@@ -1,0 +1,28 @@
+{
+  "name": "foxy-theme",
+  "version": "1.0.0",
+  "description": "Best wordpress theme framemwork",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/foxy-theme/foxy-theme.git"
+  },
+  "keywords": [
+    "wordpress",
+    "theme",
+    "framework"
+  ],
+  "author": "Puleeno Nguyen",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/foxy-theme/foxy-theme/issues"
+  },
+  "homepage": "https://github.com/foxy-theme/foxy-theme#readme",
+  "devDependencies": {
+    "webpack": "^4.20.2",
+    "webpack-cli": "^3.1.2"
+  }
+}
