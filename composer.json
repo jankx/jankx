@@ -1,15 +1,12 @@
 {
-    "name": "foxy-framework/theme",
-    "description": "Best wordpress theme framework",
+    "name": "foxy-theme-framework/foxy",
+    "description": "Best WordPress theme framework for Developers",
     "type": "project",
-    "license": "GPL-3.0-only",
+    "license": "MIT",
     "authors": [
         {
-            "name": "Puleeno Nguyen",
-            "email": "puleeno@gmail.com"
+            "name": "WPClouds",
+            "email": "contact@wpclouds.com"
         }
-    ],
-    "config": {
-        "vendor-dir": "includes/thirdparty"
-    }
+    ]
 }
