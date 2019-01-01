@@ -1,0 +1,22 @@
+{
+  "name": "foxy-theme-framework",
+  "description": "Best Wordpress theme framemwork for Developers",
+  "main": "index.js",
+  "authors": [
+    "WPClouds <contact@wpclouds.com>"
+  ],
+  "license": "GPL-3.0",
+  "keywords": [
+    "wordpress",
+    "theme",
+    "framework"
+  ],
+  "homepage": "https://github.com/foxy-theme-framework/foxy",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

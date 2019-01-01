@@ -16,4 +16,4 @@ define( 'FOXY_THEME_FUNC_FILE', __FILE__ );
 /**
  * Load foxy theme framework
  */
-require_once dirname( FOXY_THEME_FUNC_FILE ) . '/framework/init.php';
+require_once dirname( FOXY_THEME_FUNC_FILE ) . '/vendor/autoload.php';
