@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
   "name": "jankx/jankx",
   "description": "Jankx is a powerful WordPress theme framework. High performance, compatible, easy to use and develop",
   "type": "project",
@@ -13,16 +12,4 @@
   "require": {
     "jankx/core": "dev-master@dev"
   }
-=======
-    "name": "foxy-theme-framework/foxy",
-    "description": "Best WordPress theme framework for Developers",
-    "type": "project",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "WPClouds",
-            "email": "contact@wpclouds.com"
-        }
-    ]
->>>>>>> 4933ff0... Change package name
 }
