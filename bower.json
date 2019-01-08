@@ -1,17 +1,17 @@
 {
-  "name": "foxy-theme-framework",
-  "description": "Best Wordpress theme framemwork for Developers",
+  "name": "jankx",
+  "description": "Jankx is a powerful WordPress theme framework. High performance, compatible, easy to use and develop",
   "main": "index.js",
   "authors": [
-    "WPClouds <contact@wpclouds.com>"
+    "Puleeno Nguyen <puleeno@gmail.com"
   ],
-  "license": "GPL-3.0",
+  "license": "MIT",
   "keywords": [
     "wordpress",
     "theme",
     "framework"
   ],
-  "homepage": "https://github.com/foxy-theme-framework/foxy",
+  "homepage": "https://github.com/jankx/jankx",
   "ignore": [
     "**/.*",
     "node_modules",
