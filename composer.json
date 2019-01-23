@@ -15,6 +15,6 @@
         "jankx/widgets": "dev-master",
         "jankx/site-layouts": "dev-master",
         "jankx/post-layouts": "dev-master",
-        "twig-engine": "dev-master"
+        "jankx/twig-engine": "dev-master"
     }
 }
