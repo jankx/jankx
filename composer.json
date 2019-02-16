@@ -15,6 +15,5 @@
     "jankx/widgets": "dev-dev",
     "jankx/site-layouts": "dev-dev",
     "jankx/post-layouts": "dev-dev",
-    "jankx/twig-engine": "dev-dev"
   }
 }
