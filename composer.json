@@ -11,6 +11,6 @@
     }
   ],
   "require": {
-    "jankx/core": "dev-master",
+    "jankx/core": "dev-master"
   }
 }
