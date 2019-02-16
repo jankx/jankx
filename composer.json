@@ -10,6 +10,11 @@
     }
   ],
   "require": {
-    "jankx/core": "dev-master@dev"
+    "jankx/core": "dev-dev",
+    "jankx/cli": "dev-dev",
+    "jankx/widgets": "dev-dev",
+    "jankx/site-layouts": "dev-dev",
+    "jankx/post-layouts": "dev-dev",
+    "jankx/twig-engine": "dev-dev"
   }
 }
