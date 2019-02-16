@@ -12,10 +12,5 @@
   ],
   "require": {
     "jankx/core": "dev-master",
-    "jankx/cli": "dev-master",
-    "jankx/widgets": "dev-master",
-    "jankx/site-layouts": "dev-master",
-    "jankx/post-layouts": "dev-master",
-    "jankx/twig-engine": "dev-master"
   }
 }
