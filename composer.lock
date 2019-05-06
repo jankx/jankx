@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "357652fe43c5e4e5e972a8613c0ec93e",
+    "content-hash": "7dc0958d587dce354c8824f6823ba022",
     "packages": [
         {
             "name": "jankx/admin",
@@ -12,15 +12,20 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/admin.git",
-                "reference": "417465e3fbb568fec0f9d64e0871b8e338bb4dc1"
+                "reference": "7a5ce7cf2e84bad06e2a753a26ed2562a18ef51c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/admin/zipball/417465e3fbb568fec0f9d64e0871b8e338bb4dc1",
-                "reference": "417465e3fbb568fec0f9d64e0871b8e338bb4dc1",
+                "url": "https://api.github.com/repos/jankx/admin/zipball/7a5ce7cf2e84bad06e2a753a26ed2562a18ef51c",
+                "reference": "7a5ce7cf2e84bad06e2a753a26ed2562a18ef51c",
                 "shasum": ""
             },
             "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "": "src/"
+                }
+            },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
@@ -32,7 +37,7 @@
                 }
             ],
             "description": "The Jankx admin framework is a partial of Jankx theme framework",
-            "time": "2019-05-01T14:56:54+00:00"
+            "time": "2019-05-06T06:50:53+00:00"
         },
         {
             "name": "jankx/assets",
@@ -40,15 +45,20 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/assets.git",
-                "reference": "b3a4881abec3869d1e87ba7eec70ada351a238a8"
+                "reference": "5aed9d2865ce1882381c4be9fd31163331f25074"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/assets/zipball/b3a4881abec3869d1e87ba7eec70ada351a238a8",
-                "reference": "b3a4881abec3869d1e87ba7eec70ada351a238a8",
+                "url": "https://api.github.com/repos/jankx/assets/zipball/5aed9d2865ce1882381c4be9fd31163331f25074",
+                "reference": "5aed9d2865ce1882381c4be9fd31163331f25074",
                 "shasum": ""
             },
             "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jankx\\Asset\\": "src/"
+                }
+            },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
@@ -60,7 +70,7 @@
                 }
             ],
             "description": "Jankx Assets is used to manage CSS, JS, libraries with beautiful syntax",
-            "time": "2019-05-01T14:58:29+00:00"
+            "time": "2019-05-06T06:50:30+00:00"
         },
         {
             "name": "jankx/cli",
@@ -68,15 +78,23 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/cli.git",
-                "reference": "cf08b3938eb88bf29c34420b2634f025deaf1df4"
+                "reference": "e50f2d476112f3ed02f6afb9447283edc6e00259"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/cli/zipball/cf08b3938eb88bf29c34420b2634f025deaf1df4",
-                "reference": "cf08b3938eb88bf29c34420b2634f025deaf1df4",
+                "url": "https://api.github.com/repos/jankx/cli/zipball/e50f2d476112f3ed02f6afb9447283edc6e00259",
+                "reference": "e50f2d476112f3ed02f6afb9447283edc6e00259",
                 "shasum": ""
             },
             "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jankx\\CLI\\": "src/"
+                },
+                "files": [
+                    "init.php"
+                ]
+            },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
@@ -88,7 +106,7 @@
                 }
             ],
             "description": "You love WP CLI and usually use it to manage WordPress. So you will love Jankx CLI for WP CLI too",
-            "time": "2019-02-16T01:39:57+00:00"
+            "time": "2019-05-06T07:18:52+00:00"
         },
         {
             "name": "jankx/core",
@@ -96,12 +114,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/core.git",
-                "reference": "7ce8512940671c9048905163c919f2d43798a575"
+                "reference": "948f53ebcc8667846d38cfe10ba01cfaede8959a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/core/zipball/7ce8512940671c9048905163c919f2d43798a575",
-                "reference": "7ce8512940671c9048905163c919f2d43798a575",
+                "url": "https://api.github.com/repos/jankx/core/zipball/948f53ebcc8667846d38cfe10ba01cfaede8959a",
+                "reference": "948f53ebcc8667846d38cfe10ba01cfaede8959a",
                 "shasum": ""
             },
             "require": {
@@ -112,10 +130,17 @@
                 "jankx/human-number": "dev-master",
                 "jankx/options": "dev-master",
                 "jankx/template": "dev-master",
-                "jankx/translation": "dev-master",
                 "jankx/ui-framework": "dev-master"
             },
             "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "": "src/"
+                },
+                "files": [
+                    "framework.php"
+                ]
+            },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
@@ -127,7 +152,7 @@
                 }
             ],
             "description": "This is the core of Jankx theme framework and is also usable on its own as embed framework",
-            "time": "2019-05-01T14:58:50+00:00"
+            "time": "2019-05-03T09:25:29+00:00"
         },
         {
             "name": "jankx/data-types",
@@ -166,15 +191,20 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/fields.git",
-                "reference": "8fa55585a8de0c2fd359ca0f310be9f7ad913985"
+                "reference": "fb44fc07bf7a8700333cdb0e55140c9f2383ae03"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/fields/zipball/8fa55585a8de0c2fd359ca0f310be9f7ad913985",
-                "reference": "8fa55585a8de0c2fd359ca0f310be9f7ad913985",
+                "url": "https://api.github.com/repos/jankx/fields/zipball/fb44fc07bf7a8700333cdb0e55140c9f2383ae03",
+                "reference": "fb44fc07bf7a8700333cdb0e55140c9f2383ae03",
                 "shasum": ""
             },
             "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jankx\\Fields\\": "src/"
+                }
+            },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
@@ -186,7 +216,7 @@
                 }
             ],
             "description": "Jankx Fields is a simple framework used to create meta box, settings, form, etc",
-            "time": "2019-05-01T05:03:58+00:00"
+            "time": "2019-05-06T07:15:29+00:00"
         },
         {
             "name": "jankx/human-number",
@@ -194,15 +224,20 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/human-number.git",
-                "reference": "1050976a7a9fcbde0cac58b3636c45822e3b9b98"
+                "reference": "816b4d687131f14347cc58fa491c37b4c5379449"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/human-number/zipball/1050976a7a9fcbde0cac58b3636c45822e3b9b98",
-                "reference": "1050976a7a9fcbde0cac58b3636c45822e3b9b98",
+                "url": "https://api.github.com/repos/jankx/human-number/zipball/816b4d687131f14347cc58fa491c37b4c5379449",
+                "reference": "816b4d687131f14347cc58fa491c37b4c5379449",
                 "shasum": ""
             },
             "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jankx\\HumanNumber\\": "src/"
+                }
+            },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
@@ -214,7 +249,7 @@
                 }
             ],
             "description": "Friendly number for human can read easiler.",
-            "time": "2019-02-16T01:41:22+00:00"
+            "time": "2019-05-06T07:15:34+00:00"
         },
         {
             "name": "jankx/options",
@@ -222,15 +257,20 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/options.git",
-                "reference": "afa0e217e1ff933849d2974a0d72de661760772f"
+                "reference": "eea4578fc75770eb1118397d9b01b506d70af79e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/options/zipball/afa0e217e1ff933849d2974a0d72de661760772f",
-                "reference": "afa0e217e1ff933849d2974a0d72de661760772f",
+                "url": "https://api.github.com/repos/jankx/options/zipball/eea4578fc75770eb1118397d9b01b506d70af79e",
+                "reference": "eea4578fc75770eb1118397d9b01b506d70af79e",
                 "shasum": ""
             },
             "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jankx\\Options\\": "src/"
+                }
+            },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
@@ -242,7 +282,7 @@
                 }
             ],
             "description": "Jankx options usable to create the theme, add-on options integrate with your loved option frameworks",
-            "time": "2019-05-01T14:56:10+00:00"
+            "time": "2019-05-06T07:15:40+00:00"
         },
         {
             "name": "jankx/post-layouts",
@@ -335,79 +375,25 @@
             "time": "2019-05-01T14:39:24+00:00"
         },
         {
-            "name": "jankx/translation",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/jankx/translation.git",
-                "reference": "1e4f3ceaf2a084e1e0bdd0673ea351567373a562"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/jankx/translation/zipball/1e4f3ceaf2a084e1e0bdd0673ea351567373a562",
-                "reference": "1e4f3ceaf2a084e1e0bdd0673ea351567373a562",
-                "shasum": ""
-            },
-            "type": "library",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Puleeno Nguyen",
-                    "email": "puleeno@gmail.com"
-                }
-            ],
-            "description": "Compile languages to mo format or compatible with other multi-language plugins",
-            "time": "2019-02-16T01:41:17+00:00"
-        },
-        {
-            "name": "jankx/twig-engine",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/jankx/twig-engine.git",
-                "reference": "55e22cb5fbcc8cf2bb4c481168403c62bb333531"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/jankx/twig-engine/zipball/55e22cb5fbcc8cf2bb4c481168403c62bb333531",
-                "reference": "55e22cb5fbcc8cf2bb4c481168403c62bb333531",
-                "shasum": ""
-            },
-            "require": {
-                "jankx/core": "dev-master"
-            },
-            "type": "library",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Puleeno Nguyen",
-                    "email": "puleeno@gmail.com"
-                }
-            ],
-            "description": "The flexible, fast, and secure template engine for Jankx theme framemwork",
-            "time": "2019-05-01T05:23:27+00:00"
-        },
-        {
             "name": "jankx/ui-framework",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/ui-framework.git",
-                "reference": "4c3bd81e6bb14210adc19a397ed9ed403236bb65"
+                "reference": "8660e78d8044ab9ab3f438be58304799b36c410e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/ui-framework/zipball/4c3bd81e6bb14210adc19a397ed9ed403236bb65",
-                "reference": "4c3bd81e6bb14210adc19a397ed9ed403236bb65",
+                "url": "https://api.github.com/repos/jankx/ui-framework/zipball/8660e78d8044ab9ab3f438be58304799b36c410e",
+                "reference": "8660e78d8044ab9ab3f438be58304799b36c410e",
                 "shasum": ""
             },
             "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jankx\\UI\\Framework\\": "src/"
+                }
+            },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
@@ -419,7 +405,7 @@
                 }
             ],
             "description": "Jankx UI framework integrate with popular CSS frameworks",
-            "time": "2019-05-01T14:37:05+00:00"
+            "time": "2019-05-06T07:15:55+00:00"
         },
         {
             "name": "jankx/widgets",
@@ -427,18 +413,26 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/widgets.git",
-                "reference": "97d05388279873efcb753c1a88b664860d45f1d1"
+                "reference": "c6af0ad00f61304e578467bf4aa8168539f55d1d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/widgets/zipball/97d05388279873efcb753c1a88b664860d45f1d1",
-                "reference": "97d05388279873efcb753c1a88b664860d45f1d1",
+                "url": "https://api.github.com/repos/jankx/widgets/zipball/c6af0ad00f61304e578467bf4aa8168539f55d1d",
+                "reference": "c6af0ad00f61304e578467bf4aa8168539f55d1d",
                 "shasum": ""
             },
             "require": {
                 "jankx/core": "dev-master"
             },
             "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jankx\\Widgets\\": "src/"
+                },
+                "files": [
+                    "init.php"
+                ]
+            },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
@@ -450,7 +444,7 @@
                 }
             ],
             "description": "Common widgets are developed specifically for Jankx theme framework",
-            "time": "2019-05-01T14:55:07+00:00"
+            "time": "2019-05-06T07:16:01+00:00"
         }
     ],
     "packages-dev": [],
@@ -461,8 +455,7 @@
         "jankx/cli": 20,
         "jankx/widgets": 20,
         "jankx/site-layouts": 20,
-        "jankx/post-layouts": 20,
-        "jankx/twig-engine": 20
+        "jankx/post-layouts": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
