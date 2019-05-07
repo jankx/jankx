@@ -12,18 +12,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/admin.git",
-                "reference": "7a5ce7cf2e84bad06e2a753a26ed2562a18ef51c"
+                "reference": "0e3d31571ec9429962d913aa9e1661ee77611517"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/admin/zipball/7a5ce7cf2e84bad06e2a753a26ed2562a18ef51c",
-                "reference": "7a5ce7cf2e84bad06e2a753a26ed2562a18ef51c",
+                "url": "https://api.github.com/repos/jankx/admin/zipball/0e3d31571ec9429962d913aa9e1661ee77611517",
+                "reference": "0e3d31571ec9429962d913aa9e1661ee77611517",
                 "shasum": ""
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "": "src/"
+                    "Jankx\\Admin\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -37,7 +37,7 @@
                 }
             ],
             "description": "The Jankx admin framework is a partial of Jankx theme framework",
-            "time": "2019-05-06T06:50:53+00:00"
+            "time": "2019-05-07T06:49:23+00:00"
         },
         {
             "name": "jankx/assets",
@@ -114,12 +114,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/core.git",
-                "reference": "948f53ebcc8667846d38cfe10ba01cfaede8959a"
+                "reference": "ed2b0c436253db9e931ad066f2277b13e65393c3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/core/zipball/948f53ebcc8667846d38cfe10ba01cfaede8959a",
-                "reference": "948f53ebcc8667846d38cfe10ba01cfaede8959a",
+                "url": "https://api.github.com/repos/jankx/core/zipball/ed2b0c436253db9e931ad066f2277b13e65393c3",
+                "reference": "ed2b0c436253db9e931ad066f2277b13e65393c3",
                 "shasum": ""
             },
             "require": {
@@ -152,7 +152,7 @@
                 }
             ],
             "description": "This is the core of Jankx theme framework and is also usable on its own as embed framework",
-            "time": "2019-05-03T09:25:29+00:00"
+            "time": "2019-05-07T08:44:38+00:00"
         },
         {
             "name": "jankx/data-types",
@@ -160,18 +160,23 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/data-types.git",
-                "reference": "90752614e963f4eecf61608fe7db36c6eb83bd01"
+                "reference": "f4845f641584269d06a80fcc745a66a005f04e94"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/data-types/zipball/90752614e963f4eecf61608fe7db36c6eb83bd01",
-                "reference": "90752614e963f4eecf61608fe7db36c6eb83bd01",
+                "url": "https://api.github.com/repos/jankx/data-types/zipball/f4845f641584269d06a80fcc745a66a005f04e94",
+                "reference": "f4845f641584269d06a80fcc745a66a005f04e94",
                 "shasum": ""
             },
             "require": {
                 "jankx/fields": "dev-master"
             },
             "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jankx\\DataTypes\\": "src/"
+                }
+            },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
@@ -183,7 +188,7 @@
                 }
             ],
             "description": "WordPress data types such as: custom post type, taxonoxy, metas,etc",
-            "time": "2019-05-01T05:23:39+00:00"
+            "time": "2019-05-07T08:23:26+00:00"
         },
         {
             "name": "jankx/fields",
@@ -290,18 +295,23 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/post-layouts.git",
-                "reference": "53e8fa6c57fc42b0ff5db70488e3c4f106bc50bb"
+                "reference": "23f7818bc076f23ee5099c019e85818d1d6b80ac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/post-layouts/zipball/53e8fa6c57fc42b0ff5db70488e3c4f106bc50bb",
-                "reference": "53e8fa6c57fc42b0ff5db70488e3c4f106bc50bb",
+                "url": "https://api.github.com/repos/jankx/post-layouts/zipball/23f7818bc076f23ee5099c019e85818d1d6b80ac",
+                "reference": "23f7818bc076f23ee5099c019e85818d1d6b80ac",
                 "shasum": ""
             },
             "require": {
                 "jankx/core": "dev-master"
             },
             "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jankx\\PostLayouts\\": "src/"
+                }
+            },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
@@ -313,7 +323,7 @@
                 }
             ],
             "description": "WordPress post and custom post type layout generator",
-            "time": "2019-05-01T14:55:52+00:00"
+            "time": "2019-05-07T08:25:09+00:00"
         },
         {
             "name": "jankx/site-layouts",
@@ -321,18 +331,23 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/site-layouts.git",
-                "reference": "f271f567077bb8874ebfce7e6b37dcac38535cad"
+                "reference": "8bf3a7a2d1ab4c99e5d256ceb76f4beec7208380"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/site-layouts/zipball/f271f567077bb8874ebfce7e6b37dcac38535cad",
-                "reference": "f271f567077bb8874ebfce7e6b37dcac38535cad",
+                "url": "https://api.github.com/repos/jankx/site-layouts/zipball/8bf3a7a2d1ab4c99e5d256ceb76f4beec7208380",
+                "reference": "8bf3a7a2d1ab4c99e5d256ceb76f4beec7208380",
                 "shasum": ""
             },
             "require": {
                 "jankx/core": "dev-master"
             },
             "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jankx\\SiteLayouts\\": "src/"
+                }
+            },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
@@ -344,7 +359,7 @@
                 }
             ],
             "description": "The best way to create multi site layouts and management layouts",
-            "time": "2019-05-01T05:23:22+00:00"
+            "time": "2019-05-07T08:25:39+00:00"
         },
         {
             "name": "jankx/template",
@@ -352,15 +367,20 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/template.git",
-                "reference": "b5bb590c1f39503bef5102fdd2398a1e6cc77635"
+                "reference": "a33705e74475a4a146cdcd29f8fd86e1db5282c5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/template/zipball/b5bb590c1f39503bef5102fdd2398a1e6cc77635",
-                "reference": "b5bb590c1f39503bef5102fdd2398a1e6cc77635",
+                "url": "https://api.github.com/repos/jankx/template/zipball/a33705e74475a4a146cdcd29f8fd86e1db5282c5",
+                "reference": "a33705e74475a4a146cdcd29f8fd86e1db5282c5",
                 "shasum": ""
             },
             "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jankx\\Template\\": "src/"
+                }
+            },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
@@ -372,7 +392,7 @@
                 }
             ],
             "description": "Jankx template manager usable to load template with support override, caching",
-            "time": "2019-05-01T14:39:24+00:00"
+            "time": "2019-05-07T08:20:07+00:00"
         },
         {
             "name": "jankx/ui-framework",
