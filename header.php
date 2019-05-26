@@ -9,3 +9,10 @@
  * @since 1.0
  */
 
+/**
+ * Load header template via Jankx Template Engine
+ *
+ * Site header can be modified via feature override templates of WordPress
+ * so please don't modify this file to ensure Jankx Framework working is exactly.
+ */
+jankx_template( 'header' );

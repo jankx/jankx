@@ -4,7 +4,7 @@
  *
  * PLEASE DON'T MODIFY THIS FILE
  *
- * @package Jankx/Framework
+ * @package Jankx/Template
  * @author Puleeno Nguyen <puleeno@gmail.com>
  * @since 1.0
  */
