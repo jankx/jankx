@@ -9,3 +9,7 @@
  * @since 1.0
  */
 
+/**
+ * Load template via Jankx core
+ */
+jankx_page( __FILE__ );
