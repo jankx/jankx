@@ -45,12 +45,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/assets.git",
-                "reference": "2a498065918904a6dc5d65cc4a20026796462fb0"
+                "reference": "ecaa350c9434e7b6c9ca736798be82253b43c577"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/assets/zipball/2a498065918904a6dc5d65cc4a20026796462fb0",
-                "reference": "2a498065918904a6dc5d65cc4a20026796462fb0",
+                "url": "https://api.github.com/repos/jankx/assets/zipball/ecaa350c9434e7b6c9ca736798be82253b43c577",
+                "reference": "ecaa350c9434e7b6c9ca736798be82253b43c577",
                 "shasum": ""
             },
             "type": "library",
@@ -70,7 +70,7 @@
                 }
             ],
             "description": "Jankx Assets is used to manage CSS, JS, libraries with beautiful syntax",
-            "time": "2019-05-26T10:44:29+00:00"
+            "time": "2019-06-16T06:16:29+00:00"
         },
         {
             "name": "jankx/cli",
@@ -78,22 +78,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/cli.git",
-                "reference": "e50f2d476112f3ed02f6afb9447283edc6e00259"
+                "reference": "928ef76293765f0816458fd2999997f17ce50c4d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/cli/zipball/e50f2d476112f3ed02f6afb9447283edc6e00259",
-                "reference": "e50f2d476112f3ed02f6afb9447283edc6e00259",
+                "url": "https://api.github.com/repos/jankx/cli/zipball/928ef76293765f0816458fd2999997f17ce50c4d",
+                "reference": "928ef76293765f0816458fd2999997f17ce50c4d",
                 "shasum": ""
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
                     "Jankx\\CLI\\": "src/"
-                },
-                "files": [
-                    "init.php"
-                ]
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -106,7 +103,7 @@
                 }
             ],
             "description": "You love WP CLI and usually use it to manage WordPress. So you will love Jankx CLI for WP CLI too",
-            "time": "2019-05-06T07:18:52+00:00"
+            "time": "2019-06-16T06:16:20+00:00"
         },
         {
             "name": "jankx/core",
@@ -114,12 +111,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/core.git",
-                "reference": "6bd2e6c774252202a938c12448fa23dc467f2e3f"
+                "reference": "496d358896b90ef06bf32248ac2f7ba41d5475e3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/core/zipball/6bd2e6c774252202a938c12448fa23dc467f2e3f",
-                "reference": "6bd2e6c774252202a938c12448fa23dc467f2e3f",
+                "url": "https://api.github.com/repos/jankx/core/zipball/496d358896b90ef06bf32248ac2f7ba41d5475e3",
+                "reference": "496d358896b90ef06bf32248ac2f7ba41d5475e3",
                 "shasum": ""
             },
             "require": {
@@ -152,7 +149,7 @@
                 }
             ],
             "description": "This is the core of Jankx theme framework and is also usable on its own as embed framework",
-            "time": "2019-05-26T10:29:16+00:00"
+            "time": "2019-06-16T05:43:44+00:00"
         },
         {
             "name": "jankx/data-types",
@@ -160,12 +157,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/data-types.git",
-                "reference": "f4845f641584269d06a80fcc745a66a005f04e94"
+                "reference": "bdec4917135b97aea3c3c54c7082e190371b3406"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/data-types/zipball/f4845f641584269d06a80fcc745a66a005f04e94",
-                "reference": "f4845f641584269d06a80fcc745a66a005f04e94",
+                "url": "https://api.github.com/repos/jankx/data-types/zipball/bdec4917135b97aea3c3c54c7082e190371b3406",
+                "reference": "bdec4917135b97aea3c3c54c7082e190371b3406",
                 "shasum": ""
             },
             "require": {
@@ -188,7 +185,7 @@
                 }
             ],
             "description": "WordPress data types such as: custom post type, taxonoxy, metas,etc",
-            "time": "2019-05-07T08:23:26+00:00"
+            "time": "2019-06-16T06:12:59+00:00"
         },
         {
             "name": "jankx/fields",
@@ -196,12 +193,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/fields.git",
-                "reference": "12ced372db720d2d902251b688ae4079827ae907"
+                "reference": "0bb791f1b7f7cf28f0a68f07c3252c8efe7a590f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/fields/zipball/12ced372db720d2d902251b688ae4079827ae907",
-                "reference": "12ced372db720d2d902251b688ae4079827ae907",
+                "url": "https://api.github.com/repos/jankx/fields/zipball/0bb791f1b7f7cf28f0a68f07c3252c8efe7a590f",
+                "reference": "0bb791f1b7f7cf28f0a68f07c3252c8efe7a590f",
                 "shasum": ""
             },
             "type": "library",
@@ -221,7 +218,7 @@
                 }
             ],
             "description": "Jankx Fields is a simple framework used to create meta box, settings, form, etc",
-            "time": "2019-06-03T02:17:53+00:00"
+            "time": "2019-06-16T06:07:59+00:00"
         },
         {
             "name": "jankx/human-number",
@@ -229,19 +226,22 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/human-number.git",
-                "reference": "816b4d687131f14347cc58fa491c37b4c5379449"
+                "reference": "fd96cd982d798c758737a85738864386c031afdc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/human-number/zipball/816b4d687131f14347cc58fa491c37b4c5379449",
-                "reference": "816b4d687131f14347cc58fa491c37b4c5379449",
+                "url": "https://api.github.com/repos/jankx/human-number/zipball/fd96cd982d798c758737a85738864386c031afdc",
+                "reference": "fd96cd982d798c758737a85738864386c031afdc",
                 "shasum": ""
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
                     "Jankx\\HumanNumber\\": "src/"
-                }
+                },
+                "files": [
+                    "helpers.php"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -254,7 +254,7 @@
                 }
             ],
             "description": "Friendly number for human can read easiler.",
-            "time": "2019-05-06T07:15:34+00:00"
+            "time": "2019-06-16T06:08:40+00:00"
         },
         {
             "name": "jankx/options",
@@ -262,12 +262,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/options.git",
-                "reference": "eea4578fc75770eb1118397d9b01b506d70af79e"
+                "reference": "0097edbebd5047df169391394dc29250bf8584a1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/options/zipball/eea4578fc75770eb1118397d9b01b506d70af79e",
-                "reference": "eea4578fc75770eb1118397d9b01b506d70af79e",
+                "url": "https://api.github.com/repos/jankx/options/zipball/0097edbebd5047df169391394dc29250bf8584a1",
+                "reference": "0097edbebd5047df169391394dc29250bf8584a1",
                 "shasum": ""
             },
             "type": "library",
@@ -287,7 +287,7 @@
                 }
             ],
             "description": "Jankx options usable to create the theme, add-on options integrate with your loved option frameworks",
-            "time": "2019-05-06T07:15:40+00:00"
+            "time": "2019-06-16T05:44:09+00:00"
         },
         {
             "name": "jankx/post-layouts",
@@ -295,12 +295,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/post-layouts.git",
-                "reference": "23f7818bc076f23ee5099c019e85818d1d6b80ac"
+                "reference": "d86a2e7a6e360492a0d7c0e9378df06e16fa45d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/post-layouts/zipball/23f7818bc076f23ee5099c019e85818d1d6b80ac",
-                "reference": "23f7818bc076f23ee5099c019e85818d1d6b80ac",
+                "url": "https://api.github.com/repos/jankx/post-layouts/zipball/d86a2e7a6e360492a0d7c0e9378df06e16fa45d2",
+                "reference": "d86a2e7a6e360492a0d7c0e9378df06e16fa45d2",
                 "shasum": ""
             },
             "require": {
@@ -323,7 +323,7 @@
                 }
             ],
             "description": "WordPress post and custom post type layout generator",
-            "time": "2019-05-07T08:25:09+00:00"
+            "time": "2019-06-16T05:44:29+00:00"
         },
         {
             "name": "jankx/site-layouts",
@@ -331,12 +331,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/site-layouts.git",
-                "reference": "8bf3a7a2d1ab4c99e5d256ceb76f4beec7208380"
+                "reference": "2ce323512d784da490a9bfc87b1d3aa8d4799ebd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/site-layouts/zipball/8bf3a7a2d1ab4c99e5d256ceb76f4beec7208380",
-                "reference": "8bf3a7a2d1ab4c99e5d256ceb76f4beec7208380",
+                "url": "https://api.github.com/repos/jankx/site-layouts/zipball/2ce323512d784da490a9bfc87b1d3aa8d4799ebd",
+                "reference": "2ce323512d784da490a9bfc87b1d3aa8d4799ebd",
                 "shasum": ""
             },
             "require": {
@@ -359,7 +359,7 @@
                 }
             ],
             "description": "The best way to create multi site layouts and management layouts",
-            "time": "2019-05-07T08:25:39+00:00"
+            "time": "2019-06-16T05:44:48+00:00"
         },
         {
             "name": "jankx/template",
@@ -367,12 +367,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/template.git",
-                "reference": "80a46ac31f173728d3e55d455115df67f4243395"
+                "reference": "cd0c2da3dcd13ff4e9b9848f2e6cb65c099c498d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/template/zipball/80a46ac31f173728d3e55d455115df67f4243395",
-                "reference": "80a46ac31f173728d3e55d455115df67f4243395",
+                "url": "https://api.github.com/repos/jankx/template/zipball/cd0c2da3dcd13ff4e9b9848f2e6cb65c099c498d",
+                "reference": "cd0c2da3dcd13ff4e9b9848f2e6cb65c099c498d",
                 "shasum": ""
             },
             "require": {
@@ -395,7 +395,7 @@
                 }
             ],
             "description": "Jankx template manager usable to load template with support override, caching",
-            "time": "2019-06-03T02:18:12+00:00"
+            "time": "2019-06-16T06:46:04+00:00"
         },
         {
             "name": "jankx/ui-framework",
@@ -403,12 +403,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/ui-framework.git",
-                "reference": "f8f9d3e5951c1dcdf37d714dde5ebb2853030804"
+                "reference": "3561f08ca3c4f3d2bed07b37c122c83b4f6559a7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/ui-framework/zipball/f8f9d3e5951c1dcdf37d714dde5ebb2853030804",
-                "reference": "f8f9d3e5951c1dcdf37d714dde5ebb2853030804",
+                "url": "https://api.github.com/repos/jankx/ui-framework/zipball/3561f08ca3c4f3d2bed07b37c122c83b4f6559a7",
+                "reference": "3561f08ca3c4f3d2bed07b37c122c83b4f6559a7",
                 "shasum": ""
             },
             "type": "library",
@@ -428,7 +428,7 @@
                 }
             ],
             "description": "Jankx UI framework integrate with popular CSS frameworks",
-            "time": "2019-06-03T02:18:18+00:00"
+            "time": "2019-06-16T06:08:54+00:00"
         },
         {
             "name": "jankx/widgets",
@@ -436,12 +436,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/widgets.git",
-                "reference": "361a5e205e90984b3e79caef86730606838a30eb"
+                "reference": "2f71fd75efb3ff7d25699bd33a24ec1e07d26d84"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/widgets/zipball/361a5e205e90984b3e79caef86730606838a30eb",
-                "reference": "361a5e205e90984b3e79caef86730606838a30eb",
+                "url": "https://api.github.com/repos/jankx/widgets/zipball/2f71fd75efb3ff7d25699bd33a24ec1e07d26d84",
+                "reference": "2f71fd75efb3ff7d25699bd33a24ec1e07d26d84",
                 "shasum": ""
             },
             "require": {
@@ -464,7 +464,7 @@
                 }
             ],
             "description": "Common widgets are developed specifically for Jankx theme framework",
-            "time": "2019-05-26T18:22:43+00:00"
+            "time": "2019-06-16T05:45:39+00:00"
         }
     ],
     "packages-dev": [],
