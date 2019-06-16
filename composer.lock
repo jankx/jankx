@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/admin.git",
-                "reference": "0e3d31571ec9429962d913aa9e1661ee77611517"
+                "reference": "3547ff86f55b9fedf547fb4bc9a361f3dbe9d27c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/admin/zipball/0e3d31571ec9429962d913aa9e1661ee77611517",
-                "reference": "0e3d31571ec9429962d913aa9e1661ee77611517",
+                "url": "https://api.github.com/repos/jankx/admin/zipball/3547ff86f55b9fedf547fb4bc9a361f3dbe9d27c",
+                "reference": "3547ff86f55b9fedf547fb4bc9a361f3dbe9d27c",
                 "shasum": ""
             },
             "type": "library",
@@ -37,7 +37,7 @@
                 }
             ],
             "description": "The Jankx admin framework is a partial of Jankx theme framework",
-            "time": "2019-05-07T06:49:23+00:00"
+            "time": "2019-05-07T10:39:50+00:00"
         },
         {
             "name": "jankx/assets",
@@ -45,12 +45,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/assets.git",
-                "reference": "5aed9d2865ce1882381c4be9fd31163331f25074"
+                "reference": "2a498065918904a6dc5d65cc4a20026796462fb0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/assets/zipball/5aed9d2865ce1882381c4be9fd31163331f25074",
-                "reference": "5aed9d2865ce1882381c4be9fd31163331f25074",
+                "url": "https://api.github.com/repos/jankx/assets/zipball/2a498065918904a6dc5d65cc4a20026796462fb0",
+                "reference": "2a498065918904a6dc5d65cc4a20026796462fb0",
                 "shasum": ""
             },
             "type": "library",
@@ -70,7 +70,7 @@
                 }
             ],
             "description": "Jankx Assets is used to manage CSS, JS, libraries with beautiful syntax",
-            "time": "2019-05-06T06:50:30+00:00"
+            "time": "2019-05-26T10:44:29+00:00"
         },
         {
             "name": "jankx/cli",
@@ -114,12 +114,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/core.git",
-                "reference": "ed2b0c436253db9e931ad066f2277b13e65393c3"
+                "reference": "6bd2e6c774252202a938c12448fa23dc467f2e3f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/core/zipball/ed2b0c436253db9e931ad066f2277b13e65393c3",
-                "reference": "ed2b0c436253db9e931ad066f2277b13e65393c3",
+                "url": "https://api.github.com/repos/jankx/core/zipball/6bd2e6c774252202a938c12448fa23dc467f2e3f",
+                "reference": "6bd2e6c774252202a938c12448fa23dc467f2e3f",
                 "shasum": ""
             },
             "require": {
@@ -152,7 +152,7 @@
                 }
             ],
             "description": "This is the core of Jankx theme framework and is also usable on its own as embed framework",
-            "time": "2019-05-07T08:44:38+00:00"
+            "time": "2019-05-26T10:29:16+00:00"
         },
         {
             "name": "jankx/data-types",
@@ -196,12 +196,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/fields.git",
-                "reference": "fb44fc07bf7a8700333cdb0e55140c9f2383ae03"
+                "reference": "12ced372db720d2d902251b688ae4079827ae907"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/fields/zipball/fb44fc07bf7a8700333cdb0e55140c9f2383ae03",
-                "reference": "fb44fc07bf7a8700333cdb0e55140c9f2383ae03",
+                "url": "https://api.github.com/repos/jankx/fields/zipball/12ced372db720d2d902251b688ae4079827ae907",
+                "reference": "12ced372db720d2d902251b688ae4079827ae907",
                 "shasum": ""
             },
             "type": "library",
@@ -221,7 +221,7 @@
                 }
             ],
             "description": "Jankx Fields is a simple framework used to create meta box, settings, form, etc",
-            "time": "2019-05-06T07:15:29+00:00"
+            "time": "2019-06-03T02:17:53+00:00"
         },
         {
             "name": "jankx/human-number",
@@ -367,13 +367,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/template.git",
-                "reference": "a33705e74475a4a146cdcd29f8fd86e1db5282c5"
+                "reference": "80a46ac31f173728d3e55d455115df67f4243395"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/template/zipball/a33705e74475a4a146cdcd29f8fd86e1db5282c5",
-                "reference": "a33705e74475a4a146cdcd29f8fd86e1db5282c5",
+                "url": "https://api.github.com/repos/jankx/template/zipball/80a46ac31f173728d3e55d455115df67f4243395",
+                "reference": "80a46ac31f173728d3e55d455115df67f4243395",
                 "shasum": ""
+            },
+            "require": {
+                "jankx/ui-framework": "dev-master"
             },
             "type": "library",
             "autoload": {
@@ -392,7 +395,7 @@
                 }
             ],
             "description": "Jankx template manager usable to load template with support override, caching",
-            "time": "2019-05-07T08:20:07+00:00"
+            "time": "2019-06-03T02:18:12+00:00"
         },
         {
             "name": "jankx/ui-framework",
@@ -400,12 +403,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/ui-framework.git",
-                "reference": "8660e78d8044ab9ab3f438be58304799b36c410e"
+                "reference": "f8f9d3e5951c1dcdf37d714dde5ebb2853030804"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/ui-framework/zipball/8660e78d8044ab9ab3f438be58304799b36c410e",
-                "reference": "8660e78d8044ab9ab3f438be58304799b36c410e",
+                "url": "https://api.github.com/repos/jankx/ui-framework/zipball/f8f9d3e5951c1dcdf37d714dde5ebb2853030804",
+                "reference": "f8f9d3e5951c1dcdf37d714dde5ebb2853030804",
                 "shasum": ""
             },
             "type": "library",
@@ -425,7 +428,7 @@
                 }
             ],
             "description": "Jankx UI framework integrate with popular CSS frameworks",
-            "time": "2019-05-06T07:15:55+00:00"
+            "time": "2019-06-03T02:18:18+00:00"
         },
         {
             "name": "jankx/widgets",
@@ -433,12 +436,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/widgets.git",
-                "reference": "c6af0ad00f61304e578467bf4aa8168539f55d1d"
+                "reference": "361a5e205e90984b3e79caef86730606838a30eb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/widgets/zipball/c6af0ad00f61304e578467bf4aa8168539f55d1d",
-                "reference": "c6af0ad00f61304e578467bf4aa8168539f55d1d",
+                "url": "https://api.github.com/repos/jankx/widgets/zipball/361a5e205e90984b3e79caef86730606838a30eb",
+                "reference": "361a5e205e90984b3e79caef86730606838a30eb",
                 "shasum": ""
             },
             "require": {
@@ -448,10 +451,7 @@
             "autoload": {
                 "psr-4": {
                     "Jankx\\Widgets\\": "src/"
-                },
-                "files": [
-                    "init.php"
-                ]
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -464,7 +464,7 @@
                 }
             ],
             "description": "Common widgets are developed specifically for Jankx theme framework",
-            "time": "2019-05-06T07:16:01+00:00"
+            "time": "2019-05-26T18:22:43+00:00"
         }
     ],
     "packages-dev": [],
