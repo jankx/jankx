@@ -111,12 +111,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/core.git",
-                "reference": "ad2c42a8a42abb09a5509731cfa17a57519560b6"
+                "reference": "d290f315779b9e1177652cf604e09f54c8891921"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/core/zipball/ad2c42a8a42abb09a5509731cfa17a57519560b6",
-                "reference": "ad2c42a8a42abb09a5509731cfa17a57519560b6",
+                "url": "https://api.github.com/repos/jankx/core/zipball/d290f315779b9e1177652cf604e09f54c8891921",
+                "reference": "d290f315779b9e1177652cf604e09f54c8891921",
                 "shasum": ""
             },
             "require": {
@@ -151,7 +151,7 @@
                 }
             ],
             "description": "This is the core of Jankx theme framework and is also usable on its own as embed framework",
-            "time": "2019-06-16T20:19:35+00:00"
+            "time": "2019-06-16T23:39:56+00:00"
         },
         {
             "name": "jankx/data-types",
