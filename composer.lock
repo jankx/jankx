@@ -45,19 +45,22 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/assets.git",
-                "reference": "1767d41b9c191eb9ece88b0dcd5266f8092e468d"
+                "reference": "3ab580b98124670c0589f3fcefaf76a03d7f82e3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/assets/zipball/1767d41b9c191eb9ece88b0dcd5266f8092e468d",
-                "reference": "1767d41b9c191eb9ece88b0dcd5266f8092e468d",
+                "url": "https://api.github.com/repos/jankx/assets/zipball/3ab580b98124670c0589f3fcefaf76a03d7f82e3",
+                "reference": "3ab580b98124670c0589f3fcefaf76a03d7f82e3",
                 "shasum": ""
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
                     "Jankx\\Asset\\": "src/"
-                }
+                },
+                "files": [
+                    "helpers.php"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -70,7 +73,7 @@
                 }
             ],
             "description": "Jankx Assets is used to manage CSS, JS, libraries with beautiful syntax",
-            "time": "2019-06-17T16:35:12+00:00"
+            "time": "2019-07-06T03:54:18+00:00"
         },
         {
             "name": "jankx/cli",
@@ -111,12 +114,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/core.git",
-                "reference": "ed3ddb3f7ab90e656513819dc5416b89ee06f93a"
+                "reference": "35bf14196a5d13079414912853de75140f17fde0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/core/zipball/ed3ddb3f7ab90e656513819dc5416b89ee06f93a",
-                "reference": "ed3ddb3f7ab90e656513819dc5416b89ee06f93a",
+                "url": "https://api.github.com/repos/jankx/core/zipball/35bf14196a5d13079414912853de75140f17fde0",
+                "reference": "35bf14196a5d13079414912853de75140f17fde0",
                 "shasum": ""
             },
             "require": {
@@ -127,7 +130,8 @@
                 "jankx/human-number": "dev-master",
                 "jankx/options": "dev-master",
                 "jankx/template": "dev-master",
-                "jankx/ui-framework": "dev-master"
+                "jankx/ui-framework": "dev-master",
+                "mck89/peast": "^1.9.2"
             },
             "type": "library",
             "autoload": {
@@ -137,7 +141,8 @@
                 "files": [
                     "framework.php",
                     "helpers/array.php",
-                    "helpers/wordpress.php"
+                    "helpers/wordpress.php",
+                    "helpers/jankx.php"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -151,7 +156,7 @@
                 }
             ],
             "description": "This is the core of Jankx theme framework and is also usable on its own as embed framework",
-            "time": "2019-06-21T07:08:50+00:00"
+            "time": "2019-07-06T04:02:14+00:00"
         },
         {
             "name": "jankx/data-types",
@@ -297,12 +302,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/post-layouts.git",
-                "reference": "9a0f65823d09474b04937575d1400b82754650ca"
+                "reference": "bc8c662ee9021b84b13e1f4345547bc6983510ac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/post-layouts/zipball/9a0f65823d09474b04937575d1400b82754650ca",
-                "reference": "9a0f65823d09474b04937575d1400b82754650ca",
+                "url": "https://api.github.com/repos/jankx/post-layouts/zipball/bc8c662ee9021b84b13e1f4345547bc6983510ac",
+                "reference": "bc8c662ee9021b84b13e1f4345547bc6983510ac",
                 "shasum": ""
             },
             "require": {
@@ -325,7 +330,7 @@
                 }
             ],
             "description": "WordPress post and custom post type layout generator",
-            "time": "2019-06-17T16:35:51+00:00"
+            "time": "2019-06-24T00:18:32+00:00"
         },
         {
             "name": "jankx/site-layouts",
@@ -369,12 +374,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/template.git",
-                "reference": "6bbfe903d872d62ac2bd86c18d471fcd5d2dce74"
+                "reference": "5f41462e94cad06cfaca94e6cd6e4fcd44384d12"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/template/zipball/6bbfe903d872d62ac2bd86c18d471fcd5d2dce74",
-                "reference": "6bbfe903d872d62ac2bd86c18d471fcd5d2dce74",
+                "url": "https://api.github.com/repos/jankx/template/zipball/5f41462e94cad06cfaca94e6cd6e4fcd44384d12",
+                "reference": "5f41462e94cad06cfaca94e6cd6e4fcd44384d12",
                 "shasum": ""
             },
             "require": {
@@ -397,7 +402,7 @@
                 }
             ],
             "description": "Jankx template manager usable to load template with support override, caching",
-            "time": "2019-06-21T07:09:11+00:00"
+            "time": "2019-07-06T03:54:35+00:00"
         },
         {
             "name": "jankx/ui-framework",
@@ -405,12 +410,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/ui-framework.git",
-                "reference": "9fa0d0db9f08511a1cd6dd28fe6e6b656f057829"
+                "reference": "f30731bb32b526121e31ecc4fe28f3f36258ec0a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/ui-framework/zipball/9fa0d0db9f08511a1cd6dd28fe6e6b656f057829",
-                "reference": "9fa0d0db9f08511a1cd6dd28fe6e6b656f057829",
+                "url": "https://api.github.com/repos/jankx/ui-framework/zipball/f30731bb32b526121e31ecc4fe28f3f36258ec0a",
+                "reference": "f30731bb32b526121e31ecc4fe28f3f36258ec0a",
                 "shasum": ""
             },
             "type": "library",
@@ -430,7 +435,7 @@
                 }
             ],
             "description": "Jankx UI framework integrate with popular CSS frameworks",
-            "time": "2019-06-21T07:10:03+00:00"
+            "time": "2019-07-06T04:04:09+00:00"
         },
         {
             "name": "jankx/widgets",
@@ -467,6 +472,51 @@
             ],
             "description": "Common widgets are developed specifically for Jankx theme framework",
             "time": "2019-06-16T05:45:39+00:00"
+        },
+        {
+            "name": "mck89/peast",
+            "version": "v1.9.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mck89/peast.git",
+                "reference": "7c9e487a0bb2410b3b7f27e8274cd04248b68197"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mck89/peast/zipball/7c9e487a0bb2410b3b7f27e8274cd04248b68197",
+                "reference": "7c9e487a0bb2410b3b7f27e8274cd04248b68197",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.0|^5.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.9.2-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Peast\\": "lib/Peast/",
+                    "Peast\\test\\": "test/Peast/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Marco Marchiò",
+                    "email": "marco.mm89@gmail.com"
+                }
+            ],
+            "description": "Peast is PHP library that generates AST for JavaScript code",
+            "time": "2019-05-24T16:47:14+00:00"
         }
     ],
     "packages-dev": [],
