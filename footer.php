@@ -16,8 +16,9 @@
  * so please don't modify this file to ensure Jankx Framework working is exactly.
  */
 jankx_template(
-    array(
-        'partials/footer',
-        'footer',
-    )
+	array(
+		'partials/footer',
+		'footer',
+	),
+	'footer'
 );
