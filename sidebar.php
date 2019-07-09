@@ -16,8 +16,8 @@
  * so please don't modify this file to ensure Jankx Framework working is exactly.
  */
 jankx_template(
-    array(
-        'partials/sidebar',
-        'sidebar',
-    )
+	array(
+		'partials/sidebar',
+		'sidebar',
+	)
 );
