@@ -4,6 +4,7 @@ Jankx WordPress theme framework
 Jankx is a powerful WordPress theme framework. High performance, compatible, easy to use and develop.
 
 QUICK LINKS
+
 [Documentation](https://jankx.github.io)
 
 # Main features
