@@ -45,12 +45,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/assets.git",
-                "reference": "d8653aedfa6d982a36a80fd76a3d36deedafa334"
+                "reference": "3905e28c109591f03fa69a1824b0c11d1ead7bb1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/assets/zipball/d8653aedfa6d982a36a80fd76a3d36deedafa334",
-                "reference": "d8653aedfa6d982a36a80fd76a3d36deedafa334",
+                "url": "https://api.github.com/repos/jankx/assets/zipball/3905e28c109591f03fa69a1824b0c11d1ead7bb1",
+                "reference": "3905e28c109591f03fa69a1824b0c11d1ead7bb1",
                 "shasum": ""
             },
             "type": "library",
@@ -73,7 +73,7 @@
                 }
             ],
             "description": "Jankx Assets is used to manage CSS, JS, libraries with beautiful syntax",
-            "time": "2019-07-12T05:01:55+00:00"
+            "time": "2019-07-12T09:46:31+00:00"
         },
         {
             "name": "jankx/cli",
