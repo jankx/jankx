@@ -14,8 +14,8 @@
   "require": {
     "jankx/core": "dev-master",
     "jankx/cli": "dev-master",
-    "jankx/widgets": "dev-master",
-    "jankx/site-layouts": "dev-master",
-    "jankx/post-layouts": "dev-master"
+    "jankx/widget": "dev-master",
+    "jankx/site-layout": "dev-master",
+    "jankx/post-layout": "dev-master"
   }
 }
