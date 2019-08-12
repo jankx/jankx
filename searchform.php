@@ -1,4 +1,7 @@
-<form class="form-inline my-2 my-lg-0">
-	<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-	<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+<form action="<?php echo site_url(); ?>" class="form-inline my-2 my-lg-0">
+	<div class="from-wrap">
+		<input type="hidden" name="post_type" value="product" />
+		<input type="text" name="s" value="<?php echo get_search_query(); ?>" />
+		<button>Tìm kiếm</button>
+	</div>
 </form>
