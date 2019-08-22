@@ -16,6 +16,7 @@
     "jankx/cli": "dev-master",
     "jankx/widget": "dev-master",
     "jankx/site-layout": "dev-master",
-    "jankx/post-layout": "dev-master"
+    "jankx/post-layout": "dev-master",
+    "ramphor/updater": "dev-master"
   }
 }

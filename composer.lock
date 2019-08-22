@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "78d0c004ce8d638eaf5142493629bae2",
+    "content-hash": "677bae35bc549b69a187077af297adf4",
     "packages": [
         {
             "name": "jankx/admin",
@@ -471,6 +471,39 @@
             ],
             "description": "Common widgets are developed specifically for Jankx theme framework",
             "time": "2019-07-15T06:19:33+00:00"
+        },
+        {
+            "name": "ramphor/updater",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ramphor/updater.git",
+                "reference": "69b20a8bb6b5f67707fc5a5e8422485ae3fcaf36"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ramphor/updater/zipball/69b20a8bb6b5f67707fc5a5e8422485ae3fcaf36",
+                "reference": "69b20a8bb6b5f67707fc5a5e8422485ae3fcaf36",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Ramphor\\Updater\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ramphor Premium",
+                    "email": "puleeno@gmail.com"
+                }
+            ],
+            "description": "The embeded updater for themes, plugins in WordPress",
+            "time": "2019-08-22T02:12:52+00:00"
         }
     ],
     "packages-dev": [],
@@ -481,7 +514,8 @@
         "jankx/cli": 20,
         "jankx/widget": 20,
         "jankx/site-layout": 20,
-        "jankx/post-layout": 20
+        "jankx/post-layout": 20,
+        "ramphor/updater": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
