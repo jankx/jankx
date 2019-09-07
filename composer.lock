@@ -45,12 +45,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/asset.git",
-                "reference": "62fd761da1778c2fc6c2ff97bdb99420c8499b2b"
+                "reference": "91f2b21802fcaf03029ba16616697b6ad33534c9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/asset/zipball/62fd761da1778c2fc6c2ff97bdb99420c8499b2b",
-                "reference": "62fd761da1778c2fc6c2ff97bdb99420c8499b2b",
+                "url": "https://api.github.com/repos/jankx/asset/zipball/91f2b21802fcaf03029ba16616697b6ad33534c9",
+                "reference": "91f2b21802fcaf03029ba16616697b6ad33534c9",
                 "shasum": ""
             },
             "type": "library",
@@ -73,7 +73,7 @@
                 }
             ],
             "description": "Jankx Assets is used to manage CSS, JS, libraries with beautiful syntax",
-            "time": "2019-08-19T17:39:03+00:00"
+            "time": "2019-09-05T04:02:03+00:00"
         },
         {
             "name": "jankx/cli",
@@ -373,12 +373,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/template.git",
-                "reference": "1063993cfdfc768203a7178907887da5af869034"
+                "reference": "286ea6ab121a7b23bccec697318298b3bf143197"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/template/zipball/1063993cfdfc768203a7178907887da5af869034",
-                "reference": "1063993cfdfc768203a7178907887da5af869034",
+                "url": "https://api.github.com/repos/jankx/template/zipball/286ea6ab121a7b23bccec697318298b3bf143197",
+                "reference": "286ea6ab121a7b23bccec697318298b3bf143197",
                 "shasum": ""
             },
             "require": {
@@ -401,7 +401,7 @@
                 }
             ],
             "description": "Jankx template manager usable to load template with support override, caching",
-            "time": "2019-08-25T04:27:33+00:00"
+            "time": "2019-09-07T13:09:18+00:00"
         },
         {
             "name": "jankx/ui-framework",
