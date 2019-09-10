@@ -45,12 +45,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/asset.git",
-                "reference": "91f2b21802fcaf03029ba16616697b6ad33534c9"
+                "reference": "8d1b121aedd1d24ce00e0703608dc943b4a915da"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/asset/zipball/91f2b21802fcaf03029ba16616697b6ad33534c9",
-                "reference": "91f2b21802fcaf03029ba16616697b6ad33534c9",
+                "url": "https://api.github.com/repos/jankx/asset/zipball/8d1b121aedd1d24ce00e0703608dc943b4a915da",
+                "reference": "8d1b121aedd1d24ce00e0703608dc943b4a915da",
                 "shasum": ""
             },
             "type": "library",
@@ -73,7 +73,7 @@
                 }
             ],
             "description": "Jankx Assets is used to manage CSS, JS, libraries with beautiful syntax",
-            "time": "2019-09-05T04:02:03+00:00"
+            "time": "2019-09-10T19:21:17+00:00"
         },
         {
             "name": "jankx/cli",
@@ -114,12 +114,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/core.git",
-                "reference": "bd7c5dd251bfd19ce94bf4dccca3bb816905244c"
+                "reference": "8da26dbde2ffa4bfd33acbfbf9f783a6f4024a7e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/core/zipball/bd7c5dd251bfd19ce94bf4dccca3bb816905244c",
-                "reference": "bd7c5dd251bfd19ce94bf4dccca3bb816905244c",
+                "url": "https://api.github.com/repos/jankx/core/zipball/8da26dbde2ffa4bfd33acbfbf9f783a6f4024a7e",
+                "reference": "8da26dbde2ffa4bfd33acbfbf9f783a6f4024a7e",
                 "shasum": ""
             },
             "require": {
@@ -155,7 +155,7 @@
                 }
             ],
             "description": "This is the core of Jankx theme framework and is also usable on its own as embed framework",
-            "time": "2019-08-19T17:06:36+00:00"
+            "time": "2019-09-10T19:25:41+00:00"
         },
         {
             "name": "jankx/data-type",
