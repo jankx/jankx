@@ -373,12 +373,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/template.git",
-                "reference": "18a71eb0afa1e7c1ad852caca30c4ed7eff7ba78"
+                "reference": "03463bd38a35b9de30f5e530368b53a60e1e058b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/template/zipball/18a71eb0afa1e7c1ad852caca30c4ed7eff7ba78",
-                "reference": "18a71eb0afa1e7c1ad852caca30c4ed7eff7ba78",
+                "url": "https://api.github.com/repos/jankx/template/zipball/03463bd38a35b9de30f5e530368b53a60e1e058b",
+                "reference": "03463bd38a35b9de30f5e530368b53a60e1e058b",
                 "shasum": ""
             },
             "require": {
@@ -401,7 +401,7 @@
                 }
             ],
             "description": "Jankx template manager usable to load template with support override, caching",
-            "time": "2019-09-17T01:21:31+00:00"
+            "time": "2019-09-21T04:48:02+00:00"
         },
         {
             "name": "jankx/ui-framework",
@@ -409,12 +409,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/ui-framework.git",
-                "reference": "c2d02eec6c6ef1e172a4ae6e158ae7dfb0816043"
+                "reference": "83f7887da2fa2f9af8a5ac777aac149f7cac12f9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/ui-framework/zipball/c2d02eec6c6ef1e172a4ae6e158ae7dfb0816043",
-                "reference": "c2d02eec6c6ef1e172a4ae6e158ae7dfb0816043",
+                "url": "https://api.github.com/repos/jankx/ui-framework/zipball/83f7887da2fa2f9af8a5ac777aac149f7cac12f9",
+                "reference": "83f7887da2fa2f9af8a5ac777aac149f7cac12f9",
                 "shasum": ""
             },
             "type": "library",
@@ -434,7 +434,7 @@
                 }
             ],
             "description": "Jankx UI framework integrate with popular CSS frameworks",
-            "time": "2019-08-17T04:31:55+00:00"
+            "time": "2019-09-21T05:09:00+00:00"
         },
         {
             "name": "jankx/widget",
