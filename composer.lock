@@ -45,12 +45,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/asset.git",
-                "reference": "8d1b121aedd1d24ce00e0703608dc943b4a915da"
+                "reference": "903bdc7c810abcff3fc4ab05629b6edb81688058"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/asset/zipball/8d1b121aedd1d24ce00e0703608dc943b4a915da",
-                "reference": "8d1b121aedd1d24ce00e0703608dc943b4a915da",
+                "url": "https://api.github.com/repos/jankx/asset/zipball/903bdc7c810abcff3fc4ab05629b6edb81688058",
+                "reference": "903bdc7c810abcff3fc4ab05629b6edb81688058",
                 "shasum": ""
             },
             "type": "library",
@@ -73,7 +73,7 @@
                 }
             ],
             "description": "Jankx Assets is used to manage CSS, JS, libraries with beautiful syntax",
-            "time": "2019-09-10T19:21:17+00:00"
+            "time": "2019-09-25T14:48:48+00:00"
         },
         {
             "name": "jankx/cli",
@@ -409,12 +409,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/ui-framework.git",
-                "reference": "83f7887da2fa2f9af8a5ac777aac149f7cac12f9"
+                "reference": "e04fe414ec62676aa5e0a97a4639db80adbf8ba3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/ui-framework/zipball/83f7887da2fa2f9af8a5ac777aac149f7cac12f9",
-                "reference": "83f7887da2fa2f9af8a5ac777aac149f7cac12f9",
+                "url": "https://api.github.com/repos/jankx/ui-framework/zipball/e04fe414ec62676aa5e0a97a4639db80adbf8ba3",
+                "reference": "e04fe414ec62676aa5e0a97a4639db80adbf8ba3",
                 "shasum": ""
             },
             "type": "library",
@@ -434,7 +434,7 @@
                 }
             ],
             "description": "Jankx UI framework integrate with popular CSS frameworks",
-            "time": "2019-09-21T05:09:00+00:00"
+            "time": "2019-09-26T01:36:40+00:00"
         },
         {
             "name": "jankx/widget",
