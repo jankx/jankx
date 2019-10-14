@@ -114,12 +114,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/core.git",
-                "reference": "8da26dbde2ffa4bfd33acbfbf9f783a6f4024a7e"
+                "reference": "a0351dc19d9b01632e007f67a80dee6718c935a0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/core/zipball/8da26dbde2ffa4bfd33acbfbf9f783a6f4024a7e",
-                "reference": "8da26dbde2ffa4bfd33acbfbf9f783a6f4024a7e",
+                "url": "https://api.github.com/repos/jankx/core/zipball/a0351dc19d9b01632e007f67a80dee6718c935a0",
+                "reference": "a0351dc19d9b01632e007f67a80dee6718c935a0",
                 "shasum": ""
             },
             "require": {
@@ -155,7 +155,7 @@
                 }
             ],
             "description": "This is the core of Jankx theme framework and is also usable on its own as embed framework",
-            "time": "2019-09-10T19:25:41+00:00"
+            "time": "2019-10-13T17:04:33+00:00"
         },
         {
             "name": "jankx/data-type",
@@ -337,12 +337,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/site-layout.git",
-                "reference": "dc1eff737c1aad988b4c6646ad0dac45dc1439b5"
+                "reference": "e97b0ce174d40036dbcdb3a6c13c8db747fcce16"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/site-layout/zipball/dc1eff737c1aad988b4c6646ad0dac45dc1439b5",
-                "reference": "dc1eff737c1aad988b4c6646ad0dac45dc1439b5",
+                "url": "https://api.github.com/repos/jankx/site-layout/zipball/e97b0ce174d40036dbcdb3a6c13c8db747fcce16",
+                "reference": "e97b0ce174d40036dbcdb3a6c13c8db747fcce16",
                 "shasum": ""
             },
             "require": {
@@ -365,7 +365,7 @@
                 }
             ],
             "description": "The best way to create multi site layouts and management layouts",
-            "time": "2019-07-15T06:27:31+00:00"
+            "time": "2019-10-13T15:17:18+00:00"
         },
         {
             "name": "jankx/template",
