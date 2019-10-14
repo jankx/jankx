@@ -1,5 +1,5 @@
 <?php
-define('JANKX_ABSPATH', realpath(dirname(__FILE__) . '/../..'));
+define( 'JANKX_ABSPATH', realpath( dirname( __FILE__ ) . '/../..' ) );
 
 /**
  * Page Builder plugin integrations
