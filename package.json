@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "Jankx is a powerful WordPress theme framework. High performance, compatible, easy to use and develop",
   "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "webpack": "^4.41.1",
+    "webpack-cli": "^3.3.9"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -20,7 +25,5 @@
   "bugs": {
     "url": "https://github.com/jankx/jankx/issues"
   },
-  "homepage": "https://github.com/jankx/jankx#readme",
-  "devDependencies": {
-  }
+  "homepage": "https://github.com/jankx/jankx#readme"
 }
