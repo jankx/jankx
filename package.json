@@ -2,10 +2,17 @@
   "name": "jankx",
   "version": "1.0.0",
   "description": "Jankx is a powerful WordPress theme framework. High performance, compatible, easy to use and develop",
-  "main": "index.js",
+  "main": "src/js/index.js",
   "dependencies": {},
   "devDependencies": {
-    "webpack": "^4.41.1",
+    "css-loader": "^3.2.0",
+    "fibers": "^4.0.1",
+    "mini-css-extract-plugin": "^0.8.0",
+    "node-sass": "^4.12.0",
+    "sass": "^1.23.0",
+    "sass-loader": "^8.0.0",
+    "style-loader": "^1.0.0",
+    "webpack": "^4.41.2",
     "webpack-cli": "^3.3.9"
   },
   "scripts": {
