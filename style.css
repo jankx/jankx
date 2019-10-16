@@ -6,12 +6,6 @@ Description: Jankx is a powerful WordPress theme framework. High performance, co
 Tags: SEO, landing-page, muli-layouts
 Author: Puleeno Nguyen
 Author URI: https://puleeno.com
-*/
-/**
- * List no padding
- */
-.widget ul {
-  padding: 0;
-  margin: 0;
-  list-style: none;
-}
+*/.widget{padding:0;margin:0}.widget ul{padding:0;margin:0;list-style:none}
+
+/*# sourceMappingURL=style.css.map*/
