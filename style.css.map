@@ -1,1 +1,7 @@
-{"version":3,"sources":["webpack:///./src/sass/style.scss"],"names":[],"mappings":"AAAA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA,UAAU,UAAU,SAAS,WAAW,UAAU,SAAS,gB","file":"../style.css","sourcesContent":["/*!\nTheme Name: Jankx Framework\nTheme URI: https://wordpress.puleeno.com/jankx\nVersion: 1.0.0\nDescription: Jankx is a powerful WordPress theme framework. High performance, compatible, easy to use and develop.\nTags: SEO, landing-page, muli-layouts\nAuthor: Puleeno Nguyen\nAuthor URI: https://puleeno.com\n*/.widget{padding:0;margin:0}.widget ul{padding:0;margin:0;list-style:none}"],"sourceRoot":""}
+{
+"version": 3,
+"mappings": "AAAA;;;;;;;;EAQE;ACRF,OAAQ;EACJ,OAAO,EAAE,CAAC;EACV,MAAM,EAAE,CAAC;;ACCb;;GAEG;AAGC,UAAG;EACC,OAAO,EAAE,CAAC;EACV,MAAM,EAAE,CAAC;EACT,UAAU,EAAE,IAAI;;ACXxB,oBAAqB;EACpB,YAAY,EAAE,GAAG;EACjB,aAAa,EAAE,GAAG",
+"sources": ["src/sass/style.scss","src/sass/element/_wordpress.scss","src/sass/element/_list.scss","src/sass/plugins/_elementor.scss"],
+"names": [],
+"file": "style.css"
+}
