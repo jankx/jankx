@@ -1,7 +1,7 @@
 {
 "version": 3,
-"mappings": "AAAA;;;;;;;;EAQE;ACRF,OAAQ;EACJ,OAAO,EAAE,CAAC;EACV,MAAM,EAAE,CAAC;;ACCb;;GAEG;AAGC,UAAG;EACC,OAAO,EAAE,CAAC;EACV,MAAM,EAAE,CAAC;EACT,UAAU,EAAE,IAAI;;ACXxB,oBAAqB;EACpB,YAAY,EAAE,GAAG;EACjB,aAAa,EAAE,GAAG",
-"sources": ["src/sass/style.scss","src/sass/element/_wordpress.scss","src/sass/element/_list.scss","src/sass/plugins/_elementor.scss"],
+"mappings": "AAAA;;;;;;;;EAQE;ACLF;;GAEG;AAGC,UAAG;EACC,OAAO,EAAE,CAAC;EACV,MAAM,EAAE,CAAC;EACT,UAAU,EAAE,IAAI;;ACXxB;;GAEG;AAEC,2BAAa;EACT,YAAY,EAAE,CAAC;EACf,aAAa,EAAE,CAAC;;ACNxB,oBAAqB;EACpB,YAAY,EAAE,GAAG;EACjB,aAAa,EAAE,GAAG",
+"sources": ["src/sass/style.scss","src/sass/element/_list.scss","src/sass/css-framework/_bootstrap.scss","src/sass/plugins/_elementor.scss"],
 "names": [],
 "file": "style.css"
 }
