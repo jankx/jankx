@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ab6654dcb6e204336d64f1d110e23186",
+    "content-hash": "dc25eca3e4afa4662975f9b69e332175",
     "packages": [
         {
             "name": "jankx/admin",
@@ -76,23 +76,23 @@
             "time": "2019-10-16T16:02:21+00:00"
         },
         {
-            "name": "jankx/cli",
+            "name": "jankx/command",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/jankx/cli.git",
-                "reference": "928ef76293765f0816458fd2999997f17ce50c4d"
+                "url": "https://github.com/jankx/command.git",
+                "reference": "43683f035a609e3379e0c548360d5476bf345f22"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/cli/zipball/928ef76293765f0816458fd2999997f17ce50c4d",
-                "reference": "928ef76293765f0816458fd2999997f17ce50c4d",
+                "url": "https://api.github.com/repos/jankx/command/zipball/43683f035a609e3379e0c548360d5476bf345f22",
+                "reference": "43683f035a609e3379e0c548360d5476bf345f22",
                 "shasum": ""
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "Jankx\\CLI\\": "src/"
+                    "Jankx\\Command\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -106,7 +106,7 @@
                 }
             ],
             "description": "You love WP CLI and usually use it to manage WordPress. So you will love Jankx CLI for WP CLI too",
-            "time": "2019-06-16T06:16:20+00:00"
+            "time": "2019-10-18T13:51:25+00:00"
         },
         {
             "name": "jankx/core",
@@ -478,12 +478,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ramphor/updater.git",
-                "reference": "69b20a8bb6b5f67707fc5a5e8422485ae3fcaf36"
+                "reference": "de0cc9ab6ea37b214534210c2de0164b3c32113f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ramphor/updater/zipball/69b20a8bb6b5f67707fc5a5e8422485ae3fcaf36",
-                "reference": "69b20a8bb6b5f67707fc5a5e8422485ae3fcaf36",
+                "url": "https://api.github.com/repos/ramphor/updater/zipball/de0cc9ab6ea37b214534210c2de0164b3c32113f",
+                "reference": "de0cc9ab6ea37b214534210c2de0164b3c32113f",
                 "shasum": ""
             },
             "type": "library",
@@ -503,7 +503,7 @@
                 }
             ],
             "description": "The embeded updater for themes, plugins in WordPress",
-            "time": "2019-08-22T02:12:52+00:00"
+            "time": "2019-10-17T04:58:49+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -627,8 +627,8 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "jankx/command": 20,
         "jankx/core": 20,
-        "jankx/cli": 20,
         "jankx/widget": 20,
         "jankx/site-layout": 20,
         "jankx/post-layout": 20,
