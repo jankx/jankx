@@ -36,12 +36,28 @@ Author URI: https://puleeno.com
 /**
  * Reset padding container for Navbar
  */
-.navbar-expand > .container {
+.ui-boostrap .navbar-expand > .container {
   padding-left: 15px;
   padding-right: 15px; }
 
-.elementor-container {
+/*!
+ * Integrated with Elementor Page Builder
+ */
+.ui-bootstrap .elementor-container {
   padding-left: 5px;
   padding-right: 5px; }
+
+@media (min-width: 576px) {
+  .ui-bootstrap .elementor-section.elementor-section-boxed > .elementor-container {
+    max-width: 540px; } }
+@media (min-width: 768px) {
+  .ui-bootstrap .elementor-section.elementor-section-boxed > .elementor-container {
+    max-width: 720px; } }
+@media (min-width: 992px) {
+  .ui-bootstrap .elementor-section.elementor-section-boxed > .elementor-container {
+    max-width: 960px; } }
+@media (min-width: 1200px) {
+  .ui-bootstrap .elementor-section.elementor-section-boxed > .elementor-container {
+    max-width: 1140px; } }
 
 /*# sourceMappingURL=style.css.map */

@@ -1,9 +1,11 @@
 /**
  * Reset padding container for Navbar
  */
-.navbar-expand {
-    > .container {
-        padding-left: 15px;
-        padding-right: 15px;
+.ui-boostrap {
+    .navbar-expand {
+        > .container {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
     }
 }
