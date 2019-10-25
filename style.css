@@ -25,6 +25,14 @@ Author URI: https://puleeno.com
       display: block;
       padding: 5px 10px; }
 
+.footer-widget-area {
+  padding-top: 30px;
+  padding-bottom: 30px; }
+
+.site-footer {
+  padding-top: 30px;
+  padding-bottom: 30px; }
+
 /**
  * Reset padding container for Navbar
  */
