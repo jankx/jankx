@@ -1,11 +1,19 @@
 /**
  * Reset padding container for Navbar
  */
-.ui-boostrap {
+.ui-bootstrap {
     .navbar-expand {
-        > .container {
+        >.container {
             padding-left: 15px;
             padding-right: 15px;
+        }
+    }
+
+    .navbar {
+        .navbar-brand {
+            &.logo {
+                margin-bottom: 0;
+            }
         }
     }
 }
