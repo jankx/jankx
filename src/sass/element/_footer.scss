@@ -1,9 +1,17 @@
 .footer-widget-area {
     padding-top: 30px;
     padding-bottom: 30px;
+    background-color: #282828;
+    color: #999;
+    font-size: $footerFontSize;
+
+    a {
+        color: #999;
+    }
 }
 
 .site-footer {
     padding-top: 30px;
     padding-bottom: 30px;
+    font-size: $footerFontSize;
 }

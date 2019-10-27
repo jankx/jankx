@@ -1,7 +1,7 @@
 /*!
 Theme Name: Jankx Framework
 Theme URI: https://wordpress.puleeno.com/jankx
-Version: 1.0.0
+Version: 1.0.6.3
 Description: Jankx is a powerful WordPress theme framework. High performance, compatible, easy to use and develop.
 Tags: SEO, landing-page, muli-layouts
 Author: Puleeno Nguyen
@@ -65,6 +65,11 @@ blockquote.right {
   width: 33%;
   float: right; }
 
+a {
+  text-decoration: none; }
+  a:hover {
+    text-decoration: none; }
+
 /**
  * List no padding
  */
@@ -85,11 +90,17 @@ blockquote.right {
 
 .footer-widget-area {
   padding-top: 30px;
-  padding-bottom: 30px; }
+  padding-bottom: 30px;
+  background-color: #282828;
+  color: #999;
+  font-size: 15px; }
+  .footer-widget-area a {
+    color: #999; }
 
 .site-footer {
   padding-top: 30px;
-  padding-bottom: 30px; }
+  padding-bottom: 30px;
+  font-size: 15px; }
 
 /**
  * Reset padding container for Navbar
