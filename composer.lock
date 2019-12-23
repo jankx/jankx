@@ -45,12 +45,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/asset.git",
-                "reference": "c2faeb2b2c9239c3b7de1b2a4a3703c565dde9ea"
+                "reference": "5e5951d55dfcce41937525d989ecb9731117e41e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/asset/zipball/c2faeb2b2c9239c3b7de1b2a4a3703c565dde9ea",
-                "reference": "c2faeb2b2c9239c3b7de1b2a4a3703c565dde9ea",
+                "url": "https://api.github.com/repos/jankx/asset/zipball/5e5951d55dfcce41937525d989ecb9731117e41e",
+                "reference": "5e5951d55dfcce41937525d989ecb9731117e41e",
                 "shasum": ""
             },
             "type": "library",
