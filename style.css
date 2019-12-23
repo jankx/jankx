@@ -65,6 +65,9 @@ blockquote.right {
   width: 33%;
   float: right; }
 
+textarea {
+  max-width: 100%; }
+
 a {
   text-decoration: none; }
   a:hover {
