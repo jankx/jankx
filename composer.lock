@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "590ece5b839d183c762be359cb6e3dec",
+    "content-hash": "3c492791241bdac9093eb720fe6ac56a",
     "packages": [
         {
             "name": "jankx/admin",
@@ -73,7 +73,7 @@
                 }
             ],
             "description": "Jankx Assets is used to manage CSS, JS, libraries with beautiful syntax",
-            "time": "2019-10-26T03:16:31+00:00"
+            "time": "2019-12-23T00:22:51+00:00"
         },
         {
             "name": "jankx/command",
@@ -294,6 +294,39 @@
             ],
             "description": "Jankx options usable to create the theme, add-on options integrate with your loved option frameworks",
             "time": "2019-10-26T03:24:13+00:00"
+        },
+        {
+            "name": "jankx/pagination",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jankx/pagination.git",
+                "reference": "4cdc6e4fe3d5de6c70867b38c44ea1589b80ed49"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jankx/pagination/zipball/4cdc6e4fe3d5de6c70867b38c44ea1589b80ed49",
+                "reference": "4cdc6e4fe3d5de6c70867b38c44ea1589b80ed49",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jankx\\Pagination\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Puleeno Nguyen",
+                    "email": "puleeno@gmail.com"
+                }
+            ],
+            "description": "The WordPress pagination support multi styles: number, infinite loop, load more",
+            "time": "2019-12-28T11:18:59+00:00"
         },
         {
             "name": "jankx/post-layout",
@@ -632,7 +665,8 @@
         "jankx/post-layout": 20,
         "jankx/site-layout": 20,
         "jankx/widget": 20,
-        "ramphor/updater": 20
+        "ramphor/updater": 20,
+        "jankx/pagination": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
