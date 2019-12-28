@@ -442,12 +442,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/ui-framework.git",
-                "reference": "6b6e48e0db141bb8d9fad50c3efff938ad5367dd"
+                "reference": "d0b86e3a5528f0d9fc5104e8a80cf88135b577c6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/ui-framework/zipball/6b6e48e0db141bb8d9fad50c3efff938ad5367dd",
-                "reference": "6b6e48e0db141bb8d9fad50c3efff938ad5367dd",
+                "url": "https://api.github.com/repos/jankx/ui-framework/zipball/d0b86e3a5528f0d9fc5104e8a80cf88135b577c6",
+                "reference": "d0b86e3a5528f0d9fc5104e8a80cf88135b577c6",
                 "shasum": ""
             },
             "type": "library",
