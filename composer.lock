@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3c492791241bdac9093eb720fe6ac56a",
+    "content-hash": "1ade034a73ff84cc95c178ff5b43f147",
     "packages": [
         {
             "name": "jankx/admin",
@@ -45,12 +45,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/asset.git",
-                "reference": "087cc36729f288f00b63eb8c3a31b15068d90a89"
+                "reference": "4f43b09b0f47969b0f0a476716f5939bd92d34de"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/asset/zipball/087cc36729f288f00b63eb8c3a31b15068d90a89",
-                "reference": "087cc36729f288f00b63eb8c3a31b15068d90a89",
+                "url": "https://api.github.com/repos/jankx/asset/zipball/4f43b09b0f47969b0f0a476716f5939bd92d34de",
+                "reference": "4f43b09b0f47969b0f0a476716f5939bd92d34de",
                 "shasum": ""
             },
             "type": "library",
@@ -73,7 +73,7 @@
                 }
             ],
             "description": "Jankx Assets is used to manage CSS, JS, libraries with beautiful syntax",
-            "time": "2019-12-27T14:39:54+00:00"
+            "time": "2019-12-31T02:31:58+00:00"
         },
         {
             "name": "jankx/command",
@@ -406,12 +406,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/template.git",
-                "reference": "2f923ab83998b6d3cacb2d08630da8aad747723f"
+                "reference": "695fd86a49b013c659e31fe5ab0b5e149145867d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/template/zipball/2f923ab83998b6d3cacb2d08630da8aad747723f",
-                "reference": "2f923ab83998b6d3cacb2d08630da8aad747723f",
+                "url": "https://api.github.com/repos/jankx/template/zipball/695fd86a49b013c659e31fe5ab0b5e149145867d",
+                "reference": "695fd86a49b013c659e31fe5ab0b5e149145867d",
                 "shasum": ""
             },
             "require": {
@@ -434,7 +434,7 @@
                 }
             ],
             "description": "Jankx template manager usable to load template with support override, caching",
-            "time": "2019-12-28T03:54:13+00:00"
+            "time": "2019-12-31T01:23:40+00:00"
         },
         {
             "name": "jankx/ui-framework",
@@ -442,12 +442,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/ui-framework.git",
-                "reference": "7637fc29a69c7a2cd9c21e0383d152c97cc95f0b"
+                "reference": "0aed9aca1568f2c3e0e7b0787cbad821a879195f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/ui-framework/zipball/7637fc29a69c7a2cd9c21e0383d152c97cc95f0b",
-                "reference": "7637fc29a69c7a2cd9c21e0383d152c97cc95f0b",
+                "url": "https://api.github.com/repos/jankx/ui-framework/zipball/0aed9aca1568f2c3e0e7b0787cbad821a879195f",
+                "reference": "0aed9aca1568f2c3e0e7b0787cbad821a879195f",
                 "shasum": ""
             },
             "type": "library",
@@ -467,7 +467,7 @@
                 }
             ],
             "description": "Jankx UI framework integrate with popular CSS frameworks",
-            "time": "2019-12-27T01:03:57+00:00"
+            "time": "2019-12-31T02:32:08+00:00"
         },
         {
             "name": "jankx/widget",
@@ -662,11 +662,11 @@
     "stability-flags": {
         "jankx/command": 20,
         "jankx/core": 20,
+        "jankx/pagination": 20,
         "jankx/post-layout": 20,
         "jankx/site-layout": 20,
         "jankx/widget": 20,
-        "ramphor/updater": 20,
-        "jankx/pagination": 20
+        "ramphor/updater": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
