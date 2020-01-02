@@ -442,12 +442,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/ui-framework.git",
-                "reference": "0aed9aca1568f2c3e0e7b0787cbad821a879195f"
+                "reference": "f350f85fd2478d45be8e59c343007c0d36ef5359"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/ui-framework/zipball/0aed9aca1568f2c3e0e7b0787cbad821a879195f",
-                "reference": "0aed9aca1568f2c3e0e7b0787cbad821a879195f",
+                "url": "https://api.github.com/repos/jankx/ui-framework/zipball/f350f85fd2478d45be8e59c343007c0d36ef5359",
+                "reference": "f350f85fd2478d45be8e59c343007c0d36ef5359",
                 "shasum": ""
             },
             "type": "library",
@@ -467,7 +467,7 @@
                 }
             ],
             "description": "Jankx UI framework integrate with popular CSS frameworks",
-            "time": "2019-12-31T02:32:08+00:00"
+            "time": "2020-01-02T12:57:13+00:00"
         },
         {
             "name": "jankx/widget",
