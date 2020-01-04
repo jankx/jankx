@@ -370,12 +370,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/site-layout.git",
-                "reference": "01f3b877d349aef5c9f31a8ada6e62cbf15bfd3b"
+                "reference": "412082127d70d21645e00cc20ba59b74dbaa6990"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/site-layout/zipball/01f3b877d349aef5c9f31a8ada6e62cbf15bfd3b",
-                "reference": "01f3b877d349aef5c9f31a8ada6e62cbf15bfd3b",
+                "url": "https://api.github.com/repos/jankx/site-layout/zipball/412082127d70d21645e00cc20ba59b74dbaa6990",
+                "reference": "412082127d70d21645e00cc20ba59b74dbaa6990",
                 "shasum": ""
             },
             "require": {
