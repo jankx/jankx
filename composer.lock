@@ -406,12 +406,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/template.git",
-                "reference": "3c18ba3b995c65f7a94d648aa3f7fe263d88f534"
+                "reference": "a43144a75e0ad13375adcc82014fe555c11d14f4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/template/zipball/3c18ba3b995c65f7a94d648aa3f7fe263d88f534",
-                "reference": "3c18ba3b995c65f7a94d648aa3f7fe263d88f534",
+                "url": "https://api.github.com/repos/jankx/template/zipball/a43144a75e0ad13375adcc82014fe555c11d14f4",
+                "reference": "a43144a75e0ad13375adcc82014fe555c11d14f4",
                 "shasum": ""
             },
             "require": {
