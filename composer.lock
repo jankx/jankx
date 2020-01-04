@@ -406,12 +406,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/template.git",
-                "reference": "695fd86a49b013c659e31fe5ab0b5e149145867d"
+                "reference": "0acef9d507504cc48227db1ce30b5a78a23b6481"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/template/zipball/695fd86a49b013c659e31fe5ab0b5e149145867d",
-                "reference": "695fd86a49b013c659e31fe5ab0b5e149145867d",
+                "url": "https://api.github.com/repos/jankx/template/zipball/0acef9d507504cc48227db1ce30b5a78a23b6481",
+                "reference": "0acef9d507504cc48227db1ce30b5a78a23b6481",
                 "shasum": ""
             },
             "require": {
@@ -434,7 +434,7 @@
                 }
             ],
             "description": "Jankx template manager usable to load template with support override, caching",
-            "time": "2019-12-31T01:23:40+00:00"
+            "time": "2020-01-04T04:28:16+00:00"
         },
         {
             "name": "jankx/ui-framework",
