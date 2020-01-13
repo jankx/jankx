@@ -398,7 +398,7 @@
                 }
             ],
             "description": "The best way to create multi site layouts and management layouts",
-            "time": "2019-10-26T11:59:20+00:00"
+            "time": "2020-01-04T16:08:29+00:00"
         },
         {
             "name": "jankx/template",
@@ -406,12 +406,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/template.git",
-                "reference": "a43144a75e0ad13375adcc82014fe555c11d14f4"
+                "reference": "11ce6ccee919900aa4af90701a8899e49e7a52f5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/template/zipball/a43144a75e0ad13375adcc82014fe555c11d14f4",
-                "reference": "a43144a75e0ad13375adcc82014fe555c11d14f4",
+                "url": "https://api.github.com/repos/jankx/template/zipball/11ce6ccee919900aa4af90701a8899e49e7a52f5",
+                "reference": "11ce6ccee919900aa4af90701a8899e49e7a52f5",
                 "shasum": ""
             },
             "require": {
@@ -434,7 +434,7 @@
                 }
             ],
             "description": "Jankx template manager usable to load template with support override, caching",
-            "time": "2020-01-04T04:28:16+00:00"
+            "time": "2020-01-12T16:53:44+00:00"
         },
         {
             "name": "jankx/ui-framework",
@@ -442,12 +442,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/ui-framework.git",
-                "reference": "f350f85fd2478d45be8e59c343007c0d36ef5359"
+                "reference": "bedf5ec3b7f7d5437d8fab36f2a6acd1eb0e9a01"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/ui-framework/zipball/f350f85fd2478d45be8e59c343007c0d36ef5359",
-                "reference": "f350f85fd2478d45be8e59c343007c0d36ef5359",
+                "url": "https://api.github.com/repos/jankx/ui-framework/zipball/bedf5ec3b7f7d5437d8fab36f2a6acd1eb0e9a01",
+                "reference": "bedf5ec3b7f7d5437d8fab36f2a6acd1eb0e9a01",
                 "shasum": ""
             },
             "type": "library",
