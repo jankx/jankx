@@ -15,10 +15,4 @@
  * Site footer can be modified via feature override templates of WordPress
  * so please don't modify this file to ensure Jankx Framework working is exactly.
  */
-jankx_template(
-	array(
-		'partials/footer',
-		'footer',
-	),
-	'footer'
-);
+jankx_template( 'footer' );

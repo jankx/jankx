@@ -20,10 +20,5 @@
     "jankx/widget": "dev-master",
     "ramphor/updater": "dev-master",
     "symfony/yaml": "4.3.5"
-  },
-  "autoload": {
-    "files": [
-      "includes/bootstrap/startup.php"
-    ]
   }
 }

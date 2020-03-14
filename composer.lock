@@ -45,22 +45,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/asset.git",
-                "reference": "4f43b09b0f47969b0f0a476716f5939bd92d34de"
+                "reference": "d3e733506805cb5d6bedd568ab8070a34d9d315c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/asset/zipball/4f43b09b0f47969b0f0a476716f5939bd92d34de",
-                "reference": "4f43b09b0f47969b0f0a476716f5939bd92d34de",
+                "url": "https://api.github.com/repos/jankx/asset/zipball/d3e733506805cb5d6bedd568ab8070a34d9d315c",
+                "reference": "d3e733506805cb5d6bedd568ab8070a34d9d315c",
                 "shasum": ""
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
                     "Jankx\\Asset\\": "src/"
-                },
-                "files": [
-                    "helpers.php"
-                ]
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -73,7 +70,7 @@
                 }
             ],
             "description": "Jankx Assets is used to manage CSS, JS, libraries with beautiful syntax",
-            "time": "2019-12-31T02:31:58+00:00"
+            "time": "2020-02-24T15:27:18+00:00"
         },
         {
             "name": "jankx/command",
@@ -114,12 +111,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/core.git",
-                "reference": "60bdab173203ff38c316a06f36772fe846f238b3"
+                "reference": "c609d825440d43ad0299d0cdb06861ca5da4bfd9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/core/zipball/60bdab173203ff38c316a06f36772fe846f238b3",
-                "reference": "60bdab173203ff38c316a06f36772fe846f238b3",
+                "url": "https://api.github.com/repos/jankx/core/zipball/c609d825440d43ad0299d0cdb06861ca5da4bfd9",
+                "reference": "c609d825440d43ad0299d0cdb06861ca5da4bfd9",
                 "shasum": ""
             },
             "require": {
@@ -127,6 +124,7 @@
                 "jankx/asset": "dev-master",
                 "jankx/data-type": "dev-master",
                 "jankx/field": "dev-master",
+                "jankx/helpers": "dev-master",
                 "jankx/human-number": "dev-master",
                 "jankx/option": "dev-master",
                 "jankx/template": "dev-master",
@@ -138,10 +136,7 @@
                     "": "src/"
                 },
                 "files": [
-                    "framework.php",
-                    "helpers/array.php",
-                    "helpers/wordpress.php",
-                    "helpers/jankx.php"
+                    "framework.php"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -155,7 +150,7 @@
                 }
             ],
             "description": "This is the core of Jankx theme framework and is also usable on its own as embed framework",
-            "time": "2019-12-26T16:56:33+00:00"
+            "time": "2020-02-26T15:32:47+00:00"
         },
         {
             "name": "jankx/data-type",
@@ -225,6 +220,39 @@
             ],
             "description": "Jankx Fields is a simple framework used to create meta box, settings, form, etc",
             "time": "2019-07-15T04:42:51+00:00"
+        },
+        {
+            "name": "jankx/helpers",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jankx/helpers.git",
+                "reference": "9a0c99891f349eda61911bd75506ceb58f5c4f8d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jankx/helpers/zipball/9a0c99891f349eda61911bd75506ceb58f5c4f8d",
+                "reference": "9a0c99891f349eda61911bd75506ceb58f5c4f8d",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/helpers.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Puleeno Nguyen",
+                    "email": "puleeno@gmail.com"
+                }
+            ],
+            "description": "The helpers for Jankx Framework",
+            "time": "2020-02-26T13:38:51+00:00"
         },
         {
             "name": "jankx/human-number",
@@ -334,16 +362,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/post-layout.git",
-                "reference": "f9a6bcbb5d554358abe370a7f566aa94ca389ced"
+                "reference": "99983e3c05183eab7c096218afa3a14c2ef01394"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/post-layout/zipball/f9a6bcbb5d554358abe370a7f566aa94ca389ced",
-                "reference": "f9a6bcbb5d554358abe370a7f566aa94ca389ced",
+                "url": "https://api.github.com/repos/jankx/post-layout/zipball/99983e3c05183eab7c096218afa3a14c2ef01394",
+                "reference": "99983e3c05183eab7c096218afa3a14c2ef01394",
                 "shasum": ""
             },
             "require": {
-                "jankx/core": "dev-master"
+                "jankx/template": "dev-master"
             },
             "type": "library",
             "autoload": {
@@ -362,7 +390,7 @@
                 }
             ],
             "description": "WordPress post and custom post type layout generator",
-            "time": "2019-07-15T06:27:12+00:00"
+            "time": "2020-02-25T15:30:03+00:00"
         },
         {
             "name": "jankx/site-layout",
@@ -370,12 +398,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/site-layout.git",
-                "reference": "412082127d70d21645e00cc20ba59b74dbaa6990"
+                "reference": "1a1a5b3e05aa83c4dc1aec17d427bbfa4e14d3b7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/site-layout/zipball/412082127d70d21645e00cc20ba59b74dbaa6990",
-                "reference": "412082127d70d21645e00cc20ba59b74dbaa6990",
+                "url": "https://api.github.com/repos/jankx/site-layout/zipball/1a1a5b3e05aa83c4dc1aec17d427bbfa4e14d3b7",
+                "reference": "1a1a5b3e05aa83c4dc1aec17d427bbfa4e14d3b7",
                 "shasum": ""
             },
             "require": {
@@ -398,7 +426,7 @@
                 }
             ],
             "description": "The best way to create multi site layouts and management layouts",
-            "time": "2020-01-04T16:08:29+00:00"
+            "time": "2020-02-26T00:01:05+00:00"
         },
         {
             "name": "jankx/template",
@@ -406,15 +434,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/template.git",
-                "reference": "11ce6ccee919900aa4af90701a8899e49e7a52f5"
+                "reference": "2184538469286b93747134a43673602973e970e6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/template/zipball/11ce6ccee919900aa4af90701a8899e49e7a52f5",
-                "reference": "11ce6ccee919900aa4af90701a8899e49e7a52f5",
+                "url": "https://api.github.com/repos/jankx/template/zipball/2184538469286b93747134a43673602973e970e6",
+                "reference": "2184538469286b93747134a43673602973e970e6",
                 "shasum": ""
             },
             "require": {
+                "jankx/asset": "dev-master",
                 "jankx/ui-framework": "dev-master"
             },
             "type": "library",
@@ -434,7 +463,40 @@
                 }
             ],
             "description": "Jankx template manager usable to load template with support override, caching",
-            "time": "2020-01-12T16:53:44+00:00"
+            "time": "2020-02-26T23:52:40+00:00"
+        },
+        {
+            "name": "jankx/template-engine",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jankx/template-engine.git",
+                "reference": "efbdf3bd1fe16ba5e49feb1527e0ff8477f90804"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jankx/template-engine/zipball/efbdf3bd1fe16ba5e49feb1527e0ff8477f90804",
+                "reference": "efbdf3bd1fe16ba5e49feb1527e0ff8477f90804",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jankx\\Template\\Engine\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Puleeno Nguyen",
+                    "email": "puleeno@gmail.com"
+                }
+            ],
+            "description": "The template engine for Jankx Framework",
+            "time": "2020-02-28T14:49:57+00:00"
         },
         {
             "name": "jankx/ui-framework",
@@ -442,13 +504,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/ui-framework.git",
-                "reference": "bedf5ec3b7f7d5437d8fab36f2a6acd1eb0e9a01"
+                "reference": "18a3d84ad787cf51d78af8eb1fffc60042ff24ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/ui-framework/zipball/bedf5ec3b7f7d5437d8fab36f2a6acd1eb0e9a01",
-                "reference": "bedf5ec3b7f7d5437d8fab36f2a6acd1eb0e9a01",
+                "url": "https://api.github.com/repos/jankx/ui-framework/zipball/18a3d84ad787cf51d78af8eb1fffc60042ff24ec",
+                "reference": "18a3d84ad787cf51d78af8eb1fffc60042ff24ec",
                 "shasum": ""
+            },
+            "require": {
+                "jankx/template-engine": "dev-master"
             },
             "type": "library",
             "autoload": {
@@ -467,7 +532,7 @@
                 }
             ],
             "description": "Jankx UI framework integrate with popular CSS frameworks",
-            "time": "2020-01-02T12:57:13+00:00"
+            "time": "2020-02-26T23:51:55+00:00"
         },
         {
             "name": "jankx/widget",
@@ -540,16 +605,16 @@
         },
         {
             "name": "symfony/polyfill-ctype",
-            "version": "v1.13.1",
+            "version": "v1.14.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-ctype.git",
-                "reference": "f8f0b461be3385e56d6de3dbb5a0df24c0c275e3"
+                "reference": "fbdeaec0df06cf3d51c93de80c7eb76e271f5a38"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/f8f0b461be3385e56d6de3dbb5a0df24c0c275e3",
-                "reference": "f8f0b461be3385e56d6de3dbb5a0df24c0c275e3",
+                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/fbdeaec0df06cf3d51c93de80c7eb76e271f5a38",
+                "reference": "fbdeaec0df06cf3d51c93de80c7eb76e271f5a38",
                 "shasum": ""
             },
             "require": {
@@ -561,7 +626,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.13-dev"
+                    "dev-master": "1.14-dev"
                 }
             },
             "autoload": {
@@ -594,7 +659,7 @@
                 "polyfill",
                 "portable"
             ],
-            "time": "2019-11-27T13:56:44+00:00"
+            "time": "2020-01-13T11:15:53+00:00"
         },
         {
             "name": "symfony/yaml",
