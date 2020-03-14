@@ -45,12 +45,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/asset.git",
-                "reference": "d3e733506805cb5d6bedd568ab8070a34d9d315c"
+                "reference": "a39896eb4cdf064d399602f5fa26240d25633341"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/asset/zipball/d3e733506805cb5d6bedd568ab8070a34d9d315c",
-                "reference": "d3e733506805cb5d6bedd568ab8070a34d9d315c",
+                "url": "https://api.github.com/repos/jankx/asset/zipball/a39896eb4cdf064d399602f5fa26240d25633341",
+                "reference": "a39896eb4cdf064d399602f5fa26240d25633341",
                 "shasum": ""
             },
             "type": "library",
@@ -70,7 +70,7 @@
                 }
             ],
             "description": "Jankx Assets is used to manage CSS, JS, libraries with beautiful syntax",
-            "time": "2020-02-24T15:27:18+00:00"
+            "time": "2020-03-06T00:14:04+00:00"
         },
         {
             "name": "jankx/command",
@@ -111,12 +111,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/core.git",
-                "reference": "c609d825440d43ad0299d0cdb06861ca5da4bfd9"
+                "reference": "1f023eedc34094c1ce0d571619e5b2f8a2deb242"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/core/zipball/c609d825440d43ad0299d0cdb06861ca5da4bfd9",
-                "reference": "c609d825440d43ad0299d0cdb06861ca5da4bfd9",
+                "url": "https://api.github.com/repos/jankx/core/zipball/1f023eedc34094c1ce0d571619e5b2f8a2deb242",
+                "reference": "1f023eedc34094c1ce0d571619e5b2f8a2deb242",
                 "shasum": ""
             },
             "require": {
@@ -150,7 +150,7 @@
                 }
             ],
             "description": "This is the core of Jankx theme framework and is also usable on its own as embed framework",
-            "time": "2020-02-26T15:32:47+00:00"
+            "time": "2020-03-09T03:35:41+00:00"
         },
         {
             "name": "jankx/data-type",
@@ -227,12 +227,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/helpers.git",
-                "reference": "9a0c99891f349eda61911bd75506ceb58f5c4f8d"
+                "reference": "9fe5d82c6601f9aa8b4612261034e3d63b8c9e86"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/helpers/zipball/9a0c99891f349eda61911bd75506ceb58f5c4f8d",
-                "reference": "9a0c99891f349eda61911bd75506ceb58f5c4f8d",
+                "url": "https://api.github.com/repos/jankx/helpers/zipball/9fe5d82c6601f9aa8b4612261034e3d63b8c9e86",
+                "reference": "9fe5d82c6601f9aa8b4612261034e3d63b8c9e86",
                 "shasum": ""
             },
             "type": "library",
@@ -252,7 +252,7 @@
                 }
             ],
             "description": "The helpers for Jankx Framework",
-            "time": "2020-02-26T13:38:51+00:00"
+            "time": "2020-03-01T13:27:15+00:00"
         },
         {
             "name": "jankx/human-number",
@@ -434,16 +434,17 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/template.git",
-                "reference": "2184538469286b93747134a43673602973e970e6"
+                "reference": "c9044dc12109c964a511e66d01acfc507618286b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/template/zipball/2184538469286b93747134a43673602973e970e6",
-                "reference": "2184538469286b93747134a43673602973e970e6",
+                "url": "https://api.github.com/repos/jankx/template/zipball/c9044dc12109c964a511e66d01acfc507618286b",
+                "reference": "c9044dc12109c964a511e66d01acfc507618286b",
                 "shasum": ""
             },
             "require": {
                 "jankx/asset": "dev-master",
+                "jankx/template-engine": "dev-master",
                 "jankx/ui-framework": "dev-master"
             },
             "type": "library",
@@ -463,7 +464,7 @@
                 }
             ],
             "description": "Jankx template manager usable to load template with support override, caching",
-            "time": "2020-02-26T23:52:40+00:00"
+            "time": "2020-03-09T04:10:32+00:00"
         },
         {
             "name": "jankx/template-engine",
@@ -471,12 +472,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/template-engine.git",
-                "reference": "efbdf3bd1fe16ba5e49feb1527e0ff8477f90804"
+                "reference": "4c6e62d01128fd6be7c57b5812c6cb62ec3786c0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/template-engine/zipball/efbdf3bd1fe16ba5e49feb1527e0ff8477f90804",
-                "reference": "efbdf3bd1fe16ba5e49feb1527e0ff8477f90804",
+                "url": "https://api.github.com/repos/jankx/template-engine/zipball/4c6e62d01128fd6be7c57b5812c6cb62ec3786c0",
+                "reference": "4c6e62d01128fd6be7c57b5812c6cb62ec3786c0",
                 "shasum": ""
             },
             "type": "library",
@@ -496,7 +497,7 @@
                 }
             ],
             "description": "The template engine for Jankx Framework",
-            "time": "2020-02-28T14:49:57+00:00"
+            "time": "2020-03-09T03:38:00+00:00"
         },
         {
             "name": "jankx/ui-framework",
@@ -504,12 +505,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/ui-framework.git",
-                "reference": "18a3d84ad787cf51d78af8eb1fffc60042ff24ec"
+                "reference": "4bba63be1b9afcd06d386e4ee5bb5fae81af77d9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/ui-framework/zipball/18a3d84ad787cf51d78af8eb1fffc60042ff24ec",
-                "reference": "18a3d84ad787cf51d78af8eb1fffc60042ff24ec",
+                "url": "https://api.github.com/repos/jankx/ui-framework/zipball/4bba63be1b9afcd06d386e4ee5bb5fae81af77d9",
+                "reference": "4bba63be1b9afcd06d386e4ee5bb5fae81af77d9",
                 "shasum": ""
             },
             "require": {
@@ -532,7 +533,7 @@
                 }
             ],
             "description": "Jankx UI framework integrate with popular CSS frameworks",
-            "time": "2020-02-26T23:51:55+00:00"
+            "time": "2020-03-02T00:33:13+00:00"
         },
         {
             "name": "jankx/widget",
