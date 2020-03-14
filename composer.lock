@@ -111,21 +111,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/core.git",
-                "reference": "1f023eedc34094c1ce0d571619e5b2f8a2deb242"
+                "reference": "6f378e168405cdbfa11f0f5a61ac661aeee7da8a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/core/zipball/1f023eedc34094c1ce0d571619e5b2f8a2deb242",
-                "reference": "1f023eedc34094c1ce0d571619e5b2f8a2deb242",
+                "url": "https://api.github.com/repos/jankx/core/zipball/6f378e168405cdbfa11f0f5a61ac661aeee7da8a",
+                "reference": "6f378e168405cdbfa11f0f5a61ac661aeee7da8a",
                 "shasum": ""
             },
             "require": {
                 "jankx/admin": "dev-master",
                 "jankx/asset": "dev-master",
-                "jankx/data-type": "dev-master",
-                "jankx/field": "dev-master",
                 "jankx/helpers": "dev-master",
-                "jankx/human-number": "dev-master",
                 "jankx/option": "dev-master",
                 "jankx/template": "dev-master",
                 "jankx/ui-framework": "dev-master"
@@ -150,76 +147,7 @@
                 }
             ],
             "description": "This is the core of Jankx theme framework and is also usable on its own as embed framework",
-            "time": "2020-03-09T03:35:41+00:00"
-        },
-        {
-            "name": "jankx/data-type",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/jankx/data-type.git",
-                "reference": "6f7e12b203e73860bb25ae5fb0ad9fb94a8bc66d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/jankx/data-type/zipball/6f7e12b203e73860bb25ae5fb0ad9fb94a8bc66d",
-                "reference": "6f7e12b203e73860bb25ae5fb0ad9fb94a8bc66d",
-                "shasum": ""
-            },
-            "require": {
-                "jankx/field": "dev-master"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Jankx\\DataType\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Puleeno Nguyen",
-                    "email": "puleeno@gmail.com"
-                }
-            ],
-            "description": "WordPress data types such as: custom post type, taxonoxy, metas,etc",
-            "time": "2019-07-15T04:58:51+00:00"
-        },
-        {
-            "name": "jankx/field",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/jankx/field.git",
-                "reference": "0028ad5b271f7e1b0fa7bd7251a4efde92c6a936"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/jankx/field/zipball/0028ad5b271f7e1b0fa7bd7251a4efde92c6a936",
-                "reference": "0028ad5b271f7e1b0fa7bd7251a4efde92c6a936",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Jankx\\Fields\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Puleeno Nguyen",
-                    "email": "puleeno@gmail.com"
-                }
-            ],
-            "description": "Jankx Fields is a simple framework used to create meta box, settings, form, etc",
-            "time": "2019-07-15T04:42:51+00:00"
+            "time": "2020-03-14T13:57:36+00:00"
         },
         {
             "name": "jankx/helpers",
@@ -253,42 +181,6 @@
             ],
             "description": "The helpers for Jankx Framework",
             "time": "2020-03-01T13:27:15+00:00"
-        },
-        {
-            "name": "jankx/human-number",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/jankx/human-number.git",
-                "reference": "9ea36f817f2c4c10a088a74a48ce31b2cda5bca7"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/jankx/human-number/zipball/9ea36f817f2c4c10a088a74a48ce31b2cda5bca7",
-                "reference": "9ea36f817f2c4c10a088a74a48ce31b2cda5bca7",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Jankx\\HumanNumber\\": "src/"
-                },
-                "files": [
-                    "helpers.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Puleeno Nguyen",
-                    "email": "puleeno@gmail.com"
-                }
-            ],
-            "description": "Friendly number for human can read easiler.",
-            "time": "2019-10-25T18:15:32+00:00"
         },
         {
             "name": "jankx/option",
