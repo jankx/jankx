@@ -15,4 +15,13 @@
  * Site header can be modified via feature override templates of WordPress
  * so please don't modify this file to ensure Jankx Framework working is exactly.
  */
-jankx_template( 'header' );
+
+jankx_template(
+	'header',
+	apply_filters(
+		'jankx_template_header_data',
+		[
+			'current_user' => wp_get_current_user(),
+		]
+	)
+);
