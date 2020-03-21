@@ -45,12 +45,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/asset.git",
-                "reference": "a39896eb4cdf064d399602f5fa26240d25633341"
+                "reference": "37478d56533ae309bc8a310cdca894b2299408d9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/asset/zipball/a39896eb4cdf064d399602f5fa26240d25633341",
-                "reference": "a39896eb4cdf064d399602f5fa26240d25633341",
+                "url": "https://api.github.com/repos/jankx/asset/zipball/37478d56533ae309bc8a310cdca894b2299408d9",
+                "reference": "37478d56533ae309bc8a310cdca894b2299408d9",
                 "shasum": ""
             },
             "type": "library",
@@ -70,7 +70,7 @@
                 }
             ],
             "description": "Jankx Assets is used to manage CSS, JS, libraries with beautiful syntax",
-            "time": "2020-03-06T00:14:04+00:00"
+            "time": "2020-03-17T17:42:01+00:00"
         },
         {
             "name": "jankx/command",
@@ -111,12 +111,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/core.git",
-                "reference": "6f378e168405cdbfa11f0f5a61ac661aeee7da8a"
+                "reference": "5ca64500fa7506a7d0b80baabab7772dc7dcc778"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/core/zipball/6f378e168405cdbfa11f0f5a61ac661aeee7da8a",
-                "reference": "6f378e168405cdbfa11f0f5a61ac661aeee7da8a",
+                "url": "https://api.github.com/repos/jankx/core/zipball/5ca64500fa7506a7d0b80baabab7772dc7dcc778",
+                "reference": "5ca64500fa7506a7d0b80baabab7772dc7dcc778",
                 "shasum": ""
             },
             "require": {
@@ -147,7 +147,7 @@
                 }
             ],
             "description": "This is the core of Jankx theme framework and is also usable on its own as embed framework",
-            "time": "2020-03-14T13:57:36+00:00"
+            "time": "2020-03-17T00:36:46+00:00"
         },
         {
             "name": "jankx/helpers",
@@ -290,12 +290,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/site-layout.git",
-                "reference": "1a1a5b3e05aa83c4dc1aec17d427bbfa4e14d3b7"
+                "reference": "52f67effd6a7e16e95242df8c99b16b554e08606"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/site-layout/zipball/1a1a5b3e05aa83c4dc1aec17d427bbfa4e14d3b7",
-                "reference": "1a1a5b3e05aa83c4dc1aec17d427bbfa4e14d3b7",
+                "url": "https://api.github.com/repos/jankx/site-layout/zipball/52f67effd6a7e16e95242df8c99b16b554e08606",
+                "reference": "52f67effd6a7e16e95242df8c99b16b554e08606",
                 "shasum": ""
             },
             "require": {
@@ -318,7 +318,7 @@
                 }
             ],
             "description": "The best way to create multi site layouts and management layouts",
-            "time": "2020-02-26T00:01:05+00:00"
+            "time": "2020-03-17T00:37:03+00:00"
         },
         {
             "name": "jankx/template",
@@ -326,12 +326,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/template.git",
-                "reference": "c9044dc12109c964a511e66d01acfc507618286b"
+                "reference": "7e00755bfee38d25da38f2227eec10aeb23ae56e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/template/zipball/c9044dc12109c964a511e66d01acfc507618286b",
-                "reference": "c9044dc12109c964a511e66d01acfc507618286b",
+                "url": "https://api.github.com/repos/jankx/template/zipball/7e00755bfee38d25da38f2227eec10aeb23ae56e",
+                "reference": "7e00755bfee38d25da38f2227eec10aeb23ae56e",
                 "shasum": ""
             },
             "require": {
@@ -356,7 +356,7 @@
                 }
             ],
             "description": "Jankx template manager usable to load template with support override, caching",
-            "time": "2020-03-09T04:10:32+00:00"
+            "time": "2020-03-18T13:09:51+00:00"
         },
         {
             "name": "jankx/template-engine",
