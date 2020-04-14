@@ -6,7 +6,7 @@
  *
  * @package Jankx/Framework
  * @author Puleeno Nguyen <puleeno@gmail.com>
- * @since 1.0
+ * @since 1.0.0
  */
 
 jankx();
