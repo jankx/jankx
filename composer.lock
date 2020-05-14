@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1ade034a73ff84cc95c178ff5b43f147",
+    "content-hash": "8d509d9293f473f5d660406bf7080212",
     "packages": [
         {
             "name": "jankx/admin",
@@ -45,12 +45,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/asset.git",
-                "reference": "37478d56533ae309bc8a310cdca894b2299408d9"
+                "reference": "ba620c8cdec831adc2fafbcdf34afa00f2312fb1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/asset/zipball/37478d56533ae309bc8a310cdca894b2299408d9",
-                "reference": "37478d56533ae309bc8a310cdca894b2299408d9",
+                "url": "https://api.github.com/repos/jankx/asset/zipball/ba620c8cdec831adc2fafbcdf34afa00f2312fb1",
+                "reference": "ba620c8cdec831adc2fafbcdf34afa00f2312fb1",
                 "shasum": ""
             },
             "type": "library",
@@ -70,7 +70,7 @@
                 }
             ],
             "description": "Jankx Assets is used to manage CSS, JS, libraries with beautiful syntax",
-            "time": "2020-03-17T17:42:01+00:00"
+            "time": "2020-04-12T10:16:21+00:00"
         },
         {
             "name": "jankx/command",
@@ -111,12 +111,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/core.git",
-                "reference": "5ca64500fa7506a7d0b80baabab7772dc7dcc778"
+                "reference": "fea9106907841b04715aa141b2c7bfbdb77521b2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/core/zipball/5ca64500fa7506a7d0b80baabab7772dc7dcc778",
-                "reference": "5ca64500fa7506a7d0b80baabab7772dc7dcc778",
+                "url": "https://api.github.com/repos/jankx/core/zipball/fea9106907841b04715aa141b2c7bfbdb77521b2",
+                "reference": "fea9106907841b04715aa141b2c7bfbdb77521b2",
                 "shasum": ""
             },
             "require": {
@@ -147,7 +147,7 @@
                 }
             ],
             "description": "This is the core of Jankx theme framework and is also usable on its own as embed framework",
-            "time": "2020-03-17T00:36:46+00:00"
+            "time": "2020-03-29T15:02:55+00:00"
         },
         {
             "name": "jankx/helpers",
@@ -155,12 +155,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/helpers.git",
-                "reference": "9fe5d82c6601f9aa8b4612261034e3d63b8c9e86"
+                "reference": "98e5c06724d07de99679d554b499a9cf54e2224a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/helpers/zipball/9fe5d82c6601f9aa8b4612261034e3d63b8c9e86",
-                "reference": "9fe5d82c6601f9aa8b4612261034e3d63b8c9e86",
+                "url": "https://api.github.com/repos/jankx/helpers/zipball/98e5c06724d07de99679d554b499a9cf54e2224a",
+                "reference": "98e5c06724d07de99679d554b499a9cf54e2224a",
                 "shasum": ""
             },
             "type": "library",
@@ -180,7 +180,7 @@
                 }
             ],
             "description": "The helpers for Jankx Framework",
-            "time": "2020-03-01T13:27:15+00:00"
+            "time": "2020-04-14T00:56:23+00:00"
         },
         {
             "name": "jankx/option",
@@ -326,12 +326,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/template.git",
-                "reference": "7e00755bfee38d25da38f2227eec10aeb23ae56e"
+                "reference": "92d75c2099d3d62f5bc911f313e98ff345b768b2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/template/zipball/7e00755bfee38d25da38f2227eec10aeb23ae56e",
-                "reference": "7e00755bfee38d25da38f2227eec10aeb23ae56e",
+                "url": "https://api.github.com/repos/jankx/template/zipball/92d75c2099d3d62f5bc911f313e98ff345b768b2",
+                "reference": "92d75c2099d3d62f5bc911f313e98ff345b768b2",
                 "shasum": ""
             },
             "require": {
@@ -356,7 +356,7 @@
                 }
             ],
             "description": "Jankx template manager usable to load template with support override, caching",
-            "time": "2020-03-18T13:09:51+00:00"
+            "time": "2020-04-14T16:23:58+00:00"
         },
         {
             "name": "jankx/template-engine",
@@ -364,13 +364,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/template-engine.git",
-                "reference": "4c6e62d01128fd6be7c57b5812c6cb62ec3786c0"
+                "reference": "cfd235ed3cfb6787ac9f3ef1693d2ec566bfff91"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/template-engine/zipball/4c6e62d01128fd6be7c57b5812c6cb62ec3786c0",
-                "reference": "4c6e62d01128fd6be7c57b5812c6cb62ec3786c0",
+                "url": "https://api.github.com/repos/jankx/template-engine/zipball/cfd235ed3cfb6787ac9f3ef1693d2ec566bfff91",
+                "reference": "cfd235ed3cfb6787ac9f3ef1693d2ec566bfff91",
                 "shasum": ""
+            },
+            "require": {
+                "jankx/helpers": "dev-master"
             },
             "type": "library",
             "autoload": {
@@ -389,7 +392,7 @@
                 }
             ],
             "description": "The template engine for Jankx Framework",
-            "time": "2020-03-09T03:38:00+00:00"
+            "time": "2020-04-14T00:58:03+00:00"
         },
         {
             "name": "jankx/ui-framework",
@@ -462,156 +465,6 @@
             ],
             "description": "Common widgets are developed specifically for Jankx theme framework",
             "time": "2019-07-15T06:19:33+00:00"
-        },
-        {
-            "name": "ramphor/updater",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ramphor/updater.git",
-                "reference": "de0cc9ab6ea37b214534210c2de0164b3c32113f"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ramphor/updater/zipball/de0cc9ab6ea37b214534210c2de0164b3c32113f",
-                "reference": "de0cc9ab6ea37b214534210c2de0164b3c32113f",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Ramphor\\Updater\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Ramphor Premium",
-                    "email": "puleeno@gmail.com"
-                }
-            ],
-            "description": "The embeded updater for themes, plugins in WordPress",
-            "time": "2019-10-17T04:58:49+00:00"
-        },
-        {
-            "name": "symfony/polyfill-ctype",
-            "version": "v1.14.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/polyfill-ctype.git",
-                "reference": "fbdeaec0df06cf3d51c93de80c7eb76e271f5a38"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/fbdeaec0df06cf3d51c93de80c7eb76e271f5a38",
-                "reference": "fbdeaec0df06cf3d51c93de80c7eb76e271f5a38",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "suggest": {
-                "ext-ctype": "For best performance"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.14-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Ctype\\": ""
-                },
-                "files": [
-                    "bootstrap.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Gert de Pagter",
-                    "email": "BackEndTea@gmail.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony polyfill for ctype functions",
-            "homepage": "https://symfony.com",
-            "keywords": [
-                "compatibility",
-                "ctype",
-                "polyfill",
-                "portable"
-            ],
-            "time": "2020-01-13T11:15:53+00:00"
-        },
-        {
-            "name": "symfony/yaml",
-            "version": "v4.3.5",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/yaml.git",
-                "reference": "41e16350a2a1c7383c4735aa2f9fce74cf3d1178"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/41e16350a2a1c7383c4735aa2f9fce74cf3d1178",
-                "reference": "41e16350a2a1c7383c4735aa2f9fce74cf3d1178",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.1.3",
-                "symfony/polyfill-ctype": "~1.8"
-            },
-            "conflict": {
-                "symfony/console": "<3.4"
-            },
-            "require-dev": {
-                "symfony/console": "~3.4|~4.0"
-            },
-            "suggest": {
-                "symfony/console": "For validating YAML files using the lint command"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "4.3-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Component\\Yaml\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony Yaml Component",
-            "homepage": "https://symfony.com",
-            "time": "2019-09-11T15:41:19+00:00"
         }
     ],
     "packages-dev": [],
@@ -623,11 +476,11 @@
         "jankx/pagination": 20,
         "jankx/post-layout": 20,
         "jankx/site-layout": 20,
-        "jankx/widget": 20,
-        "ramphor/updater": 20
+        "jankx/widget": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": [],
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
 }

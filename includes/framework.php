@@ -6,7 +6,9 @@ final class Jankx_Framework {
 	public function __construct() {
 		$loaded = $this->load_composer();
 		if ( ! $loaded ) {
-			return;
+			function jankx() {
+				_e( 'Please install Jankx framework via Composer.', 'jankx' );
+			}
 		}
 		$this->define_constants();
 		$this->setup_theme();
@@ -37,7 +39,7 @@ final class Jankx_Framework {
 	}
 
 	public function load_integrated_plugins() {
-		require_once JANKX_ABSPATH . '/includes/elementor/class-jankx-elementor.php';
+		require_once dirname( __FILE__ ) . '/elementor/class-jankx-elementor.php';
 	}
 }
 

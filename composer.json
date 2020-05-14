@@ -17,8 +17,6 @@
     "jankx/pagination": "dev-master",
     "jankx/post-layout": "dev-master",
     "jankx/site-layout": "dev-master",
-    "jankx/widget": "dev-master",
-    "ramphor/updater": "dev-master",
-    "symfony/yaml": "4.3.5"
+    "jankx/widget": "dev-master"
   }
 }

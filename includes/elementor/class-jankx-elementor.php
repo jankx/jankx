@@ -2,7 +2,7 @@
 use Elementor\Widget_Base;
 class Jankx_Elementor {
 	public function __construct() {
-		$activated_plugins = get_option( 'active_plugins', [] );
+		$activated_plugins = get_option( 'active_plugins', array() );
 		if ( ! in_array( 'elementor/elementor.php', $activated_plugins ) || ! class_exists( Widget_Base::class ) ) {
 			return;
 		}
