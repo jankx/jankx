@@ -5,7 +5,7 @@
 final class Jankx_Framework {
 	public function __construct() {
 		$loaded = $this->load_composer();
-		if ( ! $loaded ) {
+		if ( ! $loaded && ! function_exists( 'jankx' ) ) {
 			function jankx() {
 				_e( 'Please install Jankx framework via Composer.', 'jankx' );
 			}
