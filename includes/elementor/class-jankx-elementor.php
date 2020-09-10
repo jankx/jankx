@@ -18,9 +18,22 @@ class Jankx_Elementor {
 
 	public function init_hooks() {
 		add_action( 'elementor/init', array( $this, 'register_elementor_widgets' ) );
+		add_filter( 'elementor/editor/localize_settings', array( $this, 'removeElementPromtionWidgets' ) );
 	}
 
 	public function register_elementor_widgets() {
+	}
+
+	public function removeElementPromtionWidgets( $config ) {
+		if ( ! apply_filters( 'jankx_plugin_elementor_remove_promions', true ) ) {
+			return $config;
+		}
+		// Remove Elementor promotion widgets to look good
+		if ( isset( $config['promotionWidgets'] ) ) {
+			unset( $config['promotionWidgets'] );
+		}
+
+		return $config;
 	}
 }
 
