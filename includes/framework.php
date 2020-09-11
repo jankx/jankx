@@ -35,11 +35,7 @@ final class Jankx_Framework {
 	}
 
 	protected function setup_theme() {
-		add_action( 'init', array( $this, 'load_integrated_plugins' ) );
-	}
-
-	public function load_integrated_plugins() {
-		require_once dirname( __FILE__ ) . '/elementor/class-jankx-elementor.php';
+		// Create theme feature at here
 	}
 }
 
