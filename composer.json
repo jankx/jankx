@@ -12,11 +12,6 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
-    "jankx/command": "dev-master",
-    "jankx/core": "dev-master",
-    "jankx/pagination": "dev-master",
-    "jankx/post-layout": "dev-master",
-    "jankx/site-layout": "dev-master",
-    "jankx/widget": "dev-master"
+    "jankx/core": "dev-master"
   }
 }
