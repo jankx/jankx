@@ -20,8 +20,8 @@ jankx_template(
 	'header',
 	apply_filters(
 		'jankx_template_header_data',
-		[
+		array(
 			'current_user' => wp_get_current_user(),
-		]
+		)
 	)
 );
