@@ -41,5 +41,8 @@ jankx_template(
 	array(
 		"sidebar/{$sidebar_name}",
 		'sidebar/primary',
+	),
+	array(
+		'sidebar_name' => $sidebar_name,
 	)
 );
