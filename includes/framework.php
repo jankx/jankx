@@ -9,9 +9,11 @@ final class Jankx_Framework {
 			function jankx() {
 				_e( 'Please install Jankx framework via Composer.', 'jankx' );
 			}
+		} else {
+			$this->define_constants();
+			$this->includes();
+			$this->init_hooks();
 		}
-		$this->define_constants();
-		$this->setup_theme();
 	}
 
 	protected function load_composer() {
@@ -34,8 +36,14 @@ final class Jankx_Framework {
 		$this->define( 'JANKX_ABSPATH', get_template_directory() );
 	}
 
-	protected function setup_theme() {
-		// Create theme feature at here
+	protected function includes() {
+	}
+	
+	protected function init_hooks() {
+		add_action('after_setup_theme', array($this, 'setup_theme'));
+	}
+	
+	public function setup_theme() {
 	}
 }
 
