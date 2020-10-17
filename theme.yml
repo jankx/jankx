@@ -1,14 +1,23 @@
 name: "Jankx Framework"
 plugins:
+  woocommerce: 
+    - required: true
 layouts:
-imageS: 
+  - home: 'fw'
+  - page: 'fw'
+  - post: 'cs'
+  - category: 'cs'
+  - tag: 'cs'
+   archive: 'cs'
+  - other: 'cs'
+images: 
   thumbnail: 
-    - 180
-    - 120
+    - width: 180
+    - height: 120
   medium:
-    - 480
-    - 350
+    - width: 480
+    - height: 350
   large:
-    - 1024
-    - 1024
+    - width: 1024
+    - height: 1024
 version: "1.0.0"
