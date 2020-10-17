@@ -1,4 +1,14 @@
 name: "Jankx Framework"
 plugins:
 layouts:
+imageS: 
+  thumbnail: 
+    - 180
+    - 120
+  medium:
+    - 480
+    - 350
+  large:
+    - 1024
+    - 1024
 version: "1.0.0"
