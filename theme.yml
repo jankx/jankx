@@ -20,4 +20,10 @@ images:
   large:
     - width: 1024
     - height: 1024
+colors:
+  - primary_color: "#A8201A"
+  - secondary: "#EC9A29"
+  - neutral: "#0F8B8D"
+  - secondary_contrast: "#143642",
+  - primary_contrast: "#DAD2D8"
 version: "1.0.0"
