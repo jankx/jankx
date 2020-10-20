@@ -7,6 +7,9 @@ QUICK LINKS
 
 [Documentation](https://jankx.github.io)
 
+# Requirements
+- PHP: >= 5.6
+
 # Main features
 
 - Quick make a WordPress theme
