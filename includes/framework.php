@@ -40,8 +40,12 @@ final class Jankx_Framework {
 	}
 	
 	protected function init_hooks() {
+                add_action('switch_theme', array($this, 'active_theme'));
 		add_action('after_setup_theme', array($this, 'setup_theme'));
 	}
+
+        public function active_theme() {
+        }
 	
 	public function setup_theme() {
 	}
