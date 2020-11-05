@@ -33,7 +33,7 @@ final class Jankx_Framework {
 	}
 
 	protected function define_constants() {
-		$this->define( 'JANKX_ABSPATH', get_template_directory() );
+		$this->define( 'JANKX_ABSPATH', dirname(__DIR__) );
 	}
 
 	protected function includes() {
