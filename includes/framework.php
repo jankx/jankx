@@ -10,7 +10,7 @@ final class Jankx_Framework {
 				_e( 'Please install Jankx framework via Composer.', 'jankx' );
 			}
 		} else {
-			$this->define_constants();
+			$this->bootstrap();
 			$this->includes();
 			$this->init_hooks();
 		}
@@ -32,7 +32,7 @@ final class Jankx_Framework {
 		define( $name, $value );
 	}
 
-	protected function define_constants() {
+	protected function bootstrap() {
 		$this->define( 'JANKX_ABSPATH', dirname(__DIR__) );
 	}
 
