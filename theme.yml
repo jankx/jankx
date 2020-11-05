@@ -1,32 +1,35 @@
-name: "Jankx Framework"
 plugins:
-  woocommerce: 
-    - required: true
+  woocommerce:
+    required: true
+
 layouts:
-  - home: 'fw'
-  - page: 'fw'
-  - post: 'cs'
-  - category: 'cs'
-  - tag: 'cs'
-   archive: 'cs'
-  - other: 'cs'
-images: 
-  thumbnail: 
-    - width: 180
-    - height: 120
+  home: 'fw'
+  page: 'fw'
+  post: 'cs'
+  category: 'cs'
+  tag: 'cs'
+  archive: 'cs'
+  other: 'cs'
+
+images:
+  thumbnail:
+    width: 180
+    height: 120
   medium:
-    - width: 480
-    - height: 350
+    width: 480
+    height: 350
   medium_mobile:
-    - width: 520
-    - height: 380
+    width: 520
+    height: 380
   large:
-    - width: 1024
-    - height: 1024
+    width: 1024
+    height: 1024
+
 colors:
-  - primary_color: "#A8201A"
-  - secondary: "#EC9A29"
-  - neutral: "#0F8B8D"
-  - secondary_contrast: "#143642",
-  - primary_contrast: "#DAD2D8"
+  primary_color: "#A8201A"
+  secondary: "#EC9A29"
+  neutral: "#0F8B8D"
+  secondary_contrast: "#143642",
+  primary_contrast: "#DAD2D8"
+
 version: "1.0.0"
