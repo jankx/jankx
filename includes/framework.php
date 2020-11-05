@@ -2,6 +2,9 @@
 /**
  * Jankx Framework
  */
+use Jankx\GlobalVariables;
+use Jankx\Yaml\Yaml;
+
 final class Jankx_Framework {
 	public function __construct() {
 		$loaded = $this->load_composer();
@@ -33,7 +36,16 @@ final class Jankx_Framework {
 	}
 
 	protected function bootstrap() {
-		$this->define( 'JANKX_ABSPATH', dirname(__DIR__) );
+                $this->define( 'JANKX_ABSPATH', dirname(__DIR__) );
+		$theme_config_file = sprintf('%s/theme.yml', constant('JANKX_ABSPATH'));
+		if (file_exists($theme_config_file)) {
+			$yaml = new Yaml();
+			$theme_configs = $yaml->loadFile($theme_config_file);
+
+			if (is_array($theme_configs)) {
+				GlobalVariables::set('configs', $theme_configs);
+			}
+		}
 	}
 
 	protected function includes() {
