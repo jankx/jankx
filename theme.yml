@@ -17,6 +17,9 @@ images:
   medium:
     - width: 480
     - height: 350
+  medium_mobile:
+    - width: 520
+    - height: 380
   large:
     - width: 1024
     - height: 1024
