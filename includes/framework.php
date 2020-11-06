@@ -36,29 +36,29 @@ final class Jankx_Framework {
 	}
 
 	protected function bootstrap() {
-                $this->define( 'JANKX_ABSPATH', dirname(__DIR__) );
-		$theme_config_file = sprintf('%s/theme.yml', constant('JANKX_ABSPATH'));
-		if (file_exists($theme_config_file)) {
-			$yaml = new Yaml();
-			$theme_configs = $yaml->loadFile($theme_config_file);
+				$this->define( 'JANKX_ABSPATH', dirname( __DIR__ ) );
+		$theme_config_file = sprintf( '%s/theme.yml', constant( 'JANKX_ABSPATH' ) );
+		if ( file_exists( $theme_config_file ) ) {
+			$yaml          = new Yaml();
+			$theme_configs = $yaml->loadFile( $theme_config_file );
 
-			if (is_array($theme_configs)) {
-				GlobalVariables::set('configs', $theme_configs);
+			if ( is_array( $theme_configs ) ) {
+				GlobalVariables::set( 'configs', $theme_configs );
 			}
 		}
 	}
 
 	protected function includes() {
 	}
-	
+
 	protected function init_hooks() {
-                add_action('switch_theme', array($this, 'active_theme'));
-		add_action('after_setup_theme', array($this, 'setup_theme'));
+				add_action( 'switch_theme', array( $this, 'active_theme' ) );
+		add_action( 'after_setup_theme', array( $this, 'setup_theme' ) );
 	}
 
-        public function active_theme() {
-        }
-	
+	public function active_theme() {
+	}
+
 	public function setup_theme() {
 	}
 }
