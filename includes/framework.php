@@ -4,6 +4,7 @@
  */
 use Jankx\GlobalVariables;
 use Jankx\Yaml\Yaml;
+use Jankx\Option\Option;
 
 final class Jankx_Framework {
 	public function __construct() {
@@ -36,7 +37,14 @@ final class Jankx_Framework {
 	}
 
 	protected function bootstrap() {
-				$this->define( 'JANKX_ABSPATH', dirname( __DIR__ ) );
+		$this->define( 'JANKX_ABSPATH', dirname( __DIR__ ) );
+		if (!function_exists('jankx_get_option')) {
+			function jankx_get_option($optionName, $defaultValue = null)
+			{
+				return Option::get($optionName, $defaultValue);
+			}
+		}
+
 		$theme_config_file = sprintf( '%s/theme.yml', constant( 'JANKX_ABSPATH' ) );
 		if ( file_exists( $theme_config_file ) ) {
 			$yaml          = new Yaml();
