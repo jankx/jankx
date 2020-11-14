@@ -38,10 +38,9 @@ final class Jankx_Framework {
 
 	protected function bootstrap() {
 		$this->define( 'JANKX_ABSPATH', dirname( __DIR__ ) );
-		if (!function_exists('jankx_get_option')) {
-			function jankx_get_option($optionName, $defaultValue = null)
-			{
-				return Option::get($optionName, $defaultValue);
+		if ( ! function_exists( 'jankx_get_option' ) ) {
+			function jankx_get_option( $optionName, $defaultValue = null ) {
+				return Option::get( $optionName, $defaultValue );
 			}
 		}
 
