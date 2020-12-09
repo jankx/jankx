@@ -1,0 +1,527 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "cd7df02cf90a7f7c54d49358c93cd9f3",
+    "packages": [
+        {
+            "name": "jankx/admin",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jankx/admin.git",
+                "reference": "3cd4fa4230490557de2fcd095e7225a824ba6f10"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jankx/admin/zipball/3cd4fa4230490557de2fcd095e7225a824ba6f10",
+                "reference": "3cd4fa4230490557de2fcd095e7225a824ba6f10",
+                "shasum": ""
+            },
+            "require": {
+                "jankx/option": "dev-master"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jankx\\Admin\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Puleeno Nguyen",
+                    "email": "puleeno@gmail.com"
+                }
+            ],
+            "description": "The Jankx admin framework is a partial of Jankx theme framework",
+            "time": "2020-10-19T03:10:57+00:00"
+        },
+        {
+            "name": "jankx/asset",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jankx/asset.git",
+                "reference": "3493891c1b0658e657339db1aadd472ef1336ab9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jankx/asset/zipball/3493891c1b0658e657339db1aadd472ef1336ab9",
+                "reference": "3493891c1b0658e657339db1aadd472ef1336ab9",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jankx\\Asset\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Puleeno Nguyen",
+                    "email": "puleeno@gmail.com"
+                }
+            ],
+            "description": "Jankx Assets is used to manage CSS, JS, libraries with beautiful syntax",
+            "time": "2020-12-05T16:10:09+00:00"
+        },
+        {
+            "name": "jankx/component",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jankx/component.git",
+                "reference": "56eb0833e50ab11d1ce0069514857890ca0741da"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jankx/component/zipball/56eb0833e50ab11d1ce0069514857890ca0741da",
+                "reference": "56eb0833e50ab11d1ce0069514857890ca0741da",
+                "shasum": ""
+            },
+            "require": {
+                "jankx/asset": "*",
+                "jankx/template": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jankx\\Component\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Puleeno Nguyen",
+                    "email": "puleeno@gmail.com"
+                }
+            ],
+            "description": "Jankx components",
+            "time": "2020-11-04T03:24:55+00:00"
+        },
+        {
+            "name": "jankx/core",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jankx/core.git",
+                "reference": "18bbab354765d834a1d12fe3b4a26fe1a5f569d8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jankx/core/zipball/18bbab354765d834a1d12fe3b4a26fe1a5f569d8",
+                "reference": "18bbab354765d834a1d12fe3b4a26fe1a5f569d8",
+                "shasum": ""
+            },
+            "require": {
+                "jankx/admin": "dev-master",
+                "jankx/asset": "dev-master",
+                "jankx/component": "dev-master",
+                "jankx/helpers": "dev-master",
+                "jankx/languages": "dev-master",
+                "jankx/option": "dev-master",
+                "jankx/pagination": "dev-master",
+                "jankx/post-layout": "dev-master",
+                "jankx/site-layout": "dev-master",
+                "jankx/template": "dev-master",
+                "jankx/widget": "dev-master",
+                "jankx/yaml": "dev-master"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "": "./src/",
+                    "AdvancedElementor\\Controls\\": "./src/Jankx/Integration/Elementor/Controls/"
+                },
+                "files": [
+                    "framework.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Puleeno Nguyen",
+                    "email": "puleeno@gmail.com"
+                }
+            ],
+            "description": "This is the core of Jankx theme framework and is also usable on its own as embed framework",
+            "time": "2020-11-05T05:58:37+00:00"
+        },
+        {
+            "name": "jankx/helpers",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jankx/helpers.git",
+                "reference": "6190ed549e58c5e3db437eeaa488a001792c20f3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jankx/helpers/zipball/6190ed549e58c5e3db437eeaa488a001792c20f3",
+                "reference": "6190ed549e58c5e3db437eeaa488a001792c20f3",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "./loader.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Puleeno Nguyen",
+                    "email": "puleeno@gmail.com"
+                }
+            ],
+            "description": "The helpers for Jankx Framework",
+            "time": "2020-11-23T15:49:00+00:00"
+        },
+        {
+            "name": "jankx/languages",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jankx/languages.git",
+                "reference": "058c423236d73ff8a0df600c2aa44080eecb37fb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jankx/languages/zipball/058c423236d73ff8a0df600c2aa44080eecb37fb",
+                "reference": "058c423236d73ff8a0df600c2aa44080eecb37fb",
+                "shasum": ""
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jankx Team",
+                    "email": "puleeno@gmai.com"
+                }
+            ],
+            "description": "Jankx theme framework translations",
+            "time": "2020-09-16T15:14:22+00:00"
+        },
+        {
+            "name": "jankx/option",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jankx/option.git",
+                "reference": "c0b4fe8e8ebd6a4db371c496f5ec6b45b8309c0c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jankx/option/zipball/c0b4fe8e8ebd6a4db371c496f5ec6b45b8309c0c",
+                "reference": "c0b4fe8e8ebd6a4db371c496f5ec6b45b8309c0c",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jankx\\Option\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Puleeno Nguyen",
+                    "email": "puleeno@gmail.com"
+                }
+            ],
+            "description": "Jankx options usable to create the theme, add-on options integrate with your loved option frameworks",
+            "time": "2020-11-14T12:33:30+00:00"
+        },
+        {
+            "name": "jankx/pagination",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jankx/pagination.git",
+                "reference": "6aa6aaccddde46406d41732ec7f0f8e1ea588add"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jankx/pagination/zipball/6aa6aaccddde46406d41732ec7f0f8e1ea588add",
+                "reference": "6aa6aaccddde46406d41732ec7f0f8e1ea588add",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jankx\\Pagination\\": "src/"
+                },
+                "files": [
+                    "./functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Puleeno Nguyen",
+                    "email": "puleeno@gmail.com"
+                }
+            ],
+            "description": "The WordPress pagination support multi styles: number, infinite loop, load more",
+            "time": "2020-11-04T06:31:09+00:00"
+        },
+        {
+            "name": "jankx/post-layout",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jankx/post-layout.git",
+                "reference": "aea548094bcbef65c442383d532ca0116d9eee5b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jankx/post-layout/zipball/aea548094bcbef65c442383d532ca0116d9eee5b",
+                "reference": "aea548094bcbef65c442383d532ca0116d9eee5b",
+                "shasum": ""
+            },
+            "require": {
+                "jankx/site-layout": "dev-master",
+                "jankx/template": "dev-master"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jankx\\PostLayout\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Puleeno Nguyen",
+                    "email": "puleeno@gmail.com"
+                }
+            ],
+            "description": "WordPress post and custom post type layout generator",
+            "time": "2020-12-09T03:06:26+00:00"
+        },
+        {
+            "name": "jankx/site-layout",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jankx/site-layout.git",
+                "reference": "e0e9db18e6a375bf3cb51fe714d3adf6c20d6757"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jankx/site-layout/zipball/e0e9db18e6a375bf3cb51fe714d3adf6c20d6757",
+                "reference": "e0e9db18e6a375bf3cb51fe714d3adf6c20d6757",
+                "shasum": ""
+            },
+            "require": {
+                "jankx/component": "dev-master",
+                "jankx/template": "dev-master"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jankx\\SiteLayout\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Puleeno Nguyen",
+                    "email": "puleeno@gmail.com"
+                }
+            ],
+            "description": "The best way to create multi-layouts",
+            "time": "2020-11-04T08:59:13+00:00"
+        },
+        {
+            "name": "jankx/template",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jankx/template.git",
+                "reference": "197f51c8893c8340d1e9e20aaa44fe7d2f626c88"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jankx/template/zipball/197f51c8893c8340d1e9e20aaa44fe7d2f626c88",
+                "reference": "197f51c8893c8340d1e9e20aaa44fe7d2f626c88",
+                "shasum": ""
+            },
+            "require": {
+                "jankx/template-engine": "dev-master"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jankx\\Template\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Puleeno Nguyen",
+                    "email": "puleeno@gmail.com"
+                }
+            ],
+            "description": "Jankx Template is used to load the template support override, caching.",
+            "time": "2020-11-06T02:09:02+00:00"
+        },
+        {
+            "name": "jankx/template-engine",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jankx/template-engine.git",
+                "reference": "33ac45314098b554c8acdab4cb5d74aa1a752210"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jankx/template-engine/zipball/33ac45314098b554c8acdab4cb5d74aa1a752210",
+                "reference": "33ac45314098b554c8acdab4cb5d74aa1a752210",
+                "shasum": ""
+            },
+            "require": {
+                "jankx/helpers": "dev-master"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jankx\\Template\\Engine\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Puleeno Nguyen",
+                    "email": "puleeno@gmail.com"
+                }
+            ],
+            "description": "The template engine for Jankx Framework",
+            "time": "2020-09-30T08:43:06+00:00"
+        },
+        {
+            "name": "jankx/widget",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jankx/widget.git",
+                "reference": "686570cb13876b00a695601f6ac8c273c505fd18"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jankx/widget/zipball/686570cb13876b00a695601f6ac8c273c505fd18",
+                "reference": "686570cb13876b00a695601f6ac8c273c505fd18",
+                "shasum": ""
+            },
+            "require": {
+                "jankx/helpers": "dev-master",
+                "jankx/post-layout": "dev-master"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jankx\\Widget\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Puleeno Nguyen",
+                    "email": "puleeno@gmail.com"
+                }
+            ],
+            "description": "Common widgets are developed specifically for Jankx theme framework",
+            "time": "2020-11-13T02:55:57+00:00"
+        },
+        {
+            "name": "jankx/yaml",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jankx/yaml.git",
+                "reference": "a391afd45660b80b55ae2574b431e430b6c43dac"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jankx/yaml/zipball/a391afd45660b80b55ae2574b431e430b6c43dac",
+                "reference": "a391afd45660b80b55ae2574b431e430b6c43dac",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jankx\\Yaml\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "PHP Yaml Parser",
+            "homepage": "https://github.com/jankx/yaml",
+            "keywords": [
+                "parser",
+                "php",
+                "yaml"
+            ],
+            "time": "2020-11-05T06:00:38+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "dev",
+    "stability-flags": {
+        "jankx/core": 20
+    },
+    "prefer-stable": true,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
+}
