@@ -9,7 +9,9 @@
  * @since 1.0.0
  */
 
+do_action( 'jankx_template_before_list_comments', $comments );
 if ( post_password_required() || empty( $comments ) ) {
+	do_action( 'jankx_template_after_list_comments', $comments );
 	return;
 }
 
@@ -29,6 +31,7 @@ $comment_pagination = paginate_comments_links(
 	)
 );
 
+
 jankx_template(
 	'comment/template',
 	array(
@@ -43,3 +46,4 @@ jankx_template(
 		),
 	)
 );
+do_action( 'jankx_template_after_list_comments', $comments );
