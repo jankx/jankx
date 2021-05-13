@@ -53,6 +53,8 @@ final class Jankx_Framework {
 				GlobalVariables::set( 'configs', $theme_configs );
 			}
 		}
+		// Disable WordPress theme system and use Jankx theme system
+		add_filter( 'wp_using_themes', '__return_false' );
 	}
 
 	protected function includes() {
