@@ -15,4 +15,4 @@
  * Site header can be modified via feature override templates of WordPress
  * so please don't modify this file to ensure Jankx Framework working is exactly.
  */
-jankx_template( 'sidebar/alt' );
+jankx_template( 'partials/sidebar/alt' );

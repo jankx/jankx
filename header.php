@@ -17,7 +17,7 @@
  */
 
 jankx_template(
-	'header',
+	'partials/header',
 	apply_filters(
 		'jankx_template_header_data',
 		[

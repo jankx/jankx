@@ -39,8 +39,8 @@ if ( has_action( $sidebar_hook ) ) {
 // Load the sidebar template if hook "jankx_sidebar_{$sidebar_name}_content" doesn't have actions
 jankx_template(
 	array(
-		"sidebar/{$sidebar_name}",
-		'sidebar/primary',
+		"partials/sidebar/{$sidebar_name}",
+		'partials/sidebar/primary',
 	),
 	array(
 		'sidebar_name' => $sidebar_name,
