@@ -50,7 +50,9 @@ final class Jankx_Framework {
 			$theme_configs = $yaml->loadFile( $theme_config_file );
 
 			if ( is_array( $theme_configs ) ) {
-				GlobalVariables::set( 'configs', $theme_configs );
+				foreach( $theme_configs as $config => $value ) {
+					GlobalVariables::set( $config, $value, true );
+				}
 			}
 		}
 		// Disable WordPress theme system and use Jankx theme system
