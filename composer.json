@@ -12,6 +12,7 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
-    "jankx/core": "dev-master"
+    "jankx/core": "*",
+    "jankx/widget": "*"
   }
 }
