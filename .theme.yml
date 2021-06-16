@@ -1,3 +1,5 @@
+# Please do not store any SECURE INFORMATIONS in this file
+# This file should be use for public info
 theme:
   name: 'Jankx'
   short_name: 'Jankx'
@@ -7,13 +9,7 @@ plugins:
     required: true
 
 layouts:
-  home: 'fw'
-  page: 'fw'
-  post: 'cs'
-  category: 'cs'
-  tag: 'cs'
-  archive: 'cs'
-  other: 'cs'
+  container_width: 1200
 
 images:
   thumbnail:
