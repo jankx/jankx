@@ -68,6 +68,11 @@ final class Jankx_Framework {
 	}
 	
 	public function active() {
+            $theme = Jankx::theme();
+            $installed = get_option(sprintf('%s_is_installed', $theme->stylesheet));
+
+            do_action('jankx_framework_activation_hook', $installed);
+            do_action("{$theme->stylesheet}_activation_hook", $installed);
 	}
 
 	public function setup_theme() {
