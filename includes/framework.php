@@ -66,8 +66,10 @@ final class Jankx_Framework {
 		add_action( 'after_switch_theme', array( $this, 'active' ));
 		add_action( 'after_setup_theme', array( $this, 'setup_theme' ) );
 	
-		add_filter('has_post_thumbnail', array($this, 'has_post_thumbnail'), 10, 3);
-		add_filter('default_post_metadata', array($this, 'default_post_thumbnail'), 10, 4);
+		if ( wp_is_request( 'frontend' ) ) {
+			add_filter('has_post_thumbnail', array($this, 'has_post_thumbnail'), 10, 3);
+			add_filter('default_post_metadata', array($this, 'default_post_thumbnail'), 10, 4);
+		}
 	}
 
 	public function has_post_thumbnail($has_thumbnail, $post, $thumbnail_id) {
