@@ -8,8 +8,9 @@ plugins:
   woocommerce:
     required: true
 
-layouts:
+layout:
   container_width: 1200
+  footer_sidebars: 1
 
 images:
   thumbnail:
