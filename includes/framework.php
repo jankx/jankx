@@ -5,6 +5,7 @@
 use Jankx\GlobalVariables;
 use Jankx\Yaml\Yaml;
 use Jankx\Option\Option;
+use Jankx\IconFonts;
 
 final class Jankx_Framework {
 	public function __construct() {
@@ -99,6 +100,8 @@ final class Jankx_Framework {
 	}
 
 	public function setup_theme() {
+		// Example added icon font to Jankx framework
+		// IconFonts::add( 'fontawesome5', sprintf('%s/assets/fontawesome-free-5.15.3-web/css/all.css', JANKX_ABSPATH), '5.15.3', 'Fontawesome 5' );
 	}
 }
 
