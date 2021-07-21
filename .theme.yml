@@ -11,6 +11,10 @@ plugins:
 layout:
   container_width: 1200
   footer_sidebars: 1
+  
+ woocommerce:
+  archive_product:
+    page_as_template: false
 
 images:
   thumbnail:
