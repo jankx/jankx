@@ -10,7 +10,12 @@ plugins:
 
 layout:
   container_width: 1200
-  footer_sidebars: 1
+  footer_sidebars: 4
+  breakpoints:
+    tablet: 768
+    landscape_tablet: 992
+    desktop: 1200
+    large_desktop: 1600
   
  woocommerce:
   archive_product:
