@@ -1,5 +1,6 @@
 var smoothScroll = new scrollToSmooth( 'a', {
     targetAttribute: 'href',
+    topOnEmptyHash: false,
     duration: 400,
     durationRelative: false,
     durationMin: false,
