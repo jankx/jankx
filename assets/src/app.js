@@ -1,4 +1,4 @@
-var smoothScroll = new scrollToSmooth( 'a', {
+var smoothScroll = new scrollToSmooth( 'a.jankx-scrollto', {
     targetAttribute: 'href',
     topOnEmptyHash: false,
     duration: 400,
