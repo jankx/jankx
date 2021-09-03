@@ -22,7 +22,7 @@ jankx_template(
 		'jankx_template_header_data',
 		[
 			'current_user' => wp_get_current_user(),
-			'html_class'   => apply_filters('jankx_template_html_class', array('no-js'))
+			'html_class'   => apply_filters('jankx/template/tag/html/classes', array('no-js'))
 		]
 	)
 );
