@@ -44,6 +44,17 @@ final class Jankx_Framework {
 				return Option::get( $optionName, $defaultValue );
 			}
 		}
+		
+		if (! function_exists('jankx_get_asset_url')) {
+		    function jankx_get_asset_url($path = '')
+		    {
+			if (!isset($GLOBALS['jankx_asset_dir_url'])) {
+			    $GLOBALS['jankx_asset_dir_url'] = sprintf('%s/assets', jankx_get_path_url(JANKX_ABSPATH));
+			}
+
+			return sprintf('%s/%s', $GLOBALS['jankx_asset_dir_url'], $path);
+		    }
+		}
 
 		$theme_config_file = sprintf( '%s/.theme.yml', constant( 'JANKX_ABSPATH' ) );
 		if ( file_exists( $theme_config_file ) ) {
