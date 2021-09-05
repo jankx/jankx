@@ -36,3 +36,16 @@ function jankx_sticky_header_detector() {
     header.classList.remove("sticky");
   }
 }
+
+var primaryMenuHasSubItems = document.querySelectorAll('.navigation-primary .show-child');
+if (primaryMenuHasSubItems.length > 0) {
+  for (i=0; i<primaryMenuHasSubItems.length; i++) {
+      primaryMenuHasSubItem = primaryMenuHasSubItems[i];
+      primaryMenuHasSubItem.addEventListener('click', function (e) {
+          currentMenuItem = e.target.findParent('.menu-item');
+          if (currentMenuItem) {
+              currentMenuItem.toggleClass('show-sub');
+          }
+      });
+  }
+}
