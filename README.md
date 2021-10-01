@@ -19,7 +19,7 @@ QUICK LINKS
 
 ## Via Composer package manager
 ```
-composer create-project jankx/jankx
+composer create-project jankx/jankx -s dev
 ```
 
 
