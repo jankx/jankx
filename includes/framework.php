@@ -6,6 +6,7 @@ use Jankx\GlobalVariables;
 use Jankx\Yaml\Yaml;
 use Jankx\Option\Option;
 use Jankx\IconFonts;
+use Jankx\SiteLayout\Menu\Mobile\Slideout;
 
 final class Jankx_Framework {
 	public function __construct() {
@@ -44,7 +45,7 @@ final class Jankx_Framework {
 				return Option::get( $optionName, $defaultValue );
 			}
 		}
-		
+
 		if (! function_exists('jankx_get_asset_url')) {
 		    function jankx_get_asset_url($path = '')
 		    {
@@ -77,7 +78,7 @@ final class Jankx_Framework {
 	protected function init_hooks() {
 		add_action( 'after_switch_theme', array( $this, 'active' ));
 		add_action( 'after_setup_theme', array( $this, 'setup_theme' ) );
-	
+
 		if ( wp_is_request( 'frontend' ) ) {
 			add_filter('has_post_thumbnail', array($this, 'has_post_thumbnail'), 10, 3);
 			add_filter('default_post_metadata', array($this, 'default_post_thumbnail'), 10, 4);
@@ -101,7 +102,7 @@ final class Jankx_Framework {
 		// Return the image ID from WordPress media
 		return 0;
 	}
-	
+
 	public function active() {
             $theme = Jankx::theme();
             $installed = get_option(sprintf('%s_is_installed', $theme->stylesheet));
@@ -113,6 +114,12 @@ final class Jankx_Framework {
 	public function setup_theme() {
 		// Example added icon font to Jankx framework
 		// IconFonts::add( 'fontawesome5', sprintf('%s/assets/fontawesome-free-5.15.3-web/css/all.css', JANKX_ABSPATH), '5.15.3', 'Fontawesome 5' );
+
+		if (wp_is_request('frontend')) {
+			apply_filters('jankx/layout/site/mobile/menu/apply', function(){
+				return Slideout::class;
+			});
+		}
 	}
 }
 
