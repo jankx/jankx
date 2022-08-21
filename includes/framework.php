@@ -3,7 +3,6 @@
  * Jankx Framework
  */
 use Jankx\GlobalVariables;
-use Jankx\Yaml\Yaml;
 use Jankx\Option\Option;
 use Jankx\IconFonts;
 use Jankx\SiteLayout\Menu\Mobile\Slideout;
