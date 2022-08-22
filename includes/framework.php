@@ -34,7 +34,12 @@ final class Jankx_Framework {
 		if ( defined( $name ) ) {
 			return;
 		}
-		define( $name, $value );
+		// Fix the editor warning
+		if ($name === 'JANKX_ABSPATH') {
+			define('JANKX_ABSPATH', $value);
+		} else {
+			define($name, $value);
+		}
 	}
 
 	protected function bootstrap() {
