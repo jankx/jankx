@@ -627,12 +627,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/template-engine.git",
-                "reference": "2f15e0cb42ae97eb94339734ff9f2ae151fc5f80"
+                "reference": "fcf44dfaa01bb7d11d1ded4084a11732819a8c4b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/template-engine/zipball/2f15e0cb42ae97eb94339734ff9f2ae151fc5f80",
-                "reference": "2f15e0cb42ae97eb94339734ff9f2ae151fc5f80",
+                "url": "https://api.github.com/repos/jankx/template-engine/zipball/fcf44dfaa01bb7d11d1ded4084a11732819a8c4b",
+                "reference": "fcf44dfaa01bb7d11d1ded4084a11732819a8c4b",
                 "shasum": ""
             },
             "require": {
@@ -661,7 +661,7 @@
                 "issues": "https://github.com/jankx/template-engine/issues",
                 "source": "https://github.com/jankx/template-engine/tree/master"
             },
-            "time": "2021-08-19T14:17:34+00:00"
+            "time": "2022-10-08T13:26:11+00:00"
         },
         {
             "name": "jankx/widget",
