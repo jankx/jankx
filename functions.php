@@ -1,11 +1,8 @@
 <?php
-/**
- *
- */
-
 require_once __DIR__ . '/includes/framework.php';
 
-function jankx_register_css_and_scripts() {
+function jankx_register_css_and_scripts()
+{
     $jankxCssDeps = array('jankx-base');
     $stylesheetName = Jankx::theme()->get_stylesheet();
 
@@ -32,8 +29,11 @@ function jankx_register_css_and_scripts() {
     $appJsVer = Jankx::theme()->version;
     $appJsName = '';
 
+    $appjs = is_child_theme()
+        ? sprintf('%s/assets/js/app.js', get_stylesheet_directory())
+        : sprintf('%s/js/app.js', $assetDirectory);
 
-    if (file_exists($appjs = sprintf('%s/js/app.js', $assetDirectory))) {
+    if (file_exists($appjs)) {
         $appJsName = 'app';
         $abspath = constant('ABSPATH');
         if (PHP_OS === 'WINNT') {
@@ -49,7 +49,7 @@ function jankx_register_css_and_scripts() {
         );
     }
 
-    add_action('wp_enqueue_scripts', function() use($stylesheetName, $jankxCssDeps, $appJsName){
+    add_action('wp_enqueue_scripts', function () use ($stylesheetName, $jankxCssDeps, $appJsName) {
         $mainStylesheet = apply_filters('jankx_main_stylesheet', $stylesheetName, $jankxCssDeps);
         $mainJs         = apply_filters('jankx_main_js', $appJsName);
 
@@ -62,6 +62,6 @@ function jankx_register_css_and_scripts() {
 }
 
 // Setup theme by yourself
-add_action('init', function(){
-    add_action('wp_enqueue_scripts', 'jankx_register_css_and_scripts', 30);
+add_action('init', function () {
+    add_action('wp_enqueue_scripts', 'jankx_register_css_and_scripts', 5);
 });
