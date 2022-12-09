@@ -48,11 +48,11 @@ return [
     ],
   ],
   'colors' => [
-    'primary_color' => NULL,
-    'secondary' => NULL,
-    'neutral' => NULL,
-    'secondary_contrast' => NULL,
-    'primary_contrast' => NULL,
+    'primary_color' => null,
+    'secondary' => null,
+    'neutral' => null,
+    'secondary_contrast' => null,
+    'primary_contrast' => null,
   ],
   'version' => '1.0.0',
 ];
