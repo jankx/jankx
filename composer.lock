@@ -234,7 +234,7 @@
         },
         {
             "name": "jankx/helpers",
-            "version": "dev-master",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/helpers.git",
@@ -246,7 +246,6 @@
                 "reference": "c09d54291f778eb5aaa84631417fefb48c20f133",
                 "shasum": ""
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "files": [
@@ -269,7 +268,7 @@
             "description": "The helpers for Jankx Framework",
             "support": {
                 "issues": "https://github.com/jankx/helpers/issues",
-                "source": "https://github.com/jankx/helpers/tree/master"
+                "source": "https://github.com/jankx/helpers/tree/1.0.0"
             },
             "time": "2022-01-30T16:41:56+00:00"
         },
