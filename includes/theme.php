@@ -4,8 +4,8 @@
  */
 return [
   'theme' => [
-    'name' => 'Buu Lien',
-    'short_name' => 'Buu Lien',
+    'name' => 'Jankx Framework',
+    'short_name' => 'Jankx Framework',
   ],
   'plugins' => [
     'woocommerce' => [
