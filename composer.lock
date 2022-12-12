@@ -138,12 +138,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/component.git",
-                "reference": "315f074e09847c8ead4fabed970e4e78ef16efcb"
+                "reference": "3ed658285b92861f7b36baa1134a1914cbed88ca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/component/zipball/315f074e09847c8ead4fabed970e4e78ef16efcb",
-                "reference": "315f074e09847c8ead4fabed970e4e78ef16efcb",
+                "url": "https://api.github.com/repos/jankx/component/zipball/3ed658285b92861f7b36baa1134a1914cbed88ca",
+                "reference": "3ed658285b92861f7b36baa1134a1914cbed88ca",
                 "shasum": ""
             },
             "require": {
@@ -172,7 +172,7 @@
                 "issues": "https://github.com/jankx/component/issues",
                 "source": "https://github.com/jankx/component/tree/master"
             },
-            "time": "2022-08-21T14:55:48+00:00"
+            "time": "2022-12-12T00:50:47+00:00"
         },
         {
             "name": "jankx/core",
@@ -585,12 +585,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/template.git",
-                "reference": "13972af86a8941d7459141aaef5159799f01103d"
+                "reference": "34a84fb36cc947a69cd1c016257de87ca62d1dcf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/template/zipball/13972af86a8941d7459141aaef5159799f01103d",
-                "reference": "13972af86a8941d7459141aaef5159799f01103d",
+                "url": "https://api.github.com/repos/jankx/template/zipball/34a84fb36cc947a69cd1c016257de87ca62d1dcf",
+                "reference": "34a84fb36cc947a69cd1c016257de87ca62d1dcf",
                 "shasum": ""
             },
             "require": {
@@ -618,7 +618,7 @@
                 "issues": "https://github.com/jankx/template/issues",
                 "source": "https://github.com/jankx/template/tree/master"
             },
-            "time": "2022-08-20T09:57:09+00:00"
+            "time": "2022-12-11T21:07:43+00:00"
         },
         {
             "name": "jankx/template-engine",
