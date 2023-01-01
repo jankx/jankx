@@ -180,12 +180,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/core.git",
-                "reference": "c00553e6918d7711fb2b80032fb6fc4c6738bc6b"
+                "reference": "dcf7754fb0d6cb180e8488f1911372783b915a66"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/core/zipball/c00553e6918d7711fb2b80032fb6fc4c6738bc6b",
-                "reference": "c00553e6918d7711fb2b80032fb6fc4c6738bc6b",
+                "url": "https://api.github.com/repos/jankx/core/zipball/dcf7754fb0d6cb180e8488f1911372783b915a66",
+                "reference": "dcf7754fb0d6cb180e8488f1911372783b915a66",
                 "shasum": ""
             },
             "require": {
@@ -230,7 +230,7 @@
                 "issues": "https://github.com/jankx/core/issues",
                 "source": "https://github.com/jankx/core/tree/master"
             },
-            "time": "2022-12-25T03:53:07+00:00"
+            "time": "2023-01-01T04:30:22+00:00"
         },
         {
             "name": "jankx/helpers",
@@ -461,12 +461,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/post-layout.git",
-                "reference": "fcdf1665a754a977ff9bd156882451c87522e3df"
+                "reference": "231b8f46d6f091a2baac90847f4f4ddfbd799372"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/post-layout/zipball/fcdf1665a754a977ff9bd156882451c87522e3df",
-                "reference": "fcdf1665a754a977ff9bd156882451c87522e3df",
+                "url": "https://api.github.com/repos/jankx/post-layout/zipball/231b8f46d6f091a2baac90847f4f4ddfbd799372",
+                "reference": "231b8f46d6f091a2baac90847f4f4ddfbd799372",
                 "shasum": ""
             },
             "require": {
@@ -496,7 +496,7 @@
                 "issues": "https://github.com/jankx/post-layout/issues",
                 "source": "https://github.com/jankx/post-layout/tree/master"
             },
-            "time": "2022-12-26T04:56:24+00:00"
+            "time": "2023-01-01T04:27:56+00:00"
         },
         {
             "name": "jankx/seo",
