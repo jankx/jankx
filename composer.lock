@@ -581,22 +581,21 @@
         },
         {
             "name": "jankx/template",
-            "version": "dev-master",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/template.git",
-                "reference": "34a84fb36cc947a69cd1c016257de87ca62d1dcf"
+                "reference": "090e6ae95d5e2014b1d16dc9191a378431d45fb2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/template/zipball/34a84fb36cc947a69cd1c016257de87ca62d1dcf",
-                "reference": "34a84fb36cc947a69cd1c016257de87ca62d1dcf",
+                "url": "https://api.github.com/repos/jankx/template/zipball/090e6ae95d5e2014b1d16dc9191a378431d45fb2",
+                "reference": "090e6ae95d5e2014b1d16dc9191a378431d45fb2",
                 "shasum": ""
             },
             "require": {
                 "jankx/template-engine": "*"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -616,9 +615,9 @@
             "description": "Jankx Template is used to load the template support override, caching.",
             "support": {
                 "issues": "https://github.com/jankx/template/issues",
-                "source": "https://github.com/jankx/template/tree/master"
+                "source": "https://github.com/jankx/template/tree/1.0.0"
             },
-            "time": "2022-12-11T21:07:43+00:00"
+            "time": "2023-01-02T04:43:11+00:00"
         },
         {
             "name": "jankx/template-engine",
