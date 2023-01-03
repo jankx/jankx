@@ -180,12 +180,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/core.git",
-                "reference": "dcf7754fb0d6cb180e8488f1911372783b915a66"
+                "reference": "a6a4f9824fb7d7e50cfd03c97aed0f058d88bc2f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/core/zipball/dcf7754fb0d6cb180e8488f1911372783b915a66",
-                "reference": "dcf7754fb0d6cb180e8488f1911372783b915a66",
+                "url": "https://api.github.com/repos/jankx/core/zipball/a6a4f9824fb7d7e50cfd03c97aed0f058d88bc2f",
+                "reference": "a6a4f9824fb7d7e50cfd03c97aed0f058d88bc2f",
                 "shasum": ""
             },
             "require": {
@@ -193,14 +193,14 @@
                 "jankx/asset": "*",
                 "jankx/command": "*",
                 "jankx/component": "*",
-                "jankx/helpers": "*",
+                "jankx/helpers": "^1.0.0",
                 "jankx/languages": "*",
                 "jankx/option": "*",
                 "jankx/pagination": "*",
                 "jankx/post-layout": "*",
                 "jankx/seo": "*",
                 "jankx/site-layout": "*",
-                "jankx/template": "*",
+                "jankx/template": "^1.0.0",
                 "jankx/widget": "*",
                 "jankx/wordpress-specs": "*"
             },
@@ -230,7 +230,7 @@
                 "issues": "https://github.com/jankx/core/issues",
                 "source": "https://github.com/jankx/core/tree/master"
             },
-            "time": "2023-01-01T04:30:22+00:00"
+            "time": "2023-01-03T03:14:16+00:00"
         },
         {
             "name": "jankx/helpers",
@@ -585,12 +585,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/template.git",
-                "reference": "090e6ae95d5e2014b1d16dc9191a378431d45fb2"
+                "reference": "37be9394b4fdd82bee6da9c40cdd7aa64061041a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/template/zipball/090e6ae95d5e2014b1d16dc9191a378431d45fb2",
-                "reference": "090e6ae95d5e2014b1d16dc9191a378431d45fb2",
+                "url": "https://api.github.com/repos/jankx/template/zipball/37be9394b4fdd82bee6da9c40cdd7aa64061041a",
+                "reference": "37be9394b4fdd82bee6da9c40cdd7aa64061041a",
                 "shasum": ""
             },
             "require": {
@@ -617,7 +617,7 @@
                 "issues": "https://github.com/jankx/template/issues",
                 "source": "https://github.com/jankx/template/tree/1.0.0"
             },
-            "time": "2023-01-02T04:43:11+00:00"
+            "time": "2023-01-03T03:10:13+00:00"
         },
         {
             "name": "jankx/template-engine",
