@@ -9,6 +9,8 @@ use Jankx\SiteLayout\Menu\Mobile\Slideout;
 
 final class Jankx_Framework
 {
+    protected $supportHomePagination = false;
+
     public function __construct()
     {
         $loaded = $this->load_composer();
@@ -95,6 +97,35 @@ final class Jankx_Framework
             add_filter('has_post_thumbnail', array($this, 'has_post_thumbnail'), 10, 3);
             add_filter('default_post_metadata', array($this, 'default_post_thumbnail'), 10, 4);
         }
+        add_action('init', [$this, 'init']);
+    }
+
+    public function init() {
+        if (get_option('show_on_front') === 'posts') {
+            $this->rewriteRules();
+        }
+    }
+
+
+    /**
+     * @param \WP_Post[] $posts
+     * @param \WP_Query $query
+     */
+    public function supportHomePagePaginate($posts, $query) {
+        if ($this->supportHomePagination  && $query->is_home() && $query->get('paged') > 1 && $query->is_main_query() && empty($posts)) {
+            $posts = [new \WP_Post(new stdClass)];
+        }
+        return $posts;
+    }
+
+    protected function rewriteRules() {
+        add_rewrite_rule(
+            '^/page/([0-9]{1,})/?$',
+            'index.php?paged=$matches[1]&p=1',
+            'top'
+        );
+        $this->supportHomePagination = true;
+        add_filter('posts_results', [$this, 'supportHomePagePaginate'], 10, 2);
     }
 
     public function has_post_thumbnail($has_thumbnail, $post, $thumbnail_id)
