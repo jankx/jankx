@@ -180,12 +180,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/core.git",
-                "reference": "a6a4f9824fb7d7e50cfd03c97aed0f058d88bc2f"
+                "reference": "3a69a4deb309f35636c4d09adb8e704db218a234"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/core/zipball/a6a4f9824fb7d7e50cfd03c97aed0f058d88bc2f",
-                "reference": "a6a4f9824fb7d7e50cfd03c97aed0f058d88bc2f",
+                "url": "https://api.github.com/repos/jankx/core/zipball/3a69a4deb309f35636c4d09adb8e704db218a234",
+                "reference": "3a69a4deb309f35636c4d09adb8e704db218a234",
                 "shasum": ""
             },
             "require": {
@@ -230,7 +230,7 @@
                 "issues": "https://github.com/jankx/core/issues",
                 "source": "https://github.com/jankx/core/tree/master"
             },
-            "time": "2023-01-03T03:14:16+00:00"
+            "time": "2023-01-07T04:26:27+00:00"
         },
         {
             "name": "jankx/helpers",
