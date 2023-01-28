@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "823bf70e9649cc6e4335a763f97b76d0",
+    "content-hash": "996bc84759e10d148b5a717a03b14376",
     "packages": [
         {
             "name": "jankx/admin",
@@ -231,6 +231,44 @@
                 "source": "https://github.com/jankx/core/tree/master"
             },
             "time": "2023-01-18T04:34:49+00:00"
+        },
+        {
+            "name": "jankx/gutenberg",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jankx/gutenberg.git",
+                "reference": "5fea53db9cc2aa32116060a9fb40002f676bbc36"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jankx/gutenberg/zipball/5fea53db9cc2aa32116060a9fb40002f676bbc36",
+                "reference": "5fea53db9cc2aa32116060a9fb40002f676bbc36",
+                "shasum": ""
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jankx\\Gutenberg\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Puleeno Nguyen",
+                    "email": "puleeno@gmail.com"
+                }
+            ],
+            "description": "The Block Editor extension for WordPress and beyond",
+            "support": {
+                "issues": "https://github.com/jankx/gutenberg/issues",
+                "source": "https://github.com/jankx/gutenberg/tree/master"
+            },
+            "time": "2023-01-28T17:12:59+00:00"
         },
         {
             "name": "jankx/helpers",
