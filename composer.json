@@ -13,6 +13,7 @@
   "prefer-stable": true,
   "require": {
     "jankx/core": "*",
+    "jankx/gutenberg": "*",
     "jankx/widget": "*"
   }
 }
