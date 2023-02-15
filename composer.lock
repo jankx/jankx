@@ -180,12 +180,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/core.git",
-                "reference": "c84ad9887eed8503a138ee7574b9cb948855ca1f"
+                "reference": "52e162ae2f60dd6b6a18e632bdc578ac7e4687bd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/core/zipball/c84ad9887eed8503a138ee7574b9cb948855ca1f",
-                "reference": "c84ad9887eed8503a138ee7574b9cb948855ca1f",
+                "url": "https://api.github.com/repos/jankx/core/zipball/52e162ae2f60dd6b6a18e632bdc578ac7e4687bd",
+                "reference": "52e162ae2f60dd6b6a18e632bdc578ac7e4687bd",
                 "shasum": ""
             },
             "require": {
@@ -230,7 +230,7 @@
                 "issues": "https://github.com/jankx/core/issues",
                 "source": "https://github.com/jankx/core/tree/master"
             },
-            "time": "2023-01-18T04:34:49+00:00"
+            "time": "2023-02-15T04:46:28+00:00"
         },
         {
             "name": "jankx/gutenberg",
@@ -499,12 +499,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/post-layout.git",
-                "reference": "27f59d5c8f49ee58721ee5a3337620c0de32915c"
+                "reference": "66a3f69ef6b117b00dadd3d14f28552fda7679ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/post-layout/zipball/27f59d5c8f49ee58721ee5a3337620c0de32915c",
-                "reference": "27f59d5c8f49ee58721ee5a3337620c0de32915c",
+                "url": "https://api.github.com/repos/jankx/post-layout/zipball/66a3f69ef6b117b00dadd3d14f28552fda7679ec",
+                "reference": "66a3f69ef6b117b00dadd3d14f28552fda7679ec",
                 "shasum": ""
             },
             "require": {
@@ -534,7 +534,7 @@
                 "issues": "https://github.com/jankx/post-layout/issues",
                 "source": "https://github.com/jankx/post-layout/tree/master"
             },
-            "time": "2023-01-18T04:29:34+00:00"
+            "time": "2023-02-15T04:48:39+00:00"
         },
         {
             "name": "jankx/seo",
@@ -663,12 +663,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/template-engine.git",
-                "reference": "a38978dbf3f15be7773b700bd625ab0fbe6ba059"
+                "reference": "6be7051a497ef9855d04455f19ab5a24a602dcb2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/template-engine/zipball/a38978dbf3f15be7773b700bd625ab0fbe6ba059",
-                "reference": "a38978dbf3f15be7773b700bd625ab0fbe6ba059",
+                "url": "https://api.github.com/repos/jankx/template-engine/zipball/6be7051a497ef9855d04455f19ab5a24a602dcb2",
+                "reference": "6be7051a497ef9855d04455f19ab5a24a602dcb2",
                 "shasum": ""
             },
             "require": {
@@ -697,7 +697,7 @@
                 "issues": "https://github.com/jankx/template-engine/issues",
                 "source": "https://github.com/jankx/template-engine/tree/master"
             },
-            "time": "2022-12-30T07:04:47+00:00"
+            "time": "2023-02-12T10:22:04+00:00"
         },
         {
             "name": "jankx/widget",
