@@ -499,12 +499,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/post-layout.git",
-                "reference": "66a3f69ef6b117b00dadd3d14f28552fda7679ec"
+                "reference": "b7c04ec24d3b64304a4ab0a568778492bad88b64"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/post-layout/zipball/66a3f69ef6b117b00dadd3d14f28552fda7679ec",
-                "reference": "66a3f69ef6b117b00dadd3d14f28552fda7679ec",
+                "url": "https://api.github.com/repos/jankx/post-layout/zipball/b7c04ec24d3b64304a4ab0a568778492bad88b64",
+                "reference": "b7c04ec24d3b64304a4ab0a568778492bad88b64",
                 "shasum": ""
             },
             "require": {
@@ -534,7 +534,7 @@
                 "issues": "https://github.com/jankx/post-layout/issues",
                 "source": "https://github.com/jankx/post-layout/tree/master"
             },
-            "time": "2023-02-15T04:48:39+00:00"
+            "time": "2023-02-17T23:05:36+00:00"
         },
         {
             "name": "jankx/seo",
