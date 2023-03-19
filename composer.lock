@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "996bc84759e10d148b5a717a03b14376",
+    "content-hash": "7f844b8df914847bf07e2c18e0ccecc9",
     "packages": [
         {
             "name": "jankx/admin",
@@ -349,6 +349,44 @@
                 "source": "https://github.com/jankx/languages/tree/master"
             },
             "time": "2022-08-22T00:15:32+00:00"
+        },
+        {
+            "name": "jankx/menu-builder",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jankx/menu-builder.git",
+                "reference": "c8ec09a4d861dc15901a01f441ecf6d7695dd0bb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jankx/menu-builder/zipball/c8ec09a4d861dc15901a01f441ecf6d7695dd0bb",
+                "reference": "c8ec09a4d861dc15901a01f441ecf6d7695dd0bb",
+                "shasum": ""
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jankx\\Builder\\Menu\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "Puleeno Nguyen",
+                    "email": "puleeno@gmail.com"
+                }
+            ],
+            "description": "The menu style and layout builder for Jankx framework",
+            "support": {
+                "issues": "https://github.com/jankx/menu-builder/issues",
+                "source": "https://github.com/jankx/menu-builder/tree/master"
+            },
+            "time": "2023-03-19T09:27:16+00:00"
         },
         {
             "name": "jankx/option",
@@ -781,7 +819,9 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "jankx/menu-builder": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": [],
