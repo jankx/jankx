@@ -1,2 +1,24 @@
 {
+    "layouts": {
+        "default": {
+            "name": "jankx-cs",
+            "widescreen": false
+        },
+        "home": {
+            "name": "jankx-fw",
+            "widescreen": false
+        },
+        "page": {
+            "name": "jankx-fw",
+            "widescreen": false
+        },
+        "single": {
+            "name": "jankx-cs",
+            "widescreen": false
+        },
+        "archive": {
+            "name": "jankx-cs",
+            "widescreen": false
+        }
+    }
 }
