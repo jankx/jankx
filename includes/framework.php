@@ -69,17 +69,6 @@ final class Jankx_Framework
                 return sprintf('%s/%s', $GLOBALS['jankx_asset_dir_url'], $path);
             }
         }
-
-        $theme_config_file = sprintf('%s/includes/theme.php', constant('JANKX_ABSPATH'));
-        if (file_exists($theme_config_file)) {
-            $theme_configs = include $theme_config_file;
-
-            if (is_array($theme_configs)) {
-                foreach ($theme_configs as $config => $value) {
-                    GlobalVariables::set($config, $value, true);
-                }
-            }
-        }
         // Disable WordPress theme system and use Jankx theme system
         add_filter('wp_using_themes', '__return_false');
     }
