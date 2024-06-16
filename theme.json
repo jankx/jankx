@@ -1,4 +1,11 @@
 {
+    "site": {
+        "layout": {
+            "footer" {
+                "sidebars": 4
+            }
+        }
+    },
     "layouts": {
         "default": {
             "name": "jankx-cs",
