@@ -1,7 +1,7 @@
 {
     "site": {
         "layout": {
-            "footer" {
+            "footer": {
                 "sidebars": 4
             }
         }
