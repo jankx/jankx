@@ -2,9 +2,7 @@
 /**
  * Jankx Framework
  */
-use Jankx\GlobalVariables;
-use Jankx\Option\Option;
-use Jankx\IconFonts;
+use Jankx\Option;
 use Jankx\SiteLayout\Menu\Mobile\Slideout;
 
 final class Jankx_Framework
