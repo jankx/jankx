@@ -66,3 +66,12 @@ function jankx_register_css_and_scripts()
 add_action('init', function () {
     add_action('wp_enqueue_scripts', 'jankx_register_css_and_scripts', 5);
 });
+
+add_action('wp', function(){
+    add_filter('jankx/gutenberg/enabled', function($enabled){
+        if (is_single()) {
+            return in_array(get_post_type(), ['product', 'page', 'post']);
+        }
+        return $enabled;
+    });
+});
