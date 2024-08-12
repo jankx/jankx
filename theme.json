@@ -1,4 +1,4 @@
-{
+    {
     "name": "Jankx Framework",
     "short_name": "Jankx",
     "site": {
@@ -28,6 +28,11 @@
         "archive": {
             "name": "jankx-cs",
             "widescreen": false
+        }
+    },
+    "customs": {
+        "thumbnail": {
+            "default": "template::assets/img/no-image.svg"
         }
     }
 }
