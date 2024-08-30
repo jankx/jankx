@@ -8,7 +8,7 @@ QUICK LINKS
 [Documentation](https://jankx.github.io)
 
 # Requirements
-- PHP: >= 5.6
+- PHP: >= 7.1
 
 # Main features
 
