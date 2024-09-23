@@ -14,7 +14,6 @@
   "require": {
     "jankx/core": "*",
     "jankx/gutenberg": "*",
-    "jankx/widget": "*",
-    "jankx/menu-builder": "dev-master"
+    "jankx/widget": "*"
   }
 }
