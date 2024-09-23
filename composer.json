@@ -15,5 +15,15 @@
     "jankx/core": "*",
     "jankx/gutenberg": "*",
     "jankx/widget": "*"
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  },
+  "require-dev": {
+    "dealerdirect/phpcodesniffer-composer-installer": "^0.7",
+    "phpcompatibility/phpcompatibility-wp": "*",
+    "wptrt/wpthemereview": "*"
   }
 }
