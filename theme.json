@@ -1,38 +1,38 @@
     {
     "name": "Jankx Framework",
     "short_name": "Jankx",
-    "site": {
-        "layout": {
-            "footer": {
-                "sidebars": 4
-            }
-        }
-    },
-    "layouts": {
-        "default": {
-            "name": "jankx-cs",
-            "widescreen": false
-        },
-        "home": {
-            "name": "jankx-fw",
-            "widescreen": false
-        },
-        "page": {
-            "name": "jankx-fw",
-            "widescreen": false
-        },
-        "single": {
-            "name": "jankx-cs",
-            "widescreen": false
-        },
-        "archive": {
-            "name": "jankx-cs",
-            "widescreen": false
-        }
-    },
     "customs": {
         "thumbnail": {
             "default": "template::assets/img/no-image.svg"
-        }
+        },
+        "layouts": {
+            "default": {
+                "name": "jankx-cs",
+                "widescreen": false
+            },
+            "home": {
+                "name": "jankx-fw",
+                "widescreen": false
+            },
+            "page": {
+                "name": "jankx-fw",
+                "widescreen": false
+            },
+            "single": {
+                "name": "jankx-cs",
+                "widescreen": false
+            },
+            "archive": {
+                "name": "jankx-cs",
+                "widescreen": false
+            }
+        },
+        "site": {
+            "layout": {
+                "footer": {
+                    "sidebars": 4
+                }
+            }
+        },
     }
 }
