@@ -27,12 +27,10 @@
                 "widescreen": false
             }
         },
-        "site": {
-            "layout": {
-                "footer": {
-                    "sidebars": 4
-                }
+        "layout": {
+            "footer": {
+                "sidebars": 4
             }
-        },
+        }
     }
 }
