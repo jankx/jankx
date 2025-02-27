@@ -30,6 +30,11 @@
         "layout": {
             "footer": {
                 "sidebars": 4
+            },
+            "menu": {
+                "secondary": {
+                    "enable": false
+                }
             }
         }
     }
