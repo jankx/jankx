@@ -33,7 +33,8 @@
             },
             "menu": {
                 "secondary": {
-                    "enable": false
+                    "enable": false,
+                    "sticky": false
                 }
             }
         }
