@@ -41,10 +41,16 @@ function jankx_register_css_and_scripts()
             $abspath = str_replace('\\', '/', $abspath);
             $appjs = str_replace('\\', '/', $appjs);
         }
+
+        $jankxJsDeps = ['jankx-common', 'scroll-to-smooth'];
+        if (apply_filters('jankx/tool/livereload/enabled', constant('JANKX_LIVERELOAD'))) {
+            $bucket->js('livereload', 'http://localhost:35729/livereload.js', [], '3.0.2');
+            $jankxJsDeps[] = 'livereload';
+        }
         js(
             $appJsName,
             str_replace($abspath, site_url('/'), $appjs),
-            apply_filters('jankx_asset_js_dependences', array('jankx-common', 'scroll-to-smooth')),
+            apply_filters('jankx_asset_js_dependences', $jankxJsDeps),
             $appJsVer,
             true
         );
