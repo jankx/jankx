@@ -36,6 +36,9 @@
                     "enable": false,
                     "sticky": false
                 }
+            },
+            "woocommerce": {
+                "product": "default"
             }
         }
     }
