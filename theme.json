@@ -25,6 +25,10 @@
             "archive": {
                 "name": "jankx-cs",
                 "widescreen": false
+            },
+            "not_found": {
+                "name": "jankx-fw",
+                "widescreen": true
             }
         },
         "layout": {
