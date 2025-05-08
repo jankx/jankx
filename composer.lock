@@ -529,12 +529,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/polyfills.git",
-                "reference": "51efdc8d54201349dc655783b53d41c8983f6c29"
+                "reference": "39893ef5095acacf060d89afd79f45e44cc96b64"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/polyfills/zipball/51efdc8d54201349dc655783b53d41c8983f6c29",
-                "reference": "51efdc8d54201349dc655783b53d41c8983f6c29",
+                "url": "https://api.github.com/repos/jankx/polyfills/zipball/39893ef5095acacf060d89afd79f45e44cc96b64",
+                "reference": "39893ef5095acacf060d89afd79f45e44cc96b64",
                 "shasum": ""
             },
             "default-branch": true,
@@ -562,7 +562,7 @@
                 "issues": "https://github.com/jankx/polyfills/issues",
                 "source": "https://github.com/jankx/polyfills/tree/master"
             },
-            "time": "2025-05-08T01:33:22+00:00"
+            "time": "2025-05-08T02:19:13+00:00"
         },
         {
             "name": "jankx/post-layout",
