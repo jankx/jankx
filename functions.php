@@ -43,7 +43,7 @@ function jankx_register_css_and_scripts()
         }
 
         $jankxJsDeps = ['jankx-common', 'scroll-to-smooth'];
-        if (apply_filters('jankx/tool/livereload/enabled', constant('JANKX_LIVERELOAD'))) {
+        if (defined('JANKX_LIVERELOAD') && apply_filters('jankx/tool/livereload/enabled', constant('JANKX_LIVERELOAD'))) {
             $bucket->js('livereload', 'http://localhost:35729/livereload.js', [], '3.0.2');
             $jankxJsDeps[] = 'livereload';
         }
