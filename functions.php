@@ -9,15 +9,17 @@ function jankx_register_css_and_scripts()
     $stylesheetName = Jankx::theme()->get_stylesheet();
     // var_dump($stylesheetName);
     // die;
-    $jankxTemplate = wp_get_theme(Jankx::templateStylesheet());
+    $stylesheetTheme = wp_get_theme(Jankx::templateStylesheet());
     if (is_child_theme() && apply_filters('jankx/styles/includes/main', true)) {
+        $templateTheme = wp_get_theme($stylesheetTheme->get_template());
         $stylesheetUri = sprintf('%s/style.css', get_template_directory_uri());
-        $jankxCssDeps[] = $jankxTemplate->get_template();
+        $jankxCssDeps[] = $templateTheme->get_stylesheet();
+
         css(
-            $jankxTemplate->get_stylesheet(),
+            $templateTheme->get_stylesheet(),
             $stylesheetUri,
             array(),
-            $jankxTemplate->version
+            $templateTheme->version
         );
     }
 

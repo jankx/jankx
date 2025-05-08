@@ -1,7 +1,9 @@
 <?php
+
 /**
  * Jankx Framework
  */
+
 use Jankx\Option;
 use Jankx\SiteLayout\Menu\Mobile\Slideout;
 
@@ -87,7 +89,8 @@ final class Jankx_Framework
         add_action('init', [$this, 'init']);
     }
 
-    public function init() {
+    public function init()
+    {
         if (get_option('show_on_front') === 'posts') {
             $this->rewriteRules();
         }
@@ -98,14 +101,16 @@ final class Jankx_Framework
      * @param \WP_Post[] $posts
      * @param \WP_Query $query
      */
-    public function supportHomePagePaginate($posts, $query) {
+    public function supportHomePagePaginate($posts, $query)
+    {
         if ($this->supportHomePagination  && $query->is_home() && $query->get('paged') > 1 && $query->is_main_query() && empty($posts)) {
-            $posts = [new \WP_Post(new stdClass)];
+            $posts = [new \WP_Post(new stdClass())];
         }
         return $posts;
     }
 
-    protected function rewriteRules() {
+    protected function rewriteRules()
+    {
         add_rewrite_rule(
             '^/page/([0-9]{1,})/?$',
             'index.php?paged=$matches[1]&p=1',
