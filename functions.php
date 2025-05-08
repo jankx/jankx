@@ -7,12 +7,12 @@ function jankx_register_css_and_scripts()
 {
     $jankxCssDeps = array('jankx-base');
     $stylesheetName = Jankx::theme()->get_stylesheet();
+    // var_dump($stylesheetName);
+    // die;
     $jankxTemplate = wp_get_theme(Jankx::templateStylesheet());
-
     if (is_child_theme() && apply_filters('jankx/styles/includes/main', true)) {
         $stylesheetUri = sprintf('%s/style.css', get_template_directory_uri());
-        $jankxCssDeps[] = $jankxTemplate->get_stylesheet();
-
+        $jankxCssDeps[] = $jankxTemplate->get_template();
         css(
             $jankxTemplate->get_stylesheet(),
             $stylesheetUri,
