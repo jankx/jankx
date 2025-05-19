@@ -98,3 +98,9 @@ function jankx_get_font_icon_prefix($groupName = null) {
     }
     return 'jkx-';
 }
+
+
+function jankx_get_font_icon($name)
+{
+    return sprintf('%s%s', jankx_get_font_icon_prefix(), $name);
+}
