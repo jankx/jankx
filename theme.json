@@ -44,6 +44,14 @@
             "woocommerce": {
                 "product": "default"
             }
+        },
+        "woocommerce": {
+            "product": {
+                "sidebar": true
+            },
+            "sales": {
+                "flash_percent": true
+            }
         }
     }
 }
