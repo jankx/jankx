@@ -88,13 +88,3 @@ add_action('wp', function(){
         return $enabled;
     });
 });
-
-/**
-* Use this prefix for global
-*/
-function jankx_get_font_icon_prefix($groupName = null) {
-    if (!empty($groupName)) {
-        return apply_filters("jankx/font-icons/{$groupName}/prefix", $groupName);
-    }
-    return 'jkx-';
-}

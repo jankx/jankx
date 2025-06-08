@@ -142,12 +142,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/core.git",
-                "reference": "a52e50dbfa2124015008f8bea34c9d0e8fc5f9e3"
+                "reference": "cb29fffe9bdbf0327cfb9cceb9be2fe8bb96146f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/core/zipball/a52e50dbfa2124015008f8bea34c9d0e8fc5f9e3",
-                "reference": "a52e50dbfa2124015008f8bea34c9d0e8fc5f9e3",
+                "url": "https://api.github.com/repos/jankx/core/zipball/cb29fffe9bdbf0327cfb9cceb9be2fe8bb96146f",
+                "reference": "cb29fffe9bdbf0327cfb9cceb9be2fe8bb96146f",
                 "shasum": ""
             },
             "require": {
@@ -202,7 +202,7 @@
                 "issues": "https://github.com/jankx/core/issues",
                 "source": "https://github.com/jankx/core/tree/master"
             },
-            "time": "2025-05-08T01:31:51+00:00"
+            "time": "2025-06-08T14:47:53+00:00"
         },
         {
             "name": "jankx/dashboard-framework",
@@ -251,12 +251,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/gutenberg.git",
-                "reference": "a6bfda695a45b8a5974761933643ecc638a5aa22"
+                "reference": "e99de9e3c1d6b3d457dddc18b751bb77ff38449b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/gutenberg/zipball/a6bfda695a45b8a5974761933643ecc638a5aa22",
-                "reference": "a6bfda695a45b8a5974761933643ecc638a5aa22",
+                "url": "https://api.github.com/repos/jankx/gutenberg/zipball/e99de9e3c1d6b3d457dddc18b751bb77ff38449b",
+                "reference": "e99de9e3c1d6b3d457dddc18b751bb77ff38449b",
                 "shasum": ""
             },
             "require": {
@@ -287,7 +287,7 @@
                 "issues": "https://github.com/jankx/gutenberg/issues",
                 "source": "https://github.com/jankx/gutenberg/tree/master"
             },
-            "time": "2025-02-27T17:35:13+00:00"
+            "time": "2025-06-04T14:33:25+00:00"
         },
         {
             "name": "jankx/helpers",
@@ -570,12 +570,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/post-layout.git",
-                "reference": "7d3d7869894a0067928b3c931c06aa38032ebc82"
+                "reference": "582115904bad11133ca03b12860b2ecb5212c3e8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/post-layout/zipball/7d3d7869894a0067928b3c931c06aa38032ebc82",
-                "reference": "7d3d7869894a0067928b3c931c06aa38032ebc82",
+                "url": "https://api.github.com/repos/jankx/post-layout/zipball/582115904bad11133ca03b12860b2ecb5212c3e8",
+                "reference": "582115904bad11133ca03b12860b2ecb5212c3e8",
                 "shasum": ""
             },
             "require": {
@@ -605,7 +605,7 @@
                 "issues": "https://github.com/jankx/post-layout/issues",
                 "source": "https://github.com/jankx/post-layout/tree/master"
             },
-            "time": "2025-04-12T02:21:38+00:00"
+            "time": "2025-06-06T14:56:43+00:00"
         },
         {
             "name": "jankx/site-layout",
@@ -613,12 +613,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/site-layout.git",
-                "reference": "7d7c0ef06871a20cbec3f0a93f85c74df3071d2c"
+                "reference": "bcc63bae884ed699c62cdfedc94f3c4049cc9a0a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/site-layout/zipball/7d7c0ef06871a20cbec3f0a93f85c74df3071d2c",
-                "reference": "7d7c0ef06871a20cbec3f0a93f85c74df3071d2c",
+                "url": "https://api.github.com/repos/jankx/site-layout/zipball/bcc63bae884ed699c62cdfedc94f3c4049cc9a0a",
+                "reference": "bcc63bae884ed699c62cdfedc94f3c4049cc9a0a",
                 "shasum": ""
             },
             "require": {
@@ -647,7 +647,7 @@
                 "issues": "https://github.com/jankx/site-layout/issues",
                 "source": "https://github.com/jankx/site-layout/tree/master"
             },
-            "time": "2025-04-01T01:02:20+00:00"
+            "time": "2025-06-06T13:52:55+00:00"
         },
         {
             "name": "jankx/template",
@@ -737,12 +737,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/widget.git",
-                "reference": "4a409c67e702cb5473704320368c303bd76ae7fd"
+                "reference": "855cfce1cae3e6cecad0af577c77ed68a2971bd9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/widget/zipball/4a409c67e702cb5473704320368c303bd76ae7fd",
-                "reference": "4a409c67e702cb5473704320368c303bd76ae7fd",
+                "url": "https://api.github.com/repos/jankx/widget/zipball/855cfce1cae3e6cecad0af577c77ed68a2971bd9",
+                "reference": "855cfce1cae3e6cecad0af577c77ed68a2971bd9",
                 "shasum": ""
             },
             "require": {
@@ -770,7 +770,7 @@
                 "issues": "https://github.com/jankx/widget/issues",
                 "source": "https://github.com/jankx/widget/tree/master"
             },
-            "time": "2025-03-10T03:13:53+00:00"
+            "time": "2025-06-06T14:57:11+00:00"
         },
         {
             "name": "jankx/wordpress-specs",
@@ -1970,21 +1970,22 @@
         },
         {
             "name": "phpcompatibility/phpcompatibility-wp",
-            "version": "2.1.6",
+            "version": "2.1.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCompatibility/PHPCompatibilityWP.git",
-                "reference": "80ccb1a7640995edf1b87a4409fa584cd5869469"
+                "reference": "5bfbbfbabb3df2b9a83e601de9153e4a7111962c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCompatibility/PHPCompatibilityWP/zipball/80ccb1a7640995edf1b87a4409fa584cd5869469",
-                "reference": "80ccb1a7640995edf1b87a4409fa584cd5869469",
+                "url": "https://api.github.com/repos/PHPCompatibility/PHPCompatibilityWP/zipball/5bfbbfbabb3df2b9a83e601de9153e4a7111962c",
+                "reference": "5bfbbfbabb3df2b9a83e601de9153e4a7111962c",
                 "shasum": ""
             },
             "require": {
                 "phpcompatibility/php-compatibility": "^9.0",
-                "phpcompatibility/phpcompatibility-paragonie": "^1.0"
+                "phpcompatibility/phpcompatibility-paragonie": "^1.0",
+                "squizlabs/php_codesniffer": "^3.3"
             },
             "require-dev": {
                 "dealerdirect/phpcodesniffer-composer-installer": "^1.0"
@@ -2034,22 +2035,26 @@
                 {
                     "url": "https://opencollective.com/php_codesniffer",
                     "type": "open_collective"
+                },
+                {
+                    "url": "https://thanks.dev/u/gh/phpcompatibility",
+                    "type": "thanks_dev"
                 }
             ],
-            "time": "2025-01-16T22:34:19+00:00"
+            "time": "2025-05-12T16:38:37+00:00"
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "3.12.2",
+            "version": "3.13.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/PHP_CodeSniffer.git",
-                "reference": "6d4cf6032d4b718f168c90a96e36c7d0eaacb2aa"
+                "reference": "65ff2489553b83b4597e89c3b8b721487011d186"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/6d4cf6032d4b718f168c90a96e36c7d0eaacb2aa",
-                "reference": "6d4cf6032d4b718f168c90a96e36c7d0eaacb2aa",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/65ff2489553b83b4597e89c3b8b721487011d186",
+                "reference": "65ff2489553b83b4597e89c3b8b721487011d186",
                 "shasum": ""
             },
             "require": {
@@ -2120,7 +2125,7 @@
                     "type": "thanks_dev"
                 }
             ],
-            "time": "2025-04-13T04:10:18+00:00"
+            "time": "2025-05-11T03:36:00+00:00"
         },
         {
             "name": "wp-coding-standards/wpcs",
