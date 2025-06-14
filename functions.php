@@ -1,4 +1,7 @@
 <?php
+if (!defined('ABSPATH')) {
+    exit('Cheatin huh?');
+}
 
 use Jankx\Asset\Bucket;
 require_once __DIR__ . '/includes/framework.php';

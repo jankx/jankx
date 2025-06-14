@@ -1,4 +1,7 @@
 <?php
+if (!defined('ABSPATH')) {
+    exit('Cheatin huh?');
+}
 /**
  * This is a part of Jankx Framework
  *
