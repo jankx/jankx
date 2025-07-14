@@ -10,7 +10,7 @@
     }
   ],
   "minimum-stability": "dev",
-  "prefer-stable": false,
+  "prefer-stable": true,
   "require": {
     "php": ">=7.1",
     "jankx/core": "*",
