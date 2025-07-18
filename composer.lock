@@ -52,113 +52,24 @@
             "time": "2024-02-22T17:51:05+00:00"
         },
         {
-            "name": "jankx/asset",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/jankx/asset.git",
-                "reference": "78630a3f8ceebf0ede3f619e2ea0bc7911a9d458"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/jankx/asset/zipball/78630a3f8ceebf0ede3f619e2ea0bc7911a9d458",
-                "reference": "78630a3f8ceebf0ede3f619e2ea0bc7911a9d458",
-                "shasum": ""
-            },
-            "require": {
-                "jankx/helpers": "*"
-            },
-            "default-branch": true,
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Jankx\\Asset\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Puleeno Nguyen",
-                    "email": "puleeno@gmail.com"
-                }
-            ],
-            "description": "Jankx Assets is used to manage CSS, JS, libraries with beautiful syntax",
-            "support": {
-                "issues": "https://github.com/jankx/asset/issues",
-                "source": "https://github.com/jankx/asset/tree/master"
-            },
-            "time": "2025-06-14T05:50:59+00:00"
-        },
-        {
-            "name": "jankx/command",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/jankx/command.git",
-                "reference": "e57e0ecbc5700129100fbe5425eb36f54fb9aef5"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/jankx/command/zipball/e57e0ecbc5700129100fbe5425eb36f54fb9aef5",
-                "reference": "e57e0ecbc5700129100fbe5425eb36f54fb9aef5",
-                "shasum": ""
-            },
-            "require": {
-                "jankx/helpers": "*"
-            },
-            "require-dev": {
-                "wp-cli/wp-cli": "*"
-            },
-            "default-branch": true,
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Jankx\\Command\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Puleeno Nguyen",
-                    "email": "puleeno@gmail.com"
-                }
-            ],
-            "description": "You love WP CLI and usually use it to manage WordPress. Maybe you will love Jankx for WP CLI too.",
-            "support": {
-                "issues": "https://github.com/jankx/command/issues",
-                "source": "https://github.com/jankx/command/tree/master"
-            },
-            "time": "2025-06-14T05:50:46+00:00"
-        },
-        {
             "name": "jankx/core",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/core.git",
-                "reference": "59b7ec79390a0a6e03782d13c94b85d877eecd6e"
+                "reference": "6d482ca46a634ea538408ad843238bd49a01a937"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/core/zipball/59b7ec79390a0a6e03782d13c94b85d877eecd6e",
-                "reference": "59b7ec79390a0a6e03782d13c94b85d877eecd6e",
+                "url": "https://api.github.com/repos/jankx/core/zipball/6d482ca46a634ea538408ad843238bd49a01a937",
+                "reference": "6d482ca46a634ea538408ad843238bd49a01a937",
                 "shasum": ""
             },
             "require": {
-                "jankx/asset": "*",
-                "jankx/command": "*",
                 "jankx/helpers": "^1.0.0",
                 "jankx/option-adapter": "*",
-                "jankx/pagination": "*",
                 "jankx/polyfills": "*",
                 "jankx/post-layout": "*",
-                "jankx/site-layout": "*",
                 "jankx/template": "^1.0.0",
                 "jankx/wordpress-specs": "*",
                 "masterminds/html5": "^2.9",
@@ -178,7 +89,8 @@
             "type": "library",
             "autoload": {
                 "files": [
-                    "framework.php"
+                    "framework.php",
+                    "./helpers/assets.php"
                 ],
                 "psr-4": {
                     "": "./src/",
@@ -202,7 +114,7 @@
                 "issues": "https://github.com/jankx/core/issues",
                 "source": "https://github.com/jankx/core/tree/master"
             },
-            "time": "2025-06-14T05:50:28+00:00"
+            "time": "2025-07-18T15:35:06+00:00"
         },
         {
             "name": "jankx/dashboard-framework",
@@ -210,12 +122,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/dashboard-framework.git",
-                "reference": "07b86010244a804aea39ba5fcebf7c6f83998508"
+                "reference": "400dbbc83eb7cb682a7cea60fa5bb8e1088b9291"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/dashboard-framework/zipball/07b86010244a804aea39ba5fcebf7c6f83998508",
-                "reference": "07b86010244a804aea39ba5fcebf7c6f83998508",
+                "url": "https://api.github.com/repos/jankx/dashboard-framework/zipball/400dbbc83eb7cb682a7cea60fa5bb8e1088b9291",
+                "reference": "400dbbc83eb7cb682a7cea60fa5bb8e1088b9291",
                 "shasum": ""
             },
             "require": {
@@ -243,7 +155,7 @@
                 "issues": "https://github.com/jankx/dashboard-framework/issues",
                 "source": "https://github.com/jankx/dashboard-framework/tree/master"
             },
-            "time": "2025-06-14T05:56:53+00:00"
+            "time": "2025-06-22T16:10:44+00:00"
         },
         {
             "name": "jankx/gutenberg",
@@ -420,47 +332,6 @@
             "time": "2025-06-14T05:56:15+00:00"
         },
         {
-            "name": "jankx/pagination",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/jankx/pagination.git",
-                "reference": "aaa248876c5366da9abf8af51b57182187d2be3b"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/jankx/pagination/zipball/aaa248876c5366da9abf8af51b57182187d2be3b",
-                "reference": "aaa248876c5366da9abf8af51b57182187d2be3b",
-                "shasum": ""
-            },
-            "default-branch": true,
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "./functions.php"
-                ],
-                "psr-4": {
-                    "Jankx\\Pagination\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Puleeno Nguyen",
-                    "email": "puleeno@gmail.com"
-                }
-            ],
-            "description": "The WordPress pagination support multi styles: number, infinite loop, load more",
-            "support": {
-                "issues": "https://github.com/jankx/pagination/issues",
-                "source": "https://github.com/jankx/pagination/tree/master"
-            },
-            "time": "2021-10-24T10:47:48+00:00"
-        },
-        {
             "name": "jankx/plates",
             "version": "v3.5.0",
             "source": {
@@ -570,17 +441,15 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/post-layout.git",
-                "reference": "8e00ff290d2cbda0aa8e55b2201e66bff46fdd66"
+                "reference": "d1400e6d32c36eaac41f3082a20953eb45f6b88a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/post-layout/zipball/8e00ff290d2cbda0aa8e55b2201e66bff46fdd66",
-                "reference": "8e00ff290d2cbda0aa8e55b2201e66bff46fdd66",
+                "url": "https://api.github.com/repos/jankx/post-layout/zipball/d1400e6d32c36eaac41f3082a20953eb45f6b88a",
+                "reference": "d1400e6d32c36eaac41f3082a20953eb45f6b88a",
                 "shasum": ""
             },
             "require": {
-                "jankx/asset": "*",
-                "jankx/pagination": "*",
                 "jankx/template": "*"
             },
             "default-branch": true,
@@ -605,49 +474,7 @@
                 "issues": "https://github.com/jankx/post-layout/issues",
                 "source": "https://github.com/jankx/post-layout/tree/master"
             },
-            "time": "2025-06-14T05:51:24+00:00"
-        },
-        {
-            "name": "jankx/site-layout",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/jankx/site-layout.git",
-                "reference": "0203b6dee02ea82fff8828483e29ff568f204727"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/jankx/site-layout/zipball/0203b6dee02ea82fff8828483e29ff568f204727",
-                "reference": "0203b6dee02ea82fff8828483e29ff568f204727",
-                "shasum": ""
-            },
-            "require": {
-                "jankx/asset": "*",
-                "jankx/template": "*"
-            },
-            "default-branch": true,
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Jankx\\SiteLayout\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Puleeno Nguyen",
-                    "email": "puleeno@gmail.com"
-                }
-            ],
-            "description": "The best way to create multi-layouts",
-            "support": {
-                "issues": "https://github.com/jankx/site-layout/issues",
-                "source": "https://github.com/jankx/site-layout/tree/master"
-            },
-            "time": "2025-06-14T05:51:36+00:00"
+            "time": "2025-07-18T16:34:42+00:00"
         },
         {
             "name": "jankx/template",
@@ -932,20 +759,20 @@
         },
         {
             "name": "symfony/deprecation-contracts",
-            "version": "v2.5.4",
+            "version": "v3.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/deprecation-contracts.git",
-                "reference": "605389f2a7e5625f273b53960dc46aeaf9c62918"
+                "reference": "63afe740e99a13ba87ec199bb07bbdee937a5b62"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/605389f2a7e5625f273b53960dc46aeaf9c62918",
-                "reference": "605389f2a7e5625f273b53960dc46aeaf9c62918",
+                "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/63afe740e99a13ba87ec199bb07bbdee937a5b62",
+                "reference": "63afe740e99a13ba87ec199bb07bbdee937a5b62",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.1"
+                "php": ">=8.1"
             },
             "type": "library",
             "extra": {
@@ -954,7 +781,7 @@
                     "name": "symfony/contracts"
                 },
                 "branch-alias": {
-                    "dev-main": "2.5-dev"
+                    "dev-main": "3.6-dev"
                 }
             },
             "autoload": {
@@ -979,7 +806,7 @@
             "description": "A generic function and convention to trigger deprecation notices",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/deprecation-contracts/tree/v2.5.4"
+                "source": "https://github.com/symfony/deprecation-contracts/tree/v3.6.0"
             },
             "funding": [
                 {
@@ -995,7 +822,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-09-25T14:11:13+00:00"
+            "time": "2024-09-25T14:21:43+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -1479,42 +1306,37 @@
         },
         {
             "name": "symfony/property-info",
-            "version": "v5.4.48",
+            "version": "v6.4.18",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/property-info.git",
-                "reference": "a0396295ad585f95fccd690bc6a281e5bd303902"
+                "reference": "94d18e5cc11a37fd92856d38b61d9cdf72536a1e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/property-info/zipball/a0396295ad585f95fccd690bc6a281e5bd303902",
-                "reference": "a0396295ad585f95fccd690bc6a281e5bd303902",
+                "url": "https://api.github.com/repos/symfony/property-info/zipball/94d18e5cc11a37fd92856d38b61d9cdf72536a1e",
+                "reference": "94d18e5cc11a37fd92856d38b61d9cdf72536a1e",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.2.5",
-                "symfony/deprecation-contracts": "^2.1|^3",
-                "symfony/polyfill-php80": "^1.16",
-                "symfony/string": "^5.1|^6.0"
+                "php": ">=8.1",
+                "symfony/string": "^5.4|^6.0|^7.0"
             },
             "conflict": {
-                "phpdocumentor/reflection-docblock": "<3.2.2",
-                "phpdocumentor/type-resolver": "<1.4.0",
-                "symfony/dependency-injection": "<4.4"
+                "doctrine/annotations": "<1.12",
+                "phpdocumentor/reflection-docblock": "<5.2",
+                "phpdocumentor/type-resolver": "<1.5.1",
+                "symfony/cache": "<5.4",
+                "symfony/dependency-injection": "<5.4|>=6.0,<6.4",
+                "symfony/serializer": "<5.4"
             },
             "require-dev": {
-                "doctrine/annotations": "^1.10.4|^2",
-                "phpdocumentor/reflection-docblock": "^3.0|^4.0|^5.0",
+                "doctrine/annotations": "^1.12|^2",
+                "phpdocumentor/reflection-docblock": "^5.2",
                 "phpstan/phpdoc-parser": "^1.0|^2.0",
-                "symfony/cache": "^4.4|^5.0|^6.0",
-                "symfony/dependency-injection": "^4.4|^5.0|^6.0",
-                "symfony/serializer": "^4.4|^5.0|^6.0"
-            },
-            "suggest": {
-                "phpdocumentor/reflection-docblock": "To use the PHPDoc",
-                "psr/cache-implementation": "To cache results",
-                "symfony/doctrine-bridge": "To use Doctrine metadata",
-                "symfony/serializer": "To use Serializer metadata"
+                "symfony/cache": "^5.4|^6.0|^7.0",
+                "symfony/dependency-injection": "^5.4|^6.0|^7.0",
+                "symfony/serializer": "^5.4|^6.4|^7.0"
             },
             "type": "library",
             "autoload": {
@@ -1550,7 +1372,7 @@
                 "validator"
             ],
             "support": {
-                "source": "https://github.com/symfony/property-info/tree/v5.4.48"
+                "source": "https://github.com/symfony/property-info/tree/v6.4.18"
             },
             "funding": [
                 {
@@ -1566,7 +1388,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-11-25T16:14:41+00:00"
+            "time": "2025-01-21T10:52:27+00:00"
         },
         {
             "name": "symfony/serializer",
@@ -1673,34 +1495,34 @@
         },
         {
             "name": "symfony/string",
-            "version": "v5.4.47",
+            "version": "v6.4.21",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/string.git",
-                "reference": "136ca7d72f72b599f2631aca474a4f8e26719799"
+                "reference": "73e2c6966a5aef1d4892873ed5322245295370c6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/136ca7d72f72b599f2631aca474a4f8e26719799",
-                "reference": "136ca7d72f72b599f2631aca474a4f8e26719799",
+                "url": "https://api.github.com/repos/symfony/string/zipball/73e2c6966a5aef1d4892873ed5322245295370c6",
+                "reference": "73e2c6966a5aef1d4892873ed5322245295370c6",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.2.5",
+                "php": ">=8.1",
                 "symfony/polyfill-ctype": "~1.8",
                 "symfony/polyfill-intl-grapheme": "~1.0",
                 "symfony/polyfill-intl-normalizer": "~1.0",
-                "symfony/polyfill-mbstring": "~1.0",
-                "symfony/polyfill-php80": "~1.15"
+                "symfony/polyfill-mbstring": "~1.0"
             },
             "conflict": {
-                "symfony/translation-contracts": ">=3.0"
+                "symfony/translation-contracts": "<2.5"
             },
             "require-dev": {
-                "symfony/error-handler": "^4.4|^5.0|^6.0",
-                "symfony/http-client": "^4.4|^5.0|^6.0",
-                "symfony/translation-contracts": "^1.1|^2",
-                "symfony/var-exporter": "^4.4|^5.0|^6.0"
+                "symfony/error-handler": "^5.4|^6.0|^7.0",
+                "symfony/http-client": "^5.4|^6.0|^7.0",
+                "symfony/intl": "^6.2|^7.0",
+                "symfony/translation-contracts": "^2.5|^3.0",
+                "symfony/var-exporter": "^5.4|^6.0|^7.0"
             },
             "type": "library",
             "autoload": {
@@ -1739,7 +1561,7 @@
                 "utf8"
             ],
             "support": {
-                "source": "https://github.com/symfony/string/tree/v5.4.47"
+                "source": "https://github.com/symfony/string/tree/v6.4.21"
             },
             "funding": [
                 {
@@ -1755,7 +1577,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-11-10T20:33:58+00:00"
+            "time": "2025-04-18T15:23:29+00:00"
         }
     ],
     "packages-dev": [
@@ -2045,16 +1867,16 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "3.13.1",
+            "version": "3.13.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/PHP_CodeSniffer.git",
-                "reference": "1b71b4dd7e7ef651ac749cea67e513c0c832f4bd"
+                "reference": "5b5e3821314f947dd040c70f7992a64eac89025c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/1b71b4dd7e7ef651ac749cea67e513c0c832f4bd",
-                "reference": "1b71b4dd7e7ef651ac749cea67e513c0c832f4bd",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/5b5e3821314f947dd040c70f7992a64eac89025c",
+                "reference": "5b5e3821314f947dd040c70f7992a64eac89025c",
                 "shasum": ""
             },
             "require": {
@@ -2125,7 +1947,7 @@
                     "type": "thanks_dev"
                 }
             ],
-            "time": "2025-06-12T15:04:34+00:00"
+            "time": "2025-06-17T22:17:01+00:00"
         },
         {
             "name": "wp-coding-standards/wpcs",
