@@ -6,15 +6,12 @@ var smoothScroll = new scrollToSmooth( 'a.jankx-scrollto', {
   durationMin: false,
   durationMax: false,
   easing: 'easeOutCubic',
-  onScrollStart: (data) => { console.log(data); },
-  onScrollUpdate: (data) => { console.log(data); },
-  onScrollEnd: (data) => { console.log(data); },
+  onScrollStart: (data) => { /* Scroll started */ },
+  onScrollUpdate: (data) => { /* Scroll updated */ },
+  onScrollEnd: (data) => { /* Scroll ended */ },
   fixedHeader: null
 })
 smoothScroll.init();
-
-
-
 
 // Get the header
 var header = document.getElementById("jankx-site-header");

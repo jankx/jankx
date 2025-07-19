@@ -10,8 +10,7 @@ function jankx_register_css_and_scripts()
 {
     $jankxCssDeps = array('jankx-base');
     $stylesheetName = Jankx::theme()->get_stylesheet();
-    // var_dump($stylesheetName);
-    // die;
+
     $stylesheetTheme = wp_get_theme(Jankx::templateStylesheet());
     if (is_child_theme() && apply_filters('jankx/styles/includes/main', true)) {
         $templateTheme = wp_get_theme($stylesheetTheme->get_template());

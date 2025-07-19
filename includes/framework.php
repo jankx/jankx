@@ -10,13 +10,22 @@ if (!defined('ABSPATH')) {
 use Jankx\Option;
 use Jankx\SiteLayout\Menu\Mobile\Slideout;
 
+// Define constants with proper validation
+if (!defined('JANKX_FRAMEWORK_FILE_LOADER')) {
+    define('JANKX_FRAMEWORK_FILE_LOADER', __FILE__);
+}
 
-define('JANKX_FRAMEWORK_FILE_LOADER', __FILE__);
-define('JANKX_FRAMEWORK_DIRECTORY', dirname(__DIR__));
+if (!defined('JANKX_FRAMEWORK_DIRECTORY')) {
+    define('JANKX_FRAMEWORK_DIRECTORY', dirname(__DIR__));
+}
 
 final class Jankx_Framework
 {
     protected $supportHomePagination = false;
+
+    // Define constants for better maintainability
+    const MOBILE_BREAKPOINT = 768;
+    const DEFAULT_POST_TYPES = ['post'];
 
     public function __construct()
     {
@@ -111,7 +120,6 @@ final class Jankx_Framework
         }
     }
 
-
     /**
      * @param \WP_Post[] $posts
      * @param \WP_Query $query
@@ -138,12 +146,11 @@ final class Jankx_Framework
     public function has_post_thumbnail($has_thumbnail, $post, $thumbnail_id)
     {
         $post = get_post($post);
-        if (in_array($post->post_type, array('post'))) {
+        if (in_array($post->post_type, self::DEFAULT_POST_TYPES)) {
             return true;
         }
         return $has_thumbnail;
     }
-
 
     public function default_post_thumbnail($value, $object_id, $meta_key, $single)
     {
@@ -157,11 +164,11 @@ final class Jankx_Framework
 
     public function active()
     {
-            $theme = Jankx::theme();
-            $installed = get_option(sprintf('%s_is_installed', $theme->stylesheet));
+        $theme = Jankx::theme();
+        $installed = get_option(sprintf('%s_is_installed', $theme->stylesheet));
 
-            do_action('jankx_framework_activation_hook', $installed);
-            do_action("{$theme->stylesheet}_activation_hook", $installed);
+        do_action('jankx_framework_activation_hook', $installed);
+        do_action("{$theme->stylesheet}_activation_hook", $installed);
     }
 
     public function setup_theme()
