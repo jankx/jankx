@@ -115,6 +115,9 @@ final class Jankx_Framework
         // Include path validator
         require_once __DIR__ . '/path-validator.php';
 
+        // Include file upload security
+        require_once __DIR__ . '/file-upload-security.php';
+
         // Include performance config
         require_once __DIR__ . '/performance-config.php';
 
