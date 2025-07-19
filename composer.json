@@ -14,8 +14,7 @@
   "require": {
     "php": ">=7.1",
     "jankx/core": "*",
-    "jankx/gutenberg": "*",
-    "jankx/widget": "*"
+    "jankx/gutenberg": "*"
   },
   "config": {
     "allow-plugins": {

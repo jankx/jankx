@@ -10,6 +10,9 @@ if (!defined('ABSPATH')) {
 use Jankx\Option;
 use Jankx\SiteLayout\Menu\Mobile\Slideout;
 
+
+define('JANKX_FRAMEWORK_FILE_LOADER', __FILE__);
+
 final class Jankx_Framework
 {
     protected $supportHomePagination = false;
@@ -82,6 +85,14 @@ final class Jankx_Framework
 
     protected function init_hooks()
     {
+        $jankxInstance = Jankx::getInstance();
+
+        add_action(
+            'after_setup_theme',
+            array($jankxInstance, 'setup'),
+            2
+        );
+
         add_action('after_switch_theme', array( $this, 'active' ));
         add_action('after_setup_theme', array( $this, 'setup_theme' ));
 
