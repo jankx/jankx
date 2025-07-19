@@ -114,6 +114,12 @@ final class Jankx_Framework
 
         // Include path validator
         require_once __DIR__ . '/path-validator.php';
+
+        // Include performance config
+        require_once __DIR__ . '/performance-config.php';
+
+        // Include performance helper
+        require_once __DIR__ . '/performance.php';
     }
 
     protected function init_hooks()
