@@ -10,6 +10,9 @@ if (!defined('ABSPATH')) {
 use Jankx\Option;
 use Jankx\SiteLayout\Menu\Mobile\Slideout;
 
+// Include configuration
+require_once __DIR__ . '/config.php';
+
 // Define constants with proper validation
 if (!defined('JANKX_FRAMEWORK_FILE_LOADER')) {
     define('JANKX_FRAMEWORK_FILE_LOADER', __FILE__);
@@ -23,12 +26,18 @@ final class Jankx_Framework
 {
     protected $supportHomePagination = false;
 
-    // Define constants for better maintainability
-    const MOBILE_BREAKPOINT = 768;
-    const DEFAULT_POST_TYPES = ['post'];
+    // Use constants from config
+    const MOBILE_BREAKPOINT = Jankx_Config::MOBILE_BREAKPOINT;
+    const DEFAULT_POST_TYPES = Jankx_Config::DEFAULT_POST_TYPES;
 
     public function __construct()
     {
+        // Check requirements first
+        if (!Jankx_Config::check_requirements()) {
+            add_action('admin_notices', [$this, 'show_requirements_error']);
+            return;
+        }
+
         $loaded = $this->load_composer();
         if (! $loaded && ! function_exists('jankx')) {
             function jankx()
@@ -40,6 +49,15 @@ final class Jankx_Framework
             $this->includes();
             $this->init_hooks();
         }
+    }
+
+    /**
+     * Show requirements error notice
+     */
+    public function show_requirements_error()
+    {
+        $error_message = Jankx_Config::get_requirements_error();
+        echo '<div class="notice notice-error"><p>' . $error_message . '</p></div>';
     }
 
     protected function load_composer()
@@ -91,6 +109,8 @@ final class Jankx_Framework
 
     protected function includes()
     {
+        // Include security helper
+        require_once __DIR__ . '/security.php';
     }
 
     protected function init_hooks()
