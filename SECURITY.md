@@ -19,8 +19,17 @@ Jankx Framework đã được cải thiện với các biện pháp bảo mật 
 - **File Permissions**: Kiểm tra quyền đọc/ghi trước khi thao tác
 - **Error Handling**: Try-catch blocks cho tất cả file operations
 - **SVG Sanitization**: Loại bỏ các elements và attributes nguy hiểm
+- **Safe File Operations**: Thay thế `@` error suppression bằng proper error handling
+- **Path Validator**: Class `Jankx_Path_Validator` để validate và normalize paths
 
-### 3. Configuration Management
+### 3. Cache System Security
+
+- **Safe Directory Creation**: `safe_mkdir()` với validation và error handling
+- **Safe File Writing**: `safe_write_file()` với path validation
+- **Safe File Deletion**: `safe_delete_file()` và `safe_delete_dir()` với proper checks
+- **Cache Path Validation**: Sử dụng path validator cho tất cả cache operations
+
+### 4. Configuration Management
 
 - **Centralized Config**: Tất cả constants được quản lý trong `Jankx_Config`
 - **Environment Checks**: Kiểm tra PHP và WordPress version requirements
@@ -51,6 +60,37 @@ if (!Jankx_Security_Helper::verify_nonce('nonce_field', 'action_name')) {
 ```php
 $content = Jankx_Security_Helper::safe_file_operation($file_path, 'read');
 $result = Jankx_Security_Helper::safe_file_operation($file_path, 'write', $data);
+```
+
+## Cách sử dụng Path Validator
+
+### Validate file path:
+```php
+$valid_path = jankx_validate_path($file_path, $base_directory);
+if ($valid_path === false) {
+    // Handle invalid path
+}
+```
+
+### Normalize path:
+```php
+$normalized_path = jankx_normalize_path($path);
+if ($normalized_path === false) {
+    // Handle invalid path
+}
+```
+
+### Join paths safely:
+```php
+$safe_path = jankx_join_paths($dir1, $dir2, $filename);
+```
+
+### Get cache path:
+```php
+$cache_path = jankx_get_cache_path('cache_name');
+if ($cache_path === false) {
+    // Handle invalid cache name
+}
 ```
 
 ## Best Practices
@@ -96,6 +136,18 @@ if (!isset($file['error'])) {
 }
 ```
 
+### 5. Validate file paths
+```php
+// ❌ Không làm thế này
+$file_path = $user_input . '/file.txt';
+
+// ✅ Làm thế này
+$valid_path = jankx_validate_path($user_input . '/file.txt', $base_dir);
+if ($valid_path !== false) {
+    // Use $valid_path
+}
+```
+
 ## Security Checklist
 
 - [ ] Tất cả user input được sanitize
@@ -106,6 +158,8 @@ if (!isset($file['error'])) {
 - [ ] Error messages không expose sensitive information
 - [ ] File uploads được validate
 - [ ] HTTPS được sử dụng cho sensitive data
+- [ ] Path validation cho tất cả file operations
+- [ ] Cache operations sử dụng safe methods
 
 ## Error Handling
 
@@ -124,19 +178,56 @@ try {
 }
 ```
 
+## Cache Security
+
+Cache system đã được cải thiện với:
+
+```php
+// Safe directory creation
+if (!self::safe_mkdir($cache_dir)) {
+    error_log('Jankx Cache: Failed to create cache directory');
+    return;
+}
+
+// Safe file writing
+if (!self::safe_write_file($cache_file, $content)) {
+    error_log('Jankx Cache: Failed to write cache file');
+    return;
+}
+
+// Safe file deletion
+if (!self::safe_delete_file($file_path)) {
+    error_log('Jankx Cache: Failed to delete file');
+    return;
+}
+```
+
 ## Reporting Security Issues
 
 Nếu bạn phát hiện lỗ hổng bảo mật, vui lòng:
 
 1. **Không public issue** trên GitHub
 2. **Email trực tiếp** đến: puleeno@gmail.com
-3. **Mô tả chi tiết** về lỗ hổng
-4. **Cung cấp steps** để reproduce
+3. **Mô tả chi tiết** lỗ hổng và cách reproduce
+4. **Cung cấp proof of concept** nếu có thể
 
-## Updates
+## Version History
 
-Framework sẽ được cập nhật thường xuyên với các biện pháp bảo mật mới. Hãy đảm bảo bạn luôn sử dụng phiên bản mới nhất.
+### v1.0.2 (Latest)
+- ✅ Thêm Path Validator class
+- ✅ Cải thiện Cache system security
+- ✅ Thay thế `@` error suppression
+- ✅ Thêm safe file operations
+- ✅ Cải thiện error handling
 
----
+### v1.0.1
+- ✅ Thêm Security Helper class
+- ✅ Centralized configuration
+- ✅ Input validation và sanitization
+- ✅ Nonce verification
+- ✅ SVG sanitization
 
-**Lưu ý**: Bảo mật là trách nhiệm của tất cả developers. Hãy luôn tuân thủ các guidelines này và cập nhật kiến thức bảo mật thường xuyên.
+### v1.0.0
+- ✅ Basic security measures
+- ✅ WordPress coding standards
+- ✅ Error handling

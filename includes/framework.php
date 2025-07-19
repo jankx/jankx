@@ -111,6 +111,9 @@ final class Jankx_Framework
     {
         // Include security helper
         require_once __DIR__ . '/security.php';
+
+        // Include path validator
+        require_once __DIR__ . '/path-validator.php';
     }
 
     protected function init_hooks()
