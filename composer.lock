@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d01ded8a4bf788a7f50efd4093d6da67",
+    "content-hash": "cde019c47e76f5aca1f777a4b90999e9",
     "packages": [
         {
             "name": "enshrined/svg-sanitize",
@@ -441,12 +441,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/post-layout.git",
-                "reference": "d1400e6d32c36eaac41f3082a20953eb45f6b88a"
+                "reference": "38bc570e0007c483ac895539c1a37d3380bdd202"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/post-layout/zipball/d1400e6d32c36eaac41f3082a20953eb45f6b88a",
-                "reference": "d1400e6d32c36eaac41f3082a20953eb45f6b88a",
+                "url": "https://api.github.com/repos/jankx/post-layout/zipball/38bc570e0007c483ac895539c1a37d3380bdd202",
+                "reference": "38bc570e0007c483ac895539c1a37d3380bdd202",
                 "shasum": ""
             },
             "require": {
@@ -474,7 +474,7 @@
                 "issues": "https://github.com/jankx/post-layout/issues",
                 "source": "https://github.com/jankx/post-layout/tree/master"
             },
-            "time": "2025-07-18T16:34:42+00:00"
+            "time": "2025-07-19T01:09:48+00:00"
         },
         {
             "name": "jankx/template",
@@ -557,47 +557,6 @@
                 "source": "https://github.com/jankx/template-engine/tree/master"
             },
             "time": "2025-06-14T05:51:48+00:00"
-        },
-        {
-            "name": "jankx/widget",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/jankx/widget.git",
-                "reference": "cc7da2e9e65f36a5414f03212ac997ad63213a7d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/jankx/widget/zipball/cc7da2e9e65f36a5414f03212ac997ad63213a7d",
-                "reference": "cc7da2e9e65f36a5414f03212ac997ad63213a7d",
-                "shasum": ""
-            },
-            "require": {
-                "jankx/option-adapter": "*"
-            },
-            "default-branch": true,
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Jankx\\Widget\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Puleeno Nguyen",
-                    "email": "puleeno@gmail.com"
-                }
-            ],
-            "description": "Common widgets are developed specifically for Jankx theme framework",
-            "support": {
-                "issues": "https://github.com/jankx/widget/issues",
-                "source": "https://github.com/jankx/widget/tree/master"
-            },
-            "time": "2025-06-14T05:52:07+00:00"
         },
         {
             "name": "jankx/wordpress-specs",
