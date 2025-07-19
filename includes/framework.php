@@ -118,6 +118,9 @@ final class Jankx_Framework
         // Include file upload security
         require_once __DIR__ . '/file-upload-security.php';
 
+        // Include SVG sanitizer
+        require_once __DIR__ . '/svg-sanitizer.php';
+
         // Include performance config
         require_once __DIR__ . '/performance-config.php';
 

@@ -379,7 +379,8 @@ class Jankx_File_Upload_Security
             return false;
         }
 
-        $sanitized = Jankx_Security_Helper::sanitize_svg($svg_content);
+        // Use the new SVG sanitizer
+        $sanitized = Jankx_SVG_Sanitizer::sanitize_svg($svg_content);
         if ($sanitized === false) {
             return false;
         }
