@@ -12,6 +12,7 @@ use Jankx\SiteLayout\Menu\Mobile\Slideout;
 
 
 define('JANKX_FRAMEWORK_FILE_LOADER', __FILE__);
+define('JANKX_FRAMEWORK_DIRECTORY', dirname(__DIR__));
 
 final class Jankx_Framework
 {
