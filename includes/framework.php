@@ -6,7 +6,7 @@ if (!defined('ABSPATH')) {
 /**
  * Jankx Framework
  */
-
+use Jankx\Jankx;
 use Jankx\Option;
 use Jankx\SiteLayout\Menu\Mobile\Slideout;
 
