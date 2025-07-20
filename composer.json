@@ -3,6 +3,7 @@
   "description": "Jankx is a powerful WordPress theme framework. High performance, compatible, easy to use and develop",
   "type": "project",
   "license": "MIT",
+  "version": "2.0.0",
   "authors": [
     {
       "name": "Puleeno Nguyen",
@@ -13,7 +14,7 @@
   "prefer-stable": true,
   "require": {
     "php": ">=7.1",
-    "jankx/core": "^1.0",
+    "jankx/core": "^2.0",
     "jankx/gutenberg": "*"
   },
   "config": {
