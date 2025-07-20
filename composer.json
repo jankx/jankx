@@ -13,7 +13,7 @@
   "prefer-stable": true,
   "require": {
     "php": ">=7.1",
-    "jankx/core": "*",
+    "jankx/core": "^1.0",
     "jankx/gutenberg": "*"
   },
   "config": {
