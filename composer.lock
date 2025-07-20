@@ -52,34 +52,131 @@
             "time": "2024-02-22T17:51:05+00:00"
         },
         {
-            "name": "jankx/core",
-            "version": "1.0.0",
+            "name": "illuminate/container",
+            "version": "v10.48.28",
             "source": {
                 "type": "git",
-                "url": "https://github.com/jankx/core.git",
-                "reference": "9fbbc54e38daddc5eb3ea88f64ae41227d5e3972"
+                "url": "https://github.com/illuminate/container.git",
+                "reference": "ed6253f7dd3a67d468b2cc7a69a657e1f14c7ba3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/core/zipball/9fbbc54e38daddc5eb3ea88f64ae41227d5e3972",
-                "reference": "9fbbc54e38daddc5eb3ea88f64ae41227d5e3972",
+                "url": "https://api.github.com/repos/illuminate/container/zipball/ed6253f7dd3a67d468b2cc7a69a657e1f14c7ba3",
+                "reference": "ed6253f7dd3a67d468b2cc7a69a657e1f14c7ba3",
                 "shasum": ""
             },
             "require": {
+                "illuminate/contracts": "^10.0",
+                "php": "^8.1",
+                "psr/container": "^1.1.1|^2.0.1"
+            },
+            "provide": {
+                "psr/container-implementation": "1.1|2.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "10.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Illuminate\\Container\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "The Illuminate Container package.",
+            "homepage": "https://laravel.com",
+            "support": {
+                "issues": "https://github.com/laravel/framework/issues",
+                "source": "https://github.com/laravel/framework"
+            },
+            "time": "2024-11-21T14:02:44+00:00"
+        },
+        {
+            "name": "illuminate/contracts",
+            "version": "v10.48.28",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/illuminate/contracts.git",
+                "reference": "f90663a69f926105a70b78060a31f3c64e2d1c74"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/illuminate/contracts/zipball/f90663a69f926105a70b78060a31f3c64e2d1c74",
+                "reference": "f90663a69f926105a70b78060a31f3c64e2d1c74",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.1",
+                "psr/container": "^1.1.1|^2.0.1",
+                "psr/simple-cache": "^1.0|^2.0|^3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "10.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Illuminate\\Contracts\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "The Illuminate Contracts package.",
+            "homepage": "https://laravel.com",
+            "support": {
+                "issues": "https://github.com/laravel/framework/issues",
+                "source": "https://github.com/laravel/framework"
+            },
+            "time": "2024-11-21T14:02:44+00:00"
+        },
+        {
+            "name": "jankx/core",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jankx/core.git",
+                "reference": "371cf624f6b1c50cc99b22f085783a3ced6aea99"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jankx/core/zipball/371cf624f6b1c50cc99b22f085783a3ced6aea99",
+                "reference": "371cf624f6b1c50cc99b22f085783a3ced6aea99",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/container": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0",
                 "jankx/helpers": "^1.0.0",
                 "jankx/option-adapter": "*",
                 "jankx/polyfills": "*",
-                "jankx/post-layout": "*",
+                "jankx/post-layout": "^1.0",
                 "jankx/template": "^1.0.0",
-                "jankx/wordpress-specs": "*",
+                "jankx/wordpress-specs": "^1.0",
                 "masterminds/html5": "^2.9",
-                "psr/container": "^2.0",
+                "psr/container": "^1.0|^2.0",
                 "symfony/polyfill-php80": "^1.0",
                 "symfony/property-access": "^5.4",
                 "symfony/serializer": "^5.4"
-            },
-            "require-dev": {
-                "jankx/debugger": "*"
             },
             "suggest": {
                 "jankx/dashboard-framework": "Official option framework for Jankx theme",
@@ -93,9 +190,7 @@
                 ],
                 "psr-4": {
                     "": "./src/",
-                    "Illuminate\\Container\\": "./src/Jankx/Container/",
-                    "AdvancedElementor\\Controls\\": "./src/Jankx/Integration/Elementor/Controls/",
-                    "Illuminate\\Contracts\\Container\\": "./src/Jankx/Interfaces/Container/"
+                    "AdvancedElementor\\Controls\\": "./src/Jankx/Integration/Elementor/Controls/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -111,9 +206,9 @@
             "description": "This is the core of Jankx theme framework and is also usable on its own as embed framework",
             "support": {
                 "issues": "https://github.com/jankx/core/issues",
-                "source": "https://github.com/jankx/core/tree/1.0.0"
+                "source": "https://github.com/jankx/core/tree/1.1.0"
             },
-            "time": "2025-07-19T09:11:00+00:00"
+            "time": "2025-07-20T07:41:46+00:00"
         },
         {
             "name": "jankx/dashboard-framework",
@@ -557,7 +652,7 @@
         },
         {
             "name": "jankx/wordpress-specs",
-            "version": "dev-master",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/wordpress-specs.git",
@@ -569,7 +664,6 @@
                 "reference": "38a3d691de1887cbf602f20fe8da052e67a41b3d",
                 "shasum": ""
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -589,7 +683,7 @@
             "description": " Define the WordPress specs to reuse in themes or plugins",
             "support": {
                 "issues": "https://github.com/jankx/wordpress-specs/issues",
-                "source": "https://github.com/jankx/wordpress-specs/tree/master"
+                "source": "https://github.com/jankx/wordpress-specs/tree/1.0.0"
             },
             "time": "2021-03-20T04:12:11+00:00"
         },
@@ -712,6 +806,57 @@
                 "source": "https://github.com/php-fig/container/tree/2.0.2"
             },
             "time": "2021-11-05T16:47:00+00:00"
+        },
+        {
+            "name": "psr/simple-cache",
+            "version": "3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/simple-cache.git",
+                "reference": "764e0b3939f5ca87cb904f570ef9be2d78a07865"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/simple-cache/zipball/764e0b3939f5ca87cb904f570ef9be2d78a07865",
+                "reference": "764e0b3939f5ca87cb904f570ef9be2d78a07865",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.0.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\SimpleCache\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "https://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interfaces for simple caching",
+            "keywords": [
+                "cache",
+                "caching",
+                "psr",
+                "psr-16",
+                "simple-cache"
+            ],
+            "support": {
+                "source": "https://github.com/php-fig/simple-cache/tree/3.0.0"
+            },
+            "time": "2021-10-29T13:26:27+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
