@@ -3,6 +3,7 @@ if (!defined('ABSPATH')) {
     exit('Cheating huh?');
 }
 
+use Jankx\Jankx;
 use Jankx\Asset\Bucket;
 require_once __DIR__ . '/includes/framework.php';
 

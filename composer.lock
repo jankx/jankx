@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bb0936ab5f1c7d242fe102fd2089c5c9",
+    "content-hash": "2bc6fadbcb2724f4581b0423804387ae",
     "packages": [
         {
             "name": "enshrined/svg-sanitize",
@@ -152,16 +152,16 @@
         },
         {
             "name": "jankx/core",
-            "version": "1.1.0",
+            "version": "v2.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/core.git",
-                "reference": "371cf624f6b1c50cc99b22f085783a3ced6aea99"
+                "reference": "dfc4636d92b893a2ce6678d4da08cd2979885f6c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/core/zipball/371cf624f6b1c50cc99b22f085783a3ced6aea99",
-                "reference": "371cf624f6b1c50cc99b22f085783a3ced6aea99",
+                "url": "https://api.github.com/repos/jankx/core/zipball/dfc4636d92b893a2ce6678d4da08cd2979885f6c",
+                "reference": "dfc4636d92b893a2ce6678d4da08cd2979885f6c",
                 "shasum": ""
             },
             "require": {
@@ -170,7 +170,7 @@
                 "jankx/option-adapter": "*",
                 "jankx/polyfills": "*",
                 "jankx/post-layout": "^1.0",
-                "jankx/template": "^1.0.0",
+                "jankx/template": "^2.0",
                 "jankx/wordpress-specs": "^1.0",
                 "masterminds/html5": "^2.9",
                 "psr/container": "^1.0|^2.0",
@@ -182,6 +182,7 @@
                 "jankx/dashboard-framework": "Official option framework for Jankx theme",
                 "monolog/monolog": "Allows more advanced logging of the application flow"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "files": [
@@ -189,7 +190,7 @@
                     "helpers/assets.php"
                 ],
                 "psr-4": {
-                    "": "./src/",
+                    "Jankx\\": "./src/",
                     "AdvancedElementor\\Controls\\": "./src/Jankx/Integration/Elementor/Controls/"
                 }
             },
@@ -206,9 +207,9 @@
             "description": "This is the core of Jankx theme framework and is also usable on its own as embed framework",
             "support": {
                 "issues": "https://github.com/jankx/core/issues",
-                "source": "https://github.com/jankx/core/tree/1.1.0"
+                "source": "https://github.com/jankx/core/tree/v2"
             },
-            "time": "2025-07-20T07:41:46+00:00"
+            "time": "2025-07-20T11:06:45+00:00"
         },
         {
             "name": "jankx/dashboard-framework",
@@ -257,12 +258,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/gutenberg.git",
-                "reference": "383f6ee9da53d4c8890047fc84796301e3d90986"
+                "reference": "2b1d7c0b726dff7640430d18b08976471584920b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/gutenberg/zipball/383f6ee9da53d4c8890047fc84796301e3d90986",
-                "reference": "383f6ee9da53d4c8890047fc84796301e3d90986",
+                "url": "https://api.github.com/repos/jankx/gutenberg/zipball/2b1d7c0b726dff7640430d18b08976471584920b",
+                "reference": "2b1d7c0b726dff7640430d18b08976471584920b",
                 "shasum": ""
             },
             "require": {
@@ -293,7 +294,7 @@
                 "issues": "https://github.com/jankx/gutenberg/issues",
                 "source": "https://github.com/jankx/gutenberg/tree/master"
             },
-            "time": "2025-06-14T05:51:13+00:00"
+            "time": "2025-07-20T11:15:44+00:00"
         },
         {
             "name": "jankx/helpers",
@@ -571,21 +572,22 @@
         },
         {
             "name": "jankx/template",
-            "version": "1.2.0",
+            "version": "v2.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/template.git",
-                "reference": "b7d78155cb0cbbcee737c4afd556c988c2a65d67"
+                "reference": "feed857116f8dcc41ee5d743a7e67b9faed6185c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/template/zipball/b7d78155cb0cbbcee737c4afd556c988c2a65d67",
-                "reference": "b7d78155cb0cbbcee737c4afd556c988c2a65d67",
+                "url": "https://api.github.com/repos/jankx/template/zipball/feed857116f8dcc41ee5d743a7e67b9faed6185c",
+                "reference": "feed857116f8dcc41ee5d743a7e67b9faed6185c",
                 "shasum": ""
             },
             "require": {
                 "jankx/template-engine": "*"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -605,9 +607,9 @@
             "description": "Jankx Template is used to load the template support override, caching.",
             "support": {
                 "issues": "https://github.com/jankx/template/issues",
-                "source": "https://github.com/jankx/template/tree/1.2.0"
+                "source": "https://github.com/jankx/template/tree/v2"
             },
-            "time": "2025-06-14T05:56:03+00:00"
+            "time": "2025-07-20T11:08:05+00:00"
         },
         {
             "name": "jankx/template-engine",
