@@ -3,6 +3,14 @@ if (!defined('ABSPATH')) {
     exit('Cheating huh?');
 }
 
+require_once get_template_directory() . '/includes/security.php';
+require_once get_template_directory() . '/includes/svg-sanitizer.php';
+require_once get_template_directory() . '/includes/file-upload-security.php';
+require_once get_template_directory() . '/includes/path-validator.php';
+require_once get_template_directory() . '/includes/config.php';
+require_once get_template_directory() . '/includes/performance.php';
+require_once get_template_directory() . '/includes/performance-config.php';
+
 use Jankx\Jankx;
 use Jankx\Asset\Bucket;
 require_once __DIR__ . '/includes/framework.php';
