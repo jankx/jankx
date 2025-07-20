@@ -156,12 +156,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/core.git",
-                "reference": "dfc4636d92b893a2ce6678d4da08cd2979885f6c"
+                "reference": "db3a21a646c2a7544dffcabbf454ac0d37466c43"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/core/zipball/dfc4636d92b893a2ce6678d4da08cd2979885f6c",
-                "reference": "dfc4636d92b893a2ce6678d4da08cd2979885f6c",
+                "url": "https://api.github.com/repos/jankx/core/zipball/db3a21a646c2a7544dffcabbf454ac0d37466c43",
+                "reference": "db3a21a646c2a7544dffcabbf454ac0d37466c43",
                 "shasum": ""
             },
             "require": {
@@ -209,7 +209,7 @@
                 "issues": "https://github.com/jankx/core/issues",
                 "source": "https://github.com/jankx/core/tree/v2"
             },
-            "time": "2025-07-20T11:06:45+00:00"
+            "time": "2025-07-20T17:52:45+00:00"
         },
         {
             "name": "jankx/dashboard-framework",
