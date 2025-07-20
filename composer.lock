@@ -156,12 +156,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/core.git",
-                "reference": "db3a21a646c2a7544dffcabbf454ac0d37466c43"
+                "reference": "406df94b7d3ec9ee90569bd88550a5dc845d774c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/core/zipball/db3a21a646c2a7544dffcabbf454ac0d37466c43",
-                "reference": "db3a21a646c2a7544dffcabbf454ac0d37466c43",
+                "url": "https://api.github.com/repos/jankx/core/zipball/406df94b7d3ec9ee90569bd88550a5dc845d774c",
+                "reference": "406df94b7d3ec9ee90569bd88550a5dc845d774c",
                 "shasum": ""
             },
             "require": {
@@ -169,7 +169,7 @@
                 "jankx/helpers": "^1.0.0",
                 "jankx/option-adapter": "*",
                 "jankx/polyfills": "*",
-                "jankx/post-layout": "^1.0",
+                "jankx/post-layout": "^2.0",
                 "jankx/template": "^2.0",
                 "jankx/wordpress-specs": "^1.0",
                 "masterminds/html5": "^2.9",
@@ -186,8 +186,7 @@
             "type": "library",
             "autoload": {
                 "files": [
-                    "framework.php",
-                    "helpers/assets.php"
+                    "framework.php"
                 ],
                 "psr-4": {
                     "Jankx\\": "./src/",
@@ -209,7 +208,7 @@
                 "issues": "https://github.com/jankx/core/issues",
                 "source": "https://github.com/jankx/core/tree/v2"
             },
-            "time": "2025-07-20T17:52:45+00:00"
+            "time": "2025-07-20T18:55:18+00:00"
         },
         {
             "name": "jankx/dashboard-framework",
@@ -532,21 +531,22 @@
         },
         {
             "name": "jankx/post-layout",
-            "version": "1.0.0",
+            "version": "v2.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/post-layout.git",
-                "reference": "38bc570e0007c483ac895539c1a37d3380bdd202"
+                "reference": "bcb2d55515a7f037e5ef50dcb46b34f05ef6e0f5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/post-layout/zipball/38bc570e0007c483ac895539c1a37d3380bdd202",
-                "reference": "38bc570e0007c483ac895539c1a37d3380bdd202",
+                "url": "https://api.github.com/repos/jankx/post-layout/zipball/bcb2d55515a7f037e5ef50dcb46b34f05ef6e0f5",
+                "reference": "bcb2d55515a7f037e5ef50dcb46b34f05ef6e0f5",
                 "shasum": ""
             },
             "require": {
                 "jankx/template": "*"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -566,9 +566,9 @@
             "description": "WordPress post and custom post type layout generator",
             "support": {
                 "issues": "https://github.com/jankx/post-layout/issues",
-                "source": "https://github.com/jankx/post-layout/tree/1.0.0"
+                "source": "https://github.com/jankx/post-layout/tree/v2"
             },
-            "time": "2025-07-19T01:09:48+00:00"
+            "time": "2025-07-20T18:52:55+00:00"
         },
         {
             "name": "jankx/template",
