@@ -20,12 +20,6 @@ class CLIBootstrapper extends AbstractBootstrapper
 
     public function bootstrap(Container $container): void
     {
-        add_action('cli_init', [$this, 'initializeCLICommands']);
         do_action('jankx/bootstrapper/cli/loaded', $container);
-    }
-
-    public function initializeCLICommands(): void
-    {
-        // Add CLI command initialization logic here
     }
 }

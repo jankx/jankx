@@ -20,12 +20,6 @@ class APIBootstrapper extends AbstractBootstrapper
 
     public function bootstrap(Container $container): void
     {
-        add_action('rest_api_init', [$this, 'initializeAPIEndpoints']);
         do_action('jankx/bootstrapper/api/loaded', $container);
-    }
-
-    public function initializeAPIEndpoints(): void
-    {
-        // Add API endpoint initialization logic here
     }
 }
