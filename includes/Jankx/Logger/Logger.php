@@ -66,7 +66,7 @@ class Logger
     {
         // Chỉ log warning, error hoặc nếu có JANKX_LOG_ALL
         $shouldLog = (
-            (defined('WP_DEBUG_LOG') && constant('WP_DEBUG_LOG') === true) ||
+            (defined('JANKX_DEBUG') && constant('JANKX_DEBUG') === true) ||
             in_array($level, ['warning', 'error'])
         );
         if (!$shouldLog) {
