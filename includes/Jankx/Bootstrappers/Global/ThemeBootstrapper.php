@@ -3,6 +3,7 @@
 namespace Jankx\Bootstrappers\Global;
 
 use Illuminate\Container\Container;
+use Jankx\Bootstrappers\AbstractBootstrapper;
 
 class ThemeBootstrapper extends AbstractBootstrapper
 {
