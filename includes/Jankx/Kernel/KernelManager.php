@@ -3,8 +3,8 @@
 namespace Jankx\Kernel;
 
 use Illuminate\Container\Container;
+use Jankx\Bootstrappers\System\CoreBootstrapper;
 use Jankx\Contracts\KernelInterface;
-use Jankx\Facades\Logger;
 
 /**
  * Kernel Manager
@@ -30,8 +30,8 @@ class KernelManager
     protected function bootstrapSystem()
     {
         // Initialize the system with CoreBootstrapper before doing anything else
-        $bootstrapper = new \Jankx\Bootstrap\CoreBootstrapper($this->container);
-        $bootstrapper->bootstrap();
+        $bootstrapper = new CoreBootstrapper();
+        $bootstrapper->bootstrap($this->container);
     }
 
     public function boot()

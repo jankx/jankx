@@ -4,7 +4,7 @@ namespace Jankx\Kernel;
 
 use Jankx\Contracts\KernelInterface;
 use Jankx\Bootstrappers\CLIBootstrapper;
-use Jankx\Bootstrappers\ThemeBootstrapper;
+use Jankx\Bootstrappers\Global\ThemeBootstrapper;
 use Jankx\Command\CommandManager;
 use Jankx\Command\Commands\CacheCommand;
 use Jankx\Command\Commands\OptimizeCommand;

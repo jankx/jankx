@@ -3,7 +3,7 @@
 namespace Jankx\Kernel;
 
 use Jankx\Contracts\KernelInterface;
-use Jankx\Bootstrappers\ThemeBootstrapper;
+use Jankx\Bootstrappers\Global\ThemeBootstrapper;
 
 /**
  * Cron Kernel

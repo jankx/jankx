@@ -2,24 +2,11 @@
 
 namespace Jankx\Bootstrappers;
 
-use Jankx\Jankx;
-use Jankx\Contracts\BootstrapperInterface;
 use Illuminate\Container\Container;
+use Jankx\Contracts\BootstrapperInterface;
 
-/**
- * Abstract Bootstrapper
- *
- * Base class for all bootstrappers in Jankx framework
- *
- * @package Jankx\Bootstrappers
- */
 abstract class AbstractBootstrapper implements BootstrapperInterface
 {
-    /**
-     * @var Container
-     */
-    protected $container;
-
     /**
      * @var int
      */
@@ -31,53 +18,11 @@ abstract class AbstractBootstrapper implements BootstrapperInterface
     protected $dependencies = [];
 
     /**
-     * @var bool
-     */
-    protected $enabled = true;
-
-    /**
-     * Constructor
-     */
-    public function __construct(Container $container = null)
-    {
-        $this->container = $container ?: Jankx::getInstance();
-    }
-
-    /**
-     * Bootstrap the application
-     */
-    abstract public function bootstrap(Container $container): void;
-
-    /**
      * Get bootstrapper priority
      */
     public function getPriority(): int
     {
         return $this->priority;
-    }
-
-    /**
-     * Set bootstrapper priority
-     */
-    public function setPriority(int $priority): void
-    {
-        $this->priority = $priority;
-    }
-
-    /**
-     * Check if bootstrapper should run
-     */
-    public function shouldRun(): bool
-    {
-        return $this->enabled && $this->checkConditions();
-    }
-
-    /**
-     * Check bootstrapper conditions
-     */
-    protected function checkConditions(): bool
-    {
-        return true;
     }
 
     /**
@@ -89,50 +34,17 @@ abstract class AbstractBootstrapper implements BootstrapperInterface
     }
 
     /**
-     * Set bootstrapper dependencies
+     * Get bootstrapper name (must be implemented by child)
      */
-    public function setDependencies(array $dependencies): void
-    {
-        $this->dependencies = $dependencies;
-    }
+    abstract public function getName(): string;
 
     /**
-     * Enable bootstrapper
+     * Check if bootstrapper should run (must be implemented by child)
      */
-    public function enable(): void
-    {
-        $this->enabled = true;
-    }
+    abstract public function shouldRun(): bool;
 
     /**
-     * Disable bootstrapper
+     * Bootstrap the application (must be implemented by child)
      */
-    public function disable(): void
-    {
-        $this->enabled = false;
-    }
-
-    /**
-     * Check if bootstrapper is enabled
-     */
-    public function isEnabled(): bool
-    {
-        return $this->enabled;
-    }
-
-    /**
-     * Get bootstrapper name
-     */
-    public function getName(): string
-    {
-        return static::class;
-    }
-
-    /**
-     * Get bootstrapper description
-     */
-    public function getDescription(): string
-    {
-        return 'Bootstrapper for ' . $this->getName();
-    }
+    abstract public function bootstrap(Container $container): void;
 }
