@@ -1,8 +1,9 @@
 <?php
 
-namespace Jankx\Bootstrappers;
+namespace Jankx\Bootstrappers\Dashboard;
 
 use Illuminate\Container\Container;
+use Jankx\Bootstrappers\AbstractBootstrapper;
 
 class AdminBootstrapper extends AbstractBootstrapper
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Jankx\Bootstrappers;
+namespace Jankx\Bootstrappers\Global;
 
 use Illuminate\Container\Container;
 

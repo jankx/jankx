@@ -3,7 +3,8 @@
 namespace Jankx\Kernel;
 
 use Jankx\Contracts\KernelInterface;
-use Jankx\Bootstrappers\AdminBootstrapper;
+
+use Jankx\Bootstrappers\Dashboard\AdminBootstrapper;
 use Jankx\Bootstrappers\Global\ThemeBootstrapper;
 
 /**

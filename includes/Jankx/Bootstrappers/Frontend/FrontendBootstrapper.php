@@ -1,8 +1,9 @@
 <?php
 
-namespace Jankx\Bootstrappers;
+namespace Jankx\Bootstrappers\Frontend;
 
 use Illuminate\Container\Container;
+use Jankx\Bootstrappers\AbstractBootstrapper;
 
 class FrontendBootstrapper extends AbstractBootstrapper
 {
