@@ -2,6 +2,9 @@
 
 namespace Jankx\Context;
 
+use Jankx\Contracts\ContextInterface;
+use Jankx\Enum\ContextAbstract;
+
 if (!defined('ABSPATH')) {
     exit('Cheating huh?');
 }
@@ -35,14 +38,12 @@ class ContextualServiceRegistry
     /**
      * Đăng ký một dịch vụ với ngữ cảnh cụ thể
      *
-     * @param string $context Ngữ cảnh (frontend, dashboard, shared)
+     * @param ContextInterface $context Ngữ cảnh (frontend, dashboard, shared)
      * @param string $serviceProviderClass Tên class của service provider
      */
-    public static function register($context, $serviceProviderClass)
+    public static function register(ContextInterface $context, $serviceProviderClass)
     {
-        if (in_array($context, [self::FRONTEND, self::DASHBOARD, self::SHARED])) {
-            self::$services[$context][] = $serviceProviderClass;
-        }
+        self::$services[$context->getValue()][] = $serviceProviderClass;
     }
 
     /**

@@ -36,6 +36,7 @@ final class CoreBootstrapper extends AbstractBootstrapper
      */
     public function bootstrap(Container $container): void
     {
+
         // Đăng ký dịch vụ dùng chung (shared)
         // ContextualServiceRegistry::register(ContextualServiceRegistry::SHARED, GoogleFontsServiceProvider::class);
         // ContextualServiceRegistry::register(ContextualServiceRegistry::SHARED, ThemeOptionsServiceProvider::class);
