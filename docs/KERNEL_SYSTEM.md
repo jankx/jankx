@@ -31,7 +31,7 @@ abstract class AbstractKernel implements KernelInterface
     protected $booted = false;
     protected $kernelType;
 
-    abstract protected function getKernelType(): string;
+    abstract public function getKernelType(): string;
     abstract protected function registerBootstrappers(): void;
     abstract protected function registerServices(): void;
     abstract protected function registerHooks(): void;

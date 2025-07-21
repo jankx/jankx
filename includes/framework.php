@@ -109,9 +109,6 @@ final class Jankx_Framework
 
     protected function includes()
     {
-        // Include security helper
-        require_once __DIR__ . '/security.php';
-
         // Include path validator
         require_once __DIR__ . '/path-validator.php';
 

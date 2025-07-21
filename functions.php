@@ -3,7 +3,6 @@ if (!defined('ABSPATH')) {
     exit('Cheating huh?');
 }
 
-require_once get_template_directory() . '/includes/security.php';
 require_once get_template_directory() . '/includes/svg-sanitizer.php';
 require_once get_template_directory() . '/includes/file-upload-security.php';
 require_once get_template_directory() . '/includes/path-validator.php';
