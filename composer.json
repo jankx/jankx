@@ -14,17 +14,18 @@
   "prefer-stable": true,
   "require": {
     "php": ">=7.1",
-    "jankx/core": "^2.0",
-    "jankx/gutenberg": "*"
+    "psr/container": "^1.0|^2.0",
+    "illuminate/container": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0",
+    "jankx/option-adapter": "*",
+    "jankx/dashboard-framework": "*"
   },
-  "config": {
-    "allow-plugins": {
-      "dealerdirect/phpcodesniffer-composer-installer": true
+  "autoload": {
+    "psr-4": {
+      "Jankx\\": "./includes/Jankx"
     }
   },
-  "require-dev": {
-    "dealerdirect/phpcodesniffer-composer-installer": "^0.7",
-    "phpcompatibility/phpcompatibility-wp": "*",
-    "wptrt/wpthemereview": "*"
+  "suggest": {
+    "monolog/monolog": "Allows more advanced logging of the application flow",
+    "jankx/dashboard-framework": "Official option framework for Jankx theme"
   }
 }

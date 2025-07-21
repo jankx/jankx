@@ -19,9 +19,9 @@ Jankx Framework đã implement hệ thống Kernel với 4 loại kernel chính 
 
 ## 🏗️ Cấu trúc Kernel System
 
-### **1. AbstractKernel (Base Class)**
+### **1. Kernel (Base Class)**
 ```php
-abstract class AbstractKernel implements KernelInterface
+abstract class Kernel implements KernelInterface
 {
     protected $container;
     protected $services = [];

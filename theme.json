@@ -1,58 +1,9 @@
-    {
-    "name": "Jankx Framework",
-    "short_name": "Jankx",
-    "customs": {
-        "thumbnail": {
-            "default": "template::assets/img/no-image.svg"
-        },
-        "layouts": {
-            "default": {
-                "name": "jankx-cs",
-                "widescreen": false
-            },
-            "home": {
-                "name": "jankx-fw",
-                "widescreen": false
-            },
-            "page": {
-                "name": "jankx-fw",
-                "widescreen": false
-            },
-            "single": {
-                "name": "jankx-cs",
-                "widescreen": false
-            },
-            "archive": {
-                "name": "jankx-cs",
-                "widescreen": false
-            },
-            "not_found": {
-                "name": "jankx-fw",
-                "widescreen": true
-            }
-        },
-        "layout": {
-            "fluid": false,
-            "footer": {
-                "sidebars": 4
-            },
-            "menu": {
-                "secondary": {
-                    "enable": false,
-                    "sticky": false
-                }
-            },
-            "woocommerce": {
-                "product": "default"
-            }
-        },
-        "woocommerce": {
-            "product": {
-                "sidebar": true
-            },
-            "sales": {
-                "flash_percent": true
-            }
-        }
-    }
+{
+    "$schema": "https://schemas.wp.org/trunk/theme.json",
+    "version": 2,
+    "settings": {},
+    "styles": {},
+    "customTemplates": {},
+    "templateParts": {},
+    "patterns": []
 }
