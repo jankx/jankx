@@ -1,0 +1,715 @@
+/**
+ * Jankx Layout Options Styles
+ *
+ * Styles for layout options controls in Gutenberg editor.
+ * Provides consistent styling for option groups, controls, and interactions.
+ */
+
+/* ==========================================================================
+   Layout Options Container
+   ========================================================================== */
+
+.jankx-layout-options {
+    background: #fff;
+    border: 1px solid #e2e4e7;
+    border-radius: 4px;
+    margin: 16px 0;
+    overflow: hidden;
+}
+
+.jankx-layout-options-header {
+    background: #f9f9f9;
+    border-bottom: 1px solid #e2e4e7;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.jankx-layout-options-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e1e1e;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.jankx-layout-options-title::before {
+    content: '⚙️';
+    margin-right: 8px;
+    font-size: 16px;
+}
+
+.jankx-layout-options-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 3px;
+    transition: background-color 0.2s ease;
+}
+
+.jankx-layout-options-toggle:hover {
+    background: #e2e4e7;
+}
+
+.jankx-layout-options-toggle svg {
+    width: 16px;
+    height: 16px;
+    fill: #757575;
+    transition: transform 0.2s ease;
+}
+
+.jankx-layout-options-toggle.expanded svg {
+    transform: rotate(180deg);
+}
+
+/* ==========================================================================
+   Option Groups
+   ========================================================================== */
+
+.jankx-option-groups {
+    padding: 16px;
+}
+
+.jankx-option-group {
+    margin-bottom: 24px;
+    border: 1px solid #e2e4e7;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.jankx-option-group:last-child {
+    margin-bottom: 0;
+}
+
+.jankx-option-group-header {
+    background: #f6f7f7;
+    border-bottom: 1px solid #e2e4e7;
+    padding: 10px 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background-color 0.2s ease;
+}
+
+.jankx-option-group-header:hover {
+    background: #f0f0f1;
+}
+
+.jankx-option-group-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1e1e1e;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.jankx-option-group-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+    fill: #757575;
+}
+
+.jankx-option-group-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 2px;
+    border-radius: 2px;
+    transition: background-color 0.2s ease;
+}
+
+.jankx-option-group-toggle:hover {
+    background: #e2e4e7;
+}
+
+.jankx-option-group-toggle svg {
+    width: 12px;
+    height: 12px;
+    fill: #757575;
+    transition: transform 0.2s ease;
+}
+
+.jankx-option-group-toggle.expanded svg {
+    transform: rotate(90deg);
+}
+
+.jankx-option-group-content {
+    padding: 12px;
+    display: none;
+}
+
+.jankx-option-group-content.expanded {
+    display: block;
+}
+
+/* ==========================================================================
+   Option Controls
+   ========================================================================== */
+
+.jankx-option-control {
+    margin-bottom: 16px;
+}
+
+.jankx-option-control:last-child {
+    margin-bottom: 0;
+}
+
+.jankx-option-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #1e1e1e;
+    margin-bottom: 6px;
+    line-height: 1.4;
+}
+
+.jankx-option-description {
+    font-size: 11px;
+    color: #757575;
+    margin-top: 4px;
+    line-height: 1.4;
+}
+
+.jankx-option-help {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    background: #007cba;
+    color: white;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 14px;
+    font-size: 10px;
+    font-weight: bold;
+    margin-left: 6px;
+    cursor: help;
+    transition: background-color 0.2s ease;
+}
+
+.jankx-option-help:hover {
+    background: #005a87;
+}
+
+/* ==========================================================================
+   Control Types
+   ========================================================================== */
+
+/* Select Control */
+.jankx-select-control {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #8c8f94;
+    border-radius: 3px;
+    font-size: 13px;
+    background: #fff;
+    color: #1e1e1e;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.jankx-select-control:focus {
+    border-color: #007cba;
+    box-shadow: 0 0 0 1px #007cba;
+    outline: none;
+}
+
+.jankx-select-control:hover {
+    border-color: #007cba;
+}
+
+/* Range Control */
+.jankx-range-control {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: #e2e4e7;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.jankx-range-control::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #007cba;
+    cursor: pointer;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.jankx-range-control::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #007cba;
+    cursor: pointer;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.jankx-range-control:focus::-webkit-slider-thumb {
+    box-shadow: 0 0 0 2px #007cba;
+}
+
+.jankx-range-control:focus::-moz-range-thumb {
+    box-shadow: 0 0 0 2px #007cba;
+}
+
+.jankx-range-value {
+    display: inline-block;
+    background: #007cba;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-left: 8px;
+}
+
+/* Toggle Control */
+.jankx-toggle-control {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+
+.jankx-toggle-control input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.jankx-toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.3s;
+    border-radius: 24px;
+}
+
+.jankx-toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.jankx-toggle-control input:checked + .jankx-toggle-slider {
+    background-color: #007cba;
+}
+
+.jankx-toggle-control input:checked + .jankx-toggle-slider:before {
+    transform: translateX(20px);
+}
+
+.jankx-toggle-control input:focus + .jankx-toggle-slider {
+    box-shadow: 0 0 0 2px #007cba;
+}
+
+/* Color Picker */
+.jankx-color-picker {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.jankx-color-picker-input {
+    width: 40px;
+    height: 32px;
+    border: 2px solid #e2e4e7;
+    border-radius: 4px;
+    cursor: pointer;
+    background: none;
+    padding: 0;
+}
+
+.jankx-color-picker-input::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+.jankx-color-picker-input::-webkit-color-swatch {
+    border: none;
+    border-radius: 2px;
+}
+
+.jankx-color-picker-input::-moz-color-swatch {
+    border: none;
+    border-radius: 2px;
+}
+
+.jankx-color-picker-input:focus {
+    border-color: #007cba;
+    outline: none;
+    box-shadow: 0 0 0 1px #007cba;
+}
+
+.jankx-color-picker-value {
+    flex: 1;
+    font-family: monospace;
+    font-size: 12px;
+    color: #757575;
+}
+
+/* Media Upload */
+.jankx-media-upload {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.jankx-media-upload-button {
+    background: #007cba;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 3px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.jankx-media-upload-button:hover {
+    background: #005a87;
+}
+
+.jankx-media-upload-preview {
+    width: 60px;
+    height: 40px;
+    border: 1px solid #e2e4e7;
+    border-radius: 3px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+}
+
+.jankx-media-upload-remove {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 16px;
+    height: 16px;
+    background: #dc3232;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Text Control */
+.jankx-text-control {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #8c8f94;
+    border-radius: 3px;
+    font-size: 13px;
+    background: #fff;
+    color: #1e1e1e;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.jankx-text-control:focus {
+    border-color: #007cba;
+    box-shadow: 0 0 0 1px #007cba;
+    outline: none;
+}
+
+.jankx-text-control:hover {
+    border-color: #007cba;
+}
+
+/* ==========================================================================
+   Option Grid Layout
+   ========================================================================== */
+
+.jankx-option-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.jankx-option-grid-3 {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.jankx-option-grid-4 {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+/* ==========================================================================
+   Conditional Options
+   ========================================================================== */
+
+.jankx-option-conditional {
+    opacity: 0.6;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.jankx-option-conditional.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.jankx-option-conditional .jankx-option-label {
+    color: #757575;
+}
+
+.jankx-option-conditional.active .jankx-option-label {
+    color: #1e1e1e;
+}
+
+/* ==========================================================================
+   Validation States
+   ========================================================================== */
+
+.jankx-option-control.has-error .jankx-option-label {
+    color: #dc3232;
+}
+
+.jankx-option-control.has-error input,
+.jankx-option-control.has-error select {
+    border-color: #dc3232;
+}
+
+.jankx-option-control.has-error .jankx-option-description {
+    color: #dc3232;
+}
+
+.jankx-option-control.has-warning .jankx-option-label {
+    color: #dba617;
+}
+
+.jankx-option-control.has-warning input,
+.jankx-option-control.has-warning select {
+    border-color: #dba617;
+}
+
+.jankx-option-control.has-warning .jankx-option-description {
+    color: #dba617;
+}
+
+/* ==========================================================================
+   Performance Options
+   ========================================================================== */
+
+.jankx-performance-options {
+    background: #f0f6fc;
+    border: 1px solid #007cba;
+    border-radius: 4px;
+    padding: 12px;
+    margin-top: 16px;
+}
+
+.jankx-performance-options-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.jankx-performance-options-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+    fill: #007cba;
+}
+
+.jankx-performance-options-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #007cba;
+    margin: 0;
+}
+
+.jankx-performance-options-description {
+    font-size: 11px;
+    color: #007cba;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+
+@media (max-width: 782px) {
+    .jankx-option-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .jankx-option-grid-3,
+    .jankx-option-grid-4 {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .jankx-option-grid-3,
+    .jankx-option-grid-4 {
+        grid-template-columns: 1fr;
+    }
+
+    .jankx-layout-options-header {
+        padding: 10px 12px;
+    }
+
+    .jankx-option-groups {
+        padding: 12px;
+    }
+
+    .jankx-option-group-content {
+        padding: 10px;
+    }
+}
+
+/* ==========================================================================
+   Dark Mode Support
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+    .jankx-layout-options {
+        background: #1e1e1e;
+        border-color: #3c434a;
+    }
+
+    .jankx-layout-options-header {
+        background: #2c3338;
+        border-color: #3c434a;
+    }
+
+    .jankx-option-group {
+        border-color: #3c434a;
+    }
+
+    .jankx-option-group-header {
+        background: #2c3338;
+        border-color: #3c434a;
+    }
+
+    .jankx-option-group-header:hover {
+        background: #32373c;
+    }
+
+    .jankx-option-label {
+        color: #f0f0f1;
+    }
+
+    .jankx-option-description {
+        color: #a7aaad;
+    }
+
+    .jankx-select-control,
+    .jankx-text-control {
+        background: #2c3338;
+        border-color: #3c434a;
+        color: #f0f0f1;
+    }
+
+    .jankx-select-control:focus,
+    .jankx-text-control:focus {
+        border-color: #007cba;
+    }
+
+    .jankx-range-control {
+        background: #3c434a;
+    }
+
+    .jankx-toggle-slider {
+        background-color: #3c434a;
+    }
+
+    .jankx-performance-options {
+        background: #1e1e1e;
+        border-color: #007cba;
+    }
+
+    .jankx-performance-options-title,
+    .jankx-performance-options-description {
+        color: #007cba;
+    }
+}
+
+/* ==========================================================================
+   High Contrast Mode
+   ========================================================================== */
+
+@media (prefers-contrast: high) {
+    .jankx-layout-options {
+        border-width: 2px;
+    }
+
+    .jankx-option-group {
+        border-width: 2px;
+    }
+
+    .jankx-select-control,
+    .jankx-text-control {
+        border-width: 2px;
+    }
+
+    .jankx-toggle-slider {
+        border: 2px solid #000;
+    }
+
+    .jankx-toggle-slider:before {
+        border: 2px solid #000;
+    }
+}
+
+/* ==========================================================================
+   Reduced Motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .jankx-layout-options-toggle svg,
+    .jankx-option-group-toggle svg,
+    .jankx-toggle-slider,
+    .jankx-toggle-slider:before {
+        transition: none;
+    }
+}
+
+/* ==========================================================================
+   Print Styles
+   ========================================================================== */
+
+@media print {
+    .jankx-layout-options {
+        border: 1px solid #000;
+        background: #fff;
+    }
+
+    .jankx-layout-options-header,
+    .jankx-option-group-header {
+        background: #f0f0f0;
+        border-color: #000;
+    }
+
+    .jankx-option-group {
+        border-color: #000;
+        page-break-inside: avoid;
+    }
+}

@@ -1,0 +1,16 @@
+<?php
+/**
+ * Hero Button Block Template
+ *
+ * Template for rendering hero button blocks.
+ * Variables available: $buttonText, $buttonUrl, $alignment
+ */
+?>
+
+<?php if (!empty($buttonText)): ?>
+    <div class="jankx-hero-actions jankx-text-<?php echo esc_attr($alignment ?? 'left'); ?>">
+        <a href="<?php echo esc_url($buttonUrl ?? '#'); ?>" class="jankx-hero-button jankx-btn jankx-btn-primary">
+            <?php echo esc_html($buttonText); ?>
+        </a>
+    </div>
+<?php endif; ?>

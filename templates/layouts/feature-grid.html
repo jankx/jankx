@@ -1,0 +1,54 @@
+<?php
+/**
+ * Feature Grid Template
+ *
+ * Template for rendering feature grid layouts.
+ * Variables available: $title, $description, $columns, $features
+ */
+?>
+
+<div class="jankx-feature-grid">
+    <?php if (!empty($title)): ?>
+        <div class="jankx-feature-grid-header">
+            <h2 class="jankx-feature-grid-title"><?php echo esc_html($title); ?></h2>
+
+            <?php if (!empty($description)): ?>
+                <p class="jankx-feature-grid-description"><?php echo esc_html($description); ?></p>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if (!empty($features) && is_array($features)): ?>
+        <div class="jankx-feature-grid-content">
+            <div class="jankx-feature-grid-items" style="grid-template-columns: repeat(<?php echo esc_attr($columns ?? 3); ?>, 1fr);">
+                <?php foreach ($features as $feature): ?>
+                    <div class="jankx-feature-item">
+                        <?php if (!empty($feature['icon'])): ?>
+                            <div class="jankx-feature-icon">
+                                <i class="<?php echo esc_attr($feature['icon']); ?>"></i>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if (!empty($feature['title'])): ?>
+                            <h3 class="jankx-feature-title"><?php echo esc_html($feature['title']); ?></h3>
+                        <?php endif; ?>
+
+                        <?php if (!empty($feature['description'])): ?>
+                            <p class="jankx-feature-description"><?php echo esc_html($feature['description']); ?></p>
+                        <?php endif; ?>
+
+                        <?php if (!empty($feature['link'])): ?>
+                            <a href="<?php echo esc_url($feature['link']); ?>" class="jankx-feature-link">
+                                <?php echo esc_html($feature['linkText'] ?? 'Learn More'); ?>
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    <?php else: ?>
+        <div class="jankx-feature-grid-placeholder">
+            <p><?php _e('No features added yet. Add features using the block editor.', 'jankx'); ?></p>
+        </div>
+    <?php endif; ?>
+</div>

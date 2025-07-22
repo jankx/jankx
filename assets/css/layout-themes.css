@@ -1,0 +1,603 @@
+/**
+ * Jankx Layout Themes Styles
+ *
+ * Styles for layout themes, variations, and design systems.
+ * Provides consistent theming across different layout types.
+ */
+
+/* ==========================================================================
+   Theme Variables
+   ========================================================================== */
+
+:root {
+    /* Color Palette */
+    --jankx-primary: #007cba;
+    --jankx-primary-dark: #005a87;
+    --jankx-primary-light: #00a0d2;
+    --jankx-secondary: #6c757d;
+    --jankx-success: #00a32a;
+    --jankx-warning: #dba617;
+    --jankx-error: #dc3232;
+    --jankx-info: #007cba;
+
+    /* Typography */
+    --jankx-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+    --jankx-font-size-base: 16px;
+    --jankx-font-size-sm: 14px;
+    --jankx-font-size-lg: 18px;
+    --jankx-font-size-xl: 24px;
+    --jankx-font-size-2xl: 32px;
+    --jankx-font-size-3xl: 48px;
+
+    /* Spacing */
+    --jankx-spacing-xs: 4px;
+    --jankx-spacing-sm: 8px;
+    --jankx-spacing-md: 16px;
+    --jankx-spacing-lg: 24px;
+    --jankx-spacing-xl: 32px;
+    --jankx-spacing-2xl: 48px;
+    --jankx-spacing-3xl: 64px;
+
+    /* Border Radius */
+    --jankx-border-radius-sm: 4px;
+    --jankx-border-radius-md: 8px;
+    --jankx-border-radius-lg: 12px;
+    --jankx-border-radius-xl: 16px;
+
+    /* Shadows */
+    --jankx-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --jankx-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --jankx-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+    --jankx-shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+
+    /* Transitions */
+    --jankx-transition-fast: 0.15s ease;
+    --jankx-transition-normal: 0.3s ease;
+    --jankx-transition-slow: 0.5s ease;
+}
+
+/* ==========================================================================
+   Theme Variations
+   ========================================================================== */
+
+/* Modern Theme */
+.jankx-theme-modern {
+    --jankx-primary: #6366f1;
+    --jankx-primary-dark: #4f46e5;
+    --jankx-primary-light: #818cf8;
+    --jankx-border-radius-md: 12px;
+    --jankx-shadow-md: 0 10px 15px rgba(99, 102, 241, 0.1);
+}
+
+/* Classic Theme */
+.jankx-theme-classic {
+    --jankx-primary: #1e40af;
+    --jankx-primary-dark: #1e3a8a;
+    --jankx-primary-light: #3b82f6;
+    --jankx-border-radius-md: 4px;
+    --jankx-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Minimal Theme */
+.jankx-theme-minimal {
+    --jankx-primary: #000000;
+    --jankx-primary-dark: #000000;
+    --jankx-primary-light: #666666;
+    --jankx-border-radius-md: 0px;
+    --jankx-shadow-md: none;
+}
+
+/* Playful Theme */
+.jankx-theme-playful {
+    --jankx-primary: #f59e0b;
+    --jankx-primary-dark: #d97706;
+    --jankx-primary-light: #fbbf24;
+    --jankx-border-radius-md: 20px;
+    --jankx-shadow-md: 0 10px 25px rgba(245, 158, 11, 0.2);
+}
+
+/* ==========================================================================
+   Layout Variations
+   ========================================================================== */
+
+/* Hero Section Variations */
+.jankx-hero-variation-centered {
+    text-align: center;
+}
+
+.jankx-hero-variation-left {
+    text-align: left;
+}
+
+.jankx-hero-variation-right {
+    text-align: right;
+}
+
+.jankx-hero-variation-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--jankx-spacing-xl);
+    align-items: center;
+}
+
+.jankx-hero-variation-fullscreen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Testimonial Variations */
+.jankx-testimonial-variation-card {
+    background: #fff;
+    border-radius: var(--jankx-border-radius-md);
+    padding: var(--jankx-spacing-lg);
+    box-shadow: var(--jankx-shadow-md);
+}
+
+.jankx-testimonial-variation-quote {
+    border-left: 4px solid var(--jankx-primary);
+    padding-left: var(--jankx-spacing-lg);
+}
+
+.jankx-testimonial-variation-minimal {
+    text-align: center;
+    padding: var(--jankx-spacing-xl);
+}
+
+/* Feature Grid Variations */
+.jankx-feature-grid-variation-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--jankx-spacing-lg);
+}
+
+.jankx-feature-grid-variation-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--jankx-spacing-md);
+}
+
+.jankx-feature-grid-variation-masonry {
+    columns: 3;
+    column-gap: var(--jankx-spacing-lg);
+}
+
+.jankx-feature-grid-variation-masonry > * {
+    break-inside: avoid;
+    margin-bottom: var(--jankx-spacing-lg);
+}
+
+/* ==========================================================================
+   Component Styles
+   ========================================================================== */
+
+/* Buttons */
+.jankx-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--jankx-spacing-sm) var(--jankx-spacing-lg);
+    border: none;
+    border-radius: var(--jankx-border-radius-md);
+    font-size: var(--jankx-font-size-sm);
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all var(--jankx-transition-normal);
+    line-height: 1.5;
+}
+
+.jankx-btn-primary {
+    background: var(--jankx-primary);
+    color: white;
+}
+
+.jankx-btn-primary:hover {
+    background: var(--jankx-primary-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--jankx-shadow-lg);
+}
+
+.jankx-btn-secondary {
+    background: transparent;
+    color: var(--jankx-primary);
+    border: 2px solid var(--jankx-primary);
+}
+
+.jankx-btn-secondary:hover {
+    background: var(--jankx-primary);
+    color: white;
+}
+
+.jankx-btn-ghost {
+    background: transparent;
+    color: var(--jankx-primary);
+}
+
+.jankx-btn-ghost:hover {
+    background: rgba(0, 124, 186, 0.1);
+}
+
+/* Cards */
+.jankx-card {
+    background: #fff;
+    border-radius: var(--jankx-border-radius-md);
+    padding: var(--jankx-spacing-lg);
+    box-shadow: var(--jankx-shadow-md);
+    transition: all var(--jankx-transition-normal);
+}
+
+.jankx-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--jankx-shadow-lg);
+}
+
+.jankx-card-header {
+    margin-bottom: var(--jankx-spacing-md);
+}
+
+.jankx-card-title {
+    font-size: var(--jankx-font-size-lg);
+    font-weight: 600;
+    color: #1e1e1e;
+    margin: 0 0 var(--jankx-spacing-sm) 0;
+}
+
+.jankx-card-subtitle {
+    font-size: var(--jankx-font-size-sm);
+    color: var(--jankx-secondary);
+    margin: 0;
+}
+
+.jankx-card-body {
+    color: #1e1e1e;
+    line-height: 1.6;
+}
+
+.jankx-card-footer {
+    margin-top: var(--jankx-spacing-md);
+    padding-top: var(--jankx-spacing-md);
+    border-top: 1px solid #e2e4e7;
+}
+
+/* Alerts */
+.jankx-alert {
+    padding: var(--jankx-spacing-md);
+    border-radius: var(--jankx-border-radius-md);
+    margin-bottom: var(--jankx-spacing-md);
+    border-left: 4px solid;
+}
+
+.jankx-alert-info {
+    background: rgba(0, 124, 186, 0.1);
+    border-left-color: var(--jankx-info);
+    color: var(--jankx-info);
+}
+
+.jankx-alert-success {
+    background: rgba(0, 163, 42, 0.1);
+    border-left-color: var(--jankx-success);
+    color: var(--jankx-success);
+}
+
+.jankx-alert-warning {
+    background: rgba(219, 166, 23, 0.1);
+    border-left-color: var(--jankx-warning);
+    color: var(--jankx-warning);
+}
+
+.jankx-alert-error {
+    background: rgba(220, 50, 50, 0.1);
+    border-left-color: var(--jankx-error);
+    color: var(--jankx-error);
+}
+
+/* ==========================================================================
+   Layout Components
+   ========================================================================== */
+
+/* Hero Section */
+.jankx-hero {
+    padding: var(--jankx-spacing-3xl) 0;
+    background: linear-gradient(135deg, var(--jankx-primary) 0%, var(--jankx-primary-light) 100%);
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.jankx-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+.jankx-hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--jankx-spacing-lg);
+}
+
+.jankx-hero-title {
+    font-size: var(--jankx-font-size-3xl);
+    font-weight: 700;
+    margin-bottom: var(--jankx-spacing-lg);
+    line-height: 1.2;
+}
+
+.jankx-hero-description {
+    font-size: var(--jankx-font-size-lg);
+    margin-bottom: var(--jankx-spacing-xl);
+    opacity: 0.9;
+    line-height: 1.6;
+}
+
+.jankx-hero-actions {
+    display: flex;
+    gap: var(--jankx-spacing-md);
+    flex-wrap: wrap;
+}
+
+/* Testimonial */
+.jankx-testimonial {
+    padding: var(--jankx-spacing-xl) 0;
+    background: #f9f9f9;
+}
+
+.jankx-testimonial-content {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 0 var(--jankx-spacing-lg);
+}
+
+.jankx-testimonial-quote {
+    font-size: var(--jankx-font-size-xl);
+    font-style: italic;
+    color: #1e1e1e;
+    margin-bottom: var(--jankx-spacing-lg);
+    line-height: 1.6;
+}
+
+.jankx-testimonial-author {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--jankx-spacing-md);
+}
+
+.jankx-testimonial-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.jankx-testimonial-author-info {
+    text-align: left;
+}
+
+.jankx-testimonial-author-name {
+    font-weight: 600;
+    color: #1e1e1e;
+    margin: 0;
+}
+
+.jankx-testimonial-author-title {
+    font-size: var(--jankx-font-size-sm);
+    color: var(--jankx-secondary);
+    margin: 0;
+}
+
+/* Feature Grid */
+.jankx-feature-grid {
+    padding: var(--jankx-spacing-3xl) 0;
+}
+
+.jankx-feature-grid-header {
+    text-align: center;
+    margin-bottom: var(--jankx-spacing-3xl);
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 var(--jankx-spacing-lg);
+}
+
+.jankx-feature-grid-title {
+    font-size: var(--jankx-font-size-2xl);
+    font-weight: 700;
+    color: #1e1e1e;
+    margin-bottom: var(--jankx-spacing-md);
+}
+
+.jankx-feature-grid-description {
+    font-size: var(--jankx-font-size-lg);
+    color: var(--jankx-secondary);
+    line-height: 1.6;
+}
+
+.jankx-feature-grid-items {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--jankx-spacing-lg);
+}
+
+.jankx-feature-item {
+    text-align: center;
+    padding: var(--jankx-spacing-lg);
+}
+
+.jankx-feature-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto var(--jankx-spacing-lg);
+    background: var(--jankx-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 32px;
+}
+
+.jankx-feature-title {
+    font-size: var(--jankx-font-size-lg);
+    font-weight: 600;
+    color: #1e1e1e;
+    margin-bottom: var(--jankx-spacing-sm);
+}
+
+.jankx-feature-description {
+    color: var(--jankx-secondary);
+    line-height: 1.6;
+}
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .jankx-hero-variation-split {
+        grid-template-columns: 1fr;
+        gap: var(--jankx-spacing-lg);
+    }
+
+    .jankx-hero-title {
+        font-size: var(--jankx-font-size-2xl);
+    }
+
+    .jankx-hero-description {
+        font-size: var(--jankx-font-size-base);
+    }
+
+    .jankx-hero-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .jankx-feature-grid-variation-masonry {
+        columns: 2;
+    }
+
+    .jankx-testimonial-quote {
+        font-size: var(--jankx-font-size-lg);
+    }
+}
+
+@media (max-width: 480px) {
+    .jankx-hero {
+        padding: var(--jankx-spacing-2xl) 0;
+    }
+
+    .jankx-hero-title {
+        font-size: var(--jankx-font-size-xl);
+    }
+
+    .jankx-feature-grid-variation-masonry {
+        columns: 1;
+    }
+
+    .jankx-testimonial-author {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+/* ==========================================================================
+   Dark Mode Support
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+    .jankx-card {
+        background: #1e1e1e;
+        color: #f0f0f1;
+    }
+
+    .jankx-card-title {
+        color: #f0f0f1;
+    }
+
+    .jankx-testimonial {
+        background: #2c3338;
+    }
+
+    .jankx-testimonial-quote {
+        color: #f0f0f1;
+    }
+
+    .jankx-testimonial-author-name {
+        color: #f0f0f1;
+    }
+
+    .jankx-feature-grid-title {
+        color: #f0f0f1;
+    }
+
+    .jankx-feature-title {
+        color: #f0f0f1;
+    }
+}
+
+/* ==========================================================================
+   High Contrast Mode
+   ========================================================================== */
+
+@media (prefers-contrast: high) {
+    .jankx-btn {
+        border-width: 2px;
+    }
+
+    .jankx-card {
+        border: 2px solid #000;
+    }
+
+    .jankx-alert {
+        border-width: 4px;
+    }
+}
+
+/* ==========================================================================
+   Reduced Motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .jankx-btn,
+    .jankx-card {
+        transition: none;
+    }
+
+    .jankx-hero::before {
+        animation: none;
+    }
+}
+
+/* ==========================================================================
+   Print Styles
+   ========================================================================== */
+
+@media print {
+    .jankx-hero {
+        background: #fff !important;
+        color: #000 !important;
+    }
+
+    .jankx-hero::before {
+        display: none;
+    }
+
+    .jankx-testimonial {
+        background: #fff !important;
+    }
+
+    .jankx-card {
+        box-shadow: none;
+        border: 1px solid #000;
+    }
+}

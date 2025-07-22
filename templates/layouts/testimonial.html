@@ -1,0 +1,58 @@
+<?php
+/**
+ * Testimonial Template
+ *
+ * Template for rendering testimonial layouts.
+ * Variables available: $quote, $author, $position, $company, $avatar, $rating
+ */
+?>
+
+<div class="jankx-testimonial">
+    <div class="jankx-testimonial-content">
+        <?php if (!empty($quote)): ?>
+            <blockquote class="jankx-testimonial-quote">
+                <p><?php echo esc_html($quote); ?></p>
+            </blockquote>
+        <?php endif; ?>
+
+        <div class="jankx-testimonial-author">
+            <?php if (!empty($avatar)): ?>
+                <div class="jankx-testimonial-avatar">
+                    <img src="<?php echo esc_url($avatar); ?>" alt="<?php echo esc_attr($author); ?>" class="jankx-testimonial-avatar-img">
+                </div>
+            <?php endif; ?>
+
+            <div class="jankx-testimonial-author-info">
+                <?php if (!empty($author)): ?>
+                    <strong class="jankx-testimonial-author-name"><?php echo esc_html($author); ?></strong>
+                <?php endif; ?>
+
+                <?php if (!empty($position) || !empty($company)): ?>
+                    <span class="jankx-testimonial-author-meta">
+                        <?php if (!empty($position)): ?>
+                            <span class="jankx-testimonial-position"><?php echo esc_html($position); ?></span>
+                        <?php endif; ?>
+
+                        <?php if (!empty($position) && !empty($company)): ?>
+                            <span class="jankx-testimonial-separator"> at </span>
+                        <?php endif; ?>
+
+                        <?php if (!empty($company)): ?>
+                            <span class="jankx-testimonial-company"><?php echo esc_html($company); ?></span>
+                        <?php endif; ?>
+                    </span>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <?php if (!empty($rating) && $rating > 0): ?>
+            <div class="jankx-testimonial-rating">
+                <?php for ($i = 1; $i <= 5; $i++): ?>
+                    <span class="jankx-testimonial-star <?php echo $i <= $rating ? 'filled' : 'empty'; ?>">
+                        ★
+                    </span>
+                <?php endfor; ?>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>

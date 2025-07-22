@@ -1,0 +1,661 @@
+/**
+ * Jankx Layout Preview Styles
+ *
+ * Styles for layout preview and live preview in Gutenberg editor.
+ * Provides visual feedback and preview functionality.
+ */
+
+/* ==========================================================================
+   Layout Preview Container
+   ========================================================================== */
+
+.jankx-layout-preview {
+    position: relative;
+    border: 2px dashed #e2e4e7;
+    border-radius: 8px;
+    margin: 16px 0;
+    background: #f9f9f9;
+    min-height: 200px;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.jankx-layout-preview:hover {
+    border-color: #007cba;
+    background: #f0f6fc;
+}
+
+.jankx-layout-preview.loading {
+    border-color: #007cba;
+    background: #f0f6fc;
+}
+
+.jankx-layout-preview.error {
+    border-color: #dc3232;
+    background: #fff5f5;
+}
+
+.jankx-layout-preview.success {
+    border-color: #00a32a;
+    background: #f0f6fc;
+}
+
+/* ==========================================================================
+   Preview Header
+   ========================================================================== */
+
+.jankx-preview-header {
+    background: #fff;
+    border-bottom: 1px solid #e2e4e7;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 6px 6px 0 0;
+}
+
+.jankx-preview-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e1e1e;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.jankx-preview-title::before {
+    content: '👁️';
+    margin-right: 8px;
+    font-size: 16px;
+}
+
+.jankx-preview-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.jankx-preview-button {
+    background: #007cba;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 3px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.jankx-preview-button:hover {
+    background: #005a87;
+}
+
+.jankx-preview-button.secondary {
+    background: #f0f0f1;
+    color: #1e1e1e;
+    border: 1px solid #8c8f94;
+}
+
+.jankx-preview-button.secondary:hover {
+    background: #e2e4e7;
+}
+
+/* ==========================================================================
+   Preview Content
+   ========================================================================== */
+
+.jankx-preview-content {
+    padding: 20px;
+    min-height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.jankx-preview-placeholder {
+    text-align: center;
+    color: #757575;
+}
+
+.jankx-preview-placeholder-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.jankx-preview-placeholder-text {
+    font-size: 14px;
+    margin: 0;
+}
+
+.jankx-preview-placeholder-description {
+    font-size: 12px;
+    margin: 8px 0 0 0;
+    opacity: 0.7;
+}
+
+/* ==========================================================================
+   Live Preview
+   ========================================================================== */
+
+.jankx-live-preview {
+    position: relative;
+    border: 2px solid #007cba;
+    border-radius: 8px;
+    margin: 16px 0;
+    background: #fff;
+    overflow: hidden;
+}
+
+.jankx-live-preview-header {
+    background: #007cba;
+    color: white;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.jankx-live-preview-label {
+    display: flex;
+    align-items: center;
+}
+
+.jankx-live-preview-label::before {
+    content: '🔄';
+    margin-right: 6px;
+    font-size: 14px;
+}
+
+.jankx-live-preview-status {
+    font-size: 10px;
+    opacity: 0.8;
+}
+
+.jankx-live-preview-content {
+    padding: 20px;
+    position: relative;
+}
+
+.jankx-live-preview-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.jankx-live-preview-loading {
+    text-align: center;
+    color: #007cba;
+}
+
+.jankx-live-preview-loading-spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid #e2e4e7;
+    border-top: 2px solid #007cba;
+    border-radius: 50%;
+    animation: jankx-spin 1s linear infinite;
+    margin: 0 auto 8px;
+}
+
+@keyframes jankx-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   Preview Modes
+   ========================================================================== */
+
+.jankx-preview-mode-selector {
+    display: flex;
+    background: #f0f0f1;
+    border-radius: 4px;
+    padding: 2px;
+    margin-bottom: 16px;
+}
+
+.jankx-preview-mode-button {
+    flex: 1;
+    background: none;
+    border: none;
+    padding: 8px 12px;
+    font-size: 12px;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background-color 0.2s ease;
+}
+
+.jankx-preview-mode-button.active {
+    background: #007cba;
+    color: white;
+}
+
+.jankx-preview-mode-button:hover:not(.active) {
+    background: #e2e4e7;
+}
+
+/* ==========================================================================
+   Device Preview
+   ========================================================================== */
+
+.jankx-device-preview {
+    position: relative;
+    margin: 20px auto;
+    transition: all 0.3s ease;
+}
+
+.jankx-device-preview.desktop {
+    max-width: 100%;
+    border: none;
+}
+
+.jankx-device-preview.tablet {
+    max-width: 768px;
+    border: 8px solid #333;
+    border-radius: 12px;
+    margin: 20px auto;
+}
+
+.jankx-device-preview.mobile {
+    max-width: 375px;
+    border: 8px solid #333;
+    border-radius: 20px;
+    margin: 20px auto;
+}
+
+.jankx-device-preview-content {
+    background: #fff;
+    overflow: hidden;
+}
+
+.jankx-device-preview-content iframe {
+    width: 100%;
+    height: 600px;
+    border: none;
+}
+
+/* ==========================================================================
+   Preview Controls
+   ========================================================================== */
+
+.jankx-preview-controls {
+    background: #f9f9f9;
+    border-top: 1px solid #e2e4e7;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 0 0 6px 6px;
+}
+
+.jankx-preview-controls-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.jankx-preview-controls-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.jankx-preview-control {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #757575;
+}
+
+.jankx-preview-control input[type="checkbox"] {
+    margin: 0;
+}
+
+.jankx-preview-control label {
+    cursor: pointer;
+    margin: 0;
+}
+
+/* ==========================================================================
+   Preview States
+   ========================================================================== */
+
+.jankx-preview-state {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.jankx-preview-state.loading {
+    background: #007cba;
+    color: white;
+}
+
+.jankx-preview-state.error {
+    background: #dc3232;
+    color: white;
+}
+
+.jankx-preview-state.success {
+    background: #00a32a;
+    color: white;
+}
+
+.jankx-preview-state.draft {
+    background: #757575;
+    color: white;
+}
+
+/* ==========================================================================
+   Preview Toolbar
+   ========================================================================== */
+
+.jankx-preview-toolbar {
+    background: #fff;
+    border: 1px solid #e2e4e7;
+    border-radius: 4px;
+    padding: 8px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.jankx-preview-toolbar-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-right: 12px;
+    border-right: 1px solid #e2e4e7;
+}
+
+.jankx-preview-toolbar-group:last-child {
+    border-right: none;
+    padding-right: 0;
+}
+
+.jankx-preview-toolbar-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #757575;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.jankx-preview-toolbar-button {
+    background: none;
+    border: 1px solid #e2e4e7;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.jankx-preview-toolbar-button:hover {
+    background: #f0f0f1;
+    border-color: #007cba;
+}
+
+.jankx-preview-toolbar-button.active {
+    background: #007cba;
+    color: white;
+    border-color: #007cba;
+}
+
+/* ==========================================================================
+   Preview Grid
+   ========================================================================== */
+
+.jankx-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.jankx-preview-grid-item {
+    border: 1px solid #e2e4e7;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #fff;
+    transition: box-shadow 0.2s ease;
+}
+
+.jankx-preview-grid-item:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.jankx-preview-grid-header {
+    background: #f9f9f9;
+    padding: 12px;
+    border-bottom: 1px solid #e2e4e7;
+}
+
+.jankx-preview-grid-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1e1e1e;
+    margin: 0;
+}
+
+.jankx-preview-grid-content {
+    padding: 16px;
+    min-height: 120px;
+}
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+
+@media (max-width: 782px) {
+    .jankx-preview-header {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+    .jankx-preview-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .jankx-preview-controls {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+    .jankx-preview-controls-left,
+    .jankx-preview-controls-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .jankx-preview-toolbar {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .jankx-preview-toolbar-group {
+        border-right: none;
+        padding-right: 0;
+    }
+
+    .jankx-preview-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .jankx-preview-content {
+        padding: 16px;
+    }
+
+    .jankx-live-preview-content {
+        padding: 16px;
+    }
+
+    .jankx-device-preview.tablet,
+    .jankx-device-preview.mobile {
+        max-width: 100%;
+        border: none;
+        margin: 10px 0;
+    }
+}
+
+/* ==========================================================================
+   Dark Mode Support
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+    .jankx-layout-preview {
+        background: #1e1e1e;
+        border-color: #3c434a;
+    }
+
+    .jankx-layout-preview:hover {
+        border-color: #007cba;
+        background: #2c3338;
+    }
+
+    .jankx-preview-header {
+        background: #2c3338;
+        border-color: #3c434a;
+    }
+
+    .jankx-preview-title {
+        color: #f0f0f1;
+    }
+
+    .jankx-preview-placeholder {
+        color: #a7aaad;
+    }
+
+    .jankx-live-preview {
+        background: #1e1e1e;
+        border-color: #007cba;
+    }
+
+    .jankx-live-preview-content {
+        background: #1e1e1e;
+    }
+
+    .jankx-live-preview-overlay {
+        background: rgba(30, 30, 30, 0.9);
+    }
+
+    .jankx-preview-controls {
+        background: #2c3338;
+        border-color: #3c434a;
+    }
+
+    .jankx-preview-toolbar {
+        background: #2c3338;
+        border-color: #3c434a;
+    }
+
+    .jankx-preview-toolbar-button {
+        border-color: #3c434a;
+        color: #f0f0f1;
+    }
+
+    .jankx-preview-toolbar-button:hover {
+        background: #32373c;
+        border-color: #007cba;
+    }
+
+    .jankx-preview-grid-item {
+        background: #1e1e1e;
+        border-color: #3c434a;
+    }
+
+    .jankx-preview-grid-header {
+        background: #2c3338;
+        border-color: #3c434a;
+    }
+
+    .jankx-preview-grid-title {
+        color: #f0f0f1;
+    }
+}
+
+/* ==========================================================================
+   High Contrast Mode
+   ========================================================================== */
+
+@media (prefers-contrast: high) {
+    .jankx-layout-preview {
+        border-width: 3px;
+    }
+
+    .jankx-live-preview {
+        border-width: 3px;
+    }
+
+    .jankx-preview-toolbar-button {
+        border-width: 2px;
+    }
+
+    .jankx-preview-toolbar-button.active {
+        border-width: 3px;
+    }
+}
+
+/* ==========================================================================
+   Reduced Motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .jankx-layout-preview,
+    .jankx-device-preview,
+    .jankx-live-preview-spinner {
+        transition: none;
+    }
+
+    .jankx-live-preview-loading-spinner {
+        animation: none;
+    }
+}
+
+/* ==========================================================================
+   Print Styles
+   ========================================================================== */
+
+@media print {
+    .jankx-layout-preview,
+    .jankx-live-preview {
+        border: 1px solid #000;
+        background: #fff;
+        page-break-inside: avoid;
+    }
+
+    .jankx-preview-header,
+    .jankx-live-preview-header,
+    .jankx-preview-controls,
+    .jankx-preview-toolbar {
+        background: #f0f0f0;
+        border-color: #000;
+    }
+
+    .jankx-preview-button,
+    .jankx-preview-toolbar-button {
+        display: none;
+    }
+}

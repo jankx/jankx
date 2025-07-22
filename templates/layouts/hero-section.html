@@ -1,0 +1,39 @@
+<?php
+/**
+ * Hero Section Template
+ *
+ * Template for rendering hero section layouts.
+ * Variables available: $title, $description, $buttonText, $buttonUrl, $backgroundImage, $overlay
+ */
+?>
+
+<div class="jankx-hero-section">
+    <?php if (!empty($backgroundImage)): ?>
+        <div class="jankx-hero-background">
+            <img src="<?php echo esc_url($backgroundImage); ?>" alt="" class="jankx-hero-bg-image">
+            <?php if ($overlay): ?>
+                <div class="jankx-hero-overlay"></div>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
+
+    <div class="jankx-hero-content">
+        <div class="jankx-hero-container">
+            <?php if (!empty($title)): ?>
+                <h1 class="jankx-hero-title"><?php echo esc_html($title); ?></h1>
+            <?php endif; ?>
+
+            <?php if (!empty($description)): ?>
+                <p class="jankx-hero-description"><?php echo esc_html($description); ?></p>
+            <?php endif; ?>
+
+            <?php if (!empty($buttonText)): ?>
+                <div class="jankx-hero-actions">
+                    <a href="<?php echo esc_url($buttonUrl ?? '#'); ?>" class="jankx-hero-button">
+                        <?php echo esc_html($buttonText); ?>
+                    </a>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>

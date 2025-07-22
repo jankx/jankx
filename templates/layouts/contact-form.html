@@ -1,0 +1,96 @@
+<?php
+/**
+ * Contact Form Template
+ *
+ * Template for rendering contact form layouts.
+ * Variables available: $title, $description, $email, $phone, $address, $successMessage
+ */
+?>
+
+<div class="jankx-contact-form">
+    <?php if (!empty($title)): ?>
+        <div class="jankx-contact-form-header">
+            <h2 class="jankx-contact-form-title"><?php echo esc_html($title); ?></h2>
+
+            <?php if (!empty($description)): ?>
+                <p class="jankx-contact-form-description"><?php echo esc_html($description); ?></p>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
+
+    <div class="jankx-contact-form-content">
+        <form class="jankx-contact-form-form" method="post" action="">
+            <?php wp_nonce_field('jankx_contact_form', 'jankx_contact_nonce'); ?>
+
+            <div class="jankx-contact-form-fields">
+                <div class="jankx-form-row">
+                    <div class="jankx-form-field">
+                        <label for="jankx_contact_name" class="jankx-form-label"><?php _e('Name', 'jankx'); ?> *</label>
+                        <input type="text" id="jankx_contact_name" name="jankx_contact_name" class="jankx-form-input" required>
+                    </div>
+
+                    <div class="jankx-form-field">
+                        <label for="jankx_contact_email" class="jankx-form-label"><?php _e('Email', 'jankx'); ?> *</label>
+                        <input type="email" id="jankx_contact_email" name="jankx_contact_email" class="jankx-form-input" required>
+                    </div>
+                </div>
+
+                <div class="jankx-form-row">
+                    <div class="jankx-form-field">
+                        <label for="jankx_contact_subject" class="jankx-form-label"><?php _e('Subject', 'jankx'); ?> *</label>
+                        <input type="text" id="jankx_contact_subject" name="jankx_contact_subject" class="jankx-form-input" required>
+                    </div>
+
+                    <div class="jankx-form-field">
+                        <label for="jankx_contact_phone" class="jankx-form-label"><?php _e('Phone', 'jankx'); ?></label>
+                        <input type="tel" id="jankx_contact_phone" name="jankx_contact_phone" class="jankx-form-input">
+                    </div>
+                </div>
+
+                <div class="jankx-form-field">
+                    <label for="jankx_contact_message" class="jankx-form-label"><?php _e('Message', 'jankx'); ?> *</label>
+                    <textarea id="jankx_contact_message" name="jankx_contact_message" class="jankx-form-textarea" rows="5" required></textarea>
+                </div>
+            </div>
+
+            <div class="jankx-contact-form-submit">
+                <button type="submit" class="jankx-form-submit">
+                    <?php _e('Send Message', 'jankx'); ?>
+                </button>
+            </div>
+        </form>
+
+        <?php if (!empty($email) || !empty($phone) || !empty($address)): ?>
+            <div class="jankx-contact-info">
+                <h3 class="jankx-contact-info-title"><?php _e('Contact Information', 'jankx'); ?></h3>
+
+                <div class="jankx-contact-info-items">
+                    <?php if (!empty($email)): ?>
+                        <div class="jankx-contact-info-item">
+                            <i class="jankx-contact-icon jankx-icon-email"></i>
+                            <span class="jankx-contact-info-text">
+                                <a href="mailto:<?php echo esc_attr($email); ?>"><?php echo esc_html($email); ?></a>
+                            </span>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (!empty($phone)): ?>
+                        <div class="jankx-contact-info-item">
+                            <i class="jankx-contact-icon jankx-icon-phone"></i>
+                            <span class="jankx-contact-info-text">
+                                <a href="tel:<?php echo esc_attr($phone); ?>"><?php echo esc_html($phone); ?></a>
+                            </span>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (!empty($address)): ?>
+                        <div class="jankx-contact-info-item">
+                            <i class="jankx-contact-icon jankx-icon-location"></i>
+                            <span class="jankx-contact-info-text"><?php echo esc_html($address); ?></span>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>
