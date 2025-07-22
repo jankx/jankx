@@ -71,10 +71,7 @@ class Logger
             return;
         }
         $formattedMessage = $this->formatMessage($level, $message, $context);
-        // Log to file or system log
-        if (!self::$instance) {
-            error_log($formattedMessage);
-        }
+        error_log($formattedMessage);
     }
 
     /**
