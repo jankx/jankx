@@ -29,21 +29,26 @@ class GutenbergFrontendBootstrapper extends AbstractBootstrapper
 
     public function bootstrap(Container $container): void
     {
-        // Parse post content to find used blocks
-        $used_blocks = $this->parseUsedBlocks();
-
-        // Register only used blocks
-        $this->registerUsedBlocks($used_blocks);
-
+        Logger::info('GutenbergFrontendBootstrapper is booting');
+        // Only parse and register blocks after the_post of the main query
+        add_action('the_post', function($post) use ($container) {
+            static $parsed = false;
+            if ($parsed) {
+                return;
+            }
+            global $wp_query;
+            if (isset($wp_query) && method_exists($wp_query, 'is_main_query') && $wp_query->is_main_query()) {
+                $used_blocks = $this->parseUsedBlocks();
+                $used_blocks = array_unique($used_blocks);
+                $this->registerUsedBlocks($used_blocks);
+                $parsed = true;
+            }
+        });
         // Initialize partial hydration
         $this->initializePartialHydration();
-
         // Enqueue frontend assets via proper WordPress hooks
         add_action('wp_enqueue_scripts', [$this, 'enqueueFrontendAssets']);
-
         Logger::debug('Gutenberg Frontend Bootstrapper initialized', [
-            'used_blocks' => $used_blocks,
-            'total_blocks' => count($used_blocks),
             'context' => 'frontend'
         ]);
     }
@@ -54,27 +59,13 @@ class GutenbergFrontendBootstrapper extends AbstractBootstrapper
     protected function parseUsedBlocks(): array
     {
         global $post;
-
-        $used_blocks = [];
-
-        // Get current post content
-        $content = '';
-        if ($post && isset($post->post_content)) {
-            $content = $post->post_content;
-        }
-
-        // Also check for blocks in widgets and other areas
-        $widget_content = $this->getWidgetContent();
-        $content .= $widget_content;
-
-        // Parse blocks from content
+        $content = $post->post_content ?? '';
+        $content .= $this->getWidgetContent();
         $blocks = parse_blocks($content);
+        Logger::debug('Parsed blocks array', ['blocks' => $blocks]);
         $used_blocks = $this->extractJankxBlocks($blocks);
-
-        // Allow filtering of used blocks
-        $used_blocks = apply_filters('jankx/frontend/used_blocks', $used_blocks, $content);
-
-        return array_unique($used_blocks);
+        Logger::debug('Extracted Jankx block names', ['used_blocks' => $used_blocks]);
+        return array_unique(apply_filters('jankx/frontend/used_blocks', $used_blocks, $content));
     }
 
     /**
