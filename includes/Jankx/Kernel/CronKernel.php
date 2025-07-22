@@ -4,6 +4,7 @@ namespace Jankx\Kernel;
 
 use Jankx\Contracts\KernelInterface;
 use Jankx\Bootstrappers\Global\ThemeBootstrapper;
+use Jankx\Facades\Logger;
 
 /**
  * Cron Kernel
@@ -173,7 +174,7 @@ class CronKernel extends Kernel implements KernelInterface
      */
     protected function logInfo(string $message): void
     {
-        error_log("Jankx Cron Info: {$message}");
+        Logger::info("Jankx Cron Info: {$message}");
     }
 
     /**
@@ -181,7 +182,7 @@ class CronKernel extends Kernel implements KernelInterface
      */
     protected function logError(string $message): void
     {
-        error_log("Jankx Cron Error: {$message}");
+        Logger::error("Jankx Cron Error: {$message}");
     }
 
     /**
@@ -189,7 +190,7 @@ class CronKernel extends Kernel implements KernelInterface
      */
     protected function logSuccess(string $message): void
     {
-        error_log("Jankx Cron Success: {$message}");
+        Logger::success("Jankx Cron Success: {$message}");
     }
 
     /**
@@ -197,6 +198,6 @@ class CronKernel extends Kernel implements KernelInterface
      */
     protected function logWarning(string $message): void
     {
-        error_log("Jankx Cron Warning: {$message}");
+        Logger::warning("Jankx Cron Warning: {$message}");
     }
 }

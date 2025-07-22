@@ -6,6 +6,7 @@ use Jankx\Jankx;
 use Jankx\Contracts\KernelInterface;
 use Jankx\Contracts\BootstrapperInterface;
 use Illuminate\Container\Container;
+use Jankx\Facades\Logger;
 
 /**
  * Abstract Kernel Class
@@ -299,10 +300,10 @@ abstract class Kernel implements KernelInterface
                     $provider->register();
                     $provider->boot();
                 } catch (\Exception $e) {
-                    error_log(sprintf("%s: Không thể khởi tạo Service Provider {$providerClass}: " . $e->getMessage(), get_class($this)));
+                    Logger::error(sprintf("%s: Không thể khởi tạo Service Provider {$providerClass}: %s", get_class($this), $e->getMessage()));
                 }
             } else {
-                error_log(sprintf("%s: Service Provider {$providerClass} không tồn tại", get_class($this)));
+                Logger::error(sprintf("%s: Service Provider {$providerClass} không tồn tại", get_class($this)));
             }
         }
     }

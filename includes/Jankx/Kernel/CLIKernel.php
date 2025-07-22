@@ -9,6 +9,7 @@ use Jankx\Command\CommandManager;
 use Jankx\Command\Commands\CacheCommand;
 use Jankx\Command\Commands\OptimizeCommand;
 use Jankx\Command\Commands\SecurityCommand;
+use Jankx\Facades\Logger;
 
 /**
  * CLI Kernel
@@ -280,7 +281,7 @@ class CLIKernel extends Kernel implements KernelInterface
      */
     protected function logError(string $message): void
     {
-        error_log("Jankx CLI Error: {$message}");
+        Logger::error("Jankx CLI Error: {$message}");
     }
 
     /**
@@ -288,7 +289,7 @@ class CLIKernel extends Kernel implements KernelInterface
      */
     protected function logInfo(string $message): void
     {
-        error_log("Jankx CLI Info: {$message}");
+        Logger::info("Jankx CLI Info: {$message}");
     }
 
     /**
@@ -296,7 +297,7 @@ class CLIKernel extends Kernel implements KernelInterface
      */
     protected function logSuccess(string $message): void
     {
-        error_log("Jankx CLI Success: {$message}");
+        Logger::success("Jankx CLI Success: {$message}");
     }
 
     /**
@@ -304,6 +305,6 @@ class CLIKernel extends Kernel implements KernelInterface
      */
     protected function logWarning(string $message): void
     {
-        error_log("Jankx CLI Warning: {$message}");
+        Logger::warning("Jankx CLI Warning: {$message}");
     }
 }

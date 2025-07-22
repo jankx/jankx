@@ -51,9 +51,7 @@ class Logger
      */
     public function debug($message, array $context = [])
     {
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            $this->log('debug', $message, $context);
-        }
+        $this->log('debug', $message, $context);
     }
 
     /**
@@ -64,7 +62,7 @@ class Logger
      */
     protected function log($level, $message, array $context = [])
     {
-        // Chỉ log warning, error hoặc nếu có JANKX_LOG_ALL
+        // Only log warning, error, or if JANKX_DEBUG is true
         $shouldLog = (
             (defined('JANKX_DEBUG') && constant('JANKX_DEBUG') === true) ||
             in_array($level, ['warning', 'error'])
@@ -73,7 +71,10 @@ class Logger
             return;
         }
         $formattedMessage = $this->formatMessage($level, $message, $context);
-        error_log($formattedMessage);
+        // Log to file or system log
+        if (!self::$instance) {
+            error_log($formattedMessage);
+        }
     }
 
     /**
