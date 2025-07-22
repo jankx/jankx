@@ -8,31 +8,49 @@ Thư mục này chứa tất cả tài liệu liên quan đến Jankx Gutenberg 
 
 ### Core System Documentation
 
-1. **[GUTENBERG_LAYOUT_SYSTEM.md](./GUTENBERG_LAYOUT_SYSTEM.md)** - Tài liệu tổng quan về hệ thống Gutenberg Layout
+1. **[GUTENBERG_BLOCKS.md](./GUTENBERG_BLOCKS.md)** - Tài liệu về Gutenberg Blocks System
+   - Block registration và architecture
+   - React components và PHP rendering
+   - Testimonial block implementation
+   - Adding new blocks guide
+
+2. **[GUTENBERG_AJAX_SYSTEM.md](./GUTENBERG_AJAX_SYSTEM.md)** - Tài liệu về Gutenberg AJAX System
+   - Dedicated kernel cho AJAX requests
+   - Performance optimization
+   - Security features
+   - Integration với frontend
+
+3. **[GUTENBERG_FRONTEND_SYSTEM.md](./GUTENBERG_FRONTEND_SYSTEM.md)** - Tài liệu về Gutenberg Frontend System
+   - Post content parsing
+   - Selective block registration
+   - Performance optimization
+   - Partial hydration integration
+
+4. **[GUTENBERG_LAYOUT_SYSTEM.md](./GUTENBERG_LAYOUT_SYSTEM.md)** - Tài liệu tổng quan về hệ thống Gutenberg Layout
    - Architecture và core components
    - Layout Registry và Layout Manager
    - System flow và workflow
    - Usage examples và best practices
 
-2. **[LAYOUT_OPTIONS.md](./LAYOUT_OPTIONS.md)** - Tài liệu về Layout Options System
+5. **[LAYOUT_OPTIONS.md](./LAYOUT_OPTIONS.md)** - Tài liệu về Layout Options System
    - Option groups và types
    - Registration và validation
    - React integration
    - Performance features
 
-3. **[LAYOUT_TEMPLATE_SYSTEM.md](./LAYOUT_TEMPLATE_SYSTEM.md)** - Tài liệu về Layout Template System
+6. **[LAYOUT_TEMPLATE_SYSTEM.md](./LAYOUT_TEMPLATE_SYSTEM.md)** - Tài liệu về Layout Template System
    - Template registration và rendering
    - Block configuration
    - Template variables
    - Custom templates
 
-4. **[PARTIAL_HYDRATION_SYSTEM.md](./PARTIAL_HYDRATION_SYSTEM.md)** - Tài liệu về Partial Hydration
+7. **[PARTIAL_HYDRATION_SYSTEM.md](./PARTIAL_HYDRATION_SYSTEM.md)** - Tài liệu về Partial Hydration
    - JavaScript implementation
    - AJAX handling
    - Performance monitoring
    - Error handling
 
-5. **[LAYOUT_OPTIONS_CSS.md](./LAYOUT_OPTIONS_CSS.md)** - Tài liệu về CSS Framework
+8. **[LAYOUT_OPTIONS_CSS.md](./LAYOUT_OPTIONS_CSS.md)** - Tài liệu về CSS Framework
    - Layout options styling
    - Theme system
    - Responsive design
@@ -133,6 +151,18 @@ document.addEventListener('DOMContentLoaded', function() {
 - Responsive design
 - Accessibility features
 
+### Gutenberg AJAX System
+- Dedicated kernel cho AJAX requests
+- Performance optimization
+- Security features
+- Real-time monitoring
+
+### Gutenberg Frontend System
+- Post content parsing
+- Selective block registration
+- Performance optimization
+- Partial hydration integration
+
 ## Key Features
 
 ### Performance
@@ -219,27 +249,37 @@ document.addEventListener('DOMContentLoaded', function() {
 - `includes/Jankx/Gutenberg/LayoutOptions.php`
 - `includes/Jankx/Gutenberg/LayoutTemplate.php`
 - `includes/Jankx/Gutenberg/AjaxHandler.php`
+- `includes/Jankx/Gutenberg/BlockRegistry.php`
+- `includes/Jankx/Gutenberg/Blocks/AbstractBlock.php`
+- `includes/Jankx/Gutenberg/Blocks/TestimonialBlock.php`
 
 ### JavaScript Files
 - `assets/js/partial-hydration.js`
 - `assets/js/layout-options.js`
+- `assets/gutenberg/js/editor.js`
+- `assets/gutenberg/js/blocks/testimonial/index.js`
 
 ### CSS Files
 - `assets/css/layout-options.css`
 - `assets/css/layout-preview.css`
 - `assets/css/layout-themes.css`
 - `assets/css/partial-hydration.css`
+- `assets/gutenberg/css/editor.css`
+- `assets/gutenberg/css/frontend.css`
 
 ### Template Files
 - `templates/layouts/hero-section.html`
 - `templates/layouts/testimonial.html`
 - `templates/layouts/feature-grid.html`
 - `templates/layouts/contact-form.html`
-- `templates/layouts/blocks/`
+- `templates/blocks/testimonial.html`
 
 ## Support
 
 Để được hỗ trợ hoặc báo cáo vấn đề, vui lòng tham khảo:
+- [GUTENBERG_BLOCKS.md](./GUTENBERG_BLOCKS.md) - Blocks system guide
+- [GUTENBERG_AJAX_SYSTEM.md](./GUTENBERG_AJAX_SYSTEM.md) - AJAX system guide
+- [GUTENBERG_FRONTEND_SYSTEM.md](./GUTENBERG_FRONTEND_SYSTEM.md) - Frontend system guide
 - [GUTENBERG_LAYOUT_SYSTEM.md](./GUTENBERG_LAYOUT_SYSTEM.md) - Tài liệu tổng quan
 - [LAYOUT_OPTIONS.md](./LAYOUT_OPTIONS.md) - Hướng dẫn options
 - [LAYOUT_TEMPLATE_SYSTEM.md](./LAYOUT_TEMPLATE_SYSTEM.md) - Template system

@@ -53,7 +53,12 @@ class KernelManager
             return; // Stop here, do not check other contexts
         }
 
-        if (wp_doing_cron()) {
+        // Check for Gutenberg AJAX requests first
+        if (wp_doing_ajax() &&
+            (isset($_POST['action']) || isset($_GET['action'])) &&
+            (strpos($_POST['action'] ?? $_GET['action'] ?? '', 'jankx_gutenberg') === 0)) {
+            $this->currentKernel = $this->container->make(GutenbergAjaxKernel::class);
+        } elseif (wp_doing_cron()) {
             $this->currentKernel = $this->container->make(CronKernel::class);
         } elseif (defined('REST_REQUEST') && REST_REQUEST) {
             $this->currentKernel = $this->container->make(APIKernel::class);
@@ -148,6 +153,10 @@ class KernelManager
                 $this->bootKernel('cron');
                 break;
 
+            case 'gutenberg-ajax':
+                $this->bootKernel('gutenberg-ajax');
+                break;
+
             default:
                 $this->bootKernel('frontend');
                 break;
@@ -165,6 +174,13 @@ class KernelManager
 
         if (wp_doing_cron()) {
             return 'cron';
+        }
+
+        // Check for Gutenberg AJAX requests
+        if (wp_doing_ajax() &&
+            (isset($_POST['action']) || isset($_GET['action'])) &&
+            (strpos($_POST['action'] ?? $_GET['action'] ?? '', 'jankx_gutenberg') === 0)) {
+            return 'gutenberg-ajax';
         }
 
         if (is_admin()) {

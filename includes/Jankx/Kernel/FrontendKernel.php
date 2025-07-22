@@ -5,6 +5,7 @@ namespace Jankx\Kernel;
 use Jankx\Contracts\KernelInterface;
 use Jankx\Bootstrappers\Frontend\FrontendBootstrapper;
 use Jankx\Bootstrappers\Global\ThemeBootstrapper;
+use Jankx\Bootstrappers\GutenbergFrontendBootstrapper;
 
 /**
  * Frontend Kernel
@@ -30,6 +31,9 @@ class FrontendKernel extends Kernel implements KernelInterface
     {
         // Theme bootstrapper (highest priority)
         $this->addBootstrapper(ThemeBootstrapper::class);
+
+        // Gutenberg Frontend bootstrapper (for used blocks only)
+        $this->addBootstrapper(GutenbergFrontendBootstrapper::class);
 
         // Frontend bootstrapper
         $this->addBootstrapper(FrontendBootstrapper::class);

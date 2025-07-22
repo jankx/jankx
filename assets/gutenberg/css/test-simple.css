@@ -1,0 +1,24 @@
+/* Test Simple Block Styles */
+
+.wp-block-jankx-test-simple {
+    padding: 1rem;
+    border: 2px dashed #ddd;
+    background: #f9f9f9;
+    border-radius: 4px;
+    margin: 1rem 0;
+}
+
+.wp-block-jankx-test-simple.is-selected {
+    border-color: #007cba;
+    background: #f0f8ff;
+}
+
+.wp-block-jankx-test-simple p {
+    margin: 0;
+}
+
+.wp-block-jankx-test-simple p:empty::before {
+    content: 'Enter content...';
+    color: #6c757d;
+    font-style: italic;
+}

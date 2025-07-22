@@ -1,0 +1,69 @@
+<?php
+/**
+ * Testimonial Block Template
+ *
+ * Available variables:
+ * - $block_id: Unique block ID
+ * - $class_name: CSS classes
+ * - $content: Testimonial content
+ * - $author: Author name
+ * - $position: Author position
+ * - $company: Author company
+ * - $avatar_url: Avatar image URL
+ * - $rating: Star rating (1-5)
+ * - $style: Block style variant
+ * - $alignment: Text alignment
+ * - $show_avatar: Whether to show avatar
+ * - $show_rating: Whether to show rating
+ * - $background_color: Background color
+ * - $text_color: Text color
+ * - $style_attr: Inline styles
+ */
+?>
+<div id="<?php echo esc_attr($block_id); ?>" class="<?php echo esc_attr($class_name); ?>"<?php echo $style_attr; ?>>
+    <div class="jankx-testimonial-content">
+        <?php if ($show_rating && $rating > 0): ?>
+            <div class="jankx-testimonial-rating">
+                <?php for ($i = 1; $i <= 5; $i++): ?>
+                    <span class="jankx-star <?php echo $i <= $rating ? 'filled' : 'empty'; ?>">★</span>
+                <?php endfor; ?>
+            </div>
+        <?php endif; ?>
+
+        <blockquote class="jankx-testimonial-quote">
+            <?php echo wp_kses_post($content); ?>
+        </blockquote>
+
+        <?php if ($author || $position || $company): ?>
+            <div class="jankx-testimonial-author">
+                <?php if ($show_avatar && $avatar_url): ?>
+                    <div class="jankx-testimonial-avatar">
+                        <img src="<?php echo esc_url($avatar_url); ?>" alt="<?php echo esc_attr($author); ?>" />
+                    </div>
+                <?php endif; ?>
+
+                <div class="jankx-testimonial-author-info">
+                    <?php if ($author): ?>
+                        <div class="jankx-testimonial-author-name"><?php echo esc_html($author); ?></div>
+                    <?php endif; ?>
+
+                    <?php if ($position || $company): ?>
+                        <div class="jankx-testimonial-author-meta">
+                            <?php if ($position): ?>
+                                <span class="jankx-testimonial-position"><?php echo esc_html($position); ?></span>
+                            <?php endif; ?>
+
+                            <?php if ($position && $company): ?>
+                                <span class="jankx-testimonial-separator">, </span>
+                            <?php endif; ?>
+
+                            <?php if ($company): ?>
+                                <span class="jankx-testimonial-company"><?php echo esc_html($company); ?></span>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>

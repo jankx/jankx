@@ -3,25 +3,24 @@
 namespace Jankx\Kernel;
 
 use Jankx\Contracts\KernelInterface;
-use Jankx\Bootstrappers\Dashboard\AdminBootstrapper;
 use Jankx\Bootstrappers\Global\ThemeBootstrapper;
-use Jankx\Bootstrappers\GutenbergBootstrapper;
+use Jankx\Bootstrappers\GutenbergAjaxBootstrapper;
 
 /**
- * Admin Kernel
+ * Gutenberg AJAX Kernel
  *
- * Handles admin-specific features
+ * Handles Gutenberg AJAX requests for partial hydration and block data
  *
  * @package Jankx\Kernel
  */
-class AdminKernel extends Kernel implements KernelInterface
+class GutenbergAjaxKernel extends Kernel implements KernelInterface
 {
     /**
      * Get kernel type
      */
     public function getKernelType(): string
     {
-        return 'admin';
+        return 'gutenberg-ajax';
     }
 
     /**
@@ -32,14 +31,11 @@ class AdminKernel extends Kernel implements KernelInterface
         // Theme bootstrapper (highest priority)
         $this->addBootstrapper(ThemeBootstrapper::class);
 
-        // Gutenberg bootstrapper (for block registration)
-        $this->addBootstrapper(GutenbergBootstrapper::class);
-
-        // Admin bootstrapper
-        $this->addBootstrapper(AdminBootstrapper::class);
+        // Gutenberg AJAX bootstrapper
+        $this->addBootstrapper(GutenbergAjaxBootstrapper::class);
 
         // Allow child themes to add custom bootstrappers
-        $customBootstrappers = apply_filters('jankx/admin/bootstrappers', []);
+        $customBootstrappers = apply_filters('jankx/gutenberg-ajax/bootstrappers', []);
         foreach ($customBootstrappers as $bootstrapper) {
             $this->addBootstrapper($bootstrapper);
         }
@@ -50,7 +46,7 @@ class AdminKernel extends Kernel implements KernelInterface
      */
     protected function registerServices(): void
     {
-        // Admin-specific services will be registered here
+        // Gutenberg AJAX-specific services will be registered here
     }
 
     /**
@@ -58,7 +54,7 @@ class AdminKernel extends Kernel implements KernelInterface
      */
     protected function registerHooks(): void
     {
-        // Admin-specific hooks will be registered here
+        // Gutenberg AJAX-specific hooks will be registered here
     }
 
     /**
@@ -66,7 +62,7 @@ class AdminKernel extends Kernel implements KernelInterface
      */
     protected function registerFilters(): void
     {
-        // Admin-specific filters will be registered here
+        // Gutenberg AJAX-specific filters will be registered here
     }
 
     /**
@@ -75,7 +71,7 @@ class AdminKernel extends Kernel implements KernelInterface
     public function boot(): void
     {
         parent::boot();
-        // Additional boot logic for admin if needed
+        // Additional boot logic for Gutenberg AJAX if needed
     }
 
     /**
