@@ -9,7 +9,7 @@ use Jankx\Gutenberg\LayoutRegistry;
  *
  * Provides easy access to Layout Registry functionality.
  */
-class Layout extends \Jankx\Facade
+class Layout extends Facade
 {
     /**
      * Get the facade accessor

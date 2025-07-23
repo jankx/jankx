@@ -1,8 +1,9 @@
 <?php
 
-namespace Jankx;
+namespace Jankx\Facades;
 
 use Illuminate\Container\Container;
+use Jankx\Jankx;
 
 /**
  * Facade class for Jankx Framework

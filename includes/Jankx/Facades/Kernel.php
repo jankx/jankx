@@ -2,7 +2,6 @@
 
 namespace Jankx\Facades;
 
-use Jankx\Facade;
 use Jankx\Kernel\KernelManager;
 
 /**

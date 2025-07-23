@@ -9,7 +9,7 @@ use Jankx\Gutenberg\LayoutOptions;
  *
  * Provides easy access to Layout Options functionality.
  */
-class Options extends \Jankx\Facade
+class Options extends Facade
 {
     /**
      * Get the facade accessor
