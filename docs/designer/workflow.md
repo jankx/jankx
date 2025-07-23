@@ -359,7 +359,7 @@ class WordPressThemeGenerator
     {
         $css = "/*\n";
         $css .= "Theme Name: Generated Theme\n";
-        $css .= "Description: Auto-generated theme from design\n";
+        $css .= "Description: Theme generated from design data\n";
         $css .= "Version: 1.0.0\n";
         $css .= "*/\n\n";
 
@@ -451,7 +451,7 @@ class WordPressThemeGenerator
     private function generateThemeFunctions(): string
     {
         $php = "<?php\n\n";
-        $php .= "// Auto-generated theme functions\n\n";
+        $php .= "// Theme functions generated from design data\n\n";
 
         // Add theme setup
         $php .= "function jankx_theme_setup() {\n";
@@ -513,7 +513,7 @@ class WordPressThemeGenerator
             'title' => ucfirst($name),
             'category' => 'jankx',
             'icon' => 'admin-generic',
-            'description' => $component['description'] ?? "Auto-generated {$name} component",
+            'description' => $component['description'] ?? "Generated {$name} component",
             'supports' => [
                 'html' => false,
                 'anchor' => true,
@@ -672,7 +672,7 @@ class WordPressThemeGenerator
             'theme' => [
                 'name' => 'Generated Theme',
                 'version' => '1.0.0',
-                'description' => 'Auto-generated theme from design',
+                'description' => 'Theme generated from design data',
             ],
             'design' => [
                 'colors' => $this->designData->getColors(),

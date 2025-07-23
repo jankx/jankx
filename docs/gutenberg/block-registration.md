@@ -604,7 +604,7 @@ abstract class AbstractBlock
 
         $templateContent = file_get_contents($templatePath);
 
-        // Simple template engine
+        // Basic template engine
         foreach ($data as $key => $value) {
             $templateContent = str_replace('{{' . $key . '}}', $value, $templateContent);
         }

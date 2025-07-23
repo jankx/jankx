@@ -610,7 +610,7 @@ class CriticalCSSGenerator
 
     private function parseCSSRules(string $css): array
     {
-        // Simple CSS parser
+        // Basic CSS parser
         $rules = [];
         $currentRule = '';
         $braceCount = 0;

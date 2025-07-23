@@ -436,7 +436,7 @@ class UserIntegrationTest extends TestCase
 ### 1. Complexity Limits
 ```php
 // ✅ GOOD - Low complexity
-class SimpleValidator
+class BasicValidator
 {
     public function validate(array $data): bool
     {
