@@ -71,7 +71,7 @@ class CLIKernel extends Kernel implements KernelInterface
     protected function registerFilters(): void
     {
         // CLI output formatting
-        $this->addFilter('jankx_cli_output', [$this, 'formatCLIOutput']);
+        $this->addFilter('jankx/cli/output', [$this, 'formatCLIOutput']);
     }
 
     /**
@@ -89,7 +89,7 @@ class CLIKernel extends Kernel implements KernelInterface
         $this->logInfo('CLI Kernel initialized successfully');
 
         // Allow child themes to hook into CLI initialization
-        do_action('jankx_cli_initialized');
+        do_action('jankx/cli/initialized');
     }
 
     /**
@@ -106,7 +106,7 @@ class CLIKernel extends Kernel implements KernelInterface
         \WP_CLI::add_command('jankx version', [$this, 'showVersion']);
 
         // Allow child themes to register custom WP-CLI commands
-        do_action('jankx_wpcli_register_commands');
+        do_action('jankx/wpcli/register_commands');
     }
 
     /**

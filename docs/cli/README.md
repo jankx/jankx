@@ -10,9 +10,23 @@ Jankx framework cung cấp các WordPress CLI commands để quản lý và tư�
 
 ## 🚀 **Available Commands**
 
+### 📋 **Table of Contents**
+
+#### **Information Commands**
+- [`wp jankx info`](#wp-jankx-info) - Hiển thị thông tin framework và môi trường
+- [`wp jankx version`](#wp-jankx-version) - Hiển thị phiên bản framework
+
+#### **Future Commands** (Sẽ được implement)
+- [`wp jankx cache`](#wp-jankx-cache) - Quản lý cache
+- [`wp jankx optimize`](#wp-jankx-optimize) - Tối ưu hóa performance
+- [`wp jankx security`](#wp-jankx-security) - Kiểm tra bảo mật
+- [`wp jankx debug`](#wp-jankx-debug) - Debug và troubleshooting
+
+---
+
 ### **Framework Information**
 
-#### `wp jankx info`
+#### `wp jankx info` {#wp-jankx-info}
 Hiển thị thông tin chi tiết về framework và môi trường:
 
 ```bash
@@ -29,7 +43,7 @@ Memory Limit: 256M
 Max Execution Time: 30s
 ```
 
-#### `wp jankx version`
+#### `wp jankx version` {#wp-jankx-version}
 Hiển thị phiên bản hiện tại của Jankx framework:
 
 ```bash
@@ -53,14 +67,14 @@ wp jankx <command> [options]
 ### **Command Categories**
 
 #### **Information Commands**
-- `info` - Hiển thị thông tin framework và môi trường
-- `version` - Hiển thị phiên bản framework
+- [`info`](#wp-jankx-info) - Hiển thị thông tin framework và môi trường
+- [`version`](#wp-jankx-version) - Hiển thị phiên bản framework
 
 #### **Future Commands** (Sẽ được implement)
-- `cache` - Quản lý cache
-- `optimize` - Tối ưu hóa performance
-- `security` - Kiểm tra bảo mật
-- `debug` - Debug và troubleshooting
+- [`cache`](#wp-jankx-cache) - Quản lý cache
+- [`optimize`](#wp-jankx-optimize) - Tối ưu hóa performance
+- [`security`](#wp-jankx-security) - Kiểm tra bảo mật
+- [`debug`](#wp-jankx-debug) - Debug và troubleshooting
 
 ## 🛠️ **Development**
 

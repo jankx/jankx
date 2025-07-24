@@ -306,7 +306,7 @@ function jankx_register_pattern_categories() {
         ['label' => 'Jankx Tabs Layouts']
     );
 }
-add_action('init', 'jankx_register_pattern_categories');
+add_action('init', 'jankx/register_pattern_categories');
 ```
 
 ### 2. Pattern Registration Helper
@@ -388,7 +388,7 @@ function jankx_pattern_styles() {
         }
     ');
 }
-add_action('wp_enqueue_scripts', 'jankx_pattern_styles');
+add_action('wp_enqueue_scripts', 'jankx/pattern_styles');
 ```
 
 ## Pattern Development

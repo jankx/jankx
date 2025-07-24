@@ -42,7 +42,7 @@ class Dashboard
     {
         // Add Jankx dashboard widget
         wp_add_dashboard_widget(
-            'jankx_dashboard_widget',
+            'jankx/dashboard/widget',
             'Jankx Dashboard',
             [$this, 'renderDashboardWidget']
         );

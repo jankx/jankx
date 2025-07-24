@@ -149,7 +149,7 @@ class ContextualServiceRegistry
     private static function isGutenbergAjax(): bool
     {
         $action = $_POST['action'] ?? $_GET['action'] ?? '';
-        return strpos($action, 'jankx_gutenberg') === 0;
+        return strpos($action, 'jankx/gutenberg') === 0;
     }
 
     /**
