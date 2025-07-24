@@ -5,7 +5,7 @@
 [![Tests](https://github.com/jankx/jankx/workflows/PHPUnit%20Tests/badge.svg)](https://github.com/jankx/jankx/actions/workflows/phpunit.yml)
 [![Coverage](https://img.shields.io/badge/coverage-85.7%25-brightgreen)](https://github.com/jankx/jankx/actions/workflows/phpunit.yml)
 [![PHP Version](https://img.shields.io/badge/php-7.4%2B-blue.svg)](https://php.net)
-[![WordPress](https://img.shields.io/badge/wordpress-5.0%2B-green.svg)](https://wordpress.org)
+[![WordPress](https://img.shields.io/badge/wordpress-5.8%2B-green.svg)](https://wordpress.org)
 
 Jankx is a powerful WordPress theme framework built with modern architecture, focusing on performance, maintainability, and developer experience. It provides a robust foundation for creating WordPress themes with advanced features like Gutenberg integration, deferred service loading, and context-aware bootstrapping.
 
@@ -13,7 +13,7 @@ Jankx is a powerful WordPress theme framework built with modern architecture, fo
 
 ### Requirements
 - **PHP**: >= 7.4
-- **WordPress**: >= 5.0
+- **WordPress**: >= 5.8
 - **Composer**: For dependency management
 
 ### Installation
