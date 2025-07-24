@@ -68,22 +68,46 @@ class FrontendBootstrapper extends AbstractBootstrapper
 
     public function loadFrontendServices(): void
     {
-        $resolver = $this->container->make('deferred.resolver');
+        try {
+            // Get container from global Jankx instance
+            $container = \Jankx\Jankx::getInstance();
 
-        // Load frontend services only when needed
-        if (!is_admin()) {
-            $resolver->resolve(\Jankx\Frontend\TemplateManager::class);
+            if (!$container || !$container->bound('deferred.resolver')) {
+                return;
+            }
+
+            $resolver = $container->make('deferred.resolver');
+
+            // Load frontend services only when needed
+            if (!is_admin()) {
+                $resolver->resolve(\Jankx\Frontend\TemplateManager::class);
+            }
+        } catch (\Exception $e) {
+            // Log error but don't break the application
+            error_log('Jankx FrontendBootstrapper error: ' . $e->getMessage());
         }
     }
 
     public function loadFrontendAssets(): void
     {
-        // Load frontend assets when needed
-        $resolver = $this->container->make('deferred.resolver');
+        try {
+            // Get container from global Jankx instance
+            $container = \Jankx\Jankx::getInstance();
 
-        if ($resolver->has(\Jankx\Frontend\AssetManager::class)) {
-            $assetManager = $resolver->resolve(\Jankx\Frontend\AssetManager::class);
-            $assetManager->enqueueFrontendAssets();
+            if (!$container || !$container->bound('deferred.resolver')) {
+                return;
+            }
+
+            // Load frontend assets when needed
+            $resolver = $container->make('deferred.resolver');
+
+            if ($resolver->has(\Jankx\Frontend\AssetManager::class)) {
+                $assetManager = $resolver->resolve(\Jankx\Frontend\AssetManager::class);
+                $assetManager->enqueueFrontendAssets();
+            }
+        } catch (\Exception $e) {
+            // Log error but don't break the application
+            error_log('Jankx FrontendBootstrapper error: ' . $e->getMessage());
         }
     }
 }

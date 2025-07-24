@@ -164,9 +164,11 @@ class ContextualServiceProvider
      */
     private function registerCLIServices(): void
     {
-        $this->container->singleton(\Jankx\CLI\CommandManager::class);
-        $this->container->singleton(\Jankx\CLI\OutputManager::class);
-        $this->container->singleton(\Jankx\CLI\ProgressBar::class);
+        // CLI services are minimal for now
+        // Will be implemented when needed
+        // $this->container->singleton(\Jankx\CLI\CommandManager::class);
+        // $this->container->singleton(\Jankx\CLI\OutputManager::class);
+        // $this->container->singleton(\Jankx\CLI\ProgressBar::class);
     }
 
     /**

@@ -243,7 +243,7 @@ class APIKernel extends Kernel implements KernelInterface
             'success' => true,
             'data' => $response,
             'timestamp' => current_time('timestamp'),
-            'version' => Jankx::FRAMEWORK_VERSION,
+            'version' => \Jankx\Jankx::getFrameworkVersion(),
         ];
 
         return apply_filters('jankx_api_response_formatted', $formatted);
@@ -262,7 +262,7 @@ class APIKernel extends Kernel implements KernelInterface
                 'data' => $error->get_error_data(),
             ],
             'timestamp' => current_time('timestamp'),
-            'version' => Jankx::FRAMEWORK_VERSION,
+            'version' => \Jankx\Jankx::getFrameworkVersion(),
         ];
 
         return apply_filters('jankx_api_error_formatted', $formatted);

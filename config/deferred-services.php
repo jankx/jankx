@@ -66,13 +66,15 @@ return [
 
         'cli' => [
             'services' => [
-                \Jankx\CLI\CommandManager::class,
-                \Jankx\CLI\OutputManager::class,
-                \Jankx\CLI\ProgressBar::class,
+                // CLI services are minimal for now
+                // Will be implemented when needed
+                // \Jankx\CLI\CommandManager::class,
+                // \Jankx\CLI\OutputManager::class,
+                // \Jankx\CLI\ProgressBar::class,
             ],
             'deferred' => [
-                \Jankx\CLI\ReportGenerator::class,
-                \Jankx\CLI\DataExporter::class,
+                // \Jankx\CLI\ReportGenerator::class,
+                // \Jankx\CLI\DataExporter::class,
             ],
             'priority' => 5,
         ],
