@@ -160,7 +160,7 @@ a:hover {
 }
 
 .nav-list {
-  display: none; /* Hide the main navigation menu */
+  display: flex;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -810,9 +810,6 @@ pre code {
     height: 60px;
   }
 
-  .nav-list {
-    display: none;
-  }
 
   .mobile-menu-toggle {
     display: none; /* Hide mobile menu toggle since main nav is hidden */
