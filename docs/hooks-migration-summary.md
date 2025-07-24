@@ -8,7 +8,7 @@
 ### 1. CLI Hooks
 - `jankx_cli_output` → `jankx/cli/output`
 - `jankx_cli_initialized` → `jankx/cli/initialized`
-- `jankx_wpcli_register_commands` → `jankx/wpcli/register_commands`
+- `jankx/wpcli/register_commands` → `jankx/wpcli/register_commands`
 
 ### 2. API Hooks
 - `jankx_api_register_endpoints` → `jankx/api/register_endpoints`
