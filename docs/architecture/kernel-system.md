@@ -38,203 +38,190 @@ Kernel System là trái tim của Jankx 2.0, quản lý việc khởi tạo fram
 <?php
 namespace Jankx\Kernel;
 
-use Jankx\Container\ServiceContainer;
-use Jankx\Bootstrap\BootstrapManager;
-use Jankx\Providers\ServiceProvider;
+use Jankx\Jankx;
+use Jankx\Contracts\KernelInterface;
+use Jankx\Contracts\BootstrapperInterface;
+use Illuminate\Container\Container;
+use Jankx\Facades\Logger;
 
-class Kernel
+/**
+ * Abstract Kernel Class
+ *
+ * Base class for all kernel types in Jankx framework
+ *
+ * @package Jankx\Kernel
+ */
+abstract class Kernel implements KernelInterface
 {
-    private $container;
-    private $bootstrapManager;
-    private $providers = [];
-    private $booted = false;
+    /**
+     * @var Container
+     */
+    protected $container;
 
-    public function __construct()
+    /**
+     * @var array
+     */
+    protected $services = [];
+
+    /**
+     * @var array
+     */
+    protected $hooks = [];
+
+    /**
+     * @var array
+     */
+    protected $filters = [];
+
+    /**
+     * @var array
+     */
+    protected $bootstrappers = [];
+
+    /**
+     * @var bool
+     */
+    protected $booted = false;
+
+    /**
+     * @var string
+     */
+    protected $kernelType;
+
+    protected $serviceProviders = [];
+
+    /**
+     * Constructor
+     */
+    public function __construct(Container $container = null)
     {
-        $this->container = new ServiceContainer();
-        $this->bootstrapManager = new BootstrapManager($this->container);
-        $this->registerCoreProviders();
+        $this->container = $container ?: Jankx::getInstance();
+        $this->kernelType = $this->getKernelType();
+
+        $this->registerBootstrappers();
+        $this->registerServices();
+        $this->registerHooks();
+        $this->registerFilters();
     }
 
-    public function bootstrap(): void
+    /**
+     * Get kernel type
+     */
+    public function getKernelType(): string
+    {
+        return 'abstract';
+    }
+
+    /**
+     * Register bootstrappers
+     */
+    abstract protected function registerBootstrappers(): void;
+
+    /**
+     * Register services
+     */
+    abstract protected function registerServices(): void;
+
+    /**
+     * Register hooks
+     */
+    abstract protected function registerHooks(): void;
+
+    /**
+     * Register filters
+     */
+    abstract protected function registerFilters(): void;
+
+    /**
+     * Boot the kernel
+     */
+    public function boot(): void
     {
         if ($this->booted) {
             return;
         }
 
-        // Register service providers
-        $this->registerProviders();
-
-        // Boot service providers
-        $this->bootProviders();
-
-        // Run bootstrappers
         $this->runBootstrappers();
+        $this->loadServices();
+        $this->loadHooks();
+        $this->loadFilters();
 
         $this->booted = true;
     }
 
-    private function registerCoreProviders(): void
-    {
-        $this->providers = [
-            \Jankx\Providers\AssetServiceProvider::class,
-            \Jankx\Providers\GutenbergServiceProvider::class,
-            \Jankx\Providers\SecurityServiceProvider::class,
-            \Jankx\Providers\PerformanceServiceProvider::class,
-            \Jankx\Providers\TemplateServiceProvider::class,
-        ];
-    }
-
-    private function registerProviders(): void
-    {
-        foreach ($this->providers as $provider) {
-            $this->container->register($provider);
-        }
-    }
-
-    private function bootProviders(): void
-    {
-        foreach ($this->providers as $provider) {
-            $instance = $this->container->make($provider);
-            if ($instance instanceof ServiceProvider) {
-                $instance->boot();
-            }
-        }
-    }
-
-    private function runBootstrappers(): void
-    {
-        $this->bootstrapManager->run();
-    }
-
-    public function getContainer(): ServiceContainer
-    {
-        return $this->container;
-    }
-
+    /**
+     * Check if kernel is booted
+     */
     public function isBooted(): bool
     {
         return $this->booted;
     }
+
+    /**
+     * Get kernel type
+     */
+    public function getType(): string
+    {
+        return $this->kernelType;
+    }
+
+    /**
+     * Get container
+     */
+    public function getContainer(): \Illuminate\Container\Container
+    {
+        return $this->container;
+    }
 }
 ```
 
-### Service Container
+### Service Container (Illuminate Container)
+
+Jankx sử dụng Illuminate Container từ Laravel framework để quản lý dependency injection:
+
 ```php
 <?php
-namespace Jankx\Container;
+// Jankx extends Illuminate Container
+namespace Jankx;
 
-class ServiceContainer
+use Illuminate\Container\Container;
+
+class Jankx extends Container
 {
-    private $bindings = [];
-    private $singletons = [];
-    private $instances = [];
+    /**
+     * Instance của class Jankx
+     * @var Jankx
+     */
+    protected static $instance;
 
-    public function bind(string $abstract, $concrete = null, bool $shared = false): void
+    /**
+     * Lấy instance của Jankx
+     * @return Jankx
+     */
+    public static function getInstance()
     {
-        $this->bindings[$abstract] = [
-            'concrete' => $concrete,
-            'shared' => $shared,
-        ];
+        if (!self::$instance) {
+            self::$instance = new self();
+        }
+        return self::$instance;
     }
 
-    public function singleton(string $abstract, $concrete = null): void
+    /**
+     * Tên của framework
+     * @return string
+     */
+    public static function getFrameworkName(): string
     {
-        $this->bind($abstract, $concrete, true);
+        return FrameworkEnum::frameworkName();
     }
 
-    public function make(string $abstract)
+    /**
+     * Phiên bản hiện tại của framework
+     * @return string
+     */
+    public static function getFrameworkVersion(): string
     {
-        // Check if already resolved
-        if (isset($this->instances[$abstract])) {
-            return $this->instances[$abstract];
-        }
-
-        // Check if singleton exists
-        if (isset($this->singletons[$abstract])) {
-            return $this->singletons[$abstract];
-        }
-
-        // Resolve the binding
-        $concrete = $this->resolve($abstract);
-
-        // Store if singleton
-        if (isset($this->bindings[$abstract]['shared']) && $this->bindings[$abstract]['shared']) {
-            $this->singletons[$abstract] = $concrete;
-        }
-
-        return $concrete;
-    }
-
-    private function resolve(string $abstract)
-    {
-        if (!isset($this->bindings[$abstract])) {
-            throw new \Exception("No binding found for {$abstract}");
-        }
-
-        $binding = $this->bindings[$abstract];
-        $concrete = $binding['concrete'];
-
-        if (is_callable($concrete)) {
-            return $concrete($this);
-        }
-
-        if (is_string($concrete)) {
-            return $this->build($concrete);
-        }
-
-        return $concrete;
-    }
-
-    private function build(string $concrete)
-    {
-        $reflector = new \ReflectionClass($concrete);
-
-        if (!$reflector->isInstantiable()) {
-            throw new \Exception("Class {$concrete} is not instantiable");
-        }
-
-        $constructor = $reflector->getConstructor();
-
-        if (is_null($constructor)) {
-            return new $concrete;
-        }
-
-        $dependencies = $this->resolveDependencies($constructor->getParameters());
-
-        return $reflector->newInstanceArgs($dependencies);
-    }
-
-    private function resolveDependencies(array $dependencies): array
-    {
-        $results = [];
-
-        foreach ($dependencies as $dependency) {
-            $results[] = $this->resolveDependency($dependency);
-        }
-
-        return $results;
-    }
-
-    private function resolveDependency(\ReflectionParameter $dependency)
-    {
-        $type = $dependency->getType();
-
-        if ($type && !$type->isBuiltin()) {
-            return $this->make($type->getName());
-        }
-
-        if ($dependency->isDefaultValueAvailable()) {
-            return $dependency->getDefaultValue();
-        }
-
-        throw new \Exception("Unresolvable dependency {$dependency->getName()}");
-    }
-
-    public function register(string $provider): void
-    {
-        $instance = new $provider($this);
-        $instance->register();
+        return FrameworkEnum::frameworkVersion();
     }
 }
 ```
@@ -244,101 +231,110 @@ class ServiceContainer
 ### Bootstrap Manager Implementation
 ```php
 <?php
-namespace Jankx\Bootstrap;
+namespace Jankx\Kernel;
 
-use Jankx\Container\ServiceContainer;
-
-class BootstrapManager
+/**
+ * Bootstrap Manager trong Kernel
+ */
+protected function runBootstrappers(): void
 {
-    private $container;
-    private $bootstrappers = [];
+    $bootstrappers = $this->sortBootstrappersByPriority();
 
-    public function __construct(ServiceContainer $container)
-    {
-        $this->container = $container;
-        $this->registerBootstrappers();
-    }
+    foreach ($bootstrappers as $bootstrapper) {
+        if ($this->shouldRunBootstrapper($bootstrapper)) {
+            $instance = $this->container->make($bootstrapper);
 
-    private function registerBootstrappers(): void
-    {
-        $this->bootstrappers = [
-            CoreBootstrapper::class,
-            AdminBootstrapper::class,
-            FrontendBootstrapper::class,
-            ThemeBootstrapper::class,
-            WooCommerceBootstrapper::class,
-        ];
-    }
-
-    public function run(): void
-    {
-        foreach ($this->bootstrappers as $bootstrapper) {
-            if ($this->shouldRun($bootstrapper)) {
-                $instance = $this->container->make($bootstrapper);
-                $instance->bootstrap();
+            if ($instance instanceof BootstrapperInterface) {
+                // Check dependencies
+                if ($this->checkBootstrapperDependencies($instance)) {
+                    $instance->bootstrap($this->container);
+                }
             }
         }
     }
+}
 
-    private function shouldRun(string $bootstrapper): bool
-    {
-        switch ($bootstrapper) {
-            case AdminBootstrapper::class:
-                return is_admin();
-            case FrontendBootstrapper::class:
-                return !is_admin();
-            case WooCommerceBootstrapper::class:
-                return class_exists('WooCommerce');
-            default:
-                return true;
-        }
+/**
+ * Sort bootstrappers by priority
+ */
+protected function sortBootstrappersByPriority(): array
+{
+    $bootstrappers = $this->bootstrappers;
+
+    usort($bootstrappers, function($a, $b) {
+        $aInstance = $this->container->make($a);
+        $bInstance = $this->container->make($b);
+
+        return $aInstance->getPriority() - $bInstance->getPriority();
+    });
+
+    return $bootstrappers;
+}
+
+/**
+ * Check if bootstrapper should run
+ */
+protected function shouldRunBootstrapper(string $bootstrapper): bool
+{
+    $instance = $this->container->make($bootstrapper);
+
+    if ($instance instanceof BootstrapperInterface) {
+        return $instance->shouldRun();
     }
+
+    return true;
 }
 ```
 
-### Core Bootstrapper
+### Core Bootstrapper Example
 ```php
 <?php
-namespace Jankx\Bootstrap;
+namespace Jankx\Bootstrappers\Global;
 
-use Jankx\Container\ServiceContainer;
+use Illuminate\Container\Container;
+use Jankx\Bootstrappers\AbstractBootstrapper;
 
-class CoreBootstrapper
+class CoreBootstrapper extends AbstractBootstrapper
 {
-    private $container;
+    protected $priority = 5; // Highest priority
 
-    public function __construct(ServiceContainer $container)
+    public function getName(): string
     {
-        $this->container = $container;
+        return 'core';
     }
 
-    public function bootstrap(): void
+    public function shouldRun(): bool
+    {
+        return true; // Always runs
+    }
+
+    public function bootstrap(Container $container): void
     {
         // Initialize core services
-        $this->initializeCoreServices();
+        $this->initializeCoreServices($container);
 
         // Set up WordPress hooks
         $this->setupWordPressHooks();
 
         // Initialize error handling
-        $this->initializeErrorHandling();
+        $this->initializeErrorHandling($container);
 
         // Set up logging
-        $this->setupLogging();
+        $this->setupLogging($container);
     }
 
-    private function initializeCoreServices(): void
+    private function initializeCoreServices(Container $container): void
     {
         // Initialize configuration
-        $config = $this->container->make(\Jankx\Config\ConfigManager::class);
+        $config = $container->make(\Jankx\Config\ConfigManager::class);
         $config->load();
 
         // Initialize asset manager
-        $assetManager = $this->container->make(\Jankx\Assets\AssetManager::class);
+        $assetManager = $container->make(\Jankx\Assets\AssetManager::class);
         $assetManager->initialize();
 
         // Initialize security manager
-        $securityManager = $this->container->make(\Jankx\Security\SecurityManager::class);
+        $securityManager = $container->make(\Jankx\Security\SecurityManager::class);
         $securityManager->initialize();
     }
 
@@ -412,13 +408,13 @@ class CoreBootstrapper
 <?php
 namespace Jankx\Providers;
 
-use Jankx\Container\ServiceContainer;
+use Illuminate\Container\Container;
 
 abstract class ServiceProvider
 {
     protected $container;
 
-    public function __construct(ServiceContainer $container)
+    public function __construct(Container $container)
     {
         $this->container = $container;
     }
@@ -437,7 +433,7 @@ abstract class ServiceProvider
 <?php
 namespace Jankx\Providers;
 
-use Jankx\Container\ServiceContainer;
+use Illuminate\Container\Container;
 
 class AssetServiceProvider extends ServiceProvider
 {
@@ -461,7 +457,7 @@ class AssetServiceProvider extends ServiceProvider
 <?php
 namespace Jankx\Providers;
 
-use Jankx\Container\ServiceContainer;
+use Illuminate\Container\Container;
 
 class GutenbergServiceProvider extends ServiceProvider
 {

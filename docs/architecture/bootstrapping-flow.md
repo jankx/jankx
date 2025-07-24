@@ -56,125 +56,96 @@ Jankx::getInstance()->bootstrap();
 // framework.php
 namespace Jankx;
 
-class Jankx
+use Illuminate\Container\Container;
+
+class Jankx extends Container
 {
-    private static $instance = null;
-    private $kernel;
-    private $container;
-    private $booted = false;
+    /**
+     * Instance của class Jankx
+     * @var Jankx
+     */
+    protected static $instance;
 
-    private function __construct()
+    /**
+     * Lấy instance của Jankx
+     * @return Jankx
+     */
+    public static function getInstance()
     {
-        // Private constructor for singleton
-    }
-
-    public static function getInstance(): self
-    {
-        if (self::$instance === null) {
+        if (!self::$instance) {
             self::$instance = new self();
         }
         return self::$instance;
     }
 
+    /**
+     * Tên của framework
+     * @return string
+     */
+    public static function getFrameworkName(): string
+    {
+        return FrameworkEnum::frameworkName();
+    }
+
+    /**
+     * Phiên bản hiện tại của framework
+     * @return string
+     */
+    public static function getFrameworkVersion(): string
+    {
+        return FrameworkEnum::frameworkVersion();
+    }
+
+    /**
+     * Bootstrap framework
+     */
     public function bootstrap(): void
     {
-        if ($this->booted) {
-            return;
-        }
-
-        // 1. Initialize kernel
+        // 1. Initialize kernel based on context
         $this->initializeKernel();
 
         // 2. Register core services
         $this->registerCoreServices();
 
-        // 3. Run bootstrappers
-        $this->runBootstrappers();
-
-        // 4. Setup WordPress hooks
-        $this->setupWordPressHooks();
-
-        $this->booted = true;
+        // 3. Boot kernel
+        $this->bootKernel();
     }
 
     private function initializeKernel(): void
     {
-        $this->kernel = new Kernel();
-        $this->container = $this->kernel->getContainer();
+        // Determine kernel type based on context
+        if (defined('WP_CLI') && WP_CLI) {
+            $this->kernel = new \Jankx\Kernel\CLIKernel($this);
+        } elseif (defined('REST_REQUEST') && REST_REQUEST) {
+            $this->kernel = new \Jankx\Kernel\APIKernel($this);
+        } elseif (wp_doing_ajax()) {
+            $this->kernel = new \Jankx\Kernel\GutenbergAjaxKernel($this);
+        } elseif (is_admin()) {
+            $this->kernel = new \Jankx\Kernel\AdminKernel($this);
+        } else {
+            $this->kernel = new \Jankx\Kernel\FrontendKernel($this);
+        }
     }
 
     private function registerCoreServices(): void
     {
-        $this->container->singleton(\Jankx\Config\ConfigManager::class);
-        $this->container->singleton(\Jankx\Assets\AssetManager::class);
-        $this->container->singleton(\Jankx\Security\SecurityManager::class);
-        $this->container->singleton(\Jankx\Performance\PerformanceMonitor::class);
+        $this->singleton(\Jankx\Config\ConfigManager::class);
+        $this->singleton(\Jankx\Assets\AssetManager::class);
+        $this->singleton(\Jankx\Security\SecurityManager::class);
+        $this->singleton(\Jankx\Performance\PerformanceMonitor::class);
     }
 
-    private function runBootstrappers(): void
+    private function bootKernel(): void
     {
-        $this->kernel->bootstrap();
+        $this->kernel->boot();
     }
 
-    private function setupWordPressHooks(): void
+    /**
+     * Get container instance
+     */
+    public function getContainer(): Container
     {
-        // Theme setup
-        add_action('after_setup_theme', [$this, 'setupTheme']);
-
-        // Enqueue scripts and styles
-        add_action('wp_enqueue_scripts', [$this, 'enqueueScripts']);
-        add_action('admin_enqueue_scripts', [$this, 'enqueueAdminScripts']);
-
-        // Widgets
-        add_action('widgets_init', [$this, 'registerWidgets']);
-
-        // Customizer
-        add_action('customize_register', [$this, 'customizeRegister']);
-    }
-
-    public function setupTheme(): void
-    {
-        // Add theme support
-        add_theme_support('post-thumbnails');
-        add_theme_support('title-tag');
-        add_theme_support('custom-logo');
-        add_theme_support('html5', [
-            'search-form',
-            'comment-form',
-            'comment-list',
-            'gallery',
-            'caption',
-        ]);
-
-        // Register navigation menus
-        register_nav_menus([
-            'primary' => __('Primary Menu', 'jankx'),
-            'footer' => __('Footer Menu', 'jankx'),
-        ]);
-    }
-
-    public function enqueueScripts(): void
-    {
-        $assetManager = $this->container->make(\Jankx\Assets\AssetManager::class);
-        $assetManager->enqueueFrontendAssets();
-    }
-
-    public function enqueueAdminScripts(): void
-    {
-        $assetManager = $this->container->make(\Jankx\Assets\AssetManager::class);
-        $assetManager->enqueueAdminAssets();
-    }
-
-    public function registerWidgets(): void
-    {
-        $widgetManager = $this->container->make(\Jankx\Widgets\WidgetManager::class);
-        $widgetManager->registerWidgets();
-    }
-
-    public function customizeRegister(\WP_Customize_Manager $wp_customize): void
-    {
-        $customizer = $this->container->make(\Jankx\Customizer\CustomizerManager::class);
-        $customizer->register($wp_customize);
+        return $this;
     }
 }
 ```
@@ -184,23 +155,29 @@ class Jankx
 ### Core Bootstrapper
 ```php
 <?php
-namespace Jankx\Bootstrap;
+namespace Jankx\Bootstrappers\Global;
 
-use Jankx\Container\ServiceContainer;
+use Illuminate\Container\Container;
+use Jankx\Bootstrappers\AbstractBootstrapper;
 
-class CoreBootstrapper
+class CoreBootstrapper extends AbstractBootstrapper
 {
-    private $container;
+    protected $priority = 5;
 
-    public function __construct(ServiceContainer $container)
+    public function getName(): string
     {
-        $this->container = $container;
+        return 'core';
     }
 
-    public function bootstrap(): void
+    public function shouldRun(): bool
+    {
+        return true;
+    }
+
+    public function bootstrap(Container $container): void
     {
         // Initialize core services
-        $this->initializeCoreServices();
+        $this->initializeCoreServices($container);
 
         // Set up WordPress hooks
         $this->setupWordPressHooks();
@@ -212,22 +189,22 @@ class CoreBootstrapper
         $this->setupLogging();
     }
 
-    private function initializeCoreServices(): void
+    private function initializeCoreServices(Container $container): void
     {
         // Initialize configuration
-        $config = $this->container->make(\Jankx\Config\ConfigManager::class);
+        $config = $container->make(\Jankx\Config\ConfigManager::class);
         $config->load();
 
         // Initialize asset manager
-        $assetManager = $this->container->make(\Jankx\Assets\AssetManager::class);
+        $assetManager = $container->make(\Jankx\Assets\AssetManager::class);
         $assetManager->initialize();
 
         // Initialize security manager
-        $securityManager = $this->container->make(\Jankx\Security\SecurityManager::class);
+        $securityManager = $container->make(\Jankx\Security\SecurityManager::class);
         $securityManager->initialize();
 
         // Initialize performance monitor
-        $performanceMonitor = $this->container->make(\Jankx\Performance\PerformanceMonitor::class);
+        $performanceMonitor = $container->make(\Jankx\Performance\PerformanceMonitor::class);
         $performanceMonitor->initialize();
     }
 
@@ -310,23 +287,29 @@ class CoreBootstrapper
 ### Admin Bootstrapper
 ```php
 <?php
-namespace Jankx\Bootstrap;
+namespace Jankx\Bootstrappers\Dashboard;
 
-use Jankx\Container\ServiceContainer;
+use Illuminate\Container\Container;
+use Jankx\Bootstrappers\AbstractBootstrapper;
 
-class AdminBootstrapper
+class AdminBootstrapper extends AbstractBootstrapper
 {
-    private $container;
+    protected $priority = 20;
 
-    public function __construct(ServiceContainer $container)
+    public function getName(): string
     {
-        $this->container = $container;
+        return 'admin';
     }
 
-    public function bootstrap(): void
+    public function shouldRun(): bool
+    {
+        return is_admin();
+    }
+
+    public function bootstrap(Container $container): void
     {
         // Initialize admin-specific services
-        $this->initializeAdminServices();
+        $this->initializeAdminServices($container);
 
         // Set up admin hooks
         $this->setupAdminHooks();
@@ -338,14 +321,14 @@ class AdminBootstrapper
         $this->setupAdminScripts();
     }
 
-    private function initializeAdminServices(): void
+    private function initializeAdminServices(Container $container): void
     {
         // Initialize admin manager
-        $adminManager = $this->container->make(\Jankx\Admin\AdminManager::class);
+        $adminManager = $container->make(\Jankx\Admin\AdminManager::class);
         $adminManager->initialize();
 
         // Initialize settings manager
-        $settingsManager = $this->container->make(\Jankx\Admin\SettingsManager::class);
+        $settingsManager = $container->make(\Jankx\Admin\SettingsManager::class);
         $settingsManager->initialize();
     }
 
@@ -445,23 +428,29 @@ class AdminBootstrapper
 ### Frontend Bootstrapper
 ```php
 <?php
-namespace Jankx\Bootstrap;
+namespace Jankx\Bootstrappers\Frontend;
 
-use Jankx\Container\ServiceContainer;
+use Illuminate\Container\Container;
+use Jankx\Bootstrappers\AbstractBootstrapper;
 
-class FrontendBootstrapper
+class FrontendBootstrapper extends AbstractBootstrapper
 {
-    private $container;
+    protected $priority = 15;
 
-    public function __construct(ServiceContainer $container)
+    public function getName(): string
     {
-        $this->container = $container;
+        return 'frontend';
     }
 
-    public function bootstrap(): void
+    public function shouldRun(): bool
+    {
+        return !is_admin();
+    }
+
+    public function bootstrap(Container $container): void
     {
         // Initialize frontend-specific services
-        $this->initializeFrontendServices();
+        $this->initializeFrontendServices($container);
 
         // Set up frontend hooks
         $this->setupFrontendHooks();
@@ -473,18 +462,18 @@ class FrontendBootstrapper
         $this->setupPerformanceOptimization();
     }
 
-    private function initializeFrontendServices(): void
+    private function initializeFrontendServices(Container $container): void
     {
         // Initialize template renderer
-        $templateRenderer = $this->container->make(\Jankx\Template\TemplateRenderer::class);
+        $templateRenderer = $container->make(\Jankx\Template\TemplateRenderer::class);
         $templateRenderer->initialize();
 
         // Initialize SEO manager
-        $seoManager = $this->container->make(\Jankx\SEO\SEOManager::class);
+        $seoManager = $container->make(\Jankx\SEO\SEOManager::class);
         $seoManager->initialize();
 
         // Initialize analytics
-        $analyticsManager = $this->container->make(\Jankx\Analytics\AnalyticsManager::class);
+        $analyticsManager = $container->make(\Jankx\Analytics\AnalyticsManager::class);
         $analyticsManager->initialize();
     }
 
@@ -575,11 +564,11 @@ class BootstrapManager
     private function registerBootstrappers(): void
     {
         $this->bootstrappers = [
-            CoreBootstrapper::class,
-            AdminBootstrapper::class,
-            FrontendBootstrapper::class,
-            ThemeBootstrapper::class,
-            WooCommerceBootstrapper::class,
+            \Jankx\Bootstrappers\Global\CoreBootstrapper::class,
+            \Jankx\Bootstrappers\Dashboard\AdminBootstrapper::class,
+            \Jankx\Bootstrappers\Frontend\FrontendBootstrapper::class,
+            \Jankx\Bootstrappers\Global\ThemeBootstrapper::class,
+            \Jankx\Bootstrappers\Frontend\WooCommerceBootstrapper::class,
         ];
     }
 
@@ -596,11 +585,11 @@ class BootstrapManager
     private function shouldRun(string $bootstrapper): bool
     {
         switch ($bootstrapper) {
-            case AdminBootstrapper::class:
+            case \Jankx\Bootstrappers\Dashboard\AdminBootstrapper::class:
                 return is_admin();
-            case FrontendBootstrapper::class:
+            case \Jankx\Bootstrappers\Frontend\FrontendBootstrapper::class:
                 return !is_admin();
-            case WooCommerceBootstrapper::class:
+            case \Jankx\Bootstrappers\Frontend\WooCommerceBootstrapper::class:
                 return class_exists('WooCommerce');
             default:
                 return true;
