@@ -525,23 +525,21 @@ function jankx_enable_detailed_logging() {
     }
 
     // Log all Jankx operations
-    add_action('jankx/query_loop/render', function($attributes, $result) {
-        error_log('Jankx Query Loop: ' . json_encode([
-            'attributes' => $attributes,
-            'result_length' => strlen($result),
+    add_action('jankx/frontend/used_blocks', function($used_blocks, $content) {
+        error_log('Jankx Used Blocks: ' . json_encode([
+            'blocks' => $used_blocks,
+            'content_length' => strlen($content),
             'timestamp' => current_time('mysql')
         ]));
     }, 10, 2);
 
-    // Log pattern rendering
-    add_action('jankx/pattern/render', function($pattern_name, $post_id, $result) {
-        error_log('Jankx Pattern Render: ' . json_encode([
-            'pattern' => $pattern_name,
-            'post_id' => $post_id,
-            'result_length' => strlen($result),
+    // Log partial hydration settings
+    add_action('jankx/frontend/partial_hydration_settings', function($settings) {
+        error_log('Jankx Partial Hydration: ' . json_encode([
+            'settings' => $settings,
             'timestamp' => current_time('mysql')
         ]));
-    }, 10, 3);
+    }, 10, 1);
 }
 ```
 

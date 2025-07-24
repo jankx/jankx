@@ -12,9 +12,6 @@
 
 ### 2. API Hooks
 - `jankx_api_register_endpoints` → `jankx/api/register_endpoints`
-- `jankx_api_response` → `jankx/api/response`
-- `jankx_api_error` → `jankx/api/error`
-- `jankx_api_permissions` → `jankx/api/permissions`
 - `jankx_api_public_endpoints` → `jankx/api/public_endpoints`
 - `jankx_api_response_formatted` → `jankx/api/response_formatted`
 - `jankx_api_error_formatted` → `jankx/api/error_formatted`
@@ -39,13 +36,7 @@
 ### 6. Context Detection
 - `jankx_gutenberg` → `jankx/gutenberg` (in strategy patterns)
 
-### 7. Documentation Examples
-- `jankx_query_loop_render` → `jankx/query_loop/render`
-- `jankx_pattern_render` → `jankx/pattern/render`
-- `jankx_register_pattern_categories` → `jankx/register_pattern_categories`
-- `jankx_pattern_styles` → `jankx/pattern_styles`
-
-### 8. Database Options
+### 7. Database Options
 - `jankx_api_logs` → `jankx/api/logs`
 - `jankx_api_rate_limit_*` → `jankx/api/rate_limit_*`
 
