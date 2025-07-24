@@ -44,6 +44,72 @@
     }
   }
 
+  // Collapsible Navigation
+  class CollapsibleNavigation {
+    constructor() {
+      this.navToggle = document.querySelector('.nav-toggle');
+      this.navCollapsible = document.querySelector('#nav-collapsible');
+      this.navOverlay = document.querySelector('#nav-overlay');
+      this.isOpen = false;
+      this.init();
+    }
+
+    init() {
+      this.bindEvents();
+    }
+
+    bindEvents() {
+      // Toggle button
+      this.navToggle.addEventListener('click', () => {
+        this.toggle();
+      });
+
+      // Overlay click to close
+      this.navOverlay.addEventListener('click', () => {
+        this.close();
+      });
+
+      // Close on escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && this.isOpen) {
+          this.close();
+        }
+      });
+
+      // Close on navigation link click
+      const navLinks = this.navCollapsible.querySelectorAll('a');
+      navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          this.close();
+        });
+      });
+    }
+
+    toggle() {
+      if (this.isOpen) {
+        this.close();
+      } else {
+        this.open();
+      }
+    }
+
+    open() {
+      this.isOpen = true;
+      this.navCollapsible.classList.add('active');
+      this.navOverlay.classList.add('active');
+      this.navToggle.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    close() {
+      this.isOpen = false;
+      this.navCollapsible.classList.remove('active');
+      this.navOverlay.classList.remove('active');
+      this.navToggle.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  }
+
   // Search functionality
   class SearchManager {
     constructor() {
@@ -436,6 +502,7 @@
   // Initialize all components when DOM is ready
   document.addEventListener('DOMContentLoaded', () => {
     new ThemeManager();
+    new CollapsibleNavigation();
     new SearchManager();
     new TableOfContents();
     new BackToTop();
