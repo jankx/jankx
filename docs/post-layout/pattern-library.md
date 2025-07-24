@@ -6,27 +6,19 @@ Jankx 2.0 Pattern Library cung cấp collection các Gutenberg patterns được
 
 ## Pattern Categories
 
-### 1. Post Layouts (`jankx-post-layouts`)
-Patterns cơ bản cho hiển thị posts
-
-### 2. Card Layouts (`jankx-card-layouts`)
-Patterns cho card-based layouts
-
-### 3. Grid Layouts (`jankx-grid-layouts`)
-Patterns cho grid-based layouts
-
-### 4. Hero Layouts (`jankx-hero-layouts`)
-Patterns cho hero sections
-
-### 5. Carousel Layouts (`jankx-carousel-layouts`)
-Patterns cho carousel/slider layouts
-
-### 6. Tabs Layouts (`jankx-tabs-layouts`)
-Patterns cho tabbed layouts
+| Category | Description |
+|----------|-------------|
+| `jankx-post-layouts` | Patterns cơ bản cho hiển thị posts |
+| `jankx-card-layouts` | Patterns cho card-based layouts |
+| `jankx-grid-layouts` | Patterns cho grid-based layouts |
+| `jankx-hero-layouts` | Patterns cho hero sections |
+| `jankx-carousel-layouts` | Patterns cho carousel/slider layouts |
+| `jankx-tabs-layouts` | Patterns cho tabbed layouts |
 
 ## Core Patterns
 
 ### 1. Basic Post Card
+
 ```php
 register_block_pattern(
     'jankx/post-card',
@@ -51,6 +43,7 @@ register_block_pattern(
 ```
 
 ### 2. Post Card with Meta
+
 ```php
 register_block_pattern(
     'jankx/post-card-meta',
@@ -81,6 +74,7 @@ register_block_pattern(
 ```
 
 ### 3. Hero Post Layout
+
 ```php
 register_block_pattern(
     'jankx/hero-post',
@@ -115,6 +109,7 @@ register_block_pattern(
 ## Grid Layout Patterns
 
 ### 1. 2-Column Grid
+
 ```php
 register_block_pattern(
     'jankx/grid-2-columns',
@@ -145,6 +140,7 @@ register_block_pattern(
 ```
 
 ### 2. 3-Column Grid
+
 ```php
 register_block_pattern(
     'jankx/grid-3-columns',
@@ -184,6 +180,7 @@ register_block_pattern(
 ## Carousel Patterns
 
 ### 1. Basic Carousel
+
 ```php
 register_block_pattern(
     'jankx/carousel-basic',
@@ -227,6 +224,7 @@ register_block_pattern(
 ## Tabs Patterns
 
 ### 1. Basic Tabs
+
 ```php
 register_block_pattern(
     'jankx/tabs-basic',
@@ -274,6 +272,7 @@ register_block_pattern(
 ## Pattern Registration System
 
 ### 1. Pattern Categories Registration
+
 ```php
 function jankx_register_pattern_categories() {
     register_block_pattern_category(
@@ -310,6 +309,7 @@ add_action('init', 'jankx_register_pattern_categories');
 ```
 
 ### 2. Pattern Registration Helper
+
 ```php
 class Jankx_Pattern_Registry {
     private $patterns = [];
@@ -341,6 +341,7 @@ class Jankx_Pattern_Registry {
 ## Pattern Customization
 
 ### 1. Pattern Variables
+
 ```php
 function jankx_pattern_variables($pattern_content, $post_id) {
     $variables = [
@@ -357,6 +358,7 @@ function jankx_pattern_variables($pattern_content, $post_id) {
 ```
 
 ### 2. Pattern Styling
+
 ```php
 function jankx_pattern_styles() {
     wp_register_style(
@@ -394,6 +396,7 @@ add_action('wp_enqueue_scripts', 'jankx_pattern_styles');
 ## Pattern Development
 
 ### 1. Creating Custom Patterns
+
 ```php
 function jankx_create_custom_pattern($name, $content, $category = 'jankx-post-layouts') {
     register_block_pattern(
@@ -409,6 +412,7 @@ function jankx_create_custom_pattern($name, $content, $category = 'jankx-post-la
 ```
 
 ### 2. Pattern Validation
+
 ```php
 function jankx_validate_pattern($content) {
     // Check for required blocks
@@ -425,6 +429,7 @@ function jankx_validate_pattern($content) {
 ```
 
 ### 3. Pattern Testing
+
 ```php
 function jankx_test_pattern($pattern_name, $post_id) {
     $pattern = get_block_pattern($pattern_name);
@@ -442,25 +447,37 @@ function jankx_test_pattern($pattern_name, $post_id) {
 ## Best Practices
 
 ### 1. Pattern Design
-- **Keep patterns simple**: Focus on core functionality
-- **Use semantic HTML**: Proper heading levels, alt text, etc.
-- **Responsive design**: Mobile-first approach
-- **Accessibility**: ARIA labels, keyboard navigation
+
+| Principle | Description |
+|-----------|-------------|
+| **Keep patterns simple** | Focus on core functionality |
+| **Use semantic HTML** | Proper heading levels, alt text, etc. |
+| **Responsive design** | Mobile-first approach |
+| **Accessibility** | ARIA labels, keyboard navigation |
 
 ### 2. Performance
-- **Optimize images**: Use appropriate image sizes
-- **Minimize CSS**: Use utility classes when possible
-- **Lazy loading**: Implement for images and content
-- **Caching**: Cache pattern rendering when appropriate
+
+| Optimization | Description |
+|-------------|-------------|
+| **Optimize images** | Use appropriate image sizes |
+| **Minimize CSS** | Use utility classes when possible |
+| **Lazy loading** | Implement for images and content |
+| **Caching** | Cache pattern rendering when appropriate |
 
 ### 3. Maintainability
-- **Consistent naming**: Use clear, descriptive names
-- **Documentation**: Comment complex patterns
-- **Version control**: Track pattern changes
-- **Testing**: Test patterns across different scenarios
+
+| Practice | Description |
+|----------|-------------|
+| **Consistent naming** | Use clear, descriptive names |
+| **Documentation** | Comment complex patterns |
+| **Version control** | Track pattern changes |
+| **Testing** | Test patterns across different scenarios |
 
 ### 4. Extensibility
-- **Modular design**: Break complex patterns into smaller parts
-- **Variable support**: Use placeholders for dynamic content
-- **Customization options**: Allow for easy modification
-- **Plugin support**: Design for third-party extensions
+
+| Feature | Description |
+|---------|-------------|
+| **Modular design** | Break complex patterns into smaller parts |
+| **Variable support** | Use placeholders for dynamic content |
+| **Customization options** | Allow for easy modification |
+| **Plugin support** | Design for third-party extensions |
