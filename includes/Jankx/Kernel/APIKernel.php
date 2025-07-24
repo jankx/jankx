@@ -86,7 +86,7 @@ class APIKernel extends Kernel implements KernelInterface
         $this->addHook('rest_post_dispatch', [$this, 'logAPIRequest']);
 
         // Custom endpoints
-        $this->addHook('jankx_api_register_endpoints', [$this, 'registerCustomEndpoints']);
+        $this->addHook('jankx/api/register_endpoints', [$this, 'registerCustomEndpoints']);
     }
 
     /**
@@ -95,13 +95,13 @@ class APIKernel extends Kernel implements KernelInterface
     protected function registerFilters(): void
     {
         // API response formatting
-        $this->addFilter('jankx_api_response', [$this, 'formatAPIResponse']);
+        $this->addFilter('jankx/api/response', [$this, 'formatAPIResponse']);
 
         // API error handling
-        $this->addFilter('jankx_api_error', [$this, 'formatAPIError']);
+        $this->addFilter('jankx/api/error', [$this, 'formatAPIError']);
 
         // API permissions
-        $this->addFilter('jankx_api_permissions', [$this, 'checkAPIPermissions']);
+        $this->addFilter('jankx/api/permissions', [$this, 'checkAPIPermissions']);
     }
 
     /**
@@ -120,7 +120,7 @@ class APIKernel extends Kernel implements KernelInterface
         $api_manager->registerEndpoint('settings', SettingsEndpoint::class);
 
         // Allow child themes to register custom endpoints
-        do_action('jankx_api_register_endpoints', $api_manager);
+        do_action('jankx/api/register_endpoints', $api_manager);
     }
 
     /**
@@ -146,7 +146,7 @@ class APIKernel extends Kernel implements KernelInterface
     public function authenticateAPI($result): mixed
     {
         // Skip authentication for public endpoints
-        $public_endpoints = apply_filters('jankx_api_public_endpoints', [
+        $public_endpoints = apply_filters('jankx/api/public_endpoints', [
             'posts',
             'pages',
             'categories',
@@ -162,7 +162,7 @@ class APIKernel extends Kernel implements KernelInterface
         $api_key = $this->getAPIKey();
         if (!$api_key) {
             return new \WP_Error(
-                'jankx_api_no_key',
+                'jankx/api/no_key',
                 __('API key is required', 'jankx'),
                 ['status' => 401]
             );
@@ -171,7 +171,7 @@ class APIKernel extends Kernel implements KernelInterface
         // Validate API key
         if (!$this->validateAPIKey($api_key)) {
             return new \WP_Error(
-                'jankx_api_invalid_key',
+                'jankx/api/invalid_key',
                 __('Invalid API key', 'jankx'),
                 ['status' => 401]
             );
@@ -195,7 +195,7 @@ class APIKernel extends Kernel implements KernelInterface
         // Check rate limit
         if ($this->isRateLimited($ip, $endpoint)) {
             return new \WP_Error(
-                'jankx_api_rate_limited',
+                'jankx/api/rate_limited',
                 __('Rate limit exceeded', 'jankx'),
                 ['status' => 429]
             );
@@ -246,7 +246,7 @@ class APIKernel extends Kernel implements KernelInterface
             'version' => \Jankx\Jankx::getFrameworkVersion(),
         ];
 
-        return apply_filters('jankx_api_response_formatted', $formatted);
+        return apply_filters('jankx/api/response_formatted', $formatted);
     }
 
     /**
@@ -265,7 +265,7 @@ class APIKernel extends Kernel implements KernelInterface
             'version' => \Jankx\Jankx::getFrameworkVersion(),
         ];
 
-        return apply_filters('jankx_api_error_formatted', $formatted);
+        return apply_filters('jankx/api/error_formatted', $formatted);
     }
 
     /**
@@ -331,7 +331,7 @@ class APIKernel extends Kernel implements KernelInterface
      */
     protected function validateAPIKey(string $api_key): bool
     {
-        $valid_keys = apply_filters('jankx_api_valid_keys', []);
+        $valid_keys = apply_filters('jankx/api/valid_keys', []);
         return in_array($api_key, $valid_keys);
     }
 
@@ -361,15 +361,15 @@ class APIKernel extends Kernel implements KernelInterface
      */
     protected function isRateLimited(string $ip, string $endpoint): bool
     {
-        $rate_limit_key = "jankx_api_rate_limit_{$ip}_{$endpoint}";
+        $rate_limit_key = "jankx/api/rate_limit_{$ip}_{$endpoint}";
         $rate_limit = get_transient($rate_limit_key);
 
         if (!$rate_limit) {
             return false;
         }
 
-        $max_requests = apply_filters('jankx_api_rate_limit_max', 100);
-        $time_window = apply_filters('jankx_api_rate_limit_window', 3600); // 1 hour
+        $max_requests = apply_filters('jankx/api/rate_limit_max', 100);
+        $time_window = apply_filters('jankx/api/rate_limit_window', 3600); // 1 hour
 
         return $rate_limit['count'] >= $max_requests;
     }
@@ -379,7 +379,7 @@ class APIKernel extends Kernel implements KernelInterface
      */
     protected function updateRateLimit(string $ip, string $endpoint): void
     {
-        $rate_limit_key = "jankx_api_rate_limit_{$ip}_{$endpoint}";
+        $rate_limit_key = "jankx/api/rate_limit_{$ip}_{$endpoint}";
         $rate_limit = get_transient($rate_limit_key);
 
         if (!$rate_limit) {
@@ -400,7 +400,7 @@ class APIKernel extends Kernel implements KernelInterface
     protected function logToDatabase(array $log_data): void
     {
         // Log to WordPress options or custom table
-        $logs = get_option('jankx_api_logs', []);
+        $logs = get_option('jankx/api/logs', []);
         $logs[] = $log_data;
 
         // Keep only last 1000 logs
@@ -408,6 +408,6 @@ class APIKernel extends Kernel implements KernelInterface
             $logs = array_slice($logs, -1000);
         }
 
-        update_option('jankx_api_logs', $logs);
+        update_option('jankx/api/logs', $logs);
     }
 }

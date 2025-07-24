@@ -525,7 +525,7 @@ function jankx_enable_detailed_logging() {
     }
 
     // Log all Jankx operations
-    add_action('jankx_query_loop_render', function($attributes, $result) {
+    add_action('jankx/query_loop/render', function($attributes, $result) {
         error_log('Jankx Query Loop: ' . json_encode([
             'attributes' => $attributes,
             'result_length' => strlen($result),
@@ -534,7 +534,7 @@ function jankx_enable_detailed_logging() {
     }, 10, 2);
 
     // Log pattern rendering
-    add_action('jankx_pattern_render', function($pattern_name, $post_id, $result) {
+    add_action('jankx/pattern/render', function($pattern_name, $post_id, $result) {
         error_log('Jankx Pattern Render: ' . json_encode([
             'pattern' => $pattern_name,
             'post_id' => $post_id,

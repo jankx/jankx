@@ -10,7 +10,7 @@ Các ví dụ thực tế về cách sử dụng và phát triển CLI commands 
 <?php
 // Trong functions.php hoặc plugin
 
-add_action('jankx_wpcli_register_commands', function() {
+add_action('jankx/wpcli/register_commands', function() {
     \WP_CLI::add_command('jankx theme:info', 'ThemeInfoCommand');
 });
 
@@ -58,7 +58,7 @@ Text Domain: bookix
 <?php
 // Trong functions.php hoặc plugin
 
-add_action('jankx_wpcli_register_commands', function() {
+add_action('jankx/wpcli/register_commands', function() {
     \WP_CLI::add_command('jankx cache:clear', 'CacheClearCommand');
     \WP_CLI::add_command('jankx cache:status', 'CacheStatusCommand');
 });
@@ -152,7 +152,7 @@ class CacheStatusCommand
 <?php
 // Trong functions.php hoặc plugin
 
-add_action('jankx_wpcli_register_commands', function() {
+add_action('jankx/wpcli/register_commands', function() {
     \WP_CLI::add_command('jankx db:optimize', 'DatabaseOptimizeCommand');
 });
 
@@ -237,7 +237,7 @@ class DatabaseOptimizeCommand
 <?php
 // Trong functions.php hoặc plugin
 
-add_action('jankx_wpcli_register_commands', function() {
+add_action('jankx/wpcli/register_commands', function() {
     \WP_CLI::add_command('jankx performance:analyze', 'PerformanceAnalyzeCommand');
 });
 
@@ -344,7 +344,7 @@ class PerformanceAnalyzeCommand
 <?php
 // Trong functions.php hoặc plugin
 
-add_action('jankx_wpcli_register_commands', function() {
+add_action('jankx/wpcli/register_commands', function() {
     \WP_CLI::add_command('jankx plugin:list', 'PluginListCommand');
     \WP_CLI::add_command('jankx plugin:status', 'PluginStatusCommand');
 });
@@ -445,7 +445,7 @@ class PluginStatusCommand
 <?php
 // Trong functions.php hoặc plugin
 
-add_action('jankx_wpcli_register_commands', function() {
+add_action('jankx/wpcli/register_commands', function() {
     \WP_CLI::add_command('jankx user:list', 'UserListCommand');
     \WP_CLI::add_command('jankx user:stats', 'UserStatsCommand');
 });
@@ -546,7 +546,7 @@ class UserStatsCommand
 <?php
 // Trong functions.php hoặc plugin
 
-add_action('jankx_wpcli_register_commands', function() {
+add_action('jankx/wpcli/register_commands', function() {
     \WP_CLI::add_command('jankx service:list', 'ServiceListCommand');
     \WP_CLI::add_command('jankx service:status', 'ServiceStatusCommand');
 });
@@ -603,7 +603,7 @@ class ServiceStatusCommand
         \WP_CLI::line("Kernel Status: {$kernel_status}");
 
         // Check bootstrapper status
-        $bootstrapper_status = has_action('jankx_cli_initialized') ? 'Registered' : 'Not Registered';
+        $bootstrapper_status = has_action('jankx/cli/initialized') ? 'Registered' : 'Not Registered';
         \WP_CLI::line("Bootstrapper Status: {$bootstrapper_status}");
     }
 }

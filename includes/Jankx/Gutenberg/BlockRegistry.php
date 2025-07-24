@@ -114,7 +114,7 @@ class BlockRegistry
         wp_localize_script('jankx-gutenberg-editor', 'jankxGutenberg', [
             'blocks' => self::getBlockData(),
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('jankx_gutenberg_nonce'),
+            'nonce' => wp_create_nonce('jankx/gutenberg/nonce'),
         ]);
     }
 

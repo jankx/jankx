@@ -36,7 +36,7 @@ CLIKernel
 <?php
 // Trong functions.php hoặc plugin file
 
-add_action('jankx_wpcli_register_commands', function() {
+add_action('jankx/wpcli/register_commands', function() {
     // Register custom command
     \WP_CLI::add_command('jankx custom', 'CustomJankxCommand');
 });

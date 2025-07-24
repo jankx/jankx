@@ -27,13 +27,13 @@ function jankx_audit_existing_layouts() {
     $posts_with_layouts = $wpdb->get_results("
         SELECT ID, post_content
         FROM {$wpdb->posts}
-        WHERE post_content LIKE '%[jankx_layout%'
+        WHERE post_content LIKE '%[jankx/layout%'
     ");
 
     $layout_usage = [];
     foreach ($posts_with_layouts as $post) {
         // Extract layout information
-        preg_match_all('/\[jankx_layout([^\]]*)\](.*?)\[\/jankx_layout\]/s', $post->post_content, $matches);
+        preg_match_all('/\[jankx/layout([^\]]*)\](.*?)\[\/jankx/layout\]/s', $post->post_content, $matches);
 
         foreach ($matches[1] as $index => $attributes) {
             $attrs = shortcode_parse_atts($attributes);
@@ -179,7 +179,7 @@ function jankx_batch_migrate_layouts() {
     $posts_to_migrate = $wpdb->get_results("
         SELECT ID, post_title, post_content
         FROM {$wpdb->posts}
-        WHERE post_content LIKE '%[jankx_layout%'
+        WHERE post_content LIKE '%[jankx/layout%'
         AND post_status = 'publish'
     ");
 
@@ -222,7 +222,7 @@ function jankx_validate_migration($post_id) {
     ];
 
     // Check for old shortcodes
-    if (strpos($content, '[jankx_layout') !== false) {
+    if (strpos($content, '[jankx/layout') !== false) {
         $validation_results['has_old_shortcodes'] = true;
         $validation_results['errors'][] = 'Contains old Jankx 1.0 shortcodes';
     }
@@ -293,7 +293,7 @@ function jankx_create_migration_backup() {
     $posts_to_backup = $wpdb->get_results("
         SELECT ID, post_content
         FROM {$wpdb->posts}
-        WHERE post_content LIKE '%[jankx_layout%'
+        WHERE post_content LIKE '%[jankx/layout%'
     ");
 
     foreach ($posts_to_backup as $post) {

@@ -160,7 +160,7 @@ class GutenbergFrontendBootstrapper extends AbstractBootstrapper
             'usedBlocks' => $used_blocks,
             'partialHydration' => $this->getPartialHydrationSettings(),
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('jankx_gutenberg_nonce'),
+            'nonce' => wp_create_nonce('jankx/gutenberg/nonce'),
         ]);
     }
 
@@ -253,7 +253,7 @@ class GutenbergFrontendBootstrapper extends AbstractBootstrapper
     public function handleBlockRender(): void
     {
         // Verify nonce
-        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'jankx_gutenberg_nonce')) {
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'jankx/gutenberg/nonce')) {
             wp_die('Security check failed', 'Security Error', ['response' => 403]);
         }
 

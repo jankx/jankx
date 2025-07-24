@@ -52,9 +52,9 @@ class CronKernel extends Kernel implements KernelInterface
     protected function registerHooks(): void
     {
         // Cron jobs
-        $this->addHook('jankx_cron_optimize', [$this, 'runOptimizationCron']);
-        $this->addHook('jankx_cron_security_scan', [$this, 'runSecurityScanCron']);
-        $this->addHook('jankx_cron_cache_cleanup', [$this, 'runCacheCleanupCron']);
+        $this->addHook('jankx/cron/optimize', [$this, 'runOptimizationCron']);
+        $this->addHook('jankx/cron/security_scan', [$this, 'runSecurityScanCron']);
+        $this->addHook('jankx/cron/cache_cleanup', [$this, 'runCacheCleanupCron']);
 
         // Schedule cron jobs on init
         $this->addHook('init', [$this, 'scheduleCronJobs']);
@@ -66,7 +66,7 @@ class CronKernel extends Kernel implements KernelInterface
     protected function registerFilters(): void
     {
         // Cron output formatting
-        $this->addFilter('jankx_cron_output', [$this, 'formatCronOutput']);
+        $this->addFilter('jankx/cron/output', [$this, 'formatCronOutput']);
     }
 
     /**
@@ -109,18 +109,18 @@ class CronKernel extends Kernel implements KernelInterface
     public function scheduleCronJobs(): void
     {
         // Schedule optimization cron (daily at 2 AM)
-        if (!wp_next_scheduled('jankx_cron_optimize')) {
-            wp_schedule_event(strtotime('tomorrow 2:00 AM'), 'daily', 'jankx_cron_optimize');
+        if (!wp_next_scheduled('jankx/cron/optimize')) {
+            wp_schedule_event(strtotime('tomorrow 2:00 AM'), 'daily', 'jankx/cron/optimize');
         }
 
         // Schedule security scan cron (weekly on Sunday at 3 AM)
-        if (!wp_next_scheduled('jankx_cron_security_scan')) {
-            wp_schedule_event(strtotime('next Sunday 3:00 AM'), 'weekly', 'jankx_cron_security_scan');
+        if (!wp_next_scheduled('jankx/cron/security_scan')) {
+            wp_schedule_event(strtotime('next Sunday 3:00 AM'), 'weekly', 'jankx/cron/security_scan');
         }
 
         // Schedule cache cleanup cron (every 6 hours)
-        if (!wp_next_scheduled('jankx_cron_cache_cleanup')) {
-            wp_schedule_event(time(), 'every_6_hours', 'jankx_cron_cache_cleanup');
+        if (!wp_next_scheduled('jankx/cron/cache_cleanup')) {
+            wp_schedule_event(time(), 'every_6_hours', 'jankx/cron/cache_cleanup');
         }
     }
 
