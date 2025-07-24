@@ -258,8 +258,7 @@ class GutenbergServiceProvider extends ServiceProvider
     {
         $this->singleton(\Jankx\Gutenberg\BlockRegistry::class);
         $this->singleton(\Jankx\Gutenberg\BlockRenderer::class);
-        $this->singleton(\Jankx\Gutenberg\LayoutManager::class);
-        $this->singleton(\Jankx\Gutenberg\AJAXHandler::class);
+        // LayoutManager removed - only core Gutenberg system remains
     }
 
     public function boot(): void

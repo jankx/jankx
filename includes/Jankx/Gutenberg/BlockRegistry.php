@@ -2,7 +2,6 @@
 
 namespace Jankx\Gutenberg;
 
-use Jankx\Gutenberg\Blocks\TestimonialBlock;
 use Jankx\Facades\Logger;
 
 class BlockRegistry
@@ -16,10 +15,7 @@ class BlockRegistry
             return;
         }
 
-        add_action('init', [self::class, 'registerBlocks']);
         add_action('enqueue_block_editor_assets', [self::class, 'enqueueEditorAssets']);
-        // Note: Frontend assets are handled by GutenbergFrontendBootstrapper
-        // to avoid duplicate enqueuing
 
         self::$initialized = true;
     }
@@ -27,61 +23,6 @@ class BlockRegistry
     public static function boot()
     {
         self::init();
-    }
-
-    public static function registerBlocks()
-    {
-        // Check if blocks already registered
-        if (!empty(self::$blocks)) {
-            Logger::debug('Jankx Gutenberg: Blocks already registered, skipping');
-            return;
-        }
-
-        // Register testimonial block
-        self::registerBlock('jankx/testimonial', TestimonialBlock::class);
-
-        // Debug logging
-        Logger::debug('Jankx Gutenberg: Registered blocks', [
-            'blocks' => array_keys(self::$blocks),
-            'count' => count(self::$blocks)
-        ]);
-    }
-
-    public static function registerBlock($name, $class)
-    {
-        if (!class_exists($class)) {
-            Logger::error("Jankx Gutenberg: Block class {$class} not found");
-            return;
-        }
-
-        self::$blocks[$name] = $class;
-
-        // Check if register_block_type function exists
-        if (!function_exists('register_block_type')) {
-            Logger::error("Jankx Gutenberg: register_block_type function not available");
-            return;
-        }
-
-        // Debug logging
-        Logger::debug('Jankx Gutenberg: Registering block', [
-            'name' => $name,
-            'class' => $class
-        ]);
-
-        // Register block with WordPress
-        register_block_type($name, [
-            'editor_script' => 'jankx-gutenberg-editor',
-            'editor_style' => 'jankx-gutenberg-editor-style',
-            'style' => 'jankx-gutenberg-frontend-style',
-            'render_callback' => [$class, 'render'],
-            'attributes' => $class::getAttributes(),
-            'category' => 'widgets', // Add category to PHP registration
-        ]);
-
-        Logger::debug('Jankx Gutenberg: Block registered successfully', [
-            'name' => $name,
-            'class' => $class
-        ]);
     }
 
     public static function enqueueEditorAssets()
@@ -93,14 +34,6 @@ class BlockRegistry
             get_template_directory_uri() . '/assets/gutenberg/js/editor.js',
             $asset_file['dependencies'],
             $asset_file['version']
-        );
-
-        // Enqueue testimonial block script
-        wp_enqueue_script(
-            'jankx-testimonial-block',
-            get_template_directory_uri() . '/assets/gutenberg/js/blocks/testimonial/index.js',
-            ['jankx-gutenberg-editor', 'wp-blocks', 'wp-block-editor', 'wp-components', 'wp-i18n'],
-            JANKX_VERSION
         );
 
         wp_enqueue_style(
@@ -130,19 +63,7 @@ class BlockRegistry
 
     public static function getBlockData()
     {
-        $data = [];
-        foreach (self::$blocks as $name => $class) {
-            $data[$name] = [
-                'name' => $name,
-                'title' => $class::getTitle(),
-                'description' => $class::getDescription(),
-                'category' => $class::getCategory(),
-                'icon' => $class::getIcon(),
-                'keywords' => $class::getKeywords(),
-                'supports' => $class::getSupports(),
-            ];
-        }
-        return $data;
+        return [];
     }
 
     public static function getBlocks()

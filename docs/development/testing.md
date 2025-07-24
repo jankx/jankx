@@ -291,7 +291,7 @@ class ServiceIntegrationTest extends TestCase
 namespace Jankx\Tests\Integration;
 
 use PHPUnit\Framework\TestCase;
-use Jankx\Gutenberg\AJAX\AJAXHandler;
+// AJAXHandler removed - only core Gutenberg system remains
 use Jankx\Gutenberg\AJAX\ContentRenderer;
 use Jankx\Security\SecurityManager;
 
@@ -305,7 +305,7 @@ class AJAXIntegrationTest extends TestCase
     {
         $this->renderer = $this->createMock(ContentRenderer::class);
         $this->securityManager = $this->createMock(SecurityManager::class);
-        $this->handler = new AJAXHandler($this->renderer, $this->securityManager);
+        // AJAXHandler removed - only core Gutenberg system remains
     }
 
     public function testLoadContentWithValidRequest()
@@ -539,7 +539,7 @@ class PerformanceTest extends TestCase
             'nonce' => wp_create_nonce('jankx_ajax_nonce')
         ];
 
-        $handler = new AJAXHandler();
+        // AJAXHandler removed - only core Gutenberg system remains
         $handler->handleLoadContent();
 
         $endTime = microtime(true);
