@@ -7,7 +7,7 @@ Jankx is a powerful WordPress theme framework built with modern architecture, fo
 ## 🚀 Quick Start
 
 ### Requirements
-- **PHP**: >= 7.1
+- **PHP**: >= 7.4
 - **WordPress**: >= 5.0
 - **Composer**: For dependency management
 
