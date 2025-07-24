@@ -1,0 +1,613 @@
+---
+layout: default
+title: Jankx Framework - Modern WordPress Theme Framework
+description: High-performance WordPress theme framework with Gutenberg integration, deferred service loading, and context-aware bootstrapping.
+---
+
+<div class="hero-section">
+  <div class="hero-content">
+    <div class="hero-text">
+      <h1 class="hero-title">
+        Modern WordPress Theme Framework
+      </h1>
+      <p class="hero-description">
+        Jankx is a powerful WordPress theme framework built with modern architecture, focusing on performance, maintainability, and developer experience.
+      </p>
+      <div class="hero-actions">
+        <a href="/architecture/" class="btn btn-primary">
+          <i class="fas fa-rocket"></i>
+          Get Started
+        </a>
+        <a href="https://github.com/jankx/jankx" class="btn btn-secondary" target="_blank">
+          <i class="fab fa-github"></i>
+          View on GitHub
+        </a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="code-preview">
+        <div class="code-header">
+          <div class="code-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <span class="code-title">framework.php</span>
+        </div>
+        <pre><code class="language-php">// Initialize container
+$container = Jankx::getInstance();
+
+// Boot kernel by context
+$kernelManager = new KernelManager($container);
+$kernelManager->boot();
+
+// Automatic context detection
+// CLI → Gutenberg AJAX → Cron → REST API → Admin → Frontend</code></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="features-section">
+  <div class="container">
+    <h2 class="section-title">Why Choose Jankx?</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-bolt"></i>
+        </div>
+        <h3>High Performance</h3>
+        <p>Deferred service loading, context-aware bootstrapping, and intelligent caching for optimal performance.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-puzzle-piece"></i>
+        </div>
+        <h3>Modern Architecture</h3>
+        <p>Layered architecture with dependency injection, service containers, and clean separation of concerns.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fab fa-wordpress"></i>
+        </div>
+        <h3>Gutenberg Ready</h3>
+        <p>Advanced Gutenberg integration with custom blocks, layout system, and partial hydration.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-code"></i>
+        </div>
+        <h3>Developer Friendly</h3>
+        <p>Clean APIs, comprehensive documentation, and modern development tools for better DX.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <h3>Secure & Reliable</h3>
+        <p>Built with security best practices, error handling, and graceful degradation.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-users"></i>
+        </div>
+        <h3>Community Driven</h3>
+        <p>Open source, actively maintained, and supported by the WordPress community.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="quick-start-section">
+  <div class="container">
+    <h2 class="section-title">Quick Start</h2>
+    <div class="quick-start-content">
+      <div class="installation-steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h3>Install via Composer</h3>
+            <pre><code class="language-bash">composer create-project jankx/jankx my-theme -s dev</code></pre>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h3>Activate Theme</h3>
+            <p>Upload the theme to your WordPress installation and activate it from the admin panel.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h3>Start Building</h3>
+            <p>Create custom blocks, layouts, and themes using the powerful Jankx framework.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="requirements">
+        <h3>Requirements</h3>
+        <ul>
+          <li><strong>PHP:</strong> >= 7.1</li>
+          <li><strong>WordPress:</strong> >= 5.0</li>
+          <li><strong>Composer:</strong> For dependency management</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="documentation-section">
+  <div class="container">
+    <h2 class="section-title">Documentation</h2>
+    <div class="docs-grid">
+      <div class="doc-category">
+        <h3><i class="fas fa-architecture"></i> Architecture</h3>
+        <ul>
+          <li><a href="/architecture/">Overview</a></li>
+          <li><a href="/architecture/bootstrapper-structure/">Bootstrapper Structure</a></li>
+          <li><a href="/architecture/kernel-system/">Kernel System</a></li>
+          <li><a href="/architecture/service-container/">Service Container</a></li>
+          <li><a href="/architecture/deferred-service-context/">Deferred Service Context</a></li>
+        </ul>
+      </div>
+
+      <div class="doc-category">
+        <h3><i class="fas fa-code"></i> Development</h3>
+        <ul>
+          <li><a href="/development/best-practices/">Best Practices</a></li>
+          <li><a href="/development/testing/">Testing</a></li>
+          <li><a href="/development/troubleshooting/">Troubleshooting</a></li>
+          <li><a href="/development/rules/">Development Rules</a></li>
+        </ul>
+      </div>
+
+      <div class="doc-category">
+        <h3><i class="fab fa-wordpress"></i> Gutenberg</h3>
+        <ul>
+          <li><a href="/gutenberg/block-registration/">Block Registration</a></li>
+          <li><a href="/gutenberg/layout-system/">Layout System</a></li>
+          <li><a href="/gutenberg/ajax-system/">AJAX System</a></li>
+          <li><a href="/gutenberg/blocks/">Custom Blocks</a></li>
+        </ul>
+      </div>
+
+      <div class="doc-category">
+        <h3><i class="fas fa-palette"></i> Designer</h3>
+        <ul>
+          <li><a href="/designer/quick-start/">Quick Start</a></li>
+          <li><a href="/designer/workflow/">Workflow</a></li>
+          <li><a href="/designer/design-system/">Design System</a></li>
+          <li><a href="/designer/speed-optimization/">Speed Optimization</a></li>
+        </ul>
+      </div>
+
+      <div class="doc-category">
+        <h3><i class="fas fa-tachometer-alt"></i> Performance</h3>
+        <ul>
+          <li><a href="/performance/asset-management/">Asset Management</a></li>
+          <li><a href="/performance/core-web-vitals/">Core Web Vitals</a></li>
+        </ul>
+      </div>
+
+      <div class="doc-category">
+        <h3><i class="fas fa-shield-alt"></i> Security</h3>
+        <ul>
+          <li><a href="/security/guidelines/">Security Guidelines</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="community-section">
+  <div class="container">
+    <h2 class="section-title">Join the Community</h2>
+    <div class="community-content">
+      <div class="community-card">
+        <div class="community-icon">
+          <i class="fab fa-github"></i>
+        </div>
+        <h3>GitHub</h3>
+        <p>Contribute to the project, report issues, and stay updated with the latest developments.</p>
+        <a href="https://github.com/jankx/jankx" class="btn btn-outline" target="_blank">
+          View Repository
+        </a>
+      </div>
+
+      <div class="community-card">
+        <div class="community-icon">
+          <i class="fas fa-comments"></i>
+        </div>
+        <h3>Discussions</h3>
+        <p>Join discussions, ask questions, and share your experiences with the community.</p>
+        <a href="https://github.com/jankx/jankx/discussions" class="btn btn-outline" target="_blank">
+          Start Discussion
+        </a>
+      </div>
+
+      <div class="community-card">
+        <div class="community-icon">
+          <i class="fas fa-bug"></i>
+        </div>
+        <h3>Issues</h3>
+        <p>Report bugs, request features, and help improve the framework.</p>
+        <a href="https://github.com/jankx/jankx/issues" class="btn btn-outline" target="_blank">
+          Report Issue
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+/* Hero Section */
+.hero-section {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+  color: white;
+  padding: var(--spacing-2xl) 0;
+  margin-bottom: var(--spacing-2xl);
+}
+
+.hero-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-2xl);
+  align-items: center;
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: var(--spacing-lg);
+  line-height: 1.2;
+}
+
+.hero-description {
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--spacing-xl);
+  opacity: 0.9;
+  line-height: 1.6;
+}
+
+.hero-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  text-decoration: none;
+  transition: var(--transition);
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: white;
+  color: var(--color-primary);
+}
+
+.btn-primary:hover {
+  background-color: #f8fafc;
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+}
+
+.btn-outline:hover {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+/* Code Preview */
+.code-preview {
+  background-color: var(--color-code-background);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.code-header {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-md);
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.code-dots {
+  display: flex;
+  gap: var(--spacing-xs);
+  margin-right: var(--spacing-md);
+}
+
+.code-dots span {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--color-text-muted);
+}
+
+.code-dots span:nth-child(1) { background-color: #ef4444; }
+.code-dots span:nth-child(2) { background-color: #f59e0b; }
+.code-dots span:nth-child(3) { background-color: #10b981; }
+
+.code-title {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+/* Features Section */
+.features-section {
+  padding: var(--spacing-2xl) 0;
+  background-color: var(--color-surface);
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: var(--spacing-2xl);
+  font-size: 2.5rem;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-xl);
+}
+
+.feature-card {
+  background-color: var(--color-background);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  text-align: center;
+  transition: var(--transition);
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.feature-icon {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto var(--spacing-lg);
+  background-color: var(--color-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+}
+
+.feature-card h3 {
+  margin-bottom: var(--spacing-md);
+  color: var(--color-text);
+}
+
+.feature-card p {
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+/* Quick Start Section */
+.quick-start-section {
+  padding: var(--spacing-2xl) 0;
+}
+
+.quick-start-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--spacing-2xl);
+  align-items: start;
+}
+
+.installation-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.step {
+  display: flex;
+  gap: var(--spacing-lg);
+  align-items: flex-start;
+}
+
+.step-number {
+  width: 40px;
+  height: 40px;
+  background-color: var(--color-primary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.step-content h3 {
+  margin-bottom: var(--spacing-sm);
+}
+
+.step-content p {
+  color: var(--color-text-muted);
+  margin-bottom: var(--spacing-md);
+}
+
+.requirements {
+  background-color: var(--color-surface);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+}
+
+.requirements h3 {
+  margin-bottom: var(--spacing-md);
+}
+
+.requirements ul {
+  list-style: none;
+  padding: 0;
+}
+
+.requirements li {
+  padding: var(--spacing-sm) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.requirements li:last-child {
+  border-bottom: none;
+}
+
+/* Documentation Section */
+.documentation-section {
+  padding: var(--spacing-2xl) 0;
+  background-color: var(--color-surface);
+}
+
+.docs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-xl);
+}
+
+.doc-category {
+  background-color: var(--color-background);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+}
+
+.doc-category h3 {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+  color: var(--color-primary);
+}
+
+.doc-category ul {
+  list-style: none;
+  padding: 0;
+}
+
+.doc-category li {
+  margin-bottom: var(--spacing-sm);
+}
+
+.doc-category a {
+  color: var(--color-text-muted);
+  transition: var(--transition);
+}
+
+.doc-category a:hover {
+  color: var(--color-primary);
+}
+
+/* Community Section */
+.community-section {
+  padding: var(--spacing-2xl) 0;
+}
+
+.community-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-xl);
+}
+
+.community-card {
+  background-color: var(--color-surface);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  text-align: center;
+  transition: var(--transition);
+}
+
+.community-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.community-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto var(--spacing-lg);
+  background-color: var(--color-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 2rem;
+}
+
+.community-card h3 {
+  margin-bottom: var(--spacing-md);
+}
+
+.community-card p {
+  color: var(--color-text-muted);
+  margin-bottom: var(--spacing-lg);
+  line-height: 1.6;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero-content {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .hero-actions {
+    justify-content: center;
+  }
+
+  .quick-start-content {
+    grid-template-columns: 1fr;
+  }
+
+  .section-title {
+    font-size: 2rem;
+  }
+}
+</style>

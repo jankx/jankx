@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang | default: 'en' }}">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>{% if page.title %}{{ page.title }} - {% endif %}{{ site.title }}</title>
+  <meta name="description" content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}">
+
+  <!-- SEO -->
+  {% seo %}
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="{{ '/assets/images/favicon.ico' | relative_url }}">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
+
+  <!-- Theme -->
+  <script>
+    // Check for saved theme preference or default to 'light'
+    const theme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', theme);
+  </script>
+</head>
+
+<body class="layout-{{ page.layout }}">
+  <!-- Skip to content -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <div class="header-content">
+        <!-- Logo -->
+        <div class="logo">
+          <a href="{{ '/' | relative_url }}">
+            <img src="{{ site.theme_settings.logo | default: '/assets/images/logo.png' | relative_url }}"
+                 alt="{{ site.title }}"
+                 height="{{ site.theme_settings.logo_height | default: '40px' }}">
+          </a>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="main-nav" role="navigation">
+          <ul class="nav-list">
+            {% for item in site.theme_settings.navigation %}
+              <li class="nav-item{% if item.children %} has-dropdown{% endif %}">
+                <a href="{{ item.url | relative_url }}"
+                   class="nav-link{% if page.url == item.url %} active{% endif %}">
+                  {{ item.title }}
+                </a>
+                {% if item.children %}
+                  <ul class="dropdown">
+                    {% for child in item.children %}
+                      <li>
+                        <a href="{{ child.url | relative_url }}"
+                           class="dropdown-link{% if page.url == child.url %} active{% endif %}">
+                          {{ child.title }}
+                        </a>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        </nav>
+
+        <!-- Header actions -->
+        <div class="header-actions">
+          <!-- Search -->
+          <button class="search-toggle" aria-label="Search">
+            <i class="fas fa-search"></i>
+          </button>
+
+          <!-- Theme toggle -->
+          <button class="theme-toggle" aria-label="Toggle theme">
+            <i class="fas fa-moon"></i>
+          </button>
+
+          <!-- Mobile menu toggle -->
+          <button class="mobile-menu-toggle" aria-label="Toggle mobile menu">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Search overlay -->
+  <div class="search-overlay" id="search-overlay">
+    <div class="search-container">
+      <div class="search-header">
+        <h2>Search Documentation</h2>
+        <button class="search-close" aria-label="Close search">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="search-input-wrapper">
+        <input type="text" id="search-input" placeholder="Search documentation..." autocomplete="off">
+        <i class="fas fa-search search-icon"></i>
+      </div>
+      <div id="search-results" class="search-results"></div>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <main id="main-content" class="site-main">
+    <div class="container">
+      <div class="content-wrapper">
+        <!-- Sidebar -->
+        {% if page.sidebar %}
+          <aside class="sidebar" id="sidebar">
+            <div class="sidebar-content">
+              {% include sidebar-{{ page.sidebar }}.html %}
+            </div>
+          </aside>
+        {% endif %}
+
+        <!-- Main content area -->
+        <div class="main-content{% unless page.sidebar %} full-width{% endunless %}">
+          <!-- Breadcrumbs -->
+          {% if site.theme_settings.layout.breadcrumbs %}
+            <nav class="breadcrumbs" aria-label="Breadcrumb">
+              <ol>
+                <li><a href="{{ '/' | relative_url }}">Home</a></li>
+                {% for item in page.breadcrumbs %}
+                  <li><a href="{{ item.url | relative_url }}">{{ item.title }}</a></li>
+                {% endfor %}
+                <li aria-current="page">{{ page.title }}</li>
+              </ol>
+            </nav>
+          {% endif %}
+
+          <!-- Article -->
+          <article class="content">
+            <!-- Page header -->
+            <header class="page-header">
+              <h1 class="page-title">{{ page.title }}</h1>
+              {% if page.description %}
+                <p class="page-description">{{ page.description }}</p>
+              {% endif %}
+              {% if page.author %}
+                <div class="page-meta">
+                  <span class="author">By {{ page.author }}</span>
+                  {% if page.date %}
+                    <span class="date">{{ page.date | date: "%B %d, %Y" }}</span>
+                  {% endif %}
+                </div>
+              {% endif %}
+            </header>
+
+            <!-- Table of contents -->
+            {% if site.theme_settings.layout.toc and page.toc != false %}
+              <div class="toc-wrapper" id="toc-wrapper">
+                <div class="toc-header">
+                  <h3>Table of Contents</h3>
+                  <button class="toc-toggle" aria-label="Toggle table of contents">
+                    <i class="fas fa-list"></i>
+                  </button>
+                </div>
+                <nav class="toc" id="toc"></nav>
+              </div>
+            {% endif %}
+
+            <!-- Content -->
+            <div class="content-body">
+              {{ content }}
+            </div>
+
+            <!-- Page footer -->
+            <footer class="page-footer">
+              <!-- Reading time -->
+              {% if site.theme_settings.layout.reading_time %}
+                <div class="reading-time">
+                  <i class="fas fa-clock"></i>
+                  <span id="reading-time"></span> min read
+                </div>
+              {% endif %}
+
+              <!-- Share buttons -->
+              {% if site.theme_settings.layout.share_buttons %}
+                <div class="share-buttons">
+                  <span>Share:</span>
+                  <a href="https://twitter.com/intent/tweet?text={{ page.title | url_encode }}&url={{ page.url | absolute_url }}"
+                     target="_blank" rel="noopener" aria-label="Share on Twitter">
+                    <i class="fab fa-twitter"></i>
+                  </a>
+                  <a href="https://www.facebook.com/sharer/sharer.php?u={{ page.url | absolute_url }}"
+                     target="_blank" rel="noopener" aria-label="Share on Facebook">
+                    <i class="fab fa-facebook"></i>
+                  </a>
+                  <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ page.url | absolute_url }}"
+                     target="_blank" rel="noopener" aria-label="Share on LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                  </a>
+                </div>
+              {% endif %}
+            </footer>
+          </article>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>{{ site.title }}</h3>
+          <p>{{ site.description }}</p>
+        </div>
+
+        <div class="footer-section">
+          <h4>Documentation</h4>
+          <ul>
+            <li><a href="{{ '/architecture/' | relative_url }}">Architecture</a></li>
+            <li><a href="{{ '/development/' | relative_url }}">Development</a></li>
+            <li><a href="{{ '/gutenberg/' | relative_url }}">Gutenberg</a></li>
+            <li><a href="{{ '/designer/' | relative_url }}">Designer</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-section">
+          <h4>Community</h4>
+          <ul>
+            <li><a href="https://github.com/jankx/jankx">GitHub</a></li>
+            <li><a href="https://github.com/jankx/jankx/issues">Issues</a></li>
+            <li><a href="https://github.com/jankx/jankx/discussions">Discussions</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-section">
+          <h4>Follow Us</h4>
+          <div class="social-links">
+            {% for item in site.theme_settings.footer %}
+              <a href="{{ item.url }}" target="_blank" rel="noopener" aria-label="{{ item.title }}">
+                <i class="{{ item.icon }}"></i>
+              </a>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; {{ site.time | date: '%Y' }} {{ site.title }}. All rights reserved.</p>
+        <p>Made with ❤️ for the WordPress community</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Back to top -->
+  {% if site.theme_settings.layout.back_to_top %}
+    <button class="back-to-top" id="back-to-top" aria-label="Back to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+  {% endif %}
+
+  <!-- Scripts -->
+  <script src="{{ '/assets/js/main.js' | relative_url }}"></script>
+  <script src="{{ '/assets/js/search.js' | relative_url }}"></script>
+  <script src="{{ '/assets/js/toc.js' | relative_url }}"></script>
+
+  <!-- Additional scripts -->
+  {% if page.scripts %}
+    {% for script in page.scripts %}
+      <script src="{{ script | relative_url }}"></script>
+    {% endfor %}
+  {% endif %}
+</body>
+</html>

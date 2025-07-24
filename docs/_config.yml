@@ -1,0 +1,286 @@
+# Jankx Framework Documentation
+# Modern GitHub Pages theme configuration
+
+title: Jankx Framework
+description: Modern, High-Performance WordPress Theme Framework
+author: Jankx Team
+email: puleeno@gmail.com
+url: "https://jankx.github.io"
+baseurl: ""
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+permalink: pretty
+relative_links:
+  enabled: true
+  collections: true
+
+# Collections
+collections:
+  architecture:
+    output: true
+    permalink: /architecture/:name/
+  development:
+    output: true
+    permalink: /development/:name/
+  gutenberg:
+    output: true
+    permalink: /gutenberg/:name/
+  designer:
+    output: true
+    permalink: /designer/:name/
+  performance:
+    output: true
+    permalink: /performance/:name/
+  post-layout:
+    output: true
+    permalink: /post-layout/:name/
+  security:
+    output: true
+    permalink: /security/:name/
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
+  - jekyll-paginate
+  - jekyll-redirect-from
+
+# Exclude from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+  - .git
+  - .gitignore
+  - README.md
+  - LICENSE
+  - package.json
+  - webpack.mix.js
+
+# Defaults
+defaults:
+  -
+    scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+      author: "Jankx Team"
+  -
+    scope:
+      path: ""
+      type: "architecture"
+    values:
+      layout: "page"
+      sidebar: "architecture"
+  -
+    scope:
+      path: ""
+      type: "development"
+    values:
+      layout: "page"
+      sidebar: "development"
+  -
+    scope:
+      path: ""
+      type: "gutenberg"
+    values:
+      layout: "page"
+      sidebar: "gutenberg"
+  -
+    scope:
+      path: ""
+      type: "designer"
+    values:
+      layout: "page"
+      sidebar: "designer"
+  -
+    scope:
+      path: ""
+      type: "performance"
+    values:
+      layout: "page"
+      sidebar: "performance"
+  -
+    scope:
+      path: ""
+      type: "post-layout"
+    values:
+      layout: "page"
+      sidebar: "post-layout"
+  -
+    scope:
+      path: ""
+      type: "security"
+    values:
+      layout: "page"
+      sidebar: "security"
+
+# Theme settings
+theme_settings:
+  # Meta
+  title: Jankx Framework
+  description: Modern, High-Performance WordPress Theme Framework
+  keywords: wordpress, theme, framework, gutenberg, performance
+
+  # Header
+  logo: /assets/images/logo.png
+  logo_height: 40px
+
+  # Navigation
+  navigation:
+    - title: Home
+      url: /
+    - title: Architecture
+      url: /architecture/
+      children:
+        - title: Overview
+          url: /architecture/
+        - title: Bootstrapper Structure
+          url: /architecture/bootstrapper-structure/
+        - title: Kernel System
+          url: /architecture/kernel-system/
+        - title: Service Container
+          url: /architecture/service-container/
+        - title: Deferred Service Context
+          url: /architecture/deferred-service-context/
+    - title: Development
+      url: /development/
+      children:
+        - title: Best Practices
+          url: /development/best-practices/
+        - title: Testing
+          url: /development/testing/
+        - title: Troubleshooting
+          url: /development/troubleshooting/
+        - title: Rules
+          url: /development/rules/
+    - title: Gutenberg
+      url: /gutenberg/
+      children:
+        - title: Block Registration
+          url: /gutenberg/block-registration/
+        - title: Layout System
+          url: /gutenberg/layout-system/
+        - title: AJAX System
+          url: /gutenberg/ajax-system/
+        - title: Blocks
+          url: /gutenberg/blocks/
+    - title: Designer
+      url: /designer/
+      children:
+        - title: Quick Start
+          url: /designer/quick-start/
+        - title: Workflow
+          url: /designer/workflow/
+        - title: Design System
+          url: /designer/design-system/
+        - title: Speed Optimization
+          url: /designer/speed-optimization/
+    - title: Performance
+      url: /performance/
+      children:
+        - title: Asset Management
+          url: /performance/asset-management/
+        - title: Core Web Vitals
+          url: /performance/core-web-vitals/
+    - title: Post Layout
+      url: /post-layout/
+      children:
+        - title: Overview
+          url: /post-layout/
+        - title: Best Practices
+          url: /post-layout/best-practices/
+        - title: Pattern Library
+          url: /post-layout/pattern-library/
+        - title: Migration Guide
+          url: /post-layout/migration-guide/
+    - title: Security
+      url: /security/
+      children:
+        - title: Guidelines
+          url: /security/guidelines/
+
+  # Footer
+  footer:
+    - title: GitHub
+      url: https://github.com/jankx/jankx
+      icon: fab fa-github
+    - title: Issues
+      url: https://github.com/jankx/jankx/issues
+      icon: fas fa-bug
+    - title: Discussions
+      url: https://github.com/jankx/jankx/discussions
+      icon: fas fa-comments
+
+  # Social
+  social:
+    github: jankx/jankx
+    twitter: jankx_framework
+
+  # Search
+  search: true
+  search_full_content: true
+
+  # Comments
+  comments:
+    provider: false
+
+  # Analytics
+  analytics:
+    provider: google
+    google:
+      tracking_id: ""
+
+  # SEO
+  seo:
+    type: WebSite
+    author: Jankx Team
+
+  # Colors
+  colors:
+    primary: "#2563eb"
+    secondary: "#64748b"
+    accent: "#f59e0b"
+    text: "#1e293b"
+    background: "#ffffff"
+    sidebar: "#f8fafc"
+    code: "#1e293b"
+    code_background: "#f1f5f9"
+
+  # Typography
+  typography:
+    font_family: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+    font_size: "16px"
+    line_height: "1.6"
+    heading_font: "Inter, sans-serif"
+    code_font: "JetBrains Mono, 'Fira Code', monospace"
+
+  # Layout
+  layout:
+    sidebar: true
+    toc: true
+    toc_sticky: true
+    breadcrumbs: true
+    back_to_top: true
+    reading_time: true
+    share_buttons: true
+    related_posts: true
+
+  # Features
+  features:
+    dark_mode: true
+    search: true
+    toc: true
+    breadcrumbs: true
+    back_to_top: true
+    reading_time: true
+    share_buttons: true
+    related_posts: true
+    copy_code: true
+    smooth_scroll: true
+    lazy_loading: true
