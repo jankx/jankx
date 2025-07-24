@@ -1,26 +1,33 @@
-# Migration Guide
+# Migration Guide - Jankx 1.x to 2.0
 
-> **Hướng dẫn chuyển đổi từ theme cũ sang Jankx 2.0**
+> **Hướng dẫn chuyển đổi từ Jankx 1.x lên Jankx 2.0**
+
+## 🎯 Overview
+
+Jankx 2.0 là một bước nhảy vọt từ Jankx 1.x, chuyển từ template engine tùy chỉnh sang kiến trúc Gutenberg-first hiện đại. Migration này đòi hỏi việc chuyển đổi toàn diện từ hệ thống `views` sang hệ thống `templates` dựa trên Gutenberg blocks.
 
 ## 🚀 Quick Migration Checklist
 
 ### 1. **Pre-Migration Analysis**
 ```bash
-# Kiểm tra theme hiện tại
+# Kiểm tra Jankx 1.x installation
 wp theme list
 wp plugin list
 
 # Backup database
 wp db export backup.sql
 
-# Backup theme files
-cp -r wp-content/themes/old-theme wp-content/themes/old-theme-backup
+# Backup Jankx 1.x theme files
+cp -r wp-content/themes/jankx-1x wp-content/themes/jankx-1x-backup
+
+# Analyze current template structure
+find wp-content/themes/jankx-1x/views -name "*.php" -type f
 ```
 
 ### 2. **Installation Steps**
 ```bash
 # 1. Install Jankx 2.0
-wp theme install jankx --activate
+wp theme install jankx-2.0 --activate
 
 # 2. Install required plugins
 wp plugin install gutenberg --activate
@@ -29,9 +36,177 @@ wp plugin install classic-editor --activate
 # 3. Verify installation
 wp theme status
 wp plugin status
+
+# 4. Check Gutenberg compatibility
+wp eval "echo 'Gutenberg version: ' . get_bloginfo('version');"
 ```
 
-### 3. **Content Migration**
+### 3. **Template System Migration**
+
+#### Migrate from Views to Templates
+```php
+// Jankx 1.x Template System (views/)
+class ViewsMigrator
+{
+    public function migrateViewsToTemplates()
+    {
+        $views = $this->getAllViews();
+
+        foreach ($views as $view) {
+            $template = $this->convertViewToTemplate($view);
+            $this->saveTemplate($template);
+        }
+    }
+
+    private function convertViewToTemplate($viewPath)
+    {
+        $viewContent = file_get_contents($viewPath);
+
+        // Convert PHP template to HTML template
+        $templateContent = $this->convertPHPToHTML($viewContent);
+
+        return $templateContent;
+    }
+
+    private function convertPHPToHTML($phpContent)
+    {
+        // Convert PHP variables to Gutenberg blocks
+        $htmlContent = preg_replace(
+            '/<\?php echo \$(\w+); \?>/',
+            '<!-- wp:jankx/dynamic-content {"field":"$1"} /-->',
+            $phpContent
+        );
+
+        // Convert PHP loops to Gutenberg query blocks
+        $htmlContent = preg_replace(
+            '/<\?php foreach \(\$(\w+) as \$(\w+)\): \?>(.*?)<\?php endforeach; \?>/s',
+            '<!-- wp:query {"queryId":1,"query":{"postType":"post"}} --><div class="wp-block-query">$3</div><!-- /wp:query -->',
+            $htmlContent
+        );
+
+        // Convert PHP conditionals to Gutenberg conditional blocks
+        $htmlContent = preg_replace(
+            '/<\?php if \(\$(\w+)\): \?>(.*?)<\?php endif; \?>/s',
+            '<!-- wp:jankx/conditional {"condition":"$1"} -->$2<!-- /wp:jankx/conditional -->',
+            $htmlContent
+        );
+
+        return $htmlContent;
+    }
+}
+
+// Template Mapping Examples
+$templateMapping = [
+    // Layout templates
+    'views/layouts/main.php' => 'templates/layouts/main.html',
+    'views/layouts/sidebar.php' => 'templates/layouts/sidebar.html',
+
+    // Page templates
+    'views/pages/home.php' => 'templates/front-page.html',
+    'views/pages/archive.php' => 'templates/archive.html',
+    'views/pages/single.php' => 'templates/single.html',
+
+    // Partial templates
+    'views/partials/header.php' => 'templates/parts/header.html',
+    'views/partials/footer.php' => 'templates/parts/footer.html',
+    'views/partials/sidebar.php' => 'templates/parts/sidebar.html',
+
+    // Component templates
+    'views/components/post-item.php' => 'templates/blocks/post-item.html',
+    'views/components/testimonial.php' => 'templates/blocks/testimonial.html'
+];
+```
+
+#### Convert PHP Templates to HTML Templates
+```php
+// Jankx 1.x PHP Template (views/layouts/main.php)
+<?php
+/**
+ * Main layout template
+ */
+?>
+<!DOCTYPE html>
+<html <?php language_attributes(); ?>>
+<head>
+    <meta charset="<?php bloginfo('charset'); ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <?php wp_head(); ?>
+</head>
+<body <?php body_class(); ?>>
+    <header>
+        <?php jankx_template('partials/header', ['site_title' => get_bloginfo('name')]); ?>
+    </header>
+
+    <main>
+        <?php echo $content; ?>
+    </main>
+
+    <footer>
+        <?php jankx_template('partials/footer'); ?>
+    </footer>
+
+    <?php wp_footer(); ?>
+</body>
+</html>
+
+// Jankx 2.0 HTML Template (templates/layouts/main.html)
+<!DOCTYPE html>
+<html <?php echo get_language_attributes(); ?>>
+<head>
+    <meta charset="<?php bloginfo('charset'); ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <?php wp_head(); ?>
+</head>
+<body <?php body_class(); ?>>
+    <!-- wp:template-part {"slug":"header","tagName":"header"} /-->
+
+    <!-- wp:group {"tagName":"main","layout":{"type":"constrained"}} -->
+    <main class="wp-block-group">
+        <!-- wp:post-content /-->
+    </main>
+    <!-- /wp:group -->
+
+    <!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->
+
+    <?php wp_footer(); ?>
+</body>
+</html>
+```
+
+#### Migrate Template Functions
+```php
+// Jankx 1.x Template Functions
+class Jankx1xTemplateFunctions
+{
+    public function renderTemplate($template, $data = [])
+    {
+        extract($data);
+        include get_template_directory() . "/views/{$template}.php";
+    }
+
+    public function getTemplatePath($template)
+    {
+        return get_template_directory() . "/views/{$template}.php";
+    }
+}
+
+// Jankx 2.0 Template Functions
+class Jankx2xTemplateFunctions
+{
+    public function renderTemplate($template, $data = [])
+    {
+        // Use WordPress template hierarchy
+        get_template_part("templates/{$template}");
+    }
+
+    public function getTemplatePath($template)
+    {
+        return get_template_directory() . "/templates/{$template}.html";
+    }
+}
+```
+
+### 4. **Content Migration**
 
 #### Migrate Posts & Pages
 ```php
@@ -73,10 +248,33 @@ class ContentMigrator
 
     private function convertShortcodesToBlocks($content)
     {
+        // Convert Jankx 1.x shortcodes to Gutenberg blocks
+
         // Convert [testimonial] to Gutenberg block
         $content = preg_replace(
             '/\[testimonial\s+author="([^"]+)"\](.*?)\[\/testimonial\]/s',
             '<!-- wp:jankx/testimonial {"author":"$1"} --><div class="wp-block-jankx-testimonial">$2</div><!-- /wp:jankx/testimonial -->',
+            $content
+        );
+
+        // Convert [post-grid] to Gutenberg query block
+        $content = preg_replace(
+            '/\[post-grid\s+posts_per_page="(\d+)"\s+category="([^"]+)"\]/',
+            '<!-- wp:query {"queryId":1,"query":{"perPage":$1,"categories":["$2"],"postType":"post"}} --><div class="wp-block-query"><!-- wp:post-template --><!-- wp:post-title /--><!-- wp:post-excerpt /--><!-- /wp:post-template --></div><!-- /wp:query -->',
+            $content
+        );
+
+        // Convert [hero-section] to Gutenberg hero block
+        $content = preg_replace(
+            '/\[hero-section\s+title="([^"]+)"\s+subtitle="([^"]+)"\]/',
+            '<!-- wp:jankx/hero-section {"title":"$1","subtitle":"$2"} --><div class="wp-block-jankx-hero-section"></div><!-- /wp:jankx/hero-section -->',
+            $content
+        );
+
+        // Convert [contact-form] to Gutenberg form block
+        $content = preg_replace(
+            '/\[contact-form\s+title="([^"]+)"\]/',
+            '<!-- wp:jankx/contact-form {"title":"$1"} --><div class="wp-block-jankx-contact-form"></div><!-- /wp:jankx/contact-form -->',
             $content
         );
 
@@ -171,21 +369,71 @@ class FunctionMigrator
 
     private function migrateCustomQueries()
     {
-        // Old way
+        // Jankx 1.x - Procedural approach
         // function get_featured_posts() {
         //     return get_posts(['meta_key' => 'featured', 'meta_value' => '1']);
         // }
 
-        // New way - Use Jankx Query Service
+        // Jankx 2.0 - Service-based approach
         class FeaturedPostsService
         {
+            private $queryService;
+            private $cacheService;
+
+            public function __construct(QueryService $queryService, CacheService $cacheService)
+            {
+                $this->queryService = $queryService;
+                $this->cacheService = $cacheService;
+            }
+
             public function getFeaturedPosts(): array
             {
-                return $this->queryService->getPosts([
-                    'meta_query' => [
-                        ['key' => 'featured', 'value' => '1']
-                    ]
-                ]);
+                $cacheKey = 'featured_posts';
+
+                return $this->cacheService->remember($cacheKey, function() {
+                    return $this->queryService->getPosts([
+                        'meta_query' => [
+                            ['key' => 'featured', 'value' => '1']
+                        ],
+                        'posts_per_page' => 6,
+                        'orderby' => 'date',
+                        'order' => 'DESC'
+                    ]);
+                }, 3600); // Cache for 1 hour
+            }
+        }
+    }
+
+    private function migrateCustomHooks()
+    {
+        // Jankx 1.x - Direct hook usage
+        // add_action('wp_head', 'custom_meta_tags');
+        // add_filter('the_content', 'custom_content_filter');
+
+        // Jankx 2.0 - Event-driven approach
+        class CustomEventHandlers
+        {
+            public function handleMetaTags(Event $event)
+            {
+                $metaTags = [
+                    'og:title' => get_the_title(),
+                    'og:description' => get_the_excerpt(),
+                    'og:image' => get_the_post_thumbnail_url()
+                ];
+
+                foreach ($metaTags as $property => $content) {
+                    echo "<meta property=\"{$property}\" content=\"{$content}\">\n";
+                }
+            }
+
+            public function handleContentFilter(Event $event)
+            {
+                $content = $event->getData('content');
+
+                // Apply content filters using Jankx 2.0 services
+                $content = $this->contentService->process($content);
+
+                $event->setData('content', $content);
             }
         }
     }
@@ -230,7 +478,113 @@ class PluginCompatibilityChecker
 }
 ```
 
-### 6. **Performance Optimization**
+### 6. **Asset Management Migration**
+
+#### Migrate from Old Asset System to Modern Pipeline
+```php
+// Jankx 1.x Asset Management
+class Jankx1xAssetManager
+{
+    public function enqueueAssets()
+    {
+        // Old way - Direct enqueue
+        wp_enqueue_style('jankx-style', get_template_directory_uri() . '/style.css');
+        wp_enqueue_script('jankx-script', get_template_directory_uri() . '/assets/js/main.js', ['jquery']);
+    }
+}
+
+// Jankx 2.0 Asset Management
+class Jankx2xAssetManager
+{
+    private $assetService;
+    private $performanceService;
+
+    public function __construct(AssetService $assetService, PerformanceService $performanceService)
+    {
+        $this->assetService = $assetService;
+        $this->performanceService = $performanceService;
+    }
+
+    public function enqueueAssets()
+    {
+        // Modern asset pipeline with optimization
+        $this->assetService->enqueueCriticalCSS();
+        $this->assetService->enqueueDeferredCSS();
+        $this->assetService->enqueueDeferredJS();
+
+        // Performance optimizations
+        $this->performanceService->enableLazyLoading();
+        $this->performanceService->enableResourceHints();
+    }
+}
+
+// Asset Migration Examples
+$assetMigration = [
+    // CSS files
+    'style.css' => 'assets/css/main.css',
+    'assets/css/layout.css' => 'assets/css/layout-options.css',
+    'assets/css/components.css' => 'assets/css/layout-themes.css',
+
+    // JavaScript files
+    'assets/js/main.js' => 'assets/js/layout-options.js',
+    'assets/js/components.js' => 'assets/js/partial-hydration.js',
+
+    // Gutenberg assets
+    'assets/gutenberg/editor.css' => 'assets/gutenberg/css/editor.css',
+    'assets/gutenberg/frontend.css' => 'assets/gutenberg/css/frontend.css'
+];
+```
+
+#### Webpack Configuration Migration
+```javascript
+// Jankx 1.x - Basic webpack config
+module.exports = {
+    entry: './assets/js/main.js',
+    output: {
+        path: path.resolve(__dirname, 'dist'),
+        filename: 'bundle.js'
+    }
+};
+
+// Jankx 2.0 - Modern webpack config with optimization
+const path = require('path');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+
+module.exports = {
+    entry: {
+        main: './assets/js/layout-options.js',
+        gutenberg: './assets/gutenberg/js/editor.js',
+        partialHydration: './assets/js/partial-hydration.js'
+    },
+    output: {
+        path: path.resolve(__dirname, 'dist'),
+        filename: '[name].[contenthash].js',
+        clean: true
+    },
+    optimization: {
+        minimize: true,
+        minimizer: [new TerserPlugin()],
+        splitChunks: {
+            chunks: 'all',
+            cacheGroups: {
+                vendor: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: 'vendors',
+                    chunks: 'all'
+                }
+            }
+        }
+    },
+    plugins: [
+        new MiniCssExtractPlugin({
+            filename: '[name].[contenthash].css'
+        })
+    ]
+};
+```
+
+### 7. **Performance Optimization**
 
 #### Optimize Images
 ```php
@@ -267,7 +621,7 @@ class ImageOptimizer
 }
 ```
 
-### 7. **Testing & Validation**
+### 8. **Testing & Validation**
 
 #### Migration Testing
 ```php
@@ -277,10 +631,12 @@ class MigrationTester
     public function testMigration()
     {
         $tests = [
+            'testTemplateMigration' => $this->testTemplateMigration(),
             'testPostsMigrated' => $this->testPostsMigrated(),
             'testPagesMigrated' => $this->testPagesMigrated(),
             'testMenusMigrated' => $this->testMenusMigrated(),
             'testBlocksWorking' => $this->testBlocksWorking(),
+            'testAssetMigration' => $this->testAssetMigration(),
             'testPerformance' => $this->testPerformance(),
         ];
 
@@ -291,6 +647,45 @@ class MigrationTester
         }
     }
 
+    private function testTemplateMigration()
+    {
+        // Test if all views were converted to templates
+        $views = glob(get_template_directory() . '/views/**/*.php');
+        $templates = glob(get_template_directory() . '/templates/**/*.html');
+
+        return count($views) === 0 && count($templates) > 0;
+    }
+
+    private function testAssetMigration()
+    {
+        // Test if assets are properly migrated
+        $oldAssets = [
+            'style.css',
+            'assets/js/main.js',
+            'assets/css/layout.css'
+        ];
+
+        $newAssets = [
+            'assets/css/layout-options.css',
+            'assets/js/layout-options.js',
+            'assets/gutenberg/css/editor.css'
+        ];
+
+        foreach ($oldAssets as $asset) {
+            if (file_exists(get_template_directory() . '/' . $asset)) {
+                return false; // Old assets should not exist
+            }
+        }
+
+        foreach ($newAssets as $asset) {
+            if (!file_exists(get_template_directory() . '/' . $asset)) {
+                return false; // New assets should exist
+            }
+        }
+
+        return true;
+    }
+
     private function testPerformance()
     {
         // Test Core Web Vitals
@@ -299,6 +694,63 @@ class MigrationTester
         $cls = $this->measureCLS();
 
         return $lcp < 2.5 && $fid < 100 && $cls < 0.1;
+    }
+}
+```
+
+#### Migration Troubleshooting
+```php
+// Common migration issues and solutions
+class MigrationTroubleshooter
+{
+    public function diagnoseIssues()
+    {
+        $issues = [];
+
+        // Check template conversion
+        if ($this->hasUnconvertedTemplates()) {
+            $issues[] = 'Unconverted templates found';
+        }
+
+        // Check shortcode conversion
+        if ($this->hasUnconvertedShortcodes()) {
+            $issues[] = 'Unconverted shortcodes found';
+        }
+
+        // Check asset migration
+        if ($this->hasMissingAssets()) {
+            $issues[] = 'Missing assets after migration';
+        }
+
+        return $issues;
+    }
+
+    public function fixCommonIssues()
+    {
+        // Fix template conversion issues
+        $this->fixTemplateConversion();
+
+        // Fix shortcode conversion issues
+        $this->fixShortcodeConversion();
+
+        // Fix asset migration issues
+        $this->fixAssetMigration();
+    }
+
+    private function fixTemplateConversion()
+    {
+        // Convert remaining PHP templates to HTML
+        $phpTemplates = glob(get_template_directory() . '/views/**/*.php');
+
+        foreach ($phpTemplates as $template) {
+            $htmlTemplate = str_replace('.php', '.html', $template);
+            $htmlTemplate = str_replace('/views/', '/templates/', $htmlTemplate);
+
+            $content = file_get_contents($template);
+            $htmlContent = $this->convertPHPToHTML($content);
+
+            file_put_contents($htmlTemplate, $htmlContent);
+        }
     }
 }
 ```
@@ -372,40 +824,50 @@ class PerformanceOptimizer
 }
 ```
 
-## 📊 Migration Checklist
+## 📊 Migration Checklist - Jankx 1.x to 2.0
 
-### ✅ Pre-Migration
-- [ ] Backup database
-- [ ] Backup theme files
-- [ ] Document customizations
-- [ ] List active plugins
-- [ ] Test in staging environment
+### ✅ Pre-Migration Analysis
+- [ ] Backup Jankx 1.x database
+- [ ] Backup Jankx 1.x theme files
+- [ ] Document current template structure (`views/` directory)
+- [ ] List all custom shortcodes and functions
+- [ ] Document current asset structure
+- [ ] Test migration in staging environment
 
-### ✅ Installation
-- [ ] Install Jankx 2.0
-- [ ] Activate theme
-- [ ] Install required plugins
-- [ ] Verify installation
+### ✅ Template System Migration
+- [ ] Convert `views/` templates to `templates/` HTML files
+- [ ] Migrate PHP templates to Gutenberg blocks
+- [ ] Convert template functions to service-based architecture
+- [ ] Update template hierarchy
+- [ ] Test template rendering
 
 ### ✅ Content Migration
 - [ ] Migrate posts and pages
-- [ ] Convert shortcodes to blocks
-- [ ] Migrate custom fields
-- [ ] Update image references
-- [ ] Test content display
+- [ ] Convert Jankx 1.x shortcodes to Gutenberg blocks
+- [ ] Migrate custom fields to block attributes
+- [ ] Update image references for optimization
+- [ ] Test content display in new system
+
+### ✅ Asset Management Migration
+- [ ] Migrate CSS files to new structure
+- [ ] Update JavaScript files for modern pipeline
+- [ ] Configure webpack for optimization
+- [ ] Set up critical CSS delivery
+- [ ] Test asset loading and performance
 
 ### ✅ Customization Migration
-- [ ] Migrate custom CSS
-- [ ] Convert custom functions
-- [ ] Update theme customizations
-- [ ] Test custom features
+- [ ] Convert custom CSS to CSS variables
+- [ ] Migrate custom functions to services
+- [ ] Update theme customizations for Gutenberg
+- [ ] Test custom features in new architecture
 
-### ✅ Post-Migration
+### ✅ Post-Migration Validation
 - [ ] Test all functionality
-- [ ] Optimize performance
-- [ ] Update SEO settings
+- [ ] Verify Core Web Vitals performance
+- [ ] Update SEO settings for new structure
 - [ ] Test mobile responsiveness
-- [ ] Verify security
+- [ ] Verify security and compatibility
+- [ ] Run performance optimization
 
 ## 🚀 Quick Start Commands
 

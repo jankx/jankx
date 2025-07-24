@@ -49,7 +49,7 @@ Jankx 2.0 là một framework WordPress hiện đại được thiết kế vớ
 
 ### Requirements
 - WordPress 6.0+
-- PHP 8.0+
+- PHP 7.4+
 - Node.js 16+ (for development)
 
 ### Installation
