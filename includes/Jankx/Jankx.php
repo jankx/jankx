@@ -20,7 +20,6 @@ if (!defined('ABSPATH')) {
  */
 
 use Illuminate\Container\Container;
-use Jankx\Enum\FrameworkEnum;
 
 /**
  * Class Jankx
@@ -37,12 +36,18 @@ use Jankx\Enum\FrameworkEnum;
 class Jankx extends Container
 {
     /**
+     * Framework constants
+     */
+    const FRAMEWORK_NAME = 'Jankx';
+    const FRAMEWORK_VERSION = '2.0.0';
+
+    /**
      * Tên của framework
      * @return string
      */
     public static function getFrameworkName(): string
     {
-        return FrameworkEnum::frameworkName();
+        return self::FRAMEWORK_NAME;
     }
 
     /**
@@ -51,7 +56,7 @@ class Jankx extends Container
      */
     public static function getFrameworkVersion(): string
     {
-        return FrameworkEnum::frameworkVersion();
+        return self::FRAMEWORK_VERSION;
     }
 
     /**

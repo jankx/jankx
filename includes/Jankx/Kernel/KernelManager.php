@@ -5,11 +5,20 @@ namespace Jankx\Kernel;
 use Illuminate\Container\Container;
 use Jankx\Bootstrappers\Global\CoreBootstrapper;
 use Jankx\Contracts\KernelInterface;
+use Jankx\Kernel\Strategies\KernelContextStrategy;
+use Jankx\Kernel\Strategies\CLIKernelStrategy;
+use Jankx\Kernel\Strategies\GutenbergAjaxKernelStrategy;
+use Jankx\Kernel\Strategies\CronKernelStrategy;
+use Jankx\Kernel\Strategies\APIKernelStrategy;
+use Jankx\Kernel\Strategies\AdminKernelStrategy;
+use Jankx\Kernel\Strategies\FrontendKernelStrategy;
+use Jankx\Kernel\KernelFactory;
 
 /**
  * Kernel Manager
  *
  * Manages the registration, initialization, and booting of kernels based on context.
+ * Uses Strategy Pattern to determine which kernel to boot based on context.
  *
  * @package Jankx\Kernel
  */
@@ -20,11 +29,15 @@ class KernelManager
     protected $currentKernel;
     protected $kernels = [];
     protected $bootedKernels = [];
+    protected $contextStrategies = [];
+    protected $kernelFactory;
 
     public function __construct(Container $container)
     {
         $this->container = $container;
+        $this->kernelFactory = new KernelFactory($container);
         $this->bootstrapSystem();
+        $this->registerContextStrategies();
     }
 
     protected function bootstrapSystem()
@@ -32,6 +45,28 @@ class KernelManager
         // Initialize the system with CoreBootstrapper before doing anything else
         $bootstrapper = new CoreBootstrapper();
         $bootstrapper->bootstrap($this->container);
+    }
+
+    /**
+     * Register context strategies for determining which kernel to use
+     */
+    protected function registerContextStrategies()
+    {
+        $strategies = [
+            new CLIKernelStrategy(),
+            new GutenbergAjaxKernelStrategy(),
+            new CronKernelStrategy(),
+            new APIKernelStrategy(),
+            new AdminKernelStrategy(),
+            new FrontendKernelStrategy(), // Default fallback
+        ];
+
+        // Sort strategies by priority (lower number = higher priority)
+        usort($strategies, function($a, $b) {
+            return $a->getPriority() <=> $b->getPriority();
+        });
+
+        $this->contextStrategies = $strategies;
     }
 
     public function boot()
@@ -44,33 +79,39 @@ class KernelManager
         $this->determineContextAndBootKernel();
     }
 
+        /**
+     * Use Strategy Pattern to determine context and boot appropriate kernel
+     */
     protected function determineContextAndBootKernel()
     {
-        // Prioritize CLI context and do not load other kernels if in CLI
-        if (defined('WP_CLI') && WP_CLI) {
-            $this->currentKernel = $this->container->make(CLIKernel::class);
-            $this->currentKernel->boot();
-            return; // Stop here, do not check other contexts
-        }
-
-        // Check for Gutenberg AJAX requests first
-        if (wp_doing_ajax() &&
-            (isset($_POST['action']) || isset($_GET['action'])) &&
-            (strpos($_POST['action'] ?? $_GET['action'] ?? '', 'jankx_gutenberg') === 0)) {
-            $this->currentKernel = $this->container->make(GutenbergAjaxKernel::class);
-        } elseif (wp_doing_cron()) {
-            $this->currentKernel = $this->container->make(CronKernel::class);
-        } elseif (defined('REST_REQUEST') && REST_REQUEST) {
-            $this->currentKernel = $this->container->make(APIKernel::class);
-        } elseif (is_admin()) {
-            $this->currentKernel = $this->container->make(AdminKernel::class);
-        } else {
-            $this->currentKernel = $this->container->make(FrontendKernel::class);
-        }
+        $context = $this->getCurrentContext();
+        $this->currentKernel = $this->kernelFactory->createKernel($context);
 
         if ($this->currentKernel) {
             $this->currentKernel->boot();
         }
+    }
+
+    /**
+     * Get current context using Strategy Pattern
+     */
+    protected function getCurrentContext(): string
+    {
+        foreach ($this->contextStrategies as $strategy) {
+            if ($strategy->canHandle()) {
+                return $strategy->getContext();
+            }
+        }
+
+        return 'frontend'; // Default fallback
+    }
+
+    /**
+     * Get kernel class for given context using factory
+     */
+    protected function getKernelClassForContext(string $context): ?string
+    {
+        return $this->kernelFactory->getKernelClass($context);
     }
 
     public function getCurrentKernel()
@@ -79,18 +120,11 @@ class KernelManager
     }
 
     /**
-     * Register a kernel
+     * Register a kernel using factory
      */
     public function registerKernel(string $type, string $kernelClass): void
     {
-        if (!class_exists($kernelClass)) {
-            throw new \InvalidArgumentException("Kernel class {$kernelClass} does not exist");
-        }
-
-        if (!is_subclass_of($kernelClass, KernelInterface::class)) {
-            throw new \InvalidArgumentException("Kernel class {$kernelClass} must implement KernelInterface");
-        }
-
+        $this->kernelFactory->registerKernel($type, $kernelClass);
         $this->kernels[$type] = $kernelClass;
     }
 
@@ -126,73 +160,12 @@ class KernelManager
     }
 
     /**
-     * Boot kernels by context
+     * Boot kernels by context using Strategy Pattern
      */
     public function bootKernelsByContext(): void
     {
         $context = $this->getCurrentContext();
-
-        switch ($context) {
-            case 'frontend':
-                $this->bootKernel('frontend');
-                break;
-
-            case 'admin':
-                $this->bootKernel('admin');
-                break;
-
-            case 'api':
-                $this->bootKernel('api');
-                break;
-
-            case 'cli':
-                $this->bootKernel('cli');
-                break;
-
-            case 'cron':
-                $this->bootKernel('cron');
-                break;
-
-            case 'gutenberg-ajax':
-                $this->bootKernel('gutenberg-ajax');
-                break;
-
-            default:
-                $this->bootKernel('frontend');
-                break;
-        }
-    }
-
-    /**
-     * Get current context
-     */
-    protected function getCurrentContext(): string
-    {
-        if (defined('WP_CLI') && WP_CLI) {
-            return 'cli';
-        }
-
-        if (wp_doing_cron()) {
-            return 'cron';
-        }
-
-        // Check for Gutenberg AJAX requests
-        if (wp_doing_ajax() &&
-            (isset($_POST['action']) || isset($_GET['action'])) &&
-            (strpos($_POST['action'] ?? $_GET['action'] ?? '', 'jankx_gutenberg') === 0)) {
-            return 'gutenberg-ajax';
-        }
-
-        if (is_admin()) {
-            return 'admin';
-        }
-
-        // Check if it's a REST API request
-        if (defined('REST_REQUEST') && REST_REQUEST) {
-            return 'api';
-        }
-
-        return 'frontend';
+        $this->bootKernel($context);
     }
 
     public function getAllKernels(): array
@@ -233,7 +206,7 @@ class KernelManager
         return [
             'type' => $type,
             'booted' => $kernel->isBooted(),
-            // Các thông tin khác nếu cần
+            'context' => $this->getCurrentContext(),
         ];
     }
 
@@ -246,5 +219,19 @@ class KernelManager
         }
 
         return $info;
+    }
+
+    /**
+     * Get current context strategies for debugging
+     */
+    public function getContextStrategies(): array
+    {
+        return array_map(function($strategy) {
+            return [
+                'class' => get_class($strategy),
+                'canHandle' => $strategy->canHandle(),
+                'context' => $strategy->getContext(),
+            ];
+        }, $this->contextStrategies);
     }
 }

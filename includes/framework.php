@@ -23,11 +23,11 @@ if (file_exists($autoload_path)) {
 use Jankx\Jankx;
 use Jankx\Kernel\KernelManager;
 
-// Initialize container
-$container = Jankx::getInstance();
+// Initialize Jankx container
+$jankx = Jankx::getInstance();
 
 // Initialize KernelManager and boot kernel by context
-$kernelManager = new KernelManager($container);
+$kernelManager = new KernelManager($jankx);
 $kernelManager->boot();
 
 $currentKernel = $kernelManager->getCurrentKernel();

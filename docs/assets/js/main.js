@@ -461,6 +461,57 @@
     }
   }
 
+  // Skip link functionality
+  class SkipLink {
+    constructor() {
+      this.skipLink = document.querySelector('.skip-link');
+      this.mainContent = document.querySelector('#main-content');
+      this.init();
+    }
+
+    init() {
+      if (this.skipLink && this.mainContent) {
+        this.bindEvents();
+      }
+    }
+
+    bindEvents() {
+      this.skipLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.focusMainContent();
+      });
+
+      // Handle keyboard navigation
+      this.skipLink.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          this.focusMainContent();
+        }
+      });
+    }
+
+    focusMainContent() {
+      // Focus the main content
+      this.mainContent.focus();
+
+      // Scroll to main content smoothly
+      this.mainContent.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+
+      // Add visual feedback
+      this.mainContent.style.outline = '2px solid var(--color-accent)';
+      this.mainContent.style.outlineOffset = '2px';
+
+      // Remove outline after a delay
+      setTimeout(() => {
+        this.mainContent.style.outline = '';
+        this.mainContent.style.outlineOffset = '';
+      }, 3000);
+    }
+  }
+
   // Initialize all components when DOM is ready
   document.addEventListener('DOMContentLoaded', () => {
     new ThemeManager();
@@ -470,6 +521,7 @@
     new BackToTop();
     new ReadingTime();
     new CodeCopy();
+    new SkipLink();
   });
 
 })();

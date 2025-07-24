@@ -67,22 +67,46 @@ class AdminBootstrapper extends AbstractBootstrapper
 
     public function loadAdminServices(): void
     {
-        $resolver = $this->container->make('deferred.resolver');
+        try {
+            // Get container from global Jankx instance
+            $container = \Jankx\Jankx::getInstance();
 
-        // Load admin services only when in admin context
-        if (is_admin()) {
-            $resolver->resolve(\Jankx\Admin\DashboardManager::class);
+            if (!$container || !$container->bound('deferred.resolver')) {
+                return;
+            }
+
+            $resolver = $container->make('deferred.resolver');
+
+            // Load admin services only when in admin context
+            if (is_admin()) {
+                $resolver->resolve(\Jankx\Admin\DashboardManager::class);
+            }
+        } catch (\Exception $e) {
+            // Log error but don't break the application
+            error_log('Jankx AdminBootstrapper error: ' . $e->getMessage());
         }
     }
 
     public function loadAdminAssets(): void
     {
-        // Load admin assets when needed
-        $resolver = $this->container->make('deferred.resolver');
+        try {
+            // Get container from global Jankx instance
+            $container = \Jankx\Jankx::getInstance();
 
-        if ($resolver->has(\Jankx\Admin\AssetManager::class)) {
-            $assetManager = $resolver->resolve(\Jankx\Admin\AssetManager::class);
-            $assetManager->enqueueAdminAssets();
+            if (!$container || !$container->bound('deferred.resolver')) {
+                return;
+            }
+
+            // Load admin assets when needed
+            $resolver = $container->make('deferred.resolver');
+
+            if ($resolver->has(\Jankx\Admin\AssetManager::class)) {
+                $assetManager = $resolver->resolve(\Jankx\Admin\AssetManager::class);
+                $assetManager->enqueueAdminAssets();
+            }
+        } catch (\Exception $e) {
+            // Log error but don't break the application
+            error_log('Jankx AdminBootstrapper error: ' . $e->getMessage());
         }
     }
 }

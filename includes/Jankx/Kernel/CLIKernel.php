@@ -5,10 +5,6 @@ namespace Jankx\Kernel;
 use Jankx\Contracts\KernelInterface;
 use Jankx\Bootstrappers\CLI\CLIBootstrapper;
 use Jankx\Bootstrappers\Global\ThemeBootstrapper;
-use Jankx\Command\CommandManager;
-use Jankx\Command\Commands\CacheCommand;
-use Jankx\Command\Commands\OptimizeCommand;
-use Jankx\Command\Commands\SecurityCommand;
 use Jankx\Facades\Logger;
 
 /**
@@ -51,17 +47,8 @@ class CLIKernel extends Kernel implements KernelInterface
      */
     protected function registerServices(): void
     {
-        // Command manager
-        $this->addService(CommandManager::class);
-
-        // Cache command
-        $this->addService(CacheCommand::class);
-
-        // Optimize command
-        $this->addService(OptimizeCommand::class);
-
-        // Security command
-        $this->addService(SecurityCommand::class);
+        // CLI services will be registered by CLIBootstrapper
+        // No immediate services needed for CLI kernel
     }
 
     /**
@@ -69,18 +56,13 @@ class CLIKernel extends Kernel implements KernelInterface
      */
     protected function registerHooks(): void
     {
-        // CLI commands
-        $this->addHook('cli_init', [$this, 'registerCLICommands']);
+        // CLI initialization
+        $this->addHook('cli_init', [$this, 'initializeCLI']);
 
-        // WP-CLI commands
+        // WP-CLI commands (if WP-CLI is available)
         if (defined('WP_CLI') && WP_CLI) {
             $this->addHook('cli_init', [$this, 'registerWPCLICommands']);
         }
-
-        // Cron jobs
-        $this->addHook('jankx_cron_optimize', [$this, 'runOptimizationCron']);
-        $this->addHook('jankx_cron_security_scan', [$this, 'runSecurityScanCron']);
-        $this->addHook('jankx_cron_cache_cleanup', [$this, 'runCacheCleanupCron']);
     }
 
     /**
@@ -90,25 +72,24 @@ class CLIKernel extends Kernel implements KernelInterface
     {
         // CLI output formatting
         $this->addFilter('jankx_cli_output', [$this, 'formatCLIOutput']);
-
-        // Command help text
-        $this->addFilter('jankx_command_help', [$this, 'formatCommandHelp']);
     }
 
     /**
-     * Register CLI commands
+     * Initialize CLI environment
      */
-    public function registerCLICommands(): void
+    public function initializeCLI(): void
     {
-        $command_manager = $this->container->make(CommandManager::class);
+        // Check CLI requirements
+        if (!$this->checkRequirements()) {
+            $this->logError('CLI requirements not met');
+            return;
+        }
 
-        // Register built-in commands
-        $command_manager->registerCommand('cache:clear', CacheCommand::class);
-        $command_manager->registerCommand('optimize', OptimizeCommand::class);
-        $command_manager->registerCommand('security:scan', SecurityCommand::class);
+        // Log CLI initialization
+        $this->logInfo('CLI Kernel initialized successfully');
 
-        // Allow child themes to register custom commands
-        do_action('jankx_cli_register_commands', $command_manager);
+        // Allow child themes to hook into CLI initialization
+        do_action('jankx_cli_initialized');
     }
 
     /**
@@ -120,44 +101,35 @@ class CLIKernel extends Kernel implements KernelInterface
             return;
         }
 
-        // Cache commands
-        \WP_CLI::add_command('jankx cache', 'Jankx\Command\Commands\CacheCommand');
-
-        // Optimize commands
-        \WP_CLI::add_command('jankx optimize', 'Jankx\Command\Commands\OptimizeCommand');
-
-        // Security commands
-        \WP_CLI::add_command('jankx security', 'Jankx\Command\Commands\SecurityCommand');
+        // Basic Jankx commands
+        \WP_CLI::add_command('jankx info', [$this, 'showFrameworkInfo']);
+        \WP_CLI::add_command('jankx version', [$this, 'showVersion']);
 
         // Allow child themes to register custom WP-CLI commands
         do_action('jankx_wpcli_register_commands');
     }
 
     /**
-     * Run optimization cron
+     * Show framework information
      */
-    public function runOptimizationCron(): void
+    public function showFrameworkInfo(): void
     {
-        $optimize_command = $this->container->make(OptimizeCommand::class);
-        $optimize_command->execute(['--cron' => true]);
+        $info = $this->getEnvironmentInfo();
+
+        \WP_CLI::line('Jankx Framework Information:');
+        \WP_CLI::line("PHP Version: {$info['php_version']}");
+        \WP_CLI::line("WordPress Version: {$info['wordpress_version']}");
+        \WP_CLI::line("Jankx Version: {$info['jankx_version']}");
+        \WP_CLI::line("Memory Limit: {$info['memory_limit']}");
+        \WP_CLI::line("Max Execution Time: {$info['max_execution_time']}s");
     }
 
     /**
-     * Run security scan cron
+     * Show version information
      */
-    public function runSecurityScanCron(): void
+    public function showVersion(): void
     {
-        $security_command = $this->container->make(SecurityCommand::class);
-        $security_command->execute(['--cron' => true]);
-    }
-
-    /**
-     * Run cache cleanup cron
-     */
-    public function runCacheCleanupCron(): void
-    {
-        $cache_command = $this->container->make(CacheCommand::class);
-        $cache_command->execute(['cleanup' => true]);
+        \WP_CLI::line("Jankx Framework Version: " . \Jankx\Jankx::getFrameworkVersion());
     }
 
     /**
@@ -184,20 +156,6 @@ class CLIKernel extends Kernel implements KernelInterface
     }
 
     /**
-     * Format command help
-     */
-    public function formatCommandHelp(string $help): string
-    {
-        $help = str_replace(
-            ['{version}', '{framework}'],
-            [Jankx::FRAMEWORK_VERSION, Jankx::FRAMEWORK_NAME],
-            $help
-        );
-
-        return $help;
-    }
-
-    /**
      * Get CLI environment info
      */
     public function getEnvironmentInfo(): array
@@ -205,7 +163,7 @@ class CLIKernel extends Kernel implements KernelInterface
         return [
             'php_version' => PHP_VERSION,
             'wordpress_version' => get_bloginfo('version'),
-            'jankx_version' => Jankx::FRAMEWORK_VERSION,
+            'jankx_version' => \Jankx\Jankx::getFrameworkVersion(),
             'memory_limit' => ini_get('memory_limit'),
             'max_execution_time' => ini_get('max_execution_time'),
             'upload_max_filesize' => ini_get('upload_max_filesize'),

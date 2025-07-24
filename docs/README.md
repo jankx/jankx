@@ -39,6 +39,11 @@ Jankx 2.0 là một framework WordPress hiện đại được thiết kế vớ
 - [Testing Guidelines](./development/testing.md) - Testing strategies
 - [Troubleshooting](./development/troubleshooting.md) - Common issues & solutions
 
+### 🖥️ CLI Commands
+- [CLI Documentation](./cli/README.md) - WordPress CLI commands
+- [CLI Development](./cli/development.md) - Custom commands development
+- [CLI Examples](./cli/examples.md) - Real-world examples
+
 ### 📁 Assets & Templates
 - [Asset Structure](./assets/structure.md) - Folder organization
 
