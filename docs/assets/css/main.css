@@ -457,16 +457,97 @@ a:hover {
 .sidebar {
   position: sticky;
   top: calc(var(--header-height) + var(--spacing-md));
-  width: var(--sidebar-width);
+  width: 320px;
+  min-width: 260px;
+  max-width: 340px;
   max-height: calc(100vh - var(--header-height) - var(--spacing-md));
   overflow-y: auto;
+  background: none;
+  border: none;
+  padding: 0;
 }
 
 .sidebar-content {
-  background-color: var(--color-surface);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-lg);
-  border: 1px solid var(--color-border);
+  background: none;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+  padding: 0 0 0 0;
+}
+
+.sidebar-content ul,
+.sidebar-content ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar-content > ul > li {
+  margin-bottom: 8px;
+}
+
+.sidebar-content a {
+  display: block;
+  padding: 8px 16px 8px 20px;
+  color: var(--color-text);
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 0;
+  border-left: 3px solid transparent;
+  background: none;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.sidebar-content a:hover {
+  color: var(--color-primary);
+  background: var(--color-surface);
+  border-left: 3px solid var(--color-primary);
+}
+
+.sidebar-content .active > a,
+.sidebar-content a.active {
+  color: var(--color-primary);
+  font-weight: 600;
+  background: var(--color-surface);
+  border-left: 3px solid var(--color-primary);
+}
+
+/* List con (submenu) */
+.sidebar-content ul ul {
+  margin-left: 0;
+  padding-left: 18px;
+  border-left: 2px solid var(--color-border);
+}
+
+.sidebar-content ul ul li {
+  margin-bottom: 4px;
+}
+
+.sidebar-content ul ul a {
+  font-size: 15px;
+  font-weight: 400;
+  padding: 6px 12px 6px 18px;
+  border-left: 2px solid transparent;
+}
+
+.sidebar-content ul ul a.active {
+  border-left: 2px solid var(--color-primary);
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+/* Scrollbar đẹp */
+.sidebar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) var(--color-surface);
+}
+.sidebar::-webkit-scrollbar {
+  width: 7px;
+  background: var(--color-surface);
+}
+.sidebar::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
 }
 
 /* Breadcrumbs */
@@ -801,6 +882,8 @@ pre code {
   .sidebar {
     position: static;
     width: 100%;
+    min-width: 0;
+    max-width: none;
     max-height: none;
   }
 }
