@@ -1068,9 +1068,9 @@ pre code {
   transform: translateY(-2px);
 }
 
-/* Code Preview */
+/* Hero Section Code Preview Contrast Fix */
 .hero-code {
-  background-color: var(--color-background);
+  background-color: #23272f;
   border-radius: var(--radius-lg);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -1110,7 +1110,7 @@ pre code {
 
 .code-content {
   padding: var(--spacing-lg);
-  background-color: var(--color-background);
+  background-color: #23272f;
 }
 
 .code-content pre {
