@@ -415,44 +415,6 @@
     }
   }
 
-  // Mobile menu
-  class MobileMenu {
-    constructor() {
-      this.toggle = document.querySelector('.mobile-menu-toggle');
-      this.nav = document.querySelector('.main-nav');
-      this.init();
-    }
-
-    init() {
-      if (!this.toggle || !this.nav) return;
-
-      this.bindEvents();
-    }
-
-    bindEvents() {
-      this.toggle.addEventListener('click', () => {
-        this.toggleMenu();
-      });
-
-      // Close menu when clicking outside
-      document.addEventListener('click', (e) => {
-        if (!this.nav.contains(e.target) && !this.toggle.contains(e.target)) {
-          this.closeMenu();
-        }
-      });
-    }
-
-    toggleMenu() {
-      this.nav.classList.toggle('mobile-open');
-      this.toggle.classList.toggle('active');
-    }
-
-    closeMenu() {
-      this.nav.classList.remove('mobile-open');
-      this.toggle.classList.remove('active');
-    }
-  }
-
   // Copy code functionality
   class CodeCopy {
     constructor() {
@@ -507,7 +469,6 @@
     new TableOfContents();
     new BackToTop();
     new ReadingTime();
-    new MobileMenu();
     new CodeCopy();
   });
 
