@@ -2,64 +2,228 @@
 
 namespace Jankx\Context;
 
-use Jankx\Contracts\ContextInterface;
-use Jankx\Enum\ContextAbstract;
-
-if (!defined('ABSPATH')) {
-    exit('Cheating huh?');
-}
+use Illuminate\Container\Container;
 
 /**
- * Class ContextualServiceRegistry
+ * Contextual Service Registry
  *
- * Quản lý việc đăng ký các dịch vụ theo ngữ cảnh (frontend, dashboard, shared).
- * Đảm bảo chỉ các dịch vụ phù hợp được khởi tạo trong từng ngữ cảnh.
+ * Manages service registration and loading based on application context
  *
  * @package Jankx\Context
- * @author Puleeno Nguyen <puleeno@gmail.com>
  */
 class ContextualServiceRegistry
 {
-    const FRONTEND = 'frontend';
-    const DASHBOARD = 'dashboard';
     const SHARED = 'shared';
+    const ADMIN = 'admin';
+    const FRONTEND = 'frontend';
+    const API = 'api';
+    const CLI = 'cli';
+    const GUTENBERG = 'gutenberg';
+    const WOOCOMMERCE = 'woocommerce';
+
+    private static $registry = [];
+    private static $deferred = [];
+    private static $loaded = [];
 
     /**
-     * Danh sách các dịch vụ được đăng ký theo ngữ cảnh
-     *
-     * @var array
+     * Register a service for specific context
      */
-    protected static $services = [
-        self::FRONTEND => [],
-        self::DASHBOARD => [],
-        self::SHARED => []
-    ];
-
-    /**
-     * Đăng ký một dịch vụ với ngữ cảnh cụ thể
-     *
-     * @param ContextInterface $context Ngữ cảnh (frontend, dashboard, shared)
-     * @param string $serviceProviderClass Tên class của service provider
-     */
-    public static function register(ContextInterface $context, $serviceProviderClass)
+    public static function register(string $context, string $serviceClass, array $options = []): void
     {
-        self::$services[$context->getValue()][] = $serviceProviderClass;
+        if (!isset(self::$registry[$context])) {
+            self::$registry[$context] = [];
+        }
+
+        self::$registry[$context][] = [
+            'class' => $serviceClass,
+            'options' => $options,
+            'deferred' => $options['deferred'] ?? true,
+            'priority' => $options['priority'] ?? 10,
+        ];
     }
 
     /**
-     * Lấy danh sách các dịch vụ theo ngữ cảnh
-     *
-     * @param string $context Ngữ cảnh hiện tại
-     * @return array Danh sách các service provider class
+     * Register multiple services for a context
      */
-    public static function getServices($context)
+    public static function registerMultiple(string $context, array $services, array $options = []): void
     {
-        $sharedServices = self::$services[self::SHARED];
-        if ($context === self::FRONTEND) {
-            return array_merge($sharedServices, self::$services[self::FRONTEND]);
-        } elseif ($context === self::DASHBOARD) {
-            return array_merge($sharedServices, self::$services[self::DASHBOARD]);
+        foreach ($services as $service) {
+            self::register($context, $service, $options);
         }
-        return $sharedServices;
+    }
+
+    /**
+     * Register a deferred service
+     */
+    public static function defer(string $context, callable $factory, array $options = []): void
+    {
+        if (!isset(self::$deferred[$context])) {
+            self::$deferred[$context] = [];
+        }
+
+        self::$deferred[$context][] = [
+            'factory' => $factory,
+            'options' => $options,
+            'priority' => $options['priority'] ?? 10,
+        ];
+    }
+
+    /**
+     * Load services for current context
+     */
+    public static function loadForContext(Container $container, string $context): void
+    {
+        if (isset(self::$loaded[$context])) {
+            return; // Already loaded
+        }
+
+        // Load immediate services
+        if (isset(self::$registry[$context])) {
+            foreach (self::$registry[$context] as $service) {
+                if (!$service['deferred']) {
+                    $container->singleton($service['class']);
+                }
+            }
+        }
+
+        // Mark as loaded
+        self::$loaded[$context] = true;
+    }
+
+    /**
+     * Resolve deferred service
+     */
+    public static function resolve(Container $container, string $context, string $serviceName): mixed
+    {
+        // Check if service is already resolved
+        if ($container->bound($serviceName)) {
+            return $container->make($serviceName);
+        }
+
+        // Load deferred services for context
+        if (isset(self::$deferred[$context])) {
+            foreach (self::$deferred[$context] as $deferred) {
+                $deferred['factory']($container);
+            }
+        }
+
+        // Try to resolve again
+        if ($container->bound($serviceName)) {
+            return $container->make($serviceName);
+        }
+
+        throw new \Exception("Service {$serviceName} not found in context {$context}");
+    }
+
+    /**
+     * Get current application context
+     */
+    public static function getCurrentContext(): string
+    {
+        if (defined('WP_CLI') && WP_CLI) {
+            return self::CLI;
+        }
+
+        if (defined('REST_REQUEST') && REST_REQUEST) {
+            return self::API;
+        }
+
+        if (wp_doing_ajax() && self::isGutenbergAjax()) {
+            return self::GUTENBERG;
+        }
+
+        if (is_admin()) {
+            return self::ADMIN;
+        }
+
+        if (class_exists('WooCommerce') && self::isWooCommercePage()) {
+            return self::WOOCOMMERCE;
+        }
+
+        return self::FRONTEND;
+    }
+
+    /**
+     * Check if current request is Gutenberg AJAX
+     */
+    private static function isGutenbergAjax(): bool
+    {
+        $action = $_POST['action'] ?? $_GET['action'] ?? '';
+        return strpos($action, 'jankx_gutenberg') === 0;
+    }
+
+    /**
+     * Check if current page is WooCommerce page
+     */
+    private static function isWooCommercePage(): bool
+    {
+        return function_exists('is_woocommerce') && is_woocommerce();
+    }
+
+    /**
+     * Get all registered services for a context
+     */
+    public static function getServicesForContext(string $context): array
+    {
+        $services = [];
+
+        if (isset(self::$registry[$context])) {
+            foreach (self::$registry[$context] as $service) {
+                $services[] = $service['class'];
+            }
+        }
+
+        return $services;
+    }
+
+    /**
+     * Get all deferred services for a context
+     */
+    public static function getDeferredServicesForContext(string $context): array
+    {
+        return self::$deferred[$context] ?? [];
+    }
+
+    /**
+     * Check if context is loaded
+     */
+    public static function isContextLoaded(string $context): bool
+    {
+        return isset(self::$loaded[$context]);
+    }
+
+    /**
+     * Get all loaded contexts
+     */
+    public static function getLoadedContexts(): array
+    {
+        return array_keys(self::$loaded);
+    }
+
+    /**
+     * Clear loaded contexts (for testing)
+     */
+    public static function clearLoadedContexts(): void
+    {
+        self::$loaded = [];
+    }
+
+    /**
+     * Get registry statistics
+     */
+    public static function getStats(): array
+    {
+        $stats = [];
+
+        foreach (self::$registry as $context => $services) {
+            $stats[$context] = [
+                'total_services' => count($services),
+                'deferred_services' => count(array_filter($services, function($s) { return $s['deferred']; })),
+                'immediate_services' => count(array_filter($services, function($s) { return !$s['deferred']; })),
+                'loaded' => isset(self::$loaded[$context]),
+            ];
+        }
+
+        return $stats;
     }
 }

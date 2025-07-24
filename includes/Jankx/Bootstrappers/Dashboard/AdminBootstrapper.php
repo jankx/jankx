@@ -21,6 +21,68 @@ class AdminBootstrapper extends AbstractBootstrapper
 
     public function bootstrap(Container $container): void
     {
+        // Register context-aware services
+        $contextProvider = new \Jankx\Providers\ContextualServiceProvider($container);
+        $contextProvider->register();
+
+        // Setup deferred service resolver
+        $container->singleton('deferred.resolver', \Jankx\Services\DeferredServiceResolver::class);
+
+        // Load essential admin services immediately
+        $this->loadEssentialServices($container);
+
+        // Defer heavy services
+        $this->deferHeavyServices($container);
+
+        // Set up admin hooks
+        $this->setupAdminHooks();
+
         do_action('jankx/bootstrapper/admin/loaded', $container);
+    }
+
+    private function loadEssentialServices(Container $container): void
+    {
+        // Services needed immediately
+        $container->singleton(\Jankx\Admin\MenuManager::class);
+        $container->singleton(\Jankx\Admin\AssetManager::class);
+        $container->singleton(\Jankx\Admin\NoticeManager::class);
+    }
+
+    private function deferHeavyServices(Container $container): void
+    {
+        // Defer heavy services until actually needed
+        \Jankx\Context\ContextualServiceRegistry::defer(\Jankx\Context\ContextualServiceRegistry::ADMIN, function(Container $container) {
+            $container->singleton(\Jankx\Admin\AnalyticsManager::class);
+            $container->singleton(\Jankx\Admin\ReportManager::class);
+            $container->singleton(\Jankx\Admin\DashboardWidgetManager::class);
+        });
+    }
+
+    private function setupAdminHooks(): void
+    {
+        // Hook into WordPress to load services when needed
+        add_action('admin_init', [$this, 'loadAdminServices']);
+        add_action('admin_enqueue_scripts', [$this, 'loadAdminAssets']);
+    }
+
+    public function loadAdminServices(): void
+    {
+        $resolver = $this->container->make('deferred.resolver');
+
+        // Load admin services only when in admin context
+        if (is_admin()) {
+            $resolver->resolve(\Jankx\Admin\DashboardManager::class);
+        }
+    }
+
+    public function loadAdminAssets(): void
+    {
+        // Load admin assets when needed
+        $resolver = $this->container->make('deferred.resolver');
+
+        if ($resolver->has(\Jankx\Admin\AssetManager::class)) {
+            $assetManager = $resolver->resolve(\Jankx\Admin\AssetManager::class);
+            $assetManager->enqueueAdminAssets();
+        }
     }
 }
