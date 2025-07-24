@@ -1,231 +1,314 @@
 # Jankx 2.0 Documentation
 
-> **Modern WordPress Theme Framework with Gutenberg-First Architecture**
+## Overview
 
-Jankx 2.0 là một framework WordPress hiện đại được thiết kế với kiến trúc Gutenberg-first, tuân thủ các nguyên tắc software engineering nghiêm ngặt và tối ưu hóa Core Web Vitals.
+Jankx 2.0 là một WordPress theme framework hiện đại được xây dựng với kiến trúc modular và hệ thống bootstrapping tiên tiến. Tài liệu này cung cấp hướng dẫn chi tiết cho việc phát triển và sử dụng Jankx 2.0.
 
-## 🚀 Core Philosophy
+## Table of Contents
 
-- **Gutenberg-First**: Tất cả blocks và layouts đều được xây dựng trên Gutenberg
-- **Atomic Design**: Hệ thống component modular và tái sử dụng
-- **Performance-First**: Tối ưu Core Web Vitals (LCP, FID, CLS)
-- **Security by Design**: Bảo mật tích hợp sâu vào kiến trúc
-- **Developer Experience**: DX tối ưu với tooling hiện đại
+### 🚀 Getting Started
+- [Quick Start Guide](development/README.md) - Hướng dẫn bắt đầu nhanh
+- [Installation](development/README.md#installation) - Cài đặt và setup
+- [Configuration](development/README.md#configuration) - Cấu hình cơ bản
 
-## 📚 Documentation Structure
+### 🏗️ Architecture
+- [Bootstrapper Structure](architecture/bootstrapper-structure.md) - Cấu trúc bootstrapper
+- [Bootstrapping Flow](architecture/bootstrapping-flow.md) - Luồng bootstrapping
+- [Deferred Service Context](architecture/deferred-service-context.md) - Context cho deferred services
+- [Kernel System](architecture/kernel-system.md) - Hệ thống kernel
+- [Service Container](architecture/service-container.md) - Service container
 
-### 🏗 Architecture & System Design
-- [Architecture Overview](./architecture/README.md) - Tổng quan kiến trúc và flow
-- [Kernel System](./architecture/kernel-system.md) - Hệ thống kernel và bootstrapping
-- [Service Container](./architecture/service-container.md) - Service container pattern
-- [Bootstrapping Flow](./architecture/bootstrapping-flow.md) - Quy trình khởi tạo
+### 🎨 Templates System
+- [Templates Overview](templates/README.md) - Tổng quan về templates
+- [Block Templates](templates/block-templates.md) - Templates cho blocks
+- [Layout Templates](templates/layout-templates.md) - Templates cho layouts
+- [Page Templates](templates/page-templates.md) - Templates cho pages
 
-### 🧩 Gutenberg System
-- [Gutenberg Blocks](./gutenberg/blocks.md) - Hệ thống block development
-- [Block Registration](./gutenberg/block-registration.md) - JSON-based registration
-- [Layout System](./gutenberg/layout-system.md) - Layout management
-- [AJAX System](./gutenberg/ajax-system.md) - Dynamic content loading
+### 🔧 Development
+- [Development Guidelines](development/best-practices.md) - Hướng dẫn phát triển
+- [Coding Standards](development/rules.md) - Tiêu chuẩn code
+- [CLI Development](cli/development.md) - Phát triển CLI
+- [CLI Examples](cli/examples.md) - Ví dụ CLI
 
-### ⚡ Performance & Optimization
-- [Core Web Vitals](./performance/core-web-vitals.md) - LCP, FID, CLS optimization
-- [Asset Management](./performance/asset-management.md) - Lazy loading và optimization
+### 🎯 Gutenberg Integration
+- [Block Registration](gutenberg/block-registration.md) - Đăng ký blocks
+- [Blocks Overview](gutenberg/blocks.md) - Tổng quan về blocks
+- [Ajax System](gutenberg/ajax-system.md) - Hệ thống Ajax
+- [Pattern Library](post-layout/pattern-library.md) - Thư viện patterns
+
+### 📊 Post Layout System
+- [Post Layout Overview](post-layout/README.md) - Tổng quan post layout
+- [Dynamic Query Loop](post-layout/dynamic-query-loop.md) - Query loop động
+- [Best Practices](post-layout/best-practices.md) - Best practices
+- [Troubleshooting](post-layout/troubleshooting.md) - Xử lý sự cố
+- [Migration Guide](post-layout/migration-guide.md) - Hướng dẫn migration
+
+### 🎨 Design System
+- [Design System Overview](designer/design-system.md) - Tổng quan design system
+- [Quick Start](designer/quick-start.md) - Bắt đầu nhanh
+- [Advanced Workflow](designer/advanced-workflow.md) - Workflow nâng cao
+- [Component Library](designer/component-library.md) - Thư viện components
+
+### ⚡ Performance
+- [Performance Overview](performance/README.md) - Tổng quan performance
+- [Asset Management](performance/asset-management.md) - Quản lý assets
+- [Core Web Vitals](performance/core-web-vitals.md) - Core Web Vitals
 
 ### 🔒 Security
-- [Security Guidelines](./security/guidelines.md) - Security best practices
+- [Security Guidelines](security/guidelines.md) - Hướng dẫn bảo mật
+- [Security Overview](security/README.md) - Tổng quan bảo mật
 
-### 🛠 Development
-- [Coding Rules](./development/rules.md) - Strict OOP principles
-- [Best Practices](./development/best-practices.md) - Development guidelines
-- [Testing Guidelines](./development/testing.md) - Testing strategies
-- [Troubleshooting](./development/troubleshooting.md) - Common issues & solutions
+### 🔄 Migration
+- [Migration Guide](migration-guide.md) - Hướng dẫn migration tổng quát
+- [Hooks Migration](hooks-migration-summary.md) - Migration hooks
+- [Update Summary](UPDATE_SUMMARY.md) - Tóm tắt cập nhật
 
-### 🖥️ CLI Commands
-- [CLI Documentation](./cli/README.md) - WordPress CLI commands
-- [CLI Development](./cli/development.md) - Custom commands development
-- [CLI Examples](./cli/examples.md) - Real-world examples
+## Quick Navigation
 
-### 📁 Assets & Templates
-- [Asset Structure](./assets/structure.md) - Folder organization
+### For Developers
+- [Development Guide](development/README.md) - Hướng dẫn phát triển
+- [Architecture Overview](architecture/bootstrapper-structure.md) - Tổng quan kiến trúc
+- [CLI Tools](cli/development.md) - Công cụ CLI
+- [Gutenberg Integration](gutenberg/blocks.md) - Tích hợp Gutenberg
 
-### 🚀 Migration & Quick Start
-- [Migration Guide](./migration-guide.md) - Chuyển từ theme cũ sang Jankx
+### For Designers
+- [Design System](designer/design-system.md) - Hệ thống thiết kế
+- [Component Library](designer/component-library.md) - Thư viện components
+- [Quick Start](designer/quick-start.md) - Bắt đầu nhanh
 
-## 🚀 Quick Start
+### For Content Creators
+- [Post Layout System](post-layout/README.md) - Hệ thống post layout
+- [Pattern Library](post-layout/pattern-library.md) - Thư viện patterns
+- [Templates](templates/README.md) - Templates
 
-### Requirements
-- WordPress 6.0+
-- PHP 7.4+
-- Node.js 16+ (for development)
+### For Administrators
+- [Installation Guide](development/README.md#installation) - Hướng dẫn cài đặt
+- [Configuration](development/README.md#configuration) - Cấu hình
+- [Troubleshooting](post-layout/troubleshooting.md) - Xử lý sự cố
 
-### Installation
+## Key Features
+
+### 🚀 Modern Architecture
+- **Modular Design**: Kiến trúc modular với bootstrappers
+- **Service Container**: Dependency injection container
+- **Kernel System**: Multi-kernel system cho different contexts
+- **Deferred Services**: Lazy loading services
+
+### 🎨 Advanced Templates
+- **Block Templates**: PHP templates cho Gutenberg blocks
+- **Layout Templates**: Templates cho complex layouts
+- **Page Templates**: HTML templates với Gutenberg markup
+- **Template Hierarchy**: Flexible template system
+
+### 🔧 Developer Tools
+- **CLI Commands**: Command-line interface
+- **Debug Tools**: Comprehensive debugging
+- **Performance Monitoring**: Built-in performance tools
+- **Code Generation**: Scaffolding tools
+
+### 📊 Post Layout System
+- **Dynamic Query Loop**: Advanced query system
+- **Pattern Library**: Reusable patterns
+- **Layout Manager**: Flexible layout management
+- **Migration Tools**: Easy migration from old systems
+
+### 🎯 Gutenberg Integration
+- **Custom Blocks**: Easy block creation
+- **Ajax System**: Dynamic content loading
+- **Block Patterns**: Reusable block patterns
+- **Editor Enhancements**: Enhanced editor experience
+
+## Getting Started
+
+### 1. Installation
 ```bash
-# Clone theme
-git clone [repository-url]
+# Clone repository
+git clone https://github.com/jankx/jankx.git my-theme
 
 # Install dependencies
 composer install
 npm install
-
-# Build assets
-npm run build
 ```
 
-### Development
+### 2. Development Setup
 ```bash
-# Watch mode
+# Start development server
 npm run dev
 
 # Build for production
 npm run build
 ```
 
-## 🏗 Architecture Overview
-
-```
-Jankx 2.0
-├── Kernel System (Bootstrapping)
-├── Service Container (Dependency Injection)
-├── Gutenberg Blocks (Atomic Design)
-├── Performance Layer (Core Web Vitals)
-├── Security Layer (XSS, CSRF, SVG)
-└── Asset Management (Lazy Loading)
-```
-
-## 🎯 Key Features
-
-- **Gutenberg-First**: Native block editor integration
-- **Atomic Design**: Modular component system
-- **Lazy Loading**: Partial hydration system
-- **Core Web Vitals**: Performance optimization
-- **Security by Design**: Built-in security measures
-- **Developer Experience**: Modern tooling and workflows
-
-## 📊 Performance Targets
-
-- **LCP**: < 2.5s
-- **FID**: < 100ms
-- **CLS**: < 0.1
-- **TTFB**: < 600ms
-
-## 🔒 Security Features
-
-- XSS Prevention
-- CSRF Protection
-- SVG Sanitization
-- Nonce Verification
-- Input Sanitization
-- Output Escaping
-
-## 🚀 Migration Path
-
-### From Old Theme
+### 3. CLI Usage
 ```bash
-# 1. Install Jankx
-wp theme install jankx --activate
+# Generate new block
+wp jankx generate:block my-block
 
-# 2. Run migration script
-wp eval-file migration-script.php
+# Create new layout
+wp jankx generate:layout my-layout
 
-# 3. Test migration
-wp eval-file test-migration.php
+# Run performance test
+wp jankx performance:test
 ```
 
-### From Jankx 1.0
+## Architecture Overview
+
+### Bootstrapper System
+```
+Bootstrapper
+├── CoreBootstrapper
+├── ThemeBootstrapper
+├── FrontendBootstrapper
+├── AdminBootstrapper
+├── APIBootstrapper
+├── CLIBootstrapper
+└── GutenbergBootstrapper
+```
+
+### Kernel System
+```
+Kernel
+├── FrontendKernel
+├── AdminKernel
+├── APIKernel
+├── CLIKernel
+└── CronKernel
+```
+
+### Template System
+```
+Templates
+├── Page Templates (HTML)
+├── Block Templates (PHP)
+├── Layout Templates (PHP)
+└── Template Parts
+```
+
+## Development Workflow
+
+### 1. Create New Block
 ```php
-// Use migration helper
-class JankxMigrator
-{
-    public function migrateFromV1()
-    {
-        // Migrate blocks
-        $this->migrateBlocks();
+// Register block
+add_action('init', function() {
+    register_block_type('jankx/my-block', [
+        'render_callback' => 'render_my_block'
+    ]);
+});
 
-        // Migrate templates
-        $this->migrateTemplates();
-
-        // Migrate assets
-        $this->migrateAssets();
-    }
+// Render function
+function render_my_block($attributes) {
+    return include_template('blocks/my-block.html', $attributes);
 }
 ```
 
-## 🛠 Development Workflow
-
-### 1. **Create New Block**
-```bash
-# Generate block scaffold
-npm run create-block testimonial
-
-# This creates:
-# - blocks/testimonial/block.json
-# - blocks/testimonial/TestimonialBlock.php
-# - assets/blocks/testimonial/
-```
-
-### 2. **Development Mode**
-```bash
-# Start development server
-npm run dev
-
-# Watch for changes
-npm run watch
-```
-
-### 3. **Testing**
-```bash
-# Run tests
-npm run test
-
-# Run performance tests
-npm run test:performance
-```
-
-## 📖 Contributing
-
-### Development Rules
-1. **Strict OOP**: No procedural functions
-2. **Service Pattern**: Use dependency injection
-3. **Testing**: Write tests for all features
-4. **Performance**: Optimize for Core Web Vitals
-5. **Security**: Follow security guidelines
-
-### Code Standards
-- PSR-12 coding standards
-- Type hints and return types
-- Meaningful comments
-- Small, focused functions
-- Dependency injection
-
-## 🔧 Troubleshooting
-
-### Common Issues
-1. **Block not registering**: Check namespace and registration
-2. **Assets not loading**: Verify file paths and permissions
-3. **Performance issues**: Use performance monitoring tools
-4. **Security issues**: Follow security guidelines
-
-### Debug Tools
+### 2. Create New Layout
 ```php
-// Enable debug mode
-define('WP_DEBUG', true);
-define('JANKX_DEBUG', true);
-
-// Use debug logger
-$logger = new DebugLogger();
-$logger->log('Debug message', ['context' => 'data']);
+// Register layout
+add_action('init', function() {
+    register_block_pattern('jankx/my-layout', [
+        'content' => include_template('layouts/my-layout.html')
+    ]);
+});
 ```
 
-## 📄 License
+### 3. Custom Template
+```php
+// Create custom template
+function my_custom_template($variables) {
+    return include_template('custom/my-template.html', $variables);
+}
+```
 
-GPL v2 or later
+## Performance Features
+
+### 1. Asset Optimization
+- **Lazy Loading**: Automatic lazy loading
+- **Code Splitting**: Dynamic code splitting
+- **Caching**: Built-in caching system
+- **Minification**: Automatic asset minification
+
+### 2. Database Optimization
+- **Query Optimization**: Optimized database queries
+- **Caching**: Object and page caching
+- **Indexing**: Automatic index optimization
+- **Cleanup**: Regular cleanup tasks
+
+### 3. Frontend Performance
+- **Critical CSS**: Inline critical CSS
+- **Image Optimization**: Automatic image optimization
+- **CDN Support**: Built-in CDN support
+- **Service Workers**: PWA capabilities
+
+## Security Features
+
+### 1. Input Validation
+- **Sanitization**: Automatic input sanitization
+- **Validation**: Comprehensive validation
+- **Escaping**: Output escaping
+- **Nonces**: CSRF protection
+
+### 2. Access Control
+- **Role-based Access**: Granular permissions
+- **API Security**: Secure API endpoints
+- **File Protection**: Protected file access
+- **HTTPS Enforcement**: SSL enforcement
+
+## Migration Support
+
+### 1. From Jankx 1.x
+- **Automatic Migration**: One-click migration
+- **Hook Compatibility**: Backward compatibility
+- **Template Conversion**: Template migration tools
+- **Data Preservation**: Data integrity
+
+### 2. From Other Themes
+- **Import Tools**: Import from other themes
+- **Template Conversion**: Template conversion
+- **Data Migration**: Data migration tools
+- **Customization Preservation**: Preserve customizations
+
+## Support & Community
+
+### 📚 Documentation
+- **Comprehensive Guides**: Detailed documentation
+- **Code Examples**: Practical examples
+- **Best Practices**: Development best practices
+- **Troubleshooting**: Common issues and solutions
+
+### 🛠️ Development Tools
+- **CLI Commands**: Command-line tools
+- **Debug Tools**: Debugging utilities
+- **Performance Tools**: Performance monitoring
+- **Code Generators**: Scaffolding tools
+
+### 🤝 Community
+- **GitHub Issues**: Bug reports and feature requests
+- **Discussions**: Community discussions
+- **Contributions**: Contribution guidelines
+- **Support**: Technical support
+
+## Version Information
+
+- **Current Version**: 2.0.0
+- **PHP Requirement**: 7.4+
+- **WordPress Requirement**: 5.8+
+- **Gutenberg Requirement**: 10.0+
+
+## License
+
+Jankx 2.0 is licensed under the GPL v2 or later.
+
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
+
+## Support
+
+- **Documentation**: [docs.jankx.com](https://docs.jankx.com)
+- **Issues**: [GitHub Issues](https://github.com/jankx/jankx/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/jankx/jankx/discussions)
+- **Community**: [Community Forum](https://community.jankx.com)
 
 ---
 
 **Jankx 2.0** - Modern WordPress Theme Framework
-
-> **Tài liệu này được thiết kế để:**
-> - Cung cấp hướng dẫn thực tế cho development
-> - Không có hứa suông hay benchmark giả
-> - Là tài liệu tra cứu cho development team
-> - Hướng dẫn chuyển đổi nhanh nhất có thể
-> - Cách tiếp cận Jankx đúng đắn
