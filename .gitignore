@@ -4,3 +4,29 @@ vendor
 .sass-cache
 node_modules
 /style.js*
+
+# PHPUnit Coverage Reports
+coverage-report/
+coverage.xml
+.phpunit.cache/
+.phpunit.result.cache
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp

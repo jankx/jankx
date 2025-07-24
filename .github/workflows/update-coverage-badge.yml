@@ -1,0 +1,53 @@
+name: Update Coverage Badge
+
+on:
+  workflow_run:
+    workflows: ["PHPUnit Tests"]
+    types:
+      - completed
+    branches: [main]
+
+jobs:
+  update-badge:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 8.1
+        extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite
+        coverage: xdebug
+        tools: composer:v2
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress
+
+    - name: Run tests and generate coverage
+      run: vendor/bin/phpunit --coverage-clover=coverage.xml
+
+    - name: Calculate coverage percentage
+      id: coverage
+      run: |
+        COVERAGE=$(vendor/bin/phpunit --coverage-text --coverage-filter=includes/Jankx | grep "Lines:" | awk '{print $2}' | sed 's/%//')
+        echo "coverage=$COVERAGE" >> $GITHUB_OUTPUT
+
+    - name: Update README with coverage badge
+      run: |
+        # Create coverage badge URL
+        BADGE_URL="https://img.shields.io/badge/coverage-${{ steps.coverage.outputs.coverage }}%25-brightgreen"
+
+        # Update README.md
+        sed -i 's|!\[Coverage\]\(https://img.shields.io/badge/coverage-[0-9.]*%25-[a-z]*\)|![Coverage]('$BADGE_URL')|g' README.md
+
+    - name: Commit and push changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add README.md
+        git diff --quiet && git diff --staged --quiet || git commit -m "Update coverage badge to ${{ steps.coverage.outputs.coverage }}%"
+        git push

@@ -1,0 +1,283 @@
+/**
+ * Jankx Admin CSS
+ *
+ * Admin-specific styles
+ */
+
+/* Admin Dashboard */
+.jankx-dashboard-widget {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.jankx-dashboard-widget h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1d2327;
+}
+
+.jankx-dashboard-widget .widget-content {
+    color: #646970;
+    line-height: 1.5;
+}
+
+/* Admin Menu */
+.jankx-admin-menu {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.jankx-admin-menu .menu-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid #ccd0d4;
+    background: #f6f7f7;
+}
+
+.jankx-admin-menu .menu-header h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1d2327;
+}
+
+.jankx-admin-menu .menu-toggle {
+    float: right;
+    background: none;
+    border: none;
+    color: #646970;
+    cursor: pointer;
+    padding: 0;
+    font-size: 16px;
+}
+
+.jankx-admin-menu .menu-toggle:hover {
+    color: #1d2327;
+}
+
+.jankx-admin-menu .menu-content {
+    padding: 20px;
+    display: none;
+}
+
+.jankx-admin-menu.menu-open .menu-content {
+    display: block;
+}
+
+.jankx-admin-menu .menu-item {
+    margin-bottom: 10px;
+}
+
+.jankx-admin-menu .menu-item:last-child {
+    margin-bottom: 0;
+}
+
+.jankx-admin-menu .menu-item a {
+    color: #2271b1;
+    text-decoration: none;
+    display: block;
+    padding: 8px 0;
+}
+
+.jankx-admin-menu .menu-item a:hover {
+    color: #135e96;
+}
+
+/* Admin Notices */
+.jankx-admin-notice {
+    background: #fff;
+    border-left: 4px solid #00a32a;
+    border-radius: 4px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.jankx-admin-notice.notice-error {
+    border-left-color: #d63638;
+}
+
+.jankx-admin-notice.notice-warning {
+    border-left-color: #dba617;
+}
+
+.jankx-admin-notice.notice-info {
+    border-left-color: #72aee6;
+}
+
+.jankx-admin-notice .notice-content {
+    color: #646970;
+    line-height: 1.5;
+}
+
+.jankx-admin-notice .notice-dismiss {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: #646970;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 0;
+}
+
+.jankx-admin-notice .notice-dismiss:hover {
+    color: #1d2327;
+}
+
+/* Loading States */
+.loading {
+    position: relative;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #2271b1;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Admin Forms */
+.jankx-admin-form {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.jankx-admin-form .form-row {
+    margin-bottom: 15px;
+}
+
+.jankx-admin-form .form-row:last-child {
+    margin-bottom: 0;
+}
+
+.jankx-admin-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #1d2327;
+}
+
+.jankx-admin-form input[type="text"],
+.jankx-admin-form input[type="email"],
+.jankx-admin-form input[type="password"],
+.jankx-admin-form textarea,
+.jankx-admin-form select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #8c8f94;
+    border-radius: 4px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.jankx-admin-form input[type="text"]:focus,
+.jankx-admin-form input[type="email"]:focus,
+.jankx-admin-form input[type="password"]:focus,
+.jankx-admin-form textarea:focus,
+.jankx-admin-form select:focus {
+    border-color: #2271b1;
+    box-shadow: 0 0 0 1px #2271b1;
+    outline: none;
+}
+
+.jankx-admin-form .button {
+    background: #2271b1;
+    border: 1px solid #2271b1;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1.4;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.jankx-admin-form .button:hover {
+    background: #135e96;
+    border-color: #135e96;
+}
+
+.jankx-admin-form .button-secondary {
+    background: #f6f7f7;
+    border-color: #2271b1;
+    color: #2271b1;
+}
+
+.jankx-admin-form .button-secondary:hover {
+    background: #f0f0f1;
+    border-color: #135e96;
+    color: #135e96;
+}
+
+/* Admin Tables */
+.jankx-admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.jankx-admin-table th,
+.jankx-admin-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ccd0d4;
+}
+
+.jankx-admin-table th {
+    background: #f6f7f7;
+    font-weight: 600;
+    color: #1d2327;
+}
+
+.jankx-admin-table tr:last-child td {
+    border-bottom: none;
+}
+
+.jankx-admin-table tr:hover {
+    background: #f6f7f7;
+}
+
+/* Responsive */
+@media (max-width: 782px) {
+    .jankx-admin-menu .menu-toggle {
+        display: block;
+    }
+
+    .jankx-admin-table {
+        font-size: 14px;
+    }
+
+    .jankx-admin-table th,
+    .jankx-admin-table td {
+        padding: 8px 10px;
+    }
+}

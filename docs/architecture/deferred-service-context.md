@@ -261,8 +261,7 @@ class ContextualServiceProvider
             // Gutenberg-specific deferred services
             if ($context === ContextualServiceRegistry::GUTENBERG) {
                 $container->singleton(\Jankx\Gutenberg\BlockRegistry::class);
-                $container->singleton(\Jankx\Gutenberg\LayoutRegistry::class);
-                $container->singleton(\Jankx\Gutenberg\AjaxHandler::class);
+                // Layout system removed - only core Gutenberg system remains
                 $container->singleton(\Jankx\Gutenberg\BlockRenderer::class);
             }
 
@@ -325,7 +324,7 @@ class ContextualServiceProvider
     {
         $this->container->singleton(\Jankx\Gutenberg\EditorManager::class);
         $this->container->singleton(\Jankx\Gutenberg\BlockRenderer::class);
-        $this->container->singleton(\Jankx\Gutenberg\LayoutManager::class);
+        // LayoutManager removed - only core Gutenberg system remains
     }
 
     /**
