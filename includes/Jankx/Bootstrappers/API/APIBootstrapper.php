@@ -1,8 +1,9 @@
 <?php
 
-namespace Jankx\Bootstrappers;
+namespace Jankx\Bootstrappers\API;
 
 use Illuminate\Container\Container;
+use Jankx\Bootstrappers\AbstractBootstrapper;
 
 class APIBootstrapper extends AbstractBootstrapper
 {

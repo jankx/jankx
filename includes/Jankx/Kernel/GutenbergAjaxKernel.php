@@ -4,7 +4,7 @@ namespace Jankx\Kernel;
 
 use Jankx\Contracts\KernelInterface;
 use Jankx\Bootstrappers\Global\ThemeBootstrapper;
-use Jankx\Bootstrappers\GutenbergAjaxBootstrapper;
+use Jankx\Bootstrappers\Gutenberg\GutenbergAjaxBootstrapper;
 
 /**
  * Gutenberg AJAX Kernel

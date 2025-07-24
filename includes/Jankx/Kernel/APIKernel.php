@@ -3,7 +3,7 @@
 namespace Jankx\Kernel;
 
 use Jankx\Contracts\KernelInterface;
-use Jankx\Bootstrappers\APIBootstrapper;
+use Jankx\Bootstrappers\API\APIBootstrapper;
 use Jankx\Bootstrappers\Global\ThemeBootstrapper;
 use Jankx\API\APIManager;
 use Jankx\API\Endpoints\PostsEndpoint;

@@ -1,10 +1,11 @@
 <?php
 
-namespace Jankx\Bootstrappers;
+namespace Jankx\Bootstrappers\Gutenberg;
 
 use Illuminate\Container\Container;
 use Jankx\Gutenberg\AjaxHandler;
 use Jankx\Facades\Logger;
+use Jankx\Bootstrappers\AbstractBootstrapper;
 
 /**
  * Gutenberg AJAX Bootstrapper

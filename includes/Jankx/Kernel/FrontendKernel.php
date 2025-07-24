@@ -4,8 +4,9 @@ namespace Jankx\Kernel;
 
 use Jankx\Contracts\KernelInterface;
 use Jankx\Bootstrappers\Frontend\FrontendBootstrapper;
+use Jankx\Bootstrappers\Frontend\WooCommerceBootstrapper;
 use Jankx\Bootstrappers\Global\ThemeBootstrapper;
-use Jankx\Bootstrappers\GutenbergFrontendBootstrapper;
+use Jankx\Bootstrappers\Gutenberg\GutenbergFrontendBootstrapper;
 
 /**
  * Frontend Kernel
@@ -37,6 +38,11 @@ class FrontendKernel extends Kernel implements KernelInterface
 
         // Frontend bootstrapper
         $this->addBootstrapper(FrontendBootstrapper::class);
+
+        // WooCommerce bootstrapper (if WooCommerce is active)
+        if (class_exists('WooCommerce')) {
+            $this->addBootstrapper(WooCommerceBootstrapper::class);
+        }
 
         // Allow child themes to add custom bootstrappers
         $customBootstrappers = apply_filters('jankx/frontend/bootstrappers', []);

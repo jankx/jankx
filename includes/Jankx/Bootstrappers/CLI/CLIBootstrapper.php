@@ -1,8 +1,9 @@
 <?php
 
-namespace Jankx\Bootstrappers;
+namespace Jankx\Bootstrappers\CLI;
 
 use Illuminate\Container\Container;
+use Jankx\Bootstrappers\AbstractBootstrapper;
 
 class CLIBootstrapper extends AbstractBootstrapper
 {

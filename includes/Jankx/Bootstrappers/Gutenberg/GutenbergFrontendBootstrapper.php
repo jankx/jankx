@@ -1,8 +1,9 @@
 <?php
 
-namespace Jankx\Bootstrappers;
+namespace Jankx\Bootstrappers\Gutenberg;
 
 use Illuminate\Container\Container;
+use Jankx\Bootstrappers\AbstractBootstrapper;
 use Jankx\Gutenberg\BlockRegistry;
 use Jankx\Facades\Logger;
 

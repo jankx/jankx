@@ -3,7 +3,7 @@
 namespace Jankx\Kernel;
 
 use Illuminate\Container\Container;
-use Jankx\Bootstrappers\System\CoreBootstrapper;
+use Jankx\Bootstrappers\Global\CoreBootstrapper;
 use Jankx\Contracts\KernelInterface;
 
 /**

@@ -3,7 +3,7 @@
 namespace Jankx\Kernel;
 
 use Jankx\Contracts\KernelInterface;
-use Jankx\Bootstrappers\CLIBootstrapper;
+use Jankx\Bootstrappers\CLI\CLIBootstrapper;
 use Jankx\Bootstrappers\Global\ThemeBootstrapper;
 use Jankx\Command\CommandManager;
 use Jankx\Command\Commands\CacheCommand;
