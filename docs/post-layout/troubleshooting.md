@@ -31,8 +31,9 @@ function jankx_debug_query_parameters($attributes) {
 ```
 
 #### Solutions
+
+**1. Check if posts exist**
 ```php
-// 1. Check if posts exist
 function jankx_check_posts_exist($post_type = 'post') {
     $posts = get_posts([
         'post_type' => $post_type,
@@ -46,8 +47,10 @@ function jankx_check_posts_exist($post_type = 'post') {
 
     return true;
 }
+```
 
-// 2. Verify query arguments
+**2. Verify query arguments**
+```php
 function jankx_verify_query_args($attributes) {
     $issues = [];
 
@@ -120,8 +123,9 @@ function jankx_debug_pattern_rendering($pattern_name, $post_id) {
 ```
 
 #### Solutions
+
+**1. Register missing patterns**
 ```php
-// 1. Register missing patterns
 function jankx_register_missing_patterns() {
     $required_patterns = [
         'jankx/post-card',
@@ -137,8 +141,10 @@ function jankx_register_missing_patterns() {
         }
     }
 }
+```
 
-// 2. Fallback pattern
+**2. Fallback pattern**
+```php
 function jankx_get_fallback_pattern($pattern_name) {
     $fallback_patterns = [
         'jankx/post-card' => 'jankx/post-card-meta',
@@ -185,16 +191,19 @@ function jankx_monitor_query_performance($attributes) {
 ```
 
 #### Solutions
+
+**1. Implement caching**
 ```php
-// 1. Implement caching
 function jankx_cache_query_results($attributes, $html) {
     $cache_key = 'jankx_query_' . md5(serialize($attributes));
     wp_cache_set($cache_key, $html, 'jankx_query_loop', 300); // 5 minutes
 
     return $html;
 }
+```
 
-// 2. Optimize query arguments
+**2. Optimize query arguments**
+```php
 function jankx_optimize_query_args($attributes) {
     $query_args = jankx_build_query_args($attributes);
 
@@ -215,8 +224,10 @@ function jankx_optimize_query_args($attributes) {
 
     return $query_args;
 }
+```
 
-// 3. Implement lazy loading
+**3. Implement lazy loading**
+```php
 function jankx_lazy_load_implementation($attributes) {
     $per_page = min($attributes['perPage'] ?? 6, 12); // Limit initial load
 
@@ -258,8 +269,9 @@ function jankxDebugEditorIssues() {
 ```
 
 #### Solutions
+
+**1. Ensure block registration**
 ```php
-// 1. Ensure block registration
 function jankx_ensure_block_registration() {
     if (!function_exists('register_block_type')) {
         return;
@@ -272,8 +284,10 @@ function jankx_ensure_block_registration() {
         'editor_style' => 'jankx-dynamic-query-loop-editor-style',
     ]);
 }
+```
 
-// 2. Enqueue editor assets
+**2. Enqueue editor assets**
+```php
 function jankx_enqueue_editor_assets() {
     if (!is_admin()) {
         return;
@@ -343,8 +357,9 @@ function jankx_debug_migration_issues() {
 ```
 
 #### Solutions
+
+**1. Re-run migration**
 ```php
-// 1. Re-run migration
 function jankx_rerun_migration($post_id) {
     $post = get_post($post_id);
     $content = $post->post_content;
@@ -361,8 +376,10 @@ function jankx_rerun_migration($post_id) {
 
     return $content;
 }
+```
 
-// 2. Manual migration helper
+**2. Manual migration helper**
+```php
 function jankx_manual_migration_helper($old_shortcode) {
     // Parse old shortcode
     preg_match('/\[jankx_layout([^\]]*)\](.*?)\[\/jankx_layout\]/s', $old_shortcode, $matches);
@@ -525,23 +542,21 @@ function jankx_enable_detailed_logging() {
     }
 
     // Log all Jankx operations
-    add_action('jankx/query_loop/render', function($attributes, $result) {
-        error_log('Jankx Query Loop: ' . json_encode([
-            'attributes' => $attributes,
-            'result_length' => strlen($result),
+    add_action('jankx/frontend/used_blocks', function($used_blocks, $content) {
+        error_log('Jankx Used Blocks: ' . json_encode([
+            'blocks' => $used_blocks,
+            'content_length' => strlen($content),
             'timestamp' => current_time('mysql')
         ]));
     }, 10, 2);
 
-    // Log pattern rendering
-    add_action('jankx/pattern/render', function($pattern_name, $post_id, $result) {
-        error_log('Jankx Pattern Render: ' . json_encode([
-            'pattern' => $pattern_name,
-            'post_id' => $post_id,
-            'result_length' => strlen($result),
+    // Log partial hydration settings
+    add_action('jankx/frontend/partial_hydration_settings', function($settings) {
+        error_log('Jankx Partial Hydration: ' . json_encode([
+            'settings' => $settings,
             'timestamp' => current_time('mysql')
         ]));
-    }, 10, 3);
+    }, 10, 1);
 }
 ```
 

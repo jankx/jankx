@@ -83,7 +83,7 @@ class CustomCLIServiceProvider
 {
     public function register()
     {
-        add_action('jankx_wpcli_register_commands', [$this, 'registerCommands']);
+        add_action('jankx/wpcli/register_commands', [$this, 'registerCommands']);
     }
 
     public function registerCommands()

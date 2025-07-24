@@ -84,7 +84,7 @@ wp jankx <command> [options]
 
 1. **Hook vào WordPress CLI:**
 ```php
-add_action('jankx_wpcli_register_commands', function() {
+add_action('jankx/wpcli/register_commands', function() {
     // Register your custom commands here
 });
 ```
@@ -103,7 +103,7 @@ public function registerWPCLICommands(): void
     \WP_CLI::add_command('jankx version', [$this, 'showVersion']);
 
     // Allow child themes to register custom WP-CLI commands
-    do_action('jankx_wpcli_register_commands');
+    do_action('jankx/wpcli/register_commands');
 }
 ```
 
@@ -176,7 +176,7 @@ wp jankx info --debug
 ## 🔗 **Integration Points**
 
 ### **WordPress Hooks**
-- `jankx_wpcli_register_commands` - Để register custom commands
+- `jankx/wpcli/register_commands` - Để register custom commands
 - `jankx_cli_initialized` - Khi CLI kernel được khởi tạo
 
 ### **Jankx Framework**

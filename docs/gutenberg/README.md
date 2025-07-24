@@ -18,3 +18,8 @@ Thư mục này cung cấp hướng dẫn về phát triển block, đăng ký b
 ---
 
 **Xem chi tiết từng chủ đề trong các file tương ứng.**
+
+---
+
+## Tài liệu liên quan
+- [Templates System](../templates/README.md): Tổng quan và hướng dẫn về hệ thống template của Jankx.
