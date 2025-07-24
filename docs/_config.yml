@@ -6,7 +6,7 @@ description: Modern, High-Performance WordPress Theme Framework
 author: Jankx Team
 email: puleeno@gmail.com
 url: "https://jankx.github.io"
-baseurl: ""
+baseurl: "/jankx"
 
 # Build settings
 markdown: kramdown
