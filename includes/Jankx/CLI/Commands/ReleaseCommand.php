@@ -60,6 +60,9 @@ class ReleaseCommand extends WP_CLI_Command
      * [--dry-run]
      * : Show what would be included without creating the package
      *
+     * [--verbose]
+     * : Show detailed information about exclude patterns and files
+     *
      * ## EXAMPLES
      *
      *     # Create release with auto-detected version
@@ -74,6 +77,9 @@ class ReleaseCommand extends WP_CLI_Command
      *     # Dry run to see what would be included
      *     wp jankx release --dry-run
      *
+     *     # Show detailed information
+     *     wp jankx release --verbose
+     *
      * @since 2.0.0
      */
     public function __invoke($args, $assoc_args)
@@ -82,6 +88,7 @@ class ReleaseCommand extends WP_CLI_Command
         $outputDir = isset($assoc_args['output']) ? $assoc_args['output'] : './releases';
         $force = isset($assoc_args['force']);
         $dryRun = isset($assoc_args['dry-run']);
+        $verbose = isset($assoc_args['verbose']);
 
         WP_CLI::log("🎯 Creating Jankx Framework Release Package");
         WP_CLI::log("📦 Theme: {$this->themeName}");
@@ -106,19 +113,23 @@ class ReleaseCommand extends WP_CLI_Command
         // Get files to include
         $files = $this->getFilesToInclude();
 
-        WP_CLI::log("📁 Theme path: {$this->themePath}");
-        WP_CLI::log("📄 Files found: " . count($files));
+        if ($verbose) {
+            WP_CLI::log("📁 Theme path: {$this->themePath}");
+            WP_CLI::log("📄 Files found: " . count($files));
+        }
 
         if (empty($files)) {
             WP_CLI::error("No files to include in release package. Please check your exclude patterns and .gitattributes.");
-            WP_CLI::log("🔍 Debug info:");
-            WP_CLI::log("   - Theme path: {$this->themePath}");
-            WP_CLI::log("   - Exclude patterns: " . count($this->excludePatterns));
+            if ($verbose) {
+                WP_CLI::log("🔍 Debug info:");
+                WP_CLI::log("   - Theme path: {$this->themePath}");
+                WP_CLI::log("   - Exclude patterns: " . count($this->excludePatterns));
+            }
             return;
         }
 
         if ($dryRun) {
-            $this->displayDryRun($files);
+            $this->displayDryRun($files, $verbose);
             return;
         }
 
@@ -134,7 +145,7 @@ class ReleaseCommand extends WP_CLI_Command
         }
 
         // Create ZIP package
-        if ($this->createZipPackage($files, $packagePath)) {
+        if ($this->createZipPackage($files, $packagePath, $verbose)) {
             // Check if file exists before getting size
             if (file_exists($packagePath)) {
                 $size = $this->formatBytes(filesize($packagePath));
@@ -200,7 +211,11 @@ class ReleaseCommand extends WP_CLI_Command
         $content = file_get_contents($gitattributesPath);
         $lines = explode("\n", $content);
 
-        WP_CLI::log("📖 Reading exclude patterns from .gitattributes...");
+        // Only show verbose info if --verbose flag is set
+        $verbose = WP_CLI::get_config('verbose');
+        if ($verbose) {
+            WP_CLI::log("📖 Reading exclude patterns from .gitattributes...");
+        }
 
         foreach ($lines as $line) {
             $line = trim($line);
@@ -214,9 +229,13 @@ class ReleaseCommand extends WP_CLI_Command
                     // Đảm bảo vendor directory được include (không loại trừ)
                     if ($pattern !== '/vendor' && $pattern !== 'vendor/') {
                         $this->excludePatterns[] = $pattern;
-                        WP_CLI::log("   - Excluding: {$pattern}");
+                        if ($verbose) {
+                            WP_CLI::log("   - Excluding: {$pattern}");
+                        }
                     } else {
-                        WP_CLI::log("   - Including: {$pattern} (vendor directory)");
+                        if ($verbose) {
+                            WP_CLI::log("   - Including: {$pattern} (vendor directory)");
+                        }
                     }
                 }
             }
@@ -225,7 +244,9 @@ class ReleaseCommand extends WP_CLI_Command
         // Luôn ignore .git directory dù có khai báo hay không
         if (!in_array('/.git', $this->excludePatterns)) {
             $this->excludePatterns[] = '/.git';
-            WP_CLI::log("   - Excluding: /.git (always ignored)");
+            if ($verbose) {
+                WP_CLI::log("   - Excluding: /.git (always ignored)");
+            }
         }
 
         // Luôn ignore system files dù có khai báo hay không
@@ -252,11 +273,15 @@ class ReleaseCommand extends WP_CLI_Command
         foreach ($systemFiles as $systemFile) {
             if (!in_array($systemFile, $this->excludePatterns)) {
                 $this->excludePatterns[] = $systemFile;
-                WP_CLI::log("   - Excluding: {$systemFile} (system file)");
+                if ($verbose) {
+                    WP_CLI::log("   - Excluding: {$systemFile} (system file)");
+                }
             }
         }
 
-        WP_CLI::log("📋 Total exclude patterns loaded: " . count($this->excludePatterns));
+        if ($verbose) {
+            WP_CLI::log("📋 Total exclude patterns loaded: " . count($this->excludePatterns));
+        }
     }
 
     /**
@@ -346,33 +371,37 @@ class ReleaseCommand extends WP_CLI_Command
      * Display dry run information
      *
      * @param array $files
+     * @param bool $verbose
      * @since 2.0.0
      */
-    private function displayDryRun($files)
+    private function displayDryRun($files, $verbose = false)
     {
         WP_CLI::log("🔍 DRY RUN - Files that would be included:");
         WP_CLI::log("📄 Total files: " . count($files));
-        WP_CLI::log("");
-
-        // Group files by directory
-        $groupedFiles = [];
-        foreach ($files as $file) {
-            $dir = dirname($file);
-            if ($dir === '.') {
-                $dir = 'root';
-            }
-            $groupedFiles[$dir][] = $file;
-        }
-
-        foreach ($groupedFiles as $dir => $dirFiles) {
-            WP_CLI::log("📁 {$dir}/ (" . count($dirFiles) . " files)");
-            foreach (array_slice($dirFiles, 0, 5) as $file) {
-                WP_CLI::log("   - {$file}");
-            }
-            if (count($dirFiles) > 5) {
-                WP_CLI::log("   ... and " . (count($dirFiles) - 5) . " more files");
-            }
+        
+        if ($verbose) {
             WP_CLI::log("");
+
+            // Group files by directory
+            $groupedFiles = [];
+            foreach ($files as $file) {
+                $dir = dirname($file);
+                if ($dir === '.') {
+                    $dir = 'root';
+                }
+                $groupedFiles[$dir][] = $file;
+            }
+
+            foreach ($groupedFiles as $dir => $dirFiles) {
+                WP_CLI::log("📁 {$dir}/ (" . count($dirFiles) . " files)");
+                foreach (array_slice($dirFiles, 0, 5) as $file) {
+                    WP_CLI::log("   - {$file}");
+                }
+                if (count($dirFiles) > 5) {
+                    WP_CLI::log("   ... and " . (count($dirFiles) - 5) . " more files");
+                }
+                WP_CLI::log("");
+            }
         }
 
         WP_CLI::log("✅ Dry run completed. Use --force to create actual package.");
@@ -383,10 +412,11 @@ class ReleaseCommand extends WP_CLI_Command
      *
      * @param array $files
      * @param string $packagePath
+     * @param bool $verbose
      * @return bool
      * @since 2.0.0
      */
-    private function createZipPackage($files, $packagePath)
+    private function createZipPackage($files, $packagePath, $verbose = false)
     {
         $zip = new \ZipArchive();
 
@@ -403,11 +433,12 @@ class ReleaseCommand extends WP_CLI_Command
         foreach ($files as $filePath) {
             $file = str_replace($this->themePath, '', $filePath);
 
-
             if (file_exists($filePath)) {
                 if ($zip->addFile($filePath, $file)) {
                     $addedFiles++;
-                    WP_CLI::log(" - {$file}");
+                    if ($verbose) {
+                        WP_CLI::log(" - {$file}");
+                    }
                 } else {
                     WP_CLI::warning('Can add "' . $file . '" to ZIP');
                 }
@@ -432,7 +463,9 @@ class ReleaseCommand extends WP_CLI_Command
             return false;
         }
 
-        WP_CLI::log("🗂️  Total files added to zip: {$addedFiles}");
+        if ($verbose) {
+            WP_CLI::log("🗂️  Total files added to zip: {$addedFiles}");
+        }
         return $zip->close();
     }
 

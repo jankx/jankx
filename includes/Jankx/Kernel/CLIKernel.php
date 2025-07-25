@@ -112,19 +112,34 @@ class CLIKernel extends Kernel implements KernelInterface
         do_action('jankx/wpcli/register_commands');
     }
 
-    /**
+        /**
      * Show framework information
      */
     public function showFrameworkInfo(): void
     {
         $info = $this->getEnvironmentInfo();
 
-        \WP_CLI::line('Jankx Framework Information:');
-        \WP_CLI::line("PHP Version: {$info['php_version']}");
-        \WP_CLI::line("WordPress Version: {$info['wordpress_version']}");
-        \WP_CLI::line("Jankx Version: {$info['jankx_version']}");
-        \WP_CLI::line("Memory Limit: {$info['memory_limit']}");
-        \WP_CLI::line("Max Execution Time: {$info['max_execution_time']}s");
+        \WP_CLI::line('🎯 Jankx Framework Information');
+        \WP_CLI::line('================================');
+        \WP_CLI::line('');
+
+        // System Information
+        \WP_CLI::line('🖥️  System Information:');
+        \WP_CLI::line("   • PHP Version: {$info['php_version']}");
+        \WP_CLI::line("   • WordPress Version: {$info['wordpress_version']}");
+        \WP_CLI::line("   • Jankx Version: {$info['jankx_version']}");
+        \WP_CLI::line('');
+
+        // Performance Information
+        \WP_CLI::line('⚡ Performance Settings:');
+        \WP_CLI::line("   • Memory Limit: {$info['memory_limit']}");
+        \WP_CLI::line("   • Max Execution Time: {$info['max_execution_time']}s");
+        \WP_CLI::line("   • Upload Max Filesize: {$info['upload_max_filesize']}");
+        \WP_CLI::line("   • Post Max Size: {$info['post_max_size']}");
+        \WP_CLI::line('');
+
+        // Show active plugins
+        $this->showActivePlugins();
     }
 
     /**
@@ -133,6 +148,48 @@ class CLIKernel extends Kernel implements KernelInterface
     public function showVersion(): void
     {
         \WP_CLI::line("Jankx Framework Version: " . \Jankx\Jankx::getFrameworkVersion());
+    }
+
+        /**
+     * Show active plugins information
+     */
+    public function showActivePlugins(): void
+    {
+        if (!function_exists('get_plugins')) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+
+        $active_plugins = get_option('active_plugins');
+        $all_plugins = get_plugins();
+
+        if (empty($active_plugins)) {
+            \WP_CLI::line('🔌 Active Plugins: None');
+            return;
+        }
+
+        \WP_CLI::line('🔌 Active Plugins (' . count($active_plugins) . '):');
+
+        foreach ($active_plugins as $index => $plugin_file) {
+            $number = $index + 1;
+
+            if (isset($all_plugins[$plugin_file])) {
+                $plugin_data = $all_plugins[$plugin_file];
+                $plugin_name = $plugin_data['Name'] ?? basename($plugin_file, '.php');
+                $plugin_version = $plugin_data['Version'] ?? 'Unknown';
+                $plugin_author = $plugin_data['Author'] ?? 'Unknown';
+                $plugin_description = $plugin_data['Description'] ?? '';
+
+                \WP_CLI::line("   {$number}. {$plugin_name} v{$plugin_version}");
+                \WP_CLI::line("      👤 Author: {$plugin_author}");
+                if (!empty($plugin_description)) {
+                    \WP_CLI::line("      📝 Description: {$plugin_description}");
+                }
+                \WP_CLI::line('');
+            } else {
+                \WP_CLI::line("   {$number}. " . basename($plugin_file, '.php') . " (Plugin data not found)");
+                \WP_CLI::line('');
+            }
+        }
     }
 
     /**
