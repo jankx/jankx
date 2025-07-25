@@ -541,6 +541,180 @@ class TemplateRenderer
 }
 ```
 
+## 🎯 WordPress Hook Naming Rules
+
+### 1. Action Hook Naming Convention
+```php
+// ✅ REQUIRED - Package-style action hook names
+class UserService
+{
+    public function createUser(array $data): User
+    {
+        // Pre-action hook
+        do_action('jankx/user/before_create', $data);
+
+        $user = $this->repository->create($data);
+
+        // Post-action hook
+        do_action('jankx/user/after_create', $user, $data);
+
+        return $user;
+    }
+}
+
+// ✅ GOOD - Consistent package naming
+do_action('jankx/template/before_render', $template, $data);
+do_action('jankx/security/before_validation', $input);
+do_action('jankx/admin/after_save_settings', $settings);
+do_action('jankx/frontend/before_enqueue_assets');
+do_action('jankx/api/before_response', $response);
+
+// ❌ FORBIDDEN - Generic hook names
+do_action('user_created', $user); // Too generic
+do_action('before_save', $data); // No package prefix
+do_action('jankx_user_created', $user); // Wrong separator
+```
+
+### 2. Filter Hook Naming Convention
+```php
+// ✅ REQUIRED - Package-style filter hook names
+class TemplateRenderer
+{
+    public function render(string $template, array $data): string
+    {
+        // Pre-filter hook
+        $data = apply_filters('jankx/template/render_data', $data, $template);
+
+        $content = $this->renderTemplate($template, $data);
+
+        // Post-filter hook
+        $content = apply_filters('jankx/template/render_content', $content, $template, $data);
+
+        return $content;
+    }
+}
+
+// ✅ GOOD - Consistent filter naming
+$userData = apply_filters('jankx/user/validation_rules', $rules, $context);
+$templatePath = apply_filters('jankx/template/locate_template', $path, $template);
+$settings = apply_filters('jankx/admin/default_settings', $defaults);
+$assets = apply_filters('jankx/frontend/enqueue_assets', $assets);
+
+// ❌ FORBIDDEN - Generic filter names
+$data = apply_filters('user_data', $data); // Too generic
+$content = apply_filters('render_content', $content); // No package prefix
+$settings = apply_filters('jankx_settings', $settings); // Wrong separator
+```
+
+### 3. Hook Priority and Parameter Rules
+```php
+// ✅ GOOD - Proper hook usage with priority and parameters
+class UserController
+{
+    public function handleUserCreation(array $data): void
+    {
+        // Action with priority and parameters
+        do_action('jankx/user/before_validation', $data, 10);
+
+        $validatedData = apply_filters('jankx/user/validate_input', $data, 10, 2);
+
+        if ($this->validator->validate($validatedData)) {
+            do_action('jankx/user/before_create', $validatedData, 10);
+
+            $user = $this->service->createUser($validatedData);
+
+            do_action('jankx/user/after_create', $user, $validatedData, 10);
+        }
+    }
+}
+
+// ✅ GOOD - Filter with default value
+class ConfigManager
+{
+    public function getConfig(string $key, $default = null)
+    {
+        return apply_filters(
+            'jankx/config/get_value',
+            $default,
+            $key,
+            $this->context
+        );
+    }
+}
+```
+
+### 4. Hook Documentation Standards
+```php
+/**
+ * User service for managing user operations
+ *
+ * @package Jankx\User
+ */
+class UserService
+{
+    /**
+     * Create a new user
+     *
+     * Fires the following hooks:
+     * - `jankx/user/before_create` (array $data) - Before user creation
+     * - `jankx/user/after_create` (User $user, array $data) - After user creation
+     *
+     * @param array $data User data
+     * @return User Created user
+     * @throws ValidationException When data is invalid
+     * @throws ServiceException When creation fails
+     */
+    public function createUser(array $data): User
+    {
+        do_action('jankx/user/before_create', $data);
+
+        $user = $this->repository->create($data);
+
+        do_action('jankx/user/after_create', $user, $data);
+
+        return $user;
+    }
+}
+```
+
+### 5. Hook Registration Rules
+```php
+// ✅ GOOD - Hook registration in service providers
+class UserServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+        // Register hooks in service provider
+        add_action('jankx/user/before_create', [$this, 'logUserCreation'], 10, 1);
+        add_filter('jankx/user/validation_rules', [$this, 'addCustomValidation'], 10, 2);
+    }
+
+    public function logUserCreation(array $data): void
+    {
+        error_log('User creation started: ' . json_encode($data));
+    }
+
+    public function addCustomValidation(array $rules, string $context): array
+    {
+        if ($context === 'registration') {
+            $rules['terms_accepted'] = 'required|boolean';
+        }
+
+        return $rules;
+    }
+}
+
+// ❌ FORBIDDEN - Direct hook registration in classes
+class UserService
+{
+    public function __construct()
+    {
+        // Don't register hooks in constructor
+        add_action('jankx/user/created', [$this, 'sendEmail']); // WRONG
+    }
+}
+```
+
 ## 📝 Documentation Rules
 
 ### 1. PHPDoc Comments
@@ -554,6 +728,10 @@ class UserService
 {
     /**
      * Create a new user
+     *
+     * Fires the following hooks:
+     * - `jankx/user/before_create` (array $data) - Before user creation
+     * - `jankx/user/after_create` (User $user, array $data) - After user creation
      *
      * @param array $data User data
      * @return User Created user
@@ -578,6 +756,11 @@ User module provides user management functionality.
 - `UserService`: Main service for user operations
 - `UserRepository`: Data access layer
 - `UserValidator`: Input validation
+
+## Hooks
+- `jankx/user/before_create` - Fired before user creation
+- `jankx/user/after_create` - Fired after user creation
+- `jankx/user/validation_rules` - Filter for validation rules
 
 ## Usage
 ```php
