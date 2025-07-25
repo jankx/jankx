@@ -11,7 +11,7 @@ use Jankx\Context\ContextualServiceRegistry;
  * Resolves services with lazy loading and context-aware resolution
  *
  * @package Jankx\Services
- */
+ * @since 2.0.0\n */
 class DeferredServiceResolver
 {
     private $container;
@@ -26,7 +26,7 @@ class DeferredServiceResolver
 
     /**
      * Resolve a service with deferred loading
-     */
+     * @since 2.0.0\n     */
     public function resolve(string $serviceName): mixed
     {
         // Check if already resolved
@@ -66,7 +66,7 @@ class DeferredServiceResolver
 
     /**
      * Check if service is available in current context
-     */
+     * @since 2.0.0\n     */
     public function has(string $serviceName): bool
     {
         try {
@@ -79,7 +79,7 @@ class DeferredServiceResolver
 
     /**
      * Get all resolved services
-     */
+     * @since 2.0.0\n     */
     public function getResolvedServices(): array
     {
         return array_keys($this->resolved);
@@ -87,7 +87,7 @@ class DeferredServiceResolver
 
     /**
      * Get service resolution statistics
-     */
+     * @since 2.0.0\n     */
     public function getResolutionStats(): array
     {
         return [
@@ -99,7 +99,7 @@ class DeferredServiceResolver
 
     /**
      * Clear resolved services cache
-     */
+     * @since 2.0.0\n     */
     public function clearCache(): void
     {
         $this->resolved = [];
@@ -108,7 +108,7 @@ class DeferredServiceResolver
 
     /**
      * Get current context
-     */
+     * @since 2.0.0\n     */
     private function getCurrentContext(): string
     {
         return ContextualServiceRegistry::getCurrentContext();
@@ -116,7 +116,7 @@ class DeferredServiceResolver
 
     /**
      * Get monitor instance
-     */
+     * @since 2.0.0\n     */
     public function getMonitor(): DeferredServiceMonitor
     {
         return $this->monitor;
