@@ -32,7 +32,7 @@ class MissingSinceTagChecker extends AbstractIssueChecker
                     $class['line'],
                     true,
                     [
-                        'type' => 'add_since_tag',
+                        'type' => 'missing_since_tag',
                         'target' => 'class',
                         'name' => $class['name'],
                         'docblock' => $class['docblock'],
@@ -52,7 +52,7 @@ class MissingSinceTagChecker extends AbstractIssueChecker
                     $method['line'],
                     true,
                     [
-                        'type' => 'add_since_tag',
+                        'type' => 'missing_since_tag',
                         'target' => 'method',
                         'name' => $method['name'],
                         'class' => $method['class'],

@@ -21,36 +21,75 @@ class MissingSinceTagFixer implements IssueFixerInterface
     public function fix($content, $fix)
     {
         $docblock = $fix['docblock'];
+        $target = $fix['target'];
+        $name = $fix['name'];
+        $line = $fix['line'];
 
         // Check if docblock already has @since tag
         if (strpos($docblock, '@since') !== false) {
             return $content;
         }
 
-        // Find the prefix (whitespace + *) from the last docblock line
-        $lines = explode("\n", $docblock);
-        $prefix = ' * ';
+        // If docblock is empty or doesn't exist, create a new one
+        if (empty($docblock) || trim($docblock) === '') {
+            $lines = explode("\n", $content);
+            $declarationLineContent = $lines[$line - 1]; // The line where class/method is declared
 
-        for ($i = count($lines) - 2; $i >= 0; $i--) {
-            $line = $lines[$i];
-            if (preg_match('/^(\s*\*)/', $line, $m)) {
-                $prefix = $m[1] . ' ';
-                break;
+            // Determine indentation of the declaration line
+            preg_match('/^(\s*)/', $declarationLineContent, $matches);
+            $indentation = $matches[1];
+
+            // Check if there's already a docblock before this line (look back up to 5 lines)
+            $hasDocblock = false;
+            for ($i = 1; $i <= 5; $i++) {
+                if ($line - $i > 0) {
+                    $prevLine = $lines[$line - $i - 1];
+                    if (strpos($prevLine, '/**') !== false) {
+                        $hasDocblock = true;
+                        break;
+                    }
+                }
             }
-        }
 
-        // Insert @since line before */
-        $newDocblock = '';
-        for ($i = 0; $i < count($lines); $i++) {
-            if (preg_match('/^\s*\*\//', $lines[$i])) {
-                $newDocblock .= $prefix . '@since 2.0.0' . "\n";
+            if ($hasDocblock) {
+                // Already has a docblock, skip this fix
+                return $content;
             }
-            $newDocblock .= $lines[$i] . "\n";
+
+            // Create new docblock
+            $newDocblockContent = $indentation . "/**\n";
+            $newDocblockContent .= $indentation . " * " . ucfirst($target) . " " . $name . "\n";
+            $newDocblockContent .= $indentation . " *\n";
+            $newDocblockContent .= $indentation . " * @since 2.0.0\n";
+            $newDocblockContent .= $indentation . " */";
+
+            // Insert the new docblock before the declaration line
+            array_splice($lines, $line - 1, 0, $newDocblockContent);
+
+            return implode("\n", $lines);
+        } else {
+            // Docblock exists but is missing @since tag, insert into existing docblock
+            $lines = explode("\n", $docblock);
+            $prefix = ' * ';
+
+            for ($i = count($lines) - 2; $i >= 0; $i--) {
+                $line_content = $lines[$i];
+                if (preg_match('/^(\s*\*)/', $line_content, $m)) {
+                    $prefix = $m[1] . ' ';
+                    break;
+                }
+            }
+
+            $newDocblock = '';
+            foreach ($lines as $line_content) {
+                if (preg_match('/^\s*\*\//', $line_content)) {
+                    $newDocblock .= $prefix . '@since 2.0.0' . "\n";
+                }
+                $newDocblock .= $line_content . "\n";
+            }
+            $newDocblock = rtrim($newDocblock, "\n");
+
+            return str_replace($docblock, $newDocblock, $content);
         }
-
-        // Remove trailing newline if exists
-        $newDocblock = rtrim($newDocblock, "\n");
-
-        return str_replace($docblock, $newDocblock, $content);
     }
 }

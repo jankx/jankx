@@ -107,6 +107,8 @@ class CodingStandardCommand extends WP_CLI_Command
     {
         $this->issueFixers = [
             'missing_since_tag' => new \Jankx\CLI\Fixers\MissingSinceTagFixer(),
+            'unsanitized_input' => new \Jankx\CLI\Fixers\UnsanitizedInputFixer(),
+            'improper_exit' => new \Jankx\CLI\Fixers\ImproperExitFixer(),
         ];
     }
 
@@ -165,7 +167,7 @@ class CodingStandardCommand extends WP_CLI_Command
      * : Check a specific file (overrides path parameter)
      *
      * [--exclude=<exclude>]
-     * : Comma-separated list of paths to exclude (default: vendor,tests,node_modules)
+     * : Comma-separated list of paths to exclude (default: vendor,tests,node_modules,coverage)
      *
      * [--verbose]
      * : Show detailed output
@@ -173,16 +175,19 @@ class CodingStandardCommand extends WP_CLI_Command
      * [--format=<format>]
      * : Output format (table, csv, json) (default: table)
      *
-     * [--per-file]
-     * : Show results grouped by file (print after each file)
+     * [--table]
+     * : Show results in table format (overrides --per-file)
      *
      * ## EXAMPLES
      *
-     *     # Check coding standards in current directory
+     *     # Check coding standards in current directory (per-file mode)
      *     wp jankx code
      *
-     *     # Check coding standards in specific path
+     *     # Check coding standards in specific path (per-file mode)
      *     wp jankx code includes/Jankx
+     *
+     *     # Show results in table format
+     *     wp jankx code --table
      *
      *     # Fix coding standards automatically
      *     wp jankx code --fix
@@ -205,7 +210,7 @@ class CodingStandardCommand extends WP_CLI_Command
      *     # Include all directories (no excludes)
      *     wp jankx code --exclude=
      *
-     *     # Show results per file
+     *     # Show results per file (default mode)
      *     wp jankx code --per-file
      *
      * @since 2.0.0
@@ -218,11 +223,11 @@ class CodingStandardCommand extends WP_CLI_Command
         $exclude = isset($assoc_args['exclude']) ? explode(',', $assoc_args['exclude']) : [];
         $verbose = isset($assoc_args['verbose']);
         $format = isset($assoc_args['format']) ? $assoc_args['format'] : 'table';
-        $perFile = isset($assoc_args['per-file']);
+        $tableMode = isset($assoc_args['table']);
 
         // Mặc định loại bỏ vendor, tests, node_modules nếu không có exclude
         if (empty($exclude)) {
-            $exclude = ['vendor', 'tests', 'node_modules'];
+            $exclude = ['vendor', 'tests', 'node_modules', 'coverage'];
         }
 
         // Header với thông tin chi tiết
@@ -245,7 +250,7 @@ class CodingStandardCommand extends WP_CLI_Command
         WP_CLI::log("⚙️  Mode: " . ($fix ? 'FIX' : 'CHECK'));
         WP_CLI::log("📊 Format: " . strtoupper($format));
         WP_CLI::log("🔍 Verbose: " . ($verbose ? 'YES' : 'NO'));
-        WP_CLI::log("📋 Per-file: " . ($perFile ? 'YES' : 'NO'));
+        WP_CLI::log("📋 Display: " . ($tableMode ? 'TABLE' : 'PER-FILE'));
         WP_CLI::log(str_repeat('-', 80));
 
         if ($fix) {
@@ -260,11 +265,11 @@ class CodingStandardCommand extends WP_CLI_Command
             $this->checkSingleFile($file, $fix, $verbose);
         } else {
             WP_CLI::log("🚀 Starting directory scan...");
-            if ($perFile) {
-                $this->scanDirectoryPerFile($path, $exclude, $fix, $verbose);
-            } else {
+            if ($tableMode) {
                 $this->scanDirectory($path, $exclude, $fix, $verbose);
                 $this->displayResults($format);
+            } else {
+                $this->scanDirectoryPerFile($path, $exclude, $fix, $verbose);
             }
         }
 
@@ -557,6 +562,11 @@ class CodingStandardCommand extends WP_CLI_Command
         // Loading: Analyzing fixable issues
         $this->showSpinner("Analyzing " . count($fixableIssues) . " fixable issues...");
 
+        // Sort issues by line number in descending order to avoid line number conflicts
+        usort($fixableIssues, function($a, $b) {
+            return $b['fix']['line'] - $a['fix']['line'];
+        });
+
         foreach ($fixableIssues as $index => $issue) {
             $this->showSpinner("Fixing issue " . ($index + 1) . "/" . count($fixableIssues) . "...");
             $updatedContent = $this->applyFix($updatedContent, $issue['fix']);
@@ -586,14 +596,17 @@ class CodingStandardCommand extends WP_CLI_Command
         $fixType = $fix['type'];
 
         if (isset($this->issueFixers[$fixType])) {
+            WP_CLI::debug("Applying fixer for type: $fixType");
             return $this->issueFixers[$fixType]->fix($content, $fix);
         }
 
         // Fallback to old logic for backward compatibility
         if ($fixType === 'add_since_tag') {
+            WP_CLI::debug("Using fallback addSinceTag fixer");
             return $this->addSinceTag($content, $fix);
         }
 
+        WP_CLI::debug("No fixer found for type: $fixType");
         return $content;
     }
 
@@ -709,6 +722,20 @@ class CodingStandardCommand extends WP_CLI_Command
                     $issueIcon = '📁'; // File icon
                 } elseif (strpos($issue['type'], 'abspath') !== false || strpos($issue['type'], 'constant') !== false) {
                     $issueIcon = '🔧'; // Constants icon
+                } elseif (strpos($issue['type'], 'since') !== false) {
+                    $issueIcon = '📅'; // Since tag icon
+                } elseif (strpos($issue['type'], 'unsanitized') !== false) {
+                    $issueIcon = '🧼'; // Sanitization icon
+                } elseif (strpos($issue['type'], 'improper') !== false) {
+                    $issueIcon = '⚠️'; // Improper usage icon
+                } elseif (strpos($issue['type'], 'missing') !== false) {
+                    $issueIcon = '❌'; // Missing icon
+                } elseif (strpos($issue['type'], 'unsafe') !== false) {
+                    $issueIcon = '🚨'; // Unsafe icon
+                } elseif (strpos($issue['type'], 'deprecated') !== false) {
+                    $issueIcon = '⏰'; // Deprecated icon
+                } elseif (strpos($issue['type'], 'hardcoded') !== false) {
+                    $issueIcon = '🔒'; // Hardcoded icon
                 }
 
                 $table[] = [
@@ -820,6 +847,20 @@ class CodingStandardCommand extends WP_CLI_Command
                 $issueIcon = '📁'; // File icon
             } elseif (strpos($issue['type'], 'abspath') !== false || strpos($issue['type'], 'constant') !== false) {
                 $issueIcon = '🔧'; // Constants icon
+            } elseif (strpos($issue['type'], 'since') !== false) {
+                $issueIcon = '📅'; // Since tag icon
+            } elseif (strpos($issue['type'], 'unsanitized') !== false) {
+                $issueIcon = '🧼'; // Sanitization icon
+            } elseif (strpos($issue['type'], 'improper') !== false) {
+                $issueIcon = '⚠️'; // Improper usage icon
+            } elseif (strpos($issue['type'], 'missing') !== false) {
+                $issueIcon = '❌'; // Missing icon
+            } elseif (strpos($issue['type'], 'unsafe') !== false) {
+                $issueIcon = '🚨'; // Unsafe icon
+            } elseif (strpos($issue['type'], 'deprecated') !== false) {
+                $issueIcon = '⏰'; // Deprecated icon
+            } elseif (strpos($issue['type'], 'hardcoded') !== false) {
+                $issueIcon = '🔒'; // Hardcoded icon
             }
 
             WP_CLI::log(sprintf("   %s %s [Line %d] %s (%s): %s",
