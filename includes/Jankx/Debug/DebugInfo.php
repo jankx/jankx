@@ -666,6 +666,7 @@ class DebugInfo
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
             gap: 10px !important;
             margin-top: 10px !important;
+            margin-bottom: 10px !important;
         }
 
         body:not(.wp-admin) .jankx-debug-metric,
@@ -725,20 +726,7 @@ class DebugInfo
             color: #ffffff !important;
         }
 
-        body:not(.wp-admin) .jankx-debug-mini-stats,
-        body.wp-admin:not(.gutenberg-editor-page) .jankx-debug-mini-stats {
-            display: flex !important;
-            gap: 20px !important;
-            font-size: 11px !important;
-            opacity: 0.9 !important;
-        }
 
-        body:not(.wp-admin) .jankx-debug-mini-stat,
-        body.wp-admin:not(.gutenberg-editor-page) .jankx-debug-mini-stat {
-            display: flex !important;
-            align-items: center !important;
-            gap: 5px !important;
-        }
 
         /* Hide debug panel in Gutenberg editor to avoid conflicts */
         body.gutenberg-editor-page #jankx-debug-info,
@@ -917,6 +905,43 @@ class DebugInfo
         $html .= '</div>';
 
         $html .= '</div>'; // End grid
+
+        // Gutenberg Blocks Info
+        $blocksInfo = self::getGutenbergBlocksInfo();
+        if ($blocksInfo['is_gutenberg_editor'] || $blocksInfo['is_gutenberg_frontend'] || $blocksInfo['total_blocks'] > 0) {
+            $html .= '<div class="jankx-debug-section">';
+            $html .= '<div class="jankx-debug-section-title">🧱 Gutenberg Blocks</div>';
+            $html .= '<ul class="jankx-debug-list">';
+
+            if ($blocksInfo['is_gutenberg_editor']) {
+                $html .= '<li>Editor Mode: ✅ Gutenberg Editor</li>';
+            }
+
+            if ($blocksInfo['is_gutenberg_frontend']) {
+                $html .= '<li>Frontend: ✅ Gutenberg Content</li>';
+            }
+
+            if ($blocksInfo['total_blocks'] > 0) {
+                $html .= '<li>Total Blocks: ' . $blocksInfo['total_blocks'] . '</li>';
+
+                if (!empty($blocksInfo['block_types'])) {
+                    $html .= '<li>Block Types:';
+                    $blockTypeCounts = [];
+                    foreach ($blocksInfo['block_types'] as $blockType => $count) {
+                        $blockTypeCounts[] = $blockType . ' (' . $count . ')';
+                    }
+                    $html .= ' ' . implode(', ', $blockTypeCounts);
+                    $html .= '</li>';
+                }
+            }
+
+            if (isset($blocksInfo['template_parts'])) {
+                $html .= '<li>Template Parts: ' . $blocksInfo['template_parts'] . '</li>';
+            }
+
+            $html .= '</ul>';
+            $html .= '</div>';
+        }
 
         // Database Query Details
         $queryInfo = self::getQueryCountSinceInit();
@@ -1126,6 +1151,7 @@ class DebugInfo
             'cache_info' => self::$cacheInfo,
             'plugin_cache_info' => self::$pluginCacheInfo,
             'object_cache_info' => self::$objectCacheInfo,
+            'gutenberg_blocks' => self::getGutenbergBlocksInfo(),
             'php_version' => PHP_VERSION,
             'server_software' => $_SERVER['SERVER_SOFTWARE'] ?? 'Unknown'
         ];
@@ -1151,6 +1177,68 @@ class DebugInfo
     public static function debugQueryCountingForTesting()
     {
         return self::debugQueryCounting();
+    }
+
+    /**
+     * Get Gutenberg blocks count
+     *
+     * @return array
+     * @since 2.0.1
+     */
+    private static function getGutenbergBlocksInfo()
+    {
+        $blocksInfo = [
+            'total_blocks' => 0,
+            'block_types' => [],
+            'is_gutenberg_editor' => false,
+            'is_gutenberg_frontend' => false
+        ];
+
+        // Check if we're in Gutenberg editor
+        if (is_admin() && function_exists('get_current_screen')) {
+            $screen = get_current_screen();
+            if ($screen && method_exists($screen, 'is_block_editor') && $screen->is_block_editor()) {
+                $blocksInfo['is_gutenberg_editor'] = true;
+            }
+        }
+
+        // Check if we're rendering Gutenberg content on frontend
+        if (has_blocks(get_the_content()) || has_blocks(get_the_excerpt())) {
+            $blocksInfo['is_gutenberg_frontend'] = true;
+
+            // Get post content
+            $content = get_the_content();
+            if (!empty($content)) {
+                // Parse blocks
+                $blocks = parse_blocks($content);
+
+                // Count blocks
+                $blocksInfo['total_blocks'] = count($blocks);
+
+                // Count block types
+                $blockTypes = [];
+                foreach ($blocks as $block) {
+                    if (!empty($block['blockName'])) {
+                        $blockName = $block['blockName'];
+                        if (!isset($blockTypes[$blockName])) {
+                            $blockTypes[$blockName] = 0;
+                        }
+                        $blockTypes[$blockName]++;
+                    }
+                }
+                $blocksInfo['block_types'] = $blockTypes;
+            }
+        }
+
+        // Check for template parts
+        if (function_exists('get_block_template_parts')) {
+            $templateParts = get_block_template_parts();
+            if (!empty($templateParts)) {
+                $blocksInfo['template_parts'] = count($templateParts);
+            }
+        }
+
+        return $blocksInfo;
     }
 
     /**
