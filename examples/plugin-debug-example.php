@@ -29,7 +29,7 @@ class JankxDebugIntegrationExample {
     public function __construct() {
         // Only add debug info if Jankx debug is enabled
         if (defined('JANKX_DEBUG') && JANKX_DEBUG) {
-            add_action('jankx_debug_info', [$this, 'addDebugInfo']);
+            add_action('jankx/debug/add_info', [$this, 'addDebugInfo']);
         }
 
         // Add some example data for demonstration
@@ -152,7 +152,7 @@ new JankxDebugIntegrationExample();
 /**
  * Alternative example using filter hook
  */
-add_filter('jankx_debug_info', function($debugInfo) {
+add_filter('jankx/debug/modify_info', function($debugInfo) {
     // Only add if Jankx debug is enabled
     if (defined('JANKX_DEBUG') && JANKX_DEBUG) {
         $debugInfo['Filter Hook Example'] = 'Using filter hook instead of action hook';

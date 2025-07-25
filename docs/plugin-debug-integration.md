@@ -6,7 +6,7 @@ Jankx Debug System provides action hooks and filters that allow plugins to add t
 
 ## Available Hooks
 
-### 1. Action Hook: `jankx_debug_info`
+### 1. Action Hook: `jankx/debug/add_info`
 
 This action hook allows plugins to add their debug information directly to the debug array.
 
@@ -14,13 +14,13 @@ This action hook allows plugins to add their debug information directly to the d
 /**
  * Add plugin debug info using action hook
  */
-add_action('jankx_debug_info', function(&$debugInfo) {
+add_action('jankx/debug/add_info', function(&$debugInfo) {
     // Add your debug info
     $debugInfo['My Plugin'] = 'Version 1.0.0, Active Features: 5';
 });
 ```
 
-### 2. Filter Hook: `jankx_debug_info`
+### 2. Filter Hook: `jankx/debug/modify_info`
 
 This filter hook allows plugins to modify the debug information array.
 
@@ -28,7 +28,7 @@ This filter hook allows plugins to modify the debug information array.
 /**
  * Add plugin debug info using filter hook
  */
-add_filter('jankx_debug_info', function($debugInfo) {
+add_filter('jankx/debug/modify_info', function($debugInfo) {
     $debugInfo['My Plugin'] = 'Version 1.0.0, Active Features: 5';
     return $debugInfo;
 });
@@ -44,7 +44,7 @@ use Jankx\Debug\DebugInfo;
 /**
  * Add plugin debug info using helper method
  */
-add_action('jankx_debug_info', function(&$debugInfo) {
+add_action('jankx/debug/add_info', function(&$debugInfo) {
     DebugInfo::addPluginDebugInfo($debugInfo, 'My Plugin', 'Version 1.0.0, Active Features: 5');
 });
 ```
@@ -71,7 +71,7 @@ class MyDebugPlugin {
     public function __construct() {
         // Only add debug info if Jankx debug is enabled
         if (defined('JANKX_DEBUG') && JANKX_DEBUG) {
-            add_action('jankx_debug_info', [$this, 'addDebugInfo']);
+            add_action('jankx/debug/add_info', [$this, 'addDebugInfo']);
         }
     }
 
