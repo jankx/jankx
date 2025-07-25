@@ -164,7 +164,7 @@ class MyPlugin {
     public function __construct() {
         // Chỉ thêm debug info khi JANKX_DEBUG được kích hoạt
         if (defined('JANKX_DEBUG') && JANKX_DEBUG) {
-            add_action('jankx_debug_info', [$this, 'addDebugInfo']);
+            add_action('jankx/debug/add_info', [$this, 'addDebugInfo']);
         }
     }
 

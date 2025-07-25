@@ -61,14 +61,14 @@ if (!defined('JANKX_DEBUG')) {
 ### 1. **Thêm Debug Info**
 ```php
 // Sử dụng action hook
-add_action('jankx_debug_info', function(&$debugInfo) {
+add_action('jankx/debug/add_info', function(&$debugInfo) {
     $debugInfo['My Plugin'] = 'Version 1.0.0, Active Features: 5';
 });
 
 // Sử dụng helper method
 use Jankx\Debug\DebugInfo;
 
-add_action('jankx_debug_info', function(&$debugInfo) {
+add_action('jankx/debug/add_info', function(&$debugInfo) {
     DebugInfo::addPluginDebugInfo($debugInfo, 'My Plugin', 'Version 1.0.0');
 });
 ```
@@ -78,7 +78,7 @@ add_action('jankx_debug_info', function(&$debugInfo) {
 class MyPlugin {
     public function __construct() {
         if (defined('JANKX_DEBUG') && JANKX_DEBUG) {
-            add_action('jankx_debug_info', [$this, 'addDebugInfo']);
+            add_action('jankx/debug/add_info', [$this, 'addDebugInfo']);
         }
     }
 
