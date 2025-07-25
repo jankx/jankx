@@ -89,6 +89,7 @@ Jankx 2.0 features a modern layered architecture designed for optimal performanc
 - **Facade Pattern**: Clean, expressive API for common operations
 - **Comprehensive Logging**: Built-in logging system with multiple levels
 - **Error Handling**: Graceful error handling with detailed reporting
+- **Debug System**: Integrated debug panel for performance monitoring and troubleshooting
 
 ## 🧪 Testing & Quality Assurance
 
@@ -205,6 +206,10 @@ Comprehensive documentation is available at [https://jankx.github.io](https://ja
 - [Service Container](./docs/architecture/service-container.md)
 - [Deferred Service Context](./docs/architecture/deferred-service-context.md)
 
+### Debug System
+- [Debug System Guide](./docs/debug-system.md) - Complete guide to Jankx Debug System
+- [Plugin Debug Integration](./docs/plugin-debug-integration.md) - How to integrate debug info for plugins
+
 ### Development Guides
 - [Best Practices](./docs/development/best-practices.md)
 - [Testing](./docs/development/testing.md)
@@ -277,6 +282,25 @@ class CustomBootstrapper extends AbstractBootstrapper
         // Your initialization logic here
     }
 }
+```
+
+### Using Debug System
+```php
+<?php
+// Enable debug system in wp-config.php
+define('JANKX_DEBUG', true);
+
+// Add custom debug info for plugins
+add_action('jankx_debug_info', function(&$debugInfo) {
+    $debugInfo['My Plugin'] = 'Version 1.0.0, Active Features: 5';
+});
+
+// Or use helper method
+use Jankx\Debug\DebugInfo;
+
+add_action('jankx_debug_info', function(&$debugInfo) {
+    DebugInfo::addPluginDebugInfo($debugInfo, 'My Plugin', 'Version 1.0.0');
+});
 ```
 
 ## 🔄 Migration Guide

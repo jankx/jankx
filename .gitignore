@@ -30,3 +30,7 @@ logs/
 # Temporary files
 *.tmp
 *.temp
+
+
+# Jankx files
+releases/*

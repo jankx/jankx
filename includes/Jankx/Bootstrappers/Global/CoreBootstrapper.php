@@ -36,6 +36,10 @@ final class CoreBootstrapper extends AbstractBootstrapper
      */
     public function bootstrap(Container $container): void
     {
+        // Initialize debug information if JANKX_DEBUG is enabled
+        if (defined('JANKX_DEBUG') && JANKX_DEBUG) {
+            \Jankx\Debug\DebugInfo::init();
+        }
 
         // Đăng ký dịch vụ dùng chung (shared)
         // ContextualServiceRegistry::register(ContextualServiceRegistry::SHARED, GoogleFontsServiceProvider::class);

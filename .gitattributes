@@ -1,2 +1,50 @@
+# Development files - exclude from release
 /.circleci export-ignore
 /.travis.yml export-ignore
+/tests export-ignore
+/examples export-ignore
+/coverage-report export-ignore
+/TESTING.md export-ignore
+/phpunit.xml export-ignore
+/tests export-ignore
+/docs export-ignore
+/docker-compose.yml export-ignore
+/Dockerfile export-ignore
+/package-lock.json export-ignore
+/composer.lock export-ignore
+/.github export-ignore
+/.gitignore export-ignore
+/.gitattributes export-ignore
+
+# IDE and Editor files
+.vscode/ export-ignore
+.idea/ export-ignore
+*.swp export-ignore
+*.swo export-ignore
+*~ export-ignore
+
+# OS generated files
+.DS_Store export-ignore
+Thumbs.db export-ignore
+ehthumbs.db export-ignore
+Desktop.ini export-ignore
+
+# Logs and temporary files
+*.log export-ignore
+logs/ export-ignore
+*.tmp export-ignore
+*.temp export-ignore
+
+# Node modules and build artifacts
+node_modules/ export-ignore
+bower_components/ export-ignore
+.sass-cache/ export-ignore
+/style.js* export-ignore
+
+# PHPUnit and testing artifacts
+coverage.xml export-ignore
+.phpunit.cache/ export-ignore
+.phpunit.result.cache export-ignore
+
+# Jankx structures
+releases/ export-ignore

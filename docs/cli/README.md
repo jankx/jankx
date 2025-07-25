@@ -1,6 +1,51 @@
-# Jankx WordPress CLI Commands
+# Jankx CLI Documentation
+
+> **Complete documentation cho Jankx WordPress CLI Commands**
 
 Jankx framework cung cấp các WordPress CLI commands để quản lý và tương tác với framework một cách dễ dàng.
+
+## 📚 Documentation Index
+
+### 🚀 Getting Started
+- **[Commands Reference](commands-reference.md)** - Complete reference cho tất cả commands
+- **[Release Command](release-command.md)** - Chi tiết về `wp jankx release`
+
+### 📋 Individual Commands
+- **[Release Command](release-command.md)** - Chi tiết về `wp jankx release`
+- **[Code Command](code-command.md)** - Chi tiết về `wp jankx code`
+- **[Generate Block Command](generate-block-command.md)** - Chi tiết về `wp jankx generate-block`
+- **[Create Bootstrapper Command](create-bootstrapper-command.md)** - Chi tiết về `wp jankx create-bootstrapper`
+
+### 🔧 Development
+- **[Development Guide](development.md)** - Hướng dẫn phát triển CLI commands
+- **[Examples](examples.md)** - Ví dụ sử dụng các commands
+- **[Troubleshooting](troubleshooting.md)** - Xử lý lỗi thường gặp
+
+## 🚀 Quick Start
+
+### Installation
+```bash
+# Đảm bảo WP-CLI đã được cài đặt
+wp --version
+
+# Kiểm tra Jankx CLI commands
+wp jankx --help
+```
+
+### Basic Usage
+```bash
+# Check coding standards
+wp jankx code
+
+# Generate a new block
+wp jankx generate-block hero-section
+
+# Create a new bootstrapper
+wp jankx create-bootstrapper CustomFeature
+
+# Create release package
+wp jankx release --dry-run
+```
 
 ## 📋 **Requirements**
 
@@ -12,6 +57,12 @@ Jankx framework cung cấp các WordPress CLI commands để quản lý và tư�
 
 ### 📋 **Table of Contents**
 
+#### **Development Commands**
+- [`wp jankx code`](#wp-jankx-code) - Check và fix WordPress Coding Standards
+- [`wp jankx generate-block`](#wp-jankx-generate-block) - Tạo Gutenberg blocks mới
+- [`wp jankx create-bootstrapper`](#wp-jankx-create-bootstrapper) - Tạo bootstrapper mới
+- [`wp jankx release`](#wp-jankx-release) - Tạo release package cho framework
+
 #### **Information Commands**
 - [`wp jankx info`](#wp-jankx-info) - Hiển thị thông tin framework và môi trường
 - [`wp jankx version`](#wp-jankx-version) - Hiển thị phiên bản framework
@@ -22,11 +73,153 @@ Jankx framework cung cấp các WordPress CLI commands để quản lý và tư�
 - [`wp jankx security`](#wp-jankx-security) - Kiểm tra bảo mật
 - [`wp jankx debug`](#wp-jankx-debug) - Debug và troubleshooting
 
+## 📋 Available Commands
+
+| Command | Description | Status |
+|---------|-------------|--------|
+| `wp jankx code` | Check WordPress Coding Standards | ✅ Implemented |
+| `wp jankx generate-block` | Tạo Gutenberg blocks | ✅ Implemented |
+| `wp jankx create-bootstrapper` | Tạo bootstrappers | ✅ Implemented |
+| `wp jankx release` | Tạo release package | ✅ Implemented |
+| `wp jankx info` | Hiển thị thông tin framework | 🔄 Planned |
+| `wp jankx version` | Hiển thị phiên bản | 🔄 Planned |
+
+---
+
+### **Development Commands**
+
+#### `wp jankx code` {#wp-jankx-code}
+Check và fix WordPress Coding Standards:
+
+```bash
+wp jankx code [--fix] [--path=<path>] [--exclude=<exclude>] [--verbose] [--format=<format>]
+```
+
+**Options:**
+- `--fix` - Tự động fix các issues
+- `--path=<path>` - Đường dẫn cụ thể để check
+- `--exclude=<exclude>` - Loại trừ paths (default: vendor,tests,node_modules,coverage)
+- `--verbose` - Hiển thị thông tin chi tiết
+- `--format=<format>` - Output format (table, csv, json)
+
+**Examples:**
+```bash
+# Check coding standards
+wp jankx code
+
+# Fix issues automatically
+wp jankx code --fix
+
+# Check specific directory
+wp jankx code --path=includes/Jankx/Kernel
+
+# Exclude specific paths
+wp jankx code --exclude=vendor,tests --format=json
+```
+
+#### `wp jankx generate-block` {#wp-jankx-generate-block}
+Tạo Gutenberg block mới:
+
+```bash
+wp jankx generate-block <block-name> [--title=<title>] [--description=<description>]
+```
+
+**Options:**
+- `<block-name>` - Tên block (required)
+- `--title=<title>` - Tiêu đề block
+- `--description=<description>` - Mô tả block
+
+**Examples:**
+```bash
+# Tạo block đơn giản
+wp jankx generate-block hero-section
+
+# Tạo block với options
+wp jankx generate-block feature-grid --title="Feature Grid" --description="Display features in a grid layout"
+```
+
+#### `wp jankx create-bootstrapper` {#wp-jankx-create-bootstrapper}
+Tạo bootstrapper mới:
+
+```bash
+wp jankx create-bootstrapper <bootstrapper-name> [--context=<context>] [--priority=<priority>] [--description=<description>]
+```
+
+**Options:**
+- `<bootstrapper-name>` - Tên bootstrapper (required)
+- `--context=<context>` - Context (global, frontend, admin, api, cli, gutenberg)
+- `--priority=<priority>` - Priority (default: 10)
+- `--description=<description>` - Mô tả bootstrapper
+
+**Examples:**
+```bash
+# Tạo global bootstrapper
+wp jankx create-bootstrapper CustomFeature
+
+# Tạo frontend bootstrapper với priority
+wp jankx create-bootstrapper ThirdPartyIntegration --context=frontend --priority=15
+```
+
+#### `wp jankx release` {#wp-jankx-release}
+Tạo release package cho Jankx Framework:
+
+```bash
+wp jankx release [--version=<version>] [--output=<output>] [--force] [--dry-run]
+```
+
+**Options:**
+- `--version=<version>` - Version number (auto-detect từ style.css)
+- `--output=<output>` - Output directory (default: ./releases)
+- `--force` - Force overwrite existing file
+- `--dry-run` - Show files sẽ được include mà không tạo package
+
+**Examples:**
+```bash
+# Tạo release với auto-detect version
+wp jankx release
+
+# Tạo release với version cụ thể
+wp jankx release --version=2.0.0
+
+# Dry run để xem files
+wp jankx release --dry-run
+
+# Tạo release với output tùy chỉnh
+wp jankx release --output=/path/to/releases
+```
+
+**Output:**
+```
+🎯 Creating Jankx Framework Release Package
+📦 Theme: bookix
+🏷️  Version: 2.0.0
+📁 Output: ./releases
+
+📖 Reading exclude patterns from .gitattributes...
+   - Excluding: /.circleci
+   - Excluding: /.travis.yml
+   - Excluding: /tests
+   - Excluding: /examples
+   - Excluding: /coverage-report
+   - Excluding: /docs
+   - Including: /vendor (vendor directory)
+📋 Total exclude patterns loaded: 25
+
+Success: Release package created successfully!
+📦 Package: ./releases/bookix-2.0.0.zip
+📊 Size: 2.5 MB
+📄 Files included: 156
+```
+
+**Important Notes:**
+- Command đọc `.gitattributes` để xác định files cần loại trừ từ `export-ignore` patterns
+- **Vendor directory được include** (không loại trừ) để đảm bảo PHP dependencies hoạt động đúng
+- Sử dụng `--dry-run` để preview files trước khi tạo package
+- Command hiển thị chi tiết các patterns được load từ `.gitattributes`
+
 ---
 
 ### **Framework Information**
-
-#### `wp jankx info` {#wp-jankx-info}
 Hiển thị thông tin chi tiết về framework và môi trường:
 
 ```bash
@@ -65,6 +258,12 @@ wp jankx <command> [options]
 ```
 
 ### **Command Categories**
+
+#### **Development Commands**
+- [`code`](#wp-jankx-code) - Check và fix WordPress Coding Standards
+- [`generate-block`](#wp-jankx-generate-block) - Tạo Gutenberg blocks mới
+- [`create-bootstrapper`](#wp-jankx-create-bootstrapper) - Tạo bootstrapper mới
+- [`release`](#wp-jankx-release) - Tạo release package cho framework
 
 #### **Information Commands**
 - [`info`](#wp-jankx-info) - Hiển thị thông tin framework và môi trường
@@ -123,6 +322,33 @@ class CustomJankxCommand
 \WP_CLI::add_command('jankx custom', 'CustomJankxCommand');
 ```
 
+### **Available Commands Implementation**
+
+Tất cả commands hiện có được implement trong:
+
+- **`includes/Jankx/CLI/Commands/CodingStandardCommand.php`** - Check coding standards
+- **`includes/Jankx/CLI/Commands/GenerateBlockCommand.php`** - Generate Gutenberg blocks
+- **`includes/Jankx/CLI/Commands/CreateBootstrapperCommand.php`** - Create bootstrappers
+- **`includes/Jankx/CLI/Commands/ReleaseCommand.php`** - Create release packages
+
+Commands được đăng ký trong **`includes/Jankx/CLI/CLICommands.php`** và load thông qua **`includes/Jankx/Providers/CLIServiceProvider.php`**.
+
+## 📊 Command Status
+
+### ✅ Implemented Commands
+- `wp jankx code` - Check coding standards
+- `wp jankx generate-block` - Generate blocks
+- `wp jankx create-bootstrapper` - Create bootstrappers
+- `wp jankx release` - Create release packages
+
+### 🔄 Planned Commands
+- `wp jankx info` - Framework information
+- `wp jankx version` - Version display
+- `wp jankx cache` - Cache management
+- `wp jankx optimize` - Performance optimization
+- `wp jankx security` - Security scanning
+- `wp jankx debug` - Debug information
+
 ## 📊 **Environment Information**
 
 ### **Framework Details**
@@ -168,10 +394,10 @@ wp jankx info --debug
 
 ## 📚 **Related Documentation**
 
-- [Jankx Framework Documentation](../README.md)
-- [Migration Guide](../migration-guide.md)
-- [Development Best Practices](../development/best-practices.md)
-- [Performance Optimization](../performance/README.md)
+- **[Framework Overview](../README.md)** - Tổng quan về Jankx Framework
+- **[Development Best Practices](../development/best-practices.md)** - Best practices
+- **[Performance Optimization](../performance/README.md)** - Performance guides
+- **[Migration Guide](../migration-guide.md)** - Migration từ version cũ
 
 ## 🔗 **Integration Points**
 
@@ -209,6 +435,18 @@ wp jankx version
 # Get detailed information
 wp jankx info
 
+# Check coding standards
+wp jankx code
+
+# Generate a new block
+wp jankx generate-block hero-section
+
+# Create a new bootstrapper
+wp jankx create-bootstrapper CustomFeature
+
+# Create release package
+wp jankx release
+
 # With debug mode
 wp jankx info --debug
 ```
@@ -220,17 +458,28 @@ wp core version && wp jankx version
 
 # Get system information
 wp jankx info | grep "PHP Version"
+
+# Check coding standards for specific path
+wp jankx code --path=includes/Jankx/Kernel
+
+# Create release package with dry run
+wp jankx release --dry-run
 ```
 
 ## 🤝 **Contributing**
 
-Để đóng góp vào CLI commands:
+Để đóng góp vào CLI documentation:
 
 1. **Fork repository**
 2. **Create feature branch**
-3. **Implement command**
-4. **Add tests**
-5. **Submit pull request**
+3. **Update documentation**
+4. **Submit pull request**
+
+### **Documentation Guidelines**
+- Sử dụng Markdown format
+- Bao gồm examples và use cases
+- Cung cấp troubleshooting guides
+- Cập nhật khi có commands mới
 
 ### **Command Guidelines**
 - Sử dụng namespace `jankx`
