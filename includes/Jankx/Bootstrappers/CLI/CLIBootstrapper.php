@@ -4,7 +4,7 @@ namespace Jankx\Bootstrappers\CLI;
 
 use Illuminate\Container\Container;
 use Jankx\Bootstrappers\AbstractBootstrapper;
-use Jankx\CLI\CLICommands;
+use Jankx\Providers\CLIServiceProvider;
 
 /**
  * CLI Bootstrapper
@@ -47,8 +47,10 @@ class CLIBootstrapper extends AbstractBootstrapper
      */
     public function bootstrap(Container $container): void
     {
-        // Register Jankx CLI commands
-        CLICommands::register();
+        // Register CLI service provider
+        $cliServiceProvider = new CLIServiceProvider($container);
+        $cliServiceProvider->register();
+        $cliServiceProvider->boot();
 
         // Fire action for other CLI integrations
         do_action('jankx/bootstrapper/cli/loaded', $container);
