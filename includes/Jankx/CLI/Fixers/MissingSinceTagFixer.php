@@ -2,6 +2,8 @@
 
 namespace Jankx\CLI\Fixers;
 
+use Jankx\Jankx;
+
 /**
  * Fixer for missing @since tags
  *
@@ -60,7 +62,7 @@ class MissingSinceTagFixer implements IssueFixerInterface
             $newDocblockContent = $indentation . "/**\n";
             $newDocblockContent .= $indentation . " * " . ucfirst($target) . " " . $name . "\n";
             $newDocblockContent .= $indentation . " *\n";
-            $newDocblockContent .= $indentation . " * @since 2.0.0\n";
+            $newDocblockContent .= $indentation . " * @since " . Jankx::getFrameworkVersion() . "\n";
             $newDocblockContent .= $indentation . " */";
 
             // Insert the new docblock before the declaration line
@@ -83,7 +85,7 @@ class MissingSinceTagFixer implements IssueFixerInterface
             $newDocblock = '';
             foreach ($lines as $line_content) {
                 if (preg_match('/^\s*\*\//', $line_content)) {
-                    $newDocblock .= $prefix . '@since 2.0.0' . "\n";
+                    $newDocblock .= $prefix . '@since ' . Jankx::getFrameworkVersion() . "\n";
                 }
                 $newDocblock .= $line_content . "\n";
             }

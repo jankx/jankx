@@ -5,6 +5,7 @@ namespace Jankx\CLI\Commands;
 use WP_CLI;
 use WP_CLI_Command;
 use Jankx\CLI\Parser\PHPParser;
+use Jankx\Jankx;
 
 /**
  * WP CLI Command to check and fix WordPress Coding Standards
@@ -387,6 +388,11 @@ class CodingStandardCommand extends WP_CLI_Command
     }
 
     // Scan directory và show từng file (dùng cho --per-file)
+    /**
+     * Method scanDirectoryPerFile
+     *
+     * @since 2.0.0
+     */
     private function scanDirectoryPerFile($path, $exclude, $fix, $verbose)
     {
         if (!is_dir($path)) {
@@ -563,6 +569,11 @@ class CodingStandardCommand extends WP_CLI_Command
         $this->showSpinner("Analyzing " . count($fixableIssues) . " fixable issues...");
 
         // Sort issues by line number in descending order to avoid line number conflicts
+        /**
+         * Method showSpinner
+         *
+         * @since 2.0.0
+         */
         usort($fixableIssues, function($a, $b) {
             return $b['fix']['line'] - $a['fix']['line'];
         });
@@ -640,7 +651,7 @@ class CodingStandardCommand extends WP_CLI_Command
         $newDocblock = '';
         for ($i = 0; $i < count($lines); $i++) {
             if (preg_match('/^\s*\*\//', $lines[$i])) {
-                $newDocblock .= $prefix . '@since 2.0.0\n';
+                $newDocblock .= $prefix . '@since ' . Jankx::getFrameworkVersion() . "\n";
             }
             $newDocblock .= $lines[$i] . "\n";
         }
@@ -789,6 +800,11 @@ class CodingStandardCommand extends WP_CLI_Command
     }
 
     // Thêm hàm hiển thị kết quả cho từng file
+    /**
+     * Method displayFileResult
+     *
+     * @since 2.0.0
+     */
     private function displayFileResult($file, $fileIssues)
     {
         $issueCount = count($fileIssues);
