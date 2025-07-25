@@ -1,6 +1,11 @@
 <?php
 
+
 namespace Jankx\CLI\Commands;
+
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
 
 use WP_CLI;
 use WP_CLI_Command;
@@ -86,6 +91,7 @@ class CodingStandardCommand extends WP_CLI_Command
             'missing_since_tag' => new \Jankx\CLI\Checkers\MissingSinceTagChecker(),
             'improper_exit' => new \Jankx\CLI\Checkers\ExitUsageChecker(),
             'unsanitized_input' => new \Jankx\CLI\Checkers\SanitizationChecker(),
+            'missing_abspath_check' => new \Jankx\CLI\Checkers\ABSPATHChecker(),
             // TODO: Add other checkers when they are created
             // 'improper_wp_die' => new \Jankx\CLI\Checkers\WpDieUsageChecker(),
             // 'missing_nonce_verification' => new \Jankx\CLI\Checkers\NonceVerificationChecker(),
@@ -110,6 +116,7 @@ class CodingStandardCommand extends WP_CLI_Command
             'missing_since_tag' => new \Jankx\CLI\Fixers\MissingSinceTagFixer(),
             'unsanitized_input' => new \Jankx\CLI\Fixers\UnsanitizedInputFixer(),
             'improper_exit' => new \Jankx\CLI\Fixers\ImproperExitFixer(),
+            'missing_abspath_check' => new \Jankx\CLI\Fixers\ABSPATHCheckFixer(),
         ];
     }
 
