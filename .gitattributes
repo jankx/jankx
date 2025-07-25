@@ -45,3 +45,6 @@ bower_components/ export-ignore
 coverage.xml export-ignore
 .phpunit.cache/ export-ignore
 .phpunit.result.cache export-ignore
+
+# Jankx structures
+releases/ export-ignore

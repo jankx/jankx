@@ -6,6 +6,7 @@ use Jankx\CLI\CLICommands;
 use Jankx\CLI\Commands\CodingStandardCommand;
 use Jankx\CLI\Commands\GenerateBlockCommand;
 use Jankx\CLI\Commands\CreateBootstrapperCommand;
+use Jankx\CLI\Commands\ReleaseCommand;
 
 /**
  * CLI Service Provider
@@ -38,6 +39,10 @@ class CLIServiceProvider extends ServiceProvider
 
         $this->singleton('cli.command.create-bootstrapper', function ($container) {
             return new CreateBootstrapperCommand();
+        });
+
+        $this->singleton('cli.command.release', function ($container) {
+            return new ReleaseCommand();
         });
     }
 

@@ -31,6 +31,9 @@ class CLICommands
 
         // Register code command
         WP_CLI::add_command('jankx code', 'Jankx\\CLI\\Commands\\CodingStandardCommand');
+
+        // Register release command
+        WP_CLI::add_command('jankx release', 'Jankx\\CLI\\Commands\\ReleaseCommand');
     }
 
     /**
@@ -77,6 +80,17 @@ class CLICommands
                     'wp jankx code --fix',
                     'wp jankx code --path=includes/Jankx/Kernel',
                     'wp jankx code --exclude=vendor,tests --format=json'
+                ]
+            ],
+            'release' => [
+                'description' => 'Create release package for Jankx Framework',
+                'usage' => 'wp jankx release [--version=<version>] [--output=<output>] [--force] [--dry-run]',
+                'examples' => [
+                    'wp jankx release',
+                    'wp jankx release --version=2.0.0',
+                    'wp jankx release --output=/path/to/releases',
+                    'wp jankx release --dry-run',
+                    'wp jankx release --force'
                 ]
             ]
         ];
