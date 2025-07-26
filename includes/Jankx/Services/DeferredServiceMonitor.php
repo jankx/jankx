@@ -2,12 +2,15 @@
 
 namespace Jankx\Services;
 
+use Jankx\Facades\Logger;
+
 /**
  * Deferred Service Monitor
  *
- * Monitors performance metrics for deferred service loading
+ * Monitors and tracks deferred service performance and usage
  *
  * @package Jankx\Services
+ * @since 2.0.1
  */
 class DeferredServiceMonitor
 {
@@ -186,7 +189,7 @@ class DeferredServiceMonitor
     {
         if (defined('WP_DEBUG') && WP_DEBUG) {
             $summary = $this->getPerformanceSummary();
-            error_log('JANKX DEFERRED SERVICE METRICS: ' . json_encode($summary));
+            Logger::error('JANKX DEFERRED SERVICE METRICS: ' . json_encode($summary));
         }
     }
 

@@ -4,7 +4,16 @@ namespace Jankx\Bootstrappers\Dashboard;
 
 use Illuminate\Container\Container;
 use Jankx\Bootstrappers\AbstractBootstrapper;
+use Jankx\Facades\Logger;
 
+/**
+ * Admin Bootstrapper
+ *
+ * Handles admin dashboard initialization and setup
+ *
+ * @package Jankx\Bootstrappers\Dashboard
+ * @since 2.0.1
+ */
 class AdminBootstrapper extends AbstractBootstrapper
 {
     protected $priority = 20;
@@ -83,7 +92,7 @@ class AdminBootstrapper extends AbstractBootstrapper
             }
         } catch (\Exception $e) {
             // Log error but don't break the application
-            error_log('Jankx AdminBootstrapper error: ' . $e->getMessage());
+            Logger::error('Jankx AdminBootstrapper error: ' . $e->getMessage());
         }
     }
 
@@ -106,7 +115,7 @@ class AdminBootstrapper extends AbstractBootstrapper
             }
         } catch (\Exception $e) {
             // Log error but don't break the application
-            error_log('Jankx AdminBootstrapper error: ' . $e->getMessage());
+            Logger::error('Jankx AdminBootstrapper error: ' . $e->getMessage());
         }
     }
 }

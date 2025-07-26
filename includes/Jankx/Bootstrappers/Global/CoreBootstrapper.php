@@ -38,7 +38,7 @@ final class CoreBootstrapper extends AbstractBootstrapper
     {
         // Initialize debug information if JANKX_DEBUG is enabled
         if (defined('JANKX_DEBUG') && JANKX_DEBUG) {
-            \Jankx\Debug\DebugInfo::init();
+            \Jankx\Debug\DebugIntegration::init();
         }
 
         // Đăng ký dịch vụ dùng chung (shared)

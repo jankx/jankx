@@ -9,6 +9,7 @@
 // Example 1: Basic Service Registration
 use Jankx\Context\ContextualServiceRegistry;
 use Jankx\Facades\DeferredService;
+use Jankx\Facades\Logger;
 
 // Register services for different contexts
 ContextualServiceRegistry::register(ContextualServiceRegistry::ADMIN, [
@@ -154,7 +155,11 @@ class SafeServiceLoader
             return $service;
         } catch (\Exception $e) {
             // Log error and provide fallback
-            error_log("Failed to load service: {$serviceName} - " . $e->getMessage());
+            Logger::error("Failed to load service: {$serviceName}", [
+                'service_name' => $serviceName,
+                'exception' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
 
             // Return fallback service
             return new FallbackService();

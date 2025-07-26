@@ -34,7 +34,52 @@ function get_posts_data() {
 }
 ```
 
+### ✅ WordPress Functions Are Allowed
+```php
+// ALLOWED - Direct WordPress function calls
+class PostService
+{
+    public function getPost(int $postId): ?WP_Post
+    {
+        return get_post($postId);
+    }
+
+    public function getPosts(array $args): array
+    {
+        return get_posts($args);
+    }
+
+    public function hasBlocks(string $content): bool
+    {
+        return has_blocks($content);
+    }
+}
+```
+
 ## ✅ Required Patterns
+
+### ✅ WordPress Integration
+```php
+// ENCOURAGED - Direct WordPress function usage
+class GutenbergService
+{
+    public function hasBlocks(string $content): bool
+    {
+        return has_blocks($content);
+    }
+
+    public function parseBlocks(string $content): array
+    {
+        return parse_blocks($content);
+    }
+
+    public function isBlockEditor(): bool
+    {
+        $screen = get_current_screen();
+        return $screen && method_exists($screen, 'is_block_editor') && $screen->is_block_editor();
+    }
+}
+```
 
 ### ✅ Static Helper Classes
 ```php
@@ -91,6 +136,7 @@ class UserService
 ### ✅ Repository Pattern
 ```php
 // REQUIRED - Repository pattern for data access
+// WordPress functions are allowed and encouraged
 class UserRepository
 {
     public function find(int $id): ?User

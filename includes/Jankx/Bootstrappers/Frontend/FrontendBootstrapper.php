@@ -4,7 +4,16 @@ namespace Jankx\Bootstrappers\Frontend;
 
 use Illuminate\Container\Container;
 use Jankx\Bootstrappers\AbstractBootstrapper;
+use Jankx\Facades\Logger;
 
+/**
+ * Frontend Bootstrapper
+ *
+ * Handles frontend initialization and setup
+ *
+ * @package Jankx\Bootstrappers\Frontend
+ * @since 2.0.1
+ */
 class FrontendBootstrapper extends AbstractBootstrapper
 {
     protected $priority = 15;
@@ -84,7 +93,7 @@ class FrontendBootstrapper extends AbstractBootstrapper
             }
         } catch (\Exception $e) {
             // Log error but don't break the application
-            error_log('Jankx FrontendBootstrapper error: ' . $e->getMessage());
+            Logger::error('Jankx FrontendBootstrapper error: ' . $e->getMessage());
         }
     }
 
@@ -107,7 +116,7 @@ class FrontendBootstrapper extends AbstractBootstrapper
             }
         } catch (\Exception $e) {
             // Log error but don't break the application
-            error_log('Jankx FrontendBootstrapper error: ' . $e->getMessage());
+            Logger::error('Jankx FrontendBootstrapper error: ' . $e->getMessage());
         }
     }
 }

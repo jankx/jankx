@@ -6,6 +6,7 @@ use Illuminate\Container\Container;
 use Jankx\Bootstrappers\AbstractBootstrapper;
 use Jankx\Gutenberg\BlockRegistry;
 use Jankx\Facades\Logger;
+use Jankx\Services\BlockParserService;
 
 /**
  * Gutenberg Frontend Bootstrapper
@@ -62,7 +63,7 @@ class GutenbergFrontendBootstrapper extends AbstractBootstrapper
         global $post;
         $content = $post->post_content ?? '';
         $content .= $this->getWidgetContent();
-        $blocks = parse_blocks($content);
+        $blocks = BlockParserService::parseBlocks($content);
         Logger::debug('Parsed blocks array', ['blocks' => $blocks]);
         $used_blocks = $this->extractJankxBlocks($blocks);
         Logger::debug('Extracted Jankx block names', ['used_blocks' => $used_blocks]);
@@ -303,37 +304,18 @@ class GutenbergFrontendBootstrapper extends AbstractBootstrapper
     }
 
     /**
-     * Get block statistics
+     * Get block statistics using BlockParserService
      */
     public function getBlockStats(): array
     {
-        global $post;
+        $stats = BlockParserService::getBlockStats();
 
-        $stats = [
-            'total_blocks' => 0,
-            'jankx_blocks' => 0,
-            'used_blocks' => [],
-            'partial_hydration_enabled' => false,
+        return array_merge($stats, [
+            'partial_hydration_enabled' => $this->getPartialHydrationSettings()['enabled'],
             'performance' => [
-                'parse_time' => 0,
                 'memory_usage' => memory_get_usage(true)
             ]
-        ];
-
-        if ($post && isset($post->post_content)) {
-            $start_time = microtime(true);
-
-            $blocks = parse_blocks($post->post_content);
-            $used_blocks = $this->extractJankxBlocks($blocks);
-
-            $stats['total_blocks'] = count($blocks);
-            $stats['jankx_blocks'] = count($used_blocks);
-            $stats['used_blocks'] = $used_blocks;
-            $stats['partial_hydration_enabled'] = $this->getPartialHydrationSettings()['enabled'];
-            $stats['performance']['parse_time'] = microtime(true) - $start_time;
-        }
-
-        return $stats;
+        ]);
     }
 
     /**

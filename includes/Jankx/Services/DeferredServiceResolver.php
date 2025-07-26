@@ -4,14 +4,16 @@ namespace Jankx\Services;
 
 use Illuminate\Container\Container;
 use Jankx\Context\ContextualServiceRegistry;
+use Jankx\Facades\Logger;
 
 /**
  * Deferred Service Resolver
  *
- * Resolves services with lazy loading and context-aware resolution
+ * Handles resolution of deferred services in different contexts
  *
  * @package Jankx\Services
- * @since 2.0.0\n */
+ * @since 2.0.1
+ */
 class DeferredServiceResolver
 {
     private $container;
@@ -59,7 +61,11 @@ class DeferredServiceResolver
             $this->monitor->endMonitoring($serviceName);
 
             // Log the error
-            error_log("Failed to resolve service: {$serviceName} in context: {$context}");
+            Logger::error("Failed to resolve service: {$serviceName} in context: {$context}", [
+                'service_name' => $serviceName,
+                'context' => $context,
+                'exception' => $e,
+            ]);
             throw $e;
         }
     }

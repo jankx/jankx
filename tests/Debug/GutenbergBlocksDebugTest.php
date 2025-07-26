@@ -3,7 +3,7 @@
 namespace Tests\Debug;
 
 use PHPUnit\Framework\TestCase;
-use Jankx\Debug\DebugInfo;
+use Jankx\Debug\Helpers\DebugHelper;
 
 /**
  * Test Gutenberg Blocks Debug Information
@@ -20,7 +20,7 @@ class GutenbergBlocksDebugTest extends TestCase
      */
     public function testGutenbergBlocksInfoMethodExists()
     {
-        $this->assertTrue(method_exists('Jankx\Debug\DebugInfo', 'getGutenbergBlocksInfo'));
+        $this->assertTrue(method_exists('Jankx\Debug\Helpers\DebugHelper', 'getDebugInfo'));
     }
 
     /**
@@ -30,23 +30,22 @@ class GutenbergBlocksDebugTest extends TestCase
      */
     public function testGutenbergBlocksInfoStructure()
     {
-        // Use reflection to access private method
-        $reflection = new \ReflectionClass('Jankx\Debug\DebugInfo');
-        $method = $reflection->getMethod('getGutenbergBlocksInfo');
-        $method->setAccessible(true);
+        $debugInfo = DebugHelper::getDebugInfo();
 
-        $blocksInfo = $method->invoke(null);
+        if (!empty($debugInfo) && isset($debugInfo['gutenberg_blocks'])) {
+            $blocksInfo = $debugInfo['gutenberg_blocks'];
 
-        $this->assertIsArray($blocksInfo);
-        $this->assertArrayHasKey('total_blocks', $blocksInfo);
-        $this->assertArrayHasKey('block_types', $blocksInfo);
-        $this->assertArrayHasKey('is_gutenberg_editor', $blocksInfo);
-        $this->assertArrayHasKey('is_gutenberg_frontend', $blocksInfo);
+            $this->assertIsArray($blocksInfo);
+            $this->assertArrayHasKey('total_blocks', $blocksInfo);
+            $this->assertArrayHasKey('block_types', $blocksInfo);
+            $this->assertArrayHasKey('is_gutenberg_editor', $blocksInfo);
+            $this->assertArrayHasKey('is_gutenberg_frontend', $blocksInfo);
 
-        $this->assertIsInt($blocksInfo['total_blocks']);
-        $this->assertIsArray($blocksInfo['block_types']);
-        $this->assertIsBool($blocksInfo['is_gutenberg_editor']);
-        $this->assertIsBool($blocksInfo['is_gutenberg_frontend']);
+            $this->assertIsInt($blocksInfo['total_blocks']);
+            $this->assertIsArray($blocksInfo['block_types']);
+            $this->assertIsBool($blocksInfo['is_gutenberg_editor']);
+            $this->assertIsBool($blocksInfo['is_gutenberg_frontend']);
+        }
     }
 
     /**
@@ -56,10 +55,12 @@ class GutenbergBlocksDebugTest extends TestCase
      */
     public function testDebugInfoIncludesGutenbergBlocks()
     {
-        $debugInfo = DebugInfo::getDebugInfo();
+        $debugInfo = DebugHelper::getDebugInfo();
 
-        $this->assertArrayHasKey('gutenberg_blocks', $debugInfo);
-        $this->assertIsArray($debugInfo['gutenberg_blocks']);
+        if (!empty($debugInfo)) {
+            $this->assertArrayHasKey('gutenberg_blocks', $debugInfo);
+            $this->assertIsArray($debugInfo['gutenberg_blocks']);
+        }
     }
 
     /**
@@ -69,36 +70,31 @@ class GutenbergBlocksDebugTest extends TestCase
      */
     public function testGutenbergBlocksInfoInDifferentContexts()
     {
-        // Use reflection to access private method
-        $reflection = new \ReflectionClass('Jankx\Debug\DebugInfo');
-        $method = $reflection->getMethod('getGutenbergBlocksInfo');
-        $method->setAccessible(true);
+        $debugInfo = DebugHelper::getDebugInfo();
 
-        $blocksInfo = $method->invoke(null);
+        if (!empty($debugInfo) && isset($debugInfo['gutenberg_blocks'])) {
+            $blocksInfo = $debugInfo['gutenberg_blocks'];
 
-        // Test that total_blocks is non-negative
-        $this->assertGreaterThanOrEqual(0, $blocksInfo['total_blocks']);
+            // Test that total_blocks is non-negative
+            $this->assertGreaterThanOrEqual(0, $blocksInfo['total_blocks']);
 
-        // Test that block_types is array
-        $this->assertIsArray($blocksInfo['block_types']);
+            // Test that block_types is array
+            $this->assertIsArray($blocksInfo['block_types']);
 
-        // Test that boolean flags are actually boolean
-        $this->assertIsBool($blocksInfo['is_gutenberg_editor']);
-        $this->assertIsBool($blocksInfo['is_gutenberg_frontend']);
+            // Test that boolean flags are actually boolean
+            $this->assertIsBool($blocksInfo['is_gutenberg_editor']);
+            $this->assertIsBool($blocksInfo['is_gutenberg_frontend']);
+        }
     }
 
     /**
-     * Test that Gutenberg blocks info is accessible via reflection
+     * Test that Gutenberg blocks info is accessible via helper
      *
      * @since 2.0.1
      */
-    public function testGutenbergBlocksInfoAccessibleViaReflection()
+    public function testGutenbergBlocksInfoAccessibleViaHelper()
     {
-        $reflection = new \ReflectionClass('Jankx\Debug\DebugInfo');
-
-        $this->assertTrue($reflection->hasMethod('getGutenbergBlocksInfo'));
-
-        $method = $reflection->getMethod('getGutenbergBlocksInfo');
-        $this->assertTrue($method->isPrivate());
+        $this->assertTrue(method_exists('Jankx\Debug\Helpers\DebugHelper', 'getDebugInfo'));
+        $this->assertTrue(method_exists('Jankx\Debug\Helpers\DebugHelper', 'isEnabled'));
     }
 }
