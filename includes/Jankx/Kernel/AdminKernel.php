@@ -91,6 +91,11 @@ class AdminKernel extends Kernel implements KernelInterface
         // Admin bootstrapper (excluding Gutenberg)
         $this->addBootstrapper(AdminBootstrapper::class);
 
+        // Debug bootstrapper (when JANKX_DEBUG is enabled)
+        if (defined('JANKX_DEBUG') && JANKX_DEBUG) {
+            $this->addBootstrapper(\Jankx\Bootstrappers\Global\DebugBootstrapper::class);
+        }
+
         // Gutenberg bootstrapper (only when in Gutenberg editor)
         if ($this->isGutenbergEditor()) {
             $this->addBootstrapper(GutenbergBootstrapper::class);

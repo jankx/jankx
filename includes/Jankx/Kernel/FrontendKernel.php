@@ -33,6 +33,11 @@ class FrontendKernel extends Kernel implements KernelInterface
         // Theme bootstrapper (highest priority)
         $this->addBootstrapper(ThemeBootstrapper::class);
 
+        // Debug bootstrapper (when JANKX_DEBUG is enabled)
+        if (defined('JANKX_DEBUG') && JANKX_DEBUG) {
+            $this->addBootstrapper(\Jankx\Bootstrappers\Global\DebugBootstrapper::class);
+        }
+
         // Gutenberg Frontend bootstrapper (for used blocks only)
         $this->addBootstrapper(GutenbergFrontendBootstrapper::class);
 
