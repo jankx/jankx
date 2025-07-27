@@ -3,6 +3,7 @@
 namespace Jankx\Providers;
 
 use Jankx\Facades\Logger;
+use Jankx\Services\UserService;
 
 class FrontendServiceProvider extends ServiceProvider
 {
@@ -11,6 +12,9 @@ class FrontendServiceProvider extends ServiceProvider
         // Register helper provider for frontend
         $helperProvider = new FrontendHelperProvider($this->container);
         $helperProvider->register();
+
+        // Register User Service
+        $this->singleton('user.service', UserService::class);
 
         // Add other frontend services here
     }

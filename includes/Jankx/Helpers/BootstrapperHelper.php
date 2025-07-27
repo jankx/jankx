@@ -6,11 +6,11 @@ use Illuminate\Container\Container;
 
 /**
  * Bootstrapper Helper
- * 
+ *
  * Manages bootstrapper patterns in a DRY way
- * 
+ *
  * @package Jankx\Helpers
- * @since 2.0.1
+ * @since 2.0.0
  */
 class BootstrapperHelper
 {
@@ -68,4 +68,4 @@ class BootstrapperHelper
 
         return $container->make('deferred.resolver');
     }
-} 
+}

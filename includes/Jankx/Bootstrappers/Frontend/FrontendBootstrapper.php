@@ -16,7 +16,7 @@ use Jankx\Helpers\DeferredServiceHelper;
  * Handles frontend initialization and setup
  *
  * @package Jankx\Bootstrappers\Frontend
- * @since 2.0.1
+ * @since 2.0.0
  */
 class FrontendBootstrapper extends AbstractBootstrapper
 {

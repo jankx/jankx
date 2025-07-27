@@ -8,7 +8,7 @@ namespace Jankx\Helpers;
  * Manages WordPress theme support features in a DRY way
  *
  * @package Jankx\Helpers
- * @since 2.0.1
+ * @since 2.0.0
  */
 class ThemeSupportHelper
 {

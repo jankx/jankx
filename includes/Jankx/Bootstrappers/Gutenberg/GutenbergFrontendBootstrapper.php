@@ -219,7 +219,7 @@ class GutenbergFrontendBootstrapper extends AbstractBootstrapper
             'jankx-frontend',
             get_template_directory_uri() . '/assets/js/partial-hydration.js',
             ['jquery'],
-            JANKX_VERSION,
+            \Jankx\Jankx::getFrameworkVersion(),
             true
         );
 
@@ -228,7 +228,7 @@ class GutenbergFrontendBootstrapper extends AbstractBootstrapper
             'jankx-gutenberg-frontend-style',
             get_template_directory_uri() . '/assets/gutenberg/css/frontend.css',
             [],
-            JANKX_VERSION
+            \Jankx\Jankx::getFrameworkVersion()
         );
 
         // Enqueue partial hydration styles
@@ -236,7 +236,7 @@ class GutenbergFrontendBootstrapper extends AbstractBootstrapper
             'jankx-partial-hydration',
             get_template_directory_uri() . '/assets/css/partial-hydration.css',
             [],
-            JANKX_VERSION
+            \Jankx\Jankx::getFrameworkVersion()
         );
 
         // Enqueue layout themes
@@ -244,7 +244,7 @@ class GutenbergFrontendBootstrapper extends AbstractBootstrapper
             'jankx-layout-themes',
             get_template_directory_uri() . '/assets/css/layout-themes.css',
             [],
-            JANKX_VERSION
+            \Jankx\Jankx::getFrameworkVersion()
         );
     }
 

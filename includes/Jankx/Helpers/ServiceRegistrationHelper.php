@@ -10,7 +10,7 @@ use Illuminate\Container\Container;
  * Manages service registration in a DRY way
  *
  * @package Jankx\Helpers
- * @since 2.0.1
+ * @since 2.0.0
  */
 class ServiceRegistrationHelper
 {

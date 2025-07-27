@@ -16,7 +16,7 @@ use Jankx\Helpers\DeferredServiceHelper;
  * Handles admin dashboard initialization and setup
  *
  * @package Jankx\Bootstrappers\Dashboard
- * @since 2.0.1
+ * @since 2.0.0
  */
 class AdminBootstrapper extends AbstractBootstrapper
 {

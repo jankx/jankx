@@ -40,7 +40,7 @@ class BlockRegistry
             'jankx-gutenberg-editor-style',
             get_template_directory_uri() . '/assets/gutenberg/css/editor.css',
             [],
-            JANKX_VERSION
+            \Jankx\Jankx::getFrameworkVersion()
         );
 
         // Localize script with block data
@@ -57,7 +57,7 @@ class BlockRegistry
             'jankx-gutenberg-frontend-style',
             get_template_directory_uri() . '/assets/gutenberg/css/frontend.css',
             [],
-            JANKX_VERSION
+            \Jankx\Jankx::getFrameworkVersion()
         );
     }
 

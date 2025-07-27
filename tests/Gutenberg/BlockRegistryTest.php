@@ -116,9 +116,7 @@ class BlockRegistryTest extends TestCase
             define('JANKX_ABSPATH', __DIR__ . '/../../');
         }
 
-        if (!defined('JANKX_VERSION')) {
-            define('JANKX_VERSION', '2.0.0');
-        }
+        // Version is now handled by Jankx::getFrameworkVersion()
 
         // This should not throw an exception
         BlockRegistry::enqueueEditorAssets();
@@ -140,10 +138,7 @@ class BlockRegistryTest extends TestCase
             }
         }
 
-        // Define constant if not defined
-        if (!defined('JANKX_VERSION')) {
-            define('JANKX_VERSION', '2.0.0');
-        }
+        // Version is now handled by Jankx::getFrameworkVersion()
 
         // This should not throw an exception
         BlockRegistry::enqueueFrontendAssets();

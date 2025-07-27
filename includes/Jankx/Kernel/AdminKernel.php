@@ -6,6 +6,7 @@ use Jankx\Contracts\KernelInterface;
 use Jankx\Bootstrappers\Dashboard\AdminBootstrapper;
 use Jankx\Bootstrappers\Global\ThemeBootstrapper;
 use Jankx\Bootstrappers\Gutenberg\GutenbergBootstrapper;
+use Jankx\Jankx;
 
 /**
  * Admin Kernel
@@ -177,14 +178,14 @@ class AdminKernel extends Kernel implements KernelInterface
             'jankx-admin',
             get_template_directory_uri() . '/assets/css/admin.css',
             [],
-            JANKX_VERSION
+            Jankx::getFrameworkVersion()
         );
 
         wp_enqueue_script(
             'jankx-admin',
             get_template_directory_uri() . '/assets/js/admin.js',
             ['jquery'],
-            JANKX_VERSION,
+            Jankx::getFrameworkVersion(),
             true
         );
     }

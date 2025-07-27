@@ -18,5 +18,5 @@ return [
         'wp-data',
         'wp-compose',
     ],
-    'version' => JANKX_VERSION,
+    'version' => \Jankx\Jankx::getFrameworkVersion(),
 ];

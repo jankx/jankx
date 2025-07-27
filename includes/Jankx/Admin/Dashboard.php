@@ -58,7 +58,7 @@ class Dashboard
             <h3>Welcome to Jankx!</h3>
             <p>Jankx is a powerful WordPress theme framework.</p>
             <ul>
-                <li><strong>Version:</strong> <?php echo JANKX_VERSION; ?></li>
+                <li><strong>Version:</strong> <?php echo \Jankx\Jankx::getFrameworkVersion(); ?></li>
                 <li><strong>Theme:</strong> <?php echo get_template(); ?></li>
                 <li><strong>PHP Version:</strong> <?php echo PHP_VERSION; ?></li>
             </ul>

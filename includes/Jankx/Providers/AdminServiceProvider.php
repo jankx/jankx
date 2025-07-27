@@ -2,12 +2,15 @@
 
 namespace Jankx\Providers;
 
+use Jankx\Services\UserService;
+
 class AdminServiceProvider extends ServiceProvider
 {
     public function register()
     {
         // Đăng ký các dịch vụ cho admin
-        // Hiện tại không có dịch vụ cụ thể nào được đăng ký
+        // Register User Service for admin context
+        $this->singleton('user.service', UserService::class);
 
         // Đăng ký helper provider cho admin
         $helperProvider = new AdminHelperProvider($this->container);

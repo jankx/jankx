@@ -15,7 +15,7 @@ use Jankx\Helpers\BootstrapperHelper;
  * Handles debug functionality initialization
  *
  * @package Jankx\Bootstrappers\Global
- * @since 2.0.1
+ * @since 2.0.0
  */
 class DebugBootstrapper extends AbstractBootstrapper
 {
@@ -51,7 +51,7 @@ class DebugBootstrapper extends AbstractBootstrapper
      * Initialize debug services
      *
      * @param Container $container
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function initializeDebugServices(Container $container): void
     {
@@ -62,7 +62,7 @@ class DebugBootstrapper extends AbstractBootstrapper
     /**
      * Setup debug hooks based on context
      *
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function setupDebugHooks(): void
     {
@@ -78,7 +78,7 @@ class DebugBootstrapper extends AbstractBootstrapper
     /**
      * Initialize admin debug info
      *
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function initAdminDebugInfo(): void
     {
@@ -100,7 +100,7 @@ class DebugBootstrapper extends AbstractBootstrapper
     /**
      * Display frontend debug info
      *
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function displayFrontendDebugInfo(): void
     {
