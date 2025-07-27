@@ -24,6 +24,7 @@ return [
                 \Jankx\Admin\MenuManager::class,
                 \Jankx\Admin\AssetManager::class,
                 \Jankx\Admin\NoticeManager::class,
+                \Jankx\Services\UserService::class,
             ],
             'deferred' => [
                 \Jankx\Admin\DashboardManager::class,
@@ -40,6 +41,7 @@ return [
                 \Jankx\Frontend\AssetManager::class,
                 \Jankx\Frontend\TemplateManager::class,
                 \Jankx\Frontend\ContentManager::class,
+                \Jankx\Services\UserService::class,
             ],
             'deferred' => [
                 \Jankx\SEO\SEOManager::class,
