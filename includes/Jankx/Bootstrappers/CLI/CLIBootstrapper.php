@@ -53,6 +53,6 @@ class CLIBootstrapper extends AbstractBootstrapper
         $cliServiceProvider->boot();
 
         // Fire action for other CLI integrations
-        do_action('jankx/bootstrapper/cli/loaded', $container);
+        BootstrapperHelper::fireLoadedAction($this->getName(), $container);
     }
 }

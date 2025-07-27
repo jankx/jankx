@@ -5,6 +5,9 @@ namespace Jankx\Bootstrappers\Global;
 use Illuminate\Container\Container;
 use Jankx\Bootstrappers\AbstractBootstrapper;
 use Jankx\Facades\Logger;
+use Jankx\Helpers\ServiceRegistrationHelper;
+use Jankx\Helpers\ErrorHandlingHelper;
+use Jankx\Helpers\BootstrapperHelper;
 
 /**
  * Debug Bootstrapper
@@ -30,24 +33,18 @@ class DebugBootstrapper extends AbstractBootstrapper
 
     public function bootstrap(Container $container): void
     {
-        try {
+        ErrorHandlingHelper::safeExecute(function() use ($container) {
             // Initialize debug services
             $this->initializeDebugServices($container);
-            
+
             // Setup debug hooks based on context
             $this->setupDebugHooks();
-            
+
             Logger::debug('Debug bootstrapper initialized', [
                 'context' => is_admin() ? 'admin' : 'frontend',
                 'services' => $this->getDebugServices()
             ]);
-            
-        } catch (\Exception $e) {
-            Logger::error('Debug bootstrapper error: ' . $e->getMessage(), [
-                'exception' => $e,
-                'context' => is_admin() ? 'admin' : 'frontend'
-            ]);
-        }
+        }, 'DebugBootstrapper bootstrap');
     }
 
     /**
@@ -58,25 +55,8 @@ class DebugBootstrapper extends AbstractBootstrapper
      */
     private function initializeDebugServices(Container $container): void
     {
-        // Register debug services
-        $container->singleton(\Jankx\Debug\Services\DebugInfoService::class);
-        $container->singleton(\Jankx\Debug\Services\QueryCountService::class);
-        $container->singleton(\Jankx\Debug\Services\CacheInfoService::class);
-        $container->singleton(\Jankx\Debug\Services\GutenbergBlocksService::class);
-        $container->singleton(\Jankx\Debug\Services\PluginDebugService::class);
-        $container->singleton(\Jankx\Debug\Renderers\DebugInfoRenderer::class);
-        
-        // Register main debug info class
-        $container->singleton(\Jankx\Debug\DebugInfo::class, function($container) {
-            return new \Jankx\Debug\DebugInfo(
-                $container->make(\Jankx\Debug\Services\DebugInfoService::class),
-                $container->make(\Jankx\Debug\Services\QueryCountService::class),
-                $container->make(\Jankx\Debug\Services\CacheInfoService::class),
-                $container->make(\Jankx\Debug\Services\GutenbergBlocksService::class),
-                $container->make(\Jankx\Debug\Services\PluginDebugService::class),
-                $container->make(\Jankx\Debug\Renderers\DebugInfoRenderer::class)
-            );
-        });
+        // Register debug services using helper
+        ServiceRegistrationHelper::registerDebugServices($container);
     }
 
     /**
@@ -106,17 +86,15 @@ class DebugBootstrapper extends AbstractBootstrapper
             return;
         }
 
-        try {
-            $container = \Jankx\Jankx::getInstance();
+        ErrorHandlingHelper::safeExecute(function() {
+            $container = BootstrapperHelper::getGlobalContainer();
             if ($container && $container->bound(\Jankx\Debug\DebugInfo::class)) {
                 $debugInfo = $container->make(\Jankx\Debug\DebugInfo::class);
                 $debugInfo->initAdminBarDebugInfo();
-                
+
                 Logger::debug('Admin debug info initialized');
             }
-        } catch (\Exception $e) {
-            Logger::error('Failed to initialize admin debug info: ' . $e->getMessage());
-        }
+        }, 'DebugBootstrapper initAdminDebugInfo');
     }
 
     /**
@@ -126,15 +104,13 @@ class DebugBootstrapper extends AbstractBootstrapper
      */
     public function displayFrontendDebugInfo(): void
     {
-        try {
-            $container = \Jankx\Jankx::getInstance();
+        ErrorHandlingHelper::safeExecute(function() {
+            $container = BootstrapperHelper::getGlobalContainer();
             if ($container && $container->bound(\Jankx\Debug\DebugInfo::class)) {
                 $debugInfo = $container->make(\Jankx\Debug\DebugInfo::class);
                 $debugInfo->displayDebugInfo();
             }
-        } catch (\Exception $e) {
-            Logger::error('Failed to display frontend debug info: ' . $e->getMessage());
-        }
+        }, 'DebugBootstrapper displayFrontendDebugInfo');
     }
 
     /**
@@ -147,11 +123,11 @@ class DebugBootstrapper extends AbstractBootstrapper
     {
         return [
             'DebugInfoService',
-            'QueryCountService', 
+            'QueryCountService',
             'CacheInfoService',
             'GutenbergBlocksService',
             'PluginDebugService',
             'DebugInfoRenderer'
         ];
     }
-} 
+}

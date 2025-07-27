@@ -4,6 +4,8 @@ namespace Jankx\Bootstrappers\Global;
 
 use Illuminate\Container\Container;
 use Jankx\Bootstrappers\AbstractBootstrapper;
+use Jankx\Helpers\ThemeSupportHelper;
+use Jankx\Helpers\BootstrapperHelper;
 
 class ThemeBootstrapper extends AbstractBootstrapper
 {
@@ -23,25 +25,39 @@ class ThemeBootstrapper extends AbstractBootstrapper
     {
         add_action('after_setup_theme', [$this, 'setupTheme']);
         add_action('init', [$this, 'initializeThemeFeatures']);
-        do_action('jankx/bootstrapper/theme/loaded', $container);
+        // Fire loaded action
+        BootstrapperHelper::fireLoadedAction($this->getName(), $container);
     }
 
     public function setupTheme(): void
     {
-        add_theme_support('automatic-feed-links');
-        add_theme_support('title-tag');
-        add_theme_support('post-thumbnails');
-        add_theme_support('html5', ['search-form', 'comment-form', 'comment-list', 'gallery', 'caption']);
-        add_theme_support('customize-selective-refresh-widgets');
-        register_nav_menus([
-            'primary' => __('Primary Menu', 'jankx'),
-            'footer' => __('Footer Menu', 'jankx'),
-        ]);
-        load_theme_textdomain('jankx', get_template_directory() . '/languages');
+        // Add all theme supports using helper
+        ThemeSupportHelper::addBasicSupports();
+        ThemeSupportHelper::addGutenbergSupports();
+        ThemeSupportHelper::registerNavigationMenus();
+        ThemeSupportHelper::loadTextDomain();
     }
 
     public function initializeThemeFeatures(): void
     {
         // Add theme-specific initialization logic here
+
+        // Add custom image sizes
+        ThemeSupportHelper::addCustomImageSizes();
+
+        // Add custom logo support
+        ThemeSupportHelper::addCustomLogoSupport();
+
+        // Add custom background
+        ThemeSupportHelper::addCustomBackgroundSupport();
+
+        // Add custom header
+        ThemeSupportHelper::addCustomHeaderSupport();
+
+        // Add editor color palette
+        ThemeSupportHelper::addEditorColorPalette();
+
+        // Add editor font sizes
+        ThemeSupportHelper::addEditorFontSizes();
     }
 }

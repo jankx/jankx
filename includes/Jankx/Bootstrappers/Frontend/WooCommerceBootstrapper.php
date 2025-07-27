@@ -21,6 +21,6 @@ class WooCommerceBootstrapper extends AbstractBootstrapper
 
     public function bootstrap(Container $container): void
     {
-        do_action('jankx/bootstrapper/woocommerce/loaded', $container);
+        BootstrapperHelper::fireLoadedAction($this->getName(), $container);
     }
 }

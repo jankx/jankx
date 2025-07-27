@@ -21,6 +21,6 @@ class APIBootstrapper extends AbstractBootstrapper
 
     public function bootstrap(Container $container): void
     {
-        do_action('jankx/bootstrapper/api/loaded', $container);
+        BootstrapperHelper::fireLoadedAction($this->getName(), $container);
     }
 }

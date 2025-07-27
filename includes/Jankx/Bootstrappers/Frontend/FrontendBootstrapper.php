@@ -5,6 +5,10 @@ namespace Jankx\Bootstrappers\Frontend;
 use Illuminate\Container\Container;
 use Jankx\Bootstrappers\AbstractBootstrapper;
 use Jankx\Facades\Logger;
+use Jankx\Helpers\ServiceRegistrationHelper;
+use Jankx\Helpers\ErrorHandlingHelper;
+use Jankx\Helpers\BootstrapperHelper;
+use Jankx\Helpers\DeferredServiceHelper;
 
 /**
  * Frontend Bootstrapper
@@ -31,11 +35,10 @@ class FrontendBootstrapper extends AbstractBootstrapper
     public function bootstrap(Container $container): void
     {
         // Register context-aware services
-        $contextProvider = new \Jankx\Providers\ContextualServiceProvider($container);
-        $contextProvider->register();
+        BootstrapperHelper::registerContextProvider($container);
 
         // Setup deferred service resolver
-        $container->singleton('deferred.resolver', \Jankx\Services\DeferredServiceResolver::class);
+        BootstrapperHelper::setupDeferredResolver($container);
 
         // Load essential frontend services immediately
         $this->loadEssentialServices($container);
@@ -46,26 +49,20 @@ class FrontendBootstrapper extends AbstractBootstrapper
         // Set up frontend hooks
         $this->setupFrontendHooks();
 
-        do_action('jankx/bootstrapper/frontend/loaded', $container);
+        // Fire loaded action
+        BootstrapperHelper::fireLoadedAction($this->getName(), $container);
     }
 
     private function loadEssentialServices(Container $container): void
     {
         // Services needed immediately
-        $container->singleton(\Jankx\Frontend\AssetManager::class);
-        $container->singleton(\Jankx\Frontend\TemplateManager::class);
-        $container->singleton(\Jankx\Frontend\ContentManager::class);
+        ServiceRegistrationHelper::registerFrontendServices($container);
     }
 
     private function deferHeavyServices(Container $container): void
     {
         // Defer heavy services until actually needed
-        \Jankx\Context\ContextualServiceRegistry::defer(\Jankx\Context\ContextualServiceRegistry::FRONTEND, function(Container $container) {
-            $container->singleton(\Jankx\SEO\SEOManager::class);
-            $container->singleton(\Jankx\Analytics\AnalyticsManager::class);
-            $container->singleton(\Jankx\Template\TemplateRenderer::class);
-            $container->singleton(\Jankx\Frontend\AssetOptimizer::class);
-        });
+        DeferredServiceHelper::registerFrontendDeferredServices();
     }
 
     private function setupFrontendHooks(): void
@@ -77,46 +74,38 @@ class FrontendBootstrapper extends AbstractBootstrapper
 
     public function loadFrontendServices(): void
     {
-        try {
+        ErrorHandlingHelper::safeExecute(function() {
             // Get container from global Jankx instance
-            $container = \Jankx\Jankx::getInstance();
+            $container = BootstrapperHelper::getGlobalContainer();
 
-            if (!$container || !$container->bound('deferred.resolver')) {
+            $resolver = BootstrapperHelper::getDeferredResolver($container);
+            if (!$resolver) {
                 return;
             }
-
-            $resolver = $container->make('deferred.resolver');
 
             // Load frontend services only when needed
             if (!is_admin()) {
                 $resolver->resolve(\Jankx\Frontend\TemplateManager::class);
             }
-        } catch (\Exception $e) {
-            // Log error but don't break the application
-            Logger::error('Jankx FrontendBootstrapper error: ' . $e->getMessage());
-        }
+        }, 'FrontendBootstrapper loadFrontendServices');
     }
 
     public function loadFrontendAssets(): void
     {
-        try {
+        ErrorHandlingHelper::safeExecute(function() {
             // Get container from global Jankx instance
-            $container = \Jankx\Jankx::getInstance();
+            $container = BootstrapperHelper::getGlobalContainer();
 
-            if (!$container || !$container->bound('deferred.resolver')) {
+            $resolver = BootstrapperHelper::getDeferredResolver($container);
+            if (!$resolver) {
                 return;
             }
 
             // Load frontend assets when needed
-            $resolver = $container->make('deferred.resolver');
-
             if ($resolver->has(\Jankx\Frontend\AssetManager::class)) {
                 $assetManager = $resolver->resolve(\Jankx\Frontend\AssetManager::class);
                 $assetManager->enqueueFrontendAssets();
             }
-        } catch (\Exception $e) {
-            // Log error but don't break the application
-            Logger::error('Jankx FrontendBootstrapper error: ' . $e->getMessage());
-        }
+        }, 'FrontendBootstrapper loadFrontendAssets');
     }
 }

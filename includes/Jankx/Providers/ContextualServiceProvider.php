@@ -4,6 +4,8 @@ namespace Jankx\Providers;
 
 use Illuminate\Container\Container;
 use Jankx\Context\ContextualServiceRegistry;
+use Jankx\Helpers\ServiceRegistrationHelper;
+use Jankx\Helpers\DeferredServiceHelper;
 
 /**
  * Contextual Service Provider
@@ -52,10 +54,7 @@ class ContextualServiceProvider
     private function registerCoreServices(): void
     {
         // Essential services that are always needed
-        $this->container->singleton(\Jankx\Config\ConfigManager::class);
-        $this->container->singleton(\Jankx\Logger\Logger::class);
-        $this->container->singleton(\Jankx\Security\SecurityManager::class);
-        $this->container->singleton(\Jankx\Performance\PerformanceMonitor::class);
+        ServiceRegistrationHelper::registerCoreServices($this->container);
     }
 
     /**
@@ -91,39 +90,7 @@ class ContextualServiceProvider
     private function registerDeferredServices(string $context): void
     {
         // Defer heavy services until actually needed
-        ContextualServiceRegistry::defer($context, function(Container $container) use ($context) {
-            // Admin-specific deferred services
-            if ($context === ContextualServiceRegistry::ADMIN) {
-                $container->singleton(\Jankx\Admin\DashboardManager::class);
-                $container->singleton(\Jankx\Admin\SettingsManager::class);
-                $container->singleton(\Jankx\Admin\NoticeManager::class);
-                $container->singleton(\Jankx\Admin\AnalyticsManager::class);
-                $container->singleton(\Jankx\Admin\ReportManager::class);
-            }
-
-            // Frontend-specific deferred services
-            if ($context === ContextualServiceRegistry::FRONTEND) {
-                $container->singleton(\Jankx\SEO\SEOManager::class);
-                $container->singleton(\Jankx\Analytics\AnalyticsManager::class);
-                $container->singleton(\Jankx\Template\TemplateRenderer::class);
-                $container->singleton(\Jankx\Frontend\AssetOptimizer::class);
-            }
-
-            // Gutenberg-specific deferred services
-            if ($context === ContextualServiceRegistry::GUTENBERG) {
-                $container->singleton(\Jankx\Gutenberg\BlockRegistry::class);
-                $container->singleton(\Jankx\Gutenberg\LayoutRegistry::class);
-                $container->singleton(\Jankx\Gutenberg\AjaxHandler::class);
-                $container->singleton(\Jankx\Gutenberg\BlockRenderer::class);
-            }
-
-            // WooCommerce-specific deferred services
-            if ($context === ContextualServiceRegistry::WOOCOMMERCE) {
-                $container->singleton(\Jankx\WooCommerce\ProductManager::class);
-                $container->singleton(\Jankx\WooCommerce\CartManager::class);
-                $container->singleton(\Jankx\WooCommerce\CheckoutManager::class);
-            }
-        });
+        DeferredServiceHelper::registerDeferredServicesForContext($context);
     }
 
     /**
@@ -131,10 +98,7 @@ class ContextualServiceProvider
      */
     private function registerAdminServices(): void
     {
-        $this->container->singleton(\Jankx\Admin\AdminManager::class);
-        $this->container->singleton(\Jankx\Admin\MenuManager::class);
-        $this->container->singleton(\Jankx\Admin\AssetManager::class);
-        $this->container->singleton(\Jankx\Admin\NoticeManager::class);
+        ServiceRegistrationHelper::registerAdminServices($this->container);
     }
 
     /**
@@ -142,10 +106,7 @@ class ContextualServiceProvider
      */
     private function registerFrontendServices(): void
     {
-        $this->container->singleton(\Jankx\Frontend\AssetManager::class);
-        $this->container->singleton(\Jankx\Frontend\TemplateManager::class);
-        $this->container->singleton(\Jankx\Frontend\ContentManager::class);
-        $this->container->singleton(\Jankx\Frontend\SEO\SEOManager::class);
+        ServiceRegistrationHelper::registerFrontendServices($this->container);
     }
 
     /**
@@ -153,10 +114,7 @@ class ContextualServiceProvider
      */
     private function registerAPIServices(): void
     {
-        $this->container->singleton(\Jankx\API\APIManager::class);
-        $this->container->singleton(\Jankx\API\EndpointManager::class);
-        $this->container->singleton(\Jankx\API\AuthenticationManager::class);
-        $this->container->singleton(\Jankx\API\ResponseFormatter::class);
+        ServiceRegistrationHelper::registerAPIServices($this->container);
     }
 
     /**
@@ -166,9 +124,7 @@ class ContextualServiceProvider
     {
         // CLI services are minimal for now
         // Will be implemented when needed
-        // $this->container->singleton(\Jankx\CLI\CommandManager::class);
-        // $this->container->singleton(\Jankx\CLI\OutputManager::class);
-        // $this->container->singleton(\Jankx\CLI\ProgressBar::class);
+        // ServiceRegistrationHelper::registerCLIServices($this->container);
     }
 
     /**
@@ -176,9 +132,7 @@ class ContextualServiceProvider
      */
     private function registerGutenbergServices(): void
     {
-        $this->container->singleton(\Jankx\Gutenberg\EditorManager::class);
-        $this->container->singleton(\Jankx\Gutenberg\BlockRenderer::class);
-        $this->container->singleton(\Jankx\Gutenberg\LayoutManager::class);
+        ServiceRegistrationHelper::registerGutenbergServices($this->container);
     }
 
     /**
@@ -186,9 +140,7 @@ class ContextualServiceProvider
      */
     private function registerWooCommerceServices(): void
     {
-        $this->container->singleton(\Jankx\WooCommerce\WooCommerceManager::class);
-        $this->container->singleton(\Jankx\WooCommerce\ProductManager::class);
-        $this->container->singleton(\Jankx\WooCommerce\CartManager::class);
+        ServiceRegistrationHelper::registerWooCommerceServices($this->container);
     }
 
     /**
