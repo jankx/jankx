@@ -475,7 +475,7 @@ class GutenbergAssetManager
                 'jankx-block-' . $blockName . '-editor',
                 get_theme_file_uri($blockData['editorScript']),
                 ['wp-blocks', 'wp-element', 'wp-editor'],
-                JANKX_VERSION,
+                \Jankx\Jankx::getFrameworkVersion(),
                 true
             );
         }
@@ -486,7 +486,7 @@ class GutenbergAssetManager
                 'jankx-block-' . $blockName . '-editor',
                 get_theme_file_uri($blockData['editorStyle']),
                 [],
-                JANKX_VERSION
+                \Jankx\Jankx::getFrameworkVersion()
             );
         }
 
@@ -496,7 +496,7 @@ class GutenbergAssetManager
                 'jankx-block-' . $blockName . '-frontend',
                 get_theme_file_uri($blockData['style']),
                 [],
-                JANKX_VERSION
+                \Jankx\Jankx::getFrameworkVersion()
             );
         }
     }

@@ -365,7 +365,7 @@ function jankx_pattern_styles() {
         'jankx-patterns',
         get_template_directory_uri() . '/assets/css/patterns.css',
         [],
-        JANKX_VERSION
+        \Jankx\Jankx::getFrameworkVersion()
     );
 
     // Add pattern-specific styles

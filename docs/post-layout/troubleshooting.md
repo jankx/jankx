@@ -297,14 +297,14 @@ function jankx_enqueue_editor_assets() {
         'jankx-dynamic-query-loop-editor',
         get_template_directory_uri() . '/assets/js/editor.js',
         ['wp-blocks', 'wp-element', 'wp-editor', 'wp-components'],
-        JANKX_VERSION
+        \Jankx\Jankx::getFrameworkVersion()
     );
 
     wp_enqueue_style(
         'jankx-dynamic-query-loop-editor-style',
         get_template_directory_uri() . '/assets/css/editor.css',
         ['wp-edit-blocks'],
-        JANKX_VERSION
+        \Jankx\Jankx::getFrameworkVersion()
     );
 }
 add_action('enqueue_block_editor_assets', 'jankx_enqueue_editor_assets');

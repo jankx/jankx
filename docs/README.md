@@ -17,6 +17,9 @@ Jankx 2.0 là một WordPress theme framework hiện đại được xây dựng
 - [Deferred Service Context](architecture/deferred-service-context.md) - Context cho deferred services
 - [Kernel System](architecture/kernel-system.md) - Hệ thống kernel
 - [Service Container](architecture/service-container.md) - Service container
+- [Framework Principles](framework-principles.md) - Nguyên tắc framework
+- [Comprehensive Principles](comprehensive-principles.md) - Nguyên tắc toàn diện
+- [Core Principles](principles.md) - Nguyên tắc cốt lõi
 
 ### 🎨 Templates System
 - [Templates Overview](templates/README.md) - Tổng quan về templates
@@ -27,14 +30,27 @@ Jankx 2.0 là một WordPress theme framework hiện đại được xây dựng
 ### 🔧 Development
 - [Development Guidelines](development/best-practices.md) - Hướng dẫn phát triển
 - [Coding Standards](development/rules.md) - Tiêu chuẩn code
+- [Code Review Guidelines](development/code-review-guidelines.md) - Hướng dẫn review code
+- [Testing Guidelines](development/testing.md) - Hướng dẫn testing
+- [Logging System](development/logging.md) - Hệ thống logging
+- [Troubleshooting](development/troubleshooting.md) - Xử lý sự cố
+- [Cleanup Summary](development/cleanup-summary.md) - Tóm tắt cleanup
 - [CLI Development](cli/development.md) - Phát triển CLI
 - [CLI Examples](cli/examples.md) - Ví dụ CLI
+- [CLI Commands Reference](cli/commands-reference.md) - Tham khảo lệnh CLI
+- [Release Command](cli/release-command.md) - Lệnh release
+- [User Service](services/user-service.md) - User Service với caching và filtering
 
 ### 🎯 Gutenberg Integration
 - [Block Registration](gutenberg/block-registration.md) - Đăng ký blocks
 - [Blocks Overview](gutenberg/blocks.md) - Tổng quan về blocks
 - [Ajax System](gutenberg/ajax-system.md) - Hệ thống Ajax
+- [Layout System](gutenberg/layout-system.md) - Hệ thống layout
 - [Pattern Library](post-layout/pattern-library.md) - Thư viện patterns
+
+### 🔧 Services
+- [Services Overview](services/README.md) - Tổng quan về services
+- [User Service](services/user-service.md) - User Service với caching và filtering
 
 ### 📊 Post Layout System
 - [Post Layout Overview](post-layout/README.md) - Tổng quan post layout
@@ -47,7 +63,8 @@ Jankx 2.0 là một WordPress theme framework hiện đại được xây dựng
 - [Design System Overview](designer/design-system.md) - Tổng quan design system
 - [Quick Start](designer/quick-start.md) - Bắt đầu nhanh
 - [Advanced Workflow](designer/advanced-workflow.md) - Workflow nâng cao
-- [Component Library](designer/component-library.md) - Thư viện components
+- [Workflow Guide](designer/workflow.md) - Hướng dẫn workflow
+- [Speed Optimization](designer/speed-optimization.md) - Tối ưu tốc độ
 
 ### ⚡ Performance
 - [Performance Overview](performance/README.md) - Tổng quan performance
@@ -63,6 +80,12 @@ Jankx 2.0 là một WordPress theme framework hiện đại được xây dựng
 - [Hooks Migration](hooks-migration-summary.md) - Migration hooks
 - [Update Summary](UPDATE_SUMMARY.md) - Tóm tắt cập nhật
 
+### 🐛 Debug & Troubleshooting
+- [Debug System](debug-system.md) - Hệ thống debug
+- [Debug Quick Start](debug-quick-start.md) - Bắt đầu debug nhanh
+- [Plugin Debug Integration](plugin-debug-integration.md) - Tích hợp debug plugin
+- [Gutenberg Blocks Debug](debug/gutenberg-blocks-debug.md) - Debug Gutenberg blocks
+
 ## Quick Navigation
 
 ### For Developers
@@ -70,6 +93,9 @@ Jankx 2.0 là một WordPress theme framework hiện đại được xây dựng
 - [Architecture Overview](architecture/bootstrapper-structure.md) - Tổng quan kiến trúc
 - [CLI Tools](cli/development.md) - Công cụ CLI
 - [Gutenberg Integration](gutenberg/blocks.md) - Tích hợp Gutenberg
+- [Services Overview](services/README.md) - Tổng quan services
+- [User Service](services/user-service.md) - User Service với caching
+- [Debug System](debug-system.md) - Hệ thống debug
 
 ### For Designers
 - [Design System](designer/design-system.md) - Hệ thống thiết kế
@@ -93,6 +119,7 @@ Jankx 2.0 là một WordPress theme framework hiện đại được xây dựng
 - **Service Container**: Dependency injection container
 - **Kernel System**: Multi-kernel system cho different contexts
 - **Deferred Services**: Lazy loading services
+- **User Service**: Caching và filtering cho user data
 
 ### 🎨 Advanced Templates
 - **Block Templates**: PHP templates cho Gutenberg blocks
@@ -217,6 +244,18 @@ add_action('init', function() {
 function my_custom_template($variables) {
     return include_template('custom/my-template.html', $variables);
 }
+```
+
+### 4. User Service Usage
+```php
+// Get user with caching
+$user = User::get(1, ['ID', 'display_name', 'user_email']);
+
+// Get current user
+$currentUser = User::current(['ID', 'display_name']);
+
+// Search users
+$results = User::search('john', ['ID', 'display_name'], 5);
 ```
 
 ## Performance Features

@@ -629,7 +629,7 @@ require_once dirname(__DIR__) . '/includes/framework.php';
 
 // Set up test environment
 define('JANKX_TESTING', true);
-define('JANKX_VERSION', '2.0.0-test');
+// Version is now handled by Jankx::getFrameworkVersion()
 
 // Initialize test database
 if (!defined('WP_TESTS_DIR')) {
