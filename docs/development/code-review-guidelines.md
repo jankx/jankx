@@ -185,7 +185,7 @@ class WordPressIntegrationTest extends TestCase
  * - get_current_screen() - Get current admin screen
  *
  * @package Jankx\Services
- * @since 2.0.1
+ * @since 2.0.0
  */
 class GutenbergBlocksService
 {
@@ -194,7 +194,7 @@ class GutenbergBlocksService
      *
      * @param string $content Post content
      * @return bool True if content has blocks
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function hasBlocks(string $content): bool
     {

@@ -31,6 +31,149 @@ Service Container là core component của Jankx 2.0, quản lý dependency inje
 └─────────────────────────────────────┘
 ```
 
+## 🔧 Container Access Patterns
+
+Jankx 2.0 cung cấp nhiều cách để truy cập container, tùy theo context và preference:
+
+### 1. Direct Container Injection (Recommended)
+```php
+// ✅ RECOMMENDED - Trong Bootstrapper classes
+class AdminBootstrapper extends AbstractBootstrapper
+{
+    public function bootstrap(Container $container): void
+    {
+        $this->container = $container;
+
+        // Sử dụng container trực tiếp
+        $service = $this->container->make(\Jankx\Services\BlockParserService::class);
+    }
+}
+```
+
+### 2. Application Facade (Static Access)
+```php
+// ✅ CONVENIENT - Static access từ bất kỳ đâu
+use Jankx\Facades\Application;
+
+$service = Application::make(\Jankx\Services\BlockParserService::class);
+$service = Application::bound('service.name');
+Application::singleton('service.name', ServiceClass::class);
+```
+
+### 3. Jankx Singleton (Global Access)
+```php
+// ✅ SIMPLE - Truy cập global container
+$service = \Jankx\Jankx::getInstance()->make(\Jankx\Services\BlockParserService::class);
+```
+
+### 4. Helper Function (Proposed)
+```php
+// ✅ CONVENIENT - Helper function (có thể thêm)
+function jankx() {
+    return \Jankx\Jankx::getInstance();
+}
+
+// Sử dụng
+$service = jankx()->make(\Jankx\Services\BlockParserService::class);
+```
+
+### 5. Service-Specific Facades
+```php
+// ✅ SPECIALIZED - Facades cho specific services
+use Jankx\Facades\User;
+use Jankx\Facades\Logger;
+
+$user = User::get(1);
+Logger::info('Message');
+```
+
+## 🎯 Usage Guidelines
+
+### **Khi nào dùng cách nào:**
+
+#### **1. Direct Container Injection** ✅ **BEST PRACTICE**
+```php
+// Trong Bootstrapper classes
+class FrontendBootstrapper extends AbstractBootstrapper
+{
+    public function bootstrap(Container $container): void
+    {
+        $this->container = $container;
+
+        // Sử dụng injected container
+        $assetManager = $this->container->make(\Jankx\Assets\AssetManager::class);
+        $seoManager = $this->container->make(\Jankx\SEO\SEOManager::class);
+    }
+}
+```
+
+**Ưu điểm:**
+- Dependency injection rõ ràng
+- Dễ test
+- Type hinting
+- Performance tốt nhất
+
+#### **2. Application Facade** ✅ **CONVENIENT**
+```php
+// Trong các helper functions hoặc global context
+use Jankx\Facades\Application;
+
+function getBlockService() {
+    return Application::make(\Jankx\Services\BlockParserService::class);
+}
+
+// Hoặc trong template files
+$userService = Application::make(\Jankx\Services\UserService::class);
+```
+
+**Ưu điểm:**
+- Static access từ bất kỳ đâu
+- Clean API
+- Không cần inject container
+
+#### **3. Jankx Singleton** ✅ **SIMPLE**
+```php
+// Trong legacy code hoặc quick access
+$service = \Jankx\Jankx::getInstance()->make(Service::class);
+
+// Hoặc với helper function
+function jankx() {
+    return \Jankx\Jankx::getInstance();
+}
+
+$service = jankx()->make(Service::class);
+```
+
+**Ưu điểm:**
+- Đơn giản nhất
+- Tương thích với code cũ
+- Global access
+
+#### **4. Service-Specific Facades** ✅ **SPECIALIZED**
+```php
+// Cho các services có API phức tạp
+use Jankx\Facades\User;
+use Jankx\Facades\Logger;
+
+$user = User::get(1, ['name', 'email']);
+Logger::error('Error message', ['context' => 'debug']);
+```
+
+**Ưu điểm:**
+- API chuyên biệt cho từng service
+- Method chaining
+- Type safety
+
+## 📊 Performance Comparison
+
+| Method | Performance | Testability | Clean Code | Global Access |
+|--------|-------------|-------------|------------|---------------|
+| **Direct Injection** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ❌ |
+| **Application Facade** | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ✅ |
+| **Jankx Singleton** | ⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐ | ✅ |
+| **Helper Function** | ⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐ | ✅ |
+| **Service Facades** | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ✅ |
+
 ## 🔧 Container Implementation
 
 ### Service Container Class

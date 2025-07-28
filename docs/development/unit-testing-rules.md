@@ -1,8 +1,8 @@
-# Testing Guidelines
+# Testing Rules & Guidelines - Jankx 2.0
 
 > **Comprehensive Testing Strategy for Jankx 2.0**
 
-Jankx 2.0 tuân thủ testing best practices với unit tests, integration tests, và automated testing workflows.
+Jankx 2.0 tuân thủ testing best practices với unit tests, integration tests, và automated testing workflows. Tất cả code phải tuân thủ các testing rules này.
 
 ## 🧪 Testing Strategy
 
@@ -31,127 +31,209 @@ Jankx 2.0 tuân thủ testing best practices với unit tests, integration tests
 └─────────────────────────────────────┘
 ```
 
+## 🎯 Core Requirements
+
+### 1. Mandatory Unit Tests
+
+**All classes and helpers must have comprehensive unit tests.**
+
+- ✅ **Required**: Every class must have a corresponding test file
+- ✅ **Required**: All public methods must be tested
+- ✅ **Required**: Test both success and failure scenarios
+- ✅ **Required**: Use proper mocking for external dependencies
+
+### 2. Test Coverage
+
+- **Minimum Coverage**: 90%+ test coverage for all classes
+- **Coverage Types**: Line coverage, branch coverage, and method coverage
+- **Coverage Reports**: Generate HTML and text coverage reports
+
+### 3. Test Structure
+
+```
+tests/
+├── Unit/
+│   ├── Helpers/
+│   │   ├── BootstrapperHelperTest.php
+│   │   └── DeferredServiceHelperTest.php
+│   ├── Services/
+│   │   ├── UserServiceTest.php
+│   │   ├── BlockParserServiceTest.php
+│   │   └── GutenbergBlocksServiceTest.php
+│   ├── Facades/
+│   │   ├── UserFacadeTest.php
+│   │   └── KernelFacadeTest.php
+│   └── Bootstrappers/
+│       ├── CoreBootstrapperTest.php
+│       └── FrontendBootstrapperTest.php
+├── Integration/
+│   ├── ServiceIntegrationTest.php
+│   └── WorkflowIntegrationTest.php
+├── E2E/
+│   └── GutenbergE2ETest.php
+└── Performance/
+    └── PerformanceTest.php
+```
+
 ## 🔧 Unit Testing
 
-### Test Structure
+### 1. Helper Class Testing
+
+Helper classes contain static methods and must be tested thoroughly:
+
 ```php
-<?php
-namespace Jankx\Tests\Unit;
-
-use PHPUnit\Framework\TestCase;
-use Jankx\User\UserService;
-use Jankx\User\UserRepository;
-use Jankx\User\UserValidator;
-
-class UserServiceTest extends TestCase
+class ExampleHelperTest extends TestCase
 {
-    private $userService;
-    private $userRepository;
-    private $userValidator;
-
-    protected function setUp(): void
+    public function testFormatDataWithValidInput(): void
     {
-        $this->userRepository = $this->createMock(UserRepository::class);
-        $this->userValidator = $this->createMock(UserValidator::class);
-        $this->userService = new UserService($this->userRepository, $this->userValidator);
+        $input = ['test', 'data'];
+        $result = ExampleHelper::formatData($input);
+
+        $this->assertIsArray($result);
+        $this->assertCount(2, $result);
     }
 
-    public function testCreateUserWithValidData()
+    public function testFormatDataWithEmptyInput(): void
     {
-        // Arrange
-        $userData = [
-            'name' => 'John Doe',
-            'email' => 'john@example.com',
-            'password' => 'secure123'
-        ];
+        $input = [];
+        $result = ExampleHelper::formatData($input);
 
-        $user = new User(1, 'John Doe', 'john@example.com');
-
-        $this->userValidator->expects($this->once())
-            ->method('validate')
-            ->with($userData)
-            ->willReturn(true);
-
-        $this->userRepository->expects($this->once())
-            ->method('create')
-            ->with($userData)
-            ->willReturn($user);
-
-        // Act
-        $result = $this->userService->createUser($userData);
-
-        // Assert
-        $this->assertEquals($user, $result);
-        $this->assertEquals('John Doe', $result->getName());
-        $this->assertEquals('john@example.com', $result->getEmail());
+        $this->assertIsArray($result);
+        $this->assertEmpty($result);
     }
 
-    public function testCreateUserWithInvalidData()
+    public function testValidateInputWithValidString(): void
     {
-        // Arrange
-        $userData = [
-            'name' => '',
-            'email' => 'invalid-email',
-            'password' => '123'
-        ];
+        $input = 'valid input';
+        $result = ExampleHelper::validateInput($input);
 
-        $this->userValidator->expects($this->once())
-            ->method('validate')
-            ->with($userData)
-            ->willReturn(false);
-
-        // Act & Assert
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid user data');
-
-        $this->userService->createUser($userData);
+        $this->assertTrue($result);
     }
 
-    public function testGetUserById()
+    public function testValidateInputWithEmptyString(): void
     {
-        // Arrange
-        $userId = 1;
-        $user = new User($userId, 'John Doe', 'john@example.com');
+        $input = '';
+        $result = ExampleHelper::validateInput($input);
 
-        $this->userRepository->expects($this->once())
-            ->method('find')
-            ->with($userId)
-            ->willReturn($user);
-
-        // Act
-        $result = $this->userService->getUser($userId);
-
-        // Assert
-        $this->assertEquals($user, $result);
-    }
-
-    public function testGetUserByIdNotFound()
-    {
-        // Arrange
-        $userId = 999;
-
-        $this->userRepository->expects($this->once())
-            ->method('find')
-            ->with($userId)
-            ->willReturn(null);
-
-        // Act
-        $result = $this->userService->getUser($userId);
-
-        // Assert
-        $this->assertNull($result);
+        $this->assertFalse($result);
     }
 }
 ```
 
-### Block Testing
+### 2. Service Class Testing
+
+Service classes contain instance methods and require dependency mocking:
+
 ```php
-<?php
-namespace Jankx\Tests\Unit\Gutenberg;
+class ExampleServiceTest extends TestCase
+{
+    private $mockRepository;
+    private $service;
 
-use PHPUnit\Framework\TestCase;
-use Jankx\Gutenberg\Blocks\TestimonialBlock;
+    protected function setUp(): void
+    {
+        $this->mockRepository = $this->createMock(ExampleRepository::class);
+        $this->service = new ExampleService($this->mockRepository);
+    }
 
+    public function testProcessDataSuccessfully(): void
+    {
+        $inputData = ['test' => 'data'];
+        $expectedResult = ['test' => 'data', 'id' => 123];
+
+        $this->mockRepository
+            ->expects($this->once())
+            ->method('save')
+            ->with($this->arrayHasKey('test'))
+            ->willReturn($expectedResult);
+
+        $result = $this->service->processData($inputData);
+
+        $this->assertEquals($expectedResult, $result);
+    }
+
+    public function testProcessDataThrowsException(): void
+    {
+        $inputData = ['invalid' => 'data'];
+
+        $this->mockRepository
+            ->expects($this->once())
+            ->method('save')
+            ->willThrowException(new \Exception('Database error'));
+
+        $this->expectException(\Exception::class);
+        $this->service->processData($inputData);
+    }
+}
+```
+
+### 3. WordPress Function Mocking
+
+Mock WordPress functions to isolate tests:
+
+```php
+class WordPressMockTest extends TestCase
+{
+    public function testGetUserDataWithMockedWordPressFunctions(): void
+    {
+        // Mock WordPress functions
+        $this->mockFunction('get_user_by', function($field, $value) {
+            return (object) [
+                'ID' => 1,
+                'user_login' => 'testuser',
+                'user_email' => 'test@example.com'
+            ];
+        });
+
+        $this->mockFunction('wp_cache_get', function($key) {
+            return false; // Simulate cache miss
+        });
+
+        $this->mockFunction('wp_cache_set', function($key, $data) {
+            return true; // Simulate successful cache set
+        });
+
+        $userService = new UserService();
+        $result = $userService->getUser(1);
+
+        $this->assertIsArray($result);
+        $this->assertEquals(1, $result['id']);
+    }
+}
+```
+
+### 4. Exception Testing
+
+Test both success and failure scenarios:
+
+```php
+public function testGetUserWithInvalidId(): void
+{
+    $this->expectException(\InvalidArgumentException::class);
+    $this->expectExceptionMessage('Invalid user ID');
+
+    $userService = new UserService();
+    $userService->getUser(-1);
+}
+
+public function testGetUserWithNonExistentId(): void
+{
+    $this->mockFunction('get_user_by', function($field, $value) {
+        return false;
+    });
+
+    $userService = new UserService();
+    $result = $userService->getUser(999);
+
+    $this->assertNull($result);
+}
+```
+
+### 5. Block Testing
+
+Test Gutenberg blocks thoroughly:
+
+```php
 class TestimonialBlockTest extends TestCase
 {
     private $block;
@@ -230,16 +312,48 @@ class TestimonialBlockTest extends TestCase
 
 ## 🔄 Integration Testing
 
-### Service Integration Tests
+### 1. Service Integration Tests
+
+Test complete workflows and interactions:
+
 ```php
-<?php
-namespace Jankx\Tests\Integration;
+class UserServiceIntegrationTest extends TestCase
+{
+    private $userService;
+    private $cacheService;
 
-use PHPUnit\Framework\TestCase;
-use Jankx\Container\ServiceContainer;
-use Jankx\Providers\AssetServiceProvider;
-use Jankx\Providers\GutenbergServiceProvider;
+    protected function setUp(): void
+    {
+        $this->cacheService = new CacheService();
+        $this->userService = new UserService($this->cacheService);
+    }
 
+    public function testCompleteUserWorkflow(): void
+    {
+        // Test user creation
+        $userData = ['name' => 'John Doe', 'email' => 'john@example.com'];
+        $user = $this->userService->createUser($userData);
+
+        $this->assertIsArray($user);
+        $this->assertEquals('John Doe', $user['name']);
+
+        // Test user retrieval
+        $retrievedUser = $this->userService->getUser($user['id']);
+
+        $this->assertEquals($user['id'], $retrievedUser['id']);
+        $this->assertEquals($user['name'], $retrievedUser['name']);
+
+        // Test cache functionality
+        $cachedUser = $this->userService->getUser($user['id']);
+
+        $this->assertEquals($retrievedUser, $cachedUser);
+    }
+}
+```
+
+### 2. Service Provider Integration Tests
+
+```php
 class ServiceIntegrationTest extends TestCase
 {
     private $container;
@@ -285,19 +399,11 @@ class ServiceIntegrationTest extends TestCase
 }
 ```
 
-### AJAX Integration Tests
+### 3. AJAX Integration Tests
+
 ```php
-<?php
-namespace Jankx\Tests\Integration;
-
-use PHPUnit\Framework\TestCase;
-// AJAXHandler removed - only core Gutenberg system remains
-use Jankx\Gutenberg\AJAX\ContentRenderer;
-use Jankx\Security\SecurityManager;
-
 class AJAXIntegrationTest extends TestCase
 {
-    private $handler;
     private $renderer;
     private $securityManager;
 
@@ -305,7 +411,6 @@ class AJAXIntegrationTest extends TestCase
     {
         $this->renderer = $this->createMock(ContentRenderer::class);
         $this->securityManager = $this->createMock(SecurityManager::class);
-        // AJAXHandler removed - only core Gutenberg system remains
     }
 
     public function testLoadContentWithValidRequest()
@@ -359,14 +464,6 @@ class AJAXIntegrationTest extends TestCase
 
 ### E2E Test Setup
 ```php
-<?php
-namespace Jankx\Tests\E2E;
-
-use PHPUnit\Framework\TestCase;
-use Facebook\WebDriver\Remote\RemoteWebDriver;
-use Facebook\WebDriver\WebDriverBy;
-use Facebook\WebDriver\WebDriverExpectedCondition;
-
 class GutenbergE2ETest extends TestCase
 {
     private $driver;
@@ -498,11 +595,6 @@ class GutenbergE2ETest extends TestCase
 
 ### Performance Test Suite
 ```php
-<?php
-namespace Jankx\Tests\Performance;
-
-use PHPUnit\Framework\TestCase;
-
 class PerformanceTest extends TestCase
 {
     public function testBlockRenderingPerformance()
@@ -539,7 +631,6 @@ class PerformanceTest extends TestCase
             'nonce' => wp_create_nonce('jankx_ajax_nonce')
         ];
 
-        // AJAXHandler removed - only core Gutenberg system remains
         $handler->handleLoadContent();
 
         $endTime = microtime(true);
@@ -576,13 +667,13 @@ class PerformanceTest extends TestCase
 
 ### PHPUnit Configuration
 ```xml
-<!-- phpunit.xml -->
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
          bootstrap="tests/bootstrap.php"
          colors="true"
          verbose="true">
+
     <testsuites>
         <testsuite name="Unit Tests">
             <directory>tests/Unit</directory>
@@ -600,13 +691,27 @@ class PerformanceTest extends TestCase
 
     <coverage>
         <include>
-            <directory suffix=".php">includes/Jankx</directory>
+            <directory suffix=".php">includes/Jankx/</directory>
         </include>
         <exclude>
+            <directory>includes/Jankx/I18n/</directory>
+            <directory>includes/Jankx/Views/</directory>
             <directory>includes/Jankx/Tests</directory>
             <directory>vendor</directory>
         </exclude>
+        <report>
+            <html outputDirectory="coverage-report/"/>
+            <text outputFile="coverage-report/coverage.txt"/>
+        </report>
     </coverage>
+
+    <filter>
+        <whitelist>
+            <include>
+                <directory suffix=".php">includes/Jankx/</directory>
+            </include>
+        </whitelist>
+    </filter>
 
     <php>
         <env name="WP_ENV" value="testing"/>
@@ -629,7 +734,6 @@ require_once dirname(__DIR__) . '/includes/framework.php';
 
 // Set up test environment
 define('JANKX_TESTING', true);
-// Version is now handled by Jankx::getFrameworkVersion()
 
 // Initialize test database
 if (!defined('WP_TESTS_DIR')) {
@@ -642,74 +746,182 @@ require_once __DIR__ . '/helpers/BlockTestHelper.php';
 require_once __DIR__ . '/helpers/AJAXTestHelper.php';
 ```
 
-## 📊 Test Reporting
+## 🚀 Running Tests
 
-### Test Coverage Report
+### Basic Test Execution
+```bash
+# Run all tests
+vendor/bin/phpunit
+
+# Run specific test file
+vendor/bin/phpunit tests/Unit/Services/UserServiceTest.php
+
+# Run specific test method
+vendor/bin/phpunit --filter testGetUser tests/Unit/Services/UserServiceTest.php
+
+# Run specific test suite
+vendor/bin/phpunit --testsuite "Unit Tests"
+```
+
+### Coverage Reports
+```bash
+# Generate HTML coverage report
+vendor/bin/phpunit --coverage-html coverage-report/
+
+# Generate text coverage report
+vendor/bin/phpunit --coverage-text coverage-report/coverage.txt
+
+# Generate both HTML and text reports
+vendor/bin/phpunit --coverage-html coverage-report/ --coverage-text coverage-report/coverage.txt
+```
+
+### Continuous Integration
+```yaml
+# .github/workflows/tests.yml
+name: Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress
+
+    - name: Run tests
+      run: vendor/bin/phpunit --coverage-text --coverage-clover coverage.xml
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1
+      with:
+        file: ./coverage.xml
+```
+
+## 📊 Code Review Checklist
+
+When reviewing code, ensure:
+
+- [ ] **All classes have corresponding test files**
+- [ ] **All public methods are tested**
+- [ ] **Both success and failure scenarios are covered**
+- [ ] **External dependencies are properly mocked**
+- [ ] **Test coverage is 90%+**
+- [ ] **Tests are independent and isolated**
+- [ ] **Test names are descriptive and clear**
+- [ ] **Integration tests cover complex workflows**
+- [ ] **Exception handling is tested**
+- [ ] **Edge cases are covered**
+- [ ] **Performance tests are included**
+- [ ] **E2E tests cover critical user flows**
+
+## 🔄 Migration from Jankx 1.x
+
+When migrating from Jankx 1.x to 2.0:
+
+1. **Create Test Files**: Create test files for all classes
+2. **Add Test Coverage**: Ensure 90%+ test coverage
+3. **Mock Dependencies**: Mock WordPress functions and external dependencies
+4. **Test Both Scenarios**: Test both success and failure cases
+5. **Update CI/CD**: Update continuous integration to include test coverage
+6. **Add Performance Tests**: Include performance benchmarks
+7. **Add E2E Tests**: Test critical user workflows
+
+## 🎯 Examples
+
+### Helper Class Example
 ```php
-class TestCoverageReporter
+<?php
+namespace Jankx\Tests\Unit\Helpers;
+
+use PHPUnit\Framework\TestCase;
+use Jankx\Helpers\ExampleHelper;
+
+class ExampleHelperTest extends TestCase
 {
-    private $coverageData = [];
-
-    public function generateReport(): string
+    public function testFormatDataWithValidInput(): void
     {
-        $report = "# Test Coverage Report\n\n";
+        $input = ['test', 'data'];
+        $result = ExampleHelper::formatData($input);
 
-        $report .= "## Overall Coverage\n";
-        $report .= "- **Unit Tests**: {$this->getUnitTestCoverage()}%\n";
-        $report .= "- **Integration Tests**: {$this->getIntegrationTestCoverage()}%\n";
-        $report .= "- **E2E Tests**: {$this->getE2ETestCoverage()}%\n";
-
-        $report .= "\n## Component Coverage\n";
-        $report .= $this->getComponentCoverage();
-
-        $report .= "\n## Performance Metrics\n";
-        $report .= $this->getPerformanceMetrics();
-
-        return $report;
+        $this->assertIsArray($result);
+        $this->assertCount(2, $result);
     }
 
-    private function getUnitTestCoverage(): int
+    public function testFormatDataWithEmptyInput(): void
     {
-        // Calculate unit test coverage
-        return 95; // Example value
-    }
+        $input = [];
+        $result = ExampleHelper::formatData($input);
 
-    private function getIntegrationTestCoverage(): int
-    {
-        // Calculate integration test coverage
-        return 85; // Example value
-    }
-
-    private function getE2ETestCoverage(): int
-    {
-        // Calculate E2E test coverage
-        return 70; // Example value
-    }
-
-    private function getComponentCoverage(): string
-    {
-        return "
-- **Kernel System**: 98%
-- **Service Container**: 95%
-- **Gutenberg Blocks**: 92%
-- **AJAX System**: 88%
-- **Security System**: 96%
-- **Performance System**: 90%
-        ";
-    }
-
-    private function getPerformanceMetrics(): string
-    {
-        return "
-- **Block Rendering**: < 100ms
-- **AJAX Response**: < 500ms
-- **Memory Usage**: < 10MB increase
-- **Test Execution**: < 30 seconds
-        ";
+        $this->assertIsArray($result);
+        $this->assertEmpty($result);
     }
 }
 ```
 
+### Service Class Example
+```php
+<?php
+namespace Jankx\Tests\Unit\Services;
+
+use PHPUnit\Framework\TestCase;
+use Jankx\Services\ExampleService;
+use Jankx\Repositories\ExampleRepository;
+
+class ExampleServiceTest extends TestCase
+{
+    private $mockRepository;
+    private $service;
+
+    protected function setUp(): void
+    {
+        $this->mockRepository = $this->createMock(ExampleRepository::class);
+        $this->service = new ExampleService($this->mockRepository);
+    }
+
+    public function testProcessDataSuccessfully(): void
+    {
+        $inputData = ['test' => 'data'];
+        $expectedResult = ['processed' => 'data'];
+
+        $this->mockRepository
+            ->expects($this->once())
+            ->method('save')
+            ->with($this->arrayHasKey('test'))
+            ->willReturn($expectedResult);
+
+        $result = $this->service->processData($inputData);
+
+        $this->assertEquals($expectedResult, $result);
+    }
+}
+```
+
+## 🎉 Conclusion
+
+Following these testing rules ensures:
+
+- **Code Quality**: Comprehensive testing prevents bugs and regressions
+- **Maintainability**: Tests serve as documentation and prevent breaking changes
+- **Confidence**: High test coverage gives confidence in code changes
+- **Refactoring**: Tests enable safe refactoring and improvements
+- **Documentation**: Tests serve as living documentation of expected behavior
+- **Performance**: Performance tests ensure optimal execution
+- **User Experience**: E2E tests ensure critical user flows work correctly
+
+Remember: **All classes must have comprehensive unit tests with 90%+ coverage, and tests must cover both success and failure scenarios. Performance and E2E tests are also mandatory for critical components.**
+
 ---
 
-**Next**: [Migration Guide](./migration.md)
+**Jankx 2.0** - Modern WordPress Theme Framework (Development Version) 🚧
+
+*Last updated: Development Phase*
+*Framework version: 2.0.0-dev*
