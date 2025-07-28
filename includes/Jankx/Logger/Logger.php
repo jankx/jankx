@@ -20,7 +20,7 @@ class Logger
      */
     protected function isRunningTests(): bool
     {
-        return defined('IS_TESTING') && IS_TESTING === 1;
+        return defined('IS_TESTING') && boolval(IS_TESTING);
     }
 
     /**
