@@ -49,6 +49,18 @@ class UserFacadeTest extends TestCase
         $this->assertEquals('Facade User 2', $users[$user2]['display_name']);
     }
 
+    public function testGetBatchUsers()
+    {
+        $user1 = $this->factory->user->create(['display_name' => 'Batch User 1']);
+        $user2 = $this->factory->user->create(['display_name' => 'Batch User 2']);
+
+        $users = User::getBatch([$user1, $user2], ['ID', 'display_name']);
+
+        $this->assertCount(2, $users);
+        $this->assertEquals('Batch User 1', $users[0]['display_name']);
+        $this->assertEquals('Batch User 2', $users[1]['display_name']);
+    }
+
     public function testGetUsersByRole()
     {
         $this->factory->user->create(['role' => 'administrator']);
@@ -156,6 +168,28 @@ class UserFacadeTest extends TestCase
         $this->assertFalse(User::hasRole($userId, 'subscriber'));
     }
 
+    public function testHasAnyRole()
+    {
+        $userId = $this->factory->user->create([
+            'user_login' => 'anyroleuser',
+            'role' => 'administrator'
+        ]);
+
+        $this->assertTrue(User::hasAnyRole($userId, ['administrator', 'editor']));
+        $this->assertFalse(User::hasAnyRole($userId, ['subscriber', 'contributor']));
+    }
+
+    public function testHasAllRoles()
+    {
+        $userId = $this->factory->user->create([
+            'user_login' => 'allroleuser',
+            'role' => 'administrator'
+        ]);
+
+        $this->assertTrue(User::hasAllRoles($userId, ['administrator']));
+        $this->assertFalse(User::hasAllRoles($userId, ['administrator', 'editor']));
+    }
+
     public function testGetMeta()
     {
         $userId = $this->factory->user->create([
@@ -186,6 +220,171 @@ class UserFacadeTest extends TestCase
         $this->assertEquals('updated_value', $meta);
     }
 
+    public function testDeleteMeta()
+    {
+        $userId = $this->factory->user->create([
+            'user_login' => 'deletemetauser',
+            'display_name' => 'Delete Meta User'
+        ]);
+
+        // Set user meta first
+        update_user_meta($userId, 'delete_field', 'delete_value');
+
+        $result = User::deleteMeta($userId, 'delete_field');
+
+        $this->assertTrue($result);
+
+        $meta = User::getMeta($userId, 'delete_field');
+        $this->assertEmpty($meta);
+    }
+
+    public function testGetRegistrationDate()
+    {
+        $userId = $this->factory->user->create([
+            'user_login' => 'regdateuser',
+            'display_name' => 'Reg Date User'
+        ]);
+
+        $regDate = User::getRegistrationDate($userId, 'Y-m-d');
+
+        $this->assertNotNull($regDate);
+        $this->assertIsString($regDate);
+        $this->assertMatchesRegularExpression('/^\d{4}-\d{2}-\d{2}$/', $regDate);
+    }
+
+    public function testGetLastLogin()
+    {
+        $userId = $this->factory->user->create([
+            'user_login' => 'lastloginuser',
+            'display_name' => 'Last Login User'
+        ]);
+
+        // Set last login time
+        update_user_meta($userId, 'last_login', time());
+
+        $lastLogin = User::getLastLogin($userId, 'Y-m-d');
+
+        $this->assertNotNull($lastLogin);
+        $this->assertIsString($lastLogin);
+        $this->assertMatchesRegularExpression('/^\d{4}-\d{2}-\d{2}$/', $lastLogin);
+    }
+
+    public function testUpdateLastLogin()
+    {
+        $userId = $this->factory->user->create([
+            'user_login' => 'updatelastloginuser',
+            'display_name' => 'Update Last Login User'
+        ]);
+
+        $result = User::updateLastLogin($userId);
+
+        $this->assertTrue($result);
+
+        $lastLogin = User::getLastLogin($userId);
+        $this->assertNotNull($lastLogin);
+    }
+
+    public function testGetLoginCount()
+    {
+        $userId = $this->factory->user->create([
+            'user_login' => 'logincountuser',
+            'display_name' => 'Login Count User'
+        ]);
+
+        $count = User::getLoginCount($userId);
+        $this->assertEquals(0, $count);
+    }
+
+    public function testIncrementLoginCount()
+    {
+        $userId = $this->factory->user->create([
+            'user_login' => 'incrementlogincountuser',
+            'display_name' => 'Increment Login Count User'
+        ]);
+
+        $result = User::incrementLoginCount($userId);
+
+        $this->assertTrue($result);
+
+        $count = User::getLoginCount($userId);
+        $this->assertEquals(1, $count);
+    }
+
+    public function testGetStatus()
+    {
+        $userId = $this->factory->user->create([
+            'user_login' => 'statususer',
+            'display_name' => 'Status User'
+        ]);
+
+        $status = User::getStatus($userId);
+        $this->assertEquals('active', $status);
+    }
+
+    public function testSetStatus()
+    {
+        $userId = $this->factory->user->create([
+            'user_login' => 'setstatususer',
+            'display_name' => 'Set Status User'
+        ]);
+
+        $result = User::setStatus($userId, 'inactive');
+
+        $this->assertTrue($result);
+
+        $status = User::getStatus($userId);
+        $this->assertEquals('inactive', $status);
+    }
+
+    public function testIsActive()
+    {
+        $userId = $this->factory->user->create([
+            'user_login' => 'activeuser',
+            'display_name' => 'Active User'
+        ]);
+
+        $this->assertTrue(User::isActive($userId));
+
+        User::setStatus($userId, 'inactive');
+        $this->assertFalse(User::isActive($userId));
+    }
+
+    public function testGetProfileCompletion()
+    {
+        $userId = $this->factory->user->create([
+            'user_login' => 'completionuser',
+            'display_name' => 'Completion User',
+            'user_email' => 'completion@example.com'
+        ]);
+
+        $completion = User::getProfileCompletion($userId);
+
+        $this->assertIsFloat($completion);
+        $this->assertGreaterThan(0, $completion);
+        $this->assertLessThanOrEqual(100, $completion);
+    }
+
+    public function testGetIncompleteProfiles()
+    {
+        $this->factory->user->create([
+            'user_login' => 'incompleteuser1',
+            'display_name' => 'Incomplete User 1',
+            'role' => 'subscriber'
+        ]);
+
+        $this->factory->user->create([
+            'user_login' => 'incompleteuser2',
+            'display_name' => 'Incomplete User 2',
+            'role' => 'subscriber'
+        ]);
+
+        $incompleteUsers = User::getIncompleteProfiles(80.0, ['ID', 'display_name']);
+
+        $this->assertIsArray($incompleteUsers);
+        // Should find users with incomplete profiles
+        $this->assertNotEmpty($incompleteUsers);
+    }
+
     public function testCacheManagement()
     {
         $userId = $this->factory->user->create([
@@ -206,6 +405,31 @@ class UserFacadeTest extends TestCase
         // Should still work
         $user = User::get($userId);
         $this->assertNotNull($user);
+    }
+
+    public function testCacheStatistics()
+    {
+        $userId = $this->factory->user->create([
+            'user_login' => 'statsfacadeuser',
+            'display_name' => 'Stats Facade User'
+        ]);
+
+        // Get user (should be a miss)
+        User::get($userId);
+
+        // Get user again (should be a hit)
+        User::get($userId);
+
+        $stats = User::getCacheStats();
+        $this->assertIsArray($stats);
+        $this->assertArrayHasKey('hits', $stats);
+        $this->assertArrayHasKey('misses', $stats);
+        $this->assertArrayHasKey('sets', $stats);
+
+        $hitRatio = User::getCacheHitRatio();
+        $this->assertIsFloat($hitRatio);
+        $this->assertGreaterThanOrEqual(0, $hitRatio);
+        $this->assertLessThanOrEqual(1, $hitRatio);
     }
 
     public function testClearAllCache()
@@ -233,8 +457,8 @@ class UserFacadeTest extends TestCase
         $this->assertNull($user);
 
         // Test with invalid input
-        $user = User::get('');
-        $this->assertNull($user);
+        $this->expectException(\InvalidArgumentException::class);
+        User::get('');
 
         // Test meta with non-existent user
         $meta = User::getMeta(99999, 'test_field');
@@ -253,7 +477,7 @@ class UserFacadeTest extends TestCase
         ]);
 
         // Add filter to modify user data
-        add_filter('jankx_user_data', function($userData, $filterUserId, $fields) {
+        add_filter('jankx/user/data', function($userData, $filterUserId, $fields) {
             if (is_array($userData)) {
                 $userData['facade_filter'] = 'filtered';
             } elseif (is_object($userData)) {

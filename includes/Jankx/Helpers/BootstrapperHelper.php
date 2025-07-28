@@ -60,7 +60,7 @@ class BootstrapperHelper
     /**
      * Get deferred resolver from container
      */
-    public static function getDeferredResolver($container)
+    public static function getDeferredResolver(Container $container)
     {
         if (!self::isContainerReady($container)) {
             return null;

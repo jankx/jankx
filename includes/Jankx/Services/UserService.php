@@ -18,36 +18,135 @@ class UserService
     private $cache = [];
     private $cacheExpiry = 3600; // 1 hour default
     private $cachePrefix = 'jankx_user_';
+    private $maxCacheSize = 1000; // Limit memory cache size
+    private $cacheStats = [
+        'hits' => 0,
+        'misses' => 0,
+        'sets' => 0,
+    ];
 
     /**
      * Get user information with caching
      *
      * @param int|string $user_id User ID or username/email
-     * @param array $fields Specific fields to retrieve
+     * @param array $fields Specific fields to retrieve. If empty, returns all fields
      * @return array|WP_User|null User data or null if not found
+     * @throws \InvalidArgumentException When user_id is empty
+     * @throws UserServiceException When database query fails
+     *
+     * @example
+     * $user = User::get(1, ['ID', 'display_name']);
+     * $user = User::get('admin', ['user_email']);
      */
     public function getUser($user_id, array $fields = []): mixed
     {
+        // Validate input
+        if (empty($user_id)) {
+            throw new \InvalidArgumentException('User ID cannot be empty');
+        }
+
+        // Sanitize fields
+        $fields = $this->sanitizeFields($fields);
+
         $cacheKey = $this->getCacheKey($user_id, $fields);
-        
+
         // Check cache first
         $cachedData = $this->getFromCache($cacheKey);
         if ($cachedData !== false) {
+            $this->cacheStats['hits']++;
+            $this->triggerCacheHitEvent($cacheKey);
             return $cachedData;
         }
 
+        $this->cacheStats['misses']++;
+
         // Get user data from database
         $userData = $this->fetchUserFromDatabase($user_id, $fields);
-        
+
         if ($userData) {
             // Apply filters to allow customization
             $userData = $this->applyUserFilters($userData, $user_id, $fields);
-            
+
             // Cache the filtered data
             $this->setCache($cacheKey, $userData);
+
+            // Trigger user loaded event
+            $this->triggerUserLoadedEvent($userData, $user_id);
         }
 
         return $userData;
+    }
+
+    /**
+     * Get multiple users by IDs with batch optimization
+     *
+     * @param array $user_ids Array of user IDs
+     * @param array $fields Specific fields to retrieve
+     * @return array Array of user data
+     * @throws \InvalidArgumentException When user_ids is empty
+     */
+    public function getUsers(array $user_ids, array $fields = []): array
+    {
+        if (empty($user_ids)) {
+            throw new \InvalidArgumentException('User IDs array cannot be empty');
+        }
+
+        // Sanitize fields
+        $fields = $this->sanitizeFields($fields);
+
+        // Use batch operation for better performance
+        return $this->getUsersBatch($user_ids, $fields);
+    }
+
+    /**
+     * Get multiple users with batch database query
+     *
+     * @param array $user_ids Array of user IDs
+     * @param array $fields Specific fields to retrieve
+     * @return array Array of user data
+     */
+    public function getUsersBatch(array $user_ids, array $fields = []): array
+    {
+        $cacheKey = $this->getCacheKey('batch_' . md5(serialize($user_ids)), $fields);
+
+        // Check cache first
+        $cachedData = $this->getFromCache($cacheKey);
+        if ($cachedData !== false) {
+            $this->cacheStats['hits']++;
+            return $cachedData;
+        }
+
+        $this->cacheStats['misses']++;
+
+        try {
+            $users = get_users([
+                'include' => $user_ids,
+                'fields' => empty($fields) ? 'all' : $fields,
+            ]);
+
+            if (!empty($users)) {
+                // Apply filters to each user
+                foreach ($users as $key => $user) {
+                    $userId = is_array($user) ? ($user['ID'] ?? null) : ($user->ID ?? null);
+                    $users[$key] = $this->applyUserFilters($user, $userId, $fields);
+                }
+
+                // Cache the filtered data
+                $this->setCache($cacheKey, $users);
+
+                // Trigger batch loaded event
+                $this->triggerBatchUsersLoadedEvent($users, $user_ids);
+            }
+
+            return $users;
+
+        } catch (\Exception $e) {
+            Logger::error('Failed to fetch users batch from database', [
+                'user_ids' => $user_ids,
+                'error' => $e->getMessage(),
+            ]);
+            throw new UserServiceException("Failed to fetch users batch", 0, $e);
+        }
     }
 
     /**
@@ -59,33 +158,12 @@ class UserService
     public function getCurrentUser(array $fields = []): mixed
     {
         $currentUser = wp_get_current_user();
-        
+
         if (!$currentUser->exists()) {
             return null;
         }
 
         return $this->getUser($currentUser->ID, $fields);
-    }
-
-    /**
-     * Get multiple users by IDs
-     *
-     * @param array $user_ids Array of user IDs
-     * @param array $fields Specific fields to retrieve
-     * @return array Array of user data
-     */
-    public function getUsers(array $user_ids, array $fields = []): array
-    {
-        $users = [];
-        
-        foreach ($user_ids as $user_id) {
-            $user = $this->getUser($user_id, $fields);
-            if ($user) {
-                $users[$user_id] = $user;
-            }
-        }
-
-        return $users;
     }
 
     /**
@@ -95,34 +173,55 @@ class UserService
      * @param array $fields Specific fields to retrieve
      * @param int $limit Maximum number of users to retrieve
      * @return array Array of user data
+     * @throws \InvalidArgumentException When role is empty
      */
     public function getUsersByRole(string $role, array $fields = [], int $limit = -1): array
     {
+        if (empty($role)) {
+            throw new \InvalidArgumentException('Role cannot be empty');
+        }
+
+        // Sanitize fields
+        $fields = $this->sanitizeFields($fields);
+
         $cacheKey = $this->getCacheKey("role_{$role}", $fields);
-        
+
         // Check cache first
         $cachedData = $this->getFromCache($cacheKey);
         if ($cachedData !== false) {
+            $this->cacheStats['hits']++;
             return array_slice($cachedData, 0, $limit > 0 ? $limit : count($cachedData));
         }
 
-        $users = get_users([
-            'role' => $role,
-            'fields' => empty($fields) ? 'all' : $fields,
-            'number' => $limit,
-        ]);
+        $this->cacheStats['misses']++;
 
-        if (!empty($users)) {
-            // Apply filters to each user
-            foreach ($users as $key => $user) {
-                $users[$key] = $this->applyUserFilters($user, $user->ID ?? $user['ID'] ?? null, $fields);
+        try {
+            $users = get_users([
+                'role' => $role,
+                'fields' => empty($fields) ? 'all' : $fields,
+                'number' => $limit,
+            ]);
+
+            if (!empty($users)) {
+                // Apply filters to each user
+                foreach ($users as $key => $user) {
+                    $userId = is_array($user) ? ($user['ID'] ?? null) : ($user->ID ?? null);
+                    $users[$key] = $this->applyUserFilters($user, $userId, $fields);
+                }
+
+                // Cache the filtered data
+                $this->setCache($cacheKey, $users);
             }
-            
-            // Cache the filtered data
-            $this->setCache($cacheKey, $users);
-        }
 
-        return $users;
+            return $users;
+
+        } catch (\Exception $e) {
+            Logger::error('Failed to fetch users by role from database', [
+                'role' => $role,
+                'error' => $e->getMessage(),
+            ]);
+            throw new UserServiceException("Failed to fetch users by role: {$role}", 0, $e);
+        }
     }
 
     /**
@@ -132,35 +231,56 @@ class UserService
      * @param array $fields Specific fields to retrieve
      * @param int $limit Maximum number of users to retrieve
      * @return array Array of user data
+     * @throws \InvalidArgumentException When search_term is empty
      */
     public function searchUsers(string $search_term, array $fields = [], int $limit = 10): array
     {
+        if (empty($search_term)) {
+            throw new \InvalidArgumentException('Search term cannot be empty');
+        }
+
+        // Sanitize fields
+        $fields = $this->sanitizeFields($fields);
+
         $cacheKey = $this->getCacheKey("search_{$search_term}", $fields);
-        
+
         // Check cache first
         $cachedData = $this->getFromCache($cacheKey);
         if ($cachedData !== false) {
+            $this->cacheStats['hits']++;
             return array_slice($cachedData, 0, $limit);
         }
 
-        $users = get_users([
-            'search' => "*{$search_term}*",
-            'search_columns' => ['user_login', 'user_email', 'display_name'],
-            'fields' => empty($fields) ? 'all' : $fields,
-            'number' => $limit,
-        ]);
+        $this->cacheStats['misses']++;
 
-        if (!empty($users)) {
-            // Apply filters to each user
-            foreach ($users as $key => $user) {
-                $users[$key] = $this->applyUserFilters($user, $user->ID ?? $user['ID'] ?? null, $fields);
+        try {
+            $users = get_users([
+                'search' => "*{$search_term}*",
+                'search_columns' => ['user_login', 'user_email', 'display_name'],
+                'fields' => empty($fields) ? 'all' : $fields,
+                'number' => $limit,
+            ]);
+
+            if (!empty($users)) {
+                // Apply filters to each user
+                foreach ($users as $key => $user) {
+                    $userId = is_array($user) ? ($user['ID'] ?? null) : ($user->ID ?? null);
+                    $users[$key] = $this->applyUserFilters($user, $userId, $fields);
+                }
+
+                // Cache the filtered data
+                $this->setCache($cacheKey, $users);
             }
-            
-            // Cache the filtered data
-            $this->setCache($cacheKey, $users);
-        }
 
-        return $users;
+            return $users;
+
+        } catch (\Exception $e) {
+            Logger::error('Failed to search users from database', [
+                'search_term' => $search_term,
+                'error' => $e->getMessage(),
+            ]);
+            throw new UserServiceException("Failed to search users: {$search_term}", 0, $e);
+        }
     }
 
     /**
@@ -175,11 +295,13 @@ class UserService
             // Clear all user cache
             $this->cache = [];
             wp_cache_flush_group('jankx_user_cache');
+            $this->triggerCacheClearedEvent('all');
         } else {
             // Clear specific user cache
             $cacheKey = $this->getCacheKey($user_id);
             unset($this->cache[$cacheKey]);
             wp_cache_delete($cacheKey, 'jankx_user_cache');
+            $this->triggerCacheClearedEvent($user_id);
         }
     }
 
@@ -188,9 +310,13 @@ class UserService
      *
      * @param int $seconds Cache expiry time in seconds
      * @return void
+     * @throws \InvalidArgumentException When seconds is negative
      */
     public function setCacheExpiry(int $seconds): void
     {
+        if ($seconds < 0) {
+            throw new \InvalidArgumentException('Cache expiry time cannot be negative');
+        }
         $this->cacheExpiry = $seconds;
     }
 
@@ -202,6 +328,27 @@ class UserService
     public function getCacheExpiry(): int
     {
         return $this->cacheExpiry;
+    }
+
+    /**
+     * Get cache statistics
+     *
+     * @return array Cache statistics
+     */
+    public function getCacheStats(): array
+    {
+        return $this->cacheStats;
+    }
+
+    /**
+     * Get cache hit ratio
+     *
+     * @return float Cache hit ratio (0-1)
+     */
+    public function getCacheHitRatio(): float
+    {
+        $total = $this->cacheStats['hits'] + $this->cacheStats['misses'];
+        return $total > 0 ? $this->cacheStats['hits'] / $total : 0.0;
     }
 
     /**
@@ -248,7 +395,7 @@ class UserService
     }
 
     /**
-     * Set data in cache
+     * Set data in cache with memory management
      *
      * @param string $cacheKey Cache key
      * @param mixed $data Data to cache
@@ -256,6 +403,11 @@ class UserService
      */
     private function setCache(string $cacheKey, mixed $data): void
     {
+        // Check cache size limit
+        if (count($this->cache) >= $this->maxCacheSize) {
+            $this->cleanupCache();
+        }
+
         $cacheData = [
             'data' => $data,
             'expiry' => time() + $this->cacheExpiry,
@@ -266,6 +418,34 @@ class UserService
 
         // Store in WordPress object cache
         wp_cache_set($cacheKey, $cacheData, 'jankx_user_cache', $this->cacheExpiry);
+
+        $this->cacheStats['sets']++;
+    }
+
+    /**
+     * Cleanup old cache entries
+     *
+     * @return void
+     */
+    private function cleanupCache(): void
+    {
+        $currentTime = time();
+        $removed = 0;
+
+        foreach ($this->cache as $key => $data) {
+            if ($data['expiry'] <= $currentTime) {
+                unset($this->cache[$key]);
+                $removed++;
+            }
+        }
+
+        // If still too many entries, remove oldest
+        if (count($this->cache) >= $this->maxCacheSize) {
+            $entries = array_slice($this->cache, 0, count($this->cache) - $this->maxCacheSize + 100, true);
+            foreach ($entries as $key => $data) {
+                unset($this->cache[$key]);
+            }
+        }
     }
 
     /**
@@ -274,6 +454,7 @@ class UserService
      * @param int|string $user_id User ID or username/email
      * @param array $fields Specific fields to retrieve
      * @return array|WP_User|null User data
+     * @throws UserServiceException When database query fails
      */
     private function fetchUserFromDatabase($user_id, array $fields = []): mixed
     {
@@ -311,7 +492,7 @@ class UserService
                 'user_id' => $user_id,
                 'error' => $e->getMessage(),
             ]);
-            return null;
+            throw new UserServiceException("Failed to fetch user: {$user_id}", 0, $e);
         }
     }
 
@@ -326,16 +507,16 @@ class UserService
     private function applyUserFilters(mixed $userData, ?int $user_id, array $fields): mixed
     {
         // Allow plugins and themes to modify user data
-        $filteredData = apply_filters('jankx_user_data', $userData, $user_id, $fields);
-        
+        $filteredData = apply_filters('jankx/user/data', $userData, $user_id, $fields);
+
         // Allow specific field filtering
         if (!empty($fields)) {
-            $filteredData = apply_filters('jankx_user_data_fields', $filteredData, $user_id, $fields);
+            $filteredData = apply_filters('jankx/user/data_fields', $filteredData, $user_id, $fields);
         }
 
         // Allow context-specific filtering
         $context = $this->getCurrentContext();
-        $filteredData = apply_filters("jankx_user_data_{$context}", $filteredData, $user_id, $fields);
+        $filteredData = apply_filters("jankx/user/data_{$context}", $filteredData, $user_id, $fields);
 
         return $filteredData;
     }
@@ -359,4 +540,64 @@ class UserService
             return 'frontend';
         }
     }
-} 
+
+    /**
+     * Sanitize fields array
+     *
+     * @param array $fields Fields to sanitize
+     * @return array Sanitized fields
+     */
+    private function sanitizeFields(array $fields): array
+    {
+        return array_filter($fields, function($field) {
+            return is_string($field) && !empty($field);
+        });
+    }
+
+    /**
+     * Trigger user loaded event
+     *
+     * @param mixed $user User data
+     * @param int $user_id User ID
+     */
+    private function triggerUserLoadedEvent($user, $user_id): void
+    {
+        do_action('jankx/user/loaded', $user, $user_id);
+    }
+
+    /**
+     * Trigger batch users loaded event
+     *
+     * @param array $users Users data
+     * @param array $user_ids User IDs
+     */
+    private function triggerBatchUsersLoadedEvent(array $users, array $user_ids): void
+    {
+        do_action('jankx/user/batch_loaded', $users, $user_ids);
+    }
+
+    /**
+     * Trigger cache hit event
+     *
+     * @param string $cacheKey Cache key
+     */
+    private function triggerCacheHitEvent(string $cacheKey): void
+    {
+        do_action('jankx/user/cache_hit', $cacheKey);
+    }
+
+    /**
+     * Trigger cache cleared event
+     *
+     * @param int $user_id User ID
+     */
+    private function triggerCacheClearedEvent($user_id): void
+    {
+        do_action('jankx/user/cache_cleared', $user_id);
+    }
+}
+
+/**
+ * User Service Exception
+ */
+class UserServiceException extends \Exception {}

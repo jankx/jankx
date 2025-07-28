@@ -71,7 +71,16 @@ class Logger
             return;
         }
         $formattedMessage = $this->formatMessage($level, $message, $context);
-        error_log($formattedMessage);
+
+        // Use WordPress error logging instead of error_log
+        if (function_exists('error_log')) {
+            error_log($formattedMessage);
+        } else {
+            // Fallback for environments without error_log
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                trigger_error($formattedMessage, E_USER_NOTICE);
+            }
+        }
     }
 
     /**

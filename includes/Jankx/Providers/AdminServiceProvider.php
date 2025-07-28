@@ -12,6 +12,9 @@ class AdminServiceProvider extends ServiceProvider
         // Register User Service for admin context
         $this->singleton('user.service', UserService::class);
 
+        // Register BlockParserService
+        $this->singleton(\Jankx\Services\BlockParserService::class, \Jankx\Services\BlockParserService::class);
+
         // Đăng ký helper provider cho admin
         $helperProvider = new AdminHelperProvider($this->container);
         $helperProvider->register();

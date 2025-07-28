@@ -29,6 +29,7 @@ Jankx 2.0 là một WordPress theme framework hiện đại được xây dựng
 
 ### 🔧 Development
 - [Development Guidelines](development/best-practices.md) - Hướng dẫn phát triển
+- [Coding Rules](development/coding-rules.md) - Quy tắc coding cho Jankx 2.0
 - [Coding Standards](development/rules.md) - Tiêu chuẩn code
 - [Code Review Guidelines](development/code-review-guidelines.md) - Hướng dẫn review code
 - [Testing Guidelines](development/testing.md) - Hướng dẫn testing

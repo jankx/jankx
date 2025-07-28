@@ -10,6 +10,7 @@ Jankx Framework cung cấp một hệ thống services mạnh mẽ với caching
 
 #### User Service
 - **File**: [user-service.md](user-service.md)
+- **Improvements**: [user-service-improvements.md](user-service-improvements.md)
 - **Class**: `Jankx\Services\UserService`
 - **Facade**: `Jankx\Facades\User`
 - **Mô tả**: Quản lý user data với caching và filtering
@@ -19,6 +20,9 @@ Jankx Framework cung cấp một hệ thống services mạnh mẽ với caching
   - Context-aware (admin, frontend, API)
   - Meta management
   - Role-based queries
+  - Batch operations cho performance
+  - Cache statistics và monitoring
+  - Enhanced error handling
 
 #### Deferred Service Resolver
 - **File**: [deferred-service-resolver.md](deferred-service-resolver.md)

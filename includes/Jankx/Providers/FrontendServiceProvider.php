@@ -16,6 +16,9 @@ class FrontendServiceProvider extends ServiceProvider
         // Register User Service
         $this->singleton('user.service', UserService::class);
 
+        // Register BlockParserService
+        $this->singleton(\Jankx\Services\BlockParserService::class, \Jankx\Services\BlockParserService::class);
+
         // Add other frontend services here
     }
 

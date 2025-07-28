@@ -141,8 +141,19 @@ class CronKernel extends Kernel implements KernelInterface
      */
     protected function cleanAutoDrafts(): void
     {
-        global $wpdb;
-        $old_drafts = $wpdb->get_col("SELECT ID FROM $wpdb->posts WHERE post_status = 'auto-draft' AND DATE_SUB(CURDATE(), INTERVAL 7 DAY) > post_date");
+        // Use WordPress functions instead of direct database queries
+        $old_drafts = get_posts([
+            'post_status' => 'auto-draft',
+            'date_query' => [
+                [
+                    'before' => '7 days ago',
+                    'inclusive' => false,
+                ]
+            ],
+            'fields' => 'ids',
+            'posts_per_page' => -1,
+        ]);
+
         foreach ($old_drafts as $draft_id) {
             wp_delete_post($draft_id, true);
         }
@@ -154,10 +165,27 @@ class CronKernel extends Kernel implements KernelInterface
      */
     protected function cleanExpiredTransients(): void
     {
-        global $wpdb;
-        $wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE '_transient_timeout_%' AND option_value < UNIX_TIMESTAMP()");
-        $wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE '_transient_%' AND option_name NOT LIKE '_transient_timeout_%'");
+        // Use WordPress functions instead of direct database queries
+        $this->cleanExpiredTransientsUsingWordPress();
         $this->logInfo('Cleaned up expired transients');
+    }
+
+    /**
+     * Clean expired transients using WordPress functions
+     */
+    private function cleanExpiredTransientsUsingWordPress(): void
+    {
+        // Get all transients
+        $transients = get_option('_transient_timeout_*');
+        
+        if ($transients) {
+            foreach ($transients as $transient => $timeout) {
+                if ($timeout < time()) {
+                    $transient_name = str_replace('_transient_timeout_', '', $transient);
+                    delete_transient($transient_name);
+                }
+            }
+        }
     }
 
     /**

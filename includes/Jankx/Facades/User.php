@@ -27,6 +27,8 @@ class User extends Facade
      * @param int|string $user_id User ID or username/email
      * @param array $fields Specific fields to retrieve
      * @return array|WP_User|null User data or null if not found
+     * @throws \InvalidArgumentException When user_id is empty
+     * @throws UserServiceException When database query fails
      */
     public static function get($user_id, array $fields = []): mixed
     {
@@ -47,16 +49,30 @@ class User extends Facade
     }
 
     /**
-     * Get multiple users by IDs
+     * Get multiple users by IDs with batch optimization
      *
      * @param array $user_ids Array of user IDs
      * @param array $fields Specific fields to retrieve
      * @return array Array of user data
+     * @throws \InvalidArgumentException When user_ids is empty
      */
     public static function getMultiple(array $user_ids, array $fields = []): array
     {
         $service = static::getFacadeRoot();
         return $service->getUsers($user_ids, $fields);
+    }
+
+    /**
+     * Get multiple users with batch database query (alias for getMultiple)
+     *
+     * @param array $user_ids Array of user IDs
+     * @param array $fields Specific fields to retrieve
+     * @return array Array of user data
+     * @throws \InvalidArgumentException When user_ids is empty
+     */
+    public static function getBatch(array $user_ids, array $fields = []): array
+    {
+        return static::getMultiple($user_ids, $fields);
     }
 
     /**
@@ -66,6 +82,7 @@ class User extends Facade
      * @param array $fields Specific fields to retrieve
      * @param int $limit Maximum number of users to retrieve
      * @return array Array of user data
+     * @throws \InvalidArgumentException When role is empty
      */
     public static function getByRole(string $role, array $fields = [], int $limit = -1): array
     {
@@ -80,6 +97,7 @@ class User extends Facade
      * @param array $fields Specific fields to retrieve
      * @param int $limit Maximum number of users to retrieve
      * @return array Array of user data
+     * @throws \InvalidArgumentException When search_term is empty
      */
     public static function search(string $search_term, array $fields = [], int $limit = 10): array
     {
@@ -104,6 +122,7 @@ class User extends Facade
      *
      * @param int $seconds Cache expiry time in seconds
      * @return void
+     * @throws \InvalidArgumentException When seconds is negative
      */
     public static function setCacheExpiry(int $seconds): void
     {
@@ -120,6 +139,28 @@ class User extends Facade
     {
         $service = static::getFacadeRoot();
         return $service->getCacheExpiry();
+    }
+
+    /**
+     * Get cache statistics
+     *
+     * @return array Cache statistics
+     */
+    public static function getCacheStats(): array
+    {
+        $service = static::getFacadeRoot();
+        return $service->getCacheStats();
+    }
+
+    /**
+     * Get cache hit ratio
+     *
+     * @return float Cache hit ratio (0-1)
+     */
+    public static function getCacheHitRatio(): float
+    {
+        $service = static::getFacadeRoot();
+        return $service->getCacheHitRatio();
     }
 
     /**
@@ -250,6 +291,32 @@ class User extends Facade
     }
 
     /**
+     * Check if user has any of the specified roles
+     *
+     * @param int|string $user_id User ID or username/email
+     * @param array $roles Array of roles to check
+     * @return bool True if user has any of the roles
+     */
+    public static function hasAnyRole($user_id, array $roles): bool
+    {
+        $userRoles = static::getRoles($user_id);
+        return !empty(array_intersect($roles, $userRoles));
+    }
+
+    /**
+     * Check if user has all of the specified roles
+     *
+     * @param int|string $user_id User ID or username/email
+     * @param array $roles Array of roles to check
+     * @return bool True if user has all of the roles
+     */
+    public static function hasAllRoles($user_id, array $roles): bool
+    {
+        $userRoles = static::getRoles($user_id);
+        return count(array_intersect($roles, $userRoles)) === count($roles);
+    }
+
+    /**
      * Get user meta data
      *
      * @param int|string $user_id User ID or username/email
@@ -296,5 +363,207 @@ class User extends Facade
         }
 
         return $result;
+    }
+
+    /**
+     * Delete user meta data
+     *
+     * @param int|string $user_id User ID or username/email
+     * @param string $key Meta key
+     * @return bool True on successful delete, false on failure
+     */
+    public static function deleteMeta($user_id, string $key): bool
+    {
+        $service = static::getFacadeRoot();
+        $user = $service->getUser($user_id, ['ID']);
+
+        if (!$user) {
+            return false;
+        }
+
+        $userId = is_array($user) ? $user['ID'] : $user->ID;
+        $result = delete_user_meta($userId, $key);
+
+        // Clear cache for this user after meta delete
+        if ($result) {
+            $service->clearCache($userId);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get user registration date
+     *
+     * @param int|string $user_id User ID or username/email
+     * @param string $format Date format (default: 'Y-m-d H:i:s')
+     * @return string|null Registration date or null if not found
+     */
+    public static function getRegistrationDate($user_id, string $format = 'Y-m-d H:i:s'): ?string
+    {
+        $service = static::getFacadeRoot();
+        $user = $service->getUser($user_id, ['user_registered']);
+
+        if (is_array($user) && isset($user['user_registered'])) {
+            return date($format, strtotime($user['user_registered']));
+        } elseif (is_object($user) && isset($user->user_registered)) {
+            return date($format, strtotime($user->user_registered));
+        }
+
+        return null;
+    }
+
+    /**
+     * Get user last login time (requires custom meta field)
+     *
+     * @param int|string $user_id User ID or username/email
+     * @param string $format Date format (default: 'Y-m-d H:i:s')
+     * @return string|null Last login time or null if not found
+     */
+    public static function getLastLogin($user_id, string $format = 'Y-m-d H:i:s'): ?string
+    {
+        $lastLogin = static::getMeta($user_id, 'last_login');
+        
+        if ($lastLogin) {
+            return date($format, (int) $lastLogin);
+        }
+
+        return null;
+    }
+
+    /**
+     * Update user last login time
+     *
+     * @param int|string $user_id User ID or username/email
+     * @return bool True on successful update, false on failure
+     */
+    public static function updateLastLogin($user_id): bool
+    {
+        return static::updateMeta($user_id, 'last_login', time());
+    }
+
+    /**
+     * Get user login count
+     *
+     * @param int|string $user_id User ID or username/email
+     * @return int Login count
+     */
+    public static function getLoginCount($user_id): int
+    {
+        $count = static::getMeta($user_id, 'login_count');
+        return $count ? (int) $count : 0;
+    }
+
+    /**
+     * Increment user login count
+     *
+     * @param int|string $user_id User ID or username/email
+     * @return bool True on successful update, false on failure
+     */
+    public static function incrementLoginCount($user_id): bool
+    {
+        $currentCount = static::getLoginCount($user_id);
+        return static::updateMeta($user_id, 'login_count', $currentCount + 1);
+    }
+
+    /**
+     * Get user status (active, inactive, banned, etc.)
+     *
+     * @param int|string $user_id User ID or username/email
+     * @return string User status
+     */
+    public static function getStatus($user_id): string
+    {
+        $status = static::getMeta($user_id, 'user_status');
+        return $status ?: 'active';
+    }
+
+    /**
+     * Set user status
+     *
+     * @param int|string $user_id User ID or username/email
+     * @param string $status User status
+     * @return bool True on successful update, false on failure
+     */
+    public static function setStatus($user_id, string $status): bool
+    {
+        return static::updateMeta($user_id, 'user_status', $status);
+    }
+
+    /**
+     * Check if user is active
+     *
+     * @param int|string $user_id User ID or username/email
+     * @return bool True if user is active
+     */
+    public static function isActive($user_id): bool
+    {
+        return static::getStatus($user_id) === 'active';
+    }
+
+    /**
+     * Get user profile completion percentage
+     *
+     * @param int|string $user_id User ID or username/email
+     * @return float Completion percentage (0-100)
+     */
+    public static function getProfileCompletion($user_id): float
+    {
+        $service = static::getFacadeRoot();
+        $user = $service->getUser($user_id, [
+            'display_name', 'user_email', 'user_url', 'description'
+        ]);
+
+        if (!$user) {
+            return 0.0;
+        }
+
+        $requiredFields = ['display_name', 'user_email'];
+        $optionalFields = ['user_url', 'description'];
+        
+        $completed = 0;
+        $total = count($requiredFields) + count($optionalFields);
+
+        // Check required fields
+        foreach ($requiredFields as $field) {
+            $value = is_array($user) ? ($user[$field] ?? '') : ($user->$field ?? '');
+            if (!empty($value)) {
+                $completed++;
+            }
+        }
+
+        // Check optional fields
+        foreach ($optionalFields as $field) {
+            $value = is_array($user) ? ($user[$field] ?? '') : ($user->$field ?? '');
+            if (!empty($value)) {
+                $completed++;
+            }
+        }
+
+        return ($completed / $total) * 100;
+    }
+
+    /**
+     * Get users with incomplete profiles
+     *
+     * @param float $minCompletion Minimum completion percentage (default: 50)
+     * @param array $fields Specific fields to retrieve
+     * @return array Array of users with incomplete profiles
+     */
+    public static function getIncompleteProfiles(float $minCompletion = 50.0, array $fields = []): array
+    {
+        $allUsers = static::getByRole('subscriber', $fields);
+        $incompleteUsers = [];
+
+        foreach ($allUsers as $user) {
+            $userId = is_array($user) ? $user['ID'] : $user->ID;
+            $completion = static::getProfileCompletion($userId);
+            
+            if ($completion < $minCompletion) {
+                $incompleteUsers[] = $user;
+            }
+        }
+
+        return $incompleteUsers;
     }
 }

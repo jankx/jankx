@@ -156,16 +156,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/dashboard-framework.git",
-                "reference": "65f541118ff88661809566e8c1b96af64b762287"
+                "reference": "be6886c3fac0554efd4a1cd8b5ff9849f8114164"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/dashboard-framework/zipball/65f541118ff88661809566e8c1b96af64b762287",
-                "reference": "65f541118ff88661809566e8c1b96af64b762287",
+                "url": "https://api.github.com/repos/jankx/dashboard-framework/zipball/be6886c3fac0554efd4a1cd8b5ff9849f8114164",
+                "reference": "be6886c3fac0554efd4a1cd8b5ff9849f8114164",
                 "shasum": ""
             },
             "require": {
-                "jankx/icon-picker": "dev-master"
+                "jankx/icon-picker": "^2.0"
             },
             "default-branch": true,
             "type": "project",
@@ -189,65 +189,24 @@
                 "issues": "https://github.com/jankx/dashboard-framework/issues",
                 "source": "https://github.com/jankx/dashboard-framework/tree/master"
             },
-            "time": "2025-07-19T15:22:22+00:00"
-        },
-        {
-            "name": "jankx/helpers",
-            "version": "1.0.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/jankx/helpers.git",
-                "reference": "def6f1fcc9e30972f4ff964846974b13a3bb303d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/jankx/helpers/zipball/def6f1fcc9e30972f4ff964846974b13a3bb303d",
-                "reference": "def6f1fcc9e30972f4ff964846974b13a3bb303d",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "./loader.php"
-                ],
-                "psr-4": {
-                    "Jankx\\Helpers\\": "src/Helpers"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Puleeno Nguyen",
-                    "email": "puleeno@gmail.com"
-                }
-            ],
-            "description": "The helpers for Jankx Framework",
-            "support": {
-                "issues": "https://github.com/jankx/helpers/issues",
-                "source": "https://github.com/jankx/helpers/tree/1.0.4"
-            },
-            "time": "2024-06-18T14:52:41+00:00"
+            "time": "2025-07-27T17:44:05+00:00"
         },
         {
             "name": "jankx/icon-picker",
-            "version": "dev-master",
+            "version": "v2.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jankx/icon-picker.git",
-                "reference": "0e4f1717732bd83548688dc274df20511e7d6155"
+                "reference": "94cfd0ff88f2dd3ec3b5d0af48d524796a337c61"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jankx/icon-picker/zipball/0e4f1717732bd83548688dc274df20511e7d6155",
-                "reference": "0e4f1717732bd83548688dc274df20511e7d6155",
+                "url": "https://api.github.com/repos/jankx/icon-picker/zipball/94cfd0ff88f2dd3ec3b5d0af48d524796a337c61",
+                "reference": "94cfd0ff88f2dd3ec3b5d0af48d524796a337c61",
                 "shasum": ""
             },
             "require": {
-                "enshrined/svg-sanitize": "^0.18.0",
-                "jankx/helpers": "*"
+                "enshrined/svg-sanitize": "^0.18.0"
             },
             "require-dev": {
                 "wp-coding-standards/wpcs": "^0.10.0"
@@ -255,9 +214,7 @@
             "default-branch": true,
             "type": "wordpress-plugin",
             "autoload": {
-                "files": [
-                    "./icon-picker.php"
-                ]
+                "files": []
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -276,9 +233,9 @@
                 "wordpress"
             ],
             "support": {
-                "source": "https://github.com/jankx/icon-picker/tree/master"
+                "source": "https://github.com/jankx/icon-picker/tree/v2"
             },
-            "time": "2025-06-14T05:56:20+00:00"
+            "time": "2025-07-27T17:41:20+00:00"
         },
         {
             "name": "jankx/option-adapter",

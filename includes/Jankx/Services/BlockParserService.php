@@ -7,7 +7,7 @@ use Jankx\Facades\Logger;
 /**
  * Block Parser Service
  *
- * Handles parsing and counting of Gutenberg blocks
+ * Parses and analyzes Gutenberg blocks
  *
  * @package Jankx\Services
  * @since 2.0.1
@@ -21,7 +21,7 @@ class BlockParserService
      * @return array
      * @since 2.0.1
      */
-    public static function parseBlocks(string $content): array
+    public function parseBlocks(string $content): array
     {
         if (empty($content) || !has_blocks($content)) {
             return [];
@@ -37,7 +37,7 @@ class BlockParserService
      * @return array
      * @since 2.0.1
      */
-    public static function extractBlockNames(array $blocks): array
+    public function extractBlockNames(array $blocks): array
     {
         $blockNames = [];
 
@@ -48,7 +48,7 @@ class BlockParserService
 
             // Recursively check inner blocks
             if (isset($block['innerBlocks']) && is_array($block['innerBlocks'])) {
-                $innerBlocks = self::extractBlockNames($block['innerBlocks']);
+                $innerBlocks = $this->extractBlockNames($block['innerBlocks']);
                 $blockNames = array_merge($blockNames, $innerBlocks);
             }
         }
@@ -63,7 +63,7 @@ class BlockParserService
      * @return array
      * @since 2.0.1
      */
-    public static function countBlockTypes(array $blocks): array
+    public function countBlockTypes(array $blocks): array
     {
         $blockTypes = [];
 
@@ -87,7 +87,7 @@ class BlockParserService
      * @return int
      * @since 2.0.1
      */
-    public static function countAllBlocks(array $blocks): int
+    public function countAllBlocks(array $blocks): int
     {
         $count = 0;
 
@@ -96,223 +96,267 @@ class BlockParserService
 
             // Count inner blocks recursively
             if (!empty($block['innerBlocks'])) {
-                $count += self::countAllBlocks($block['innerBlocks']);
+                $count += $this->countAllBlocks($block['innerBlocks']);
             }
         }
 
         return $count;
     }
 
-
-
     /**
-     * Get comprehensive block statistics
+     * Get block statistics
      *
+     * @param array $blocks
      * @return array
      * @since 2.0.1
      */
-    public static function getBlockStats(): array
+    public function getBlockStats(): array
     {
-        // Use the comprehensive parsing method
-        $allBlocks = self::parseAllContentBlocks();
-
-        // Count blocks correctly
-        $blockTypes = self::countBlockTypes($allBlocks); // Root blocks only
-        $totalBlocks = self::countAllBlocks($allBlocks); // All blocks (including nested)
-
-        return [
-            'total_blocks' => $totalBlocks,
-            'block_types' => $blockTypes,
-            'block_names' => self::extractBlockNames($allBlocks)
+        $stats = [
+            'total_blocks' => 0,
+            'block_types' => [],
+            'unique_blocks' => 0,
+            'nested_blocks' => 0
         ];
+
+        // Get all posts with blocks
+        $posts = get_posts([
+            'post_type' => 'any',
+            'post_status' => 'publish',
+            'posts_per_page' => -1,
+            'meta_query' => [
+                [
+                    'key' => '_jankx_block_stats',
+                    'compare' => 'EXISTS'
+                ]
+            ]
+        ]);
+
+        foreach ($posts as $post) {
+            $postStats = get_post_meta($post->ID, '_jankx_block_stats', true);
+            if (is_array($postStats)) {
+                $stats['total_blocks'] += $postStats['total_blocks'] ?? 0;
+                $stats['nested_blocks'] += $postStats['nested_blocks'] ?? 0;
+
+                if (isset($postStats['block_types'])) {
+                    foreach ($postStats['block_types'] as $blockType => $count) {
+                        if (!isset($stats['block_types'][$blockType])) {
+                            $stats['block_types'][$blockType] = 0;
+                        }
+                        $stats['block_types'][$blockType] += $count;
+                    }
+                }
+            }
+        }
+
+        $stats['unique_blocks'] = count($stats['block_types']);
+
+        return $stats;
     }
 
     /**
-     * Parse blocks from all possible content sources
+     * Parse all content blocks
      *
      * @return array
      * @since 2.0.1
      */
-    public static function parseAllContentBlocks(): array
+    public function parseAllContentBlocks(): array
     {
         $allBlocks = [];
 
-        // Parse current post content (if exists)
-        global $post;
-        if ($post && isset($post->post_content)) {
-            $content = $post->post_content;
-            if (!empty($content) && has_blocks($content)) {
-                $blocks = self::parseBlocks($content);
-                $allBlocks = array_merge($allBlocks, $blocks);
+        // Get all published posts
+        $posts = get_posts([
+            'post_type' => 'any',
+            'post_status' => 'publish',
+            'posts_per_page' => -1
+        ]);
+
+        foreach ($posts as $post) {
+            if (has_blocks($post->post_content)) {
+                        $blocks = $this->parseBlocks($post->post_content);
+        $blockNames = $this->extractBlockNames($blocks);
+                $allBlocks = array_merge($allBlocks, $blockNames);
             }
         }
 
-        return $allBlocks;
+        return array_unique($allBlocks);
     }
 
     /**
-     * Get block statistics at admin_enqueue_scripts hook
+     * Get block stats at admin enqueue
      *
      * @return array
      * @since 2.0.1
      */
-    public static function getBlockStatsAtAdminEnqueue(): array
+    public function getBlockStatsAtAdminEnqueue(): array
     {
-        // Parse blocks at admin_enqueue_scripts to ensure admin content is loaded
-        if (!did_action('admin_enqueue_scripts')) {
-            add_action('admin_enqueue_scripts', function() {
-                return self::getBlockStats();
-            }, 999);
-            return ['total_blocks' => 0, 'block_types' => [], 'block_names' => []];
+        if (!is_admin()) {
+            return [];
         }
 
-        return self::getBlockStats();
+        $stats = $this->getBlockStats();
+
+        Logger::debug('Block stats at admin enqueue', $stats);
+
+        return $stats;
     }
 
     /**
-     * Get block statistics at wp_footer hook
+     * Get block stats at wp_footer
      *
      * @return array
      * @since 2.0.1
      */
-    public static function getBlockStatsAtWpFooter(): array
+    public function getBlockStatsAtWpFooter(): array
     {
-        // Parse blocks at wp_footer to ensure all content is rendered
-        if (!did_action('wp_footer')) {
-            add_action('wp_footer', function() {
-                return self::getBlockStats();
-            }, 999);
-            return ['total_blocks' => 0, 'block_types' => [], 'block_names' => []];
+        if (is_admin()) {
+            return [];
         }
 
-        return self::getBlockStats();
+        $stats = $this->getBlockStats();
+
+        Logger::debug('Block stats at wp_footer', $stats);
+
+        return $stats;
     }
 
     /**
-     * Display debug information in browser
+     * Display debug info
      *
-     * @return void
      * @since 2.0.1
      */
-    public static function displayDebugInfo(): void
+    public function displayDebugInfo(): void
     {
-        $detailedStats = self::getDetailedBlockStats();
-
-        // Only display if there are blocks
-        if ($detailedStats['total_blocks'] <= 0) {
+        if (!defined('WP_DEBUG') || !WP_DEBUG) {
             return;
         }
 
-        echo '<div id="bookix-debug-box" style="position: fixed; top: 10px; right: 10px; background: #f0f0f0; border: 2px solid #333; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 12px; max-width: 400px; z-index: 9999; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">';
-        echo '<h3 style="margin: 0 0 10px 0; color: #333;">📝 Gutenberg Blocks</h3>';
+        $stats = $this->getBlockStats();
 
-        // Content wrapper for minimize/maximize
-        echo '<div class="debug-content">';
+        if (empty($stats['total_blocks'])) {
+            return;
+        }
 
-        // Summary
-        echo '<div style="margin-bottom: 10px;">';
-        echo '<strong>🎯 Summary:</strong><br>';
-        echo 'Formula: ' . $detailedStats['summary']['formula'] . '<br>';
-        echo 'Root Blocks: ' . $detailedStats['summary']['root_count'] . '<br>';
-        echo 'Nested Blocks: ' . $detailedStats['summary']['nested_count'] . '<br>';
-        echo 'Total Blocks: ' . $detailedStats['summary']['total_count'] . '<br>';
+        echo '<div style="background: #f0f0f0; padding: 10px; margin: 10px; border: 1px solid #ccc; font-family: monospace; font-size: 12px;">';
+        echo '<strong>Jankx Block Statistics:</strong><br>';
+        echo 'Total Blocks: ' . $stats['total_blocks'] . '<br>';
+        echo 'Unique Block Types: ' . $stats['unique_blocks'] . '<br>';
+        echo 'Nested Blocks: ' . $stats['nested_blocks'] . '<br>';
+
+        if (!empty($stats['block_types'])) {
+            echo '<br><strong>Block Types:</strong><br>';
+            foreach ($stats['block_types'] as $blockType => $count) {
+                echo '- ' . $blockType . ': ' . $count . '<br>';
+            }
+        }
+
         echo '</div>';
-
-        // Block Types
-        if (!empty($detailedStats['block_types'])) {
-            echo '<div style="margin-bottom: 10px;">';
-            echo '<strong>📋 Root Block Types:</strong><br>';
-            foreach ($detailedStats['block_types'] as $blockType => $count) {
-                echo '• ' . $blockType . ': ' . $count . '<br>';
-            }
-            echo '</div>';
-        }
-
-        // Context
-        echo '<div style="margin-bottom: 10px;">';
-        echo '<strong>🔍 Context:</strong><br>';
-        echo 'URL: ' . ($_SERVER['REQUEST_URI'] ?? 'unknown') . '<br>';
-
-        global $post;
-        if ($post && isset($post->post_content)) {
-            echo 'Post ID: ' . $post->ID . '<br>';
-            echo 'Has Blocks: ' . (has_blocks($post->post_content) ? 'Yes' : 'No') . '<br>';
-        }
-
-        // Add screen info for debugging
-        if (is_admin()) {
-            $currentScreen = get_current_screen();
-            if ($currentScreen) {
-                echo 'Screen: ' . $currentScreen->base . '<br>';
-                echo 'Screen ID: ' . $currentScreen->id . '<br>';
-            }
-        }
-        echo '</div>';
-        echo '</div>'; // Close debug-content
-
-        // Minimize/Maximize button
-        echo '<button id="bookix-debug-toggle" onclick="bookix_toggle_debug()" style="background: #0073aa; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 11px; margin-right: 5px;">📋</button>';
-        echo '<button onclick="this.parentElement.style.display=\'none\'" style="background: #ff4444; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 11px;">✕</button>';
-        echo '</div>';
-
-        // Add JavaScript for minimize/maximize functionality
-        echo '<script>
-        function bookix_toggle_debug() {
-            const debugBox = document.getElementById("bookix-debug-box");
-            const toggleBtn = document.getElementById("bookix-debug-toggle");
-            const content = debugBox.querySelector(".debug-content");
-
-            if (content.style.display === "none") {
-                // Maximize
-                content.style.display = "block";
-                toggleBtn.innerHTML = "📋";
-                toggleBtn.title = "Minimize";
-                debugBox.style.maxWidth = "400px";
-            } else {
-                // Minimize
-                content.style.display = "none";
-                toggleBtn.innerHTML = "📊";
-                toggleBtn.title = "Maximize";
-                debugBox.style.maxWidth = "200px";
-            }
-        }
-
-        // Initialize tooltip
-        document.addEventListener("DOMContentLoaded", function() {
-            const toggleBtn = document.getElementById("bookix-debug-toggle");
-            if (toggleBtn) {
-                toggleBtn.title = "Minimize";
-            }
-        });
-        </script>';
     }
 
     /**
-     * Get detailed block statistics with comprehensive information
+     * Get detailed block statistics
      *
      * @return array
      * @since 2.0.1
      */
-    public static function getDetailedBlockStats(): array
+    public function getDetailedBlockStats(): array
     {
-        $allBlocks = self::parseAllContentBlocks();
-        $blockTypes = self::countBlockTypes($allBlocks);
-        $totalBlocks = self::countAllBlocks($allBlocks);
-        $rootBlocks = count($allBlocks);
-        $nestedBlocks = $totalBlocks - $rootBlocks;
-
-        return [
-            'total_blocks' => $totalBlocks,
-            'root_blocks' => $rootBlocks,
-            'nested_blocks' => $nestedBlocks,
-            'block_types' => $blockTypes,
-            'block_names' => self::extractBlockNames($allBlocks),
-            'summary' => [
-                'root_count' => $rootBlocks,
-                'nested_count' => $nestedBlocks,
-                'total_count' => $totalBlocks,
-                'formula' => $rootBlocks . ' root + ' . $nestedBlocks . ' nested = ' . $totalBlocks . ' total'
-            ]
+        $detailedStats = [
+            'overview' => $this->getBlockStats(),
+            'posts_with_blocks' => [],
+            'block_usage_by_post_type' => [],
+            'most_used_blocks' => [],
+            'recent_blocks' => []
         ];
+
+        // Get posts with blocks
+        $posts = get_posts([
+            'post_type' => 'any',
+            'post_status' => 'publish',
+            'posts_per_page' => -1,
+            'meta_query' => [
+                [
+                    'key' => '_jankx_block_stats',
+                    'compare' => 'EXISTS'
+                ]
+            ]
+        ]);
+
+        $postTypeStats = [];
+        $blockUsage = [];
+
+        foreach ($posts as $post) {
+            $postStats = get_post_meta($post->ID, '_jankx_block_stats', true);
+            if (is_array($postStats)) {
+                $detailedStats['posts_with_blocks'][] = [
+                    'id' => $post->ID,
+                    'title' => $post->post_title,
+                    'type' => $post->post_type,
+                    'stats' => $postStats
+                ];
+
+                // Aggregate by post type
+                if (!isset($postTypeStats[$post->post_type])) {
+                    $postTypeStats[$post->post_type] = [
+                        'total_blocks' => 0,
+                        'unique_blocks' => 0,
+                        'posts_count' => 0
+                    ];
+                }
+                $postTypeStats[$post->post_type]['total_blocks'] += $postStats['total_blocks'] ?? 0;
+                $postTypeStats[$post->post_type]['posts_count']++;
+
+                // Aggregate block usage
+                if (isset($postStats['block_types'])) {
+                    foreach ($postStats['block_types'] as $blockType => $count) {
+                        if (!isset($blockUsage[$blockType])) {
+                            $blockUsage[$blockType] = 0;
+                        }
+                        $blockUsage[$blockType] += $count;
+                    }
+                }
+            }
+        }
+
+        $detailedStats['block_usage_by_post_type'] = $postTypeStats;
+
+        // Sort blocks by usage
+        arsort($blockUsage);
+        $detailedStats['most_used_blocks'] = array_slice($blockUsage, 0, 10, true);
+
+        // Get recent blocks (last 30 days)
+        $recentPosts = get_posts([
+            'post_type' => 'any',
+            'post_status' => 'publish',
+            'posts_per_page' => -1,
+            'date_query' => [
+                [
+                    'after' => '30 days ago'
+                ]
+            ],
+            'meta_query' => [
+                [
+                    'key' => '_jankx_block_stats',
+                    'compare' => 'EXISTS'
+                ]
+            ]
+        ]);
+
+        $recentBlocks = [];
+        foreach ($recentPosts as $post) {
+            $postStats = get_post_meta($post->ID, '_jankx_block_stats', true);
+            if (is_array($postStats) && isset($postStats['block_types'])) {
+                foreach ($postStats['block_types'] as $blockType => $count) {
+                    if (!isset($recentBlocks[$blockType])) {
+                        $recentBlocks[$blockType] = 0;
+                    }
+                    $recentBlocks[$blockType] += $count;
+                }
+            }
+        }
+        arsort($recentBlocks);
+        $detailedStats['recent_blocks'] = array_slice($recentBlocks, 0, 10, true);
+
+        return $detailedStats;
     }
 }

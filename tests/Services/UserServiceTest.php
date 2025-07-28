@@ -93,6 +93,21 @@ class UserServiceTest extends TestCase
         $this->assertEquals($userId, $currentUser->ID);
     }
 
+    public function testGetUsersBatch()
+    {
+        $user1 = $this->factory->user->create(['display_name' => 'User 1']);
+        $user2 = $this->factory->user->create(['display_name' => 'User 2']);
+        $user3 = $this->factory->user->create(['display_name' => 'User 3']);
+
+        $users = $this->userService->getUsersBatch([$user1, $user2, $user3], ['ID', 'display_name']);
+
+        $this->assertCount(3, $users);
+        $this->assertIsArray($users[0]);
+        $this->assertEquals('User 1', $users[0]['display_name']);
+        $this->assertEquals('User 2', $users[1]['display_name']);
+        $this->assertEquals('User 3', $users[2]['display_name']);
+    }
+
     public function testGetUsersByRole()
     {
         // Create admin users
@@ -169,6 +184,28 @@ class UserServiceTest extends TestCase
         $this->assertNotNull($user);
     }
 
+    public function testCacheStatistics()
+    {
+        $userId = $this->factory->user->create([
+            'user_login' => 'statsuser',
+            'display_name' => 'Stats User'
+        ]);
+
+        // Get user (should be a miss)
+        $this->userService->getUser($userId);
+
+        // Get user again (should be a hit)
+        $this->userService->getUser($userId);
+
+        $stats = $this->userService->getCacheStats();
+        $this->assertEquals(1, $stats['hits']);
+        $this->assertEquals(1, $stats['misses']);
+        $this->assertEquals(1, $stats['sets']);
+
+        $hitRatio = $this->userService->getCacheHitRatio();
+        $this->assertEquals(0.5, $hitRatio);
+    }
+
     public function testUserFilters()
     {
         $userId = $this->factory->user->create([
@@ -177,7 +214,7 @@ class UserServiceTest extends TestCase
         ]);
 
         // Add a filter to modify user data
-        add_filter('jankx_user_data', function($userData, $filterUserId, $fields) {
+        add_filter('jankx/user/data', function($userData, $filterUserId, $fields) {
             if (is_array($userData)) {
                 $userData['custom_field'] = 'filtered_value';
             } elseif (is_object($userData)) {
@@ -203,7 +240,7 @@ class UserServiceTest extends TestCase
         ]);
 
         // Add context-specific filter
-        add_filter('jankx_user_data_admin', function($userData, $filterUserId, $fields) {
+        add_filter('jankx/user/data_admin', function($userData, $filterUserId, $fields) {
             if (is_array($userData)) {
                 $userData['admin_context'] = true;
             } elseif (is_object($userData)) {
@@ -231,8 +268,111 @@ class UserServiceTest extends TestCase
         $this->assertNull($user);
 
         // Test with invalid input
-        $user = $this->userService->getUser('');
-        $this->assertNull($user);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->userService->getUser('');
+    }
+
+    public function testInputValidation()
+    {
+        // Test empty user ID
+        $this->expectException(\InvalidArgumentException::class);
+        $this->userService->getUser('');
+
+        // Test empty user IDs array
+        $this->expectException(\InvalidArgumentException::class);
+        $this->userService->getUsers([]);
+
+        // Test empty role
+        $this->expectException(\InvalidArgumentException::class);
+        $this->userService->getUsersByRole('');
+
+        // Test empty search term
+        $this->expectException(\InvalidArgumentException::class);
+        $this->userService->searchUsers('');
+
+        // Test negative cache expiry
+        $this->expectException(\InvalidArgumentException::class);
+        $this->userService->setCacheExpiry(-1);
+    }
+
+    public function testEventHooks()
+    {
+        $userId = $this->factory->user->create([
+            'user_login' => 'eventuser',
+            'display_name' => 'Event User'
+        ]);
+
+        $userLoaded = false;
+        $cacheHit = false;
+        $cacheCleared = false;
+
+        // Listen for user loaded event
+        add_action('jankx/user/loaded', function($user, $user_id) use (&$userLoaded) {
+            $userLoaded = true;
+        }, 10, 2);
+
+        // Listen for cache hit event
+        add_action('jankx/user/cache_hit', function($cacheKey) use (&$cacheHit) {
+            $cacheHit = true;
+        });
+
+        // Listen for cache cleared event
+        add_action('jankx/user/cache_cleared', function($user_id) use (&$cacheCleared) {
+            $cacheCleared = true;
+        });
+
+        // Get user (should trigger user_loaded event)
+        $this->userService->getUser($userId);
+        $this->assertTrue($userLoaded);
+
+        // Get user again (should trigger cache_hit event)
+        $this->userService->getUser($userId);
+        $this->assertTrue($cacheHit);
+
+        // Clear cache (should trigger cache_cleared event)
+        $this->userService->clearCache($userId);
+        $this->assertTrue($cacheCleared);
+    }
+
+    public function testBatchEventHooks()
+    {
+        $user1 = $this->factory->user->create(['display_name' => 'Batch User 1']);
+        $user2 = $this->factory->user->create(['display_name' => 'Batch User 2']);
+
+        $batchLoaded = false;
+
+        // Listen for batch users loaded event
+        add_action('jankx/user/batch_loaded', function($users, $user_ids) use (&$batchLoaded) {
+            $batchLoaded = true;
+        }, 10, 2);
+
+        // Get users batch (should trigger batch_loaded event)
+        $this->userService->getUsersBatch([$user1, $user2]);
+        $this->assertTrue($batchLoaded);
+    }
+
+    public function testMemoryManagement()
+    {
+        // Set a small cache size for testing
+        $this->userService->setCacheExpiry(3600);
+
+        // Create multiple users to test cache cleanup
+        $userIds = [];
+        for ($i = 0; $i < 5; $i++) {
+            $userIds[] = $this->factory->user->create([
+                'user_login' => "memoryuser{$i}",
+                'display_name' => "Memory User {$i}"
+            ]);
+        }
+
+        // Get all users to populate cache
+        foreach ($userIds as $userId) {
+            $this->userService->getUser($userId);
+        }
+
+        // Cache should still work after multiple operations
+        $user = $this->userService->getUser($userIds[0]);
+        $this->assertNotNull($user);
     }
 
     public function testGetMultipleUsers()

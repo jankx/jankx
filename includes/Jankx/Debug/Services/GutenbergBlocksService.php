@@ -139,9 +139,10 @@ class GutenbergBlocksService
     private function hasGutenbergContent(): bool
     {
         // Always try to parse blocks and check the result
+        $blockParserService = \Jankx\Facades\Kernel::getInstance()->make(\Jankx\Services\BlockParserService::class);
         $stats = is_admin()
-            ? BlockParserService::getBlockStatsAtAdminEnqueue()
-            : BlockParserService::getBlockStatsAtWpFooter();
+            ? $blockParserService->getBlockStatsAtAdminEnqueue()
+            : $blockParserService->getBlockStatsAtWpFooter();
 
         // If we found any blocks, return true
         if ($stats['total_blocks'] > 0) {
@@ -233,9 +234,10 @@ class GutenbergBlocksService
     private function parseBlocks(): array
     {
         // Use BlockParserService for comprehensive block parsing
+        $blockParserService = \Jankx\Facades\Kernel::getInstance()->make(\Jankx\Services\BlockParserService::class);
         $stats = is_admin()
-            ? BlockParserService::getBlockStatsAtAdminEnqueue()
-            : BlockParserService::getBlockStatsAtWpFooter();
+            ? $blockParserService->getBlockStatsAtAdminEnqueue()
+            : $blockParserService->getBlockStatsAtWpFooter();
 
         // Debug logging
         Logger::debug('GutenbergBlocksService Debug', [

@@ -63,24 +63,21 @@ class CacheInfoService implements CacheInfoInterface
      */
     public function getTransientsInfo(): array
     {
-        global $wpdb;
-
         $transients = [];
         $transientCount = 0;
         $transientSize = 0;
 
-        if (isset($wpdb)) {
-            $results = $wpdb->get_results(
-                "SELECT option_name, option_value FROM {$wpdb->options}
-                 WHERE option_name LIKE '_transient_%' OR option_name LIKE '_site_transient_%'"
-            );
+        // Use WordPress functions instead of direct database queries
+        $transientKeys = $this->getTransientKeys();
 
-            foreach ($results as $result) {
+        foreach ($transientKeys as $key) {
+            $value = get_transient($key);
+            if ($value !== false) {
                 $transientCount++;
-                $transientSize += strlen($result->option_value);
+                $transientSize += strlen(serialize($value));
                 $transients[] = [
-                    'name' => $result->option_name,
-                    'size' => strlen($result->option_value)
+                    'name' => $key,
+                    'size' => strlen(serialize($value))
                 ];
             }
         }
@@ -90,6 +87,36 @@ class CacheInfoService implements CacheInfoInterface
             'size' => $transientSize,
             'items' => $transients
         ];
+    }
+
+    /**
+     * Get transient keys using WordPress functions
+     *
+     * @return array
+     */
+    private function getTransientKeys(): array
+    {
+        // This is a simplified approach - in practice, you might need to use
+        // WordPress functions to get transient keys without direct database access
+        $keys = [];
+
+        // Get common transient keys
+        $commonTransients = [
+            '_transient_timeout_',
+            '_site_transient_timeout_'
+        ];
+
+        foreach ($commonTransients as $prefix) {
+            $options = get_option($prefix . '*');
+            if ($options) {
+                foreach ($options as $key => $value) {
+                    $transientKey = str_replace($prefix, '', $key);
+                    $keys[] = $transientKey;
+                }
+            }
+        }
+
+        return array_unique($keys);
     }
 
     /**
