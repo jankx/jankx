@@ -31,6 +31,10 @@ class FrontendServiceProvider extends ServiceProvider
         $this->singleton(\Jankx\Adapters\WordPressAdapter::class);
         $this->singleton(\Jankx\Parsers\BlockParser::class);
 
+        // Config Repository
+        $this->singleton('config', \Jankx\Config\Repository::class);
+        $this->singleton(\Jankx\Config\Repository::class);
+
         // Note: Other services like TemplateRenderer, SEOManager, etc.
         // will be registered when their classes are actually created
         // For now, we only register services that exist in the codebase
