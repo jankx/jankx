@@ -243,8 +243,10 @@ ThemeSupportHelper::addGutenbergSupports();
 $container->singleton(\Jankx\Admin\MenuManager::class);
 $container->singleton(\Jankx\Admin\AssetManager::class);
 
-// After: Centralized in ServiceRegistrationHelper
-ServiceRegistrationHelper::registerAdminServices($container);
+// After: Centralized in Service Providers
+$adminProvider = new \Jankx\Providers\AdminServiceProvider($container);
+$adminProvider->register();
+$adminProvider->boot();
 ```
 
 #### Centralized Error Handling
@@ -268,7 +270,7 @@ ErrorHandlingHelper::safeExecute(function() use ($container, $serviceName) {
 ```php
 // Clear, simple method names
 ThemeSupportHelper::addBasicSupports();
-ServiceRegistrationHelper::registerAdminServices();
+$adminProvider->register(); // Service Provider pattern
 ErrorHandlingHelper::safeExecute();
 ```
 
@@ -276,14 +278,15 @@ ErrorHandlingHelper::safeExecute();
 ```php
 // Simple, one-line calls instead of complex logic
 BootstrapperHelper::fireLoadedAction($this->getName(), $container);
-DeferredServiceHelper::registerAdminDeferredServices();
+$deferredProvider = new \Jankx\Providers\AdminServiceProvider($container);
+$deferredProvider->register();
 ```
 
 #### Clear Class Responsibilities
 ```php
 // Each class has one simple purpose
 class ThemeSupportHelper { /* Only theme support */ }
-class ServiceRegistrationHelper { /* Only service registration */ }
+class AdminServiceProvider { /* Only admin services */ }
 class ErrorHandlingHelper { /* Only error handling */ }
 ```
 
@@ -314,9 +317,10 @@ class ThemeSupportHelper
 
 #### Deferred Loading
 ```php
-// Only load services when actually needed
-DeferredServiceHelper::registerAdminDeferredServices();
-// Services are loaded only when admin context is active
+$adminProvider = new \Jankx\Providers\AdminServiceProvider($container);
+$adminProvider->register();
+$adminProvider->boot();
+// Services loaded only when admin context is active
 ```
 
 ## 🔧 Design Patterns
@@ -369,7 +373,9 @@ ThemeSupportHelper::addBasicSupports();
 
 ### 3. Deferred Loading
 ```php
-DeferredServiceHelper::registerAdminDeferredServices();
+$adminProvider = new \Jankx\Providers\AdminServiceProvider($container);
+$adminProvider->register();
+$adminProvider->boot();
 // Services loaded only when admin context is active
 ```
 
@@ -425,8 +431,9 @@ class Bootstrapper
     }
 }
 
-// Uses composition with Helpers
-ServiceRegistrationHelper::registerAdminServices($container);
+// Uses composition with Service Providers
+$adminProvider = new \Jankx\Providers\AdminServiceProvider($container);
+$adminProvider->register();
 ErrorHandlingHelper::safeExecute($callback, $operation);
 ```
 

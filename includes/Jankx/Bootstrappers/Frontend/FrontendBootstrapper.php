@@ -5,10 +5,8 @@ namespace Jankx\Bootstrappers\Frontend;
 use Illuminate\Container\Container;
 use Jankx\Bootstrappers\AbstractBootstrapper;
 use Jankx\Facades\Logger;
-use Jankx\Helpers\ServiceRegistrationHelper;
 use Jankx\Helpers\ErrorHandlingHelper;
 use Jankx\Helpers\BootstrapperHelper;
-use Jankx\Helpers\DeferredServiceHelper;
 
 /**
  * Frontend Bootstrapper
@@ -55,14 +53,16 @@ class FrontendBootstrapper extends AbstractBootstrapper
 
     private function loadEssentialServices(Container $container): void
     {
-        // Services needed immediately
-        ServiceRegistrationHelper::registerFrontendServices($container);
+        // Services needed immediately - now registered through FrontendServiceProvider
+        $provider = new \Jankx\Providers\FrontendServiceProvider($container);
+        $provider->register();
     }
 
     private function deferHeavyServices(Container $container): void
     {
-        // Defer heavy services until actually needed
-        DeferredServiceHelper::registerFrontendDeferredServices();
+        // Defer heavy services until actually needed - now through FrontendServiceProvider
+        $provider = new \Jankx\Providers\FrontendServiceProvider($container);
+        $provider->boot();
     }
 
     private function setupFrontendHooks(): void

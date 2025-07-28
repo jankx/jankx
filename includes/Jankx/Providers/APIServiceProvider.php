@@ -2,81 +2,44 @@
 
 namespace Jankx\Providers;
 
-use Jankx\CLI\Commands\GenerateBlockCommand;
-use Jankx\CLI\Commands\CreateBootstrapperCommand;
-use Jankx\CLI\Commands\ReleaseCommand;
-use Jankx\CLI\Commands\CodingStandardCommand;
-
 /**
- * CLI Service Provider
+ * API Service Provider
  *
- * Registers and boots CLI-specific services
+ * Registers and boots API-specific services
  *
  * @package Jankx\Providers
- * @since 2.0.0
  */
-class CLIServiceProvider extends ServiceProvider
+class APIServiceProvider extends ServiceProvider
 {
-    /**
-     * Register CLI services
-     *
-     * @since 2.0.0
-     */
     public function register()
     {
-        // CLI commands container
-        $this->singleton('cli.commands', function ($container) {
-            return new \Jankx\CLI\CLICommands($container);
-        });
+        // Core API services - only register classes that actually exist
+        // For now, we only register shared services that exist in the codebase
 
-        // Individual CLI commands - only register classes that actually exist
-        $this->singleton('cli.command.generate-block', function ($container) {
-            return new GenerateBlockCommand($container);
-        });
-
-        $this->singleton('cli.command.create-bootstrapper', function ($container) {
-            return new CreateBootstrapperCommand($container);
-        });
-
-        $this->singleton('cli.command.release', function ($container) {
-            return new ReleaseCommand($container);
-        });
-
-        $this->singleton('cli.command.coding-standard', function ($container) {
-            return new CodingStandardCommand($container);
-        });
-
-        // Shared services that exist in the codebase
+        // User service (shared with frontend and admin)
         $this->singleton('user.service', \Jankx\Services\UserService::class);
+
+        // Block parser service (shared with frontend and admin)
         $this->singleton(\Jankx\Services\BlockParserService::class, \Jankx\Services\BlockParserService::class);
+
+        // Deferred service resolver
         $this->singleton(\Jankx\Services\DeferredServiceResolver::class);
         $this->singleton(\Jankx\Services\DeferredServiceMonitor::class);
+
+        // Gutenberg blocks service
         $this->singleton(\Jankx\Services\GutenbergBlocksService::class);
 
         // Dependencies for GutenbergBlocksService
         $this->singleton(\Jankx\Adapters\WordPressAdapter::class);
         $this->singleton(\Jankx\Parsers\BlockParser::class);
 
-        // Note: Other CLI utilities like FileGenerator, CodeGenerator, etc.
+        // Note: API-specific services like APIManager, PostsEndpoint, etc.
         // will be registered when their classes are actually created
         // For now, we only register services that exist in the codebase
     }
 
-    /**
-     * Boot CLI services
-     *
-     * @since 2.0.0
-     */
     public function boot()
     {
-        // Boot CLI commands container
-        if ($this->container->has('cli.commands')) {
-            $cliCommands = $this->container->make('cli.commands');
-            if (method_exists($cliCommands, 'register')) {
-                $cliCommands->register();
-            }
-        }
-
         // Boot user service
         if ($this->container->has('user.service')) {
             $userService = $this->container->make('user.service');
@@ -108,16 +71,5 @@ class CLIServiceProvider extends ServiceProvider
                 $gutenbergBlocksService->initialize();
             }
         }
-    }
-
-    /**
-     * Check if service provider should load
-     *
-     * @since 2.0.0
-     * @return bool
-     */
-    public function shouldLoad(): bool
-    {
-        return defined('WP_CLI') && WP_CLI;
     }
 }

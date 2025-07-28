@@ -4,13 +4,12 @@ namespace Jankx\Providers;
 
 use Illuminate\Container\Container;
 use Jankx\Context\ContextualServiceRegistry;
-use Jankx\Helpers\ServiceRegistrationHelper;
-use Jankx\Helpers\DeferredServiceHelper;
 
 /**
  * Contextual Service Provider
  *
- * Registers services based on current application context
+ * Registers and boots services based on the current context
+ * (admin, frontend, cli, api, etc.)
  *
  * @package Jankx\Providers
  */
@@ -21,15 +20,13 @@ class ContextualServiceProvider extends ServiceProvider
         parent::__construct($container);
     }
 
-    /**
-     * Register services based on current context
-     */
     public function register(): void
     {
-        $context = $this->getCurrentContext();
-
-        // Register core services (always loaded)
+        // Register core services
         $this->registerCoreServices();
+
+        // Get current context
+        $context = $this->getCurrentContext();
 
         // Register context-specific services
         $this->registerContextServices($context);
@@ -38,34 +35,38 @@ class ContextualServiceProvider extends ServiceProvider
         $this->registerDeferredServices($context);
     }
 
-    /**
-     * Boot the service provider
-     */
     public function boot(): void
     {
-        // Boot any services that need to be booted after registration
+        // Get current context
         $context = $this->getCurrentContext();
+
+        // Boot context-specific services
         $this->bootContextServices($context);
     }
 
     /**
-     * Get current application context
+     * Get current context
      */
     private function getCurrentContext(): string
     {
-        return ContextualServiceRegistry::getCurrentContext();
+        if (is_admin()) {
+            return ContextualServiceRegistry::ADMIN;
+        } elseif (defined('WP_CLI') && WP_CLI) {
+            return ContextualServiceRegistry::CLI;
+        } elseif (wp_doing_ajax()) {
+            return ContextualServiceRegistry::API;
+        } else {
+            return ContextualServiceRegistry::FRONTEND;
+        }
     }
 
     /**
-     * Register core services (always loaded)
+     * Register core services
      */
     private function registerCoreServices(): void
     {
-        ServiceRegistrationHelper::registerCoreServices($this->container);
-
-        // Register additional core services
-        $this->container->singleton(\Jankx\Services\GutenbergBlocksService::class);
-        $this->container->singleton(\Jankx\Services\DeferredServiceMonitor::class);
+        // Core services are now registered through specific Service Providers
+        // This method is kept for backward compatibility
     }
 
     /**
@@ -96,29 +97,22 @@ class ContextualServiceProvider extends ServiceProvider
     }
 
     /**
-     * Boot context-specific services
+     * Boot context services
      */
     private function bootContextServices(string $context): void
     {
-        // Boot any services that need to be booted for this context
         switch ($context) {
-            case ContextualServiceRegistry::ADMIN:
+            case 'admin':
                 $this->bootAdminServices();
                 break;
-            case ContextualServiceRegistry::FRONTEND:
+            case 'frontend':
                 $this->bootFrontendServices();
                 break;
-            case ContextualServiceRegistry::API:
+            case 'api':
                 $this->bootAPIServices();
                 break;
-            case ContextualServiceRegistry::CLI:
+            case 'cli':
                 $this->bootCLIServices();
-                break;
-            case ContextualServiceRegistry::GUTENBERG:
-                $this->bootGutenbergServices();
-                break;
-            case ContextualServiceRegistry::WOOCOMMERCE:
-                $this->bootWooCommerceServices();
                 break;
         }
     }
@@ -129,7 +123,7 @@ class ContextualServiceProvider extends ServiceProvider
     private function registerDeferredServices(string $context): void
     {
         // Defer heavy services until actually needed
-        DeferredServiceHelper::registerDeferredServicesForContext($context);
+        \Jankx\Helpers\DeferredServiceHelper::registerDeferredServices($this->container, $context);
     }
 
     /**
@@ -137,7 +131,9 @@ class ContextualServiceProvider extends ServiceProvider
      */
     private function registerAdminServices(): void
     {
-        ServiceRegistrationHelper::registerAdminServices($this->container);
+        // Admin services are now registered through AdminServiceProvider
+        $provider = new AdminServiceProvider($this->container);
+        $provider->register();
     }
 
     /**
@@ -145,7 +141,9 @@ class ContextualServiceProvider extends ServiceProvider
      */
     private function registerFrontendServices(): void
     {
-        ServiceRegistrationHelper::registerFrontendServices($this->container);
+        // Frontend services are now registered through FrontendServiceProvider
+        $provider = new FrontendServiceProvider($this->container);
+        $provider->register();
     }
 
     /**
@@ -153,7 +151,9 @@ class ContextualServiceProvider extends ServiceProvider
      */
     private function registerAPIServices(): void
     {
-        ServiceRegistrationHelper::registerAPIServices($this->container);
+        // API services are now registered through APIServiceProvider
+        $provider = new APIServiceProvider($this->container);
+        $provider->register();
     }
 
     /**
@@ -161,25 +161,9 @@ class ContextualServiceProvider extends ServiceProvider
      */
     private function registerCLIServices(): void
     {
-        // CLI services are minimal for now
-        // Will be implemented when needed
-        // ServiceRegistrationHelper::registerCLIServices($this->container);
-    }
-
-    /**
-     * Register Gutenberg services
-     */
-    private function registerGutenbergServices(): void
-    {
-        ServiceRegistrationHelper::registerGutenbergServices($this->container);
-    }
-
-    /**
-     * Register WooCommerce services
-     */
-    private function registerWooCommerceServices(): void
-    {
-        ServiceRegistrationHelper::registerWooCommerceServices($this->container);
+        // CLI services are now registered through CLIServiceProvider
+        $provider = new CLIServiceProvider($this->container);
+        $provider->register();
     }
 
     /**
@@ -187,7 +171,9 @@ class ContextualServiceProvider extends ServiceProvider
      */
     private function bootAdminServices(): void
     {
-        // Boot admin-specific services
+        // Boot admin services through AdminServiceProvider
+        $provider = new AdminServiceProvider($this->container);
+        $provider->boot();
     }
 
     /**
@@ -195,7 +181,9 @@ class ContextualServiceProvider extends ServiceProvider
      */
     private function bootFrontendServices(): void
     {
-        // Boot frontend-specific services
+        // Boot frontend services through FrontendServiceProvider
+        $provider = new FrontendServiceProvider($this->container);
+        $provider->boot();
     }
 
     /**
@@ -203,7 +191,9 @@ class ContextualServiceProvider extends ServiceProvider
      */
     private function bootAPIServices(): void
     {
-        // Boot API-specific services
+        // Boot API services through APIServiceProvider
+        $provider = new APIServiceProvider($this->container);
+        $provider->boot();
     }
 
     /**
@@ -211,23 +201,9 @@ class ContextualServiceProvider extends ServiceProvider
      */
     private function bootCLIServices(): void
     {
-        // Boot CLI-specific services
-    }
-
-    /**
-     * Boot Gutenberg services
-     */
-    private function bootGutenbergServices(): void
-    {
-        // Boot Gutenberg-specific services
-    }
-
-    /**
-     * Boot WooCommerce services
-     */
-    private function bootWooCommerceServices(): void
-    {
-        // Boot WooCommerce-specific services
+        // Boot CLI services through CLIServiceProvider
+        $provider = new CLIServiceProvider($this->container);
+        $provider->boot();
     }
 
     /**

@@ -1,712 +1,736 @@
-# Bootstrapping Flow
+# Bootstrapping Flow - Jankx Framework
 
-> **Framework Initialization & Service Loading**
+## Tổng quan
 
-Jankx 2.0 sử dụng bootstrapping flow hiện đại để khởi tạo framework, load services và setup environment.
+Bootstrapping Flow là quy trình khởi tạo và khởi động Jankx Framework. Flow này đảm bảo các thành phần được load theo đúng thứ tự và dependencies.
 
-## 🔄 Bootstrapping Architecture
+## Flow chính
 
-### Flow Diagram
 ```
-┌─────────────────────────────────────┐
-│         WordPress Load              │
-│  ┌─────────────┐  ┌─────────────┐  │
-│  │   Theme     │  │  functions  │  │
-│  │  Loading    │  │   .php      │  │
-│  └─────────────┘  └─────────────┘  │
-└─────────────────────────────────────┘
-┌─────────────────────────────────────┐
-│         Framework Bootstrap         │
-│  ┌─────────────┐  ┌─────────────┐  │
-│  │   Jankx     │  │  Kernel     │  │
-│  │ Bootstrap   │  │  Init       │  │
-│  └─────────────┘  └─────────────┘  │
-└─────────────────────────────────────┘
-┌─────────────────────────────────────┐
-│         Service Registration        │
-│  ┌─────────────┐  ┌─────────────┐  │
-│  │   Service   │  │  Provider   │  │
-│  │  Container  │  │  Loading    │  │
-│  └─────────────┘  └─────────────┘  │
-└─────────────────────────────────────┘
-┌─────────────────────────────────────┐
-│         Bootstrappers               │
-│  ┌─────────────┐  ┌─────────────┐  │
-│  │   Admin     │  │  Frontend   │  │
-│  │Bootstrap    │  │Bootstrap    │  │
-│  └─────────────┘  └─────────────┘  │
-└─────────────────────────────────────┘
+Kernel → App → Bootstrapper → Service Provider → Service Boot
 ```
 
-## 🔧 Bootstrapping Implementation
+### 🔄 **Chi tiết từng bước:**
 
-### WordPress Entry Point
+#### 1. **Kernel tạo App**
 ```php
-<?php
-// functions.php
-require_once get_template_directory() . '/includes/framework.php';
-
-// Initialize Jankx framework
-Jankx::getInstance()->bootstrap();
-```
-
-### Framework Bootstrap
-```php
-<?php
-// framework.php
-namespace Jankx;
-
-use Illuminate\Container\Container;
-
-class Jankx extends Container
+// Kernel constructor
+public function __construct(Container $container = null)
 {
-    /**
-     * Instance của class Jankx
-     * @var Jankx
-     */
-    protected static $instance;
+    $this->container = $container ?: Jankx::getInstance();
+    $this->kernelType = $this->getKernelType();
 
-    /**
-     * Lấy instance của Jankx
-     * @return Jankx
-     */
-    public static function getInstance()
-    {
-        if (!self::$instance) {
-            self::$instance = new self();
-        }
-        return self::$instance;
-    }
-
-    /**
-     * Tên của framework
-     * @return string
-     */
-    public static function getFrameworkName(): string
-    {
-        return FrameworkEnum::frameworkName();
-    }
-
-    /**
-     * Phiên bản hiện tại của framework
-     * @return string
-     */
-    public static function getFrameworkVersion(): string
-    {
-        return FrameworkEnum::frameworkVersion();
-    }
-
-    /**
-     * Bootstrap framework
-     */
-    public function bootstrap(): void
-    {
-        // 1. Initialize kernel based on context
-        $this->initializeKernel();
-
-        // 2. Register core services
-        $this->registerCoreServices();
-
-        // 3. Boot kernel
-        $this->bootKernel();
-    }
-
-    private function initializeKernel(): void
-    {
-        // Determine kernel type based on context
-        if (defined('WP_CLI') && WP_CLI) {
-            $this->kernel = new \Jankx\Kernel\CLIKernel($this);
-        } elseif (defined('REST_REQUEST') && REST_REQUEST) {
-            $this->kernel = new \Jankx\Kernel\APIKernel($this);
-        } elseif (wp_doing_ajax()) {
-            $this->kernel = new \Jankx\Kernel\GutenbergAjaxKernel($this);
-        } elseif (is_admin()) {
-            $this->kernel = new \Jankx\Kernel\AdminKernel($this);
-        } else {
-            $this->kernel = new \Jankx\Kernel\FrontendKernel($this);
-        }
-    }
-
-    private function registerCoreServices(): void
-    {
-        $this->singleton(\Jankx\Config\ConfigManager::class);
-        $this->singleton(\Jankx\Assets\AssetManager::class);
-        $this->singleton(\Jankx\Security\SecurityManager::class);
-        $this->singleton(\Jankx\Performance\PerformanceMonitor::class);
-    }
-
-    private function bootKernel(): void
-    {
-        $this->kernel->boot();
-    }
-
-    /**
-     * Get container instance
-     */
-    public function getContainer(): Container
-    {
-        return $this;
-    }
+    $this->registerBootstrappers();
+    $this->registerServices();
+    $this->registerHooks();
+    $this->registerFilters();
 }
 ```
 
-## 🔄 Bootstrapper Classes
-
-### Core Bootstrapper
+#### 2. **App gọi Bootstrapper**
 ```php
-<?php
-namespace Jankx\Bootstrappers\Global;
-
-use Illuminate\Container\Container;
-use Jankx\Bootstrappers\AbstractBootstrapper;
-
-class CoreBootstrapper extends AbstractBootstrapper
+// Kernel::boot() method
+public function boot(): void
 {
-    protected $priority = 5;
-
-    public function getName(): string
-    {
-        return 'core';
+    if ($this->booted) {
+        return;
     }
 
-    public function shouldRun(): bool
-    {
-        return true;
-    }
+    // Run bootstrappers
+    $this->runBootstrappers();
 
-    public function bootstrap(Container $container): void
-    {
-        // Initialize core services
-        $this->initializeCoreServices($container);
+    // Load components
+    $this->loadServices();
+    $this->loadHooks();
+    $this->loadFilters();
 
-        // Set up WordPress hooks
-        $this->setupWordPressHooks();
+    $this->booted = true;
 
-        // Initialize error handling
-        $this->initializeErrorHandling();
-
-        // Set up logging
-        $this->setupLogging();
-    }
-
-    private function initializeCoreServices(Container $container): void
-    {
-        // Initialize configuration
-        $config = $container->make(\Jankx\Config\ConfigManager::class);
-        $config->load();
-
-        // Initialize asset manager
-        $assetManager = $container->make(\Jankx\Assets\AssetManager::class);
-        $assetManager->initialize();
-
-        // Initialize security manager
-        $securityManager = $container->make(\Jankx\Security\SecurityManager::class);
-        $securityManager->initialize();
-
-        // Initialize performance monitor
-        $performanceMonitor = $container->make(\Jankx\Performance\PerformanceMonitor::class);
-        $performanceMonitor->initialize();
-    }
-
-    private function setupWordPressHooks(): void
-    {
-        // Theme setup
-        add_action('after_setup_theme', [$this, 'setupTheme']);
-
-        // Enqueue scripts and styles
-        add_action('wp_enqueue_scripts', [$this, 'enqueueScripts']);
-        add_action('admin_enqueue_scripts', [$this, 'enqueueAdminScripts']);
-
-        // Widgets
-        add_action('widgets_init', [$this, 'registerWidgets']);
-
-        // Customizer
-        add_action('customize_register', [$this, 'customizeRegister']);
-
-        // Gutenberg
-        add_action('init', [$this, 'registerGutenbergBlocks']);
-    }
-
-    public function setupTheme(): void
-    {
-        // Add theme support
-        add_theme_support('post-thumbnails');
-        add_theme_support('title-tag');
-        add_theme_support('custom-logo');
-        add_theme_support('html5', [
-            'search-form',
-            'comment-form',
-            'comment-list',
-            'gallery',
-            'caption',
-        ]);
-
-        // Register navigation menus
-        register_nav_menus([
-            'primary' => __('Primary Menu', 'jankx'),
-            'footer' => __('Footer Menu', 'jankx'),
-        ]);
-
-        // Add image sizes
-        add_image_size('jankx-hero', 1920, 1080, true);
-        add_image_size('jankx-thumbnail', 400, 300, true);
-    }
-
-    public function enqueueScripts(): void
-    {
-        $assetManager = $this->container->make(\Jankx\Assets\AssetManager::class);
-        $assetManager->enqueueFrontendAssets();
-    }
-
-    public function enqueueAdminScripts(): void
-    {
-        $assetManager = $this->container->make(\Jankx\Assets\AssetManager::class);
-        $assetManager->enqueueAdminAssets();
-    }
-
-    public function registerWidgets(): void
-    {
-        $widgetManager = $this->container->make(\Jankx\Widgets\WidgetManager::class);
-        $widgetManager->registerWidgets();
-    }
-
-    public function customizeRegister(\WP_Customize_Manager $wp_customize): void
-    {
-        $customizer = $this->container->make(\Jankx\Customizer\CustomizerManager::class);
-        $customizer->register($wp_customize);
-    }
-
-    public function registerGutenbergBlocks(): void
-    {
-        $blockRegistry = $this->container->make(\Jankx\Gutenberg\BlockRegistry::class);
-        $blockRegistry->registerBlocks();
-    }
+    do_action("jankx/kernel/{$this->kernelType}/booted", $this);
 }
 ```
 
-### Admin Bootstrapper
+#### 3. **Bootstrapper gọi Service Provider**
 ```php
-<?php
-namespace Jankx\Bootstrappers\Dashboard;
-
-use Illuminate\Container\Container;
-use Jankx\Bootstrappers\AbstractBootstrapper;
-
-class AdminBootstrapper extends AbstractBootstrapper
+// Kernel::loadServices()
+protected function loadServices()
 {
-    protected $priority = 20;
-
-    public function getName(): string
-    {
-        return 'admin';
-    }
-
-    public function shouldRun(): bool
-    {
-        return is_admin();
-    }
-
-    public function bootstrap(Container $container): void
-    {
-        // Initialize admin-specific services
-        $this->initializeAdminServices($container);
-
-        // Set up admin hooks
-        $this->setupAdminHooks();
-
-        // Initialize admin menu
-        $this->setupAdminMenu();
-
-        // Initialize admin scripts
-        $this->setupAdminScripts();
-    }
-
-    private function initializeAdminServices(Container $container): void
-    {
-        // Initialize admin manager
-        $adminManager = $container->make(\Jankx\Admin\AdminManager::class);
-        $adminManager->initialize();
-
-        // Initialize settings manager
-        $settingsManager = $container->make(\Jankx\Admin\SettingsManager::class);
-        $settingsManager->initialize();
-    }
-
-    private function setupAdminHooks(): void
-    {
-        // Admin menu
-        add_action('admin_menu', [$this, 'setupAdminMenu']);
-
-        // Admin scripts
-        add_action('admin_enqueue_scripts', [$this, 'enqueueAdminScripts']);
-
-        // Admin styles
-        add_action('admin_enqueue_scripts', [$this, 'enqueueAdminStyles']);
-
-        // Admin notices
-        add_action('admin_notices', [$this, 'displayAdminNotices']);
-    }
-
-    public function setupAdminMenu(): void
-    {
-        add_menu_page(
-            'Jankx Settings',
-            'Jankx',
-            'manage_options',
-            'jankx-settings',
-            [$this, 'renderSettingsPage'],
-            'dashicons-admin-generic',
-            30
-        );
-
-        add_submenu_page(
-            'jankx-settings',
-            'General Settings',
-            'General',
-            'manage_options',
-            'jankx-settings',
-            [$this, 'renderSettingsPage']
-        );
-
-        add_submenu_page(
-            'jankx-settings',
-            'Performance',
-            'Performance',
-            'manage_options',
-            'jankx-performance',
-            [$this, 'renderPerformancePage']
-        );
-
-        add_submenu_page(
-            'jankx-settings',
-            'Security',
-            'Security',
-            'manage_options',
-            'jankx-security',
-            [$this, 'renderSecurityPage']
-        );
-    }
-
-    public function enqueueAdminScripts(): void
-    {
-        $assetManager = $this->container->make(\Jankx\Assets\AssetManager::class);
-        $assetManager->enqueueAdminScripts();
-    }
-
-    public function enqueueAdminStyles(): void
-    {
-        $assetManager = $this->container->make(\Jankx\Assets\AssetManager::class);
-        $assetManager->enqueueAdminStyles();
-    }
-
-    public function displayAdminNotices(): void
-    {
-        $noticeManager = $this->container->make(\Jankx\Admin\NoticeManager::class);
-        $noticeManager->displayNotices();
-    }
-
-    public function renderSettingsPage(): void
-    {
-        $settingsManager = $this->container->make(\Jankx\Admin\SettingsManager::class);
-        $settingsManager->renderSettingsPage();
-    }
-
-    public function renderPerformancePage(): void
-    {
-        $performanceManager = $this->container->make(\Jankx\Performance\PerformanceManager::class);
-        $performanceManager->renderPerformancePage();
-    }
-
-    public function renderSecurityPage(): void
-    {
-        $securityManager = $this->container->make(\Jankx\Security\SecurityManager::class);
-        $securityManager->renderSecurityPage();
-    }
-}
-```
-
-### Frontend Bootstrapper
-```php
-<?php
-namespace Jankx\Bootstrappers\Frontend;
-
-use Illuminate\Container\Container;
-use Jankx\Bootstrappers\AbstractBootstrapper;
-
-class FrontendBootstrapper extends AbstractBootstrapper
-{
-    protected $priority = 15;
-
-    public function getName(): string
-    {
-        return 'frontend';
-    }
-
-    public function shouldRun(): bool
-    {
-        return !is_admin();
-    }
-
-    public function bootstrap(Container $container): void
-    {
-        // Initialize frontend-specific services
-        $this->initializeFrontendServices($container);
-
-        // Set up frontend hooks
-        $this->setupFrontendHooks();
-
-        // Initialize template system
-        $this->setupTemplateSystem();
-
-        // Initialize performance optimization
-        $this->setupPerformanceOptimization();
-    }
-
-    private function initializeFrontendServices(Container $container): void
-    {
-        // Initialize template renderer
-        $templateRenderer = $container->make(\Jankx\Template\TemplateRenderer::class);
-        $templateRenderer->initialize();
-
-        // Initialize SEO manager
-        $seoManager = $container->make(\Jankx\SEO\SEOManager::class);
-        $seoManager->initialize();
-
-        // Initialize analytics
-        $analyticsManager = $container->make(\Jankx\Analytics\AnalyticsManager::class);
-        $analyticsManager->initialize();
-    }
-
-    private function setupFrontendHooks(): void
-    {
-        // Enqueue scripts and styles
-        add_action('wp_enqueue_scripts', [$this, 'enqueueScripts']);
-        add_action('wp_enqueue_scripts', [$this, 'enqueueStyles']);
-
-        // Template hooks
-        add_action('wp_head', [$this, 'addHeadMeta']);
-        add_action('wp_footer', [$this, 'addFooterScripts']);
-
-        // Content hooks
-        add_filter('the_content', [$this, 'filterContent']);
-        add_filter('excerpt_more', [$this, 'filterExcerptMore']);
-
-        // Performance hooks
-        add_action('wp_head', [$this, 'addPerformanceMeta']);
-        add_action('wp_footer', [$this, 'addPerformanceScripts']);
-    }
-
-    public function enqueueScripts(): void
-    {
-        $assetManager = $this->container->make(\Jankx\Assets\AssetManager::class);
-        $assetManager->enqueueFrontendScripts();
-    }
-
-    public function enqueueStyles(): void
-    {
-        $assetManager = $this->container->make(\Jankx\Assets\AssetManager::class);
-        $assetManager->enqueueFrontendStyles();
-    }
-
-    public function addHeadMeta(): void
-    {
-        $seoManager = $this->container->make(\Jankx\SEO\SEOManager::class);
-        $seoManager->addHeadMeta();
-    }
-
-    public function addFooterScripts(): void
-    {
-        $analyticsManager = $this->container->make(\Jankx\Analytics\AnalyticsManager::class);
-        $analyticsManager->addFooterScripts();
-    }
-
-    public function filterContent(string $content): string
-    {
-        $contentManager = $this->container->make(\Jankx\Content\ContentManager::class);
-        return $contentManager->filterContent($content);
-    }
-
-    public function filterExcerptMore(string $more): string
-    {
-        $contentManager = $this->container->make(\Jankx\Content\ContentManager::class);
-        return $contentManager->filterExcerptMore($more);
-    }
-
-    public function addPerformanceMeta(): void
-    {
-        $performanceManager = $this->container->make(\Jankx\Performance\PerformanceManager::class);
-        $performanceManager->addPerformanceMeta();
-    }
-
-    public function addPerformanceScripts(): void
-    {
-        $performanceManager = $this->container->make(\Jankx\Performance\PerformanceManager::class);
-        $performanceManager->addPerformanceScripts();
-    }
-}
-```
-
-## 🔄 Bootstrapping Flow
-
-### Execution Order
-```php
-class BootstrapManager
-{
-    private $container;
-    private $bootstrappers = [];
-
-    public function __construct(ServiceContainer $container)
-    {
-        $this->container = $container;
-        $this->registerBootstrappers();
-    }
-
-    private function registerBootstrappers(): void
-    {
-        $this->bootstrappers = [
-            \Jankx\Bootstrappers\Global\CoreBootstrapper::class,
-            \Jankx\Bootstrappers\Dashboard\AdminBootstrapper::class,
-            \Jankx\Bootstrappers\Frontend\FrontendBootstrapper::class,
-            \Jankx\Bootstrappers\Global\ThemeBootstrapper::class,
-            \Jankx\Bootstrappers\Frontend\WooCommerceBootstrapper::class,
-        ];
-    }
-
-    public function run(): void
-    {
-        foreach ($this->bootstrappers as $bootstrapper) {
-            if ($this->shouldRun($bootstrapper)) {
-                $instance = $this->container->make($bootstrapper);
-                $instance->bootstrap();
+    foreach ($this->getServiceProviders() as $providerClass) {
+        if (class_exists($providerClass)) {
+            try {
+                $provider = new $providerClass($this->container);
+                $provider->register();  // Đăng ký services
+                $provider->boot();      // Boot services
+            } catch (\Exception $e) {
+                Logger::error("Không thể khởi tạo Service Provider {$providerClass}: " . $e->getMessage());
             }
         }
     }
+}
+```
 
-    private function shouldRun(string $bootstrapper): bool
+#### 4. **Service Provider boot services cần thiết**
+```php
+// ServiceProvider abstract class
+abstract class ServiceProvider
+{
+    protected $container;
+
+    public function __construct(Container $container)
     {
-        switch ($bootstrapper) {
-            case \Jankx\Bootstrappers\Dashboard\AdminBootstrapper::class:
-                return is_admin();
-            case \Jankx\Bootstrappers\Frontend\FrontendBootstrapper::class:
-                return !is_admin();
-            case \Jankx\Bootstrappers\Frontend\WooCommerceBootstrapper::class:
-                return class_exists('WooCommerce');
-            default:
-                return true;
+        $this->container = $container;
+    }
+
+    abstract public function register();  // Đăng ký services
+
+    public function boot()               // Boot services
+    {
+        // Override if needed
+    }
+
+    protected function bind($abstract, $concrete = null, $shared = false)
+    {
+        $this->container->bind($abstract, $concrete, $shared);
+    }
+
+    protected function singleton($abstract, $concrete = null)
+    {
+        $this->bind($abstract, $concrete, true);
+    }
+}
+```
+
+## Kiến trúc chi tiết
+
+### 🏗️ **Kernel (Core)**
+- Quản lý Container (IoC)
+- Điều phối toàn bộ framework
+- Chạy bootstrappers theo priority
+- Load service providers
+
+**Kernel Types:**
+- `FrontendKernel` - Cho frontend
+- `AdminKernel` - Cho admin
+- `CLIKernel` - Cho CLI
+
+### 🔧 **Bootstrapper (Bootstrap)**
+- Khởi tạo các thành phần cơ bản
+- Setup environment
+- Register core services
+- Có priority system để chạy theo thứ tự
+
+**Bootstrapper Types:**
+- `GlobalBootstrapper` - Chạy mọi nơi
+- `FrontendBootstrapper` - Chỉ frontend
+- `AdminBootstrapper` - Chỉ admin
+- `CLIBootstrapper` - Chỉ CLI
+
+### 📦 **Service Provider (Services)**
+- Đăng ký services vào container
+- Boot services khi cần
+- Quản lý dependencies
+- Context-aware (Admin, Frontend, CLI)
+
+**Service Provider Types:**
+- `FrontendServiceProvider` - Services cho frontend
+- `AdminServiceProvider` - Services cho admin
+- `CLIServiceProvider` - Services cho CLI
+- `DebugServiceProvider` - Services cho debug
+
+## Flow thực tế
+
+### 🔄 **Frontend Flow:**
+```php
+// 1. Kernel khởi tạo
+$kernel = new FrontendKernel($container);
+
+// 2. Kernel boot
+$kernel->boot();
+
+// 3. Chạy bootstrappers theo priority
+foreach ($bootstrappers as $bootstrapper) {
+    if ($bootstrapper->shouldRun()) {
+        $bootstrapper->bootstrap($container);
+    }
+}
+
+// 4. Load service providers
+foreach ($serviceProviders as $provider) {
+    $provider->register();  // Đăng ký services
+    $provider->boot();      // Khởi động services
+}
+```
+
+### 🔄 **Admin Flow:**
+```php
+// 1. Admin Kernel
+$adminKernel = new AdminKernel($container);
+
+// 2. Boot admin-specific components
+$adminKernel->boot();
+
+// 3. Load admin bootstrappers
+// - AdminBootstrapper
+// - GlobalBootstrapper
+
+// 4. Load admin service providers
+// - AdminServiceProvider
+// - DebugServiceProvider (if debug mode)
+```
+
+### 🔄 **CLI Flow:**
+```php
+// 1. CLI Kernel
+$cliKernel = new CLIKernel($container);
+
+// 2. Boot CLI-specific components
+$cliKernel->boot();
+
+// 3. Load CLI bootstrappers
+// - CLIBootstrapper
+// - GlobalBootstrapper
+
+// 4. Load CLI service providers
+// - CLIServiceProvider
+```
+
+## Ví dụ thực tế
+
+### 🐛 **Debug System Flow:**
+```php
+// 1. Kernel tạo app
+$app = new Jankx();
+
+// 2. App gọi bootstrapper
+$bootstrapper = new DebugBootstrapper();
+$bootstrapper->bootstrap($app);
+
+// 3. Bootstrapper gọi service provider
+$provider = new DebugServiceProvider($app);
+$provider->register();  // Đăng ký DebugInfo service
+$provider->boot();      // Khởi động debug system
+
+// 4. Service provider boot service
+$debugInfo = $app->make(DebugInfo::class);
+$debugInfo->init();
+```
+
+### 🎨 **Frontend Flow:**
+```php
+// 1. Frontend Kernel
+$frontendKernel = new FrontendKernel($container);
+
+// 2. Register bootstrappers
+$frontendKernel->addBootstrapper(FrontendBootstrapper::class);
+$frontendKernel->addBootstrapper(GlobalBootstrapper::class);
+
+// 3. Register service providers
+$frontendKernel->addServiceProvider(FrontendServiceProvider::class);
+
+// 4. Boot kernel
+$frontendKernel->boot();
+
+// 5. Services được load và sẵn sàng sử dụng
+$templateEngine = $container->make(TemplateEngine::class);
+$assetManager = $container->make(AssetManager::class);
+```
+
+## Priority System
+
+### 📊 **Bootstrapper Priority:**
+```php
+// Lower number = higher priority
+protected $priority = 1;   // Highest priority
+protected $priority = 5;   // High priority
+protected $priority = 10;  // Normal priority
+protected $priority = 15;  // Low priority
+protected $priority = 20;  // Lowest priority
+```
+
+### 🔄 **Execution Order:**
+1. **Priority 1-5**: Core bootstrappers (Global, Environment)
+2. **Priority 6-10**: Context bootstrappers (Frontend, Admin, CLI)
+3. **Priority 11-15**: Feature bootstrappers (Debug, Cache, etc.)
+4. **Priority 16-20**: Plugin bootstrappers
+
+## Dependencies Management
+
+### 🔗 **Bootstrapper Dependencies:**
+```php
+class DebugBootstrapper extends AbstractBootstrapper
+{
+    protected $dependencies = [
+        'Jankx\Kernel\Kernel',
+        'Jankx\Container\Container'
+    ];
+
+    public function shouldRun(): bool
+    {
+        return defined('JANKX_DEBUG') && JANKX_DEBUG;
+    }
+
+    public function bootstrap(Container $container): void
+    {
+        // Bootstrap debug system
+        $debugInfo = new DebugInfo($container);
+        $container->singleton(DebugInfo::class, $debugInfo);
+    }
+}
+```
+
+### 🔗 **Service Provider Dependencies:**
+```php
+class DebugServiceProvider extends ServiceProvider
+{
+    public function register()
+    {
+        // Register debug services
+        $this->singleton(DebugInfo::class);
+        $this->singleton(DebugInfoRenderer::class);
+        $this->singleton(DebugInfoService::class);
+    }
+
+    public function boot()
+    {
+        // Boot debug services
+        $debugInfo = $this->container->make(DebugInfo::class);
+        $debugInfo->init();
+    }
+}
+```
+
+## Error Handling
+
+### ⚠️ **Bootstrapper Errors:**
+```php
+protected function runBootstrappers(): void
+{
+    foreach ($sortedBootstrappers as $bootstrapperClass) {
+        try {
+            $bootstrapper = $this->container->make($bootstrapperClass);
+
+            if (!$bootstrapper->shouldRun()) {
+                continue;
+            }
+
+            $bootstrapper->bootstrap($this->container);
+        } catch (\Exception $e) {
+            Logger::error("Bootstrapper {$bootstrapperClass} failed: " . $e->getMessage());
         }
     }
 }
 ```
 
-### Environment Detection
+### ⚠️ **Service Provider Errors:**
 ```php
-class EnvironmentDetector
+protected function loadServices()
 {
-    public function isDevelopment(): bool
-    {
-        return defined('WP_DEBUG') && WP_DEBUG;
-    }
-
-    public function isProduction(): bool
-    {
-        return !$this->isDevelopment();
-    }
-
-    public function isAdmin(): bool
-    {
-        return is_admin();
-    }
-
-    public function isFrontend(): bool
-    {
-        return !is_admin();
-    }
-
-    public function isAJAX(): bool
-    {
-        return wp_doing_ajax();
-    }
-
-    public function isREST(): bool
-    {
-        return defined('REST_REQUEST') && REST_REQUEST;
-    }
-
-    public function getEnvironment(): string
-    {
-        if ($this->isDevelopment()) {
-            return 'development';
-        }
-
-        return 'production';
-    }
-}
-```
-
-## 📊 Bootstrapping Monitoring
-
-### Performance Monitoring
-```php
-class BootstrapPerformanceMonitor
-{
-    private $startTimes = [];
-    private $metrics = [];
-
-    public function startMonitoring(string $phase): void
-    {
-        $this->startTimes[$phase] = microtime(true);
-    }
-
-    public function endMonitoring(string $phase): void
-    {
-        if (isset($this->startTimes[$phase])) {
-            $time = microtime(true) - $this->startTimes[$phase];
-            $this->metrics[$phase] = $time;
-        }
-    }
-
-    public function getMetrics(): array
-    {
-        return $this->metrics;
-    }
-
-    public function getTotalTime(): float
-    {
-        return array_sum($this->metrics);
-    }
-
-    public function logMetrics(): void
-    {
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log('JANKX BOOTSTRAP METRICS: ' . json_encode($this->metrics));
+    foreach ($this->getServiceProviders() as $providerClass) {
+        try {
+            $provider = new $providerClass($this->container);
+            $provider->register();
+            $provider->boot();
+        } catch (\Exception $e) {
+            Logger::error("Service Provider {$providerClass} failed: " . $e->getMessage());
         }
     }
 }
 ```
 
-### Error Handling
+## Best Practices
+
+### ✅ **Kernel Design:**
+- Mỗi context có kernel riêng
+- Kernel quản lý container và dependencies
+- Kernel chịu trách nhiệm bootstrapping flow
+
+### ✅ **Bootstrapper Design:**
+- Bootstrapper chỉ khởi tạo, không chứa business logic
+- Sử dụng priority system để control execution order
+- Check dependencies trước khi chạy
+
+### ✅ **Service Provider Design:**
+- Service provider đăng ký services vào container
+- Boot method chỉ chạy khi cần thiết
+- Handle errors gracefully
+
+### ✅ **Error Handling:**
+- Log errors nhưng không crash framework
+- Continue execution nếu có lỗi
+- Provide fallback mechanisms
+
+## Performance Considerations
+
+### ⚡ **Lazy Loading:**
 ```php
-class BootstrapErrorHandler
+// Services chỉ được load khi cần
+public function boot()
 {
-    public function handleBootstrapError(\Throwable $exception): void
-    {
-        $error = [
-            'message' => $exception->getMessage(),
-            'file' => $exception->getFile(),
-            'line' => $exception->getLine(),
-            'trace' => $exception->getTraceAsString(),
-            'timestamp' => current_time('mysql')
-        ];
-
-        error_log('JANKX BOOTSTRAP ERROR: ' . json_encode($error));
-
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            throw $exception;
-        }
+    if ($this->shouldBoot()) {
+        $this->loadServices();
     }
 }
+```
+
+### ⚡ **Conditional Loading:**
+```php
+// Chỉ load services cho context hiện tại
+public function shouldRun(): bool
+{
+    return is_admin() && current_user_can('manage_options');
+}
+```
+
+### ⚡ **Caching:**
+```php
+// Cache bootstrapped state
+protected $booted = false;
+
+public function boot(): void
+{
+    if ($this->booted) {
+        return;
+    }
+
+    // Boot logic here
+    $this->booted = true;
+}
+```
+
+## Testing
+
+### 🧪 **Kernel Testing:**
+```php
+class KernelTest extends TestCase
+{
+    public function test_kernel_boots_correctly()
+    {
+        $kernel = new FrontendKernel();
+        $kernel->boot();
+
+        $this->assertTrue($kernel->isBooted());
+    }
+}
+```
+
+### 🧪 **Bootstrapper Testing:**
+```php
+class BootstrapperTest extends TestCase
+{
+    public function test_bootstrapper_runs_in_order()
+    {
+        $kernel = new TestKernel();
+        $kernel->addBootstrapper(TestBootstrapper::class);
+        $kernel->boot();
+
+        $this->assertTrue($kernel->hasBootstrapper(TestBootstrapper::class));
+    }
+}
+```
+
+### 🧪 **Service Provider Testing:**
+```php
+class ServiceProviderTest extends TestCase
+{
+    public function test_service_provider_registers_services()
+    {
+        $container = new Container();
+        $provider = new TestServiceProvider($container);
+        $provider->register();
+
+        $this->assertTrue($container->bound(TestService::class));
+    }
+}
+```
+
+## Troubleshooting
+
+### 🔍 **Common Issues:**
+
+1. **Bootstrapper không chạy:**
+   - Kiểm tra `shouldRun()` method
+   - Verify dependencies
+   - Check priority order
+
+2. **Service Provider lỗi:**
+   - Kiểm tra service registration
+   - Verify container bindings
+   - Check error logs
+
+3. **Performance issues:**
+   - Review bootstrapper priority
+   - Optimize service loading
+   - Use lazy loading
+
+### 🔍 **Debug Tips:**
+```php
+// Enable debug logging
+Logger::debug('Bootstrapper started', ['class' => get_class($this)]);
+Logger::debug('Service Provider registered', ['provider' => $providerClass]);
+Logger::debug('Kernel booted', ['type' => $this->kernelType]);
 ```
 
 ---
 
-**Next**: [Layout System](./layout-system.md) | [Frontend Rendering](./frontend-rendering.md)
+**Version**: 2.0.0
+**Last Updated**: 2024
+**Compatibility**: WordPress 5.0+, PHP 7.4+
+
+## ✅ **Thống nhất Service Registration**
+
+### 🔄 **Chuẩn mới:**
+
+Tất cả services phải được register và boot thông qua **Service Provider**:
+
+```php
+// ✅ Đúng - Thông qua Service Provider
+class AdminServiceProvider extends ServiceProvider
+{
+    public function register()
+    {
+        $this->singleton('admin.dashboard', Dashboard::class);
+        $this->singleton('admin.menu', MenuManager::class);
+        $this->singleton('admin.assets', AssetManager::class);
+    }
+
+    public function boot()
+    {
+        if ($this->container->has('admin.dashboard')) {
+            $dashboard = $this->container->make('admin.dashboard');
+            $dashboard->initialize();
+        }
+    }
+}
+
+// ❌ Sai - Register trực tiếp trong Kernel (Method addService đã bị xóa)
+protected function registerServices(): void
+{
+    $this->addService('admin.dashboard', [
+        'class' => \Jankx\Admin\Dashboard::class,
+        'params' => []
+    ]);
+}
+```
+
+### 🏗️ **Service Provider Types:**
+
+#### **1. AdminServiceProvider**
+```php
+// Admin-specific services
+$this->singleton('admin.dashboard', Dashboard::class);
+$this->singleton('admin.menu', MenuManager::class);
+$this->singleton('admin.assets', AssetManager::class);
+$this->singleton('admin.settings', SettingsManager::class);
+$this->singleton('admin.notices', NoticeManager::class);
+```
+
+#### **2. FrontendServiceProvider**
+```php
+// Frontend-specific services
+$this->singleton(TemplateRenderer::class);
+$this->singleton(SEOManager::class);
+$this->singleton(AnalyticsManager::class);
+$this->singleton(AssetOptimizer::class);
+$this->singleton(PerformanceMonitor::class);
+```
+
+#### **3. CLIServiceProvider**
+```php
+// CLI-specific services
+$this->singleton('cli.commands', function ($container) {
+    return new \Jankx\CLI\CLICommands($container);
+});
+$this->singleton('cli.command.code', function ($container) {
+    return new CodeCommand($container);
+});
+```
+
+#### **4. APIServiceProvider**
+```php
+// API-specific services
+$this->singleton(APIManager::class);
+$this->singleton(PostsEndpoint::class);
+$this->singleton(PagesEndpoint::class);
+$this->singleton(CategoriesEndpoint::class);
+```
+
+#### **5. DebugServiceProvider**
+```php
+// Debug-specific services
+$this->singleton(DebugInfo::class);
+$this->singleton(DebugInfoService::class);
+$this->singleton(QueryCountService::class);
+$this->singleton(CacheInfoService::class);
+```
+
+### 🔄 **Kernel Registration:**
+
+```php
+// AdminKernel.php
+protected function registerServices(): void
+{
+    // Register AdminServiceProvider
+    $this->addServiceProvider(\Jankx\Providers\AdminServiceProvider::class);
+}
+
+// FrontendKernel.php
+protected function registerServices(): void
+{
+    // Register FrontendServiceProvider
+    $this->addServiceProvider(\Jankx\Providers\FrontendServiceProvider::class);
+}
+
+// CLIKernel.php
+protected function registerServices(): void
+{
+    // Register CLIServiceProvider
+    $this->addServiceProvider(\Jankx\Providers\CLIServiceProvider::class);
+}
+```
+
+### 🔧 **Kernel Loading:**
+
+```php
+// Kernel.php - loadServices method
+protected function loadServices()
+{
+    // Load services from Service Providers
+    foreach ($this->getServiceProviders() as $providerClass) {
+        if (class_exists($providerClass)) {
+            try {
+                $provider = new $providerClass($this->container);
+                $provider->register();  // Đăng ký services
+                $provider->boot();      // Boot services
+            } catch (\Exception $e) {
+                Logger::error("Service Provider {$providerClass} failed: " . $e->getMessage());
+            }
+        }
+    }
+
+    // Load services registered directly in Kernel (backward compatibility)
+    foreach ($this->services as $service) {
+        try {
+            if (is_array($service)) {
+                $class = $service['class'];
+                $params = $service['params'] ?? [];
+
+                if (class_exists($class)) {
+                    $this->container->singleton($class, function($container) use ($class, $params) {
+                        return new $class(...$params);
+                    });
+                }
+            } elseif (is_string($service)) {
+                if (class_exists($service)) {
+                    $this->container->singleton($service);
+                }
+            }
+        } catch (\Exception $e) {
+            Logger::error("Service {$service} failed: " . $e->getMessage());
+        }
+    }
+}
+```
+
+### 🚫 **Không được phép:**
+
+#### **1. Register trực tiếp trong Kernel**
+```php
+// ❌ Không được phép - Method addService đã bị xóa
+protected function registerServices(): void
+{
+    $this->addService('admin.dashboard', [
+        'class' => \Jankx\Admin\Dashboard::class,
+        'params' => []
+    ]);
+}
+```
+
+#### **2. Register trực tiếp trong Bootstrapper**
+```php
+// ❌ Không được phép
+public function bootstrap(Container $container): void
+{
+    $container->singleton(DebugInfo::class, $debugInfo);
+}
+```
+
+#### **3. Register trực tiếp trong Helper**
+```php
+// ❌ Không được phép - Sử dụng Service Provider pattern thay thế
+public static function registerServices(Container $container, array $services): void
+{
+    foreach ($services as $service) {
+        $container->singleton($service);
+    }
+}
+```
+
+### ✅ **Phải làm:**
+
+#### **1. Tạo Service Provider cho mỗi context**
+```php
+// ✅ Đúng
+class MyCustomServiceProvider extends ServiceProvider
+{
+    public function register()
+    {
+        $this->singleton(MyService::class);
+        $this->singleton(MyOtherService::class);
+    }
+
+    public function boot()
+    {
+        // Boot services if needed
+    }
+
+    public function shouldLoad(): bool
+    {
+        return true; // Logic để quyết định có load hay không
+    }
+}
+```
+
+#### **2. Register Service Provider trong Kernel**
+```php
+// ✅ Đúng
+protected function registerServices(): void
+{
+    $this->addServiceProvider(\Jankx\Providers\MyCustomServiceProvider::class);
+}
+```
+
+#### **3. Sử dụng Service Provider pattern**
+```php
+// ✅ Đúng
+class AdminServiceProvider extends ServiceProvider
+{
+    public function register()
+    {
+        $this->singleton('admin.dashboard', \Jankx\Admin\Dashboard::class);
+        $this->singleton(\Jankx\Services\UserService::class);
+    }
+
+    public function boot()
+    {
+        // Boot services if needed
+    }
+}
+```
+
+### 📊 **Tóm tắt thay đổi:**
+
+| Trước | Sau |
+|-------|-----|
+| Register trực tiếp trong Kernel | Register qua Service Provider |
+| Register trực tiếp trong Bootstrapper | Register qua Service Provider |
+| Register trực tiếp trong Helper | Register qua Service Provider |
+| Services scattered everywhere | Services centralized in Providers |
+| No standard boot process | Standard boot process in Providers |
+
+### 🎯 **Lợi ích:**
+
+1. **Consistency**: Tất cả services đều được register theo cùng một cách
+2. **Maintainability**: Dễ bảo trì và mở rộng
+3. **Testability**: Dễ test từng Service Provider
+4. **Separation of Concerns**: Mỗi Provider chịu trách nhiệm cho context riêng
+5. **Standardization**: Chuẩn hóa cách register và boot services

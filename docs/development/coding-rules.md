@@ -1,842 +1,834 @@
-# Coding Rules & Standards - Jankx 2.0
+# Coding Rules - Jankx Framework
 
-> **Comprehensive Coding Rules for Jankx 2.0 Framework**
+## Tổng quan
 
-This document outlines the comprehensive coding rules and standards for Jankx 2.0 framework development, including OOP principles, service class rules, and WordPress integration guidelines.
+Coding Rules định nghĩa các quy tắc và chuẩn code cho Jankx Framework, đảm bảo tính nhất quán, bảo trì và mở rộng.
 
-## 🎯 Overview
+## Kiến trúc Framework
 
-Jankx 2.0 tuân thủ nghiêm ngặt các nguyên tắc OOP và software engineering để đảm bảo code maintainable, testable và scalable. Tất cả code phải tuân thủ các rules này.
+### 🔄 **Bootstrapping Flow**
 
-## 🏗 Core Principles
+```
+Kernel → App → Bootstrapper → Service Provider → Service Boot
+```
 
-### 1. Object-Oriented Programming (OOP)
+#### **Flow chi tiết:**
 
-- **Single Responsibility Principle (SRP)**: Each class should have only one reason to change
-- **Dependency Injection (DI)**: Use constructor injection for dependencies
-- **Avoid Static Methods for Business Logic**: Static methods should only be used for utility functions and helper classes
+1. **Kernel tạo App**
+   ```php
+   // Kernel constructor
+   public function __construct(Container $container = null)
+   {
+       $this->container = $container ?: Jankx::getInstance();
+       $this->registerBootstrappers();
+       $this->registerServices();
+   }
+   ```
 
-### 2. Service Class Rules
+2. **App gọi Bootstrapper**
+   ```php
+   // Kernel::boot() method
+   public function boot(): void
+   {
+       $this->runBootstrappers();
+       $this->loadServices();
+       $this->loadHooks();
+       $this->loadFilters();
+   }
+   ```
 
-**Service classes must be resolved through Container and have no static methods.**
+3. **Bootstrapper gọi Service Provider**
+   ```php
+   // Kernel::loadServices()
+   protected function loadServices()
+   {
+       foreach ($this->getServiceProviders() as $providerClass) {
+           $provider = new $providerClass($this->container);
+           $provider->register();  // Đăng ký services
+           $provider->boot();      // Boot services
+       }
+   }
+   ```
 
+4. **Service Provider boot services cần thiết**
+   ```php
+   // ServiceProvider abstract class
+   abstract class ServiceProvider
+   {
+       abstract public function register();  // Đăng ký services
+
+       public function boot()               // Boot services
+       {
+           // Override if needed
+       }
+   }
+   ```
+
+### 🏗️ **Kiến trúc Components:**
+
+#### **Kernel (Core)**
+- Quản lý Container (IoC)
+- Điều phối toàn bộ framework
+- Chạy bootstrappers theo priority
+- Load service providers
+
+#### **Bootstrapper (Bootstrap)**
+- Khởi tạo các thành phần cơ bản
+- Setup environment
+- Register core services
+- Có priority system để chạy theo thứ tự
+
+#### **Service Provider (Services)**
+- Đăng ký services vào container
+- Boot services khi cần
+- Quản lý dependencies
+- Context-aware (Admin, Frontend, CLI)
+
+## Naming Conventions
+
+### 📝 **Class Names**
 ```php
-// ✅ Correct - Service class with instance methods
-class UserService
-{
-    private $cache;
-
-    public function __construct(CacheInterface $cache)
-    {
-        $this->cache = $cache;
-    }
-
-    public function getUser(int $userId): ?array
-    {
-        // Implementation
-    }
-}
-
-// ❌ Incorrect - Static methods in service class
-class UserService
-{
-    public static function getUser(int $userId): ?array
-    {
-        // This violates service class rules
-    }
-}
-```
-
-### 3. Helper Classes
-
-**All helper classes must be static classes with static methods only.**
-
-```php
-// ✅ Correct - Static helper class
-class BootstrapperHelper
-{
-    public static function fireLoadedAction(string $bootstrapperName, Container $container): void
-    {
-        do_action("jankx/bootstrapper/{$bootstrapperName}/loaded", $container);
-    }
-}
-
-// ❌ Incorrect - Instance methods in helper
-class BootstrapperHelper
-{
-    private $container;
-
-    public function __construct(Container $container)
-    {
-        $this->container = $container;
-    }
-
-    public function fireLoadedAction(string $bootstrapperName): void
-    {
-        // This violates the static helper rule
-    }
-}
-```
-
-## 🚫 Forbidden Patterns
-
-### ❌ No Procedural Functions
-```php
-// FORBIDDEN - Procedural functions
-function get_user_data($user_id) {
-    return get_user_meta($user_id, 'data', true);
-}
-
-function render_template($template, $data) {
-    // Template rendering logic
-}
-```
-
-### ❌ No Global Variables
-```php
-// FORBIDDEN - Global variables
-$global_config = [];
-$theme_options = get_option('theme_options');
-```
-
-### ❌ No Direct Database Queries
-```php
-// FORBIDDEN - Direct database queries
-function get_posts_data() {
-    global $wpdb;
-    return $wpdb->get_results("SELECT * FROM {$wpdb->posts}");
-}
-```
-
-### ✅ WordPress Functions Are Allowed
-```php
-// ALLOWED - Direct WordPress function calls
-class PostService
-{
-    public function getPost(int $postId): ?WP_Post
-    {
-        return get_post($postId);
-    }
-
-    public function getPosts(array $args): array
-    {
-        return get_posts($args);
-    }
-
-    public function hasBlocks(string $content): bool
-    {
-        return has_blocks($content);
-    }
-}
-```
-
-## ✅ Required Patterns
-
-### ✅ WordPress Integration
-```php
-// ENCOURAGED - Direct WordPress function usage
-class GutenbergService
-{
-    public function hasBlocks(string $content): bool
-    {
-        return has_blocks($content);
-    }
-
-    public function parseBlocks(string $content): array
-    {
-        return parse_blocks($content);
-    }
-
-    public function isBlockEditor(): bool
-    {
-        $screen = get_current_screen();
-        return $screen && method_exists($screen, 'is_block_editor') && $screen->is_block_editor();
-    }
-}
-```
-
-### ✅ Static Helper Classes
-```php
-// REQUIRED - Static helper classes
-class UserHelper
-{
-    public static function getData(int $userId): array
-    {
-        return get_user_meta($userId, 'data', true) ?: [];
-    }
-
-    public static function updateData(int $userId, array $data): bool
-    {
-        return update_user_meta($userId, 'data', $data);
-    }
-
-    public static function validateData(array $data): bool
-    {
-        return !empty($data['name']) && !empty($data['email']);
-    }
-}
-```
-
-### ✅ Service Classes
-```php
-// REQUIRED - Service classes with dependency injection
-class UserService
-{
-    private $repository;
-    private $validator;
-
-    public function __construct(UserRepository $repository, UserValidator $validator)
-    {
-        $this->repository = $repository;
-        $this->validator = $validator;
-    }
-
-    public function createUser(array $data): User
-    {
-        if (!$this->validator->validate($data)) {
-            throw new InvalidArgumentException('Invalid user data');
-        }
-
-        return $this->repository->create($data);
-    }
-
-    public function getUser(int $id): ?User
-    {
-        return $this->repository->find($id);
-    }
-}
-```
-
-### ✅ Repository Pattern
-```php
-// REQUIRED - Repository pattern for data access
-// WordPress functions are allowed and encouraged
-class UserRepository
-{
-    public function find(int $id): ?User
-    {
-        $userData = get_user($id);
-        return $userData ? new User($userData) : null;
-    }
-
-    public function create(array $data): User
-    {
-        $userId = wp_insert_user($data);
-        return $this->find($userId);
-    }
-
-    public function update(int $id, array $data): User
-    {
-        $data['ID'] = $id;
-        wp_update_user($data);
-        return $this->find($id);
-    }
-
-    public function delete(int $id): bool
-    {
-        return wp_delete_user($id);
-    }
-}
-```
-
-## 🔧 Code Quality Rules
-
-### 1. Logging
-
-- **Use Centralized Logger**: Always use `Jankx\Facades\Logger` instead of `error_log()`
-- **Log Levels**: Use appropriate log levels (debug, info, warning, error)
-- **Context Information**: Include relevant context in log messages
-
-```php
-// ✅ Correct
-Logger::debug('User service initialized', ['user_id' => $userId]);
-
-// ❌ Incorrect
-error_log('User service initialized');
-```
-
-### 2. WordPress Hook Naming
-
-- **Package-Style Naming**: Use `jankx/package/name` format for all hooks
-- **Consistent Naming**: Follow the same pattern across all hooks
-
-```php
-// ✅ Correct
-do_action('jankx/user/loaded', $user, $user_id);
-apply_filters('jankx/user/data', $userData, $user_id, $fields);
-
-// ❌ Incorrect
-do_action('jankx_user_loaded', $user, $user_id);
-apply_filters('jankx_user_data', $userData, $user_id, $fields);
-```
-
-### 3. Error Handling
-
-- **Custom Exceptions**: Use custom exceptions for domain-specific errors
-- **Graceful Degradation**: Handle errors gracefully without breaking the application
-- **Proper Error Messages**: Provide clear, actionable error messages
-
-```php
-// ✅ Correct
-try {
-    $user = $this->userService->getUser($userId);
-} catch (UserNotFoundException $e) {
-    Logger::warning('User not found', ['user_id' => $userId]);
-    return null;
-}
-
-// ❌ Incorrect
-$user = $this->userService->getUser($userId); // No error handling
-```
-
-### 4. Constants vs Static Methods
-
-- **Version Management**: Use static methods instead of global constants for version information
-- **Encapsulation**: Keep version logic within the main framework class
-
-```php
-// ✅ Correct
-$version = Jankx::getFrameworkVersion();
-
-// ❌ Incorrect
-$version = JANKX_VERSION; // Global constant
-```
-
-## 🏗 Class Structure Rules
-
-### 1. Single Responsibility Principle
-```php
-// ✅ GOOD - Single responsibility
-class UserValidator
-{
-    public function validate(array $data): bool
-    {
-        return $this->validateEmail($data['email'])
-            && $this->validateName($data['name']);
-    }
-
-    private function validateEmail(string $email): bool
-    {
-        return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
-    }
-
-    private function validateName(string $name): bool
-    {
-        return strlen(trim($name)) >= 2;
-    }
-}
-
-// ❌ BAD - Multiple responsibilities
-class UserManager
-{
-    public function validate() { /* validation logic */ }
-    public function save() { /* database logic */ }
-    public function sendEmail() { /* email logic */ }
-    public function renderTemplate() { /* template logic */ }
-}
-```
-
-### 2. Dependency Injection
-```php
-// ✅ GOOD - Dependency injection
-class UserController
-{
-    private $userService;
-    private $templateRenderer;
-
-    public function __construct(UserService $userService, TemplateRenderer $templateRenderer)
-    {
-        $this->userService = $userService;
-        $this->templateRenderer = $templateRenderer;
-    }
-
-    public function createUser(array $data): string
-    {
-        $user = $this->userService->createUser($data);
-        return $this->templateRenderer->render('user/created', ['user' => $user]);
-    }
-}
-
-// ❌ BAD - Direct instantiation
-class UserController
-{
-    public function createUser(array $data): string
-    {
-        $userService = new UserService(); // Direct instantiation
-        $templateRenderer = new TemplateRenderer(); // Direct instantiation
-        // ...
-    }
-}
-```
-
-### 3. Interface Segregation
-```php
-// ✅ GOOD - Specific interfaces
-interface UserReader
-{
-    public function find(int $id): ?User;
-    public function findByEmail(string $email): ?User;
-}
-
-interface UserWriter
-{
-    public function create(array $data): User;
-    public function update(int $id, array $data): User;
-    public function delete(int $id): bool;
-}
-
-interface UserRepository extends UserReader, UserWriter
-{
-    // Combines both interfaces
-}
-
-// ❌ BAD - Fat interface
-interface UserManager
-{
-    public function find(int $id): ?User;
-    public function create(array $data): User;
-    public function update(int $id, array $data): User;
-    public function delete(int $id): bool;
-    public function sendEmail(User $user): bool; // Not related to data access
-    public function renderTemplate(User $user): string; // Not related to data access
-}
-```
-
-## 📁 File Organization Rules
-
-### 1. PSR-4 Autoloading
-```php
-// ✅ GOOD - PSR-4 structure
-namespace Jankx\User;
-
-class UserService
-{
-    // Service implementation
-}
-
-// File location: includes/Jankx/User/UserService.php
-```
-
-### 2. Directory Structure
-```
-includes/
-├── Jankx/
-│   ├── User/
-│   │   ├── UserService.php
-│   │   ├── UserRepository.php
-│   │   ├── UserValidator.php
-│   │   └── Interfaces/
-│   │       ├── UserReader.php
-│   │       └── UserWriter.php
-│   ├── Template/
-│   │   ├── TemplateRenderer.php
-│   │   └── TemplateEngine.php
-│   └── Security/
-│       ├── SecurityManager.php
-│       └── Sanitizer.php
-```
-
-### 3. Naming Conventions
-```php
-// ✅ GOOD - Clear naming
-class UserService {} // Service classes
-class UserRepository {} // Repository classes
-class UserValidator {} // Validator classes
-class UserController {} // Controller classes
-class UserInterface {} // Interface classes
-class UserException {} // Exception classes
-
-// File names match class names exactly
-UserService.php
-UserRepository.php
-UserValidator.php
-```
-
-### 4. Helper Classes Location
-- **Path**: `includes/Jankx/Helpers/`
-- **Naming**: `*Helper.php`
-- **Methods**: All methods must be static
-
-### 5. Service Classes Location
-- **Path**: `includes/Jankx/Services/`
-- **Naming**: `*Service.php`
-- **Methods**: Instance methods only
-
-### 6. Bootstrapper Classes Location
-- **Path**: `includes/Jankx/Bootstrappers/`
-- **Naming**: `*Bootstrapper.php`
-- **Methods**: Instance methods for business logic, static calls to helpers
-
-## 🧪 Testing Rules
-
-### 1. Unit Testing
-```php
-// ✅ REQUIRED - Unit tests for all classes
-class UserServiceTest extends TestCase
-{
-    private $userService;
-    private $repository;
-    private $validator;
-
-    protected function setUp(): void
-    {
-        $this->repository = $this->createMock(UserRepository::class);
-        $this->validator = $this->createMock(UserValidator::class);
-        $this->userService = new UserService($this->repository, $this->validator);
-    }
-
-    public function testCreateUserWithValidData()
-    {
-        $data = ['name' => 'John Doe', 'email' => 'john@example.com'];
-        $user = new User(1, 'John Doe', 'john@example.com');
-
-        $this->validator->expects($this->once())
-            ->method('validate')
-            ->with($data)
-            ->willReturn(true);
-
-        $this->repository->expects($this->once())
-            ->method('create')
-            ->with($data)
-            ->willReturn($user);
-
-        $result = $this->userService->createUser($data);
-
-        $this->assertEquals($user, $result);
-    }
-
-    public function testCreateUserWithInvalidData()
-    {
-        $data = ['name' => '', 'email' => 'invalid-email'];
-
-        $this->validator->expects($this->once())
-            ->method('validate')
-            ->with($data)
-            ->willReturn(false);
-
-        $this->expectException(ValidationException::class);
-
-        $this->userService->createUser($data);
-    }
-}
-```
-
-### 2. Integration Testing
-```php
-// ✅ REQUIRED - Integration tests
-class UserIntegrationTest extends TestCase
-{
-    public function testUserCreationFlow()
-    {
-        $container = new ServiceContainer();
-        $userService = $container->get(UserService::class);
-
-        $data = ['name' => 'John Doe', 'email' => 'john@example.com'];
-        $user = $userService->createUser($data);
-
-        $this->assertInstanceOf(User::class, $user);
-        $this->assertEquals('John Doe', $user->getName());
-        $this->assertEquals('john@example.com', $user->getEmail());
-    }
-}
-```
-
-### 3. Testing Guidelines
-
-- **Mandatory Unit Tests**: **All classes and helpers must have comprehensive unit tests**
-- **Test Coverage**: Aim for 90%+ test coverage for all classes
-- **Test Structure**: Follow the pattern `tests/{Namespace}/{ClassName}Test.php`
-- **Mocking**: Use mocks for external dependencies (WordPress functions, database, etc.)
-- **Test Naming**: Use descriptive test method names that explain the scenario
-- **Test Isolation**: Each test should be independent and not rely on other tests
-- **Helper Testing**: Test all static methods in helper classes
-- **Service Testing**: Test all instance methods in service classes
-- **Exception Testing**: Test both success and failure scenarios
-- **Integration Testing**: Write integration tests for complex workflows
-
-## 🔒 Security Rules
-
-### 1. Input Sanitization
-```php
-// ✅ REQUIRED - Input sanitization
-class UserValidator
-{
-    public function validate(array $data): bool
-    {
-        $sanitizedData = $this->sanitizeInput($data);
-        return $this->validateSanitizedData($sanitizedData);
-    }
-
-    private function sanitizeInput(array $data): array
-    {
-        return [
-            'name' => sanitize_text_field($data['name'] ?? ''),
-            'email' => sanitize_email($data['email'] ?? ''),
-            'description' => wp_kses_post($data['description'] ?? ''),
-        ];
-    }
-}
-```
-
-### 2. Output Escaping
-```php
-// ✅ REQUIRED - Output escaping
+// ✅ Đúng
+class FrontendKernel extends Kernel
+class AdminBootstrapper extends AbstractBootstrapper
+class DebugServiceProvider extends ServiceProvider
 class TemplateRenderer
-{
-    public function render(string $template, array $data): string
-    {
-        $escapedData = $this->escapeOutput($data);
-        return $this->renderTemplate($template, $escapedData);
-    }
+class AssetManager
 
-    private function escapeOutput(array $data): array
-    {
-        return [
-            'name' => esc_html($data['name']),
-            'email' => esc_attr($data['email']),
-            'description' => wp_kses_post($data['description']),
-        ];
-    }
-}
+// ❌ Sai
+class frontend_kernel
+class admin_bootstrapper
+class debug_service_provider
+class template_renderer
+class asset_manager
 ```
 
-## 🎯 WordPress Hook Naming Rules
-
-### 1. Action Hook Naming Convention
+### 📝 **Method Names**
 ```php
-// ✅ REQUIRED - Package-style action hook names
-class UserService
-{
-    public function createUser(array $data): User
-    {
-        // Pre-action hook
-        do_action('jankx/user/before_create', $data);
+// ✅ Đúng
+public function boot(): void
+public function register(): void
+public function shouldRun(): bool
+public function bootstrap(Container $container): void
+public function getContainer(): Container
 
-        $user = $this->repository->create($data);
-
-        // Post-action hook
-        do_action('jankx/user/after_create', $user, $data);
-
-        return $user;
-    }
-}
-
-// ✅ GOOD - Consistent package naming
-do_action('jankx/template/before_render', $template, $data);
-do_action('jankx/security/before_validation', $input);
-do_action('jankx/admin/after_save_settings', $settings);
-do_action('jankx/frontend/before_enqueue_assets');
-do_action('jankx/api/before_response', $response);
-
-// ❌ FORBIDDEN - Generic hook names
-do_action('user_created', $user); // Too generic
-do_action('before_save', $data); // No package prefix
-do_action('jankx_user_created', $user); // Wrong separator
+// ❌ Sai
+public function Boot(): void
+public function Register(): void
+public function should_run(): bool
+public function Bootstrap(Container $container): void
+public function get_container(): Container
 ```
 
-### 2. Filter Hook Naming Convention
+### 📝 **Property Names**
 ```php
-// ✅ REQUIRED - Package-style filter hook names
-class TemplateRenderer
-{
-    public function render(string $template, array $data): string
-    {
-        // Pre-filter hook
-        $data = apply_filters('jankx/template/render_data', $data, $template);
+// ✅ Đúng
+protected $container;
+protected $bootstrappers = [];
+protected $serviceProviders = [];
+protected $booted = false;
+protected $priority = 10;
 
-        $content = $this->renderTemplate($template, $data);
-
-        // Post-filter hook
-        $content = apply_filters('jankx/template/render_content', $content, $template, $data);
-
-        return $content;
-    }
-}
-
-// ✅ GOOD - Consistent filter naming
-$userData = apply_filters('jankx/user/validation_rules', $rules, $context);
-$templatePath = apply_filters('jankx/template/locate_template', $path, $template);
-$settings = apply_filters('jankx/admin/default_settings', $defaults);
-$assets = apply_filters('jankx/frontend/enqueue_assets', $assets);
-
-// ❌ FORBIDDEN - Generic filter names
-$data = apply_filters('user_data', $data); // Too generic
-$content = apply_filters('render_content', $content); // No package prefix
-$settings = apply_filters('jankx_settings', $settings); // Wrong separator
+// ❌ Sai
+protected $Container;
+protected $bootstrappers_array = [];
+protected $service_providers = [];
+protected $Booted = false;
+protected $Priority = 10;
 ```
 
-## 📝 Documentation Rules
-
-### 1. PHPDoc Comments
+### 📝 **Constant Names**
 ```php
-/**
- * User service for managing user operations
- *
- * @package Jankx\User
- */
-class UserService
-{
-    /**
-     * Create a new user
-     *
-     * Fires the following hooks:
-     * - `jankx/user/before_create` (array $data) - Before user creation
-     * - `jankx/user/after_create` (User $user, array $data) - After user creation
-     *
-     * @param array $data User data
-     * @return User Created user
-     * @throws ValidationException When data is invalid
-     * @throws ServiceException When creation fails
-     */
-    public function createUser(array $data): User
-    {
-        // Implementation
-    }
-}
+// ✅ Đúng
+const FRAMEWORK_NAME = 'Jankx';
+const FRAMEWORK_VERSION = '2.0.0';
+const DEFAULT_PRIORITY = 10;
+const DEBUG_MODE = true;
+
+// ❌ Sai
+const framework_name = 'Jankx';
+const Framework_Version = '2.0.0';
+const default_priority = 10;
+const debug_mode = true;
 ```
 
-### 2. README Files
-```markdown
-# User Module
+## File Structure
 
-## Overview
-User module provides user management functionality.
+### 📁 **Directory Structure**
+```
+includes/Jankx/
+├── Kernel/
+│   ├── Kernel.php
+│   ├── FrontendKernel.php
+│   ├── AdminKernel.php
+│   └── CLIKernel.php
+├── Bootstrappers/
+│   ├── AbstractBootstrapper.php
+│   ├── Global/
+│   ├── Frontend/
+│   ├── Admin/
+│   └── CLI/
+├── Providers/
+│   ├── ServiceProvider.php
+│   ├── FrontendServiceProvider.php
+│   ├── AdminServiceProvider.php
+│   └── CLIServiceProvider.php
+├── Services/
+│   ├── DebugInfo.php
+│   ├── TemplateRenderer.php
+│   └── AssetManager.php
+└── Contracts/
+    ├── KernelInterface.php
+    ├── BootstrapperInterface.php
+    └── ServiceProviderInterface.php
+```
 
-## Classes
-- `UserService`: Main service for user operations
-- `UserRepository`: Data access layer
-- `UserValidator`: Input validation
-
-## Hooks
-- `jankx/user/before_create` - Fired before user creation
-- `jankx/user/after_create` - Fired after user creation
-- `jankx/user/validation_rules` - Filter for validation rules
-
-## Usage
+### 📁 **File Naming**
 ```php
-$userService = $container->get(UserService::class);
-$user = $userService->createUser(['name' => 'John', 'email' => 'john@example.com']);
+// ✅ Đúng
+Kernel.php
+FrontendKernel.php
+AdminBootstrapper.php
+DebugServiceProvider.php
+TemplateRenderer.php
+
+// ❌ Sai
+kernel.php
+frontend_kernel.php
+admin_bootstrapper.php
+debug_service_provider.php
+template_renderer.php
 ```
 
-## Testing
-Run tests with: `composer test -- --filter=User`
-```
+## Code Organization
 
-## 📊 Code Review Checklist
-
-- [ ] Follows OOP principles
-- [ ] Uses appropriate helper classes (static methods only)
-- [ ] Implements proper error handling
-- [ ] Uses centralized logging
-- [ ] Follows WordPress hook naming conventions
-- [ ] Uses WordPress functions instead of direct database queries
-- [ ] Includes proper documentation
-- [ ] **Has comprehensive unit tests for all classes and helpers**
-- [ ] **Tests cover both success and failure scenarios**
-- [ ] **Tests use proper mocking for external dependencies**
-- [ ] **Test coverage is 90%+ for all classes**
-- [ ] Follows security best practices
-- [ ] Implements performance optimizations where appropriate
-
-## 🔄 Migration from Jankx 1.x
-
-When migrating from Jankx 1.x to 2.0:
-
-1. **Convert Helper Methods**: Ensure all helper methods are static
-2. **Update Hook Names**: Convert hook names to package-style format
-3. **Replace Constants**: Replace global constants with static method calls
-4. **Update Logging**: Replace `error_log()` with `Logger` facade
-5. **Refactor Services**: Ensure service classes use instance methods
-6. **Update Database Queries**: Replace direct queries with WordPress functions
-7. **Add Unit Tests**: **Create comprehensive unit tests for all classes and helpers**
-8. **Test Coverage**: Ensure 90%+ test coverage for all migrated code
-
-## 🎯 Examples
-
-### Helper Class Example
+### 🏗️ **Class Structure**
 ```php
 <?php
 
-namespace Jankx\Helpers;
+namespace Jankx\Kernel;
 
-class ExampleHelper
-{
-    public static function formatData(array $data): array
-    {
-        return array_map('sanitize_text_field', $data);
-    }
-
-    public static function validateInput(string $input): bool
-    {
-        return !empty(trim($input));
-    }
-}
-```
-
-### Service Class Example
-```php
-<?php
-
-namespace Jankx\Services;
-
+use Jankx\Contracts\KernelInterface;
+use Jankx\Contracts\BootstrapperInterface;
+use Illuminate\Container\Container;
 use Jankx\Facades\Logger;
 
-class ExampleService
+/**
+ * Abstract Kernel Class
+ *
+ * Base class for all kernel types in Jankx framework
+ *
+ * @package Jankx\Kernel
+ */
+abstract class Kernel implements KernelInterface
 {
-    private $repository;
+    // 1. Properties
+    protected $container;
+    protected $bootstrappers = [];
+    protected $serviceProviders = [];
+    protected $booted = false;
 
-    public function __construct(ExampleRepository $repository)
+    // 2. Constructor
+    public function __construct(Container $container = null)
     {
-        $this->repository = $repository;
+        $this->container = $container ?: Jankx::getInstance();
+        $this->registerBootstrappers();
+        $this->registerServices();
     }
 
-    public function processData(array $data): array
+    // 3. Abstract methods
+    abstract protected function registerBootstrappers(): void;
+    abstract protected function registerServices(): void;
+
+    // 4. Public methods
+    public function boot(): void
     {
-        try {
-            $formattedData = ExampleHelper::formatData($data);
-            return $this->repository->save($formattedData);
-        } catch (\Exception $e) {
-            Logger::error('Failed to process data', ['error' => $e->getMessage()]);
-            throw $e;
+        if ($this->booted) {
+            return;
+        }
+
+        $this->runBootstrappers();
+        $this->loadServices();
+        $this->loadHooks();
+        $this->loadFilters();
+
+        $this->booted = true;
+    }
+
+    // 5. Protected methods
+    protected function runBootstrappers(): void
+    {
+        // Implementation
+    }
+
+    // 6. Private methods
+    private function sortBootstrappersByPriority(): array
+    {
+        // Implementation
+    }
+}
+```
+
+### 🔧 **Method Organization**
+```php
+class ExampleClass
+{
+    // 1. Properties
+    protected $property;
+
+    // 2. Constructor
+    public function __construct()
+    {
+        // Constructor logic
+    }
+
+    // 3. Public methods
+    public function publicMethod(): void
+    {
+        // Public method logic
+    }
+
+    // 4. Protected methods
+    protected function protectedMethod(): void
+    {
+        // Protected method logic
+    }
+
+    // 5. Private methods
+    private function privateMethod(): void
+    {
+        // Private method logic
+    }
+}
+```
+
+## Type Declarations
+
+### 📝 **Property Types**
+```php
+// ✅ Đúng
+protected Container $container;
+protected array $bootstrappers = [];
+protected bool $booted = false;
+protected int $priority = 10;
+protected string $kernelType;
+
+// ❌ Sai
+protected $container;
+protected $bootstrappers = [];
+protected $booted = false;
+protected $priority = 10;
+protected $kernelType;
+```
+
+### 📝 **Method Return Types**
+```php
+// ✅ Đúng
+public function boot(): void
+public function getContainer(): Container
+public function getBootstrappers(): array
+public function isBooted(): bool
+public function getPriority(): int
+
+// ❌ Sai
+public function boot()
+public function getContainer()
+public function getBootstrappers()
+public function isBooted()
+public function getPriority()
+```
+
+### 📝 **Parameter Types**
+```php
+// ✅ Đúng
+public function bootstrap(Container $container): void
+public function addBootstrapper(string $bootstrapper): void
+public function hasBootstrapper(string $bootstrapper): bool
+public function setPriority(int $priority): void
+
+// ❌ Sai
+public function bootstrap($container): void
+public function addBootstrapper($bootstrapper): void
+public function hasBootstrapper($bootstrapper): bool
+public function setPriority($priority): void
+```
+
+## Error Handling
+
+### ⚠️ **Exception Handling**
+```php
+// ✅ Đúng
+try {
+    $provider = new $providerClass($this->container);
+    $provider->register();
+    $provider->boot();
+} catch (\Exception $e) {
+    Logger::error("Service Provider {$providerClass} failed: " . $e->getMessage());
+}
+
+// ❌ Sai
+$provider = new $providerClass($this->container);
+$provider->register();
+$provider->boot();
+```
+
+### ⚠️ **Error Logging**
+```php
+// ✅ Đúng
+Logger::error("Bootstrapper {$bootstrapperClass} failed: " . $e->getMessage());
+Logger::debug('Kernel booted', ['type' => $this->kernelType]);
+
+// ❌ Sai
+error_log("Bootstrapper failed");
+echo "Kernel booted";
+```
+
+## Performance Rules
+
+### ⚡ **Lazy Loading**
+```php
+// ✅ Đúng
+public function boot(): void
+{
+    if ($this->booted) {
+        return;
+    }
+
+    // Boot logic here
+    $this->booted = true;
+}
+
+// ❌ Sai
+public function boot(): void
+{
+    // Always run boot logic
+    $this->booted = true;
+}
+```
+
+### ⚡ **Conditional Loading**
+```php
+// ✅ Đúng
+public function shouldRun(): bool
+{
+    return is_admin() && current_user_can('manage_options');
+}
+
+// ❌ Sai
+public function shouldRun(): bool
+{
+    return true; // Always run
+}
+```
+
+### ⚡ **Memory Management**
+```php
+// ✅ Đúng
+protected function loadServices()
+{
+    foreach ($this->getServiceProviders() as $providerClass) {
+        if (class_exists($providerClass)) {
+            $provider = new $providerClass($this->container);
+            $provider->register();
+            $provider->boot();
         }
     }
 }
-```
 
-### Bootstrapper Example
-```php
-<?php
-
-namespace Jankx\Bootstrappers;
-
-use Jankx\Helpers\BootstrapperHelper;
-
-class ExampleBootstrapper extends AbstractBootstrapper
+// ❌ Sai
+protected function loadServices()
 {
-    public function bootstrap(Container $container): void
-    {
-        // Use static helper methods
-        BootstrapperHelper::fireLoadedAction($this->getName(), $container);
+    $providers = $this->getServiceProviders();
+    foreach ($providers as $providerClass) {
+        $provider = new $providerClass($this->container);
+        $provider->register();
+        $provider->boot();
     }
 }
 ```
 
-## 🎉 Conclusion
+## Security Rules
 
-Following these coding rules ensures:
+### 🔒 **Input Validation**
+```php
+// ✅ Đúng
+public function addBootstrapper(string $bootstrapper): void
+{
+    if (!class_exists($bootstrapper)) {
+        throw new \InvalidArgumentException("Bootstrapper {$bootstrapper} does not exist");
+    }
 
-- **Consistency**: All code follows the same patterns
-- **Maintainability**: Code is easy to understand and modify
-- **Performance**: Optimized for WordPress environment
-- **Security**: Follows WordPress security best practices
-- **Testability**: Code is easy to test and debug
-- **Reliability**: Comprehensive unit tests ensure code quality and prevent regressions
+    if (!in_array($bootstrapper, $this->bootstrappers)) {
+        $this->bootstrappers[] = $bootstrapper;
+    }
+}
 
-Remember: **Helper classes are static, Service classes are instance-based, all classes must have comprehensive unit tests, and always use the appropriate patterns for each type of class.**
+// ❌ Sai
+public function addBootstrapper(string $bootstrapper): void
+{
+    $this->bootstrappers[] = $bootstrapper;
+}
+```
+
+### 🔒 **Permission Checks**
+```php
+// ✅ Đúng
+public function shouldRun(): bool
+{
+    return is_admin() && current_user_can('manage_options');
+}
+
+// ❌ Sai
+public function shouldRun(): bool
+{
+    return true;
+}
+```
+
+### 🔒 **Data Sanitization**
+```php
+// ✅ Đúng
+public function setKernelType(string $type): void
+{
+    $this->kernelType = sanitize_text_field($type);
+}
+
+// ❌ Sai
+public function setKernelType(string $type): void
+{
+    $this->kernelType = $type;
+}
+```
+
+## Testing Rules
+
+### 🧪 **Unit Testing**
+```php
+// ✅ Đúng
+class KernelTest extends TestCase
+{
+    public function test_kernel_boots_correctly()
+    {
+        $kernel = new FrontendKernel();
+        $kernel->boot();
+
+        $this->assertTrue($kernel->isBooted());
+    }
+}
+
+// ❌ Sai
+class KernelTest extends TestCase
+{
+    public function test_kernel_boots_correctly()
+    {
+        $kernel = new FrontendKernel();
+        $kernel->boot();
+
+        // No assertions
+    }
+}
+```
+
+### 🧪 **Integration Testing**
+```php
+// ✅ Đúng
+class BootstrapperTest extends TestCase
+{
+    public function test_bootstrapper_runs_in_order()
+    {
+        $kernel = new TestKernel();
+        $kernel->addBootstrapper(TestBootstrapper::class);
+        $kernel->boot();
+
+        $this->assertTrue($kernel->hasBootstrapper(TestBootstrapper::class));
+    }
+}
+```
+
+## Documentation Rules
+
+### 📝 **Class Documentation**
+```php
+/**
+ * Abstract Kernel Class
+ *
+ * Base class for all kernel types in Jankx framework.
+ * Provides common functionality and enforces contract implementation.
+ *
+ * @package Jankx\Kernel
+ * @since 2.0.0
+ */
+abstract class Kernel implements KernelInterface
+{
+    // Class implementation
+}
+```
+
+### 📝 **Method Documentation**
+```php
+/**
+ * Boot the kernel
+ *
+ * Initializes all bootstrappers, loads services, and sets up hooks.
+ * This method should only be called once per kernel instance.
+ *
+ * @return void
+ * @throws \RuntimeException If bootstrapping fails
+ */
+public function boot(): void
+{
+    // Method implementation
+}
+```
+
+### 📝 **Property Documentation**
+```php
+/**
+ * @var Container The service container instance
+ */
+protected $container;
+
+/**
+ * @var array List of registered bootstrappers
+ */
+protected $bootstrappers = [];
+
+/**
+ * @var bool Whether the kernel has been booted
+ */
+protected $booted = false;
+```
+
+## Best Practices
+
+### ✅ **Do's**
+- Sử dụng type declarations cho tất cả properties và methods
+- Implement proper error handling với try-catch
+- Log errors và debug information
+- Use lazy loading cho performance
+- Follow naming conventions
+- Write comprehensive tests
+- Document all public methods và classes
+
+### ❌ **Don'ts**
+- Không sử dụng global variables
+- Không hardcode values
+- Không ignore exceptions
+- Không use magic numbers
+- Không write code without tests
+- Không skip documentation
+
+## Code Review Checklist
+
+### 🔍 **Architecture**
+- [ ] Follows bootstrapping flow: Kernel → App → Bootstrapper → Service Provider
+- [ ] Uses proper dependency injection
+- [ ] Implements interfaces correctly
+- [ ] Follows separation of concerns
+
+### 🔍 **Code Quality**
+- [ ] Uses type declarations
+- [ ] Follows naming conventions
+- [ ] Implements proper error handling
+- [ ] Includes comprehensive tests
+- [ ] Has proper documentation
+
+### 🔍 **Performance**
+- [ ] Uses lazy loading where appropriate
+- [ ] Implements conditional loading
+- [ ] Avoids memory leaks
+- [ ] Optimizes database queries
+
+### 🔍 **Security**
+- [ ] Validates all inputs
+- [ ] Checks permissions
+- [ ] Sanitizes data
+- [ ] Uses prepared statements
 
 ---
 
-**Jankx 2.0** - Modern WordPress Theme Framework (Development Version) 🚧
+**Version**: 2.0.0
+**Last Updated**: 2024
+**Compatibility**: WordPress 5.0+, PHP 7.4+
 
-*Last updated: Development Phase*
-*Framework version: 2.0.0-dev*
+## Service Registration Rules
+
+### 🔄 **Service Provider Pattern (Bắt buộc)**
+
+Tất cả services phải được register và boot thông qua **Service Provider**:
+
+```php
+// ✅ Đúng - Thông qua Service Provider
+class AdminServiceProvider extends ServiceProvider
+{
+    public function register()
+    {
+        $this->singleton('admin.dashboard', Dashboard::class);
+        $this->singleton('admin.menu', MenuManager::class);
+    }
+
+    public function boot()
+    {
+        if ($this->container->has('admin.dashboard')) {
+            $dashboard = $this->container->make('admin.dashboard');
+            $dashboard->initialize();
+        }
+    }
+}
+
+// ❌ Sai - Register trực tiếp
+protected function registerServices(): void
+{
+    $this->addService('admin.dashboard', [
+        'class' => \Jankx\Admin\Dashboard::class,
+        'params' => []
+    ]);
+}
+```
+
+### 🏗️ **Service Provider Types**
+
+#### **1. Context-Specific Providers**
+```php
+// AdminServiceProvider - Admin context
+// FrontendServiceProvider - Frontend context
+// CLIServiceProvider - CLI context
+// APIServiceProvider - API context
+// DebugServiceProvider - Debug context
+```
+
+#### **2. Feature-Specific Providers**
+```php
+// GutenbergServiceProvider - Gutenberg features
+// WooCommerceServiceProvider - WooCommerce features
+// SecurityServiceProvider - Security features
+// PerformanceServiceProvider - Performance features
+```
+
+### 🔧 **Kernel Integration**
+
+```php
+// ✅ Đúng - Register Service Provider trong Kernel
+protected function registerServices(): void
+{
+    $this->addServiceProvider(\Jankx\Providers\AdminServiceProvider::class);
+    $this->addServiceProvider(\Jankx\Providers\FrontendServiceProvider::class);
+}
+
+// ❌ Sai - Register services trực tiếp
+protected function registerServices(): void
+{
+    $this->addService('admin.dashboard', [
+        'class' => \Jankx\Admin\Dashboard::class,
+        'params' => []
+    ]);
+}
+```
+
+### 🚫 **Không được phép**
+
+#### **1. Register trực tiếp trong Kernel**
+```php
+// ❌ Không được phép - Method addService đã bị xóa
+protected function registerServices(): void
+{
+    $this->addService('admin.dashboard', [
+        'class' => \Jankx\Admin\Dashboard::class,
+        'params' => []
+    ]);
+}
+```
+
+#### **2. Register trực tiếp trong Bootstrapper**
+```php
+// ❌ Không được phép
+public function bootstrap(Container $container): void
+{
+    $container->singleton(DebugInfo::class, $debugInfo);
+}
+```
+
+#### **3. Register trực tiếp trong Helper**
+```php
+// ❌ Không được phép - Sử dụng Service Provider pattern thay thế
+public static function registerServices(Container $container, array $services): void
+{
+    foreach ($services as $service) {
+        $container->singleton($service);
+    }
+}
+```
+
+### ✅ **Phải làm**
+
+#### **1. Tạo Service Provider cho mỗi context**
+```php
+// ✅ Đúng
+class MyCustomServiceProvider extends ServiceProvider
+{
+    public function register()
+    {
+        $this->singleton(MyService::class);
+        $this->singleton(MyOtherService::class);
+    }
+
+    public function boot()
+    {
+        // Boot services if needed
+    }
+
+    public function shouldLoad(): bool
+    {
+        return true; // Logic để quyết định có load hay không
+    }
+}
+```
+
+#### **2. Register Service Provider trong Kernel**
+```php
+// ✅ Đúng
+protected function registerServices(): void
+{
+    $this->addServiceProvider(\Jankx\Providers\AdminServiceProvider::class);
+    $this->addServiceProvider(\Jankx\Providers\FrontendServiceProvider::class);
+    $this->addServiceProvider(\Jankx\Providers\MyCustomServiceProvider::class);
+}
+```
+
+#### **3. Sử dụng Service Provider pattern**
+```php
+// ✅ Đúng
+class AdminServiceProvider extends ServiceProvider
+{
+    public function register()
+    {
+        $this->singleton('admin.dashboard', \Jankx\Admin\Dashboard::class);
+        $this->singleton(\Jankx\Services\UserService::class);
+    }
+
+    public function boot()
+    {
+        // Boot services if needed
+    }
+}
+```
+
+### 📋 **Service Provider Checklist**
+
+- [ ] Extend `ServiceProvider` class
+- [ ] Implement `register()` method
+- [ ] Implement `boot()` method
+- [ ] Use `$this->singleton()` for registration
+- [ ] Check container has service before booting
+- [ ] Handle exceptions in boot process
+- [ ] Add proper documentation
+- [ ] Register in appropriate Kernel
+
+### 🎯 **Best Practices**
+
+1. **One Provider per Context**: Mỗi context (admin, frontend, cli) có một Provider riêng
+2. **Feature Grouping**: Nhóm các services liên quan trong cùng một Provider
+3. **Lazy Loading**: Sử dụng singleton pattern cho performance
+4. **Error Handling**: Xử lý lỗi trong boot process
+5. **Documentation**: Comment rõ ràng cho mỗi service
+6. **Testing**: Test từng Service Provider riêng biệt

@@ -27,7 +27,10 @@ class BootstrapperHelper
      */
     public static function setupDeferredResolver(Container $container): void
     {
-        ServiceRegistrationHelper::registerDeferredServices($container);
+        // Deferred services are now registered through appropriate Service Providers
+        // This method is kept for backward compatibility
+        $context = is_admin() ? 'admin' : 'frontend';
+        DeferredServiceHelper::registerDeferredServices($container, $context);
     }
 
     /**

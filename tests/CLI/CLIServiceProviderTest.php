@@ -65,12 +65,12 @@ class CLIServiceProviderTest extends TestCase
     {
         $this->serviceProvider->register();
 
-        // Test that CLI commands container binding exists
+        // Test that CLI commands container is registered
         $this->assertTrue($this->container->bound('cli.commands'),
             'CLI commands should be bound to container');
 
         // Test that individual command classes are registered
-        $this->assertTrue($this->container->bound('cli.command.code'),
+        $this->assertTrue($this->container->bound('cli.command.coding-standard'),
             'CodingStandardCommand should be bound to container');
         $this->assertTrue($this->container->bound('cli.command.generate-block'),
             'GenerateBlockCommand should be bound to container');
@@ -87,8 +87,8 @@ class CLIServiceProviderTest extends TestCase
     {
         $this->serviceProvider->register();
 
-        $command1 = $this->container->make('cli.command.code');
-        $command2 = $this->container->make('cli.command.code');
+        $command1 = $this->container->make('cli.command.coding-standard');
+        $command2 = $this->container->make('cli.command.coding-standard');
 
         $this->assertSame($command1, $command2,
             'CLI commands should be singletons');
@@ -104,7 +104,7 @@ class CLIServiceProviderTest extends TestCase
         $this->serviceProvider->register();
 
         $this->assertInstanceOf(CodingStandardCommand::class,
-            $this->container->make('cli.command.code'));
+            $this->container->make('cli.command.coding-standard'));
         $this->assertInstanceOf(GenerateBlockCommand::class,
             $this->container->make('cli.command.generate-block'));
         $this->assertInstanceOf(CreateBootstrapperCommand::class,

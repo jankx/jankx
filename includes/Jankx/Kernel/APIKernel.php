@@ -53,16 +53,12 @@ class APIKernel extends Kernel implements KernelInterface
      */
     protected function registerServices(): void
     {
-        // API manager
-        $this->addService(APIManager::class);
+        // Register APIServiceProvider
+        $this->addServiceProvider(\Jankx\Providers\APIServiceProvider::class);
 
-        // Core endpoints
-        $this->addService(PostsEndpoint::class);
-        $this->addService(PagesEndpoint::class);
-        $this->addService(CategoriesEndpoint::class);
-        $this->addService(TagsEndpoint::class);
-        $this->addService(UsersEndpoint::class);
-        $this->addService(SettingsEndpoint::class);
+        // API services are now registered through APIServiceProvider
+        // This method is kept for backward compatibility
+        // All services should be registered through Service Providers
     }
 
     /**

@@ -3,86 +3,106 @@
 namespace Jankx\Helpers;
 
 use Illuminate\Container\Container;
-use Jankx\Context\ContextualServiceRegistry;
 
 /**
  * Deferred Service Helper
  *
- * Manages deferred service registration in a DRY way
+ * Helper class for registering deferred services through Service Providers
+ * instead of registering directly to container
  *
  * @package Jankx\Helpers
- * @since 2.0.0
  */
 class DeferredServiceHelper
 {
     /**
-     * Register admin deferred services
+     * Register deferred services through appropriate Service Providers
+     *
+     * @param Container $container
+     * @param string $context
+     * @return void
      */
-    public static function registerAdminDeferredServices(): void
+    public static function registerDeferredServices(Container $container, string $context = 'frontend'): void
     {
-        ContextualServiceRegistry::defer(ContextualServiceRegistry::ADMIN, function(Container $container) {
-            $container->singleton(\Jankx\Admin\AnalyticsManager::class);
-            $container->singleton(\Jankx\Admin\ReportManager::class);
-            $container->singleton(\Jankx\Admin\DashboardWidgetManager::class);
+        // Register deferred service resolver
+        $container->singleton('deferred.resolver', function($container) {
+            return new \Jankx\Services\DeferredServiceResolver($container);
         });
-    }
 
-    /**
-     * Register frontend deferred services
-     */
-    public static function registerFrontendDeferredServices(): void
-    {
-        ContextualServiceRegistry::defer(ContextualServiceRegistry::FRONTEND, function(Container $container) {
-            $container->singleton(\Jankx\SEO\SEOManager::class);
-            $container->singleton(\Jankx\Analytics\AnalyticsManager::class);
-            $container->singleton(\Jankx\Template\TemplateRenderer::class);
-            $container->singleton(\Jankx\Frontend\AssetOptimizer::class);
-        });
-    }
-
-    /**
-     * Register Gutenberg deferred services
-     */
-    public static function registerGutenbergDeferredServices(): void
-    {
-        ContextualServiceRegistry::defer(ContextualServiceRegistry::GUTENBERG, function(Container $container) {
-            $container->singleton(\Jankx\Gutenberg\BlockRegistry::class);
-            $container->singleton(\Jankx\Gutenberg\LayoutRegistry::class);
-            $container->singleton(\Jankx\Gutenberg\AjaxHandler::class);
-            $container->singleton(\Jankx\Gutenberg\BlockRenderer::class);
-        });
-    }
-
-    /**
-     * Register WooCommerce deferred services
-     */
-    public static function registerWooCommerceDeferredServices(): void
-    {
-        ContextualServiceRegistry::defer(ContextualServiceRegistry::WOOCOMMERCE, function(Container $container) {
-            $container->singleton(\Jankx\WooCommerce\ProductManager::class);
-            $container->singleton(\Jankx\WooCommerce\CartManager::class);
-            $container->singleton(\Jankx\WooCommerce\CheckoutManager::class);
-        });
-    }
-
-    /**
-     * Register all deferred services for a context
-     */
-    public static function registerDeferredServicesForContext(string $context): void
-    {
+        // Register context-specific deferred services through Service Providers
         switch ($context) {
-            case ContextualServiceRegistry::ADMIN:
-                self::registerAdminDeferredServices();
+            case 'admin':
+                $provider = new \Jankx\Providers\AdminServiceProvider($container);
                 break;
-            case ContextualServiceRegistry::FRONTEND:
-                self::registerFrontendDeferredServices();
+            case 'frontend':
+                $provider = new \Jankx\Providers\FrontendServiceProvider($container);
                 break;
-            case ContextualServiceRegistry::GUTENBERG:
-                self::registerGutenbergDeferredServices();
+            case 'cli':
+                $provider = new \Jankx\Providers\CLIServiceProvider($container);
                 break;
-            case ContextualServiceRegistry::WOOCOMMERCE:
-                self::registerWooCommerceDeferredServices();
+            case 'api':
+                $provider = new \Jankx\Providers\APIServiceProvider($container);
                 break;
+            default:
+                $provider = new \Jankx\Providers\FrontendServiceProvider($container);
         }
+
+        $provider->register();
+        $provider->boot();
+    }
+
+    /**
+     * Register admin deferred services through AdminServiceProvider
+     *
+     * @param Container $container
+     * @return void
+     */
+    public static function registerAdminDeferredServices(Container $container): void
+    {
+        // Admin services are now registered through AdminServiceProvider
+        $provider = new \Jankx\Providers\AdminServiceProvider($container);
+        $provider->register();
+        $provider->boot();
+    }
+
+    /**
+     * Register frontend deferred services through FrontendServiceProvider
+     *
+     * @param Container $container
+     * @return void
+     */
+    public static function registerFrontendDeferredServices(Container $container): void
+    {
+        // Frontend services are now registered through FrontendServiceProvider
+        $provider = new \Jankx\Providers\FrontendServiceProvider($container);
+        $provider->register();
+        $provider->boot();
+    }
+
+    /**
+     * Register Gutenberg deferred services through appropriate Service Provider
+     *
+     * @param Container $container
+     * @return void
+     */
+    public static function registerGutenbergDeferredServices(Container $container): void
+    {
+        // Gutenberg services should be registered through appropriate Service Provider
+        // based on context (admin for editor, frontend for rendering)
+        $context = is_admin() ? 'admin' : 'frontend';
+        self::registerDeferredServices($container, $context);
+    }
+
+    /**
+     * Register WooCommerce deferred services through appropriate Service Provider
+     *
+     * @param Container $container
+     * @return void
+     */
+    public static function registerWooCommerceDeferredServices(Container $container): void
+    {
+        // WooCommerce services should be registered through appropriate Service Provider
+        // based on context (admin for management, frontend for display)
+        $context = is_admin() ? 'admin' : 'frontend';
+        self::registerDeferredServices($container, $context);
     }
 }

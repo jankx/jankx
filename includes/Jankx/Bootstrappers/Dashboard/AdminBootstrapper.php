@@ -5,10 +5,8 @@ namespace Jankx\Bootstrappers\Dashboard;
 use Illuminate\Container\Container;
 use Jankx\Bootstrappers\AbstractBootstrapper;
 use Jankx\Facades\Logger;
-use Jankx\Helpers\ServiceRegistrationHelper;
 use Jankx\Helpers\ErrorHandlingHelper;
 use Jankx\Helpers\BootstrapperHelper;
-use Jankx\Helpers\DeferredServiceHelper;
 
 /**
  * Admin Bootstrapper
@@ -55,14 +53,16 @@ class AdminBootstrapper extends AbstractBootstrapper
 
     private function loadEssentialServices(Container $container): void
     {
-        // Services needed immediately
-        ServiceRegistrationHelper::registerAdminServices($container);
+        // Services needed immediately - now registered through AdminServiceProvider
+        $provider = new \Jankx\Providers\AdminServiceProvider($container);
+        $provider->register();
     }
 
     private function deferHeavyServices(Container $container): void
     {
-        // Defer heavy services until actually needed
-        DeferredServiceHelper::registerAdminDeferredServices();
+        // Defer heavy services until actually needed - now through AdminServiceProvider
+        $provider = new \Jankx\Providers\AdminServiceProvider($container);
+        $provider->boot();
     }
 
     private function setupAdminHooks(): void

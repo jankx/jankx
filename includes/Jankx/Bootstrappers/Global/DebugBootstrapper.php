@@ -5,7 +5,6 @@ namespace Jankx\Bootstrappers\Global;
 use Illuminate\Container\Container;
 use Jankx\Bootstrappers\AbstractBootstrapper;
 use Jankx\Facades\Logger;
-use Jankx\Helpers\ServiceRegistrationHelper;
 use Jankx\Helpers\ErrorHandlingHelper;
 use Jankx\Helpers\BootstrapperHelper;
 
@@ -31,32 +30,23 @@ class DebugBootstrapper extends AbstractBootstrapper
         return defined('JANKX_DEBUG') && JANKX_DEBUG;
     }
 
+    /**
+     * Bootstrap the application
+     */
     public function bootstrap(Container $container): void
     {
-        ErrorHandlingHelper::safeExecute(function() use ($container) {
-            // Initialize debug services
-            $this->initializeDebugServices($container);
+        // Register DebugServiceProvider instead of registering services directly
+        $debugProvider = new \Jankx\Providers\DebugServiceProvider($container);
+        $debugProvider->register();
+        $debugProvider->boot();
 
-            // Setup debug hooks based on context
-            $this->setupDebugHooks();
-
-            Logger::debug('Debug bootstrapper initialized', [
-                'context' => is_admin() ? 'admin' : 'frontend',
-                'services' => $this->getDebugServices()
-            ]);
-        }, 'DebugBootstrapper bootstrap');
-    }
-
-    /**
-     * Initialize debug services
-     *
-     * @param Container $container
-     * @since 2.0.0
-     */
-    private function initializeDebugServices(Container $container): void
-    {
-        // Register debug services using helper
-        ServiceRegistrationHelper::registerDebugServices($container);
+        // Initialize debug info if needed
+        if ($container->has(\Jankx\Debug\DebugInfo::class)) {
+            $debugInfo = $container->make(\Jankx\Debug\DebugInfo::class);
+            if (method_exists($debugInfo, 'init')) {
+                $debugInfo->init();
+            }
+        }
     }
 
     /**

@@ -2,6 +2,9 @@
 
 namespace Jankx\Services;
 
+use Jankx\Adapters\WordPressAdapter;
+use Jankx\Parsers\BlockParser;
+
 /**
  * Gutenberg Blocks Service
  *

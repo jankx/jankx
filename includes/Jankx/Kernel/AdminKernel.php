@@ -114,11 +114,12 @@ class AdminKernel extends Kernel implements KernelInterface
      */
     protected function registerServices(): void
     {
-        // Admin-specific services (excluding Gutenberg)
-        $this->addService('admin.dashboard', [
-            'class' => \Jankx\Admin\Dashboard::class,
-            'params' => []
-        ]);
+        // Register AdminServiceProvider
+        $this->addServiceProvider(\Jankx\Providers\AdminServiceProvider::class);
+
+        // Admin services are now registered through AdminServiceProvider
+        // This method is kept for backward compatibility
+        // All services should be registered through Service Providers
     }
 
     /**

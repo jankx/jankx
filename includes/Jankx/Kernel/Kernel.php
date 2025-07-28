@@ -25,11 +25,6 @@ abstract class Kernel implements KernelInterface
     /**
      * @var array
      */
-    protected $services = [];
-
-    /**
-     * @var array
-     */
     protected $hooks = [];
 
     /**
@@ -144,14 +139,6 @@ abstract class Kernel implements KernelInterface
     public function getContainer(): \Illuminate\Container\Container
     {
         return $this->container;
-    }
-
-    /**
-     * Get services
-     */
-    public function getServices(): array
-    {
-        return $this->services;
     }
 
     /**
@@ -293,6 +280,7 @@ abstract class Kernel implements KernelInterface
      */
     protected function loadServices()
     {
+        // Load services from Service Providers
         foreach ($this->getServiceProviders() as $providerClass) {
             if (class_exists($providerClass)) {
                 try {
@@ -333,18 +321,6 @@ abstract class Kernel implements KernelInterface
     }
 
     /**
-     * Add service
-     */
-    protected function addService($service, array $params = []): void
-    {
-        if (is_string($service)) {
-            $this->services[] = ['class' => $service, 'params' => $params];
-        } else {
-            $this->services[] = $service;
-        }
-    }
-
-    /**
      * Add hook
      */
     protected function addHook(string $hook, $callback, int $priority = 10, int $args = 1): void
@@ -373,5 +349,34 @@ abstract class Kernel implements KernelInterface
     protected function getServiceProviders(): array
     {
         return $this->serviceProviders;
+    }
+
+    /**
+     * Add service provider
+     */
+    public function addServiceProvider(string $providerClass): void
+    {
+        if (!in_array($providerClass, $this->serviceProviders)) {
+            $this->serviceProviders[] = $providerClass;
+        }
+    }
+
+    /**
+     * Remove service provider
+     */
+    public function removeServiceProvider(string $providerClass): void
+    {
+        $key = array_search($providerClass, $this->serviceProviders);
+        if ($key !== false) {
+            unset($this->serviceProviders[$key]);
+        }
+    }
+
+    /**
+     * Check if service provider exists
+     */
+    public function hasServiceProvider(string $providerClass): bool
+    {
+        return in_array($providerClass, $this->serviceProviders);
     }
 }

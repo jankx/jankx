@@ -61,7 +61,12 @@ class FrontendKernel extends Kernel implements KernelInterface
      */
     protected function registerServices(): void
     {
-        // Frontend-specific services will be registered here
+        // Register FrontendServiceProvider
+        $this->addServiceProvider(\Jankx\Providers\FrontendServiceProvider::class);
+
+        // Frontend services are now registered through FrontendServiceProvider
+        // This method is kept for backward compatibility
+        // All services should be registered through Service Providers
     }
 
     /**

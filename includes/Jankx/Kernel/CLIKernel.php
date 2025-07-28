@@ -63,8 +63,12 @@ class CLIKernel extends Kernel implements KernelInterface
      */
     protected function registerServices(): void
     {
-        // CLI services will be registered by CLIBootstrapper
-        // No immediate services needed for CLI kernel
+        // Register CLIServiceProvider
+        $this->addServiceProvider(\Jankx\Providers\CLIServiceProvider::class);
+
+        // CLI services are now registered through CLIServiceProvider
+        // This method is kept for backward compatibility
+        // All services should be registered through Service Providers
     }
 
     /**
