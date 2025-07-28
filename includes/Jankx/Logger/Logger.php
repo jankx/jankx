@@ -20,10 +20,7 @@ class Logger
      */
     protected function isRunningTests(): bool
     {
-        return defined('PHPUNIT_COMPOSER_INSTALL') ||
-               defined('__PHPUNIT_PHAR__') ||
-               class_exists('PHPUnit\Framework\TestCase') ||
-               (defined('PHP_SAPI') && PHP_SAPI === 'cli' && strpos($_SERVER['SCRIPT_NAME'] ?? '', 'phpunit') !== false);
+        return defined('IS_TESTING') && IS_TESTING === 1;
     }
 
     /**
