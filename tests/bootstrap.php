@@ -292,14 +292,19 @@ if (!function_exists('has_blocks')) {
 
 if (!function_exists('parse_blocks')) {
     function parse_blocks($content) {
-        return [
-            [
-                'blockName' => 'core/paragraph',
-                'attrs' => [],
-                'innerBlocks' => [],
-                'innerContent' => ['<p>Test content</p>']
-            ]
-        ];
+        $blocks = [];
+        $pattern = "/<!-- wp:([^\\s\\/>]+)/";
+        if (preg_match_all($pattern, $content, $matches)) {
+            foreach ($matches[1] as $blockName) {
+                $blocks[] = [
+                    'blockName' => 'core/' . $blockName,
+                    'attrs' => [],
+                    'innerBlocks' => [],
+                    'innerContent' => ['<' . $blockName . '>content</' . $blockName . '>']
+                ];
+            }
+        }
+        return $blocks;
     }
 }
 
@@ -694,3 +699,34 @@ global $wp_cache_get, $wp_cache_set, $wp_cache_delete, $wp_cache_flush_group;
 global $wp_using_ext_object_cache, $wp_cache_get_stats, $is_plugin_active;
 global $parse_blocks, $has_blocks, $get_the_content, $get_the_excerpt;
 global $is_admin, $get_option;
+
+// WordPress stub classes for testing
+if (!class_exists('WP_Post')) {
+    class WP_Post {
+        public $post_content = '';
+        public $post_type = '';
+        public $ID = 0;
+        public $post_title = '';
+        public $post_status = 'publish';
+    }
+}
+
+if (!class_exists('WP_Term')) {
+    class WP_Term {
+        public $description = '';
+        public $term_id = 0;
+        public $name = '';
+        public $slug = '';
+        public $taxonomy = '';
+    }
+}
+
+if (!class_exists('WP_User')) {
+    class WP_User {
+        public $description = '';
+        public $ID = 0;
+        public $user_login = '';
+        public $user_email = '';
+        public $display_name = '';
+    }
+}

@@ -433,58 +433,63 @@ class GutenbergBlocksService
     }
 
     /**
-     * Parse all content blocks from database
+     * Parse current page/post blocks
      *
      * @since 2.0.0
      */
     private function parseAllContentBlocks(): void
     {
-        // Get all posts with blocks
-        $posts = get_posts([
-            'post_type' => 'any',
-            'post_status' => 'publish',
-            'posts_per_page' => -1
-        ]);
+        // Get current queried object
+        $queriedObject = get_queried_object();
 
-        $allBlockTypes = [];
-        $totalBlocks = 0;
-        $uniqueBlockTypes = 0;
-
-        foreach ($posts as $post) {
-            if (has_blocks($post->post_content)) {
-                // Use new GutenbergBlockExtractor for high performance
-                $extractor = new \Jankx\Parsers\GutenbergBlockExtractor($post->post_content);
-                $blockStats = $extractor->getBlockStats();
-
-                if (!empty($blockStats['block_types'])) {
-                    foreach ($blockStats['block_types'] as $blockName => $count) {
-                        if (!isset($allBlockTypes[$blockName])) {
-                            $allBlockTypes[$blockName] = 0;
-                            $uniqueBlockTypes++;
-                        }
-                        $allBlockTypes[$blockName] += $count;
-                    }
-                    $totalBlocks += $blockStats['total_blocks'];
-                }
-            }
+        if (!$queriedObject) {
+            Logger::debug('GutenbergBlocksService: No queried object found');
+            return;
         }
 
-        // Update blocks info with real data
-        if ($totalBlocks > 0) {
-            $this->blocksInfo['total_blocks'] = $totalBlocks;
-            $this->blocksInfo['block_types'] = $allBlockTypes;
-            $this->blocksInfo['unique_block_types'] = $uniqueBlockTypes;
+        $content = '';
+        $postType = '';
 
-            // Debug: Log the calculation
-            $calculatedTotal = array_sum($allBlockTypes);
-            Logger::debug('GutenbergBlocksService: Parsed all content blocks', [
-                'total_blocks' => $totalBlocks,
-                'unique_block_types' => $uniqueBlockTypes,
-                'block_types' => $allBlockTypes,
-                'calculated_total' => $calculatedTotal,
-                'difference' => $totalBlocks - $calculatedTotal,
-                'posts_processed' => count($posts)
+        // Get content based on queried object type
+        if ($queriedObject instanceof WP_Post) {
+            $content = $queriedObject->post_content;
+            $postType = $queriedObject->post_type;
+        } elseif ($queriedObject instanceof WP_Term) {
+            // For taxonomy pages, get description
+            $content = $queriedObject->description;
+            $postType = 'taxonomy';
+        } elseif ($queriedObject instanceof WP_User) {
+            // For author pages, get bio
+            $content = $queriedObject->description;
+            $postType = 'author';
+        }
+
+        if (empty($content)) {
+            Logger::debug('GutenbergBlocksService: No content found in queried object', [
+                'object_type' => get_class($queriedObject),
+                'post_type' => $postType
             ]);
+            return;
+        }
+
+        // Use GutenbergBlockExtractor for high performance
+        $extractor = new \Jankx\Parsers\GutenbergBlockExtractor($content);
+        $blockStats = $extractor->getBlockStats();
+
+        if (!empty($blockStats['block_types'])) {
+            $this->blocksInfo['total_blocks'] = $blockStats['total_blocks'];
+            $this->blocksInfo['block_types'] = $blockStats['block_types'];
+            $this->blocksInfo['unique_block_types'] = $blockStats['unique_block_types'];
+
+            Logger::debug('GutenbergBlocksService: Parsed current page blocks', [
+                'total_blocks' => $blockStats['total_blocks'],
+                'unique_block_types' => $blockStats['unique_block_types'],
+                'block_types' => $blockStats['block_types'],
+                'post_type' => $postType,
+                'object_type' => get_class($queriedObject)
+            ]);
+        } else {
+            Logger::debug('GutenbergBlocksService: No blocks found in current page content');
         }
     }
 }
