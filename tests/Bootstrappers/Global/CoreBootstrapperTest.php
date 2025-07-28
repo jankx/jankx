@@ -73,20 +73,20 @@ class CoreBootstrapperTest extends TestCase
     public function testBootstrapperBootstrapMethod()
     {
         $container = new Container();
-        
+
         // Mock required functions
         if (!function_exists('defined')) {
             function defined($constant) {
                 return $constant === 'JANKX_DEBUG';
             }
         }
-        
+
         if (!function_exists('do_action')) {
             function do_action($hook, $container = null) {
                 // Mock implementation
             }
         }
-        
+
         // Test bootstrap execution
         $this->bootstrapper->bootstrap($container);
         $this->assertTrue(true); // If we reach here, no errors occurred
@@ -141,7 +141,7 @@ class CoreBootstrapperTest extends TestCase
      */
     public function testBootstrapperClassName()
     {
-        $this->assertEquals('CoreBootstrapper', get_class($this->bootstrapper));
+        $this->assertEquals('Jankx\Bootstrappers\Global\CoreBootstrapper', get_class($this->bootstrapper));
     }
 
     /**
@@ -151,8 +151,8 @@ class CoreBootstrapperTest extends TestCase
     {
         $reflection = new \ReflectionClass($this->bootstrapper);
         $docComment = $reflection->getDocComment();
-        
+
         $this->assertStringContainsString('@package', $docComment);
         $this->assertStringContainsString('@author', $docComment);
     }
-} 
+}

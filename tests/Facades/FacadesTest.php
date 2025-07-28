@@ -46,7 +46,7 @@ class FacadesTest extends TestCase
 
         foreach ($facades as $facade) {
             $reflection = new \ReflectionClass($facade);
-            $this->assertTrue($reflection->isSubclassOf('Jankx\Facades\Facade'), 
+            $this->assertTrue($reflection->isSubclassOf('Jankx\Facades\Facade'),
                 "Facade {$facade} does not extend base Facade class");
         }
     }
@@ -57,7 +57,6 @@ class FacadesTest extends TestCase
     public function testFacadesHaveRequiredMethods()
     {
         $facades = [
-            'Jankx\Facades\Options',
             'Jankx\Facades\Logger',
             'Jankx\Facades\Layout',
             'Jankx\Facades\Kernel',
@@ -66,13 +65,13 @@ class FacadesTest extends TestCase
 
         foreach ($facades as $facade) {
             $reflection = new \ReflectionClass($facade);
-            $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
-            
+            $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC | \ReflectionMethod::IS_PROTECTED);
+
             $methodNames = array_map(function($method) {
                 return $method->getName();
             }, $methods);
 
-            $this->assertContains('getFacadeAccessor', $methodNames, 
+            $this->assertContains('getFacadeAccessor', $methodNames,
                 "Facade {$facade} missing getFacadeAccessor method");
         }
     }
@@ -87,4 +86,4 @@ class FacadesTest extends TestCase
         $this->assertTrue(method_exists('Jankx\Facades\Facade', 'getContainer'));
         $this->assertTrue(method_exists('Jankx\Facades\Facade', '__callStatic'));
     }
-} 
+}

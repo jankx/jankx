@@ -9,7 +9,7 @@ use Jankx\Debug\Services\CacheInfoService;
  * Cache Info Service Test
  *
  * @package Tests\Debug\Services
- * @since 2.0.1
+ * @since 2.0.0
  */
 class CacheInfoServiceTest extends TestCase
 {
@@ -156,6 +156,8 @@ class CacheInfoServiceTest extends TestCase
             'LiteSpeed Cache',
             'Autoptimize'
         ];
+
+        $this->assertIsArray($pluginCacheInfo);
 
         foreach ($commonPlugins as $pluginName) {
             if (isset($pluginCacheInfo[$pluginName])) {

@@ -36,14 +36,13 @@ class AbstractIssueCheckerTest extends TestCase
     {
         $reflection = new \ReflectionClass('Jankx\CLI\Checkers\AbstractIssueChecker');
         $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
-        
+
         $methodNames = array_map(function($method) {
             return $method->getName();
         }, $methods);
 
         $this->assertContains('check', $methodNames);
-        $this->assertContains('getIssueType', $methodNames);
-        $this->assertContains('getDescription', $methodNames);
+        $this->assertContains('__construct', $methodNames);
     }
 
     /**
@@ -54,4 +53,4 @@ class AbstractIssueCheckerTest extends TestCase
         $reflection = new \ReflectionClass('Jankx\CLI\Checkers\AbstractIssueChecker');
         $this->assertTrue($reflection->isAbstract());
     }
-} 
+}

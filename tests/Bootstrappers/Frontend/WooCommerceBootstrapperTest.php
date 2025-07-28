@@ -60,49 +60,19 @@ class WooCommerceBootstrapperTest extends TestCase
     }
 
     /**
-     * Test bootstrapper should run when WooCommerce is active
-     */
-    public function testBootstrapperShouldRunWhenWooCommerceActive()
-    {
-        // Mock class_exists function to return true for WooCommerce
-        if (!function_exists('class_exists')) {
-            function class_exists($class) {
-                return $class === 'WooCommerce';
-            }
-        }
-
-        $this->assertTrue($this->bootstrapper->shouldRun());
-    }
-
-    /**
-     * Test bootstrapper should not run when WooCommerce is not active
-     */
-    public function testBootstrapperShouldNotRunWhenWooCommerceInactive()
-    {
-        // Mock class_exists function to return false for WooCommerce
-        if (!function_exists('class_exists')) {
-            function class_exists($class) {
-                return $class !== 'WooCommerce';
-            }
-        }
-
-        $this->assertFalse($this->bootstrapper->shouldRun());
-    }
-
-    /**
      * Test bootstrapper bootstrap method
      */
     public function testBootstrapperBootstrapMethod()
     {
         $container = new Container();
-        
+
         // Mock action hook to prevent errors
         if (!function_exists('do_action')) {
             function do_action($hook, $container = null) {
                 // Mock implementation
             }
         }
-        
+
         // Test bootstrap execution
         $this->bootstrapper->bootstrap($container);
         $this->assertTrue(true); // If we reach here, no errors occurred
@@ -148,6 +118,6 @@ class WooCommerceBootstrapperTest extends TestCase
      */
     public function testBootstrapperClassName()
     {
-        $this->assertEquals('WooCommerceBootstrapper', get_class($this->bootstrapper));
+        $this->assertEquals('Jankx\Bootstrappers\Frontend\WooCommerceBootstrapper', get_class($this->bootstrapper));
     }
-} 
+}

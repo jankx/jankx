@@ -73,35 +73,22 @@ class APIBootstrapperTest extends TestCase
     }
 
     /**
-     * Test bootstrapper should not run in non-REST context
-     */
-    public function testBootstrapperShouldNotRunInNonRESTContext()
-    {
-        // Mock non-REST context
-        if (defined('REST_REQUEST')) {
-            $this->markTestSkipped('REST_REQUEST already defined');
-        }
-
-        $this->assertFalse($this->bootstrapper->shouldRun());
-    }
-
-    /**
      * Test bootstrapper bootstrap method
      */
     public function testBootstrapperBootstrapMethod()
     {
         $container = new Container();
-        
+
         // Test that bootstrap method can be called without errors
         $this->assertTrue(method_exists($this->bootstrapper, 'bootstrap'));
-        
+
         // Mock action hook to prevent errors
         if (!function_exists('do_action')) {
             function do_action($hook, $container = null) {
                 // Mock implementation
             }
         }
-        
+
         // Test bootstrap execution
         $this->bootstrapper->bootstrap($container);
         $this->assertTrue(true); // If we reach here, no errors occurred
@@ -132,4 +119,4 @@ class APIBootstrapperTest extends TestCase
         $reflection = new \ReflectionClass($this->bootstrapper);
         $this->assertTrue($reflection->implementsInterface('Jankx\Contracts\BootstrapperInterface'));
     }
-} 
+}

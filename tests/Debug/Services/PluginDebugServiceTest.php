@@ -9,7 +9,7 @@ use Jankx\Debug\Services\PluginDebugService;
  * Plugin Debug Service Test
  *
  * @package Tests\Debug\Services
- * @since 2.0.1
+ * @since 2.0.0
  */
 class PluginDebugServiceTest extends TestCase
 {

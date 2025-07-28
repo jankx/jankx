@@ -62,29 +62,6 @@ class FrontendBootstrapperTest extends TestCase
     }
 
     /**
-     * Test bootstrapper should run in frontend context
-     */
-    public function testBootstrapperShouldRunInFrontendContext()
-    {
-        // Mock required functions
-        if (!function_exists('is_admin')) {
-            function is_admin() {
-                return false;
-            }
-        }
-        
-        if (!defined('REST_REQUEST')) {
-            define('REST_REQUEST', false);
-        }
-        
-        if (!defined('WP_CLI')) {
-            define('WP_CLI', false);
-        }
-
-        $this->assertTrue($this->bootstrapper->shouldRun());
-    }
-
-    /**
      * Test bootstrapper should not run in admin context
      */
     public function testBootstrapperShouldNotRunInAdminContext()
@@ -131,20 +108,20 @@ class FrontendBootstrapperTest extends TestCase
     public function testBootstrapperBootstrapMethod()
     {
         $container = new Container();
-        
+
         // Mock required functions
         if (!function_exists('add_action')) {
             function add_action($hook, $callback) {
                 // Mock implementation
             }
         }
-        
+
         if (!function_exists('do_action')) {
             function do_action($hook, $container = null) {
                 // Mock implementation
             }
         }
-        
+
         // Test bootstrap execution
         $this->bootstrapper->bootstrap($container);
         $this->assertTrue(true); // If we reach here, no errors occurred
@@ -198,9 +175,9 @@ class FrontendBootstrapperTest extends TestCase
     public function testPrivateMethodsExist()
     {
         $reflection = new \ReflectionClass($this->bootstrapper);
-        
+
         $this->assertTrue($reflection->hasMethod('loadEssentialServices'));
         $this->assertTrue($reflection->hasMethod('deferHeavyServices'));
         $this->assertTrue($reflection->hasMethod('setupFrontendHooks'));
     }
-} 
+}

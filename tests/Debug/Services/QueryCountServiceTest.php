@@ -9,7 +9,7 @@ use Jankx\Debug\Services\QueryCountService;
  * Query Count Service Test
  *
  * @package Tests\Debug\Services
- * @since 2.0.1
+ * @since 2.0.0
  */
 class QueryCountServiceTest extends TestCase
 {

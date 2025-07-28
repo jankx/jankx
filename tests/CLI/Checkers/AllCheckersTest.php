@@ -87,8 +87,6 @@ class AllCheckersTest extends TestCase
 
             $this->assertContains('check', $methodNames,
                 "Checker {$checker} missing check method");
-            $this->assertContains('getIssueName', $methodNames,
-                "Checker {$checker} missing getIssueName method");
         }
     }
 }

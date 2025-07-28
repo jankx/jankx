@@ -46,7 +46,7 @@ class AbstractBootstrapperTest extends TestCase
     public function testAbstractBootstrapperHasRequiredMethods()
     {
         $reflection = new \ReflectionClass('Jankx\Bootstrappers\AbstractBootstrapper');
-        
+
         $this->assertTrue($reflection->hasMethod('getPriority'));
         $this->assertTrue($reflection->hasMethod('getDependencies'));
         $this->assertTrue($reflection->hasMethod('getName'));
@@ -60,13 +60,13 @@ class AbstractBootstrapperTest extends TestCase
     public function testAbstractBootstrapperHasAbstractMethods()
     {
         $reflection = new \ReflectionClass('Jankx\Bootstrappers\AbstractBootstrapper');
-        
+
         $getNameMethod = $reflection->getMethod('getName');
         $this->assertTrue($getNameMethod->isAbstract());
-        
+
         $shouldRunMethod = $reflection->getMethod('shouldRun');
         $this->assertTrue($shouldRunMethod->isAbstract());
-        
+
         $bootstrapMethod = $reflection->getMethod('bootstrap');
         $this->assertTrue($bootstrapMethod->isAbstract());
     }
@@ -77,10 +77,10 @@ class AbstractBootstrapperTest extends TestCase
     public function testAbstractBootstrapperHasConcreteMethods()
     {
         $reflection = new \ReflectionClass('Jankx\Bootstrappers\AbstractBootstrapper');
-        
+
         $getPriorityMethod = $reflection->getMethod('getPriority');
         $this->assertFalse($getPriorityMethod->isAbstract());
-        
+
         $getDependenciesMethod = $reflection->getMethod('getDependencies');
         $this->assertFalse($getDependenciesMethod->isAbstract());
     }
@@ -91,13 +91,13 @@ class AbstractBootstrapperTest extends TestCase
     public function testAbstractBootstrapperHasProtectedProperties()
     {
         $reflection = new \ReflectionClass('Jankx\Bootstrappers\AbstractBootstrapper');
-        
+
         $this->assertTrue($reflection->hasProperty('priority'));
         $this->assertTrue($reflection->hasProperty('dependencies'));
-        
+
         $priorityProperty = $reflection->getProperty('priority');
         $this->assertTrue($priorityProperty->isProtected());
-        
+
         $dependenciesProperty = $reflection->getProperty('dependencies');
         $this->assertTrue($dependenciesProperty->isProtected());
     }
@@ -113,18 +113,18 @@ class AbstractBootstrapperTest extends TestCase
             {
                 return 'test';
             }
-            
+
             public function shouldRun(): bool
             {
                 return true;
             }
-            
+
             public function bootstrap(Container $container): void
             {
                 // Test implementation
             }
         };
-        
+
         $this->assertEquals(10, $testClass->getPriority());
         $this->assertEquals([], $testClass->getDependencies());
     }
@@ -152,9 +152,19 @@ class AbstractBootstrapperTest extends TestCase
     public function testAbstractBootstrapperHasDocumentation()
     {
         $reflection = new \ReflectionClass('Jankx\Bootstrappers\AbstractBootstrapper');
+
+        // Check class documentation
         $docComment = $reflection->getDocComment();
-        
-        $this->assertStringContainsString('@var', $docComment);
+        $this->assertStringContainsString('@package', $docComment);
+
+        // Check property documentation for @var annotations
+        $priorityProperty = $reflection->getProperty('priority');
+        $priorityDoc = $priorityProperty->getDocComment();
+        $this->assertStringContainsString('@var', $priorityDoc);
+
+        $dependenciesProperty = $reflection->getProperty('dependencies');
+        $dependenciesDoc = $dependenciesProperty->getDocComment();
+        $this->assertStringContainsString('@var', $dependenciesDoc);
     }
 
     /**
@@ -163,23 +173,23 @@ class AbstractBootstrapperTest extends TestCase
     public function testAbstractBootstrapperMethodSignatures()
     {
         $reflection = new \ReflectionClass('Jankx\Bootstrappers\AbstractBootstrapper');
-        
+
         // Test getPriority method signature
         $getPriorityMethod = $reflection->getMethod('getPriority');
         $this->assertEquals('int', $getPriorityMethod->getReturnType()->getName());
-        
+
         // Test getDependencies method signature
         $getDependenciesMethod = $reflection->getMethod('getDependencies');
         $this->assertEquals('array', $getDependenciesMethod->getReturnType()->getName());
-        
+
         // Test getName method signature
         $getNameMethod = $reflection->getMethod('getName');
         $this->assertEquals('string', $getNameMethod->getReturnType()->getName());
-        
+
         // Test shouldRun method signature
         $shouldRunMethod = $reflection->getMethod('shouldRun');
         $this->assertEquals('bool', $shouldRunMethod->getReturnType()->getName());
-        
+
         // Test bootstrap method signature
         $bootstrapMethod = $reflection->getMethod('bootstrap');
         $this->assertEquals('void', $bootstrapMethod->getReturnType()->getName());

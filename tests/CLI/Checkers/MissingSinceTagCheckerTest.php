@@ -71,8 +71,8 @@ class MissingSinceTagCheckerTest extends TestCase
         $this->assertEquals('warning', $issue['severity']);
         $this->assertEquals("Class 'TestClass' is missing @since tag", $issue['message']);
         $this->assertTrue($issue['fixable']);
-        $this->assertEquals('class', $issue['target']);
-        $this->assertEquals('TestClass', $issue['name']);
+        $this->assertEquals('class', $issue['fix']['target']);
+        $this->assertEquals('TestClass', $issue['fix']['name']);
     }
 
     public function testCheckWithValidSinceTagInMethod()
@@ -122,9 +122,9 @@ class MissingSinceTagCheckerTest extends TestCase
         $this->assertEquals('warning', $issue['severity']);
         $this->assertEquals("Method 'testMethod' in class 'TestClass' is missing @since tag", $issue['message']);
         $this->assertTrue($issue['fixable']);
-        $this->assertEquals('method', $issue['target']);
-        $this->assertEquals('testMethod', $issue['name']);
-        $this->assertEquals('TestClass', $issue['class']);
+        $this->assertEquals('method', $issue['fix']['target']);
+        $this->assertEquals('testMethod', $issue['fix']['name']);
+        $this->assertEquals('TestClass', $issue['fix']['class']);
     }
 
     public function testCheckWithMultipleClasses()
@@ -153,7 +153,7 @@ class MissingSinceTagCheckerTest extends TestCase
         $this->assertCount(1, $issues);
 
         $issue = $issues[0];
-        $this->assertEquals('FirstClass', $issue['name']);
+        $this->assertEquals('FirstClass', $issue['fix']['name']);
     }
 
     public function testCheckWithMultipleMethods()
@@ -184,7 +184,7 @@ class MissingSinceTagCheckerTest extends TestCase
         $this->assertCount(1, $issues);
 
         $issue = $issues[0];
-        $this->assertEquals('firstMethod', $issue['name']);
+        $this->assertEquals('firstMethod', $issue['fix']['name']);
     }
 
     public function testCheckWithNoClassesOrMethods()
@@ -280,7 +280,7 @@ class MissingSinceTagCheckerTest extends TestCase
         $classIssue = $issues[0];
         $methodIssue = $issues[1];
 
-        $this->assertEquals('class', $classIssue['target']);
-        $this->assertEquals('method', $methodIssue['target']);
+        $this->assertEquals('class', $classIssue['fix']['target']);
+        $this->assertEquals('method', $methodIssue['fix']['target']);
     }
 }

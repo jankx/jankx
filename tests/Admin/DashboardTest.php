@@ -25,7 +25,7 @@ class DashboardTest extends TestCase
      */
     public function testDashboardHasRequiredMethods()
     {
-        $this->assertTrue(method_exists('Jankx\Admin\Dashboard', 'init'));
+        $this->assertTrue(method_exists('Jankx\Admin\Dashboard', 'initialize'));
         $this->assertTrue(method_exists('Jankx\Admin\Dashboard', 'registerHooks'));
     }
 

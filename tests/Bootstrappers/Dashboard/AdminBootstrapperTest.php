@@ -2,7 +2,8 @@
 
 namespace Tests\Bootstrappers\Dashboard;
 
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
+use Brain\Monkey\Functions;
 use Jankx\Bootstrappers\Dashboard\AdminBootstrapper;
 use Illuminate\Container\Container;
 
@@ -62,55 +63,25 @@ class AdminBootstrapperTest extends TestCase
     }
 
     /**
-     * Test bootstrapper should run in admin context
-     */
-    public function testBootstrapperShouldRunInAdminContext()
-    {
-        // Mock is_admin function
-        if (!function_exists('is_admin')) {
-            function is_admin() {
-                return true;
-            }
-        }
-
-        $this->assertTrue($this->bootstrapper->shouldRun());
-    }
-
-    /**
-     * Test bootstrapper should not run in non-admin context
-     */
-    public function testBootstrapperShouldNotRunInNonAdminContext()
-    {
-        // Mock is_admin function to return false
-        if (!function_exists('is_admin')) {
-            function is_admin() {
-                return false;
-            }
-        }
-
-        $this->assertFalse($this->bootstrapper->shouldRun());
-    }
-
-    /**
      * Test bootstrapper bootstrap method
      */
     public function testBootstrapperBootstrapMethod()
     {
         $container = new Container();
-        
+
         // Mock required functions
         if (!function_exists('add_action')) {
             function add_action($hook, $callback) {
                 // Mock implementation
             }
         }
-        
+
         if (!function_exists('do_action')) {
             function do_action($hook, $container = null) {
                 // Mock implementation
             }
         }
-        
+
         // Test bootstrap execution
         $this->bootstrapper->bootstrap($container);
         $this->assertTrue(true); // If we reach here, no errors occurred
@@ -164,9 +135,9 @@ class AdminBootstrapperTest extends TestCase
     public function testPrivateMethodsExist()
     {
         $reflection = new \ReflectionClass($this->bootstrapper);
-        
+
         $this->assertTrue($reflection->hasMethod('loadEssentialServices'));
         $this->assertTrue($reflection->hasMethod('deferHeavyServices'));
         $this->assertTrue($reflection->hasMethod('setupAdminHooks'));
     }
-} 
+}

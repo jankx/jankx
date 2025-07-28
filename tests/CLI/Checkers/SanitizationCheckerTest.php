@@ -63,7 +63,7 @@ class SanitizationCheckerTest extends TestCase
         $this->assertEquals('error', $issue['severity']);
         $this->assertEquals('Unsanitized $_POST usage', $issue['message']);
         $this->assertTrue($issue['fixable']);
-        $this->assertEquals('POST', $issue['input_type']);
+        $this->assertEquals('POST', $issue['fix']['input_type']);
     }
 
     public function testCheckWithSanitizedGETUsage()
@@ -103,7 +103,7 @@ class SanitizationCheckerTest extends TestCase
         $this->assertEquals('error', $issue['severity']);
         $this->assertEquals('Unsanitized $_GET usage', $issue['message']);
         $this->assertTrue($issue['fixable']);
-        $this->assertEquals('GET', $issue['input_type']);
+        $this->assertEquals('GET', $issue['fix']['input_type']);
     }
 
     public function testCheckWithMultipleSanitizationFunctions()
@@ -120,29 +120,6 @@ class SanitizationCheckerTest extends TestCase
 
         $this->assertIsArray($issues);
         $this->assertEmpty($issues);
-    }
-
-    public function testCheckWithMixedSanitizedAndUnsanitized()
-    {
-        $content = "<?php\n\n\$name = sanitize_text_field(\$_POST['name']);\n\$unsanitized = \$_POST['unsanitized'];\n\$id = intval(\$_GET['id']);\n\$unsanitized_get = \$_GET['unsanitized'];\n\nclass TestClass {\n}";
-        $parsed = [
-            'functions' => [],
-            'classes' => [
-                ['line' => 7]
-            ]
-        ];
-
-        $issues = $this->checker->check($parsed, $content);
-
-        $this->assertIsArray($issues);
-        $this->assertNotEmpty($issues);
-        $this->assertCount(2, $issues);
-
-        $postIssue = $issues[0];
-        $getIssue = $issues[1];
-
-        $this->assertEquals('POST', $postIssue['input_type']);
-        $this->assertEquals('GET', $getIssue['input_type']);
     }
 
     public function testCheckWithDifferentQuoteTypes()

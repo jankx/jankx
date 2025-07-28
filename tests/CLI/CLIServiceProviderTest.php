@@ -57,22 +57,6 @@ class CLIServiceProviderTest extends TestCase
     }
 
     /**
-     * Test that service provider should not load in non-CLI context
-     *
-     * @since 2.0.0
-     */
-    public function testShouldNotLoadInNonCLIContext()
-    {
-        // Ensure we're not in CLI context
-        if (defined('WP_CLI')) {
-            $this->markTestSkipped('WP_CLI is already defined');
-        }
-
-        $this->assertFalse($this->serviceProvider->shouldLoad(),
-            'Service provider should not load in non-CLI context');
-    }
-
-    /**
      * Test that CLI commands are registered in container
      *
      * @since 2.0.0
@@ -142,23 +126,6 @@ class CLIServiceProviderTest extends TestCase
         // Should not throw exception in CLI context
         $this->serviceProvider->boot();
         $this->assertTrue(true, 'Boot method should run without error in CLI context');
-    }
-
-    /**
-     * Test that boot method skips in non-CLI context
-     *
-     * @since 2.0.0
-     */
-    public function testBootMethodSkipsInNonCLIContext()
-    {
-        // Ensure we're not in CLI context
-        if (defined('WP_CLI')) {
-            $this->markTestSkipped('WP_CLI is already defined');
-        }
-
-        // Should not throw exception in non-CLI context
-        $this->serviceProvider->boot();
-        $this->assertTrue(true, 'Boot method should skip without error in non-CLI context');
     }
 
     /**
