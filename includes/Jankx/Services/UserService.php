@@ -6,12 +6,14 @@ use Jankx\Facades\Logger;
 use WP_User;
 
 /**
- * User Service
+ * User Service for Jankx Framework
  *
- * Handles user data retrieval with caching and filtering capabilities
+ * Provides user data retrieval, caching, and filtering capabilities.
  *
  * @package Jankx\Services
- * @since 2.0.1
+ * @author Puleeno Nguyen <puleeno@gmail.com>
+ * @version 2.0.0
+ * @license MIT
  */
 class UserService
 {
@@ -119,7 +121,7 @@ class UserService
         $this->cacheStats['misses']++;
 
         try {
-            $users = get_users([
+            $users = \get_users([
                 'include' => $user_ids,
                 'fields' => empty($fields) ? 'all' : $fields,
             ]);
@@ -157,7 +159,7 @@ class UserService
      */
     public function getCurrentUser(array $fields = []): mixed
     {
-        $currentUser = wp_get_current_user();
+        $currentUser = \wp_get_current_user();
 
         if (!$currentUser->exists()) {
             return null;
@@ -196,7 +198,7 @@ class UserService
         $this->cacheStats['misses']++;
 
         try {
-            $users = get_users([
+            $users = \get_users([
                 'role' => $role,
                 'fields' => empty($fields) ? 'all' : $fields,
                 'number' => $limit,
@@ -254,7 +256,7 @@ class UserService
         $this->cacheStats['misses']++;
 
         try {
-            $users = get_users([
+            $users = \get_users([
                 'search' => "*{$search_term}*",
                 'search_columns' => ['user_login', 'user_email', 'display_name'],
                 'fields' => empty($fields) ? 'all' : $fields,
@@ -294,7 +296,7 @@ class UserService
         if ($user_id === null) {
             // Clear all user cache
             $this->cache = [];
-            wp_cache_flush_group('jankx_user_cache');
+            \wp_cache_flush_group('jankx_user_cache');
             $this->triggerCacheClearedEvent('all');
         } else {
             // Clear specific user cache
@@ -382,7 +384,7 @@ class UserService
         }
 
         // Check WordPress object cache
-        $cached = wp_cache_get($cacheKey, 'jankx_user_cache');
+        $cached = \wp_cache_get($cacheKey, 'jankx_user_cache');
         if ($cached !== false) {
             if ($cached['expiry'] > time()) {
                 $this->cache[$cacheKey] = $cached;
@@ -417,7 +419,7 @@ class UserService
         $this->cache[$cacheKey] = $cacheData;
 
         // Store in WordPress object cache
-        wp_cache_set($cacheKey, $cacheData, 'jankx_user_cache', $this->cacheExpiry);
+        \wp_cache_set($cacheKey, $cacheData, 'jankx_user_cache', $this->cacheExpiry);
 
         $this->cacheStats['sets']++;
     }
@@ -461,12 +463,12 @@ class UserService
         try {
             // Try to get user by ID first
             if (is_numeric($user_id)) {
-                $user = get_user_by('ID', $user_id);
+                $user = \get_user_by('ID', $user_id);
             } else {
                 // Try by username or email
-                $user = get_user_by('login', $user_id);
+                $user = \get_user_by('login', $user_id);
                 if (!$user) {
-                    $user = get_user_by('email', $user_id);
+                                          $user = \get_user_by('email', $user_id);
                 }
             }
 
@@ -507,16 +509,16 @@ class UserService
     private function applyUserFilters(mixed $userData, ?int $user_id, array $fields): mixed
     {
         // Allow plugins and themes to modify user data
-        $filteredData = apply_filters('jankx/user/data', $userData, $user_id, $fields);
+        $filteredData = \apply_filters('jankx/user/data', $userData, $user_id, $fields);
 
         // Allow specific field filtering
         if (!empty($fields)) {
-            $filteredData = apply_filters('jankx/user/data_fields', $filteredData, $user_id, $fields);
+            $filteredData = \apply_filters('jankx/user/data_fields', $filteredData, $user_id, $fields);
         }
 
         // Allow context-specific filtering
         $context = $this->getCurrentContext();
-        $filteredData = apply_filters("jankx/user/data_{$context}", $filteredData, $user_id, $fields);
+        $filteredData = \apply_filters("jankx/user/data_{$context}", $filteredData, $user_id, $fields);
 
         return $filteredData;
     }
@@ -562,7 +564,7 @@ class UserService
      */
     private function triggerUserLoadedEvent($user, $user_id): void
     {
-        do_action('jankx/user/loaded', $user, $user_id);
+        \do_action('jankx/user/loaded', $user, $user_id);
     }
 
     /**
@@ -573,7 +575,7 @@ class UserService
      */
     private function triggerBatchUsersLoadedEvent(array $users, array $user_ids): void
     {
-        do_action('jankx/user/batch_loaded', $users, $user_ids);
+        \do_action('jankx/user/batch_loaded', $users, $user_ids);
     }
 
     /**
@@ -583,7 +585,7 @@ class UserService
      */
     private function triggerCacheHitEvent(string $cacheKey): void
     {
-        do_action('jankx/user/cache_hit', $cacheKey);
+        \do_action('jankx/user/cache_hit', $cacheKey);
     }
 
     /**
@@ -593,7 +595,7 @@ class UserService
      */
     private function triggerCacheClearedEvent($user_id): void
     {
-        do_action('jankx/user/cache_cleared', $user_id);
+        \do_action('jankx/user/cache_cleared', $user_id);
     }
 }
 

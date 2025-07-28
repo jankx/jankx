@@ -2,6 +2,7 @@
 
 namespace Jankx\Debug\Facades;
 
+use Illuminate\Container\Container;
 use Jankx\Debug\DebugServiceProvider;
 
 /**
@@ -10,18 +11,19 @@ use Jankx\Debug\DebugServiceProvider;
  * Provides easy access to debug functionality
  *
  * @package Jankx\Debug\Facades
- * @since 2.0.1
+ * @since 2.0.0
  */
 class Debug
 {
     /**
      * Initialize debug system
      *
-     * @since 2.0.1
+     * @param Container $container
+     * @since 2.0.0
      */
-    public static function init(): void
+    public static function init(Container $container): void
     {
-        DebugServiceProvider::register();
+        DebugServiceProvider::register($container);
     }
 
     /**
@@ -29,7 +31,7 @@ class Debug
      *
      * @param string $pluginName
      * @param string $info
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public static function addPluginInfo(string $pluginName, string $info): void
     {
@@ -40,7 +42,7 @@ class Debug
      * Get debug info for testing
      *
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public static function getInfo(): array
     {
@@ -52,7 +54,7 @@ class Debug
      * Get query count for testing
      *
      * @return int
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public static function getQueryCount(): int
     {

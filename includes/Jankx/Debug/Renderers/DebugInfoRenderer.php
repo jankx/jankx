@@ -10,7 +10,7 @@ use Jankx\Debug\Contracts\DebugInfoRendererInterface;
  * Renders debug information as HTML with embedded CSS and JS
  *
  * @package Jankx\Debug\Renderers
- * @since 2.0.1
+ * @since 2.0.0
  */
 class DebugInfoRenderer implements DebugInfoRendererInterface
 {
@@ -19,7 +19,7 @@ class DebugInfoRenderer implements DebugInfoRendererInterface
      *
      * @param array $debugData
      * @return string
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function render(array $debugData): string
     {
@@ -32,7 +32,7 @@ class DebugInfoRenderer implements DebugInfoRendererInterface
      *
      * @param array $debugData
      * @return string
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function generateDebugHtml(array $debugData): string
     {
@@ -110,7 +110,7 @@ class DebugInfoRenderer implements DebugInfoRendererInterface
      *
      * @param array $cacheInfo
      * @return string
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function renderCacheInfo(array $cacheInfo): string
     {
@@ -160,7 +160,7 @@ class DebugInfoRenderer implements DebugInfoRendererInterface
      *
      * @param array $gutenbergBlocks
      * @return string
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function renderGutenbergBlocksInfo(array $gutenbergBlocks): string
     {
@@ -169,7 +169,10 @@ class DebugInfoRenderer implements DebugInfoRendererInterface
         $html .= '<ul class="jankx-debug-list">';
 
         $totalBlocks = $gutenbergBlocks['total_blocks'] ?? 0;
+        $uniqueBlockTypes = $gutenbergBlocks['unique_block_types'] ?? count($gutenbergBlocks['block_types'] ?? []);
+
         $html .= '<li><strong>Total Blocks:</strong> ' . $totalBlocks . '</li>';
+        $html .= '<li><strong>Unique Block Types:</strong> ' . $uniqueBlockTypes . '</li>';
 
         // Show block theme info
         if (function_exists('wp_is_block_theme')) {
@@ -200,7 +203,7 @@ class DebugInfoRenderer implements DebugInfoRendererInterface
      *
      * @param array $pluginDebugInfo
      * @return string
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function renderPluginDebugInfo(array $pluginDebugInfo): string
     {
@@ -222,7 +225,7 @@ class DebugInfoRenderer implements DebugInfoRendererInterface
      * Render CSS styles
      *
      * @return string
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function renderStyles(): string
     {
@@ -404,7 +407,7 @@ class DebugInfoRenderer implements DebugInfoRendererInterface
      * Render JavaScript
      *
      * @return string
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function renderScripts(): string
     {
@@ -494,7 +497,7 @@ class DebugInfoRenderer implements DebugInfoRendererInterface
      * @param int $bytes
      * @param int $precision
      * @return string
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function formatBytes(int $bytes, int $precision = 2): string
     {
@@ -513,7 +516,7 @@ class DebugInfoRenderer implements DebugInfoRendererInterface
      * @param int $usage
      * @param int $limit
      * @return float
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function calculateMemoryUsagePercentage(int $usage, int $limit): float
     {

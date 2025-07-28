@@ -2,6 +2,7 @@
 
 namespace Jankx\Debug;
 
+use Illuminate\Container\Container;
 use Jankx\Debug\Facades\Debug;
 
 /**
@@ -10,16 +11,17 @@ use Jankx\Debug\Facades\Debug;
  * Handles initialization of debug system
  *
  * @package Jankx\Debug
- * @since 2.0.1
+ * @since 2.0.0
  */
 class DebugBootstrap
 {
     /**
      * Initialize debug system
      *
-     * @since 2.0.1
+     * @param Container $container
+     * @since 2.0.0
      */
-    public static function init(): void
+    public static function init(Container $container): void
     {
         // Only initialize if debug is enabled
         if (!defined('JANKX_DEBUG') || !JANKX_DEBUG) {
@@ -27,7 +29,7 @@ class DebugBootstrap
         }
 
         // Initialize debug system
-        Debug::init();
+        Debug::init($container);
 
         // Add action hooks for plugin integration
         add_action('jankx/debug/collect_plugin_info', [self::class, 'collectPluginInfo'], 10, 1);
@@ -37,7 +39,7 @@ class DebugBootstrap
      * Collect plugin information
      *
      * @param PluginDebugService $pluginDebugService
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public static function collectPluginInfo($pluginDebugService): void
     {
@@ -50,7 +52,7 @@ class DebugBootstrap
      *
      * @param string $pluginName
      * @param string $info
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public static function addPluginDebugInfo(string $pluginName, string $info): void
     {

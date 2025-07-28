@@ -3,10 +3,14 @@
 namespace Jankx\Parsers;
 
 /**
- * Block Parser
+ * Block Parser for Jankx Framework
+ *
+ * Parses and analyzes Gutenberg blocks from content.
  *
  * @package Jankx\Parsers
- * @since 2.0.1
+ * @author Puleeno Nguyen <puleeno@gmail.com>
+ * @version 2.0.0
+ * @license MIT
  */
 class BlockParser
 {
@@ -15,7 +19,7 @@ class BlockParser
      *
      * @param string $content
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function parse(string $content): array
     {
@@ -23,7 +27,7 @@ class BlockParser
             return [];
         }
 
-        return parse_blocks($content) ?: [];
+        return \parse_blocks($content) ?: [];
     }
 
     /**
@@ -31,7 +35,7 @@ class BlockParser
      *
      * @param string $content
      * @return int
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function countBlocks(string $content): int
     {
@@ -44,7 +48,7 @@ class BlockParser
      *
      * @param string $content
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function getBlockTypes(string $content): array
     {
@@ -57,7 +61,7 @@ class BlockParser
      *
      * @param array $blocks
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function extractBlockTypes(array $blocks): array
     {

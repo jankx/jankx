@@ -8,26 +8,26 @@ namespace Jankx\Debug\Services;
  * Manages basic debug information like response time and memory usage
  *
  * @package Jankx\Debug\Services
- * @since 2.0.1
+ * @since 2.0.0
  */
 class DebugInfoService
 {
     /**
      * @var float
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private $startTime;
 
     /**
      * @var bool
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private $isTracking = false;
 
     /**
      * Start tracking debug information
      *
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function startTracking(): void
     {
@@ -39,7 +39,7 @@ class DebugInfoService
      * Get response time
      *
      * @return float
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function getResponseTime(): float
     {
@@ -54,7 +54,7 @@ class DebugInfoService
      * Get memory usage
      *
      * @return int
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function getMemoryUsage(): int
     {
@@ -65,7 +65,7 @@ class DebugInfoService
      * Get memory limit
      *
      * @return int
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function getMemoryLimit(): int
     {
@@ -99,16 +99,24 @@ class DebugInfoService
      * @param int $bytes
      * @param int $precision
      * @return string
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function formatBytes(int $bytes, int $precision = 2): string
     {
         $units = ['B', 'KB', 'MB', 'GB', 'TB'];
 
-        for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
-            $bytes /= 1024;
+        if ($bytes === 0) {
+            return '0 B';
         }
 
-        return round($bytes, $precision) . ' ' . $units[$i];
+        $i = 0;
+        $bytesFloat = (float) $bytes;
+
+        while ($bytesFloat >= 1024 && $i < count($units) - 1) {
+            $bytesFloat /= 1024;
+            $i++;
+        }
+
+        return number_format($bytesFloat, $precision) . ' ' . $units[$i];
     }
 }

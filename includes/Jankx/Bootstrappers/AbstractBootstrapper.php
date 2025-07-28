@@ -5,15 +5,24 @@ namespace Jankx\Bootstrappers;
 use Illuminate\Container\Container;
 use Jankx\Contracts\BootstrapperInterface;
 
+/**
+ * Abstract Bootstrapper
+ *
+ * Base class for all bootstrappers in the Jankx framework.
+ * Provides common functionality and enforces contract implementation.
+ *
+ * @package Jankx\Bootstrappers
+ * @since 2.0.0
+ */
 abstract class AbstractBootstrapper implements BootstrapperInterface
 {
     /**
-     * @var int
+     * @var int Bootstrapper priority (lower numbers run first)
      */
     protected $priority = 10;
 
     /**
-     * @var array
+     * @var array List of bootstrapper dependencies
      */
     protected $dependencies = [];
 

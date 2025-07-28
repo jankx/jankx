@@ -28,6 +28,7 @@ class KernelFactory
     {
         $this->kernelMap = [
             'cli' => CLIKernel::class,
+            'ajax' => AjaxKernel::class,
             'gutenberg-ajax' => GutenbergAjaxKernel::class,
             'cron' => CronKernel::class,
             'api' => APIKernel::class,

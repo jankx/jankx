@@ -4,7 +4,7 @@
  * Handles partial hydration of dynamic content
  *
  * @package Jankx\Assets
- * @since 2.0.1
+ * @since 2.0.0
  */
 
 (function($) {

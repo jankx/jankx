@@ -3,39 +3,41 @@
 namespace Jankx\Kernel\Strategies;
 
 /**
- * Strategy for CLI context
+ * Strategy for WordPress AJAX context
+ *
+ * Handles AJAX requests through wp-admin/admin-ajax.php
  *
  * @package Jankx\Kernel\Strategies
  */
-class CLIKernelStrategy extends KernelContextStrategy
+class AjaxKernelStrategy extends KernelContextStrategy
 {
     /**
-     * Check if this strategy can handle the current context
+     * Check if current context is WordPress AJAX
      *
      * @return bool
      */
     public function canHandle(): bool
     {
-        return defined('WP_CLI') && WP_CLI;
+        return defined('DOING_AJAX') && DOING_AJAX;
     }
 
     /**
-     * Get CLI context name
+     * Get AJAX context name
      *
      * @return string
      */
     public function getContext(): string
     {
-        return 'cli';
+        return 'ajax';
     }
 
     /**
-     * CLI has high priority
+     * AJAX has high priority
      *
      * @return int
      */
     public function getPriority(): int
     {
-        return 1;
+        return 5;
     }
 }

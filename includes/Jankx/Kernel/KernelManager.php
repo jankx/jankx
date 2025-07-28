@@ -7,6 +7,7 @@ use Jankx\Bootstrappers\Global\CoreBootstrapper;
 use Jankx\Contracts\KernelInterface;
 use Jankx\Kernel\Strategies\KernelContextStrategy;
 use Jankx\Kernel\Strategies\CLIKernelStrategy;
+use Jankx\Kernel\Strategies\AjaxKernelStrategy;
 use Jankx\Kernel\Strategies\GutenbergAjaxKernelStrategy;
 use Jankx\Kernel\Strategies\CronKernelStrategy;
 use Jankx\Kernel\Strategies\APIKernelStrategy;
@@ -54,6 +55,7 @@ class KernelManager
     {
         $strategies = [
             new CLIKernelStrategy(),
+            new AjaxKernelStrategy(),
             new GutenbergAjaxKernelStrategy(),
             new CronKernelStrategy(),
             new APIKernelStrategy(),

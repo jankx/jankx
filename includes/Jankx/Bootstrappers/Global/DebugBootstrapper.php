@@ -117,7 +117,7 @@ class DebugBootstrapper extends AbstractBootstrapper
      * Get debug services list
      *
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function getDebugServices(): array
     {

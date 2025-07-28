@@ -2,6 +2,7 @@
 
 namespace Jankx\Debug;
 
+use Illuminate\Container\Container;
 use Jankx\Debug\DebugBootstrap;
 use Jankx\Debug\Helpers\DebugHelper;
 
@@ -11,19 +12,20 @@ use Jankx\Debug\Helpers\DebugHelper;
  * Handles integration of debug system into Jankx theme
  *
  * @package Jankx\Debug
- * @since 2.0.1
+ * @since 2.0.0
  */
 class DebugIntegration
 {
     /**
      * Initialize debug integration
      *
-     * @since 2.0.1
+     * @param Container $container
+     * @since 2.0.0
      */
-    public static function init(): void
+    public static function init(Container $container): void
     {
         // Initialize debug system
-        DebugBootstrap::init();
+        DebugBootstrap::init($container);
 
         // Add theme-specific debug information
         add_action('jankx/debug/add_plugin_info', [self::class, 'addThemeDebugInfo'], 10, 1);
@@ -37,7 +39,7 @@ class DebugIntegration
      * Add theme debug information
      *
      * @param $pluginDebugService
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public static function addThemeDebugInfo($pluginDebugService): void
     {
@@ -79,7 +81,7 @@ class DebugIntegration
     /**
      * Add performance information
      *
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public static function addPerformanceInfo(): void
     {
@@ -108,7 +110,7 @@ class DebugIntegration
      * Get debug panel HTML
      *
      * @return string
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public static function getDebugPanel(): string
     {
@@ -130,7 +132,7 @@ class DebugIntegration
     /**
      * Display debug panel
      *
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public static function displayDebugPanel(): void
     {
@@ -144,7 +146,7 @@ class DebugIntegration
     /**
      * Add debug panel to footer
      *
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public static function addDebugPanelToFooter(): void
     {
@@ -159,7 +161,7 @@ class DebugIntegration
     /**
      * Enable debug mode
      *
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public static function enableDebugMode(): void
     {
@@ -171,7 +173,7 @@ class DebugIntegration
     /**
      * Disable debug mode
      *
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public static function disableDebugMode(): void
     {

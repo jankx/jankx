@@ -11,20 +11,20 @@ use Jankx\Facades\Logger;
  * Service for handling Gutenberg blocks debug information
  *
  * @package Jankx\Debug\Services
- * @since 2.0.1
+ * @since 2.0.0
  */
 class GutenbergBlocksService
 {
     /**
      * @var array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private $blocksInfo = [];
 
     /**
      * Capture Gutenberg blocks information
      *
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function captureInfo(): void
     {
@@ -40,20 +40,64 @@ class GutenbergBlocksService
             $this->blocksInfo['is_gutenberg_editor'] = true;
         }
 
-        // Parse blocks based on context
-        if (is_admin()) {
-            // For admin/backend, parse at admin_enqueue_scripts hook
-            add_action('admin_enqueue_scripts', [$this, 'parseBlocksAtAdminEnqueue'], 999);
+        // Parse blocks directly instead of using hooks
+        $this->parseBlocksDirectly();
+    }
+
+    /**
+     * Parse blocks directly
+     *
+     * @since 2.0.0
+     */
+    private function parseBlocksDirectly(): void
+    {
+        // Check frontend content
+        if ($this->hasGutenbergContent()) {
+            $this->blocksInfo['is_gutenberg_frontend'] = true;
+            $parsedBlocks = $this->parseBlocks();
+            $this->blocksInfo = array_merge($this->blocksInfo, $parsedBlocks);
+
+            Logger::debug('GutenbergBlocksService: Parsed blocks from content', $parsedBlocks);
         } else {
-            // For frontend, parse at wp_footer hook
-            add_action('wp_footer', [$this, 'parseBlocksAtWpFooter'], 999);
+            Logger::debug('GutenbergBlocksService: No Gutenberg content found');
+        }
+
+        // Check template parts
+        $templateParts = $this->getTemplateParts();
+        if ($templateParts > 0) {
+            $this->blocksInfo['template_parts'] = $templateParts;
+            Logger::debug('GutenbergBlocksService: Found template parts', ['count' => $templateParts]);
+        }
+
+        // Parse all content blocks from database
+        $this->parseAllContentBlocks();
+
+        // Check if this is a block theme (only as fallback if no real blocks found)
+        if (function_exists('wp_is_block_theme') && wp_is_block_theme() && $this->blocksInfo['total_blocks'] === 0) {
+            $this->blocksInfo['is_block_theme'] = true;
+            $this->blocksInfo['total_blocks'] = 1;
+            $this->blocksInfo['block_types']['core/theme'] = 1;
+            Logger::debug('GutenbergBlocksService: Block theme detected (fallback)');
+        }
+
+        // If still no blocks found, check for any content
+        if ($this->blocksInfo['total_blocks'] === 0) {
+            $content = $this->getCurrentContent();
+            if (!empty($content)) {
+                Logger::debug('GutenbergBlocksService: Found content but no blocks', [
+                    'content_length' => strlen($content),
+                    'content_preview' => substr($content, 0, 100)
+                ]);
+            } else {
+                Logger::debug('GutenbergBlocksService: No content found');
+            }
         }
     }
 
     /**
      * Parse blocks at admin_enqueue_scripts hook (for admin/backend)
      *
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function parseBlocksAtAdminEnqueue(): void
     {
@@ -73,7 +117,7 @@ class GutenbergBlocksService
     /**
      * Parse blocks at wp_footer hook
      *
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function parseBlocksAtWpFooter(): void
     {
@@ -96,10 +140,32 @@ class GutenbergBlocksService
      * Get Gutenberg blocks information
      *
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function getBlocksInfo(): array
     {
+        // Auto-capture info if not already captured
+        if (empty($this->blocksInfo) || $this->blocksInfo['total_blocks'] === 0) {
+            $this->captureInfo();
+        }
+
+        return $this->blocksInfo;
+    }
+
+    /**
+     * Force refresh blocks info
+     *
+     * @return array
+     * @since 2.0.0
+     */
+    public function forceRefreshBlocksInfo(): array
+    {
+        // Clear existing info
+        $this->blocksInfo = [];
+
+        // Re-capture info
+        $this->captureInfo();
+
         return $this->blocksInfo;
     }
 
@@ -107,7 +173,7 @@ class GutenbergBlocksService
      * Check if currently in Gutenberg editor
      *
      * @return bool
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function isGutenbergEditor(): bool
     {
@@ -118,7 +184,7 @@ class GutenbergBlocksService
      * Check if currently in block editor
      *
      * @return bool
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function isBlockEditor(): bool
     {
@@ -134,19 +200,39 @@ class GutenbergBlocksService
      * Check if current content has Gutenberg blocks
      *
      * @return bool
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function hasGutenbergContent(): bool
     {
-        // Always try to parse blocks and check the result
-        $blockParserService = \Jankx\Facades\Kernel::getInstance()->make(\Jankx\Services\BlockParserService::class);
-        $stats = is_admin()
-            ? $blockParserService->getBlockStatsAtAdminEnqueue()
-            : $blockParserService->getBlockStatsAtWpFooter();
+        // Check current post content
+        if (is_singular()) {
+            global $post;
+            if ($post && !empty($post->post_content) && has_blocks($post->post_content)) {
+                return true;
+            }
+        }
 
-        // If we found any blocks, return true
-        if ($stats['total_blocks'] > 0) {
-            return true;
+        // Check content from the loop
+        if (have_posts()) {
+            while (have_posts()) {
+                the_post();
+                $content = get_the_content();
+                rewind_posts();
+                if (!empty($content) && has_blocks($content)) {
+                    return true;
+                }
+            }
+        }
+
+        // Check global $wp_query
+        global $wp_query;
+        if ($wp_query && $wp_query->have_posts()) {
+            $wp_query->the_post();
+            $content = get_the_content();
+            $wp_query->rewind_posts();
+            if (!empty($content) && has_blocks($content)) {
+                return true;
+            }
         }
 
         // Additional checks for block theme
@@ -171,7 +257,7 @@ class GutenbergBlocksService
      * Check if theme templates have blocks
      *
      * @return bool
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function hasThemeTemplateBlocks(): bool
     {
@@ -207,7 +293,7 @@ class GutenbergBlocksService
      * Check if widgets have blocks
      *
      * @return bool
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function hasWidgetBlocks(): bool
     {
@@ -226,38 +312,115 @@ class GutenbergBlocksService
     }
 
     /**
-     * Parse blocks from content using BlockParserService
+     * Parse blocks from content
      *
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function parseBlocks(): array
     {
-        // Use BlockParserService for comprehensive block parsing
-        $blockParserService = \Jankx\Facades\Kernel::getInstance()->make(\Jankx\Services\BlockParserService::class);
-        $stats = is_admin()
-            ? $blockParserService->getBlockStatsAtAdminEnqueue()
-            : $blockParserService->getBlockStatsAtWpFooter();
+        $content = $this->getCurrentContent();
 
-        // Debug logging
-        Logger::debug('GutenbergBlocksService Debug', [
-            'context' => is_admin() ? 'Admin' : 'Frontend',
-            'total_blocks' => $stats['total_blocks'],
-            'block_types' => $stats['block_types'],
-            'block_names' => $stats['block_names'] ?? []
-        ]);
+        if (empty($content) || !has_blocks($content)) {
+            return [
+                'total_blocks' => 0,
+                'block_types' => []
+            ];
+        }
+
+        $blocks = parse_blocks($content);
+        $blockTypes = [];
+        $totalBlocks = 0;
+
+        foreach ($blocks as $block) {
+            if (!empty($block['blockName'])) {
+                $blockName = $block['blockName'];
+                if (!isset($blockTypes[$blockName])) {
+                    $blockTypes[$blockName] = 0;
+                }
+                $blockTypes[$blockName]++;
+                $totalBlocks++;
+            }
+
+            // Count nested blocks
+            if (!empty($block['innerBlocks'])) {
+                $totalBlocks += $this->countNestedBlocks($block['innerBlocks']);
+            }
+        }
 
         return [
-            'total_blocks' => $stats['total_blocks'],
-            'block_types' => $stats['block_types']
+            'total_blocks' => $totalBlocks,
+            'block_types' => $blockTypes
         ];
+    }
+
+    /**
+     * Count nested blocks recursively
+     *
+     * @param array $blocks
+     * @return int
+     * @since 2.0.0
+     */
+    private function countNestedBlocks(array $blocks): int
+    {
+        $count = 0;
+
+        foreach ($blocks as $block) {
+            if (!empty($block['blockName'])) {
+                $count++;
+            }
+
+            if (!empty($block['innerBlocks'])) {
+                $count += $this->countNestedBlocks($block['innerBlocks']);
+            }
+        }
+
+        return $count;
+    }
+
+    /**
+     * Get current content
+     *
+     * @return string
+     * @since 2.0.0
+     */
+    private function getCurrentContent(): string
+    {
+        // Try to get current post content
+        if (is_singular()) {
+            global $post;
+            if ($post && !empty($post->post_content)) {
+                return $post->post_content;
+            }
+        }
+
+        // Try to get content from the loop
+        if (have_posts()) {
+            while (have_posts()) {
+                the_post();
+                $content = get_the_content();
+                rewind_posts();
+                return $content;
+            }
+        }
+
+        // Try to get content from global $wp_query
+        global $wp_query;
+        if ($wp_query && $wp_query->have_posts()) {
+            $wp_query->the_post();
+            $content = get_the_content();
+            $wp_query->rewind_posts();
+            return $content;
+        }
+
+        return '';
     }
 
     /**
      * Get template parts count
      *
      * @return int
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function getTemplateParts(): int
     {
@@ -267,5 +430,61 @@ class GutenbergBlocksService
 
         $templateParts = get_block_template_parts();
         return is_array($templateParts) ? count($templateParts) : 0;
+    }
+
+    /**
+     * Parse all content blocks from database
+     *
+     * @since 2.0.0
+     */
+    private function parseAllContentBlocks(): void
+    {
+        // Get all posts with blocks
+        $posts = get_posts([
+            'post_type' => 'any',
+            'post_status' => 'publish',
+            'posts_per_page' => -1
+        ]);
+
+        $allBlockTypes = [];
+        $totalBlocks = 0;
+        $uniqueBlockTypes = 0;
+
+        foreach ($posts as $post) {
+            if (has_blocks($post->post_content)) {
+                // Use new GutenbergBlockExtractor for high performance
+                $extractor = new \Jankx\Parsers\GutenbergBlockExtractor($post->post_content);
+                $blockStats = $extractor->getBlockStats();
+
+                if (!empty($blockStats['block_types'])) {
+                    foreach ($blockStats['block_types'] as $blockName => $count) {
+                        if (!isset($allBlockTypes[$blockName])) {
+                            $allBlockTypes[$blockName] = 0;
+                            $uniqueBlockTypes++;
+                        }
+                        $allBlockTypes[$blockName] += $count;
+                    }
+                    $totalBlocks += $blockStats['total_blocks'];
+                }
+            }
+        }
+
+        // Update blocks info with real data
+        if ($totalBlocks > 0) {
+            $this->blocksInfo['total_blocks'] = $totalBlocks;
+            $this->blocksInfo['block_types'] = $allBlockTypes;
+            $this->blocksInfo['unique_block_types'] = $uniqueBlockTypes;
+
+            // Debug: Log the calculation
+            $calculatedTotal = array_sum($allBlockTypes);
+            Logger::debug('GutenbergBlocksService: Parsed all content blocks', [
+                'total_blocks' => $totalBlocks,
+                'unique_block_types' => $uniqueBlockTypes,
+                'block_types' => $allBlockTypes,
+                'calculated_total' => $calculatedTotal,
+                'difference' => $totalBlocks - $calculatedTotal,
+                'posts_processed' => count($posts)
+            ]);
+        }
     }
 }

@@ -8,7 +8,7 @@ use Jankx\CLI\Fixers\IssueFixerInterface;
  * Fixer for adding ABSPATH security check in PHP header
  *
  * @package Jankx\CLI\Fixers
- * @since 2.0.1
+ * @since 2.0.0
  */
 class ABSPATHCheckFixer implements IssueFixerInterface
 {
@@ -18,7 +18,7 @@ class ABSPATHCheckFixer implements IssueFixerInterface
      * @param string $content
      * @param array $fix
      * @return string
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function fix($content, $fix)
     {
@@ -41,7 +41,7 @@ class ABSPATHCheckFixer implements IssueFixerInterface
      *
      * @param array $lines
      * @return int
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function findInsertPosition($lines)
     {
@@ -65,7 +65,7 @@ class ABSPATHCheckFixer implements IssueFixerInterface
      * Create ABSPATH security check code
      *
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function createABSPATHCheck()
     {

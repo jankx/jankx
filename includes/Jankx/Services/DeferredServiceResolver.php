@@ -12,7 +12,7 @@ use Jankx\Facades\Logger;
  * Handles resolution of deferred services in different contexts
  *
  * @package Jankx\Services
- * @since 2.0.1
+ * @since 2.0.0
  */
 class DeferredServiceResolver
 {
@@ -20,10 +20,10 @@ class DeferredServiceResolver
     private $resolved = [];
     private $monitor;
 
-    public function __construct(Container $container)
+    public function __construct(Container $container, DeferredServiceMonitor $monitor)
     {
         $this->container = $container;
-        $this->monitor = new DeferredServiceMonitor();
+        $this->monitor = $monitor;
     }
 
     /**

@@ -10,20 +10,20 @@ use Jankx\Debug\Contracts\PluginDebugInterface;
  * Manages plugin debug information collection and storage
  *
  * @package Jankx\Debug\Services
- * @since 2.0.1
+ * @since 2.0.0
  */
 class PluginDebugService implements PluginDebugInterface
 {
     /**
      * @var array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private $pluginDebugInfo = [];
 
     /**
      * Capture plugin debug information
      *
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function captureInfo(): void
     {
@@ -35,7 +35,7 @@ class PluginDebugService implements PluginDebugInterface
      * Get plugin debug information
      *
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function getPluginDebugInfo(): array
     {
@@ -47,7 +47,7 @@ class PluginDebugService implements PluginDebugInterface
      *
      * @param string $pluginName
      * @param string $info
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function addDebugInfo(string $pluginName, string $info): void
     {

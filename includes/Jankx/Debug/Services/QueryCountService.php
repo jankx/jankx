@@ -10,32 +10,32 @@ use Jankx\Debug\Contracts\QueryCountInterface;
  * Manages database query counting and tracking
  *
  * @package Jankx\Debug\Services
- * @since 2.0.1
+ * @since 2.0.0
  */
 class QueryCountService implements QueryCountInterface
 {
     /**
      * @var int
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private $initialQueryCount = 0;
 
     /**
      * @var int
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private $queryCount = 0;
 
     /**
      * @var bool
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private $isTracking = false;
 
     /**
      * Start tracking queries
      *
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function startTracking(): void
     {
@@ -63,7 +63,7 @@ class QueryCountService implements QueryCountInterface
     /**
      * Capture initial query count
      *
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function captureInitialQueryCount(): void
     {
@@ -78,7 +78,7 @@ class QueryCountService implements QueryCountInterface
      * Get query count
      *
      * @return int
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function getQueryCount(): int
     {
@@ -100,7 +100,7 @@ class QueryCountService implements QueryCountInterface
      *
      * @param string $query
      * @return string
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function countQuery(string $query): string
     {
@@ -116,7 +116,7 @@ class QueryCountService implements QueryCountInterface
      *
      * @param string $query
      * @param string $queryType
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function countWpdbQuery(string $query, string $queryType): void
     {

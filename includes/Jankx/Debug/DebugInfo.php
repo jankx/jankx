@@ -18,49 +18,49 @@ use Jankx\Facades\Logger;
  * when JANKX_DEBUG is enabled.
  *
  * @package Jankx\Debug
- * @since 2.0.1
+ * @since 2.0.0
  */
 class DebugInfo implements DebugInfoInterface
 {
     /**
      * @var DebugInfoService
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private $debugInfoService;
 
     /**
      * @var QueryCountService
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private $queryCountService;
 
     /**
      * @var CacheInfoService
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private $cacheInfoService;
 
     /**
      * @var GutenbergBlocksService
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private $gutenbergBlocksService;
 
     /**
      * @var PluginDebugService
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private $pluginDebugService;
 
     /**
      * @var DebugInfoRenderer
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private $renderer;
 
     /**
      * @var bool
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private $isInitialized = false;
 
@@ -73,7 +73,7 @@ class DebugInfo implements DebugInfoInterface
      * @param GutenbergBlocksService $gutenbergBlocksService
      * @param PluginDebugService $pluginDebugService
      * @param DebugInfoRenderer $renderer
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function __construct(
         DebugInfoService $debugInfoService,
@@ -94,7 +94,7 @@ class DebugInfo implements DebugInfoInterface
     /**
      * Initialize debug tracking
      *
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function init(): void
     {
@@ -116,7 +116,7 @@ class DebugInfo implements DebugInfoInterface
      * Check if debug should be initialized
      *
      * @return bool
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function shouldInitialize(): bool
     {
@@ -126,7 +126,7 @@ class DebugInfo implements DebugInfoInterface
     /**
      * Register WordPress hooks
      *
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function registerHooks(): void
     {
@@ -137,7 +137,7 @@ class DebugInfo implements DebugInfoInterface
     /**
      * Display debug information
      *
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function displayDebugInfo(): void
     {
@@ -153,7 +153,7 @@ class DebugInfo implements DebugInfoInterface
      * Check if debug info should be displayed
      *
      * @return bool
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function shouldDisplay(): bool
     {
@@ -164,7 +164,7 @@ class DebugInfo implements DebugInfoInterface
      * Collect all debug data
      *
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function collectDebugData(): array
     {
@@ -174,7 +174,7 @@ class DebugInfo implements DebugInfoInterface
             'memory_limit' => $this->debugInfoService->getMemoryLimit(),
             'query_count' => $this->queryCountService->getQueryCount(),
             'cache_info' => $this->cacheInfoService->getCacheInfo(),
-            'gutenberg_blocks' => $this->gutenbergBlocksService->getBlocksInfo(),
+            'gutenberg_blocks' => $this->gutenbergBlocksService->forceRefreshBlocksInfo(),
             'plugin_debug' => $this->pluginDebugService->getPluginDebugInfo(),
         ];
     }
@@ -183,7 +183,7 @@ class DebugInfo implements DebugInfoInterface
      * Get debug info for testing
      *
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function getDebugInfo(): array
     {
@@ -194,7 +194,7 @@ class DebugInfo implements DebugInfoInterface
      * Get query count for testing
      *
      * @return int
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function getQueryCountForTesting(): int
     {
@@ -206,7 +206,7 @@ class DebugInfo implements DebugInfoInterface
      *
      * @param string $pluginName
      * @param string $info
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function addPluginDebugInfo(string $pluginName, string $info): void
     {
@@ -216,7 +216,7 @@ class DebugInfo implements DebugInfoInterface
     /**
      * Initialize admin bar debug info
      *
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function initAdminBarDebugInfo(): void
     {
@@ -244,7 +244,7 @@ class DebugInfo implements DebugInfoInterface
      * Add admin bar menu
      *
      * @param \WP_Admin_Bar $wp_admin_bar
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function addAdminBarMenu($wp_admin_bar): void
     {
@@ -261,7 +261,7 @@ class DebugInfo implements DebugInfoInterface
     /**
      * Add JavaScript for admin bar functionality
      *
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function addAdminBarJavaScript(): void
     {
@@ -451,7 +451,7 @@ class DebugInfo implements DebugInfoInterface
     /**
      * Handle AJAX request for debug info
      *
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function handleAjaxRequest(): void
     {

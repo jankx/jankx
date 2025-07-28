@@ -7,6 +7,14 @@ use Jankx\Bootstrappers\AbstractBootstrapper;
 use Jankx\Helpers\ThemeSupportHelper;
 use Jankx\Helpers\BootstrapperHelper;
 
+/**
+ * Theme Bootstrapper
+ *
+ * Handles theme initialization and setup
+ *
+ * @package Jankx\Bootstrappers\Global
+ * @since 2.0.0
+ */
 class ThemeBootstrapper extends AbstractBootstrapper
 {
     protected $priority = 10;

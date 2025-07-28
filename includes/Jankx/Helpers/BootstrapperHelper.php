@@ -27,9 +27,7 @@ class BootstrapperHelper
      */
     public static function setupDeferredResolver(Container $container): void
     {
-        if (!$container->bound('deferred.resolver')) {
-            $container->singleton('deferred.resolver', \Jankx\Services\DeferredServiceResolver::class);
-        }
+        ServiceRegistrationHelper::registerDeferredServices($container);
     }
 
     /**

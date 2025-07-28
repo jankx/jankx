@@ -14,13 +14,11 @@ use Jankx\Helpers\DeferredServiceHelper;
  *
  * @package Jankx\Providers
  */
-class ContextualServiceProvider
+class ContextualServiceProvider extends ServiceProvider
 {
-    private $container;
-
     public function __construct(Container $container)
     {
-        $this->container = $container;
+        parent::__construct($container);
     }
 
     /**
@@ -41,6 +39,16 @@ class ContextualServiceProvider
     }
 
     /**
+     * Boot the service provider
+     */
+    public function boot(): void
+    {
+        // Boot any services that need to be booted after registration
+        $context = $this->getCurrentContext();
+        $this->bootContextServices($context);
+    }
+
+    /**
      * Get current application context
      */
     private function getCurrentContext(): string
@@ -53,8 +61,11 @@ class ContextualServiceProvider
      */
     private function registerCoreServices(): void
     {
-        // Essential services that are always needed
         ServiceRegistrationHelper::registerCoreServices($this->container);
+
+        // Register additional core services
+        $this->container->singleton(\Jankx\Services\GutenbergBlocksService::class);
+        $this->container->singleton(\Jankx\Services\DeferredServiceMonitor::class);
     }
 
     /**
@@ -80,6 +91,34 @@ class ContextualServiceProvider
                 break;
             case ContextualServiceRegistry::WOOCOMMERCE:
                 $this->registerWooCommerceServices();
+                break;
+        }
+    }
+
+    /**
+     * Boot context-specific services
+     */
+    private function bootContextServices(string $context): void
+    {
+        // Boot any services that need to be booted for this context
+        switch ($context) {
+            case ContextualServiceRegistry::ADMIN:
+                $this->bootAdminServices();
+                break;
+            case ContextualServiceRegistry::FRONTEND:
+                $this->bootFrontendServices();
+                break;
+            case ContextualServiceRegistry::API:
+                $this->bootAPIServices();
+                break;
+            case ContextualServiceRegistry::CLI:
+                $this->bootCLIServices();
+                break;
+            case ContextualServiceRegistry::GUTENBERG:
+                $this->bootGutenbergServices();
+                break;
+            case ContextualServiceRegistry::WOOCOMMERCE:
+                $this->bootWooCommerceServices();
                 break;
         }
     }
@@ -141,6 +180,54 @@ class ContextualServiceProvider
     private function registerWooCommerceServices(): void
     {
         ServiceRegistrationHelper::registerWooCommerceServices($this->container);
+    }
+
+    /**
+     * Boot admin services
+     */
+    private function bootAdminServices(): void
+    {
+        // Boot admin-specific services
+    }
+
+    /**
+     * Boot frontend services
+     */
+    private function bootFrontendServices(): void
+    {
+        // Boot frontend-specific services
+    }
+
+    /**
+     * Boot API services
+     */
+    private function bootAPIServices(): void
+    {
+        // Boot API-specific services
+    }
+
+    /**
+     * Boot CLI services
+     */
+    private function bootCLIServices(): void
+    {
+        // Boot CLI-specific services
+    }
+
+    /**
+     * Boot Gutenberg services
+     */
+    private function bootGutenbergServices(): void
+    {
+        // Boot Gutenberg-specific services
+    }
+
+    /**
+     * Boot WooCommerce services
+     */
+    private function bootWooCommerceServices(): void
+    {
+        // Boot WooCommerce-specific services
     }
 
     /**

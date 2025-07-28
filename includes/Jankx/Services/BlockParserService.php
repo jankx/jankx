@@ -10,7 +10,7 @@ use Jankx\Facades\Logger;
  * Parses and analyzes Gutenberg blocks
  *
  * @package Jankx\Services
- * @since 2.0.1
+ * @since 2.0.0
  */
 class BlockParserService
 {
@@ -19,7 +19,7 @@ class BlockParserService
      *
      * @param string $content
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function parseBlocks(string $content): array
     {
@@ -35,7 +35,7 @@ class BlockParserService
      *
      * @param array $blocks
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function extractBlockNames(array $blocks): array
     {
@@ -61,7 +61,7 @@ class BlockParserService
      *
      * @param array $blocks
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function countBlockTypes(array $blocks): array
     {
@@ -85,7 +85,7 @@ class BlockParserService
      *
      * @param array $blocks
      * @return int
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function countAllBlocks(array $blocks): int
     {
@@ -106,9 +106,8 @@ class BlockParserService
     /**
      * Get block statistics
      *
-     * @param array $blocks
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function getBlockStats(): array
     {
@@ -119,7 +118,23 @@ class BlockParserService
             'nested_blocks' => 0
         ];
 
-        // Get all posts with blocks
+        // First, try to get stats from current content
+        $currentContent = $this->getCurrentContent();
+        if (!empty($currentContent) && has_blocks($currentContent)) {
+            $blocks = $this->parseBlocks($currentContent);
+            $blockTypes = $this->countBlockTypes($blocks);
+            $totalBlocks = $this->countAllBlocks($blocks);
+
+            $stats['total_blocks'] = $totalBlocks;
+            $stats['block_types'] = $blockTypes;
+            $stats['unique_blocks'] = count($blockTypes);
+            $stats['nested_blocks'] = $totalBlocks - count($blocks); // Nested = total - root blocks
+
+            Logger::debug('Block stats from current content', $stats);
+            return $stats;
+        }
+
+        // Fallback: Get all posts with blocks
         $posts = get_posts([
             'post_type' => 'any',
             'post_status' => 'publish',
@@ -155,10 +170,48 @@ class BlockParserService
     }
 
     /**
+     * Get current content based on context
+     *
+     * @return string
+     * @since 2.0.0
+     */
+    private function getCurrentContent(): string
+    {
+        // Try to get current post content
+        if (is_singular()) {
+            global $post;
+            if ($post && !empty($post->post_content)) {
+                return $post->post_content;
+            }
+        }
+
+        // Try to get content from the loop
+        if (have_posts()) {
+            while (have_posts()) {
+                the_post();
+                $content = get_the_content();
+                rewind_posts();
+                return $content;
+            }
+        }
+
+        // Try to get content from global $wp_query
+        global $wp_query;
+        if ($wp_query && $wp_query->have_posts()) {
+            $wp_query->the_post();
+            $content = get_the_content();
+            $wp_query->rewind_posts();
+            return $content;
+        }
+
+        return '';
+    }
+
+    /**
      * Parse all content blocks
      *
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function parseAllContentBlocks(): array
     {
@@ -186,7 +239,7 @@ class BlockParserService
      * Get block stats at admin enqueue
      *
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function getBlockStatsAtAdminEnqueue(): array
     {
@@ -205,7 +258,7 @@ class BlockParserService
      * Get block stats at wp_footer
      *
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function getBlockStatsAtWpFooter(): array
     {
@@ -223,7 +276,7 @@ class BlockParserService
     /**
      * Display debug info
      *
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function displayDebugInfo(): void
     {
@@ -257,7 +310,7 @@ class BlockParserService
      * Get detailed block statistics
      *
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function getDetailedBlockStats(): array
     {

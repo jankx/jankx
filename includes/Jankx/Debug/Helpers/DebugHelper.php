@@ -11,7 +11,7 @@ use Jankx\Debug\Facades\Debug;
  * Provides utility functions for debugging
  *
  * @package Jankx\Debug\Helpers
- * @since 2.0.1
+ * @since 2.0.0
  */
 class DebugHelper
 {
@@ -19,7 +19,7 @@ class DebugHelper
      * Check if debug is enabled
      *
      * @return bool
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public static function isEnabled(): bool
     {
@@ -30,7 +30,7 @@ class DebugHelper
      * Get debug info
      *
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public static function getDebugInfo(): array
     {
@@ -45,7 +45,7 @@ class DebugHelper
      * Get query count
      *
      * @return int
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public static function getQueryCount(): int
     {
@@ -61,7 +61,7 @@ class DebugHelper
      *
      * @param string $pluginName
      * @param string $info
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public static function addPluginInfo(string $pluginName, string $info): void
     {
@@ -78,7 +78,7 @@ class DebugHelper
      * @param int $bytes
      * @param int $precision
      * @return string
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public static function formatBytes(int $bytes, int $precision = 2): string
     {
@@ -97,7 +97,7 @@ class DebugHelper
      * @param int $usage
      * @param int $limit
      * @return float
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public static function calculateMemoryUsagePercentage(int $usage, int $limit): float
     {
@@ -112,7 +112,7 @@ class DebugHelper
      * Get current memory usage
      *
      * @return int
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public static function getCurrentMemoryUsage(): int
     {
@@ -123,7 +123,7 @@ class DebugHelper
      * Get memory limit
      *
      * @return int
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public static function getMemoryLimit(): int
     {
@@ -156,7 +156,7 @@ class DebugHelper
      *
      * @param float $startTime
      * @return float
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public static function getResponseTime(float $startTime): float
     {
@@ -168,7 +168,7 @@ class DebugHelper
      *
      * @param string $message
      * @param array $context
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public static function log(string $message, array $context = []): void
     {

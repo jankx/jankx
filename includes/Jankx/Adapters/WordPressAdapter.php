@@ -3,10 +3,14 @@
 namespace Jankx\Adapters;
 
 /**
- * WordPress Adapter
+ * WordPress Adapter for Jankx Framework
+ *
+ * Provides WordPress-specific functionality and adaptations.
  *
  * @package Jankx\Adapters
- * @since 2.0.1
+ * @author Puleeno Nguyen <puleeno@gmail.com>
+ * @version 2.0.0
+ * @license MIT
  */
 class WordPressAdapter
 {
@@ -14,18 +18,18 @@ class WordPressAdapter
      * Check if currently in admin area
      *
      * @return bool
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function isAdmin(): bool
     {
-        return is_admin();
+        return \is_admin();
     }
 
     /**
      * Check if currently in block editor
      *
      * @return bool
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function isBlockEditor(): bool
     {
@@ -42,40 +46,40 @@ class WordPressAdapter
      *
      * @param string $content
      * @return bool
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function hasBlocks(string $content): bool
     {
-        return has_blocks($content);
+        return \has_blocks($content);
     }
 
     /**
      * Get current post content
      *
      * @return string
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function getCurrentContent(): string
     {
-        return get_the_content() ?: '';
+        return \get_the_content() ?: '';
     }
 
     /**
      * Get current post excerpt
      *
      * @return string
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function getCurrentExcerpt(): string
     {
-        return get_the_excerpt() ?: '';
+        return \get_the_excerpt() ?: '';
     }
 
     /**
      * Get template parts count
      *
      * @return int
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function getTemplatePartsCount(): int
     {

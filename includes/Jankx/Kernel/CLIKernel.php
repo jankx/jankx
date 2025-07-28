@@ -25,6 +25,22 @@ class CLIKernel extends Kernel implements KernelInterface
     }
 
     /**
+     * Check if this kernel should run
+     */
+    public function shouldRun(): bool
+    {
+        return defined('WP_CLI') && WP_CLI;
+    }
+
+    /**
+     * Bootstrap the kernel (alias for boot method)
+     */
+    public function bootstrap(): void
+    {
+        $this->boot();
+    }
+
+    /**
      * Register bootstrappers
      */
     protected function registerBootstrappers(): void

@@ -16,7 +16,7 @@ class GutenbergAjaxKernelStrategy extends KernelContextStrategy
      */
     public function canHandle(): bool
     {
-        if (!wp_doing_ajax()) {
+        if (!defined('DOING_AJAX') || !DOING_AJAX) {
             return false;
         }
 

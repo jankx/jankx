@@ -6,7 +6,7 @@ namespace Jankx\Services;
  * Gutenberg Blocks Service
  *
  * @package Jankx\Services
- * @since 2.0.1
+ * @since 2.0.0
  */
 class GutenbergBlocksService
 {
@@ -23,7 +23,7 @@ class GutenbergBlocksService
      * Get Gutenberg blocks information
      *
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function getBlocksInfo(): array
     {
@@ -58,7 +58,7 @@ class GutenbergBlocksService
      * Check if currently in Gutenberg editor
      *
      * @return bool
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function isGutenbergEditor(): bool
     {
@@ -70,7 +70,7 @@ class GutenbergBlocksService
      * Check if current content has Gutenberg blocks
      *
      * @return bool
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function hasGutenbergContent(): bool
     {
@@ -85,7 +85,7 @@ class GutenbergBlocksService
      * Parse blocks from content
      *
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function parseBlocks(): array
     {
@@ -108,7 +108,7 @@ class GutenbergBlocksService
      *
      * @param array $blocks
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function countBlockTypes(array $blocks): array
     {
@@ -131,7 +131,7 @@ class GutenbergBlocksService
      * Get template parts count
      *
      * @return int
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function getTemplateParts(): int
     {

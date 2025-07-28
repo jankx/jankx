@@ -18,6 +18,7 @@ use Jankx\Services\BlockParserService;
 class GutenbergFrontendBootstrapper extends AbstractBootstrapper
 {
     protected $priority = 15; // Higher priority than FrontendBootstrapper
+    protected $container;
 
     public function getName(): string
     {
@@ -31,6 +32,8 @@ class GutenbergFrontendBootstrapper extends AbstractBootstrapper
 
     public function bootstrap(Container $container): void
     {
+        $this->container = $container;
+
         Logger::info('GutenbergFrontendBootstrapper is booting');
         // Only parse and register blocks after the_post of the main query
         add_action('the_post', function($post) use ($container) {
@@ -56,14 +59,17 @@ class GutenbergFrontendBootstrapper extends AbstractBootstrapper
     }
 
     /**
-     * Parse post content to find used Jankx blocks
+     * Parse used blocks from content
      */
     protected function parseUsedBlocks(): array
     {
-        global $post;
-        $content = $post->post_content ?? '';
+        $content = get_the_content();
         $content .= $this->getWidgetContent();
-        $blocks = BlockParserService::parseBlocks($content);
+
+        // Get BlockParserService from container (using Application facade)
+        $blockParserService = \Jankx\Facades\Application::make(\Jankx\Services\BlockParserService::class);
+        $blocks = $blockParserService->parseBlocks($content);
+
         Logger::debug('Parsed blocks array', ['blocks' => $blocks]);
         $used_blocks = $this->extractJankxBlocks($blocks);
         Logger::debug('Extracted Jankx block names', ['used_blocks' => $used_blocks]);
@@ -308,7 +314,9 @@ class GutenbergFrontendBootstrapper extends AbstractBootstrapper
      */
     public function getBlockStats(): array
     {
-        $stats = BlockParserService::getBlockStats();
+        // Get BlockParserService from container (using Application facade)
+        $blockParserService = \Jankx\Facades\Application::make(\Jankx\Services\BlockParserService::class);
+        $stats = $blockParserService->getBlockStats();
 
         return array_merge($stats, [
             'partial_hydration_enabled' => $this->getPartialHydrationSettings()['enabled'],

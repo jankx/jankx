@@ -6,14 +6,14 @@ namespace Jankx\Debug\Contracts;
  * Cache Info Interface
  *
  * @package Jankx\Debug\Contracts
- * @since 2.0.1
+ * @since 2.0.0
  */
 interface CacheInfoInterface
 {
     /**
      * Capture cache information
      *
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function captureInfo(): void;
 
@@ -21,7 +21,7 @@ interface CacheInfoInterface
      * Get cache information
      *
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function getCacheInfo(): array;
 
@@ -29,7 +29,7 @@ interface CacheInfoInterface
      * Get transients info
      *
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function getTransientsInfo(): array;
 
@@ -37,7 +37,7 @@ interface CacheInfoInterface
      * Get object cache info
      *
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function getObjectCacheInfo(): array;
 
@@ -45,7 +45,7 @@ interface CacheInfoInterface
      * Get plugin cache info
      *
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function getPluginCacheInfo(): array;
 }

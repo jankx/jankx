@@ -10,7 +10,7 @@ use Jankx\Facades\Logger;
  * Monitors and tracks deferred service performance and usage
  *
  * @package Jankx\Services
- * @since 2.0.1
+ * @since 2.0.0
  */
 class DeferredServiceMonitor
 {

@@ -5,37 +5,39 @@ namespace Jankx\Debug\Services;
 use Jankx\Debug\Contracts\CacheInfoInterface;
 
 /**
- * Cache Info Service
+ * Cache Info Service for Jankx Framework
  *
- * Manages cache information collection and analysis
+ * Provides cache-related information for debugging purposes.
  *
  * @package Jankx\Debug\Services
- * @since 2.0.1
+ * @author Puleeno Nguyen <puleeno@gmail.com>
+ * @version 2.0.0
+ * @license MIT
  */
 class CacheInfoService implements CacheInfoInterface
 {
     /**
      * @var array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private $cacheInfo = [];
 
     /**
      * @var array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private $objectCacheInfo = [];
 
     /**
      * @var array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private $pluginCacheInfo = [];
 
     /**
      * Capture cache information
      *
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function captureInfo(): void
     {
@@ -48,7 +50,7 @@ class CacheInfoService implements CacheInfoInterface
      * Get cache information
      *
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function getCacheInfo(): array
     {
@@ -59,7 +61,7 @@ class CacheInfoService implements CacheInfoInterface
      * Get transients info
      *
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function getTransientsInfo(): array
     {
@@ -107,7 +109,7 @@ class CacheInfoService implements CacheInfoInterface
         ];
 
         foreach ($commonTransients as $prefix) {
-            $options = get_option($prefix . '*');
+            $options = \get_option($prefix . '*');
             if ($options) {
                 foreach ($options as $key => $value) {
                     $transientKey = str_replace($prefix, '', $key);
@@ -123,10 +125,13 @@ class CacheInfoService implements CacheInfoInterface
      * Get object cache info
      *
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function getObjectCacheInfo(): array
     {
+        if (empty($this->objectCacheInfo)) {
+            $this->captureObjectCacheInfo();
+        }
         return $this->objectCacheInfo;
     }
 
@@ -134,22 +139,25 @@ class CacheInfoService implements CacheInfoInterface
      * Get plugin cache info
      *
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function getPluginCacheInfo(): array
     {
+        if (empty($this->pluginCacheInfo)) {
+            $this->capturePluginCacheInfo();
+        }
         return $this->pluginCacheInfo;
     }
 
     /**
      * Capture object cache information
      *
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function captureObjectCacheInfo(): void
     {
         $this->objectCacheInfo = [
-            'enabled' => wp_using_ext_object_cache(),
+            'enabled' => \wp_using_ext_object_cache(),
             'type' => $this->getObjectCacheType(),
             'stats' => $this->getObjectCacheStats()
         ];
@@ -159,11 +167,11 @@ class CacheInfoService implements CacheInfoInterface
      * Get object cache type
      *
      * @return string
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function getObjectCacheType(): string
     {
-        if (!wp_using_ext_object_cache()) {
+        if (!\wp_using_ext_object_cache()) {
             return 'WordPress Default';
         }
 
@@ -182,15 +190,15 @@ class CacheInfoService implements CacheInfoInterface
      * Get object cache stats
      *
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function getObjectCacheStats(): array
     {
-        if (!wp_using_ext_object_cache()) {
+        if (!\wp_using_ext_object_cache()) {
             return [];
         }
 
-        $stats = wp_cache_get_stats();
+        $stats = \wp_cache_get_stats();
 
         if (!$stats) {
             return [];
@@ -210,7 +218,7 @@ class CacheInfoService implements CacheInfoInterface
      *
      * @param array $stats
      * @return float
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function calculateHitRate(array $stats): float
     {
@@ -228,7 +236,7 @@ class CacheInfoService implements CacheInfoInterface
     /**
      * Capture plugin cache information
      *
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function capturePluginCacheInfo(): void
     {
@@ -244,7 +252,7 @@ class CacheInfoService implements CacheInfoInterface
         ];
 
         foreach ($plugins as $name => $plugin_file) {
-            if (is_plugin_active($plugin_file)) {
+            if (\is_plugin_active($plugin_file)) {
                 $this->pluginCacheInfo[$name] = $this->getPluginCacheStatus($name);
             }
         }
@@ -255,7 +263,7 @@ class CacheInfoService implements CacheInfoInterface
      *
      * @param string $pluginName
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function getPluginCacheStatus(string $pluginName): array
     {
@@ -275,11 +283,11 @@ class CacheInfoService implements CacheInfoInterface
      * Get W3 Total Cache status
      *
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function getW3TotalCacheStatus(): array
     {
-        $config = get_option('w3tc_config');
+        $config = \get_option('w3tc_config');
 
         if (!$config) {
             return ['status' => 'Active', 'details' => 'Configuration not found'];
@@ -298,11 +306,11 @@ class CacheInfoService implements CacheInfoInterface
      * Get WP Super Cache status
      *
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function getWPSuperCacheStatus(): array
     {
-        $wp_cache_enabled = get_option('wp_cache_enabled');
+        $wp_cache_enabled = \get_option('wp_cache_enabled');
 
         return [
             'status' => $wp_cache_enabled ? 'Active' : 'Inactive',
@@ -314,11 +322,11 @@ class CacheInfoService implements CacheInfoInterface
      * Get WP Rocket status
      *
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function getWPRocketStatus(): array
     {
-        $options = get_option('wp_rocket_settings');
+        $options = \get_option('wp_rocket_settings');
 
         if (!$options) {
             return ['status' => 'Active', 'details' => 'Settings not found'];
@@ -335,7 +343,7 @@ class CacheInfoService implements CacheInfoInterface
     /**
      * Build cache info summary
      *
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function buildCacheInfo(): void
     {

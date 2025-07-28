@@ -27,17 +27,14 @@ class ServiceRegistrationHelper
     /**
      * Register services with deferred resolver
      */
-    public static function registerDeferredServices(Container $container, array $services): void
+    public static function registerDeferredServices(Container $container): void
     {
-        // Register deferred resolver if not exists
-        if (!$container->bound('deferred.resolver')) {
-            $container->singleton('deferred.resolver', \Jankx\Services\DeferredServiceResolver::class);
-        }
-
-        // Register services for deferred loading
-        foreach ($services as $service) {
-            $container->singleton($service);
-        }
+        $container->singleton('deferred.resolver', function($container) {
+            return new \Jankx\Services\DeferredServiceResolver(
+                $container,
+                $container->make(\Jankx\Services\DeferredServiceMonitor::class)
+            );
+        });
     }
 
     /**
@@ -45,14 +42,16 @@ class ServiceRegistrationHelper
      */
     public static function registerCoreServices(Container $container): void
     {
-        $coreServices = [
-            \Jankx\Config\ConfigManager::class,
-            \Jankx\Logger\Logger::class,
-            \Jankx\Security\SecurityManager::class,
-            \Jankx\Performance\PerformanceMonitor::class,
+        $services = [
+            \Jankx\Services\UserService::class,
+            \Jankx\Services\BlockParserService::class,
+            \Jankx\Services\GutenbergBlocksService::class,
+            \Jankx\Services\DeferredServiceMonitor::class,
         ];
 
-        self::registerServices($container, $coreServices);
+        foreach ($services as $service) {
+            $container->singleton($service);
+        }
     }
 
     /**

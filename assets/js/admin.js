@@ -4,7 +4,7 @@
  * Handles admin interface functionality
  *
  * @package Jankx\Assets
- * @since 2.0.1
+ * @since 2.0.0
  */
 
 (function($) {
@@ -19,7 +19,7 @@
     function initDashboardWidgets() {
         $('.jankx-dashboard-widget').each(function() {
             const widgetId = $(this).data('widget-id');
-            
+
             // Widget initialization code here
         });
     }

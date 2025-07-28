@@ -6,14 +6,14 @@ namespace Jankx\Debug\Contracts;
  * Query Count Interface
  *
  * @package Jankx\Debug\Contracts
- * @since 2.0.1
+ * @since 2.0.0
  */
 interface QueryCountInterface
 {
     /**
      * Start tracking queries
      *
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function startTracking(): void;
 
@@ -21,7 +21,7 @@ interface QueryCountInterface
      * Get query count
      *
      * @return int
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function getQueryCount(): int;
 
@@ -30,7 +30,7 @@ interface QueryCountInterface
      *
      * @param string $query
      * @return string
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function countQuery(string $query): string;
 
@@ -39,7 +39,7 @@ interface QueryCountInterface
      *
      * @param string $query
      * @param string $queryType
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function countWpdbQuery(string $query, string $queryType): void;
 }
