@@ -4,6 +4,7 @@ namespace Jankx\Bootstrappers\CLI;
 
 use Illuminate\Container\Container;
 use Jankx\Bootstrappers\AbstractBootstrapper;
+use Jankx\Helpers\BootstrapperHelper;
 use Jankx\Providers\CLIServiceProvider;
 
 /**

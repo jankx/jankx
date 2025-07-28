@@ -101,11 +101,21 @@ class KernelManager
     {
         foreach ($this->contextStrategies as $strategy) {
             if ($strategy->canHandle()) {
-                return $strategy->getContext();
+                $context = $strategy->getContext();
+                // Debug logging
+                if (defined('JANKX_DEBUG') && JANKX_DEBUG) {
+                    \Jankx\Facades\Logger::debug("KernelManager: Detected context: {$context} using strategy: " . get_class($strategy));
+                }
+                return $context;
             }
         }
 
-        return 'frontend'; // Default fallback
+        $context = 'frontend'; // Default fallback
+        // Debug logging
+        if (defined('JANKX_DEBUG') && JANKX_DEBUG) {
+            \Jankx\Facades\Logger::debug("KernelManager: Using default context: {$context}");
+        }
+        return $context;
     }
 
     /**

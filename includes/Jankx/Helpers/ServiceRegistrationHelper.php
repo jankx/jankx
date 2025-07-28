@@ -45,7 +45,6 @@ class ServiceRegistrationHelper
         $services = [
             \Jankx\Services\UserService::class,
             \Jankx\Services\BlockParserService::class,
-            \Jankx\Services\GutenbergBlocksService::class,
             \Jankx\Services\DeferredServiceMonitor::class,
         ];
 
@@ -77,6 +76,7 @@ class ServiceRegistrationHelper
             \Jankx\Frontend\AssetManager::class,
             \Jankx\Frontend\TemplateManager::class,
             \Jankx\Frontend\ContentManager::class,
+            \Jankx\Services\GutenbergBlocksService::class,
         ];
 
         self::registerServices($container, $frontendServices);

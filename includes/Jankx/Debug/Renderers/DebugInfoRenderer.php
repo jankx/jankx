@@ -99,6 +99,12 @@ class DebugInfoRenderer implements DebugInfoRendererInterface
             $html .= $this->renderPluginDebugInfo($pluginDebugInfo);
         }
 
+        // Cache Comparison Info
+        $cacheComparison = $debugData['cache_comparison'] ?? [];
+        if (!empty($cacheComparison)) {
+            $html .= $this->renderCacheComparisonInfo($cacheComparison);
+        }
+
         $html .= '</div>'; // End content wrapper
         $html .= '</div>'; // End main div
 
@@ -214,6 +220,62 @@ class DebugInfoRenderer implements DebugInfoRendererInterface
         foreach ($pluginDebugInfo as $plugin => $info) {
             $html .= '<li><strong>' . esc_html($plugin) . ':</strong> ' . esc_html($info) . '</li>';
         }
+
+        $html .= '</ul>';
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    /**
+     * Render cache comparison information
+     *
+     * @param array $cacheComparison
+     * @return string
+     * @since 2.0.0
+     */
+    private function renderCacheComparisonInfo(array $cacheComparison): string
+    {
+        $html = '<div class="jankx-debug-section">';
+        $html .= '<div class="jankx-debug-section-title">⚡ Cache vs No-Cache Comparison</div>';
+        $html .= '<ul class="jankx-debug-list">';
+
+        if (!$cacheComparison['has_cached_data']) {
+            $html .= '<li><em>' . esc_html($cacheComparison['message']) . '</em></li>';
+            $html .= '</ul>';
+            $html .= '</div>';
+            return $html;
+        }
+
+        // Response Time Comparison
+        $responseTime = $cacheComparison['response_time'];
+        $html .= '<li><strong>Response Time:</strong></li>';
+        $html .= '<li><ul class="jankx-debug-sublist">';
+        $html .= '<li>Current: ' . number_format($responseTime['current'], 4) . 's</li>';
+        $html .= '<li>Cached: ' . number_format($responseTime['cached'], 4) . 's</li>';
+        $html .= '<li>Difference: ' . number_format($responseTime['difference'], 4) . 's</li>';
+        $html .= '<li>Improvement: ' . number_format($responseTime['improvement'], 1) . '%</li>';
+        $html .= '</ul></li>';
+
+        // Memory Usage Comparison
+        $memoryUsage = $cacheComparison['memory_usage'];
+        $html .= '<li><strong>Memory Usage:</strong></li>';
+        $html .= '<li><ul class="jankx-debug-sublist">';
+        $html .= '<li>Current: ' . $this->formatBytes($memoryUsage['current']) . '</li>';
+        $html .= '<li>Cached: ' . $this->formatBytes($memoryUsage['cached']) . '</li>';
+        $html .= '<li>Difference: ' . $this->formatBytes($memoryUsage['difference']) . '</li>';
+        $html .= '<li>Improvement: ' . number_format($memoryUsage['improvement'], 1) . '%</li>';
+        $html .= '</ul></li>';
+
+        // Query Count Comparison
+        $queryCount = $cacheComparison['query_count'];
+        $html .= '<li><strong>Database Queries:</strong></li>';
+        $html .= '<li><ul class="jankx-debug-sublist">';
+        $html .= '<li>Current: ' . $queryCount['current'] . ' queries</li>';
+        $html .= '<li>Cached: ' . $queryCount['cached'] . ' queries</li>';
+        $html .= '<li>Difference: ' . $queryCount['difference'] . ' queries</li>';
+        $html .= '<li>Improvement: ' . number_format($queryCount['improvement'], 1) . '%</li>';
+        $html .= '</ul></li>';
 
         $html .= '</ul>';
         $html .= '</div>';
@@ -372,6 +434,16 @@ class DebugInfoRenderer implements DebugInfoRendererInterface
                 margin-bottom: 2px;
                 font-size: 11px;
                 color: #ccc;
+            }
+
+            /* Cache comparison styling */
+            .jankx-debug-sublist li:last-child {
+                color: #4CAF50;
+                font-weight: 600;
+            }
+
+            .jankx-debug-sublist li:nth-last-child(2) {
+                color: #FF9800;
             }
 
             /* Scrollbar styling */

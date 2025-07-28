@@ -132,6 +132,177 @@ class DebugInfo implements DebugInfoInterface
     {
         add_action('wp_footer', [$this, 'displayDebugInfo'], 999);
         add_action('admin_footer', [$this, 'displayDebugInfo'], 999);
+
+        // Add cache prevention headers when debug is active
+        add_action('wp_head', [$this, 'addCachePreventionHeaders'], 1);
+        add_action('admin_head', [$this, 'addCachePreventionHeaders'], 1);
+
+        // Prevent caching by popular optimization plugins
+        add_action('init', [$this, 'preventCachingByPlugins']);
+    }
+
+    /**
+     * Add cache prevention headers for debug information
+     *
+     * @since 2.0.0
+     */
+    public function addCachePreventionHeaders(): void
+    {
+        if (!$this->shouldDisplay()) {
+            return;
+        }
+
+        // Add no-cache headers to prevent caching of debug info
+        header('Cache-Control: no-cache, no-store, must-revalidate, max-age=0');
+        header('Pragma: no-cache');
+        header('Expires: Thu, 01 Jan 1970 00:00:00 GMT');
+
+        // Add custom header to identify debug mode
+        header('X-Jankx-Debug: active');
+
+        Logger::debug('Cache prevention headers added for debug mode');
+    }
+
+    /**
+     * Prevent caching by popular WordPress optimization plugins
+     *
+     * @since 2.0.0
+     */
+    public function preventCachingByPlugins(): void
+    {
+        if (!$this->shouldDisplay()) {
+            return;
+        }
+
+        // Disable WP Rocket caching for debug pages
+        if (defined('WP_ROCKET_VERSION')) {
+            add_filter('rocket_override_donotcachepage', '__return_true');
+            add_filter('rocket_cache_reject_uri', function($uris) {
+                $uris[] = '.*';
+                return $uris;
+            });
+            Logger::debug('WP Rocket caching disabled for debug mode');
+        }
+
+        // Disable W3 Total Cache for debug pages
+        if (defined('W3TC_VERSION')) {
+            add_filter('w3tc_can_cache', '__return_false');
+            add_filter('w3tc_can_cache_page', '__return_false');
+            Logger::debug('W3 Total Cache disabled for debug mode');
+        }
+
+        // Disable WP Super Cache for debug pages
+        if (defined('WPCACHEHOME')) {
+            add_filter('wp_cache_ob_callback_filter', '__return_false');
+            add_filter('do_rocket_generate_caching_files', '__return_false');
+            Logger::debug('WP Super Cache disabled for debug mode');
+        }
+
+        // Disable Autoptimize for debug pages
+        if (defined('AUTOPTIMIZE_PLUGIN_VERSION')) {
+            add_filter('autoptimize_filter_js_exclude', function($exclude) {
+                $exclude[] = 'jankx-debug';
+                return $exclude;
+            });
+            add_filter('autoptimize_filter_css_exclude', function($exclude) {
+                $exclude[] = 'jankx-debug';
+                return $exclude;
+            });
+            Logger::debug('Autoptimize exclusions added for debug mode');
+        }
+
+        // Disable LiteSpeed Cache for debug pages
+        if (defined('LSCWP_V')) {
+            add_filter('litespeed_cache_api_control', '__return_false');
+            add_filter('litespeed_cache_api_control_force_public', '__return_false');
+            Logger::debug('LiteSpeed Cache disabled for debug mode');
+        }
+
+        // Disable Hummingbird Cache for debug pages
+        if (class_exists('WP_Hummingbird')) {
+            add_filter('wphb_cache_control', '__return_false');
+            Logger::debug('Hummingbird Cache disabled for debug mode');
+        }
+
+        // Disable SG Optimizer for debug pages
+        if (defined('SG_CACHEPRESS_VERSION')) {
+            add_filter('sgo_js_minify_exclude', function($exclude) {
+                $exclude[] = 'jankx-debug';
+                return $exclude;
+            });
+            add_filter('sgo_css_minify_exclude', function($exclude) {
+                $exclude[] = 'jankx-debug';
+                return $exclude;
+            });
+            Logger::debug('SG Optimizer exclusions added for debug mode');
+        }
+
+        // Disable Breeze Cache for debug pages
+        if (defined('BREEZE_VERSION')) {
+            add_filter('breeze_cache_control', '__return_false');
+            Logger::debug('Breeze Cache disabled for debug mode');
+        }
+
+        // Disable Swift Performance for debug pages
+        if (defined('SWIFT_PERFORMANCE_VERSION')) {
+            add_filter('swift_performance_cache_control', '__return_false');
+            Logger::debug('Swift Performance Cache disabled for debug mode');
+        }
+
+        // Add JavaScript to prevent caching by client-side optimizations
+        add_action('wp_head', [$this, 'addClientSideCachePrevention'], 999);
+        add_action('admin_head', [$this, 'addClientSideCachePrevention'], 999);
+    }
+
+    /**
+     * Add client-side cache prevention JavaScript
+     *
+     * @since 2.0.0
+     */
+    public function addClientSideCachePrevention(): void
+    {
+        if (!$this->shouldDisplay()) {
+            return;
+        }
+
+        echo '<script>
+        // Prevent caching of debug information
+        if (typeof window !== "undefined") {
+            // Clear any existing cache for debug elements
+            if (window.caches) {
+                caches.keys().then(function(names) {
+                    names.forEach(function(name) {
+                        caches.delete(name);
+                    });
+                });
+            }
+
+            // Disable service worker caching for debug pages
+            if ("serviceWorker" in navigator) {
+                navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                    for (let registration of registrations) {
+                        registration.unregister();
+                    }
+                });
+            }
+
+            // Add meta tags to prevent caching
+            const meta = document.createElement("meta");
+            meta.httpEquiv = "Cache-Control";
+            meta.content = "no-cache, no-store, must-revalidate";
+            document.head.appendChild(meta);
+
+            const meta2 = document.createElement("meta");
+            meta2.httpEquiv = "Pragma";
+            meta2.content = "no-cache";
+            document.head.appendChild(meta2);
+
+            const meta3 = document.createElement("meta");
+            meta3.httpEquiv = "Expires";
+            meta3.content = "0";
+            document.head.appendChild(meta3);
+        }
+        </script>';
     }
 
     /**
@@ -146,7 +317,36 @@ class DebugInfo implements DebugInfoInterface
         }
 
         $debugData = $this->collectDebugData();
+
+        // Save debug data for cache comparison
+        $this->saveDebugDataForComparison($debugData);
+
         echo $this->renderer->render($debugData);
+    }
+
+    /**
+     * Save debug data for cache comparison
+     *
+     * @param array $debugData
+     * @since 2.0.0
+     */
+    private function saveDebugDataForComparison(array $debugData): void
+    {
+        $cacheKey = 'jankx_debug_cached_' . md5($_SERVER['REQUEST_URI'] ?? '');
+        $cacheData = [
+            'response_time' => $debugData['response_time'] ?? 0,
+            'memory_usage' => $debugData['memory_usage'] ?? 0,
+            'query_count' => $debugData['query_count'] ?? 0,
+            'timestamp' => time()
+        ];
+
+        // Cache for 1 hour
+        wp_cache_set($cacheKey, $cacheData, 'jankx_debug', HOUR_IN_SECONDS);
+
+        Logger::debug('Debug data saved for cache comparison', [
+            'cache_key' => $cacheKey,
+            'data' => $cacheData
+        ]);
     }
 
     /**
@@ -231,8 +431,9 @@ class DebugInfo implements DebugInfoInterface
         // Add JavaScript
         add_action('admin_footer', [$this, 'addAdminBarJavaScript']);
 
-        // Add AJAX handler
+        // Add AJAX handlers
         add_action('wp_ajax_bookix_get_block_debug_info', [$this, 'handleAjaxRequest']);
+        add_action('wp_ajax_bookix_clear_debug_cache', [$this, 'handleClearCacheRequest']);
 
         Logger::debug('Admin bar debug info initialized', [
             'user_id' => get_current_user_id(),
@@ -254,6 +455,16 @@ class DebugInfo implements DebugInfoInterface
             'href' => '#',
             'meta' => [
                 'onclick' => 'bookix_show_block_debug(); return false;'
+            ]
+        ]);
+
+        // Add clear cache button
+        $wp_admin_bar->add_menu([
+            'id' => 'clear-debug-cache',
+            'title' => '🗑️ Clear Debug Cache',
+            'href' => '#',
+            'meta' => [
+                'onclick' => 'bookix_clear_debug_cache(); return false;'
             ]
         ]);
     }
@@ -351,6 +562,25 @@ class DebugInfo implements DebugInfoInterface
             }
 
             // Make functions globally available
+            window.bookix_clear_debug_cache = function() {
+                if (confirm("Clear debug cache data? This will reset cache comparison data.")) {
+                    fetch("' . admin_url('admin-ajax.php') . '", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded",
+                        },
+                        body: "action=bookix_clear_debug_cache"
+                    })
+                    .then(response => response.text())
+                    .then(result => {
+                        alert("Debug cache cleared successfully!");
+                    })
+                    .catch(error => {
+                        alert("Error clearing debug cache. Check console for details.");
+                    });
+                }
+            };
+
             window.bookix_show_block_debug = function() {
                 const now = Date.now();
 
@@ -464,9 +694,18 @@ class DebugInfo implements DebugInfoInterface
             wp_die('Unauthorized');
         }
 
+        // Add cache prevention headers for AJAX response
+        $this->addCachePreventionHeaders();
+
         try {
-            // Get debug data
+            // Get debug data for current page (not cached)
             $debugData = $this->getDebugInfo();
+
+            // Get cached version for comparison if available
+            $cachedDebugData = $this->getCachedDebugData();
+
+            // Add cache comparison data
+            $debugData['cache_comparison'] = $this->compareWithCachedData($debugData, $cachedDebugData);
 
             // Check if we have Gutenberg blocks
             if (empty($debugData['gutenberg_blocks'])) {
@@ -480,7 +719,8 @@ class DebugInfo implements DebugInfoInterface
 
             Logger::debug('AJAX debug info rendered successfully', [
                 'blocks_count' => count($debugData['gutenberg_blocks']),
-                'html_length' => strlen($html)
+                'html_length' => strlen($html),
+                'has_cache_comparison' => !empty($debugData['cache_comparison'])
             ]);
 
             echo $html;
@@ -492,6 +732,116 @@ class DebugInfo implements DebugInfoInterface
                 'trace' => $e->getTraceAsString()
             ]);
             wp_die('Error loading debug info');
+        }
+    }
+
+    /**
+     * Get cached debug data for comparison
+     *
+     * @return array
+     * @since 2.0.0
+     */
+    private function getCachedDebugData(): array
+    {
+        $cacheKey = 'jankx_debug_cached_' . md5($_SERVER['REQUEST_URI'] ?? '');
+        $cachedData = wp_cache_get($cacheKey, 'jankx_debug');
+
+        if ($cachedData === false) {
+            return [];
+        }
+
+        return $cachedData;
+    }
+
+    /**
+     * Compare current debug data with cached data
+     *
+     * @param array $currentData
+     * @param array $cachedData
+     * @return array
+     * @since 2.0.0
+     */
+    private function compareWithCachedData(array $currentData, array $cachedData): array
+    {
+        if (empty($cachedData)) {
+            return [
+                'has_cached_data' => false,
+                'message' => 'No cached data available for comparison'
+            ];
+        }
+
+        $comparison = [
+            'has_cached_data' => true,
+            'response_time' => [
+                'current' => $currentData['response_time'] ?? 0,
+                'cached' => $cachedData['response_time'] ?? 0,
+                'difference' => ($currentData['response_time'] ?? 0) - ($cachedData['response_time'] ?? 0),
+                'improvement' => (($cachedData['response_time'] ?? 0) - ($currentData['response_time'] ?? 0)) / ($cachedData['response_time'] ?? 1) * 100
+            ],
+            'memory_usage' => [
+                'current' => $currentData['memory_usage'] ?? 0,
+                'cached' => $cachedData['memory_usage'] ?? 0,
+                'difference' => ($currentData['memory_usage'] ?? 0) - ($cachedData['memory_usage'] ?? 0),
+                'improvement' => (($cachedData['memory_usage'] ?? 0) - ($currentData['memory_usage'] ?? 0)) / ($cachedData['memory_usage'] ?? 1) * 100
+            ],
+            'query_count' => [
+                'current' => $currentData['query_count'] ?? 0,
+                'cached' => $cachedData['query_count'] ?? 0,
+                'difference' => ($currentData['query_count'] ?? 0) - ($cachedData['query_count'] ?? 0),
+                'improvement' => (($cachedData['query_count'] ?? 0) - ($currentData['query_count'] ?? 0)) / ($cachedData['query_count'] ?? 1) * 100
+            ]
+        ];
+
+        return $comparison;
+    }
+
+    /**
+     * Clear cached debug data
+     *
+     * @since 2.0.0
+     */
+    public function clearCachedDebugData(): void
+    {
+        $cacheKey = 'jankx_debug_cached_' . md5($_SERVER['REQUEST_URI'] ?? '');
+        wp_cache_delete($cacheKey, 'jankx_debug');
+
+        Logger::debug('Cached debug data cleared', [
+            'cache_key' => $cacheKey
+        ]);
+    }
+
+    /**
+     * Handle AJAX request to clear debug cache
+     *
+     * @since 2.0.0
+     */
+    public function handleClearCacheRequest(): void
+    {
+        // Check permissions
+        if (!current_user_can('manage_options')) {
+            Logger::warning('Unauthorized AJAX request to clear debug cache', [
+                'user_id' => get_current_user_id(),
+                'user_caps' => wp_get_current_user()->roles ?? []
+            ]);
+            wp_die('Unauthorized');
+        }
+
+        try {
+            $this->clearCachedDebugData();
+
+            Logger::debug('Debug cache cleared via AJAX request', [
+                'user_id' => get_current_user_id()
+            ]);
+
+            echo 'success';
+            wp_die();
+
+        } catch (\Exception $e) {
+            Logger::error('Failed to clear debug cache via AJAX', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            wp_die('Error clearing debug cache');
         }
     }
 }
