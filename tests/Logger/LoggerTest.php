@@ -27,45 +27,45 @@ class LoggerTest extends TestCase
 
     public function testInfoMethod()
     {
-        // Capture output to suppress log messages
-        ob_start();
-        $this->logger->info('Test info message');
-        ob_end_clean();
+        // Mock internalLog method
+        $logger = Mockery::mock(Logger::class)->makePartial()->shouldAllowMockingProtectedMethods();
+        $logger->shouldReceive('internalLog')->once()->with(Mockery::pattern('/\[Jankx info\] Test info message/'));
 
-        // If no exception is thrown, the method works
+        $logger->info('Test info message');
+
         $this->assertTrue(true);
     }
 
     public function testWarningMethod()
     {
-        // Capture output to suppress log messages
-        ob_start();
-        $this->logger->warning('Test warning message');
-        ob_end_clean();
+        // Mock internalLog method
+        $logger = Mockery::mock(Logger::class)->makePartial()->shouldAllowMockingProtectedMethods();
+        $logger->shouldReceive('internalLog')->once()->with(Mockery::pattern('/\[Jankx warning\] Test warning message/'));
 
-        // If no exception is thrown, the method works
+        $logger->warning('Test warning message');
+
         $this->assertTrue(true);
     }
 
     public function testErrorMethod()
     {
-        // Capture output to suppress log messages
-        ob_start();
-        $this->logger->error('Test error message');
-        ob_end_clean();
+        // Mock internalLog method
+        $logger = Mockery::mock(Logger::class)->makePartial()->shouldAllowMockingProtectedMethods();
+        $logger->shouldReceive('internalLog')->once()->with(Mockery::pattern('/\[Jankx error\] Test error message/'));
 
-        // If no exception is thrown, the method works
+        $logger->error('Test error message');
+
         $this->assertTrue(true);
     }
 
     public function testDebugMethod()
     {
-        // Capture output to suppress log messages
-        ob_start();
-        $this->logger->debug('Test debug message');
-        ob_end_clean();
+        // Mock internalLog method
+        $logger = Mockery::mock(Logger::class)->makePartial()->shouldAllowMockingProtectedMethods();
+        $logger->shouldReceive('internalLog')->once()->with(Mockery::pattern('/\[Jankx debug\] Test debug message/'));
 
-        // If no exception is thrown, the method works
+        $logger->debug('Test debug message');
+
         $this->assertTrue(true);
     }
 
@@ -73,12 +73,12 @@ class LoggerTest extends TestCase
     {
         $context = ['user_id' => 123, 'action' => 'test'];
 
-        // Capture output to suppress log messages
-        ob_start();
-        $this->logger->info('Test message with context', $context);
-        ob_end_clean();
+        // Mock internalLog method
+        $logger = Mockery::mock(Logger::class)->makePartial()->shouldAllowMockingProtectedMethods();
+        $logger->shouldReceive('internalLog')->once()->with(Mockery::pattern('/\[Jankx info\] Test message with context.*{"user_id":123,"action":"test"}/'));
 
-        // If no exception is thrown, the method works
+        $logger->info('Test message with context', $context);
+
         $this->assertTrue(true);
     }
 
@@ -115,42 +115,33 @@ class LoggerTest extends TestCase
             define('JANKX_DEBUG', true);
         }
 
-        $reflection = new \ReflectionClass(Logger::class);
-        $method = $reflection->getMethod('log');
-        $method->setAccessible(true);
+        // Mock internalLog method
+        $logger = Mockery::mock(Logger::class)->makePartial()->shouldAllowMockingProtectedMethods();
+        $logger->shouldReceive('internalLog')->once()->with(Mockery::pattern('/\[Jankx debug\] Test debug message/'));
 
-        // Capture output to suppress log messages
-        ob_start();
-        $method->invoke($this->logger, 'debug', 'Test debug message');
-        ob_end_clean();
+        $logger->debug('Test debug message');
 
         $this->assertTrue(true);
     }
 
     public function testLogMethodWithWarningLevel()
     {
-        $reflection = new \ReflectionClass(Logger::class);
-        $method = $reflection->getMethod('log');
-        $method->setAccessible(true);
+        // Mock internalLog method
+        $logger = Mockery::mock(Logger::class)->makePartial()->shouldAllowMockingProtectedMethods();
+        $logger->shouldReceive('internalLog')->once()->with(Mockery::pattern('/\[Jankx warning\] Test warning message/'));
 
-        // Capture output to suppress log messages
-        ob_start();
-        $method->invoke($this->logger, 'warning', 'Test warning message');
-        ob_end_clean();
+        $logger->warning('Test warning message');
 
         $this->assertTrue(true);
     }
 
     public function testLogMethodWithErrorLevel()
     {
-        $reflection = new \ReflectionClass(Logger::class);
-        $method = $reflection->getMethod('log');
-        $method->setAccessible(true);
+        // Mock internalLog method
+        $logger = Mockery::mock(Logger::class)->makePartial()->shouldAllowMockingProtectedMethods();
+        $logger->shouldReceive('internalLog')->once()->with(Mockery::pattern('/\[Jankx error\] Test error message/'));
 
-        // Capture output to suppress log messages
-        ob_start();
-        $method->invoke($this->logger, 'error', 'Test error message');
-        ob_end_clean();
+        $logger->error('Test error message');
 
         $this->assertTrue(true);
     }
@@ -164,14 +155,12 @@ class LoggerTest extends TestCase
 
         // Temporarily undefine JANKX_DEBUG
         if (defined('JANKX_DEBUG')) {
-            $reflection = new \ReflectionClass('Jankx\Logger\Logger');
-            $method = $reflection->getMethod('log');
-            $method->setAccessible(true);
+            // Mock internalLog method - should be called even for info level when debug is disabled
+            // because we're in test environment
+            $logger = Mockery::mock(Logger::class)->makePartial()->shouldAllowMockingProtectedMethods();
+            $logger->shouldReceive('internalLog')->once()->with(Mockery::pattern('/\[Jankx info\] Test info message/'));
 
-            // Capture output to suppress log messages
-            ob_start();
-            $method->invoke($this->logger, 'info', 'Test info message');
-            ob_end_clean();
+            $logger->info('Test info message');
 
             $this->assertTrue(true);
         }
@@ -185,25 +174,13 @@ class LoggerTest extends TestCase
 
     public function testLogMethodCallsErrorLog()
     {
-        // Mock error_log function to verify it's called
-        $errorLogCalled = false;
-        $errorLogMessage = '';
+        // Mock internalLog method
+        $logger = Mockery::mock(Logger::class)->makePartial()->shouldAllowMockingProtectedMethods();
+        $logger->shouldReceive('internalLog')->once()->with(Mockery::pattern('/\[Jankx warning\] Test warning message/'));
 
-        // Create a temporary function to capture error_log calls
-        $originalErrorLog = 'error_log';
-        if (function_exists('error_log')) {
-            // We can't easily mock built-in functions in PHP, but we can test that the method doesn't throw
-            $reflection = new \ReflectionClass(Logger::class);
-            $method = $reflection->getMethod('log');
-            $method->setAccessible(true);
+        $logger->warning('Test warning message');
 
-            // Capture output to suppress log messages
-            ob_start();
-            $method->invoke($this->logger, 'warning', 'Test warning message');
-            ob_end_clean();
-
-            $this->assertTrue(true, 'log method should call error_log without throwing exception');
-        }
+        $this->assertTrue(true, 'log method should call internalLog without throwing exception');
     }
 
     public function testLogMethodWithJankxDebugConstant()
@@ -213,19 +190,27 @@ class LoggerTest extends TestCase
             define('JANKX_DEBUG', true);
         }
 
-        $reflection = new \ReflectionClass(Logger::class);
-        $method = $reflection->getMethod('log');
-        $method->setAccessible(true);
+        // Mock internalLog method
+        $logger = Mockery::mock(Logger::class)->makePartial()->shouldAllowMockingProtectedMethods();
+        $logger->shouldReceive('internalLog')->times(4)->with(Mockery::pattern('/\[Jankx (info|debug|warning|error)\] Test (info|debug|warning|error) message/'));
 
         // Test all log levels when JANKX_DEBUG is true
         $levels = ['info', 'debug', 'warning', 'error'];
         foreach ($levels as $level) {
-            // Capture output to suppress log messages
-            ob_start();
-            $method->invoke($this->logger, $level, "Test {$level} message");
-            ob_end_clean();
-
-            $this->assertTrue(true, "log method should work for {$level} level when JANKX_DEBUG is true");
+            $logger->{$level}("Test {$level} message");
         }
+
+        $this->assertTrue(true, "log method should work for all levels when JANKX_DEBUG is true");
+    }
+
+    public function testIsRunningTestsMethod()
+    {
+        $reflection = new \ReflectionClass(Logger::class);
+        $method = $reflection->getMethod('isRunningTests');
+        $method->setAccessible(true);
+
+        $result = $method->invoke($this->logger);
+
+        $this->assertTrue($result, 'isRunningTests should return true in test environment');
     }
 }

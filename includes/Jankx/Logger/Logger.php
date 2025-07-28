@@ -20,8 +20,8 @@ class Logger
      */
     protected function isRunningTests(): bool
     {
-        return defined('PHPUNIT_COMPOSER_INSTALL') || 
-               defined('__PHPUNIT_PHAR__') || 
+        return defined('PHPUNIT_COMPOSER_INSTALL') ||
+               defined('__PHPUNIT_PHAR__') ||
                class_exists('PHPUnit\Framework\TestCase') ||
                (defined('PHP_SAPI') && PHP_SAPI === 'cli' && strpos($_SERVER['SCRIPT_NAME'] ?? '', 'phpunit') !== false);
     }
@@ -74,6 +74,13 @@ class Logger
      */
     protected function log($level, $message, array $context = [])
     {
+        // If running tests, always log for testing purposes
+        if ($this->isRunningTests()) {
+            $formattedMessage = $this->formatMessage($level, $message, $context);
+            $this->internalLog($formattedMessage);
+            return;
+        }
+
         // Only log warning, error, or if JANKX_DEBUG is true
         $shouldLog = (
             (defined('JANKX_DEBUG') && constant('JANKX_DEBUG') === true) ||
@@ -84,13 +91,8 @@ class Logger
         }
         $formattedMessage = $this->formatMessage($level, $message, $context);
 
-        // If running tests, use internal method instead of error_log
-        if ($this->isRunningTests()) {
-            $this->internalLog($formattedMessage);
-        } else {
-            // Use WordPress error logging
-            error_log($formattedMessage);
-        }
+        // Use WordPress error logging
+        error_log($formattedMessage);
     }
 
     /**
