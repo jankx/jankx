@@ -128,8 +128,6 @@ class AdminKernel extends Kernel implements KernelInterface
     protected function registerHooks(): void
     {
         // Admin-specific hooks (excluding Gutenberg)
-        add_action('admin_menu', [$this, 'registerAdminMenu']);
-        add_action('admin_init', [$this, 'initializeAdmin']);
         add_action('admin_enqueue_scripts', [$this, 'enqueueAdminAssets']);
     }
 
@@ -141,32 +139,6 @@ class AdminKernel extends Kernel implements KernelInterface
         // Admin-specific filters (excluding Gutenberg)
         add_filter('jankx/admin/menu_items', [$this, 'filterAdminMenuItems']);
         add_filter('jankx/admin/dashboard_widgets', [$this, 'filterDashboardWidgets']);
-    }
-
-    /**
-     * Register admin menu
-     */
-    public function registerAdminMenu(): void
-    {
-        $container = $this->getContainer();
-
-        if ($container->has('admin.dashboard')) {
-            $dashboard = $container->get('admin.dashboard');
-            $dashboard->initialize();
-        }
-    }
-
-    /**
-     * Initialize admin
-     */
-    public function initializeAdmin(): void
-    {
-        $container = $this->getContainer();
-
-        if ($container->has('admin.dashboard')) {
-            $dashboard = $container->get('admin.dashboard');
-            $dashboard->initialize();
-        }
     }
 
     /**

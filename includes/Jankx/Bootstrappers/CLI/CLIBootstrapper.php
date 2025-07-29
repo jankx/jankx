@@ -48,12 +48,19 @@ class CLIBootstrapper extends AbstractBootstrapper
      */
     public function bootstrap(Container $container): void
     {
-        // Register CLI service provider
-        $cliServiceProvider = new CLIServiceProvider($container);
-        $cliServiceProvider->register();
-        $cliServiceProvider->boot();
+        // Register context-aware services
+        BootstrapperHelper::registerContextProvider($container);
 
-        // Fire action for other CLI integrations
+        // Setup deferred service resolver
+        BootstrapperHelper::setupDeferredResolver($container);
+
+        // CLI services are now registered through CLIKernel
+        // No need to create new CLIServiceProvider instance here
+
+        // Set up CLI hooks
+        $this->setupCLIHooks();
+
+        // Fire loaded action
         BootstrapperHelper::fireLoadedAction($this->getName(), $container);
     }
 }

@@ -61,14 +61,8 @@ class ServiceRegistrationHelper
      */
     public static function registerDebugServices(Container $container): void
     {
-        // Debug services are now registered through DebugServiceProvider
+        // Debug services are now registered through FrontendServiceProvider
         // This method is kept for backward compatibility
-
-        if (defined('JANKX_DEBUG') && JANKX_DEBUG) {
-            $debugProvider = new \Jankx\Providers\DebugServiceProvider($container);
-            $debugProvider->register();
-            $debugProvider->boot();
-        }
     }
 
     /**
@@ -80,24 +74,8 @@ class ServiceRegistrationHelper
      */
     public static function registerContextServices(Container $container, string $context): void
     {
-        switch ($context) {
-            case 'frontend':
-                $provider = new \Jankx\Providers\FrontendServiceProvider($container);
-                break;
-            case 'admin':
-                $provider = new \Jankx\Providers\AdminServiceProvider($container);
-                break;
-            case 'cli':
-                $provider = new \Jankx\Providers\CLIServiceProvider($container);
-                break;
-            case 'api':
-                $provider = new \Jankx\Providers\APIServiceProvider($container);
-                break;
-            default:
-                return;
-        }
-
-        $provider->register();
-        $provider->boot();
+        // All services are now registered through their respective Kernels
+        // No need to create new ServiceProvider instances here
+        return;
     }
 }

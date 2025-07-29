@@ -53,16 +53,14 @@ class FrontendBootstrapper extends AbstractBootstrapper
 
     private function loadEssentialServices(Container $container): void
     {
-        // Services needed immediately - now registered through FrontendServiceProvider
-        $provider = new \Jankx\Providers\FrontendServiceProvider($container);
-        $provider->register();
+        // Services needed immediately - now registered through FrontendKernel
+        // No need to create new FrontendServiceProvider instance here
     }
 
     private function deferHeavyServices(Container $container): void
     {
-        // Defer heavy services until actually needed - now through FrontendServiceProvider
-        $provider = new \Jankx\Providers\FrontendServiceProvider($container);
-        $provider->boot();
+        // Defer heavy services until actually needed - now through FrontendKernel
+        // No need to create new FrontendServiceProvider instance here
     }
 
     private function setupFrontendHooks(): void

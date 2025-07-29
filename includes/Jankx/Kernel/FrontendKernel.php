@@ -64,6 +64,11 @@ class FrontendKernel extends Kernel implements KernelInterface
         // Register FrontendServiceProvider
         $this->addServiceProvider(\Jankx\Providers\FrontendServiceProvider::class);
 
+        // Register DebugServiceProvider (only in frontend context)
+        if (defined('JANKX_DEBUG') && JANKX_DEBUG) {
+            $this->addServiceProvider(\Jankx\Providers\DebugServiceProvider::class);
+        }
+
         // Frontend services are now registered through FrontendServiceProvider
         // This method is kept for backward compatibility
         // All services should be registered through Service Providers

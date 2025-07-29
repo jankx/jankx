@@ -121,8 +121,8 @@ class CLIKernel extends Kernel implements KernelInterface
             return;
         }
 
-        // Register Jankx CLI commands
-        \Jankx\CLI\CLICommands::register();
+        // CLI commands are now registered through CLIServiceProvider
+        // No need to register them here
 
         // Basic Jankx commands
         \WP_CLI::add_command('jankx info', [$this, 'showFrameworkInfo']);

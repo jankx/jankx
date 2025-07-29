@@ -378,7 +378,24 @@ Tất cả commands hiện có được implement trong:
 - **`includes/Jankx/CLI/Commands/CreateBootstrapperCommand.php`** - Create bootstrappers
 - **`includes/Jankx/CLI/Commands/ReleaseCommand.php`** - Create release packages
 
-Commands được đăng ký trong **`includes/Jankx/CLI/CLICommands.php`** và load thông qua **`includes/Jankx/Providers/CLIServiceProvider.php`**.
+Commands được đăng ký trực tiếp trong **`includes/Jankx/Providers/CLIServiceProvider.php`** thông qua method `registerCLICommands()`.
+
+```php
+// CLIServiceProvider.php
+private function registerCLICommands(): void
+{
+    if (!defined('WP_CLI') || !WP_CLI) {
+        return;
+    }
+
+    // Register individual commands
+    if ($this->container->has('cli.command.generate-block')) {
+        WP_CLI::add_command('jankx generate-block', $this->container->make('cli.command.generate-block'));
+    }
+
+    // ... other commands
+}
+```
 
 ## 📊 Command Status
 

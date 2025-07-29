@@ -2,6 +2,7 @@
 
 namespace Jankx\Providers;
 
+use WP_CLI;
 use Jankx\CLI\Commands\GenerateBlockCommand;
 use Jankx\CLI\Commands\CreateBootstrapperCommand;
 use Jankx\CLI\Commands\ReleaseCommand;
@@ -24,11 +25,6 @@ class CLIServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        // CLI commands container
-        $this->singleton('cli.commands', function ($container) {
-            return new \Jankx\CLI\CLICommands($container);
-        });
-
         // Individual CLI commands - only register classes that actually exist
         $this->singleton('cli.command.generate-block', function ($container) {
             return new GenerateBlockCommand($container);
@@ -73,13 +69,8 @@ class CLIServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // Boot CLI commands container
-        if ($this->container->has('cli.commands')) {
-            $cliCommands = $this->container->make('cli.commands');
-            if (method_exists($cliCommands, 'register')) {
-                $cliCommands->register();
-            }
-        }
+        // Register CLI commands with WP_CLI
+        $this->registerCLICommands();
 
         // Boot user service
         if ($this->container->has('user.service')) {
@@ -111,6 +102,38 @@ class CLIServiceProvider extends ServiceProvider
             if (method_exists($gutenbergBlocksService, 'initialize')) {
                 $gutenbergBlocksService->initialize();
             }
+        }
+    }
+
+    /**
+     * Register CLI commands with WP_CLI
+     *
+     * @since 2.0.0
+     */
+    private function registerCLICommands(): void
+    {
+        if (!defined('WP_CLI') || !WP_CLI) {
+            return;
+        }
+
+        // Register generate-block command
+        if ($this->container->has('cli.command.generate-block')) {
+            WP_CLI::add_command('jankx generate-block', $this->container->make('cli.command.generate-block'));
+        }
+
+        // Register create-bootstrapper command
+        if ($this->container->has('cli.command.create-bootstrapper')) {
+            WP_CLI::add_command('jankx create-bootstrapper', $this->container->make('cli.command.create-bootstrapper'));
+        }
+
+        // Register code command
+        if ($this->container->has('cli.command.coding-standard')) {
+            WP_CLI::add_command('jankx code', $this->container->make('cli.command.coding-standard'));
+        }
+
+        // Register release command
+        if ($this->container->has('cli.command.release')) {
+            WP_CLI::add_command('jankx release', $this->container->make('cli.command.release'));
         }
     }
 

@@ -274,9 +274,8 @@ class ContextualServiceProvider
      */
     private function registerAdminServices(): void
     {
-        // Deprecated - Use AdminServiceProvider instead
-        $provider = new \Jankx\Providers\AdminServiceProvider($this->container);
-        $provider->register();
+        // Admin services are now registered through AdminKernel
+        // No need to create new AdminServiceProvider instance here
     }
 
     /**
@@ -284,9 +283,8 @@ class ContextualServiceProvider
      */
     private function registerFrontendServices(): void
     {
-        // Deprecated - Use FrontendServiceProvider instead
-        $provider = new \Jankx\Providers\FrontendServiceProvider($this->container);
-        $provider->register();
+        // Frontend services are now registered through FrontendKernel
+        // No need to create new FrontendServiceProvider instance here
     }
 }
 ```

@@ -2,12 +2,12 @@
 
 namespace Jankx\Facades;
 
-use Jankx\Config\Repository;
+use Jankx\Config\Contracts\ConfigRepositoryInterface;
 
 /**
  * Config Facade
  *
- * Provides easy access to the Config Repository
+ * Provides a static interface to the Config Repository
  *
  * @package Jankx\Facades
  * @since 2.0.0
@@ -15,21 +15,21 @@ use Jankx\Config\Repository;
 class Config extends Facade
 {
     /**
-     * Get the registered name of the component.
+     * Get the facade accessor
      *
      * @return string
      */
-    protected static function getFacadeAccessor()
+    protected static function getFacadeAccessor(): string
     {
         return 'config';
     }
 
     /**
-     * Get the facade accessor
+     * Get the facade root
      *
-     * @return Repository
+     * @return ConfigRepositoryInterface
      */
-    public static function getFacadeRoot()
+    public static function getFacadeRoot(): ConfigRepositoryInterface
     {
         return static::resolveFacadeInstance(static::getFacadeAccessor());
     }
@@ -80,7 +80,7 @@ class Config extends Facade
     }
 
     /**
-     * Get configuration for specific section
+     * Get configuration section
      *
      * @param string $section
      * @return array
@@ -122,7 +122,7 @@ class Config extends Facade
     }
 
     /**
-     * Get configuration difference between parent and child themes
+     * Get configuration differences
      *
      * @return array
      */
@@ -132,9 +132,9 @@ class Config extends Facade
     }
 
     /**
-     * Clear config cache
+     * Clear cache
      *
-     * @param string|null $file Specific file to clear cache for, or null for all
+     * @param string|null $file
      * @return void
      */
     public static function clearCache(string $file = null): void

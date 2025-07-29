@@ -2,35 +2,42 @@
 
 namespace Jankx\Config;
 
+use Jankx\Config\Contracts\ConfigRepositoryInterface;
 use Jankx\Providers\ServiceProvider;
 
 /**
  * Config Service Provider
  *
- * Registers and boots config-related services
+ * Registers the Config Repository in the IoC container
  *
  * @package Jankx\Config
  * @since 2.0.0
  */
 class ConfigServiceProvider extends ServiceProvider
 {
-    public function register()
+    /**
+     * Register services
+     */
+    public function register(): void
     {
-        // Register Config Repository as singleton
-        $this->singleton('config', Repository::class);
+        $this->singleton('config', function() {
+            return new Repository();
+        });
 
-        // Register Config Repository with its interface
-        $this->singleton(Repository::class, Repository::class);
+        $this->singleton(Repository::class, function() {
+            return new Repository();
+        });
+
+        $this->singleton(ConfigRepositoryInterface::class, function() {
+            return new Repository();
+        });
     }
 
-    public function boot()
+    /**
+     * Boot services
+     */
+    public function boot(): void
     {
-        // Boot config repository if needed
-        if ($this->container->has('config')) {
-            $config = $this->container->make('config');
-            if (method_exists($config, 'initialize')) {
-                $config->initialize();
-            }
-        }
+        // No additional boot logic needed
     }
 }

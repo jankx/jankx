@@ -147,7 +147,6 @@ return [
         \Jankx\Providers\AdminServiceProvider::class,
         \Jankx\Providers\APIServiceProvider::class,
         \Jankx\Providers\CLIServiceProvider::class,
-        \Jankx\Providers\DebugServiceProvider::class,
     ],
 
     /*

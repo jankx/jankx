@@ -102,9 +102,6 @@ class ContextualServiceProvider extends ServiceProvider
     private function bootContextServices(string $context): void
     {
         switch ($context) {
-            case 'admin':
-                $this->bootAdminServices();
-                break;
             case 'frontend':
                 $this->bootFrontendServices();
                 break;
@@ -131,9 +128,8 @@ class ContextualServiceProvider extends ServiceProvider
      */
     private function registerAdminServices(): void
     {
-        // Admin services are now registered through AdminServiceProvider
-        $provider = new AdminServiceProvider($this->container);
-        $provider->register();
+        // Admin services are now registered through AdminKernel
+        // No need to create new AdminServiceProvider instance here
     }
 
     /**
@@ -141,9 +137,8 @@ class ContextualServiceProvider extends ServiceProvider
      */
     private function registerFrontendServices(): void
     {
-        // Frontend services are now registered through FrontendServiceProvider
-        $provider = new FrontendServiceProvider($this->container);
-        $provider->register();
+        // Frontend services are now registered through FrontendKernel
+        // No need to create new FrontendServiceProvider instance here
     }
 
     /**
@@ -151,9 +146,8 @@ class ContextualServiceProvider extends ServiceProvider
      */
     private function registerAPIServices(): void
     {
-        // API services are now registered through APIServiceProvider
-        $provider = new APIServiceProvider($this->container);
-        $provider->register();
+        // API services are now registered through APIKernel
+        // No need to create new APIServiceProvider instance here
     }
 
     /**
@@ -161,9 +155,8 @@ class ContextualServiceProvider extends ServiceProvider
      */
     private function registerCLIServices(): void
     {
-        // CLI services are now registered through CLIServiceProvider
-        $provider = new CLIServiceProvider($this->container);
-        $provider->register();
+        // CLI services are now registered through CLIKernel
+        // No need to create new CLIServiceProvider instance here
     }
 
     /**
@@ -171,9 +164,8 @@ class ContextualServiceProvider extends ServiceProvider
      */
     private function bootAdminServices(): void
     {
-        // Boot admin services through AdminServiceProvider
-        $provider = new AdminServiceProvider($this->container);
-        $provider->boot();
+        // Admin services are now booted through AdminKernel
+        // No need to create new AdminServiceProvider instance here
     }
 
     /**
@@ -181,9 +173,8 @@ class ContextualServiceProvider extends ServiceProvider
      */
     private function bootFrontendServices(): void
     {
-        // Boot frontend services through FrontendServiceProvider
-        $provider = new FrontendServiceProvider($this->container);
-        $provider->boot();
+        // Frontend services are now booted through FrontendKernel
+        // No need to create new FrontendServiceProvider instance here
     }
 
     /**
@@ -191,9 +182,8 @@ class ContextualServiceProvider extends ServiceProvider
      */
     private function bootAPIServices(): void
     {
-        // Boot API services through APIServiceProvider
-        $provider = new APIServiceProvider($this->container);
-        $provider->boot();
+        // API services are now booted through APIKernel
+        // No need to create new APIServiceProvider instance here
     }
 
     /**
@@ -201,9 +191,8 @@ class ContextualServiceProvider extends ServiceProvider
      */
     private function bootCLIServices(): void
     {
-        // Boot CLI services through CLIServiceProvider
-        $provider = new CLIServiceProvider($this->container);
-        $provider->boot();
+        // CLI services are now booted through CLIKernel
+        // No need to create new CLIServiceProvider instance here
     }
 
     /**

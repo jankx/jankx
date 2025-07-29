@@ -96,6 +96,11 @@ Jankx Framework là một WordPress theme framework mạnh mẽ với các tính
 - [Deferred Services](services/deferred-service-resolver.md)
 - [CLI Tools](cli/overview.md)
 
+### 🔄 **Recent Architecture Changes**
+- [Service Provider Consolidation](architecture/bootstrapping-flow.md#service-provider-consolidation) - Loại bỏ duplicate Service Provider initialization
+- [Context-Aware Debug System](debug/readme.md#context-aware-debug-system) - Debug chỉ hoạt động ở frontend context
+- [Kernel-Based Service Registration](development/coding-rules.md#service-provider-types) - Service Provider chỉ được register qua Kernel
+
 ### 🔧 **Developer Tools**
 - [CLI Commands](cli/commands-reference.md)
 - [Testing Guide](development/testing.md)

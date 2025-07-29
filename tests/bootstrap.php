@@ -1,8 +1,74 @@
 <?php
 
 /**
- * Bootstrap file for PHPUnit tests
+ * Test Bootstrap
+ *
+ * @package Tests
+ * @since 2.0.0
  */
+
+// Mock WordPress functions for testing
+if (!function_exists('get_template_directory')) {
+    function get_template_directory() {
+        return __DIR__ . '/../test-parent-theme';
+    }
+}
+
+if (!function_exists('get_stylesheet_directory')) {
+    function get_stylesheet_directory() {
+        return __DIR__ . '/../test-child-theme';
+    }
+}
+
+if (!function_exists('wp_upload_dir')) {
+    function wp_upload_dir() {
+        return [
+            'basedir' => __DIR__ . '/../test-uploads'
+        ];
+    }
+}
+
+if (!function_exists('wp_cache_get')) {
+    function wp_cache_get($key, $group = '') {
+        return false;
+    }
+}
+
+if (!function_exists('wp_cache_set')) {
+    function wp_cache_set($key, $value, $group = '', $expire = 0) {
+        return true;
+    }
+}
+
+if (!function_exists('wp_cache_delete')) {
+    function wp_cache_delete($key, $group = '') {
+        return true;
+    }
+}
+
+if (!function_exists('wp_mkdir_p')) {
+    function wp_mkdir_p($dir) {
+        return mkdir($dir, 0755, true);
+    }
+}
+
+if (!function_exists('wp_cache_get')) {
+    function wp_cache_get($key, $group = '') {
+        return false;
+    }
+}
+
+if (!function_exists('wp_cache_set')) {
+    function wp_cache_set($key, $value, $group = '', $expire = 0) {
+        return true;
+    }
+}
+
+if (!function_exists('wp_cache_delete')) {
+    function wp_cache_delete($key, $group = '') {
+        return true;
+    }
+}
 
 // Load Composer autoloader
 require_once __DIR__ . '/../vendor/autoload.php';

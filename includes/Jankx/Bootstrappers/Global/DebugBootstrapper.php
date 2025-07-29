@@ -27,7 +27,7 @@ class DebugBootstrapper extends AbstractBootstrapper
 
     public function shouldRun(): bool
     {
-        return defined('JANKX_DEBUG') && JANKX_DEBUG;
+        return defined('JANKX_DEBUG') && JANKX_DEBUG && !is_admin();
     }
 
     /**
@@ -35,10 +35,8 @@ class DebugBootstrapper extends AbstractBootstrapper
      */
     public function bootstrap(Container $container): void
     {
-        // Register DebugServiceProvider instead of registering services directly
-        $debugProvider = new \Jankx\Providers\DebugServiceProvider($container);
-        $debugProvider->register();
-        $debugProvider->boot();
+        // Debug services are now registered through DebugServiceProvider
+        // This bootstrapper only handles debug info initialization
 
         // Initialize debug info if needed
         if ($container->has(\Jankx\Debug\DebugInfo::class)) {

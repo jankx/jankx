@@ -170,9 +170,12 @@ includes/Jankx/
 │   └── CLI/
 ├── Providers/
 │   ├── ServiceProvider.php
-│   ├── FrontendServiceProvider.php
+│   ├── FrontendServiceProvider.php (bao gồm debug services)
 │   ├── AdminServiceProvider.php
-│   └── CLIServiceProvider.php
+│   ├── APIServiceProvider.php
+│   ├── CLIServiceProvider.php
+│   ├── DebugServiceProvider.php (chỉ frontend context)
+│   └── ContextualServiceProvider.php
 ├── Services/
 │   ├── DebugInfo.php
 │   ├── TemplateRenderer.php
@@ -694,7 +697,7 @@ protected function registerServices(): void
 // FrontendServiceProvider - Frontend context
 // CLIServiceProvider - CLI context
 // APIServiceProvider - API context
-// DebugServiceProvider - Debug context
+// DebugServiceProvider - Debug context (chỉ frontend)
 ```
 
 #### **2. Feature-Specific Providers**

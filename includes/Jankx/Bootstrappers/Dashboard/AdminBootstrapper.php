@@ -53,16 +53,14 @@ class AdminBootstrapper extends AbstractBootstrapper
 
     private function loadEssentialServices(Container $container): void
     {
-        // Services needed immediately - now registered through AdminServiceProvider
-        $provider = new \Jankx\Providers\AdminServiceProvider($container);
-        $provider->register();
+        // Services needed immediately - now registered through AdminKernel
+        // No need to create new AdminServiceProvider instance here
     }
 
     private function deferHeavyServices(Container $container): void
     {
-        // Defer heavy services until actually needed - now through AdminServiceProvider
-        $provider = new \Jankx\Providers\AdminServiceProvider($container);
-        $provider->boot();
+        // Defer heavy services until actually needed - now through AdminKernel
+        // No need to create new AdminServiceProvider instance here
     }
 
     private function setupAdminHooks(): void

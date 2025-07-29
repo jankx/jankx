@@ -24,6 +24,7 @@ class Dashboard
     public function initialize(): void
     {
         if ($this->initialized) {
+            Logger::debug('Admin Dashboard already initialized, skipping');
             return;
         }
 
@@ -32,10 +33,7 @@ class Dashboard
         // Register hooks
         $this->registerHooks();
 
-        // Add dashboard widgets
-        add_action('wp_dashboard_setup', [$this, 'addDashboardWidgets']);
-
-        Logger::debug('Admin Dashboard initialized');
+        Logger::debug('Admin Dashboard initialized successfully');
     }
 
     /**
@@ -45,9 +43,6 @@ class Dashboard
     {
         // Register admin menu
         add_action('admin_menu', [$this, 'addMenuPages']);
-
-        // Register dashboard widgets
-        add_action('wp_dashboard_setup', [$this, 'addDashboardWidgets']);
 
         // Register admin scripts and styles
         add_action('admin_enqueue_scripts', [$this, 'enqueueAdminAssets']);
@@ -70,15 +65,6 @@ class Dashboard
         );
 
         // Add submenu pages
-        add_submenu_page(
-            'jankx-dashboard',
-            'Dashboard',
-            'Dashboard',
-            'manage_options',
-            'jankx-dashboard',
-            [$this, 'renderDashboardPage']
-        );
-
         add_submenu_page(
             'jankx-dashboard',
             'Settings',
@@ -139,37 +125,6 @@ class Dashboard
                 <h2>Framework Settings</h2>
                 <p>Configure your Jankx framework settings here.</p>
             </div>
-        </div>
-        <?php
-    }
-
-    /**
-     * Add dashboard widgets
-     */
-    public function addDashboardWidgets(): void
-    {
-        // Add Jankx dashboard widget
-        wp_add_dashboard_widget(
-            'jankx/dashboard/widget',
-            'Jankx Dashboard',
-            [$this, 'renderDashboardWidget']
-        );
-    }
-
-    /**
-     * Render dashboard widget
-     */
-    public function renderDashboardWidget(): void
-    {
-        ?>
-        <div class="jankx-dashboard-widget">
-            <h3>Welcome to Jankx!</h3>
-            <p>Jankx is a powerful WordPress theme framework.</p>
-            <ul>
-                <li><strong>Version:</strong> <?php echo \Jankx\Jankx::getFrameworkVersion(); ?></li>
-                <li><strong>Theme:</strong> <?php echo get_template(); ?></li>
-                <li><strong>PHP Version:</strong> <?php echo PHP_VERSION; ?></li>
-            </ul>
         </div>
         <?php
     }

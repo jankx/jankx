@@ -3,9 +3,17 @@
 namespace Tests\Facades;
 
 use PHPUnit\Framework\TestCase;
+use Jankx\Facades\Config;
+use Jankx\Facades\Debug;
+use Jankx\Facades\Logger;
+use Jankx\Facades\Template;
+use Jankx\Facades\Theme;
+use Jankx\Facades\Asset;
+use Jankx\Facades\Block;
+use Jankx\Facades\Layout;
 
 /**
- * Test all Facades
+ * Facades Test
  *
  * @package Tests\Facades
  * @since 2.0.0
@@ -13,17 +21,19 @@ use PHPUnit\Framework\TestCase;
 class FacadesTest extends TestCase
 {
     /**
-     * Test all facades exist
+     * Test that all facades exist
      */
-    public function testAllFacadesExist()
+    public function testAllFacadesExist(): void
     {
         $facades = [
-            'Jankx\Facades\Options',
-            'Jankx\Facades\Logger',
-            'Jankx\Facades\Layout',
-            'Jankx\Facades\Kernel',
-            'Jankx\Facades\Facade',
-            'Jankx\Facades\DeferredService'
+            Config::class,
+            Debug::class,
+            Logger::class,
+            Template::class,
+            Theme::class,
+            Asset::class,
+            Block::class,
+            Layout::class,
         ];
 
         foreach ($facades as $facade) {
@@ -32,58 +42,129 @@ class FacadesTest extends TestCase
     }
 
     /**
-     * Test facades extend base Facade
+     * Test that facades extend base facade
      */
-    public function testFacadesExtendBaseFacade()
+    public function testFacadesExtendBaseFacade(): void
     {
         $facades = [
-            'Jankx\Facades\Options',
-            'Jankx\Facades\Logger',
-            'Jankx\Facades\Layout',
-            'Jankx\Facades\Kernel',
-            'Jankx\Facades\DeferredService'
+            Config::class,
+            Debug::class,
+            Logger::class,
+            Template::class,
+            Theme::class,
+            Asset::class,
+            Block::class,
+            Layout::class,
         ];
 
         foreach ($facades as $facade) {
             $reflection = new \ReflectionClass($facade);
-            $this->assertTrue($reflection->isSubclassOf('Jankx\Facades\Facade'),
-                "Facade {$facade} does not extend base Facade class");
+            $this->assertTrue($reflection->isSubclassOf(\Jankx\Facades\Facade::class), "Facade {$facade} does not extend base Facade");
         }
     }
 
     /**
-     * Test facades have required methods
+     * Test that facades have getFacadeAccessor method
      */
-    public function testFacadesHaveRequiredMethods()
+    public function testFacadesHaveAccessorMethod(): void
     {
         $facades = [
-            'Jankx\Facades\Logger',
-            'Jankx\Facades\Layout',
-            'Jankx\Facades\Kernel',
-            'Jankx\Facades\DeferredService'
+            Config::class,
+            Debug::class,
+            Logger::class,
+            Template::class,
+            Theme::class,
+            Asset::class,
+            Block::class,
+            Layout::class,
         ];
 
         foreach ($facades as $facade) {
             $reflection = new \ReflectionClass($facade);
-            $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC | \ReflectionMethod::IS_PROTECTED);
-
-            $methodNames = array_map(function($method) {
-                return $method->getName();
-            }, $methods);
-
-            $this->assertContains('getFacadeAccessor', $methodNames,
-                "Facade {$facade} missing getFacadeAccessor method");
+            $this->assertTrue($reflection->hasMethod('getFacadeAccessor'), "Facade {$facade} does not have getFacadeAccessor method");
         }
     }
 
     /**
-     * Test base facade functionality
+     * Test Config facade
      */
-    public function testBaseFacadeFunctionality()
+    public function testConfigFacade(): void
     {
-        $this->assertTrue(class_exists('Jankx\Facades\Facade'));
-        $this->assertTrue(method_exists('Jankx\Facades\Facade', 'setContainer'));
-        $this->assertTrue(method_exists('Jankx\Facades\Facade', 'getContainer'));
-        $this->assertTrue(method_exists('Jankx\Facades\Facade', '__callStatic'));
+        $this->assertTrue(class_exists(Config::class));
+        $this->assertTrue(method_exists(Config::class, 'get'));
+        $this->assertTrue(method_exists(Config::class, 'set'));
+        $this->assertTrue(method_exists(Config::class, 'has'));
+    }
+
+    /**
+     * Test Debug facade
+     */
+    public function testDebugFacade(): void
+    {
+        $this->assertTrue(class_exists(Debug::class));
+        $this->assertTrue(method_exists(Debug::class, 'info'));
+        $this->assertTrue(method_exists(Debug::class, 'warning'));
+        $this->assertTrue(method_exists(Debug::class, 'error'));
+    }
+
+    /**
+     * Test Logger facade
+     */
+    public function testLoggerFacade(): void
+    {
+        $this->assertTrue(class_exists(Logger::class));
+        $this->assertTrue(method_exists(Logger::class, 'info'));
+        $this->assertTrue(method_exists(Logger::class, 'warning'));
+        $this->assertTrue(method_exists(Logger::class, 'error'));
+    }
+
+    /**
+     * Test Template facade
+     */
+    public function testTemplateFacade(): void
+    {
+        $this->assertTrue(class_exists(Template::class));
+        $this->assertTrue(method_exists(Template::class, 'render'));
+        $this->assertTrue(method_exists(Template::class, 'exists'));
+    }
+
+    /**
+     * Test Theme facade
+     */
+    public function testThemeFacade(): void
+    {
+        $this->assertTrue(class_exists(Theme::class));
+        $this->assertTrue(method_exists(Theme::class, 'get'));
+        $this->assertTrue(method_exists(Theme::class, 'set'));
+    }
+
+    /**
+     * Test Asset facade
+     */
+    public function testAssetFacade(): void
+    {
+        $this->assertTrue(class_exists(Asset::class));
+        $this->assertTrue(method_exists(Asset::class, 'enqueue'));
+        $this->assertTrue(method_exists(Asset::class, 'dequeue'));
+    }
+
+    /**
+     * Test Block facade
+     */
+    public function testBlockFacade(): void
+    {
+        $this->assertTrue(class_exists(Block::class));
+        $this->assertTrue(method_exists(Block::class, 'register'));
+        $this->assertTrue(method_exists(Block::class, 'render'));
+    }
+
+    /**
+     * Test Layout facade
+     */
+    public function testLayoutFacade(): void
+    {
+        $this->assertTrue(class_exists(Layout::class));
+        $this->assertTrue(method_exists(Layout::class, 'get'));
+        $this->assertTrue(method_exists(Layout::class, 'set'));
     }
 }

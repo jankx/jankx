@@ -2,7 +2,7 @@
 
 namespace Jankx\Config;
 
-use Illuminate\Contracts\Container\Container;
+use Jankx\Config\Contracts\ConfigRepositoryInterface;
 use Jankx\Facades\Logger;
 
 /**
@@ -13,13 +13,8 @@ use Jankx\Facades\Logger;
  * @package Jankx\Config
  * @since 2.0.0
  */
-class Repository
+class Repository implements ConfigRepositoryInterface
 {
-    /**
-     * @var Container
-     */
-    protected $container;
-
     /**
      * @var array
      */
@@ -67,12 +62,9 @@ class Repository
 
     /**
      * Constructor
-     *
-     * @param Container $container
      */
-    public function __construct(Container $container)
+    public function __construct()
     {
-        $this->container = $container;
         $this->initializeThemePaths();
         $this->loadConfigurations();
     }
@@ -152,7 +144,7 @@ class Repository
         return $config;
     }
 
-        /**
+    /**
      * Load configuration from file with caching
      *
      * @param string $file
@@ -362,7 +354,7 @@ class Repository
         $current = $value;
     }
 
-        /**
+    /**
      * Generate cache key based on file checksum
      *
      * @param string $file
@@ -550,5 +542,60 @@ class Repository
             'differences' => $this->getConfigDifference(),
             'cache_stats' => $this->getCacheStats()
         ];
+    }
+
+    /**
+     * ArrayAccess implementation
+     */
+
+    /**
+     * Check if offset exists
+     *
+     * @param mixed $offset
+     * @return bool
+     */
+    public function offsetExists($offset): bool
+    {
+        return $this->has($offset);
+    }
+
+    /**
+     * Get offset value
+     *
+     * @param mixed $offset
+     * @return mixed
+     */
+    #[\ReturnTypeWillChange]
+    public function offsetGet($offset)
+    {
+        return $this->get($offset);
+    }
+
+    /**
+     * Set offset value
+     *
+     * @param mixed $offset
+     * @param mixed $value
+     * @return void
+     */
+    public function offsetSet($offset, $value): void
+    {
+        if ($offset === null) {
+            throw new \InvalidArgumentException('Offset cannot be null for ArrayAccess');
+        }
+
+        $this->set($offset, $value);
+    }
+
+    /**
+     * Unset offset
+     *
+     * @param mixed $offset
+     * @return void
+     */
+    public function offsetUnset($offset): void
+    {
+        // For config, we'll set the value to null instead of unsetting
+        $this->set($offset, null);
     }
 }

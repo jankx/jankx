@@ -65,10 +65,6 @@ class CLIServiceProviderTest extends TestCase
     {
         $this->serviceProvider->register();
 
-        // Test that CLI commands container is registered
-        $this->assertTrue($this->container->bound('cli.commands'),
-            'CLI commands should be bound to container');
-
         // Test that individual command classes are registered
         $this->assertTrue($this->container->bound('cli.command.coding-standard'),
             'CodingStandardCommand should be bound to container');
@@ -76,6 +72,8 @@ class CLIServiceProviderTest extends TestCase
             'GenerateBlockCommand should be bound to container');
         $this->assertTrue($this->container->bound('cli.command.create-bootstrapper'),
             'CreateBootstrapperCommand should be bound to container');
+        $this->assertTrue($this->container->bound('cli.command.release'),
+            'ReleaseCommand should be bound to container');
     }
 
     /**
@@ -109,6 +107,8 @@ class CLIServiceProviderTest extends TestCase
             $this->container->make('cli.command.generate-block'));
         $this->assertInstanceOf(CreateBootstrapperCommand::class,
             $this->container->make('cli.command.create-bootstrapper'));
+        $this->assertInstanceOf(ReleaseCommand::class,
+            $this->container->make('cli.command.release'));
     }
 
     /**

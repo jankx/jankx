@@ -30,20 +30,10 @@ class DeferredServiceHelper
 
         // Register context-specific deferred services through Service Providers
         switch ($context) {
-            case 'admin':
-                $provider = new \Jankx\Providers\AdminServiceProvider($container);
-                break;
-            case 'frontend':
-                $provider = new \Jankx\Providers\FrontendServiceProvider($container);
-                break;
-            case 'cli':
-                $provider = new \Jankx\Providers\CLIServiceProvider($container);
-                break;
-            case 'api':
-                $provider = new \Jankx\Providers\APIServiceProvider($container);
-                break;
             default:
-                $provider = new \Jankx\Providers\FrontendServiceProvider($container);
+                // All services are now registered through their respective Kernels
+                // No need to create new ServiceProvider instances here
+                return;
         }
 
         $provider->register();
@@ -58,10 +48,8 @@ class DeferredServiceHelper
      */
     public static function registerAdminDeferredServices(Container $container): void
     {
-        // Admin services are now registered through AdminServiceProvider
-        $provider = new \Jankx\Providers\AdminServiceProvider($container);
-        $provider->register();
-        $provider->boot();
+        // Admin services are now registered through AdminKernel
+        // No need to create new AdminServiceProvider instance here
     }
 
     /**
@@ -72,10 +60,8 @@ class DeferredServiceHelper
      */
     public static function registerFrontendDeferredServices(Container $container): void
     {
-        // Frontend services are now registered through FrontendServiceProvider
-        $provider = new \Jankx\Providers\FrontendServiceProvider($container);
-        $provider->register();
-        $provider->boot();
+        // Frontend services are now registered through FrontendKernel
+        // No need to create new FrontendServiceProvider instance here
     }
 
     /**

@@ -134,8 +134,9 @@ abstract class ServiceProvider
 **Service Provider Types:**
 - `FrontendServiceProvider` - Services cho frontend
 - `AdminServiceProvider` - Services cho admin
+- `APIServiceProvider` - Services cho API
 - `CLIServiceProvider` - Services cho CLI
-- `DebugServiceProvider` - Services cho debug
+- `DebugServiceProvider` - Services cho debug (chỉ frontend context)
 
 ## Flow thực tế
 
@@ -175,7 +176,6 @@ $adminKernel->boot();
 
 // 4. Load admin service providers
 // - AdminServiceProvider
-// - DebugServiceProvider (if debug mode)
 ```
 
 ### 🔄 **CLI Flow:**
@@ -196,23 +196,31 @@ $cliKernel->boot();
 
 ## Ví dụ thực tế
 
-### 🐛 **Debug System Flow:**
+### 🐛 **Debug System Flow (Frontend Context):**
 ```php
-// 1. Kernel tạo app
-$app = new Jankx();
+// 1. Frontend Kernel
+$frontendKernel = new FrontendKernel($container);
 
-// 2. App gọi bootstrapper
-$bootstrapper = new DebugBootstrapper();
-$bootstrapper->bootstrap($app);
+// 2. Register service providers
+$frontendKernel->addServiceProvider(FrontendServiceProvider::class);
 
-// 3. Bootstrapper gọi service provider
-$provider = new DebugServiceProvider($app);
-$provider->register();  // Đăng ký DebugInfo service
-$provider->boot();      // Khởi động debug system
+// 3. Register DebugServiceProvider (only if JANKX_DEBUG = true)
+if (defined('JANKX_DEBUG') && JANKX_DEBUG) {
+    $frontendKernel->addServiceProvider(DebugServiceProvider::class);
+}
 
-// 4. Service provider boot service
-$debugInfo = $app->make(DebugInfo::class);
-$debugInfo->init();
+// 4. DebugServiceProvider register debug services (nếu JANKX_DEBUG = true và !is_admin())
+if (defined('JANKX_DEBUG') && JANKX_DEBUG && !is_admin()) {
+    $this->singleton(DebugInfo::class);
+    $this->singleton(DebugInfoService::class);
+    // ... other debug services
+}
+
+// 5. DebugBootstrapper chỉ chạy ở frontend context
+if (defined('JANKX_DEBUG') && JANKX_DEBUG && !is_admin()) {
+    $debugBootstrapper = new DebugBootstrapper();
+    $debugBootstrapper->bootstrap($container);
+}
 ```
 
 ### 🎨 **Frontend Flow:**
@@ -226,13 +234,6 @@ $frontendKernel->addBootstrapper(GlobalBootstrapper::class);
 
 // 3. Register service providers
 $frontendKernel->addServiceProvider(FrontendServiceProvider::class);
-
-// 4. Boot kernel
-$frontendKernel->boot();
-
-// 5. Services được load và sẵn sàng sử dụng
-$templateEngine = $container->make(TemplateEngine::class);
-$assetManager = $container->make(AssetManager::class);
 ```
 
 ## Priority System
