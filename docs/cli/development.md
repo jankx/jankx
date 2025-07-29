@@ -312,9 +312,10 @@ class FacadeBasedCommand
 {
     public function __invoke($args, $assoc_args)
     {
-        // Use Jankx facades
-        $version = \Jankx\Facades\Kernel::getFrameworkVersion();
-        $config = \Jankx\Facades\Options::get('some_option');
+        // Use Jankx services directly
+        $kernelManager = \Jankx\Kernel\KernelManager::getInstance();
+        $version = $kernelManager->getFrameworkVersion();
+        $config = \Jankx\Facades\Config::get('some_option');
 
         \WP_CLI::line("Framework version: {$version}");
         \WP_CLI::line("Config value: {$config}");

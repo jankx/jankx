@@ -21,7 +21,14 @@ Jankx Framework là một WordPress theme framework mạnh mẽ với các tính
 - [Development Guide](development/development-guide.md) - Hướng dẫn phát triển
 - [Best Practices](development/best-practices.md) - Thực hành tốt nhất
 - [Coding Standards](development/coding-standards.md) - Tiêu chuẩn code
+- [Coding Rules](development/coding-rules.md) - Quy tắc code và kiến trúc
 - [Testing Guide](development/testing.md) - Hướng dẫn testing
+
+### 🎭 **Facades**
+- [Facades Overview](facades.md) - Tổng quan Facades
+- [Available Facades](facades.md#available-facades) - Các Facades có sẵn
+- [Best Practices](facades.md#best-practices) - Thực hành tốt nhất
+- [Testing Facades](facades.md#testing-facades) - Testing Facades
 
 ### 🐛 **Debug System**
 - [Debug Overview](debug/readme.md) - Tổng quan hệ thống debug
@@ -95,11 +102,13 @@ Jankx Framework là một WordPress theme framework mạnh mẽ với các tính
 - [Performance Monitoring](debug/performance-monitoring.md)
 - [Deferred Services](services/deferred-service-resolver.md)
 - [CLI Tools](cli/overview.md)
+- [Facades System](facades.md)
 
 ### 🔄 **Recent Architecture Changes**
 - [Service Provider Consolidation](architecture/bootstrapping-flow.md#service-provider-consolidation) - Loại bỏ duplicate Service Provider initialization
-- [Context-Aware Debug System](debug/readme.md#context-aware-debug-system) - Debug chỉ hoạt động ở frontend context
-- [Kernel-Based Service Registration](development/coding-rules.md#service-provider-types) - Service Provider chỉ được register qua Kernel
+- [Kernel Facade Removal](facades.md#removed-facades) - Loại bỏ Kernel facade, sử dụng direct access
+- [Facade Usage Rules](development/coding-rules.md#facade-usage-rules) - Quy tắc sử dụng Facades
+- [Debug Service Provider Context](architecture/bootstrapping-flow.md#context-aware-debug-system) - Debug services chỉ chạy trong frontend context
 
 ### 🔧 **Developer Tools**
 - [CLI Commands](cli/commands-reference.md)

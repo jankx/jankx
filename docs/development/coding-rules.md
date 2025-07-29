@@ -15,7 +15,7 @@ Kernel → App → Bootstrapper → Service Provider → Service Boot
 #### **Flow chi tiết:**
 
 1. **Kernel tạo App**
-   ```php
+```php
    // Kernel constructor
    public function __construct(Container $container = null)
    {
@@ -60,9 +60,9 @@ Kernel → App → Bootstrapper → Service Provider → Service Boot
        public function boot()               // Boot services
        {
            // Override if needed
-       }
-   }
-   ```
+    }
+}
+```
 
 ### 🏗️ **Kiến trúc Components:**
 
@@ -83,6 +83,51 @@ Kernel → App → Bootstrapper → Service Provider → Service Boot
 - Boot services khi cần
 - Quản lý dependencies
 - Context-aware (Admin, Frontend, CLI)
+
+### 🎭 **Facade Usage Rules**
+
+#### **✅ Facades được phép sử dụng:**
+```php
+// ✅ Đúng - Config Facade
+$value = \Jankx\Facades\Config::get('app.name');
+
+// ✅ Đúng - Debug Facade
+\Jankx\Facades\Debug::info('Debug message');
+
+// ✅ Đúng - Logger Facade
+\Jankx\Facades\Logger::error('Error message');
+
+// ✅ Đúng - Theme Facade
+$theme = \Jankx\Facades\Theme::get();
+```
+
+#### **❌ Facades không được phép:**
+```php
+// ❌ Sai - Kernel Facade (đã bị loại bỏ)
+$version = \Jankx\Facades\Kernel::getFrameworkVersion();
+
+// ❌ Sai - Options Facade (đã bị loại bỏ)
+$option = \Jankx\Facades\Options::get('option_name');
+```
+
+#### **✅ Direct Access Pattern:**
+```php
+// ✅ Đúng - Direct access cho Kernel
+$kernelManager = \Jankx\Kernel\KernelManager::getInstance();
+$version = $kernelManager->getFrameworkVersion();
+
+// ✅ Đúng - Direct access cho services
+$container = \Jankx\Jankx::getInstance();
+$service = $container->make(MyService::class);
+```
+
+#### **🎯 Facade Guidelines:**
+
+1. **Chỉ tạo Facade khi cần thiết** - Không tạo facade cho mọi service
+2. **Static interface cho services phổ biến** - Config, Debug, Logger, Theme
+3. **Direct access cho core components** - Kernel, Container, Service Providers
+4. **Consistent naming** - Tên facade phải rõ ràng và mô tả
+5. **Proper documentation** - Comment đầy đủ cho mỗi facade method
 
 ## Naming Conventions
 
