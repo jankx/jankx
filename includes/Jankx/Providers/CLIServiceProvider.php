@@ -39,7 +39,7 @@ class CLIServiceProvider extends ServiceProvider
         });
 
         $this->singleton('cli.command.coding-standard', function ($container) {
-            return new CodingStandardCommand($container);
+            return new CodingStandardCommand();
         });
 
         // Shared services that exist in the codebase

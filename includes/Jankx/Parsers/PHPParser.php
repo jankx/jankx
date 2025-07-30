@@ -81,6 +81,11 @@ class PHPParser
      */
     public function parseContent($content, $filePath = '')
     {
+        // Check if this is a script file (like .asset.php)
+        if ($this->isScriptFile($content, $filePath)) {
+            return $this->parseScriptFile($content, $filePath);
+        }
+
         $this->tokens = token_get_all($content);
         $this->reset();
 
@@ -99,6 +104,71 @@ class PHPParser
             'functions' => $this->functions,
             'interfaces' => $this->interfaces,
             'traits' => $this->traits,
+        ];
+    }
+
+    /**
+     * Check if file is a script file (like .asset.php)
+     *
+     * @param string $content
+     * @param string $filePath
+     * @return bool
+     * @since 2.0.0
+     */
+    private function isScriptFile($content, $filePath)
+    {
+        // Check if filename contains .asset.php
+        if (strpos($filePath, '.asset.php') !== false) {
+            return true;
+        }
+
+        // Check if content only contains return statement and array
+        $tokens = token_get_all($content);
+        $hasReturn = false;
+        $hasArray = false;
+        $hasClass = false;
+        $hasFunction = false;
+        $hasNamespace = false;
+
+        foreach ($tokens as $token) {
+            if (is_array($token)) {
+                if ($token[0] === T_RETURN) {
+                    $hasReturn = true;
+                } elseif ($token[0] === T_ARRAY || $token === '[') {
+                    $hasArray = true;
+                } elseif ($token[0] === T_CLASS) {
+                    $hasClass = true;
+                } elseif ($token[0] === T_FUNCTION) {
+                    $hasFunction = true;
+                } elseif ($token[0] === T_NAMESPACE) {
+                    $hasNamespace = true;
+                }
+            }
+        }
+
+        // If it has return and array but no class/function/namespace, it's likely a script
+        return $hasReturn && $hasArray && !$hasClass && !$hasFunction && !$hasNamespace;
+    }
+
+    /**
+     * Parse script file (like .asset.php)
+     *
+     * @param string $content
+     * @param string $filePath
+     * @return array
+     * @since 2.0.0
+     */
+    private function parseScriptFile($content, $filePath)
+    {
+        return [
+            'file' => $filePath,
+            'type' => 'script',
+            'namespaces' => [],
+            'classes' => [],
+            'methods' => [],
+            'functions' => [],
+            'interfaces' => [],
+            'traits' => [],
         ];
     }
 

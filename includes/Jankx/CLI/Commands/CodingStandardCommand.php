@@ -167,6 +167,9 @@ class CodingStandardCommand extends WP_CLI_Command
      *
      * ## OPTIONS
      *
+     * [<path>]
+     * : Path to check (default: current directory)
+     *
      * [--fix]
      * : Fix issues automatically
      *
@@ -191,7 +194,7 @@ class CodingStandardCommand extends WP_CLI_Command
      *     wp jankx code
      *
      *     # Check coding standards in specific path (per-file mode)
-     *     wp jankx code includes/Jankx
+     *     wp jankx code <path>
      *
      *     # Show results in table format
      *     wp jankx code --table
@@ -200,7 +203,7 @@ class CodingStandardCommand extends WP_CLI_Command
      *     wp jankx code --fix
      *
      *     # Fix coding standards in specific path
-     *     wp jankx code includes/Jankx --fix
+     *     wp jankx code <path> --fix
      *
      *     # Check specific path
      *     wp jankx code includes/Jankx/Kernel
@@ -496,6 +499,15 @@ class CodingStandardCommand extends WP_CLI_Command
             // Loading: Parsing PHP code
             $this->showSpinner("Parsing PHP code: " . basename($filePath));
             $parsed = $this->parser->parseContent($content, $filePath);
+
+            // Skip script files (like .asset.php) from WordPress standards checking
+            if (isset($parsed['type']) && $parsed['type'] === 'script') {
+                $this->clearLine();
+                if (WP_CLI::get_config('verbose')) {
+                    WP_CLI::log("⏭️  Skipping script file: " . basename($filePath));
+                }
+                return;
+            }
 
             // Loading: Checking WordPress standards
             $this->showSpinner("Checking standards: " . basename($filePath));

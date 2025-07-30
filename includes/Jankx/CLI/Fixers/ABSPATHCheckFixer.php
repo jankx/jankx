@@ -45,15 +45,27 @@ class ABSPATHCheckFixer implements IssueFixerInterface
      */
     private function findInsertPosition($lines)
     {
-        $insertLine = 0;
+        $insertLine = 1; // Default: insert after <?php
 
         // Look for namespace declaration
         for ($i = 0; $i < count($lines); $i++) {
             $line = trim($lines[$i]);
 
+            // Skip empty lines and comments
+            if (empty($line) || strpos($line, '//') === 0 || strpos($line, '/*') === 0 || strpos($line, '*') === 0) {
+                continue;
+            }
+
             // Find namespace declaration
             if (strpos($line, 'namespace') === 0) {
                 $insertLine = $i + 1; // Insert after namespace
+                break;
+            }
+
+            // If we find a non-empty line that's not a comment and not namespace,
+            // insert ABSPATH check before it
+            if (!empty($line) && strpos($line, '<?php') !== 0) {
+                $insertLine = $i;
                 break;
             }
         }
