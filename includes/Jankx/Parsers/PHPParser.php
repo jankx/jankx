@@ -2,60 +2,47 @@
 
 namespace Jankx\Parsers;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+use PhpParser\Node;
+use PhpParser\NodeFinder;
+use PhpParser\ParserFactory;
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Function_;
+use PhpParser\Node\Stmt\Namespace_;
+use PhpParser\Node\Stmt\Interface_;
+use PhpParser\Node\Stmt\Trait_;
+use PhpParser\Node\Stmt\ClassConst;
+use PhpParser\Node\Stmt\Property;
+use PhpParser\Comment\Doc;
+
 /**
- * PHP Parser for Jankx CLI
+ * PHP Parser using nikic/php-parser
  *
- * Parses PHP files to extract namespaces, classes, methods, docblocks, and PHP 8 attributes
- *
- * @package Jankx\Parsers
  * @since 2.0.0
  */
 class PHPParser
 {
-    /**
-     * @var array
-     * @since 2.0.0
-     */
-    private $tokens = [];
-
-    /**
-     * @var array
-     * @since 2.0.0
-     */
-    private $namespaces = [];
-
-    /**
-     * @var array
-     * @since 2.0.0
-     */
+    private $parser;
+    private $nodeFinder;
     private $classes = [];
-
-    /**
-     * @var array
-     * @since 2.0.0
-     */
     private $methods = [];
-
-    /**
-     * @var array
-     * @since 2.0.0
-     */
+    private $namespaces = [];
     private $functions = [];
-
-    /**
-     * @var array
-     * @since 2.0.0
-     */
     private $interfaces = [];
-
-    /**
-     * @var array
-     * @since 2.0.0
-     */
     private $traits = [];
 
+    public function __construct()
+    {
+        $this->parser = (new ParserFactory)->createForNewestSupportedVersion();
+        $this->nodeFinder = new NodeFinder();
+    }
+
     /**
-     * Parse a PHP file
+     * Parse PHP file
      *
      * @param string $filePath
      * @return array
@@ -64,7 +51,7 @@ class PHPParser
     public function parseFile($filePath)
     {
         if (!file_exists($filePath)) {
-            throw new \InvalidArgumentException("File not found: $filePath");
+            return [];
         }
 
         $content = file_get_contents($filePath);
@@ -81,34 +68,38 @@ class PHPParser
      */
     public function parseContent($content, $filePath = '')
     {
-        // Check if this is a script file (like .asset.php)
+        $this->reset();
+
+        // Check if this is a script file
         if ($this->isScriptFile($content, $filePath)) {
             return $this->parseScriptFile($content, $filePath);
         }
 
-        $this->tokens = token_get_all($content);
-        $this->reset();
+        try {
+            $ast = $this->parser->parse($content);
 
-        $this->parseNamespaces();
-        $this->parseClasses();
-        $this->parseMethods();
-        $this->parseFunctions();
-        $this->parseInterfaces();
-        $this->parseTraits();
+            if ($ast === null) {
+                return [];
+            }
 
-        return [
-            'file' => $filePath,
-            'namespaces' => $this->namespaces,
-            'classes' => $this->classes,
-            'methods' => $this->methods,
-            'functions' => $this->functions,
-            'interfaces' => $this->interfaces,
-            'traits' => $this->traits,
-        ];
+            $this->parseAST($ast);
+
+            return [
+                'classes' => $this->classes,
+                'methods' => $this->methods,
+                'namespaces' => $this->namespaces,
+                'functions' => $this->functions,
+                'interfaces' => $this->interfaces,
+                'traits' => $this->traits,
+            ];
+        } catch (\Exception $e) {
+            // Log error but don't fail
+            return [];
+        }
     }
 
     /**
-     * Check if file is a script file (like .asset.php)
+     * Check if file is a script file
      *
      * @param string $content
      * @param string $filePath
@@ -117,41 +108,30 @@ class PHPParser
      */
     private function isScriptFile($content, $filePath)
     {
-        // Check if filename contains .asset.php
+        // Check file extension
         if (strpos($filePath, '.asset.php') !== false) {
             return true;
         }
 
-        // Check if content only contains return statement and array
-        $tokens = token_get_all($content);
-        $hasReturn = false;
-        $hasArray = false;
-        $hasClass = false;
-        $hasFunction = false;
-        $hasNamespace = false;
+        // Check content patterns
+        $scriptPatterns = [
+            '/wp_enqueue_script/',
+            '/wp_register_script/',
+            '/wp_localize_script/',
+            '/wp_add_inline_script/',
+        ];
 
-        foreach ($tokens as $token) {
-            if (is_array($token)) {
-                if ($token[0] === T_RETURN) {
-                    $hasReturn = true;
-                } elseif ($token[0] === T_ARRAY || $token === '[') {
-                    $hasArray = true;
-                } elseif ($token[0] === T_CLASS) {
-                    $hasClass = true;
-                } elseif ($token[0] === T_FUNCTION) {
-                    $hasFunction = true;
-                } elseif ($token[0] === T_NAMESPACE) {
-                    $hasNamespace = true;
-                }
+        foreach ($scriptPatterns as $pattern) {
+            if (preg_match($pattern, $content)) {
+                return true;
             }
         }
 
-        // If it has return and array but no class/function/namespace, it's likely a script
-        return $hasReturn && $hasArray && !$hasClass && !$hasFunction && !$hasNamespace;
+        return false;
     }
 
     /**
-     * Parse script file (like .asset.php)
+     * Parse script file (simplified parsing)
      *
      * @param string $content
      * @param string $filePath
@@ -161,15 +141,330 @@ class PHPParser
     private function parseScriptFile($content, $filePath)
     {
         return [
-            'file' => $filePath,
-            'type' => 'script',
-            'namespaces' => [],
             'classes' => [],
             'methods' => [],
+            'namespaces' => [],
             'functions' => [],
             'interfaces' => [],
             'traits' => [],
         ];
+    }
+
+    /**
+     * Parse AST nodes
+     *
+     * @param array $ast
+     * @since 2.0.0
+     */
+    private function parseAST($ast)
+    {
+        foreach ($ast as $node) {
+            if ($node instanceof Namespace_) {
+                $this->parseNamespace($node);
+            } elseif ($node instanceof Class_) {
+                $this->parseClass($node);
+            } elseif ($node instanceof Function_) {
+                $this->parseFunction($node);
+            } elseif ($node instanceof Interface_) {
+                $this->parseInterface($node);
+            } elseif ($node instanceof Trait_) {
+                $this->parseTrait($node);
+            }
+        }
+    }
+
+    /**
+     * Parse namespace
+     *
+     * @param Namespace_ $node
+     * @since 2.0.0
+     */
+    private function parseNamespace($node)
+    {
+        $namespaceName = $node->name ? $node->name->toString() : '';
+        $docblock = $this->extractDocblock($node);
+
+        $this->namespaces[] = [
+            'name' => $namespaceName,
+            'docblock' => $docblock,
+            'line' => $node->getStartLine(),
+            'start' => $node->getStartLine(),
+            'end' => $node->getEndLine(),
+        ];
+
+        // Parse nodes inside namespace
+        foreach ($node->stmts as $stmt) {
+            if ($stmt instanceof Class_) {
+                $this->parseClass($stmt, $namespaceName);
+            } elseif ($stmt instanceof Function_) {
+                $this->parseFunction($stmt, $namespaceName);
+            } elseif ($stmt instanceof Interface_) {
+                $this->parseInterface($stmt, $namespaceName);
+            } elseif ($stmt instanceof Trait_) {
+                $this->parseTrait($stmt, $namespaceName);
+            }
+        }
+    }
+
+    /**
+     * Parse class
+     *
+     * @param Class_ $node
+     * @param string $namespace
+     * @since 2.0.0
+     */
+    private function parseClass($node, $namespace = '')
+    {
+        $className = $node->name ? $node->name->toString() : '';
+        $docblock = $this->extractDocblock($node);
+
+        $this->classes[] = [
+            'name' => $className,
+            'namespace' => $namespace,
+            'fullName' => $namespace ? $namespace . '\\' . $className : $className,
+            'docblock' => $docblock,
+            'line' => $node->getStartLine(),
+            'start' => $node->getStartLine(),
+            'end' => $node->getEndLine(),
+            'extends' => $node->extends ? $node->extends->toString() : null,
+            'implements' => array_map(function($interface) {
+                return $interface->toString();
+            }, $node->implements),
+            'isAbstract' => $node->isAbstract(),
+            'isFinal' => $node->isFinal(),
+            'visibility' => 'public', // Default visibility
+        ];
+
+        // Parse class methods
+        foreach ($node->stmts as $stmt) {
+            if ($stmt instanceof ClassMethod) {
+                $this->parseClassMethod($stmt, $className);
+            }
+        }
+    }
+
+    /**
+     * Parse class method
+     *
+     * @param ClassMethod $node
+     * @param string $className
+     * @since 2.0.0
+     */
+    private function parseClassMethod($node, $className)
+    {
+        $methodName = $node->name->toString();
+        $docblock = $this->extractDocblock($node);
+
+        $this->methods[] = [
+            'name' => $methodName,
+            'class' => $className,
+            'docblock' => $docblock,
+            'line' => $node->getStartLine(),
+            'start' => $node->getStartLine(),
+            'end' => $node->getEndLine(),
+            'visibility' => $this->getVisibility($node),
+            'isStatic' => $node->isStatic(),
+            'isAbstract' => $node->isAbstract(),
+            'isFinal' => $node->isFinal(),
+            'parameters' => $this->parseParameters($node->params),
+            'returnType' => $this->getTypeString($node->returnType),
+        ];
+    }
+
+    /**
+     * Parse function
+     *
+     * @param Function_ $node
+     * @param string $namespace
+     * @since 2.0.0
+     */
+    private function parseFunction($node, $namespace = '')
+    {
+        $functionName = $node->name->toString();
+        $docblock = $this->extractDocblock($node);
+
+        $this->functions[] = [
+            'name' => $functionName,
+            'namespace' => $namespace,
+            'fullName' => $namespace ? $namespace . '\\' . $functionName : $functionName,
+            'docblock' => $docblock,
+            'line' => $node->getStartLine(),
+            'start' => $node->getStartLine(),
+            'end' => $node->getEndLine(),
+            'parameters' => $this->parseParameters($node->params),
+            'returnType' => $this->getTypeString($node->returnType),
+        ];
+    }
+
+    /**
+     * Parse interface
+     *
+     * @param Interface_ $node
+     * @param string $namespace
+     * @since 2.0.0
+     */
+    private function parseInterface($node, $namespace = '')
+    {
+        $interfaceName = $node->name->toString();
+        $docblock = $this->extractDocblock($node);
+
+        $this->interfaces[] = [
+            'name' => $interfaceName,
+            'namespace' => $namespace,
+            'fullName' => $namespace ? $namespace . '\\' . $interfaceName : $interfaceName,
+            'docblock' => $docblock,
+            'line' => $node->getStartLine(),
+            'start' => $node->getStartLine(),
+            'end' => $node->getEndLine(),
+            'extends' => array_map(function($interface) {
+                return $interface->toString();
+            }, $node->extends),
+        ];
+    }
+
+    /**
+     * Parse trait
+     *
+     * @param Trait_ $node
+     * @param string $namespace
+     * @since 2.0.0
+     */
+    private function parseTrait($node, $namespace = '')
+    {
+        $traitName = $node->name->toString();
+        $docblock = $this->extractDocblock($node);
+
+        $this->traits[] = [
+            'name' => $traitName,
+            'namespace' => $namespace,
+            'fullName' => $namespace ? $namespace . '\\' . $traitName : $traitName,
+            'docblock' => $docblock,
+            'line' => $node->getStartLine(),
+            'start' => $node->getStartLine(),
+            'end' => $node->getEndLine(),
+        ];
+    }
+
+    /**
+     * Extract docblock from node
+     *
+     * @param Node $node
+     * @return string|null
+     * @since 2.0.0
+     */
+    private function extractDocblock($node)
+    {
+        $comments = $node->getComments();
+        foreach ($comments as $comment) {
+            if ($comment instanceof Doc) {
+                return $comment->getText();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Get method visibility
+     *
+     * @param ClassMethod $node
+     * @return string
+     * @since 2.0.0
+     */
+    private function getVisibility($node)
+    {
+        if ($node->isPublic()) {
+            return 'public';
+        } elseif ($node->isProtected()) {
+            return 'protected';
+        } elseif ($node->isPrivate()) {
+            return 'private';
+        }
+        return 'public';
+    }
+
+    /**
+     * Parse parameters
+     *
+     * @param array $params
+     * @return array
+     * @since 2.0.0
+     */
+    private function parseParameters($params)
+    {
+        $result = [];
+        foreach ($params as $param) {
+            $result[] = [
+                'name' => $param->var->name,
+                'type' => $this->getTypeString($param->type),
+                'default' => $this->getDefaultValue($param->default),
+            ];
+        }
+        return $result;
+    }
+
+    /**
+     * Get type string from node
+     *
+     * @param Node|null $type
+     * @return string|null
+     * @since 2.0.0
+     */
+    private function getTypeString($type)
+    {
+        if (!$type) {
+            return null;
+        }
+
+        if (method_exists($type, 'toString')) {
+            return $type->toString();
+        }
+
+        if (method_exists($type, 'getType')) {
+            return $type->getType();
+        }
+
+        return (string) $type;
+    }
+
+    /**
+     * Get default value from node
+     *
+     * @param Node|null $default
+     * @return string|null
+     * @since 2.0.0
+     */
+    private function getDefaultValue($default)
+    {
+        if (!$default) {
+            return null;
+        }
+
+        // Handle different node types
+        $nodeType = get_class($default);
+
+        switch ($nodeType) {
+            case 'PhpParser\Node\Expr\Array_':
+                return '[]';
+            case 'PhpParser\Node\Expr\ConstFetch':
+                return $default->name->toString();
+            case 'PhpParser\Node\Scalar\String_':
+                return "'" . $default->value . "'";
+            case 'PhpParser\Node\Scalar\LNumber':
+            case 'PhpParser\Node\Scalar\DNumber':
+                return (string) $default->value;
+            case 'PhpParser\Node\Expr\UnaryMinus':
+                return '-' . $this->getDefaultValue($default->expr);
+            case 'PhpParser\Node\Expr\UnaryPlus':
+                return '+' . $this->getDefaultValue($default->expr);
+            default:
+                if (method_exists($default, 'toString')) {
+                    return $default->toString();
+                }
+                if (method_exists($default, 'getValue')) {
+                    return $default->getValue();
+                }
+                return 'null';
+        }
     }
 
     /**
@@ -179,813 +474,16 @@ class PHPParser
      */
     private function reset()
     {
-        $this->namespaces = [];
         $this->classes = [];
         $this->methods = [];
+        $this->namespaces = [];
         $this->functions = [];
         $this->interfaces = [];
         $this->traits = [];
     }
 
     /**
-     * Parse namespaces
-     *
-     * @since 2.0.0
-     */
-    private function parseNamespaces()
-    {
-        $currentNamespace = '';
-        $currentDocblock = '';
-        $currentAttributes = [];
-
-        for ($i = 0; $i < count($this->tokens); $i++) {
-            $token = $this->tokens[$i];
-
-            if (is_array($token)) {
-                if ($token[0] === T_DOC_COMMENT) {
-                    $currentDocblock = $token[1];
-                } elseif ($token[0] === T_ATTRIBUTE) {
-                    $currentAttributes = $this->parseAttributes($i);
-                } elseif ($token[0] === T_NAMESPACE) {
-                    $namespaceName = $this->extractNamespaceName($i);
-                    $currentNamespace = $namespaceName;
-
-                    $this->namespaces[] = [
-                        'name' => $namespaceName,
-                        'docblock' => $currentDocblock,
-                        'attributes' => $currentAttributes,
-                        'line' => $token[2],
-                        'start' => $token[2],
-                        'end' => $this->findNamespaceEnd($i),
-                    ];
-
-                    $currentDocblock = '';
-                    $currentAttributes = [];
-                }
-            }
-        }
-    }
-
-    /**
-     * Parse classes
-     *
-     * @since 2.0.0
-     */
-    private function parseClasses()
-    {
-        $currentNamespace = '';
-        $currentDocblock = '';
-        $currentAttributes = [];
-
-        for ($i = 0; $i < count($this->tokens); $i++) {
-            $token = $this->tokens[$i];
-
-            if (is_array($token)) {
-                if ($token[0] === T_DOC_COMMENT) {
-                    $currentDocblock = $token[1];
-                } elseif ($token[0] === T_ATTRIBUTE) {
-                    $currentAttributes = $this->parseAttributes($i);
-                } elseif ($token[0] === T_NAMESPACE) {
-                    $currentNamespace = $this->extractNamespaceName($i);
-                } elseif ($token[0] === T_CLASS) {
-                    $className = $this->extractClassName($i);
-                    $classInfo = $this->extractClassInfo($i);
-
-                    $this->classes[] = [
-                        'name' => $className,
-                        'namespace' => $currentNamespace,
-                        'fullName' => $currentNamespace ? $currentNamespace . '\\' . $className : $className,
-                        'docblock' => $currentDocblock,
-                        'attributes' => $currentAttributes,
-                        'line' => $token[2],
-                        'start' => $token[2],
-                        'end' => $classInfo['end'],
-                        'extends' => $classInfo['extends'],
-                        'implements' => $classInfo['implements'],
-                        'isAbstract' => $classInfo['isAbstract'],
-                        'isFinal' => $classInfo['isFinal'],
-                        'visibility' => $classInfo['visibility'],
-                    ];
-
-                    $currentDocblock = '';
-                    $currentAttributes = [];
-                }
-            }
-        }
-    }
-
-    /**
-     * Parse methods
-     *
-     * @since 2.0.0
-     */
-    private function parseMethods()
-    {
-        $currentClass = '';
-        $currentDocblock = '';
-        $currentAttributes = [];
-        $inClass = false;
-
-        for ($i = 0; $i < count($this->tokens); $i++) {
-            $token = $this->tokens[$i];
-
-            if (is_array($token)) {
-                if ($token[0] === T_DOC_COMMENT) {
-                    $currentDocblock = $token[1];
-                } elseif ($token[0] === T_ATTRIBUTE) {
-                    $currentAttributes = $this->parseAttributes($i);
-                } elseif ($token[0] === T_CLASS) {
-                    $inClass = true;
-                    $currentClass = $this->extractClassName($i);
-                } elseif ($token[0] === T_FUNCTION && $inClass) {
-                    $methodInfo = $this->extractMethodInfo($i);
-
-                    $this->methods[] = [
-                        'name' => $methodInfo['name'],
-                        'class' => $currentClass,
-                        'docblock' => $currentDocblock,
-                        'attributes' => $currentAttributes,
-                        'line' => $token[2],
-                        'start' => $token[2],
-                        'end' => $methodInfo['end'],
-                        'visibility' => $methodInfo['visibility'],
-                        'isStatic' => $methodInfo['isStatic'],
-                        'isAbstract' => $methodInfo['isAbstract'],
-                        'isFinal' => $methodInfo['isFinal'],
-                        'parameters' => $methodInfo['parameters'],
-                        'returnType' => $methodInfo['returnType'],
-                    ];
-
-                    $currentDocblock = '';
-                    $currentAttributes = [];
-                }
-            }
-        }
-    }
-
-    /**
-     * Parse functions
-     *
-     * @since 2.0.0
-     */
-    private function parseFunctions()
-    {
-        $currentDocblock = '';
-        $currentAttributes = [];
-        $inClass = false;
-
-        for ($i = 0; $i < count($this->tokens); $i++) {
-            $token = $this->tokens[$i];
-
-            if (is_array($token)) {
-                if ($token[0] === T_DOC_COMMENT) {
-                    $currentDocblock = $token[1];
-                } elseif ($token[0] === T_ATTRIBUTE) {
-                    $currentAttributes = $this->parseAttributes($i);
-                } elseif ($token[0] === T_CLASS) {
-                    $inClass = true;
-                } elseif ($token[0] === T_FUNCTION && !$inClass) {
-                    $functionInfo = $this->extractFunctionInfo($i);
-
-                    $this->functions[] = [
-                        'name' => $functionInfo['name'],
-                        'docblock' => $currentDocblock,
-                        'attributes' => $currentAttributes,
-                        'line' => $token[2],
-                        'start' => $token[2],
-                        'end' => $functionInfo['end'],
-                        'parameters' => $functionInfo['parameters'],
-                        'returnType' => $functionInfo['returnType'],
-                    ];
-
-                    $currentDocblock = '';
-                    $currentAttributes = [];
-                }
-            }
-        }
-    }
-
-    /**
-     * Parse interfaces
-     *
-     * @since 2.0.0
-     */
-    private function parseInterfaces()
-    {
-        $currentDocblock = '';
-        $currentAttributes = [];
-
-        for ($i = 0; $i < count($this->tokens); $i++) {
-            $token = $this->tokens[$i];
-
-            if (is_array($token)) {
-                if ($token[0] === T_DOC_COMMENT) {
-                    $currentDocblock = $token[1];
-                } elseif ($token[0] === T_ATTRIBUTE) {
-                    $currentAttributes = $this->parseAttributes($i);
-                } elseif ($token[0] === T_INTERFACE) {
-                    $interfaceName = $this->extractInterfaceName($i);
-                    $interfaceInfo = $this->extractInterfaceInfo($i);
-
-                    $this->interfaces[] = [
-                        'name' => $interfaceName,
-                        'docblock' => $currentDocblock,
-                        'attributes' => $currentAttributes,
-                        'line' => $token[2],
-                        'start' => $token[2],
-                        'end' => $interfaceInfo['end'],
-                        'extends' => $interfaceInfo['extends'],
-                    ];
-
-                    $currentDocblock = '';
-                    $currentAttributes = [];
-                }
-            }
-        }
-    }
-
-    /**
-     * Parse traits
-     *
-     * @since 2.0.0
-     */
-    private function parseTraits()
-    {
-        $currentDocblock = '';
-        $currentAttributes = [];
-
-        for ($i = 0; $i < count($this->tokens); $i++) {
-            $token = $this->tokens[$i];
-
-            if (is_array($token)) {
-                if ($token[0] === T_DOC_COMMENT) {
-                    $currentDocblock = $token[1];
-                } elseif ($token[0] === T_ATTRIBUTE) {
-                    $currentAttributes = $this->parseAttributes($i);
-                } elseif ($token[0] === T_TRAIT) {
-                    $traitName = $this->extractTraitName($i);
-                    $traitInfo = $this->extractTraitInfo($i);
-
-                    $this->traits[] = [
-                        'name' => $traitName,
-                        'docblock' => $currentDocblock,
-                        'attributes' => $currentAttributes,
-                        'line' => $token[2],
-                        'start' => $token[2],
-                        'end' => $traitInfo['end'],
-                    ];
-
-                    $currentDocblock = '';
-                    $currentAttributes = [];
-                }
-            }
-        }
-    }
-
-    /**
-     * Parse PHP 8 attributes
-     *
-     * @param int $startIndex
-     * @return array
-     * @since 2.0.0
-     */
-    private function parseAttributes($startIndex)
-    {
-        $attributes = [];
-        $currentAttribute = '';
-        $inAttribute = false;
-        $bracketCount = 0;
-
-        for ($i = $startIndex; $i < count($this->tokens); $i++) {
-            $token = $this->tokens[$i];
-
-            if (is_array($token)) {
-                if ($token[0] === T_ATTRIBUTE) {
-                    $inAttribute = true;
-                    $bracketCount = 0;
-                    $currentAttribute = '';
-                } elseif ($inAttribute) {
-                    if ($token[0] === '(') {
-                        $bracketCount++;
-                    } elseif ($token[0] === ')') {
-                        $bracketCount--;
-                        if ($bracketCount === 0) {
-                            $inAttribute = false;
-                            $attributes[] = $this->parseAttributeString($currentAttribute);
-                            $currentAttribute = '';
-                        }
-                    } else {
-                        $currentAttribute .= $token[1];
-                    }
-                }
-            } else {
-                if ($inAttribute) {
-                    $currentAttribute .= $token;
-                }
-            }
-
-            if (!$inAttribute && $bracketCount === 0) {
-                break;
-            }
-        }
-
-        return $attributes;
-    }
-
-    /**
-     * Parse attribute string
-     *
-     * @param string $attributeString
-     * @return array
-     * @since 2.0.0
-     */
-    private function parseAttributeString($attributeString)
-    {
-        // Simple attribute parsing - can be enhanced for complex attributes
-        return [
-            'raw' => $attributeString,
-            'name' => trim($attributeString),
-            'arguments' => [],
-        ];
-    }
-
-    /**
-     * Extract namespace name
-     *
-     * @param int $startIndex
-     * @return string
-     * @since 2.0.0
-     */
-    private function extractNamespaceName($startIndex)
-    {
-        $namespace = '';
-
-        for ($i = $startIndex + 1; $i < count($this->tokens); $i++) {
-            $token = $this->tokens[$i];
-
-            if (is_array($token)) {
-                if ($token[0] === T_STRING || $token[0] === T_NS_SEPARATOR) {
-                    $namespace .= $token[1];
-                } elseif ($token[0] === T_WHITESPACE) {
-                    continue;
-                } else {
-                    break;
-                }
-            } else {
-                if ($token === ';') {
-                    break;
-                }
-            }
-        }
-
-        return trim($namespace);
-    }
-
-    /**
-     * Find namespace end
-     *
-     * @param int $startIndex
-     * @return int
-     * @since 2.0.0
-     */
-    private function findNamespaceEnd($startIndex)
-    {
-        for ($i = $startIndex; $i < count($this->tokens); $i++) {
-            $token = $this->tokens[$i];
-
-            if (is_array($token)) {
-                if ($token[0] === T_NAMESPACE) {
-                    return $token[2];
-                }
-            }
-        }
-
-        return count($this->tokens);
-    }
-
-    /**
-     * Extract class name
-     *
-     * @param int $startIndex
-     * @return string
-     * @since 2.0.0
-     */
-    private function extractClassName($startIndex)
-    {
-        for ($i = $startIndex + 1; $i < count($this->tokens); $i++) {
-            $token = $this->tokens[$i];
-
-            if (is_array($token) && $token[0] === T_STRING) {
-                return $token[1];
-            }
-        }
-
-        return '';
-    }
-
-    /**
-     * Extract class information
-     *
-     * @param int $startIndex
-     * @return array
-     * @since 2.0.0
-     */
-    private function extractClassInfo($startIndex)
-    {
-        $info = [
-            'extends' => '',
-            'implements' => [],
-            'isAbstract' => false,
-            'isFinal' => false,
-            'visibility' => 'public',
-            'end' => $startIndex,
-        ];
-
-        // Check for abstract/final keywords
-        for ($i = $startIndex - 1; $i >= 0; $i--) {
-            $token = $this->tokens[$i];
-
-            if (is_array($token)) {
-                if ($token[0] === T_ABSTRACT) {
-                    $info['isAbstract'] = true;
-                } elseif ($token[0] === T_FINAL) {
-                    $info['isFinal'] = true;
-                } elseif ($token[0] === T_WHITESPACE) {
-                    continue;
-                } else {
-                    break;
-                }
-            }
-        }
-
-        // Find extends and implements
-        $bracketCount = 0;
-        $inClass = false;
-
-        for ($i = $startIndex; $i < count($this->tokens); $i++) {
-            $token = $this->tokens[$i];
-
-            if (is_array($token)) {
-                if ($token[0] === T_CLASS) {
-                    $inClass = true;
-                } elseif ($token[0] === T_EXTENDS && $inClass) {
-                    $info['extends'] = $this->extractExtends($i);
-                } elseif ($token[0] === T_IMPLEMENTS && $inClass) {
-                    $info['implements'] = $this->extractImplements($i);
-                } elseif ($token[0] === T_WHITESPACE) {
-                    continue;
-                }
-            } else {
-                if ($token === '{' && $inClass) {
-                    $bracketCount++;
-                } elseif ($token === '}' && $inClass) {
-                    $bracketCount--;
-                    if ($bracketCount === 0) {
-                        $info['end'] = $i;
-                        break;
-                    }
-                }
-            }
-        }
-
-        return $info;
-    }
-
-    /**
-     * Extract extends clause
-     *
-     * @param int $startIndex
-     * @return string
-     * @since 2.0.0
-     */
-    private function extractExtends($startIndex)
-    {
-        $extends = '';
-
-        for ($i = $startIndex + 1; $i < count($this->tokens); $i++) {
-            $token = $this->tokens[$i];
-
-            if (is_array($token)) {
-                if ($token[0] === T_STRING || $token[0] === T_NS_SEPARATOR) {
-                    $extends .= $token[1];
-                } elseif ($token[0] === T_WHITESPACE) {
-                    continue;
-                } else {
-                    break;
-                }
-            } else {
-                if ($token === '{' || $token === 'implements') {
-                    break;
-                }
-            }
-        }
-
-        return trim($extends);
-    }
-
-    /**
-     * Extract implements clause
-     *
-     * @param int $startIndex
-     * @return array
-     * @since 2.0.0
-     */
-    private function extractImplements($startIndex)
-    {
-        $implements = [];
-        $current = '';
-
-        for ($i = $startIndex + 1; $i < count($this->tokens); $i++) {
-            $token = $this->tokens[$i];
-
-            if (is_array($token)) {
-                if ($token[0] === T_STRING || $token[0] === T_NS_SEPARATOR) {
-                    $current .= $token[1];
-                } elseif ($token[0] === T_WHITESPACE) {
-                    continue;
-                } else {
-                    break;
-                }
-            } else {
-                if ($token === ',') {
-                    $implements[] = trim($current);
-                    $current = '';
-                } elseif ($token === '{') {
-                    if (!empty($current)) {
-                        $implements[] = trim($current);
-                    }
-                    break;
-                }
-            }
-        }
-
-        if (!empty($current)) {
-            $implements[] = trim($current);
-        }
-
-        return $implements;
-    }
-
-    /**
-     * Extract method information
-     *
-     * @param int $startIndex
-     * @return array
-     * @since 2.0.0
-     */
-    private function extractMethodInfo($startIndex)
-    {
-        $info = [
-            'name' => '',
-            'visibility' => 'public',
-            'isStatic' => false,
-            'isAbstract' => false,
-            'isFinal' => false,
-            'parameters' => [],
-            'returnType' => '',
-            'end' => $startIndex,
-        ];
-
-        // Get method name
-        for ($i = $startIndex + 1; $i < count($this->tokens); $i++) {
-            $token = $this->tokens[$i];
-
-            if (is_array($token) && $token[0] === T_STRING) {
-                $info['name'] = $token[1];
-                break;
-            }
-        }
-
-        // Check modifiers
-        for ($i = $startIndex - 1; $i >= 0; $i--) {
-            $token = $this->tokens[$i];
-
-            if (is_array($token)) {
-                if ($token[0] === T_PUBLIC) {
-                    $info['visibility'] = 'public';
-                } elseif ($token[0] === T_PROTECTED) {
-                    $info['visibility'] = 'protected';
-                } elseif ($token[0] === T_PRIVATE) {
-                    $info['visibility'] = 'private';
-                } elseif ($token[0] === T_STATIC) {
-                    $info['isStatic'] = true;
-                } elseif ($token[0] === T_ABSTRACT) {
-                    $info['isAbstract'] = true;
-                } elseif ($token[0] === T_FINAL) {
-                    $info['isFinal'] = true;
-                } elseif ($token[0] === T_WHITESPACE) {
-                    continue;
-                } else {
-                    break;
-                }
-            }
-        }
-
-        // Find method end
-        $bracketCount = 0;
-        $inMethod = false;
-
-        for ($i = $startIndex; $i < count($this->tokens); $i++) {
-            $token = $this->tokens[$i];
-
-            if (is_array($token)) {
-                if ($token[0] === T_FUNCTION) {
-                    $inMethod = true;
-                }
-            } else {
-                if ($token === '{' && $inMethod) {
-                    $bracketCount++;
-                } elseif ($token === '}' && $inMethod) {
-                    $bracketCount--;
-                    if ($bracketCount === 0) {
-                        $info['end'] = $i;
-                        break;
-                    }
-                }
-            }
-        }
-
-        return $info;
-    }
-
-    /**
-     * Extract function information
-     *
-     * @param int $startIndex
-     * @return array
-     * @since 2.0.0
-     */
-    private function extractFunctionInfo($startIndex)
-    {
-        $info = [
-            'name' => '',
-            'parameters' => [],
-            'returnType' => '',
-            'end' => $startIndex,
-        ];
-
-        // Get function name
-        for ($i = $startIndex + 1; $i < count($this->tokens); $i++) {
-            $token = $this->tokens[$i];
-
-            if (is_array($token) && $token[0] === T_STRING) {
-                $info['name'] = $token[1];
-                break;
-            }
-        }
-
-        // Find function end
-        $bracketCount = 0;
-        $inFunction = false;
-
-        for ($i = $startIndex; $i < count($this->tokens); $i++) {
-            $token = $this->tokens[$i];
-
-            if (is_array($token)) {
-                if ($token[0] === T_FUNCTION) {
-                    $inFunction = true;
-                }
-            } else {
-                if ($token === '{' && $inFunction) {
-                    $bracketCount++;
-                } elseif ($token === '}' && $inFunction) {
-                    $bracketCount--;
-                    if ($bracketCount === 0) {
-                        $info['end'] = $i;
-                        break;
-                    }
-                }
-            }
-        }
-
-        return $info;
-    }
-
-    /**
-     * Extract interface name
-     *
-     * @param int $startIndex
-     * @return string
-     * @since 2.0.0
-     */
-    private function extractInterfaceName($startIndex)
-    {
-        for ($i = $startIndex + 1; $i < count($this->tokens); $i++) {
-            $token = $this->tokens[$i];
-
-            if (is_array($token) && $token[0] === T_STRING) {
-                return $token[1];
-            }
-        }
-
-        return '';
-    }
-
-    /**
-     * Extract interface information
-     *
-     * @param int $startIndex
-     * @return array
-     * @since 2.0.0
-     */
-    private function extractInterfaceInfo($startIndex)
-    {
-        $info = [
-            'extends' => [],
-            'end' => $startIndex,
-        ];
-
-        // Find extends
-        $bracketCount = 0;
-        $inInterface = false;
-
-        for ($i = $startIndex; $i < count($this->tokens); $i++) {
-            $token = $this->tokens[$i];
-
-            if (is_array($token)) {
-                if ($token[0] === T_INTERFACE) {
-                    $inInterface = true;
-                } elseif ($token[0] === T_EXTENDS && $inInterface) {
-                    $info['extends'] = $this->extractImplements($i);
-                }
-            } else {
-                if ($token === '{' && $inInterface) {
-                    $bracketCount++;
-                } elseif ($token === '}' && $inInterface) {
-                    $bracketCount--;
-                    if ($bracketCount === 0) {
-                        $info['end'] = $i;
-                        break;
-                    }
-                }
-            }
-        }
-
-        return $info;
-    }
-
-    /**
-     * Extract trait name
-     *
-     * @param int $startIndex
-     * @return string
-     * @since 2.0.0
-     */
-    private function extractTraitName($startIndex)
-    {
-        for ($i = $startIndex + 1; $i < count($this->tokens); $i++) {
-            $token = $this->tokens[$i];
-
-            if (is_array($token) && $token[0] === T_STRING) {
-                return $token[1];
-            }
-        }
-
-        return '';
-    }
-
-    /**
-     * Extract trait information
-     *
-     * @param int $startIndex
-     * @return array
-     * @since 2.0.0
-     */
-    private function extractTraitInfo($startIndex)
-    {
-        $info = [
-            'end' => $startIndex,
-        ];
-
-        // Find trait end
-        $bracketCount = 0;
-        $inTrait = false;
-
-        for ($i = $startIndex; $i < count($this->tokens); $i++) {
-            $token = $this->tokens[$i];
-
-            if (is_array($token)) {
-                if ($token[0] === T_TRAIT) {
-                    $inTrait = true;
-                }
-            } else {
-                if ($token === '{' && $inTrait) {
-                    $bracketCount++;
-                } elseif ($token === '}' && $inTrait) {
-                    $bracketCount--;
-                    if ($bracketCount === 0) {
-                        $info['end'] = $i;
-                        break;
-                    }
-                }
-            }
-        }
-
-        return $info;
-    }
-
-    /**
-     * Get all classes
+     * Get classes
      *
      * @return array
      * @since 2.0.0
@@ -996,7 +494,7 @@ class PHPParser
     }
 
     /**
-     * Get all methods
+     * Get methods
      *
      * @return array
      * @since 2.0.0
@@ -1007,7 +505,7 @@ class PHPParser
     }
 
     /**
-     * Get all namespaces
+     * Get namespaces
      *
      * @return array
      * @since 2.0.0
@@ -1018,7 +516,7 @@ class PHPParser
     }
 
     /**
-     * Get all functions
+     * Get functions
      *
      * @return array
      * @since 2.0.0
@@ -1029,7 +527,7 @@ class PHPParser
     }
 
     /**
-     * Get all interfaces
+     * Get interfaces
      *
      * @return array
      * @since 2.0.0
@@ -1040,7 +538,7 @@ class PHPParser
     }
 
     /**
-     * Get all traits
+     * Get traits
      *
      * @return array
      * @since 2.0.0
@@ -1051,7 +549,7 @@ class PHPParser
     }
 
     /**
-     * Check if a docblock has a specific tag
+     * Check if docblock has tag
      *
      * @param string $docblock
      * @param string $tag
@@ -1060,36 +558,38 @@ class PHPParser
      */
     public function hasTag($docblock, $tag)
     {
-        if (empty($docblock)) {
+        if (!$docblock) {
             return false;
         }
 
-        return preg_match("/@$tag\s+/", $docblock);
+        $pattern = '/@' . preg_quote($tag, '/') . '\b/';
+        return preg_match($pattern, $docblock) === 1;
     }
 
     /**
-     * Extract tag value from docblock
+     * Extract tag value
      *
      * @param string $docblock
      * @param string $tag
-     * @return string
+     * @return string|null
      * @since 2.0.0
      */
     public function extractTagValue($docblock, $tag)
     {
-        if (empty($docblock)) {
-            return '';
+        if (!$docblock) {
+            return null;
         }
 
-        if (preg_match("/@$tag\s+([^\s\n\r]+)/", $docblock, $matches)) {
+        $pattern = '/@' . preg_quote($tag, '/') . '\s+([^\s\r\n]+)/';
+        if (preg_match($pattern, $docblock, $matches)) {
             return trim($matches[1]);
         }
 
-        return '';
+        return null;
     }
 
     /**
-     * Extract all tag values from docblock
+     * Extract all tag values
      *
      * @param string $docblock
      * @param string $tag
@@ -1098,17 +598,14 @@ class PHPParser
      */
     public function extractAllTagValues($docblock, $tag)
     {
-        if (empty($docblock)) {
+        if (!$docblock) {
             return [];
         }
 
-        $values = [];
-        if (preg_match_all("/@$tag\s+([^\s\n\r]+)/", $docblock, $matches)) {
-            foreach ($matches[1] as $match) {
-                $values[] = trim($match);
-            }
-        }
+        $pattern = '/@' . preg_quote($tag, '/') . '\s+([^\s\r\n]+)/';
+        $matches = [];
+        preg_match_all($pattern, $docblock, $matches);
 
-        return $values;
+        return array_map('trim', $matches[1]);
     }
 }
