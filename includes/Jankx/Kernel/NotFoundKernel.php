@@ -6,7 +6,7 @@ if (!defined('ABSPATH')) {
     exit('Cheating huh?');
 }
 
-use Jankx\Context\ContextualServiceRegistry;
+use Illuminate\Container\Container;
 
 /**
  * Class NotFoundKernel
@@ -15,44 +15,88 @@ use Jankx\Context\ContextualServiceRegistry;
  *
  * @package Jankx\Kernel
  * @author Puleeno Nguyen <puleeno@gmail.com>
+ * @since 2.0.0
  */
-class NotFoundKernel
+class NotFoundKernel extends Kernel
 {
-    protected $container;
-    protected $booted = false;
-
     /**
      * Constructor
      *
-     * @param mixed $container Container để resolve các dịch vụ
+     * @param Container $container Container để resolve các dịch vụ
+     * @since 2.0.0
      */
-    public function __construct($container)
+    public function __construct(Container $container = null)
     {
-        $this->container = $container;
+        parent::__construct($container);
     }
 
     /**
-     * Khởi tạo các dịch vụ theo ngữ cảnh 404
-     */
-    public function boot()
-    {
-        $services = ContextualServiceRegistry::getServices(ContextualServiceRegistry::FRONTEND); // 404 dùng các dịch vụ frontend
-        foreach ($services as $serviceProviderClass) {
-            if (class_exists($serviceProviderClass)) {
-                $serviceProvider = new $serviceProviderClass($this->container);
-                $serviceProvider->register();
-            }
-        }
-        $this->booted = true;
-    }
-
-    /**
-     * Kiểm tra xem kernel đã được khởi tạo hay chưa
+     * Get kernel type
      *
-     * @return bool
+     * @return string
+     * @since 2.0.0
      */
-    public function isBooted()
+    public function getKernelType(): string
     {
-        return $this->booted;
+        return 'not_found';
+    }
+
+    /**
+     * Register bootstrappers
+     * @since 2.0.0
+     */
+    protected function registerBootstrappers(): void
+    {
+        parent::registerBootstrappers();
+
+        $this->bootstrappers = [
+            'Jankx\Bootstrappers\Global\CoreBootstrapper',
+            'Jankx\Bootstrappers\Global\DebugBootstrapper',
+            'Jankx\Bootstrappers\Frontend\FrontendBootstrapper',
+        ];
+    }
+
+    /**
+     * Register services
+     * @since 2.0.0
+     */
+    protected function registerServices(): void
+    {
+        parent::registerServices();
+
+        $this->services = [];
+    }
+
+    /**
+     * Register hooks
+     * @since 2.0.0
+     */
+    protected function registerHooks(): void
+    {
+        $this->hooks = [
+            'template_redirect' => ['Jankx\Kernel\NotFoundKernel', 'handleNotFound'],
+        ];
+    }
+
+    /**
+     * Register filters
+     * @since 2.0.0
+     */
+    protected function registerFilters(): void
+    {
+        $this->filters = [
+            'jankx_404_title' => ['Jankx\Kernel\NotFoundKernel', 'filter404Title'],
+        ];
+    }
+
+    /**
+     * Handle 404 requests
+     * @since 2.0.0
+     */
+    public static function handleNotFound()
+    {
+        if (is_404()) {
+            // Handle 404 logic here
+        }
     }
 }

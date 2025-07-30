@@ -2,12 +2,18 @@
 
 namespace Jankx\Facades;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\Gutenberg\LayoutRegistry;
 
 /**
  * Layout Facade
  *
  * Provides easy access to Layout Registry functionality.
+ * @since 2.0.0
  */
 class Layout extends Facade
 {
@@ -15,6 +21,7 @@ class Layout extends Facade
      * Get the facade accessor
      *
      * @return string
+     * @since 2.0.0
      */
     protected static function getFacadeAccessor()
     {
@@ -27,6 +34,7 @@ class Layout extends Facade
      * @param string $name Layout name
      * @param array $config Layout configuration
      * @return void
+     * @since 2.0.0
      */
     public static function register($name, array $config)
     {
@@ -40,6 +48,7 @@ class Layout extends Facade
      * @param string $blockName Block name
      * @param array $config Block configuration
      * @return void
+     * @since 2.0.0
      */
     public static function registerBlock($layoutName, $blockName, array $config = [])
     {
@@ -51,6 +60,7 @@ class Layout extends Facade
      *
      * @param string $name Layout name
      * @return array|null Layout configuration
+     * @since 2.0.0
      */
     public static function get($name)
     {
@@ -61,6 +71,7 @@ class Layout extends Facade
      * Get all registered layouts
      *
      * @return array All layouts
+     * @since 2.0.0
      */
     public static function all()
     {
@@ -72,6 +83,7 @@ class Layout extends Facade
      *
      * @param string $category Category name
      * @return array Layouts in category
+     * @since 2.0.0
      */
     public static function getByCategory($category)
     {
@@ -83,6 +95,7 @@ class Layout extends Facade
      *
      * @param string $name Layout name
      * @return bool
+     * @since 2.0.0
      */
     public static function has($name)
     {
@@ -94,6 +107,7 @@ class Layout extends Facade
      *
      * @param string $layoutName Layout name
      * @return array Blocks in layout
+     * @since 2.0.0
      */
     public static function getBlocks($layoutName)
     {
@@ -105,6 +119,7 @@ class Layout extends Facade
      *
      * @param int $postId Post ID
      * @return array Used layouts
+     * @since 2.0.0
      */
     public static function getUsed($postId = null)
     {
@@ -121,6 +136,7 @@ class Layout extends Facade
      *
      * @param array $attributes Block attributes
      * @return array Layout settings
+     * @since 2.0.0
      */
     public static function getSettings($attributes)
     {
@@ -132,6 +148,7 @@ class Layout extends Facade
      *
      * @param string $layoutName Layout name
      * @return bool
+     * @since 2.0.0
      */
     public static function supportsPartialHydration($layoutName)
     {

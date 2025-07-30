@@ -2,6 +2,11 @@
 
 namespace Jankx\Kernel;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\Contracts\KernelInterface;
 use Jankx\Bootstrappers\API\APIBootstrapper;
 use Jankx\Bootstrappers\Global\ThemeBootstrapper;
@@ -19,11 +24,13 @@ use Jankx\API\Endpoints\SettingsEndpoint;
  * Handles API-specific features and endpoints
  *
  * @package Jankx\Kernel
+ * @since 2.0.0
  */
 class APIKernel extends Kernel implements KernelInterface
 {
     /**
      * Get kernel type
+     * @since 2.0.0
      */
     public function getKernelType(): string
     {
@@ -32,9 +39,12 @@ class APIKernel extends Kernel implements KernelInterface
 
     /**
      * Register bootstrappers
+     * @since 2.0.0
      */
     protected function registerBootstrappers(): void
     {
+        parent::registerBootstrappers();
+
         // Theme bootstrapper (highest priority)
         $this->addBootstrapper(ThemeBootstrapper::class);
 
@@ -50,62 +60,43 @@ class APIKernel extends Kernel implements KernelInterface
 
     /**
      * Register services
+     * @since 2.0.0
      */
     protected function registerServices(): void
     {
-        // API manager
-        $this->addService(APIManager::class);
+        parent::registerServices();
 
-        // Core endpoints
-        $this->addService(PostsEndpoint::class);
-        $this->addService(PagesEndpoint::class);
-        $this->addService(CategoriesEndpoint::class);
-        $this->addService(TagsEndpoint::class);
-        $this->addService(UsersEndpoint::class);
-        $this->addService(SettingsEndpoint::class);
+        // Register APIServiceProvider
+        $this->addServiceProvider(\Jankx\Providers\APIServiceProvider::class);
     }
 
     /**
      * Register hooks
+     * @since 2.0.0
      */
     protected function registerHooks(): void
     {
-        // REST API initialization
-        $this->addHook('rest_api_init', [$this, 'registerAPIEndpoints']);
-
-        // CORS headers
-        $this->addHook('rest_pre_serve_request', [$this, 'addCORSHeaders']);
-
-        // API authentication
-        $this->addHook('rest_authentication_errors', [$this, 'authenticateAPI']);
-
-        // API rate limiting
-        $this->addHook('rest_pre_dispatch', [$this, 'checkRateLimit']);
-
-        // API logging
-        $this->addHook('rest_post_dispatch', [$this, 'logAPIRequest']);
-
-        // Custom endpoints
-        $this->addHook('jankx/api/register_endpoints', [$this, 'registerCustomEndpoints']);
+        $this->hooks = [
+            'rest_api_init' => ['Jankx\Kernel\APIKernel', 'initializeAPI'],
+            'wp_ajax_jankx_api' => ['Jankx\Kernel\APIKernel', 'handleAjaxRequest'],
+            'wp_ajax_nopriv_jankx_api' => ['Jankx\Kernel\APIKernel', 'handleAjaxRequest'],
+        ];
     }
 
     /**
      * Register filters
+     * @since 2.0.0
      */
     protected function registerFilters(): void
     {
-        // API response formatting
-        $this->addFilter('jankx/api/response', [$this, 'formatAPIResponse']);
-
-        // API error handling
-        $this->addFilter('jankx/api/error', [$this, 'formatAPIError']);
-
-        // API permissions
-        $this->addFilter('jankx/api/permissions', [$this, 'checkAPIPermissions']);
+        $this->filters = [
+            'jankx_api_response' => ['Jankx\Kernel\APIKernel', 'filterAPIResponse'],
+        ];
     }
 
     /**
      * Register API endpoints
+     * @since 2.0.0
      */
     public function registerAPIEndpoints(): void
     {
@@ -125,6 +116,7 @@ class APIKernel extends Kernel implements KernelInterface
 
     /**
      * Add CORS headers
+     * @since 2.0.0
      */
     public function addCORSHeaders(): void
     {
@@ -142,6 +134,7 @@ class APIKernel extends Kernel implements KernelInterface
 
     /**
      * Authenticate API
+     * @since 2.0.0
      */
     public function authenticateAPI($result): mixed
     {
@@ -182,6 +175,7 @@ class APIKernel extends Kernel implements KernelInterface
 
     /**
      * Check rate limit
+     * @since 2.0.0
      */
     public function checkRateLimit($result): mixed
     {
@@ -209,6 +203,7 @@ class APIKernel extends Kernel implements KernelInterface
 
     /**
      * Log API request
+     * @since 2.0.0
      */
     public function logAPIRequest($response, $handler, $request): void
     {
@@ -227,6 +222,7 @@ class APIKernel extends Kernel implements KernelInterface
 
     /**
      * Register custom endpoints
+     * @since 2.0.0
      */
     public function registerCustomEndpoints($api_manager): void
     {
@@ -236,6 +232,7 @@ class APIKernel extends Kernel implements KernelInterface
 
     /**
      * Format API response
+     * @since 2.0.0
      */
     public function formatAPIResponse($response): array
     {
@@ -251,6 +248,7 @@ class APIKernel extends Kernel implements KernelInterface
 
     /**
      * Format API error
+     * @since 2.0.0
      */
     public function formatAPIError($error): array
     {
@@ -270,6 +268,7 @@ class APIKernel extends Kernel implements KernelInterface
 
     /**
      * Check API permissions
+     * @since 2.0.0
      */
     public function checkAPIPermissions($permissions, $endpoint): bool
     {
@@ -289,6 +288,7 @@ class APIKernel extends Kernel implements KernelInterface
 
     /**
      * Get current endpoint
+     * @since 2.0.0
      */
     protected function getCurrentEndpoint(): string
     {
@@ -307,6 +307,7 @@ class APIKernel extends Kernel implements KernelInterface
 
     /**
      * Get API key from request
+     * @since 2.0.0
      */
     protected function getAPIKey(): ?string
     {
@@ -323,11 +324,12 @@ class APIKernel extends Kernel implements KernelInterface
         }
 
         // Check query parameter
-        return $_GET['api_key'] ?? null;
+        return sanitize_text_field($_GET['api_key']) ?? null;
     }
 
     /**
      * Validate API key
+     * @since 2.0.0
      */
     protected function validateAPIKey(string $api_key): bool
     {
@@ -337,6 +339,7 @@ class APIKernel extends Kernel implements KernelInterface
 
     /**
      * Get client IP
+     * @since 2.0.0
      */
     protected function getClientIP(): string
     {
@@ -358,6 +361,7 @@ class APIKernel extends Kernel implements KernelInterface
 
     /**
      * Check if request is rate limited
+     * @since 2.0.0
      */
     protected function isRateLimited(string $ip, string $endpoint): bool
     {
@@ -376,6 +380,7 @@ class APIKernel extends Kernel implements KernelInterface
 
     /**
      * Update rate limit counter
+     * @since 2.0.0
      */
     protected function updateRateLimit(string $ip, string $endpoint): void
     {
@@ -396,6 +401,7 @@ class APIKernel extends Kernel implements KernelInterface
 
     /**
      * Log to database
+     * @since 2.0.0
      */
     protected function logToDatabase(array $log_data): void
     {

@@ -2,6 +2,11 @@
 
 namespace Jankx\Kernel;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\Contracts\KernelInterface;
 use Jankx\Bootstrappers\Global\ThemeBootstrapper;
 use Jankx\Bootstrappers\Gutenberg\GutenbergAjaxBootstrapper;
@@ -12,11 +17,13 @@ use Jankx\Bootstrappers\Gutenberg\GutenbergAjaxBootstrapper;
  * Handles Gutenberg AJAX requests for partial hydration and block data
  *
  * @package Jankx\Kernel
+ * @since 2.0.0
  */
 class GutenbergAjaxKernel extends Kernel implements KernelInterface
 {
     /**
      * Get kernel type
+     * @since 2.0.0
      */
     public function getKernelType(): string
     {
@@ -25,9 +32,12 @@ class GutenbergAjaxKernel extends Kernel implements KernelInterface
 
     /**
      * Register bootstrappers
+     * @since 2.0.0
      */
     protected function registerBootstrappers(): void
     {
+        parent::registerBootstrappers();
+
         // Theme bootstrapper (highest priority)
         $this->addBootstrapper(ThemeBootstrapper::class);
 
@@ -43,14 +53,18 @@ class GutenbergAjaxKernel extends Kernel implements KernelInterface
 
     /**
      * Register services
+     * @since 2.0.0
      */
     protected function registerServices(): void
     {
+        parent::registerServices();
+
         // Gutenberg AJAX-specific services will be registered here
     }
 
     /**
      * Register hooks
+     * @since 2.0.0
      */
     protected function registerHooks(): void
     {
@@ -59,6 +73,7 @@ class GutenbergAjaxKernel extends Kernel implements KernelInterface
 
     /**
      * Register filters
+     * @since 2.0.0
      */
     protected function registerFilters(): void
     {
@@ -67,6 +82,7 @@ class GutenbergAjaxKernel extends Kernel implements KernelInterface
 
     /**
      * Boot the kernel
+     * @since 2.0.0
      */
     public function boot(): void
     {
@@ -76,6 +92,7 @@ class GutenbergAjaxKernel extends Kernel implements KernelInterface
 
     /**
      * Check if kernel is booted
+     * @since 2.0.0
      */
     public function isBooted(): bool
     {

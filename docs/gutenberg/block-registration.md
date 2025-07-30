@@ -235,7 +235,7 @@ class BlockRegistry
             $handle,
             get_theme_file_uri($scriptPath),
             $dependencies,
-            JANKX_VERSION,
+            \Jankx\Jankx::getFrameworkVersion(),
             true
         );
     }
@@ -248,7 +248,7 @@ class BlockRegistry
             $handle,
             get_theme_file_uri($stylePath),
             [],
-            JANKX_VERSION
+            \Jankx\Jankx::getFrameworkVersion()
         );
     }
 

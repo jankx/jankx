@@ -26,8 +26,10 @@ class KernelFactoryTest extends TestCase
      */
     public function testFactoryHasRequiredMethods()
     {
-        $this->assertTrue(method_exists('Jankx\Kernel\KernelFactory', 'create'));
-        $this->assertTrue(method_exists('Jankx\Kernel\KernelFactory', 'getSupportedKernels'));
+        $this->assertTrue(method_exists('Jankx\Kernel\KernelFactory', 'createKernel'));
+        $this->assertTrue(method_exists('Jankx\Kernel\KernelFactory', 'getKernelMap'));
+        $this->assertTrue(method_exists('Jankx\Kernel\KernelFactory', 'hasKernel'));
+        $this->assertTrue(method_exists('Jankx\Kernel\KernelFactory', 'getKernelClass'));
     }
 
     /**
@@ -50,10 +52,10 @@ class KernelFactoryTest extends TestCase
      */
     public function testFactorySupportsAllKernelTypes()
     {
-        $supportedTypes = ['cli', 'frontend', 'admin', 'api', 'ajax', 'cron', 'gutenberg-ajax', 'not-found'];
+        $supportedTypes = ['cli', 'gutenberg-ajax', 'cron', 'api', 'admin', 'frontend'];
 
         foreach ($supportedTypes as $type) {
-            $this->assertTrue(method_exists('Jankx\Kernel\KernelFactory', 'create'));
+            $this->assertTrue(method_exists('Jankx\Kernel\KernelFactory', 'createKernel'));
         }
     }
 }

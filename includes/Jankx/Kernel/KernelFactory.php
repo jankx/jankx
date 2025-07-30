@@ -2,6 +2,11 @@
 
 namespace Jankx\Kernel;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Illuminate\Container\Container;
 use Jankx\Contracts\KernelInterface;
 
@@ -9,12 +14,18 @@ use Jankx\Contracts\KernelInterface;
  * Factory for creating kernel instances
  *
  * @package Jankx\Kernel
+ * @since 2.0.0
  */
 class KernelFactory
 {
     protected $container;
     protected $kernelMap = [];
 
+    /**
+     * Method __construct
+     *
+     * @since 2.0.0
+     */
     public function __construct(Container $container)
     {
         $this->container = $container;
@@ -23,11 +34,13 @@ class KernelFactory
 
     /**
      * Register default kernel mappings
+     * @since 2.0.0
      */
     protected function registerDefaultKernels()
     {
         $this->kernelMap = [
             'cli' => CLIKernel::class,
+            'ajax' => AjaxKernel::class,
             'gutenberg-ajax' => GutenbergAjaxKernel::class,
             'cron' => CronKernel::class,
             'api' => APIKernel::class,
@@ -41,6 +54,7 @@ class KernelFactory
      *
      * @param string $context
      * @return KernelInterface|null
+     * @since 2.0.0
      */
     public function createKernel(string $context): ?KernelInterface
     {
@@ -63,6 +77,7 @@ class KernelFactory
      * @param string $context
      * @param string $kernelClass
      * @return void
+     * @since 2.0.0
      */
     public function registerKernel(string $context, string $kernelClass): void
     {
@@ -81,6 +96,7 @@ class KernelFactory
      * Get all registered kernel mappings
      *
      * @return array
+     * @since 2.0.0
      */
     public function getKernelMap(): array
     {
@@ -92,6 +108,7 @@ class KernelFactory
      *
      * @param string $context
      * @return bool
+     * @since 2.0.0
      */
     public function hasKernel(string $context): bool
     {
@@ -103,6 +120,7 @@ class KernelFactory
      *
      * @param string $context
      * @return string|null
+     * @since 2.0.0
      */
     public function getKernelClass(string $context): ?string
     {

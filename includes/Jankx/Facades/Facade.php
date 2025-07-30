@@ -2,6 +2,11 @@
 
 namespace Jankx\Facades;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Illuminate\Container\Container;
 use Jankx\Jankx;
 
@@ -14,6 +19,7 @@ use Jankx\Jankx;
  * @author Puleeno Nguyen <puleeno@gmail.com>
  * @version 2.0.0
  * @license MIT
+ * @since 2.0.0
  */
 class Facade
 {
@@ -26,6 +32,7 @@ class Facade
     /**
      * Set the container instance
      * @param \Illuminate\Container\Container $container
+     * @since 2.0.0
      */
     public static function setContainer(Container $container)
     {
@@ -35,6 +42,7 @@ class Facade
     /**
      * Get the container instance
      * @return \Illuminate\Container\Container
+     * @since 2.0.0
      */
     public static function getContainer()
     {
@@ -47,6 +55,7 @@ class Facade
     /**
      * Get the registered name of the component
      * @return string
+     * @since 2.0.0
      */
     protected static function getFacadeAccessor()
     {
@@ -57,6 +66,7 @@ class Facade
      * Resolve the facade instance from the container
      * @param string $name
      * @return mixed
+     * @since 2.0.0
      */
     protected static function resolveFacadeInstance($name)
     {
@@ -71,6 +81,7 @@ class Facade
      * @param string $method
      * @param array $args
      * @return mixed
+     * @since 2.0.0
      */
     public static function __callStatic($method, $args)
     {

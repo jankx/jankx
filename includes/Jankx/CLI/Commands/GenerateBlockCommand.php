@@ -2,6 +2,11 @@
 
 namespace Jankx\CLI\Commands;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use WP_CLI;
 use WP_CLI_Command;
 

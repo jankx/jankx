@@ -2,13 +2,18 @@
 
 namespace Jankx\CLI\Fixers;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\CLI\Fixers\IssueFixerInterface;
 
 /**
  * Fixer for adding ABSPATH security check in PHP header
  *
  * @package Jankx\CLI\Fixers
- * @since 2.0.1
+ * @since 2.0.0
  */
 class ABSPATHCheckFixer implements IssueFixerInterface
 {
@@ -18,7 +23,7 @@ class ABSPATHCheckFixer implements IssueFixerInterface
      * @param string $content
      * @param array $fix
      * @return string
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function fix($content, $fix)
     {
@@ -41,19 +46,31 @@ class ABSPATHCheckFixer implements IssueFixerInterface
      *
      * @param array $lines
      * @return int
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function findInsertPosition($lines)
     {
-        $insertLine = 0;
+        $insertLine = 1; // Default: insert after <?php
 
         // Look for namespace declaration
         for ($i = 0; $i < count($lines); $i++) {
             $line = trim($lines[$i]);
 
+            // Skip empty lines and comments
+            if (empty($line) || strpos($line, '//') === 0 || strpos($line, '/*') === 0 || strpos($line, '*') === 0) {
+                continue;
+            }
+
             // Find namespace declaration
             if (strpos($line, 'namespace') === 0) {
                 $insertLine = $i + 1; // Insert after namespace
+                break;
+            }
+
+            // If we find a non-empty line that's not a comment and not namespace,
+            // insert ABSPATH check before it
+            if (!empty($line) && strpos($line, '<?php') !== 0) {
+                $insertLine = $i;
                 break;
             }
         }
@@ -65,7 +82,7 @@ class ABSPATHCheckFixer implements IssueFixerInterface
      * Create ABSPATH security check code
      *
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function createABSPATHCheck()
     {

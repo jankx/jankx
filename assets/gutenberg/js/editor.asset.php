@@ -6,6 +6,11 @@
  * For now, we'll provide a basic structure
  */
 
+
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
 return [
     'dependencies' => [
         'wp-blocks',
@@ -18,5 +23,5 @@ return [
         'wp-data',
         'wp-compose',
     ],
-    'version' => JANKX_VERSION,
+    'version' => \Jankx\Jankx::getFrameworkVersion(),
 ];

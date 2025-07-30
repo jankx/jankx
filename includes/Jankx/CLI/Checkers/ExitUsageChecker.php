@@ -2,6 +2,11 @@
 
 namespace Jankx\CLI\Checkers;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 /**
  * Checker for improper exit() usage
  *
@@ -23,7 +28,7 @@ class ExitUsageChecker extends AbstractIssueChecker
         $issues = [];
 
         // Check for exit() without ABSPATH check
-        if (preg_match_all('/exit\s*\(\s*[\'"]/', $content, $matches, PREG_OFFSET_CAPTURE)) {
+        if (preg_match_all('/exit\s*\(/', $content, $matches, PREG_OFFSET_CAPTURE)) {
             foreach ($matches[0] as $match) {
                 $line = $this->getLineNumber($content, $match[1]);
 

@@ -2,6 +2,11 @@
 
 namespace Jankx\Kernel;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\Contracts\KernelInterface;
 use Jankx\Bootstrappers\Frontend\FrontendBootstrapper;
 use Jankx\Bootstrappers\Frontend\WooCommerceBootstrapper;
@@ -30,8 +35,15 @@ class FrontendKernel extends Kernel implements KernelInterface
      */
     protected function registerBootstrappers(): void
     {
+        parent::registerBootstrappers();
+
         // Theme bootstrapper (highest priority)
         $this->addBootstrapper(ThemeBootstrapper::class);
+
+        // Debug bootstrapper (when JANKX_DEBUG is enabled)
+        if (defined('JANKX_DEBUG') && JANKX_DEBUG) {
+            $this->addBootstrapper(\Jankx\Bootstrappers\Global\DebugBootstrapper::class);
+        }
 
         // Gutenberg Frontend bootstrapper (for used blocks only)
         $this->addBootstrapper(GutenbergFrontendBootstrapper::class);
@@ -56,7 +68,7 @@ class FrontendKernel extends Kernel implements KernelInterface
      */
     protected function registerServices(): void
     {
-        // Frontend-specific services will be registered here
+        parent::registerServices();
     }
 
     /**
@@ -64,7 +76,11 @@ class FrontendKernel extends Kernel implements KernelInterface
      */
     protected function registerHooks(): void
     {
-        // Frontend-specific hooks will be registered here
+        $this->hooks = [
+            'wp_loaded' => ['Jankx\Kernel\FrontendKernel', 'loadFrontendServices'],
+            'wp_enqueue_scripts' => ['Jankx\Kernel\FrontendKernel', 'enqueueFrontendAssets'],
+            'wp_head' => ['Jankx\Kernel\FrontendKernel', 'addHeadMeta'],
+        ];
     }
 
     /**
@@ -72,7 +88,10 @@ class FrontendKernel extends Kernel implements KernelInterface
      */
     protected function registerFilters(): void
     {
-        // Frontend-specific filters will be registered here
+        $this->filters = [
+            'jankx_frontend_title' => ['Jankx\Kernel\FrontendKernel', 'filterPageTitle'],
+            'jankx_frontend_description' => ['Jankx\Kernel\FrontendKernel', 'filterPageDescription'],
+        ];
     }
 
     /**

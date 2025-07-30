@@ -2,6 +2,20 @@
 
 namespace Jankx\Debug;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
+use Jankx\Debug\Services\DebugInfoService;
+use Jankx\Debug\Services\QueryCountService;
+use Jankx\Debug\Services\CacheInfoService;
+use Jankx\Debug\Services\GutenbergBlocksService;
+use Jankx\Debug\Services\PluginDebugService;
+use Jankx\Debug\Renderers\DebugInfoRenderer;
+use Jankx\Debug\Contracts\DebugInfoInterface;
+use Jankx\Facades\Logger;
+
 /**
  * Debug Information Manager for Jankx Framework
  *
@@ -9,1179 +23,829 @@ namespace Jankx\Debug;
  * when JANKX_DEBUG is enabled.
  *
  * @package Jankx\Debug
- * @since 2.0.1
+ * @since 2.0.0
  */
-class DebugInfo
+class DebugInfo implements DebugInfoInterface
 {
     /**
-     * @var float
-     * @since 2.0.1
+     * @var DebugInfoService
+     * @since 2.0.0
      */
-    private static $startTime;
+    private $debugInfoService;
 
     /**
-     * @var array
-     * @since 2.0.1
+     * @var QueryCountService
+     * @since 2.0.0
      */
-    private static $cacheInfo = [];
+    private $queryCountService;
 
     /**
-     * @var array
-     * @since 2.0.1
+     * @var CacheInfoService
+     * @since 2.0.0
      */
-    private static $pluginCacheInfo = [];
+    private $cacheInfoService;
 
     /**
-     * @var array
-     * @since 2.0.1
+     * @var GutenbergBlocksService
+     * @since 2.0.0
      */
-    private static $objectCacheInfo = [];
+    private $gutenbergBlocksService;
 
     /**
-     * @var int
-     * @since 2.0.1
+     * @var PluginDebugService
+     * @since 2.0.0
      */
-    private static $initialQueryCount = 0;
+    private $pluginDebugService;
 
     /**
-     * @var int
-     * @since 2.0.1
+     * @var DebugInfoRenderer
+     * @since 2.0.0
      */
-    private static $queryCount = 0;
+    private $renderer;
+
+    /**
+     * @var bool
+     * @since 2.0.0
+     */
+    private $isInitialized = false;
+
+    /**
+     * Constructor with dependency injection
+     *
+     * @param DebugInfoService $debugInfoService
+     * @param QueryCountService $queryCountService
+     * @param CacheInfoService $cacheInfoService
+     * @param GutenbergBlocksService $gutenbergBlocksService
+     * @param PluginDebugService $pluginDebugService
+     * @param DebugInfoRenderer $renderer
+     * @since 2.0.0
+     */
+    public function __construct(
+        DebugInfoService $debugInfoService,
+        QueryCountService $queryCountService,
+        CacheInfoService $cacheInfoService,
+        GutenbergBlocksService $gutenbergBlocksService,
+        PluginDebugService $pluginDebugService,
+        DebugInfoRenderer $renderer
+    ) {
+        $this->debugInfoService = $debugInfoService;
+        $this->queryCountService = $queryCountService;
+        $this->cacheInfoService = $cacheInfoService;
+        $this->gutenbergBlocksService = $gutenbergBlocksService;
+        $this->pluginDebugService = $pluginDebugService;
+        $this->renderer = $renderer;
+    }
 
     /**
      * Initialize debug tracking
      *
-     * @since 2.0.1
+     * @since 2.0.0
      */
-    public static function init()
+    public function init(): void
     {
-        if (!defined('JANKX_DEBUG') || !JANKX_DEBUG) {
+        Logger::debug('DebugInfo::init', ['shouldInitialize' => $this->shouldInitialize()]);
+        if (!$this->shouldInitialize()) {
             return;
         }
 
-        self::$startTime = microtime(true);
+        $this->debugInfoService->startTracking();
+        $this->queryCountService->startTracking();
+        $this->cacheInfoService->captureInfo();
+        $this->gutenbergBlocksService->captureInfo();
+        $this->pluginDebugService->captureInfo();
 
-        // Capture initial query count when functions.php is loaded
-        self::captureInitialQueryCount();
-
-        // Hook into WordPress to capture cache information
-        add_action('wp_footer', [self::class, 'displayDebugInfo'], 999);
-        add_action('admin_footer', [self::class, 'displayDebugInfo'], 999);
-
-        // Capture cache information
-        self::captureCacheInfo();
-
-        // Hook into database queries to count them
-        add_filter('query', [self::class, 'countQuery'], 10, 1);
-
-        // Also hook into wpdb query method
-        if (isset($GLOBALS['wpdb'])) {
-            add_action('wpdb_query', [self::class, 'countWpdbQuery'], 10, 2);
-        }
-
-        // Enable query logging
-        if (!defined('SAVEQUERIES')) {
-            define('SAVEQUERIES', true);
-        }
-    }
-
-        /**
-     * Capture initial query count when functions.php is loaded
-     *
-     * @since 2.0.1
-     */
-    private static function captureInitialQueryCount()
-    {
-        global $wpdb;
-
-        // Enable query logging if not already enabled
-        if (!defined('SAVEQUERIES')) {
-            define('SAVEQUERIES', true);
-        }
-
-        if ($wpdb && method_exists($wpdb, 'num_queries')) {
-            self::$initialQueryCount = $wpdb->num_queries;
-        } else {
-            // Fallback: count queries from $wpdb->queries if available
-            if ($wpdb && isset($wpdb->queries) && is_array($wpdb->queries)) {
-                self::$initialQueryCount = count($wpdb->queries);
-            }
-        }
+        $this->registerHooks();
+        $this->isInitialized = true;
     }
 
     /**
-     * Capture cache information from various sources
+     * Check if debug should be initialized
      *
-     * @since 2.0.1
+     * @return bool
+     * @since 2.0.0
      */
-    private static function captureCacheInfo()
+    private function shouldInitialize(): bool
     {
-        // WordPress Object Cache
-        global $wp_object_cache;
-        if ($wp_object_cache && method_exists($wp_object_cache, 'getStats')) {
-            self::$cacheInfo['object_cache'] = $wp_object_cache->getStats();
-        }
-
-        // Transients
-        self::$cacheInfo['transients'] = self::getTransientsInfo();
-
-        // Plugin cache information
-        self::capturePluginCacheInfo();
-
-        // Object cache information
-        self::captureObjectCacheInfo();
-    }
-
-        /**
-     * Get transients information
-     *
-     * @return array
-     * @since 2.0.1
-     */
-    private static function getTransientsInfo()
-    {
-        global $wpdb;
-
-        // Check if $wpdb is available and has get_results method
-        if (!$wpdb || !method_exists($wpdb, 'get_results')) {
-            return [
-                'count' => 0,
-                'autoload_count' => 0,
-                'total_size' => 0
-            ];
-        }
-
-        $transients = $wpdb->get_results(
-            "SELECT option_name, option_value, autoload
-             FROM {$wpdb->options}
-             WHERE option_name LIKE '_transient_%'
-             ORDER BY option_name"
-        );
-
-        $info = [
-            'count' => count($transients),
-            'autoload_count' => 0,
-            'total_size' => 0
-        ];
-
-        foreach ($transients as $transient) {
-            if ($transient->autoload === 'yes') {
-                $info['autoload_count']++;
-            }
-            $info['total_size'] += strlen($transient->option_value);
-        }
-
-        return $info;
-    }
-
-        /**
-     * Get query count since functions.php was loaded
-     *
-     * @return array
-     * @since 2.0.1
-     */
-    private static function getQueryCountSinceInit()
-    {
-        global $wpdb;
-
-        // Use our custom query counter as primary method
-        $currentQueryCount = self::$queryCount;
-
-        // Fallback to wpdb methods if our counter is 0
-        if ($currentQueryCount == 0 && $wpdb) {
-            if (method_exists($wpdb, 'num_queries')) {
-                $currentQueryCount = $wpdb->num_queries;
-            } elseif (isset($wpdb->queries) && is_array($wpdb->queries)) {
-                $currentQueryCount = count($wpdb->queries);
-            } elseif (defined('SAVEQUERIES') && SAVEQUERIES && isset($wpdb->queries)) {
-                $currentQueryCount = count($wpdb->queries);
-            }
-        }
-
-        $queriesSinceInit = $currentQueryCount - self::$initialQueryCount;
-
-        return [
-            'total_queries' => $currentQueryCount,
-            'queries_since_init' => $queriesSinceInit,
-            'initial_count' => self::$initialQueryCount
-        ];
+        return defined('JANKX_DEBUG') && JANKX_DEBUG && !$this->isInitialized;
     }
 
     /**
-     * Debug method to check query counting status
+     * Register WordPress hooks
      *
-     * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
-    private static function debugQueryCounting()
+    private function registerHooks(): void
     {
-        global $wpdb;
+        add_action('wp_footer', [$this, 'displayDebugInfo'], 999);
+        add_action('admin_footer', [$this, 'displayDebugInfo'], 999);
 
-        $debug = [
-            'wpdb_exists' => isset($wpdb),
-            'wpdb_class' => $wpdb ? get_class($wpdb) : 'null',
-            'num_queries_method' => $wpdb && method_exists($wpdb, 'num_queries'),
-            'queries_property' => $wpdb && isset($wpdb->queries),
-            'queries_is_array' => $wpdb && isset($wpdb->queries) && is_array($wpdb->queries),
-            'savequeries_defined' => defined('SAVEQUERIES'),
-            'savequeries_value' => defined('SAVEQUERIES') ? SAVEQUERIES : 'undefined',
-            'initial_count' => self::$initialQueryCount,
-            'current_queries' => $wpdb ? (method_exists($wpdb, 'num_queries') ? $wpdb->num_queries : 'method_not_exists') : 'wpdb_null'
-        ];
+        // Add cache prevention headers when debug is active
+        add_action('wp_head', [$this, 'addCachePreventionHeaders'], 1);
+        add_action('admin_head', [$this, 'addCachePreventionHeaders'], 1);
 
-        return $debug;
+        // Prevent caching by popular optimization plugins
+        add_action('init', [$this, 'preventCachingByPlugins']);
     }
 
     /**
-     * Count database queries
+     * Add cache prevention headers for debug information
      *
-     * @param string $query
-     * @return string
-     * @since 2.0.1
+     * @since 2.0.0
      */
-    public static function countQuery($query)
+    public function addCachePreventionHeaders(): void
     {
-        self::$queryCount++;
-        return $query;
-    }
-
-    /**
-     * Count wpdb queries
-     *
-     * @param string $query
-     * @param string $query_type
-     * @since 2.0.1
-     */
-    public static function countWpdbQuery($query, $query_type)
-    {
-        self::$queryCount++;
-    }
-
-    /**
-     * Capture object cache information
-     *
-     * @since 2.0.1
-     */
-    private static function captureObjectCacheInfo()
-    {
-        // OPcache
-        if (function_exists('opcache_get_status')) {
-            $opcache_status = opcache_get_status();
-            if ($opcache_status) {
-                self::$objectCacheInfo['opcache'] = [
-                    'enabled' => true,
-                    'memory_usage' => $opcache_status['memory_usage'] ?? [],
-                    'opcache_statistics' => $opcache_status['opcache_statistics'] ?? [],
-                    'interned_strings_usage' => $opcache_status['interned_strings_usage'] ?? [],
-                    'jit' => $opcache_status['jit'] ?? []
-                ];
-            } else {
-                self::$objectCacheInfo['opcache'] = ['enabled' => false];
-            }
-        } else {
-            self::$objectCacheInfo['opcache'] = ['enabled' => false, 'reason' => 'function_not_exists'];
+        if (!$this->shouldDisplay()) {
+            return;
         }
 
-        // Redis
-        if (class_exists('Redis')) {
-            try {
-                $redis = new Redis();
-                if ($redis->connect('127.0.0.1', 6379, 1)) {
-                    $info = $redis->info();
-                    self::$objectCacheInfo['redis'] = [
-                        'enabled' => true,
-                        'version' => $info['redis_version'] ?? 'unknown',
-                        'used_memory' => $info['used_memory'] ?? 0,
-                        'used_memory_human' => $info['used_memory_human'] ?? '0B',
-                        'connected_clients' => $info['connected_clients'] ?? 0,
-                        'total_commands_processed' => $info['total_commands_processed'] ?? 0
-                    ];
-                    $redis->close();
-                } else {
-                    self::$objectCacheInfo['redis'] = ['enabled' => false, 'reason' => 'connection_failed'];
-                }
-            } catch (Exception $e) {
-                self::$objectCacheInfo['redis'] = ['enabled' => false, 'reason' => 'exception', 'error' => $e->getMessage()];
-            }
-        } else {
-            self::$objectCacheInfo['redis'] = ['enabled' => false, 'reason' => 'class_not_exists'];
+        // Add no-cache headers to prevent caching of debug info
+        header('Cache-Control: no-cache, no-store, must-revalidate, max-age=0');
+        header('Pragma: no-cache');
+        header('Expires: Thu, 01 Jan 1970 00:00:00 GMT');
+
+        // Add custom header to identify debug mode
+        header('X-Jankx-Debug: active');
+
+        Logger::debug('Cache prevention headers added for debug mode');
+    }
+
+    /**
+     * Prevent caching by popular WordPress optimization plugins
+     *
+     * @since 2.0.0
+     */
+    public function preventCachingByPlugins(): void
+    {
+        if (!$this->shouldDisplay()) {
+            return;
         }
 
-        // Memcached
-        if (class_exists('Memcached')) {
-            try {
-                $memcached = new Memcached();
-                if ($memcached->addServer('127.0.0.1', 11211)) {
-                    $stats = $memcached->getStats();
-                    if ($stats) {
-                        $server_stats = reset($stats); // Get first server stats
-                        self::$objectCacheInfo['memcached'] = [
-                            'enabled' => true,
-                            'version' => $server_stats['version'] ?? 'unknown',
-                            'curr_items' => $server_stats['curr_items'] ?? 0,
-                            'total_items' => $server_stats['total_items'] ?? 0,
-                            'bytes' => $server_stats['bytes'] ?? 0,
-                            'bytes_read' => $server_stats['bytes_read'] ?? 0,
-                            'bytes_written' => $server_stats['bytes_written'] ?? 0
-                        ];
-                    } else {
-                        self::$objectCacheInfo['memcached'] = ['enabled' => false, 'reason' => 'no_stats'];
+        // Disable WP Rocket caching for debug pages
+        if (defined('WP_ROCKET_VERSION')) {
+            add_filter('rocket_override_donotcachepage', '__return_true');
+            add_filter('rocket_cache_reject_uri', function ($uris) {
+                $uris[] = '.*';
+                return $uris;
+            });
+            Logger::debug('WP Rocket caching disabled for debug mode');
+        }
+
+        // Disable W3 Total Cache for debug pages
+        if (defined('W3TC_VERSION')) {
+            add_filter('w3tc_can_cache', '__return_false');
+            add_filter('w3tc_can_cache_page', '__return_false');
+            Logger::debug('W3 Total Cache disabled for debug mode');
+        }
+
+        // Disable WP Super Cache for debug pages
+        if (defined('WPCACHEHOME')) {
+            add_filter('wp_cache_ob_callback_filter', '__return_false');
+            add_filter('do_rocket_generate_caching_files', '__return_false');
+            Logger::debug('WP Super Cache disabled for debug mode');
+        }
+
+        // Disable Autoptimize for debug pages
+        if (defined('AUTOPTIMIZE_PLUGIN_VERSION')) {
+            add_filter('autoptimize_filter_js_exclude', function ($exclude) {
+                $exclude[] = 'jankx-debug';
+                return $exclude;
+            });
+            add_filter('autoptimize_filter_css_exclude', function ($exclude) {
+                $exclude[] = 'jankx-debug';
+                return $exclude;
+            });
+            Logger::debug('Autoptimize exclusions added for debug mode');
+        }
+
+        // Disable LiteSpeed Cache for debug pages
+        if (defined('LSCWP_V')) {
+            add_filter('litespeed_cache_api_control', '__return_false');
+            add_filter('litespeed_cache_api_control_force_public', '__return_false');
+            Logger::debug('LiteSpeed Cache disabled for debug mode');
+        }
+
+        // Disable Hummingbird Cache for debug pages
+        if (class_exists('WP_Hummingbird')) {
+            add_filter('wphb_cache_control', '__return_false');
+            Logger::debug('Hummingbird Cache disabled for debug mode');
+        }
+
+        // Disable SG Optimizer for debug pages
+        if (defined('SG_CACHEPRESS_VERSION')) {
+            add_filter('sgo_js_minify_exclude', function ($exclude) {
+                $exclude[] = 'jankx-debug';
+                return $exclude;
+            });
+            add_filter('sgo_css_minify_exclude', function ($exclude) {
+                $exclude[] = 'jankx-debug';
+                return $exclude;
+            });
+            Logger::debug('SG Optimizer exclusions added for debug mode');
+        }
+
+        // Disable Breeze Cache for debug pages
+        if (defined('BREEZE_VERSION')) {
+            add_filter('breeze_cache_control', '__return_false');
+            Logger::debug('Breeze Cache disabled for debug mode');
+        }
+
+        // Disable Swift Performance for debug pages
+        if (defined('SWIFT_PERFORMANCE_VERSION')) {
+            add_filter('swift_performance_cache_control', '__return_false');
+            Logger::debug('Swift Performance Cache disabled for debug mode');
+        }
+
+        // Add JavaScript to prevent caching by client-side optimizations
+        add_action('wp_head', [$this, 'addClientSideCachePrevention'], 999);
+        add_action('admin_head', [$this, 'addClientSideCachePrevention'], 999);
+    }
+
+    /**
+     * Add client-side cache prevention JavaScript
+     *
+     * @since 2.0.0
+     */
+    public function addClientSideCachePrevention(): void
+    {
+        if (!$this->shouldDisplay()) {
+            return;
+        }
+
+        echo '<script>
+        // Prevent caching of debug information
+        if (typeof window !== "undefined") {
+            // Clear any existing cache for debug elements
+            if (window.caches) {
+                caches.keys().then(function(names) {
+                    names.forEach(function(name) {
+                        caches.delete(name);
+                    });
+                });
+            }
+
+            // Disable service worker caching for debug pages
+            if ("serviceWorker" in navigator) {
+                navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                    for (let registration of registrations) {
+                        registration.unregister();
                     }
-                } else {
-                    self::$objectCacheInfo['memcached'] = ['enabled' => false, 'reason' => 'connection_failed'];
-                }
-            } catch (Exception $e) {
-                self::$objectCacheInfo['memcached'] = ['enabled' => false, 'reason' => 'exception', 'error' => $e->getMessage()];
-            }
-        } else {
-            self::$objectCacheInfo['memcached'] = ['enabled' => false, 'reason' => 'class_not_exists'];
-        }
-
-        // APC/APCu
-        if (function_exists('apcu_enabled') && apcu_enabled()) {
-            $apcu_info = apcu_cache_info();
-            $apcu_sma_info = apcu_sma_info();
-            self::$objectCacheInfo['apcu'] = [
-                'enabled' => true,
-                'version' => phpversion('apcu'),
-                'cache_hits' => $apcu_info['cache_hits'] ?? 0,
-                'cache_misses' => $apcu_info['cache_misses'] ?? 0,
-                'num_entries' => $apcu_info['num_entries'] ?? 0,
-                'memory_usage' => $apcu_sma_info['avail_mem'] ?? 0
-            ];
-        } elseif (function_exists('apc_cache_info')) {
-            $apc_info = apc_cache_info();
-            $apc_sma_info = apc_sma_info();
-            self::$objectCacheInfo['apc'] = [
-                'enabled' => true,
-                'version' => phpversion('apc'),
-                'cache_hits' => $apc_info['cache_hits'] ?? 0,
-                'cache_misses' => $apc_info['cache_misses'] ?? 0,
-                'num_entries' => $apc_info['num_entries'] ?? 0,
-                'memory_usage' => $apc_sma_info['avail_mem'] ?? 0
-            ];
-        } else {
-            self::$objectCacheInfo['apcu'] = ['enabled' => false, 'reason' => 'not_available'];
-        }
-
-        // WordPress Object Cache
-        global $wp_object_cache;
-        if ($wp_object_cache) {
-            $wp_cache_class = get_class($wp_object_cache);
-            self::$objectCacheInfo['wordpress_object_cache'] = [
-                'enabled' => true,
-                'class' => $wp_cache_class,
-                'is_persistent' => method_exists($wp_object_cache, 'getStats'),
-                'has_stats' => method_exists($wp_object_cache, 'getStats')
-            ];
-
-            // Try to get stats if available
-            if (method_exists($wp_object_cache, 'getStats')) {
-                try {
-                    $wp_stats = $wp_object_cache->getStats();
-                    self::$objectCacheInfo['wordpress_object_cache']['stats'] = $wp_stats;
-                } catch (Exception $e) {
-                    self::$objectCacheInfo['wordpress_object_cache']['stats_error'] = $e->getMessage();
-                }
-            }
-        } else {
-            self::$objectCacheInfo['wordpress_object_cache'] = ['enabled' => false, 'reason' => 'not_available'];
-        }
-    }
-
-    /**
-     * Capture plugin cache information
-     *
-     * @since 2.0.1
-     */
-    private static function capturePluginCacheInfo()
-    {
-        // WooCommerce cache
-        if (class_exists('WC_Cache_Helper')) {
-            self::$pluginCacheInfo['woocommerce'] = [
-                'cache_enabled' => wc_get_cache_helper()->get_transient_version('product') !== false,
-                'cache_version' => wc_get_cache_helper()->get_transient_version('product')
-            ];
-        }
-
-        // WP Rocket cache
-        if (function_exists('rocket_get_option')) {
-            self::$pluginCacheInfo['wp_rocket'] = [
-                'cache_enabled' => rocket_get_option('cache_logged_user'),
-                'minify_enabled' => rocket_get_option('minify_html'),
-                'cdn_enabled' => rocket_get_option('cdn')
-            ];
-        }
-
-        // W3 Total Cache
-        if (class_exists('W3_Config')) {
-            $w3_config = new \W3_Config();
-            self::$pluginCacheInfo['w3_total_cache'] = [
-                'page_cache_enabled' => $w3_config->get_boolean('pgcache.enabled'),
-                'database_cache_enabled' => $w3_config->get_boolean('dbcache.enabled'),
-                'object_cache_enabled' => $w3_config->get_boolean('objectcache.enabled')
-            ];
-        }
-
-        // WP Super Cache
-        if (function_exists('wp_cache_get_option')) {
-            self::$pluginCacheInfo['wp_super_cache'] = [
-                'cache_enabled' => wp_cache_get_option('wp_cache_enabled'),
-                'mod_rewrite' => wp_cache_get_option('wp_cache_mod_rewrite')
-            ];
-        }
-    }
-
-    /**
-     * Display debug information in HTML
-     *
-     * @since 2.0.1
-     */
-    public static function displayDebugInfo()
-    {
-        if (!defined('JANKX_DEBUG') || !JANKX_DEBUG) {
-            return;
-        }
-
-        $responseTime = microtime(true) - self::$startTime;
-        $memoryUsage = memory_get_peak_usage(true);
-        $memoryLimit = ini_get('memory_limit');
-
-        $debugHtml = self::generateDebugHtml($responseTime, $memoryUsage, $memoryLimit);
-
-        echo $debugHtml;
-    }
-
-        /**
-     * Generate debug HTML
-     *
-     * @param float $responseTime
-     * @param int $memoryUsage
-     * @param string $memoryLimit
-     * @return string
-     * @since 2.0.1
-     */
-    private static function generateDebugHtml($responseTime, $memoryUsage, $memoryLimit)
-    {
-                // CSS Styles with higher specificity to avoid conflicts with Gutenberg
-        $css = '
-        <style>
-        /* Jankx Debug System - High specificity to avoid Gutenberg conflicts */
-        body:not(.wp-admin) #jankx-debug-info,
-        body.wp-admin:not(.gutenberg-editor-page) #jankx-debug-info {
-            position: fixed !important;
-            bottom: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
-            color: #ffffff !important;
-            font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace !important;
-            font-size: 12px !important;
-            line-height: 1.4 !important;
-            padding: 15px !important;
-            z-index: 999999 !important;
-            max-height: 350px !important;
-            overflow-y: auto !important;
-            border-top: 3px solid #0073aa !important;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.3) !important;
-            backdrop-filter: blur(10px) !important;
-            -webkit-backdrop-filter: blur(10px) !important;
-            transition: transform 0.3s ease-in-out, max-height 0.3s ease-in-out !important;
-        }
-
-        body:not(.wp-admin) #jankx-debug-info.minimized,
-        body.wp-admin:not(.gutenberg-editor-page) #jankx-debug-info.minimized {
-            transform: translateY(calc(100% - 40px)) !important;
-            max-height: 40px !important;
-            overflow: hidden !important;
-            cursor: pointer !important;
-        }
-
-        body:not(.wp-admin) #jankx-debug-info.minimized:hover,
-        body.wp-admin:not(.gutenberg-editor-page) #jankx-debug-info.minimized:hover {
-            transform: translateY(calc(100% - 50px)) !important;
-            max-height: 50px !important;
-        }
-
-        body:not(.wp-admin) #jankx-debug-info::-webkit-scrollbar,
-        body.wp-admin:not(.gutenberg-editor-page) #jankx-debug-info::-webkit-scrollbar {
-            width: 8px !important;
-        }
-
-        body:not(.wp-admin) #jankx-debug-info::-webkit-scrollbar-track,
-        body.wp-admin:not(.gutenberg-editor-page) #jankx-debug-info::-webkit-scrollbar-track {
-            background: #2d2d2d !important;
-        }
-
-        body:not(.wp-admin) #jankx-debug-info::-webkit-scrollbar-thumb,
-        body.wp-admin:not(.gutenberg-editor-page) #jankx-debug-info::-webkit-scrollbar-thumb {
-            background: #0073aa !important;
-            border-radius: 4px !important;
-        }
-
-        body:not(.wp-admin) #jankx-debug-info::-webkit-scrollbar-thumb:hover,
-        body.wp-admin:not(.gutenberg-editor-page) #jankx-debug-info::-webkit-scrollbar-thumb:hover {
-            background: #005a87 !important;
-        }
-
-        body:not(.wp-admin) .jankx-debug-header,
-        body.wp-admin:not(.gutenberg-editor-page) .jankx-debug-header {
-            display: flex !important;
-            justify-content: space-between !important;
-            align-items: center !important;
-            margin-bottom: 15px !important;
-            padding-bottom: 10px !important;
-            border-bottom: 1px solid #444 !important;
-        }
-
-        body:not(.wp-admin) .jankx-debug-title,
-        body.wp-admin:not(.gutenberg-editor-page) .jankx-debug-title {
-            font-weight: bold !important;
-            font-size: 14px !important;
-            color: #0073aa !important;
-        }
-
-        body:not(.wp-admin) .jankx-debug-close,
-        body.wp-admin:not(.gutenberg-editor-page) .jankx-debug-close {
-            background: #0073aa !important;
-            color: white !important;
-            border: none !important;
-            padding: 6px 12px !important;
-            cursor: pointer !important;
-            border-radius: 4px !important;
-            font-size: 11px !important;
-            transition: background 0.2s !important;
-        }
-
-        body:not(.wp-admin) .jankx-debug-close:hover,
-        body.wp-admin:not(.gutenberg-editor-page) .jankx-debug-close:hover {
-            background: #005a87 !important;
-        }
-
-        body:not(.wp-admin) .jankx-debug-toggle,
-        body.wp-admin:not(.gutenberg-editor-page) .jankx-debug-toggle {
-            background: #ff9800 !important;
-            color: white !important;
-            border: none !important;
-            padding: 6px 12px !important;
-            cursor: pointer !important;
-            border-radius: 4px !important;
-            font-size: 11px !important;
-            transition: background 0.2s !important;
-            margin-right: 8px !important;
-        }
-
-        body:not(.wp-admin) .jankx-debug-toggle:hover,
-        body.wp-admin:not(.gutenberg-editor-page) .jankx-debug-toggle:hover {
-            background: #f57c00 !important;
-        }
-
-        body:not(.wp-admin) .jankx-debug-fullscreen,
-        body.wp-admin:not(.gutenberg-editor-page) .jankx-debug-fullscreen {
-            background: #9c27b0 !important;
-            color: white !important;
-            border: none !important;
-            padding: 6px 12px !important;
-            cursor: pointer !important;
-            border-radius: 4px !important;
-            font-size: 11px !important;
-            transition: background 0.2s !important;
-            margin-right: 8px !important;
-        }
-
-        body:not(.wp-admin) .jankx-debug-fullscreen:hover,
-        body.wp-admin:not(.gutenberg-editor-page) .jankx-debug-fullscreen:hover {
-            background: #7b1fa2 !important;
-        }
-
-        body:not(.wp-admin) #jankx-debug-info.fullscreen,
-        body.wp-admin:not(.gutenberg-editor-page) #jankx-debug-info.fullscreen {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            bottom: 0 !important;
-            max-height: none !important;
-            height: 100vh !important;
-            z-index: 999999 !important;
-            transform: none !important;
-        }
-
-        body:not(.wp-admin) #jankx-debug-info.fullscreen .jankx-debug-header,
-        body.wp-admin:not(.gutenberg-editor-page) #jankx-debug-info.fullscreen .jankx-debug-header {
-            position: sticky !important;
-            top: 0 !important;
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
-            z-index: 10 !important;
-            padding: 15px !important;
-            margin: -15px -15px 15px -15px !important;
-            border-bottom: 2px solid #0073aa !important;
-        }
-
-        body:not(.wp-admin) #jankx-debug-info.fullscreen .jankx-debug-content,
-        body.wp-admin:not(.gutenberg-editor-page) #jankx-debug-info.fullscreen .jankx-debug-content {
-            height: calc(100vh - 80px) !important;
-            overflow-y: auto !important;
-            padding: 0 15px !important;
-        }
-
-        body:not(.wp-admin) .jankx-debug-section,
-        body.wp-admin:not(.gutenberg-editor-page) .jankx-debug-section {
-            margin-bottom: 12px !important;
-            padding: 8px !important;
-            background: rgba(255,255,255,0.05) !important;
-            border-radius: 4px !important;
-            border-left: 3px solid #0073aa !important;
-        }
-
-        body:not(.wp-admin) .jankx-debug-section-title,
-        body.wp-admin:not(.gutenberg-editor-page) .jankx-debug-section-title {
-            font-weight: bold !important;
-            margin-bottom: 5px !important;
-            color: #00d4aa !important;
-        }
-
-        body:not(.wp-admin) .jankx-debug-item,
-        body.wp-admin:not(.gutenberg-editor-page) .jankx-debug-item {
-            margin: 3px 0 !important;
-            padding: 2px 0 !important;
-        }
-
-        body:not(.wp-admin) .jankx-debug-list,
-        body.wp-admin:not(.gutenberg-editor-page) .jankx-debug-list {
-            margin: 5px 0 !important;
-            padding-left: 20px !important;
-        }
-
-        body:not(.wp-admin) .jankx-debug-list li,
-        body.wp-admin:not(.gutenberg-editor-page) .jankx-debug-list li {
-            margin: 2px 0 !important;
-            padding: 1px 0 !important;
-        }
-
-        body:not(.wp-admin) .jankx-debug-grid,
-        body.wp-admin:not(.gutenberg-editor-page) .jankx-debug-grid {
-            display: grid !important;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
-            gap: 10px !important;
-            margin-top: 10px !important;
-        }
-
-        body:not(.wp-admin) .jankx-debug-metric,
-        body.wp-admin:not(.gutenberg-editor-page) .jankx-debug-metric {
-            background: rgba(0,115,170,0.1) !important;
-            padding: 8px !important;
-            border-radius: 4px !important;
-            border: 1px solid rgba(0,115,170,0.3) !important;
-        }
-
-        body:not(.wp-admin) .jankx-debug-metric-label,
-        body.wp-admin:not(.gutenberg-editor-page) .jankx-debug-metric-label {
-            font-weight: bold !important;
-            color: #00d4aa !important;
-            font-size: 11px !important;
-            text-transform: uppercase !important;
-            letter-spacing: 0.5px !important;
-        }
-
-        body:not(.wp-admin) .jankx-debug-metric-value,
-        body.wp-admin:not(.gutenberg-editor-page) .jankx-debug-metric-value {
-            font-size: 13px !important;
-            color: #ffffff !important;
-            margin-top: 2px !important;
-        }
-
-        body:not(.wp-admin) .jankx-debug-mini-bar,
-        body.wp-admin:not(.gutenberg-editor-page) .jankx-debug-mini-bar {
-            display: none !important;
-            position: fixed !important;
-            bottom: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            height: 40px !important;
-            background: linear-gradient(135deg, #0073aa 0%, #005a87 100%) !important;
-            color: white !important;
-            font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace !important;
-            font-size: 12px !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: space-between !important;
-            padding: 0 15px !important;
-            z-index: 999999 !important;
-            border-top: 2px solid #00d4aa !important;
-            cursor: pointer !important;
-            transition: height 0.3s ease-in-out !important;
-        }
-
-        body:not(.wp-admin) .jankx-debug-mini-bar:hover,
-        body.wp-admin:not(.gutenberg-editor-page) .jankx-debug-mini-bar:hover {
-            height: 50px !important;
-        }
-
-        body:not(.wp-admin) .jankx-debug-mini-title,
-        body.wp-admin:not(.gutenberg-editor-page) .jankx-debug-mini-title {
-            font-weight: bold !important;
-            color: #ffffff !important;
-        }
-
-        body:not(.wp-admin) .jankx-debug-mini-stats,
-        body.wp-admin:not(.gutenberg-editor-page) .jankx-debug-mini-stats {
-            display: flex !important;
-            gap: 20px !important;
-            font-size: 11px !important;
-            opacity: 0.9 !important;
-        }
-
-        body:not(.wp-admin) .jankx-debug-mini-stat,
-        body.wp-admin:not(.gutenberg-editor-page) .jankx-debug-mini-stat {
-            display: flex !important;
-            align-items: center !important;
-            gap: 5px !important;
-        }
-
-        /* Hide debug panel in Gutenberg editor to avoid conflicts */
-        body.gutenberg-editor-page #jankx-debug-info,
-        body.gutenberg-editor-page .jankx-debug-mini-bar {
-            display: none !important;
-        }
-
-        @media (max-width: 768px) {
-            body:not(.wp-admin) #jankx-debug-info,
-            body.wp-admin:not(.gutenberg-editor-page) #jankx-debug-info {
-                font-size: 11px !important;
-                padding: 10px !important;
-                max-height: 250px !important;
+                });
             }
 
-            body:not(.wp-admin) .jankx-debug-grid,
-            body.wp-admin:not(.gutenberg-editor-page) .jankx-debug-grid {
-                grid-template-columns: 1fr !important;
-                gap: 5px !important;
-            }
+            // Add meta tags to prevent caching
+            const meta = document.createElement("meta");
+            meta.httpEquiv = "Cache-Control";
+            meta.content = "no-cache, no-store, must-revalidate";
+            document.head.appendChild(meta);
 
-            body:not(.wp-admin) .jankx-debug-mini-stats,
-            body.wp-admin:not(.gutenberg-editor-page) .jankx-debug-mini-stats {
-                gap: 10px !important;
-                font-size: 10px !important;
-            }
+            const meta2 = document.createElement("meta");
+            meta2.httpEquiv = "Pragma";
+            meta2.content = "no-cache";
+            document.head.appendChild(meta2);
+
+            const meta3 = document.createElement("meta");
+            meta3.httpEquiv = "Expires";
+            meta3.content = "0";
+            document.head.appendChild(meta3);
         }
-        </style>';
-
-                // JavaScript
-        $js = '
-        <script>
-        function jankxMinimizeDebug() {
-            const debugInfo = document.getElementById("jankx-debug-info");
-            const miniBar = document.getElementById("jankx-debug-mini-bar");
-            const toggleBtn = document.getElementById("jankx-debug-toggle-btn");
-
-            debugInfo.classList.add("minimized");
-            miniBar.style.display = "flex";
-            toggleBtn.textContent = "□";
-
-            localStorage.setItem("jankx-debug-state", "minimized");
-        }
-
-        function jankxMaximizeDebug() {
-            const debugInfo = document.getElementById("jankx-debug-info");
-            const miniBar = document.getElementById("jankx-debug-mini-bar");
-            const toggleBtn = document.getElementById("jankx-debug-toggle-btn");
-
-            debugInfo.classList.remove("minimized");
-            miniBar.style.display = "none";
-            toggleBtn.textContent = "−";
-
-            localStorage.setItem("jankx-debug-state", "maximized");
-        }
-
-        function jankxToggleDebug() {
-            const debugInfo = document.getElementById("jankx-debug-info");
-            const miniBar = document.getElementById("jankx-debug-mini-bar");
-            const toggleBtn = document.getElementById("jankx-debug-toggle-btn");
-
-            // If in fullscreen mode, exit fullscreen first
-            if (debugInfo.classList.contains("fullscreen")) {
-                jankxExitFullscreen();
-            }
-
-            if (debugInfo.classList.contains("minimized")) {
-                jankxMaximizeDebug();
-            } else {
-                jankxMinimizeDebug();
-            }
-        }
-
-        function jankxToggleFullscreen() {
-            const debugInfo = document.getElementById("jankx-debug-info");
-            const miniBar = document.getElementById("jankx-debug-mini-bar");
-
-            if (debugInfo.classList.contains("fullscreen")) {
-                jankxExitFullscreen();
-            } else {
-                jankxEnterFullscreen();
-            }
-        }
-
-        function jankxEnterFullscreen() {
-            const debugInfo = document.getElementById("jankx-debug-info");
-            const miniBar = document.getElementById("jankx-debug-mini-bar");
-
-            debugInfo.classList.remove("minimized");
-            debugInfo.classList.add("fullscreen");
-            miniBar.style.display = "none";
-
-            localStorage.setItem("jankx-debug-state", "fullscreen");
-        }
-
-        function jankxExitFullscreen() {
-            const debugInfo = document.getElementById("jankx-debug-info");
-            const miniBar = document.getElementById("jankx-debug-mini-bar");
-            const toggleBtn = document.getElementById("jankx-debug-toggle-btn");
-
-            debugInfo.classList.remove("fullscreen");
-            miniBar.style.display = "none";
-            toggleBtn.textContent = "−";
-
-            localStorage.setItem("jankx-debug-state", "maximized");
-        }
-
-        // Check localStorage on load
-        document.addEventListener("DOMContentLoaded", function() {
-            const debugInfo = document.getElementById("jankx-debug-info");
-            const miniBar = document.getElementById("jankx-debug-mini-bar");
-            const toggleBtn = document.getElementById("jankx-debug-toggle-btn");
-            const state = localStorage.getItem("jankx-debug-state");
-
-            if (state === "minimized") {
-                debugInfo.classList.add("minimized");
-                miniBar.style.display = "flex";
-                toggleBtn.textContent = "□";
-            } else if (state === "fullscreen") {
-                debugInfo.classList.add("fullscreen");
-                miniBar.style.display = "none";
-                toggleBtn.textContent = "−";
-            }
-        });
-
-        // Click on minimized debug to maximize
-        document.addEventListener("click", function(e) {
-            const debugInfo = document.getElementById("jankx-debug-info");
-            const miniBar = document.getElementById("jankx-debug-mini-bar");
-
-            if (e.target === miniBar || miniBar.contains(e.target)) {
-                jankxMaximizeDebug();
-            }
-        });
         </script>';
-
-                $html = $css . $js . '<div id="jankx-debug-info">';
-
-        // Header
-        $html .= '<div class="jankx-debug-header">';
-        $html .= '<div class="jankx-debug-title">🔍 JANKX DEBUG INFO</div>';
-        $html .= '<div>';
-        $html .= '<button class="jankx-debug-fullscreen" onclick="jankxToggleFullscreen()" title="Fullscreen">⛶</button>';
-        $html .= '<button class="jankx-debug-toggle" onclick="jankxToggleDebug()" title="Toggle Debug Panel" id="jankx-debug-toggle-btn">−</button>';
-        $html .= '</div>';
-        $html .= '</div>';
-
-        // Content wrapper
-        $html .= '<div class="jankx-debug-content">';
-
-        // Metrics Grid
-        $html .= '<div class="jankx-debug-grid">';
-
-        // Response Time
-        $html .= '<div class="jankx-debug-metric">';
-        $html .= '<div class="jankx-debug-metric-label">⏱️ Response Time</div>';
-        $html .= '<div class="jankx-debug-metric-value">' . number_format($responseTime * 1000, 2) . 'ms</div>';
-        $html .= '</div>';
-
-        // Memory Usage
-        $html .= '<div class="jankx-debug-metric">';
-        $html .= '<div class="jankx-debug-metric-label">💾 Memory Usage</div>';
-        $html .= '<div class="jankx-debug-metric-value">' . self::formatBytes($memoryUsage) . ' / ' . $memoryLimit . '</div>';
-        $html .= '</div>';
-
-                // Database Queries
-        $queryInfo = self::getQueryCountSinceInit();
-        $html .= '<div class="jankx-debug-metric">';
-        $html .= '<div class="jankx-debug-metric-label">🗄️ Database</div>';
-        $html .= '<div class="jankx-debug-metric-value">';
-        $html .= $queryInfo['total_queries'] . ' total queries';
-        if ($queryInfo['queries_since_init'] > 0) {
-            $html .= '<br><small style="color: #00d4aa;">+' . $queryInfo['queries_since_init'] . ' since functions.php</small>';
-        }
-        $html .= '</div>';
-        $html .= '</div>';
-
-        $html .= '</div>'; // End grid
-
-        // Database Query Details
-        $queryInfo = self::getQueryCountSinceInit();
-        $debugInfo = self::debugQueryCounting();
-        $html .= '<div class="jankx-debug-section">';
-        $html .= '<div class="jankx-debug-section-title">🗄️ Database Queries</div>';
-        $html .= '<ul class="jankx-debug-list">';
-        $html .= '<li>Total Queries: ' . $queryInfo['total_queries'] . '</li>';
-        $html .= '<li>Since functions.php: +' . $queryInfo['queries_since_init'] . ' queries</li>';
-        $html .= '<li>Initial Count: ' . $queryInfo['initial_count'] . ' queries</li>';
-        $html .= '</ul>';
-
-        // Debug information (only show if queries = 0 and in debug mode)
-        if ($queryInfo['total_queries'] == 0 && defined('WP_DEBUG') && WP_DEBUG) {
-            $html .= '<div style="margin-top: 10px; padding: 8px; background: rgba(255,0,0,0.1); border-radius: 4px; font-size: 10px;">';
-            $html .= '<strong>Debug Info:</strong><br>';
-            $html .= 'Custom counter: ' . self::$queryCount . '<br>';
-            $html .= 'wpdb exists: ' . ($debugInfo['wpdb_exists'] ? '✅' : '❌') . '<br>';
-            $html .= 'num_queries method: ' . ($debugInfo['num_queries_method'] ? '✅' : '❌') . '<br>';
-            $html .= 'queries property: ' . ($debugInfo['queries_property'] ? '✅' : '❌') . '<br>';
-            $html .= 'SAVEQUERIES: ' . ($debugInfo['savequeries_defined'] ? '✅' : '❌') . '<br>';
-            $html .= 'Current queries: ' . $debugInfo['current_queries'];
-            $html .= '</div>';
-        }
-
-        $html .= '</div>';
-
-        // WordPress Cache Info
-        if (!empty(self::$cacheInfo)) {
-            $html .= '<div class="jankx-debug-section">';
-            $html .= '<div class="jankx-debug-section-title">🗄️ WordPress Cache</div>';
-            $html .= '<ul class="jankx-debug-list">';
-
-            if (isset(self::$cacheInfo['transients'])) {
-                $transients = self::$cacheInfo['transients'];
-                $html .= '<li>Transients: ' . $transients['count'] . ' items (' . self::formatBytes($transients['total_size']) . ')</li>';
-            }
-
-            if (isset(self::$cacheInfo['object_cache'])) {
-                $html .= '<li>Object Cache: Available</li>';
-            }
-
-            $html .= '</ul>';
-            $html .= '</div>';
-        }
-
-        // Plugin Cache Info
-        if (!empty(self::$pluginCacheInfo)) {
-            $html .= '<div class="jankx-debug-section">';
-            $html .= '<div class="jankx-debug-section-title">🔌 Plugin Cache</div>';
-            $html .= '<ul class="jankx-debug-list">';
-
-            foreach (self::$pluginCacheInfo as $plugin => $info) {
-                $status = [];
-                foreach ($info as $key => $value) {
-                    if (is_bool($value)) {
-                        $status[] = $key . ': ' . ($value ? '✅' : '❌');
-                    } else {
-                        $status[] = $key . ': ' . $value;
-                    }
-                }
-                $html .= '<li>' . ucfirst(str_replace('_', ' ', $plugin)) . ': ' . implode(', ', $status) . '</li>';
-            }
-
-            $html .= '</ul>';
-            $html .= '</div>';
-        }
-
-        // Object Cache Info
-        if (!empty(self::$objectCacheInfo)) {
-            $html .= '<div class="jankx-debug-section">';
-            $html .= '<div class="jankx-debug-section-title">⚡ Object Cache</div>';
-            $html .= '<ul class="jankx-debug-list">';
-
-            foreach (self::$objectCacheInfo as $cache_type => $info) {
-                if ($info['enabled']) {
-                    $status = [];
-
-                    switch ($cache_type) {
-                        case 'opcache':
-                            if (isset($info['opcache_statistics'])) {
-                                $stats = $info['opcache_statistics'];
-                                $status[] = 'Hits: ' . number_format($stats['hits'] ?? 0);
-                                $status[] = 'Misses: ' . number_format($stats['misses'] ?? 0);
-                                $status[] = 'Hit Rate: ' . round(($stats['opcache_hit_rate'] ?? 0), 2) . '%';
-                            }
-                            if (isset($info['memory_usage'])) {
-                                $mem = $info['memory_usage'];
-                                $status[] = 'Memory: ' . self::formatBytes($mem['used_memory'] ?? 0) . ' / ' . self::formatBytes($mem['free_memory'] ?? 0);
-                            }
-                            break;
-
-                        case 'redis':
-                            $status[] = 'Version: ' . ($info['version'] ?? 'unknown');
-                            $status[] = 'Memory: ' . ($info['used_memory_human'] ?? '0B');
-                            $status[] = 'Clients: ' . ($info['connected_clients'] ?? 0);
-                            $status[] = 'Commands: ' . number_format($info['total_commands_processed'] ?? 0);
-                            break;
-
-                        case 'memcached':
-                            $status[] = 'Version: ' . ($info['version'] ?? 'unknown');
-                            $status[] = 'Items: ' . number_format($info['curr_items'] ?? 0);
-                            $status[] = 'Memory: ' . self::formatBytes($info['bytes'] ?? 0);
-                            $status[] = 'Total Items: ' . number_format($info['total_items'] ?? 0);
-                            break;
-
-                        case 'apcu':
-                        case 'apc':
-                            $status[] = 'Version: ' . ($info['version'] ?? 'unknown');
-                            $status[] = 'Hits: ' . number_format($info['cache_hits'] ?? 0);
-                            $status[] = 'Misses: ' . number_format($info['cache_misses'] ?? 0);
-                            $status[] = 'Entries: ' . number_format($info['num_entries'] ?? 0);
-                            $status[] = 'Memory: ' . self::formatBytes($info['memory_usage'] ?? 0);
-                            break;
-
-                        case 'wordpress_object_cache':
-                            $status[] = 'Class: ' . ($info['class'] ?? 'unknown');
-                            $status[] = 'Persistent: ' . ($info['is_persistent'] ? '✅' : '❌');
-                            $status[] = 'Stats Available: ' . ($info['has_stats'] ? '✅' : '❌');
-                            break;
-                    }
-
-                    $html .= '<li>' . ucfirst(str_replace('_', ' ', $cache_type)) . ': ' . implode(', ', $status) . '</li>';
-                } else {
-                    $reason = $info['reason'] ?? 'disabled';
-                    $html .= '<li>' . ucfirst(str_replace('_', ' ', $cache_type)) . ': ❌ (' . $reason . ')</li>';
-                }
-            }
-
-            $html .= '</ul>';
-            $html .= '</div>';
-        }
-
-        // Server Info
-        $html .= '<div class="jankx-debug-section">';
-        $html .= '<div class="jankx-debug-section-title">🖥️ Server Info</div>';
-        $html .= '<div class="jankx-debug-item">PHP ' . PHP_VERSION . ' | ' . ($_SERVER['SERVER_SOFTWARE'] ?? 'Unknown') . '</div>';
-        $html .= '</div>';
-
-        // Plugin Debug Info (via action hooks)
-        $pluginDebugInfo = self::getPluginDebugInfo();
-        if (!empty($pluginDebugInfo)) {
-            $html .= '<div class="jankx-debug-section">';
-            $html .= '<div class="jankx-debug-section-title">🔌 Plugin Debug Info</div>';
-            $html .= '<ul class="jankx-debug-list">';
-
-            foreach ($pluginDebugInfo as $plugin => $info) {
-                $html .= '<li><strong>' . esc_html($plugin) . ':</strong> ' . esc_html($info) . '</li>';
-            }
-
-            $html .= '</ul>';
-            $html .= '</div>';
-        }
-
-        $html .= '</div>'; // End content wrapper
-        $html .= '</div>'; // End main div
-
-        // Mini Bar (shown when minimized)
-        $html .= '<div id="jankx-debug-mini-bar" style="display: none;">';
-        $html .= '<div class="jankx-debug-mini-title">🔍 JANKX DEBUG</div>';
-        $html .= '<div class="jankx-debug-mini-stats">';
-        $html .= '<div class="jankx-debug-mini-stat">⏱️ ' . number_format($responseTime * 1000, 0) . 'ms</div>';
-        $html .= '<div class="jankx-debug-mini-stat">💾 ' . self::formatBytes($memoryUsage) . '</div>';
-        $queryInfo = self::getQueryCountSinceInit();
-        $html .= '<div class="jankx-debug-mini-stat">🗄️ ' . $queryInfo['total_queries'] . ' queries</div>';
-        $html .= '</div>';
-        $html .= '</div>';
-
-        return $html;
     }
 
     /**
-     * Format bytes to human readable format
+     * Display debug information
      *
-     * @param int $bytes
-     * @param int $precision
-     * @return string
-     * @since 2.0.1
+     * @since 2.0.0
      */
-    private static function formatBytes($bytes, $precision = 2)
+    public function displayDebugInfo(): void
     {
-        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-
-        for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
-            $bytes /= 1024;
+        if (!$this->shouldDisplay()) {
+            return;
         }
 
-        return round($bytes, $precision) . ' ' . $units[$i];
+        $debugData = $this->collectDebugData();
+
+        // Save debug data for cache comparison
+        $this->saveDebugDataForComparison($debugData);
+
+        echo $this->renderer->render($debugData);
     }
 
     /**
-     * Get debug information as array
+     * Save debug data for cache comparison
+     *
+     * @param array $debugData
+     * @since 2.0.0
+     */
+    private function saveDebugDataForComparison(array $debugData): void
+    {
+        $cacheKey = 'jankx_debug_cached_' . md5($_SERVER['REQUEST_URI'] ?? '');
+        $cacheData = [
+            'response_time' => $debugData['response_time'] ?? 0,
+            'memory_usage' => $debugData['memory_usage'] ?? 0,
+            'query_count' => $debugData['query_count'] ?? 0,
+            'timestamp' => time()
+        ];
+
+        // Cache for 1 hour
+        wp_cache_set($cacheKey, $cacheData, 'jankx_debug', HOUR_IN_SECONDS);
+
+        Logger::debug('Debug data saved for cache comparison', [
+            'cache_key' => $cacheKey,
+            'data' => $cacheData
+        ]);
+    }
+
+    /**
+     * Check if debug info should be displayed
+     *
+     * @return bool
+     * @since 2.0.0
+     */
+    private function shouldDisplay(): bool
+    {
+        return defined('JANKX_DEBUG') && JANKX_DEBUG && $this->isInitialized;
+    }
+
+    /**
+     * Collect all debug data
      *
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
-    public static function getDebugInfo()
+    private function collectDebugData(): array
     {
-        if (!defined('JANKX_DEBUG') || !JANKX_DEBUG) {
-            return [];
-        }
-
         return [
-            'response_time' => microtime(true) - self::$startTime,
-            'memory_usage' => memory_get_peak_usage(true),
-            'memory_limit' => ini_get('memory_limit'),
-            'cache_info' => self::$cacheInfo,
-            'plugin_cache_info' => self::$pluginCacheInfo,
-            'object_cache_info' => self::$objectCacheInfo,
-            'php_version' => PHP_VERSION,
-            'server_software' => $_SERVER['SERVER_SOFTWARE'] ?? 'Unknown'
+            'response_time' => $this->debugInfoService->getResponseTime(),
+            'memory_usage' => $this->debugInfoService->getMemoryUsage(),
+            'memory_limit' => $this->debugInfoService->getMemoryLimit(),
+            'query_count' => $this->queryCountService->getQueryCount(),
+            'cache_info' => $this->cacheInfoService->getCacheInfo(),
+            'gutenberg_blocks' => $this->gutenbergBlocksService->forceRefreshBlocksInfo(),
+            'plugin_debug' => $this->pluginDebugService->getPluginDebugInfo(),
         ];
+    }
+
+    /**
+     * Get debug info for testing
+     *
+     * @return array
+     * @since 2.0.0
+     */
+    public function getDebugInfo(): array
+    {
+        return $this->collectDebugData();
     }
 
     /**
      * Get query count for testing
      *
-     * @return array
-     * @since 2.0.1
+     * @return int
+     * @since 2.0.0
      */
-    public static function getQueryCountForTesting()
+    public function getQueryCountForTesting(): int
     {
-        return self::getQueryCountSinceInit();
+        return $this->queryCountService->getQueryCount();
     }
 
     /**
-     * Debug query counting for testing
+     * Add plugin debug info
      *
-     * @return array
-     * @since 2.0.1
+     * @param string $pluginName
+     * @param string $info
+     * @since 2.0.0
      */
-    public static function debugQueryCountingForTesting()
+    public function addPluginDebugInfo(string $pluginName, string $info): void
     {
-        return self::debugQueryCounting();
+        $this->pluginDebugService->addDebugInfo($pluginName, $info);
     }
 
     /**
-     * Get plugin debug information via action hooks
+     * Initialize admin bar debug info
      *
-     * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
-    private static function getPluginDebugInfo()
+    public function initAdminBarDebugInfo(): void
     {
-        $pluginDebugInfo = [];
+        if (!is_admin() || !current_user_can('manage_options')) {
+            Logger::debug('Admin debug info skipped - not admin or insufficient permissions');
+            return;
+        }
 
-        // Action hook for plugins to add their debug info
-        do_action('jankx/debug/add_info', $pluginDebugInfo);
+        // Add debug button to admin bar
+        add_action('admin_bar_menu', [$this, 'addAdminBarMenu'], 999);
 
-        // Filter hook for plugins to modify debug info
-        $pluginDebugInfo = apply_filters('jankx/debug/modify_info', $pluginDebugInfo);
+        // Add JavaScript
+        add_action('admin_footer', [$this, 'addAdminBarJavaScript']);
 
-        return $pluginDebugInfo;
+        // Add AJAX handlers
+        add_action('wp_ajax_bookix_get_block_debug_info', [$this, 'handleAjaxRequest']);
+        add_action('wp_ajax_bookix_clear_debug_cache', [$this, 'handleClearCacheRequest']);
+
+        Logger::debug('Admin bar debug info initialized', [
+            'user_id' => get_current_user_id(),
+            'user_caps' => wp_get_current_user()->roles ?? []
+        ]);
     }
 
     /**
-     * Add plugin debug info (helper method for plugins)
+     * Add admin bar menu
      *
-     * @param array $debugInfo Reference to debug info array
-     * @param string $pluginName Plugin name
-     * @param string $info Debug information
-     * @since 2.0.1
+     * @param \WP_Admin_Bar $wp_admin_bar
+     * @since 2.0.0
      */
-    public static function addPluginDebugInfo(&$debugInfo, $pluginName, $info)
+    public function addAdminBarMenu($wp_admin_bar): void
     {
-        $debugInfo[$pluginName] = $info;
+        $wp_admin_bar->add_menu([
+            'id' => 'block-debug-info',
+            'title' => '📝 Gutenberg Blocks',
+            'href' => '#',
+            'meta' => [
+                'onclick' => 'bookix_show_block_debug(); return false;'
+            ]
+        ]);
+
+        // Add clear cache button
+        $wp_admin_bar->add_menu([
+            'id' => 'clear-debug-cache',
+            'title' => '🗑️ Clear Debug Cache',
+            'href' => '#',
+            'meta' => [
+                'onclick' => 'bookix_clear_debug_cache(); return false;'
+            ]
+        ]);
+    }
+
+    /**
+     * Add JavaScript for admin bar functionality
+     *
+     * @since 2.0.0
+     */
+    public function addAdminBarJavaScript(): void
+    {
+        echo '<script>
+        // Wait for DOM to be ready
+        jQuery(document).ready(function($) {
+            // State management for debug info
+            let debugInfoState = {
+                isLoading: false,
+                isVisible: false,
+                lastRequestTime: 0,
+                requestCooldown: 2000 // 2 seconds cooldown
+            };
+
+            // Local storage keys
+            const DEBUG_STATE_KEY = "jankx_debug_state";
+
+            // Get saved debug state
+            function getSavedDebugState() {
+                try {
+                    const saved = localStorage.getItem(DEBUG_STATE_KEY);
+                    return saved ? JSON.parse(saved) : { minimized: false };
+                } catch (e) {
+                    return { minimized: false };
+                }
+            }
+
+            // Save debug state
+            function saveDebugState(state) {
+                try {
+                    localStorage.setItem(DEBUG_STATE_KEY, JSON.stringify(state));
+                } catch (e) {
+                    // Silent fail
+                }
+            }
+
+            // Toggle debug info minimize/maximize
+            function toggleDebugMinimize() {
+                const debugBox = document.getElementById("jankx-debug-info");
+                const content = debugBox.querySelector(".jankx-debug-content");
+                const toggleBtn = document.querySelector(".jankx-debug-close");
+
+                if (!debugBox || !content || !toggleBtn) return;
+
+                const isCurrentlyMinimized = content.style.display === "none";
+                const newState = { minimized: !isCurrentlyMinimized };
+
+                if (newState.minimized) {
+                    // Minimize
+                    content.style.display = "none";
+                    toggleBtn.innerHTML = "□";
+                    toggleBtn.title = "Expand";
+                    debugBox.style.maxWidth = "200px";
+                } else {
+                    // Maximize
+                    content.style.display = "block";
+                    toggleBtn.innerHTML = "×";
+                    toggleBtn.title = "Minimize";
+                    debugBox.style.maxWidth = "400px";
+                }
+
+                // Save state
+                saveDebugState(newState);
+            }
+
+            // Apply saved state to debug box
+            function applySavedState(debugBox) {
+                const savedState = getSavedDebugState();
+                const content = debugBox.querySelector(".jankx-debug-content");
+                const toggleBtn = document.querySelector(".jankx-debug-close");
+
+                if (!content || !toggleBtn) return;
+
+                if (savedState.minimized) {
+                    // Apply minimized state
+                    content.style.display = "none";
+                    toggleBtn.innerHTML = "□";
+                    toggleBtn.title = "Expand";
+                    debugBox.style.maxWidth = "200px";
+                } else {
+                    // Apply maximized state
+                    content.style.display = "block";
+                    toggleBtn.innerHTML = "×";
+                    toggleBtn.title = "Minimize";
+                    debugBox.style.maxWidth = "400px";
+                }
+            }
+
+            // Make functions globally available
+            window.bookix_clear_debug_cache = function() {
+                if (confirm("Clear debug cache data? This will reset cache comparison data.")) {
+                    fetch("' . admin_url('admin-ajax.php') . '", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded",
+                        },
+                        body: "action=bookix_clear_debug_cache"
+                    })
+                    .then(response => response.text())
+                    .then(result => {
+                        alert("Debug cache cleared successfully!");
+                    })
+                    .catch(error => {
+                        alert("Error clearing debug cache. Check console for details.");
+                    });
+                }
+            };
+
+            window.bookix_show_block_debug = function() {
+                const now = Date.now();
+
+                // Prevent multiple rapid clicks
+                if (debugInfoState.isLoading) {
+                    return;
+                }
+
+                // Check cooldown period
+                if (now - debugInfoState.lastRequestTime < debugInfoState.requestCooldown) {
+                    return;
+                }
+
+                // Update state
+                debugInfoState.isLoading = true;
+                debugInfoState.lastRequestTime = now;
+
+                // Update button appearance
+                const debugButton = document.querySelector("#wp-admin-bar-block-debug-info a");
+                if (debugButton) {
+                    debugButton.innerHTML = "⏳ Loading...";
+                    debugButton.style.opacity = "0.6";
+                }
+
+                // Create AJAX request to get debug info
+                fetch("' . admin_url('admin-ajax.php') . '", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    body: "action=bookix_get_block_debug_info"
+                })
+                .then(response => response.text())
+                .then(html => {
+                    // Remove existing debug box
+                    const existing = document.getElementById("jankx-debug-info");
+                    if (existing) existing.remove();
+
+                    // Only add debug box if there is content (has blocks)
+                    if (html.trim() !== "") {
+                        document.body.insertAdjacentHTML("beforeend", html);
+                        debugInfoState.isVisible = true;
+
+                        // Apply saved state
+                        const debugBox = document.getElementById("jankx-debug-info");
+                        if (debugBox) {
+                            applySavedState(debugBox);
+                        }
+
+                        // Add event listeners for minimize/maximize
+                        const toggleBtn = document.querySelector(".jankx-debug-close");
+                        if (toggleBtn) {
+                            toggleBtn.addEventListener("click", toggleDebugMinimize);
+                        }
+
+                        // Add close button functionality
+                        const closeBtn = document.querySelector("#jankx-debug-info button:last-child");
+                        if (closeBtn) {
+                            closeBtn.addEventListener("click", function() {
+                                const debugBox = document.getElementById("jankx-debug-info");
+                                if (debugBox) {
+                                    debugBox.remove();
+                                    debugInfoState.isVisible = false;
+                                }
+                            });
+                        }
+                    } else {
+                        alert("No Gutenberg blocks found on this page.");
+                    }
+                })
+                .catch(error => {
+                    alert("Error loading block debug info. Check console for details.");
+                })
+                .finally(() => {
+                    debugInfoState.isLoading = false;
+                    const debugButton = document.querySelector("#wp-admin-bar-block-debug-info a");
+                    if (debugButton) {
+                        debugButton.innerHTML = "📝 Gutenberg Blocks";
+                        debugButton.style.opacity = "1";
+                    }
+                });
+            };
+
+            // Add hover effects for admin bar button
+            const debugButton = document.querySelector("#wp-admin-bar-block-debug-info a");
+            if (debugButton) {
+                debugButton.addEventListener("mouseenter", function() {
+                    this.style.opacity = "0.8";
+                });
+                debugButton.addEventListener("mouseleave", function() {
+                    this.style.opacity = "1";
+                });
+            }
+        });
+        </script>';
+    }
+
+    /**
+     * Handle AJAX request for debug info
+     *
+     * @since 2.0.0
+     */
+    public function handleAjaxRequest(): void
+    {
+        // Check permissions
+        if (!current_user_can('manage_options')) {
+            Logger::warning('Unauthorized AJAX request for debug info', [
+                'user_id' => get_current_user_id(),
+                'user_caps' => wp_get_current_user()->roles ?? []
+            ]);
+            wp_die('Unauthorized');
+        }
+
+        // Add cache prevention headers for AJAX response
+        $this->addCachePreventionHeaders();
+
+        try {
+            // Get debug data for current page (not cached)
+            $debugData = $this->getDebugInfo();
+
+            // Get cached version for comparison if available
+            $cachedDebugData = $this->getCachedDebugData();
+
+            // Add cache comparison data
+            $debugData['cache_comparison'] = $this->compareWithCachedData($debugData, $cachedDebugData);
+
+            // Check if we have Gutenberg blocks
+            if (empty($debugData['gutenberg_blocks'])) {
+                Logger::debug('No Gutenberg blocks found for AJAX request');
+                echo '';
+                wp_die();
+            }
+
+            // Render debug info
+            $html = $this->renderer->render($debugData);
+
+            Logger::debug('AJAX debug info rendered successfully', [
+                'blocks_count' => count($debugData['gutenberg_blocks']),
+                'html_length' => strlen($html),
+                'has_cache_comparison' => !empty($debugData['cache_comparison'])
+            ]);
+
+            echo $html;
+            wp_die();
+        } catch (\Exception $e) {
+            Logger::error('Failed to handle AJAX debug request', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            wp_die('Error loading debug info');
+        }
+    }
+
+    /**
+     * Get cached debug data for comparison
+     *
+     * @return array
+     * @since 2.0.0
+     */
+    private function getCachedDebugData(): array
+    {
+        $cacheKey = 'jankx_debug_cached_' . md5($_SERVER['REQUEST_URI'] ?? '');
+        $cachedData = wp_cache_get($cacheKey, 'jankx_debug');
+
+        if ($cachedData === false) {
+            return [];
+        }
+
+        return $cachedData;
+    }
+
+    /**
+     * Compare current debug data with cached data
+     *
+     * @param array $currentData
+     * @param array $cachedData
+     * @return array
+     * @since 2.0.0
+     */
+    private function compareWithCachedData(array $currentData, array $cachedData): array
+    {
+        if (empty($cachedData)) {
+            return [
+                'has_cached_data' => false,
+                'message' => 'No cached data available for comparison'
+            ];
+        }
+
+        $comparison = [
+            'has_cached_data' => true,
+            'response_time' => [
+                'current' => $currentData['response_time'] ?? 0,
+                'cached' => $cachedData['response_time'] ?? 0,
+                'difference' => ($currentData['response_time'] ?? 0) - ($cachedData['response_time'] ?? 0),
+                'improvement' => (($cachedData['response_time'] ?? 0) - ($currentData['response_time'] ?? 0)) / ($cachedData['response_time'] ?? 1) * 100
+            ],
+            'memory_usage' => [
+                'current' => $currentData['memory_usage'] ?? 0,
+                'cached' => $cachedData['memory_usage'] ?? 0,
+                'difference' => ($currentData['memory_usage'] ?? 0) - ($cachedData['memory_usage'] ?? 0),
+                'improvement' => (($cachedData['memory_usage'] ?? 0) - ($currentData['memory_usage'] ?? 0)) / ($cachedData['memory_usage'] ?? 1) * 100
+            ],
+            'query_count' => [
+                'current' => $currentData['query_count'] ?? 0,
+                'cached' => $cachedData['query_count'] ?? 0,
+                'difference' => ($currentData['query_count'] ?? 0) - ($cachedData['query_count'] ?? 0),
+                'improvement' => (($cachedData['query_count'] ?? 0) - ($currentData['query_count'] ?? 0)) / ($cachedData['query_count'] ?? 1) * 100
+            ]
+        ];
+
+        return $comparison;
+    }
+
+    /**
+     * Clear cached debug data
+     *
+     * @since 2.0.0
+     */
+    public function clearCachedDebugData(): void
+    {
+        $cacheKey = 'jankx_debug_cached_' . md5($_SERVER['REQUEST_URI'] ?? '');
+        wp_cache_delete($cacheKey, 'jankx_debug');
+
+        Logger::debug('Cached debug data cleared', [
+            'cache_key' => $cacheKey
+        ]);
+    }
+
+    /**
+     * Handle AJAX request to clear debug cache
+     *
+     * @since 2.0.0
+     */
+    public function handleClearCacheRequest(): void
+    {
+        // Check permissions
+        if (!current_user_can('manage_options')) {
+            Logger::warning('Unauthorized AJAX request to clear debug cache', [
+                'user_id' => get_current_user_id(),
+                'user_caps' => wp_get_current_user()->roles ?? []
+            ]);
+            wp_die('Unauthorized');
+        }
+
+        try {
+            $this->clearCachedDebugData();
+
+            Logger::debug('Debug cache cleared via AJAX request', [
+                'user_id' => get_current_user_id()
+            ]);
+
+            echo 'success';
+            wp_die();
+        } catch (\Exception $e) {
+            Logger::error('Failed to clear debug cache via AJAX', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            wp_die('Error clearing debug cache');
+        }
     }
 }

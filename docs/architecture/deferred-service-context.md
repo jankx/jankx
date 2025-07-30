@@ -161,7 +161,7 @@ namespace Jankx\Providers;
 use Illuminate\Container\Container;
 use Jankx\Context\ContextualServiceRegistry;
 
-class ContextualServiceProvider
+class CustomKernel extends \Jankx\Kernel\Kernel
 {
     private $container;
 
@@ -213,23 +213,21 @@ class ContextualServiceProvider
     private function registerContextServices(string $context): void
     {
         switch ($context) {
-            case ContextualServiceRegistry::ADMIN:
-                $this->registerAdminServices();
+            case 'admin':
+                $provider = new \Jankx\Providers\AdminServiceProvider($this->container);
+                $provider->register();
                 break;
-            case ContextualServiceRegistry::FRONTEND:
-                $this->registerFrontendServices();
+            case 'frontend':
+                $provider = new \Jankx\Providers\FrontendServiceProvider($this->container);
+                $provider->register();
                 break;
-            case ContextualServiceRegistry::API:
-                $this->registerAPIServices();
+            case 'api':
+                $provider = new \Jankx\Providers\APIServiceProvider($this->container);
+                $provider->register();
                 break;
-            case ContextualServiceRegistry::CLI:
-                $this->registerCLIServices();
-                break;
-            case ContextualServiceRegistry::GUTENBERG:
-                $this->registerGutenbergServices();
-                break;
-            case ContextualServiceRegistry::WOOCOMMERCE:
-                $this->registerWooCommerceServices();
+            case 'cli':
+                $provider = new \Jankx\Providers\CLIServiceProvider($this->container);
+                $provider->register();
                 break;
         }
     }
@@ -242,99 +240,51 @@ class ContextualServiceProvider
         // Defer heavy services until actually needed
         ContextualServiceRegistry::defer($context, function(Container $container) use ($context) {
             // Admin-specific deferred services
-            if ($context === ContextualServiceRegistry::ADMIN) {
-                $container->singleton(\Jankx\Admin\DashboardManager::class);
-                $container->singleton(\Jankx\Admin\SettingsManager::class);
-                $container->singleton(\Jankx\Admin\NoticeManager::class);
-                $container->singleton(\Jankx\Admin\AnalyticsManager::class);
-                $container->singleton(\Jankx\Admin\ReportManager::class);
+            if ($context === 'admin') {
+                $provider = new \Jankx\Providers\AdminServiceProvider($container);
+                $provider->register();
+                $provider->boot();
             }
 
             // Frontend-specific deferred services
-            if ($context === ContextualServiceRegistry::FRONTEND) {
-                $container->singleton(\Jankx\SEO\SEOManager::class);
-                $container->singleton(\Jankx\Analytics\AnalyticsManager::class);
-                $container->singleton(\Jankx\Template\TemplateRenderer::class);
-                $container->singleton(\Jankx\Frontend\AssetOptimizer::class);
+            if ($context === 'frontend') {
+                $provider = new \Jankx\Providers\FrontendServiceProvider($container);
+                $provider->register();
+                $provider->boot();
             }
 
-            // Gutenberg-specific deferred services
-            if ($context === ContextualServiceRegistry::GUTENBERG) {
-                $container->singleton(\Jankx\Gutenberg\BlockRegistry::class);
-                // Layout system removed - only core Gutenberg system remains
-                $container->singleton(\Jankx\Gutenberg\BlockRenderer::class);
+            // CLI-specific deferred services
+            if ($context === 'cli') {
+                $provider = new \Jankx\Providers\CLIServiceProvider($container);
+                $provider->register();
+                $provider->boot();
             }
 
-            // WooCommerce-specific deferred services
-            if ($context === ContextualServiceRegistry::WOOCOMMERCE) {
-                $container->singleton(\Jankx\WooCommerce\ProductManager::class);
-                $container->singleton(\Jankx\WooCommerce\CartManager::class);
-                $container->singleton(\Jankx\WooCommerce\CheckoutManager::class);
+            // API-specific deferred services
+            if ($context === 'api') {
+                $provider = new \Jankx\Providers\APIServiceProvider($container);
+                $provider->register();
+                $provider->boot();
             }
         });
     }
 
     /**
-     * Register admin services
+     * Register admin services (Deprecated - Use AdminServiceProvider)
      */
     private function registerAdminServices(): void
     {
-        $this->container->singleton(\Jankx\Admin\AdminManager::class);
-        $this->container->singleton(\Jankx\Admin\MenuManager::class);
-        $this->container->singleton(\Jankx\Admin\AssetManager::class);
-        $this->container->singleton(\Jankx\Admin\NoticeManager::class);
+        // Admin services are now registered through AdminKernel
+        // No need to create new AdminServiceProvider instance here
     }
 
     /**
-     * Register frontend services
+     * Register frontend services (Deprecated - Use FrontendServiceProvider)
      */
     private function registerFrontendServices(): void
     {
-        $this->container->singleton(\Jankx\Frontend\AssetManager::class);
-        $this->container->singleton(\Jankx\Frontend\TemplateManager::class);
-        $this->container->singleton(\Jankx\Frontend\ContentManager::class);
-        $this->container->singleton(\Jankx\Frontend\SEO\SEOManager::class);
-    }
-
-    /**
-     * Register API services
-     */
-    private function registerAPIServices(): void
-    {
-        $this->container->singleton(\Jankx\API\APIManager::class);
-        $this->container->singleton(\Jankx\API\EndpointManager::class);
-        $this->container->singleton(\Jankx\API\AuthenticationManager::class);
-        $this->container->singleton(\Jankx\API\ResponseFormatter::class);
-    }
-
-    /**
-     * Register CLI services
-     */
-    private function registerCLIServices(): void
-    {
-        $this->container->singleton(\Jankx\CLI\CommandManager::class);
-        $this->container->singleton(\Jankx\CLI\OutputManager::class);
-        $this->container->singleton(\Jankx\CLI\ProgressBar::class);
-    }
-
-    /**
-     * Register Gutenberg services
-     */
-    private function registerGutenbergServices(): void
-    {
-        $this->container->singleton(\Jankx\Gutenberg\EditorManager::class);
-        $this->container->singleton(\Jankx\Gutenberg\BlockRenderer::class);
-        // LayoutManager removed - only core Gutenberg system remains
-    }
-
-    /**
-     * Register WooCommerce services
-     */
-    private function registerWooCommerceServices(): void
-    {
-        $this->container->singleton(\Jankx\WooCommerce\WooCommerceManager::class);
-        $this->container->singleton(\Jankx\WooCommerce\ProductManager::class);
-        $this->container->singleton(\Jankx\WooCommerce\CartManager::class);
+        // Frontend services are now registered through FrontendKernel
+        // No need to create new FrontendServiceProvider instance here
     }
 }
 ```
@@ -514,10 +464,6 @@ class AdminBootstrapper extends AbstractBootstrapper
 {
     public function bootstrap(Container $container): void
     {
-        // Register context-aware services
-        $contextProvider = new ContextualServiceProvider($container);
-        $contextProvider->register();
-
         // Setup deferred service resolver
         $container->singleton('deferred.resolver', DeferredServiceResolver::class);
 
@@ -915,7 +861,6 @@ namespace Jankx\Bootstrappers\Dashboard;
 use Illuminate\Container\Container;
 use Jankx\Bootstrappers\AbstractBootstrapper;
 use Jankx\Services\DeferredServiceResolver;
-use Jankx\Providers\ContextualServiceProvider;
 use Jankx\Context\ContextualServiceRegistry;
 
 class AdminBootstrapper extends AbstractBootstrapper
@@ -934,10 +879,6 @@ class AdminBootstrapper extends AbstractBootstrapper
 
     public function bootstrap(Container $container): void
     {
-        // Register context-aware services
-        $contextProvider = new ContextualServiceProvider($container);
-        $contextProvider->register();
-
         // Setup deferred service resolver
         $container->singleton('deferred.resolver', DeferredServiceResolver::class);
 

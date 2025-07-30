@@ -2,10 +2,16 @@
 
 namespace Jankx\Bootstrappers\Gutenberg;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Illuminate\Container\Container;
 use Jankx\Bootstrappers\AbstractBootstrapper;
 use Jankx\Gutenberg\BlockRegistry;
 use Jankx\Facades\Logger;
+use Jankx\Services\BlockParserService;
 
 /**
  * Gutenberg Frontend Bootstrapper
@@ -17,6 +23,7 @@ use Jankx\Facades\Logger;
 class GutenbergFrontendBootstrapper extends AbstractBootstrapper
 {
     protected $priority = 15; // Higher priority than FrontendBootstrapper
+    protected $container;
 
     public function getName(): string
     {
@@ -30,9 +37,11 @@ class GutenbergFrontendBootstrapper extends AbstractBootstrapper
 
     public function bootstrap(Container $container): void
     {
+        $this->container = $container;
+
         Logger::info('GutenbergFrontendBootstrapper is booting');
         // Only parse and register blocks after the_post of the main query
-        add_action('the_post', function($post) use ($container) {
+        add_action('the_post', function ($post) use ($container) {
             static $parsed = false;
             if ($parsed) {
                 return;
@@ -55,14 +64,17 @@ class GutenbergFrontendBootstrapper extends AbstractBootstrapper
     }
 
     /**
-     * Parse post content to find used Jankx blocks
+     * Parse used blocks from content
      */
     protected function parseUsedBlocks(): array
     {
-        global $post;
-        $content = $post->post_content ?? '';
+        $content = get_the_content();
         $content .= $this->getWidgetContent();
-        $blocks = parse_blocks($content);
+
+        // Get BlockParserService from container (using Application facade)
+        $blockParserService = \Jankx\Facades\Application::make(\Jankx\Services\BlockParserService::class);
+        $blocks = $blockParserService->parseBlocks($content);
+
         Logger::debug('Parsed blocks array', ['blocks' => $blocks]);
         $used_blocks = $this->extractJankxBlocks($blocks);
         Logger::debug('Extracted Jankx block names', ['used_blocks' => $used_blocks]);
@@ -173,7 +185,7 @@ class GutenbergFrontendBootstrapper extends AbstractBootstrapper
         $settings = $this->getPartialHydrationSettings();
 
         // Add partial hydration data to page
-        add_action('wp_head', function() use ($settings) {
+        add_action('wp_head', function () use ($settings) {
             echo '<script type="application/json" id="jankx-partial-hydration-settings">';
             echo json_encode($settings);
             echo '</script>';
@@ -218,7 +230,7 @@ class GutenbergFrontendBootstrapper extends AbstractBootstrapper
             'jankx-frontend',
             get_template_directory_uri() . '/assets/js/partial-hydration.js',
             ['jquery'],
-            JANKX_VERSION,
+            \Jankx\Jankx::getFrameworkVersion(),
             true
         );
 
@@ -227,7 +239,7 @@ class GutenbergFrontendBootstrapper extends AbstractBootstrapper
             'jankx-gutenberg-frontend-style',
             get_template_directory_uri() . '/assets/gutenberg/css/frontend.css',
             [],
-            JANKX_VERSION
+            \Jankx\Jankx::getFrameworkVersion()
         );
 
         // Enqueue partial hydration styles
@@ -235,7 +247,7 @@ class GutenbergFrontendBootstrapper extends AbstractBootstrapper
             'jankx-partial-hydration',
             get_template_directory_uri() . '/assets/css/partial-hydration.css',
             [],
-            JANKX_VERSION
+            \Jankx\Jankx::getFrameworkVersion()
         );
 
         // Enqueue layout themes
@@ -243,7 +255,7 @@ class GutenbergFrontendBootstrapper extends AbstractBootstrapper
             'jankx-layout-themes',
             get_template_directory_uri() . '/assets/css/layout-themes.css',
             [],
-            JANKX_VERSION
+            \Jankx\Jankx::getFrameworkVersion()
         );
     }
 
@@ -287,7 +299,6 @@ class GutenbergFrontendBootstrapper extends AbstractBootstrapper
                     'memory_usage' => memory_get_usage(true)
                 ]
             ]);
-
         } catch (\Exception $e) {
             Logger::error('Frontend block rendering failed', [
                 'block_name' => $block_name,
@@ -303,37 +314,20 @@ class GutenbergFrontendBootstrapper extends AbstractBootstrapper
     }
 
     /**
-     * Get block statistics
+     * Get block statistics using BlockParserService
      */
     public function getBlockStats(): array
     {
-        global $post;
+        // Get BlockParserService from container (using Application facade)
+        $blockParserService = \Jankx\Facades\Application::make(\Jankx\Services\BlockParserService::class);
+        $stats = $blockParserService->getBlockStats();
 
-        $stats = [
-            'total_blocks' => 0,
-            'jankx_blocks' => 0,
-            'used_blocks' => [],
-            'partial_hydration_enabled' => false,
+        return array_merge($stats, [
+            'partial_hydration_enabled' => $this->getPartialHydrationSettings()['enabled'],
             'performance' => [
-                'parse_time' => 0,
                 'memory_usage' => memory_get_usage(true)
             ]
-        ];
-
-        if ($post && isset($post->post_content)) {
-            $start_time = microtime(true);
-
-            $blocks = parse_blocks($post->post_content);
-            $used_blocks = $this->extractJankxBlocks($blocks);
-
-            $stats['total_blocks'] = count($blocks);
-            $stats['jankx_blocks'] = count($used_blocks);
-            $stats['used_blocks'] = $used_blocks;
-            $stats['partial_hydration_enabled'] = $this->getPartialHydrationSettings()['enabled'];
-            $stats['performance']['parse_time'] = microtime(true) - $start_time;
-        }
-
-        return $stats;
+        ]);
     }
 
     /**

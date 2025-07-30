@@ -70,7 +70,7 @@ class AssetManager
                 $handle,
                 $asset['script'],
                 $asset['dependencies'] ?? [],
-                $asset['version'] ?? JANKX_VERSION,
+                $asset['version'] ?? \Jankx\Jankx::getFrameworkVersion(),
                 $asset['in_footer'] ?? true
             );
         }
@@ -80,7 +80,7 @@ class AssetManager
                 $handle,
                 $asset['style'],
                 $asset['dependencies'] ?? [],
-                $asset['version'] ?? JANKX_VERSION
+                $asset['version'] ?? \Jankx\Jankx::getFrameworkVersion()
             );
         }
     }
@@ -145,28 +145,28 @@ class AssetManager
         $this->registerAsset('jankx-main', [
             'script' => get_theme_file_uri('assets/dist/js/main.min.js'),
             'dependencies' => ['jquery'],
-            'version' => JANKX_VERSION,
+            'version' => \Jankx\Jankx::getFrameworkVersion(),
             'in_footer' => true,
         ]);
 
         $this->registerAsset('jankx-style', [
             'style' => get_theme_file_uri('assets/dist/css/main.min.css'),
             'dependencies' => [],
-            'version' => JANKX_VERSION,
+            'version' => \Jankx\Jankx::getFrameworkVersion(),
         ]);
 
         // Admin assets
         $this->registerAsset('jankx-admin', [
             'script' => get_theme_file_uri('assets/dist/js/admin.min.js'),
             'dependencies' => ['jquery', 'wp-color-picker'],
-            'version' => JANKX_VERSION,
+            'version' => \Jankx\Jankx::getFrameworkVersion(),
             'in_footer' => true,
         ]);
 
         $this->registerAsset('jankx-admin-style', [
             'style' => get_theme_file_uri('assets/dist/css/admin.min.css'),
             'dependencies' => ['wp-color-picker'],
-            'version' => JANKX_VERSION,
+            'version' => \Jankx\Jankx::getFrameworkVersion(),
         ]);
     }
 }
@@ -704,22 +704,13 @@ class AssetPerformanceMonitor
         return array_slice($this->metrics, 0, $limit, true);
     }
 
-    public function generateReport(): string
+    public function getMetrics(): array
     {
-        $report = "# Asset Performance Report\n\n";
-
-        $report .= "## Overall Metrics\n";
-        $report .= "- **Total Assets**: " . count($this->metrics) . "\n";
-        $report .= "- **Average Load Time**: " . number_format($this->getAverageLoadTime() * 1000, 2) . "ms\n";
-
-        $report .= "\n## Slowest Assets\n";
-        $slowestAssets = $this->getSlowestAssets();
-
-        foreach ($slowestAssets as $assetName => $metrics) {
-            $report .= "- **{$assetName}**: " . number_format($metrics['load_time'] * 1000, 2) . "ms\n";
-        }
-
-        return $report;
+        return [
+            'total_assets' => count($this->metrics),
+            'average_load_time' => $this->getAverageLoadTime(),
+            'slowest_assets' => $this->getSlowestAssets()
+        ];
     }
 }
 ```

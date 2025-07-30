@@ -212,7 +212,7 @@ function jankx_optimize_pattern_assets() {
             'jankx-patterns',
             get_template_directory_uri() . '/assets/css/patterns.min.css',
             [],
-            JANKX_VERSION
+            \Jankx\Jankx::getFrameworkVersion()
         );
 
         // Inline critical CSS

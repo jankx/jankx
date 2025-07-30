@@ -2,9 +2,15 @@
 
 namespace Jankx\Kernel;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\Jankx;
 use Jankx\Contracts\KernelInterface;
 use Jankx\Contracts\BootstrapperInterface;
+use Jankx\Facades\Config;
 use Illuminate\Container\Container;
 use Jankx\Facades\Logger;
 
@@ -14,6 +20,7 @@ use Jankx\Facades\Logger;
  * Base class for all kernel types in Jankx framework
  *
  * @package Jankx\Kernel
+ * @since 2.0.0
  */
 abstract class Kernel implements KernelInterface
 {
@@ -21,11 +28,6 @@ abstract class Kernel implements KernelInterface
      * @var Container
      */
     protected $container;
-
-    /**
-     * @var array
-     */
-    protected $services = [];
 
     /**
      * @var array
@@ -52,18 +54,25 @@ abstract class Kernel implements KernelInterface
      */
     protected $kernelType;
 
+    /**
+     * @var string
+     */
+    protected $context;
+
     protected $serviceProviders = [];
 
     /**
      * Constructor
+     * @since 2.0.0
      */
     public function __construct(Container $container = null)
     {
         $this->container = $container ?: Jankx::getInstance();
         $this->kernelType = $this->getKernelType();
 
+        // Configuration is loaded by Config facade
+
         $this->registerBootstrappers();
-        $this->registerServices();
         $this->registerHooks();
         $this->registerFilters();
     }
@@ -72,34 +81,85 @@ abstract class Kernel implements KernelInterface
      * Get kernel type
      *
      * @return string
+     * @since 2.0.0
      */
     public function getKernelType(): string
     {
         return 'abstract';
     }
 
-    /**
-     * Register bootstrappers
+                /**
+     * Get current context
+     * @since 2.0.0
      */
-    abstract protected function registerBootstrappers(): void;
+    protected function getCurrentContext(): string
+    {
+        return $this->context ?? 'frontend';
+    }
 
-    /**
-     * Register services
+        /**
+     * Set context for this kernel
+     * @since 2.0.0
      */
-    abstract protected function registerServices(): void;
+    public function setContext(string $context): void
+    {
+        $this->context = $context;
+    }
+
+            /**
+     * Register bootstrappers
+     * @since 2.0.0
+     */
+    protected function registerBootstrappers(): void
+    {
+        // Add ConfigBootstrapper first (highest priority)
+        $this->addBootstrapper(\Jankx\Bootstrappers\Global\ConfigBootstrapper::class);
+
+        // Add CoreBootstrapper
+        $this->addBootstrapper(\Jankx\Bootstrappers\Global\CoreBootstrapper::class);
+    }
+
+        /**
+     * Register services from configuration
+     * @since 2.0.0
+     */
+    protected function registerServices(): void
+    {
+        $this->serviceProviders = Config::get('app.providers.' . $this->getCurrentContext(), []);
+
+        // Add global providers
+        $globalProviders = Config::get('app.providers.global', []);
+        $this->serviceProviders = array_merge($globalProviders, $this->serviceProviders);
+
+        // Remove duplicates
+        $this->serviceProviders = array_unique($this->serviceProviders);
+
+        // Debug log providers
+        Logger::debug('registerServices', [
+            'context' => $this->getCurrentContext(),
+            'global_providers' => $globalProviders,
+            'context_providers' => Config::get('app.providers.' . $this->getCurrentContext(), []),
+            'final_providers' => $this->serviceProviders
+        ]);
+    }
+
+
 
     /**
      * Register hooks
+     * @since 2.0.0
      */
     abstract protected function registerHooks(): void;
 
     /**
      * Register filters
+     * @since 2.0.0
      */
     abstract protected function registerFilters(): void;
 
     /**
      * Boot kernel
+     * @since 2.0.0
      */
     public function boot(): void
     {
@@ -107,8 +167,11 @@ abstract class Kernel implements KernelInterface
             return;
         }
 
-        // Run bootstrappers
+        // Run bootstrappers first
         $this->runBootstrappers();
+
+        // Register services after bootstrappers have run
+        $this->registerServices();
 
         // Load components
         $this->loadServices();
@@ -122,6 +185,7 @@ abstract class Kernel implements KernelInterface
 
     /**
      * Check if kernel is booted
+     * @since 2.0.0
      */
     public function isBooted(): bool
     {
@@ -130,6 +194,7 @@ abstract class Kernel implements KernelInterface
 
     /**
      * Get kernel type
+     * @since 2.0.0
      */
     public function getType(): string
     {
@@ -140,6 +205,7 @@ abstract class Kernel implements KernelInterface
      * Get container
      *
      * @return \Illuminate\Container\Container
+     * @since 2.0.0
      */
     public function getContainer(): \Illuminate\Container\Container
     {
@@ -147,15 +213,8 @@ abstract class Kernel implements KernelInterface
     }
 
     /**
-     * Get services
-     */
-    public function getServices(): array
-    {
-        return $this->services;
-    }
-
-    /**
      * Get hooks
+     * @since 2.0.0
      */
     public function getHooks(): array
     {
@@ -164,6 +223,7 @@ abstract class Kernel implements KernelInterface
 
     /**
      * Get filters
+     * @since 2.0.0
      */
     public function getFilters(): array
     {
@@ -172,6 +232,7 @@ abstract class Kernel implements KernelInterface
 
     /**
      * Get bootstrappers
+     * @since 2.0.0
      */
     public function getBootstrappers(): array
     {
@@ -180,6 +241,7 @@ abstract class Kernel implements KernelInterface
 
     /**
      * Add bootstrapper
+     * @since 2.0.0
      */
     public function addBootstrapper(string $bootstrapper): void
     {
@@ -190,6 +252,7 @@ abstract class Kernel implements KernelInterface
 
     /**
      * Remove bootstrapper
+     * @since 2.0.0
      */
     public function removeBootstrapper(string $bootstrapper): void
     {
@@ -201,6 +264,7 @@ abstract class Kernel implements KernelInterface
 
     /**
      * Check if bootstrapper exists
+     * @since 2.0.0
      */
     public function hasBootstrapper(string $bootstrapper): bool
     {
@@ -209,6 +273,7 @@ abstract class Kernel implements KernelInterface
 
     /**
      * Run bootstrappers
+     * @since 2.0.0
      */
     protected function runBootstrappers(): void
     {
@@ -242,6 +307,7 @@ abstract class Kernel implements KernelInterface
 
     /**
      * Sort bootstrappers by priority
+     * @since 2.0.0
      */
     protected function sortBootstrappersByPriority(): array
     {
@@ -274,6 +340,7 @@ abstract class Kernel implements KernelInterface
 
     /**
      * Check bootstrapper dependencies
+     * @since 2.0.0
      */
     protected function checkBootstrapperDependencies(BootstrapperInterface $bootstrapper): bool
     {
@@ -290,26 +357,48 @@ abstract class Kernel implements KernelInterface
 
     /**
      * Load services
+     * @since 2.0.0
      */
     protected function loadServices()
     {
+        Logger::debug('loadServices', ['start' => true]);
+
+        // Load services from Service Providers
         foreach ($this->getServiceProviders() as $providerClass) {
+            Logger::debug('loadingProvider', ['provider' => $providerClass]);
+
             if (class_exists($providerClass)) {
                 try {
+                    // Check if class is abstract
+                    $reflection = new \ReflectionClass($providerClass);
+                    if ($reflection->isAbstract()) {
+                        Logger::warning(sprintf("%s: Service Provider {$providerClass} is abstract and cannot be instantiated", get_class($this)));
+                        continue;
+                    }
+
                     $provider = new $providerClass($this->container);
                     $provider->register();
                     $provider->boot();
+
+                    Logger::debug('providerLoaded', ['provider' => $providerClass, 'status' => 'success']);
                 } catch (\Exception $e) {
                     Logger::error(sprintf("%s: Không thể khởi tạo Service Provider {$providerClass}: %s", get_class($this), $e->getMessage()));
+
+                    Logger::debug('providerLoaded', ['provider' => $providerClass, 'status' => 'failed', 'error' => $e->getMessage()]);
                 }
             } else {
                 Logger::error(sprintf("%s: Service Provider {$providerClass} không tồn tại", get_class($this)));
+
+                Logger::debug('providerLoaded', ['provider' => $providerClass, 'status' => 'not_found']);
             }
         }
+
+        Logger::debug('loadServices', ['end' => true]);
     }
 
     /**
      * Load hooks
+     * @since 2.0.0
      */
     protected function loadHooks(): void
     {
@@ -322,6 +411,7 @@ abstract class Kernel implements KernelInterface
 
     /**
      * Load filters
+     * @since 2.0.0
      */
     protected function loadFilters(): void
     {
@@ -333,19 +423,8 @@ abstract class Kernel implements KernelInterface
     }
 
     /**
-     * Add service
-     */
-    protected function addService($service, array $params = []): void
-    {
-        if (is_string($service)) {
-            $this->services[] = ['class' => $service, 'params' => $params];
-        } else {
-            $this->services[] = $service;
-        }
-    }
-
-    /**
      * Add hook
+     * @since 2.0.0
      */
     protected function addHook(string $hook, $callback, int $priority = 10, int $args = 1): void
     {
@@ -359,6 +438,7 @@ abstract class Kernel implements KernelInterface
 
     /**
      * Add filter
+     * @since 2.0.0
      */
     protected function addFilter(string $filter, $callback, int $priority = 10, int $args = 1): void
     {
@@ -370,8 +450,45 @@ abstract class Kernel implements KernelInterface
         ];
     }
 
+    /**
+     * Method getServiceProviders
+     *
+     * @since 2.0.0
+     */
     protected function getServiceProviders(): array
     {
         return $this->serviceProviders;
+    }
+
+    /**
+     * Add service provider
+     * @since 2.0.0
+     */
+    public function addServiceProvider(string $providerClass): void
+    {
+        if (!in_array($providerClass, $this->serviceProviders)) {
+            $this->serviceProviders[] = $providerClass;
+        }
+    }
+
+    /**
+     * Remove service provider
+     * @since 2.0.0
+     */
+    public function removeServiceProvider(string $providerClass): void
+    {
+        $key = array_search($providerClass, $this->serviceProviders);
+        if ($key !== false) {
+            unset($this->serviceProviders[$key]);
+        }
+    }
+
+    /**
+     * Check if service provider exists
+     * @since 2.0.0
+     */
+    public function hasServiceProvider(string $providerClass): bool
+    {
+        return in_array($providerClass, $this->serviceProviders);
     }
 }

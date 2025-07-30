@@ -46,12 +46,6 @@ class KernelTest extends TestCase
         $this->assertEquals('abstract', $mockKernel->getType());
     }
 
-    public function testGetServices()
-    {
-        $mockKernel = $this->getMockForAbstractClass(Kernel::class);
-        $this->assertIsArray($mockKernel->getServices());
-    }
-
     public function testGetHooks()
     {
         $mockKernel = $this->getMockForAbstractClass(Kernel::class);

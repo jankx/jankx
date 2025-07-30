@@ -26,9 +26,10 @@ class DeferredServiceMonitorTest extends TestCase
      */
     public function testMonitorHasRequiredMethods()
     {
-        $this->assertTrue(method_exists('Jankx\Services\DeferredServiceMonitor', 'monitor'));
-        $this->assertTrue(method_exists('Jankx\Services\DeferredServiceMonitor', 'getDeferredServices'));
-        $this->assertTrue(method_exists('Jankx\Services\DeferredServiceMonitor', 'isServiceDeferred'));
+        $this->assertTrue(method_exists('Jankx\Services\DeferredServiceMonitor', 'startMonitoring'));
+        $this->assertTrue(method_exists('Jankx\Services\DeferredServiceMonitor', 'endMonitoring'));
+        $this->assertTrue(method_exists('Jankx\Services\DeferredServiceMonitor', 'getMetrics'));
+        $this->assertTrue(method_exists('Jankx\Services\DeferredServiceMonitor', 'getPerformanceSummary'));
     }
 
     /**
@@ -37,6 +38,8 @@ class DeferredServiceMonitorTest extends TestCase
     public function testMonitorFunctionality()
     {
         $this->assertTrue(class_exists('Jankx\Services\DeferredServiceMonitor'));
-        $this->assertTrue(method_exists('Jankx\Services\DeferredServiceMonitor', 'registerDeferredService'));
+        $this->assertTrue(method_exists('Jankx\Services\DeferredServiceMonitor', 'getServiceMetrics'));
+        $this->assertTrue(method_exists('Jankx\Services\DeferredServiceMonitor', 'getTotalLoadTime'));
+        $this->assertTrue(method_exists('Jankx\Services\DeferredServiceMonitor', 'getTotalMemoryUsage'));
     }
-} 
+}

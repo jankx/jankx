@@ -2,6 +2,11 @@
 
 namespace Jankx\Kernel;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\Contracts\KernelInterface;
 use Jankx\Bootstrappers\Global\ThemeBootstrapper;
 use Jankx\Facades\Logger;
@@ -12,11 +17,13 @@ use Jankx\Facades\Logger;
  * Handles WP Cron jobs and scheduled tasks
  *
  * @package Jankx\Kernel
+ * @since 2.0.0
  */
 class CronKernel extends Kernel implements KernelInterface
 {
     /**
      * Get kernel type
+     * @since 2.0.0
      */
     public function getKernelType(): string
     {
@@ -25,9 +32,12 @@ class CronKernel extends Kernel implements KernelInterface
 
     /**
      * Register bootstrappers
+     * @since 2.0.0
      */
     protected function registerBootstrappers(): void
     {
+        parent::registerBootstrappers();
+
         // Theme bootstrapper (highest priority)
         $this->addBootstrapper(ThemeBootstrapper::class);
 
@@ -40,14 +50,18 @@ class CronKernel extends Kernel implements KernelInterface
 
     /**
      * Register services
+     * @since 2.0.0
      */
     protected function registerServices(): void
     {
+        parent::registerServices();
+
         // Không cần đăng ký các command services ở đây
     }
 
     /**
      * Register hooks
+     * @since 2.0.0
      */
     protected function registerHooks(): void
     {
@@ -62,6 +76,7 @@ class CronKernel extends Kernel implements KernelInterface
 
     /**
      * Register filters
+     * @since 2.0.0
      */
     protected function registerFilters(): void
     {
@@ -71,6 +86,7 @@ class CronKernel extends Kernel implements KernelInterface
 
     /**
      * Run optimization cron
+     * @since 2.0.0
      */
     public function runOptimizationCron(): void
     {
@@ -83,6 +99,7 @@ class CronKernel extends Kernel implements KernelInterface
 
     /**
      * Run security scan cron
+     * @since 2.0.0
      */
     public function runSecurityScanCron(): void
     {
@@ -94,6 +111,7 @@ class CronKernel extends Kernel implements KernelInterface
 
     /**
      * Run cache cleanup cron
+     * @since 2.0.0
      */
     public function runCacheCleanupCron(): void
     {
@@ -105,6 +123,7 @@ class CronKernel extends Kernel implements KernelInterface
 
     /**
      * Schedule cron jobs
+     * @since 2.0.0
      */
     public function scheduleCronJobs(): void
     {
@@ -126,6 +145,7 @@ class CronKernel extends Kernel implements KernelInterface
 
     /**
      * Format cron output
+     * @since 2.0.0
      */
     public function formatCronOutput(string $output): string
     {
@@ -138,11 +158,23 @@ class CronKernel extends Kernel implements KernelInterface
 
     /**
      * Clean auto drafts
+     * @since 2.0.0
      */
     protected function cleanAutoDrafts(): void
     {
-        global $wpdb;
-        $old_drafts = $wpdb->get_col("SELECT ID FROM $wpdb->posts WHERE post_status = 'auto-draft' AND DATE_SUB(CURDATE(), INTERVAL 7 DAY) > post_date");
+        // Use WordPress functions instead of direct database queries
+        $old_drafts = get_posts([
+            'post_status' => 'auto-draft',
+            'date_query' => [
+                [
+                    'before' => '7 days ago',
+                    'inclusive' => false,
+                ]
+            ],
+            'fields' => 'ids',
+            'posts_per_page' => -1,
+        ]);
+
         foreach ($old_drafts as $draft_id) {
             wp_delete_post($draft_id, true);
         }
@@ -151,17 +183,37 @@ class CronKernel extends Kernel implements KernelInterface
 
     /**
      * Clean expired transients
+     * @since 2.0.0
      */
     protected function cleanExpiredTransients(): void
     {
-        global $wpdb;
-        $wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE '_transient_timeout_%' AND option_value < UNIX_TIMESTAMP()");
-        $wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE '_transient_%' AND option_name NOT LIKE '_transient_timeout_%'");
+        // Use WordPress functions instead of direct database queries
+        $this->cleanExpiredTransientsUsingWordPress();
         $this->logInfo('Cleaned up expired transients');
     }
 
     /**
+     * Clean expired transients using WordPress functions
+     * @since 2.0.0
+     */
+    private function cleanExpiredTransientsUsingWordPress(): void
+    {
+        // Get all transients
+        $transients = get_option('_transient_timeout_*');
+
+        if ($transients) {
+            foreach ($transients as $transient => $timeout) {
+                if ($timeout < time()) {
+                    $transient_name = str_replace('_transient_timeout_', '', $transient);
+                    delete_transient($transient_name);
+                }
+            }
+        }
+    }
+
+    /**
      * Check system files for unexpected changes
+     * @since 2.0.0
      */
     protected function checkSystemFiles(): void
     {
@@ -171,6 +223,7 @@ class CronKernel extends Kernel implements KernelInterface
 
     /**
      * Log info message
+     * @since 2.0.0
      */
     protected function logInfo(string $message): void
     {
@@ -179,6 +232,7 @@ class CronKernel extends Kernel implements KernelInterface
 
     /**
      * Log error message
+     * @since 2.0.0
      */
     protected function logError(string $message): void
     {
@@ -187,6 +241,7 @@ class CronKernel extends Kernel implements KernelInterface
 
     /**
      * Log success message
+     * @since 2.0.0
      */
     protected function logSuccess(string $message): void
     {
@@ -195,6 +250,7 @@ class CronKernel extends Kernel implements KernelInterface
 
     /**
      * Log warning message
+     * @since 2.0.0
      */
     protected function logWarning(string $message): void
     {

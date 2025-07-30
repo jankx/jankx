@@ -2,8 +2,14 @@
 
 namespace Jankx\Bootstrappers\CLI;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Illuminate\Container\Container;
 use Jankx\Bootstrappers\AbstractBootstrapper;
+use Jankx\Helpers\BootstrapperHelper;
 use Jankx\Providers\CLIServiceProvider;
 
 /**
@@ -47,12 +53,12 @@ class CLIBootstrapper extends AbstractBootstrapper
      */
     public function bootstrap(Container $container): void
     {
-        // Register CLI service provider
-        $cliServiceProvider = new CLIServiceProvider($container);
-        $cliServiceProvider->register();
-        $cliServiceProvider->boot();
+        // Setup deferred service resolver
+        BootstrapperHelper::setupDeferredResolver($container);
 
-        // Fire action for other CLI integrations
-        do_action('jankx/bootstrapper/cli/loaded', $container);
+        // CLI services are now registered through CLIKernel
+
+        // Fire loaded action
+        BootstrapperHelper::fireLoadedAction($this->getName(), $container);
     }
 }

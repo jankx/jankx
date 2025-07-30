@@ -6,7 +6,8 @@ if (!defined('ABSPATH')) {
     exit('Cheating huh?');
 }
 
-use Jankx\Context\ContextualServiceRegistry;
+
+use Illuminate\Container\Container;
 
 /**
  * Class AjaxKernel
@@ -15,44 +16,90 @@ use Jankx\Context\ContextualServiceRegistry;
  *
  * @package Jankx\Kernel
  * @author Puleeno Nguyen <puleeno@gmail.com>
+ * @since 2.0.0
  */
-class AjaxKernel
+class AjaxKernel extends Kernel
 {
-    protected $container;
-    protected $booted = false;
-
     /**
      * Constructor
      *
-     * @param mixed $container Container để resolve các dịch vụ
+     * @param Container $container Container để resolve các dịch vụ
+     * @since 2.0.0
      */
-    public function __construct($container)
+    public function __construct(Container $container = null)
     {
-        $this->container = $container;
+        parent::__construct($container);
     }
 
     /**
-     * Khởi tạo các dịch vụ theo ngữ cảnh AJAX
-     */
-    public function boot()
-    {
-        $services = ContextualServiceRegistry::getServices(ContextualServiceRegistry::FRONTEND); // AJAX có thể dùng các dịch vụ frontend
-        foreach ($services as $serviceProviderClass) {
-            if (class_exists($serviceProviderClass)) {
-                $serviceProvider = new $serviceProviderClass($this->container);
-                $serviceProvider->register();
-            }
-        }
-        $this->booted = true;
-    }
-
-    /**
-     * Kiểm tra xem kernel đã được khởi tạo hay chưa
+     * Get kernel type
      *
-     * @return bool
+     * @return string
+     * @since 2.0.0
      */
-    public function isBooted()
+    public function getKernelType(): string
     {
-        return $this->booted;
+        return 'ajax';
+    }
+
+    /**
+     * Register bootstrappers
+     * @since 2.0.0
+     */
+    protected function registerBootstrappers(): void
+    {
+        parent::registerBootstrappers();
+
+        $this->bootstrappers = [
+            'Jankx\Bootstrappers\Global\CoreBootstrapper',
+            'Jankx\Bootstrappers\Global\DebugBootstrapper',
+            'Jankx\Bootstrappers\Gutenberg\GutenbergAjaxBootstrapper',
+        ];
+    }
+
+    /**
+     * Register services
+     * @since 2.0.0
+     */
+    protected function registerServices(): void
+    {
+        parent::registerServices();
+
+        $this->services = [
+            'Jankx\Providers\AdminServiceProvider',
+        ];
+    }
+
+    /**
+     * Register hooks
+     * @since 2.0.0
+     */
+    protected function registerHooks(): void
+    {
+        $this->hooks = [
+            'wp_ajax_nopriv_jankx_ajax' => ['Jankx\Kernel\AjaxKernel', 'handleAjaxRequest'],
+            'wp_ajax_jankx_ajax' => ['Jankx\Kernel\AjaxKernel', 'handleAjaxRequest'],
+        ];
+    }
+
+    /**
+     * Register filters
+     * @since 2.0.0
+     */
+    protected function registerFilters(): void
+    {
+        $this->filters = [
+            'jankx_ajax_response' => ['Jankx\Kernel\AjaxKernel', 'filterAjaxResponse'],
+        ];
+    }
+
+    /**
+     * Handle AJAX requests
+     * @since 2.0.0
+     */
+    public static function handleAjaxRequest()
+    {
+        // Handle AJAX request logic here
+        wp_die();
     }
 }

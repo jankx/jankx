@@ -2,17 +2,24 @@
 
 namespace Jankx\Kernel\Strategies;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 /**
  * Strategy for CLI context
  *
  * @package Jankx\Kernel\Strategies
+ * @since 2.0.0
  */
 class CLIKernelStrategy extends KernelContextStrategy
 {
     /**
-     * Check if current context is CLI
+     * Check if this strategy can handle the current context
      *
      * @return bool
+     * @since 2.0.0
      */
     public function canHandle(): bool
     {
@@ -23,6 +30,7 @@ class CLIKernelStrategy extends KernelContextStrategy
      * Get CLI context name
      *
      * @return string
+     * @since 2.0.0
      */
     public function getContext(): string
     {
@@ -30,9 +38,10 @@ class CLIKernelStrategy extends KernelContextStrategy
     }
 
     /**
-     * CLI has highest priority
+     * CLI has high priority
      *
      * @return int
+     * @since 2.0.0
      */
     public function getPriority(): int
     {

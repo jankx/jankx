@@ -2,13 +2,18 @@
 
 namespace Jankx\CLI\Checkers;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\CLI\Checkers\IssueCheckerInterface;
 
 /**
  * Checker for ABSPATH security check in PHP header
  *
  * @package Jankx\CLI\Checkers
- * @since 2.0.1
+ * @since 2.0.0
  */
 class ABSPATHChecker implements IssueCheckerInterface
 {
@@ -18,7 +23,7 @@ class ABSPATHChecker implements IssueCheckerInterface
      * @param array $parsed
      * @param string $content
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     public function check($parsed, $content)
     {
@@ -57,7 +62,7 @@ class ABSPATHChecker implements IssueCheckerInterface
      * @param array $parsed
      * @param array $lines
      * @return int
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function findHeaderEndLine($parsed, $lines)
     {
@@ -85,7 +90,7 @@ class ABSPATHChecker implements IssueCheckerInterface
      * @param array $lines
      * @param int $headerEndLine
      * @return bool
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function hasABSPATHCheckInHeader($lines, $headerEndLine)
     {
@@ -111,7 +116,7 @@ class ABSPATHChecker implements IssueCheckerInterface
      *
      * @param string $line
      * @return bool
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function isABSPATHCheck($line)
     {
@@ -143,7 +148,7 @@ class ABSPATHChecker implements IssueCheckerInterface
      * @param string $description
      * @param array $additional
      * @return array
-     * @since 2.0.1
+     * @since 2.0.0
      */
     private function createIssue($type, $severity, $message, $description, $additional = [])
     {

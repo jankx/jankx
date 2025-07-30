@@ -1,25 +1,28 @@
 <?php
 
-use Jankx\Facades\Logger;
-
 if (!defined('ABSPATH')) {
     exit('Cheating huh?');
 }
 
-// Define basic constants for Jankx Framework
+// Define Jankx ABSPATH
 define('JANKX_ABSPATH', dirname(__FILE__, 2));
-define('JANKX_VERSION', '2.0.0');
 
-// Load Composer autoloader if available
+// Check if composer autoloader exists
 $autoload_path = JANKX_ABSPATH . '/vendor/autoload.php';
-if (file_exists($autoload_path)) {
-    require_once $autoload_path;
-} else {
-    error_log('Jankx Framework: Composer autoloader not found. Please run composer install.');
-    return;
+
+if (!file_exists($autoload_path)) {
+    // Use WordPress error logging instead of error_log
+    if (function_exists('wp_die')) {
+        wp_die('Jankx Framework: Composer autoloader not found. Please run composer install.');
+    } else {
+        die('Jankx Framework: Composer autoloader not found. Please run composer install.');
+    }
 }
 
-// Import required namespaces
+require_once $autoload_path;
+
+// Import required namespaces (only after autoloader is loaded)
+use Jankx\Facades\Logger;
 use Jankx\Jankx;
 use Jankx\Kernel\KernelManager;
 
@@ -29,6 +32,10 @@ $jankx = Jankx::getInstance();
 // Initialize KernelManager and boot kernel by context
 $kernelManager = new KernelManager($jankx);
 $kernelManager->boot();
+
+$jankx->singleton(KernelManager::class, function () use ($kernelManager) {
+    return $kernelManager;
+});
 
 $currentKernel = $kernelManager->getCurrentKernel();
 if ($currentKernel) {

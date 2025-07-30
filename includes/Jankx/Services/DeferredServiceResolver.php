@@ -2,26 +2,38 @@
 
 namespace Jankx\Services;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Illuminate\Container\Container;
-use Jankx\Context\ContextualServiceRegistry;
+use Jankx\Facades\Kernel;
+use Jankx\Facades\Logger;
 
 /**
  * Deferred Service Resolver
  *
- * Resolves services with lazy loading and context-aware resolution
+ * Handles resolution of deferred services in different contexts
  *
  * @package Jankx\Services
- * @since 2.0.0\n */
+ * @since 2.0.0
+ */
 class DeferredServiceResolver
 {
     private $container;
     private $resolved = [];
     private $monitor;
 
-    public function __construct(Container $container)
+    /**
+     * Method __construct
+     *
+     * @since 2.0.0
+     */
+    public function __construct(Container $container, DeferredServiceMonitor $monitor)
     {
         $this->container = $container;
-        $this->monitor = new DeferredServiceMonitor();
+        $this->monitor = $monitor;
     }
 
     /**
@@ -38,8 +50,8 @@ class DeferredServiceResolver
         $this->monitor->startMonitoring($serviceName);
 
         try {
-            // Get current context
-            $context = ContextualServiceRegistry::getCurrentContext();
+            // Get current context using Kernel facade
+            $context = Kernel::getCurrentContext();
 
             // Try to resolve from container
             if ($this->container->bound($serviceName)) {
@@ -50,16 +62,19 @@ class DeferredServiceResolver
             }
 
             // Try to resolve from deferred registry
-            $service = ContextualServiceRegistry::resolve($this->container, $context, $serviceName);
+            $service = $this->container->make($serviceName);
             $this->resolved[$serviceName] = $service;
             $this->monitor->endMonitoring($serviceName);
             return $service;
-
         } catch (\Exception $e) {
             $this->monitor->endMonitoring($serviceName);
 
             // Log the error
-            error_log("Failed to resolve service: {$serviceName} in context: {$context}");
+            Logger::error("Failed to resolve service: {$serviceName} in context: {$context}", [
+                'service_name' => $serviceName,
+                'context' => $context,
+                'exception' => $e,
+            ]);
             throw $e;
         }
     }
@@ -106,13 +121,6 @@ class DeferredServiceResolver
         $this->monitor->clearMetrics();
     }
 
-    /**
-     * Get current context
-     * @since 2.0.0\n     */
-    private function getCurrentContext(): string
-    {
-        return ContextualServiceRegistry::getCurrentContext();
-    }
 
     /**
      * Get monitor instance

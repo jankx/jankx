@@ -91,7 +91,10 @@ class CLIBootstrapperTest extends TestCase
     public function testCLIServiceProviderExists()
     {
         $this->assertTrue(class_exists('Jankx\Providers\CLIServiceProvider'));
-        $this->assertInstanceOf('Jankx\Providers\ServiceProvider', new CLIServiceProvider());
+
+        // Create a mock container
+        $container = $this->createMock('Illuminate\Container\Container');
+        $this->assertInstanceOf('Jankx\Providers\ServiceProvider', new CLIServiceProvider($container));
     }
 
     /**

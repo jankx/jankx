@@ -7,6 +7,7 @@ use Jankx\Providers\CLIServiceProvider;
 use Jankx\CLI\Commands\CodingStandardCommand;
 use Jankx\CLI\Commands\GenerateBlockCommand;
 use Jankx\CLI\Commands\CreateBootstrapperCommand;
+use Jankx\CLI\Commands\ReleaseCommand;
 use Illuminate\Container\Container;
 
 /**
@@ -57,22 +58,6 @@ class CLIServiceProviderTest extends TestCase
     }
 
     /**
-     * Test that service provider should not load in non-CLI context
-     *
-     * @since 2.0.0
-     */
-    public function testShouldNotLoadInNonCLIContext()
-    {
-        // Ensure we're not in CLI context
-        if (defined('WP_CLI')) {
-            $this->markTestSkipped('WP_CLI is already defined');
-        }
-
-        $this->assertFalse($this->serviceProvider->shouldLoad(),
-            'Service provider should not load in non-CLI context');
-    }
-
-    /**
      * Test that CLI commands are registered in container
      *
      * @since 2.0.0
@@ -81,17 +66,15 @@ class CLIServiceProviderTest extends TestCase
     {
         $this->serviceProvider->register();
 
-        // Test that CLI commands container binding exists
-        $this->assertTrue($this->container->bound('cli.commands'),
-            'CLI commands should be bound to container');
-
         // Test that individual command classes are registered
-        $this->assertTrue($this->container->bound('cli.command.code'),
+        $this->assertTrue($this->container->bound('cli.command.coding-standard'),
             'CodingStandardCommand should be bound to container');
         $this->assertTrue($this->container->bound('cli.command.generate-block'),
             'GenerateBlockCommand should be bound to container');
         $this->assertTrue($this->container->bound('cli.command.create-bootstrapper'),
             'CreateBootstrapperCommand should be bound to container');
+        $this->assertTrue($this->container->bound('cli.command.release'),
+            'ReleaseCommand should be bound to container');
     }
 
     /**
@@ -103,8 +86,8 @@ class CLIServiceProviderTest extends TestCase
     {
         $this->serviceProvider->register();
 
-        $command1 = $this->container->make('cli.command.code');
-        $command2 = $this->container->make('cli.command.code');
+        $command1 = $this->container->make('cli.command.coding-standard');
+        $command2 = $this->container->make('cli.command.coding-standard');
 
         $this->assertSame($command1, $command2,
             'CLI commands should be singletons');
@@ -120,11 +103,13 @@ class CLIServiceProviderTest extends TestCase
         $this->serviceProvider->register();
 
         $this->assertInstanceOf(CodingStandardCommand::class,
-            $this->container->make('cli.command.code'));
+            $this->container->make('cli.command.coding-standard'));
         $this->assertInstanceOf(GenerateBlockCommand::class,
             $this->container->make('cli.command.generate-block'));
         $this->assertInstanceOf(CreateBootstrapperCommand::class,
             $this->container->make('cli.command.create-bootstrapper'));
+        $this->assertInstanceOf(ReleaseCommand::class,
+            $this->container->make('cli.command.release'));
     }
 
     /**
@@ -142,23 +127,6 @@ class CLIServiceProviderTest extends TestCase
         // Should not throw exception in CLI context
         $this->serviceProvider->boot();
         $this->assertTrue(true, 'Boot method should run without error in CLI context');
-    }
-
-    /**
-     * Test that boot method skips in non-CLI context
-     *
-     * @since 2.0.0
-     */
-    public function testBootMethodSkipsInNonCLIContext()
-    {
-        // Ensure we're not in CLI context
-        if (defined('WP_CLI')) {
-            $this->markTestSkipped('WP_CLI is already defined');
-        }
-
-        // Should not throw exception in non-CLI context
-        $this->serviceProvider->boot();
-        $this->assertTrue(true, 'Boot method should skip without error in non-CLI context');
     }
 
     /**

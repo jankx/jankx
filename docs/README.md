@@ -1,314 +1,357 @@
 # Jankx 2.0 Documentation
 
-## Overview
+> **Modern WordPress Theme Framework - Development Version**
 
-Jankx 2.0 là một WordPress theme framework hiện đại được xây dựng với kiến trúc modular và hệ thống bootstrapping tiên tiến. Tài liệu này cung cấp hướng dẫn chi tiết cho việc phát triển và sử dụng Jankx 2.0.
+Jankx 2.0 là một WordPress theme framework hiện đại đang trong giai đoạn phát triển, sử dụng kiến trúc layered architecture với dependency injection, service container và context-aware bootstrapping.
 
-## Table of Contents
+## 🚧 Development Status
 
-### 🚀 Getting Started
-- [Quick Start Guide](development/README.md) - Hướng dẫn bắt đầu nhanh
-- [Installation](development/README.md#installation) - Cài đặt và setup
-- [Configuration](development/README.md#configuration) - Cấu hình cơ bản
+**⚠️ Lưu ý:** Jankx 2.0 hiện đang trong giai đoạn **phát triển** (Development). Tài liệu này mô tả kiến trúc và tính năng đang được implement.
 
-### 🏗️ Architecture
-- [Bootstrapper Structure](architecture/bootstrapper-structure.md) - Cấu trúc bootstrapper
-- [Bootstrapping Flow](architecture/bootstrapping-flow.md) - Luồng bootstrapping
-- [Deferred Service Context](architecture/deferred-service-context.md) - Context cho deferred services
-- [Kernel System](architecture/kernel-system.md) - Hệ thống kernel
-- [Service Container](architecture/service-container.md) - Service container
+### Current Version: `2.0.0-dev`
+- ✅ **Core Architecture**: Hoàn thành
+- ✅ **Service Container**: Hoàn thành
+- ✅ **Bootstrapper System**: Hoàn thành
+- ✅ **Kernel System**: Hoàn thành
+- ✅ **Configuration System**: Hoàn thành (Config Facade + Repository)
+- ✅ **WordPress Integration**: Hoàn thành (Direct function calls)
+- 🔄 **Gutenberg Integration**: Đang phát triển
+- 🔄 **Performance System**: Đang phát triển
+- 🔄 **Designer Tools**: Đang phát triển
 
-### 🎨 Templates System
-- [Templates Overview](templates/README.md) - Tổng quan về templates
-- [Block Templates](templates/block-templates.md) - Templates cho blocks
-- [Layout Templates](templates/layout-templates.md) - Templates cho layouts
-- [Page Templates](templates/page-templates.md) - Templates cho pages
+## 🏗 Architecture Overview
 
-### 🔧 Development
-- [Development Guidelines](development/best-practices.md) - Hướng dẫn phát triển
-- [Coding Standards](development/rules.md) - Tiêu chuẩn code
-- [CLI Development](cli/development.md) - Phát triển CLI
-- [CLI Examples](cli/examples.md) - Ví dụ CLI
+### Core Components
+```
+┌─────────────────────────────────────┐
+│         Presentation Layer          │
+│  ┌─────────────┐  ┌─────────────┐  │
+│  │   Blocks    │  │   Layouts   │  │
+│  │   (Dev)     │  │   (Dev)     │  │
+│  └─────────────┘  └─────────────┘  │
+└─────────────────────────────────────┘
+┌─────────────────────────────────────┐
+│         Business Logic Layer        │
+│  ┌─────────────┐  ┌─────────────┐  │
+│  │   Services  │  │   Helpers   │  │
+│  │   (Ready)   │  │   (Ready)   │  │
+│  └─────────────┘  └─────────────┘  │
+└─────────────────────────────────────┘
+┌─────────────────────────────────────┐
+│         Infrastructure Layer        │
+│  ┌─────────────┐  ┌─────────────┐  │
+│  │    Kernel   │  │   Container │  │
+│  │   (Ready)   │  │   (Ready)   │  │
+│  └─────────────┘  └─────────────┘  │
+└─────────────────────────────────────┘
+┌─────────────────────────────────────┐
+│         WordPress Layer             │
+│  ┌─────────────┐  ┌─────────────┐  │
+│  │    Hooks    │  │   Filters   │  │
+│  │   (Ready)   │  │   (Ready)   │  │
+│  └─────────────┘  └─────────────┘  │
+└─────────────────────────────────────┘
+```
 
-### 🎯 Gutenberg Integration
-- [Block Registration](gutenberg/block-registration.md) - Đăng ký blocks
-- [Blocks Overview](gutenberg/blocks.md) - Tổng quan về blocks
-- [Ajax System](gutenberg/ajax-system.md) - Hệ thống Ajax
-- [Pattern Library](post-layout/pattern-library.md) - Thư viện patterns
+## 🔧 Core Systems (Ready)
 
-### 📊 Post Layout System
-- [Post Layout Overview](post-layout/README.md) - Tổng quan post layout
-- [Dynamic Query Loop](post-layout/dynamic-query-loop.md) - Query loop động
-- [Best Practices](post-layout/best-practices.md) - Best practices
-- [Troubleshooting](post-layout/troubleshooting.md) - Xử lý sự cố
-- [Migration Guide](post-layout/migration-guide.md) - Hướng dẫn migration
+### 1. **Service Container** ✅
+- Dependency Injection pattern
+- Service lifecycle management
+- Context-aware service loading
+- Deferred service resolution
 
-### 🎨 Design System
-- [Design System Overview](designer/design-system.md) - Tổng quan design system
-- [Quick Start](designer/quick-start.md) - Bắt đầu nhanh
-- [Advanced Workflow](designer/advanced-workflow.md) - Workflow nâng cao
-- [Component Library](designer/component-library.md) - Thư viện components
+### 2. **Kernel System** ✅
+- Context-aware bootstrapping
+- Multiple kernel types (Admin, Frontend, CLI, API)
+- Service registration and management
+- Performance monitoring
 
-### ⚡ Performance
-- [Performance Overview](performance/README.md) - Tổng quan performance
-- [Asset Management](performance/asset-management.md) - Quản lý assets
-- [Core Web Vitals](performance/core-web-vitals.md) - Core Web Vitals
+### 3. **Bootstrapper System** ✅
+- Priority-based execution
+- Context detection
+- Service registration
+- Hook management
+
+### 4. **Configuration System** ✅
+- Config Facade for easy access
+- Repository pattern implementation
+- Context-aware configuration loading
+- File-based configuration management
+
+### 5. **Debug System** ✅
+- Gutenberg blocks debug
+- Performance monitoring
+- Service resolution tracking
+- Error handling
+
+### 6. **WordPress Integration** ✅
+- Direct WordPress function calls (no adapters)
+- Centralized context detection via Kernel Facade
+- Simplified service architecture
+- Reduced complexity
+
+## 🔄 Systems in Development
+
+### 1. **Gutenberg Integration** 🔄
+- Block registry system
+- Frontend block rendering
+- AJAX block handling
+- Layout system
+
+### 2. **Performance System** 🔄
+- Asset optimization
+- Core Web Vitals monitoring
+- Lazy loading implementation
+- Cache management
+
+### 3. **Designer Tools** 🔄
+- Figma integration
+- Design token generation
+- Component library
+- Visual page builder
+
+## 📚 Documentation Structure
+
+### 🏗 Architecture (Core Systems)
+- [Architecture Overview](./architecture/README.md) - Tổng quan kiến trúc
+- [Kernel System](./architecture/kernel-system.md) - Core framework bootstrapping
+- [Service Container](./architecture/service-container.md) - Dependency injection system
+- [Bootstrapping Flow](./architecture/bootstrapping-flow.md) - Framework initialization
+- [Bootstrapper Structure](./architecture/bootstrapper-structure.md) - Bootstrapper organization
+- [Deferred Service Context](./architecture/deferred-service-context.md) - Lazy loading system
+
+### 🔧 Development (Guidelines & Rules)
+- [Development Overview](./development/README.md) - Tổng quan development
+- [Coding Rules & Standards](./development/coding-rules.md) - **Comprehensive coding rules**
+- [Unit Testing Rules](./development/unit-testing-rules.md) - **Complete testing guidelines**
+- [Best Practices](./development/best-practices.md) - Development best practices
+- [Code Review Guidelines](./development/code-review-guidelines.md) - Code review process
+- [Logging Guidelines](./development/logging.md) - Logging standards
+- [Troubleshooting](./development/troubleshooting.md) - Common issues and solutions
+
+### 🐛 Debug & Monitoring
+- [Debug System](./debug/debug-system.md) - Debug information system
+- [Debug Quick Start](./debug/debug-quick-start.md) - Quick debug setup
+- [Gutenberg Blocks Debug](./debug/gutenberg-blocks-debug.md) - Block debugging
+- [Plugin Debug Integration](./debug/plugin-debug-integration.md) - Plugin integration
+
+### 🎨 Systems in Development
+- [Gutenberg Integration](./gutenberg/README.md) - Block editor integration (Dev)
+- [Performance System](./performance/README.md) - Performance optimization (Dev)
+- [Designer Tools](./designer/README.md) - Design-to-code tools (Dev)
+
+### 🛠 Services & Components
+- [Services Overview](./services/README.md) - Service architecture
+- [User Service](./services/user-service.md) - User management service
+- [Deferred Service Resolver](./services/deferred-service-resolver.md) - Lazy loading service
+
+### 📄 Templates & Layouts
+- [Templates Overview](./templates/README.md) - Template system
+- [Block Templates](./templates/block-templates.md) - Gutenberg block templates
+- [Layout Templates](./templates/layout-templates.md) - Layout system
+- [Page Templates](./templates/page-templates.md) - Page templates
+
+### 📝 Post Layout System
+- [Post Layout Overview](./post-layout/README.md) - Post layout system
+- [Dynamic Query Loop](./post-layout/dynamic-query-loop.md) - Dynamic content
+- [Pattern Library](./post-layout/pattern-library.md) - Reusable patterns
+- [Best Practices](./post-layout/best-practices.md) - Layout best practices
+- [Migration Guide](./post-layout/migration-guide.md) - Migration from 1.x
+- [Troubleshooting](./post-layout/troubleshooting.md) - Layout issues
+
+### 🎯 CLI Tools
+- [CLI Overview](./cli/README.md) - Command line tools
+- [Commands Reference](./cli/commands-reference.md) - Available commands
+- [Development Commands](./cli/development.md) - Development tools
+- [Release Command](./cli/release-command.md) - Release management
+- [CLI Examples](./cli/examples.md) - Usage examples
+
+### 🎨 Assets & Design
+- [Assets Overview](./assets/README.md) - Asset management
+- [Asset Structure](./assets/structure.md) - Asset organization
+- [Design System](./designer/design-system.md) - Design system
+- [Advanced Workflow](./designer/advanced-workflow.md) - Advanced design workflow
+- [Quick Start](./designer/quick-start.md) - Design quick start
+- [Speed Optimization](./designer/speed-optimization.md) - Performance optimization
+- [Workflow](./designer/workflow.md) - Design workflow
 
 ### 🔒 Security
-- [Security Guidelines](security/guidelines.md) - Hướng dẫn bảo mật
-- [Security Overview](security/README.md) - Tổng quan bảo mật
+- [Security Overview](./security/README.md) - Security guidelines
+- [Security Guidelines](./security/guidelines.md) - Security best practices
 
-### 🔄 Migration
-- [Migration Guide](migration-guide.md) - Hướng dẫn migration tổng quát
-- [Hooks Migration](hooks-migration-summary.md) - Migration hooks
-- [Update Summary](UPDATE_SUMMARY.md) - Tóm tắt cập nhật
+### 📋 Core Documents
+- [Principles](./principles.md) - **Core development principles**
+- [Migration Guide](./migration-guide.md) - Migration from Jankx 1.x
 
-## Quick Navigation
+## 🚀 Getting Started
 
-### For Developers
-- [Development Guide](development/README.md) - Hướng dẫn phát triển
-- [Architecture Overview](architecture/bootstrapper-structure.md) - Tổng quan kiến trúc
-- [CLI Tools](cli/development.md) - Công cụ CLI
-- [Gutenberg Integration](gutenberg/blocks.md) - Tích hợp Gutenberg
+### Prerequisites
+- PHP 7.4+
+- WordPress 5.0+
+- Composer
 
-### For Designers
-- [Design System](designer/design-system.md) - Hệ thống thiết kế
-- [Component Library](designer/component-library.md) - Thư viện components
-- [Quick Start](designer/quick-start.md) - Bắt đầu nhanh
-
-### For Content Creators
-- [Post Layout System](post-layout/README.md) - Hệ thống post layout
-- [Pattern Library](post-layout/pattern-library.md) - Thư viện patterns
-- [Templates](templates/README.md) - Templates
-
-### For Administrators
-- [Installation Guide](development/README.md#installation) - Hướng dẫn cài đặt
-- [Configuration](development/README.md#configuration) - Cấu hình
-- [Troubleshooting](post-layout/troubleshooting.md) - Xử lý sự cố
-
-## Key Features
-
-### 🚀 Modern Architecture
-- **Modular Design**: Kiến trúc modular với bootstrappers
-- **Service Container**: Dependency injection container
-- **Kernel System**: Multi-kernel system cho different contexts
-- **Deferred Services**: Lazy loading services
-
-### 🎨 Advanced Templates
-- **Block Templates**: PHP templates cho Gutenberg blocks
-- **Layout Templates**: Templates cho complex layouts
-- **Page Templates**: HTML templates với Gutenberg markup
-- **Template Hierarchy**: Flexible template system
-
-### 🔧 Developer Tools
-- **CLI Commands**: Command-line interface
-- **Debug Tools**: Comprehensive debugging
-- **Performance Monitoring**: Built-in performance tools
-- **Code Generation**: Scaffolding tools
-
-### 📊 Post Layout System
-- **Dynamic Query Loop**: Advanced query system
-- **Pattern Library**: Reusable patterns
-- **Layout Manager**: Flexible layout management
-- **Migration Tools**: Easy migration from old systems
-
-### 🎯 Gutenberg Integration
-- **Custom Blocks**: Easy block creation
-- **Ajax System**: Dynamic content loading
-- **Block Patterns**: Reusable block patterns
-- **Editor Enhancements**: Enhanced editor experience
-
-## Getting Started
-
-### 1. Installation
+### Installation (Development)
 ```bash
 # Clone repository
-git clone https://github.com/jankx/jankx.git my-theme
+git clone https://github.com/jankx/jankx-2.0.git
 
 # Install dependencies
 composer install
-npm install
+
+# Setup development environment
+cp .env.example .env
 ```
 
-### 2. Development Setup
-```bash
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
-```
-
-### 3. CLI Usage
-```bash
-# Generate new block
-wp jankx generate:block my-block
-
-# Create new layout
-wp jankx generate:layout my-layout
-
-# Run performance test
-wp jankx performance:test
-```
-
-## Architecture Overview
-
-### Bootstrapper System
-```
-Bootstrapper
-├── CoreBootstrapper
-├── ThemeBootstrapper
-├── FrontendBootstrapper
-├── AdminBootstrapper
-├── APIBootstrapper
-├── CLIBootstrapper
-└── GutenbergBootstrapper
-```
-
-### Kernel System
-```
-Kernel
-├── FrontendKernel
-├── AdminKernel
-├── APIKernel
-├── CLIKernel
-└── CronKernel
-```
-
-### Template System
-```
-Templates
-├── Page Templates (HTML)
-├── Block Templates (PHP)
-├── Layout Templates (PHP)
-└── Template Parts
-```
-
-## Development Workflow
-
-### 1. Create New Block
+### Basic Usage
 ```php
-// Register block
-add_action('init', function() {
-    register_block_type('jankx/my-block', [
-        'render_callback' => 'render_my_block'
-    ]);
-});
+// Initialize framework
+require_once get_template_directory() . '/includes/framework.php';
 
-// Render function
-function render_my_block($attributes) {
-    return include_template('blocks/my-block.html', $attributes);
+// Framework auto-bootstraps based on context
+```
+
+## 🔧 Development Guidelines
+
+### 1. **Configuration Management**
+```php
+// Access configuration via Config Facade
+$value = \Jankx\Facades\Config::get('app.providers.frontend');
+$allConfig = \Jankx\Facades\Config::all();
+
+// Set configuration
+\Jankx\Facades\Config::set('custom.key', 'value');
+```
+
+### 2. **Service Development**
+```php
+// Create new service
+class MyService
+{
+    public function __construct(Container $container)
+    {
+        $this->container = $container;
+    }
+
+    public function doSomething(): void
+    {
+        // Implementation
+    }
+}
+
+// Register in bootstrapper
+$this->container->singleton(MyService::class);
+```
+
+### 3. **WordPress Integration**
+```php
+// Direct WordPress function calls (no adapters)
+$content = \get_the_content() ?: '';
+$excerpt = \get_the_excerpt() ?: '';
+$hasBlocks = \has_blocks($content);
+$isAdmin = \is_admin();
+
+// WordPress hooks
+\add_action('init', [$this, 'initialize']);
+\add_filter('the_content', [$this, 'processContent']);
+```
+
+### 4. **Context Detection**
+```php
+// Use Kernel Facade for context detection
+$context = \Jankx\Facades\Kernel::getCurrentContext();
+
+// Available contexts: frontend, admin, cli, api, ajax, not_found
+```
+
+### 5. **Bootstrapper Development**
+```php
+class MyBootstrapper extends AbstractBootstrapper
+{
+    public function bootstrap(Container $container): void
+    {
+        // Register services
+        $container->singleton(MyService::class);
+
+        // Setup hooks
+        add_action('init', [$this, 'initialize']);
+    }
 }
 ```
 
-### 2. Create New Layout
+### 6. **Testing**
 ```php
-// Register layout
-add_action('init', function() {
-    register_block_pattern('jankx/my-layout', [
-        'content' => include_template('layouts/my-layout.html')
-    ]);
-});
-```
+class MyServiceTest extends TestCase
+{
+    public function testServiceMethod(): void
+    {
+        $service = new MyService($this->container);
+        $result = $service->doSomething();
 
-### 3. Custom Template
-```php
-// Create custom template
-function my_custom_template($variables) {
-    return include_template('custom/my-template.html', $variables);
+        $this->assertNotNull($result);
+    }
 }
 ```
 
-## Performance Features
+## 🐛 Known Issues
 
-### 1. Asset Optimization
-- **Lazy Loading**: Automatic lazy loading
-- **Code Splitting**: Dynamic code splitting
-- **Caching**: Built-in caching system
-- **Minification**: Automatic asset minification
+### Current Limitations
+1. **Gutenberg Integration**: Chưa hoàn thiện, một số blocks chưa hoạt động
+2. **Performance System**: Chưa implement đầy đủ
+3. **Designer Tools**: Chưa có CLI tools
+4. **Documentation**: Một số tài liệu mô tả tính năng chưa implement
 
-### 2. Database Optimization
-- **Query Optimization**: Optimized database queries
-- **Caching**: Object and page caching
-- **Indexing**: Automatic index optimization
-- **Cleanup**: Regular cleanup tasks
+### Workarounds
+- Sử dụng WordPress core blocks thay vì custom blocks
+- Implement performance optimization manually
+- Sử dụng traditional theme development workflow
 
-### 3. Frontend Performance
-- **Critical CSS**: Inline critical CSS
-- **Image Optimization**: Automatic image optimization
-- **CDN Support**: Built-in CDN support
-- **Service Workers**: PWA capabilities
+## 🤝 Contributing
 
-## Security Features
+### Development Setup
+```bash
+# Install development dependencies
+composer install --dev
 
-### 1. Input Validation
-- **Sanitization**: Automatic input sanitization
-- **Validation**: Comprehensive validation
-- **Escaping**: Output escaping
-- **Nonces**: CSRF protection
+# Run tests
+./vendor/bin/phpunit
 
-### 2. Access Control
-- **Role-based Access**: Granular permissions
-- **API Security**: Secure API endpoints
-- **File Protection**: Protected file access
-- **HTTPS Enforcement**: SSL enforcement
+# Run coding standards check
+./vendor/bin/phpcs
+```
 
-## Migration Support
+### Code Standards
+- PSR-4 autoloading
+- PSR-12 coding style
+- PHP 7.4+ features
+- WordPress coding standards
 
-### 1. From Jankx 1.x
-- **Automatic Migration**: One-click migration
-- **Hook Compatibility**: Backward compatibility
-- **Template Conversion**: Template migration tools
-- **Data Preservation**: Data integrity
+## 📝 Changelog
 
-### 2. From Other Themes
-- **Import Tools**: Import from other themes
-- **Template Conversion**: Template conversion
-- **Data Migration**: Data migration tools
-- **Customization Preservation**: Preserve customizations
+### Version 2.0.0-dev (Current)
+- ✅ Core architecture implementation
+- ✅ Service container system
+- ✅ Kernel and bootstrapper system
+- ✅ Configuration system (Config Facade + Repository)
+- ✅ WordPress integration (Direct function calls)
+- ✅ Debug system
+- 🔄 Gutenberg integration (in progress)
+- 🔄 Performance system (in progress)
+- 🔄 Designer tools (planned)
 
-## Support & Community
+## 📞 Support
 
-### 📚 Documentation
-- **Comprehensive Guides**: Detailed documentation
-- **Code Examples**: Practical examples
-- **Best Practices**: Development best practices
-- **Troubleshooting**: Common issues and solutions
+### Development Support
+- **GitHub Issues**: [Submit issues](https://github.com/jankx/jankx-2.0/issues)
+- **Discord**: [Development community](https://discord.gg/jankx)
+- **Documentation**: [Development docs](./development/README.md)
 
-### 🛠️ Development Tools
-- **CLI Commands**: Command-line tools
-- **Debug Tools**: Debugging utilities
-- **Performance Tools**: Performance monitoring
-- **Code Generators**: Scaffolding tools
-
-### 🤝 Community
-- **GitHub Issues**: Bug reports and feature requests
-- **Discussions**: Community discussions
-- **Contributions**: Contribution guidelines
-- **Support**: Technical support
-
-## Version Information
-
-- **Current Version**: 2.0.0
-- **PHP Requirement**: 7.4+
-- **WordPress Requirement**: 5.8+
-- **Gutenberg Requirement**: 10.0+
-
-## License
-
-Jankx 2.0 is licensed under the GPL v2 or later.
-
-## Contributing
-
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
-
-## Support
-
-- **Documentation**: [docs.jankx.com](https://docs.jankx.com)
-- **Issues**: [GitHub Issues](https://github.com/jankx/jankx/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/jankx/jankx/discussions)
-- **Community**: [Community Forum](https://community.jankx.com)
+### Production Use
+⚠️ **Không khuyến nghị sử dụng trong production** cho đến khi release chính thức.
 
 ---
 
-**Jankx 2.0** - Modern WordPress Theme Framework
+**Jankx 2.0** - Modern WordPress Theme Framework (Development Version) 🚧
+
+*Last updated: Development Phase*
+*Framework version: 2.0.0-dev*

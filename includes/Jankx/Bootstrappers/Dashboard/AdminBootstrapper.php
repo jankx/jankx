@@ -2,31 +2,58 @@
 
 namespace Jankx\Bootstrappers\Dashboard;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Illuminate\Container\Container;
 use Jankx\Bootstrappers\AbstractBootstrapper;
+use Jankx\Facades\Logger;
+use Jankx\Helpers\ErrorHandlingHelper;
+use Jankx\Helpers\BootstrapperHelper;
 
+/**
+ * Admin Bootstrapper
+ *
+ * Handles admin dashboard initialization and setup
+ *
+ * @package Jankx\Bootstrappers\Dashboard
+ * @since 2.0.0
+ */
 class AdminBootstrapper extends AbstractBootstrapper
 {
     protected $priority = 20;
 
+    /**
+     * Method getName
+     *
+     * @since 2.0.0
+     */
     public function getName(): string
     {
         return 'admin';
     }
 
+    /**
+     * Method shouldRun
+     *
+     * @since 2.0.0
+     */
     public function shouldRun(): bool
     {
         return is_admin();
     }
 
+    /**
+     * Method bootstrap
+     *
+     * @since 2.0.0
+     */
     public function bootstrap(Container $container): void
     {
-        // Register context-aware services
-        $contextProvider = new \Jankx\Providers\ContextualServiceProvider($container);
-        $contextProvider->register();
-
         // Setup deferred service resolver
-        $container->singleton('deferred.resolver', \Jankx\Services\DeferredServiceResolver::class);
+        BootstrapperHelper::setupDeferredResolver($container);
 
         // Load essential admin services immediately
         $this->loadEssentialServices($container);
@@ -37,27 +64,35 @@ class AdminBootstrapper extends AbstractBootstrapper
         // Set up admin hooks
         $this->setupAdminHooks();
 
-        do_action('jankx/bootstrapper/admin/loaded', $container);
+        // Fire loaded action
+        BootstrapperHelper::fireLoadedAction($this->getName(), $container);
     }
 
+    /**
+     * Method loadEssentialServices
+     *
+     * @since 2.0.0
+     */
     private function loadEssentialServices(Container $container): void
     {
-        // Services needed immediately
-        $container->singleton(\Jankx\Admin\MenuManager::class);
-        $container->singleton(\Jankx\Admin\AssetManager::class);
-        $container->singleton(\Jankx\Admin\NoticeManager::class);
+        // Services needed immediately - now registered through AdminKernel
     }
 
+    /**
+     * Method deferHeavyServices
+     *
+     * @since 2.0.0
+     */
     private function deferHeavyServices(Container $container): void
     {
-        // Defer heavy services until actually needed
-        \Jankx\Context\ContextualServiceRegistry::defer(\Jankx\Context\ContextualServiceRegistry::ADMIN, function(Container $container) {
-            $container->singleton(\Jankx\Admin\AnalyticsManager::class);
-            $container->singleton(\Jankx\Admin\ReportManager::class);
-            $container->singleton(\Jankx\Admin\DashboardWidgetManager::class);
-        });
+        // Defer heavy services until actually needed - now through AdminKernel
     }
 
+    /**
+     * Method setupAdminHooks
+     *
+     * @since 2.0.0
+     */
     private function setupAdminHooks(): void
     {
         // Hook into WordPress to load services when needed
@@ -65,48 +100,50 @@ class AdminBootstrapper extends AbstractBootstrapper
         add_action('admin_enqueue_scripts', [$this, 'loadAdminAssets']);
     }
 
+    /**
+     * Method loadAdminServices
+     *
+     * @since 2.0.0
+     */
     public function loadAdminServices(): void
     {
-        try {
+        ErrorHandlingHelper::safeExecute(function () {
             // Get container from global Jankx instance
-            $container = \Jankx\Jankx::getInstance();
+            $container = BootstrapperHelper::getGlobalContainer();
 
-            if (!$container || !$container->bound('deferred.resolver')) {
+            $resolver = BootstrapperHelper::getDeferredResolver($container);
+            if (!$resolver) {
                 return;
             }
-
-            $resolver = $container->make('deferred.resolver');
 
             // Load admin services only when in admin context
             if (is_admin()) {
                 $resolver->resolve(\Jankx\Admin\DashboardManager::class);
             }
-        } catch (\Exception $e) {
-            // Log error but don't break the application
-            error_log('Jankx AdminBootstrapper error: ' . $e->getMessage());
-        }
+        }, 'AdminBootstrapper loadAdminServices');
     }
 
+    /**
+     * Method loadAdminAssets
+     *
+     * @since 2.0.0
+     */
     public function loadAdminAssets(): void
     {
-        try {
+        ErrorHandlingHelper::safeExecute(function () {
             // Get container from global Jankx instance
-            $container = \Jankx\Jankx::getInstance();
+            $container = BootstrapperHelper::getGlobalContainer();
 
-            if (!$container || !$container->bound('deferred.resolver')) {
+            $resolver = BootstrapperHelper::getDeferredResolver($container);
+            if (!$resolver) {
                 return;
             }
 
             // Load admin assets when needed
-            $resolver = $container->make('deferred.resolver');
-
             if ($resolver->has(\Jankx\Admin\AssetManager::class)) {
                 $assetManager = $resolver->resolve(\Jankx\Admin\AssetManager::class);
                 $assetManager->enqueueAdminAssets();
             }
-        } catch (\Exception $e) {
-            // Log error but don't break the application
-            error_log('Jankx AdminBootstrapper error: ' . $e->getMessage());
-        }
+        }, 'AdminBootstrapper loadAdminAssets');
     }
 }

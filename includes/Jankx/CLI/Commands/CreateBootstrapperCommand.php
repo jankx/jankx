@@ -2,6 +2,11 @@
 
 namespace Jankx\CLI\Commands;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use WP_CLI;
 use WP_CLI_Command;
 
@@ -62,4 +67,4 @@ class CreateBootstrapperCommand extends WP_CLI_Command
         WP_CLI::log("📁 Files created:");
         WP_CLI::log("   - includes/Jankx/Bootstrappers/$context/{$bootstrapperName}Bootstrapper.php");
     }
-} 
+}

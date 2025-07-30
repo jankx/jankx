@@ -2,11 +2,15 @@
 
 namespace Jankx\Kernel;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Illuminate\Container\Container;
 use Jankx\Bootstrappers\Global\CoreBootstrapper;
-use Jankx\Contracts\KernelInterface;
-use Jankx\Kernel\Strategies\KernelContextStrategy;
 use Jankx\Kernel\Strategies\CLIKernelStrategy;
+use Jankx\Kernel\Strategies\AjaxKernelStrategy;
 use Jankx\Kernel\Strategies\GutenbergAjaxKernelStrategy;
 use Jankx\Kernel\Strategies\CronKernelStrategy;
 use Jankx\Kernel\Strategies\APIKernelStrategy;
@@ -21,17 +25,24 @@ use Jankx\Kernel\KernelFactory;
  * Uses Strategy Pattern to determine which kernel to boot based on context.
  *
  * @package Jankx\Kernel
+ * @since 2.0.0
  */
 class KernelManager
 {
     protected $container;
     protected $booted = false;
     protected $currentKernel;
-    protected $kernels = [];
-    protected $bootedKernels = [];
     protected $contextStrategies = [];
     protected $kernelFactory;
 
+    protected $currentContext = null;
+
+
+    /**
+     * Method __construct
+     *
+     * @since 2.0.0
+     */
     public function __construct(Container $container)
     {
         $this->container = $container;
@@ -40,6 +51,11 @@ class KernelManager
         $this->registerContextStrategies();
     }
 
+    /**
+     * Method bootstrapSystem
+     *
+     * @since 2.0.0
+     */
     protected function bootstrapSystem()
     {
         // Initialize the system with CoreBootstrapper before doing anything else
@@ -49,11 +65,13 @@ class KernelManager
 
     /**
      * Register context strategies for determining which kernel to use
+     * @since 2.0.0
      */
     protected function registerContextStrategies()
     {
         $strategies = [
             new CLIKernelStrategy(),
+            new AjaxKernelStrategy(),
             new GutenbergAjaxKernelStrategy(),
             new CronKernelStrategy(),
             new APIKernelStrategy(),
@@ -62,13 +80,18 @@ class KernelManager
         ];
 
         // Sort strategies by priority (lower number = higher priority)
-        usort($strategies, function($a, $b) {
+        usort($strategies, function ($a, $b) {
             return $a->getPriority() <=> $b->getPriority();
         });
 
         $this->contextStrategies = $strategies;
     }
 
+    /**
+     * Method boot
+     *
+     * @since 2.0.0
+     */
     public function boot()
     {
         if ($this->booted) {
@@ -81,6 +104,7 @@ class KernelManager
 
         /**
      * Use Strategy Pattern to determine context and boot appropriate kernel
+     * @since 2.0.0
      */
     protected function determineContextAndBootKernel()
     {
@@ -88,32 +112,47 @@ class KernelManager
         $this->currentKernel = $this->kernelFactory->createKernel($context);
 
         if ($this->currentKernel) {
+            // Set context for the kernel
+            $this->currentKernel->setContext($context);
             $this->currentKernel->boot();
         }
     }
 
     /**
      * Get current context using Strategy Pattern
+     * @since 2.0.0
      */
-    protected function getCurrentContext(): string
+    public function getCurrentContext(): string
     {
-        foreach ($this->contextStrategies as $strategy) {
-            if ($strategy->canHandle()) {
-                return $strategy->getContext();
+        if (is_null($this->currentContext)) {
+            foreach ($this->contextStrategies as $strategy) {
+                if ($strategy->canHandle()) {
+                    $context = $strategy->getContext();
+                    // Debug logging
+                    if (defined('JANKX_DEBUG') && JANKX_DEBUG) {
+                        \Jankx\Facades\Logger::debug("KernelManager: Detected context: {$context} using strategy: " . get_class($strategy));
+                    }
+                    return $context;
+                }
             }
-        }
 
-        return 'frontend'; // Default fallback
+            $context = 'frontend'; // Default fallback
+            // Debug logging
+            if (defined('JANKX_DEBUG') && JANKX_DEBUG) {
+                \Jankx\Facades\Logger::debug("KernelManager: Using default context: {$context}");
+            }
+            $this->currentContext = $context;
+        } else {
+            $context = $this->currentContext;
+        }
+        return $context;
     }
 
     /**
-     * Get kernel class for given context using factory
+     * Method getCurrentKernel
+     *
+     * @since 2.0.0
      */
-    protected function getKernelClassForContext(string $context): ?string
-    {
-        return $this->kernelFactory->getKernelClass($context);
-    }
-
     public function getCurrentKernel()
     {
         return $this->currentKernel;
@@ -121,117 +160,10 @@ class KernelManager
 
     /**
      * Register a kernel using factory
+     * @since 2.0.0
      */
     public function registerKernel(string $type, string $kernelClass): void
     {
         $this->kernelFactory->registerKernel($type, $kernelClass);
-        $this->kernels[$type] = $kernelClass;
-    }
-
-    public function getKernel(string $type)
-    {
-        if (!isset($this->kernels[$type])) {
-            return null;
-        }
-
-        $kernelClass = $this->kernels[$type];
-
-        if (!isset($this->bootedKernels[$type])) {
-            $this->bootedKernels[$type] = new $kernelClass($this->container);
-        }
-
-        return $this->bootedKernels[$type];
-    }
-
-    public function bootKernel(string $type): void
-    {
-        $kernel = $this->getKernel($type);
-
-        if ($kernel && !$kernel->isBooted()) {
-            $kernel->boot();
-        }
-    }
-
-    public function bootAllKernels(): void
-    {
-        foreach (array_keys($this->kernels) as $type) {
-            $this->bootKernel($type);
-        }
-    }
-
-    /**
-     * Boot kernels by context using Strategy Pattern
-     */
-    public function bootKernelsByContext(): void
-    {
-        $context = $this->getCurrentContext();
-        $this->bootKernel($context);
-    }
-
-    public function getAllKernels(): array
-    {
-        return $this->kernels;
-    }
-
-    public function getBootedKernels(): array
-    {
-        return $this->bootedKernels;
-    }
-
-    public function hasKernel(string $type): bool
-    {
-        return isset($this->kernels[$type]);
-    }
-
-    public function isKernelBooted(string $type): bool
-    {
-        $kernel = $this->getKernel($type);
-        return $kernel ? $kernel->isBooted() : false;
-    }
-
-    public function removeKernel(string $type): void
-    {
-        unset($this->kernels[$type]);
-        unset($this->bootedKernels[$type]);
-    }
-
-    public function getKernelInfo(string $type): array
-    {
-        $kernel = $this->getKernel($type);
-
-        if (!$kernel) {
-            return [];
-        }
-
-        return [
-            'type' => $type,
-            'booted' => $kernel->isBooted(),
-            'context' => $this->getCurrentContext(),
-        ];
-    }
-
-    public function getAllKernelInfo(): array
-    {
-        $info = [];
-
-        foreach (array_keys($this->kernels) as $type) {
-            $info[$type] = $this->getKernelInfo($type);
-        }
-
-        return $info;
-    }
-
-    /**
-     * Get current context strategies for debugging
-     */
-    public function getContextStrategies(): array
-    {
-        return array_map(function($strategy) {
-            return [
-                'class' => get_class($strategy),
-                'canHandle' => $strategy->canHandle(),
-                'context' => $strategy->getContext(),
-            ];
-        }, $this->contextStrategies);
     }
 }

@@ -2,11 +2,15 @@
 
 namespace Jankx\Bootstrappers\Gutenberg;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Illuminate\Container\Container;
 use Jankx\Gutenberg\BlockRegistry;
 use Jankx\Facades\Logger;
 use Jankx\Bootstrappers\AbstractBootstrapper;
-
 
 /**
  * Gutenberg Bootstrapper
@@ -14,21 +18,37 @@ use Jankx\Bootstrappers\AbstractBootstrapper;
  * Handles Gutenberg block registration and editor integration
  *
  * @package Jankx\Bootstrappers
+ * @since 2.0.0
  */
 class GutenbergBootstrapper extends AbstractBootstrapper
 {
     protected $priority = 10;
 
+    /**
+     * Method getName
+     *
+     * @since 2.0.0
+     */
     public function getName(): string
     {
         return 'gutenberg';
     }
 
+    /**
+     * Method shouldRun
+     *
+     * @since 2.0.0
+     */
     public function shouldRun(): bool
     {
         return function_exists('register_block_type') && is_admin();
     }
 
+    /**
+     * Method bootstrap
+     *
+     * @since 2.0.0
+     */
     public function bootstrap(Container $container): void
     {
         // Initialize Gutenberg Block Registry
@@ -47,6 +67,7 @@ class GutenbergBootstrapper extends AbstractBootstrapper
 
     /**
      * Register block categories
+     * @since 2.0.0
      */
     public function registerBlockCategories($categories)
     {

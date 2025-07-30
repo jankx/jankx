@@ -2,6 +2,11 @@
 
 namespace Jankx\Kernel;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\Contracts\KernelInterface;
 use Jankx\Bootstrappers\CLI\CLIBootstrapper;
 use Jankx\Bootstrappers\Global\ThemeBootstrapper;
@@ -13,11 +18,13 @@ use Jankx\Facades\Logger;
  * Handles CLI-specific features and commands
  *
  * @package Jankx\Kernel
+ * @since 2.0.0
  */
 class CLIKernel extends Kernel implements KernelInterface
 {
     /**
      * Get kernel type
+     * @since 2.0.0
      */
     public function getKernelType(): string
     {
@@ -25,10 +32,31 @@ class CLIKernel extends Kernel implements KernelInterface
     }
 
     /**
+     * Check if this kernel should run
+     * @since 2.0.0
+     */
+    public function shouldRun(): bool
+    {
+        return defined('WP_CLI') && WP_CLI;
+    }
+
+    /**
+     * Bootstrap the kernel (alias for boot method)
+     * @since 2.0.0
+     */
+    public function bootstrap(): void
+    {
+        $this->boot();
+    }
+
+    /**
      * Register bootstrappers
+     * @since 2.0.0
      */
     protected function registerBootstrappers(): void
     {
+        parent::registerBootstrappers();
+
         // Theme bootstrapper (highest priority)
         $this->addBootstrapper(ThemeBootstrapper::class);
 
@@ -44,15 +72,19 @@ class CLIKernel extends Kernel implements KernelInterface
 
     /**
      * Register services
+     * @since 2.0.0
      */
     protected function registerServices(): void
     {
-        // CLI services will be registered by CLIBootstrapper
-        // No immediate services needed for CLI kernel
+        parent::registerServices();
+
+        // Register CLIServiceProvider
+        $this->addServiceProvider(\Jankx\Providers\CLIServiceProvider::class);
     }
 
     /**
      * Register hooks
+     * @since 2.0.0
      */
     protected function registerHooks(): void
     {
@@ -67,15 +99,18 @@ class CLIKernel extends Kernel implements KernelInterface
 
     /**
      * Register filters
+     * @since 2.0.0
      */
     protected function registerFilters(): void
     {
-        // CLI output formatting
-        $this->addFilter('jankx/cli/output', [$this, 'formatCLIOutput']);
+        $this->filters = [
+            'jankx_cli_commands' => ['Jankx\Kernel\CLIKernel', 'filterCLICommands'],
+        ];
     }
 
     /**
      * Initialize CLI environment
+     * @since 2.0.0
      */
     public function initializeCLI(): void
     {
@@ -94,6 +129,7 @@ class CLIKernel extends Kernel implements KernelInterface
 
     /**
      * Register WP-CLI commands
+     * @since 2.0.0
      */
     public function registerWPCLICommands(): void
     {
@@ -101,8 +137,7 @@ class CLIKernel extends Kernel implements KernelInterface
             return;
         }
 
-        // Register Jankx CLI commands
-        \Jankx\CLI\CLICommands::register();
+        // CLI commands are now registered through CLIServiceProvider
 
         // Basic Jankx commands
         \WP_CLI::add_command('jankx info', [$this, 'showFrameworkInfo']);
@@ -112,31 +147,92 @@ class CLIKernel extends Kernel implements KernelInterface
         do_action('jankx/wpcli/register_commands');
     }
 
-    /**
+        /**
      * Show framework information
+     * @since 2.0.0
      */
     public function showFrameworkInfo(): void
     {
         $info = $this->getEnvironmentInfo();
 
-        \WP_CLI::line('Jankx Framework Information:');
-        \WP_CLI::line("PHP Version: {$info['php_version']}");
-        \WP_CLI::line("WordPress Version: {$info['wordpress_version']}");
-        \WP_CLI::line("Jankx Version: {$info['jankx_version']}");
-        \WP_CLI::line("Memory Limit: {$info['memory_limit']}");
-        \WP_CLI::line("Max Execution Time: {$info['max_execution_time']}s");
+        \WP_CLI::line('🎯 Jankx Framework Information');
+        \WP_CLI::line('================================');
+        \WP_CLI::line('');
+
+        // System Information
+        \WP_CLI::line('🖥️  System Information:');
+        \WP_CLI::line("   • PHP Version: {$info['php_version']}");
+        \WP_CLI::line("   • WordPress Version: {$info['wordpress_version']}");
+        \WP_CLI::line("   • Jankx Version: {$info['jankx_version']}");
+        \WP_CLI::line('');
+
+        // Performance Information
+        \WP_CLI::line('⚡ Performance Settings:');
+        \WP_CLI::line("   • Memory Limit: {$info['memory_limit']}");
+        \WP_CLI::line("   • Max Execution Time: {$info['max_execution_time']}s");
+        \WP_CLI::line("   • Upload Max Filesize: {$info['upload_max_filesize']}");
+        \WP_CLI::line("   • Post Max Size: {$info['post_max_size']}");
+        \WP_CLI::line('');
+
+        // Show active plugins
+        $this->showActivePlugins();
     }
 
     /**
      * Show version information
+     * @since 2.0.0
      */
     public function showVersion(): void
     {
         \WP_CLI::line("Jankx Framework Version: " . \Jankx\Jankx::getFrameworkVersion());
     }
 
+        /**
+     * Show active plugins information
+     * @since 2.0.0
+     */
+    public function showActivePlugins(): void
+    {
+        if (!function_exists('get_plugins')) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+
+        $active_plugins = get_option('active_plugins');
+        $all_plugins = get_plugins();
+
+        if (empty($active_plugins)) {
+            \WP_CLI::line('🔌 Active Plugins: None');
+            return;
+        }
+
+        \WP_CLI::line('🔌 Active Plugins (' . count($active_plugins) . '):');
+
+        foreach ($active_plugins as $index => $plugin_file) {
+            $number = $index + 1;
+
+            if (isset($all_plugins[$plugin_file])) {
+                $plugin_data = $all_plugins[$plugin_file];
+                $plugin_name = $plugin_data['Name'] ?? basename($plugin_file, '.php');
+                $plugin_version = $plugin_data['Version'] ?? 'Unknown';
+                $plugin_author = $plugin_data['Author'] ?? 'Unknown';
+                $plugin_description = $plugin_data['Description'] ?? '';
+
+                \WP_CLI::line("   {$number}. {$plugin_name} v{$plugin_version}");
+                \WP_CLI::line("      👤 Author: {$plugin_author}");
+                if (!empty($plugin_description)) {
+                    \WP_CLI::line("      📝 Description: {$plugin_description}");
+                }
+                \WP_CLI::line('');
+            } else {
+                \WP_CLI::line("   {$number}. " . basename($plugin_file, '.php') . " (Plugin data not found)");
+                \WP_CLI::line('');
+            }
+        }
+    }
+
     /**
      * Format CLI output
+     * @since 2.0.0
      */
     public function formatCLIOutput(string $output): string
     {
@@ -160,6 +256,7 @@ class CLIKernel extends Kernel implements KernelInterface
 
     /**
      * Get CLI environment info
+     * @since 2.0.0
      */
     public function getEnvironmentInfo(): array
     {
@@ -176,6 +273,7 @@ class CLIKernel extends Kernel implements KernelInterface
 
     /**
      * Check CLI requirements
+     * @since 2.0.0
      */
     public function checkRequirements(): bool
     {
@@ -199,6 +297,7 @@ class CLIKernel extends Kernel implements KernelInterface
 
     /**
      * Check memory limit
+     * @since 2.0.0
      */
     protected function checkMemoryLimit(): bool
     {
@@ -209,6 +308,7 @@ class CLIKernel extends Kernel implements KernelInterface
 
     /**
      * Check execution time
+     * @since 2.0.0
      */
     protected function checkExecutionTime(): bool
     {
@@ -218,6 +318,7 @@ class CLIKernel extends Kernel implements KernelInterface
 
     /**
      * Convert memory string to bytes
+     * @since 2.0.0
      */
     protected function convertToBytes(string $memory_string): int
     {
@@ -239,6 +340,7 @@ class CLIKernel extends Kernel implements KernelInterface
 
     /**
      * Log error message
+     * @since 2.0.0
      */
     protected function logError(string $message): void
     {
@@ -247,6 +349,7 @@ class CLIKernel extends Kernel implements KernelInterface
 
     /**
      * Log info message
+     * @since 2.0.0
      */
     protected function logInfo(string $message): void
     {
@@ -255,6 +358,7 @@ class CLIKernel extends Kernel implements KernelInterface
 
     /**
      * Log success message
+     * @since 2.0.0
      */
     protected function logSuccess(string $message): void
     {
@@ -263,6 +367,7 @@ class CLIKernel extends Kernel implements KernelInterface
 
     /**
      * Log warning message
+     * @since 2.0.0
      */
     protected function logWarning(string $message): void
     {

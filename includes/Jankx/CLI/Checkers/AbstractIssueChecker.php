@@ -2,7 +2,12 @@
 
 namespace Jankx\CLI\Checkers;
 
-use Jankx\CLI\Parser\PHPParser;
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
+use Jankx\Parsers\PHPParser;
 
 /**
  * Abstract base class for Issue Checkers

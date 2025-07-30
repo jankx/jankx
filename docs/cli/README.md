@@ -81,8 +81,8 @@ wp jankx release --dry-run
 | `wp jankx generate-block` | Tạo Gutenberg blocks | ✅ Implemented |
 | `wp jankx create-bootstrapper` | Tạo bootstrappers | ✅ Implemented |
 | `wp jankx release` | Tạo release package | ✅ Implemented |
-| `wp jankx info` | Hiển thị thông tin framework | 🔄 Planned |
-| `wp jankx version` | Hiển thị phiên bản | 🔄 Planned |
+| `wp jankx info` | Hiển thị thông tin framework | ✅ Implemented |
+| `wp jankx version` | Hiển thị phiên bản | ✅ Implemented |
 
 ---
 
@@ -164,7 +164,7 @@ wp jankx create-bootstrapper ThirdPartyIntegration --context=frontend --priority
 Tạo release package cho Jankx Framework:
 
 ```bash
-wp jankx release [--version=<version>] [--output=<output>] [--force] [--dry-run]
+wp jankx release [--version=<version>] [--output=<output>] [--force] [--dry-run] [--verbose]
 ```
 
 **Options:**
@@ -172,6 +172,7 @@ wp jankx release [--version=<version>] [--output=<output>] [--force] [--dry-run]
 - `--output=<output>` - Output directory (default: ./releases)
 - `--force` - Force overwrite existing file
 - `--dry-run` - Show files sẽ được include mà không tạo package
+- `--verbose` - Show detailed information about exclude patterns and files
 
 **Examples:**
 ```bash
@@ -186,14 +187,33 @@ wp jankx release --dry-run
 
 # Tạo release với output tùy chỉnh
 wp jankx release --output=/path/to/releases
+
+# Show detailed information
+wp jankx release --verbose
 ```
 
-**Output:**
+**Output (Default):**
 ```
 🎯 Creating Jankx Framework Release Package
 📦 Theme: bookix
 🏷️  Version: 2.0.0
 📁 Output: ./releases
+
+Success: Release package created successfully!
+📦 Package: ./releases/bookix-2.0.0.zip
+📊 Size: 2.5 MB
+📄 Files included: 156
+```
+
+**Output (with --verbose):**
+```
+🎯 Creating Jankx Framework Release Package
+📦 Theme: bookix
+🏷️  Version: 2.0.0
+📁 Output: ./releases
+
+📁 Theme path: /path/to/theme
+📄 Files found: 156
 
 📖 Reading exclude patterns from .gitattributes...
    - Excluding: /.circleci
@@ -205,6 +225,12 @@ wp jankx release --output=/path/to/releases
    - Including: /vendor (vendor directory)
 📋 Total exclude patterns loaded: 25
 
+ - includes/Jankx/Kernel/CLIKernel.php
+ - includes/Jankx/CLI/Commands/ReleaseCommand.php
+ - style.css
+ - functions.php
+🗂️  Total files added to zip: 156
+
 Success: Release package created successfully!
 📦 Package: ./releases/bookix-2.0.0.zip
 📊 Size: 2.5 MB
@@ -215,7 +241,8 @@ Success: Release package created successfully!
 - Command đọc `.gitattributes` để xác định files cần loại trừ từ `export-ignore` patterns
 - **Vendor directory được include** (không loại trừ) để đảm bảo PHP dependencies hoạt động đúng
 - Sử dụng `--dry-run` để preview files trước khi tạo package
-- Command hiển thị chi tiết các patterns được load từ `.gitattributes`
+- Sử dụng `--verbose` để xem thông tin chi tiết về exclude patterns và files được nén
+- Mặc định chỉ hiển thị thông tin cơ bản, ẩn chi tiết để output gọn gàng
 
 ---
 
@@ -228,12 +255,32 @@ wp jankx info
 
 **Output:**
 ```
-Jankx Framework Information:
-PHP Version: 8.1.30
-WordPress Version: 6.4.3
-Jankx Version: 2.0.0
-Memory Limit: 256M
-Max Execution Time: 30s
+🎯 Jankx Framework Information
+================================
+
+🖥️  System Information:
+   • PHP Version: 8.1.30
+   • WordPress Version: 6.4.3
+   • Jankx Version: 2.0.0
+
+⚡ Performance Settings:
+   • Memory Limit: 256M
+   • Max Execution Time: 30s
+   • Upload Max Filesize: 64M
+   • Post Max Size: 64M
+
+🔌 Active Plugins (3):
+   1. WooCommerce v8.5.2
+      👤 Author: Automattic
+      📝 Description: An eCommerce toolkit that helps you sell anything online.
+
+   2. Yoast SEO v21.7
+      👤 Author: Team Yoast
+      📝 Description: Improve your WordPress SEO: Write better content and have a fully optimized website.
+
+   3. Contact Form 7 v5.8.1
+      👤 Author: Takayuki Miyoshi
+      📝 Description: Just another contact form plugin. Simple but flexible.
 ```
 
 #### `wp jankx version` {#wp-jankx-version}
@@ -331,7 +378,24 @@ Tất cả commands hiện có được implement trong:
 - **`includes/Jankx/CLI/Commands/CreateBootstrapperCommand.php`** - Create bootstrappers
 - **`includes/Jankx/CLI/Commands/ReleaseCommand.php`** - Create release packages
 
-Commands được đăng ký trong **`includes/Jankx/CLI/CLICommands.php`** và load thông qua **`includes/Jankx/Providers/CLIServiceProvider.php`**.
+Commands được đăng ký trực tiếp trong **`includes/Jankx/Providers/CLIServiceProvider.php`** thông qua method `registerCLICommands()`.
+
+```php
+// CLIServiceProvider.php
+private function registerCLICommands(): void
+{
+    if (!defined('WP_CLI') || !WP_CLI) {
+        return;
+    }
+
+    // Register individual commands
+    if ($this->container->has('cli.command.generate-block')) {
+        WP_CLI::add_command('jankx generate-block', $this->container->make('cli.command.generate-block'));
+    }
+
+    // ... other commands
+}
+```
 
 ## 📊 Command Status
 
@@ -340,10 +404,10 @@ Commands được đăng ký trong **`includes/Jankx/CLI/CLICommands.php`** và 
 - `wp jankx generate-block` - Generate blocks
 - `wp jankx create-bootstrapper` - Create bootstrappers
 - `wp jankx release` - Create release packages
-
-### 🔄 Planned Commands
 - `wp jankx info` - Framework information
 - `wp jankx version` - Version display
+
+### 🔄 Planned Commands
 - `wp jankx cache` - Cache management
 - `wp jankx optimize` - Performance optimization
 - `wp jankx security` - Security scanning
@@ -365,6 +429,7 @@ Commands sẽ hiển thị:
 - **Max Execution Time:** Thời gian thực thi tối đa
 - **Upload Max Filesize:** Kích thước upload tối đa
 - **Post Max Size:** Kích thước POST tối đa
+- **Active Plugins:** Danh sách plugins đang active với version và author
 
 ## 🔍 **Troubleshooting**
 
@@ -408,7 +473,6 @@ wp jankx info --debug
 ### **Jankx Framework**
 - `CLIKernel` - Kernel xử lý CLI commands
 - `CLIBootstrapper` - Bootstrapper cho CLI context
-- `ContextualServiceProvider` - Service provider cho CLI
 
 ## 🚀 **Future Roadmap**
 
