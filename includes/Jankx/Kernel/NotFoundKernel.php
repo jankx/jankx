@@ -15,6 +15,7 @@ use Illuminate\Container\Container;
  *
  * @package Jankx\Kernel
  * @author Puleeno Nguyen <puleeno@gmail.com>
+ * @since 2.0.0
  */
 class NotFoundKernel extends Kernel
 {
@@ -22,6 +23,7 @@ class NotFoundKernel extends Kernel
      * Constructor
      *
      * @param Container $container Container để resolve các dịch vụ
+     * @since 2.0.0
      */
     public function __construct(Container $container = null)
     {
@@ -32,6 +34,7 @@ class NotFoundKernel extends Kernel
      * Get kernel type
      *
      * @return string
+     * @since 2.0.0
      */
     public function getKernelType(): string
     {
@@ -40,6 +43,7 @@ class NotFoundKernel extends Kernel
 
     /**
      * Register bootstrappers
+     * @since 2.0.0
      */
     protected function registerBootstrappers(): void
     {
@@ -54,6 +58,7 @@ class NotFoundKernel extends Kernel
 
     /**
      * Register services
+     * @since 2.0.0
      */
     protected function registerServices(): void
     {
@@ -64,6 +69,7 @@ class NotFoundKernel extends Kernel
 
     /**
      * Register hooks
+     * @since 2.0.0
      */
     protected function registerHooks(): void
     {
@@ -74,6 +80,7 @@ class NotFoundKernel extends Kernel
 
     /**
      * Register filters
+     * @since 2.0.0
      */
     protected function registerFilters(): void
     {
@@ -84,6 +91,7 @@ class NotFoundKernel extends Kernel
 
     /**
      * Handle 404 requests
+     * @since 2.0.0
      */
     public static function handleNotFound()
     {

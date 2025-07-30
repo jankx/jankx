@@ -2,6 +2,11 @@
 
 namespace Jankx\CLI\Fixers;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\Jankx;
 
 /**

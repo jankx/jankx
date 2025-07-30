@@ -2,6 +2,11 @@
 
 namespace Jankx\Bootstrappers;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Illuminate\Container\Container;
 use Jankx\Contracts\BootstrapperInterface;
 
@@ -28,6 +33,7 @@ abstract class AbstractBootstrapper implements BootstrapperInterface
 
     /**
      * Get bootstrapper priority
+     * @since 2.0.0
      */
     public function getPriority(): int
     {
@@ -36,6 +42,7 @@ abstract class AbstractBootstrapper implements BootstrapperInterface
 
     /**
      * Get bootstrapper dependencies
+     * @since 2.0.0
      */
     public function getDependencies(): array
     {
@@ -44,16 +51,19 @@ abstract class AbstractBootstrapper implements BootstrapperInterface
 
     /**
      * Get bootstrapper name (must be implemented by child)
+     * @since 2.0.0
      */
     abstract public function getName(): string;
 
     /**
      * Check if bootstrapper should run (must be implemented by child)
+     * @since 2.0.0
      */
     abstract public function shouldRun(): bool;
 
     /**
      * Bootstrap the application (must be implemented by child)
+     * @since 2.0.0
      */
     abstract public function bootstrap(Container $container): void;
 }

@@ -2,6 +2,11 @@
 
 namespace Jankx\Bootstrappers\Global;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Illuminate\Container\Container;
 use Jankx\Bootstrappers\AbstractBootstrapper;
 use Jankx\Helpers\ThemeSupportHelper;
@@ -19,16 +24,31 @@ class ThemeBootstrapper extends AbstractBootstrapper
 {
     protected $priority = 10;
 
+    /**
+     * Method getName
+     *
+     * @since 2.0.0
+     */
     public function getName(): string
     {
         return 'theme';
     }
 
+    /**
+     * Method shouldRun
+     *
+     * @since 2.0.0
+     */
     public function shouldRun(): bool
     {
         return true; // Theme bootstrapper always runs
     }
 
+    /**
+     * Method bootstrap
+     *
+     * @since 2.0.0
+     */
     public function bootstrap(Container $container): void
     {
         add_action('after_setup_theme', [$this, 'setupTheme']);
@@ -37,6 +57,11 @@ class ThemeBootstrapper extends AbstractBootstrapper
         BootstrapperHelper::fireLoadedAction($this->getName(), $container);
     }
 
+    /**
+     * Method setupTheme
+     *
+     * @since 2.0.0
+     */
     public function setupTheme(): void
     {
         // Add all theme supports using helper
@@ -46,6 +71,11 @@ class ThemeBootstrapper extends AbstractBootstrapper
         ThemeSupportHelper::loadTextDomain();
     }
 
+    /**
+     * Method initializeThemeFeatures
+     *
+     * @since 2.0.0
+     */
     public function initializeThemeFeatures(): void
     {
         // Add theme-specific initialization logic here

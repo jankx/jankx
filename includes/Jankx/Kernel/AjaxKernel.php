@@ -16,6 +16,7 @@ use Illuminate\Container\Container;
  *
  * @package Jankx\Kernel
  * @author Puleeno Nguyen <puleeno@gmail.com>
+ * @since 2.0.0
  */
 class AjaxKernel extends Kernel
 {
@@ -23,6 +24,7 @@ class AjaxKernel extends Kernel
      * Constructor
      *
      * @param Container $container Container để resolve các dịch vụ
+     * @since 2.0.0
      */
     public function __construct(Container $container = null)
     {
@@ -33,6 +35,7 @@ class AjaxKernel extends Kernel
      * Get kernel type
      *
      * @return string
+     * @since 2.0.0
      */
     public function getKernelType(): string
     {
@@ -41,6 +44,7 @@ class AjaxKernel extends Kernel
 
     /**
      * Register bootstrappers
+     * @since 2.0.0
      */
     protected function registerBootstrappers(): void
     {
@@ -55,6 +59,7 @@ class AjaxKernel extends Kernel
 
     /**
      * Register services
+     * @since 2.0.0
      */
     protected function registerServices(): void
     {
@@ -67,6 +72,7 @@ class AjaxKernel extends Kernel
 
     /**
      * Register hooks
+     * @since 2.0.0
      */
     protected function registerHooks(): void
     {
@@ -78,6 +84,7 @@ class AjaxKernel extends Kernel
 
     /**
      * Register filters
+     * @since 2.0.0
      */
     protected function registerFilters(): void
     {
@@ -88,6 +95,7 @@ class AjaxKernel extends Kernel
 
     /**
      * Handle AJAX requests
+     * @since 2.0.0
      */
     public static function handleAjaxRequest()
     {

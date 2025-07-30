@@ -2,10 +2,16 @@
 
 namespace Jankx\Kernel\Strategies;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 /**
  * Strategy for Cron context
  *
  * @package Jankx\Kernel\Strategies
+ * @since 2.0.0
  */
 class CronKernelStrategy extends KernelContextStrategy
 {
@@ -13,6 +19,7 @@ class CronKernelStrategy extends KernelContextStrategy
      * Check if current context is Cron
      *
      * @return bool
+     * @since 2.0.0
      */
     public function canHandle(): bool
     {
@@ -30,6 +37,7 @@ class CronKernelStrategy extends KernelContextStrategy
      * Get Cron context name
      *
      * @return string
+     * @since 2.0.0
      */
     public function getContext(): string
     {
@@ -40,6 +48,7 @@ class CronKernelStrategy extends KernelContextStrategy
      * Cron has medium priority
      *
      * @return int
+     * @since 2.0.0
      */
     public function getPriority(): int
     {

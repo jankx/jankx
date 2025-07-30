@@ -2,6 +2,11 @@
 
 namespace Jankx\Config;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\Contracts\ConfigRepositoryInterface;
 use Jankx\Facades\Logger;
 
@@ -62,6 +67,7 @@ class Repository implements ConfigRepositoryInterface
 
     /**
      * Constructor
+     * @since 2.0.0
      */
     public function __construct()
     {
@@ -71,6 +77,7 @@ class Repository implements ConfigRepositoryInterface
 
     /**
      * Initialize theme paths with environment variable support
+     * @since 2.0.0
      */
     protected function initializeThemePaths(): void
     {
@@ -104,6 +111,7 @@ class Repository implements ConfigRepositoryInterface
 
     /**
      * Load configurations from parent and child themes
+     * @since 2.0.0
      */
     protected function loadConfigurations(): void
     {
@@ -121,6 +129,7 @@ class Repository implements ConfigRepositoryInterface
 
     /**
      * Load configurations from ConfigBootstrapper
+     * @since 2.0.0
      */
     public function loadFromBootstrapper(): void
     {
@@ -129,6 +138,7 @@ class Repository implements ConfigRepositoryInterface
 
     /**
      * Load parent theme configuration
+     * @since 2.0.0
      */
     protected function loadParentConfig(): void
     {
@@ -149,6 +159,7 @@ class Repository implements ConfigRepositoryInterface
 
     /**
      * Load child theme configuration
+     * @since 2.0.0
      */
     protected function loadChildConfig(): void
     {
@@ -172,6 +183,7 @@ class Repository implements ConfigRepositoryInterface
      *
      * @param string $directory
      * @return array
+     * @since 2.0.0
      */
     protected function loadConfigFromDirectory(string $directory): array
     {
@@ -196,6 +208,7 @@ class Repository implements ConfigRepositoryInterface
      *
      * @param string $file
      * @return array
+     * @since 2.0.0
      */
     protected function loadConfigFile(string $file): array
     {
@@ -234,6 +247,7 @@ class Repository implements ConfigRepositoryInterface
 
     /**
      * Merge parent and child configurations
+     * @since 2.0.0
      */
     protected function mergeConfigurations(): void
     {
@@ -252,6 +266,7 @@ class Repository implements ConfigRepositoryInterface
      * @param array $parent
      * @param array $child
      * @return array
+     * @since 2.0.0
      */
     protected function deepMerge(array $parent, array $child): array
     {
@@ -276,6 +291,7 @@ class Repository implements ConfigRepositoryInterface
      * @param string $key
      * @param mixed $default
      * @return mixed
+     * @since 2.0.0
      */
     public function get(string $key, $default = null)
     {
@@ -288,6 +304,7 @@ class Repository implements ConfigRepositoryInterface
      * @param string $key
      * @param mixed $value
      * @return void
+     * @since 2.0.0
      */
     public function set(string $key, $value): void
     {
@@ -299,6 +316,7 @@ class Repository implements ConfigRepositoryInterface
      *
      * @param string $key
      * @return bool
+     * @since 2.0.0
      */
     public function has(string $key): bool
     {
@@ -309,6 +327,7 @@ class Repository implements ConfigRepositoryInterface
      * Get all configuration
      *
      * @return array
+     * @since 2.0.0
      */
     public function all(): array
     {
@@ -319,6 +338,7 @@ class Repository implements ConfigRepositoryInterface
      * Get parent theme configuration
      *
      * @return array
+     * @since 2.0.0
      */
     public function getParentConfig(): array
     {
@@ -329,6 +349,7 @@ class Repository implements ConfigRepositoryInterface
      * Get child theme configuration
      *
      * @return array
+     * @since 2.0.0
      */
     public function getChildConfig(): array
     {
@@ -339,6 +360,7 @@ class Repository implements ConfigRepositoryInterface
      * Check if using child theme
      *
      * @return bool
+     * @since 2.0.0
      */
     public function isChildTheme(): bool
     {
@@ -349,6 +371,7 @@ class Repository implements ConfigRepositoryInterface
      * Get loaded config files
      *
      * @return array
+     * @since 2.0.0
      */
     public function getLoadedFiles(): array
     {
@@ -362,6 +385,7 @@ class Repository implements ConfigRepositoryInterface
      * @param string $key
      * @param mixed $default
      * @return mixed
+     * @since 2.0.0
      */
     protected function getNestedValue(array $array, string $key, $default = null)
     {
@@ -385,6 +409,7 @@ class Repository implements ConfigRepositoryInterface
      * @param string $key
      * @param mixed $value
      * @return void
+     * @since 2.0.0
      */
     protected function setNestedValue(array &$array, string $key, $value): void
     {
@@ -406,6 +431,7 @@ class Repository implements ConfigRepositoryInterface
      *
      * @param string $file
      * @return string
+     * @since 2.0.0
      */
     protected function generateCacheKey(string $file): string
     {
@@ -431,6 +457,7 @@ class Repository implements ConfigRepositoryInterface
      *
      * @param string $cacheKey
      * @return array|false
+     * @since 2.0.0
      */
     protected function getCachedConfig(string $cacheKey)
     {
@@ -448,6 +475,7 @@ class Repository implements ConfigRepositoryInterface
      * @param string $cacheKey
      * @param array $config
      * @return void
+     * @since 2.0.0
      */
     protected function cacheConfig(string $cacheKey, array $config): void
     {
@@ -464,6 +492,7 @@ class Repository implements ConfigRepositoryInterface
      *
      * @param string|null $file Specific file to clear cache for, or null for all
      * @return void
+     * @since 2.0.0
      */
     public function clearCache(string $file = null): void
     {
@@ -484,6 +513,7 @@ class Repository implements ConfigRepositoryInterface
      * Get cache statistics
      *
      * @return array
+     * @since 2.0.0
      */
     public function getCacheStats(): array
     {
@@ -508,6 +538,7 @@ class Repository implements ConfigRepositoryInterface
      *
      * @param string $file
      * @return bool
+     * @since 2.0.0
      */
     public function hasFileChanged(string $file): bool
     {
@@ -525,6 +556,7 @@ class Repository implements ConfigRepositoryInterface
      * Reload configurations
      *
      * @return void
+     * @since 2.0.0
      */
     public function reload(): void
     {
@@ -543,6 +575,7 @@ class Repository implements ConfigRepositoryInterface
      *
      * @param string $section
      * @return array
+     * @since 2.0.0
      */
     public function getSection(string $section): array
     {
@@ -554,6 +587,7 @@ class Repository implements ConfigRepositoryInterface
      *
      * @param array $config
      * @return void
+     * @since 2.0.0
      */
     public function merge(array $config): void
     {
@@ -564,6 +598,7 @@ class Repository implements ConfigRepositoryInterface
      * Get configuration difference between parent and child themes
      *
      * @return array
+     * @since 2.0.0
      */
     public function getConfigDifference(): array
     {
@@ -592,6 +627,7 @@ class Repository implements ConfigRepositoryInterface
      * Export configuration to array
      *
      * @return array
+     * @since 2.0.0
      */
     public function toArray(): array
     {
@@ -608,6 +644,7 @@ class Repository implements ConfigRepositoryInterface
 
     /**
      * ArrayAccess implementation
+     * @since 2.0.0
      */
 
     /**
@@ -626,6 +663,7 @@ class Repository implements ConfigRepositoryInterface
      *
      * @param mixed $offset
      * @return mixed
+     * @since 2.0.0
      */
     #[\ReturnTypeWillChange]
     public function offsetGet($offset)
@@ -639,6 +677,7 @@ class Repository implements ConfigRepositoryInterface
      * @param mixed $offset
      * @param mixed $value
      * @return void
+     * @since 2.0.0
      */
     public function offsetSet($offset, $value): void
     {
@@ -654,6 +693,7 @@ class Repository implements ConfigRepositoryInterface
      *
      * @param mixed $offset
      * @return void
+     * @since 2.0.0
      */
     public function offsetUnset($offset): void
     {

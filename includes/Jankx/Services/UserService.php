@@ -2,6 +2,11 @@
 
 namespace Jankx\Services;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\Facades\Logger;
 use WP_User;
 
@@ -14,6 +19,7 @@ use WP_User;
  * @author Puleeno Nguyen <puleeno@gmail.com>
  * @version 2.0.0
  * @license MIT
+ * @since 2.0.0
  */
 class UserService
 {
@@ -39,6 +45,7 @@ class UserService
      * @example
      * $user = User::get(1, ['ID', 'display_name']);
      * $user = User::get('admin', ['user_email']);
+     * @since 2.0.0
      */
     public function getUser($user_id, array $fields = []): mixed
     {
@@ -86,6 +93,7 @@ class UserService
      * @param array $fields Specific fields to retrieve
      * @return array Array of user data
      * @throws \InvalidArgumentException When user_ids is empty
+     * @since 2.0.0
      */
     public function getUsers(array $user_ids, array $fields = []): array
     {
@@ -106,6 +114,7 @@ class UserService
      * @param array $user_ids Array of user IDs
      * @param array $fields Specific fields to retrieve
      * @return array Array of user data
+     * @since 2.0.0
      */
     public function getUsersBatch(array $user_ids, array $fields = []): array
     {
@@ -155,6 +164,7 @@ class UserService
      *
      * @param array $fields Specific fields to retrieve
      * @return array|WP_User|null Current user data
+     * @since 2.0.0
      */
     public function getCurrentUser(array $fields = []): mixed
     {
@@ -175,6 +185,7 @@ class UserService
      * @param int $limit Maximum number of users to retrieve
      * @return array Array of user data
      * @throws \InvalidArgumentException When role is empty
+     * @since 2.0.0
      */
     public function getUsersByRole(string $role, array $fields = [], int $limit = -1): array
     {
@@ -232,6 +243,7 @@ class UserService
      * @param int $limit Maximum number of users to retrieve
      * @return array Array of user data
      * @throws \InvalidArgumentException When search_term is empty
+     * @since 2.0.0
      */
     public function searchUsers(string $search_term, array $fields = [], int $limit = 10): array
     {
@@ -287,6 +299,7 @@ class UserService
      *
      * @param int|string|null $user_id Specific user ID or null for all
      * @return void
+     * @since 2.0.0
      */
     public function clearCache($user_id = null): void
     {
@@ -310,6 +323,7 @@ class UserService
      * @param int $seconds Cache expiry time in seconds
      * @return void
      * @throws \InvalidArgumentException When seconds is negative
+     * @since 2.0.0
      */
     public function setCacheExpiry(int $seconds): void
     {
@@ -323,6 +337,7 @@ class UserService
      * Get cache expiry time
      *
      * @return int Cache expiry time in seconds
+     * @since 2.0.0
      */
     public function getCacheExpiry(): int
     {
@@ -333,6 +348,7 @@ class UserService
      * Get cache statistics
      *
      * @return array Cache statistics
+     * @since 2.0.0
      */
     public function getCacheStats(): array
     {
@@ -343,6 +359,7 @@ class UserService
      * Get cache hit ratio
      *
      * @return float Cache hit ratio (0-1)
+     * @since 2.0.0
      */
     public function getCacheHitRatio(): float
     {
@@ -356,6 +373,7 @@ class UserService
      * @param int|string $user_id User ID or identifier
      * @param array $fields Specific fields
      * @return string Cache key
+     * @since 2.0.0
      */
     private function getCacheKey($user_id, array $fields = []): string
     {
@@ -368,6 +386,7 @@ class UserService
      *
      * @param string $cacheKey Cache key
      * @return mixed Cached data or false if not found/expired
+     * @since 2.0.0
      */
     private function getFromCache(string $cacheKey): mixed
     {
@@ -399,6 +418,7 @@ class UserService
      * @param string $cacheKey Cache key
      * @param mixed $data Data to cache
      * @return void
+     * @since 2.0.0
      */
     private function setCache(string $cacheKey, mixed $data): void
     {
@@ -425,6 +445,7 @@ class UserService
      * Cleanup old cache entries
      *
      * @return void
+     * @since 2.0.0
      */
     private function cleanupCache(): void
     {
@@ -454,6 +475,7 @@ class UserService
      * @param array $fields Specific fields to retrieve
      * @return array|WP_User|null User data
      * @throws UserServiceException When database query fails
+     * @since 2.0.0
      */
     private function fetchUserFromDatabase($user_id, array $fields = []): mixed
     {
@@ -501,6 +523,7 @@ class UserService
      * @param int|null $user_id User ID
      * @param array $fields Requested fields
      * @return mixed Filtered user data
+     * @since 2.0.0
      */
     private function applyUserFilters(mixed $userData, ?int $user_id, array $fields): mixed
     {
@@ -525,6 +548,7 @@ class UserService
      *
      * @param array $fields Fields to sanitize
      * @return array Sanitized fields
+     * @since 2.0.0
      */
     private function sanitizeFields(array $fields): array
     {
@@ -538,6 +562,7 @@ class UserService
      *
      * @param mixed $user User data
      * @param int $user_id User ID
+     * @since 2.0.0
      */
     private function triggerUserLoadedEvent($user, $user_id): void
     {
@@ -549,6 +574,7 @@ class UserService
      *
      * @param array $users Users data
      * @param array $user_ids User IDs
+     * @since 2.0.0
      */
     private function triggerBatchUsersLoadedEvent(array $users, array $user_ids): void
     {
@@ -559,6 +585,7 @@ class UserService
      * Trigger cache hit event
      *
      * @param string $cacheKey Cache key
+     * @since 2.0.0
      */
     private function triggerCacheHitEvent(string $cacheKey): void
     {
@@ -569,6 +596,7 @@ class UserService
      * Trigger cache cleared event
      *
      * @param int $user_id User ID
+     * @since 2.0.0
      */
     private function triggerCacheClearedEvent($user_id): void
     {
@@ -578,6 +606,7 @@ class UserService
 
 /**
  * User Service Exception
+ * @since 2.0.0
  */
 class UserServiceException extends \Exception
 {

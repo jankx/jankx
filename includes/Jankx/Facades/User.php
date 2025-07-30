@@ -2,6 +2,11 @@
 
 namespace Jankx\Facades;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\Services\UserService;
 
 /**
@@ -10,11 +15,13 @@ use Jankx\Services\UserService;
  * Provides easy access to user service functionality
  *
  * @package Jankx\Facades
+ * @since 2.0.0
  */
 class User extends Facade
 {
     /**
      * Get the registered name of the component.
+     * @since 2.0.0
      */
     protected static function getFacadeAccessor()
     {
@@ -29,6 +36,7 @@ class User extends Facade
      * @return array|WP_User|null User data or null if not found
      * @throws \InvalidArgumentException When user_id is empty
      * @throws UserServiceException When database query fails
+     * @since 2.0.0
      */
     public static function get($user_id, array $fields = []): mixed
     {
@@ -41,6 +49,7 @@ class User extends Facade
      *
      * @param array $fields Specific fields to retrieve
      * @return array|WP_User|null Current user data
+     * @since 2.0.0
      */
     public static function current(array $fields = []): mixed
     {
@@ -55,6 +64,7 @@ class User extends Facade
      * @param array $fields Specific fields to retrieve
      * @return array Array of user data
      * @throws \InvalidArgumentException When user_ids is empty
+     * @since 2.0.0
      */
     public static function getMultiple(array $user_ids, array $fields = []): array
     {
@@ -69,6 +79,7 @@ class User extends Facade
      * @param array $fields Specific fields to retrieve
      * @return array Array of user data
      * @throws \InvalidArgumentException When user_ids is empty
+     * @since 2.0.0
      */
     public static function getBatch(array $user_ids, array $fields = []): array
     {
@@ -83,6 +94,7 @@ class User extends Facade
      * @param int $limit Maximum number of users to retrieve
      * @return array Array of user data
      * @throws \InvalidArgumentException When role is empty
+     * @since 2.0.0
      */
     public static function getByRole(string $role, array $fields = [], int $limit = -1): array
     {
@@ -98,6 +110,7 @@ class User extends Facade
      * @param int $limit Maximum number of users to retrieve
      * @return array Array of user data
      * @throws \InvalidArgumentException When search_term is empty
+     * @since 2.0.0
      */
     public static function search(string $search_term, array $fields = [], int $limit = 10): array
     {
@@ -110,6 +123,7 @@ class User extends Facade
      *
      * @param int|string|null $user_id Specific user ID or null for all
      * @return void
+     * @since 2.0.0
      */
     public static function clearCache($user_id = null): void
     {
@@ -123,6 +137,7 @@ class User extends Facade
      * @param int $seconds Cache expiry time in seconds
      * @return void
      * @throws \InvalidArgumentException When seconds is negative
+     * @since 2.0.0
      */
     public static function setCacheExpiry(int $seconds): void
     {
@@ -134,6 +149,7 @@ class User extends Facade
      * Get cache expiry time
      *
      * @return int Cache expiry time in seconds
+     * @since 2.0.0
      */
     public static function getCacheExpiry(): int
     {
@@ -145,6 +161,7 @@ class User extends Facade
      * Get cache statistics
      *
      * @return array Cache statistics
+     * @since 2.0.0
      */
     public static function getCacheStats(): array
     {
@@ -156,6 +173,7 @@ class User extends Facade
      * Get cache hit ratio
      *
      * @return float Cache hit ratio (0-1)
+     * @since 2.0.0
      */
     public static function getCacheHitRatio(): float
     {
@@ -168,6 +186,7 @@ class User extends Facade
      *
      * @param int|string $user_id User ID or username/email
      * @return bool True if user exists
+     * @since 2.0.0
      */
     public static function exists($user_id): bool
     {
@@ -181,6 +200,7 @@ class User extends Facade
      *
      * @param string $identifier Username or email
      * @return int|null User ID or null if not found
+     * @since 2.0.0
      */
     public static function getId($identifier): ?int
     {
@@ -201,6 +221,7 @@ class User extends Facade
      *
      * @param int|string $user_id User ID or username/email
      * @return string|null Display name or null if not found
+     * @since 2.0.0
      */
     public static function getDisplayName($user_id): ?string
     {
@@ -221,6 +242,7 @@ class User extends Facade
      *
      * @param int|string $user_id User ID or username/email
      * @return string|null Email or null if not found
+     * @since 2.0.0
      */
     public static function getEmail($user_id): ?string
     {
@@ -242,6 +264,7 @@ class User extends Facade
      * @param int|string $user_id User ID or username/email
      * @param int $size Avatar size
      * @return string|null Avatar URL or null if not found
+     * @since 2.0.0
      */
     public static function getAvatar($user_id, int $size = 96): ?string
     {
@@ -261,6 +284,7 @@ class User extends Facade
      *
      * @param int|string $user_id User ID or username/email
      * @return array Array of user roles
+     * @since 2.0.0
      */
     public static function getRoles($user_id): array
     {
@@ -283,6 +307,7 @@ class User extends Facade
      * @param int|string $user_id User ID or username/email
      * @param string $role Role to check
      * @return bool True if user has the role
+     * @since 2.0.0
      */
     public static function hasRole($user_id, string $role): bool
     {
@@ -296,6 +321,7 @@ class User extends Facade
      * @param int|string $user_id User ID or username/email
      * @param array $roles Array of roles to check
      * @return bool True if user has any of the roles
+     * @since 2.0.0
      */
     public static function hasAnyRole($user_id, array $roles): bool
     {
@@ -309,6 +335,7 @@ class User extends Facade
      * @param int|string $user_id User ID or username/email
      * @param array $roles Array of roles to check
      * @return bool True if user has all of the roles
+     * @since 2.0.0
      */
     public static function hasAllRoles($user_id, array $roles): bool
     {
@@ -323,6 +350,7 @@ class User extends Facade
      * @param string $key Meta key
      * @param bool $single Whether to return a single value
      * @return mixed Meta value
+     * @since 2.0.0
      */
     public static function getMeta($user_id, string $key, bool $single = true): mixed
     {
@@ -344,6 +372,7 @@ class User extends Facade
      * @param string $key Meta key
      * @param mixed $value Meta value
      * @return int|bool Meta ID if the key didn't exist, true on successful update, false on failure
+     * @since 2.0.0
      */
     public static function updateMeta($user_id, string $key, mixed $value): mixed
     {
@@ -371,6 +400,7 @@ class User extends Facade
      * @param int|string $user_id User ID or username/email
      * @param string $key Meta key
      * @return bool True on successful delete, false on failure
+     * @since 2.0.0
      */
     public static function deleteMeta($user_id, string $key): bool
     {
@@ -398,6 +428,7 @@ class User extends Facade
      * @param int|string $user_id User ID or username/email
      * @param string $format Date format (default: 'Y-m-d H:i:s')
      * @return string|null Registration date or null if not found
+     * @since 2.0.0
      */
     public static function getRegistrationDate($user_id, string $format = 'Y-m-d H:i:s'): ?string
     {
@@ -419,6 +450,7 @@ class User extends Facade
      * @param int|string $user_id User ID or username/email
      * @param string $format Date format (default: 'Y-m-d H:i:s')
      * @return string|null Last login time or null if not found
+     * @since 2.0.0
      */
     public static function getLastLogin($user_id, string $format = 'Y-m-d H:i:s'): ?string
     {
@@ -436,6 +468,7 @@ class User extends Facade
      *
      * @param int|string $user_id User ID or username/email
      * @return bool True on successful update, false on failure
+     * @since 2.0.0
      */
     public static function updateLastLogin($user_id): bool
     {
@@ -447,6 +480,7 @@ class User extends Facade
      *
      * @param int|string $user_id User ID or username/email
      * @return int Login count
+     * @since 2.0.0
      */
     public static function getLoginCount($user_id): int
     {
@@ -459,6 +493,7 @@ class User extends Facade
      *
      * @param int|string $user_id User ID or username/email
      * @return bool True on successful update, false on failure
+     * @since 2.0.0
      */
     public static function incrementLoginCount($user_id): bool
     {
@@ -471,6 +506,7 @@ class User extends Facade
      *
      * @param int|string $user_id User ID or username/email
      * @return string User status
+     * @since 2.0.0
      */
     public static function getStatus($user_id): string
     {
@@ -484,6 +520,7 @@ class User extends Facade
      * @param int|string $user_id User ID or username/email
      * @param string $status User status
      * @return bool True on successful update, false on failure
+     * @since 2.0.0
      */
     public static function setStatus($user_id, string $status): bool
     {
@@ -495,6 +532,7 @@ class User extends Facade
      *
      * @param int|string $user_id User ID or username/email
      * @return bool True if user is active
+     * @since 2.0.0
      */
     public static function isActive($user_id): bool
     {
@@ -506,6 +544,7 @@ class User extends Facade
      *
      * @param int|string $user_id User ID or username/email
      * @return float Completion percentage (0-100)
+     * @since 2.0.0
      */
     public static function getProfileCompletion($user_id): float
     {
@@ -549,6 +588,7 @@ class User extends Facade
      * @param float $minCompletion Minimum completion percentage (default: 50)
      * @param array $fields Specific fields to retrieve
      * @return array Array of users with incomplete profiles
+     * @since 2.0.0
      */
     public static function getIncompleteProfiles(float $minCompletion = 50.0, array $fields = []): array
     {

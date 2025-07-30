@@ -2,6 +2,11 @@
 
 namespace Jankx\Debug\Services;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 /**
  * Debug Info Service
  *

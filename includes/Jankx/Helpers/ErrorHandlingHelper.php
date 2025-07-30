@@ -2,6 +2,11 @@
 
 namespace Jankx\Helpers;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\Facades\Logger;
 
 /**
@@ -16,6 +21,7 @@ class ErrorHandlingHelper
 {
     /**
      * Handle bootstrapper errors
+     * @since 2.0.0
      */
     public static function handleBootstrapperError(\Exception $e, string $bootstrapperName): void
     {
@@ -24,6 +30,7 @@ class ErrorHandlingHelper
 
     /**
      * Handle service resolution errors
+     * @since 2.0.0
      */
     public static function handleServiceResolutionError(\Exception $e, string $serviceName, string $context = ''): void
     {
@@ -40,6 +47,7 @@ class ErrorHandlingHelper
 
     /**
      * Handle AJAX errors
+     * @since 2.0.0
      */
     public static function handleAjaxError(\Exception $e, string $action): void
     {
@@ -51,6 +59,7 @@ class ErrorHandlingHelper
 
     /**
      * Handle CLI errors
+     * @since 2.0.0
      */
     public static function handleCLIError(\Exception $e, string $command = ''): void
     {
@@ -65,6 +74,7 @@ class ErrorHandlingHelper
 
     /**
      * Handle debug errors
+     * @since 2.0.0
      */
     public static function handleDebugError(\Exception $e, string $operation): void
     {
@@ -73,6 +83,7 @@ class ErrorHandlingHelper
 
     /**
      * Safe container resolution with error handling
+     * @since 2.0.0
      */
     public static function safeResolve($container, string $serviceName, callable $fallback = null)
     {
@@ -94,6 +105,7 @@ class ErrorHandlingHelper
 
     /**
      * Safe action execution with error handling
+     * @since 2.0.0
      */
     public static function safeExecute(callable $callback, string $operation, callable $fallback = null)
     {

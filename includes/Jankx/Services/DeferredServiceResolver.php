@@ -2,6 +2,11 @@
 
 namespace Jankx\Services;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Illuminate\Container\Container;
 use Jankx\Facades\Kernel;
 use Jankx\Facades\Logger;
@@ -20,6 +25,11 @@ class DeferredServiceResolver
     private $resolved = [];
     private $monitor;
 
+    /**
+     * Method __construct
+     *
+     * @since 2.0.0
+     */
     public function __construct(Container $container, DeferredServiceMonitor $monitor)
     {
         $this->container = $container;

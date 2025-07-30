@@ -6,6 +6,11 @@
  * For now, we'll provide a basic structure
  */
 
+
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
 return [
     'dependencies' => [
         'wp-blocks',

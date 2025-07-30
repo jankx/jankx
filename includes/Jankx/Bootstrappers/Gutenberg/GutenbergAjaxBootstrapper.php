@@ -2,6 +2,11 @@
 
 namespace Jankx\Bootstrappers\Gutenberg;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Illuminate\Container\Container;
 use Jankx\Gutenberg\AjaxHandler;
 use Jankx\Facades\Logger;
@@ -13,23 +18,39 @@ use Jankx\Bootstrappers\AbstractBootstrapper;
  * Handles AJAX requests for Gutenberg blocks and partial hydration
  *
  * @package Jankx\Bootstrappers
+ * @since 2.0.0
  */
 class GutenbergAjaxBootstrapper extends AbstractBootstrapper
 {
     protected $priority = 5;
 
+    /**
+     * Method getName
+     *
+     * @since 2.0.0
+     */
     public function getName(): string
     {
         return 'gutenberg-ajax';
     }
 
+    /**
+     * Method shouldRun
+     *
+     * @since 2.0.0
+     */
     public function shouldRun(): bool
     {
         return wp_doing_ajax() &&
-               (isset($_POST['action']) || isset($_GET['action'])) &&
-               (strpos($_POST['action'] ?? $_GET['action'] ?? '', 'jankx_gutenberg') === 0);
+               (isset(sanitize_text_field($_POST['action'])) || isset(sanitize_text_field($_GET['action']))) &&
+               (strpos(sanitize_text_field($_POST['action']) ?? sanitize_text_field($_GET['action']) ?? '', 'jankx_gutenberg') === 0);
     }
 
+    /**
+     * Method bootstrap
+     *
+     * @since 2.0.0
+     */
     public function bootstrap(Container $container): void
     {
         // Initialize AJAX Handler
@@ -40,12 +61,13 @@ class GutenbergAjaxBootstrapper extends AbstractBootstrapper
 
         Logger::debug('Gutenberg AJAX Bootstrapper initialized', [
             'context' => 'ajax',
-            'action' => $_POST['action'] ?? $_GET['action'] ?? 'unknown'
+            'action' => sanitize_text_field($_POST['action']) ?? sanitize_text_field($_GET['action']) ?? 'unknown'
         ]);
     }
 
     /**
      * Register AJAX hooks for Gutenberg
+     * @since 2.0.0
      */
     protected function registerAjaxHooks(): void
     {
@@ -72,17 +94,18 @@ class GutenbergAjaxBootstrapper extends AbstractBootstrapper
 
     /**
      * Handle block rendering AJAX request
+     * @since 2.0.0
      */
     public function handleBlockRender(): void
     {
         // Verify nonce
-        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'jankx_gutenberg_nonce')) {
+        if (!wp_verify_nonce(sanitize_text_field($_POST['nonce']) ?? '', 'jankx_gutenberg_nonce')) {
             wp_die('Security check failed', 'Security Error', ['response' => 403]);
         }
 
         $block_name = sanitize_text_field($_POST['block_name'] ?? '');
-        $attributes = json_decode(stripslashes($_POST['attributes'] ?? '{}'), true);
-        $content = wp_kses_post($_POST['content'] ?? '');
+        $attributes = json_decode(stripslashes(sanitize_text_field($_POST['attributes']) ?? '{}'), true);
+        $content = wp_kses_post(sanitize_text_field($_POST['content']) ?? '');
 
         if (empty($block_name)) {
             wp_send_json_error(['message' => 'Block name is required']);
@@ -122,16 +145,17 @@ class GutenbergAjaxBootstrapper extends AbstractBootstrapper
 
     /**
      * Handle layout loading AJAX request
+     * @since 2.0.0
      */
     public function handleLayoutLoad(): void
     {
         // Verify nonce
-        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'jankx_gutenberg_nonce')) {
+        if (!wp_verify_nonce(sanitize_text_field($_POST['nonce']) ?? '', 'jankx_gutenberg_nonce')) {
             wp_die('Security check failed', 'Security Error', ['response' => 403]);
         }
 
         $layout_name = sanitize_text_field($_POST['layout_name'] ?? '');
-        $layout_data = json_decode(stripslashes($_POST['layout_data'] ?? '{}'), true);
+        $layout_data = json_decode(stripslashes(sanitize_text_field($_POST['layout_data']) ?? '{}'), true);
 
         if (empty($layout_name)) {
             wp_send_json_error(['message' => 'Layout name is required']);
@@ -159,11 +183,12 @@ class GutenbergAjaxBootstrapper extends AbstractBootstrapper
 
     /**
      * Handle get block data AJAX request
+     * @since 2.0.0
      */
     public function handleGetBlockData(): void
     {
         // Verify nonce
-        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'jankx_gutenberg_nonce')) {
+        if (!wp_verify_nonce(sanitize_text_field($_POST['nonce']) ?? '', 'jankx_gutenberg_nonce')) {
             wp_die('Security check failed', 'Security Error', ['response' => 403]);
         }
 
@@ -202,11 +227,12 @@ class GutenbergAjaxBootstrapper extends AbstractBootstrapper
 
     /**
      * Handle get block options AJAX request
+     * @since 2.0.0
      */
     public function handleGetBlockOptions(): void
     {
         // Verify nonce
-        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'jankx_gutenberg_nonce')) {
+        if (!wp_verify_nonce(sanitize_text_field($_POST['nonce']) ?? '', 'jankx_gutenberg_nonce')) {
             wp_die('Security check failed', 'Security Error', ['response' => 403]);
         }
 
@@ -240,11 +266,12 @@ class GutenbergAjaxBootstrapper extends AbstractBootstrapper
 
     /**
      * Handle performance stats AJAX request
+     * @since 2.0.0
      */
     public function handlePerformanceStats(): void
     {
         // Verify nonce
-        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'jankx_gutenberg_nonce')) {
+        if (!wp_verify_nonce(sanitize_text_field($_POST['nonce']) ?? '', 'jankx_gutenberg_nonce')) {
             wp_die('Security check failed', 'Security Error', ['response' => 403]);
         }
 

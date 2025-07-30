@@ -2,6 +2,11 @@
 
 namespace Jankx\Kernel;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\Contracts\KernelInterface;
 use Jankx\Bootstrappers\CLI\CLIBootstrapper;
 use Jankx\Bootstrappers\Global\ThemeBootstrapper;
@@ -13,11 +18,13 @@ use Jankx\Facades\Logger;
  * Handles CLI-specific features and commands
  *
  * @package Jankx\Kernel
+ * @since 2.0.0
  */
 class CLIKernel extends Kernel implements KernelInterface
 {
     /**
      * Get kernel type
+     * @since 2.0.0
      */
     public function getKernelType(): string
     {
@@ -26,6 +33,7 @@ class CLIKernel extends Kernel implements KernelInterface
 
     /**
      * Check if this kernel should run
+     * @since 2.0.0
      */
     public function shouldRun(): bool
     {
@@ -34,6 +42,7 @@ class CLIKernel extends Kernel implements KernelInterface
 
     /**
      * Bootstrap the kernel (alias for boot method)
+     * @since 2.0.0
      */
     public function bootstrap(): void
     {
@@ -42,6 +51,7 @@ class CLIKernel extends Kernel implements KernelInterface
 
     /**
      * Register bootstrappers
+     * @since 2.0.0
      */
     protected function registerBootstrappers(): void
     {
@@ -62,6 +72,7 @@ class CLIKernel extends Kernel implements KernelInterface
 
     /**
      * Register services
+     * @since 2.0.0
      */
     protected function registerServices(): void
     {
@@ -73,6 +84,7 @@ class CLIKernel extends Kernel implements KernelInterface
 
     /**
      * Register hooks
+     * @since 2.0.0
      */
     protected function registerHooks(): void
     {
@@ -87,6 +99,7 @@ class CLIKernel extends Kernel implements KernelInterface
 
     /**
      * Register filters
+     * @since 2.0.0
      */
     protected function registerFilters(): void
     {
@@ -97,6 +110,7 @@ class CLIKernel extends Kernel implements KernelInterface
 
     /**
      * Initialize CLI environment
+     * @since 2.0.0
      */
     public function initializeCLI(): void
     {
@@ -115,6 +129,7 @@ class CLIKernel extends Kernel implements KernelInterface
 
     /**
      * Register WP-CLI commands
+     * @since 2.0.0
      */
     public function registerWPCLICommands(): void
     {
@@ -134,6 +149,7 @@ class CLIKernel extends Kernel implements KernelInterface
 
         /**
      * Show framework information
+     * @since 2.0.0
      */
     public function showFrameworkInfo(): void
     {
@@ -164,6 +180,7 @@ class CLIKernel extends Kernel implements KernelInterface
 
     /**
      * Show version information
+     * @since 2.0.0
      */
     public function showVersion(): void
     {
@@ -172,6 +189,7 @@ class CLIKernel extends Kernel implements KernelInterface
 
         /**
      * Show active plugins information
+     * @since 2.0.0
      */
     public function showActivePlugins(): void
     {
@@ -214,6 +232,7 @@ class CLIKernel extends Kernel implements KernelInterface
 
     /**
      * Format CLI output
+     * @since 2.0.0
      */
     public function formatCLIOutput(string $output): string
     {
@@ -237,6 +256,7 @@ class CLIKernel extends Kernel implements KernelInterface
 
     /**
      * Get CLI environment info
+     * @since 2.0.0
      */
     public function getEnvironmentInfo(): array
     {
@@ -253,6 +273,7 @@ class CLIKernel extends Kernel implements KernelInterface
 
     /**
      * Check CLI requirements
+     * @since 2.0.0
      */
     public function checkRequirements(): bool
     {
@@ -276,6 +297,7 @@ class CLIKernel extends Kernel implements KernelInterface
 
     /**
      * Check memory limit
+     * @since 2.0.0
      */
     protected function checkMemoryLimit(): bool
     {
@@ -286,6 +308,7 @@ class CLIKernel extends Kernel implements KernelInterface
 
     /**
      * Check execution time
+     * @since 2.0.0
      */
     protected function checkExecutionTime(): bool
     {
@@ -295,6 +318,7 @@ class CLIKernel extends Kernel implements KernelInterface
 
     /**
      * Convert memory string to bytes
+     * @since 2.0.0
      */
     protected function convertToBytes(string $memory_string): int
     {
@@ -316,6 +340,7 @@ class CLIKernel extends Kernel implements KernelInterface
 
     /**
      * Log error message
+     * @since 2.0.0
      */
     protected function logError(string $message): void
     {
@@ -324,6 +349,7 @@ class CLIKernel extends Kernel implements KernelInterface
 
     /**
      * Log info message
+     * @since 2.0.0
      */
     protected function logInfo(string $message): void
     {
@@ -332,6 +358,7 @@ class CLIKernel extends Kernel implements KernelInterface
 
     /**
      * Log success message
+     * @since 2.0.0
      */
     protected function logSuccess(string $message): void
     {
@@ -340,6 +367,7 @@ class CLIKernel extends Kernel implements KernelInterface
 
     /**
      * Log warning message
+     * @since 2.0.0
      */
     protected function logWarning(string $message): void
     {

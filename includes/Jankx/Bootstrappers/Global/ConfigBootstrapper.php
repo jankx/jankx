@@ -2,6 +2,11 @@
 
 namespace Jankx\Bootstrappers\Global;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\Contracts\BootstrapperInterface;
 use Jankx\Facades\Config;
 use Jankx\Facades\Logger;
@@ -14,11 +19,13 @@ use Jankx\Kernel\KernelManager;
  * Loads configuration files and fills Config Repository
  *
  * @package Jankx\Bootstrappers\Global
+ * @since 2.0.0
  */
 class ConfigBootstrapper implements BootstrapperInterface
 {
     /**
      * Bootstrap the application
+     * @since 2.0.0
      */
     public function bootstrap(\Illuminate\Container\Container $container): void
     {
@@ -44,6 +51,7 @@ class ConfigBootstrapper implements BootstrapperInterface
 
     /**
      * Check if bootstrapper should run
+     * @since 2.0.0
      */
     public function shouldRun(): bool
     {
@@ -52,6 +60,7 @@ class ConfigBootstrapper implements BootstrapperInterface
 
     /**
      * Load all configuration files
+     * @since 2.0.0
      */
     protected function loadConfigurationFiles($repository): void
     {
@@ -71,6 +80,7 @@ class ConfigBootstrapper implements BootstrapperInterface
 
     /**
      * Get config directory path
+     * @since 2.0.0
      */
     protected function getConfigPath(): string
     {
@@ -87,6 +97,7 @@ class ConfigBootstrapper implements BootstrapperInterface
 
     /**
      * Get list of config files
+     * @since 2.0.0
      */
     protected function getConfigFiles(string $configPath): array
     {
@@ -103,6 +114,7 @@ class ConfigBootstrapper implements BootstrapperInterface
 
     /**
      * Load individual config file
+     * @since 2.0.0
      */
     protected function loadConfigFile(string $file, $repository): void
     {
@@ -130,6 +142,7 @@ class ConfigBootstrapper implements BootstrapperInterface
 
     /**
      * Get bootstrapper priority
+     * @since 2.0.0
      */
     public function getPriority(): int
     {
@@ -138,6 +151,7 @@ class ConfigBootstrapper implements BootstrapperInterface
 
     /**
      * Set current context to Repository (directly)
+     * @since 2.0.0
      */
     protected function setCurrentContext($repository): void
     {
@@ -149,6 +163,7 @@ class ConfigBootstrapper implements BootstrapperInterface
 
     /**
      * Get bootstrapper dependencies
+     * @since 2.0.0
      */
     public function getDependencies(): array
     {

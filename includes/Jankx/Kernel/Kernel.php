@@ -2,6 +2,11 @@
 
 namespace Jankx\Kernel;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\Jankx;
 use Jankx\Contracts\KernelInterface;
 use Jankx\Contracts\BootstrapperInterface;
@@ -15,6 +20,7 @@ use Jankx\Facades\Logger;
  * Base class for all kernel types in Jankx framework
  *
  * @package Jankx\Kernel
+ * @since 2.0.0
  */
 abstract class Kernel implements KernelInterface
 {
@@ -57,6 +63,7 @@ abstract class Kernel implements KernelInterface
 
     /**
      * Constructor
+     * @since 2.0.0
      */
     public function __construct(Container $container = null)
     {
@@ -74,6 +81,7 @@ abstract class Kernel implements KernelInterface
      * Get kernel type
      *
      * @return string
+     * @since 2.0.0
      */
     public function getKernelType(): string
     {
@@ -82,6 +90,7 @@ abstract class Kernel implements KernelInterface
 
                 /**
      * Get current context
+     * @since 2.0.0
      */
     protected function getCurrentContext(): string
     {
@@ -90,6 +99,7 @@ abstract class Kernel implements KernelInterface
 
         /**
      * Set context for this kernel
+     * @since 2.0.0
      */
     public function setContext(string $context): void
     {
@@ -98,6 +108,7 @@ abstract class Kernel implements KernelInterface
 
             /**
      * Register bootstrappers
+     * @since 2.0.0
      */
     protected function registerBootstrappers(): void
     {
@@ -110,6 +121,7 @@ abstract class Kernel implements KernelInterface
 
         /**
      * Register services from configuration
+     * @since 2.0.0
      */
     protected function registerServices(): void
     {
@@ -135,16 +147,19 @@ abstract class Kernel implements KernelInterface
 
     /**
      * Register hooks
+     * @since 2.0.0
      */
     abstract protected function registerHooks(): void;
 
     /**
      * Register filters
+     * @since 2.0.0
      */
     abstract protected function registerFilters(): void;
 
     /**
      * Boot kernel
+     * @since 2.0.0
      */
     public function boot(): void
     {
@@ -170,6 +185,7 @@ abstract class Kernel implements KernelInterface
 
     /**
      * Check if kernel is booted
+     * @since 2.0.0
      */
     public function isBooted(): bool
     {
@@ -178,6 +194,7 @@ abstract class Kernel implements KernelInterface
 
     /**
      * Get kernel type
+     * @since 2.0.0
      */
     public function getType(): string
     {
@@ -188,6 +205,7 @@ abstract class Kernel implements KernelInterface
      * Get container
      *
      * @return \Illuminate\Container\Container
+     * @since 2.0.0
      */
     public function getContainer(): \Illuminate\Container\Container
     {
@@ -196,6 +214,7 @@ abstract class Kernel implements KernelInterface
 
     /**
      * Get hooks
+     * @since 2.0.0
      */
     public function getHooks(): array
     {
@@ -204,6 +223,7 @@ abstract class Kernel implements KernelInterface
 
     /**
      * Get filters
+     * @since 2.0.0
      */
     public function getFilters(): array
     {
@@ -212,6 +232,7 @@ abstract class Kernel implements KernelInterface
 
     /**
      * Get bootstrappers
+     * @since 2.0.0
      */
     public function getBootstrappers(): array
     {
@@ -220,6 +241,7 @@ abstract class Kernel implements KernelInterface
 
     /**
      * Add bootstrapper
+     * @since 2.0.0
      */
     public function addBootstrapper(string $bootstrapper): void
     {
@@ -230,6 +252,7 @@ abstract class Kernel implements KernelInterface
 
     /**
      * Remove bootstrapper
+     * @since 2.0.0
      */
     public function removeBootstrapper(string $bootstrapper): void
     {
@@ -241,6 +264,7 @@ abstract class Kernel implements KernelInterface
 
     /**
      * Check if bootstrapper exists
+     * @since 2.0.0
      */
     public function hasBootstrapper(string $bootstrapper): bool
     {
@@ -249,6 +273,7 @@ abstract class Kernel implements KernelInterface
 
     /**
      * Run bootstrappers
+     * @since 2.0.0
      */
     protected function runBootstrappers(): void
     {
@@ -282,6 +307,7 @@ abstract class Kernel implements KernelInterface
 
     /**
      * Sort bootstrappers by priority
+     * @since 2.0.0
      */
     protected function sortBootstrappersByPriority(): array
     {
@@ -314,6 +340,7 @@ abstract class Kernel implements KernelInterface
 
     /**
      * Check bootstrapper dependencies
+     * @since 2.0.0
      */
     protected function checkBootstrapperDependencies(BootstrapperInterface $bootstrapper): bool
     {
@@ -330,6 +357,7 @@ abstract class Kernel implements KernelInterface
 
     /**
      * Load services
+     * @since 2.0.0
      */
     protected function loadServices()
     {
@@ -370,6 +398,7 @@ abstract class Kernel implements KernelInterface
 
     /**
      * Load hooks
+     * @since 2.0.0
      */
     protected function loadHooks(): void
     {
@@ -382,6 +411,7 @@ abstract class Kernel implements KernelInterface
 
     /**
      * Load filters
+     * @since 2.0.0
      */
     protected function loadFilters(): void
     {
@@ -394,6 +424,7 @@ abstract class Kernel implements KernelInterface
 
     /**
      * Add hook
+     * @since 2.0.0
      */
     protected function addHook(string $hook, $callback, int $priority = 10, int $args = 1): void
     {
@@ -407,6 +438,7 @@ abstract class Kernel implements KernelInterface
 
     /**
      * Add filter
+     * @since 2.0.0
      */
     protected function addFilter(string $filter, $callback, int $priority = 10, int $args = 1): void
     {
@@ -418,6 +450,11 @@ abstract class Kernel implements KernelInterface
         ];
     }
 
+    /**
+     * Method getServiceProviders
+     *
+     * @since 2.0.0
+     */
     protected function getServiceProviders(): array
     {
         return $this->serviceProviders;
@@ -425,6 +462,7 @@ abstract class Kernel implements KernelInterface
 
     /**
      * Add service provider
+     * @since 2.0.0
      */
     public function addServiceProvider(string $providerClass): void
     {
@@ -435,6 +473,7 @@ abstract class Kernel implements KernelInterface
 
     /**
      * Remove service provider
+     * @since 2.0.0
      */
     public function removeServiceProvider(string $providerClass): void
     {
@@ -446,6 +485,7 @@ abstract class Kernel implements KernelInterface
 
     /**
      * Check if service provider exists
+     * @since 2.0.0
      */
     public function hasServiceProvider(string $providerClass): bool
     {

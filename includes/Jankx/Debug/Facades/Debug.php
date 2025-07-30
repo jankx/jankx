@@ -2,6 +2,11 @@
 
 namespace Jankx\Debug\Facades;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Illuminate\Container\Container;
 use Jankx\Providers\DebugServiceProvider;
 

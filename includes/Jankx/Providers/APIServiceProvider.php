@@ -2,15 +2,26 @@
 
 namespace Jankx\Providers;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 /**
  * API Service Provider
  *
  * Registers and boots API-specific services
  *
  * @package Jankx\Providers
+ * @since 2.0.0
  */
 class APIServiceProvider extends ServiceProvider
 {
+    /**
+     * Method register
+     *
+     * @since 2.0.0
+     */
     public function register()
     {
         // Core API services - only register classes that actually exist
@@ -42,6 +53,11 @@ class APIServiceProvider extends ServiceProvider
         // For now, we only register services that exist in the codebase
     }
 
+    /**
+     * Method boot
+     *
+     * @since 2.0.0
+     */
     public function boot()
     {
         // Boot user service

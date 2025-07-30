@@ -2,6 +2,11 @@
 
 namespace Jankx\Parsers;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 /**
  * Block Parser for Jankx Framework
  *
@@ -11,6 +16,7 @@ namespace Jankx\Parsers;
  * @author Puleeno Nguyen <puleeno@gmail.com>
  * @version 2.0.0
  * @license MIT
+ * @since 2.0.0
  */
 class BlockParser
 {

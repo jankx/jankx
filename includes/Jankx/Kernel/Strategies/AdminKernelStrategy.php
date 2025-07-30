@@ -2,10 +2,16 @@
 
 namespace Jankx\Kernel\Strategies;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 /**
  * Strategy for Admin context
  *
  * @package Jankx\Kernel\Strategies
+ * @since 2.0.0
  */
 class AdminKernelStrategy extends KernelContextStrategy
 {
@@ -13,6 +19,7 @@ class AdminKernelStrategy extends KernelContextStrategy
      * Check if current context is Admin
      *
      * @return bool
+     * @since 2.0.0
      */
     public function canHandle(): bool
     {
@@ -23,6 +30,7 @@ class AdminKernelStrategy extends KernelContextStrategy
      * Get Admin context name
      *
      * @return string
+     * @since 2.0.0
      */
     public function getContext(): string
     {
@@ -33,6 +41,7 @@ class AdminKernelStrategy extends KernelContextStrategy
      * Admin has medium priority
      *
      * @return int
+     * @since 2.0.0
      */
     public function getPriority(): int
     {

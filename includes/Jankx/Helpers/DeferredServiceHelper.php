@@ -2,6 +2,11 @@
 
 namespace Jankx\Helpers;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Illuminate\Container\Container;
 
 /**
@@ -11,6 +16,7 @@ use Illuminate\Container\Container;
  * instead of registering directly to container
  *
  * @package Jankx\Helpers
+ * @since 2.0.0
  */
 class DeferredServiceHelper
 {
@@ -20,6 +26,7 @@ class DeferredServiceHelper
      * @param Container $container
      * @param string $context
      * @return void
+     * @since 2.0.0
      */
     public static function registerDeferredServices(Container $container, string $context = 'frontend'): void
     {
@@ -44,6 +51,7 @@ class DeferredServiceHelper
      *
      * @param Container $container
      * @return void
+     * @since 2.0.0
      */
     public static function registerAdminDeferredServices(Container $container): void
     {
@@ -55,6 +63,7 @@ class DeferredServiceHelper
      *
      * @param Container $container
      * @return void
+     * @since 2.0.0
      */
     public static function registerFrontendDeferredServices(Container $container): void
     {
@@ -66,6 +75,7 @@ class DeferredServiceHelper
      *
      * @param Container $container
      * @return void
+     * @since 2.0.0
      */
     public static function registerGutenbergDeferredServices(Container $container): void
     {
@@ -80,6 +90,7 @@ class DeferredServiceHelper
      *
      * @param Container $container
      * @return void
+     * @since 2.0.0
      */
     public static function registerWooCommerceDeferredServices(Container $container): void
     {

@@ -2,17 +2,24 @@
 
 namespace Jankx\Facades;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 /**
  * Kernel Facade
  *
  * Provides easy access to KernelManager and current kernel information
  *
  * @package Jankx\Facades
+ * @since 2.0.0
  */
 class Kernel extends Facade
 {
     /**
      * Get the registered name of the component.
+     * @since 2.0.0
      */
     protected static function getFacadeAccessor()
     {
@@ -21,6 +28,7 @@ class Kernel extends Facade
 
     /**
      * Get current context from the current kernel
+     * @since 2.0.0
      */
     public static function getCurrentContext(): string
     {
@@ -53,6 +61,7 @@ class Kernel extends Facade
 
     /**
      * Get current kernel instance
+     * @since 2.0.0
      */
     public static function getCurrentKernel()
     {
@@ -62,6 +71,7 @@ class Kernel extends Facade
 
     /**
      * Check if kernel is booted
+     * @since 2.0.0
      */
     public static function isBooted(): bool
     {
@@ -71,6 +81,7 @@ class Kernel extends Facade
 
     /**
      * Get kernel type
+     * @since 2.0.0
      */
     public static function getType(): string
     {
@@ -80,6 +91,7 @@ class Kernel extends Facade
 
     /**
      * Get container instance
+     * @since 2.0.0
      */
     public static function getContainer()
     {

@@ -2,6 +2,11 @@
 
 namespace Jankx\Kernel;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Illuminate\Container\Container;
 use Jankx\Bootstrappers\Global\CoreBootstrapper;
 use Jankx\Kernel\Strategies\CLIKernelStrategy;
@@ -20,6 +25,7 @@ use Jankx\Kernel\KernelFactory;
  * Uses Strategy Pattern to determine which kernel to boot based on context.
  *
  * @package Jankx\Kernel
+ * @since 2.0.0
  */
 class KernelManager
 {
@@ -32,6 +38,11 @@ class KernelManager
     protected $currentContext = null;
 
 
+    /**
+     * Method __construct
+     *
+     * @since 2.0.0
+     */
     public function __construct(Container $container)
     {
         $this->container = $container;
@@ -40,6 +51,11 @@ class KernelManager
         $this->registerContextStrategies();
     }
 
+    /**
+     * Method bootstrapSystem
+     *
+     * @since 2.0.0
+     */
     protected function bootstrapSystem()
     {
         // Initialize the system with CoreBootstrapper before doing anything else
@@ -49,6 +65,7 @@ class KernelManager
 
     /**
      * Register context strategies for determining which kernel to use
+     * @since 2.0.0
      */
     protected function registerContextStrategies()
     {
@@ -70,6 +87,11 @@ class KernelManager
         $this->contextStrategies = $strategies;
     }
 
+    /**
+     * Method boot
+     *
+     * @since 2.0.0
+     */
     public function boot()
     {
         if ($this->booted) {
@@ -82,6 +104,7 @@ class KernelManager
 
         /**
      * Use Strategy Pattern to determine context and boot appropriate kernel
+     * @since 2.0.0
      */
     protected function determineContextAndBootKernel()
     {
@@ -97,6 +120,7 @@ class KernelManager
 
     /**
      * Get current context using Strategy Pattern
+     * @since 2.0.0
      */
     public function getCurrentContext(): string
     {
@@ -124,6 +148,11 @@ class KernelManager
         return $context;
     }
 
+    /**
+     * Method getCurrentKernel
+     *
+     * @since 2.0.0
+     */
     public function getCurrentKernel()
     {
         return $this->currentKernel;
@@ -131,6 +160,7 @@ class KernelManager
 
     /**
      * Register a kernel using factory
+     * @since 2.0.0
      */
     public function registerKernel(string $type, string $kernelClass): void
     {

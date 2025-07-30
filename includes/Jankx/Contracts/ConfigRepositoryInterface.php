@@ -2,6 +2,11 @@
 
 namespace Jankx\Contracts;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 /**
  * Config Repository Interface
  *

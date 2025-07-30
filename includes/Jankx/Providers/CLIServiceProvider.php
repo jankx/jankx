@@ -2,6 +2,11 @@
 
 namespace Jankx\Providers;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use WP_CLI;
 use Jankx\CLI\Commands\GenerateBlockCommand;
 use Jankx\CLI\Commands\CreateBootstrapperCommand;

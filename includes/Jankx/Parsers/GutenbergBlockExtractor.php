@@ -2,6 +2,11 @@
 
 namespace Jankx\Parsers;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 /**
  * Gutenberg Block Extractor - Regex-based
  *
@@ -13,6 +18,11 @@ class GutenbergBlockExtractor
 {
     private $content;
 
+    /**
+     * Method __construct
+     *
+     * @since 2.0.0
+     */
     public function __construct(string $content)
     {
         $this->content = $content;
@@ -20,6 +30,7 @@ class GutenbergBlockExtractor
 
     /**
      * Extract block names and count blocks using optimized regex
+     * @since 2.0.0
      */
     public function extractBlockInfo(): array
     {
@@ -53,6 +64,7 @@ class GutenbergBlockExtractor
 
     /**
      * Get only block names (for backward compatibility)
+     * @since 2.0.0
      */
     public function getBlockNames(): array
     {
@@ -62,6 +74,7 @@ class GutenbergBlockExtractor
 
     /**
      * Get block statistics
+     * @since 2.0.0
      */
     public function getBlockStats(): array
     {
@@ -70,6 +83,7 @@ class GutenbergBlockExtractor
 
     /**
      * Count total blocks
+     * @since 2.0.0
      */
     public function countTotalBlocks(): int
     {
@@ -79,6 +93,7 @@ class GutenbergBlockExtractor
 
     /**
      * Check if content has blocks
+     * @since 2.0.0
      */
     public function hasBlocks(): bool
     {

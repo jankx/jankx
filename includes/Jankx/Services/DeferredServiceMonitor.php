@@ -2,6 +2,11 @@
 
 namespace Jankx\Services;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\Facades\Logger;
 
 /**
@@ -19,6 +24,7 @@ class DeferredServiceMonitor
 
     /**
      * Start monitoring a service
+     * @since 2.0.0
      */
     public function startMonitoring(string $serviceName): void
     {
@@ -31,6 +37,7 @@ class DeferredServiceMonitor
 
     /**
      * End monitoring a service
+     * @since 2.0.0
      */
     public function endMonitoring(string $serviceName): void
     {
@@ -60,6 +67,7 @@ class DeferredServiceMonitor
 
     /**
      * Get all metrics
+     * @since 2.0.0
      */
     public function getMetrics(): array
     {
@@ -68,6 +76,7 @@ class DeferredServiceMonitor
 
     /**
      * Get metrics for a specific service
+     * @since 2.0.0
      */
     public function getServiceMetrics(string $serviceName): ?array
     {
@@ -76,6 +85,7 @@ class DeferredServiceMonitor
 
     /**
      * Get total load time for all services
+     * @since 2.0.0
      */
     public function getTotalLoadTime(): float
     {
@@ -84,6 +94,7 @@ class DeferredServiceMonitor
 
     /**
      * Get total memory usage for all services
+     * @since 2.0.0
      */
     public function getTotalMemoryUsage(): int
     {
@@ -92,6 +103,7 @@ class DeferredServiceMonitor
 
     /**
      * Get average load time
+     * @since 2.0.0
      */
     public function getAverageLoadTime(): float
     {
@@ -104,6 +116,7 @@ class DeferredServiceMonitor
 
     /**
      * Get average memory usage
+     * @since 2.0.0
      */
     public function getAverageMemoryUsage(): float
     {
@@ -116,6 +129,7 @@ class DeferredServiceMonitor
 
     /**
      * Get slowest service
+     * @since 2.0.0
      */
     public function getSlowestService(): ?array
     {
@@ -142,6 +156,7 @@ class DeferredServiceMonitor
 
     /**
      * Get service with highest memory usage
+     * @since 2.0.0
      */
     public function getHighestMemoryService(): ?array
     {
@@ -168,6 +183,7 @@ class DeferredServiceMonitor
 
     /**
      * Get performance summary
+     * @since 2.0.0
      */
     public function getPerformanceSummary(): array
     {
@@ -184,6 +200,7 @@ class DeferredServiceMonitor
 
     /**
      * Log metrics to error log (for debugging)
+     * @since 2.0.0
      */
     public function logMetrics(): void
     {
@@ -195,6 +212,7 @@ class DeferredServiceMonitor
 
     /**
      * Clear all metrics
+     * @since 2.0.0
      */
     public function clearMetrics(): void
     {
@@ -204,6 +222,7 @@ class DeferredServiceMonitor
 
     /**
      * Check if monitoring is active for a service
+     * @since 2.0.0
      */
     public function isMonitoring(string $serviceName): bool
     {
@@ -212,6 +231,7 @@ class DeferredServiceMonitor
 
     /**
      * Get currently monitoring services
+     * @since 2.0.0
      */
     public function getCurrentlyMonitoring(): array
     {

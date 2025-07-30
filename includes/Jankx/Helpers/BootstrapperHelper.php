@@ -2,6 +2,11 @@
 
 namespace Jankx\Helpers;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Illuminate\Container\Container;
 
 /**

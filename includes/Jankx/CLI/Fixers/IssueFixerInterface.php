@@ -2,6 +2,11 @@
 
 namespace Jankx\CLI\Fixers;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 /**
  * Interface for Issue Fixer Strategy
  *

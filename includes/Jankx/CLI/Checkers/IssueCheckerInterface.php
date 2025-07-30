@@ -2,6 +2,11 @@
 
 namespace Jankx\CLI\Checkers;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 /**
  * Interface for Issue Checker Strategy
  *

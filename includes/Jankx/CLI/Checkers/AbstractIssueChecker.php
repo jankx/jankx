@@ -2,6 +2,11 @@
 
 namespace Jankx\CLI\Checkers;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\Parsers\PHPParser;
 
 /**

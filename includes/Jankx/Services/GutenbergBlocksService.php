@@ -2,6 +2,11 @@
 
 namespace Jankx\Services;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\Parsers\BlockParser;
 
 /**
@@ -14,6 +19,11 @@ class GutenbergBlocksService
 {
     private $blockParser;
 
+    /**
+     * Method __construct
+     *
+     * @since 2.0.0
+     */
     public function __construct(BlockParser $blockParser)
     {
         $this->blockParser = $blockParser;
@@ -129,6 +139,7 @@ class GutenbergBlocksService
      * Check if currently in block editor
      *
      * @return bool
+     * @since 2.0.0
      */
     private function isBlockEditor(): bool
     {

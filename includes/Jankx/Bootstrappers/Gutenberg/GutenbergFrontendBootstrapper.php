@@ -2,6 +2,11 @@
 
 namespace Jankx\Bootstrappers\Gutenberg;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Illuminate\Container\Container;
 use Jankx\Bootstrappers\AbstractBootstrapper;
 use Jankx\Gutenberg\BlockRegistry;

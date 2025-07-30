@@ -2,6 +2,11 @@
 
 namespace Jankx\Facades;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\Services\DeferredServiceResolver;
 
 /**
@@ -10,11 +15,13 @@ use Jankx\Services\DeferredServiceResolver;
  * Provides easy access to deferred service resolution
  *
  * @package Jankx\Facades
+ * @since 2.0.0
  */
 class DeferredService extends Facade
 {
     /**
      * Get the registered name of the component.
+     * @since 2.0.0
      */
     protected static function getFacadeAccessor()
     {
@@ -23,6 +30,7 @@ class DeferredService extends Facade
 
     /**
      * Resolve a service with deferred loading
+     * @since 2.0.0
      */
     public static function resolve(string $serviceName): mixed
     {
@@ -32,6 +40,7 @@ class DeferredService extends Facade
 
     /**
      * Check if service is available in current context
+     * @since 2.0.0
      */
     public static function has(string $serviceName): bool
     {
@@ -41,6 +50,7 @@ class DeferredService extends Facade
 
     /**
      * Get all resolved services
+     * @since 2.0.0
      */
     public static function getResolvedServices(): array
     {
@@ -50,6 +60,7 @@ class DeferredService extends Facade
 
     /**
      * Get service resolution statistics
+     * @since 2.0.0
      */
     public static function getStats(): array
     {
@@ -60,6 +71,7 @@ class DeferredService extends Facade
 
     /**
      * Register a service for specific context
+     * @since 2.0.0
      */
     public static function register(string $context, string $serviceClass, array $options = []): void
     {
@@ -69,6 +81,7 @@ class DeferredService extends Facade
 
     /**
      * Register multiple services for a context
+     * @since 2.0.0
      */
     public static function registerMultiple(string $context, array $services, array $options = []): void
     {
@@ -79,6 +92,7 @@ class DeferredService extends Facade
 
     /**
      * Defer a service for specific context
+     * @since 2.0.0
      */
     public static function defer(string $context, callable $factory, array $options = []): void
     {
@@ -88,6 +102,7 @@ class DeferredService extends Facade
 
     /**
      * Get registry statistics
+     * @since 2.0.0
      */
     public static function getRegistryStats(): array
     {
@@ -100,6 +115,7 @@ class DeferredService extends Facade
 
     /**
      * Clear resolved services cache
+     * @since 2.0.0
      */
     public static function clearCache(): void
     {
@@ -109,6 +125,7 @@ class DeferredService extends Facade
 
     /**
      * Get performance metrics
+     * @since 2.0.0
      */
     public static function getPerformanceMetrics(): array
     {
@@ -119,6 +136,7 @@ class DeferredService extends Facade
 
     /**
      * Log performance metrics
+     * @since 2.0.0
      */
     public static function logMetrics(): void
     {

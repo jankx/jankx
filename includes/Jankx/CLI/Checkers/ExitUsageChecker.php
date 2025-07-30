@@ -2,6 +2,11 @@
 
 namespace Jankx\CLI\Checkers;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 /**
  * Checker for improper exit() usage
  *

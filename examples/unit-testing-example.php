@@ -5,21 +5,47 @@
  *
  * This file demonstrates how to implement comprehensive unit tests
  * following the Jankx 2.0 coding rules.
+ * @since 2.0.0
  */
 
 // Example Helper Class
+
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+/**
+ * Class ExampleHelper
+ *
+ * @since 2.0.0
+ */
 class ExampleHelper
 {
+    /**
+     * Method formatData
+     *
+     * @since 2.0.0
+     */
     public static function formatData(array $data): array
     {
         return array_map('sanitize_text_field', $data);
     }
 
+    /**
+     * Method validateInput
+     *
+     * @since 2.0.0
+     */
     public static function validateInput(string $input): bool
     {
         return !empty(trim($input));
     }
 
+    /**
+     * Method calculatePercentage
+     *
+     * @since 2.0.0
+     */
     public static function calculatePercentage(int $value, int $total): float
     {
         if ($total === 0) {
@@ -30,15 +56,30 @@ class ExampleHelper
 }
 
 // Example Service Class
+/**
+ * Class ExampleService
+ *
+ * @since 2.0.0
+ */
 class ExampleService
 {
     private $repository;
 
+    /**
+     * Method __construct
+     *
+     * @since 2.0.0
+     */
     public function __construct(ExampleRepository $repository)
     {
         $this->repository = $repository;
     }
 
+    /**
+     * Method processData
+     *
+     * @since 2.0.0
+     */
     public function processData(array $data): array
     {
         try {
@@ -50,6 +91,11 @@ class ExampleService
         }
     }
 
+    /**
+     * Method getUserStats
+     *
+     * @since 2.0.0
+     */
     public function getUserStats(int $userId): array
     {
         $user = $this->repository->find($userId);
@@ -66,14 +112,29 @@ class ExampleService
 }
 
 // Example Repository (for demonstration)
+/**
+ * Class ExampleRepository
+ *
+ * @since 2.0.0
+ */
 class ExampleRepository
 {
+    /**
+     * Method save
+     *
+     * @since 2.0.0
+     */
     public function save(array $data): array
     {
         // Simulate database save
         return array_merge($data, ['id' => rand(1, 1000)]);
     }
 
+    /**
+     * Method find
+     *
+     * @since 2.0.0
+     */
     public function find(int $id): ?array
     {
         // Simulate database find
@@ -90,10 +151,16 @@ class ExampleRepository
 }
 
 // Example Unit Tests (following Jankx 2.0 rules)
+/**
+ * Class ExampleHelperTest
+ *
+ * @since 2.0.0
+ */
 class ExampleHelperTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Test formatData with valid input
+     * @since 2.0.0
      */
     public function testFormatDataWithValidInput(): void
     {
@@ -109,6 +176,7 @@ class ExampleHelperTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Test formatData with empty input
+     * @since 2.0.0
      */
     public function testFormatDataWithEmptyInput(): void
     {
@@ -121,6 +189,7 @@ class ExampleHelperTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Test validateInput with valid string
+     * @since 2.0.0
      */
     public function testValidateInputWithValidString(): void
     {
@@ -132,6 +201,7 @@ class ExampleHelperTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Test validateInput with empty string
+     * @since 2.0.0
      */
     public function testValidateInputWithEmptyString(): void
     {
@@ -143,6 +213,7 @@ class ExampleHelperTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Test validateInput with whitespace only
+     * @since 2.0.0
      */
     public function testValidateInputWithWhitespaceOnly(): void
     {
@@ -154,6 +225,7 @@ class ExampleHelperTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Test calculatePercentage with valid values
+     * @since 2.0.0
      */
     public function testCalculatePercentageWithValidValues(): void
     {
@@ -164,6 +236,7 @@ class ExampleHelperTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Test calculatePercentage with zero total
+     * @since 2.0.0
      */
     public function testCalculatePercentageWithZeroTotal(): void
     {
@@ -174,6 +247,7 @@ class ExampleHelperTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Test calculatePercentage with decimal result
+     * @since 2.0.0
      */
     public function testCalculatePercentageWithDecimalResult(): void
     {
@@ -183,11 +257,21 @@ class ExampleHelperTest extends \PHPUnit\Framework\TestCase
     }
 }
 
+/**
+ * Class ExampleServiceTest
+ *
+ * @since 2.0.0
+ */
 class ExampleServiceTest extends \PHPUnit\Framework\TestCase
 {
     private $mockRepository;
     private $service;
 
+    /**
+     * Method setUp
+     *
+     * @since 2.0.0
+     */
     protected function setUp(): void
     {
         $this->mockRepository = $this->createMock(ExampleRepository::class);
@@ -196,6 +280,7 @@ class ExampleServiceTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Test processData successfully
+     * @since 2.0.0
      */
     public function testProcessDataSuccessfully(): void
     {
@@ -215,6 +300,7 @@ class ExampleServiceTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Test processData throws exception
+     * @since 2.0.0
      */
     public function testProcessDataThrowsException(): void
     {
@@ -231,6 +317,7 @@ class ExampleServiceTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Test getUserStats with valid user ID
+     * @since 2.0.0
      */
     public function testGetUserStatsWithValidUserId(): void
     {
@@ -258,6 +345,7 @@ class ExampleServiceTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Test getUserStats with invalid user ID
+     * @since 2.0.0
      */
     public function testGetUserStatsWithInvalidUserId(): void
     {
@@ -277,6 +365,7 @@ class ExampleServiceTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Test getUserStats with zero user ID
+     * @since 2.0.0
      */
     public function testGetUserStatsWithZeroUserId(): void
     {
@@ -297,12 +386,18 @@ class ExampleServiceTest extends \PHPUnit\Framework\TestCase
 
 /**
  * Integration Test Example
+ * @since 2.0.0
  */
 class ExampleIntegrationTest extends \PHPUnit\Framework\TestCase
 {
     private $repository;
     private $service;
 
+    /**
+     * Method setUp
+     *
+     * @since 2.0.0
+     */
     protected function setUp(): void
     {
         $this->repository = new ExampleRepository();
@@ -311,6 +406,7 @@ class ExampleIntegrationTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Test complete workflow from data processing to user stats
+     * @since 2.0.0
      */
     public function testCompleteWorkflow(): void
     {
@@ -336,11 +432,13 @@ class ExampleIntegrationTest extends \PHPUnit\Framework\TestCase
 
 /**
  * Test Configuration Example
+ * @since 2.0.0
  */
 class TestConfiguration
 {
     /**
      * PHPUnit configuration example for Jankx 2.0
+     * @since 2.0.0
      */
     public static function getPhpUnitConfig(): array
     {

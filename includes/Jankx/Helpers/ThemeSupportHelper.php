@@ -2,6 +2,11 @@
 
 namespace Jankx\Helpers;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 /**
  * Theme Support Helper
  *
@@ -49,6 +54,7 @@ class ThemeSupportHelper
 
     /**
      * Add all basic theme supports
+     * @since 2.0.0
      */
     public static function addBasicSupports(): void
     {
@@ -62,6 +68,7 @@ class ThemeSupportHelper
 
     /**
      * Add all Gutenberg theme supports
+     * @since 2.0.0
      */
     public static function addGutenbergSupports(): void
     {
@@ -72,6 +79,7 @@ class ThemeSupportHelper
 
     /**
      * Add custom logo support
+     * @since 2.0.0
      */
     public static function addCustomLogoSupport(array $args = []): void
     {
@@ -87,6 +95,7 @@ class ThemeSupportHelper
 
     /**
      * Add custom background support
+     * @since 2.0.0
      */
     public static function addCustomBackgroundSupport(array $args = []): void
     {
@@ -100,6 +109,7 @@ class ThemeSupportHelper
 
     /**
      * Add custom header support
+     * @since 2.0.0
      */
     public static function addCustomHeaderSupport(array $args = []): void
     {
@@ -116,6 +126,7 @@ class ThemeSupportHelper
 
     /**
      * Add editor color palette
+     * @since 2.0.0
      */
     public static function addEditorColorPalette(array $colors = []): void
     {
@@ -138,6 +149,7 @@ class ThemeSupportHelper
 
     /**
      * Add editor font sizes
+     * @since 2.0.0
      */
     public static function addEditorFontSizes(array $sizes = []): void
     {
@@ -165,6 +177,7 @@ class ThemeSupportHelper
 
     /**
      * Add custom image sizes
+     * @since 2.0.0
      */
     public static function addCustomImageSizes(): void
     {
@@ -181,6 +194,7 @@ class ThemeSupportHelper
 
     /**
      * Register navigation menus
+     * @since 2.0.0
      */
     public static function registerNavigationMenus(array $menus = []): void
     {
@@ -195,6 +209,7 @@ class ThemeSupportHelper
 
     /**
      * Load theme text domain
+     * @since 2.0.0
      */
     public static function loadTextDomain(string $domain = 'jankx', string $path = null): void
     {

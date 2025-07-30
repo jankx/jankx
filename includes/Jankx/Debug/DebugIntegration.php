@@ -2,6 +2,11 @@
 
 namespace Jankx\Debug;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Illuminate\Container\Container;
 use Jankx\Debug\DebugBootstrap;
 use Jankx\Debug\Helpers\DebugHelper;

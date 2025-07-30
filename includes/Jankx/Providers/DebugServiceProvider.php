@@ -2,6 +2,11 @@
 
 namespace Jankx\Providers;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\Facades\Logger;
 
 /**
@@ -10,9 +15,15 @@ use Jankx\Facades\Logger;
  * Registers and boots debug-specific services only in frontend context
  *
  * @package Jankx\Providers
+ * @since 2.0.0
  */
 class DebugServiceProvider extends ServiceProvider
 {
+    /**
+     * Method register
+     *
+     * @since 2.0.0
+     */
     public function register()
     {
         Logger::debug('DebugServiceProvider::register', [
@@ -39,6 +50,11 @@ class DebugServiceProvider extends ServiceProvider
         }
     }
 
+    /**
+     * Method boot
+     *
+     * @since 2.0.0
+     */
     public function boot()
     {
         // Boot debug services - only if JANKX_DEBUG is defined and we're in frontend context
@@ -49,6 +65,7 @@ class DebugServiceProvider extends ServiceProvider
 
     /**
      * Boot debug services
+     * @since 2.0.0
      */
     private function bootDebugServices(): void
     {
@@ -75,6 +92,7 @@ class DebugServiceProvider extends ServiceProvider
      * Check if service provider should load
      *
      * @return bool
+     * @since 2.0.0
      */
     public function shouldLoad(): bool
     {

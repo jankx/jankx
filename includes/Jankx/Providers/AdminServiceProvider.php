@@ -2,6 +2,11 @@
 
 namespace Jankx\Providers;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\Admin\Dashboard;
 
 /**
@@ -10,9 +15,15 @@ use Jankx\Admin\Dashboard;
  * Registers and boots admin-specific services
  *
  * @package Jankx\Providers
+ * @since 2.0.0
  */
 class AdminServiceProvider extends ServiceProvider
 {
+    /**
+     * Method register
+     *
+     * @since 2.0.0
+     */
     public function register()
     {
         // Core admin services - only register classes that actually exist
@@ -48,6 +59,11 @@ class AdminServiceProvider extends ServiceProvider
         // For now, we only register services that exist in the codebase
     }
 
+    /**
+     * Method boot
+     *
+     * @since 2.0.0
+     */
     public function boot()
     {
         // Boot admin dashboard if container has it

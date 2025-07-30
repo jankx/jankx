@@ -2,6 +2,11 @@
 
 namespace Jankx\Helpers;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 /**
  * CLI Helper Class
  * 
@@ -67,6 +72,7 @@ class CLIHelper
      * @param string $type Type of separator (header, section, subsection, thin)
      * @param int $length Length of the separator
      * @return string
+     * @since 2.0.0
      */
     public static function separator($type = 'section', $length = 80)
     {
@@ -80,6 +86,7 @@ class CLIHelper
      * @param string $message Message to log
      * @param string $icon Icon type
      * @return void
+     * @since 2.0.0
      */
     public static function log($message, $icon = null)
     {
@@ -93,6 +100,7 @@ class CLIHelper
      * 
      * @param string $message Message to log
      * @return void
+     * @since 2.0.0
      */
     public static function success($message)
     {
@@ -104,6 +112,7 @@ class CLIHelper
      * 
      * @param string $message Message to log
      * @return void
+     * @since 2.0.0
      */
     public static function error($message)
     {
@@ -115,6 +124,7 @@ class CLIHelper
      * 
      * @param string $message Message to log
      * @return void
+     * @since 2.0.0
      */
     public static function warning($message)
     {
@@ -128,6 +138,7 @@ class CLIHelper
      * @param string $description Description of the file
      * @param bool $required Whether the file is required
      * @return bool
+     * @since 2.0.0
      */
     public static function checkFile($filePath, $description = 'File', $required = true)
     {
@@ -151,6 +162,7 @@ class CLIHelper
      * @param string $description Description of the directory
      * @param bool $required Whether the directory is required
      * @return bool
+     * @since 2.0.0
      */
     public static function checkDirectory($dirPath, $description = 'Directory', $required = true)
     {
@@ -173,6 +185,7 @@ class CLIHelper
      * @param string $dirPath Directory path to create
      * @param string $description Description of the directory
      * @return bool
+     * @since 2.0.0
      */
     public static function createDirectory($dirPath, $description = 'Directory')
     {
@@ -190,6 +203,7 @@ class CLIHelper
      * 
      * @param int $bytes Size in bytes
      * @return string
+     * @since 2.0.0
      */
     public static function formatBytes($bytes)
     {
@@ -208,6 +222,7 @@ class CLIHelper
      * @param int $total Total items
      * @param int $width Bar width
      * @return string
+     * @since 2.0.0
      */
     public static function progressBar($current, $total, $width = 50)
     {
@@ -228,6 +243,7 @@ class CLIHelper
      * @param array $excludePatterns Patterns to exclude
      * @param string $relativePath Base path for relative paths
      * @return array
+     * @since 2.0.0
      */
     public static function getFilesRecursively($directory, $excludePatterns = [], $relativePath = '')
     {
@@ -253,6 +269,7 @@ class CLIHelper
      * @param string $relativePath Relative file path
      * @param array $excludePatterns Patterns to exclude
      * @return bool
+     * @since 2.0.0
      */
     public static function shouldIncludeFile($relativePath, $excludePatterns = [])
     {
@@ -289,6 +306,7 @@ class CLIHelper
      * @param array $stats Statistics to display
      * @param string $title Title for the statistics
      * @return void
+     * @since 2.0.0
      */
     public static function displayStats($stats, $title = 'Statistics')
     {
@@ -309,6 +327,7 @@ class CLIHelper
      * 
      * @param string $statType Type of statistic
      * @return string
+     * @since 2.0.0
      */
     private static function getStatIcon($statType)
     {

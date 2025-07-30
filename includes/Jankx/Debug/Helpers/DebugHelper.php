@@ -2,6 +2,11 @@
 
 namespace Jankx\Debug\Helpers;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\Facades\Logger;
 use Jankx\Debug\Facades\Debug;
 

@@ -2,6 +2,11 @@
 
 namespace Jankx\Providers;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\Services\UserService;
 use Jankx\Services\BlockParserService;
 
@@ -11,9 +16,15 @@ use Jankx\Services\BlockParserService;
  * Registers and boots frontend-specific services
  *
  * @package Jankx\Providers
+ * @since 2.0.0
  */
 class FrontendServiceProvider extends ServiceProvider
 {
+    /**
+     * Method register
+     *
+     * @since 2.0.0
+     */
     public function register()
     {
         \Jankx\Facades\Logger::debug('FrontendServiceProvider::register', ['start' => true]);
@@ -44,6 +55,11 @@ class FrontendServiceProvider extends ServiceProvider
         // For now, we only register services that exist in the codebase
     }
 
+    /**
+     * Method boot
+     *
+     * @since 2.0.0
+     */
     public function boot()
     {
         // Boot user service

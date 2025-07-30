@@ -2,6 +2,11 @@
 
 namespace Jankx\Bootstrappers\Global;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Illuminate\Container\Container;
 use Jankx\Bootstrappers\AbstractBootstrapper;
 use Jankx\Facades\Logger;
@@ -20,11 +25,21 @@ class DebugBootstrapper extends AbstractBootstrapper
 {
     protected $priority = 30;
 
+    /**
+     * Method getName
+     *
+     * @since 2.0.0
+     */
     public function getName(): string
     {
         return 'debug';
     }
 
+    /**
+     * Method shouldRun
+     *
+     * @since 2.0.0
+     */
     public function shouldRun(): bool
     {
         return defined('JANKX_DEBUG') && JANKX_DEBUG && !is_admin();
@@ -32,6 +47,7 @@ class DebugBootstrapper extends AbstractBootstrapper
 
     /**
      * Bootstrap the application
+     * @since 2.0.0
      */
     public function bootstrap(Container $container): void
     {

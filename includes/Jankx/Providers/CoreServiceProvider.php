@@ -2,6 +2,11 @@
 
 namespace Jankx\Providers;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\Config\Repository;
 use Jankx\Contracts\ConfigRepositoryInterface;
 
@@ -11,11 +16,13 @@ use Jankx\Contracts\ConfigRepositoryInterface;
  * Registers core framework services
  *
  * @package Jankx\Providers
+ * @since 2.0.0
  */
 class CoreServiceProvider extends ServiceProvider
 {
     /**
      * Register services
+     * @since 2.0.0
      */
     public function register(): void
     {
@@ -30,6 +37,7 @@ class CoreServiceProvider extends ServiceProvider
 
     /**
      * Boot services
+     * @since 2.0.0
      */
     public function boot(): void
     {

@@ -2,6 +2,11 @@
 
 namespace Jankx\Admin;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\Facades\Logger;
 use Jankx\Config\Repository;
 

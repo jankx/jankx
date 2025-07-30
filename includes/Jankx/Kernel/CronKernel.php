@@ -2,6 +2,11 @@
 
 namespace Jankx\Kernel;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\Contracts\KernelInterface;
 use Jankx\Bootstrappers\Global\ThemeBootstrapper;
 use Jankx\Facades\Logger;
@@ -12,11 +17,13 @@ use Jankx\Facades\Logger;
  * Handles WP Cron jobs and scheduled tasks
  *
  * @package Jankx\Kernel
+ * @since 2.0.0
  */
 class CronKernel extends Kernel implements KernelInterface
 {
     /**
      * Get kernel type
+     * @since 2.0.0
      */
     public function getKernelType(): string
     {
@@ -25,6 +32,7 @@ class CronKernel extends Kernel implements KernelInterface
 
     /**
      * Register bootstrappers
+     * @since 2.0.0
      */
     protected function registerBootstrappers(): void
     {
@@ -42,6 +50,7 @@ class CronKernel extends Kernel implements KernelInterface
 
     /**
      * Register services
+     * @since 2.0.0
      */
     protected function registerServices(): void
     {
@@ -52,6 +61,7 @@ class CronKernel extends Kernel implements KernelInterface
 
     /**
      * Register hooks
+     * @since 2.0.0
      */
     protected function registerHooks(): void
     {
@@ -66,6 +76,7 @@ class CronKernel extends Kernel implements KernelInterface
 
     /**
      * Register filters
+     * @since 2.0.0
      */
     protected function registerFilters(): void
     {
@@ -75,6 +86,7 @@ class CronKernel extends Kernel implements KernelInterface
 
     /**
      * Run optimization cron
+     * @since 2.0.0
      */
     public function runOptimizationCron(): void
     {
@@ -87,6 +99,7 @@ class CronKernel extends Kernel implements KernelInterface
 
     /**
      * Run security scan cron
+     * @since 2.0.0
      */
     public function runSecurityScanCron(): void
     {
@@ -98,6 +111,7 @@ class CronKernel extends Kernel implements KernelInterface
 
     /**
      * Run cache cleanup cron
+     * @since 2.0.0
      */
     public function runCacheCleanupCron(): void
     {
@@ -109,6 +123,7 @@ class CronKernel extends Kernel implements KernelInterface
 
     /**
      * Schedule cron jobs
+     * @since 2.0.0
      */
     public function scheduleCronJobs(): void
     {
@@ -130,6 +145,7 @@ class CronKernel extends Kernel implements KernelInterface
 
     /**
      * Format cron output
+     * @since 2.0.0
      */
     public function formatCronOutput(string $output): string
     {
@@ -142,6 +158,7 @@ class CronKernel extends Kernel implements KernelInterface
 
     /**
      * Clean auto drafts
+     * @since 2.0.0
      */
     protected function cleanAutoDrafts(): void
     {
@@ -166,6 +183,7 @@ class CronKernel extends Kernel implements KernelInterface
 
     /**
      * Clean expired transients
+     * @since 2.0.0
      */
     protected function cleanExpiredTransients(): void
     {
@@ -176,6 +194,7 @@ class CronKernel extends Kernel implements KernelInterface
 
     /**
      * Clean expired transients using WordPress functions
+     * @since 2.0.0
      */
     private function cleanExpiredTransientsUsingWordPress(): void
     {
@@ -194,6 +213,7 @@ class CronKernel extends Kernel implements KernelInterface
 
     /**
      * Check system files for unexpected changes
+     * @since 2.0.0
      */
     protected function checkSystemFiles(): void
     {
@@ -203,6 +223,7 @@ class CronKernel extends Kernel implements KernelInterface
 
     /**
      * Log info message
+     * @since 2.0.0
      */
     protected function logInfo(string $message): void
     {
@@ -211,6 +232,7 @@ class CronKernel extends Kernel implements KernelInterface
 
     /**
      * Log error message
+     * @since 2.0.0
      */
     protected function logError(string $message): void
     {
@@ -219,6 +241,7 @@ class CronKernel extends Kernel implements KernelInterface
 
     /**
      * Log success message
+     * @since 2.0.0
      */
     protected function logSuccess(string $message): void
     {
@@ -227,6 +250,7 @@ class CronKernel extends Kernel implements KernelInterface
 
     /**
      * Log warning message
+     * @since 2.0.0
      */
     protected function logWarning(string $message): void
     {

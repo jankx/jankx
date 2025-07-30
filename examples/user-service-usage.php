@@ -7,6 +7,11 @@
  */
 
 // Example 1: Basic User Service Usage
+
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
 use Jankx\Facades\User;
 use Jankx\Facades\Logger;
 
@@ -225,8 +230,18 @@ add_action('jankx_user_cache_cleared', function($userId) {
 });
 
 // Example 12: Error Handling
+/**
+ * Class SafeUserLoader
+ *
+ * @since 2.0.0
+ */
 class SafeUserLoader
 {
+    /**
+     * Method loadUser
+     *
+     * @since 2.0.0
+     */
     public function loadUser($userId)
     {
         try {
@@ -255,8 +270,18 @@ class SafeUserLoader
 }
 
 // Example 13: Performance Monitoring
+/**
+ * Class UserPerformanceMonitor
+ *
+ * @since 2.0.0
+ */
 class UserPerformanceMonitor
 {
+    /**
+     * Method monitorUserLoading
+     *
+     * @since 2.0.0
+     */
     public function monitorUserLoading($userId)
     {
         $startTime = microtime(true);
@@ -280,6 +305,11 @@ class UserPerformanceMonitor
         return $user;
     }
 
+    /**
+     * Method monitorBatchLoading
+     *
+     * @since 2.0.0
+     */
     public function monitorBatchLoading($userIds)
     {
         $startTime = microtime(true);
@@ -305,8 +335,18 @@ class UserPerformanceMonitor
 }
 
 // Example 14: Advanced Usage in Templates
+/**
+ * Class UserTemplateHelper
+ *
+ * @since 2.0.0
+ */
 class UserTemplateHelper
 {
+    /**
+     * Method renderUserProfile
+     *
+     * @since 2.0.0
+     */
     public function renderUserProfile($userId)
     {
         $user = User::get($userId, [
@@ -335,6 +375,11 @@ class UserTemplateHelper
         return $html;
     }
 
+    /**
+     * Method renderUserList
+     *
+     * @since 2.0.0
+     */
     public function renderUserList($userIds)
     {
         $users = User::getBatch($userIds, ['ID', 'display_name', 'user_email']);
@@ -357,8 +402,18 @@ class UserTemplateHelper
 }
 
 // Example 15: Integration with WordPress Hooks
+/**
+ * Class UserHookIntegration
+ *
+ * @since 2.0.0
+ */
 class UserHookIntegration
 {
+    /**
+     * Method __construct
+     *
+     * @since 2.0.0
+     */
     public function __construct()
     {
         // Clear user cache when user is updated
@@ -373,12 +428,22 @@ class UserHookIntegration
         add_action('wp_loaded', [$this, 'monitorUserActivity']);
     }
 
+    /**
+     * Method clearUserCache
+     *
+     * @since 2.0.0
+     */
     public function clearUserCache($userId)
     {
         User::clearCache($userId);
         Logger::info("Cleared cache for user: {$userId}");
     }
 
+    /**
+     * Method updateUserLoginInfo
+     *
+     * @since 2.0.0
+     */
     public function updateUserLoginInfo($userLogin, $user)
     {
         User::updateLastLogin($user->ID);
@@ -386,6 +451,11 @@ class UserHookIntegration
         Logger::info("Updated login info for user: {$user->ID}");
     }
 
+    /**
+     * Method monitorUserActivity
+     *
+     * @since 2.0.0
+     */
     public function monitorUserActivity()
     {
         if (is_user_logged_in()) {

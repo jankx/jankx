@@ -2,6 +2,11 @@
 
 namespace Jankx\Debug;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\Debug\Services\DebugInfoService;
 use Jankx\Debug\Services\QueryCountService;
 use Jankx\Debug\Services\CacheInfoService;

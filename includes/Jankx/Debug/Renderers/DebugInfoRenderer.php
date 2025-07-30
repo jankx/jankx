@@ -2,6 +2,11 @@
 
 namespace Jankx\Debug\Renderers;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\Debug\Contracts\DebugInfoRendererInterface;
 
 /**

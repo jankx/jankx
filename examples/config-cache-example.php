@@ -9,6 +9,11 @@
  * @since 2.0.0
  */
 
+
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
 use Jankx\Facades\Config;
 
 // Example 1: Basic cache usage
@@ -61,10 +66,16 @@ echo "- Cached load: {$benchmark['cached_load']} seconds\n";
 echo "- Improvement: {$benchmark['improvement']}%\n";
 
 // Example 4: Cache management
+/**
+ * Class ConfigCacheManager
+ *
+ * @since 2.0.0
+ */
 class ConfigCacheManager
 {
     /**
      * Clear cache for specific config file
+     * @since 2.0.0
      */
     public static function clearConfigCache(string $configFile): void
     {
@@ -74,6 +85,7 @@ class ConfigCacheManager
 
     /**
      * Clear all config caches
+     * @since 2.0.0
      */
     public static function clearAllCaches(): void
     {
@@ -83,6 +95,7 @@ class ConfigCacheManager
 
     /**
      * Get detailed cache information
+     * @since 2.0.0
      */
     public static function getCacheInfo(): array
     {
@@ -102,6 +115,7 @@ class ConfigCacheManager
 
     /**
      * Monitor config file changes
+     * @since 2.0.0
      */
     public static function monitorChanges(): array
     {
@@ -126,6 +140,7 @@ class ConfigCacheManager
 
     /**
      * Optimize cache performance
+     * @since 2.0.0
      */
     public static function optimizeCache(): array
     {
@@ -164,7 +179,7 @@ add_action('admin_init', function() {
 add_action('wp_ajax_clear_config_cache', function() {
     // AJAX endpoint to clear config cache
     if (current_user_can('manage_options')) {
-        $file = $_POST['file'] ?? null;
+        $file = sanitize_text_field($_POST['file']) ?? null;
 
         if ($file) {
             ConfigCacheManager::clearConfigCache($file);

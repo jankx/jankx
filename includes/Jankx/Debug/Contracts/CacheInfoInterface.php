@@ -2,6 +2,11 @@
 
 namespace Jankx\Debug\Contracts;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 /**
  * Cache Info Interface
  *

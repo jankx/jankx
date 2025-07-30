@@ -2,6 +2,11 @@
 
 namespace Jankx\Debug\Services;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\Services\BlockParserService;
 use Jankx\Facades\Logger;
 

@@ -18,14 +18,25 @@ if (!defined('ABSPATH')) {
  *
  * @package Jankx\Bootstrap
  * @author Puleeno Nguyen <puleeno@gmail.com>
+ * @since 2.0.0
  */
 final class CoreBootstrapper extends AbstractBootstrapper
 {
+    /**
+     * Method getName
+     *
+     * @since 2.0.0
+     */
     public function getName(): string
     {
         return 'core';
     }
 
+    /**
+     * Method shouldRun
+     *
+     * @since 2.0.0
+     */
     public function shouldRun(): bool
     {
         return true;
@@ -33,6 +44,7 @@ final class CoreBootstrapper extends AbstractBootstrapper
 
     /**
      * Khởi tạo các dịch vụ và đăng ký chúng theo ngữ cảnh
+     * @since 2.0.0
      */
     public function bootstrap(Container $container): void
     {

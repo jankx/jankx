@@ -31,6 +31,7 @@ use Illuminate\Container\Container;
  * @version 2.0.0
  * @license MIT
  *
+ * @since 2.0.0
  */
 
 class Jankx extends Container
@@ -44,6 +45,7 @@ class Jankx extends Container
     /**
      * Tên của framework
      * @return string
+     * @since 2.0.0
      */
     public static function getFrameworkName(): string
     {
@@ -53,6 +55,7 @@ class Jankx extends Container
     /**
      * Phiên bản hiện tại của framework
      * @return string
+     * @since 2.0.0
      */
     public static function getFrameworkVersion(): string
     {
@@ -68,6 +71,7 @@ class Jankx extends Container
     /**
      * Lấy instance của Jankx
      * @return Jankx
+     * @since 2.0.0
      */
     public static function getInstance()
     {

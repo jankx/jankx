@@ -13,6 +13,7 @@ if (!defined('ABSPATH')) {
 
 /**
  * Example plugin class demonstrating Jankx Debug System integration
+ * @since 2.0.0
  */
 class JankxDebugIntegrationExample {
 
@@ -25,6 +26,7 @@ class JankxDebugIntegrationExample {
 
     /**
      * Constructor
+     * @since 2.0.0
      */
     public function __construct() {
         // Only add debug info if Jankx debug is enabled
@@ -38,6 +40,7 @@ class JankxDebugIntegrationExample {
 
     /**
      * Initialize example data
+     * @since 2.0.0
      */
     public function initExampleData() {
         // Create example data for demonstration
@@ -58,6 +61,7 @@ class JankxDebugIntegrationExample {
      * Add debug information to Jankx debug panel
      *
      * @param array $debugInfo Reference to debug info array
+     * @since 2.0.0
      */
     public function addDebugInfo(&$debugInfo) {
         try {
@@ -93,6 +97,7 @@ class JankxDebugIntegrationExample {
      * Get debug data
      *
      * @return array
+     * @since 2.0.0
      */
     private function getDebugData() {
         $data = get_option('jankx_debug_example_data', []);
@@ -114,6 +119,7 @@ class JankxDebugIntegrationExample {
      * Get active features count
      *
      * @return int
+     * @since 2.0.0
      */
     private function getActiveFeatures() {
         return 5; // Example value
@@ -123,6 +129,7 @@ class JankxDebugIntegrationExample {
      * Get database records count
      *
      * @return int
+     * @since 2.0.0
      */
     private function getDatabaseRecords() {
         global $wpdb;
@@ -136,6 +143,7 @@ class JankxDebugIntegrationExample {
      * Get cache statistics
      *
      * @return array
+     * @since 2.0.0
      */
     private function getCacheStats() {
         // Example cache stats - replace with your actual cache implementation

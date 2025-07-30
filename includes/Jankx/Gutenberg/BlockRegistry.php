@@ -2,6 +2,11 @@
 
 namespace Jankx\Gutenberg;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\Facades\Logger;
 
 class BlockRegistry

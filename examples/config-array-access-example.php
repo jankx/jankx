@@ -10,6 +10,11 @@
  */
 
 // Example 1: Basic ArrayAccess Usage
+
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
 echo "=== Basic ArrayAccess Usage ===\n";
 
 $config = new \Jankx\Config\Repository();

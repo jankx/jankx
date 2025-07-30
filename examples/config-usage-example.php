@@ -11,6 +11,11 @@
  */
 
 // Example 1: Basic usage with Facade
+
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
 use Jankx\Facades\Config;
 
 // Get a simple configuration value
@@ -68,8 +73,18 @@ $additionalConfig = [
 Config::merge($additionalConfig);
 
 // Example 5: Practical usage in theme development
+/**
+ * Class ThemeConfigManager
+ *
+ * @since 2.0.0
+ */
 class ThemeConfigManager
 {
+    /**
+     * Method getLayoutSettings
+     *
+     * @since 2.0.0
+     */
     public function getLayoutSettings()
     {
         return [
@@ -81,6 +96,11 @@ class ThemeConfigManager
         ];
     }
 
+    /**
+     * Method getColorSettings
+     *
+     * @since 2.0.0
+     */
     public function getColorSettings()
     {
         return [
@@ -91,11 +111,21 @@ class ThemeConfigManager
         ];
     }
 
+    /**
+     * Method isFeatureEnabled
+     *
+     * @since 2.0.0
+     */
     public function isFeatureEnabled($feature)
     {
         return Config::get("theme.features.{$feature}", false);
     }
 
+    /**
+     * Method getChildSpecificSettings
+     *
+     * @since 2.0.0
+     */
     public function getChildSpecificSettings()
     {
         if (!Config::isChildTheme()) {

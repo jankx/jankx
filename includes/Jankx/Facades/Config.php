@@ -2,6 +2,11 @@
 
 namespace Jankx\Facades;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\Contracts\ConfigRepositoryInterface;
 use Jankx\Config\Repository;
 
@@ -19,6 +24,7 @@ class Config extends Facade
      * Get the facade accessor
      *
      * @return string
+     * @since 2.0.0
      */
     protected static function getFacadeAccessor(): string
     {
@@ -29,6 +35,7 @@ class Config extends Facade
      * Get the facade root
      *
      * @return ConfigRepositoryInterface
+     * @since 2.0.0
      */
     public static function getFacadeRoot(): ConfigRepositoryInterface
     {
@@ -41,6 +48,7 @@ class Config extends Facade
      * @param string $key
      * @param mixed $default
      * @return mixed
+     * @since 2.0.0
      */
     public static function get(string $key, $default = null)
     {
@@ -53,6 +61,7 @@ class Config extends Facade
      * @param string $key
      * @param mixed $value
      * @return void
+     * @since 2.0.0
      */
     public static function set(string $key, $value): void
     {
@@ -64,6 +73,7 @@ class Config extends Facade
      *
      * @param string $key
      * @return bool
+     * @since 2.0.0
      */
     public static function has(string $key): bool
     {
@@ -74,6 +84,7 @@ class Config extends Facade
      * Get all configuration
      *
      * @return array
+     * @since 2.0.0
      */
     public static function all(): array
     {
@@ -85,6 +96,7 @@ class Config extends Facade
      *
      * @param string $section
      * @return array
+     * @since 2.0.0
      */
     public static function section(string $section): array
     {
@@ -96,6 +108,7 @@ class Config extends Facade
      *
      * @param array $config
      * @return void
+     * @since 2.0.0
      */
     public static function merge(array $config): void
     {
@@ -106,6 +119,7 @@ class Config extends Facade
      * Reload configurations
      *
      * @return void
+     * @since 2.0.0
      */
     public static function reload(): void
     {
@@ -116,6 +130,7 @@ class Config extends Facade
      * Check if using child theme
      *
      * @return bool
+     * @since 2.0.0
      */
     public static function isChildTheme(): bool
     {
@@ -126,6 +141,7 @@ class Config extends Facade
      * Get configuration differences
      *
      * @return array
+     * @since 2.0.0
      */
     public static function getDifferences(): array
     {
@@ -137,6 +153,7 @@ class Config extends Facade
      *
      * @param string|null $file
      * @return void
+     * @since 2.0.0
      */
     public static function clearCache(string $file = null): void
     {
@@ -147,6 +164,7 @@ class Config extends Facade
      * Get cache statistics
      *
      * @return array
+     * @since 2.0.0
      */
     public static function getCacheStats(): array
     {
@@ -158,6 +176,7 @@ class Config extends Facade
      *
      * @param string $file
      * @return bool
+     * @since 2.0.0
      */
     public static function hasFileChanged(string $file): bool
     {

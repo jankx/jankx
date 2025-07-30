@@ -2,6 +2,11 @@
 
 namespace Jankx\Services;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\Facades\Logger;
 
 /**

@@ -2,6 +2,11 @@
 
 namespace Jankx\Debug\Services;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Jankx\Debug\Contracts\CacheInfoInterface;
 
 /**
@@ -13,6 +18,7 @@ use Jankx\Debug\Contracts\CacheInfoInterface;
  * @author Puleeno Nguyen <puleeno@gmail.com>
  * @version 2.0.0
  * @license MIT
+ * @since 2.0.0
  */
 class CacheInfoService implements CacheInfoInterface
 {
@@ -95,6 +101,7 @@ class CacheInfoService implements CacheInfoInterface
      * Get transient keys using WordPress functions
      *
      * @return array
+     * @since 2.0.0
      */
     private function getTransientKeys(): array
     {

@@ -2,10 +2,16 @@
 
 namespace Jankx\Kernel\Strategies;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 /**
  * Strategy for Gutenberg AJAX context
  *
  * @package Jankx\Kernel\Strategies
+ * @since 2.0.0
  */
 class GutenbergAjaxKernelStrategy extends KernelContextStrategy
 {
@@ -13,6 +19,7 @@ class GutenbergAjaxKernelStrategy extends KernelContextStrategy
      * Check if current context is Gutenberg AJAX
      *
      * @return bool
+     * @since 2.0.0
      */
     public function canHandle(): bool
     {
@@ -20,7 +27,7 @@ class GutenbergAjaxKernelStrategy extends KernelContextStrategy
             return false;
         }
 
-        $action = $_POST['action'] ?? $_GET['action'] ?? '';
+        $action = sanitize_text_field($_POST['action']) ?? sanitize_text_field($_GET['action']) ?? '';
         return strpos($action, 'jankx/gutenberg') === 0;
     }
 
@@ -28,6 +35,7 @@ class GutenbergAjaxKernelStrategy extends KernelContextStrategy
      * Get Gutenberg AJAX context name
      *
      * @return string
+     * @since 2.0.0
      */
     public function getContext(): string
     {
@@ -38,6 +46,7 @@ class GutenbergAjaxKernelStrategy extends KernelContextStrategy
      * Gutenberg AJAX has high priority
      *
      * @return int
+     * @since 2.0.0
      */
     public function getPriority(): int
     {

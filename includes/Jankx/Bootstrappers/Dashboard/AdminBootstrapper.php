@@ -2,6 +2,11 @@
 
 namespace Jankx\Bootstrappers\Dashboard;
 
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+
 use Illuminate\Container\Container;
 use Jankx\Bootstrappers\AbstractBootstrapper;
 use Jankx\Facades\Logger;
@@ -20,16 +25,31 @@ class AdminBootstrapper extends AbstractBootstrapper
 {
     protected $priority = 20;
 
+    /**
+     * Method getName
+     *
+     * @since 2.0.0
+     */
     public function getName(): string
     {
         return 'admin';
     }
 
+    /**
+     * Method shouldRun
+     *
+     * @since 2.0.0
+     */
     public function shouldRun(): bool
     {
         return is_admin();
     }
 
+    /**
+     * Method bootstrap
+     *
+     * @since 2.0.0
+     */
     public function bootstrap(Container $container): void
     {
         // Setup deferred service resolver
@@ -48,16 +68,31 @@ class AdminBootstrapper extends AbstractBootstrapper
         BootstrapperHelper::fireLoadedAction($this->getName(), $container);
     }
 
+    /**
+     * Method loadEssentialServices
+     *
+     * @since 2.0.0
+     */
     private function loadEssentialServices(Container $container): void
     {
         // Services needed immediately - now registered through AdminKernel
     }
 
+    /**
+     * Method deferHeavyServices
+     *
+     * @since 2.0.0
+     */
     private function deferHeavyServices(Container $container): void
     {
         // Defer heavy services until actually needed - now through AdminKernel
     }
 
+    /**
+     * Method setupAdminHooks
+     *
+     * @since 2.0.0
+     */
     private function setupAdminHooks(): void
     {
         // Hook into WordPress to load services when needed
@@ -65,6 +100,11 @@ class AdminBootstrapper extends AbstractBootstrapper
         add_action('admin_enqueue_scripts', [$this, 'loadAdminAssets']);
     }
 
+    /**
+     * Method loadAdminServices
+     *
+     * @since 2.0.0
+     */
     public function loadAdminServices(): void
     {
         ErrorHandlingHelper::safeExecute(function () {
@@ -83,6 +123,11 @@ class AdminBootstrapper extends AbstractBootstrapper
         }, 'AdminBootstrapper loadAdminServices');
     }
 
+    /**
+     * Method loadAdminAssets
+     *
+     * @since 2.0.0
+     */
     public function loadAdminAssets(): void
     {
         ErrorHandlingHelper::safeExecute(function () {
