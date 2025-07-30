@@ -9,6 +9,7 @@ use Jankx\Facades\Layout;
 use Jankx\Facades\Application;
 use Jankx\Facades\User;
 use Jankx\Facades\DeferredService;
+use Jankx\Facades\Kernel;
 
 /**
  * Facades Test
@@ -32,6 +33,7 @@ class FacadesTest extends TestCase
             Application::class,
             User::class,
             DeferredService::class,
+            Kernel::class,
         ];
 
         foreach ($facades as $facade) {
@@ -45,7 +47,6 @@ class FacadesTest extends TestCase
     public function testRemovedFacadesNoLongerExist(): void
     {
         $removedFacades = [
-            'Jankx\Facades\Kernel',
             'Jankx\Facades\Options',
             'Jankx\Facades\Debug',
             'Jankx\Facades\Template',
@@ -71,6 +72,7 @@ class FacadesTest extends TestCase
             Application::class,
             User::class,
             DeferredService::class,
+            Kernel::class,
         ];
 
         foreach ($facades as $facade) {
@@ -91,6 +93,7 @@ class FacadesTest extends TestCase
             Application::class,
             User::class,
             DeferredService::class,
+            Kernel::class,
         ];
 
         foreach ($facades as $facade) {
@@ -111,6 +114,7 @@ class FacadesTest extends TestCase
             Application::class,
             User::class,
             DeferredService::class,
+            Kernel::class,
         ];
 
         foreach ($facades as $facade) {
@@ -190,7 +194,22 @@ class FacadesTest extends TestCase
         $this->assertTrue(method_exists(DeferredService::class, 'resolve'));
         $this->assertTrue(method_exists(DeferredService::class, 'has'));
         $this->assertTrue(method_exists(DeferredService::class, 'register'));
-        $this->assertTrue(method_exists(DeferredService::class, 'getCurrentContext'));
+        $this->assertTrue(method_exists(DeferredService::class, 'getResolvedServices'));
+        $this->assertTrue(method_exists(DeferredService::class, 'getStats'));
+        $this->assertTrue(method_exists(DeferredService::class, 'clearCache'));
+    }
+
+    /**
+     * Test Kernel facade
+     */
+    public function testKernelFacade(): void
+    {
+        $this->assertTrue(class_exists(Kernel::class));
+        $this->assertTrue(method_exists(Kernel::class, 'getCurrentContext'));
+        $this->assertTrue(method_exists(Kernel::class, 'getCurrentKernel'));
+        $this->assertTrue(method_exists(Kernel::class, 'isBooted'));
+        $this->assertTrue(method_exists(Kernel::class, 'getType'));
+        $this->assertTrue(method_exists(Kernel::class, 'getContainer'));
     }
 
     /**
@@ -201,7 +220,8 @@ class FacadesTest extends TestCase
         $this->assertTrue(class_exists(\Jankx\Kernel\KernelManager::class));
         $this->assertTrue(method_exists(\Jankx\Kernel\KernelManager::class, 'boot'));
         $this->assertTrue(method_exists(\Jankx\Kernel\KernelManager::class, 'getCurrentKernel'));
-        $this->assertTrue(method_exists(\Jankx\Kernel\KernelManager::class, 'getAllKernels'));
+        $this->assertTrue(method_exists(\Jankx\Kernel\KernelManager::class, 'getCurrentContext'));
+        $this->assertTrue(method_exists(\Jankx\Kernel\KernelManager::class, 'registerKernel'));
 
         // Check that Jankx class has getFrameworkVersion
         $this->assertTrue(class_exists(\Jankx\Jankx::class));
@@ -220,6 +240,7 @@ class FacadesTest extends TestCase
             Application::class,
             User::class,
             DeferredService::class,
+            Kernel::class,
         ];
 
         foreach ($facades as $facade) {

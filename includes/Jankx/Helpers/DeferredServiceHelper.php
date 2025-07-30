@@ -24,7 +24,7 @@ class DeferredServiceHelper
     public static function registerDeferredServices(Container $container, string $context = 'frontend'): void
     {
         // Register deferred service resolver
-        $container->singleton('deferred.resolver', function($container) {
+        $container->singleton('deferred.resolver', function ($container) {
             return new \Jankx\Services\DeferredServiceResolver($container);
         });
 
@@ -32,7 +32,6 @@ class DeferredServiceHelper
         switch ($context) {
             default:
                 // All services are now registered through their respective Kernels
-                // No need to create new ServiceProvider instances here
                 return;
         }
 
@@ -49,7 +48,6 @@ class DeferredServiceHelper
     public static function registerAdminDeferredServices(Container $container): void
     {
         // Admin services are now registered through AdminKernel
-        // No need to create new AdminServiceProvider instance here
     }
 
     /**
@@ -61,7 +59,6 @@ class DeferredServiceHelper
     public static function registerFrontendDeferredServices(Container $container): void
     {
         // Frontend services are now registered through FrontendKernel
-        // No need to create new FrontendServiceProvider instance here
     }
 
     /**

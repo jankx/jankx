@@ -34,15 +34,6 @@ class BootstrapperHelper
     }
 
     /**
-     * Register context provider
-     */
-    public static function registerContextProvider(Container $container): void
-    {
-        $contextProvider = new \Jankx\Providers\ContextualServiceProvider($container);
-        $contextProvider->register();
-    }
-
-    /**
      * Get container from global instance
      */
     public static function getGlobalContainer()

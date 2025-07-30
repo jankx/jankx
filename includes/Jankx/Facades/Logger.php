@@ -2,7 +2,6 @@
 
 namespace Jankx\Facades;
 
-
 /**
  * Logger Facade
  *

@@ -610,18 +610,16 @@ class ConversionTracker
         return $endTime - $startTime;
     }
 
-    public function generateReport(array $metrics): string
+        public function getMetrics(array $metrics): array
     {
-        $report = "# Conversion Report\n\n";
-        $report .= "## Process Times\n";
-        $report .= "- **Design Extraction**: " . number_format($metrics['design_extraction'], 2) . "s\n";
-        $report .= "- **CSS Generation**: " . number_format($metrics['css_generation'], 2) . "s\n";
-        $report .= "- **Block Creation**: " . number_format($metrics['block_creation'], 2) . "s\n";
-        $report .= "- **Theme Generation**: " . number_format($metrics['theme_generation'], 2) . "s\n";
-        $report .= "- **Deployment**: " . number_format($metrics['deployment'], 2) . "s\n";
-        $report .= "- **Total Time**: " . number_format($metrics['total_time'], 2) . "s\n\n";
-
-        return $report;
+        return [
+            'design_extraction' => $metrics['design_extraction'],
+            'css_generation' => $metrics['css_generation'],
+            'block_creation' => $metrics['block_creation'],
+            'theme_generation' => $metrics['theme_generation'],
+            'deployment' => $metrics['deployment'],
+            'total_time' => $metrics['total_time']
+        ];
     }
 }
 ```

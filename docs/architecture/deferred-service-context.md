@@ -161,7 +161,7 @@ namespace Jankx\Providers;
 use Illuminate\Container\Container;
 use Jankx\Context\ContextualServiceRegistry;
 
-class ContextualServiceProvider
+class CustomKernel extends \Jankx\Kernel\Kernel
 {
     private $container;
 
@@ -464,10 +464,6 @@ class AdminBootstrapper extends AbstractBootstrapper
 {
     public function bootstrap(Container $container): void
     {
-        // Register context-aware services
-        $contextProvider = new ContextualServiceProvider($container);
-        $contextProvider->register();
-
         // Setup deferred service resolver
         $container->singleton('deferred.resolver', DeferredServiceResolver::class);
 
@@ -865,7 +861,6 @@ namespace Jankx\Bootstrappers\Dashboard;
 use Illuminate\Container\Container;
 use Jankx\Bootstrappers\AbstractBootstrapper;
 use Jankx\Services\DeferredServiceResolver;
-use Jankx\Providers\ContextualServiceProvider;
 use Jankx\Context\ContextualServiceRegistry;
 
 class AdminBootstrapper extends AbstractBootstrapper
@@ -884,10 +879,6 @@ class AdminBootstrapper extends AbstractBootstrapper
 
     public function bootstrap(Container $container): void
     {
-        // Register context-aware services
-        $contextProvider = new ContextualServiceProvider($container);
-        $contextProvider->register();
-
         // Setup deferred service resolver
         $container->singleton('deferred.resolver', DeferredServiceResolver::class);
 

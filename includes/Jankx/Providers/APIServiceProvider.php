@@ -30,7 +30,7 @@ class APIServiceProvider extends ServiceProvider
         $this->singleton(\Jankx\Services\GutenbergBlocksService::class);
 
         // Dependencies for GutenbergBlocksService
-        $this->singleton(\Jankx\Adapters\WordPressAdapter::class);
+
         $this->singleton(\Jankx\Parsers\BlockParser::class);
 
         // Config Repository

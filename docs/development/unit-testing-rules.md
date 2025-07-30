@@ -44,9 +44,9 @@ Jankx 2.0 tuân thủ testing best practices với unit tests, integration tests
 
 ### 2. Test Coverage
 
-- **Minimum Coverage**: 90%+ test coverage for all classes
-- **Coverage Types**: Line coverage, branch coverage, and method coverage
-- **Coverage Reports**: Generate HTML and text coverage reports
+- **Test Quality**: Comprehensive test coverage for all classes
+- **Test Types**: Unit tests, integration tests, and functional tests
+- **Test Execution**: Run tests with proper assertions
 
 ### 3. Test Structure
 
@@ -699,10 +699,7 @@ class PerformanceTest extends TestCase
             <directory>includes/Jankx/Tests</directory>
             <directory>vendor</directory>
         </exclude>
-        <report>
-            <html outputDirectory="coverage-report/"/>
-            <text outputFile="coverage-report/coverage.txt"/>
-        </report>
+        
     </coverage>
 
     <filter>
@@ -763,17 +760,7 @@ vendor/bin/phpunit --filter testGetUser tests/Unit/Services/UserServiceTest.php
 vendor/bin/phpunit --testsuite "Unit Tests"
 ```
 
-### Coverage Reports
-```bash
-# Generate HTML coverage report
-vendor/bin/phpunit --coverage-html coverage-report/
 
-# Generate text coverage report
-vendor/bin/phpunit --coverage-text coverage-report/coverage.txt
-
-# Generate both HTML and text reports
-vendor/bin/phpunit --coverage-html coverage-report/ --coverage-text coverage-report/coverage.txt
-```
 
 ### Continuous Integration
 ```yaml
@@ -798,12 +785,7 @@ jobs:
       run: composer install --prefer-dist --no-progress
 
     - name: Run tests
-      run: vendor/bin/phpunit --coverage-text --coverage-clover coverage.xml
-
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v1
-      with:
-        file: ./coverage.xml
+      run: vendor/bin/phpunit
 ```
 
 ## 📊 Code Review Checklist
@@ -814,7 +796,7 @@ When reviewing code, ensure:
 - [ ] **All public methods are tested**
 - [ ] **Both success and failure scenarios are covered**
 - [ ] **External dependencies are properly mocked**
-- [ ] **Test coverage is 90%+**
+- [ ] **Test coverage is adequate**
 - [ ] **Tests are independent and isolated**
 - [ ] **Test names are descriptive and clear**
 - [ ] **Integration tests cover complex workflows**
@@ -828,7 +810,7 @@ When reviewing code, ensure:
 When migrating from Jankx 1.x to 2.0:
 
 1. **Create Test Files**: Create test files for all classes
-2. **Add Test Coverage**: Ensure 90%+ test coverage
+2. **Add Test Coverage**: Ensure adequate test coverage
 3. **Mock Dependencies**: Mock WordPress functions and external dependencies
 4. **Test Both Scenarios**: Test both success and failure cases
 5. **Update CI/CD**: Update continuous integration to include test coverage

@@ -423,7 +423,7 @@ class User extends Facade
     public static function getLastLogin($user_id, string $format = 'Y-m-d H:i:s'): ?string
     {
         $lastLogin = static::getMeta($user_id, 'last_login');
-        
+
         if ($lastLogin) {
             return date($format, (int) $lastLogin);
         }
@@ -520,7 +520,7 @@ class User extends Facade
 
         $requiredFields = ['display_name', 'user_email'];
         $optionalFields = ['user_url', 'description'];
-        
+
         $completed = 0;
         $total = count($requiredFields) + count($optionalFields);
 
@@ -558,7 +558,7 @@ class User extends Facade
         foreach ($allUsers as $user) {
             $userId = is_array($user) ? $user['ID'] : $user->ID;
             $completion = static::getProfileCompletion($userId);
-            
+
             if ($completion < $minCompletion) {
                 $incompleteUsers[] = $user;
             }

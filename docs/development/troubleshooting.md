@@ -286,13 +286,13 @@ class PerformanceProfiler
         ];
     }
 
-    public function getReport(): array
+    public function getTimers(): array
     {
-        $report = [];
+        $timers = [];
         foreach ($this->timers as $name => $startTime) {
-            $report[$name] = $this->end($name);
+            $timers[$name] = $this->end($name);
         }
-        return $report;
+        return $timers;
     }
 }
 ```

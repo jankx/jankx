@@ -141,7 +141,6 @@ class UserService
             }
 
             return $users;
-
         } catch (\Exception $e) {
             Logger::error('Failed to fetch users batch from database', [
                 'user_ids' => $user_ids,
@@ -216,7 +215,6 @@ class UserService
             }
 
             return $users;
-
         } catch (\Exception $e) {
             Logger::error('Failed to fetch users by role from database', [
                 'role' => $role,
@@ -275,7 +273,6 @@ class UserService
             }
 
             return $users;
-
         } catch (\Exception $e) {
             Logger::error('Failed to search users from database', [
                 'search_term' => $search_term,
@@ -488,7 +485,6 @@ class UserService
             }
 
             return $user;
-
         } catch (\Exception $e) {
             Logger::error('Failed to fetch user from database', [
                 'user_id' => $user_id,
@@ -517,31 +513,12 @@ class UserService
         }
 
         // Allow context-specific filtering
-        $context = $this->getCurrentContext();
+        $context = \Jankx\Facades\Kernel::getCurrentContext();
         $filteredData = \apply_filters("jankx/user/data_{$context}", $filteredData, $user_id, $fields);
 
         return $filteredData;
     }
 
-    /**
-     * Get current context
-     *
-     * @return string Current context
-     */
-    private function getCurrentContext(): string
-    {
-        if (is_admin()) {
-            return 'admin';
-        } elseif (wp_doing_ajax()) {
-            return 'ajax';
-        } elseif (wp_doing_cron()) {
-            return 'cron';
-        } elseif (defined('REST_REQUEST') && REST_REQUEST) {
-            return 'rest';
-        } else {
-            return 'frontend';
-        }
-    }
 
     /**
      * Sanitize fields array
@@ -551,7 +528,7 @@ class UserService
      */
     private function sanitizeFields(array $fields): array
     {
-        return array_filter($fields, function($field) {
+        return array_filter($fields, function ($field) {
             return is_string($field) && !empty($field);
         });
     }
@@ -602,4 +579,6 @@ class UserService
 /**
  * User Service Exception
  */
-class UserServiceException extends \Exception {}
+class UserServiceException extends \Exception
+{
+}

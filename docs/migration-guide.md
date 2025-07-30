@@ -1,890 +1,618 @@
-# Migration Guide - Jankx 1.x to 2.0
+# Migration Guide
 
-> **Hướng dẫn chuyển đổi từ Jankx 1.x lên Jankx 2.0**
+> **Jankx 1.x to 2.0 Migration Guide**
 
-## 🎯 Overview
-
-Jankx 2.0 là một bước nhảy vọt từ Jankx 1.x, chuyển từ template engine tùy chỉnh sang kiến trúc Gutenberg-first hiện đại. Migration này đòi hỏi việc chuyển đổi toàn diện từ hệ thống `views` sang hệ thống `templates` dựa trên Gutenberg blocks.
+Hướng dẫn migration từ Jankx 1.x lên Jankx 2.0 framework.
 
 ## 🚀 Quick Migration Checklist
 
 ### 1. **Pre-Migration Analysis**
-```bash
-# Kiểm tra Jankx 1.x installation
-wp theme list
-wp plugin list
+- [ ] Audit existing code for deprecated patterns
+- [ ] Identify WordPress function usage
+- [ ] Review service dependencies
+- [ ] Check configuration access patterns
 
-# Backup database
-wp db export backup.sql
+### 2. **Core Framework Changes**
+- [ ] Update to new bootstrapping system
+- [ ] Migrate to Config Facade
+- [ ] Remove WordPressAdapter usage
+- [ ] Update context detection
 
-# Backup Jankx 1.x theme files
-cp -r wp-content/themes/jankx-1x wp-content/themes/jankx-1x-backup
+### 3. **Service Layer Updates**
+- [ ] Convert to Service Provider pattern
+- [ ] Implement proper DI
+- [ ] Update error handling
+- [ ] Add structured logging
 
-# Analyze current template structure
-find wp-content/themes/jankx-1x/views -name "*.php" -type f
-```
+### 4. **Testing & Validation**
+- [ ] Update test suites
+- [ ] Verify WordPress integration
+- [ ] Test configuration loading
+- [ ] Validate debug system
 
-### 2. **Installation Steps**
-```bash
-# 1. Install Jankx 2.0
-wp theme install jankx-2.0 --activate
+## 🔄 Major Architectural Changes
 
-# 2. Install required plugins
-wp plugin install gutenberg --activate
-wp plugin install classic-editor --activate
+### **1. Configuration System**
 
-# 3. Verify installation
-wp theme status
-wp plugin status
-
-# 4. Check Gutenberg compatibility
-wp eval "echo 'Gutenberg version: ' . get_bloginfo('version');"
-```
-
-### 3. **Template System Migration**
-
-#### Migrate from Views to Templates
+#### **Old Pattern (1.x)**
 ```php
-// Jankx 1.x Template System (views/)
-class ViewsMigrator
-{
-    public function migrateViewsToTemplates()
-    {
-        $views = $this->getAllViews();
+// ❌ OLD - Direct config access
+$config = $this->config['app']['providers'];
+$debugMode = $this->config['debug'] ?? false;
 
-        foreach ($views as $view) {
-            $template = $this->convertViewToTemplate($view);
-            $this->saveTemplate($template);
-        }
-    }
-
-    private function convertViewToTemplate($viewPath)
-    {
-        $viewContent = file_get_contents($viewPath);
-
-        // Convert PHP template to HTML template
-        $templateContent = $this->convertPHPToHTML($viewContent);
-
-        return $templateContent;
-    }
-
-    private function convertPHPToHTML($phpContent)
-    {
-        // Convert PHP variables to Gutenberg blocks
-        $htmlContent = preg_replace(
-            '/<\?php echo \$(\w+); \?>/',
-            '<!-- wp:jankx/dynamic-content {"field":"$1"} /-->',
-            $phpContent
-        );
-
-        // Convert PHP loops to Gutenberg query blocks
-        $htmlContent = preg_replace(
-            '/<\?php foreach \(\$(\w+) as \$(\w+)\): \?>(.*?)<\?php endforeach; \?>/s',
-            '<!-- wp:query {"queryId":1,"query":{"postType":"post"}} --><div class="wp-block-query">$3</div><!-- /wp:query -->',
-            $htmlContent
-        );
-
-        // Convert PHP conditionals to Gutenberg conditional blocks
-        $htmlContent = preg_replace(
-            '/<\?php if \(\$(\w+)\): \?>(.*?)<\?php endif; \?>/s',
-            '<!-- wp:jankx/conditional {"condition":"$1"} -->$2<!-- /wp:jankx/conditional -->',
-            $htmlContent
-        );
-
-        return $htmlContent;
-    }
-}
-
-// Template Mapping Examples
-$templateMapping = [
-    // Layout templates
-    'views/layouts/main.php' => 'templates/layouts/main.html',
-    'views/layouts/sidebar.php' => 'templates/layouts/sidebar.html',
-
-    // Page templates
-    'views/pages/home.php' => 'templates/front-page.html',
-    'views/pages/archive.php' => 'templates/archive.html',
-    'views/pages/single.php' => 'templates/single.html',
-
-    // Partial templates
-    'views/partials/header.php' => 'templates/parts/header.html',
-    'views/partials/footer.php' => 'templates/parts/footer.html',
-    'views/partials/sidebar.php' => 'templates/parts/sidebar.html',
-
-    // Component templates
-    'views/components/post-item.php' => 'templates/blocks/post-item.html',
-    'views/components/testimonial.php' => 'templates/blocks/testimonial.html'
-];
+// ❌ OLD - ConfigManager usage
+$configManager = new ConfigManager();
+$value = $configManager->get('app.providers');
 ```
 
-#### Convert PHP Templates to HTML Templates
+#### **New Pattern (2.0)**
 ```php
-// Jankx 1.x PHP Template (views/layouts/main.php)
-<?php
-/**
- * Main layout template
- */
-?>
-<!DOCTYPE html>
-<html <?php language_attributes(); ?>>
-<head>
-    <meta charset="<?php bloginfo('charset'); ?>">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <?php wp_head(); ?>
-</head>
-<body <?php body_class(); ?>>
-    <header>
-        <?php jankx_template('partials/header', ['site_title' => get_bloginfo('name')]); ?>
-    </header>
+// ✅ NEW - Config Facade
+$providers = \Jankx\Facades\Config::get('app.providers.frontend', []);
+$debugMode = \Jankx\Facades\Config::get('app.debug', false);
 
-    <main>
-        <?php echo $content; ?>
-    </main>
-
-    <footer>
-        <?php jankx_template('partials/footer'); ?>
-    </footer>
-
-    <?php wp_footer(); ?>
-</body>
-</html>
-
-// Jankx 2.0 HTML Template (templates/layouts/main.html)
-<!DOCTYPE html>
-<html <?php echo get_language_attributes(); ?>>
-<head>
-    <meta charset="<?php bloginfo('charset'); ?>">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <?php wp_head(); ?>
-</head>
-<body <?php body_class(); ?>>
-    <!-- wp:template-part {"slug":"header","tagName":"header"} /-->
-
-    <!-- wp:group {"tagName":"main","layout":{"type":"constrained"}} -->
-    <main class="wp-block-group">
-        <!-- wp:post-content /-->
-    </main>
-    <!-- /wp:group -->
-
-    <!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->
-
-    <?php wp_footer(); ?>
-</body>
-</html>
+// ✅ NEW - Repository pattern
+$allConfig = \Jankx\Facades\Config::all();
+\Jankx\Facades\Config::set('custom.key', 'value');
 ```
 
-#### Migrate Template Functions
+### **2. WordPress Integration**
+
+#### **Old Pattern (1.x)**
 ```php
-// Jankx 1.x Template Functions
-class Jankx1xTemplateFunctions
+// ❌ OLD - WordPressAdapter dependency injection
+class GutenbergBlocksService
 {
-    public function renderTemplate($template, $data = [])
+    private $wordPressAdapter;
+
+    public function __construct(WordPressAdapter $adapter)
     {
-        extract($data);
-        include get_template_directory() . "/views/{$template}.php";
+        $this->wordPressAdapter = $adapter;
     }
 
-    public function getTemplatePath($template)
+    public function getBlocksInfo(): array
     {
-        return get_template_directory() . "/views/{$template}.php";
-    }
-}
-
-// Jankx 2.0 Template Functions
-class Jankx2xTemplateFunctions
-{
-    public function renderTemplate($template, $data = [])
-    {
-        // Use WordPress template hierarchy
-        get_template_part("templates/{$template}");
-    }
-
-    public function getTemplatePath($template)
-    {
-        return get_template_directory() . "/templates/{$template}.html";
+        $content = $this->wordPressAdapter->getCurrentContent();
+        return $this->wordPressAdapter->hasBlocks($content) ? [] : [];
     }
 }
 ```
 
-### 4. **Content Migration**
-
-#### Migrate Posts & Pages
+#### **New Pattern (2.0)**
 ```php
-// functions.php - Migration helper
-class ContentMigrator
+// ✅ NEW - Direct WordPress function calls
+class GutenbergBlocksService
 {
-    public function migrateContent()
+    public function getBlocksInfo(): array
     {
-        // Migrate posts
-        $this->migratePosts();
-
-        // Migrate pages
-        $this->migratePages();
-
-        // Migrate menus
-        $this->migrateMenus();
-
-        // Migrate widgets
-        $this->migrateWidgets();
+        $content = \get_the_content() ?: '';
+        return \has_blocks($content) ? $this->parseBlocks($content) : [];
     }
 
-    private function migratePosts()
+    private function isBlockEditor(): bool
     {
-        $posts = get_posts([
-            'numberposts' => -1,
-            'post_type' => 'post'
+        return \is_admin() && \get_current_screen() && \get_current_screen()->is_block_editor;
+    }
+}
+```
+
+### **3. Context Detection**
+
+#### **Old Pattern (1.x)**
+```php
+// ❌ OLD - Multiple context detection methods
+class DeferredServiceResolver
+{
+    private function getCurrentContext(): string
+    {
+        if (defined('WP_CLI') && WP_CLI) return 'cli';
+        if (wp_doing_ajax()) return 'ajax';
+        if (is_admin()) return 'admin';
+        return 'frontend';
+    }
+}
+
+class UserService
+{
+    private function getCurrentContext(): string
+    {
+        // Duplicate logic
+        if (defined('WP_CLI') && WP_CLI) return 'cli';
+        if (wp_doing_ajax()) return 'ajax';
+        if (is_admin()) return 'admin';
+        return 'frontend';
+    }
+}
+```
+
+#### **New Pattern (2.0)**
+```php
+// ✅ NEW - Centralized via Kernel Facade
+class DeferredServiceResolver
+{
+    public function resolve($serviceName)
+    {
+        $context = \Jankx\Facades\Kernel::getCurrentContext();
+        // ... rest of logic
+    }
+}
+
+class UserService
+{
+    public function getUserData()
+    {
+        $context = \Jankx\Facades\Kernel::getCurrentContext();
+        // ... context-specific logic
+    }
+}
+```
+
+### **4. Service Registration**
+
+#### **Old Pattern (1.x)**
+```php
+// ❌ OLD - Direct service registration in Kernel
+class FrontendKernel extends Kernel
+{
+    protected function registerServices(): void
+    {
+        $this->addService('user.service', [
+            'class' => UserService::class,
+            'params' => []
         ]);
 
-        foreach ($posts as $post) {
-            // Convert old shortcodes to blocks
-            $content = $this->convertShortcodesToBlocks($post->post_content);
-
-            wp_update_post([
-                'ID' => $post->ID,
-                'post_content' => $content
-            ]);
-        }
-    }
-
-    private function convertShortcodesToBlocks($content)
-    {
-        // Convert Jankx 1.x shortcodes to Gutenberg blocks
-
-        // Convert [testimonial] to Gutenberg block
-        $content = preg_replace(
-            '/\[testimonial\s+author="([^"]+)"\](.*?)\[\/testimonial\]/s',
-            '<!-- wp:jankx/testimonial {"author":"$1"} --><div class="wp-block-jankx-testimonial">$2</div><!-- /wp:jankx/testimonial -->',
-            $content
-        );
-
-        // Convert [post-grid] to Gutenberg query block
-        $content = preg_replace(
-            '/\[post-grid\s+posts_per_page="(\d+)"\s+category="([^"]+)"\]/',
-            '<!-- wp:query {"queryId":1,"query":{"perPage":$1,"categories":["$2"],"postType":"post"}} --><div class="wp-block-query"><!-- wp:post-template --><!-- wp:post-title /--><!-- wp:post-excerpt /--><!-- /wp:post-template --></div><!-- /wp:query -->',
-            $content
-        );
-
-        // Convert [hero-section] to Gutenberg hero block
-        $content = preg_replace(
-            '/\[hero-section\s+title="([^"]+)"\s+subtitle="([^"]+)"\]/',
-            '<!-- wp:jankx/hero-section {"title":"$1","subtitle":"$2"} --><div class="wp-block-jankx-hero-section"></div><!-- /wp:jankx/hero-section -->',
-            $content
-        );
-
-        // Convert [contact-form] to Gutenberg form block
-        $content = preg_replace(
-            '/\[contact-form\s+title="([^"]+)"\]/',
-            '<!-- wp:jankx/contact-form {"title":"$1"} --><div class="wp-block-jankx-contact-form"></div><!-- /wp:jankx/contact-form -->',
-            $content
-        );
-
-        return $content;
+        $this->addService('debug.info', [
+            'class' => DebugInfo::class,
+            'params' => []
+        ]);
     }
 }
 ```
 
-#### Migrate Custom Fields
+#### **New Pattern (2.0)**
 ```php
-// Migrate ACF fields to Gutenberg blocks
-class ACFMigrator
+// ✅ NEW - Service Provider pattern
+class FrontendServiceProvider extends ServiceProvider
 {
-    public function migrateACFFields()
+    public function register(): void
     {
-        if (!function_exists('get_field_objects')) {
+        $this->singleton('user.service', UserService::class);
+        $this->singleton(DebugInfo::class);
+    }
+
+    public function boot(): void
+    {
+        // Boot logic if needed
+    }
+}
+
+// Kernel only registers Service Providers
+class FrontendKernel extends Kernel
+{
+    protected function registerServices(): void
+    {
+        parent::registerServices(); // Loads from Config
+    }
+}
+```
+
+### **5. Error Handling**
+
+#### **Old Pattern (1.x)**
+```php
+// ❌ OLD - Basic error handling
+public function loadService(string $serviceClass): void
+{
+    $service = new $serviceClass($this->container);
+    $service->register();
+}
+```
+
+#### **New Pattern (2.0)**
+```php
+// ✅ NEW - Comprehensive error handling
+public function loadService(string $serviceClass): void
+{
+    try {
+        if (!class_exists($serviceClass)) {
+            throw new \InvalidArgumentException("Service {$serviceClass} does not exist");
+        }
+
+        $reflection = new \ReflectionClass($serviceClass);
+        if ($reflection->isAbstract()) {
+            Logger::warning("Service Provider {$serviceClass} is abstract and cannot be instantiated");
             return;
         }
 
-        $posts = get_posts(['numberposts' => -1]);
+        $service = new $serviceClass($this->container);
+        $service->register();
+        $service->boot();
 
-        foreach ($posts as $post) {
-            $fields = get_field_objects($post->ID);
-
-            if ($fields) {
-                $blocks = $this->convertACFToBlocks($fields);
-                $this->updatePostBlocks($post->ID, $blocks);
-            }
-        }
-    }
-
-    private function convertACFToBlocks($fields)
-    {
-        $blocks = [];
-
-        foreach ($fields as $field) {
-            switch ($field['type']) {
-                case 'text':
-                    $blocks[] = $this->createTextBlock($field);
-                    break;
-                case 'image':
-                    $blocks[] = $this->createImageBlock($field);
-                    break;
-                case 'wysiwyg':
-                    $blocks[] = $this->createParagraphBlock($field);
-                    break;
-            }
-        }
-
-        return $blocks;
+        Logger::debug('providerLoaded', [
+            'provider' => $serviceClass,
+            'status' => 'success'
+        ]);
+    } catch (\Exception $e) {
+        Logger::error("Failed to load service {$serviceClass}: " . $e->getMessage());
     }
 }
 ```
 
-### 4. **Theme Customization Migration**
+## 📋 Step-by-Step Migration
 
-#### Migrate Custom CSS
-```css
-/* old-theme-style.css → assets/css/custom.css */
-.old-header {
-    /* Convert to Jankx CSS variables */
-    background-color: var(--color-primary);
-    padding: var(--spacing-lg);
-}
+### **Step 1: Update Configuration Access**
 
-.old-navigation {
-    /* Convert to Jankx navigation styles */
-    font-family: var(--font-family-primary);
-    font-size: var(--font-size-base);
-}
-```
-
-#### Migrate Custom Functions
+#### **Before (1.x)**
 ```php
-// functions.php - Migrate custom functions
-class FunctionMigrator
-{
-    public function migrateCustomFunctions()
-    {
-        // Old: function custom_post_query() { ... }
-        // New: Use Jankx Query Service
-        $this->migrateCustomQueries();
-
-        // Old: function custom_shortcode() { ... }
-        // New: Use Gutenberg blocks
-        $this->migrateShortcodes();
-
-        // Old: function custom_hook() { ... }
-        // New: Use Jankx Hook System
-        $this->migrateHooks();
-    }
-
-    private function migrateCustomQueries()
-    {
-        // Jankx 1.x - Procedural approach
-        // function get_featured_posts() {
-        //     return get_posts(['meta_key' => 'featured', 'meta_value' => '1']);
-        // }
-
-        // Jankx 2.0 - Service-based approach
-        class FeaturedPostsService
-        {
-            private $queryService;
-            private $cacheService;
-
-            public function __construct(QueryService $queryService, CacheService $cacheService)
-            {
-                $this->queryService = $queryService;
-                $this->cacheService = $cacheService;
-            }
-
-            public function getFeaturedPosts(): array
-            {
-                $cacheKey = 'featured_posts';
-
-                return $this->cacheService->remember($cacheKey, function() {
-                    return $this->queryService->getPosts([
-                        'meta_query' => [
-                            ['key' => 'featured', 'value' => '1']
-                        ],
-                        'posts_per_page' => 6,
-                        'orderby' => 'date',
-                        'order' => 'DESC'
-                    ]);
-                }, 3600); // Cache for 1 hour
-            }
-        }
-    }
-
-    private function migrateCustomHooks()
-    {
-        // Jankx 1.x - Direct hook usage
-        // add_action('wp_head', 'custom_meta_tags');
-        // add_filter('the_content', 'custom_content_filter');
-
-        // Jankx 2.0 - Event-driven approach
-        class CustomEventHandlers
-        {
-            public function handleMetaTags(Event $event)
-            {
-                $metaTags = [
-                    'og:title' => get_the_title(),
-                    'og:description' => get_the_excerpt(),
-                    'og:image' => get_the_post_thumbnail_url()
-                ];
-
-                foreach ($metaTags as $property => $content) {
-                    echo "<meta property=\"{$property}\" content=\"{$content}\">\n";
-                }
-            }
-
-            public function handleContentFilter(Event $event)
-            {
-                $content = $event->getData('content');
-
-                // Apply content filters using Jankx 2.0 services
-                $content = $this->contentService->process($content);
-
-                $event->setData('content', $content);
-            }
-        }
-    }
-}
-```
-
-### 5. **Plugin Compatibility**
-
-#### Check Plugin Compatibility
-```php
-// Check if plugins work with Jankx
-class PluginCompatibilityChecker
-{
-    private $incompatiblePlugins = [
-        'old-page-builder',
-        'deprecated-shortcode-plugin',
-        'incompatible-theme-plugin'
-    ];
-
-    public function checkCompatibility()
-    {
-        $activePlugins = get_option('active_plugins');
-
-        foreach ($activePlugins as $plugin) {
-            if (in_array($plugin, $this->incompatiblePlugins)) {
-                $this->deactivatePlugin($plugin);
-                $this->notifyIncompatiblePlugin($plugin);
-            }
-        }
-    }
-
-    public function findAlternatives($plugin)
-    {
-        $alternatives = [
-            'old-page-builder' => 'Use Gutenberg blocks',
-            'deprecated-shortcode-plugin' => 'Use Jankx blocks',
-            'incompatible-theme-plugin' => 'Use Jankx theme features'
-        ];
-
-        return $alternatives[$plugin] ?? 'Check Jankx documentation';
-    }
-}
-```
-
-### 6. **Asset Management Migration**
-
-#### Migrate from Old Asset System to Modern Pipeline
-```php
-// Jankx 1.x Asset Management
-class Jankx1xAssetManager
-{
-    public function enqueueAssets()
-    {
-        // Old way - Direct enqueue
-        wp_enqueue_style('jankx-style', get_template_directory_uri() . '/style.css');
-        wp_enqueue_script('jankx-script', get_template_directory_uri() . '/assets/js/main.js', ['jquery']);
-    }
-}
-
-// Jankx 2.0 Asset Management
-class Jankx2xAssetManager
-{
-    private $assetService;
-    private $performanceService;
-
-    public function __construct(AssetService $assetService, PerformanceService $performanceService)
-    {
-        $this->assetService = $assetService;
-        $this->performanceService = $performanceService;
-    }
-
-    public function enqueueAssets()
-    {
-        // Modern asset pipeline with optimization
-        $this->assetService->enqueueCriticalCSS();
-        $this->assetService->enqueueDeferredCSS();
-        $this->assetService->enqueueDeferredJS();
-
-        // Performance optimizations
-        $this->performanceService->enableLazyLoading();
-        $this->performanceService->enableResourceHints();
-    }
-}
-
-// Asset Migration Examples
-$assetMigration = [
-    // CSS files
-    'style.css' => 'assets/css/main.css',
-    'assets/css/layout.css' => 'assets/css/layout-options.css',
-    'assets/css/components.css' => 'assets/css/layout-themes.css',
-
-    // JavaScript files
-    'assets/js/main.js' => 'assets/js/layout-options.js',
-    'assets/js/components.js' => 'assets/js/partial-hydration.js',
-
-    // Gutenberg assets
-    'assets/gutenberg/editor.css' => 'assets/gutenberg/css/editor.css',
-    'assets/gutenberg/frontend.css' => 'assets/gutenberg/css/frontend.css'
+// functions.php
+$config = [
+    'app' => [
+        'providers' => [
+            'frontend' => [
+                'FrontendServiceProvider',
+                'DebugServiceProvider'
+            ]
+        ]
+    ]
 ];
 ```
 
-#### Webpack Configuration Migration
-```javascript
-// Jankx 1.x - Basic webpack config
-module.exports = {
-    entry: './assets/js/main.js',
-    output: {
-        path: path.resolve(__dirname, 'dist'),
-        filename: 'bundle.js'
+#### **After (2.0)**
+```php
+// config/app.php
+return [
+    'providers' => [
+        'frontend' => [
+            'Jankx\Providers\FrontendServiceProvider',
+            'Jankx\Providers\DebugServiceProvider',
+        ],
+    ],
+];
+```
+
+### **Step 2: Remove WordPressAdapter Dependencies**
+
+#### **Before (1.x)**
+```php
+// Service Provider
+class FrontendServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+        $this->singleton(WordPressAdapter::class);
+        $this->singleton(GutenbergBlocksService::class);
     }
-};
+}
 
-// Jankx 2.0 - Modern webpack config with optimization
-const path = require('path');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
+// Service
+class GutenbergBlocksService
+{
+    private $wordPressAdapter;
 
-module.exports = {
-    entry: {
-        main: './assets/js/layout-options.js',
-        gutenberg: './assets/gutenberg/js/editor.js',
-        partialHydration: './assets/js/partial-hydration.js'
-    },
-    output: {
-        path: path.resolve(__dirname, 'dist'),
-        filename: '[name].[contenthash].js',
-        clean: true
-    },
-    optimization: {
-        minimize: true,
-        minimizer: [new TerserPlugin()],
-        splitChunks: {
-            chunks: 'all',
-            cacheGroups: {
-                vendor: {
-                    test: /[\\/]node_modules[\\/]/,
-                    name: 'vendors',
-                    chunks: 'all'
+    public function __construct(WordPressAdapter $adapter)
+    {
+        $this->wordPressAdapter = $adapter;
+    }
+}
+```
+
+#### **After (2.0)**
+```php
+// Service Provider
+class FrontendServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+        $this->singleton(GutenbergBlocksService::class);
+    }
+}
+
+// Service
+class GutenbergBlocksService
+{
+    public function getBlocksInfo(): array
+    {
+        $content = \get_the_content() ?: '';
+        return \has_blocks($content) ? $this->parseBlocks($content) : [];
+    }
+}
+```
+
+### **Step 3: Update Context Detection**
+
+#### **Before (1.x)**
+```php
+// Multiple classes with duplicate logic
+class ServiceA
+{
+    private function getCurrentContext(): string
+    {
+        if (defined('WP_CLI') && WP_CLI) return 'cli';
+        if (wp_doing_ajax()) return 'ajax';
+        if (is_admin()) return 'admin';
+        return 'frontend';
+    }
+}
+
+class ServiceB
+{
+    private function getCurrentContext(): string
+    {
+        // Same logic duplicated
+        if (defined('WP_CLI') && WP_CLI) return 'cli';
+        if (wp_doing_ajax()) return 'ajax';
+        if (is_admin()) return 'admin';
+        return 'frontend';
+    }
+}
+```
+
+#### **After (2.0)**
+```php
+// Centralized context detection
+class ServiceA
+{
+    public function doSomething()
+    {
+        $context = \Jankx\Facades\Kernel::getCurrentContext();
+        // Use context
+    }
+}
+
+class ServiceB
+{
+    public function doSomething()
+    {
+        $context = \Jankx\Facades\Kernel::getCurrentContext();
+        // Use context
+    }
+}
+```
+
+### **Step 4: Update Error Handling**
+
+#### **Before (1.x)**
+```php
+// Basic error handling
+public function loadServices(): void
+{
+    foreach ($this->serviceProviders as $providerClass) {
+        $provider = new $providerClass($this->container);
+        $provider->register();
+        $provider->boot();
+    }
+}
+```
+
+#### **After (2.0)**
+```php
+// Comprehensive error handling
+public function loadServices(): void
+{
+    foreach ($this->getServiceProviders() as $providerClass) {
+        Logger::debug('loadingProvider', ['provider' => $providerClass]);
+
+        if (class_exists($providerClass)) {
+            try {
+                $reflection = new \ReflectionClass($providerClass);
+                if ($reflection->isAbstract()) {
+                    Logger::warning("Service Provider {$providerClass} is abstract");
+                    continue;
                 }
+
+                $provider = new $providerClass($this->container);
+                $provider->register();
+                $provider->boot();
+
+                Logger::debug('providerLoaded', [
+                    'provider' => $providerClass,
+                    'status' => 'success'
+                ]);
+            } catch (\Exception $e) {
+                Logger::error("Failed to load service {$providerClass}: " . $e->getMessage());
             }
-        }
-    },
-    plugins: [
-        new MiniCssExtractPlugin({
-            filename: '[name].[contenthash].css'
-        })
-    ]
-};
-```
-
-### 7. **Performance Optimization**
-
-#### Optimize Images
-```php
-// Migrate and optimize images
-class ImageOptimizer
-{
-    public function optimizeImages()
-    {
-        $images = $this->getAllImages();
-
-        foreach ($images as $image) {
-            // Generate WebP versions
-            $this->generateWebP($image);
-
-            // Generate responsive sizes
-            $this->generateResponsiveSizes($image);
-
-            // Update image references
-            $this->updateImageReferences($image);
-        }
-    }
-
-    private function generateWebP($imagePath)
-    {
-        $webpPath = str_replace(['.jpg', '.png'], '.webp', $imagePath);
-
-        if (!file_exists($webpPath)) {
-            // Convert to WebP
-            $image = imagecreatefromstring(file_get_contents($imagePath));
-            imagewebp($image, $webpPath, 85);
-            imagedestroy($image);
+        } else {
+            Logger::error("Service Provider {$providerClass} does not exist");
         }
     }
 }
 ```
 
-### 8. **Testing & Validation**
+## 🧪 Testing Migration
 
-#### Migration Testing
+### **1. Update Test Suites**
+
+#### **Before (1.x)**
 ```php
-// Test migration results
-class MigrationTester
+class GutenbergBlocksServiceTest extends TestCase
 {
-    public function testMigration()
+    public function testGetBlocksInfo()
     {
-        $tests = [
-            'testTemplateMigration' => $this->testTemplateMigration(),
-            'testPostsMigrated' => $this->testPostsMigrated(),
-            'testPagesMigrated' => $this->testPagesMigrated(),
-            'testMenusMigrated' => $this->testMenusMigrated(),
-            'testBlocksWorking' => $this->testBlocksWorking(),
-            'testAssetMigration' => $this->testAssetMigration(),
-            'testPerformance' => $this->testPerformance(),
-        ];
+        $adapter = $this->createMock(WordPressAdapter::class);
+        $adapter->method('getCurrentContent')->willReturn('<!-- wp:paragraph -->');
+        $adapter->method('hasBlocks')->willReturn(true);
 
-        foreach ($tests as $test => $result) {
-            if (!$result) {
-                $this->logTestFailure($test);
-            }
-        }
-    }
+        $service = new GutenbergBlocksService($adapter);
+        $result = $service->getBlocksInfo();
 
-    private function testTemplateMigration()
-    {
-        // Test if all views were converted to templates
-        $views = glob(get_template_directory() . '/views/**/*.php');
-        $templates = glob(get_template_directory() . '/templates/**/*.html');
-
-        return count($views) === 0 && count($templates) > 0;
-    }
-
-    private function testAssetMigration()
-    {
-        // Test if assets are properly migrated
-        $oldAssets = [
-            'style.css',
-            'assets/js/main.js',
-            'assets/css/layout.css'
-        ];
-
-        $newAssets = [
-            'assets/css/layout-options.css',
-            'assets/js/layout-options.js',
-            'assets/gutenberg/css/editor.css'
-        ];
-
-        foreach ($oldAssets as $asset) {
-            if (file_exists(get_template_directory() . '/' . $asset)) {
-                return false; // Old assets should not exist
-            }
-        }
-
-        foreach ($newAssets as $asset) {
-            if (!file_exists(get_template_directory() . '/' . $asset)) {
-                return false; // New assets should exist
-            }
-        }
-
-        return true;
-    }
-
-    private function testPerformance()
-    {
-        // Test Core Web Vitals
-        $lcp = $this->measureLCP();
-        $fid = $this->measureFID();
-        $cls = $this->measureCLS();
-
-        return $lcp < 2.5 && $fid < 100 && $cls < 0.1;
+        $this->assertNotEmpty($result);
     }
 }
 ```
 
-#### Migration Troubleshooting
+#### **After (2.0)**
 ```php
-// Common migration issues and solutions
-class MigrationTroubleshooter
+class GutenbergBlocksServiceTest extends TestCase
 {
-    public function diagnoseIssues()
+    public function testGetBlocksInfo()
     {
-        $issues = [];
-
-        // Check template conversion
-        if ($this->hasUnconvertedTemplates()) {
-            $issues[] = 'Unconverted templates found';
-        }
-
-        // Check shortcode conversion
-        if ($this->hasUnconvertedShortcodes()) {
-            $issues[] = 'Unconverted shortcodes found';
-        }
-
-        // Check asset migration
-        if ($this->hasMissingAssets()) {
-            $issues[] = 'Missing assets after migration';
-        }
-
-        return $issues;
-    }
-
-    public function fixCommonIssues()
-    {
-        // Fix template conversion issues
-        $this->fixTemplateConversion();
-
-        // Fix shortcode conversion issues
-        $this->fixShortcodeConversion();
-
-        // Fix asset migration issues
-        $this->fixAssetMigration();
-    }
-
-    private function fixTemplateConversion()
-    {
-        // Convert remaining PHP templates to HTML
-        $phpTemplates = glob(get_template_directory() . '/views/**/*.php');
-
-        foreach ($phpTemplates as $template) {
-            $htmlTemplate = str_replace('.php', '.html', $template);
-            $htmlTemplate = str_replace('/views/', '/templates/', $htmlTemplate);
-
-            $content = file_get_contents($template);
-            $htmlContent = $this->convertPHPToHTML($content);
-
-            file_put_contents($htmlTemplate, $htmlContent);
-        }
-    }
-}
-```
-
-## 🔧 Common Migration Issues
-
-### Issue 1: Shortcodes Not Working
-```php
-// Solution: Convert shortcodes to blocks
-add_filter('the_content', function($content) {
-    // Convert [testimonial] to block
-    $content = preg_replace(
-        '/\[testimonial\](.*?)\[\/testimonial\]/s',
-        '<!-- wp:jankx/testimonial --><div class="wp-block-jankx-testimonial">$1</div><!-- /wp:jankx/testimonial -->',
-        $content
-    );
-
-    return $content;
-});
-```
-
-### Issue 2: Custom Fields Missing
-```php
-// Solution: Use Jankx Meta Service
-class MetaMigrator
-{
-    public function migrateCustomFields()
-    {
-        global $wpdb;
-
-        $customFields = $wpdb->get_results("
-            SELECT post_id, meta_key, meta_value
-            FROM {$wpdb->postmeta}
-            WHERE meta_key LIKE 'custom_%'
-        ");
-
-        foreach ($customFields as $field) {
-            // Convert to Jankx meta format
-            $this->convertToJankxMeta($field);
-        }
-    }
-}
-```
-
-### Issue 3: Performance Issues
-```php
-// Solution: Enable Jankx optimizations
-class PerformanceOptimizer
-{
-    public function enableOptimizations()
-    {
-        // Enable lazy loading
-        add_filter('wp_get_attachment_image_attributes', function($attr) {
-            $attr['loading'] = 'lazy';
-            return $attr;
+        // Mock WordPress functions
+        $this->mockFunction('get_the_content', function() {
+            return '<!-- wp:paragraph -->';
         });
 
-        // Enable critical CSS
-        add_action('wp_head', function() {
-            echo '<style>' . $this->getCriticalCSS() . '</style>';
+        $this->mockFunction('has_blocks', function($content) {
+            return strpos($content, '<!-- wp:') !== false;
         });
 
-        // Enable asset optimization
-        add_filter('script_loader_tag', function($tag, $handle) {
-            if (strpos($handle, 'jankx-') === 0) {
-                return str_replace('<script ', '<script defer ', $tag);
-            }
-            return $tag;
-        }, 10, 2);
+        $service = new GutenbergBlocksService();
+        $result = $service->getBlocksInfo();
+
+        $this->assertNotEmpty($result);
     }
 }
 ```
 
-## 📊 Migration Checklist - Jankx 1.x to 2.0
+### **2. Update Integration Tests**
 
-### ✅ Pre-Migration Analysis
-- [ ] Backup Jankx 1.x database
-- [ ] Backup Jankx 1.x theme files
-- [ ] Document current template structure (`views/` directory)
-- [ ] List all custom shortcodes and functions
-- [ ] Document current asset structure
-- [ ] Test migration in staging environment
+#### **Before (1.x)**
+```php
+class WordPressIntegrationTest extends TestCase
+{
+    public function testWordPressAdapterIntegration()
+    {
+        $adapter = new WordPressAdapter();
+        $service = new GutenbergBlocksService($adapter);
 
-### ✅ Template System Migration
-- [ ] Convert `views/` templates to `templates/` HTML files
-- [ ] Migrate PHP templates to Gutenberg blocks
-- [ ] Convert template functions to service-based architecture
-- [ ] Update template hierarchy
-- [ ] Test template rendering
+        $this->assertInstanceOf(GutenbergBlocksService::class, $service);
+    }
+}
+```
 
-### ✅ Content Migration
-- [ ] Migrate posts and pages
-- [ ] Convert Jankx 1.x shortcodes to Gutenberg blocks
-- [ ] Migrate custom fields to block attributes
-- [ ] Update image references for optimization
-- [ ] Test content display in new system
+#### **After (2.0)**
+```php
+class WordPressIntegrationTest extends TestCase
+{
+    public function testDirectWordPressFunctionCalls()
+    {
+        $service = new GutenbergBlocksService();
 
-### ✅ Asset Management Migration
-- [ ] Migrate CSS files to new structure
-- [ ] Update JavaScript files for modern pipeline
-- [ ] Configure webpack for optimization
-- [ ] Set up critical CSS delivery
-- [ ] Test asset loading and performance
+        // Test actual WordPress function calls
+        $content = \get_the_content() ?: '';
+        $hasBlocks = \has_blocks($content);
 
-### ✅ Customization Migration
-- [ ] Convert custom CSS to CSS variables
-- [ ] Migrate custom functions to services
-- [ ] Update theme customizations for Gutenberg
-- [ ] Test custom features in new architecture
+        $this->assertIsString($content);
+        $this->assertIsBool($hasBlocks);
+    }
+}
+```
 
-### ✅ Post-Migration Validation
-- [ ] Test all functionality
-- [ ] Verify Core Web Vitals performance
-- [ ] Update SEO settings for new structure
-- [ ] Test mobile responsiveness
-- [ ] Verify security and compatibility
-- [ ] Run performance optimization
+## 🚨 Breaking Changes
 
-## 🚀 Quick Start Commands
+### **1. Removed Classes**
+- `WordPressAdapter` - Use direct WordPress function calls
+- `ConfigManager` - Use Config Facade
+- `ContextualServiceRegistry` - Use Kernel Facade
 
+### **2. Changed Method Signatures**
+- `Kernel::registerServices()` - Now loads from Config
+- `ServiceProvider::register()` - Must return void
+- `Bootstrapper::bootstrap()` - Must accept Container parameter
+
+### **3. New Requirements**
+- All services must be registered via Service Providers
+- Configuration must be accessed via Config Facade
+- Context detection must use Kernel Facade
+- Error handling must include structured logging
+
+## 🔧 Migration Tools
+
+### **1. Automated Migration Script**
 ```bash
-# 1. Install Jankx
-wp theme install jankx --activate
+# Run migration analysis
+php bin/migrate-analyze.php
 
-# 2. Run migration
-wp eval-file migration-script.php
-
-# 3. Test migration
-wp eval-file test-migration.php
-
-# 4. Optimize performance
-wp eval-file optimize-performance.php
+# Apply automated fixes
+php bin/migrate-apply.php
 ```
+
+### **2. Manual Migration Checklist**
+- [ ] Replace `WordPressAdapter` usage with direct function calls
+- [ ] Update configuration access to use Config Facade
+- [ ] Replace context detection with Kernel Facade
+- [ ] Convert direct service registration to Service Providers
+- [ ] Add comprehensive error handling
+- [ ] Update test suites
+- [ ] Verify WordPress integration
+
+## 📊 Migration Metrics
+
+### **Success Criteria**
+- [ ] All WordPressAdapter dependencies removed
+- [ ] Config Facade used for all configuration access
+- [ ] Kernel Facade used for context detection
+- [ ] Service Providers implemented for all services
+- [ ] Error handling includes structured logging
+- [ ] Test coverage > 80%
+- [ ] No deprecated patterns remain
+
+### **Performance Impact**
+- **Memory Usage**: Reduced (no adapter overhead)
+- **Execution Time**: Improved (direct function calls)
+- **Code Complexity**: Reduced (fewer abstractions)
+
+## 🆘 Troubleshooting
+
+### **Common Migration Issues**
+
+#### **1. "Class WordPressAdapter not found"**
+```php
+// ❌ Problem
+class MyService
+{
+    public function __construct(WordPressAdapter $adapter)
+    {
+        $this->adapter = $adapter;
+    }
+}
+
+// ✅ Solution
+class MyService
+{
+    public function getCurrentContent(): string
+    {
+        return \get_the_content() ?: '';
+    }
+}
+```
+
+#### **2. "Config not accessible"**
+```php
+// ❌ Problem
+$config = $this->config['app']['providers'];
+
+// ✅ Solution
+$providers = \Jankx\Facades\Config::get('app.providers', []);
+```
+
+#### **3. "Context detection not working"**
+```php
+// ❌ Problem
+private function getCurrentContext(): string
+{
+    // Manual detection
+}
+
+// ✅ Solution
+$context = \Jankx\Facades\Kernel::getCurrentContext();
+```
+
+## 📚 Additional Resources
+
+### **Documentation**
+- [Architecture Overview](./architecture/README.md)
+- [Coding Rules](./development/coding-rules.md)
+- [Service Provider Guide](./services/README.md)
+- [Configuration Guide](./config/README.md)
+
+### **Examples**
+- [Service Migration Examples](./examples/service-migration.md)
+- [Configuration Migration Examples](./examples/config-migration.md)
+- [Testing Migration Examples](./examples/testing-migration.md)
 
 ---
 
-**Next**: [Development Rules](./development/rules.md) | [Gutenberg Blocks](./gutenberg/blocks.md)
+**Jankx 2.0 Migration Guide** - Modern WordPress Theme Framework Migration 🚀
+
+*Last updated: Development Phase*
+*Framework version: 2.0.0-dev*

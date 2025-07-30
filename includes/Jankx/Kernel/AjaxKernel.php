@@ -6,7 +6,7 @@ if (!defined('ABSPATH')) {
     exit('Cheating huh?');
 }
 
-use Jankx\Context\ContextualServiceRegistry;
+
 use Illuminate\Container\Container;
 
 /**
@@ -44,6 +44,8 @@ class AjaxKernel extends Kernel
      */
     protected function registerBootstrappers(): void
     {
+        parent::registerBootstrappers();
+
         $this->bootstrappers = [
             'Jankx\Bootstrappers\Global\CoreBootstrapper',
             'Jankx\Bootstrappers\Global\DebugBootstrapper',
@@ -56,9 +58,10 @@ class AjaxKernel extends Kernel
      */
     protected function registerServices(): void
     {
+        parent::registerServices();
+
         $this->services = [
             'Jankx\Providers\AdminServiceProvider',
-            'Jankx\Providers\ContextualServiceProvider',
         ];
     }
 
@@ -78,7 +81,9 @@ class AjaxKernel extends Kernel
      */
     protected function registerFilters(): void
     {
-        $this->filters = [];
+        $this->filters = [
+            'jankx_ajax_response' => ['Jankx\Kernel\AjaxKernel', 'filterAjaxResponse'],
+        ];
     }
 
     /**

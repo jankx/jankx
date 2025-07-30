@@ -35,7 +35,7 @@ class CLIServiceProvider extends ServiceProvider
         });
 
         $this->singleton('cli.command.release', function ($container) {
-            return new ReleaseCommand($container);
+            return new ReleaseCommand();
         });
 
         $this->singleton('cli.command.coding-standard', function ($container) {
@@ -50,7 +50,7 @@ class CLIServiceProvider extends ServiceProvider
         $this->singleton(\Jankx\Services\GutenbergBlocksService::class);
 
         // Dependencies for GutenbergBlocksService
-        $this->singleton(\Jankx\Adapters\WordPressAdapter::class);
+
         $this->singleton(\Jankx\Parsers\BlockParser::class);
 
         // Config Repository

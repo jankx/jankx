@@ -1,245 +1,465 @@
 # Code Review Guidelines
 
-> **Hướng dẫn review code theo Jankx 2.0 standards**
+> **Jankx 2.0 Code Review Standards**
 
-## 🎯 **Review Checklist**
+Tài liệu này định nghĩa quy trình và tiêu chuẩn code review cho Jankx 2.0 framework.
 
-### **✅ OOP Principles**
-- [ ] Classes follow Single Responsibility Principle
-- [ ] Proper dependency injection used
-- [ ] No static methods for business logic
-- [ ] Interfaces used for abstraction
+## 🎯 Review Principles
 
-### **✅ WordPress Integration**
-- [ ] WordPress functions used directly (allowed)
-- [ ] No direct database queries (forbidden)
-- [ ] Proper error handling for WordPress functions
-- [ ] WordPress hooks used correctly
+### **1. Architecture Consistency**
+- Tuân thủ layered architecture
+- Sử dụng đúng patterns (DI, Facade, Repository)
+- Không vi phạm separation of concerns
 
-### **✅ Code Quality**
-- [ ] Type declarations on all methods
-- [ ] Proper PHPDoc documentation
-- [ ] Consistent naming conventions
-- [ ] Error handling implemented
+### **2. Code Quality**
+- Tuân thủ coding rules và standards
+- Sử dụng type declarations
+- Implement proper error handling
 
-### **✅ Testing**
-- [ ] Unit tests written
-- [ ] Integration tests for WordPress functions
-- [ ] Test coverage > 80%
-- [ ] Mock WordPress functions in tests
+### **3. Performance & Security**
+- Không có memory leaks
+- Sử dụng lazy loading khi cần
+- Validate và sanitize input
 
-## 📋 **WordPress Functions Usage**
+## 📋 Review Checklist
 
-### **✅ Allowed Direct Usage**
+### **🏗 Architecture Review**
+
+#### **✅ Service Container Usage**
+```php
+// ✅ GOOD - Proper DI
+class UserService
+{
+    private $container;
+
+    public function __construct(Container $container)
+    {
+        $this->container = $container;
+    }
+
+    public function getUser(int $userId): ?User
+    {
+        return $this->container->make(UserRepository::class)->find($userId);
+    }
+}
+
+// ❌ BAD - Direct instantiation
+class UserService
+{
+    public function getUser(int $userId): ?User
+    {
+        return new UserRepository()->find($userId);
+    }
+}
+```
+
+#### **✅ Configuration Management**
+```php
+// ✅ GOOD - Config Facade usage
+$providers = \Jankx\Facades\Config::get('app.providers.frontend', []);
+$debugMode = \Jankx\Facades\Config::get('app.debug', false);
+
+// ❌ BAD - Direct config access
+$providers = $this->config['app']['providers']['frontend'] ?? [];
+```
+
+#### **✅ WordPress Integration**
 ```php
 // ✅ GOOD - Direct WordPress function calls
-class PostService
-{
-    public function getPost(int $id): ?WP_Post
-    {
-        return get_post($id);
-    }
+$content = \get_the_content() ?: '';
+$excerpt = \get_the_excerpt() ?: '';
+$hasBlocks = \has_blocks($content);
+$isAdmin = \is_admin();
 
-    public function hasBlocks(string $content): bool
-    {
-        return has_blocks($content);
-    }
+// WordPress hooks
+\add_action('init', [$this, 'initialize']);
+\add_filter('the_content', [$this, 'processContent']);
 
-    public function parseBlocks(string $content): array
-    {
-        return parse_blocks($content);
-    }
-}
+// ❌ BAD - WordPressAdapter usage (removed)
+$content = $this->wordPressAdapter->getCurrentContent();
+$hasBlocks = $this->wordPressAdapter->hasBlocks($content);
 ```
 
-### **❌ Still Forbidden**
+#### **✅ Context Detection**
 ```php
-// ❌ FORBIDDEN - Direct database queries
-class PostRepository
+// ✅ GOOD - Kernel Facade usage
+$context = \Jankx\Facades\Kernel::getCurrentContext();
+
+switch ($context) {
+    case 'frontend':
+        // Frontend logic
+        break;
+    case 'admin':
+        // Admin logic
+        break;
+}
+
+// ❌ BAD - Manual context detection
+private function getCurrentContext(): string
 {
-    public function getPosts(): array
-    {
-        global $wpdb;
-        return $wpdb->get_results("SELECT * FROM {$wpdb->posts}");
-    }
+    if (defined('WP_CLI') && WP_CLI) return 'cli';
+    if (wp_doing_ajax()) return 'ajax';
+    if (is_admin()) return 'admin';
+    return 'frontend';
 }
 ```
 
-## 🔍 **Common Issues**
+### **🔧 Service Provider Review**
 
-### **1. Static Methods Abuse**
+#### **✅ Service Provider Structure**
 ```php
-// ❌ BAD - Static methods for business logic
-class DebugInfo
+// ✅ GOOD - Proper Service Provider
+class MyServiceProvider extends ServiceProvider
 {
-    public static function getGutenbergBlocksInfo(): array
+    public function register(): void
     {
-        // Business logic in static method
+        $this->singleton(MyService::class);
+        $this->singleton(MyRepository::class);
+    }
+
+    public function boot(): void
+    {
+        // Boot logic here
     }
 }
 
-// ✅ GOOD - Instance methods with DI
-class GutenbergBlocksService
+// ❌ BAD - Direct service registration
+class MyBootstrapper extends AbstractBootstrapper
 {
-    private $wordPressAdapter;
-
-    public function __construct(WordPressAdapter $adapter)
+    public function bootstrap(Container $container): void
     {
-        $this->wordPressAdapter = $adapter;
-    }
-
-    public function getBlocksInfo(): array
-    {
-        // Business logic in instance method
+        $container->singleton(MyService::class); // ❌ Should be in Service Provider
     }
 }
 ```
 
-### **2. Mixed Responsibilities**
+### **📝 Code Quality Review**
+
+#### **✅ Type Declarations**
 ```php
-// ❌ BAD - Multiple responsibilities
-class UserManager
+// ✅ GOOD - Full type declarations
+public function getUser(int $userId): ?User
 {
-    public function validate() { /* validation */ }
-    public function save() { /* database */ }
-    public function sendEmail() { /* email */ }
-    public function renderTemplate() { /* template */ }
+    return $this->repository->find($userId);
 }
 
-// ✅ GOOD - Single responsibility
-class UserValidator { /* only validation */ }
-class UserRepository { /* only data access */ }
-class EmailService { /* only email */ }
-class TemplateRenderer { /* only rendering */ }
+// ❌ BAD - Missing type declarations
+public function getUser($userId)
+{
+    return $this->repository->find($userId);
+}
 ```
 
-### **3. Poor Error Handling**
+#### **✅ Error Handling**
+```php
+// ✅ GOOD - Proper exception handling
+try {
+    $service = $container->make(MyService::class);
+    $result = $service->doSomething();
+} catch (BindingResolutionException $e) {
+    Logger::error('Service not found: ' . $e->getMessage());
+} catch (Exception $e) {
+    Logger::error('Unexpected error: ' . $e->getMessage());
+}
+
+// ❌ BAD - No error handling
+$service = $container->make(MyService::class);
+$result = $service->doSomething();
+```
+
+#### **✅ Logging**
+```php
+// ✅ GOOD - Structured logging
+Logger::debug('Service registered', [
+    'service' => MyService::class,
+    'context' => Kernel::getCurrentContext()
+]);
+
+Logger::error('Service failed', [
+    'service' => MyService::class,
+    'error' => $e->getMessage(),
+    'trace' => $e->getTraceAsString()
+]);
+
+// ❌ BAD - Echo or error_log
+echo "Service registered";
+error_log("Service failed");
+```
+
+### **🏗 Bootstrapper Review**
+
+#### **✅ Bootstrapper Structure**
+```php
+// ✅ GOOD - Proper Bootstrapper
+class MyBootstrapper extends AbstractBootstrapper
+{
+    public function bootstrap(Container $container): void
+    {
+        // Register services via Service Provider
+        // Setup hooks
+        add_action('init', [$this, 'initialize']);
+    }
+
+    public function getPriority(): int
+    {
+        return 10; // Lower = higher priority
+    }
+
+    public function shouldRun(): bool
+    {
+        return !is_admin(); // Only in frontend
+    }
+}
+
+// ❌ BAD - Missing required methods
+class MyBootstrapper extends AbstractBootstrapper
+{
+    public function bootstrap(Container $container): void
+    {
+        // Missing getPriority() and shouldRun()
+    }
+}
+```
+
+### **🎭 Facade Usage Review**
+
+#### **✅ Allowed Facades**
+```php
+// ✅ GOOD - Config Facade
+$value = \Jankx\Facades\Config::get('app.providers.frontend');
+$allConfig = \Jankx\Facades\Config::all();
+
+// ✅ GOOD - Logger Facade
+\Jankx\Facades\Logger::debug('message', ['data' => $data]);
+\Jankx\Facades\Logger::error('error message');
+
+// ✅ GOOD - Kernel Facade
+$context = \Jankx\Facades\Kernel::getCurrentContext();
+```
+
+#### **❌ Forbidden Facades**
+```php
+// ❌ BAD - Options Facade (removed)
+$option = \Jankx\Facades\Options::get('option_name');
+```
+
+### **🧪 Testing Review**
+
+#### **✅ Test Structure**
+```php
+// ✅ GOOD - Proper test structure
+class MyServiceTest extends TestCase
+{
+    private $container;
+    private $service;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->container = new Container();
+        $this->service = new MyService($this->container);
+    }
+
+    public function testServiceMethod(): void
+    {
+        $result = $this->service->doSomething();
+        $this->assertNotNull($result);
+    }
+}
+
+// ❌ BAD - Missing setup or assertions
+class MyServiceTest extends TestCase
+{
+    public function testServiceMethod(): void
+    {
+        $service = new MyService();
+        $service->doSomething();
+        // No assertions
+    }
+}
+```
+
+## 🚫 Common Anti-Patterns
+
+### **1. ❌ Global State Usage**
+```php
+// ❌ BAD - Global variables
+global $myService;
+$myService = new MyService();
+
+// ✅ GOOD - Use container
+$container->singleton(MyService::class);
+$service = $container->make(MyService::class);
+```
+
+### **2. ❌ Direct WordPress Calls in Business Logic**
+```php
+// ❌ BAD - WordPress calls in business logic
+class UserService
+{
+    public function getCurrentUser()
+    {
+        return wp_get_current_user(); // ❌ Direct call
+    }
+}
+
+// ✅ GOOD - Direct WordPress calls when needed
+class UserService
+{
+    public function getCurrentUser()
+    {
+        return \wp_get_current_user(); // ✅ Direct call with namespace
+    }
+}
+```
+
+### **3. ❌ Complex Dependencies**
+```php
+// ❌ BAD - Too many dependencies
+class ComplexService
+{
+    public function __construct(
+        UserService $userService,
+        ConfigService $configService,
+        LoggerService $loggerService,
+        CacheService $cacheService,
+        DatabaseService $databaseService
+    ) {
+        // Too complex
+    }
+}
+
+// ✅ GOOD - Break into smaller services
+class SimpleService
+{
+    public function __construct(Container $container)
+    {
+        $this->container = $container;
+    }
+}
+```
+
+### **4. ❌ Missing Error Handling**
 ```php
 // ❌ BAD - No error handling
-class PostService
+public function loadService(string $serviceClass): void
 {
-    public function getPost(int $id): WP_Post
-    {
-        return get_post($id); // Could return false
-    }
+    $service = new $serviceClass($this->container);
+    $service->register();
 }
 
 // ✅ GOOD - Proper error handling
-class PostService
+public function loadService(string $serviceClass): void
 {
-    public function getPost(int $id): ?WP_Post
-    {
-        $post = get_post($id);
-        return $post ?: null;
-    }
-}
-```
-
-## 🧪 **Testing Guidelines**
-
-### **1. WordPress Function Testing**
-```php
-// ✅ GOOD - Mock WordPress functions
-class GutenbergServiceTest extends TestCase
-{
-    public function testHasBlocks()
-    {
-        // Mock WordPress function
-        $this->mockFunction('has_blocks', function($content) {
-            return strpos($content, '<!-- wp:') !== false;
-        });
-
-        $service = new GutenbergService();
-        $this->assertTrue($service->hasBlocks('<!-- wp:paragraph -->'));
-    }
-}
-```
-
-### **2. Integration Testing**
-```php
-// ✅ GOOD - Integration tests
-class WordPressIntegrationTest extends TestCase
-{
-    public function testWordPressFunctionsWork()
-    {
-        // Test actual WordPress functions
-        $post = get_post(1);
-        $this->assertInstanceOf('WP_Post', $post);
-
-        $hasBlocks = has_blocks('<!-- wp:paragraph -->');
-        $this->assertTrue($hasBlocks);
-    }
-}
-```
-
-## 📝 **Documentation Standards**
-
-### **1. WordPress Function Documentation**
-```php
-/**
- * Gutenberg Blocks Service
- *
- * Uses WordPress functions directly:
- * - has_blocks() - Check if content has blocks
- * - parse_blocks() - Parse content into blocks
- * - get_current_screen() - Get current admin screen
- *
- * @package Jankx\Services
- * @since 2.0.0
- */
-class GutenbergBlocksService
-{
-    /**
-     * Check if content has Gutenberg blocks
-     *
-     * @param string $content Post content
-     * @return bool True if content has blocks
-     * @since 2.0.0
-     */
-    public function hasBlocks(string $content): bool
-    {
-        return has_blocks($content);
-    }
-}
-```
-
-## 🚀 **Performance Considerations**
-
-### **1. WordPress Function Performance**
-```php
-// ✅ GOOD - Cache expensive WordPress calls
-class CachedPostService
-{
-    private $cache = [];
-
-    public function getPost(int $id): ?WP_Post
-    {
-        if (!isset($this->cache[$id])) {
-            $this->cache[$id] = get_post($id) ?: null;
+    try {
+        if (!class_exists($serviceClass)) {
+            throw new \InvalidArgumentException("Service {$serviceClass} does not exist");
         }
 
-        return $this->cache[$id];
+        $service = new $serviceClass($this->container);
+        $service->register();
+    } catch (\Exception $e) {
+        Logger::error("Failed to load service {$serviceClass}: " . $e->getMessage());
     }
 }
 ```
 
-### **2. Batch Operations**
+## 📋 Review Process
+
+### **1. Pre-Review Checklist**
+- [ ] Code follows naming conventions
+- [ ] Type declarations are used
+- [ ] Error handling is implemented
+- [ ] Logging is structured
+- [ ] Tests are included
+- [ ] Documentation is updated
+
+### **2. Architecture Review**
+- [ ] Uses proper DI pattern
+- [ ] Follows layered architecture
+- [ ] Uses Config Facade for configuration
+- [ ] Uses Kernel Facade for context detection
+- [ ] Uses direct WordPress function calls
+- [ ] No WordPressAdapter usage
+
+### **3. Code Quality Review**
+- [ ] SOLID principles followed
+- [ ] KISS principle applied
+- [ ] No anti-patterns
+- [ ] Performance considerations
+- [ ] Security best practices
+
+### **4. Testing Review**
+- [ ] Unit tests included
+- [ ] Integration tests if needed
+- [ ] Mocking used appropriately
+- [ ] Test coverage adequate
+
+## 🎯 Review Guidelines
+
+### **✅ Approve When:**
+- Code follows all standards
+- Architecture is consistent
+- Tests are comprehensive
+- Documentation is updated
+- No anti-patterns detected
+
+### **❌ Request Changes When:**
+- Missing type declarations
+- No error handling
+- Uses forbidden patterns
+- Missing tests
+- Poor documentation
+- Performance issues
+- Security concerns
+
+### **🔄 Request Discussion When:**
+- Architecture decisions unclear
+- Performance impact uncertain
+- Security implications unclear
+- Testing strategy unclear
+
+## 📝 Review Comments
+
+### **✅ Good Comment Examples**
 ```php
-// ✅ GOOD - Batch WordPress operations
-class BatchPostService
-{
-    public function getMultiplePosts(array $ids): array
-    {
-        // Use get_posts with multiple IDs instead of multiple get_post calls
-        return get_posts([
-            'post__in' => $ids,
-            'post_type' => 'post',
-            'posts_per_page' => -1
-        ]);
-    }
-}
+// ✅ GOOD - Specific and actionable
+"Please add type declaration for $userId parameter"
+"Consider using Config Facade instead of direct array access"
+"Add error handling for the service registration"
+"Missing test for the error case"
 ```
+
+### **❌ Bad Comment Examples**
+```php
+// ❌ BAD - Vague and unhelpful
+"Fix this"
+"Not good"
+"Should be better"
+"Add tests"
+```
+
+## 🎯 Review Metrics
+
+### **Quality Metrics**
+- **Type Declaration Coverage**: 100%
+- **Error Handling Coverage**: 100%
+- **Test Coverage**: >80%
+- **Documentation Coverage**: 100%
+
+### **Performance Metrics**
+- **Memory Usage**: No leaks
+- **Execution Time**: Within acceptable limits
+- **Database Queries**: Optimized
+
+### **Security Metrics**
+- **Input Validation**: 100%
+- **Permission Checks**: Implemented
+- **Data Sanitization**: Applied
 
 ---
 
-**WordPress Functions Are Allowed** - Jankx 2.0 encourages direct usage of WordPress functions while maintaining OOP principles! 🎯
+**Jankx 2.0 Code Review Guidelines** - Modern WordPress Theme Framework Standards 🚀
+
+*Last updated: Development Phase*
+*Framework version: 2.0.0-dev*

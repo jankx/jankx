@@ -7,7 +7,6 @@ use Jankx\Gutenberg\BlockRegistry;
 use Jankx\Facades\Logger;
 use Jankx\Bootstrappers\AbstractBootstrapper;
 
-
 /**
  * Gutenberg Bootstrapper
  *

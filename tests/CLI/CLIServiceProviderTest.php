@@ -7,6 +7,7 @@ use Jankx\Providers\CLIServiceProvider;
 use Jankx\CLI\Commands\CodingStandardCommand;
 use Jankx\CLI\Commands\GenerateBlockCommand;
 use Jankx\CLI\Commands\CreateBootstrapperCommand;
+use Jankx\CLI\Commands\ReleaseCommand;
 use Illuminate\Container\Container;
 
 /**

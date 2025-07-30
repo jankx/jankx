@@ -2,6 +2,8 @@
 
 namespace Jankx\Providers;
 
+use Jankx\Facades\Logger;
+
 /**
  * Debug Service Provider
  *
@@ -13,8 +15,16 @@ class DebugServiceProvider extends ServiceProvider
 {
     public function register()
     {
+        Logger::debug('DebugServiceProvider::register', [
+            'jankx_debug' => defined('JANKX_DEBUG') && JANKX_DEBUG,
+            'is_admin' => is_admin(),
+            'condition_met' => defined('JANKX_DEBUG') && JANKX_DEBUG && !is_admin()
+        ]);
+
         // Debug services - only register if JANKX_DEBUG is defined and we're in frontend context
         if (defined('JANKX_DEBUG') && JANKX_DEBUG && !is_admin()) {
+            Logger::debug('registeringDebugServices', ['start' => true]);
+
             $this->singleton(\Jankx\Debug\DebugInfo::class);
             $this->singleton(\Jankx\Debug\Services\DebugInfoService::class);
             $this->singleton(\Jankx\Debug\Services\QueryCountService::class);
@@ -22,11 +32,10 @@ class DebugServiceProvider extends ServiceProvider
             $this->singleton(\Jankx\Debug\Services\GutenbergBlocksService::class);
             $this->singleton(\Jankx\Debug\Services\PluginDebugService::class);
             $this->singleton(\Jankx\Debug\Renderers\DebugInfoRenderer::class);
-            $this->singleton(\Jankx\Debug\Services\PerformanceMonitor::class);
-            $this->singleton(\Jankx\Debug\Services\MemoryMonitor::class);
-            $this->singleton(\Jankx\Debug\Services\QueryMonitor::class);
-            $this->singleton(\Jankx\Debug\Services\DebugLogger::class);
-            $this->singleton(\Jankx\Debug\Services\DebugReporter::class);
+
+            Logger::debug('registeringDebugServices', ['end' => true, 'status' => 'success']);
+        } else {
+            Logger::debug('registeringDebugServices', ['status' => 'skipped', 'reason' => 'conditions_not_met']);
         }
     }
 

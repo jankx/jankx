@@ -3,6 +3,7 @@
 namespace Jankx\Admin;
 
 use Jankx\Facades\Logger;
+use Jankx\Config\Repository;
 
 /**
  * Admin Dashboard
@@ -17,6 +18,47 @@ class Dashboard
      * @var bool
      */
     protected $initialized = false;
+
+    /**
+     * @var Repository|null
+     */
+    protected $config;
+
+    /**
+     * Get theme name from config
+     *
+     * @return string
+     */
+    protected function getThemeName(): string
+    {
+        try {
+            if (!$this->config) {
+                $this->config = new Repository();
+            }
+            return $this->config->get('theme.template.info.name', 'Jankx');
+        } catch (\Exception $e) {
+            Logger::error('Failed to get theme name from config', ['exception' => $e->getMessage()]);
+            return 'Jankx';
+        }
+    }
+
+    /**
+     * Get theme version from config
+     *
+     * @return string
+     */
+    protected function getThemeVersion(): string
+    {
+        try {
+            if (!$this->config) {
+                $this->config = new Repository();
+            }
+            return $this->config->get('theme.template.info.version', '2.0.0');
+        } catch (\Exception $e) {
+            Logger::error('Failed to get theme version from config', ['exception' => $e->getMessage()]);
+            return '2.0.0';
+        }
+    }
 
     /**
      * Initialize dashboard
@@ -53,10 +95,12 @@ class Dashboard
      */
     public function addMenuPages(): void
     {
-        // Add main Jankx menu page
+        $themeName = $this->getThemeName();
+
+        // Add main theme menu page
         add_menu_page(
-            'Jankx Dashboard',
-            'Jankx',
+            $themeName . ' Dashboard',
+            $themeName,
             'manage_options',
             'jankx-dashboard',
             [$this, 'renderDashboardPage'],
@@ -102,12 +146,15 @@ class Dashboard
      */
     public function renderDashboardPage(): void
     {
+        $themeName = $this->getThemeName();
+        $themeVersion = $this->getThemeVersion();
         ?>
         <div class="wrap">
-            <h1>Jankx Dashboard</h1>
+            <h1><?php echo esc_html($themeName); ?> Dashboard</h1>
             <div class="jankx-dashboard-content">
-                <h2>Welcome to Jankx Framework</h2>
-                <p>This is the main dashboard page for Jankx framework.</p>
+                <h2>Welcome to <?php echo esc_html($themeName); ?> Framework</h2>
+                <p>Version: <?php echo esc_html($themeVersion); ?></p>
+                <p>This is the main dashboard page for <?php echo esc_html($themeName); ?> framework.</p>
             </div>
         </div>
         <?php
@@ -118,12 +165,13 @@ class Dashboard
      */
     public function renderSettingsPage(): void
     {
+        $themeName = $this->getThemeName();
         ?>
         <div class="wrap">
-            <h1>Jankx Settings</h1>
+            <h1><?php echo esc_html($themeName); ?> Settings</h1>
             <div class="jankx-settings-content">
                 <h2>Framework Settings</h2>
-                <p>Configure your Jankx framework settings here.</p>
+                <p>Configure your <?php echo esc_html($themeName); ?> framework settings here.</p>
             </div>
         </div>
         <?php

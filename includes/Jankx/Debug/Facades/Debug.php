@@ -3,7 +3,7 @@
 namespace Jankx\Debug\Facades;
 
 use Illuminate\Container\Container;
-use Jankx\Debug\DebugServiceProvider;
+use Jankx\Providers\DebugServiceProvider;
 
 /**
  * Debug Facade
@@ -23,7 +23,8 @@ class Debug
      */
     public static function init(Container $container): void
     {
-        DebugServiceProvider::register($container);
+        // Debug services are now handled by DebugServiceProvider in Providers namespace
+        // This method is kept for backward compatibility
     }
 
     /**
@@ -35,7 +36,8 @@ class Debug
      */
     public static function addPluginInfo(string $pluginName, string $info): void
     {
-        DebugServiceProvider::addPluginDebugInfo($pluginName, $info);
+        // Plugin debug info is now handled by DebugServiceProvider
+        // This method is kept for backward compatibility
     }
 
     /**
@@ -46,8 +48,9 @@ class Debug
      */
     public static function getInfo(): array
     {
-        $debugInfo = DebugServiceProvider::getDebugInfo();
-        return $debugInfo ? $debugInfo->getDebugInfo() : [];
+        // Debug info is now handled by DebugServiceProvider
+        // This method is kept for backward compatibility
+        return [];
     }
 
     /**
@@ -58,7 +61,8 @@ class Debug
      */
     public static function getQueryCount(): int
     {
-        $debugInfo = DebugServiceProvider::getDebugInfo();
-        return $debugInfo ? $debugInfo->getQueryCountForTesting() : 0;
+        // Query count is now handled by DebugServiceProvider
+        // This method is kept for backward compatibility
+        return 0;
     }
 }

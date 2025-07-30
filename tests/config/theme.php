@@ -20,12 +20,12 @@ return [
     */
     'template' => [
         'info' => [
-            'name' => 'Jankx',
+            'name' => 'Bookix',
             'version' => '2.0.0',
             'description' => 'A modern WordPress theme built with Jankx Framework',
             'author' => 'Jankx Team',
-            'author_url' => 'https://puleeno.com',
-            'theme_url' => 'https://jankx.github.io/jankx/',
+            'author_url' => 'https://jankx.com',
+            'theme_url' => 'https://jankx.com/bookix',
             'license' => 'GPL v2 or later',
             'text_domain' => 'jankx',
         ],

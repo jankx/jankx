@@ -16,6 +16,8 @@ class FrontendServiceProvider extends ServiceProvider
 {
     public function register()
     {
+        \Jankx\Facades\Logger::debug('FrontendServiceProvider::register', ['start' => true]);
+
         // Core frontend services - only register classes that actually exist
         $this->singleton('user.service', UserService::class);
         $this->singleton(\Jankx\Services\BlockParserService::class, \Jankx\Services\BlockParserService::class);
@@ -28,12 +30,14 @@ class FrontendServiceProvider extends ServiceProvider
         $this->singleton(\Jankx\Services\GutenbergBlocksService::class);
 
         // Dependencies for GutenbergBlocksService
-        $this->singleton(\Jankx\Adapters\WordPressAdapter::class);
+
         $this->singleton(\Jankx\Parsers\BlockParser::class);
 
         // Config Repository
         $this->singleton('config', \Jankx\Config\Repository::class);
         $this->singleton(\Jankx\Config\Repository::class);
+
+        \Jankx\Facades\Logger::debug('FrontendServiceProvider::register', ['end' => true, 'status' => 'success']);
 
         // Note: Other services like TemplateRenderer, SEOManager, etc.
         // will be registered when their classes are actually created

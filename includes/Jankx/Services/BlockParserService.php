@@ -227,7 +227,7 @@ class BlockParserService
         foreach ($posts as $post) {
             if (has_blocks($post->post_content)) {
                         $blocks = $this->parseBlocks($post->post_content);
-        $blockNames = $this->extractBlockNames($blocks);
+                $blockNames = $this->extractBlockNames($blocks);
                 $allBlocks = array_merge($allBlocks, $blockNames);
             }
         }

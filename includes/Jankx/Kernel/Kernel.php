@@ -5,6 +5,7 @@ namespace Jankx\Kernel;
 use Jankx\Jankx;
 use Jankx\Contracts\KernelInterface;
 use Jankx\Contracts\BootstrapperInterface;
+use Jankx\Facades\Config;
 use Illuminate\Container\Container;
 use Jankx\Facades\Logger;
 
@@ -47,6 +48,11 @@ abstract class Kernel implements KernelInterface
      */
     protected $kernelType;
 
+    /**
+     * @var string
+     */
+    protected $context;
+
     protected $serviceProviders = [];
 
     /**
@@ -57,8 +63,9 @@ abstract class Kernel implements KernelInterface
         $this->container = $container ?: Jankx::getInstance();
         $this->kernelType = $this->getKernelType();
 
+        // Configuration is loaded by Config facade
+
         $this->registerBootstrappers();
-        $this->registerServices();
         $this->registerHooks();
         $this->registerFilters();
     }
@@ -73,15 +80,58 @@ abstract class Kernel implements KernelInterface
         return 'abstract';
     }
 
-    /**
+                /**
+     * Get current context
+     */
+    protected function getCurrentContext(): string
+    {
+        return $this->context ?? 'frontend';
+    }
+
+        /**
+     * Set context for this kernel
+     */
+    public function setContext(string $context): void
+    {
+        $this->context = $context;
+    }
+
+            /**
      * Register bootstrappers
      */
-    abstract protected function registerBootstrappers(): void;
+    protected function registerBootstrappers(): void
+    {
+        // Add ConfigBootstrapper first (highest priority)
+        $this->addBootstrapper(\Jankx\Bootstrappers\Global\ConfigBootstrapper::class);
 
-    /**
-     * Register services
+        // Add CoreBootstrapper
+        $this->addBootstrapper(\Jankx\Bootstrappers\Global\CoreBootstrapper::class);
+    }
+
+        /**
+     * Register services from configuration
      */
-    abstract protected function registerServices(): void;
+    protected function registerServices(): void
+    {
+        $this->serviceProviders = Config::get('app.providers.' . $this->getCurrentContext(), []);
+
+        // Add global providers
+        $globalProviders = Config::get('app.providers.global', []);
+        $this->serviceProviders = array_merge($globalProviders, $this->serviceProviders);
+
+        // Remove duplicates
+        $this->serviceProviders = array_unique($this->serviceProviders);
+
+        // Debug log providers
+        Logger::debug('registerServices', [
+            'context' => $this->getCurrentContext(),
+            'global_providers' => $globalProviders,
+            'context_providers' => Config::get('app.providers.' . $this->getCurrentContext(), []),
+            'final_providers' => $this->serviceProviders
+        ]);
+    }
+
+
 
     /**
      * Register hooks
@@ -102,8 +152,11 @@ abstract class Kernel implements KernelInterface
             return;
         }
 
-        // Run bootstrappers
+        // Run bootstrappers first
         $this->runBootstrappers();
+
+        // Register services after bootstrappers have run
+        $this->registerServices();
 
         // Load components
         $this->loadServices();
@@ -280,20 +333,39 @@ abstract class Kernel implements KernelInterface
      */
     protected function loadServices()
     {
+        Logger::debug('loadServices', ['start' => true]);
+
         // Load services from Service Providers
         foreach ($this->getServiceProviders() as $providerClass) {
+            Logger::debug('loadingProvider', ['provider' => $providerClass]);
+
             if (class_exists($providerClass)) {
                 try {
+                    // Check if class is abstract
+                    $reflection = new \ReflectionClass($providerClass);
+                    if ($reflection->isAbstract()) {
+                        Logger::warning(sprintf("%s: Service Provider {$providerClass} is abstract and cannot be instantiated", get_class($this)));
+                        continue;
+                    }
+
                     $provider = new $providerClass($this->container);
                     $provider->register();
                     $provider->boot();
+
+                    Logger::debug('providerLoaded', ['provider' => $providerClass, 'status' => 'success']);
                 } catch (\Exception $e) {
                     Logger::error(sprintf("%s: Không thể khởi tạo Service Provider {$providerClass}: %s", get_class($this), $e->getMessage()));
+
+                    Logger::debug('providerLoaded', ['provider' => $providerClass, 'status' => 'failed', 'error' => $e->getMessage()]);
                 }
             } else {
                 Logger::error(sprintf("%s: Service Provider {$providerClass} không tồn tại", get_class($this)));
+
+                Logger::debug('providerLoaded', ['provider' => $providerClass, 'status' => 'not_found']);
             }
         }
+
+        Logger::debug('loadServices', ['end' => true]);
     }
 
     /**

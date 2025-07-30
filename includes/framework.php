@@ -33,6 +33,10 @@ $jankx = Jankx::getInstance();
 $kernelManager = new KernelManager($jankx);
 $kernelManager->boot();
 
+$jankx->singleton(KernelManager::class, function () use ($kernelManager) {
+    return $kernelManager;
+});
+
 $currentKernel = $kernelManager->getCurrentKernel();
 if ($currentKernel) {
     Logger::debug('Current kernel info', [

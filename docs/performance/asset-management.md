@@ -704,22 +704,13 @@ class AssetPerformanceMonitor
         return array_slice($this->metrics, 0, $limit, true);
     }
 
-    public function generateReport(): string
+    public function getMetrics(): array
     {
-        $report = "# Asset Performance Report\n\n";
-
-        $report .= "## Overall Metrics\n";
-        $report .= "- **Total Assets**: " . count($this->metrics) . "\n";
-        $report .= "- **Average Load Time**: " . number_format($this->getAverageLoadTime() * 1000, 2) . "ms\n";
-
-        $report .= "\n## Slowest Assets\n";
-        $slowestAssets = $this->getSlowestAssets();
-
-        foreach ($slowestAssets as $assetName => $metrics) {
-            $report .= "- **{$assetName}**: " . number_format($metrics['load_time'] * 1000, 2) . "ms\n";
-        }
-
-        return $report;
+        return [
+            'total_assets' => count($this->metrics),
+            'average_load_time' => $this->getAverageLoadTime(),
+            'slowest_assets' => $this->getSlowestAssets()
+        ];
     }
 }
 ```

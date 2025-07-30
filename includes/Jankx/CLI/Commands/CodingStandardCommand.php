@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Jankx\CLI\Commands;
 
 if (!defined('ABSPATH')) {
@@ -383,7 +382,7 @@ class CodingStandardCommand extends WP_CLI_Command
                     $this->clearLine();
                 }
                 $this->displayFileResult($file, $this->issues[$file]);
-            } else if ($verbose) {
+            } elseif ($verbose) {
                 WP_CLI::log("   ✅ No issues found");
             }
         }
@@ -431,7 +430,7 @@ class CodingStandardCommand extends WP_CLI_Command
                     $this->clearLine();
                 }
                 $this->displayFileResult($file, $this->issues[$file]);
-            } else if ($verbose) {
+            } elseif ($verbose) {
                 WP_CLI::log("   ✅ No issues found");
             }
         }
@@ -515,7 +514,6 @@ class CodingStandardCommand extends WP_CLI_Command
 
             // Clear spinner line
             $this->clearLine();
-
         } catch (\Exception $e) {
             $this->clearLine();
             WP_CLI::warning("⚠️ Error processing $filePath: " . $e->getMessage());
@@ -581,7 +579,7 @@ class CodingStandardCommand extends WP_CLI_Command
          *
          * @since 2.0.0
          */
-        usort($fixableIssues, function($a, $b) {
+        usort($fixableIssues, function ($a, $b) {
             return $b['fix']['line'] - $a['fix']['line'];
         });
 
@@ -886,7 +884,8 @@ class CodingStandardCommand extends WP_CLI_Command
                 $issueIcon = '🔒'; // Hardcoded icon
             }
 
-            WP_CLI::log(sprintf("   %s %s [Line %d] %s (%s): %s",
+            WP_CLI::log(sprintf(
+                "   %s %s [Line %d] %s (%s): %s",
                 $severityIcon,
                 $issueIcon,
                 $issue['line'],

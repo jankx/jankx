@@ -20,7 +20,6 @@ class ServiceProvidersTest extends TestCase
         $providers = [
             'Jankx\Providers\ServiceProvider',
             'Jankx\Providers\CLIServiceProvider',
-            'Jankx\Providers\ContextualServiceProvider'
         ];
 
         foreach ($providers as $provider) {
@@ -35,7 +34,6 @@ class ServiceProvidersTest extends TestCase
     {
         $providers = [
             'Jankx\Providers\CLIServiceProvider',
-            'Jankx\Providers\ContextualServiceProvider'
         ];
 
         foreach ($providers as $provider) {
@@ -53,7 +51,6 @@ class ServiceProvidersTest extends TestCase
         $providers = [
             'Jankx\Providers\ServiceProvider',
             'Jankx\Providers\CLIServiceProvider',
-            'Jankx\Providers\ContextualServiceProvider'
         ];
 
         foreach ($providers as $provider) {
@@ -88,14 +85,5 @@ class ServiceProvidersTest extends TestCase
     {
         $this->assertTrue(class_exists('Jankx\Providers\CLIServiceProvider'));
         $this->assertTrue(method_exists('Jankx\Providers\CLIServiceProvider', 'shouldLoad'));
-    }
-
-    /**
-     * Test contextual service provider specific methods
-     */
-    public function testContextualServiceProviderSpecificMethods()
-    {
-        $this->assertTrue(class_exists('Jankx\Providers\ContextualServiceProvider'));
-        $this->assertTrue(method_exists('Jankx\Providers\ContextualServiceProvider', 'register'));
     }
 }

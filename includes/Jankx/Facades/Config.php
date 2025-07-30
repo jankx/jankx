@@ -3,6 +3,7 @@
 namespace Jankx\Facades;
 
 use Jankx\Config\Contracts\ConfigRepositoryInterface;
+use Jankx\Config\Repository;
 
 /**
  * Config Facade
@@ -21,7 +22,7 @@ class Config extends Facade
      */
     protected static function getFacadeAccessor(): string
     {
-        return 'config';
+        return Repository::class;
     }
 
     /**
@@ -31,7 +32,7 @@ class Config extends Facade
      */
     public static function getFacadeRoot(): ConfigRepositoryInterface
     {
-        return static::resolveFacadeInstance(static::getFacadeAccessor());
+        return static::getContainer()->get(static::getFacadeAccessor());
     }
 
     /**

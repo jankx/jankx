@@ -62,4 +62,4 @@ class CreateBootstrapperCommand extends WP_CLI_Command
         WP_CLI::log("📁 Files created:");
         WP_CLI::log("   - includes/Jankx/Bootstrappers/$context/{$bootstrapperName}Bootstrapper.php");
     }
-} 
+}

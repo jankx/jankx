@@ -9,7 +9,7 @@ if (!defined('ABSPATH')) {
     exit('Cheating huh?');
 }
 
-use Jankx\Context\ContextualServiceRegistry;
+
 
 /**
  * Class CoreBootstrapper
@@ -40,16 +40,5 @@ final class CoreBootstrapper extends AbstractBootstrapper
         if (defined('JANKX_DEBUG') && JANKX_DEBUG) {
             \Jankx\Debug\DebugIntegration::init($container);
         }
-
-        // Đăng ký dịch vụ dùng chung (shared)
-        // ContextualServiceRegistry::register(ContextualServiceRegistry::SHARED, GoogleFontsServiceProvider::class);
-        // ContextualServiceRegistry::register(ContextualServiceRegistry::SHARED, ThemeOptionsServiceProvider::class);
-
-        // // Đăng ký dịch vụ frontend
-        // ContextualServiceRegistry::register(ContextualServiceRegistry::FRONTEND, SocialSharingServiceProvider::class);
-        // ContextualServiceRegistry::register(ContextualServiceRegistry::FRONTEND, PostLayoutServiceProvider::class);
-
-        // // Đăng ký dịch vụ dashboard
-        // ContextualServiceRegistry::register(ContextualServiceRegistry::DASHBOARD, AdminMenuServiceProvider::class);
     }
 }

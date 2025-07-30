@@ -28,6 +28,8 @@ class CronKernel extends Kernel implements KernelInterface
      */
     protected function registerBootstrappers(): void
     {
+        parent::registerBootstrappers();
+
         // Theme bootstrapper (highest priority)
         $this->addBootstrapper(ThemeBootstrapper::class);
 
@@ -43,6 +45,8 @@ class CronKernel extends Kernel implements KernelInterface
      */
     protected function registerServices(): void
     {
+        parent::registerServices();
+
         // Không cần đăng ký các command services ở đây
     }
 
@@ -177,7 +181,7 @@ class CronKernel extends Kernel implements KernelInterface
     {
         // Get all transients
         $transients = get_option('_transient_timeout_*');
-        
+
         if ($transients) {
             foreach ($transients as $transient => $timeout) {
                 if ($timeout < time()) {

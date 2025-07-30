@@ -98,6 +98,7 @@ class DebugInfo implements DebugInfoInterface
      */
     public function init(): void
     {
+        Logger::debug('DebugInfo::init', ['shouldInitialize' => $this->shouldInitialize()]);
         if (!$this->shouldInitialize()) {
             return;
         }
@@ -177,7 +178,7 @@ class DebugInfo implements DebugInfoInterface
         // Disable WP Rocket caching for debug pages
         if (defined('WP_ROCKET_VERSION')) {
             add_filter('rocket_override_donotcachepage', '__return_true');
-            add_filter('rocket_cache_reject_uri', function($uris) {
+            add_filter('rocket_cache_reject_uri', function ($uris) {
                 $uris[] = '.*';
                 return $uris;
             });
@@ -200,11 +201,11 @@ class DebugInfo implements DebugInfoInterface
 
         // Disable Autoptimize for debug pages
         if (defined('AUTOPTIMIZE_PLUGIN_VERSION')) {
-            add_filter('autoptimize_filter_js_exclude', function($exclude) {
+            add_filter('autoptimize_filter_js_exclude', function ($exclude) {
                 $exclude[] = 'jankx-debug';
                 return $exclude;
             });
-            add_filter('autoptimize_filter_css_exclude', function($exclude) {
+            add_filter('autoptimize_filter_css_exclude', function ($exclude) {
                 $exclude[] = 'jankx-debug';
                 return $exclude;
             });
@@ -226,11 +227,11 @@ class DebugInfo implements DebugInfoInterface
 
         // Disable SG Optimizer for debug pages
         if (defined('SG_CACHEPRESS_VERSION')) {
-            add_filter('sgo_js_minify_exclude', function($exclude) {
+            add_filter('sgo_js_minify_exclude', function ($exclude) {
                 $exclude[] = 'jankx-debug';
                 return $exclude;
             });
-            add_filter('sgo_css_minify_exclude', function($exclude) {
+            add_filter('sgo_css_minify_exclude', function ($exclude) {
                 $exclude[] = 'jankx-debug';
                 return $exclude;
             });
@@ -725,7 +726,6 @@ class DebugInfo implements DebugInfoInterface
 
             echo $html;
             wp_die();
-
         } catch (\Exception $e) {
             Logger::error('Failed to handle AJAX debug request', [
                 'error' => $e->getMessage(),
@@ -835,7 +835,6 @@ class DebugInfo implements DebugInfoInterface
 
             echo 'success';
             wp_die();
-
         } catch (\Exception $e) {
             Logger::error('Failed to clear debug cache via AJAX', [
                 'error' => $e->getMessage(),

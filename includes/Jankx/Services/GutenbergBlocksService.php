@@ -2,7 +2,6 @@
 
 namespace Jankx\Services;
 
-use Jankx\Adapters\WordPressAdapter;
 use Jankx\Parsers\BlockParser;
 
 /**
@@ -13,12 +12,10 @@ use Jankx\Parsers\BlockParser;
  */
 class GutenbergBlocksService
 {
-    private $wordPressAdapter;
     private $blockParser;
 
-    public function __construct(WordPressAdapter $wordPressAdapter, BlockParser $blockParser)
+    public function __construct(BlockParser $blockParser)
     {
-        $this->wordPressAdapter = $wordPressAdapter;
         $this->blockParser = $blockParser;
     }
 
@@ -65,8 +62,7 @@ class GutenbergBlocksService
      */
     private function isGutenbergEditor(): bool
     {
-        return $this->wordPressAdapter->isAdmin() &&
-               $this->wordPressAdapter->isBlockEditor();
+        return \is_admin() && $this->isBlockEditor();
     }
 
     /**
@@ -77,11 +73,10 @@ class GutenbergBlocksService
      */
     private function hasGutenbergContent(): bool
     {
-        $content = $this->wordPressAdapter->getCurrentContent();
-        $excerpt = $this->wordPressAdapter->getCurrentExcerpt();
+        $content = \get_the_content() ?: '';
+        $excerpt = \get_the_excerpt() ?: '';
 
-        return $this->wordPressAdapter->hasBlocks($content) ||
-               $this->wordPressAdapter->hasBlocks($excerpt);
+        return \has_blocks($content) || \has_blocks($excerpt);
     }
 
     /**
@@ -92,7 +87,7 @@ class GutenbergBlocksService
      */
     private function parseBlocks(): array
     {
-        $content = $this->wordPressAdapter->getCurrentContent();
+        $content = \get_the_content() ?: '';
 
         if (empty($content)) {
             return ['total_blocks' => 0, 'block_types' => []];
@@ -131,6 +126,21 @@ class GutenbergBlocksService
     }
 
     /**
+     * Check if currently in block editor
+     *
+     * @return bool
+     */
+    private function isBlockEditor(): bool
+    {
+        if (!function_exists('get_current_screen')) {
+            return false;
+        }
+
+        $screen = \get_current_screen();
+        return $screen && method_exists($screen, 'is_block_editor') && $screen->is_block_editor();
+    }
+
+    /**
      * Get template parts count
      *
      * @return int
@@ -138,6 +148,11 @@ class GutenbergBlocksService
      */
     private function getTemplateParts(): int
     {
-        return $this->wordPressAdapter->getTemplatePartsCount();
+        if (!function_exists('get_block_template_parts')) {
+            return 0;
+        }
+
+        $templateParts = \get_block_template_parts();
+        return is_array($templateParts) ? count($templateParts) : 0;
     }
 }

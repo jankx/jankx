@@ -13,7 +13,6 @@ Jankx framework cung cấp một hệ thống CLI mạnh mẽ cho phép develope
 ```
 CLIKernel
 ├── CLIBootstrapper
-├── ContextualServiceProvider
 └── Custom Commands
     ├── Information Commands
     ├── Management Commands

@@ -30,6 +30,8 @@ class FrontendKernel extends Kernel implements KernelInterface
      */
     protected function registerBootstrappers(): void
     {
+        parent::registerBootstrappers();
+
         // Theme bootstrapper (highest priority)
         $this->addBootstrapper(ThemeBootstrapper::class);
 
@@ -61,17 +63,7 @@ class FrontendKernel extends Kernel implements KernelInterface
      */
     protected function registerServices(): void
     {
-        // Register FrontendServiceProvider
-        $this->addServiceProvider(\Jankx\Providers\FrontendServiceProvider::class);
-
-        // Register DebugServiceProvider (only in frontend context)
-        if (defined('JANKX_DEBUG') && JANKX_DEBUG) {
-            $this->addServiceProvider(\Jankx\Providers\DebugServiceProvider::class);
-        }
-
-        // Frontend services are now registered through FrontendServiceProvider
-        // This method is kept for backward compatibility
-        // All services should be registered through Service Providers
+        parent::registerServices();
     }
 
     /**
@@ -79,7 +71,11 @@ class FrontendKernel extends Kernel implements KernelInterface
      */
     protected function registerHooks(): void
     {
-        // Frontend-specific hooks will be registered here
+        $this->hooks = [
+            'wp_loaded' => ['Jankx\Kernel\FrontendKernel', 'loadFrontendServices'],
+            'wp_enqueue_scripts' => ['Jankx\Kernel\FrontendKernel', 'enqueueFrontendAssets'],
+            'wp_head' => ['Jankx\Kernel\FrontendKernel', 'addHeadMeta'],
+        ];
     }
 
     /**
@@ -87,7 +83,10 @@ class FrontendKernel extends Kernel implements KernelInterface
      */
     protected function registerFilters(): void
     {
-        // Frontend-specific filters will be registered here
+        $this->filters = [
+            'jankx_frontend_title' => ['Jankx\Kernel\FrontendKernel', 'filterPageTitle'],
+            'jankx_frontend_description' => ['Jankx\Kernel\FrontendKernel', 'filterPageDescription'],
+        ];
     }
 
     /**

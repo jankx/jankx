@@ -71,9 +71,11 @@ class Jankx extends Container
      */
     public static function getInstance()
     {
-        if (!self::$instance) {
-            self::$instance = new self();
+        $instance = self::$instance;
+        if (is_null($instance)) {
+            $instance = new self();
         }
+        self::$instance = &$instance;
         return self::$instance;
     }
 }

@@ -536,7 +536,7 @@ backstop test
 npm install -g lighthouse
 
 # Test performance
-lighthouse https://your-site.com --output=html --output-path=./lighthouse-report.html
+lighthouse https://your-site.com --output=html --output-path=./lighthouse.html
 ```
 
 ### 3. **Accessibility Testing**

@@ -82,53 +82,15 @@ class AdminKernel extends Kernel implements KernelInterface
     }
 
     /**
-     * Register bootstrappers
-     */
-    protected function registerBootstrappers(): void
-    {
-        // Theme bootstrapper (highest priority)
-        $this->addBootstrapper(ThemeBootstrapper::class);
-
-        // Admin bootstrapper (excluding Gutenberg)
-        $this->addBootstrapper(AdminBootstrapper::class);
-
-        // Debug bootstrapper (when JANKX_DEBUG is enabled)
-        if (defined('JANKX_DEBUG') && JANKX_DEBUG) {
-            $this->addBootstrapper(\Jankx\Bootstrappers\Global\DebugBootstrapper::class);
-        }
-
-        // Gutenberg bootstrapper (only when in Gutenberg editor)
-        if ($this->isGutenbergEditor()) {
-            $this->addBootstrapper(GutenbergBootstrapper::class);
-        }
-
-        // Allow child themes to add custom bootstrappers
-        $customBootstrappers = apply_filters('jankx/admin/bootstrappers', []);
-        foreach ($customBootstrappers as $bootstrapper) {
-            $this->addBootstrapper($bootstrapper);
-        }
-    }
-
-    /**
-     * Register services
-     */
-    protected function registerServices(): void
-    {
-        // Register AdminServiceProvider
-        $this->addServiceProvider(\Jankx\Providers\AdminServiceProvider::class);
-
-        // Admin services are now registered through AdminServiceProvider
-        // This method is kept for backward compatibility
-        // All services should be registered through Service Providers
-    }
-
-    /**
      * Register hooks
      */
     protected function registerHooks(): void
     {
-        // Admin-specific hooks (excluding Gutenberg)
-        add_action('admin_enqueue_scripts', [$this, 'enqueueAdminAssets']);
+        $this->hooks = [
+            'admin_init' => ['Jankx\Kernel\AdminKernel', 'initializeAdmin'],
+            'admin_menu' => ['Jankx\Kernel\AdminKernel', 'setupAdminMenu'],
+            'admin_enqueue_scripts' => ['Jankx\Kernel\AdminKernel', 'enqueueAdminAssets'],
+        ];
     }
 
     /**
@@ -136,9 +98,9 @@ class AdminKernel extends Kernel implements KernelInterface
      */
     protected function registerFilters(): void
     {
-        // Admin-specific filters (excluding Gutenberg)
-        add_filter('jankx/admin/menu_items', [$this, 'filterAdminMenuItems']);
-        add_filter('jankx/admin/dashboard_widgets', [$this, 'filterDashboardWidgets']);
+        $this->filters = [
+            'jankx_admin_page_title' => ['Jankx\Kernel\AdminKernel', 'filterPageTitle'],
+        ];
     }
 
     /**

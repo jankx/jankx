@@ -32,9 +32,6 @@ class FrontendBootstrapper extends AbstractBootstrapper
 
     public function bootstrap(Container $container): void
     {
-        // Register context-aware services
-        BootstrapperHelper::registerContextProvider($container);
-
         // Setup deferred service resolver
         BootstrapperHelper::setupDeferredResolver($container);
 
@@ -54,13 +51,11 @@ class FrontendBootstrapper extends AbstractBootstrapper
     private function loadEssentialServices(Container $container): void
     {
         // Services needed immediately - now registered through FrontendKernel
-        // No need to create new FrontendServiceProvider instance here
     }
 
     private function deferHeavyServices(Container $container): void
     {
         // Defer heavy services until actually needed - now through FrontendKernel
-        // No need to create new FrontendServiceProvider instance here
     }
 
     private function setupFrontendHooks(): void
@@ -72,7 +67,7 @@ class FrontendBootstrapper extends AbstractBootstrapper
 
     public function loadFrontendServices(): void
     {
-        ErrorHandlingHelper::safeExecute(function() {
+        ErrorHandlingHelper::safeExecute(function () {
             // Get container from global Jankx instance
             $container = BootstrapperHelper::getGlobalContainer();
 
@@ -90,7 +85,7 @@ class FrontendBootstrapper extends AbstractBootstrapper
 
     public function loadFrontendAssets(): void
     {
-        ErrorHandlingHelper::safeExecute(function() {
+        ErrorHandlingHelper::safeExecute(function () {
             // Get container from global Jankx instance
             $container = BootstrapperHelper::getGlobalContainer();
 

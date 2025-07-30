@@ -32,12 +32,16 @@ class AdminServiceProvider extends ServiceProvider
         $this->singleton(\Jankx\Services\GutenbergBlocksService::class);
 
         // Dependencies for GutenbergBlocksService
-        $this->singleton(\Jankx\Adapters\WordPressAdapter::class);
+
         $this->singleton(\Jankx\Parsers\BlockParser::class);
 
-        // Config Repository
+        // Config Repository and Service Provider
         $this->singleton('config', \Jankx\Config\Repository::class);
         $this->singleton(\Jankx\Config\Repository::class);
+        $this->singleton(\Jankx\Config\ConfigRepositoryInterface::class, \Jankx\Config\Repository::class);
+
+        // Register Config facade
+        $this->singleton('config.facade', \Jankx\Facades\Config::class);
 
         // Note: Other admin services like MenuManager, AssetManager, etc.
         // will be registered when their classes are actually created

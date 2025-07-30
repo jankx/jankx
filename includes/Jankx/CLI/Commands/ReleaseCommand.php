@@ -38,9 +38,9 @@ class ReleaseCommand extends WP_CLI_Command
      */
     public function __construct()
     {
-        $this->themePath = get_template_directory();
-        $this->themeName = get_template();
-        $this->loadExcludePatterns();
+        $this->themePath = \get_template_directory();
+        $this->themeName = \get_template();
+        $this->loadExcludePatterns(false); // Default to false in constructor
     }
 
     /**
@@ -110,6 +110,11 @@ class ReleaseCommand extends WP_CLI_Command
             }
         }
 
+        // Reload exclude patterns with verbose flag if needed
+        if ($verbose) {
+            $this->loadExcludePatterns($verbose);
+        }
+
         // Get files to include
         $files = $this->getFilesToInclude();
 
@@ -164,9 +169,10 @@ class ReleaseCommand extends WP_CLI_Command
     /**
      * Load exclude patterns from .gitattributes
      *
+     * @param bool $verbose
      * @since 2.0.0
      */
-    private function loadExcludePatterns()
+    private function loadExcludePatterns($verbose = false)
     {
         $gitattributesPath = $this->themePath . '/.gitattributes';
 
@@ -212,7 +218,7 @@ class ReleaseCommand extends WP_CLI_Command
         $lines = explode("\n", $content);
 
         // Only show verbose info if --verbose flag is set
-        $verbose = WP_CLI::get_config('verbose');
+        $verbose = isset($assoc_args['verbose']);
         if ($verbose) {
             WP_CLI::log("📖 Reading exclude patterns from .gitattributes...");
         }
@@ -378,7 +384,7 @@ class ReleaseCommand extends WP_CLI_Command
     {
         WP_CLI::log("🔍 DRY RUN - Files that would be included:");
         WP_CLI::log("📄 Total files: " . count($files));
-        
+
         if ($verbose) {
             WP_CLI::log("");
 

@@ -45,6 +45,8 @@ class CLIKernel extends Kernel implements KernelInterface
      */
     protected function registerBootstrappers(): void
     {
+        parent::registerBootstrappers();
+
         // Theme bootstrapper (highest priority)
         $this->addBootstrapper(ThemeBootstrapper::class);
 
@@ -63,12 +65,10 @@ class CLIKernel extends Kernel implements KernelInterface
      */
     protected function registerServices(): void
     {
+        parent::registerServices();
+
         // Register CLIServiceProvider
         $this->addServiceProvider(\Jankx\Providers\CLIServiceProvider::class);
-
-        // CLI services are now registered through CLIServiceProvider
-        // This method is kept for backward compatibility
-        // All services should be registered through Service Providers
     }
 
     /**
@@ -90,8 +90,9 @@ class CLIKernel extends Kernel implements KernelInterface
      */
     protected function registerFilters(): void
     {
-        // CLI output formatting
-        $this->addFilter('jankx/cli/output', [$this, 'formatCLIOutput']);
+        $this->filters = [
+            'jankx_cli_commands' => ['Jankx\Kernel\CLIKernel', 'filterCLICommands'],
+        ];
     }
 
     /**
@@ -122,7 +123,6 @@ class CLIKernel extends Kernel implements KernelInterface
         }
 
         // CLI commands are now registered through CLIServiceProvider
-        // No need to register them here
 
         // Basic Jankx commands
         \WP_CLI::add_command('jankx info', [$this, 'showFrameworkInfo']);

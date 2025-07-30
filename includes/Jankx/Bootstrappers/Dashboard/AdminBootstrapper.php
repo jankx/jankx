@@ -32,9 +32,6 @@ class AdminBootstrapper extends AbstractBootstrapper
 
     public function bootstrap(Container $container): void
     {
-        // Register context-aware services
-        BootstrapperHelper::registerContextProvider($container);
-
         // Setup deferred service resolver
         BootstrapperHelper::setupDeferredResolver($container);
 
@@ -54,13 +51,11 @@ class AdminBootstrapper extends AbstractBootstrapper
     private function loadEssentialServices(Container $container): void
     {
         // Services needed immediately - now registered through AdminKernel
-        // No need to create new AdminServiceProvider instance here
     }
 
     private function deferHeavyServices(Container $container): void
     {
         // Defer heavy services until actually needed - now through AdminKernel
-        // No need to create new AdminServiceProvider instance here
     }
 
     private function setupAdminHooks(): void
@@ -72,7 +67,7 @@ class AdminBootstrapper extends AbstractBootstrapper
 
     public function loadAdminServices(): void
     {
-        ErrorHandlingHelper::safeExecute(function() {
+        ErrorHandlingHelper::safeExecute(function () {
             // Get container from global Jankx instance
             $container = BootstrapperHelper::getGlobalContainer();
 
@@ -90,7 +85,7 @@ class AdminBootstrapper extends AbstractBootstrapper
 
     public function loadAdminAssets(): void
     {
-        ErrorHandlingHelper::safeExecute(function() {
+        ErrorHandlingHelper::safeExecute(function () {
             // Get container from global Jankx instance
             $container = BootstrapperHelper::getGlobalContainer();
 

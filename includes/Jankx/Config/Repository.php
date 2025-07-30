@@ -66,17 +66,40 @@ class Repository implements ConfigRepositoryInterface
     public function __construct()
     {
         $this->initializeThemePaths();
-        $this->loadConfigurations();
+        // Configurations will be loaded by ConfigBootstrapper
     }
 
     /**
-     * Initialize theme paths
+     * Initialize theme paths with environment variable support
      */
     protected function initializeThemePaths(): void
     {
-        $this->parentThemePath = get_template_directory();
-        $this->childThemePath = get_stylesheet_directory();
-        $this->isChildTheme = $this->parentThemePath !== $this->childThemePath;
+        // Check for environment variable for config paths
+        $configPath = getenv('JANKX_CONFIG_PATH');
+
+        if ($configPath && is_dir($configPath)) {
+            // Use environment-specified config path
+            $this->parentThemePath = $configPath;
+            $this->childThemePath = $configPath;
+            $this->isChildTheme = false;
+        } else {
+            // Use default WordPress theme paths with fallback
+            if (function_exists('get_template_directory')) {
+                $this->parentThemePath = get_template_directory();
+            } else {
+                // Fallback to current working directory (theme root)
+                $this->parentThemePath = getcwd();
+            }
+
+            if (function_exists('get_stylesheet_directory')) {
+                $this->childThemePath = get_stylesheet_directory();
+            } else {
+                // Fallback to current working directory (theme root)
+                $this->childThemePath = getcwd();
+            }
+
+            $this->isChildTheme = $this->parentThemePath !== $this->childThemePath;
+        }
     }
 
     /**
@@ -97,14 +120,30 @@ class Repository implements ConfigRepositoryInterface
     }
 
     /**
+     * Load configurations from ConfigBootstrapper
+     */
+    public function loadFromBootstrapper(): void
+    {
+        $this->loadConfigurations();
+    }
+
+    /**
      * Load parent theme configuration
      */
     protected function loadParentConfig(): void
     {
-        $parentConfigPath = $this->parentThemePath . '/config';
+        // Check if using environment variable
+        $configPath = getenv('JANKX_CONFIG_PATH');
 
-        if (is_dir($parentConfigPath)) {
-            $this->parentConfig = $this->loadConfigFromDirectory($parentConfigPath);
+        if ($configPath && is_dir($configPath)) {
+            // Use environment-specified config path directly
+            $this->parentConfig = $this->loadConfigFromDirectory($configPath);
+        } else {
+            // Use default WordPress theme path
+            $parentConfigPath = $this->parentThemePath . '/config';
+            if (is_dir($parentConfigPath)) {
+                $this->parentConfig = $this->loadConfigFromDirectory($parentConfigPath);
+            }
         }
     }
 
@@ -113,10 +152,18 @@ class Repository implements ConfigRepositoryInterface
      */
     protected function loadChildConfig(): void
     {
-        $childConfigPath = $this->childThemePath . '/config';
+        // Check if using environment variable
+        $configPath = getenv('JANKX_CONFIG_PATH');
 
-        if (is_dir($childConfigPath)) {
-            $this->childConfig = $this->loadConfigFromDirectory($childConfigPath);
+        if ($configPath && is_dir($configPath)) {
+            // Use environment-specified config path directly
+            $this->childConfig = $this->loadConfigFromDirectory($configPath);
+        } else {
+            // Use default WordPress theme path
+            $childConfigPath = $this->childThemePath . '/config';
+            if (is_dir($childConfigPath)) {
+                $this->childConfig = $this->loadConfigFromDirectory($childConfigPath);
+            }
         }
     }
 
@@ -362,6 +409,13 @@ class Repository implements ConfigRepositoryInterface
      */
     protected function generateCacheKey(string $file): string
     {
+        if (!file_exists($file)) {
+            // Return a default cache key for non-existent files
+            $cacheKey = 'jankx_config_' . md5($file . '_missing');
+            $this->cacheKeys[$file] = $cacheKey;
+            return $cacheKey;
+        }
+
         $fileContent = file_get_contents($file);
         $checksum = crc32($fileContent);
         $this->fileChecksums[$file] = $checksum;
@@ -380,6 +434,10 @@ class Repository implements ConfigRepositoryInterface
      */
     protected function getCachedConfig(string $cacheKey)
     {
+        if (!function_exists('wp_cache_get')) {
+            return false;
+        }
+
         $cached = wp_cache_get($cacheKey, 'jankx_config');
         return $cached !== false ? $cached : false;
     }
@@ -393,6 +451,10 @@ class Repository implements ConfigRepositoryInterface
      */
     protected function cacheConfig(string $cacheKey, array $config): void
     {
+        if (!function_exists('wp_cache_set')) {
+            return;
+        }
+
         // Cache for 1 hour (3600 seconds)
         wp_cache_set($cacheKey, $config, 'jankx_config', 3600);
     }

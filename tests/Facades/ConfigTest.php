@@ -33,8 +33,8 @@ class ConfigTest extends TestCase
         $this->container = new Container();
         $this->repository = Mockery::mock(Repository::class);
 
-        // Bind mock repository to container
-        $this->container->singleton('config', function() {
+        // Bind mock repository to container using the correct facade accessor
+        $this->container->singleton(Repository::class, function() {
             return $this->repository;
         });
 
@@ -265,7 +265,7 @@ class ConfigTest extends TestCase
 
         $accessor = $method->invoke(null);
 
-        $this->assertEquals('config', $accessor);
+        $this->assertEquals(Repository::class, $accessor);
     }
 
     /**

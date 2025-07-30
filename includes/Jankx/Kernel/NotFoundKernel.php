@@ -43,6 +43,8 @@ class NotFoundKernel extends Kernel
      */
     protected function registerBootstrappers(): void
     {
+        parent::registerBootstrappers();
+
         $this->bootstrappers = [
             'Jankx\Bootstrappers\Global\CoreBootstrapper',
             'Jankx\Bootstrappers\Global\DebugBootstrapper',
@@ -55,9 +57,9 @@ class NotFoundKernel extends Kernel
      */
     protected function registerServices(): void
     {
-        $this->services = [
-            'Jankx\Providers\ContextualServiceProvider',
-        ];
+        parent::registerServices();
+
+        $this->services = [];
     }
 
     /**
@@ -75,7 +77,9 @@ class NotFoundKernel extends Kernel
      */
     protected function registerFilters(): void
     {
-        $this->filters = [];
+        $this->filters = [
+            'jankx_404_title' => ['Jankx\Kernel\NotFoundKernel', 'filter404Title'],
+        ];
     }
 
     /**

@@ -36,7 +36,7 @@ class GutenbergFrontendBootstrapper extends AbstractBootstrapper
 
         Logger::info('GutenbergFrontendBootstrapper is booting');
         // Only parse and register blocks after the_post of the main query
-        add_action('the_post', function($post) use ($container) {
+        add_action('the_post', function ($post) use ($container) {
             static $parsed = false;
             if ($parsed) {
                 return;
@@ -180,7 +180,7 @@ class GutenbergFrontendBootstrapper extends AbstractBootstrapper
         $settings = $this->getPartialHydrationSettings();
 
         // Add partial hydration data to page
-        add_action('wp_head', function() use ($settings) {
+        add_action('wp_head', function () use ($settings) {
             echo '<script type="application/json" id="jankx-partial-hydration-settings">';
             echo json_encode($settings);
             echo '</script>';
@@ -294,7 +294,6 @@ class GutenbergFrontendBootstrapper extends AbstractBootstrapper
                     'memory_usage' => memory_get_usage(true)
                 ]
             ]);
-
         } catch (\Exception $e) {
             Logger::error('Frontend block rendering failed', [
                 'block_name' => $block_name,

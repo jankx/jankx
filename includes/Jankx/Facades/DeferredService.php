@@ -3,7 +3,6 @@
 namespace Jankx\Facades;
 
 use Jankx\Services\DeferredServiceResolver;
-use Jankx\Context\ContextualServiceRegistry;
 
 /**
  * Deferred Service Facade
@@ -58,20 +57,14 @@ class DeferredService extends Facade
         return $resolver->getResolutionStats();
     }
 
-    /**
-     * Get current context
-     */
-    public static function getCurrentContext(): string
-    {
-        return ContextualServiceRegistry::getCurrentContext();
-    }
 
     /**
      * Register a service for specific context
      */
     public static function register(string $context, string $serviceClass, array $options = []): void
     {
-        ContextualServiceRegistry::register($context, $serviceClass, $options);
+        // Use Config system instead
+        \Jankx\Facades\Config::set("services.{$context}.{$serviceClass}", $options);
     }
 
     /**
@@ -79,7 +72,9 @@ class DeferredService extends Facade
      */
     public static function registerMultiple(string $context, array $services, array $options = []): void
     {
-        ContextualServiceRegistry::registerMultiple($context, $services, $options);
+        foreach ($services as $service) {
+            self::register($context, $service, $options);
+        }
     }
 
     /**
@@ -87,7 +82,8 @@ class DeferredService extends Facade
      */
     public static function defer(string $context, callable $factory, array $options = []): void
     {
-        ContextualServiceRegistry::defer($context, $factory, $options);
+        // Use Config system instead
+        \Jankx\Facades\Config::set("deferred.{$context}", $factory);
     }
 
     /**
@@ -95,7 +91,11 @@ class DeferredService extends Facade
      */
     public static function getRegistryStats(): array
     {
-        return ContextualServiceRegistry::getStats();
+        return [
+            'context' => Kernel::getCurrentContext(),
+            'services' => Config::get('services', []),
+            'deferred' => Config::get('deferred', []),
+        ];
     }
 
     /**

@@ -28,6 +28,8 @@ class GutenbergAjaxKernel extends Kernel implements KernelInterface
      */
     protected function registerBootstrappers(): void
     {
+        parent::registerBootstrappers();
+
         // Theme bootstrapper (highest priority)
         $this->addBootstrapper(ThemeBootstrapper::class);
 
@@ -46,6 +48,8 @@ class GutenbergAjaxKernel extends Kernel implements KernelInterface
      */
     protected function registerServices(): void
     {
+        parent::registerServices();
+
         // Gutenberg AJAX-specific services will be registered here
     }
 

@@ -102,7 +102,7 @@ Jankx 2.0 follows and implements a comprehensive set of programming principles t
 Each class should have one clear responsibility:
 
 ```php
-// ✅ ThemeSupportHelper - Only manages WordPress theme support
+// ✅ ThemeSupportHelper - Only manages theme support
 class ThemeSupportHelper
 {
     public static function addBasicSupports(): void
@@ -111,13 +111,14 @@ class ThemeSupportHelper
     // ... other theme support methods
 }
 
-// ✅ ServiceRegistrationHelper - Only manages service registration
-class ServiceRegistrationHelper
+// ✅ Service Provider Pattern - Register services through dedicated providers
+class AdminServiceProvider extends ServiceProvider
 {
-    public static function registerServices(Container $container, array $services): void
-    public static function registerAdminServices(Container $container): void
-    public static function registerFrontendServices(Container $container): void
-    // ... other registration methods
+    public function register(): void
+    {
+        $this->singleton('admin.dashboard', \Jankx\Admin\Dashboard::class);
+        $this->singleton(\Jankx\Services\UserService::class);
+    }
 }
 
 // ✅ ErrorHandlingHelper - Only manages error handling
@@ -556,8 +557,9 @@ if (!wp_verify_nonce($_POST['nonce'], 'action')) {
 - Provide fallback mechanisms where possible
 
 ### 5. Service Registration
-- Use ServiceRegistrationHelper for all service registration
-- Group related services together
+- Use Service Provider pattern for all service registration
+- Create dedicated Service Providers for each context (admin, frontend, cli)
+- Register services through Kernels using addServiceProvider()
 - Use deferred registration for heavy services
 
 ## 🔧 Maintenance Guidelines
@@ -575,15 +577,25 @@ public static function addNewFeatureSupport(): void
 
 ### 2. Adding New Services
 ```php
-// Add to ServiceRegistrationHelper
-public static function registerNewServices(Container $container): void
+// Create a new Service Provider
+class MyCustomServiceProvider extends ServiceProvider
 {
-    $newServices = [
-        \Jankx\New\NewService::class,
-        \Jankx\New\AnotherService::class,
-    ];
+    public function register(): void
+    {
+        $this->singleton(\Jankx\New\NewService::class);
+        $this->singleton(\Jankx\New\AnotherService::class);
+    }
 
-    self::registerServices($container, $newServices);
+    public function boot(): void
+    {
+        // Boot services if needed
+    }
+}
+
+// Register in appropriate Kernel
+protected function registerServices(): void
+{
+    $this->addServiceProvider(\Jankx\Providers\MyCustomServiceProvider::class);
 }
 ```
 

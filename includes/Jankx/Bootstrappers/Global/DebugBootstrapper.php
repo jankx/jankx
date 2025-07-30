@@ -38,6 +38,10 @@ class DebugBootstrapper extends AbstractBootstrapper
         // Debug services are now registered through DebugServiceProvider
         // This bootstrapper only handles debug info initialization
 
+        Logger::debug('$container->has(\Jankx\Debug\DebugInfo::class)', [
+            'has_debug' => $container->has(\Jankx\Debug\DebugInfo::class)
+        ]);
+
         // Initialize debug info if needed
         if ($container->has(\Jankx\Debug\DebugInfo::class)) {
             $debugInfo = $container->make(\Jankx\Debug\DebugInfo::class);
@@ -74,7 +78,7 @@ class DebugBootstrapper extends AbstractBootstrapper
             return;
         }
 
-        ErrorHandlingHelper::safeExecute(function() {
+        ErrorHandlingHelper::safeExecute(function () {
             $container = BootstrapperHelper::getGlobalContainer();
             if ($container && $container->bound(\Jankx\Debug\DebugInfo::class)) {
                 $debugInfo = $container->make(\Jankx\Debug\DebugInfo::class);
@@ -92,7 +96,7 @@ class DebugBootstrapper extends AbstractBootstrapper
      */
     public function displayFrontendDebugInfo(): void
     {
-        ErrorHandlingHelper::safeExecute(function() {
+        ErrorHandlingHelper::safeExecute(function () {
             $container = BootstrapperHelper::getGlobalContainer();
             if ($container && $container->bound(\Jankx\Debug\DebugInfo::class)) {
                 $debugInfo = $container->make(\Jankx\Debug\DebugInfo::class);

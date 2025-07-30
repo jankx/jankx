@@ -13,6 +13,8 @@ Jankx 2.0 là một WordPress theme framework hiện đại đang trong giai đo
 - ✅ **Service Container**: Hoàn thành
 - ✅ **Bootstrapper System**: Hoàn thành
 - ✅ **Kernel System**: Hoàn thành
+- ✅ **Configuration System**: Hoàn thành (Config Facade + Repository)
+- ✅ **WordPress Integration**: Hoàn thành (Direct function calls)
 - 🔄 **Gutenberg Integration**: Đang phát triển
 - 🔄 **Performance System**: Đang phát triển
 - 🔄 **Designer Tools**: Đang phát triển
@@ -71,11 +73,23 @@ Jankx 2.0 là một WordPress theme framework hiện đại đang trong giai đo
 - Service registration
 - Hook management
 
-### 4. **Debug System** ✅
+### 4. **Configuration System** ✅
+- Config Facade for easy access
+- Repository pattern implementation
+- Context-aware configuration loading
+- File-based configuration management
+
+### 5. **Debug System** ✅
 - Gutenberg blocks debug
 - Performance monitoring
 - Service resolution tracking
 - Error handling
+
+### 6. **WordPress Integration** ✅
+- Direct WordPress function calls (no adapters)
+- Centralized context detection via Kernel Facade
+- Simplified service architecture
+- Reduced complexity
 
 ## 🔄 Systems in Development
 
@@ -199,7 +213,17 @@ require_once get_template_directory() . '/includes/framework.php';
 
 ## 🔧 Development Guidelines
 
-### 1. **Service Development**
+### 1. **Configuration Management**
+```php
+// Access configuration via Config Facade
+$value = \Jankx\Facades\Config::get('app.providers.frontend');
+$allConfig = \Jankx\Facades\Config::all();
+
+// Set configuration
+\Jankx\Facades\Config::set('custom.key', 'value');
+```
+
+### 2. **Service Development**
 ```php
 // Create new service
 class MyService
@@ -219,7 +243,28 @@ class MyService
 $this->container->singleton(MyService::class);
 ```
 
-### 2. **Bootstrapper Development**
+### 3. **WordPress Integration**
+```php
+// Direct WordPress function calls (no adapters)
+$content = \get_the_content() ?: '';
+$excerpt = \get_the_excerpt() ?: '';
+$hasBlocks = \has_blocks($content);
+$isAdmin = \is_admin();
+
+// WordPress hooks
+\add_action('init', [$this, 'initialize']);
+\add_filter('the_content', [$this, 'processContent']);
+```
+
+### 4. **Context Detection**
+```php
+// Use Kernel Facade for context detection
+$context = \Jankx\Facades\Kernel::getCurrentContext();
+
+// Available contexts: frontend, admin, cli, api, ajax, not_found
+```
+
+### 5. **Bootstrapper Development**
 ```php
 class MyBootstrapper extends AbstractBootstrapper
 {
@@ -234,7 +279,7 @@ class MyBootstrapper extends AbstractBootstrapper
 }
 ```
 
-### 3. **Testing**
+### 6. **Testing**
 ```php
 class MyServiceTest extends TestCase
 {
@@ -287,6 +332,8 @@ composer install --dev
 - ✅ Core architecture implementation
 - ✅ Service container system
 - ✅ Kernel and bootstrapper system
+- ✅ Configuration system (Config Facade + Repository)
+- ✅ WordPress integration (Direct function calls)
 - ✅ Debug system
 - 🔄 Gutenberg integration (in progress)
 - 🔄 Performance system (in progress)
@@ -295,7 +342,7 @@ composer install --dev
 ## 📞 Support
 
 ### Development Support
-- **GitHub Issues**: [Report bugs](https://github.com/jankx/jankx-2.0/issues)
+- **GitHub Issues**: [Submit issues](https://github.com/jankx/jankx-2.0/issues)
 - **Discord**: [Development community](https://discord.gg/jankx)
 - **Documentation**: [Development docs](./development/README.md)
 

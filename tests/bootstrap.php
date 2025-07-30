@@ -14,6 +14,12 @@ if (!function_exists('get_template_directory')) {
     }
 }
 
+if (!function_exists('get_template')) {
+    function get_template() {
+        return 'test-parent-theme';
+    }
+}
+
 if (!function_exists('get_stylesheet_directory')) {
     function get_stylesheet_directory() {
         return __DIR__ . '/../test-child-theme';
@@ -123,6 +129,26 @@ if (!class_exists('WP_CLI')) {
     class WP_CLI {
         public static function add_command($name, $callable) {
             // Mock implementation
+        }
+        
+        public static function log($message) {
+            // Mock implementation
+        }
+        
+        public static function error($message) {
+            // Mock implementation
+        }
+        
+        public static function warning($message) {
+            // Mock implementation
+        }
+        
+        public static function success($message) {
+            // Mock implementation
+        }
+        
+        public static function get_config($key) {
+            return false;
         }
     }
 }

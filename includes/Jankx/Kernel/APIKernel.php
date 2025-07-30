@@ -35,6 +35,8 @@ class APIKernel extends Kernel implements KernelInterface
      */
     protected function registerBootstrappers(): void
     {
+        parent::registerBootstrappers();
+
         // Theme bootstrapper (highest priority)
         $this->addBootstrapper(ThemeBootstrapper::class);
 
@@ -53,12 +55,10 @@ class APIKernel extends Kernel implements KernelInterface
      */
     protected function registerServices(): void
     {
+        parent::registerServices();
+
         // Register APIServiceProvider
         $this->addServiceProvider(\Jankx\Providers\APIServiceProvider::class);
-
-        // API services are now registered through APIServiceProvider
-        // This method is kept for backward compatibility
-        // All services should be registered through Service Providers
     }
 
     /**
@@ -66,23 +66,11 @@ class APIKernel extends Kernel implements KernelInterface
      */
     protected function registerHooks(): void
     {
-        // REST API initialization
-        $this->addHook('rest_api_init', [$this, 'registerAPIEndpoints']);
-
-        // CORS headers
-        $this->addHook('rest_pre_serve_request', [$this, 'addCORSHeaders']);
-
-        // API authentication
-        $this->addHook('rest_authentication_errors', [$this, 'authenticateAPI']);
-
-        // API rate limiting
-        $this->addHook('rest_pre_dispatch', [$this, 'checkRateLimit']);
-
-        // API logging
-        $this->addHook('rest_post_dispatch', [$this, 'logAPIRequest']);
-
-        // Custom endpoints
-        $this->addHook('jankx/api/register_endpoints', [$this, 'registerCustomEndpoints']);
+        $this->hooks = [
+            'rest_api_init' => ['Jankx\Kernel\APIKernel', 'initializeAPI'],
+            'wp_ajax_jankx_api' => ['Jankx\Kernel\APIKernel', 'handleAjaxRequest'],
+            'wp_ajax_nopriv_jankx_api' => ['Jankx\Kernel\APIKernel', 'handleAjaxRequest'],
+        ];
     }
 
     /**
@@ -90,14 +78,9 @@ class APIKernel extends Kernel implements KernelInterface
      */
     protected function registerFilters(): void
     {
-        // API response formatting
-        $this->addFilter('jankx/api/response', [$this, 'formatAPIResponse']);
-
-        // API error handling
-        $this->addFilter('jankx/api/error', [$this, 'formatAPIError']);
-
-        // API permissions
-        $this->addFilter('jankx/api/permissions', [$this, 'checkAPIPermissions']);
+        $this->filters = [
+            'jankx_api_response' => ['Jankx\Kernel\APIKernel', 'filterAPIResponse'],
+        ];
     }
 
     /**

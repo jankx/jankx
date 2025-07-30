@@ -420,7 +420,7 @@ if (defined('JANKX_DEBUG') && JANKX_DEBUG) {
 ### 2. Health Check
 ```php
 function jankx_health_check() {
-    $health_report = [
+    $health_check = [
         'patterns_registered' => false,
         'blocks_registered' => false,
         'posts_available' => false,
@@ -435,9 +435,9 @@ function jankx_health_check() {
     });
 
     if (!empty($jankx_patterns)) {
-        $health_report['patterns_registered'] = true;
+        $health_check['patterns_registered'] = true;
     } else {
-        $health_report['errors'][] = 'No Jankx patterns registered';
+        $health_check['errors'][] = 'No Jankx patterns registered';
     }
 
     // Check blocks
@@ -447,17 +447,17 @@ function jankx_health_check() {
     });
 
     if (!empty($jankx_blocks)) {
-        $health_report['blocks_registered'] = true;
+        $health_check['blocks_registered'] = true;
     } else {
-        $health_report['errors'][] = 'No Jankx blocks registered';
+        $health_check['errors'][] = 'No Jankx blocks registered';
     }
 
     // Check posts
     $posts = get_posts(['post_type' => 'post', 'numberposts' => 1]);
     if (!empty($posts)) {
-        $health_report['posts_available'] = true;
+        $health_check['posts_available'] = true;
     } else {
-        $health_report['errors'][] = 'No posts available';
+        $health_check['errors'][] = 'No posts available';
     }
 
     // Check cache
@@ -466,12 +466,12 @@ function jankx_health_check() {
     $cached = wp_cache_get($test_key, 'jankx');
 
     if ($cached === 'test') {
-        $health_report['cache_working'] = true;
+        $health_check['cache_working'] = true;
     } else {
-        $health_report['errors'][] = 'Cache not working';
+        $health_check['errors'][] = 'Cache not working';
     }
 
-    return $health_report;
+    return $health_check;
 }
 ```
 
@@ -560,7 +560,7 @@ function jankx_enable_detailed_logging() {
 }
 ```
 
-### 2. Error Reporting
+### 2. Error Handling
 ```php
 // Custom error handler for Jankx
 function jankx_error_handler($errno, $errstr, $errfile, $errline) {

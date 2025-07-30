@@ -17,12 +17,12 @@ class CronKernelStrategy extends KernelContextStrategy
     public function canHandle(): bool
     {
         $isCron = wp_doing_cron();
-        
+
         // Debug logging
         if (defined('JANKX_DEBUG') && JANKX_DEBUG) {
             \Jankx\Facades\Logger::debug("CronKernelStrategy: wp_doing_cron() = " . ($isCron ? 'true' : 'false'));
         }
-        
+
         return $isCron;
     }
 

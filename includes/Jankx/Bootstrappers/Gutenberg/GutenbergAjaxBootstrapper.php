@@ -106,7 +106,6 @@ class GutenbergAjaxBootstrapper extends AbstractBootstrapper
                 'block_name' => $block_name,
                 'attributes' => $attributes
             ]);
-
         } catch (\Exception $e) {
             Logger::error('Block rendering failed', [
                 'block_name' => $block_name,
@@ -144,7 +143,6 @@ class GutenbergAjaxBootstrapper extends AbstractBootstrapper
             $result = AjaxHandler::loadLayout($layout_name, $layout_data);
 
             wp_send_json_success($result);
-
         } catch (\Exception $e) {
             Logger::error('Layout loading failed', [
                 'layout_name' => $layout_name,
@@ -188,7 +186,6 @@ class GutenbergAjaxBootstrapper extends AbstractBootstrapper
             wp_send_json_success([
                 'block_data' => $block_data[$block_name]
             ]);
-
         } catch (\Exception $e) {
             Logger::error('Get block data failed', [
                 'block_name' => $block_name,
@@ -227,7 +224,6 @@ class GutenbergAjaxBootstrapper extends AbstractBootstrapper
             wp_send_json_success([
                 'options' => $options
             ]);
-
         } catch (\Exception $e) {
             Logger::error('Get block options failed', [
                 'block_name' => $block_name,
@@ -265,7 +261,6 @@ class GutenbergAjaxBootstrapper extends AbstractBootstrapper
             wp_send_json_success([
                 'stats' => $stats
             ]);
-
         } catch (\Exception $e) {
             Logger::error('Get performance stats failed', [
                 'error' => $e->getMessage(),

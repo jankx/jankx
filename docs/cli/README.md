@@ -473,7 +473,6 @@ wp jankx info --debug
 ### **Jankx Framework**
 - `CLIKernel` - Kernel xử lý CLI commands
 - `CLIBootstrapper` - Bootstrapper cho CLI context
-- `ContextualServiceProvider` - Service provider cho CLI
 
 ## 🚀 **Future Roadmap**
 

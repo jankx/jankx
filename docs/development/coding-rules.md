@@ -1,111 +1,200 @@
-# Coding Rules - Jankx Framework
+# Coding Rules & Standards
 
-## Tổng quan
+> **Jankx 2.0 Development Standards**
 
-Coding Rules định nghĩa các quy tắc và chuẩn code cho Jankx Framework, đảm bảo tính nhất quán, bảo trì và mở rộng.
+Tài liệu này định nghĩa các quy tắc coding và standards cho Jankx 2.0 framework.
 
-## Kiến trúc Framework
+## 🎯 Core Principles
 
-### 🔄 **Bootstrapping Flow**
+### **1. KISS Principle**
+- **Keep It Simple, Stupid**
+- Tránh over-engineering
+- Ưu tiên giải pháp đơn giản nhất có thể
 
+### **2. SOLID Principles**
+- **Single Responsibility**: Mỗi class chỉ có một trách nhiệm
+- **Open/Closed**: Mở để mở rộng, đóng để sửa đổi
+- **Liskov Substitution**: Subclass có thể thay thế base class
+- **Interface Segregation**: Interface nhỏ, chuyên biệt
+- **Dependency Inversion**: Phụ thuộc vào abstraction, không phải concrete
+
+### **3. WordPress Integration**
+- Sử dụng WordPress functions trực tiếp (không cần adapters)
+- Tuân thủ WordPress coding standards
+- Tương thích với WordPress hooks system
+
+## 📋 Coding Standards
+
+### **1. File Structure**
 ```
-Kernel → App → Bootstrapper → Service Provider → Service Boot
+includes/
+├── Jankx/
+│   ├── Bootstrappers/     # Bootstrapper classes
+│   ├── Config/           # Configuration system
+│   ├── Contracts/        # Interfaces
+│   ├── Debug/            # Debug system
+│   ├── Facades/          # Facade classes
+│   ├── Kernel/           # Kernel system
+│   ├── Providers/        # Service providers
+│   ├── Services/         # Business logic services
+│   └── Helpers/          # Utility classes
 ```
 
-#### **Flow chi tiết:**
+### **2. Naming Conventions**
 
-1. **Kernel tạo App**
+#### **Classes**
 ```php
-   // Kernel constructor
-   public function __construct(Container $container = null)
-   {
-       $this->container = $container ?: Jankx::getInstance();
-       $this->registerBootstrappers();
-       $this->registerServices();
-   }
-   ```
+// ✅ Đúng - PascalCase
+class UserService
+class GutenbergBlocksService
+class ConfigBootstrapper
 
-2. **App gọi Bootstrapper**
-   ```php
-   // Kernel::boot() method
-   public function boot(): void
-   {
-       $this->runBootstrappers();
-       $this->loadServices();
-       $this->loadHooks();
-       $this->loadFilters();
-   }
-   ```
+// ❌ Sai - camelCase
+class userService
+class gutenbergBlocksService
+```
 
-3. **Bootstrapper gọi Service Provider**
-   ```php
-   // Kernel::loadServices()
-   protected function loadServices()
-   {
-       foreach ($this->getServiceProviders() as $providerClass) {
-           $provider = new $providerClass($this->container);
-           $provider->register();  // Đăng ký services
-           $provider->boot();      // Boot services
-       }
-   }
-   ```
+#### **Methods**
+```php
+// ✅ Đúng - camelCase
+public function getUserData()
+public function registerServices()
+public function bootstrap()
 
-4. **Service Provider boot services cần thiết**
-   ```php
-   // ServiceProvider abstract class
-   abstract class ServiceProvider
-   {
-       abstract public function register();  // Đăng ký services
+// ❌ Sai - snake_case
+public function get_user_data()
+public function register_services()
+```
 
-       public function boot()               // Boot services
-       {
-           // Override if needed
+#### **Properties**
+```php
+// ✅ Đúng - camelCase
+private $container;
+private $serviceProviders;
+private $debugInfo;
+
+// ❌ Sai - snake_case
+private $service_providers;
+private $debug_info;
+```
+
+#### **Constants**
+```php
+// ✅ Đúng - UPPER_SNAKE_CASE
+const DEBUG_MODE = true;
+const CACHE_EXPIRY = 3600;
+const MAX_RETRIES = 3;
+```
+
+### **3. Code Organization**
+
+#### **Class Structure**
+```php
+<?php
+
+namespace Jankx\Services;
+
+use Jankx\Contracts\ServiceInterface;
+use Jankx\Facades\Config;
+
+/**
+ * Service class description
+ *
+ * @package Jankx\Services
+ * @since 2.0.0
+ */
+class MyService implements ServiceInterface
+{
+    /**
+     * @var Container
+     */
+    private $container;
+
+    /**
+     * Constructor
+     */
+    public function __construct(Container $container)
+    {
+        $this->container = $container;
+    }
+
+    /**
+     * Public methods first
+     */
+    public function doSomething(): void
+    {
+        // Implementation
+    }
+
+    /**
+     * Protected methods
+     */
+    protected function helperMethod(): void
+    {
+        // Implementation
+    }
+
+    /**
+     * Private methods last
+     */
+    private function internalMethod(): void
+    {
+        // Implementation
     }
 }
 ```
 
-### 🏗️ **Kiến trúc Components:**
+## 🔧 Framework-Specific Rules
 
-#### **Kernel (Core)**
-- Quản lý Container (IoC)
-- Điều phối toàn bộ framework
-- Chạy bootstrappers theo priority
-- Load service providers
+### **1. Service Container Usage**
 
-#### **Bootstrapper (Bootstrap)**
-- Khởi tạo các thành phần cơ bản
-- Setup environment
-- Register core services
-- Có priority system để chạy theo thứ tự
+#### **✅ Đúng - Dependency Injection**
+```php
+class UserService
+{
+    private $container;
 
-#### **Service Provider (Services)**
-- Đăng ký services vào container
-- Boot services khi cần
-- Quản lý dependencies
-- Context-aware (Admin, Frontend, CLI)
+    public function __construct(Container $container)
+    {
+        $this->container = $container;
+    }
 
-### 🎭 **Facade Usage Rules**
+    public function getUser(int $userId): ?User
+    {
+        return $this->container->make(UserRepository::class)->find($userId);
+    }
+}
+```
 
-#### **✅ Facades được phép sử dụng:**
+#### **❌ Sai - Direct instantiation**
+```php
+class UserService
+{
+    public function getUser(int $userId): ?User
+    {
+        return new UserRepository()->find($userId); // ❌ Không sử dụng container
+    }
+}
+```
+
+### **2. Facade Usage**
+
+#### **✅ Facades được phép:**
 ```php
 // ✅ Đúng - Config Facade
-$value = \Jankx\Facades\Config::get('app.name');
-
-// ✅ Đúng - Debug Facade
-\Jankx\Facades\Debug::info('Debug message');
+$value = \Jankx\Facades\Config::get('app.providers.frontend');
+$allConfig = \Jankx\Facades\Config::all();
 
 // ✅ Đúng - Logger Facade
-\Jankx\Facades\Logger::error('Error message');
+\Jankx\Facades\Logger::debug('message', ['data' => $data]);
+\Jankx\Facades\Logger::error('error message');
 
-// ✅ Đúng - Theme Facade
-$theme = \Jankx\Facades\Theme::get();
+// ✅ Đúng - Kernel Facade
+$context = \Jankx\Facades\Kernel::getCurrentContext();
 ```
 
 #### **❌ Facades không được phép:**
 ```php
-// ❌ Sai - Kernel Facade (đã bị loại bỏ)
-$version = \Jankx\Facades\Kernel::getFrameworkVersion();
-
 // ❌ Sai - Options Facade (đã bị loại bỏ)
 $option = \Jankx\Facades\Options::get('option_name');
 ```
@@ -121,762 +210,295 @@ $container = \Jankx\Jankx::getInstance();
 $service = $container->make(MyService::class);
 ```
 
+#### **✅ WordPress Function Usage:**
+```php
+// ✅ Đúng - Gọi WordPress functions trực tiếp
+$content = \get_the_content() ?: '';
+$excerpt = \get_the_excerpt() ?: '';
+$hasBlocks = \has_blocks($content);
+$isAdmin = \is_admin();
+
+// ✅ Đúng - Sử dụng WordPress hooks
+\add_action('init', [$this, 'initialize']);
+\add_filter('the_content', [$this, 'processContent']);
+
+// ✅ Đúng - WordPress constants
+if (defined('WP_CLI') && WP_CLI) {
+    // CLI context
+}
+```
+
 #### **🎯 Facade Guidelines:**
+- **Sử dụng Facades cho**: Config, Logger, Kernel
+- **Tránh Facades cho**: Services phức tạp, Business logic
+- **Ưu tiên DI cho**: Services có dependencies phức tạp
 
-1. **Chỉ tạo Facade khi cần thiết** - Không tạo facade cho mọi service
-2. **Static interface cho services phổ biến** - Config, Debug, Logger, Theme
-3. **Direct access cho core components** - Kernel, Container, Service Providers
-4. **Consistent naming** - Tên facade phải rõ ràng và mô tả
-5. **Proper documentation** - Comment đầy đủ cho mỗi facade method
+### **3. Bootstrapper Development**
 
-## Naming Conventions
-
-### 📝 **Class Names**
+#### **✅ Đúng - Bootstrapper Structure**
 ```php
-// ✅ Đúng
-class FrontendKernel extends Kernel
-class AdminBootstrapper extends AbstractBootstrapper
-class DebugServiceProvider extends ServiceProvider
-class TemplateRenderer
-class AssetManager
-
-// ❌ Sai
-class frontend_kernel
-class admin_bootstrapper
-class debug_service_provider
-class template_renderer
-class asset_manager
-```
-
-### 📝 **Method Names**
-```php
-// ✅ Đúng
-public function boot(): void
-public function register(): void
-public function shouldRun(): bool
-public function bootstrap(Container $container): void
-public function getContainer(): Container
-
-// ❌ Sai
-public function Boot(): void
-public function Register(): void
-public function should_run(): bool
-public function Bootstrap(Container $container): void
-public function get_container(): Container
-```
-
-### 📝 **Property Names**
-```php
-// ✅ Đúng
-protected $container;
-protected $bootstrappers = [];
-protected $serviceProviders = [];
-protected $booted = false;
-protected $priority = 10;
-
-// ❌ Sai
-protected $Container;
-protected $bootstrappers_array = [];
-protected $service_providers = [];
-protected $Booted = false;
-protected $Priority = 10;
-```
-
-### 📝 **Constant Names**
-```php
-// ✅ Đúng
-const FRAMEWORK_NAME = 'Jankx';
-const FRAMEWORK_VERSION = '2.0.0';
-const DEFAULT_PRIORITY = 10;
-const DEBUG_MODE = true;
-
-// ❌ Sai
-const framework_name = 'Jankx';
-const Framework_Version = '2.0.0';
-const default_priority = 10;
-const debug_mode = true;
-```
-
-## File Structure
-
-### 📁 **Directory Structure**
-```
-includes/Jankx/
-├── Kernel/
-│   ├── Kernel.php
-│   ├── FrontendKernel.php
-│   ├── AdminKernel.php
-│   └── CLIKernel.php
-├── Bootstrappers/
-│   ├── AbstractBootstrapper.php
-│   ├── Global/
-│   ├── Frontend/
-│   ├── Admin/
-│   └── CLI/
-├── Providers/
-│   ├── ServiceProvider.php
-│   ├── FrontendServiceProvider.php (bao gồm debug services)
-│   ├── AdminServiceProvider.php
-│   ├── APIServiceProvider.php
-│   ├── CLIServiceProvider.php
-│   ├── DebugServiceProvider.php (chỉ frontend context)
-│   └── ContextualServiceProvider.php
-├── Services/
-│   ├── DebugInfo.php
-│   ├── TemplateRenderer.php
-│   └── AssetManager.php
-└── Contracts/
-    ├── KernelInterface.php
-    ├── BootstrapperInterface.php
-    └── ServiceProviderInterface.php
-```
-
-### 📁 **File Naming**
-```php
-// ✅ Đúng
-Kernel.php
-FrontendKernel.php
-AdminBootstrapper.php
-DebugServiceProvider.php
-TemplateRenderer.php
-
-// ❌ Sai
-kernel.php
-frontend_kernel.php
-admin_bootstrapper.php
-debug_service_provider.php
-template_renderer.php
-```
-
-## Code Organization
-
-### 🏗️ **Class Structure**
-```php
-<?php
-
-namespace Jankx\Kernel;
-
-use Jankx\Contracts\KernelInterface;
-use Jankx\Contracts\BootstrapperInterface;
-use Illuminate\Container\Container;
-use Jankx\Facades\Logger;
-
-/**
- * Abstract Kernel Class
- *
- * Base class for all kernel types in Jankx framework
- *
- * @package Jankx\Kernel
- */
-abstract class Kernel implements KernelInterface
+class MyBootstrapper extends AbstractBootstrapper
 {
-    // 1. Properties
-    protected $container;
-    protected $bootstrappers = [];
-    protected $serviceProviders = [];
-    protected $booted = false;
-
-    // 2. Constructor
-    public function __construct(Container $container = null)
+    public function bootstrap(Container $container): void
     {
-        $this->container = $container ?: Jankx::getInstance();
-        $this->registerBootstrappers();
-        $this->registerServices();
+        // Register services
+        $container->singleton(MyService::class);
+
+        // Setup hooks
+        add_action('init', [$this, 'initialize']);
     }
 
-    // 3. Abstract methods
-    abstract protected function registerBootstrappers(): void;
-    abstract protected function registerServices(): void;
+    public function getPriority(): int
+    {
+        return 10; // Lower = higher priority
+    }
 
-    // 4. Public methods
+    public function shouldRun(): bool
+    {
+        return !is_admin(); // Only in frontend
+    }
+}
+```
+
+### **4. Service Provider Development**
+
+#### **✅ Đúng - Service Provider**
+```php
+class MyServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+        $this->singleton(MyService::class);
+        $this->singleton(MyRepository::class);
+    }
+
     public function boot(): void
     {
-        if ($this->booted) {
-            return;
-        }
-
-        $this->runBootstrappers();
-        $this->loadServices();
-        $this->loadHooks();
-        $this->loadFilters();
-
-        $this->booted = true;
-    }
-
-    // 5. Protected methods
-    protected function runBootstrappers(): void
-    {
-        // Implementation
-    }
-
-    // 6. Private methods
-    private function sortBootstrappersByPriority(): array
-    {
-        // Implementation
+        // Boot logic here
     }
 }
 ```
 
-### 🔧 **Method Organization**
+### **5. Configuration Management**
+
+#### **✅ Đúng - Config Usage**
 ```php
-class ExampleClass
-{
-    // 1. Properties
-    protected $property;
+// Access configuration
+$providers = \Jankx\Facades\Config::get('app.providers.frontend', []);
+$debugMode = \Jankx\Facades\Config::get('app.debug', false);
 
-    // 2. Constructor
-    public function __construct()
-    {
-        // Constructor logic
-    }
+// Set configuration
+\Jankx\Facades\Config::set('custom.key', 'value');
 
-    // 3. Public methods
-    public function publicMethod(): void
-    {
-        // Public method logic
-    }
-
-    // 4. Protected methods
-    protected function protectedMethod(): void
-    {
-        // Protected method logic
-    }
-
-    // 5. Private methods
-    private function privateMethod(): void
-    {
-        // Private method logic
-    }
+// Check if exists
+if (\Jankx\Facades\Config::has('app.providers')) {
+    // Do something
 }
 ```
 
-## Type Declarations
+### **6. Context Detection**
 
-### 📝 **Property Types**
+#### **✅ Đúng - Context Usage**
 ```php
-// ✅ Đúng
-protected Container $container;
-protected array $bootstrappers = [];
-protected bool $booted = false;
-protected int $priority = 10;
-protected string $kernelType;
+// Use Kernel Facade for context detection
+$context = \Jankx\Facades\Kernel::getCurrentContext();
 
-// ❌ Sai
-protected $container;
-protected $bootstrappers = [];
-protected $booted = false;
-protected $priority = 10;
-protected $kernelType;
+switch ($context) {
+    case 'frontend':
+        // Frontend logic
+        break;
+    case 'admin':
+        // Admin logic
+        break;
+    case 'cli':
+        // CLI logic
+        break;
+}
 ```
 
-### 📝 **Method Return Types**
+## 🐛 Error Handling
+
+### **1. Exception Handling**
 ```php
-// ✅ Đúng
-public function boot(): void
-public function getContainer(): Container
-public function getBootstrappers(): array
-public function isBooted(): bool
-public function getPriority(): int
-
-// ❌ Sai
-public function boot()
-public function getContainer()
-public function getBootstrappers()
-public function isBooted()
-public function getPriority()
-```
-
-### 📝 **Parameter Types**
-```php
-// ✅ Đúng
-public function bootstrap(Container $container): void
-public function addBootstrapper(string $bootstrapper): void
-public function hasBootstrapper(string $bootstrapper): bool
-public function setPriority(int $priority): void
-
-// ❌ Sai
-public function bootstrap($container): void
-public function addBootstrapper($bootstrapper): void
-public function hasBootstrapper($bootstrapper): bool
-public function setPriority($priority): void
-```
-
-## Error Handling
-
-### ⚠️ **Exception Handling**
-```php
-// ✅ Đúng
+// ✅ Đúng - Try-catch với specific exceptions
 try {
-    $provider = new $providerClass($this->container);
-    $provider->register();
-    $provider->boot();
-} catch (\Exception $e) {
-    Logger::error("Service Provider {$providerClass} failed: " . $e->getMessage());
-}
-
-// ❌ Sai
-$provider = new $providerClass($this->container);
-$provider->register();
-$provider->boot();
-```
-
-### ⚠️ **Error Logging**
-```php
-// ✅ Đúng
-Logger::error("Bootstrapper {$bootstrapperClass} failed: " . $e->getMessage());
-Logger::debug('Kernel booted', ['type' => $this->kernelType]);
-
-// ❌ Sai
-error_log("Bootstrapper failed");
-echo "Kernel booted";
-```
-
-## Performance Rules
-
-### ⚡ **Lazy Loading**
-```php
-// ✅ Đúng
-public function boot(): void
-{
-    if ($this->booted) {
-        return;
-    }
-
-    // Boot logic here
-    $this->booted = true;
-}
-
-// ❌ Sai
-public function boot(): void
-{
-    // Always run boot logic
-    $this->booted = true;
+    $service = $container->make(MyService::class);
+    $result = $service->doSomething();
+} catch (BindingResolutionException $e) {
+    Logger::error('Service not found: ' . $e->getMessage());
+} catch (Exception $e) {
+    Logger::error('Unexpected error: ' . $e->getMessage());
 }
 ```
 
-### ⚡ **Conditional Loading**
+### **2. Logging**
 ```php
-// ✅ Đúng
-public function shouldRun(): bool
-{
-    return is_admin() && current_user_can('manage_options');
-}
+// ✅ Đúng - Structured logging
+Logger::debug('Service registered', [
+    'service' => MyService::class,
+    'context' => Kernel::getCurrentContext()
+]);
 
-// ❌ Sai
-public function shouldRun(): bool
-{
-    return true; // Always run
-}
+Logger::error('Service failed', [
+    'service' => MyService::class,
+    'error' => $e->getMessage(),
+    'trace' => $e->getTraceAsString()
+]);
 ```
 
-### ⚡ **Memory Management**
+## 🧪 Testing Standards
+
+### **1. Test Structure**
 ```php
-// ✅ Đúng
-protected function loadServices()
+class MyServiceTest extends TestCase
 {
-    foreach ($this->getServiceProviders() as $providerClass) {
-        if (class_exists($providerClass)) {
-            $provider = new $providerClass($this->container);
-            $provider->register();
-            $provider->boot();
-        }
-    }
-}
+    private $container;
+    private $service;
 
-// ❌ Sai
-protected function loadServices()
-{
-    $providers = $this->getServiceProviders();
-    foreach ($providers as $providerClass) {
-        $provider = new $providerClass($this->container);
-        $provider->register();
-        $provider->boot();
-    }
-}
-```
-
-## Security Rules
-
-### 🔒 **Input Validation**
-```php
-// ✅ Đúng
-public function addBootstrapper(string $bootstrapper): void
-{
-    if (!class_exists($bootstrapper)) {
-        throw new \InvalidArgumentException("Bootstrapper {$bootstrapper} does not exist");
-    }
-
-    if (!in_array($bootstrapper, $this->bootstrappers)) {
-        $this->bootstrappers[] = $bootstrapper;
-    }
-}
-
-// ❌ Sai
-public function addBootstrapper(string $bootstrapper): void
-{
-    $this->bootstrappers[] = $bootstrapper;
-}
-```
-
-### 🔒 **Permission Checks**
-```php
-// ✅ Đúng
-public function shouldRun(): bool
-{
-    return is_admin() && current_user_can('manage_options');
-}
-
-// ❌ Sai
-public function shouldRun(): bool
-{
-    return true;
-}
-```
-
-### 🔒 **Data Sanitization**
-```php
-// ✅ Đúng
-public function setKernelType(string $type): void
-{
-    $this->kernelType = sanitize_text_field($type);
-}
-
-// ❌ Sai
-public function setKernelType(string $type): void
-{
-    $this->kernelType = $type;
-}
-```
-
-## Testing Rules
-
-### 🧪 **Unit Testing**
-```php
-// ✅ Đúng
-class KernelTest extends TestCase
-{
-    public function test_kernel_boots_correctly()
+    protected function setUp(): void
     {
-        $kernel = new FrontendKernel();
-        $kernel->boot();
-
-        $this->assertTrue($kernel->isBooted());
+        parent::setUp();
+        $this->container = new Container();
+        $this->service = new MyService($this->container);
     }
-}
 
-// ❌ Sai
-class KernelTest extends TestCase
-{
-    public function test_kernel_boots_correctly()
+    public function testServiceMethod(): void
     {
-        $kernel = new FrontendKernel();
-        $kernel->boot();
-
-        // No assertions
+        $result = $this->service->doSomething();
+        $this->assertNotNull($result);
     }
 }
 ```
 
-### 🧪 **Integration Testing**
+### **2. Mocking**
 ```php
-// ✅ Đúng
-class BootstrapperTest extends TestCase
-{
-    public function test_bootstrapper_runs_in_order()
-    {
-        $kernel = new TestKernel();
-        $kernel->addBootstrapper(TestBootstrapper::class);
-        $kernel->boot();
+// ✅ Đúng - Mock dependencies
+$mockRepository = $this->createMock(UserRepository::class);
+$mockRepository->method('find')->willReturn(new User());
 
-        $this->assertTrue($kernel->hasBootstrapper(TestBootstrapper::class));
-    }
-}
+$this->container->instance(UserRepository::class, $mockRepository);
 ```
 
-## Documentation Rules
+## 📝 Documentation Standards
 
-### 📝 **Class Documentation**
+### **1. PHPDoc**
 ```php
 /**
- * Abstract Kernel Class
+ * User service for managing user data
  *
- * Base class for all kernel types in Jankx framework.
- * Provides common functionality and enforces contract implementation.
- *
- * @package Jankx\Kernel
+ * @package Jankx\Services
  * @since 2.0.0
  */
-abstract class Kernel implements KernelInterface
+class UserService
 {
-    // Class implementation
+    /**
+     * Get user by ID
+     *
+     * @param int $userId User ID
+     * @return User|null User object or null if not found
+     * @throws UserNotFoundException When user not found
+     */
+    public function getUser(int $userId): ?User
+    {
+        // Implementation
+    }
 }
 ```
 
-### 📝 **Method Documentation**
+### **2. Inline Comments**
 ```php
-/**
- * Boot the kernel
- *
- * Initializes all bootstrappers, loads services, and sets up hooks.
- * This method should only be called once per kernel instance.
- *
- * @return void
- * @throws \RuntimeException If bootstrapping fails
- */
-public function boot(): void
+// ✅ Đúng - Explain why, not what
+// Check if user has permission to access admin area
+if (!current_user_can('manage_options')) {
+    return;
+}
+
+// ❌ Sai - Redundant comments
+$user = getUser(); // Get user
+```
+
+## 🚫 Anti-Patterns
+
+### **1. ❌ Avoid Global State**
+```php
+// ❌ Sai - Global variables
+global $myService;
+$myService = new MyService();
+
+// ✅ Đúng - Use container
+$container->singleton(MyService::class);
+$service = $container->make(MyService::class);
+```
+
+### **2. ❌ Avoid Direct WordPress Calls in Services**
+```php
+// ❌ Sai - Direct WordPress calls in business logic
+class UserService
 {
-    // Method implementation
+    public function getCurrentUser()
+    {
+        return wp_get_current_user(); // ❌ Direct call
+    }
+}
+
+// ✅ Đúng - Use WordPress functions directly when needed
+class UserService
+{
+    public function getCurrentUser()
+    {
+        return \wp_get_current_user(); // ✅ Direct call with namespace
+    }
 }
 ```
 
-### 📝 **Property Documentation**
+### **3. ❌ Avoid Complex Dependencies**
 ```php
-/**
- * @var Container The service container instance
- */
-protected $container;
+// ❌ Sai - Too many dependencies
+class ComplexService
+{
+    public function __construct(
+        UserService $userService,
+        ConfigService $configService,
+        LoggerService $loggerService,
+        CacheService $cacheService,
+        DatabaseService $databaseService
+    ) {
+        // Too complex
+    }
+}
 
-/**
- * @var array List of registered bootstrappers
- */
-protected $bootstrappers = [];
-
-/**
- * @var bool Whether the kernel has been booted
- */
-protected $booted = false;
+// ✅ Đúng - Break into smaller services
+class SimpleService
+{
+    public function __construct(Container $container)
+    {
+        $this->container = $container;
+    }
+}
 ```
 
-## Best Practices
+## 🎯 Best Practices Summary
 
-### ✅ **Do's**
-- Sử dụng type declarations cho tất cả properties và methods
-- Implement proper error handling với try-catch
-- Log errors và debug information
-- Use lazy loading cho performance
-- Follow naming conventions
+### **✅ Do's:**
+- Sử dụng Dependency Injection
+- Tuân thủ SOLID principles
+- Sử dụng Config Facade cho configuration
+- Sử dụng Kernel Facade cho context detection
+- Gọi WordPress functions trực tiếp
+- Log structured data
 - Write comprehensive tests
-- Document all public methods và classes
 
-### ❌ **Don'ts**
-- Không sử dụng global variables
-- Không hardcode values
+### **❌ Don'ts:**
+- Không sử dụng global state
+- Không tạo dependencies phức tạp
+- Không sử dụng WordPressAdapter (đã loại bỏ)
+- Không sử dụng ConfigManager (đã loại bỏ)
+- Không viết comments thừa
 - Không ignore exceptions
-- Không use magic numbers
-- Không write code without tests
-- Không skip documentation
-
-## Code Review Checklist
-
-### 🔍 **Architecture**
-- [ ] Follows bootstrapping flow: Kernel → App → Bootstrapper → Service Provider
-- [ ] Uses proper dependency injection
-- [ ] Implements interfaces correctly
-- [ ] Follows separation of concerns
-
-### 🔍 **Code Quality**
-- [ ] Uses type declarations
-- [ ] Follows naming conventions
-- [ ] Implements proper error handling
-- [ ] Includes comprehensive tests
-- [ ] Has proper documentation
-
-### 🔍 **Performance**
-- [ ] Uses lazy loading where appropriate
-- [ ] Implements conditional loading
-- [ ] Avoids memory leaks
-- [ ] Optimizes database queries
-
-### 🔍 **Security**
-- [ ] Validates all inputs
-- [ ] Checks permissions
-- [ ] Sanitizes data
-- [ ] Uses prepared statements
 
 ---
 
-**Version**: 2.0.0
-**Last Updated**: 2024
-**Compatibility**: WordPress 5.0+, PHP 7.4+
+**Jankx 2.0 Coding Rules** - Modern WordPress Theme Framework Standards 🚀
 
-## Service Registration Rules
-
-### 🔄 **Service Provider Pattern (Bắt buộc)**
-
-Tất cả services phải được register và boot thông qua **Service Provider**:
-
-```php
-// ✅ Đúng - Thông qua Service Provider
-class AdminServiceProvider extends ServiceProvider
-{
-    public function register()
-    {
-        $this->singleton('admin.dashboard', Dashboard::class);
-        $this->singleton('admin.menu', MenuManager::class);
-    }
-
-    public function boot()
-    {
-        if ($this->container->has('admin.dashboard')) {
-            $dashboard = $this->container->make('admin.dashboard');
-            $dashboard->initialize();
-        }
-    }
-}
-
-// ❌ Sai - Register trực tiếp
-protected function registerServices(): void
-{
-    $this->addService('admin.dashboard', [
-        'class' => \Jankx\Admin\Dashboard::class,
-        'params' => []
-    ]);
-}
-```
-
-### 🏗️ **Service Provider Types**
-
-#### **1. Context-Specific Providers**
-```php
-// AdminServiceProvider - Admin context
-// FrontendServiceProvider - Frontend context
-// CLIServiceProvider - CLI context
-// APIServiceProvider - API context
-// DebugServiceProvider - Debug context (chỉ frontend)
-```
-
-#### **2. Feature-Specific Providers**
-```php
-// GutenbergServiceProvider - Gutenberg features
-// WooCommerceServiceProvider - WooCommerce features
-// SecurityServiceProvider - Security features
-// PerformanceServiceProvider - Performance features
-```
-
-### 🔧 **Kernel Integration**
-
-```php
-// ✅ Đúng - Register Service Provider trong Kernel
-protected function registerServices(): void
-{
-    $this->addServiceProvider(\Jankx\Providers\AdminServiceProvider::class);
-    $this->addServiceProvider(\Jankx\Providers\FrontendServiceProvider::class);
-}
-
-// ❌ Sai - Register services trực tiếp
-protected function registerServices(): void
-{
-    $this->addService('admin.dashboard', [
-        'class' => \Jankx\Admin\Dashboard::class,
-        'params' => []
-    ]);
-}
-```
-
-### 🚫 **Không được phép**
-
-#### **1. Register trực tiếp trong Kernel**
-```php
-// ❌ Không được phép - Method addService đã bị xóa
-protected function registerServices(): void
-{
-    $this->addService('admin.dashboard', [
-        'class' => \Jankx\Admin\Dashboard::class,
-        'params' => []
-    ]);
-}
-```
-
-#### **2. Register trực tiếp trong Bootstrapper**
-```php
-// ❌ Không được phép
-public function bootstrap(Container $container): void
-{
-    $container->singleton(DebugInfo::class, $debugInfo);
-}
-```
-
-#### **3. Register trực tiếp trong Helper**
-```php
-// ❌ Không được phép - Sử dụng Service Provider pattern thay thế
-public static function registerServices(Container $container, array $services): void
-{
-    foreach ($services as $service) {
-        $container->singleton($service);
-    }
-}
-```
-
-### ✅ **Phải làm**
-
-#### **1. Tạo Service Provider cho mỗi context**
-```php
-// ✅ Đúng
-class MyCustomServiceProvider extends ServiceProvider
-{
-    public function register()
-    {
-        $this->singleton(MyService::class);
-        $this->singleton(MyOtherService::class);
-    }
-
-    public function boot()
-    {
-        // Boot services if needed
-    }
-
-    public function shouldLoad(): bool
-    {
-        return true; // Logic để quyết định có load hay không
-    }
-}
-```
-
-#### **2. Register Service Provider trong Kernel**
-```php
-// ✅ Đúng
-protected function registerServices(): void
-{
-    $this->addServiceProvider(\Jankx\Providers\AdminServiceProvider::class);
-    $this->addServiceProvider(\Jankx\Providers\FrontendServiceProvider::class);
-    $this->addServiceProvider(\Jankx\Providers\MyCustomServiceProvider::class);
-}
-```
-
-#### **3. Sử dụng Service Provider pattern**
-```php
-// ✅ Đúng
-class AdminServiceProvider extends ServiceProvider
-{
-    public function register()
-    {
-        $this->singleton('admin.dashboard', \Jankx\Admin\Dashboard::class);
-        $this->singleton(\Jankx\Services\UserService::class);
-    }
-
-    public function boot()
-    {
-        // Boot services if needed
-    }
-}
-```
-
-### 📋 **Service Provider Checklist**
-
-- [ ] Extend `ServiceProvider` class
-- [ ] Implement `register()` method
-- [ ] Implement `boot()` method
-- [ ] Use `$this->singleton()` for registration
-- [ ] Check container has service before booting
-- [ ] Handle exceptions in boot process
-- [ ] Add proper documentation
-- [ ] Register in appropriate Kernel
-
-### 🎯 **Best Practices**
-
-1. **One Provider per Context**: Mỗi context (admin, frontend, cli) có một Provider riêng
-2. **Feature Grouping**: Nhóm các services liên quan trong cùng một Provider
-3. **Lazy Loading**: Sử dụng singleton pattern cho performance
-4. **Error Handling**: Xử lý lỗi trong boot process
-5. **Documentation**: Comment rõ ràng cho mỗi service
-6. **Testing**: Test từng Service Provider riêng biệt
+*Last updated: Development Phase*
+*Framework version: 2.0.0-dev*

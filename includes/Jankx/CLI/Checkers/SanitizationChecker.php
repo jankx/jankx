@@ -28,8 +28,10 @@ class SanitizationChecker extends AbstractIssueChecker
                 $line = $this->getLineNumber($content, $match[1]);
 
                 // Check if this $_POST usage is properly sanitized
-                if (!$this->hasPatternAfter($content, $match[1], '/(sanitize_text_field|sanitize_email|sanitize_url|wp_kses_post|intval|floatval)/', 200) &&
-                    !$this->hasPatternBefore($content, $match[1], '/(sanitize_text_field|sanitize_email|sanitize_url|wp_kses_post|intval|floatval)\s*\(/')) {
+                if (
+                    !$this->hasPatternAfter($content, $match[1], '/(sanitize_text_field|sanitize_email|sanitize_url|wp_kses_post|intval|floatval)/', 200) &&
+                    !$this->hasPatternBefore($content, $match[1], '/(sanitize_text_field|sanitize_email|sanitize_url|wp_kses_post|intval|floatval)\s*\(/')
+                ) {
                     $issues[] = $this->createIssue(
                         'unsanitized_input',
                         'error',
@@ -48,8 +50,10 @@ class SanitizationChecker extends AbstractIssueChecker
                 $line = $this->getLineNumber($content, $match[1]);
 
                 // Check if this $_GET usage is properly sanitized
-                if (!$this->hasPatternAfter($content, $match[1], '/(sanitize_text_field|sanitize_email|sanitize_url|wp_kses_post|intval|floatval)/', 200) &&
-                    !$this->hasPatternBefore($content, $match[1], '/(sanitize_text_field|sanitize_email|sanitize_url|wp_kses_post|intval|floatval)\s*\(/')) {
+                if (
+                    !$this->hasPatternAfter($content, $match[1], '/(sanitize_text_field|sanitize_email|sanitize_url|wp_kses_post|intval|floatval)/', 200) &&
+                    !$this->hasPatternBefore($content, $match[1], '/(sanitize_text_field|sanitize_email|sanitize_url|wp_kses_post|intval|floatval)\s*\(/')
+                ) {
                     $issues[] = $this->createIssue(
                         'unsanitized_input',
                         'error',
