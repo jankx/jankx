@@ -2,7 +2,7 @@
 
 namespace Jankx\Facades;
 
-use Jankx\Config\Contracts\ConfigRepositoryInterface;
+use Jankx\Contracts\ConfigRepositoryInterface;
 use Jankx\Config\Repository;
 
 /**

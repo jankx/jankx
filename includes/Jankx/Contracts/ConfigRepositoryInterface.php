@@ -1,11 +1,11 @@
 <?php
 
-namespace Jankx\Config\Contracts;
+namespace Jankx\Contracts;
 
 /**
  * Config Repository Interface
  *
- * @package Jankx\Config\Contracts
+ * @package Jankx\Contracts
  * @since 2.0.0
  */
 interface ConfigRepositoryInterface extends \ArrayAccess

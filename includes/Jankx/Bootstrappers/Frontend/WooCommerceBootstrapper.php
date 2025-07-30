@@ -4,6 +4,7 @@ namespace Jankx\Bootstrappers\Frontend;
 
 use Illuminate\Container\Container;
 use Jankx\Bootstrappers\AbstractBootstrapper;
+use Jankx\Helpers\BootstrapperHelper;
 
 class WooCommerceBootstrapper extends AbstractBootstrapper
 {

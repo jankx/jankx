@@ -1,13 +1,13 @@
 <?php
 
-namespace Jankx\CLI\Parser;
+namespace Jankx\Parsers;
 
 /**
  * PHP Parser for Jankx CLI
  *
  * Parses PHP files to extract namespaces, classes, methods, docblocks, and PHP 8 attributes
  *
- * @package Jankx\CLI\Parser
+ * @package Jankx\Parsers
  * @since 2.0.0
  */
 class PHPParser

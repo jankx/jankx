@@ -8,7 +8,7 @@ if (!defined('ABSPATH')) {
 
 use WP_CLI;
 use WP_CLI_Command;
-use Jankx\CLI\Parser\PHPParser;
+use Jankx\Parsers\PHPParser;
 use Jankx\Jankx;
 
 /**

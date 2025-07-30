@@ -3,7 +3,7 @@
 namespace Jankx\Providers;
 
 use Jankx\Config\Repository;
-use Jankx\Config\Contracts\ConfigRepositoryInterface;
+use Jankx\Contracts\ConfigRepositoryInterface;
 
 /**
  * Core Service Provider

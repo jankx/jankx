@@ -2,7 +2,7 @@
 
 namespace Jankx\Config;
 
-use Jankx\Config\Contracts\ConfigRepositoryInterface;
+use Jankx\Contracts\ConfigRepositoryInterface;
 use Jankx\Facades\Logger;
 
 /**

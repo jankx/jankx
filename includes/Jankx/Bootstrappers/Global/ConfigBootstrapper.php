@@ -37,7 +37,7 @@ class ConfigBootstrapper implements BootstrapperInterface
         // Register in container (after fill data)
         $container->instance(\Jankx\Config\Repository::class, $repository);
         $container->singleton(
-            \Jankx\Config\Contracts\ConfigRepositoryInterface::class,
+            \Jankx\Contracts\ConfigRepositoryInterface::class,
             \Jankx\Config\Repository::class
         );
     }

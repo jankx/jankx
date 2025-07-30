@@ -2,7 +2,7 @@
 
 namespace Jankx\CLI\Checkers;
 
-use Jankx\CLI\Parser\PHPParser;
+use Jankx\Parsers\PHPParser;
 
 /**
  * Abstract base class for Issue Checkers
