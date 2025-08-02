@@ -1,13 +1,13 @@
 <?php
 /**
  * Title: Right-aligned 404
- * Slug: twentytwentyfive/template-404-vertical-header-blog
+ * Slug: jankx/template-404-vertical-header-blog
  * Template Types: 404
  * Viewport width: 1400
  *
  * @package WordPress
- * @subpackage Twenty_Twenty_Five
- * @since Twenty Twenty-Five 1.0
+ * @subpackage Jankx_Framework
+ * @since Jankx Framework 2.0
  */
 
 ?>
@@ -26,7 +26,7 @@
 			<div style="height:var(--wp--preset--spacing--50)" aria-hidden="true" class="wp-block-spacer"></div>
 			<!-- /wp:spacer -->
 
-			<!-- wp:pattern {"slug":"twentytwentyfive/hidden-404"} /-->
+			<!-- wp:pattern {"slug":"jankx/hidden-404"} /-->
 
 			<!-- wp:spacer {"height":"var:preset|spacing|50"} -->
 			<div style="height:var(--wp--preset--spacing--50)" aria-hidden="true" class="wp-block-spacer"></div>
