@@ -14,3 +14,6 @@
 if (!defined('ABSPATH')) {
     exit;
 }
+
+// Load Jankx Framework
+require_once get_template_directory() . '/includes/framework.php';

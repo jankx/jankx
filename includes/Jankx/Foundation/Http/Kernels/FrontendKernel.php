@@ -1,0 +1,30 @@
+<?php
+
+namespace Jankx\Foundation\Http\Kernels;
+
+use Jankx\Foundation\Http\Kernel;
+use Jankx\Http\Request;
+
+class FrontendKernel extends Kernel
+{
+    /**
+     * Handle an incoming frontend request.
+     *
+     * @param  \Jankx\Http\Request  $request
+     * @return void
+     */
+    public function handle($request)
+    {
+        // Frontend specific logic will be implemented via service providers
+    }
+
+    /**
+     * Register WordPress hooks for frontend.
+     *
+     * @return void
+     */
+    public function registerHooks()
+    {
+        // Frontend hooks will be registered via service providers
+    }
+}
