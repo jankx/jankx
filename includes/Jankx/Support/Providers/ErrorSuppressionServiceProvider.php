@@ -75,13 +75,13 @@ class ErrorSuppressionServiceProvider extends ServiceProvider
     public function suppressDoingItWrong($trigger_error, $function, $message)
     {
         // Get suppression config
-        $suppression_config = \Jankx\Facades\Config::get('error.suppression', []);
+        $config = $this->app->make('config');
+        $suppression_config = $config->get('error.suppression', []);
 
         // Check if doing_it_wrong suppression is enabled
-        if (!empty($suppression_config['doing_it_wrong']['enabled'])) {
-            return false; // Don't trigger error
+        if (!isset($suppression_config['doing_it_wrong']['enabled']) || $suppression_config['doing_it_wrong']['enabled'] === false) {
+            return $trigger_error;
         }
-
 
         // Check specific function suppressions
         $suppressed_functions = $suppression_config['doing_it_wrong']['functions'] ?? [];
@@ -109,11 +109,12 @@ class ErrorSuppressionServiceProvider extends ServiceProvider
      */
     public function suppressPhpErrors($message, $error)
     {
-        $suppression_config = \Jankx\Facades\Config::get('error.suppression', []);
+        $config = $this->app->make('config');
+        $suppression_config = $config->get('error.suppression', []);
 
         // Check if PHP error suppression is enabled
-        if (!empty($suppression_config['php_errors']['enabled'])) {
-            return ''; // Return empty message
+        if (!isset($suppression_config['php_errors']['enabled']) || $suppression_config['php_errors']['enabled'] === false) {
+            return $message; // Return original message
         }
 
         // Check specific error suppressions
@@ -132,10 +133,11 @@ class ErrorSuppressionServiceProvider extends ServiceProvider
      */
     public function suppressAdminNotices()
     {
-        $suppression_config = \Jankx\Facades\Config::get('error.suppression', []);
+        $config = $this->app->make('config');
+        $suppression_config = $config->get('error.suppression', []);
 
         // Check if admin notice suppression is enabled
-        if (!empty($suppression_config['admin_notices']['enabled'])) {
+        if (isset($suppression_config['admin_notices']['enabled']) && $suppression_config['admin_notices']['enabled'] === true) {
             remove_all_actions('admin_notices');
         }
 

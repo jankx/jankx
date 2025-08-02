@@ -21,7 +21,7 @@ return [
     */
     'suppression' => [
         'doing_it_wrong' => [
-            'enabled' => true,  // Enable suppression
+            'enabled' => false,  // Enable suppression
             'functions' => [
                 // Specific functions to suppress
                 'wp_enqueue_script',

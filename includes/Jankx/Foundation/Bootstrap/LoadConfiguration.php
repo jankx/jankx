@@ -42,11 +42,20 @@ class LoadConfiguration
      */
     protected function loadThemeConfiguration(Application $app, Repository $config)
     {
-        $configPath = $app->configPath();
+        $envConfigPath = getenv('JANKX_CONFIG_PATH');
+        $envChildConfigPath = getenv('JANKX_CHILD_CONFIG_PATH');
+
+        if ($envConfigPath) {
+            $parentConfigPath = $envConfigPath;
+            $childConfigPath = $envChildConfigPath ?: $envConfigPath; // Use child path if set, otherwise same as parent
+        } else {
+            $parentConfigPath = get_template_directory() . '/config';
+            $childConfigPath = get_stylesheet_directory() . '/config';
+        }
 
         if (Environment::isDebugLog()) {
-            error_log(sprintf('[JANKX DEBUG] Loading theme config from: %s', $configPath));
-            error_log(sprintf('[JANKX DEBUG] app.php exists: %s', file_exists($configPath . '/app.php') ? 'yes' : 'no'));
+            error_log(sprintf('[JANKX DEBUG] Loading parent config from: %s', $parentConfigPath));
+            error_log(sprintf('[JANKX DEBUG] Loading child config from: %s', $childConfigPath));
         }
 
         // Load all config files
@@ -58,26 +67,117 @@ class LoadConfiguration
         ];
 
         foreach ($configFiles as $configFile) {
-            $filePath = $configPath . '/' . $configFile;
+            $parentFile = $parentConfigPath . '/' . $configFile;
+            $childFile = $childConfigPath . '/' . $configFile;
 
-            if (file_exists($filePath)) {
-                if (Environment::isDebugLog()) {
-                    error_log(sprintf('[JANKX DEBUG] Loading %s configuration', $configFile));
-                }
+            $configKey = str_replace('.php', '', $configFile);
+            $parentConfig = $this->loadCachedConfig($parentFile, $configKey);
+            $childConfig = $this->loadCachedConfig($childFile, $configKey);
 
-                $configData = require $filePath;
-                $configKey = str_replace('.php', '', $configFile);
-                $config->set($configKey, $configData);
+            // Deep merge: child override parent
+            $mergedConfig = $this->deepMergeConfig($parentConfig, $childConfig);
+            $config->set($configKey, $mergedConfig);
 
-                if (Environment::isDebugLog()) {
-                    error_log(sprintf('[JANKX DEBUG] %s loaded with keys: %s', $configFile, implode(', ', array_keys($configData))));
-                }
-            } else {
-                if (Environment::isDebugLog()) {
-                    error_log(sprintf('[JANKX DEBUG] %s not found at: %s', $configFile, $filePath));
+            if (Environment::isDebugLog()) {
+                error_log(sprintf('[JANKX DEBUG] %s loaded with keys: %s', $configFile, implode(', ', array_keys($mergedConfig))));
+            }
+        }
+    }
+
+    /**
+     * Load config from cache or file
+     *
+     * @param string $filePath
+     * @param string $configType
+     * @return array
+     */
+    protected function loadCachedConfig($filePath, $configType)
+    {
+        if (!file_exists($filePath)) {
+            return [];
+        }
+
+        // Calculate CRC32 checksum of file
+        $fileContent = file_get_contents($filePath);
+        $checksum = crc32($fileContent);
+
+        // Generate cache key
+        $cacheKey = "file_configs_{$configType}_{$checksum}";
+
+        // Try to get from cache first
+        $cachedConfig = wp_cache_get($cacheKey, 'jankx_config');
+
+        if ($cachedConfig !== false) {
+            if (Environment::isDebugLog()) {
+                error_log(sprintf('[JANKX DEBUG] Config loaded from cache: %s', $cacheKey));
+            }
+            return $cachedConfig;
+        }
+
+        // Load from file and cache
+        $config = require $filePath;
+
+        // Cache for 1 hour (3600 seconds)
+        wp_cache_set($cacheKey, $config, 'jankx_config', 3600);
+
+        if (Environment::isDebugLog()) {
+            error_log(sprintf('[JANKX DEBUG] Config cached: %s', $cacheKey));
+        }
+
+        return $config;
+    }
+
+    /**
+     * Clear all config cache
+     *
+     * @return void
+     */
+    public static function clearConfigCache()
+    {
+        wp_cache_flush_group('jankx_config');
+
+        if (Environment::isDebugLog()) {
+            error_log('[JANKX DEBUG] Config cache cleared');
+        }
+    }
+
+    /**
+     * Clear cache for specific config type
+     *
+     * @param string $configType
+     * @return void
+     */
+    public static function clearConfigCacheByType($configType)
+    {
+        // Get all cache keys for this type
+        global $wp_object_cache;
+
+        if (isset($wp_object_cache->cache) && is_array($wp_object_cache->cache)) {
+            foreach ($wp_object_cache->cache as $key => $value) {
+                if (strpos($key, "file_configs_{$configType}_") === 0) {
+                    wp_cache_delete($key, 'jankx_config');
                 }
             }
         }
+
+        if (Environment::isDebugLog()) {
+            error_log(sprintf('[JANKX DEBUG] Config cache cleared for type: %s', $configType));
+        }
+    }
+
+    /**
+     * Deep merge two config arrays (child overrides parent, only keys present in child)
+     */
+    protected function deepMergeConfig(array $parent, array $child)
+    {
+        foreach ($child as $key => $value) {
+            if (is_array($value) && isset($parent[$key]) && is_array($parent[$key])) {
+                $parent[$key] = $this->deepMergeConfig($parent[$key], $value);
+            } else {
+                $parent[$key] = $value;
+            }
+        }
+        return $parent;
     }
 
         /**
