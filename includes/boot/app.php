@@ -20,27 +20,12 @@ if (!defined('ABSPATH')) {
  *
  * @return \Jankx\Foundation\Application
  */
-function jankx_app()
-{
-    static $app = null;
 
-    if ($app === null) {
-        if (Environment::isDebugLog()) {
-            error_log('[JANKX DEBUG] Initializing Jankx Application...');
-        }
+ $app = new Application(get_template_directory());
 
-        $app = new Application(get_template_directory());
-
-        if (Environment::isDebugLog()) {
-            error_log('[JANKX DEBUG] Jankx Application initialized successfully');
-        }
-    }
-
-    return $app;
-}
-
-// Initialize the application
-$app = jankx_app();
+ if (Environment::isDebugLog()) {
+     error_log('[JANKX DEBUG] Jankx Application initialized successfully');
+ }
 
 // Return the application instance
 return $app;
