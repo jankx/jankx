@@ -1,6 +1,16 @@
-# Jankx Framework
+# Jankx Framework Documentation
 
 Jankx là một WordPress theme framework được xây dựng với kiến trúc Laravel-style, cung cấp cấu trúc mạnh mẽ và linh hoạt cho việc phát triển WordPress themes.
+
+## 📚 Tài liệu
+
+### 🚀 Getting Started
+- **[Getting Started Guide](getting-started.md)** - Hướng dẫn cài đặt và sử dụng cơ bản
+- **[Architecture Overview](architecture.md)** - Tổng quan kiến trúc framework
+- **[Package Architecture](package-architecture.md)** - Kiến trúc package tương lai
+
+### 📋 Coding Standards
+- **[Coding Rules](coding-rules.md)** - Quy tắc coding chi tiết (PSR-12 + WordPress)
 
 ## Tổng quan
 
