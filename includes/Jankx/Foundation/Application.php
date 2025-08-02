@@ -73,7 +73,7 @@ class Application extends Container
      */
     public function __construct($basePath = null)
     {
-        $this->basePath = $basePath;
+        $this->basePath = $basePath ?: dirname(__DIR__, 3);
 
         $this->registerBaseBindings();
         $this->registerBaseServiceProviders();
@@ -138,6 +138,10 @@ class Application extends Container
 
         $this->singleton('config', function () {
             return new Repository();
+        });
+
+        $this->singleton('log', function () {
+            return new \Jankx\Foundation\Log\Logger();
         });
     }
 

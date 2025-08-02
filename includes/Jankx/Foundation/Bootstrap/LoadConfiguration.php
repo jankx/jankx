@@ -54,6 +54,13 @@ class LoadConfiguration
             }
             $appConfig = require $configPath . '/app.php';
             $config->set('app', $appConfig);
+            if (Environment::isDebugLog()) {
+                error_log('[JANKX DEBUG] App config loaded: ' . print_r($appConfig, true));
+            }
+        } else {
+            if (Environment::isDebugLog()) {
+                error_log('[JANKX DEBUG] app.php not found at: ' . $configPath . '/app.php');
+            }
         }
 
         if (file_exists($configPath . '/providers.php')) {
@@ -62,6 +69,13 @@ class LoadConfiguration
             }
             $providersConfig = require $configPath . '/providers.php';
             $config->set('providers', $providersConfig);
+            if (Environment::isDebugLog()) {
+                error_log('[JANKX DEBUG] Providers config loaded: ' . print_r($providersConfig, true));
+            }
+        } else {
+            if (Environment::isDebugLog()) {
+                error_log('[JANKX DEBUG] providers.php not found at: ' . $configPath . '/providers.php');
+            }
         }
     }
 
