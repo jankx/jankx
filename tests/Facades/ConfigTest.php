@@ -38,12 +38,11 @@ class ConfigTest extends TestCase
         Config::set('app', [
             'name' => 'Jankx',
             'providers' => [
-                'AppServiceProvider',
                 'ConfigServiceProvider'
             ]
         ]);
 
         $this->assertEquals('Jankx', Config::get('app.name'));
-        $this->assertEquals(['AppServiceProvider', 'ConfigServiceProvider'], Config::get('app.providers'));
+        $this->assertEquals(['ConfigServiceProvider'], Config::get('app.providers'));
     }
 }

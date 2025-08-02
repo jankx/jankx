@@ -57,13 +57,12 @@ class RepositoryTest extends TestCase
         $this->config->set('app', [
             'name' => 'Jankx',
             'providers' => [
-                'AppServiceProvider',
                 'ConfigServiceProvider'
             ]
         ]);
 
         $this->assertEquals('Jankx', $this->config->get('app.name'));
-        $this->assertEquals(['AppServiceProvider', 'ConfigServiceProvider'], $this->config->get('app.providers'));
+        $this->assertEquals(['ConfigServiceProvider'], $this->config->get('app.providers'));
     }
 
     public function testRepositoryCanSetWithDotNotation()
