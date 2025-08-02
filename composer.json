@@ -1,0 +1,47 @@
+{
+  "name": "jankx/jankx",
+  "description": "Jankx is a powerful WordPress theme framework. High performance, compatible, easy to use and develop",
+  "type": "project",
+  "license": "MIT",
+  "version": "2.0.0",
+  "authors": [
+    {
+      "name": "Puleeno Nguyen",
+      "email": "puleeno@gmail.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "require": {
+    "php": ">=7.4",
+    "psr/container": "^1.0|^2.0",
+    "illuminate/container": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0",
+    "jankx/option-adapter": "*",
+    "jankx/dashboard-framework": "*",
+    "nikic/php-parser": "^5.6",
+    "symfony/http-foundation": "^6.4"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.5|^10.0",
+    "phpunit/php-code-coverage": "^9.2|^10.0",
+    "mockery/mockery": "^1.5",
+    "brain/monkey": "^2.6",
+    "yoast/phpunit-polyfills": "^1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Jankx\\": "./includes/Jankx"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "./tests"
+    }
+  },
+  "scripts": {
+  },
+  "suggest": {
+    "monolog/monolog": "Allows more advanced logging of the application flow",
+    "jankx/dashboard-framework": "Official option framework for Jankx theme"
+  }
+}
