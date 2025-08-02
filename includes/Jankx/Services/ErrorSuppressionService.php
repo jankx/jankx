@@ -63,7 +63,8 @@ class ErrorSuppressionService
      */
     public function getSuppressionConfig()
     {
-        return \Jankx\Facades\Config::get('error.suppression', []);
+        $config = $this->app->make('config');
+        return $config->get('error.suppression', []);
     }
 
     /**
