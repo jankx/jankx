@@ -4,7 +4,6 @@ namespace Jankx\Foundation\Http;
 
 use Jankx\Foundation\Application;
 use Jankx\Foundation\Bootstrap\LoadConfiguration;
-use Jankx\Foundation\Bootstrap\HandleExceptions;
 use Jankx\Foundation\Bootstrap\RegisterLogger;
 use Jankx\Foundation\Bootstrap\RegisterFacades;
 use Jankx\Foundation\Bootstrap\RegisterProviders;
@@ -27,7 +26,6 @@ abstract class Kernel
      */
     protected $bootstrappers = [
         LoadConfiguration::class,
-        HandleExceptions::class,
         RegisterLogger::class,
         RegisterFacades::class,
         ThemeDataLoader::class,

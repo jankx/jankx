@@ -49,31 +49,33 @@ class LoadConfiguration
             error_log(sprintf('[JANKX DEBUG] app.php exists: %s', file_exists($configPath . '/app.php') ? 'yes' : 'no'));
         }
 
-        if (file_exists($configPath . '/app.php')) {
-            if (Environment::isDebugLog()) {
-                error_log('[JANKX DEBUG] Loading app.php configuration');
-            }
-            $appConfig = require $configPath . '/app.php';
-            $config->set('app', $appConfig);
+        // Load all config files
+        $configFiles = [
+            'app.php',
+            'providers.php',
+            'error.php',
+            'layout.php'
+        ];
 
-            if (Environment::isDebugLog()) {
-                error_log('[JANKX DEBUG] app.php loaded with keys: ' . implode(', ', array_keys($appConfig)));
-            }
-        } else {
-            if (Environment::isDebugLog()) {
-                error_log('[JANKX DEBUG] app.php not found at: ' . $configPath . '/app.php');
-            }
-        }
+        foreach ($configFiles as $configFile) {
+            $filePath = $configPath . '/' . $configFile;
 
-        if (file_exists($configPath . '/providers.php')) {
-            if (Environment::isDebugLog()) {
-                error_log('[JANKX DEBUG] Loading providers.php configuration');
-            }
-            $providersConfig = require $configPath . '/providers.php';
-            $config->set('providers', $providersConfig);
-        } else {
-            if (Environment::isDebugLog()) {
-                error_log('[JANKX DEBUG] providers.php not found at: ' . $configPath . '/providers.php');
+            if (file_exists($filePath)) {
+                if (Environment::isDebugLog()) {
+                    error_log(sprintf('[JANKX DEBUG] Loading %s configuration', $configFile));
+                }
+
+                $configData = require $filePath;
+                $configKey = str_replace('.php', '', $configFile);
+                $config->set($configKey, $configData);
+
+                if (Environment::isDebugLog()) {
+                    error_log(sprintf('[JANKX DEBUG] %s loaded with keys: %s', $configFile, implode(', ', array_keys($configData))));
+                }
+            } else {
+                if (Environment::isDebugLog()) {
+                    error_log(sprintf('[JANKX DEBUG] %s not found at: %s', $configFile, $filePath));
+                }
             }
         }
     }

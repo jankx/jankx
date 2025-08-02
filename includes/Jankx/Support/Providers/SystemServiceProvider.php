@@ -56,8 +56,13 @@ class SystemServiceProvider extends ServiceProvider
         Cache::setFacadeApplication($app);
         User::setFacadeApplication($app);
 
+        // Register layout facades
+        \Jankx\Facades\Menu::setFacadeApplication($app);
+        \Jankx\Facades\Sidebar::setFacadeApplication($app);
+        \Jankx\Facades\Footer::setFacadeApplication($app);
+
         if (\Jankx\Helper\Environment::isDebugLog()) {
-            error_log('[JANKX DEBUG] SystemServiceProvider: Registered Cache and User facades');
+            error_log('[JANKX DEBUG] SystemServiceProvider: Registered Cache, User, and Layout facades');
         }
     }
 
