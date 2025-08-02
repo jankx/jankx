@@ -71,7 +71,7 @@ protected $bootstrappers = [
 2. **HandleExceptions**: Setup exception handlers và error reporting
 3. **RegisterLogger**: Register logging system với WordPress
 4. **RegisterFacades**: Register App, Config, Log facades
-5. **RegisterProviders**: Load và register service providers từ config
+5. **RegisterProviders**: Register app-level providers trước, sau đó register kernel-specific providers
 6. **BootProviders**: Call `boot()` method trên tất cả providers
 
 ### 3. Request Flow

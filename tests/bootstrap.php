@@ -88,6 +88,67 @@ if (!function_exists('get_locale')) {
     }
 }
 
+if (!function_exists('wp_get_theme')) {
+    function wp_get_theme($stylesheet = null) {
+        return new class {
+            public function get($key) {
+                $data = [
+                    'Name' => 'Test Theme',
+                    'Version' => '1.0.0',
+                    'TextDomain' => 'test-theme',
+                    'Template' => 'test-theme',
+                    'Stylesheet' => 'test-theme'
+                ];
+                return $data[$key] ?? '';
+            }
+
+            public function get_stylesheet() {
+                return 'test-theme';
+            }
+
+            public function get_template() {
+                return 'test-theme';
+            }
+        };
+    }
+}
+
+if (!function_exists('get_template')) {
+    function get_template() {
+        return 'test-theme';
+    }
+}
+
+if (!function_exists('get_stylesheet')) {
+    function get_stylesheet() {
+        return 'test-theme';
+    }
+}
+
+if (!function_exists('get_template_directory_uri')) {
+    function get_template_directory_uri() {
+        return 'http://localhost/wp-content/themes/test-theme';
+    }
+}
+
+if (!function_exists('get_stylesheet_directory_uri')) {
+    function get_stylesheet_directory_uri() {
+        return 'http://localhost/wp-content/themes/test-theme';
+    }
+}
+
+if (!function_exists('wp_enqueue_style')) {
+    function wp_enqueue_style($handle, $src = false, $deps = array(), $ver = false, $media = 'all') {
+        // Mock implementation
+    }
+}
+
+if (!function_exists('wp_register_style')) {
+    function wp_register_style($handle, $src, $deps = array(), $ver = false, $media = 'all') {
+        // Mock implementation
+    }
+}
+
 if (!function_exists('AUTH_KEY')) {
     if (!defined('AUTH_KEY')) {
         define('AUTH_KEY', 'test-key');
