@@ -17,6 +17,9 @@ Jankx Framework tuân thủ WordPress Coding Standards kết hợp với PSR-12 
 class ThemeManager {}
 class AssetManager {}
 class WpCliCommand {}
+class MenuManager {}
+class SidebarManager {}
+class FooterManager {}
 
 // ❌ Incorrect
 class jankx_theme_manager {}
@@ -30,6 +33,8 @@ class Jankx_Theme_Manager {}
 function getThemeOption() {}
 function getThemeConfig() {}
 function handleAjaxRequest() {}
+function loadCachedConfig() {}
+function clearConfigCache() {}
 
 // ❌ Incorrect
 function jankx_get_theme_option() {}
@@ -43,6 +48,8 @@ function get_theme_config() {}
 $themeOptions = [];
 $userId = get_current_user_id();
 $postData = $_POST;
+$cacheKey = "file_configs_app_{$checksum}";
+$configContent = file_get_contents($filePath);
 
 // ❌ Incorrect
 $theme_options = [];
@@ -56,6 +63,8 @@ $post_data = $_POST;
 define('JANKX_VERSION', '2.0.0');
 define('JANKX_DEBUG', true);
 define('THEME_TEXT_DOMAIN', 'jankx-theme');
+define('JANKX_CONFIG_PATH', '/path/to/config');
+define('JANKX_CHILD_CONFIG_PATH', '/path/to/child/config');
 
 // ❌ Incorrect
 define('jankx_version', '2.0.0');
@@ -133,12 +142,12 @@ $config = array(
 add_action('jankx/theme/init', [$this, 'initTheme']);
 add_filter('jankx/theme/config', [$this, 'modifyConfig']);
 do_action('jankx/blocks/registered', $blocks);
+add_filter('jankx/user/data', [$this, 'modifyUserData']);
 
 // ❌ Incorrect
 add_action('jankx-theme-init', [$this, 'initTheme']);
 add_filter('jankx-theme-config', [$this, 'modifyConfig']);
 do_action('jankx-blocks-registered', $blocks);
-
 add_action('jankx_theme_init', [$this, 'initTheme']);
 add_filter('jankx_theme_config', [$this, 'modifyConfig']);
 do_action('jankx_blocks_registered', $blocks);
@@ -321,6 +330,7 @@ $posts = $wpdb->get_results(
 $message = 'Hello ' . $name . ', welcome to ' . $siteName;
 $url = home_url('/custom-page/');
 $class = 'button ' . $size . ' ' . $style;
+$cacheKey = 'file_configs_' . $type . '_' . $checksum;
 
 // ❌ Incorrect
 $message = "Hello $name, welcome to $siteName";
@@ -343,27 +353,264 @@ $html = "<div class='$class'>
          </div>";
 ```
 
-## 9. Helper Functions
+## 9. Configuration Management
 
-### 9.1 Static Classes
+### 9.1 Config Cache System
+```php
+// ✅ Correct
+protected function loadCachedConfig($filePath, $type)
+{
+    $content = file_get_contents($filePath);
+    $checksum = crc32($content);
+    $cacheKey = 'file_configs_' . $type . '_' . $checksum;
+
+    $cached = wp_cache_get($cacheKey, 'jankx_config');
+    if ($cached !== false) {
+        return $cached;
+    }
+
+    $config = include $filePath;
+    wp_cache_set($cacheKey, $config, 'jankx_config', 3600);
+
+    return $config;
+}
+
+// ❌ Incorrect
+protected function loadConfig($filePath)
+{
+    return include $filePath; // No caching
+}
+```
+
+### 9.2 Environment Variables
+```php
+// ✅ Correct
+$configPath = getenv('JANKX_CONFIG_PATH') ?: get_template_directory() . '/config';
+$childConfigPath = getenv('JANKX_CHILD_CONFIG_PATH') ?: get_stylesheet_directory() . '/config';
+
+// ❌ Incorrect
+$configPath = get_template_directory() . '/config'; // No environment override
+```
+
+### 9.3 Deep Merge Configuration
+```php
+// ✅ Correct
+protected function deepMergeConfig($parent, $child)
+{
+    foreach ($child as $key => $value) {
+        if (is_array($value) && isset($parent[$key]) && is_array($parent[$key])) {
+            $parent[$key] = $this->deepMergeConfig($parent[$key], $value);
+        } else {
+            $parent[$key] = $value;
+        }
+    }
+    return $parent;
+}
+
+// ❌ Incorrect
+$config = array_merge($parent, $child); // No deep merge
+```
+
+## 10. Error Suppression System
+
+### 10.1 Error Suppression Configuration
+```php
+// ✅ Correct
+// config/error.php
+return [
+    'suppression' => [
+        'doing_it_wrong' => [
+            'enabled' => true,
+            'functions' => ['wp_enqueue_script'],
+            'patterns' => ['wp-editor.*should not be enqueued']
+        ],
+        'php_errors' => [
+            'enabled' => true,
+            'messages' => ['Deprecated:', 'Notice:']
+        ],
+        'admin_notices' => [
+            'enabled' => true,
+            'notices' => ['Plugin compatibility']
+        ]
+    ]
+];
+
+// ❌ Incorrect
+// Suppress all errors without configuration
+error_reporting(0);
+```
+
+### 10.2 Conditional Error Suppression
+```php
+// ✅ Correct
+public function suppressDoingItWrong()
+{
+    $config = Config::get('error.suppression.doing_it_wrong');
+
+    if (!isset($config['enabled']) || $config['enabled'] === false) {
+        return;
+    }
+
+    add_filter('doing_it_wrong_trigger_error', [$this, 'filterDoingItWrong'], 10, 3);
+}
+
+// ❌ Incorrect
+public function suppressDoingItWrong()
+{
+    // Always suppress without checking config
+    add_filter('doing_it_wrong_trigger_error', '__return_false');
+}
+```
+
+## 11. Layout Management
+
+### 11.1 Manager Classes
+```php
+// ✅ Correct
+class MenuManager
+{
+    public function render($location)
+    {
+        if (!has_nav_menu($location)) {
+            return '';
+        }
+
+        return wp_nav_menu([
+            'theme_location' => $location,
+            'echo' => false,
+            'container' => false
+        ]);
+    }
+}
+
+class SidebarManager
+{
+    public function render($id)
+    {
+        if (!is_active_sidebar($id)) {
+            return '';
+        }
+
+        ob_start();
+        dynamic_sidebar($id);
+        return ob_get_clean();
+    }
+}
+
+// ❌ Incorrect
+function render_menu($location)
+{
+    return wp_nav_menu(['theme_location' => $location]);
+}
+```
+
+### 11.2 Layout Configuration
+```php
+// ✅ Correct
+// config/layout.php
+return [
+    'menu' => [
+        'primary' => ['location' => 'primary', 'description' => 'Primary Menu'],
+        'secondary' => ['location' => 'secondary', 'description' => 'Secondary Menu'],
+        'footer' => ['location' => 'footer', 'description' => 'Footer Menu'],
+        'mobile' => ['location' => 'mobile', 'description' => 'Mobile Menu']
+    ],
+    'sidebar' => [
+        'primary' => ['id' => 'primary', 'name' => 'Primary Sidebar'],
+        'secondary' => ['id' => 'secondary', 'name' => 'Secondary Sidebar']
+    ],
+    'footer' => [
+        'menu' => ['location' => 'footer-menu'],
+        'widgets' => ['columns' => 3],
+        'content' => ['copyright' => '© 2024'],
+        'layout' => ['type' => 'columns']
+    ]
+];
+
+// ❌ Incorrect
+// Hard-coded layout configuration
+$menus = ['primary', 'secondary', 'footer'];
+$sidebars = ['primary', 'secondary'];
+```
+
+## 12. System Services
+
+### 12.1 User Service with Cache
+```php
+// ✅ Correct
+class UserService
+{
+    public function getById($id)
+    {
+        $cacheKey = 'user_' . $id;
+        $cached = wp_cache_get($cacheKey, 'jankx_users');
+
+        if ($cached !== false) {
+            return $cached;
+        }
+
+        $user = get_user_by('id', $id);
+        if ($user) {
+            $userData = apply_filters('jankx/user/data', $user);
+            wp_cache_set($cacheKey, $userData, 'jankx_users', 3600);
+            return $userData;
+        }
+
+        return null;
+    }
+}
+
+// ❌ Incorrect
+function get_user_by_id($id)
+{
+    return get_user_by('id', $id); // No caching
+}
+```
+
+### 12.2 Cache Service
+```php
+// ✅ Correct
+class CacheService
+{
+    public function get($key, $default = null)
+    {
+        return wp_cache_get($key, 'jankx_cache') ?: $default;
+    }
+
+    public function set($key, $value, $ttl = 3600)
+    {
+        return wp_cache_set($key, $value, 'jankx_cache', $ttl);
+    }
+}
+
+// ❌ Incorrect
+function cache_get($key)
+{
+    return wp_cache_get($key); // No group isolation
+}
+```
+
+## 13. Helper Functions
+
+### 13.1 Static Classes
 ```php
 // ✅ Correct
 class ThemeHelper
 {
     public static function getThemeOption($key, $default = null)
-{
-    return get_option("theme_{$key}", $default);
-}
+    {
+        return get_option("theme_{$key}", $default);
+    }
 
-public static function isDevelopment()
-{
-    return defined('WP_DEBUG') && WP_DEBUG;
-}
+    public static function isDevelopment()
+    {
+        return defined('WP_DEBUG') && WP_DEBUG;
+    }
 
-public static function getAssetUrl($file)
-{
-    return get_template_directory_uri() . '/assets/' . $file;
-}
+    public static function getAssetUrl($file)
+    {
+        return get_template_directory_uri() . '/assets/' . $file;
+    }
 }
 
 // Usage
@@ -381,7 +628,7 @@ function isDevelopment()
 }
 ```
 
-### 9.2 PSR-4 Autoloading
+### 13.2 PSR-4 Autoloading
 ```php
 // ✅ Correct - follows PSR-4
 namespace Jankx\Helper;
@@ -401,9 +648,9 @@ function jankx_is_debug_log()
 }
 ```
 
-## 10. Debugging
+## 14. Debugging
 
-### 10.1 Jankx Log Facade
+### 14.1 Jankx Log Facade
 ```php
 // ✅ Correct
 use Jankx\Facades\Log;
@@ -418,7 +665,7 @@ var_dump($data);
 print_r($array);
 ```
 
-### 10.2 Debug Conditions
+### 14.2 Debug Conditions
 ```php
 // ✅ Correct
 if (Environment::isDebugLog()) {
@@ -429,9 +676,9 @@ if (Environment::isDebugLog()) {
 Log::debug('Debug information', $data); // Always logs
 ```
 
-## 11. Global Variables
+## 15. Global Variables
 
-### 11.1 No Additional Globals
+### 15.1 No Additional Globals
 ```php
 // ✅ Correct
 class ThemeManager
@@ -452,7 +699,7 @@ global $theme_manager;
 $theme_manager = new ThemeManager();
 ```
 
-### 11.2 WordPress Globals Only
+### 15.2 WordPress Globals Only
 ```php
 // ✅ Correct - WordPress globals
 global $wpdb;
@@ -464,9 +711,9 @@ global $jankx_theme_options;
 global $custom_global_variable;
 ```
 
-## 12. WordPress Functions
+## 16. WordPress Functions
 
-### 12.1 Direct Usage When Needed
+### 16.1 Direct Usage When Needed
 ```php
 // ✅ Correct
 $postId = get_the_ID();
@@ -487,7 +734,7 @@ class WordPressWrapper
 }
 ```
 
-### 12.2 WordPress Hooks
+### 16.2 WordPress Hooks
 ```php
 // ✅ Correct
 add_action('wp_enqueue_scripts', [$this, 'enqueueAssets']);
@@ -498,9 +745,9 @@ add_action('after_setup_theme', [$this, 'setupTheme']);
 $this->event_dispatcher->dispatch('assets.enqueue', $assets);
 ```
 
-## 13. Programming Principles
+## 17. Programming Principles
 
-### 13.1 SOLID Principles
+### 17.1 SOLID Principles
 
 #### Single Responsibility Principle (SRP)
 ```php
@@ -508,22 +755,29 @@ $this->event_dispatcher->dispatch('assets.enqueue', $assets);
 class ThemeAssetsManager
 {
     public function enqueueScripts() {}
-public function enqueueStyles() {}
+    public function enqueueStyles() {}
 }
 
 class ThemeMenuManager
 {
     public function registerMenus() {}
-public function displayMenu() {}
+    public function displayMenu() {}
+}
+
+class CacheManager
+{
+    public function get($key) {}
+    public function set($key, $value) {}
+    public function clear($key) {}
 }
 
 // ❌ Incorrect
 class ThemeManager
 {
     public function enqueueScripts() {}
-public function registerMenus() {}
-public function handleAjax() {}
-public function saveOptions() {}
+    public function registerMenus() {}
+    public function handleAjax() {}
+    public function saveOptions() {}
 }
 ```
 
@@ -546,25 +800,25 @@ class CustomThemeProvider implements ThemeProvider
 class ThemeManager
 {
     public function registerProvider($type)
-{
-    if ($type === 'custom') {
-        // Custom logic
-    } elseif ($type === 'default') {
-        // Default logic
+    {
+        if ($type === 'custom') {
+            // Custom logic
+        } elseif ($type === 'default') {
+            // Default logic
+        }
     }
-}
 }
 ```
 
-### 13.2 DRY (Don't Repeat Yourself)
+### 17.2 DRY (Don't Repeat Yourself)
 ```php
 // ✅ Correct
 class ThemeHelper
 {
     public static function getAssetUrl($file)
-{
-    return get_template_directory_uri() . '/assets/' . $file;
-}
+    {
+        return get_template_directory_uri() . '/assets/' . $file;
+    }
 }
 
 // Usage
@@ -576,7 +830,7 @@ $cssUrl = get_template_directory_uri() . '/assets/style.css';
 $jsUrl = get_template_directory_uri() . '/assets/script.js';
 ```
 
-### 13.3 KISS (Keep It Simple, Stupid)
+### 17.3 KISS (Keep It Simple, Stupid)
 ```php
 // ✅ Correct
 public function isUserLoggedIn()
@@ -593,7 +847,7 @@ public function isUserLoggedIn()
 }
 ```
 
-### 13.4 YAGNI (You Aren't Gonna Need It)
+### 17.4 YAGNI (You Aren't Gonna Need It)
 ```php
 // ✅ Correct - Only implement what you need
 class ThemeManager
@@ -617,7 +871,7 @@ class ThemeManager
 }
 ```
 
-### 13.5 Separation of Concerns (SoC)
+### 17.5 Separation of Concerns (SoC)
 ```php
 // ✅ Correct
 class ThemeAssetsManager
@@ -635,17 +889,22 @@ class ThemeOptionsManager
     public function saveOptions() {}
 }
 
+class CacheManager
+{
+    public function manageCache() {}
+}
+
 // ❌ Incorrect
 class ThemeManager
 {
     public function doEverything()
-{
-    // Assets, menus, options, everything mixed together
-}
+    {
+        // Assets, menus, options, everything mixed together
+    }
 }
 ```
 
-### 13.6 Law of Demeter
+### 17.6 Law of Demeter
 ```php
 // ✅ Correct
 class ThemeManager
@@ -653,22 +912,22 @@ class ThemeManager
     private $config;
 
     public function getThemeName()
-{
-    return $this->config->get('app.name');
-}
+    {
+        return $this->config->get('app.name');
+    }
 }
 
 // ❌ Incorrect
 class ThemeManager
 {
     public function getThemeName()
-{
-    return $this->app->make('config')->get('app.name');
-}
+    {
+        return $this->app->make('config')->get('app.name');
+    }
 }
 ```
 
-### 13.7 Encapsulation
+### 17.7 Encapsulation
 ```php
 // ✅ Correct
 class ThemeOptions
@@ -693,9 +952,9 @@ class ThemeOptions
 }
 ```
 
-## 14. Unit Testing
+## 18. Unit Testing
 
-### 14.1 Test Structure
+### 18.1 Test Structure
 ```php
 // ✅ Correct
 class ThemeManagerTest extends TestCase
@@ -709,43 +968,79 @@ class ThemeManagerTest extends TestCase
     }
 
     public function testShouldRegisterThemeSupport()
-{
-    // Arrange
-    $expectedSupports = ['post-thumbnails', 'title-tag'];
+    {
+        // Arrange
+        $expectedSupports = ['post-thumbnails', 'title-tag'];
 
-    // Act
-    $this->theme_manager->setupTheme();
+        // Act
+        $this->theme_manager->setupTheme();
 
-    // Assert
-    foreach ($expectedSupports as $support) {
-        $this->assertTrue(current_theme_supports($support));
+        // Assert
+        foreach ($expectedSupports as $support) {
+            $this->assertTrue(current_theme_supports($support));
+        }
     }
-}
 }
 ```
 
-### 14.2 Test Coverage
+### 18.2 Test Coverage
 ```php
 // ✅ Correct - Test all public methods
 class ThemeHelperTest extends TestCase
 {
     public function testGetAssetUrl()
-{
-    $url = ThemeHelper::getAssetUrl('style.css');
-    $this->assertStringContainsString('/assets/style.css', $url);
-}
+    {
+        $url = ThemeHelper::getAssetUrl('style.css');
+        $this->assertStringContainsString('/assets/style.css', $url);
+    }
 
-public function testGetThemeOption()
-{
-    $option = ThemeHelper::getThemeOption('testKey', 'default');
-    $this->assertEquals('default', $option);
-}
+    public function testGetThemeOption()
+    {
+        $option = ThemeHelper::getThemeOption('testKey', 'default');
+        $this->assertEquals('default', $option);
+    }
 }
 ```
 
-## 15. Code Documentation
+### 18.3 Cache Testing
+```php
+// ✅ Correct
+class LoadConfigurationTest extends TestCase
+{
+    public function testLoadCachedConfigMethod()
+    {
+        // Create temporary test file
+        $testConfigDir = sys_get_temp_dir() . '/jankx_test_config_' . uniqid();
+        if (!is_dir($testConfigDir)) {
+            mkdir($testConfigDir, 0777, true);
+        }
 
-### 15.1 PHPDoc Standards
+        $testConfig = [
+            'name' => 'Test Config',
+            'version' => '1.0.0'
+        ];
+        file_put_contents($testConfigDir . '/app.php', '<?php return ' . var_export($testConfig, true) . ';');
+
+        // Use reflection to access protected method
+        $reflection = new \ReflectionClass($this->loadConfiguration);
+        $method = $reflection->getMethod('loadCachedConfig');
+        $method->setAccessible(true);
+
+        $result = $method->invoke($this->loadConfiguration, $testConfigDir . '/app.php', 'app');
+
+        // Should return config from file
+        $this->assertEquals($testConfig, $result);
+
+        // Cleanup
+        unlink($testConfigDir . '/app.php');
+        rmdir($testConfigDir);
+    }
+}
+```
+
+## 19. Code Documentation
+
+### 19.1 PHPDoc Standards
 ```php
 /**
  * Theme manager class for handling theme initialization and configuration.
@@ -768,7 +1063,7 @@ class ThemeManager
 }
 ```
 
-### 15.2 Inline Comments
+### 19.2 Inline Comments
 ```php
 // ✅ Correct
 // Check if user has permission to edit posts
@@ -783,9 +1078,65 @@ if (current_user_can('edit_posts')) { // Check permissions
 }
 ```
 
-## 16. Performance Considerations
+## 20. Performance Considerations
 
-### 16.1 Avoid Premature Optimization
+### 20.1 Configuration Caching
+```php
+// ✅ Correct
+protected function loadCachedConfig($filePath, $type)
+{
+    $content = file_get_contents($filePath);
+    $checksum = crc32($content);
+    $cacheKey = 'file_configs_' . $type . '_' . $checksum;
+
+    $cached = wp_cache_get($cacheKey, 'jankx_config');
+    if ($cached !== false) {
+        return $cached;
+    }
+
+    $config = include $filePath;
+    wp_cache_set($cacheKey, $config, 'jankx_config', 3600);
+
+    return $config;
+}
+
+// ❌ Incorrect
+protected function loadConfig($filePath)
+{
+    return include $filePath; // No caching
+}
+```
+
+### 20.2 User Data Caching
+```php
+// ✅ Correct
+public function getById($id)
+{
+    $cacheKey = 'user_' . $id;
+    $cached = wp_cache_get($cacheKey, 'jankx_users');
+
+    if ($cached !== false) {
+        return $cached;
+    }
+
+    $user = get_user_by('id', $id);
+    if ($user) {
+        $userData = apply_filters('jankx/user/data', $user);
+        wp_cache_set($cacheKey, $userData, 'jankx_users', 3600);
+        return $userData;
+    }
+
+    return null;
+}
+
+// ❌ Incorrect
+public function getById($id)
+{
+    return get_user_by('id', $id); // No caching
+}
+```
+
+### 20.3 Avoid Premature Optimization
 ```php
 // ✅ Correct - Simple and readable
 public function get_posts()
@@ -809,7 +1160,7 @@ public function get_posts()
 }
 ```
 
-### 16.2 Clean Code Practices
+### 20.4 Clean Code Practices
 ```php
 // ✅ Correct - Descriptive names
 public function registerThemeAssets()
@@ -826,9 +1177,9 @@ public function regAssets()
 }
 ```
 
-## 17. Security Best Practices
+## 21. Security Best Practices
 
-### 17.1 Nonce Verification
+### 21.1 Nonce Verification
 ```php
 // ✅ Correct
 public function handleAjaxRequest()
@@ -847,7 +1198,7 @@ public function handleAjaxRequest()
 }
 ```
 
-### 17.2 Capability Checks
+### 21.2 Capability Checks
 ```php
 // ✅ Correct
 public function saveThemeOptions()
@@ -866,9 +1217,20 @@ public function saveThemeOptions()
 }
 ```
 
-## 18. File Organization
+### 21.3 Cache Security
+```php
+// ✅ Correct
+$cacheKey = 'jankx_config_' . $type . '_' . $checksum;
+wp_cache_set($cacheKey, $data, 'jankx_config', 3600);
 
-### 18.1 Directory Structure
+// ❌ Incorrect
+$cacheKey = 'config_' . $type; // No prefix, no checksum
+wp_cache_set($cacheKey, $data, '', 3600); // No group
+```
+
+## 22. File Organization
+
+### 22.1 Directory Structure
 ```
 includes/
 ├── Jankx/
@@ -878,18 +1240,25 @@ includes/
 │   ├── Foundation/
 │   ├── Helper/
 │   ├── Http/
+│   ├── Managers/
+│   ├── Models/
+│   ├── Services/
 │   └── Support/
 ├── boot/
 │   └── app.php
 └── framework.php
 ```
 
-### 18.2 File Naming
+### 22.2 File Naming
 ```php
 // ✅ Correct
 ThemeManager.php
 AssetManager.php
 MenuManager.php
+SidebarManager.php
+FooterManager.php
+UserService.php
+CacheService.php
 
 // ❌ Incorrect
 theme_manager.php
@@ -897,15 +1266,18 @@ asset_manager.php
 menu_manager.php
 ```
 
-## 19. Version Control
+## 23. Version Control
 
-### 19.1 Commit Messages
+### 23.1 Commit Messages
 ```bash
 # ✅ Correct
-feat: add theme assets manager
+feat: add config cache system with CRC32
+feat: implement error suppression system
+feat: add layout management with managers
+feat: add user and cache services
 fix: resolve nonce verification issue
 docs: update coding standards documentation
-test: add unit tests for theme helper
+test: add unit tests for cache system
 
 # ❌ Incorrect
 updated code
@@ -913,7 +1285,7 @@ fixed bug
 added feature
 ```
 
-### 19.2 Git Ignore
+### 23.2 Git Ignore
 ```gitignore
 # ✅ Correct
 /vendor/
@@ -923,7 +1295,7 @@ added feature
 .env
 ```
 
-## 20. Code Review Checklist
+## 24. Code Review Checklist
 
 - [ ] Follows WordPress Coding Standards
 - [ ] Follows PSR-12
@@ -938,3 +1310,8 @@ added feature
 - [ ] Implements proper error handling
 - [ ] Uses WordPress functions when appropriate
 - [ ] Follows security best practices
+- [ ] Implements configuration caching with CRC32
+- [ ] Uses error suppression system properly
+- [ ] Implements layout management with managers
+- [ ] Uses system services (User, Cache) with proper caching
+- [ ] Follows cache security practices (prefixes, groups)
