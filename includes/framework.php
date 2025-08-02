@@ -129,6 +129,9 @@ class Jankx_Framework
                 break;
         }
 
+        // Register kernel in container
+        $this->app->instance('kernel', $kernel);
+
         // Initialize the kernel with WordPress hooks
         try {
             $kernel->init($request);
@@ -180,6 +183,9 @@ class Jankx_Framework
                 }
                 return 1; // Unknown console type
         }
+
+        // Register kernel in container
+        $this->app->instance('kernel', $kernel);
 
         // Handle the console request
         try {
