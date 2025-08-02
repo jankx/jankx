@@ -12,22 +12,27 @@ return [
     'http' => [
         // Frontend providers
         'frontend' => [
-            // Jankx\Providers\FrontendServiceProvider::class,
+            Jankx\Support\Providers\ThemeServiceProvider::class,
+            Jankx\Support\Providers\GutenbergServiceProvider::class,
+            Jankx\Support\Providers\PerformanceServiceProvider::class,
         ],
-        
+
         // Admin providers
         'admin' => [
-            // Jankx\Providers\AdminServiceProvider::class,
+            Jankx\Support\Providers\ThemeServiceProvider::class,
+            Jankx\Support\Providers\GutenbergServiceProvider::class,
+            Jankx\Support\Providers\PerformanceServiceProvider::class,
         ],
-        
+
         // REST API providers
         'rest_api' => [
-            // Jankx\Providers\RestApiServiceProvider::class,
+            Jankx\Support\Providers\ThemeServiceProvider::class,
         ],
-        
+
         // Admin Ajax providers
         'admin_ajax' => [
-            // Jankx\Providers\AdminAjaxServiceProvider::class,
+            Jankx\Support\Providers\ThemeServiceProvider::class,
+            Jankx\Support\Providers\AjaxServiceProvider::class,
         ],
     ],
 
@@ -44,24 +49,12 @@ return [
         'wp_cli' => [
             // Jankx\Providers\WpCliServiceProvider::class,
         ],
-        
+
         // WP Cron providers
         'wp_cron' => [
             // Jankx\Providers\WpCronServiceProvider::class,
         ],
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Global Providers
-    |--------------------------------------------------------------------------
-    |
-    | These providers will be loaded for all request types
-    |
-    */
-    'global' => [
-        // Jankx\Providers\AppServiceProvider::class,
-        // Jankx\Providers\EventServiceProvider::class,
-        // Jankx\Providers\RouteServiceProvider::class,
-    ],
-]; 
+
+];

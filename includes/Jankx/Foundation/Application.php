@@ -152,7 +152,21 @@ class Application extends Container
      */
     protected function registerBaseServiceProviders()
     {
-        // Register base service providers here if needed
+        try {
+            $config = $this->make('config');
+            $providers = $config->get('app.providers', []);
+
+            foreach ($providers as $provider) {
+                if (is_string($provider) && class_exists($provider)) {
+                    $this->register($provider);
+                }
+            }
+        } catch (Exception $e) {
+            // Fallback if config is not available
+            if (Environment::isDebugLog()) {
+                error_log('[JANKX DEBUG] Could not load app providers: ' . $e->getMessage());
+            }
+        }
     }
 
     /**
