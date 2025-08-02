@@ -8,6 +8,7 @@
     <php>
         <const name="IS_TESTING" value="1"/>
         <env name="JANKX_CONFIG_PATH" value="tests/config"/>
+        <env name="JANKX_CHILD_CONFIG_PATH" value="tests/config/child"/>
     </php>
     <testsuites>
         <testsuite name="Jankx Framework">
