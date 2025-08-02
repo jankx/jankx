@@ -193,8 +193,7 @@ Providers được đăng ký theo request type:
 'console' => [
     'wp_cli' => [WpCliServiceProvider::class],
     'wp_cron' => [WpCronServiceProvider::class],
-],
-'global' => [AppServiceProvider::class],
+]
 ```
 
 ### 6. Configuration System

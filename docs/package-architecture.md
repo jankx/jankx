@@ -444,7 +444,7 @@ return [
         ],
     ],
     'global' => [
-        YourTheme\Support\Providers\AppServiceProvider::class,
+        // Global service providers
     ],
 ];
 ```
