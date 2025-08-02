@@ -46,6 +46,7 @@ class LoadConfiguration
 
         if (Environment::isDebugLog()) {
             error_log(sprintf('[JANKX DEBUG] Loading theme config from: %s', $configPath));
+            error_log(sprintf('[JANKX DEBUG] app.php exists: %s', file_exists($configPath . '/app.php') ? 'yes' : 'no'));
         }
 
         if (file_exists($configPath . '/app.php')) {
@@ -54,8 +55,9 @@ class LoadConfiguration
             }
             $appConfig = require $configPath . '/app.php';
             $config->set('app', $appConfig);
+
             if (Environment::isDebugLog()) {
-                error_log('[JANKX DEBUG] App config loaded: ' . print_r($appConfig, true));
+                error_log('[JANKX DEBUG] app.php loaded with keys: ' . implode(', ', array_keys($appConfig)));
             }
         } else {
             if (Environment::isDebugLog()) {
@@ -69,9 +71,6 @@ class LoadConfiguration
             }
             $providersConfig = require $configPath . '/providers.php';
             $config->set('providers', $providersConfig);
-            if (Environment::isDebugLog()) {
-                error_log('[JANKX DEBUG] Providers config loaded: ' . print_r($providersConfig, true));
-            }
         } else {
             if (Environment::isDebugLog()) {
                 error_log('[JANKX DEBUG] providers.php not found at: ' . $configPath . '/providers.php');

@@ -22,8 +22,23 @@ class RegisterProviders
         $config = $app->make('config');
         $providersConfig = $config->get('providers', []);
 
-        // Get global providers
-        $globalProviders = $providersConfig['global'] ?? [];
+        // Get app-level global providers first
+        $appProviders = $config->get('app.providers', []);
+        if (Environment::isDebugLog()) {
+            error_log(sprintf('[JANKX DEBUG] Found %d app-level providers', count($appProviders)));
+        }
+
+        // Register app-level providers first (global scope)
+        foreach ($appProviders as $provider) {
+            if (is_string($provider) && class_exists($provider)) {
+                if (Environment::isDebugLog()) {
+                    error_log(sprintf('[JANKX DEBUG] Registering app-level provider: %s', $provider));
+                }
+                $app->register($provider);
+            } elseif (Environment::isDebugLog()) {
+                error_log(sprintf('[JANKX DEBUG] App-level provider class not found: %s', is_string($provider) ? $provider : gettype($provider)));
+            }
+        }
 
         // Get kernel-specific providers based on request type
         $kernelProviders = [];
@@ -37,21 +52,19 @@ class RegisterProviders
             $kernelProviders = $providersConfig['http']['frontend'] ?? [];
         }
 
-        // Merge global and kernel-specific providers
-        $providers = array_merge($globalProviders, $kernelProviders);
-
         if (Environment::isDebugLog()) {
-            error_log(sprintf('[JANKX DEBUG] Found %d providers to register', count($providers)));
+            error_log(sprintf('[JANKX DEBUG] Found %d kernel-specific providers', count($kernelProviders)));
         }
 
-        foreach ($providers as $provider) {
+        // Register kernel-specific providers
+        foreach ($kernelProviders as $provider) {
             if (is_string($provider) && class_exists($provider)) {
                 if (Environment::isDebugLog()) {
-                    error_log(sprintf('[JANKX DEBUG] Registering provider: %s', $provider));
+                    error_log(sprintf('[JANKX DEBUG] Registering kernel-specific provider: %s', $provider));
                 }
                 $app->register($provider);
             } elseif (Environment::isDebugLog()) {
-                error_log(sprintf('[JANKX DEBUG] Provider class not found or invalid: %s', is_string($provider) ? $provider : gettype($provider)));
+                error_log(sprintf('[JANKX DEBUG] Kernel-specific provider class not found: %s', is_string($provider) ? $provider : gettype($provider)));
             }
         }
 

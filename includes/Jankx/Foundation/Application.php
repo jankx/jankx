@@ -5,6 +5,7 @@ namespace Jankx\Foundation;
 use Exception;
 use Illuminate\Container\Container;
 use Jankx\Config\Repository;
+use Jankx\Facades\Log;
 use Jankx\Helper\Environment;
 
 class Application extends Container
@@ -76,7 +77,6 @@ class Application extends Container
         $this->basePath = $basePath ?: dirname(__DIR__, 3);
 
         $this->registerBaseBindings();
-        $this->registerBaseServiceProviders();
         $this->registerCoreContainerAliases();
     }
 
@@ -145,29 +145,7 @@ class Application extends Container
         });
     }
 
-    /**
-     * Register all of the base service providers.
-     *
-     * @return void
-     */
-    protected function registerBaseServiceProviders()
-    {
-        try {
-            $config = $this->make('config');
-            $providers = $config->get('app.providers', []);
 
-            foreach ($providers as $provider) {
-                if (is_string($provider) && class_exists($provider)) {
-                    $this->register($provider);
-                }
-            }
-        } catch (Exception $e) {
-            // Fallback if config is not available
-            if (Environment::isDebugLog()) {
-                error_log('[JANKX DEBUG] Could not load app providers: ' . $e->getMessage());
-            }
-        }
-    }
 
     /**
      * Register the core class aliases in the container.

@@ -60,7 +60,7 @@ return [
     |
     */
     'providers' => [
-        // Jankx Service Providers...
+        Jankx\Support\Providers\SystemServiceProvider::class,
     ],
 
     /*

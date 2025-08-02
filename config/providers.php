@@ -10,14 +10,14 @@ return [
     |
     */
         'http' => [
-        // Frontend providers
+                // Frontend providers
         'frontend' => [
              Jankx\Support\Providers\ThemeServiceProvider::class,
              Jankx\Support\Providers\AssetServiceProvider::class,
              Jankx\Support\Providers\GutenbergServiceProvider::class,
              Jankx\Support\Providers\PerformanceServiceProvider::class,
         ],
-        
+
         // Admin providers
         'admin' => [
              Jankx\Support\Providers\ThemeServiceProvider::class,
@@ -25,12 +25,12 @@ return [
              Jankx\Support\Providers\GutenbergServiceProvider::class,
              Jankx\Support\Providers\PerformanceServiceProvider::class,
         ],
-        
+
         // REST API providers
         'rest_api' => [
              Jankx\Support\Providers\ThemeServiceProvider::class,
         ],
-        
+
         // Admin Ajax providers
         'admin_ajax' => [
              Jankx\Support\Providers\ThemeServiceProvider::class,
