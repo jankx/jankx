@@ -49,7 +49,7 @@ class UserService
     public function getById($userId)
     {
         $cacheKey = "user_id_{$userId}";
-        
+
         // Check cache first
         if ($this->cache->isEnabled() && $cached = $this->cache->get($cacheKey)) {
             return $this->applyFilters($cached);
@@ -57,16 +57,16 @@ class UserService
 
         // Query database
         $userData = get_user_by('ID', $userId);
-        
+
         if (!$userData) {
             return null;
         }
 
         $user = new User($userData);
-        
+
         // Apply filters
         $user = $this->applyFilters($user);
-        
+
         // Cache the result
         if ($this->cache->isEnabled()) {
             $this->cache->set($cacheKey, $user);
@@ -84,7 +84,7 @@ class UserService
     public function getByUsername($username)
     {
         $cacheKey = "user_username_{$username}";
-        
+
         // Check cache first
         if ($this->cache->isEnabled() && $cached = $this->cache->get($cacheKey)) {
             return $this->applyFilters($cached);
@@ -92,16 +92,16 @@ class UserService
 
         // Query database
         $userData = get_user_by('login', $username);
-        
+
         if (!$userData) {
             return null;
         }
 
         $user = new User($userData);
-        
+
         // Apply filters
         $user = $this->applyFilters($user);
-        
+
         // Cache the result
         if ($this->cache->isEnabled()) {
             $this->cache->set($cacheKey, $user);
@@ -118,7 +118,7 @@ class UserService
     public function getCurrent()
     {
         $currentUser = wp_get_current_user();
-        
+
         if (!$currentUser->exists()) {
             return null;
         }
@@ -136,4 +136,4 @@ class UserService
     {
         return apply_filters('jankx/user/data', $user);
     }
-} 
+}

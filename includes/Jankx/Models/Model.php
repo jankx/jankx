@@ -154,4 +154,4 @@ abstract class Model
     {
         return $this->has($key);
     }
-} 
+}

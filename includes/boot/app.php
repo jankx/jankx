@@ -23,9 +23,9 @@ if (!defined('ABSPATH')) {
 
  $app = new Application(get_template_directory());
 
- if (Environment::isDebugLog()) {
-     error_log('[JANKX DEBUG] Jankx Application initialized successfully');
- }
+if (Environment::isDebugLog()) {
+    error_log('[JANKX DEBUG] Jankx Application initialized successfully');
+}
 
 // Return the application instance
 return $app;

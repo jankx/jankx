@@ -21,4 +21,4 @@ class Asset extends Facade
     {
         return 'asset';
     }
-} 
+}

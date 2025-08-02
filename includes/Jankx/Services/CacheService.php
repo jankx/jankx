@@ -124,4 +124,4 @@ class CacheService
             return true; // Default to enabled
         }
     }
-} 
+}

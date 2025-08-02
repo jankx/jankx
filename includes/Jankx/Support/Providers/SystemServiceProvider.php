@@ -73,4 +73,4 @@ class SystemServiceProvider extends ServiceProvider
             error_log('[JANKX DEBUG] SystemServiceProvider: Booted successfully');
         }
     }
-} 
+}
