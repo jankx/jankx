@@ -2,6 +2,7 @@
 
 namespace Jankx\Foundation;
 
+use Exception;
 use Illuminate\Container\Container;
 use Jankx\Config\Repository;
 use Jankx\Helper\Environment;
@@ -157,14 +158,31 @@ class Application extends Container
      */
     protected function registerCoreContainerAliases()
     {
-        foreach (
-            [
+        // Default aliases
+        $defaultAliases = [
             'app'      => [\Jankx\Foundation\Application::class],
             'config'   => [\Jankx\Config\Repository::class],
-            ] as $key => $aliases
-        ) {
-            foreach ($aliases as $alias) {
-                $this->alias($key, $alias);
+        ];
+
+        // Load aliases from config if available
+        try {
+            $config = $this->make('config');
+            $configAliases = $config->get('app.aliases', []);
+
+            // Merge default aliases with config aliases
+            $aliases = array_merge($defaultAliases, $configAliases);
+        } catch (Exception $e) {
+            // Fallback to default aliases if config is not available
+            $aliases = $defaultAliases;
+        }
+
+        foreach ($aliases as $key => $aliasClasses) {
+            if (is_array($aliasClasses)) {
+                foreach ($aliasClasses as $alias) {
+                    $this->alias($key, $alias);
+                }
+            } else {
+                $this->alias($key, $aliasClasses);
             }
         }
     }

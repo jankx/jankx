@@ -116,13 +116,19 @@ return [
     |--------------------------------------------------------------------------
     |
     | This array of class aliases will be registered when this application
-    | is started. However, feel free to register as many as you wish as
-    | the aliases are "lazy" loaded so they don't hinder performance.
+    | is started. These aliases are used for container bindings.
+    | Facades are registered separately in the bootstrap process.
     |
     */
     'aliases' => [
-        'App' => Jankx\Facades\App::class,
-        'Config' => Jankx\Facades\Config::class,
-        'Log' => Jankx\Facades\Log::class,
+        'app' => [
+            \Jankx\Foundation\Application::class,
+        ],
+        'config' => [
+            \Jankx\Config\Repository::class,
+        ],
+        'log' => [
+            \Jankx\Foundation\Log\Logger::class,
+        ],
     ],
 ];
