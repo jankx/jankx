@@ -1,14 +1,14 @@
 <?php
 /**
  * Title: Centered footer
- * Slug: twentytwentyfive/footer-centered
+ * Slug: jankx/footer-centered
  * Categories: footer
  * Block Types: core/template-part/footer
  * Description: Footer with centered site title and tagline.
  *
  * @package WordPress
- * @subpackage Twenty_Twenty_Five
- * @since Twenty Twenty-Five 1.0
+ * @subpackage Jankx_Framework
+ * @since Jankx Framework 2.0
  */
 
 ?>
@@ -30,8 +30,8 @@
 		<?php
 		printf(
 			/* translators: Designed with WordPress. %s: WordPress link. */
-			esc_html__( 'Designed with %s', 'twentytwentyfive' ),
-			'<a href="' . esc_url( __( 'https://wordpress.org', 'twentytwentyfive' ) ) . '" rel="nofollow">WordPress</a>'
+			esc_html__( 'Designed with %s', 'jankx' ),
+			'<a href="' . esc_url( __( 'https://wordpress.org', 'jankx' ) ) . '" rel="nofollow">WordPress</a>'
 		);
 		?>
 	</p>

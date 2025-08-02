@@ -1,14 +1,14 @@
 <?php
 /**
  * Title: News blog archive
- * Slug: twentytwentyfive/template-archive-news-blog
+ * Slug: jankx/template-archive-news-blog
  * Template Types: archive
  * Viewport width: 1400
  * Inserter: no
  *
  * @package WordPress
- * @subpackage Twenty_Twenty_Five
- * @since Twenty Twenty-Five 1.0
+ * @subpackage Jankx_Framework
+ * @since Jankx Framework 2.0
  */
 
 ?>
@@ -30,7 +30,7 @@
 	<!-- /wp:group -->
 	<!-- wp:group {"align":"wide","layout":{"type":"default"}} -->
 	<div class="wp-block-group alignwide">
-		<!-- wp:pattern {"slug":"twentytwentyfive/template-query-loop-news-blog"} /-->
+		<!-- wp:pattern {"slug":"jankx/template-query-loop-news-blog"} /-->
 	</div>
 	<!-- /wp:group -->
 </main>

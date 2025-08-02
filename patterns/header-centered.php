@@ -1,14 +1,14 @@
 <?php
 /**
  * Title: Centered site header
- * Slug: twentytwentyfive/header-centered
+ * Slug: jankx/header-centered
  * Categories: header
  * Block Types: core/template-part/header
  * Description: Site header with centered site title and navigation.
  *
  * @package WordPress
- * @subpackage Twenty_Twenty_Five
- * @since Twenty Twenty-Five 1.0
+ * @subpackage Jankx_Framework
+ * @since Jankx Framework 2.0
  */
 
 ?>
