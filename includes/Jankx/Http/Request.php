@@ -2,139 +2,243 @@
 
 namespace Jankx\Http;
 
-use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
-use Jankx\Helper\Environment;
-
-class Request extends SymfonyRequest
+/**
+ * Simple HTTP Request Class for Jankx Framework
+ *
+ * This class provides basic request detection using WordPress native functions
+ * without depending on external HTTP libraries.
+ *
+ * @package Jankx\Http
+ * @since 1.0.0
+ */
+class Request
 {
-        /**
-     * Capture the current request and detect its type.
+    /**
+     * Request type constants
+     */
+    const TYPE_FRONTEND = 'frontend';
+    const TYPE_ADMIN = 'admin';
+    const TYPE_ADMIN_AJAX = 'admin_ajax';
+    const TYPE_REST_API = 'rest_api';
+    const TYPE_WP_CLI = 'wp_cli';
+    const TYPE_WP_CRON = 'wp_cron';
+
+    /**
+     * Create a new request instance
      *
-     * @return \Jankx\Http\Request
+     * @return static
      */
     public static function capture()
     {
-        $request = static::createFromGlobalsInternal();
-
-        // Detect request type and set it as a property
-        $request->requestType = static::detectRequestType($request);
-
-        return $request;
+        return new static();
     }
 
     /**
-     * Create a new request from the global variables.
-     *
-     * @return \Jankx\Http\Request
-     */
-    protected static function createFromGlobalsInternal()
-    {
-        $request = new static(
-            $_GET,
-            $_POST,
-            [],
-            $_COOKIE,
-            $_FILES,
-            $_SERVER
-        );
-
-        if (
-            $request->headers->get('CONTENT_TYPE') === 'application/x-www-form-urlencoded'
-            && in_array(strtoupper($request->server->get('REQUEST_METHOD', 'GET')), ['PUT', 'DELETE', 'PATCH'])
-        ) {
-            parse_str($request->getContent(), $data);
-            $request->request = new \Symfony\Component\HttpFoundation\ParameterBag($data);
-        }
-
-        return $request;
-    }
-
-    /**
-     * Get the detected request type.
+     * Get the request type
      *
      * @return string
      */
     public function getRequestType()
     {
-        return $this->requestType ?? 'frontend';
-    }
-
-    /**
-     * Detect the type of WordPress request.
-     *
-     * @param  \Jankx\Http\Request  $request
-     * @return string
-     */
-    protected static function detectRequestType(Request $request)
-    {
-        if (Environment::isDebugLog()) {
-            error_log('[JANKX DEBUG] Detecting request type using WordPress functions');
+        // Check WP CLI
+        if (defined('WP_CLI') && WP_CLI) {
+            return self::TYPE_WP_CLI;
         }
 
-        // Check for admin ajax
-        if (static::isAdminAjax($request)) {
-            if (Environment::isDebugLog()) {
-                error_log('[JANKX DEBUG] Detected as admin_ajax');
-            }
-            return 'admin_ajax';
+        // Check WP Cron
+        if (defined('DOING_CRON') && DOING_CRON) {
+            return self::TYPE_WP_CRON;
         }
 
-        // Check for REST API
-        if (static::isRestApi($request)) {
-            if (Environment::isDebugLog()) {
-                error_log('[JANKX DEBUG] Detected as rest_api');
-            }
-            return 'rest_api';
+        // Check REST API
+        if (defined('REST_REQUEST') && REST_REQUEST) {
+            return self::TYPE_REST_API;
         }
 
-        // Check for admin dashboard
-        if (static::isAdminDashboard($request)) {
-            if (Environment::isDebugLog()) {
-                error_log('[JANKX DEBUG] Detected as dashboard');
-            }
-            return 'dashboard';
+        // Check Admin AJAX
+        if (wp_doing_ajax()) {
+            return self::TYPE_ADMIN_AJAX;
+        }
+
+        // Check Admin Dashboard
+        if (is_admin()) {
+            return self::TYPE_ADMIN;
         }
 
         // Default to frontend
-        if (Environment::isDebugLog()) {
-            error_log('[JANKX DEBUG] Detected as frontend (default)');
-        }
-        return 'frontend';
+        return self::TYPE_FRONTEND;
     }
 
     /**
-     * Check if the request is a WordPress admin ajax request.
+     * Get the HTTP method
      *
-     * @param  \Jankx\Http\Request  $request
-     * @return bool
+     * @return string
      */
-    protected static function isAdminAjax(Request $request)
+    public function getMethod()
     {
-        // Check if this is an admin-ajax.php request
-        return defined('DOING_AJAX') && DOING_AJAX && is_admin();
+        return $_SERVER['REQUEST_METHOD'] ?? 'GET';
     }
 
     /**
-     * Check if the request is a WordPress REST API request.
+     * Get the request path
      *
-     * @param  \Jankx\Http\Request  $request
+     * @return string
+     */
+    public function getPathInfo()
+    {
+        $path = $_SERVER['REQUEST_URI'] ?? '/';
+        $path = parse_url($path, PHP_URL_PATH);
+
+        return $path ?: '/';
+    }
+
+    /**
+     * Get a request parameter
+     *
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
+    public function get($key, $default = null)
+    {
+        return $_REQUEST[$key] ?? $default;
+    }
+
+    /**
+     * Get a GET parameter
+     *
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
+    public function getQuery($key, $default = null)
+    {
+        return $_GET[$key] ?? $default;
+    }
+
+    /**
+     * Get a POST parameter
+     *
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
+    public function getPost($key, $default = null)
+    {
+        return $_POST[$key] ?? $default;
+    }
+
+    /**
+     * Check if request is AJAX
+     *
      * @return bool
      */
-    protected static function isRestApi(Request $request)
+    public function isAjax()
     {
-        // Check if this is a REST API request
+        return wp_doing_ajax();
+    }
+
+    /**
+     * Check if request is admin
+     *
+     * @return bool
+     */
+    public function isAdmin()
+    {
+        return is_admin();
+    }
+
+    /**
+     * Check if request is REST API
+     *
+     * @return bool
+     */
+    public function isRestApi()
+    {
         return defined('REST_REQUEST') && REST_REQUEST;
     }
 
     /**
-     * Check if the request is a WordPress admin dashboard request.
+     * Check if request is WP CLI
      *
-     * @param  \Jankx\Http\Request  $request
      * @return bool
      */
-    protected static function isAdminDashboard(Request $request)
+    public function isWpCli()
     {
-        // Check if this is an admin request using WordPress function
-        return is_admin() && !defined('DOING_AJAX');
+        return defined('WP_CLI') && WP_CLI;
+    }
+
+    /**
+     * Check if request is WP Cron
+     *
+     * @return bool
+     */
+    public function isWpCron()
+    {
+        return defined('DOING_CRON') && DOING_CRON;
+    }
+
+    /**
+     * Get all request data
+     *
+     * @return array
+     */
+    public function all()
+    {
+        return $_REQUEST;
+    }
+
+    /**
+     * Get all GET data
+     *
+     * @return array
+     */
+    public function query()
+    {
+        return $_GET;
+    }
+
+    /**
+     * Get all POST data
+     *
+     * @return array
+     */
+    public function post()
+    {
+        return $_POST;
+    }
+
+    /**
+     * Get request headers
+     *
+     * @return array
+     */
+    public function headers()
+    {
+        $headers = [];
+
+        foreach ($_SERVER as $key => $value) {
+            if (strpos($key, 'HTTP_') === 0) {
+                $header = str_replace('_', '-', strtolower(substr($key, 5)));
+                $headers[$header] = $value;
+            }
+        }
+
+        return $headers;
+    }
+
+    /**
+     * Get a specific header
+     *
+     * @param string $name
+     * @param mixed $default
+     * @return mixed
+     */
+    public function header($name, $default = null)
+    {
+        $headers = $this->headers();
+        $name = strtolower($name);
+
+        return $headers[$name] ?? $default;
     }
 }

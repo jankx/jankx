@@ -26,7 +26,7 @@ class RequestTest extends TestCase
         $this->assertIsString($requestType);
 
         // Should be one of the valid request types
-        $validTypes = ['frontend', 'admin_ajax', 'rest_api', 'dashboard'];
+        $validTypes = ['frontend', 'admin', 'admin_ajax', 'rest_api', 'wp_cli', 'wp_cron'];
         $this->assertContains($requestType, $validTypes);
     }
 
@@ -45,33 +45,35 @@ class RequestTest extends TestCase
     public function testRequestCanDetectAdminAjax()
     {
         $request = Request::capture();
-        $reflection = new \ReflectionClass($request);
-        $method = $reflection->getMethod('isAdminAjax');
-        $method->setAccessible(true);
-
-        $result = $method->invoke($request, $request);
+        $result = $request->isAjax();
         $this->assertIsBool($result);
     }
 
     public function testRequestCanDetectRestApi()
     {
         $request = Request::capture();
-        $reflection = new \ReflectionClass($request);
-        $method = $reflection->getMethod('isRestApi');
-        $method->setAccessible(true);
-
-        $result = $method->invoke($request, $request);
+        $result = $request->isRestApi();
         $this->assertIsBool($result);
     }
 
-    public function testRequestCanDetectAdminDashboard()
+    public function testRequestCanDetectAdmin()
     {
         $request = Request::capture();
-        $reflection = new \ReflectionClass($request);
-        $method = $reflection->getMethod('isAdminDashboard');
-        $method->setAccessible(true);
+        $result = $request->isAdmin();
+        $this->assertIsBool($result);
+    }
 
-        $result = $method->invoke($request, $request);
+    public function testRequestCanDetectWpCli()
+    {
+        $request = Request::capture();
+        $result = $request->isWpCli();
+        $this->assertIsBool($result);
+    }
+
+    public function testRequestCanDetectWpCron()
+    {
+        $request = Request::capture();
+        $result = $request->isWpCron();
         $this->assertIsBool($result);
     }
 }
