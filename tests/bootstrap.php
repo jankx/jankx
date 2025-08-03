@@ -76,11 +76,7 @@ if (!function_exists('delete_option')) {
     }
 }
 
-if (!function_exists('get_site_url')) {
-    function get_site_url($blog_id = null, $path = '', $scheme = null) {
-        return 'http://localhost';
-    }
-}
+
 
 if (!function_exists('get_locale')) {
     function get_locale() {
@@ -125,15 +121,51 @@ if (!function_exists('get_stylesheet')) {
     }
 }
 
+// Mock get_template_directory_uri function
 if (!function_exists('get_template_directory_uri')) {
-    function get_template_directory_uri() {
-        return 'http://localhost/wp-content/themes/test-theme';
+    function get_template_directory_uri()
+    {
+        return 'http://example.com/wp-content/themes/bookix';
     }
 }
 
+// Mock get_stylesheet_directory_uri function
 if (!function_exists('get_stylesheet_directory_uri')) {
-    function get_stylesheet_directory_uri() {
-        return 'http://localhost/wp-content/themes/test-theme';
+    function get_stylesheet_directory_uri()
+    {
+        return 'http://example.com/wp-content/themes/bookix-child';
+    }
+}
+
+// Mock get_site_url function
+if (!function_exists('get_site_url')) {
+    function get_site_url($path = '')
+    {
+        return 'http://example.com';
+    }
+}
+
+// Mock get_home_url function
+if (!function_exists('get_home_url')) {
+    function get_home_url($path = '')
+    {
+        return 'http://example.com';
+    }
+}
+
+// Mock get_admin_url function
+if (!function_exists('get_admin_url')) {
+    function get_admin_url($path = '')
+    {
+        return 'http://example.com/wp-admin';
+    }
+}
+
+// Mock content_url function
+if (!function_exists('content_url')) {
+    function content_url($path = '')
+    {
+        return 'http://example.com/wp-content/' . ltrim($path, '/');
     }
 }
 
@@ -322,6 +354,45 @@ $wp_widget_factory->widgets = [
     'search' => 'WP_Widget_Search',
     'recent-posts' => 'WP_Widget_Recent_Posts'
 ];
+
+// Mock wp_upload_dir function
+if (!function_exists('wp_upload_dir')) {
+    function wp_upload_dir()
+    {
+        return [
+            'baseurl' => 'http://example.com/wp-content/uploads',
+            'basedir' => '/path/to/wp-content/uploads',
+            'url' => 'http://example.com/wp-content/uploads',
+            'path' => '/path/to/wp-content/uploads',
+            'subdir' => '',
+            'error' => false
+        ];
+    }
+}
+
+// Mock get_stylesheet_directory function
+if (!function_exists('get_stylesheet_directory')) {
+    function get_stylesheet_directory()
+    {
+        return '/path/to/wp-content/themes/bookix-child';
+    }
+}
+
+// Mock remove_all_actions function
+if (!function_exists('remove_all_actions')) {
+    function remove_all_actions($hook, $priority = false)
+    {
+        return true;
+    }
+}
+
+// Mock remove_action function
+if (!function_exists('remove_action')) {
+    function remove_action($hook, $callback, $priority = 10)
+    {
+        return true;
+    }
+}
 
 // Set up test environment
 define('WP_DEBUG', true);
