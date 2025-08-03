@@ -3,25 +3,48 @@
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
          bootstrap="tests/bootstrap.php"
          colors="true"
+         verbose="true"
+         stopOnFailure="false"
          processIsolation="false"
-         stopOnFailure="false">
-    <php>
-        <const name="IS_TESTING" value="1"/>
-        <env name="JANKX_CONFIG_PATH" value="tests/config"/>
-        <env name="JANKX_CHILD_CONFIG_PATH" value="tests/config/child"/>
-    </php>
+         convertDeprecationsToExceptions="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true">
+
     <testsuites>
-        <testsuite name="Jankx Framework">
-            <directory>tests</directory>
+        <testsuite name="Lazy Loading Tests">
+            <directory>tests/Support</directory>
+            <directory>tests/Foundation</directory>
+            <directory>tests/Support/Providers</directory>
+        </testsuite>
+
+        <testsuite name="LazyLoader Tests">
+            <file>tests/Support/LazyLoaderTest.php</file>
+        </testsuite>
+
+        <testsuite name="Application Lazy Tests">
+            <file>tests/Foundation/ApplicationLazyTest.php</file>
+        </testsuite>
+
+        <testsuite name="HeavyServicesProvider Tests">
+            <file>tests/Support/Providers/HeavyServicesProviderTest.php</file>
         </testsuite>
     </testsuites>
+
     <coverage>
         <include>
-            <directory suffix=".php">./includes</directory>
+            <directory suffix=".php">includes/Jankx</directory>
         </include>
         <report>
-            <html outputDirectory="coverage"/>
-            <text outputFile="coverage.txt"/>
+            <html outputDirectory="tests/reports/coverage"/>
+            <text outputFile="tests/reports/coverage.txt"/>
         </report>
     </coverage>
+
+    <php>
+        <env name="APP_ENV" value="testing"/>
+        <env name="CACHE_DRIVER" value="array"/>
+        <env name="SESSION_DRIVER" value="array"/>
+        <env name="QUEUE_DRIVER" value="sync"/>
+    </php>
 </phpunit>
