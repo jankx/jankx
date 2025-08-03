@@ -67,6 +67,20 @@ class Application extends Container
     protected $deferredServices = [];
 
     /**
+     * Lazy loaded services cache
+     *
+     * @var array
+     */
+    protected $lazyServices = [];
+
+    /**
+     * Services that should be lazy loaded
+     *
+     * @var array
+     */
+    protected $lazyServiceProviders = [];
+
+    /**
      * Create a new Jankx application instance.
      *
      * @param  string|null  $basePath
@@ -345,5 +359,77 @@ class Application extends Container
         return in_array($provider, array_map(function ($p) {
             return get_class($p);
         }, $this->serviceProviders));
+    }
+
+    /**
+     * Register a lazy service provider
+     *
+     * @param string $provider
+     * @return void
+     */
+    public function registerLazy($provider)
+    {
+        $this->lazyServiceProviders[] = $provider;
+    }
+
+    /**
+     * Load a lazy service when needed
+     *
+     * @param string $service
+     * @return mixed
+     */
+    public function loadLazyService($service)
+    {
+        // Check if service is already loaded
+        if (isset($this->lazyServices[$service])) {
+            return $this->lazyServices[$service];
+        }
+
+        // Find and load the provider
+        foreach ($this->lazyServiceProviders as $provider) {
+            if (method_exists($provider, 'provides') && $provider::provides($service)) {
+                $this->register($provider);
+                $this->lazyServices[$service] = $this->make($service);
+                return $this->lazyServices[$service];
+            }
+        }
+
+        throw new Exception("Lazy service '{$service}' not found");
+    }
+
+    /**
+     * Check if a service is lazy loaded
+     *
+     * @param string $service
+     * @return bool
+     */
+    public function isLazyService($service)
+    {
+        foreach ($this->lazyServiceProviders as $provider) {
+            if (method_exists($provider, 'provides') && $provider::provides($service)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Get all lazy service providers
+     *
+     * @return array
+     */
+    public function getLazyServiceProviders()
+    {
+        return $this->lazyServiceProviders;
+    }
+
+    /**
+     * Clear lazy services cache
+     *
+     * @return void
+     */
+    public function clearLazyServices()
+    {
+        $this->lazyServices = [];
     }
 }

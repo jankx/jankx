@@ -5,6 +5,7 @@ return [
     'version' => '2.0.0',
     'providers' => [
         Jankx\Support\Providers\SystemServiceProvider::class,
+        Jankx\Support\Providers\LazyServiceProvider::class,
         Jankx\Support\Providers\TranslationServiceProvider::class,
     ],
     'aliases' => [
