@@ -12,10 +12,9 @@ const LiveReloadPlugin = require('webpack-livereload-plugin');
  |
  */
 
-mix.js('assets/src/app.js', 'assets/js')
-    .sass('style.scss', '.', [
-        //
-    ])
+mix.js('resources/src/app.js', 'resources/assets/js')
+    .sass('resources/scss/style.scss', 'style.css')
+    .sass('resources/scss/admin.scss', 'resources/assets/css/admin.css')
     .webpackConfig({
         plugins: [new LiveReloadPlugin({
             useSourceHash : true

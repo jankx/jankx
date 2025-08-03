@@ -12,12 +12,27 @@ const LiveReloadPlugin = require('webpack-livereload-plugin');
  |
  */
 
-mix.js('assets/src/app.js', 'assets/js')
-    .sass('style.scss', '.', [
-        //
-    ])
-    .webpackConfig({
-        plugins: [new LiveReloadPlugin({
-            useSourceHash : true
-        })],
-    });
+// Development mode
+if (mix.inProduction()) {
+    // Production builds
+    mix.js('resources/src/app.js', 'resources/js/app.js')
+        .sass('resources/scss/style.scss', 'style.min.css')
+        .sass('resources/scss/admin.scss', 'resources/assets/css/admin.min.css')
+        .version()
+        .sourceMaps();
+} else {
+    // Development builds with hot reload
+    mix.js('resources/src/app.js', 'resources/assets/js/app.js')
+        .sass('resources/scss/style.scss', 'resources/assets/css/style.css')
+        .sass('resources/scss/admin.scss', 'resources/assets/css/admin.css')
+        .webpackConfig({
+            plugins: [new LiveReloadPlugin({
+                useSourceHash: true
+            })],
+        })
+        .sourceMaps();
+}
+
+// Copy assets
+mix.copy('resources/assets/fonts', 'resources/assets/fonts')
+    .copy('resources/assets/images', 'resources/assets/images');
