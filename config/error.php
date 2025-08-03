@@ -26,6 +26,8 @@ return [
                 // Specific functions to suppress
                 'wp_enqueue_script',
                 'wp_enqueue_style',
+                '_load_textdomain_just_in_time',
+                'wp_style_is'
             ],
             'patterns' => [
                 // Message patterns to suppress
