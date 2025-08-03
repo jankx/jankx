@@ -25,7 +25,6 @@ use Jankx\Helper\Environment;
  */
 class SlideoutMenuServiceProvider extends ServiceProvider
 {
-
     /**
      * Register any application services.
      *
