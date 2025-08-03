@@ -4,6 +4,8 @@ namespace Jankx\Support\Providers;
 
 use Jankx\Support\Blocks\GutenbergRepository;
 use Jankx\Foundation\Application;
+use Jankx\Facades\Log;
+use Jankx\Helper\Environment;
 
 /**
  * Gutenberg Service Provider
@@ -25,13 +27,10 @@ class GutenbergServiceProvider extends ServiceProvider
      */
     public function register(Application $app)
     {
-        // Register Gutenberg Repository as singleton
-        $this->app->singleton('gutenberg.repository', function ($app) {
-            return new GutenbergRepository();
+        // Register Gutenberg repository
+        $app->singleton('gutenberg.repository', function ($app) {
+            return new \Jankx\Support\Blocks\GutenbergRepository();
         });
-
-        // Register Gutenberg Repository alias
-        $this->app->alias('gutenberg.repository', GutenbergRepository::class);
     }
 
     /**
@@ -43,10 +42,7 @@ class GutenbergServiceProvider extends ServiceProvider
     public function boot(Application $app)
     {
         // Initialize Gutenberg blocks
-        $this->app->make('gutenberg.repository')->init();
-
-        // Enqueue block editor assets
-        add_action('enqueue_block_editor_assets', [$this, 'enqueueBlockEditorAssets']);
+        $this->registerGutenbergHooks();
     }
 
     /**
@@ -61,28 +57,50 @@ class GutenbergServiceProvider extends ServiceProvider
     }
 
     /**
-     * Enqueue built block scripts
-     *
-     * @return void
+     * Enqueue built block scripts and styles
      */
-    protected function enqueueBuiltBlockScripts()
+    public function enqueueBuiltBlockScripts()
     {
-        // Cache block discovery for 1 hour
-        $cacheKey = 'jankx_blocks_discovery';
-        $blocks = wp_cache_get($cacheKey, 'jankx_blocks');
+        $blocksDir = get_template_directory() . '/resources/blocks';
 
-        if ($blocks === false) {
-            $blocks = $this->discoverBlocks();
-            wp_cache_set($cacheKey, $blocks, 'jankx_blocks', 3600);
+        if (!is_dir($blocksDir)) {
+            return;
         }
 
-        // Debug: Log discovered blocks
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log('[JANKX DEBUG] Discovered blocks: ' . print_r($blocks, true));
-        }
+        $blockDirs = glob($blocksDir . '/*', GLOB_ONLYDIR);
 
-        foreach ($blocks as $blockName => $blockData) {
-            $this->enqueueBlockScript($blockName, $blockData['buildPath']);
+        foreach ($blockDirs as $blockDir) {
+            $blockName = basename($blockDir);
+            $buildDir = $blockDir . '/build';
+
+            if (!is_dir($buildDir)) {
+                continue;
+            }
+
+            // Enqueue built JS file
+            $jsFile = $buildDir . '/index.js';
+            if (file_exists($jsFile)) {
+                $scriptUrl = \Jankx\Facades\Url::blockAsset($blockName . '/build/index.js');
+                wp_enqueue_script(
+                    'jankx-block-' . $blockName,
+                    $scriptUrl,
+                    ['wp-blocks', 'wp-element', 'wp-editor'],
+                    filemtime($jsFile),
+                    true
+                );
+            }
+
+            // Enqueue built CSS file
+            $cssFile = $buildDir . '/index.css.css';
+            if (file_exists($cssFile)) {
+                $styleUrl = \Jankx\Facades\Url::blockAsset($blockName . '/build/index.css.css');
+                wp_enqueue_style(
+                    'jankx-block-' . $blockName . '-style',
+                    $styleUrl,
+                    [],
+                    filemtime($cssFile)
+                );
+            }
         }
     }
 
@@ -97,16 +115,16 @@ class GutenbergServiceProvider extends ServiceProvider
         $blocksPath = get_template_directory() . '/resources/blocks';
 
         if (!is_dir($blocksPath)) {
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log('[JANKX DEBUG] Blocks path does not exist: ' . $blocksPath);
+            if (Environment::isDebugLog()) {
+                Log::debug('Blocks path does not exist: ' . $blocksPath);
             }
             return $blocks;
         }
 
         $blockDirs = glob($blocksPath . '/*', GLOB_ONLYDIR);
 
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log('[JANKX DEBUG] Found block directories: ' . print_r($blockDirs, true));
+        if (Environment::isDebugLog()) {
+            Log::debug('Found block directories: ' . print_r($blockDirs, true));
         }
 
         foreach ($blockDirs as $blockDir) {
@@ -121,12 +139,12 @@ class GutenbergServiceProvider extends ServiceProvider
                     'assetFile' => $buildPath . '/index.asset.php'
                 ];
 
-                if (defined('WP_DEBUG') && WP_DEBUG) {
-                    error_log('[JANKX DEBUG] Registered block: ' . $blockName . ' at ' . $buildPath);
+                if (Environment::isDebugLog()) {
+                    Log::debug('Registered block: ' . $blockName . ' at ' . $buildPath);
                 }
             } else {
-                if (defined('WP_DEBUG') && WP_DEBUG) {
-                    error_log('[JANKX DEBUG] Build path does not exist: ' . $buildPath);
+                if (Environment::isDebugLog()) {
+                    Log::debug('Build path does not exist: ' . $buildPath);
                 }
             }
         }
@@ -144,11 +162,11 @@ class GutenbergServiceProvider extends ServiceProvider
     protected function enqueueBlockScript($blockName, $buildPath)
     {
         $scriptFile = $buildPath . '/index.js';
-        $styleFile = $buildPath . '/index.css';
+        $styleFile = $buildPath . '/index.css.css';
         $assetFile = $buildPath . '/index.asset.php';
 
         if (file_exists($scriptFile)) {
-            $scriptUrl = get_template_directory_uri() . '/resources/blocks/' . $blockName . '/build/index.js';
+            $scriptUrl = \Jankx\Facades\Asset::url('resources/blocks/' . $blockName . '/build/index.js');
 
             // Load dependencies from asset file if exists
             $dependencies = ['wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-i18n'];
@@ -174,7 +192,7 @@ class GutenbergServiceProvider extends ServiceProvider
         }
 
         if (file_exists($styleFile)) {
-            $styleUrl = get_template_directory_uri() . '/resources/blocks/' . $blockName . '/build/index.css.css';
+            $styleUrl = \Jankx\Facades\Asset::url('resources/blocks/' . $blockName . '/build/index.css.css');
             $styleVersion = filemtime($styleFile);
 
             wp_enqueue_style(
@@ -194,5 +212,16 @@ class GutenbergServiceProvider extends ServiceProvider
     public static function clearBlockCache()
     {
         wp_cache_flush_group('jankx_blocks');
+    }
+
+    /**
+     * Register Gutenberg-specific hooks
+     */
+    protected function registerGutenbergHooks()
+    {
+        add_action('init', [$this->app->make('gutenberg.repository'), 'init']);
+
+        // Enqueue block editor assets with priority 20 (after wp_enqueue_scripts)
+        add_action('enqueue_block_editor_assets', [$this, 'enqueueBlockEditorAssets'], 20);
     }
 }

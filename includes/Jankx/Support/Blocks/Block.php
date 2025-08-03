@@ -193,7 +193,7 @@ abstract class Block
                 }
 
                 $assetData['script'] = [
-                    'url' => get_template_directory_uri() . '/resources/blocks/' . $this->getBlockNameFromPath($blockPath) . '/' . $metadata['editorScript'],
+                    'url' => \Jankx\Facades\Url::blockAsset($this->getBlockNameFromPath($blockPath) . '/' . $metadata['editorScript']),
                     'dependencies' => $dependencies,
                     'version' => $version
                 ];
@@ -205,7 +205,7 @@ abstract class Block
             $stylePath = $blockPath . '/' . $metadata['style'];
             if (file_exists($stylePath)) {
                 $assetData['style'] = [
-                    'url' => get_template_directory_uri() . '/resources/blocks/' . $this->getBlockNameFromPath($blockPath) . '/' . $metadata['style'],
+                    'url' => \Jankx\Facades\Url::blockAsset($this->getBlockNameFromPath($blockPath) . '/' . $metadata['style']),
                     'version' => filemtime($stylePath)
                 ];
             }
@@ -242,5 +242,51 @@ abstract class Block
         $blockArgs = array_merge($metadata, $blockArgs);
 
         register_block_type($blockPath, $blockArgs);
+    }
+
+    protected function getBlockMetadataUrls($blockPath, $metadata)
+    {
+        $blockName = $this->getBlockNameFromPath($blockPath);
+        $urls = [];
+        if (isset($metadata['editorScript'])) {
+            $urls['editorScript'] = [
+                'url' => \Jankx\Facades\Url::blockAsset($blockName . '/' . $metadata['editorScript'])
+            ];
+        }
+        if (isset($metadata['style'])) {
+            $urls['style'] = [
+                'url' => \Jankx\Facades\Url::blockAsset($blockName . '/' . $metadata['style'])
+            ];
+        }
+        return $urls;
+    }
+
+    /**
+     * Get block assets
+     *
+     * @return array
+     */
+    protected function getBlockAssets()
+    {
+        $blockPath = $this->getBlockPath();
+        $metadata = $this->getMetadata();
+
+        $assets = [];
+
+        if (isset($metadata['editorScript'])) {
+            $assets['editorScript'] = [
+                'url' => \Jankx\Facades\Url::blockAsset($this->getBlockNameFromPath($blockPath) . '/' . $metadata['editorScript']),
+                'path' => $blockPath . '/' . $metadata['editorScript']
+            ];
+        }
+
+        if (isset($metadata['style'])) {
+            $assets['style'] = [
+                'url' => \Jankx\Facades\Url::blockAsset($this->getBlockNameFromPath($blockPath) . '/' . $metadata['style']),
+                'path' => $blockPath . '/' . $metadata['style']
+            ];
+        }
+
+        return $assets;
     }
 }

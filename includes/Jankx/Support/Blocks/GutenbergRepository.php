@@ -32,7 +32,7 @@ class GutenbergRepository
      */
     public function __construct()
     {
-        $this->registerDefaultBlocks();
+        // Blocks will be registered in init() method
     }
 
     /**
@@ -60,6 +60,11 @@ class GutenbergRepository
         $block = new $blockClass();
 
         if (!$block instanceof Block) {
+            return;
+        }
+
+        // Check if block is already registered
+        if (isset($this->blocks[$block->getName()])) {
             return;
         }
 
@@ -105,6 +110,10 @@ class GutenbergRepository
      */
     public function registerAllBlocks()
     {
+        // Register default blocks first
+        $this->registerDefaultBlocks();
+
+        // Register discovered blocks
         foreach ($this->instances as $block) {
             $block->register();
         }
@@ -187,50 +196,42 @@ class GutenbergRepository
      *
      * @return void
      */
-    public function enqueueBlockAssets()
+    public function enqueueAllBlockAssets()
     {
         $metadata = $this->getBlocksMetadata();
 
         foreach ($metadata as $blockName => $blockData) {
-            $this->enqueueBlockAsset($blockName, $blockData);
+            $this->enqueueBlockAssets($blockName, $blockData);
         }
     }
 
     /**
-     * Enqueue block asset
+     * Enqueue block assets
      *
-     * @param string $blockName Block name
-     * @param array $blockData Block data
-     * @return void
+     * @param string $blockName
+     * @param array $blockData
      */
-    protected function enqueueBlockAsset($blockName, $blockData)
+    protected function enqueueBlockAssets($blockName, $blockData)
     {
-        $blockPath = get_template_directory() . '/resources/blocks/' . $blockName;
-
         // Enqueue editor script
-        if (isset($blockData['editorScript'])) {
-            $scriptPath = $blockPath . '/' . $blockData['editorScript'];
-            if (file_exists($scriptPath)) {
-                wp_enqueue_script(
-                    $blockData['name'] . '-editor',
-                    get_template_directory_uri() . '/resources/blocks/' . $blockName . '/' . $blockData['editorScript'],
-                    ['wp-blocks', 'wp-element', 'wp-editor'],
-                    filemtime($scriptPath)
-                );
-            }
+        if (!empty($blockData['editorScript'])) {
+            wp_enqueue_script(
+                $blockData['name'] . '-editor',
+                \Jankx\Facades\Url::blockAsset($blockName . '/' . $blockData['editorScript']),
+                ['wp-blocks', 'wp-element', 'wp-editor'],
+                filemtime($blockData['buildPath'] . '/' . $blockData['editorScript']),
+                true
+            );
         }
 
-        // Enqueue styles
-        if (isset($blockData['style'])) {
-            $stylePath = $blockPath . '/' . $blockData['style'];
-            if (file_exists($stylePath)) {
-                wp_enqueue_style(
-                    $blockData['name'] . '-style',
-                    get_template_directory_uri() . '/resources/blocks/' . $blockName . '/' . $blockData['style'],
-                    [],
-                    filemtime($stylePath)
-                );
-            }
+        // Enqueue block style
+        if (!empty($blockData['style'])) {
+            wp_enqueue_style(
+                $blockData['name'] . '-style',
+                \Jankx\Facades\Url::blockAsset($blockName . '/' . $blockData['style']),
+                [],
+                filemtime($blockData['buildPath'] . '/' . $blockData['style'])
+            );
         }
     }
 
@@ -246,8 +247,5 @@ class GutenbergRepository
 
         // Register all blocks
         $this->registerAllBlocks();
-
-        // Enqueue assets
-        add_action('enqueue_block_editor_assets', [$this, 'enqueueBlockAssets']);
     }
 }
