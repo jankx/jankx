@@ -127,31 +127,91 @@ abstract class Block
      */
     protected function enqueueAssets($blockPath, $metadata)
     {
-        // Enqueue editor script
+        // Cache asset data for 1 hour
+        $cacheKey = 'jankx_block_assets_' . $this->name;
+        $assetData = wp_cache_get($cacheKey, 'jankx_blocks');
+
+        if ($assetData === false) {
+            $assetData = $this->getAssetData($blockPath, $metadata);
+            wp_cache_set($cacheKey, $assetData, 'jankx_blocks', 3600);
+        }
+
+        // Enqueue script if available
+        if ($assetData['script']) {
+            wp_enqueue_script(
+                $this->name . '-editor',
+                $assetData['script']['url'],
+                $assetData['script']['dependencies'],
+                $assetData['script']['version'],
+                true
+            );
+        }
+
+        // Enqueue style if available
+        if ($assetData['style']) {
+            wp_enqueue_style(
+                $this->name . '-style',
+                $assetData['style']['url'],
+                [],
+                $assetData['style']['version']
+            );
+        }
+    }
+
+    /**
+     * Get asset data for block
+     *
+     * @param string $blockPath Path to block directory
+     * @param array $metadata Block metadata
+     * @return array
+     */
+    protected function getAssetData($blockPath, $metadata)
+    {
+        $assetData = [
+            'script' => null,
+            'style' => null
+        ];
+
+        // Get script data
         if (isset($metadata['editorScript'])) {
             $scriptPath = $blockPath . '/' . $metadata['editorScript'];
+            $assetPath = $blockPath . '/build/index.asset.php';
+
             if (file_exists($scriptPath)) {
-                wp_enqueue_script(
-                    $this->name . '-editor',
-                    get_template_directory_uri() . '/resources/blocks/' . $this->getBlockNameFromPath($blockPath) . '/' . $metadata['editorScript'],
-                    ['wp-blocks', 'wp-element', 'wp-editor'],
-                    filemtime($scriptPath)
-                );
+                $dependencies = ['wp-blocks', 'wp-element', 'wp-editor'];
+                $version = filemtime($scriptPath);
+
+                // Load dependencies from asset file if exists
+                if (file_exists($assetPath)) {
+                    $asset = include $assetPath;
+                    if (is_array($asset) && isset($asset['dependencies'])) {
+                        $dependencies = $asset['dependencies'];
+                    }
+                    if (is_array($asset) && isset($asset['version'])) {
+                        $version = $asset['version'];
+                    }
+                }
+
+                $assetData['script'] = [
+                    'url' => get_template_directory_uri() . '/resources/blocks/' . $this->getBlockNameFromPath($blockPath) . '/' . $metadata['editorScript'],
+                    'dependencies' => $dependencies,
+                    'version' => $version
+                ];
             }
         }
 
-        // Enqueue styles
+        // Get style data
         if (isset($metadata['style'])) {
             $stylePath = $blockPath . '/' . $metadata['style'];
             if (file_exists($stylePath)) {
-                wp_enqueue_style(
-                    $this->name . '-style',
-                    get_template_directory_uri() . '/resources/blocks/' . $this->getBlockNameFromPath($blockPath) . '/' . $metadata['style'],
-                    [],
-                    filemtime($stylePath)
-                );
+                $assetData['style'] = [
+                    'url' => get_template_directory_uri() . '/resources/blocks/' . $this->getBlockNameFromPath($blockPath) . '/' . $metadata['style'],
+                    'version' => filemtime($stylePath)
+                ];
             }
         }
+
+        return $assetData;
     }
 
     /**

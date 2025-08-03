@@ -97,12 +97,11 @@ class LoadConfiguration
             return [];
         }
 
-        // Calculate CRC32 checksum of file
-        $fileContent = file_get_contents($filePath);
-        $checksum = crc32($fileContent);
+        // Use file modification time for cache invalidation
+        $fileMtime = filemtime($filePath);
 
-        // Generate cache key
-        $cacheKey = "file_configs_{$configType}_{$checksum}";
+        // Generate cache key with mtime
+        $cacheKey = "file_configs_{$configType}_{$fileMtime}";
 
         // Try to get from cache first
         $cachedConfig = wp_cache_get($cacheKey, 'jankx_config');

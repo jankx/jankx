@@ -50,6 +50,9 @@ class WidgetRendererBlock extends Block
                 ]
             ]
         ]);
+
+        // Auto-register the block
+        add_action('init', [$this, 'register']);
     }
 
     /**
@@ -60,10 +63,14 @@ class WidgetRendererBlock extends Block
     public function register()
     {
         $blockPath = get_template_directory() . '/resources/blocks/widget-renderer';
+        $buildPath = $blockPath . '/build';
         $metadata = $this->getBlockMetadata($blockPath);
 
-        // Enqueue assets
-        $this->enqueueAssets($blockPath, $metadata);
+        // Update metadata to use built assets
+        if (is_dir($buildPath)) {
+            $metadata['editorScript'] = 'build/index.js';
+            $metadata['style'] = 'build/index.css';
+        }
 
         // Register block
         $this->registerBlock($blockPath, $metadata);
@@ -250,19 +257,37 @@ class WidgetRendererBlock extends Block
      */
     public function getAvailableWidgets()
     {
-        global $wp_widget_factory;
+        // Cache widgets list for 1 hour
+        $cacheKey = 'jankx_available_widgets';
+        $widgets = wp_cache_get($cacheKey, 'jankx_widgets');
 
-        $widgets = [];
+        if ($widgets === false) {
+            global $wp_widget_factory;
 
-        foreach ($wp_widget_factory->widgets as $widgetId => $widgetClass) {
-            $widgets[] = [
-                'id' => $widgetId,
-                'title' => $widgetClass,
-                'description' => 'Widget description'
-            ];
+            $widgets = [];
+
+            foreach ($wp_widget_factory->widgets as $widgetId => $widgetClass) {
+                $widgets[] = [
+                    'id' => $widgetId,
+                    'title' => $widgetClass,
+                    'description' => 'Widget description'
+                ];
+            }
+
+            wp_cache_set($cacheKey, $widgets, 'jankx_widgets', 3600);
         }
 
         return rest_ensure_response($widgets);
+    }
+
+    /**
+     * Clear widget cache
+     *
+     * @return void
+     */
+    public static function clearWidgetCache()
+    {
+        wp_cache_flush_group('jankx_widgets');
     }
 
     /**

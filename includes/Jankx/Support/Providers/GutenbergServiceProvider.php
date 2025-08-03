@@ -67,10 +67,32 @@ class GutenbergServiceProvider extends ServiceProvider
      */
     protected function enqueueBuiltBlockScripts()
     {
+        // Cache block discovery for 1 hour
+        $cacheKey = 'jankx_blocks_discovery';
+        $blocks = wp_cache_get($cacheKey, 'jankx_blocks');
+
+        if ($blocks === false) {
+            $blocks = $this->discoverBlocks();
+            wp_cache_set($cacheKey, $blocks, 'jankx_blocks', 3600);
+        }
+
+        foreach ($blocks as $blockName => $blockData) {
+            $this->enqueueBlockScript($blockName, $blockData['buildPath']);
+        }
+    }
+
+    /**
+     * Discover blocks from filesystem
+     *
+     * @return array
+     */
+    protected function discoverBlocks()
+    {
+        $blocks = [];
         $blocksPath = get_template_directory() . '/resources/blocks';
 
         if (!is_dir($blocksPath)) {
-            return;
+            return $blocks;
         }
 
         $blockDirs = glob($blocksPath . '/*', GLOB_ONLYDIR);
@@ -80,9 +102,16 @@ class GutenbergServiceProvider extends ServiceProvider
             $buildPath = $blockDir . '/build';
 
             if (is_dir($buildPath)) {
-                $this->enqueueBlockScript($blockName, $buildPath);
+                $blocks[$blockName] = [
+                    'buildPath' => $buildPath,
+                    'scriptFile' => $buildPath . '/index.js',
+                    'styleFile' => $buildPath . '/index.css',
+                    'assetFile' => $buildPath . '/index.asset.php'
+                ];
             }
         }
+
+        return $blocks;
     }
 
     /**
@@ -96,16 +125,30 @@ class GutenbergServiceProvider extends ServiceProvider
     {
         $scriptFile = $buildPath . '/index.js';
         $styleFile = $buildPath . '/index.css';
+        $assetFile = $buildPath . '/index.asset.php';
 
         if (file_exists($scriptFile)) {
             $scriptUrl = get_template_directory_uri() . '/resources/blocks/' . $blockName . '/build/index.js';
-            $scriptVersion = filemtime($scriptFile);
+
+            // Load dependencies from asset file if exists
+            $dependencies = ['wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-i18n'];
+            $version = filemtime($scriptFile);
+
+            if (file_exists($assetFile)) {
+                $asset = include $assetFile;
+                if (is_array($asset) && isset($asset['dependencies'])) {
+                    $dependencies = $asset['dependencies'];
+                }
+                if (is_array($asset) && isset($asset['version'])) {
+                    $version = $asset['version'];
+                }
+            }
 
             wp_enqueue_script(
                 'jankx-block-' . $blockName,
                 $scriptUrl,
-                ['wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-i18n'],
-                $scriptVersion,
+                $dependencies,
+                $version,
                 true
             );
         }
@@ -121,5 +164,15 @@ class GutenbergServiceProvider extends ServiceProvider
                 $styleVersion
             );
         }
+    }
+
+    /**
+     * Clear block discovery cache
+     *
+     * @return void
+     */
+    public static function clearBlockCache()
+    {
+        wp_cache_flush_group('jankx_blocks');
     }
 }
