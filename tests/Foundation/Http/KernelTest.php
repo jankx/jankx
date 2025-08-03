@@ -91,4 +91,34 @@ class KernelTest extends TestCase
 
         $this->assertSame($this->app, $kernel->getApplication());
     }
+
+    public function testKernelCanGetContext()
+    {
+        $kernel = new class ($this->app) extends Kernel {
+            protected $context = 'test_context';
+
+            public function handle($request)
+            {
+            }
+            public function registerHooks()
+            {
+            }
+        };
+
+        $this->assertEquals('test_context', $kernel->getContext());
+    }
+
+    public function testKernelImplementsKernelInterface()
+    {
+        $kernel = new class ($this->app) extends Kernel {
+            public function handle($request)
+            {
+            }
+            public function registerHooks()
+            {
+            }
+        };
+
+        $this->assertInstanceOf(\Jankx\Contracts\KernelInterface::class, $kernel);
+    }
 }
