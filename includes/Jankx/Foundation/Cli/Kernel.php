@@ -9,6 +9,7 @@ use Jankx\Foundation\Bootstrap\RegisterFacades;
 use Jankx\Foundation\Bootstrap\RegisterProviders;
 use Jankx\Foundation\Bootstrap\BootProviders;
 use Jankx\Foundation\Bootstrap\ThemeDataLoader;
+use Jankx\Foundation\Bootstrap\BootChildTheme;
 
 abstract class Kernel
 {
@@ -29,6 +30,7 @@ abstract class Kernel
         RegisterLogger::class,
         RegisterFacades::class,
         ThemeDataLoader::class,
+        BootChildTheme::class,
         RegisterProviders::class,
         BootProviders::class,
     ];
