@@ -3,6 +3,7 @@
 namespace Jankx\Foundation\Cli\Kernels;
 
 use Jankx\Foundation\Cli\Kernel;
+use Jankx\Support\Providers\WordPressCliServiceProvider;
 
 class WpCliKernel extends Kernel
 {
@@ -21,10 +22,8 @@ class WpCliKernel extends Kernel
             return 1;
         }
 
-        // Register custom WP CLI commands
-        add_action('cli_init', function () {
-            // Register commands here
-        });
+        // WordPress CLI Service Provider is automatically registered via config/providers.php
+        // and booted through RegisterProviders bootstrap class
 
         return 0;
     }

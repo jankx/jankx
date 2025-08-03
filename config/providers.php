@@ -50,7 +50,7 @@ return [
     'console' => [
         // WP CLI providers
         'wp_cli' => [
-            // Jankx\Providers\WpCliServiceProvider::class,
+            Jankx\Support\Providers\WordPressCliServiceProvider::class,
         ],
 
         // WP Cron providers
