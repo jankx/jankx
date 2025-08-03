@@ -5,11 +5,11 @@ namespace Jankx\Support\Blocks;
 /**
  * Gutenberg Repository
  *
- * This class manages all Gutenberg blocks in the Jankx Framework.
- * It handles block registration, discovery, and lifecycle management.
+ * This class manages storage of Gutenberg blocks and patterns in the Jankx Framework.
+ * It handles block and pattern registration and storage.
  *
  * @package Jankx\Support\Blocks
- * @since 1.0.0
+ * @since 2.0.0
  */
 class GutenbergRepository
 {
@@ -28,21 +28,25 @@ class GutenbergRepository
     protected $instances = [];
 
     /**
+     * Registered patterns
+     *
+     * @var array
+     */
+    protected $patterns = [];
+
+    /**
+     * Pattern instances
+     *
+     * @var array
+     */
+    protected $patternInstances = [];
+
+    /**
      * Constructor
      */
     public function __construct()
     {
-        // Blocks will be registered in init() method
-    }
-
-    /**
-     * Register default blocks
-     *
-     * @return void
-     */
-    protected function registerDefaultBlocks()
-    {
-        $this->registerBlock(WidgetRendererBlock::class);
+        // Repository is ready for block storage
     }
 
     /**
@@ -104,148 +108,176 @@ class GutenbergRepository
     }
 
     /**
-     * Register all blocks with WordPress
+     * Check if block exists
      *
-     * @return void
+     * @param string $blockName Block name
+     * @return bool
      */
-    public function registerAllBlocks()
+    public function hasBlock($blockName)
     {
-        // Register default blocks first
-        $this->registerDefaultBlocks();
-
-        // Register discovered blocks
-        foreach ($this->instances as $block) {
-            $block->register();
-        }
+        return isset($this->blocks[$blockName]);
     }
 
     /**
-     * Discover blocks from resources/blocks directory
+     * Get block count
+     *
+     * @return int
+     */
+    public function getBlockCount()
+    {
+        return count($this->blocks);
+    }
+
+    /**
+     * Clear all blocks
      *
      * @return void
      */
-    public function discoverBlocks()
+    public function clear()
     {
-        $blocksPath = get_template_directory() . '/resources/blocks';
+        $this->blocks = [];
+        $this->instances = [];
+    }
 
-        if (!is_dir($blocksPath)) {
+    /**
+     * Remove a specific block
+     *
+     * @param string $blockName Block name
+     * @return void
+     */
+    public function removeBlock($blockName)
+    {
+        if (isset($this->blocks[$blockName])) {
+            unset($this->blocks[$blockName]);
+        }
+
+        if (isset($this->instances[$blockName])) {
+            unset($this->instances[$blockName]);
+        }
+    }
+
+    // ========================================
+    // PATTERN METHODS
+    // ========================================
+
+    /**
+     * Register a pattern
+     *
+     * @param string $patternClass Pattern class name
+     * @param \Jankx\Foundation\Application $app Application instance
+     * @return void
+     */
+    public function registerPattern($patternClass, $app = null)
+    {
+        if (!class_exists($patternClass)) {
             return;
         }
 
-        $blockDirs = glob($blocksPath . '/*', GLOB_ONLYDIR);
-
-        foreach ($blockDirs as $blockDir) {
-            $blockName = basename($blockDir);
-            $blockClass = $this->getBlockClassFromName($blockName);
-
-            if ($blockClass && class_exists($blockClass)) {
-                $this->registerBlock($blockClass);
-            }
+        // Check if class is not abstract
+        $reflection = new \ReflectionClass($patternClass);
+        if ($reflection->isAbstract()) {
+            return;
         }
+
+        // Create pattern instance
+        $pattern = $app ? new $patternClass($app) : new $patternClass();
+
+        // Check if pattern is valid
+        if (!$pattern instanceof \Jankx\Support\Blocks\Patterns\GutenbergPattern) {
+            return;
+        }
+
+        // Get pattern slug using reflection
+        $method = $reflection->getMethod('getPatternSlug');
+        $method->setAccessible(true);
+        $patternSlug = $method->invoke($pattern);
+
+        // Check if pattern is already registered
+        if (isset($this->patterns[$patternSlug])) {
+            return;
+        }
+
+        $this->patterns[$patternSlug] = $patternClass;
+        $this->patternInstances[$patternSlug] = $pattern;
     }
 
     /**
-     * Get block class name from block directory name
+     * Get pattern instance
      *
-     * @param string $blockName Block directory name
-     * @return string|null
+     * @param string $patternSlug Pattern slug
+     * @return \Jankx\Support\Blocks\Patterns\GutenbergPattern|null
      */
-    protected function getBlockClassFromName($blockName)
+    public function getPattern($patternSlug)
     {
-        // Convert kebab-case to PascalCase
-        $className = str_replace('-', '', ucwords($blockName, '-')) . 'Block';
-
-        return 'Jankx\\Support\\Blocks\\' . $className;
+        return $this->patternInstances[$patternSlug] ?? null;
     }
 
     /**
-     * Get block metadata from resources/blocks directory
+     * Get all registered patterns
      *
      * @return array
      */
-    public function getBlocksMetadata()
+    public function getPatterns()
     {
-        $metadata = [];
-        $blocksPath = get_template_directory() . '/resources/blocks';
-
-        if (!is_dir($blocksPath)) {
-            return $metadata;
-        }
-
-        $blockDirs = glob($blocksPath . '/*', GLOB_ONLYDIR);
-
-        foreach ($blockDirs as $blockDir) {
-            $blockName = basename($blockDir);
-            $blockJsonPath = $blockDir . '/block.json';
-
-            if (file_exists($blockJsonPath)) {
-                $blockJson = file_get_contents($blockJsonPath);
-                $blockData = json_decode($blockJson, true);
-
-                if ($blockData) {
-                    $metadata[$blockName] = $blockData;
-                }
-            }
-        }
-
-        return $metadata;
+        return $this->patterns;
     }
 
     /**
-     * Enqueue all block assets
+     * Get all pattern instances
+     *
+     * @return array
+     */
+    public function getPatternInstances()
+    {
+        return $this->patternInstances;
+    }
+
+    /**
+     * Check if pattern exists
+     *
+     * @param string $patternSlug Pattern slug
+     * @return bool
+     */
+    public function hasPattern($patternSlug)
+    {
+        return isset($this->patterns[$patternSlug]);
+    }
+
+    /**
+     * Get pattern count
+     *
+     * @return int
+     */
+    public function getPatternCount()
+    {
+        return count($this->patterns);
+    }
+
+    /**
+     * Remove a specific pattern
+     *
+     * @param string $patternSlug Pattern slug
+     * @return void
+     */
+    public function removePattern($patternSlug)
+    {
+        if (isset($this->patterns[$patternSlug])) {
+            unset($this->patterns[$patternSlug]);
+        }
+
+        if (isset($this->patternInstances[$patternSlug])) {
+            unset($this->patternInstances[$patternSlug]);
+        }
+    }
+
+    /**
+     * Clear all patterns
      *
      * @return void
      */
-    public function enqueueAllBlockAssets()
+    public function clearPatterns()
     {
-        $metadata = $this->getBlocksMetadata();
-
-        foreach ($metadata as $blockName => $blockData) {
-            $this->enqueueBlockAssets($blockName, $blockData);
-        }
-    }
-
-    /**
-     * Enqueue block assets
-     *
-     * @param string $blockName
-     * @param array $blockData
-     */
-    protected function enqueueBlockAssets($blockName, $blockData)
-    {
-        // Enqueue editor script
-        if (!empty($blockData['editorScript'])) {
-            wp_enqueue_script(
-                $blockData['name'] . '-editor',
-                \Jankx\Facades\Url::blockAsset($blockName . '/' . $blockData['editorScript']),
-                ['wp-blocks', 'wp-element', 'wp-editor'],
-                filemtime($blockData['buildPath'] . '/' . $blockData['editorScript']),
-                true
-            );
-        }
-
-        // Enqueue block style
-        if (!empty($blockData['style'])) {
-            wp_enqueue_style(
-                $blockData['name'] . '-style',
-                \Jankx\Facades\Url::blockAsset($blockName . '/' . $blockData['style']),
-                [],
-                filemtime($blockData['buildPath'] . '/' . $blockData['style'])
-            );
-        }
-    }
-
-    /**
-     * Initialize blocks
-     *
-     * @return void
-     */
-    public function init()
-    {
-        // Discover blocks from directory
-        $this->discoverBlocks();
-
-        // Register all blocks
-        $this->registerAllBlocks();
+        $this->patterns = [];
+        $this->patternInstances = [];
     }
 }

@@ -634,6 +634,30 @@ $wp_registered_sidebars = [
     ],
 ];
 
+// Mock register_block_pattern_category function
+if (!function_exists('register_block_pattern_category')) {
+    function register_block_pattern_category($slug, $properties)
+    {
+        return true;
+    }
+}
+
+// Mock wp_cache_delete function
+if (!function_exists('wp_cache_delete')) {
+    function wp_cache_delete($key, $group = 'default')
+    {
+        return true;
+    }
+}
+
+// Mock glob function for testing
+if (!function_exists('glob')) {
+    function glob($pattern, $flags = 0)
+    {
+        return [];
+    }
+}
+
 // Set up test environment
 define('WP_DEBUG', true);
 define('WP_DEBUG_LOG', true);

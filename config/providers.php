@@ -16,6 +16,7 @@ return [
             Jankx\Support\Providers\LayoutServiceProvider::class,
             Jankx\Support\Providers\AssetServiceProvider::class,
             Jankx\Support\Providers\PerformanceServiceProvider::class,
+            Jankx\Support\Providers\PlatesServiceProvider::class,
             Jankx\Support\Providers\GutenbergServiceProvider::class,
             \Jankx\Support\Providers\Layout\SlideoutMenuServiceProvider::class,
         ],
@@ -27,6 +28,7 @@ return [
             Jankx\Support\Providers\AssetServiceProvider::class,
             Jankx\Support\Providers\ErrorSuppressionServiceProvider::class,
             Jankx\Support\Providers\PerformanceServiceProvider::class,
+            Jankx\Support\Providers\PlatesServiceProvider::class,
             Jankx\Support\Providers\GutenbergServiceProvider::class,
         ],
 
