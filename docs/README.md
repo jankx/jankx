@@ -36,6 +36,10 @@
 - [Child Theme Boot](./child-theme-boot.md) - Tài liệu chi tiết về Child Theme Boot
 - [Child Theme Quick Start](./child-theme-quick-start.md) - Hướng dẫn nhanh cho Child Theme Boot
 
+### ⚡ Performance & Optimization
+- [Lazy Loading Services](./lazy-loading-services.md) - Hướng dẫn lazy loading services
+- [Lazy Loading Quick Reference](./lazy-loading-quick-reference.md) - Tham khảo nhanh lazy loading
+
 ## 🎯 Tính năng chính
 
 ### ✅ Framework Features
