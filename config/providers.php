@@ -16,6 +16,7 @@ return [
             Jankx\Support\Providers\LayoutServiceProvider::class,
             Jankx\Support\Providers\AssetServiceProvider::class,
             Jankx\Support\Providers\PerformanceServiceProvider::class,
+            Jankx\Support\Providers\GutenbergServiceProvider::class,
         ],
 
         // Admin providers
@@ -25,6 +26,7 @@ return [
             Jankx\Support\Providers\AssetServiceProvider::class,
             Jankx\Support\Providers\ErrorSuppressionServiceProvider::class,
             Jankx\Support\Providers\PerformanceServiceProvider::class,
+            Jankx\Support\Providers\GutenbergServiceProvider::class,
         ],
 
         // REST API providers
