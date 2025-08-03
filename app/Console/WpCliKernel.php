@@ -1,6 +1,6 @@
 <?php
 
-namespace Jankx\Foundation\Cli\Kernels;
+namespace App\Console;
 
 use Jankx\Foundation\Cli\Kernel;
 use Jankx\Support\Providers\WordPressCliServiceProvider;

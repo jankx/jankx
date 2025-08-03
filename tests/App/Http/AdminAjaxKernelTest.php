@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Foundation\Http\Kernels;
+namespace Tests\App\Http;
 
 use PHPUnit\Framework\TestCase;
-use Jankx\Foundation\Http\Kernels\AdminAjaxKernel;
+use App\Http\AdminAjaxKernel;
 use Jankx\Http\Request;
 use Jankx\Foundation\Application;
 

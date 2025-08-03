@@ -1,13 +1,13 @@
 <?php
 
-namespace Tests\Foundation\Http\Kernels;
+namespace Tests\App\Http;
 
 use PHPUnit\Framework\TestCase;
-use Jankx\Foundation\Http\Kernels\FrontendKernel;
+use App\Http\RestApiKernel;
 use Jankx\Http\Request;
 use Jankx\Foundation\Application;
 
-class FrontendKernelTest extends TestCase
+class RestApiKernelTest extends TestCase
 {
     private Application $app;
     private Request $request;
@@ -18,42 +18,42 @@ class FrontendKernelTest extends TestCase
         $this->request = new Request();
     }
 
-    public function testFrontendKernelCanBeInstantiated()
+    public function testRestApiKernelCanBeInstantiated()
     {
-        $kernel = new FrontendKernel($this->app);
-        $this->assertInstanceOf(FrontendKernel::class, $kernel);
+        $kernel = new RestApiKernel($this->app);
+        $this->assertInstanceOf(RestApiKernel::class, $kernel);
     }
 
-    public function testFrontendKernelCanHandleRequest()
+    public function testRestApiKernelCanHandleRequest()
     {
-        $kernel = new FrontendKernel($this->app);
+        $kernel = new RestApiKernel($this->app);
 
         // Should not throw any exception
         $this->expectNotToPerformAssertions();
         $kernel->handle($this->request);
     }
 
-    public function testFrontendKernelCanRegisterHooks()
+    public function testRestApiKernelCanRegisterHooks()
     {
-        $kernel = new FrontendKernel($this->app);
+        $kernel = new RestApiKernel($this->app);
 
         // Should not throw any exception
         $this->expectNotToPerformAssertions();
         $kernel->registerHooks();
     }
 
-    public function testFrontendKernelCanInitialize()
+    public function testRestApiKernelCanInitialize()
     {
-        $kernel = new FrontendKernel($this->app);
+        $kernel = new RestApiKernel($this->app);
 
         // Should not throw any exception
         $this->expectNotToPerformAssertions();
         $kernel->init($this->request);
     }
 
-    public function testFrontendKernelCanGetApplication()
+    public function testRestApiKernelCanGetApplication()
     {
-        $kernel = new FrontendKernel($this->app);
+        $kernel = new RestApiKernel($this->app);
         $this->assertSame($this->app, $kernel->getApplication());
     }
 }

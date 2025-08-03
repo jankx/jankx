@@ -129,13 +129,13 @@ your-theme/
 <?php
 
 use Jankx\Http\Request as JankxRequest;
-use Jankx\Foundation\Http\Kernels\AdminAjaxKernel;
-use Jankx\Foundation\Http\Kernels\RestApiKernel;
-use Jankx\Foundation\Http\Kernels\DashboardKernel;
-use Jankx\Foundation\Http\Kernels\FrontendKernel;
+use App\Http\AdminAjaxKernel;
+use App\Http\RestApiKernel;
+use App\Http\DashboardKernel;
+use App\Http\FrontendKernel;
 use Jankx\Foundation\Cli\ConsoleDetector;
-use Jankx\Foundation\Cli\Kernels\WpCronKernel;
-use Jankx\Foundation\Cli\Kernels\WpCliKernel;
+use App\Console\WpCronKernel;
+use App\Console\WpCliKernel;
 use Jankx\Helper\Environment;
 
 /**

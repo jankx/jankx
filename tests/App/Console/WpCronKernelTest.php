@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Foundation\Cli\Kernels;
+namespace Tests\App\Console;
 
 use PHPUnit\Framework\TestCase;
-use Jankx\Foundation\Cli\Kernels\WpCronKernel;
+use App\Console\WpCronKernel;
 use Jankx\Foundation\Application;
 
 class WpCronKernelTest extends TestCase

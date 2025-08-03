@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Foundation\Http\Kernels;
+namespace Tests\App\Http;
 
 use PHPUnit\Framework\TestCase;
-use Jankx\Foundation\Http\Kernels\DashboardKernel;
+use App\Http\DashboardKernel;
 use Jankx\Http\Request;
 use Jankx\Foundation\Application;
 

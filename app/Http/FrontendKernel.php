@@ -1,6 +1,6 @@
 <?php
 
-namespace Jankx\Foundation\Http\Kernels;
+namespace App\Http;
 
 use Jankx\Foundation\Http\Kernel;
 use Jankx\Http\Request;
