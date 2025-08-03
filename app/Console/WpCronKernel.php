@@ -8,6 +8,13 @@ use Jankx\Helper\Environment;
 class WpCronKernel extends Kernel
 {
     /**
+     * The kernel context.
+     *
+     * @var string
+     */
+    protected $context = 'wp_cron';
+
+    /**
      * Handle WordPress cron jobs.
      *
      * @param  array  $args

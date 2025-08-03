@@ -2,6 +2,7 @@
 
 namespace Jankx\Support\Providers;
 
+use Jankx\Contracts\KernelInterface;
 use Jankx\Foundation\Application;
 use Jankx\Services\AssetService;
 use Jankx\Facades\Asset;
@@ -58,7 +59,7 @@ class AssetServiceProvider extends ServiceProvider
         $kernel = $app->make('kernel');
 
         // Only load theme stylesheets for frontend requests
-        if ($kernel instanceof \Jankx\Foundation\Http\Kernels\FrontendKernel) {
+        if ($kernel->getContext() === 'frontend') {
             add_action('wp_enqueue_scripts', [$this, 'enqueueThemeStylesheets']);
         }
     }

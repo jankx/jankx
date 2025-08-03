@@ -10,8 +10,9 @@ use Jankx\Foundation\Bootstrap\RegisterProviders;
 use Jankx\Foundation\Bootstrap\BootProviders;
 use Jankx\Foundation\Bootstrap\ThemeDataLoader;
 use Jankx\Foundation\Bootstrap\BootChildTheme;
+use Jankx\Contracts\KernelInterface;
 
-abstract class Kernel
+abstract class Kernel implements KernelInterface
 {
     /**
      * The application instance.
@@ -34,6 +35,13 @@ abstract class Kernel
         RegisterProviders::class,
         BootProviders::class,
     ];
+
+    /**
+     * The kernel context.
+     *
+     * @var string
+     */
+    protected $context;
 
     /**
      * Create a new console kernel instance.
@@ -74,5 +82,40 @@ abstract class Kernel
     public function getApplication()
     {
         return $this->app;
+    }
+
+    /**
+     * Register WordPress hooks for this kernel.
+     * Console kernels typically don't need WordPress hooks.
+     *
+     * @return void
+     */
+    public function registerHooks()
+    {
+        // Console kernels don't need WordPress hooks
+    }
+
+    /**
+     * Initialize the kernel with WordPress hooks.
+     * Console kernels typically don't need WordPress hooks.
+     *
+     * @param \Jankx\Http\Request $request
+     * @return void
+     */
+    public function init($request)
+    {
+        $this->bootstrap();
+        $this->handle($request);
+        // Console kernels don't need registerHooks()
+    }
+
+    /**
+     * Get the kernel context.
+     *
+     * @return string
+     */
+    public function getContext()
+    {
+        return $this->context;
     }
 }

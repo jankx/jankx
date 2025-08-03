@@ -8,6 +8,13 @@ use Jankx\Http\Request;
 class AdminAjaxKernel extends Kernel
 {
     /**
+     * The kernel context.
+     *
+     * @var string
+     */
+    protected $context = 'admin_ajax';
+
+    /**
      * Handle an incoming admin ajax request.
      *
      * @param  \Jankx\Http\Request  $request

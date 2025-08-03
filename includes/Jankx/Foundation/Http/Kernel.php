@@ -10,8 +10,9 @@ use Jankx\Foundation\Bootstrap\RegisterProviders;
 use Jankx\Foundation\Bootstrap\BootProviders;
 use Jankx\Foundation\Bootstrap\ThemeDataLoader;
 use Jankx\Foundation\Bootstrap\BootChildTheme;
+use Jankx\Contracts\KernelInterface;
 
-abstract class Kernel
+abstract class Kernel implements KernelInterface
 {
     /**
      * The application instance.
@@ -34,6 +35,13 @@ abstract class Kernel
         RegisterProviders::class,
         BootProviders::class,
     ];
+
+    /**
+     * The kernel context.
+     *
+     * @var string
+     */
+    protected $context;
 
     /**
      * Create a new HTTP kernel instance.
@@ -96,5 +104,15 @@ abstract class Kernel
     public function getApplication()
     {
         return $this->app;
+    }
+
+    /**
+     * Get the kernel context.
+     *
+     * @return string
+     */
+    public function getContext()
+    {
+        return $this->context;
     }
 }

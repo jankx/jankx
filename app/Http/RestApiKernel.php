@@ -8,6 +8,13 @@ use Jankx\Http\Request;
 class RestApiKernel extends Kernel
 {
     /**
+     * The kernel context.
+     *
+     * @var string
+     */
+    protected $context = 'rest';
+
+    /**
      * Handle an incoming REST API request.
      *
      * @param  \Jankx\Http\Request  $request

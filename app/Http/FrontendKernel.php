@@ -8,6 +8,13 @@ use Jankx\Http\Request;
 class FrontendKernel extends Kernel
 {
     /**
+     * The kernel context.
+     *
+     * @var string
+     */
+    protected $context = 'frontend';
+
+    /**
      * Handle an incoming frontend request.
      *
      * @param  \Jankx\Http\Request  $request

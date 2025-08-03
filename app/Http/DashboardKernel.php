@@ -8,6 +8,13 @@ use Jankx\Http\Request;
 class DashboardKernel extends Kernel
 {
     /**
+     * The kernel context.
+     *
+     * @var string
+     */
+    protected $context = 'admin';
+
+    /**
      * Handle an incoming admin dashboard request.
      *
      * @param  \Jankx\Http\Request  $request

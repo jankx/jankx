@@ -8,6 +8,13 @@ use Jankx\Support\Providers\WordPressCliServiceProvider;
 class WpCliKernel extends Kernel
 {
     /**
+     * The kernel context.
+     *
+     * @var string
+     */
+    protected $context = 'wp_cli';
+
+    /**
      * Handle WP CLI commands.
      *
      * @param  array  $args
