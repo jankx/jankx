@@ -54,6 +54,11 @@ child-theme/
 ├── composer.json          # Package configuration
 ├── vendor/               # Composer dependencies
 │   └── autoload.php     # Composer autoloader
+├── config/               # Configuration files (cloned from parent)
+│   ├── app.php          # App configuration
+│   ├── providers.php    # Service providers
+│   ├── error.php        # Error suppression
+│   └── layout.php       # Layout configuration
 ├── src/                  # Source code (PSR-4)
 │   ├── Services/         # Service classes
 │   ├── Controllers/      # Controller classes
@@ -392,7 +397,24 @@ Version: 1.0.0
 touch functions.php
 ```
 
-### 2. Tạo Composer.json
+### 2. Clone Config từ Parent Theme
+```bash
+# Clone config files từ parent theme
+wp jankx config clone
+
+# Hoặc force clone nếu files đã tồn tại
+wp jankx config clone --force
+```
+
+**Files được clone:**
+- `config/app.php` - App configuration
+- `config/providers.php` - Service providers
+- `config/error.php` - Error suppression
+- `config/layout.php` - Layout configuration
+
+**Lưu ý:** Config files sẽ override parent theme configs khi child theme có config riêng.
+
+### 3. Tạo Composer.json
 ```bash
 # Tạo composer.json
 cat > composer.json << 'EOF'
@@ -416,7 +438,7 @@ cat > composer.json << 'EOF'
 EOF
 ```
 
-### 3. Tạo Source Structure
+### 4. Tạo Source Structure
 ```bash
 # Tạo source directories
 mkdir -p src/{Services,Controllers,Models}
@@ -440,7 +462,7 @@ class ExampleService
 EOF
 ```
 
-### 4. Cài đặt Dependencies
+### 5. Cài đặt Dependencies
 ```bash
 # Cài đặt composer dependencies
 composer install
@@ -507,6 +529,24 @@ chmod 755 wp-content/themes/your-child-theme
 chmod 644 wp-content/themes/your-child-theme/composer.json
 ```
 
+### 5. Config Clone Issues
+**Vấn đề**: Không thể clone config từ parent theme
+**Giải pháp**:
+```bash
+# Kiểm tra active theme
+wp theme list --status=active
+
+# Kiểm tra command có được đăng ký không
+wp help jankx config
+
+# Force clone nếu files đã tồn tại
+wp jankx config clone --force
+
+# Kiểm tra quyền thư mục
+ls -la wp-content/themes/your-child-theme/
+chmod 755 wp-content/themes/your-child-theme/
+```
+
 ## Best Practices
 
 ### 1. Namespace Convention
@@ -550,6 +590,12 @@ if (bookix_child_has_composer()) {
 - Sanitize output data
 - Use WordPress nonces for forms
 - Follow WordPress coding standards
+
+### 6. Configuration Management
+- Clone config từ parent theme trước khi customize
+- Backup config files trước khi modify
+- Test config changes trong development environment
+- Use version control cho config files
 
 ## Integration với Jankx Framework
 

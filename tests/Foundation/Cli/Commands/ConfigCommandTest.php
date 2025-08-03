@@ -1,0 +1,223 @@
+<?php
+
+namespace Tests\Foundation\Cli\Commands;
+
+use PHPUnit\Framework\TestCase;
+use Jankx\Foundation\Cli\Commands\ConfigCommand;
+use Jankx\Foundation\Application;
+use Jankx\Config\Repository;
+
+// Include mock WP CLI classes
+require_once __DIR__ . '/MockWPCLI.php';
+
+/**
+ * ConfigCommand Test
+ *
+ * @package Tests\Foundation\Cli\Commands
+ * @since 2.0.0
+ */
+class ConfigCommandTest extends TestCase
+{
+    protected $configCommand;
+    protected $app;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Setup facade root
+        $this->app = new Application(get_template_directory());
+        \Jankx\Facades\Facade::setFacadeApplication($this->app);
+
+        $this->configCommand = new ConfigCommand();
+    }
+
+    public function testIsChildThemeMethod()
+    {
+        // Mock wp_get_theme to return child theme
+        if (!function_exists('wp_get_theme')) {
+            function wp_get_theme($stylesheet = null)
+            {
+                $theme = new \stdClass();
+                $theme->get_stylesheet = function () {
+                    return 'child-theme';
+                };
+                $theme->get_template = function () {
+                    return 'parent-theme';
+                };
+                $theme->get = function ($key) {
+                    return $key === 'Name' ? 'Child Theme' : 'child-theme';
+                };
+                return $theme;
+            }
+        }
+
+        // Mock get_template_directory and get_stylesheet_directory
+        if (!function_exists('get_template_directory')) {
+            function get_template_directory()
+            {
+                return '/path/to/parent-theme';
+            }
+        }
+        if (!function_exists('get_stylesheet_directory')) {
+            function get_stylesheet_directory()
+            {
+                return '/path/to/child-theme';
+            }
+        }
+
+        // Use reflection to access protected method
+        $reflection = new \ReflectionClass($this->configCommand);
+        $method = $reflection->getMethod('isChildTheme');
+        $method->setAccessible(true);
+
+        $result = $method->invoke($this->configCommand);
+        $this->assertTrue($result);
+    }
+
+    public function testIsNotChildThemeMethod()
+    {
+        // Mock wp_get_theme to return parent theme
+        if (!function_exists('wp_get_theme')) {
+            function wp_get_theme($stylesheet = null)
+            {
+                $theme = new \stdClass();
+                $theme->get_stylesheet = function () {
+                    return 'parent-theme';
+                };
+                $theme->get_template = function () {
+                    return 'parent-theme';
+                };
+                $theme->get = function ($key) {
+                    return $key === 'Name' ? 'Parent Theme' : 'parent-theme';
+                };
+                return $theme;
+            }
+        }
+
+        // Mock get_template_directory and get_stylesheet_directory
+        if (!function_exists('get_template_directory')) {
+            function get_template_directory()
+            {
+                return '/path/to/parent-theme';
+            }
+        }
+        if (!function_exists('get_stylesheet_directory')) {
+            function get_stylesheet_directory()
+            {
+                return '/path/to/parent-theme';
+            }
+        }
+
+        // Use reflection to access protected method
+        $reflection = new \ReflectionClass($this->configCommand);
+        $method = $reflection->getMethod('isChildTheme');
+        $method->setAccessible(true);
+
+        $result = $method->invoke($this->configCommand);
+        $this->assertFalse($result);
+    }
+
+    public function testCloneConfigFileMethod()
+    {
+        // Create temporary test files
+        $tempDir = sys_get_temp_dir() . '/jankx_test_' . uniqid();
+        mkdir($tempDir, 0777, true);
+
+        $parentFile = $tempDir . '/parent_config.php';
+        $childFile = $tempDir . '/child_config.php';
+
+        // Create parent config file
+        $parentContent = "<?php\n\nreturn [\n    'name' => 'Parent Theme',\n    'version' => '1.0.0'\n];";
+        file_put_contents($parentFile, $parentContent);
+
+        // Use reflection to access protected method
+        $reflection = new \ReflectionClass($this->configCommand);
+        $method = $reflection->getMethod('cloneConfigFile');
+        $method->setAccessible(true);
+
+        $result = $method->invoke($this->configCommand, $parentFile, $childFile, 'test.php');
+
+        // Should return true
+        $this->assertTrue($result);
+
+        // Check if child file was created
+        $this->assertFileExists($childFile);
+
+        // Check if content was cloned with header
+        $childContent = file_get_contents($childFile);
+        $this->assertStringContainsString('Cloned from parent theme', $childContent);
+        $this->assertStringContainsString('Parent Theme', $childContent);
+        $this->assertStringContainsString('wp jankx config clone', $childContent);
+
+        // Cleanup
+        unlink($parentFile);
+        unlink($childFile);
+        rmdir($tempDir);
+    }
+
+    public function testCloneConfigFileWithNonExistentParent()
+    {
+        $tempDir = sys_get_temp_dir() . '/jankx_test_' . uniqid();
+        mkdir($tempDir, 0777, true);
+
+        $parentFile = $tempDir . '/non_existent.php';
+        $childFile = $tempDir . '/child_config.php';
+
+        // Use reflection to access protected method
+        $reflection = new \ReflectionClass($this->configCommand);
+        $method = $reflection->getMethod('cloneConfigFile');
+        $method->setAccessible(true);
+
+        $result = $method->invoke($this->configCommand, $parentFile, $childFile, 'test.php');
+
+        // Should return false
+        $this->assertFalse($result);
+
+        // Cleanup
+        rmdir($tempDir);
+    }
+
+    public function testClearConfigCacheMethod()
+    {
+        // Mock WordPress cache functions
+        if (!function_exists('wp_cache_flush_group')) {
+            function wp_cache_flush_group($group)
+            {
+                return true;
+            }
+        }
+
+        // Mock Environment and Log facades
+        if (!class_exists('Jankx\Helper\Environment')) {
+            class_alias('stdClass', 'Jankx\Helper\Environment');
+        }
+        if (!class_exists('Jankx\Facades\Log')) {
+            class_alias('stdClass', 'Jankx\Facades\Log');
+        }
+
+        // Use reflection to access protected method
+        $reflection = new \ReflectionClass($this->configCommand);
+        $method = $reflection->getMethod('clearConfigCache');
+        $method->setAccessible(true);
+
+        // Should not throw exception
+        $this->assertNull($method->invoke($this->configCommand));
+    }
+
+    public function testShowNextStepsMethod()
+    {
+        // Use reflection to access protected method
+        $reflection = new \ReflectionClass($this->configCommand);
+        $method = $reflection->getMethod('showNextSteps');
+        $method->setAccessible(true);
+
+        // Should not throw exception
+        $this->assertNull($method->invoke($this->configCommand));
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+    }
+}

@@ -5,6 +5,7 @@ namespace Jankx\Support\Providers;
 use Jankx\Foundation\Application;
 use Jankx\Foundation\Cli\Commands\JankxCommand;
 use Jankx\Foundation\Cli\Commands\CacheCommand;
+use Jankx\Foundation\Cli\Commands\ConfigCommand;
 use Jankx\Facades\Log;
 use Jankx\Helper\Environment;
 
@@ -34,6 +35,10 @@ class WordPressCliServiceProvider extends ServiceProvider
 
         $this->app->singleton('jankx.cache.command', function ($app) {
             return new CacheCommand();
+        });
+
+        $this->app->singleton('jankx.config.command', function ($app) {
+            return new ConfigCommand();
         });
     }
 
@@ -66,6 +71,9 @@ class WordPressCliServiceProvider extends ServiceProvider
         // Register cache management commands
         \WP_CLI::add_command('jankx cache', $this->app->make('jankx.cache.command'));
 
+        // Register config management commands
+        \WP_CLI::add_command('jankx config', $this->app->make('jankx.config.command'));
+
         // Log command registration
         if (Environment::isDebugLog()) {
             Log::debug('WP CLI commands registered');
@@ -93,6 +101,9 @@ class WordPressCliServiceProvider extends ServiceProvider
                 'clear-widgets' => 'Clear widget cache',
                 'clear-users' => 'Clear user cache',
                 'status' => 'Show cache status'
+            ],
+            'jankx config' => [
+                'clone' => 'Clone config from parent theme to child theme'
             ]
         ];
     }
