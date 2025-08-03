@@ -15,7 +15,7 @@ class HeroSectionPattern extends GutenbergPattern
      */
     protected function getPatternSlug(): string
     {
-        return 'bookix/hero-section';
+        return 'jankx/hero-section';
     }
 
     /**

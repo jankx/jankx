@@ -374,7 +374,7 @@ if (!function_exists('child_theme_get_version')) {
 require_once get_template_directory() . '/includes/framework.php';
 
 // Initialize child theme
-if (class_exists('Jankx\Foundation\Bootstrap\BootChildTheme') && 
+if (class_exists('Jankx\Foundation\Bootstrap\BootChildTheme') &&
     \Jankx\Foundation\Bootstrap\BootChildTheme::hasChildThemeComposer()) {
     // Load theme service
     $themeService = new \YourChildTheme\Services\ThemeService('Child Theme Service');
@@ -406,7 +406,7 @@ cd wp-content/themes/your-child-theme
 # Tạo style.css
 echo "/*
 Theme Name: Your Child Theme
-Template: bookix
+Template: jankx
 Version: 1.0.0
 */" > style.css
 
@@ -511,7 +511,7 @@ add_action('wp_footer', function() {
 ### 3. Unit Tests
 ```bash
 # Chạy unit tests
-cd bookix
+cd jankx
 vendor/bin/phpunit tests/Foundation/Bootstrap/BootChildThemeTest.php
 ```
 
@@ -587,7 +587,7 @@ src/
 
 ### 3. Error Handling
 ```php
-if (class_exists('Jankx\Foundation\Bootstrap\BootChildTheme') && 
+if (class_exists('Jankx\Foundation\Bootstrap\BootChildTheme') &&
     \Jankx\Foundation\Bootstrap\BootChildTheme::hasChildThemeComposer()) {
     try {
         $service = new \YourChildTheme\Services\ExampleService();

@@ -15,7 +15,7 @@ class CardGridPattern extends GutenbergPattern
      */
     protected function getPatternSlug(): string
     {
-        return 'bookix/card-grid';
+        return 'jankx/card-grid';
     }
 
     /**

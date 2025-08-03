@@ -18,49 +18,49 @@ class UrlManagerTest extends TestCase
     public function testGetThemeUrl()
     {
         $themeUrl = $this->urlManager->getThemeUrl();
-        $this->assertEquals('http://example.com/wp-content/themes/bookix', $themeUrl);
+        $this->assertEquals('http://example.com/wp-content/themes/jankx', $themeUrl);
     }
 
     public function testGetChildThemeUrl()
     {
         $childThemeUrl = $this->urlManager->getChildThemeUrl();
-        $this->assertEquals('http://example.com/wp-content/themes/bookix-child', $childThemeUrl);
+        $this->assertEquals('http://example.com/wp-content/themes/jankx-child', $childThemeUrl);
     }
 
     public function testAsset()
     {
         $assetUrl = $this->urlManager->asset('css/style.css');
-        $this->assertEquals('http://example.com/wp-content/themes/bookix/assets/css/style.css', $assetUrl);
+        $this->assertEquals('http://example.com/wp-content/themes/jankx/assets/css/style.css', $assetUrl);
     }
 
     public function testBlockAsset()
     {
         $blockUrl = $this->urlManager->blockAsset('widget-renderer/build/index.js');
-        $this->assertEquals('http://example.com/wp-content/themes/bookix/resources/blocks/widget-renderer/build/index.js', $blockUrl);
+        $this->assertEquals('http://example.com/wp-content/themes/jankx/resources/blocks/widget-renderer/build/index.js', $blockUrl);
     }
 
     public function testImage()
     {
         $imageUrl = $this->urlManager->image('logo.png');
-        $this->assertEquals('http://example.com/wp-content/themes/bookix/assets/images/logo.png', $imageUrl);
+        $this->assertEquals('http://example.com/wp-content/themes/jankx/assets/images/logo.png', $imageUrl);
     }
 
     public function testCss()
     {
         $cssUrl = $this->urlManager->css('style.css');
-        $this->assertEquals('http://example.com/wp-content/themes/bookix/assets/css/style.css', $cssUrl);
+        $this->assertEquals('http://example.com/wp-content/themes/jankx/assets/css/style.css', $cssUrl);
     }
 
     public function testJs()
     {
         $jsUrl = $this->urlManager->js('app.js');
-        $this->assertEquals('http://example.com/wp-content/themes/bookix/assets/js/app.js', $jsUrl);
+        $this->assertEquals('http://example.com/wp-content/themes/jankx/assets/js/app.js', $jsUrl);
     }
 
     public function testVendor()
     {
         $vendorUrl = $this->urlManager->vendor('bootstrap/css/bootstrap.css');
-        $this->assertEquals('http://example.com/wp-content/themes/bookix/vendor/bootstrap/css/bootstrap.css', $vendorUrl);
+        $this->assertEquals('http://example.com/wp-content/themes/jankx/vendor/bootstrap/css/bootstrap.css', $vendorUrl);
     }
 
     public function testUploads()
@@ -96,24 +96,24 @@ class UrlManagerTest extends TestCase
     public function testIncludes()
     {
         $includesUrl = $this->urlManager->includes('Jankx/Config/Repository.php');
-        $this->assertEquals('http://example.com/wp-content/themes/bookix/includes/Jankx/Config/Repository.php', $includesUrl);
+        $this->assertEquals('http://example.com/wp-content/themes/jankx/includes/Jankx/Config/Repository.php', $includesUrl);
     }
 
     public function testResources()
     {
         $resourcesUrl = $this->urlManager->resources('blocks/widget-renderer/index.js');
-        $this->assertEquals('http://example.com/wp-content/themes/bookix/resources/blocks/widget-renderer/index.js', $resourcesUrl);
+        $this->assertEquals('http://example.com/wp-content/themes/jankx/resources/blocks/widget-renderer/index.js', $resourcesUrl);
     }
 
     public function testAssetWithLeadingSlash()
     {
         $assetUrl = $this->urlManager->asset('/css/style.css');
-        $this->assertEquals('http://example.com/wp-content/themes/bookix/assets/css/style.css', $assetUrl);
+        $this->assertEquals('http://example.com/wp-content/themes/jankx/assets/css/style.css', $assetUrl);
     }
 
     public function testImageWithLeadingSlash()
     {
         $imageUrl = $this->urlManager->image('/logo.png');
-        $this->assertEquals('http://example.com/wp-content/themes/bookix/assets/images/logo.png', $imageUrl);
+        $this->assertEquals('http://example.com/wp-content/themes/jankx/assets/images/logo.png', $imageUrl);
     }
 }

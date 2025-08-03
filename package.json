@@ -1,7 +1,7 @@
 {
-  "name": "bookix-theme",
+  "name": "jankx",
   "version": "1.0.0",
-  "description": "Bookix WordPress Theme with Gutenberg Blocks",
+  "description": "Jankx WordPress Theme with Gutenberg Blocks",
   "main": "index.js",
   "scripts": {
     "build:widget-renderer": "wp-scripts build resources/blocks/widget-renderer/index.js resources/blocks/widget-renderer/index.css --output-path=resources/blocks/widget-renderer/build",
@@ -22,7 +22,7 @@
     "gutenberg",
     "blocks"
   ],
-  "author": "Bookix Team",
+  "author": "Puleeno Nguyen",
   "license": "MIT",
   "devDependencies": {
     "@wordpress/scripts": "^26.19.0",

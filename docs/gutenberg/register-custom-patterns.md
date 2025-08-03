@@ -134,8 +134,8 @@ Xóa patterns mặc định nếu cần:
 add_action('jankx/gutenberg/register-patterns', function($repository, $app) {
 
     // Xóa default patterns nếu cần
-    $repository->removePattern('bookix/hero-section');
-    $repository->removePattern('bookix/card-grid');
+    $repository->removePattern('jankx/hero-section');
+    $repository->removePattern('jankx/card-grid');
 
 }, 5, 2); // Priority thấp hơn để chạy trước pattern registration
 ```
@@ -162,7 +162,7 @@ add_action('jankx/gutenberg/register-patterns', function($repository, $app) {
     }
 
     // Đăng ký patterns theo theme
-    if (get_template() === 'bookix') {
+    if (get_template() === 'jankx') {
         $repository->registerPattern(\MyTheme\Patterns\ThemeSpecificPattern::class, $app);
     }
 
@@ -187,7 +187,7 @@ class CustomHeroPattern extends \Jankx\Support\Blocks\Patterns\GutenbergPattern
 
 ```
 themes/
-├── bookix-child/
+├── jankx-child/
 │   ├── patterns/
 │   │   ├── custom-hero.html
 │   │   ├── testimonial-grid.html
@@ -225,11 +225,11 @@ add_action('jankx/gutenberg/register-patterns', function($repository, $app) {
 // Cache pattern registration
 add_action('jankx/gutenberg/register-patterns', function($repository, $app) {
     $cache_key = 'jankx_patterns_registered';
-    
+
     if (!wp_cache_get($cache_key)) {
         // Register patterns
         $repository->registerPattern(\MyTheme\Patterns\CustomPattern::class, $app);
-        
+
         wp_cache_set($cache_key, true, '', 3600);
     }
 }, 10, 2);
@@ -238,7 +238,7 @@ add_action('jankx/gutenberg/register-patterns', function($repository, $app) {
 ## 📁 File Structure Example
 
 ```
-bookix-child/
+jankx-child/
 ├── functions.php
 ├── patterns/
 │   ├── custom-hero.html
@@ -261,7 +261,7 @@ add_action('jankx/gutenberg/register-patterns', function($repository, $app) {
     if (defined('WP_DEBUG') && WP_DEBUG) {
         error_log('Registering patterns...');
     }
-    
+
     $repository->registerPattern(\MyTheme\Patterns\CustomPattern::class, $app);
 }, 10, 2);
 ```
@@ -276,12 +276,12 @@ protected function getPatternData(): array
         'description' => 'Pattern description',
         'categories' => ['custom'],
     ];
-    
+
     // Validate required fields
     if (empty($data['title']) || empty($data['categories'])) {
         throw new \InvalidArgumentException('Pattern data is invalid');
     }
-    
+
     return $data;
 }
 ```
@@ -304,4 +304,4 @@ Nếu gặp vấn đề, hãy kiểm tra:
 
 ---
 
-*Last updated: August 2025* 
+*Last updated: August 2025*

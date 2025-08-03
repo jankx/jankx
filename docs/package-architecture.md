@@ -70,7 +70,7 @@ your-theme/
     "license": "MIT",
     "authors": [
         {
-            "name": "Jankx Team",
+            "name": "Puleeno Nguyen",
             "email": "team@jankx.com"
         }
     ],

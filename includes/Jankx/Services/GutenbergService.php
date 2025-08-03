@@ -377,9 +377,9 @@ class GutenbergService
     protected function registerPatternCategories(): void
     {
         $patternCategories = [
-            'bookix' => [
-                'label' => 'Bookix Patterns',
-                'description' => 'Custom patterns for Bookix theme'
+            'jankx' => [
+                'label' => 'Jankx Patterns',
+                'description' => 'Custom patterns for Jankx theme'
             ],
             'hero' => [
                 'label' => 'Hero Sections',
