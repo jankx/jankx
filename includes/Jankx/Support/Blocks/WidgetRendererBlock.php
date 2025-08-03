@@ -69,7 +69,7 @@ class WidgetRendererBlock extends Block
         // Update metadata to use built assets
         if (is_dir($buildPath)) {
             $metadata['editorScript'] = 'build/index.js';
-            $metadata['style'] = 'build/index.css';
+            $metadata['style'] = 'build/index.css.css';
         }
 
         // Register block

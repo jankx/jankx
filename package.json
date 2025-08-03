@@ -4,8 +4,8 @@
   "description": "Bookix WordPress Theme with Gutenberg Blocks",
   "main": "index.js",
   "scripts": {
-    "build:widget-renderer": "wp-scripts build resources/blocks/widget-renderer/index.js --output-path=resources/blocks/widget-renderer/build",
-    "dev:widget-renderer": "wp-scripts start resources/blocks/widget-renderer/index.js --output-path=resources/blocks/widget-renderer/build",
+    "build:widget-renderer": "wp-scripts build resources/blocks/widget-renderer/index.js resources/blocks/widget-renderer/index.css --output-path=resources/blocks/widget-renderer/build",
+    "dev:widget-renderer": "wp-scripts start resources/blocks/widget-renderer/index.js resources/blocks/widget-renderer/index.css --output-path=resources/blocks/widget-renderer/build",
     "format": "wp-scripts format",
     "lint:css": "wp-scripts lint-style",
     "lint:js": "wp-scripts lint-js",

@@ -76,6 +76,11 @@ class GutenbergServiceProvider extends ServiceProvider
             wp_cache_set($cacheKey, $blocks, 'jankx_blocks', 3600);
         }
 
+        // Debug: Log discovered blocks
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('[JANKX DEBUG] Discovered blocks: ' . print_r($blocks, true));
+        }
+
         foreach ($blocks as $blockName => $blockData) {
             $this->enqueueBlockScript($blockName, $blockData['buildPath']);
         }
@@ -92,10 +97,17 @@ class GutenbergServiceProvider extends ServiceProvider
         $blocksPath = get_template_directory() . '/resources/blocks';
 
         if (!is_dir($blocksPath)) {
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log('[JANKX DEBUG] Blocks path does not exist: ' . $blocksPath);
+            }
             return $blocks;
         }
 
         $blockDirs = glob($blocksPath . '/*', GLOB_ONLYDIR);
+
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('[JANKX DEBUG] Found block directories: ' . print_r($blockDirs, true));
+        }
 
         foreach ($blockDirs as $blockDir) {
             $blockName = basename($blockDir);
@@ -105,9 +117,17 @@ class GutenbergServiceProvider extends ServiceProvider
                 $blocks[$blockName] = [
                     'buildPath' => $buildPath,
                     'scriptFile' => $buildPath . '/index.js',
-                    'styleFile' => $buildPath . '/index.css',
+                    'styleFile' => $buildPath . '/index.css.css',
                     'assetFile' => $buildPath . '/index.asset.php'
                 ];
+
+                if (defined('WP_DEBUG') && WP_DEBUG) {
+                    error_log('[JANKX DEBUG] Registered block: ' . $blockName . ' at ' . $buildPath);
+                }
+            } else {
+                if (defined('WP_DEBUG') && WP_DEBUG) {
+                    error_log('[JANKX DEBUG] Build path does not exist: ' . $buildPath);
+                }
             }
         }
 
@@ -154,7 +174,7 @@ class GutenbergServiceProvider extends ServiceProvider
         }
 
         if (file_exists($styleFile)) {
-            $styleUrl = get_template_directory_uri() . '/resources/blocks/' . $blockName . '/build/index.css';
+            $styleUrl = get_template_directory_uri() . '/resources/blocks/' . $blockName . '/build/index.css.css';
             $styleVersion = filemtime($styleFile);
 
             wp_enqueue_style(
