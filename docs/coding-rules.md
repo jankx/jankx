@@ -2,7 +2,293 @@
 
 ## Tổng quan
 
-Jankx Framework tuân thủ WordPress Coding Standards kết hợp với PSR-12 để đảm bảo code dễ maintain và mở rộng.
+Jankx Framework tuân thủ WordPress Coding Standards kết hợp với PSR-12 và **Zen of Python** để đảm bảo code dễ maintain, mở rộng và có tính thực tiễn cao.
+
+## 0. Zen of Python Principles
+
+Jankx Framework áp dụng Zen of Python vào PHP development:
+
+### 0.1 Beautiful is better than ugly
+```php
+// ✅ Beautiful - Clean, readable code
+$user = User::getById($id);
+$posts = Post::getRecent(10);
+
+// ❌ Ugly - Hard to read, confusing
+$u = get_user_by('ID', $id);
+$p = get_posts(['numberposts' => 10]);
+```
+
+### 0.2 Explicit is better than implicit
+```php
+// ✅ Explicit - Clear what's happening
+$config = $app->make('config');
+$userService = $app->make(UserService::class);
+
+// ❌ Implicit - Magic, unclear
+$config = app('config');
+$user = User::instance();
+```
+
+### 0.3 Simple is better than complex
+```php
+// ✅ Simple - Straightforward approach
+public function getUser($id) {
+    return get_user_by('ID', $id);
+}
+
+// ❌ Complex - Over-engineered
+public function getUser($id) {
+    $cache = $this->cache->get("user_{$id}");
+    if ($cache) return $cache;
+
+    $user = get_user_by('ID', $id);
+    $this->cache->set("user_{$id}", $user, 3600);
+    return $user;
+}
+```
+
+### 0.4 Complex is better than complicated
+```php
+// ✅ Complex but clear - When complexity is necessary
+public function deepMergeConfig($parent, $child) {
+    foreach ($child as $key => $value) {
+        if (is_array($value) && isset($parent[$key]) && is_array($parent[$key])) {
+            $parent[$key] = $this->deepMergeConfig($parent[$key], $value);
+        } else {
+            $parent[$key] = $value;
+        }
+    }
+    return $parent;
+}
+
+// ❌ Complicated - Hard to understand
+public function merge($p, $c) {
+    return array_merge_recursive($p, $c);
+}
+```
+
+### 0.5 Flat is better than nested
+```php
+// ✅ Flat - Easy to follow
+public function processUser($user) {
+    if (!$user) return null;
+    if (!$user->isActive()) return null;
+    if ($user->isBlocked()) return null;
+
+    return $this->formatUser($user);
+}
+
+// ❌ Nested - Hard to read
+public function processUser($user) {
+    if ($user) {
+        if ($user->isActive()) {
+            if (!$user->isBlocked()) {
+                return $this->formatUser($user);
+            }
+        }
+    }
+    return null;
+}
+```
+
+### 0.6 Sparse is better than dense
+```php
+// ✅ Sparse - Clear separation
+$config = [
+    'name' => 'Jankx Framework',
+    'version' => '2.0.0',
+    'debug' => true,
+    'features' => [
+        'gutenberg' => true,
+        'cache' => true,
+    ]
+];
+
+// ❌ Dense - Hard to read
+$config = ['name'=>'Jankx Framework','version'=>'2.0.0','debug'=>true,'features'=>['gutenberg'=>true,'cache'=>true]];
+```
+
+### 0.7 Readability counts
+```php
+// ✅ Readable - Self-documenting
+$isDebugMode = Environment::isDebugLog();
+$cacheKey = "user_{$userId}_data";
+$expirationTime = 3600; // 1 hour
+
+// ❌ Unreadable - Magic numbers/strings
+$debug = defined('WP_DEBUG') && WP_DEBUG;
+$key = "u_{$id}_d";
+$ttl = 3600;
+```
+
+### 0.8 Special cases aren't special enough to break the rules
+```php
+// ✅ Consistent - Follow the same pattern
+public function getConfig($key, $default = null) {
+    return $this->config->get($key, $default);
+}
+
+public function getUser($id, $default = null) {
+    return $this->userService->get($id, $default);
+}
+
+// ❌ Inconsistent - Different patterns for similar operations
+public function getConfig($key) {
+    return isset($this->config[$key]) ? $this->config[$key] : null;
+}
+
+public function getUser($id) {
+    return get_user_by('ID', $id);
+}
+```
+
+### 0.9 Although practicality beats purity
+```php
+// ✅ Practical - Works in real-world scenarios
+public function getAssetUrl($path) {
+    return get_template_directory_uri() . '/assets/' . ltrim($path, '/');
+}
+
+// ❌ Pure but impractical - Over-abstraction
+public function getAssetUrl($path) {
+    return $this->urlManager->asset($path);
+}
+```
+
+### 0.10 Errors should never pass silently
+```php
+// ✅ Explicit error handling
+public function loadConfig($file) {
+    if (!file_exists($file)) {
+        throw new ConfigNotFoundException("Config file not found: {$file}");
+    }
+
+    $config = include $file;
+    if (!is_array($config)) {
+        throw new InvalidConfigException("Config must be an array");
+    }
+
+    return $config;
+}
+
+// ❌ Silent failures
+public function loadConfig($file) {
+    return @include $file ?: [];
+}
+```
+
+### 0.11 Unless explicitly silenced
+```php
+// ✅ Explicitly silenced when necessary
+try {
+    $result = $this->riskyOperation();
+} catch (NonCriticalException $e) {
+    Log::warning("Non-critical error: " . $e->getMessage());
+    $result = $this->fallbackOperation();
+}
+```
+
+### 0.12 In the face of ambiguity, refuse the temptation to guess
+```php
+// ✅ Clear and explicit
+public function processUser($user) {
+    if (!$user instanceof WP_User) {
+        throw new InvalidArgumentException('User must be WP_User instance');
+    }
+
+    return $this->formatUser($user);
+}
+
+// ❌ Ambiguous - What if $user is null, string, or array?
+public function processUser($user) {
+    return $this->formatUser($user);
+}
+```
+
+### 0.13 There should be one-- and preferably only one --obvious way to do it
+```php
+// ✅ One obvious way - Use Facades
+$imageUrl = Url::image('logo.png');
+$cssUrl = Url::css('style.css');
+
+// ❌ Multiple ways - Confusing
+$imageUrl = get_template_directory_uri() . '/assets/images/logo.png';
+$imageUrl = get_stylesheet_directory_uri() . '/assets/images/logo.png';
+$imageUrl = home_url('/wp-content/themes/theme/assets/images/logo.png');
+```
+
+### 0.14 Although that way may not be obvious at first unless you're Dutch
+```php
+// ✅ Clear naming makes it obvious
+class UserService {
+    public function getById($id) { /* ... */ }
+    public function getCurrentUser() { /* ... */ }
+}
+
+// ❌ Unclear naming
+class User {
+    public function get($id) { /* ... */ }
+    public function current() { /* ... */ }
+}
+```
+
+### 0.15 Now is better than never
+```php
+// ✅ Do it now - Simple implementation
+public function getConfig($key) {
+    return $this->config[$key] ?? null;
+}
+
+// ❌ Never - Over-planning
+public function getConfig($key) {
+    // TODO: Add caching, validation, type checking, etc.
+    return $this->config[$key] ?? null;
+}
+```
+
+### 0.16 Although never is often better than *right* now
+```php
+// ✅ Think before implementing
+// Don't add features you don't need yet
+// Don't optimize prematurely
+// Don't add complexity without clear benefit
+```
+
+### 0.17 If the implementation is hard to explain, it's a bad idea
+```php
+// ✅ Easy to explain
+public function mergeConfigs($parent, $child) {
+    return array_merge($parent, $child);
+}
+
+// ❌ Hard to explain - Avoid complex patterns
+public function mergeConfigs($parent, $child) {
+    // Complex recursive merging with special cases
+    // that nobody can understand
+}
+```
+
+### 0.18 If the implementation is easy to explain, it may be a good idea
+```php
+// ✅ Easy to explain - Good idea
+public function getAssetUrl($path) {
+    return get_template_directory_uri() . '/assets/' . $path;
+}
+```
+
+### 0.19 Namespaces are one honking great idea -- let's do more of those!
+```php
+// ✅ Use namespaces properly
+namespace Jankx\Services;
+namespace Jankx\Support\Providers;
+namespace Jankx\Foundation\Bootstrap;
+
+// ✅ Use imports
+use Jankx\Facades\Url;
+use Jankx\Facades\Log;
+use Jankx\Helper\Environment;
+```
 
 ## 1. WordPress Coding Standards
 
@@ -48,7 +334,7 @@ function get_theme_config() {}
 $themeOptions = [];
 $userId = get_current_user_id();
 $postData = $_POST;
-$cacheKey = "file_configs_app_{$checksum}";
+$cacheKey = 'file_configs_app_' . $checksum;
 $configContent = file_get_contents($filePath);
 
 // ❌ Incorrect
@@ -353,6 +639,28 @@ $html = "<div class='$class'>
          </div>";
 ```
 
+### URL Generation
+**❌ Sai:**
+```php
+// Dùng nhiều format URL khác nhau
+$imageUrl = get_template_directory_uri() . '/assets/images/logo.png';
+$cssUrl = get_stylesheet_directory_uri() . '/assets/css/style.css';
+$jsUrl = get_template_directory_uri() . '/assets/js/script.js';
+```
+
+**✅ Đúng:**
+```php
+// Dùng Url Facade để centralize URL generation
+$imageUrl = \Jankx\Facades\Url::image('logo.png');
+$cssUrl = \Jankx\Facades\Url::css('style.css');
+$jsUrl = \Jankx\Facades\Url::js('script.js');
+$blockUrl = \Jankx\Facades\Url::blockAsset('widget-renderer/build/index.js');
+```
+
+**Rule:**
+> All asset URLs (CSS, JS, images, fonts, etc.) must be generated via the AssetService (through the Asset Facade).
+> Do not use get_template_directory_uri(), get_stylesheet_directory_uri(), home_url(), site_url(), or any other direct URL concatenation for assets.
+
 ## 9. Configuration Management
 
 ### 9.1 Config Cache System
@@ -599,7 +907,7 @@ class ThemeHelper
 {
     public static function getThemeOption($key, $default = null)
     {
-        return get_option("theme_{$key}", $default);
+        return get_option('theme_' . $key, $default);
     }
 
     public static function isDevelopment()
@@ -812,7 +1120,7 @@ class ThemeManager
 
 ### 17.2 DRY (Don't Repeat Yourself)
 ```php
-// ✅ Correct
+// ✅ Correct - Using helper methods
 class ThemeHelper
 {
     public static function getAssetUrl($file)
@@ -825,7 +1133,19 @@ class ThemeHelper
 $cssUrl = ThemeHelper::getAssetUrl('style.css');
 $jsUrl = ThemeHelper::getAssetUrl('script.js');
 
-// ❌ Incorrect
+// ✅ Correct - Using Log Facade for debug logging
+use Jankx\Facades\Log;
+
+Log::debug('Loading configuration...');
+Log::debug('Config data: ' . print_r($config, true));
+```
+
+// ❌ Incorrect - Manual prefix with error_log
+error_log('[JANKX DEBUG] Loading configuration...');
+error_log('[JANKX DEBUG] Config data: ' . print_r($config, true));
+```
+
+// ❌ Incorrect - Repeating asset paths
 $cssUrl = get_template_directory_uri() . '/assets/style.css';
 $jsUrl = get_template_directory_uri() . '/assets/script.js';
 ```
@@ -1139,7 +1459,7 @@ public function getById($id)
 ### 20.3 Avoid Premature Optimization
 ```php
 // ✅ Correct - Simple and readable
-public function get_posts()
+public function getPosts()
 {
     return get_posts([
         'post_type' => 'post',
@@ -1148,11 +1468,11 @@ public function get_posts()
 }
 
 // ❌ Incorrect - Over-optimized without need
-public function get_posts()
+public function getPosts()
 {
     global $wpdb;
-    $cache_key = 'posts_' . md5(serialize($args));
-    $cached = wp_cache_get($cache_key);
+    $cacheKey = 'posts_' . md5(serialize($args));
+    $cached = wp_cache_get($cacheKey);
     if ($cached) {
         return $cached;
     }
@@ -1170,7 +1490,7 @@ public function registerThemeAssets()
 }
 
 // ❌ Incorrect - Unclear names
-public function regAssets()
+public function registerAssets()
 {
     wp_enqueue_style('s', get_stylesheet_uri());
     wp_enqueue_script('js', get_template_directory_uri() . '/assets/theme.js');
@@ -1228,9 +1548,144 @@ $cacheKey = 'config_' . $type; // No prefix, no checksum
 wp_cache_set($cacheKey, $data, '', 3600); // No group
 ```
 
-## 22. File Organization
+## 22. Environment Helper
 
-### 22.1 Directory Structure
+### 22.0 Refactoring Existing Code
+```php
+// Before - Manual prefix with error_log
+error_log('[JANKX DEBUG] Loading configuration...');
+error_log('[JANKX DEBUG] Config data: ' . print_r($config, true));
+
+// After - Using Log Facade
+use Jankx\Facades\Log;
+
+Log::debug('Loading configuration...');
+Log::debug('Config data: ' . print_r($config, true));
+
+// Before - Repeating debug checks
+if (defined('WP_DEBUG') && WP_DEBUG) {
+    error_log('[JANKX DEBUG] Loading configuration...');
+}
+
+// After - Using Environment Helper with Log Facade
+use Jankx\Helper\Environment;
+use Jankx\Facades\Log;
+
+if (Environment::isDebugLog()) {
+    Log::debug('Loading configuration...');
+}
+```
+
+**Benefits of using Log Facade and Environment Helper:**
+- ✅ **DRY Principle**: No repeated `defined('WP_DEBUG') && WP_DEBUG`
+- ✅ **No Manual Prefix**: Log Facade automatically adds `[JANKX DEBUG]` prefix
+- ✅ **Consistent Format**: All debug messages use standardized format
+- ✅ **Centralized Logic**: Environment detection and logging logic in one place
+- ✅ **Easier Maintenance**: Change debug logic in one place
+- ✅ **Better Testing**: Can mock Log Facade and Environment helper in tests
+- ✅ **Type Safety**: Log Facade provides better type checking
+
+### 22.1 Debug Logging
+```php
+// ✅ Correct - Using Log Facade
+use Jankx\Facades\Log;
+
+Log::debug('Loading configuration...');
+Log::debug('Config data: ' . print_r($config, true));
+Log::debug('Error occurred: ' . $error->getMessage());
+
+// ✅ Correct - Using Environment helper with Log Facade
+use Jankx\Helper\Environment;
+use Jankx\Facades\Log;
+
+if (Environment::isDebugLog()) {
+    Log::debug('Loading configuration...');
+    Log::debug('Config data: ' . print_r($config, true));
+}
+
+// ❌ Incorrect - Manual prefix with error_log
+if (defined('WP_DEBUG') && WP_DEBUG) {
+    error_log('[JANKX DEBUG] Loading configuration...');
+    error_log('[JANKX DEBUG] Config data: ' . print_r($config, true));
+    error_log('[JANKX DEBUG] Error occurred: ' . $error->getMessage());
+}
+
+// ❌ Incorrect - Repeating debug checks
+if (defined('WP_DEBUG') && WP_DEBUG) {
+    error_log('[JANKX DEBUG] Loading configuration...');
+}
+
+if (defined('WP_DEBUG') && WP_DEBUG) {
+    error_log('[JANKX DEBUG] Config data: ' . print_r($config, true));
+}
+```
+
+### 22.2 Environment Detection
+```php
+// ✅ Correct - Using Environment helper
+use Jankx\Helper\Environment;
+
+if (Environment::isWpCli()) {
+    // WP CLI specific logic
+}
+
+if (Environment::isWpCron()) {
+    // WP Cron specific logic
+}
+
+if (Environment::isAdmin()) {
+    // Admin specific logic
+}
+
+// ❌ Incorrect - Repeating environment checks
+if (defined('WP_CLI') && WP_CLI) {
+    // WP CLI specific logic
+}
+
+if (defined('DOING_CRON') && DOING_CRON) {
+    // WP Cron specific logic
+}
+
+if (is_admin()) {
+    // Admin specific logic
+}
+```
+
+### 22.3 Consistent Debug Format
+```php
+// ✅ Correct - Using Log Facade for consistent format
+use Jankx\Facades\Log;
+
+Log::debug($message);
+Log::debug('Data: ' . print_r($data, true));
+Log::debug('Error: ' . $error->getMessage());
+
+// ✅ Correct - Using Environment helper with Log Facade
+use Jankx\Helper\Environment;
+use Jankx\Facades\Log;
+
+if (Environment::isDebugLog()) {
+    Log::debug($message);
+    Log::debug('Data: ' . print_r($data, true));
+    Log::debug('Error: ' . $error->getMessage());
+}
+
+// ❌ Incorrect - Manual prefix with error_log
+error_log('[JANKX DEBUG] ' . $message);
+error_log('[JANKX DEBUG] Data: ' . print_r($data, true));
+error_log('[JANKX DEBUG] Error: ' . $error->getMessage());
+
+// ❌ Incorrect - Inconsistent debug format
+if (defined('WP_DEBUG') && WP_DEBUG) {
+    error_log('Debug: ' . $message);
+    var_dump($data);
+    echo $error->getMessage();
+}
+```
+
+## 23. File Organization
+
+### 23.1 Directory Structure
 ```
 includes/
 ├── Jankx/
@@ -1249,7 +1704,7 @@ includes/
 └── framework.php
 ```
 
-### 22.2 File Naming
+### 23.2 File Naming
 ```php
 // ✅ Correct
 ThemeManager.php
@@ -1266,9 +1721,9 @@ asset_manager.php
 menu_manager.php
 ```
 
-## 23. Version Control
+## 24. Version Control
 
-### 23.1 Commit Messages
+### 24.1 Commit Messages
 ```bash
 # ✅ Correct
 feat: add config cache system with CRC32
@@ -1285,7 +1740,7 @@ fixed bug
 added feature
 ```
 
-### 23.2 Git Ignore
+### 24.2 Git Ignore
 ```gitignore
 # ✅ Correct
 /vendor/
@@ -1295,7 +1750,7 @@ added feature
 .env
 ```
 
-## 24. Code Review Checklist
+## 25. Code Review Checklist
 
 - [ ] Follows WordPress Coding Standards
 - [ ] Follows PSR-12
@@ -1305,6 +1760,8 @@ added feature
 - [ ] Includes proper PHPDoc comments
 - [ ] Has unit tests for new functionality
 - [ ] Uses Jankx Log Facade for debugging
+- [ ] Uses Log Facade for debug logging (not `error_log('[JANKX DEBUG]')`)
+- [ ] Uses Environment Helper for debug checks (not `defined('WP_DEBUG')`)
 - [ ] No additional global variables
 - [ ] Follows SOLID principles
 - [ ] Implements proper error handling

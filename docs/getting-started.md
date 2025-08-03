@@ -252,7 +252,7 @@ if (Cache::has('key')) {
 use Jankx\Facades\Asset;
 
 // Convert path to URL
-$url = Asset::urlFromPath('/path/to/file.css');
+$url = \Jankx\Facades\Url::asset('file.css');
 
 // Get parent theme URL
 $parentUrl = Asset::templateUrl('/assets/style.css');

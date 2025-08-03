@@ -335,7 +335,7 @@ $value = Cache::get('key', 'default');
 ```php
 use Jankx\Facades\Asset;
 
-$url = Asset::urlFromPath('/path/to/file.css');
+$url = \Jankx\Facades\Url::asset('file.css');
 $themeUrl = Asset::themeUrl('/assets/style.css');
 ```
 
