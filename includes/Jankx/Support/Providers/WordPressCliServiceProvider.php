@@ -5,6 +5,8 @@ namespace Jankx\Support\Providers;
 use Jankx\Foundation\Application;
 use Jankx\Foundation\Cli\Commands\JankxCommand;
 use Jankx\Foundation\Cli\Commands\CacheCommand;
+use Jankx\Facades\Log;
+use Jankx\Helper\Environment;
 
 /**
  * WordPress CLI Service Provider
@@ -65,8 +67,8 @@ class WordPressCliServiceProvider extends ServiceProvider
         \WP_CLI::add_command('jankx cache', $this->app->make('jankx.cache.command'));
 
         // Log command registration
-        if (class_exists('Jankx\Helper\Environment') && \Jankx\Helper\Environment::isDebugLog()) {
-            error_log('[JANKX DEBUG] WP CLI commands registered');
+        if (Environment::isDebugLog()) {
+            Log::debug('WP CLI commands registered');
         }
     }
 

@@ -24,13 +24,13 @@ class SidebarManager
     /**
      * Get sidebar by ID
      *
-     * @param string $sidebar_id
+     * @param string $sidebarId
      * @return string
      */
-    public function getSidebar($sidebar_id)
+    public function getSidebar($sidebarId)
     {
         ob_start();
-        dynamic_sidebar($sidebar_id);
+        dynamic_sidebar($sidebarId);
         return ob_get_clean();
     }
 
@@ -63,12 +63,12 @@ class SidebarManager
     /**
      * Check if sidebar is active
      *
-     * @param string $sidebar_id
+     * @param string $sidebarId
      * @return bool
      */
-    public function isSidebarActive($sidebar_id)
+    public function isSidebarActive($sidebarId)
     {
-        return is_active_sidebar($sidebar_id);
+        return is_active_sidebar($sidebarId);
     }
 
     /**
@@ -105,39 +105,39 @@ class SidebarManager
     /**
      * Get sidebar data by ID
      *
-     * @param string $sidebar_id
+     * @param string $sidebarId
      * @return array|null
      */
-    public function getSidebarData($sidebar_id)
+    public function getSidebarData($sidebarId)
     {
         $sidebars = $this->getRegisteredSidebars();
-        return isset($sidebars[$sidebar_id]) ? $sidebars[$sidebar_id] : null;
+        return isset($sidebars[$sidebarId]) ? $sidebars[$sidebarId] : null;
     }
 
     /**
      * Render sidebar with wrapper
      *
-     * @param string $sidebar_id
+     * @param string $sidebarId
      * @param array $args
      * @return string
      */
-    public function renderSidebar($sidebar_id, $args = [])
+    public function renderSidebar($sidebarId, $args = [])
     {
         $defaults = [
             'wrapper_class' => 'sidebar',
-            'wrapper_id' => 'sidebar-' . $sidebar_id,
+            'wrapper_id' => 'sidebar-' . $sidebarId,
             'title' => '',
             'show_title' => true,
         ];
 
         $args = wp_parse_args($args, $defaults);
 
-        if (!$this->isSidebarActive($sidebar_id)) {
+        if (!$this->isSidebarActive($sidebarId)) {
             return '';
         }
 
-        $sidebar_data = $this->getSidebarData($sidebar_id);
-        $title = $args['title'] ?: ($sidebar_data['name'] ?? '');
+        $sidebarData = $this->getSidebarData($sidebarId);
+        $title = $args['title'] ?: ($sidebarData['name'] ?? '');
 
         $output = sprintf(
             '<aside class="%s" id="%s">',
@@ -149,7 +149,7 @@ class SidebarManager
             $output .= sprintf('<h3 class="sidebar-title">%s</h3>', esc_html($title));
         }
 
-        $output .= $this->getSidebar($sidebar_id);
+        $output .= $this->getSidebar($sidebarId);
         $output .= '</aside>';
 
         return $output;
@@ -196,18 +196,18 @@ class SidebarManager
     /**
      * Get widget count in sidebar
      *
-     * @param string $sidebar_id
+     * @param string $sidebarId
      * @return int
      */
-    public function getWidgetCount($sidebar_id)
+    public function getWidgetCount($sidebarId)
     {
-        $sidebars_widgets = wp_get_sidebars_widgets();
+        $sidebarsWidgets = wp_get_sidebars_widgets();
 
-        if (!isset($sidebars_widgets[$sidebar_id])) {
+        if (!isset($sidebarsWidgets[$sidebarId])) {
             return 0;
         }
 
-        return count($sidebars_widgets[$sidebar_id]);
+        return count($sidebarsWidgets[$sidebarId]);
     }
 
     /**

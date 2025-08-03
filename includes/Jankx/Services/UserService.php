@@ -48,7 +48,7 @@ class UserService
      */
     public function getById($userId)
     {
-        $cacheKey = "user_id_{$userId}";
+        $cacheKey = 'user_id_' . $userId;
 
         // Check cache first
         if ($this->cache->isEnabled() && $cached = $this->cache->get($cacheKey)) {
@@ -83,7 +83,7 @@ class UserService
      */
     public function getByUsername($username)
     {
-        $cacheKey = "user_username_{$username}";
+        $cacheKey = 'user_username_' . $username;
 
         // Check cache first
         if ($this->cache->isEnabled() && $cached = $this->cache->get($cacheKey)) {

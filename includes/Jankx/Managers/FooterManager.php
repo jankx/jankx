@@ -29,8 +29,8 @@ class FooterManager
      */
     public function getFooterMenu($args = [])
     {
-        $menu_manager = $this->app->make('layout.menu');
-        return $menu_manager->getFooterMenu($args);
+        $menuManager = $this->app->make('layout.menu');
+        return $menuManager->getFooterMenu($args);
     }
 
     /**
@@ -40,8 +40,8 @@ class FooterManager
      */
     public function getFooterWidgets()
     {
-        $footer_config = $this->getFooterConfig();
-        $columns = $footer_config['widgets']['columns'] ?? 3;
+        $footerConfig = $this->getFooterConfig();
+        $columns = $footerConfig['widgets']['columns'] ?? 3;
 
         $output = '<div class="footer-widgets">';
 
@@ -72,8 +72,8 @@ class FooterManager
      */
     public function getFooterContent()
     {
-        $footer_config = $this->getFooterConfig();
-        $content = $footer_config['content'] ?? '';
+        $footerConfig = $this->getFooterConfig();
+        $content = $footerConfig['content'] ?? '';
 
         return apply_filters('jankx/layout/footer/content', $content);
     }
@@ -85,17 +85,17 @@ class FooterManager
      */
     public function renderFooter()
     {
-        $footer_config = $this->getFooterConfig();
+        $footerConfig = $this->getFooterConfig();
 
         $output = '<footer class="site-footer">';
 
         // Footer widgets
-        if (!empty($footer_config['widgets']['enabled'])) {
+        if (!empty($footerConfig['widgets']['enabled'])) {
             $output .= $this->getFooterWidgets();
         }
 
         // Footer menu
-        if (!empty($footer_config['menu']['enabled'])) {
+        if (!empty($footerConfig['menu']['enabled'])) {
             $output .= '<div class="footer-menu-wrapper">';
             $output .= $this->getFooterMenu();
             $output .= '</div>';
@@ -121,8 +121,8 @@ class FooterManager
      */
     public function isFooterMenuEnabled()
     {
-        $footer_config = $this->getFooterConfig();
-        return !empty($footer_config['menu']['enabled']);
+        $footerConfig = $this->getFooterConfig();
+        return !empty($footerConfig['menu']['enabled']);
     }
 
     /**
@@ -132,8 +132,8 @@ class FooterManager
      */
     public function isFooterWidgetsEnabled()
     {
-        $footer_config = $this->getFooterConfig();
-        return !empty($footer_config['widgets']['enabled']);
+        $footerConfig = $this->getFooterConfig();
+        return !empty($footerConfig['widgets']['enabled']);
     }
 
     /**
@@ -143,8 +143,8 @@ class FooterManager
      */
     public function getFooterWidgetColumns()
     {
-        $footer_config = $this->getFooterConfig();
-        return $footer_config['widgets']['columns'] ?? 3;
+        $footerConfig = $this->getFooterConfig();
+        return $footerConfig['widgets']['columns'] ?? 3;
     }
 
     /**
@@ -224,8 +224,8 @@ class FooterManager
      */
     public function getFooterLayoutClass()
     {
-        $footer_config = $this->getFooterConfig();
-        $layout = $footer_config['layout'] ?? 'default';
+        $footerConfig = $this->getFooterConfig();
+        $layout = $footerConfig['layout'] ?? 'default';
 
         return 'footer-layout-' . $layout;
     }
