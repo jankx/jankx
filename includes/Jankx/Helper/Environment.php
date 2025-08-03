@@ -5,13 +5,24 @@ namespace Jankx\Helper;
 class Environment
 {
     /**
+     * Debug log cache to avoid repeated checks
+     */
+    private static $debugLogCache = null;
+
+    /**
      * Check if debug logging is enabled.
+     * Performance optimized with caching
      *
      * @return bool
      */
     public static function isDebugLog()
     {
-        return defined('WP_DEBUG') && WP_DEBUG;
+        // Cache the result to avoid repeated checks
+        if (self::$debugLogCache === null) {
+            self::$debugLogCache = defined('WP_DEBUG') && WP_DEBUG;
+        }
+
+        return self::$debugLogCache;
     }
 
     /**

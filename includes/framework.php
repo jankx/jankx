@@ -54,18 +54,7 @@ class Jankx_Framework
     public function init()
     {
         // Handle console requests first
-        if (Environment::isWpCli()) {
-            if (Environment::isDebugLog()) {
-                error_log('[JANKX DEBUG] Framework handling WP CLI request');
-            }
-            $this->handleConsoleRequest();
-            return;
-        }
-
-        if (Environment::isWpCron()) {
-            if (Environment::isDebugLog()) {
-                error_log('[JANKX DEBUG] Framework handling WP Cron request');
-            }
+        if (Environment::isWpCli() || Environment::isWpCron()) {
             $this->handleConsoleRequest();
             return;
         }
@@ -73,10 +62,6 @@ class Jankx_Framework
         // Handle HTTP requests
         $request = JankxRequest::capture();
         $requestType = $request->getRequestType();
-
-        if (Environment::isDebugLog()) {
-            error_log(sprintf('[JANKX DEBUG] Framework handling %s request', $requestType));
-        }
 
         $this->handleHttpRequest();
     }
@@ -91,41 +76,28 @@ class Jankx_Framework
         $request = JankxRequest::capture();
         $requestType = $request->getRequestType();
 
+        // Only log in debug mode if needed
         if (Environment::isDebugLog()) {
-            error_log(sprintf('[JANKX DEBUG] Request Type: %s', $requestType));
-            error_log(sprintf('[JANKX DEBUG] Request Path: %s', $request->getPathInfo()));
-            error_log(sprintf('[JANKX DEBUG] Request Method: %s', $request->getMethod()));
+            error_log(sprintf('[JANKX DEBUG] Request: %s %s', $request->getMethod(), $request->getPathInfo()));
         }
 
         // Create appropriate kernel based on request type
         switch ($requestType) {
             case 'admin_ajax':
                 $kernel = new AdminAjaxKernel($this->app);
-                if (Environment::isDebugLog()) {
-                    error_log('[JANKX DEBUG] Created AdminAjaxKernel');
-                }
                 break;
 
             case 'rest_api':
                 $kernel = new RestApiKernel($this->app);
-                if (Environment::isDebugLog()) {
-                    error_log('[JANKX DEBUG] Created RestApiKernel');
-                }
                 break;
 
             case 'dashboard':
                 $kernel = new DashboardKernel($this->app);
-                if (Environment::isDebugLog()) {
-                    error_log('[JANKX DEBUG] Created DashboardKernel');
-                }
                 break;
 
             case 'frontend':
             default:
                 $kernel = new FrontendKernel($this->app);
-                if (Environment::isDebugLog()) {
-                    error_log('[JANKX DEBUG] Created FrontendKernel');
-                }
                 break;
         }
 
