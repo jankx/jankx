@@ -207,6 +207,48 @@ class MyServiceProvider extends ServiceProvider
 }
 ```
 
+### Creating a Lazy Service Provider
+
+```php
+<?php
+
+namespace MyTheme\Providers;
+
+use Jankx\Support\Providers\ServiceProvider;
+
+class LazyServiceProvider extends ServiceProvider
+{
+    /**
+     * The services that this provider provides
+     */
+    protected $provides = [
+        'expensive.service',
+        'heavy.calculator'
+    ];
+
+    /**
+     * Register any application services.
+     */
+    public function register(Application $app)
+    {
+        $app->singleton('expensive.service', function ($app) {
+            return new ExpensiveService();
+        });
+    }
+
+    /**
+     * Check if this provider provides a specific service
+     */
+    public static function provides($service)
+    {
+        return in_array($service, [
+            'expensive.service',
+            'heavy.calculator'
+        ]);
+    }
+}
+```
+
 ### Registering Service Providers
 
 ```php
@@ -216,6 +258,33 @@ return [
         MyTheme\Providers\MyServiceProvider::class,
     ],
 ];
+```
+
+### Registering Lazy Service Providers
+
+```php
+// Register lazy service provider
+$app->registerLazy(LazyServiceProvider::class);
+
+// Use LazyLoader helper
+use Jankx\Support\LazyLoader;
+
+// Set application in LazyLoader
+LazyLoader::setApp($app);
+
+// Get lazy service
+$service = LazyLoader::service('expensive.service');
+
+// Check if service is lazy
+if (LazyLoader::isLazy('expensive.service')) {
+    // Service is lazy loaded
+}
+
+// Monitor performance
+LazyLoader::monitor('expensive.service');
+
+// Clear cache
+LazyLoader::clearCache();
 ```
 
 ## Bootstrappers
@@ -335,6 +404,30 @@ $isDebug = Environment::isDebugLog();
 
 // Check if development mode
 $isDev = Environment::isDevelopment();
+```
+
+### LazyLoader Helper
+
+```php
+use Jankx\Support\LazyLoader;
+
+// Set application
+LazyLoader::setApp($app);
+
+// Get lazy service
+$service = LazyLoader::service('expensive.service');
+
+// Check if service is lazy
+$isLazy = LazyLoader::isLazy('expensive.service');
+
+// Monitor performance
+LazyLoader::monitor('expensive.service');
+
+// Get cached services
+$cached = LazyLoader::getCachedServices();
+
+// Clear cache
+LazyLoader::clearCache();
 ```
 
 ### Request Helper

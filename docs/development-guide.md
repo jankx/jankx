@@ -224,15 +224,15 @@ use Jankx\Support\Providers\ServiceProvider;
 
 class ThemeServiceProvider extends ServiceProvider
 {
-    public function register()
+    public function register(Application $app)
     {
         // Register services
-        $this->app->singleton('theme.config', function ($app) {
+        $app->singleton('theme.config', function ($app) {
             return new ThemeConfig();
         });
     }
 
-    public function boot()
+    public function boot(Application $app)
     {
         // Boot theme services
         add_action('wp_enqueue_scripts', [$this, 'enqueueAssets']);
@@ -243,6 +243,56 @@ class ThemeServiceProvider extends ServiceProvider
         // Enqueue theme assets
     }
 }
+```
+
+### 4. Lazy Service Providers
+
+For expensive services that should only be loaded when needed:
+
+```php
+<?php
+
+namespace MyTheme\Providers;
+
+use Jankx\Support\Providers\ServiceProvider;
+
+class LazyServiceProvider extends ServiceProvider
+{
+    protected $provides = [
+        'expensive.service',
+        'heavy.calculator'
+    ];
+
+    public function register(Application $app)
+    {
+        $app->singleton('expensive.service', function ($app) {
+            return new ExpensiveService();
+        });
+    }
+
+    public static function provides($service)
+    {
+        return in_array($service, [
+            'expensive.service',
+            'heavy.calculator'
+        ]);
+    }
+}
+```
+
+### 5. Using Lazy Loading
+
+```php
+// Register lazy provider
+$app->registerLazy(LazyServiceProvider::class);
+
+// Use LazyLoader helper
+use Jankx\Support\LazyLoader;
+
+LazyLoader::setApp($app);
+
+// Service is only created when requested
+$service = LazyLoader::service('expensive.service');
 ```
 
 ## Customization
