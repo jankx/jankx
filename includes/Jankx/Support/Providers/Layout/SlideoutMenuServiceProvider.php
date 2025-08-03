@@ -33,8 +33,6 @@ class SlideoutMenuServiceProvider extends ServiceProvider
      */
     public function register(Application $app)
     {
-        // Note: SlideoutMenuService is now registered in HeavyServicesProvider as 'slideout.menu.service'
-        // This provider only handles UI rendering and assets
     }
 
     /**
@@ -45,8 +43,5 @@ class SlideoutMenuServiceProvider extends ServiceProvider
      */
     public function boot(Application $app)
     {
-        if (Environment::isDebugLog()) {
-            // Debug log removed for release
-        }
     }
 }
