@@ -7,7 +7,7 @@ use Jankx\Helper\Environment;
 
 class EnvironmentTest extends TestCase
 {
-        public function testEnvironmentCanDetectDebugMode()
+    public function testEnvironmentCanDetectDebugMode()
     {
         // Test with WP_DEBUG defined
         if (!defined('WP_DEBUG')) {
@@ -41,7 +41,8 @@ class EnvironmentTest extends TestCase
     {
         // Mock is_admin function trả về true
         if (!function_exists('is_admin')) {
-            function is_admin() {
+            function is_admin()
+            {
                 return true;
             }
         }
@@ -54,11 +55,13 @@ class EnvironmentTest extends TestCase
         if (function_exists('is_admin')) {
             // Temporarily override the function
             $GLOBALS['mock_is_admin'] = false;
-            function is_admin() {
+            function is_admin()
+            {
                 return $GLOBALS['mock_is_admin'] ?? true;
             }
         } else {
-            function is_admin() {
+            function is_admin()
+            {
                 return $GLOBALS['mock_is_admin'] ?? true;
             }
         }

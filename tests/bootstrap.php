@@ -5,73 +5,85 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 // Mock WordPress functions for testing
 if (!function_exists('add_action')) {
-    function add_action($hook, $callback, $priority = 10, $accepted_args = 1) {
+    function add_action($hook, $callback, $priority = 10, $accepted_args = 1)
+    {
         // Mock implementation
     }
 }
 
 if (!function_exists('add_filter')) {
-    function add_filter($hook, $callback, $priority = 10, $accepted_args = 1) {
+    function add_filter($hook, $callback, $priority = 10, $accepted_args = 1)
+    {
         // Mock implementation
     }
 }
 
 if (!function_exists('do_action')) {
-    function do_action($hook, ...$args) {
+    function do_action($hook, ...$args)
+    {
         // Mock implementation
     }
 }
 
 if (!function_exists('apply_filters')) {
-    function apply_filters($hook, $value, ...$args) {
+    function apply_filters($hook, $value, ...$args)
+    {
         return $value;
     }
 }
 
 if (!function_exists('wp_parse_url')) {
-    function wp_parse_url($url, $component = -1) {
+    function wp_parse_url($url, $component = -1)
+    {
         return parse_url($url, $component);
     }
 }
 
 if (!function_exists('wp_doing_ajax')) {
-    function wp_doing_ajax() {
+    function wp_doing_ajax()
+    {
         return false;
     }
 }
 
 if (!function_exists('wp_doing_cron')) {
-    function wp_doing_cron() {
+    function wp_doing_cron()
+    {
         return false;
     }
 }
 
 if (!function_exists('is_admin')) {
-    function is_admin() {
+    function is_admin()
+    {
         return $GLOBALS['mock_is_admin'] ?? true;
     }
 }
 
 if (!function_exists('wp_get_environment_type')) {
-    function wp_get_environment_type() {
+    function wp_get_environment_type()
+    {
         return 'production';
     }
 }
 
 if (!function_exists('get_option')) {
-    function get_option($option, $default = false) {
+    function get_option($option, $default = false)
+    {
         return $default;
     }
 }
 
 if (!function_exists('update_option')) {
-    function update_option($option, $value, $autoload = null) {
+    function update_option($option, $value, $autoload = null)
+    {
         return true;
     }
 }
 
 if (!function_exists('delete_option')) {
-    function delete_option($option) {
+    function delete_option($option)
+    {
         return true;
     }
 }
@@ -79,15 +91,18 @@ if (!function_exists('delete_option')) {
 
 
 if (!function_exists('get_locale')) {
-    function get_locale() {
+    function get_locale()
+    {
         return 'en_US';
     }
 }
 
 if (!function_exists('wp_get_theme')) {
-    function wp_get_theme($stylesheet = null) {
+    function wp_get_theme($stylesheet = null)
+    {
         return new class {
-            public function get($key) {
+            public function get($key)
+            {
                 $data = [
                     'Name' => 'Test Theme',
                     'Version' => '1.0.0',
@@ -98,11 +113,13 @@ if (!function_exists('wp_get_theme')) {
                 return $data[$key] ?? '';
             }
 
-            public function get_stylesheet() {
+            public function get_stylesheet()
+            {
                 return 'test-theme';
             }
 
-            public function get_template() {
+            public function get_template()
+            {
                 return 'test-theme';
             }
         };
@@ -110,13 +127,15 @@ if (!function_exists('wp_get_theme')) {
 }
 
 if (!function_exists('get_template')) {
-    function get_template() {
+    function get_template()
+    {
         return 'test-theme';
     }
 }
 
 if (!function_exists('get_stylesheet')) {
-    function get_stylesheet() {
+    function get_stylesheet()
+    {
         return 'test-theme';
     }
 }
@@ -170,13 +189,15 @@ if (!function_exists('content_url')) {
 }
 
 if (!function_exists('wp_enqueue_style')) {
-    function wp_enqueue_style($handle, $src = false, $deps = array(), $ver = false, $media = 'all') {
+    function wp_enqueue_style($handle, $src = false, $deps = array(), $ver = false, $media = 'all')
+    {
         // Mock implementation
     }
 }
 
 if (!function_exists('wp_register_style')) {
-    function wp_register_style($handle, $src, $deps = array(), $ver = false, $media = 'all') {
+    function wp_register_style($handle, $src, $deps = array(), $ver = false, $media = 'all')
+    {
         // Mock implementation
     }
 }
@@ -189,124 +210,146 @@ if (!function_exists('AUTH_KEY')) {
 
 // Mock WordPress functions
 if (!function_exists('wp_cache_get')) {
-    function wp_cache_get($key, $group = 'default') {
+    function wp_cache_get($key, $group = 'default')
+    {
         return false;
     }
 }
 
 if (!function_exists('wp_cache_set')) {
-    function wp_cache_set($key, $value, $group = 'default', $ttl = 0) {
+    function wp_cache_set($key, $value, $group = 'default', $ttl = 0)
+    {
         return true;
     }
 }
 
 if (!function_exists('wp_cache_flush_group')) {
-    function wp_cache_flush_group($group) {
+    function wp_cache_flush_group($group)
+    {
         return true;
     }
 }
 
 if (!function_exists('crc32')) {
-    function crc32($string) {
+    function crc32($string)
+    {
         return hash('crc32', $string);
     }
 }
 
 if (!function_exists('__')) {
-    function __($text, $domain = 'default') {
+    function __($text, $domain = 'default')
+    {
         return $text;
     }
 }
 
 if (!function_exists('_e')) {
-    function _e($text, $domain = 'default') {
+    function _e($text, $domain = 'default')
+    {
         echo $text;
     }
 }
 
 if (!function_exists('esc_html')) {
-    function esc_html($text) {
+    function esc_html($text)
+    {
         return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
     }
 }
 
 if (!function_exists('esc_attr')) {
-    function esc_attr($text) {
+    function esc_attr($text)
+    {
         return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
     }
 }
 
 if (!function_exists('esc_url')) {
-    function esc_url($url) {
+    function esc_url($url)
+    {
         return filter_var($url, FILTER_SANITIZE_URL);
     }
 }
 
 if (!function_exists('get_template_directory')) {
-    function get_template_directory() {
+    function get_template_directory()
+    {
         return '/path/to/template';
     }
 }
 
 if (!function_exists('register_block_type')) {
-    function register_block_type($block_name, $args = array()) {
+    function register_block_type($block_name, $args = array())
+    {
         return true;
     }
 }
 
 if (!function_exists('register_rest_route')) {
-    function register_rest_route($namespace, $route, $args = array()) {
+    function register_rest_route($namespace, $route, $args = array())
+    {
         return true;
     }
 }
 
 if (!function_exists('rest_ensure_response')) {
-    function rest_ensure_response($data) {
+    function rest_ensure_response($data)
+    {
         return new WP_REST_Response($data);
     }
 }
 
 if (!class_exists('WP_REST_Response')) {
-    class WP_REST_Response {
+    class WP_REST_Response
+    {
         private $data;
 
-        public function __construct($data) {
+        public function __construct($data)
+        {
             $this->data = $data;
         }
 
-        public function get_data() {
+        public function get_data()
+        {
             return $this->data;
         }
     }
 }
 
 if (!class_exists('WP_REST_Request')) {
-    class WP_REST_Request {
+    class WP_REST_Request
+    {
         private $params = [];
 
-        public function get_param($key) {
+        public function get_param($key)
+        {
             return $this->params[$key] ?? null;
         }
 
-        public function set_param($key, $value) {
+        public function set_param($key, $value)
+        {
             $this->params[$key] = $value;
         }
     }
 }
 
 if (!class_exists('WP_Widget')) {
-    class WP_Widget {
+    class WP_Widget
+    {
         public $id_base;
         public $name;
         public $widget_options;
 
-        public function __construct() {
+        public function __construct()
+        {
             $this->id_base = 'widget';
             $this->name = 'Widget';
             $this->widget_options = ['description' => 'A widget'];
         }
 
-        public function widget($args, $instance) {
+        public function widget($args, $instance)
+        {
             // Mock widget rendering
         }
     }
@@ -314,8 +357,10 @@ if (!class_exists('WP_Widget')) {
 
 // Mock widget classes
 if (!class_exists('WP_Widget_Text')) {
-    class WP_Widget_Text extends WP_Widget {
-        public function __construct() {
+    class WP_Widget_Text extends WP_Widget
+    {
+        public function __construct()
+        {
             parent::__construct();
             $this->id_base = 'text';
             $this->name = 'Text';
@@ -325,8 +370,10 @@ if (!class_exists('WP_Widget_Text')) {
 }
 
 if (!class_exists('WP_Widget_Search')) {
-    class WP_Widget_Search extends WP_Widget {
-        public function __construct() {
+    class WP_Widget_Search extends WP_Widget
+    {
+        public function __construct()
+        {
             parent::__construct();
             $this->id_base = 'search';
             $this->name = 'Search';
@@ -336,8 +383,10 @@ if (!class_exists('WP_Widget_Search')) {
 }
 
 if (!class_exists('WP_Widget_Recent_Posts')) {
-    class WP_Widget_Recent_Posts extends WP_Widget {
-        public function __construct() {
+    class WP_Widget_Recent_Posts extends WP_Widget
+    {
+        public function __construct()
+        {
             parent::__construct();
             $this->id_base = 'recent-posts';
             $this->name = 'Recent Posts';
@@ -393,6 +442,197 @@ if (!function_exists('remove_action')) {
         return true;
     }
 }
+
+// Mock WordPress menu functions
+if (!function_exists('wp_nav_menu')) {
+    function wp_nav_menu($args = [])
+    {
+        $defaults = [
+            'theme_location' => 'primary',
+            'container' => 'nav',
+            'container_class' => 'menu-primary',
+            'container_id' => 'menu-primary',
+            'menu_class' => 'menu',
+            'echo' => false,
+            'fallback_cb' => false,
+        ];
+        $args = wp_parse_args($args, $defaults);
+
+        if ($args['echo']) {
+            return '';
+        }
+
+        return sprintf(
+            '<%1$s class="%2$s" id="%3$s"><ul class="%4$s"><li><a href="#">Menu Item</a></li></ul></%1$s>',
+            $args['container'],
+            $args['container_class'],
+            $args['container_id'],
+            $args['menu_class']
+        );
+    }
+}
+
+if (!function_exists('has_nav_menu')) {
+    function has_nav_menu($location)
+    {
+        $locations = [
+            'primary' => true,
+            'secondary' => true,
+            'footer' => true,
+        ];
+        return $locations[$location] ?? false;
+    }
+}
+
+if (!function_exists('get_nav_menu_locations')) {
+    function get_nav_menu_locations()
+    {
+        return [
+            'primary' => 1,
+            'secondary' => 2,
+            'footer' => 3,
+        ];
+    }
+}
+
+if (!function_exists('wp_get_nav_menu_object')) {
+    function wp_get_nav_menu_object($menu_id)
+    {
+        return (object) [
+            'term_id' => $menu_id,
+            'name' => 'Test Menu',
+            'slug' => 'test-menu',
+        ];
+    }
+}
+
+if (!function_exists('wp_get_nav_menu_items')) {
+    function wp_get_nav_menu_items($menu_id)
+    {
+        return [
+            (object) [
+                'ID' => 1,
+                'title' => 'Home',
+                'url' => 'http://example.com/',
+                'menu_item_parent' => 0,
+            ],
+            (object) [
+                'ID' => 2,
+                'title' => 'About',
+                'url' => 'http://example.com/about/',
+                'menu_item_parent' => 0,
+            ],
+        ];
+    }
+}
+
+// Mock WordPress sidebar functions
+if (!function_exists('is_active_sidebar')) {
+    function is_active_sidebar($sidebar_id)
+    {
+        $active_sidebars = [
+            'primary-sidebar' => true,
+            'secondary-sidebar' => true,
+            'footer-widget-1' => true,
+            'footer-widget-2' => true,
+            'footer-widget-3' => true,
+        ];
+        return $active_sidebars[$sidebar_id] ?? false;
+    }
+}
+
+if (!function_exists('dynamic_sidebar')) {
+    function dynamic_sidebar($sidebar_id)
+    {
+        echo '<div class="widget">Widget content for ' . $sidebar_id . '</div>';
+    }
+}
+
+if (!function_exists('wp_get_sidebars_widgets')) {
+    function wp_get_sidebars_widgets()
+    {
+        return [
+            'primary-sidebar' => ['widget-1', 'widget-2'],
+            'secondary-sidebar' => ['widget-3'],
+            'footer-widget-1' => ['widget-4'],
+            'footer-widget-2' => ['widget-5'],
+            'footer-widget-3' => ['widget-6'],
+        ];
+    }
+}
+
+// Mock WordPress page functions
+if (!function_exists('is_page_template')) {
+    function is_page_template($template)
+    {
+        return false;
+    }
+}
+
+if (!function_exists('is_404')) {
+    function is_404()
+    {
+        return false;
+    }
+}
+
+if (!function_exists('get_theme_mod')) {
+    function get_theme_mod($name, $default = false)
+    {
+        $mods = [
+            'sidebar_layout' => 'right',
+        ];
+        return $mods[$name] ?? $default;
+    }
+}
+
+if (!function_exists('get_permalink')) {
+    function get_permalink($post = 0)
+    {
+        return 'http://example.com/current-page/';
+    }
+}
+
+if (!function_exists('wp_parse_args')) {
+    function wp_parse_args($args, $defaults = '')
+    {
+        if (is_object($args)) {
+            $parsed_args = get_object_vars($args);
+        } elseif (is_array($args)) {
+            $parsed_args =& $args;
+        } else {
+            wp_parse_str($args, $parsed_args);
+        }
+
+        if (is_array($defaults)) {
+            return array_merge($defaults, $parsed_args);
+        }
+
+        return $parsed_args;
+    }
+}
+
+if (!function_exists('wp_parse_str')) {
+    function wp_parse_str($string, &$array)
+    {
+        parse_str($string, $array);
+    }
+}
+
+// Mock global variables for sidebars
+global $wp_registered_sidebars;
+$wp_registered_sidebars = [
+    'primary-sidebar' => [
+        'name' => 'Primary Sidebar',
+        'id' => 'primary-sidebar',
+        'description' => 'Primary sidebar area',
+    ],
+    'secondary-sidebar' => [
+        'name' => 'Secondary Sidebar',
+        'id' => 'secondary-sidebar',
+        'description' => 'Secondary sidebar area',
+    ],
+];
 
 // Set up test environment
 define('WP_DEBUG', true);

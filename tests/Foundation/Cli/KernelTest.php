@@ -14,8 +14,10 @@ class KernelTest extends TestCase
     protected function setUp(): void
     {
         $this->app = new Application();
-        $this->kernel = new class($this->app) extends Kernel {
-            public function handle($args) {}
+        $this->kernel = new class ($this->app) extends Kernel {
+            public function handle($args)
+            {
+            }
         };
     }
 

@@ -17,7 +17,7 @@ class LogTest extends TestCase
         Log::setFacadeApplication($this->app);
     }
 
-        public function testLogFacadeCanLogMessages()
+    public function testLogFacadeCanLogMessages()
     {
         // Should not throw any exception
         $this->expectNotToPerformAssertions();

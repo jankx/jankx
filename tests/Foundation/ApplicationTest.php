@@ -35,7 +35,7 @@ class ApplicationTest extends TestCase
 
     public function testApplicationCanRegisterServiceProviders()
     {
-        $provider = new class($this->app) extends \Jankx\Support\Providers\ServiceProvider {
+        $provider = new class ($this->app) extends \Jankx\Support\Providers\ServiceProvider {
             public $registered = false;
             public $booted = false;
 
@@ -56,7 +56,7 @@ class ApplicationTest extends TestCase
 
     public function testApplicationCanBootServiceProviders()
     {
-        $provider = new class($this->app) extends \Jankx\Support\Providers\ServiceProvider {
+        $provider = new class ($this->app) extends \Jankx\Support\Providers\ServiceProvider {
             public $booted = false;
 
             public function register($app)
@@ -84,9 +84,13 @@ class ApplicationTest extends TestCase
 
     public function testApplicationCanGetServiceProviders()
     {
-        $provider = new class($this->app) extends \Jankx\Support\Providers\ServiceProvider {
-            public function register($app) {}
-            public function boot($app) {}
+        $provider = new class ($this->app) extends \Jankx\Support\Providers\ServiceProvider {
+            public function register($app)
+            {
+            }
+            public function boot($app)
+            {
+            }
         };
 
         $this->app->register($provider);
@@ -95,17 +99,21 @@ class ApplicationTest extends TestCase
         $this->assertContains($provider, $providers);
     }
 
-        public function testApplicationCanCheckIfProviderIsRegistered()
+    public function testApplicationCanCheckIfProviderIsRegistered()
     {
-        $provider = new class($this->app) extends \Jankx\Support\Providers\ServiceProvider {
-            public function register($app) {}
-            public function boot($app) {}
+        $provider = new class ($this->app) extends \Jankx\Support\Providers\ServiceProvider {
+            public function register($app)
+            {
+            }
+            public function boot($app)
+            {
+            }
         };
 
-        $this->assertFalse($this->app->isRegistered(get_class($provider)));
+            $this->assertFalse($this->app->isRegistered(get_class($provider)));
 
-        $this->app->register($provider);
-        $this->assertTrue($this->app->isRegistered(get_class($provider)));
+            $this->app->register($provider);
+            $this->assertTrue($this->app->isRegistered(get_class($provider)));
     }
 
     public function testApplicationCanGetVersion()
@@ -123,7 +131,8 @@ class ApplicationTest extends TestCase
     public function testApplicationCanCheckIfBooted()
     {
         $this->expectNotToPerformAssertions();
-        $this->app->booted(function() {});
+        $this->app->booted(function () {
+        });
     }
 
     public function testApplicationCanCallBootedCallbacks()

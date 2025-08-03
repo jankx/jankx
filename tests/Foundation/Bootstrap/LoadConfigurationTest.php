@@ -97,7 +97,7 @@ class LoadConfigurationTest extends TestCase
         $this->config->expects($this->atLeastOnce())
             ->method('set')
             ->withConsecutive(
-                ['app', $this->callback(function($config) {
+                ['app', $this->callback(function ($config) {
                     // Should have child theme values (overridden)
                     return $config['name'] === 'Child Theme' &&
                            $config['version'] === '2.0.0' &&
@@ -125,12 +125,14 @@ class LoadConfigurationTest extends TestCase
 
         // Mock get_template_directory to return a valid path
         if (!function_exists('get_template_directory')) {
-            function get_template_directory() {
+            function get_template_directory()
+            {
                 return __DIR__ . '/../../../../'; // Points to theme root
             }
         }
         if (!function_exists('get_stylesheet_directory')) {
-            function get_stylesheet_directory() {
+            function get_stylesheet_directory()
+            {
                 return __DIR__ . '/../../../../'; // Points to theme root
             }
         }
@@ -228,7 +230,8 @@ class LoadConfigurationTest extends TestCase
     {
         // Mock WordPress function
         if (!function_exists('get_option')) {
-            function get_option($key, $default = false) {
+            function get_option($key, $default = false)
+            {
                 if ($key === 'jankx_config') {
                     return ['test_option' => 'test_value'];
                 }
@@ -247,7 +250,8 @@ class LoadConfigurationTest extends TestCase
     {
         // Mock WordPress function
         if (!function_exists('get_option')) {
-            function get_option($key, $default = false) {
+            function get_option($key, $default = false)
+            {
                 return $default;
             }
         }
@@ -307,7 +311,8 @@ class LoadConfigurationTest extends TestCase
 
         // Override wp_cache_get to return cached data
         if (!function_exists('wp_cache_get')) {
-            function wp_cache_get($key, $group = '') {
+            function wp_cache_get($key, $group = '')
+            {
                 global $wp_cache_mock;
                 if (strpos($key, 'file_configs_app_') === 0) {
                     return $wp_cache_mock;

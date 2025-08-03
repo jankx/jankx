@@ -20,9 +20,13 @@ class KernelTest extends TestCase
 
     public function testKernelCanBeInstantiated()
     {
-        $kernel = new class($this->app) extends Kernel {
-            public function handle($request) {}
-            public function registerHooks() {}
+        $kernel = new class ($this->app) extends Kernel {
+            public function handle($request)
+            {
+            }
+            public function registerHooks()
+            {
+            }
         };
 
         $this->assertInstanceOf(Kernel::class, $kernel);
@@ -30,11 +34,15 @@ class KernelTest extends TestCase
 
     public function testKernelCanBootstrap()
     {
-        $kernel = new class($this->app) extends Kernel {
+        $kernel = new class ($this->app) extends Kernel {
             public $bootstrapped = false;
 
-            public function handle($request) {}
-            public function registerHooks() {}
+            public function handle($request)
+            {
+            }
+            public function registerHooks()
+            {
+            }
 
             public function bootstrap()
             {
@@ -49,7 +57,7 @@ class KernelTest extends TestCase
 
     public function testKernelCanInitialize()
     {
-        $kernel = new class($this->app) extends Kernel {
+        $kernel = new class ($this->app) extends Kernel {
             public $handled = false;
             public $hooksRegistered = false;
 
@@ -72,13 +80,15 @@ class KernelTest extends TestCase
 
     public function testKernelCanGetApplication()
     {
-        $kernel = new class($this->app) extends Kernel {
-            public function handle($request) {}
-            public function registerHooks() {}
+        $kernel = new class ($this->app) extends Kernel {
+            public function handle($request)
+            {
+            }
+            public function registerHooks()
+            {
+            }
         };
 
         $this->assertSame($this->app, $kernel->getApplication());
     }
-
-
 }

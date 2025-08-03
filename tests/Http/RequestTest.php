@@ -19,7 +19,7 @@ class RequestTest extends TestCase
         $this->assertInstanceOf(Request::class, $this->request);
     }
 
-        public function testRequestCanGetRequestType()
+    public function testRequestCanGetRequestType()
     {
         // Test that getRequestType returns a string
         $requestType = $this->request->getRequestType();

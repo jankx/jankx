@@ -17,9 +17,13 @@ class ServiceProviderTest extends TestCase
 
     public function testServiceProviderCanBeInstantiated()
     {
-        $provider = new class($this->app) extends ServiceProvider {
-            public function register($app) {}
-            public function boot($app) {}
+        $provider = new class ($this->app) extends ServiceProvider {
+            public function register($app)
+            {
+            }
+            public function boot($app)
+            {
+            }
         };
 
         $this->assertInstanceOf(ServiceProvider::class, $provider);
@@ -27,9 +31,13 @@ class ServiceProviderTest extends TestCase
 
     public function testServiceProviderCanGetApplication()
     {
-        $provider = new class($this->app) extends ServiceProvider {
-            public function register($app) {}
-            public function boot($app) {}
+        $provider = new class ($this->app) extends ServiceProvider {
+            public function register($app)
+            {
+            }
+            public function boot($app)
+            {
+            }
         };
 
         $this->assertSame($this->app, $provider->getApplication());
@@ -37,7 +45,7 @@ class ServiceProviderTest extends TestCase
 
     public function testServiceProviderCanRegisterServices()
     {
-        $provider = new class($this->app) extends ServiceProvider {
+        $provider = new class ($this->app) extends ServiceProvider {
             public $registered = false;
 
             public function register($app)
@@ -45,7 +53,9 @@ class ServiceProviderTest extends TestCase
                 $this->registered = true;
             }
 
-            public function boot($app) {}
+            public function boot($app)
+            {
+            }
         };
 
         $provider->register($this->app);
@@ -54,10 +64,12 @@ class ServiceProviderTest extends TestCase
 
     public function testServiceProviderCanBootServices()
     {
-        $provider = new class($this->app) extends ServiceProvider {
+        $provider = new class ($this->app) extends ServiceProvider {
             public $booted = false;
 
-            public function register($app) {}
+            public function register($app)
+            {
+            }
 
             public function boot($app)
             {
@@ -71,7 +83,7 @@ class ServiceProviderTest extends TestCase
 
     public function testServiceProviderCanRegisterAndBoot()
     {
-        $provider = new class($this->app) extends ServiceProvider {
+        $provider = new class ($this->app) extends ServiceProvider {
             public $registered = false;
             public $booted = false;
 

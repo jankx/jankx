@@ -32,10 +32,12 @@ class BootProvidersTest extends TestCase
 
     public function testBootProvidersCanBootRegisteredProviders()
     {
-        $provider = new class($this->app) extends \Jankx\Support\Providers\ServiceProvider {
+        $provider = new class ($this->app) extends \Jankx\Support\Providers\ServiceProvider {
             public $booted = false;
 
-            public function register($app) {}
+            public function register($app)
+            {
+            }
 
             public function boot($app)
             {
@@ -53,10 +55,12 @@ class BootProvidersTest extends TestCase
 
     public function testBootProvidersCanBootMultipleProviders()
     {
-        $provider1 = new class($this->app) extends \Jankx\Support\Providers\ServiceProvider {
+        $provider1 = new class ($this->app) extends \Jankx\Support\Providers\ServiceProvider {
             public $booted = false;
 
-            public function register($app) {}
+            public function register($app)
+            {
+            }
 
             public function boot($app)
             {
@@ -64,10 +68,12 @@ class BootProvidersTest extends TestCase
             }
         };
 
-        $provider2 = new class($this->app) extends \Jankx\Support\Providers\ServiceProvider {
+        $provider2 = new class ($this->app) extends \Jankx\Support\Providers\ServiceProvider {
             public $booted = false;
 
-            public function register($app) {}
+            public function register($app)
+            {
+            }
 
             public function boot($app)
             {
@@ -96,8 +102,10 @@ class BootProvidersTest extends TestCase
 
     public function testBootProvidersCanHandleProviderExceptions()
     {
-        $provider = new class($this->app) extends \Jankx\Support\Providers\ServiceProvider {
-            public function register($app) {}
+        $provider = new class ($this->app) extends \Jankx\Support\Providers\ServiceProvider {
+            public function register($app)
+            {
+            }
 
             public function boot($app)
             {
