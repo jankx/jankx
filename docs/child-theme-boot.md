@@ -4,6 +4,29 @@
 
 Child Theme Boot là một tính năng mạnh mẽ trong Jankx Framework cho phép child themes có thể sử dụng composer dependencies và autoloading riêng của mình. Tính năng này được thực hiện thông qua Bootstrap `BootChildTheme` và tích hợp hoàn hảo với Jankx Framework architecture.
 
+## Triết lý phát triển
+
+### Nguyên tắc cốt lõi
+
+**"Tất cả tính năng đều load qua Service Provider"**
+
+Child Theme Boot tuân thủ triết lý phát triển cốt lõi của Jankx Framework:
+
+#### 1. **Service Provider Integration**
+- Child theme composer được đăng ký như một service trong Application Container
+- Tuân thủ Service Provider pattern cho tất cả tính năng
+- Dễ dàng extend và override services
+
+#### 2. **Bootstrap Integration**
+- Child Theme Boot được tích hợp vào bootstrap system
+- Chạy theo thứ tự logic: sau ThemeDataLoader, trước RegisterProviders
+- Đảm bảo lazy loading và dependency injection
+
+#### 3. **Modularity**
+- Child theme có thể có Service Providers riêng
+- Dễ dàng thêm/xóa tính năng cho child theme
+- Clear separation giữa parent và child theme services
+
 ## Kiến trúc
 
 ### Bootstrap System
@@ -186,10 +209,13 @@ $app->singleton('child_theme.composer', function () use ($packageInfo) {
 ### 1. Kiểm tra Child Theme Composer
 ```php
 // Kiểm tra xem child theme có composer không
-if (function_exists('bookix_child_has_composer') && bookix_child_has_composer()) {
-    // Child theme có composer dependencies
-    $composerInfo = bookix_child_get_composer_info();
-    echo 'Package: ' . $composerInfo['name'];
+if (class_exists('Jankx\Foundation\Bootstrap\BootChildTheme')) {
+    $hasComposer = \Jankx\Foundation\Bootstrap\BootChildTheme::hasChildThemeComposer();
+    if ($hasComposer) {
+        // Child theme có composer dependencies
+        $composerInfo = \Jankx\Foundation\Bootstrap\BootChildTheme::getChildThemeComposerInfo();
+        echo 'Package: ' . $composerInfo['name'];
+    }
 }
 ```
 
@@ -212,32 +238,22 @@ if (function_exists('child_theme_helper_function')) {
 
 ## Helper Functions
 
-### WordPress Helper Functions
+### Static Methods
 ```php
-/**
- * Kiểm tra xem child theme có composer dependencies không
- */
-function bookix_child_has_composer()
+// Kiểm tra child theme composer
+BootChildTheme::hasChildThemeComposer()
 
-/**
- * Lấy thông tin composer package
- */
-function bookix_child_get_composer_info()
+// Lấy thông tin composer
+BootChildTheme::getChildThemeComposerInfo()
 
-/**
- * Lấy đường dẫn đến vendor directory
- */
-function bookix_child_get_vendor_path()
+// Lấy vendor path
+BootChildTheme::getChildThemeVendorPath()
 
-/**
- * Lấy đường dẫn đến composer.json
- */
-function bookix_child_get_composer_json_path()
+// Lấy composer.json path
+BootChildTheme::getChildThemeComposerJsonPath()
 
-/**
- * Debug thông tin composer (development only)
- */
-function bookix_child_debug_composer()
+// Debug thông tin composer (development only)
+BootChildTheme::debugChildThemeComposer()
 ```
 
 ### Static Methods
@@ -340,8 +356,8 @@ if (!function_exists('child_theme_set_option')) {
 if (!function_exists('child_theme_get_version')) {
     function child_theme_get_version()
     {
-        if (function_exists('bookix_child_get_composer_info')) {
-            $composerInfo = bookix_child_get_composer_info();
+        if (class_exists('Jankx\Foundation\Bootstrap\BootChildTheme')) {
+            $composerInfo = \Jankx\Foundation\Bootstrap\BootChildTheme::getChildThemeComposerInfo();
             return $composerInfo['version'] ?? '1.0.0';
         }
         return '1.0.0';
@@ -358,7 +374,8 @@ if (!function_exists('child_theme_get_version')) {
 require_once get_template_directory() . '/includes/framework.php';
 
 // Initialize child theme
-if (bookix_child_has_composer()) {
+if (class_exists('Jankx\Foundation\Bootstrap\BootChildTheme') && 
+    \Jankx\Foundation\Bootstrap\BootChildTheme::hasChildThemeComposer()) {
     // Load theme service
     $themeService = new \YourChildTheme\Services\ThemeService('Child Theme Service');
 
@@ -484,8 +501,9 @@ http://your-site.com/wp-content/themes/your-child-theme/test-composer.php
 ```php
 // Thêm vào functions.php để test
 add_action('wp_footer', function() {
-    if (function_exists('bookix_child_has_composer')) {
-        echo '<!-- Child Theme Composer: ' . (bookix_child_has_composer() ? 'Loaded' : 'Not loaded') . ' -->';
+    if (class_exists('Jankx\Foundation\Bootstrap\BootChildTheme')) {
+        $hasComposer = \Jankx\Foundation\Bootstrap\BootChildTheme::hasChildThemeComposer();
+        echo '<!-- Child Theme Composer: ' . ($hasComposer ? 'Loaded' : 'Not loaded') . ' -->';
     }
 });
 ```
@@ -569,7 +587,8 @@ src/
 
 ### 3. Error Handling
 ```php
-if (bookix_child_has_composer()) {
+if (class_exists('Jankx\Foundation\Bootstrap\BootChildTheme') && 
+    \Jankx\Foundation\Bootstrap\BootChildTheme::hasChildThemeComposer()) {
     try {
         $service = new \YourChildTheme\Services\ExampleService();
         $result = $service->doSomething();
@@ -608,7 +627,7 @@ Child Theme Boot được tích hợp vào Jankx Framework bootstrap system:
 ### 2. Service Container
 ```php
 // Truy cập child theme composer info
-$app = jankx_app();
+$app = \Jankx\Facades\App::getFacadeRoot();
 $composerInfo = $app->make('child_theme.composer');
 ```
 

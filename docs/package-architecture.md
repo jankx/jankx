@@ -296,7 +296,7 @@ if (!defined('ABSPATH')) {
  *
  * @return \Jankx\Foundation\Application
  */
-function jankx_app()
+App::getFacadeRoot()
 {
     static $app = null;
 
@@ -316,7 +316,7 @@ function jankx_app()
 }
 
 // Initialize the application
-$app = jankx_app();
+$app = \Jankx\Facades\App::getFacadeRoot();
 
 // Return the application instance
 return $app;

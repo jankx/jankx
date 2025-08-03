@@ -1,5 +1,20 @@
 # Jankx Framework Documentation
 
+## Triết lý phát triển
+
+### Nguyên tắc cốt lõi
+
+**"Tất cả tính năng đều load qua Service Provider"**
+
+Đây là triết lý phát triển cốt lõi của Jankx Framework, đảm bảo tính nhất quán và modularity trong toàn bộ hệ thống:
+
+- **Modularity**: Mọi tính năng được đóng gói trong Service Provider riêng biệt
+- **Lazy Loading**: Services chỉ được load khi cần thiết
+- **Dependency Injection**: Tất cả dependencies được inject qua Application Container
+- **Testability**: Dễ dàng test và mock từng service
+- **Extensibility**: Dễ dàng thêm/xóa tính năng bằng cách đăng ký/hủy Service Provider
+- **Consistency**: Tất cả features follow cùng một pattern
+
 ## 📚 Tài liệu chính
 
 ### 🚀 Getting Started
@@ -15,8 +30,6 @@
 ### 🎨 Gutenberg Integration
 - [Gutenberg Block Development Flow](./gutenberg/gutenberg-block-development-flow.md)
 - [Gutenberg Simple Architecture](./gutenberg/gutenberg-simple-architecture.md)
-- [Jankx Query Loop Block](./gutenberg/jankx-query-loop-block.md)
-- [Jankx Query Loop Classes](./gutenberg/jankx-query-loop-classes.md)
 - [Register Custom Patterns](./gutenberg/register-custom-patterns.md)
 
 ### 🌟 Child Theme Boot
@@ -103,7 +116,8 @@ class ExampleService
 
 require_once get_template_directory() . '/includes/framework.php';
 
-if (bookix_child_has_composer()) {
+if (class_exists('Jankx\Foundation\Bootstrap\BootChildTheme') &&
+    \Jankx\Foundation\Bootstrap\BootChildTheme::hasChildThemeComposer()) {
     $service = new \MyChildTheme\Services\ExampleService();
     echo $service->test();
 }
@@ -202,11 +216,11 @@ composer require monolog/monolog
 - `Menu` - Menu management
 - `Sidebar` - Sidebar management
 
-### Helper Functions
-- `jankx_app()` - Get application instance
-- `jankx_config()` - Get configuration value
-- `bookix_child_has_composer()` - Check child theme composer
-- `bookix_child_get_composer_info()` - Get composer info
+### Static Methods
+- `App::getFacadeRoot()` - Get application instance
+- `Config::get()` - Get configuration value
+- `BootChildTheme::hasChildThemeComposer()` - Check child theme composer
+- `BootChildTheme::getChildThemeComposerInfo()` - Get composer info
 
 ### Bootstrap Classes
 - `LoadConfiguration` - Load framework configuration
@@ -224,14 +238,14 @@ composer require monolog/monolog
 
 ### Debug Commands
 ```bash
-# Check framework status
-wp jankx status
+# Check framework info
+wp jankx info
 
 # Clear cache
-wp jankx cache:clear
+wp jankx cache clear
 
-# Debug composer
-wp jankx debug:composer
+# Check cache status
+wp jankx cache status
 ```
 
 ## 🤝 Contributing

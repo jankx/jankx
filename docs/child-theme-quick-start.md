@@ -115,7 +115,8 @@ cat > functions.php << 'EOF'
 require_once get_template_directory() . '/includes/framework.php';
 
 // Initialize child theme
-if (function_exists('jankx_child_has_composer') && jankx_child_has_composer()) {
+if (class_exists('Jankx\Foundation\Bootstrap\BootChildTheme') &&
+    \Jankx\Foundation\Bootstrap\BootChildTheme::hasChildThemeComposer()) {
     // Load service
     $service = new \MyChildTheme\Services\ExampleService();
 
@@ -185,8 +186,8 @@ composer require monolog/monolog
 ```php
 // Thêm vào functions.php
 add_action('wp_footer', function() {
-    if (function_exists('jankx_child_get_composer_info')) {
-        $info = jankx_child_get_composer_info();
+    if (class_exists('Jankx\Foundation\Bootstrap\BootChildTheme')) {
+        $info = \Jankx\Foundation\Bootstrap\BootChildTheme::getChildThemeComposerInfo();
         echo '<!-- Package: ' . $info['name'] . ' -->';
     }
 });
@@ -248,7 +249,8 @@ class ThemeController
 ### 2. Sử dụng trong Functions.php
 ```php
 // functions.php
-if (jankx_child_has_composer()) {
+if (class_exists('Jankx\Foundation\Bootstrap\BootChildTheme') &&
+    \Jankx\Foundation\Bootstrap\BootChildTheme::hasChildThemeComposer()) {
     new \MyChildTheme\Controllers\ThemeController();
 }
 ```
@@ -286,7 +288,8 @@ namespace MyChildTheme\Models;
 
 ### 2. Error Handling
 ```php
-if (jankx_child_has_composer()) {
+if (class_exists('Jankx\Foundation\Bootstrap\BootChildTheme') &&
+    \Jankx\Foundation\Bootstrap\BootChildTheme::hasChildThemeComposer()) {
     try {
         $service = new \MyChildTheme\Services\ExampleService();
         $result = $service->test();
@@ -300,9 +303,10 @@ if (jankx_child_has_composer()) {
 ```php
 // Lazy loading
 add_action('init', function() {
-    if (jankx_child_has_composer()) {
-        // Load services only when needed
-    }
+    if (class_exists('Jankx\Foundation\Bootstrap\BootChildTheme') &&
+    \Jankx\Foundation\Bootstrap\BootChildTheme::hasChildThemeComposer()) {
+    // Load services only when needed
+}
 });
 ```
 
@@ -319,8 +323,8 @@ add_action('init', function() {
 ```php
 // Thêm vào functions.php để debug
 add_action('wp_footer', function() {
-    if (function_exists('jankx_child_debug_composer')) {
-        jankx_child_debug_composer();
+    if (class_exists('Jankx\Foundation\Bootstrap\BootChildTheme')) {
+        \Jankx\Foundation\Bootstrap\BootChildTheme::debugChildThemeComposer();
     }
 });
 ```

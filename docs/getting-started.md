@@ -1,5 +1,20 @@
 # Getting Started with Jankx Framework
 
+## Triết lý phát triển
+
+### Nguyên tắc cốt lõi
+
+**"Tất cả tính năng đều load qua Service Provider"**
+
+Jankx Framework được xây dựng dựa trên triết lý này để đảm bảo:
+
+- **Modularity**: Mọi tính năng được đóng gói trong Service Provider riêng biệt
+- **Lazy Loading**: Services chỉ được load khi cần thiết
+- **Dependency Injection**: Tất cả dependencies được inject qua Application Container
+- **Testability**: Dễ dàng test và mock từng service
+- **Extensibility**: Dễ dàng thêm/xóa tính năng bằng cách đăng ký/hủy Service Provider
+- **Consistency**: Tất cả features follow cùng một pattern
+
 ## Cài đặt
 
 ### 1. Yêu cầu hệ thống
@@ -203,7 +218,8 @@ Jankx\Foundation\Bootstrap\LoadConfiguration::clearConfigCacheByType('app');
 ```php
 // For testing environment
 define('JANKX_CONFIG_PATH', '/path/to/test/config');
-define('JANKX_CHILD_CONFIG_PATH', '/path/to/test/child/config');
+// Child theme config path is automatically detected
+// No need to define JANKX_CHILD_CONFIG_PATH
 ```
 
 ## System Services

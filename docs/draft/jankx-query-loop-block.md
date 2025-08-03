@@ -764,7 +764,7 @@ use Jankx\Http\Request;
 function jankx_query_loop_render($attributes, $content)
 {
     // Get Jankx application instance
-    $app = jankx_app();
+    $app = \Jankx\Facades\App::getFacadeRoot();
 
     // Extract attributes with defaults
     $queryType = $attributes['queryType'] ?? 'latest';

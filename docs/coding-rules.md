@@ -4,6 +4,34 @@
 
 Jankx Framework tuân thủ WordPress Coding Standards kết hợp với PSR-12 và **Zen of Python** để đảm bảo code dễ maintain, mở rộng và có tính thực tiễn cao.
 
+## Triết lý phát triển
+
+### Nguyên tắc cốt lõi
+
+**"Tất cả tính năng đều load qua Service Provider"**
+
+Đây là triết lý phát triển cốt lõi của Jankx Framework, ảnh hưởng đến tất cả quy tắc coding:
+
+#### 1. **Service Provider Pattern**
+- Mọi tính năng phải được đóng gói trong Service Provider
+- Providers được đăng ký trong `config/providers.php`
+- Mỗi provider có trách nhiệm rõ ràng và độc lập
+
+#### 2. **Dependency Injection**
+- Sử dụng Application Container cho dependency injection
+- Tránh global variables và static methods
+- Services được inject qua constructor hoặc method injection
+
+#### 3. **Lazy Loading**
+- Services chỉ được load khi cần thiết
+- Sử dụng lazy loading cho expensive operations
+- Bootstrap theo thứ tự logic và dependency
+
+#### 4. **Testability**
+- Mỗi service có thể được test độc lập
+- Dễ dàng mock dependencies
+- Clear separation of concerns
+
 ## 0. Zen of Python Principles
 
 Jankx Framework áp dụng Zen of Python vào PHP development:
@@ -350,7 +378,8 @@ define('JANKX_VERSION', '2.0.0');
 define('JANKX_DEBUG', true);
 define('THEME_TEXT_DOMAIN', 'jankx-theme');
 define('JANKX_CONFIG_PATH', '/path/to/config');
-define('JANKX_CHILD_CONFIG_PATH', '/path/to/child/config');
+// Child theme config path is automatically detected
+// No need to define JANKX_CHILD_CONFIG_PATH
 
 // ❌ Incorrect
 define('jankx_version', '2.0.0');
@@ -694,7 +723,7 @@ protected function loadConfig($filePath)
 ```php
 // ✅ Correct
 $configPath = getenv('JANKX_CONFIG_PATH') ?: get_template_directory() . '/config';
-$childConfigPath = getenv('JANKX_CHILD_CONFIG_PATH') ?: get_stylesheet_directory() . '/config';
+$childConfigPath = get_stylesheet_directory() . '/config';
 
 // ❌ Incorrect
 $configPath = get_template_directory() . '/config'; // No environment override

@@ -4,6 +4,44 @@
 
 Jankx Framework là một framework PHP hiện đại được thiết kế cho WordPress themes, cung cấp cấu trúc modular và các tính năng mạnh mẽ cho việc phát triển theme.
 
+## Triết lý phát triển
+
+### Nguyên tắc cốt lõi
+
+**"Tất cả tính năng đều load qua Service Provider"**
+
+Đây là triết lý phát triển cốt lõi của Jankx Framework, đảm bảo tính nhất quán và modularity trong toàn bộ hệ thống:
+
+#### 1. **Modularity**
+- Mọi tính năng được đóng gói trong Service Provider riêng biệt
+- Mỗi provider có trách nhiệm rõ ràng và độc lập
+- Dễ dàng thêm/xóa tính năng mà không ảnh hưởng đến các phần khác
+
+#### 2. **Lazy Loading**
+- Services chỉ được load khi cần thiết
+- Tối ưu performance và memory usage
+- Bootstrap theo thứ tự logic và dependency
+
+#### 3. **Dependency Injection**
+- Tất cả dependencies được inject qua Application Container
+- Loại bỏ tight coupling giữa các components
+- Dễ dàng test và mock services
+
+#### 4. **Testability**
+- Mỗi service có thể được test độc lập
+- Dễ dàng mock dependencies cho unit testing
+- Clear separation of concerns
+
+#### 5. **Extensibility**
+- Dễ dàng thêm/xóa tính năng bằng cách đăng ký/hủy Service Provider
+- Child themes có thể override hoặc extend providers
+- Plugin developers có thể hook vào framework
+
+#### 6. **Consistency**
+- Tất cả features follow cùng một pattern
+- Uniform API và coding standards
+- Predictable behavior và structure
+
 ## Core Components
 
 ### 1. Foundation Layer
