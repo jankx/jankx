@@ -76,22 +76,22 @@ class ErrorSuppressionServiceProvider extends ServiceProvider
     {
         // Get suppression config
         $config = $this->app->make('config');
-        $suppression_config = $config->get('error.suppression', []);
+        $suppressionConfig = $config->get('error.suppression', []);
 
         // Check if doing_it_wrong suppression is enabled
-        if (!isset($suppression_config['doing_it_wrong']['enabled']) || $suppression_config['doing_it_wrong']['enabled'] === false) {
+        if (!isset($suppressionConfig['doing_it_wrong']['enabled']) || $suppressionConfig['doing_it_wrong']['enabled'] === false) {
             return $trigger_error;
         }
 
         // Check specific function suppressions
-        $suppressed_functions = $suppression_config['doing_it_wrong']['functions'] ?? [];
-        if (in_array($function, $suppressed_functions)) {
+        $suppressedFunctions = $suppressionConfig['doing_it_wrong']['functions'] ?? [];
+        if (in_array($function, $suppressedFunctions)) {
             return false;
         }
 
         // Check message pattern suppressions
-        $suppressed_patterns = $suppression_config['doing_it_wrong']['patterns'] ?? [];
-        foreach ($suppressed_patterns as $pattern) {
+        $suppressedPatterns = $suppressionConfig['doing_it_wrong']['patterns'] ?? [];
+        foreach ($suppressedPatterns as $pattern) {
             if (strpos($message, $pattern) !== false) {
                 return false;
             }

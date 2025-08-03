@@ -59,7 +59,7 @@ class LayoutServiceProvider extends ServiceProvider
     protected function registerMenus()
     {
         add_action('init', function () {
-            $menu_config = \Jankx\Facades\Config::get('layout.menu', []);
+            $menuConfig = \Jankx\Facades\Config::get('layout.menu', []);
 
             $menus = [];
 
@@ -70,7 +70,7 @@ class LayoutServiceProvider extends ServiceProvider
             ]);
 
             // Secondary menu (optional)
-            if (!empty($menu_config['secondary'])) {
+            if (!empty($menuConfig['secondary'])) {
                 $menus['secondary'] = apply_filters('jankx/layout/menu/secondary', [
                     'name' => 'Secondary Menu',
                     'description' => 'Secondary navigation menu',
@@ -78,7 +78,7 @@ class LayoutServiceProvider extends ServiceProvider
             }
 
             // Footer menu (optional)
-            if (!empty($menu_config['footer'])) {
+            if (!empty($menuConfig['footer'])) {
                 $menus['footer'] = apply_filters('jankx/layout/menu/footer', [
                     'name' => 'Footer Menu',
                     'description' => 'Footer navigation menu',
@@ -97,7 +97,7 @@ class LayoutServiceProvider extends ServiceProvider
     protected function registerSidebars()
     {
         add_action('widgets_init', function () {
-            $sidebar_config = \Jankx\Facades\Config::get('layout.sidebar', []);
+            $sidebarConfig = \Jankx\Facades\Config::get('layout.sidebar', []);
 
             // Primary sidebar (always available)
             $primary_sidebar = apply_filters('jankx/layout/sidebar/primary', [
@@ -164,11 +164,11 @@ class LayoutServiceProvider extends ServiceProvider
         // Add layout body classes
         add_filter('body_class', [$this, 'addLayoutBodyClasses']);
 
-        // Add layout-specific scripts
-        add_action('wp_enqueue_scripts', [$this, 'enqueueLayoutScripts']);
+        // Add layout-specific scripts with priority 20
+        add_action('wp_enqueue_scripts', [$this, 'enqueueLayoutScripts'], 20);
 
-        // Add layout-specific styles
-        add_action('wp_enqueue_scripts', [$this, 'enqueueLayoutStyles']);
+        // Add layout-specific styles with priority 20
+        add_action('wp_enqueue_scripts', [$this, 'enqueueLayoutStyles'], 20);
     }
 
     /**
@@ -201,19 +201,13 @@ class LayoutServiceProvider extends ServiceProvider
      */
     public function enqueueLayoutScripts()
     {
-        $layout_config = \Jankx\Facades\Config::get('layout', []);
-
-        // Mobile menu script (if mobile menu is enabled)
-        $menu_config = $layout_config['menu'] ?? [];
-        if (!empty($menu_config['mobile'])) {
-            \wp_enqueue_script(
-                'layout-mobile-menu',
-                get_template_directory_uri() . '/assets/js/mobile-menu.js',
-                ['jquery'],
-                '1.0.0',
-                true
-            );
-        }
+        wp_enqueue_script(
+            'jankx-mobile-menu',
+            \Jankx\Facades\Url::js('mobile-menu.js'),
+            ['jquery'],
+            '1.0.0',
+            true
+        );
     }
 
     /**
@@ -221,19 +215,17 @@ class LayoutServiceProvider extends ServiceProvider
      */
     public function enqueueLayoutStyles()
     {
-        // Layout styles
         wp_enqueue_style(
-            'layout-styles',
-            get_template_directory_uri() . '/assets/css/layout.css',
+            'jankx-layout',
+            \Jankx\Facades\Url::css('layout.css'),
             [],
             '1.0.0'
         );
 
-        // Responsive layout styles
         wp_enqueue_style(
-            'layout-responsive',
-            get_template_directory_uri() . '/assets/css/responsive.css',
-            ['layout-styles'],
+            'jankx-responsive',
+            \Jankx\Facades\Url::css('responsive.css'),
+            ['jankx-layout'],
             '1.0.0'
         );
     }

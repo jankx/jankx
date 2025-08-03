@@ -51,8 +51,7 @@ class WidgetRendererBlock extends Block
             ]
         ]);
 
-        // Auto-register the block
-        add_action('init', [$this, 'register']);
+        // Block will be registered by GutenbergServiceProvider
     }
 
     /**
@@ -109,7 +108,7 @@ class WidgetRendererBlock extends Block
         ob_start();
         ?>
         <div class="widget-renderer-block <?php echo esc_attr($className); ?>">
-            <?php if ($showTitle && !empty($title)): ?>
+            <?php if ($showTitle && !empty($title)) : ?>
                 <h3 class="widget-title"><?php echo esc_html($title); ?></h3>
             <?php endif; ?>
 
@@ -235,7 +234,7 @@ class WidgetRendererBlock extends Block
         register_rest_route('jankx/v1', '/widgets/available', [
             'methods' => 'GET',
             'callback' => [$this, 'getAvailableWidgets'],
-            'permission_callback' => function() {
+            'permission_callback' => function () {
                 return current_user_can('edit_posts');
             }
         ]);
@@ -244,7 +243,7 @@ class WidgetRendererBlock extends Block
         register_rest_route('jankx/v1', '/widgets/preview', [
             'methods' => 'POST',
             'callback' => [$this, 'getWidgetPreview'],
-            'permission_callback' => function() {
+            'permission_callback' => function () {
                 return current_user_can('edit_posts');
             }
         ]);
@@ -321,7 +320,7 @@ class WidgetRendererBlock extends Block
         ob_start();
         ?>
         <div class="widget-renderer-block">
-            <?php if ($showTitle && !empty($title)): ?>
+            <?php if ($showTitle && !empty($title)) : ?>
                 <h3 class="widget-title"><?php echo esc_html($title); ?></h3>
             <?php endif; ?>
 
