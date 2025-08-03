@@ -176,23 +176,6 @@ class LayoutServiceProvider extends ServiceProvider
      */
     public function addLayoutBodyClasses($classes)
     {
-        $layout_config = \Jankx\Facades\Config::get('layout', []);
-
-        // Add sidebar layout class
-        $sidebar_config = $layout_config['sidebar'] ?? [];
-
-        if (!empty($sidebar_config['primary'])) {
-            $classes[] = 'has-primary-sidebar';
-        }
-
-        if (!empty($sidebar_config['secondary'])) {
-            $classes[] = 'has-secondary-sidebar';
-        }
-
-        if (empty($sidebar_config['primary']) && empty($sidebar_config['secondary'])) {
-            $classes[] = 'no-sidebar';
-        }
-
         return $classes;
     }
 
@@ -201,13 +184,7 @@ class LayoutServiceProvider extends ServiceProvider
      */
     public function enqueueLayoutScripts()
     {
-        wp_enqueue_script(
-            'jankx-mobile-menu',
-            \Jankx\Facades\Url::js('mobile-menu.js'),
-            ['jquery'],
-            '1.0.0',
-            true
-        );
+
     }
 
     /**
@@ -215,18 +192,5 @@ class LayoutServiceProvider extends ServiceProvider
      */
     public function enqueueLayoutStyles()
     {
-        wp_enqueue_style(
-            'jankx-layout',
-            \Jankx\Facades\Url::css('layout.css'),
-            [],
-            '1.0.0'
-        );
-
-        wp_enqueue_style(
-            'jankx-responsive',
-            \Jankx\Facades\Url::css('responsive.css'),
-            ['jankx-layout'],
-            '1.0.0'
-        );
     }
 }
