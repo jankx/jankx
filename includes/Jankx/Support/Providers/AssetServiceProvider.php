@@ -35,8 +35,11 @@ class AssetServiceProvider extends ServiceProvider
      */
     public function register(Application $app)
     {
-        $app->singleton('asset', function (Application $app) {
-            return new AssetService($app);
+        $this->app->singleton('asset', function ($app) {
+            return new \Jankx\Services\AssetService($app);
+        });
+        $this->app->singleton(\Jankx\Services\AssetService::class, function ($app) {
+            return $app->make('asset');
         });
 
         // Register Asset facade

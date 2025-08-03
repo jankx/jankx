@@ -87,35 +87,13 @@ class AssetService
 
 
     /**
-     * Convert path to URL
+     * Get asset URL (alias for templateUrl)
      *
-     * @param string $path
+     * @param string $path Asset path
      * @return string
      */
-    public function urlFromPath($path)
+    public function url($path = '')
     {
-        return site_url($path);
-    }
-
-    /**
-     * Get parent theme URL with path
-     *
-     * @param string $path
-     * @return string
-     */
-    public function templateUrl($path = '')
-    {
-        return get_template_directory_uri() . '/' . ltrim($path, '/');
-    }
-
-    /**
-     * Get child theme URL with path
-     *
-     * @param string $path
-     * @return string
-     */
-    public function themeUrl($path = '')
-    {
-        return get_stylesheet_directory_uri() . '/' . ltrim($path, '/');
+        return $this->app->make(\Jankx\Managers\UrlManager::class)->asset($path);
     }
 }
