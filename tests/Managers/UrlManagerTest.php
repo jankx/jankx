@@ -116,4 +116,4 @@ class UrlManagerTest extends TestCase
         $imageUrl = $this->urlManager->image('/logo.png');
         $this->assertEquals('http://example.com/wp-content/themes/bookix/assets/images/logo.png', $imageUrl);
     }
-} 
+}
