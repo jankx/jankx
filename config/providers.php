@@ -17,6 +17,7 @@ return [
             Jankx\Support\Providers\AssetServiceProvider::class,
             Jankx\Support\Providers\PerformanceServiceProvider::class,
             Jankx\Support\Providers\GutenbergServiceProvider::class,
+            \Jankx\Support\Providers\Layout\SlideoutMenuServiceProvider::class,
         ],
 
         // Admin providers
@@ -30,7 +31,7 @@ return [
         ],
 
         // REST API providers
-        'rest_api' => [
+        'rest' => [
             Jankx\Support\Providers\ThemeServiceProvider::class,
         ],
 
@@ -52,12 +53,11 @@ return [
     'console' => [
         // WP CLI providers
         'wp_cli' => [
-            Jankx\Support\Providers\WordPressCliServiceProvider::class,
+            \Jankx\Support\Providers\WordPressCliServiceProvider::class,
         ],
 
         // WP Cron providers
         'wp_cron' => [
-            // Jankx\Providers\WpCronServiceProvider::class,
         ],
     ],
 ];
