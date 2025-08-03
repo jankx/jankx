@@ -109,17 +109,8 @@ class ConfigCommand extends WP_CLI_Command
             'webpack.mix.js'
         ];
 
-        $parentBuildPath = get_template_directory() . '/resources';
-        $childBuildPath = get_stylesheet_directory() . '/resources';
-
-        // Create child resources directory if it doesn't exist
-        if (!is_dir($childBuildPath)) {
-            if (!mkdir($childBuildPath, 0755, true)) {
-                WP_CLI::error('Failed to create child resources directory: ' . $childBuildPath);
-                return;
-            }
-            WP_CLI::log('Created child resources directory: ' . $childBuildPath);
-        }
+        $parentBuildPath = get_template_directory();
+        $childBuildPath = get_stylesheet_directory();
 
         foreach ($buildFiles as $buildFile) {
             $parentFile = $parentBuildPath . '/' . $buildFile;
@@ -331,7 +322,7 @@ class ConfigCommand extends WP_CLI_Command
         WP_CLI::log('  1. Review the cloned config files in your child theme');
         WP_CLI::log('  2. Review the cloned build files (package.json, webpack.mix.js)');
         WP_CLI::log('  3. Modify the config files as needed for your child theme');
-        WP_CLI::log('  4. Install npm dependencies: cd wp-content/themes/your-child-theme/resources && npm install');
+        WP_CLI::log('  4. Install npm dependencies: cd wp-content/themes/your-child-theme && npm install');
         WP_CLI::log('  5. Test your child theme configuration');
         WP_CLI::log('  6. Clear cache if needed: wp jankx cache clear');
         WP_CLI::log('');
