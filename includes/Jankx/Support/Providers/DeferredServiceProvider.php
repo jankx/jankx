@@ -29,7 +29,7 @@ class DeferredServiceProvider extends ServiceProvider
 
         // Register deferred services
         $deferredServiceProvider = &$this;
-        add_action('after_setup_theme', function() use($deferredServiceProvider, $app) {
+        add_action('after_setup_theme', function () use ($deferredServiceProvider, $app) {
             $deferredServiceProvider->registerDeferredServices($app);
         });
     }
@@ -80,7 +80,7 @@ class DeferredServiceProvider extends ServiceProvider
 
         // Đăng ký service với callback phức tạp
         $deferredManager->register('advanced_example', function () use ($app) {
-            return new class($app) extends ExampleService {
+            return new class ($app) extends ExampleService {
                 protected $name = 'advanced_example';
 
                 protected function boot(): void

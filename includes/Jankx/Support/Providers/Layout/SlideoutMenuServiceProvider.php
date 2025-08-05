@@ -43,6 +43,5 @@ class SlideoutMenuServiceProvider extends ServiceProvider
      */
     public function boot(Application $app)
     {
-
     }
 }

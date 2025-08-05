@@ -2,5 +2,6 @@
 
 namespace Jankx\Layout\Menu;
 
-class SlideoutMenu {
+class SlideoutMenu
+{
 }
