@@ -13,4 +13,7 @@ return [
         'cache' => ['\Jankx\Services\CacheService'],
         'url' => ['\Jankx\Managers\UrlManager'],
     ],
+    'options' => [
+        'framework' => 'jankx', // auto, jankx, kirki, redux, wordpress
+    ],
 ];
