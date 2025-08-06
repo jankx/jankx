@@ -136,79 +136,156 @@ class JankxMenuItemsService
      */
     protected function setupHooks()
     {
-        // Add control section to nav-menus.php
-        add_action('admin_footer-nav-menus.php', [$this, 'addControlSection']);
+        // Add meta box to nav-menus
+        add_action('admin_head-nav-menus.php', [$this, 'addMetaBox']);
 
-        // Add custom menu item types
+        // Setup Jankx menu items
+        add_filter('wp_setup_nav_menu_item', [$this, 'setupJankxItems']);
+
+        // Add custom fields
         add_action('wp_nav_menu_item_custom_fields', [$this, 'addCustomFields'], 10, 4);
 
-        // Save custom menu item data
+        // Save custom fields
         add_action('wp_update_nav_menu_item', [$this, 'saveCustomFields'], 10, 3);
 
         // Render custom menu items
         add_filter('wp_nav_menu_item_title', [$this, 'renderCustomMenuItem'], 10, 4);
-
-        // Add custom CSS and JS
-        add_action('admin_enqueue_scripts', [$this, 'enqueueAdminAssets']);
     }
 
     /**
-     * Add control section to nav-menus.php
+     * Add meta box to nav-menus
      *
      * @return void
      */
-    public function addControlSection()
+    public function addMetaBox()
+    {
+        add_meta_box(
+            'jankx-framework-menu-items',
+            $this->config['section_title'],
+            [$this, 'renderMetaBox'],
+            'nav-menus',
+            'side'
+        );
+    }
+
+    /**
+     * Render meta box content
+     *
+     * @return void
+     */
+    public function renderMetaBox()
     {
         ?>
-        <div id="jankx-framework-menu-items" class="control-section accordion-section">
-            <h3 class="accordion-section-title" tabindex="0">
-                <?php echo esc_html($this->config['section_title']); ?>
-                <span class="screen-reader-text"><?php _e('Press return or enter to expand.'); ?></span>
-            </h3>
-            <div class="accordion-section-content">
-                <div class="customlinkdiv" id="customlinkdiv">
-                    <input type="hidden" value="custom" name="menu-item[-1][menu-item-type]" />
-                    <p id="menu-item-url-wrap" class="wp-clearfix">
-                        <label class="howto" for="custom-menu-item-url">
-                            <?php _e('URL'); ?>
-                        </label>
-                        <input id="custom-menu-item-url" name="menu-item[-1][menu-item-url]" type="text" class="code menu-item-textbox" value="http://" />
-                    </p>
-                    <p id="menu-item-name-wrap" class="wp-clearfix">
-                        <label class="howto" for="custom-menu-item-name">
-                            <?php _e('Link Text'); ?>
-                        </label>
-                        <input id="custom-menu-item-name" name="menu-item[-1][menu-item-title]" type="text" class="regular-text menu-item-textbox" />
-                    </p>
-                    <p class="button-controls">
-                        <span class="add-to-menu">
-                            <input type="submit" class="button-secondary submit-add-to-menu right" value="<?php esc_attr_e('Add to Menu'); ?>" name="add-custom-menu-item" id="submit-customlinkdiv" />
-                            <span class="spinner"></span>
-                        </span>
-                    </p>
-                </div>
-
-                <!-- Jankx Framework Menu Items -->
-                <div class="jankx-menu-items">
-                    <h4><?php _e('Jankx Framework Items'); ?></h4>
-                    <div class="jankx-menu-items-list">
-                        <?php foreach ($this->menuItemTypes as $type => $item) : ?>
-                            <div class="jankx-menu-item" data-type="<?php echo esc_attr($type); ?>">
-                                <span class="jankx-menu-item-icon"><?php echo $item['icon']; ?></span>
-                                <div class="jankx-menu-item-content">
-                                    <h5><?php echo esc_html($item['title']); ?></h5>
-                                    <p><?php echo esc_html($item['description']); ?></p>
-                                </div>
-                                <button type="button" class="button jankx-add-menu-item" data-type="<?php echo esc_attr($type); ?>">
-                                    <?php _e('Add to Menu'); ?>
-                                </button>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
+        <div id="posttype-jankx-menu-items" class="posttypediv">
+            <div id="tabs-panel-jankx-menu-items" class="tabs-panel tabs-panel-active">
+                <ul id="jankx-menu-items-checklist" class="categorychecklist form-no-clear">
+                    <?php
+                    $i = -1;
+                    foreach ($this->menuItemTypes as $type => $item) :
+                        $menuItem = $this->createMenuItem($type, $item);
+                        ?>
+                        <li>
+                            <label class="menu-item-title">
+                                <input
+                                    type="checkbox"
+                                    class="menu-item-checkbox"
+                                    name="menu-item[<?php echo esc_attr($i); ?>][menu-item-object-id]"
+                                    value="<?php echo esc_attr($i); ?>"
+                                />
+                                <?php echo esc_html($item['title']); ?>
+                            </label>
+                            <?php $this->renderMenuItemHiddenInputs($i, $menuItem); ?>
+                        </li>
+                        <?php
+                        $i--;
+                    endforeach;
+                    ?>
+                </ul>
             </div>
+            <p class="button-controls">
+                <span class="add-to-menu">
+                    <button
+                        type="submit"
+                        class="button-secondary submit-add-to-menu right"
+                        value="<?php esc_attr_e('Add to menu', 'jankx'); ?>"
+                        name="add-post-type-menu-item"
+                        id="submit-posttype-jankx-menu-items"
+                    >
+                        <?php esc_html_e('Add to menu', 'jankx'); ?>
+                    </button>
+                    <span class="spinner"></span>
+                </span>
+            </p>
         </div>
         <?php
+    }
+
+    /**
+     * Create menu item data
+     *
+     * @param string $type
+     * @param array $item
+     * @return array
+     */
+    protected function createMenuItem($type, $item)
+    {
+        $menuItem = [
+            'type' => $type,
+            'title' => $item['title'],
+            'url' => "#jankx-{$type}",
+            'classes' => null
+        ];
+
+        return apply_filters("jankx_menu_item_{$type}", $menuItem, $type);
+    }
+
+    /**
+     * Render hidden inputs for menu item
+     *
+     * @param int $index
+     * @param array $item
+     * @return void
+     */
+    protected function renderMenuItemHiddenInputs($index, $item)
+    {
+        foreach ($item as $type => $value) : ?>
+            <?php if (is_null($value)) : ?>
+                <input type="hidden"
+                    class="menu-item-<?php echo $type; ?>"
+                    name="menu-item[<?php echo esc_attr($index); ?>][menu-item-<?php echo $type; ?>]"
+                />
+            <?php else : ?>
+                <input
+                    type="hidden"
+                    class="menu-item-<?php echo $type; ?>"
+                    name="menu-item[<?php echo esc_attr($index); ?>][menu-item-<?php echo $type; ?>]"
+                    value="<?php echo esc_attr($value); ?>"
+                />
+            <?php endif; ?>
+            <?php
+        endforeach;
+    }
+
+    /**
+     * Setup Jankx menu items
+     *
+     * @param object $menuItem
+     * @return object
+     */
+    public function setupJankxItems($menuItem)
+    {
+        if (isset($this->menuItemTypes[$menuItem->type])) {
+            $title = $this->menuItemTypes[$menuItem->type]['title'];
+
+            // Ensure title is string
+            if (is_array($title)) {
+                $title = $title[0];
+            }
+
+            $menuItem->type_label = sprintf('Jankx %s', $title);
+        }
+
+        return $menuItem;
     }
 
     /**
@@ -290,7 +367,14 @@ class JankxMenuItemsService
         $menu_item = $this->menuItemTypes[$item_type];
 
         if (method_exists($this, $menu_item['callback'])) {
-            return call_user_func($menu_item['callback'], $item, $args, $depth);
+            $result = call_user_func($menu_item['callback'], $item, $args, $depth);
+
+            // Ensure we return a string
+            if (is_array($result)) {
+                return implode('', $result);
+            }
+
+            return (string) $result;
         }
 
         return $title;
@@ -374,38 +458,6 @@ class JankxMenuItemsService
             esc_attr($class),
             $icon
         );
-    }
-
-    /**
-     * Enqueue admin assets
-     *
-     * @return void
-     */
-    public function enqueueAdminAssets()
-    {
-        $screen = get_current_screen();
-
-        if ($screen && $screen->id === 'nav-menus') {
-            wp_enqueue_style(
-                'jankx-menu-items-admin',
-                get_template_directory_uri() . '/assets/css/jankx-menu-items-admin.css',
-                [],
-                '2.0.0'
-            );
-
-            wp_enqueue_script(
-                'jankx-menu-items-admin',
-                get_template_directory_uri() . '/assets/js/jankx-menu-items-admin.js',
-                ['jquery'],
-                '2.0.0',
-                true
-            );
-
-            wp_localize_script('jankx-menu-items-admin', 'jankxMenuItems', [
-                'ajaxUrl' => admin_url('admin-ajax.php'),
-                'nonce' => wp_create_nonce('jankx-menu-items-nonce'),
-            ]);
-        }
     }
 
     /**
