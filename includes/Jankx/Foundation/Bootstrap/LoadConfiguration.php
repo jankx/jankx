@@ -25,9 +25,6 @@ class LoadConfiguration
         // Load configuration from theme files
         $this->loadThemeConfiguration($app, $config);
 
-        // Load configuration from database
-        $this->loadDatabaseConfiguration($config);
-
         if (Environment::isDebugLog()) {
             error_log('[JANKX DEBUG] Configuration loaded successfully');
         }
@@ -200,30 +197,5 @@ class LoadConfiguration
         }
 
         return array_keys($array) !== range(0, count($array) - 1);
-    }
-
-        /**
-     * Load configuration from database.
-     *
-     * @param  \Jankx\Config\Repository  $config
-     * @return void
-     */
-    protected function loadDatabaseConfiguration(Repository $config)
-    {
-        if (Environment::isDebugLog()) {
-            error_log('[JANKX DEBUG] Loading database configuration...');
-        }
-
-        // Load WordPress options that are relevant to Jankx
-        $jankxOptions = get_option('jankx_config', []);
-
-        if (!empty($jankxOptions)) {
-            if (Environment::isDebugLog()) {
-                error_log(sprintf('[JANKX DEBUG] Loaded %d database options', count($jankxOptions)));
-            }
-            $config->set('database', $jankxOptions);
-        } elseif (Environment::isDebugLog()) {
-            error_log('[JANKX DEBUG] No database configuration found');
-        }
     }
 }
