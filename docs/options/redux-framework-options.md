@@ -1,786 +1,572 @@
 # Redux Framework Options
 
-Tài liệu hướng dẫn sử dụng Redux Framework cho Theme Options trong Jankx Framework.
+Hướng dẫn sử dụng Redux Framework với Jankx Theme Options System.
 
-## 🏗️ Redux Framework Overview
+## Tổng quan
 
-### **1. Redux Framework Advantages**
+Redux Framework là một trong những option frameworks được hỗ trợ bởi Jankx Theme Options System. Nó cung cấp giao diện admin hiện đại với nhiều tính năng nâng cao.
+
+## Kiến trúc
 
 ```mermaid
 graph TD
-    A[Redux Framework] --> B[Advanced Field Types]
-    A --> C[Beautiful UI]
-    A --> D[Customizer Integration]
-    A --> E[Large Community]
+    A[Jankx Theme] --> B[Option Adapter]
+    B --> C[Redux Adapter]
+    C --> D[Redux Transformer]
+    D --> E[Redux Framework]
 
-    B --> F[Typography]
-    B --> G[Color Picker]
-    B --> H[Image Select]
-    B --> I[Repeater Fields]
+    F[Configuration Files] --> G[OptionsReader]
+    G --> H[ConfigRepository]
+    H --> C
 
-    C --> J[Real-time Preview]
-    C --> K[Professional Interface]
-    C --> L[Responsive Design]
-
-    D --> M[WordPress Customizer]
-    D --> N[Live Preview]
-    D --> O[Theme Customization]
-
-    E --> P[Extensive Documentation]
-    E --> Q[Regular Updates]
-    E --> R[Professional Support]
+    E --> I[WordPress Admin]
+    E --> J[Real-time Preview]
+    E --> K[Import/Export]
 ```
 
-### **2. Redux Framework Detection**
+## Configuration
 
-```mermaid
-flowchart TD
-    A[Framework Detection] --> B[Check Redux Class]
-    B -->|Exists| C[Select Redux Framework]
-    B -->|Not Exists| D[Check Other Frameworks]
+### 1. Enable Redux Framework
 
-    C --> E[Load Redux Adapter]
-    E --> F[Register Admin Menu]
-    F --> G[Create Sections]
-    G --> H[Redux UI Ready]
-
-    D --> I[Check Jankx Dashboard]
-    I -->|Exists| J[Select Jankx Framework]
-    I -->|Not Exists| K[Check Kirki]
-    K -->|Exists| L[Select Kirki Framework]
-    K -->|Not Exists| M[Use WordPress API]
-```
-
-### **3. Redux Configuration Flow**
-
-```mermaid
-sequenceDiagram
-    participant T as Theme
-    participant F as Framework
-    participant R as Redux Adapter
-    participant DB as WordPress DB
-
-    T->>F: setFrameworkFromExternal('redux')
-    F->>R: Load Redux Adapter
-    R->>R: prepare()
-    R->>R: setArgs()
-    R->>DB: Register Redux Options
-    R->>R: register_admin_menu()
-    R->>R: createSections()
-    R->>T: Redux Framework Ready
-```
-
-## 🚀 Redux Framework Features
-
-### **1. Advanced Field Types**
-
-| Field Type | Description | WordPress Native | Redux Support |
-|------------|-------------|------------------|---------------|
-| `text` | Text input | ✅ | ✅ |
-| `textarea` | Multi-line text | ✅ | ✅ |
-| `image_select` | Image select | ❌ | ✅ |
-| `color` | Color picker | ❌ | ✅ |
-| `typography` | Typography settings | ❌ | ✅ |
-| `slider` | Range slider | ❌ | ✅ |
-| `switch` | Toggle switch | ❌ | ✅ |
-| `select` | Dropdown select | ❌ | ✅ |
-| `radio` | Radio buttons | ❌ | ✅ |
-| `checkbox` | Checkbox | ❌ | ✅ |
-| `icon` | Icon picker | ❌ | ✅ |
-| `media` | Media upload | ❌ | ✅ |
-| `gallery` | Gallery upload | ❌ | ✅ |
-| `repeater` | Repeater fields | ❌ | ✅ |
-| `sorter` | Sortable fields | ❌ | ✅ |
-
-### **2. Redux-Specific Features**
-
-#### **A. Developer Mode**
 ```php
-// Enable developer mode trong development
-'dev_mode' => defined('WP_DEBUG') && WP_DEBUG,
+// Trong config/app.php
+'options' => [
+    'framework' => 'redux',
+    'display_name' => 'Theme Options',
+    'menu_title' => 'Theme Options',
+    'page_slug' => 'theme-options',
+    'dev_mode' => true,
+    'import_export' => true,
+],
 ```
 
-#### **B. Customizer Integration**
+### 2. Redux Arguments
+
 ```php
-// Enable WordPress Customizer integration
-'customizer' => true,
-```
-
-#### **C. Import/Export**
-```php
-// Enable import/export functionality
-'import_export' => true,
-```
-
-#### **D. Real-time Preview**
-```php
-// Enable real-time preview
-'live_preview' => true,
-```
-
-## 📁 Configuration Structure
-
-### **1. Redux Configuration**
-
-#### **A. config/app.php**
-```php
-return [
-    'options' => [
-        'framework' => 'redux', // Force Redux framework
-        'directory' => 'includes/options',
-        'menu_title' => __('Theme Options', 'jankx'),
-        'display_name' => __('Bookix Options', 'jankx'),
-        'menu_position' => 60,
-        'menu_icon' => 'dashicons-admin-customizer',
-        'dev_mode' => defined('WP_DEBUG') && WP_DEBUG,
-        'customizer' => true,
-        'import_export' => true,
-    ],
+// Redux arguments được tự động set bởi adapter
+$args = [
+    'opt_name' => 'bookix',
+    'display_name' => 'Bookix Theme Options',
+    'menu_title' => 'Theme Options',
+    'customizer' => false,
+    'display_version' => '1.0.0.0',
+    'page_priority' => 60,
+    'dev_mode' => true,
+    'page_parent' => 'themes.php',
+    'page_permissions' => 'manage_options',
+    'save_defaults' => true,
+    'default_show' => false,
+    'default_mark' => '',
+    'show_import_export' => true,
+    'transient_time' => 3600,
+    'output' => true,
+    'output_tag' => true,
+    'database' => '',
+    'use_cdn' => true,
+    'menu_type' => 'submenu',
+    'allow_sub_menu' => true,
+    'page_slug' => 'bookix',
 ];
 ```
 
-#### **B. config/providers.php**
+## Icon Transformation
+
+Redux Framework sử dụng Elusive Icons thay vì WordPress Dashicons:
+
+### Icon Mapping
+
 ```php
-return [
-    'http' => [
-        'admin' => [
-            // TranslationServiceProvider must come first
-            Jankx\Support\Providers\TranslationServiceProvider::class,
-
-            // ThemeOptionsServiceProvider comes after
-            \App\Providers\ThemeOptionsServiceProvider::class,
-
-            // Other providers
-            \App\Providers\BookAuthorServiceProvider::class,
-        ],
-    ],
-];
+// dashicons → elusiveicons
+'dashicons-admin-generic' => 'el el-cog'
+'dashicons-editor-textcolor' => 'el el-font'
+'dashicons-art' => 'el el-picture'
+'dashicons-layout' => 'el el-th-large'
+'dashicons-align-wide' => 'el el-align-left'
+'dashicons-align-full-width' => 'el el-align-justify'
+'dashicons-admin-post' => 'el el-file'
+'dashicons-admin-tools' => 'el el-wrench'
+'dashicons-admin-settings' => 'el el-cog'
+'dashicons-admin-appearance' => 'el el-picture'
+'dashicons-admin-plugins' => 'el el-puzzle-piece'
+'dashicons-admin-users' => 'el el-user'
+'dashicons-admin-comments' => 'el el-comment'
+'dashicons-admin-media' => 'el el-picture'
+'dashicons-admin-links' => 'el el-link'
+'dashicons-admin-page' => 'el el-file-alt'
 ```
 
-### **2. Service Provider Implementation**
+### Transformation Process
 
-#### **A. ThemeOptionsServiceProvider với Redux**
-```php
-<?php
+1. **Original Icon**: `dashicons-admin-generic`
+2. **Adapter Transform**: `ReduxFramework::transformIcon()`
+3. **Final Icon**: `el el-cog`
 
-namespace App\Providers;
+## Field Types Mapping
 
-use Jankx\Foundation\Application;
-use Jankx\Support\Providers\ServiceProvider;
-use Jankx\Adapter\Options\Framework;
-use Jankx\Adapter\Options\OptionsReader;
+### Basic Fields
 
-class ThemeOptionsServiceProvider extends ServiceProvider
-{
-    public function register(Application $app)
-    {
-        // Register option-adapter services
-        $this->registerOptionAdapter($app);
-    }
+| Jankx Type | Redux Type | Description |
+|------------|------------|-------------|
+| `text` | `text` | Text input |
+| `textarea` | `textarea` | Multi-line text |
+| `image` | `media` | Media upload |
+| `icon` | `icon` | Icon picker |
+| `color` | `color` | Color picker |
+| `select` | `select` | Dropdown select |
+| `radio` | `radio` | Radio buttons |
+| `checkbox` | `checkbox` | Checkbox |
+| `switch` | `switch` | Toggle switch |
 
-    public function boot(Application $app)
-    {
-        // Boot theme options after textdomain is loaded
-        add_action('after_setup_theme', [$this, 'bootThemeOptions'], 20);
-    }
+### Advanced Fields
 
-    protected function registerOptionAdapter(Application $app)
-    {
-        // Register Framework singleton
-        $app->singleton(Framework::class, function ($app) {
-            return Framework::getInstance();
-        });
+| Jankx Type | Redux Type | Description |
+|------------|------------|-------------|
+| `slider` | `slider` | Range slider |
+| `typography` | `typography` | Typography settings |
+| `background` | `background` | Background settings |
+| `spacing` | `spacing` | Spacing controls |
+| `image_select` | `image_select` | Image select |
+| `gallery` | `gallery` | Gallery upload |
+| `repeater` | `repeater` | Repeater field |
+| `sorter` | `sorter` | Sortable list |
 
-        // Register OptionsReader singleton
-        $app->singleton(OptionsReader::class, function ($app) {
-            return OptionsReader::getInstance();
-        });
-    }
+## Data Structure Transformation
 
-    public function bootThemeOptions()
-    {
-        // Ensure textdomain is loaded first
-        $this->ensureTextdomainLoaded();
+### 1. Jankx Structure (3-level)
 
-        // Load theme options with Redux
-        $this->loadThemeOptions();
-    }
-
-    protected function ensureTextdomainLoaded()
-    {
-        if (!is_textdomain_loaded('jankx')) {
-            load_theme_textdomain('jankx', get_template_directory() . '/languages');
-        }
-    }
-
-    protected function loadThemeOptions()
-    {
-        // 1. Set framework mode to Redux
-        $framework = Framework::getInstance();
-        $framework->setFrameworkFromExternal('redux');
-
-        // 2. Load framework
-        $framework->loadFramework();
-
-        // 3. Register admin menu with Redux
-        $activeFramework = $framework->getActiveFramework();
-        $activeFramework->register_admin_menu(
-            __('Theme Options', 'jankx'),
-            __('Bookix Options', 'jankx')
-        );
-
-        // 4. Create sections with Redux
-        $optionsReader = OptionsReader::getInstance();
-        $activeFramework->createSections($optionsReader);
-    }
-}
+```
+Pages
+├── General Settings
+│   ├── Site Information
+│   │   ├── site_title (text)
+│   │   ├── site_description (textarea)
+│   │   └── site_logo (image)
+│   └── Social Media
+│       ├── facebook_url (text)
+│       ├── twitter_url (text)
+│       └── instagram_url (text)
+└── Typography
+    ├── Body Typography
+    │   └── body_typography (typography)
+    └── Headings Typography
+        ├── h1_typography (typography)
+        ├── h2_typography (typography)
+        └── h3_typography (typography)
 ```
 
-## 🎨 Field Configuration Examples
+### 2. Redux Structure (2-level)
 
-### **1. Basic Fields**
+```
+Sections
+├── General Settings
+│   ├── site_title (text)
+│   ├── site_description (textarea)
+│   ├── site_logo (media)
+│   ├── facebook_url (text)
+│   ├── twitter_url (text)
+│   └── instagram_url (text)
+└── Typography
+    ├── body_typography (typography)
+    ├── h1_typography (typography)
+    ├── h2_typography (typography)
+    └── h3_typography (typography)
+```
 
-#### **A. Text Field**
+## Field Configuration Examples
+
+### 1. Text Field
+
 ```php
+// Jankx configuration
+'site_title' => [
+    'type' => 'text',
+    'title' => 'Site Title',
+    'subtitle' => 'Main site title',
+    'description' => 'Enter your site title',
+    'default' => 'Bookix - Book Store',
+],
+
+// Redux transformation
 [
     'id' => 'site_title',
-    'name' => __('Site Title', 'jankx'),
     'type' => 'text',
-    'wordpress_native' => true,
-    'option_name' => 'blogname',
-    'default_value' => get_option('blogname'),
-    'subtitle' => __('Enter your site title', 'jankx'),
-    'desc' => __('This will be displayed in browser tab', 'jankx'),
+    'title' => 'Site Title',
+    'subtitle' => 'Main site title',
+    'desc' => 'Enter your site title',
+    'default' => 'Bookix - Book Store',
 ]
 ```
 
-#### **B. Textarea Field**
-```php
-[
-    'id' => 'site_description',
-    'name' => __('Site Description', 'jankx'),
-    'type' => 'textarea',
-    'wordpress_native' => true,
-    'option_name' => 'blogdescription',
-    'default_value' => get_option('blogdescription'),
-    'subtitle' => __('Enter your site description', 'jankx'),
-    'desc' => __('This will be used for SEO', 'jankx'),
-]
-```
+### 2. Select Field
 
-### **2. Media Fields**
-
-#### **A. Media Upload**
 ```php
-[
-    'id' => 'site_logo',
-    'name' => __('Site Logo', 'jankx'),
-    'type' => 'media',
-    'default_value' => '',
-    'subtitle' => __('Upload your site logo', 'jankx'),
-    'desc' => __('Recommended size: 200x60px', 'jankx'),
+// Jankx configuration
+'header_style' => [
+    'type' => 'select',
+    'title' => 'Header Style',
+    'subtitle' => 'Header layout style',
+    'description' => 'Choose header layout style',
+    'default' => 'style1',
     'options' => [
-        'preview_size' => 'medium',
+        'style1' => 'Style 1 - Classic',
+        'style2' => 'Style 2 - Modern',
+        'style3' => 'Style 3 - Minimal',
+        'style4' => 'Style 4 - Creative',
     ],
-]
-```
+],
 
-#### **B. Gallery Upload**
-```php
+// Redux transformation
 [
-    'id' => 'home_slider',
-    'name' => __('Home Slider Images', 'jankx'),
-    'type' => 'gallery',
-    'default_value' => '',
-    'subtitle' => __('Upload slider images', 'jankx'),
-    'desc' => __('Select images for home page slider', 'jankx'),
-]
-```
-
-### **3. Color Fields**
-
-#### **A. Color Picker**
-```php
-[
-    'id' => 'primary_color',
-    'name' => __('Primary Color', 'jankx'),
-    'type' => 'color',
-    'default_value' => '#007cba',
-    'subtitle' => __('Choose primary color', 'jankx'),
-    'desc' => __('This will be used for buttons and links', 'jankx'),
-]
-```
-
-#### **B. Color Palette**
-```php
-[
-    'id' => 'color_palette',
-    'name' => __('Color Palette', 'jankx'),
-    'type' => 'color',
-    'default_value' => [
-        'primary' => '#007cba',
-        'secondary' => '#6c757d',
-        'success' => '#28a745',
-        'danger' => '#dc3545',
-        'warning' => '#ffc107',
-        'info' => '#17a2b8',
-    ],
-    'subtitle' => __('Configure color palette', 'jankx'),
-    'desc' => __('Set colors for different elements', 'jankx'),
-]
-```
-
-### **4. Typography Fields**
-
-#### **A. Typography Settings**
-```php
-[
-    'id' => 'body_typography',
-    'name' => __('Body Typography', 'jankx'),
-    'type' => 'typography',
-    'default_value' => [
-        'font-family' => 'Arial, sans-serif',
-        'font-size' => '16px',
-        'font-weight' => '400',
-        'line-height' => '1.6',
-        'color' => '#333333',
-    ],
-    'subtitle' => __('Configure body text typography', 'jankx'),
-    'desc' => __('Set font family, size, weight, and line height', 'jankx'),
-]
-```
-
-#### **B. Heading Typography**
-```php
-[
-    'id' => 'heading_typography',
-    'name' => __('Heading Typography', 'jankx'),
-    'type' => 'typography',
-    'default_value' => [
-        'font-family' => 'Georgia, serif',
-        'font-size' => '24px',
-        'font-weight' => '700',
-        'line-height' => '1.2',
-        'color' => '#000000',
-    ],
-    'subtitle' => __('Configure heading typography', 'jankx'),
-    'desc' => __('Set typography for all headings', 'jankx'),
-]
-```
-
-### **5. Layout Fields**
-
-#### **A. Image Select**
-```php
-[
-    'id' => 'header_layout',
-    'name' => __('Header Layout', 'jankx'),
-    'type' => 'image_select',
+    'id' => 'header_style',
+    'type' => 'select',
+    'title' => 'Header Style',
+    'subtitle' => 'Header layout style',
+    'desc' => 'Choose header layout style',
+    'default' => 'style1',
     'options' => [
-        'layout-1' => [
-            'alt' => 'Layout 1',
-            'img' => get_template_directory_uri() . '/assets/images/layout-1.png',
-        ],
-        'layout-2' => [
-            'alt' => 'Layout 2',
-            'img' => get_template_directory_uri() . '/assets/images/layout-2.png',
-        ],
-        'layout-3' => [
-            'alt' => 'Layout 3',
-            'img' => get_template_directory_uri() . '/assets/images/layout-3.png',
-        ],
+        'style1' => 'Style 1 - Classic',
+        'style2' => 'Style 2 - Modern',
+        'style3' => 'Style 3 - Minimal',
+        'style4' => 'Style 4 - Creative',
     ],
-    'default_value' => 'layout-1',
-    'subtitle' => __('Choose header layout', 'jankx'),
-    'desc' => __('Select the layout for your header', 'jankx'),
 ]
 ```
 
-#### **B. Slider Field**
+### 3. Slider Field
+
 ```php
+// Jankx configuration
+'container_width' => [
+    'type' => 'slider',
+    'title' => 'Container Width',
+    'subtitle' => 'Container width in pixels',
+    'description' => 'Set the maximum width of the main container',
+    'default' => 1200,
+    'min' => 800,
+    'max' => 1400,
+    'step' => 10,
+],
+
+// Redux transformation
 [
     'id' => 'container_width',
-    'name' => __('Container Width', 'jankx'),
     'type' => 'slider',
-    'default_value' => 1200,
+    'title' => 'Container Width',
+    'subtitle' => 'Container width in pixels',
+    'desc' => 'Set the maximum width of the main container',
+    'default' => 1200,
     'min' => 800,
-    'max' => 1600,
-    'step' => 50,
-    'subtitle' => __('Set container width', 'jankx'),
-    'desc' => __('Adjust the maximum width of your content', 'jankx'),
+    'max' => 1400,
+    'step' => 10,
 ]
 ```
 
-### **6. Advanced Fields**
+### 4. Typography Field
 
-#### **A. Repeater Fields**
 ```php
+// Jankx configuration
+'body_typography' => [
+    'type' => 'typography',
+    'title' => 'Body Typography',
+    'subtitle' => 'Body text typography',
+    'description' => 'Configure typography for body text',
+    'default' => [
+        'font-family' => 'Open Sans, sans-serif',
+        'font-size' => '16px',
+        'font-weight' => '400',
+        'font-style' => 'normal',
+        'line-height' => '1.6',
+        'letter-spacing' => '0px',
+        'text-align' => 'left',
+        'text-transform' => 'none',
+        'color' => '#333333',
+    ],
+],
+
+// Redux transformation
 [
-    'id' => 'social_links',
-    'name' => __('Social Links', 'jankx'),
-    'type' => 'repeater',
-    'subtitle' => __('Add social media links', 'jankx'),
-    'desc' => __('Configure your social media profiles', 'jankx'),
-    'fields' => [
-        [
-            'id' => 'social_icon',
-            'name' => __('Icon', 'jankx'),
-            'type' => 'icon',
-            'default_value' => 'fab fa-facebook',
-        ],
-        [
-            'id' => 'social_url',
-            'name' => __('URL', 'jankx'),
-            'type' => 'text',
-            'default_value' => '',
-        ],
-        [
-            'id' => 'social_title',
-            'name' => __('Title', 'jankx'),
-            'type' => 'text',
-            'default_value' => '',
-        ],
+    'id' => 'body_typography',
+    'type' => 'typography',
+    'title' => 'Body Typography',
+    'subtitle' => 'Body text typography',
+    'desc' => 'Configure typography for body text',
+    'default' => [
+        'font-family' => 'Open Sans, sans-serif',
+        'font-size' => '16px',
+        'font-weight' => '400',
+        'font-style' => 'normal',
+        'line-height' => '1.6',
+        'letter-spacing' => '0px',
+        'text-align' => 'left',
+        'text-transform' => 'none',
+        'color' => '#333333',
     ],
 ]
 ```
 
-#### **B. Sorter Fields**
+## Advanced Features
+
+### 1. WordPress Native Fields
+
 ```php
+// Jankx configuration
+'blogname' => [
+    'type' => 'text',
+    'title' => 'Site Title',
+    'subtitle' => 'WordPress site title',
+    'description' => 'This field is connected to WordPress option',
+    'wordpress_native' => true,
+    'option_name' => 'blogname',
+],
+
+// Redux transformation
 [
-    'id' => 'home_sections',
-    'name' => __('Home Page Sections', 'jankx'),
-    'type' => 'sorter',
-    'subtitle' => __('Arrange home page sections', 'jankx'),
-    'desc' => __('Drag and drop to reorder sections', 'jankx'),
-    'options' => [
-        'enabled' => [
-            'hero' => __('Hero Section', 'jankx'),
-            'features' => __('Features Section', 'jankx'),
-            'about' => __('About Section', 'jankx'),
-            'services' => __('Services Section', 'jankx'),
-            'testimonials' => __('Testimonials Section', 'jankx'),
-            'contact' => __('Contact Section', 'jankx'),
-        ],
-        'disabled' => [
-            'newsletter' => __('Newsletter Section', 'jankx'),
-            'gallery' => __('Gallery Section', 'jankx'),
-        ],
-    ],
+    'id' => 'blogname',
+    'type' => 'text',
+    'title' => 'Site Title',
+    'subtitle' => 'WordPress site title',
+    'desc' => 'This field is connected to WordPress option',
+    'wordpress_native' => true,
+    'option_name' => 'blogname',
 ]
 ```
 
-#### **C. Switch Fields**
+### 2. Conditional Fields
+
 ```php
-[
-    'id' => 'enable_sticky_header',
-    'name' => __('Enable Sticky Header', 'jankx'),
+// Jankx configuration
+'enable_custom_logo' => [
     'type' => 'switch',
-    'default_value' => true,
-    'subtitle' => __('Make header sticky on scroll', 'jankx'),
-    'desc' => __('Header will stay at top when scrolling', 'jankx'),
+    'title' => 'Enable Custom Logo',
+    'default' => true,
+],
+
+'custom_logo' => [
+    'type' => 'image',
+    'title' => 'Custom Logo',
+    'required' => ['enable_custom_logo', '=', true],
+],
+
+// Redux transformation
+[
+    'id' => 'enable_custom_logo',
+    'type' => 'switch',
+    'title' => 'Enable Custom Logo',
+    'default' => true,
 ],
 [
-    'id' => 'enable_back_to_top',
-    'name' => __('Enable Back to Top', 'jankx'),
-    'type' => 'switch',
-    'default_value' => true,
-    'subtitle' => __('Show back to top button', 'jankx'),
-    'desc' => __('Display back to top button on scroll', 'jankx'),
+    'id' => 'custom_logo',
+    'type' => 'media',
+    'title' => 'Custom Logo',
+    'required' => ['enable_custom_logo', '=', true],
 ]
 ```
 
-## 🔧 Redux Configuration Files
+### 3. Repeater Fields
 
-### **1. pages.php**
 ```php
-<?php
-if (!defined('ABSPATH')) {
-    exit('Cheating huh?');
-}
-
-return [
-    [
-        'id' => 'general',
-        'name' => __('General Settings', 'jankx'),
-        'args' => [
-            'description' => __('General theme settings', 'jankx'),
-        ],
-    ],
-    [
-        'id' => 'header',
-        'name' => __('Header Settings', 'jankx'),
-        'args' => [
-            'description' => __('Header customization options', 'jankx'),
-        ],
-    ],
-    [
-        'id' => 'colors',
-        'name' => __('Color Settings', 'jankx'),
-        'args' => [
-            'description' => __('Theme color customization', 'jankx'),
-        ],
-    ],
-    [
-        'id' => 'typography',
-        'name' => __('Typography Settings', 'jankx'),
-        'args' => [
-            'description' => __('Font and text settings', 'jankx'),
-        ],
-    ],
-    [
-        'id' => 'layout',
-        'name' => __('Layout Settings', 'jankx'),
-        'args' => [
-            'description' => __('Page layout options', 'jankx'),
-        ],
-    ],
-    [
-        'id' => 'social',
-        'name' => __('Social Settings', 'jankx'),
-        'args' => [
-            'description' => __('Social media configuration', 'jankx'),
-        ],
-    ],
-];
-```
-
-### **2. general/site_info.php**
-```php
-<?php
-if (!defined('ABSPATH')) {
-    exit('Cheating huh?');
-}
-
-return [
-    'id' => 'site_info',
-    'name' => __('Site Information', 'jankx'),
-    'description' => __('Basic site information settings', 'jankx'),
+// Jankx configuration
+'social_links' => [
+    'type' => 'repeater',
+    'title' => 'Social Links',
+    'subtitle' => 'Add social media links',
     'fields' => [
-        [
-            'id' => 'site_title',
-            'name' => __('Site Title', 'jankx'),
+        'platform' => [
+            'type' => 'select',
+            'title' => 'Platform',
+            'options' => [
+                'facebook' => 'Facebook',
+                'twitter' => 'Twitter',
+                'instagram' => 'Instagram',
+            ],
+        ],
+        'url' => [
             'type' => 'text',
-            'wordpress_native' => true,
-            'option_name' => 'blogname',
-            'default_value' => get_option('blogname'),
-            'subtitle' => __('Enter your site title', 'jankx'),
-            'desc' => __('This will be displayed in browser tab', 'jankx'),
-        ],
-        [
-            'id' => 'site_description',
-            'name' => __('Site Description', 'jankx'),
-            'type' => 'textarea',
-            'wordpress_native' => true,
-            'option_name' => 'blogdescription',
-            'default_value' => get_option('blogdescription'),
-            'subtitle' => __('Enter your site description', 'jankx'),
-            'desc' => __('This will be used for SEO', 'jankx'),
-        ],
-        [
-            'id' => 'site_logo',
-            'name' => __('Site Logo', 'jankx'),
-            'type' => 'media',
-            'default_value' => '',
-            'subtitle' => __('Upload your site logo', 'jankx'),
-            'desc' => __('Recommended size: 200x60px', 'jankx'),
-        ],
-        [
-            'id' => 'site_favicon',
-            'name' => __('Site Favicon', 'jankx'),
-            'type' => 'media',
-            'default_value' => '',
-            'subtitle' => __('Upload your site favicon', 'jankx'),
-            'desc' => __('Recommended size: 32x32px', 'jankx'),
+            'title' => 'URL',
         ],
     ],
-];
-```
+],
 
-### **3. colors/primary_colors.php**
-```php
-<?php
-if (!defined('ABSPATH')) {
-    exit('Cheating huh?');
-}
-
-return [
-    'id' => 'primary_colors',
-    'name' => __('Primary Colors', 'jankx'),
-    'description' => __('Configure primary color scheme', 'jankx'),
+// Redux transformation
+[
+    'id' => 'social_links',
+    'type' => 'repeater',
+    'title' => 'Social Links',
+    'subtitle' => 'Add social media links',
     'fields' => [
         [
-            'id' => 'primary_color',
-            'name' => __('Primary Color', 'jankx'),
-            'type' => 'color',
-            'default_value' => '#007cba',
-            'subtitle' => __('Choose primary color', 'jankx'),
-            'desc' => __('This will be used for buttons and links', 'jankx'),
+            'id' => 'platform',
+            'type' => 'select',
+            'title' => 'Platform',
+            'options' => [
+                'facebook' => 'Facebook',
+                'twitter' => 'Twitter',
+                'instagram' => 'Instagram',
+            ],
         ],
         [
-            'id' => 'primary_hover',
-            'name' => __('Primary Hover Color', 'jankx'),
-            'type' => 'color',
-            'default_value' => '#005a87',
-            'subtitle' => __('Choose primary hover color', 'jankx'),
-            'desc' => __('This will be used for button hover states', 'jankx'),
-        ],
-        [
-            'id' => 'secondary_color',
-            'name' => __('Secondary Color', 'jankx'),
-            'type' => 'color',
-            'default_value' => '#6c757d',
-            'subtitle' => __('Choose secondary color', 'jankx'),
-            'desc' => __('This will be used for secondary elements', 'jankx'),
-        ],
-        [
-            'id' => 'accent_color',
-            'name' => __('Accent Color', 'jankx'),
-            'type' => 'color',
-            'default_value' => '#28a745',
-            'subtitle' => __('Choose accent color', 'jankx'),
-            'desc' => __('This will be used for highlights and accents', 'jankx'),
+            'id' => 'url',
+            'type' => 'text',
+            'title' => 'URL',
         ],
     ],
+]
+```
+
+## Performance Optimization
+
+### 1. Lazy Loading
+
+```php
+// Redux arguments optimization
+$args = [
+    'output' => false, // Disable CSS output if not needed
+    'output_tag' => false, // Disable output tag
+    'use_cdn' => false, // Disable CDN for better performance
+    'transient_time' => 0, // Disable transient caching
 ];
 ```
 
-### **4. typography/body_typography.php**
+### 2. Conditional Loading
+
 ```php
-<?php
-if (!defined('ABSPATH')) {
-    exit('Cheating huh?');
-}
-
-return [
-    'id' => 'body_typography',
-    'name' => __('Body Typography', 'jankx'),
-    'description' => __('Configure body text typography', 'jankx'),
-    'fields' => [
-        [
-            'id' => 'body_font',
-            'name' => __('Body Font', 'jankx'),
-            'type' => 'typography',
-            'default_value' => [
-                'font-family' => 'Arial, sans-serif',
-                'font-size' => '16px',
-                'font-weight' => '400',
-                'line-height' => '1.6',
-                'color' => '#333333',
-            ],
-            'subtitle' => __('Configure body text typography', 'jankx'),
-            'desc' => __('Set font family, size, weight, and line height', 'jankx'),
-        ],
-        [
-            'id' => 'heading_font',
-            'name' => __('Heading Font', 'jankx'),
-            'type' => 'typography',
-            'default_value' => [
-                'font-family' => 'Georgia, serif',
-                'font-size' => '24px',
-                'font-weight' => '700',
-                'line-height' => '1.2',
-                'color' => '#000000',
-            ],
-            'subtitle' => __('Configure heading typography', 'jankx'),
-            'desc' => __('Set typography for all headings', 'jankx'),
-        ],
-    ],
-];
-```
-
-## 🚀 Redux Benefits
-
-### **1. Advanced UI Features**
-- ✅ **Beautiful Interface**: Professional admin interface
-- ✅ **Real-time Preview**: Live preview of changes
-- ✅ **Responsive Design**: Works on all devices
-- ✅ **Customizer Integration**: WordPress Customizer support
-
-### **2. Developer Experience**
-- ✅ **Extensive Documentation**: Comprehensive guides
-- ✅ **Large Community**: Active support community
-- ✅ **Regular Updates**: Frequent feature updates
-- ✅ **Professional Support**: Paid support available
-
-### **3. Performance Features**
-- ✅ **Optimized Loading**: Efficient data handling
-- ✅ **Caching Mechanisms**: Built-in caching
-- ✅ **Lazy Loading**: Load only what's needed
-- ✅ **Memory Management**: Efficient memory usage
-
-### **4. Advanced Field Types**
-- ✅ **Typography Fields**: Complete font control
-- ✅ **Color Pickers**: Advanced color selection
-- ✅ **Media Fields**: Image and file management
-- ✅ **Repeater Fields**: Dynamic content sections
-- ✅ **Sorter Fields**: Drag and drop ordering
-
-## 🔍 Debugging Redux
-
-### **1. Check Redux Installation**
-```php
-if (class_exists('Redux')) {
-    echo "Redux Framework is installed\n";
-} else {
-    echo "Redux Framework is not installed\n";
+// Only load Redux on options page
+if (isset($_GET['page']) && $_GET['page'] === 'theme-options') {
+    // Load Redux assets
 }
 ```
 
-### **2. Check Redux Options**
+### 3. Asset Optimization
+
 ```php
-$redux_options = get_option('your_theme_options');
-if ($redux_options) {
-    echo "Redux options found\n";
-    print_r($redux_options);
-} else {
-    echo "No Redux options found\n";
+// Minified assets in production
+if (!WP_DEBUG) {
+    $args['use_cdn'] = true;
+    $args['output'] = false;
 }
 ```
 
-### **3. Debug Redux Framework**
+## Error Handling
+
+### 1. Framework Detection
+
 ```php
-$framework = \Jankx\Adapter\Options\Framework::getInstance();
-$currentMode = $framework->getCurrentMode();
-$activeFramework = $framework->getActiveFramework();
-
-echo "Current mode: " . $currentMode . "\n";
-echo "Active framework: " . get_class($activeFramework) . "\n";
-
-if ($currentMode === 'redux') {
-    echo "Redux framework is active\n";
-} else {
-    echo "Redux framework is not active\n";
+// Check if Redux is available
+if (!class_exists('Redux')) {
+    // Fallback to another framework
+    $framework->setFrameworkFromExternal('wordpress');
 }
 ```
 
-## 🎯 Best Practices
+### 2. Field Validation
 
-### **1. Redux Configuration**
-- ✅ Use Redux field types for better UX
-- ✅ Enable developer mode in development
-- ✅ Use proper field validation
-- ✅ Implement proper error handling
+```php
+// Validate field configuration
+if (!isset($field['id']) || !isset($field['type'])) {
+    error_log('Invalid field configuration: ' . json_encode($field));
+    continue;
+}
+```
 
-### **2. Performance**
-- ✅ Use lazy loading for large option sets
-- ✅ Implement proper caching
-- ✅ Optimize field rendering
-- ✅ Use efficient data structures
+### 3. Icon Transformation
 
-### **3. User Experience**
-- ✅ Provide clear field descriptions
-- ✅ Use appropriate field types
-- ✅ Implement real-time preview
-- ✅ Add helpful tooltips
+```php
+// Safe icon transformation
+$icon = $adapter->transformIcon($originalIcon);
+if (empty($icon)) {
+    $icon = 'el el-cog'; // Fallback icon
+}
+```
 
-### **4. Development**
-- ✅ Use version control for options
-- ✅ Implement backup/restore functionality
-- ✅ Add import/export features
-- ✅ Document custom fields
+## Debugging
 
----
+### 1. Enable Debug Mode
 
-**Version**: 1.0.0
-**Author**: Puleeno Nguyen
-**License**: MIT
+```php
+// In config/app.php
+'options' => [
+    'framework' => 'redux',
+    'dev_mode' => true, // Enable debug mode
+],
+```
+
+### 2. Check Transformation Logs
+
+```php
+// Debug logs will show transformation process
+[JANKX DEBUG] ReduxTransformer: Original icon from page: "dashicons-admin-generic"
+[JANKX DEBUG] ReduxFramework: Mapping icon "dashicons-admin-generic" to "el el-cog"
+[JANKX DEBUG] ReduxTransformer: Icon transformed by adapter: "el el-cog"
+```
+
+### 3. Verify Field Count
+
+```php
+// Check if all fields are transformed
+[JANKX DEBUG] ReduxTransformer: Final section "General Settings" has 12 fields
+[JANKX DEBUG] ReduxTransformer: Transformation completed with 8 sections
+```
+
+## Best Practices
+
+### 1. Field Organization
+
+- Group related fields in sections
+- Use descriptive field IDs
+- Provide clear descriptions and subtitles
+- Set appropriate default values
+
+### 2. Icon Selection
+
+- Use semantic dashicons
+- Ensure icon transformation works correctly
+- Test icon display in Redux interface
+
+### 3. Performance
+
+- Minimize field count per section
+- Use appropriate field types
+- Optimize Redux arguments for production
+
+### 4. User Experience
+
+- Provide clear field descriptions
+- Use logical field ordering
+- Include helpful subtitles
+- Set sensible default values
+
+## Troubleshooting
+
+### 1. Icons Not Displaying
+
+**Problem**: Icons show as `dashicons` instead of `elusiveicons`
+
+**Solution**: Check icon transformation in `ReduxFramework::transformIcon()`
+
+### 2. Fields Not Appearing
+
+**Problem**: Sections are empty in Redux interface
+
+**Solution**: Verify field transformation in `ReduxTransformer::transformField()`
+
+### 3. Menu Not Showing
+
+**Problem**: Theme options menu doesn't appear
+
+**Solution**: Check Redux initialization and admin menu registration
+
+### 4. Performance Issues
+
+**Problem**: Slow loading or high memory usage
+
+**Solution**: Optimize Redux arguments and disable unnecessary features
+
+## Related Documentation
+
+- [Theme Options Overview](../readme.md)
+- [Option Adapter Documentation](../../../vendor/jankx/option-adapter/README.md)
+- [Redux Framework Documentation](https://reduxframework.com/)
+
+## License
+
+MIT License - Xem file LICENSE để biết thêm chi tiết.

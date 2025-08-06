@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Jankx\Facades\Config;
+use Jankx\Facades\Log;
 use Jankx\Foundation\Application;
 use Jankx\Adapter\Options\Framework as OptionFramework;
 
@@ -88,17 +89,17 @@ class ThemeOptionsService
             $this->adapter = OptionFramework::getActiveFramework();
 
             // Debug
-            error_log('Theme Options: Framework mode - ' . OptionFramework::getCurrentMode());
-            error_log('Theme Options: Adapter loaded - ' . ($this->adapter ? get_class($this->adapter) : 'No adapter'));
+            Log::debug('Theme Options: Framework mode - ' . OptionFramework::getCurrentMode());
+            Log::debug('Theme Options: Adapter loaded - ' . ($this->adapter ? get_class($this->adapter) : 'No adapter'));
 
             // Thiết lập options data cho adapter
             if ($this->adapter) {
                 $this->setupOptionsForAdapter();
             } else {
-                error_log('Theme Options: No adapter available');
+                Log::error('Theme Options: No adapter available');
             }
         } catch (\Exception $e) {
-            error_log('Theme Options: Error initializing adapter - ' . $e->getMessage());
+            Log::error('Theme Options: Error initializing adapter - ' . $e->getMessage());
         }
     }
 
@@ -111,13 +112,13 @@ class ThemeOptionsService
     {
         try {
             $pagesFile = $this->optionsPath . '/pages.php';
-            error_log('Theme Options: Loading from path - ' . $this->optionsPath);
+
 
             if (file_exists($pagesFile)) {
                 $this->optionsData['pages'] = include $pagesFile;
-                error_log('Theme Options: Pages loaded - ' . count($this->optionsData['pages']));
+
             } else {
-                error_log('Theme Options: Pages file not found - ' . $pagesFile);
+
             }
 
             // Load sections cho từng page
@@ -135,14 +136,14 @@ class ThemeOptionsService
                             $this->optionsData['sections'][$pageId][$sectionName] = include $file;
                         }
 
-                        error_log('Theme Options: Sections loaded for ' . $pageId . ' - ' . count($this->optionsData['sections'][$pageId]));
+
                     } else {
-                        error_log('Theme Options: Page directory not found - ' . $pageDir);
+
                     }
                 }
             }
         } catch (\Exception $e) {
-            error_log('Theme Options: Error loading options data - ' . $e->getMessage());
+
         }
     }
 

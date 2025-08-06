@@ -1,644 +1,316 @@
-# Theme Options Documentation
+# Jankx Theme Options System
 
-Tài liệu hướng dẫn sử dụng Theme Options trong Jankx Framework với option-adapter.
+Hệ thống theme options framework-agnostic cho Jankx framework, hỗ trợ nhiều option frameworks khác nhau.
 
-## 🏗️ Architecture Overview
+## Tổng quan
 
-### **1. Service Provider Integration**
+Jankx Theme Options System cung cấp một interface thống nhất để làm việc với các option frameworks khác nhau mà không cần hardcode framework-specific logic vào theme.
 
-```mermaid
-graph TD
-    A[ThemeOptionsServiceProvider] --> B[register]
-    A --> C[boot]
-
-    B --> D[Register Framework]
-    B --> E[Register OptionsReader]
-    B --> F[Register Helper]
-
-    C --> G[Load Framework]
-    C --> H[Register Admin Menu]
-    C --> I[Create Sections]
-
-    G --> J[JankxOptionFramework]
-    G --> K[ReduxFramework]
-    G --> L[KirkiFramework]
-    G --> M[WordPressSettingAPI]
-```
-
-### **2. Loading Order**
-
-```mermaid
-sequenceDiagram
-    participant WP as WordPress
-    participant TSP as TranslationServiceProvider
-    participant TOPS as ThemeOptionsServiceProvider
-    participant OA as Option Adapter
-    participant DB as WordPress DB
-
-    WP->>TSP: after_setup_theme (priority: 10)
-    TSP->>TSP: loadTextDomain()
-    TSP->>DB: load_theme_textdomain()
-
-    WP->>TOPS: after_setup_theme (priority: 20)
-    TOPS->>TOPS: ensureTextdomainLoaded()
-    TOPS->>OA: loadFramework()
-    TOPS->>OA: register_admin_menu()
-    TOPS->>OA: createSections()
-```
-
-### **3. Configuration Structure**
+## Kiến trúc
 
 ```mermaid
 graph TD
-    A[Theme Options] --> B[Service Provider]
-    B --> C[Framework Detection]
-    C --> D[Adapter Selection]
-    D --> E[UI Framework]
+    A[Jankx Theme] --> B[Theme Options System]
+    B --> C[Option Adapter]
+    C --> D[Framework Detection]
+    D --> E[Adapter Selection]
 
-    F[Configuration Files] --> G[OptionsReader]
-    G --> H[ConfigRepository]
-    H --> I[Framework Adapter]
-    I --> E
+    E --> F[Redux Adapter]
+    E --> G[Kirki Adapter]
+    E --> H[WordPress Settings API Adapter]
+    E --> I[Customizer Adapter]
+    E --> J[Jankx Dashboard Adapter]
 
-    J[Child Theme Override] --> K[Priority System]
-    K --> L[File Override]
-    L --> G
+    F --> K[Redux Transformer]
+    G --> L[Kirki Transformer]
+    H --> M[WordPress Transformer]
+    I --> N[Customizer Transformer]
+    J --> O[Native Transformer]
+
+    K --> P[Redux Framework]
+    L --> Q[Kirki Framework]
+    M --> R[WordPress Settings API]
+    N --> S[WordPress Customizer]
+    O --> T[Jankx Dashboard]
+
+    U[Configuration Files] --> V[OptionsReader]
+    V --> W[ConfigRepository]
+    W --> C
 ```
 
-## 🚀 Rules & Requirements
+## Supported Frameworks
 
-### **Rule 1: Call Flow 1 Chiều**
-- ✅ **Jankx Framework → option-adapter**: Chỉ có 1 chiều
-- ✅ **Không có chiều ngược lại**: option-adapter không gọi lại Jankx Framework
-- ✅ **Public Interface**: Chỉ expose các methods cần thiết
+### 1. Redux Framework
+- **Adapter**: `ReduxFramework`
+- **Transformer**: `ReduxTransformer`
+- **Icon Mapping**: `dashicons` → `elusiveicons`
+- **Features**: Advanced UI, real-time preview, import/export
 
-### **Rule 2: Menu Title Registration**
-- ✅ **Adapter Interface**: Tất cả adapters phải implement `register_admin_menu()`
-- ✅ **Framework Detection**: Tự động detect và load framework
-- ✅ **Menu Configuration**: Set menu title, position, icon qua adapter
+### 2. Kirki Framework
+- **Adapter**: `KirkiFramework`
+- **Transformer**: `KirkiTransformer`
+- **Icon Mapping**: `dashicons` (direct)
+- **Features**: WordPress Customizer integration
 
-### **Rule 3: Modify option-adapter**
-- ✅ **Flexible Architecture**: Có thể modify option-adapter
-- ✅ **Extensible Design**: Dễ dàng thêm features mới
-- ✅ **Backward Compatibility**: Không break existing functionality
+### 3. WordPress Settings API
+- **Adapter**: `WordPressSettingAPI`
+- **Transformer**: `WordPressTransformer`
+- **Icon Mapping**: `dashicons` (direct)
+- **Features**: Native WordPress admin pages
 
-### **Rule 4: Child Theme Override Support**
-- ✅ **Directory Priority**: Child → Parent → Framework → Fallback
-- ✅ **File Override**: Child theme có thể override từng file
-- ✅ **Configuration Merge**: Preserve parent config nếu child không override
+### 4. WordPress Customizer
+- **Adapter**: `CustomizeFramework`
+- **Transformer**: `CustomizeTransformer`
+- **Icon Mapping**: `dashicons` (direct)
+- **Features**: Live preview, WordPress native
 
-### **Rule 5: Standard Data Structure**
-- ✅ **Format Chuẩn**: Theo cấu trúc từ `tests/configs/`
-- ✅ **Field Properties**: Standard field properties
-- ✅ **Security Checks**: ABSPATH check trong tất cả files
+### 5. Jankx Dashboard (Native)
+- **Adapter**: `JankxOptionFramework`
+- **Transformer**: Native (không cần transformer)
+- **Icon Mapping**: `dashicons` (direct)
+- **Features**: React-based UI, modern interface
 
-### **Rule 6: WordPress Native Field Support**
-- ✅ **Direct Integration**: Fields có thể thao tác trực tiếp với WordPress
-- ✅ **Action Hooks**: Support actions để chỉnh sửa WordPress data
-- ✅ **Automatic Sync**: Tự động sync với WordPress options
+## Configuration
 
-### **Rule 7: Service Provider Integration**
-- ✅ **ThemeOptionsServiceProvider**: Tạo theme options qua service provider
-- ✅ **Dependency Injection**: Sử dụng Application container
-- ✅ **Lifecycle Management**: Proper register/boot phases
+### 1. Basic Configuration
 
-### **Rule 8: Textdomain Loading Order**
-- ✅ **After Textdomain**: Theme options load sau khi setup textdomain
-- ✅ **Translation Support**: Tất cả text strings được translate
-- ✅ **Hook Priority**: Proper WordPress hook priorities
-
-## 📁 Configuration Structure
-
-### **1. Directory Structure**
-
-```
-theme/
-├── app/
-│   └── Providers/
-│       └── ThemeOptionsServiceProvider.php
-├── config/
-│   ├── app.php
-│   └── providers.php
-├── includes/
-│   └── options/
-│       ├── pages.php
-│       ├── general/
-│       │   ├── site_info.php
-│       │   └── logo_settings.php
-│       ├── colors/
-│       │   ├── primary_colors.php
-│       │   └── secondary_colors.php
-│       └── typography/
-│           ├── body_typography.php
-│           └── heading_typography.php
-└── child-theme/
-    └── includes/
-        └── options/
-            ├── pages.php (Override)
-            └── general/
-                └── site_info.php (Override)
-```
-
-### **2. File Format Standards**
-
-#### **A. pages.php**
 ```php
-<?php
-if (!defined('ABSPATH')) {
-    exit('Cheating huh?');
-}
+// Trong config/app.php
+'options' => [
+    'framework' => 'redux', // hoặc 'kirki', 'wordpress', 'customize', 'jankx'
+    'display_name' => 'Theme Options',
+    'menu_title' => 'Theme Options',
+    'page_slug' => 'theme-options',
+    'dev_mode' => true,
+    'import_export' => true,
+],
+```
 
+### 2. Framework Detection Priority
+
+1. **External configuration** - `setFrameworkFromExternal()`
+2. **Config file** - `Config::get('app.options.framework')`
+3. **WordPress options** - Database stored preference
+4. **Auto detection** - Detect available frameworks
+
+## Options Data Structure
+
+```
+resources/options/
+├── pages.php                    # Pages configuration
+├── general/                     # Page directory
+│   ├── sections.php            # Sections cho page
+│   ├── site-information/       # Section directory
+│   │   └── fields.php         # Fields cho section
+│   └── social-media/           # Section directory
+│       └── fields.php         # Fields cho section
+└── typography/                 # Page directory
+    ├── sections.php
+    └── body-typography/
+        └── fields.php
+```
+
+### 3. Page Configuration (pages.php)
+
+```php
 return [
-    [
-        'id' => 'general',
-        'name' => __('General Settings', 'jankx'),
-        'args' => [
-            'description' => __('General theme settings', 'jankx'),
-        ],
+    'general' => [
+        'title' => 'General Settings',
+        'icon' => 'dashicons-admin-generic',
+        'priority' => 30,
     ],
-    [
-        'id' => 'colors',
-        'name' => __('Color Settings', 'jankx'),
-        'args' => [
-            'description' => __('Theme color customization', 'jankx'),
-        ],
+    'typography' => [
+        'title' => 'Typography',
+        'icon' => 'dashicons-editor-textcolor',
+        'priority' => 30,
     ],
 ];
 ```
 
-#### **B. Section Files (general/site_info.php)**
-```php
-<?php
-if (!defined('ABSPATH')) {
-    exit('Cheating huh?');
-}
+### 4. Section Configuration (sections.php)
 
+```php
 return [
-    'id' => 'site_info',
-    'name' => __('Site Information', 'jankx'),
-    'description' => __('Basic site information settings', 'jankx'),
-    'fields' => [
-        [
-            'id' => 'site_title',
-            'name' => __('Site Title', 'jankx'),
-            'type' => 'text',
-            'wordpress_native' => true,
-            'option_name' => 'blogname',
-            'default_value' => get_option('blogname'),
-            'sub_title' => __('Enter your site title', 'jankx'),
-            'description' => __('This will be displayed in browser tab', 'jankx'),
-        ],
-        [
-            'id' => 'site_logo',
-            'name' => __('Site Logo', 'jankx'),
-            'type' => 'image',
-            'default_value' => '',
-            'sub_title' => __('Upload your site logo', 'jankx'),
-            'description' => __('Recommended size: 200x60px', 'jankx'),
-            'options' => [
-                'preview_size' => 'medium',
-            ],
-        ],
+    'site-information' => [
+        'title' => 'Site Information',
+        'description' => 'Basic site settings',
+    ],
+    'social-media' => [
+        'title' => 'Social Media',
+        'description' => 'Social media links',
     ],
 ];
 ```
 
-## 🔧 Service Provider Implementation
+### 5. Field Configuration (fields.php)
 
-### **1. ThemeOptionsServiceProvider**
-
-```php
-<?php
-
-namespace App\Providers;
-
-use Jankx\Foundation\Application;
-use Jankx\Support\Providers\ServiceProvider;
-use Jankx\Adapter\Options\Framework;
-use Jankx\Adapter\Options\OptionsReader;
-
-class ThemeOptionsServiceProvider extends ServiceProvider
-{
-    public function register(Application $app)
-    {
-        // Register option-adapter services
-        $this->registerOptionAdapter($app);
-    }
-
-    public function boot(Application $app)
-    {
-        // Boot theme options after textdomain is loaded
-        add_action('after_setup_theme', [$this, 'bootThemeOptions'], 20);
-    }
-
-    protected function registerOptionAdapter(Application $app)
-    {
-        // Register Framework singleton
-        $app->singleton(Framework::class, function ($app) {
-            return Framework::getInstance();
-        });
-
-        // Register OptionsReader singleton
-        $app->singleton(OptionsReader::class, function ($app) {
-            return OptionsReader::getInstance();
-        });
-    }
-
-    public function bootThemeOptions()
-    {
-        // Ensure textdomain is loaded first
-        $this->ensureTextdomainLoaded();
-
-        // Load theme options
-        $this->loadThemeOptions();
-    }
-
-    protected function ensureTextdomainLoaded()
-    {
-        if (!is_textdomain_loaded('jankx')) {
-            load_theme_textdomain('jankx', get_template_directory() . '/languages');
-        }
-    }
-
-    protected function loadThemeOptions()
-    {
-        // 1. Set framework mode
-        $framework = Framework::getInstance();
-        $framework->setFrameworkFromExternal('jankx');
-
-        // 2. Load framework
-        $framework->loadFramework();
-
-        // 3. Register admin menu
-        $activeFramework = $framework->getActiveFramework();
-        $activeFramework->register_admin_menu(
-            __('Theme Options', 'jankx'),
-            __('Bookix Options', 'jankx')
-        );
-
-        // 4. Create sections
-        $optionsReader = OptionsReader::getInstance();
-        $activeFramework->createSections($optionsReader);
-    }
-}
-```
-
-### **2. Provider Registration**
-
-#### **A. config/providers.php**
 ```php
 return [
-    'http' => [
-        'admin' => [
-            // TranslationServiceProvider must come first
-            Jankx\Support\Providers\TranslationServiceProvider::class,
-
-            // ThemeOptionsServiceProvider comes after
-            \App\Providers\ThemeOptionsServiceProvider::class,
-
-            // Other providers
-            \App\Providers\BookAuthorServiceProvider::class,
-        ],
+    'site_title' => [
+        'type' => 'text',
+        'title' => 'Site Title',
+        'subtitle' => 'Main site title',
+        'description' => 'Enter your site title',
+        'default' => 'Bookix - Book Store',
+    ],
+    'site_logo' => [
+        'type' => 'image',
+        'title' => 'Site Logo',
+        'subtitle' => 'Upload logo',
+        'description' => 'Upload your site logo',
     ],
 ];
 ```
 
-#### **B. config/app.php**
-```php
-return [
-    'options' => [
-        'framework' => 'jankx', // jankx, redux, kirki, wordpress
-        'directory' => 'includes/options',
-        'menu_title' => __('Theme Options', 'jankx'),
-        'display_name' => __('Bookix Options', 'jankx'),
-        'menu_position' => 59,
-        'menu_icon' => 'dashicons-admin-customizer',
-    ],
-];
-```
+## Field Types Support
 
-## 🎨 Child Theme Override
+### Basic Fields
+- `text` - Text input
+- `textarea` - Textarea
+- `image` - Media upload
+- `icon` - Icon picker
+- `color` - Color picker
+- `select` - Select dropdown
+- `radio` - Radio buttons
+- `checkbox` - Checkbox
+- `switch` - Toggle switch
 
-### **1. Directory Priority System**
+### Advanced Fields
+- `slider` - Range slider
+- `typography` - Typography settings
+- `background` - Background settings
+- `spacing` - Spacing controls
+- `image_select` - Image select
+- `gallery` - Gallery upload
+- `repeater` - Repeater field
+- `sorter` - Sortable list
 
-```
-1. Child Theme: get_stylesheet_directory() . '/includes/options/'
-2. Parent Theme: get_template_directory() . '/includes/options/'
-3. Framework: JANKX_ABSPATH . '/includes/options/'
-4. Fallback: option-adapter/tests/configs/
-```
+## Usage
 
-### **2. Override Examples**
-
-#### **A. Override Pages (child-theme/includes/options/pages.php)**
-```php
-<?php
-if (!defined('ABSPATH')) {
-    exit('Cheating huh?');
-}
-
-return [
-    [
-        'id' => 'general',
-        'name' => __('General Settings (Custom)', 'jankx'),
-        'args' => [
-            'description' => __('Customized general settings', 'jankx'),
-        ],
-    ],
-    [
-        'id' => 'custom',
-        'name' => __('Custom Settings', 'jankx'),
-        'args' => [
-            'description' => __('Additional custom settings', 'jankx'),
-        ],
-    ],
-];
-```
-
-#### **B. Override Sections (child-theme/includes/options/general/site_info.php)**
-```php
-<?php
-if (!defined('ABSPATH')) {
-    exit('Cheating huh?');
-}
-
-return [
-    'id' => 'site_info',
-    'name' => __('Site Information (Custom)', 'jankx'),
-    'description' => __('Customized site information settings', 'jankx'),
-    'fields' => [
-        [
-            'id' => 'site_title',
-            'name' => __('Site Title', 'jankx'),
-            'type' => 'text',
-            'wordpress_native' => true,
-            'option_name' => 'blogname',
-            'default_value' => __('My Custom Website', 'jankx'),
-        ],
-        [
-            'id' => 'custom_field',
-            'name' => __('Custom Field', 'jankx'),
-            'type' => 'text',
-            'default_value' => __('Custom value', 'jankx'),
-        ],
-    ],
-];
-```
-
-#### **C. Add New Sections (child-theme/includes/options/general/logo_settings.php)**
-```php
-<?php
-if (!defined('ABSPATH')) {
-    exit('Cheating huh?');
-}
-
-return [
-    'id' => 'logo_settings',
-    'name' => __('Logo Settings', 'jankx'),
-    'description' => __('Custom logo settings for child theme', 'jankx'),
-    'fields' => [
-        [
-            'id' => 'custom_logo',
-            'name' => __('Custom Logo', 'jankx'),
-            'type' => 'image',
-            'default_value' => '',
-        ],
-        [
-            'id' => 'logo_width',
-            'name' => __('Logo Width', 'jankx'),
-            'type' => 'slider',
-            'default_value' => 200,
-        ],
-    ],
-];
-```
-
-## 🔧 WordPress Native Fields
-
-### **1. Supported Native Fields**
-
-| Field ID | WordPress Option | Description |
-|----------|------------------|-------------|
-| `blogname` | `blogname` | Site Title |
-| `blogdescription` | `blogdescription` | Tagline |
-| `siteurl` | `siteurl` | Site URL |
-| `home` | `home` | Home URL |
-| `date_format` | `date_format` | Date Format |
-| `time_format` | `time_format` | Time Format |
-| `timezone_string` | `timezone_string` | Timezone |
-
-### **2. Configuration Example**
+### 1. Service Provider Registration
 
 ```php
-[
-    'id' => 'site_title',
-    'name' => __('Site Title', 'jankx'),
-    'type' => 'text',
-    'wordpress_native' => true,
-    'option_name' => 'blogname',
-    'default_value' => get_option('blogname'),
-    'description' => __('This will update WordPress Site Title', 'jankx'),
-    'actions' => [
-        'save' => 'jankx/option/wordpress_native/save',
-        'load' => 'jankx/option/wordpress_native/load',
-    ],
-]
+// Trong config/app.php
+'providers' => [
+    // ... other providers
+    App\Providers\ThemeOptionsServiceProvider::class,
+],
 ```
 
-### **3. Action Hooks**
+### 2. Basic Usage
 
 ```php
-// Custom logic khi save WordPress native field
-add_action('jankx/option/wordpress_native/save', function($field_id, $value) {
-    if ($field_id === 'site_title') {
-        // Custom validation
-        if (empty($value)) {
-            return false;
-        }
+use Jankx\Adapter\Options\Framework as OptionFramework;
 
-        // Custom logic
-        do_action('jankx/site_title_updated', $value);
-    }
-});
+// Initialize framework
+$framework = OptionFramework::getInstance();
 
-// Custom logic khi load WordPress native field
-add_action('jankx/option/wordpress_native/load', function($field_id) {
-    if ($field_id === 'site_title') {
-        // Custom loading logic
-        return apply_filters('jankx/site_title_value', get_option('blogname'));
-    }
-});
+// Get adapter
+$adapter = $framework->getAdapter();
+
+// Create sections
+$optionsReader = OptionsReader::getInstance();
+$optionsReader->setOptionsDirectoryPath('resources/options');
+$adapter->createSections($optionsReader);
 ```
 
-## 🎯 Field Types Support
-
-### **1. Basic Field Types**
-
-| Type | Description | WordPress Native |
-|------|-------------|-----------------|
-| `text` | Text input | ✅ |
-| `textarea` | Multi-line text | ✅ |
-| `image` | Image upload | ❌ |
-| `icon` | Icon picker | ❌ |
-| `color` | Color picker | ❌ |
-| `select` | Dropdown select | ❌ |
-| `radio` | Radio buttons | ❌ |
-| `checkbox` | Checkbox | ❌ |
-| `switch` | Toggle switch | ❌ |
-| `slider` | Range slider | ❌ |
-| `typography` | Typography settings | ❌ |
-
-### **2. Field Properties**
-
-```php
-[
-    'id' => 'field_id',                    // Required: Unique identifier
-    'name' => 'Field Name',                // Required: Display name
-    'type' => 'text',                      // Required: Field type
-    'value' => '',                         // Optional: Current value
-    'default_value' => 'Default',          // Optional: Default value
-    'sub_title' => 'Subtitle',             // Optional: Subtitle text
-    'description' => 'Description',        // Optional: Field description
-    'options' => [],                       // Optional: Additional options
-    'wordpress_native' => false,           // Optional: WordPress native field
-    'option_name' => '',                   // Optional: WordPress option name
-    'actions' => [],                       // Optional: Action hooks
-]
-```
-
-## 🚀 Global Helper Functions
-
-### **1. Available Functions**
+### 3. Helper Functions
 
 ```php
 // Get option value
-$value = \Jankx\Adapter\Options\Helper::getOption('primary_color', '#007cba');
+$siteTitle = bookix_get_option('site_title', 'Default Title');
 
-// Set option value
-\Jankx\Adapter\Options\Helper::setOption('primary_color', '#ff0000');
-
-// Check option exists
-if (\Jankx\Adapter\Options\Helper::hasOption('site_logo')) {
-    // Do something
-}
-
-// Get options reader
-$reader = \Jankx\Adapter\Options\Helper::getOptionsReader();
-
-// Get framework
-$framework = \Jankx\Adapter\Options\Helper::getFramework();
+// Get current framework mode
+$frameworkMode = bookix_get_current_framework_mode();
 ```
 
-### **2. Usage Examples**
+## Child Theme Support
 
+Option Adapter tự động hỗ trợ child theme overrides:
+
+1. **Child theme priority** - Đọc từ child theme trước
+2. **Parent theme fallback** - Fallback về parent theme
+3. **Deep merge** - Merge arrays một cách thông minh
+
+## Icon Transformation
+
+Mỗi framework có cách xử lý icons khác nhau:
+
+### Redux Framework
 ```php
-// In template files
-$site_title = \Jankx\Adapter\Options\Helper::getOption('site_title', get_bloginfo('name'));
-$primary_color = \Jankx\Adapter\Options\Helper::getOption('primary_color', '#007cba');
-$logo_url = \Jankx\Adapter\Options\Helper::getOption('site_logo', '');
-
-// In functions.php
-add_action('wp_head', function() {
-    $custom_css = \Jankx\Adapter\Options\Helper::getOption('custom_css', '');
-    if (!empty($custom_css)) {
-        echo '<style>' . $custom_css . '</style>';
-    }
-});
-
-// In admin
-add_action('admin_init', function() {
-    if (\Jankx\Adapter\Options\Helper::hasOption('enable_debug')) {
-        define('WP_DEBUG', true);
-    }
-});
+// dashicons → elusiveicons
+'dashicons-admin-generic' => 'el el-cog'
+'dashicons-editor-textcolor' => 'el el-font'
+'dashicons-art' => 'el el-picture'
 ```
 
-## 🔍 Debugging
-
-### **1. Check Override Status**
-
+### Other Frameworks
 ```php
-$optionsReader = \Jankx\Adapter\Options\Helper::getOptionsReader();
-$directories = $optionsReader->getOptionsDirectories();
-
-foreach ($directories as $directory) {
-    echo "Directory: " . $directory . "\n";
-    echo "Exists: " . (is_dir($directory) ? 'Yes' : 'No') . "\n";
-}
+// Sử dụng dashicons trực tiếp
+'dashicons-admin-generic' => 'dashicons-admin-generic'
 ```
 
-### **2. Check File Priority**
+## Error Handling
 
+- **Graceful degradation** - Fallback khi framework không có sẵn
+- **Debug logging** - Log chi tiết cho development
+- **Exception handling** - Catch và handle exceptions
+
+## Performance
+
+- **Lazy loading** - Chỉ load khi cần
+- **Caching** - Cache configuration và data
+- **Memory efficient** - Tối ưu memory usage
+
+## Development
+
+### Adding New Framework
+
+1. **Create Adapter:**
 ```php
-$optionsReader = \Jankx\Adapter\Options\Helper::getOptionsReader();
-$filePath = $optionsReader->findFileInDirectories('pages.php');
-
-if ($filePath) {
-    echo "Found file: " . $filePath . "\n";
-} else {
-    echo "File not found in any directory\n";
+class NewFrameworkAdapter implements Adapter
+{
+    public function createSections($optionsReader) { /* ... */ }
+    public function transformIcon($dashicon) { /* ... */ }
 }
 ```
 
-### **3. Load Configuration Debug**
-
+2. **Create Transformer:**
 ```php
-$optionsReader = \Jankx\Adapter\Options\Helper::getOptionsReader();
-$config = $optionsReader->loadConfiguration('pages.php');
-
-if ($config) {
-    echo "Configuration loaded successfully\n";
-    print_r($config);
-} else {
-    echo "Configuration not found\n";
+class NewFrameworkTransformer
+{
+    public static function transformPage($page) { /* ... */ }
+    public static function transformField($field) { /* ... */ }
 }
 ```
 
-### **4. Framework Detection Debug**
-
+3. **Register in Framework:**
 ```php
-$framework = \Jankx\Adapter\Options\Helper::getFramework();
-$currentMode = $framework->getCurrentMode();
-$activeFramework = $framework->getActiveFramework();
-
-echo "Current mode: " . $currentMode . "\n";
-echo "Active framework: " . get_class($activeFramework) . "\n";
+// Trong Framework.php
+protected $supportedFrameworks = [
+    'newframework' => NewFrameworkAdapter::class,
+];
 ```
 
-## 🚀 Best Practices
+### Testing
 
-### **1. Service Provider Setup**
-- ✅ TranslationServiceProvider phải load trước
-- ✅ ThemeOptionsServiceProvider load sau với priority 20
-- ✅ Proper dependency injection
+```php
+// Test framework detection
+$framework = OptionFramework::getInstance();
+$adapter = $framework->getAdapter();
+assert($adapter instanceof ExpectedAdapter);
 
-### **2. Configuration Management**
-- ✅ Tất cả text strings sử dụng `__()` function
-- ✅ Textdomain 'jankx' được specify
-- ✅ Security checks trong tất cả files
+// Test icon transformation
+$icon = $adapter->transformIcon('dashicons-admin-generic');
+assert($icon === 'expected-icon');
+```
 
-### **3. Child Theme Override**
-- ✅ Backup parent theme configuration
-- ✅ Test override trên development environment
-- ✅ Document các thay đổi override
+## Related Documentation
 
-### **4. WordPress Native Fields**
-- ✅ Sử dụng WordPress native fields khi có thể
-- ✅ Custom action hooks cho complex logic
-- ✅ Proper validation và sanitization
+- [Redux Framework Options](redux-framework-options.md)
+- [Option Adapter Documentation](../../vendor/jankx/option-adapter/README.md)
+- [Dashboard Framework Documentation](../../vendor/jankx/dashboard-framework/README.md)
 
-### **5. Performance**
-- ✅ Lazy loading cho configuration
-- ✅ Caching mechanisms
-- ✅ Efficient file loading
+## License
 
-### **6. Internationalization**
-- ✅ Translation support cho tất cả strings
-- ✅ RTL language support
-- ✅ WordPress standards compliance
-
----
-
-**Version**: 1.0.0
-**Author**: Puleeno Nguyen
-**License**: MIT
+MIT License - Xem file LICENSE để biết thêm chi tiết.
