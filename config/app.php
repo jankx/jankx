@@ -7,6 +7,7 @@ return [
         Jankx\Support\Providers\SystemServiceProvider::class,
         Jankx\Support\Providers\DeferredServiceProvider::class,
         Jankx\Support\Providers\TranslationServiceProvider::class,
+        App\Providers\ThemeOptionsServiceProvider::class
     ],
     'aliases' => [
         'log' => ['\Jankx\Foundation\Log\Logger'],
@@ -14,6 +15,6 @@ return [
         'url' => ['\Jankx\Managers\UrlManager'],
     ],
     'options' => [
-        'framework' => 'jankx', // auto, jankx, kirki, redux, wordpress
+        'framework' => 'redux', // auto, jankx, kirki, redux, wordpress
     ],
 ];
