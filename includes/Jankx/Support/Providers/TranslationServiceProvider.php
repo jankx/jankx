@@ -36,7 +36,6 @@ class TranslationServiceProvider extends ServiceProvider
         add_action('after_setup_theme', [$this, 'loadTextDomain']);
 
         // Add direction support
-        add_action('wp_head', [$this, 'addHtmlDirectionAttr']);
         add_filter('body_class', [$this, 'addDirectionBodyClass']);
 
         // Add language switcher
@@ -67,19 +66,6 @@ class TranslationServiceProvider extends ServiceProvider
 
         if (Environment::isDebugLog()) {
             Log::debug('TranslationServiceProvider: Text domain loaded');
-        }
-    }
-
-    /**
-     * Add HTML direction attribute
-     *
-     * @return void
-     */
-    public function addHtmlDirectionAttr()
-    {
-        $direction = $this->getCurrentDirection();
-        if ($direction) {
-            echo '<html dir="' . esc_attr($direction) . '">' . "\n";
         }
     }
 
