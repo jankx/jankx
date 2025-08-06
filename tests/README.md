@@ -1,234 +1,294 @@
-# Lazy Loading Tests
+# Unit Tests for Jankx Framework
 
-## 📋 **Tổng quan**
+Hệ thống unit tests cho Jankx Framework, bao gồm tests cho Theme Options System.
 
-Unit tests cho lazy loading functionality của Jankx Framework. Tests này đảm bảo rằng lazy loading hoạt động chính xác và performance được tối ưu.
+## Cấu trúc Tests
 
-## 🧪 **Test Files**
-
-### **1. LazyLoaderTest.php**
-- **Location:** `tests/Support/LazyLoaderTest.php`
-- **Purpose:** Test LazyLoader helper class
-- **Coverage:**
-  - Service loading và caching
-  - Performance monitoring
-  - Error handling
-  - Memory usage optimization
-
-### **2. ApplicationLazyTest.php**
-- **Location:** `tests/Foundation/ApplicationLazyTest.php`
-- **Purpose:** Test Application container lazy loading methods
-- **Coverage:**
-  - Lazy service registration
-  - Service instantiation
-  - Singleton behavior
-  - Performance metrics
-
-### **3. HeavyServicesProviderTest.php**
-- **Location:** `tests/Support/Providers/HeavyServicesProviderTest.php`
-- **Purpose:** Test HeavyServicesProvider
-- **Coverage:**
-  - Service provider registration
-  - Service instantiation
-  - Provider inheritance
-  - Performance optimization
-
-## 🚀 **Cách chạy tests**
-
-### **1. Chạy tất cả tests:**
-```bash
-# Từ thư mục bookix
-vendor/bin/phpunit
-
-# Hoặc với PHPUnit đã cài global
-phpunit
+```
+tests/
+├── App/
+│   ├── Services/
+│   │   └── ThemeOptionsServiceTest.php
+│   └── Providers/
+│       └── ThemeOptionsServiceProviderTest.php
+├── helpers/
+│   └── TestCase.php
+├── bootstrap.php
+└── README.md
 ```
 
-### **2. Chạy specific test suite:**
+## Chạy Tests
+
+### 1. Chạy tất cả tests
+
 ```bash
-# Chạy chỉ LazyLoader tests
-vendor/bin/phpunit --testsuite "LazyLoader Tests"
+# Chạy tất cả tests
+./vendor/bin/phpunit
 
-# Chạy chỉ Application lazy tests
-vendor/bin/phpunit --testsuite "Application Lazy Tests"
+# Chạy với coverage
+./vendor/bin/phpunit --coverage-html coverage/html
 
-# Chạy chỉ HeavyServicesProvider tests
-vendor/bin/phpunit --testsuite "HeavyServicesProvider Tests"
+# Chạy với verbose output
+./vendor/bin/phpunit --verbose
 ```
 
-### **3. Chạy specific test file:**
+### 2. Chạy specific test suite
+
 ```bash
-# Chạy LazyLoaderTest
-vendor/bin/phpunit tests/Support/LazyLoaderTest.php
+# Chạy App tests
+./vendor/bin/phpunit --testsuite App
 
-# Chạy ApplicationLazyTest
-vendor/bin/phpunit tests/Foundation/ApplicationLazyTest.php
+# Chạy Services tests
+./vendor/bin/phpunit --testsuite Services
 
-# Chạy HeavyServicesProviderTest
-vendor/bin/phpunit tests/Support/Providers/HeavyServicesProviderTest.php
+# Chạy Providers tests
+./vendor/bin/phpunit --testsuite Providers
 ```
 
-### **4. Chạy specific test method:**
+### 3. Chạy specific test file
+
 ```bash
-# Chạy test method cụ thể
-vendor/bin/phpunit --filter testLoadLazyService tests/Support/LazyLoaderTest.php
+# Chạy ThemeOptionsServiceTest
+./vendor/bin/phpunit tests/App/Services/ThemeOptionsServiceTest.php
+
+# Chạy ThemeOptionsServiceProviderTest
+./vendor/bin/phpunit tests/App/Providers/ThemeOptionsServiceProviderTest.php
 ```
 
-## 📊 **Test Coverage**
+### 4. Chạy specific test method
 
-### **LazyLoaderTest Coverage:**
-- ✅ **setApp()** - Set application instance
-- ✅ **service()** - Load lazy service
-- ✅ **isLazy()** - Check if service is lazy
-- ✅ **clearCache()** - Clear service cache
-- ✅ **getCachedServices()** - Get cached services
-- ✅ **monitor()** - Performance monitoring
-- ✅ **Error handling** - Non-existent services
-- ✅ **Performance** - Loading time comparison
-- ✅ **Memory usage** - Memory optimization
+```bash
+# Chạy specific test method
+./vendor/bin/phpunit --filter test_constructor_sets_app_property
+```
 
-### **ApplicationLazyTest Coverage:**
-- ✅ **registerLazy()** - Register lazy provider
-- ✅ **loadLazyService()** - Load lazy service
-- ✅ **isLazyService()** - Check lazy service
-- ✅ **Singleton behavior** - Same instance
-- ✅ **Performance** - Loading time metrics
-- ✅ **Memory usage** - Memory consumption
-- ✅ **Error handling** - Invalid services
+## Test Coverage
 
-### **HeavyServicesProviderTest Coverage:**
-- ✅ **provides()** - Service availability
-- ✅ **register()** - Service registration
-- ✅ **boot()** - Provider booting
-- ✅ **Service instantiation** - Correct classes
-- ✅ **Singleton behavior** - Same instances
-- ✅ **Dependencies** - App injection
-- ✅ **Performance** - Registration time
-- ✅ **Memory usage** - Memory consumption
+### ThemeOptionsService Tests
 
-## 🎯 **Test Scenarios**
+| Test Method | Description |
+|-------------|-------------|
+| `test_constructor_sets_app_property` | Kiểm tra constructor set app property |
+| `test_constructor_sets_options_path` | Kiểm tra constructor set options path |
+| `test_constructor_sets_option_name` | Kiểm tra constructor set option name |
+| `test_init_calls_init_option_adapter` | Kiểm tra init() gọi initOptionAdapter() |
+| `test_init_calls_create_sections_for_adapter` | Kiểm tra init() gọi createSectionsForAdapter() |
+| `test_init_option_adapter_sets_adapter` | Kiểm tra initOptionAdapter() set adapter |
+| `test_init_option_adapter_sets_options_for_adapter` | Kiểm tra initOptionAdapter() set options |
+| `test_create_sections_for_adapter_calls_adapter_create_sections` | Kiểm tra createSectionsForAdapter() gọi adapter |
+| `test_get_option_returns_adapter_value` | Kiểm tra getOption() trả về adapter value |
+| `test_get_option_returns_default_when_no_adapter` | Kiểm tra getOption() trả về default khi không có adapter |
+| `test_register_admin_menu_calls_adapter_register_admin_menu` | Kiểm tra registerAdminMenu() gọi adapter |
+| `test_register_admin_menu_creates_direct_menu_when_no_adapter` | Kiểm tra registerAdminMenu() tạo direct menu |
+| `test_get_current_framework_mode_returns_framework_mode` | Kiểm tra getCurrentFrameworkMode() |
+| `test_get_name_returns_service_name` | Kiểm tra getName() |
+| `test_get_options_data_returns_options_data` | Kiểm tra getOptionsData() |
+| `test_get_adapter_returns_adapter` | Kiểm tra getAdapter() |
+| `test_get_adapter_returns_null_when_not_initialized` | Kiểm tra getAdapter() trả về null |
+| `test_render_options_page_outputs_html` | Kiểm tra renderOptionsPage() output HTML |
+| `test_load_options_data_loads_pages_file` | Kiểm tra loadOptionsData() load pages file |
+| `test_setup_options_for_adapter_sets_correct_args` | Kiểm tra setupOptionsForAdapter() set args |
+| `test_setup_options_for_adapter_does_nothing_when_no_adapter` | Kiểm tra setupOptionsForAdapter() không làm gì |
+| `test_create_sections_for_adapter_handles_exception` | Kiểm tra exception handling |
+| `test_register_admin_menu_handles_exception` | Kiểm tra exception handling |
+| `test_constructor_handles_framework_error` | Kiểm tra constructor handle framework error |
 
-### **1. Happy Path Tests:**
+### ThemeOptionsServiceProvider Tests
+
+| Test Method | Description |
+|-------------|-------------|
+| `test_register_registers_theme_options_service` | Kiểm tra register() đăng ký service |
+| `test_register_registers_service_alias` | Kiểm tra register() đăng ký alias |
+| `test_boot_registers_init_hook` | Kiểm tra boot() đăng ký init hook |
+| `test_boot_registers_admin_menu_hook` | Kiểm tra boot() đăng ký admin_menu hook |
+| `test_init_hook_calls_service_init` | Kiểm tra init hook gọi service init() |
+| `test_admin_menu_hook_calls_service_register_admin_menu` | Kiểm tra admin_menu hook gọi service |
+| `test_init_hook_handles_exception` | Kiểm tra init hook handle exception |
+| `test_admin_menu_hook_handles_exception` | Kiểm tra admin_menu hook handle exception |
+| `test_service_singleton_creates_theme_options_service` | Kiểm tra singleton tạo service |
+| `test_boot_logs_debug_messages` | Kiểm tra boot() log debug messages |
+| `test_init_hook_logs_debug_messages` | Kiểm tra init hook log debug messages |
+| `test_admin_menu_hook_logs_debug_messages` | Kiểm tra admin_menu hook log debug messages |
+| `test_exception_in_init_hook_logs_error` | Kiểm tra exception trong init hook log error |
+| `test_exception_in_admin_menu_hook_logs_error` | Kiểm tra exception trong admin_menu hook log error |
+| `test_provider_extends_service_provider` | Kiểm tra provider extend ServiceProvider |
+| `test_provider_has_register_method` | Kiểm tra provider có register method |
+| `test_provider_has_boot_method` | Kiểm tra provider có boot method |
+| `test_register_method_accepts_application_parameter` | Kiểm tra register method accept Application parameter |
+| `test_boot_method_accepts_application_parameter` | Kiểm tra boot method accept Application parameter |
+
+## Mocking Strategy
+
+### 1. WordPress Functions
+
+Tất cả WordPress functions được mock trong `bootstrap.php`:
+
 ```php
-// Test loading lazy service
-$userService = LazyLoader::service('user.service');
-$this->assertInstanceOf(UserService::class, $userService);
+if (!function_exists('add_action')) {
+    function add_action($hook, $callback, $priority = 10, $accepted_args = 1) {
+        return true;
+    }
+}
 ```
 
-### **2. Error Handling Tests:**
+### 2. Framework Classes
+
+Sử dụng Mockery để mock framework classes:
+
 ```php
-// Test loading non-existent service
-$this->expectException(\Exception::class);
-LazyLoader::service('non.existent.service');
+// Mock OptionFramework
+$mockFramework = Mockery::mock('alias:' . OptionFramework::class);
+$mockFramework->shouldReceive('getInstance')->andReturnSelf();
+$mockFramework->shouldReceive('loadFramework')->andReturnSelf();
+$mockFramework->shouldReceive('getActiveFramework')->andReturn($this->mockAdapter);
 ```
 
-### **3. Performance Tests:**
+### 3. Adapter Interface
+
+Mock adapter interface để test service behavior:
+
 ```php
-// Test loading performance
-$start = microtime(true);
-$service = LazyLoader::service('user.service');
-$time = microtime(true) - $start;
-$this->assertLessThan(0.1, $time); // Less than 100ms
+// Mock adapter
+$this->mockAdapter = Mockery::mock('Jankx\Adapter\Options\Interfaces\Adapter');
+$this->mockAdapter->shouldReceive('setArgs')->andReturnSelf();
+$this->mockAdapter->shouldReceive('createSections')->andReturnSelf();
+$this->mockAdapter->shouldReceive('register_admin_menu')->andReturnSelf();
+$this->mockAdapter->shouldReceive('getOption')->andReturn('test_value');
 ```
 
-### **4. Memory Tests:**
+## Test Helpers
+
+### 1. Base TestCase
+
+`tests/helpers/TestCase.php` cung cấp common functionality:
+
+- **Reflection helpers**: `getProtectedProperty()`, `setProtectedProperty()`, `callProtectedMethod()`
+- **Assertion helpers**: `assertHasMethod()`, `assertHasProperty()`, `assertExtends()`, `assertImplements()`
+- **WordPress mocks**: `createMockPost()`, `createMockUser()`, `createMockTerm()`
+- **File helpers**: `createTempFile()`, `cleanupTempFiles()`
+
+### 2. Usage Examples
+
 ```php
-// Test memory usage
-$initialMemory = memory_get_usage();
-$service = LazyLoader::service('user.service');
-$memoryUsed = memory_get_usage() - $initialMemory;
-$this->assertLessThan(1024 * 1024, $memoryUsed); // Less than 1MB
+// Test protected method
+$result = $this->callProtectedMethod($service, 'loadOptionsData');
+
+// Test protected property
+$value = $this->getProtectedProperty($service, 'optionsPath');
+
+// Test class structure
+$this->assertHasMethod(ThemeOptionsService::class, 'init');
+$this->assertHasProperty(ThemeOptionsService::class, 'app');
+$this->assertExtends(ThemeOptionsServiceProvider::class, ServiceProvider::class);
 ```
 
-## 📈 **Performance Benchmarks**
+## Configuration
 
-### **Expected Performance:**
-- **Service Loading:** < 100ms per service
-- **Memory Usage:** < 1MB total
-- **Cache Hit:** 99% improvement on second load
-- **Singleton Behavior:** Same instance returned
+### 1. PHPUnit Configuration
 
-### **Test Results Example:**
+`phpunit.xml` cấu hình:
+
+- **Test suites**: App, Services, Providers
+- **Coverage**: HTML và text reports
+- **Environment**: Testing environment variables
+- **Bootstrap**: `tests/bootstrap.php`
+
+### 2. Bootstrap File
+
+`tests/bootstrap.php` thiết lập:
+
+- **WordPress constants**: ABSPATH, WP_CONTENT_DIR, etc.
+- **WordPress functions**: Mock tất cả WordPress functions
+- **Autoloader**: Load Composer autoloader
+- **Error reporting**: Set up cho testing
+- **Timezone**: UTC cho consistency
+
+## Best Practices
+
+### 1. Test Organization
+
+- **One test per method**: Mỗi test method test một functionality
+- **Descriptive names**: Test method names mô tả rõ ràng
+- **Arrange-Act-Assert**: Follow AAA pattern
+- **Isolation**: Tests không phụ thuộc lẫn nhau
+
+### 2. Mocking Guidelines
+
+- **Mock external dependencies**: WordPress functions, external APIs
+- **Don't mock internal logic**: Test actual business logic
+- **Use meaningful return values**: Mock return values phải realistic
+- **Verify interactions**: Kiểm tra method calls và parameters
+
+### 3. Assertion Strategy
+
+- **Test behavior, not implementation**: Focus on what, not how
+- **Use specific assertions**: `assertEquals()` thay vì `assertTrue()`
+- **Test edge cases**: Exception handling, null values, empty arrays
+- **Test error conditions**: Invalid input, missing dependencies
+
+### 4. Coverage Goals
+
+- **100% method coverage**: Tất cả public methods được test
+- **90% line coverage**: Tất cả important code paths
+- **100% branch coverage**: Tất cả conditional logic
+- **Exception paths**: Test error handling và edge cases
+
+## Continuous Integration
+
+### 1. GitHub Actions
+
+```yaml
+name: Tests
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+      - name: Install dependencies
+        run: composer install
+      - name: Run tests
+        run: ./vendor/bin/phpunit
+      - name: Upload coverage
+        uses: codecov/codecov-action@v1
 ```
-LazyLoaderTest::testServiceLoadingPerformance
-- First load: 15.23ms
-- Second load: 0.05ms
-- Performance improvement: 99.67%
 
-ApplicationLazyTest::testLazyServicePerformance
-- Registration time: 2.45ms
-- Instantiation time: 8.12ms
-- Memory usage: 256KB
-```
+### 2. Local Development
 
-## 🔧 **Test Configuration**
-
-### **PHPUnit Configuration:**
-- **Bootstrap:** `tests/bootstrap.php`
-- **Test Suites:** 4 test suites
-- **Coverage:** HTML và text reports
-- **Environment:** Testing environment
-
-### **Mock Functions:**
-- WordPress functions (add_action, add_filter, etc.)
-- User functions (get_user_by, is_user_logged_in)
-- Environment functions (error_log, microtime)
-
-## 🐛 **Troubleshooting**
-
-### **Common Issues:**
-
-#### **1. Class not found:**
 ```bash
-# Ensure autoloader is working
-composer dump-autoload
+# Run tests before commit
+./vendor/bin/phpunit
+
+# Run with coverage
+./vendor/bin/phpunit --coverage-html coverage/html
+
+# Run specific test
+./vendor/bin/phpunit --filter test_constructor_sets_app_property
 ```
 
-#### **2. Mock functions not working:**
-```bash
-# Check bootstrap.php is loaded
-vendor/bin/phpunit --bootstrap tests/bootstrap.php
-```
+## Troubleshooting
 
-#### **3. Performance tests failing:**
-```bash
-# Run with verbose output
-vendor/bin/phpunit --verbose
-```
+### 1. Common Issues
 
-### **Debug Commands:**
-```bash
-# Run with debug output
-vendor/bin/phpunit --debug
+- **Mockery not found**: Install Mockery via Composer
+- **WordPress functions not mocked**: Check bootstrap.php
+- **Protected method access**: Use reflection helpers
+- **File system issues**: Use temp files và cleanup
 
-# Run with coverage report
-vendor/bin/phpunit --coverage-html tests/reports/coverage
+### 2. Debug Tips
 
-# Run specific test with output
-vendor/bin/phpunit --filter testLoadLazyService --verbose
-```
+- **Verbose output**: `./vendor/bin/phpunit --verbose`
+- **Stop on failure**: `./vendor/bin/phpunit --stop-on-failure`
+- **Filter tests**: `./vendor/bin/phpunit --filter test_name`
+- **Coverage report**: Check `coverage/html/index.html`
 
-## 📚 **Related Documentation**
+## Related Documentation
 
-- [Lazy Loading Services](../docs/lazy-loading-services.md)
-- [Lazy Loading Quick Reference](../docs/lazy-loading-quick-reference.md)
-- [Performance Tips](../docs/performance-tips.md)
-- [Development Guide](../docs/development-guide.md)
-
-## 🎉 **Success Criteria**
-
-### **All Tests Passing:**
-- ✅ **LazyLoaderTest:** 15/15 tests passing
-- ✅ **ApplicationLazyTest:** 12/12 tests passing
-- ✅ **HeavyServicesProviderTest:** 15/15 tests passing
-
-### **Performance Targets:**
-- ✅ **Loading Time:** < 100ms per service
-- ✅ **Memory Usage:** < 1MB total
-- ✅ **Cache Performance:** 99% improvement
-- ✅ **Error Handling:** Graceful failures
-
-### **Code Coverage:**
-- ✅ **LazyLoader:** 100% method coverage
-- ✅ **Application:** 100% lazy loading methods
-- ✅ **HeavyServicesProvider:** 100% provider methods
+- [Theme Options Overview](../docs/options/readme.md)
+- [Redux Framework Options](../docs/options/redux-framework-options.md)
+- [Option Adapter Documentation](../vendor/jankx/option-adapter/README.md)
+- [Dashboard Framework Documentation](../vendor/jankx/dashboard-framework/README.md)
