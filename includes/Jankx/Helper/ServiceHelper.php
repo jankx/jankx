@@ -2,8 +2,8 @@
 
 namespace App\Helpers;
 
-use App\Managers\DeferredServiceManager;
 use Jankx\Foundation\Application;
+use Jankx\Managers\DeferredServiceManager;
 
 class ServiceHelper
 {

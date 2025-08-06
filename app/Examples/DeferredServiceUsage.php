@@ -163,7 +163,7 @@ class DeferredServiceUsage
     public static function createCustomService()
     {
         // Tạo custom service class
-        $customService = new class() extends \App\Services\AbstractService {
+        $customService = new class () extends \App\Services\AbstractService {
             protected $name = 'custom';
 
             protected function boot(): void
