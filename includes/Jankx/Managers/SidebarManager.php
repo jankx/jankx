@@ -15,199 +15,71 @@ use Jankx\Foundation\Application;
 class SidebarManager
 {
     protected $app;
+    protected $sidebarConfig = [];
 
     public function __construct(Application $app)
     {
         $this->app = $app;
+        $this->setupHooks();
     }
 
     /**
-     * Get sidebar by ID
+     * Setup WordPress hooks
      *
-     * @param string $sidebarId
-     * @return string
+     * @return void
      */
-    public function getSidebar($sidebarId)
+    protected function setupHooks()
     {
-        ob_start();
-        dynamic_sidebar($sidebarId);
-        return ob_get_clean();
+        add_action('widgets_init', [$this, 'registerSidebars']);
     }
 
     /**
-     * Get primary sidebar
+     * Register widget areas/sidebars based on config
      *
-     * @return string
+     * @return void
      */
-    public function getPrimarySidebar()
+    public function registerSidebars()
     {
-        return $this->renderSidebar('primary-sidebar', [
-            'wrapper_class' => 'sidebar primary-sidebar',
-            'wrapper_id' => 'primary-sidebar',
+        $sidebarConfig = \Jankx\Facades\Config::get('layout.sidebar', []);
+
+        // Primary sidebar (always available)
+        $primary_sidebar = apply_filters('jankx/layout/sidebar/primary', [
+            'name' => 'Primary Sidebar',
+            'id' => 'primary-sidebar',
+            'description' => 'Primary sidebar area',
+            'before_widget' => '<div id="%1$s" class="widget %2$s">',
+            'after_widget' => '</div>',
+            'before_title' => '<h3 class="widget-title">',
+            'after_title' => '</h3>',
         ]);
-    }
 
-    /**
-     * Get secondary sidebar
-     *
-     * @return string
-     */
-    public function getSecondarySidebar()
-    {
-        return $this->renderSidebar('secondary-sidebar', [
-            'wrapper_class' => 'sidebar secondary-sidebar',
-            'wrapper_id' => 'secondary-sidebar',
-        ]);
-    }
+        register_sidebar($primary_sidebar);
 
-    /**
-     * Check if sidebar is active
-     *
-     * @param string $sidebarId
-     * @return bool
-     */
-    public function isSidebarActive($sidebarId)
-    {
-        return is_active_sidebar($sidebarId);
-    }
+        // Secondary sidebar (optional)
+        if (!empty($sidebarConfig['secondary'])) {
+            $secondary_sidebar = apply_filters('jankx/layout/sidebar/secondary', [
+                'name' => 'Secondary Sidebar',
+                'id' => 'secondary-sidebar',
+                'description' => 'Secondary sidebar area',
+                'before_widget' => '<div id="%1$s" class="widget %2$s">',
+                'after_widget' => '</div>',
+                'before_title' => '<h3 class="widget-title">',
+                'after_title' => '</h3>',
+            ]);
 
-    /**
-     * Check if primary sidebar is active
-     *
-     * @return bool
-     */
-    public function isPrimarySidebarActive()
-    {
-        return $this->isSidebarActive('primary-sidebar');
-    }
-
-    /**
-     * Check if secondary sidebar is active
-     *
-     * @return bool
-     */
-    public function isSecondarySidebarActive()
-    {
-        return $this->isSidebarActive('secondary-sidebar');
-    }
-
-    /**
-     * Get all registered sidebars
-     *
-     * @return array
-     */
-    public function getRegisteredSidebars()
-    {
-        global $wp_registered_sidebars;
-        return $wp_registered_sidebars;
-    }
-
-    /**
-     * Get sidebar data by ID
-     *
-     * @param string $sidebarId
-     * @return array|null
-     */
-    public function getSidebarData($sidebarId)
-    {
-        $sidebars = $this->getRegisteredSidebars();
-        return isset($sidebars[$sidebarId]) ? $sidebars[$sidebarId] : null;
-    }
-
-    /**
-     * Render sidebar with wrapper
-     *
-     * @param string $sidebarId
-     * @param array $args
-     * @return string
-     */
-    public function renderSidebar($sidebarId, $args = [])
-    {
-        $defaults = [
-            'wrapper_class' => 'sidebar',
-            'wrapper_id' => 'sidebar-' . $sidebarId,
-            'title' => '',
-            'show_title' => true,
-        ];
-
-        $args = wp_parse_args($args, $defaults);
-
-        if (!$this->isSidebarActive($sidebarId)) {
-            return '';
+            register_sidebar($secondary_sidebar);
         }
-
-        $sidebarData = $this->getSidebarData($sidebarId);
-        $title = $args['title'] ?: ($sidebarData['name'] ?? '');
-
-        $output = sprintf(
-            '<aside class="%s" id="%s">',
-            esc_attr($args['wrapper_class']),
-            esc_attr($args['wrapper_id'])
-        );
-
-        if ($args['show_title'] && $title) {
-            $output .= sprintf('<h3 class="sidebar-title">%s</h3>', esc_html($title));
-        }
-
-        $output .= $this->getSidebar($sidebarId);
-        $output .= '</aside>';
-
-        return $output;
     }
 
     /**
-     * Check if current page should show sidebar
+     * Set sidebar configuration
      *
-     * @return bool
+     * @param array $config
+     * @return void
      */
-    public function shouldShowSidebar()
+    public function setSidebarConfig(array $config)
     {
-        // Don't show sidebar on full-width pages
-        if (is_page_template('page-full-width.php')) {
-            return false;
-        }
-
-        // Don't show sidebar on 404 pages
-        if (is_404()) {
-            return false;
-        }
-
-        // Show sidebar if primary sidebar is active
-        return $this->isPrimarySidebarActive();
-    }
-
-    /**
-     * Get sidebar layout class
-     *
-     * @return string
-     */
-    public function getSidebarLayoutClass()
-    {
-        if (!$this->shouldShowSidebar()) {
-            return 'no-sidebar';
-        }
-
-        // Check for custom layout
-        $layout = get_theme_mod('sidebar_layout', 'right');
-
-        return 'sidebar-' . $layout;
-    }
-
-    /**
-     * Get widget count in sidebar
-     *
-     * @param string $sidebarId
-     * @return int
-     */
-    public function getWidgetCount($sidebarId)
-    {
-        $sidebarsWidgets = wp_get_sidebars_widgets();
-
-        if (!isset($sidebarsWidgets[$sidebarId])) {
-            return 0;
-        }
-
-        return count($sidebarsWidgets[$sidebarId]);
+        $this->sidebarConfig = $config;
     }
 
     /**
@@ -217,11 +89,15 @@ class SidebarManager
      */
     public function getSidebarConfig()
     {
+        if (!empty($this->sidebarConfig)) {
+            return $this->sidebarConfig;
+        }
+
         return \Jankx\Facades\Config::get('layout.sidebar', []);
     }
 
     /**
-     * Check if sidebar is enabled in config
+     * Check if sidebar is enabled
      *
      * @param string $sidebar_type
      * @return bool
@@ -233,22 +109,28 @@ class SidebarManager
     }
 
     /**
-     * Check if primary sidebar is enabled
+     * Get sidebar by ID
      *
-     * @return bool
+     * @param string $sidebar_id
+     * @return array|null
      */
-    public function isPrimarySidebarEnabled()
+    public function getSidebar($sidebar_id)
     {
-        return $this->isSidebarEnabled('primary');
+        global $wp_registered_sidebars;
+
+        return isset($wp_registered_sidebars[$sidebar_id])
+            ? $wp_registered_sidebars[$sidebar_id]
+            : null;
     }
 
     /**
-     * Check if secondary sidebar is enabled
+     * Check if sidebar is active
      *
+     * @param string $sidebar_id
      * @return bool
      */
-    public function isSecondarySidebarEnabled()
+    public function isSidebarActive($sidebar_id)
     {
-        return $this->isSidebarEnabled('secondary');
+        return is_active_sidebar($sidebar_id);
     }
 }

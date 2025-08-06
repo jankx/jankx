@@ -175,13 +175,14 @@ class JankxMenuItemsService
      */
     public function renderMetaBox()
     {
+        $menuItemTypes = apply_filters('jankx/menu/item-types', $this->menuItemTypes);
         ?>
         <div id="posttype-jankx-menu-items" class="posttypediv">
             <div id="tabs-panel-jankx-menu-items" class="tabs-panel tabs-panel-active">
                 <ul id="jankx-menu-items-checklist" class="categorychecklist form-no-clear">
                     <?php
                     $i = -1;
-                    foreach ($this->menuItemTypes as $type => $item) :
+                    foreach ($menuItemTypes as $type => $item) :
                         $menuItem = $this->createMenuItem($type, $item);
                         ?>
                         <li>
@@ -468,17 +469,5 @@ class JankxMenuItemsService
     public function getConfig()
     {
         return $this->config;
-    }
-
-    /**
-     * Update configuration
-     *
-     * @param  array  $config
-     * @return void
-     */
-    public function updateConfig(array $config)
-    {
-        $this->config = array_merge($this->config, $config);
-        $this->registerMenuItemTypes();
     }
 }

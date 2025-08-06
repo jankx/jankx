@@ -3,6 +3,7 @@
 namespace Jankx\Support\Providers;
 
 use Jankx\Foundation\Application;
+use Jankx\Services\ThemeService;
 use Jankx\Support\Providers\ServiceProvider;
 
 /**
@@ -34,6 +35,9 @@ class ThemeServiceProvider extends ServiceProvider
      */
     public function register(Application $app)
     {
+        $app->singleton('theme', function () {
+            return new ThemeService();
+        });
     }
 
     /**
@@ -45,5 +49,7 @@ class ThemeServiceProvider extends ServiceProvider
     public function boot(Application $app)
     {
         // dùng để bật các theme feature của WordPress
+        $theme = $app->make('theme');
+        add_action('init', [$theme, 'initFeatures']);
     }
 }

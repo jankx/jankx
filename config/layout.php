@@ -22,7 +22,7 @@ return [
     */
     'menu' => [
         'primary' => true,      // Always available
-        'secondary' => false,    // Optional
+        'secondary' => true,    // Optional
         'footer' => false,       // Optional
         'mobile' => true,        // Mobile menu support
     ],

@@ -15,10 +15,79 @@ use Jankx\Foundation\Application;
 class MenuManager
 {
     protected $app;
+    protected $menuConfig = [];
 
     public function __construct(Application $app)
     {
         $this->app = $app;
+        $this->setupHooks();
+    }
+
+    /**
+     * Setup WordPress hooks
+     *
+     * @return void
+     */
+    protected function setupHooks()
+    {
+        add_action('init', [$this, 'registerMenus']);
+    }
+
+    /**
+     * Register navigation menus based on config
+     *
+     * @return void
+     */
+    public function registerMenus()
+    {
+        $menuConfig = \Jankx\Facades\Config::get('layout.menu', []);
+
+        $menus = [];
+
+        // Primary menu (always available)
+        $menus['primary'] = apply_filters('jankx/layout/menu/primary', 'Primary Menu');
+
+        // Secondary menu (optional)
+        if (!empty($menuConfig['secondary'])) {
+            $menus['secondary'] = apply_filters('jankx/layout/menu/secondary', 'Secondary Menu');
+        }
+
+        // Footer menu (optional)
+        if (!empty($menuConfig['footer'])) {
+            $menus['footer'] = apply_filters('jankx/layout/menu/footer', 'Footer Menu');
+        }
+
+        if (!empty($menus)) {
+            register_nav_menus($menus);
+        }
+
+        // Store menu config for later use
+        $this->setMenuConfig($menus);
+    }
+
+    /**
+     * Set menu configuration
+     *
+     * @param array $config
+     * @return void
+     */
+    public function setMenuConfig(array $config)
+    {
+        $this->menuConfig = $config;
+    }
+
+    /**
+     * Get menu configuration
+     *
+     * @return array
+     */
+    public function getMenuConfig()
+    {
+        if (!empty($this->menuConfig)) {
+            return $this->menuConfig;
+        }
+
+        return \Jankx\Facades\Config::get('layout.menu', []);
     }
 
     /**
@@ -198,16 +267,6 @@ class MenuManager
         }
 
         return false;
-    }
-
-    /**
-     * Get menu configuration
-     *
-     * @return array
-     */
-    public function getMenuConfig()
-    {
-        return \Jankx\Facades\Config::get('layout.menu', []);
     }
 
     /**

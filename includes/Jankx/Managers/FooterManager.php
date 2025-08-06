@@ -15,10 +15,49 @@ use Jankx\Foundation\Application;
 class FooterManager
 {
     protected $app;
+    protected $footerConfig = [];
 
     public function __construct(Application $app)
     {
         $this->app = $app;
+        $this->setupHooks();
+    }
+
+    /**
+     * Setup WordPress hooks
+     *
+     * @return void
+     */
+    protected function setupHooks()
+    {
+        add_action('widgets_init', [$this, 'registerFooterWidgets']);
+    }
+
+    /**
+     * Register footer widgets based on config
+     *
+     * @return void
+     */
+    public function registerFooterWidgets()
+    {
+        $footer_config = $this->getFooterConfig();
+
+        // Footer widgets columns
+        $footer_columns = $footer_config['widgets']['columns'] ?? 3;
+
+        for ($i = 1; $i <= $footer_columns; $i++) {
+            $footer_widget = apply_filters("jankx/layout/footer/widgets/column_{$i}", [
+                'name' => "Footer Widget {$i}",
+                'id' => "footer-widget-{$i}",
+                'description' => "Footer widget area {$i}",
+                'before_widget' => '<div id="%1$s" class="widget %2$s">',
+                'after_widget' => '</div>',
+                'before_title' => '<h4 class="widget-title">',
+                'after_title' => '</h4>',
+            ]);
+
+            register_sidebar($footer_widget);
+        }
     }
 
     /**
@@ -148,12 +187,27 @@ class FooterManager
     }
 
     /**
+     * Set footer configuration
+     *
+     * @param array $config
+     * @return void
+     */
+    public function setFooterConfig(array $config)
+    {
+        $this->footerConfig = $config;
+    }
+
+    /**
      * Get footer configuration
      *
      * @return array
      */
     public function getFooterConfig()
     {
+        if (!empty($this->footerConfig)) {
+            return $this->footerConfig;
+        }
+
         return \Jankx\Facades\Config::get('layout.footer', []);
     }
 
