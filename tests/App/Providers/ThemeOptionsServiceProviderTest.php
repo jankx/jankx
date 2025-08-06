@@ -41,20 +41,12 @@ class ThemeOptionsServiceProviderTest extends TestCase
     /**
      * @test
      */
-    public function test_register_registers_theme_options_service()
+    public function test_register_registers_service_and_alias()
     {
         $this->app->shouldReceive('singleton')
             ->once()
             ->with('theme-options', Mockery::type('Closure'));
 
-        $this->provider->register($this->app);
-    }
-
-    /**
-     * @test
-     */
-    public function test_register_registers_service_alias()
-    {
         $this->app->shouldReceive('alias')
             ->once()
             ->with('theme-options', ThemeOptionsService::class);
@@ -65,26 +57,7 @@ class ThemeOptionsServiceProviderTest extends TestCase
     /**
      * @test
      */
-    public function test_boot_registers_init_hook()
-    {
-        // Mock WordPress add_action function
-        if (!function_exists('add_action')) {
-            function add_action($hook, $callback, $priority = 10)
-            {
-                return true;
-            }
-        }
-
-        $this->provider->boot($this->app);
-
-        // If we reach here without exception, the test passes
-        $this->assertTrue(true);
-    }
-
-    /**
-     * @test
-     */
-    public function test_boot_registers_admin_menu_hook()
+    public function test_boot_registers_wordpress_hooks()
     {
         // Mock WordPress add_action function
         if (!function_exists('add_action')) {
@@ -159,14 +132,14 @@ class ThemeOptionsServiceProviderTest extends TestCase
     /**
      * @test
      */
-    public function test_init_hook_handles_exception()
+    public function test_hooks_handle_exceptions_gracefully()
     {
         // Mock WordPress add_action function
         if (!function_exists('add_action')) {
             function add_action($hook, $callback, $priority = 10)
             {
                 // Execute the callback immediately for testing
-                if ($hook === 'init' && $priority === 10) {
+                if (in_array($hook, ['init', 'admin_menu']) && $priority === 10) {
                     $callback();
                 }
                 return true;
@@ -177,36 +150,6 @@ class ThemeOptionsServiceProviderTest extends TestCase
         $mockService = Mockery::mock(ThemeOptionsService::class);
         $mockService->shouldReceive('init')
             ->andThrow(new \Exception('Test exception'));
-
-        $this->app->shouldReceive('get')
-            ->with('theme-options')
-            ->andReturn($mockService);
-
-        // Should not throw exception
-        $this->provider->boot($this->app);
-
-        $this->assertTrue(true);
-    }
-
-    /**
-     * @test
-     */
-    public function test_admin_menu_hook_handles_exception()
-    {
-        // Mock WordPress add_action function
-        if (!function_exists('add_action')) {
-            function add_action($hook, $callback, $priority = 10)
-            {
-                // Execute the callback immediately for testing
-                if ($hook === 'admin_menu' && $priority === 10) {
-                    $callback();
-                }
-                return true;
-            }
-        }
-
-        // Mock service to throw exception
-        $mockService = Mockery::mock(ThemeOptionsService::class);
         $mockService->shouldReceive('registerAdminMenu')
             ->andThrow(new \Exception('Test exception'));
 
@@ -269,14 +212,14 @@ class ThemeOptionsServiceProviderTest extends TestCase
     /**
      * @test
      */
-    public function test_init_hook_logs_debug_messages()
+    public function test_hooks_log_debug_and_error_messages()
     {
         // Mock WordPress add_action function
         if (!function_exists('add_action')) {
             function add_action($hook, $callback, $priority = 10)
             {
                 // Execute the callback immediately for testing
-                if ($hook === 'init' && $priority === 10) {
+                if (in_array($hook, ['init', 'admin_menu']) && $priority === 10) {
                     $callback();
                 }
                 return true;
@@ -285,6 +228,7 @@ class ThemeOptionsServiceProviderTest extends TestCase
 
         $mockService = Mockery::mock(ThemeOptionsService::class);
         $mockService->shouldReceive('init')->andReturnSelf();
+        $mockService->shouldReceive('registerAdminMenu')->andReturnSelf();
 
         $this->app->shouldReceive('get')
             ->with('theme-options')
@@ -300,35 +244,6 @@ class ThemeOptionsServiceProviderTest extends TestCase
         $mockLog->shouldReceive('debug')
             ->with('ThemeOptionsServiceProvider: ThemeOptionsService initialized')
             ->once();
-
-        $this->provider->boot($this->app);
-    }
-
-    /**
-     * @test
-     */
-    public function test_admin_menu_hook_logs_debug_messages()
-    {
-        // Mock WordPress add_action function
-        if (!function_exists('add_action')) {
-            function add_action($hook, $callback, $priority = 10)
-            {
-                // Execute the callback immediately for testing
-                if ($hook === 'admin_menu' && $priority === 10) {
-                    $callback();
-                }
-                return true;
-            }
-        }
-
-        $mockService = Mockery::mock(ThemeOptionsService::class);
-        $mockService->shouldReceive('registerAdminMenu')->andReturnSelf();
-
-        $this->app->shouldReceive('get')
-            ->with('theme-options')
-            ->andReturn($mockService);
-
-        $mockLog = Mockery::mock('alias:Jankx\Facades\Log');
         $mockLog->shouldReceive('debug')
             ->with('ThemeOptionsServiceProvider: admin_menu hook triggered')
             ->once();
@@ -342,14 +257,14 @@ class ThemeOptionsServiceProviderTest extends TestCase
     /**
      * @test
      */
-    public function test_exception_in_init_hook_logs_error()
+    public function test_exception_in_hooks_logs_error()
     {
         // Mock WordPress add_action function
         if (!function_exists('add_action')) {
             function add_action($hook, $callback, $priority = 10)
             {
                 // Execute the callback immediately for testing
-                if ($hook === 'init' && $priority === 10) {
+                if (in_array($hook, ['init', 'admin_menu']) && $priority === 10) {
                     $callback();
                 }
                 return true;
@@ -359,37 +274,6 @@ class ThemeOptionsServiceProviderTest extends TestCase
         $mockService = Mockery::mock(ThemeOptionsService::class);
         $mockService->shouldReceive('init')
             ->andThrow(new \Exception('Test exception'));
-
-        $this->app->shouldReceive('get')
-            ->with('theme-options')
-            ->andReturn($mockService);
-
-        $mockLog = Mockery::mock('alias:Jankx\Facades\Log');
-        $mockLog->shouldReceive('error')
-            ->with('Theme Options Error: Test exception')
-            ->once();
-
-        $this->provider->boot($this->app);
-    }
-
-    /**
-     * @test
-     */
-    public function test_exception_in_admin_menu_hook_logs_error()
-    {
-        // Mock WordPress add_action function
-        if (!function_exists('add_action')) {
-            function add_action($hook, $callback, $priority = 10)
-            {
-                // Execute the callback immediately for testing
-                if ($hook === 'admin_menu' && $priority === 10) {
-                    $callback();
-                }
-                return true;
-            }
-        }
-
-        $mockService = Mockery::mock(ThemeOptionsService::class);
         $mockService->shouldReceive('registerAdminMenu')
             ->andThrow(new \Exception('Test exception'));
 
@@ -400,7 +284,7 @@ class ThemeOptionsServiceProviderTest extends TestCase
         $mockLog = Mockery::mock('alias:Jankx\Facades\Log');
         $mockLog->shouldReceive('error')
             ->with('Theme Options Error: Test exception')
-            ->once();
+            ->twice(); // Once for init, once for admin_menu
 
         $this->provider->boot($this->app);
     }
@@ -408,31 +292,17 @@ class ThemeOptionsServiceProviderTest extends TestCase
     /**
      * @test
      */
-    public function test_provider_extends_service_provider()
+    public function test_provider_structure_and_methods()
     {
         $this->assertInstanceOf(\Jankx\Support\Providers\ServiceProvider::class, $this->provider);
-    }
-
-    /**
-     * @test
-     */
-    public function test_provider_has_register_method()
-    {
         $this->assertTrue(method_exists($this->provider, 'register'));
-    }
-
-    /**
-     * @test
-     */
-    public function test_provider_has_boot_method()
-    {
         $this->assertTrue(method_exists($this->provider, 'boot'));
     }
 
     /**
      * @test
      */
-    public function test_register_method_accepts_application_parameter()
+    public function test_methods_accept_correct_parameters()
     {
         $reflection = new \ReflectionMethod($this->provider, 'register');
         $parameters = $reflection->getParameters();
@@ -440,13 +310,7 @@ class ThemeOptionsServiceProviderTest extends TestCase
         $this->assertCount(1, $parameters);
         $this->assertEquals('app', $parameters[0]->getName());
         $this->assertEquals(Application::class, $parameters[0]->getType()->getName());
-    }
 
-    /**
-     * @test
-     */
-    public function test_boot_method_accepts_application_parameter()
-    {
         $reflection = new \ReflectionMethod($this->provider, 'boot');
         $parameters = $reflection->getParameters();
 

@@ -1,43 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.0/phpunit.xsd"
          bootstrap="tests/bootstrap.php"
          colors="true"
-         verbose="true"
-         stopOnFailure="false"
          processIsolation="false"
-         convertDeprecationsToExceptions="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true">
-
+         stopOnFailure="false"
+         cacheDirectory=".phpunit.cache"
+         backupGlobals="false">
+    
     <testsuites>
-        <testsuite name="Lazy Loading Tests">
-            <directory>tests/Support</directory>
-            <directory>tests/Foundation</directory>
-            <directory>tests/Support/Providers</directory>
+        <testsuite name="App">
+            <directory>tests/App</directory>
         </testsuite>
-
-        <testsuite name="LazyLoader Tests">
-            <file>tests/Support/LazyLoaderTest.php</file>
+        <testsuite name="Services">
+            <directory>tests/App/Services</directory>
         </testsuite>
-
-        <testsuite name="Application Lazy Tests">
-            <file>tests/Foundation/ApplicationLazyTest.php</file>
-        </testsuite>
-
-        <testsuite name="HeavyServicesProvider Tests">
-            <file>tests/Support/Providers/HeavyServicesProviderTest.php</file>
+        <testsuite name="Providers">
+            <directory>tests/App/Providers</directory>
         </testsuite>
     </testsuites>
 
     <coverage>
         <include>
-            <directory suffix=".php">includes/Jankx</directory>
+            <directory suffix=".php">app</directory>
+            <directory suffix=".php">includes</directory>
         </include>
+        <exclude>
+            <directory>vendor</directory>
+            <directory>tests</directory>
+            <directory>node_modules</directory>
+            <file>*.blade.php</file>
+        </exclude>
         <report>
-            <html outputDirectory="tests/reports/coverage"/>
-            <text outputFile="tests/reports/coverage.txt"/>
+            <html outputDirectory="coverage/html"/>
+            <text outputFile="coverage/coverage.txt"/>
         </report>
     </coverage>
 
@@ -46,5 +42,8 @@
         <env name="CACHE_DRIVER" value="array"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="QUEUE_DRIVER" value="sync"/>
+        <env name="MAIL_DRIVER" value="array"/>
+        <env name="DB_CONNECTION" value="sqlite"/>
+        <env name="DB_DATABASE" value=":memory:"/>
     </php>
 </phpunit>

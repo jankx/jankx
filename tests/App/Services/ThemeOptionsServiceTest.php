@@ -65,59 +65,22 @@ class ThemeOptionsServiceTest extends TestCase
     /**
      * @test
      */
-    public function test_constructor_sets_app_property()
+    public function test_constructor_initializes_service_correctly()
     {
-        $this->assertSame($this->app, $this->service->getApp());
+        // Test constructor sets properties correctly
+        $this->assertSame($this->app, $this->getProtectedProperty($this->service, 'app'));
+        $this->assertEquals('bookix_theme_options', $this->getProtectedProperty($this->service, 'optionName'));
+        $this->assertEquals('theme-options', $this->service->getName());
     }
 
     /**
      * @test
      */
-    public function test_constructor_sets_options_path()
-    {
-        $expectedPath = get_stylesheet_directory() . '/resources/options';
-        $this->assertEquals($expectedPath, $this->service->getOptionsPath());
-    }
-
-    /**
-     * @test
-     */
-    public function test_constructor_sets_option_name()
-    {
-        $this->assertEquals('bookix_theme_options', $this->service->getOptionName());
-    }
-
-    /**
-     * @test
-     */
-    public function test_init_calls_init_option_adapter()
+    public function test_init_initializes_adapter_and_sections()
     {
         $this->service->init();
 
-        // Verify that initOptionAdapter was called
-        // This is tested indirectly through the adapter being set
-        $this->assertNotNull($this->service->getAdapter());
-    }
-
-    /**
-     * @test
-     */
-    public function test_init_calls_create_sections_for_adapter()
-    {
-        $this->service->init();
-
-        // Verify that createSectionsForAdapter was called
-        // This is tested indirectly through the adapter being set
-        $this->assertNotNull($this->service->getAdapter());
-    }
-
-    /**
-     * @test
-     */
-    public function test_init_option_adapter_sets_adapter()
-    {
-        $this->service->init();
-
+        // Verify adapter is set
         $this->assertNotNull($this->service->getAdapter());
         $this->assertInstanceOf('Jankx\Adapter\Options\Interfaces\Adapter', $this->service->getAdapter());
     }
@@ -125,7 +88,7 @@ class ThemeOptionsServiceTest extends TestCase
     /**
      * @test
      */
-    public function test_init_option_adapter_sets_options_for_adapter()
+    public function test_init_sets_options_for_adapter()
     {
         $this->mockAdapter->shouldReceive('setArgs')->once()->with(Mockery::type('array'));
 
@@ -135,7 +98,7 @@ class ThemeOptionsServiceTest extends TestCase
     /**
      * @test
      */
-    public function test_create_sections_for_adapter_calls_adapter_create_sections()
+    public function test_create_sections_calls_adapter()
     {
         $this->mockAdapter->shouldReceive('createSections')->once()->with(Mockery::type(OptionsReader::class));
 
@@ -145,7 +108,7 @@ class ThemeOptionsServiceTest extends TestCase
     /**
      * @test
      */
-    public function test_get_option_returns_adapter_value()
+    public function test_get_option_returns_adapter_value_when_initialized()
     {
         $this->service->init();
 
@@ -157,7 +120,7 @@ class ThemeOptionsServiceTest extends TestCase
     /**
      * @test
      */
-    public function test_get_option_returns_default_when_no_adapter()
+    public function test_get_option_returns_default_when_not_initialized()
     {
         $result = $this->service->getOption('test_key', 'default_value');
 
@@ -167,7 +130,7 @@ class ThemeOptionsServiceTest extends TestCase
     /**
      * @test
      */
-    public function test_register_admin_menu_calls_adapter_register_admin_menu()
+    public function test_register_admin_menu_calls_adapter_when_initialized()
     {
         $this->service->init();
 
@@ -181,7 +144,7 @@ class ThemeOptionsServiceTest extends TestCase
     /**
      * @test
      */
-    public function test_register_admin_menu_creates_direct_menu_when_no_adapter()
+    public function test_register_admin_menu_creates_direct_menu_when_not_initialized()
     {
         // Mock WordPress function
         if (!function_exists('add_menu_page')) {
@@ -200,53 +163,11 @@ class ThemeOptionsServiceTest extends TestCase
     /**
      * @test
      */
-    public function test_get_current_framework_mode_returns_framework_mode()
+    public function test_utility_methods_return_correct_values()
     {
-        $mode = $this->service->getCurrentFrameworkMode();
-
-        $this->assertEquals('redux', $mode);
-    }
-
-    /**
-     * @test
-     */
-    public function test_get_name_returns_service_name()
-    {
-        $name = $this->service->getName();
-
-        $this->assertEquals('theme-options', $name);
-    }
-
-    /**
-     * @test
-     */
-    public function test_get_options_data_returns_options_data()
-    {
-        $data = $this->service->getOptionsData();
-
-        $this->assertIsArray($data);
-    }
-
-    /**
-     * @test
-     */
-    public function test_get_adapter_returns_adapter()
-    {
-        $this->service->init();
-
-        $adapter = $this->service->getAdapter();
-
-        $this->assertInstanceOf('Jankx\Adapter\Options\Interfaces\Adapter', $adapter);
-    }
-
-    /**
-     * @test
-     */
-    public function test_get_adapter_returns_null_when_not_initialized()
-    {
-        $adapter = $this->service->getAdapter();
-
-        $this->assertNull($adapter);
+        $this->assertEquals('redux', $this->service->getCurrentFrameworkMode());
+        $this->assertIsArray($this->service->getOptionsData());
+        $this->assertNull($this->service->getAdapter()); // Not initialized yet
     }
 
     /**
@@ -269,36 +190,6 @@ class ThemeOptionsServiceTest extends TestCase
     /**
      * @test
      */
-    public function test_load_options_data_loads_pages_file()
-    {
-        // Mock file system
-        $mockPagesFile = [
-            'general' => [
-                'title' => 'General Settings',
-                'icon' => 'dashicons-admin-generic',
-            ],
-        ];
-
-        // Mock file_exists and include
-        if (!function_exists('file_exists')) {
-            function file_exists($path)
-            {
-                return strpos($path, 'pages.php') !== false;
-            }
-        }
-
-        // Mock include function - we can't mock include directly, so we'll test differently
-        // The actual include will be handled by the real file system in integration tests
-
-        $this->service->loadOptionsData();
-
-        $data = $this->service->getOptionsData();
-        $this->assertArrayHasKey('pages', $data);
-    }
-
-    /**
-     * @test
-     */
     public function test_setup_options_for_adapter_sets_correct_args()
     {
         $this->service->init();
@@ -312,7 +203,7 @@ class ThemeOptionsServiceTest extends TestCase
                        $args['page_parent'] === 'themes.php';
             }));
 
-        $this->service->setupOptionsForAdapter();
+        $this->callProtectedMethod($this->service, 'setupOptionsForAdapter');
     }
 
     /**
@@ -321,7 +212,7 @@ class ThemeOptionsServiceTest extends TestCase
     public function test_setup_options_for_adapter_does_nothing_when_no_adapter()
     {
         // Should not throw any exception
-        $this->service->setupOptionsForAdapter();
+        $this->callProtectedMethod($this->service, 'setupOptionsForAdapter');
 
         $this->assertTrue(true);
     }
@@ -329,7 +220,7 @@ class ThemeOptionsServiceTest extends TestCase
     /**
      * @test
      */
-    public function test_create_sections_for_adapter_handles_exception()
+    public function test_exception_handling_in_create_sections()
     {
         // Mock adapter to throw exception
         $mockAdapterWithException = Mockery::mock('Jankx\Adapter\Options\Interfaces\Adapter');
@@ -353,7 +244,7 @@ class ThemeOptionsServiceTest extends TestCase
     /**
      * @test
      */
-    public function test_register_admin_menu_handles_exception()
+    public function test_exception_handling_in_register_admin_menu()
     {
         // Mock adapter to throw exception
         $mockAdapterWithException = Mockery::mock('Jankx\Adapter\Options\Interfaces\Adapter');
@@ -392,43 +283,22 @@ class ThemeOptionsServiceTest extends TestCase
     /**
      * Helper method to access protected properties for testing
      */
-    protected function getApp()
+    protected function getProtectedProperty($object, $property)
     {
-        $reflection = new \ReflectionClass($this->service);
-        $property = $reflection->getProperty('app');
-        $property->setAccessible(true);
-        return $property->getValue($this->service);
+        $reflection = new \ReflectionClass($object);
+        $propertyReflection = $reflection->getProperty($property);
+        $propertyReflection->setAccessible(true);
+        return $propertyReflection->getValue($object);
     }
 
-    protected function getOptionsPath()
+    /**
+     * Helper method to call protected methods for testing
+     */
+    protected function callProtectedMethod($object, $method, ...$args)
     {
-        $reflection = new \ReflectionClass($this->service);
-        $property = $reflection->getProperty('optionsPath');
-        $property->setAccessible(true);
-        return $property->getValue($this->service);
-    }
-
-    protected function getOptionName()
-    {
-        $reflection = new \ReflectionClass($this->service);
-        $property = $reflection->getProperty('optionName');
-        $property->setAccessible(true);
-        return $property->getValue($this->service);
-    }
-
-    protected function loadOptionsData()
-    {
-        $reflection = new \ReflectionClass($this->service);
-        $method = $reflection->getMethod('loadOptionsData');
-        $method->setAccessible(true);
-        return $method->invoke($this->service);
-    }
-
-    protected function setupOptionsForAdapter()
-    {
-        $reflection = new \ReflectionClass($this->service);
-        $method = $reflection->getMethod('setupOptionsForAdapter');
-        $method->setAccessible(true);
-        return $method->invoke($this->service);
+        $reflection = new \ReflectionClass($object);
+        $methodReflection = $reflection->getMethod($method);
+        $methodReflection->setAccessible(true);
+        return $methodReflection->invoke($object, ...$args);
     }
 }

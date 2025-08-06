@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Jankx\Facades\Log;
 use Jankx\Foundation\Application;
 use App\Services\ThemeOptionsService;
 
@@ -26,20 +27,19 @@ class ThemeOptionsServiceProvider extends \Jankx\Support\Providers\ServiceProvid
      */
     public function boot(Application $app)
     {
-        error_log('[JANKX DEBUG] ThemeOptionsServiceProvider: Boot method called');
-
-                error_log('[JANKX DEBUG] ThemeOptionsServiceProvider: Registering init hook');
+        Log::debug('ThemeOptionsServiceProvider: Boot method called');
+        Log::debug('ThemeOptionsServiceProvider: Registering init hook');
 
         // Đăng ký init hook để khởi tạo theme options
         add_action('init', function () use ($app) {
-            error_log('[JANKX DEBUG] ThemeOptionsServiceProvider: init hook triggered');
+            Log::debug('ThemeOptionsServiceProvider: init hook triggered');
 
             try {
                 $themeOptions = $app->get('theme-options');
-                error_log('[JANKX DEBUG] ThemeOptionsServiceProvider: ThemeOptionsService retrieved');
+                Log::debug('ThemeOptionsServiceProvider: ThemeOptionsService retrieved');
 
                 $themeOptions->init();
-                error_log('[JANKX DEBUG] ThemeOptionsServiceProvider: ThemeOptionsService initialized');
+                Log::debug('ThemeOptionsServiceProvider: ThemeOptionsService initialized');
             } catch (\Exception $e) {
                 error_log('Theme Options Error: ' . $e->getMessage());
             }
@@ -47,40 +47,17 @@ class ThemeOptionsServiceProvider extends \Jankx\Support\Providers\ServiceProvid
 
         // Đăng ký admin menu với try-catch để tránh lỗi
         add_action('admin_menu', function () use ($app) {
-            error_log('[JANKX DEBUG] ThemeOptionsServiceProvider: admin_menu hook triggered');
+            Log::debug('ThemeOptionsServiceProvider: admin_menu hook triggered');
 
             try {
                 $themeOptions = $app->get('theme-options');
                 $themeOptions->registerAdminMenu();
-                error_log('[JANKX DEBUG] ThemeOptionsServiceProvider: Admin menu registered');
+                Log::debug('ThemeOptionsServiceProvider: Admin menu registered');
             } catch (\Exception $e) {
-                error_log('Theme Options Error: ' . $e->getMessage());
+                Log::error('Theme Options Error: ' . $e->getMessage());
             }
         }, 10);
 
-        error_log('[JANKX DEBUG] ThemeOptionsServiceProvider: hooks registered');
-
-        // Debug: Kiểm tra xem service có được load không
-        add_action('admin_notices', function () use ($app) {
-            if (current_user_can('manage_options')) {
-                try {
-                    $themeOptions = $app->get('theme-options');
-                    $adapter = $themeOptions->getAdapter();
-                    $frameworkMode = $themeOptions->getCurrentFrameworkMode();
-
-                    echo '<div class="notice notice-info">';
-                    echo '<p><strong>Theme Options Debug:</strong></p>';
-                    echo '<p>Framework Mode: ' . $frameworkMode . '</p>';
-                    echo '<p>Adapter: ' . ($adapter ? get_class($adapter) : 'Not loaded') . '</p>';
-                    echo '<p>Options Data: ' . (empty($themeOptions->getOptionsData()) ? 'Empty' : 'Loaded') . '</p>';
-                    echo '<p>Service Provider: ' . get_class($this) . '</p>';
-                    echo '</div>';
-                } catch (\Exception $e) {
-                    echo '<div class="notice notice-error">';
-                    echo '<p><strong>Theme Options Error:</strong> ' . $e->getMessage() . '</p>';
-                    echo '</div>';
-                }
-            }
-        });
+        Log::debug('ThemeOptionsServiceProvider: hooks registered');
     }
 }
