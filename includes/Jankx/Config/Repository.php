@@ -146,6 +146,62 @@ class Repository implements ArrayAccess, RepositoryContract
     }
 
     /**
+     * Merge configuration values.
+     *
+     * @param  array  $items
+     * @return void
+     */
+    public function merge(array $items)
+    {
+        $this->items = $this->deepMerge($this->items, $items);
+    }
+
+    /**
+     * Deep merge arrays with smart handling of associative vs indexed arrays.
+     *
+     * @param  array  $original
+     * @param  array  $new
+     * @return array
+     */
+    protected function deepMerge(array $original, array $new)
+    {
+        $result = $original;
+
+        foreach ($new as $key => $value) {
+            if (array_key_exists($key, $original) && is_array($original[$key]) && is_array($value)) {
+                // Both are arrays - check if they are associative or indexed
+                if ($this->isAssociative($original[$key]) && $this->isAssociative($value)) {
+                    // Both are associative arrays - deep merge
+                    $result[$key] = $this->deepMerge($original[$key], $value);
+                } else {
+                    // At least one is indexed array - replace completely
+                    $result[$key] = $value;
+                }
+            } else {
+                // Not both arrays or key doesn't exist - replace
+                $result[$key] = $value;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Check if an array is associative (has string keys).
+     *
+     * @param  array  $array
+     * @return bool
+     */
+    protected function isAssociative(array $array)
+    {
+        if (empty($array)) {
+            return true; // Empty arrays are considered associative
+        }
+
+        return array_keys($array) !== range(0, count($array) - 1);
+    }
+
+    /**
      * Get all of the configuration items for the application.
      *
      * @return array

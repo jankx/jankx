@@ -171,12 +171,35 @@ class LoadConfiguration
     {
         foreach ($child as $key => $value) {
             if (is_array($value) && isset($parent[$key]) && is_array($parent[$key])) {
-                $parent[$key] = $this->deepMergeConfig($parent[$key], $value);
+                // Check if both arrays are associative or indexed
+                if ($this->isAssociative($parent[$key]) && $this->isAssociative($value)) {
+                    // Both are associative arrays - deep merge
+                    $parent[$key] = $this->deepMergeConfig($parent[$key], $value);
+                } else {
+                    // At least one is indexed array - replace completely
+                    $parent[$key] = $value;
+                }
             } else {
+                // Not both arrays or key doesn't exist - replace
                 $parent[$key] = $value;
             }
         }
         return $parent;
+    }
+
+    /**
+     * Check if an array is associative (has string keys).
+     *
+     * @param  array  $array
+     * @return bool
+     */
+    protected function isAssociative(array $array)
+    {
+        if (empty($array)) {
+            return true; // Empty arrays are considered associative
+        }
+
+        return array_keys($array) !== range(0, count($array) - 1);
     }
 
         /**
