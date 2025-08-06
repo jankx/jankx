@@ -18,7 +18,7 @@ return [
             Jankx\Support\Providers\PerformanceServiceProvider::class,
             Jankx\Support\Providers\PlatesServiceProvider::class,
             Jankx\Support\Providers\GutenbergServiceProvider::class,
-            \Jankx\Support\Providers\Layout\SlideoutMenuServiceProvider::class,
+            App\Providers\SlideoutMenuServiceProvider::class,
         ],
 
         // Admin providers
