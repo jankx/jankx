@@ -81,6 +81,11 @@
 			"title": "Footer"
 		},
 		{
+			"area": "header",
+			"name": "offcanvas",
+			"title": "Offcanvas"
+		},
+		{
 			"area": "uncategorized",
 			"name": "sidebar",
 			"title": "Sidebar"

@@ -78,8 +78,7 @@ class SlideoutMenuLayoutService
      */
     public function renderSlideoutMenu()
     {
-        ?>
-        <?php
+        echo do_blocks('<!-- wp:template-part {"slug":"offcanvas"} /-->');
     }
 
     /**
