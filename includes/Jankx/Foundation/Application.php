@@ -2,11 +2,15 @@
 
 namespace Jankx\Foundation;
 
+use App\Providers\ThemeOptionsServiceProvider;
 use Exception;
 use Illuminate\Container\Container;
 use Jankx\Config\Repository;
 use Jankx\Facades\Log;
 use Jankx\Helper\Environment;
+use Jankx\Support\Providers\DeferredServiceProvider;
+use Jankx\Support\Providers\SystemServiceProvider;
+use Jankx\Support\Providers\TranslationServiceProvider;
 
 class Application extends Container
 {
@@ -51,6 +55,18 @@ class Application extends Container
      * @var array
      */
     protected $serviceProviders = [];
+
+    /**
+     * The built-in service providers that should always be registered.
+     *
+     * @var array
+     */
+    protected $builtInProviders = [
+        SystemServiceProvider::class,
+        DeferredServiceProvider::class,
+        TranslationServiceProvider::class,
+        ThemeOptionsServiceProvider::class
+    ];
 
     /**
      * The loaded service providers.
@@ -325,17 +341,52 @@ class Application extends Container
     }
 
     /**
+     * Get all built-in service providers.
+     *
+     * @return array
+     */
+    public function getBuiltInProviders()
+    {
+        return $this->builtInProviders;
+    }
+
+    /**
+     * Get all service providers including built-in ones.
+     *
+     * @return array
+     */
+    public function getAllServiceProviders()
+    {
+        return array_merge($this->builtInProviders, $this->serviceProviders);
+    }
+
+    /**
+     * Boot all service providers including built-in ones.
+     *
+     * @return void
+     */
+    public function bootAllProviders()
+    {
+        $allProviders = $this->getAllServiceProviders();
+
+        var_dump($allProviders);
+        die;
+
+        foreach ($allProviders as $provider) {
+            if (method_exists($provider, 'boot')) {
+                $provider->boot($this);
+            }
+        }
+    }
+
+    /**
      * Boot the application's service providers.
      *
      * @return void
      */
     public function bootProviders()
     {
-        foreach ($this->serviceProviders as $provider) {
-            if (method_exists($provider, 'boot')) {
-                $provider->boot($this);
-            }
-        }
+        $this->bootAllProviders();
     }
 
     /**
