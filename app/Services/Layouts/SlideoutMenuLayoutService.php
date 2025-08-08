@@ -58,7 +58,7 @@ class SlideoutMenuLayoutService
     public function openNav()
     {
         ?>
-        <div id="slideoutNav" class="slideoutNav">
+        <div id="slideoutNav" class="slideoutNav slideout-menu">
             <?php
     }
 
@@ -92,7 +92,7 @@ class SlideoutMenuLayoutService
     public function openPanel()
     {
         ?>
-        <div id="slideoutPanel" class="slideoutPanel">
+        <div id="slideoutPanel" class="slideoutPanel slideout-panel">
             <?php
     }
 
@@ -139,6 +139,7 @@ body {
 }
 
 .slideoutNav {
+  background: #fff;
   position: fixed;
   top: 0;
   bottom: 0;
@@ -148,6 +149,7 @@ body {
   -webkit-overflow-scrolling: touch;
   z-index: 0;
   display: none;
+  z-index: 10;
 }
 
 .slideoutNav-left {
@@ -166,6 +168,14 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
 }
+
+.slideout-open .slideoutNav {
+  box-shadow: 4px 5px 5px 0px rgba(0,0,0,0.75);
+    -webkit-box-shadow: 4px 5px 5px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 4px 5px 5px 0px rgba(0,0,0,0.75);
+}
+
+
 
 body.admin-bar .slideoutNav {
     padding-top: 54px;
@@ -226,8 +236,7 @@ document.addEventListener("DOMContentLoaded", function() {
         "panel": panel,
         "menu": menu,
         "padding": 256,
-        "tolerance": 70,
-        "easing": "step-start"
+        "tolerance": 70
     });
 
     // Add toggle button functionality
