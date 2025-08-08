@@ -357,7 +357,7 @@ class Application extends Container
      */
     public function getAllServiceProviders()
     {
-        return array_merge($this->builtInProviders, $this->serviceProviders);
+        return $this->serviceProviders;
     }
 
     /**
@@ -368,10 +368,6 @@ class Application extends Container
     public function bootAllProviders()
     {
         $allProviders = $this->getAllServiceProviders();
-
-        var_dump($allProviders);
-        die;
-
         foreach ($allProviders as $provider) {
             if (method_exists($provider, 'boot')) {
                 $provider->boot($this);

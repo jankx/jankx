@@ -23,7 +23,10 @@ class RegisterProviders
         $providersConfig = $config->get('providers', []);
 
         // Get app-level global providers first
-        $appProviders = $config->get('app.providers', []);
+        $appProviders = array_merge(
+            $app->getBuiltInProviders(),
+            $config->get('app.providers', [])
+        );
         if (Environment::isDebugLog()) {
             error_log(sprintf('[JANKX DEBUG] Found %d app-level providers', count($appProviders)));
         }
