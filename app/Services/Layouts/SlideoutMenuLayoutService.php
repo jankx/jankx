@@ -144,7 +144,7 @@ body {
   bottom: 0;
   width: 256px;
   min-height: 100vh;
-  overflow-y: hidden;
+  overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   z-index: 0;
   display: none;
@@ -217,11 +217,8 @@ document.addEventListener("DOMContentLoaded", function() {
     var panel = document.getElementById("slideoutPanel");
     var menu = document.getElementById("slideoutNav");
 
-    console.log("Panel element:", panel);
-    console.log("Menu element:", menu);
 
     if (!panel || !menu) {
-        console.error("Slideout elements not found!");
         return;
     }
 
@@ -237,6 +234,15 @@ document.addEventListener("DOMContentLoaded", function() {
     var toggleButton = document.querySelector(".hamburger-toggle-menu");
     if (toggleButton) {
         toggleButton.addEventListener("click", function() {
+            slideout.toggle();
+        });
+    }
+
+
+    // Add toggle button functionality
+    var toggleButtonOffCanvas = document.querySelector(".hamburger-toggle-menu-offcanvas");
+    if (toggleButtonOffCanvas) {
+        toggleButtonOffCanvas.addEventListener("click", function() {
             slideout.toggle();
         });
     }
