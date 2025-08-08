@@ -45,6 +45,10 @@ class SlideoutMenuLayoutService
         add_action('wp_body_open', [$this, 'closeNav'], 15);
         add_action('wp_body_open', [$this, 'openPanel'], 16);
         add_action('wp_footer', [$this, 'closePanel'], 999);
+        add_action('wp_enqueue_scripts', [$this, 'enqueueSlideoutStyles']);
+        add_action('wp_enqueue_scripts', [$this, 'enqueueSlideoutScripts']);
+        add_action('wp_head', [$this, 'addSlideoutStylesInline']);
+        add_action('wp_footer', [$this, 'addSlideoutDebugInfo'], 1000);
     }
 
     /**
@@ -55,8 +59,8 @@ class SlideoutMenuLayoutService
     public function openNav()
     {
         ?>
-        <div class="slideoutNav">
-        <?php
+        <div id="slideoutNav" class="slideoutNav">
+            <?php
     }
 
     /**
@@ -89,8 +93,8 @@ class SlideoutMenuLayoutService
     public function openPanel()
     {
         ?>
-        <div class="slidePanel">
-        <?php
+        <div id="slideoutPanel" class="slideoutPanel">
+            <?php
     }
 
     /**
@@ -103,5 +107,174 @@ class SlideoutMenuLayoutService
         ?>
         </div>
         <?php
+    }
+
+    /**
+     * Enqueue slideout menu styles
+     *
+     * @return void
+     */
+    public function enqueueSlideoutStyles()
+    {
+        // Add inline style to any existing style handle
+        wp_add_inline_style('jankx-style', $this->getSlideoutCSS());
+
+        // Also add to wp-block-library as fallback
+        wp_add_inline_style('wp-block-library', $this->getSlideoutCSS());
+
+        // Add to theme's main style as another fallback
+        wp_add_inline_style('bookix-style', $this->getSlideoutCSS());
+    }
+
+    /**
+     * Get slideout menu CSS
+     *
+     * @return string
+     */
+    private function getSlideoutCSS()
+    {
+        return '
+body {
+  width: 100%;
+  height: 100%;
+}
+
+.slideoutNav {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 256px;
+  min-height: 100vh;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+  z-index: 0;
+  display: none;
+}
+
+.slideoutNav-left {
+  left: 0;
+}
+
+.slideoutNav-right {
+  right: 0;
+}
+
+.slideoutPanel {
+  position: relative;
+  z-index: 1;
+  will-change: transform;
+  background-color: #FFF; /* A background-color is required */
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body.admin-bar .slideoutNav {
+    padding-top: 54px;
+}
+
+.slideout-open,
+.slideout-open body,
+.slideout-open .slideoutPanel {
+  overflow: hidden;
+}
+
+.slideout-open .slideoutNav {
+  display: block;
+}';
+    }
+
+    /**
+     * Enqueue slideout menu scripts
+     *
+     * @return void
+     */
+    public function enqueueSlideoutScripts()
+    {
+        $debug = defined('WP_DEBUG') && WP_DEBUG;
+        $filename = $debug ? 'slideout.js' : 'slideout.min.js';
+
+        wp_enqueue_script(
+            'slideout-menu',
+            get_template_directory_uri() . '/resources/assets/libs/slideout-1.0.1/' . $filename,
+            [],
+            '1.0.1',
+            true
+        );
+
+        // Add inline script to initialize slideout
+        wp_add_inline_script('slideout-menu', $this->getSlideoutInitScript());
+    }
+
+    /**
+     * Get slideout initialization script
+     *
+     * @return string
+     */
+    private function getSlideoutInitScript()
+    {
+        return '
+document.addEventListener("DOMContentLoaded", function() {
+    // Check if elements exist
+    var panel = document.getElementById("slideoutPanel");
+    var menu = document.getElementById("slideoutNav");
+
+    console.log("Panel element:", panel);
+    console.log("Menu element:", menu);
+
+    if (!panel || !menu) {
+        console.error("Slideout elements not found!");
+        return;
+    }
+
+    var slideout = new Slideout({
+        "panel": panel,
+        "menu": menu,
+        "padding": 256,
+        "tolerance": 70
+    });
+
+    // Add toggle button functionality
+    var toggleButton = document.querySelector(".hamburger-toggle-menu");
+    if (toggleButton) {
+        toggleButton.addEventListener("click", function() {
+            slideout.toggle();
+        });
+    }
+
+    // Close slideout when clicking on menu items
+    var menuItems = document.querySelectorAll(".slideoutNav a");
+    menuItems.forEach(function(item) {
+        item.addEventListener("click", function() {
+            slideout.close();
+        });
+    });
+});';
+    }
+
+    /**
+     * Add slideout styles directly to wp_head
+     *
+     * @return void
+     */
+    public function addSlideoutStylesInline()
+    {
+        echo '<style type="text/css">' . $this->getSlideoutCSS() . '</style>';
+    }
+
+    /**
+     * Add debug information for slideout
+     *
+     * @return void
+     */
+    public function addSlideoutDebugInfo()
+    {
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            echo '<script>
+            console.log("Slideout Debug Info:");
+            console.log("Panel element:", document.getElementById("slideoutPanel"));
+            console.log("Menu element:", document.getElementById("slideoutNav"));
+            console.log("Toggle button:", document.querySelector(".hamburger-toggle-menu"));
+            </script>';
+        }
     }
 }
