@@ -48,7 +48,6 @@ class SlideoutMenuLayoutService
         add_action('wp_enqueue_scripts', [$this, 'enqueueSlideoutStyles']);
         add_action('wp_enqueue_scripts', [$this, 'enqueueSlideoutScripts']);
         add_action('wp_head', [$this, 'addSlideoutStylesInline']);
-        add_action('wp_footer', [$this, 'addSlideoutDebugInfo'], 1000);
     }
 
     /**
@@ -145,7 +144,7 @@ body {
   bottom: 0;
   width: 256px;
   min-height: 100vh;
-  overflow-y: scroll;
+  overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
   z-index: 0;
   display: none;
@@ -230,7 +229,8 @@ document.addEventListener("DOMContentLoaded", function() {
         "panel": panel,
         "menu": menu,
         "padding": 256,
-        "tolerance": 70
+        "tolerance": 70,
+        "easing": "step-start"
     });
 
     // Add toggle button functionality
@@ -261,20 +261,4 @@ document.addEventListener("DOMContentLoaded", function() {
         echo '<style type="text/css">' . $this->getSlideoutCSS() . '</style>';
     }
 
-    /**
-     * Add debug information for slideout
-     *
-     * @return void
-     */
-    public function addSlideoutDebugInfo()
-    {
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            echo '<script>
-            console.log("Slideout Debug Info:");
-            console.log("Panel element:", document.getElementById("slideoutPanel"));
-            console.log("Menu element:", document.getElementById("slideoutNav"));
-            console.log("Toggle button:", document.querySelector(".hamburger-toggle-menu"));
-            </script>';
-        }
-    }
 }
