@@ -12,6 +12,6 @@ return [
         'url' => ['\Jankx\Managers\UrlManager'],
     ],
     'options' => [
-        'framework' => 'redux', // auto, jankx, kirki, redux, wordpress
+        'framework' => 'auto', // auto, jankx, kirki, redux, wordpress
     ],
 ];

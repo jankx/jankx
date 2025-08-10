@@ -44,6 +44,11 @@ class Logger
             return true;
         }
 
+        // Debug level only shows when JANKX_DEBUG_LOG is defined and true
+        if ($level === self::DEBUG) {
+            return defined('JANKX_DEBUG_LOG') && JANKX_DEBUG_LOG === true;
+        }
+
         $levels = [
             self::EMERGENCY => 0,
             self::ALERT     => 1,
@@ -52,7 +57,6 @@ class Logger
             self::WARNING   => 4,
             self::NOTICE    => 5,
             self::INFO      => 6,
-            self::DEBUG     => 7,
         ];
 
         $currentLevel = $levels[self::WARNING] ?? 4;
