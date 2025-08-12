@@ -16,15 +16,19 @@ use Jankx\Services\FontIcons\IconTypes\SvgIconsProvider;
 
 class FontIconsServiceProvider extends ServiceProvider
 {
+    protected $app;
+
     public function register(Application $app)
     {
+        $this->app = $app;
+
         // Register core services
         $app->singleton('font-icons.repository', function($app) {
-            return new IconRepository($app, Config::get('font-icons'));
+            return new IconRepository($app);
         });
 
         $app->singleton('font-icons.manager', function($app) {
-            return new IconTypeManager(Config::get('font-icons'));
+            return new IconTypeManager();
         });
 
         $app->singleton('font-icons.renderer', function($app) {
@@ -85,8 +89,7 @@ class FontIconsServiceProvider extends ServiceProvider
 
     public function autoLoadActiveIcons()
     {
-        $app = app();
-        $activeTypes = $app->make('font-icons.manager')->getActiveTypes();
+        $activeTypes = $this->app->make('font-icons.manager')->getActiveTypes();
 
         foreach ($activeTypes as $type) {
             // Không auto-load FontAwesome
@@ -95,7 +98,7 @@ class FontIconsServiceProvider extends ServiceProvider
             }
 
             try {
-                $provider = $app->make("font-icons.{$type}");
+                $provider = $this->app->make("font-icons.{$type}");
                 $provider->enqueue();
             } catch (\Exception $e) {
                 // Log error but don't break
@@ -106,18 +109,16 @@ class FontIconsServiceProvider extends ServiceProvider
 
     public function enqueueGutenbergAssets()
     {
-        $app = app();
-
         wp_enqueue_script(
             'jankx-gutenberg-icons',
-            $app->make('jankx.urls')['base'] . '/assets/js/gutenberg-icons.js',
+            $this->app->make('jankx.urls')['base'] . '/assets/js/gutenberg-icons.js',
             ['wp-blocks', 'wp-element', 'wp-components'],
-            $app->make('jankx.version'),
+            $this->app->make('jankx.version'),
             true
         );
 
         // Localize script with icon data
-        $iconData = $app->make('font-icons.repository')->getIconTypes();
+        $iconData = $this->app->make('font-icons.repository')->getIconTypes();
         wp_localize_script('jankx-gutenberg-icons', 'jankxIcons', [
             'types' => $iconData,
             'apiUrl' => rest_url('jankx/v1/icons/')
@@ -133,8 +134,7 @@ class FontIconsServiceProvider extends ServiceProvider
 
     public function autoUpdateIcons()
     {
-        $app = app();
-        $transformer = $app->make('font-icons.transformer');
+        $transformer = $this->app->make('font-icons.transformer');
 
         // Chỉ update các icon types mặc định, không bao gồm FontAwesome
         $iconTypes = Config::get('font-icons.auto_update.types', ['material', 'custom']);
@@ -144,7 +144,7 @@ class FontIconsServiceProvider extends ServiceProvider
             if (isset($typeConfig['cdn_url'])) {
                 try {
                     $cssUrl = $typeConfig['cdn_url'];
-                    $outputPath = $app->make('jankx.paths')['base'] . "/resources/icons/{$type}/icons.json";
+                    $outputPath = $this->app->make('jankx.paths')['base'] . "/resources/icons/{$type}/icons.json";
 
                     $transformer->transformAndSave($cssUrl, $type, $outputPath);
                 } catch (\Exception $e) {
@@ -156,11 +156,10 @@ class FontIconsServiceProvider extends ServiceProvider
 
     public function renderAdminPage()
     {
-        $app = app();
         $activeTab = $_GET['tab'] ?? 'icon-sets';
-        $iconTypes = $app->make('font-icons.repository')->getIconTypes();
+        $iconTypes = $this->app->make('font-icons.repository')->getIconTypes();
 
-        $templatePath = $app->make('jankx.paths')['base'] . '/templates/admin/icons-repository.php';
+        $templatePath = $this->app->make('jankx.paths')['base'] . '/templates/admin/icons-repository.php';
 
         if (file_exists($templatePath)) {
             include $templatePath;

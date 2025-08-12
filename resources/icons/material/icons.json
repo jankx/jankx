@@ -1,0 +1,42 @@
+{
+    "icons": [
+        {
+            "name": "home",
+            "class": "material-icons",
+            "type": "material",
+            "tags": ["home", "house", "main"],
+            "category": "navigation"
+        },
+        {
+            "name": "search",
+            "class": "material-icons",
+            "type": "material",
+            "tags": ["search", "find", "lookup"],
+            "category": "action"
+        },
+        {
+            "name": "menu",
+            "class": "material-icons",
+            "type": "material",
+            "tags": ["menu", "hamburger", "navigation"],
+            "category": "navigation"
+        }
+    ],
+    "categories": {
+        "navigation": {
+            "id": "navigation",
+            "name": "Navigation",
+            "description": "Navigation and menu icons"
+        },
+        "action": {
+            "id": "action",
+            "name": "Action",
+            "description": "Action and interaction icons"
+        }
+    },
+    "metadata": {
+        "type": "material",
+        "parsed_at": "2024-01-01 00:00:00",
+        "source": "manual"
+    }
+}

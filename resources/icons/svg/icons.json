@@ -1,0 +1,30 @@
+{
+    "icons": [
+        {
+            "name": "check",
+            "class": "svg-icon-check",
+            "type": "svg",
+            "tags": ["check", "tick", "success"],
+            "category": "status"
+        },
+        {
+            "name": "close",
+            "class": "svg-icon-close",
+            "type": "svg",
+            "tags": ["close", "x", "cancel"],
+            "category": "status"
+        }
+    ],
+    "categories": {
+        "status": {
+            "id": "status",
+            "name": "Status",
+            "description": "Status and feedback icons"
+        }
+    },
+    "metadata": {
+        "type": "svg",
+        "parsed_at": "2024-01-01 00:00:00",
+        "source": "manual"
+    }
+}

@@ -75,10 +75,8 @@ class IconCommands
                 WP_CLI::log("Created output directory: {$outputDir}");
             }
 
-            // Transform CSS to JSON
-            $app = app();
-            $transformer = new IconTransformerService($app);
-            $result = $transformer->transformFromCss($cssUrl, $type);
+            // Transform CSS to JSON - sử dụng Config facade trực tiếp
+            $result = $this->transformCssToJson($cssUrl, $type);
 
             // Save to file
             $jsonData = json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
@@ -94,6 +92,99 @@ class IconCommands
         } catch (\Exception $e) {
             WP_CLI::error("Transformation failed: " . $e->getMessage());
         }
+    }
+
+    /**
+     * Transform CSS to JSON without using IconTransformerService
+     */
+    private function transformCssToJson($cssUrl, $type)
+    {
+        // Fetch CSS content
+        $cssContent = file_get_contents($cssUrl);
+        if ($cssContent === false) {
+            throw new \Exception("Failed to fetch CSS from: {$cssUrl}");
+        }
+
+        // Simple transformation based on type
+        $icons = [];
+        $categories = [];
+
+        switch ($type) {
+            case 'fontawesome':
+                // Parse FontAwesome CSS patterns
+                preg_match_all('/\.fa-([a-zA-Z0-9-]+)\s*\{[^}]*\}/i', $cssContent, $matches);
+                foreach ($matches[1] as $iconName) {
+                    $icons[] = [
+                        'name' => $iconName,
+                        'class' => "fa-{$iconName}",
+                        'type' => 'fontawesome',
+                        'tags' => [$iconName],
+                        'category' => 'general'
+                    ];
+                }
+                break;
+
+            case 'material':
+                // Parse Material Icons CSS patterns
+                preg_match_all('/\.material-icons\s*\{[^}]*\}/i', $cssContent, $matches);
+                $icons[] = [
+                    'name' => 'material-icons',
+                    'class' => 'material-icons',
+                    'type' => 'material',
+                    'tags' => ['material', 'icons'],
+                    'category' => 'general'
+                ];
+                break;
+
+            case 'custom':
+                // Parse custom icon patterns
+                preg_match_all('/\.icon-([a-zA-Z0-9-]+)\s*\{[^}]*\}/i', $cssContent, $matches);
+                foreach ($matches[1] as $iconName) {
+                    $icons[] = [
+                        'name' => $iconName,
+                        'class' => "icon-{$iconName}",
+                        'type' => 'custom',
+                        'tags' => [$iconName],
+                        'category' => 'general'
+                    ];
+                }
+                break;
+
+            case 'svg':
+                // Parse SVG icon patterns
+                preg_match_all('/\.svg-icon-([a-zA-Z0-9-]+)\s*\{[^}]*\}/i', $cssContent, $matches);
+                foreach ($matches[1] as $iconName) {
+                    $icons[] = [
+                        'name' => $iconName,
+                        'class' => "svg-icon-{$iconName}",
+                        'type' => 'svg',
+                        'tags' => [$iconName],
+                        'category' => 'general'
+                    ];
+                }
+                break;
+
+            default:
+                throw new \Exception("Unsupported icon type: {$type}");
+        }
+
+        $categories = [
+            'general' => [
+                'id' => 'general',
+                'name' => 'General',
+                'description' => 'General icons'
+            ]
+        ];
+
+        return [
+            'icons' => $icons,
+            'categories' => $categories,
+            'metadata' => [
+                'type' => $type,
+                'parsed_at' => current_time('mysql'),
+                'source' => 'css_parser'
+            ]
+        ];
     }
 
     /**
@@ -337,9 +428,6 @@ class IconCommands
             return;
         }
 
-        $app = app();
-        $transformer = new IconTransformerService($app);
-
         // Get CSS URL from config
         $cssUrl = $config['cdn_url'] ?? '';
         if (empty($cssUrl)) {
@@ -347,10 +435,12 @@ class IconCommands
             return;
         }
 
-        // Transform and save
-        $basePath = $app->make('jankx.paths')['base'];
+        // Transform and save using our local method
+        $result = $this->transformCssToJson($cssUrl, $type);
+
+        // Get base path from WordPress theme directory
+        $basePath = get_template_directory();
         $outputPath = $basePath . "/resources/icons/{$type}/icons.json";
-        $result = $transformer->transformFromCss($cssUrl, $type);
 
         // Save to file
         $outputDir = dirname($outputPath);

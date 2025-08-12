@@ -1,0 +1,47 @@
+{
+    "icons": [
+        {
+            "name": "home",
+            "class": "fas fa-home",
+            "type": "fontawesome",
+            "tags": ["home", "house", "main"],
+            "category": "navigation"
+        },
+        {
+            "name": "search",
+            "class": "fas fa-search",
+            "type": "fontawesome",
+            "tags": ["search", "find", "lookup"],
+            "category": "action"
+        },
+        {
+            "name": "user",
+            "class": "fas fa-user",
+            "type": "fontawesome",
+            "tags": ["user", "person", "profile"],
+            "category": "user"
+        }
+    ],
+    "categories": {
+        "navigation": {
+            "id": "navigation",
+            "name": "Navigation",
+            "description": "Navigation and menu icons"
+        },
+        "action": {
+            "id": "action",
+            "name": "Action",
+            "description": "Action and interaction icons"
+        },
+        "user": {
+            "id": "user",
+            "name": "User",
+            "description": "User and profile related icons"
+        }
+    },
+    "metadata": {
+        "type": "fontawesome",
+        "parsed_at": "2024-01-01 00:00:00",
+        "source": "manual"
+    }
+}
