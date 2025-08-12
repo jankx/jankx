@@ -3,4 +3,5 @@ vendor
 coverage
 coverage.txt
 node_modules
-/composer.lockpackage-lock.json
+/composer.lock
+package-lock.json
