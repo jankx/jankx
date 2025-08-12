@@ -2,7 +2,8 @@
 
 return [
     'name' => 'Jankx Framework',
-    'menu_title' => 'Jankx Framework',
+    'menu_title' => 'Jankx',
+    'admin_page_title' => 'Jankx Framework',
     'menu_position' => 59,
     'version' => '2.0.0',
     'providers' => [

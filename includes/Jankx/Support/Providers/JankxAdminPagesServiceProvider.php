@@ -48,12 +48,12 @@ class JankxAdminPagesServiceProvider extends ServiceProvider
     {
         // Main menu
         add_menu_page(
-            Config::get('app.menu_title', 'Jankx Framework'), // Page title
+            Config::get('app.admin_page_title', 'Jankx Framework'), // Page title
             Config::get('app.menu_title', 'Jankx Framework'), // Menu title
             'manage_options', // Capability
             'jankx-settings', // Menu slug
             [$this, 'renderMainPage'], // Callback
-            'dashicons-admin-generic', // Icon
+            'dashicons-art', // Icon
             Config::get('app.menu_position', 59) // Position
         );
 
