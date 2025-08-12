@@ -1,0 +1,130 @@
+/**
+ * Language Switcher Block - Main CSS
+ *
+ * This file contains the main styles for the language switcher block
+ */
+
+/* Main block container */
+.language-switcher-block {
+    margin: 1rem 0;
+    padding: 0;
+    font-family: inherit;
+}
+
+/* Dropdown style */
+.language-switcher-dropdown {
+    width: 100%;
+    max-width: 300px;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    background-color: #ffffff;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+}
+
+.language-switcher-dropdown:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.language-switcher-dropdown:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.language-switcher-dropdown option {
+    padding: 0.5rem;
+    font-size: 1rem;
+}
+
+/* List style */
+.language-switcher-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.language-switcher-list .language-item {
+    margin: 0;
+    padding: 0;
+}
+
+.language-switcher-list .language-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 6px;
+    background-color: #ffffff;
+    color: #374151;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.language-switcher-list .language-link:hover {
+    border-color: #cbd5e1;
+    background-color: #f8fafc;
+    color: #1f2937;
+    text-decoration: none;
+}
+
+.language-switcher-list .current-language .language-link {
+    border-color: #3b82f6;
+    background-color: #3b82f6;
+    color: #ffffff;
+}
+
+.language-switcher-list .current-language .language-link:hover {
+    border-color: #2563eb;
+    background-color: #2563eb;
+}
+
+/* Language flag */
+.language-flag {
+    width: 20px;
+    height: 15px;
+    object-fit: cover;
+    border-radius: 2px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Language name */
+.language-name {
+    font-weight: 500;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .language-switcher-dropdown {
+        max-width: 100%;
+        font-size: 0.875rem;
+    }
+
+    .language-switcher-list {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .language-switcher-list .language-link {
+        justify-content: center;
+        padding: 0.75rem 1rem;
+    }
+}

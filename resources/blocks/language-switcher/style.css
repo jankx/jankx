@@ -1,0 +1,268 @@
+/**
+ * Language Switcher Block Styles
+ *
+ * Styles for both frontend and editor
+ */
+
+/* Main block container */
+.language-switcher-block {
+    margin: 1rem 0;
+    padding: 0;
+    font-family: inherit;
+}
+
+/* Dropdown style */
+.language-switcher-dropdown {
+    width: 100%;
+    max-width: 300px;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    background-color: #ffffff;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+}
+
+.language-switcher-dropdown:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.language-switcher-dropdown:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.language-switcher-dropdown option {
+    padding: 0.5rem;
+    font-size: 1rem;
+}
+
+/* List style */
+.language-switcher-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.language-switcher-list .language-item {
+    margin: 0;
+    padding: 0;
+}
+
+.language-switcher-list .language-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 6px;
+    background-color: #ffffff;
+    color: #374151;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.language-switcher-list .language-link:hover {
+    border-color: #cbd5e1;
+    background-color: #f8fafc;
+    color: #1f2937;
+    text-decoration: none;
+}
+
+.language-switcher-list .current-language .language-link {
+    border-color: #3b82f6;
+    background-color: #3b82f6;
+    color: #ffffff;
+}
+
+.language-switcher-list .current-language .language-link:hover {
+    border-color: #2563eb;
+    background-color: #2563eb;
+}
+
+/* Language flag */
+.language-flag {
+    width: 20px;
+    height: 15px;
+    object-fit: cover;
+    border-radius: 2px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Language name */
+.language-name {
+    font-weight: 500;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .language-switcher-dropdown {
+        max-width: 100%;
+        font-size: 0.875rem;
+    }
+
+    .language-switcher-list {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .language-switcher-list .language-link {
+        justify-content: center;
+        padding: 0.75rem 1rem;
+    }
+}
+
+/* Editor specific styles */
+.language-switcher-editor-preview {
+    border: 2px dashed #d1d5db;
+    border-radius: 8px;
+    padding: 1.5rem;
+    background-color: #f9fafb;
+    text-align: center;
+}
+
+.language-switcher-editor-preview .language-switcher-title {
+    margin: 0 0 1rem 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+.language-switcher-preview {
+    margin: 1rem 0;
+}
+
+.language-switcher-preview.loading {
+    color: #6b7280;
+    font-style: italic;
+}
+
+.language-switcher-preview.error {
+    color: #dc2626;
+    background-color: #fef2f2;
+    padding: 0.75rem;
+    border-radius: 6px;
+    border: 1px solid #fecaca;
+}
+
+.language-switcher-preview.no-languages {
+    color: #6b7280;
+    background-color: #f3f4f6;
+    padding: 0.75rem;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+}
+
+.language-switcher-info {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: #f0f9ff;
+    border-radius: 6px;
+    border: 1px solid #bae6fd;
+}
+
+.language-switcher-info p {
+    margin: 0.25rem 0;
+    font-size: 0.875rem;
+    color: #0369a1;
+}
+
+.language-count {
+    font-weight: 600;
+}
+
+.current-language-info {
+    font-style: italic;
+}
+
+/* Preview styles in editor */
+.language-switcher-dropdown-preview .language-switcher-dropdown {
+    cursor: default;
+    opacity: 0.7;
+}
+
+.language-switcher-list-preview .language-link {
+    cursor: default;
+}
+
+.language-switcher-list-preview .language-link:hover {
+    background-color: #ffffff;
+    border-color: #e2e8f0;
+    color: #374151;
+}
+
+/* Hover effects for interactive elements */
+.language-switcher-dropdown:not(:disabled):hover {
+    border-color: #cbd5e1;
+}
+
+.language-switcher-list .language-link:not(.current-language):hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Focus states for accessibility */
+.language-switcher-dropdown:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+.language-switcher-list .language-link:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .language-switcher-dropdown {
+        background-color: #1f2937;
+        border-color: #4b5563;
+        color: #f9fafb;
+    }
+
+    .language-switcher-dropdown:hover {
+        border-color: #6b7280;
+    }
+
+    .language-switcher-dropdown:focus {
+        border-color: #60a5fa;
+    }
+
+    .language-switcher-list .language-link {
+        background-color: #1f2937;
+        border-color: #4b5563;
+        color: #f9fafb;
+    }
+
+    .language-switcher-list .language-link:hover {
+        background-color: #374151;
+        border-color: #6b7280;
+    }
+
+    .language-switcher-list .current-language .language-link {
+        background-color: #1d4ed8;
+        border-color: #1d4ed8;
+    }
+
+    .language-switcher-list .current-language .language-link:hover {
+        background-color: #1e40af;
+        border-color: #1e40af;
+    }
+}

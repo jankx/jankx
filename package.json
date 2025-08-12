@@ -6,6 +6,8 @@
   "scripts": {
     "build:widget-renderer": "wp-scripts build resources/blocks/widget-renderer/index.js resources/blocks/widget-renderer/index.css --output-path=resources/blocks/widget-renderer/build",
     "dev:widget-renderer": "wp-scripts start resources/blocks/widget-renderer/index.js resources/blocks/widget-renderer/index.css --output-path=resources/blocks/widget-renderer/build",
+    "build:language-switcher": "wp-scripts build resources/blocks/language-switcher/index.js resources/blocks/language-switcher/style.css --output-path=resources/blocks/language-switcher/build",
+    "dev:language-switcher": "wp-scripts start resources/blocks/language-switcher/index.js resources/blocks/language-switcher/style.css --output-path=resources/blocks/language-switcher/build",
     "format": "wp-scripts format",
     "lint:css": "wp-scripts lint-style",
     "lint:js": "wp-scripts lint-js",
