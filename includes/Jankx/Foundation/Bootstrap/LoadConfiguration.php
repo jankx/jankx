@@ -60,7 +60,8 @@ class LoadConfiguration
             'app.php',
             'providers.php',
             'error.php',
-            'layout.php'
+            'layout.php',
+            'font-icons.php'
         ];
 
         foreach ($configFiles as $configFile) {
