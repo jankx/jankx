@@ -31,6 +31,7 @@ return [
             Jankx\Support\Providers\PlatesServiceProvider::class,
             Jankx\Support\Providers\GutenbergServiceProvider::class,
             Jankx\Support\Providers\JankxMenuItemsServiceProvider::class,
+            Jankx\Support\Providers\JankxAdminMenuServiceProvider::class,
         ],
 
         // REST API providers

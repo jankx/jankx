@@ -60,8 +60,8 @@ class FontIconsServiceProvider extends ServiceProvider
 
     public function boot(Application $app)
     {
-        // Register admin menu
-        add_action('admin_menu', [$this, 'registerAdminMenu']);
+        // Admin menu được quản lý bởi JankxAdminMenuServiceProvider
+        // add_action('admin_menu', [$this, 'registerAdminMenu']);
 
         // Register Gutenberg integration
         add_action('enqueue_block_editor_assets', [$this, 'enqueueGutenbergAssets']);
