@@ -567,8 +567,10 @@ class FontsService
     }
 
     /**
-     * Thêm admin menu
+     * Admin menu được quản lý bởi JankxAdminPagesServiceProvider
+     * Method này đã được comment out để tránh duplicate menu
      */
+    /*
     public function addAdminMenu()
     {
         add_submenu_page(
@@ -581,13 +583,11 @@ class FontsService
         );
     }
 
-    /**
-     * Render admin page
-     */
     public function renderAdminPage()
     {
         include get_template_directory() . '/templates/admin/fonts.php';
     }
+    */
 
     /**
      * AJAX: Đăng ký font

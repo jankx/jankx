@@ -39,8 +39,8 @@ class FontsServiceProvider extends ServiceProvider
         // Đăng ký REST API endpoints
         add_action('rest_api_init', [$fontsService, 'registerRestEndpoints']);
 
-        // Đăng ký admin menu
-        add_action('admin_menu', [$fontsService, 'addAdminMenu']);
+        // Admin menu được quản lý bởi JankxAdminPagesServiceProvider
+        // add_action('admin_menu', [$fontsService, 'addAdminMenu']);
 
         // Đăng ký AJAX handlers
         add_action('wp_ajax_jankx_register_font', [$fontsService, 'handleAjaxRegisterFont']);
