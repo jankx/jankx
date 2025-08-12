@@ -4,7 +4,8 @@ return [
     'name' => 'Jankx Framework',
     'version' => '2.0.0',
     'providers' => [
-        // App\Providers\ExampleServiceProvider::class
+        Jankx\Support\Providers\FontsServiceProvider::class,
+        Jankx\Support\Providers\FontIconsServiceProvider::class
     ],
     'aliases' => [
         'log' => ['\Jankx\Foundation\Log\Logger'],

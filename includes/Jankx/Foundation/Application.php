@@ -67,8 +67,7 @@ class Application extends Container
         DeferredServiceProvider::class,
         TranslationServiceProvider::class,
         JankxFrameworkServiceProvider::class,
-        ThemeOptionsServiceProvider::class,
-        FontsServiceProvider::class
+        ThemeOptionsServiceProvider::class
     ];
 
     /**
