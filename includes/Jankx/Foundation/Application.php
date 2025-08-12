@@ -6,9 +6,10 @@ use App\Providers\ThemeOptionsServiceProvider;
 use Exception;
 use Illuminate\Container\Container;
 use Jankx\Config\Repository;
-use Jankx\Facades\Log;
 use Jankx\Helper\Environment;
 use Jankx\Support\Providers\DeferredServiceProvider;
+use Jankx\Support\Providers\FontsServiceProvider;
+use Jankx\Support\Providers\JankxFrameworkServiceProvider;
 use Jankx\Support\Providers\SystemServiceProvider;
 use Jankx\Support\Providers\TranslationServiceProvider;
 
@@ -65,7 +66,9 @@ class Application extends Container
         SystemServiceProvider::class,
         DeferredServiceProvider::class,
         TranslationServiceProvider::class,
-        ThemeOptionsServiceProvider::class
+        JankxFrameworkServiceProvider::class,
+        ThemeOptionsServiceProvider::class,
+        FontsServiceProvider::class
     ];
 
     /**
