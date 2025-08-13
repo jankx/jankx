@@ -16,13 +16,13 @@ class Jankx
     public static function version()
     {
         $app = Application::getInstance();
-        
+
         try {
             // Thử lấy version từ container trước
             if ($app->bound('jankx.version')) {
                 return $app->make('jankx.version');
             }
-            
+
             // Fallback: đọc từ composer.json
             $composerFile = dirname(dirname(__DIR__)) . '/composer.json';
             if (file_exists($composerFile)) {
@@ -31,16 +31,15 @@ class Jankx
                     return $composerData['version'];
                 }
             }
-            
+
             // Fallback cuối cùng
             return '2.0.0';
-            
         } catch (\Exception $e) {
             // Fallback nếu có lỗi
             return '2.0.0';
         }
     }
-    
+
     /**
      * Get framework name
      */
@@ -48,7 +47,7 @@ class Jankx
     {
         return 'Jankx';
     }
-    
+
     /**
      * Get framework description
      */
@@ -56,27 +55,26 @@ class Jankx
     {
         return 'Jankx is a powerful WordPress theme framework. High performance, compatible, easy to use and develop';
     }
-    
+
     /**
      * Check if running in development mode
      */
     public static function isDevelopment()
     {
         $app = Application::getInstance();
-        
+
         try {
             if ($app->bound('jankx.environment')) {
                 return $app->make('jankx.environment') === 'development';
             }
-            
+
             // Fallback: kiểm tra WordPress debug mode
             return defined('WP_DEBUG') && WP_DEBUG;
-            
         } catch (\Exception $e) {
             return defined('WP_DEBUG') && WP_DEBUG;
         }
     }
-    
+
     /**
      * Get framework path
      */
@@ -84,7 +82,7 @@ class Jankx
     {
         return dirname(dirname(__DIR__));
     }
-    
+
     /**
      * Get framework includes path
      */
@@ -92,7 +90,7 @@ class Jankx
     {
         return self::path() . '/includes';
     }
-    
+
     /**
      * Get framework app path
      */
@@ -100,7 +98,7 @@ class Jankx
     {
         return self::path() . '/app';
     }
-    
+
     /**
      * Get framework resources path
      */
@@ -108,7 +106,7 @@ class Jankx
     {
         return self::path() . '/resources';
     }
-    
+
     /**
      * Get framework assets path
      */
@@ -116,7 +114,7 @@ class Jankx
     {
         return self::path() . '/assets';
     }
-    
+
     /**
      * Get framework URL
      */
@@ -125,7 +123,7 @@ class Jankx
         $templateUrl = get_template_directory_uri();
         return $templateUrl;
     }
-    
+
     /**
      * Get framework includes URL
      */
@@ -133,7 +131,7 @@ class Jankx
     {
         return self::url() . '/includes';
     }
-    
+
     /**
      * Get framework app URL
      */
@@ -141,7 +139,7 @@ class Jankx
     {
         return self::url() . '/app';
     }
-    
+
     /**
      * Get framework resources URL
      */
@@ -149,7 +147,7 @@ class Jankx
     {
         return self::url() . '/resources';
     }
-    
+
     /**
      * Get framework assets URL
      */
@@ -157,20 +155,20 @@ class Jankx
     {
         return self::url() . '/assets';
     }
-    
+
     /**
      * Magic method để gọi các methods khác
      */
     public static function __callStatic($method, $arguments)
     {
         $app = Application::getInstance();
-        
+
         try {
             // Thử gọi method từ container
             if ($app->bound("jankx.{$method}")) {
                 return $app->make("jankx.{$method}");
             }
-            
+
             // Thử gọi method từ service
             if ($app->bound("Jankx\\Services\\{$method}Service")) {
                 $service = $app->make("Jankx\\Services\\{$method}Service");
@@ -178,9 +176,8 @@ class Jankx
                     return call_user_func_array([$service, $method], $arguments);
                 }
             }
-            
+
             throw new \BadMethodCallException("Method {$method} does not exist on Jankx facade.");
-            
         } catch (\Exception $e) {
             throw new \BadMethodCallException("Method {$method} does not exist on Jankx facade: " . $e->getMessage());
         }

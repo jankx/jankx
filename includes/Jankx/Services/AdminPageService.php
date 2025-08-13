@@ -812,23 +812,17 @@ class AdminPageService
      */
     protected function handleImportExportActions($data)
     {
-        error_log("JANKX DEBUG: handleImportExportActions() called");
-        error_log("JANKX DEBUG: Action: " . ($data['jankx_action'] ?? 'null'));
-        error_log("JANKX DEBUG: Full data: " . print_r($data, true));
 
         $action = $data['jankx_action'] ?? '';
 
         switch ($action) {
             case 'import_new_icon_set':
-                error_log("JANKX DEBUG: Calling handleImportNewIconSet...");
-                $this->handleImportNewIconSet($data);
+                                $this->handleImportNewIconSet($data);
                 break;
             case 'export_icon_sets':
-                error_log("JANKX DEBUG: Calling handleExportIconSets...");
-                $this->handleExportIconSets($data);
+                                $this->handleExportIconSets($data);
                 break;
             default:
-                error_log("JANKX DEBUG: Unknown action: {$action}");
                 break;
         }
     }
@@ -838,16 +832,12 @@ class AdminPageService
      */
     protected function handleImportNewIconSet($data)
     {
-        error_log("JANKX DEBUG: handleImportNewIconSet() called");
-        error_log("JANKX DEBUG: POST data: " . print_r($data, true));
 
         // Verify nonce
         if (!wp_verify_nonce($data['_wpnonce'] ?? '', 'jankx_import_icons')) {
-            error_log("JANKX DEBUG: Nonce verification failed");
-            wp_die('Security check failed');
+                        wp_die('Security check failed');
         }
 
-        error_log("JANKX DEBUG: Nonce verification passed");
 
         try {
             $iconSetName = sanitize_text_field($data['icon_set_name'] ?? '');
@@ -857,53 +847,34 @@ class AdminPageService
             $iconCategories = sanitize_text_field($data['icon_categories'] ?? '');
             $autoLoad = isset($data['auto_load']);
 
-            error_log("JANKX DEBUG: Parsed form data:");
-            error_log("JANKX DEBUG: - Icon Set Name: {$iconSetName}");
-            error_log("JANKX DEBUG: - CSS URL: {$cssUrl}");
-            error_log("JANKX DEBUG: - CSS File: " . print_r($cssFile, true));
-            error_log("JANKX DEBUG: - Icon Prefix: {$iconPrefix}");
-            error_log("JANKX DEBUG: - Icon Categories: {$iconCategories}");
-            error_log("JANKX DEBUG: - Auto Load: " . ($autoLoad ? 'true' : 'false'));
 
             // Validate required fields
             if (empty($iconSetName) || (empty($cssUrl) && empty($cssFile['name']))) {
-                error_log("JANKX DEBUG: Validation failed - missing required fields");
-                throw new \Exception('Icon set name and CSS source are required');
+                                throw new \Exception('Icon set name and CSS source are required');
             }
 
-            error_log("JANKX DEBUG: Validation passed");
 
             // Create icon type from name
             $iconType = $this->createIconTypeFromName($iconSetName);
-            error_log("JANKX DEBUG: Created icon type: {$iconType}");
 
             // Import icons
-            error_log("JANKX DEBUG: Getting import service...");
-            $importService = $this->app->make('jankx.icon-import');
-            error_log("JANKX DEBUG: Import service obtained successfully");
+                        $importService = $this->app->make('jankx.icon-import');
 
-            error_log("JANKX DEBUG: Calling importFromCssUrl...");
-            $result = $importService->importFromCssUrl($cssUrl, $iconType, $iconSetName);
-            error_log("JANKX DEBUG: Import result: " . print_r($result, true));
+                        $result = $importService->importFromCssUrl($cssUrl, $iconType, $iconSetName);
 
             if ($result['success']) {
-                error_log("JANKX DEBUG: Import successful, showing success message");
-                // Show success message
+                                // Show success message
                 echo '<div class="notice notice-success is-dismissible">';
                 echo '<p>' . esc_html($result['message']) . '</p>';
                 echo '</div>';
             } else {
-                error_log("JANKX DEBUG: Import failed, showing error message");
-                // Show error message
+                                // Show error message
                 echo '<div class="notice notice-error is-dismissible">';
                 echo '<p>' . esc_html($result['message']) . '</p>';
                 echo '</div>';
             }
-
         } catch (\Exception $e) {
-            error_log("JANKX DEBUG: Exception caught: " . $e->getMessage());
-            error_log("JANKX DEBUG: Exception trace: " . $e->getTraceAsString());
-            echo '<div class="notice notice-error is-dismissible">';
+                                    echo '<div class="notice notice-error is-dismissible">';
             echo '<p>Import failed: ' . esc_html($e->getMessage()) . '</p>';
             echo '</div>';
         }
@@ -956,15 +927,12 @@ class AdminPageService
      */
     protected function renderImportTab($iconTypes)
     {
-        error_log("JANKX DEBUG: renderImportTab() called");
-        error_log("JANKX DEBUG: iconTypes parameter: " . print_r($iconTypes, true));
 
         echo '<div class="tab-content">';
 
         // Hiển thị thông tin về icon types hiện có
         // Lấy data trực tiếp từ config thay vì dùng $iconTypes parameter
         $allIconTypes = Config::get('font-icons.icon_types', []);
-        error_log("JANKX DEBUG: Current icon types from config: " . print_r($allIconTypes, true));
 
         if (!empty($allIconTypes) && is_array($allIconTypes)) {
             echo '<div class="jankx-current-icon-types">';
@@ -1066,8 +1034,8 @@ class AdminPageService
 
         if (!empty($allIconTypes)) {
                     echo '<form method="post" action="">';
-        echo '<input type="hidden" name="jankx_action" value="export_icon_sets">';
-        echo '<input type="hidden" name="_wpnonce" value="' . wp_create_nonce('jankx_export_icons') . '">';
+            echo '<input type="hidden" name="jankx_action" value="export_icon_sets">';
+            echo '<input type="hidden" name="_wpnonce" value="' . wp_create_nonce('jankx_export_icons') . '">';
 
             echo '<table class="form-table">';
             echo '<tr>';
@@ -1367,7 +1335,7 @@ class AdminPageService
 
         // Hiển thị thông báo
         $newStatus = $config['icon_types'][$iconType]['enabled'] ? 'enabled' : 'disabled';
-        add_action('admin_notices', function() use ($iconType, $newStatus) {
+        add_action('admin_notices', function () use ($iconType, $newStatus) {
             echo '<div class="notice notice-success is-dismissible">';
             echo '<p>Icon type <strong>' . esc_html(ucfirst($iconType)) . '</strong> has been <strong>' . esc_html($newStatus) . '</strong>.</p>';
             echo '</div>';
@@ -1401,7 +1369,7 @@ class AdminPageService
 
         // Hiển thị thông báo
         $newAutoLoad = $config['icon_types'][$iconType]['auto_load'] ? 'enabled' : 'disabled';
-        add_action('admin_notices', function() use ($iconType, $newAutoLoad) {
+        add_action('admin_notices', function () use ($iconType, $newAutoLoad) {
             echo '<div class="notice notice-success is-dismissible">';
             echo '<p>Auto-load for <strong>' . esc_html(ucfirst($iconType)) . '</strong> has been <strong>' . esc_html($newAutoLoad) . '</strong>.</p>';
             echo '</div>';
@@ -1439,7 +1407,7 @@ class AdminPageService
         $this->cleanupIconTypeFiles($iconType);
 
         // Hiển thị thông báo
-        add_action('admin_notices', function() use ($iconTypeName) {
+        add_action('admin_notices', function () use ($iconTypeName) {
             echo '<div class="notice notice-success is-dismissible">';
             echo '<p>Icon type <strong>' . esc_html($iconTypeName) . '</strong> has been <strong>removed</strong> successfully.</p>';
             echo '</div>';

@@ -275,5 +275,4 @@ document.addEventListener("DOMContentLoaded", function() {
     {
         echo '<style type="text/css">' . $this->getSlideoutCSS() . '</style>';
     }
-
 }

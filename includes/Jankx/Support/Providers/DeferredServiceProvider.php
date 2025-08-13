@@ -108,9 +108,6 @@ class DeferredServiceProvider extends ServiceProvider
         if (defined('WP_DEBUG') && WP_DEBUG) {
             add_action('shutdown', function () use ($deferredManager) {
                 // Log thống kê services
-                error_log('Deferred Services Stats:');
-                error_log('- Registered: ' . implode(', ', $deferredManager->getRegisteredServices()));
-                error_log('- Resolved: ' . implode(', ', $deferredManager->getResolvedServices()));
             });
         }
     }

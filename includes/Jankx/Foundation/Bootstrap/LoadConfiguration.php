@@ -17,7 +17,6 @@ class LoadConfiguration
     public function bootstrap(Application $app)
     {
         if (Environment::isDebugLog()) {
-            error_log('[JANKX DEBUG] Loading configuration...');
         }
 
         $config = $app->make('config');
@@ -26,7 +25,6 @@ class LoadConfiguration
         $this->loadThemeConfiguration($app, $config);
 
         if (Environment::isDebugLog()) {
-            error_log('[JANKX DEBUG] Configuration loaded successfully');
         }
     }
 
@@ -51,8 +49,6 @@ class LoadConfiguration
         }
 
         if (Environment::isDebugLog()) {
-            error_log(sprintf('[JANKX DEBUG] Loading parent config from: %s', $parentConfigPath));
-            error_log(sprintf('[JANKX DEBUG] Loading child config from: %s', $childConfigPath));
         }
 
         // Load all config files
@@ -77,7 +73,6 @@ class LoadConfiguration
             $config->set($configKey, $mergedConfig);
 
             if (Environment::isDebugLog()) {
-                error_log(sprintf('[JANKX DEBUG] %s loaded with keys: %s', $configFile, implode(', ', array_keys($mergedConfig))));
             }
         }
     }
@@ -106,7 +101,6 @@ class LoadConfiguration
 
         if ($cachedConfig !== false) {
             if (Environment::isDebugLog()) {
-                error_log(sprintf('[JANKX DEBUG] Config loaded from cache: %s', $cacheKey));
             }
             return $cachedConfig;
         }
@@ -118,7 +112,6 @@ class LoadConfiguration
         wp_cache_set($cacheKey, $config, 'jankx_config', 3600);
 
         if (Environment::isDebugLog()) {
-            error_log(sprintf('[JANKX DEBUG] Config cached: %s', $cacheKey));
         }
 
         return $config;
@@ -134,7 +127,6 @@ class LoadConfiguration
         wp_cache_flush_group('jankx_config');
 
         if (Environment::isDebugLog()) {
-            error_log('[JANKX DEBUG] Config cache cleared');
         }
     }
 
@@ -158,7 +150,6 @@ class LoadConfiguration
         }
 
         if (Environment::isDebugLog()) {
-            error_log(sprintf('[JANKX DEBUG] Config cache cleared for type: %s', $configType));
         }
     }
 

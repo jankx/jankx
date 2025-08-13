@@ -120,21 +120,21 @@ class IconRepository
 
         // Filter by category
         if (isset($filters['category'])) {
-            $filtered = array_filter($filtered, function($icon) use ($filters) {
+            $filtered = array_filter($filtered, function ($icon) use ($filters) {
                 return isset($icon['category']) && $icon['category'] === $filters['category'];
             });
         }
 
         // Filter by type
         if (isset($filters['type'])) {
-            $filtered = array_filter($filtered, function($icon) use ($filters) {
+            $filtered = array_filter($filtered, function ($icon) use ($filters) {
                 return isset($icon['type']) && $icon['type'] === $filters['type'];
             });
         }
 
         // Filter by search query
         if (isset($filters['search'])) {
-            $filtered = array_filter($filtered, function($icon) use ($filters) {
+            $filtered = array_filter($filtered, function ($icon) use ($filters) {
                 return $this->iconMatchesQuery($icon, $filters['search']);
             });
         }

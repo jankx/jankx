@@ -145,8 +145,7 @@ class LazyLoaderTest extends TestCase
      */
     public function testPerformanceMonitoring()
     {
-        // Mock error_log to capture output
-        $this->expectOutputRegex('/Service "user.service" loaded in \d+\.\d+ ms/');
+        // Mock         $this->expectOutputRegex('/Service "user.service" loaded in \d+\.\d+ ms/');
 
         // Enable debug logging for testing
         if (method_exists('Jankx\Helper\Environment', 'isDebugLog')) {

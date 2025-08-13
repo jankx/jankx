@@ -20,7 +20,6 @@ class RegisterFacades
     public function bootstrap(Application $app)
     {
         if (Environment::isDebugLog()) {
-            error_log('[JANKX DEBUG] Registering facades...');
         }
 
         // Set the application instance for the facades
@@ -34,7 +33,6 @@ class RegisterFacades
         });
 
         if (Environment::isDebugLog()) {
-            error_log('[JANKX DEBUG] Facades registered successfully');
         }
     }
 }

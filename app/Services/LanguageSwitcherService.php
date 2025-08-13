@@ -73,7 +73,6 @@ class LanguageSwitcherService extends AbstractService
         ]);
 
         if (WP_DEBUG) {
-            error_log('Language Switcher: Languages initialized - ' . count($this->languages) . ' languages found');
         }
     }
 
@@ -118,7 +117,6 @@ class LanguageSwitcherService extends AbstractService
         );
 
         if (WP_DEBUG) {
-            error_log('Language Switcher: Block registered successfully');
         }
     }
 

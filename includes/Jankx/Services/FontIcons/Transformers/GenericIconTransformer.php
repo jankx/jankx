@@ -9,24 +9,17 @@ class GenericIconTransformer extends CssToJsonTransformer
      */
     public function transform($cssContent)
     {
-        error_log("JANKX DEBUG: GenericIconTransformer::transform() called for type: {$this->iconType}");
-        error_log("JANKX DEBUG: CSS content length: " . strlen($cssContent));
 
         $this->cssContent = $cssContent;
 
         // Extract icon classes
-        error_log("JANKX DEBUG: Extracting icon classes...");
-        $iconClasses = $this->extractIconClasses($cssContent);
-        error_log("JANKX DEBUG: Found " . count($iconClasses) . " icon classes");
+                $iconClasses = $this->extractIconClasses($cssContent);
 
         // Extract font information
-        error_log("JANKX DEBUG: Extracting font information...");
-        $fontInfo = $this->extractFontInfo($cssContent);
-        error_log("JANKX DEBUG: Font family: " . ($fontInfo['font_family'] ?? 'Unknown'));
+                $fontInfo = $this->extractFontInfo($cssContent);
 
         // Generate metadata
-        error_log("JANKX DEBUG: Generating metadata...");
-        $metadata = [
+                $metadata = [
             'type' => $this->iconType,
             'version' => $this->extractVersion($cssContent),
             'font_family' => $fontInfo['font_family'] ?? 'Unknown',
@@ -38,12 +31,10 @@ class GenericIconTransformer extends CssToJsonTransformer
                 'source' => 'css_parser',
                 'total_icons' => count($iconClasses)
             ]
-        ];
+                ];
 
-        error_log("JANKX DEBUG: Metadata generated successfully");
-        error_log("JANKX DEBUG: Final icon count: " . count($metadata['icons']));
 
-        return $metadata;
+                return $metadata;
     }
 
     /**

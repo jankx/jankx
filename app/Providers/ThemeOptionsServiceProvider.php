@@ -41,7 +41,6 @@ class ThemeOptionsServiceProvider extends \Jankx\Support\Providers\ServiceProvid
                 $themeOptions->init();
                 Log::debug('ThemeOptionsServiceProvider: ThemeOptionsService initialized');
             } catch (\Exception $e) {
-                error_log('Theme Options Error: ' . $e->getMessage());
             }
         }, 10);
 

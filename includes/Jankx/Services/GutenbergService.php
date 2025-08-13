@@ -130,6 +130,7 @@ class GutenbergService
     protected function registerDefaultBlocks()
     {
         $this->repository->registerBlock(WidgetRendererBlock::class);
+        $this->repository->registerBlock(\Jankx\Support\Blocks\IconPickerBlock::class);
     }
 
     /**

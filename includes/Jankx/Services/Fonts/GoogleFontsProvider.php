@@ -54,13 +54,13 @@ class GoogleFontsProvider
         }
 
         // Thêm preconnect links vào head
-        add_action('wp_head', function() {
+        add_action('wp_head', function () {
             echo '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
             echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
         }, 1);
 
         // Thêm preconnect links vào admin head
-        add_action('admin_head', function() {
+        add_action('admin_head', function () {
             echo '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
             echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
         }, 1);

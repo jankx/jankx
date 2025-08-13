@@ -78,7 +78,6 @@ class Jankx_Framework
 
         // Only log in debug mode if needed
         if (Environment::isDebugLog()) {
-            error_log(sprintf('[JANKX DEBUG] Request: %s %s', $request->getMethod(), $request->getPathInfo()));
         }
 
         // Create appropriate kernel based on request type
@@ -112,7 +111,6 @@ class Jankx_Framework
             if (Environment::isDebugLog()) {
                 throw $e;
             }
-            error_log('Jankx HTTP Error: ' . $e->getMessage());
         }
     }
 
@@ -129,8 +127,6 @@ class Jankx_Framework
 
         // Log debug information
         if (Environment::isDebugLog()) {
-            error_log(sprintf('[JANKX DEBUG] Console Type: %s', $consoleType));
-            error_log(sprintf('[JANKX DEBUG] Console Args: %s', json_encode($args)));
         }
 
         // Create appropriate kernel based on console type
@@ -138,20 +134,17 @@ class Jankx_Framework
             case 'wp_cli':
                 $kernel = new WpCliKernel($this->app);
                 if (Environment::isDebugLog()) {
-                    error_log('[JANKX DEBUG] Created WpCliKernel');
                 }
                 break;
 
             case 'wp_cron':
                 $kernel = new WpCronKernel($this->app);
                 if (Environment::isDebugLog()) {
-                    error_log('[JANKX DEBUG] Created WpCronKernel');
                 }
                 break;
 
             default:
                 if (Environment::isDebugLog()) {
-                    error_log('[JANKX DEBUG] Unknown console type');
                 }
                 return 1; // Unknown console type
         }
@@ -167,8 +160,7 @@ class Jankx_Framework
             if (Environment::isDebugLog()) {
                 throw $e;
             }
-            error_log('Jankx Console Error: ' . $e->getMessage());
-            return 1;
+                        return 1;
         }
     }
 
@@ -209,8 +201,7 @@ class Jankx_Framework
 // Boot framework
 $framework = new Jankx_Framework();
 if (!$framework->isLoaded()) {
-    error_log('[JANKX ERROR] Composer autoloader not loaded');
-    return;
+        return;
 }
 
 $app = require dirname(__FILE__) . '/boot/app.php';

@@ -20,48 +20,34 @@ class IconImportService
     public function importFromCssUrl($cssUrl, $iconType, $displayName = null)
     {
         try {
-            error_log("JANKX DEBUG: Starting import for icon type: {$iconType}");
-            error_log("JANKX DEBUG: CSS URL: {$cssUrl}");
-            error_log("JANKX DEBUG: Display name: " . ($displayName ?: 'null'));
-
             // Validate URL
             if (!filter_var($cssUrl, FILTER_VALIDATE_URL)) {
                 throw new \Exception('Invalid CSS URL provided');
             }
 
-            error_log("JANKX DEBUG: URL validation passed");
 
             // Create transformer
             $transformer = new GenericIconTransformer($iconType);
-            error_log("JANKX DEBUG: Transformer created successfully");
 
             // Determine output path
             $outputPath = $this->getIconOutputPath($iconType);
-            error_log("JANKX DEBUG: Output path: {$outputPath}");
 
             // Transform CSS to JSON
-            error_log("JANKX DEBUG: Starting CSS transformation...");
-            $jsonData = $transformer->transformFromUrl($cssUrl, $outputPath);
-            error_log("JANKX DEBUG: CSS transformation completed. Icons found: " . count($jsonData['icons']));
+                        $jsonData = $transformer->transformFromUrl($cssUrl, $outputPath);
 
             // Update configuration
-            error_log("JANKX DEBUG: Updating configuration...");
-            $this->addIconTypeToConfig($iconType, $jsonData, $cssUrl, $displayName);
-            error_log("JANKX DEBUG: Configuration updated successfully");
+                        $this->addIconTypeToConfig($iconType, $jsonData, $cssUrl, $displayName);
 
             return [
                 'success' => true,
                 'message' => sprintf('Successfully imported %d icons for "%s"', count($jsonData['icons']), $displayName ?: $iconType),
                 'data' => $jsonData
             ];
-
         } catch (\Exception $e) {
-            error_log("JANKX DEBUG: Import failed with exception: " . $e->getMessage());
-            error_log("JANKX DEBUG: Exception trace: " . $e->getTraceAsString());
-            return [
+                                    return [
                 'success' => false,
                 'message' => 'Import failed: ' . $e->getMessage()
-            ];
+                                    ];
         }
     }
 
@@ -79,14 +65,9 @@ class IconImportService
      */
     protected function addIconTypeToConfig($iconType, $jsonData, $cssUrl, $displayName = null)
     {
-        error_log("JANKX DEBUG: addIconTypeToConfig() called");
-        error_log("JANKX DEBUG: Icon type: {$iconType}");
-        error_log("JANKX DEBUG: CSS URL: {$cssUrl}");
-        error_log("JANKX DEBUG: Display name: " . ($displayName ?: 'null'));
 
         // Get current config
         $config = Config::get('font-icons.icon_types', []);
-        error_log("JANKX DEBUG: Current config: " . print_r($config, true));
 
         // Create new icon type config
         $newConfig = [
@@ -102,16 +83,12 @@ class IconImportService
             'imported_at' => current_time('mysql')
         ];
 
-        error_log("JANKX DEBUG: New config to add: " . print_r($newConfig, true));
 
         // Add to config
         $config[$iconType] = $newConfig;
-        error_log("JANKX DEBUG: Updated config: " . print_r($config, true));
 
         // Update config file
-        error_log("JANKX DEBUG: Calling updateConfigFile...");
-        $this->updateConfigFile($config);
-        error_log("JANKX DEBUG: Config file updated successfully");
+                $this->updateConfigFile($config);
     }
 
         /**
@@ -119,25 +96,17 @@ class IconImportService
      */
     protected function updateConfigFile($config)
     {
-        error_log("JANKX DEBUG: updateConfigFile() called");
-        error_log("JANKX DEBUG: Config to write: " . print_r($config, true));
 
         $configPath = get_template_directory() . '/config/font-icons.php';
-        error_log("JANKX DEBUG: Config file path: {$configPath}");
 
         // Create config content
         $configContent = "<?php\n\nreturn " . var_export($config, true) . ";\n";
-        error_log("JANKX DEBUG: Config content length: " . strlen($configContent));
-        error_log("JANKX DEBUG: Config content preview: " . substr($configContent, 0, 300));
 
         // Write to file
         $bytesWritten = file_put_contents($configPath, $configContent);
         if ($bytesWritten === false) {
-            error_log("JANKX DEBUG: Failed to write config file");
-            throw new \Exception('Failed to update configuration file');
+                        throw new \Exception('Failed to update configuration file');
         }
-
-        error_log("JANKX DEBUG: Config file written successfully. Bytes written: {$bytesWritten}");
     }
 
     /**

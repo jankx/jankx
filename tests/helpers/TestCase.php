@@ -39,11 +39,8 @@ abstract class TestCase extends BaseTestCase
     protected function setUpCommonMocks()
     {
         // Mock WordPress functions that are commonly used
-        if (!function_exists('error_log')) {
-            function error_log($message)
-            {
-                // Mock error_log for testing
-                return true;
+        if (!function_exists('            function             {
+                // Mock                 return true;
             }
         }
 

@@ -27,13 +27,11 @@ class WpCronKernel extends Kernel
         // Handle WordPress cron specific logic
         if (!defined('DOING_CRON') || !DOING_CRON) {
             if (Environment::isDebugLog()) {
-                error_log('[JANKX DEBUG] Not a cron request, skipping');
             }
             return 1;
         }
 
         if (Environment::isDebugLog()) {
-            error_log('[JANKX DEBUG] Processing WordPress cron jobs');
         }
 
         // Process scheduled events without triggering wp_loaded
@@ -41,7 +39,6 @@ class WpCronKernel extends Kernel
         // We don't need to call do_action('wp_loaded') here
 
         if (Environment::isDebugLog()) {
-            error_log('[JANKX DEBUG] WordPress cron jobs completed');
         }
 
         return 0;

@@ -88,7 +88,6 @@ class IconCommands
             } else {
                 WP_CLI::error("Failed to save JSON file");
             }
-
         } catch (\Exception $e) {
             WP_CLI::error("Transformation failed: " . $e->getMessage());
         }
@@ -230,7 +229,6 @@ class IconCommands
 
                 WP_CLI::log("");
             }
-
         } catch (\Exception $e) {
             WP_CLI::error("Failed to list icon types: " . $e->getMessage());
         }
@@ -288,7 +286,6 @@ class IconCommands
             update_option('jankx_font_icons_active_types', $activeTypes);
 
             WP_CLI::success("Icon type '{$type}' activated successfully!");
-
         } catch (\Exception $e) {
             WP_CLI::error("Failed to activate icon type: " . $e->getMessage());
         }
@@ -331,7 +328,6 @@ class IconCommands
             update_option('jankx_font_icons_active_types', $activeTypes);
 
             WP_CLI::success("Icon type '{$type}' deactivated successfully!");
-
         } catch (\Exception $e) {
             WP_CLI::error("Failed to deactivate icon type: " . $e->getMessage());
         }
@@ -358,7 +354,6 @@ class IconCommands
             delete_transient('jankx_icons_active_types');
 
             WP_CLI::success("Icon cache cleared successfully!");
-
         } catch (\Exception $e) {
             WP_CLI::error("Failed to clear cache: " . $e->getMessage());
         }
@@ -399,7 +394,6 @@ class IconCommands
 
                 $this->refreshIconType($specificType, $iconTypes[$specificType]);
                 WP_CLI::success("Icon type '{$specificType}' refreshed successfully!");
-
             } else {
                 // Refresh all auto-update types
                 WP_CLI::log("Refreshing all auto-update icon types...");
@@ -413,7 +407,6 @@ class IconCommands
 
                 WP_CLI::success("All icon types refreshed successfully!");
             }
-
         } catch (\Exception $e) {
             WP_CLI::error("Failed to refresh icons: " . $e->getMessage());
         }

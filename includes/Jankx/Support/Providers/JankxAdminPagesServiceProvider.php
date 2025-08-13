@@ -20,12 +20,12 @@ class JankxAdminPagesServiceProvider extends ServiceProvider
         $this->app = $app;
 
         // Register AdminPageService
-        $app->singleton('jankx.admin-pages', function($app) {
+        $app->singleton('jankx.admin-pages', function ($app) {
             return new AdminPageService($app);
         });
 
         // Register IconImportService
-        $app->singleton('jankx.icon-import', function($app) {
+        $app->singleton('jankx.icon-import', function ($app) {
             return new \Jankx\Services\FontIcons\IconImportService($app);
         });
     }

@@ -53,7 +53,6 @@ class ThemeOptionsService
                 }
             }
         } catch (\Exception $e) {
-            error_log('Theme Options Framework Error: ' . $e->getMessage());
         }
 
         $this->loadOptionsData();
@@ -116,9 +115,7 @@ class ThemeOptionsService
 
             if (file_exists($pagesFile)) {
                 $this->optionsData['pages'] = include $pagesFile;
-
             } else {
-
             }
 
             // Load sections cho từng page
@@ -135,15 +132,11 @@ class ThemeOptionsService
                             $sectionName = basename($file, '.php');
                             $this->optionsData['sections'][$pageId][$sectionName] = include $file;
                         }
-
-
                     } else {
-
                     }
                 }
             }
         } catch (\Exception $e) {
-
         }
     }
 
@@ -183,8 +176,7 @@ class ThemeOptionsService
     protected function createSectionsForAdapter(): void
     {
         if (!$this->adapter) {
-            error_log('Theme Options: No adapter available for creating sections');
-            return;
+                        return;
         }
 
         try {
@@ -195,14 +187,10 @@ class ThemeOptionsService
             $optionsReader->setOptionsDirectoryPath('resources/options');
             $optionsReader->setChildThemeOverrideEnabled(true);
 
-            error_log('Theme Options: Creating sections using OptionsReader with path: resources/options');
 
             // Gọi createSections trên adapter
             $this->adapter->createSections($optionsReader);
-
-            error_log('Theme Options: Sections created successfully');
         } catch (\Exception $e) {
-            error_log('Theme Options: Error creating sections - ' . $e->getMessage());
         }
     }
 
@@ -231,16 +219,14 @@ class ThemeOptionsService
     {
         // Tạo menu trực tiếp nếu adapter không có
         if (!$this->adapter) {
-            error_log('Theme Options: Adapter not loaded, creating direct menu');
-            $this->createDirectMenu();
+                        $this->createDirectMenu();
             return;
         }
 
         try {
             $this->adapter->register_admin_menu('Theme Options', 'Bookix Theme Options');
         } catch (\Exception $e) {
-            error_log('Theme Options: Error registering admin menu - ' . $e->getMessage());
-            $this->createDirectMenu();
+                        $this->createDirectMenu();
         }
     }
 

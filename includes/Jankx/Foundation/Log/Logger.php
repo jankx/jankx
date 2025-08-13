@@ -82,8 +82,6 @@ class Logger
             $message,
             !empty($context) ? json_encode($context) : ''
         );
-
-        error_log($logMessage);
     }
 
     /**

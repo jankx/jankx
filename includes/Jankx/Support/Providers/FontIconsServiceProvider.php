@@ -23,37 +23,37 @@ class FontIconsServiceProvider extends ServiceProvider
         $this->app = $app;
 
         // Register core services
-        $app->singleton('font-icons.repository', function($app) {
+        $app->singleton('font-icons.repository', function ($app) {
             return new IconRepository($app);
         });
 
-        $app->singleton('font-icons.manager', function($app) {
+        $app->singleton('font-icons.manager', function ($app) {
             return new IconTypeManager();
         });
 
-        $app->singleton('font-icons.renderer', function($app) {
+        $app->singleton('font-icons.renderer', function ($app) {
             return new IconRenderer();
         });
 
-        $app->singleton('font-icons.transformer', function($app) {
+        $app->singleton('font-icons.transformer', function ($app) {
             return new IconTransformerService($app);
         });
 
         // Register icon type providers (FontAwesome không được register mặc định)
-        $app->singleton('font-icons.material', function($app) {
+        $app->singleton('font-icons.material', function ($app) {
             return new MaterialIconsProvider(Config::get('font-icons.icon_types.material', []));
         });
 
-        $app->singleton('font-icons.custom', function($app) {
+        $app->singleton('font-icons.custom', function ($app) {
             return new CustomIconsProvider(Config::get('font-icons.icon_types.custom', []));
         });
 
-        $app->singleton('font-icons.svg', function($app) {
+        $app->singleton('font-icons.svg', function ($app) {
             return new SvgIconsProvider(Config::get('font-icons.icon_types.svg', []));
         });
 
         // FontAwesome chỉ được register khi cần thiết
-        $app->singleton('font-icons.fontawesome', function($app) {
+        $app->singleton('font-icons.fontawesome', function ($app) {
             return new FontAwesomeProvider(Config::get('font-icons.icon_types.fontawesome', []));
         });
     }
@@ -62,9 +62,6 @@ class FontIconsServiceProvider extends ServiceProvider
     {
         // Admin menu được quản lý bởi JankxAdminMenuServiceProvider
         // add_action('admin_menu', [$this, 'registerAdminMenu']);
-
-        // Register Gutenberg integration
-        add_action('enqueue_block_editor_assets', [$this, 'enqueueGutenbergAssets']);
 
         // Auto-load active icon types (không bao gồm FontAwesome mặc định)
         add_action('wp_enqueue_scripts', [$this, 'autoLoadActiveIcons']);
@@ -102,28 +99,10 @@ class FontIconsServiceProvider extends ServiceProvider
                 $provider->enqueue();
             } catch (\Exception $e) {
                 // Log error but don't break
-                error_log("Failed to load icon provider {$type}: " . $e->getMessage());
             }
         }
     }
 
-    public function enqueueGutenbergAssets()
-    {
-        wp_enqueue_script(
-            'jankx-gutenberg-icons',
-            $this->app->make('jankx.urls')['base'] . '/assets/js/gutenberg-icons.js',
-            ['wp-blocks', 'wp-element', 'wp-components'],
-            $this->app->make('jankx.version'),
-            true
-        );
-
-        // Localize script with icon data
-        $iconData = $this->app->make('font-icons.repository')->getIconTypes();
-        wp_localize_script('jankx-gutenberg-icons', 'jankxIcons', [
-            'types' => $iconData,
-            'apiUrl' => rest_url('jankx/v1/icons/')
-        ]);
-    }
 
     public function scheduleAutoUpdate()
     {
@@ -148,7 +127,6 @@ class FontIconsServiceProvider extends ServiceProvider
 
                     $transformer->transformAndSave($cssUrl, $type, $outputPath);
                 } catch (\Exception $e) {
-                    error_log("Failed to auto-update icons for {$type}: " . $e->getMessage());
                 }
             }
         }

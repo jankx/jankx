@@ -82,9 +82,7 @@ class Fonts
 
         // Log để debug
         if ($result) {
-            error_log("Font {$fontName} registered successfully via Facade");
         } else {
-            error_log("Failed to register font {$fontName} via Facade");
         }
 
         return $result;

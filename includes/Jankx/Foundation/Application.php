@@ -295,14 +295,12 @@ class Application extends Container
     public function bootstrapWith(array $bootstrappers)
     {
         if (Environment::isDebugLog()) {
-            error_log(sprintf('[JANKX DEBUG] Starting bootstrap with %d bootstrappers', count($bootstrappers)));
         }
 
         $this->callBootingCallbacks();
 
         foreach ($bootstrappers as $bootstrapper) {
             if (Environment::isDebugLog()) {
-                error_log(sprintf('[JANKX DEBUG] Running bootstrapper: %s', $bootstrapper));
             }
 
             $this->make($bootstrapper)->bootstrap($this);
@@ -312,7 +310,6 @@ class Application extends Container
         $this->callBootedCallbacks();
 
         if (Environment::isDebugLog()) {
-            error_log('[JANKX DEBUG] Bootstrap completed');
         }
     }
 

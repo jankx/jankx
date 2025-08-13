@@ -9,7 +9,7 @@ class FontManager
 {
     protected $registeredFonts = [];
     protected $fontStyles = [];
-    
+
     /**
      * Đăng ký font mới
      */
@@ -17,13 +17,13 @@ class FontManager
     {
         $fontName = $fontData['name'];
         $this->registeredFonts[$fontName] = $fontData;
-        
+
         // Tạo CSS cho font
         $this->generateFontCSS($fontData);
-        
+
         return true;
     }
-    
+
     /**
      * Hủy đăng ký font
      */
@@ -31,35 +31,35 @@ class FontManager
     {
         if (isset($this->registeredFonts[$fontName])) {
             unset($this->registeredFonts[$fontName]);
-            
+
             // Xóa CSS của font
             $this->removeFontCSS($fontName);
-            
+
             return true;
         }
-        
+
         return false;
     }
-    
+
     /**
      * Cập nhật font
      */
     public function updateFont($fontData)
     {
         $fontName = $fontData['name'];
-        
+
         if (isset($this->registeredFonts[$fontName])) {
             $this->registeredFonts[$fontName] = $fontData;
-            
+
             // Cập nhật CSS cho font
             $this->generateFontCSS($fontData);
-            
+
             return true;
         }
-        
+
         return false;
     }
-    
+
     /**
      * Lấy tất cả fonts đã đăng ký
      */
@@ -67,7 +67,7 @@ class FontManager
     {
         return $this->registeredFonts;
     }
-    
+
     /**
      * Kiểm tra font có được đăng ký không
      */
@@ -75,7 +75,7 @@ class FontManager
     {
         return isset($this->registeredFonts[$fontName]);
     }
-    
+
     /**
      * Tạo CSS cho font
      */
@@ -84,9 +84,9 @@ class FontManager
         $fontName = $fontData['name'];
         $fontFamily = $fontData['family'];
         $category = $fontData['category'];
-        
+
         $css = '';
-        
+
         switch ($category) {
             case 'google':
                 $css = $this->generateGoogleFontCSS($fontData);
@@ -98,13 +98,13 @@ class FontManager
                 $css = $this->generateCustomFontCSS($fontData);
                 break;
         }
-        
+
         if ($css) {
             $this->fontStyles[$fontName] = $css;
             $this->injectFontCSS($fontName, $css);
         }
     }
-    
+
     /**
      * Tạo CSS cho Google Fonts
      */
@@ -113,11 +113,11 @@ class FontManager
         $fontName = $fontData['name'];
         $variants = $fontData['variants'] ?? ['400'];
         $subsets = $fontData['subsets'] ?? ['latin'];
-        
+
         // Google Fonts sử dụng link tag, không cần CSS
         return '';
     }
-    
+
     /**
      * Tạo CSS cho Adobe Fonts
      */
@@ -125,11 +125,11 @@ class FontManager
     {
         $fontName = $fontData['name'];
         $fontFamily = $fontData['family'];
-        
+
         // Adobe Fonts sử dụng link tag, không cần CSS
         return '';
     }
-    
+
     /**
      * Tạo CSS cho Custom Fonts
      */
@@ -138,31 +138,31 @@ class FontManager
         $fontName = $fontData['name'];
         $fontFamily = $fontData['family'];
         $fontFiles = $fontData['files'] ?? [];
-        
+
         if (empty($fontFiles)) {
             return '';
         }
-        
+
         $css = "@font-face {\n";
         $css .= "    font-family: '{$fontFamily}';\n";
         $css .= "    font-display: swap;\n";
-        
+
         // Xử lý các font files
         foreach ($fontFiles as $format => $file) {
             $format = strtoupper($format);
             $css .= "    src: url('{$file}') format('{$format}');\n";
         }
-        
+
         $css .= "}\n\n";
-        
+
         // Thêm CSS class cho font
         $css .= ".font-{$fontName} {\n";
         $css .= "    font-family: '{$fontFamily}', sans-serif;\n";
         $css .= "}\n";
-        
+
         return $css;
     }
-    
+
     /**
      * Xóa CSS của font
      */
@@ -170,12 +170,12 @@ class FontManager
     {
         if (isset($this->fontStyles[$fontName])) {
             unset($this->fontStyles[$fontName]);
-            
+
             // Xóa CSS khỏi WordPress
             $this->removeFontCSSFromWordPress($fontName);
         }
     }
-    
+
     /**
      * Inject CSS vào WordPress
      */
@@ -185,17 +185,17 @@ class FontManager
         $existingCSS = get_option('jankx_fonts_css', '');
         $existingCSS .= "\n" . $css;
         update_option('jankx_fonts_css', $existingCSS);
-        
+
         // Hook để inject CSS
-        add_action('wp_head', function() use ($css) {
+        add_action('wp_head', function () use ($css) {
             echo "<style id='jankx-fonts-css'>\n{$css}\n</style>\n";
         });
-        
-        add_action('admin_head', function() use ($css) {
+
+        add_action('admin_head', function () use ($css) {
             echo "<style id='jankx-fonts-css'>\n{$css}\n</style>\n";
         });
     }
-    
+
     /**
      * Xóa CSS khỏi WordPress
      */
@@ -207,7 +207,7 @@ class FontManager
         $existingCSS = preg_replace("/\.font-{$fontName}\s*{[^}]*}/s", '', $existingCSS);
         update_option('jankx_fonts_css', $existingCSS);
     }
-    
+
     /**
      * Lấy CSS của tất cả fonts
      */
@@ -215,7 +215,7 @@ class FontManager
     {
         return get_option('jankx_fonts_css', '');
     }
-    
+
     /**
      * Lấy CSS của font cụ thể
      */
@@ -223,7 +223,7 @@ class FontManager
     {
         return $this->fontStyles[$fontName] ?? '';
     }
-    
+
     /**
      * Tạo font preview HTML
      */
@@ -232,10 +232,10 @@ class FontManager
         if (!$this->isFontRegistered($fontName)) {
             return '';
         }
-        
+
         $fontData = $this->registeredFonts[$fontName];
         $fontFamily = $fontData['family'];
-        
+
         $html = "<div class='font-preview' style='font-family: \"{$fontFamily}\", sans-serif;'>";
         $html .= "<h3>{$fontName}</h3>";
         $html .= "<p class='preview-text'>{$text}</p>";
@@ -243,44 +243,44 @@ class FontManager
         $html .= "abcdefghijklmnopqrstuvwxyz<br>";
         $html .= "0123456789</p>";
         $html .= "</div>";
-        
+
         return $html;
     }
-    
+
     /**
      * Validate font data
      */
     public function validateFontData($fontData)
     {
         $required = ['name', 'family'];
-        
+
         foreach ($required as $field) {
             if (empty($fontData[$field])) {
                 return false;
             }
         }
-        
+
         // Validate font files nếu là custom font
         if (isset($fontData['category']) && $fontData['category'] === 'custom') {
             if (empty($fontData['files']) || !is_array($fontData['files'])) {
                 return false;
             }
-            
+
             $validFormats = ['woff', 'woff2', 'ttf', 'otf', 'eot'];
             foreach ($fontData['files'] as $format => $file) {
                 if (!in_array(strtolower($format), $validFormats)) {
                     return false;
                 }
-                
+
                 if (!file_exists($file)) {
                     return false;
                 }
             }
         }
-        
+
         return true;
     }
-    
+
     /**
      * Lấy font variants
      */
@@ -289,10 +289,10 @@ class FontManager
         if ($this->isFontRegistered($fontName)) {
             return $this->registeredFonts[$fontName]['variants'] ?? ['400'];
         }
-        
+
         return [];
     }
-    
+
     /**
      * Lấy font subsets
      */
@@ -301,7 +301,7 @@ class FontManager
         if ($this->isFontRegistered($fontName)) {
             return $this->registeredFonts[$fontName]['subsets'] ?? ['latin'];
         }
-        
+
         return [];
     }
 }

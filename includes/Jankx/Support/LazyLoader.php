@@ -108,8 +108,7 @@ class LazyLoader
             $end = microtime(true);
             $time = ($end - $start) * 1000; // Convert to milliseconds
 
-            error_log(sprintf(
-                '[JANKX LAZY LOAD] Service "%s" loaded in %.2f ms',
+                            '[JANKX LAZY LOAD] Service "%s" loaded in %.2f ms',
                 $service,
                 $time
             ));

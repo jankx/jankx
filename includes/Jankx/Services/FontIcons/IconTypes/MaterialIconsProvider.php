@@ -2,7 +2,6 @@
 
 namespace Jankx\Services\FontIcons\IconTypes;
 
-
 class MaterialIconsProvider extends IconTypeProvider
 {
     protected $type = 'material';
