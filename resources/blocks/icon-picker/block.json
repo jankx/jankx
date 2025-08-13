@@ -83,6 +83,6 @@
         }
     },
     "textdomain": "jankx",
-    "editorScript": "file:./build-vanilla/vanilla-block.js",
+    "editorScript": "file:./build/index.js",
     "style": "file:./build/index.css.css"
 }

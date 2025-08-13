@@ -124,6 +124,7 @@ class GutenbergService
     {
         $this->repository->registerBlock(WidgetRendererBlock::class);
         $this->repository->registerBlock(\Jankx\Support\Blocks\IconPickerBlock::class);
+        $this->repository->registerBlock(\Jankx\Support\Blocks\LanguageSwitcherBlock::class);
     }
 
     /**

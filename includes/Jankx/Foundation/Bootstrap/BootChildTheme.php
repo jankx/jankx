@@ -88,7 +88,8 @@ class BootChildTheme
             require_once $autoloadPath;
 
             if (Environment::isDebugLog()) {
-                                    'child_theme_path' => $childThemePath,
+                Log::info('Child theme composer autoloader loaded successfully', [
+                    'child_theme_path' => $childThemePath,
                     'composer_json' => $composerJsonPath,
                     'vendor_path' => $vendorPath
                 ]);
@@ -145,7 +146,8 @@ class BootChildTheme
                         });
 
                         if (Environment::isDebugLog()) {
-                                                            'package_name' => $packageInfo['name'],
+                            Log::info('Child theme composer info registered', [
+                                'package_name' => $packageInfo['name'],
                                 'version' => $packageInfo['version'],
                                 'autoload_psr4' => $packageInfo['autoload']['psr-4'] ?? [],
                                 'autoload_files' => $packageInfo['autoload']['files'] ?? []

@@ -32,5 +32,5 @@
         }
     },
     "editorScript": "file:./build/index.js",
-    "style": "file:./style.css"
+    "style": "file:./build/index.css.css"
 }

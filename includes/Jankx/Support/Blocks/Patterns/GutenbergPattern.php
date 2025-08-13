@@ -2,6 +2,7 @@
 
 namespace Jankx\Support\Blocks\Patterns;
 
+use Jankx\Facades\Log;
 use Jankx\Foundation\Application;
 use League\Plates\Engine;
 
@@ -78,10 +79,6 @@ abstract class GutenbergPattern
      */
     public function register(): void
     {
-        if (\Jankx\Helper\Environment::isDebugLog()) {
-            \Jankx\Facades\
-        }
-
         try {
             $content = $this->renderTemplate();
 
@@ -92,9 +89,6 @@ abstract class GutenbergPattern
                 ])
             );
 
-            if (\Jankx\Helper\Environment::isDebugLog()) {
-                \Jankx\Facades\
-            }
         } catch (\Exception $e) {
             \Jankx\Facades\Log::error('GutenbergPattern: Failed to register pattern with WordPress - ' . $this->patternSlug . ' - ' . $e->getMessage());
             throw $e;
@@ -109,48 +103,31 @@ abstract class GutenbergPattern
         $templateData = $this->getTemplateData();
         $templatePath = $this->getTemplatePath();
 
-        if (\Jankx\Helper\Environment::isDebugLog()) {
-            \Jankx\Facades\
-        }
-
         try {
             // Try to render from child theme first, then fallback to parent theme
             try {
                 // Try child theme first
                 if (get_template_directory() !== get_stylesheet_directory()) {
                     $content = $this->templateEngine->render('patterns-child::' . $templatePath, $templateData);
-                    if (\Jankx\Helper\Environment::isDebugLog()) {
-                        \Jankx\Facades\
-                    }
                     return $content;
                 }
             } catch (\Exception $e) {
-                if (\Jankx\Helper\Environment::isDebugLog()) {
-                    \Jankx\Facades\
-                }
+                Log::error('GutenbergPattern: Failed to render template - ' . $templatePath . ' - ' . $e->getMessage());
             }
 
             // Try parent theme
             try {
                 $content = $this->templateEngine->render('patterns::' . $templatePath, $templateData);
-                if (\Jankx\Helper\Environment::isDebugLog()) {
-                    \Jankx\Facades\
-                }
                 return $content;
             } catch (\Exception $e) {
-                if (\Jankx\Helper\Environment::isDebugLog()) {
-                    \Jankx\Facades\
-                }
+                Log::error('GutenbergPattern: Failed to render template - ' . $templatePath . ' - ' . $e->getMessage());
             }
 
             // If both fail, try without folder prefix
             $content = $this->templateEngine->render($templatePath, $templateData);
-            if (\Jankx\Helper\Environment::isDebugLog()) {
-                \Jankx\Facades\
-            }
             return $content;
         } catch (\Exception $e) {
-            \Jankx\Facades\Log::error('GutenbergPattern: Failed to render template - ' . $templatePath . ' - ' . $e->getMessage());
+            Log::error('GutenbergPattern: Failed to render template - ' . $templatePath . ' - ' . $e->getMessage());
             throw $e;
         }
     }
