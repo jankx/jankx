@@ -12,20 +12,24 @@ Hệ thống quản lý icons của Jankx Framework cung cấp giao diện admin
 - **Services Status**: Kiểm tra trạng thái các services
 
 ### 2. Icons Repository
-- **Icon Sets**: Hiển thị tất cả các icon types được cấu hình
+- **Icon Sets**: Hiển thị tất cả các icon types dạng card với thông tin chi tiết
 - **Status Management**: Bật/tắt và quản lý auto-load cho từng type
 - **Quick Actions**: Quản lý icons và import/export
+- **Enable/Disable**: Toggle trạng thái hoạt động của icon types
+- **Auto-load Control**: Bật/tắt tự động load CSS cho từng icon type
+- **Remove Icon Sets**: Xóa hoàn toàn icon types không cần thiết
 
 ### 3. Icon Management (Tab Manage)
 - **Type Selection**: Chọn icon type để quản lý
+- **Icon Type Information**: Hiển thị thông tin chi tiết và controls tích hợp
 - **Icon Grid**: Hiển thị icons dạng grid với preview
 - **Search & Filter**: Tìm kiếm và lọc theo category
 - **Icon Preview**: Xem trước icon và copy code HTML
 
 ### 4. Import/Export (Tab Import)
-- **CSS Import**: Import icons từ CSS file URL hoặc upload file
-- **Icon Export**: Export dữ liệu icons hiện tại
-- **Type Selection**: Chọn icon type để import/export
+- **Import New Icon Set**: Tạo hoàn toàn icon collection mới
+- **Export Icon Sets**: Backup và chia sẻ icon collections
+- **Current Icon Types**: Hiển thị thông tin về icon types hiện có
 
 ## Cách sử dụng
 
@@ -34,19 +38,33 @@ Hệ thống quản lý icons của Jankx Framework cung cấp giao diện admin
 2. Chọn "Icons Repository" từ menu
 3. Sử dụng các tabs để điều hướng
 
+### Quản lý Icon Sets
+1. Chọn tab "Icon Sets" trong Icons Repository
+2. Xem trạng thái hiện tại của từng icon type
+3. Sử dụng nút "Enable/Disable" để bật/tắt icon type
+4. Sử dụng nút "Enable/Disable Auto-load" để kiểm soát CSS loading
+5. Sử dụng nút "Remove" để xóa hoàn toàn icon type không cần thiết
+6. Thay đổi sẽ được lưu vào config file và áp dụng ngay lập tức
+7. Khi xóa icon type, tất cả files liên quan sẽ được dọn dẹp tự động
+
 ### Quản lý Icons
 1. Chọn tab "Manage"
 2. Chọn icon type muốn quản lý
-3. Sử dụng search và filter để tìm icons
-4. Click "Preview" để xem icon
-5. Click "Copy Code" để copy HTML code
+3. Sử dụng "Icon Type Information" để:
+   - Xem thông tin chi tiết (Status, Auto-load, Version, CDN URL, Prefixes, Categories)
+   - Bật/tắt icon type
+   - Bật/tắt auto-load
+   - Xóa hoàn toàn icon type
+4. Sử dụng search và filter để tìm icons
+5. Click "Preview" để xem icon
+6. Click "Copy Code" để copy HTML code
 
-### Import Icons
-1. Chọn tab "Import"
-2. Chọn icon type
+### Import/Export Icons
+1. Chọn tab "Import" trong Icons Repository
+2. Sử dụng "Import New Icon Set" để tạo collection mới
 3. Nhập CSS URL hoặc upload file CSS
-4. Điền icon prefix
-5. Click "Import Icons"
+4. Điền thông tin cần thiết
+5. Click "Import" để hoàn tất
 
 ## Cấu hình
 
@@ -93,6 +111,20 @@ jankx/
 │       └── JankxAdminPagesServiceProvider.php  # Service provider
 └── docs/
     └── ICON_MANAGEMENT_SYSTEM.md    # Documentation này
+```
+
+## Menu Structure
+
+```
+Jankx Framework
+├── Dashboard                    # Trang chính với widgets
+└── Icons Repository            # Quản lý icons hiện có
+    ├── Icon Sets              # Tab hiển thị icon types
+    ├── Manage                 # Tab quản lý icons theo type
+    │   └── Icon Type Information  # Thông tin chi tiết + Controls tích hợp
+    └── Import                 # Tab import/export hoàn chỉnh
+        ├── Import New Icon Set    # Tạo icon collection mới
+        └── Export Icon Sets       # Backup và chia sẻ
 ```
 
 ## API Usage

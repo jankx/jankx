@@ -1,47 +1,80 @@
 {
+    "type": "fontawesome",
+    "version": "7.0.0",
+    "prefixes": ["fa", "fas", "far", "fab", "fal", "fat"],
+    "categories": ["solid", "regular", "brands", "light", "thin"],
     "icons": [
         {
             "name": "home",
-            "class": "fas fa-home",
-            "type": "fontawesome",
-            "tags": ["home", "house", "main"],
-            "category": "navigation"
+            "category": "solid",
+            "unicode": "f015",
+            "prefixes": ["fas"]
         },
         {
             "name": "search",
-            "class": "fas fa-search",
-            "type": "fontawesome",
-            "tags": ["search", "find", "lookup"],
-            "category": "action"
+            "category": "solid",
+            "unicode": "f002",
+            "prefixes": ["fas"]
+        },
+        {
+            "name": "heart",
+            "category": "solid",
+            "unicode": "f004",
+            "prefixes": ["fas"]
+        },
+        {
+            "name": "cog",
+            "category": "solid",
+            "unicode": "f013",
+            "prefixes": ["fas"]
         },
         {
             "name": "user",
-            "class": "fas fa-user",
-            "type": "fontawesome",
-            "tags": ["user", "person", "profile"],
-            "category": "user"
-        }
-    ],
-    "categories": {
-        "navigation": {
-            "id": "navigation",
-            "name": "Navigation",
-            "description": "Navigation and menu icons"
+            "category": "solid",
+            "unicode": "f007",
+            "prefixes": ["fas"]
         },
-        "action": {
-            "id": "action",
-            "name": "Action",
-            "description": "Action and interaction icons"
+        {
+            "name": "envelope",
+            "category": "solid",
+            "unicode": "f0e0",
+            "prefixes": ["fas"]
         },
-        "user": {
-            "id": "user",
-            "name": "User",
-            "description": "User and profile related icons"
+        {
+            "name": "phone",
+            "category": "solid",
+            "unicode": "f095",
+            "prefixes": ["fas"]
+        },
+        {
+            "name": "map-marker-alt",
+            "category": "solid",
+            "unicode": "f3c5",
+            "prefixes": ["fas"]
+        },
+        {
+            "name": "bars",
+            "category": "solid",
+            "unicode": "f0c9",
+            "prefixes": ["fas"]
+        },
+        {
+            "name": "times",
+            "category": "solid",
+            "unicode": "f00d",
+            "prefixes": ["fas"]
+        },
+        {
+            "name": "plus",
+            "category": "solid",
+            "unicode": "f067",
+            "prefixes": ["fas"]
+        },
+        {
+            "name": "pencil-alt",
+            "category": "solid",
+            "unicode": "f303",
+            "prefixes": ["fas"]
         }
-    },
-    "metadata": {
-        "type": "fontawesome",
-        "parsed_at": "2024-01-01 00:00:00",
-        "source": "manual"
-    }
+    ]
 }

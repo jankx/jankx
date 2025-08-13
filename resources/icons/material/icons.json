@@ -1,42 +1,80 @@
 {
+    "type": "material",
+    "version": "1.3.0",
+    "prefixes": ["material-icons"],
+    "categories": ["navigation", "action", "toggle", "social", "communication", "maps"],
     "icons": [
         {
             "name": "home",
-            "class": "material-icons",
-            "type": "material",
-            "tags": ["home", "house", "main"],
-            "category": "navigation"
+            "category": "navigation",
+            "unicode": "e88a",
+            "prefixes": ["material-icons"]
         },
         {
             "name": "search",
-            "class": "material-icons",
-            "type": "material",
-            "tags": ["search", "find", "lookup"],
-            "category": "action"
+            "category": "action",
+            "unicode": "e8b6",
+            "prefixes": ["material-icons"]
+        },
+        {
+            "name": "favorite",
+            "category": "toggle",
+            "unicode": "e87d",
+            "prefixes": ["material-icons"]
+        },
+        {
+            "name": "settings",
+            "category": "action",
+            "unicode": "e8b8",
+            "prefixes": ["material-icons"]
+        },
+        {
+            "name": "person",
+            "category": "social",
+            "unicode": "e7fd",
+            "prefixes": ["material-icons"]
+        },
+        {
+            "name": "email",
+            "category": "communication",
+            "unicode": "e0e1",
+            "prefixes": ["material-icons"]
+        },
+        {
+            "name": "phone",
+            "category": "communication",
+            "unicode": "e0cd",
+            "prefixes": ["material-icons"]
+        },
+        {
+            "name": "location_on",
+            "category": "maps",
+            "unicode": "e55f",
+            "prefixes": ["material-icons"]
         },
         {
             "name": "menu",
-            "class": "material-icons",
-            "type": "material",
-            "tags": ["menu", "hamburger", "navigation"],
-            "category": "navigation"
-        }
-    ],
-    "categories": {
-        "navigation": {
-            "id": "navigation",
-            "name": "Navigation",
-            "description": "Navigation and menu icons"
+            "category": "navigation",
+            "unicode": "e5d2",
+            "prefixes": ["material-icons"]
         },
-        "action": {
-            "id": "action",
-            "name": "Action",
-            "description": "Action and interaction icons"
+        {
+            "name": "close",
+            "category": "action",
+            "unicode": "e5cd",
+            "prefixes": ["material-icons"]
+        },
+        {
+            "name": "add",
+            "category": "action",
+            "unicode": "e145",
+            "prefixes": ["material-icons"]
+        },
+        {
+            "name": "edit",
+            "category": "action",
+            "unicode": "e3c9",
+            "prefixes": ["material-icons"]
         }
-    },
-    "metadata": {
-        "type": "material",
-        "parsed_at": "2024-01-01 00:00:00",
-        "source": "manual"
-    }
+    ]
 }

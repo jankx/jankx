@@ -23,6 +23,11 @@ class JankxAdminPagesServiceProvider extends ServiceProvider
         $app->singleton('jankx.admin-pages', function($app) {
             return new AdminPageService($app);
         });
+
+        // Register IconImportService
+        $app->singleton('jankx.icon-import', function($app) {
+            return new \Jankx\Services\FontIcons\IconImportService($app);
+        });
     }
 
     public function boot(Application $app)
@@ -125,12 +130,27 @@ class JankxAdminPagesServiceProvider extends ServiceProvider
     {
         // Handle AJAX requests if needed
         if (wp_doing_ajax()) {
-            // Add AJAX handlers here
+            $this->handleAjaxRequests();
         }
 
         // Handle form submissions if needed
         if ($_POST && isset($_POST['jankx_action'])) {
             $this->handleFormSubmission($_POST);
+        }
+    }
+
+    /**
+     * Handle AJAX requests
+     */
+    public function handleAjaxRequests()
+    {
+        $action = $_POST['action'] ?? '';
+
+        switch ($action) {
+            case 'jankx_load_icons':
+                $adminPages = $this->app->make('jankx.admin-pages');
+                $adminPages->handleLoadIconsAjax();
+                break;
         }
     }
 
