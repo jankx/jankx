@@ -35,13 +35,11 @@ class SystemServiceProvider extends ServiceProvider
     public function register(Application $app)
     {
         if (Environment::isDebugLog()) {
-            Log::debug('SystemServiceProvider: Registering core services');
         }
 
         // Register Cache Service
         $app->singleton('cache', function (Application $app) {
             if (Environment::isDebugLog()) {
-                Log::debug('SystemServiceProvider: Creating CacheService instance');
             }
             return new CacheService($app);
         });
@@ -49,7 +47,6 @@ class SystemServiceProvider extends ServiceProvider
         // Register User Service
         $app->singleton('user', function (Application $app) {
             if (Environment::isDebugLog()) {
-                Log::debug('SystemServiceProvider: Creating UserService instance');
             }
             return new UserService($app);
         });
@@ -64,7 +61,6 @@ class SystemServiceProvider extends ServiceProvider
         \Jankx\Facades\Footer::setFacadeApplication($app);
 
         if (Environment::isDebugLog()) {
-            Log::debug('SystemServiceProvider: Registered Cache, User, and Layout facades');
         }
     }
 
@@ -77,7 +73,6 @@ class SystemServiceProvider extends ServiceProvider
     public function boot(Application $app)
     {
         if (Environment::isDebugLog()) {
-            Log::debug('SystemServiceProvider: Booted successfully');
         }
 
         // Create PHP class aliases from config
@@ -96,7 +91,6 @@ class SystemServiceProvider extends ServiceProvider
 
         if (empty($aliases)) {
             if (Environment::isDebugLog()) {
-                Log::debug('SystemServiceProvider: No aliases found in app.aliases config');
             }
             return;
         }
@@ -111,7 +105,6 @@ class SystemServiceProvider extends ServiceProvider
             $className = ucfirst($alias);
 
             if (Environment::isDebugLog()) {
-                Log::debug("SystemServiceProvider: Creating alias '{$className}' => '{$targetClass}'");
             }
 
             // Create class alias if it doesn't exist
@@ -121,7 +114,6 @@ class SystemServiceProvider extends ServiceProvider
         }
 
         if (Environment::isDebugLog()) {
-            Log::debug('SystemServiceProvider: Class aliases created successfully');
         }
     }
 }

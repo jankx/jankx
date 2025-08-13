@@ -44,7 +44,7 @@ const Edit = ({ attributes, setAttributes }) => {
     } = attributes;
 
     const blockProps = useBlockProps({
-        className: `jankx-icon-picker-block jankx-icon-picker-block--${iconAlignment} ${customClassName || ''}`.trim()
+        className: `jankx - icon - picker - block jankx - icon - picker - block--${iconAlignment} ${customClassName || ''}`.trim()
     });
 
     const handleIconChange = (icon) => {
@@ -65,37 +65,37 @@ const Edit = ({ attributes, setAttributes }) => {
     const renderIcon = () => {
         if (!iconName) {
             return (
-                <div className="jankx-icon-picker-placeholder">
+                < div className = "jankx-icon-picker-placeholder" >
                     {__('Chọn icon từ Jankx Font Icons', 'jankx')}
-                </div>
+                <  / div >
             );
         }
 
         if (iconType === 'material') {
-            const styleClass = iconStyle !== 'filled' ? `material-icons-${iconStyle}` : 'material-icons';
+            const styleClass = iconStyle !== 'filled' ? `material - icons - ${iconStyle}` : 'material-icons';
             return (
-                <span 
-                    className={styleClass}
-                    style={{ fontSize: iconSize, color: iconColor }}
+                < span
+                    className = {styleClass}
+                    style = {{ fontSize: iconSize, color: iconColor }}
                 >
                     {iconName}
-                </span>
+                <  / span >
             );
         } else if (iconType === 'fontawesome') {
-            const prefix = iconCategory === 'brands' ? 'fab' : 
+            const prefix = iconCategory === 'brands' ? 'fab' :
                           iconCategory === 'regular' ? 'far' : 'fas';
             return (
-                <i 
-                    className={`${prefix} fa-${iconName}`}
-                    style={{ fontSize: iconSize, color: iconColor }}
-                ></i>
+                < i
+                    className = {`${prefix} fa - ${iconName}`}
+                    style = {{ fontSize: iconSize, color: iconColor }}
+                >  < / i >
             );
         } else if (iconType === 'custom') {
             return (
-                <span 
-                    className={`icon icon-${iconName}`}
-                    style={{ fontSize: iconSize, color: iconColor }}
-                ></span>
+                < span
+                    className = {`icon icon - ${iconName}`}
+                    style = {{ fontSize: iconSize, color: iconColor }}
+                >  < / span >
             );
         }
 
@@ -104,52 +104,60 @@ const Edit = ({ attributes, setAttributes }) => {
 
     const renderContent = () => {
         const iconElement = renderIcon();
-        
+
         if (linkUrl) {
             return (
-                <a 
-                    href={linkUrl}
-                    target={linkTarget}
-                    rel={linkRel}
-                    className="jankx-icon-picker-block__link"
+                < a
+                    href = {linkUrl}
+                    target = {linkTarget}
+                    rel = {linkRel}
+                    className = "jankx-icon-picker-block__link"
                 >
                     {iconElement}
                     {showLabel && iconLabel && (
-                        <span className={`jankx-icon-picker-block__label jankx-icon-picker-block__label--${labelPosition}`}>
+                        < span className = {`jankx - icon - picker - block__label jankx - icon - picker - block__label--${labelPosition}`} >
                             {iconLabel}
-                        </span>
+                        <  / span >
                     )}
-                </a>
+                <  / a >
             );
         }
 
         return (
-            <>
+            <  >
                 {iconElement}
                 {showLabel && iconLabel && (
-                    <span className={`jankx-icon-picker-block__label jankx-icon-picker-block__label--${labelPosition}`}>
+                    < span className = {`jankx - icon - picker - block__label jankx - icon - picker - block__label--${labelPosition}`} >
                         {iconLabel}
-                    </span>
+                    <  / span >
                 )}
-            </>
+            <  / >
         );
     };
 
-    return React.createElement(React.Fragment, null,
-        React.createElement(BlockControls, null,
+    return React.createElement(
+        React.Fragment,
+        null,
+        React.createElement(
+            BlockControls,
+            null,
             React.createElement(AlignmentToolbar, {
                 value: iconAlignment,
                 onChange: (alignment) => setAttributes({ iconAlignment: alignment })
             })
         ),
-        React.createElement(InspectorControls, null,
-            React.createElement(PanelBody, {
-                title: __('Icon Selection', 'jankx'),
-                icon: starFilled,
-                initialOpen: true
-            },
+        React.createElement(
+            InspectorControls,
+            null,
+            React.createElement(
+                PanelBody,
+                {
+                    title: __('Icon Selection', 'jankx'),
+                    icon: starFilled,
+                    initialOpen: true
+                },
                 React.createElement(IconPicker, {
-                    value: iconName ? { name: iconName, category: iconCategory } : null,
+                    value: iconName ? { name : iconName, category : iconCategory } : null,
                     onChange: handleIconChange,
                     iconType: iconType,
                     category: iconCategory,
@@ -182,11 +190,15 @@ const Edit = ({ attributes, setAttributes }) => {
                 onLinkRelChange: (value) => setAttributes({ linkRel: value })
             })
         ),
-        React.createElement('div', blockProps,
-            React.createElement('div', {
-                className: 'jankx-icon-picker-block__content',
-                style: { textAlign: iconAlignment }
-            },
+        React.createElement(
+            'div',
+            blockProps,
+            React.createElement(
+                'div',
+                {
+                    className: 'jankx-icon-picker-block__content',
+                    style: { textAlign: iconAlignment }
+                },
                 renderContent()
             )
         )

@@ -88,8 +88,6 @@ class ThemeOptionsService
             $this->adapter = OptionFramework::getActiveFramework();
 
             // Debug
-            Log::debug('Theme Options: Framework mode - ' . OptionFramework::getCurrentMode());
-            Log::debug('Theme Options: Adapter loaded - ' . ($this->adapter ? get_class($this->adapter) : 'No adapter'));
 
             // Thiết lập options data cho adapter
             if ($this->adapter) {

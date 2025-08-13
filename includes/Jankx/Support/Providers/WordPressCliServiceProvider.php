@@ -76,7 +76,6 @@ class WordPressCliServiceProvider extends ServiceProvider
 
         // Log command registration
         if (Environment::isDebugLog()) {
-            Log::debug('WP CLI commands registered');
         }
     }
 

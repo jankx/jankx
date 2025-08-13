@@ -79,7 +79,7 @@ abstract class GutenbergPattern
     public function register(): void
     {
         if (\Jankx\Helper\Environment::isDebugLog()) {
-            \Jankx\Facades\Log::debug('GutenbergPattern: Registering pattern with WordPress - ' . $this->patternSlug);
+            \Jankx\Facades\
         }
 
         try {
@@ -93,7 +93,7 @@ abstract class GutenbergPattern
             );
 
             if (\Jankx\Helper\Environment::isDebugLog()) {
-                \Jankx\Facades\Log::debug('GutenbergPattern: Pattern registered successfully with WordPress - ' . $this->patternSlug);
+                \Jankx\Facades\
             }
         } catch (\Exception $e) {
             \Jankx\Facades\Log::error('GutenbergPattern: Failed to register pattern with WordPress - ' . $this->patternSlug . ' - ' . $e->getMessage());
@@ -110,7 +110,7 @@ abstract class GutenbergPattern
         $templatePath = $this->getTemplatePath();
 
         if (\Jankx\Helper\Environment::isDebugLog()) {
-            \Jankx\Facades\Log::debug('GutenbergPattern: Rendering template - ' . $templatePath);
+            \Jankx\Facades\
         }
 
         try {
@@ -120,13 +120,13 @@ abstract class GutenbergPattern
                 if (get_template_directory() !== get_stylesheet_directory()) {
                     $content = $this->templateEngine->render('patterns-child::' . $templatePath, $templateData);
                     if (\Jankx\Helper\Environment::isDebugLog()) {
-                        \Jankx\Facades\Log::debug('GutenbergPattern: Template rendered from child theme - ' . $templatePath);
+                        \Jankx\Facades\
                     }
                     return $content;
                 }
             } catch (\Exception $e) {
                 if (\Jankx\Helper\Environment::isDebugLog()) {
-                    \Jankx\Facades\Log::debug('GutenbergPattern: Child theme template not found, trying parent theme - ' . $templatePath);
+                    \Jankx\Facades\
                 }
             }
 
@@ -134,19 +134,19 @@ abstract class GutenbergPattern
             try {
                 $content = $this->templateEngine->render('patterns::' . $templatePath, $templateData);
                 if (\Jankx\Helper\Environment::isDebugLog()) {
-                    \Jankx\Facades\Log::debug('GutenbergPattern: Template rendered from parent theme - ' . $templatePath);
+                    \Jankx\Facades\
                 }
                 return $content;
             } catch (\Exception $e) {
                 if (\Jankx\Helper\Environment::isDebugLog()) {
-                    \Jankx\Facades\Log::debug('GutenbergPattern: Parent theme template not found, trying without prefix - ' . $templatePath);
+                    \Jankx\Facades\
                 }
             }
 
             // If both fail, try without folder prefix
             $content = $this->templateEngine->render($templatePath, $templateData);
             if (\Jankx\Helper\Environment::isDebugLog()) {
-                \Jankx\Facades\Log::debug('GutenbergPattern: Template rendered without prefix - ' . $templatePath);
+                \Jankx\Facades\
             }
             return $content;
         } catch (\Exception $e) {

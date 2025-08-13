@@ -27,36 +27,27 @@ class ThemeOptionsServiceProvider extends \Jankx\Support\Providers\ServiceProvid
      */
     public function boot(Application $app)
     {
-        Log::debug('ThemeOptionsServiceProvider: Boot method called');
-        Log::debug('ThemeOptionsServiceProvider: Registering init hook');
 
         // Đăng ký init hook để khởi tạo theme options
         add_action('init', function () use ($app) {
-            Log::debug('ThemeOptionsServiceProvider: init hook triggered');
 
             try {
                 $themeOptions = $app->get('theme-options');
-                Log::debug('ThemeOptionsServiceProvider: ThemeOptionsService retrieved');
 
                 $themeOptions->init();
-                Log::debug('ThemeOptionsServiceProvider: ThemeOptionsService initialized');
             } catch (\Exception $e) {
             }
         }, 10);
 
         // Đăng ký admin menu với try-catch để tránh lỗi
         add_action('admin_menu', function () use ($app) {
-            Log::debug('ThemeOptionsServiceProvider: admin_menu hook triggered');
 
             try {
                 $themeOptions = $app->get('theme-options');
                 $themeOptions->registerAdminMenu();
-                Log::debug('ThemeOptionsServiceProvider: Admin menu registered');
             } catch (\Exception $e) {
                 Log::error('Theme Options Error: ' . $e->getMessage());
             }
         }, 10);
-
-        Log::debug('ThemeOptionsServiceProvider: hooks registered');
     }
 }

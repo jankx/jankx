@@ -23,7 +23,6 @@ class BootChildTheme
     public function bootstrap(Application $app)
     {
         if (Environment::isDebugLog()) {
-            Log::debug('Checking for child theme composer autoloader...');
         }
 
         $childThemePath = get_stylesheet_directory();
@@ -33,7 +32,6 @@ class BootChildTheme
         // Check if child theme has composer.json and vendor directory
         if (!$this->shouldLoadChildThemeComposer($composerJsonPath, $vendorPath)) {
             if (Environment::isDebugLog()) {
-                Log::debug('Child theme composer not found or not needed');
             }
             return;
         }
@@ -90,8 +88,7 @@ class BootChildTheme
             require_once $autoloadPath;
 
             if (Environment::isDebugLog()) {
-                Log::debug('Child theme composer autoloader loaded successfully', [
-                    'child_theme_path' => $childThemePath,
+                                    'child_theme_path' => $childThemePath,
                     'composer_json' => $composerJsonPath,
                     'vendor_path' => $vendorPath
                 ]);
@@ -148,8 +145,7 @@ class BootChildTheme
                         });
 
                         if (Environment::isDebugLog()) {
-                            Log::debug('Child theme composer info registered', [
-                                'package_name' => $packageInfo['name'],
+                                                            'package_name' => $packageInfo['name'],
                                 'version' => $packageInfo['version'],
                                 'autoload_psr4' => $packageInfo['autoload']['psr-4'] ?? [],
                                 'autoload_files' => $packageInfo['autoload']['files'] ?? []

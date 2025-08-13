@@ -211,8 +211,7 @@ class ConfigCommand extends WP_CLI_Command
 
             // Log the action
             if (Environment::isDebugLog()) {
-                Log::debug("Config file cloned", [
-                    'parent_file' => $parentFile,
+                                    'parent_file' => $parentFile,
                     'child_file' => $childFile,
                     'config_file' => $configFile
                 ]);
@@ -275,8 +274,7 @@ class ConfigCommand extends WP_CLI_Command
 
             // Log the action
             if (Environment::isDebugLog()) {
-                Log::debug("Build file cloned", [
-                    'parent_file' => $parentFile,
+                                    'parent_file' => $parentFile,
                     'child_file' => $childFile,
                     'build_file' => $buildFile
                 ]);
@@ -306,7 +304,6 @@ class ConfigCommand extends WP_CLI_Command
         wp_cache_flush_group('jankx_config');
 
         if (Environment::isDebugLog()) {
-            Log::debug('Config cache cleared after cloning');
         }
     }
 

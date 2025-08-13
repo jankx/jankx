@@ -27,7 +27,6 @@ class LanguageSwitcherServiceProvider extends \Jankx\Support\Providers\ServicePr
      */
     public function boot(Application $app)
     {
-        Log::debug('LanguageSwitcherServiceProvider: Boot method called');
 
         // Kiểm tra Polylang plugin có được kích hoạt không
         if (!function_exists('pll_current_language')) {
@@ -37,14 +36,11 @@ class LanguageSwitcherServiceProvider extends \Jankx\Support\Providers\ServicePr
 
         // Đăng ký init hook để khởi tạo language switcher
         add_action('init', function () use ($app) {
-            Log::debug('LanguageSwitcherServiceProvider: init hook triggered');
 
             try {
                 $languageSwitcher = $app->get('language-switcher');
-                Log::debug('LanguageSwitcherServiceProvider: LanguageSwitcherService retrieved');
 
                 $languageSwitcher->init();
-                Log::debug('LanguageSwitcherServiceProvider: LanguageSwitcherService initialized');
             } catch (\Exception $e) {
                 Log::error('Language Switcher Error: ' . $e->getMessage());
             }
@@ -55,7 +51,6 @@ class LanguageSwitcherServiceProvider extends \Jankx\Support\Providers\ServicePr
             try {
                 $languageSwitcher = $app->get('language-switcher');
                 $languageSwitcher->registerBlock();
-                Log::debug('LanguageSwitcherServiceProvider: Block registered');
             } catch (\Exception $e) {
                 Log::error('Language Switcher Block Error: ' . $e->getMessage());
             }
@@ -66,12 +61,9 @@ class LanguageSwitcherServiceProvider extends \Jankx\Support\Providers\ServicePr
             try {
                 $languageSwitcher = $app->get('language-switcher');
                 $languageSwitcher->registerRestRoutes();
-                Log::debug('LanguageSwitcherServiceProvider: REST routes registered');
             } catch (\Exception $e) {
                 Log::error('Language Switcher REST Error: ' . $e->getMessage());
             }
         });
-
-        Log::debug('LanguageSwitcherServiceProvider: hooks registered');
     }
 }

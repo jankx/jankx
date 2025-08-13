@@ -285,17 +285,17 @@
         min-width: 300px;
         max-width: 350px;
     }
-    
+
     .jankx-icon-picker__grid {
         grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
         gap: 8px;
     }
-    
+
     .jankx-icon-picker__icon-item {
         padding: 12px 8px;
         min-height: 70px;
     }
-    
+
     .jankx-icon-picker__icon-item i,
     .jankx-icon-picker__icon-item .material-icons,
     .jankx-icon-picker__icon-item .material-icons-outlined,
@@ -304,7 +304,7 @@
     .jankx-icon-picker__icon-item .material-icons-two-tone {
         font-size: 20px;
     }
-    
+
     .jankx-icon-picker__icon-name {
         font-size: 10px;
     }

@@ -37,7 +37,6 @@ class GutenbergService
     public function init()
     {
         if (Environment::isDebugLog()) {
-            Log::debug('GutenbergService: Starting initialization');
         }
 
         try {
@@ -51,7 +50,6 @@ class GutenbergService
             $this->discoverPatterns();
 
             if (Environment::isDebugLog()) {
-                Log::debug('GutenbergService: Blocks and patterns initialized successfully');
             }
         } catch (\Exception $e) {
             Log::error('GutenbergService: Failed to initialize - ' . $e->getMessage());
@@ -67,14 +65,12 @@ class GutenbergService
     public function discoverBlocks()
     {
         if (Environment::isDebugLog()) {
-            Log::debug('GutenbergService: Starting block discovery');
         }
 
         $blocksPath = get_template_directory() . '/resources/blocks';
 
         if (!is_dir($blocksPath)) {
             if (Environment::isDebugLog()) {
-                Log::debug('GutenbergService: No blocks directory found at ' . $blocksPath);
             }
             return;
         }
@@ -91,20 +87,17 @@ class GutenbergService
                     $this->repository->registerBlock($blockClass);
                     $discoveredCount++;
                     if (Environment::isDebugLog()) {
-                        Log::debug('GutenbergService: Discovered and registered block ' . $blockName);
                     }
                 } catch (\Exception $e) {
                     Log::error('GutenbergService: Failed to register block ' . $blockName . ' - ' . $e->getMessage());
                 }
             } else {
                 if (Environment::isDebugLog()) {
-                    Log::debug('GutenbergService: Block class not found for ' . $blockName . ' (' . $blockClass . ')');
                 }
             }
         }
 
         if (Environment::isDebugLog()) {
-            Log::debug('GutenbergService: Block discovery completed. Found ' . $discoveredCount . ' blocks');
         }
     }
 
@@ -141,7 +134,6 @@ class GutenbergService
     public function registerAllBlocks()
     {
         if (Environment::isDebugLog()) {
-            Log::debug('GutenbergService: Starting block registration');
         }
 
         try {
@@ -157,7 +149,6 @@ class GutenbergService
                     $block->register();
                     $registeredCount++;
                     if (Environment::isDebugLog()) {
-                        Log::debug('GutenbergService: Registered block ' . $blockName);
                     }
                 } catch (\Exception $e) {
                     Log::error('GutenbergService: Failed to register block ' . $blockName . ' - ' . $e->getMessage());
@@ -165,7 +156,6 @@ class GutenbergService
             }
 
             if (Environment::isDebugLog()) {
-                Log::debug('GutenbergService: Block registration completed. Registered ' . $registeredCount . ' blocks');
             }
         } catch (\Exception $e) {
             Log::error('GutenbergService: Failed to register blocks - ' . $e->getMessage());
@@ -214,7 +204,6 @@ class GutenbergService
     public function enqueueAllBlockAssets()
     {
         if (Environment::isDebugLog()) {
-            Log::debug('GutenbergService: Starting asset enqueueing');
         }
 
         try {
@@ -226,7 +215,6 @@ class GutenbergService
                     $this->enqueueBlockAssets($blockName, $blockData);
                     $enqueuedCount++;
                     if (Environment::isDebugLog()) {
-                        Log::debug('GutenbergService: Enqueued assets for block ' . $blockName);
                     }
                 } catch (\Exception $e) {
                     Log::error('GutenbergService: Failed to enqueue assets for block ' . $blockName . ' - ' . $e->getMessage());
@@ -234,7 +222,6 @@ class GutenbergService
             }
 
             if (Environment::isDebugLog()) {
-                Log::debug('GutenbergService: Asset enqueueing completed. Enqueued ' . $enqueuedCount . ' blocks');
             }
         } catch (\Exception $e) {
             Log::error('GutenbergService: Failed to enqueue block assets - ' . $e->getMessage());
@@ -351,7 +338,6 @@ class GutenbergService
     public function clearCache()
     {
         if (Environment::isDebugLog()) {
-            Log::debug('GutenbergService: Clearing block cache');
         }
 
         try {
@@ -360,7 +346,6 @@ class GutenbergService
             wp_cache_delete('jankx_patterns', 'jankx_patterns');
 
             if (Environment::isDebugLog()) {
-                Log::debug('GutenbergService: Block cache cleared successfully');
             }
         } catch (\Exception $e) {
             Log::error('GutenbergService: Failed to clear block cache - ' . $e->getMessage());
@@ -415,7 +400,6 @@ class GutenbergService
     public function discoverPatterns(): void
     {
         if (Environment::isDebugLog()) {
-            Log::debug('GutenbergService: Starting pattern discovery');
         }
 
         try {
@@ -426,7 +410,6 @@ class GutenbergService
             do_action('jankx/gutenberg/register-patterns', $this->repository, $this->app);
 
             if (Environment::isDebugLog()) {
-                Log::debug('GutenbergService: Pattern discovery completed');
             }
         } catch (\Exception $e) {
             Log::error('GutenbergService: Failed to discover patterns - ' . $e->getMessage());
@@ -440,7 +423,6 @@ class GutenbergService
     protected function registerDefaultPatterns(): void
     {
         if (Environment::isDebugLog()) {
-            Log::debug('GutenbergService: Registering default patterns');
         }
 
         // Register built-in patterns
@@ -453,7 +435,6 @@ class GutenbergService
             try {
                 $this->repository->registerPattern($patternClass, $this->app);
                 if (Environment::isDebugLog()) {
-                    Log::debug('GutenbergService: Registered default pattern ' . $patternClass);
                 }
             } catch (\Exception $e) {
                 Log::error('GutenbergService: Failed to register default pattern ' . $patternClass . ' - ' . $e->getMessage());
@@ -461,7 +442,6 @@ class GutenbergService
         }
 
         if (Environment::isDebugLog()) {
-            Log::debug('GutenbergService: Default patterns registration completed');
         }
     }
 
@@ -521,7 +501,6 @@ class GutenbergService
     public function createPattern(string $className): GutenbergPattern
     {
         if (Environment::isDebugLog()) {
-            Log::debug('GutenbergService: Creating pattern instance for ' . $className);
         }
 
         if (!class_exists($className)) {
@@ -546,7 +525,6 @@ class GutenbergService
             }
 
             if (Environment::isDebugLog()) {
-                Log::debug('GutenbergService: Successfully created pattern instance for ' . $className);
             }
 
             return $pattern;
@@ -592,7 +570,6 @@ class GutenbergService
     public function clearPatternCache(): void
     {
         if (Environment::isDebugLog()) {
-            Log::debug('GutenbergService: Clearing pattern cache');
         }
 
         try {
@@ -601,7 +578,6 @@ class GutenbergService
             wp_cache_delete('jankx_pattern_categories', 'jankx_patterns');
 
             if (Environment::isDebugLog()) {
-                Log::debug('GutenbergService: Pattern cache cleared successfully');
             }
         } catch (\Exception $e) {
             Log::error('GutenbergService: Failed to clear pattern cache - ' . $e->getMessage());

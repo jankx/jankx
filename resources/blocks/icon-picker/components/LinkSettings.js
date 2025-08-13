@@ -41,55 +41,55 @@ const LinkSettings = ({
     };
 
     return (
-        <PanelBody
-            title={__('Link Settings', 'jankx')}
-            icon={getLinkIcon()}
-            initialOpen={false}
+        < PanelBody
+            title = {__('Link Settings', 'jankx')}
+            icon = {getLinkIcon()}
+            initialOpen = {false}
         >
-            <TextControl
-                label={__('URL', 'jankx')}
-                value={linkUrl}
-                onChange={handleLinkChange}
-                placeholder="https://example.com"
-                help={__('Nhập URL để tạo link cho icon', 'jankx')}
-            />
+            < TextControl
+                label = {__('URL', 'jankx')}
+                value = {linkUrl}
+                onChange = {handleLinkChange}
+                placeholder = "https://example.com"
+                help = {__('Nhập URL để tạo link cho icon', 'jankx')}
+            /  >
 
-            <SelectControl
-                label={__('Open in', 'jankx')}
-                value={linkTarget}
-                options={[
+            < SelectControl
+                label = {__('Open in', 'jankx')}
+                value = {linkTarget}
+                options = {[
                     { label: __('Same window', 'jankx'), value: '_self' },
                     { label: __('New window', 'jankx'), value: '_blank' },
                     { label: __('Parent frame', 'jankx'), value: '_parent' },
                     { label: __('Top frame', 'jankx'), value: '_top' }
-                ]}
-                onChange={handleLinkTargetChange}
-            />
+                    ]}
+                onChange = {handleLinkTargetChange}
+            /  >
 
-            <TextControl
-                label={__('Link Rel', 'jankx')}
-                value={linkRel}
-                onChange={handleLinkRelChange}
-                placeholder="nofollow noreferrer"
-                help={__('Thêm rel attributes cho link (tùy chọn)', 'jankx')}
-            />
+            < TextControl
+                label = {__('Link Rel', 'jankx')}
+                value = {linkRel}
+                onChange = {handleLinkRelChange}
+                placeholder = "nofollow noreferrer"
+                help = {__('Thêm rel attributes cho link (tùy chọn)', 'jankx')}
+            /  >
 
             {hasLink && (
-                <div className="jankx-link-settings__preview">
-                    <p className="jankx-link-settings__preview-text">
+                < div className = "jankx-link-settings__preview" >
+                    < p className = "jankx-link-settings__preview-text" >
                         {__('Preview:', 'jankx')}
-                    </p>
-                    <a
-                        href={linkUrl}
-                        target={linkTarget}
-                        rel={linkRel}
-                        className="jankx-link-settings__preview-link"
+                    <  / p >
+                    < a
+                        href = {linkUrl}
+                        target = {linkTarget}
+                        rel = {linkRel}
+                        className = "jankx-link-settings__preview-link"
                     >
                         {linkUrl}
-                    </a>
-                </div>
+                    <  / a >
+                <  / div >
             )}
-        </PanelBody>
+        <  / PanelBody >
     );
 };
 

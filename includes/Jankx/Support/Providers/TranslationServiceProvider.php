@@ -51,7 +51,6 @@ class TranslationServiceProvider extends ServiceProvider
     public function boot(Application $app)
     {
         if (Environment::isDebugLog()) {
-            Log::debug('TranslationServiceProvider: Booted successfully');
         }
     }
 
@@ -65,7 +64,6 @@ class TranslationServiceProvider extends ServiceProvider
         load_theme_textdomain('jankx', get_template_directory() . '/languages');
 
         if (Environment::isDebugLog()) {
-            Log::debug('TranslationServiceProvider: Text domain loaded');
         }
     }
 

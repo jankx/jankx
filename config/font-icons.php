@@ -1,15 +1,15 @@
 <?php
 
 return array (
-  'icon_types' => 
+  'icon_types' =>
   array (
-    'fontawesome' => 
+    'fontawesome' =>
     array (
       'enabled' => true,
       'auto_load' => false,
       'version' => '7.0.0',
       'cdn_url' => 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/{version}/css/all.min.css',
-      'prefixes' => 
+      'prefixes' =>
       array (
         0 => 'fa',
         1 => 'fas',
@@ -18,7 +18,7 @@ return array (
         4 => 'fal',
         5 => 'fat',
       ),
-      'categories' => 
+      'categories' =>
       array (
         0 => 'solid',
         1 => 'regular',
@@ -27,17 +27,17 @@ return array (
         4 => 'thin',
       ),
     ),
-    'material' => 
+    'material' =>
     array (
       'enabled' => true,
       'auto_load' => false,
       'version' => '1.3.0',
       'cdn_url' => 'https://fonts.googleapis.com/icon?family=Material+Icons',
-      'prefixes' => 
+      'prefixes' =>
       array (
         0 => 'material-icons',
       ),
-      'categories' => 
+      'categories' =>
       array (
         0 => 'outlined',
         1 => 'filled',
@@ -47,7 +47,7 @@ return array (
       ),
     ),
   ),
-  'admin_settings' => 
+  'admin_settings' =>
   array (
     'per_page' => 50,
     'search_enabled' => true,
@@ -55,29 +55,29 @@ return array (
     'preview_enabled' => true,
     'import_export_enabled' => true,
   ),
-  'cache' => 
+  'cache' =>
   array (
     'enabled' => true,
     'duration' => 3600,
     'auto_clear' => true,
   ),
-  'auto_update' => 
+  'auto_update' =>
   array (
     'enabled' => true,
     'frequency' => 'weekly',
-    'types' => 
+    'types' =>
     array (
       0 => 'material',
       1 => 'custom',
     ),
   ),
-  'gutenberg' => 
+  'gutenberg' =>
   array (
     'enabled' => true,
     'icon_picker' => true,
     'block_integration' => true,
   ),
-  'frontend' => 
+  'frontend' =>
   array (
     'lazy_loading' => true,
     'preload_critical' => true,
