@@ -37,8 +37,7 @@
 - [Child Theme Quick Start](./child-theme-quick-start.md) - Hướng dẫn nhanh cho Child Theme Boot
 
 ### ⚡ Performance & Optimization
-- [Lazy Loading Services](./lazy-loading-services.md) - Hướng dẫn lazy loading services
-- [Lazy Loading Quick Reference](./lazy-loading-quick-reference.md) - Tham khảo nhanh lazy loading
+- [Lazy Loading System](./lazy-loading.md) - Hệ thống lazy loading chuẩn hóa
 
 ## 🎯 Tính năng chính
 

@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Helpers;
+namespace Jankx\Helper;
 
 use Jankx\Foundation\Application;
-use Jankx\Managers\DeferredServiceManager;
 
 class ServiceHelper
 {
@@ -12,36 +11,34 @@ class ServiceHelper
      */
     protected static $app;
 
-    /**
-     * @var DeferredServiceManager
-     */
-    protected static $deferredManager;
 
-    /**
-     * Khởi tạo helper
-     *
-     * @param Application $app
-     * @return void
-     */
-    public static function init(Application $app)
+    public static function getApp()
     {
-        self::$app = $app;
-        self::$deferredManager = $app->make(DeferredServiceManager::class);
+        if (is_null(self::$app)) {
+            self::$app = Application::getInstance();
+        }
+        return self::$app;
     }
 
+
     /**
-     * Lấy service từ deferred manager
+     * Lấy service từ lazy loading system
      *
      * @param string $serviceName
+     * @param mixed $default
      * @return mixed
      */
-    public static function service(string $serviceName)
+    public static function service(string $serviceName, $default = null)
     {
-        if (!self::$deferredManager) {
+        if (!self::getApp()) {
             throw new \Exception('ServiceHelper chưa được khởi tạo. Gọi ServiceHelper::init() trước.');
         }
 
-        return self::$deferredManager->get($serviceName);
+        try {
+            return self::getApp()->lazy($serviceName, $default);
+        } catch (\Exception $e) {
+            return $default;
+        }
     }
 
     /**
@@ -52,26 +49,26 @@ class ServiceHelper
      */
     public static function hasService(string $serviceName): bool
     {
-        if (!self::$deferredManager) {
+        if (!self::$app) {
             return false;
         }
 
-        return self::$deferredManager->isRegistered($serviceName);
+        return self::getApp()->hasLazy($serviceName);
     }
 
     /**
-     * Kiểm tra service đã được resolve chưa
+     * Kiểm tra service đã được load chưa
      *
      * @param string $serviceName
      * @return bool
      */
     public static function isResolved(string $serviceName): bool
     {
-        if (!self::$deferredManager) {
+        if (!self::$app) {
             return false;
         }
 
-        return self::$deferredManager->isResolved($serviceName);
+        return self::getApp()->isLazyService($serviceName);
     }
 
     /**
@@ -81,79 +78,70 @@ class ServiceHelper
      */
     public static function getRegisteredServices(): array
     {
-        if (!self::$deferredManager) {
+        if (!self::$app) {
             return [];
         }
 
-        return self::$deferredManager->getRegisteredServices();
+        $stats = self::getApp()->getLazyStats();
+        return array_keys($stats['providers'] ?? []);
     }
 
     /**
-     * Lấy tất cả services đã được resolve
+     * Lấy tất cả services đã được load
      *
      * @return array
      */
     public static function getResolvedServices(): array
     {
-        if (!self::$deferredManager) {
+        if (!self::$app) {
             return [];
         }
 
-        return self::$deferredManager->getResolvedServices();
+        $stats = self::getApp()->getLazyStats();
+        return array_keys($stats['loaded'] ?? []);
     }
 
     /**
-     * Resolve tất cả services
+     * Load tất cả lazy services
      *
      * @return void
      */
     public static function resolveAll(): void
     {
-        if (self::$deferredManager) {
-            self::$deferredManager->resolveAll();
+        if (self::$app) {
+            // Lazy services được load tự động khi cần
+            // Không cần load tất cả cùng lúc
         }
     }
 
     /**
      * Helper function để lấy cache service
      *
-     * @return \App\Services\CacheService|null
+     * @return mixed
      */
     public static function cache()
     {
-        if (self::hasService('cache')) {
-            return self::service('cache');
-        }
-
-        return null;
+        return self::service('cache');
     }
 
     /**
-     * Helper function để lấy example service
+     * Helper function để lấy icon service
      *
-     * @return \App\Services\ExampleService|null
+     * @return mixed
      */
-    public static function example()
+    public static function icon()
     {
-        if (self::hasService('example')) {
-            return self::service('example');
-        }
-
-        return null;
+        return self::service('font-icons.repository');
     }
 
     /**
-     * Helper function để lấy advanced example service
+     * Helper function để lấy gutenberg service
      *
-     * @return \App\Services\ExampleService|null
+     * @return mixed
      */
-    public static function advancedExample()
+    public static function gutenberg()
     {
-        if (self::hasService('advanced_example')) {
-            return self::service('advanced_example');
-        }
-
-        return null;
+        return self::service('gutenberg.service');
     }
 
     /**
@@ -163,13 +151,27 @@ class ServiceHelper
      */
     public static function getStats(): array
     {
+        if (!self::$app) {
+            return [
+                'registered' => [],
+                'resolved' => [],
+                'total_registered' => 0,
+                'total_resolved' => 0,
+                'memory_usage' => memory_get_usage(true),
+                'peak_memory' => memory_get_peak_usage(true)
+            ];
+        }
+
+        $lazyStats = self::getApp()->getLazyStats();
+
         return [
             'registered' => self::getRegisteredServices(),
             'resolved' => self::getResolvedServices(),
-            'total_registered' => count(self::getRegisteredServices()),
-            'total_resolved' => count(self::getResolvedServices()),
+            'total_registered' => $lazyStats['providers'] ?? 0,
+            'total_resolved' => $lazyStats['loaded'] ?? 0,
             'memory_usage' => memory_get_usage(true),
-            'peak_memory' => memory_get_peak_usage(true)
+            'peak_memory' => memory_get_peak_usage(true),
+            'lazy_stats' => $lazyStats
         ];
     }
 
@@ -187,9 +189,11 @@ class ServiceHelper
         $stats = self::getStats();
 
         echo '<div style="position: fixed; top: 10px; right: 10px; background: #333; color: white; padding: 15px; border-radius: 5px; z-index: 9999; font-family: monospace; font-size: 12px;">';
-        echo '<h4 style="margin: 0 0 10px 0;">Deferred Services Debug</h4>';
+        echo '<h4 style="margin: 0 0 10px 0;">Lazy Services Debug</h4>';
         echo '<p><strong>Registered:</strong> ' . implode(', ', $stats['registered']) . '</p>';
-        echo '<p><strong>Resolved:</strong> ' . implode(', ', $stats['resolved']) . '</p>';
+        echo '<p><strong>Loaded:</strong> ' . implode(', ', $stats['resolved']) . '</p>';
+        echo '<p><strong>Total Providers:</strong> ' . $stats['total_registered'] . '</p>';
+        echo '<p><strong>Total Loaded:</strong> ' . $stats['total_resolved'] . '</p>';
         echo '<p><strong>Memory:</strong> ' . number_format($stats['memory_usage'] / 1024 / 1024, 2) . ' MB</p>';
         echo '<p><strong>Peak:</strong> ' . number_format($stats['peak_memory'] / 1024 / 1024, 2) . ' MB</p>';
         echo '</div>';

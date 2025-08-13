@@ -479,4 +479,45 @@ class Application extends Container
     {
         $this->lazyServices = [];
     }
+
+    /**
+     * Get lazy service with fallback
+     *
+     * @param string $service
+     * @param mixed $default
+     * @return mixed
+     */
+    public function lazy($service, $default = null)
+    {
+        try {
+            return $this->loadLazyService($service);
+        } catch (Exception $e) {
+            return $default;
+        }
+    }
+
+    /**
+     * Check if lazy service exists and can be loaded
+     *
+     * @param string $service
+     * @return bool
+     */
+    public function hasLazy($service)
+    {
+        return $this->isLazyService($service);
+    }
+
+    /**
+     * Get lazy service statistics
+     *
+     * @return array
+     */
+    public function getLazyStats()
+    {
+        return [
+            'providers' => count($this->lazyServiceProviders),
+            'loaded' => count($this->lazyServices),
+            'total' => count($this->lazyServiceProviders)
+        ];
+    }
 }

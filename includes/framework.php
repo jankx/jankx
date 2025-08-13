@@ -1,5 +1,6 @@
 <?php
 
+use Jankx\Foundation\Application;
 use Jankx\Http\Request as JankxRequest;
 use App\Http\AdminAjaxKernel;
 use App\Http\RestApiKernel;
@@ -42,6 +43,9 @@ class Jankx_Framework
     public function setApp(&$app): self
     {
         $this->app = $app;
+
+        // Set application instance to container
+        Application::setInstance($app);
 
         return $this;
     }
