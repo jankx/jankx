@@ -12,6 +12,8 @@
     "dev:icon-picker": "wp-scripts start resources/blocks/icon-picker/index.js --output-path=resources/blocks/icon-picker/build",
     "build:jankx-tab": "wp-scripts build resources/blocks/tabs/index.js resources/blocks/tabs/index.css --output-path=resources/blocks/tabs/build",
     "dev:jankx-tab": "wp-scripts start resources/blocks/tabs/index.js resources/blocks/tabs/index.css --output-path=resources/blocks/tabs/build",
+    "build:mega-menu": "wp-scripts build resources/blocks/mega-menu/index.js resources/blocks/mega-menu/index.css --output-path=resources/blocks/mega-menu/build",
+    "dev:mega-menu": "wp-scripts start resources/blocks/mega-menu/index.js resources/blocks/mega-menu/index.css --output-path=resources/blocks/mega-menu/build",
     "format": "wp-scripts format",
     "lint:css": "wp-scripts lint-style",
     "lint:js": "wp-scripts lint-js",
@@ -21,7 +23,9 @@
     "plugin-zip": "wp-scripts plugin-zip",
     "test:e2e": "wp-scripts test-e2e",
     "test:unit": "wp-scripts test-unit-js",
-    "build:all-blocks": "npm run build:widget-renderer && npm run build:language-switcher && npm run build:icon-picker && npm run build:jankx-tab"
+    "build:all-blocks": "npm run build:widget-renderer && npm run build:language-switcher && npm run build:icon-picker && npm run build:jankx-tab && npm run build:swiper-slider",
+    "build:swiper-slider": "wp-scripts build resources/blocks/swiper-slider/index.js resources/blocks/swiper-slider/index.css --output-path=resources/blocks/swiper-slider/build",
+    "dev:swiper-slider": "wp-scripts start resources/blocks/swiper-slider/index.js resources/blocks/swiper-slider/index.css --output-path=resources/blocks/swiper-slider/build"
   },
   "keywords": [
     "wordpress",

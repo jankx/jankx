@@ -8,6 +8,8 @@ use Jankx\Support\Blocks\WidgetRendererBlock;
 use Jankx\Support\Blocks\IconPickerBlock;
 use Jankx\Support\Blocks\LanguageSwitcherBlock;
 use Jankx\Support\Blocks\ComposeTabBlock;
+use Jankx\Support\Blocks\MegaMenuBlock;
+use Jankx\Support\Blocks\SwiperSlider\SwiperSlider;
 use Jankx\Support\Blocks\Patterns\GutenbergPattern;
 use Jankx\Facades\Log;
 use Jankx\Helper\Environment;
@@ -124,6 +126,8 @@ class GutenbergService
         $this->repository->registerBlock(IconPickerBlock::class);
         $this->repository->registerBlock(LanguageSwitcherBlock::class);
         $this->repository->registerBlock(ComposeTabBlock::class);
+        $this->repository->registerBlock(MegaMenuBlock::class);
+        $this->repository->registerBlock(SwiperSlider::class);
     }
 
     /**

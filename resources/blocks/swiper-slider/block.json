@@ -1,0 +1,115 @@
+{
+    "name": "jankx/swiper-slider",
+    "title": "Swiper Slider",
+    "category": "jankx",
+    "icon": "slides",
+    "description": "Advanced Swiper slider with full customization options",
+    "keywords": ["slider", "carousel", "banner", "swiper", "slideshow"],
+    "textdomain": "jankx",
+    "supports": {
+        "html": false,
+        "align": ["wide", "full"],
+        "spacing": {
+            "margin": true,
+            "padding": true
+        }
+    },
+    "attributes": {
+        "sliderType": {
+            "type": "string",
+            "default": "slider"
+        },
+        "preset": {
+            "type": "string",
+            "default": "default"
+        },
+        "slidesPerView": {
+            "type": "number",
+            "default": 1
+        },
+        "slidesPerGroup": {
+            "type": "number",
+            "default": 1
+        },
+        "spaceBetween": {
+            "type": "number",
+            "default": 30
+        },
+        "effect": {
+            "type": "string",
+            "default": "slide"
+        },
+        "direction": {
+            "type": "string",
+            "default": "horizontal"
+        },
+        "loop": {
+            "type": "boolean",
+            "default": false
+        },
+        "autoplay": {
+            "type": "boolean",
+            "default": false
+        },
+        "autoplayDelay": {
+            "type": "number",
+            "default": 3000
+        },
+        "autoplayDisableOnInteraction": {
+            "type": "boolean",
+            "default": true
+        },
+        "navigation": {
+            "type": "boolean",
+            "default": true
+        },
+        "pagination": {
+            "type": "boolean",
+            "default": true
+        },
+        "paginationType": {
+            "type": "string",
+            "default": "bullets"
+        },
+        "scrollbar": {
+            "type": "boolean",
+            "default": false
+        },
+        "centeredSlides": {
+            "type": "boolean",
+            "default": false
+        },
+        "grabCursor": {
+            "type": "boolean",
+            "default": true
+        },
+        "speed": {
+            "type": "number",
+            "default": 300
+        },
+        "slides": {
+            "type": "array",
+            "default": []
+        },
+        "breakpoints": {
+            "type": "object",
+            "default": {
+                "320": {
+                    "slidesPerView": 1,
+                    "spaceBetween": 20
+                },
+                "768": {
+                    "slidesPerView": 2,
+                    "spaceBetween": 30
+                },
+                "1024": {
+                    "slidesPerView": 3,
+                    "spaceBetween": 40
+                }
+            }
+        }
+    },
+    "editorScript": "file:./build/index.js",
+    "editorStyle": "file:./build/index.css",
+    "style": "file:./build/style-index.css"
+}
