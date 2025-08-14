@@ -75,8 +75,7 @@ class WordPressCliServiceProvider extends ServiceProvider
         \WP_CLI::add_command('jankx config', $this->app->make('jankx.config.command'));
 
         // Log command registration
-        if (Environment::isDebugLog()) {
-        }
+
     }
 
     /**

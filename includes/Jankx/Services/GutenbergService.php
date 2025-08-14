@@ -39,8 +39,7 @@ class GutenbergService
      */
     public function init()
     {
-        if (Environment::isDebugLog()) {
-        }
+
 
         try {
             // Discover blocks from directory
@@ -52,8 +51,6 @@ class GutenbergService
             // Discover and register patterns
             $this->discoverPatterns();
 
-            if (Environment::isDebugLog()) {
-            }
         } catch (\Exception $e) {
             Log::error('GutenbergService: Failed to initialize - ' . $e->getMessage());
             throw $e;
@@ -67,8 +64,7 @@ class GutenbergService
      */
     public function discoverBlocks()
     {
-        if (Environment::isDebugLog()) {
-        }
+
 
         $blocksPath = get_template_directory() . '/resources/blocks';
 
@@ -100,8 +96,7 @@ class GutenbergService
             }
         }
 
-        if (Environment::isDebugLog()) {
-        }
+
     }
 
     /**
@@ -138,8 +133,7 @@ class GutenbergService
      */
     public function registerAllBlocks()
     {
-        if (Environment::isDebugLog()) {
-        }
+
 
         try {
             // Register default blocks first
@@ -208,8 +202,7 @@ class GutenbergService
      */
     public function enqueueAllBlockAssets()
     {
-        if (Environment::isDebugLog()) {
-        }
+
 
         try {
             $metadata = $this->getBlocksMetadata();
@@ -362,8 +355,7 @@ class GutenbergService
      */
     public function clearCache()
     {
-        if (Environment::isDebugLog()) {
-        }
+
 
         try {
             // Clear any cached block data
@@ -424,9 +416,6 @@ class GutenbergService
      */
     public function discoverPatterns(): void
     {
-        if (Environment::isDebugLog()) {
-        }
-
         try {
             // Register default patterns
             $this->registerDefaultPatterns();
@@ -447,8 +436,7 @@ class GutenbergService
      */
     protected function registerDefaultPatterns(): void
     {
-        if (Environment::isDebugLog()) {
-        }
+
 
         // Register built-in patterns
         $defaultPatterns = [
@@ -466,8 +454,7 @@ class GutenbergService
             }
         }
 
-        if (Environment::isDebugLog()) {
-        }
+
     }
 
     /**
@@ -525,8 +512,7 @@ class GutenbergService
      */
     public function createPattern(string $className): GutenbergPattern
     {
-        if (Environment::isDebugLog()) {
-        }
+
 
         if (!class_exists($className)) {
             $error = 'Pattern class ' . $className . ' not found';
@@ -594,8 +580,7 @@ class GutenbergService
      */
     public function clearPatternCache(): void
     {
-        if (Environment::isDebugLog()) {
-        }
+
 
         try {
             // Clear pattern cache

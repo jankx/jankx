@@ -81,8 +81,7 @@ class Jankx_Framework
         $requestType = $request->getRequestType();
 
         // Only log in debug mode if needed
-        if (Environment::isDebugLog()) {
-        }
+
 
         // Create appropriate kernel based on request type
         switch ($requestType) {
@@ -130,8 +129,7 @@ class Jankx_Framework
         $consoleType = ConsoleDetector::detect($args);
 
         // Log debug information
-        if (Environment::isDebugLog()) {
-        }
+
 
         // Create appropriate kernel based on console type
         switch ($consoleType) {

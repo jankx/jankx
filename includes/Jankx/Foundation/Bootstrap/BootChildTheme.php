@@ -22,8 +22,7 @@ class BootChildTheme
      */
     public function bootstrap(Application $app)
     {
-        if (Environment::isDebugLog()) {
-        }
+
 
         $childThemePath = get_stylesheet_directory();
         $composerJsonPath = $childThemePath . '/composer.json';

@@ -19,8 +19,7 @@ class RegisterFacades
      */
     public function bootstrap(Application $app)
     {
-        if (Environment::isDebugLog()) {
-        }
+
 
         // Set the application instance for the facades
         AppFacade::setFacadeApplication($app);
@@ -32,7 +31,6 @@ class RegisterFacades
             return new Logger();
         });
 
-        if (Environment::isDebugLog()) {
-        }
+
     }
 }

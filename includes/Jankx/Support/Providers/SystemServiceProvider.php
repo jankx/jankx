@@ -34,8 +34,7 @@ class SystemServiceProvider extends ServiceProvider
      */
     public function register(Application $app)
     {
-        if (Environment::isDebugLog()) {
-        }
+
 
         // Register Cache Service
         $app->singleton('cache', function (Application $app) {
@@ -60,8 +59,7 @@ class SystemServiceProvider extends ServiceProvider
         \Jankx\Facades\Sidebar::setFacadeApplication($app);
         \Jankx\Facades\Footer::setFacadeApplication($app);
 
-        if (Environment::isDebugLog()) {
-        }
+
     }
 
     /**
@@ -72,8 +70,7 @@ class SystemServiceProvider extends ServiceProvider
      */
     public function boot(Application $app)
     {
-        if (Environment::isDebugLog()) {
-        }
+
 
         // Create PHP class aliases from config
         $this->createClassAliases($app);
@@ -113,7 +110,6 @@ class SystemServiceProvider extends ServiceProvider
             }
         }
 
-        if (Environment::isDebugLog()) {
-        }
+
     }
 }

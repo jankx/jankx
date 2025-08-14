@@ -303,8 +303,7 @@ class ConfigCommand extends WP_CLI_Command
         // Clear all config cache
         wp_cache_flush_group('jankx_config');
 
-        if (Environment::isDebugLog()) {
-        }
+
     }
 
     /**

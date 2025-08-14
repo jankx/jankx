@@ -16,16 +16,14 @@ class LoadConfiguration
      */
     public function bootstrap(Application $app)
     {
-        if (Environment::isDebugLog()) {
-        }
+
 
         $config = $app->make('config');
 
         // Load configuration from theme files
         $this->loadThemeConfiguration($app, $config);
 
-        if (Environment::isDebugLog()) {
-        }
+
     }
 
     /**
@@ -48,8 +46,7 @@ class LoadConfiguration
             $childConfigPath = get_stylesheet_directory() . '/config';
         }
 
-        if (Environment::isDebugLog()) {
-        }
+
 
         // Load all config files
         $configFiles = [
@@ -111,8 +108,7 @@ class LoadConfiguration
         // Cache for 1 hour (3600 seconds)
         wp_cache_set($cacheKey, $config, 'jankx_config', 3600);
 
-        if (Environment::isDebugLog()) {
-        }
+
 
         return $config;
     }
@@ -126,8 +122,7 @@ class LoadConfiguration
     {
         wp_cache_flush_group('jankx_config');
 
-        if (Environment::isDebugLog()) {
-        }
+
     }
 
     /**
@@ -149,8 +144,7 @@ class LoadConfiguration
             }
         }
 
-        if (Environment::isDebugLog()) {
-        }
+
     }
 
     /**

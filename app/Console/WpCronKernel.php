@@ -31,15 +31,13 @@ class WpCronKernel extends Kernel
             return 1;
         }
 
-        if (Environment::isDebugLog()) {
-        }
+
 
         // Process scheduled events without triggering wp_loaded
         // WordPress will handle cron jobs automatically
         // We don't need to call do_action('wp_loaded') here
 
-        if (Environment::isDebugLog()) {
-        }
+
 
         return 0;
     }

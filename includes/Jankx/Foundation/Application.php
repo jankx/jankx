@@ -292,8 +292,7 @@ class Application extends Container
      */
     public function bootstrapWith(array $bootstrappers)
     {
-        if (Environment::isDebugLog()) {
-        }
+
 
         $this->callBootingCallbacks();
 
@@ -307,8 +306,7 @@ class Application extends Container
         $this->setBooted();
         $this->callBootedCallbacks();
 
-        if (Environment::isDebugLog()) {
-        }
+
     }
 
     /**

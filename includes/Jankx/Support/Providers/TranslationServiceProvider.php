@@ -50,8 +50,7 @@ class TranslationServiceProvider extends ServiceProvider
      */
     public function boot(Application $app)
     {
-        if (Environment::isDebugLog()) {
-        }
+
     }
 
     /**
@@ -63,8 +62,7 @@ class TranslationServiceProvider extends ServiceProvider
     {
         load_theme_textdomain('jankx', get_template_directory() . '/languages');
 
-        if (Environment::isDebugLog()) {
-        }
+
     }
 
     /**
