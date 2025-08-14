@@ -14,8 +14,10 @@ const LiveReloadPlugin = require('webpack-livereload-plugin');
 
 if (mix.inProduction()) {
     mix.sass('resources/scss/style.scss', 'style.min.css')
+        .css('resources/assets/css/admin-pages.css', 'admin-pages.min.css');
 } else {
     mix.sass('resources/scss/style.scss', 'style.css')
+        .css('resources/assets/css/admin-pages.css', 'admin-pages.css')
         .webpackConfig({
             plugins: [new LiveReloadPlugin({
                 useSourceHash: true

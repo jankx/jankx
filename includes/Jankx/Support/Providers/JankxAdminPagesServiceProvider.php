@@ -116,7 +116,7 @@ class JankxAdminPagesServiceProvider extends ServiceProvider
         if (strpos($screen->id, 'jankx') !== false) {
             wp_enqueue_style(
                 'jankx-admin-pages',
-                $this->app->make('jankx.urls')['base'] . '/assets/css/admin-pages.css',
+                $this->app->make('jankx.urls')['base'] . '/resources/assets/css/admin-pages.css',
                 [],
                 $this->app->make('jankx.version') ?? '1.0.0'
             );
