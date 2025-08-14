@@ -7,7 +7,6 @@ use Exception;
 use Illuminate\Container\Container;
 use Jankx\Config\Repository;
 use Jankx\Helper\Environment;
-use Jankx\Support\Providers\DeferredServiceProvider;
 use Jankx\Support\Providers\JankxAdminPagesServiceProvider;
 use Jankx\Support\Providers\JankxFrameworkServiceProvider;
 use Jankx\Support\Providers\SystemServiceProvider;
@@ -64,7 +63,6 @@ class Application extends Container
      */
     protected $builtInProviders = [
         SystemServiceProvider::class,
-        DeferredServiceProvider::class,
         TranslationServiceProvider::class,
         JankxFrameworkServiceProvider::class,
         ThemeOptionsServiceProvider::class,
