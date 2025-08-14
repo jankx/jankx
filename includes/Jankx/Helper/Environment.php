@@ -19,7 +19,11 @@ class Environment
     {
         // Cache the result to avoid repeated checks
         if (self::$debugLogCache === null) {
-            self::$debugLogCache = defined('WP_DEBUG') && WP_DEBUG;
+            self::$debugLogCache = (
+                defined('JANKX_DEBUG_LOG') && boolval(JANKX_DEBUG_LOG)
+            ) || (
+                defined('JANKX_LOG_ALL') && boolval(JANKX_LOG_ALL)
+            );
         }
 
         return self::$debugLogCache;

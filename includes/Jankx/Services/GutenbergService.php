@@ -241,13 +241,23 @@ class GutenbergService
         // Enqueue editor script
         if (!empty($blockData['editorScript'])) {
             $scriptPath = get_template_directory() . '/resources/blocks/' . $blockName . '/' . $blockData['editorScript'];
+            $scriptDir = dirname($scriptPath);
+            $scriptName = basename($scriptPath, '.js');
+
+            // Look for corresponding asset.php file
+            $assetFile = $scriptDir . '/' . $scriptName . '.asset.php';
 
             if (file_exists($scriptPath)) {
+                // Load dependencies and version from asset.php
+                $asset = file_exists($assetFile) ? include($assetFile) : [];
+                $scriptDependencies = $asset['dependencies'] ?? ['wp-blocks', 'wp-element', 'wp-editor'];
+                $scriptVersion = $asset['version'] ?? filemtime($scriptPath);
+
                 wp_enqueue_script(
                     $blockData['name'] . '-editor',
                     \Jankx\Facades\Url::blockAsset($blockName . '/' . $blockData['editorScript']),
-                    ['wp-blocks', 'wp-element', 'wp-editor'],
-                    filemtime($scriptPath),
+                    $scriptDependencies,
+                    $scriptVersion,
                     true
                 );
             }
@@ -256,13 +266,23 @@ class GutenbergService
         // Enqueue block style
         if (!empty($blockData['style'])) {
             $stylePath = get_template_directory() . '/resources/blocks/' . $blockName . '/' . $blockData['style'];
+            $styleDir = dirname($stylePath);
+            $styleName = basename($stylePath, '.css');
+
+            // Look for corresponding style.css.asset.php file
+            $cssAssetFile = $styleDir . '/style.css.asset.php';
 
             if (file_exists($stylePath)) {
+                // Load dependencies and version from style.css.asset.php
+                $cssAsset = file_exists($cssAssetFile) ? include($cssAssetFile) : [];
+                $cssDependencies = $cssAsset['dependencies'] ?? [];
+                $cssVersion = $cssAsset['version'] ?? filemtime($stylePath);
+
                 wp_enqueue_style(
                     $blockData['name'] . '-style',
                     \Jankx\Facades\Url::blockAsset($blockName . '/' . $blockData['style']),
-                    [],
-                    filemtime($stylePath)
+                    $cssDependencies,
+                    $cssVersion
                 );
             }
         }
