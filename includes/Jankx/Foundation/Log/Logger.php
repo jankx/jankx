@@ -16,6 +16,9 @@ class Logger
     const INFO      = 'info';
     const DEBUG     = 'debug';
 
+    const SUCCESS     = 'success';
+
+
     /**
      * Log a message.
      *
@@ -57,6 +60,7 @@ class Logger
             self::WARNING   => 4,
             self::NOTICE    => 5,
             self::INFO      => 6,
+            self::SUCCESS   => 7,
         ];
 
         $currentLevel = $levels[self::WARNING] ?? 4;
@@ -178,5 +182,17 @@ class Logger
     public function debug($message, array $context = [])
     {
         $this->log(self::DEBUG, $message, $context);
+    }
+
+    /**
+     * Log a success message.
+     *
+     * @param  string  $message
+     * @param  array   $context
+     * @return void
+     */
+    public function success($message, array $context = [])
+    {
+        $this->log(self::SUCCESS, $message, $context);
     }
 }
