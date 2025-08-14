@@ -21,10 +21,10 @@ return [
     |
     */
     'menu' => [
-        'primary' => true,      // Always available
-        'secondary' => true,    // Optional
+        'primary' => false,      // Always available
+        'secondary' => false,    // Optional
         'footer' => false,       // Optional
-        'mobile' => true,        // Mobile menu support
+        'mobile' => false,        // Mobile menu support
     ],
 
     /*
@@ -37,7 +37,7 @@ return [
     |
     */
     'sidebar' => [
-        'primary' => true,       // Always available
+        'primary' => false,       // Always available
         'secondary' => false,    // Optional
     ],
 
@@ -55,7 +55,7 @@ return [
             'enabled' => false,  // Footer menu
         ],
         'widgets' => [
-            'enabled' => true,   // Footer widgets
+            'enabled' => false,   // Footer widgets
             'columns' => 4,      // Number of widget columns (1-6)
         ],
         'content' => '',         // Custom footer content
