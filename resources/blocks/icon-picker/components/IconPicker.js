@@ -67,25 +67,25 @@ const IconPicker = ({
 
     const handleIconTypeChange = (newIconType) => {
         setSelectedIconType(newIconType);
-        const firstCategory = iconData[newIconType] ? .categories ? .[0] || '';
+        const firstCategory = iconData[newIconType] && iconData[newIconType].categories && iconData[newIconType].categories[0] || '';
         setSelectedCategory(firstCategory);
-        onIconTypeChange ? .(newIconType);
-        onCategoryChange ? .(firstCategory);
+        if (onIconTypeChange) onIconTypeChange(newIconType);
+        if (onCategoryChange) onCategoryChange(firstCategory);
     };
 
     const handleCategoryChange = (newCategory) => {
         setSelectedCategory(newCategory);
-        onCategoryChange ? .(newCategory);
+        if (onCategoryChange) onCategoryChange(newCategory);
     };
 
     const renderIcon = (icon) => {
         if (selectedIconType === 'material') {
-            return < span className = "material-icons" > {icon.name} < / span > ;
+            return <span className="material-icons">{icon.name}</span>;
         } else if (selectedIconType === 'fontawesome') {
-            const prefix = icon.prefixes ? .[0] || 'fas';
-            return < i className = {`${prefix} fa - ${icon.name}`} > < / i > ;
+            const prefix = icon.prefixes && icon.prefixes[0] || 'fas';
+            return <i className={`${prefix} fa-${icon.name}`}></i>;
         } else if (selectedIconType === 'custom') {
-            return < span className = {`icon icon - ${icon.name}`} > < / span > ;
+            return <span className={`icon icon-${icon.name}`}></span>;
         }
         return null;
     };
@@ -101,90 +101,90 @@ const IconPicker = ({
     }));
 
     return (
-        < div className = "jankx-icon-picker" >
-            < Button
+        <div className="jankx-icon-picker">
+            <Button
                 isSecondary
-                onClick = {() => setIsOpen(true)}
-                className = "jankx-icon-picker__button"
+                onClick={() => setIsOpen(true)}
+                className="jankx-icon-picker__button"
             >
                 {value ? (
-                    < span className = "jankx-icon-picker__selected" >
+                    <span className="jankx-icon-picker__selected">
                         {renderIcon(value)}
-                        < span className = "jankx-icon-picker__name" > {value.name} < / span >
-                    <  / span >
+                        <span className="jankx-icon-picker__name">{value.name}</span>
+                    </span>
                 ) : (
                     __('Chọn Icon', 'jankx')
                 )}
-            <  / Button >
+            </Button>
 
             {isOpen && (
-                < Popover
-                    onClose = {() => setIsOpen(false)}
-                    className = "jankx-icon-picker__popover"
+                <Popover
+                    onClose={() => setIsOpen(false)}
+                    className="jankx-icon-picker__popover"
                 >
-                    < div className = "jankx-icon-picker__content" >
-                        < div className = "jankx-icon-picker__header" >
-                            < h3 > {__('Chọn Icon từ Jankx Font Icons', 'jankx')} < / h3 >
+                    <div className="jankx-icon-picker__content">
+                        <div className="jankx-icon-picker__header">
+                            <h3>{__('Chọn Icon từ Jankx Font Icons', 'jankx')}</h3>
 
                             {isLoading ? (
-                                < div className = "jankx-icon-picker__loading" >
+                                <div className="jankx-icon-picker__loading">
                                     {__('Đang tải danh sách icons...', 'jankx')}
-                                <  / div >
+                                </div>
                             ) : (
-                                <  >
-                                    < SelectControl
-                                        label = {__('Thư viện Icon', 'jankx')}
-                                        value = {selectedIconType}
-                                        options = {iconTypeOptions}
-                                        onChange = {handleIconTypeChange}
-                                    /  >
+                                <>
+                                    <SelectControl
+                                        label={__('Thư viện Icon', 'jankx')}
+                                        value={selectedIconType}
+                                        options={iconTypeOptions}
+                                        onChange={handleIconTypeChange}
+                                    />
 
                                     {categories.length > 0 && (
-                                        < SelectControl
-                                            label = {__('Danh mục', 'jankx')}
-                                            value = {selectedCategory}
-                                            options = {categoryOptions}
-                                            onChange = {handleCategoryChange}
-                                        /  >
+                                        <SelectControl
+                                            label={__('Danh mục', 'jankx')}
+                                            value={selectedCategory}
+                                            options={categoryOptions}
+                                            onChange={handleCategoryChange}
+                                        />
                                     )}
 
-                                    < TextControl
-                                        label = {__('Tìm kiếm', 'jankx')}
-                                        value = {searchTerm}
-                                        onChange = {setSearchTerm}
-                                        placeholder = {__('Nhập tên icon...', 'jankx')}
-                                    /  >
-                                <  / >
+                                    <TextControl
+                                        label={__('Tìm kiếm', 'jankx')}
+                                        value={searchTerm}
+                                        onChange={setSearchTerm}
+                                        placeholder={__('Nhập tên icon...', 'jankx')}
+                                    />
+                                </>
                             )}
-                        <  / div >
+                        </div>
 
                         {!isLoading && (
-                            < div className = "jankx-icon-picker__grid" >
+                            <div className="jankx-icon-picker__grid">
                                 {filteredIcons.map((icon) => (
-                                    < Button
-                                        key = {`${icon.name} - ${icon.category}`}
+                                    <Button
+                                        key={`${icon.name}-${icon.category}`}
                                         isSecondary
-                                        className = "jankx-icon-picker__icon-item"
-                                        onClick = {() => handleIconSelect(icon)}
+                                        className="jankx-icon-picker__icon-item"
+                                        onClick={() => handleIconSelect(icon)}
                                     >
                                         {renderIcon(icon)}
-                                        < span className = "jankx-icon-picker__icon-name" >
+                                        <span className="jankx-icon-picker__icon-name">
                                             {icon.name}
-                                        <  / span >
-                                    <  / Button >
+                                        </span>
+                                    </Button>
                                 ))}
-                            <  / div >
+                            </div>
                         )}
 
                         {!isLoading && filteredIcons.length === 0 && (
-                            < div className = "jankx-icon-picker__empty" >
+                            <div className="jankx-icon-picker__empty">
                                 {__('Không tìm thấy icon nào', 'jankx')}
-                            <  / div >
+                            </div>
                         )}
-                    <  / div >
-                <  / Popover >
+                    </div>
+                </Popover>
             )}
-        <  / div >
+        </div>
     );
 };
 

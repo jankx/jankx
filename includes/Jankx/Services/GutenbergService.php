@@ -5,6 +5,9 @@ namespace Jankx\Services;
 use Jankx\Foundation\Application;
 use Jankx\Support\Blocks\GutenbergRepository;
 use Jankx\Support\Blocks\WidgetRendererBlock;
+use Jankx\Support\Blocks\IconPickerBlock;
+use Jankx\Support\Blocks\LanguageSwitcherBlock;
+use Jankx\Support\Blocks\ComposeTabBlock;
 use Jankx\Support\Blocks\Patterns\GutenbergPattern;
 use Jankx\Facades\Log;
 use Jankx\Helper\Environment;
@@ -123,8 +126,9 @@ class GutenbergService
     protected function registerDefaultBlocks()
     {
         $this->repository->registerBlock(WidgetRendererBlock::class);
-        $this->repository->registerBlock(\Jankx\Support\Blocks\IconPickerBlock::class);
-        $this->repository->registerBlock(\Jankx\Support\Blocks\LanguageSwitcherBlock::class);
+        $this->repository->registerBlock(IconPickerBlock::class);
+        $this->repository->registerBlock(LanguageSwitcherBlock::class);
+        $this->repository->registerBlock(ComposeTabBlock::class);
     }
 
     /**

@@ -1,0 +1,111 @@
+/*!********************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[2].use[2]!./resources/blocks/tabs/index.css ***!
+  \********************************************************************************************************************************************************************************************/
+/* Jankx Tabs Block Editor Styles */
+.jankx-tab-block {
+    border: 2px dashed #ddd;
+    padding: 20px;
+    border-radius: 8px;
+    background: #f9f9f9;
+}
+
+.jankx-tab-nav {
+    display: flex;
+    border-bottom: 2px solid #e0e0e0;
+    margin-bottom: 20px;
+}
+
+.jankx-tab-nav.jankx-tab-vertical {
+    flex-direction: column;
+    border-bottom: none;
+    border-right: 2px solid #e0e0e0;
+    margin-bottom: 0;
+    margin-right: 20px;
+}
+
+.jankx-tab-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.jankx-tab-button:hover {
+    background: #f0f0f0;
+}
+
+.jankx-tab-button.active {
+    background: #007cba;
+    color: white;
+    border-bottom-color: #005a87;
+}
+
+.jankx-tab-button.active svg {
+    fill: white;
+}
+
+.jankx-tab-content {
+    min-height: 200px;
+    padding: 20px;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+}
+
+.jankx-tab-panel {
+    line-height: 1.6;
+}
+
+.jankx-tab-text-content {
+    font-size: 16px;
+}
+
+.jankx-tab-link-content,
+.jankx-tab-modal-content {
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    border-left: 4px solid #007cba;
+}
+
+.jankx-tab-link-content a {
+    color: #007cba;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.jankx-tab-link-content a:hover {
+    text-decoration: underline;
+}
+
+/* Tab Editor Item Styles */
+.tab-editor-item {
+    background: white;
+}
+
+.tab-editor-item .components-base-control__label {
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .jankx-tab-nav {
+        flex-direction: column;
+    }
+
+    .jankx-tab-button {
+        text-align: left;
+        justify-content: flex-start;
+    }
+}
+
+
+/*# sourceMappingURL=index.css.css.map*/
