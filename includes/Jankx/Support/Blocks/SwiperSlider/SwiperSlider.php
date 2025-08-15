@@ -384,6 +384,5 @@ class SwiperSlider extends Block
             ]
         ];
     }
-
-
 }
+

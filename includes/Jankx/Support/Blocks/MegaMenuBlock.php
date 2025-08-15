@@ -191,7 +191,7 @@ class MegaMenuBlock extends Block
         try {
             // Include the render callback file
             $render_file = $this->getBlockPath('mega-menu.php');
-            
+
             if (file_exists($render_file)) {
                 ob_start();
                 include $render_file;
@@ -318,7 +318,7 @@ class MegaMenuBlock extends Block
             // Enqueue editor script
             $editor_script = $build_dir . '/index.js';
             $editor_asset = $build_dir . '/index.asset.php';
-            
+
             if (file_exists($editor_script) && file_exists($editor_asset)) {
                 $asset_data = include $editor_asset;
                 wp_enqueue_script(

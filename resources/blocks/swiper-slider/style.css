@@ -32,13 +32,13 @@
     font-size: 14px;
 }
 
-.swiper-container {
-    background: #fff;
-    border-radius: 6px;
-    padding: 20px;
-    border: 1px solid #e1e1e1;
-    min-height: 200px;
-}
+        .swiper {
+            background: #fff;
+            border-radius: 6px;
+            padding: 20px;
+            border: 1px solid #e1e1e1;
+            min-height: 200px;
+        }
 
 .swiper-wrapper {
     display: flex;

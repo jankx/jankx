@@ -16,15 +16,30 @@ import {
     Notice
 } from '@wordpress/block-editor';
 import {
-    useState
+    useState,
+    useEffect
 } from '@wordpress/element';
-import { 
-    slides, 
+import {
+    slides,
     plus,
     desktop,
     tablet,
     mobile
 } from '@wordpress/icons';
+
+// Import Swiper
+import Swiper from 'swiper';
+import { Navigation, Pagination, Scrollbar, Autoplay, EffectFade, EffectCube, EffectCoverflow, EffectFlip, EffectCards, EffectCreative } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/scrollbar';
+import 'swiper/css/effect-fade';
+import 'swiper/css/effect-cube';
+import 'swiper/css/effect-coverflow';
+import 'swiper/css/effect-flip';
+import 'swiper/css/effect-cards';
+import 'swiper/css/effect-creative';
 
 // Preset configurations
 const PRESETS = {
@@ -135,9 +150,82 @@ function SwiperSliderEdit({ attributes, setAttributes, clientId }) {
     } = attributes;
 
     const [activeTab, setActiveTab] = useState('desktop');
+    const [swiperInstance, setSwiperInstance] = useState(null);
     const blockProps = useBlockProps({
         className: `swiper-slider-block swiper-slider-${sliderType}`
     });
+
+    // Initialize Swiper in editor
+    useEffect(() => {
+        if (swiperInstance) {
+            swiperInstance.destroy();
+        }
+
+        const swiperEl = document.querySelector(`#${blockProps.id || 'swiper-editor'} .swiper`);
+        if (swiperEl) {
+            const modules = [Navigation, Pagination, Scrollbar, Autoplay];
+
+            // Add effect modules based on selected effect
+            switch (effect) {
+                case 'fade':
+                    modules.push(EffectFade);
+                    break;
+                case 'cube':
+                    modules.push(EffectCube);
+                    break;
+                case 'coverflow':
+                    modules.push(EffectCoverflow);
+                    break;
+                case 'flip':
+                    modules.push(EffectFlip);
+                    break;
+                case 'cards':
+                    modules.push(EffectCards);
+                    break;
+                case 'creative':
+                    modules.push(EffectCreative);
+                    break;
+            }
+
+            const swiper = new Swiper(swiperEl, {
+                modules,
+                slidesPerView: slidesPerView,
+                spaceBetween: spaceBetween,
+                effect: effect,
+                direction: direction,
+                loop: loop,
+                autoplay: autoplay ? {
+                    delay: autoplayDelay,
+                    disableOnInteraction: autoplayDisableOnInteraction
+                } : false,
+                navigation: navigation ? {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev'
+                } : false,
+                pagination: pagination ? {
+                    el: '.swiper-pagination',
+                    type: paginationType,
+                    clickable: true
+                } : false,
+                scrollbar: scrollbar ? {
+                    el: '.swiper-scrollbar',
+                    draggable: true
+                } : false,
+                centeredSlides: centeredSlides,
+                grabCursor: grabCursor,
+                speed: speed,
+                breakpoints: breakpoints
+            });
+
+            setSwiperInstance(swiper);
+        }
+
+        return () => {
+            if (swiperInstance) {
+                swiperInstance.destroy();
+            }
+        };
+    }, [slidesPerView, spaceBetween, effect, direction, loop, autoplay, autoplayDelay, autoplayDisableOnInteraction, navigation, pagination, paginationType, scrollbar, centeredSlides, grabCursor, speed, breakpoints]);
 
     // Inner blocks props
     const innerBlocksProps = useInnerBlocksProps(
@@ -374,7 +462,7 @@ function SwiperSliderEdit({ attributes, setAttributes, clientId }) {
                 </PanelBody>
             </InspectorControls>
 
-            <div {...blockProps}>
+            <div {...blockProps} id={blockProps.id || 'swiper-editor'}>
                 <div className="swiper-slider-header">
                     <div className="swiper-slider-info">
                         <h4>{PRESETS[preset]?.name || __('Swiper Slider', 'jankx')}</h4>
@@ -382,28 +470,26 @@ function SwiperSliderEdit({ attributes, setAttributes, clientId }) {
                     </div>
                 </div>
 
-                <div className="swiper-container">
-                    <div {...innerBlocksProps} />
-                </div>
-
-                {navigation && (
-                    <div className="swiper-navigation">
-                        <button className="swiper-button-prev" type="button">
-                            {__('Previous', 'jankx')}
-                        </button>
-                        <button className="swiper-button-next" type="button">
-                            {__('Next', 'jankx')}
-                        </button>
+                <div className="swiper">
+                    <div className="swiper-wrapper">
+                        <div {...innerBlocksProps} />
                     </div>
-                )}
 
-                {pagination && (
-                    <div className="swiper-pagination"></div>
-                )}
+                    {navigation && (
+                        <>
+                            <div className="swiper-button-prev"></div>
+                            <div className="swiper-button-next"></div>
+                        </>
+                    )}
 
-                {scrollbar && (
-                    <div className="swiper-scrollbar"></div>
-                )}
+                    {pagination && (
+                        <div className="swiper-pagination"></div>
+                    )}
+
+                    {scrollbar && (
+                        <div className="swiper-scrollbar"></div>
+                    )}
+                </div>
             </div>
         </>
     );
