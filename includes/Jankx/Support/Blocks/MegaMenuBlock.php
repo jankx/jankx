@@ -11,6 +11,7 @@
 
 namespace Jankx\Support\Blocks;
 
+use Exception;
 use Jankx\Support\Blocks\Block;
 
 /**
