@@ -28,6 +28,7 @@ class RegisterProviders
         );
         Log::debug(sprintf('Found %d app-level providers', count($appProviders)));
 
+
         // Register app-level providers first (global scope)
         foreach ($appProviders as $provider) {
             if (is_string($provider) && class_exists($provider)) {
@@ -40,17 +41,28 @@ class RegisterProviders
 
         // Get kernel-specific providers based on request type
         $kernelProviders = [];
+        $providerGroup =null;
         if (Environment::isWpCli()) {
             $kernelProviders = $providersConfig['console']['wp_cli'] ?? [];
+            $providerGroup = 'console';
         } elseif (Environment::isWpCron()) {
             $kernelProviders = $providersConfig['console']['wp_cron'] ?? [];
+            $providerGroup = 'cron';
         } elseif (Environment::isAdmin()) {
-            $kernelProviders = $providersConfig['http']['admin'] ?? [];
+            // Check if this is an AJAX request
+            if (wp_doing_ajax()) {
+                $kernelProviders = $providersConfig['http']['admin_ajax'] ?? [];
+                $providerGroup = 'admin_ajax';
+            } else {
+                $kernelProviders = $providersConfig['http']['admin'] ?? [];
+                $providerGroup = 'admin';
+            }
         } else {
             $kernelProviders = $providersConfig['http']['frontend'] ?? [];
+            $providerGroup = 'frontend';
         }
 
-        Log::debug(sprintf('Found %d kernel-specific providers', count($kernelProviders)));
+        Log::debug(sprintf('Found %d kernel-specific %s providers', count($kernelProviders), $providerGroup));
 
         // Register kernel-specific providers
         foreach ($kernelProviders as $provider) {
