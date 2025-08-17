@@ -97,6 +97,7 @@ class SidebarTransitionsService
             transform: translateX(-100%);
             transition: transform 0.4s cubic-bezier(0.7, 0, 0.3, 1);
             box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+            overflow-y: auto;
         }
 
         .sidebar-content {
