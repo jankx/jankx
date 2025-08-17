@@ -92,8 +92,9 @@ Trả về danh sách các ngôn ngữ có sẵn:
 
 ## Styling
 
-Block sử dụng CSS classes để styling:
+Block có 2 implementation khác nhau với CSS classes riêng biệt:
 
+### Gutenberg Block (React)
 - `.language-switcher-block`: Container chính
 - `.language-switcher-dropdown`: Dropdown select
 - `.language-switcher-list`: Danh sách ngôn ngữ
@@ -102,6 +103,19 @@ Block sử dụng CSS classes để styling:
 - `.language-flag`: Cờ quốc gia
 - `.language-name`: Tên ngôn ngữ
 - `.current-language`: Ngôn ngữ hiện tại
+
+### Jankx Framework Block (PHP)
+- `.jankx-language-switcher`: Container chính
+- `.jankx-language-switcher__dropdown`: Dropdown container
+- `.jankx-language-switcher__current`: Dropdown button
+- `.jankx-language-switcher__menu`: Dropdown menu
+- `.jankx-language-switcher__item`: Mỗi item ngôn ngữ
+- `.jankx-language-switcher__link`: Liên kết ngôn ngữ
+- `.jankx-language-switcher__flag`: Cờ quốc gia
+- `.jankx-language-switcher__name`: Tên ngôn ngữ
+- `.jankx-language-switcher__arrow`: Mũi tên dropdown
+
+**Lưu ý**: Jankx framework block sử dụng BEM methodology cho CSS classes.
 
 ## Responsive Design
 
@@ -125,6 +139,12 @@ Block sử dụng CSS classes để styling:
 - Kiểm tra permalink settings
 - Kiểm tra user có quyền truy cập không
 
+### Block đã được đăng ký (Duplicate Registration)
+- **Lỗi**: "Block type 'jankx/language-switcher' is already registered"
+- **Nguyên nhân**: Block được đăng ký từ nhiều nơi
+- **Giải pháp**: Block chỉ được đăng ký từ `LanguageSwitcherBlock` class, không còn từ `LanguageSwitcherServiceProvider`
+- **Kiểm tra**: Đảm bảo chỉ có một nơi đăng ký block trong `GutenbergService`
+
 ## Development
 
 ### Build Process
@@ -141,14 +161,17 @@ npm run build:language-switcher
 
 ```
 language-switcher/
-├── block.json          # Block configuration
-├── index.js            # React component source
-├── index.css           # Main CSS
-├── style.css           # Block styles
-├── build/              # Built files
-│   ├── index.js        # Compiled JavaScript
-│   └── index.css       # Compiled CSS
-└── README.md           # This file
+├── block.json                    # Block configuration
+├── index.js                      # React component source (Gutenberg block)
+├── index.css                     # Main CSS (Gutenberg block)
+├── style.css                     # Block styles (Gutenberg block)
+├── jankx-language-switcher.css   # CSS for Jankx framework block
+├── editor.css                    # Editor-specific styles
+├── demo.html                     # Demo page for testing CSS
+├── build/                        # Built files
+│   ├── index.js                  # Compiled JavaScript
+│   └── style.css                 # Compiled CSS
+└── README.md                     # This file
 ```
 
 ## Changelog

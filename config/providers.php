@@ -18,7 +18,8 @@ return [
             Jankx\Support\Providers\PerformanceServiceProvider::class,
             Jankx\Support\Providers\PlatesServiceProvider::class,
             Jankx\Support\Providers\GutenbergServiceProvider::class,
-            App\Providers\SlideoutMenuServiceProvider::class,
+            App\Providers\LanguageSwitcherServiceProvider::class,
+            // App\Providers\Layouts\SlideoutMenuServiceProvider::class,
             // App\Providers\WooCommerce\BuyNowServiceProvider::class,
         ],
 
@@ -43,6 +44,7 @@ return [
         'admin_ajax' => [
             Jankx\Support\Providers\ThemeServiceProvider::class,
             Jankx\Support\Providers\AjaxServiceProvider::class,
+            App\Providers\LanguageSwitcherServiceProvider::class,
             // App\Providers\WooCommerce\BuyNowServiceProvider::class,
         ],
     ],

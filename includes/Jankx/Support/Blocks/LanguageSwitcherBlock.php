@@ -74,8 +74,48 @@ class LanguageSwitcherBlock extends Block
             $metadata['style'] = 'build/style.css';
         }
 
+        // Add custom CSS for Jankx framework block
+        $metadata['style'] = 'jankx-language-switcher.css';
+
         // Register block
         $this->registerBlock($blockPath, $metadata);
+
+        // Enqueue custom CSS
+        $this->enqueueCustomCSS();
+    }
+
+    /**
+     * Enqueue custom CSS for the block
+     *
+     * @return void
+     */
+    protected function enqueueCustomCSS()
+    {
+        // Enqueue frontend CSS
+        $cssUrl = get_template_directory_uri() . '/resources/blocks/language-switcher/jankx-language-switcher.css';
+        $cssPath = get_template_directory() . '/resources/blocks/language-switcher/jankx-language-switcher.css';
+
+        if (file_exists($cssPath)) {
+            wp_enqueue_style(
+                'jankx-language-switcher-style',
+                $cssUrl,
+                [],
+                filemtime($cssPath)
+            );
+        }
+
+        // Enqueue editor CSS
+        $editorCssUrl = get_template_directory_uri() . '/resources/blocks/language-switcher/editor.css';
+        $editorCssPath = get_template_directory() . '/resources/blocks/language-switcher/editor.css';
+
+        if (file_exists($editorCssPath)) {
+            wp_enqueue_style(
+                'jankx-language-switcher-editor-style',
+                $editorCssUrl,
+                ['wp-edit-blocks'],
+                filemtime($editorCssPath)
+            );
+        }
     }
 
     /**
@@ -112,11 +152,10 @@ class LanguageSwitcherBlock extends Block
         }
 
         // Build wrapper classes
-        $wrapperClasses = ['jankx-language-switcher'];
+        $wrapperClasses = ['language-switcher-block'];
         if (!empty($className)) {
             $wrapperClasses[] = $className;
         }
-        $wrapperClasses[] = 'jankx-language-switcher--' . $displayType;
 
         // Build language switcher HTML
         $switcherHtml = $this->renderLanguageSwitcher($languages, $displayType);
@@ -159,45 +198,50 @@ class LanguageSwitcherBlock extends Block
         $currentLang = pll_current_language();
         $currentLangData = $languages[$currentLang] ?? null;
 
-        $html = '<div class="jankx-language-switcher__dropdown">';
-        $html .= '<button class="jankx-language-switcher__current" type="button">';
+        $html = '<div class="language-switcher-dropdown-wrapper">';
+        $html .= '<button class="language-switcher-dropdown" type="button">';
 
         if ($currentLangData) {
-            if ($currentLangData['flag']) {
-                $html .= sprintf('<img src="%s" alt="%s" class="jankx-language-switcher__flag">',
+            if (!empty($currentLangData['flag']) && filter_var($currentLangData['flag'], FILTER_VALIDATE_URL)) {
+                $html .= sprintf('<img src="%s" alt="%s" class="language-flag">',
                     esc_url($currentLangData['flag']),
                     esc_attr($currentLangData['name'])
                 );
             }
-            $html .= sprintf('<span class="jankx-language-switcher__name">%s</span>',
-                esc_html($currentLangData['name'])
-            );
+            if ($this->attributes['showNames']) {
+                $html .= sprintf('<span class="language-name">%s</span>',
+                    esc_html($currentLangData['name'])
+                );
+            }
         }
 
-        $html .= '<span class="jankx-language-switcher__arrow">▼</span>';
+        $html .= '<span class="language-arrow">▼</span>';
         $html .= '</button>';
 
-        $html .= '<ul class="jankx-language-switcher__menu">';
+        $html .= '<ul class="language-switcher-dropdown-menu">';
         foreach ($languages as $langCode => $langData) {
             $isCurrent = $langCode === $currentLang;
-            $itemClasses = ['jankx-language-switcher__item'];
+            $itemClasses = ['language-dropdown-item'];
             if ($isCurrent) {
-                $itemClasses[] = 'jankx-language-switcher__item--current';
+                $itemClasses[] = 'current-language';
             }
 
             $html .= sprintf('<li class="%s">', esc_attr(implode(' ', $itemClasses)));
-            $html .= sprintf('<a href="%s" class="jankx-language-switcher__link">', esc_url($langData['url']));
+            $html .= sprintf('<a href="%s" class="language-dropdown-link">', esc_url($langData['url']));
 
-            if ($langData['flag']) {
-                $html .= sprintf('<img src="%s" alt="%s" class="jankx-language-switcher__flag">',
+            if (!empty($langData['flag']) && filter_var($langData['flag'], FILTER_VALIDATE_URL)) {
+                $html .= sprintf('<img src="%s" alt="%s" class="language-flag">',
                     esc_url($langData['flag']),
                     esc_attr($langData['name'])
                 );
             }
 
-            $html .= sprintf('<span class="jankx-language-switcher__name">%s</span>',
-                esc_html($langData['name'])
-            );
+            if ($this->attributes['showNames']) {
+                $html .= sprintf('<span class="language-name">%s</span>',
+                    esc_html($langData['name'])
+                );
+            }
+
             $html .= '</a></li>';
         }
         $html .= '</ul></div>';
@@ -215,27 +259,30 @@ class LanguageSwitcherBlock extends Block
     {
         $currentLang = pll_current_language();
 
-        $html = '<ul class="jankx-language-switcher__list">';
+        $html = '<ul class="language-switcher-list">';
         foreach ($languages as $langCode => $langData) {
             $isCurrent = $langCode === $currentLang;
-            $itemClasses = ['jankx-language-switcher__item'];
+            $itemClasses = ['language-item'];
             if ($isCurrent) {
-                $itemClasses[] = 'jankx-language-switcher__item--current';
+                $itemClasses[] = 'current-language';
             }
 
             $html .= sprintf('<li class="%s">', esc_attr(implode(' ', $itemClasses)));
-            $html .= sprintf('<a href="%s" class="jankx-language-switcher__link">', esc_url($langData['url']));
+            $html .= sprintf('<a href="%s" class="language-link">', esc_url($langData['url']));
 
-            if ($langData['flag']) {
-                $html .= sprintf('<img src="%s" alt="%s" class="jankx-language-switcher__flag">',
+            if (!empty($langData['flag']) && filter_var($langData['flag'], FILTER_VALIDATE_URL)) {
+                $html .= sprintf('<img src="%s" alt="%s" class="language-flag">',
                     esc_url($langData['flag']),
                     esc_attr($langData['name'])
                 );
             }
 
-            $html .= sprintf('<span class="jankx-language-switcher__name">%s</span>',
-                esc_html($langData['name'])
-            );
+            if ($this->attributes['showNames']) {
+                $html .= sprintf('<span class="language-name">%s</span>',
+                    esc_html($langData['name'])
+                );
+            }
+
             $html .= '</a></li>';
         }
         $html .= '</ul>';
@@ -253,22 +300,22 @@ class LanguageSwitcherBlock extends Block
     {
         $currentLang = pll_current_language();
 
-        $html = '<div class="jankx-language-switcher__flags">';
+        $html = '<div class="language-switcher-flags">';
         foreach ($languages as $langCode => $langData) {
             $isCurrent = $langCode === $currentLang;
-            $itemClasses = ['jankx-language-switcher__flag-item'];
+            $itemClasses = ['language-flag-item'];
             if ($isCurrent) {
-                $itemClasses[] = 'jankx-language-switcher__flag-item--current';
+                $itemClasses[] = 'current-language';
             }
 
             $html .= sprintf('<div class="%s">', esc_attr(implode(' ', $itemClasses)));
-            $html .= sprintf('<a href="%s" class="jankx-language-switcher__flag-link" title="%s">',
+            $html .= sprintf('<a href="%s" class="language-flag-link" title="%s">',
                 esc_url($langData['url']),
                 esc_attr($langData['name'])
             );
 
-            if ($langData['flag']) {
-                $html .= sprintf('<img src="%s" alt="%s" class="jankx-language-switcher__flag">',
+            if (!empty($langData['flag']) && filter_var($langData['flag'], FILTER_VALIDATE_URL)) {
+                $html .= sprintf('<img src="%s" alt="%s" class="language-flag">',
                     esc_url($langData['flag']),
                     esc_attr($langData['name'])
                 );
@@ -288,7 +335,7 @@ class LanguageSwitcherBlock extends Block
      */
     protected function renderPlaceholder()
     {
-        return '<div class="jankx-language-switcher-placeholder">' .
+        return '<div class="polylang-placeholder">' .
                '<p>' . __('Polylang plugin is not active. Language switcher cannot be displayed.', 'jankx') . '</p>' .
                '</div>';
     }

@@ -34,27 +34,42 @@ class LanguageSwitcherServiceProvider extends \Jankx\Support\Providers\ServicePr
             return;
         }
 
-        // Đăng ký init hook để khởi tạo language switcher
+                // Đăng ký init hook để khởi tạo language switcher
         add_action('init', function () use ($app) {
 
             try {
                 $languageSwitcher = $app->get('language-switcher');
 
                 $languageSwitcher->init();
+
+                if (WP_DEBUG) {
+                    Log::info('Language Switcher initialized successfully');
+                }
             } catch (\Exception $e) {
                 Log::error('Language Switcher Error: ' . $e->getMessage());
             }
-        }, 10);
+        }, 20); // Tăng priority để đảm bảo Polylang đã được load
 
-        // Đăng ký block
-        add_action('init', function () use ($app) {
+        // Thêm hook để khởi tạo lại sau khi plugins được load
+        add_action('plugins_loaded', function () use ($app) {
             try {
                 $languageSwitcher = $app->get('language-switcher');
-                $languageSwitcher->registerBlock();
+
+                // Khởi tạo lại nếu chưa có dữ liệu
+                if (empty($languageSwitcher->getLanguages())) {
+                    $languageSwitcher->init();
+
+                    if (WP_DEBUG) {
+                        Log::info('Language Switcher re-initialized after plugins loaded');
+                    }
+                }
             } catch (\Exception $e) {
-                Log::error('Language Switcher Block Error: ' . $e->getMessage());
+                Log::error('Language Switcher Re-init Error: ' . $e->getMessage());
             }
         }, 20);
+
+        // Block registration is now handled by LanguageSwitcherBlock class
+        // No need to register here to avoid duplicate registration
 
         // Đăng ký REST API endpoints
         add_action('rest_api_init', function () use ($app) {

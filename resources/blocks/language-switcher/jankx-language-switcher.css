@@ -1,0 +1,211 @@
+/* Language Switcher Block - Basic Layout Styles */
+/* Chỉ tập trung vào layout và cấu trúc, màu sắc sẽ do theme implement */
+
+.language-switcher-block {
+    display: inline-block;
+    position: relative;
+    font-size: 12px; /* Giảm font size */
+}
+
+/* Dropdown Style */
+.language-switcher-dropdown-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.language-switcher-dropdown {
+    display: flex;
+    align-items: center;
+    gap: 4px; /* Giảm gap */
+    padding: 4px 8px; /* Giảm padding */
+    border: 1px solid;
+    border-radius: 3px; /* Giảm border radius */
+    background: transparent;
+    cursor: pointer;
+    font-size: 12px; /* Giảm font size */
+    line-height: 1.2; /* Giảm line height */
+    min-width: 80px; /* Giảm min width */
+    max-width: 120px; /* Thêm max width */
+}
+
+.language-switcher-dropdown:focus {
+    outline: none;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1); /* Giảm shadow */
+}
+
+.language-arrow {
+    margin-left: auto;
+    font-size: 10px; /* Giảm arrow size */
+    transition: transform 0.2s ease;
+}
+
+.language-switcher-dropdown-wrapper:hover .language-arrow {
+    transform: rotate(180deg);
+}
+
+/* Dropdown Menu */
+.language-switcher-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 2px; /* Giảm margin */
+    padding: 2px 0; /* Giảm padding */
+    list-style: none;
+    background: transparent;
+    border: 1px solid;
+    border-radius: 3px; /* Giảm border radius */
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-5px); /* Giảm transform */
+    transition: all 0.2s ease;
+}
+
+.language-switcher-dropdown-wrapper:hover .language-switcher-dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.language-dropdown-item {
+    margin: 0;
+}
+
+.language-dropdown-link {
+    display: flex;
+    align-items: center;
+    gap: 4px; /* Giảm gap */
+    padding: 4px 8px; /* Giảm padding */
+    text-decoration: none;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.language-dropdown-link:hover {
+    text-decoration: none;
+}
+
+/* List Style */
+.language-switcher-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px; /* Giảm gap */
+}
+
+.language-switcher-list .language-item {
+    margin: 0;
+}
+
+.language-switcher-list .language-link {
+    display: flex;
+    align-items: center;
+    gap: 3px; /* Giảm gap */
+    padding: 3px 6px; /* Giảm padding */
+    text-decoration: none;
+    border-radius: 3px; /* Giảm border radius */
+    transition: all 0.2s ease;
+}
+
+.language-switcher-list .language-link:hover {
+    text-decoration: none;
+}
+
+/* Flags Style */
+.language-switcher-flags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px; /* Giảm gap */
+}
+
+.language-flag-item {
+    margin: 0;
+}
+
+.language-flag-link {
+    display: inline-block;
+    padding: 2px; /* Giảm padding */
+    border-radius: 2px; /* Giảm border radius */
+    transition: all 0.2s ease;
+}
+
+.language-flag-link:hover {
+    text-decoration: none;
+}
+
+/* Language Elements - Flag luôn được hiển thị */
+.language-flag {
+    display: inline-block;
+    width: 12px; /* Giảm width */
+    height: 9px; /* Giảm height */
+    object-fit: cover;
+    border-radius: 1px; /* Giảm border radius */
+    flex-shrink: 0;
+}
+
+.language-name {
+    display: inline-block;
+    font-size: 12px; /* Giảm font size */
+    line-height: 1.2; /* Giảm line height */
+}
+
+/* Current Language */
+.language-item.current-language .language-link,
+.language-flag-item.current-language .language-flag-link,
+.language-dropdown-item.current-language .language-dropdown-link {
+    font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .language-switcher-dropdown {
+        min-width: 70px; /* Giảm min width */
+        font-size: 11px; /* Giảm font size */
+    }
+
+    .language-switcher-list,
+    .language-switcher-flags {
+        gap: 3px; /* Giảm gap */
+    }
+
+    .language-switcher-list .language-link {
+        padding: 2px 4px; /* Giảm padding */
+        font-size: 11px; /* Giảm font size */
+    }
+
+    .language-flag {
+        width: 10px; /* Giảm width */
+        height: 8px; /* Giảm height */
+    }
+}
+
+/* Placeholder khi Polylang không active */
+.language-switcher-block .polylang-placeholder {
+    padding: 8px; /* Giảm padding */
+    text-align: center;
+    border: 1px dashed;
+    border-radius: 3px; /* Giảm border radius */
+    font-style: italic;
+    opacity: 0.6;
+    font-size: 11px; /* Giảm font size */
+}
+
+/* Editor Styles */
+.editor-styles-wrapper .language-switcher-block {
+    border: 2px dashed #ccc;
+    padding: 15px; /* Giảm padding */
+    text-align: center;
+    background: #f9f9f9;
+}
+
+.editor-styles-wrapper .language-switcher-block::before {
+    content: "🌐 Language Switcher Block";
+    display: block;
+    font-size: 14px; /* Giảm font size */
+    font-weight: 600;
+    margin-bottom: 8px; /* Giảm margin */
+    color: #666;
+}
