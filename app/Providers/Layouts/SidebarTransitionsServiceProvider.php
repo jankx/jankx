@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Providers;
+namespace App\Providers\Layouts;
 
-use App\Services\SidebarTransitionsService;
+use App\Services\Layouts\SidebarTransitionsService;
 use Jankx\Support\Providers\ServiceProvider;
 
 /**

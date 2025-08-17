@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Providers;
+namespace App\Providers\Layouts;
 
 use Jankx\Foundation\Application;
 use Jankx\Support\Providers\ServiceProvider;
