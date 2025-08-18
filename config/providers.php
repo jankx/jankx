@@ -19,6 +19,7 @@ return [
             Jankx\Support\Providers\PlatesServiceProvider::class,
             Jankx\Support\Providers\GutenbergServiceProvider::class,
             App\Providers\LanguageSwitcherServiceProvider::class,
+            // App\Providers\WordPress\ApplyTermHtmlDescriptionServiceProvider::class,
             // App\Providers\Layouts\SlideoutMenuServiceProvider::class,
             // App\Providers\WooCommerce\BuyNowServiceProvider::class,
         ],
@@ -33,6 +34,7 @@ return [
             Jankx\Support\Providers\PlatesServiceProvider::class,
             Jankx\Support\Providers\GutenbergServiceProvider::class,
             Jankx\Support\Providers\JankxMenuItemsServiceProvider::class,
+            // App\Providers\WordPress\VisualTermDescriptionEditorServiceProvider::class,
         ],
 
         // REST API providers

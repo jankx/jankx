@@ -76,36 +76,7 @@ class VisualTermDescriptionEditorServiceProvider extends ServiceProvider
      */
     protected function setupHooks()
     {
-        // Only users with the "publish_posts" capability can use this feature
-        if (current_user_can('publish_posts')) {
-            // Remove the filters which disallow HTML in term descriptions
-            remove_filter('pre_term_description', 'wp_filter_kses');
-            remove_filter('term_description', 'wp_kses_data');
-
-            // Add filters to disallow unsafe HTML tags
-            if (!current_user_can('unfiltered_html')) {
-                add_filter('pre_term_description', 'wp_kses_post');
-                add_filter('term_description', 'wp_kses_post');
-            }
-        }
-
-        // Apply `the_content` filters to term description
-        if (isset($GLOBALS['wp_embed'])) {
-            add_filter('term_description', array($GLOBALS['wp_embed'], 'run_shortcode'), 8);
-            add_filter('term_description', array($GLOBALS['wp_embed'], 'autoembed'), 8);
-        }
-
-        add_filter('term_description', 'wptexturize');
-        add_filter('term_description', 'convert_smilies');
-        add_filter('term_description', 'convert_chars');
-        add_filter('term_description', 'wpautop');
-
-        if (!is_admin()) {
-            add_filter('term_description', 'shortcode_unautop');
-            add_filter('term_description', 'do_shortcode', 11);
-        }
-
-        // Loop through the taxonomies, adding actions
+        // Loop through the taxonomies, adding actions for admin editor
         foreach ($this->taxonomies as $taxonomy) {
             add_action($taxonomy . '_edit_form_fields', array($this, 'render_field_edit'), 1, 2);
             add_action($taxonomy . '_add_form_fields', array($this, 'render_field_add'), 1, 0);
