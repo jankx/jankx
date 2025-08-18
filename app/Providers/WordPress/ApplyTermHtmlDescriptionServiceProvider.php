@@ -50,11 +50,12 @@ class ApplyTermHtmlDescriptionServiceProvider extends ServiceProvider
             remove_filter('pre_term_description', 'wp_filter_kses');
             remove_filter('term_description', 'wp_kses_data');
 
-            // Add filters to disallow unsafe HTML tags
+            // Add custom filter to allow img tags and other safe HTML
             if (!current_user_can('unfiltered_html')) {
-                add_filter('pre_term_description', 'wp_kses_post');
-                add_filter('term_description', 'wp_kses_post');
+                add_filter('pre_term_description', [$this, 'allowSafeHtml']);
+                add_filter('term_description', [$this, 'allowSafeHtml']);
             }
+            // For users with unfiltered_html capability, allow all HTML
         }
 
         // Apply `the_content` filters to term description
@@ -74,6 +75,113 @@ class ApplyTermHtmlDescriptionServiceProvider extends ServiceProvider
             add_filter('term_description', 'shortcode_unautop');
             add_filter('term_description', 'do_shortcode', 11);
         }
+    }
+
+    /**
+     * Allow safe HTML including img tags in term descriptions
+     *
+     * @param string $content
+     * @return string
+     */
+    public function allowSafeHtml($content)
+    {
+        // Define allowed HTML tags including img
+        $allowed_html = array(
+            'a' => array(
+                'href' => array(),
+                'title' => array(),
+                'target' => array(),
+                'rel' => array(),
+            ),
+            'abbr' => array(
+                'title' => array(),
+            ),
+            'acronym' => array(
+                'title' => array(),
+            ),
+            'b' => array(),
+            'blockquote' => array(
+                'cite' => array(),
+            ),
+            'cite' => array(),
+            'code' => array(),
+            'del' => array(
+                'datetime' => array(),
+            ),
+            'em' => array(),
+            'i' => array(),
+            'img' => array(
+                'src' => array(),
+                'alt' => array(),
+                'title' => array(),
+                'width' => array(),
+                'height' => array(),
+                'class' => array(),
+                'style' => array(),
+            ),
+            'ins' => array(
+                'datetime' => array(),
+                'cite' => array(),
+            ),
+            'kbd' => array(),
+            'mark' => array(),
+            'pre' => array(),
+            'q' => array(
+                'cite' => array(),
+            ),
+            's' => array(),
+            'samp' => array(),
+            'small' => array(),
+            'strike' => array(),
+            'strong' => array(),
+            'sub' => array(),
+            'sup' => array(),
+            'tt' => array(),
+            'u' => array(),
+            'var' => array(),
+            'p' => array(
+                'class' => array(),
+                'style' => array(),
+            ),
+            'br' => array(),
+            'div' => array(
+                'class' => array(),
+                'style' => array(),
+            ),
+            'span' => array(
+                'class' => array(),
+                'style' => array(),
+            ),
+            'ul' => array(
+                'class' => array(),
+            ),
+            'ol' => array(
+                'class' => array(),
+            ),
+            'li' => array(
+                'class' => array(),
+            ),
+            'h1' => array(
+                'class' => array(),
+            ),
+            'h2' => array(
+                'class' => array(),
+            ),
+            'h3' => array(
+                'class' => array(),
+            ),
+            'h4' => array(
+                'class' => array(),
+            ),
+            'h5' => array(
+                'class' => array(),
+            ),
+            'h6' => array(
+                'class' => array(),
+            ),
+        );
+
+        return wp_kses($content, $allowed_html);
     }
 
     /**

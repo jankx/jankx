@@ -102,9 +102,14 @@ class VisualTermDescriptionEditorServiceProvider extends ServiceProvider
             'tinymce' => [
                 'toolbar1' => 'formatselect,bold,italic,bullist,numlist,blockquote,alignleft,aligncenter,alignright,link,unlink,wp_more,spellchecker,fullscreen,wp_adv',
                 'toolbar2' => 'strikethrough,hr,forecolor,pastetext,removeformat,charmap,outdent,indent,undo,redo,wp_help',
+                'toolbar3' => 'image,media,table,code',
+                'extended_valid_elements' => 'img[*],a[*],div[*],span[*],p[*],br,hr,h1,h2,h3,h4,h5,h6,ul,ol,li,blockquote,pre,code,table,tr,td,th,tbody,thead,tfoot',
+                'valid_children' => '+body[img],+body[div],+body[span],+body[p],+body[br],+body[hr],+body[h1],+body[h2],+body[h3],+body[h4],+body[h5],+body[h6],+body[ul],+body[ol],+body[li],+body[blockquote],+body[pre],+body[code],+body[table]',
             ],
             'quicktags' => true,
             'drag_drop_upload' => true,
+            'wpautop' => false,
+            'teeny' => false,
         );
 
         /**
@@ -146,9 +151,14 @@ class VisualTermDescriptionEditorServiceProvider extends ServiceProvider
             'tinymce' => [
                 'toolbar1' => 'formatselect,bold,italic,bullist,numlist,blockquote,alignleft,aligncenter,alignright,link,unlink,wp_more,spellchecker,fullscreen,wp_adv',
                 'toolbar2' => 'strikethrough,hr,forecolor,pastetext,removeformat,charmap,outdent,indent,undo,redo,wp_help',
+                'toolbar3' => 'image,media,table,code',
+                'extended_valid_elements' => 'img[*],a[*],div[*],span[*],p[*],br,hr,h1,h2,h3,h4,h5,h6,ul,ol,li,blockquote,pre,code,table,tr,td,th,tbody,thead,tfoot',
+                'valid_children' => '+body[img],+body[div],+body[span],+body[p],+body[br],+body[hr],+body[h1],+body[h2],+body[h3],+body[h4],+body[h5],+body[h6],+body[ul],+body[ol],+body[li],+body[blockquote],+body[pre],+body[code],+body[table]',
             ],
             'quicktags' => true,
             'drag_drop_upload' => true,
+            'wpautop' => false,
+            'teeny' => false,
         );
 
         /**
