@@ -87,23 +87,6 @@ class VisualTermDescriptionEditorServiceProvider extends ServiceProvider
     }
 
     /**
-     * Render the editor word count section.
-     */
-    private function editor_word_count()
-    {
-        ?>
-        <div id="post-status-info">
-            <div id="description-word-count" class="hide-if-no-js" style="padding: 5px 10px;">
-                <?php printf(
-                    esc_html__('Word count: %s'),
-                    '<span class="word-count">0</span>'
-                ); ?>
-            </div>
-        </div>
-        <?php
-    }
-
-    /**
      * Add the visual editor to the edit tag screen.
      *
      * @param object $tag      The tag currently being edited.
@@ -139,7 +122,6 @@ class VisualTermDescriptionEditorServiceProvider extends ServiceProvider
             <td>
                 <?php
                 wp_editor(htmlspecialchars_decode($tag->description), 'html-tag-description', $settings);
-                $this->editor_word_count();
                 ?>
                 <p class="description"><?php esc_html_e('The description is not prominent by default; however, some themes may show it.'); ?></p>
             </td>
@@ -181,7 +163,6 @@ class VisualTermDescriptionEditorServiceProvider extends ServiceProvider
             <label for="tag-description"><?php esc_html_e('Description'); ?></label>
             <?php
             wp_editor('', 'html-tag-description', $settings);
-            $this->editor_word_count();
             ?>
             <p><?php esc_html_e('The description is not prominent by default; however, some themes may show it.'); ?></p>
 
@@ -230,13 +211,6 @@ class VisualTermDescriptionEditorServiceProvider extends ServiceProvider
             }
             .term-description-wrap .wp-editor-area {
                 min-height: 200px;
-            }
-
-            #description-word-count {
-                background: #f9f9f9;
-                border: 1px solid #ddd;
-                border-radius: 3px;
-                margin-top: 10px;
             }
         ');
     }
