@@ -1,0 +1,190 @@
+/* Image Mask Block - Frontend Styles */
+
+.image-mask-block {
+    position: relative;
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.image-mask-wrapper {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.image-mask-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+}
+
+.image-mask-effect {
+    position: absolute;
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* Wave Mask Effect */
+.image-mask-wave .image-mask-effect {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--wave-height, 50px);
+    background: var(--background-color, #ffffff);
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 20'%3E%3Cpath d='M0,20 Q25,0 50,20 T100,20 L100,20 L0,20 Z' fill='%23fff'/%3E%3C/svg%3E");
+    mask-size: calc(100% / var(--wave-frequency, 3)) 100%;
+    mask-repeat: repeat-x;
+}
+
+.image-mask-wave.image-mask-top .image-mask-effect {
+    top: 0;
+    bottom: auto;
+    transform: rotate(180deg);
+}
+
+.image-mask-wave.image-mask-left .image-mask-effect {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: auto;
+    width: var(--wave-height, 50px);
+    height: 100%;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 100'%3E%3Cpath d='M20,0 Q0,25 20,50 T20,100 L20,100 L20,0 Z' fill='%23fff'/%3E%3C/svg%3E");
+    mask-size: 100% calc(100% / var(--wave-frequency, 3));
+    mask-repeat: repeat-y;
+}
+
+.image-mask-wave.image-mask-right .image-mask-effect {
+    top: 0;
+    bottom: 0;
+    left: auto;
+    right: 0;
+    width: var(--wave-height, 50px);
+    height: 100%;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 100'%3E%3Cpath d='M0,0 Q20,25 0,50 T0,100 L0,100 L0,0 Z' fill='%23fff'/%3E%3C/svg%3E");
+    mask-size: 100% calc(100% / var(--wave-frequency, 3));
+    mask-repeat: repeat-y;
+}
+
+/* Corner Blend Effect */
+.image-mask-corner .image-mask-effect {
+    width: var(--corner-size, 100px);
+    height: var(--corner-size, 100px);
+    background: var(--background-color, #ffffff);
+}
+
+.image-mask-corner.image-mask-bottom-right .image-mask-effect {
+    bottom: 0;
+    right: 0;
+    clip-path: polygon(100% 0%, 0% 100%, 100% 100%);
+}
+
+.image-mask-corner.image-mask-bottom-left .image-mask-effect {
+    bottom: 0;
+    left: 0;
+    clip-path: polygon(0% 0%, 0% 100%, 100% 100%);
+}
+
+.image-mask-corner.image-mask-top-right .image-mask-effect {
+    top: 0;
+    right: 0;
+    clip-path: polygon(100% 0%, 0% 0%, 100% 100%);
+}
+
+.image-mask-corner.image-mask-top-left .image-mask-effect {
+    top: 0;
+    left: 0;
+    clip-path: polygon(0% 0%, 100% 0%, 0% 100%);
+}
+
+/* Circle Mask Effect */
+.image-mask-circle .image-mask-effect {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 80%;
+    border-radius: 50%;
+    background: var(--background-color, #ffffff);
+    mask: radial-gradient(circle, transparent 30%, black 70%);
+}
+
+/* Triangle Mask Effect */
+.image-mask-triangle .image-mask-effect {
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+    border-bottom: 100px solid var(--background-color, #ffffff);
+}
+
+/* Custom SVG Mask */
+.image-mask-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Background overlay for seamless blend */
+.image-mask-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+}
+
+/* No image state */
+.image-mask-no-image {
+    padding: 2rem;
+    text-align: center;
+    background: #f5f5f5;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    color: #666;
+}
+
+.image-mask-no-image p {
+    margin: 0;
+    font-size: 14px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .image-mask-wave .image-mask-effect {
+        height: calc(var(--wave-height, 50px) * 0.7);
+    }
+    
+    .image-mask-corner .image-mask-effect {
+        width: calc(var(--corner-size, 100px) * 0.8);
+        height: calc(var(--corner-size, 100px) * 0.8);
+    }
+}
+
+/* Hover effects */
+.image-mask-block:hover .image-mask-effect {
+    transition: all 0.3s ease;
+}
+
+.image-mask-wave:hover .image-mask-effect {
+    transform: scaleY(1.1);
+}
+
+.image-mask-corner:hover .image-mask-effect {
+    transform: scale(1.05);
+}
+
+.image-mask-circle:hover .image-mask-effect {
+    transform: translate(-50%, -50%) scale(1.1);
+}

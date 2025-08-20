@@ -4,6 +4,7 @@ namespace Jankx\Services;
 
 use Jankx\Foundation\Application;
 use Jankx\Support\Blocks\GutenbergRepository;
+use Jankx\Support\Blocks\ImageMaskBlock;
 use Jankx\Support\Blocks\WidgetRendererBlock;
 use Jankx\Support\Blocks\IconPickerBlock;
 use Jankx\Support\Blocks\LanguageSwitcherBlock;
@@ -128,6 +129,7 @@ class GutenbergService
         $this->repository->registerBlock(ComposeTabBlock::class);
         $this->repository->registerBlock(MegaMenuBlock::class);
         $this->repository->registerBlock(SwiperSlider::class);
+        $this->repository->registerBlock(ImageMaskBlock::class);
     }
 
     /**
