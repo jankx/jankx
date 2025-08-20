@@ -6,38 +6,121 @@ use Jankx\Support\Blocks\Block;
 
 /**
  * Image Mask Block
- * 
+ *
  * Renders image with creative mask effects like wave, corner blend, etc.
  */
 class ImageMaskBlock extends Block
 {
     protected $blockName = 'jankx/image-mask';
 
+    public function __construct()
+    {
+        parent::__construct($this->blockName, [
+            'title' => __('Image Mask', 'jankx'),
+            'category' => 'media',
+            'icon' => 'format-image',
+            'description' => __('Apply creative masks and effects to images with wave, corner blend, and custom shapes', 'jankx'),
+            'keywords' => ['image', 'mask', 'wave', 'blend', 'effect', 'photo'],
+            'supports' => [
+                'html' => false,
+                'align' => ['wide', 'full'],
+                'spacing' => [
+                    'margin' => true,
+                    'padding' => true
+                ]
+            ],
+            'attributes' => [
+                'imageId' => [
+                    'type' => 'number'
+                ],
+                'imageUrl' => [
+                    'type' => 'string'
+                ],
+                'imageAlt' => [
+                    'type' => 'string'
+                ],
+                'maskType' => [
+                    'type' => 'string',
+                    'default' => 'wave'
+                ],
+                'waveDirection' => [
+                    'type' => 'string',
+                    'default' => 'bottom'
+                ],
+                'waveHeight' => [
+                    'type' => 'number',
+                    'default' => 50
+                ],
+                'waveFrequency' => [
+                    'type' => 'number',
+                    'default' => 3
+                ],
+                'cornerPosition' => [
+                    'type' => 'string',
+                    'default' => 'bottom-right'
+                ],
+                'cornerSize' => [
+                    'type' => 'number',
+                    'default' => 100
+                ],
+                'backgroundColor' => [
+                    'type' => 'string',
+                    'default' => '#ffffff'
+                ],
+                'customMask' => [
+                    'type' => 'string',
+                    'default' => ''
+                ],
+                'className' => [
+                    'type' => 'string'
+                ]
+            ]
+        ]);
+    }
+
     public function register()
     {
-        parent::register();
-        
+        $blockPath = get_template_directory() . '/resources/blocks/image-mask';
+        $buildPath = $blockPath . '/build';
+        $metadata = $this->getBlockMetadata($blockPath);
+
+        // Update metadata to use built assets
+        if (is_dir($buildPath)) {
+            $metadata['editorScript'] = 'build/index.js';
+            $metadata['style'] = 'build/style-style.css.css';
+        } else {
+            // Fallback to source files if build doesn't exist
+            $metadata['editorScript'] = 'index.js';
+            $metadata['style'] = 'style.css';
+        }
+
+        // Register block
+        $this->registerBlock($blockPath, $metadata);
+
         // Enqueue custom CSS
         $this->enqueueCustomCSS();
     }
 
-    protected function enqueueCustomCSS()
+        protected function enqueueCustomCSS()
     {
-        // Frontend CSS
+        // Frontend CSS - use build file if available
+        $cssPath = get_template_directory() . '/resources/blocks/image-mask/build/style-style.css.css';
+        $cssUrl = get_template_directory_uri() . '/resources/blocks/image-mask/build/style-style.css.css';
+
+        if (!file_exists($cssPath)) {
+            $cssUrl = get_template_directory_uri() . '/resources/blocks/image-mask/style.css';
+            $cssPath = get_template_directory() . '/resources/blocks/image-mask/style.css';
+        }
+
         wp_enqueue_style(
             'jankx-image-mask',
-            jankx_asset_url('blocks/image-mask/style.css'),
+            $cssUrl,
             [],
-            jankx_version()
+            filemtime($cssPath)
         );
 
-        // Editor CSS
-        wp_enqueue_style(
-            'jankx-image-mask-editor',
-            jankx_asset_url('blocks/image-mask/editor.css'),
-            [],
-            jankx_version()
-        );
+        // Note: Editor CSS is handled by block.json editorStyle property
+        // WordPress will automatically load it in editor context
     }
 
     public function render($attributes, $content = '')
@@ -56,7 +139,7 @@ class ImageMaskBlock extends Block
         $className = $attributes['className'] ?? '';
 
         if (empty($imageUrl)) {
-            return '<div class="image-mask-block image-mask-no-image">' . 
+            return '<div class="image-mask-block image-mask-no-image">' .
                    '<p>' . esc_html__('No image selected', 'jankx') . '</p>' .
                    '</div>';
         }
@@ -86,7 +169,7 @@ class ImageMaskBlock extends Block
         );
 
         $html .= '<div class="image-mask-wrapper">';
-        
+
         // Main image
         $html .= sprintf(
             '<img src="%s" alt="%s" class="image-mask-image" />',
@@ -159,25 +242,25 @@ class ImageMaskBlock extends Block
             height: var(--corner-size);
             background: var(--background-color);
         }
-        
+
         .image-mask-corner.image-mask-bottom-right .image-mask-effect {
             bottom: 0;
             right: 0;
             clip-path: polygon(100% 0%, 0% 100%, 100% 100%);
         }
-        
+
         .image-mask-corner.image-mask-bottom-left .image-mask-effect {
             bottom: 0;
             left: 0;
             clip-path: polygon(0% 0%, 0% 100%, 100% 100%);
         }
-        
+
         .image-mask-corner.image-mask-top-right .image-mask-effect {
             top: 0;
             right: 0;
             clip-path: polygon(100% 0%, 0% 0%, 100% 100%);
         }
-        
+
         .image-mask-corner.image-mask-top-left .image-mask-effect {
             top: 0;
             left: 0;

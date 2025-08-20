@@ -6,7 +6,7 @@
   "scripts": {
     "build:widget-renderer": "wp-scripts build resources/blocks/widget-renderer/index.js resources/blocks/widget-renderer/index.css --output-path=resources/blocks/widget-renderer/build",
     "dev:widget-renderer": "wp-scripts start resources/blocks/widget-renderer/index.js resources/blocks/widget-renderer/index.css --output-path=resources/blocks/widget-renderer/build",
-    "build:language-switcher": "wp-scripts build resources/blocks/language-switcher/index.js resources/blocks/language-switcher/style.css --output-path=resources/blocks/language-switcher/build",
+    "build:language-switcher": "wp-scripts build resources/blocks/language-switcher/index.js resources/blocks/language-switcher/style.css --output-path=resources/blocks/language-switcher/build && cp resources/blocks/language-switcher/editor.css resources/blocks/language-switcher/build/",
     "dev:language-switcher": "wp-scripts start resources/blocks/language-switcher/index.js resources/blocks/language-switcher/style.css --output-path=resources/blocks/language-switcher/build",
     "build:icon-picker": "wp-scripts build resources/blocks/icon-picker/index.js resources/blocks/icon-picker/index.css --output-path=resources/blocks/icon-picker/build",
     "dev:icon-picker": "wp-scripts start resources/blocks/icon-picker/index.js --output-path=resources/blocks/icon-picker/build",
@@ -26,7 +26,7 @@
     "build:all-blocks": "npm run build:widget-renderer && npm run build:language-switcher && npm run build:icon-picker && npm run build:jankx-tab && npm run build:swiper-slider && npm run build:image-mask",
     "build:swiper-slider": "wp-scripts build resources/blocks/swiper-slider/index.js resources/blocks/swiper-slider/index.css --output-path=resources/blocks/swiper-slider/build",
     "dev:swiper-slider": "wp-scripts start resources/blocks/swiper-slider/index.js resources/blocks/swiper-slider/index.css --output-path=resources/blocks/swiper-slider/build",
-    "build:image-mask": "wp-scripts build resources/blocks/image-mask/index.js resources/blocks/image-mask/style.css --output-path=resources/blocks/image-mask/build",
+    "build:image-mask": "wp-scripts build resources/blocks/image-mask/index.js resources/blocks/image-mask/style.css --output-path=resources/blocks/image-mask/build && cp resources/blocks/image-mask/editor.css resources/blocks/image-mask/build/",
     "dev:image-mask": "wp-scripts start resources/blocks/image-mask/index.js resources/blocks/image-mask/style.css --output-path=resources/blocks/image-mask/build"
   },
   "keywords": [

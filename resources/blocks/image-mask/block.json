@@ -60,7 +60,7 @@
             "type": "string"
         }
     },
-    "editorScript": "file:./index.js",
-    "style": "file:./style.css",
-    "editorStyle": "file:./editor.css"
+    "editorScript": "file:./build/index.js",
+    "style": "file:./build/style-style.css.css",
+    "editorStyle": "file:./build/editor.css"
 }

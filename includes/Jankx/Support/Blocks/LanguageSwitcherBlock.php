@@ -72,6 +72,10 @@ class LanguageSwitcherBlock extends Block
         if (is_dir($buildPath)) {
             $metadata['editorScript'] = 'build/index.js';
             $metadata['style'] = 'build/style.css';
+        } else {
+            // Fallback to source files if build doesn't exist
+            $metadata['editorScript'] = 'index.js';
+            $metadata['style'] = 'style.css';
         }
 
         // Add custom CSS for Jankx framework block
@@ -104,18 +108,8 @@ class LanguageSwitcherBlock extends Block
             );
         }
 
-        // Enqueue editor CSS
-        $editorCssUrl = get_template_directory_uri() . '/resources/blocks/language-switcher/editor.css';
-        $editorCssPath = get_template_directory() . '/resources/blocks/language-switcher/editor.css';
-
-        if (file_exists($editorCssPath)) {
-            wp_enqueue_style(
-                'jankx-language-switcher-editor-style',
-                $editorCssUrl,
-                ['wp-edit-blocks'],
-                filemtime($editorCssPath)
-            );
-        }
+        // Note: Editor CSS is handled by block.json editorStyle property
+        // WordPress will automatically load it in editor context
     }
 
     /**
