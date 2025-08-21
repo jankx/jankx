@@ -208,15 +208,6 @@ class ConfigCommand extends WP_CLI_Command
             if ($result === false) {
                 return false;
             }
-
-            // Log the action
-            if (Environment::isDebugLog()) {
-                                    'parent_file' => $parentFile,
-                    'child_file' => $childFile,
-                    'config_file' => $configFile
-                ]);
-            }
-
             return true;
         } catch (\Exception $e) {
             if (Environment::isDebugLog()) {
@@ -272,13 +263,6 @@ class ConfigCommand extends WP_CLI_Command
                 return false;
             }
 
-            // Log the action
-            if (Environment::isDebugLog()) {
-                                    'parent_file' => $parentFile,
-                    'child_file' => $childFile,
-                    'build_file' => $buildFile
-                ]);
-            }
 
             return true;
         } catch (\Exception $e) {

@@ -68,8 +68,10 @@ class ThemeOptionsService
         // Khởi tạo option adapter
         $this->initOptionAdapter();
 
-        // Tạo sections cho adapter
-        $this->createSectionsForAdapter();
+        if (!is_null($this->adapter)) {
+            // Tạo sections cho adapter
+            $this->createSectionsForAdapter();
+        }
     }
 
     /**

@@ -7,7 +7,6 @@ use Jankx\Services\UserService;
 use Jankx\Services\CacheService;
 use Jankx\Facades\User;
 use Jankx\Facades\Cache;
-use Jankx\Facades\Log;
 use Jankx\Helper\Environment;
 
 /**
