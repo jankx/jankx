@@ -4,8 +4,8 @@
 	"settings": {
 		"appearanceTools": true,
 		"layout": {
-			"contentSize": "calc(100% - 80px)",
-			"wideSize": "calc(100% - 80px)"
+			"contentSize": "calc(100% - 200px)",
+			"wideSize": "calc(100% - 200px)"
 		},
 		"spacing": {
 			"padding": true,
@@ -67,6 +67,26 @@
 					"slug": "accent-5"
 				}
 			]
+		},
+		"typography": {
+			"customFontSize": true,
+			"dropCap": true,
+			"fontFamily": true,
+			"fontSize": true,
+			"fontStyle": true,
+			"fontWeight": true,
+			"letterSpacing": true,
+			"lineHeight": true,
+			"textColumns": false,
+			"textDecoration": true,
+			"textTransform": true,
+			"writingMode": false
+		}
+	},
+	"styles": {
+		"typography": {
+			"fontSize": "16px",
+			"lineHeight": "1.5"
 		}
 	},
 	"templateParts": [
