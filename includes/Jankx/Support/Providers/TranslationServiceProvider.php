@@ -50,7 +50,6 @@ class TranslationServiceProvider extends ServiceProvider
      */
     public function boot(Application $app)
     {
-
     }
 
     /**
@@ -61,8 +60,6 @@ class TranslationServiceProvider extends ServiceProvider
     public function loadTextDomain()
     {
         load_theme_textdomain('jankx', get_template_directory() . '/languages');
-
-
     }
 
     /**

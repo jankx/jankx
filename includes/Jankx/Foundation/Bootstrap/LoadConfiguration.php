@@ -22,8 +22,6 @@ class LoadConfiguration
 
         // Load configuration from theme files
         $this->loadThemeConfiguration($app, $config);
-
-
     }
 
     /**
@@ -121,8 +119,6 @@ class LoadConfiguration
     public static function clearConfigCache()
     {
         wp_cache_flush_group('jankx_config');
-
-
     }
 
     /**
@@ -143,8 +139,6 @@ class LoadConfiguration
                 }
             }
         }
-
-
     }
 
     /**

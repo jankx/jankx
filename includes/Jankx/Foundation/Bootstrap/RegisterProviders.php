@@ -41,7 +41,7 @@ class RegisterProviders
 
         // Get kernel-specific providers based on request type
         $kernelProviders = [];
-        $providerGroup =null;
+        $providerGroup = null;
         if (Environment::isWpCli()) {
             $kernelProviders = $providersConfig['console']['wp_cli'] ?? [];
             $providerGroup = 'console';

@@ -197,13 +197,15 @@ class LanguageSwitcherBlock extends Block
 
         if ($currentLangData) {
             if (!empty($currentLangData['flag']) && filter_var($currentLangData['flag'], FILTER_VALIDATE_URL)) {
-                $html .= sprintf('<img src="%s" alt="%s" class="language-flag">',
+                $html .= sprintf(
+                    '<img src="%s" alt="%s" class="language-flag">',
                     esc_url($currentLangData['flag']),
                     esc_attr($currentLangData['name'])
                 );
             }
             if ($this->attributes['showNames']) {
-                $html .= sprintf('<span class="language-name">%s</span>',
+                $html .= sprintf(
+                    '<span class="language-name">%s</span>',
                     esc_html($currentLangData['name'])
                 );
             }
@@ -224,14 +226,16 @@ class LanguageSwitcherBlock extends Block
             $html .= sprintf('<a href="%s" class="language-dropdown-link">', esc_url($langData['url']));
 
             if (!empty($langData['flag']) && filter_var($langData['flag'], FILTER_VALIDATE_URL)) {
-                $html .= sprintf('<img src="%s" alt="%s" class="language-flag">',
+                $html .= sprintf(
+                    '<img src="%s" alt="%s" class="language-flag">',
                     esc_url($langData['flag']),
                     esc_attr($langData['name'])
                 );
             }
 
             if ($this->attributes['showNames']) {
-                $html .= sprintf('<span class="language-name">%s</span>',
+                $html .= sprintf(
+                    '<span class="language-name">%s</span>',
                     esc_html($langData['name'])
                 );
             }
@@ -265,14 +269,16 @@ class LanguageSwitcherBlock extends Block
             $html .= sprintf('<a href="%s" class="language-link">', esc_url($langData['url']));
 
             if (!empty($langData['flag']) && filter_var($langData['flag'], FILTER_VALIDATE_URL)) {
-                $html .= sprintf('<img src="%s" alt="%s" class="language-flag">',
+                $html .= sprintf(
+                    '<img src="%s" alt="%s" class="language-flag">',
                     esc_url($langData['flag']),
                     esc_attr($langData['name'])
                 );
             }
 
             if ($this->attributes['showNames']) {
-                $html .= sprintf('<span class="language-name">%s</span>',
+                $html .= sprintf(
+                    '<span class="language-name">%s</span>',
                     esc_html($langData['name'])
                 );
             }
@@ -303,13 +309,15 @@ class LanguageSwitcherBlock extends Block
             }
 
             $html .= sprintf('<div class="%s">', esc_attr(implode(' ', $itemClasses)));
-            $html .= sprintf('<a href="%s" class="language-flag-link" title="%s">',
+            $html .= sprintf(
+                '<a href="%s" class="language-flag-link" title="%s">',
                 esc_url($langData['url']),
                 esc_attr($langData['name'])
             );
 
             if (!empty($langData['flag']) && filter_var($langData['flag'], FILTER_VALIDATE_URL)) {
-                $html .= sprintf('<img src="%s" alt="%s" class="language-flag">',
+                $html .= sprintf(
+                    '<img src="%s" alt="%s" class="language-flag">',
                     esc_url($langData['flag']),
                     esc_attr($langData['name'])
                 );

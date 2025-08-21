@@ -91,7 +91,6 @@ class BootChildTheme
 
             // Register child theme translation info with application
             $this->registerChildThemeTranslationInfo($textDomain, $languagesPath);
-
         } catch (\Exception $e) {
             if (Environment::isDebugLog()) {
                 Log::error('Failed to load child theme translations', [

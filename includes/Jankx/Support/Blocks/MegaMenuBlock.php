@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Mega Menu Block Class
  *
@@ -338,7 +339,7 @@ class MegaMenuBlock extends Block
                     get_template_directory_uri() . '/resources/blocks/mega-menu/build/index.css.css',
                     [],
                     filemtime($editor_style)
-            );
+                );
             }
 
             // Enqueue frontend style

@@ -30,7 +30,5 @@ class RegisterFacades
         $app->singleton('log', function ($app) {
             return new Logger();
         });
-
-
     }
 }

@@ -168,7 +168,7 @@ class ComposeTabBlock extends Block
         <div class="<?php echo esc_attr(implode(' ', $blockClasses)); ?>" id="<?php echo esc_attr($blockId); ?>">
             <!-- Tab Navigation -->
             <div class="<?php echo esc_attr(implode(' ', $navClasses)); ?>">
-                <?php foreach ($tabs as $index => $tab): ?>
+                <?php foreach ($tabs as $index => $tab) : ?>
                     <button
                         class="jankx-tab-button <?php echo $index === $activeIndex ? 'active' : ''; ?>"
                         data-tab="<?php echo esc_attr($tab['id']); ?>"
@@ -176,7 +176,7 @@ class ComposeTabBlock extends Block
                         <?php echo $tabWidthStyle; ?>
                         onclick="jankxSwitchTab('<?php echo esc_js($blockId); ?>', <?php echo esc_js($index); ?>)"
                     >
-                        <?php if ($showIcons && !empty($tab['icon'])): ?>
+                        <?php if ($showIcons && !empty($tab['icon'])) : ?>
                             <span class="dashicons dashicons-<?php echo esc_attr($tab['icon']); ?>"></span>
                         <?php endif; ?>
                         <span class="tab-title"><?php echo esc_html($tab['title']); ?></span>
@@ -186,31 +186,31 @@ class ComposeTabBlock extends Block
 
             <!-- Tab Content -->
             <div class="<?php echo esc_attr(implode(' ', $contentClasses)); ?>">
-                <?php foreach ($tabs as $index => $tab): ?>
+                <?php foreach ($tabs as $index => $tab) : ?>
                     <div
                         class="jankx-tab-panel <?php echo $index === $activeIndex ? 'active' : ''; ?>"
                         data-tab="<?php echo esc_attr($tab['id']); ?>"
                         data-index="<?php echo esc_attr($index); ?>"
                         style="display: <?php echo $index === $activeIndex ? 'block' : 'none'; ?>;"
                     >
-                        <?php if ($tab['action'] === 'content'): ?>
+                        <?php if ($tab['action'] === 'content') : ?>
                             <div class="jankx-tab-text-content">
                                 <?php echo wp_kses_post($tab['content']); ?>
                             </div>
-                        <?php elseif ($tab['action'] === 'link' && !empty($tab['link'])): ?>
+                        <?php elseif ($tab['action'] === 'link' && !empty($tab['link'])) : ?>
                             <div class="jankx-tab-link-content">
                                 <p><?php _e('Tab này sẽ link đến:', 'jankx'); ?></p>
                                 <a href="<?php echo esc_url($tab['link']); ?>" target="_blank" rel="noopener noreferrer" class="tab-link-button">
                                     <?php echo esc_html($tab['link']); ?>
                                 </a>
                             </div>
-                        <?php elseif ($tab['action'] === 'modal'): ?>
+                        <?php elseif ($tab['action'] === 'modal') : ?>
                             <div class="jankx-tab-modal-content">
                                 <p><?php _e('Tab này sẽ mở modal với:', 'jankx'); ?></p>
-                                <?php if (!empty($tab['modalTitle'])): ?>
+                                <?php if (!empty($tab['modalTitle'])) : ?>
                                     <strong><?php echo esc_html($tab['modalTitle']); ?></strong>
                                 <?php endif; ?>
-                                <?php if (!empty($tab['modalContent'])): ?>
+                                <?php if (!empty($tab['modalContent'])) : ?>
                                     <div class="modal-preview">
                                         <?php echo wp_kses_post($tab['modalContent']); ?>
                                     </div>
@@ -222,7 +222,7 @@ class ComposeTabBlock extends Block
                                     <?php _e('Mở Modal', 'jankx'); ?>
                                 </button>
                             </div>
-                        <?php else: ?>
+                        <?php else : ?>
                             <div class="jankx-tab-empty">
                                 <p><?php _e('Không có nội dung cho tab này.', 'jankx'); ?></p>
                             </div>

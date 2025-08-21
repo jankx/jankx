@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Swiper Slider Block
  *
@@ -83,23 +84,23 @@ class SwiperSlider extends Block
         <div id="<?php echo esc_attr($slider_id); ?>" class="swiper-slider-block swiper-slider-<?php echo esc_attr($slider_type); ?>">
             <div class="swiper">
                 <div class="swiper-wrapper">
-                    <?php foreach ($slides as $slide): ?>
+                    <?php foreach ($slides as $slide) : ?>
                         <div class="swiper-slide">
                             <?php echo $slide; ?>
                         </div>
                     <?php endforeach; ?>
                 </div>
 
-                <?php if ($navigation): ?>
+                <?php if ($navigation) : ?>
                     <div class="swiper-button-next"></div>
                     <div class="swiper-button-prev"></div>
                 <?php endif; ?>
 
-                <?php if ($pagination): ?>
+                <?php if ($pagination) : ?>
                     <div class="swiper-pagination"></div>
                 <?php endif; ?>
 
-                <?php if ($scrollbar): ?>
+                <?php if ($scrollbar) : ?>
                     <div class="swiper-scrollbar"></div>
                 <?php endif; ?>
             </div>

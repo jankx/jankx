@@ -57,8 +57,6 @@ class SystemServiceProvider extends ServiceProvider
         \Jankx\Facades\Menu::setFacadeApplication($app);
         \Jankx\Facades\Sidebar::setFacadeApplication($app);
         \Jankx\Facades\Footer::setFacadeApplication($app);
-
-
     }
 
     /**
@@ -108,7 +106,5 @@ class SystemServiceProvider extends ServiceProvider
                 class_alias($targetClass, $className);
             }
         }
-
-
     }
 }

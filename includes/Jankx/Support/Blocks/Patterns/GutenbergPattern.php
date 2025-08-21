@@ -88,7 +88,6 @@ abstract class GutenbergPattern
                     'content' => $content
                 ])
             );
-
         } catch (\Exception $e) {
             \Jankx\Facades\Log::error('GutenbergPattern: Failed to register pattern with WordPress - ' . $this->patternSlug . ' - ' . $e->getMessage());
             throw $e;

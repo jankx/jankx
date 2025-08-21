@@ -305,8 +305,6 @@ class Application extends Container
 
         $this->setBooted();
         $this->callBootedCallbacks();
-
-
     }
 
     /**

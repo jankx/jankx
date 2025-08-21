@@ -101,7 +101,7 @@ class ImageMaskBlock extends Block
         $this->enqueueCustomCSS();
     }
 
-        protected function enqueueCustomCSS()
+    protected function enqueueCustomCSS()
     {
         // Frontend CSS - use build file if available
         $cssPath = get_template_directory() . '/resources/blocks/image-mask/build/style-style.css.css';

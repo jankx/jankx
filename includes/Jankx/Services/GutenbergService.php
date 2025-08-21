@@ -53,7 +53,6 @@ class GutenbergService
 
             // Discover and register patterns
             $this->discoverPatterns();
-
         } catch (\Exception $e) {
             Log::error('GutenbergService: Failed to initialize - ' . $e->getMessage());
             throw $e;
@@ -98,8 +97,6 @@ class GutenbergService
                 }
             }
         }
-
-
     }
 
     /**
@@ -459,8 +456,6 @@ class GutenbergService
                 Log::error('GutenbergService: Failed to register default pattern ' . $patternClass . ' - ' . $e->getMessage());
             }
         }
-
-
     }
 
     /**
