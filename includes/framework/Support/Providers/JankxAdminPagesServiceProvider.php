@@ -3,9 +3,10 @@
 namespace Jankx\Support\Providers;
 
 use Jankx\Facades\Config;
-use Jankx\Support\Providers\ServiceProvider;
+use Jankx\Facades\Framework;
 use Jankx\Foundation\Application;
 use Jankx\Services\AdminPageService;
+use Jankx\Support\Providers\ServiceProvider;
 
 class JankxAdminPagesServiceProvider extends ServiceProvider
 {
@@ -56,7 +57,7 @@ class JankxAdminPagesServiceProvider extends ServiceProvider
             Config::get('app.admin_page_title', 'Jankx Framework'), // Page title
             Config::get('app.menu_title', 'Jankx Framework'), // Menu title
             'manage_options', // Capability
-            'jankx-settings', // Menu slug
+            Framework::jankx(), // Menu slug - sử dụng Framework facade
             [$this, 'renderMainPage'], // Callback
             'dashicons-art', // Icon
             Config::get('app.menu_position', 59) // Position
@@ -74,7 +75,7 @@ class JankxAdminPagesServiceProvider extends ServiceProvider
             }
 
             add_submenu_page(
-                'jankx-settings', // Parent slug
+                Framework::jankx(), // Parent slug - sử dụng Framework facade
                 $page['title'], // Page title
                 $page['menu_title'], // Menu title
                 $page['capability'], // Capability
@@ -82,6 +83,57 @@ class JankxAdminPagesServiceProvider extends ServiceProvider
                 [$this, 'renderSubPage'] // Callback
             );
         }
+
+        // Tích hợp Theme Options từ ThemeOptionsService
+        $this->integrateThemeOptions();
+    }
+
+    /**
+     * Tích hợp Theme Options từ ThemeOptionsService
+     */
+    protected function integrateThemeOptions()
+    {
+        try {
+            $themeOptions = $this->app->make('theme-options');
+            if ($themeOptions && method_exists($themeOptions, 'getMenuArgs')) {
+                $menuArgs = $themeOptions->getMenuArgs();
+
+                // Thay đổi parent slug để làm submenu của Jankx
+                $menuArgs['page_parent'] = Framework::jankx();
+
+                // Đăng ký Theme Options như submenu của Jankx
+                add_submenu_page(
+                    Framework::jankx(), // Parent slug
+                    $menuArgs['page_title'] ?? 'Theme Options',
+                    $menuArgs['menu_title'] ?? 'Theme Options',
+                    $menuArgs['page_permissions'] ?? 'manage_options',
+                    $menuArgs['page_slug'] ?? 'jankx-theme-options',
+                    [$themeOptions, 'renderOptionsPage']
+                );
+            }
+        } catch (\Exception $e) {
+            // Fallback: tạo Theme Options submenu đơn giản
+            add_submenu_page(
+                Framework::jankx(),
+                'Theme Options',
+                'Theme Options',
+                'manage_options',
+                'jankx-theme-options',
+                [$this, 'renderThemeOptionsFallback']
+            );
+        }
+    }
+
+    /**
+     * Render Theme Options fallback nếu service không khả dụng
+     */
+    public function renderThemeOptionsFallback()
+    {
+        echo '<div class="wrap">';
+        echo '<h1>Theme Options</h1>';
+        echo '<p>Theme options are managed through the framework adapter.</p>';
+        echo '<p>Please ensure the Theme Options service is properly configured.</p>';
+        echo '</div>';
     }
 
     /**

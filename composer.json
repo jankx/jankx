@@ -29,8 +29,8 @@
   },
   "autoload": {
     "psr-4": {
-      "Jankx\\": "./includes/Jankx",
-      "App\\": "./app"
+      "Jankx\\": "./includes/framework",
+      "App\\": "./includes/app"
     }
   },
   "autoload-dev": {

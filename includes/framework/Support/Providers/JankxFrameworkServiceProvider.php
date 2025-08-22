@@ -69,6 +69,11 @@ class JankxFrameworkServiceProvider extends ServiceProvider
         $app->singleton('jankx.facade', function ($app) {
             return new \Jankx\Jankx();
         });
+
+        // Đăng ký Framework service
+        $app->singleton('framework', function ($app) {
+            return new \Jankx\Services\FrameworkService($app);
+        });
     }
 
     public function boot(Application $app)

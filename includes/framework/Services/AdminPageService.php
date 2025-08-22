@@ -32,16 +32,8 @@ class AdminPageService
             'position' => 10
         ]);
 
-        // Theme Options được quản lý bởi framework adapter
-        // $this->addPage([
-        //     'id' => 'jankx-theme-options',
-        //     'title' => 'Theme Options',
-        //     'menu_title' => 'Theme Options',
-        //     'capability' => 'manage_options',
-        //     'callback' => [$this, 'renderThemeOptionsPage'],
-        //     'icon' => 'dashicons-admin-customizer',
-        //     'position' => 20
-        // ]);
+        // Theme Options được tích hợp thông qua ThemeOptionsService
+        // và JankxAdminPagesServiceProvider
 
         $this->addPage([
             'id' => 'jankx-icons',
@@ -202,10 +194,8 @@ class AdminPageService
     }
 
         /**
-     * Theme Options được quản lý bởi framework adapter
-     * Method này đã được comment out vì không còn được sử dụng
-     */
-    /*
+         * Render trang Theme Options
+         */
     public function renderThemeOptionsPage($page)
     {
         // Try to get theme options service
@@ -242,7 +232,6 @@ class AdminPageService
         echo '</div>';
         echo '</div>';
     }
-    */
 
     /**
      * Render trang Icons Repository

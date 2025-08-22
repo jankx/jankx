@@ -211,23 +211,50 @@ class ThemeOptionsService
     }
 
     /**
+     * Lấy menu arguments để tích hợp với Jankx Admin Menu
+     *
+     * @return array
+     */
+    public function getMenuArgs(): array
+    {
+        return [
+            'opt_name' => $this->optionName,
+            'display_name' => 'Bookix Theme Options',
+            'display_version' => '1.0.0',
+            'menu_type' => 'submenu',
+            'allow_sub_menu' => true,
+            'menu_title' => 'Theme Options',
+            'page_title' => 'Bookix Theme Options',
+            'page_parent' => 'themes.php', // Sẽ được thay đổi bởi JankxAdminPagesServiceProvider
+            'page_permissions' => 'manage_options',
+            'page_slug' => 'jankx-theme-options', // Sử dụng slug thống nhất
+        ];
+    }
+
+    /**
      * Đăng ký admin menu
      *
-     * @return void
+     * @deprecated Sử dụng JankxAdminPagesServiceProvider thay thế
      */
     public function registerAdminMenu(): void
     {
+        // Vô hiệu hóa việc tạo menu riêng biệt
+        // Menu sẽ được tích hợp thông qua JankxAdminPagesServiceProvider
+        return;
+
+        /*
         // Tạo menu trực tiếp nếu adapter không có
         if (!$this->adapter) {
-                        $this->createDirectMenu();
+            $this->createDirectMenu();
             return;
         }
 
         try {
             $this->adapter->register_admin_menu('Theme Options', 'Bookix Theme Options');
         } catch (\Exception $e) {
-                        $this->createDirectMenu();
+            $this->createDirectMenu();
         }
+        */
     }
 
     /**

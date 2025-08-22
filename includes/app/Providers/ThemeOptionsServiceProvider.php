@@ -40,6 +40,8 @@ class ThemeOptionsServiceProvider extends \Jankx\Support\Providers\ServiceProvid
         }, 10);
 
         // Đăng ký admin menu với try-catch để tránh lỗi
+        // Vô hiệu hóa vì menu sẽ được tích hợp thông qua JankxAdminPagesServiceProvider
+        /*
         add_action('admin_menu', function () use ($app) {
 
             try {
@@ -49,5 +51,6 @@ class ThemeOptionsServiceProvider extends \Jankx\Support\Providers\ServiceProvid
                 Log::error('Theme Options Error: ' . $e->getMessage());
             }
         }, 10);
+        */
     }
 }
