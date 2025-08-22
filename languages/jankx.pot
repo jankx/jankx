@@ -4,572 +4,520 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Jankx Framework 2.0.0\n"
 "Report-Msgid-Bugs-To: https://github.com/jankx/framework/issues\n"
-"POT-Creation-Date: 2024-01-01 00:00+0000\n"
-"PO-Revision-Date: 2024-01-01 00:00+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2024-12-19 00:00+0000\n"
+"PO-Revision-Date: 2024-12-19 00:00+0000\n"
+"Last-Translator: Puleeno Nguyen <puleeno@gmail.com>\n"
+"Language-Team: Vietnamese <vi@li.org>\n"
 "Language: vi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: includes/Jankx/Jankx.php:47
+#: includes/framework/Jankx.php:47
 msgid "Jankx"
 msgstr ""
 
-#: includes/Jankx/Jankx.php:55
+#: includes/framework/Jankx.php:55
 msgid "Jankx is a powerful WordPress theme framework. High performance, compatible, easy to use and develop"
 msgstr ""
 
-#: includes/Jankx/Support/Providers/TranslationServiceProvider.php:213
+#: includes/framework/Support/Providers/TranslationServiceProvider.php:213
 msgid "English"
 msgstr ""
 
-#: includes/Jankx/Support/Providers/TranslationServiceProvider.php:214
+#: includes/framework/Support/Providers/TranslationServiceProvider.php:214
 msgid "Tiếng Việt"
 msgstr ""
 
-#: includes/Jankx/Support/Providers/TranslationServiceProvider.php:215
+#: includes/framework/Support/Providers/TranslationServiceProvider.php:215
 msgid "العربية"
 msgstr ""
 
-#: includes/Jankx/Support/Providers/TranslationServiceProvider.php:216
+#: includes/framework/Support/Providers/TranslationServiceProvider.php:216
 msgid "עברית"
 msgstr ""
 
-#: includes/Jankx/Support/Providers/TranslationServiceProvider.php:217
+#: includes/framework/Support/Providers/TranslationServiceProvider.php:217
 msgid "فارسی"
 msgstr ""
 
-#: includes/Jankx/Support/Providers/TranslationServiceProvider.php:218
+#: includes/framework/Support/Providers/TranslationServiceProvider.php:218
 msgid "اردو"
 msgstr ""
 
-#: includes/Jankx/Support/Providers/TranslationServiceProvider.php:219
+#: includes/framework/Support/Providers/TranslationServiceProvider.php:219
 msgid "پښتو"
 msgstr ""
 
-#: includes/Jankx/Support/Providers/TranslationServiceProvider.php:220
+#: includes/framework/Support/Providers/TranslationServiceProvider.php:220
 msgid "سنڌي"
 msgstr ""
 
-#: includes/Jankx/Support/Providers/TranslationServiceProvider.php:221
+#: includes/framework/Support/Providers/TranslationServiceProvider.php:221
 msgid "کوردی"
 msgstr ""
 
-#: includes/Jankx/Support/Providers/TranslationServiceProvider.php:222
+#: includes/framework/Support/Providers/TranslationServiceProvider.php:222
 msgid "יידיש"
 msgstr ""
 
-#: includes/Jankx/Services/AdminPageService.php:166
+#: includes/framework/Services/AdminPageService.php:166
+#: includes/framework/Services/AdminPageService.php:282
+#: includes/framework/Services/AdminPageService.php:374
+#: includes/framework/Services/AdminPageService.php:456
 msgid "Manage Icons"
 msgstr ""
 
-#: includes/Jankx/Services/AdminPageService.php:167
+#: includes/framework/Services/AdminPageService.php:167
 msgid "Import Icons"
 msgstr ""
 
-#: includes/Jankx/Services/AdminPageService.php:168
+#: includes/framework/Services/AdminPageService.php:168
 msgid "View Framework Info"
 msgstr ""
 
-#: includes/Jankx/Services/AdminPageService.php:176
+#: includes/framework/Services/AdminPageService.php:176
+#: includes/framework/Services/AdminPageService.php:1188
 msgid "Framework Version"
 msgstr ""
 
-#: includes/Jankx/Services/AdminPageService.php:177
+#: includes/framework/Services/AdminPageService.php:177
+#: includes/framework/Services/AdminPageService.php:1189
 msgid "Environment"
 msgstr ""
 
-#: includes/Jankx/Services/AdminPageService.php:239
+#: includes/framework/Services/AdminPageService.php:239
 msgid "Jankx Native"
 msgstr ""
 
-#: includes/Jankx/Services/AdminPageService.php:239
+#: includes/framework/Services/AdminPageService.php:239
 msgid "Built-in options framework"
 msgstr ""
 
-#: includes/Jankx/Services/AdminPageService.php:281
+#: includes/framework/Services/AdminPageService.php:281
 msgid "Icon Sets"
 msgstr ""
 
-#: includes/Jankx/Services/AdminPageService.php:282
-msgid "Manage Icons"
-msgstr ""
-
-#: includes/Jankx/Services/AdminPageService.php:283
+#: includes/framework/Services/AdminPageService.php:283
+#: includes/framework/Services/AdminPageService.php:375
 msgid "Import/Export"
 msgstr ""
 
-#: includes/Jankx/Services/AdminPageService.php:374
-msgid "Manage Icons"
-msgstr ""
-
-#: includes/Jankx/Services/AdminPageService.php:375
-msgid "Import/Export"
-msgstr ""
-
-#: includes/Jankx/Services/AdminPageService.php:456
-msgid "Manage Icons"
-msgstr ""
-
-#: includes/Jankx/Services/AdminPageService.php:473
+#: includes/framework/Services/AdminPageService.php:473
+#: includes/framework/Services/AdminPageService.php:484
 msgid "← Back to Type Selection"
 msgstr ""
 
-#: includes/Jankx/Services/AdminPageService.php:484
-msgid "← Back to Type Selection"
-msgstr ""
-
-#: includes/Jankx/Services/AdminPageService.php:538
+#: includes/framework/Services/AdminPageService.php:538
+#: includes/framework/Services/AdminPageService.php:664
 msgid "Loading icons..."
 msgstr ""
 
-#: includes/Jankx/Services/AdminPageService.php:576
+#: includes/framework/Services/AdminPageService.php:576
 msgid "Total Icons"
 msgstr ""
 
-#: includes/Jankx/Services/AdminPageService.php:581
+#: includes/framework/Services/AdminPageService.php:581
 msgid "Categories"
 msgstr ""
 
-#: includes/Jankx/Services/AdminPageService.php:586
+#: includes/framework/Services/AdminPageService.php:586
 msgid "Version"
 msgstr ""
 
-#: includes/Jankx/Services/AdminPageService.php:591
+#: includes/framework/Services/AdminPageService.php:591
 msgid "Last Updated"
 msgstr ""
 
-#: includes/Jankx/Services/AdminPageService.php:597
+#: includes/framework/Services/AdminPageService.php:597
 msgid "Status"
 msgstr ""
 
-#: includes/Jankx/Services/AdminPageService.php:603
+#: includes/framework/Services/AdminPageService.php:603
 msgid "Auto Load"
 msgstr ""
 
-#: includes/Jankx/Services/AdminPageService.php:664
-msgid "Loading icons..."
-msgstr ""
-
-#: includes/Jankx/Services/AdminPageService.php:1180
+#: includes/framework/Services/AdminPageService.php:1180
 msgid "Jankx Framework Information"
 msgstr ""
 
-#: includes/Jankx/Services/AdminPageService.php:1185
+#: includes/framework/Services/AdminPageService.php:1185
 msgid "Framework Information"
 msgstr ""
 
-#: includes/Jankx/Services/AdminPageService.php:1188
-msgid "Framework Version"
-msgstr ""
-
-#: includes/Jankx/Services/AdminPageService.php:1189
-msgid "Environment"
-msgstr ""
-
-#: includes/Jankx/Services/AdminPageService.php:1190
+#: includes/framework/Services/AdminPageService.php:1190
 msgid "Base Path"
 msgstr ""
 
-#: includes/Jankx/Services/AdminPageService.php:1191
+#: includes/framework/Services/AdminPageService.php:1191
 msgid "Base URL"
 msgstr ""
 
-#: includes/Jankx/Services/AdminPageService.php:1198
+#: includes/framework/Services/AdminPageService.php:1198
 msgid "System Information"
 msgstr ""
 
-#: includes/Jankx/Services/AdminPageService.php:1258
+#: includes/framework/Services/AdminPageService.php:1258
 msgid "Welcome to Jankx Framework"
 msgstr ""
 
-#: includes/Jankx/Services/AdminPageService.php:1258
+#: includes/framework/Services/AdminPageService.php:1258
 msgid "This is the main dashboard for Jankx Framework. Use the navigation above to access different features."
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/IconPickerBlock.php:20
+#: includes/framework/Support/Blocks/IconPickerBlock.php:20
 msgid "Icon Picker"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/IconPickerBlock.php:21
+#: includes/framework/Support/Blocks/IconPickerBlock.php:21
 msgid "Select and display icons from various icon libraries"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/IconPickerBlock.php:22
+#: includes/framework/Support/Blocks/IconPickerBlock.php:22
 msgid "jankx"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/IconPickerBlock.php:23
+#: includes/framework/Support/Blocks/IconPickerBlock.php:23
 msgid "icon"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/IconPickerBlock.php:24
+#: includes/framework/Support/Blocks/IconPickerBlock.php:24
 msgid "symbol"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/IconPickerBlock.php:25
+#: includes/framework/Support/Blocks/IconPickerBlock.php:25
 msgid "fontawesome"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/IconPickerBlock.php:26
+#: includes/framework/Support/Blocks/IconPickerBlock.php:26
 msgid "material"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/IconPickerBlock.php:27
+#: includes/framework/Support/Blocks/IconPickerBlock.php:27
 msgid "Select Icon"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/IconPickerBlock.php:28
+#: includes/framework/Support/Blocks/IconPickerBlock.php:28
 msgid "Icon Name"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/IconPickerBlock.php:29
+#: includes/framework/Support/Blocks/IconPickerBlock.php:29
 msgid "Icon Type"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/IconPickerBlock.php:30
+#: includes/framework/Support/Blocks/IconPickerBlock.php:30
 msgid "Icon Size"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/IconPickerBlock.php:31
+#: includes/framework/Support/Blocks/IconPickerBlock.php:31
 msgid "Icon Color"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/IconPickerBlock.php:32
+#: includes/framework/Support/Blocks/IconPickerBlock.php:32
 msgid "Icon Style"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/IconPickerBlock.php:33
+#: includes/framework/Support/Blocks/IconPickerBlock.php:33
 msgid "No icon selected"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/LanguageSwitcherBlock.php:20
+#: includes/framework/Support/Blocks/LanguageSwitcherBlock.php:20
 msgid "Language Switcher"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/LanguageSwitcherBlock.php:21
+#: includes/framework/Support/Blocks/LanguageSwitcherBlock.php:21
 msgid "Display language switcher for multilingual sites"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/LanguageSwitcherBlock.php:22
-msgid "jankx"
-msgstr ""
-
-#: includes/Jankx/Support/Blocks/LanguageSwitcherBlock.php:23
+#: includes/framework/Support/Blocks/LanguageSwitcherBlock.php:22
 msgid "language"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/LanguageSwitcherBlock.php:24
+#: includes/framework/Support/Blocks/LanguageSwitcherBlock.php:23
 msgid "translation"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/LanguageSwitcherBlock.php:25
+#: includes/framework/Support/Blocks/LanguageSwitcherBlock.php:24
 msgid "multilingual"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/LanguageSwitcherBlock.php:26
+#: includes/framework/Support/Blocks/LanguageSwitcherBlock.php:25
 msgid "Display Type"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/LanguageSwitcherBlock.php:27
+#: includes/framework/Support/Blocks/LanguageSwitcherBlock.php:26
 msgid "Dropdown"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/LanguageSwitcherBlock.php:28
+#: includes/framework/Support/Blocks/LanguageSwitcherBlock.php:27
 msgid "List"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/LanguageSwitcherBlock.php:29
+#: includes/framework/Support/Blocks/LanguageSwitcherBlock.php:28
 msgid "Flags"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/LanguageSwitcherBlock.php:30
+#: includes/framework/Support/Blocks/LanguageSwitcherBlock.php:29
 msgid "Show Flags"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/LanguageSwitcherBlock.php:31
+#: includes/framework/Support/Blocks/LanguageSwitcherBlock.php:30
 msgid "Show Language Names"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/LanguageSwitcherBlock.php:32
+#: includes/framework/Support/Blocks/LanguageSwitcherBlock.php:31
 msgid "No languages available"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/MegaMenuBlock.php:28
+#: includes/framework/Support/Blocks/MegaMenuBlock.php:28
 msgid "Mega Menu"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/MegaMenuBlock.php:29
+#: includes/framework/Support/Blocks/MegaMenuBlock.php:29
 msgid "Display mega menu with advanced navigation options"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/MegaMenuBlock.php:30
-msgid "jankx"
-msgstr ""
-
-#: includes/Jankx/Support/Blocks/MegaMenuBlock.php:31
+#: includes/framework/Support/Blocks/MegaMenuBlock.php:30
 msgid "menu"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/MegaMenuBlock.php:32
+#: includes/framework/Support/Blocks/MegaMenuBlock.php:31
 msgid "navigation"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/MegaMenuBlock.php:33
+#: includes/framework/Support/Blocks/MegaMenuBlock.php:32
 msgid "mega"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/MegaMenuBlock.php:34
+#: includes/framework/Support/Blocks/MegaMenuBlock.php:33
 msgid "Menu Location"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/MegaMenuBlock.php:35
+#: includes/framework/Support/Blocks/MegaMenuBlock.php:34
 msgid "Primary Menu"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/MegaMenuBlock.php:36
+#: includes/framework/Support/Blocks/MegaMenuBlock.php:35
 msgid "Secondary Menu"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/MegaMenuBlock.php:37
+#: includes/framework/Support/Blocks/MegaMenuBlock.php:36
 msgid "Menu Depth"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/MegaMenuBlock.php:38
+#: includes/framework/Support/Blocks/MegaMenuBlock.php:37
 msgid "Show Description"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/MegaMenuBlock.php:39
+#: includes/framework/Support/Blocks/MegaMenuBlock.php:38
 msgid "No menu assigned to this location"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/ComposeTabBlock.php:20
+#: includes/framework/Support/Blocks/ComposeTabBlock.php:20
 msgid "Compose Tab"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/ComposeTabBlock.php:21
+#: includes/framework/Support/Blocks/ComposeTabBlock.php:21
 msgid "Create tabbed content with multiple sections"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/ComposeTabBlock.php:22
-msgid "jankx"
-msgstr ""
-
-#: includes/Jankx/Support/Blocks/ComposeTabBlock.php:23
+#: includes/framework/Support/Blocks/ComposeTabBlock.php:22
 msgid "tab"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/ComposeTabBlock.php:24
+#: includes/framework/Support/Blocks/ComposeTabBlock.php:23
 msgid "tabs"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/ComposeTabBlock.php:25
+#: includes/framework/Support/Blocks/ComposeTabBlock.php:24
 msgid "content"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/ComposeTabBlock.php:26
+#: includes/framework/Support/Blocks/ComposeTabBlock.php:25
 msgid "Tab Title"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/ComposeTabBlock.php:27
+#: includes/framework/Support/Blocks/ComposeTabBlock.php:26
 msgid "Tab Content"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/ComposeTabBlock.php:28
+#: includes/framework/Support/Blocks/ComposeTabBlock.php:27
 msgid "Add Tab"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/ComposeTabBlock.php:29
+#: includes/framework/Support/Blocks/ComposeTabBlock.php:28
 msgid "Remove Tab"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/ComposeTabBlock.php:30
+#: includes/framework/Support/Blocks/ComposeTabBlock.php:29
 msgid "No tabs added yet"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/WidgetRendererBlock.php:20
+#: includes/framework/Support/Blocks/WidgetRendererBlock.php:20
 msgid "Widget Renderer"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/WidgetRendererBlock.php:21
+#: includes/framework/Support/Blocks/WidgetRendererBlock.php:21
 msgid "Display WordPress widgets in Gutenberg blocks"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/WidgetRendererBlock.php:22
-msgid "jankx"
-msgstr ""
-
-#: includes/Jankx/Support/Blocks/WidgetRendererBlock.php:23
+#: includes/framework/Support/Blocks/WidgetRendererBlock.php:22
 msgid "widget"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/WidgetRendererBlock.php:24
+#: includes/framework/Support/Blocks/WidgetRendererBlock.php:23
 msgid "sidebar"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/WidgetRendererBlock.php:25
+#: includes/framework/Support/Blocks/WidgetRendererBlock.php:24
 msgid "Widget Type"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/WidgetRendererBlock.php:26
+#: includes/framework/Support/Blocks/WidgetRendererBlock.php:25
 msgid "Widget ID"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/WidgetRendererBlock.php:27
+#: includes/framework/Support/Blocks/WidgetRendererBlock.php:26
 msgid "Show Title"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/WidgetRendererBlock.php:28
+#: includes/framework/Support/Blocks/WidgetRendererBlock.php:27
 msgid "Widget not found"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/SwiperSlider/SwiperSlider.php:14
+#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:14
 msgid "Swiper Slider"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/SwiperSlider/SwiperSlider.php:15
+#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:15
 msgid "Create responsive sliders and carousels"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/SwiperSlider/SwiperSlider.php:16
-msgid "jankx"
-msgstr ""
-
-#: includes/Jankx/Support/Blocks/SwiperSlider/SwiperSlider.php:17
+#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:16
 msgid "slider"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/SwiperSlider/SwiperSlider.php:18
+#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:17
 msgid "carousel"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/SwiperSlider/SwiperSlider.php:19
+#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:18
 msgid "swiper"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/SwiperSlider/SwiperSlider.php:20
+#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:19
 msgid "Slides"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/SwiperSlider/SwiperSlider.php:21
+#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:20
 msgid "Effect"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/SwiperSlider/SwiperSlider.php:22
+#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:21
 msgid "Slide"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/SwiperSlider/SwiperSlider.php:23
+#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:22
 msgid "Fade"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/SwiperSlider/SwiperSlider.php:24
+#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:23
 msgid "Cube"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/SwiperSlider/SwiperSlider.php:25
+#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:24
 msgid "Coverflow"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/SwiperSlider/SwiperSlider.php:26
+#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:25
 msgid "Flip"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/SwiperSlider/SwiperSlider.php:27
+#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:26
 msgid "Cards"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/SwiperSlider/SwiperSlider.php:28
+#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:27
 msgid "Autoplay"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/SwiperSlider/SwiperSlider.php:29
+#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:28
 msgid "Loop"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/SwiperSlider/SwiperSlider.php:30
+#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:29
 msgid "Navigation"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/SwiperSlider/SwiperSlider.php:31
+#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:30
 msgid "Pagination"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/SwiperSlider/SwiperSlider.php:32
+#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:31
 msgid "No slides added"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/Patterns/HeroSectionPattern.php:16
+#: includes/framework/Support/Blocks/Patterns/HeroSectionPattern.php:16
 msgid "Hero Section"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/Patterns/HeroSectionPattern.php:17
+#: includes/framework/Support/Blocks/Patterns/HeroSectionPattern.php:17
 msgid "A hero section with title, description and call-to-action"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/Patterns/HeroSectionPattern.php:18
-msgid "jankx"
-msgstr ""
-
-#: includes/Jankx/Support/Blocks/Patterns/HeroSectionPattern.php:19
+#: includes/framework/Support/Blocks/Patterns/HeroSectionPattern.php:18
 msgid "hero"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/Patterns/HeroSectionPattern.php:20
+#: includes/framework/Support/Blocks/Patterns/HeroSectionPattern.php:19
 msgid "banner"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/Patterns/HeroSectionPattern.php:21
+#: includes/framework/Support/Blocks/Patterns/HeroSectionPattern.php:20
 msgid "header"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/Patterns/HeroSectionPattern.php:22
+#: includes/framework/Support/Blocks/Patterns/HeroSectionPattern.php:21
 msgid "Welcome to our website"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/Patterns/HeroSectionPattern.php:23
+#: includes/framework/Support/Blocks/Patterns/HeroSectionPattern.php:22
 msgid "Discover amazing features and services"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/Patterns/HeroSectionPattern.php:24
+#: includes/framework/Support/Blocks/Patterns/HeroSectionPattern.php:23
 msgid "Get Started"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/Patterns/CardGridPattern.php:16
+#: includes/framework/Support/Blocks/Patterns/CardGridPattern.php:16
 msgid "Card Grid"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/Patterns/CardGridPattern.php:17
+#: includes/framework/Support/Blocks/Patterns/CardGridPattern.php:17
 msgid "Display content in a responsive card grid layout"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/Patterns/CardGridPattern.php:18
-msgid "jankx"
-msgstr ""
-
-#: includes/Jankx/Support/Blocks/Patterns/CardGridPattern.php:19
+#: includes/framework/Support/Blocks/Patterns/CardGridPattern.php:18
 msgid "card"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/Patterns/CardGridPattern.php:20
+#: includes/framework/Support/Blocks/Patterns/CardGridPattern.php:19
 msgid "grid"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/Patterns/CardGridPattern.php:21
+#: includes/framework/Support/Blocks/Patterns/CardGridPattern.php:20
 msgid "layout"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/Patterns/CardGridPattern.php:22
+#: includes/framework/Support/Blocks/Patterns/CardGridPattern.php:21
 msgid "Card Title"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/Patterns/CardGridPattern.php:23
+#: includes/framework/Support/Blocks/Patterns/CardGridPattern.php:22
 msgid "Card description goes here"
 msgstr ""
 
-#: includes/Jankx/Support/Blocks/Patterns/CardGridPattern.php:24
+#: includes/framework/Support/Blocks/Patterns/CardGridPattern.php:23
 msgid "Read More"
 msgstr ""
