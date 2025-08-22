@@ -23,11 +23,15 @@
     "plugin-zip": "wp-scripts plugin-zip",
     "test:e2e": "wp-scripts test-e2e",
     "test:unit": "wp-scripts test-unit-js",
-    "build:all-blocks": "npm run build:widget-renderer && npm run build:language-switcher && npm run build:icon-picker && npm run build:jankx-tab && npm run build:swiper-slider && npm run build:image-mask",
+    "build:all-blocks": "npm run build:widget-renderer && npm run build:language-switcher && npm run build:icon-picker && npm run build:jankx-tab && npm run build:swiper-slider && npm run build:image-mask && npm run build:button-with-icon && npm run build:product-carousel",
     "build:swiper-slider": "wp-scripts build resources/blocks/swiper-slider/index.js resources/blocks/swiper-slider/index.css --output-path=resources/blocks/swiper-slider/build",
     "dev:swiper-slider": "wp-scripts start resources/blocks/swiper-slider/index.js resources/blocks/swiper-slider/index.css --output-path=resources/blocks/swiper-slider/build",
     "build:image-mask": "wp-scripts build resources/blocks/image-mask/index.js resources/blocks/image-mask/style.css --output-path=resources/blocks/image-mask/build && cp resources/blocks/image-mask/editor.css resources/blocks/image-mask/build/",
-    "dev:image-mask": "wp-scripts start resources/blocks/image-mask/index.js resources/blocks/image-mask/style.css --output-path=resources/blocks/image-mask/build"
+    "dev:image-mask": "wp-scripts start resources/blocks/image-mask/index.js resources/blocks/image-mask/style.css --output-path=resources/blocks/image-mask/build",
+    "build:button-with-icon": "wp-scripts build resources/blocks/button-with-icon/index.js resources/blocks/button-with-icon/index.css --output-path=resources/blocks/button-with-icon/build",
+    "dev:button-with-icon": "wp-scripts start resources/blocks/button-with-icon/index.js resources/blocks/button-with-icon/index.css --output-path=resources/blocks/button-with-icon/build",
+    "build:product-carousel": "wp-scripts build resources/blocks/product-carousel/index.js resources/blocks/product-carousel/index.css --output-path=resources/blocks/product-carousel/build",
+    "dev:product-carousel": "wp-scripts start resources/blocks/product-carousel/index.js resources/blocks/product-carousel/index.css --output-path=resources/blocks/product-carousel/build"
   },
   "keywords": [
     "wordpress",

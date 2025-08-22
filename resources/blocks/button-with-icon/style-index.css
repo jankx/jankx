@@ -1,0 +1,303 @@
+/* Button with Icon Block - Frontend Styles */
+
+.jankx-button-with-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 1rem 0;
+}
+
+.jankx-button-with-icon__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 44px;
+    line-height: 1.2;
+    text-align: center;
+}
+
+/* Button Types */
+.jankx-button-with-icon__button--primary {
+    background: #007cba;
+    color: white;
+}
+
+.jankx-button-with-icon__button--primary:hover {
+    background: #005a87;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 124, 186, 0.3);
+}
+
+.jankx-button-with-icon__button--secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.jankx-button-with-icon__button--secondary:hover {
+    background: #545b62;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
+}
+
+.jankx-button-with-icon__button--success {
+    background: #28a745;
+    color: white;
+}
+
+.jankx-button-with-icon__button--success:hover {
+    background: #1e7e34;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+}
+
+.jankx-button-with-icon__button--warning {
+    background: #ffc107;
+    color: #212529;
+}
+
+.jankx-button-with-icon__button--warning:hover {
+    background: #e0a800;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
+}
+
+.jankx-button-with-icon__button--danger {
+    background: #dc3545;
+    color: white;
+}
+
+.jankx-button-with-icon__button--danger:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+}
+
+.jankx-button-with-icon__button--info {
+    background: #17a2b8;
+    color: white;
+}
+
+.jankx-button-with-icon__button--info:hover {
+    background: #138496;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(23, 162, 184, 0.3);
+}
+
+.jankx-button-with-icon__button--light {
+    background: #f8f9fa;
+    color: #212529;
+    border: 1px solid #dee2e6;
+}
+
+.jankx-button-with-icon__button--light:hover {
+    background: #e2e6ea;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(248, 249, 250, 0.3);
+}
+
+.jankx-button-with-icon__button--dark {
+    background: #343a40;
+    color: white;
+}
+
+.jankx-button-with-icon__button--dark:hover {
+    background: #23272b;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(52, 58, 64, 0.3);
+}
+
+/* Button Styles */
+.jankx-button-with-icon__button--outlined {
+    background: transparent;
+    border: 2px solid currentColor;
+}
+
+.jankx-button-with-icon__button--outlined.jankx-button-with-icon__button--primary {
+    color: #007cba;
+    border-color: #007cba;
+}
+
+.jankx-button-with-icon__button--outlined.jankx-button-with-icon__button--primary:hover {
+    background: #007cba;
+    color: white;
+}
+
+.jankx-button-with-icon__button--text {
+    background: transparent;
+    padding: 8px 16px;
+}
+
+.jankx-button-with-icon__button--text:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.jankx-button-with-icon__button--rounded {
+    border-radius: 50px;
+}
+
+/* Button Sizes */
+.jankx-button-with-icon__button--small {
+    padding: 8px 16px;
+    font-size: 14px;
+    min-height: 36px;
+}
+
+.jankx-button-with-icon__button--medium {
+    padding: 12px 24px;
+    font-size: 16px;
+    min-height: 44px;
+}
+
+.jankx-button-with-icon__button--large {
+    padding: 16px 32px;
+    font-size: 18px;
+    min-height: 52px;
+}
+
+.jankx-button-with-icon__button--xlarge {
+    padding: 20px 40px;
+    font-size: 20px;
+    min-height: 60px;
+}
+
+/* Button Width */
+.jankx-button-with-icon__button--full-width {
+    width: 100%;
+}
+
+/* Icon Styles */
+.jankx-button-with-icon__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.jankx-button-with-icon__icon--left {
+    margin-right: 8px;
+}
+
+.jankx-button-with-icon__icon--right {
+    margin-left: 8px;
+}
+
+.jankx-button-with-icon__icon--top {
+    margin-bottom: 8px;
+}
+
+.jankx-button-with-icon__icon--bottom {
+    margin-top: 8px;
+}
+
+/* Text Styles */
+.jankx-button-with-icon__text {
+    font-weight: 500;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+/* Material Icons Support */
+.material-icons,
+.material-icons-outlined,
+.material-icons-rounded,
+.material-icons-sharp,
+.material-icons-two-tone {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Focus States */
+.jankx-button-with-icon__button:focus {
+    outline: 2px solid #007cba;
+    outline-offset: 2px;
+}
+
+/* Disabled State */
+.jankx-button-with-icon__button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Loading State */
+.jankx-button-with-icon__button--loading {
+    position: relative;
+    color: transparent;
+}
+
+.jankx-button-with-icon__button--loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    margin: -8px 0 0 -8px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .jankx-button-with-icon__button {
+        padding: 10px 20px;
+        font-size: 14px;
+        min-height: 40px;
+    }
+
+    .jankx-button-with-icon__button--large {
+        padding: 14px 28px;
+        font-size: 16px;
+        min-height: 48px;
+    }
+
+    .jankx-button-with-icon__button--xlarge {
+        padding: 16px 32px;
+        font-size: 18px;
+        min-height: 56px;
+    }
+
+    .jankx-button-with-icon__button--full-width {
+        width: 100%;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .jankx-button-with-icon__button {
+        border: 1px solid #000;
+        background: transparent !important;
+        color: #000 !important;
+        box-shadow: none !important;
+        transform: none !important;
+    }
+}
