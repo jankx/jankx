@@ -3,6 +3,7 @@
 namespace Jankx\Support\Providers;
 
 use Jankx\Services\GutenbergService;
+use Jankx\Framework\Services\AdvancedGutenbergService;
 use Jankx\Foundation\Application;
 use Jankx\Facades\Log;
 use Jankx\Helper\Environment;
@@ -35,6 +36,11 @@ class GutenbergServiceProvider extends ServiceProvider
         // Register Gutenberg repository
         $app->singleton('gutenberg.repository', function ($app) {
             return new \Jankx\Support\Blocks\GutenbergRepository();
+        });
+
+        // Register Advanced Gutenberg service
+        $app->singleton('advanced.gutenberg.service', function ($app) {
+            return new AdvancedGutenbergService();
         });
     }
 

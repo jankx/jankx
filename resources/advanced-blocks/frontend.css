@@ -1,0 +1,344 @@
+/* Responsive Blocks Frontend Styles */
+
+/* Base responsive breakpoints */
+@media (max-width: 768px) {
+    /* Tablet styles will be generated dynamically */
+}
+
+@media (max-width: 480px) {
+    /* Mobile styles will be generated dynamically */
+}
+
+/* Enhanced block styling for better responsive control */
+.wp-block-heading {
+    transition: all 0.3s ease;
+}
+
+.wp-block-heading h1,
+.wp-block-heading h2,
+.wp-block-heading h3,
+.wp-block-heading h4,
+.wp-block-heading h5,
+.wp-block-heading h6 {
+    transition: all 0.3s ease;
+}
+
+.wp-block-paragraph {
+    transition: all 0.3s ease;
+}
+
+.wp-block-paragraph p {
+    transition: all 0.3s ease;
+}
+
+.wp-block-button {
+    transition: all 0.3s ease;
+}
+
+.wp-block-button .wp-block-button__link {
+    transition: all 0.3s ease;
+}
+
+.wp-block-image {
+    transition: all 0.3s ease;
+}
+
+.wp-block-image img {
+    transition: all 0.3s ease;
+    max-width: 100%;
+    height: auto;
+}
+
+.wp-block-columns {
+    transition: all 0.3s ease;
+}
+
+.wp-block-group {
+    transition: all 0.3s ease;
+}
+
+.wp-block-spacer {
+    transition: all 0.3s ease;
+}
+
+/* Responsive utility classes */
+.cheephub-responsive-hidden-desktop {
+    display: block;
+}
+
+.cheephub-responsive-hidden-tablet {
+    display: block;
+}
+
+.cheephub-responsive-hidden-mobile {
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .cheephub-responsive-hidden-desktop {
+        display: none;
+    }
+    
+    .cheephub-responsive-hidden-tablet {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .cheephub-responsive-hidden-tablet {
+        display: none;
+    }
+    
+    .cheephub-responsive-hidden-mobile {
+        display: none;
+    }
+}
+
+/* Responsive text alignment */
+.cheephub-text-left-desktop {
+    text-align: left;
+}
+
+.cheephub-text-center-desktop {
+    text-align: center;
+}
+
+.cheephub-text-right-desktop {
+    text-align: right;
+}
+
+@media (max-width: 768px) {
+    .cheephub-text-left-tablet {
+        text-align: left;
+    }
+    
+    .cheephub-text-center-tablet {
+        text-align: center;
+    }
+    
+    .cheephub-text-right-tablet {
+        text-align: right;
+    }
+}
+
+@media (max-width: 480px) {
+    .cheephub-text-left-mobile {
+        text-align: left;
+    }
+    
+    .cheephub-text-center-mobile {
+        text-align: center;
+    }
+    
+    .cheephub-text-right-mobile {
+        text-align: right;
+    }
+}
+
+/* Responsive spacing utilities */
+.cheephub-margin-0-desktop {
+    margin: 0;
+}
+
+.cheephub-padding-0-desktop {
+    padding: 0;
+}
+
+@media (max-width: 768px) {
+    .cheephub-margin-0-tablet {
+        margin: 0;
+    }
+    
+    .cheephub-padding-0-tablet {
+        padding: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .cheephub-margin-0-mobile {
+        margin: 0;
+    }
+    
+    .cheephub-padding-0-mobile {
+        padding: 0;
+    }
+}
+
+/* Responsive visibility helpers */
+.cheephub-visible-desktop {
+    display: block;
+}
+
+.cheephub-visible-tablet {
+    display: none;
+}
+
+.cheephub-visible-mobile {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .cheephub-visible-desktop {
+        display: none;
+    }
+    
+    .cheephub-visible-tablet {
+        display: block;
+    }
+}
+
+@media (max-width: 480px) {
+    .cheephub-visible-tablet {
+        display: none;
+    }
+    
+    .cheephub-visible-mobile {
+        display: block;
+    }
+}
+
+/* Responsive grid helpers */
+.cheephub-grid-desktop {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.cheephub-grid-tablet {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.cheephub-grid-mobile {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+
+@media (max-width: 768px) {
+    .cheephub-grid-desktop {
+        display: none;
+    }
+    
+    .cheephub-grid-tablet {
+        display: grid;
+    }
+}
+
+@media (max-width: 480px) {
+    .cheephub-grid-tablet {
+        display: none;
+    }
+    
+    .cheephub-grid-mobile {
+        display: grid;
+    }
+}
+
+/* Responsive flexbox helpers */
+.cheephub-flex-desktop {
+    display: flex;
+}
+
+.cheephub-flex-tablet {
+    display: flex;
+}
+
+.cheephub-flex-mobile {
+    display: flex;
+}
+
+@media (max-width: 768px) {
+    .cheephub-flex-desktop {
+        display: none;
+    }
+    
+    .cheephub-flex-tablet {
+        display: flex;
+    }
+}
+
+@media (max-width: 480px) {
+    .cheephub-flex-tablet {
+        display: none;
+    }
+    
+    .cheephub-flex-mobile {
+        display: flex;
+    }
+}
+
+/* Responsive typography scale */
+.cheephub-text-xs {
+    font-size: 0.75rem;
+    line-height: 1rem;
+}
+
+.cheephub-text-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+
+.cheephub-text-base {
+    font-size: 1rem;
+    line-height: 1.5rem;
+}
+
+.cheephub-text-lg {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+}
+
+.cheephub-text-xl {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+}
+
+.cheephub-text-2xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
+}
+
+.cheephub-text-3xl {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+}
+
+.cheephub-text-4xl {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+}
+
+/* Responsive container */
+.cheephub-container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+    .cheephub-container {
+        max-width: 640px;
+    }
+}
+
+@media (min-width: 768px) {
+    .cheephub-container {
+        max-width: 768px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .cheephub-container {
+        max-width: 1024px;
+    }
+}
+
+@media (min-width: 1280px) {
+    .cheephub-container {
+        max-width: 1280px;
+    }
+}

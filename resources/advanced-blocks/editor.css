@@ -1,0 +1,156 @@
+/* Responsive Controls Editor Styles */
+.cheephub-responsive-controls__device-selector {
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.cheephub-responsive-controls__device-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+}
+
+.cheephub-responsive-controls__device-buttons .components-button {
+    min-width: 40px;
+    height: 40px;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.cheephub-responsive-controls__device-buttons .components-button.is-primary {
+    background-color: #007cba;
+    border-color: #007cba;
+    color: #fff;
+}
+
+.cheephub-responsive-controls__active-device {
+    margin-bottom: 16px;
+    padding: 8px 12px;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.cheephub-responsive-controls__device-label {
+    font-size: 13px;
+    color: #555;
+}
+
+.cheephub-responsive-controls__device-label strong {
+    color: #007cba;
+    font-weight: 600;
+}
+
+.cheephub-responsive-controls__controls {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.cheephub-responsive-controls__control-item {
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 16px;
+}
+
+.cheephub-responsive-controls__control-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.cheephub-responsive-controls__device-help {
+    margin-top: 16px;
+    padding: 12px;
+    background-color: #f8f9fa;
+    border-left: 4px solid #007cba;
+    border-radius: 4px;
+}
+
+.cheephub-responsive-controls__device-help .description {
+    margin: 0;
+    font-size: 12px;
+    color: #666;
+    line-height: 1.4;
+}
+
+/* Responsive control specific styles */
+.cheephub-responsive-controls .components-range-control__number {
+    width: 80px;
+}
+
+.cheephub-responsive-controls .components-unit-control__input {
+    width: 100%;
+}
+
+.cheephub-responsive-controls .components-color-picker__body {
+    padding: 0;
+}
+
+.cheephub-responsive-controls .components-toggle-control .components-base-control__field {
+    margin-bottom: 0;
+}
+
+/* Device-specific visual indicators */
+.cheephub-responsive-controls[data-device="tablet"] .cheephub-responsive-controls__device-label strong {
+    color: #f56e28;
+}
+
+.cheephub-responsive-controls[data-device="mobile"] .cheephub-responsive-controls__device-label strong {
+    color: #d63638;
+}
+
+/* Responsive preview indicators */
+.cheephub-responsive-controls__preview-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.cheephub-responsive-controls__preview-indicator.desktop {
+    background-color: #007cba;
+}
+
+.cheephub-responsive-controls__preview-indicator.tablet {
+    background-color: #f56e28;
+}
+
+.cheephub-responsive-controls__preview-indicator.mobile {
+    background-color: #d63638;
+}
+
+/* Enhanced control spacing */
+.cheephub-responsive-controls .components-base-control {
+    margin-bottom: 16px;
+}
+
+.cheephub-responsive-controls .components-base-control:last-child {
+    margin-bottom: 0;
+}
+
+/* Responsive breakpoint indicators */
+.cheephub-responsive-controls__breakpoint-info {
+    font-size: 11px;
+    color: #999;
+    text-align: center;
+    margin-top: 8px;
+    padding: 4px 8px;
+    background-color: #f9f9f9;
+    border-radius: 3px;
+}
+
+/* Control group styling */
+.cheephub-responsive-controls__control-group {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: 16px;
+    background-color: #fafafa;
+}
+
+.cheephub-responsive-controls__control-group-title {
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #333;
+    font-size: 13px;
+}
