@@ -39,7 +39,7 @@ class GutenbergServiceProvider extends ServiceProvider
         });
 
         // Register Advanced Gutenberg service
-        $app->singleton('advanced.gutenberg.service', function ($app) {
+        $app->singleton('gutenberg.advanced.service', function ($app) {
             return new AdvancedGutenbergService();
         });
     }
