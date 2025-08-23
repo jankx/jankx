@@ -6,9 +6,9 @@
  * @package Jankx\Support\Blocks\SwiperSlider
  */
 
-namespace Jankx\Support\Blocks\SwiperSlider;
+namespace Jankx\Gutenberg\Blocks\SwiperSlider;
 
-use Jankx\Support\Blocks\Block;
+use Jankx\Gutenberg\Blocks\Block;
 
 class SwiperSlider extends Block
 {

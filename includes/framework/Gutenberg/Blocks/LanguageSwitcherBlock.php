@@ -1,6 +1,6 @@
 <?php
 
-namespace Jankx\Support\Blocks;
+namespace Jankx\Gutenberg\Blocks;
 
 /**
  * Language Switcher Block
@@ -8,7 +8,7 @@ namespace Jankx\Support\Blocks;
  * This block displays language switcher for Polylang plugin
  * with customizable display options.
  *
- * @package Jankx\Support\Blocks
+ * @package Jankx\Gutenberg\Blocks
  * @since 1.0.0
  */
 class LanguageSwitcherBlock extends Block

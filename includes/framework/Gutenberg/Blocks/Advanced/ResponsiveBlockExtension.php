@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Responsive Block Extension Service
  *
@@ -10,7 +11,7 @@
  * @since 1.0.0
  */
 
-namespace Jankx\Support\Blocks\Advanced;
+namespace Jankx\Gutenberg\Blocks\Advanced;
 
 class ResponsiveBlockExtension
 {
@@ -26,8 +27,7 @@ class ResponsiveBlockExtension
         'core/group',
         'core/spacer'
     ];
-
-    /**
+/**
      * Responsive attribute mappings
      */
     protected $responsiveAttributes = [
@@ -77,8 +77,7 @@ class ResponsiveBlockExtension
             'mobile' => 'borderWidthMobile'
         ]
     ];
-
-    /**
+/**
      * Constructor
      */
     public function __construct()
@@ -112,15 +111,13 @@ class ResponsiveBlockExtension
     protected function extendBlock($blockName)
     {
         $block = WP_Block_Type_Registry::get_instance()->get_registered($blockName);
-
         if (!$block) {
             return;
         }
 
         // Add responsive attributes
         $this->addResponsiveAttributes($block, array_keys($this->responsiveAttributes));
-
-        // Add custom attributes
+// Add custom attributes
         $this->addCustomAttributes($block, [
             'responsiveControls' => [
                 'type' => 'object',
@@ -141,10 +138,10 @@ class ResponsiveBlockExtension
             if (isset($this->responsiveAttributes[$type])) {
                 foreach ($this->responsiveAttributes[$type] as $device => $attributeName) {
                     if ($device !== 'desktop') {
-                        $block->attributes[$attributeName] = [
+                            $block->attributes[$attributeName] = [
                             'type' => 'string',
                             'default' => ''
-                        ];
+                                    ];
                     }
                 }
             }
@@ -166,21 +163,8 @@ class ResponsiveBlockExtension
      */
     public function enqueueEditorAssets()
     {
-        wp_enqueue_script(
-            'cheephub-responsive-blocks-editor',
-            get_template_directory_uri() . '/resources/advanced-blocks/build/editor.js',
-            ['wp-blocks', 'wp-dom-ready', 'wp-edit-post', 'wp-components', 'wp-i18n'],
-            '1.0.0',
-            true
-        );
-
-        wp_enqueue_style(
-            'cheephub-responsive-blocks-editor',
-            get_template_directory_uri() . '/resources/advanced-blocks/build/editor.css',
-            [],
-            '1.0.0'
-        );
-
+        wp_enqueue_script('cheephub-responsive-blocks-editor', get_template_directory_uri() . '/resources/advanced-blocks/build/editor.js', ['wp-blocks', 'wp-dom-ready', 'wp-edit-post', 'wp-components', 'wp-i18n'], '1.0.0', true);
+        wp_enqueue_style('cheephub-responsive-blocks-editor', get_template_directory_uri() . '/resources/advanced-blocks/build/editor.css', [], '1.0.0');
         wp_localize_script('cheephub-responsive-blocks-editor', 'cheephubResponsiveBlocks', [
             'responsiveAttributes' => $this->responsiveAttributes,
             'extendableBlocks' => $this->extendableBlocks,

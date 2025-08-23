@@ -1,6 +1,6 @@
 <?php
 
-namespace Jankx\Support\Blocks;
+namespace Jankx\Gutenberg\Blocks;
 
 /**
  * Jankx Tabs Block
@@ -8,7 +8,7 @@ namespace Jankx\Support\Blocks;
  * This block allows users to create and manage tabs with different actions.
  * It provides a dynamic interface for tab management and content display.
  *
- * @package Jankx\Support\Blocks
+ * @package Jankx\Gutenberg\Blocks
  * @since 1.0.0
  */
 class ComposeTabBlock extends Block

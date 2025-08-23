@@ -130,6 +130,10 @@ $advancedService = new \Jankx\Framework\Services\AdvancedGutenbergService();
 $advancedService = jankx()->make('advanced.gutenberg.service');
 ```
 
+**Cấu trúc mới:**
+- PHP services: `includes/framework/Gutenberg/Blocks/Advanced/`
+- Main service: `includes/framework/Services/AdvancedGutenbergService.php`
+
 ### 3. Tích Hợp Vào Jankx Framework
 
 **Tự động boot:**
@@ -171,7 +175,7 @@ resources/advanced-blocks/          # Frontend assets và React components
 includes/framework/                 # PHP services và logic
 ├── Services/
 │   └── AdvancedGutenbergService.php  # Main service để quản lý responsive blocks
-└── Support/Blocks/Advanced/
+└── Gutenberg/Blocks/Advanced/
     ├── ResponsiveBlockExtension.php   # PHP service để extend blocks
     └── ResponsiveCSSGenerator.php     # PHP service để generate CSS
 ```

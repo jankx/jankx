@@ -1,6 +1,6 @@
 <?php
 
-namespace Jankx\Support\Blocks;
+namespace Jankx\Gutenberg\Blocks;
 
 /**
  * Base Block Class for Jankx Framework
@@ -9,7 +9,7 @@ namespace Jankx\Support\Blocks;
  * in the Jankx Framework. It handles block registration, rendering,
  * and common functionality shared across all blocks.
  *
- * @package Jankx\Support\Blocks
+ * @package Jankx\Gutenberg\Blocks
  * @since 1.0.0
  */
 abstract class Block

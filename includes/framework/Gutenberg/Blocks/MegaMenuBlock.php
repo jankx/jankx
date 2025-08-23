@@ -6,14 +6,14 @@
  * Class này xử lý Mega Menu Block trong Jankx Framework
  * với đầy đủ tính năng: accordion, flyout, custom icons, responsive
  *
- * @package Jankx\Support\Blocks
+ * @package Jankx\Gutenberg\Blocks
  * @since 2.0.0
  */
 
-namespace Jankx\Support\Blocks;
+namespace Jankx\Gutenberg\Blocks;
 
 use Exception;
-use Jankx\Support\Blocks\Block;
+use Jankx\Gutenberg\Blocks\Block;
 
 /**
  * Mega Menu Block

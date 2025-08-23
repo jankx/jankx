@@ -1,6 +1,6 @@
 <?php
 
-namespace Jankx\Support\Blocks;
+namespace Jankx\Gutenberg\Blocks;
 
 /**
  * Gutenberg Repository
@@ -8,7 +8,7 @@ namespace Jankx\Support\Blocks;
  * This class manages storage of Gutenberg blocks and patterns in the Jankx Framework.
  * It handles block and pattern registration and storage.
  *
- * @package Jankx\Support\Blocks
+ * @package Jankx\Gutenberg\Blocks
  * @since 2.0.0
  */
 class GutenbergRepository
@@ -183,7 +183,7 @@ class GutenbergRepository
         $pattern = $app ? new $patternClass($app) : new $patternClass();
 
         // Check if pattern is valid
-        if (!$pattern instanceof \Jankx\Support\Blocks\Patterns\GutenbergPattern) {
+        if (!$pattern instanceof \Jankx\Gutenberg\Blocks\Patterns\GutenbergPattern) {
             return;
         }
 
@@ -205,7 +205,7 @@ class GutenbergRepository
      * Get pattern instance
      *
      * @param string $patternSlug Pattern slug
-     * @return \Jankx\Support\Blocks\Patterns\GutenbergPattern|null
+     * @return \Jankx\Gutenberg\Blocks\Patterns\GutenbergPattern|null
      */
     public function getPattern($patternSlug)
     {

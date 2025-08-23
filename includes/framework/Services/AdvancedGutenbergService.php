@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Advanced Gutenberg Service
- * 
+ *
  * Manages responsive block extensions and advanced Gutenberg features
- * 
+ *
  * @package CheepHub
  * @subpackage Framework
  * @since 1.0.0
@@ -11,8 +12,8 @@
 
 namespace Jankx\Framework\Services;
 
-use Jankx\Support\Blocks\Advanced\ResponsiveBlockExtension;
-use Jankx\Support\Blocks\Advanced\ResponsiveCSSGenerator;
+use Jankx\Gutenberg\Blocks\Advanced\ResponsiveBlockExtension;
+use Jankx\Gutenberg\Blocks\Advanced\ResponsiveCSSGenerator;
 
 class AdvancedGutenbergService
 {
@@ -20,13 +21,11 @@ class AdvancedGutenbergService
      * Responsive block extension instance
      */
     protected $responsiveExtension;
-
-    /**
+/**
      * CSS generator instance
      */
     protected $cssGenerator;
-
-    /**
+/**
      * Constructor
      */
     public function __construct()
@@ -41,8 +40,7 @@ class AdvancedGutenbergService
     {
         // Initialize responsive block extension
         $this->responsiveExtension = new ResponsiveBlockExtension();
-        
-        // Initialize CSS generator
+// Initialize CSS generator
         $this->cssGenerator = new ResponsiveCSSGenerator();
     }
 
@@ -67,7 +65,8 @@ class AdvancedGutenbergService
      */
     public function isResponsiveEnabled()
     {
-        return true; // Always enabled for now
+        return true;
+// Always enabled for now
     }
 
     /**

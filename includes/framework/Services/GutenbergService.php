@@ -3,17 +3,16 @@
 namespace Jankx\Services;
 
 use Jankx\Foundation\Application;
-use Jankx\Support\Blocks\GutenbergRepository;
-use Jankx\Support\Blocks\ImageMaskBlock;
-use Jankx\Support\Blocks\WidgetRendererBlock;
-use Jankx\Support\Blocks\IconPickerBlock;
-use Jankx\Support\Blocks\ButtonWithIconBlock;
-use Jankx\Support\Blocks\ProductCarouselBlock;
-use Jankx\Support\Blocks\LanguageSwitcherBlock;
-use Jankx\Support\Blocks\ComposeTabBlock;
-use Jankx\Support\Blocks\MegaMenuBlock;
-use Jankx\Support\Blocks\SwiperSlider\SwiperSlider;
-use Jankx\Support\Blocks\Patterns\GutenbergPattern;
+use Jankx\Gutenberg\Blocks\ImageMaskBlock;
+use Jankx\Gutenberg\Blocks\WidgetRendererBlock;
+use Jankx\Gutenberg\Blocks\IconPickerBlock;
+use Jankx\Gutenberg\Blocks\ButtonWithIconBlock;
+use Jankx\Gutenberg\Blocks\ProductCarouselBlock;
+use Jankx\Gutenberg\Blocks\LanguageSwitcherBlock;
+use Jankx\Gutenberg\Blocks\ComposeTabBlock;
+use Jankx\Gutenberg\Blocks\MegaMenuBlock;
+use Jankx\Gutenberg\Blocks\SwiperSlider\SwiperSlider;
+use Jankx\Gutenberg\Blocks\Patterns\GutenbergPattern;
 use Jankx\Facades\Log;
 use Jankx\Helper\Environment;
 
@@ -296,7 +295,7 @@ class GutenbergService
      * Get block instance
      *
      * @param string $blockName Block name
-     * @return \Jankx\Support\Blocks\Block|null
+     * @return \Jankx\Gutenberg\Blocks\Block|null
      */
     public function getBlock($blockName)
     {
@@ -447,8 +446,8 @@ class GutenbergService
 
         // Register built-in patterns
         $defaultPatterns = [
-            \Jankx\Support\Blocks\Patterns\HeroSectionPattern::class,
-            \Jankx\Support\Blocks\Patterns\CardGridPattern::class,
+            \Jankx\Gutenberg\Blocks\Patterns\HeroSectionPattern::class,
+            \Jankx\Gutenberg\Blocks\Patterns\CardGridPattern::class,
         ];
 
         foreach ($defaultPatterns as $patternClass) {

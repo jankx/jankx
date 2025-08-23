@@ -1,6 +1,6 @@
 <?php
 
-namespace Jankx\Support\Blocks;
+namespace Jankx\Gutenberg\Blocks;
 
 /**
  * Button with Icon Block
@@ -8,7 +8,7 @@ namespace Jankx\Support\Blocks;
  * This block creates a customizable button with icon support from Jankx Font Icons System.
  * It supports various button types, sizes, styles, and icon positions.
  *
- * @package Jankx\Support\Blocks
+ * @package Jankx\Gutenberg\Blocks
  * @since 1.0.0
  */
 class ButtonWithIconBlock extends Block

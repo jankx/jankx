@@ -35,7 +35,7 @@ class GutenbergServiceProvider extends ServiceProvider
 
         // Register Gutenberg repository
         $app->singleton('gutenberg.repository', function ($app) {
-            return new \Jankx\Support\Blocks\GutenbergRepository();
+            return new \Jankx\Gutenberg\Blocks\GutenbergRepository();
         });
 
         // Register Advanced Gutenberg service

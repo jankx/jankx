@@ -1,6 +1,6 @@
 <?php
 
-namespace Jankx\Support\Blocks;
+namespace Jankx\Gutenberg\Blocks;
 
 /**
  * Product Carousel Block
@@ -8,7 +8,7 @@ namespace Jankx\Support\Blocks;
  * This block creates a product carousel that can contain WooCommerce product collections
  * as nested blocks. It transforms product lists into interactive carousels.
  *
- * @package Jankx\Support\Blocks
+ * @package Jankx\Gutenberg\Blocks
  * @since 1.0.0
  */
 class ProductCarouselBlock extends Block
@@ -139,7 +139,7 @@ class ProductCarouselBlock extends Block
 
         // Build final HTML
         $className = implode(' ', array_filter($carouselClasses));
-        $dataAttributes = implode(' ', array_map(function($key, $value) {
+        $dataAttributes = implode(' ', array_map(function ($key, $value) {
             return sprintf('%s="%s"', esc_attr($key), esc_attr($value));
         }, array_keys($carouselData), $carouselData));
 

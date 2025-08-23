@@ -1,6 +1,6 @@
 <?php
 
-namespace Jankx\Support\Blocks\Patterns;
+namespace Jankx\Gutenberg\Blocks\Patterns;
 
 /**
  * Card Grid Pattern

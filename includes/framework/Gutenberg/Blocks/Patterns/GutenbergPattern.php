@@ -1,6 +1,6 @@
 <?php
 
-namespace Jankx\Support\Blocks\Patterns;
+namespace Jankx\Gutenberg\Blocks\Patterns;
 
 use Jankx\Facades\Log;
 use Jankx\Foundation\Application;

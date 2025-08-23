@@ -1,8 +1,8 @@
 <?php
 
-namespace Jankx\Support\Blocks;
+namespace Jankx\Gutenberg\Blocks;
 
-use Jankx\Support\Blocks\Block;
+use Jankx\Gutenberg\Blocks\Block;
 
 /**
  * Image Mask Block

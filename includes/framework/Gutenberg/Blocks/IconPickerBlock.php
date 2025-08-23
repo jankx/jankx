@@ -1,6 +1,6 @@
 <?php
 
-namespace Jankx\Support\Blocks;
+namespace Jankx\Gutenberg\Blocks;
 
 /**
  * Icon Picker Block
@@ -9,7 +9,7 @@ namespace Jankx\Support\Blocks;
  * including FontAwesome and Material Icons. It supports linking, labeling, and
  * extensive customization options.
  *
- * @package Jankx\Support\Blocks
+ * @package Jankx\Gutenberg\Blocks
  * @since 1.0.0
  */
 class IconPickerBlock extends Block
