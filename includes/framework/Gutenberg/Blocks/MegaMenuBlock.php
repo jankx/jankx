@@ -326,8 +326,9 @@ class MegaMenuBlock extends Block
                 wp_enqueue_script(
                     'jankx-mega-menu-editor',
                     get_template_directory_uri() . '/resources/blocks/mega-menu/build/index.js',
-                    $asset_data['dependencies'] ?? [],
-                    $asset_data['version'] ?? filemtime($editor_script)
+                    $asset_data['dependencies'] ?? ['wp-blocks', 'wp-block-editor', 'wp-element', 'wp-i18n', 'wp-icons', 'wp-components', 'wp-data', 'wp-hooks', 'wp-url', 'wp-api-fetch'],
+                    $asset_data['version'] ?? filemtime($editor_script),
+                    true
                 );
             }
 
@@ -343,11 +344,11 @@ class MegaMenuBlock extends Block
             }
 
             // Enqueue frontend style
-            $frontend_style = $build_dir . '/style.css.css';
+            $frontend_style = $build_dir . '/style-style.css.css';
             if (file_exists($frontend_style)) {
                 wp_enqueue_style(
                     'jankx-mega-menu-frontend',
-                    get_template_directory_uri() . '/resources/blocks/mega-menu/build/style.css.css',
+                    get_template_directory_uri() . '/resources/blocks/mega-menu/build/style-style.css.css',
                     [],
                     filemtime($frontend_style)
                 );

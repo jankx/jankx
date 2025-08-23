@@ -3,26 +3,26 @@
 namespace Jankx\Gutenberg\Blocks;
 
 /**
- * Button with Icon Block
+ * Icon Button Block
  *
  * This block creates a customizable button with icon support from Jankx Font Icons System.
- * It supports various button types, sizes, styles, and icon positions.
+ * It supports various button types, sizes, styles, icon positions, and custom icon selection.
  *
  * @package Jankx\Gutenberg\Blocks
  * @since 1.0.0
  */
-class ButtonWithIconBlock extends Block
+class IconButtonBlock extends Block
 {
     /**
      * Constructor
      */
     public function __construct()
     {
-        parent::__construct('jankx/button-with-icon', [
-            'title' => __('Button with Icon', 'jankx'),
+        parent::__construct('jankx/icon-button', [
+            'title' => __('Icon Button', 'jankx'),
             'category' => 'design',
             'icon' => 'button',
-            'description' => __('Button với khả năng thêm icon từ Jankx Font Icons System', 'jankx'),
+            'description' => __('Button với khả năng thêm icon từ Jankx Font Icons System hoặc upload custom icon', 'jankx'),
             'keywords' => ['button', 'icon', 'link', 'cta', 'action', 'jankx'],
             'supports' => [
                 'html' => false,
@@ -97,6 +97,22 @@ class ButtonWithIconBlock extends Block
                     'type' => 'boolean',
                     'default' => false
                 ],
+                'iconType' => [
+                    'type' => 'string',
+                    'default' => 'font' // 'font' or 'custom'
+                ],
+                'fontIcon' => [
+                    'type' => 'string',
+                    'default' => 'arrow_forward'
+                ],
+                'customIcon' => [
+                    'type' => 'object',
+                    'default' => null
+                ],
+                'iconSize' => [
+                    'type' => 'string',
+                    'default' => '20px'
+                ],
                 'customClassName' => [
                     'type' => 'string',
                     'default' => ''
@@ -116,7 +132,7 @@ class ButtonWithIconBlock extends Block
      */
     public function register()
     {
-        $blockPath = get_template_directory() . '/resources/blocks/button-with-icon';
+        $blockPath = get_template_directory() . '/resources/blocks/icon-button';
         $buildPath = $blockPath . '/build';
         $metadata = $this->getBlockMetadata($blockPath);
 
@@ -150,6 +166,10 @@ class ButtonWithIconBlock extends Block
         $iconPosition = $attributes['iconPosition'] ?? 'left';
         $iconSpacing = $attributes['iconSpacing'] ?? '8px';
         $showIcon = $attributes['showIcon'] ?? false;
+        $iconType = $attributes['iconType'] ?? 'font';
+        $fontIcon = $attributes['fontIcon'] ?? 'arrow_forward';
+        $customIcon = $attributes['customIcon'] ?? null;
+        $iconSize = $attributes['iconSize'] ?? '20px';
         $customClassName = $attributes['customClassName'] ?? '';
         $anchor = $attributes['anchor'] ?? '';
 
@@ -159,11 +179,11 @@ class ButtonWithIconBlock extends Block
 
         // Build button classes
         $buttonClasses = [
-            'jankx-button-with-icon__button',
-            "jankx-button-with-icon__button--{$buttonType}",
-            "jankx-button-with-icon__button--{$buttonSize}",
-            "jankx-button-with-icon__button--{$buttonStyle}",
-            $buttonWidth === 'full' ? 'jankx-button-with-icon__button--full-width' : ''
+            'jankx-icon-button__button',
+            "jankx-icon-button__button--{$buttonType}",
+            "jankx-icon-button__button--{$buttonSize}",
+            "jankx-icon-button__button--{$buttonStyle}",
+            $buttonWidth === 'full' ? 'jankx-icon-button__button--full-width' : ''
         ];
 
         // Build button style
@@ -173,11 +193,11 @@ class ButtonWithIconBlock extends Block
         }
 
         // Build content HTML
-        $contentHtml = $this->renderButtonContent($text, $showIcon, $iconPosition, $iconSpacing);
+        $contentHtml = $this->renderButtonContent($text, $showIcon, $iconPosition, $iconSpacing, $iconType, $fontIcon, $customIcon, $iconSize);
 
         // Build final HTML
         $className = sprintf(
-            'jankx-button-with-icon jankx-button-with-icon--%s jankx-button-with-icon--%s jankx-button-with-icon--%s %s',
+            'jankx-icon-button jankx-icon-button--%s jankx-icon-button--%s jankx-icon-button--%s %s',
             esc_attr($buttonType),
             esc_attr($buttonSize),
             esc_attr($buttonStyle),
@@ -218,35 +238,73 @@ class ButtonWithIconBlock extends Block
      * @param bool $showIcon Whether to show icon
      * @param string $iconPosition Icon position
      * @param string $iconSpacing Icon spacing
+     * @param string $iconType Icon type (font or custom)
+     * @param string $fontIcon Font icon class
+     * @param object|null $customIcon Custom icon object
+     * @param string $iconSize Icon size
      * @return string HTML content
      */
-    protected function renderButtonContent($text, $showIcon, $iconPosition, $iconSpacing)
+    protected function renderButtonContent($text, $showIcon, $iconPosition, $iconSpacing, $iconType, $fontIcon, $customIcon, $iconSize)
     {
         $content = [];
 
         // Add left icon
         if ($showIcon && $iconPosition === 'left') {
-            $content[] = sprintf(
-                '<span class="jankx-button-with-icon__icon jankx-button-with-icon__icon--left" style="margin-right: %s;"><i class="material-icons">arrow_forward</i></span>',
-                esc_attr($iconSpacing)
-            );
+            $content[] = $this->renderIcon('left', $iconSpacing, $iconType, $fontIcon, $customIcon, $iconSize);
         }
 
         // Add text
         $content[] = sprintf(
-            '<span class="jankx-button-with-icon__text">%s</span>',
+            '<span class="jankx-icon-button__text">%s</span>',
             esc_html($text)
         );
 
         // Add right icon
         if ($showIcon && $iconPosition === 'right') {
-            $content[] = sprintf(
-                '<span class="jankx-button-with-icon__icon jankx-button-with-icon__icon--right" style="margin-left: %s;"><i class="material-icons">arrow_forward</i></span>',
-                esc_attr($iconSpacing)
-            );
+            $content[] = $this->renderIcon('right', $iconSpacing, $iconType, $fontIcon, $customIcon, $iconSize);
         }
 
         return implode('', $content);
+    }
+
+    /**
+     * Render icon based on type
+     *
+     * @param string $position Icon position
+     * @param string $spacing Icon spacing
+     * @param string $iconType Icon type
+     * @param string $fontIcon Font icon class
+     * @param object|null $customIcon Custom icon object
+     * @param string $iconSize Icon size
+     * @return string Icon HTML
+     */
+    protected function renderIcon($position, $spacing, $iconType, $fontIcon, $customIcon, $iconSize)
+    {
+        $marginProperty = $position === 'left' ? 'margin-right' : 'margin-left';
+        $iconHtml = '';
+
+        if ($iconType === 'font') {
+            $iconHtml = sprintf('<i class="material-icons" style="font-size: %s;">%s</i>', esc_attr($iconSize), esc_attr($fontIcon));
+        } elseif ($iconType === 'custom' && $customIcon && isset($customIcon['url'])) {
+            $iconHtml = sprintf(
+                '<img src="%s" alt="%s" style="width: %s; height: %s; object-fit: contain;" />',
+                esc_url($customIcon['url']),
+                esc_attr($customIcon['alt'] ?? 'Icon'),
+                esc_attr($iconSize),
+                esc_attr($iconSize)
+            );
+        } else {
+            // Fallback to default icon
+            $iconHtml = sprintf('<i class="material-icons" style="font-size: %s;">arrow_forward</i>', esc_attr($iconSize));
+        }
+
+        return sprintf(
+            '<span class="jankx-icon-button__icon jankx-icon-button__icon--%s" style="%s: %s;">%s</span>',
+            esc_attr($position),
+            esc_attr($marginProperty),
+            esc_attr($spacing),
+            $iconHtml
+        );
     }
 
     /**
@@ -256,7 +314,7 @@ class ButtonWithIconBlock extends Block
      */
     protected function renderPlaceholder()
     {
-        return '<div class="jankx-button-with-icon-placeholder"><p>' .
+        return '<div class="jankx-icon-button-placeholder"><p>' .
                __('Nhập text cho button để hiển thị ở đây.', 'jankx') .
                '</p></div>';
     }

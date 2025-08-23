@@ -1,6 +1,6 @@
-/* Button with Icon Block - Editor Styles */
+/* Icon Button Block - Editor Styles */
 
-.jankx-button-with-icon {
+.jankx-icon-button {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -12,12 +12,12 @@
     transition: all 0.3s ease;
 }
 
-.jankx-button-with-icon:hover {
+.jankx-icon-button:hover {
     border-color: #007cba;
     background: #f0f8ff;
 }
 
-.jankx-button-with-icon__button {
+.jankx-icon-button__button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -35,174 +35,166 @@
 }
 
 /* Button Types */
-.jankx-button-with-icon__button--primary {
+.jankx-icon-button__button--primary {
     background: #007cba;
     color: white;
 }
 
-.jankx-button-with-icon__button--primary:hover {
+.jankx-icon-button__button--primary:hover {
     background: #005a87;
 }
 
-.jankx-button-with-icon__button--secondary {
+.jankx-icon-button__button--secondary {
     background: #6c757d;
     color: white;
 }
 
-.jankx-button-with-icon__button--secondary:hover {
+.jankx-icon-button__button--secondary:hover {
     background: #545b62;
 }
 
-.jankx-button-with-icon__button--success {
+.jankx-icon-button__button--success {
     background: #28a745;
     color: white;
 }
 
-.jankx-button-with-icon__button--success:hover {
+.jankx-icon-button__button--success:hover {
     background: #1e7e34;
 }
 
-.jankx-button-with-icon__button--warning {
+.jankx-icon-button__button--warning {
     background: #ffc107;
     color: #212529;
 }
 
-.jankx-button-with-icon__button--warning:hover {
+.jankx-icon-button__button--warning:hover {
     background: #e0a800;
 }
 
-.jankx-button-with-icon__button--danger {
+.jankx-icon-button__button--danger {
     background: #dc3545;
     color: white;
 }
 
-.jankx-button-with-icon__button--danger:hover {
+.jankx-icon-button__button--danger:hover {
     background: #c82333;
 }
 
-.jankx-button-with-icon__button--info {
+.jankx-icon-button__button--info {
     background: #17a2b8;
     color: white;
 }
 
-.jankx-button-with-icon__button--info:hover {
+.jankx-icon-button__button--info:hover {
     background: #138496;
 }
 
-.jankx-button-with-icon__button--light {
+.jankx-icon-button__button--light {
     background: #f8f9fa;
     color: #212529;
     border: 1px solid #dee2e6;
 }
 
-.jankx-button-with-icon__button--light:hover {
+.jankx-icon-button__button--light:hover {
     background: #e2e6ea;
 }
 
-.jankx-button-with-icon__button--dark {
+.jankx-icon-button__button--dark {
     background: #343a40;
     color: white;
 }
 
-.jankx-button-with-icon__button--dark:hover {
+.jankx-icon-button__button--dark:hover {
     background: #23272b;
 }
 
 /* Button Styles */
-.jankx-button-with-icon__button--outlined {
+.jankx-icon-button__button--outlined {
     background: transparent;
     border: 2px solid currentColor;
 }
 
-.jankx-button-with-icon__button--outlined.jankx-button-with-icon__button--primary {
+.jankx-icon-button__button--outlined.jankx-icon-button__button--primary {
     color: #007cba;
     border-color: #007cba;
 }
 
-.jankx-button-with-icon__button--outlined.jankx-button-with-icon__button--primary:hover {
+.jankx-icon-button__button--outlined.jankx-icon-button__button--primary:hover {
     background: #007cba;
     color: white;
 }
 
-.jankx-button-with-icon__button--text {
+.jankx-icon-button__button--text {
     background: transparent;
     padding: 8px 16px;
 }
 
-.jankx-button-with-icon__button--text:hover {
+.jankx-icon-button__button--text:hover {
     background: rgba(0, 0, 0, 0.05);
 }
 
-.jankx-button-with-icon__button--rounded {
+.jankx-icon-button__button--rounded {
     border-radius: 50px;
 }
 
 /* Button Sizes */
-.jankx-button-with-icon__button--small {
+.jankx-icon-button__button--small {
     padding: 8px 16px;
     font-size: 14px;
     min-height: 36px;
 }
 
-.jankx-button-with-icon__button--medium {
+.jankx-icon-button__button--medium {
     padding: 12px 24px;
     font-size: 16px;
     min-height: 44px;
 }
 
-.jankx-button-with-icon__button--large {
+.jankx-icon-button__button--large {
     padding: 16px 32px;
     font-size: 18px;
     min-height: 52px;
 }
 
-.jankx-button-with-icon__button--xlarge {
+.jankx-icon-button__button--xlarge {
     padding: 20px 40px;
     font-size: 20px;
     min-height: 60px;
 }
 
 /* Button Width */
-.jankx-button-with-icon__button--full-width {
+.jankx-icon-button__button--full-width {
     width: 100%;
 }
 
 /* Icon Styles */
-.jankx-button-with-icon__icon {
+.jankx-icon-button__icon {
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 18px;
 }
 
-.jankx-button-with-icon__icon--left {
+.jankx-icon-button__icon--left {
     margin-right: 8px;
 }
 
-.jankx-button-with-icon__icon--right {
+.jankx-icon-button__icon--right {
     margin-left: 8px;
 }
 
-.jankx-button-with-icon__icon--top {
-    margin-bottom: 8px;
-}
-
-.jankx-button-with-icon__icon--bottom {
-    margin-top: 8px;
-}
-
 /* Text Styles */
-.jankx-button-with-icon__text {
+.jankx-icon-button__text {
     font-weight: 500;
     line-height: 1.2;
 }
 
 /* Icon Picker Integration */
-.jankx-button-with-icon .jankx-icon-picker {
+.jankx-icon-button .jankx-icon-picker {
     margin: 0 8px;
 }
 
-.jankx-button-with-icon .jankx-icon-picker__button {
+.jankx-icon-button .jankx-icon-picker__button {
     padding: 4px 8px;
     min-height: auto;
     font-size: 14px;
@@ -210,19 +202,19 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-    .jankx-button-with-icon__button {
+    .jankx-icon-button__button {
         padding: 10px 20px;
         font-size: 14px;
         min-height: 40px;
     }
 
-    .jankx-button-with-icon__button--large {
+    .jankx-icon-button__button--large {
         padding: 14px 28px;
         font-size: 16px;
         min-height: 48px;
     }
 
-    .jankx-button-with-icon__button--xlarge {
+    .jankx-icon-button__button--xlarge {
         padding: 16px 32px;
         font-size: 18px;
         min-height: 56px;
@@ -230,24 +222,24 @@
 }
 
 /* Focus States */
-.jankx-button-with-icon__button:focus {
+.jankx-icon-button__button:focus {
     outline: 2px solid #007cba;
     outline-offset: 2px;
 }
 
 /* Disabled State */
-.jankx-button-with-icon__button:disabled {
+.jankx-icon-button__button:disabled {
     opacity: 0.6;
     cursor: not-allowed;
 }
 
 /* Loading State */
-.jankx-button-with-icon__button--loading {
+.jankx-icon-button__button--loading {
     position: relative;
     color: transparent;
 }
 
-.jankx-button-with-icon__button--loading::after {
+.jankx-icon-button__button--loading::after {
     content: '';
     position: absolute;
     top: 50%;

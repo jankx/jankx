@@ -1,6 +1,6 @@
-# 🎯 Button with Icon Block - Jankx Framework
+# 🎯 Icon Button Block - Jankx Framework
 
-Gutenberg block tạo button với khả năng thêm icon từ **Jankx Font Icons System**, tương tự core/button của WordPress nhưng có thêm tính năng icon.
+Gutenberg block tạo button với khả năng thêm icon từ **Jankx Font Icons System** hoặc **upload custom image**, tương tự core/button của WordPress nhưng có thêm tính năng icon linh hoạt.
 
 ## 🚀 **Tính năng chính**
 
@@ -8,14 +8,15 @@ Gutenberg block tạo button với khả năng thêm icon từ **Jankx Font Icon
 - **📏 Button Sizes**: Small, Medium, Large, Extra Large
 - **🎭 Button Styles**: Filled, Outlined, Text, Rounded
 - **🔗 Link Support**: URL, target, rel attributes
-- **🎯 Icon Integration**: Icon từ Jankx Font Icons System
+- **🎯 Icon Integration**: Font icon từ Jankx Font Icons System hoặc custom image
+- **🖼️ Custom Icon Support**: Upload PNG, SVG images
 - **📱 Responsive**: Tự động responsive trên mobile/tablet/desktop
 - **♿ Accessibility**: Hỗ trợ screen reader và keyboard navigation
 
 ## 🏗️ **Cấu trúc file**
 
 ```
-button-with-icon/
+icon-button/
 ├── block.json              # Block metadata & attributes
 ├── index.js                # Main editor component
 ├── save.js                 # Frontend render component
@@ -37,9 +38,13 @@ button-with-icon/
 | `buttonSize` | string | 'medium' | Button size (small/medium/large/xlarge) |
 | `buttonStyle` | string | 'filled' | Button style (filled/outlined/text/rounded) |
 | `buttonWidth` | string | 'auto' | Button width (auto/full/custom) |
-| `iconPosition` | string | 'left' | Icon position (left/right/top/bottom) |
+| `iconPosition` | string | 'left' | Icon position (left/right) |
 | `iconSpacing` | string | '8px' | Icon spacing |
 | `showIcon` | boolean | false | Show icon |
+| `iconType` | string | 'font' | Icon type (font/custom) |
+| `fontIcon` | string | 'arrow_forward' | Font icon class name |
+| `customIcon` | object | null | Custom image icon object |
+| `iconSize` | string | '20px' | Icon size |
 | `customClassName` | string | '' | CSS class tùy chỉnh |
 | `anchor` | string | '' | HTML anchor |
 
@@ -76,42 +81,47 @@ button-with-icon/
 
 ## 🎯 **Icon Integration**
 
-### **Icon Picker Nested Block**
+### **Font Icon System**
 - Sử dụng IconPicker component từ icon-picker block
 - Chọn icon từ Jankx Font Icons System
-- 4 vị trí: left, right, top, bottom
+- 2 vị trí: left, right
 - Tùy chỉnh khoảng cách icon-text
+- Tùy chỉnh kích thước icon
+
+### **Custom Image Icon**
+- Upload PNG, SVG images
+- Hỗ trợ Media Library
+- Tùy chỉnh kích thước icon
+- Responsive và accessible
 
 ### **Icon Position Options**
 - **Left**: Icon bên trái text
 - **Right**: Icon bên phải text
-- **Top**: Icon trên text
-- **Bottom**: Icon dưới text
 
 ## 🎨 **Customization**
 
 ### **CSS Classes**
 ```css
-.jankx-button-with-icon {
+.jankx-icon-button {
     /* Block container */
 }
 
-.jankx-button-with-icon__button {
+.jankx-icon-button__button {
     /* Button element */
 }
 
-.jankx-button-with-icon__icon {
+.jankx-icon-button__icon {
     /* Icon element */
 }
 
-.jankx-button-with-icon__text {
+.jankx-icon-button__text {
     /* Text element */
 }
 ```
 
 ### **CSS Variables**
 ```css
-.jankx-button-with-icon {
+.jankx-icon-button {
     --button-padding: 12px 24px;
     --button-border-radius: 6px;
     --button-transition: all 0.2s ease;
@@ -119,14 +129,14 @@ button-with-icon/
 ```
 
 ### **Button Type Classes**
-- `.jankx-button-with-icon__button--primary`
-- `.jankx-button-with-icon__button--secondary`
-- `.jankx-button-with-icon__button--success`
-- `.jankx-button-with-icon__button--warning`
-- `.jankx-button-with-icon__button--danger`
-- `.jankx-button-with-icon__button--info`
-- `.jankx-button-with-icon__button--light`
-- `.jankx-button-with-icon__button--dark`
+- `.jankx-icon-button__button--primary`
+- `.jankx-icon-button__button--secondary`
+- `.jankx-icon-button__button--success`
+- `.jankx-icon-button__button--warning`
+- `.jankx-icon-button__button--danger`
+- `.jankx-icon-button__button--info`
+- `.jankx-icon-button__button--light`
+- `.jankx-icon-button__button--dark`
 
 ## 📱 **Responsive Design**
 

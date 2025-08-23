@@ -9,7 +9,9 @@ import {
     RichText,
     URLInput,
     ColorPalette,
-    useSetting
+    useSetting,
+    MediaUpload,
+    MediaUploadCheck
 } from '@wordpress/block-editor';
 import {
     PanelBody,
@@ -25,7 +27,9 @@ import {
     button,
     settings,
     link,
-    unlink
+    unlink,
+    plus,
+    trash
 } from '@wordpress/icons';
 
 // Import IconPicker block
@@ -44,12 +48,16 @@ const Edit = ({ attributes, setAttributes, isSelected }) => {
         iconPosition,
         iconSpacing,
         showIcon,
+        iconType,
+        fontIcon,
+        customIcon,
+        iconSize,
         customClassName,
         anchor
     } = attributes;
 
     const blockProps = useBlockProps({
-        className: `jankx-button-with-icon jankx-button-with-icon--${buttonType} jankx-button-with-icon--${buttonSize} jankx-button-with-icon--${buttonStyle} ${customClassName || ''}`.trim()
+        className: `jankx-icon-button jankx-icon-button--${buttonType} jankx-icon-button--${buttonSize} jankx-icon-button--${buttonStyle} ${customClassName || ''}`.trim()
     });
 
     const colors = useSetting('color.palette') || [];
@@ -88,14 +96,32 @@ const Edit = ({ attributes, setAttributes, isSelected }) => {
 
     const iconPositionOptions = [
         { label: __('Left', 'jankx'), value: 'left' },
-        { label: __('Right', 'jankx'), value: 'right' },
-        { label: __('Top', 'jankx'), value: 'top' },
-        { label: __('Bottom', 'jankx'), value: 'bottom' }
+        { label: __('Right', 'jankx'), value: 'right' }
     ];
 
-    const handleIconChange = (icon) => {
-        // Handle icon change from IconPicker
-        console.log('Icon selected:', icon);
+    const iconTypeOptions = [
+        { label: __('Font Icon', 'jankx'), value: 'font' },
+        { label: __('Custom Image', 'jankx'), value: 'custom' }
+    ];
+
+    const handleFontIconChange = (icon) => {
+        setAttributes({ fontIcon: icon });
+    };
+
+    const handleCustomIconChange = (media) => {
+        if (media && media.url) {
+            setAttributes({
+                customIcon: {
+                    id: media.id,
+                    url: media.url,
+                    alt: media.alt || 'Button Icon'
+                }
+            });
+        }
+    };
+
+    const removeCustomIcon = () => {
+        setAttributes({ customIcon: null });
     };
 
     const renderButtonContent = () => {
@@ -103,13 +129,23 @@ const Edit = ({ attributes, setAttributes, isSelected }) => {
 
         if (showIcon && iconPosition === 'left') {
             content.push(
-                <IconPicker
-                    key="left-icon"
-                    value={null}
-                    onChange={handleIconChange}
-                    iconType="material"
-                    category="navigation"
-                />
+                <span key="left-icon" className="jankx-icon-button__icon jankx-icon-button__icon--left">
+                    {iconType === 'font' ? (
+                        <i className="material-icons" style={{ fontSize: iconSize }}>{fontIcon}</i>
+                    ) : customIcon ? (
+                        <img
+                            src={customIcon.url}
+                            alt={customIcon.alt}
+                            style={{
+                                width: iconSize,
+                                height: iconSize,
+                                objectFit: 'contain'
+                            }}
+                        />
+                    ) : (
+                        <i className="material-icons" style={{ fontSize: iconSize }}>arrow_forward</i>
+                    )}
+                </span>
             );
         }
 
@@ -121,19 +157,29 @@ const Edit = ({ attributes, setAttributes, isSelected }) => {
                 onChange={(value) => setAttributes({ text: value })}
                 placeholder={__('Button text...', 'jankx')}
                 allowedFormats={[]}
-                className="jankx-button-with-icon__text"
+                className="jankx-icon-button__text"
             />
         );
 
         if (showIcon && iconPosition === 'right') {
             content.push(
-                <IconPicker
-                    key="right-icon"
-                    value={null}
-                    onChange={handleIconChange}
-                    iconType="material"
-                    category="navigation"
-                />
+                <span key="right-icon" className="jankx-icon-button__icon jankx-icon-button__icon--right">
+                    {iconType === 'font' ? (
+                        <i className="material-icons" style={{ fontSize: iconSize }}>{fontIcon}</i>
+                    ) : customIcon ? (
+                        <img
+                            src={customIcon.url}
+                            alt={customIcon.alt}
+                            style={{
+                                width: iconSize,
+                                height: iconSize,
+                                objectFit: 'contain'
+                            }}
+                        />
+                    ) : (
+                        <i className="material-icons" style={{ fontSize: iconSize }}>arrow_forward</i>
+                    )}
+                </span>
             );
         }
 
@@ -142,11 +188,11 @@ const Edit = ({ attributes, setAttributes, isSelected }) => {
 
     const renderButton = () => {
         const buttonClasses = [
-            'jankx-button-with-icon__button',
-            `jankx-button-with-icon__button--${buttonType}`,
-            `jankx-button-with-icon__button--${buttonSize}`,
-            `jankx-button-with-icon__button--${buttonStyle}`,
-            buttonWidth === 'full' ? 'jankx-button-with-icon__button--full-width' : ''
+            'jankx-icon-button__button',
+            `jankx-icon-button__button--${buttonType}`,
+            `jankx-icon-button__button--${buttonSize}`,
+            `jankx-icon-button__button--${buttonStyle}`,
+            buttonWidth === 'full' ? 'jankx-icon-button__button--full-width' : ''
         ].filter(Boolean).join(' ');
 
         const buttonStyle = {
@@ -269,10 +315,27 @@ const Edit = ({ attributes, setAttributes, isSelected }) => {
                     {showIcon && (
                         <>
                             <SelectControl
+                                label={__('Icon Type', 'jankx')}
+                                value={iconType}
+                                options={iconTypeOptions}
+                                onChange={(value) => setAttributes({ iconType: value })}
+                            />
+
+                            <SelectControl
                                 label={__('Icon Position', 'jankx')}
                                 value={iconPosition}
                                 options={iconPositionOptions}
                                 onChange={(value) => setAttributes({ iconPosition: value })}
+                            />
+
+                            <RangeControl
+                                label={__('Icon Size', 'jankx')}
+                                value={parseInt(iconSize)}
+                                onChange={(value) => setAttributes({ iconSize: value + 'px' })}
+                                min={12}
+                                max={48}
+                                step={2}
+                                help={__('Kích thước của icon', 'jankx')}
                             />
 
                             <RangeControl
@@ -285,17 +348,75 @@ const Edit = ({ attributes, setAttributes, isSelected }) => {
                                 help={__('Khoảng cách giữa icon và text', 'jankx')}
                             />
 
-                            <div style={{ padding: '16px', border: '1px solid #ddd', borderRadius: '4px' }}>
-                                <p style={{ margin: '0 0 12px 0', fontSize: '12px', fontWeight: '500', color: '#666' }}>
-                                    {__('Icon Picker (Nested Block)', 'jankx')}
-                                </p>
-                                <IconPicker
-                                    value={null}
-                                    onChange={handleIconChange}
-                                    iconType="material"
-                                    category="navigation"
-                                />
-                            </div>
+                            {iconType === 'font' && (
+                                <div style={{ padding: '16px', border: '1px solid #ddd', borderRadius: '4px' }}>
+                                    <p style={{ margin: '0 0 12px 0', fontSize: '12px', fontWeight: '500', color: '#666' }}>
+                                        {__('Font Icon Picker', 'jankx')}
+                                    </p>
+                                    <IconPicker
+                                        value={fontIcon}
+                                        onChange={handleFontIconChange}
+                                        iconType="material"
+                                        category="navigation"
+                                    />
+                                </div>
+                            )}
+
+                            {iconType === 'custom' && (
+                                <div style={{ padding: '16px', border: '1px solid #ddd', borderRadius: '4px' }}>
+                                    <p style={{ margin: '0 0 12px 0', fontSize: '12px', fontWeight: '500', color: '#666' }}>
+                                        {__('Custom Image Icon', 'jankx')}
+                                    </p>
+
+                                    {customIcon ? (
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+                                            <img
+                                                src={customIcon.url}
+                                                alt={customIcon.alt}
+                                                style={{
+                                                    width: '32px',
+                                                    height: '32px',
+                                                    objectFit: 'contain',
+                                                    border: '1px solid #ddd',
+                                                    borderRadius: '4px'
+                                                }}
+                                            />
+                                            <span style={{ fontSize: '12px', color: '#666' }}>
+                                                {customIcon.alt}
+                                            </span>
+                                            <Button
+                                                icon={trash}
+                                                label={__('Remove icon', 'jankx')}
+                                                onClick={removeCustomIcon}
+                                                variant="tertiary"
+                                                size="small"
+                                            />
+                                        </div>
+                                    ) : (
+                                        <MediaUploadCheck>
+                                            <MediaUpload
+                                                onSelect={handleCustomIconChange}
+                                                allowedTypes={['image']}
+                                                value={customIcon?.id}
+                                                render={({ open }) => (
+                                                    <Button
+                                                        icon={plus}
+                                                        onClick={open}
+                                                        variant="secondary"
+                                                        style={{ width: '100%' }}
+                                                    >
+                                                        {__('Choose Image', 'jankx')}
+                                                    </Button>
+                                                )}
+                                            />
+                                        </MediaUploadCheck>
+                                    )}
+
+                                    <p style={{ margin: '8px 0 0 0', fontSize: '11px', color: '#999' }}>
+                                        {__('Hỗ trợ PNG, SVG. Kích thước khuyến nghị: 24x24px đến 48x48px', 'jankx')}
+                                    </p>
+                                </div>
+                            )}
                         </>
                     )}
                 </PanelBody>
@@ -331,11 +452,11 @@ const Edit = ({ attributes, setAttributes, isSelected }) => {
 };
 
 // Register the block
-registerBlockType('jankx/button-with-icon', {
-    title: __('Button with Icon', 'jankx'),
+registerBlockType('jankx/icon-button', {
+    title: __('Icon Button', 'jankx'),
     category: 'design',
     icon: 'button',
-    description: __('Button với khả năng thêm icon từ Jankx Font Icons System', 'jankx'),
+    description: __('Button với khả năng thêm icon từ Jankx Font Icons System hoặc upload custom icon', 'jankx'),
     keywords: ['button', 'icon', 'link', 'cta', 'action', 'jankx'],
     supports: {
         html: false,
@@ -409,6 +530,22 @@ registerBlockType('jankx/button-with-icon', {
         showIcon: {
             type: 'boolean',
             default: false
+        },
+        iconType: {
+            type: 'string',
+            default: 'font'
+        },
+        fontIcon: {
+            type: 'string',
+            default: 'arrow_forward'
+        },
+        customIcon: {
+            type: 'object',
+            default: null
+        },
+        iconSize: {
+            type: 'string',
+            default: '20px'
         },
         customClassName: {
             type: 'string',

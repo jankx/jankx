@@ -6,8 +6,9 @@ use Jankx\Foundation\Application;
 use Jankx\Gutenberg\Blocks\ImageMaskBlock;
 use Jankx\Gutenberg\Blocks\WidgetRendererBlock;
 use Jankx\Gutenberg\Blocks\IconPickerBlock;
-use Jankx\Gutenberg\Blocks\ButtonWithIconBlock;
+use Jankx\Gutenberg\Blocks\IconButtonBlock;
 use Jankx\Gutenberg\Blocks\ProductCarouselBlock;
+use Jankx\Gutenberg\Blocks\DynamicCollectionBlock;
 use Jankx\Gutenberg\Blocks\LanguageSwitcherBlock;
 use Jankx\Gutenberg\Blocks\ComposeTabBlock;
 use Jankx\Gutenberg\Blocks\MegaMenuBlock;
@@ -123,8 +124,9 @@ class GutenbergService
     {
         $this->repository->registerBlock(WidgetRendererBlock::class);
         $this->repository->registerBlock(IconPickerBlock::class);
-        $this->repository->registerBlock(ButtonWithIconBlock::class);
+        $this->repository->registerBlock(IconButtonBlock::class);
         $this->repository->registerBlock(ProductCarouselBlock::class);
+        $this->repository->registerBlock(DynamicCollectionBlock::class);
         $this->repository->registerBlock(LanguageSwitcherBlock::class);
         $this->repository->registerBlock(ComposeTabBlock::class);
         $this->repository->registerBlock(MegaMenuBlock::class);

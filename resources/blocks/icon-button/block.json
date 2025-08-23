@@ -1,11 +1,11 @@
 {
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "apiVersion": 3,
-    "name": "jankx/button-with-icon",
-    "title": "Button with Icon",
+    "name": "jankx/icon-button",
+    "title": "Icon Button",
     "category": "design",
     "icon": "button",
-    "description": "Button với khả năng thêm icon từ Jankx Font Icons System",
+    "description": "Button với khả năng thêm icon từ Jankx Font Icons System hoặc upload custom icon",
     "keywords": ["button", "icon", "link", "cta", "action", "jankx"],
     "supports": {
         "html": false,
@@ -80,6 +80,22 @@
             "type": "boolean",
             "default": false
         },
+        "iconType": {
+            "type": "string",
+            "default": "font"
+        },
+        "fontIcon": {
+            "type": "string",
+            "default": "arrow_forward"
+        },
+        "customIcon": {
+            "type": "object",
+            "default": null
+        },
+        "iconSize": {
+            "type": "string",
+            "default": "20px"
+        },
         "customClassName": {
             "type": "string",
             "default": ""
@@ -91,6 +107,6 @@
     },
     "textdomain": "jankx",
     "editorScript": "file:./build/index.js",
-    "style": "file:./build/index.css.css",
+    "style": "file:./build/index.css",
     "save": "file:./save.js"
 }

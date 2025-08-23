@@ -84,5 +84,5 @@
     },
     "textdomain": "jankx",
     "editorScript": "file:./build/index.js",
-    "style": "file:./build/index.css.css"
+    "style": "file:./build/index.css"
 }

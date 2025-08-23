@@ -1,4 +1,5 @@
 {
+    "$schema": "https://schemas.wp.org/trunk/block.json",
     "name": "jankx/swiper-slider",
     "title": "Swiper Slider",
     "category": "jankx",
