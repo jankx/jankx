@@ -71,12 +71,60 @@
             background: #fff;
             border-color: #ddd;
         }
+
+        /* Editor preview styles */
+        .editor-preview {
+            background: #f9f9f9;
+            border: 2px dashed #ccc;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+
+        .editor-preview h3 {
+            margin: 0 0 15px 0;
+            color: #666;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
     <div class="demo-container">
         <h1>🌐 Language Switcher Block Demo</h1>
         <p>Đây là demo cho các style khác nhau của Language Switcher Block. CSS chỉ tập trung vào layout và cấu trúc cơ bản.</p>
+
+        <!-- Editor Preview Section -->
+        <div class="demo-section">
+            <h2 class="demo-title">🎨 Gutenberg Editor Preview</h2>
+            <p class="demo-description">UI trong Gutenberg editor giờ giống hệt frontend với dropdown menu có thể click và hover effects</p>
+
+            <div class="editor-preview">
+                <h3>Editor Preview (giống hệt frontend)</h3>
+                <div class="language-switcher-block">
+                    <div class="language-switcher-dropdown-wrapper">
+                        <button class="language-switcher-dropdown demo-dropdown" type="button">
+                            <img src="https://flagcdn.com/w20/vn.png" alt="Tiếng Việt" class="language-flag">
+                            <span class="language-name">Tiếng Việt</span>
+                            <span class="language-arrow">▼</span>
+                        </button>
+                        <ul class="language-switcher-dropdown-menu demo-dropdown-menu">
+                            <li class="language-dropdown-item current-language">
+                                <a href="#" class="language-dropdown-link demo-current">
+                                    <img src="https://flagcdn.com/w20/vn.png" alt="Tiếng Việt" class="language-flag">
+                                    <span class="language-name">Tiếng Việt</span>
+                                </a>
+                            </li>
+                            <li class="language-dropdown-item">
+                                <a href="#" class="language-dropdown-link">
+                                    <img src="https://flagcdn.com/w20/gb.png" alt="English" class="language-flag">
+                                    <span class="language-name">English</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Dropdown Style -->
         <div class="demo-section">
@@ -86,20 +134,20 @@
             <div class="language-switcher-block">
                 <div class="language-switcher-dropdown-wrapper">
                     <button class="language-switcher-dropdown demo-dropdown" type="button">
-                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTIiIHZpZXdCb3g9IjAgMCAxNiAxMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjE2IiBoZWlnaHQ9IjEyIiBmaWxsPSIjRkYwMDAwIi8+CjxwYXRoIGQ9Ik04IDZMMTIgM0g0TDAgNkw0IDlIMTJaIiBmaWxsPSIjMDA4MDAwIi8+Cjwvc3ZnPgo=" alt="Tiếng Việt" class="language-flag">
+                        <img src="https://flagcdn.com/w20/vn.png" alt="Tiếng Việt" class="language-flag">
                         <span class="language-name">Tiếng Việt</span>
                         <span class="language-arrow">▼</span>
                     </button>
                     <ul class="language-switcher-dropdown-menu demo-dropdown-menu">
                         <li class="language-dropdown-item current-language">
                             <a href="#" class="language-dropdown-link demo-current">
-                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTIiIHZpZXdCb3g9IjAgMCAxNiAxMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjE2IiBoZWlnaHQ9IjEyIiBmaWxsPSIjRkYwMDAwIi8+CjxwYXRoIGQ9Ik04IDZMMTIgM0g0TDAgNkw0IDlIMTJaIiBmaWxsPSIjMDA4MDAwIi8+Cjwvc3ZnPgo=" alt="Tiếng Việt" class="language-flag">
+                                <img src="https://flagcdn.com/w20/vn.png" alt="Tiếng Việt" class="language-flag">
                                 <span class="language-name">Tiếng Việt</span>
                             </a>
                         </li>
                         <li class="language-dropdown-item">
                             <a href="#" class="language-dropdown-link">
-                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTIiIHZpZXdCb3g9IjAgMCAxNiAxMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjE2IiBoZWlnaHQ9IjEyIiBmaWxsPSIjMDAwMENDIi8+CjxwYXRoIGQ9Ik0wIDBIMTZWN0g4VjBIMFYwWiIgZmlsbD0iI0ZGRkZGRiIvPgo8cGF0aCBkPSJNOCAwSDE2VjdIOFYwWiIgZmlsbD0iI0M4MTAwMCIvPgo8cGF0aCBkPSJNMTYgMTBIMFYxMkgxNlYxMFoiIGZpbGw9IiNGRkZGRkYiLz4KPHBhdGggZD0iTTE2IDEwSDBWMTJIMTZWMTAiIGZpbGw9IiNDODEwMDAiLz4KPC9zdmc+Cg==" alt="English" class="language-flag">
+                                <img src="https://flagcdn.com/w20/gb.png" alt="English" class="language-flag">
                                 <span class="language-name">English</span>
                             </a>
                         </li>
@@ -117,13 +165,13 @@
                 <ul class="language-switcher-list demo-list">
                     <li class="language-item current-language">
                         <a href="#" class="language-link demo-current">
-                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTIiIHZpZXdCb3g9IjAgMCAxNiAxMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjE2IiBoZWlnaHQ9IjEyIiBmaWxsPSIjRkYwMDAwIi8+CjxwYXRoIGQ9Ik04IDZMMTIgM0g0TDAgNkw0IDlIMTJaIiBmaWxsPSIjMDA4MDAwIi8+Cjwvc3ZnPgo=" alt="Tiếng Việt" class="language-flag">
+                            <img src="https://flagcdn.com/w20/vn.png" alt="Tiếng Việt" class="language-flag">
                             <span class="language-name">Tiếng Việt</span>
                         </a>
                     </li>
                     <li class="language-item">
                         <a href="#" class="language-link">
-                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTIiIHZpZXdCb3g9IjAgMCAxNiAxMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjE2IiBoZWlnaHQ9IjEyIiBmaWxsPSIjMDAwMENDIi8+CjxwYXRoIGQ9Ik0wIDBIMTZWN0g4VjBIMFYwWiIgZmlsbD0iI0ZGRkZGRiIvPgo8cGF0aCBkPSJNOCAwSDE2VjdIOFYwWiIgZmlsbD0iI0M4MTAwMCIvPgo8cGF0aCBkPSJNMTYgMTBIMFYxMkgxNlYxMFoiIGZpbGw9IiNGRkZGRkYiLz4KPHBhdGggZD0iTTE2IDEwSDBWMTJIMTZWMTAiIGZpbGw9IiNDODEwMDAiLz4KPC9zdmc+Cg==" alt="English" class="language-flag">
+                            <img src="https://flagcdn.com/w20/gb.png" alt="English" class="language-flag">
                             <span class="language-name">English</span>
                         </a>
                     </li>
@@ -140,14 +188,41 @@
                 <div class="language-switcher-flags demo-flags">
                     <div class="language-flag-item current-language">
                         <a href="#" class="language-flag-link demo-current" title="Tiếng Việt">
-                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTIiIHZpZXdCb3g9IjAgMCAxNiAxMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjE2IiBoZWlnaHQ9IjEyIiBmaWxsPSIjRkYwMDAwIi8+CjxwYXRoIGQ9Ik04IDZMMTIgM0g0TDAgNkw0IDlIMTJaIiBmaWxsPSIjMDA4MDAwIi8+Cjwvc3ZnPgo=" alt="Tiếng Việt" class="language-flag">
+                            <img src="https://flagcdn.com/w20/vn.png" alt="Tiếng Việt" class="language-flag">
                         </a>
                     </div>
                     <div class="language-flag-item">
                         <a href="#" class="language-flag-link" title="English">
-                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTIiIHZpZXdCb3g9IjAgMCAxNiAxMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjE2IiBoZWlnaHQ9IjEyIiBmaWxsPSIjMDAwMENDIi8+CjxwYXRoIGQ9Ik0wIDBIMTZWN0g4VjBIMFYwWiIgZmlsbD0iI0ZGRkZGRiIvPgo8cGF0aCBkPSJNOCAwSDE2VjdIOFYwWiIgZmlsbD0iI0M4MTAwMCIvPgo8cGF0aCBkPSJNMTYgMTBIMFYxMkgxNlYxMFoiIGZpbGw9IiNGRkZGRkYiLz4KPHBhdGggZD0iTTE2IDEwSDBWMTJIMTZWMTAiIGZpbGw9IiNDODEwMDAiLz4KPC9zdmc+Cg==" alt="English" class="language-flag">
+                            <img src="https://flagcdn.com/w20/gb.png" alt="English" class="language-flag">
                         </a>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- No Flags Example -->
+        <div class="demo-section">
+            <h2 class="demo-title">No Flags Example</h2>
+            <p class="demo-description">Ví dụ khi không có flag (chỉ hiển thị tên ngôn ngữ)</p>
+
+            <div class="language-switcher-block">
+                <div class="language-switcher-dropdown-wrapper">
+                    <button class="language-switcher-dropdown demo-dropdown" type="button">
+                        <span class="language-name">Tiếng Việt</span>
+                        <span class="language-arrow">▼</span>
+                    </button>
+                    <ul class="language-switcher-dropdown-menu demo-dropdown-menu">
+                        <li class="language-dropdown-item current-language">
+                            <a href="#" class="language-dropdown-link demo-current">
+                                <span class="language-name">Tiếng Việt</span>
+                            </a>
+                        </li>
+                        <li class="language-dropdown-item">
+                            <a href="#" class="language-dropdown-link">
+                                <span class="language-name">English</span>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -171,9 +246,11 @@
                 <li><strong>Dropdown:</strong> Sử dụng button với class <code>.language-switcher-dropdown</code> và menu <code>.language-switcher-dropdown-menu</code></li>
                 <li><strong>List:</strong> Sử dụng <code>&lt;ul&gt;</code> với class <code>.language-switcher-list</code></li>
                 <li><strong>Flags:</strong> Sử dụng <code>&lt;div&gt;</code> với class <code>.language-switcher-flags</code></li>
-                <li><strong>Flag:</strong> Luôn được hiển thị với class <code>.language-flag</code></li>
+                <li><strong>Flag:</strong> Chỉ hiển thị khi thực sự có flag hợp lệ (tránh lỗi ảnh xấu)</li>
                 <li><strong>Current language:</strong> Sử dụng class <code>.current-language</code></li>
                 <li><strong>Link redirect:</strong> Tất cả link đều sử dụng <code>href</code> từ Polylang để redirect</li>
+                <li><strong>Editor UI:</strong> Gutenberg editor hiển thị giống hệt frontend với dropdown menu có thể click</li>
+                <li><strong>Smart Flag Display:</strong> Flag chỉ render khi <code>showFlags = true</code> và <code>lang.flag</code> có giá trị hợp lệ</li>
             </ul>
         </div>
     </div>

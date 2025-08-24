@@ -11,6 +11,7 @@ Language Switcher Block là một Gutenberg block cho phép hiển thị languag
 - **Flag Support**: Hỗ trợ hiển thị cờ quốc gia cho mỗi ngôn ngữ
 - **Responsive**: Thiết kế responsive cho mobile và desktop
 - **Customizable**: Có thể tùy chỉnh hiển thị flags, tên ngôn ngữ, và ngôn ngữ hiện tại
+- **Editor Preview**: UI trong Gutenberg editor giống hệt frontend với dropdown menu hoàn chỉnh
 
 ## Yêu cầu
 
@@ -37,9 +38,10 @@ Language Switcher Block là một Gutenberg block cho phép hiển thị languag
 ### Display Types
 
 #### Dropdown
-- Hiển thị dưới dạng dropdown select
+- Hiển thị dưới dạng dropdown button với menu popup
 - Phù hợp cho header hoặc sidebar
 - Tiết kiệm không gian hiển thị
+- Hỗ trợ hover effects và click để mở/đóng
 
 #### List
 - Hiển thị dưới dạng danh sách các liên kết
@@ -52,7 +54,11 @@ Language Switcher Block là một Gutenberg block cho phép hiển thị languag
 
 1. Thêm block "Language Switcher"
 2. Cấu hình các tùy chọn trong sidebar
-3. Preview block trong editor
+3. **Editor Preview**: Block hiển thị giống hệt frontend với:
+   - Dropdown button có thể click để mở/đóng menu
+   - Menu dropdown hiển thị tất cả ngôn ngữ
+   - Hover effects và styling giống frontend
+   - Responsive design trong editor
 4. Lưu trang/post
 
 ### Trong Code
@@ -92,19 +98,36 @@ Trả về danh sách các ngôn ngữ có sẵn:
 
 ## Styling
 
+### Editor vs Frontend Consistency
+
+**UI trong Gutenberg editor giờ đây giống hệt frontend:**
+
+- **Dropdown**: Button với menu popup có thể click
+- **Hover Effects**: Arrow rotation và menu visibility
+- **Styling**: Font size, spacing, colors giống hệt
+- **Responsive**: Mobile và desktop behavior giống nhau
+- **Interactive**: Click để mở/đóng dropdown menu
+
+### CSS Classes
+
 Block có 2 implementation khác nhau với CSS classes riêng biệt:
 
-### Gutenberg Block (React)
+#### Gutenberg Block (React)
 - `.language-switcher-block`: Container chính
-- `.language-switcher-dropdown`: Dropdown select
+- `.language-switcher-dropdown-wrapper`: Dropdown container
+- `.language-switcher-dropdown`: Dropdown button
+- `.language-switcher-dropdown-menu`: Dropdown menu
+- `.language-dropdown-item`: Mỗi item trong dropdown
+- `.language-dropdown-link`: Liên kết trong dropdown
 - `.language-switcher-list`: Danh sách ngôn ngữ
 - `.language-item`: Mỗi item ngôn ngữ
 - `.language-link`: Liên kết ngôn ngữ
 - `.language-flag`: Cờ quốc gia
 - `.language-name`: Tên ngôn ngữ
+- `.language-arrow`: Mũi tên dropdown
 - `.current-language`: Ngôn ngữ hiện tại
 
-### Jankx Framework Block (PHP)
+#### Jankx Framework Block (PHP)
 - `.jankx-language-switcher`: Container chính
 - `.jankx-language-switcher__dropdown`: Dropdown container
 - `.jankx-language-switcher__current`: Dropdown button
@@ -122,6 +145,7 @@ Block có 2 implementation khác nhau với CSS classes riêng biệt:
 - **Desktop**: Hiển thị theo chiều ngang với dropdown/list
 - **Mobile**: Dropdown full-width, list chuyển thành dọc
 - **Tablet**: Tự động điều chỉnh theo kích thước màn hình
+- **Editor**: Responsive behavior giống hệt frontend
 
 ## Troubleshooting
 
@@ -166,15 +190,23 @@ language-switcher/
 ├── index.css                     # Main CSS (Gutenberg block)
 ├── style.css                     # Block styles (Gutenberg block)
 ├── jankx-language-switcher.css   # CSS for Jankx framework block
-├── editor.css                    # Editor-specific styles
+├── editor.css                    # Editor-specific styles (giống frontend)
 ├── demo.html                     # Demo page for testing CSS
 ├── build/                        # Built files
 │   ├── index.js                  # Compiled JavaScript
+│   ├── editor.css                # Editor CSS (copied)
 │   └── style.css                 # Compiled CSS
 └── README.md                     # This file
 ```
 
 ## Changelog
+
+### Version 1.1.0
+- **Editor UI Enhancement**: UI trong Gutenberg editor giờ giống hệt frontend
+- **Interactive Dropdown**: Dropdown menu có thể click để mở/đóng
+- **Consistent Styling**: Font size, spacing, colors giống hệt frontend
+- **Hover Effects**: Arrow rotation và menu visibility trong editor
+- **Responsive Editor**: Mobile và desktop behavior giống frontend
 
 ### Version 1.0.0
 - Initial release

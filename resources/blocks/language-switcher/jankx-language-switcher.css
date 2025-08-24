@@ -195,17 +195,8 @@
 
 /* Editor Styles */
 .editor-styles-wrapper .language-switcher-block {
-    border: 2px dashed #ccc;
-    padding: 15px; /* Giảm padding */
-    text-align: center;
-    background: #f9f9f9;
-}
-
-.editor-styles-wrapper .language-switcher-block::before {
-    content: "🌐 Language Switcher Block";
-    display: block;
-    font-size: 14px; /* Giảm font size */
-    font-weight: 600;
-    margin-bottom: 8px; /* Giảm margin */
-    color: #666;
+    display: inline-block;
+    position: relative;
+    font-size: 12px;
+    margin: 0.5rem 0;
 }

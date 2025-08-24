@@ -109,7 +109,7 @@ function LanguageSwitcherEdit({ attributes, setAttributes }) {
                     type="button"
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 >
-                    {showFlags && currentLang.flag && (
+                    {showFlags && currentLang.flag && currentLang.flag.trim() !== '' && (
                         <img src={currentLang.flag} alt={currentLang.name} className="language-flag" />
                     )}
                     {showNames && <span className="language-name">{currentLang.name}</span>}
@@ -121,7 +121,7 @@ function LanguageSwitcherEdit({ attributes, setAttributes }) {
                         {languages.map((lang) => (
                             <li key={lang.code} className={`language-dropdown-item ${lang.current ? 'current-language' : ''}`}>
                                 <a href="#" className="language-dropdown-link" onClick={(e) => e.preventDefault()}>
-                                    {showFlags && lang.flag && (
+                                    {showFlags && lang.flag && lang.flag.trim() !== '' && (
                                         <img src={lang.flag} alt={lang.name} className="language-flag" />
                                     )}
                                     {showNames && <span className="language-name">{lang.name}</span>}
@@ -139,7 +139,7 @@ function LanguageSwitcherEdit({ attributes, setAttributes }) {
             {languages.map((lang) => (
                 <li key={lang.code} className={`language-item ${lang.current ? 'current-language' : ''}`}>
                     <a href="#" className="language-link" onClick={(e) => e.preventDefault()}>
-                        {showFlags && lang.flag && (
+                        {showFlags && lang.flag && lang.flag.trim() !== '' && (
                             <img src={lang.flag} alt={lang.name} className="language-flag" />
                         )}
                         {showNames && <span className="language-name">{lang.name}</span>}
