@@ -38,35 +38,6 @@ abstract class TestCase extends BaseTestCase
      */
     protected function setUpCommonMocks()
     {
-        // Mock WordPress functions that are commonly used
-        if (!function_exists('            function             {
-                // Mock                 return true;
-            }
-        }
-
-        if (!function_exists('file_exists')) {
-            function file_exists($path)
-            {
-                // Mock file_exists for testing
-                return true;
-            }
-        }
-
-        if (!function_exists('is_dir')) {
-            function is_dir($path)
-            {
-                // Mock is_dir for testing
-                return true;
-            }
-        }
-
-        if (!function_exists('glob')) {
-            function glob($pattern, $flags = 0)
-            {
-                // Mock glob for testing
-                return [];
-            }
-        }
     }
 
     /**
