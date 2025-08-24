@@ -6,7 +6,7 @@
  * @package Jankx\Support\Blocks\SwiperSlider
  */
 
-namespace Jankx\Gutenberg\Blocks\SwiperSlider;
+namespace Jankx\Gutenberg\Blocks;
 
 use Jankx\Gutenberg\Blocks\Block;
 

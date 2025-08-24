@@ -4,7 +4,6 @@ namespace Jankx\Services;
 
 use Jankx\Foundation\Application;
 use Jankx\Gutenberg\Blocks\ImageMaskBlock;
-use Jankx\Gutenberg\Blocks\WidgetRendererBlock;
 use Jankx\Gutenberg\Blocks\IconPickerBlock;
 use Jankx\Gutenberg\Blocks\IconButtonBlock;
 use Jankx\Gutenberg\Blocks\ProductCarouselBlock;
@@ -12,7 +11,7 @@ use Jankx\Gutenberg\Blocks\DynamicCollectionBlock;
 use Jankx\Gutenberg\Blocks\LanguageSwitcherBlock;
 use Jankx\Gutenberg\Blocks\ComposeTabBlock;
 use Jankx\Gutenberg\Blocks\MegaMenuBlock;
-use Jankx\Gutenberg\Blocks\SwiperSlider\SwiperSlider;
+use Jankx\Gutenberg\Blocks\SwiperSlider;
 use Jankx\Gutenberg\Blocks\Patterns\GutenbergPattern;
 use Jankx\Facades\Log;
 use Jankx\Helper\Environment;
@@ -122,7 +121,6 @@ class GutenbergService
      */
     protected function registerDefaultBlocks()
     {
-        $this->repository->registerBlock(WidgetRendererBlock::class);
         $this->repository->registerBlock(IconPickerBlock::class);
         $this->repository->registerBlock(IconButtonBlock::class);
         $this->repository->registerBlock(ProductCarouselBlock::class);
