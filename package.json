@@ -1,66 +1,24 @@
 {
-  "name": "jankx",
-  "version": "2.0.0",
-  "description": "Jankx WordPress Theme with Gutenberg Blocks",
-  "main": "index.js",
-  "scripts": {
-    "build:widget-renderer": "wp-scripts build resources/blocks/widget-renderer/index.js resources/blocks/widget-renderer/index.css --output-path=resources/blocks/widget-renderer/build",
-    "dev:widget-renderer": "wp-scripts start resources/blocks/widget-renderer/index.js resources/blocks/widget-renderer/index.css --output-path=resources/blocks/widget-renderer/build",
-    "build:language-switcher": "wp-scripts build resources/blocks/language-switcher/index.js resources/blocks/language-switcher/style.css --output-path=resources/blocks/language-switcher/build && cp resources/blocks/language-switcher/editor.css resources/blocks/language-switcher/build/",
-    "dev:language-switcher": "wp-scripts start resources/blocks/language-switcher/index.js resources/blocks/language-switcher/style.css --output-path=resources/blocks/language-switcher/build",
-    "build:icon-picker": "wp-scripts build resources/blocks/icon-picker/index.js resources/blocks/icon-picker/index.css --output-path=resources/blocks/icon-picker/build",
-    "dev:icon-picker": "wp-scripts start resources/blocks/icon-picker/index.js --output-path=resources/blocks/icon-picker/build",
-    "build:jankx-tab": "wp-scripts build resources/blocks/tabs/index.js resources/blocks/tabs/index.css --output-path=resources/blocks/tabs/build",
-    "dev:jankx-tab": "wp-scripts start resources/blocks/tabs/index.js resources/blocks/tabs/index.css --output-path=resources/blocks/tabs/build",
-    "build:mega-menu": "wp-scripts build resources/blocks/mega-menu/index.js resources/blocks/mega-menu/index.css resources/blocks/mega-menu/style.css --output-path=resources/blocks/mega-menu/build",
-    "dev:mega-menu": "wp-scripts start resources/blocks/mega-menu/index.js resources/blocks/mega-menu/index.css --output-path=resources/blocks/mega-menu/build",
-    "format": "wp-scripts format",
-    "lint:css": "wp-scripts lint-style",
-    "lint:js": "wp-scripts lint-js",
-    "lint:md:docs": "wp-scripts lint-md-docs",
-    "lint:pkg-json": "wp-scripts lint-pkg-json",
-    "packages-update": "wp-scripts packages-update",
-    "plugin-zip": "wp-scripts plugin-zip",
-    "test:e2e": "wp-scripts test-e2e",
-    "test:unit": "wp-scripts test-unit-js",
-    "build:all-blocks": "npm run build:widget-renderer && npm run build:language-switcher && npm run build:icon-picker && npm run build:jankx-tab && npm run build:swiper-slider && npm run build:image-mask && npm run build:icon-button && npm run build:product-carousel && npm run build:dynamic-collection && npm run build:advanced-blocks",
-    "build:swiper-slider": "wp-scripts build resources/blocks/swiper-slider/index.js resources/blocks/swiper-slider/index.css --output-path=resources/blocks/swiper-slider/build",
-    "dev:swiper-slider": "wp-scripts start resources/blocks/swiper-slider/index.js resources/blocks/swiper-slider/index.css --output-path=resources/blocks/swiper-slider/build",
-    "build:image-mask": "wp-scripts build resources/blocks/image-mask/index.js resources/blocks/image-mask/style.css --output-path=resources/blocks/image-mask/build && cp resources/blocks/image-mask/editor.css resources/blocks/image-mask/build/",
-    "dev:image-mask": "wp-scripts start resources/blocks/image-mask/index.js resources/blocks/image-mask/style.css --output-path=resources/blocks/image-mask/build",
-    "build:icon-button": "wp-scripts build resources/blocks/icon-button/index.js resources/blocks/icon-button/index.css --output-path=resources/blocks/icon-button/build",
-    "dev:icon-button": "wp-scripts start resources/blocks/icon-button/index.js resources/blocks/icon-button/index.css --output-path=resources/blocks/icon-button/build",
-    "build:product-carousel": "wp-scripts build resources/blocks/product-carousel/index.js resources/blocks/product-carousel/index.css --output-path=resources/blocks/product-carousel/build",
-    "dev:product-carousel": "wp-scripts start resources/blocks/product-carousel/index.js resources/blocks/product-carousel/index.css --output-path=resources/blocks/product-carousel/build",
-    "build:dynamic-collection": "wp-scripts build resources/blocks/dynamic-collection/index.js resources/blocks/dynamic-collection/index.css --output-path=resources/blocks/dynamic-collection/build",
-    "dev:dynamic-collection": "wp-scripts start resources/blocks/dynamic-collection/index.js resources/blocks/dynamic-collection/index.css --output-path=resources/blocks/dynamic-collection/build",
-    "build:advanced-blocks": "wp-scripts build resources/advanced-blocks/editor.js resources/advanced-blocks/editor.css --output-path=resources/advanced-blocks/build",
-    "dev:advanced-blocks": "wp-scripts start resources/advanced-blocks/editor.js resources/advanced-blocks/editor.css --output-path=resources/advanced-blocks/build"
-  },
-  "keywords": [
-    "wordpress",
-    "theme",
-    "gutenberg",
-    "blocks"
-  ],
-  "author": "Puleeno Nguyen",
-  "license": "MIT",
-  "devDependencies": {
-    "@wordpress/babel-preset-default": "^8.28.0",
-    "@wordpress/scripts": "^26.19.0",
-    "babel-loader": "^10.0.0",
-    "webpack-cli": "^6.0.1"
-  },
-  "dependencies": {
-    "@wordpress/api-fetch": "^6.47.0",
-    "@wordpress/block-editor": "^12.26.0",
-    "@wordpress/blocks": "^12.29.0",
-    "@wordpress/components": "^30.1.0",
-    "@wordpress/element": "^5.24.0",
-    "@wordpress/i18n": "^4.58.0",
-    "@wordpress/icons": "^10.28.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "swiper": "^11.0.0"
-  }
+    "private": true,
+    "scripts": {
+        "build:dev": "npm run development",
+        "development": "mix",
+        "watch": "mix watch",
+        "watch-poll": "mix watch -- --watch-options-poll=1000",
+        "hot": "mix watch --hot",
+        "build:prod": "npm run production",
+        "production": "mix --production",
+        "build": "run-p build:*"
+    },
+    "devDependencies": {
+        "axios": "^1.8.1",
+        "laravel-mix": "^6.0.6",
+        "lodash": "^4.17.19",
+        "postcss": "^8.1.14",
+        "resolve-url-loader": "^5.0.0",
+        "sass": "^1.85.1",
+        "sass-loader": "^16.0.5",
+        "webpack-livereload-plugin": "^3.0.2",
+        "npm-run-all": "^4.1.5"
+    }
 }

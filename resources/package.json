@@ -1,24 +1,72 @@
 {
-    "private": true,
-    "scripts": {
-        "build:dev": "npm run development",
-        "development": "mix",
-        "watch": "mix watch",
-        "watch-poll": "mix watch -- --watch-options-poll=1000",
-        "hot": "mix watch --hot",
-        "build:prod": "npm run production",
-        "production": "mix --production",
-        "build": "run-p build:*"
-    },
-    "devDependencies": {
-        "axios": "^1.8.1",
-        "laravel-mix": "^6.0.6",
-        "lodash": "^4.17.19",
-        "postcss": "^8.1.14",
-        "resolve-url-loader": "^5.0.0",
-        "sass": "^1.85.1",
-        "sass-loader": "^16.0.5",
-        "webpack-livereload-plugin": "^3.0.2",
-        "npm-run-all": "^4.1.5"
-    }
+  "name": "jankx",
+  "version": "2.0.0",
+  "description": "Jankx WordPress Theme with Gutenberg Blocks",
+  "main": "index.js",
+  "scripts": {
+    "format": "wp-scripts format",
+    "lint:css": "wp-scripts lint-style",
+    "lint:js": "wp-scripts lint-js",
+    "lint:md:docs": "wp-scripts lint-md-docs",
+    "lint:pkg-json": "wp-scripts lint-pkg-json",
+    "packages-update": "wp-scripts packages-update",
+    "plugin-zip": "wp-scripts plugin-zip",
+    "test:e2e": "wp-scripts test-e2e",
+    "test:unit": "wp-scripts test-unit-js",
+
+    "build:advanced-blocks": "wp-scripts build advanced-blocks/editor.js advanced-blocks/editor.css --output-path=advanced-blocks/build",
+    "build:all-blocks": "npm run build:widget-renderer && npm run build:language-switcher && npm run build:icon-picker && npm run build:jankx-tab && npm run build:swiper-slider && npm run build:image-mask && npm run build:icon-button && npm run build:product-carousel && npm run build:dynamic-collection && npm run build:advanced-blocks",
+    "build:dynamic-collection": "wp-scripts build blocks/dynamic-collection/index.js blocks/dynamic-collection/index.css --output-path=blocks/dynamic-collection/build",
+    "build:icon-button": "wp-scripts build blocks/icon-button/index.js blocks/icon-button/index.css --output-path=blocks/icon-button/build",
+    "build:icon-picker": "wp-scripts build blocks/icon-picker/index.js blocks/icon-picker/index.css --output-path=blocks/icon-picker/build",
+    "build:image-mask": "wp-scripts build blocks/image-mask/index.js blocks/image-mask/style.css --output-path=blocks/image-mask/build && cp blocks/image-mask/editor.css blocks/image-mask/build/",
+    "build:jankx-tab": "wp-scripts build blocks/tabs/index.js blocks/tabs/index.css --output-path=blocks/tabs/build",
+    "build:language-switcher": "wp-scripts build blocks/language-switcher/index.js blocks/language-switcher/style.css --output-path=blocks/language-switcher/build && cp blocks/language-switcher/editor.css blocks/language-switcher/build/",
+    "build:mega-menu": "wp-scripts build blocks/mega-menu/index.js blocks/mega-menu/index.css blocks/mega-menu/style.css --output-path=blocks/mega-menu/build",
+    "build:product-carousel": "wp-scripts build blocks/product-carousel/index.js blocks/product-carousel/index.css --output-path=blocks/product-carousel/build",
+    "build:swiper-slider": "wp-scripts build blocks/swiper-slider/index.js blocks/swiper-slider/index.css --output-path=blocks/swiper-slider/build",
+    "build:widget-renderer": "wp-scripts build blocks/widget-renderer/index.js blocks/widget-renderer/index.css --output-path=blocks/widget-renderer/build",
+
+    "dev:advanced-blocks": "wp-scripts start advanced-blocks/editor.js advanced-blocks/editor.css --output-path=advanced-blocks/build",
+    "dev:dynamic-collection": "wp-scripts start blocks/dynamic-collection/index.js blocks/dynamic-collection/index.css --output-path=blocks/dynamic-collection/build",
+    "dev:icon-button": "wp-scripts start blocks/icon-button/index.js blocks/icon-button/index.css --output-path=blocks/icon-button/build",
+    "dev:icon-picker": "wp-scripts start blocks/icon-picker/index.js --output-path=blocks/icon-picker/build",
+    "dev:image-mask": "wp-scripts start blocks/image-mask/index.js blocks/image-mask/style.css --output-path=blocks/image-mask/build",
+    "dev:jankx-tab": "wp-scripts start blocks/tabs/index.js blocks/tabs/index.css --output-path=blocks/tabs/build",
+    "dev:language-switcher": "wp-scripts start blocks/language-switcher/index.js blocks/language-switcher/style.css --output-path=blocks/language-switcher/build",
+    "dev:mega-menu": "wp-scripts start blocks/mega-menu/index.js blocks/mega-menu/index.css --output-path=blocks/mega-menu/build",
+    "dev:product-carousel": "wp-scripts start blocks/product-carousel/index.js blocks/product-carousel/index.css --output-path=blocks/product-carousel/build",
+    "dev:swiper-slider": "wp-scripts start blocks/swiper-slider/index.js blocks/swiper-slider/index.css --output-path=blocks/swiper-slider/build",
+    "dev:widget-renderer": "wp-scripts start blocks/widget-renderer/index.js blocks/widget-renderer/index.css --output-path=blocks/widget-renderer/build",
+
+    "build": "run-p build:*",
+    "dev": "run-p dev:*"
+  },
+  "keywords": [
+    "wordpress",
+    "theme",
+    "gutenberg",
+    "blocks"
+  ],
+  "author": "Puleeno Nguyen",
+  "license": "MIT",
+  "devDependencies": {
+    "@wordpress/babel-preset-default": "^8.28.0",
+    "@wordpress/scripts": "^26.19.0",
+    "babel-loader": "^10.0.0",
+    "webpack-cli": "^6.0.1",
+    "npm-run-all": "^4.1.5"
+  },
+  "dependencies": {
+    "@wordpress/api-fetch": "^6.47.0",
+    "@wordpress/block-editor": "^12.26.0",
+    "@wordpress/blocks": "^12.29.0",
+    "@wordpress/components": "^30.1.0",
+    "@wordpress/element": "^5.24.0",
+    "@wordpress/i18n": "^4.58.0",
+    "@wordpress/icons": "^10.28.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "swiper": "^11.0.0"
+  }
 }
