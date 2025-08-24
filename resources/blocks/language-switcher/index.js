@@ -29,6 +29,7 @@ function LanguageSwitcherEdit({ attributes, setAttributes }) {
     const [languages, setLanguages] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState('');
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     const blockProps = useBlockProps({
         className: `language-switcher-block ${className || ''}`
@@ -98,23 +99,43 @@ function LanguageSwitcherEdit({ attributes, setAttributes }) {
         }
     };
 
-    const renderDropdownPreview = () => (
-        <div className="language-switcher-dropdown-preview">
-            <select className="language-switcher-dropdown" disabled>
-                {languages.map((lang) => (
-                    <option key={lang.code} value={lang.url}>
-                        {showFlags && lang.flag && (
-                            <img src={lang.flag} alt={lang.name} className="language-flag" />
-                        )}
-                        {showNames && lang.name}
-                    </option>
-                ))}
-            </select>
-        </div>
-    );
+    const renderDropdownPreview = () => {
+        const currentLang = languages.find(l => l.current) || languages[0];
+
+        return (
+            <div className="language-switcher-dropdown-wrapper">
+                <button
+                    className="language-switcher-dropdown"
+                    type="button"
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                >
+                    {showFlags && currentLang.flag && (
+                        <img src={currentLang.flag} alt={currentLang.name} className="language-flag" />
+                    )}
+                    {showNames && <span className="language-name">{currentLang.name}</span>}
+                    <span className="language-arrow">▼</span>
+                </button>
+
+                {isDropdownOpen && (
+                    <ul className="language-switcher-dropdown-menu">
+                        {languages.map((lang) => (
+                            <li key={lang.code} className={`language-dropdown-item ${lang.current ? 'current-language' : ''}`}>
+                                <a href="#" className="language-dropdown-link" onClick={(e) => e.preventDefault()}>
+                                    {showFlags && lang.flag && (
+                                        <img src={lang.flag} alt={lang.name} className="language-flag" />
+                                    )}
+                                    {showNames && <span className="language-name">{lang.name}</span>}
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </div>
+        );
+    };
 
     const renderListPreview = () => (
-        <ul className="language-switcher-list-preview">
+        <ul className="language-switcher-list">
             {languages.map((lang) => (
                 <li key={lang.code} className={`language-item ${lang.current ? 'current-language' : ''}`}>
                     <a href="#" className="language-link" onClick={(e) => e.preventDefault()}>
@@ -166,23 +187,7 @@ function LanguageSwitcherEdit({ attributes, setAttributes }) {
             </InspectorControls>
 
             <div {...blockProps}>
-                <div className="language-switcher-editor-preview">
-                    <h4 className="language-switcher-title">
-                        {__('Language Switcher Preview', 'jankx')}
-                    </h4>
-                    {renderPreview()}
-                </div>
-
-                {languages.length > 0 && (
-                    <div className="language-switcher-info">
-                        <p className="language-count">
-                            {__('Available languages:', 'jankx')} {languages.length}
-                        </p>
-                        <p className="current-language-info">
-                            {__('Current language:', 'jankx')} {languages.find(l => l.current)?.name || __('Unknown', 'jankx')}
-                        </p>
-                    </div>
-                )}
+                {renderPreview()}
             </div>
         </>
     );

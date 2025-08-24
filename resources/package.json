@@ -15,7 +15,6 @@
     "test:unit": "wp-scripts test-unit-js",
 
     "build:advanced-blocks": "wp-scripts build advanced-blocks/editor.js advanced-blocks/editor.css --output-path=advanced-blocks/build",
-    "build:all-blocks": "npm run build:widget-renderer && npm run build:language-switcher && npm run build:icon-picker && npm run build:jankx-tab && npm run build:swiper-slider && npm run build:image-mask && npm run build:icon-button && npm run build:product-carousel && npm run build:dynamic-collection && npm run build:advanced-blocks",
     "build:dynamic-collection": "wp-scripts build blocks/dynamic-collection/index.js blocks/dynamic-collection/index.css --output-path=blocks/dynamic-collection/build",
     "build:icon-button": "wp-scripts build blocks/icon-button/index.js blocks/icon-button/index.css --output-path=blocks/icon-button/build",
     "build:icon-picker": "wp-scripts build blocks/icon-picker/index.js blocks/icon-picker/index.css --output-path=blocks/icon-picker/build",
@@ -25,7 +24,6 @@
     "build:mega-menu": "wp-scripts build blocks/mega-menu/index.js blocks/mega-menu/index.css blocks/mega-menu/style.css --output-path=blocks/mega-menu/build",
     "build:product-carousel": "wp-scripts build blocks/product-carousel/index.js blocks/product-carousel/index.css --output-path=blocks/product-carousel/build",
     "build:swiper-slider": "wp-scripts build blocks/swiper-slider/index.js blocks/swiper-slider/index.css --output-path=blocks/swiper-slider/build",
-    "build:widget-renderer": "wp-scripts build blocks/widget-renderer/index.js blocks/widget-renderer/index.css --output-path=blocks/widget-renderer/build",
 
     "dev:advanced-blocks": "wp-scripts start advanced-blocks/editor.js advanced-blocks/editor.css --output-path=advanced-blocks/build",
     "dev:dynamic-collection": "wp-scripts start blocks/dynamic-collection/index.js blocks/dynamic-collection/index.css --output-path=blocks/dynamic-collection/build",
@@ -37,7 +35,6 @@
     "dev:mega-menu": "wp-scripts start blocks/mega-menu/index.js blocks/mega-menu/index.css --output-path=blocks/mega-menu/build",
     "dev:product-carousel": "wp-scripts start blocks/product-carousel/index.js blocks/product-carousel/index.css --output-path=blocks/product-carousel/build",
     "dev:swiper-slider": "wp-scripts start blocks/swiper-slider/index.js blocks/swiper-slider/index.css --output-path=blocks/swiper-slider/build",
-    "dev:widget-renderer": "wp-scripts start blocks/widget-renderer/index.js blocks/widget-renderer/index.css --output-path=blocks/widget-renderer/build",
 
     "build": "run-p build:*",
     "dev": "run-p dev:*"
