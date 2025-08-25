@@ -1,0 +1,22 @@
+/* Icon Picker Block Editor Styles */
+.wp-block-jankx-icon-picker {
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.wp-block-jankx-icon-picker .jankx-icon-picker-placeholder {
+    background: #f9f9f9;
+    border-color: #ddd;
+    color: #888;
+}
+
+.jankx-icon-settings__color {
+    margin-bottom: 16px;
+}
+
+.jankx-icon-settings__label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}

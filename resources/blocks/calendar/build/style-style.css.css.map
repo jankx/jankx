@@ -1,1 +1,0 @@
-{"version":3,"file":"./style-style.css.css","mappings":";;;AAAA,qCAAqC","sources":["webpack://jankx/./blocks/calendar/style.css"],"sourcesContent":["/* Public styles for Calendar block */\r\n@import './index.css';\r\n\r\n\r\n"],"names":[],"sourceRoot":""}

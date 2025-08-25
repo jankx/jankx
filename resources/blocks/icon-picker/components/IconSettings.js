@@ -53,26 +53,26 @@ const IconSettings = ({
     ];
 
     return (
-        < PanelBody
-            title = {__('Icon Settings', 'jankx')}
-            icon = {color}
-            initialOpen = {false}
+        <PanelBody
+            title={__('Icon Settings', 'jankx')}
+            icon={color}
+            initialOpen={false}
         >
-            < SelectControl
-                label = {__('Icon Style', 'jankx')}
-                value = {iconStyle}
-                options = {iconStyleOptions}
-                onChange = {onIconStyleChange}
-                help = {__('Chọn style cho icon (Material Icons)', 'jankx')}
-            /  >
+            <SelectControl
+                label={__('Icon Style', 'jankx')}
+                value={iconStyle}
+                options={iconStyleOptions}
+                onChange={onIconStyleChange}
+                help={__('Chọn style cho icon (Material Icons)', 'jankx')}
+            />
 
-            < TextControl
-                label = {__('Icon Size', 'jankx')}
-                value = {iconSize}
-                onChange = {onIconSizeChange}
-                placeholder = "24px"
-                help = {__('Kích thước icon (px, em, rem)', 'jankx')}
-            /  >
+            <TextControl
+                label={__('Icon Size', 'jankx')}
+                value={iconSize}
+                onChange={onIconSizeChange}
+                placeholder="24px"
+                help={__('Kích thước icon (px, em, rem)', 'jankx')}
+            />
 
             < div className = "jankx-icon-settings__color" >
                 < label className = "jankx-icon-settings__label" >

@@ -1,0 +1,57 @@
+/*!***********************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./blocks/product-carousel/style.scss ***!
+  \***********************************************************************************************************************************************************************/
+/* Product Carousel Block Styles */
+.jankx-product-carousel {
+  margin: 30px 0;
+}
+
+.jankx-product-carousel__title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.jankx-product-carousel__container {
+  position: relative;
+  overflow: hidden;
+}
+
+.jankx-product-carousel__slide {
+  padding: 10px;
+}
+
+.jankx-product-carousel__product {
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 15px;
+  text-align: center;
+  transition: box-shadow 0.3s ease;
+}
+.jankx-product-carousel__product:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.jankx-product-carousel__placeholder {
+  text-align: center;
+  padding: 40px 20px;
+  background: #f9f9f9;
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+}
+.jankx-product-carousel__placeholder-icon {
+  font-size: 48px;
+  color: #ccc;
+  margin-bottom: 15px;
+}
+.jankx-product-carousel__placeholder h3 {
+  margin: 0 0 10px 0;
+  color: #666;
+}
+.jankx-product-carousel__placeholder p {
+  margin: 0;
+  color: #999;
+}
+
+/*# sourceMappingURL=style.css.map*/

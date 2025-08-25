@@ -1,0 +1,20 @@
+/* Dynamic Collection Block Styles */
+.jankx-dynamic-collection {
+    margin: 20px 0;
+}
+
+.jankx-dynamic-collection__grid {
+    display: grid;
+    gap: 20px;
+}
+
+.jankx-dynamic-collection__item {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 15px;
+    transition: box-shadow 0.3s ease;
+}
+
+.jankx-dynamic-collection__item:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}

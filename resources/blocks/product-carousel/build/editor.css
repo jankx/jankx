@@ -1,0 +1,26 @@
+/*!************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./blocks/product-carousel/editor.scss ***!
+  \************************************************************************************************************************************************************************/
+/* Product Carousel Block Editor Styles */
+.wp-block-jankx-product-carousel {
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 8px;
+  background: #f9f9f9;
+}
+
+.jankx-product-carousel__placeholder {
+  background: #f0f0f0;
+  border-color: #ccc;
+}
+.jankx-product-carousel__placeholder-icon {
+  color: #999;
+}
+.jankx-product-carousel__placeholder h3 {
+  color: #666;
+}
+.jankx-product-carousel__placeholder p {
+  color: #888;
+}
+
+/*# sourceMappingURL=editor.css.map*/

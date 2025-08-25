@@ -1,0 +1,45 @@
+/*!******************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./blocks/icon-picker/style.scss ***!
+  \******************************************************************************************************************************************************************/
+/* Icon Picker Block Styles */
+.jankx-icon-picker-block {
+  display: inline-block;
+}
+
+.jankx-icon-picker-block__content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.jankx-icon-picker-block--left {
+  text-align: left;
+}
+
+.jankx-icon-picker-block--center {
+  text-align: center;
+}
+
+.jankx-icon-picker-block--right {
+  text-align: right;
+}
+
+.jankx-icon-picker-block__link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.jankx-icon-picker-block__label {
+  font-size: 14px;
+}
+
+.jankx-icon-picker-placeholder {
+  padding: 20px;
+  text-align: center;
+  background: #f0f0f0;
+  border: 2px dashed #ccc;
+  border-radius: 4px;
+  color: #666;
+}
+
+/*# sourceMappingURL=style.css.map*/
