@@ -135,19 +135,13 @@ class Jankx_Framework
         switch ($consoleType) {
             case 'wp_cli':
                 $kernel = new WpCliKernel($this->app);
-                if (Environment::isDebugLog()) {
-                }
                 break;
 
             case 'wp_cron':
                 $kernel = new WpCronKernel($this->app);
-                if (Environment::isDebugLog()) {
-                }
                 break;
 
             default:
-                if (Environment::isDebugLog()) {
-                }
                 return 1; // Unknown console type
         }
 

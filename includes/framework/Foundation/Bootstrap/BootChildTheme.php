@@ -28,8 +28,6 @@ class BootChildTheme
 
         // Check if child theme has composer.json and vendor directory
         if (!$this->shouldLoadChildThemeComposer($composerJsonPath, $vendorPath)) {
-            if (Environment::isDebugLog()) {
-            }
             return;
         }
 

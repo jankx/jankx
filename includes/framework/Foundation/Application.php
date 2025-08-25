@@ -297,9 +297,6 @@ class Application extends Container
         $this->callBootingCallbacks();
 
         foreach ($bootstrappers as $bootstrapper) {
-            if (Environment::isDebugLog()) {
-            }
-
             $this->make($bootstrapper)->bootstrap($this);
         }
 

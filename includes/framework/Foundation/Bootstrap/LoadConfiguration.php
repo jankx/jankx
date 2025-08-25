@@ -66,9 +66,6 @@ class LoadConfiguration
             // Deep merge: child override parent
             $mergedConfig = $this->deepMergeConfig($parentConfig, $childConfig);
             $config->set($configKey, $mergedConfig);
-
-            if (Environment::isDebugLog()) {
-            }
         }
     }
 
@@ -95,8 +92,6 @@ class LoadConfiguration
         $cachedConfig = wp_cache_get($cacheKey, 'jankx_config');
 
         if ($cachedConfig !== false) {
-            if (Environment::isDebugLog()) {
-            }
             return $cachedConfig;
         }
 

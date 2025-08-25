@@ -3,16 +3,8 @@
 namespace Jankx\Services;
 
 use Jankx\Foundation\Application;
-use Jankx\Gutenberg\Blocks\ImageMaskBlock;
-use Jankx\Gutenberg\Blocks\IconPickerBlock;
-use Jankx\Gutenberg\Blocks\IconButtonBlock;
-use Jankx\Gutenberg\Blocks\ProductCarouselBlock;
-use Jankx\Gutenberg\Blocks\DynamicCollectionBlock;
 use Jankx\Gutenberg\Blocks\LanguageSwitcherBlock;
-use Jankx\Gutenberg\Blocks\ComposeTabBlock;
-use Jankx\Gutenberg\Blocks\MegaMenuBlock;
-use Jankx\Gutenberg\Blocks\SwiperSlider;
-use Jankx\Gutenberg\Blocks\Patterns\GutenbergPattern;
+use Jankx\Gutenberg\GutenbergPattern;
 use Jankx\Facades\Log;
 use Jankx\Helper\Environment;
 
@@ -72,8 +64,6 @@ class GutenbergService
         $blocksPath = get_template_directory() . '/resources/blocks';
 
         if (!is_dir($blocksPath)) {
-            if (Environment::isDebugLog()) {
-            }
             return;
         }
 
@@ -94,8 +84,6 @@ class GutenbergService
                     Log::error('GutenbergService: Failed to register block ' . $blockName . ' - ' . $e->getMessage());
                 }
             } else {
-                if (Environment::isDebugLog()) {
-                }
             }
         }
     }
@@ -121,15 +109,7 @@ class GutenbergService
      */
     protected function registerDefaultBlocks()
     {
-        $this->repository->registerBlock(IconPickerBlock::class);
-        $this->repository->registerBlock(IconButtonBlock::class);
-        $this->repository->registerBlock(ProductCarouselBlock::class);
-        $this->repository->registerBlock(DynamicCollectionBlock::class);
         $this->repository->registerBlock(LanguageSwitcherBlock::class);
-        $this->repository->registerBlock(ComposeTabBlock::class);
-        $this->repository->registerBlock(MegaMenuBlock::class);
-        $this->repository->registerBlock(SwiperSlider::class);
-        $this->repository->registerBlock(ImageMaskBlock::class);
     }
 
     /**
@@ -158,9 +138,6 @@ class GutenbergService
                 } catch (\Exception $e) {
                     Log::error('GutenbergService: Failed to register block ' . $blockName . ' - ' . $e->getMessage());
                 }
-            }
-
-            if (Environment::isDebugLog()) {
             }
         } catch (\Exception $e) {
             Log::error('GutenbergService: Failed to register blocks - ' . $e->getMessage());
@@ -223,9 +200,6 @@ class GutenbergService
                 } catch (\Exception $e) {
                     Log::error('GutenbergService: Failed to enqueue assets for block ' . $blockName . ' - ' . $e->getMessage());
                 }
-            }
-
-            if (Environment::isDebugLog()) {
             }
         } catch (\Exception $e) {
             Log::error('GutenbergService: Failed to enqueue block assets - ' . $e->getMessage());
@@ -367,9 +341,6 @@ class GutenbergService
             // Clear any cached block data
             wp_cache_delete('jankx_blocks', 'jankx_blocks');
             wp_cache_delete('jankx_patterns', 'jankx_patterns');
-
-            if (Environment::isDebugLog()) {
-            }
         } catch (\Exception $e) {
             Log::error('GutenbergService: Failed to clear block cache - ' . $e->getMessage());
             throw $e;
@@ -428,9 +399,6 @@ class GutenbergService
 
             // Fire action hook for plugins and child themes to register their patterns
             do_action('jankx/gutenberg/register-patterns', $this->repository, $this->app);
-
-            if (Environment::isDebugLog()) {
-            }
         } catch (\Exception $e) {
             Log::error('GutenbergService: Failed to discover patterns - ' . $e->getMessage());
             throw $e;
@@ -446,15 +414,12 @@ class GutenbergService
 
         // Register built-in patterns
         $defaultPatterns = [
-            \Jankx\Gutenberg\Blocks\Patterns\HeroSectionPattern::class,
-            \Jankx\Gutenberg\Blocks\Patterns\CardGridPattern::class,
+            \Jankx\Gutenberg\Patterns\HeroSectionPattern::class,
         ];
 
         foreach ($defaultPatterns as $patternClass) {
             try {
                 $this->repository->registerPattern($patternClass, $this->app);
-                if (Environment::isDebugLog()) {
-                }
             } catch (\Exception $e) {
                 Log::error('GutenbergService: Failed to register default pattern ' . $patternClass . ' - ' . $e->getMessage());
             }
@@ -539,8 +504,6 @@ class GutenbergService
                 throw new \InvalidArgumentException($error);
             }
 
-            if (Environment::isDebugLog()) {
-            }
 
             return $pattern;
         } catch (\Exception $e) {
@@ -590,9 +553,6 @@ class GutenbergService
             // Clear pattern cache
             wp_cache_delete('jankx_patterns', 'jankx_patterns');
             wp_cache_delete('jankx_pattern_categories', 'jankx_patterns');
-
-            if (Environment::isDebugLog()) {
-            }
         } catch (\Exception $e) {
             Log::error('GutenbergService: Failed to clear pattern cache - ' . $e->getMessage());
             throw $e;

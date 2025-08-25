@@ -2,7 +2,7 @@
   "name": "jankx",
   "version": "2.0.0",
   "description": "Jankx WordPress Theme with Gutenberg Blocks",
-  "main": "index.js",
+  "main": "blocks/index.js",
   "scripts": {
     "format": "wp-scripts format",
     "lint:css": "wp-scripts lint-style",
@@ -14,27 +14,9 @@
     "test:e2e": "wp-scripts test-e2e",
     "test:unit": "wp-scripts test-unit-js",
 
-    "build:advanced-blocks": "wp-scripts build advanced-blocks/editor.js advanced-blocks/editor.css --output-path=advanced-blocks/build",
-    "build:dynamic-collection": "wp-scripts build blocks/dynamic-collection/index.js blocks/dynamic-collection/index.css --output-path=blocks/dynamic-collection/build",
-    "build:icon-button": "wp-scripts build blocks/icon-button/index.js blocks/icon-button/index.css --output-path=blocks/icon-button/build",
-    "build:icon-picker": "wp-scripts build blocks/icon-picker/index.js blocks/icon-picker/index.css --output-path=blocks/icon-picker/build",
-    "build:image-mask": "wp-scripts build blocks/image-mask/index.js blocks/image-mask/style.css --output-path=blocks/image-mask/build && cp blocks/image-mask/editor.css blocks/image-mask/build/",
-    "build:jankx-tab": "wp-scripts build blocks/tabs/index.js blocks/tabs/index.css --output-path=blocks/tabs/build",
     "build:language-switcher": "wp-scripts build blocks/language-switcher/index.js blocks/language-switcher/style.css --output-path=blocks/language-switcher/build && cp blocks/language-switcher/editor.css blocks/language-switcher/build/",
-    "build:mega-menu": "wp-scripts build blocks/mega-menu/index.js blocks/mega-menu/index.css blocks/mega-menu/style.css --output-path=blocks/mega-menu/build",
-    "build:product-carousel": "wp-scripts build blocks/product-carousel/index.js blocks/product-carousel/index.css --output-path=blocks/product-carousel/build",
-    "build:swiper-slider": "wp-scripts build blocks/swiper-slider/index.js blocks/swiper-slider/index.css --output-path=blocks/swiper-slider/build",
 
-    "dev:advanced-blocks": "wp-scripts start advanced-blocks/editor.js advanced-blocks/editor.css --output-path=advanced-blocks/build",
-    "dev:dynamic-collection": "wp-scripts start blocks/dynamic-collection/index.js blocks/dynamic-collection/index.css --output-path=blocks/dynamic-collection/build",
-    "dev:icon-button": "wp-scripts start blocks/icon-button/index.js blocks/icon-button/index.css --output-path=blocks/icon-button/build",
-    "dev:icon-picker": "wp-scripts start blocks/icon-picker/index.js --output-path=blocks/icon-picker/build",
-    "dev:image-mask": "wp-scripts start blocks/image-mask/index.js blocks/image-mask/style.css --output-path=blocks/image-mask/build",
-    "dev:jankx-tab": "wp-scripts start blocks/tabs/index.js blocks/tabs/index.css --output-path=blocks/tabs/build",
     "dev:language-switcher": "wp-scripts start blocks/language-switcher/index.js blocks/language-switcher/style.css --output-path=blocks/language-switcher/build",
-    "dev:mega-menu": "wp-scripts start blocks/mega-menu/index.js blocks/mega-menu/index.css --output-path=blocks/mega-menu/build",
-    "dev:product-carousel": "wp-scripts start blocks/product-carousel/index.js blocks/product-carousel/index.css --output-path=blocks/product-carousel/build",
-    "dev:swiper-slider": "wp-scripts start blocks/swiper-slider/index.js blocks/swiper-slider/index.css --output-path=blocks/swiper-slider/build",
 
     "build": "run-p build:*",
     "dev": "run-p dev:*"

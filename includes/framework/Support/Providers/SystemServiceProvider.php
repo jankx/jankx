@@ -37,15 +37,11 @@ class SystemServiceProvider extends ServiceProvider
 
         // Register Cache Service
         $app->singleton('cache', function (Application $app) {
-            if (Environment::isDebugLog()) {
-            }
             return new CacheService($app);
         });
 
         // Register User Service
         $app->singleton('user', function (Application $app) {
-            if (Environment::isDebugLog()) {
-            }
             return new UserService($app);
         });
 
@@ -84,8 +80,6 @@ class SystemServiceProvider extends ServiceProvider
         $aliases = $app->make('config')->get('app.aliases', []);
 
         if (empty($aliases)) {
-            if (Environment::isDebugLog()) {
-            }
             return;
         }
 
@@ -98,8 +92,6 @@ class SystemServiceProvider extends ServiceProvider
             $targetClass = reset($classes);
             $className = ucfirst($alias);
 
-            if (Environment::isDebugLog()) {
-            }
 
             // Create class alias if it doesn't exist
             if (!class_exists($className)) {

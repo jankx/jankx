@@ -1,6 +1,6 @@
 <?php
 
-namespace Jankx\Gutenberg\Blocks;
+namespace Jankx\Gutenberg;
 
 /**
  * Gutenberg Repository

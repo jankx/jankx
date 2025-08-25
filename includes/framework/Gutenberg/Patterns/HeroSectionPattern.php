@@ -1,6 +1,8 @@
 <?php
 
-namespace Jankx\Gutenberg\Blocks\Patterns;
+namespace Jankx\Gutenberg\Patterns;
+
+use Jankx\Gutenberg\GutenbergPattern;
 
 /**
  * Hero Section Pattern

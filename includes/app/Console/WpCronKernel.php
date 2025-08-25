@@ -26,8 +26,6 @@ class WpCronKernel extends Kernel
 
         // Handle WordPress cron specific logic
         if (!defined('DOING_CRON') || !DOING_CRON) {
-            if (Environment::isDebugLog()) {
-            }
             return 1;
         }
 
