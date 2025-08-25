@@ -2,6 +2,412 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./blocks/icon-picker/components/IconPicker.js":
+/*!*****************************************************!*\
+  !*** ./blocks/icon-picker/components/IconPicker.js ***!
+  \*****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/api-fetch */ "./node_modules/@wordpress/api-fetch/build-module/index.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+
+
+
+
+const IconPicker = ({
+  value,
+  onChange,
+  iconType = 'material',
+  category = 'navigation',
+  onIconTypeChange,
+  onCategoryChange
+}) => {
+  const [isOpen, setIsOpen] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  const [searchTerm, setSearchTerm] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('');
+  const [selectedIconType, setSelectedIconType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(iconType);
+  const [selectedCategory, setSelectedCategory] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(category);
+  const [iconData, setIconData] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)({});
+  const [isLoading, setIsLoading] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+
+  // Fetch icon data from Jankx Font Icons System
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    const fetchIconData = async () => {
+      setIsLoading(true);
+      try {
+        // Sử dụng Jankx Font Icons API endpoint
+        const response = await (0,_wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3__["default"])({
+          path: '/jankx/v1/icons/available',
+          method: 'GET'
+        });
+        setIconData(response || {});
+      } catch (error) {
+        console.error('Failed to fetch icon data:', error);
+        setIconData({});
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchIconData();
+  }, []);
+  const currentIconType = iconData[selectedIconType] || {};
+  const categories = currentIconType.categories || [];
+  const icons = currentIconType.icons || [];
+  const filteredIcons = icons.filter(icon => (!selectedCategory || icon.category === selectedCategory) && icon.name.toLowerCase().includes(searchTerm.toLowerCase()));
+  const handleIconSelect = icon => {
+    onChange(icon);
+    setIsOpen(false);
+    setSearchTerm('');
+  };
+  const handleIconTypeChange = newIconType => {
+    setSelectedIconType(newIconType);
+    const firstCategory = iconData[newIconType] && iconData[newIconType].categories && iconData[newIconType].categories[0] || '';
+    setSelectedCategory(firstCategory);
+    if (onIconTypeChange) onIconTypeChange(newIconType);
+    if (onCategoryChange) onCategoryChange(firstCategory);
+  };
+  const handleCategoryChange = newCategory => {
+    setSelectedCategory(newCategory);
+    if (onCategoryChange) onCategoryChange(newCategory);
+  };
+  const renderIcon = icon => {
+    if (selectedIconType === 'material') {
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+        className: "material-icons",
+        children: icon.name
+      });
+    } else if (selectedIconType === 'fontawesome') {
+      const prefix = icon.prefixes && icon.prefixes[0] || 'fas';
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("i", {
+        className: `${prefix} fa-${icon.name}`
+      });
+    } else if (selectedIconType === 'custom') {
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+        className: `icon icon-${icon.name}`
+      });
+    }
+    return null;
+  };
+  const iconTypeOptions = Object.keys(iconData).map(key => ({
+    label: iconData[key].name || key.charAt(0).toUpperCase() + key.slice(1),
+    value: key
+  }));
+  const categoryOptions = categories.map(cat => ({
+    label: cat.charAt(0).toUpperCase() + cat.slice(1),
+    value: cat
+  }));
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+    className: "jankx-icon-picker",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+      isSecondary: true,
+      onClick: () => setIsOpen(true),
+      className: "jankx-icon-picker__button",
+      children: value ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("span", {
+        className: "jankx-icon-picker__selected",
+        children: [renderIcon(value), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+          className: "jankx-icon-picker__name",
+          children: value.name
+        })]
+      }) : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Chọn Icon', 'jankx')
+    }), isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Popover, {
+      onClose: () => setIsOpen(false),
+      className: "jankx-icon-picker__popover",
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+        className: "jankx-icon-picker__content",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+          className: "jankx-icon-picker__header",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("h3", {
+            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Chọn Icon từ Jankx Font Icons', 'jankx')
+          }), isLoading ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+            className: "jankx-icon-picker__loading",
+            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Đang tải danh sách icons...', 'jankx')
+          }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Thư viện Icon', 'jankx'),
+              value: selectedIconType,
+              options: iconTypeOptions,
+              onChange: handleIconTypeChange
+            }), categories.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Danh mục', 'jankx'),
+              value: selectedCategory,
+              options: categoryOptions,
+              onChange: handleCategoryChange
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TextControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Tìm kiếm', 'jankx'),
+              value: searchTerm,
+              onChange: setSearchTerm,
+              placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Nhập tên icon...', 'jankx')
+            })]
+          })]
+        }), !isLoading && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+          className: "jankx-icon-picker__grid",
+          children: filteredIcons.map(icon => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+            isSecondary: true,
+            className: "jankx-icon-picker__icon-item",
+            onClick: () => handleIconSelect(icon),
+            children: [renderIcon(icon), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+              className: "jankx-icon-picker__icon-name",
+              children: icon.name
+            })]
+          }, `${icon.name}-${icon.category}`))
+        }), !isLoading && filteredIcons.length === 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+          className: "jankx-icon-picker__empty",
+          children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Không tìm thấy icon nào', 'jankx')
+        })]
+      })
+    })]
+  });
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (IconPicker);
+
+/***/ }),
+
+/***/ "./blocks/icon-picker/components/IconSettings.js":
+/*!*******************************************************!*\
+  !*** ./blocks/icon-picker/components/IconSettings.js ***!
+  \*******************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/align-center.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/align-left.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/align-right.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/color.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+
+
+
+const IconSettings = ({
+  iconSize,
+  iconColor,
+  iconAlignment,
+  iconStyle,
+  showLabel,
+  iconLabel,
+  labelPosition,
+  onIconSizeChange,
+  onIconColorChange,
+  onIconAlignmentChange,
+  onIconStyleChange,
+  onShowLabelChange,
+  onIconLabelChange,
+  onLabelPositionChange
+}) => {
+  const alignmentOptions = [{
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Left', 'jankx'),
+    value: 'left',
+    icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__["default"]
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Center', 'jankx'),
+    value: 'center',
+    icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_2__["default"]
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Right', 'jankx'),
+    value: 'right',
+    icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__["default"]
+  }];
+  const labelPositionOptions = [{
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Before icon', 'jankx'),
+    value: 'before'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('After icon', 'jankx'),
+    value: 'after'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Above icon', 'jankx'),
+    value: 'above'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Below icon', 'jankx'),
+    value: 'below'
+  }];
+  const iconStyleOptions = [{
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Filled', 'jankx'),
+    value: 'filled'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Outlined', 'jankx'),
+    value: 'outlined'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Rounded', 'jankx'),
+    value: 'rounded'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Sharp', 'jankx'),
+    value: 'sharp'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Two-tone', 'jankx'),
+    value: 'two-tone'
+  }];
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelBody, {
+    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Icon Settings', 'jankx'),
+    icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__["default"],
+    initialOpen: false,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Icon Style', 'jankx'),
+      value: iconStyle,
+      options: iconStyleOptions,
+      onChange: onIconStyleChange,
+      help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Chọn style cho icon (Material Icons)', 'jankx')
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TextControl, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Icon Size', 'jankx'),
+      value: iconSize,
+      onChange: onIconSizeChange,
+      placeholder: "24px",
+      help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Kích thước icon (px, em, rem)', 'jankx')
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+      className: "jankx-icon-settings__color",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("label", {
+        className: "jankx-icon-settings__label",
+        children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Icon Color', 'jankx')
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ColorPicker, {
+        color: iconColor,
+        onChangeComplete: color => onIconColorChange(color.hex),
+        enableAlpha: false
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Alignment', 'jankx'),
+      value: iconAlignment,
+      options: alignmentOptions.map(option => ({
+        label: option.label,
+        value: option.value
+      })),
+      onChange: onIconAlignmentChange
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Label', 'jankx'),
+      checked: showLabel,
+      onChange: onShowLabelChange,
+      help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Hiển thị text label cùng với icon', 'jankx')
+    }), showLabel && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TextControl, {
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Label Text', 'jankx'),
+        value: iconLabel,
+        onChange: onIconLabelChange,
+        placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enter label text...', 'jankx')
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Label Position', 'jankx'),
+        value: labelPosition,
+        options: labelPositionOptions,
+        onChange: onLabelPositionChange
+      })]
+    })]
+  });
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (IconSettings);
+
+/***/ }),
+
+/***/ "./blocks/icon-picker/components/LinkSettings.js":
+/*!*******************************************************!*\
+  !*** ./blocks/icon-picker/components/LinkSettings.js ***!
+  \*******************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/external.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/link.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+
+
+
+const LinkSettings = ({
+  linkUrl,
+  linkTarget,
+  linkRel,
+  onLinkChange,
+  onLinkTargetChange,
+  onLinkRelChange
+}) => {
+  const hasLink = !!linkUrl;
+  const handleLinkChange = newUrl => {
+    onLinkChange(newUrl);
+  };
+  const handleLinkTargetChange = newTarget => {
+    onLinkTargetChange(newTarget);
+  };
+  const handleLinkRelChange = newRel => {
+    onLinkRelChange(newRel);
+  };
+  const getLinkIcon = () => {
+    if (linkTarget === '_blank') {
+      return _wordpress_icons__WEBPACK_IMPORTED_MODULE_2__["default"];
+    }
+    return _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__["default"];
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelBody, {
+    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Link Settings', 'jankx'),
+    icon: getLinkIcon(),
+    initialOpen: false,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TextControl, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('URL', 'jankx'),
+      value: linkUrl,
+      onChange: handleLinkChange,
+      placeholder: "https://example.com",
+      help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Nhập URL để tạo link cho icon', 'jankx')
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Open in', 'jankx'),
+      value: linkTarget,
+      options: [{
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Same window', 'jankx'),
+        value: '_self'
+      }, {
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('New window', 'jankx'),
+        value: '_blank'
+      }, {
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Parent frame', 'jankx'),
+        value: '_parent'
+      }, {
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Top frame', 'jankx'),
+        value: '_top'
+      }],
+      onChange: handleLinkTargetChange
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TextControl, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Link Rel', 'jankx'),
+      value: linkRel,
+      onChange: handleLinkRelChange,
+      placeholder: "nofollow noreferrer",
+      help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Thêm rel attributes cho link (tùy chọn)', 'jankx')
+    }), hasLink && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+      className: "jankx-link-settings__preview",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+        className: "jankx-link-settings__preview-text",
+        children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Preview:', 'jankx')
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("a", {
+        href: linkUrl,
+        target: linkTarget,
+        rel: linkRel,
+        className: "jankx-link-settings__preview-link",
+        children: linkUrl
+      })]
+    })]
+  });
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (LinkSettings);
+
+/***/ }),
+
 /***/ "./node_modules/@wordpress/api-fetch/build-module/index.js":
 /*!*****************************************************************!*\
   !*** ./node_modules/@wordpress/api-fetch/build-module/index.js ***!
@@ -893,6 +1299,349 @@ function parseAndThrowError(response, shouldParseResponse = true) {
 
 /***/ }),
 
+/***/ "./node_modules/@wordpress/icons/build-module/library/align-center.js":
+/*!****************************************************************************!*\
+  !*** ./node_modules/@wordpress/icons/build-module/library/align-center.js ***!
+  \****************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/primitives */ "./node_modules/@wordpress/primitives/build-module/svg/index.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/**
+ * WordPress dependencies
+ */
+
+
+const alignCenter = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.SVG, {
+  xmlns: "http://www.w3.org/2000/svg",
+  viewBox: "0 0 24 24",
+  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.Path, {
+    d: "M7.5 5.5h9V4h-9v1.5Zm-3.5 7h16V11H4v1.5Zm3.5 7h9V18h-9v1.5Z"
+  })
+});
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (alignCenter);
+
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/icons/build-module/library/align-left.js":
+/*!**************************************************************************!*\
+  !*** ./node_modules/@wordpress/icons/build-module/library/align-left.js ***!
+  \**************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/primitives */ "./node_modules/@wordpress/primitives/build-module/svg/index.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/**
+ * WordPress dependencies
+ */
+
+
+const alignLeft = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.SVG, {
+  xmlns: "http://www.w3.org/2000/svg",
+  viewBox: "0 0 24 24",
+  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.Path, {
+    d: "M13 5.5H4V4h9v1.5Zm7 7H4V11h16v1.5Zm-7 7H4V18h9v1.5Z"
+  })
+});
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (alignLeft);
+
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/icons/build-module/library/align-right.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/@wordpress/icons/build-module/library/align-right.js ***!
+  \***************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/primitives */ "./node_modules/@wordpress/primitives/build-module/svg/index.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/**
+ * WordPress dependencies
+ */
+
+
+const alignRight = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.SVG, {
+  xmlns: "http://www.w3.org/2000/svg",
+  viewBox: "0 0 24 24",
+  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.Path, {
+    d: "M11.111 5.5H20V4h-8.889v1.5ZM4 12.5h16V11H4v1.5Zm7.111 7H20V18h-8.889v1.5Z"
+  })
+});
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (alignRight);
+
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/icons/build-module/library/color.js":
+/*!*********************************************************************!*\
+  !*** ./node_modules/@wordpress/icons/build-module/library/color.js ***!
+  \*********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/primitives */ "./node_modules/@wordpress/primitives/build-module/svg/index.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/**
+ * WordPress dependencies
+ */
+
+
+const color = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.SVG, {
+  viewBox: "0 0 24 24",
+  xmlns: "http://www.w3.org/2000/svg",
+  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.Path, {
+    d: "M17.2 10.9c-.5-1-1.2-2.1-2.1-3.2-.6-.9-1.3-1.7-2.1-2.6L12 4l-1 1.1c-.6.9-1.3 1.7-2 2.6-.8 1.2-1.5 2.3-2 3.2-.6 1.2-1 2.2-1 3 0 3.4 2.7 6.1 6.1 6.1s6.1-2.7 6.1-6.1c0-.8-.3-1.8-1-3zm-5.1 7.6c-2.5 0-4.6-2.1-4.6-4.6 0-.3.1-1 .8-2.3.5-.9 1.1-1.9 2-3.1.7-.9 1.3-1.7 1.8-2.3.7.8 1.3 1.6 1.8 2.3.8 1.1 1.5 2.2 2 3.1.7 1.3.8 2 .8 2.3 0 2.5-2.1 4.6-4.6 4.6z"
+  })
+});
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (color);
+
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/icons/build-module/library/external.js":
+/*!************************************************************************!*\
+  !*** ./node_modules/@wordpress/icons/build-module/library/external.js ***!
+  \************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/primitives */ "./node_modules/@wordpress/primitives/build-module/svg/index.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/**
+ * WordPress dependencies
+ */
+
+
+const external = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.SVG, {
+  xmlns: "http://www.w3.org/2000/svg",
+  viewBox: "0 0 24 24",
+  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.Path, {
+    d: "M19.5 4.5h-7V6h4.44l-5.97 5.97 1.06 1.06L18 7.06v4.44h1.5v-7Zm-13 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3H17v3a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h3V5.5h-3Z"
+  })
+});
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (external);
+
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/icons/build-module/library/link.js":
+/*!********************************************************************!*\
+  !*** ./node_modules/@wordpress/icons/build-module/library/link.js ***!
+  \********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/primitives */ "./node_modules/@wordpress/primitives/build-module/svg/index.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/**
+ * WordPress dependencies
+ */
+
+
+const link = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.SVG, {
+  xmlns: "http://www.w3.org/2000/svg",
+  viewBox: "0 0 24 24",
+  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.Path, {
+    d: "M10 17.389H8.444A5.194 5.194 0 1 1 8.444 7H10v1.5H8.444a3.694 3.694 0 0 0 0 7.389H10v1.5ZM14 7h1.556a5.194 5.194 0 0 1 0 10.39H14v-1.5h1.556a3.694 3.694 0 0 0 0-7.39H14V7Zm-4.5 6h5v-1.5h-5V13Z"
+  })
+});
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (link);
+
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/icons/build-module/library/star-filled.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/@wordpress/icons/build-module/library/star-filled.js ***!
+  \***************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/primitives */ "./node_modules/@wordpress/primitives/build-module/svg/index.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/**
+ * WordPress dependencies
+ */
+
+
+const starFilled = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.SVG, {
+  xmlns: "http://www.w3.org/2000/svg",
+  viewBox: "0 0 24 24",
+  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.Path, {
+    d: "M11.776 4.454a.25.25 0 01.448 0l2.069 4.192a.25.25 0 00.188.137l4.626.672a.25.25 0 01.139.426l-3.348 3.263a.25.25 0 00-.072.222l.79 4.607a.25.25 0 01-.362.263l-4.138-2.175a.25.25 0 00-.232 0l-4.138 2.175a.25.25 0 01-.363-.263l.79-4.607a.25.25 0 00-.071-.222L4.754 9.881a.25.25 0 01.139-.426l4.626-.672a.25.25 0 00.188-.137l2.069-4.192z"
+  })
+});
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (starFilled);
+
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/primitives/build-module/svg/index.js":
+/*!**********************************************************************!*\
+  !*** ./node_modules/@wordpress/primitives/build-module/svg/index.js ***!
+  \**********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Circle: () => (/* binding */ Circle),
+/* harmony export */   Defs: () => (/* binding */ Defs),
+/* harmony export */   G: () => (/* binding */ G),
+/* harmony export */   Line: () => (/* binding */ Line),
+/* harmony export */   LinearGradient: () => (/* binding */ LinearGradient),
+/* harmony export */   Path: () => (/* binding */ Path),
+/* harmony export */   Polygon: () => (/* binding */ Polygon),
+/* harmony export */   RadialGradient: () => (/* binding */ RadialGradient),
+/* harmony export */   Rect: () => (/* binding */ Rect),
+/* harmony export */   SVG: () => (/* binding */ SVG),
+/* harmony export */   Stop: () => (/* binding */ Stop)
+/* harmony export */ });
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.mjs");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/**
+ * External dependencies
+ */
+
+
+/**
+ * WordPress dependencies
+ */
+
+
+/** @typedef {{isPressed?: boolean} & import('react').ComponentPropsWithoutRef<'svg'>} SVGProps */
+
+/**
+ * @param {import('react').ComponentPropsWithoutRef<'circle'>} props
+ *
+ * @return {JSX.Element} Circle component
+ */
+
+const Circle = props => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)('circle', props);
+
+/**
+ * @param {import('react').ComponentPropsWithoutRef<'g'>} props
+ *
+ * @return {JSX.Element} G component
+ */
+const G = props => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)('g', props);
+
+/**
+ * @param {import('react').ComponentPropsWithoutRef<'line'>} props
+ *
+ * @return {JSX.Element} Path component
+ */
+const Line = props => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)('line', props);
+
+/**
+ * @param {import('react').ComponentPropsWithoutRef<'path'>} props
+ *
+ * @return {JSX.Element} Path component
+ */
+const Path = props => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)('path', props);
+
+/**
+ * @param {import('react').ComponentPropsWithoutRef<'polygon'>} props
+ *
+ * @return {JSX.Element} Polygon component
+ */
+const Polygon = props => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)('polygon', props);
+
+/**
+ * @param {import('react').ComponentPropsWithoutRef<'rect'>} props
+ *
+ * @return {JSX.Element} Rect component
+ */
+const Rect = props => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)('rect', props);
+
+/**
+ * @param {import('react').ComponentPropsWithoutRef<'defs'>} props
+ *
+ * @return {JSX.Element} Defs component
+ */
+const Defs = props => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)('defs', props);
+
+/**
+ * @param {import('react').ComponentPropsWithoutRef<'radialGradient'>} props
+ *
+ * @return {JSX.Element} RadialGradient component
+ */
+const RadialGradient = props => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)('radialGradient', props);
+
+/**
+ * @param {import('react').ComponentPropsWithoutRef<'linearGradient'>} props
+ *
+ * @return {JSX.Element} LinearGradient component
+ */
+const LinearGradient = props => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)('linearGradient', props);
+
+/**
+ * @param {import('react').ComponentPropsWithoutRef<'stop'>} props
+ *
+ * @return {JSX.Element} Stop component
+ */
+const Stop = props => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)('stop', props);
+const SVG = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.forwardRef)(
+/**
+ * @param {SVGProps}                                    props isPressed indicates whether the SVG should appear as pressed.
+ *                                                            Other props will be passed through to svg component.
+ * @param {import('react').ForwardedRef<SVGSVGElement>} ref   The forwarded ref to the SVG element.
+ *
+ * @return {JSX.Element} Stop component
+ */
+({
+  className,
+  isPressed,
+  ...props
+}, ref) => {
+  const appliedProps = {
+    ...props,
+    className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])(className, {
+      'is-pressed': isPressed
+    }) || undefined,
+    'aria-hidden': true,
+    focusable: false
+  };
+
+  // Disable reason: We need to have a way to render HTML tag for web.
+  // eslint-disable-next-line react/forbid-elements
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("svg", {
+    ...appliedProps,
+    ref: ref
+  });
+});
+SVG.displayName = 'SVG';
+
+
+/***/ }),
+
 /***/ "./node_modules/@wordpress/url/build-module/add-query-args.js":
 /*!********************************************************************!*\
   !*** ./node_modules/@wordpress/url/build-module/add-query-args.js ***!
@@ -1355,6 +2104,21 @@ function safeDecodeURIComponent(uriComponent) {
   }
 }
 
+
+/***/ }),
+
+/***/ "./node_modules/clsx/dist/clsx.mjs":
+/*!*****************************************!*\
+  !*** ./node_modules/clsx/dist/clsx.mjs ***!
+  \*****************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   clsx: () => (/* binding */ clsx),
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+function r(e){var t,f,n="";if("string"==typeof e||"number"==typeof e)n+=e;else if("object"==typeof e)if(Array.isArray(e)){var o=e.length;for(t=0;t<o;t++)e[t]&&(f=r(e[t]))&&(n&&(n+=" "),n+=f)}else for(f in e)e[f]&&(n&&(n+=" "),n+=f);return n}function clsx(){for(var e,t,f=0,n="",o=arguments.length;f<o;f++)(e=arguments[f])&&(t=r(e))&&(n&&(n+=" "),n+=t);return n}/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (clsx);
 
 /***/ }),
 
@@ -2848,9 +3612,9 @@ module.exports = React;
 var __webpack_exports__ = {};
 // This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
 (() => {
-/*!********************************************!*\
-  !*** ./blocks/language-switcher/index.tsx ***!
-  \********************************************/
+/*!**************************************!*\
+  !*** ./blocks/icon-picker/index.tsx ***!
+  \**************************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__);
@@ -2860,10 +3624,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/api-fetch */ "./node_modules/@wordpress/api-fetch/build-module/index.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/star-filled.js");
+/* harmony import */ var _components_IconPicker__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/IconPicker */ "./blocks/icon-picker/components/IconPicker.js");
+/* harmony import */ var _components_IconSettings__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/IconSettings */ "./blocks/icon-picker/components/IconSettings.js");
+/* harmony import */ var _components_LinkSettings__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/LinkSettings */ "./blocks/icon-picker/components/LinkSettings.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 
 
 
@@ -2871,205 +3636,250 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-function LanguageSwitcherEdit({ attributes, setAttributes }) {
-    const { showFlags, showNames, showCurrent, displayType, className } = attributes;
-    const [languages, setLanguages] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)([]);
-    const [isLoading, setIsLoading] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(true);
-    const [error, setError] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)('');
-    const [isDropdownOpen, setIsDropdownOpen] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(false);
+
+
+const Edit = ({ attributes, setAttributes }) => {
+    const { iconName, iconType, iconCategory, iconSize, iconColor, iconAlignment, iconStyle, linkUrl, linkTarget, linkRel, showLabel, iconLabel, labelPosition, customClassName } = attributes;
     const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)({
-        className: `language-switcher-block ${className || ''}`
+        className: `jankx-icon-picker-block jankx-icon-picker-block--${iconAlignment} ${customClassName || ''}`.trim()
     });
-    (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
-        const fetchLanguages = async () => {
-            try {
-                setIsLoading(true);
-                setError('');
-                const response = await (0,_wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_5__["default"])({
-                    path: '/jankx/v1/languages',
-                    method: 'GET'
-                });
-                if (response && Array.isArray(response)) {
-                    setLanguages(response);
+    const handleIconChange = icon => {
+        setAttributes({
+            iconName: icon.name,
+            iconCategory: icon.category || ''
+        });
+    };
+    const handleIconTypeChange = value => {
+        setAttributes({
+            iconType: value
+        });
+    };
+    const handleIconCategoryChange = value => {
+        setAttributes({
+            iconCategory: value
+        });
+    };
+    const renderIcon = () => {
+        if (!iconName) {
+            return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+                className: "jankx-icon-picker-placeholder",
+                children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Chọn icon từ Jankx Font Icons', 'jankx')
+            });
+        }
+        if (iconType === 'material') {
+            const styleClass = iconStyle !== 'filled' ? `material-icons-${iconStyle}` : 'material-icons';
+            return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
+                className: styleClass,
+                style: {
+                    fontSize: iconSize,
+                    color: iconColor
+                },
+                children: iconName
+            });
+        }
+        else if (iconType === 'fontawesome') {
+            const prefix = iconCategory === 'brands' ? 'fab' : iconCategory === 'regular' ? 'far' : 'fas';
+            return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("i", {
+                className: `${prefix} fa-${iconName}`,
+                style: {
+                    fontSize: iconSize,
+                    color: iconColor
                 }
-                else {
-                    setLanguages([]);
+            });
+        }
+        else if (iconType === 'custom') {
+            return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
+                className: `icon icon-${iconName}`,
+                style: {
+                    fontSize: iconSize,
+                    color: iconColor
                 }
-            }
-            catch (err) {
-                // eslint-disable-next-line no-console
-                console.error('Failed to fetch languages:', err);
-                setError('Failed to load languages. Please check if Polylang plugin is active.');
-                setLanguages([]);
-            }
-            finally {
-                setIsLoading(false);
-            }
-        };
-        fetchLanguages();
-    }, []);
-    const renderDropdownPreview = () => {
-        const currentLang = languages.find(l => l.current) || languages[0];
-        return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
-            className: "language-switcher-dropdown-wrapper",
-            children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("button", {
-                    className: "language-switcher-dropdown",
-                    type: "button",
-                    onClick: () => setIsDropdownOpen(!isDropdownOpen),
-                    children: [showFlags && currentLang?.flag && currentLang.flag.trim() !== '' && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("img", {
-                            src: currentLang.flag,
-                            alt: currentLang.name,
-                            className: "language-flag"
-                        }), showNames && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("span", {
-                            className: "language-name",
-                            children: currentLang?.name || ''
-                        }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("span", {
-                            className: "language-arrow",
-                            children: "\u25BC"
-                        })]
-                }), isDropdownOpen && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("ul", {
-                    className: "language-switcher-dropdown-menu",
-                    children: languages.map(lang => /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("li", {
-                        className: `language-dropdown-item ${lang.current ? 'current-language' : ''}`,
-                        children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("a", {
-                            href: "#",
-                            className: "language-dropdown-link",
-                            onClick: e => e.preventDefault(),
-                            children: [showFlags && lang.flag && lang.flag.trim() !== '' && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("img", {
-                                    src: lang.flag,
-                                    alt: lang.name,
-                                    className: "language-flag"
-                                }), showNames && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("span", {
-                                    className: "language-name",
-                                    children: lang.name
-                                })]
-                        })
-                    }, lang.code))
+            });
+        }
+        return null;
+    };
+    const renderContent = () => {
+        const iconElement = renderIcon();
+        if (linkUrl) {
+            return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("a", {
+                href: linkUrl,
+                target: linkTarget,
+                rel: linkRel,
+                className: "jankx-icon-picker-block__link",
+                children: [iconElement, showLabel && iconLabel && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
+                        className: `jankx-icon-picker-block__label jankx-icon-picker-block__label--${labelPosition}`,
+                        children: iconLabel
+                    })]
+            });
+        }
+        return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
+            children: [iconElement, showLabel && iconLabel && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
+                    className: `jankx-icon-picker-block__label jankx-icon-picker-block__label--${labelPosition}`,
+                    children: iconLabel
                 })]
         });
     };
-    const renderListPreview = () => /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("ul", {
-        className: "language-switcher-list",
-        children: languages.map(lang => /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("li", {
-            className: `language-item ${lang.current ? 'current-language' : ''}`,
-            children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("a", {
-                href: "#",
-                className: "language-link",
-                onClick: e => e.preventDefault(),
-                children: [showFlags && lang.flag && lang.flag.trim() !== '' && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("img", {
-                        src: lang.flag,
-                        alt: lang.name,
-                        className: "language-flag"
-                    }), showNames && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("span", {
-                        className: "language-name",
-                        children: lang.name
+    return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
+        children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.BlockControls, {
+                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.AlignmentToolbar, {
+                    value: iconAlignment,
+                    onChange: alignment => setAttributes({
+                        iconAlignment: alignment || 'left'
+                    })
+                })
+            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
+                children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
+                        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Icon Selection', 'jankx'),
+                        icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__["default"],
+                        initialOpen: true,
+                        children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components_IconPicker__WEBPACK_IMPORTED_MODULE_5__["default"], {
+                            value: iconName ? {
+                                name: iconName,
+                                category: iconCategory
+                            } : null,
+                            onChange: handleIconChange,
+                            iconType: iconType,
+                            category: iconCategory,
+                            onIconTypeChange: handleIconTypeChange,
+                            onCategoryChange: handleIconCategoryChange
+                        })
+                    }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components_IconSettings__WEBPACK_IMPORTED_MODULE_6__["default"], {
+                        iconSize: iconSize,
+                        iconColor: iconColor,
+                        iconAlignment: iconAlignment,
+                        iconStyle: iconStyle,
+                        showLabel: showLabel,
+                        iconLabel: iconLabel,
+                        labelPosition: labelPosition,
+                        onIconSizeChange: value => setAttributes({
+                            iconSize: value
+                        }),
+                        onIconColorChange: value => setAttributes({
+                            iconColor: value
+                        }),
+                        onIconAlignmentChange: value => setAttributes({
+                            iconAlignment: value
+                        }),
+                        onIconStyleChange: value => setAttributes({
+                            iconStyle: value
+                        }),
+                        onShowLabelChange: value => setAttributes({
+                            showLabel: value
+                        }),
+                        onIconLabelChange: value => setAttributes({
+                            iconLabel: value
+                        }),
+                        onLabelPositionChange: value => setAttributes({
+                            labelPosition: value
+                        })
+                    }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components_LinkSettings__WEBPACK_IMPORTED_MODULE_7__["default"], {
+                        linkUrl: linkUrl,
+                        linkTarget: linkTarget,
+                        linkRel: linkRel,
+                        onLinkChange: value => setAttributes({
+                            linkUrl: value
+                        }),
+                        onLinkTargetChange: value => setAttributes({
+                            linkTarget: value
+                        }),
+                        onLinkRelChange: value => setAttributes({
+                            linkRel: value
+                        })
                     })]
-            })
-        }, lang.code))
-    });
-    const renderPreview = () => {
-        if (isLoading) {
-            return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
-                className: "language-switcher-preview loading",
-                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("p", {
-                    children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Loading languages...', 'jankx')
-                })
-            });
-        }
-        if (error) {
-            return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
-                className: "language-switcher-preview error",
-                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("p", {
-                    children: error
-                })
-            });
-        }
-        if (languages.length === 0) {
-            return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
-                className: "language-switcher-preview no-languages",
-                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("p", {
-                    children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('No languages found. Please check Polylang configuration.', 'jankx')
-                })
-            });
-        }
-        return displayType === 'list' ? renderListPreview() : renderDropdownPreview();
-    };
-    return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
-        children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
-                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
-                    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Language Switcher Settings', 'jankx'),
-                    initialOpen: true,
-                    children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
-                            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display Type', 'jankx'),
-                            value: displayType,
-                            options: [{
-                                    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Dropdown', 'jankx'),
-                                    value: 'dropdown'
-                                }, {
-                                    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('List', 'jankx'),
-                                    value: 'list'
-                                }],
-                            onChange: value => setAttributes({
-                                displayType: value
-                            })
-                        }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
-                            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Flags', 'jankx'),
-                            checked: showFlags,
-                            onChange: value => setAttributes({
-                                showFlags: value
-                            }),
-                            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display country flags next to language names', 'jankx')
-                        }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
-                            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Names', 'jankx'),
-                            checked: showNames,
-                            onChange: value => setAttributes({
-                                showNames: value
-                            }),
-                            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display language names', 'jankx')
-                        }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
-                            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Current Language', 'jankx'),
-                            checked: showCurrent,
-                            onChange: value => setAttributes({
-                                showCurrent: value
-                            }),
-                            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Include current language in the switcher', 'jankx')
-                        })]
-                })
-            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
                 ...blockProps,
-                children: renderPreview()
+                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+                    className: "jankx-icon-picker-block__content",
+                    style: {
+                        textAlign: iconAlignment
+                    },
+                    children: renderContent()
+                })
             })]
     });
-}
-function LanguageSwitcherSave() {
-    return null;
-}
-(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.registerBlockType)('jankx/language-switcher', {
-    title: 'Language Switcher',
+};
+(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.registerBlockType)('jankx/icon-picker', {
+    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Icon Picker', 'jankx'),
     category: 'widgets',
-    attributes: {
-        showFlags: {
-            type: 'boolean',
-            default: true
+    icon: 'star-filled',
+    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Chọn và hiển thị icon từ Jankx Font Icons System với khả năng thêm link và tùy chỉnh style', 'jankx'),
+    keywords: ['icon', 'font', 'link', 'button', 'symbol', 'jankx'],
+    supports: {
+        html: false,
+        align: true,
+        alignWide: true,
+        spacing: {
+            margin: true,
+            padding: true
         },
-        showNames: {
-            type: 'boolean',
-            default: true
+        color: {
+            text: true,
+            background: true
         },
-        showCurrent: {
-            type: 'boolean',
-            default: true
-        },
-        displayType: {
-            type: 'string',
-            default: 'dropdown'
-        },
-        className: {
-            type: 'string'
+        typography: {
+            fontSize: true,
+            lineHeight: true
         }
     },
-    edit: LanguageSwitcherEdit,
-    save: LanguageSwitcherSave
+    attributes: {
+        iconName: {
+            type: 'string',
+            default: 'home'
+        },
+        iconType: {
+            type: 'string',
+            default: 'material'
+        },
+        iconCategory: {
+            type: 'string',
+            default: 'navigation'
+        },
+        iconSize: {
+            type: 'string',
+            default: '24px'
+        },
+        iconColor: {
+            type: 'string',
+            default: '#333333'
+        },
+        iconAlignment: {
+            type: 'string',
+            default: 'left'
+        },
+        linkUrl: {
+            type: 'string',
+            default: ''
+        },
+        linkTarget: {
+            type: 'string',
+            default: '_self'
+        },
+        linkRel: {
+            type: 'string',
+            default: ''
+        },
+        showLabel: {
+            type: 'boolean',
+            default: false
+        },
+        iconLabel: {
+            type: 'string',
+            default: ''
+        },
+        labelPosition: {
+            type: 'string',
+            default: 'after'
+        },
+        customClassName: {
+            type: 'string',
+            default: ''
+        },
+        iconStyle: {
+            type: 'string',
+            default: 'filled'
+        }
+    },
+    edit: Edit
 });
 
 })();

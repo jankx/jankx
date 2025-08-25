@@ -2,11 +2,9 @@ import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
 import {
     useBlockProps,
-    InspectorControls,
-    PanelBody,
-    ToggleControl,
-    SelectControl
+    InspectorControls
 } from '@wordpress/block-editor';
+import { PanelBody, ToggleControl, SelectControl } from '@wordpress/components';
 import { useState, useEffect } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 
@@ -79,7 +77,7 @@ function LanguageSwitcherEdit({ attributes, setAttributes }: LanguageSwitcherEdi
     }, []);
 
     const renderDropdownPreview = (): JSX.Element => {
-        const currentLang: Language = languages.find(l => l.current) || languages[0];
+        const currentLang: Language | undefined = languages.find(l => l.current) || languages[0];
 
         return (
             <div className="language-switcher-dropdown-wrapper">
@@ -88,10 +86,10 @@ function LanguageSwitcherEdit({ attributes, setAttributes }: LanguageSwitcherEdi
                     type="button"
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 >
-                    {showFlags && currentLang.flag && currentLang.flag.trim() !== '' && (
+                    {showFlags && currentLang?.flag && currentLang.flag.trim() !== '' && (
                         <img src={currentLang.flag} alt={currentLang.name} className="language-flag" />
                     )}
-                    {showNames && <span className="language-name">{currentLang.name}</span>}
+                    {showNames && <span className="language-name">{currentLang?.name || ''}</span>}
                     <span className="language-arrow">▼</span>
                 </button>
 
@@ -99,7 +97,7 @@ function LanguageSwitcherEdit({ attributes, setAttributes }: LanguageSwitcherEdi
                     <ul className="language-switcher-dropdown-menu">
                         {languages.map((lang: Language) => (
                             <li key={lang.code} className={`language-dropdown-item ${lang.current ? 'current-language' : ''}`}>
-                                <a href="#" className="language-dropdown-link" onClick={(e: React.MouseEvent) => e.preventDefault()}>
+                                <a href="#" className="language-dropdown-link" onClick={(e: React.MouseEvent<HTMLAnchorElement>) => e.preventDefault()}>
                                     {showFlags && lang.flag && lang.flag.trim() !== '' && (
                                         <img src={lang.flag} alt={lang.name} className="language-flag" />
                                     )}
@@ -205,6 +203,15 @@ function LanguageSwitcherSave(): null {
 }
 
 registerBlockType('jankx/language-switcher', {
+    title: 'Language Switcher',
+    category: 'widgets',
+    attributes: {
+        showFlags: { type: 'boolean', default: true },
+        showNames: { type: 'boolean', default: true },
+        showCurrent: { type: 'boolean', default: true },
+        displayType: { type: 'string', default: 'dropdown' },
+        className: { type: 'string' }
+    },
     edit: LanguageSwitcherEdit,
     save: LanguageSwitcherSave,
 });

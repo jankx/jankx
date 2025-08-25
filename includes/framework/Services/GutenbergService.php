@@ -3,7 +3,11 @@
 namespace Jankx\Services;
 
 use Jankx\Foundation\Application;
+use Jankx\Gutenberg\Blocks\DynamicCollectionBlock;
+use Jankx\Gutenberg\Blocks\IconPickerBlock;
 use Jankx\Gutenberg\Blocks\LanguageSwitcherBlock;
+use Jankx\Gutenberg\Blocks\CalendarBlock;
+use Jankx\Gutenberg\Blocks\ProductCarouselBlock;
 use Jankx\Gutenberg\GutenbergPattern;
 use Jankx\Facades\Log;
 use Jankx\Helper\Environment;
@@ -110,6 +114,10 @@ class GutenbergService
     protected function registerDefaultBlocks()
     {
         $this->repository->registerBlock(LanguageSwitcherBlock::class);
+        $this->repository->registerBlock(CalendarBlock::class);
+        $this->repository->registerBlock(DynamicCollectionBlock::class);
+        $this->repository->registerBlock(IconPickerBlock::class);
+        $this->repository->registerBlock(ProductCarouselBlock::class);
     }
 
     /**

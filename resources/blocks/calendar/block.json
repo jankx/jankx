@@ -1,0 +1,32 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "name": "jankx/calendar",
+    "title": "Calendar",
+    "category": "widgets",
+    "icon": "calendar",
+    "description": "Display events calendar using FullCalendar.",
+    "keywords": ["calendar", "events", "fullcalendar"],
+    "textdomain": "jankx",
+    "supports": {
+        "html": false,
+        "align": ["wide", "full"],
+        "spacing": {
+            "margin": true,
+            "padding": true
+        }
+    },
+    "attributes": {
+        "initialView": { "type": "string", "default": "dayGridMonth" },
+        "editable": { "type": "boolean", "default": false },
+        "selectable": { "type": "boolean", "default": false },
+        "weekends": { "type": "boolean", "default": true },
+        "locale": { "type": "string", "default": "en" },
+        "events": { "type": "array", "default": [] },
+        "className": { "type": "string" }
+    },
+    "editorScript": "file:./build/index.js",
+    "style": "file:./build/style-style.css.css",
+    "editorStyle": "file:./build/editor.css"
+}
+
+
