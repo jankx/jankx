@@ -61,6 +61,10 @@ module.exports = {
     'blocks/wplyr-media/build/style': './blocks/wplyr-media/style.scss',
     'blocks/wplyr-media/build/editor': './blocks/wplyr-media/editor.scss',
     'blocks/wplyr-media/build/view': './blocks/wplyr-media/view.js',
+
+    'blocks/icon-button/build/index': './blocks/icon-button/index.tsx',
+    'blocks/icon-button/build/style': './blocks/icon-button/style.scss',
+    'blocks/icon-button/build/editor': './blocks/icon-button/editor.scss',
   },
   output: {
     path: path.resolve(__dirname),

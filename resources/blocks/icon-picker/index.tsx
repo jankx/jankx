@@ -10,7 +10,7 @@ import {
 import { PanelBody } from '@wordpress/components';
 import { starFilled } from '@wordpress/icons';
 
-import IconPicker from './components/IconPicker';
+import IconPicker from '../../shared/components/IconPicker';
 import IconSettings from './components/IconSettings';
 import LinkSettings from './components/LinkSettings';
 

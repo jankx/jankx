@@ -1,0 +1,143 @@
+// Icon Button Block Frontend Styles
+.jankx-icon-button-block {
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+
+.jankx-icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border: 2px solid #007cba;
+    border-radius: 4px;
+    background: #007cba;
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.4;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 44px;
+    min-width: 120px;
+
+    &:hover {
+        background: #005a87;
+        border-color: #005a87;
+        color: #fff;
+        text-decoration: none;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    &:focus {
+        outline: 2px solid #007cba;
+        outline-offset: 2px;
+    }
+
+    &:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    // Icon styles
+    .material-icons {
+        font-size: 18px;
+        line-height: 1;
+    }
+
+    .fas {
+        font-size: 16px;
+        line-height: 1;
+    }
+
+    .dashicons {
+        font-size: 18px;
+        line-height: 1;
+        width: 18px;
+        height: 18px;
+    }
+
+    // Icon position
+    .jankx-icon-button__icon--before {
+        order: -1;
+    }
+
+    .jankx-icon-button__icon--after {
+        order: 1;
+    }
+
+    // Text content
+    span {
+        display: inline;
+        margin: 0;
+        padding: 0;
+    }
+
+    // RichText content styling
+    .jankx-icon-button__text {
+        display: inline;
+        margin: 0;
+        padding: 0;
+        border: none;
+        background: transparent;
+        color: inherit;
+        font-size: inherit;
+        font-weight: inherit;
+        line-height: inherit;
+        text-transform: inherit;
+        letter-spacing: inherit;
+        min-width: 1em;
+    }
+}
+
+// Responsive
+@media (max-width: 768px) {
+    .jankx-icon-button {
+        padding: 10px 20px;
+        font-size: 14px;
+        min-height: 40px;
+        min-width: 100px;
+
+        .material-icons {
+            font-size: 16px;
+        }
+
+        .fas {
+            font-size: 14px;
+        }
+
+        .dashicons {
+            font-size: 16px;
+            width: 16px;
+            height: 16px;
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .jankx-icon-button {
+        padding: 8px 16px;
+        font-size: 13px;
+        min-height: 36px;
+        min-width: 80px;
+        gap: 6px;
+
+        .material-icons {
+            font-size: 14px;
+        }
+
+        .fas {
+            font-size: 12px;
+        }
+
+        .dashicons {
+            font-size: 14px;
+            width: 14px;
+            height: 14px;
+        }
+    }
+}
