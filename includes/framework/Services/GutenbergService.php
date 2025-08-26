@@ -6,7 +6,6 @@ use Jankx\Foundation\Application;
 use Jankx\Gutenberg\Blocks\DynamicCollectionBlock;
 use Jankx\Gutenberg\Blocks\IconPickerBlock;
 use Jankx\Gutenberg\Blocks\LanguageSwitcherBlock;
-use Jankx\Gutenberg\Blocks\CalendarBlock;
 use Jankx\Gutenberg\Blocks\MegaMenuBlock;
 use Jankx\Gutenberg\Blocks\ProductCarouselBlock;
 use Jankx\Gutenberg\Blocks\SwiperSlideBlock;
@@ -117,7 +116,6 @@ class GutenbergService
     protected function registerDefaultBlocks()
     {
         $this->repository->registerBlock(LanguageSwitcherBlock::class);
-        $this->repository->registerBlock(CalendarBlock::class);
         $this->repository->registerBlock(DynamicCollectionBlock::class);
         $this->repository->registerBlock(IconPickerBlock::class);
         $this->repository->registerBlock(ProductCarouselBlock::class);

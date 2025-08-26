@@ -1,1 +1,0 @@
-{"version":3,"file":"blocks/calendar/build/editor.css","mappings":";;;AAAA;AACA;EACI;AACJ,C","sources":["webpack://jankx/./blocks/calendar/editor.scss"],"sourcesContent":["/* Editor-specific minor spacing */\r\n.jankx-calendar-block {\r\n    padding: 8px;\r\n}\r\n\r\n\r\n"],"names":[],"sourceRoot":""}

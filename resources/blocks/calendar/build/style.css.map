@@ -1,1 +1,0 @@
-{"version":3,"file":"blocks/calendar/build/style.css","mappings":";;;AAAA;EACI;AACJ;;AAEA;EACI;AACJ,C","sources":["webpack://jankx/./blocks/calendar/style.scss"],"sourcesContent":[".jankx-calendar-block {\r\n    display: block;\r\n}\r\n\r\n.jankx-calendar-wrap {\r\n    position: relative;\r\n}\r\n\r\n\r\n"],"names":[],"sourceRoot":""}
