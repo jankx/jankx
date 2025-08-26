@@ -10,7 +10,6 @@ import {
 import { PanelBody } from '@wordpress/components';
 import { starFilled } from '@wordpress/icons';
 
-
 import IconPicker from './components/IconPicker';
 import IconSettings from './components/IconSettings';
 import LinkSettings from './components/LinkSettings';
@@ -23,6 +22,7 @@ interface IconPickerAttributes {
     iconName: string;
     iconType: IconType;
     iconCategory: string;
+    iconSet: string;
     iconSize: string;
     iconColor: string;
     iconAlignment: Alignment;
@@ -33,6 +33,8 @@ interface IconPickerAttributes {
     showLabel: boolean;
     iconLabel: string;
     labelPosition: LabelPosition;
+    labelSize: string;
+    labelColor: string;
     customClassName?: string;
 }
 
@@ -46,6 +48,7 @@ const Edit = ({ attributes, setAttributes }: EditProps): JSX.Element => {
         iconName,
         iconType,
         iconCategory,
+        iconSet,
         iconSize,
         iconColor,
         iconAlignment,
@@ -56,6 +59,8 @@ const Edit = ({ attributes, setAttributes }: EditProps): JSX.Element => {
         showLabel,
         iconLabel,
         labelPosition,
+        labelSize,
+        labelColor,
         customClassName
     } = attributes;
 
@@ -63,10 +68,11 @@ const Edit = ({ attributes, setAttributes }: EditProps): JSX.Element => {
         className: `jankx-icon-picker-block jankx-icon-picker-block--${iconAlignment} ${customClassName || ''}`.trim()
     });
 
-    const handleIconChange = (icon: { name: string; category?: string }): void => {
+    const handleIconChange = (icon: { name: string; category?: string; iconSet?: string }): void => {
         setAttributes({
             iconName: icon.name,
-            iconCategory: icon.category || ''
+            iconCategory: icon.category || '',
+            iconSet: icon.iconSet || 'material'
         });
     };
 
@@ -87,7 +93,8 @@ const Edit = ({ attributes, setAttributes }: EditProps): JSX.Element => {
             );
         }
 
-        if (iconType === 'material') {
+        // Render icon based on iconSet
+        if (iconSet === 'material') {
             const styleClass = iconStyle !== 'filled' ? `material-icons-${iconStyle}` : 'material-icons';
             return (
                 <span
@@ -97,12 +104,17 @@ const Edit = ({ attributes, setAttributes }: EditProps): JSX.Element => {
                     {iconName}
                 </span>
             );
-        } else if (iconType === 'fontawesome') {
-            const prefix = iconCategory === 'brands' ? 'fab' :
-                          iconCategory === 'regular' ? 'far' : 'fas';
+        } else if (iconSet === 'fontawesome') {
             return (
                 <i
-                    className={`${prefix} fa-${iconName}`}
+                    className={`fas fa-${iconName}`}
+                    style={{ fontSize: iconSize, color: iconColor }}
+                />
+            );
+        } else if (iconSet === 'dashicons') {
+            return (
+                <span
+                    className={`dashicons dashicons-${iconName}`}
                     style={{ fontSize: iconSize, color: iconColor }}
                 />
             );
@@ -115,11 +127,20 @@ const Edit = ({ attributes, setAttributes }: EditProps): JSX.Element => {
             );
         }
 
-        return null;
+        // Fallback to material icons
+        return (
+            <span
+                className="material-icons"
+                style={{ fontSize: iconSize, color: iconColor }}
+            >
+                {iconName}
+            </span>
+        );
     };
 
     const renderContent = (): JSX.Element => {
         const iconElement = renderIcon();
+        const finalLabelColor = labelColor || iconColor;
 
         if (linkUrl) {
             return (
@@ -131,7 +152,10 @@ const Edit = ({ attributes, setAttributes }: EditProps): JSX.Element => {
                 >
                     {iconElement}
                     {showLabel && iconLabel && (
-                        <span className={`jankx-icon-picker-block__label jankx-icon-picker-block__label--${labelPosition}`}>
+                        <span
+                            className={`jankx-icon-picker-block__label jankx-icon-picker-block__label--${labelPosition}`}
+                            style={{ fontSize: labelSize, color: finalLabelColor }}
+                        >
                             {iconLabel}
                         </span>
                     )}
@@ -143,7 +167,10 @@ const Edit = ({ attributes, setAttributes }: EditProps): JSX.Element => {
             <>
                 {iconElement}
                 {showLabel && iconLabel && (
-                    <span className={`jankx-icon-picker-block__label jankx-icon-picker-block__label--${labelPosition}`}>
+                    <span
+                        className={`jankx-icon-picker-block__label jankx-icon-picker-block__label--${labelPosition}`}
+                        style={{ fontSize: labelSize, color: finalLabelColor }}
+                    >
                         {iconLabel}
                     </span>
                 )}
@@ -167,11 +194,11 @@ const Edit = ({ attributes, setAttributes }: EditProps): JSX.Element => {
                     initialOpen={true}
                 >
                     <IconPicker
-                        value={iconName ? { name: iconName, category: iconCategory } : null}
+                        value={iconName ? { name: iconName, category: iconCategory, iconSet: iconSet } : null}
                         onChange={handleIconChange}
                         iconType={iconType}
                         category={iconCategory}
-                        onIconTypeChange={handleIconTypeChange}
+                        onIconTypeChange={(value: string) => handleIconTypeChange(value as IconType)}
                         onCategoryChange={handleIconCategoryChange}
                     />
                 </PanelBody>
@@ -184,6 +211,8 @@ const Edit = ({ attributes, setAttributes }: EditProps): JSX.Element => {
                     showLabel={showLabel}
                     iconLabel={iconLabel}
                     labelPosition={labelPosition}
+                    labelSize={labelSize}
+                    labelColor={labelColor}
                     onIconSizeChange={(value: string) => setAttributes({ iconSize: value })}
                     onIconColorChange={(value: string) => setAttributes({ iconColor: value })}
                     onIconAlignmentChange={(value: Alignment) => setAttributes({ iconAlignment: value })}
@@ -191,6 +220,8 @@ const Edit = ({ attributes, setAttributes }: EditProps): JSX.Element => {
                     onShowLabelChange={(value: boolean) => setAttributes({ showLabel: value })}
                     onIconLabelChange={(value: string) => setAttributes({ iconLabel: value })}
                     onLabelPositionChange={(value: LabelPosition) => setAttributes({ labelPosition: value })}
+                    onLabelSizeChange={(value: string) => setAttributes({ labelSize: value })}
+                    onLabelColorChange={(value: string) => setAttributes({ labelColor: value })}
                 />
 
                 <LinkSettings
@@ -212,6 +243,133 @@ const Edit = ({ attributes, setAttributes }: EditProps): JSX.Element => {
                 </div>
             </div>
         </>
+    );
+};
+
+const Save = ({ attributes }: { attributes: IconPickerAttributes }): JSX.Element => {
+    const {
+        iconName,
+        iconType,
+        iconCategory,
+        iconSet,
+        iconSize,
+        iconColor,
+        iconAlignment,
+        iconStyle,
+        linkUrl,
+        linkTarget,
+        linkRel,
+        showLabel,
+        iconLabel,
+        labelPosition,
+        labelSize,
+        labelColor,
+        customClassName
+    } = attributes;
+
+    const blockProps = useBlockProps.save({
+        className: `jankx-icon-picker-block jankx-icon-picker-block--${iconAlignment} ${customClassName || ''}`.trim()
+    });
+
+    const renderIcon = (): JSX.Element | null => {
+        if (!iconName) {
+            return null;
+        }
+
+        // Render icon based on iconSet
+        if (iconSet === 'material') {
+            const styleClass = iconStyle !== 'filled' ? `material-icons-${iconStyle}` : 'material-icons';
+            return (
+                <span
+                    className={styleClass}
+                    style={{ fontSize: iconSize, color: iconColor }}
+                >
+                    {iconName}
+                </span>
+            );
+        } else if (iconSet === 'fontawesome') {
+            return (
+                <i
+                    className={`fas fa-${iconName}`}
+                    style={{ fontSize: iconSize, color: iconColor }}
+                />
+            );
+        } else if (iconSet === 'dashicons') {
+            return (
+                <span
+                    className={`dashicons dashicons-${iconName}`}
+                    style={{ fontSize: iconSize, color: iconColor }}
+                />
+            );
+        } else if (iconType === 'custom') {
+            return (
+                <span
+                    className={`icon icon-${iconName}`}
+                    style={{ fontSize: iconSize, color: iconColor }}
+                />
+            );
+        }
+
+        // Fallback to material icons
+        return (
+            <span
+                className="material-icons"
+                style={{ fontSize: iconSize, color: iconColor }}
+            >
+                {iconName}
+            </span>
+        );
+    };
+
+    const renderContent = (): JSX.Element => {
+        const iconElement = renderIcon();
+        const finalLabelColor = labelColor || iconColor;
+
+        if (linkUrl) {
+            return (
+                <a
+                    href={linkUrl}
+                    target={linkTarget}
+                    rel={linkRel}
+                    className="jankx-icon-picker-block__link"
+                >
+                    {iconElement}
+                    {showLabel && iconLabel && (
+                        <span
+                            className={`jankx-icon-picker-block__label jankx-icon-picker-block__label--${labelPosition}`}
+                            style={{ fontSize: labelSize, color: finalLabelColor }}
+                        >
+                            {iconLabel}
+                        </span>
+                    )}
+                </a>
+            );
+        }
+
+        return (
+            <>
+                {iconElement}
+                {showLabel && iconLabel && (
+                    <span
+                        className={`jankx-icon-picker-block__label jankx-icon-picker-block__label--${labelPosition}`}
+                        style={{ fontSize: labelSize, color: finalLabelColor }}
+                    >
+                        {iconLabel}
+                    </span>
+                )}
+            </>
+        );
+    };
+
+    return (
+        <div {...blockProps}>
+            <div
+                className="jankx-icon-picker-block__content"
+                style={{ textAlign: iconAlignment }}
+            >
+                {renderContent()}
+            </div>
+        </div>
     );
 };
 
@@ -242,6 +400,7 @@ registerBlockType('jankx/icon-picker', {
         iconName: { type: 'string', default: 'home' },
         iconType: { type: 'string', default: 'material' },
         iconCategory: { type: 'string', default: 'navigation' },
+        iconSet: { type: 'string', default: 'material' },
         iconSize: { type: 'string', default: '24px' },
         iconColor: { type: 'string', default: '#333333' },
         iconAlignment: { type: 'string', default: 'left' },
@@ -251,10 +410,13 @@ registerBlockType('jankx/icon-picker', {
         showLabel: { type: 'boolean', default: false },
         iconLabel: { type: 'string', default: '' },
         labelPosition: { type: 'string', default: 'after' },
+        labelSize: { type: 'string', default: '14px' },
+        labelColor: { type: 'string', default: '' },
         customClassName: { type: 'string', default: '' },
         iconStyle: { type: 'string', default: 'filled' }
     },
-    edit: Edit
+    edit: Edit,
+    save: Save
 });
 
 

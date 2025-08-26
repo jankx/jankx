@@ -2,10 +2,10 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./blocks/icon-picker/components/IconPicker.js":
-/*!*****************************************************!*\
-  !*** ./blocks/icon-picker/components/IconPicker.js ***!
-  \*****************************************************/
+/***/ "./blocks/icon-picker/components/IconPicker.tsx":
+/*!******************************************************!*\
+  !*** ./blocks/icon-picker/components/IconPicker.tsx ***!
+  \******************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -18,164 +18,87 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/api-fetch */ "./node_modules/@wordpress/api-fetch/build-module/index.js");
+/* harmony import */ var _ShadcnIconPicker__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ShadcnIconPicker */ "./blocks/icon-picker/components/ShadcnIconPicker.tsx");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 
 
 
 
 
-const IconPicker = ({
-  value,
-  onChange,
-  iconType = 'material',
-  category = 'navigation',
-  onIconTypeChange,
-  onCategoryChange
-}) => {
-  const [isOpen, setIsOpen] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
-  const [searchTerm, setSearchTerm] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('');
-  const [selectedIconType, setSelectedIconType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(iconType);
-  const [selectedCategory, setSelectedCategory] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(category);
-  const [iconData, setIconData] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)({});
-  const [isLoading, setIsLoading] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
-
-  // Fetch icon data from Jankx Font Icons System
-  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    const fetchIconData = async () => {
-      setIsLoading(true);
-      try {
-        // Sử dụng Jankx Font Icons API endpoint
-        const response = await (0,_wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3__["default"])({
-          path: '/jankx/v1/icons/available',
-          method: 'GET'
+const IconPicker = ({ value, onChange, iconType = 'material', category = 'navigation', onIconTypeChange, onCategoryChange }) => {
+    const [isModalOpen, setIsModalOpen] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+    const handleIconSelect = icon => {
+        onChange({
+            name: icon.name,
+            category: icon.categories?.[0] || category,
+            iconSet: icon.iconSet || 'material'
         });
-        setIconData(response || {});
-      } catch (error) {
-        console.error('Failed to fetch icon data:', error);
-        setIconData({});
-      } finally {
-        setIsLoading(false);
-      }
+        // Không cần setIsModalOpen(false) ở đây vì ShadcnIconPicker sẽ gọi onClose
     };
-    fetchIconData();
-  }, []);
-  const currentIconType = iconData[selectedIconType] || {};
-  const categories = currentIconType.categories || [];
-  const icons = currentIconType.icons || [];
-  const filteredIcons = icons.filter(icon => (!selectedCategory || icon.category === selectedCategory) && icon.name.toLowerCase().includes(searchTerm.toLowerCase()));
-  const handleIconSelect = icon => {
-    onChange(icon);
-    setIsOpen(false);
-    setSearchTerm('');
-  };
-  const handleIconTypeChange = newIconType => {
-    setSelectedIconType(newIconType);
-    const firstCategory = iconData[newIconType] && iconData[newIconType].categories && iconData[newIconType].categories[0] || '';
-    setSelectedCategory(firstCategory);
-    if (onIconTypeChange) onIconTypeChange(newIconType);
-    if (onCategoryChange) onCategoryChange(firstCategory);
-  };
-  const handleCategoryChange = newCategory => {
-    setSelectedCategory(newCategory);
-    if (onCategoryChange) onCategoryChange(newCategory);
-  };
-  const renderIcon = icon => {
-    if (selectedIconType === 'material') {
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
-        className: "material-icons",
-        children: icon.name
-      });
-    } else if (selectedIconType === 'fontawesome') {
-      const prefix = icon.prefixes && icon.prefixes[0] || 'fas';
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("i", {
-        className: `${prefix} fa-${icon.name}`
-      });
-    } else if (selectedIconType === 'custom') {
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
-        className: `icon icon-${icon.name}`
-      });
-    }
-    return null;
-  };
-  const iconTypeOptions = Object.keys(iconData).map(key => ({
-    label: iconData[key].name || key.charAt(0).toUpperCase() + key.slice(1),
-    value: key
-  }));
-  const categoryOptions = categories.map(cat => ({
-    label: cat.charAt(0).toUpperCase() + cat.slice(1),
-    value: cat
-  }));
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-    className: "jankx-icon-picker",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
-      isSecondary: true,
-      onClick: () => setIsOpen(true),
-      className: "jankx-icon-picker__button",
-      children: value ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("span", {
-        className: "jankx-icon-picker__selected",
-        children: [renderIcon(value), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
-          className: "jankx-icon-picker__name",
-          children: value.name
-        })]
-      }) : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Chọn Icon', 'jankx')
-    }), isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Popover, {
-      onClose: () => setIsOpen(false),
-      className: "jankx-icon-picker__popover",
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-        className: "jankx-icon-picker__content",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-          className: "jankx-icon-picker__header",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("h3", {
-            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Chọn Icon từ Jankx Font Icons', 'jankx')
-          }), isLoading ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-            className: "jankx-icon-picker__loading",
-            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Đang tải danh sách icons...', 'jankx')
-          }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.Fragment, {
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Thư viện Icon', 'jankx'),
-              value: selectedIconType,
-              options: iconTypeOptions,
-              onChange: handleIconTypeChange
-            }), categories.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Danh mục', 'jankx'),
-              value: selectedCategory,
-              options: categoryOptions,
-              onChange: handleCategoryChange
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TextControl, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Tìm kiếm', 'jankx'),
-              value: searchTerm,
-              onChange: setSearchTerm,
-              placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Nhập tên icon...', 'jankx')
+    const handleClose = () => {
+        setIsModalOpen(false);
+    };
+    const renderSelectedIcon = () => {
+        if (!value) {
+            return (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Chọn Icon', 'jankx');
+        }
+        let iconElement;
+        if (value.iconSet === 'material') {
+            iconElement = /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+                className: "material-icons",
+                children: value.name
+            });
+        }
+        else if (value.iconSet === 'fontawesome') {
+            iconElement = /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("i", {
+                className: `fas fa-${value.name}`
+            });
+        }
+        else if (value.iconSet === 'dashicons') {
+            iconElement = /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+                className: `dashicons dashicons-${value.name}`
+            });
+        }
+        else {
+            iconElement = /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+                className: "material-icons",
+                children: value.name
+            });
+        }
+        return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("span", {
+            className: "jankx-icon-picker__selected",
+            children: [iconElement, /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+                    className: "jankx-icon-picker__name",
+                    children: value.name
+                })]
+        });
+    };
+    return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+        className: "jankx-icon-picker",
+        children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+                isSecondary: true,
+                onClick: () => setIsModalOpen(true),
+                className: "jankx-icon-picker__button",
+                children: renderSelectedIcon()
+            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_ShadcnIconPicker__WEBPACK_IMPORTED_MODULE_3__["default"], {
+                isOpen: isModalOpen,
+                onClose: handleClose,
+                onSelect: handleIconSelect,
+                currentIcon: value,
+                searchable: true,
+                categorized: true
             })]
-          })]
-        }), !isLoading && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-          className: "jankx-icon-picker__grid",
-          children: filteredIcons.map(icon => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
-            isSecondary: true,
-            className: "jankx-icon-picker__icon-item",
-            onClick: () => handleIconSelect(icon),
-            children: [renderIcon(icon), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
-              className: "jankx-icon-picker__icon-name",
-              children: icon.name
-            })]
-          }, `${icon.name}-${icon.category}`))
-        }), !isLoading && filteredIcons.length === 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-          className: "jankx-icon-picker__empty",
-          children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Không tìm thấy icon nào', 'jankx')
-        })]
-      })
-    })]
-  });
+    });
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (IconPicker);
 
+
 /***/ }),
 
-/***/ "./blocks/icon-picker/components/IconSettings.js":
-/*!*******************************************************!*\
-  !*** ./blocks/icon-picker/components/IconSettings.js ***!
-  \*******************************************************/
+/***/ "./blocks/icon-picker/components/IconSettings.tsx":
+/*!********************************************************!*\
+  !*** ./blocks/icon-picker/components/IconSettings.tsx ***!
+  \********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -195,126 +118,272 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const IconSettings = ({
-  iconSize,
-  iconColor,
-  iconAlignment,
-  iconStyle,
-  showLabel,
-  iconLabel,
-  labelPosition,
-  onIconSizeChange,
-  onIconColorChange,
-  onIconAlignmentChange,
-  onIconStyleChange,
-  onShowLabelChange,
-  onIconLabelChange,
-  onLabelPositionChange
-}) => {
-  const alignmentOptions = [{
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Left', 'jankx'),
-    value: 'left',
-    icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__["default"]
-  }, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Center', 'jankx'),
-    value: 'center',
-    icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_2__["default"]
-  }, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Right', 'jankx'),
-    value: 'right',
-    icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__["default"]
-  }];
-  const labelPositionOptions = [{
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Before icon', 'jankx'),
-    value: 'before'
-  }, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('After icon', 'jankx'),
-    value: 'after'
-  }, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Above icon', 'jankx'),
-    value: 'above'
-  }, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Below icon', 'jankx'),
-    value: 'below'
-  }];
-  const iconStyleOptions = [{
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Filled', 'jankx'),
-    value: 'filled'
-  }, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Outlined', 'jankx'),
-    value: 'outlined'
-  }, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Rounded', 'jankx'),
-    value: 'rounded'
-  }, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Sharp', 'jankx'),
-    value: 'sharp'
-  }, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Two-tone', 'jankx'),
-    value: 'two-tone'
-  }];
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelBody, {
-    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Icon Settings', 'jankx'),
-    icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__["default"],
-    initialOpen: false,
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Icon Style', 'jankx'),
-      value: iconStyle,
-      options: iconStyleOptions,
-      onChange: onIconStyleChange,
-      help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Chọn style cho icon (Material Icons)', 'jankx')
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TextControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Icon Size', 'jankx'),
-      value: iconSize,
-      onChange: onIconSizeChange,
-      placeholder: "24px",
-      help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Kích thước icon (px, em, rem)', 'jankx')
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
-      className: "jankx-icon-settings__color",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("label", {
-        className: "jankx-icon-settings__label",
-        children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Icon Color', 'jankx')
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ColorPicker, {
-        color: iconColor,
-        onChangeComplete: color => onIconColorChange(color.hex),
-        enableAlpha: false
-      })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Alignment', 'jankx'),
-      value: iconAlignment,
-      options: alignmentOptions.map(option => ({
-        label: option.label,
-        value: option.value
-      })),
-      onChange: onIconAlignmentChange
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Label', 'jankx'),
-      checked: showLabel,
-      onChange: onShowLabelChange,
-      help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Hiển thị text label cùng với icon', 'jankx')
-    }), showLabel && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TextControl, {
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Label Text', 'jankx'),
-        value: iconLabel,
-        onChange: onIconLabelChange,
-        placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enter label text...', 'jankx')
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Label Position', 'jankx'),
-        value: labelPosition,
-        options: labelPositionOptions,
-        onChange: onLabelPositionChange
-      })]
-    })]
-  });
+const IconSettings = ({ iconSize, iconColor, iconAlignment, iconStyle, showLabel, iconLabel, labelPosition, labelSize, labelColor, onIconSizeChange, onIconColorChange, onIconAlignmentChange, onIconStyleChange, onShowLabelChange, onIconLabelChange, onLabelPositionChange, onLabelSizeChange, onLabelColorChange }) => {
+    const alignmentOptions = [{
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Left', 'jankx'),
+            value: 'left',
+            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__["default"]
+        }, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Center', 'jankx'),
+            value: 'center',
+            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_2__["default"]
+        }, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Right', 'jankx'),
+            value: 'right',
+            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__["default"]
+        }];
+    const labelPositionOptions = [{
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Before icon', 'jankx'),
+            value: 'before'
+        }, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('After icon', 'jankx'),
+            value: 'after'
+        }, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Above icon', 'jankx'),
+            value: 'above'
+        }, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Below icon', 'jankx'),
+            value: 'below'
+        }];
+    const iconStyleOptions = [{
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Filled', 'jankx'),
+            value: 'filled'
+        }, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Outlined', 'jankx'),
+            value: 'outlined'
+        }, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Rounded', 'jankx'),
+            value: 'rounded'
+        }, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Sharp', 'jankx'),
+            value: 'sharp'
+        }, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Two-tone', 'jankx'),
+            value: 'two-tone'
+        }];
+    const unitOptions = [{
+            label: 'px',
+            value: 'px'
+        }, {
+            label: 'em',
+            value: 'em'
+        }, {
+            label: 'rem',
+            value: 'rem'
+        }, {
+            label: '%',
+            value: '%'
+        }];
+    // Parse size and unit
+    const parseSize = size => {
+        const match = size.match(/^([\d.]+)(px|em|rem|%)?$/);
+        if (match) {
+            return {
+                value: parseFloat(match[1]),
+                unit: match[2] || 'px'
+            };
+        }
+        return {
+            value: 24,
+            unit: 'px'
+        };
+    };
+    const getIconSizeData = () => parseSize(iconSize !== null && iconSize !== void 0 ? iconSize : '24px');
+    const getLabelSizeData = () => parseSize(labelSize !== null && labelSize !== void 0 ? labelSize : '14px');
+    const iconSizeData = getIconSizeData();
+    const labelSizeData = getLabelSizeData();
+    // Get max values based on unit
+    const getMaxValue = unit => {
+        switch (unit) {
+            case 'px':
+                return 100;
+            case 'em':
+                return 10;
+            case 'rem':
+                return 10;
+            case '%':
+                return 200;
+            default:
+                return 100;
+        }
+    };
+    const getMinValue = unit => {
+        switch (unit) {
+            case 'px':
+                return 8;
+            case 'em':
+                return 0.5;
+            case 'rem':
+                return 0.5;
+            case '%':
+                return 10;
+            default:
+                return 8;
+        }
+    };
+    const getStepValue = unit => {
+        switch (unit) {
+            case 'px':
+                return 1;
+            case 'em':
+                return 0.1;
+            case 'rem':
+                return 0.1;
+            case '%':
+                return 5;
+            default:
+                return 1;
+        }
+    };
+    const handleIconSizeChange = value => {
+        if (value !== undefined) {
+            onIconSizeChange(`${value}${iconSizeData.unit}`);
+        }
+    };
+    const handleLabelSizeChange = value => {
+        if (value !== undefined) {
+            onLabelSizeChange(`${value}${labelSizeData.unit}`);
+        }
+    };
+    const handleIconUnitChange = unit => {
+        const newValue = Math.min(Math.max(iconSizeData.value, getMinValue(unit)), getMaxValue(unit));
+        onIconSizeChange(`${newValue}${unit}`);
+    };
+    const handleLabelUnitChange = unit => {
+        const newValue = Math.min(Math.max(labelSizeData.value, getMinValue(unit)), getMaxValue(unit));
+        onLabelSizeChange(`${newValue}${unit}`);
+    };
+    const handleIconColorChange = color => {
+        onIconColorChange(color);
+        // Nếu label color chưa được set riêng, tự động sync với icon color
+        if (!labelColor || labelColor === iconColor) {
+            onLabelColorChange(color);
+        }
+    };
+    return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Icon Settings', 'jankx'),
+        icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__["default"],
+        initialOpen: false,
+        children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Icon Style', 'jankx'),
+                value: iconStyle,
+                options: iconStyleOptions,
+                onChange: value => onIconStyleChange(value),
+                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Chọn style cho icon (Material Icons)', 'jankx')
+            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+                className: "jankx-size-control",
+                children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("label", {
+                        className: "jankx-size-control__label",
+                        children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Icon Size', 'jankx')
+                    }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Flex, {
+                        gap: 2,
+                        align: "flex-end",
+                        children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.FlexItem, {
+                                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.RangeControl, {
+                                    value: iconSizeData.value,
+                                    onChange: handleIconSizeChange,
+                                    min: getMinValue(iconSizeData.unit),
+                                    max: getMaxValue(iconSizeData.unit),
+                                    step: getStepValue(iconSizeData.unit),
+                                    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Kích thước icon', 'jankx')
+                                })
+                            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.FlexItem, {
+                                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+                                    value: iconSizeData.unit,
+                                    options: unitOptions,
+                                    onChange: value => handleIconUnitChange(value),
+                                    hideLabelFromVision: true,
+                                    className: "jankx-size-control__unit-select"
+                                })
+                            })]
+                    })]
+            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+                className: "jankx-icon-settings__color",
+                children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("label", {
+                        className: "jankx-icon-settings__label",
+                        children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Icon Color', 'jankx')
+                    }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ColorPicker, {
+                        color: iconColor,
+                        onChangeComplete: color => handleIconColorChange(typeof color === 'string' ? color : color.hex),
+                        enableAlpha: false
+                    })]
+            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Alignment', 'jankx'),
+                value: iconAlignment,
+                options: alignmentOptions.map(option => ({
+                    label: option.label,
+                    value: option.value
+                })),
+                onChange: value => onIconAlignmentChange(value)
+            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Label', 'jankx'),
+                checked: showLabel,
+                onChange: onShowLabelChange,
+                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Hiển thị text label cùng với icon', 'jankx')
+            }), showLabel && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
+                children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TextControl, {
+                        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Label Text', 'jankx'),
+                        value: iconLabel,
+                        onChange: onIconLabelChange,
+                        placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enter label text...', 'jankx')
+                    }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+                        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Label Position', 'jankx'),
+                        value: labelPosition,
+                        options: labelPositionOptions,
+                        onChange: value => onLabelPositionChange(value)
+                    }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+                        className: "jankx-size-control",
+                        children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("label", {
+                                className: "jankx-size-control__label",
+                                children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Label Size', 'jankx')
+                            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Flex, {
+                                gap: 2,
+                                align: "flex-end",
+                                children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.FlexItem, {
+                                        children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.RangeControl, {
+                                            value: labelSizeData.value,
+                                            onChange: handleLabelSizeChange,
+                                            min: getMinValue(labelSizeData.unit),
+                                            max: getMaxValue(labelSizeData.unit),
+                                            step: getStepValue(labelSizeData.unit),
+                                            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Kích thước text label', 'jankx')
+                                        })
+                                    }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.FlexItem, {
+                                        children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+                                            value: labelSizeData.unit,
+                                            options: unitOptions,
+                                            onChange: value => handleLabelUnitChange(value),
+                                            hideLabelFromVision: true,
+                                            className: "jankx-size-control__unit-select"
+                                        })
+                                    })]
+                            })]
+                    }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+                        className: "jankx-icon-settings__color",
+                        children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("label", {
+                                className: "jankx-icon-settings__label",
+                                children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Label Color', 'jankx')
+                            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ColorPicker, {
+                                color: labelColor || iconColor,
+                                onChangeComplete: color => onLabelColorChange(typeof color === 'string' ? color : color.hex),
+                                enableAlpha: false
+                            }), (!labelColor || labelColor === iconColor) && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("p", {
+                                className: "jankx-icon-settings__color-help",
+                                children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Màu text giống với màu icon', 'jankx')
+                            })]
+                    })]
+            })]
+    });
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (IconSettings);
 
+
 /***/ }),
 
-/***/ "./blocks/icon-picker/components/LinkSettings.js":
-/*!*******************************************************!*\
-  !*** ./blocks/icon-picker/components/LinkSettings.js ***!
-  \*******************************************************/
+/***/ "./blocks/icon-picker/components/LinkSettings.tsx":
+/*!********************************************************!*\
+  !*** ./blocks/icon-picker/components/LinkSettings.tsx ***!
+  \********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -332,969 +401,495 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const LinkSettings = ({
-  linkUrl,
-  linkTarget,
-  linkRel,
-  onLinkChange,
-  onLinkTargetChange,
-  onLinkRelChange
-}) => {
-  const hasLink = !!linkUrl;
-  const handleLinkChange = newUrl => {
-    onLinkChange(newUrl);
-  };
-  const handleLinkTargetChange = newTarget => {
-    onLinkTargetChange(newTarget);
-  };
-  const handleLinkRelChange = newRel => {
-    onLinkRelChange(newRel);
-  };
-  const getLinkIcon = () => {
-    if (linkTarget === '_blank') {
-      return _wordpress_icons__WEBPACK_IMPORTED_MODULE_2__["default"];
-    }
-    return _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__["default"];
-  };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelBody, {
-    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Link Settings', 'jankx'),
-    icon: getLinkIcon(),
-    initialOpen: false,
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TextControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('URL', 'jankx'),
-      value: linkUrl,
-      onChange: handleLinkChange,
-      placeholder: "https://example.com",
-      help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Nhập URL để tạo link cho icon', 'jankx')
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Open in', 'jankx'),
-      value: linkTarget,
-      options: [{
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Same window', 'jankx'),
-        value: '_self'
-      }, {
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('New window', 'jankx'),
-        value: '_blank'
-      }, {
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Parent frame', 'jankx'),
-        value: '_parent'
-      }, {
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Top frame', 'jankx'),
-        value: '_top'
-      }],
-      onChange: handleLinkTargetChange
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TextControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Link Rel', 'jankx'),
-      value: linkRel,
-      onChange: handleLinkRelChange,
-      placeholder: "nofollow noreferrer",
-      help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Thêm rel attributes cho link (tùy chọn)', 'jankx')
-    }), hasLink && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-      className: "jankx-link-settings__preview",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
-        className: "jankx-link-settings__preview-text",
-        children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Preview:', 'jankx')
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("a", {
-        href: linkUrl,
-        target: linkTarget,
-        rel: linkRel,
-        className: "jankx-link-settings__preview-link",
-        children: linkUrl
-      })]
-    })]
-  });
+const LinkSettings = ({ linkUrl, linkTarget, linkRel, onLinkChange, onLinkTargetChange, onLinkRelChange }) => {
+    const hasLink = !!linkUrl;
+    const handleLinkChange = newUrl => {
+        onLinkChange(newUrl);
+    };
+    const handleLinkTargetChange = newTarget => {
+        onLinkTargetChange(newTarget);
+    };
+    const handleLinkRelChange = newRel => {
+        onLinkRelChange(newRel);
+    };
+    const getLinkIcon = () => {
+        if (linkTarget === '_blank') {
+            return _wordpress_icons__WEBPACK_IMPORTED_MODULE_2__["default"];
+        }
+        return _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__["default"];
+    };
+    return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Link Settings', 'jankx'),
+        icon: getLinkIcon(),
+        initialOpen: false,
+        children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TextControl, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('URL', 'jankx'),
+                value: linkUrl,
+                onChange: handleLinkChange,
+                placeholder: "https://example.com",
+                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Nhập URL để tạo link cho icon', 'jankx')
+            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Open in', 'jankx'),
+                value: linkTarget,
+                options: [{
+                        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Same window', 'jankx'),
+                        value: '_self'
+                    }, {
+                        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('New window', 'jankx'),
+                        value: '_blank'
+                    }, {
+                        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Parent frame', 'jankx'),
+                        value: '_parent'
+                    }, {
+                        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Top frame', 'jankx'),
+                        value: '_top'
+                    }],
+                onChange: handleLinkTargetChange
+            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TextControl, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Link Rel', 'jankx'),
+                value: linkRel,
+                onChange: handleLinkRelChange,
+                placeholder: "nofollow noreferrer",
+                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Thêm rel attributes cho link (tùy chọn)', 'jankx')
+            }), hasLink && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                className: "jankx-link-settings__preview",
+                children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                        className: "jankx-link-settings__preview-text",
+                        children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Preview:', 'jankx')
+                    }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("a", {
+                        href: linkUrl,
+                        target: linkTarget,
+                        rel: linkRel,
+                        className: "jankx-link-settings__preview-link",
+                        children: linkUrl
+                    })]
+            })]
+    });
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (LinkSettings);
 
+
 /***/ }),
 
-/***/ "./node_modules/@wordpress/api-fetch/build-module/index.js":
-/*!*****************************************************************!*\
-  !*** ./node_modules/@wordpress/api-fetch/build-module/index.js ***!
-  \*****************************************************************/
+/***/ "./blocks/icon-picker/components/ShadcnIconPicker.tsx":
+/*!************************************************************!*\
+  !*** ./blocks/icon-picker/components/ShadcnIconPicker.tsx ***!
+  \************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _middlewares_nonce__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./middlewares/nonce */ "./node_modules/@wordpress/api-fetch/build-module/middlewares/nonce.js");
-/* harmony import */ var _middlewares_root_url__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./middlewares/root-url */ "./node_modules/@wordpress/api-fetch/build-module/middlewares/root-url.js");
-/* harmony import */ var _middlewares_preloading__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./middlewares/preloading */ "./node_modules/@wordpress/api-fetch/build-module/middlewares/preloading.js");
-/* harmony import */ var _middlewares_fetch_all_middleware__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./middlewares/fetch-all-middleware */ "./node_modules/@wordpress/api-fetch/build-module/middlewares/fetch-all-middleware.js");
-/* harmony import */ var _middlewares_namespace_endpoint__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./middlewares/namespace-endpoint */ "./node_modules/@wordpress/api-fetch/build-module/middlewares/namespace-endpoint.js");
-/* harmony import */ var _middlewares_http_v1__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./middlewares/http-v1 */ "./node_modules/@wordpress/api-fetch/build-module/middlewares/http-v1.js");
-/* harmony import */ var _middlewares_user_locale__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./middlewares/user-locale */ "./node_modules/@wordpress/api-fetch/build-module/middlewares/user-locale.js");
-/* harmony import */ var _middlewares_media_upload__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./middlewares/media-upload */ "./node_modules/@wordpress/api-fetch/build-module/middlewares/media-upload.js");
-/* harmony import */ var _middlewares_theme_preview__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./middlewares/theme-preview */ "./node_modules/@wordpress/api-fetch/build-module/middlewares/theme-preview.js");
-/* harmony import */ var _utils_response__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./utils/response */ "./node_modules/@wordpress/api-fetch/build-module/utils/response.js");
-/**
- * WordPress dependencies
- */
-
-
-/**
- * Internal dependencies
- */
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var fuse_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! fuse.js */ "./node_modules/fuse.js/dist/fuse.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 
 
 
 
+// Icon data structure
 
-
-
-
-
-
-
-/**
- * Default set of header values which should be sent with every request unless
- * explicitly provided through apiFetch options.
- *
- * @type {Record<string, string>}
- */
-const DEFAULT_HEADERS = {
-  // The backend uses the Accept header as a condition for considering an
-  // incoming request as a REST request.
-  //
-  // See: https://core.trac.wordpress.org/ticket/44534
-  Accept: 'application/json, */*;q=0.1'
-};
-
-/**
- * Default set of fetch option values which should be sent with every request
- * unless explicitly provided through apiFetch options.
- *
- * @type {Object}
- */
-const DEFAULT_OPTIONS = {
-  credentials: 'include'
-};
-
-/** @typedef {import('./types').APIFetchMiddleware} APIFetchMiddleware */
-/** @typedef {import('./types').APIFetchOptions} APIFetchOptions */
-
-/**
- * @type {import('./types').APIFetchMiddleware[]}
- */
-const middlewares = [_middlewares_user_locale__WEBPACK_IMPORTED_MODULE_7__["default"], _middlewares_namespace_endpoint__WEBPACK_IMPORTED_MODULE_5__["default"], _middlewares_http_v1__WEBPACK_IMPORTED_MODULE_6__["default"], _middlewares_fetch_all_middleware__WEBPACK_IMPORTED_MODULE_4__["default"]];
-
-/**
- * Register a middleware
- *
- * @param {import('./types').APIFetchMiddleware} middleware
- */
-function registerMiddleware(middleware) {
-  middlewares.unshift(middleware);
-}
-
-/**
- * Checks the status of a response, throwing the Response as an error if
- * it is outside the 200 range.
- *
- * @param {Response} response
- * @return {Response} The response if the status is in the 200 range.
- */
-const checkStatus = response => {
-  if (response.status >= 200 && response.status < 300) {
-    return response;
-  }
-  throw response;
-};
-
-/** @typedef {(options: import('./types').APIFetchOptions) => Promise<any>} FetchHandler*/
-
-/**
- * @type {FetchHandler}
- */
-const defaultFetchHandler = nextOptions => {
-  const {
-    url,
-    path,
-    data,
-    parse = true,
-    ...remainingOptions
-  } = nextOptions;
-  let {
-    body,
-    headers
-  } = nextOptions;
-
-  // Merge explicitly-provided headers with default values.
-  headers = {
-    ...DEFAULT_HEADERS,
-    ...headers
-  };
-
-  // The `data` property is a shorthand for sending a JSON body.
-  if (data) {
-    body = JSON.stringify(data);
-    headers['Content-Type'] = 'application/json';
-  }
-  const responsePromise = window.fetch(
-  // Fall back to explicitly passing `window.location` which is the behavior if `undefined` is passed.
-  url || path || window.location.href, {
-    ...DEFAULT_OPTIONS,
-    ...remainingOptions,
-    body,
-    headers
-  });
-  return responsePromise.then(value => Promise.resolve(value).then(checkStatus).catch(response => (0,_utils_response__WEBPACK_IMPORTED_MODULE_10__.parseAndThrowError)(response, parse)).then(response => (0,_utils_response__WEBPACK_IMPORTED_MODULE_10__.parseResponseAndNormalizeError)(response, parse)), err => {
-    // Re-throw AbortError for the users to handle it themselves.
-    if (err && err.name === 'AbortError') {
-      throw err;
+// Sample icon data with different icon sets
+const sampleIconsData = [
+    // Material Icons
+    {
+        name: "home",
+        categories: ["navigation", "layout"],
+        tags: ["house", "main", "start"],
+        iconSet: "material"
+    }, {
+        name: "user",
+        categories: ["social", "people"],
+        tags: ["person", "profile", "account"],
+        iconSet: "material"
+    }, {
+        name: "settings",
+        categories: ["navigation", "system"],
+        tags: ["gear", "config", "preferences"],
+        iconSet: "material"
+    }, {
+        name: "search",
+        categories: ["navigation", "action"],
+        tags: ["find", "lookup", "magnifier"],
+        iconSet: "material"
+    }, {
+        name: "heart",
+        categories: ["social", "emotion"],
+        tags: ["love", "like", "favorite"],
+        iconSet: "material"
+    }, {
+        name: "star",
+        categories: ["social", "rating"],
+        tags: ["favorite", "bookmark", "rating"],
+        iconSet: "material"
+    }, {
+        name: "mail",
+        categories: ["communication", "social"],
+        tags: ["email", "message", "contact"],
+        iconSet: "material"
+    }, {
+        name: "phone",
+        categories: ["communication", "social"],
+        tags: ["call", "contact", "telephone"],
+        iconSet: "material"
+    }, {
+        name: "calendar",
+        categories: ["time", "date"],
+        tags: ["schedule", "event", "date"],
+        iconSet: "material"
+    }, {
+        name: "clock",
+        categories: ["time", "date"],
+        tags: ["time", "hour", "schedule"],
+        iconSet: "material"
+    },
+    // FontAwesome Icons
+    {
+        name: "home",
+        categories: ["navigation", "layout"],
+        tags: ["house", "main", "start"],
+        iconSet: "fontawesome"
+    }, {
+        name: "user",
+        categories: ["social", "people"],
+        tags: ["person", "profile", "account"],
+        iconSet: "fontawesome"
+    }, {
+        name: "cog",
+        categories: ["navigation", "system"],
+        tags: ["gear", "config", "preferences"],
+        iconSet: "fontawesome"
+    }, {
+        name: "search",
+        categories: ["navigation", "action"],
+        tags: ["find", "lookup", "magnifier"],
+        iconSet: "fontawesome"
+    }, {
+        name: "heart",
+        categories: ["social", "emotion"],
+        tags: ["love", "like", "favorite"],
+        iconSet: "fontawesome"
+    }, {
+        name: "star",
+        categories: ["social", "rating"],
+        tags: ["favorite", "bookmark", "rating"],
+        iconSet: "fontawesome"
+    }, {
+        name: "envelope",
+        categories: ["communication", "social"],
+        tags: ["email", "message", "contact"],
+        iconSet: "fontawesome"
+    }, {
+        name: "phone",
+        categories: ["communication", "social"],
+        tags: ["call", "contact", "telephone"],
+        iconSet: "fontawesome"
+    }, {
+        name: "calendar",
+        categories: ["time", "date"],
+        tags: ["schedule", "event", "date"],
+        iconSet: "fontawesome"
+    }, {
+        name: "clock",
+        categories: ["time", "date"],
+        tags: ["time", "hour", "schedule"],
+        iconSet: "fontawesome"
+    },
+    // Dashicons
+    {
+        name: "admin-home",
+        categories: ["navigation", "admin"],
+        tags: ["home", "dashboard", "main"],
+        iconSet: "dashicons"
+    }, {
+        name: "admin-users",
+        categories: ["social", "admin"],
+        tags: ["users", "people", "admin"],
+        iconSet: "dashicons"
+    }, {
+        name: "admin-settings",
+        categories: ["navigation", "admin"],
+        tags: ["settings", "config", "admin"],
+        iconSet: "dashicons"
+    }, {
+        name: "search",
+        categories: ["navigation", "action"],
+        tags: ["find", "lookup", "search"],
+        iconSet: "dashicons"
+    }, {
+        name: "heart",
+        categories: ["social", "emotion"],
+        tags: ["love", "like", "favorite"],
+        iconSet: "dashicons"
+    }, {
+        name: "star-filled",
+        categories: ["social", "rating"],
+        tags: ["favorite", "bookmark", "rating"],
+        iconSet: "dashicons"
+    }, {
+        name: "email",
+        categories: ["communication", "social"],
+        tags: ["email", "message", "contact"],
+        iconSet: "dashicons"
+    }, {
+        name: "phone",
+        categories: ["communication", "social"],
+        tags: ["call", "contact", "telephone"],
+        iconSet: "dashicons"
+    }, {
+        name: "calendar-alt",
+        categories: ["time", "date"],
+        tags: ["schedule", "event", "date"],
+        iconSet: "dashicons"
+    }, {
+        name: "clock",
+        categories: ["time", "date"],
+        tags: ["time", "hour", "schedule"],
+        iconSet: "dashicons"
     }
-
-    // Otherwise, there is most likely no network connection.
-    // Unfortunately the message might depend on the browser.
-    throw {
-      code: 'fetch_error',
-      message: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('You are probably offline.')
-    };
-  });
-};
-
-/** @type {FetchHandler} */
-let fetchHandler = defaultFetchHandler;
-
-/**
- * Defines a custom fetch handler for making the requests that will override
- * the default one using window.fetch
- *
- * @param {FetchHandler} newFetchHandler The new fetch handler
- */
-function setFetchHandler(newFetchHandler) {
-  fetchHandler = newFetchHandler;
-}
-
-/**
- * @template T
- * @param {import('./types').APIFetchOptions} options
- * @return {Promise<T>} A promise representing the request processed via the registered middlewares.
- */
-function apiFetch(options) {
-  // creates a nested function chain that calls all middlewares and finally the `fetchHandler`,
-  // converting `middlewares = [ m1, m2, m3 ]` into:
-  // ```
-  // opts1 => m1( opts1, opts2 => m2( opts2, opts3 => m3( opts3, fetchHandler ) ) );
-  // ```
-  const enhancedHandler = middlewares.reduceRight(( /** @type {FetchHandler} */next, middleware) => {
-    return workingOptions => middleware(workingOptions, next);
-  }, fetchHandler);
-  return enhancedHandler(options).catch(error => {
-    if (error.code !== 'rest_cookie_invalid_nonce') {
-      return Promise.reject(error);
-    }
-
-    // If the nonce is invalid, refresh it and try again.
-    return window
-    // @ts-ignore
-    .fetch(apiFetch.nonceEndpoint).then(checkStatus).then(data => data.text()).then(text => {
-      // @ts-ignore
-      apiFetch.nonceMiddleware.nonce = text;
-      return apiFetch(options);
-    });
-  });
-}
-apiFetch.use = registerMiddleware;
-apiFetch.setFetchHandler = setFetchHandler;
-apiFetch.createNonceMiddleware = _middlewares_nonce__WEBPACK_IMPORTED_MODULE_1__["default"];
-apiFetch.createPreloadingMiddleware = _middlewares_preloading__WEBPACK_IMPORTED_MODULE_3__["default"];
-apiFetch.createRootURLMiddleware = _middlewares_root_url__WEBPACK_IMPORTED_MODULE_2__["default"];
-apiFetch.fetchAllMiddleware = _middlewares_fetch_all_middleware__WEBPACK_IMPORTED_MODULE_4__["default"];
-apiFetch.mediaUploadMiddleware = _middlewares_media_upload__WEBPACK_IMPORTED_MODULE_8__["default"];
-apiFetch.createThemePreviewMiddleware = _middlewares_theme_preview__WEBPACK_IMPORTED_MODULE_9__["default"];
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (apiFetch);
-
-
-/***/ }),
-
-/***/ "./node_modules/@wordpress/api-fetch/build-module/middlewares/fetch-all-middleware.js":
-/*!********************************************************************************************!*\
-  !*** ./node_modules/@wordpress/api-fetch/build-module/middlewares/fetch-all-middleware.js ***!
-  \********************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _wordpress_url__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/url */ "./node_modules/@wordpress/url/build-module/add-query-args.js");
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! .. */ "./node_modules/@wordpress/api-fetch/build-module/index.js");
-/**
- * WordPress dependencies
- */
-
-
-/**
- * Internal dependencies
- */
-
-
-/**
- * Apply query arguments to both URL and Path, whichever is present.
- *
- * @param {import('../types').APIFetchOptions} props
- * @param {Record<string, string | number>}    queryArgs
- * @return {import('../types').APIFetchOptions} The request with the modified query args
- */
-const modifyQuery = ({
-  path,
-  url,
-  ...options
-}, queryArgs) => ({
-  ...options,
-  url: url && (0,_wordpress_url__WEBPACK_IMPORTED_MODULE_0__.addQueryArgs)(url, queryArgs),
-  path: path && (0,_wordpress_url__WEBPACK_IMPORTED_MODULE_0__.addQueryArgs)(path, queryArgs)
-});
-
-/**
- * Duplicates parsing functionality from apiFetch.
- *
- * @param {Response} response
- * @return {Promise<any>} Parsed response json.
- */
-const parseResponse = response => response.json ? response.json() : Promise.reject(response);
-
-/**
- * @param {string | null} linkHeader
- * @return {{ next?: string }} The parsed link header.
- */
-const parseLinkHeader = linkHeader => {
-  if (!linkHeader) {
-    return {};
-  }
-  const match = linkHeader.match(/<([^>]+)>; rel="next"/);
-  return match ? {
-    next: match[1]
-  } : {};
-};
-
-/**
- * @param {Response} response
- * @return {string | undefined} The next page URL.
- */
-const getNextPageUrl = response => {
-  const {
-    next
-  } = parseLinkHeader(response.headers.get('link'));
-  return next;
-};
-
-/**
- * @param {import('../types').APIFetchOptions} options
- * @return {boolean} True if the request contains an unbounded query.
- */
-const requestContainsUnboundedQuery = options => {
-  const pathIsUnbounded = !!options.path && options.path.indexOf('per_page=-1') !== -1;
-  const urlIsUnbounded = !!options.url && options.url.indexOf('per_page=-1') !== -1;
-  return pathIsUnbounded || urlIsUnbounded;
-};
-
-/**
- * The REST API enforces an upper limit on the per_page option. To handle large
- * collections, apiFetch consumers can pass `per_page=-1`; this middleware will
- * then recursively assemble a full response array from all available pages.
- *
- * @type {import('../types').APIFetchMiddleware}
- */
-const fetchAllMiddleware = async (options, next) => {
-  if (options.parse === false) {
-    // If a consumer has opted out of parsing, do not apply middleware.
-    return next(options);
-  }
-  if (!requestContainsUnboundedQuery(options)) {
-    // If neither url nor path is requesting all items, do not apply middleware.
-    return next(options);
-  }
-
-  // Retrieve requested page of results.
-  const response = await (0,___WEBPACK_IMPORTED_MODULE_1__["default"])({
-    ...modifyQuery(options, {
-      per_page: 100
-    }),
-    // Ensure headers are returned for page 1.
-    parse: false
-  });
-  const results = await parseResponse(response);
-  if (!Array.isArray(results)) {
-    // We have no reliable way of merging non-array results.
-    return results;
-  }
-  let nextPage = getNextPageUrl(response);
-  if (!nextPage) {
-    // There are no further pages to request.
-    return results;
-  }
-
-  // Iteratively fetch all remaining pages until no "next" header is found.
-  let mergedResults = /** @type {any[]} */[].concat(results);
-  while (nextPage) {
-    const nextResponse = await (0,___WEBPACK_IMPORTED_MODULE_1__["default"])({
-      ...options,
-      // Ensure the URL for the next page is used instead of any provided path.
-      path: undefined,
-      url: nextPage,
-      // Ensure we still get headers so we can identify the next page.
-      parse: false
-    });
-    const nextResults = await parseResponse(nextResponse);
-    mergedResults = mergedResults.concat(nextResults);
-    nextPage = getNextPageUrl(nextResponse);
-  }
-  return mergedResults;
-};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (fetchAllMiddleware);
-
-
-/***/ }),
-
-/***/ "./node_modules/@wordpress/api-fetch/build-module/middlewares/http-v1.js":
-/*!*******************************************************************************!*\
-  !*** ./node_modules/@wordpress/api-fetch/build-module/middlewares/http-v1.js ***!
-  \*******************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/**
- * Set of HTTP methods which are eligible to be overridden.
- *
- * @type {Set<string>}
- */
-const OVERRIDE_METHODS = new Set(['PATCH', 'PUT', 'DELETE']);
-
-/**
- * Default request method.
- *
- * "A request has an associated method (a method). Unless stated otherwise it
- * is `GET`."
- *
- * @see  https://fetch.spec.whatwg.org/#requests
- *
- * @type {string}
- */
-const DEFAULT_METHOD = 'GET';
-
-/**
- * API Fetch middleware which overrides the request method for HTTP v1
- * compatibility leveraging the REST API X-HTTP-Method-Override header.
- *
- * @type {import('../types').APIFetchMiddleware}
- */
-const httpV1Middleware = (options, next) => {
-  const {
-    method = DEFAULT_METHOD
-  } = options;
-  if (OVERRIDE_METHODS.has(method.toUpperCase())) {
-    options = {
-      ...options,
-      headers: {
-        ...options.headers,
-        'X-HTTP-Method-Override': method,
-        'Content-Type': 'application/json'
-      },
-      method: 'POST'
-    };
-  }
-  return next(options);
-};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (httpV1Middleware);
-
-
-/***/ }),
-
-/***/ "./node_modules/@wordpress/api-fetch/build-module/middlewares/media-upload.js":
-/*!************************************************************************************!*\
-  !*** ./node_modules/@wordpress/api-fetch/build-module/middlewares/media-upload.js ***!
-  \************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _utils_response__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/response */ "./node_modules/@wordpress/api-fetch/build-module/utils/response.js");
-/**
- * WordPress dependencies
- */
-
-
-/**
- * Internal dependencies
- */
-
-
-/**
- * @param {import('../types').APIFetchOptions} options
- * @return {boolean} True if the request is for media upload.
- */
-function isMediaUploadRequest(options) {
-  const isCreateMethod = !!options.method && options.method === 'POST';
-  const isMediaEndpoint = !!options.path && options.path.indexOf('/wp/v2/media') !== -1 || !!options.url && options.url.indexOf('/wp/v2/media') !== -1;
-  return isMediaEndpoint && isCreateMethod;
-}
-
-/**
- * Middleware handling media upload failures and retries.
- *
- * @type {import('../types').APIFetchMiddleware}
- */
-const mediaUploadMiddleware = (options, next) => {
-  if (!isMediaUploadRequest(options)) {
-    return next(options);
-  }
-  let retries = 0;
-  const maxRetries = 5;
-
-  /**
-   * @param {string} attachmentId
-   * @return {Promise<any>} Processed post response.
-   */
-  const postProcess = attachmentId => {
-    retries++;
-    return next({
-      path: `/wp/v2/media/${attachmentId}/post-process`,
-      method: 'POST',
-      data: {
-        action: 'create-image-subsizes'
-      },
-      parse: false
-    }).catch(() => {
-      if (retries < maxRetries) {
-        return postProcess(attachmentId);
-      }
-      next({
-        path: `/wp/v2/media/${attachmentId}?force=true`,
-        method: 'DELETE'
-      });
-      return Promise.reject();
-    });
-  };
-  return next({
-    ...options,
-    parse: false
-  }).catch(response => {
-    const attachmentId = response.headers.get('x-wp-upload-attachment-id');
-    if (response.status >= 500 && response.status < 600 && attachmentId) {
-      return postProcess(attachmentId).catch(() => {
-        if (options.parse !== false) {
-          return Promise.reject({
-            code: 'post_process',
-            message: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Media upload failed. If this is a photo or a large image, please scale it down and try again.')
-          });
+];
+const ShadcnIconPicker = ({ isOpen, onClose, onSelect, currentIcon, searchable = true, categorized = true }) => {
+    const [search, setSearch] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('');
+    const [selectedIconSet, setSelectedIconSet] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('material');
+    const [selectedCategory, setSelectedCategory] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('all');
+    const [isLoading, setIsLoading] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+    const [error, setError] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
+    // Reset search when modal opens/closes
+    (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+        if (!isOpen) {
+            setSearch('');
+            setSelectedCategory('all');
         }
-        return Promise.reject(response);
-      });
+    }, [isOpen]);
+    // Get available icon sets
+    const iconSets = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
+        const sets = new Set(sampleIconsData.map(icon => icon.iconSet));
+        return Array.from(sets).map(set => ({
+            name: set.charAt(0).toUpperCase() + set.slice(1),
+            value: set
+        }));
+    }, []);
+    // Get available categories for current icon set
+    const categories = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
+        const iconSetIcons = sampleIconsData.filter(icon => icon.iconSet === selectedIconSet);
+        const cats = new Set(iconSetIcons.flatMap(icon => icon.categories));
+        return Array.from(cats).map(cat => ({
+            name: cat.charAt(0).toUpperCase() + cat.slice(1),
+            value: cat
+        }));
+    }, [selectedIconSet]);
+    // Fuse.js for fuzzy search
+    const fuseInstance = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
+        const iconSetIcons = sampleIconsData.filter(icon => icon.iconSet === selectedIconSet);
+        return new fuse_js__WEBPACK_IMPORTED_MODULE_3__["default"](iconSetIcons, {
+            keys: ['name', 'tags', 'categories'],
+            threshold: 0.3,
+            ignoreLocation: true,
+            includeScore: true
+        });
+    }, [selectedIconSet]);
+    // Filter icons based on search and category
+    const filteredIcons = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
+        let icons = sampleIconsData.filter(icon => icon.iconSet === selectedIconSet);
+        // Filter by category
+        if (selectedCategory !== 'all') {
+            icons = icons.filter(icon => icon.categories.includes(selectedCategory));
+        }
+        // Filter by search
+        if (search.trim() !== '') {
+            const results = fuseInstance.search(search.toLowerCase().trim());
+            const searchResults = results.map(result => result.item);
+            icons = icons.filter(icon => searchResults.some(result => result.name === icon.name));
+        }
+        return icons;
+    }, [search, selectedIconSet, selectedCategory, fuseInstance]);
+    // Categorize icons for display
+    const categorizedIcons = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
+        if (!categorized || search.trim() !== '' || selectedCategory !== 'all') {
+            return [{
+                    name: 'All Icons',
+                    icons: filteredIcons
+                }];
+        }
+        const categories = new Map();
+        filteredIcons.forEach(icon => {
+            if (icon.categories && icon.categories.length > 0) {
+                icon.categories.forEach(category => {
+                    if (!categories.has(category)) {
+                        categories.set(category, []);
+                    }
+                    categories.get(category).push(icon);
+                });
+            }
+            else {
+                const category = 'Other';
+                if (!categories.has(category)) {
+                    categories.set(category, []);
+                }
+                categories.get(category).push(icon);
+            }
+        });
+        return Array.from(categories.entries()).map(([name, icons]) => ({
+            name,
+            icons
+        })).sort((a, b) => a.name.localeCompare(b.name));
+    }, [filteredIcons, categorized, search, selectedCategory]);
+    const handleIconSelect = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)(icon => {
+        onSelect(icon);
+        // Gọi onClose sau một chút để đảm bảo state được cập nhật
+        setTimeout(() => {
+            onClose();
+        }, 100);
+    }, [onSelect, onClose]);
+    const handleSearchChange = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)(value => {
+        setSearch(value);
+    }, []);
+    const handleIconSetChange = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)(iconSet => {
+        setSelectedIconSet(iconSet);
+        setSelectedCategory('all');
+        setSearch('');
+    }, []);
+    const handleCategoryChange = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)(category => {
+        setSelectedCategory(category);
+    }, []);
+    const handleClose = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)(() => {
+        setSearch('');
+        setSelectedCategory('all');
+        onClose();
+    }, [onClose]);
+    const renderIcon = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)(icon => {
+        let iconElement;
+        if (icon.iconSet === 'material') {
+            iconElement = /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+                className: "material-icons",
+                children: icon.name
+            });
+        }
+        else if (icon.iconSet === 'fontawesome') {
+            iconElement = /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("i", {
+                className: `fas fa-${icon.name}`
+            });
+        }
+        else if (icon.iconSet === 'dashicons') {
+            iconElement = /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+                className: `dashicons dashicons-${icon.name}`
+            });
+        }
+        else {
+            iconElement = /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+                className: "material-icons",
+                children: icon.name
+            });
+        }
+        return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+            isSecondary: true,
+            className: `jankx-icon-picker-modal__icon-item ${currentIcon?.name === icon.name && currentIcon?.iconSet === icon.iconSet ? 'is-selected' : ''}`,
+            onClick: () => handleIconSelect(icon),
+            children: [iconElement, /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+                    className: "jankx-icon-picker-modal__icon-name",
+                    children: icon.name
+                })]
+        }, `${icon.iconSet}-${icon.name}`);
+    }, [handleIconSelect, currentIcon]);
+    if (!isOpen) {
+        return null;
     }
-    return (0,_utils_response__WEBPACK_IMPORTED_MODULE_1__.parseAndThrowError)(response, options.parse);
-  }).then(response => (0,_utils_response__WEBPACK_IMPORTED_MODULE_1__.parseResponseAndNormalizeError)(response, options.parse));
-};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (mediaUploadMiddleware);
-
-
-/***/ }),
-
-/***/ "./node_modules/@wordpress/api-fetch/build-module/middlewares/namespace-endpoint.js":
-/*!******************************************************************************************!*\
-  !*** ./node_modules/@wordpress/api-fetch/build-module/middlewares/namespace-endpoint.js ***!
-  \******************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/**
- * @type {import('../types').APIFetchMiddleware}
- */
-const namespaceAndEndpointMiddleware = (options, next) => {
-  let path = options.path;
-  let namespaceTrimmed, endpointTrimmed;
-  if (typeof options.namespace === 'string' && typeof options.endpoint === 'string') {
-    namespaceTrimmed = options.namespace.replace(/^\/|\/$/g, '');
-    endpointTrimmed = options.endpoint.replace(/^\//, '');
-    if (endpointTrimmed) {
-      path = namespaceTrimmed + '/' + endpointTrimmed;
-    } else {
-      path = namespaceTrimmed;
-    }
-  }
-  delete options.namespace;
-  delete options.endpoint;
-  return next({
-    ...options,
-    path
-  });
-};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (namespaceAndEndpointMiddleware);
-
-
-/***/ }),
-
-/***/ "./node_modules/@wordpress/api-fetch/build-module/middlewares/nonce.js":
-/*!*****************************************************************************!*\
-  !*** ./node_modules/@wordpress/api-fetch/build-module/middlewares/nonce.js ***!
-  \*****************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/**
- * @param {string} nonce
- * @return {import('../types').APIFetchMiddleware & { nonce: string }} A middleware to enhance a request with a nonce.
- */
-function createNonceMiddleware(nonce) {
-  /**
-   * @type {import('../types').APIFetchMiddleware & { nonce: string }}
-   */
-  const middleware = (options, next) => {
-    const {
-      headers = {}
-    } = options;
-
-    // If an 'X-WP-Nonce' header (or any case-insensitive variation
-    // thereof) was specified, no need to add a nonce header.
-    for (const headerName in headers) {
-      if (headerName.toLowerCase() === 'x-wp-nonce' && headers[headerName] === middleware.nonce) {
-        return next(options);
-      }
-    }
-    return next({
-      ...options,
-      headers: {
-        ...headers,
-        'X-WP-Nonce': middleware.nonce
-      }
+    return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Modal, {
+        isFullScreen: false,
+        onRequestClose: handleClose,
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Chọn Icon', 'jankx'),
+        className: "jankx-icon-picker-modal",
+        overlayClassName: "jankx-icon-picker-modal-overlay",
+        children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+            className: "jankx-icon-picker-modal__content",
+            children: [error && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Notice, {
+                    status: "error",
+                    isDismissible: false,
+                    children: error
+                }), isLoading ? /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                    className: "jankx-icon-picker-modal__loading",
+                    children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Spinner, {}), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Đang tải danh sách icons...', 'jankx')
+                        })]
+                }) : /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Flex, {
+                    className: "jankx-icon-picker-modal__layout",
+                    children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.FlexItem, {
+                            className: "jankx-icon-picker-modal__sidebar",
+                            children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                                    className: "jankx-icon-picker-modal__sidebar-header",
+                                    children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("h3", {
+                                        children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Icon Sets', 'jankx')
+                                    })
+                                }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                                    className: "jankx-icon-picker-modal__icon-sets",
+                                    children: iconSets.map(iconSet => /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+                                        isSecondary: true,
+                                        className: `jankx-icon-picker-modal__icon-set-item ${selectedIconSet === iconSet.value ? 'is-selected' : ''}`,
+                                        onClick: () => handleIconSetChange(iconSet.value),
+                                        children: iconSet.name
+                                    }, iconSet.value))
+                                })]
+                        }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.FlexItem, {
+                            className: "jankx-icon-picker-modal__main-panel",
+                            children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                                    className: "jankx-icon-picker-modal__controls",
+                                    children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Flex, {
+                                        gap: 2,
+                                        align: "center",
+                                        children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.FlexItem, {
+                                                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("select", {
+                                                    value: selectedCategory,
+                                                    onChange: e => handleCategoryChange(e.target.value),
+                                                    className: "jankx-icon-picker-modal__category-select",
+                                                    children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("option", {
+                                                            value: "all",
+                                                            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('All Categories', 'jankx')
+                                                        }), categories.map(category => /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("option", {
+                                                            value: category.value,
+                                                            children: category.name
+                                                        }, category.value))]
+                                                })
+                                            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.FlexItem, {
+                                                children: searchable && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TextControl, {
+                                                    value: search,
+                                                    onChange: handleSearchChange,
+                                                    placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Search icons...', 'jankx'),
+                                                    className: "jankx-icon-picker-modal__search"
+                                                })
+                                            })]
+                                    })
+                                }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                                    className: "jankx-icon-picker-modal__scroll-container",
+                                    children: filteredIcons.length === 0 ? /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                                        className: "jankx-icon-picker-modal__empty",
+                                        children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                                            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Không tìm thấy icon nào', 'jankx')
+                                        })
+                                    }) : /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.Fragment, {
+                                        children: categorizedIcons.map(category => /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                                            className: "jankx-icon-picker-modal__category",
+                                            children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("h3", {
+                                                    className: "jankx-icon-picker-modal__category-title",
+                                                    children: category.name
+                                                }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                                                    className: "jankx-icon-picker-modal__icon-grid",
+                                                    children: category.icons.map(renderIcon)
+                                                })]
+                                        }, category.name))
+                                    })
+                                })]
+                        })]
+                })]
+        })
     });
-  };
-  middleware.nonce = nonce;
-  return middleware;
-}
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (createNonceMiddleware);
-
-
-/***/ }),
-
-/***/ "./node_modules/@wordpress/api-fetch/build-module/middlewares/preloading.js":
-/*!**********************************************************************************!*\
-  !*** ./node_modules/@wordpress/api-fetch/build-module/middlewares/preloading.js ***!
-  \**********************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _wordpress_url__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/url */ "./node_modules/@wordpress/url/build-module/add-query-args.js");
-/* harmony import */ var _wordpress_url__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/url */ "./node_modules/@wordpress/url/build-module/get-query-args.js");
-/* harmony import */ var _wordpress_url__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/url */ "./node_modules/@wordpress/url/build-module/normalize-path.js");
-/**
- * WordPress dependencies
- */
-
-
-/**
- * @param {Record<string, any>} preloadedData
- * @return {import('../types').APIFetchMiddleware} Preloading middleware.
- */
-function createPreloadingMiddleware(preloadedData) {
-  const cache = Object.fromEntries(Object.entries(preloadedData).map(([path, data]) => [(0,_wordpress_url__WEBPACK_IMPORTED_MODULE_2__.normalizePath)(path), data]));
-  return (options, next) => {
-    const {
-      parse = true
-    } = options;
-    /** @type {string | void} */
-    let rawPath = options.path;
-    if (!rawPath && options.url) {
-      const {
-        rest_route: pathFromQuery,
-        ...queryArgs
-      } = (0,_wordpress_url__WEBPACK_IMPORTED_MODULE_1__.getQueryArgs)(options.url);
-      if (typeof pathFromQuery === 'string') {
-        rawPath = (0,_wordpress_url__WEBPACK_IMPORTED_MODULE_0__.addQueryArgs)(pathFromQuery, queryArgs);
-      }
-    }
-    if (typeof rawPath !== 'string') {
-      return next(options);
-    }
-    const method = options.method || 'GET';
-    const path = (0,_wordpress_url__WEBPACK_IMPORTED_MODULE_2__.normalizePath)(rawPath);
-    if ('GET' === method && cache[path]) {
-      const cacheData = cache[path];
-
-      // Unsetting the cache key ensures that the data is only used a single time.
-      delete cache[path];
-      return prepareResponse(cacheData, !!parse);
-    } else if ('OPTIONS' === method && cache[method] && cache[method][path]) {
-      const cacheData = cache[method][path];
-
-      // Unsetting the cache key ensures that the data is only used a single time.
-      delete cache[method][path];
-      return prepareResponse(cacheData, !!parse);
-    }
-    return next(options);
-  };
-}
-
-/**
- * This is a helper function that sends a success response.
- *
- * @param {Record<string, any>} responseData
- * @param {boolean}             parse
- * @return {Promise<any>} Promise with the response.
- */
-function prepareResponse(responseData, parse) {
-  return Promise.resolve(parse ? responseData.body : new window.Response(JSON.stringify(responseData.body), {
-    status: 200,
-    statusText: 'OK',
-    headers: responseData.headers
-  }));
-}
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (createPreloadingMiddleware);
-
-
-/***/ }),
-
-/***/ "./node_modules/@wordpress/api-fetch/build-module/middlewares/root-url.js":
-/*!********************************************************************************!*\
-  !*** ./node_modules/@wordpress/api-fetch/build-module/middlewares/root-url.js ***!
-  \********************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _namespace_endpoint__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./namespace-endpoint */ "./node_modules/@wordpress/api-fetch/build-module/middlewares/namespace-endpoint.js");
-/**
- * Internal dependencies
- */
-
-
-/**
- * @param {string} rootURL
- * @return {import('../types').APIFetchMiddleware} Root URL middleware.
- */
-const createRootURLMiddleware = rootURL => (options, next) => {
-  return (0,_namespace_endpoint__WEBPACK_IMPORTED_MODULE_0__["default"])(options, optionsWithPath => {
-    let url = optionsWithPath.url;
-    let path = optionsWithPath.path;
-    let apiRoot;
-    if (typeof path === 'string') {
-      apiRoot = rootURL;
-      if (-1 !== rootURL.indexOf('?')) {
-        path = path.replace('?', '&');
-      }
-      path = path.replace(/^\//, '');
-
-      // API root may already include query parameter prefix if site is
-      // configured to use plain permalinks.
-      if ('string' === typeof apiRoot && -1 !== apiRoot.indexOf('?')) {
-        path = path.replace('?', '&');
-      }
-      url = apiRoot + path;
-    }
-    return next({
-      ...optionsWithPath,
-      url
-    });
-  });
 };
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (createRootURLMiddleware);
-
-
-/***/ }),
-
-/***/ "./node_modules/@wordpress/api-fetch/build-module/middlewares/theme-preview.js":
-/*!*************************************************************************************!*\
-  !*** ./node_modules/@wordpress/api-fetch/build-module/middlewares/theme-preview.js ***!
-  \*************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _wordpress_url__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/url */ "./node_modules/@wordpress/url/build-module/add-query-args.js");
-/* harmony import */ var _wordpress_url__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/url */ "./node_modules/@wordpress/url/build-module/get-query-arg.js");
-/* harmony import */ var _wordpress_url__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/url */ "./node_modules/@wordpress/url/build-module/remove-query-args.js");
-/**
- * WordPress dependencies
- */
-
-
-/**
- * This appends a `wp_theme_preview` parameter to the REST API request URL if
- * the admin URL contains a `theme` GET parameter.
- *
- * If the REST API request URL has contained the `wp_theme_preview` parameter as `''`,
- * then bypass this middleware.
- *
- * @param {Record<string, any>} themePath
- * @return {import('../types').APIFetchMiddleware} Preloading middleware.
- */
-const createThemePreviewMiddleware = themePath => (options, next) => {
-  if (typeof options.url === 'string') {
-    const wpThemePreview = (0,_wordpress_url__WEBPACK_IMPORTED_MODULE_1__.getQueryArg)(options.url, 'wp_theme_preview');
-    if (wpThemePreview === undefined) {
-      options.url = (0,_wordpress_url__WEBPACK_IMPORTED_MODULE_0__.addQueryArgs)(options.url, {
-        wp_theme_preview: themePath
-      });
-    } else if (wpThemePreview === '') {
-      options.url = (0,_wordpress_url__WEBPACK_IMPORTED_MODULE_2__.removeQueryArgs)(options.url, 'wp_theme_preview');
-    }
-  }
-  if (typeof options.path === 'string') {
-    const wpThemePreview = (0,_wordpress_url__WEBPACK_IMPORTED_MODULE_1__.getQueryArg)(options.path, 'wp_theme_preview');
-    if (wpThemePreview === undefined) {
-      options.path = (0,_wordpress_url__WEBPACK_IMPORTED_MODULE_0__.addQueryArgs)(options.path, {
-        wp_theme_preview: themePath
-      });
-    } else if (wpThemePreview === '') {
-      options.path = (0,_wordpress_url__WEBPACK_IMPORTED_MODULE_2__.removeQueryArgs)(options.path, 'wp_theme_preview');
-    }
-  }
-  return next(options);
-};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (createThemePreviewMiddleware);
-
-
-/***/ }),
-
-/***/ "./node_modules/@wordpress/api-fetch/build-module/middlewares/user-locale.js":
-/*!***********************************************************************************!*\
-  !*** ./node_modules/@wordpress/api-fetch/build-module/middlewares/user-locale.js ***!
-  \***********************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _wordpress_url__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/url */ "./node_modules/@wordpress/url/build-module/add-query-args.js");
-/* harmony import */ var _wordpress_url__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/url */ "./node_modules/@wordpress/url/build-module/has-query-arg.js");
-/**
- * WordPress dependencies
- */
-
-
-/**
- * @type {import('../types').APIFetchMiddleware}
- */
-const userLocaleMiddleware = (options, next) => {
-  if (typeof options.url === 'string' && !(0,_wordpress_url__WEBPACK_IMPORTED_MODULE_1__.hasQueryArg)(options.url, '_locale')) {
-    options.url = (0,_wordpress_url__WEBPACK_IMPORTED_MODULE_0__.addQueryArgs)(options.url, {
-      _locale: 'user'
-    });
-  }
-  if (typeof options.path === 'string' && !(0,_wordpress_url__WEBPACK_IMPORTED_MODULE_1__.hasQueryArg)(options.path, '_locale')) {
-    options.path = (0,_wordpress_url__WEBPACK_IMPORTED_MODULE_0__.addQueryArgs)(options.path, {
-      _locale: 'user'
-    });
-  }
-  return next(options);
-};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (userLocaleMiddleware);
-
-
-/***/ }),
-
-/***/ "./node_modules/@wordpress/api-fetch/build-module/utils/response.js":
-/*!**************************************************************************!*\
-  !*** ./node_modules/@wordpress/api-fetch/build-module/utils/response.js ***!
-  \**************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   parseAndThrowError: () => (/* binding */ parseAndThrowError),
-/* harmony export */   parseResponseAndNormalizeError: () => (/* binding */ parseResponseAndNormalizeError)
-/* harmony export */ });
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
-/**
- * WordPress dependencies
- */
-
-
-/**
- * Parses the apiFetch response.
- *
- * @param {Response} response
- * @param {boolean}  shouldParseResponse
- *
- * @return {Promise<any> | null | Response} Parsed response.
- */
-const parseResponse = (response, shouldParseResponse = true) => {
-  if (shouldParseResponse) {
-    if (response.status === 204) {
-      return null;
-    }
-    return response.json ? response.json() : Promise.reject(response);
-  }
-  return response;
-};
-
-/**
- * Calls the `json` function on the Response, throwing an error if the response
- * doesn't have a json function or if parsing the json itself fails.
- *
- * @param {Response} response
- * @return {Promise<any>} Parsed response.
- */
-const parseJsonAndNormalizeError = response => {
-  const invalidJsonError = {
-    code: 'invalid_json',
-    message: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('The response is not a valid JSON response.')
-  };
-  if (!response || !response.json) {
-    throw invalidJsonError;
-  }
-  return response.json().catch(() => {
-    throw invalidJsonError;
-  });
-};
-
-/**
- * Parses the apiFetch response properly and normalize response errors.
- *
- * @param {Response} response
- * @param {boolean}  shouldParseResponse
- *
- * @return {Promise<any>} Parsed response.
- */
-const parseResponseAndNormalizeError = (response, shouldParseResponse = true) => {
-  return Promise.resolve(parseResponse(response, shouldParseResponse)).catch(res => parseAndThrowError(res, shouldParseResponse));
-};
-
-/**
- * Parses a response, throwing an error if parsing the response fails.
- *
- * @param {Response} response
- * @param {boolean}  shouldParseResponse
- * @return {Promise<any>} Parsed response.
- */
-function parseAndThrowError(response, shouldParseResponse = true) {
-  if (!shouldParseResponse) {
-    throw response;
-  }
-  return parseJsonAndNormalizeError(response).then(error => {
-    const unknownError = {
-      code: 'unknown_error',
-      message: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('An unknown error occurred.')
-    };
-    throw error || unknownError;
-  });
-}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ShadcnIconPicker);
 
 
 /***/ }),
@@ -1642,471 +1237,6 @@ SVG.displayName = 'SVG';
 
 /***/ }),
 
-/***/ "./node_modules/@wordpress/url/build-module/add-query-args.js":
-/*!********************************************************************!*\
-  !*** ./node_modules/@wordpress/url/build-module/add-query-args.js ***!
-  \********************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   addQueryArgs: () => (/* binding */ addQueryArgs)
-/* harmony export */ });
-/* harmony import */ var _get_query_args__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./get-query-args */ "./node_modules/@wordpress/url/build-module/get-query-args.js");
-/* harmony import */ var _build_query_string__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./build-query-string */ "./node_modules/@wordpress/url/build-module/build-query-string.js");
-/**
- * Internal dependencies
- */
-
-
-
-/**
- * Appends arguments as querystring to the provided URL. If the URL already
- * includes query arguments, the arguments are merged with (and take precedent
- * over) the existing set.
- *
- * @param {string} [url=''] URL to which arguments should be appended. If omitted,
- *                          only the resulting querystring is returned.
- * @param {Object} [args]   Query arguments to apply to URL.
- *
- * @example
- * ```js
- * const newURL = addQueryArgs( 'https://google.com', { q: 'test' } ); // https://google.com/?q=test
- * ```
- *
- * @return {string} URL with arguments applied.
- */
-function addQueryArgs(url = '', args) {
-  // If no arguments are to be appended, return original URL.
-  if (!args || !Object.keys(args).length) {
-    return url;
-  }
-  let baseUrl = url;
-
-  // Determine whether URL already had query arguments.
-  const queryStringIndex = url.indexOf('?');
-  if (queryStringIndex !== -1) {
-    // Merge into existing query arguments.
-    args = Object.assign((0,_get_query_args__WEBPACK_IMPORTED_MODULE_0__.getQueryArgs)(url), args);
-
-    // Change working base URL to omit previous query arguments.
-    baseUrl = baseUrl.substr(0, queryStringIndex);
-  }
-  return baseUrl + '?' + (0,_build_query_string__WEBPACK_IMPORTED_MODULE_1__.buildQueryString)(args);
-}
-
-
-/***/ }),
-
-/***/ "./node_modules/@wordpress/url/build-module/build-query-string.js":
-/*!************************************************************************!*\
-  !*** ./node_modules/@wordpress/url/build-module/build-query-string.js ***!
-  \************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   buildQueryString: () => (/* binding */ buildQueryString)
-/* harmony export */ });
-/**
- * Generates URL-encoded query string using input query data.
- *
- * It is intended to behave equivalent as PHP's `http_build_query`, configured
- * with encoding type PHP_QUERY_RFC3986 (spaces as `%20`).
- *
- * @example
- * ```js
- * const queryString = buildQueryString( {
- *    simple: 'is ok',
- *    arrays: [ 'are', 'fine', 'too' ],
- *    objects: {
- *       evenNested: {
- *          ok: 'yes',
- *       },
- *    },
- * } );
- * // "simple=is%20ok&arrays%5B0%5D=are&arrays%5B1%5D=fine&arrays%5B2%5D=too&objects%5BevenNested%5D%5Bok%5D=yes"
- * ```
- *
- * @param {Record<string,*>} data Data to encode.
- *
- * @return {string} Query string.
- */
-function buildQueryString(data) {
-  let string = '';
-  const stack = Object.entries(data);
-  let pair;
-  while (pair = stack.shift()) {
-    let [key, value] = pair;
-
-    // Support building deeply nested data, from array or object values.
-    const hasNestedData = Array.isArray(value) || value && value.constructor === Object;
-    if (hasNestedData) {
-      // Push array or object values onto the stack as composed of their
-      // original key and nested index or key, retaining order by a
-      // combination of Array#reverse and Array#unshift onto the stack.
-      const valuePairs = Object.entries(value).reverse();
-      for (const [member, memberValue] of valuePairs) {
-        stack.unshift([`${key}[${member}]`, memberValue]);
-      }
-    } else if (value !== undefined) {
-      // Null is treated as special case, equivalent to empty string.
-      if (value === null) {
-        value = '';
-      }
-      string += '&' + [key, value].map(encodeURIComponent).join('=');
-    }
-  }
-
-  // Loop will concatenate with leading `&`, but it's only expected for all
-  // but the first query parameter. This strips the leading `&`, while still
-  // accounting for the case that the string may in-fact be empty.
-  return string.substr(1);
-}
-
-
-/***/ }),
-
-/***/ "./node_modules/@wordpress/url/build-module/get-query-arg.js":
-/*!*******************************************************************!*\
-  !*** ./node_modules/@wordpress/url/build-module/get-query-arg.js ***!
-  \*******************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   getQueryArg: () => (/* binding */ getQueryArg)
-/* harmony export */ });
-/* harmony import */ var _get_query_args__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./get-query-args */ "./node_modules/@wordpress/url/build-module/get-query-args.js");
-/**
- * Internal dependencies
- */
-
-
-/**
- * @typedef {{[key: string]: QueryArgParsed}} QueryArgObject
- */
-
-/**
- * @typedef {string|string[]|QueryArgObject} QueryArgParsed
- */
-
-/**
- * Returns a single query argument of the url
- *
- * @param {string} url URL.
- * @param {string} arg Query arg name.
- *
- * @example
- * ```js
- * const foo = getQueryArg( 'https://wordpress.org?foo=bar&bar=baz', 'foo' ); // bar
- * ```
- *
- * @return {QueryArgParsed|void} Query arg value.
- */
-function getQueryArg(url, arg) {
-  return (0,_get_query_args__WEBPACK_IMPORTED_MODULE_0__.getQueryArgs)(url)[arg];
-}
-
-
-/***/ }),
-
-/***/ "./node_modules/@wordpress/url/build-module/get-query-args.js":
-/*!********************************************************************!*\
-  !*** ./node_modules/@wordpress/url/build-module/get-query-args.js ***!
-  \********************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   getQueryArgs: () => (/* binding */ getQueryArgs)
-/* harmony export */ });
-/* harmony import */ var _safe_decode_uri_component__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./safe-decode-uri-component */ "./node_modules/@wordpress/url/build-module/safe-decode-uri-component.js");
-/* harmony import */ var _get_query_string__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./get-query-string */ "./node_modules/@wordpress/url/build-module/get-query-string.js");
-/**
- * Internal dependencies
- */
-
-
-
-/** @typedef {import('./get-query-arg').QueryArgParsed} QueryArgParsed */
-
-/**
- * @typedef {Record<string,QueryArgParsed>} QueryArgs
- */
-
-/**
- * Sets a value in object deeply by a given array of path segments. Mutates the
- * object reference.
- *
- * @param {Record<string,*>} object Object in which to assign.
- * @param {string[]}         path   Path segment at which to set value.
- * @param {*}                value  Value to set.
- */
-function setPath(object, path, value) {
-  const length = path.length;
-  const lastIndex = length - 1;
-  for (let i = 0; i < length; i++) {
-    let key = path[i];
-    if (!key && Array.isArray(object)) {
-      // If key is empty string and next value is array, derive key from
-      // the current length of the array.
-      key = object.length.toString();
-    }
-    key = ['__proto__', 'constructor', 'prototype'].includes(key) ? key.toUpperCase() : key;
-
-    // If the next key in the path is numeric (or empty string), it will be
-    // created as an array. Otherwise, it will be created as an object.
-    const isNextKeyArrayIndex = !isNaN(Number(path[i + 1]));
-    object[key] = i === lastIndex ?
-    // If at end of path, assign the intended value.
-    value :
-    // Otherwise, advance to the next object in the path, creating
-    // it if it does not yet exist.
-    object[key] || (isNextKeyArrayIndex ? [] : {});
-    if (Array.isArray(object[key]) && !isNextKeyArrayIndex) {
-      // If we current key is non-numeric, but the next value is an
-      // array, coerce the value to an object.
-      object[key] = {
-        ...object[key]
-      };
-    }
-
-    // Update working reference object to the next in the path.
-    object = object[key];
-  }
-}
-
-/**
- * Returns an object of query arguments of the given URL. If the given URL is
- * invalid or has no querystring, an empty object is returned.
- *
- * @param {string} url URL.
- *
- * @example
- * ```js
- * const foo = getQueryArgs( 'https://wordpress.org?foo=bar&bar=baz' );
- * // { "foo": "bar", "bar": "baz" }
- * ```
- *
- * @return {QueryArgs} Query args object.
- */
-function getQueryArgs(url) {
-  return ((0,_get_query_string__WEBPACK_IMPORTED_MODULE_1__.getQueryString)(url) || ''
-  // Normalize space encoding, accounting for PHP URL encoding
-  // corresponding to `application/x-www-form-urlencoded`.
-  //
-  // See: https://tools.ietf.org/html/rfc1866#section-8.2.1
-  ).replace(/\+/g, '%20').split('&').reduce((accumulator, keyValue) => {
-    const [key, value = ''] = keyValue.split('=')
-    // Filtering avoids decoding as `undefined` for value, where
-    // default is restored in destructuring assignment.
-    .filter(Boolean).map(_safe_decode_uri_component__WEBPACK_IMPORTED_MODULE_0__.safeDecodeURIComponent);
-    if (key) {
-      const segments = key.replace(/\]/g, '').split('[');
-      setPath(accumulator, segments, value);
-    }
-    return accumulator;
-  }, Object.create(null));
-}
-
-
-/***/ }),
-
-/***/ "./node_modules/@wordpress/url/build-module/get-query-string.js":
-/*!**********************************************************************!*\
-  !*** ./node_modules/@wordpress/url/build-module/get-query-string.js ***!
-  \**********************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   getQueryString: () => (/* binding */ getQueryString)
-/* harmony export */ });
-/**
- * Returns the query string part of the URL.
- *
- * @param {string} url The full URL.
- *
- * @example
- * ```js
- * const queryString = getQueryString( 'http://localhost:8080/this/is/a/test?query=true#fragment' ); // 'query=true'
- * ```
- *
- * @return {string|void} The query string part of the URL.
- */
-function getQueryString(url) {
-  let query;
-  try {
-    query = new URL(url, 'http://example.com').search.substring(1);
-  } catch (error) {}
-  if (query) {
-    return query;
-  }
-}
-
-
-/***/ }),
-
-/***/ "./node_modules/@wordpress/url/build-module/has-query-arg.js":
-/*!*******************************************************************!*\
-  !*** ./node_modules/@wordpress/url/build-module/has-query-arg.js ***!
-  \*******************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   hasQueryArg: () => (/* binding */ hasQueryArg)
-/* harmony export */ });
-/* harmony import */ var _get_query_arg__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./get-query-arg */ "./node_modules/@wordpress/url/build-module/get-query-arg.js");
-/**
- * Internal dependencies
- */
-
-
-/**
- * Determines whether the URL contains a given query arg.
- *
- * @param {string} url URL.
- * @param {string} arg Query arg name.
- *
- * @example
- * ```js
- * const hasBar = hasQueryArg( 'https://wordpress.org?foo=bar&bar=baz', 'bar' ); // true
- * ```
- *
- * @return {boolean} Whether or not the URL contains the query arg.
- */
-function hasQueryArg(url, arg) {
-  return (0,_get_query_arg__WEBPACK_IMPORTED_MODULE_0__.getQueryArg)(url, arg) !== undefined;
-}
-
-
-/***/ }),
-
-/***/ "./node_modules/@wordpress/url/build-module/normalize-path.js":
-/*!********************************************************************!*\
-  !*** ./node_modules/@wordpress/url/build-module/normalize-path.js ***!
-  \********************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   normalizePath: () => (/* binding */ normalizePath)
-/* harmony export */ });
-/**
- * Given a path, returns a normalized path where equal query parameter values
- * will be treated as identical, regardless of order they appear in the original
- * text.
- *
- * @param {string} path Original path.
- *
- * @return {string} Normalized path.
- */
-function normalizePath(path) {
-  const splitted = path.split('?');
-  const query = splitted[1];
-  const base = splitted[0];
-  if (!query) {
-    return base;
-  }
-
-  // 'b=1%2C2&c=2&a=5'
-  return base + '?' + query
-  // [ 'b=1%2C2', 'c=2', 'a=5' ]
-  .split('&')
-  // [ [ 'b, '1%2C2' ], [ 'c', '2' ], [ 'a', '5' ] ]
-  .map(entry => entry.split('='))
-  // [ [ 'b', '1,2' ], [ 'c', '2' ], [ 'a', '5' ] ]
-  .map(pair => pair.map(decodeURIComponent))
-  // [ [ 'a', '5' ], [ 'b, '1,2' ], [ 'c', '2' ] ]
-  .sort((a, b) => a[0].localeCompare(b[0]))
-  // [ [ 'a', '5' ], [ 'b, '1%2C2' ], [ 'c', '2' ] ]
-  .map(pair => pair.map(encodeURIComponent))
-  // [ 'a=5', 'b=1%2C2', 'c=2' ]
-  .map(pair => pair.join('='))
-  // 'a=5&b=1%2C2&c=2'
-  .join('&');
-}
-
-
-/***/ }),
-
-/***/ "./node_modules/@wordpress/url/build-module/remove-query-args.js":
-/*!***********************************************************************!*\
-  !*** ./node_modules/@wordpress/url/build-module/remove-query-args.js ***!
-  \***********************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   removeQueryArgs: () => (/* binding */ removeQueryArgs)
-/* harmony export */ });
-/* harmony import */ var _get_query_args__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./get-query-args */ "./node_modules/@wordpress/url/build-module/get-query-args.js");
-/* harmony import */ var _build_query_string__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./build-query-string */ "./node_modules/@wordpress/url/build-module/build-query-string.js");
-/**
- * Internal dependencies
- */
-
-
-
-/**
- * Removes arguments from the query string of the url
- *
- * @param {string}    url  URL.
- * @param {...string} args Query Args.
- *
- * @example
- * ```js
- * const newUrl = removeQueryArgs( 'https://wordpress.org?foo=bar&bar=baz&baz=foobar', 'foo', 'bar' ); // https://wordpress.org?baz=foobar
- * ```
- *
- * @return {string} Updated URL.
- */
-function removeQueryArgs(url, ...args) {
-  const queryStringIndex = url.indexOf('?');
-  if (queryStringIndex === -1) {
-    return url;
-  }
-  const query = (0,_get_query_args__WEBPACK_IMPORTED_MODULE_0__.getQueryArgs)(url);
-  const baseURL = url.substr(0, queryStringIndex);
-  args.forEach(arg => delete query[arg]);
-  const queryString = (0,_build_query_string__WEBPACK_IMPORTED_MODULE_1__.buildQueryString)(query);
-  return queryString ? baseURL + '?' + queryString : baseURL;
-}
-
-
-/***/ }),
-
-/***/ "./node_modules/@wordpress/url/build-module/safe-decode-uri-component.js":
-/*!*******************************************************************************!*\
-  !*** ./node_modules/@wordpress/url/build-module/safe-decode-uri-component.js ***!
-  \*******************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   safeDecodeURIComponent: () => (/* binding */ safeDecodeURIComponent)
-/* harmony export */ });
-/**
- * Safely decodes a URI component with `decodeURIComponent`. Returns the URI component unmodified if
- * `decodeURIComponent` throws an error.
- *
- * @param {string} uriComponent URI component to decode.
- *
- * @return {string} Decoded URI component if possible.
- */
-function safeDecodeURIComponent(uriComponent) {
-  try {
-    return decodeURIComponent(uriComponent);
-  } catch (uriComponentError) {
-    return uriComponent;
-  }
-}
-
-
-/***/ }),
-
 /***/ "./node_modules/clsx/dist/clsx.mjs":
 /*!*****************************************!*\
   !*** ./node_modules/clsx/dist/clsx.mjs ***!
@@ -2119,6 +1249,1813 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 function r(e){var t,f,n="";if("string"==typeof e||"number"==typeof e)n+=e;else if("object"==typeof e)if(Array.isArray(e)){var o=e.length;for(t=0;t<o;t++)e[t]&&(f=r(e[t]))&&(n&&(n+=" "),n+=f)}else for(f in e)e[f]&&(n&&(n+=" "),n+=f);return n}function clsx(){for(var e,t,f=0,n="",o=arguments.length;f<o;f++)(e=arguments[f])&&(t=r(e))&&(n&&(n+=" "),n+=t);return n}/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (clsx);
+
+/***/ }),
+
+/***/ "./node_modules/fuse.js/dist/fuse.mjs":
+/*!********************************************!*\
+  !*** ./node_modules/fuse.js/dist/fuse.mjs ***!
+  \********************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Fuse)
+/* harmony export */ });
+/**
+ * Fuse.js v7.1.0 - Lightweight fuzzy-search (http://fusejs.io)
+ *
+ * Copyright (c) 2025 Kiro Risk (http://kiro.me)
+ * All Rights Reserved. Apache Software License 2.0
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+
+function isArray(value) {
+  return !Array.isArray
+    ? getTag(value) === '[object Array]'
+    : Array.isArray(value)
+}
+
+// Adapted from: https://github.com/lodash/lodash/blob/master/.internal/baseToString.js
+const INFINITY = 1 / 0;
+function baseToString(value) {
+  // Exit early for strings to avoid a performance hit in some environments.
+  if (typeof value == 'string') {
+    return value
+  }
+  let result = value + '';
+  return result == '0' && 1 / value == -INFINITY ? '-0' : result
+}
+
+function toString(value) {
+  return value == null ? '' : baseToString(value)
+}
+
+function isString(value) {
+  return typeof value === 'string'
+}
+
+function isNumber(value) {
+  return typeof value === 'number'
+}
+
+// Adapted from: https://github.com/lodash/lodash/blob/master/isBoolean.js
+function isBoolean(value) {
+  return (
+    value === true ||
+    value === false ||
+    (isObjectLike(value) && getTag(value) == '[object Boolean]')
+  )
+}
+
+function isObject(value) {
+  return typeof value === 'object'
+}
+
+// Checks if `value` is object-like.
+function isObjectLike(value) {
+  return isObject(value) && value !== null
+}
+
+function isDefined(value) {
+  return value !== undefined && value !== null
+}
+
+function isBlank(value) {
+  return !value.trim().length
+}
+
+// Gets the `toStringTag` of `value`.
+// Adapted from: https://github.com/lodash/lodash/blob/master/.internal/getTag.js
+function getTag(value) {
+  return value == null
+    ? value === undefined
+      ? '[object Undefined]'
+      : '[object Null]'
+    : Object.prototype.toString.call(value)
+}
+
+const EXTENDED_SEARCH_UNAVAILABLE = 'Extended search is not available';
+
+const INCORRECT_INDEX_TYPE = "Incorrect 'index' type";
+
+const LOGICAL_SEARCH_INVALID_QUERY_FOR_KEY = (key) =>
+  `Invalid value for key ${key}`;
+
+const PATTERN_LENGTH_TOO_LARGE = (max) =>
+  `Pattern length exceeds max of ${max}.`;
+
+const MISSING_KEY_PROPERTY = (name) => `Missing ${name} property in key`;
+
+const INVALID_KEY_WEIGHT_VALUE = (key) =>
+  `Property 'weight' in key '${key}' must be a positive integer`;
+
+const hasOwn = Object.prototype.hasOwnProperty;
+
+class KeyStore {
+  constructor(keys) {
+    this._keys = [];
+    this._keyMap = {};
+
+    let totalWeight = 0;
+
+    keys.forEach((key) => {
+      let obj = createKey(key);
+
+      this._keys.push(obj);
+      this._keyMap[obj.id] = obj;
+
+      totalWeight += obj.weight;
+    });
+
+    // Normalize weights so that their sum is equal to 1
+    this._keys.forEach((key) => {
+      key.weight /= totalWeight;
+    });
+  }
+  get(keyId) {
+    return this._keyMap[keyId]
+  }
+  keys() {
+    return this._keys
+  }
+  toJSON() {
+    return JSON.stringify(this._keys)
+  }
+}
+
+function createKey(key) {
+  let path = null;
+  let id = null;
+  let src = null;
+  let weight = 1;
+  let getFn = null;
+
+  if (isString(key) || isArray(key)) {
+    src = key;
+    path = createKeyPath(key);
+    id = createKeyId(key);
+  } else {
+    if (!hasOwn.call(key, 'name')) {
+      throw new Error(MISSING_KEY_PROPERTY('name'))
+    }
+
+    const name = key.name;
+    src = name;
+
+    if (hasOwn.call(key, 'weight')) {
+      weight = key.weight;
+
+      if (weight <= 0) {
+        throw new Error(INVALID_KEY_WEIGHT_VALUE(name))
+      }
+    }
+
+    path = createKeyPath(name);
+    id = createKeyId(name);
+    getFn = key.getFn;
+  }
+
+  return { path, id, weight, src, getFn }
+}
+
+function createKeyPath(key) {
+  return isArray(key) ? key : key.split('.')
+}
+
+function createKeyId(key) {
+  return isArray(key) ? key.join('.') : key
+}
+
+function get(obj, path) {
+  let list = [];
+  let arr = false;
+
+  const deepGet = (obj, path, index) => {
+    if (!isDefined(obj)) {
+      return
+    }
+    if (!path[index]) {
+      // If there's no path left, we've arrived at the object we care about.
+      list.push(obj);
+    } else {
+      let key = path[index];
+
+      const value = obj[key];
+
+      if (!isDefined(value)) {
+        return
+      }
+
+      // If we're at the last value in the path, and if it's a string/number/bool,
+      // add it to the list
+      if (
+        index === path.length - 1 &&
+        (isString(value) || isNumber(value) || isBoolean(value))
+      ) {
+        list.push(toString(value));
+      } else if (isArray(value)) {
+        arr = true;
+        // Search each item in the array.
+        for (let i = 0, len = value.length; i < len; i += 1) {
+          deepGet(value[i], path, index + 1);
+        }
+      } else if (path.length) {
+        // An object. Recurse further.
+        deepGet(value, path, index + 1);
+      }
+    }
+  };
+
+  // Backwards compatibility (since path used to be a string)
+  deepGet(obj, isString(path) ? path.split('.') : path, 0);
+
+  return arr ? list : list[0]
+}
+
+const MatchOptions = {
+  // Whether the matches should be included in the result set. When `true`, each record in the result
+  // set will include the indices of the matched characters.
+  // These can consequently be used for highlighting purposes.
+  includeMatches: false,
+  // When `true`, the matching function will continue to the end of a search pattern even if
+  // a perfect match has already been located in the string.
+  findAllMatches: false,
+  // Minimum number of characters that must be matched before a result is considered a match
+  minMatchCharLength: 1
+};
+
+const BasicOptions = {
+  // When `true`, the algorithm continues searching to the end of the input even if a perfect
+  // match is found before the end of the same input.
+  isCaseSensitive: false,
+  // When `true`, the algorithm will ignore diacritics (accents) in comparisons
+  ignoreDiacritics: false,
+  // When true, the matching function will continue to the end of a search pattern even if
+  includeScore: false,
+  // List of properties that will be searched. This also supports nested properties.
+  keys: [],
+  // Whether to sort the result list, by score
+  shouldSort: true,
+  // Default sort function: sort by ascending score, ascending index
+  sortFn: (a, b) =>
+    a.score === b.score ? (a.idx < b.idx ? -1 : 1) : a.score < b.score ? -1 : 1
+};
+
+const FuzzyOptions = {
+  // Approximately where in the text is the pattern expected to be found?
+  location: 0,
+  // At what point does the match algorithm give up. A threshold of '0.0' requires a perfect match
+  // (of both letters and location), a threshold of '1.0' would match anything.
+  threshold: 0.6,
+  // Determines how close the match must be to the fuzzy location (specified above).
+  // An exact letter match which is 'distance' characters away from the fuzzy location
+  // would score as a complete mismatch. A distance of '0' requires the match be at
+  // the exact location specified, a threshold of '1000' would require a perfect match
+  // to be within 800 characters of the fuzzy location to be found using a 0.8 threshold.
+  distance: 100
+};
+
+const AdvancedOptions = {
+  // When `true`, it enables the use of unix-like search commands
+  useExtendedSearch: false,
+  // The get function to use when fetching an object's properties.
+  // The default will search nested paths *ie foo.bar.baz*
+  getFn: get,
+  // When `true`, search will ignore `location` and `distance`, so it won't matter
+  // where in the string the pattern appears.
+  // More info: https://fusejs.io/concepts/scoring-theory.html#fuzziness-score
+  ignoreLocation: false,
+  // When `true`, the calculation for the relevance score (used for sorting) will
+  // ignore the field-length norm.
+  // More info: https://fusejs.io/concepts/scoring-theory.html#field-length-norm
+  ignoreFieldNorm: false,
+  // The weight to determine how much field length norm effects scoring.
+  fieldNormWeight: 1
+};
+
+var Config = {
+  ...BasicOptions,
+  ...MatchOptions,
+  ...FuzzyOptions,
+  ...AdvancedOptions
+};
+
+const SPACE = /[^ ]+/g;
+
+// Field-length norm: the shorter the field, the higher the weight.
+// Set to 3 decimals to reduce index size.
+function norm(weight = 1, mantissa = 3) {
+  const cache = new Map();
+  const m = Math.pow(10, mantissa);
+
+  return {
+    get(value) {
+      const numTokens = value.match(SPACE).length;
+
+      if (cache.has(numTokens)) {
+        return cache.get(numTokens)
+      }
+
+      // Default function is 1/sqrt(x), weight makes that variable
+      const norm = 1 / Math.pow(numTokens, 0.5 * weight);
+
+      // In place of `toFixed(mantissa)`, for faster computation
+      const n = parseFloat(Math.round(norm * m) / m);
+
+      cache.set(numTokens, n);
+
+      return n
+    },
+    clear() {
+      cache.clear();
+    }
+  }
+}
+
+class FuseIndex {
+  constructor({
+    getFn = Config.getFn,
+    fieldNormWeight = Config.fieldNormWeight
+  } = {}) {
+    this.norm = norm(fieldNormWeight, 3);
+    this.getFn = getFn;
+    this.isCreated = false;
+
+    this.setIndexRecords();
+  }
+  setSources(docs = []) {
+    this.docs = docs;
+  }
+  setIndexRecords(records = []) {
+    this.records = records;
+  }
+  setKeys(keys = []) {
+    this.keys = keys;
+    this._keysMap = {};
+    keys.forEach((key, idx) => {
+      this._keysMap[key.id] = idx;
+    });
+  }
+  create() {
+    if (this.isCreated || !this.docs.length) {
+      return
+    }
+
+    this.isCreated = true;
+
+    // List is Array<String>
+    if (isString(this.docs[0])) {
+      this.docs.forEach((doc, docIndex) => {
+        this._addString(doc, docIndex);
+      });
+    } else {
+      // List is Array<Object>
+      this.docs.forEach((doc, docIndex) => {
+        this._addObject(doc, docIndex);
+      });
+    }
+
+    this.norm.clear();
+  }
+  // Adds a doc to the end of the index
+  add(doc) {
+    const idx = this.size();
+
+    if (isString(doc)) {
+      this._addString(doc, idx);
+    } else {
+      this._addObject(doc, idx);
+    }
+  }
+  // Removes the doc at the specified index of the index
+  removeAt(idx) {
+    this.records.splice(idx, 1);
+
+    // Change ref index of every subsquent doc
+    for (let i = idx, len = this.size(); i < len; i += 1) {
+      this.records[i].i -= 1;
+    }
+  }
+  getValueForItemAtKeyId(item, keyId) {
+    return item[this._keysMap[keyId]]
+  }
+  size() {
+    return this.records.length
+  }
+  _addString(doc, docIndex) {
+    if (!isDefined(doc) || isBlank(doc)) {
+      return
+    }
+
+    let record = {
+      v: doc,
+      i: docIndex,
+      n: this.norm.get(doc)
+    };
+
+    this.records.push(record);
+  }
+  _addObject(doc, docIndex) {
+    let record = { i: docIndex, $: {} };
+
+    // Iterate over every key (i.e, path), and fetch the value at that key
+    this.keys.forEach((key, keyIndex) => {
+      let value = key.getFn ? key.getFn(doc) : this.getFn(doc, key.path);
+
+      if (!isDefined(value)) {
+        return
+      }
+
+      if (isArray(value)) {
+        let subRecords = [];
+        const stack = [{ nestedArrIndex: -1, value }];
+
+        while (stack.length) {
+          const { nestedArrIndex, value } = stack.pop();
+
+          if (!isDefined(value)) {
+            continue
+          }
+
+          if (isString(value) && !isBlank(value)) {
+            let subRecord = {
+              v: value,
+              i: nestedArrIndex,
+              n: this.norm.get(value)
+            };
+
+            subRecords.push(subRecord);
+          } else if (isArray(value)) {
+            value.forEach((item, k) => {
+              stack.push({
+                nestedArrIndex: k,
+                value: item
+              });
+            });
+          } else ;
+        }
+        record.$[keyIndex] = subRecords;
+      } else if (isString(value) && !isBlank(value)) {
+        let subRecord = {
+          v: value,
+          n: this.norm.get(value)
+        };
+
+        record.$[keyIndex] = subRecord;
+      }
+    });
+
+    this.records.push(record);
+  }
+  toJSON() {
+    return {
+      keys: this.keys,
+      records: this.records
+    }
+  }
+}
+
+function createIndex(
+  keys,
+  docs,
+  { getFn = Config.getFn, fieldNormWeight = Config.fieldNormWeight } = {}
+) {
+  const myIndex = new FuseIndex({ getFn, fieldNormWeight });
+  myIndex.setKeys(keys.map(createKey));
+  myIndex.setSources(docs);
+  myIndex.create();
+  return myIndex
+}
+
+function parseIndex(
+  data,
+  { getFn = Config.getFn, fieldNormWeight = Config.fieldNormWeight } = {}
+) {
+  const { keys, records } = data;
+  const myIndex = new FuseIndex({ getFn, fieldNormWeight });
+  myIndex.setKeys(keys);
+  myIndex.setIndexRecords(records);
+  return myIndex
+}
+
+function computeScore$1(
+  pattern,
+  {
+    errors = 0,
+    currentLocation = 0,
+    expectedLocation = 0,
+    distance = Config.distance,
+    ignoreLocation = Config.ignoreLocation
+  } = {}
+) {
+  const accuracy = errors / pattern.length;
+
+  if (ignoreLocation) {
+    return accuracy
+  }
+
+  const proximity = Math.abs(expectedLocation - currentLocation);
+
+  if (!distance) {
+    // Dodge divide by zero error.
+    return proximity ? 1.0 : accuracy
+  }
+
+  return accuracy + proximity / distance
+}
+
+function convertMaskToIndices(
+  matchmask = [],
+  minMatchCharLength = Config.minMatchCharLength
+) {
+  let indices = [];
+  let start = -1;
+  let end = -1;
+  let i = 0;
+
+  for (let len = matchmask.length; i < len; i += 1) {
+    let match = matchmask[i];
+    if (match && start === -1) {
+      start = i;
+    } else if (!match && start !== -1) {
+      end = i - 1;
+      if (end - start + 1 >= minMatchCharLength) {
+        indices.push([start, end]);
+      }
+      start = -1;
+    }
+  }
+
+  // (i-1 - start) + 1 => i - start
+  if (matchmask[i - 1] && i - start >= minMatchCharLength) {
+    indices.push([start, i - 1]);
+  }
+
+  return indices
+}
+
+// Machine word size
+const MAX_BITS = 32;
+
+function search(
+  text,
+  pattern,
+  patternAlphabet,
+  {
+    location = Config.location,
+    distance = Config.distance,
+    threshold = Config.threshold,
+    findAllMatches = Config.findAllMatches,
+    minMatchCharLength = Config.minMatchCharLength,
+    includeMatches = Config.includeMatches,
+    ignoreLocation = Config.ignoreLocation
+  } = {}
+) {
+  if (pattern.length > MAX_BITS) {
+    throw new Error(PATTERN_LENGTH_TOO_LARGE(MAX_BITS))
+  }
+
+  const patternLen = pattern.length;
+  // Set starting location at beginning text and initialize the alphabet.
+  const textLen = text.length;
+  // Handle the case when location > text.length
+  const expectedLocation = Math.max(0, Math.min(location, textLen));
+  // Highest score beyond which we give up.
+  let currentThreshold = threshold;
+  // Is there a nearby exact match? (speedup)
+  let bestLocation = expectedLocation;
+
+  // Performance: only computer matches when the minMatchCharLength > 1
+  // OR if `includeMatches` is true.
+  const computeMatches = minMatchCharLength > 1 || includeMatches;
+  // A mask of the matches, used for building the indices
+  const matchMask = computeMatches ? Array(textLen) : [];
+
+  let index;
+
+  // Get all exact matches, here for speed up
+  while ((index = text.indexOf(pattern, bestLocation)) > -1) {
+    let score = computeScore$1(pattern, {
+      currentLocation: index,
+      expectedLocation,
+      distance,
+      ignoreLocation
+    });
+
+    currentThreshold = Math.min(score, currentThreshold);
+    bestLocation = index + patternLen;
+
+    if (computeMatches) {
+      let i = 0;
+      while (i < patternLen) {
+        matchMask[index + i] = 1;
+        i += 1;
+      }
+    }
+  }
+
+  // Reset the best location
+  bestLocation = -1;
+
+  let lastBitArr = [];
+  let finalScore = 1;
+  let binMax = patternLen + textLen;
+
+  const mask = 1 << (patternLen - 1);
+
+  for (let i = 0; i < patternLen; i += 1) {
+    // Scan for the best match; each iteration allows for one more error.
+    // Run a binary search to determine how far from the match location we can stray
+    // at this error level.
+    let binMin = 0;
+    let binMid = binMax;
+
+    while (binMin < binMid) {
+      const score = computeScore$1(pattern, {
+        errors: i,
+        currentLocation: expectedLocation + binMid,
+        expectedLocation,
+        distance,
+        ignoreLocation
+      });
+
+      if (score <= currentThreshold) {
+        binMin = binMid;
+      } else {
+        binMax = binMid;
+      }
+
+      binMid = Math.floor((binMax - binMin) / 2 + binMin);
+    }
+
+    // Use the result from this iteration as the maximum for the next.
+    binMax = binMid;
+
+    let start = Math.max(1, expectedLocation - binMid + 1);
+    let finish = findAllMatches
+      ? textLen
+      : Math.min(expectedLocation + binMid, textLen) + patternLen;
+
+    // Initialize the bit array
+    let bitArr = Array(finish + 2);
+
+    bitArr[finish + 1] = (1 << i) - 1;
+
+    for (let j = finish; j >= start; j -= 1) {
+      let currentLocation = j - 1;
+      let charMatch = patternAlphabet[text.charAt(currentLocation)];
+
+      if (computeMatches) {
+        // Speed up: quick bool to int conversion (i.e, `charMatch ? 1 : 0`)
+        matchMask[currentLocation] = +!!charMatch;
+      }
+
+      // First pass: exact match
+      bitArr[j] = ((bitArr[j + 1] << 1) | 1) & charMatch;
+
+      // Subsequent passes: fuzzy match
+      if (i) {
+        bitArr[j] |=
+          ((lastBitArr[j + 1] | lastBitArr[j]) << 1) | 1 | lastBitArr[j + 1];
+      }
+
+      if (bitArr[j] & mask) {
+        finalScore = computeScore$1(pattern, {
+          errors: i,
+          currentLocation,
+          expectedLocation,
+          distance,
+          ignoreLocation
+        });
+
+        // This match will almost certainly be better than any existing match.
+        // But check anyway.
+        if (finalScore <= currentThreshold) {
+          // Indeed it is
+          currentThreshold = finalScore;
+          bestLocation = currentLocation;
+
+          // Already passed `loc`, downhill from here on in.
+          if (bestLocation <= expectedLocation) {
+            break
+          }
+
+          // When passing `bestLocation`, don't exceed our current distance from `expectedLocation`.
+          start = Math.max(1, 2 * expectedLocation - bestLocation);
+        }
+      }
+    }
+
+    // No hope for a (better) match at greater error levels.
+    const score = computeScore$1(pattern, {
+      errors: i + 1,
+      currentLocation: expectedLocation,
+      expectedLocation,
+      distance,
+      ignoreLocation
+    });
+
+    if (score > currentThreshold) {
+      break
+    }
+
+    lastBitArr = bitArr;
+  }
+
+  const result = {
+    isMatch: bestLocation >= 0,
+    // Count exact matches (those with a score of 0) to be "almost" exact
+    score: Math.max(0.001, finalScore)
+  };
+
+  if (computeMatches) {
+    const indices = convertMaskToIndices(matchMask, minMatchCharLength);
+    if (!indices.length) {
+      result.isMatch = false;
+    } else if (includeMatches) {
+      result.indices = indices;
+    }
+  }
+
+  return result
+}
+
+function createPatternAlphabet(pattern) {
+  let mask = {};
+
+  for (let i = 0, len = pattern.length; i < len; i += 1) {
+    const char = pattern.charAt(i);
+    mask[char] = (mask[char] || 0) | (1 << (len - i - 1));
+  }
+
+  return mask
+}
+
+const stripDiacritics = String.prototype.normalize
+    ? ((str) => str.normalize('NFD').replace(/[\u0300-\u036F\u0483-\u0489\u0591-\u05BD\u05BF\u05C1\u05C2\u05C4\u05C5\u05C7\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED\u0711\u0730-\u074A\u07A6-\u07B0\u07EB-\u07F3\u07FD\u0816-\u0819\u081B-\u0823\u0825-\u0827\u0829-\u082D\u0859-\u085B\u08D3-\u08E1\u08E3-\u0903\u093A-\u093C\u093E-\u094F\u0951-\u0957\u0962\u0963\u0981-\u0983\u09BC\u09BE-\u09C4\u09C7\u09C8\u09CB-\u09CD\u09D7\u09E2\u09E3\u09FE\u0A01-\u0A03\u0A3C\u0A3E-\u0A42\u0A47\u0A48\u0A4B-\u0A4D\u0A51\u0A70\u0A71\u0A75\u0A81-\u0A83\u0ABC\u0ABE-\u0AC5\u0AC7-\u0AC9\u0ACB-\u0ACD\u0AE2\u0AE3\u0AFA-\u0AFF\u0B01-\u0B03\u0B3C\u0B3E-\u0B44\u0B47\u0B48\u0B4B-\u0B4D\u0B56\u0B57\u0B62\u0B63\u0B82\u0BBE-\u0BC2\u0BC6-\u0BC8\u0BCA-\u0BCD\u0BD7\u0C00-\u0C04\u0C3E-\u0C44\u0C46-\u0C48\u0C4A-\u0C4D\u0C55\u0C56\u0C62\u0C63\u0C81-\u0C83\u0CBC\u0CBE-\u0CC4\u0CC6-\u0CC8\u0CCA-\u0CCD\u0CD5\u0CD6\u0CE2\u0CE3\u0D00-\u0D03\u0D3B\u0D3C\u0D3E-\u0D44\u0D46-\u0D48\u0D4A-\u0D4D\u0D57\u0D62\u0D63\u0D82\u0D83\u0DCA\u0DCF-\u0DD4\u0DD6\u0DD8-\u0DDF\u0DF2\u0DF3\u0E31\u0E34-\u0E3A\u0E47-\u0E4E\u0EB1\u0EB4-\u0EB9\u0EBB\u0EBC\u0EC8-\u0ECD\u0F18\u0F19\u0F35\u0F37\u0F39\u0F3E\u0F3F\u0F71-\u0F84\u0F86\u0F87\u0F8D-\u0F97\u0F99-\u0FBC\u0FC6\u102B-\u103E\u1056-\u1059\u105E-\u1060\u1062-\u1064\u1067-\u106D\u1071-\u1074\u1082-\u108D\u108F\u109A-\u109D\u135D-\u135F\u1712-\u1714\u1732-\u1734\u1752\u1753\u1772\u1773\u17B4-\u17D3\u17DD\u180B-\u180D\u1885\u1886\u18A9\u1920-\u192B\u1930-\u193B\u1A17-\u1A1B\u1A55-\u1A5E\u1A60-\u1A7C\u1A7F\u1AB0-\u1ABE\u1B00-\u1B04\u1B34-\u1B44\u1B6B-\u1B73\u1B80-\u1B82\u1BA1-\u1BAD\u1BE6-\u1BF3\u1C24-\u1C37\u1CD0-\u1CD2\u1CD4-\u1CE8\u1CED\u1CF2-\u1CF4\u1CF7-\u1CF9\u1DC0-\u1DF9\u1DFB-\u1DFF\u20D0-\u20F0\u2CEF-\u2CF1\u2D7F\u2DE0-\u2DFF\u302A-\u302F\u3099\u309A\uA66F-\uA672\uA674-\uA67D\uA69E\uA69F\uA6F0\uA6F1\uA802\uA806\uA80B\uA823-\uA827\uA880\uA881\uA8B4-\uA8C5\uA8E0-\uA8F1\uA8FF\uA926-\uA92D\uA947-\uA953\uA980-\uA983\uA9B3-\uA9C0\uA9E5\uAA29-\uAA36\uAA43\uAA4C\uAA4D\uAA7B-\uAA7D\uAAB0\uAAB2-\uAAB4\uAAB7\uAAB8\uAABE\uAABF\uAAC1\uAAEB-\uAAEF\uAAF5\uAAF6\uABE3-\uABEA\uABEC\uABED\uFB1E\uFE00-\uFE0F\uFE20-\uFE2F]/g, ''))
+    : ((str) => str);
+
+class BitapSearch {
+  constructor(
+    pattern,
+    {
+      location = Config.location,
+      threshold = Config.threshold,
+      distance = Config.distance,
+      includeMatches = Config.includeMatches,
+      findAllMatches = Config.findAllMatches,
+      minMatchCharLength = Config.minMatchCharLength,
+      isCaseSensitive = Config.isCaseSensitive,
+      ignoreDiacritics = Config.ignoreDiacritics,
+      ignoreLocation = Config.ignoreLocation
+    } = {}
+  ) {
+    this.options = {
+      location,
+      threshold,
+      distance,
+      includeMatches,
+      findAllMatches,
+      minMatchCharLength,
+      isCaseSensitive,
+      ignoreDiacritics,
+      ignoreLocation
+    };
+
+    pattern = isCaseSensitive ? pattern : pattern.toLowerCase();
+    pattern = ignoreDiacritics ? stripDiacritics(pattern) : pattern;
+    this.pattern = pattern;
+
+    this.chunks = [];
+
+    if (!this.pattern.length) {
+      return
+    }
+
+    const addChunk = (pattern, startIndex) => {
+      this.chunks.push({
+        pattern,
+        alphabet: createPatternAlphabet(pattern),
+        startIndex
+      });
+    };
+
+    const len = this.pattern.length;
+
+    if (len > MAX_BITS) {
+      let i = 0;
+      const remainder = len % MAX_BITS;
+      const end = len - remainder;
+
+      while (i < end) {
+        addChunk(this.pattern.substr(i, MAX_BITS), i);
+        i += MAX_BITS;
+      }
+
+      if (remainder) {
+        const startIndex = len - MAX_BITS;
+        addChunk(this.pattern.substr(startIndex), startIndex);
+      }
+    } else {
+      addChunk(this.pattern, 0);
+    }
+  }
+
+  searchIn(text) {
+    const { isCaseSensitive, ignoreDiacritics, includeMatches } = this.options;
+
+    text = isCaseSensitive ? text : text.toLowerCase();
+    text = ignoreDiacritics ? stripDiacritics(text) : text;
+
+    // Exact match
+    if (this.pattern === text) {
+      let result = {
+        isMatch: true,
+        score: 0
+      };
+
+      if (includeMatches) {
+        result.indices = [[0, text.length - 1]];
+      }
+
+      return result
+    }
+
+    // Otherwise, use Bitap algorithm
+    const {
+      location,
+      distance,
+      threshold,
+      findAllMatches,
+      minMatchCharLength,
+      ignoreLocation
+    } = this.options;
+
+    let allIndices = [];
+    let totalScore = 0;
+    let hasMatches = false;
+
+    this.chunks.forEach(({ pattern, alphabet, startIndex }) => {
+      const { isMatch, score, indices } = search(text, pattern, alphabet, {
+        location: location + startIndex,
+        distance,
+        threshold,
+        findAllMatches,
+        minMatchCharLength,
+        includeMatches,
+        ignoreLocation
+      });
+
+      if (isMatch) {
+        hasMatches = true;
+      }
+
+      totalScore += score;
+
+      if (isMatch && indices) {
+        allIndices = [...allIndices, ...indices];
+      }
+    });
+
+    let result = {
+      isMatch: hasMatches,
+      score: hasMatches ? totalScore / this.chunks.length : 1
+    };
+
+    if (hasMatches && includeMatches) {
+      result.indices = allIndices;
+    }
+
+    return result
+  }
+}
+
+class BaseMatch {
+  constructor(pattern) {
+    this.pattern = pattern;
+  }
+  static isMultiMatch(pattern) {
+    return getMatch(pattern, this.multiRegex)
+  }
+  static isSingleMatch(pattern) {
+    return getMatch(pattern, this.singleRegex)
+  }
+  search(/*text*/) {}
+}
+
+function getMatch(pattern, exp) {
+  const matches = pattern.match(exp);
+  return matches ? matches[1] : null
+}
+
+// Token: 'file
+
+class ExactMatch extends BaseMatch {
+  constructor(pattern) {
+    super(pattern);
+  }
+  static get type() {
+    return 'exact'
+  }
+  static get multiRegex() {
+    return /^="(.*)"$/
+  }
+  static get singleRegex() {
+    return /^=(.*)$/
+  }
+  search(text) {
+    const isMatch = text === this.pattern;
+
+    return {
+      isMatch,
+      score: isMatch ? 0 : 1,
+      indices: [0, this.pattern.length - 1]
+    }
+  }
+}
+
+// Token: !fire
+
+class InverseExactMatch extends BaseMatch {
+  constructor(pattern) {
+    super(pattern);
+  }
+  static get type() {
+    return 'inverse-exact'
+  }
+  static get multiRegex() {
+    return /^!"(.*)"$/
+  }
+  static get singleRegex() {
+    return /^!(.*)$/
+  }
+  search(text) {
+    const index = text.indexOf(this.pattern);
+    const isMatch = index === -1;
+
+    return {
+      isMatch,
+      score: isMatch ? 0 : 1,
+      indices: [0, text.length - 1]
+    }
+  }
+}
+
+// Token: ^file
+
+class PrefixExactMatch extends BaseMatch {
+  constructor(pattern) {
+    super(pattern);
+  }
+  static get type() {
+    return 'prefix-exact'
+  }
+  static get multiRegex() {
+    return /^\^"(.*)"$/
+  }
+  static get singleRegex() {
+    return /^\^(.*)$/
+  }
+  search(text) {
+    const isMatch = text.startsWith(this.pattern);
+
+    return {
+      isMatch,
+      score: isMatch ? 0 : 1,
+      indices: [0, this.pattern.length - 1]
+    }
+  }
+}
+
+// Token: !^fire
+
+class InversePrefixExactMatch extends BaseMatch {
+  constructor(pattern) {
+    super(pattern);
+  }
+  static get type() {
+    return 'inverse-prefix-exact'
+  }
+  static get multiRegex() {
+    return /^!\^"(.*)"$/
+  }
+  static get singleRegex() {
+    return /^!\^(.*)$/
+  }
+  search(text) {
+    const isMatch = !text.startsWith(this.pattern);
+
+    return {
+      isMatch,
+      score: isMatch ? 0 : 1,
+      indices: [0, text.length - 1]
+    }
+  }
+}
+
+// Token: .file$
+
+class SuffixExactMatch extends BaseMatch {
+  constructor(pattern) {
+    super(pattern);
+  }
+  static get type() {
+    return 'suffix-exact'
+  }
+  static get multiRegex() {
+    return /^"(.*)"\$$/
+  }
+  static get singleRegex() {
+    return /^(.*)\$$/
+  }
+  search(text) {
+    const isMatch = text.endsWith(this.pattern);
+
+    return {
+      isMatch,
+      score: isMatch ? 0 : 1,
+      indices: [text.length - this.pattern.length, text.length - 1]
+    }
+  }
+}
+
+// Token: !.file$
+
+class InverseSuffixExactMatch extends BaseMatch {
+  constructor(pattern) {
+    super(pattern);
+  }
+  static get type() {
+    return 'inverse-suffix-exact'
+  }
+  static get multiRegex() {
+    return /^!"(.*)"\$$/
+  }
+  static get singleRegex() {
+    return /^!(.*)\$$/
+  }
+  search(text) {
+    const isMatch = !text.endsWith(this.pattern);
+    return {
+      isMatch,
+      score: isMatch ? 0 : 1,
+      indices: [0, text.length - 1]
+    }
+  }
+}
+
+class FuzzyMatch extends BaseMatch {
+  constructor(
+    pattern,
+    {
+      location = Config.location,
+      threshold = Config.threshold,
+      distance = Config.distance,
+      includeMatches = Config.includeMatches,
+      findAllMatches = Config.findAllMatches,
+      minMatchCharLength = Config.minMatchCharLength,
+      isCaseSensitive = Config.isCaseSensitive,
+      ignoreDiacritics = Config.ignoreDiacritics,
+      ignoreLocation = Config.ignoreLocation
+    } = {}
+  ) {
+    super(pattern);
+    this._bitapSearch = new BitapSearch(pattern, {
+      location,
+      threshold,
+      distance,
+      includeMatches,
+      findAllMatches,
+      minMatchCharLength,
+      isCaseSensitive,
+      ignoreDiacritics,
+      ignoreLocation
+    });
+  }
+  static get type() {
+    return 'fuzzy'
+  }
+  static get multiRegex() {
+    return /^"(.*)"$/
+  }
+  static get singleRegex() {
+    return /^(.*)$/
+  }
+  search(text) {
+    return this._bitapSearch.searchIn(text)
+  }
+}
+
+// Token: 'file
+
+class IncludeMatch extends BaseMatch {
+  constructor(pattern) {
+    super(pattern);
+  }
+  static get type() {
+    return 'include'
+  }
+  static get multiRegex() {
+    return /^'"(.*)"$/
+  }
+  static get singleRegex() {
+    return /^'(.*)$/
+  }
+  search(text) {
+    let location = 0;
+    let index;
+
+    const indices = [];
+    const patternLen = this.pattern.length;
+
+    // Get all exact matches
+    while ((index = text.indexOf(this.pattern, location)) > -1) {
+      location = index + patternLen;
+      indices.push([index, location - 1]);
+    }
+
+    const isMatch = !!indices.length;
+
+    return {
+      isMatch,
+      score: isMatch ? 0 : 1,
+      indices
+    }
+  }
+}
+
+// ❗Order is important. DO NOT CHANGE.
+const searchers = [
+  ExactMatch,
+  IncludeMatch,
+  PrefixExactMatch,
+  InversePrefixExactMatch,
+  InverseSuffixExactMatch,
+  SuffixExactMatch,
+  InverseExactMatch,
+  FuzzyMatch
+];
+
+const searchersLen = searchers.length;
+
+// Regex to split by spaces, but keep anything in quotes together
+const SPACE_RE = / +(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/;
+const OR_TOKEN = '|';
+
+// Return a 2D array representation of the query, for simpler parsing.
+// Example:
+// "^core go$ | rb$ | py$ xy$" => [["^core", "go$"], ["rb$"], ["py$", "xy$"]]
+function parseQuery(pattern, options = {}) {
+  return pattern.split(OR_TOKEN).map((item) => {
+    let query = item
+      .trim()
+      .split(SPACE_RE)
+      .filter((item) => item && !!item.trim());
+
+    let results = [];
+    for (let i = 0, len = query.length; i < len; i += 1) {
+      const queryItem = query[i];
+
+      // 1. Handle multiple query match (i.e, once that are quoted, like `"hello world"`)
+      let found = false;
+      let idx = -1;
+      while (!found && ++idx < searchersLen) {
+        const searcher = searchers[idx];
+        let token = searcher.isMultiMatch(queryItem);
+        if (token) {
+          results.push(new searcher(token, options));
+          found = true;
+        }
+      }
+
+      if (found) {
+        continue
+      }
+
+      // 2. Handle single query matches (i.e, once that are *not* quoted)
+      idx = -1;
+      while (++idx < searchersLen) {
+        const searcher = searchers[idx];
+        let token = searcher.isSingleMatch(queryItem);
+        if (token) {
+          results.push(new searcher(token, options));
+          break
+        }
+      }
+    }
+
+    return results
+  })
+}
+
+// These extended matchers can return an array of matches, as opposed
+// to a singl match
+const MultiMatchSet = new Set([FuzzyMatch.type, IncludeMatch.type]);
+
+/**
+ * Command-like searching
+ * ======================
+ *
+ * Given multiple search terms delimited by spaces.e.g. `^jscript .python$ ruby !java`,
+ * search in a given text.
+ *
+ * Search syntax:
+ *
+ * | Token       | Match type                 | Description                            |
+ * | ----------- | -------------------------- | -------------------------------------- |
+ * | `jscript`   | fuzzy-match                | Items that fuzzy match `jscript`       |
+ * | `=scheme`   | exact-match                | Items that are `scheme`                |
+ * | `'python`   | include-match              | Items that include `python`            |
+ * | `!ruby`     | inverse-exact-match        | Items that do not include `ruby`       |
+ * | `^java`     | prefix-exact-match         | Items that start with `java`           |
+ * | `!^earlang` | inverse-prefix-exact-match | Items that do not start with `earlang` |
+ * | `.js$`      | suffix-exact-match         | Items that end with `.js`              |
+ * | `!.go$`     | inverse-suffix-exact-match | Items that do not end with `.go`       |
+ *
+ * A single pipe character acts as an OR operator. For example, the following
+ * query matches entries that start with `core` and end with either`go`, `rb`,
+ * or`py`.
+ *
+ * ```
+ * ^core go$ | rb$ | py$
+ * ```
+ */
+class ExtendedSearch {
+  constructor(
+    pattern,
+    {
+      isCaseSensitive = Config.isCaseSensitive,
+      ignoreDiacritics = Config.ignoreDiacritics,
+      includeMatches = Config.includeMatches,
+      minMatchCharLength = Config.minMatchCharLength,
+      ignoreLocation = Config.ignoreLocation,
+      findAllMatches = Config.findAllMatches,
+      location = Config.location,
+      threshold = Config.threshold,
+      distance = Config.distance
+    } = {}
+  ) {
+    this.query = null;
+    this.options = {
+      isCaseSensitive,
+      ignoreDiacritics,
+      includeMatches,
+      minMatchCharLength,
+      findAllMatches,
+      ignoreLocation,
+      location,
+      threshold,
+      distance
+    };
+
+    pattern = isCaseSensitive ? pattern : pattern.toLowerCase();
+    pattern = ignoreDiacritics ? stripDiacritics(pattern) : pattern;
+    this.pattern = pattern;
+    this.query = parseQuery(this.pattern, this.options);
+  }
+
+  static condition(_, options) {
+    return options.useExtendedSearch
+  }
+
+  searchIn(text) {
+    const query = this.query;
+
+    if (!query) {
+      return {
+        isMatch: false,
+        score: 1
+      }
+    }
+
+    const { includeMatches, isCaseSensitive, ignoreDiacritics } = this.options;
+
+    text = isCaseSensitive ? text : text.toLowerCase();
+    text = ignoreDiacritics ? stripDiacritics(text) : text;
+
+    let numMatches = 0;
+    let allIndices = [];
+    let totalScore = 0;
+
+    // ORs
+    for (let i = 0, qLen = query.length; i < qLen; i += 1) {
+      const searchers = query[i];
+
+      // Reset indices
+      allIndices.length = 0;
+      numMatches = 0;
+
+      // ANDs
+      for (let j = 0, pLen = searchers.length; j < pLen; j += 1) {
+        const searcher = searchers[j];
+        const { isMatch, indices, score } = searcher.search(text);
+
+        if (isMatch) {
+          numMatches += 1;
+          totalScore += score;
+          if (includeMatches) {
+            const type = searcher.constructor.type;
+            if (MultiMatchSet.has(type)) {
+              allIndices = [...allIndices, ...indices];
+            } else {
+              allIndices.push(indices);
+            }
+          }
+        } else {
+          totalScore = 0;
+          numMatches = 0;
+          allIndices.length = 0;
+          break
+        }
+      }
+
+      // OR condition, so if TRUE, return
+      if (numMatches) {
+        let result = {
+          isMatch: true,
+          score: totalScore / numMatches
+        };
+
+        if (includeMatches) {
+          result.indices = allIndices;
+        }
+
+        return result
+      }
+    }
+
+    // Nothing was matched
+    return {
+      isMatch: false,
+      score: 1
+    }
+  }
+}
+
+const registeredSearchers = [];
+
+function register(...args) {
+  registeredSearchers.push(...args);
+}
+
+function createSearcher(pattern, options) {
+  for (let i = 0, len = registeredSearchers.length; i < len; i += 1) {
+    let searcherClass = registeredSearchers[i];
+    if (searcherClass.condition(pattern, options)) {
+      return new searcherClass(pattern, options)
+    }
+  }
+
+  return new BitapSearch(pattern, options)
+}
+
+const LogicalOperator = {
+  AND: '$and',
+  OR: '$or'
+};
+
+const KeyType = {
+  PATH: '$path',
+  PATTERN: '$val'
+};
+
+const isExpression = (query) =>
+  !!(query[LogicalOperator.AND] || query[LogicalOperator.OR]);
+
+const isPath = (query) => !!query[KeyType.PATH];
+
+const isLeaf = (query) =>
+  !isArray(query) && isObject(query) && !isExpression(query);
+
+const convertToExplicit = (query) => ({
+  [LogicalOperator.AND]: Object.keys(query).map((key) => ({
+    [key]: query[key]
+  }))
+});
+
+// When `auto` is `true`, the parse function will infer and initialize and add
+// the appropriate `Searcher` instance
+function parse(query, options, { auto = true } = {}) {
+  const next = (query) => {
+    let keys = Object.keys(query);
+
+    const isQueryPath = isPath(query);
+
+    if (!isQueryPath && keys.length > 1 && !isExpression(query)) {
+      return next(convertToExplicit(query))
+    }
+
+    if (isLeaf(query)) {
+      const key = isQueryPath ? query[KeyType.PATH] : keys[0];
+
+      const pattern = isQueryPath ? query[KeyType.PATTERN] : query[key];
+
+      if (!isString(pattern)) {
+        throw new Error(LOGICAL_SEARCH_INVALID_QUERY_FOR_KEY(key))
+      }
+
+      const obj = {
+        keyId: createKeyId(key),
+        pattern
+      };
+
+      if (auto) {
+        obj.searcher = createSearcher(pattern, options);
+      }
+
+      return obj
+    }
+
+    let node = {
+      children: [],
+      operator: keys[0]
+    };
+
+    keys.forEach((key) => {
+      const value = query[key];
+
+      if (isArray(value)) {
+        value.forEach((item) => {
+          node.children.push(next(item));
+        });
+      }
+    });
+
+    return node
+  };
+
+  if (!isExpression(query)) {
+    query = convertToExplicit(query);
+  }
+
+  return next(query)
+}
+
+// Practical scoring function
+function computeScore(
+  results,
+  { ignoreFieldNorm = Config.ignoreFieldNorm }
+) {
+  results.forEach((result) => {
+    let totalScore = 1;
+
+    result.matches.forEach(({ key, norm, score }) => {
+      const weight = key ? key.weight : null;
+
+      totalScore *= Math.pow(
+        score === 0 && weight ? Number.EPSILON : score,
+        (weight || 1) * (ignoreFieldNorm ? 1 : norm)
+      );
+    });
+
+    result.score = totalScore;
+  });
+}
+
+function transformMatches(result, data) {
+  const matches = result.matches;
+  data.matches = [];
+
+  if (!isDefined(matches)) {
+    return
+  }
+
+  matches.forEach((match) => {
+    if (!isDefined(match.indices) || !match.indices.length) {
+      return
+    }
+
+    const { indices, value } = match;
+
+    let obj = {
+      indices,
+      value
+    };
+
+    if (match.key) {
+      obj.key = match.key.src;
+    }
+
+    if (match.idx > -1) {
+      obj.refIndex = match.idx;
+    }
+
+    data.matches.push(obj);
+  });
+}
+
+function transformScore(result, data) {
+  data.score = result.score;
+}
+
+function format(
+  results,
+  docs,
+  {
+    includeMatches = Config.includeMatches,
+    includeScore = Config.includeScore
+  } = {}
+) {
+  const transformers = [];
+
+  if (includeMatches) transformers.push(transformMatches);
+  if (includeScore) transformers.push(transformScore);
+
+  return results.map((result) => {
+    const { idx } = result;
+
+    const data = {
+      item: docs[idx],
+      refIndex: idx
+    };
+
+    if (transformers.length) {
+      transformers.forEach((transformer) => {
+        transformer(result, data);
+      });
+    }
+
+    return data
+  })
+}
+
+class Fuse {
+  constructor(docs, options = {}, index) {
+    this.options = { ...Config, ...options };
+
+    if (
+      this.options.useExtendedSearch &&
+      !true
+    ) // removed by dead control flow
+{}
+
+    this._keyStore = new KeyStore(this.options.keys);
+
+    this.setCollection(docs, index);
+  }
+
+  setCollection(docs, index) {
+    this._docs = docs;
+
+    if (index && !(index instanceof FuseIndex)) {
+      throw new Error(INCORRECT_INDEX_TYPE)
+    }
+
+    this._myIndex =
+      index ||
+      createIndex(this.options.keys, this._docs, {
+        getFn: this.options.getFn,
+        fieldNormWeight: this.options.fieldNormWeight
+      });
+  }
+
+  add(doc) {
+    if (!isDefined(doc)) {
+      return
+    }
+
+    this._docs.push(doc);
+    this._myIndex.add(doc);
+  }
+
+  remove(predicate = (/* doc, idx */) => false) {
+    const results = [];
+
+    for (let i = 0, len = this._docs.length; i < len; i += 1) {
+      const doc = this._docs[i];
+      if (predicate(doc, i)) {
+        this.removeAt(i);
+        i -= 1;
+        len -= 1;
+
+        results.push(doc);
+      }
+    }
+
+    return results
+  }
+
+  removeAt(idx) {
+    this._docs.splice(idx, 1);
+    this._myIndex.removeAt(idx);
+  }
+
+  getIndex() {
+    return this._myIndex
+  }
+
+  search(query, { limit = -1 } = {}) {
+    const {
+      includeMatches,
+      includeScore,
+      shouldSort,
+      sortFn,
+      ignoreFieldNorm
+    } = this.options;
+
+    let results = isString(query)
+      ? isString(this._docs[0])
+        ? this._searchStringList(query)
+        : this._searchObjectList(query)
+      : this._searchLogical(query);
+
+    computeScore(results, { ignoreFieldNorm });
+
+    if (shouldSort) {
+      results.sort(sortFn);
+    }
+
+    if (isNumber(limit) && limit > -1) {
+      results = results.slice(0, limit);
+    }
+
+    return format(results, this._docs, {
+      includeMatches,
+      includeScore
+    })
+  }
+
+  _searchStringList(query) {
+    const searcher = createSearcher(query, this.options);
+    const { records } = this._myIndex;
+    const results = [];
+
+    // Iterate over every string in the index
+    records.forEach(({ v: text, i: idx, n: norm }) => {
+      if (!isDefined(text)) {
+        return
+      }
+
+      const { isMatch, score, indices } = searcher.searchIn(text);
+
+      if (isMatch) {
+        results.push({
+          item: text,
+          idx,
+          matches: [{ score, value: text, norm, indices }]
+        });
+      }
+    });
+
+    return results
+  }
+
+  _searchLogical(query) {
+
+    const expression = parse(query, this.options);
+
+    const evaluate = (node, item, idx) => {
+      if (!node.children) {
+        const { keyId, searcher } = node;
+
+        const matches = this._findMatches({
+          key: this._keyStore.get(keyId),
+          value: this._myIndex.getValueForItemAtKeyId(item, keyId),
+          searcher
+        });
+
+        if (matches && matches.length) {
+          return [
+            {
+              idx,
+              item,
+              matches
+            }
+          ]
+        }
+
+        return []
+      }
+
+      const res = [];
+      for (let i = 0, len = node.children.length; i < len; i += 1) {
+        const child = node.children[i];
+        const result = evaluate(child, item, idx);
+        if (result.length) {
+          res.push(...result);
+        } else if (node.operator === LogicalOperator.AND) {
+          return []
+        }
+      }
+      return res
+    };
+
+    const records = this._myIndex.records;
+    const resultMap = {};
+    const results = [];
+
+    records.forEach(({ $: item, i: idx }) => {
+      if (isDefined(item)) {
+        let expResults = evaluate(expression, item, idx);
+
+        if (expResults.length) {
+          // Dedupe when adding
+          if (!resultMap[idx]) {
+            resultMap[idx] = { idx, item, matches: [] };
+            results.push(resultMap[idx]);
+          }
+          expResults.forEach(({ matches }) => {
+            resultMap[idx].matches.push(...matches);
+          });
+        }
+      }
+    });
+
+    return results
+  }
+
+  _searchObjectList(query) {
+    const searcher = createSearcher(query, this.options);
+    const { keys, records } = this._myIndex;
+    const results = [];
+
+    // List is Array<Object>
+    records.forEach(({ $: item, i: idx }) => {
+      if (!isDefined(item)) {
+        return
+      }
+
+      let matches = [];
+
+      // Iterate over every key (i.e, path), and fetch the value at that key
+      keys.forEach((key, keyIndex) => {
+        matches.push(
+          ...this._findMatches({
+            key,
+            value: item[keyIndex],
+            searcher
+          })
+        );
+      });
+
+      if (matches.length) {
+        results.push({
+          idx,
+          item,
+          matches
+        });
+      }
+    });
+
+    return results
+  }
+  _findMatches({ key, value, searcher }) {
+    if (!isDefined(value)) {
+      return []
+    }
+
+    let matches = [];
+
+    if (isArray(value)) {
+      value.forEach(({ v: text, i: idx, n: norm }) => {
+        if (!isDefined(text)) {
+          return
+        }
+
+        const { isMatch, score, indices } = searcher.searchIn(text);
+
+        if (isMatch) {
+          matches.push({
+            score,
+            key,
+            value: text,
+            idx,
+            norm,
+            indices
+          });
+        }
+      });
+    } else {
+      const { v: text, n: norm } = value;
+
+      const { isMatch, score, indices } = searcher.searchIn(text);
+
+      if (isMatch) {
+        matches.push({ score, key, value: text, norm, indices });
+      }
+    }
+
+    return matches
+  }
+}
+
+Fuse.version = '7.1.0';
+Fuse.createIndex = createIndex;
+Fuse.parseIndex = parseIndex;
+Fuse.config = Config;
+
+{
+  Fuse.parseQuery = parse;
+}
+
+{
+  register(ExtendedSearch);
+}
+
+
+
 
 /***/ }),
 
@@ -3625,9 +4562,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/star-filled.js");
-/* harmony import */ var _components_IconPicker__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/IconPicker */ "./blocks/icon-picker/components/IconPicker.js");
-/* harmony import */ var _components_IconSettings__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/IconSettings */ "./blocks/icon-picker/components/IconSettings.js");
-/* harmony import */ var _components_LinkSettings__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/LinkSettings */ "./blocks/icon-picker/components/LinkSettings.js");
+/* harmony import */ var _components_IconPicker__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/IconPicker */ "./blocks/icon-picker/components/IconPicker.tsx");
+/* harmony import */ var _components_IconSettings__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/IconSettings */ "./blocks/icon-picker/components/IconSettings.tsx");
+/* harmony import */ var _components_LinkSettings__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/LinkSettings */ "./blocks/icon-picker/components/LinkSettings.tsx");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 
 
@@ -3639,14 +4576,15 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const Edit = ({ attributes, setAttributes }) => {
-    const { iconName, iconType, iconCategory, iconSize, iconColor, iconAlignment, iconStyle, linkUrl, linkTarget, linkRel, showLabel, iconLabel, labelPosition, customClassName } = attributes;
+    const { iconName, iconType, iconCategory, iconSet, iconSize, iconColor, iconAlignment, iconStyle, linkUrl, linkTarget, linkRel, showLabel, iconLabel, labelPosition, labelSize, labelColor, customClassName } = attributes;
     const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)({
         className: `jankx-icon-picker-block jankx-icon-picker-block--${iconAlignment} ${customClassName || ''}`.trim()
     });
     const handleIconChange = icon => {
         setAttributes({
             iconName: icon.name,
-            iconCategory: icon.category || ''
+            iconCategory: icon.category || '',
+            iconSet: icon.iconSet || 'material'
         });
     };
     const handleIconTypeChange = value => {
@@ -3666,7 +4604,8 @@ const Edit = ({ attributes, setAttributes }) => {
                 children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Chọn icon từ Jankx Font Icons', 'jankx')
             });
         }
-        if (iconType === 'material') {
+        // Render icon based on iconSet
+        if (iconSet === 'material') {
             const styleClass = iconStyle !== 'filled' ? `material-icons-${iconStyle}` : 'material-icons';
             return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
                 className: styleClass,
@@ -3677,10 +4616,18 @@ const Edit = ({ attributes, setAttributes }) => {
                 children: iconName
             });
         }
-        else if (iconType === 'fontawesome') {
-            const prefix = iconCategory === 'brands' ? 'fab' : iconCategory === 'regular' ? 'far' : 'fas';
+        else if (iconSet === 'fontawesome') {
             return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("i", {
-                className: `${prefix} fa-${iconName}`,
+                className: `fas fa-${iconName}`,
+                style: {
+                    fontSize: iconSize,
+                    color: iconColor
+                }
+            });
+        }
+        else if (iconSet === 'dashicons') {
+            return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
+                className: `dashicons dashicons-${iconName}`,
                 style: {
                     fontSize: iconSize,
                     color: iconColor
@@ -3696,10 +4643,19 @@ const Edit = ({ attributes, setAttributes }) => {
                 }
             });
         }
-        return null;
+        // Fallback to material icons
+        return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
+            className: "material-icons",
+            style: {
+                fontSize: iconSize,
+                color: iconColor
+            },
+            children: iconName
+        });
     };
     const renderContent = () => {
         const iconElement = renderIcon();
+        const finalLabelColor = labelColor || iconColor;
         if (linkUrl) {
             return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("a", {
                 href: linkUrl,
@@ -3708,6 +4664,10 @@ const Edit = ({ attributes, setAttributes }) => {
                 className: "jankx-icon-picker-block__link",
                 children: [iconElement, showLabel && iconLabel && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
                         className: `jankx-icon-picker-block__label jankx-icon-picker-block__label--${labelPosition}`,
+                        style: {
+                            fontSize: labelSize,
+                            color: finalLabelColor
+                        },
                         children: iconLabel
                     })]
             });
@@ -3715,6 +4675,10 @@ const Edit = ({ attributes, setAttributes }) => {
         return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
             children: [iconElement, showLabel && iconLabel && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
                     className: `jankx-icon-picker-block__label jankx-icon-picker-block__label--${labelPosition}`,
+                    style: {
+                        fontSize: labelSize,
+                        color: finalLabelColor
+                    },
                     children: iconLabel
                 })]
         });
@@ -3735,12 +4699,13 @@ const Edit = ({ attributes, setAttributes }) => {
                         children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components_IconPicker__WEBPACK_IMPORTED_MODULE_5__["default"], {
                             value: iconName ? {
                                 name: iconName,
-                                category: iconCategory
+                                category: iconCategory,
+                                iconSet: iconSet
                             } : null,
                             onChange: handleIconChange,
                             iconType: iconType,
                             category: iconCategory,
-                            onIconTypeChange: handleIconTypeChange,
+                            onIconTypeChange: value => handleIconTypeChange(value),
                             onCategoryChange: handleIconCategoryChange
                         })
                     }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components_IconSettings__WEBPACK_IMPORTED_MODULE_6__["default"], {
@@ -3751,6 +4716,8 @@ const Edit = ({ attributes, setAttributes }) => {
                         showLabel: showLabel,
                         iconLabel: iconLabel,
                         labelPosition: labelPosition,
+                        labelSize: labelSize,
+                        labelColor: labelColor,
                         onIconSizeChange: value => setAttributes({
                             iconSize: value
                         }),
@@ -3771,6 +4738,12 @@ const Edit = ({ attributes, setAttributes }) => {
                         }),
                         onLabelPositionChange: value => setAttributes({
                             labelPosition: value
+                        }),
+                        onLabelSizeChange: value => setAttributes({
+                            labelSize: value
+                        }),
+                        onLabelColorChange: value => setAttributes({
+                            labelColor: value
                         })
                     }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components_LinkSettings__WEBPACK_IMPORTED_MODULE_7__["default"], {
                         linkUrl: linkUrl,
@@ -3796,6 +4769,105 @@ const Edit = ({ attributes, setAttributes }) => {
                     children: renderContent()
                 })
             })]
+    });
+};
+const Save = ({ attributes }) => {
+    const { iconName, iconType, iconCategory, iconSet, iconSize, iconColor, iconAlignment, iconStyle, linkUrl, linkTarget, linkRel, showLabel, iconLabel, labelPosition, labelSize, labelColor, customClassName } = attributes;
+    const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps.save({
+        className: `jankx-icon-picker-block jankx-icon-picker-block--${iconAlignment} ${customClassName || ''}`.trim()
+    });
+    const renderIcon = () => {
+        if (!iconName) {
+            return null;
+        }
+        // Render icon based on iconSet
+        if (iconSet === 'material') {
+            const styleClass = iconStyle !== 'filled' ? `material-icons-${iconStyle}` : 'material-icons';
+            return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
+                className: styleClass,
+                style: {
+                    fontSize: iconSize,
+                    color: iconColor
+                },
+                children: iconName
+            });
+        }
+        else if (iconSet === 'fontawesome') {
+            return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("i", {
+                className: `fas fa-${iconName}`,
+                style: {
+                    fontSize: iconSize,
+                    color: iconColor
+                }
+            });
+        }
+        else if (iconSet === 'dashicons') {
+            return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
+                className: `dashicons dashicons-${iconName}`,
+                style: {
+                    fontSize: iconSize,
+                    color: iconColor
+                }
+            });
+        }
+        else if (iconType === 'custom') {
+            return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
+                className: `icon icon-${iconName}`,
+                style: {
+                    fontSize: iconSize,
+                    color: iconColor
+                }
+            });
+        }
+        // Fallback to material icons
+        return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
+            className: "material-icons",
+            style: {
+                fontSize: iconSize,
+                color: iconColor
+            },
+            children: iconName
+        });
+    };
+    const renderContent = () => {
+        const iconElement = renderIcon();
+        const finalLabelColor = labelColor || iconColor;
+        if (linkUrl) {
+            return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("a", {
+                href: linkUrl,
+                target: linkTarget,
+                rel: linkRel,
+                className: "jankx-icon-picker-block__link",
+                children: [iconElement, showLabel && iconLabel && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
+                        className: `jankx-icon-picker-block__label jankx-icon-picker-block__label--${labelPosition}`,
+                        style: {
+                            fontSize: labelSize,
+                            color: finalLabelColor
+                        },
+                        children: iconLabel
+                    })]
+            });
+        }
+        return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
+            children: [iconElement, showLabel && iconLabel && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
+                    className: `jankx-icon-picker-block__label jankx-icon-picker-block__label--${labelPosition}`,
+                    style: {
+                        fontSize: labelSize,
+                        color: finalLabelColor
+                    },
+                    children: iconLabel
+                })]
+        });
+    };
+    return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+        ...blockProps,
+        children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+            className: "jankx-icon-picker-block__content",
+            style: {
+                textAlign: iconAlignment
+            },
+            children: renderContent()
+        })
     });
 };
 (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.registerBlockType)('jankx/icon-picker', {
@@ -3834,6 +4906,10 @@ const Edit = ({ attributes, setAttributes }) => {
             type: 'string',
             default: 'navigation'
         },
+        iconSet: {
+            type: 'string',
+            default: 'material'
+        },
         iconSize: {
             type: 'string',
             default: '24px'
@@ -3870,6 +4946,14 @@ const Edit = ({ attributes, setAttributes }) => {
             type: 'string',
             default: 'after'
         },
+        labelSize: {
+            type: 'string',
+            default: '14px'
+        },
+        labelColor: {
+            type: 'string',
+            default: ''
+        },
         customClassName: {
             type: 'string',
             default: ''
@@ -3879,7 +4963,8 @@ const Edit = ({ attributes, setAttributes }) => {
             default: 'filled'
         }
     },
-    edit: Edit
+    edit: Edit,
+    save: Save
 });
 
 })();

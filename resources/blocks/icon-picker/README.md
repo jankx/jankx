@@ -1,314 +1,227 @@
-# 🎨 Icon Picker Block - Jankx Font Icons Integration
+# Icon Picker Block
 
-Gutenberg block cho phép chọn và hiển thị icon từ **Jankx Font Icons System** với khả năng thêm link và tùy chỉnh style.
+Block Gutenberg cho phép chọn và hiển thị icon với khả năng thêm link và text.
 
-## 🎯 **Tính năng chính**
+## 🚀 Tính năng
 
-- **🎨 Jankx Font Icons Integration**: Sử dụng hệ thống Font Icons của Jankx Framework
-- **🔗 Link Support**: Thêm link vào icon (có thể mở trong tab mới)
-- **🎭 Multiple Icon Types**: Material Icons, FontAwesome, Custom Icons
-- **🎨 Icon Styles**: Filled, Outlined, Rounded, Sharp, Two-tone
-- **📱 Responsive**: Tự động responsive trên mobile/tablet/desktop
-- **♿ Accessibility**: Hỗ trợ screen reader và keyboard navigation
+### ✅ Icon Selection
+- **Multiple Icon Sets**: Material Icons, FontAwesome, Dashicons
+- **Modal Layout**: Sidebar icon sets + Main panel icon grid
+- **Category Filtering**: Filter icons theo categories
+- **Full-text Search**: Tìm kiếm icon theo tên và tags
+- **Real-time Preview**: Xem trước icon khi chọn
 
-## 🚀 **Cài đặt & Build**
+### ✅ Link Integration
+- Thêm URL cho icon
+- Tùy chọn target (_self, _blank, _parent, _top)
+- Custom rel attributes
+- Preview link trong editor
 
-### 1. **Install Dependencies**
-```bash
-cd resources/blocks/icon-picker
-npm install
+### ✅ Text/Label Support
+- Thêm text label cho icon
+- 4 vị trí: before, after, above, below
+- Toggle hiển thị/ẩn label
+- **Slider UI cho text size với unit selection (px, em, rem, %)**
+- **Text color control với auto-sync với icon color**
+- Styling riêng cho label
+
+### ✅ Styling Options
+- **Slider UI cho icon size với unit selection (px, em, rem, %)**
+- Màu sắc icon và text
+- Alignment (left, center, right)
+- Icon style (filled, outlined, rounded, sharp, two-tone)
+- Responsive design
+
+## 📖 Cách sử dụng
+
+### 1. Thêm Block
+```
+1. Mở Gutenberg Editor
+2. Thêm block "Icon Picker"
+3. Chọn icon từ modal picker
 ```
 
-### 2. **Build Block**
-```bash
-# Build production
-npm run build
-
-# Development mode với hot reload
-npm run dev
-
-# Watch mode
-npm run watch
+### 2. Chọn Icon từ Modal
+```
+1. Click "Chọn Icon" button
+2. Chọn icon set từ sidebar bên trái:
+   - Material Icons
+   - FontAwesome
+   - Dashicons
+3. Sử dụng category filter và search
+4. Click icon để chọn
 ```
 
-### 3. **Auto-registration**
-Block sẽ tự động được đăng ký khi theme được kích hoạt thông qua Jankx Framework.
+### 3. Cấu hình Link
+```
+1. Mở Inspector Controls (sidebar)
+2. Tab "Link Settings"
+3. Nhập URL
+4. Chọn target window
+5. Thêm rel attributes (tùy chọn)
+```
 
-## 🏗️ **Kiến trúc**
+### 4. Thêm Text Label
+```
+1. Tab "Icon Settings"
+2. Bật "Show Label"
+3. Nhập text label
+4. Chọn vị trí (before/after/above/below)
+5. Điều chỉnh text size bằng slider với unit selection:
+   - px: 8px - 100px
+   - em: 0.5em - 10em
+   - rem: 0.5rem - 10rem
+   - %: 10% - 200%
+6. Tùy chỉnh text color (mặc định giống icon color)
+```
 
-### **File Structure**
+### 5. Tùy chỉnh Style
+```
+1. Tab "Icon Settings"
+2. Điều chỉnh icon size bằng slider với unit selection:
+   - px: 8px - 100px
+   - em: 0.5em - 10em
+   - rem: 0.5rem - 10rem
+   - %: 10% - 200%
+3. Chọn màu sắc từ color picker
+4. Căn chỉnh alignment
+5. Chọn icon style
+6. Sử dụng Block Controls cho alignment
+```
+
+## 🎨 CSS Classes
+
+### Block Structure
+```html
+<div class="jankx-icon-picker-block jankx-icon-picker-block--{alignment}">
+    <div class="jankx-icon-picker-block__content">
+        <!-- Icon + Label -->
+    </div>
+</div>
+```
+
+### Link Structure
+```html
+<a class="jankx-icon-picker-block__link" href="..." target="...">
+    <span class="material-icons" style="font-size: 24px; color: #333;">icon_name</span>
+    <span class="jankx-icon-picker-block__label jankx-icon-picker-block__label--{position}" style="font-size: 14px; color: #333;">
+        Label Text
+    </span>
+</a>
+```
+
+### Label Positions
+- `jankx-icon-picker-block__label--before`
+- `jankx-icon-picker-block__label--after`
+- `jankx-icon-picker-block__label--above`
+- `jankx-icon-picker-block__label--below`
+
+## 🔧 Development
+
+### TypeScript Strict
+- Tất cả components đã được chuyển sang TypeScript strict
+- Type safety cho tất cả props và functions
+- Interfaces được định nghĩa rõ ràng
+
+### File Structure
 ```
 icon-picker/
-├── block.json              # Block metadata & attributes
-├── index.js                # Main editor component
-├── save.js                 # Frontend render component
-├── index.css               # Editor styles
-├── block.php               # PHP registration & render
-├── webpack.mix.js          # Build configuration
-├── package.json            # Dependencies
-├── components/             # React components
-│   ├── IconPicker.js       # Icon selection interface
-│   ├── IconSettings.js     # Icon customization panel
-│   └── LinkSettings.js     # Link configuration panel
-└── build/                  # Built assets (generated)
+├── components/
+│   ├── IconPicker.tsx          # Main picker component
+│   ├── IconSettings.tsx        # Icon styling controls (với slider UI + unit selection)
+│   ├── LinkSettings.tsx        # Link configuration
+│   └── ShadcnIconPicker.tsx    # Modal picker với layout mới
+├── index.tsx                   # Main block file
+├── editor.scss                # Editor styles
+├── style.scss                # Frontend styles
+└── block.json                # Block metadata
 ```
 
-### **Jankx Integration**
-- **Font Icons System**: Sử dụng `FontIconsServiceProvider`
-- **Icon Repository**: Lấy icon data từ `IconRepository`
-- **REST API**: Endpoint `/jankx/v1/icons/available`
-- **Auto-discovery**: Tự động được Jankx Framework phát hiện
-
-## 📖 **Sử dụng**
-
-### **Trong Gutenberg Editor**
-
-1. Thêm block "Icon Picker" vào page/post
-2. Chọn icon từ Jankx Font Icons System
-3. Tùy chỉnh size, color, alignment, style
-4. Thêm link nếu cần
-5. Thêm label text (tùy chọn)
-
-### **Trong Code**
-
-```php
-// Sử dụng block trong template
-echo do_blocks('<!-- wp:jankx/icon-picker {
-    "iconName": "heart",
-    "iconType": "material",
-    "iconStyle": "filled",
-    "iconSize": "32px",
-    "iconColor": "#e74c3c",
-    "linkUrl": "https://example.com",
-    "showLabel": true,
-    "iconLabel": "Like us"
-} /-->');
-
-// Hoặc sử dụng PHP class
-$iconBlock = new \Jankx\Support\Blocks\IconPickerBlock();
-echo $iconBlock->render([
-    'iconName' => 'star',
-    'iconType' => 'material',
-    'iconStyle' => 'outlined'
-]);
-```
-
-## ⚙️ **Attributes**
-
-| Attribute | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `iconName` | string | 'home' | Tên icon |
-| `iconType` | string | 'material' | Loại icon (material/fontawesome/custom) |
-| `iconCategory` | string | 'navigation' | Danh mục icon |
-| `iconSize` | string | '24px' | Kích thước icon |
-| `iconColor` | string | '#333333' | Màu icon |
-| `iconAlignment` | string | 'left' | Căn chỉnh (left/center/right) |
-| `iconStyle` | string | 'filled' | Style icon (filled/outlined/rounded/sharp/two-tone) |
-| `linkUrl` | string | '' | URL link |
-| `linkTarget` | string | '_self' | Target link (_self/_blank/_parent/_top) |
-| `linkRel` | string | '' | Rel attributes |
-| `showLabel` | boolean | false | Hiển thị label |
-| `iconLabel` | string | '' | Text label |
-| `labelPosition` | string | 'after' | Vị trí label (before/after/above/below) |
-| `customClassName` | string | '' | CSS class tùy chỉnh |
-
-## 🎨 **Icon Types & Styles**
-
-### **Material Icons (Default)**
-- **Styles**: filled, outlined, rounded, sharp, two-tone
-- **Categories**: navigation, action, toggle, social, communication, maps
-- **Examples**: home, search, favorite, settings, person
-
-### **FontAwesome (Optional)**
-- **Categories**: solid, regular, brands, light, thin
-- **Prefixes**: fas, far, fab, fal, fat
-- **Examples**: home, heart, star, cog, user
-
-### **Custom Icons**
-- **Categories**: general, navigation, action, status
-- **Prefix**: icon
-- **Examples**: logo, custom-icon, brand-icon
-
-## 🔗 **Link Features**
-
-- **URL**: Nhập URL bất kỳ
-- **Target**: Mở trong tab mới hoặc cùng tab
-- **Rel**: Thêm rel attributes (nofollow, noreferrer)
-- **Preview**: Xem trước link trong editor
-- **Security**: Sanitization và escaping
-
-## 🎯 **Label Options**
-
-- **Position**: Trước/sau/trên/dưới icon
-- **Text**: Tùy chỉnh nội dung
-- **Style**: Kế thừa typography từ theme
-- **Responsive**: Tự động điều chỉnh trên mobile
-
-## 🎨 **Customization**
-
-### **CSS Classes**
-```css
-.jankx-icon-picker-block {
-    /* Block container */
-}
-
-.jankx-icon-picker-block__icon {
-    /* Icon element */
-}
-
-.jankx-icon-picker-block__label {
-    /* Label text */
-}
-
-.jankx-icon-picker-block__link {
-    /* Link wrapper */
-}
-```
-
-### **CSS Variables**
-```css
-.jankx-icon-picker-block {
-    --icon-size: 24px;
-    --icon-color: #333333;
-    --icon-alignment: left;
-}
-```
-
-### **Alignment Classes**
-- `.jankx-icon-picker-block--left`
-- `.jankx-icon-picker-block--center`
-- `.jankx-icon-picker-block--right`
-
-## 📱 **Responsive Design**
-
-Block tự động responsive với breakpoints:
-
-- **Desktop**: Grid layout đầy đủ
-- **Tablet**: Grid thu nhỏ
-- **Mobile**: Single column layout
-
-## ♿ **Accessibility**
-
-- **Screen Reader**: Icon được ẩn khỏi screen reader
-- **Keyboard**: Hỗ trợ tab navigation
-- **Focus**: Focus indicator rõ ràng
-- **High Contrast**: Hỗ trợ high contrast mode
-- **Reduced Motion**: Tôn trọng user preferences
-
-## 🌍 **Internationalization**
-
-- **RTL Support**: Hỗ trợ right-to-left languages
-- **Translation Ready**: Sử dụng WordPress i18n
-- **Language Detection**: Tự động detect ngôn ngữ
-
-## 🔧 **Development**
-
-### **Build Commands**
+### Build
 ```bash
-# Build production
-npm run build
-
-# Development mode
-npm run dev
-
-# Watch mode
-npm run watch
-
-# Hot reload
-npm run hot
+npm run build:webpack
 ```
 
-### **Adding New Icons**
+## 📱 Responsive
 
-1. Cập nhật Jankx Font Icons System
-2. Thêm icon vào thư viện tương ứng
-3. Test trong editor
+Block tự động responsive với:
+- Mobile-friendly modal picker
+- Flexible layout cho icon + label
+- Touch-friendly controls
+- Optimized spacing cho mobile
+- Responsive text sizing
 
-### **Extending Block**
+## ♿ Accessibility
 
-```php
-// Extend IconPickerBlock class
-class CustomIconPickerBlock extends IconPickerBlock
-{
-    public function __construct()
-    {
-        parent::__construct();
-        // Add custom functionality
-    }
-}
-```
+- Keyboard navigation support
+- Focus indicators
+- Screen reader friendly
+- Semantic HTML structure
+- ARIA labels và descriptions
+- High contrast mode support
+- Reduced motion support
 
-## 🐛 **Troubleshooting**
+## 🎯 Use Cases
 
-### **Icon không hiển thị**
-1. Kiểm tra Jankx Font Icons System đã load
-2. Verify icon name và category
-3. Check console errors
+1. **Navigation Icons**: Menu items với icons
+2. **Social Media Links**: Icons cho social platforms
+3. **Feature Highlights**: Icons cho product features
+4. **Call-to-Action**: Button icons với labels
+5. **Contact Information**: Phone, email, location icons
 
-### **Link không hoạt động**
-1. Kiểm tra URL format
-2. Verify link target
-3. Test trong frontend
+## 🆕 New Features
 
-### **Style không apply**
-1. Kiểm tra CSS đã build
-2. Verify CSS classes
-3. Check CSS specificity
+### Modal Icon Picker Layout
+- **Left Sidebar**: Icon sets selection (Material, FontAwesome, Dashicons)
+- **Right Main Panel**: Icon grid với controls
+- **Category Filter**: Dropdown filter theo categories
+- **Search Bar**: Full-text search cho icon names và tags
+- **Responsive Design**: Mobile-friendly layout
 
-## 📚 **Examples**
+### Advanced Size Controls
+- **Icon Size Slider**: Với unit selection (px, em, rem, %)
+  - px: 8px - 100px (step: 1px)
+  - em: 0.5em - 10em (step: 0.1em)
+  - rem: 0.5rem - 10rem (step: 0.1rem)
+  - %: 10% - 200% (step: 5%)
+- **Text Size Slider**: Với unit selection (px, em, rem, %)
+  - px: 8px - 100px (step: 1px)
+  - em: 0.5em - 10em (step: 0.1em)
+  - rem: 0.5rem - 10rem (step: 0.1rem)
+  - %: 10% - 200% (step: 5%)
+- Real-time preview khi điều chỉnh
+- Intuitive unit button selection
+- Automatic value conversion khi đổi unit
 
-### **Basic Material Icon**
-```php
-<!-- wp:jankx/icon-picker {
-    "iconName": "star",
-    "iconType": "material",
-    "iconStyle": "filled"
-} /-->
-```
+### Enhanced Text Styling
+- Dynamic font-size control với multiple units
+- **Text Color Control**: Tùy chỉnh màu text riêng biệt
+- **Auto-sync**: Text color tự động sync với icon color
+- Responsive text sizing
+- Text overflow handling
+- Better typography support
+- Flexible sizing options
 
-### **Icon with Link**
-```php
-<!-- wp:jankx/icon-picker {
-    "iconName": "heart",
-    "iconType": "material",
-    "iconStyle": "outlined",
-    "iconSize": "32px",
-    "iconColor": "#e74c3c",
-    "linkUrl": "https://example.com",
-    "linkTarget": "_blank"
-} /-->
-```
+### Size Control UI
+- **Unit Button Group**: px, em, rem, % buttons
+- **Range Slider**: Với min/max/step tự động theo unit
+- **Value Display**: Hiển thị giá trị hiện tại
+- **Smart Conversion**: Tự động chuyển đổi giá trị khi đổi unit
 
-### **Icon with Label**
-```php
-<!-- wp:jankx/icon-picker {
-    "iconName": "phone",
-    "iconType": "material",
-    "iconStyle": "rounded",
-    "showLabel": true,
-    "iconLabel": "Call us",
-    "labelPosition": "after"
-} /-->
-```
+## 🔄 Updates
 
-## 🤝 **Contributing**
-
-1. Fork repository
-2. Create feature branch
-3. Make changes
-4. Test thoroughly
-5. Submit pull request
-
-## 📄 **License**
-
-MIT License - Xem file LICENSE để biết thêm chi tiết.
-
-## 🆘 **Support**
-
-- **Documentation**: Xem tài liệu Jankx Framework
-- **Issues**: Tạo issue trên GitHub
-- **Community**: Tham gia Jankx community
-
----
-
-**Icon Picker Block** - Modern Gutenberg block with Jankx Font Icons System integration.
+- ✅ TypeScript strict conversion
+- ✅ Enhanced link functionality
+- ✅ Improved text/label support
+- ✅ **Slider UI cho size controls**
+- ✅ **Text size control với unit selection**
+- ✅ **Icon size control với unit selection**
+- ✅ **Advanced unit conversion system**
+- ✅ **Modal layout với sidebar + main panel**
+- ✅ **Multiple icon sets support**
+- ✅ **Category filtering và search**
+- ✅ **Text color control với auto-sync**
+- ✅ Better responsive design
+- ✅ Accessibility improvements
+- ✅ High contrast mode support
+- ✅ Reduced motion support
