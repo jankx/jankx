@@ -1,0 +1,11 @@
+/*!**********************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./blocks/advanced-posts/editor.scss ***!
+  \**********************************************************************************************************************************************************************/
+.jankx-advanced-posts__placeholder {
+  padding: 12px;
+  border: 1px dashed rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  background: #fafafa;
+}
+
+/*# sourceMappingURL=editor.css.map*/

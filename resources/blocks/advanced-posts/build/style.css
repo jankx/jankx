@@ -1,0 +1,15 @@
+/*!*********************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./blocks/advanced-posts/style.scss ***!
+  \*********************************************************************************************************************************************************************/
+.jankx-advanced-posts__list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+.jankx-advanced-posts__item {
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+/*# sourceMappingURL=style.css.map*/

@@ -39,6 +39,7 @@ module.exports = {
     'blocks/categories-grid/build/editor': './blocks/categories-grid/editor.scss',
 
     'blocks/products-carousel/build/index': './blocks/products-carousel/index.tsx',
+    'blocks/products-carousel/build/view': './blocks/products-carousel/view.js',
     'blocks/products-carousel/build/style': './blocks/products-carousel/style.scss',
     'blocks/products-carousel/build/editor': './blocks/products-carousel/editor.scss',
 
@@ -47,8 +48,13 @@ module.exports = {
     'blocks/lookbook-reveal/build/editor': './blocks/lookbook-reveal/editor.scss',
 
     'blocks/scattered-product-list/build/index': './blocks/scattered-product-list/index.tsx',
+    'blocks/scattered-product-list/build/view': './blocks/scattered-product-list/view.js',
     'blocks/scattered-product-list/build/style': './blocks/scattered-product-list/style.scss',
     'blocks/scattered-product-list/build/editor': './blocks/scattered-product-list/editor.scss',
+
+    'blocks/advanced-posts/build/index': './blocks/advanced-posts/index.tsx',
+    'blocks/advanced-posts/build/style': './blocks/advanced-posts/style.scss',
+    'blocks/advanced-posts/build/editor': './blocks/advanced-posts/editor.scss',
   },
   output: {
     path: path.resolve(__dirname),

@@ -7,13 +7,13 @@ use Jankx\Gutenberg\Blocks\DynamicCollectionBlock;
 use Jankx\Gutenberg\Blocks\IconPickerBlock;
 use Jankx\Gutenberg\Blocks\LanguageSwitcherBlock;
 use Jankx\Gutenberg\Blocks\MegaMenuBlock;
-use Jankx\Gutenberg\Blocks\ProductCarouselBlock;
 use Jankx\Gutenberg\Blocks\SwiperSlideBlock;
 use Jankx\Gutenberg\Blocks\SwiperSliderBlock;
 use Jankx\Gutenberg\Blocks\CategoriesGridBlock;
 use Jankx\Gutenberg\Blocks\ProductsCarouselBlock;
 use Jankx\Gutenberg\Blocks\LookbookRevealBlock;
 use Jankx\Gutenberg\Blocks\ScatteredProductListBlock;
+use Jankx\Gutenberg\Blocks\AdvancedPostsBlock;
 use Jankx\Gutenberg\GutenbergPattern;
 use Jankx\Facades\Log;
 use Jankx\Helper\Environment;
@@ -129,6 +129,7 @@ class GutenbergService
         $this->repository->registerBlock(ProductsCarouselBlock::class);
         $this->repository->registerBlock(LookbookRevealBlock::class);
         $this->repository->registerBlock(ScatteredProductListBlock::class);
+        $this->repository->registerBlock(AdvancedPostsBlock::class);
     }
 
     /**

@@ -145,7 +145,7 @@ class ProductsCarouselBlock extends Block
 
         // Carousel data attributes
         $carousel_data = [
-            'data-columns' => $attributes['columns'],
+            'data-slides-per-view' => $attributes['columns'],
             'data-space-between' => $attributes['spaceBetween'],
             'data-autoplay' => $attributes['autoplay'] ? 'true' : 'false',
             'data-autoplay-speed' => $attributes['autoplaySpeed'],
@@ -163,14 +163,14 @@ class ProductsCarouselBlock extends Block
         ?>
         <div class="<?php echo esc_attr($block_class); ?>">
             <div class="jankx-products-carousel-wrapper">
-                <div class="jankx-products-carousel"<?php echo $data_attributes; ?>>
+                <div class="jankx-products-carousel swiper"<?php echo $data_attributes; ?>>
                     <?php if ($products) : ?>
                         <?php foreach ($products as $product_post) : ?>
                             <?php
                             $product = wc_get_product($product_post->ID);
                             if (!$product) continue;
                             ?>
-                            <div class="jankx-product-carousel-item">
+                            <div class="jankx-product-carousel-item swiper-slide">
                                 <div class="product-image">
                                     <a href="<?php echo esc_url($product->get_permalink()); ?>">
                                         <?php echo wp_kses_post($product->get_image('medium')); ?>
@@ -203,26 +203,12 @@ class ProductsCarouselBlock extends Block
             </div>
 
             <?php if ($attributes['navigation']) : ?>
-                <div class="carousel-navigation">
-                    <button class="nav-prev" aria-label="<?php _e('Previous', 'jankx'); ?>">
-                        <?php _e('‹', 'jankx'); ?>
-                    </button>
-                    <button class="nav-next" aria-label="<?php _e('Next', 'jankx'); ?>">
-                        <?php _e('›', 'jankx'); ?>
-                    </button>
-                </div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
             <?php endif; ?>
 
             <?php if ($attributes['pagination']) : ?>
-                <div class="carousel-pagination">
-                    <?php
-                    $total_slides = count($products);
-                    $total_pages = ceil($total_slides / $attributes['columns']);
-                    for ($i = 0; $i < $total_pages; $i++) :
-                    ?>
-                        <span class="pagination-dot<?php echo $i === 0 ? ' active' : ''; ?>" data-slide="<?php echo $i; ?>"></span>
-                    <?php endfor; ?>
-                </div>
+                <div class="swiper-pagination"></div>
             <?php endif; ?>
         </div>
         <?php

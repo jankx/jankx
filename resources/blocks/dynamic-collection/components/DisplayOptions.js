@@ -2,6 +2,9 @@ import { __ } from '@wordpress/i18n';
 import { PanelBody, ToggleControl, RangeControl, CheckboxControl } from '@wordpress/components';
 
 export default function DisplayOptions({ displayOptions, onUpdate }) {
+    // Guard against undefined nested fields
+    const safeMetaFields = Array.isArray(displayOptions?.metaFields) ? displayOptions.metaFields : [];
+
     const updateDisplayOptions = (updates) => {
         onUpdate('displayOptions', { ...displayOptions, ...updates });
     };
@@ -17,7 +20,7 @@ export default function DisplayOptions({ displayOptions, onUpdate }) {
     ];
 
     const updateMetaFields = (field, checked) => {
-        const currentFields = [...displayOptions.metaFields];
+        const currentFields = Array.isArray(displayOptions?.metaFields) ? [...displayOptions.metaFields] : [];
         if (checked && !currentFields.includes(field)) {
             currentFields.push(field);
         } else if (!checked && currentFields.includes(field)) {
@@ -31,14 +34,14 @@ export default function DisplayOptions({ displayOptions, onUpdate }) {
             <PanelBody title={__('Content Display', 'jankx')} initialOpen={true}>
                 <ToggleControl
                     label={__('Show Title', 'jankx')}
-                    checked={displayOptions.showTitle}
+                    checked={!!displayOptions.showTitle}
                     onChange={(value) => updateDisplayOptions({ showTitle: value })}
                     help={__('Display the post title', 'jankx')}
                 />
 
                 <ToggleControl
                     label={__('Show Excerpt', 'jankx')}
-                    checked={displayOptions.showExcerpt}
+                    checked={!!displayOptions.showExcerpt}
                     onChange={(value) => updateDisplayOptions({ showExcerpt: value })}
                     help={__('Display the post excerpt or content preview', 'jankx')}
                 />
@@ -46,7 +49,7 @@ export default function DisplayOptions({ displayOptions, onUpdate }) {
                 {displayOptions.showExcerpt && (
                     <RangeControl
                         label={__('Excerpt Length', 'jankx')}
-                        value={displayOptions.excerptLength}
+                        value={displayOptions.excerptLength || 10}
                         onChange={(value) => updateDisplayOptions({ excerptLength: value })}
                         min={10}
                         max={100}
@@ -57,7 +60,7 @@ export default function DisplayOptions({ displayOptions, onUpdate }) {
 
                 <ToggleControl
                     label={__('Show Meta Information', 'jankx')}
-                    checked={displayOptions.showMeta}
+                    checked={!!displayOptions.showMeta}
                     onChange={(value) => updateDisplayOptions({ showMeta: value })}
                     help={__('Display post metadata (date, author, categories, etc.)', 'jankx')}
                 />
@@ -73,7 +76,7 @@ export default function DisplayOptions({ displayOptions, onUpdate }) {
                             <CheckboxControl
                                 key={field.value}
                                 label={field.label}
-                                checked={displayOptions.metaFields.includes(field.value)}
+                                checked={safeMetaFields.includes(field.value)}
                                 onChange={(checked) => updateMetaFields(field.value, checked)}
                             />
                         ))}
@@ -82,14 +85,14 @@ export default function DisplayOptions({ displayOptions, onUpdate }) {
 
                 <ToggleControl
                     label={__('Show Featured Image', 'jankx')}
-                    checked={displayOptions.showThumbnail}
+                    checked={!!displayOptions.showThumbnail}
                     onChange={(value) => updateDisplayOptions({ showThumbnail: value })}
                     help={__('Display the post featured image', 'jankx')}
                 />
 
                 <ToggleControl
                     label={__('Show Read More Link', 'jankx')}
-                    checked={displayOptions.showReadMore}
+                    checked={!!displayOptions.showReadMore}
                     onChange={(value) => updateDisplayOptions({ showReadMore: value })}
                     help={__('Display a "Read More" link to the full post', 'jankx')}
                 />
@@ -105,14 +108,14 @@ export default function DisplayOptions({ displayOptions, onUpdate }) {
                     <div className="jankx-truncation-options">
                         <ToggleControl
                             label={__('Smart Truncation', 'jankx')}
-                            checked={displayOptions.smartTruncation || false}
+                            checked={!!displayOptions.smartTruncation}
                             onChange={(value) => updateDisplayOptions({ smartTruncation: value })}
                             help={__('Intelligently truncate content at word boundaries', 'jankx')}
                         />
 
                         <ToggleControl
                             label={__('Preserve HTML', 'jankx')}
-                            checked={displayOptions.preserveHTML || false}
+                            checked={!!displayOptions.preserveHTML}
                             onChange={(value) => updateDisplayOptions({ preserveHTML: value })}
                             help={__('Keep HTML formatting when truncating content', 'jankx')}
                         />
@@ -127,14 +130,14 @@ export default function DisplayOptions({ displayOptions, onUpdate }) {
 
                     <ToggleControl
                         label={__('Link Entire Card', 'jankx')}
-                        checked={displayOptions.linkEntireCard || false}
+                        checked={!!displayOptions.linkEntireCard}
                         onChange={(value) => updateDisplayOptions({ linkEntireCard: value })}
                         help={__('Make the entire post card clickable', 'jankx')}
                     />
 
                     <ToggleControl
                         label={__('Open in New Tab', 'jankx')}
-                        checked={displayOptions.openInNewTab || false}
+                        checked={!!displayOptions.openInNewTab}
                         onChange={(value) => updateDisplayOptions({ openInNewTab: value })}
                         help={__('Open posts in a new browser tab', 'jankx')}
                     />
@@ -150,14 +153,14 @@ export default function DisplayOptions({ displayOptions, onUpdate }) {
 
                     <ToggleControl
                         label={__('ARIA Labels', 'jankx')}
-                        checked={displayOptions.ariaLabels || false}
+                        checked={!!displayOptions.ariaLabels}
                         onChange={(value) => updateDisplayOptions({ ariaLabels: value })}
                         help={__('Add ARIA labels for better screen reader support', 'jankx')}
                     />
 
                     <ToggleControl
                         label={__('Skip Links', 'jankx')}
-                        checked={displayOptions.skipLinks || false}
+                        checked={!!displayOptions.skipLinks}
                         onChange={(value) => updateDisplayOptions({ skipLinks: value })}
                         help={__('Add skip links for keyboard navigation', 'jankx')}
                     />

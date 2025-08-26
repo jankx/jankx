@@ -94,10 +94,14 @@ class ScatteredProductListBlock extends Block
 
         ob_start();
         ?>
-        <div class="<?php echo esc_attr($block_class); ?>">
+        <div class="<?php echo esc_attr($block_class); ?>"
+             data-columns="<?php echo esc_attr($attributes['columns']); ?>"
+             data-gap="<?php echo esc_attr($attributes['gap']); ?>"
+             data-masonry="<?php echo $attributes['masonry'] ? 'true' : 'false'; ?>"
+             data-animation="<?php echo esc_attr($attributes['animation']); ?>">
             <h2 class="section-title"><?php echo esc_html($attributes['title']); ?></h2>
 
-            <div class="products-grid <?php echo esc_attr($grid_class); ?>"<?php echo $grid_style ? " style=\"{$grid_style}\"" : ''; ?>>
+            <div class="jankx-products-grid <?php echo esc_attr($grid_class); ?>"<?php echo $grid_style ? " style=\"{$grid_style}\"" : ''; ?>>
                 <?php if ($products && !is_wp_error($products)) : ?>
                     <?php foreach ($products as $index => $product_post) : ?>
                         <?php
@@ -111,7 +115,7 @@ class ScatteredProductListBlock extends Block
                             $height_class = $height_variations[$index % count($height_variations)];
                         }
                         ?>
-                        <div class="product-item <?php echo esc_attr($height_class); ?>">
+                        <div class="jankx-product-item <?php echo esc_attr($height_class); ?>">
                             <div class="product-image">
                                 <a href="<?php echo esc_url($product->get_permalink()); ?>">
                                     <?php echo wp_kses_post($product->get_image('medium')); ?>
@@ -138,7 +142,7 @@ class ScatteredProductListBlock extends Block
                             $height_class = $height_variations[($i - 1) % count($height_variations)];
                         }
                         ?>
-                        <div class="product-item <?php echo esc_attr($height_class); ?>">
+                        <div class="jankx-product-item <?php echo esc_attr($height_class); ?>">
                             <div class="product-image">
                                 <?php echo wp_kses_post(wc_placeholder_img()); ?>
                             </div>

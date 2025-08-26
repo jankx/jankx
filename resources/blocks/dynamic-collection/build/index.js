@@ -24,6 +24,8 @@ function DisplayOptions({
   displayOptions,
   onUpdate
 }) {
+  // Guard against undefined nested fields
+  const safeMetaFields = Array.isArray(displayOptions?.metaFields) ? displayOptions.metaFields : [];
   const updateDisplayOptions = updates => {
     onUpdate('displayOptions', {
       ...displayOptions,
@@ -53,7 +55,7 @@ function DisplayOptions({
     value: 'custom_fields'
   }];
   const updateMetaFields = (field, checked) => {
-    const currentFields = [...displayOptions.metaFields];
+    const currentFields = Array.isArray(displayOptions?.metaFields) ? [...displayOptions.metaFields] : [];
     if (checked && !currentFields.includes(field)) {
       currentFields.push(field);
     } else if (!checked && currentFields.includes(field)) {
@@ -70,21 +72,21 @@ function DisplayOptions({
       initialOpen: true,
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Title', 'jankx'),
-        checked: displayOptions.showTitle,
+        checked: !!displayOptions.showTitle,
         onChange: value => updateDisplayOptions({
           showTitle: value
         }),
         help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Display the post title', 'jankx')
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Excerpt', 'jankx'),
-        checked: displayOptions.showExcerpt,
+        checked: !!displayOptions.showExcerpt,
         onChange: value => updateDisplayOptions({
           showExcerpt: value
         }),
         help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Display the post excerpt or content preview', 'jankx')
       }), displayOptions.showExcerpt && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.RangeControl, {
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Excerpt Length', 'jankx'),
-        value: displayOptions.excerptLength,
+        value: displayOptions.excerptLength || 10,
         onChange: value => updateDisplayOptions({
           excerptLength: value
         }),
@@ -94,7 +96,7 @@ function DisplayOptions({
         help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Number of words to show in excerpt', 'jankx')
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Meta Information', 'jankx'),
-        checked: displayOptions.showMeta,
+        checked: !!displayOptions.showMeta,
         onChange: value => updateDisplayOptions({
           showMeta: value
         }),
@@ -108,19 +110,19 @@ function DisplayOptions({
           children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select which meta information to show for each post', 'jankx')
         }), metaFieldOptions.map(field => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CheckboxControl, {
           label: field.label,
-          checked: displayOptions.metaFields.includes(field.value),
+          checked: safeMetaFields.includes(field.value),
           onChange: checked => updateMetaFields(field.value, checked)
         }, field.value))]
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Featured Image', 'jankx'),
-        checked: displayOptions.showThumbnail,
+        checked: !!displayOptions.showThumbnail,
         onChange: value => updateDisplayOptions({
           showThumbnail: value
         }),
         help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Display the post featured image', 'jankx')
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Read More Link', 'jankx'),
-        checked: displayOptions.showReadMore,
+        checked: !!displayOptions.showReadMore,
         onChange: value => updateDisplayOptions({
           showReadMore: value
         }),
@@ -140,14 +142,14 @@ function DisplayOptions({
           className: "jankx-truncation-options",
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Smart Truncation', 'jankx'),
-            checked: displayOptions.smartTruncation || false,
+            checked: !!displayOptions.smartTruncation,
             onChange: value => updateDisplayOptions({
               smartTruncation: value
             }),
             help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Intelligently truncate content at word boundaries', 'jankx')
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Preserve HTML', 'jankx'),
-            checked: displayOptions.preserveHTML || false,
+            checked: !!displayOptions.preserveHTML,
             onChange: value => updateDisplayOptions({
               preserveHTML: value
             }),
@@ -163,14 +165,14 @@ function DisplayOptions({
           children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Control how users navigate to full content', 'jankx')
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Link Entire Card', 'jankx'),
-          checked: displayOptions.linkEntireCard || false,
+          checked: !!displayOptions.linkEntireCard,
           onChange: value => updateDisplayOptions({
             linkEntireCard: value
           }),
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Make the entire post card clickable', 'jankx')
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Open in New Tab', 'jankx'),
-          checked: displayOptions.openInNewTab || false,
+          checked: !!displayOptions.openInNewTab,
           onChange: value => updateDisplayOptions({
             openInNewTab: value
           }),
@@ -189,14 +191,14 @@ function DisplayOptions({
           children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Improve accessibility for users with screen readers', 'jankx')
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('ARIA Labels', 'jankx'),
-          checked: displayOptions.ariaLabels || false,
+          checked: !!displayOptions.ariaLabels,
           onChange: value => updateDisplayOptions({
             ariaLabels: value
           }),
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Add ARIA labels for better screen reader support', 'jankx')
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Skip Links', 'jankx'),
-          checked: displayOptions.skipLinks || false,
+          checked: !!displayOptions.skipLinks,
           onChange: value => updateDisplayOptions({
             skipLinks: value
           }),
