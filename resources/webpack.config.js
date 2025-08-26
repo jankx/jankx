@@ -34,10 +34,6 @@ module.exports = {
     'blocks/swiper-slide/build/style': './blocks/swiper-slide/src/style.scss',
     'blocks/swiper-slide/build/editor': './blocks/swiper-slide/src/editor.scss',
 
-    'blocks/categories-grid/build/index': './blocks/categories-grid/index.tsx',
-    'blocks/categories-grid/build/style': './blocks/categories-grid/style.scss',
-    'blocks/categories-grid/build/editor': './blocks/categories-grid/editor.scss',
-
     'blocks/products-carousel/build/index': './blocks/products-carousel/index.tsx',
     'blocks/products-carousel/build/view': './blocks/products-carousel/view.js',
     'blocks/products-carousel/build/style': './blocks/products-carousel/style.scss',
@@ -55,6 +51,11 @@ module.exports = {
     'blocks/advanced-posts/build/index': './blocks/advanced-posts/index.tsx',
     'blocks/advanced-posts/build/style': './blocks/advanced-posts/style.scss',
     'blocks/advanced-posts/build/editor': './blocks/advanced-posts/editor.scss',
+
+    'blocks/categories-grid/build/index': './blocks/categories-grid/index.tsx',
+    'blocks/categories-grid/build/style': './blocks/categories-grid/style.scss',
+    'blocks/categories-grid/build/editor': './blocks/categories-grid/editor.scss',
+    'blocks/categories-grid/build/view': './blocks/categories-grid/view.js',
   },
   output: {
     path: path.resolve(__dirname),

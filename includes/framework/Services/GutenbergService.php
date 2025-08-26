@@ -125,11 +125,11 @@ class GutenbergService
         $this->repository->registerBlock(MegaMenuBlock::class);
         $this->repository->registerBlock(SwiperSliderBlock::class);
         $this->repository->registerBlock(SwiperSlideBlock::class);
-        $this->repository->registerBlock(CategoriesGridBlock::class);
         $this->repository->registerBlock(ProductsCarouselBlock::class);
         $this->repository->registerBlock(LookbookRevealBlock::class);
         $this->repository->registerBlock(ScatteredProductListBlock::class);
         $this->repository->registerBlock(AdvancedPostsBlock::class);
+        $this->repository->registerBlock(CategoriesGridBlock::class);
     }
 
     /**

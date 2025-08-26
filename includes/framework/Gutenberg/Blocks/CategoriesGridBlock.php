@@ -4,144 +4,147 @@ namespace Jankx\Gutenberg\Blocks;
 
 use Jankx\Gutenberg\Block;
 
-/**
- * Categories Grid Block
- *
- * Display a grid of product categories with various layout options
- */
 class CategoriesGridBlock extends Block
 {
-    /**
-     * Block constructor
-     */
     public function __construct()
     {
         parent::__construct('jankx/categories-grid', [
-            'title' => __('Product Categories Grid', 'jankx'),
-            'description' => __('Display a grid of products from your selected categories.', 'jankx'),
+            'title' => __('Categories Grid', 'jankx'),
             'category' => 'widgets',
             'icon' => 'grid-view',
-            'keywords' => ['product categories', 'grid', 'thumbs'],
             'supports' => [
-                'align' => ['center', 'wide', 'full'],
-                'html' => false
-            ]
+                'html' => false,
+                'color' => [
+                    'background' => true,
+                    'text' => true,
+                ],
+                'shadow' => true,
+                'spacing' => [
+                    'margin' => true,
+                    'padding' => true,
+                ],
+            ],
         ]);
     }
 
-    /**
-     * Register the block
-     */
     public function register()
     {
         $block_json = $this->getBlockJson();
         if (!$block_json) {
             return;
         }
-
-        // Prioritize build/ assets
         $this->prioritizeBuildAssets($block_json);
-
         $this->registerBlockWithMetadata($block_json);
+
+        // Register AJAX handler
+        add_action('wp_ajax_jankx_get_category_products', [$this, 'get_category_products']);
+        add_action('wp_ajax_nopriv_jankx_get_category_products', [$this, 'get_category_products']);
+
+        // Enqueue AJAX data
+        add_action('wp_enqueue_scripts', [$this, 'enqueue_ajax_data']);
     }
 
-    /**
-     * Render the block
-     */
     public function render($attributes, $content = '')
     {
         $defaults = [
-            'categoryIDs' => '',
-            'orderby' => 'menu_order',
-            'limit' => 8,
-            'columns' => '3',
-            'hideEmpty' => false,
-            'productCount' => true,
-            'parentOnly' => false,
-            'align' => 'center',
-            'className' => 'is-style-layout-2',
-            'queryDisplayType' => 'all_categories',
+            'catsPerRow' => 3,
+            'productCategories' => [],
         ];
-
         $attributes = wp_parse_args($attributes, $defaults);
 
-        $args = [
-            'taxonomy' => 'product_cat',
-        ];
-
-        if ($attributes['queryDisplayType'] === 'specific') {
-            $args['orderby'] = 'include';
-            $args['include'] = $attributes['categoryIDs'];
-            $args['hide_empty'] = false;
-        } else {
-            $args['number'] = $attributes['limit'];
-            $args['hide_empty'] = $attributes['hideEmpty'];
-            $args['parent'] = ($attributes['parentOnly'] === true) ? 0 : '';
-
-            switch ($attributes['orderby']) {
-                case 'menu_order':
-                    $args['menu_order'] = 'asc';
-                    break;
-                case 'title_asc':
-                    $args['orderby'] = 'title';
-                    $args['order'] = 'asc';
-                    break;
-                case 'title_desc':
-                    $args['orderby'] = 'title';
-                    $args['order'] = 'desc';
-                    break;
-                default:
-                    break;
-            }
+        if (empty($attributes['productCategories'])) {
+            return '<p>' . __('No categories selected.', 'jankx') . '</p>';
         }
-
-        $product_categories = get_terms($args);
-
-        if ($attributes['className'] === 'is-style-layout-1') {
-            $columns = 'columns-' . $attributes['columns'];
-        } else {
-            $columns = 'columns-' . $attributes['columns'];
-        }
-
-        $align_class = $attributes['align'] ? " align{$attributes['align']}" : '';
-        $block_class = "wp-block-jankx-categories-grid{$align_class} {$attributes['className']}";
 
         ob_start();
         ?>
-        <section class="<?php echo esc_attr($block_class); ?>">
-            <div class="jankx-categories-grid <?php echo esc_attr($columns); ?>">
-                <?php if ($product_categories && !is_wp_error($product_categories)) : ?>
-                    <?php foreach ($product_categories as $cat) : ?>
-                        <div class="jankx-category-grid-item">
-                            <a class="jankx-category-grid-item-img" href="<?php echo esc_url(get_term_link($cat->slug, 'product_cat')); ?>">
-                                <?php
-                                $thumbnail_id = get_term_meta($cat->term_id, 'thumbnail_id', true);
-                                $image = wp_get_attachment_image($thumbnail_id, 'large');
-                                echo !$image ? wp_kses_post(wc_placeholder_img()) : wp_kses_post($image);
-                                ?>
-                            </a>
-                            <h4 class="jankx-category-grid-item-title">
-                                <?php echo esc_html($cat->name); ?>
-                                <?php if ($attributes['productCount']) : ?>
-                                    <span class="jankx-category-grid-item-count">(<?php echo esc_attr($cat->count); ?>)</span>
-                                <?php endif; ?>
-                            </h4>
+        <div class="jankx-categories-grid" style="--categories-per-row: <?php echo esc_attr($attributes['catsPerRow']); ?>">
+            <div class="jankx-categories-wrapper">
+                <?php foreach ($attributes['productCategories'] as $category) : ?>
+                    <?php
+                    $term = get_term_by('id', $category['id'], 'product_cat');
+                    if (!$term) continue;
+
+                    $thumbnail_id = get_term_meta($term->term_id, 'thumbnail_id', true);
+                    $image_url = $thumbnail_id ? wp_get_attachment_image_url($thumbnail_id, 'medium') : '';
+                    ?>
+                    <div class="jankx-category-item"
+                         data-category-id="<?php echo esc_attr($term->term_id); ?>"
+                         data-category-name="<?php echo esc_attr($term->name); ?>">
+                        <div class="jankx-category-image">
+                            <?php if ($image_url) : ?>
+                                <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($term->name); ?>" />
+                            <?php else : ?>
+                                <div class="jankx-category-placeholder">
+                                    <?php _e('No Image', 'jankx'); ?>
+                                </div>
+                            <?php endif; ?>
                         </div>
-                    <?php endforeach; ?>
-                <?php else : ?>
-                    <div class="jankx-category-grid-item">
-                        <div class="jankx-category-grid-item-img">
-                            <?php echo wp_kses_post(wc_placeholder_img()); ?>
-                        </div>
-                        <h4 class="jankx-category-grid-item-title">
-                            <?php _e('No categories found', 'jankx'); ?>
-                        </h4>
+                        <h4><?php echo esc_html($term->name); ?></h4>
                     </div>
-                <?php endif; ?>
-                <div class="clearfix"></div>
+                <?php endforeach; ?>
             </div>
-        </section>
+
+            <div class="jankx-products-grid">
+                <button class="jankx-close-modal">&times;</button>
+                <div class="jankx-products-content"></div>
+            </div>
+        </div>
         <?php
         return ob_get_clean();
+    }
+
+    public function get_category_products()
+    {
+        check_ajax_referer('jankx_nonce', 'nonce');
+
+        $category_id = intval($_POST['category_id']);
+        if (!$category_id) {
+            wp_send_json_error('Invalid category ID');
+        }
+
+        $args = [
+            'post_type' => 'product',
+            'posts_per_page' => 12,
+            'tax_query' => [
+                [
+                    'taxonomy' => 'product_cat',
+                    'field' => 'term_id',
+                    'terms' => $category_id,
+                ],
+            ],
+            'post_status' => 'publish',
+        ];
+
+        $products = get_posts($args);
+        $products_data = [];
+
+        foreach ($products as $product) {
+            $product_obj = wc_get_product($product->ID);
+            if (!$product_obj) continue;
+
+            $products_data[] = [
+                'id' => $product->ID,
+                'title' => $product->post_title,
+                'link' => get_permalink($product->ID),
+                'image' => get_the_post_thumbnail_url($product->ID, 'medium') ?: wc_placeholder_img_src(),
+                'price' => $product_obj->get_price_html(),
+            ];
+        }
+
+        $category_link = get_term_link($category_id, 'product_cat');
+
+        wp_send_json_success([
+            'products' => $products_data,
+            'category_link' => is_wp_error($category_link) ? '#' : $category_link,
+        ]);
+    }
+
+    public function enqueue_ajax_data()
+    {
+        wp_localize_script('jankx-categories-grid-view', 'jankx_ajax', [
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('jankx_nonce'),
+        ]);
     }
 }
