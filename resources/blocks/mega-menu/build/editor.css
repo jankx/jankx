@@ -1,0 +1,13 @@
+/*!*****************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./blocks/mega-menu/editor.scss ***!
+  \*****************************************************************************************************************************************************************/
+.wp-block-jankx-mega-menu {
+  border: 1px dashed #ddd;
+  padding: 12px;
+}
+
+.wp-block-jankx-mega-menu .mega-menu__toggle {
+  cursor: pointer;
+}
+
+/*# sourceMappingURL=editor.css.map*/

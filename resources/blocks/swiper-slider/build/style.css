@@ -1,0 +1,84 @@
+/*!************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./blocks/swiper-slider/src/style.scss ***!
+  \************************************************************************************************************************************************************************/
+.jankx-swiper-slider {
+  position: relative;
+  width: 100%;
+}
+.jankx-swiper-slider .swiper-container {
+  width: 100%;
+  height: 100%;
+}
+.jankx-swiper-slider .swiper-wrapper {
+  display: flex;
+  transition-property: transform;
+}
+.jankx-swiper-slider .swiper-slide {
+  flex-shrink: 0;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transition-property: transform;
+}
+.jankx-swiper-slider .swiper-pagination {
+  position: absolute;
+  text-align: center;
+  transition: 300ms opacity;
+  transform: translate3d(0, 0, 0);
+  z-index: 10;
+}
+.jankx-swiper-slider .swiper-pagination.swiper-pagination-hidden {
+  opacity: 0;
+}
+.jankx-swiper-slider .swiper-pagination-bullet {
+  width: 8px;
+  height: 8px;
+  display: inline-block;
+  border-radius: 50%;
+  background: #000;
+  opacity: 0.2;
+  margin: 0 4px;
+  cursor: pointer;
+}
+.jankx-swiper-slider .swiper-pagination-bullet.swiper-pagination-bullet-active {
+  opacity: 1;
+  background: #007aff;
+}
+.jankx-swiper-slider .swiper-button-next,
+.jankx-swiper-slider .swiper-button-prev {
+  position: absolute;
+  top: 50%;
+  width: 27px;
+  height: 44px;
+  margin-top: -22px;
+  z-index: 10;
+  cursor: pointer;
+  background: none;
+  color: transparent;
+}
+.jankx-swiper-slider .swiper-button-next:after,
+.jankx-swiper-slider .swiper-button-prev:after {
+  font-size: 27px;
+  color: #000;
+}
+.jankx-swiper-slider .swiper-button-next {
+  right: 10px;
+  left: auto;
+}
+.jankx-swiper-slider .swiper-button-next:after {
+  content: "next";
+}
+.jankx-swiper-slider .swiper-button-prev {
+  left: 10px;
+  right: auto;
+}
+.jankx-swiper-slider .swiper-button-prev:after {
+  content: "prev";
+}
+.jankx-swiper-slider .swiper-button-disabled {
+  opacity: 0.35;
+  cursor: auto;
+  pointer-events: none;
+}
+
+/*# sourceMappingURL=style.css.map*/

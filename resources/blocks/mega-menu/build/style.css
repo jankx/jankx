@@ -1,0 +1,57 @@
+/*!****************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./blocks/mega-menu/style.scss ***!
+  \****************************************************************************************************************************************************************/
+.jankx-mega-menu {
+  position: relative;
+}
+
+.jankx-mega-menu.is-collapsed .mega-menu__nav {
+  display: none;
+}
+
+.jankx-mega-menu .mega-menu__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.jankx-mega-menu .mega-menu__nav {
+  display: block;
+}
+
+.jankx-mega-menu .mega-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 16px;
+}
+
+.jankx-mega-menu .mega-item {
+  position: relative;
+}
+
+.jankx-mega-menu .mega-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+}
+
+.jankx-mega-menu .mega-submenu {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  min-width: 280px;
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  padding: 16px;
+  display: none;
+  z-index: 20;
+}
+
+.jankx-mega-menu .mega-item--active > .mega-submenu {
+  display: block;
+}
+
+/*# sourceMappingURL=style.css.map*/

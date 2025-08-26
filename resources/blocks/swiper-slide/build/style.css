@@ -1,0 +1,45 @@
+/*!***********************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./blocks/swiper-slide/src/style.scss ***!
+  \***********************************************************************************************************************************************************************/
+.swiper-slide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+}
+.swiper-slide .slide-image {
+  margin-bottom: 15px;
+}
+.swiper-slide .slide-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+.swiper-slide .slide-content .slide-title {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+.swiper-slide .slide-content .slide-description {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+}
+.swiper-slide .slide-inner-content {
+  margin-top: 15px;
+}
+.swiper-slide a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.swiper-slide a:hover .slide-title {
+  color: #007aff;
+}
+
+/*# sourceMappingURL=style.css.map*/

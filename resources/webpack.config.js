@@ -28,6 +28,20 @@ module.exports = {
     'blocks/product-carousel/build/save': './blocks/product-carousel/save.js',
     'blocks/product-carousel/build/style': './blocks/product-carousel/style.scss',
     'blocks/product-carousel/build/editor': './blocks/product-carousel/editor.scss',
+
+    'blocks/mega-menu/build/index': './blocks/mega-menu/index.tsx',
+    'blocks/mega-menu/build/view': './blocks/mega-menu/view.js',
+    'blocks/mega-menu/build/style': './blocks/mega-menu/style.scss',
+    'blocks/mega-menu/build/editor': './blocks/mega-menu/editor.scss',
+
+    'blocks/swiper-slider/build/index': './blocks/swiper-slider/src/index.tsx',
+    'blocks/swiper-slider/build/view': './blocks/swiper-slider/src/view.ts',
+    'blocks/swiper-slider/build/style': './blocks/swiper-slider/src/style.scss',
+    'blocks/swiper-slider/build/editor': './blocks/swiper-slider/src/editor.scss',
+
+    'blocks/swiper-slide/build/index': './blocks/swiper-slide/src/index.tsx',
+    'blocks/swiper-slide/build/style': './blocks/swiper-slide/src/style.scss',
+    'blocks/swiper-slide/build/editor': './blocks/swiper-slide/src/editor.scss',
     // thêm các entry block khác ở đây...
   },
   output: {

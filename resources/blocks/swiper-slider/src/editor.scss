@@ -1,0 +1,52 @@
+.wp-block-jankx-swiper-slider {
+    .swiper-container {
+        border: 2px dashed #ccc;
+        padding: 20px;
+        text-align: center;
+        min-height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .swiper-wrapper {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .swiper-slide {
+        border: 1px solid #ddd;
+        padding: 15px;
+        min-width: 200px;
+        background: #f9f9f9;
+
+        .slide-image {
+            margin-bottom: 10px;
+
+            img {
+                max-width: 100%;
+                height: auto;
+            }
+        }
+
+        .slide-content {
+            .slide-title {
+                margin: 0 0 10px 0;
+                font-size: 16px;
+                font-weight: bold;
+            }
+
+            .slide-description {
+                font-size: 14px;
+                color: #666;
+            }
+        }
+    }
+
+    .swiper-pagination,
+    .swiper-button-next,
+    .swiper-button-prev {
+        display: none;
+    }
+}

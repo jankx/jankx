@@ -7,7 +7,10 @@ use Jankx\Gutenberg\Blocks\DynamicCollectionBlock;
 use Jankx\Gutenberg\Blocks\IconPickerBlock;
 use Jankx\Gutenberg\Blocks\LanguageSwitcherBlock;
 use Jankx\Gutenberg\Blocks\CalendarBlock;
+use Jankx\Gutenberg\Blocks\MegaMenuBlock;
 use Jankx\Gutenberg\Blocks\ProductCarouselBlock;
+use Jankx\Gutenberg\Blocks\SwiperSlideBlock;
+use Jankx\Gutenberg\Blocks\SwiperSliderBlock;
 use Jankx\Gutenberg\GutenbergPattern;
 use Jankx\Facades\Log;
 use Jankx\Helper\Environment;
@@ -118,6 +121,9 @@ class GutenbergService
         $this->repository->registerBlock(DynamicCollectionBlock::class);
         $this->repository->registerBlock(IconPickerBlock::class);
         $this->repository->registerBlock(ProductCarouselBlock::class);
+        $this->repository->registerBlock(MegaMenuBlock::class);
+        $this->repository->registerBlock(SwiperSliderBlock::class);
+        $this->repository->registerBlock(SwiperSlideBlock::class);
     }
 
     /**
