@@ -17,7 +17,7 @@ return [
             Jankx\Support\Providers\AssetServiceProvider::class,
             Jankx\Support\Providers\PerformanceServiceProvider::class,
             Jankx\Support\Providers\PlatesServiceProvider::class,
-            Jankx\Support\Providers\GutenbergServiceProvider::class,
+            App\Providers\GutenbergServiceProvider::class,
             App\Providers\LanguageSwitcherServiceProvider::class,
             // App\Providers\WordPress\ApplyTermHtmlDescriptionServiceProvider::class,
             // App\Providers\Layouts\SlideoutMenuServiceProvider::class,
@@ -32,8 +32,8 @@ return [
             Jankx\Support\Providers\ErrorSuppressionServiceProvider::class,
             Jankx\Support\Providers\PerformanceServiceProvider::class,
             Jankx\Support\Providers\PlatesServiceProvider::class,
-            Jankx\Support\Providers\GutenbergServiceProvider::class,
             Jankx\Support\Providers\JankxMenuItemsServiceProvider::class,
+            App\Providers\GutenbergServiceProvider::class,
             // App\Providers\WordPress\VisualTermDescriptionEditorServiceProvider::class,
         ],
 
@@ -46,6 +46,7 @@ return [
         'admin_ajax' => [
             Jankx\Support\Providers\ThemeServiceProvider::class,
             Jankx\Support\Providers\AjaxServiceProvider::class,
+            App\Providers\GutenbergServiceProvider::class,
             App\Providers\LanguageSwitcherServiceProvider::class,
             // App\Providers\WooCommerce\BuyNowServiceProvider::class,
         ],

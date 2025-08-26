@@ -3,6 +3,7 @@
 namespace Jankx\Gutenberg\Blocks;
 
 use Jankx\Gutenberg\Block;
+
 class MegaMenuBlock extends Block
 {
     public function __construct()
@@ -65,4 +66,3 @@ class MegaMenuBlock extends Block
         return $html;
     }
 }
-

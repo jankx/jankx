@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Dynamic Collection Block
  *
@@ -93,7 +94,7 @@ class DynamicCollectionBlock extends Block
             'permission_callback' => '__return_true',
             'args' => [
                 'id' => [
-                    'validate_callback' => function($param) {
+                    'validate_callback' => function ($param) {
                         return !empty($param);
                     }
                 ]
@@ -416,7 +417,7 @@ class DynamicCollectionBlock extends Block
             $formatted[] = [
                 'name' => $taxonomy->name,
                 'label' => $taxonomy->label,
-                'terms' => array_map(function($term) {
+                'terms' => array_map(function ($term) {
                     return [
                         'slug' => $term->slug,
                         'name' => $term->name,

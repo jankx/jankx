@@ -103,7 +103,9 @@ class LookbookRevealBlock extends Block
                     <?php foreach ($products as $product_post) : ?>
                         <?php
                         $product = wc_get_product($product_post->ID);
-                        if (!$product) continue;
+                        if (!$product) {
+                            continue;
+                        }
                         ?>
                         <div class="lookbook-item">
                             <div class="product-image">

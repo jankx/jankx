@@ -106,7 +106,9 @@ class ScatteredProductListBlock extends Block
                     <?php foreach ($products as $index => $product_post) : ?>
                         <?php
                         $product = wc_get_product($product_post->ID);
-                        if (!$product) continue;
+                        if (!$product) {
+                            continue;
+                        }
 
                         // Determine height class for masonry layout
                         $height_class = '';
