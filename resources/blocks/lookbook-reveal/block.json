@@ -1,0 +1,46 @@
+{
+  "apiVersion": 2,
+  "name": "jankx/lookbook-reveal",
+  "title": "Lookbook Reveal",
+  "category": "widgets",
+  "icon": "visibility",
+  "description": "Interactive lookbook with reveal functionality for product discovery.",
+  "keywords": ["lookbook", "reveal", "interactive", "products"],
+  "supports": {
+    "align": ["center", "wide", "full"],
+    "html": false
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "default": "Lookbook Collection"
+    },
+    "description": {
+      "type": "string",
+      "default": "Discover our latest collection"
+    },
+    "products": {
+      "type": "array",
+      "default": []
+    },
+    "columns": {
+      "type": "number",
+      "default": 3
+    },
+    "revealEffect": {
+      "type": "string",
+      "default": "fade"
+    },
+    "autoplay": {
+      "type": "boolean",
+      "default": false
+    },
+    "autoplaySpeed": {
+      "type": "number",
+      "default": 5000
+    }
+  },
+  "editorScript": "file:./build/index.js",
+  "style": "file:./build/style.css",
+  "editorStyle": "file:./build/editor.css"
+}

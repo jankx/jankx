@@ -1,0 +1,105 @@
+{
+  "apiVersion": 2,
+  "name": "jankx/categories-grid",
+  "title": "Product Categories Grid",
+  "category": "widgets",
+  "icon": "grid-view",
+  "description": "Display a grid of products from your selected categories.",
+  "keywords": ["product categories", "grid", "thumbs"],
+  "supports": {
+    "align": ["center", "wide", "full"],
+    "html": false
+  },
+  "attributes": {
+    "categoryIDs": {
+      "type": "string",
+      "default": ""
+    },
+    "queryCategories": {
+      "type": "string",
+      "default": ""
+    },
+    "queryCategoriesLast": {
+      "type": "string",
+      "default": ""
+    },
+    "queryDisplayType": {
+      "type": "string",
+      "default": "all_categories"
+    },
+    "isLoading": {
+      "type": "boolean",
+      "default": false
+    },
+    "querySearchString": {
+      "type": "string",
+      "default": ""
+    },
+    "querySearchResults": {
+      "type": "array",
+      "default": []
+    },
+    "querySearchNoResults": {
+      "type": "boolean",
+      "default": false
+    },
+    "querySearchSelected": {
+      "type": "array",
+      "default": []
+    },
+    "queryOrder": {
+      "type": "string",
+      "default": ""
+    },
+    "parentOnly": {
+      "type": "boolean",
+      "default": false
+    },
+    "hideEmpty": {
+      "type": "boolean",
+      "default": false
+    },
+    "orderby": {
+      "type": "string",
+      "default": "menu_order"
+    },
+    "limit": {
+      "type": "number",
+      "default": 8
+    },
+    "columns": {
+      "type": "string",
+      "default": "3"
+    },
+    "productCount": {
+      "type": "boolean",
+      "default": true
+    },
+    "align": {
+      "type": "string",
+      "default": "center"
+    },
+    "className": {
+      "type": "string",
+      "default": "is-style-layout-2"
+    }
+  },
+  "styles": [
+    {
+      "name": "layout-1",
+      "label": "Layout 1"
+    },
+    {
+      "name": "layout-2",
+      "label": "Layout 2",
+      "isDefault": true
+    },
+    {
+      "name": "layout-3",
+      "label": "Layout 3"
+    }
+  ],
+  "editorScript": "file:./build/index.js",
+  "style": "file:./build/style.css",
+  "editorStyle": "file:./build/editor.css"
+}

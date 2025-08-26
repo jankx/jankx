@@ -10,10 +10,6 @@ module.exports = {
     'blocks/language-switcher/build/style': './blocks/language-switcher/style.scss',
     'blocks/language-switcher/build/editor': './blocks/language-switcher/editor.scss',
 
-    'blocks/calendar/build/index': './blocks/calendar/index.tsx',
-    'blocks/calendar/build/style': './blocks/calendar/style.scss',
-    'blocks/calendar/build/editor': './blocks/calendar/editor.scss',
-
     'blocks/dynamic-collection/build/index': './blocks/dynamic-collection/index.tsx',
     'blocks/dynamic-collection/build/save': './blocks/dynamic-collection/save.js',
     'blocks/dynamic-collection/build/style': './blocks/dynamic-collection/style.scss',
@@ -23,11 +19,6 @@ module.exports = {
     'blocks/icon-picker/build/save': './blocks/icon-picker/save.js',
     'blocks/icon-picker/build/style': './blocks/icon-picker/style.scss',
     'blocks/icon-picker/build/editor': './blocks/icon-picker/editor.scss',
-
-    'blocks/product-carousel/build/index': './blocks/product-carousel/index.tsx',
-    'blocks/product-carousel/build/save': './blocks/product-carousel/save.js',
-    'blocks/product-carousel/build/style': './blocks/product-carousel/style.scss',
-    'blocks/product-carousel/build/editor': './blocks/product-carousel/editor.scss',
 
     'blocks/mega-menu/build/index': './blocks/mega-menu/index.tsx',
     'blocks/mega-menu/build/view': './blocks/mega-menu/view.js',
@@ -42,7 +33,22 @@ module.exports = {
     'blocks/swiper-slide/build/index': './blocks/swiper-slide/src/index.tsx',
     'blocks/swiper-slide/build/style': './blocks/swiper-slide/src/style.scss',
     'blocks/swiper-slide/build/editor': './blocks/swiper-slide/src/editor.scss',
-    // thêm các entry block khác ở đây...
+
+    'blocks/categories-grid/build/index': './blocks/categories-grid/index.tsx',
+    'blocks/categories-grid/build/style': './blocks/categories-grid/style.scss',
+    'blocks/categories-grid/build/editor': './blocks/categories-grid/editor.scss',
+
+    'blocks/products-carousel/build/index': './blocks/products-carousel/index.tsx',
+    'blocks/products-carousel/build/style': './blocks/products-carousel/style.scss',
+    'blocks/products-carousel/build/editor': './blocks/products-carousel/editor.scss',
+
+    'blocks/lookbook-reveal/build/index': './blocks/lookbook-reveal/index.tsx',
+    'blocks/lookbook-reveal/build/style': './blocks/lookbook-reveal/style.scss',
+    'blocks/lookbook-reveal/build/editor': './blocks/lookbook-reveal/editor.scss',
+
+    'blocks/scattered-product-list/build/index': './blocks/scattered-product-list/index.tsx',
+    'blocks/scattered-product-list/build/style': './blocks/scattered-product-list/style.scss',
+    'blocks/scattered-product-list/build/editor': './blocks/scattered-product-list/editor.scss',
   },
   output: {
     path: path.resolve(__dirname),

@@ -1,0 +1,262 @@
+/*!*****************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./blocks/scattered-product-list/style.scss ***!
+  \*****************************************************************************************************************************************************************************/
+.wp-block-jankx-scattered-product-list {
+  margin: 3rem 0;
+}
+.wp-block-jankx-scattered-product-list .section-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 2rem 0;
+}
+.wp-block-jankx-scattered-product-list .products-grid.grid {
+  display: grid;
+  gap: 20px;
+}
+@media (max-width: 768px) {
+  .wp-block-jankx-scattered-product-list .products-grid.grid {
+    gap: 15px;
+  }
+}
+@media (max-width: 480px) {
+  .wp-block-jankx-scattered-product-list .products-grid.grid {
+    gap: 15px;
+  }
+}
+.wp-block-jankx-scattered-product-list .products-grid.masonry {
+  column-count: 4;
+  column-gap: 20px;
+}
+@media (max-width: 1200px) {
+  .wp-block-jankx-scattered-product-list .products-grid.masonry {
+    column-count: 3;
+  }
+}
+@media (max-width: 768px) {
+  .wp-block-jankx-scattered-product-list .products-grid.masonry {
+    column-count: 2;
+    column-gap: 15px;
+  }
+}
+@media (max-width: 480px) {
+  .wp-block-jankx-scattered-product-list .products-grid.masonry {
+    column-count: 1;
+    column-gap: 15px;
+  }
+}
+.wp-block-jankx-scattered-product-list .products-grid.masonry .product-item {
+  break-inside: avoid;
+  margin-bottom: 20px;
+}
+@media (max-width: 768px) {
+  .wp-block-jankx-scattered-product-list .products-grid.masonry .product-item {
+    margin-bottom: 15px;
+  }
+}
+.wp-block-jankx-scattered-product-list .product-item {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+.wp-block-jankx-scattered-product-list .product-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+.wp-block-jankx-scattered-product-list .product-item .product-image {
+  position: relative;
+  overflow: hidden;
+}
+.wp-block-jankx-scattered-product-list .product-item .product-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform 0.3s ease;
+}
+.wp-block-jankx-scattered-product-list .product-item .product-image:hover img {
+  transform: scale(1.05);
+}
+.wp-block-jankx-scattered-product-list .product-item .product-image .placeholder-image {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6c757d;
+  font-size: 0.9rem;
+  border: 2px dashed #dee2e6;
+}
+.wp-block-jankx-scattered-product-list .product-item .product-info {
+  padding: 1.5rem;
+}
+.wp-block-jankx-scattered-product-list .product-item .product-info .product-title {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  line-height: 1.4;
+}
+.wp-block-jankx-scattered-product-list .product-item .product-info .product-price {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #007cba;
+}
+.wp-block-jankx-scattered-product-list .product-item.height-tall .product-image .placeholder-image {
+  height: 350px;
+}
+.wp-block-jankx-scattered-product-list .product-item.height-medium .product-image .placeholder-image {
+  height: 250px;
+}
+.wp-block-jankx-scattered-product-list .product-item.height-short .product-image .placeholder-image {
+  height: 180px;
+}
+.wp-block-jankx-scattered-product-list.animate-fade-in .product-item {
+  opacity: 0;
+  animation: fadeInUp 0.8s ease forwards;
+}
+.wp-block-jankx-scattered-product-list.animate-fade-in .product-item:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.wp-block-jankx-scattered-product-list.animate-fade-in .product-item:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.wp-block-jankx-scattered-product-list.animate-fade-in .product-item:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.wp-block-jankx-scattered-product-list.animate-fade-in .product-item:nth-child(4) {
+  animation-delay: 0.4s;
+}
+.wp-block-jankx-scattered-product-list.animate-fade-in .product-item:nth-child(5) {
+  animation-delay: 0.5s;
+}
+.wp-block-jankx-scattered-product-list.animate-fade-in .product-item:nth-child(6) {
+  animation-delay: 0.6s;
+}
+.wp-block-jankx-scattered-product-list.animate-fade-in .product-item:nth-child(7) {
+  animation-delay: 0.7s;
+}
+.wp-block-jankx-scattered-product-list.animate-fade-in .product-item:nth-child(8) {
+  animation-delay: 0.8s;
+}
+.wp-block-jankx-scattered-product-list.animate-fade-in .product-item:nth-child(9) {
+  animation-delay: 0.9s;
+}
+.wp-block-jankx-scattered-product-list.animate-fade-in .product-item:nth-child(10) {
+  animation-delay: 1s;
+}
+.wp-block-jankx-scattered-product-list.animate-fade-in .product-item:nth-child(11) {
+  animation-delay: 1.1s;
+}
+.wp-block-jankx-scattered-product-list.animate-fade-in .product-item:nth-child(12) {
+  animation-delay: 1.2s;
+}
+.wp-block-jankx-scattered-product-list.animate-slide-up .product-item {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: slideUp 0.8s ease forwards;
+}
+.wp-block-jankx-scattered-product-list.animate-slide-up .product-item:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.wp-block-jankx-scattered-product-list.animate-slide-up .product-item:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.wp-block-jankx-scattered-product-list.animate-slide-up .product-item:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.wp-block-jankx-scattered-product-list.animate-slide-up .product-item:nth-child(4) {
+  animation-delay: 0.4s;
+}
+.wp-block-jankx-scattered-product-list.animate-slide-up .product-item:nth-child(5) {
+  animation-delay: 0.5s;
+}
+.wp-block-jankx-scattered-product-list.animate-slide-up .product-item:nth-child(6) {
+  animation-delay: 0.6s;
+}
+.wp-block-jankx-scattered-product-list.animate-slide-up .product-item:nth-child(7) {
+  animation-delay: 0.7s;
+}
+.wp-block-jankx-scattered-product-list.animate-slide-up .product-item:nth-child(8) {
+  animation-delay: 0.8s;
+}
+.wp-block-jankx-scattered-product-list.animate-slide-up .product-item:nth-child(9) {
+  animation-delay: 0.9s;
+}
+.wp-block-jankx-scattered-product-list.animate-slide-up .product-item:nth-child(10) {
+  animation-delay: 1s;
+}
+.wp-block-jankx-scattered-product-list.animate-slide-up .product-item:nth-child(11) {
+  animation-delay: 1.1s;
+}
+.wp-block-jankx-scattered-product-list.animate-slide-up .product-item:nth-child(12) {
+  animation-delay: 1.2s;
+}
+.wp-block-jankx-scattered-product-list.animate-zoom-in .product-item {
+  opacity: 0;
+  transform: scale(0.8);
+  animation: zoomIn 0.8s ease forwards;
+}
+.wp-block-jankx-scattered-product-list.animate-zoom-in .product-item:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.wp-block-jankx-scattered-product-list.animate-zoom-in .product-item:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.wp-block-jankx-scattered-product-list.animate-zoom-in .product-item:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.wp-block-jankx-scattered-product-list.animate-zoom-in .product-item:nth-child(4) {
+  animation-delay: 0.4s;
+}
+.wp-block-jankx-scattered-product-list.animate-zoom-in .product-item:nth-child(5) {
+  animation-delay: 0.5s;
+}
+.wp-block-jankx-scattered-product-list.animate-zoom-in .product-item:nth-child(6) {
+  animation-delay: 0.6s;
+}
+.wp-block-jankx-scattered-product-list.animate-zoom-in .product-item:nth-child(7) {
+  animation-delay: 0.7s;
+}
+.wp-block-jankx-scattered-product-list.animate-zoom-in .product-item:nth-child(8) {
+  animation-delay: 0.8s;
+}
+.wp-block-jankx-scattered-product-list.animate-zoom-in .product-item:nth-child(9) {
+  animation-delay: 0.9s;
+}
+.wp-block-jankx-scattered-product-list.animate-zoom-in .product-item:nth-child(10) {
+  animation-delay: 1s;
+}
+.wp-block-jankx-scattered-product-list.animate-zoom-in .product-item:nth-child(11) {
+  animation-delay: 1.1s;
+}
+.wp-block-jankx-scattered-product-list.animate-zoom-in .product-item:nth-child(12) {
+  animation-delay: 1.2s;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes slideUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes zoomIn {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/*# sourceMappingURL=style.css.map*/

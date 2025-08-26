@@ -119,6 +119,146 @@ abstract class Block
     }
 
     /**
+     * Get block.json data for the current block
+     *
+     * @return array|false Block metadata or false if not found
+     */
+    protected function getBlockJson()
+    {
+        $blockPath = $this->getBlockPath();
+        if (!$blockPath) {
+            return false;
+        }
+
+        $metadata = $this->getBlockMetadata($blockPath);
+        if (empty($metadata)) {
+            return false;
+        }
+
+        // Merge with constructor config
+        $metadata = array_merge($metadata, $this->config);
+
+        return $metadata;
+    }
+
+    /**
+     * Get the block directory path
+     *
+     * @return string|false Block directory path or false if not found
+     */
+    protected function getBlockPath()
+    {
+        $blockName = $this->getBlockNameFromNamespace($this->name);
+        $blockPath = get_template_directory() . '/resources/blocks/' . $blockName;
+
+        if (!is_dir($blockPath)) {
+            return false;
+        }
+
+        return $blockPath;
+    }
+
+    /**
+     * Extract block name from namespace
+     *
+     * @param string $namespace Full namespace (e.g., 'jankx/block-name')
+     * @return string Block name (e.g., 'block-name')
+     */
+    protected function getBlockNameFromNamespace($namespace)
+    {
+        $parts = explode('/', $namespace);
+        return end($parts);
+    }
+
+    /**
+     * Prioritize build assets over source assets
+     *
+     * @param array $metadata Block metadata
+     * @return void
+     */
+    protected function prioritizeBuildAssets(&$metadata)
+    {
+        $blockPath = $this->getBlockPath();
+        if (!$blockPath) {
+            return;
+        }
+
+        $buildPath = $blockPath . '/build';
+
+        // Check if build directory exists and prioritize build assets
+        if (is_dir($buildPath)) {
+            // Update editorScript to use build version
+            if (isset($metadata['editorScript'])) {
+                $originalScript = $metadata['editorScript'];
+                $buildScript = $this->getBuildAssetPath($originalScript, 'index.js');
+                if ($buildScript) {
+                    $metadata['editorScript'] = $buildScript;
+                }
+            }
+
+            // Update editorStyle to use build version
+            if (isset($metadata['editorStyle'])) {
+                $originalEditorStyle = $metadata['editorStyle'];
+                $buildEditorStyle = $this->getBuildAssetPath($originalEditorStyle, 'editor.css');
+                if ($buildEditorStyle) {
+                    $metadata['editorStyle'] = $buildEditorStyle;
+                }
+            }
+
+            // Update style to use build version
+            if (isset($metadata['style'])) {
+                $originalStyle = $metadata['style'];
+                $buildStyle = $this->getBuildAssetPath($originalStyle, 'style.css');
+                if ($buildStyle) {
+                    $metadata['style'] = $buildStyle;
+                }
+            }
+
+
+            // Update viewScript to use build version
+            if (isset($metadata['viewScript'])) {
+                $originalViewScript = $metadata['viewScript'];
+                $buildViewScript = $this->getBuildAssetPath($originalViewScript, 'view.js');
+                if ($buildViewScript) {
+                    $metadata['viewScript'] = $buildViewScript;
+                }
+            }
+
+            // Update save to use build version
+            if (isset($metadata['save'])) {
+                $originalSave = $metadata['save'];
+                $buildSave = $this->getBuildAssetPath($originalSave, 'save.js');
+                if ($buildSave) {
+                    $metadata['save'] = $buildSave;
+                }
+            }
+        }
+    }
+
+    /**
+     * Get build asset path
+     *
+     * @param string $originalPath Original asset path
+     * @param string $buildFilename Build filename
+     * @return string|false Build asset path or false if not found
+     */
+    protected function getBuildAssetPath($originalPath, $buildFilename)
+    {
+        $blockPath = $this->getBlockPath();
+        if (!$blockPath) {
+            return false;
+        }
+
+        $buildPath = $blockPath . '/build/' . $buildFilename;
+
+        if (file_exists($buildPath)) {
+            return 'build/' . $buildFilename;
+        }
+
+        return false;
+    }
+
+    /**
      * Enqueue block assets
      *
      * @param string $blockPath Path to block directory
@@ -133,7 +273,7 @@ abstract class Block
 
         if ($assetData === false) {
             $assetData = $this->getAssetData($blockPath, $metadata);
-            wp_cache_set($cacheKey, $assetData, 'jankx_blocks', 3600);
+            wp_cache_set($cacheKey, 'jankx_blocks', $assetData, 3600);
         }
 
         // Enqueue script if available
@@ -242,6 +382,22 @@ abstract class Block
         $blockArgs = array_merge($metadata, $blockArgs);
 
         register_block_type($blockPath, $blockArgs);
+    }
+
+    /**
+     * Register block with metadata array
+     *
+     * @param array $metadata Block metadata
+     * @return void
+     */
+    protected function registerBlockWithMetadata($metadata)
+    {
+        $blockPath = $this->getBlockPath();
+        if (!$blockPath) {
+            return;
+        }
+
+        $this->registerBlock($blockPath, $metadata);
     }
 
     protected function getBlockMetadataUrls($blockPath, $metadata)

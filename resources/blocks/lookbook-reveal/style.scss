@@ -1,0 +1,178 @@
+.wp-block-jankx-lookbook-reveal {
+    margin: 3rem 0;
+
+    .lookbook-header {
+        text-align: center;
+        margin-bottom: 2rem;
+
+        .lookbook-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #333;
+            margin: 0 0 1rem 0;
+        }
+
+        .lookbook-description {
+            font-size: 1.1rem;
+            color: #666;
+            margin: 0;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+    }
+
+    .lookbook-grid {
+        display: grid;
+        gap: 2rem;
+        grid-template-columns: repeat(3, 1fr);
+
+        @media (max-width: 768px) {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 480px) {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+    }
+
+    .lookbook-item {
+        position: relative;
+        overflow: hidden;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+
+        &:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-image {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+
+            img {
+                width: 100%;
+                height: auto;
+                display: block;
+                transition: transform 0.5s ease;
+            }
+
+            &:hover img {
+                transform: scale(1.1);
+            }
+
+            .placeholder-image {
+                background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+                height: 300px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #666;
+                font-size: 1rem;
+                border-radius: 12px;
+                border: 2px dashed #ddd;
+            }
+        }
+
+        .product-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            color: white;
+            padding: 2rem 1.5rem 1.5rem;
+            border-radius: 0 0 12px 12px;
+
+            .product-title {
+                margin: 0 0 0.5rem 0;
+                font-size: 1.2rem;
+                font-weight: 600;
+                line-height: 1.3;
+            }
+
+            .product-price {
+                font-size: 1.3rem;
+                font-weight: 700;
+                color: #ffd700;
+            }
+        }
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        &:hover::before {
+            transform: translateX(100%);
+        }
+    }
+
+    // Animation classes
+    &.animate-fade-in .lookbook-item {
+        opacity: 0;
+        animation: fadeIn 0.8s ease forwards;
+
+        @for $i from 1 through 12 {
+            &:nth-child(#{$i}) {
+                animation-delay: #{$i * 0.1}s;
+            }
+        }
+    }
+
+    &.animate-slide-up .lookbook-item {
+        opacity: 0;
+        transform: translateY(30px);
+        animation: slideUp 0.8s ease forwards;
+
+        @for $i from 1 through 12 {
+            &:nth-child(#{$i}) {
+                animation-delay: #{$i * 0.1}s;
+            }
+        }
+    }
+
+    &.animate-zoom-in .lookbook-item {
+        opacity: 0;
+        transform: scale(0.8);
+        animation: zoomIn 0.8s ease forwards;
+
+        @for $i from 1 through 12 {
+            &:nth-child(#{$i}) {
+                animation-delay: #{$i * 0.1}s;
+            }
+        }
+    }
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes zoomIn {
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

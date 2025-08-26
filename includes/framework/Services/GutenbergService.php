@@ -10,6 +10,10 @@ use Jankx\Gutenberg\Blocks\MegaMenuBlock;
 use Jankx\Gutenberg\Blocks\ProductCarouselBlock;
 use Jankx\Gutenberg\Blocks\SwiperSlideBlock;
 use Jankx\Gutenberg\Blocks\SwiperSliderBlock;
+use Jankx\Gutenberg\Blocks\CategoriesGridBlock;
+use Jankx\Gutenberg\Blocks\ProductsCarouselBlock;
+use Jankx\Gutenberg\Blocks\LookbookRevealBlock;
+use Jankx\Gutenberg\Blocks\ScatteredProductListBlock;
 use Jankx\Gutenberg\GutenbergPattern;
 use Jankx\Facades\Log;
 use Jankx\Helper\Environment;
@@ -118,10 +122,13 @@ class GutenbergService
         $this->repository->registerBlock(LanguageSwitcherBlock::class);
         $this->repository->registerBlock(DynamicCollectionBlock::class);
         $this->repository->registerBlock(IconPickerBlock::class);
-        $this->repository->registerBlock(ProductCarouselBlock::class);
         $this->repository->registerBlock(MegaMenuBlock::class);
         $this->repository->registerBlock(SwiperSliderBlock::class);
         $this->repository->registerBlock(SwiperSlideBlock::class);
+        $this->repository->registerBlock(CategoriesGridBlock::class);
+        $this->repository->registerBlock(ProductsCarouselBlock::class);
+        $this->repository->registerBlock(LookbookRevealBlock::class);
+        $this->repository->registerBlock(ScatteredProductListBlock::class);
     }
 
     /**
