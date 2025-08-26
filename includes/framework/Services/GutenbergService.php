@@ -10,6 +10,7 @@ use Jankx\Gutenberg\Blocks\MegaMenuBlock;
 use Jankx\Gutenberg\Blocks\SwiperSlideBlock;
 use Jankx\Gutenberg\Blocks\SwiperSliderBlock;
 use Jankx\Gutenberg\Blocks\CategoriesGridBlock;
+use Jankx\Gutenberg\Blocks\WplyrMediaBlock;
 use Jankx\Gutenberg\Blocks\ProductsCarouselBlock;
 use Jankx\Gutenberg\Blocks\LookbookRevealBlock;
 use Jankx\Gutenberg\Blocks\ScatteredProductListBlock;
@@ -130,6 +131,7 @@ class GutenbergService
         $this->repository->registerBlock(ScatteredProductListBlock::class);
         $this->repository->registerBlock(AdvancedPostsBlock::class);
         $this->repository->registerBlock(CategoriesGridBlock::class);
+        $this->repository->registerBlock(WplyrMediaBlock::class);
     }
 
     /**

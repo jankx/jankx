@@ -56,6 +56,11 @@ module.exports = {
     'blocks/categories-grid/build/style': './blocks/categories-grid/style.scss',
     'blocks/categories-grid/build/editor': './blocks/categories-grid/editor.scss',
     'blocks/categories-grid/build/view': './blocks/categories-grid/view.js',
+
+    'blocks/wplyr-media/build/index': './blocks/wplyr-media/index.tsx',
+    'blocks/wplyr-media/build/style': './blocks/wplyr-media/style.scss',
+    'blocks/wplyr-media/build/editor': './blocks/wplyr-media/editor.scss',
+    'blocks/wplyr-media/build/view': './blocks/wplyr-media/view.js',
   },
   output: {
     path: path.resolve(__dirname),

@@ -170,7 +170,7 @@ abstract class Block
         return end($parts);
     }
 
-    /**
+        /**
      * Prioritize build assets over source assets
      *
      * @param array $metadata Block metadata
@@ -214,7 +214,6 @@ abstract class Block
                 }
             }
 
-
             // Update viewScript to use build version
             if (isset($metadata['viewScript'])) {
                 $originalViewScript = $metadata['viewScript'];
@@ -252,7 +251,7 @@ abstract class Block
         $buildPath = $blockPath . '/build/' . $buildFilename;
 
         if (file_exists($buildPath)) {
-            return 'build/' . $buildFilename;
+            return 'file:./build/' . $buildFilename;
         }
 
         return false;
@@ -398,6 +397,10 @@ abstract class Block
         }
 
         $this->registerBlock($blockPath, $metadata);
+
+        // Add hooks to enqueue assets at the right time
+        add_action('wp_enqueue_scripts', [$this, 'enqueueBlockAssets']);
+        add_action('admin_enqueue_scripts', [$this, 'enqueueBlockAssets']);
     }
 
     protected function getBlockMetadataUrls($blockPath, $metadata)
@@ -444,5 +447,75 @@ abstract class Block
         }
 
         return $assets;
+    }
+
+    /**
+     * Enqueue block assets
+     *
+     * @return void
+     */
+    public function enqueueBlockAssets()
+    {
+        $blockPath = $this->getBlockPath();
+        if (!$blockPath) {
+            return;
+        }
+
+        $blockName = $this->getBlockNameFromNamespace($this->name);
+        $buildPath = $blockPath . '/build';
+
+        if (is_dir($buildPath)) {
+            // Frontend assets (wp_enqueue_scripts)
+            if (!is_admin()) {
+                // Enqueue frontend style
+                $stylePath = $buildPath . '/style.css';
+                if (file_exists($stylePath)) {
+                    wp_enqueue_style(
+                        $this->name . '-style',
+                        get_template_directory_uri() . '/resources/blocks/' . $blockName . '/build/style.css',
+                        [],
+                        filemtime($stylePath)
+                    );
+                }
+
+                // Enqueue view script for frontend
+                $viewScriptPath = $buildPath . '/view.js';
+                if (file_exists($viewScriptPath)) {
+                    wp_enqueue_script(
+                        $this->name . '-view',
+                        get_template_directory_uri() . '/resources/blocks/' . $blockName . '/build/view.js',
+                        [],
+                        filemtime($viewScriptPath),
+                        true
+                    );
+                }
+            }
+
+            // Admin assets (admin_enqueue_scripts)
+            if (is_admin()) {
+                // Enqueue editor script
+                $scriptPath = $buildPath . '/index.js';
+                if (file_exists($scriptPath)) {
+                    wp_enqueue_script(
+                        $this->name . '-editor',
+                        get_template_directory_uri() . '/resources/blocks/' . $blockName . '/build/index.js',
+                        ['wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-i18n'],
+                        filemtime($scriptPath),
+                        true
+                    );
+                }
+
+                // Enqueue editor style
+                $editorStylePath = $buildPath . '/editor.css';
+                if (file_exists($editorStylePath)) {
+                    wp_enqueue_style(
+                        $this->name . '-editor-style',
+                        get_template_directory_uri() . '/resources/blocks/' . $blockName . '/build/editor.css',
+                        [],
+                        filemtime($editorStylePath)
+                    );
+                }
+            }
+        }
     }
 }
