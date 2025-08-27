@@ -62,7 +62,7 @@
                 }
             });
             // Prevent body scroll when sidebar is open
-            this.element.addEventListener('transitionend', () => {
+            document.body.addEventListener('transitionend', () => {
                 if (this.isOpen) {
                     document.body.style.overflow = 'hidden';
                 }
@@ -91,7 +91,7 @@
             if (this.isOpen)
                 return;
             this.isOpen = true;
-            this.element.classList.add('sidebar-open');
+            document.body.classList.add('sidebar-open');
             // Update ARIA attributes
             if (this.trigger) {
                 this.trigger.setAttribute('aria-expanded', 'true');
@@ -110,7 +110,7 @@
             if (!this.isOpen)
                 return;
             this.isOpen = false;
-            this.element.classList.remove('sidebar-open');
+            document.body.classList.remove('sidebar-open');
             // Update ARIA attributes
             if (this.trigger) {
                 this.trigger.setAttribute('aria-expanded', 'false');

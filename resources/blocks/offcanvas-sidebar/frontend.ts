@@ -102,7 +102,7 @@ declare global {
             });
 
             // Prevent body scroll when sidebar is open
-            this.element.addEventListener('transitionend', () => {
+            document.body.addEventListener('transitionend', () => {
                 if (this.isOpen) {
                     document.body.style.overflow = 'hidden';
                 } else {
@@ -134,7 +134,7 @@ declare global {
             if (this.isOpen) return;
 
             this.isOpen = true;
-            this.element.classList.add('sidebar-open');
+            document.body.classList.add('sidebar-open');
 
             // Update ARIA attributes
             if (this.trigger) {
@@ -158,7 +158,7 @@ declare global {
             if (!this.isOpen) return;
 
             this.isOpen = false;
-            this.element.classList.remove('sidebar-open');
+            document.body.classList.remove('sidebar-open');
 
             // Update ARIA attributes
             if (this.trigger) {
