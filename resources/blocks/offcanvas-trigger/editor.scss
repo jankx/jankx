@@ -1,0 +1,124 @@
+/**
+ * Offcanvas Trigger Block - Editor Styles
+ */
+
+.editor-styles-wrapper .offcanvas-trigger-block {
+    display: inline-block;
+    margin: 10px 0;
+}
+
+.editor-styles-wrapper .offcanvas-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: #48a770;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-family: inherit;
+
+    &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    &:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(72, 167, 112, 0.5);
+    }
+
+    .trigger-icon {
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+    }
+
+    .trigger-text {
+        font-weight: 500;
+    }
+
+    // Size variants
+    &.size-small {
+        padding: 8px 12px;
+        font-size: 14px;
+
+        .trigger-icon {
+            font-size: 14px;
+        }
+    }
+
+    &.size-large {
+        padding: 16px 24px;
+        font-size: 18px;
+
+        .trigger-icon {
+            font-size: 18px;
+        }
+    }
+
+    // Style variants
+    &.style-outline {
+        background: transparent;
+        border: 2px solid currentColor;
+
+        &:hover {
+            background: rgba(72, 167, 112, 0.1);
+        }
+    }
+
+    &.style-ghost {
+        background: transparent;
+        color: #48a770;
+
+        &:hover {
+            background: rgba(72, 167, 112, 0.1);
+        }
+    }
+
+    &.style-rounded {
+        border-radius: 8px;
+    }
+
+    &.style-pill {
+        border-radius: 50px;
+    }
+}
+
+// Color picker controls
+.color-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 15px 0;
+
+    .color-control {
+        position: relative;
+
+        .components-button {
+            width: 100%;
+            justify-content: flex-start;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .color-picker-popup {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            z-index: 1000;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            margin-top: 5px;
+        }
+    }
+}

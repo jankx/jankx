@@ -255,9 +255,6 @@ class OffcanvasSidebarBlock extends Block
             esc_attr($overlayColor)
         );
 
-        // Build trigger button
-        $triggerButton = $this->renderTriggerButton($triggerText, $triggerIcon, $blockId);
-
         // Build overlay
         $overlay = $showOverlay ? $this->renderOverlay($overlayStyle, $closeOnOverlayClick, $blockId) : '';
 
@@ -277,7 +274,6 @@ class OffcanvasSidebarBlock extends Block
             '<div class="%s" id="%s" %s>
                 <div class="%s" data-effect="%s">
                     %s
-                    %s
                     <div class="offcanvas-sidebar" style="%s">
                         %s
                     </div>
@@ -288,7 +284,6 @@ class OffcanvasSidebarBlock extends Block
             $dataAttributes,
             esc_attr(implode(' ', $sidebarClasses)),
             esc_attr($animationEffect),
-            $triggerButton,
             $overlay,
             $sidebarStyle,
             $sidebarContent

@@ -1,0 +1,111 @@
+/*!************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./blocks/offcanvas-trigger/style.scss ***!
+  \************************************************************************************************************************************************************************/
+/**
+ * Offcanvas Trigger Block - Frontend Styles
+ */
+.offcanvas-trigger-block {
+  display: inline-block;
+}
+
+.offcanvas-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #48a770;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+.offcanvas-trigger:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.offcanvas-trigger:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(72, 167, 112, 0.5);
+}
+.offcanvas-trigger:active {
+  transform: translateY(0);
+}
+.offcanvas-trigger .trigger-icon {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+}
+.offcanvas-trigger .trigger-text {
+  font-weight: 500;
+}
+.offcanvas-trigger.size-small {
+  padding: 8px 12px;
+  font-size: 14px;
+}
+.offcanvas-trigger.size-small .trigger-icon {
+  font-size: 14px;
+}
+.offcanvas-trigger.size-large {
+  padding: 16px 24px;
+  font-size: 18px;
+}
+.offcanvas-trigger.size-large .trigger-icon {
+  font-size: 18px;
+}
+.offcanvas-trigger.style-outline {
+  background: transparent;
+  border: 2px solid currentColor;
+}
+.offcanvas-trigger.style-outline:hover {
+  background: rgba(72, 167, 112, 0.1);
+}
+.offcanvas-trigger.style-ghost {
+  background: transparent;
+  color: #48a770;
+}
+.offcanvas-trigger.style-ghost:hover {
+  background: rgba(72, 167, 112, 0.1);
+}
+.offcanvas-trigger.style-rounded {
+  border-radius: 8px;
+}
+.offcanvas-trigger.style-pill {
+  border-radius: 50px;
+}
+.offcanvas-trigger:not(.has-text) {
+  padding: 12px;
+  border-radius: 50%;
+}
+.offcanvas-trigger:not(.has-text).size-small {
+  padding: 8px;
+}
+.offcanvas-trigger:not(.has-text).size-large {
+  padding: 16px;
+}
+.offcanvas-trigger:not(.has-icon) .trigger-text {
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .offcanvas-trigger {
+    padding: 10px 14px;
+    font-size: 14px;
+  }
+  .offcanvas-trigger .trigger-icon {
+    font-size: 14px;
+  }
+  .offcanvas-trigger.size-large {
+    padding: 14px 20px;
+    font-size: 16px;
+  }
+  .offcanvas-trigger.size-large .trigger-icon {
+    font-size: 16px;
+  }
+}
+
+/*# sourceMappingURL=style.css.map*/

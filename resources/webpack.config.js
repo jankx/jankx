@@ -70,6 +70,10 @@ module.exports = {
     'blocks/offcanvas-sidebar/build/frontend': './blocks/offcanvas-sidebar/frontend.ts',
     'blocks/offcanvas-sidebar/build/style': './blocks/offcanvas-sidebar/style.scss',
     'blocks/offcanvas-sidebar/build/editor': './blocks/offcanvas-sidebar/editor.scss',
+
+    'blocks/offcanvas-trigger/build/index': './blocks/offcanvas-trigger/index.tsx',
+    'blocks/offcanvas-trigger/build/style': './blocks/offcanvas-trigger/style.scss',
+    'blocks/offcanvas-trigger/build/editor': './blocks/offcanvas-trigger/editor.scss',
   },
   output: {
     path: path.resolve(__dirname),

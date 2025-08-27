@@ -47,7 +47,7 @@ declare global {
 
         constructor(element: OffcanvasSidebarElement) {
             this.element = element;
-            this.trigger = element.querySelector('.offcanvas-trigger');
+            this.trigger = null; // Trigger is now external
             this.sidebar = element.querySelector('.offcanvas-sidebar');
             this.overlay = element.querySelector('.offcanvas-overlay');
             this.closeButton = element.querySelector('.close-button');
@@ -64,13 +64,21 @@ declare global {
         }
 
         private bindEvents(): void {
-            // Trigger button click
-            if (this.trigger) {
-                this.trigger.addEventListener('click', (e: Event) => {
-                    e.preventDefault();
-                    this.toggle();
-                });
-            }
+            // External trigger buttons
+            document.addEventListener('click', (e: Event) => {
+                const target = e.target as HTMLElement;
+                const triggerButton = target.closest('.offcanvas-trigger') as HTMLElement;
+
+                if (triggerButton) {
+                    const targetSidebarId = triggerButton.getAttribute('data-target-sidebar');
+
+                    // If no specific target, trigger the first sidebar
+                    if (!targetSidebarId || targetSidebarId === this.element.id) {
+                        e.preventDefault();
+                        this.toggle();
+                    }
+                }
+            });
 
             // Close button click
             if (this.closeButton) {
@@ -112,11 +120,11 @@ declare global {
         }
 
         private setupAccessibility(): void {
-            // Add ARIA attributes
-            if (this.trigger) {
-                this.trigger.setAttribute('aria-expanded', 'false');
-                this.trigger.setAttribute('aria-controls', this.sidebar?.id || 'offcanvas-sidebar');
-                this.trigger.setAttribute('aria-label', 'Toggle sidebar menu');
+            // Add ARIA attributes for sidebar
+            if (this.sidebar) {
+                this.sidebar.setAttribute('role', 'dialog');
+                this.sidebar.setAttribute('aria-modal', 'true');
+                this.sidebar.setAttribute('aria-label', 'Sidebar navigation');
             }
 
             if (this.sidebar) {
@@ -136,11 +144,6 @@ declare global {
             this.isOpen = true;
             document.body.classList.add('sidebar-open');
 
-            // Update ARIA attributes
-            if (this.trigger) {
-                this.trigger.setAttribute('aria-expanded', 'true');
-            }
-
             // Focus management
             this.focusTrap();
 
@@ -159,11 +162,6 @@ declare global {
 
             this.isOpen = false;
             document.body.classList.remove('sidebar-open');
-
-            // Update ARIA attributes
-            if (this.trigger) {
-                this.trigger.setAttribute('aria-expanded', 'false');
-            }
 
             // Clear auto close timer
             this.clearAutoClose();

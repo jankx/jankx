@@ -228,18 +228,18 @@ function OffcanvasSidebarEdit({ attributes, setAttributes }: OffcanvasSidebarEdi
 
         return (
             <div className={`offcanvas-sidebar-preview effect-${animationEffect} position-${sidebarPosition}`}>
-                {/* Trigger Button */}
-                <button
-                    className="offcanvas-trigger"
-                    onClick={() => setIsOpen(!isOpen)}
-                >
-                    {getIconComponent(triggerIcon) && (
-                        <span className="trigger-icon">
-                            {getIconComponent(triggerIcon)}
-                        </span>
-                    )}
-                    <span className="trigger-text">{triggerText}</span>
-                </button>
+                {/* Trigger Button - Removed, use separate Offcanvas Trigger block */}
+                <div className="trigger-placeholder" style={{
+                    padding: '20px',
+                    textAlign: 'center',
+                    color: '#666',
+                    fontStyle: 'italic',
+                    border: '2px dashed #ddd',
+                    borderRadius: '8px',
+                    marginBottom: '20px'
+                }}>
+                    <p>{__('Add "Offcanvas Trigger" block to open this sidebar', 'jankx')}</p>
+                </div>
 
                 {/* Overlay */}
                 {showOverlay && (
