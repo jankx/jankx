@@ -59,20 +59,7 @@ interface OffcanvasSidebarEditProps {
 
 // Animation effects available
 const ANIMATION_EFFECTS = [
-    { label: 'Slide In', value: 'slide-in' },
-    { label: 'Reveal', value: 'reveal' },
-    { label: 'Push', value: 'push' },
-    { label: 'Slide Along', value: 'slide-along' },
-    { label: 'Reverse Slide Out', value: 'reverse-slide-out' },
-    { label: 'Rotate Pusher', value: 'rotate-pusher' },
-    { label: '3D Rotate In', value: '3d-rotate-in' },
-    { label: '3D Rotate Out', value: '3d-rotate-out' },
-    { label: 'Scale Down Pusher', value: 'scale-down-pusher' },
-    { label: 'Scale Up', value: 'scale-up' },
-    { label: 'Scale and Rotate Pusher', value: 'scale-rotate-pusher' },
-    { label: 'Open Door', value: 'open-door' },
-    { label: 'Fall Down', value: 'fall-down' },
-    { label: 'Delayed 3D Rotate', value: 'delayed-3d-rotate' }
+    { label: 'Slide In', value: 'slide-in' }
 ];
 
 // Icon options

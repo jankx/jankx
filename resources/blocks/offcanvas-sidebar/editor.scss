@@ -698,20 +698,7 @@
 
 /* Animation Effects in Editor */
 .editor-styles-wrapper .offcanvas-sidebar-preview {
-    &.effect-slide-in .offcanvas-sidebar,
-    &.effect-reveal .offcanvas-sidebar,
-    &.effect-push .offcanvas-sidebar,
-    &.effect-slide-along .offcanvas-sidebar,
-    &.effect-reverse-slide-out .offcanvas-sidebar,
-    &.effect-rotate-pusher .offcanvas-sidebar,
-    &.effect-3d-rotate-in .offcanvas-sidebar,
-    &.effect-3d-rotate-out .offcanvas-sidebar,
-    &.effect-scale-down-pusher .offcanvas-sidebar,
-    &.effect-scale-up .offcanvas-sidebar,
-    &.effect-scale-rotate-pusher .offcanvas-sidebar,
-    &.effect-open-door .offcanvas-sidebar,
-    &.effect-fall-down .offcanvas-sidebar,
-    &.effect-delayed-3d-rotate .offcanvas-sidebar {
+    &.effect-slide-in .offcanvas-sidebar {
         transform: none;
         position: relative;
         left: auto;

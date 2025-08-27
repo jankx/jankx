@@ -573,7 +573,7 @@
 }
 
 /* Animation Effects in Editor */
-.editor-styles-wrapper .offcanvas-sidebar-preview.effect-slide-in .offcanvas-sidebar, .editor-styles-wrapper .offcanvas-sidebar-preview.effect-reveal .offcanvas-sidebar, .editor-styles-wrapper .offcanvas-sidebar-preview.effect-push .offcanvas-sidebar, .editor-styles-wrapper .offcanvas-sidebar-preview.effect-slide-along .offcanvas-sidebar, .editor-styles-wrapper .offcanvas-sidebar-preview.effect-reverse-slide-out .offcanvas-sidebar, .editor-styles-wrapper .offcanvas-sidebar-preview.effect-rotate-pusher .offcanvas-sidebar, .editor-styles-wrapper .offcanvas-sidebar-preview.effect-3d-rotate-in .offcanvas-sidebar, .editor-styles-wrapper .offcanvas-sidebar-preview.effect-3d-rotate-out .offcanvas-sidebar, .editor-styles-wrapper .offcanvas-sidebar-preview.effect-scale-down-pusher .offcanvas-sidebar, .editor-styles-wrapper .offcanvas-sidebar-preview.effect-scale-up .offcanvas-sidebar, .editor-styles-wrapper .offcanvas-sidebar-preview.effect-scale-rotate-pusher .offcanvas-sidebar, .editor-styles-wrapper .offcanvas-sidebar-preview.effect-open-door .offcanvas-sidebar, .editor-styles-wrapper .offcanvas-sidebar-preview.effect-fall-down .offcanvas-sidebar, .editor-styles-wrapper .offcanvas-sidebar-preview.effect-delayed-3d-rotate .offcanvas-sidebar {
+.editor-styles-wrapper .offcanvas-sidebar-preview.effect-slide-in .offcanvas-sidebar {
   transform: none;
   position: relative;
   left: auto;
