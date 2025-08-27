@@ -65,6 +65,11 @@ module.exports = {
     'blocks/icon-button/build/index': './blocks/icon-button/index.tsx',
     'blocks/icon-button/build/style': './blocks/icon-button/style.scss',
     'blocks/icon-button/build/editor': './blocks/icon-button/editor.scss',
+
+    'blocks/offcanvas-sidebar/build/index': './blocks/offcanvas-sidebar/index.tsx',
+    'blocks/offcanvas-sidebar/build/frontend': './blocks/offcanvas-sidebar/frontend.ts',
+    'blocks/offcanvas-sidebar/build/style': './blocks/offcanvas-sidebar/style.scss',
+    'blocks/offcanvas-sidebar/build/editor': './blocks/offcanvas-sidebar/editor.scss',
   },
   output: {
     path: path.resolve(__dirname),

@@ -8,6 +8,7 @@ use Jankx\Gutenberg\Blocks\IconPickerBlock;
 use Jankx\Gutenberg\Blocks\IconButtonBlock;
 use Jankx\Gutenberg\Blocks\LanguageSwitcherBlock;
 use Jankx\Gutenberg\Blocks\MegaMenuBlock;
+use Jankx\Gutenberg\Blocks\OffcanvasSidebarBlock;
 use Jankx\Gutenberg\Blocks\SwiperSlideBlock;
 use Jankx\Gutenberg\Blocks\SwiperSliderBlock;
 use Jankx\Gutenberg\Blocks\CategoriesGridBlock;
@@ -124,7 +125,9 @@ class GutenbergService
         $this->repository->registerBlock(LanguageSwitcherBlock::class);
         $this->repository->registerBlock(DynamicCollectionBlock::class);
         $this->repository->registerBlock(IconPickerBlock::class);
+        $this->repository->registerBlock(IconButtonBlock::class);
         $this->repository->registerBlock(MegaMenuBlock::class);
+        $this->repository->registerBlock(OffcanvasSidebarBlock::class);
         $this->repository->registerBlock(SwiperSliderBlock::class);
         $this->repository->registerBlock(SwiperSlideBlock::class);
         $this->repository->registerBlock(ProductsCarouselBlock::class);
@@ -133,6 +136,7 @@ class GutenbergService
         $this->repository->registerBlock(AdvancedPostsBlock::class);
         $this->repository->registerBlock(CategoriesGridBlock::class);
         $this->repository->registerBlock(WplyrMediaBlock::class);
+        $this->repository->registerBlock(OffcanvasSidebarBlock::class);
     }
 
     /**

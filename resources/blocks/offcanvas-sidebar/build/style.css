@@ -1,0 +1,935 @@
+/*!************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./blocks/offcanvas-sidebar/style.scss ***!
+  \************************************************************************************************************************************************************************/
+/**
+ * Offcanvas Sidebar Block Styles
+ * Based on SidebarTransitions with all animation effects
+ */
+/* Main block container */
+.offcanvas-sidebar-block {
+  position: relative;
+  display: inline-block;
+}
+
+/* Trigger Button */
+.offcanvas-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #48a770;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+.offcanvas-trigger:hover {
+  background: #3a8a5a;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.offcanvas-trigger:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(72, 167, 112, 0.5);
+}
+.offcanvas-trigger .trigger-icon {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+}
+.offcanvas-trigger .trigger-text {
+  font-weight: 500;
+}
+
+/* Overlay */
+.offcanvas-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.2);
+  z-index: 9998;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+  cursor: pointer;
+}
+
+/* Sidebar Container */
+.offcanvas-sidebar-preview {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  /* Base sidebar styles */
+  /* Right position */
+  /* Open state */
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 300px;
+  height: 100%;
+  background: #48a770;
+  color: #f3efe0;
+  z-index: 9999;
+  transition: all 0.5s ease;
+  transform: translateX(-100%);
+  overflow-y: auto;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  /* Sidebar Header */
+  /* Sidebar Menu */
+  /* Sidebar Content */
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: inherit;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-header .close-button {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-header .close-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-menu {
+  padding: 0;
+  margin: 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-menu li {
+  margin: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-menu li:last-child {
+  border-bottom: none;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-menu a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  color: inherit;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-menu a:hover {
+  background: rgba(255, 255, 255, 0.1);
+  text-decoration: none;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-menu a .menu-icon {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  width: 20px;
+  text-align: center;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-menu a .menu-text {
+  flex: 1;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content {
+  padding: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: auto;
+  flex: 1;
+  overflow-y: auto;
+  /* Nested blocks styling */
+  /* Core blocks specific styling */
+  /* Jankx blocks specific styling */
+  /* Nested offcanvas sidebar */
+  /* Content appender styling */
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content p {
+  margin: 0 0 16px 0;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block {
+  margin-bottom: 16px;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block:last-child {
+  margin-bottom: 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-heading {
+  color: inherit;
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-heading h1, .offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-heading h2, .offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-heading h3, .offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-heading h4, .offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-heading h5, .offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-heading h6 {
+  color: inherit;
+  margin: 0 0 16px 0;
+  font-weight: 600;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-paragraph {
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-paragraph:last-child {
+  margin-bottom: 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-image {
+  margin: 20px 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-gallery {
+  margin: 20px 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-gallery .blocks-gallery-item img {
+  border-radius: 4px;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-list {
+  margin: 16px 0;
+  padding-left: 20px;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-list li {
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-quote {
+  margin: 20px 0;
+  padding: 16px;
+  border-left: 4px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-quote p {
+  margin: 0 0 12px 0;
+  font-style: italic;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-quote cite {
+  font-size: 0.9em;
+  opacity: 0.8;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-buttons {
+  margin: 20px 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-buttons .wp-block-button {
+  margin-bottom: 8px;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-buttons .wp-block-button .wp-block-button__link {
+  background: rgba(255, 255, 255, 0.1);
+  color: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 8px 16px;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-buttons .wp-block-button .wp-block-button__link:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-separator {
+  margin: 20px 0;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-spacer {
+  margin: 16px 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-social-links {
+  margin: 20px 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-social-links .wp-social-link {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-social-links .wp-social-link:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-navigation {
+  margin: 20px 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-navigation .wp-block-navigation__container .wp-block-navigation-item .wp-block-navigation-item__content {
+  color: inherit;
+  padding: 8px 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-navigation .wp-block-navigation__container .wp-block-navigation-item .wp-block-navigation-item__content:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-search {
+  margin: 20px 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-search .wp-block-search__input {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: inherit;
+  border-radius: 4px;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-search .wp-block-search__input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-search .wp-block-search__button {
+  background: rgba(255, 255, 255, 0.2);
+  color: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-search .wp-block-search__button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-latest-posts {
+  margin: 20px 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-latest-posts .wp-block-latest-posts__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-latest-posts .wp-block-latest-posts__list li {
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-latest-posts .wp-block-latest-posts__list li:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-latest-posts .wp-block-latest-posts__list li a {
+  color: inherit;
+  text-decoration: none;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-latest-posts .wp-block-latest-posts__list li a:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-latest-comments {
+  margin: 20px 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-latest-comments .wp-block-latest-comments__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-latest-comments .wp-block-latest-comments__list li {
+  margin-bottom: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-latest-comments .wp-block-latest-comments__list li .wp-block-latest-comments__comment-author {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-latest-comments .wp-block-latest-comments__list li .wp-block-latest-comments__comment-excerpt {
+  font-size: 0.9em;
+  opacity: 0.9;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-rss {
+  margin: 20px 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-rss .wp-block-rss__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-rss .wp-block-rss__list li {
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-rss .wp-block-rss__list li:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-rss .wp-block-rss__list li a {
+  color: inherit;
+  text-decoration: none;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-rss .wp-block-rss__list li a:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-audio,
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-video {
+  margin: 20px 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-audio audio, .offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-audio video,
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-video audio,
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-video video {
+  width: 100%;
+  border-radius: 4px;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-file {
+  margin: 20px 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-file .wp-block-file__button {
+  background: rgba(255, 255, 255, 0.1);
+  color: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 8px 16px;
+  border-radius: 4px;
+  text-decoration: none;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-file .wp-block-file__button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-code {
+  margin: 20px 0;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 16px;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-code code {
+  color: #f8f8f2;
+  font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-html {
+  margin: 20px 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-html pre {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 16px;
+  overflow-x: auto;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-preformatted {
+  margin: 20px 0;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 16px;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-preformatted pre {
+  margin: 0;
+  color: #f8f8f2;
+  font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-pullquote {
+  margin: 20px 0;
+  padding: 20px;
+  border-left: 4px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-pullquote blockquote {
+  margin: 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-pullquote blockquote p {
+  font-size: 1.1em;
+  font-style: italic;
+  margin-bottom: 12px;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-pullquote blockquote cite {
+  font-size: 0.9em;
+  opacity: 0.8;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-table {
+  margin: 20px 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-table table th, .offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-table table td {
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  text-align: left;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-table table th {
+  background: rgba(255, 255, 255, 0.1);
+  font-weight: 600;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-verse {
+  margin: 20px 0;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  font-style: italic;
+  line-height: 1.6;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-media-text {
+  margin: 20px 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-media-text .wp-block-media-text__media img {
+  border-radius: 4px;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-media-text .wp-block-media-text__content {
+  padding: 16px;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-columns {
+  margin: 20px 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-columns .wp-block-column {
+  padding: 0 8px;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-columns .wp-block-column:first-child {
+  padding-left: 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-columns .wp-block-column:last-child {
+  padding-right: 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-group {
+  margin: 20px 0;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-cover {
+  margin: 20px 0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-cover .wp-block-cover__inner-container {
+  color: inherit;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-embed {
+  margin: 20px 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-embed iframe {
+  border-radius: 4px;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-jankx-language-switcher {
+  margin: 20px 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-jankx-language-switcher .language-switcher {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-jankx-language-switcher .language-switcher .language-option {
+  color: inherit;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-jankx-language-switcher .language-switcher .language-option:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-jankx-icon-button {
+  margin: 20px 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-jankx-icon-button .icon-button {
+  background: rgba(255, 255, 255, 0.1);
+  color: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-jankx-icon-button .icon-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-jankx-offcanvas-sidebar {
+  margin: 20px 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-jankx-offcanvas-sidebar .offcanvas-sidebar-block {
+  position: relative;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-jankx-offcanvas-sidebar .offcanvas-sidebar-block .offcanvas-trigger {
+  background: rgba(255, 255, 255, 0.1);
+  color: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-jankx-offcanvas-sidebar .offcanvas-sidebar-block .offcanvas-trigger:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .sidebar-content-appender {
+  text-align: center;
+  padding: 20px;
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  margin: 20px 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .sidebar-content-appender .sidebar-content-hint {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.7);
+  font-style: italic;
+  font-size: 0.9em;
+}
+.offcanvas-sidebar-preview.position-right .offcanvas-sidebar {
+  left: auto;
+  right: 0;
+  transform: translateX(100%);
+}
+.offcanvas-sidebar-preview.sidebar-open .offcanvas-sidebar {
+  transform: translateX(0);
+}
+.offcanvas-sidebar-preview.position-right.sidebar-open .offcanvas-sidebar {
+  transform: translateX(0);
+}
+
+/* ========================================
+   ANIMATION EFFECTS
+   ======================================== */
+/* Effect 1: Slide In */
+.effect-slide-in .offcanvas-sidebar {
+  transform: translateX(-100%);
+}
+
+.effect-slide-in.sidebar-open .offcanvas-sidebar {
+  transform: translateX(0);
+}
+
+.effect-slide-in.position-right .offcanvas-sidebar {
+  transform: translateX(100%);
+}
+
+.effect-slide-in.position-right.sidebar-open .offcanvas-sidebar {
+  transform: translateX(0);
+}
+
+/* Effect 2: Reveal */
+.effect-reveal .offcanvas-sidebar {
+  transform: translateX(-100%);
+  z-index: 1;
+}
+.effect-reveal.sidebar-open .offcanvas-sidebar {
+  transform: translateX(0);
+}
+.effect-reveal.position-right .offcanvas-sidebar {
+  transform: translateX(100%);
+}
+.effect-reveal.position-right.sidebar-open .offcanvas-sidebar {
+  transform: translateX(0);
+}
+
+/* Effect 3: Push */
+.effect-push .offcanvas-sidebar {
+  transform: translateX(-100%);
+}
+.effect-push.sidebar-open .offcanvas-sidebar {
+  transform: translateX(0);
+}
+.effect-push.position-right .offcanvas-sidebar {
+  transform: translateX(100%);
+}
+.effect-push.position-right.sidebar-open .offcanvas-sidebar {
+  transform: translateX(0);
+}
+
+/* Effect 4: Slide Along */
+.effect-slide-along .offcanvas-sidebar {
+  transform: translateX(-50%);
+  z-index: 1;
+}
+.effect-slide-along.sidebar-open .offcanvas-sidebar {
+  transform: translateX(0);
+}
+.effect-slide-along.position-right .offcanvas-sidebar {
+  transform: translateX(50%);
+}
+.effect-slide-along.position-right.sidebar-open .offcanvas-sidebar {
+  transform: translateX(0);
+}
+
+/* Effect 5: Reverse Slide Out */
+.effect-reverse-slide-out .offcanvas-sidebar {
+  transform: translateX(50%);
+  z-index: 1;
+}
+.effect-reverse-slide-out.sidebar-open .offcanvas-sidebar {
+  transform: translateX(0);
+}
+.effect-reverse-slide-out.position-right .offcanvas-sidebar {
+  transform: translateX(-50%);
+}
+.effect-reverse-slide-out.position-right.sidebar-open .offcanvas-sidebar {
+  transform: translateX(0);
+}
+
+/* Effect 6: Rotate Pusher */
+.effect-rotate-pusher {
+  perspective: 1500px;
+}
+.effect-rotate-pusher .offcanvas-sidebar {
+  transform: translateX(-100%);
+  transform-origin: 100% 50%;
+  transform-style: preserve-3d;
+}
+.effect-rotate-pusher.sidebar-open .offcanvas-sidebar {
+  transform: translateX(-100%) rotateY(15deg);
+}
+.effect-rotate-pusher.position-right .offcanvas-sidebar {
+  transform: translateX(100%);
+  transform-origin: 0% 50%;
+}
+.effect-rotate-pusher.position-right.sidebar-open .offcanvas-sidebar {
+  transform: translateX(100%) rotateY(-15deg);
+}
+
+/* Effect 7: 3D Rotate In */
+.effect-3d-rotate-in {
+  perspective: 1500px;
+  perspective-origin: 0% 50%;
+}
+.effect-3d-rotate-in .offcanvas-sidebar {
+  transform: translateX(-100%) rotateY(-90deg);
+  transform-origin: 100% 50%;
+  transform-style: preserve-3d;
+  z-index: 0;
+}
+.effect-3d-rotate-in.sidebar-open .offcanvas-sidebar {
+  transform: translateX(-100%) rotateY(0deg);
+}
+.effect-3d-rotate-in.position-right .offcanvas-sidebar {
+  transform: translateX(100%) rotateY(90deg);
+  transform-origin: 0% 50%;
+}
+.effect-3d-rotate-in.position-right.sidebar-open .offcanvas-sidebar {
+  transform: translateX(100%) rotateY(0deg);
+}
+
+/* Effect 8: 3D Rotate Out */
+.effect-3d-rotate-out {
+  perspective: 1500px;
+  perspective-origin: 0% 50%;
+}
+.effect-3d-rotate-out .offcanvas-sidebar {
+  transform: translateX(-100%) rotateY(90deg);
+  transform-origin: 100% 50%;
+  transform-style: preserve-3d;
+}
+.effect-3d-rotate-out.sidebar-open .offcanvas-sidebar {
+  transform: translateX(-100%) rotateY(0deg);
+}
+.effect-3d-rotate-out.position-right .offcanvas-sidebar {
+  transform: translateX(100%) rotateY(-90deg);
+  transform-origin: 0% 50%;
+}
+.effect-3d-rotate-out.position-right.sidebar-open .offcanvas-sidebar {
+  transform: translateX(100%) rotateY(0deg);
+}
+
+/* Effect 9: Scale Down Pusher */
+.effect-scale-down-pusher {
+  perspective: 1500px;
+}
+.effect-scale-down-pusher .offcanvas-sidebar {
+  transform: translateX(-100%);
+  opacity: 1;
+}
+.effect-scale-down-pusher.sidebar-open .offcanvas-sidebar {
+  transform: translateX(0);
+}
+.effect-scale-down-pusher.position-right .offcanvas-sidebar {
+  transform: translateX(100%);
+}
+.effect-scale-down-pusher.position-right.sidebar-open .offcanvas-sidebar {
+  transform: translateX(0);
+}
+
+/* Effect 10: Scale Up */
+.effect-scale-up {
+  perspective: 1500px;
+  perspective-origin: 0% 50%;
+}
+.effect-scale-up .offcanvas-sidebar {
+  z-index: 1;
+  opacity: 1;
+  transform: translateX(0) scale(0.8);
+}
+.effect-scale-up.sidebar-open .offcanvas-sidebar {
+  transform: translateX(0) scale(1);
+}
+.effect-scale-up.position-right .offcanvas-sidebar {
+  transform: translateX(0) scale(0.8);
+}
+.effect-scale-up.position-right.sidebar-open .offcanvas-sidebar {
+  transform: translateX(0) scale(1);
+}
+
+/* Effect 11: Scale and Rotate Pusher */
+.effect-scale-rotate-pusher {
+  perspective: 1500px;
+}
+.effect-scale-rotate-pusher .offcanvas-sidebar {
+  transform: translateX(-100%);
+  opacity: 1;
+}
+.effect-scale-rotate-pusher.sidebar-open .offcanvas-sidebar {
+  transform: translateX(0);
+}
+.effect-scale-rotate-pusher.position-right .offcanvas-sidebar {
+  transform: translateX(100%);
+}
+.effect-scale-rotate-pusher.position-right.sidebar-open .offcanvas-sidebar {
+  transform: translateX(0);
+}
+
+/* Effect 12: Open Door */
+.effect-open-door {
+  perspective: 1500px;
+}
+.effect-open-door .offcanvas-sidebar {
+  transform: translateX(-100%);
+  opacity: 1;
+  transform-origin: 100% 50%;
+  transform-style: preserve-3d;
+}
+.effect-open-door.sidebar-open .offcanvas-sidebar {
+  transform: translateX(0) rotateY(-10deg);
+}
+.effect-open-door.position-right .offcanvas-sidebar {
+  transform: translateX(100%);
+  transform-origin: 0% 50%;
+}
+.effect-open-door.position-right.sidebar-open .offcanvas-sidebar {
+  transform: translateX(0) rotateY(10deg);
+}
+
+/* Effect 13: Fall Down */
+.effect-fall-down {
+  perspective: 1500px;
+  perspective-origin: 0% 50%;
+}
+.effect-fall-down .offcanvas-sidebar {
+  z-index: 1;
+  opacity: 1;
+  transform: translateX(0) translateY(-100%);
+}
+.effect-fall-down.sidebar-open .offcanvas-sidebar {
+  transform: translateX(0) translateY(0);
+  transition-timing-function: ease-in-out;
+  transition-property: transform;
+  transition-duration: 0.2s;
+}
+.effect-fall-down.position-right .offcanvas-sidebar {
+  transform: translateX(0) translateY(-100%);
+}
+.effect-fall-down.position-right.sidebar-open .offcanvas-sidebar {
+  transform: translateX(0) translateY(0);
+}
+
+/* Effect 14: Delayed 3D Rotate */
+.effect-delayed-3d-rotate {
+  perspective: 1500px;
+  perspective-origin: 0% 50%;
+}
+.effect-delayed-3d-rotate .offcanvas-sidebar {
+  transform: translateX(-100%) rotateY(90deg);
+  transform-origin: 0% 50%;
+  transform-style: preserve-3d;
+  z-index: 0;
+}
+.effect-delayed-3d-rotate.sidebar-open .offcanvas-sidebar {
+  transform: translateX(-100%) rotateY(0deg);
+  transition-delay: 0.1s;
+  transition-timing-function: ease-in-out;
+  transition-property: transform;
+}
+.effect-delayed-3d-rotate.position-right .offcanvas-sidebar {
+  transform: translateX(100%) rotateY(90deg);
+  transform-origin: 0% 50%;
+}
+.effect-delayed-3d-rotate.position-right.sidebar-open .offcanvas-sidebar {
+  transform: translateX(100%) rotateY(0deg);
+  transition-delay: 0.1s;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+@media (max-width: 768px) {
+  .offcanvas-sidebar-preview .offcanvas-sidebar {
+    width: 280px;
+  }
+  .offcanvas-sidebar-preview .offcanvas-trigger {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+  .offcanvas-sidebar-preview .offcanvas-trigger .trigger-icon {
+    font-size: 14px;
+  }
+}
+@media (max-width: 480px) {
+  .offcanvas-sidebar-preview .offcanvas-sidebar {
+    width: 100%;
+    max-width: 300px;
+  }
+  .offcanvas-sidebar-preview .offcanvas-trigger {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+  .offcanvas-sidebar-preview .offcanvas-trigger .trigger-text {
+    display: none;
+  }
+}
+/* ========================================
+   EDITOR SPECIFIC STYLES
+   ======================================== */
+.editor-styles-wrapper .offcanvas-sidebar-block .offcanvas-sidebar-preview {
+  min-height: 200px;
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  background: #f9f9f9;
+  margin: 20px 0;
+}
+.editor-styles-wrapper .offcanvas-sidebar-block .offcanvas-sidebar-preview .offcanvas-trigger {
+  position: relative;
+  z-index: 1;
+}
+.editor-styles-wrapper .offcanvas-sidebar-block .offcanvas-sidebar-preview .offcanvas-sidebar {
+  position: relative;
+  transform: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+/* Menu Items Editor */
+.menu-items-editor .menu-item-editor {
+  margin-bottom: 16px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #f9f9f9;
+}
+.menu-items-editor .menu-item-editor .menu-item-preview {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.menu-items-editor .menu-item-editor .menu-item-preview .menu-item-text {
+  font-weight: 500;
+}
+.menu-items-editor .menu-item-editor .menu-item-edit-form .menu-item-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+.menu-items-editor .add-menu-item {
+  width: 100%;
+  margin-top: 12px;
+}
+
+/* Color Controls */
+.color-controls .color-picker-group {
+  margin-bottom: 16px;
+}
+.color-controls .color-picker-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+/*# sourceMappingURL=style.css.map*/
