@@ -25,15 +25,6 @@ module.exports = {
     'blocks/mega-menu/build/style': './blocks/mega-menu/style.scss',
     'blocks/mega-menu/build/editor': './blocks/mega-menu/editor.scss',
 
-    'blocks/swiper-slider/build/index': './blocks/swiper-slider/src/index.tsx',
-    'blocks/swiper-slider/build/view': './blocks/swiper-slider/src/view.ts',
-    'blocks/swiper-slider/build/style': './blocks/swiper-slider/src/style.scss',
-    'blocks/swiper-slider/build/editor': './blocks/swiper-slider/src/editor.scss',
-
-    'blocks/swiper-slide/build/index': './blocks/swiper-slide/src/index.tsx',
-    'blocks/swiper-slide/build/style': './blocks/swiper-slide/src/style.scss',
-    'blocks/swiper-slide/build/editor': './blocks/swiper-slide/src/editor.scss',
-
     'blocks/products-carousel/build/index': './blocks/products-carousel/index.tsx',
     'blocks/products-carousel/build/view': './blocks/products-carousel/view.js',
     'blocks/products-carousel/build/style': './blocks/products-carousel/style.scss',
