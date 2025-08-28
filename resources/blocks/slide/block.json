@@ -1,0 +1,15 @@
+{
+	"apiVersion": 2,
+	"name": "jankx/slide",
+	"version": "1.0.6",
+	"title": "Slide",
+	"category": "design",
+	"description": "Slide of carousel with image.",
+	"supports": {
+		"html": false
+	},
+	"parent": ["jankx/carousel"],
+	"textdomain": "jankx",
+	"editorScript": "file:./build/index.js",
+	"editorStyle": "file:./build/index.css"
+}

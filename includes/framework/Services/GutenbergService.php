@@ -11,6 +11,8 @@ use Jankx\Gutenberg\Blocks\MegaMenuBlock;
 use Jankx\Gutenberg\Blocks\SvgIconBlock;
 use Jankx\Gutenberg\Blocks\OffcanvasSidebarBlock;
 use Jankx\Gutenberg\Blocks\OffcanvasTriggerBlock;
+use Jankx\Gutenberg\Blocks\CarouselBlock;
+use Jankx\Gutenberg\Blocks\SlideBlock;
 use Jankx\Gutenberg\Blocks\SwiperSlideBlock;
 use Jankx\Gutenberg\Blocks\SwiperSliderBlock;
 use Jankx\Gutenberg\Blocks\CategoriesGridBlock;
@@ -124,6 +126,7 @@ class GutenbergService
      */
     protected function registerDefaultBlocks()
     {
+        $this->repository->registerBlock(AdvancedPostsBlock::class);
         $this->repository->registerBlock(LanguageSwitcherBlock::class);
         $this->repository->registerBlock(DynamicCollectionBlock::class);
         $this->repository->registerBlock(IconPickerBlock::class);
@@ -131,13 +134,14 @@ class GutenbergService
         $this->repository->registerBlock(SvgIconBlock::class);
         $this->repository->registerBlock(MegaMenuBlock::class);
         $this->repository->registerBlock(OffcanvasSidebarBlock::class);
-        $this->repository->registerBlock(OffcanvasTriggerBlock::class);        $this->repository->registerBlock(ProductsCarouselBlock::class);
+        $this->repository->registerBlock(OffcanvasTriggerBlock::class);
+        $this->repository->registerBlock(CarouselBlock::class);
+        $this->repository->registerBlock(SlideBlock::class);
+        $this->repository->registerBlock(ProductsCarouselBlock::class);
         $this->repository->registerBlock(LookbookRevealBlock::class);
         $this->repository->registerBlock(ScatteredProductListBlock::class);
-        $this->repository->registerBlock(AdvancedPostsBlock::class);
         $this->repository->registerBlock(CategoriesGridBlock::class);
         $this->repository->registerBlock(WplyrMediaBlock::class);
-        $this->repository->registerBlock(OffcanvasSidebarBlock::class);
     }
 
     /**

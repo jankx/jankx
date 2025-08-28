@@ -1,0 +1,49 @@
+{
+	"apiVersion": 2,
+	"name": "jankx/carousel",
+	"version": "1.0.6",
+	"title": "Carousel",
+	"category": "design",
+	"description": "Slider list of images, cards, logos.",
+	"supports": {
+		"html": false,
+		"align": ["wide", "full"]
+	},
+	"innerBlocks": {
+		"allowedBlocks": [
+			"core/paragraph",
+			"core/heading",
+			"core/image",
+			"core/group",
+			"core/columns",
+			"core/column",
+			"core/buttons",
+			"core/button",
+			"core/spacer",
+			"core/separator",
+			"core/list",
+			"core/quote",
+			"core/media-text",
+			"core/cover",
+			"core/video",
+			"core/audio",
+			"core/file",
+			"core/gallery",
+			"core/embed",
+			"jankx/icon-button",
+			"jankx/svg-icon",
+			"jankx/slide"
+		],
+		"template": [
+			["core/group", {}, [
+				["core/image", {"url": "", "alt": "Carousel slide"}]
+			]]
+		],
+		"templateLock": false
+	},
+	"textdomain": "jankx",
+	"editorScript": "file:./build/index.js",
+	"viewScript": "file:./build/view.js",
+	"editorStyle": "file:./build/index.css",
+	"style": "file:./build/style.css"
+}

@@ -1,0 +1,36 @@
+.wpd-block-carousel {
+	margin-bottom: 1em;
+
+	&__header {
+		margin-bottom: 1em;
+	}
+
+	&__title,
+	&__description {
+		text-align: center;
+	}
+
+	.swiper {
+		visibility: hidden;
+
+		&.swiper-initialized {
+			visibility: visible;
+		}
+
+		&[data-has-pagination="true"] {
+			padding-bottom: 2em;
+		}
+	}
+}
+
+// Hide default Swiper navigation buttons that might be created by CSS
+.swiper-button-prev:not([data-swiper-button-prev]),
+.swiper-button-next:not([data-swiper-button-next]) {
+  display: none !important;
+}
+
+// Ensure our navigation buttons are visible
+.swiper-button-prev[data-swiper-button-prev],
+.swiper-button-next[data-swiper-button-next] {
+  display: flex !important;
+}

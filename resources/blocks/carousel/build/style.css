@@ -1,0 +1,33 @@
+/*!***************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./blocks/carousel/style.scss ***!
+  \***************************************************************************************************************************************************************/
+.wpd-block-carousel {
+  margin-bottom: 1em;
+}
+.wpd-block-carousel__header {
+  margin-bottom: 1em;
+}
+.wpd-block-carousel__title, .wpd-block-carousel__description {
+  text-align: center;
+}
+.wpd-block-carousel .swiper {
+  visibility: hidden;
+}
+.wpd-block-carousel .swiper.swiper-initialized {
+  visibility: visible;
+}
+.wpd-block-carousel .swiper[data-has-pagination=true] {
+  padding-bottom: 2em;
+}
+
+.swiper-button-prev:not([data-swiper-button-prev]),
+.swiper-button-next:not([data-swiper-button-next]) {
+  display: none !important;
+}
+
+.swiper-button-prev[data-swiper-button-prev],
+.swiper-button-next[data-swiper-button-next] {
+  display: flex !important;
+}
+
+/*# sourceMappingURL=style.css.map*/

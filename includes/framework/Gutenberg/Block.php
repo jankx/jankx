@@ -463,6 +463,7 @@ abstract class Block
 
         $blockName = $this->getBlockNameFromNamespace($this->name);
         $buildPath = $blockPath . '/build';
+        $metadata = $this->getBlockJson();
 
         if (is_dir($buildPath)) {
             // Frontend assets (wp_enqueue_scripts)
@@ -481,13 +482,34 @@ abstract class Block
                 // Enqueue view script for frontend
                 $viewScriptPath = $buildPath . '/view.js';
                 if (file_exists($viewScriptPath)) {
+                    $dependencies = [];
+
+                    // Add Swiper dependency for carousel block
+                    if ($this->name === 'jankx/carousel') {
+                        $dependencies[] = 'swiper-js';
+                    }
+
                     wp_enqueue_script(
                         $this->name . '-view',
                         get_template_directory_uri() . '/resources/blocks/' . $blockName . '/build/view.js',
-                        [],
+                        $dependencies,
                         filemtime($viewScriptPath),
                         true
                     );
+                }
+
+                // Enqueue script for frontend if declared in block.json (only if no viewScript)
+                if ($metadata && isset($metadata['script']) && !isset($metadata['viewScript'])) {
+                    $scriptPath = $buildPath . '/view.js';
+                    if (file_exists($scriptPath)) {
+                        wp_enqueue_script(
+                            $this->name . '-script',
+                            get_template_directory_uri() . '/resources/blocks/' . $blockName . '/build/view.js',
+                            [],
+                            filemtime($scriptPath),
+                            true
+                        );
+                    }
                 }
             }
 
@@ -514,6 +536,20 @@ abstract class Block
                         [],
                         filemtime($editorStylePath)
                     );
+                }
+
+                // Enqueue script for editor if declared in block.json (only if no viewScript)
+                if ($metadata && isset($metadata['script']) && !isset($metadata['viewScript'])) {
+                    $scriptPath = $buildPath . '/view.js';
+                    if (file_exists($scriptPath)) {
+                        wp_enqueue_script(
+                            $this->name . '-script',
+                            get_template_directory_uri() . '/resources/blocks/' . $blockName . '/build/view.js',
+                            [],
+                            filemtime($scriptPath),
+                            true
+                        );
+                    }
                 }
             }
         }

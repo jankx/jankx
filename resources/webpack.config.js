@@ -30,6 +30,14 @@ module.exports = {
     'blocks/products-carousel/build/style': './blocks/products-carousel/style.scss',
     'blocks/products-carousel/build/editor': './blocks/products-carousel/editor.scss',
 
+    'blocks/carousel/build/index': './blocks/carousel/index.tsx',
+    'blocks/carousel/build/view': './blocks/carousel/view.ts',
+    'blocks/carousel/build/style': './blocks/carousel/style.scss',
+    'blocks/carousel/build/editor': './blocks/carousel/editor.scss',
+
+    'blocks/slide/build/index': './blocks/slide/index.tsx',
+    'blocks/slide/build/editor': './blocks/slide/editor.scss',
+
     'blocks/lookbook-reveal/build/index': './blocks/lookbook-reveal/index.tsx',
     'blocks/lookbook-reveal/build/style': './blocks/lookbook-reveal/style.scss',
     'blocks/lookbook-reveal/build/editor': './blocks/lookbook-reveal/editor.scss',
@@ -74,6 +82,10 @@ module.exports = {
     path: path.resolve(__dirname),
     filename: '[name].js',
     clean: false,
+    assetModuleFilename: 'blocks/[name]/build/[name][ext]',
+  },
+  optimization: {
+    splitChunks: false
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
@@ -88,6 +100,7 @@ module.exports = {
     '@wordpress/element': ['wp', 'element'],
     '@wordpress/data': ['wp', 'data'],
     '@wordpress/core-data': ['wp', 'coreData'],
+    swiper: 'Swiper',
   },
   plugins: [
     new RemoveEmptyScriptsPlugin(),
@@ -133,6 +146,13 @@ module.exports = {
         ]
       },
       { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' },
+      {
+        test: /\.(png|jpe?g|gif|svg|webp)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'blocks/carousel/build/[name][ext]'
+        }
+      },
     ],
   },
 };

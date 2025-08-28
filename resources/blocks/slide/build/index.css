@@ -1,0 +1,13 @@
+/*!*************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./blocks/slide/editor.scss ***!
+  \*************************************************************************************************************************************************************/
+.block-editor-block-list__layout .wpd-block-slide.block-editor-block-list__block:not([contenteditable]):focus::after, .block-editor-block-list__layout .wpd-block-slide.block-editor-block-list__block .block-editor-block-list__block:not([contenteditable]):focus::after {
+  box-shadow: inset 0 0 0 var(--wp-admin-border-width-focus) var(--wp-admin-theme-color);
+}
+.wpd-block-slide__inner > .wp-block {
+  margin-top: 0;
+  margin-bottom: 0;
+  max-width: none;
+}
+
+/*# sourceMappingURL=index.css.map*/

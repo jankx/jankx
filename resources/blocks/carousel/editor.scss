@@ -1,0 +1,80 @@
+.wpd-block-carousel {
+
+	&__title {
+
+		.editor-styles-wrapper & {
+			margin: 0;
+		}
+	}
+
+	.editor-styles-wrapper & .wp-block {
+		margin-right: 0;
+		margin-left: 0;
+	}
+
+	.swiper {
+
+		.editor-styles-wrapper & {
+			visibility: visible;
+		}
+	}
+
+	.swiper-wrapper {
+
+		.wp-block {
+			margin-top: 0;
+			margin-bottom: 0;
+			max-width: none;
+		}
+
+		> .wp-block {
+			margin-right: var(--space-between);
+		}
+	}
+
+	&_is-opened {
+
+		.swiper-wrapper {
+			flex-wrap: wrap;
+
+			> .wp-block {
+				margin-bottom: var(--space-between);
+			}
+		}
+	}
+
+	@each $columns in [1, 2, 3, 4, 5, 6] {
+		&_columns-#{ $columns } {
+
+			.swiper-wrapper {
+
+				> *:not(.block-list-appender) {
+					width: calc(100% / $columns - var(--space-between) + var(--space-between) / $columns);
+
+					&:nth-child(#{ $columns }n) {
+						margin-right: 0;
+					}
+				}
+			}
+		}
+	}
+
+	&-inner-blocks {
+
+		&__appender {
+
+			.block-editor-button-block-appender {
+				background-color: #fff;
+			}
+		}
+	}
+}
+
+.components-panel__row {
+
+	&.is-vertical {
+		flex-direction: column;
+		align-items: flex-start;
+		margin-bottom: 16px;
+	}
+}
