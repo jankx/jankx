@@ -24,7 +24,7 @@ import { Icon } from '@wordpress/icons';
 import { bolt } from './../../icons/bolt';
 import { parseIcon } from './../../utils';
 
-export default function CustomInserterModal( props ) {
+export default function CustomInserterModal( props: any ) {
 	const {
 		isCustomInserterOpen,
 		setCustomInserterOpen,
@@ -63,7 +63,7 @@ export default function CustomInserterModal( props ) {
 	};
 
 	let iconToRender = parseIcon( customIcon );
-	const isSVG = ! isEmpty( iconToRender?.props );
+	const isSVG = ! isEmpty( (iconToRender as any)?.props );
 
 	// Render the defualt lightning bolt if the icon is not a valid SVG.
 	iconToRender = isSVG ? iconToRender : bolt;
@@ -115,7 +115,7 @@ export default function CustomInserterModal( props ) {
 	);
 }
 
-function IconPreview( { iconToRender, iconSize, setIconSize, isSVG } ) {
+function IconPreview( { iconToRender, iconSize, setIconSize, isSVG }: any ) {
 	return (
 		<div className="icon-preview">
 			<div

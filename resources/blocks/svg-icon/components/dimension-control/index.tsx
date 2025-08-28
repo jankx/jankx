@@ -35,7 +35,7 @@ const RANGE_CONTROL_CUSTOM_SETTINGS = {
 	deg: { max: 360, step: 1 },
 };
 
-export default function DimensionControl( { onChange, label, units, value } ) {
+export default function DimensionControl( { onChange, label, units, value }: any ) {
 	const customRangeValue = parseFloat( value );
 	const themeJsonUnits = useSettings( 'spacing.units' )[ 0 ];
 

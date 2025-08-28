@@ -59,7 +59,7 @@ export default function Sidebar( props: any ) {
 				className="icon-inserter__sidebar__category-type"
 				label={ type.title }
 			>
-				{ type.categories.map( ( category ) => {
+				{ type.categories.map( ( category: any ) => {
 					const isActive = currentCategory
 						? category === currentCategory
 						: category === `${ ALL_CATEGORY_PREFIX }${ type.type }`;

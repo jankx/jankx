@@ -338,9 +338,66 @@ function DimensionControl({ onChange, label, units, value }) {
 /*!************************************************************!*\
   !*** ./blocks/svg-icon/components/icon-dropzone/index.tsx ***!
   \************************************************************/
-/***/ (() => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nSyntaxError: C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\blocks\\svg-icon\\components\\icon-dropzone\\index.tsx: Unexpected token, expected \",\" (26:26)\n\n\u001b[0m \u001b[90m 24 |\u001b[39m \t\t\t\tallowedTypes\u001b[33m:\u001b[39m [ \u001b[32m'image/svg+xml'\u001b[39m ]\u001b[33m,\u001b[39m\n \u001b[90m 25 |\u001b[39m \t\t\t\tfilesList\u001b[33m,\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 26 |\u001b[39m \t\t\t\tonFileChange( [ image \u001b[36mas\u001b[39m any ] ) {\n \u001b[90m    |\u001b[39m \t\t\t\t                      \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 27 |\u001b[39m \t\t\t\t\t\u001b[36mif\u001b[39m ( isBlobURL( image\u001b[33m?\u001b[39m\u001b[33m.\u001b[39murl ) ) {\n \u001b[90m 28 |\u001b[39m \t\t\t\t\t\t\u001b[36mreturn\u001b[39m\u001b[33m;\u001b[39m\n \u001b[90m 29 |\u001b[39m \t\t\t\t\t}\u001b[0m\n    at constructor (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:367:19)\n    at TypeScriptParserMixin.raise (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:6630:19)\n    at TypeScriptParserMixin.unexpected (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:6650:16)\n    at TypeScriptParserMixin.expect (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:6930:12)\n    at TypeScriptParserMixin.parseBindingList (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:7399:14)\n    at TypeScriptParserMixin.parseBindingAtom (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:7381:32)\n    at TypeScriptParserMixin.parseBindingAtom (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:9962:18)\n    at TypeScriptParserMixin.parseMaybeDefault (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:7477:39)\n    at TypeScriptParserMixin.parseMaybeDefault (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:9992:24)\n    at TypeScriptParserMixin.parseBindingElement (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:9199:23)\n    at TypeScriptParserMixin.parseBindingList (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:7425:24)\n    at TypeScriptParserMixin.parseFunctionParams (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:13466:24)\n    at TypeScriptParserMixin.parseFunctionParams (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:9769:11)\n    at TypeScriptParserMixin.parseMethod (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:12049:10)\n    at TypeScriptParserMixin.parseMethod (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:10123:26)\n    at TypeScriptParserMixin.parseObjectMethod (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:11950:19)\n    at TypeScriptParserMixin.parseObjPropValue (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:11984:23)\n    at TypeScriptParserMixin.parseObjPropValue (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:9764:18)\n    at TypeScriptParserMixin.parsePropertyDefinition (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:11921:17)\n    at TypeScriptParserMixin.parseObjectLike (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:11836:21)\n    at TypeScriptParserMixin.parseExprAtom (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:11339:23)\n    at TypeScriptParserMixin.parseExprAtom (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:4797:20)\n    at TypeScriptParserMixin.parseExprSubscripts (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:11081:23)\n    at TypeScriptParserMixin.parseUpdate (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:11066:21)\n    at TypeScriptParserMixin.parseMaybeUnary (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:11046:23)\n    at TypeScriptParserMixin.parseMaybeUnary (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:9857:18)\n    at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:10899:61)\n    at TypeScriptParserMixin.parseExprOps (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:10904:23)\n    at TypeScriptParserMixin.parseMaybeConditional (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:10881:23)\n    at TypeScriptParserMixin.parseMaybeAssign (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:10831:21)\n    at TypeScriptParserMixin.parseMaybeAssign (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:9806:20)\n    at C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:10800:39\n    at TypeScriptParserMixin.allowInAnd (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:12432:12)\n    at TypeScriptParserMixin.parseMaybeAssignAllowIn (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:10800:17)\n    at TypeScriptParserMixin.parseMaybeAssignAllowInOrVoidPattern (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:12499:17)\n    at TypeScriptParserMixin.parseExprListItem (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:12181:18)\n    at TypeScriptParserMixin.parseCallExpressionArguments (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:11252:22)\n    at TypeScriptParserMixin.parseCoverCallAndAsyncArrowHead (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:11186:29)\n    at TypeScriptParserMixin.parseSubscript (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:11120:19)\n    at TypeScriptParserMixin.parseSubscript (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:9358:18)\n    at TypeScriptParserMixin.parseSubscripts (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:11094:19)\n    at TypeScriptParserMixin.parseExprSubscripts (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:11085:17)\n    at TypeScriptParserMixin.parseUpdate (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:11066:21)\n    at TypeScriptParserMixin.parseMaybeUnary (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:11046:23)\n    at TypeScriptParserMixin.parseMaybeUnary (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:9857:18)\n    at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:10899:61)\n    at TypeScriptParserMixin.parseExprOps (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:10904:23)\n    at TypeScriptParserMixin.parseMaybeConditional (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:10881:23)\n    at TypeScriptParserMixin.parseMaybeAssign (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:10831:21)\n    at TypeScriptParserMixin.parseMaybeAssign (C:\\Users\\puleeno\\Projects\\CheepHub\\public_html\\wp-content\\themes\\cheephub\\resources\\node_modules\\@babel\\parser\\lib\\index.js:9806:20)");
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ IconDropZone)
+/* harmony export */ });
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_blob__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/blob */ "./node_modules/@wordpress/blob/build-module/index.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./../../utils */ "./blocks/svg-icon/utils/index.ts");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/**
+ * WordPress dependencies
+ */
+
+
+
+/**
+ * Internal dependencies
+ */
+
+
+function IconDropZone(props) {
+    const { attributes, setAttributes, mediaUpload, isSVGUploadAllowed } = props;
+    function onDropFiles(filesList) {
+        if (isSVGUploadAllowed) {
+            mediaUpload({
+                allowedTypes: ['image/svg+xml'],
+                filesList,
+                onFileChange([image]) {
+                    if ((0,_wordpress_blob__WEBPACK_IMPORTED_MODULE_2__.isBlobURL)(image?.url)) {
+                        return;
+                    }
+                    (0,_utils__WEBPACK_IMPORTED_MODULE_3__.parseUploadedMediaAndSetIcon)(image, attributes, setAttributes);
+                },
+                onError() {
+                    (0,_utils__WEBPACK_IMPORTED_MODULE_3__.displayMessages)('fileTypeUploadError');
+                }
+            });
+        }
+        else {
+            const reader = new window.FileReader();
+            reader.readAsText(filesList[0]);
+            reader.onload = e => {
+                var _e$target$result;
+                const fileContent = (_e$target$result = e?.target?.result) !== null && _e$target$result !== void 0 ? _e$target$result : '';
+                (0,_utils__WEBPACK_IMPORTED_MODULE_3__.parseDroppedMediaAndSetIcon)(fileContent, setAttributes);
+            };
+        }
+    }
+    const label = isSVGUploadAllowed ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Drop SVG file to upload', 'icon-block') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Drop SVG file to insert', 'icon-block');
+    return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.DropZone, {
+        label: label,
+        onFilesDrop: onDropFiles
+    });
+}
+
 
 /***/ }),
 
@@ -443,7 +500,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   CustomInserterModal: () => (/* reexport safe */ _custom_inserter__WEBPACK_IMPORTED_MODULE_1__["default"]),
 /* harmony export */   DimensionControl: () => (/* reexport safe */ _dimension_control__WEBPACK_IMPORTED_MODULE_0__["default"]),
-/* harmony export */   IconDropZone: () => (/* reexport default from dynamic */ _icon_dropzone__WEBPACK_IMPORTED_MODULE_5___default.a),
+/* harmony export */   IconDropZone: () => (/* reexport safe */ _icon_dropzone__WEBPACK_IMPORTED_MODULE_5__["default"]),
 /* harmony export */   IconPlaceholder: () => (/* reexport safe */ _icon_placeholder__WEBPACK_IMPORTED_MODULE_4__["default"]),
 /* harmony export */   InserterModal: () => (/* reexport safe */ _inserter__WEBPACK_IMPORTED_MODULE_2__["default"]),
 /* harmony export */   QuickInserterPopover: () => (/* reexport safe */ _quick_inserter__WEBPACK_IMPORTED_MODULE_3__["default"])
@@ -454,7 +511,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _quick_inserter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./quick-inserter */ "./blocks/svg-icon/components/quick-inserter/index.tsx");
 /* harmony import */ var _icon_placeholder__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./icon-placeholder */ "./blocks/svg-icon/components/icon-placeholder/index.tsx");
 /* harmony import */ var _icon_dropzone__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./icon-dropzone */ "./blocks/svg-icon/components/icon-dropzone/index.tsx");
-/* harmony import */ var _icon_dropzone__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_icon_dropzone__WEBPACK_IMPORTED_MODULE_5__);
 
 
 
@@ -5389,6 +5445,136 @@ function sanitizeRawSVGString(rawString) {
         svgString = new window.XMLSerializer().serializeToString(svgDoc.documentElement);
     }
     return svgString;
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/blob/build-module/index.js":
+/*!************************************************************!*\
+  !*** ./node_modules/@wordpress/blob/build-module/index.js ***!
+  \************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   createBlobURL: () => (/* binding */ createBlobURL),
+/* harmony export */   downloadBlob: () => (/* binding */ downloadBlob),
+/* harmony export */   getBlobByURL: () => (/* binding */ getBlobByURL),
+/* harmony export */   getBlobTypeByURL: () => (/* binding */ getBlobTypeByURL),
+/* harmony export */   isBlobURL: () => (/* binding */ isBlobURL),
+/* harmony export */   revokeBlobURL: () => (/* binding */ revokeBlobURL)
+/* harmony export */ });
+/**
+ * @type {Record<string, File|undefined>}
+ */
+const cache = {};
+
+/**
+ * Create a blob URL from a file.
+ *
+ * @param {File} file The file to create a blob URL for.
+ *
+ * @return {string} The blob URL.
+ */
+function createBlobURL(file) {
+  const url = window.URL.createObjectURL(file);
+  cache[url] = file;
+  return url;
+}
+
+/**
+ * Retrieve a file based on a blob URL. The file must have been created by
+ * `createBlobURL` and not removed by `revokeBlobURL`, otherwise it will return
+ * `undefined`.
+ *
+ * @param {string} url The blob URL.
+ *
+ * @return {File|undefined} The file for the blob URL.
+ */
+function getBlobByURL(url) {
+  return cache[url];
+}
+
+/**
+ * Retrieve a blob type based on URL. The file must have been created by
+ * `createBlobURL` and not removed by `revokeBlobURL`, otherwise it will return
+ * `undefined`.
+ *
+ * @param {string} url The blob URL.
+ *
+ * @return {string|undefined} The blob type.
+ */
+function getBlobTypeByURL(url) {
+  return getBlobByURL(url)?.type.split('/')[0]; // 0: media type , 1: file extension eg ( type: 'image/jpeg' ).
+}
+
+/**
+ * Remove the resource and file cache from memory.
+ *
+ * @param {string} url The blob URL.
+ */
+function revokeBlobURL(url) {
+  if (cache[url]) {
+    window.URL.revokeObjectURL(url);
+  }
+  delete cache[url];
+}
+
+/**
+ * Check whether a url is a blob url.
+ *
+ * @param {string|undefined} url The URL.
+ *
+ * @return {boolean} Is the url a blob url?
+ */
+function isBlobURL(url) {
+  if (!url || !url.indexOf) {
+    return false;
+  }
+  return url.indexOf('blob:') === 0;
+}
+
+/**
+ * Downloads a file, e.g., a text or readable stream, in the browser.
+ * Appropriate for downloading smaller file sizes, e.g., < 5 MB.
+ *
+ * Example usage:
+ *
+ * ```js
+ * 	const fileContent = JSON.stringify(
+ * 		{
+ * 			"title": "My Post",
+ * 		},
+ * 		null,
+ * 		2
+ * 	);
+ * 	const filename = 'file.json';
+ *
+ * 	downloadBlob( filename, fileContent, 'application/json' );
+ * ```
+ *
+ * @param {string}   filename    File name.
+ * @param {BlobPart} content     File content (BufferSource | Blob | string).
+ * @param {string}   contentType (Optional) File mime type. Default is `''`.
+ */
+function downloadBlob(filename, content, contentType = '') {
+  if (!filename || !content) {
+    return;
+  }
+  const file = new window.Blob([content], {
+    type: contentType
+  });
+  const url = window.URL.createObjectURL(file);
+  const anchorElement = document.createElement('a');
+  anchorElement.href = url;
+  anchorElement.download = filename;
+  anchorElement.style.display = 'none';
+  document.body.appendChild(anchorElement);
+  anchorElement.click();
+  document.body.removeChild(anchorElement);
+  window.URL.revokeObjectURL(url);
 }
 
 

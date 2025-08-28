@@ -99,7 +99,7 @@ export default function InserterModal( props: any ) {
 		setInserterOpen( false );
 	}
 
-	function onClickCategory( category ) {
+	function onClickCategory( category: any ) {
 		setCurrentCategory( category );
 	}
 

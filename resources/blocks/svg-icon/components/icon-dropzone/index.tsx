@@ -23,12 +23,12 @@ export default function IconDropZone( props: any ) {
 			mediaUpload( {
 				allowedTypes: [ 'image/svg+xml' ],
 				filesList,
-				onFileChange( [ image as any ] ) {
-					if ( isBlobURL( image?.url ) ) {
+				onFileChange( [ image ]: any[] ) {
+					if ( isBlobURL( (image as any)?.url ) ) {
 						return;
 					}
 					parseUploadedMediaAndSetIcon(
-						image,
+						image as any,
 						attributes,
 						setAttributes
 					);
