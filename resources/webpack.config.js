@@ -74,6 +74,10 @@ module.exports = {
     'blocks/offcanvas-trigger/build/index': './blocks/offcanvas-trigger/index.tsx',
     'blocks/offcanvas-trigger/build/style': './blocks/offcanvas-trigger/style.scss',
     'blocks/offcanvas-trigger/build/editor': './blocks/offcanvas-trigger/editor.scss',
+
+    'blocks/svg-icon/build/index': './blocks/svg-icon/index.tsx',
+    'blocks/svg-icon/build/style': './blocks/svg-icon/style.scss',
+    'blocks/svg-icon/build/editor': './blocks/svg-icon/editor.scss',
   },
   output: {
     path: path.resolve(__dirname),
