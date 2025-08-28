@@ -83,13 +83,13 @@ class OffcanvasTriggerBlock extends Block
                 <?php echo $dataAttributes; ?>
                 data-target-sidebar="<?php echo esc_attr($targetSidebarId); ?>"
             >
-                <?php if ($showIcon && $iconHtml): ?>
+                <?php if ($showIcon && $iconHtml) : ?>
                     <span class="trigger-icon">
                         <?php echo $iconHtml; ?>
                     </span>
                 <?php endif; ?>
 
-                <?php if ($showText): ?>
+                <?php if ($showText) : ?>
                     <span class="trigger-text"><?php echo esc_html($triggerText); ?></span>
                 <?php endif; ?>
             </button>

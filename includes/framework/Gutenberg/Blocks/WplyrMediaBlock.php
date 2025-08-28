@@ -27,7 +27,7 @@ class WplyrMediaBlock extends Block
         ]);
     }
 
-            public function register()
+    public function register()
     {
         $block_json = $this->getBlockJson();
         if (!$block_json) {
@@ -45,7 +45,7 @@ class WplyrMediaBlock extends Block
         }
     }
 
-        public function enqueue_plyr_assets()
+    public function enqueue_plyr_assets()
     {
         // Enqueue Plyr CSS
         wp_enqueue_style(

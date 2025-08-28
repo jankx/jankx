@@ -161,7 +161,7 @@ class OffcanvasSidebarBlock extends Block
       * @param array $metadata Block metadata
       * @return void
       */
-     protected function enqueueAssets($blockPath, $metadata)
+    protected function enqueueAssets($blockPath, $metadata)
     {
         // Enqueue frontend CSS
         $cssUrl = get_template_directory_uri() . '/resources/blocks/offcanvas-sidebar/build/style.css';
@@ -414,18 +414,18 @@ class OffcanvasSidebarBlock extends Block
       * @param string $content Block content
       * @return string HTML
       */
-     protected function renderSidebarInnerContent($content)
-     {
-         // Process nested blocks content
-         $processedContent = $this->processNestedBlocks($content);
+    protected function renderSidebarInnerContent($content)
+    {
+        // Process nested blocks content
+        $processedContent = $this->processNestedBlocks($content);
 
-         return sprintf(
-             '<div class="sidebar-content">
+        return sprintf(
+            '<div class="sidebar-content">
                  %s
              </div>',
-             $processedContent
-         );
-     }
+            $processedContent
+        );
+    }
 
      /**
       * Process nested blocks content
@@ -433,20 +433,20 @@ class OffcanvasSidebarBlock extends Block
       * @param string $content Raw content
       * @return string Processed content
       */
-     protected function processNestedBlocks($content)
-     {
-         if (empty($content)) {
-             return '<p>' . esc_html__('Add your content here using any available blocks.', 'jankx') . '</p>';
-         }
+    protected function processNestedBlocks($content)
+    {
+        if (empty($content)) {
+            return '<p>' . esc_html__('Add your content here using any available blocks.', 'jankx') . '</p>';
+        }
 
-         // Apply WordPress content filters
-         $processedContent = apply_filters('the_content', $content);
+        // Apply WordPress content filters
+        $processedContent = apply_filters('the_content', $content);
 
-         // Add custom styling for nested blocks
-         $processedContent = $this->addNestedBlocksStyling($processedContent);
+        // Add custom styling for nested blocks
+        $processedContent = $this->addNestedBlocksStyling($processedContent);
 
-         return $processedContent;
-     }
+        return $processedContent;
+    }
 
      /**
       * Add custom styling for nested blocks
@@ -454,205 +454,205 @@ class OffcanvasSidebarBlock extends Block
       * @param string $content Processed content
       * @return string Styled content
       */
-     protected function addNestedBlocksStyling($content)
-     {
-         // Add custom classes for better styling
-         $content = str_replace(
-             'class="wp-block-',
-             'class="wp-block- sidebar-nested-block-',
-             $content
-         );
+    protected function addNestedBlocksStyling($content)
+    {
+        // Add custom classes for better styling
+        $content = str_replace(
+            'class="wp-block-',
+            'class="wp-block- sidebar-nested-block-',
+            $content
+        );
 
-         // Add specific styling for different block types
-         $content = preg_replace(
-             '/<div([^>]*class="[^"]*wp-block-heading[^"]*"[^>]*)>/',
-             '<div$1 style="color: inherit; margin-top: 0; margin-bottom: 16px;">',
-             $content
-         );
+        // Add specific styling for different block types
+        $content = preg_replace(
+            '/<div([^>]*class="[^"]*wp-block-heading[^"]*"[^>]*)>/',
+            '<div$1 style="color: inherit; margin-top: 0; margin-bottom: 16px;">',
+            $content
+        );
 
-         $content = preg_replace(
-             '/<div([^>]*class="[^"]*wp-block-paragraph[^"]*"[^>]*)>/',
-             '<div$1 style="line-height: 1.6; margin-bottom: 16px;">',
-             $content
-         );
+        $content = preg_replace(
+            '/<div([^>]*class="[^"]*wp-block-paragraph[^"]*"[^>]*)>/',
+            '<div$1 style="line-height: 1.6; margin-bottom: 16px;">',
+            $content
+        );
 
-         $content = preg_replace(
-             '/<div([^>]*class="[^"]*wp-block-image[^"]*"[^>]*)>/',
-             '<div$1 style="margin: 20px 0;">',
-             $content
-         );
+        $content = preg_replace(
+            '/<div([^>]*class="[^"]*wp-block-image[^"]*"[^>]*)>/',
+            '<div$1 style="margin: 20px 0;">',
+            $content
+        );
 
-         $content = preg_replace(
-             '/<div([^>]*class="[^"]*wp-block-gallery[^"]*"[^>]*)>/',
-             '<div$1 style="margin: 20px 0;">',
-             $content
-         );
+        $content = preg_replace(
+            '/<div([^>]*class="[^"]*wp-block-gallery[^"]*"[^>]*)>/',
+            '<div$1 style="margin: 20px 0;">',
+            $content
+        );
 
-         $content = preg_replace(
-             '/<div([^>]*class="[^"]*wp-block-quote[^"]*"[^>]*)>/',
-             '<div$1 style="margin: 20px 0; padding: 16px; border-left: 4px solid rgba(255, 255, 255, 0.3); background: rgba(255, 255, 255, 0.05); border-radius: 4px;">',
-             $content
-         );
+        $content = preg_replace(
+            '/<div([^>]*class="[^"]*wp-block-quote[^"]*"[^>]*)>/',
+            '<div$1 style="margin: 20px 0; padding: 16px; border-left: 4px solid rgba(255, 255, 255, 0.3); background: rgba(255, 255, 255, 0.05); border-radius: 4px;">',
+            $content
+        );
 
-         $content = preg_replace(
-             '/<div([^>]*class="[^"]*wp-block-buttons[^"]*"[^>]*)>/',
-             '<div$1 style="margin: 20px 0;">',
-             $content
-         );
+        $content = preg_replace(
+            '/<div([^>]*class="[^"]*wp-block-buttons[^"]*"[^>]*)>/',
+            '<div$1 style="margin: 20px 0;">',
+            $content
+        );
 
-         $content = preg_replace(
-             '/<div([^>]*class="[^"]*wp-block-separator[^"]*"[^>]*)>/',
-             '<div$1 style="margin: 20px 0;">',
-             $content
-         );
+        $content = preg_replace(
+            '/<div([^>]*class="[^"]*wp-block-separator[^"]*"[^>]*)>/',
+            '<div$1 style="margin: 20px 0;">',
+            $content
+        );
 
-         $content = preg_replace(
-             '/<div([^>]*class="[^"]*wp-block-spacer[^"]*"[^>]*)>/',
-             '<div$1 style="margin: 16px 0;">',
-             $content
-         );
+        $content = preg_replace(
+            '/<div([^>]*class="[^"]*wp-block-spacer[^"]*"[^>]*)>/',
+            '<div$1 style="margin: 16px 0;">',
+            $content
+        );
 
-         $content = preg_replace(
-             '/<div([^>]*class="[^"]*wp-block-social-links[^"]*"[^>]*)>/',
-             '<div$1 style="margin: 20px 0;">',
-             $content
-         );
+        $content = preg_replace(
+            '/<div([^>]*class="[^"]*wp-block-social-links[^"]*"[^>]*)>/',
+            '<div$1 style="margin: 20px 0;">',
+            $content
+        );
 
-         $content = preg_replace(
-             '/<div([^>]*class="[^"]*wp-block-navigation[^"]*"[^>]*)>/',
-             '<div$1 style="margin: 20px 0;">',
-             $content
-         );
+        $content = preg_replace(
+            '/<div([^>]*class="[^"]*wp-block-navigation[^"]*"[^>]*)>/',
+            '<div$1 style="margin: 20px 0;">',
+            $content
+        );
 
-         $content = preg_replace(
-             '/<div([^>]*class="[^"]*wp-block-search[^"]*"[^>]*)>/',
-             '<div$1 style="margin: 20px 0;">',
-             $content
-         );
+        $content = preg_replace(
+            '/<div([^>]*class="[^"]*wp-block-search[^"]*"[^>]*)>/',
+            '<div$1 style="margin: 20px 0;">',
+            $content
+        );
 
-         $content = preg_replace(
-             '/<div([^>]*class="[^"]*wp-block-latest-posts[^"]*"[^>]*)>/',
-             '<div$1 style="margin: 20px 0;">',
-             $content
-         );
+        $content = preg_replace(
+            '/<div([^>]*class="[^"]*wp-block-latest-posts[^"]*"[^>]*)>/',
+            '<div$1 style="margin: 20px 0;">',
+            $content
+        );
 
-         $content = preg_replace(
-             '/<div([^>]*class="[^"]*wp-block-latest-comments[^"]*"[^>]*)>/',
-             '<div$1 style="margin: 20px 0;">',
-             $content
-         );
+        $content = preg_replace(
+            '/<div([^>]*class="[^"]*wp-block-latest-comments[^"]*"[^>]*)>/',
+            '<div$1 style="margin: 20px 0;">',
+            $content
+        );
 
-         $content = preg_replace(
-             '/<div([^>]*class="[^"]*wp-block-rss[^"]*"[^>]*)>/',
-             '<div$1 style="margin: 20px 0;">',
-             $content
-         );
+        $content = preg_replace(
+            '/<div([^>]*class="[^"]*wp-block-rss[^"]*"[^>]*)>/',
+            '<div$1 style="margin: 20px 0;">',
+            $content
+        );
 
-         $content = preg_replace(
-             '/<div([^>]*class="[^"]*wp-block-audio[^"]*"[^>]*)>/',
-             '<div$1 style="margin: 20px 0;">',
-             $content
-         );
+        $content = preg_replace(
+            '/<div([^>]*class="[^"]*wp-block-audio[^"]*"[^>]*)>/',
+            '<div$1 style="margin: 20px 0;">',
+            $content
+        );
 
-         $content = preg_replace(
-             '/<div([^>]*class="[^"]*wp-block-video[^"]*"[^>]*)>/',
-             '<div$1 style="margin: 20px 0;">',
-             $content
-         );
+        $content = preg_replace(
+            '/<div([^>]*class="[^"]*wp-block-video[^"]*"[^>]*)>/',
+            '<div$1 style="margin: 20px 0;">',
+            $content
+        );
 
-         $content = preg_replace(
-             '/<div([^>]*class="[^"]*wp-block-file[^"]*"[^>]*)>/',
-             '<div$1 style="margin: 20px 0;">',
-             $content
-         );
+        $content = preg_replace(
+            '/<div([^>]*class="[^"]*wp-block-file[^"]*"[^>]*)>/',
+            '<div$1 style="margin: 20px 0;">',
+            $content
+        );
 
-         $content = preg_replace(
-             '/<div([^>]*class="[^"]*wp-block-code[^"]*"[^>]*)>/',
-             '<div$1 style="margin: 20px 0; background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 4px; padding: 16px;">',
-             $content
-         );
+        $content = preg_replace(
+            '/<div([^>]*class="[^"]*wp-block-code[^"]*"[^>]*)>/',
+            '<div$1 style="margin: 20px 0; background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 4px; padding: 16px;">',
+            $content
+        );
 
-         $content = preg_replace(
-             '/<div([^>]*class="[^"]*wp-block-html[^"]*"[^>]*)>/',
-             '<div$1 style="margin: 20px 0;">',
-             $content
-         );
+        $content = preg_replace(
+            '/<div([^>]*class="[^"]*wp-block-html[^"]*"[^>]*)>/',
+            '<div$1 style="margin: 20px 0;">',
+            $content
+        );
 
-         $content = preg_replace(
-             '/<div([^>]*class="[^"]*wp-block-preformatted[^"]*"[^>]*)>/',
-             '<div$1 style="margin: 20px 0; background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 4px; padding: 16px;">',
-             $content
-         );
+        $content = preg_replace(
+            '/<div([^>]*class="[^"]*wp-block-preformatted[^"]*"[^>]*)>/',
+            '<div$1 style="margin: 20px 0; background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 4px; padding: 16px;">',
+            $content
+        );
 
-         $content = preg_replace(
-             '/<div([^>]*class="[^"]*wp-block-pullquote[^"]*"[^>]*)>/',
-             '<div$1 style="margin: 20px 0; padding: 20px; border-left: 4px solid rgba(255, 255, 255, 0.3); background: rgba(255, 255, 255, 0.05); border-radius: 4px;">',
-             $content
-         );
+        $content = preg_replace(
+            '/<div([^>]*class="[^"]*wp-block-pullquote[^"]*"[^>]*)>/',
+            '<div$1 style="margin: 20px 0; padding: 20px; border-left: 4px solid rgba(255, 255, 255, 0.3); background: rgba(255, 255, 255, 0.05); border-radius: 4px;">',
+            $content
+        );
 
-         $content = preg_replace(
-             '/<div([^>]*class="[^"]*wp-block-table[^"]*"[^>]*)>/',
-             '<div$1 style="margin: 20px 0;">',
-             $content
-         );
+        $content = preg_replace(
+            '/<div([^>]*class="[^"]*wp-block-table[^"]*"[^>]*)>/',
+            '<div$1 style="margin: 20px 0;">',
+            $content
+        );
 
-         $content = preg_replace(
-             '/<div([^>]*class="[^"]*wp-block-verse[^"]*"[^>]*)>/',
-             '<div$1 style="margin: 20px 0; padding: 16px; background: rgba(255, 255, 255, 0.05); border-radius: 4px; font-style: italic; line-height: 1.6;">',
-             $content
-         );
+        $content = preg_replace(
+            '/<div([^>]*class="[^"]*wp-block-verse[^"]*"[^>]*)>/',
+            '<div$1 style="margin: 20px 0; padding: 16px; background: rgba(255, 255, 255, 0.05); border-radius: 4px; font-style: italic; line-height: 1.6;">',
+            $content
+        );
 
-         $content = preg_replace(
-             '/<div([^>]*class="[^"]*wp-block-media-text[^"]*"[^>]*)>/',
-             '<div$1 style="margin: 20px 0;">',
-             $content
-         );
+        $content = preg_replace(
+            '/<div([^>]*class="[^"]*wp-block-media-text[^"]*"[^>]*)>/',
+            '<div$1 style="margin: 20px 0;">',
+            $content
+        );
 
-         $content = preg_replace(
-             '/<div([^>]*class="[^"]*wp-block-columns[^"]*"[^>]*)>/',
-             '<div$1 style="margin: 20px 0;">',
-             $content
-         );
+        $content = preg_replace(
+            '/<div([^>]*class="[^"]*wp-block-columns[^"]*"[^>]*)>/',
+            '<div$1 style="margin: 20px 0;">',
+            $content
+        );
 
-         $content = preg_replace(
-             '/<div([^>]*class="[^"]*wp-block-group[^"]*"[^>]*)>/',
-             '<div$1 style="margin: 20px 0; padding: 16px; background: rgba(255, 255, 255, 0.05); border-radius: 4px; border: 1px solid rgba(255, 255, 255, 0.1);">',
-             $content
-         );
+        $content = preg_replace(
+            '/<div([^>]*class="[^"]*wp-block-group[^"]*"[^>]*)>/',
+            '<div$1 style="margin: 20px 0; padding: 16px; background: rgba(255, 255, 255, 0.05); border-radius: 4px; border: 1px solid rgba(255, 255, 255, 0.1);">',
+            $content
+        );
 
-         $content = preg_replace(
-             '/<div([^>]*class="[^"]*wp-block-cover[^"]*"[^>]*)>/',
-             '<div$1 style="margin: 20px 0; border-radius: 4px; overflow: hidden;">',
-             $content
-         );
+        $content = preg_replace(
+            '/<div([^>]*class="[^"]*wp-block-cover[^"]*"[^>]*)>/',
+            '<div$1 style="margin: 20px 0; border-radius: 4px; overflow: hidden;">',
+            $content
+        );
 
-         $content = preg_replace(
-             '/<div([^>]*class="[^"]*wp-block-embed[^"]*"[^>]*)>/',
-             '<div$1 style="margin: 20px 0;">',
-             $content
-         );
+        $content = preg_replace(
+            '/<div([^>]*class="[^"]*wp-block-embed[^"]*"[^>]*)>/',
+            '<div$1 style="margin: 20px 0;">',
+            $content
+        );
 
-         // Jankx blocks styling
-         $content = preg_replace(
-             '/<div([^>]*class="[^"]*wp-block-jankx-language-switcher[^"]*"[^>]*)>/',
-             '<div$1 style="margin: 20px 0;">',
-             $content
-         );
+        // Jankx blocks styling
+        $content = preg_replace(
+            '/<div([^>]*class="[^"]*wp-block-jankx-language-switcher[^"]*"[^>]*)>/',
+            '<div$1 style="margin: 20px 0;">',
+            $content
+        );
 
-         $content = preg_replace(
-             '/<div([^>]*class="[^"]*wp-block-jankx-icon-button[^"]*"[^>]*)>/',
-             '<div$1 style="margin: 20px 0;">',
-             $content
-         );
+        $content = preg_replace(
+            '/<div([^>]*class="[^"]*wp-block-jankx-icon-button[^"]*"[^>]*)>/',
+            '<div$1 style="margin: 20px 0;">',
+            $content
+        );
 
-         $content = preg_replace(
-             '/<div([^>]*class="[^"]*wp-block-jankx-offcanvas-sidebar[^"]*"[^>]*)>/',
-             '<div$1 style="margin: 20px 0;">',
-             $content
-         );
+        $content = preg_replace(
+            '/<div([^>]*class="[^"]*wp-block-jankx-offcanvas-sidebar[^"]*"[^>]*)>/',
+            '<div$1 style="margin: 20px 0;">',
+            $content
+        );
 
-         return $content;
-     }
+        return $content;
+    }
 
     /**
      * Get icon HTML

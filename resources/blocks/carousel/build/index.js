@@ -172,7 +172,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   BLOCK_CLASS_NAME: () => (/* binding */ BLOCK_CLASS_NAME)
 /* harmony export */ });
-const BLOCK_CLASS_NAME = 'wpd-block-carousel';
+const BLOCK_CLASS_NAME = 'jankx-carousel';
 
 
 /***/ }),
@@ -335,14 +335,14 @@ function Edit({ attributes, setAttributes, clientId, isSelected }) {
                                 max: 1000,
                                 step: 1
                             }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("legend", {
-                                children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Background', 'wpd-blocks')
+                                children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Background', 'jankx')
                             }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ColorPalette, {
                                 colors: _constants_editor__WEBPACK_IMPORTED_MODULE_6__.COLOR_SCHEMES,
                                 value: backgroundColor,
                                 onChange: onBackgroundColorChange,
                                 className: "components-color-list-picker__color-picker"
                             }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("legend", {
-                                children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Text', 'wpd-blocks')
+                                children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Text', 'jankx')
                             }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ColorPalette, {
                                 colors: _constants_editor__WEBPACK_IMPORTED_MODULE_6__.COLOR_SCHEMES.slice().reverse(),
                                 value: color,
@@ -355,14 +355,14 @@ function Edit({ attributes, setAttributes, clientId, isSelected }) {
                 children: [hasTitle && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.RichText, {
                         tagName: _constants_editor__WEBPACK_IMPORTED_MODULE_6__.TITLE_TAG,
                         value: title,
-                        placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Title', 'wpd-blocks'),
+                        placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Title', 'jankx'),
                         onChange: onTitleChange,
                         className: `${_constants__WEBPACK_IMPORTED_MODULE_5__.BLOCK_CLASS_NAME}__title`
                     }), hasDescription && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.RichText, {
                         tagName: "div",
                         multiline: "p",
                         value: description,
-                        placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Description', 'wpd-blocks'),
+                        placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Description', 'jankx'),
                         onChange: onDescriptionChange,
                         className: `${_constants__WEBPACK_IMPORTED_MODULE_5__.BLOCK_CLASS_NAME}__description`
                     })]

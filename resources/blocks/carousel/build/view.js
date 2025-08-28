@@ -12,7 +12,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   BLOCK_CLASS_NAME: () => (/* binding */ BLOCK_CLASS_NAME)
 /* harmony export */ });
-const BLOCK_CLASS_NAME = 'wpd-block-carousel';
+const BLOCK_CLASS_NAME = 'jankx-carousel';
 
 
 /***/ }),

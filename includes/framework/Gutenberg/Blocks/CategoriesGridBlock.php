@@ -63,7 +63,9 @@ class CategoriesGridBlock extends Block
                 <?php foreach ($attributes['productCategories'] as $category) : ?>
                     <?php
                     $term = get_term_by('id', $category['id'], 'product_cat');
-                    if (!$term) continue;
+                    if (!$term) {
+                        continue;
+                    }
 
                     $thumbnail_id = get_term_meta($term->term_id, 'thumbnail_id', true);
                     $image_url = $thumbnail_id ? wp_get_attachment_image_url($thumbnail_id, 'medium') : '';
@@ -121,7 +123,9 @@ class CategoriesGridBlock extends Block
 
         foreach ($products as $product) {
             $product_obj = wc_get_product($product->ID);
-            if (!$product_obj) continue;
+            if (!$product_obj) {
+                continue;
+            }
 
             $products_data[] = [
                 'id' => $product->ID,

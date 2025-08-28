@@ -1,8 +1,9 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
-import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
-import { PanelBody, RangeControl, SelectControl } from '@wordpress/components';
+import { useBlockProps } from '@wordpress/block-editor';
+import { RangeControl, SelectControl } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
+import { InspectorGroups, InspectorToolsPanelItem, CommonPanels } from '../../shared/components';
 import metadata from './block.json';
 
 interface Category {
@@ -56,11 +57,21 @@ const Edit = ({ attributes, setAttributes }: { attributes: Attributes; setAttrib
     setAttributes({ productCategories: selectedArray });
   };
 
+  const resetAll = () => {
+    setAttributes({
+      catsPerRow: 3,
+      productCategories: []
+    });
+  };
+
   return (
     <div {...blockProps}>
-      <InspectorControls>
-        <PanelBody
-          title={__('Grid Settings', 'jankx')}
+      <InspectorGroups.Settings useToolsPanel={true} resetAll={resetAll}>
+        <InspectorToolsPanelItem
+          label={__('Categories per row', 'jankx')}
+          isShownByDefault={true}
+          hasValue={() => catsPerRow !== 3}
+          onDeselect={() => setAttributes({ catsPerRow: 3 })}
         >
           <RangeControl
             label={__('Categories per row', 'jankx')}
@@ -69,32 +80,31 @@ const Edit = ({ attributes, setAttributes }: { attributes: Attributes; setAttrib
             min={1}
             max={6}
           />
-        </PanelBody>
-        <PanelBody
-          title={__('Select Categories', 'jankx')}
-          initialOpen={false}
-        >
-          {categories ? (
-            <SelectControl
-              multiple
-              label={__('Choose categories', 'jankx')}
-              value={selectedIds}
-              options={categoryOptions}
-              onChange={(selected) => {
-                handleChange(
-                  Array.isArray(selected)
-                    ? selected.map(Number).map(String)
-                    : [String(selected)]
-                );
-              }}
-            />
-          ) : (
-            <p>
-              {__('Loading categories…', 'jankx')}
-            </p>
-          )}
-        </PanelBody>
-      </InspectorControls>
+        </InspectorToolsPanelItem>
+      </InspectorGroups.Settings>
+
+      <CommonPanels.Settings initialOpen={false}>
+        {categories ? (
+          <SelectControl
+            multiple
+            label={__('Choose categories', 'jankx')}
+            value={selectedIds}
+            options={categoryOptions}
+            onChange={(selected) => {
+              handleChange(
+                Array.isArray(selected)
+                  ? selected.map(Number).map(String)
+                  : [String(selected)]
+              );
+            }}
+          />
+        ) : (
+          <p>
+            {__('Loading categories…', 'jankx')}
+          </p>
+        )}
+      </CommonPanels.Settings>
+
       <div className="jankx-categories-wrapper">
         {productCategories.length ? (
           productCategories.map((cat) => (

@@ -1,7 +1,8 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
-import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
-import { PanelBody, SelectControl, RangeControl, ToggleControl } from '@wordpress/components';
+import { useBlockProps } from '@wordpress/block-editor';
+import { SelectControl, RangeControl, ToggleControl } from '@wordpress/components';
+import { InspectorGroups, InspectorToolsPanelItem, CommonPanels } from '../../shared/components';
 import metadata from './block.json';
 
 interface Attributes {
@@ -19,10 +20,27 @@ const Edit = ({ attributes, setAttributes }: { attributes: Attributes; setAttrib
   const { postType = 'post', postsToShow = 5, offset = 0, order = 'desc', orderBy = 'date', ignoreStickyPosts = true, showAllPosts = false } = attributes;
   const blockProps = useBlockProps({ className: 'jankx-advanced-posts' });
 
+  const resetAll = () => {
+    setAttributes({
+      postType: 'post',
+      postsToShow: 5,
+      offset: 0,
+      order: 'desc',
+      orderBy: 'date',
+      ignoreStickyPosts: true,
+      showAllPosts: false
+    });
+  };
+
   return (
     <div {...blockProps}>
-      <InspectorControls>
-        <PanelBody title={__('Query', 'jankx')}>
+      <InspectorGroups.Settings useToolsPanel={true} resetAll={resetAll}>
+        <InspectorToolsPanelItem
+          label={__('Post Type', 'jankx')}
+          isShownByDefault={true}
+          hasValue={() => postType !== 'post'}
+          onDeselect={() => setAttributes({ postType: 'post' })}
+        >
           <SelectControl
             label={__('Post Type', 'jankx')}
             value={postType}
@@ -32,6 +50,14 @@ const Edit = ({ attributes, setAttributes }: { attributes: Attributes; setAttrib
             ]}
             onChange={(value) => setAttributes({ postType: value })}
           />
+        </InspectorToolsPanelItem>
+
+        <InspectorToolsPanelItem
+          label={__('Posts to show', 'jankx')}
+          isShownByDefault={true}
+          hasValue={() => postsToShow !== 5}
+          onDeselect={() => setAttributes({ postsToShow: 5 })}
+        >
           <RangeControl
             label={__('Posts to show', 'jankx')}
             min={1}
@@ -39,6 +65,14 @@ const Edit = ({ attributes, setAttributes }: { attributes: Attributes; setAttrib
             value={postsToShow}
             onChange={(value?: number) => setAttributes({ postsToShow: value || 1 })}
           />
+        </InspectorToolsPanelItem>
+
+        <InspectorToolsPanelItem
+          label={__('Offset', 'jankx')}
+          isShownByDefault={false}
+          hasValue={() => offset !== 0}
+          onDeselect={() => setAttributes({ offset: 0 })}
+        >
           <RangeControl
             label={__('Offset', 'jankx')}
             min={0}
@@ -46,6 +80,14 @@ const Edit = ({ attributes, setAttributes }: { attributes: Attributes; setAttrib
             value={offset}
             onChange={(value?: number) => setAttributes({ offset: value || 0 })}
           />
+        </InspectorToolsPanelItem>
+
+        <InspectorToolsPanelItem
+          label={__('Order', 'jankx')}
+          isShownByDefault={false}
+          hasValue={() => order !== 'desc'}
+          onDeselect={() => setAttributes({ order: 'desc' })}
+        >
           <SelectControl
             label={__('Order', 'jankx')}
             value={order}
@@ -55,6 +97,14 @@ const Edit = ({ attributes, setAttributes }: { attributes: Attributes; setAttrib
             ]}
             onChange={(value) => setAttributes({ order: value as Attributes['order'] })}
           />
+        </InspectorToolsPanelItem>
+
+        <InspectorToolsPanelItem
+          label={__('Order by', 'jankx')}
+          isShownByDefault={false}
+          hasValue={() => orderBy !== 'date'}
+          onDeselect={() => setAttributes({ orderBy: 'date' })}
+        >
           <SelectControl
             label={__('Order by', 'jankx')}
             value={orderBy}
@@ -65,18 +115,35 @@ const Edit = ({ attributes, setAttributes }: { attributes: Attributes; setAttrib
             ]}
             onChange={(value) => setAttributes({ orderBy: value })}
           />
+        </InspectorToolsPanelItem>
+
+        <InspectorToolsPanelItem
+          label={__('Ignore sticky posts', 'jankx')}
+          isShownByDefault={false}
+          hasValue={() => !ignoreStickyPosts}
+          onDeselect={() => setAttributes({ ignoreStickyPosts: true })}
+        >
           <ToggleControl
             label={__('Ignore sticky posts', 'jankx')}
             checked={ignoreStickyPosts}
             onChange={(value) => setAttributes({ ignoreStickyPosts: value })}
           />
+        </InspectorToolsPanelItem>
+
+        <InspectorToolsPanelItem
+          label={__('Show all posts', 'jankx')}
+          isShownByDefault={false}
+          hasValue={() => showAllPosts}
+          onDeselect={() => setAttributes({ showAllPosts: false })}
+        >
           <ToggleControl
             label={__('Show all posts (disable pagination)', 'jankx')}
             checked={showAllPosts}
             onChange={(value) => setAttributes({ showAllPosts: value })}
           />
-        </PanelBody>
-      </InspectorControls>
+        </InspectorToolsPanelItem>
+      </InspectorGroups.Settings>
+
       <div className="jankx-advanced-posts__placeholder">
         {__('Posts will render on the frontend.', 'jankx')}
       </div>

@@ -198,14 +198,14 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 						max={1000}
 						step={1}
 					/>
-					<legend>{__('Background', 'wpd-blocks')}</legend>
+					<legend>{__('Background', 'jankx')}</legend>
 					<ColorPalette
 						colors={COLOR_SCHEMES}
 						value={backgroundColor}
 						onChange={onBackgroundColorChange}
 						className="components-color-list-picker__color-picker"
 					/>
-					<legend>{__('Text', 'wpd-blocks')}</legend>
+					<legend>{__('Text', 'jankx')}</legend>
 					<ColorPalette
 						colors={COLOR_SCHEMES.slice().reverse()}
 						value={color}
@@ -219,7 +219,7 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 					<RichText
 						tagName={TITLE_TAG}
 						value={title}
-						placeholder={__('Title', 'wpd-blocks')}
+						placeholder={__('Title', 'jankx')}
 						onChange={onTitleChange}
 						className={`${BLOCK_CLASS_NAME}__title`}
 					/>
@@ -229,7 +229,7 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 						tagName="div"
 						multiline="p"
 						value={description}
-						placeholder={__('Description', 'wpd-blocks')}
+						placeholder={__('Description', 'jankx')}
 						onChange={onDescriptionChange}
 						className={`${BLOCK_CLASS_NAME}__description`}
 					/>

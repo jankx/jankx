@@ -235,11 +235,11 @@ class SvgIconBlock extends Block
         ob_start();
         ?>
         <div class="<?php echo esc_attr($classString); ?>" style="<?php echo esc_attr($styleString); ?>">
-            <?php if ($linkUrl): ?>
+            <?php if ($linkUrl) : ?>
                 <a <?php echo $linkAttrs; ?> <?php echo $titleAttr; ?> <?php echo $ariaLabel; ?>>
                     <?php echo $icon; ?>
                 </a>
-            <?php else: ?>
+            <?php else : ?>
                 <span <?php echo $titleAttr; ?> <?php echo $ariaLabel; ?>>
                     <?php echo $icon; ?>
                 </span>

@@ -134,45 +134,45 @@ class CarouselBlock extends Block
         $this->enqueueCustomCSS();
     }
 
-    	/**
-	 * Enqueue custom CSS for the block
-	 *
-	 * @return void
-	 */
-	protected function enqueueCustomCSS()
-	{
-		// Enqueue frontend CSS
-		$cssUrl = get_template_directory_uri() . '/resources/blocks/carousel/jankx-carousel.css';
-		$cssPath = get_template_directory() . '/resources/blocks/carousel/jankx-carousel.css';
+        /**
+     * Enqueue custom CSS for the block
+     *
+     * @return void
+     */
+    protected function enqueueCustomCSS()
+    {
+        // Enqueue frontend CSS
+        $cssUrl = get_template_directory_uri() . '/resources/blocks/carousel/jankx-carousel.css';
+        $cssPath = get_template_directory() . '/resources/blocks/carousel/jankx-carousel.css';
 
-		if (file_exists($cssPath)) {
-			wp_enqueue_style(
-				'jankx-carousel-style',
-				$cssUrl,
-				[],
-				filemtime($cssPath)
-			);
-		}
+        if (file_exists($cssPath)) {
+            wp_enqueue_style(
+                'jankx-carousel-style',
+                $cssUrl,
+                [],
+                filemtime($cssPath)
+            );
+        }
 
-		// Enqueue Swiper from CDN
-		wp_enqueue_script(
-			'swiper-js',
-			'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js',
-			[],
-			'11.2.10',
-			true
-		);
+        // Enqueue Swiper from CDN
+        wp_enqueue_script(
+            'swiper-js',
+            'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js',
+            [],
+            '11.2.10',
+            true
+        );
 
-		wp_enqueue_style(
-			'swiper-css',
-			'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css',
-			[],
-			'11.2.10'
-		);
+        wp_enqueue_style(
+            'swiper-css',
+            'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css',
+            [],
+            '11.2.10'
+        );
 
-		// Note: Editor CSS is handled by block.json editorStyle property
-		// WordPress will automatically load it in editor context
-	}
+        // Note: Editor CSS is handled by block.json editorStyle property
+        // WordPress will automatically load it in editor context
+    }
 
     /**
      * Render the block content
@@ -232,10 +232,10 @@ class CarouselBlock extends Block
         ?>
         <div class="<?php echo esc_attr(implode(' ', $wrapperClasses)); ?>" style="<?php echo esc_attr($style); ?>">
             <div class="wp-block-jankx-carousel__header">
-                <?php if ($hasTitle && $title): ?>
+                <?php if ($hasTitle && $title) : ?>
                     <h2 class="wp-block-jankx-carousel__title"><?php echo wp_kses_post($title); ?></h2>
                 <?php endif; ?>
-                <?php if ($hasDescription && $description): ?>
+                <?php if ($hasDescription && $description) : ?>
                     <div class="wp-block-jankx-carousel__description"><?php echo wp_kses_post($description); ?></div>
                 <?php endif; ?>
             </div>
@@ -243,10 +243,10 @@ class CarouselBlock extends Block
                 <div class="swiper-wrapper">
                     <?php echo $content; ?>
                 </div>
-                <?php if ($hasPagination === 'true'): ?>
+                <?php if ($hasPagination === 'true') : ?>
                     <div class="swiper-pagination"></div>
                 <?php endif; ?>
-                <?php if ($hasNavigation === 'true'): ?>
+                <?php if ($hasNavigation === 'true') : ?>
                     <div class="swiper-button-prev" data-swiper-button-prev></div>
                     <div class="swiper-button-next" data-swiper-button-next></div>
                 <?php endif; ?>

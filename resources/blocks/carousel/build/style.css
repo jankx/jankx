@@ -1,22 +1,22 @@
 /*!***************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./blocks/carousel/style.scss ***!
   \***************************************************************************************************************************************************************/
-.wpd-block-carousel {
+.jankx-carousel {
   margin-bottom: 1em;
 }
-.wpd-block-carousel__header {
+.jankx-carousel__header {
   margin-bottom: 1em;
 }
-.wpd-block-carousel__title, .wpd-block-carousel__description {
+.jankx-carousel__title, .jankx-carousel__description {
   text-align: center;
 }
-.wpd-block-carousel .swiper {
+.jankx-carousel .swiper {
   visibility: hidden;
 }
-.wpd-block-carousel .swiper.swiper-initialized {
+.jankx-carousel .swiper.swiper-initialized {
   visibility: visible;
 }
-.wpd-block-carousel .swiper[data-has-pagination=true] {
+.jankx-carousel .swiper[data-has-pagination=true] {
   padding-bottom: 2em;
 }
 

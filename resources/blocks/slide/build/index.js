@@ -15,8 +15,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _wordpress_hooks__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/hooks */ "./node_modules/@wordpress/hooks/build-module/index.js");
 
-const BLOCK_CLASS_NAME = 'wpd-block-slide';
-const ALLOWED_BLOCKS = (0,_wordpress_hooks__WEBPACK_IMPORTED_MODULE_0__.applyFilters)('wpd.block-slide.allowed_blocks', ['wpd/block-card', 'wpd/block-logo', 'core/image']);
+const BLOCK_CLASS_NAME = 'jankx-slide';
+const ALLOWED_BLOCKS = (0,_wordpress_hooks__WEBPACK_IMPORTED_MODULE_0__.applyFilters)('jankx.slide.allowed_blocks', ['core/image']);
 
 
 /***/ }),
