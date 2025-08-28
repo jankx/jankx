@@ -69,11 +69,11 @@ export default function DimensionControl( { onChange, label, units, value } ) {
 		availableUnits[ 0 ]?.value ||
 		'px';
 
-	const handleSliderChange = ( next ) => {
+	const handleSliderChange = ( next: number ) => {
 		onChange( [ next, selectedUnit ].join( '' ) );
 	};
 
-	const handleChange = ( unitValue ) => {
+	const handleChange = ( unitValue: string ) => {
 		// Prevent the unit from getting returned if there is no actual value set.
 		const [ newValue, newUnit ] = // eslint-disable-line
 			parseQuantityAndUnitFromRawValue( unitValue );
@@ -82,7 +82,7 @@ export default function DimensionControl( { onChange, label, units, value } ) {
 		}
 	};
 
-	const handleUnitChange = ( newUnit ) => {
+	const handleUnitChange = ( newUnit: string ) => {
 		// Attempt to smooth over differences between currentUnit and newUnit.
 		// This should slightly improve the experience of switching between unit types.
 		const [ currentValue, currentUnit ] =
@@ -90,16 +90,16 @@ export default function DimensionControl( { onChange, label, units, value } ) {
 
 		if ( [ 'em', 'rem' ].includes( newUnit ) && currentUnit === 'px' ) {
 			// Convert pixel value to an approximate of the new unit, assuming a root size of 16px.
-			onChange( ( currentValue / 16 ).toFixed( 2 ) + newUnit );
+			onChange( ( (currentValue || 0) / 16 ).toFixed( 2 ) + newUnit );
 		} else if (
-			[ 'em', 'rem' ].includes( currentUnit ) &&
+			[ 'em', 'rem' ].includes( currentUnit || '' ) &&
 			newUnit === 'px'
 		) {
 			// Convert to pixel value assuming a root size of 16px.
-			onChange( Math.round( currentValue * 16 ) + newUnit );
+			onChange( Math.round( (currentValue || 0) * 16 ) + newUnit );
 		} else if (
 			[ 'vh', 'vw', '%' ].includes( newUnit ) &&
-			currentValue > 100
+			(currentValue || 0) > 100
 		) {
 			// When converting to `vh`, `vw`, or `%` units, cap the new value at 100.
 			onChange( 100 + newUnit );
@@ -128,11 +128,11 @@ export default function DimensionControl( { onChange, label, units, value } ) {
 							value={ customRangeValue }
 							min={ 0 }
 							max={
-								RANGE_CONTROL_CUSTOM_SETTINGS[ selectedUnit ]
+								(RANGE_CONTROL_CUSTOM_SETTINGS as any)[ selectedUnit ]
 									?.max ?? 100
 							}
 							step={
-								RANGE_CONTROL_CUSTOM_SETTINGS[ selectedUnit ]
+								(RANGE_CONTROL_CUSTOM_SETTINGS as any)[ selectedUnit ]
 									?.step ?? 0.1
 							}
 							withInputField={ false }

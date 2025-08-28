@@ -4,7 +4,7 @@
 import { __, sprintf, _n } from '@wordpress/i18n';
 import { RangeControl } from '@wordpress/components';
 
-export default function ContentHeader( props ) {
+export default function ContentHeader( props: any ) {
 	const { searchInput, shownIconsCount, iconSize, setIconSize } = props;
 
 	return (

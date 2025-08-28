@@ -10,7 +10,6 @@ import { isEmpty } from 'lodash';
 import { __experimentalParseQuantityAndUnitFromRawValue as parseQuantityAndUnitFromRawValue } from '@wordpress/components'; // eslint-disable-line
 import {
 	useBlockProps,
-	__experimentalGetBorderClassesAndStyles as getBorderClassesAndStyles, // eslint-disable-line
 } from '@wordpress/block-editor';
 
 /**
@@ -24,7 +23,7 @@ import { flattenIconsArray, parseIcon } from './utils';
  *
  * @param {Object} props All props passed to this function.
  */
-export default function Save( props ) {
+export default function Save( props: any ) {
 	const {
 		customGradient,
 		flipHorizontal,
@@ -55,7 +54,7 @@ export default function Save( props ) {
 
 	const iconsAll = flattenIconsArray( getIcons() );
 	const namedIcon = iconsAll.filter( ( i ) => i.name === iconName );
-	let printedIcon = '';
+	let printedIcon: any = '';
 
 	if ( icon && isEmpty( namedIcon ) ) {
 		// Custom icons are strings and need to be parsed.
@@ -89,7 +88,7 @@ export default function Save( props ) {
 	}
 
 	const blockProps = useBlockProps.save();
-	const borderProps = getBorderClassesAndStyles( props.attributes );
+	const borderProps = { className: '', style: {} };
 
 	const iconClasses = classnames( 'icon-container', borderProps?.className, {
 		'has-icon-color': iconColorValue,
@@ -127,8 +126,8 @@ export default function Save( props ) {
 		color: iconColorValue,
 		width: iconWidth,
 		height: height || undefined,
-		...blockProps.style,
-		...borderProps.style,
+		...(blockProps.style as any),
+		...(borderProps.style as any),
 		transform: `rotate(${ rotateValue }) scaleX(${ scaleXValue }) scaleY(${ scaleYValue })`,
 
 		// Margin is applied to the wrapper container, so unset.
@@ -138,7 +137,7 @@ export default function Save( props ) {
 		marginTop: undefined,
 	};
 
-	const blockStyles = useBlockProps.save()?.style;
+	const blockStyles = useBlockProps.save()?.style as any;
 
 	// And even though margin is set on the main block div, we need to handle it
 	// manually since all other styles are applied to the inner div.

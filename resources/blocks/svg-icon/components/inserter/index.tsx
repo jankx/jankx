@@ -18,7 +18,7 @@ import { flattenIconsArray, getIconTypes } from './../../utils';
 import ContentHeader from './content-header';
 import IconGrid from './icon-grid';
 import Sidebar from './sidebar';
-export default function InserterModal( props ) {
+export default function InserterModal( props: any ) {
 	const { isInserterOpen, setInserterOpen, attributes, setAttributes } =
 		props;
 	const iconsByType = getIcons();
@@ -66,7 +66,7 @@ export default function InserterModal( props ) {
 				}
 
 				return (
-					icon?.keywords?.some( ( keyword ) =>
+					icon?.keywords?.some( ( keyword: any ) =>
 						keyword.includes( input )
 					) || false
 				);
@@ -76,7 +76,7 @@ export default function InserterModal( props ) {
 		if ( currentCategory.startsWith( 'all__' ) ) {
 			const categoryType = currentCategory.replace( 'all__', '' );
 			return (
-				iconsByType.find( ( type ) => type.type === categoryType )
+				(iconsByType as any).find( ( type: any ) => type.type === categoryType )
 					?.icons || []
 			);
 		}
@@ -90,7 +90,7 @@ export default function InserterModal( props ) {
 		return null;
 	}
 
-	function updateIconAtts( name, hasNoIconFill ) {
+	function updateIconAtts( name: any, hasNoIconFill: any ) {
 		setAttributes( {
 			icon: '',
 			iconName: name,

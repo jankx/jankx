@@ -12,7 +12,7 @@ import { bolt } from './../../icons/bolt';
 import { parseUploadedMediaAndSetIcon } from '../../utils';
 import QuickInserterPopover from './../quick-inserter';
 
-export default function IconPlaceholder( props ) {
+export default function IconPlaceholder( props: any ) {
 	const {
 		setInserterOpen,
 		isQuickInserterOpen,

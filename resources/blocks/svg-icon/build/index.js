@@ -5014,7 +5014,10 @@ function Save(props) {
         };
     }
     const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.useBlockProps.save();
-    const borderProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.__experimentalGetBorderClassesAndStyles)(props.attributes);
+    const borderProps = {
+        className: '',
+        style: {}
+    };
     const iconClasses = classnames__WEBPACK_IMPORTED_MODULE_0___default()('icon-container', borderProps?.className, {
         'has-icon-color': iconColorValue,
         'has-no-icon-fill-color': hasNoIconFill,
@@ -36554,8 +36557,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const { name } = _block_json__WEBPACK_IMPORTED_MODULE_4__;
 const settings = {
+    ..._block_json__WEBPACK_IMPORTED_MODULE_4__,
     icon: _icons_bolt__WEBPACK_IMPORTED_MODULE_5__.bolt,
     example: {
         attributes: {
@@ -36585,10 +36588,7 @@ const settings = {
 /**
  * Register the Icon Block.
  */
-(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.registerBlockType)({
-    name,
-    ..._block_json__WEBPACK_IMPORTED_MODULE_4__
-}, settings);
+(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.registerBlockType)(_block_json__WEBPACK_IMPORTED_MODULE_4__.name, settings);
 /**
  * Make the Icon Block available to Navigation blocks.
  *

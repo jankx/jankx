@@ -16,7 +16,7 @@ import { Button } from '@wordpress/components';
  */
 import { parseIcon } from './../../utils';
 
-export default function IconGrid( props ) {
+export default function IconGrid( props: any ) {
 	const { shownIcons, iconSize, updateIconAtts, attributes } = props;
 
 	const noResults = (
@@ -31,7 +31,7 @@ export default function IconGrid( props ) {
 
 	const searchResults = (
 		<div className="icons-list">
-			{ shownIcons.map( ( icon ) => {
+			{ shownIcons.map( ( icon: any ) => {
 				let renderedIcon = icon.icon;
 
 				// Icons provided by third-parties are generally strings.

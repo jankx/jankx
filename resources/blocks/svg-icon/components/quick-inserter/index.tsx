@@ -18,7 +18,7 @@ import { Icon, blockDefault } from '@wordpress/icons';
 import getIcons from './../../icons';
 import { flattenIconsArray, parseIcon } from './../../utils';
 
-export default function QuickInserterPopover( props ) {
+export default function QuickInserterPopover( props: any ) {
 	const [ searchInput, setSearchInput ] = useState( '' );
 	const {
 		setInserterOpen,
@@ -31,7 +31,7 @@ export default function QuickInserterPopover( props ) {
 		return null;
 	}
 
-	function updateIconAtts( name, hasNoIconFill ) {
+	function updateIconAtts( name: any, hasNoIconFill: any ) {
 		setAttributes( {
 			icon: '',
 			iconName: name,
@@ -46,7 +46,7 @@ export default function QuickInserterPopover( props ) {
 	// Get the icons of the default type, if there is one. Otherwise, just pull
 	// from the first icon type.
 	const iconsOfDefaultType =
-		iconsByType.filter( ( t ) => t.isDefault )[ 0 ]?.icons ?? iconsAll;
+		(iconsByType as any).filter( ( t: any ) => t.isDefault )[ 0 ]?.icons ?? iconsAll;
 
 	let shownIcons = [];
 

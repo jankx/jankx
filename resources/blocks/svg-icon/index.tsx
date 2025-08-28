@@ -12,8 +12,8 @@ import Save from './save';
 import metadata from './block.json';
 import { bolt as icon } from './icons/bolt';
 
-const { name } = metadata;
 const settings = {
+	...metadata,
 	icon,
 	example: {
 		attributes: {
@@ -44,7 +44,7 @@ const settings = {
 /**
  * Register the Icon Block.
  */
-registerBlockType( { name, ...metadata }, settings );
+registerBlockType( metadata.name, settings as any );
 
 /**
  * Make the Icon Block available to Navigation blocks.
@@ -55,7 +55,7 @@ registerBlockType( { name, ...metadata }, settings );
  * @param {string} blockName     The name of the block being modified.
  * @return {Object} The modified settings for the Navigation block or the original settings for other blocks.
  */
-const addToNavigation = ( blockSettings, blockName ) => {
+const addToNavigation = ( blockSettings: any, blockName: string ) => {
 	if ( blockName === 'core/navigation' ) {
 		return {
 			...blockSettings,

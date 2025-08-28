@@ -14,16 +14,16 @@ import {
 	displayMessages,
 } from './../../utils';
 
-export default function IconDropZone( props ) {
+export default function IconDropZone( props: any ) {
 	const { attributes, setAttributes, mediaUpload, isSVGUploadAllowed } =
 		props;
 
-	function onDropFiles( filesList ) {
+	function onDropFiles( filesList: any ) {
 		if ( isSVGUploadAllowed ) {
 			mediaUpload( {
 				allowedTypes: [ 'image/svg+xml' ],
 				filesList,
-				onFileChange( [ image ] ) {
+				onFileChange( [ image as any ] ) {
 					if ( isBlobURL( image?.url ) ) {
 						return;
 					}

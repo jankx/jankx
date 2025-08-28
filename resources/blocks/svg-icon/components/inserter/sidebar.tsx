@@ -16,7 +16,7 @@ import { simplifyCategories } from '../../utils';
 
 const ALL_CATEGORY_PREFIX = 'all__';
 
-export default function Sidebar( props ) {
+export default function Sidebar( props: any ) {
 	const {
 		iconsByType,
 		currentCategory,
@@ -26,7 +26,7 @@ export default function Sidebar( props ) {
 	} = props;
 
 	const preparedTypes = useMemo( () => {
-		return iconsByType.map( ( type ) => {
+		return (iconsByType as any).map( ( type: any ) => {
 			const title = type?.title ?? type.type;
 			const categoriesFull = type?.categories ?? [];
 			const categories = simplifyCategories( categoriesFull );
@@ -52,7 +52,7 @@ export default function Sidebar( props ) {
 		} );
 	}, [ iconsByType ] );
 
-	function renderIconTypeCategories( type ) {
+	function renderIconTypeCategories( type: any ) {
 		return (
 			<MenuGroup
 				key={ `type-${ type.type }` }
