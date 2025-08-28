@@ -43,6 +43,9 @@ class GutenbergService
         $this->app = $app;
         $this->repository = $app->make('gutenberg.repository');
         $this->registerPatternCategories();
+
+        // Hook để enqueue assets
+        add_action('enqueue_block_editor_assets', [$this, 'enqueueAllBlockAssets']);
     }
 
     /**
@@ -155,6 +158,14 @@ class GutenbergService
             // Register default blocks first
             $this->registerDefaultBlocks();
 
+
+            // Fire action hook for plugins and child themes to register their blocks
+            do_action(
+                'jankx/gutenberg/register-blocks',
+                $this->repository,
+                $this->app
+            );
+
             // Register discovered blocks
             $instances = $this->repository->getInstances();
             $registeredCount = 0;
@@ -231,6 +242,9 @@ class GutenbergService
                     Log::error('GutenbergService: Failed to enqueue assets for block ' . $blockName . ' - ' . $e->getMessage());
                 }
             }
+
+            // Enqueue enhance blocks script
+            $this->enqueueEnhanceBlocksScript();
         } catch (\Exception $e) {
             Log::error('GutenbergService: Failed to enqueue block assets - ' . $e->getMessage());
             throw $e;
@@ -612,5 +626,233 @@ class GutenbergService
         $method = $reflection->getMethod('getTemplateData');
         $method->setAccessible(true);
         return $method->invoke($pattern);
+    }
+
+    // ========================================
+    // ENHANCE BLOCKS METHODS
+    // ========================================
+
+    /**
+     * Enqueue enhance blocks script for debugging and monitoring
+     *
+     * @return void
+     */
+    public function enqueueEnhanceBlocksScript()
+    {
+        // Chỉ enqueue trong editor
+        if (!is_admin() || !function_exists('get_current_screen')) {
+            return;
+        }
+
+        $screen = get_current_screen();
+        if (!$screen || !in_array($screen->id, ['post', 'page', 'post-new', 'post-edit'])) {
+            return;
+        }
+
+        $enhanceBlocksPath = get_template_directory() . '/resources/enhance-blocks/build/index.js';
+
+        // Kiểm tra file tồn tại
+        if (!file_exists($enhanceBlocksPath)) {
+            Log::warning('GutenbergService: Enhance blocks script not found at ' . $enhanceBlocksPath);
+            return;
+        }
+
+        // Enqueue enhance blocks script
+        wp_enqueue_script(
+            'jankx-enhance-blocks',
+            get_template_directory_uri() . '/resources/enhance-blocks/build/index.js',
+            ['wp-blocks', 'wp-dom-ready', 'wp-edit-post', 'wp-element', 'wp-components', 'wp-data'],
+            filemtime($enhanceBlocksPath),
+            true
+        );
+
+        // Localize script với data cần thiết
+        wp_localize_script('jankx-enhance-blocks', 'jankxEnhanceBlocks', [
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('jankx_enhance_blocks_nonce'),
+            'debug' => Environment::isDebugLog(),
+            'blocks' => $this->getBlocksMetadata(),
+            'patterns' => $this->getPatternStats(),
+        ]);
+
+        Log::info('GutenbergService: Enhance blocks script enqueued successfully');
+    }
+
+    /**
+     * Get enhance blocks configuration
+     *
+     * @return array
+     */
+    public function getEnhanceBlocksConfig(): array
+    {
+        return [
+            'enabled' => true,
+            'debug' => Environment::isDebugLog(),
+            'logLevel' => Environment::isDebugLog() ? 'debug' : 'info',
+            'monitoredBlocks' => [
+                'core' => $this->getCoreBlocksList(),
+                'custom' => $this->getCustomBlocksList(),
+            ],
+            'features' => [
+                'blockLogging' => true,
+                'coreBlockEnhancement' => true,
+                'customBlockEnhancement' => true,
+                'performanceMonitoring' => true,
+            ]
+        ];
+    }
+
+    /**
+     * Get list of core blocks to monitor
+     *
+     * @return array
+     */
+    protected function getCoreBlocksList(): array
+    {
+        return [
+            'core/paragraph',
+            'core/heading',
+            'core/image',
+            'core/gallery',
+            'core/list',
+            'core/quote',
+            'core/audio',
+            'core/cover',
+            'core/file',
+            'core/video',
+            'core/columns',
+            'core/column',
+            'core/group',
+            'core/buttons',
+            'core/button',
+            'core/media-text',
+            'core/spacer',
+            'core/separator',
+            'core/shortcode',
+            'core/html',
+            'core/preformatted',
+            'core/code',
+            'core/verse',
+            'core/table',
+            'core/pullquote',
+            'core/embed',
+            'core/social-links',
+            'core/social-link',
+            'core/navigation',
+            'core/navigation-link',
+            'core/navigation-submenu',
+            'core/site-logo',
+            'core/site-title',
+            'core/site-tagline',
+            'core/query',
+            'core/post-template',
+            'core/post-title',
+            'core/post-excerpt',
+            'core/post-featured-image',
+            'core/post-date',
+            'core/post-terms',
+            'core/post-navigation-link',
+            'core/read-more',
+            'core/query-pagination',
+            'core/query-pagination-numbers',
+            'core/query-pagination-previous',
+            'core/query-pagination-next',
+            'core/query-no-results',
+            'core/query-loop',
+            'core/term-description',
+            'core/archive-title',
+            'core/search',
+            'core/loginout',
+            'core/home-link',
+            'core/page-list',
+            'core/calendar',
+            'core/rss',
+            'core/tag-cloud',
+            'core/latest-posts',
+            'core/latest-comments',
+            'core/legacy-widget',
+            'core/widget-group',
+            'core/theme',
+            'core/comment-template',
+            'core/comment-title',
+            'core/comment-date',
+            'core/comment-content',
+            'core/comment-author-name',
+            'core/comment-author-avatar',
+            'core/comment-reply-link',
+            'core/comment-edit-link',
+            'core/comment',
+            'core/comments-pagination',
+            'core/comments-pagination-numbers',
+            'core/comments-pagination-previous',
+            'core/comments-pagination-next',
+            'core/comments-title',
+            'core/post-comments-form',
+            'core/avatar',
+            'core/block',
+            'core/template-part',
+            'core/pattern',
+        ];
+    }
+
+    /**
+     * Get list of custom blocks to monitor
+     *
+     * @return array
+     */
+    protected function getCustomBlocksList(): array
+    {
+        $customBlocks = [];
+        $instances = $this->getInstances();
+
+        foreach ($instances as $blockName => $block) {
+            if (method_exists($block, 'getBlockName')) {
+                $customBlocks[] = $block->getBlockName();
+            }
+        }
+
+        return $customBlocks;
+    }
+
+    /**
+     * Enable enhance blocks debugging
+     *
+     * @return void
+     */
+    public function enableEnhanceBlocksDebug()
+    {
+        if (!Environment::isDebugLog()) {
+            return;
+        }
+
+        // Add debug action hooks
+        add_action('wp_ajax_jankx_enhance_blocks_debug', [$this, 'handleEnhanceBlocksDebug']);
+        add_action('wp_ajax_nopriv_jankx_enhance_blocks_debug', [$this, 'handleEnhanceBlocksDebug']);
+
+        if (Environment::isDebugLog()) {
+            Log::info('GutenbergService: Enhance blocks debug mode enabled');
+        }
+    }
+
+    /**
+     * Handle enhance blocks debug AJAX request
+     *
+     * @return void
+     */
+    public function handleEnhanceBlocksDebug()
+    {
+        check_ajax_referer('jankx_enhance_blocks_nonce', 'nonce');
+
+        $response = [
+            'success' => true,
+            'data' => [
+                'config' => $this->getEnhanceBlocksConfig(),
+                'blocks' => $this->getBlocksMetadata(),
+                'patterns' => $this->getPatternStats(),
+                'timestamp' => current_time('mysql'),
+            ]
+        ];
+
+        wp_send_json($response);
     }
 }

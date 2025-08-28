@@ -11,6 +11,7 @@ use Jankx\Support\Providers\JankxAdminPagesServiceProvider;
 use Jankx\Support\Providers\JankxFrameworkServiceProvider;
 use Jankx\Support\Providers\SystemServiceProvider;
 use Jankx\Support\Providers\TranslationServiceProvider;
+use Jankx\Support\Providers\ModuleServiceProvider;
 
 class Application extends Container
 {
@@ -66,7 +67,8 @@ class Application extends Container
         TranslationServiceProvider::class,
         JankxFrameworkServiceProvider::class,
         ThemeOptionsServiceProvider::class,
-        JankxAdminPagesServiceProvider::class
+        JankxAdminPagesServiceProvider::class,
+        ModuleServiceProvider::class
     ];
 
     /**
