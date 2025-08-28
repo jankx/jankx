@@ -22,7 +22,7 @@ import {
     home,
     info,
     cog,
-    email,
+    envelope,
     plus,
     trash
 } from '@wordpress/icons';
@@ -109,7 +109,7 @@ function OffcanvasSidebarEdit({ attributes, setAttributes }: OffcanvasSidebarEdi
             home,
             info,
             cog,
-            email
+            envelope
         };
         return iconMap[iconName] || menu;
     };

@@ -20,7 +20,7 @@ import {
     home,
     info,
     cog,
-    email,
+    envelope,
     plus,
     trash
 } from '@wordpress/icons';
@@ -103,7 +103,7 @@ function OffcanvasTriggerEdit({ attributes, setAttributes }: OffcanvasTriggerEdi
             home,
             info,
             cog,
-            email
+            envelope
         };
         return iconMap[iconName] || menu;
     };
