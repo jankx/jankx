@@ -137,9 +137,7 @@ class GutenbergService
         $this->repository->registerBlock(OffcanvasTriggerBlock::class);
         $this->repository->registerBlock(CarouselBlock::class);
         $this->repository->registerBlock(SlideBlock::class);
-        $this->repository->registerBlock(ProductsCarouselBlock::class);
         $this->repository->registerBlock(LookbookRevealBlock::class);
-        $this->repository->registerBlock(ScatteredProductListBlock::class);
         $this->repository->registerBlock(CategoriesGridBlock::class);
         $this->repository->registerBlock(WplyrMediaBlock::class);
     }
