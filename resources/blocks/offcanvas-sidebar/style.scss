@@ -80,8 +80,7 @@
         z-index: 9999;
         transition: all 0.5s ease;
         transform: translateX(-100%);
-        overflow-y: auto;
-        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        overflow: auto;
         opacity: 0;
         visibility: hidden;
 
@@ -661,6 +660,41 @@
 
                          &:hover {
                              background: rgba(255, 255, 255, 0.2);
+                         }
+                     }
+
+                     // Reset nested sidebar content styles
+                     .sidebar-content {
+                         padding: 0;
+                         border-top: none;
+                         margin-top: 0;
+                         flex: none;
+                         overflow-y: visible;
+                         background: none;
+                         border: none;
+
+                         .wp-block {
+                             margin-bottom: 8px;
+
+                             &:last-child {
+                                 margin-bottom: 0;
+                             }
+                         }
+
+                         .wp-block-heading {
+                             margin-bottom: 8px;
+
+                             h1, h2, h3, h4, h5, h6 {
+                                 margin: 0 0 8px 0;
+                             }
+                         }
+
+                         .wp-block-paragraph {
+                             margin-bottom: 8px;
+
+                             &:last-child {
+                                 margin-bottom: 0;
+                             }
                          }
                      }
                  }
