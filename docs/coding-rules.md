@@ -1773,7 +1773,7 @@ added feature
 ```gitignore
 # ✅ Correct
 /vendor/
-/node_modules/
+/node_extensions/
 .DS_Store
 *.log
 .env

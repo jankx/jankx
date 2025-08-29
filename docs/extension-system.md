@@ -1,16 +1,16 @@
-# Hệ Thống Modules - Jankx Theme
+# Hệ Thống Extensions - Jankx Theme
 
 ## Tổng Quan
 
-Jankx theme sử dụng hệ thống modules để tổ chức và quản lý các tính năng một cách modular. Mỗi module là một đơn vị độc lập có thể được kích hoạt/vô hiệu hóa và có cấu trúc riêng biệt.
+Jankx theme sử dụng hệ thống extensions để tổ chức và quản lý các tính năng một cách modular. Mỗi extension là một đơn vị độc lập có thể được kích hoạt/vô hiệu hóa và có cấu trúc riêng biệt.
 
-## Cấu Trúc Module
+## Cấu Trúc Extension
 
-### 1. Thư Mục Module
+### 1. Thư Mục Extension
 ```
-includes/modules/
-├── module-name/
-│   ├── manifest.json          # Cấu hình module
+includes/extensions/
+├── extension-name/
+│   ├── manifest.json          # Cấu hình extension
 │   ├── includes/              # PHP classes
 │   ├── assets/                # CSS, JS, images
 │   ├── blocks/                # Gutenberg blocks
@@ -20,14 +20,14 @@ includes/modules/
 
 ### 2. File Manifest.json
 
-File `manifest.json` là trung tâm cấu hình của mỗi module, định nghĩa tất cả thông tin cần thiết:
+File `manifest.json` là trung tâm cấu hình của mỗi extension, định nghĩa tất cả thông tin cần thiết:
 
 ```json
 {
-    "module_id": "unique-module-id",
-    "name": "Module Display Name",
+    "extension_id": "unique-extension-id",
+    "name": "Extension Display Name",
     "version": "1.0.0",
-    "description": "Mô tả module",
+    "description": "Mô tả extension",
     "author": "Author Name",
     "license": "GPL v2 or later",
     "requires": "5.0",
@@ -41,8 +41,8 @@ File `manifest.json` là trung tâm cấu hình của mỗi module, định ngh�
 ### 1. Caller Configuration
 ```json
 "caller": {
-    "class": "Jankx\\Modules\\ModuleName\\ModuleClass",
-    "file": "includes/ModuleClass.php",
+    "class": "Jankx\\Extensions\\ExtensionName\\ExtensionClass",
+    "file": "includes/ExtensionClass.php",
     "method": "register_hooks",
     "args": [],
     "autoload": true,
@@ -55,7 +55,7 @@ File `manifest.json` là trung tâm cấu hình của mỗi module, định ngh�
 "blocks": [
     {
         "name": "namespace/block-name",
-        "class": "Jankx\\Modules\\ModuleName\\Blocks\\BlockClass",
+        "class": "Jankx\\Extensions\\ExtensionName\\Blocks\\BlockClass",
         "file": "includes/Blocks/BlockClass.php"
     }
 ]
@@ -84,17 +84,17 @@ File `manifest.json` là trung tâm cấu hình của mỗi module, định ngh�
 }
 ```
 
-## Ví Dụ Thực Tế: Formiflex Module
+## Ví Dụ Thực Tế: Formiflex Extension
 
-Dựa trên module Formiflex, đây là cách một module hoàn chỉnh được cấu hình:
+Dựa trên extension Formiflex, đây là cách một extension hoàn chỉnh được cấu hình:
 
 ### Manifest.json của Formiflex
 ```json
 {
-    "module_id": "formiflex",
+    "extension_id": "formiflex",
     "name": "Formiflex",
     "version": "1.0.0",
-    "description": "Advanced form builder module for Jankx theme with drag and drop interface",
+    "description": "Advanced form builder extension for Jankx theme with drag and drop interface",
     "author": "Jankx Team",
     "license": "GPL v2 or later",
     "requires": "5.0",
@@ -104,8 +104,8 @@ Dựa trên module Formiflex, đây là cách một module hoàn chỉnh đượ
         "jankx": "2.0.0"
     },
     "caller": {
-        "class": "Jankx\\Modules\\Formiflex\\FormiflexModule",
-        "file": "includes/FormiflexModule.php",
+        "class": "Jankx\\Extensions\\Formiflex\\FormiflexExtension",
+        "file": "includes/FormiflexExtension.php",
         "method": "register_hooks",
         "args": [],
         "autoload": true,
@@ -114,7 +114,7 @@ Dựa trên module Formiflex, đây là cách một module hoàn chỉnh đượ
     "blocks": [
         {
             "name": "formiflex/form",
-            "class": "Jankx\\Modules\\Formiflex\\Blocks\\FormiflexBlock",
+            "class": "Jankx\\Extensions\\Formiflex\\Blocks\\FormiflexBlock",
             "file": "includes/Blocks/FormiflexBlock.php"
         }
     ],
@@ -136,20 +136,20 @@ Dựa trên module Formiflex, đây là cách một module hoàn chỉnh đượ
 }
 ```
 
-## Cách Tạo Module Mới
+## Cách Tạo Extension Mới
 
 ### 1. Tạo Cấu Trúc Thư Mục
 ```bash
-mkdir -p includes/modules/your-module-name/{includes,assets/{css,js},blocks,templates,screenshots}
+mkdir -p includes/extensions/your-extension-name/{includes,assets/{css,js},blocks,templates,screenshots}
 ```
 
 ### 2. Tạo Manifest.json
 ```json
 {
-    "module_id": "your-module-name",
-    "name": "Your Module Name",
+    "extension_id": "your-extension-name",
+    "name": "Your Extension Name",
     "version": "1.0.0",
-    "description": "Mô tả module của bạn",
+    "description": "Mô tả extension của bạn",
     "author": "Your Name",
     "license": "GPL v2 or later",
     "requires": "5.0",
@@ -159,8 +159,8 @@ mkdir -p includes/modules/your-module-name/{includes,assets/{css,js},blocks,temp
         "jankx": "2.0.0"
     },
     "caller": {
-        "class": "Jankx\\Modules\\YourModule\\YourModuleClass",
-        "file": "includes/YourModuleClass.php",
+        "class": "Jankx\\Extensions\\YourExtension\\YourExtensionClass",
+        "file": "includes/YourExtensionClass.php",
         "method": "register_hooks",
         "args": [],
         "autoload": true,
@@ -181,23 +181,23 @@ mkdir -p includes/modules/your-module-name/{includes,assets/{css,js},blocks,temp
 }
 ```
 
-### 3. Tạo Main Module Class
+### 3. Tạo Main Extension Class
 ```php
 <?php
-namespace Jankx\Modules\YourModule;
+namespace Jankx\Extensions\YourExtension;
 
-use Jankx\Framework\Module\AbstractModule;
+use Jankx\Framework\Extension\AbstractExtension;
 
-class YourModuleClass extends AbstractModule
+class YourExtensionClass extends AbstractExtension
 {
     public function register_hooks()
     {
-        add_action('init', [$this, 'init_module']);
+        add_action('init', [$this, 'init_extension']);
     }
 
-    public function init_module()
+    public function init_extension()
     {
-        // Khởi tạo module
+        // Khởi tạo extension
     }
 }
 ```
@@ -205,10 +205,10 @@ class YourModuleClass extends AbstractModule
 ## Best Practices
 
 ### 1. Naming Convention
-- Module ID: lowercase, hyphens
+- Extension ID: lowercase, hyphens
 - Class names: PascalCase
 - File names: PascalCase.php
-- Namespace: `Jankx\Modules\ModuleName`
+- Namespace: `Jankx\Extensions\ExtensionName`
 
 ### 2. File Organization
 - Tách biệt admin và frontend assets
@@ -222,7 +222,7 @@ class YourModuleClass extends AbstractModule
 
 ## Kết Luận
 
-Hệ thống modules của Jankx theme cung cấp một cách tổ chức và quản lý code hiệu quả, cho phép:
+Hệ thống extensions của Jankx theme cung cấp một cách tổ chức và quản lý code hiệu quả, cho phép:
 - Phát triển tính năng độc lập
 - Dễ dàng maintain và update
 - Tái sử dụng code

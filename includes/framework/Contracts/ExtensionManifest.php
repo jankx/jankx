@@ -3,11 +3,11 @@
 namespace Jankx\Contracts;
 
 /**
- * Module Manifest Interface
+ * Extension Manifest Interface
  *
- * Contract cho module manifest trong Jankx framework
+ * Contract cho extension manifest trong Jankx framework
  */
-interface ModuleManifest
+interface ExtensionManifest
 {
     /**
      * Load manifest from file
@@ -41,29 +41,29 @@ interface ModuleManifest
     public function setData(array $data): void;
 
     /**
-     * Get module ID
+     * Get extension ID
      *
      * @return string
      */
-    public function getModuleId(): string;
+    public function getExtensionId(): string;
 
     /**
-     * Set module ID
+     * Set extension ID
      *
-     * @param string $moduleId
+     * @param string $extensionId
      * @return void
      */
-    public function setModuleId(string $moduleId): void;
+    public function setExtensionId(string $extensionId): void;
 
     /**
-     * Get module name
+     * Get extension name
      *
      * @return string
      */
     public function getName(): string;
 
     /**
-     * Set module name
+     * Set extension name
      *
      * @param string $name
      * @return void
@@ -71,14 +71,14 @@ interface ModuleManifest
     public function setName(string $name): void;
 
     /**
-     * Get module version
+     * Get extension version
      *
      * @return string
      */
     public function getVersion(): string;
 
     /**
-     * Set module version
+     * Set extension version
      *
      * @param string $version
      * @return void
@@ -86,14 +86,14 @@ interface ModuleManifest
     public function setVersion(string $version): void;
 
     /**
-     * Get module description
+     * Get extension description
      *
      * @return string
      */
     public function getDescription(): string;
 
     /**
-     * Set module description
+     * Set extension description
      *
      * @param string $description
      * @return void
@@ -101,14 +101,14 @@ interface ModuleManifest
     public function setDescription(string $description): void;
 
     /**
-     * Get module author
+     * Get extension author
      *
      * @return string
      */
     public function getAuthor(): string;
 
     /**
-     * Set module author
+     * Set extension author
      *
      * @param string $author
      * @return void
@@ -116,14 +116,14 @@ interface ModuleManifest
     public function setAuthor(string $author): void;
 
     /**
-     * Get module homepage
+     * Get extension homepage
      *
      * @return string
      */
     public function getHomepage(): string;
 
     /**
-     * Set module homepage
+     * Set extension homepage
      *
      * @param string $homepage
      * @return void
@@ -131,14 +131,14 @@ interface ModuleManifest
     public function setHomepage(string $homepage): void;
 
     /**
-     * Get module license
+     * Get extension license
      *
      * @return string
      */
     public function getLicense(): string;
 
     /**
-     * Set module license
+     * Set extension license
      *
      * @param string $license
      * @return void
@@ -146,14 +146,14 @@ interface ModuleManifest
     public function setLicense(string $license): void;
 
     /**
-     * Get module dependencies
+     * Get extension dependencies
      *
      * @return array
      */
     public function getDependencies(): array;
 
     /**
-     * Set module dependencies
+     * Set extension dependencies
      *
      * @param array $dependencies
      * @return void
@@ -161,14 +161,14 @@ interface ModuleManifest
     public function setDependencies(array $dependencies): void;
 
     /**
-     * Get module requirements
+     * Get extension requirements
      *
      * @return array
      */
     public function getRequirements(): array;
 
     /**
-     * Set module requirements
+     * Set extension requirements
      *
      * @param array $requirements
      * @return void
@@ -259,32 +259,32 @@ interface ModuleManifest
     /**
      * Compare version with another manifest
      *
-     * @param ModuleManifest $other
+     * @param ExtensionManifest $other
      * @return int
      */
-    public function compareVersion(ModuleManifest $other): int;
+    public function compareVersion(ExtensionManifest $other): int;
 
     /**
      * Check if this manifest is newer than another
      *
-     * @param ModuleManifest $other
+     * @param ExtensionManifest $other
      * @return bool
      */
-    public function isNewerThan(ModuleManifest $other): bool;
+    public function isNewerThan(ExtensionManifest $other): bool;
 
     /**
      * Check if this manifest is older than another
      *
-     * @param ModuleManifest $other
+     * @param ExtensionManifest $other
      * @return bool
      */
-    public function isOlderThan(ModuleManifest $other): bool;
+    public function isOlderThan(ExtensionManifest $other): bool;
 
     /**
      * Check if this manifest is compatible with another
      *
-     * @param ModuleManifest $other
+     * @param ExtensionManifest $other
      * @return bool
      */
-    public function isCompatibleWith(ModuleManifest $other): bool;
+    public function isCompatibleWith(ExtensionManifest $other): bool;
 }

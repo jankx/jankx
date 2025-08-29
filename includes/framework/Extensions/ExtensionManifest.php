@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Module Manifest for Jankx Theme Framework
+ * Extension Manifest for Jankx Theme Framework
  *
- * @package Jankx\Framework\Modules
+ * @package Jankx\Framework\Extensions
  */
 
-namespace Jankx\Modules;
+namespace Jankx\Extensions;
 
-class ModuleManifest implements \Jankx\Contracts\ModuleManifest
+class ExtensionManifest implements \Jankx\Contracts\ExtensionManifest
 {
     protected $name;
     protected $version;
@@ -105,7 +105,7 @@ class ModuleManifest implements \Jankx\Contracts\ModuleManifest
     }
 
     /**
-     * Check if module needs update
+     * Check if extension needs update
      */
     public function needs_update($current_version)
     {
@@ -113,7 +113,7 @@ class ModuleManifest implements \Jankx\Contracts\ModuleManifest
     }
 
     /**
-     * Check if module is compatible with current WordPress version
+     * Check if extension is compatible with current WordPress version
      */
     public function is_compatible_with_wp($wp_version)
     {
@@ -125,7 +125,7 @@ class ModuleManifest implements \Jankx\Contracts\ModuleManifest
     }
 
     /**
-     * Check if module is compatible with current PHP version
+     * Check if extension is compatible with current PHP version
      */
     public function is_compatible_with_php($php_version)
     {
@@ -264,7 +264,7 @@ class ModuleManifest implements \Jankx\Contracts\ModuleManifest
     public function getData(): array
     {
         return [
-            'module_id' => $this->module_id,
+            'extension_id' => $this->extension_id,
             'name' => $this->name,
             'version' => $this->version,
             'description' => $this->description,
@@ -289,14 +289,14 @@ class ModuleManifest implements \Jankx\Contracts\ModuleManifest
         }
     }
 
-    public function getModuleId(): string
+    public function getExtensionId(): string
     {
-        return $this->module_id ?? '';
+        return $this->extension_id ?? '';
     }
 
-    public function setModuleId(string $moduleId): void
+    public function setExtensionId(string $extensionId): void
     {
-        $this->module_id = $moduleId;
+        $this->extension_id = $extensionId;
     }
 
     public function getName(): string
@@ -442,22 +442,22 @@ class ModuleManifest implements \Jankx\Contracts\ModuleManifest
         return $this->validate();
     }
 
-    public function compareVersion(\Jankx\Contracts\ModuleManifest $other): int
+    public function compareVersion(\Jankx\Contracts\ExtensionManifest $other): int
     {
         return version_compare($this->getVersion(), $other->getVersion());
     }
 
-    public function isNewerThan(\Jankx\Contracts\ModuleManifest $other): bool
+    public function isNewerThan(\Jankx\Contracts\ExtensionManifest $other): bool
     {
         return $this->compareVersion($other) > 0;
     }
 
-    public function isOlderThan(\Jankx\Contracts\ModuleManifest $other): bool
+    public function isOlderThan(\Jankx\Contracts\ExtensionManifest $other): bool
     {
         return $this->compareVersion($other) < 0;
     }
 
-    public function isCompatibleWith(\Jankx\Contracts\ModuleManifest $other): bool
+    public function isCompatibleWith(\Jankx\Contracts\ExtensionManifest $other): bool
     {
         // TODO: Implement compatibility check logic
         return true;

@@ -3,14 +3,14 @@
 namespace Jankx\Contracts;
 
 /**
- * Module Interface
+ * Extension Interface
  *
- * Contract cho tất cả modules trong Jankx framework
+ * Contract cho tất cả extensions trong Jankx framework
  */
-interface Module
+interface Extension
 {
     /**
-     * Initialize module
+     * Initialize extension
      *
      * @return void
      */
@@ -24,62 +24,62 @@ interface Module
     public function register_hooks(): void;
 
     /**
-     * Check if module is active
+     * Check if extension is active
      *
      * @return bool
      */
     public function is_active(): bool;
 
     /**
-     * Check module dependencies
+     * Check extension dependencies
      *
      * @return bool
      */
     public function check_dependencies(): bool;
 
     /**
-     * Get module information
+     * Get extension information
      *
      * @return array
      */
     public function get_info(): array;
 
     /**
-     * Get module name
+     * Get extension name
      *
      * @return string
      */
-    public function get_module_name(): string;
+    public function get_extension_name(): string;
 
     /**
-     * Get module path
+     * Get extension path
      *
      * @return string
      */
-    public function get_module_path(): string;
+    public function get_extension_path(): string;
 
     /**
-     * Get module URL
+     * Get extension URL
      *
      * @return string
      */
-    public function get_module_url(): string;
+    public function get_extension_url(): string;
 
     /**
-     * Set module path
+     * Set extension path
      *
      * @param string $path
      * @return void
      */
-    public function set_module_path(string $path): void;
+    public function set_extension_path(string $path): void;
 
     /**
-     * Set module URL
+     * Set extension URL
      *
      * @param string $url
      * @return void
      */
-    public function set_module_url(string $url): void;
+    public function set_extension_url(string $url): void;
 
     /**
      * Get manifest data
@@ -97,7 +97,7 @@ interface Module
     public function set_manifest_data(array $data): void;
 
     /**
-     * Get module setting
+     * Get extension setting
      *
      * @param string $key
      * @param mixed $default
@@ -106,7 +106,7 @@ interface Module
     public function get_setting(string $key, $default = null);
 
     /**
-     * Set module setting
+     * Set extension setting
      *
      * @param string $key
      * @param mixed $value
@@ -115,14 +115,14 @@ interface Module
     public function set_setting(string $key, $value): void;
 
     /**
-     * Get all module settings
+     * Get all extension settings
      *
      * @return array
      */
     public function get_settings(): array;
 
     /**
-     * Set multiple module settings
+     * Set multiple extension settings
      *
      * @param array $settings
      * @return void
@@ -130,63 +130,63 @@ interface Module
     public function set_settings(array $settings): void;
 
     /**
-     * Activate module
+     * Activate extension
      *
      * @return bool
      */
     public function activate(): bool;
 
     /**
-     * Deactivate module
+     * Deactivate extension
      *
      * @return bool
      */
     public function deactivate(): bool;
 
     /**
-     * Install module
+     * Install extension
      *
      * @return bool
      */
     public function install(): bool;
 
     /**
-     * Uninstall module
+     * Uninstall extension
      *
      * @return bool
      */
     public function uninstall(): bool;
 
     /**
-     * Get module version
+     * Get extension version
      *
      * @return string
      */
     public function get_version(): string;
 
     /**
-     * Check if module has update
+     * Check if extension has update
      *
      * @return bool
      */
     public function has_update(): bool;
 
     /**
-     * Get module dependencies
+     * Get extension dependencies
      *
      * @return array
      */
     public function get_dependencies(): array;
 
     /**
-     * Get module requirements
+     * Get extension requirements
      *
      * @return array
      */
     public function get_requirements(): array;
 
     /**
-     * Validate module
+     * Validate extension
      *
      * @return bool
      */

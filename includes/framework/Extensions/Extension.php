@@ -1,25 +1,25 @@
 <?php
 
 /**
- * Base Module Class for Jankx Theme Framework
+ * Base Extension Class for Jankx Theme Framework
  *
- * @package Jankx\Framework\Modules
+ * @package Jankx\Framework\Extensions
  */
 
-namespace Jankx\Modules;
+namespace Jankx\Extensions;
 
 use Jankx\Facades\App;
 
-abstract class Module implements \Jankx\Contracts\Module
+abstract class Extension implements \Jankx\Contracts\Extension
 {
     protected $name;
     protected $version;
     protected $description;
     protected $author;
-    protected $module_path;
-    protected $module_url;
+    protected $extension_path;
+    protected $extension_url;
     protected $is_active = true;
-    protected $is_child_theme_module = false;
+    protected $is_child_theme_extension = false;
     protected $manifest_data = [];
     public function __construct()
     {
@@ -28,7 +28,7 @@ abstract class Module implements \Jankx\Contracts\Module
     }
 
     /**
-     * Initialize the module
+     * Initialize the extension
      */
     abstract public function init(): void;
     /**
@@ -36,7 +36,7 @@ abstract class Module implements \Jankx\Contracts\Module
      */
     abstract public function register_hooks(): void;
     /**
-     * Get module information
+     * Get extension information
      */
     public function get_info(): array
     {
@@ -45,15 +45,15 @@ abstract class Module implements \Jankx\Contracts\Module
             'version' => $this->version,
             'description' => $this->description,
             'author' => $this->author,
-            'path' => $this->module_path,
-            'url' => $this->module_url,
+            'path' => $this->extension_path,
+            'url' => $this->extension_url,
             'active' => $this->is_active,
-            'is_child_theme_module' => $this->is_child_theme_module,
+            'is_child_theme_extension' => $this->is_child_theme_extension,
         ];
     }
 
     /**
-     * Check if module is active
+     * Check if extension is active
      */
     public function is_active(): bool
     {
@@ -61,71 +61,71 @@ abstract class Module implements \Jankx\Contracts\Module
     }
 
     /**
-     * Activate module
+     * Activate extension
      */
     public function activate(): bool
     {
         $this->is_active = true;
-        do_action('jankx/module/activated', $this->name);
+        do_action('jankx/extension/activated', $this->name);
         return true;
     }
 
     /**
-     * Deactivate module
+     * Deactivate extension
      */
     public function deactivate(): bool
     {
         $this->is_active = false;
-        do_action('jankx/module/deactivated', $this->name);
+        do_action('jankx/extension/deactivated', $this->name);
         return true;
     }
 
     /**
-     * Get module assets path
+     * Get extension assets path
      */
     protected function get_assets_path(): string
     {
-        return $this->module_path . '/assets';
+        return $this->extension_path . '/assets';
     }
 
     /**
-     * Get module assets URL
+     * Get extension assets URL
      */
     protected function get_assets_url(): string
     {
-        return $this->module_url . '/assets';
+        return $this->extension_url . '/assets';
     }
 
     /**
-     * Check if module is from child theme
+     * Check if extension is from child theme
      */
-    public function is_child_theme_module(): bool
+    public function is_child_theme_extension(): bool
     {
-        return $this->is_child_theme_module;
+        return $this->is_child_theme_extension;
     }
 
     /**
-     * Set child theme module flag
+     * Set child theme extension flag
      */
-    protected function set_child_theme_module($is_child = true)
+    protected function set_child_theme_extension($is_child = true)
     {
-        $this->is_child_theme_module = $is_child;
+        $this->is_child_theme_extension = $is_child;
     }
 
     /**
-     * Set module path
+     * Set extension path
      */
-    public function set_module_path(string $path): void
+    public function set_extension_path(string $path): void
     {
-        $this->module_path = $path;
+        $this->extension_path = $path;
     }
 
     /**
-     * Set module URL
+     * Set extension URL
      */
-    public function set_module_url(string $url): void
+    public function set_extension_url(string $url): void
     {
-        $this->module_url = $url;
+        $this->extension_url = $url;
     }
 
     /**
@@ -134,7 +134,7 @@ abstract class Module implements \Jankx\Contracts\Module
     public function set_manifest_data(array $data): void
     {
         $this->manifest_data = $data;
-// Update module properties from manifest
+// Update extension properties from manifest
         if (isset($data['name'])) {
             $this->name = $data['name'];
         }
@@ -190,49 +190,49 @@ abstract class Module implements \Jankx\Contracts\Module
     }
 
     /**
-     * Get user setting for this module
+     * Get user setting for this extension
      */
     public function get_setting(string $key, $default = null)
     {
-        $moduleService = App::make('module.service');
-        $moduleName = $this->get_module_name();
-        return $moduleService->getModuleSetting($moduleName, $key, $default);
+        $extensionService = App::make('extension.service');
+        $extensionName = $this->get_extension_name();
+        return $extensionService->getExtensionSetting($extensionName, $key, $default);
     }
 
     /**
-     * Set user setting for this module
+     * Set user setting for this extension
      */
     public function set_setting(string $key, $value): void
     {
-        $moduleService = App::make('module.service');
-        $moduleName = $this->get_module_name();
-        $moduleService->setModuleSetting($moduleName, $key, $value);
+        $extensionService = App::make('extension.service');
+        $extensionName = $this->get_extension_name();
+        $extensionService->setExtensionSetting($extensionName, $key, $value);
     }
 
     /**
-     * Get all user settings for this module
+     * Get all user settings for this extension
      */
     public function get_settings(): array
     {
-        $moduleService = App::make('module.service');
-        $moduleName = $this->get_module_name();
-        return $moduleService->getModuleSettings($moduleName);
+        $extensionService = App::make('extension.service');
+        $extensionName = $this->get_extension_name();
+        return $extensionService->getExtensionSettings($extensionName);
     }
 
     /**
-     * Set multiple user settings for this module
+     * Set multiple user settings for this extension
      */
     public function set_settings(array $settings): void
     {
-        $moduleService = App::make('module.service');
-        $moduleName = $this->get_module_name();
-        $moduleService->setModuleSettings($moduleName, $settings);
+        $extensionService = App::make('extension.service');
+        $extensionName = $this->get_extension_name();
+        $extensionService->setExtensionSettings($extensionName, $settings);
     }
 
     /**
-     * Get module name (for settings)
+     * Get extension name (for settings)
      */
-    public function get_module_name(): string
+    public function get_extension_name(): string
     {
         // Try to get from manifest first
         if (isset($this->manifest_data['name'])) {
@@ -242,29 +242,29 @@ abstract class Module implements \Jankx\Contracts\Module
         // Fallback to class name
         $className = get_class($this);
         $parts = explode('\\', $className);
-        $moduleName = end($parts);
-// Remove "Module" suffix
-        return strtolower(str_replace('Module', '', $moduleName));
+        $extensionName = end($parts);
+// Remove "Extension" suffix
+        return strtolower(str_replace('Extension', '', $extensionName));
     }
 
     /**
-     * Get module blocks path
+     * Get extension blocks path
      */
     protected function get_blocks_path()
     {
-        return $this->module_path . '/blocks';
+        return $this->extension_path . '/blocks';
     }
 
     /**
-     * Get module blocks URL
+     * Get extension blocks URL
      */
     protected function get_blocks_url()
     {
-        return $this->module_url . '/blocks';
+        return $this->extension_url . '/blocks';
     }
 
     /**
-     * Enqueue module assets
+     * Enqueue extension assets
      */
     protected function enqueue_assets()
     {
@@ -280,7 +280,7 @@ abstract class Module implements \Jankx\Contracts\Module
     }
 
     /**
-     * Get module dependencies
+     * Get extension dependencies
      */
     public function get_dependencies(): array
     {
@@ -288,7 +288,7 @@ abstract class Module implements \Jankx\Contracts\Module
     }
 
     /**
-     * Check if module dependencies are met
+     * Check if extension dependencies are met
      */
     public function check_dependencies(): bool
     {
@@ -303,22 +303,22 @@ abstract class Module implements \Jankx\Contracts\Module
     }
 
     /**
-     * Install module
+     * Install extension
      */
     public function install(): bool
     {
         // Override in child classes if needed
-        do_action('jankx/module/installed', $this->name);
+        do_action('jankx/extension/installed', $this->name);
         return true;
     }
 
     /**
-     * Uninstall module
+     * Uninstall extension
      */
     public function uninstall(): bool
     {
         // Override in child classes if needed
-        do_action('jankx/module/uninstalled', $this->name);
+        do_action('jankx/extension/uninstalled', $this->name);
         return true;
     }
 }

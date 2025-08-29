@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Module Manager Admin Page View
+ * Extension Manager Admin Page View
  *
- * @package Jankx\Framework\Modules
+ * @package Jankx\Framework\Extensions
  */
 
 // Prevent direct access
@@ -15,44 +15,44 @@ if (!defined('ABSPATH')) {
 <div class="wrap">
     <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
 
-    <div class="jankx-module-manager">
+    <div class="jankx-extension-manager">
         <!-- Statistics -->
-        <div class="jankx-module-stats">
-            <h2>Module Statistics</h2>
+        <div class="jankx-extension-stats">
+            <h2>Extension Statistics</h2>
             <div class="stats-grid">
                 <div class="stat-item">
                     <span class="stat-number"><?php echo esc_html($stats['total']); ?></span>
-                    <span class="stat-label">Total Modules</span>
+                    <span class="stat-label">Total Extensions</span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-number"><?php echo esc_html($stats['active']); ?></span>
-                    <span class="stat-label">Active Modules</span>
+                    <span class="stat-label">Active Extensions</span>
                 </div>
                                  <div class="stat-item">
                      <span class="stat-number"><?php echo esc_html($stats['inactive']); ?></span>
-                     <span class="stat-label">Inactive Modules</span>
+                     <span class="stat-label">Inactive Extensions</span>
                  </div>
                  <div class="stat-item">
                      <span class="stat-number"><?php echo esc_html($stats['unique_ids']); ?></span>
-                     <span class="stat-label">Unique Module IDs</span>
+                     <span class="stat-label">Unique Extension IDs</span>
                  </div>
             </div>
         </div>
 
-        <!-- Module List -->
-        <div class="jankx-module-list">
-            <h2>Module Management</h2>
+        <!-- Extension List -->
+        <div class="jankx-extension-list">
+            <h2>Extension Management</h2>
 
-            <?php if (empty($modules)) :
+            <?php if (empty($extensions)) :
                 ?>
-                <p>No modules found.</p>
+                <p>No extensions found.</p>
                 <?php
             else :
                 ?>
                 <table class="wp-list-table widefat fixed striped">
                     <thead>
                         <tr>
-                            <th>Module</th>
+                            <th>Extension</th>
                             <th>Version</th>
                             <th>Description</th>
                             <th>Status</th>
@@ -60,45 +60,45 @@ if (!defined('ABSPATH')) {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($modules as $moduleName => $module) :
-                            $moduleInfo = $module->get_info();
-                            $status = $module->is_active() ? 'active' : 'inactive';
+                        <?php foreach ($extensions as $extensionName => $extension) :
+                            $extensionInfo = $extension->get_info();
+                            $status = $extension->is_active() ? 'active' : 'inactive';
                             ?>
                             <tr>
                                                                  <td>
-                                     <strong><?php echo esc_html($moduleInfo['name']); ?></strong>
-                                     <?php if ($moduleInfo['is_child_theme_module']) :
+                                     <strong><?php echo esc_html($extensionInfo['name']); ?></strong>
+                                     <?php if ($extensionInfo['is_child_theme_extension']) :
                                             ?>
                                          <span class="child-theme-badge">Child Theme</span>
                                             <?php
                                      endif; ?>
                                      <br>
-                                     <small class="module-id">ID: <?php echo esc_html($module->get_manifest_data()['module_id'] ?? $moduleName); ?></small>
+                                     <small class="extension-id">ID: <?php echo esc_html($extension->get_manifest_data()['extension_id'] ?? $extensionName); ?></small>
                                  </td>
-                                <td><?php echo esc_html($moduleInfo['version']); ?></td>
-                                <td><?php echo esc_html($moduleInfo['description']); ?></td>
+                                <td><?php echo esc_html($extensionInfo['version']); ?></td>
+                                <td><?php echo esc_html($extensionInfo['description']); ?></td>
                                 <td>
-                                    <span class="module-status module-status-<?php echo esc_attr($status); ?>">
+                                    <span class="extension-status extension-status-<?php echo esc_attr($status); ?>">
                                         <?php echo esc_html(ucfirst($status)); ?>
                                     </span>
                                 </td>
                                 <td>
                                     <button
-                                        class="button toggle-module"
-                                        data-module="<?php echo esc_attr($moduleName); ?>"
+                                        class="button toggle-extension"
+                                        data-extension="<?php echo esc_attr($extensionName); ?>"
                                         data-status="<?php echo esc_attr($status); ?>"
                                     >
                                         <?php echo $status === 'active' ? 'Disable' : 'Enable'; ?>
                                     </button>
 
-                                                                         <?php if (method_exists($module, 'get_manifest_data')) :
-                                                                                $manifest = $module->get_manifest_data();
+                                                                         <?php if (method_exists($extension, 'get_manifest_data')) :
+                                                                                $manifest = $extension->get_manifest_data();
                                                                                 if ($manifest) :
                                                                                     ?>
-                                         <button class="button view-details" data-module="<?php echo esc_attr($moduleName); ?>">
+                                         <button class="button view-details" data-extension="<?php echo esc_attr($extensionName); ?>">
                                              Manifest
                                          </button>
-                                         <button class="button view-settings" data-module="<?php echo esc_attr($moduleName); ?>">
+                                         <button class="button view-settings" data-extension="<?php echo esc_attr($extensionName); ?>">
                                              Settings
                                          </button>
                                                                                     <?php
@@ -114,33 +114,33 @@ if (!defined('ABSPATH')) {
             endif; ?>
         </div>
 
-                 <!-- Module Manifest Modal -->
-         <div id="module-manifest-modal" class="jankx-modal" style="display: none;">
+                 <!-- Extension Manifest Modal -->
+         <div id="extension-manifest-modal" class="jankx-modal" style="display: none;">
              <div class="jankx-modal-content">
                  <span class="jankx-modal-close">&times;</span>
-                                   <h3>Module Manifest (Developer Configuration)</h3>
+                                   <h3>Extension Manifest (Developer Configuration)</h3>
                   <p><em>⚠️ This is developer configuration, do not modify manually</em></p>
-                 <div id="module-manifest-content"></div>
+                 <div id="extension-manifest-content"></div>
              </div>
          </div>
 
-         <!-- Module Settings Modal -->
-         <div id="module-settings-modal" class="jankx-modal" style="display: none;">
+         <!-- Extension Settings Modal -->
+         <div id="extension-settings-modal" class="jankx-modal" style="display: none;">
              <div class="jankx-modal-content">
                  <span class="jankx-modal-close">&times;</span>
-                 <h3>Module Settings (User Configuration)</h3>
-                 <div id="module-settings-content"></div>
+                 <h3>Extension Settings (User Configuration)</h3>
+                 <div id="extension-settings-content"></div>
              </div>
          </div>
     </div>
 </div>
 
 <style>
-.jankx-module-manager {
+.jankx-extension-manager {
     margin-top: 20px;
 }
 
-.jankx-module-stats {
+.jankx-extension-stats {
     background: #fff;
     padding: 20px;
     border: 1px solid #ccd0d4;
@@ -175,7 +175,7 @@ if (!defined('ABSPATH')) {
     color: #666;
 }
 
-.jankx-module-list {
+.jankx-extension-list {
     background: #fff;
     padding: 20px;
     border: 1px solid #ccd0d4;
@@ -191,19 +191,19 @@ if (!defined('ABSPATH')) {
     margin-left: 5px;
 }
 
-.module-status {
+.extension-status {
     padding: 4px 8px;
     border-radius: 3px;
     font-size: 12px;
     font-weight: 500;
 }
 
-.module-status-active {
+.extension-status-active {
     background: #d4edda;
     color: #155724;
 }
 
-.module-status-inactive {
+.extension-status-inactive {
     background: #f8d7da;
     color: #721c24;
 }
@@ -246,7 +246,7 @@ if (!defined('ABSPATH')) {
      margin-left: 5px;
  }
 
- .module-settings-form {
+ .extension-settings-form {
      margin-top: 15px;
  }
 
@@ -267,11 +267,11 @@ if (!defined('ABSPATH')) {
      max-width: 300px;
  }
 
- .module-settings-form .button {
+ .extension-settings-form .button {
      margin-top: 15px;
  }
 
- .module-id {
+ .extension-id {
      color: #666;
      font-style: italic;
  }
@@ -279,21 +279,21 @@ if (!defined('ABSPATH')) {
 
 <script>
 jQuery(document).ready(function($) {
-    // Toggle module
-    $('.toggle-module').on('click', function() {
+    // Toggle extension
+    $('.toggle-extension').on('click', function() {
         var button = $(this);
-        var module = button.data('module');
+        var extension = button.data('extension');
         var currentStatus = button.data('status');
 
         button.prop('disabled', true).text('Processing...');
 
         $.ajax({
-            url: jankxModuleManager.ajaxUrl,
+            url: jankxExtensionManager.ajaxUrl,
             type: 'POST',
             data: {
-                action: 'jankx_toggle_module',
-                module: module,
-                nonce: jankxModuleManager.nonce
+                action: 'jankx_toggle_extension',
+                extension: extension,
+                nonce: jankxExtensionManager.nonce
             },
             success: function(response) {
                 if (response.success) {
@@ -303,13 +303,13 @@ jQuery(document).ready(function($) {
                     button.text(newStatus === 'enabled' ? 'Disable' : 'Enable');
 
                     // Update status cell
-                    var statusCell = button.closest('tr').find('.module-status');
-                    statusCell.removeClass('module-status-active module-status-inactive')
-                             .addClass('module-status-' + newStatus)
+                    var statusCell = button.closest('tr').find('.extension-status');
+                    statusCell.removeClass('extension-status-active extension-status-inactive')
+                             .addClass('extension-status-' + newStatus)
                              .text(newStatus.charAt(0).toUpperCase() + newStatus.slice(1));
 
                     // Show success message
-                    alert('Module toggled successfully!');
+                    alert('Extension toggled successfully!');
                 } else {
                     alert('Error: ' + response.data);
                 }
@@ -323,57 +323,57 @@ jQuery(document).ready(function($) {
         });
     });
 
-         // Module manifest modal
+         // Extension manifest modal
      $('.view-details').on('click', function() {
-         var module = $(this).data('module');
-         $('#module-manifest-content').html('<p>Loading module manifest...</p>');
-         $('#module-manifest-modal').show();
+         var extension = $(this).data('extension');
+         $('#extension-manifest-content').html('<p>Loading extension manifest...</p>');
+         $('#extension-manifest-modal').show();
 
-         // Load module manifest via AJAX
+         // Load extension manifest via AJAX
          $.ajax({
-             url: jankxModuleManager.ajaxUrl,
+             url: jankxExtensionManager.ajaxUrl,
              type: 'POST',
              data: {
-                 action: 'jankx_get_module_manifest',
-                 module: module,
-                 nonce: jankxModuleManager.nonce
+                 action: 'jankx_get_extension_manifest',
+                 extension: extension,
+                 nonce: jankxExtensionManager.nonce
              },
              success: function(response) {
                  if (response.success) {
-                     $('#module-manifest-content').html('<pre>' + JSON.stringify(response.data, null, 2) + '</pre>');
+                     $('#extension-manifest-content').html('<pre>' + JSON.stringify(response.data, null, 2) + '</pre>');
                  } else {
-                     $('#module-manifest-content').html('<p>Error loading manifest: ' + response.data + '</p>');
+                     $('#extension-manifest-content').html('<p>Error loading manifest: ' + response.data + '</p>');
                  }
              },
              error: function() {
-                 $('#module-manifest-content').html('<p>Error loading manifest</p>');
+                 $('#extension-manifest-content').html('<p>Error loading manifest</p>');
              }
          });
      });
 
-     // Module settings modal
+     // Extension settings modal
      $('.view-settings').on('click', function() {
-         var module = $(this).data('module');
-         $('#module-settings-content').html('<p>Loading module settings...</p>');
-         $('#module-settings-modal').show();
+         var extension = $(this).data('extension');
+         $('#extension-settings-content').html('<p>Loading extension settings...</p>');
+         $('#extension-settings-modal').show();
 
-         // Load module settings via AJAX
+         // Load extension settings via AJAX
          $.ajax({
-             url: jankxModuleManager.ajaxUrl,
+             url: jankxExtensionManager.ajaxUrl,
              type: 'POST',
              data: {
-                 action: 'jankx_get_module_settings',
-                 module: module,
-                 nonce: jankxModuleManager.nonce
+                 action: 'jankx_get_extension_settings',
+                 extension: extension,
+                 nonce: jankxExtensionManager.nonce
              },
              success: function(response) {
                  if (response.success) {
-                     var settingsHtml = '<div class="module-settings-form">';
+                     var settingsHtml = '<div class="extension-settings-form">';
                      if (Object.keys(response.data).length === 0) {
-                         settingsHtml += '<p>No user settings configured for this module.</p>';
+                         settingsHtml += '<p>No user settings configured for this extension.</p>';
                      } else {
-                         settingsHtml += '<form id="module-settings-form">';
-                         settingsHtml += '<input type="hidden" name="module" value="' + module + '">';
+                         settingsHtml += '<form id="extension-settings-form">';
+                         settingsHtml += '<input type="hidden" name="extension" value="' + extension + '">';
 
                          $.each(response.data, function(key, value) {
                              settingsHtml += '<div class="setting-row">';
@@ -387,13 +387,13 @@ jQuery(document).ready(function($) {
                      }
                      settingsHtml += '</div>';
 
-                     $('#module-settings-content').html(settingsHtml);
+                     $('#extension-settings-content').html(settingsHtml);
                  } else {
-                     $('#module-settings-content').html('<p>Error loading settings: ' + response.data + '</p>');
+                     $('#extension-settings-content').html('<p>Error loading settings: ' + response.data + '</p>');
                  }
              },
              error: function() {
-                 $('#module-settings-content').html('<p>Error loading settings</p>');
+                 $('#extension-settings-content').html('<p>Error loading settings</p>');
              }
          });
      });
@@ -411,20 +411,20 @@ jQuery(document).ready(function($) {
      });
 
      // Handle settings form submission
-     $(document).on('submit', '#module-settings-form', function(e) {
+     $(document).on('submit', '#extension-settings-form', function(e) {
          e.preventDefault();
 
          var formData = $(this).serialize();
-         formData += '&action=jankx_save_module_settings&nonce=' + jankxModuleManager.nonce;
+         formData += '&action=jankx_save_extension_settings&nonce=' + jankxExtensionManager.nonce;
 
          $.ajax({
-             url: jankxModuleManager.ajaxUrl,
+             url: jankxExtensionManager.ajaxUrl,
              type: 'POST',
              data: formData,
              success: function(response) {
                  if (response.success) {
                      alert('Settings saved successfully!');
-                     $('#module-settings-modal').hide();
+                     $('#extension-settings-modal').hide();
                  } else {
                      alert('Error saving settings: ' + response.data);
                  }
