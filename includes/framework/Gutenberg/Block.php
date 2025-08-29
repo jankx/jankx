@@ -286,15 +286,8 @@ abstract class Block
             );
         }
 
-        // Enqueue style if available
-        if ($assetData['style']) {
-            wp_enqueue_style(
-                $this->name . '-style',
-                $assetData['style']['url'],
-                [],
-                $assetData['style']['version']
-            );
-        }
+        // CSS is handled automatically by block.json
+        // No manual CSS enqueue to avoid iframe warnings
     }
 
     /**
@@ -400,7 +393,7 @@ abstract class Block
 
         // Add hooks to enqueue assets at the right time
         add_action('wp_enqueue_scripts', [$this, 'enqueueBlockAssets']);
-        add_action('admin_enqueue_scripts', [$this, 'enqueueBlockAssets']);
+        add_action('enqueue_block_assets', [$this, 'enqueueBlockAssets']);
     }
 
     protected function getBlockMetadataUrls($blockPath, $metadata)
@@ -513,8 +506,8 @@ abstract class Block
                 }
             }
 
-            // Admin assets (admin_enqueue_scripts)
-            if (is_admin()) {
+            // Admin assets (enqueue_block_assets)
+            if (is_admin() && function_exists('get_current_screen') && get_current_screen() && get_current_screen()->is_block_editor) {
                 // Enqueue editor script
                 $scriptPath = $buildPath . '/index.js';
                 if (file_exists($scriptPath)) {
@@ -527,16 +520,8 @@ abstract class Block
                     );
                 }
 
-                // Enqueue editor style
-                $editorStylePath = $buildPath . '/editor.css';
-                if (file_exists($editorStylePath)) {
-                    wp_enqueue_style(
-                        $this->name . '-editor-style',
-                        get_template_directory_uri() . '/resources/blocks/' . $blockName . '/build/editor.css',
-                        [],
-                        filemtime($editorStylePath)
-                    );
-                }
+                // CSS is handled automatically by block.json
+                // No manual CSS enqueue to avoid iframe warnings
 
                 // Enqueue script for editor if declared in block.json (only if no viewScript)
                 if ($metadata && isset($metadata['script']) && !isset($metadata['viewScript'])) {

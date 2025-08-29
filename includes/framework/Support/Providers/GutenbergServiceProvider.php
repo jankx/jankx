@@ -51,64 +51,7 @@ class GutenbergServiceProvider extends ServiceProvider
         $this->registerGutenbergHooks();
     }
 
-    /**
-     * Enqueue block editor assets
-     *
-     * @return void
-     */
-    public function enqueueBlockEditorAssets()
-    {
-        // Enqueue built block scripts
-        $this->enqueueBuiltBlockScripts();
-    }
 
-    /**
-     * Enqueue built block scripts and styles
-     */
-    public function enqueueBuiltBlockScripts()
-    {
-        $blocksDir = get_template_directory() . '/resources/blocks';
-
-        if (!is_dir($blocksDir)) {
-            return;
-        }
-
-        $blockDirs = glob($blocksDir . '/*', GLOB_ONLYDIR);
-
-        foreach ($blockDirs as $blockDir) {
-            $blockName = basename($blockDir);
-            $buildDir = $blockDir . '/build';
-
-            if (!is_dir($buildDir)) {
-                continue;
-            }
-
-            // Enqueue built JS file
-            $jsFile = $buildDir . '/index.js';
-            if (file_exists($jsFile)) {
-                $scriptUrl = \Jankx\Facades\Url::blockAsset($blockName . '/build/index.js');
-                wp_enqueue_script(
-                    'jankx-block-' . $blockName,
-                    $scriptUrl,
-                    ['wp-blocks', 'wp-element', 'wp-editor'],
-                    filemtime($jsFile),
-                    true
-                );
-            }
-
-            // Enqueue built CSS file
-            $cssFile = $buildDir . '/index.css.css';
-            if (file_exists($cssFile)) {
-                $styleUrl = \Jankx\Facades\Url::blockAsset($blockName . '/build/index.css.css');
-                wp_enqueue_style(
-                    'jankx-block-' . $blockName . '-style',
-                    $styleUrl,
-                    [],
-                    filemtime($cssFile)
-                );
-            }
-        }
-    }
 
     /**
      * Clear block discovery cache
@@ -136,8 +79,5 @@ class GutenbergServiceProvider extends ServiceProvider
     {
         // Initialize Gutenberg service (includes both blocks and patterns)
         add_action('init', [$this->app->make('gutenberg.service'), 'init']);
-
-        // Enqueue block editor assets with priority 20 (after wp_enqueue_scripts)
-        add_action('enqueue_block_editor_assets', [$this, 'enqueueBlockEditorAssets'], 20);
     }
 }

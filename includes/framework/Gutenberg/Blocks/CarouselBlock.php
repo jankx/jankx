@@ -130,8 +130,7 @@ class CarouselBlock extends Block
         add_action('wp_enqueue_scripts', [$this, 'enqueueBlockAssets']);
         add_action('admin_enqueue_scripts', [$this, 'enqueueBlockAssets']);
 
-        // Enqueue custom CSS
-        $this->enqueueCustomCSS();
+        // CSS is handled automatically by block.json
     }
 
         /**
@@ -142,17 +141,8 @@ class CarouselBlock extends Block
     protected function enqueueCustomCSS()
     {
         // Enqueue frontend CSS
-        $cssUrl = get_template_directory_uri() . '/resources/blocks/carousel/jankx-carousel.css';
-        $cssPath = get_template_directory() . '/resources/blocks/carousel/jankx-carousel.css';
-
-        if (file_exists($cssPath)) {
-            wp_enqueue_style(
-                'jankx-carousel-style',
-                $cssUrl,
-                [],
-                filemtime($cssPath)
-            );
-        }
+        // CSS is handled automatically by block.json
+        // No manual CSS enqueue to avoid iframe warnings
 
         // Enqueue Swiper from CDN
         wp_enqueue_script(

@@ -86,8 +86,7 @@ class LanguageSwitcherBlock extends Block
         // Register block
         $this->registerBlock($blockPath, $metadata);
 
-        // Enqueue custom CSS
-        $this->enqueueCustomCSS();
+        // CSS is handled automatically by block.json
     }
 
     /**
@@ -97,18 +96,8 @@ class LanguageSwitcherBlock extends Block
      */
     protected function enqueueCustomCSS()
     {
-        // Enqueue frontend CSS
-        $cssUrl = get_template_directory_uri() . '/resources/blocks/language-switcher/jankx-language-switcher.css';
-        $cssPath = get_template_directory() . '/resources/blocks/language-switcher/jankx-language-switcher.css';
-
-        if (file_exists($cssPath)) {
-            wp_enqueue_style(
-                'jankx-language-switcher-style',
-                $cssUrl,
-                [],
-                filemtime($cssPath)
-            );
-        }
+        // CSS is handled automatically by block.json
+        // No manual CSS enqueue to avoid iframe warnings
 
         // Note: Editor CSS is handled by block.json editorStyle property
         // WordPress will automatically load it in editor context

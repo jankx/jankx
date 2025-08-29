@@ -3,7 +3,6 @@
 namespace Jankx\Services;
 
 use Jankx\Foundation\Application;
-use Jankx\Gutenberg\Blocks\TabsBlock;
 use Jankx\Gutenberg\Blocks\DynamicCollectionBlock;
 use Jankx\Gutenberg\Blocks\IconPickerBlock;
 use Jankx\Gutenberg\Blocks\IconButtonBlock;
@@ -143,7 +142,6 @@ class GutenbergService
         $this->repository->registerBlock(SlideBlock::class);
         $this->repository->registerBlock(SvgIconBlock::class);
         $this->repository->registerBlock(SvgIconButtonBlock::class);
-        $this->repository->registerBlock(TabsBlock::class);
         $this->repository->registerBlock(WplyrMediaBlock::class);
     }
 
@@ -286,29 +284,8 @@ class GutenbergService
             }
         }
 
-        // Enqueue block style
-        if (!empty($blockData['style'])) {
-            $stylePath = get_template_directory() . '/resources/blocks/' . $blockName . '/' . $blockData['style'];
-            $styleDir = dirname($stylePath);
-            $styleName = basename($stylePath, '.css');
-
-            // Look for corresponding style.css.asset.php file
-            $cssAssetFile = $styleDir . '/style.css.asset.php';
-
-            if (file_exists($stylePath)) {
-                // Load dependencies and version from style.css.asset.php
-                $cssAsset = file_exists($cssAssetFile) ? include($cssAssetFile) : [];
-                $cssDependencies = $cssAsset['dependencies'] ?? [];
-                $cssVersion = $cssAsset['version'] ?? filemtime($stylePath);
-
-                wp_enqueue_style(
-                    $blockData['name'] . '-style',
-                    \Jankx\Facades\Url::blockAsset($blockName . '/' . $blockData['style']),
-                    $cssDependencies,
-                    $cssVersion
-                );
-            }
-        }
+        // CSS is handled automatically by block.json
+        // No manual CSS enqueue to avoid iframe warnings
     }
 
     /**

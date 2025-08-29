@@ -54,24 +54,13 @@ class SlideBlock extends Block
         $buildPath = $blockPath . '/build';
         $metadata = $this->getBlockMetadata($blockPath);
 
-        // Update metadata to use built assets
-        if (is_dir($buildPath)) {
-            $metadata['editorScript'] = 'build/index.js';
-            $metadata['editorStyle'] = 'build/editor.css';
-        } else {
-            // Fallback to source files if build doesn't exist
-            $metadata['editorScript'] = 'index.js';
-            $metadata['editorStyle'] = 'editor.css';
-        }
-
-        // Add custom CSS for Jankx framework block
-        $metadata['editorStyle'] = 'jankx-slide.css';
+        // Let block.json handle all assets automatically
+        // No manual override to avoid conflicts
 
         // Register block
         $this->registerBlock($blockPath, $metadata);
 
-        // Enqueue custom CSS
-        $this->enqueueCustomCSS();
+        // CSS is handled automatically by block.json
     }
 
     /**
@@ -81,18 +70,8 @@ class SlideBlock extends Block
      */
     protected function enqueueCustomCSS()
     {
-        // Enqueue editor CSS
-        $cssUrl = get_template_directory_uri() . '/resources/blocks/slide/jankx-slide.css';
-        $cssPath = get_template_directory() . '/resources/blocks/slide/jankx-slide.css';
-
-        if (file_exists($cssPath)) {
-            wp_enqueue_style(
-                'jankx-slide-style',
-                $cssUrl,
-                [],
-                filemtime($cssPath)
-            );
-        }
+        // CSS is handled automatically by block.json
+        // No manual CSS enqueue to avoid iframe warnings
 
         // Note: Editor CSS is handled by block.json editorStyle property
         // WordPress will automatically load it in editor context

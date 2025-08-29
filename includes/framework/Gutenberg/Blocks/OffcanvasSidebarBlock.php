@@ -163,18 +163,8 @@ class OffcanvasSidebarBlock extends Block
       */
     protected function enqueueAssets($blockPath, $metadata)
     {
-        // Enqueue frontend CSS
-        $cssUrl = get_template_directory_uri() . '/resources/blocks/offcanvas-sidebar/build/style.css';
-        $cssPath = get_template_directory() . '/resources/blocks/offcanvas-sidebar/build/style.css';
-
-        if (file_exists($cssPath)) {
-            wp_enqueue_style(
-                'jankx-offcanvas-sidebar-style',
-                $cssUrl,
-                [],
-                filemtime($cssPath)
-            );
-        }
+        // CSS is handled automatically by block.json
+        // No manual CSS enqueue to avoid iframe warnings
 
         // Enqueue frontend JavaScript (compiled from TypeScript)
         $jsUrl = get_template_directory_uri() . '/resources/blocks/offcanvas-sidebar/build/frontend.js';

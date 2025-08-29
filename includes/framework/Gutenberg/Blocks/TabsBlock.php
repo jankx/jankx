@@ -309,18 +309,7 @@ class TabsBlock extends Block
      */
     protected function enqueueCustomCSS()
     {
-        // Enqueue frontend CSS
-        $cssUrl = get_template_directory_uri() . '/resources/blocks/tabs/jankx-tabs.css';
-        $cssPath = get_template_directory() . '/resources/blocks/tabs/jankx-tabs.css';
-
-        if (file_exists($cssPath)) {
-            wp_enqueue_style(
-                'jankx-tabs-style',
-                $cssUrl,
-                [],
-                filemtime($cssPath)
-            );
-        }
+        // No manual CSS enqueue to avoid iframe warnings
 
         // Enqueue frontend JavaScript
         $jsUrl = get_template_directory_uri() . '/resources/blocks/tabs/frontend.js';
