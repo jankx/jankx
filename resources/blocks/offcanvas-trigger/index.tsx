@@ -132,7 +132,7 @@ function OffcanvasTriggerEdit({ attributes, setAttributes }: OffcanvasTriggerEdi
     const handleClick = (e: React.MouseEvent) => {
         e.preventDefault();
         // In editor, just show a message
-        alert(__('This trigger button will open the offcanvas sidebar on the frontend.', 'jankx'));
+        jQuery(e.target).parents('.is-root-container').toggleClass('sidebar-open');
     };
 
     return (
@@ -201,7 +201,6 @@ function OffcanvasTriggerEdit({ attributes, setAttributes }: OffcanvasTriggerEdi
                                     <ColorPicker
                                         color={backgroundColor}
                                         onChange={(color: string) => setAttributes({ backgroundColor: color })}
-                                        onClose={() => setIsColorPickerOpen(false)}
                                     />
                                 </div>
                             )}
@@ -220,7 +219,6 @@ function OffcanvasTriggerEdit({ attributes, setAttributes }: OffcanvasTriggerEdi
                                     <ColorPicker
                                         color={textColor}
                                         onChange={(color: string) => setAttributes({ textColor: color })}
-                                        onClose={() => setIsTextColorPickerOpen(false)}
                                     />
                                 </div>
                             )}
@@ -230,7 +228,11 @@ function OffcanvasTriggerEdit({ attributes, setAttributes }: OffcanvasTriggerEdi
                     <RangeControl
                         label={__('Border Radius', 'jankx')}
                         value={parseInt(borderRadius)}
-                        onChange={(value: number) => setAttributes({ borderRadius: `${value}px` })}
+                        onChange={(value: number | undefined) => {
+                            if (value !== undefined) {
+                                setAttributes({ borderRadius: `${value}px` });
+                            }
+                        }}
                         min={0}
                         max={50}
                         step={1}
