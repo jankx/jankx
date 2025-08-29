@@ -50,7 +50,7 @@ import {
         privateApis as blockEditorPrivateApis,
 } from '@wordpress/block-editor';
 import { displayShortcut, isKeyboardEvent, ENTER } from '@wordpress/keycodes';
-import { link, linkOff } from '@wordpress/icons';
+import { link, linkOff, plus } from '@wordpress/icons';
 import {
         createBlock,
         cloneBlock,
@@ -188,6 +188,10 @@ function ButtonEdit( props: any ) {
                 url,
                 width,
                 metadata,
+                imageId,
+                imageUrl,
+                imageAlt,
+                imageSize,
         } = attributes;
 
         const TagName = tagName || 'a';
@@ -327,6 +331,43 @@ function ButtonEdit( props: any ) {
         const hasBlockControls =
                 hasNonContentControls || ( isLinkTag && ! lockUrlControls );
 
+        // Handle media upload with wp.media API
+        const handleMediaUpload = () => {
+                if (typeof wp === 'undefined' || !wp.media) {
+                        console.warn('WordPress media API not available');
+                        return;
+                }
+
+                // Polyfill for _.contains if not available
+                if (typeof _ !== 'undefined' && !_.contains) {
+                        _.contains = function(array, item) {
+                                return array.indexOf(item) !== -1;
+                        };
+                }
+
+                const frame = wp.media({
+                        title: __('Select or Upload Image'),
+                        button: {
+                                text: __('Use this image')
+                        },
+                        multiple: false,
+                        library: {
+                                type: 'image'
+                        }
+                });
+
+                frame.on('select', () => {
+                        const attachment = frame.state().get('selection').first().toJSON();
+                        setAttributes({
+                                imageId: attachment.id,
+                                imageUrl: attachment.url,
+                                imageAlt: attachment.alt || '',
+                        });
+                });
+
+                frame.open();
+        };
+
         return (
                 <>
                         <div
@@ -336,6 +377,14 @@ function ButtonEdit( props: any ) {
                                                 width,
                                 } ) }
                         >
+                                { imageUrl && (
+                                        <img
+                                                src={ imageUrl }
+                                                alt={ imageAlt || '' }
+                                                style={ { width: imageSize, height: 'auto' } }
+                                                className="wp-block-jankx-image-button__image"
+                                        />
+                                ) }
                                 <RichText
                                         ref={ mergedRef }
                                         aria-label={ __( 'Button text' ) }
@@ -403,6 +452,12 @@ function ButtonEdit( props: any ) {
                                                         isActive={ isURLSet }
                                                 />
                                         ) }
+                                        <ToolbarButton
+                                                icon={ plus }
+                                                title={ imageUrl ? __( 'Replace Image' ) : __( 'Choose Image' ) }
+                                                onClick={ handleMediaUpload }
+                                                isActive={ !! imageUrl }
+                                        />
                                 </BlockControls>
                         ) }
                         { isLinkTag &&

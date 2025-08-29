@@ -1,6 +1,7 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
+const DependencyExtractionWebpackPlugin = require('@wordpress/dependency-extraction-webpack-plugin');
 
 module.exports = {
   mode: 'development',
@@ -25,25 +26,9 @@ module.exports = {
     'blocks/mega-menu/build/style': './blocks/mega-menu/style.scss',
     'blocks/mega-menu/build/editor': './blocks/mega-menu/editor.scss',
 
-
-
-    'blocks/carousel/build/index': './blocks/carousel/index.tsx',
-    'blocks/carousel/build/view': './blocks/carousel/view.ts',
-    'blocks/carousel/build/style': './blocks/carousel/style.scss',
-    'blocks/carousel/build/editor': './blocks/carousel/editor.scss',
-
-    'blocks/slide/build/index': './blocks/slide/index.tsx',
-    'blocks/slide/build/editor': './blocks/slide/editor.scss',
-
     'blocks/lookbook-reveal/build/index': './blocks/lookbook-reveal/index.tsx',
     'blocks/lookbook-reveal/build/style': './blocks/lookbook-reveal/style.scss',
     'blocks/lookbook-reveal/build/editor': './blocks/lookbook-reveal/editor.scss',
-
-
-
-    'blocks/advanced-posts/build/index': './blocks/advanced-posts/index.tsx',
-    'blocks/advanced-posts/build/style': './blocks/advanced-posts/style.scss',
-    'blocks/advanced-posts/build/editor': './blocks/advanced-posts/editor.scss',
 
     'blocks/categories-grid/build/index': './blocks/categories-grid/index.tsx',
     'blocks/categories-grid/build/style': './blocks/categories-grid/style.scss',
@@ -84,8 +69,6 @@ module.exports = {
     'blocks/image-button/build/index': './blocks/image-button/index.tsx',
     'blocks/image-button/build/style': './blocks/image-button/style.scss',
     'blocks/image-button/build/editor': './blocks/image-button/editor.scss',
-
-    'enhance-blocks/build/index': './enhance-blocks/main.ts',
   },
   output: {
     path: path.resolve(__dirname),
@@ -115,6 +98,47 @@ module.exports = {
     new RemoveEmptyScriptsPlugin(),
     new MiniCssExtractPlugin({
       filename: '[name].css',
+    }),
+    new DependencyExtractionWebpackPlugin({
+      // Output to a .asset.php file for each entry point
+      outputFormat: 'php',
+      // Don't combine assets to create separate .asset.php files
+      combineAssets: false,
+      // Include WordPress core dependencies
+      useDefaults: true,
+      // Request external dependencies
+      requestToExternal: (request) => {
+        if (request === '@wordpress/blocks') {
+          return ['wp', 'blocks'];
+        }
+        if (request === '@wordpress/i18n') {
+          return ['wp', 'i18n'];
+        }
+        if (request === '@wordpress/block-editor') {
+          return ['wp', 'blockEditor'];
+        }
+        if (request === '@wordpress/components') {
+          return ['wp', 'components'];
+        }
+        if (request === '@wordpress/element') {
+          return ['wp', 'element'];
+        }
+        if (request === '@wordpress/data') {
+          return ['wp', 'data'];
+        }
+        if (request === '@wordpress/core-data') {
+          return ['wp', 'coreData'];
+        }
+        if (request === 'react') {
+          return 'React';
+        }
+        if (request === 'react-dom') {
+          return 'ReactDOM';
+        }
+        if (request === 'swiper') {
+          return 'Swiper';
+        }
+      },
     }),
   ],
   module: {

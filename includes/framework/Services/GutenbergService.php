@@ -13,12 +13,10 @@ use Jankx\Gutenberg\Blocks\SvgIconButtonBlock;
 use Jankx\Gutenberg\Blocks\ImageButtonBlock;
 use Jankx\Gutenberg\Blocks\OffcanvasSidebarBlock;
 use Jankx\Gutenberg\Blocks\OffcanvasTriggerBlock;
-use Jankx\Gutenberg\Blocks\CarouselBlock;
-use Jankx\Gutenberg\Blocks\SlideBlock;
 use Jankx\Gutenberg\Blocks\CategoriesGridBlock;
+use Jankx\Gutenberg\Blocks\TabsBlock;
 use Jankx\Gutenberg\Blocks\WplyrMediaBlock;
 use Jankx\Gutenberg\Blocks\LookbookRevealBlock;
-use Jankx\Gutenberg\Blocks\AdvancedPostsBlock;
 use Jankx\Gutenberg\GutenbergPattern;
 use Jankx\Facades\Log;
 use Jankx\Helper\Environment;
@@ -127,8 +125,6 @@ class GutenbergService
      */
     protected function registerDefaultBlocks()
     {
-        $this->repository->registerBlock(AdvancedPostsBlock::class);
-        $this->repository->registerBlock(CarouselBlock::class);
         $this->repository->registerBlock(CategoriesGridBlock::class);
         $this->repository->registerBlock(DynamicCollectionBlock::class);
         $this->repository->registerBlock(IconButtonBlock::class);
@@ -139,9 +135,9 @@ class GutenbergService
         $this->repository->registerBlock(MegaMenuBlock::class);
         $this->repository->registerBlock(OffcanvasSidebarBlock::class);
         $this->repository->registerBlock(OffcanvasTriggerBlock::class);
-        $this->repository->registerBlock(SlideBlock::class);
         $this->repository->registerBlock(SvgIconBlock::class);
         $this->repository->registerBlock(SvgIconButtonBlock::class);
+        $this->repository->registerBlock(TabsBlock::class);
         $this->repository->registerBlock(WplyrMediaBlock::class);
     }
 
