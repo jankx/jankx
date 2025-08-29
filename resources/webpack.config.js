@@ -69,6 +69,11 @@ module.exports = {
     'blocks/image-button/build/index': './blocks/image-button/index.tsx',
     'blocks/image-button/build/style': './blocks/image-button/style.scss',
     'blocks/image-button/build/editor': './blocks/image-button/editor.scss',
+
+     // Product Collection Block
+     'blocks/product-collection/build/index': './blocks/product-collection/index.tsx',
+     'blocks/product-collection/build/style': './blocks/product-collection/style.scss',
+     'blocks/product-collection/build/editor': './blocks/product-collection/editor.scss',
   },
   output: {
     path: path.resolve(__dirname),

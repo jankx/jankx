@@ -81,6 +81,15 @@
                 "imageSize": {
                         "type": "string",
                         "default": "20px"
+                },
+                "imageWidth": {
+                        "type": "number"
+                },
+                "imageHeight": {
+                        "type": "number"
+                },
+                "imageSizeSlug": {
+                        "type": "string"
                 }
         },
         "supports": {
