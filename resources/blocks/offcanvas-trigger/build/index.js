@@ -1923,7 +1923,7 @@ function OffcanvasTriggerEdit({ attributes, setAttributes }) {
     const handleClick = e => {
         e.preventDefault();
         // In editor, just show a message
-        alert((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('This trigger button will open the offcanvas sidebar on the frontend.', 'jankx'));
+        jQuery(e.target).parents('.is-root-container').toggleClass('sidebar-open');
     };
     return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
         children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
@@ -1998,8 +1998,7 @@ function OffcanvasTriggerEdit({ attributes, setAttributes }) {
                                                     color: backgroundColor,
                                                     onChange: color => setAttributes({
                                                         backgroundColor: color
-                                                    }),
-                                                    onClose: () => setIsColorPickerOpen(false)
+                                                    })
                                                 })
                                             })]
                                     }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("div", {
@@ -2018,17 +2017,20 @@ function OffcanvasTriggerEdit({ attributes, setAttributes }) {
                                                     color: textColor,
                                                     onChange: color => setAttributes({
                                                         textColor: color
-                                                    }),
-                                                    onClose: () => setIsTextColorPickerOpen(false)
+                                                    })
                                                 })
                                             })]
                                     })]
                             }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RangeControl, {
                                 label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Border Radius', 'jankx'),
                                 value: parseInt(borderRadius),
-                                onChange: value => setAttributes({
-                                    borderRadius: `${value}px`
-                                }),
+                                onChange: value => {
+                                    if (value !== undefined) {
+                                        setAttributes({
+                                            borderRadius: `${value}px`
+                                        });
+                                    }
+                                },
                                 min: 0,
                                 max: 50,
                                 step: 1
