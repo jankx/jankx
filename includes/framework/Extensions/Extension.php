@@ -3,7 +3,7 @@
 /**
  * Base Extension Class for Jankx Theme Framework
  *
- * @package Jankx\Framework\Extensions
+ * @package Jankx\Extensions
  */
 
 namespace Jankx\Extensions;

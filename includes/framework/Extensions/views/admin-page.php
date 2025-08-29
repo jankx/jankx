@@ -3,7 +3,7 @@
 /**
  * Extension Manager Admin Page View
  *
- * @package Jankx\Framework\Extensions
+ * @package Jankx\Extensions
  */
 
 // Prevent direct access

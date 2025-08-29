@@ -3,7 +3,7 @@
 namespace Jankx\Support\Providers;
 
 use Jankx\Services\GutenbergService;
-use Jankx\Framework\Services\AdvancedGutenbergService;
+use Jankx\Services\AdvancedGutenbergService;
 use Jankx\Foundation\Application;
 use Jankx\Facades\Log;
 use Jankx\Helper\Environment;

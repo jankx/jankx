@@ -212,7 +212,7 @@ mkdir -p includes/extensions/my-extension
 <?php
 namespace Jankx\Extensions\MyExtension\Includes;
 
-use Jankx\Framework\Extensions\Extension;
+use Jankx\Extensions\Extension;
 
 class MyExtensionExtension extends Extension
 {
