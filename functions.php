@@ -17,10 +17,3 @@ if (!defined('ABSPATH')) {
 
 // Load Jankx Framework
 require_once get_template_directory() . '/includes/framework.php';
-
-add_action('init', function(){
-    if (isset($_GET['test'])) {
-        wp_redirect('https://google.com.vn');
-        exit();
-    }
-});
