@@ -72,6 +72,10 @@ module.exports = {
     'blocks/svg-icon/build/style': './blocks/svg-icon/style.scss',
     'blocks/svg-icon/build/editor': './blocks/svg-icon/editor.scss',
 
+    'blocks/svg-icon-button/build/index': './blocks/svg-icon-button/index.tsx',
+    'blocks/svg-icon-button/build/style': './blocks/svg-icon-button/style.scss',
+    'blocks/svg-icon-button/build/editor': './blocks/svg-icon-button/editor.scss',
+
     'enhance-blocks/build/index': './enhance-blocks/main.ts',
   },
   output: {
