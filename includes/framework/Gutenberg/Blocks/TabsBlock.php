@@ -1,45 +1,270 @@
 <?php
 
-namespace Jankx\Framework\Gutenberg\Blocks;
+namespace Jankx\Gutenberg\Blocks;
 
-use Jankx\Framework\Gutenberg\Block;
+use Jankx\Gutenberg\Block;
 
 /**
- * Tabs Block Class
+ * Tabs Block
  *
- * @package Jankx\Framework\Gutenberg\Blocks
+ * This block displays content in tabs style with customizable options.
+ *
+ * @package Jankx\Gutenberg\Blocks
+ * @since 1.0.0
  */
 class TabsBlock extends Block
 {
     /**
-     * Block name
-     */
-    protected $name = 'jankx/tabs';
-
-    /**
-     * Block constructor
+     * Constructor
      */
     public function __construct()
     {
-        parent::__construct();
-
-        $this->title = __('Tabs Block', 'jankx');
-        $this->description = __('Display content in tabs style', 'jankx');
-        $this->category = 'jankx-blocks';
-        $this->keywords = [
-            __('tabs', 'jankx'),
-            __('tab', 'jankx'),
-            __('content', 'jankx'),
-            __('navigation', 'jankx'),
-        ];
+        parent::__construct('jankx/tabs', [
+            'title' => __('Tabs Block', 'jankx'),
+            'category' => 'jankx-blocks',
+            'icon' => 'list-view',
+            'description' => __('Display content in tabs style', 'jankx'),
+            'keywords' => ['tabs', 'tab', 'content', 'navigation'],
+            'supports' => [
+                'html' => false,
+                'align' => ['wide', 'full'],
+                'anchor' => true,
+                'spacing' => [
+                    'margin' => true,
+                    'padding' => true
+                ]
+            ],
+            'attributes' => [
+                'uniqueId' => [
+                    'type' => 'string',
+                    'default' => ''
+                ],
+                'tabLayout' => [
+                    'type' => 'string',
+                    'default' => 'horizontal'
+                ],
+                'labelsPosition' => [
+                    'type' => 'string',
+                    'default' => 'top'
+                ],
+                'showSeparator' => [
+                    'type' => 'boolean',
+                    'default' => true
+                ],
+                'separatorStyle' => [
+                    'type' => 'string',
+                    'default' => 'solid'
+                ],
+                'separatorColor' => [
+                    'type' => 'string',
+                    'default' => '#E1E1E1'
+                ],
+                'separatorHeight' => [
+                    'type' => 'number',
+                    'default' => 1
+                ],
+                'addLabelsSeparator' => [
+                    'type' => 'boolean',
+                    'default' => true
+                ],
+                'labelsSeparatorStyle' => [
+                    'type' => 'string',
+                    'default' => 'solid'
+                ],
+                'labelsSeparatorColor' => [
+                    'type' => 'string',
+                    'default' => '#E1E1E1'
+                ],
+                'labelsSeparatorWidth' => [
+                    'type' => 'number',
+                    'default' => 1
+                ],
+                'useCustomColors' => [
+                    'type' => 'boolean',
+                    'default' => true
+                ],
+                'activeTabColor' => [
+                    'type' => 'string',
+                    'default' => '#44677A'
+                ],
+                'activeTabBg' => [
+                    'type' => 'string',
+                    'default' => ''
+                ],
+                'makeActiveTabSeparateLess' => [
+                    'type' => 'boolean',
+                    'default' => true
+                ],
+                'anchorId' => [
+                    'type' => 'string',
+                    'default' => ''
+                ],
+                'customClass' => [
+                    'type' => 'string',
+                    'default' => ''
+                ],
+                'containerBorderStyle' => [
+                    'type' => 'string',
+                    'default' => 'solid'
+                ],
+                'enableContainerLinkedBorder' => [
+                    'type' => 'boolean',
+                    'default' => true
+                ],
+                'containerLinkedBorderWidth' => [
+                    'type' => 'number',
+                    'default' => 1
+                ],
+                'containerTopBorderWidth' => [
+                    'type' => 'number',
+                    'default' => 1
+                ],
+                'containerRightBorderWidth' => [
+                    'type' => 'number',
+                    'default' => 1
+                ],
+                'containerBottomBorderWidth' => [
+                    'type' => 'number',
+                    'default' => 1
+                ],
+                'containerLeftBorderWidth' => [
+                    'type' => 'number',
+                    'default' => 1
+                ],
+                'containerBorderColor' => [
+                    'type' => 'string',
+                    'default' => '#E1E1E1'
+                ],
+                'enableContainerLinkedBorderRadius' => [
+                    'type' => 'boolean',
+                    'default' => true
+                ],
+                'containerLinkedBorderRadius' => [
+                    'type' => 'number',
+                    'default' => 1
+                ],
+                'containerTopBorderRadius' => [
+                    'type' => 'number',
+                    'default' => 1
+                ],
+                'containerRightBorderRadius' => [
+                    'type' => 'number',
+                    'default' => 1
+                ],
+                'containerBottomBorderRadius' => [
+                    'type' => 'number',
+                    'default' => 1
+                ],
+                'containerLeftBorderRadius' => [
+                    'type' => 'number',
+                    'default' => 1
+                ],
+                'containerDeskTopMargin' => [
+                    'type' => 'string',
+                    'default' => ''
+                ],
+                'containerDeskBottomMargin' => [
+                    'type' => 'string',
+                    'default' => ''
+                ],
+                'zIndex' => [
+                    'type' => 'string',
+                    'default' => ''
+                ],
+                'labelsBg' => [
+                    'type' => 'string',
+                    'default' => ''
+                ],
+                'labelsColor' => [
+                    'type' => 'string',
+                    'default' => ''
+                ],
+                'enableLinkedDeskPadding' => [
+                    'type' => 'boolean',
+                    'default' => true
+                ],
+                'labelsLinkedDeskPadding' => [
+                    'type' => 'number',
+                    'default' => 10
+                ],
+                'labelsDeskPaddingTop' => [
+                    'type' => 'number',
+                    'default' => 10
+                ],
+                'labelsDeskPaddingRight' => [
+                    'type' => 'number',
+                    'default' => 10
+                ],
+                'labelsDeskPaddingBottom' => [
+                    'type' => 'number',
+                    'default' => 10
+                ],
+                'labelsDeskPaddingLeft' => [
+                    'type' => 'number',
+                    'default' => 10
+                ],
+                'tabsContentBg' => [
+                    'type' => 'string',
+                    'default' => ''
+                ],
+                'tabsContentColor' => [
+                    'type' => 'string',
+                    'default' => ''
+                ],
+                'enableLinkedContentDeskPadding' => [
+                    'type' => 'boolean',
+                    'default' => true
+                ],
+                'tabsContentLinkedDeskPadding' => [
+                    'type' => 'number',
+                    'default' => 10
+                ],
+                'tabsContentDeskPaddingTop' => [
+                    'type' => 'number',
+                    'default' => 10
+                ],
+                'tabsContentDeskPaddingRight' => [
+                    'type' => 'number',
+                    'default' => 10
+                ],
+                'tabsContentDeskPaddingBottom' => [
+                    'type' => 'number',
+                    'default' => 10
+                ],
+                'tabsContentDeskPaddingLeft' => [
+                    'type' => 'number',
+                    'default' => 10
+                ]
+            ]
+        ]);
     }
 
     /**
      * Register the block
+     *
+     * @return void
      */
     public function register()
     {
-        parent::register();
+        $blockPath = get_template_directory() . '/resources/blocks/tabs';
+        $buildPath = $blockPath . '/build';
+        $metadata = $this->getBlockMetadata($blockPath);
+
+        // Update metadata to use built assets
+        if (is_dir($buildPath)) {
+            $metadata['editorScript'] = 'build/index.js';
+            $metadata['style'] = 'build/style.css';
+        } else {
+            // Fallback to source files if build doesn't exist
+            $metadata['editorScript'] = 'index.js';
+            $metadata['style'] = 'style.css';
+        }
+
+        // Add custom CSS for Jankx framework block
+        $metadata['style'] = 'jankx-tabs.css';
+
+        // Register block
+        $this->registerBlock($blockPath, $metadata);
 
         // Register tab child block
         register_block_type('jankx/tab', [
@@ -72,10 +297,55 @@ class TabsBlock extends Block
             ],
             'render_callback' => [$this, 'renderTab'],
         ]);
+
+        // Enqueue custom CSS
+        $this->enqueueCustomCSS();
     }
 
     /**
-     * Render the tabs block
+     * Enqueue custom CSS for the block
+     *
+     * @return void
+     */
+    protected function enqueueCustomCSS()
+    {
+        // Enqueue frontend CSS
+        $cssUrl = get_template_directory_uri() . '/resources/blocks/tabs/jankx-tabs.css';
+        $cssPath = get_template_directory() . '/resources/blocks/tabs/jankx-tabs.css';
+
+        if (file_exists($cssPath)) {
+            wp_enqueue_style(
+                'jankx-tabs-style',
+                $cssUrl,
+                [],
+                filemtime($cssPath)
+            );
+        }
+
+        // Enqueue frontend JavaScript
+        $jsUrl = get_template_directory_uri() . '/resources/blocks/tabs/frontend.js';
+        $jsPath = get_template_directory() . '/resources/blocks/tabs/frontend.js';
+
+        if (file_exists($jsPath)) {
+            wp_enqueue_script(
+                'jankx-tabs-frontend',
+                $jsUrl,
+                ['jquery'],
+                filemtime($jsPath),
+                true
+            );
+        }
+
+        // Note: Editor CSS is handled by block.json editorStyle property
+        // WordPress will automatically load it in editor context
+    }
+
+    /**
+     * Render the block content
+     *
+     * @param array $attributes Block attributes
+     * @param string $content Block content
+     * @return string Rendered HTML
      */
     public function render($attributes, $content = '')
     {
@@ -163,6 +433,10 @@ class TabsBlock extends Block
 
     /**
      * Render tab child block
+     *
+     * @param array $attributes Block attributes
+     * @param string $content Block content
+     * @return string Rendered HTML
      */
     public function renderTab($attributes, $content = '')
     {
@@ -185,8 +459,11 @@ class TabsBlock extends Block
 
     /**
      * Build container styles
+     *
+     * @param array $attributes Block attributes
+     * @return string CSS styles
      */
-    private function buildContainerStyles($attributes)
+    protected function buildContainerStyles($attributes)
     {
         $styles = [];
 
@@ -245,8 +522,11 @@ class TabsBlock extends Block
 
     /**
      * Build labels styles
+     *
+     * @param array $attributes Block attributes
+     * @return string CSS styles
      */
-    private function buildLabelsStyles($attributes)
+    protected function buildLabelsStyles($attributes)
     {
         $styles = [];
 
@@ -278,8 +558,11 @@ class TabsBlock extends Block
 
     /**
      * Build content styles
+     *
+     * @param array $attributes Block attributes
+     * @return string CSS styles
      */
-    private function buildContentStyles($attributes)
+    protected function buildContentStyles($attributes)
     {
         $styles = [];
 
@@ -307,42 +590,5 @@ class TabsBlock extends Block
         }
 
         return implode(' ', $styles);
-    }
-
-    /**
-     * Enqueue block assets
-     */
-    public function enqueueAssets()
-    {
-        // Enqueue frontend JavaScript
-        wp_enqueue_script(
-            'jankx-tabs-frontend',
-            $this->getAssetUrl('blocks/tabs/frontend.js'),
-            ['jquery'],
-            $this->getVersion(),
-            true
-        );
-
-        // Enqueue frontend styles
-        wp_enqueue_style(
-            'jankx-tabs-style',
-            $this->getAssetUrl('blocks/tabs/style.css'),
-            [],
-            $this->getVersion()
-        );
-    }
-
-    /**
-     * Enqueue editor assets
-     */
-    public function enqueueEditorAssets()
-    {
-        // Enqueue editor styles
-        wp_enqueue_style(
-            'jankx-tabs-editor',
-            $this->getAssetUrl('blocks/tabs/editor.css'),
-            [],
-            $this->getVersion()
-        );
     }
 }

@@ -379,6 +379,22 @@ export function Edit( props ) {
 									unlink();
 									linkRef.current?.focus();
 								} }
+								settings={ [
+									{
+										id: 'opensInNewTab',
+										title: __( 'Open in new tab', 'jankx' ),
+									},
+									{
+										id: 'nofollow',
+										title: __( 'Add nofollow', 'jankx' ),
+									},
+									{
+										id: 'sponsored',
+										title: __( 'Add sponsored', 'jankx' ),
+									},
+								] }
+								showSuggestions={ true }
+								showInitialSuggestions={ true }
 							/>
 						</Popover>
 					) }
@@ -744,6 +760,47 @@ export function Edit( props ) {
 					/>
 				</InspectorControls>
 			) }
+			<InspectorControls group="settings">
+				<ToolsPanel
+					label={ __( 'Link Settings', 'jankx' ) }
+					resetAll={ () => {
+						setAttributes( {
+							url: undefined,
+							linkTarget: undefined,
+							linkRel: undefined,
+						} );
+					} }
+					dropdownMenuProps={ dropdownMenuProps }
+				>
+					<ToolsPanelItem
+						label={ __( 'URL', 'jankx' ) }
+						isShownByDefault
+						hasValue={ () => !! url }
+						onDeselect={ () => setAttributes( { url: undefined } ) }
+					>
+						<TextControl
+							label={ __( 'URL', 'jankx' ) }
+							value={ url || '' }
+							onChange={ ( value ) => setAttributes( { url: value } ) }
+							placeholder={ __( 'Enter URL...', 'jankx' ) }
+							__nextHasNoMarginBottom
+						/>
+					</ToolsPanelItem>
+					<ToolsPanelItem
+						label={ __( 'Open in new tab', 'jankx' ) }
+						isShownByDefault
+						hasValue={ () => opensInNewTab }
+						onDeselect={ () => onToggleOpenInNewTab( false ) }
+					>
+						<ToggleControl
+							label={ __( 'Open in new tab', 'jankx' ) }
+							checked={ opensInNewTab }
+							onChange={ onToggleOpenInNewTab }
+							help={ __( 'Adds target="_blank" and rel="noreferrer noopener"', 'jankx' ) }
+						/>
+					</ToolsPanelItem>
+				</ToolsPanel>
+			</InspectorControls>
 			<InspectorControls group="advanced">
 				<TextControl
 					label={ __( 'Link rel', 'jankx' ) }
@@ -751,6 +808,7 @@ export function Edit( props ) {
 					onChange={ ( value ) =>
 						setAttributes( { linkRel: value } )
 					}
+					help={ __( 'Additional rel attributes for the link', 'jankx' ) }
 					__nextHasNoMarginBottom
 				/>
 				<TextControl

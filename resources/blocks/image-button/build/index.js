@@ -257,13 +257,11 @@ function useEnter(props) {
     }, []);
 }
 function WidthPanel({ selectedWidth, setAttributes }) {
-    const dropdownMenuProps = (0,_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalUseToolsPanelDropdownMenuProps)();
     return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalToolsPanel, {
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Settings'),
         resetAll: () => setAttributes({
             width: undefined
         }),
-        dropdownMenuProps: dropdownMenuProps,
         children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalToolsPanelItem, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Width'),
             isShownByDefault: true,

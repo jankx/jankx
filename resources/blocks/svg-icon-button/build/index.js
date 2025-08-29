@@ -8,7 +8,7 @@
 /***/ ((module) => {
 
 "use strict";
-module.exports = /*#__PURE__*/JSON.parse('{"apiVersion":3,"name":"jankx/svg-icon-button","title":"SVG Icon Button","category":"design","description":"A button with an SVG icon that can be linked.","keywords":["button","icon","svg","link"],"attributes":{"icon":{"type":"string","source":"html","selector":".icon-container","default":"","__experimentalRole":"content"},"iconName":{"type":"string","__experimentalRole":"content"},"text":{"type":"string","source":"html","selector":".button-text","default":"Button"},"url":{"type":"string","source":"attribute","selector":"a","attribute":"href"},"linkTarget":{"type":"string","source":"attribute","selector":"a","attribute":"target"},"rel":{"type":"string","source":"attribute","selector":"a","attribute":"rel"},"placeholder":{"type":"string"},"width":{"type":["string","number"]},"height":{"type":"string"},"iconBackgroundColor":{"type":"string"},"customIconBackgroundColor":{"type":"string"},"iconBackgroundColorValue":{"type":"string"},"iconColor":{"type":"string"},"customIconColor":{"type":"string"},"iconColorValue":{"type":"string"},"gradient":{"type":"string"},"customGradient":{"type":"string"},"hasNoIconFill":{"type":"boolean"},"label":{"type":"string"},"title":{"type":"string"},"rotate":{"type":"number"},"flipHorizontal":{"type":"boolean"},"flipVertical":{"type":"boolean"},"style":{"type":"object"},"borderRadius":{"type":"string"},"backgroundColor":{"type":"string"},"customBackgroundColor":{"type":"string"},"textColor":{"type":"string"},"customTextColor":{"type":"string"},"fontSize":{"type":"string"},"fontFamily":{"type":"string"},"fontWeight":{"type":"string"},"padding":{"type":"object"},"margin":{"type":"object"},"border":{"type":"object"},"boxShadow":{"type":"object"},"hoverEffect":{"type":"string","default":"none"},"iconPosition":{"type":"string","default":"left"},"iconSpacing":{"type":"string","default":"8px"},"showIcon":{"type":"boolean","default":true},"showText":{"type":"boolean","default":true}},"supports":{"anchor":true,"align":true,"html":false,"interactivity":{"clientNavigation":true},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true,"__experimentalSelector":".wp-block-button__link","__experimentalSkipSerialization":true,"__experimentalDefaultControls":{"color":false,"radius":false,"style":false,"width":false}},"spacing":{"padding":true,"margin":true,"__experimentalDefaultControls":{"margin":false,"padding":false}},"typography":{"fontSize":true,"fontFamily":true,"fontWeight":true,"lineHeight":true,"__experimentalDefaultControls":{"fontSize":false,"fontFamily":false,"fontWeight":false,"lineHeight":false}}},"textdomain":"jankx","editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
+module.exports = /*#__PURE__*/JSON.parse('{"apiVersion":3,"name":"jankx/svg-icon-button","title":"SVG Icon Button","category":"design","description":"A button with an SVG icon that can be linked.","keywords":["button","icon","svg","link"],"attributes":{"icon":{"type":"string","source":"html","selector":".icon-container","default":"","__experimentalRole":"content"},"iconName":{"type":"string","__experimentalRole":"content"},"text":{"type":"string","source":"html","selector":".button-text","default":"Button"},"url":{"type":"string","source":"attribute","selector":"a","attribute":"href"},"linkTarget":{"type":"string","source":"attribute","selector":"a","attribute":"target"},"linkRel":{"type":"string","source":"attribute","selector":"a","attribute":"rel"},"placeholder":{"type":"string"},"width":{"type":["string","number"]},"height":{"type":"string"},"iconBackgroundColor":{"type":"string"},"customIconBackgroundColor":{"type":"string"},"iconBackgroundColorValue":{"type":"string"},"iconColor":{"type":"string"},"customIconColor":{"type":"string"},"iconColorValue":{"type":"string"},"gradient":{"type":"string"},"customGradient":{"type":"string"},"hasNoIconFill":{"type":"boolean"},"label":{"type":"string"},"title":{"type":"string"},"rotate":{"type":"number"},"flipHorizontal":{"type":"boolean"},"flipVertical":{"type":"boolean"},"style":{"type":"object"},"borderRadius":{"type":"string"},"backgroundColor":{"type":"string"},"customBackgroundColor":{"type":"string"},"textColor":{"type":"string"},"customTextColor":{"type":"string"},"fontSize":{"type":"string"},"fontFamily":{"type":"string"},"fontWeight":{"type":"string"},"padding":{"type":"object"},"margin":{"type":"object"},"border":{"type":"object"},"boxShadow":{"type":"object"},"hoverEffect":{"type":"string","default":"none"},"iconPosition":{"type":"string","default":"left"},"iconSpacing":{"type":"string","default":"8px"},"showIcon":{"type":"boolean","default":true},"showText":{"type":"boolean","default":true}},"supports":{"anchor":true,"align":true,"html":false,"interactivity":{"clientNavigation":true},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true,"__experimentalSelector":".wp-block-button__link","__experimentalSkipSerialization":true,"__experimentalDefaultControls":{"color":false,"radius":false,"style":false,"width":false}},"spacing":{"padding":true,"margin":true,"__experimentalDefaultControls":{"margin":false,"padding":false}},"typography":{"fontSize":true,"fontFamily":true,"fontWeight":true,"lineHeight":true,"__experimentalDefaultControls":{"fontSize":false,"fontFamily":false,"fontWeight":false,"lineHeight":false}}},"textdomain":"jankx","editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
 
 /***/ }),
 
@@ -274,7 +274,19 @@ function Edit(props) {
                                 onRemove: () => {
                                     unlink();
                                     linkRef.current?.focus();
-                                }
+                                },
+                                settings: [{
+                                        id: 'opensInNewTab',
+                                        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Open in new tab', 'jankx')
+                                    }, {
+                                        id: 'nofollow',
+                                        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Add nofollow', 'jankx')
+                                    }, {
+                                        id: 'sponsored',
+                                        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Add sponsored', 'jankx')
+                                    }],
+                                showSuggestions: true,
+                                showInitialSuggestions: true
                             })
                         }), (icon || iconName) && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.Fragment, {
                             children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToolbarButton, {
@@ -557,6 +569,47 @@ function Edit(props) {
                         backgroundColor: customBackgroundColor || buttonBackgroundColor,
                         isLargeText: false
                     })]
+            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.InspectorControls, {
+                group: "settings",
+                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalToolsPanel, {
+                    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Link Settings', 'jankx'),
+                    resetAll: () => {
+                        setAttributes({
+                            url: undefined,
+                            linkTarget: undefined,
+                            linkRel: undefined
+                        });
+                    },
+                    dropdownMenuProps: dropdownMenuProps,
+                    children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalToolsPanelItem, {
+                            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('URL', 'jankx'),
+                            isShownByDefault: true,
+                            hasValue: () => !!url,
+                            onDeselect: () => setAttributes({
+                                url: undefined
+                            }),
+                            children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+                                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('URL', 'jankx'),
+                                value: url || '',
+                                onChange: value => setAttributes({
+                                    url: value
+                                }),
+                                placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Enter URL...', 'jankx'),
+                                __nextHasNoMarginBottom: true
+                            })
+                        }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalToolsPanelItem, {
+                            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Open in new tab', 'jankx'),
+                            isShownByDefault: true,
+                            hasValue: () => opensInNewTab,
+                            onDeselect: () => onToggleOpenInNewTab(false),
+                            children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+                                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Open in new tab', 'jankx'),
+                                checked: opensInNewTab,
+                                onChange: onToggleOpenInNewTab,
+                                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Adds target="_blank" and rel="noreferrer noopener"', 'jankx')
+                            })
+                        })]
+                })
             }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.InspectorControls, {
                 group: "advanced",
                 children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
@@ -565,6 +618,7 @@ function Edit(props) {
                         onChange: value => setAttributes({
                             linkRel: value
                         }),
+                        help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Additional rel attributes for the link', 'jankx'),
                         __nextHasNoMarginBottom: true
                     }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
                         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Title attribute', 'jankx'),

@@ -29,7 +29,7 @@ import {
         __experimentalToolsPanelItem as ToolsPanelItem,
         __experimentalToggleGroupControl as ToggleGroupControl,
         __experimentalToggleGroupControlOption as ToggleGroupControlOption,
-        __experimentalUseToolsPanelDropdownMenuProps as useToolsPanelDropdownMenuProps,
+
 } from '@wordpress/components';
 import {
         AlignmentControl,
@@ -125,13 +125,10 @@ function useEnter( props: any ) {
 }
 
 function WidthPanel( { selectedWidth, setAttributes }: { selectedWidth?: number; setAttributes: any } ) {
-        const dropdownMenuProps = useToolsPanelDropdownMenuProps();
-
         return (
                 <ToolsPanel
                         label={ __( 'Settings' ) }
                         resetAll={ () => setAttributes( { width: undefined } ) }
-                        dropdownMenuProps={ dropdownMenuProps }
                 >
                         <ToolsPanelItem
                                 label={ __( 'Width' ) }

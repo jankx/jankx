@@ -35,7 +35,7 @@
 			"selector": "a",
 			"attribute": "target"
 		},
-		"rel": {
+		"linkRel": {
 			"type": "string",
 			"source": "attribute",
 			"selector": "a",

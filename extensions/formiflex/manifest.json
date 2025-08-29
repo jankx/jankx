@@ -1,0 +1,92 @@
+{
+    "extension_id": "formiflex",
+    "name": "Formiflex",
+    "version": "2.7.1",
+    "description": "Lightweight Gutenberg contact form builder, blazingly fast with no external dependencies and ReCaptcha support.",
+    "author": "Tropicalista",
+    "license": "GPL-2.0+",
+    "requires": "6.6",
+    "tested": "6.8",
+    "requires_php": "7.0",
+    "dependencies": {
+        "jankx": "2.0.0"
+    },
+    "caller": {
+        "class": "Formello\\Plugin",
+        "file": "formello.php",
+        "method": "run",
+        "args": [],
+        "autoload": true,
+        "priority": 10
+    },
+    "blocks": [
+        {
+            "name": "formello/form",
+            "class": "Formello\\Blocks",
+            "file": "includes/Blocks.php"
+        },
+        {
+            "name": "formello/input",
+            "class": "Formello\\Blocks",
+            "file": "includes/Blocks.php"
+        },
+        {
+            "name": "formello/textarea",
+            "class": "Formello\\Blocks",
+            "file": "includes/Blocks.php"
+        },
+        {
+            "name": "formello/select",
+            "class": "Formello\\Blocks",
+            "file": "includes/Blocks.php"
+        },
+        {
+            "name": "formello/button",
+            "class": "Formello\\Blocks",
+            "file": "includes/Blocks.php"
+        },
+        {
+            "name": "formello/fieldset",
+            "class": "Formello\\Blocks",
+            "file": "includes/Blocks.php"
+        },
+        {
+            "name": "formello/message",
+            "class": "Formello\\Blocks",
+            "file": "includes/Blocks.php"
+        },
+        {
+            "name": "formello/output",
+            "class": "Formello\\Blocks",
+            "file": "includes/Blocks.php"
+        },
+        {
+            "name": "formello/multichoices",
+            "class": "Formello\\Blocks",
+            "file": "includes/Blocks.php"
+        },
+        {
+            "name": "formello/library",
+            "class": "Formello\\Blocks",
+            "file": "includes/Blocks.php"
+        }
+    ],
+    "assets": {
+        "admin": {
+            "css": ["build/style-admin.css"],
+            "js": ["build/admin.js", "build/form-settings.js", "build/field-variations.js"]
+        },
+        "frontend": {
+            "css": [],
+            "js": []
+        }
+    },
+    "hooks": {
+        "init": ["register_blocks"],
+        "wp_enqueue_scripts": ["enqueue_frontend_assets"],
+        "enqueue_block_editor_assets": ["enqueue_editor_assets"],
+        "admin_enqueue_scripts": ["enqueue_admin_assets"]
+    },
+    "textdomain": "formello",
+    "domain_path": "/languages"
+}

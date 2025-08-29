@@ -3,7 +3,7 @@
 namespace Jankx\Services;
 
 use Jankx\Foundation\Application;
-use Jankx\Framework\Gutenberg\Blocks\TabsBlock;
+use Jankx\Gutenberg\Blocks\TabsBlock;
 use Jankx\Gutenberg\Blocks\DynamicCollectionBlock;
 use Jankx\Gutenberg\Blocks\IconPickerBlock;
 use Jankx\Gutenberg\Blocks\IconButtonBlock;
@@ -16,13 +16,9 @@ use Jankx\Gutenberg\Blocks\OffcanvasSidebarBlock;
 use Jankx\Gutenberg\Blocks\OffcanvasTriggerBlock;
 use Jankx\Gutenberg\Blocks\CarouselBlock;
 use Jankx\Gutenberg\Blocks\SlideBlock;
-use Jankx\Gutenberg\Blocks\SwiperSlideBlock;
-use Jankx\Gutenberg\Blocks\SwiperSliderBlock;
 use Jankx\Gutenberg\Blocks\CategoriesGridBlock;
 use Jankx\Gutenberg\Blocks\WplyrMediaBlock;
-use Jankx\Gutenberg\Blocks\ProductsCarouselBlock;
 use Jankx\Gutenberg\Blocks\LookbookRevealBlock;
-use Jankx\Gutenberg\Blocks\ScatteredProductListBlock;
 use Jankx\Gutenberg\Blocks\AdvancedPostsBlock;
 use Jankx\Gutenberg\GutenbergPattern;
 use Jankx\Facades\Log;
@@ -133,21 +129,22 @@ class GutenbergService
     protected function registerDefaultBlocks()
     {
         $this->repository->registerBlock(AdvancedPostsBlock::class);
-        $this->repository->registerBlock(LanguageSwitcherBlock::class);
+        $this->repository->registerBlock(CarouselBlock::class);
+        $this->repository->registerBlock(CategoriesGridBlock::class);
         $this->repository->registerBlock(DynamicCollectionBlock::class);
-        $this->repository->registerBlock(IconPickerBlock::class);
         $this->repository->registerBlock(IconButtonBlock::class);
-        $this->repository->registerBlock(SvgIconBlock::class);
+        $this->repository->registerBlock(IconPickerBlock::class);
+        $this->repository->registerBlock(ImageButtonBlock::class);
+        $this->repository->registerBlock(LanguageSwitcherBlock::class);
+        $this->repository->registerBlock(LookbookRevealBlock::class);
         $this->repository->registerBlock(MegaMenuBlock::class);
         $this->repository->registerBlock(OffcanvasSidebarBlock::class);
         $this->repository->registerBlock(OffcanvasTriggerBlock::class);
-        $this->repository->registerBlock(CarouselBlock::class);
         $this->repository->registerBlock(SlideBlock::class);
-        $this->repository->registerBlock(LookbookRevealBlock::class);
-        $this->repository->registerBlock(CategoriesGridBlock::class);
-        $this->repository->registerBlock(WplyrMediaBlock::class);
+        $this->repository->registerBlock(SvgIconBlock::class);
+        $this->repository->registerBlock(SvgIconButtonBlock::class);
         $this->repository->registerBlock(TabsBlock::class);
-        $this->repository->registerBlock(ImageButtonBlock::class);
+        $this->repository->registerBlock(WplyrMediaBlock::class);
     }
 
     /**
