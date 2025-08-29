@@ -70,14 +70,14 @@ class ExtensionServiceProvider extends ServiceProvider
         // Load extensions from parent theme
         $this->loadExtensionsFromDirectory(
             $extensionManager,
-            $this->app->basePath('includes/extensions')
+            $this->app->basePath('/extensions')
         );
 
         // Load extensions from child theme (if exists)
         if (is_child_theme()) {
             $this->loadExtensionsFromDirectory(
                 $extensionManager,
-                get_stylesheet_directory() . '/includes/extensions'
+                get_stylesheet_directory() . '/extensions'
             );
         }
     }
