@@ -61,11 +61,6 @@ module.exports = {
     'blocks/svg-icon-button/build/style': './blocks/svg-icon-button/style.scss',
     'blocks/svg-icon-button/build/editor': './blocks/svg-icon-button/editor.scss',
 
-    'blocks/tabs/build/index': './blocks/tabs/index.tsx',
-    'blocks/tabs/build/frontend': './blocks/tabs/frontend.ts',
-    'blocks/tabs/build/style': './blocks/tabs/style.scss',
-    'blocks/tabs/build/editor': './blocks/tabs/editor.scss',
-
     'blocks/image-button/build/index': './blocks/image-button/index.tsx',
     'blocks/image-button/build/style': './blocks/image-button/style.scss',
     'blocks/image-button/build/editor': './blocks/image-button/editor.scss',
