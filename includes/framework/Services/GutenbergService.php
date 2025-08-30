@@ -127,21 +127,22 @@ class GutenbergService
      */
     protected function registerDefaultBlocks()
     {
-        $this->repository->registerBlock(CategoriesGridBlock::class);
-        $this->repository->registerBlock(DynamicCollectionBlock::class);
-        $this->repository->registerBlock(IconButtonBlock::class);
-        $this->repository->registerBlock(IconPickerBlock::class);
         $this->repository->registerBlock(ImageButtonBlock::class);
-        $this->repository->registerBlock(LanguageSwitcherBlock::class);
-        $this->repository->registerBlock(LookbookRevealBlock::class);
-        $this->repository->registerBlock(MegaMenuBlock::class);
-        $this->repository->registerBlock(OffcanvasSidebarBlock::class);
-        $this->repository->registerBlock(OffcanvasTriggerBlock::class);
+        $this->repository->registerBlock(IconButtonBlock::class);
         $this->repository->registerBlock(SvgIconBlock::class);
         $this->repository->registerBlock(SvgIconButtonBlock::class);
-        $this->repository->registerBlock(TabsBlock::class);
+        $this->repository->registerBlock(OffcanvasTriggerBlock::class);
+        $this->repository->registerBlock(CategoriesGridBlock::class);
         $this->repository->registerBlock(WplyrMediaBlock::class);
+        $this->repository->registerBlock(LookbookRevealBlock::class);
 
+
+        $this->repository->registerBlock(DynamicCollectionBlock::class);
+        $this->repository->registerBlock(IconPickerBlock::class);
+        $this->repository->registerBlock(LanguageSwitcherBlock::class);
+        $this->repository->registerBlock(MegaMenuBlock::class);
+        $this->repository->registerBlock(OffcanvasSidebarBlock::class);
+        $this->repository->registerBlock(TabsBlock::class);
         $this->repository->registerBlock(ProductCollection::class);
     }
 
