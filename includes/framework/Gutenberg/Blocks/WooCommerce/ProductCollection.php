@@ -114,7 +114,8 @@ class ProductCollection extends Block
 
                 <?php if ($products->have_posts()) : ?>
                     <div class="jankx-product-collection-grid" style="grid-template-columns: repeat(<?php echo esc_attr($columns); ?>, 1fr);">
-                        <?php while ($products->have_posts()) : $products->the_post(); ?>
+                        <?php while ($products->have_posts()) :
+                            $products->the_post(); ?>
                             <div class="jankx-product-item">
                                 <div class="product-image">
                                     <?php if (has_post_thumbnail()) : ?>

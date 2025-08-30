@@ -16,180 +16,15 @@ use Jankx\Gutenberg\Block;
 class OffcanvasSidebarBlock extends Block
 {
     /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        parent::__construct('jankx/offcanvas-sidebar', [
-            'title' => __('Offcanvas Sidebar', 'jankx'),
-            'category' => 'widgets',
-            'icon' => 'menu',
-            'description' => __('Create animated offcanvas sidebar with multiple transition effects', 'jankx'),
-            'keywords' => ['sidebar', 'offcanvas', 'menu', 'navigation', 'animation', 'transition'],
-            'supports' => [
-                'html' => false,
-                'align' => ['wide', 'full'],
-                'spacing' => [
-                    'margin' => true,
-                    'padding' => true
-                ]
-            ],
-            'attributes' => [
-                'sidebarPosition' => [
-                    'type' => 'string',
-                    'default' => 'left'
-                ],
-                'animationEffect' => [
-                    'type' => 'string',
-                    'default' => 'slide-in'
-                ],
-                'sidebarWidth' => [
-                    'type' => 'string',
-                    'default' => '300px'
-                ],
-                'overlayColor' => [
-                    'type' => 'string',
-                    'default' => 'rgba(0,0,0,0.2)'
-                ],
-                'sidebarBackground' => [
-                    'type' => 'string',
-                    'default' => '#48a770'
-                ],
-                'textColor' => [
-                    'type' => 'string',
-                    'default' => '#f3efe0'
-                ],
-                'triggerText' => [
-                    'type' => 'string',
-                    'default' => 'Menu'
-                ],
-                'triggerIcon' => [
-                    'type' => 'string',
-                    'default' => 'menu'
-                ],
-                'showOverlay' => [
-                    'type' => 'boolean',
-                    'default' => true
-                ],
-                'closeOnOverlayClick' => [
-                    'type' => 'boolean',
-                    'default' => true
-                ],
-                'closeOnEscape' => [
-                    'type' => 'boolean',
-                    'default' => true
-                ],
-                'autoClose' => [
-                    'type' => 'boolean',
-                    'default' => false
-                ],
-                'autoCloseDelay' => [
-                    'type' => 'number',
-                    'default' => 5000
-                ],
-                'menuItems' => [
-                    'type' => 'array',
-                    'default' => [
-                        [
-                            'id' => 'home',
-                            'text' => 'Home',
-                            'url' => '#',
-                            'icon' => 'home'
-                        ],
-                        [
-                            'id' => 'about',
-                            'text' => 'About',
-                            'url' => '#',
-                            'icon' => 'info'
-                        ],
-                        [
-                            'id' => 'services',
-                            'text' => 'Services',
-                            'url' => '#',
-                            'icon' => 'cog'
-                        ],
-                        [
-                            'id' => 'contact',
-                            'text' => 'Contact',
-                            'url' => '#',
-                            'icon' => 'email'
-                        ]
-                    ]
-                ],
-                'className' => [
-                    'type' => 'string',
-                    'default' => ''
-                ]
-            ]
-        ]);
-    }
-
-    /**
-     * Register the block
+     * Block ID
      *
-     * @return void
+     * @var string
      */
-    public function register()
-    {
-        $blockPath = get_template_directory() . '/resources/blocks/offcanvas-sidebar';
-        $buildPath = $blockPath . '/build';
-        $metadata = $this->getBlockMetadata($blockPath);
+    protected $blockId = 'jankx/offcanvas-sidebar';
 
-        // Update metadata to use built assets
-        if (is_dir($buildPath)) {
-            $metadata['editorScript'] = 'build/index.js';
-            $metadata['style'] = 'build/style.css';
-            $metadata['editorStyle'] = 'build/editor.css';
-        } else {
-            // Fallback to source files if build doesn't exist
-            $metadata['editorScript'] = 'index.tsx';
-            $metadata['style'] = 'style.scss';
-            $metadata['editorStyle'] = 'editor.scss';
-        }
 
-        // Register block
-        $this->registerBlock($blockPath, $metadata);
 
-        // Enqueue custom CSS and JS
-        $this->enqueueAssets($blockPath, $metadata);
-    }
 
-         /**
-      * Enqueue block assets
-      *
-      * @param string $blockPath Block path
-      * @param array $metadata Block metadata
-      * @return void
-      */
-    protected function enqueueAssets($blockPath, $metadata)
-    {
-        // CSS is handled automatically by block.json
-        // No manual CSS enqueue to avoid iframe warnings
-
-        // Enqueue frontend JavaScript (compiled from TypeScript)
-        $jsUrl = get_template_directory_uri() . '/resources/blocks/offcanvas-sidebar/build/frontend.js';
-        $jsPath = get_template_directory() . '/resources/blocks/offcanvas-sidebar/build/frontend.js';
-
-        if (file_exists($jsPath)) {
-            wp_enqueue_script(
-                'jankx-offcanvas-sidebar-frontend',
-                $jsUrl,
-                ['jquery'],
-                filemtime($jsPath),
-                true
-            );
-
-            // Localize script with settings
-            wp_localize_script('jankx-offcanvas-sidebar-frontend', 'offcanvasSidebarSettings', [
-                'ajaxUrl' => admin_url('admin-ajax.php'),
-                'nonce' => wp_create_nonce('offcanvas_sidebar_nonce'),
-                'i18n' => [
-                    'close' => __('Close', 'jankx'),
-                    'open' => __('Open', 'jankx')
-                ]
-            ]);
-        }
-    }
 
     /**
      * Render the block content
@@ -425,6 +260,19 @@ class OffcanvasSidebarBlock extends Block
       */
     protected function processNestedBlocks($content)
     {
+        // Handle case where content is an array (block data) instead of string
+        if (is_array($content)) {
+            // If content is an array, try to extract innerHTML or convert to string
+            if (isset($content['innerHTML'])) {
+                $content = $content['innerHTML'];
+            } elseif (isset($content['innerContent']) && is_array($content['innerContent'])) {
+                $content = implode('', array_filter($content['innerContent'], 'is_string'));
+            } else {
+                // If we can't extract content from array, return default message
+                return '<p>' . esc_html__('Add your content here using any available blocks.', 'jankx') . '</p>';
+            }
+        }
+
         if (empty($content)) {
             return '<p>' . esc_html__('Add your content here using any available blocks.', 'jankx') . '</p>';
         }

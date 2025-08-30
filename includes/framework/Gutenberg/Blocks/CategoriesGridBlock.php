@@ -6,36 +6,15 @@ use Jankx\Gutenberg\Block;
 
 class CategoriesGridBlock extends Block
 {
-    public function __construct()
-    {
-        parent::__construct('jankx/categories-grid', [
-            'title' => __('Categories Grid', 'jankx'),
-            'category' => 'widgets',
-            'icon' => 'grid-view',
-            'supports' => [
-                'html' => false,
-                'color' => [
-                    'background' => true,
-                    'text' => true,
-                ],
-                'shadow' => true,
-                'spacing' => [
-                    'margin' => true,
-                    'padding' => true,
-                ],
-            ],
-        ]);
-    }
+    /**
+     * Block ID
+     *
+     * @var string
+     */
+    protected $blockId = 'jankx/categories-grid';
 
-    public function register()
+    public function init()
     {
-        $block_json = $this->getBlockJson();
-        if (!$block_json) {
-            return;
-        }
-        $this->prioritizeBuildAssets($block_json);
-        $this->registerBlockWithMetadata($block_json);
-
         // Register AJAX handler
         add_action('wp_ajax_jankx_get_category_products', [$this, 'get_category_products']);
         add_action('wp_ajax_nopriv_jankx_get_category_products', [$this, 'get_category_products']);

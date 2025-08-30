@@ -6,45 +6,14 @@ use Jankx\Gutenberg\Block;
 
 class OffcanvasTriggerBlock extends Block
 {
-    public function __construct()
-    {
-        parent::__construct('jankx/offcanvas-trigger', [
-            'title' => __('Offcanvas Trigger', 'jankx'),
-            'category' => 'widgets',
-            'icon' => 'button',
-            'description' => __('A trigger button to open offcanvas sidebar', 'jankx'),
-            'keywords' => ['button', 'trigger', 'sidebar', 'offcanvas', 'menu'],
-            'supports' => [
-                'html' => false,
-                'align' => ['left', 'center', 'right'],
-                'spacing' => [
-                    'margin' => true,
-                    'padding' => true
-                ]
-            ],
-            'attributes' => [
-                'triggerText' => ['type' => 'string', 'default' => 'Menu'],
-                'triggerIcon' => ['type' => 'string', 'default' => 'menu'],
-                'targetSidebarId' => ['type' => 'string', 'default' => ''],
-                'buttonStyle' => ['type' => 'string', 'default' => 'default'],
-                'buttonSize' => ['type' => 'string', 'default' => 'medium'],
-                'backgroundColor' => ['type' => 'string', 'default' => '#48a770'],
-                'textColor' => ['type' => 'string', 'default' => '#ffffff'],
-                'borderRadius' => ['type' => 'string', 'default' => '4px'],
-                'showIcon' => ['type' => 'boolean', 'default' => true],
-                'showText' => ['type' => 'boolean', 'default' => true],
-                'className' => ['type' => 'string']
-            ]
-        ]);
-    }
+    /**
+     * Block ID
+     *
+     * @var string
+     */
+    protected $blockId = 'jankx/offcanvas-trigger';
 
-    public function register()
-    {
-        $blockPath = $this->getBlockPath();
-        $metadata = $this->getBlockMetadata($blockPath);
 
-        $this->registerBlock($blockPath, $metadata);
-    }
 
     public function render($attributes, $content = '')
     {

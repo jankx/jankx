@@ -16,44 +16,12 @@ use Jankx\Gutenberg\Block;
 class SvgIconButtonBlock extends Block
 {
     /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        parent::__construct('jankx/svg-icon-button', [
-            'title' => __('SVG Icon Button', 'jankx'),
-            'category' => 'jankx-blocks',
-            'icon' => 'button',
-            'description' => __('Display a button with customizable SVG icon and text', 'jankx'),
-            'keywords' => ['button', 'icon', 'svg', 'link', 'action'],
-            'supports' => [
-                'html' => false,
-                'align' => ['left', 'center', 'right'],
-                'anchor' => true,
-                'interactivity' => [
-                    'clientNavigation' => true
-                ],
-                'spacing' => [
-                    'margin' => true,
-                    'padding' => true
-                ]
-            ]
-        ]);
-    }
-
-    /**
-     * Register the block
+     * Block ID
      *
-     * @return void
+     * @var string
      */
-    public function register()
-    {
-        $blockPath = get_template_directory() . '/resources/blocks/svg-icon-button';
-        $metadata = $this->getBlockMetadata($blockPath);
+    protected $blockId = 'jankx/svg-icon-button';
 
-        // Register block - CSS will be handled by block.json
-        $this->registerBlock($blockPath, $metadata);
-    }
 
     /**
      * Render the block content

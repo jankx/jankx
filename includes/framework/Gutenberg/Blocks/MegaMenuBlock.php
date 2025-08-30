@@ -6,46 +6,16 @@ use Jankx\Gutenberg\Block;
 
 class MegaMenuBlock extends Block
 {
-    public function __construct()
-    {
-        parent::__construct('jankx/mega-menu', [
-            'title' => __('Mega Menu', 'jankx'),
-            'category' => 'widgets',
-            'icon' => 'menu',
-            'description' => __('Responsive mega menu with hover/click submenus and keyboard support.', 'jankx'),
-            'keywords' => ['menu', 'mega', 'navigation'],
-            'supports' => [
-                'html' => false,
-                'align' => ['wide', 'full'],
-            ],
-            'attributes' => [
-                'toggleLabel' => [ 'type' => 'string', 'default' => 'Menu' ],
-                'collapseBreakpoint' => [ 'type' => 'number', 'default' => 959 ],
-                'className' => [ 'type' => 'string', 'default' => '' ],
-            ],
-        ]);
-    }
+    /**
+     * Block ID
+     *
+     * @var string
+     */
+    protected $blockId = 'jankx/mega-menu';
 
-    public function register()
-    {
-        $blockPath = get_template_directory() . '/resources/blocks/mega-menu';
-        $buildPath = $blockPath . '/build';
-        $metadata  = $this->getBlockMetadata($blockPath);
 
-        if (is_dir($buildPath)) {
-            $metadata['editorScript'] = 'build/index.js';
-            $metadata['style'] = 'build/style.css';
-            $metadata['viewScript'] = 'build/view.js';
-            $metadata['editorStyle'] = 'build/editor.css';
-        } else {
-            $metadata['editorScript'] = 'index.js';
-            $metadata['style'] = 'style.css';
-            $metadata['viewScript'] = 'view.js';
-            $metadata['editorStyle'] = 'editor.css';
-        }
 
-        $this->registerBlock($blockPath, $metadata);
-    }
+
 
     public function render($attributes, $content = '')
     {

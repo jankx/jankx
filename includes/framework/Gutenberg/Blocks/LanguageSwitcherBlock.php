@@ -16,92 +16,13 @@ use Jankx\Gutenberg\Block;
 class LanguageSwitcherBlock extends Block
 {
     /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        parent::__construct('jankx/language-switcher', [
-            'title' => __('Language Switcher', 'jankx'),
-            'category' => 'widgets',
-            'icon' => 'translation',
-            'description' => __('Display language switcher for Polylang plugin', 'jankx'),
-            'keywords' => ['language', 'polylang', 'switcher', 'multilingual'],
-            'supports' => [
-                'html' => false,
-                'align' => ['wide', 'full'],
-                'spacing' => [
-                    'margin' => true,
-                    'padding' => true
-                ]
-            ],
-            'attributes' => [
-                'showFlags' => [
-                    'type' => 'boolean',
-                    'default' => true
-                ],
-                'showNames' => [
-                    'type' => 'boolean',
-                    'default' => true
-                ],
-                'showCurrent' => [
-                    'type' => 'boolean',
-                    'default' => true
-                ],
-                'displayType' => [
-                    'type' => 'string',
-                    'default' => 'dropdown'
-                ],
-                'className' => [
-                    'type' => 'string',
-                    'default' => ''
-                ]
-            ]
-        ]);
-    }
-
-    /**
-     * Register the block
+     * Block ID
      *
-     * @return void
+     * @var string
      */
-    public function register()
-    {
-        $blockPath = get_template_directory() . '/resources/blocks/language-switcher';
-        $buildPath = $blockPath . '/build';
-        $metadata = $this->getBlockMetadata($blockPath);
+    protected $blockId = 'jankx/language-switcher';
 
-        // Update metadata to use built assets
-        if (is_dir($buildPath)) {
-            $metadata['editorScript'] = 'build/index.js';
-            $metadata['style'] = 'build/style.css';
-        } else {
-            // Fallback to source files if build doesn't exist
-            $metadata['editorScript'] = 'index.js';
-            $metadata['style'] = 'style.css';
-        }
 
-        // Add custom CSS for Jankx framework block
-        $metadata['style'] = 'jankx-language-switcher.css';
-
-        // Register block
-        $this->registerBlock($blockPath, $metadata);
-
-        // CSS is handled automatically by block.json
-    }
-
-    /**
-     * Enqueue custom CSS for the block
-     *
-     * @return void
-     */
-    protected function enqueueCustomCSS()
-    {
-        // CSS is handled automatically by block.json
-        // No manual CSS enqueue to avoid iframe warnings
-
-        // Note: Editor CSS is handled by block.json editorStyle property
-        // WordPress will automatically load it in editor context
-    }
 
     /**
      * Render the block content

@@ -13,137 +13,14 @@ use Jankx\Gutenberg\Block;
 class SvgIconBlock extends Block
 {
     /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        parent::__construct('jankx/svg-icon', [
-            'title' => __('SVG Icon', 'jankx'),
-            'category' => 'media',
-            'icon' => 'star-filled',
-            'description' => __('Insert an SVG icon or graphic.', 'jankx'),
-            'keywords' => ['icon', 'svg'],
-            'supports' => [
-                'anchor' => true,
-                'align' => true,
-                'html' => false,
-                'interactivity' => [
-                    'clientNavigation' => true
-                ],
-                '__experimentalBorder' => [
-                    'color' => true,
-                    'radius' => true,
-                    'style' => true,
-                    'width' => true,
-                    '__experimentalSelector' => '.icon-container',
-                    '__experimentalSkipSerialization' => true,
-                    '__experimentalDefaultControls' => [
-                        'color' => false,
-                        'radius' => false,
-                        'style' => false,
-                        'width' => false
-                    ]
-                ],
-                'spacing' => [
-                    'padding' => true,
-                    'margin' => true,
-                    '__experimentalDefaultControls' => [
-                        'margin' => false,
-                        'padding' => false
-                    ]
-                ]
-            ],
-            'attributes' => [
-                'icon' => [
-                    'type' => 'string',
-                    'source' => 'html',
-                    'selector' => '.icon-container',
-                    'default' => '',
-                    '__experimentalRole' => 'content'
-                ],
-                'iconName' => [
-                    'type' => 'string',
-                    '__experimentalRole' => 'content'
-                ],
-                'itemsJustification' => [
-                    'type' => 'string'
-                ],
-                'iconBackgroundColor' => [
-                    'type' => 'string'
-                ],
-                'customIconBackgroundColor' => [
-                    'type' => 'string'
-                ],
-                'iconBackgroundColorValue' => [
-                    'type' => 'string'
-                ],
-                'iconColor' => [
-                    'type' => 'string'
-                ],
-                'customIconColor' => [
-                    'type' => 'string'
-                ],
-                'iconColorValue' => [
-                    'type' => 'string'
-                ],
-                'gradient' => [
-                    'type' => 'string'
-                ],
-                'customGradient' => [
-                    'type' => 'string'
-                ],
-                'hasNoIconFill' => [
-                    'type' => 'boolean'
-                ],
-                'label' => [
-                    'type' => 'string'
-                ],
-                'title' => [
-                    'type' => 'string'
-                ],
-                'linkUrl' => [
-                    'type' => 'string'
-                ],
-                'linkRel' => [
-                    'type' => 'string'
-                ],
-                'linkTarget' => [
-                    'type' => 'string'
-                ],
-                'rotate' => [
-                    'type' => 'number'
-                ],
-                'flipHorizontal' => [
-                    'type' => 'boolean'
-                ],
-                'flipVertical' => [
-                    'type' => 'boolean'
-                ],
-                'width' => [
-                    'type' => ['string', 'number']
-                ],
-                'height' => [
-                    'type' => 'string'
-                ],
-                'percentWidth' => [
-                    'type' => 'number'
-                ]
-            ]
-        ]);
-    }
-
-    /**
-     * Register the block
+     * Block ID
      *
-     * @return void
+     * @var string
      */
-    public function register()
-    {
-        $blockPath = $this->getBlockPath();
-        $metadata = $this->getBlockMetadata($blockPath);
+    protected $blockId = 'jankx/svg-icon';
 
-        $this->registerBlock($blockPath, $metadata);
-    }
+
+
 
     /**
      * Render the block content

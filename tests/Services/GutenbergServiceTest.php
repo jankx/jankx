@@ -172,26 +172,6 @@ class GutenbergServiceTest extends TestCase
         $this->assertNull($result);
     }
 
-    public function testGetBlockClassFromName()
-    {
-        $reflection = new \ReflectionClass($this->gutenbergService);
-        $method = $reflection->getMethod('getBlockClassFromName');
-        $method->setAccessible(true);
-
-        $result = $method->invoke($this->gutenbergService, 'widget-renderer');
-        $this->assertEquals('Jankx\\Support\\Blocks\\WidgetRendererBlock', $result);
-    }
-
-    public function testGetBlockClassFromNameWithHyphens()
-    {
-        $reflection = new \ReflectionClass($this->gutenbergService);
-        $method = $reflection->getMethod('getBlockClassFromName');
-        $method->setAccessible(true);
-
-        $result = $method->invoke($this->gutenbergService, 'my-custom-block');
-        $this->assertEquals('Jankx\\Support\\Blocks\\MyCustomBlockBlock', $result);
-    }
-
     public function testRegisterDefaultBlocks()
     {
         $reflection = new \ReflectionClass($this->gutenbergService);
@@ -210,7 +190,7 @@ class GutenbergServiceTest extends TestCase
         // Ensure Log facade is set
         Log::setFacadeApplication($this->app);
 
-        $mockBlock = $this->createMock(\Jankx\Support\Blocks\Block::class);
+        $mockBlock = $this->createMock(\Jankx\Support\Block::class);
         $mockBlock->expects($this->once())
             ->method('register');
 
@@ -224,44 +204,7 @@ class GutenbergServiceTest extends TestCase
         // Recreate the service with updated repository
         $this->gutenbergService = new GutenbergService($this->app);
 
-        $this->gutenbergService->registerAllBlocks();
-    }
-
-    public function testGetBlocksMetadata()
-    {
-        $result = $this->gutenbergService->getBlocksMetadata();
-        $this->assertIsArray($result);
-    }
-
-    public function testEnqueueAllBlockAssets()
-    {
-        // Ensure Log facade is set
-        Log::setFacadeApplication($this->app);
-
-        // Mock getBlocksMetadata to return test data
-        $this->gutenbergService = $this->getMockBuilder(GutenbergService::class)
-            ->setConstructorArgs([$this->app])
-            ->onlyMethods(['getBlocksMetadata', 'enqueueBlockAssets'])
-            ->getMock();
-
-        $this->gutenbergService->method('getBlocksMetadata')
-            ->willReturn([
-                'test-block' => [
-                    'name' => 'test/block',
-                    'editorScript' => 'build/index.js',
-                    'style' => 'build/index.css.css',
-                ],
-            ]);
-
-        $this->gutenbergService->expects($this->once())
-            ->method('enqueueBlockAssets')
-            ->with('test-block', [
-                'name' => 'test/block',
-                'editorScript' => 'build/index.js',
-                'style' => 'build/index.css.css',
-            ]);
-
-        $this->gutenbergService->enqueueAllBlockAssets();
+        $this->gutenbergService->registerBlocks();
     }
 
     // ========================================

@@ -17,67 +17,19 @@ use Jankx\Gutenberg\Block;
 class DynamicCollectionBlock extends Block
 {
     /**
-     * Constructor
+     * Block ID
+     *
+     * @var string
      */
-    public function __construct()
-    {
-        parent::__construct('jankx/dynamic-collection', [
-            'title' => __('Dynamic Collection', 'jankx'),
-            'category' => 'jankx',
-            'icon' => 'grid-view',
-            'description' => __('Hiển thị collection động với khả năng tùy chỉnh query, template và filters', 'jankx'),
-            'keywords' => ['collection', 'posts', 'query', 'template', 'filter', 'dynamic'],
-            'supports' => [
-                'html' => false,
-                'align' => ['wide', 'full'],
-                'spacing' => [
-                    'margin' => true,
-                    'padding' => true
-                ],
-                'color' => [
-                    'text' => true,
-                    'background' => true,
-                    'gradients' => true
-                ],
-                'typography' => [
-                    'fontSize' => true,
-                    'lineHeight' => true,
-                    'fontFamily' => true,
-                    'fontWeight' => true,
-                    'fontStyle' => true,
-                    'letterSpacing' => true
-                ],
-                'border' => [
-                    'color' => true,
-                    'radius' => true,
-                    'style' => true,
-                    'width' => true
-                ]
-            ]
-        ]);
-    }
+    protected $blockId = 'jankx/dynamic-collection';
 
     /**
      * Register the block
      *
      * @return void
      */
-    public function register()
+    public function init()
     {
-        $blockPath = get_template_directory() . '/resources/blocks/dynamic-collection';
-        $buildPath = $blockPath . '/build';
-        $metadata = $this->getBlockMetadata($blockPath);
-
-        // Update metadata to use built assets
-        if (is_dir($buildPath)) {
-            $metadata['editorScript'] = 'build/index.js';
-            $metadata['style'] = 'build/style-index.css';
-        }
-
-        // Register block
-        $this->registerBlock($blockPath, $metadata);
-
-        // Register REST API endpoints for dynamic queries
         add_action('rest_api_init', [$this, 'registerRestEndpoints']);
     }
 

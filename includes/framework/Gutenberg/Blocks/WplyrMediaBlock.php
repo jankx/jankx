@@ -6,43 +6,20 @@ use Jankx\Gutenberg\Block;
 
 class WplyrMediaBlock extends Block
 {
-    public function __construct()
-    {
-        parent::__construct('jankx/wplyr-media', [
-            'title' => __('WPlyr Media Player', 'jankx'),
-            'category' => 'media',
-            'icon' => 'video-alt3',
-            'supports' => [
-                'html' => false,
-                'align' => ['wide', 'full'],
-                'color' => [
-                    'background' => true,
-                    'text' => true,
-                ],
-                'spacing' => [
-                    'margin' => true,
-                    'padding' => true,
-                ],
-            ],
-        ]);
-    }
+    /**
+     * Block ID
+     *
+     * @var string
+     */
+    protected $blockId = 'jankx/wplyr-media';
 
-    public function register()
+
+
+    public function init()
     {
-        $block_json = $this->getBlockJson();
-        if (!$block_json) {
-            return;
-        }
-        $this->prioritizeBuildAssets($block_json);
-        $this->registerBlockWithMetadata($block_json);
 
         // Enqueue Plyr library only on frontend
         add_action('wp_enqueue_scripts', [$this, 'enqueue_plyr_assets']);
-
-        // Debug: Log block registration
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log('WPlyr Media Block registered with metadata: ' . print_r($block_json, true));
-        }
     }
 
     public function enqueue_plyr_assets()
@@ -67,7 +44,6 @@ class WplyrMediaBlock extends Block
 
     public function enqueueBlockAssets()
     {
-        parent::enqueueBlockAssets();
 
         // Re-enqueue view script with Plyr dependency on frontend only
         if (!is_admin()) {

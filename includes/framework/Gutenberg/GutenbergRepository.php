@@ -2,6 +2,8 @@
 
 namespace Jankx\Gutenberg;
 
+use Exception;
+
 /**
  * Gutenberg Repository
  *
@@ -52,28 +54,22 @@ class GutenbergRepository
     /**
      * Register a block
      *
-     * @param string $blockClass Block class name
+     * @param string|Block $blockClass Block class name or instance
      * @return void
      */
     public function registerBlock($blockClass)
     {
-        if (!class_exists($blockClass)) {
-            return;
+        if (is_object($blockClass)) {
+            if (!$blockClass instanceof Block) {
+                throw new Exception('Block class must be an instance of ' . Block::class);
+            }
+            // inited
+            $this->blocks[get_class($blockClass)] = true;
+            $this->instances[get_class($blockClass)] = $blockClass;
+        } else {
+            // not inited
+            $this->blocks[$blockClass] = false;
         }
-
-        $block = new $blockClass();
-
-        if (!$block instanceof Block) {
-            return;
-        }
-
-        // Check if block is already registered
-        if (isset($this->blocks[$block->getName()])) {
-            return;
-        }
-
-        $this->blocks[$block->getName()] = $blockClass;
-        $this->instances[$block->getName()] = $block;
     }
 
     /**
@@ -183,7 +179,7 @@ class GutenbergRepository
         $pattern = $app ? new $patternClass($app) : new $patternClass();
 
         // Check if pattern is valid
-        if (!$pattern instanceof \Jankx\Gutenberg\Blocks\Patterns\GutenbergPattern) {
+        if (!$pattern instanceof \Jankx\Gutenberg\Patterns\GutenbergPattern) {
             return;
         }
 
@@ -205,7 +201,7 @@ class GutenbergRepository
      * Get pattern instance
      *
      * @param string $patternSlug Pattern slug
-     * @return \Jankx\Gutenberg\Blocks\Patterns\GutenbergPattern|null
+     * @return \Jankx\Gutenberg\Patterns\GutenbergPattern|null
      */
     public function getPattern($patternSlug)
     {

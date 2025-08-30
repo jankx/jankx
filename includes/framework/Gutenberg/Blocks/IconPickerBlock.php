@@ -17,113 +17,22 @@ use Jankx\Gutenberg\Block;
 class IconPickerBlock extends Block
 {
     /**
-     * Constructor
+     * Block ID
+     *
+     * @var string
      */
-    public function __construct()
-    {
-        parent::__construct('jankx/icon-picker', [
-            'title' => __('Icon Picker', 'jankx'),
-            'category' => 'widgets',
-            'icon' => 'star-filled',
-            'description' => __('Chọn và hiển thị icon từ Jankx Font Icons System với khả năng thêm link và tùy chỉnh style', 'jankx'),
-            'keywords' => ['icon', 'font', 'link', 'button', 'symbol', 'jankx'],
-            'supports' => [
-                'html' => false,
-                'align' => true,
-                'alignWide' => true,
-                'spacing' => [
-                    'margin' => true,
-                    'padding' => true
-                ],
-                'color' => [
-                    'text' => true,
-                    'background' => true
-                ],
-                'typography' => [
-                    'fontSize' => true,
-                    'lineHeight' => true
-                ]
-            ],
-            'attributes' => [
-                'iconName' => [
-                    'type' => 'string',
-                    'default' => 'home'
-                ],
-                'iconType' => [
-                    'type' => 'string',
-                    'default' => 'material'
-                ],
-                'iconCategory' => [
-                    'type' => 'string',
-                    'default' => 'navigation'
-                ],
-                'iconSize' => [
-                    'type' => 'string',
-                    'default' => '24px'
-                ],
-                'iconColor' => [
-                    'type' => 'string',
-                    'default' => '#333333'
-                ],
-                'iconAlignment' => [
-                    'type' => 'string',
-                    'default' => 'left'
-                ],
-                'iconStyle' => [
-                    'type' => 'string',
-                    'default' => 'filled'
-                ],
-                'linkUrl' => [
-                    'type' => 'string',
-                    'default' => ''
-                ],
-                'linkTarget' => [
-                    'type' => 'string',
-                    'default' => '_self'
-                ],
-                'linkRel' => [
-                    'type' => 'string',
-                    'default' => ''
-                ],
-                'showLabel' => [
-                    'type' => 'boolean',
-                    'default' => false
-                ],
-                'iconLabel' => [
-                    'type' => 'string',
-                    'default' => ''
-                ],
-                'labelPosition' => [
-                    'type' => 'string',
-                    'default' => 'after'
-                ],
-                'customClassName' => [
-                    'type' => 'string',
-                    'default' => ''
-                ]
-            ]
-        ]);
-    }
+    protected $blockId = 'jankx/icon-picker';
+
+
 
     /**
      * Register the block
      *
      * @return void
      */
-    public function register()
+    public function init()
     {
-        $blockPath = get_template_directory() . '/resources/blocks/icon-picker';
-        $buildPath = $blockPath . '/build';
-        $metadata = $this->getBlockMetadata($blockPath);
 
-        // Update metadata to use built assets
-        if (is_dir($buildPath)) {
-            $metadata['editorScript'] = 'build/index.js';
-            $metadata['style'] = 'build/index.css.css';
-        }
-
-        // Register block
-        $this->registerBlock($blockPath, $metadata);
 
         // Register REST API endpoints for icon data
         add_action('rest_api_init', [$this, 'registerRestEndpoints']);

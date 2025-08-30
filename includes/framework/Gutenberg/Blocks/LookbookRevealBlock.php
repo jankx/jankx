@@ -12,38 +12,12 @@ use Jankx\Gutenberg\Block;
 class LookbookRevealBlock extends Block
 {
     /**
-     * Block constructor
+     * Block ID
+     *
+     * @var string
      */
-    public function __construct()
-    {
-        parent::__construct('jankx/lookbook-reveal', [
-            'title' => __('Lookbook Reveal', 'jankx'),
-            'description' => __('Display a lookbook with reveal effects for products.', 'jankx'),
-            'category' => 'widgets',
-            'icon' => 'visibility',
-            'keywords' => ['lookbook', 'reveal', 'products', 'woocommerce'],
-            'supports' => [
-                'align' => ['center', 'wide', 'full'],
-                'html' => false
-            ]
-        ]);
-    }
+    protected $blockId = 'jankx/lookbook-reveal';
 
-    /**
-     * Register the block
-     */
-    public function register()
-    {
-        $block_json = $this->getBlockJson();
-        if (!$block_json) {
-            return;
-        }
-
-        // Prioritize build/ assets
-        $this->prioritizeBuildAssets($block_json);
-
-        $this->registerBlockWithMetadata($block_json);
-    }
 
     /**
      * Render the block
