@@ -29,4 +29,21 @@ div[data-type="jankx/image-button"] {
   display: table;
 }
 
+.wp-block-jankx-image-button__link-container {
+  display: inline-flex !important;
+  align-items: center;
+  flex-direction: row;
+  cursor: pointer;
+  text-align: center;
+  word-break: break-word;
+  box-sizing: border-box;
+  height: 100%;
+  align-content: center;
+}
+.wp-block-jankx-image-button__link-container .block-editor-rich-text__editable {
+  display: inline !important;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
 /*# sourceMappingURL=editor.css.map*/

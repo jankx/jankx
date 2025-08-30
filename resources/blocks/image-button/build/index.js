@@ -8,7 +8,7 @@
   \****************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/image-button","title":"Image Button","category":"jankx-blocks","description":"Prompt visitors to take action with a button-style link.","keywords":["link","button","image"],"textdomain":"jankx","attributes":{"tagName":{"type":"string","enum":["a","button"],"default":"a"},"type":{"type":"string","default":"button"},"textAlign":{"type":"string"},"url":{"type":"string","source":"attribute","selector":"a","attribute":"href","role":"content"},"title":{"type":"string","source":"attribute","selector":"a,button","attribute":"title","role":"content"},"text":{"type":"rich-text","source":"rich-text","selector":"a,button","role":"content"},"linkTarget":{"type":"string","source":"attribute","selector":"a","attribute":"target","role":"content"},"rel":{"type":"string","source":"attribute","selector":"a","attribute":"rel","role":"content"},"placeholder":{"type":"string"},"backgroundColor":{"type":"string"},"textColor":{"type":"string"},"gradient":{"type":"string"},"width":{"type":"number"},"imageId":{"type":"number"},"imageUrl":{"type":"string"},"imageAlt":{"type":"string"},"imageSize":{"type":"string","default":"20px"}},"supports":{"anchor":true,"splitting":true,"align":false,"alignWide":false,"color":{"__experimentalSkipSerialization":true,"gradients":true,"__experimentalDefaultControls":{"background":true,"text":true}},"typography":{"__experimentalSkipSerialization":["fontSize","lineHeight","fontFamily","fontWeight","fontStyle","textTransform","textDecoration","letterSpacing"],"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true,"__experimentalTextTransform":true,"__experimentalTextDecoration":true,"__experimentalLetterSpacing":true,"__experimentalWritingMode":true,"__experimentalDefaultControls":{"fontSize":true}},"reusable":false,"shadow":{"__experimentalSkipSerialization":true},"spacing":{"__experimentalSkipSerialization":true,"padding":["horizontal","vertical"],"__experimentalDefaultControls":{"padding":true}},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true,"__experimentalSkipSerialization":true,"__experimentalDefaultControls":{"color":true,"radius":true,"style":true,"width":true}},"interactivity":{"clientNavigation":true}},"styles":[{"name":"fill","label":"Fill","isDefault":true},{"name":"outline","label":"Outline"}],"editorScript":"build/index.js","editorStyle":"build/editor.css","style":"build/style.css","selectors":{"root":".wp-block-jankx-image-button .wp-block-jankx-image-button__link","typography":{"writingMode":".wp-block-jankx-image-button"}}}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/image-button","title":"Image Button","category":"jankx-blocks","description":"Prompt visitors to take action with a button-style link.","keywords":["link","button","image"],"textdomain":"jankx","attributes":{"tagName":{"type":"string","enum":["a","button"],"default":"a"},"type":{"type":"string","default":"button"},"textAlign":{"type":"string"},"url":{"type":"string","source":"attribute","selector":"a","attribute":"href","role":"content"},"title":{"type":"string","source":"attribute","selector":"a,button","attribute":"title","role":"content"},"text":{"type":"rich-text","source":"rich-text","selector":"a,button","role":"content"},"linkTarget":{"type":"string","source":"attribute","selector":"a","attribute":"target","role":"content"},"rel":{"type":"string","source":"attribute","selector":"a","attribute":"rel","role":"content"},"placeholder":{"type":"string"},"backgroundColor":{"type":"string"},"textColor":{"type":"string"},"gradient":{"type":"string"},"width":{"type":"number"},"imageId":{"type":"number"},"imageUrl":{"type":"string"},"imageAlt":{"type":"string"},"imageSize":{"type":"string","default":"20px"},"imageWidth":{"type":"number"},"imageHeight":{"type":"number","default":20},"imageSizeSlug":{"type":"string"},"imageMarginRight":{"type":"string","default":"5px"}},"supports":{"anchor":true,"splitting":true,"align":false,"alignWide":false,"color":{"__experimentalSkipSerialization":true,"gradients":true,"__experimentalDefaultControls":{"background":true,"text":true}},"typography":{"__experimentalSkipSerialization":["fontSize","lineHeight","fontFamily","fontWeight","fontStyle","textTransform","textDecoration","letterSpacing"],"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true,"__experimentalTextTransform":true,"__experimentalTextDecoration":true,"__experimentalLetterSpacing":true,"__experimentalWritingMode":true,"__experimentalDefaultControls":{"fontSize":true}},"reusable":false,"shadow":{"__experimentalSkipSerialization":true},"spacing":{"__experimentalSkipSerialization":true,"padding":["horizontal","vertical"],"__experimentalDefaultControls":{"padding":true}},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true,"__experimentalSkipSerialization":true,"__experimentalDefaultControls":{"color":true,"radius":true,"style":true,"width":true}},"interactivity":{"clientNavigation":true}},"styles":[{"name":"fill","label":"Fill","isDefault":true},{"name":"outline","label":"Outline"}],"editorScript":"build/index.js","editorStyle":"build/editor.css","style":"build/style.css","selectors":{"root":".wp-block-jankx-image-button .wp-block-jankx-image-button__link","typography":{"writingMode":".wp-block-jankx-image-button"}}}');
 
 /***/ }),
 
@@ -31,10 +31,10 @@ const NOFOLLOW_REL = 'nofollow';
 
 /***/ }),
 
-/***/ "./blocks/image-button/deprecated.ts":
-/*!*******************************************!*\
-  !*** ./blocks/image-button/deprecated.ts ***!
-  \*******************************************/
+/***/ "./blocks/image-button/deprecated.tsx":
+/*!********************************************!*\
+  !*** ./blocks/image-button/deprecated.tsx ***!
+  \********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -43,51 +43,33 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.mjs");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__);
 /**
  * WordPress dependencies
  */
 
 /**
- * External dependencies
+ * Deprecated version of the image button block.
+ * This is used for backward compatibility with older versions.
  */
 
-
 const deprecated = [{
-        supports: {
-            anchor: true,
-            align: true,
-            alignWide: false,
-            color: {
-                __experimentalSkipSerialization: true,
-                gradients: true
-            },
-            typography: {
-                fontSize: true,
-                __experimentalFontFamily: true
-            },
-            reusable: false,
-            __experimentalSelector: '.wp-block-jankx-image-button__link'
-        },
         attributes: {
+            tagName: {
+                type: 'string',
+                default: 'a'
+            },
+            text: {
+                type: 'string',
+                source: 'html',
+                selector: 'a,button'
+            },
             url: {
                 type: 'string',
                 source: 'attribute',
                 selector: 'a',
                 attribute: 'href'
-            },
-            title: {
-                type: 'string',
-                source: 'attribute',
-                selector: 'a',
-                attribute: 'title'
-            },
-            text: {
-                type: 'string',
-                source: 'html',
-                selector: 'a'
             },
             linkTarget: {
                 type: 'string',
@@ -104,56 +86,66 @@ const deprecated = [{
             placeholder: {
                 type: 'string'
             },
-            backgroundColor: {
-                type: 'string'
-            },
-            textColor: {
-                type: 'string'
-            },
-            gradient: {
+            textAlign: {
                 type: 'string'
             },
             width: {
                 type: 'number'
+            },
+            imageId: {
+                type: 'number'
+            },
+            imageUrl: {
+                type: 'string'
+            },
+            imageAlt: {
+                type: 'string'
+            },
+            imageHeight: {
+                type: 'number',
+                default: 20
+            },
+            imageMarginRight: {
+                type: 'string',
+                default: '5px'
             }
         },
-        save({ attributes, className }) {
-            const { fontSize, linkTarget, rel, style, text, title, url, width } = attributes;
-            if (!text) {
-                return null;
+        save: ({ attributes }) => {
+            const { tagName, text, url, linkTarget, rel, textAlign, width, imageUrl, imageAlt, imageHeight, imageMarginRight } = attributes;
+            const TagName = tagName || 'a';
+            const isButtonTag = 'button' === TagName;
+            const wrapperClasses = ['wp-block-jankx-image-button'];
+            if (width) {
+                wrapperClasses.push(`has-custom-width wp-block-jankx-image-button__width-${width}`);
             }
-            const borderProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.__experimentalGetBorderClassesAndStyles)(attributes);
-            const colorProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.__experimentalGetColorClassesAndStyles)(attributes);
-            const spacingProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.__experimentalGetSpacingClassesAndStyles)(attributes);
-            const buttonClasses = (0,clsx__WEBPACK_IMPORTED_MODULE_1__["default"])('wp-block-jankx-image-button__link', colorProps.className, borderProps.className, {
-                // For backwards compatibility add style that isn't provided via
-                // block support.
-                'no-border-radius': style?.border?.radius === 0
+            const buttonClasses = ['wp-block-jankx-image-button__link'];
+            if (textAlign) {
+                buttonClasses.push(`has-text-align-${textAlign}`);
+            }
+            return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+                ..._wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.useBlockProps.save({
+                    className: wrapperClasses.join(' ')
+                }),
+                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(TagName, {
+                    type: isButtonTag ? 'button' : null,
+                    className: buttonClasses.join(' '),
+                    href: isButtonTag ? null : url,
+                    target: isButtonTag ? null : linkTarget,
+                    rel: isButtonTag ? null : rel,
+                    children: [imageUrl && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("img", {
+                            src: imageUrl,
+                            alt: imageAlt || '',
+                            style: {
+                                height: imageHeight,
+                                width: 'auto',
+                                marginRight: imageMarginRight || '5px'
+                            },
+                            className: "wp-block-jankx-image-button__image"
+                        }), text && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.RichText.Content, {
+                            value: text
+                        })]
+                })
             });
-            const buttonStyle = {
-                ...borderProps.style,
-                ...colorProps.style,
-                ...spacingProps.style
-            };
-            // The use of a `title` attribute here is soft-deprecated, but still applied
-            // if it had already been assigned, for the sake of backward-compatibility.
-            // A title will no longer be assigned for new or updated button block links.
-            const wrapperClasses = (0,clsx__WEBPACK_IMPORTED_MODULE_1__["default"])(className, {
-                [`has-custom-width wp-block-jankx-image-button__width-${width}`]: width,
-                [`has-custom-font-size`]: fontSize || style?.typography?.fontSize
-            });
-            return react__WEBPACK_IMPORTED_MODULE_2___default().createElement('div', {
-                className: wrapperClasses
-            }, react__WEBPACK_IMPORTED_MODULE_2___default().createElement(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.RichText.Content, {
-                tagName: 'a',
-                className: buttonClasses,
-                href: url,
-                title: title,
-                style: buttonStyle,
-                value: text,
-                target: linkTarget,
-                rel: rel
-            }));
         }
     }];
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (deprecated);
@@ -294,7 +286,9 @@ function WidthPanel({ selectedWidth, setAttributes }) {
 }
 function ButtonEdit(props) {
     const { attributes, setAttributes, className, isSelected, onReplace, mergeBlocks, clientId, context } = props;
-    const { tagName, textAlign, linkTarget, placeholder, rel, style, text, url, width, metadata, imageId, imageUrl, imageAlt, imageSize } = attributes;
+    const { tagName, textAlign, linkTarget, placeholder, rel, style, text, url, width, metadata, imageId, imageUrl, imageAlt, imageHeight, imageMarginRight } = attributes;
+    const cleanText = text ? text.replace(/<img[^>]*>/g, '') : '';
+    console.log('cleanText: ' + cleanText);
     const TagName = tagName || 'a';
     function onKeyDown(event) {
         if (_wordpress_keycodes__WEBPACK_IMPORTED_MODULE_7__.isKeyboardEvent.primary(event, 'k')) {
@@ -431,47 +425,50 @@ function ButtonEdit(props) {
         frame.open();
     };
     return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.Fragment, {
-        children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)("div", {
+        children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
                 ...blockProps,
                 className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])(blockProps.className, {
                     [`has-custom-width wp-block-jankx-image-button__width-${width}`]: width
                 }),
-                children: [imageUrl && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("img", {
-                        src: imageUrl,
-                        alt: imageAlt || '',
-                        style: {
-                            width: imageSize,
-                            height: 'auto'
-                        },
-                        className: "wp-block-jankx-image-button__image"
-                    }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.RichText, {
-                        ref: mergedRef,
-                        "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Button text'),
-                        placeholder: placeholder || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Add text…'),
-                        value: text,
-                        onChange: value => setAttributes({
-                            text: value
-                        }),
-                        withoutInteractiveFormatting: true,
-                        className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])(className, 'wp-block-jankx-image-button__link', colorProps.className, borderProps.className, typographyProps.className, {
-                            [`has-text-align-${textAlign}`]: textAlign,
-                            // For backwards compatibility add style that isn't
-                            // provided via block support.
-                            'no-border-radius': style?.border?.radius === 0,
-                            [`has-custom-font-size`]: blockProps.style.fontSize
-                        }, (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.__experimentalGetElementClassName)('button')),
-                        style: {
-                            ...borderProps.style,
-                            ...colorProps.style,
-                            ...spacingProps.style,
-                            ...shadowProps.style,
-                            ...typographyProps.style,
-                            writingMode: undefined
-                        },
-                        onReplace: onReplace,
-                        onMerge: mergeBlocks,
-                        identifier: "text"
-                    })]
+                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)("div", {
+                    className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])('wp-block-jankx-image-button__link-container', 'wp-block-jankx-image-button__link', colorProps.className, borderProps.className, typographyProps.className, {
+                        [`has-text-align-${textAlign}`]: textAlign,
+                        'no-border-radius': style?.border?.radius === 0,
+                        [`has-custom-font-size`]: blockProps.style.fontSize
+                    }, (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.__experimentalGetElementClassName)('button')),
+                    style: {
+                        ...borderProps.style,
+                        ...colorProps.style,
+                        ...spacingProps.style,
+                        ...shadowProps.style,
+                        ...typographyProps.style,
+                        writingMode: undefined
+                    },
+                    children: [imageUrl && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("img", {
+                            src: imageUrl,
+                            alt: imageAlt || '',
+                            style: {
+                                height: imageHeight ? `${imageHeight}px` : '20px',
+                                width: 'auto',
+                                marginRight: imageMarginRight || '5px'
+                            },
+                            className: "wp-block-jankx-image-button__image"
+                        }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.RichText, {
+                            ref: mergedRef,
+                            "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Button text'),
+                            placeholder: placeholder || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Add text…'),
+                            value: cleanText,
+                            onChange: value => setAttributes({
+                                text: value
+                            }),
+                            withoutInteractiveFormatting: true,
+                            allowedFormats: ['core/bold', 'core/italic', 'core/strikethrough', 'core/link'],
+                            className: "block-editor-rich-text__editable",
+                            onReplace: onReplace,
+                            onMerge: mergeBlocks,
+                            identifier: "text"
+                        })]
+                })
             }), hasBlockControls && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockControls, {
                 group: "block",
                 children: [hasNonContentControls && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.AlignmentControl, {
@@ -522,11 +519,42 @@ function ButtonEdit(props) {
                     withCreateSuggestion: userCanCreatePages,
                     createSuggestionButtonText: createButtonText
                 })
-            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.InspectorControls, {
-                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(WidthPanel, {
-                    selectedWidth: width,
-                    setAttributes: setAttributes
-                })
+            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.InspectorControls, {
+                children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(WidthPanel, {
+                        selectedWidth: width,
+                        setAttributes: setAttributes
+                    }), imageUrl && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+                        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Image Settings'),
+                        initialOpen: false,
+                        children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.RangeControl, {
+                                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Image Height'),
+                                value: imageHeight || 20,
+                                onChange: value => setAttributes({
+                                    imageHeight: value
+                                }),
+                                min: 10,
+                                max: 100,
+                                step: 1,
+                                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Adjust the height of the image in pixels.')
+                            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.RangeControl, {
+                                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Image Margin Right'),
+                                value: parseInt(imageMarginRight) || 8,
+                                onChange: value => setAttributes({
+                                    imageMarginRight: `${value}px`
+                                }),
+                                min: 0,
+                                max: 50,
+                                step: 1,
+                                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Adjust the margin between image and text.')
+                            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.TextControl, {
+                                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Image Alt Text'),
+                                value: imageAlt || '',
+                                onChange: value => setAttributes({
+                                    imageAlt: value
+                                }),
+                                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Alternative text for accessibility.')
+                            })]
+                    })]
             }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.InspectorControls, {
                 group: "advanced",
                 children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.SelectControl, {
@@ -569,49 +597,28 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   getUpdatedLinkAttributes: () => (/* binding */ getUpdatedLinkAttributes)
 /* harmony export */ });
-/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./constants */ "./blocks/image-button/constants.ts");
-/* harmony import */ var _wordpress_url__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/url */ "@wordpress/url");
-/* harmony import */ var _wordpress_url__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_url__WEBPACK_IMPORTED_MODULE_1__);
 /**
- * Internal dependencies
- */
-
-/**
- * WordPress dependencies
- */
-
-/**
- * Updates the link attributes.
+ * Updates the link attributes based on the provided values.
  *
- * @param {Object}  attributes               The current block attributes.
- * @param {string}  attributes.rel           The current link rel attribute.
- * @param {string}  attributes.url           The current link url.
- * @param {boolean} attributes.opensInNewTab Whether the link should open in a new window.
- * @param {boolean} attributes.nofollow      Whether the link should be marked as nofollow.
+ * @param {Object} attributes - The current attributes.
+ * @param {string} attributes.rel - The current rel attribute.
+ * @param {string} attributes.url - The new URL.
+ * @param {boolean} attributes.opensInNewTab - Whether the link opens in a new tab.
+ * @param {boolean} attributes.nofollow - Whether the link should be marked as nofollow.
+ * @return {Object} The updated attributes.
  */
-function getUpdatedLinkAttributes({ rel = '', url = '', opensInNewTab, nofollow }) {
-    let newLinkTarget;
-    // Since `rel` is editable attribute, we need to check for existing values and proceed accordingly.
-    let updatedRel = rel;
-    if (opensInNewTab) {
-        newLinkTarget = _constants__WEBPACK_IMPORTED_MODULE_0__.NEW_TAB_TARGET;
-        updatedRel = updatedRel?.includes(_constants__WEBPACK_IMPORTED_MODULE_0__.NEW_TAB_REL) ? updatedRel : updatedRel + ` ${_constants__WEBPACK_IMPORTED_MODULE_0__.NEW_TAB_REL}`;
-    }
-    else {
-        const relRegex = new RegExp(`\\b${_constants__WEBPACK_IMPORTED_MODULE_0__.NEW_TAB_REL}\\s*`, 'g');
-        updatedRel = updatedRel?.replace(relRegex, '').trim();
+function getUpdatedLinkAttributes({ rel, url, opensInNewTab, nofollow }) {
+    const newRel = [];
+    if (rel) {
+        newRel.push(rel);
     }
     if (nofollow) {
-        updatedRel = updatedRel?.includes(_constants__WEBPACK_IMPORTED_MODULE_0__.NOFOLLOW_REL) ? updatedRel : (updatedRel + ` ${_constants__WEBPACK_IMPORTED_MODULE_0__.NOFOLLOW_REL}`).trim();
-    }
-    else {
-        const relRegex = new RegExp(`\\b${_constants__WEBPACK_IMPORTED_MODULE_0__.NOFOLLOW_REL}\\s*`, 'g');
-        updatedRel = updatedRel?.replace(relRegex, '').trim();
+        newRel.push('nofollow');
     }
     return {
-        url: (0,_wordpress_url__WEBPACK_IMPORTED_MODULE_1__.prependHTTP)(url),
-        linkTarget: newLinkTarget,
-        rel: updatedRel || undefined
+        url,
+        linkTarget: opensInNewTab ? '_blank' : undefined,
+        rel: newRel.length > 0 ? newRel.join(' ') : undefined
     };
 }
 
@@ -643,7 +650,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function save({ attributes, className }) {
-    const { tagName, type, textAlign, fontSize, linkTarget, rel, style, text, title, url, width } = attributes;
+    const { tagName, type, textAlign, fontSize, linkTarget, rel, style, text, title, url, width, imageId, imageUrl, imageAlt, imageHeight, imageMarginRight } = attributes;
     const TagName = tagName || 'a';
     const isButtonTag = 'button' === TagName;
     const buttonType = type || 'button';
@@ -673,22 +680,36 @@ function save({ attributes, className }) {
     const wrapperClasses = (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])(className, {
         [`has-custom-width wp-block-jankx-image-button__width-${width}`]: width
     });
-    return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+    // Check if text contains img tags
+    const textContainsImg = text && text.includes('<img');
+    const richText = text && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.RichText.Content, {
+        value: text
+    });
+    const saveData = /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
         ..._wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps.save({
             className: wrapperClasses
         }),
-        children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.RichText.Content, {
-            tagName: TagName,
+        children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(TagName, {
             type: isButtonTag ? buttonType : null,
             className: buttonClasses,
             href: isButtonTag ? null : url,
             title: title,
             style: buttonStyle,
-            value: text,
             target: isButtonTag ? null : linkTarget,
-            rel: isButtonTag ? null : rel
+            rel: isButtonTag ? null : rel,
+            children: [!textContainsImg && imageUrl && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("img", {
+                    src: imageUrl,
+                    alt: imageAlt || '',
+                    style: {
+                        height: imageHeight ? `${imageHeight}px` : '20px',
+                        width: 'auto',
+                        marginRight: imageMarginRight || '5px'
+                    },
+                    className: "wp-block-jankx-image-button__image"
+                }), richText]
         })
     });
+    return saveData;
 }
 
 
@@ -923,26 +944,6 @@ module.exports = window["wp"]["primitives"];
 
 /***/ }),
 
-/***/ "@wordpress/url":
-/*!*****************************!*\
-  !*** external ["wp","url"] ***!
-  \*****************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["url"];
-
-/***/ }),
-
-/***/ "react":
-/*!************************!*\
-  !*** external "React" ***!
-  \************************/
-/***/ ((module) => {
-
-module.exports = window["React"];
-
-/***/ }),
-
 /***/ "react/jsx-runtime":
 /*!**********************************!*\
   !*** external "ReactJSXRuntime" ***!
@@ -1038,7 +1039,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/button.js");
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _deprecated__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./deprecated */ "./blocks/image-button/deprecated.ts");
+/* harmony import */ var _deprecated__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./deprecated */ "./blocks/image-button/deprecated.tsx");
 /* harmony import */ var _edit__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./edit */ "./blocks/image-button/edit.tsx");
 /* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./block.json */ "./blocks/image-button/block.json");
 /* harmony import */ var _save__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./save */ "./blocks/image-button/save.tsx");

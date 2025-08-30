@@ -25,6 +25,8 @@ import {
         ToolbarButton,
         Popover,
         SelectControl,
+        PanelBody,
+        RangeControl,
         __experimentalToolsPanel as ToolsPanel,
         __experimentalToolsPanelItem as ToolsPanelItem,
         __experimentalToggleGroupControl as ToggleGroupControl,
@@ -191,8 +193,14 @@ function ButtonEdit( props: any ) {
                 imageId,
                 imageUrl,
                 imageAlt,
-                imageSize,
+                imageHeight,
+                imageMarginRight,
         } = attributes;
+
+        const cleanText = text ? text.replace(/<img[^>]*>/g, '') : '';
+
+
+        console.log('cleanText: ' + cleanText);
 
         const TagName = tagName || 'a';
 
@@ -377,40 +385,17 @@ function ButtonEdit( props: any ) {
                                                 width,
                                 } ) }
                         >
-                                { imageUrl && (
-                                        <img
-                                                src={ imageUrl }
-                                                alt={ imageAlt || '' }
-                                                style={ { width: imageSize, height: 'auto' } }
-                                                className="wp-block-jankx-image-button__image"
-                                        />
-                                ) }
-                                <RichText
-                                        ref={ mergedRef }
-                                        aria-label={ __( 'Button text' ) }
-                                        placeholder={ placeholder || __( 'Add text…' ) }
-                                        value={ text }
-                                        onChange={ ( value ) =>
-                                                setAttributes( {
-                                                        text: value,
-                                                } )
-                                        }
-                                        withoutInteractiveFormatting
+                                                                <div
                                         className={ clsx(
-                                                className,
+                                                'wp-block-jankx-image-button__link-container',
                                                 'wp-block-jankx-image-button__link',
                                                 colorProps.className,
                                                 borderProps.className,
                                                 typographyProps.className,
                                                 {
                                                         [ `has-text-align-${ textAlign }` ]: textAlign,
-
-                                                        // For backwards compatibility add style that isn't
-                                                        // provided via block support.
                                                         'no-border-radius': style?.border?.radius === 0,
-
-                                                        [ `has-custom-font-size` ]:
-                                                                blockProps.style.fontSize,
+                                                        [ `has-custom-font-size` ]: blockProps.style.fontSize,
                                                 },
                                                 __experimentalGetElementClassName( 'button' )
                                         ) }
@@ -422,10 +407,37 @@ function ButtonEdit( props: any ) {
                                                 ...typographyProps.style,
                                                 writingMode: undefined,
                                         } }
+                                >
+                                        { imageUrl && (
+                                                <img
+                                                        src={ imageUrl }
+                                                        alt={ imageAlt || '' }
+                                                        style={ {
+                                                                height: imageHeight ? `${ imageHeight }px` : '20px',
+                                                                width: 'auto',
+                                                                marginRight: imageMarginRight || '5px'
+                                                        } }
+                                                        className="wp-block-jankx-image-button__image"
+                                                />
+                                        ) }
+                                        <RichText
+                                                ref={ mergedRef }
+                                                aria-label={ __( 'Button text' ) }
+                                                placeholder={ placeholder || __( 'Add text…' ) }
+                                                value={ cleanText }
+                                                onChange={ ( value ) =>
+                                                        setAttributes( {
+                                                                text: value,
+                                                        } )
+                                                }
+                                                withoutInteractiveFormatting
+                                                allowedFormats={ [ 'core/bold', 'core/italic', 'core/strikethrough', 'core/link' ] }
+                                                className="block-editor-rich-text__editable"
                                         onReplace={ onReplace }
                                         onMerge={ mergeBlocks }
                                         identifier="text"
                                 />
+                                </div>
                         </div>
                         { hasBlockControls && (
                                 <BlockControls group="block">
@@ -510,6 +522,40 @@ function ButtonEdit( props: any ) {
                                         selectedWidth={ width }
                                         setAttributes={ setAttributes }
                                 />
+                                { imageUrl && (
+                                        <PanelBody title={ __( 'Image Settings' ) } initialOpen={ false }>
+                                                <RangeControl
+                                                        label={ __( 'Image Height' ) }
+                                                        value={ imageHeight || 20 }
+                                                        onChange={ ( value ) =>
+                                                                setAttributes( { imageHeight: value } )
+                                                        }
+                                                        min={ 10 }
+                                                        max={ 100 }
+                                                        step={ 1 }
+                                                        help={ __( 'Adjust the height of the image in pixels.' ) }
+                                                />
+                                                <RangeControl
+                                                        label={ __( 'Image Margin Right' ) }
+                                                        value={ parseInt( imageMarginRight ) || 8 }
+                                                        onChange={ ( value ) =>
+                                                                setAttributes( { imageMarginRight: `${ value }px` } )
+                                                        }
+                                                        min={ 0 }
+                                                        max={ 50 }
+                                                        step={ 1 }
+                                                        help={ __( 'Adjust the margin between image and text.' ) }
+                                                />
+                                                <TextControl
+                                                        label={ __( 'Image Alt Text' ) }
+                                                        value={ imageAlt || '' }
+                                                        onChange={ ( value ) =>
+                                                                setAttributes( { imageAlt: value } )
+                                                        }
+                                                        help={ __( 'Alternative text for accessibility.' ) }
+                                                />
+                                        </PanelBody>
+                                ) }
                         </InspectorControls>
                         <InspectorControls group="advanced">
                                 <SelectControl

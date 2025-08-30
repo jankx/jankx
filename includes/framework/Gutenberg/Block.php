@@ -135,6 +135,9 @@ abstract class Block
             return false;
         }
 
+                // Prioritize build assets over source assets
+        $this->prioritizeBuildAssets($metadata);
+
         // Merge with constructor config
         $metadata = array_merge($metadata, $this->config);
 
@@ -251,7 +254,8 @@ abstract class Block
         $buildPath = $blockPath . '/build/' . $buildFilename;
 
         if (file_exists($buildPath)) {
-            return 'file:./build/' . $buildFilename;
+            // Return the build path relative to block directory
+            return 'build/' . $buildFilename;
         }
 
         return false;
@@ -376,7 +380,7 @@ abstract class Block
         register_block_type($blockPath, $blockArgs);
     }
 
-    /**
+        /**
      * Register block with metadata array
      *
      * @param array $metadata Block metadata
@@ -392,8 +396,24 @@ abstract class Block
         $this->registerBlock($blockPath, $metadata);
 
         // Add hooks to enqueue assets at the right time
-        add_action('wp_enqueue_scripts', [$this, 'enqueueBlockAssets']);
         add_action('enqueue_block_assets', [$this, 'enqueueBlockAssets']);
+
+        // Manually enqueue editor styles with high priority to ensure it loads
+        add_action('enqueue_block_editor_assets', [$this, 'enqueueEditorStyles'], 20);
+        
+        // Also try wp_enqueue_scripts for admin
+        add_action('wp_enqueue_scripts', [$this, 'enqueueEditorStyles']);
+        add_action('admin_enqueue_scripts', [$this, 'enqueueEditorStyles']);
+        
+        // Try to enqueue editor style immediately if we're in admin and block editor
+        if (is_admin() && function_exists('get_current_screen')) {
+            $screen = get_current_screen();
+            if ($screen && $screen->is_block_editor) {
+                $this->enqueueEditorStyles();
+            }
+        }
+        
+        error_log('ImageButton: Registered multiple hooks for editor styles: ' . $this->name);
     }
 
     protected function getBlockMetadataUrls($blockPath, $metadata)
@@ -440,6 +460,50 @@ abstract class Block
         }
 
         return $assets;
+    }
+
+    /**
+     * Enqueue editor styles
+     *
+     * @return void
+     */
+    public function enqueueEditorStyles()
+    {
+        // Only enqueue in admin and when in block editor
+        if (!is_admin()) {
+            return;
+        }
+
+        // Check if we're in the block editor
+        $screen = get_current_screen();
+        if (!$screen || !$screen->is_block_editor) {
+            return;
+        }
+
+        $blockPath = $this->getBlockPath();
+        if (!$blockPath) {
+            error_log('ImageButton: Block path not found for: ' . $this->name);
+            return;
+        }
+
+        $blockName = $this->getBlockNameFromNamespace($this->name);
+        $editorStylePath = $blockPath . '/build/editor.css';
+        $editorStyleUrl = get_template_directory_uri() . '/resources/blocks/' . $blockName . '/build/editor.css';
+
+        error_log('ImageButton: Checking editor style - Path: ' . $editorStylePath);
+        error_log('ImageButton: Editor style URL: ' . $editorStyleUrl);
+
+        if (file_exists($editorStylePath)) {
+            wp_enqueue_style(
+                $this->name . '-editor-style',
+                $editorStyleUrl,
+                [],
+                filemtime($editorStylePath)
+            );
+            error_log('ImageButton: Successfully enqueued editor style: ' . $this->name . '-editor-style');
+        } else {
+            error_log('ImageButton: Editor style file not found: ' . $editorStylePath);
+        }
     }
 
     /**

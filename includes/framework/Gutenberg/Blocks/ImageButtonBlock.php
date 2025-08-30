@@ -153,6 +153,32 @@ class ImageButtonBlock extends Block
                 ],
                 'width' => [
                     'type' => 'number'
+                ],
+                'imageId' => [
+                    'type' => 'number'
+                ],
+                'imageUrl' => [
+                    'type' => 'string'
+                ],
+                'imageAlt' => [
+                    'type' => 'string'
+                ],
+                'imageSize' => [
+                    'type' => 'string',
+                    'default' => '20px'
+                ],
+                'imageWidth' => [
+                    'type' => 'number'
+                ],
+                'imageHeight' => [
+                    'type' => 'number'
+                ],
+                'imageSizeSlug' => [
+                    'type' => 'string'
+                ],
+                'imageMarginRight' => [
+                    'type' => 'string',
+                    'default' => '8px'
                 ]
             ]
         ]);
@@ -168,8 +194,20 @@ class ImageButtonBlock extends Block
         $blockPath = get_template_directory() . '/resources/blocks/image-button';
         $metadata = $this->getBlockMetadata($blockPath);
 
-        // Register block - CSS will be handled by block.json
-        $this->registerBlock($blockPath, $metadata);
+        // Register block with assets enqueue
+        $this->registerBlockWithMetadata($metadata);
+        
+        // Force enqueue editor style for this specific block
+        add_action('enqueue_block_editor_assets', function() use ($blockPath) {
+            if (file_exists($blockPath . '/build/editor.css')) {
+                wp_enqueue_style(
+                    'jankx-image-button-editor',
+                    get_template_directory_uri() . '/resources/blocks/image-button/build/editor.css',
+                    [],
+                    filemtime($blockPath . '/build/editor.css')
+                );
+            }
+        });
     }
 
 

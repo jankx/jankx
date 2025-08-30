@@ -86,10 +86,15 @@
                         "type": "number"
                 },
                 "imageHeight": {
-                        "type": "number"
+                        "type": "number",
+                        "default": 20
                 },
                 "imageSizeSlug": {
                         "type": "string"
+                },
+                "imageMarginRight": {
+                        "type": "string",
+                        "default": "5px"
                 }
         },
         "supports": {

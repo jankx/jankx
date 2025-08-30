@@ -30,6 +30,11 @@ export default function save( { attributes, className }: any ) {
                 title,
                 url,
                 width,
+                imageId,
+                imageUrl,
+                imageAlt,
+                imageHeight,
+                imageMarginRight,
         } = attributes;
 
         const TagName = tagName || 'a';
@@ -71,19 +76,37 @@ export default function save( { attributes, className }: any ) {
                 [ `has-custom-width wp-block-jankx-image-button__width-${ width }` ]: width,
         } );
 
-        return (
+        // Check if text contains img tags
+        const textContainsImg = text && text.includes('<img');
+        const richText = ( text && <RichText.Content value={ text } /> );
+
+        const saveData = (
                 <div { ...useBlockProps.save( { className: wrapperClasses } ) }>
-                        <RichText.Content
-                                tagName={ TagName }
+                        <TagName
                                 type={ isButtonTag ? buttonType : null }
                                 className={ buttonClasses }
                                 href={ isButtonTag ? null : url }
                                 title={ title }
                                 style={ buttonStyle }
-                                value={ text }
                                 target={ isButtonTag ? null : linkTarget }
                                 rel={ isButtonTag ? null : rel }
-                        />
+                        >
+                                { !textContainsImg && imageUrl && (
+                                        <img
+                                                src={ imageUrl }
+                                                alt={ imageAlt || '' }
+                                                style={ {
+                                                        height: imageHeight ? `${ imageHeight }px` : '20px',
+                                                        width: 'auto',
+                                                        marginRight: imageMarginRight || '5px'
+                                                } }
+                                                className="wp-block-jankx-image-button__image"
+                                        />
+                                ) }
+                                { richText }
+                        </TagName>
                 </div>
         );
+
+        return saveData;
 }
