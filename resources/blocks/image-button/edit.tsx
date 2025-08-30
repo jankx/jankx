@@ -198,10 +198,6 @@ function ButtonEdit( props: any ) {
         } = attributes;
 
         const cleanText = text ? text.replace(/<img[^>]*>/g, '') : '';
-
-
-        console.log('cleanText: ' + cleanText);
-
         const TagName = tagName || 'a';
 
         function onKeyDown( event: KeyboardEvent ) {
