@@ -159,7 +159,7 @@ class Controller extends AbstractBlock
 
         if (
             $is_product_collection_block &&
-            'woocommerce/product-collection' === $block_name &&
+            'jankx/product-collection' === $block_name &&
             ! $force_page_reload_global
         ) {
             $enhanced_query_stack[] = $parsed_block['attrs']['queryId'];

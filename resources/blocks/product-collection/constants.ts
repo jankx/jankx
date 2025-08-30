@@ -9,8 +9,20 @@
 /**
  * External dependencies
  */
-import { getSetting } from '@woocommerce/settings';
-import { objectOmit } from '@woocommerce/utils';
+// Mock functions for WooCommerce dependencies
+const getSetting = <T>(key: string, defaultValue: T): T => {
+    // Try to get from global wc object
+    if (typeof window !== 'undefined' && (window as any).wc && (window as any).wc.settings) {
+        return (window as any).wc.settings[key] || defaultValue;
+    }
+    return defaultValue;
+};
+
+const objectOmit = <T extends Record<string, any>, K extends keyof T>(obj: T, key: K): Omit<T, K> => {
+    const { [key]: omitted, ...rest } = obj;
+    return rest;
+};
+
 import type { InnerBlockTemplate } from '@wordpress/blocks';
 
 /**

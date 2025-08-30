@@ -2,7 +2,6 @@
 
 namespace Jankx\Services;
 
-use Automattic\WooCommerce\Internal\Admin\BlockTemplates\Block;
 use Jankx\Foundation\Application;
 use Jankx\Gutenberg\Blocks\DynamicCollectionBlock;
 use Jankx\Gutenberg\Blocks\IconPickerBlock;
@@ -16,13 +15,10 @@ use Jankx\Gutenberg\Blocks\OffcanvasSidebarBlock;
 use Jankx\Gutenberg\Blocks\OffcanvasTriggerBlock;
 use Jankx\Gutenberg\Blocks\CategoriesGridBlock;
 use Jankx\Gutenberg\Blocks\WooCommerce\ProductCollection;
-use Jankx\Gutenberg\Blocks\TabsBlock;
 use Jankx\Gutenberg\Blocks\WplyrMediaBlock;
 use Jankx\Gutenberg\Blocks\LookbookRevealBlock;
 use Jankx\Gutenberg\GutenbergPattern;
 use Jankx\Facades\Log;
-use Jankx\Helper\Environment;
-use WP_Block_Type_Registry;
 
 /**
  * Gutenberg Service
@@ -116,12 +112,9 @@ class GutenbergService
         $this->repository->registerBlock(CategoriesGridBlock::class);
         $this->repository->registerBlock(WplyrMediaBlock::class);
         $this->repository->registerBlock(LookbookRevealBlock::class);
-
-
         $this->repository->registerBlock(ImageButtonBlock::class);
-        $this->repository->registerBlock(TabsBlock::class);
 
-        // $this->repository->registerBlock(ProductCollection::class);
+        $this->repository->registerBlock(ProductCollection::class);
     }
 
     /**

@@ -12,33 +12,8 @@ use Jankx\Gutenberg\Blocks\WooCommerce\ProductCollection\Controller;
  */
 class ProductCollection extends Block
 {
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        parent::__construct('jankx/product-collection', [
-            'title' => __('Product Collection', 'jankx'),
-            'category' => 'jankx-blocks',
-            'icon' => 'products',
-            'description' => __('Display a collection of products from your store.', 'jankx'),
-            'keywords' => ['products', 'collection', 'jankx', 'woocommerce'],
-            'supports' => [
-                'html' => false,
-                'align' => ['wide', 'full']
-            ]
-        ]);
-    }
 
-    /**
-     * Register the block
-     */
-    public function register()
-    {
-        $blockPath = get_template_directory() . '/resources/blocks/product-collection';
-        $metadata = $this->getBlockMetadata($blockPath);
-        $this->registerBlock($blockPath, $metadata);
-    }
+    protected $blockId = 'jankx/product-collection';
 
     /**
      * Render the block using WooCommerce Controller
@@ -57,52 +32,39 @@ class ProductCollection extends Block
      */
     private function renderWithWooCommerceController($attributes, $content)
     {
-        $collection = $attributes['collection'] ?? 'all';
-        $columns = $attributes['displayLayout']['columns'] ?? 3;
-        $postsPerPage = $attributes['query']['perPage'] ?? 12;
+        // Create Controller instance
+        $controller = new Controller('jankx/product-collection', 'resources/blocks/product-collection');
 
-        // Build query args similar to WooCommerce Controller
-        $args = [
-            'post_type' => 'product',
-            'post_status' => 'publish',
-            'posts_per_page' => $postsPerPage,
-            'paged' => get_query_var('paged') ? get_query_var('paged') : 1
+        // Build block context for Controller
+        $block_context = [
+            'query' => [
+                'isProductCollectionBlock' => true,
+                'perPage' => $attributes['query']['perPage'] ?? 12,
+                'orderBy' => $attributes['query']['orderBy'] ?? 'date',
+                'order' => $attributes['query']['order'] ?? 'desc',
+                'featured' => $attributes['query']['featured'] ?? false,
+                'woocommerceOnSale' => $attributes['query']['woocommerceOnSale'] ?? false,
+            ],
+            'collection' => $attributes['collection'] ?? 'all',
+            'productCollectionLocation' => 'archive'
         ];
 
-        // Add collection-specific logic based on WooCommerce Controller
-        switch ($collection) {
-            case 'featured':
-                $args['meta_query'] = [
-                    [
-                        'key' => '_featured',
-                        'value' => 'yes',
-                        'compare' => '='
-                    ]
-                ];
-                break;
-            case 'on-sale':
-                $args['meta_query'] = [
-                    [
-                        'key' => '_sale_price',
-                        'value' => '',
-                        'compare' => '!='
-                    ]
-                ];
-                break;
-            case 'best-selling':
-                $args['meta_key'] = 'total_sales';
-                $args['orderby'] = 'meta_value_num';
-                break;
-            case 'new':
-                $args['orderby'] = 'date';
-                $args['order'] = 'DESC';
-                break;
-            default:
-                // All products
-                break;
-        }
+        // Create a mock block object for Controller
+        $block = (object) [
+            'context' => $block_context
+        ];
 
-        $products = new \WP_Query($args);
+        // Get current page
+        $page = get_query_var('paged') ? get_query_var('paged') : 1;
+
+        // Use Controller's build_frontend_query method
+        $query_args = $controller->build_frontend_query([], $block, $page);
+
+        // Execute query
+        $products = new \WP_Query($query_args);
+
+        $columns = $attributes['displayLayout']['columns'] ?? 3;
+        $collection = $attributes['collection'] ?? 'all';
 
         ob_start();
         ?>
@@ -110,15 +72,16 @@ class ProductCollection extends Block
             <div class="jankx-product-collection"
                  data-collection="<?php echo esc_attr($collection); ?>"
                  data-columns="<?php echo esc_attr($columns); ?>"
-                 data-posts-per-page="<?php echo esc_attr($postsPerPage); ?>">
+                 data-posts-per-page="<?php echo esc_attr($attributes['query']['perPage'] ?? 12); ?>">
 
-                <?php if ($products->have_posts()) : ?>
-                    <div class="jankx-product-collection-grid" style="grid-template-columns: repeat(<?php echo esc_attr($columns); ?>, 1fr);">
-                        <?php while ($products->have_posts()) :
+                <?php if ($products->have_posts()): ?>
+                    <div class="jankx-product-collection-grid"
+                         style="grid-template-columns: repeat(<?php echo esc_attr($columns); ?>, 1fr);">
+                        <?php while ($products->have_posts()):
                             $products->the_post(); ?>
                             <div class="jankx-product-item">
                                 <div class="product-image">
-                                    <?php if (has_post_thumbnail()) : ?>
+                                    <?php if (has_post_thumbnail()): ?>
                                         <a href="<?php the_permalink(); ?>">
                                             <?php the_post_thumbnail('medium'); ?>
                                         </a>
@@ -141,7 +104,7 @@ class ProductCollection extends Block
                         <?php endwhile; ?>
                     </div>
 
-                    <?php if ($products->max_num_pages > 1) : ?>
+                    <?php if ($products->max_num_pages > 1): ?>
                         <div class="jankx-pagination">
                             <?php
                             echo paginate_links([
@@ -153,7 +116,7 @@ class ProductCollection extends Block
                             ?>
                         </div>
                     <?php endif; ?>
-                <?php else : ?>
+                <?php else: ?>
                     <div class="jankx-no-products">
                         <p><?php _e('No products found.', 'jankx'); ?></p>
                     </div>

@@ -132,7 +132,7 @@ class Renderer
         $is_product_collection_block = $block['attrs']['query']['isProductCollectionBlock'] ?? false;
 
         if ($is_product_collection_block) {
-            wp_enqueue_script_module('woocommerce/product-collection');
+            wp_enqueue_script_module('jankx/product-collection');
 
             $collection                     = $block['attrs']['collection'] ?? '';
             $is_enhanced_pagination_enabled = ! ( $block['attrs']['forcePageReload'] ?? false );
@@ -144,7 +144,7 @@ class Renderer
 
             $p = new \WP_HTML_Tag_Processor($block_content);
             if ($p->next_tag(array( 'class_name' => 'wp-block-woocommerce-product-collection' ))) {
-                $p->set_attribute('data-wp-interactive', 'woocommerce/product-collection');
+                $p->set_attribute('data-wp-interactive', 'jankx/product-collection');
                 $p->set_attribute('data-wp-init', 'callbacks.onRender');
                 $p->set_attribute('data-wp-context', wp_json_encode($context, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP));
 
