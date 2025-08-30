@@ -2,6 +2,8 @@
 
 namespace Jankx\Gutenberg;
 
+use Jankx\Contracts\BlockInterface;
+
 /**
  * Base Block Class for Jankx Framework
  *
@@ -12,7 +14,7 @@ namespace Jankx\Gutenberg;
  * @package Jankx\Gutenberg\Blocks
  * @since 1.0.0
  */
-abstract class Block
+abstract class Block implements BlockInterface
 {
     /**
      * Block name (namespace/block-name)
@@ -400,11 +402,11 @@ abstract class Block
 
         // Manually enqueue editor styles with high priority to ensure it loads
         add_action('enqueue_block_editor_assets', [$this, 'enqueueEditorStyles'], 20);
-        
+
         // Also try wp_enqueue_scripts for admin
         add_action('wp_enqueue_scripts', [$this, 'enqueueEditorStyles']);
         add_action('admin_enqueue_scripts', [$this, 'enqueueEditorStyles']);
-        
+
         // Try to enqueue editor style immediately if we're in admin and block editor
         if (is_admin() && function_exists('get_current_screen')) {
             $screen = get_current_screen();
@@ -412,7 +414,7 @@ abstract class Block
                 $this->enqueueEditorStyles();
             }
         }
-        
+
         error_log('ImageButton: Registered multiple hooks for editor styles: ' . $this->name);
     }
 

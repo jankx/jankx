@@ -1,13 +1,13 @@
 <?php
 
-namespace Jankx\Contracts;
+namespace Jankx\Contracts\Extension;
 
 /**
  * Extension Service Interface
  *
  * Contract cho extension service trong Jankx framework
  */
-interface ExtensionService
+interface ExtensionServiceInterface
 {
     /**
      * Enable extension

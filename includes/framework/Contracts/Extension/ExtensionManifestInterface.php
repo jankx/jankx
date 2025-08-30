@@ -1,13 +1,13 @@
 <?php
 
-namespace Jankx\Contracts;
+namespace Jankx\Contracts\Extension;
 
 /**
  * Extension Manifest Interface
  *
  * Contract cho extension manifest trong Jankx framework
  */
-interface ExtensionManifest
+interface ExtensionManifestInterface
 {
     /**
      * Load manifest from file
@@ -259,32 +259,32 @@ interface ExtensionManifest
     /**
      * Compare version with another manifest
      *
-     * @param ExtensionManifest $other
+     * @param ExtensionManifestInterface $other
      * @return int
      */
-    public function compareVersion(ExtensionManifest $other): int;
+    public function compareVersion(ExtensionManifestInterface $other): int;
 
     /**
      * Check if this manifest is newer than another
      *
-     * @param ExtensionManifest $other
+     * @param ExtensionManifestInterface $other
      * @return bool
      */
-    public function isNewerThan(ExtensionManifest $other): bool;
+    public function isNewerThan(ExtensionManifestInterface $other): bool;
 
     /**
      * Check if this manifest is older than another
      *
-     * @param ExtensionManifest $other
+     * @param ExtensionManifestInterface $other
      * @return bool
      */
-    public function isOlderThan(ExtensionManifest $other): bool;
+    public function isOlderThan(ExtensionManifestInterface $other): bool;
 
     /**
      * Check if this manifest is compatible with another
      *
-     * @param ExtensionManifest $other
+     * @param ExtensionManifestInterface $other
      * @return bool
      */
-    public function isCompatibleWith(ExtensionManifest $other): bool;
+    public function isCompatibleWith(ExtensionManifestInterface $other): bool;
 }

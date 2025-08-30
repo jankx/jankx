@@ -1,13 +1,13 @@
 <?php
 
-namespace Jankx\Contracts;
+namespace Jankx\Contracts\Extension;
 
 /**
  * Extension Interface
  *
  * Contract cho tất cả extensions trong Jankx framework
  */
-interface Extension
+interface ExtensionInterface
 {
     /**
      * Initialize extension

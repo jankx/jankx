@@ -1,13 +1,13 @@
 <?php
 
-namespace Jankx\Contracts;
+namespace Jankx\Contracts\Extension;
 
 /**
  * Extension Manager Interface
  *
  * Contract cho extension manager trong Jankx framework
  */
-interface ExtensionManager
+interface ExtensionManagerInterface
 {
     /**
      * Get singleton instance
@@ -40,7 +40,7 @@ interface ExtensionManager
      * @param string $name
      * @return Extension|null
      */
-    public function get_extension(string $name): ?Extension;
+    public function get_extension(string $name): ?ExtensionInterface;
 
     /**
      * Check if extension exists
@@ -77,7 +77,7 @@ interface ExtensionManager
      * @param string $extensionId
      * @return Extension|null
      */
-    public function get_extension_by_id(string $extensionId): ?Extension;
+    public function get_extension_by_id(string $extensionId): ?ExtensionInterface;
 
     /**
      * Check if extension ID exists

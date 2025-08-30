@@ -8,7 +8,9 @@
 
 namespace Jankx\Extensions;
 
-class ExtensionService implements \Jankx\Contracts\ExtensionService
+use Jankx\Contracts\Extension\ExtensionServiceInterface;
+
+class ExtensionService implements ExtensionServiceInterface
 {
     /**
      * @var ExtensionManager

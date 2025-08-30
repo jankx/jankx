@@ -8,10 +8,10 @@
 
 namespace Jankx\Extensions;
 
-use Jankx\Contracts\ExtensionManager as ExtensionManagerContract;
-use Jankx\Contracts\Extension;
+use Jankx\Contracts\Extension\ExtensionInterface;
+use Jankx\Contracts\Extension\ExtensionManagerInterface;
 
-class ExtensionManager implements ExtensionManagerContract
+class ExtensionManager implements ExtensionManagerInterface
 {
     private static $instance = null;
     private $extensions = [];
@@ -199,7 +199,7 @@ class ExtensionManager implements ExtensionManagerContract
     /**
      * Get a specific extension
      */
-    public function get_extension(string $name): ?Extension
+    public function get_extension(string $name): ?ExtensionInterface
     {
         return $this->extensions[$name] ?? null;
     }
@@ -207,7 +207,7 @@ class ExtensionManager implements ExtensionManagerContract
     /**
      * Get extension by ID
      */
-    public function get_extension_by_id(string $extensionId): ?Extension
+    public function get_extension_by_id(string $extensionId): ?ExtensionInterface
     {
         if (!isset($this->extension_ids[$extensionId])) {
             return null;

@@ -8,7 +8,9 @@
 
 namespace Jankx\Extensions;
 
-class ExtensionManifest implements \Jankx\Contracts\ExtensionManifest
+use Jankx\Contracts\Extension\ExtensionManifestInterface;
+
+class ExtensionManifest implements ExtensionManifestInterface
 {
     protected $name;
     protected $version;
@@ -442,22 +444,22 @@ class ExtensionManifest implements \Jankx\Contracts\ExtensionManifest
         return $this->validate();
     }
 
-    public function compareVersion(\Jankx\Contracts\ExtensionManifest $other): int
+    public function compareVersion(ExtensionManifestInterface $other): int
     {
         return version_compare($this->getVersion(), $other->getVersion());
     }
 
-    public function isNewerThan(\Jankx\Contracts\ExtensionManifest $other): bool
+    public function isNewerThan(ExtensionManifestInterface $other): bool
     {
         return $this->compareVersion($other) > 0;
     }
 
-    public function isOlderThan(\Jankx\Contracts\ExtensionManifest $other): bool
+    public function isOlderThan(ExtensionManifestInterface $other): bool
     {
         return $this->compareVersion($other) < 0;
     }
 
-    public function isCompatibleWith(\Jankx\Contracts\ExtensionManifest $other): bool
+    public function isCompatibleWith(ExtensionManifestInterface $other): bool
     {
         // TODO: Implement compatibility check logic
         return true;
