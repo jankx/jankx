@@ -53,7 +53,10 @@ class GutenbergService
     public function initBlocks()
     {
         foreach ($this->getBlocks() as $blockClass => $initialized) {
-            $block = $initialized ? $this->repository->getBlock($blockClass) : new $blockClass();
+            $block = $initialized
+                ? $this->repository->getBlock($blockClass)
+                : new $blockClass();
+
             $this->repository->registerBlock($block);
         }
     }
@@ -77,10 +80,9 @@ class GutenbergService
 
             foreach ($instances as $blockName => $block) {
                 try {
+                    Log::info('Register block ' . $blockName . ' to Gutenberg editor');
                     $block->register();
                     $registeredCount++;
-                    if (Environment::isDebugLog()) {
-                    }
                 } catch (\Exception $e) {
                     Log::error('GutenbergService: Failed to register block ' . $blockName . ' - ' . $e->getMessage());
                 }
@@ -102,21 +104,21 @@ class GutenbergService
      */
     protected function registerDefaultBlocks()
     {
-        $this->repository->registerBlock(ImageButtonBlock::class);
-        $this->repository->registerBlock(IconButtonBlock::class);
         $this->repository->registerBlock(SvgIconBlock::class);
+        $this->repository->registerBlock(MegaMenuBlock::class);
         $this->repository->registerBlock(SvgIconButtonBlock::class);
+        $this->repository->registerBlock(OffcanvasSidebarBlock::class);
+        $this->repository->registerBlock(IconPickerBlock::class);
+        $this->repository->registerBlock(DynamicCollectionBlock::class);
+        $this->repository->registerBlock(IconButtonBlock::class);
         $this->repository->registerBlock(OffcanvasTriggerBlock::class);
+        $this->repository->registerBlock(LanguageSwitcherBlock::class);
         $this->repository->registerBlock(CategoriesGridBlock::class);
         $this->repository->registerBlock(WplyrMediaBlock::class);
         $this->repository->registerBlock(LookbookRevealBlock::class);
 
 
-        $this->repository->registerBlock(DynamicCollectionBlock::class);
-        $this->repository->registerBlock(IconPickerBlock::class);
-        $this->repository->registerBlock(LanguageSwitcherBlock::class);
-        $this->repository->registerBlock(MegaMenuBlock::class);
-        $this->repository->registerBlock(OffcanvasSidebarBlock::class);
+        $this->repository->registerBlock(ImageButtonBlock::class);
         $this->repository->registerBlock(TabsBlock::class);
 
         // $this->repository->registerBlock(ProductCollection::class);

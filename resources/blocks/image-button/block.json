@@ -166,9 +166,9 @@
                 { "name": "fill", "label": "Fill", "isDefault": true },
                 { "name": "outline", "label": "Outline" }
         ],
-        "editorScript": "build/index.js",
-        "editorStyle": "build/editor.css",
-        "style": "build/style.css",
+        "editorScript": "file:./build/index.js",
+        "editorStyle": "file:./build/editor.css",
+        "style": "file:./build/style.css",
         "selectors": {
                 "root": ".wp-block-jankx-image-button .wp-block-jankx-image-button__link",
                 "typography": {

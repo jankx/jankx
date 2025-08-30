@@ -288,7 +288,6 @@ function ButtonEdit(props) {
     const { attributes, setAttributes, className, isSelected, onReplace, mergeBlocks, clientId, context } = props;
     const { tagName, textAlign, linkTarget, placeholder, rel, style, text, url, width, metadata, imageId, imageUrl, imageAlt, imageHeight, imageMarginRight } = attributes;
     const cleanText = text ? text.replace(/<img[^>]*>/g, '') : '';
-    console.log('cleanText: ' + cleanText);
     const TagName = tagName || 'a';
     function onKeyDown(event) {
         if (_wordpress_keycodes__WEBPACK_IMPORTED_MODULE_7__.isKeyboardEvent.primary(event, 'k')) {
