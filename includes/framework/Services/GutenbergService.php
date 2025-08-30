@@ -13,10 +13,7 @@ use Jankx\Gutenberg\Blocks\SvgIconButtonBlock;
 use Jankx\Gutenberg\Blocks\ImageButtonBlock;
 use Jankx\Gutenberg\Blocks\OffcanvasSidebarBlock;
 use Jankx\Gutenberg\Blocks\OffcanvasTriggerBlock;
-use Jankx\Gutenberg\Blocks\CategoriesGridBlock;
-use Jankx\Gutenberg\Blocks\WooCommerce\ProductCollection;
 use Jankx\Gutenberg\Blocks\WplyrMediaBlock;
-use Jankx\Gutenberg\Blocks\LookbookRevealBlock;
 use Jankx\Gutenberg\GutenbergPattern;
 use Jankx\Facades\Log;
 
@@ -109,12 +106,9 @@ class GutenbergService
         $this->repository->registerBlock(IconButtonBlock::class);
         $this->repository->registerBlock(OffcanvasTriggerBlock::class);
         $this->repository->registerBlock(LanguageSwitcherBlock::class);
-        $this->repository->registerBlock(CategoriesGridBlock::class);
         $this->repository->registerBlock(WplyrMediaBlock::class);
-        $this->repository->registerBlock(LookbookRevealBlock::class);
         $this->repository->registerBlock(ImageButtonBlock::class);
 
-        $this->repository->registerBlock(ProductCollection::class);
     }
 
     /**

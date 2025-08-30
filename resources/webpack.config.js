@@ -26,15 +26,6 @@ module.exports = {
     'blocks/mega-menu/build/style': './blocks/mega-menu/style.scss',
     'blocks/mega-menu/build/editor': './blocks/mega-menu/editor.scss',
 
-    'blocks/lookbook-reveal/build/index': './blocks/lookbook-reveal/index.tsx',
-    'blocks/lookbook-reveal/build/style': './blocks/lookbook-reveal/style.scss',
-    'blocks/lookbook-reveal/build/editor': './blocks/lookbook-reveal/editor.scss',
-
-    'blocks/categories-grid/build/index': './blocks/categories-grid/index.tsx',
-    'blocks/categories-grid/build/style': './blocks/categories-grid/style.scss',
-    'blocks/categories-grid/build/editor': './blocks/categories-grid/editor.scss',
-    'blocks/categories-grid/build/view': './blocks/categories-grid/view.js',
-
     'blocks/wplyr-media/build/index': './blocks/wplyr-media/index.tsx',
     'blocks/wplyr-media/build/style': './blocks/wplyr-media/style.scss',
     'blocks/wplyr-media/build/editor': './blocks/wplyr-media/editor.scss',
@@ -64,11 +55,6 @@ module.exports = {
     'blocks/image-button/build/index': './blocks/image-button/index.tsx',
     'blocks/image-button/build/style': './blocks/image-button/style.scss',
     'blocks/image-button/build/editor': './blocks/image-button/editor.scss',
-
-     // Product Collection Block
-    //  'blocks/product-collection/build/index': './blocks/product-collection/index.tsx',
-    //  'blocks/product-collection/build/style': './blocks/product-collection/style.scss',
-    //  'blocks/product-collection/build/editor': './blocks/product-collection/editor.scss',
   },
   output: {
     path: path.resolve(__dirname),

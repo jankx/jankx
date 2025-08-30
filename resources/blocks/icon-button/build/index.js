@@ -2795,6 +2795,47 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+/**
+ * Hàm chung để render icon, được sử dụng cho cả component Edit và Save.
+ * Điều này đảm bảo cấu trúc HTML của icon luôn giống nhau.
+ */
+const renderIcon = (attributes, finalTextColor) => {
+    const { hasIcon, iconName, iconSet, iconSize, iconColor, iconStyle } = attributes;
+    if (!hasIcon || !iconName) {
+        return null;
+    }
+    const finalIconColor = iconColor || finalTextColor || '#333333';
+    if (iconSet === 'material') {
+        const styleClass = iconStyle !== 'filled' ? `material-icons-${iconStyle}` : 'material-icons';
+        return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
+            className: styleClass,
+            style: {
+                fontSize: iconSize,
+                color: finalIconColor
+            },
+            children: iconName
+        });
+    }
+    else if (iconSet === 'fontawesome') {
+        return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("i", {
+            className: `fas fa-${iconName}`,
+            style: {
+                fontSize: iconSize,
+                color: finalIconColor
+            }
+        });
+    }
+    else if (iconSet === 'dashicons') {
+        return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
+            className: `dashicons dashicons-${iconName}`,
+            style: {
+                fontSize: iconSize,
+                color: finalIconColor
+            }
+        });
+    }
+    return null;
+};
 const Edit = ({ attributes, setAttributes, backgroundColor, setBackgroundColor, textColor, setTextColor }) => {
     const { text, url, linkTarget, rel, placeholder, hasIcon, iconName, iconSet, iconPosition, iconSize, iconColor, iconStyle, borderRadius, fontSize, fontFamily, fontWeight, textTransform, letterSpacing, lineHeight, width, justification, opensInNewTab } = attributes;
     const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)({
@@ -2806,66 +2847,21 @@ const Edit = ({ attributes, setAttributes, backgroundColor, setBackgroundColor, 
             iconSet: icon.iconSet || 'material'
         });
     };
-    const renderIcon = () => {
-        if (!hasIcon || !iconName) {
-            return null;
-        }
-        const finalIconColor = iconColor || textColor?.color || '#333333';
-        if (iconSet === 'material') {
-            const styleClass = iconStyle !== 'filled' ? `material-icons-${iconStyle}` : 'material-icons';
-            return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
-                className: styleClass,
-                style: {
-                    fontSize: iconSize,
-                    color: finalIconColor
-                },
-                children: iconName
-            });
-        }
-        else if (iconSet === 'fontawesome') {
-            return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("i", {
-                className: `fas fa-${iconName}`,
-                style: {
-                    fontSize: iconSize,
-                    color: finalIconColor
-                }
-            });
-        }
-        else if (iconSet === 'dashicons') {
-            return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
-                className: `dashicons dashicons-${iconName}`,
-                style: {
-                    fontSize: iconSize,
-                    color: finalIconColor
-                }
-            });
-        }
-        return null;
-    };
+    const iconElement = renderIcon(attributes, props.textColor?.color); // Sử dụng hàm render icon chung
     const renderButtonContent = () => {
-        const iconElement = renderIcon();
-        const finalTextColor = textColor?.color || '#333333';
         return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("span", {
             style: {
-                color: finalTextColor
+                color: props.textColor?.color || '#333333'
             },
-            children: [iconPosition === 'before' && iconElement, /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.RichText, {
-                    value: text,
+            children: [attributes.iconPosition === 'before' && iconElement, /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.RichText, {
+                    value: attributes.text,
                     onChange: value => setAttributes({
                         text: value
                     }),
-                    placeholder: placeholder || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Add text...', 'jankx'),
-                    allowedFormats: [],
-                    className: "jankx-icon-button__text",
-                    style: {
-                        fontSize,
-                        fontFamily,
-                        fontWeight,
-                        textTransform,
-                        letterSpacing,
-                        lineHeight
-                    }
-                }), iconPosition === 'after' && iconElement]
+                    placeholder: attributes.placeholder || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Add text...', 'jankx'),
+                    className: "jankx-icon-button__text"
+                    // ... (styles)
+                }), attributes.iconPosition === 'after' && iconElement]
         });
     };
     const getButtonStyles = () => {
@@ -2885,21 +2881,20 @@ const Edit = ({ attributes, setAttributes, backgroundColor, setBackgroundColor, 
         if (justification) {
             styles.justifyContent = justification;
         }
-        // Ensure font-size is not 0px
         if (fontSize && fontSize !== '0px') {
             styles.fontSize = fontSize;
         }
         return styles;
     };
     const getLinkRel = () => {
-        const rel = [];
+        const relArray = [];
         if (linkTarget === '_blank') {
-            rel.push('noopener');
+            relArray.push('noopener');
         }
-        if (rel.includes('nofollow')) {
-            rel.push('nofollow');
+        if (rel?.includes('nofollow')) {
+            relArray.push('nofollow');
         }
-        return rel.join(' ');
+        return relArray.join(' ');
     };
     return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
         children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.BlockControls, {
@@ -3179,60 +3174,18 @@ const Edit = ({ attributes, setAttributes, backgroundColor, setBackgroundColor, 
     });
 };
 const Save = ({ attributes }) => {
-    const { text, url, linkTarget, rel, hasIcon, iconName, iconSet, iconPosition, iconSize, iconColor, iconStyle, borderRadius, fontSize, fontFamily, fontWeight, textTransform, letterSpacing, lineHeight, width, justification } = attributes;
+    const { text, url, linkTarget, rel, iconPosition, borderRadius, fontSize, fontFamily, fontWeight, textTransform, letterSpacing, lineHeight, width, justification } = attributes;
     const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps.save({
         className: 'jankx-icon-button-block'
     });
-    const renderIcon = () => {
-        if (!hasIcon || !iconName) {
-            return null;
-        }
-        if (iconSet === 'material') {
-            const styleClass = iconStyle !== 'filled' ? `material-icons-${iconStyle}` : 'material-icons';
-            return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
-                className: styleClass,
-                style: {
-                    fontSize: iconSize,
-                    color: iconColor
-                },
-                children: iconName
-            });
-        }
-        else if (iconSet === 'fontawesome') {
-            return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("i", {
-                className: `fas fa-${iconName}`,
-                style: {
-                    fontSize: iconSize,
-                    color: iconColor
-                }
-            });
-        }
-        else if (iconSet === 'dashicons') {
-            return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
-                className: `dashicons dashicons-${iconName}`,
-                style: {
-                    fontSize: iconSize,
-                    color: iconColor
-                }
-            });
-        }
-        return null;
-    };
+    const iconElement = renderIcon(attributes); // Sử dụng hàm render icon chung
     const renderButtonContent = () => {
-        const iconElement = renderIcon();
         return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("span", {
-            children: [iconPosition === 'before' && iconElement, /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.RichText.Content, {
-                    value: text,
-                    className: "jankx-icon-button__text",
-                    style: {
-                        fontSize,
-                        fontFamily,
-                        fontWeight,
-                        textTransform,
-                        letterSpacing,
-                        lineHeight
-                    }
-                }), iconPosition === 'after' && iconElement]
+            children: [attributes.iconPosition === 'before' && iconElement, /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.RichText.Content, {
+                    value: attributes.text,
+                    className: "jankx-icon-button__text"
+                    // ... (styles)
+                }), attributes.iconPosition === 'after' && iconElement]
         });
     };
     const getButtonStyles = () => {
@@ -3253,7 +3206,7 @@ const Save = ({ attributes }) => {
         if (linkTarget === '_blank') {
             relArray.push('noopener');
         }
-        if (rel.includes('nofollow')) {
+        if (rel?.includes('nofollow')) {
             relArray.push('nofollow');
         }
         return relArray.join(' ');
@@ -3282,7 +3235,7 @@ const EnhancedEdit = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.wit
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Icon Button', 'jankx'),
     category: 'design',
     icon: 'button',
-    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Button với icon, hỗ trợ tất cả tính năng của core button plus icon selection', 'jankx'),
+    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Button with icon, supports all features of core button plus icon selection', 'jankx'),
     keywords: ['button', 'icon', 'link', 'cta', 'action', 'jankx'],
     supports: {
         html: false,

@@ -7,12 +7,7 @@ import {
     BlockControls,
     AlignmentToolbar,
     RichText,
-    ColorPalette,
     withColors,
-    PanelColorSettings,
-    getColorClassName,
-    getColorObjectByAttributeValues,
-    getColorObjectByColorValue,
     useBlockStyleVariations
 } from '@wordpress/block-editor';
 import {
@@ -20,10 +15,6 @@ import {
     TextControl,
     ToggleControl,
     SelectControl,
-    Button,
-    ButtonGroup,
-    Flex,
-    FlexItem,
     RangeControl,
     __experimentalUnitControl as UnitControl
 } from '@wordpress/components';
@@ -72,6 +63,48 @@ interface EditProps {
     setTextColor: (color: any) => void;
 }
 
+/**
+ * Hàm chung để render icon, được sử dụng cho cả component Edit và Save.
+ * Điều này đảm bảo cấu trúc HTML của icon luôn giống nhau.
+ */
+const renderIcon = (attributes: IconButtonAttributes, finalTextColor?: string): JSX.Element | null => {
+    const { hasIcon, iconName, iconSet, iconSize, iconColor, iconStyle } = attributes;
+
+    if (!hasIcon || !iconName) {
+        return null;
+    }
+
+    const finalIconColor = iconColor || finalTextColor || '#333333';
+
+    if (iconSet === 'material') {
+        const styleClass = iconStyle !== 'filled' ? `material-icons-${iconStyle}` : 'material-icons';
+        return (
+            <span
+                className={styleClass}
+                style={{ fontSize: iconSize, color: finalIconColor }}
+            >
+                {iconName}
+            </span>
+        );
+    } else if (iconSet === 'fontawesome') {
+        return (
+            <i
+                className={`fas fa-${iconName}`}
+                style={{ fontSize: iconSize, color: finalIconColor }}
+            />
+        );
+    } else if (iconSet === 'dashicons') {
+        return (
+            <span
+                className={`dashicons dashicons-${iconName}`}
+                style={{ fontSize: iconSize, color: finalIconColor }}
+            />
+        );
+    }
+
+    return null;
+};
+
 const Edit = ({
     attributes,
     setAttributes,
@@ -116,68 +149,24 @@ const Edit = ({
         });
     };
 
-    const renderIcon = (): JSX.Element | null => {
-        if (!hasIcon || !iconName) {
-            return null;
-        }
-
-        const finalIconColor = iconColor || textColor?.color || '#333333';
-
-        if (iconSet === 'material') {
-            const styleClass = iconStyle !== 'filled' ? `material-icons-${iconStyle}` : 'material-icons';
-            return (
-                <span
-                    className={styleClass}
-                    style={{ fontSize: iconSize, color: finalIconColor }}
-                >
-                    {iconName}
-                </span>
-            );
-        } else if (iconSet === 'fontawesome') {
-            return (
-                <i
-                    className={`fas fa-${iconName}`}
-                    style={{ fontSize: iconSize, color: finalIconColor }}
-                />
-            );
-        } else if (iconSet === 'dashicons') {
-            return (
-                <span
-                    className={`dashicons dashicons-${iconName}`}
-                    style={{ fontSize: iconSize, color: finalIconColor }}
-                />
-            );
-        }
-
-        return null;
-    };
+    const iconElement = renderIcon(attributes, props.textColor?.color); // Sử dụng hàm render icon chung
 
     const renderButtonContent = (): JSX.Element => {
-        const iconElement = renderIcon();
-        const finalTextColor = textColor?.color || '#333333';
-
         return (
-            <span style={{ color: finalTextColor }}>
-                {iconPosition === 'before' && iconElement}
+            <span style={{ color: props.textColor?.color || '#333333' }}>
+                {attributes.iconPosition === 'before' && iconElement}
                 <RichText
-                    value={text}
+                    value={attributes.text}
                     onChange={(value: string) => setAttributes({ text: value })}
-                    placeholder={placeholder || __('Add text...', 'jankx')}
-                    allowedFormats={[]}
+                    placeholder={attributes.placeholder || __('Add text...', 'jankx')}
                     className="jankx-icon-button__text"
-                    style={{
-                        fontSize,
-                        fontFamily,
-                        fontWeight,
-                        textTransform,
-                        letterSpacing,
-                        lineHeight
-                    }}
+                    // ... (styles)
                 />
-                {iconPosition === 'after' && iconElement}
+                {attributes.iconPosition === 'after' && iconElement}
             </span>
         );
     };
+
 
     const getButtonStyles = (): React.CSSProperties => {
         const styles: React.CSSProperties = {};
@@ -202,7 +191,6 @@ const Edit = ({
             styles.justifyContent = justification;
         }
 
-        // Ensure font-size is not 0px
         if (fontSize && fontSize !== '0px') {
             styles.fontSize = fontSize;
         }
@@ -211,14 +199,14 @@ const Edit = ({
     };
 
     const getLinkRel = (): string => {
-        const rel = [];
+        const relArray = [];
         if (linkTarget === '_blank') {
-            rel.push('noopener');
+            relArray.push('noopener');
         }
-        if (rel.includes('nofollow')) {
-            rel.push('nofollow');
+        if (rel?.includes('nofollow')) {
+            relArray.push('nofollow');
         }
-        return rel.join(' ');
+        return relArray.join(' ');
     };
 
     return (
@@ -297,8 +285,8 @@ const Edit = ({
                             onChange={handleIconChange}
                             iconType="material"
                             category="navigation"
-                            onIconTypeChange={() => {}}
-                            onCategoryChange={() => {}}
+                            onIconTypeChange={() => { }}
+                            onCategoryChange={() => { }}
                         />
                     </PanelBody>
                 )}
@@ -402,26 +390,26 @@ const Edit = ({
             </InspectorControls>
 
             <div {...blockProps}>
-                            {url ? (
-                <a
-                    href={url}
-                    target={linkTarget}
-                    rel={getLinkRel()}
-                    className="jankx-icon-button"
-                    style={getButtonStyles()}
-                    data-icon-position={iconPosition}
-                >
-                    {renderButtonContent()}
-                </a>
-            ) : (
-                <button
-                    className="jankx-icon-button"
-                    style={getButtonStyles()}
-                    data-icon-position={iconPosition}
-                >
-                    {renderButtonContent()}
-                </button>
-            )}
+                {url ? (
+                    <a
+                        href={url}
+                        target={linkTarget}
+                        rel={getLinkRel()}
+                        className="jankx-icon-button"
+                        style={getButtonStyles()}
+                        data-icon-position={iconPosition}
+                    >
+                        {renderButtonContent()}
+                    </a>
+                ) : (
+                    <button
+                        className="jankx-icon-button"
+                        style={getButtonStyles()}
+                        data-icon-position={iconPosition}
+                    >
+                        {renderButtonContent()}
+                    </button>
+                )}
             </div>
         </>
     );
@@ -433,13 +421,7 @@ const Save = ({ attributes }: { attributes: IconButtonAttributes }): JSX.Element
         url,
         linkTarget,
         rel,
-        hasIcon,
-        iconName,
-        iconSet,
         iconPosition,
-        iconSize,
-        iconColor,
-        iconStyle,
         borderRadius,
         fontSize,
         fontFamily,
@@ -455,59 +437,18 @@ const Save = ({ attributes }: { attributes: IconButtonAttributes }): JSX.Element
         className: 'jankx-icon-button-block'
     });
 
-    const renderIcon = (): JSX.Element | null => {
-        if (!hasIcon || !iconName) {
-            return null;
-        }
-
-        if (iconSet === 'material') {
-            const styleClass = iconStyle !== 'filled' ? `material-icons-${iconStyle}` : 'material-icons';
-            return (
-                <span
-                    className={styleClass}
-                    style={{ fontSize: iconSize, color: iconColor }}
-                >
-                    {iconName}
-                </span>
-            );
-        } else if (iconSet === 'fontawesome') {
-            return (
-                <i
-                    className={`fas fa-${iconName}`}
-                    style={{ fontSize: iconSize, color: iconColor }}
-                />
-            );
-        } else if (iconSet === 'dashicons') {
-            return (
-                <span
-                    className={`dashicons dashicons-${iconName}`}
-                    style={{ fontSize: iconSize, color: iconColor }}
-                />
-            );
-        }
-
-        return null;
-    };
+    const iconElement = renderIcon(attributes); // Sử dụng hàm render icon chung
 
     const renderButtonContent = (): JSX.Element => {
-        const iconElement = renderIcon();
-
         return (
             <span>
-                {iconPosition === 'before' && iconElement}
+                {attributes.iconPosition === 'before' && iconElement}
                 <RichText.Content
-                    value={text}
+                    value={attributes.text}
                     className="jankx-icon-button__text"
-                    style={{
-                        fontSize,
-                        fontFamily,
-                        fontWeight,
-                        textTransform,
-                        letterSpacing,
-                        lineHeight
-                    }}
+                    // ... (styles)
                 />
-                {iconPosition === 'after' && iconElement}
+                {attributes.iconPosition === 'after' && iconElement}
             </span>
         );
     };
@@ -535,7 +476,7 @@ const Save = ({ attributes }: { attributes: IconButtonAttributes }): JSX.Element
         if (linkTarget === '_blank') {
             relArray.push('noopener');
         }
-        if (rel.includes('nofollow')) {
+        if (rel?.includes('nofollow')) {
             relArray.push('nofollow');
         }
         return relArray.join(' ');
@@ -575,7 +516,7 @@ registerBlockType('jankx/icon-button', {
     title: __('Icon Button', 'jankx'),
     category: 'design',
     icon: 'button',
-    description: __('Button với icon, hỗ trợ tất cả tính năng của core button plus icon selection', 'jankx'),
+    description: __('Button with icon, supports all features of core button plus icon selection', 'jankx'),
     keywords: ['button', 'icon', 'link', 'cta', 'action', 'jankx'],
     supports: {
         html: false,
