@@ -24,6 +24,13 @@ abstract class Block implements BlockInterface
     protected $name;
 
     /**
+     * Block ID (namespace/block-name)
+     *
+     * @var string
+     */
+    protected $blockId = 'jankx/demo';
+
+    /**
      * Block configuration
      *
      * @var array
@@ -38,16 +45,364 @@ abstract class Block implements BlockInterface
     protected $attributes;
 
     /**
+     * Editor script URL
+     *
+     * @var string|null
+     */
+    protected $editorScriptUrl;
+
+    /**
+     * Frontend script URL
+     *
+     * @var string|null
+     */
+    protected $scriptUrl;
+
+    /**
+     * View script URL
+     *
+     * @var string|null
+     */
+    protected $viewScriptUrl;
+
+    /**
+     * Editor style URL
+     *
+     * @var string|null
+     */
+    protected $editorStyleUrl;
+
+    /**
+     * Frontend style URL
+     *
+     * @var string|null
+     */
+    protected $styleUrl;
+
+    /**
+     * View style URL
+     *
+     * @var string|null
+     */
+    protected $viewStyleUrl;
+
+    /**
+     * Parsed block metadata
+     *
+     * @var array|null
+     */
+    protected $parsedMetadata;
+
+            /**
      * Constructor
      *
-     * @param string $name Block name
-     * @param array $config Block configuration
+     * @param string|null $blockPath Path to the directory containing block.json
+     * @throws \RuntimeException When block path cannot be resolved
      */
-    public function __construct($name, array $config = [])
+    public function __construct($blockPath = null)
     {
-        $this->name = $name;
-        $this->config = $config;
-        $this->attributes = $config['attributes'] ?? [];
+        // Resolve blockPath if not provided
+        if (!$blockPath) {
+            $blockPath = $this->resolveBlockPathFromContainer();
+
+            if (!$blockPath) {
+                throw new \RuntimeException(
+                    sprintf('Cannot resolve block path for block ID: %s', $this->blockId)
+                );
+            }
+        }
+
+        $this->blockPath = $blockPath;
+
+        // Initialize block from metadata
+        $this->initializeFromMetadata($blockPath);
+    }
+
+    /**
+     * Initialize block properties from metadata
+     *
+     * @param string|false $blockPath Path to block directory
+     * @return void
+     */
+    protected function initializeFromMetadata($blockPath)
+    {
+        if ($blockPath) {
+            $metadata = $this->parseBlockJsonFromPath($blockPath);
+
+            if ($metadata) {
+                $this->name = $metadata['name'] ?? '';
+                $this->attributes = $metadata['attributes'] ?? [];
+                $this->config = $metadata;
+                return;
+            }
+        }
+
+        // Fallback values
+        $this->name = $this->blockId;
+        $this->attributes = [];
+        $this->config = [];
+    }
+
+    /**
+     * Resolve block path from application container
+     *
+     * @return string|false Block path or false if not found
+     */
+    protected function resolveBlockPathFromContainer()
+    {
+        if (!function_exists('jankx')) {
+            return false;
+        }
+
+        $app = jankx();
+        if (!$app || !$app->bound('blocks.path')) {
+            return false;
+        }
+
+        $blocksPath = $app->make('blocks.path');
+        $blockName = $this->getBlockNameFromNamespace($this->blockId);
+        $blockPath = $blocksPath . '/' . $blockName;
+
+        if (!is_dir($blockPath)) {
+            return false;
+        }
+
+        return $blockPath;
+    }
+
+    /**
+     * Parse the block.json file to extract metadata and assets information
+     *
+     * This method reads and parses the block.json file to extract:
+     * - Block metadata (name, title, description, category, etc.)
+     * - Script and style assets URLs
+     * - Editor and frontend dependencies
+     * - Block attributes and supports configuration
+     *
+     * The parsed data is typically used to configure the block's
+     * registration and asset loading in WordPress.
+     *
+     * @return self Returns the current instance for method chaining
+     */
+    public function parseBlockJson(): self
+    {
+        $metadata = $this->getBlockJson();
+        if ($metadata) {
+            $this->parsedMetadata = $metadata;
+
+            // Set script URLs from metadata
+            if (isset($metadata['editorScript'])) {
+                $this->setEditorScriptUrl($this->getAssetUrl($metadata['editorScript']));
+            }
+            if (isset($metadata['script'])) {
+                $this->setScriptUrl($this->getAssetUrl($metadata['script']));
+            }
+            if (isset($metadata['viewScript'])) {
+                $this->setViewScriptUrl($this->getAssetUrl($metadata['viewScript']));
+            }
+
+            // Set style URLs from metadata
+            if (isset($metadata['editorStyle'])) {
+                $this->setEditorStyleUrl($this->getAssetUrl($metadata['editorStyle']));
+            }
+            if (isset($metadata['style'])) {
+                $this->setStyleUrl($this->getAssetUrl($metadata['style']));
+            }
+            if (isset($metadata['viewStyle'])) {
+                $this->setViewStyleUrl($this->getAssetUrl($metadata['viewStyle']));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set the editor script URL for the block
+     *
+     * @param string|null $url The URL to the editor script file
+     * @return self Returns the current instance for method chaining
+     */
+    public function setEditorScriptUrl(?string $url): self
+    {
+        $this->editorScriptUrl = $url;
+        return $this;
+    }
+
+    /**
+     * Get the editor script URL for the block
+     *
+     * @return string|null The URL to the editor script file or null if not set
+     */
+    public function getEditorScriptUrl(): ?string
+    {
+        return $this->editorScriptUrl;
+    }
+
+    /**
+     * Set the frontend script URL for the block
+     *
+     * @param string|null $url The URL to the frontend script file
+     * @return self Returns the current instance for method chaining
+     */
+    public function setScriptUrl(?string $url): self
+    {
+        $this->scriptUrl = $url;
+        return $this;
+    }
+
+    /**
+     * Get the frontend script URL for the block
+     *
+     * @return string|null The URL to the frontend script file or null if not set
+     */
+    public function getScriptUrl(): ?string
+    {
+        return $this->scriptUrl;
+    }
+
+    /**
+     * Set the view script URL for the block
+     *
+     * @param string|null $url The URL to the view script file
+     * @return self Returns the current instance for method chaining
+     */
+    public function setViewScriptUrl(?string $url): self
+    {
+        $this->viewScriptUrl = $url;
+        return $this;
+    }
+
+    /**
+     * Get the view script URL for the block
+     *
+     * @return string|null The URL to the view script file or null if not set
+     */
+    public function getViewScriptUrl(): ?string
+    {
+        return $this->viewScriptUrl;
+    }
+
+    /**
+     * Set the editor style URL for the block
+     *
+     * @param string|null $url The URL to the editor style file
+     * @return self Returns the current instance for method chaining
+     */
+    public function setEditorStyleUrl(?string $url): self
+    {
+        $this->editorStyleUrl = $url;
+        return $this;
+    }
+
+    /**
+     * Get the editor style URL for the block
+     *
+     * @return string|null The URL to the editor style file or null if not set
+     */
+    public function getEditorStyleUrl(): ?string
+    {
+        return $this->editorStyleUrl;
+    }
+
+    /**
+     * Set the frontend style URL for the block
+     *
+     * @param string|null $url The URL to the frontend style file
+     * @return self Returns the current instance for method chaining
+     */
+    public function setStyleUrl(?string $url): self
+    {
+        $this->styleUrl = $url;
+        return $this;
+    }
+
+    /**
+     * Get the frontend style URL for the block
+     *
+     * @return string|null The URL to the frontend style file or null if not set
+     */
+    public function getStyleUrl(): ?string
+    {
+        return $this->styleUrl;
+    }
+
+    /**
+     * Set the view style URL for the block
+     *
+     * @param string|null $url The URL to the view style file
+     * @return self Returns the current instance for method chaining
+     */
+    public function setViewStyleUrl(?string $url): self
+    {
+        $this->viewStyleUrl = $url;
+        return $this;
+    }
+
+    /**
+     * Get the view style URL for the block
+     *
+     * @return string|null The URL to the view style file or null if not set
+     */
+    public function getViewStyleUrl(): ?string
+    {
+        return $this->viewStyleUrl;
+    }
+
+    /**
+     * Register the block to the Gutenberg editor by enqueuing the editor.js script
+     *
+     * This method handles the registration of the block's editor script
+     * to ensure it's properly loaded in the Gutenberg editor environment.
+     * It typically enqueues the editor.js file that contains the block's
+     * editor-specific functionality and React components.
+     *
+     * @return self Returns the current instance for method chaining
+     */
+    public function registerBlockToEditor(): self
+    {
+        $editorScriptUrl = $this->getEditorScriptUrl();
+        if ($editorScriptUrl) {
+            wp_enqueue_script(
+                $this->name . '-editor',
+                $editorScriptUrl,
+                ['wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-i18n'],
+                filemtime($this->getBlockPath() . '/build/index.js') ?: '1.0.0',
+                true
+            );
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get asset URL from relative path
+     *
+     * @param string $relativePath Relative path to asset
+     * @return string Full URL to asset
+     */
+    protected function getAssetUrl($relativePath)
+    {
+        $blockPath = $this->getBlockPath();
+        if (!$blockPath) {
+            return '';
+        }
+
+        $blockName = $this->getBlockNameFromPath($blockPath);
+        return \Jankx\Facades\Url::blockAsset($blockName . '/' . $relativePath);
+    }
+
+    /**
+     * Get parsed metadata
+     *
+     * @return array|null Parsed metadata or null if not parsed
+     */
+    protected function getMetadata()
+    {
+        if ($this->parsedMetadata === null) {
+            $this->parseBlockJson();
+        }
+
+        return $this->parsedMetadata;
     }
 
     /**
@@ -121,6 +476,29 @@ abstract class Block implements BlockInterface
     }
 
     /**
+     * Parse block.json from a specific path
+     *
+     * @param string $blockPath Path to the directory containing block.json
+     * @return array|false Block metadata or false if not found
+     */
+    protected function parseBlockJsonFromPath($blockPath)
+    {
+        if (!is_dir($blockPath)) {
+            return false;
+        }
+
+        $metadata = $this->getBlockMetadata($blockPath);
+        if (empty($metadata)) {
+            return false;
+        }
+
+        // Prioritize build assets over source assets
+        $this->prioritizeBuildAssets($metadata);
+
+        return $metadata;
+    }
+
+    /**
      * Get block.json data for the current block
      *
      * @return array|false Block metadata or false if not found
@@ -147,14 +525,41 @@ abstract class Block implements BlockInterface
     }
 
     /**
+     * Block directory path
+     *
+     * @var string|null
+     */
+    protected $blockPath;
+
+    /**
      * Get the block directory path
      *
      * @return string|false Block directory path or false if not found
      */
     protected function getBlockPath()
     {
+        if ($this->blockPath) {
+            return $this->blockPath;
+        }
+
+        // Fallback to old method if blockPath not set
         $blockName = $this->getBlockNameFromNamespace($this->name);
-        $blockPath = get_template_directory() . '/resources/blocks/' . $blockName;
+
+        // Get blocks path from application binding
+        $blocksPath = '';
+        if (function_exists('jankx')) {
+            $app = jankx();
+            if ($app && $app->bound('blocks.path')) {
+                $blocksPath = $app->make('blocks.path');
+            }
+        }
+
+        // Fallback to hardcoded path if binding not available
+        if (empty($blocksPath)) {
+            $blocksPath = get_template_directory() . '/resources/blocks';
+        }
+
+        $blockPath = $blocksPath . '/' . $blockName;
 
         if (!is_dir($blockPath)) {
             return false;

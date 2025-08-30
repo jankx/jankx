@@ -28,6 +28,11 @@ class GutenbergServiceProvider extends ServiceProvider
      */
     public function register(Application $app)
     {
+        // Register blocks path
+        $app->bind('blocks.path', function ($app) {
+            return get_template_directory() . '/resources/blocks';
+        });
+
         // Register Gutenberg service
         $app->singleton('gutenberg.service', function ($app) {
             return new GutenbergService($app);
