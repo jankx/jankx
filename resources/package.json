@@ -55,7 +55,7 @@
     "@fullcalendar/interaction": "^6.1.15",
     "@tanstack/react-virtual": "^3.13.12",
     "@types/wordpress__core-data": "^2.4.5",
-    "@woocommerce/components": "^6.0.0",
+    "@woocommerce/components": "^6.2.0",
     "@woocommerce/customer-effort-score": "^3.0.0",
     "@woocommerce/data": "^1.4.0",
     "@wordpress/api-fetch": "^6.47.0",
