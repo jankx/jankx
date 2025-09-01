@@ -2,6 +2,7 @@
 
 namespace Jankx\Services;
 
+use Automattic\WooCommerce\Blocks\BlockTypes\ProductCollection;
 use Jankx\Foundation\Application;
 use Jankx\Gutenberg\Blocks\DynamicCollectionBlock;
 use Jankx\Gutenberg\Blocks\DynamicQueryBlock;
@@ -104,6 +105,7 @@ class GutenbergService
     protected function registerDefaultBlocks()
     {
         $this->repository->registerBlock(DynamicQueryBlock::class);
+        $this->repository->registerBlock(ProductCollection::class);
         $this->repository->registerBlock(SvgIconBlock::class);
         $this->repository->registerBlock(MegaMenuBlock::class);
         $this->repository->registerBlock(SvgIconButtonBlock::class);
