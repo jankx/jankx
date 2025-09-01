@@ -23,187 +23,201 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const IconSettings = ({ hasIcon, iconName, iconSet, iconPosition, iconSize, iconColor, iconStyle, onHasIconChange, onIconNameChange, onIconSetChange, onIconPositionChange, onIconSizeChange, onIconColorChange, onIconStyleChange }) => {
-    // Parse size value and unit
-    const parseSize = size => {
-        const match = size.match(/^([\d.]+)(px|em|rem|%)$/);
-        if (match) {
-            return {
-                value: parseFloat(match[1]),
-                unit: match[2]
-            };
-        }
-        return {
-            value: 16,
-            unit: 'px'
-        };
+const IconSettings = ({
+  hasIcon,
+  iconName,
+  iconSet,
+  iconPosition,
+  iconSize,
+  iconColor,
+  iconStyle,
+  onHasIconChange,
+  onIconNameChange,
+  onIconSetChange,
+  onIconPositionChange,
+  onIconSizeChange,
+  onIconColorChange,
+  onIconStyleChange
+}) => {
+  // Parse size value and unit
+  const parseSize = size => {
+    const match = size.match(/^([\d.]+)(px|em|rem|%)$/);
+    if (match) {
+      return {
+        value: parseFloat(match[1]),
+        unit: match[2]
+      };
+    }
+    return {
+      value: 16,
+      unit: 'px'
     };
-    const iconSizeData = parseSize(iconSize);
-    const unitOptions = [{
-            label: 'px',
-            value: 'px'
-        }, {
-            label: 'em',
-            value: 'em'
-        }, {
-            label: 'rem',
-            value: 'rem'
-        }, {
-            label: '%',
-            value: '%'
-        }];
-    const positionOptions = [{
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Before text', 'jankx'),
-            value: 'before'
-        }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('After text', 'jankx'),
-            value: 'after'
-        }];
-    const iconSetOptions = [{
-            label: 'Material Icons',
-            value: 'material'
-        }, {
-            label: 'FontAwesome',
-            value: 'fontawesome'
-        }, {
-            label: 'Dashicons',
-            value: 'dashicons'
-        }];
-    const styleOptions = [{
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Filled', 'jankx'),
-            value: 'filled'
-        }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Outlined', 'jankx'),
-            value: 'outlined'
-        }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Rounded', 'jankx'),
-            value: 'rounded'
-        }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Sharp', 'jankx'),
-            value: 'sharp'
-        }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Two-tone', 'jankx'),
-            value: 'two-tone'
-        }];
-    const getMinValue = unit => {
-        switch (unit) {
-            case 'px':
-                return 8;
-            case 'em':
-                return 0.5;
-            case 'rem':
-                return 0.5;
-            case '%':
-                return 10;
-            default:
-                return 8;
-        }
-    };
-    const getMaxValue = unit => {
-        switch (unit) {
-            case 'px':
-                return 100;
-            case 'em':
-                return 10;
-            case 'rem':
-                return 10;
-            case '%':
-                return 200;
-            default:
-                return 100;
-        }
-    };
-    const getStepValue = unit => {
-        switch (unit) {
-            case 'px':
-                return 1;
-            case 'em':
-                return 0.1;
-            case 'rem':
-                return 0.1;
-            case '%':
-                return 5;
-            default:
-                return 1;
-        }
-    };
-    const handleIconSizeChange = value => {
-        if (value !== undefined) {
-            onIconSizeChange(`${value}${iconSizeData.unit}`);
-        }
-    };
-    const handleIconUnitChange = unit => {
-        const newValue = Math.min(Math.max(iconSizeData.value, getMinValue(unit)), getMaxValue(unit));
-        onIconSizeChange(`${newValue}${unit}`);
-    };
-    return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelBody, {
-        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Icon Settings', 'jankx'),
-        icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_2__["default"],
-        initialOpen: false,
-        children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Icon', 'jankx'),
-                checked: hasIcon,
-                onChange: onHasIconChange,
-                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Thêm icon vào button', 'jankx')
-            }), hasIcon && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
-                children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
-                        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Icon Set', 'jankx'),
-                        value: iconSet,
-                        options: iconSetOptions,
-                        onChange: value => onIconSetChange(value)
-                    }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
-                        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Icon Position', 'jankx'),
-                        value: iconPosition,
-                        options: positionOptions,
-                        onChange: value => onIconPositionChange(value)
-                    }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
-                        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Icon Style', 'jankx'),
-                        value: iconStyle,
-                        options: styleOptions,
-                        onChange: value => onIconStyleChange(value)
-                    }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
-                        className: "jankx-size-control",
-                        children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
-                                className: "jankx-size-control__label",
-                                children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Icon Size', 'jankx')
-                            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Flex, {
-                                gap: 2,
-                                align: "flex-end",
-                                children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.FlexItem, {
-                                        children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.RangeControl, {
-                                            value: iconSizeData.value,
-                                            onChange: handleIconSizeChange,
-                                            min: getMinValue(iconSizeData.unit),
-                                            max: getMaxValue(iconSizeData.unit),
-                                            step: getStepValue(iconSizeData.unit),
-                                            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Kích thước icon', 'jankx')
-                                        })
-                                    }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.FlexItem, {
-                                        children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
-                                            value: iconSizeData.unit,
-                                            options: unitOptions,
-                                            onChange: value => handleIconUnitChange(value),
-                                            hideLabelFromVision: true,
-                                            className: "jankx-size-control__unit-select"
-                                        })
-                                    })]
-                            })]
-                    }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
-                        className: "jankx-icon-settings__color",
-                        children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
-                                className: "jankx-icon-settings__label",
-                                children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Icon Color', 'jankx')
-                            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ColorPicker, {
-                                color: iconColor,
-                                onChangeComplete: color => onIconColorChange(typeof color === 'string' ? color : color.hex),
-                                enableAlpha: false
-                            })]
-                    })]
-            })]
-    });
+  };
+  const iconSizeData = parseSize(iconSize);
+  const unitOptions = [{
+    label: 'px',
+    value: 'px'
+  }, {
+    label: 'em',
+    value: 'em'
+  }, {
+    label: 'rem',
+    value: 'rem'
+  }, {
+    label: '%',
+    value: '%'
+  }];
+  const positionOptions = [{
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Before text', 'jankx'),
+    value: 'before'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('After text', 'jankx'),
+    value: 'after'
+  }];
+  const iconSetOptions = [{
+    label: 'Material Icons',
+    value: 'material'
+  }, {
+    label: 'FontAwesome',
+    value: 'fontawesome'
+  }, {
+    label: 'Dashicons',
+    value: 'dashicons'
+  }];
+  const styleOptions = [{
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Filled', 'jankx'),
+    value: 'filled'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Outlined', 'jankx'),
+    value: 'outlined'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Rounded', 'jankx'),
+    value: 'rounded'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Sharp', 'jankx'),
+    value: 'sharp'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Two-tone', 'jankx'),
+    value: 'two-tone'
+  }];
+  const getMinValue = unit => {
+    switch (unit) {
+      case 'px':
+        return 8;
+      case 'em':
+        return 0.5;
+      case 'rem':
+        return 0.5;
+      case '%':
+        return 10;
+      default:
+        return 8;
+    }
+  };
+  const getMaxValue = unit => {
+    switch (unit) {
+      case 'px':
+        return 100;
+      case 'em':
+        return 10;
+      case 'rem':
+        return 10;
+      case '%':
+        return 200;
+      default:
+        return 100;
+    }
+  };
+  const getStepValue = unit => {
+    switch (unit) {
+      case 'px':
+        return 1;
+      case 'em':
+        return 0.1;
+      case 'rem':
+        return 0.1;
+      case '%':
+        return 5;
+      default:
+        return 1;
+    }
+  };
+  const handleIconSizeChange = value => {
+    if (value !== undefined) {
+      onIconSizeChange(`${value}${iconSizeData.unit}`);
+    }
+  };
+  const handleIconUnitChange = unit => {
+    const newValue = Math.min(Math.max(iconSizeData.value, getMinValue(unit)), getMaxValue(unit));
+    onIconSizeChange(`${newValue}${unit}`);
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelBody, {
+    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Icon Settings', 'jankx'),
+    icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_2__["default"],
+    initialOpen: false,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Icon', 'jankx'),
+      checked: hasIcon,
+      onChange: onHasIconChange,
+      help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Thêm icon vào button', 'jankx')
+    }), hasIcon && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Icon Set', 'jankx'),
+        value: iconSet,
+        options: iconSetOptions,
+        onChange: value => onIconSetChange(value)
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Icon Position', 'jankx'),
+        value: iconPosition,
+        options: positionOptions,
+        onChange: value => onIconPositionChange(value)
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Icon Style', 'jankx'),
+        value: iconStyle,
+        options: styleOptions,
+        onChange: value => onIconStyleChange(value)
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+        className: "jankx-size-control",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
+          className: "jankx-size-control__label",
+          children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Icon Size', 'jankx')
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Flex, {
+          gap: 2,
+          align: "flex-end",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.FlexItem, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.RangeControl, {
+              value: iconSizeData.value,
+              onChange: handleIconSizeChange,
+              min: getMinValue(iconSizeData.unit),
+              max: getMaxValue(iconSizeData.unit),
+              step: getStepValue(iconSizeData.unit),
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Kích thước icon', 'jankx')
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.FlexItem, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+              value: iconSizeData.unit,
+              options: unitOptions,
+              onChange: value => handleIconUnitChange(value),
+              hideLabelFromVision: true,
+              className: "jankx-size-control__unit-select"
+            })
+          })]
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+        className: "jankx-icon-settings__color",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
+          className: "jankx-icon-settings__label",
+          children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Icon Color', 'jankx')
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ColorPicker, {
+          color: iconColor,
+          onChangeComplete: color => onIconColorChange(typeof color === 'string' ? color : color.hex),
+          enableAlpha: false
+        })]
+      })]
+    })]
+  });
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (IconSettings);
-
 
 /***/ }),
 
@@ -286,7 +300,6 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * WordPress dependencies
  */
-
 
 
 const settings = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.SVG, {
@@ -2134,73 +2147,76 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const IconPicker = ({ value, onChange, iconType = 'material', category = 'navigation', onIconTypeChange, onCategoryChange }) => {
-    const [isModalOpen, setIsModalOpen] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
-    const handleIconSelect = icon => {
-        onChange({
-            name: icon.name,
-            category: icon.categories?.[0] || category,
-            iconSet: icon.iconSet || 'material'
-        });
-        // Không cần setIsModalOpen(false) ở đây vì ShadcnIconPicker sẽ gọi onClose
-    };
-    const handleClose = () => {
-        setIsModalOpen(false);
-    };
-    const renderSelectedIcon = () => {
-        if (!value) {
-            return (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Chọn Icon', 'jankx');
-        }
-        let iconElement;
-        if (value.iconSet === 'material') {
-            iconElement = /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
-                className: "material-icons",
-                children: value.name
-            });
-        }
-        else if (value.iconSet === 'fontawesome') {
-            iconElement = /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("i", {
-                className: `fas fa-${value.name}`
-            });
-        }
-        else if (value.iconSet === 'dashicons') {
-            iconElement = /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
-                className: `dashicons dashicons-${value.name}`
-            });
-        }
-        else {
-            iconElement = /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
-                className: "material-icons",
-                children: value.name
-            });
-        }
-        return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("span", {
-            className: "jankx-icon-picker__selected",
-            children: [iconElement, /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
-                    className: "jankx-icon-picker__name",
-                    children: value.name
-                })]
-        });
-    };
-    return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-        className: "jankx-icon-picker",
-        children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
-                isSecondary: true,
-                onClick: () => setIsModalOpen(true),
-                className: "jankx-icon-picker__button",
-                children: renderSelectedIcon()
-            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_ShadcnIconPicker__WEBPACK_IMPORTED_MODULE_3__["default"], {
-                isOpen: isModalOpen,
-                onClose: handleClose,
-                onSelect: handleIconSelect,
-                currentIcon: value,
-                searchable: true,
-                categorized: true
-            })]
+const IconPicker = ({
+  value,
+  onChange,
+  iconType = 'material',
+  category = 'navigation',
+  onIconTypeChange,
+  onCategoryChange
+}) => {
+  const [isModalOpen, setIsModalOpen] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  const handleIconSelect = icon => {
+    onChange({
+      name: icon.name,
+      category: icon.categories?.[0] || category,
+      iconSet: icon.iconSet || 'material'
     });
+    // Không cần setIsModalOpen(false) ở đây vì ShadcnIconPicker sẽ gọi onClose
+  };
+  const handleClose = () => {
+    setIsModalOpen(false);
+  };
+  const renderSelectedIcon = () => {
+    if (!value) {
+      return (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Chọn Icon', 'jankx');
+    }
+    let iconElement;
+    if (value.iconSet === 'material') {
+      iconElement = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+        className: "material-icons",
+        children: value.name
+      });
+    } else if (value.iconSet === 'fontawesome') {
+      iconElement = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("i", {
+        className: `fas fa-${value.name}`
+      });
+    } else if (value.iconSet === 'dashicons') {
+      iconElement = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+        className: `dashicons dashicons-${value.name}`
+      });
+    } else {
+      iconElement = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+        className: "material-icons",
+        children: value.name
+      });
+    }
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("span", {
+      className: "jankx-icon-picker__selected",
+      children: [iconElement, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+        className: "jankx-icon-picker__name",
+        children: value.name
+      })]
+    });
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+    className: "jankx-icon-picker",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+      isSecondary: true,
+      onClick: () => setIsModalOpen(true),
+      className: "jankx-icon-picker__button",
+      children: renderSelectedIcon()
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_ShadcnIconPicker__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      isOpen: isModalOpen,
+      onClose: handleClose,
+      onSelect: handleIconSelect,
+      currentIcon: value,
+      searchable: true,
+      categorized: true
+    })]
+  });
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (IconPicker);
-
 
 /***/ }),
 
@@ -2227,404 +2243,414 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 // Icon data structure
 
 // Sample icon data with different icon sets
 const sampleIconsData = [
-    // Material Icons
-    {
-        name: "home",
-        categories: ["navigation", "layout"],
-        tags: ["house", "main", "start"],
-        iconSet: "material"
-    }, {
-        name: "user",
-        categories: ["social", "people"],
-        tags: ["person", "profile", "account"],
-        iconSet: "material"
-    }, {
-        name: "settings",
-        categories: ["navigation", "system"],
-        tags: ["gear", "config", "preferences"],
-        iconSet: "material"
-    }, {
-        name: "search",
-        categories: ["navigation", "action"],
-        tags: ["find", "lookup", "magnifier"],
-        iconSet: "material"
-    }, {
-        name: "heart",
-        categories: ["social", "emotion"],
-        tags: ["love", "like", "favorite"],
-        iconSet: "material"
-    }, {
-        name: "star",
-        categories: ["social", "rating"],
-        tags: ["favorite", "bookmark", "rating"],
-        iconSet: "material"
-    }, {
-        name: "mail",
-        categories: ["communication", "social"],
-        tags: ["email", "message", "contact"],
-        iconSet: "material"
-    }, {
-        name: "phone",
-        categories: ["communication", "social"],
-        tags: ["call", "contact", "telephone"],
-        iconSet: "material"
-    }, {
-        name: "calendar",
-        categories: ["time", "date"],
-        tags: ["schedule", "event", "date"],
-        iconSet: "material"
-    }, {
-        name: "clock",
-        categories: ["time", "date"],
-        tags: ["time", "hour", "schedule"],
-        iconSet: "material"
-    },
-    // FontAwesome Icons
-    {
-        name: "home",
-        categories: ["navigation", "layout"],
-        tags: ["house", "main", "start"],
-        iconSet: "fontawesome"
-    }, {
-        name: "user",
-        categories: ["social", "people"],
-        tags: ["person", "profile", "account"],
-        iconSet: "fontawesome"
-    }, {
-        name: "cog",
-        categories: ["navigation", "system"],
-        tags: ["gear", "config", "preferences"],
-        iconSet: "fontawesome"
-    }, {
-        name: "search",
-        categories: ["navigation", "action"],
-        tags: ["find", "lookup", "magnifier"],
-        iconSet: "fontawesome"
-    }, {
-        name: "heart",
-        categories: ["social", "emotion"],
-        tags: ["love", "like", "favorite"],
-        iconSet: "fontawesome"
-    }, {
-        name: "star",
-        categories: ["social", "rating"],
-        tags: ["favorite", "bookmark", "rating"],
-        iconSet: "fontawesome"
-    }, {
-        name: "envelope",
-        categories: ["communication", "social"],
-        tags: ["email", "message", "contact"],
-        iconSet: "fontawesome"
-    }, {
-        name: "phone",
-        categories: ["communication", "social"],
-        tags: ["call", "contact", "telephone"],
-        iconSet: "fontawesome"
-    }, {
-        name: "calendar",
-        categories: ["time", "date"],
-        tags: ["schedule", "event", "date"],
-        iconSet: "fontawesome"
-    }, {
-        name: "clock",
-        categories: ["time", "date"],
-        tags: ["time", "hour", "schedule"],
-        iconSet: "fontawesome"
-    },
-    // Dashicons
-    {
-        name: "admin-home",
-        categories: ["navigation", "admin"],
-        tags: ["home", "dashboard", "main"],
-        iconSet: "dashicons"
-    }, {
-        name: "admin-users",
-        categories: ["social", "admin"],
-        tags: ["users", "people", "admin"],
-        iconSet: "dashicons"
-    }, {
-        name: "admin-settings",
-        categories: ["navigation", "admin"],
-        tags: ["settings", "config", "admin"],
-        iconSet: "dashicons"
-    }, {
-        name: "search",
-        categories: ["navigation", "action"],
-        tags: ["find", "lookup", "search"],
-        iconSet: "dashicons"
-    }, {
-        name: "heart",
-        categories: ["social", "emotion"],
-        tags: ["love", "like", "favorite"],
-        iconSet: "dashicons"
-    }, {
-        name: "star-filled",
-        categories: ["social", "rating"],
-        tags: ["favorite", "bookmark", "rating"],
-        iconSet: "dashicons"
-    }, {
-        name: "email",
-        categories: ["communication", "social"],
-        tags: ["email", "message", "contact"],
-        iconSet: "dashicons"
-    }, {
-        name: "phone",
-        categories: ["communication", "social"],
-        tags: ["call", "contact", "telephone"],
-        iconSet: "dashicons"
-    }, {
-        name: "calendar-alt",
-        categories: ["time", "date"],
-        tags: ["schedule", "event", "date"],
-        iconSet: "dashicons"
-    }, {
-        name: "clock",
-        categories: ["time", "date"],
-        tags: ["time", "hour", "schedule"],
-        iconSet: "dashicons"
-    }
-];
-const ShadcnIconPicker = ({ isOpen, onClose, onSelect, currentIcon, searchable = true, categorized = true }) => {
-    const [search, setSearch] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('');
-    const [selectedIconSet, setSelectedIconSet] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('material');
-    const [selectedCategory, setSelectedCategory] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('all');
-    const [isLoading, setIsLoading] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
-    const [error, setError] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
-    // Reset search when modal opens/closes
-    (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-        if (!isOpen) {
-            setSearch('');
-            setSelectedCategory('all');
-        }
-    }, [isOpen]);
-    // Get available icon sets
-    const iconSets = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
-        const sets = new Set(sampleIconsData.map(icon => icon.iconSet));
-        return Array.from(sets).map(set => ({
-            name: set.charAt(0).toUpperCase() + set.slice(1),
-            value: set
-        }));
-    }, []);
-    // Get available categories for current icon set
-    const categories = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
-        const iconSetIcons = sampleIconsData.filter(icon => icon.iconSet === selectedIconSet);
-        const cats = new Set(iconSetIcons.flatMap(icon => icon.categories));
-        return Array.from(cats).map(cat => ({
-            name: cat.charAt(0).toUpperCase() + cat.slice(1),
-            value: cat
-        }));
-    }, [selectedIconSet]);
-    // Fuse.js for fuzzy search
-    const fuseInstance = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
-        const iconSetIcons = sampleIconsData.filter(icon => icon.iconSet === selectedIconSet);
-        return new fuse_js__WEBPACK_IMPORTED_MODULE_3__["default"](iconSetIcons, {
-            keys: ['name', 'tags', 'categories'],
-            threshold: 0.3,
-            ignoreLocation: true,
-            includeScore: true
-        });
-    }, [selectedIconSet]);
-    // Filter icons based on search and category
-    const filteredIcons = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
-        let icons = sampleIconsData.filter(icon => icon.iconSet === selectedIconSet);
-        // Filter by category
-        if (selectedCategory !== 'all') {
-            icons = icons.filter(icon => icon.categories.includes(selectedCategory));
-        }
-        // Filter by search
-        if (search.trim() !== '') {
-            const results = fuseInstance.search(search.toLowerCase().trim());
-            const searchResults = results.map(result => result.item);
-            icons = icons.filter(icon => searchResults.some(result => result.name === icon.name));
-        }
-        return icons;
-    }, [search, selectedIconSet, selectedCategory, fuseInstance]);
-    // Categorize icons for display
-    const categorizedIcons = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
-        if (!categorized || search.trim() !== '' || selectedCategory !== 'all') {
-            return [{
-                    name: 'All Icons',
-                    icons: filteredIcons
-                }];
-        }
-        const categories = new Map();
-        filteredIcons.forEach(icon => {
-            if (icon.categories && icon.categories.length > 0) {
-                icon.categories.forEach(category => {
-                    if (!categories.has(category)) {
-                        categories.set(category, []);
-                    }
-                    categories.get(category).push(icon);
-                });
-            }
-            else {
-                const category = 'Other';
-                if (!categories.has(category)) {
-                    categories.set(category, []);
-                }
-                categories.get(category).push(icon);
-            }
-        });
-        return Array.from(categories.entries()).map(([name, icons]) => ({
-            name,
-            icons
-        })).sort((a, b) => a.name.localeCompare(b.name));
-    }, [filteredIcons, categorized, search, selectedCategory]);
-    const handleIconSelect = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)(icon => {
-        onSelect(icon);
-        // Gọi onClose sau một chút để đảm bảo state được cập nhật
-        setTimeout(() => {
-            onClose();
-        }, 100);
-    }, [onSelect, onClose]);
-    const handleSearchChange = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)(value => {
-        setSearch(value);
-    }, []);
-    const handleIconSetChange = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)(iconSet => {
-        setSelectedIconSet(iconSet);
-        setSelectedCategory('all');
-        setSearch('');
-    }, []);
-    const handleCategoryChange = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)(category => {
-        setSelectedCategory(category);
-    }, []);
-    const handleClose = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)(() => {
-        setSearch('');
-        setSelectedCategory('all');
-        onClose();
-    }, [onClose]);
-    const renderIcon = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)(icon => {
-        let iconElement;
-        if (icon.iconSet === 'material') {
-            iconElement = /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
-                className: "material-icons",
-                children: icon.name
-            });
-        }
-        else if (icon.iconSet === 'fontawesome') {
-            iconElement = /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("i", {
-                className: `fas fa-${icon.name}`
-            });
-        }
-        else if (icon.iconSet === 'dashicons') {
-            iconElement = /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
-                className: `dashicons dashicons-${icon.name}`
-            });
-        }
-        else {
-            iconElement = /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
-                className: "material-icons",
-                children: icon.name
-            });
-        }
-        return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
-            isSecondary: true,
-            className: `jankx-icon-picker-modal__icon-item ${currentIcon?.name === icon.name && currentIcon?.iconSet === icon.iconSet ? 'is-selected' : ''}`,
-            onClick: () => handleIconSelect(icon),
-            children: [iconElement, /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
-                    className: "jankx-icon-picker-modal__icon-name",
-                    children: icon.name
-                })]
-        }, `${icon.iconSet}-${icon.name}`);
-    }, [handleIconSelect, currentIcon]);
+// Material Icons
+{
+  name: "home",
+  categories: ["navigation", "layout"],
+  tags: ["house", "main", "start"],
+  iconSet: "material"
+}, {
+  name: "user",
+  categories: ["social", "people"],
+  tags: ["person", "profile", "account"],
+  iconSet: "material"
+}, {
+  name: "settings",
+  categories: ["navigation", "system"],
+  tags: ["gear", "config", "preferences"],
+  iconSet: "material"
+}, {
+  name: "search",
+  categories: ["navigation", "action"],
+  tags: ["find", "lookup", "magnifier"],
+  iconSet: "material"
+}, {
+  name: "heart",
+  categories: ["social", "emotion"],
+  tags: ["love", "like", "favorite"],
+  iconSet: "material"
+}, {
+  name: "star",
+  categories: ["social", "rating"],
+  tags: ["favorite", "bookmark", "rating"],
+  iconSet: "material"
+}, {
+  name: "mail",
+  categories: ["communication", "social"],
+  tags: ["email", "message", "contact"],
+  iconSet: "material"
+}, {
+  name: "phone",
+  categories: ["communication", "social"],
+  tags: ["call", "contact", "telephone"],
+  iconSet: "material"
+}, {
+  name: "calendar",
+  categories: ["time", "date"],
+  tags: ["schedule", "event", "date"],
+  iconSet: "material"
+}, {
+  name: "clock",
+  categories: ["time", "date"],
+  tags: ["time", "hour", "schedule"],
+  iconSet: "material"
+},
+// FontAwesome Icons
+{
+  name: "home",
+  categories: ["navigation", "layout"],
+  tags: ["house", "main", "start"],
+  iconSet: "fontawesome"
+}, {
+  name: "user",
+  categories: ["social", "people"],
+  tags: ["person", "profile", "account"],
+  iconSet: "fontawesome"
+}, {
+  name: "cog",
+  categories: ["navigation", "system"],
+  tags: ["gear", "config", "preferences"],
+  iconSet: "fontawesome"
+}, {
+  name: "search",
+  categories: ["navigation", "action"],
+  tags: ["find", "lookup", "magnifier"],
+  iconSet: "fontawesome"
+}, {
+  name: "heart",
+  categories: ["social", "emotion"],
+  tags: ["love", "like", "favorite"],
+  iconSet: "fontawesome"
+}, {
+  name: "star",
+  categories: ["social", "rating"],
+  tags: ["favorite", "bookmark", "rating"],
+  iconSet: "fontawesome"
+}, {
+  name: "envelope",
+  categories: ["communication", "social"],
+  tags: ["email", "message", "contact"],
+  iconSet: "fontawesome"
+}, {
+  name: "phone",
+  categories: ["communication", "social"],
+  tags: ["call", "contact", "telephone"],
+  iconSet: "fontawesome"
+}, {
+  name: "calendar",
+  categories: ["time", "date"],
+  tags: ["schedule", "event", "date"],
+  iconSet: "fontawesome"
+}, {
+  name: "clock",
+  categories: ["time", "date"],
+  tags: ["time", "hour", "schedule"],
+  iconSet: "fontawesome"
+},
+// Dashicons
+{
+  name: "admin-home",
+  categories: ["navigation", "admin"],
+  tags: ["home", "dashboard", "main"],
+  iconSet: "dashicons"
+}, {
+  name: "admin-users",
+  categories: ["social", "admin"],
+  tags: ["users", "people", "admin"],
+  iconSet: "dashicons"
+}, {
+  name: "admin-settings",
+  categories: ["navigation", "admin"],
+  tags: ["settings", "config", "admin"],
+  iconSet: "dashicons"
+}, {
+  name: "search",
+  categories: ["navigation", "action"],
+  tags: ["find", "lookup", "search"],
+  iconSet: "dashicons"
+}, {
+  name: "heart",
+  categories: ["social", "emotion"],
+  tags: ["love", "like", "favorite"],
+  iconSet: "dashicons"
+}, {
+  name: "star-filled",
+  categories: ["social", "rating"],
+  tags: ["favorite", "bookmark", "rating"],
+  iconSet: "dashicons"
+}, {
+  name: "email",
+  categories: ["communication", "social"],
+  tags: ["email", "message", "contact"],
+  iconSet: "dashicons"
+}, {
+  name: "phone",
+  categories: ["communication", "social"],
+  tags: ["call", "contact", "telephone"],
+  iconSet: "dashicons"
+}, {
+  name: "calendar-alt",
+  categories: ["time", "date"],
+  tags: ["schedule", "event", "date"],
+  iconSet: "dashicons"
+}, {
+  name: "clock",
+  categories: ["time", "date"],
+  tags: ["time", "hour", "schedule"],
+  iconSet: "dashicons"
+}];
+const ShadcnIconPicker = ({
+  isOpen,
+  onClose,
+  onSelect,
+  currentIcon,
+  searchable = true,
+  categorized = true
+}) => {
+  const [search, setSearch] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('');
+  const [selectedIconSet, setSelectedIconSet] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('material');
+  const [selectedCategory, setSelectedCategory] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('all');
+  const [isLoading, setIsLoading] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  const [error, setError] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
+
+  // Reset search when modal opens/closes
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     if (!isOpen) {
-        return null;
+      setSearch('');
+      setSelectedCategory('all');
     }
-    return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Modal, {
-        isFullScreen: false,
-        onRequestClose: handleClose,
-        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Chọn Icon', 'jankx'),
-        className: "jankx-icon-picker-modal",
-        overlayClassName: "jankx-icon-picker-modal-overlay",
-        children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-            className: "jankx-icon-picker-modal__content",
-            children: [error && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Notice, {
-                    status: "error",
-                    isDismissible: false,
-                    children: error
-                }), isLoading ? /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-                    className: "jankx-icon-picker-modal__loading",
-                    children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Spinner, {}), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
-                            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Đang tải danh sách icons...', 'jankx')
-                        })]
-                }) : /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Flex, {
-                    className: "jankx-icon-picker-modal__layout",
-                    children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.FlexItem, {
-                            className: "jankx-icon-picker-modal__sidebar",
-                            children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                                    className: "jankx-icon-picker-modal__sidebar-header",
-                                    children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("h3", {
-                                        children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Icon Sets', 'jankx')
-                                    })
-                                }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                                    className: "jankx-icon-picker-modal__icon-sets",
-                                    children: iconSets.map(iconSet => /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
-                                        isSecondary: true,
-                                        className: `jankx-icon-picker-modal__icon-set-item ${selectedIconSet === iconSet.value ? 'is-selected' : ''}`,
-                                        onClick: () => handleIconSetChange(iconSet.value),
-                                        children: iconSet.name
-                                    }, iconSet.value))
-                                })]
-                        }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.FlexItem, {
-                            className: "jankx-icon-picker-modal__main-panel",
-                            children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                                    className: "jankx-icon-picker-modal__controls",
-                                    children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Flex, {
-                                        gap: 2,
-                                        align: "center",
-                                        children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.FlexItem, {
-                                                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("select", {
-                                                    value: selectedCategory,
-                                                    onChange: e => handleCategoryChange(e.target.value),
-                                                    className: "jankx-icon-picker-modal__category-select",
-                                                    children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("option", {
-                                                            value: "all",
-                                                            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('All Categories', 'jankx')
-                                                        }), categories.map(category => /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("option", {
-                                                            value: category.value,
-                                                            children: category.name
-                                                        }, category.value))]
-                                                })
-                                            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.FlexItem, {
-                                                children: searchable && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TextControl, {
-                                                    value: search,
-                                                    onChange: handleSearchChange,
-                                                    placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Search icons...', 'jankx'),
-                                                    className: "jankx-icon-picker-modal__search"
-                                                })
-                                            })]
-                                    })
-                                }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                                    className: "jankx-icon-picker-modal__scroll-container",
-                                    children: filteredIcons.length === 0 ? /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                                        className: "jankx-icon-picker-modal__empty",
-                                        children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
-                                            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Không tìm thấy icon nào', 'jankx')
-                                        })
-                                    }) : /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.Fragment, {
-                                        children: categorizedIcons.map(category => /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-                                            className: "jankx-icon-picker-modal__category",
-                                            children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("h3", {
-                                                    className: "jankx-icon-picker-modal__category-title",
-                                                    children: category.name
-                                                }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                                                    className: "jankx-icon-picker-modal__icon-grid",
-                                                    children: category.icons.map(renderIcon)
-                                                })]
-                                        }, category.name))
-                                    })
-                                })]
-                        })]
-                })]
-        })
+  }, [isOpen]);
+
+  // Get available icon sets
+  const iconSets = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
+    const sets = new Set(sampleIconsData.map(icon => icon.iconSet));
+    return Array.from(sets).map(set => ({
+      name: set.charAt(0).toUpperCase() + set.slice(1),
+      value: set
+    }));
+  }, []);
+
+  // Get available categories for current icon set
+  const categories = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
+    const iconSetIcons = sampleIconsData.filter(icon => icon.iconSet === selectedIconSet);
+    const cats = new Set(iconSetIcons.flatMap(icon => icon.categories));
+    return Array.from(cats).map(cat => ({
+      name: cat.charAt(0).toUpperCase() + cat.slice(1),
+      value: cat
+    }));
+  }, [selectedIconSet]);
+
+  // Fuse.js for fuzzy search
+  const fuseInstance = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
+    const iconSetIcons = sampleIconsData.filter(icon => icon.iconSet === selectedIconSet);
+    return new fuse_js__WEBPACK_IMPORTED_MODULE_3__["default"](iconSetIcons, {
+      keys: ['name', 'tags', 'categories'],
+      threshold: 0.3,
+      ignoreLocation: true,
+      includeScore: true
     });
+  }, [selectedIconSet]);
+
+  // Filter icons based on search and category
+  const filteredIcons = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
+    let icons = sampleIconsData.filter(icon => icon.iconSet === selectedIconSet);
+
+    // Filter by category
+    if (selectedCategory !== 'all') {
+      icons = icons.filter(icon => icon.categories.includes(selectedCategory));
+    }
+
+    // Filter by search
+    if (search.trim() !== '') {
+      const results = fuseInstance.search(search.toLowerCase().trim());
+      const searchResults = results.map(result => result.item);
+      icons = icons.filter(icon => searchResults.some(result => result.name === icon.name));
+    }
+    return icons;
+  }, [search, selectedIconSet, selectedCategory, fuseInstance]);
+
+  // Categorize icons for display
+  const categorizedIcons = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
+    if (!categorized || search.trim() !== '' || selectedCategory !== 'all') {
+      return [{
+        name: 'All Icons',
+        icons: filteredIcons
+      }];
+    }
+    const categories = new Map();
+    filteredIcons.forEach(icon => {
+      if (icon.categories && icon.categories.length > 0) {
+        icon.categories.forEach(category => {
+          if (!categories.has(category)) {
+            categories.set(category, []);
+          }
+          categories.get(category).push(icon);
+        });
+      } else {
+        const category = 'Other';
+        if (!categories.has(category)) {
+          categories.set(category, []);
+        }
+        categories.get(category).push(icon);
+      }
+    });
+    return Array.from(categories.entries()).map(([name, icons]) => ({
+      name,
+      icons
+    })).sort((a, b) => a.name.localeCompare(b.name));
+  }, [filteredIcons, categorized, search, selectedCategory]);
+  const handleIconSelect = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)(icon => {
+    onSelect(icon);
+    // Gọi onClose sau một chút để đảm bảo state được cập nhật
+    setTimeout(() => {
+      onClose();
+    }, 100);
+  }, [onSelect, onClose]);
+  const handleSearchChange = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)(value => {
+    setSearch(value);
+  }, []);
+  const handleIconSetChange = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)(iconSet => {
+    setSelectedIconSet(iconSet);
+    setSelectedCategory('all');
+    setSearch('');
+  }, []);
+  const handleCategoryChange = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)(category => {
+    setSelectedCategory(category);
+  }, []);
+  const handleClose = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)(() => {
+    setSearch('');
+    setSelectedCategory('all');
+    onClose();
+  }, [onClose]);
+  const renderIcon = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)(icon => {
+    let iconElement;
+    if (icon.iconSet === 'material') {
+      iconElement = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+        className: "material-icons",
+        children: icon.name
+      });
+    } else if (icon.iconSet === 'fontawesome') {
+      iconElement = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("i", {
+        className: `fas fa-${icon.name}`
+      });
+    } else if (icon.iconSet === 'dashicons') {
+      iconElement = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+        className: `dashicons dashicons-${icon.name}`
+      });
+    } else {
+      iconElement = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+        className: "material-icons",
+        children: icon.name
+      });
+    }
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+      isSecondary: true,
+      className: `jankx-icon-picker-modal__icon-item ${currentIcon?.name === icon.name && currentIcon?.iconSet === icon.iconSet ? 'is-selected' : ''}`,
+      onClick: () => handleIconSelect(icon),
+      children: [iconElement, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+        className: "jankx-icon-picker-modal__icon-name",
+        children: icon.name
+      })]
+    }, `${icon.iconSet}-${icon.name}`);
+  }, [handleIconSelect, currentIcon]);
+  if (!isOpen) {
+    return null;
+  }
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Modal, {
+    isFullScreen: false,
+    onRequestClose: handleClose,
+    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Chọn Icon', 'jankx'),
+    className: "jankx-icon-picker-modal",
+    overlayClassName: "jankx-icon-picker-modal-overlay",
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+      className: "jankx-icon-picker-modal__content",
+      children: [error && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Notice, {
+        status: "error",
+        isDismissible: false,
+        children: error
+      }), isLoading ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+        className: "jankx-icon-picker-modal__loading",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Spinner, {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+          children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Đang tải danh sách icons...', 'jankx')
+        })]
+      }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Flex, {
+        className: "jankx-icon-picker-modal__layout",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.FlexItem, {
+          className: "jankx-icon-picker-modal__sidebar",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+            className: "jankx-icon-picker-modal__sidebar-header",
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("h3", {
+              children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Icon Sets', 'jankx')
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+            className: "jankx-icon-picker-modal__icon-sets",
+            children: iconSets.map(iconSet => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+              isSecondary: true,
+              className: `jankx-icon-picker-modal__icon-set-item ${selectedIconSet === iconSet.value ? 'is-selected' : ''}`,
+              onClick: () => handleIconSetChange(iconSet.value),
+              children: iconSet.name
+            }, iconSet.value))
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.FlexItem, {
+          className: "jankx-icon-picker-modal__main-panel",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+            className: "jankx-icon-picker-modal__controls",
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Flex, {
+              gap: 2,
+              align: "center",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.FlexItem, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("select", {
+                  value: selectedCategory,
+                  onChange: e => handleCategoryChange(e.target.value),
+                  className: "jankx-icon-picker-modal__category-select",
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("option", {
+                    value: "all",
+                    children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('All Categories', 'jankx')
+                  }), categories.map(category => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("option", {
+                    value: category.value,
+                    children: category.name
+                  }, category.value))]
+                })
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.FlexItem, {
+                children: searchable && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TextControl, {
+                  value: search,
+                  onChange: handleSearchChange,
+                  placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Search icons...', 'jankx'),
+                  className: "jankx-icon-picker-modal__search"
+                })
+              })]
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+            className: "jankx-icon-picker-modal__scroll-container",
+            children: filteredIcons.length === 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+              className: "jankx-icon-picker-modal__empty",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Không tìm thấy icon nào', 'jankx')
+              })
+            }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.Fragment, {
+              children: categorizedIcons.map(category => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                className: "jankx-icon-picker-modal__category",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("h3", {
+                  className: "jankx-icon-picker-modal__category-title",
+                  children: category.name
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                  className: "jankx-icon-picker-modal__icon-grid",
+                  children: category.icons.map(renderIcon)
+                })]
+              }, category.name))
+            })
+          })]
+        })]
+      })]
+    })
+  });
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ShadcnIconPicker);
-
 
 /***/ }),
 
@@ -2685,6 +2711,16 @@ module.exports = window["wp"]["i18n"];
 /***/ ((module) => {
 
 module.exports = window["wp"]["primitives"];
+
+/***/ }),
+
+/***/ "react":
+/*!************************!*\
+  !*** external "React" ***!
+  \************************/
+/***/ ((module) => {
+
+module.exports = window["React"];
 
 /***/ }),
 
@@ -2777,16 +2813,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/link.js");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/settings.js");
-/* harmony import */ var _shared_components_IconPicker__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../shared/components/IconPicker */ "./shared/components/IconPicker.tsx");
-/* harmony import */ var _components_IconSettings__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/IconSettings */ "./blocks/icon-button/components/IconSettings.tsx");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/link.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/settings.js");
+/* harmony import */ var _shared_components_IconPicker__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../shared/components/IconPicker */ "./shared/components/IconPicker.tsx");
+/* harmony import */ var _components_IconSettings__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./components/IconSettings */ "./blocks/icon-button/components/IconSettings.tsx");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__);
+
 
 
 
@@ -2800,582 +2839,635 @@ __webpack_require__.r(__webpack_exports__);
  * Điều này đảm bảo cấu trúc HTML của icon luôn giống nhau.
  */
 const renderIcon = (attributes, finalTextColor) => {
-    const { hasIcon, iconName, iconSet, iconSize, iconColor, iconStyle } = attributes;
-    if (!hasIcon || !iconName) {
-        return null;
-    }
-    const finalIconColor = iconColor || finalTextColor || '#333333';
-    if (iconSet === 'material') {
-        const styleClass = iconStyle !== 'filled' ? `material-icons-${iconStyle}` : 'material-icons';
-        return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
-            className: styleClass,
-            style: {
-                fontSize: iconSize,
-                color: finalIconColor
-            },
-            children: iconName
-        });
-    }
-    else if (iconSet === 'fontawesome') {
-        return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("i", {
-            className: `fas fa-${iconName}`,
-            style: {
-                fontSize: iconSize,
-                color: finalIconColor
-            }
-        });
-    }
-    else if (iconSet === 'dashicons') {
-        return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
-            className: `dashicons dashicons-${iconName}`,
-            style: {
-                fontSize: iconSize,
-                color: finalIconColor
-            }
-        });
-    }
+  const {
+    hasIcon,
+    iconName,
+    iconSet,
+    iconSize,
+    iconColor,
+    iconStyle
+  } = attributes;
+  if (!hasIcon || !iconName) {
     return null;
+  }
+  const finalIconColor = iconColor || finalTextColor || '#333333';
+  if (iconSet === 'material') {
+    const styleClass = iconStyle !== 'filled' ? `material-icons-${iconStyle}` : 'material-icons';
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("span", {
+      className: styleClass,
+      style: {
+        fontSize: iconSize,
+        color: finalIconColor
+      },
+      children: iconName
+    });
+  } else if (iconSet === 'fontawesome') {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("i", {
+      className: `fas fa-${iconName}`,
+      style: {
+        fontSize: iconSize,
+        color: finalIconColor
+      }
+    });
+  } else if (iconSet === 'dashicons') {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("span", {
+      className: `dashicons dashicons-${iconName}`,
+      style: {
+        fontSize: iconSize,
+        color: finalIconColor
+      }
+    });
+  }
+  return null;
 };
-const Edit = ({ attributes, setAttributes, backgroundColor, setBackgroundColor, textColor, setTextColor }) => {
-    const { text, url, linkTarget, rel, placeholder, hasIcon, iconName, iconSet, iconPosition, iconSize, iconColor, iconStyle, borderRadius, fontSize, fontFamily, fontWeight, textTransform, letterSpacing, lineHeight, width, justification, opensInNewTab } = attributes;
-    const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)({
-        className: 'jankx-icon-button-block'
+const Edit = ({
+  attributes,
+  setAttributes,
+  backgroundColor,
+  setBackgroundColor,
+  textColor,
+  setTextColor
+}) => {
+  const {
+    text,
+    url,
+    linkTarget,
+    rel,
+    placeholder,
+    hasIcon,
+    iconName,
+    iconSet,
+    iconPosition,
+    iconSize,
+    iconColor,
+    iconStyle,
+    borderRadius,
+    fontSize,
+    fontFamily,
+    fontWeight,
+    textTransform,
+    letterSpacing,
+    lineHeight,
+    width,
+    justification,
+    opensInNewTab
+  } = attributes;
+  const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.useBlockProps)({
+    className: 'jankx-icon-button-block'
+  });
+  const handleIconChange = icon => {
+    setAttributes({
+      iconName: icon.name,
+      iconSet: icon.iconSet || 'material'
     });
-    const handleIconChange = icon => {
-        setAttributes({
-            iconName: icon.name,
-            iconSet: icon.iconSet || 'material'
-        });
-    };
-    const iconElement = renderIcon(attributes, props.textColor?.color); // Sử dụng hàm render icon chung
-    const renderButtonContent = () => {
-        return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("span", {
-            style: {
-                color: props.textColor?.color || '#333333'
-            },
-            children: [attributes.iconPosition === 'before' && iconElement, /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.RichText, {
-                    value: attributes.text,
-                    onChange: value => setAttributes({
-                        text: value
-                    }),
-                    placeholder: attributes.placeholder || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Add text...', 'jankx'),
-                    className: "jankx-icon-button__text"
-                    // ... (styles)
-                }), attributes.iconPosition === 'after' && iconElement]
-        });
-    };
-    const getButtonStyles = () => {
-        const styles = {};
-        if (backgroundColor?.color) {
-            styles.backgroundColor = backgroundColor.color;
-        }
-        if (textColor?.color) {
-            styles.color = textColor.color;
-        }
-        if (borderRadius !== undefined) {
-            styles.borderRadius = `${borderRadius}px`;
-        }
-        if (width) {
-            styles.width = `${width}px`;
-        }
-        if (justification) {
-            styles.justifyContent = justification;
-        }
-        if (fontSize && fontSize !== '0px') {
-            styles.fontSize = fontSize;
-        }
-        return styles;
-    };
-    const getLinkRel = () => {
-        const relArray = [];
-        if (linkTarget === '_blank') {
-            relArray.push('noopener');
-        }
-        if (rel?.includes('nofollow')) {
-            relArray.push('nofollow');
-        }
-        return relArray.join(' ');
-    };
-    return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
-        children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.BlockControls, {
-                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.AlignmentToolbar, {
-                    value: justification,
-                    onChange: value => setAttributes({
-                        justification: value || 'left'
-                    })
-                })
-            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
-                children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
-                        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Button Settings', 'jankx'),
-                        icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__["default"],
-                        initialOpen: true,
-                        children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
-                                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('URL', 'jankx'),
-                                value: url,
-                                onChange: value => setAttributes({
-                                    url: value
-                                }),
-                                placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('https://example.com', 'jankx')
-                            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
-                                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Open in new tab', 'jankx'),
-                                checked: opensInNewTab,
-                                onChange: value => {
-                                    setAttributes({
-                                        opensInNewTab: value
-                                    });
-                                    if (value) {
-                                        setAttributes({
-                                            linkTarget: '_blank'
-                                        });
-                                    }
-                                    else {
-                                        setAttributes({
-                                            linkTarget: '_self'
-                                        });
-                                    }
-                                }
-                            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
-                                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Link Rel', 'jankx'),
-                                value: rel,
-                                options: [{
-                                        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('None', 'jankx'),
-                                        value: ''
-                                    }, {
-                                        label: 'nofollow',
-                                        value: 'nofollow'
-                                    }, {
-                                        label: 'noopener',
-                                        value: 'noopener'
-                                    }, {
-                                        label: 'nofollow noopener',
-                                        value: 'nofollow noopener'
-                                    }],
-                                onChange: value => setAttributes({
-                                    rel: value
-                                })
-                            })]
-                    }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components_IconSettings__WEBPACK_IMPORTED_MODULE_7__["default"], {
-                        hasIcon: hasIcon,
-                        iconName: iconName,
-                        iconSet: iconSet,
-                        iconPosition: iconPosition,
-                        iconSize: iconSize,
-                        iconColor: iconColor,
-                        iconStyle: iconStyle,
-                        onHasIconChange: value => setAttributes({
-                            hasIcon: value
-                        }),
-                        onIconNameChange: name => setAttributes({
-                            iconName: name
-                        }),
-                        onIconSetChange: set => setAttributes({
-                            iconSet: set
-                        }),
-                        onIconPositionChange: position => setAttributes({
-                            iconPosition: position
-                        }),
-                        onIconSizeChange: size => setAttributes({
-                            iconSize: size
-                        }),
-                        onIconColorChange: color => setAttributes({
-                            iconColor: color
-                        }),
-                        onIconStyleChange: style => setAttributes({
-                            iconStyle: style
-                        })
-                    }), hasIcon && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
-                        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Icon Selection', 'jankx'),
-                        icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__["default"],
-                        initialOpen: false,
-                        children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_shared_components_IconPicker__WEBPACK_IMPORTED_MODULE_6__["default"], {
-                            value: iconName ? {
-                                name: iconName,
-                                iconSet: iconSet
-                            } : null,
-                            onChange: handleIconChange,
-                            iconType: "material",
-                            category: "navigation",
-                            onIconTypeChange: () => { },
-                            onCategoryChange: () => { }
-                        })
-                    }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
-                        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Typography', 'jankx'),
-                        initialOpen: false,
-                        children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalUnitControl, {
-                                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Font Size', 'jankx'),
-                                value: fontSize,
-                                onChange: value => setAttributes({
-                                    fontSize: value
-                                }),
-                                units: [{
-                                        value: 'px',
-                                        label: 'px',
-                                        default: 16
-                                    }, {
-                                        value: 'em',
-                                        label: 'em',
-                                        default: 1
-                                    }, {
-                                        value: 'rem',
-                                        label: 'rem',
-                                        default: 1
-                                    }, {
-                                        value: '%',
-                                        label: '%',
-                                        default: 100
-                                    }]
-                            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
-                                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Font Weight', 'jankx'),
-                                value: fontWeight,
-                                options: [{
-                                        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Normal', 'jankx'),
-                                        value: 'normal'
-                                    }, {
-                                        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Bold', 'jankx'),
-                                        value: 'bold'
-                                    }, {
-                                        label: '100',
-                                        value: '100'
-                                    }, {
-                                        label: '200',
-                                        value: '200'
-                                    }, {
-                                        label: '300',
-                                        value: '300'
-                                    }, {
-                                        label: '400',
-                                        value: '400'
-                                    }, {
-                                        label: '500',
-                                        value: '500'
-                                    }, {
-                                        label: '600',
-                                        value: '600'
-                                    }, {
-                                        label: '700',
-                                        value: '700'
-                                    }, {
-                                        label: '800',
-                                        value: '800'
-                                    }, {
-                                        label: '900',
-                                        value: '900'
-                                    }],
-                                onChange: value => setAttributes({
-                                    fontWeight: value
-                                })
-                            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
-                                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Text Transform', 'jankx'),
-                                value: textTransform,
-                                options: [{
-                                        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('None', 'jankx'),
-                                        value: 'none'
-                                    }, {
-                                        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Uppercase', 'jankx'),
-                                        value: 'uppercase'
-                                    }, {
-                                        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Lowercase', 'jankx'),
-                                        value: 'lowercase'
-                                    }, {
-                                        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Capitalize', 'jankx'),
-                                        value: 'capitalize'
-                                    }],
-                                onChange: value => setAttributes({
-                                    textTransform: value
-                                })
-                            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalUnitControl, {
-                                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Letter Spacing', 'jankx'),
-                                value: letterSpacing,
-                                onChange: value => setAttributes({
-                                    letterSpacing: value
-                                }),
-                                units: [{
-                                        value: 'px',
-                                        label: 'px',
-                                        default: 0
-                                    }, {
-                                        value: 'em',
-                                        label: 'em',
-                                        default: 0
-                                    }, {
-                                        value: 'rem',
-                                        label: 'rem',
-                                        default: 0
-                                    }]
-                            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalUnitControl, {
-                                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Line Height', 'jankx'),
-                                value: lineHeight,
-                                onChange: value => setAttributes({
-                                    lineHeight: value
-                                }),
-                                units: [{
-                                        value: '',
-                                        label: 'none',
-                                        default: 1.2
-                                    }, {
-                                        value: 'px',
-                                        label: 'px',
-                                        default: 20
-                                    }, {
-                                        value: 'em',
-                                        label: 'em',
-                                        default: 1.2
-                                    }, {
-                                        value: 'rem',
-                                        label: 'rem',
-                                        default: 1.2
-                                    }]
-                            })]
-                    }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
-                        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Layout', 'jankx'),
-                        initialOpen: false,
-                        children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RangeControl, {
-                                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Border Radius', 'jankx'),
-                                value: borderRadius,
-                                onChange: value => setAttributes({
-                                    borderRadius: value || 0
-                                }),
-                                min: 0,
-                                max: 50,
-                                step: 1
-                            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalUnitControl, {
-                                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Width', 'jankx'),
-                                value: width ? `${width}px` : '',
-                                onChange: value => {
-                                    const numValue = parseInt(value);
-                                    setAttributes({
-                                        width: isNaN(numValue) ? undefined : numValue
-                                    });
-                                },
-                                units: [{
-                                        value: 'px',
-                                        label: 'px',
-                                        default: 200
-                                    }]
-                            })]
-                    })]
-            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
-                ...blockProps,
-                children: url ? /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("a", {
-                    href: url,
-                    target: linkTarget,
-                    rel: getLinkRel(),
-                    className: "jankx-icon-button",
-                    style: getButtonStyles(),
-                    "data-icon-position": iconPosition,
-                    children: renderButtonContent()
-                }) : /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("button", {
-                    className: "jankx-icon-button",
-                    style: getButtonStyles(),
-                    "data-icon-position": iconPosition,
-                    children: renderButtonContent()
-                })
-            })]
+  };
+  const iconElement = renderIcon(attributes, props.textColor?.color); // Sử dụng hàm render icon chung
+
+  const renderButtonContent = () => {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("span", {
+      style: {
+        color: props.textColor?.color || '#333333'
+      },
+      children: [attributes.iconPosition === 'before' && iconElement, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.RichText, {
+        value: attributes.text,
+        onChange: value => setAttributes({
+          text: value
+        }),
+        placeholder: attributes.placeholder || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Add text...', 'jankx'),
+        className: "jankx-icon-button__text"
+        // ... (styles)
+      }), attributes.iconPosition === 'after' && iconElement]
     });
-};
-const Save = ({ attributes }) => {
-    const { text, url, linkTarget, rel, iconPosition, borderRadius, fontSize, fontFamily, fontWeight, textTransform, letterSpacing, lineHeight, width, justification } = attributes;
-    const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps.save({
-        className: 'jankx-icon-button-block'
-    });
-    const iconElement = renderIcon(attributes); // Sử dụng hàm render icon chung
-    const renderButtonContent = () => {
-        return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("span", {
-            children: [attributes.iconPosition === 'before' && iconElement, /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.RichText.Content, {
-                    value: attributes.text,
-                    className: "jankx-icon-button__text"
-                    // ... (styles)
-                }), attributes.iconPosition === 'after' && iconElement]
-        });
-    };
-    const getButtonStyles = () => {
-        const styles = {};
-        if (borderRadius !== undefined) {
-            styles.borderRadius = `${borderRadius}px`;
-        }
-        if (width) {
-            styles.width = `${width}px`;
-        }
-        if (justification) {
-            styles.justifyContent = justification;
-        }
-        return styles;
-    };
-    const getLinkRel = () => {
-        const relArray = [];
-        if (linkTarget === '_blank') {
-            relArray.push('noopener');
-        }
-        if (rel?.includes('nofollow')) {
-            relArray.push('nofollow');
-        }
-        return relArray.join(' ');
-    };
-    return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
-        ...blockProps,
-        children: url ? /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("a", {
-            href: url,
-            target: linkTarget,
-            rel: getLinkRel(),
-            className: "jankx-icon-button",
-            style: getButtonStyles(),
-            children: renderButtonContent()
-        }) : /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("button", {
-            className: "jankx-icon-button",
-            style: getButtonStyles(),
-            children: renderButtonContent()
+  };
+  const getButtonStyles = () => {
+    const styles = {};
+    if (backgroundColor?.color) {
+      styles.backgroundColor = backgroundColor.color;
+    }
+    if (textColor?.color) {
+      styles.color = textColor.color;
+    }
+    if (borderRadius !== undefined) {
+      styles.borderRadius = `${borderRadius}px`;
+    }
+    if (width) {
+      styles.width = `${width}px`;
+    }
+    if (justification) {
+      styles.justifyContent = justification;
+    }
+    if (fontSize && fontSize !== '0px') {
+      styles.fontSize = fontSize;
+    }
+    return styles;
+  };
+  const getLinkRel = () => {
+    const relArray = [];
+    if (linkTarget === '_blank') {
+      relArray.push('noopener');
+    }
+    if (rel?.includes('nofollow')) {
+      relArray.push('nofollow');
+    }
+    return relArray.join(' ');
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.BlockControls, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.AlignmentToolbar, {
+        value: justification,
+        onChange: value => setAttributes({
+          justification: value || 'left'
         })
-    });
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.InspectorControls, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Button Settings', 'jankx'),
+        icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__["default"],
+        initialOpen: true,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.TextControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('URL', 'jankx'),
+          value: url,
+          onChange: value => setAttributes({
+            url: value
+          }),
+          placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('https://example.com', 'jankx')
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Open in new tab', 'jankx'),
+          checked: opensInNewTab,
+          onChange: value => {
+            setAttributes({
+              opensInNewTab: value
+            });
+            if (value) {
+              setAttributes({
+                linkTarget: '_blank'
+              });
+            } else {
+              setAttributes({
+                linkTarget: '_self'
+              });
+            }
+          }
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.SelectControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Link Rel', 'jankx'),
+          value: rel,
+          options: [{
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('None', 'jankx'),
+            value: ''
+          }, {
+            label: 'nofollow',
+            value: 'nofollow'
+          }, {
+            label: 'noopener',
+            value: 'noopener'
+          }, {
+            label: 'nofollow noopener',
+            value: 'nofollow noopener'
+          }],
+          onChange: value => setAttributes({
+            rel: value
+          })
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_components_IconSettings__WEBPACK_IMPORTED_MODULE_8__["default"], {
+        hasIcon: hasIcon,
+        iconName: iconName,
+        iconSet: iconSet,
+        iconPosition: iconPosition,
+        iconSize: iconSize,
+        iconColor: iconColor,
+        iconStyle: iconStyle,
+        onHasIconChange: value => setAttributes({
+          hasIcon: value
+        }),
+        onIconNameChange: name => setAttributes({
+          iconName: name
+        }),
+        onIconSetChange: set => setAttributes({
+          iconSet: set
+        }),
+        onIconPositionChange: position => setAttributes({
+          iconPosition: position
+        }),
+        onIconSizeChange: size => setAttributes({
+          iconSize: size
+        }),
+        onIconColorChange: color => setAttributes({
+          iconColor: color
+        }),
+        onIconStyleChange: style => setAttributes({
+          iconStyle: style
+        })
+      }), hasIcon && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Icon Selection', 'jankx'),
+        icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__["default"],
+        initialOpen: false,
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_shared_components_IconPicker__WEBPACK_IMPORTED_MODULE_7__["default"], {
+          value: iconName ? {
+            name: iconName,
+            iconSet: iconSet
+          } : null,
+          onChange: handleIconChange,
+          iconType: "material",
+          category: "navigation",
+          onIconTypeChange: () => {},
+          onCategoryChange: () => {}
+        })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Typography', 'jankx'),
+        initialOpen: false,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.__experimentalUnitControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Font Size', 'jankx'),
+          value: fontSize,
+          onChange: value => setAttributes({
+            fontSize: value
+          }),
+          units: [{
+            value: 'px',
+            label: 'px',
+            default: 16
+          }, {
+            value: 'em',
+            label: 'em',
+            default: 1
+          }, {
+            value: 'rem',
+            label: 'rem',
+            default: 1
+          }, {
+            value: '%',
+            label: '%',
+            default: 100
+          }]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.SelectControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Font Weight', 'jankx'),
+          value: fontWeight,
+          options: [{
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Normal', 'jankx'),
+            value: 'normal'
+          }, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Bold', 'jankx'),
+            value: 'bold'
+          }, {
+            label: '100',
+            value: '100'
+          }, {
+            label: '200',
+            value: '200'
+          }, {
+            label: '300',
+            value: '300'
+          }, {
+            label: '400',
+            value: '400'
+          }, {
+            label: '500',
+            value: '500'
+          }, {
+            label: '600',
+            value: '600'
+          }, {
+            label: '700',
+            value: '700'
+          }, {
+            label: '800',
+            value: '800'
+          }, {
+            label: '900',
+            value: '900'
+          }],
+          onChange: value => setAttributes({
+            fontWeight: value
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.SelectControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Text Transform', 'jankx'),
+          value: textTransform,
+          options: [{
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('None', 'jankx'),
+            value: 'none'
+          }, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Uppercase', 'jankx'),
+            value: 'uppercase'
+          }, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Lowercase', 'jankx'),
+            value: 'lowercase'
+          }, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Capitalize', 'jankx'),
+            value: 'capitalize'
+          }],
+          onChange: value => setAttributes({
+            textTransform: value
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.__experimentalUnitControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Letter Spacing', 'jankx'),
+          value: letterSpacing,
+          onChange: value => setAttributes({
+            letterSpacing: value
+          }),
+          units: [{
+            value: 'px',
+            label: 'px',
+            default: 0
+          }, {
+            value: 'em',
+            label: 'em',
+            default: 0
+          }, {
+            value: 'rem',
+            label: 'rem',
+            default: 0
+          }]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.__experimentalUnitControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Line Height', 'jankx'),
+          value: lineHeight,
+          onChange: value => setAttributes({
+            lineHeight: value
+          }),
+          units: [{
+            value: '',
+            label: 'none',
+            default: 1.2
+          }, {
+            value: 'px',
+            label: 'px',
+            default: 20
+          }, {
+            value: 'em',
+            label: 'em',
+            default: 1.2
+          }, {
+            value: 'rem',
+            label: 'rem',
+            default: 1.2
+          }]
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Layout', 'jankx'),
+        initialOpen: false,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.RangeControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Border Radius', 'jankx'),
+          value: borderRadius,
+          onChange: value => setAttributes({
+            borderRadius: value || 0
+          }),
+          min: 0,
+          max: 50,
+          step: 1
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.__experimentalUnitControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Width', 'jankx'),
+          value: width ? `${width}px` : '',
+          onChange: value => {
+            const numValue = parseInt(value);
+            setAttributes({
+              width: isNaN(numValue) ? undefined : numValue
+            });
+          },
+          units: [{
+            value: 'px',
+            label: 'px',
+            default: 200
+          }]
+        })]
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
+      ...blockProps,
+      children: url ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("a", {
+        href: url,
+        target: linkTarget,
+        rel: getLinkRel(),
+        className: "jankx-icon-button",
+        style: getButtonStyles(),
+        "data-icon-position": iconPosition,
+        children: renderButtonContent()
+      }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("button", {
+        className: "jankx-icon-button",
+        style: getButtonStyles(),
+        "data-icon-position": iconPosition,
+        children: renderButtonContent()
+      })
+    })]
+  });
 };
+const Save = ({
+  attributes
+}) => {
+  const {
+    text,
+    url,
+    linkTarget,
+    rel,
+    iconPosition,
+    borderRadius,
+    fontSize,
+    fontFamily,
+    fontWeight,
+    textTransform,
+    letterSpacing,
+    lineHeight,
+    width,
+    justification
+  } = attributes;
+  const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.useBlockProps.save({
+    className: 'jankx-icon-button-block'
+  });
+  const iconElement = renderIcon(attributes); // Sử dụng hàm render icon chung
+
+  const renderButtonContent = () => {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("span", {
+      children: [attributes.iconPosition === 'before' && iconElement, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.RichText.Content, {
+        value: attributes.text,
+        className: "jankx-icon-button__text"
+        // ... (styles)
+      }), attributes.iconPosition === 'after' && iconElement]
+    });
+  };
+  const getButtonStyles = () => {
+    const styles = {};
+    if (borderRadius !== undefined) {
+      styles.borderRadius = `${borderRadius}px`;
+    }
+    if (width) {
+      styles.width = `${width}px`;
+    }
+    if (justification) {
+      styles.justifyContent = justification;
+    }
+    return styles;
+  };
+  const getLinkRel = () => {
+    const relArray = [];
+    if (linkTarget === '_blank') {
+      relArray.push('noopener');
+    }
+    if (rel?.includes('nofollow')) {
+      relArray.push('nofollow');
+    }
+    return relArray.join(' ');
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
+    ...blockProps,
+    children: url ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("a", {
+      href: url,
+      target: linkTarget,
+      rel: getLinkRel(),
+      className: "jankx-icon-button",
+      style: getButtonStyles(),
+      children: renderButtonContent()
+    }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("button", {
+      className: "jankx-icon-button",
+      style: getButtonStyles(),
+      children: renderButtonContent()
+    })
+  });
+};
+
 // Enhanced Edit component with color support
-const EnhancedEdit = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.withColors)('backgroundColor', {
-    textColor: 'color'
+const EnhancedEdit = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.withColors)('backgroundColor', {
+  textColor: 'color'
 })(Edit);
 (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.registerBlockType)('jankx/icon-button', {
-    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Icon Button', 'jankx'),
-    category: 'design',
-    icon: 'button',
-    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Button with icon, supports all features of core button plus icon selection', 'jankx'),
-    keywords: ['button', 'icon', 'link', 'cta', 'action', 'jankx'],
-    supports: {
-        html: false,
-        align: ['left', 'center', 'right', 'wide', 'full'],
-        alignWide: true,
-        spacing: {
-            margin: true,
-            padding: true
-        },
-        color: {
-            text: true,
-            background: true,
-            gradients: true,
-            link: true
-        },
-        typography: {
-            fontSize: true,
-            lineHeight: true,
-            fontFamily: true,
-            fontWeight: true,
-            textTransform: true,
-            letterSpacing: true
-        },
-        border: {
-            color: true,
-            radius: true,
-            style: true,
-            width: true
-        },
-        reusable: false
+  title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Icon Button', 'jankx'),
+  category: 'design',
+  icon: 'button',
+  description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Button with icon, supports all features of core button plus icon selection', 'jankx'),
+  keywords: ['button', 'icon', 'link', 'cta', 'action', 'jankx'],
+  supports: {
+    html: false,
+    align: ['left', 'center', 'right', 'wide', 'full'],
+    alignWide: true,
+    spacing: {
+      margin: true,
+      padding: true
     },
-    attributes: {
-        text: {
-            type: 'string',
-            source: 'html',
-            selector: 'span'
-        },
-        url: {
-            type: 'string',
-            source: 'attribute',
-            selector: 'a',
-            attribute: 'href'
-        },
-        linkTarget: {
-            type: 'string',
-            source: 'attribute',
-            selector: 'a',
-            attribute: 'target'
-        },
-        rel: {
-            type: 'string',
-            source: 'attribute',
-            selector: 'a',
-            attribute: 'rel'
-        },
-        placeholder: {
-            type: 'string'
-        },
-        hasIcon: {
-            type: 'boolean',
-            default: false
-        },
-        iconName: {
-            type: 'string',
-            default: ''
-        },
-        iconSet: {
-            type: 'string',
-            default: 'material'
-        },
-        iconPosition: {
-            type: 'string',
-            default: 'before'
-        },
-        iconSize: {
-            type: 'string',
-            default: '16px'
-        },
-        iconColor: {
-            type: 'string',
-            default: ''
-        },
-        iconStyle: {
-            type: 'string',
-            default: 'filled'
-        },
-        backgroundColor: {
-            type: 'string'
-        },
-        textColor: {
-            type: 'string'
-        },
-        gradient: {
-            type: 'string'
-        },
-        customGradient: {
-            type: 'string'
-        },
-        borderRadius: {
-            type: 'number'
-        },
-        style: {
-            type: 'object'
-        },
-        className: {
-            type: 'string'
-        },
-        fontSize: {
-            type: 'string'
-        },
-        fontFamily: {
-            type: 'string'
-        },
-        fontWeight: {
-            type: 'string'
-        },
-        textTransform: {
-            type: 'string'
-        },
-        letterSpacing: {
-            type: 'string'
-        },
-        lineHeight: {
-            type: 'string'
-        },
-        width: {
-            type: 'number'
-        },
-        justification: {
-            type: 'string'
-        },
-        opensInNewTab: {
-            type: 'boolean',
-            default: false
-        }
+    color: {
+      text: true,
+      background: true,
+      gradients: true,
+      link: true
     },
-    edit: EnhancedEdit,
-    save: Save
+    typography: {
+      fontSize: true,
+      lineHeight: true,
+      fontFamily: true,
+      fontWeight: true,
+      textTransform: true,
+      letterSpacing: true
+    },
+    border: {
+      color: true,
+      radius: true,
+      style: true,
+      width: true
+    },
+    reusable: false
+  },
+  attributes: {
+    text: {
+      type: 'string',
+      source: 'html',
+      selector: 'span'
+    },
+    url: {
+      type: 'string',
+      source: 'attribute',
+      selector: 'a',
+      attribute: 'href'
+    },
+    linkTarget: {
+      type: 'string',
+      source: 'attribute',
+      selector: 'a',
+      attribute: 'target'
+    },
+    rel: {
+      type: 'string',
+      source: 'attribute',
+      selector: 'a',
+      attribute: 'rel'
+    },
+    placeholder: {
+      type: 'string'
+    },
+    hasIcon: {
+      type: 'boolean',
+      default: false
+    },
+    iconName: {
+      type: 'string',
+      default: ''
+    },
+    iconSet: {
+      type: 'string',
+      default: 'material'
+    },
+    iconPosition: {
+      type: 'string',
+      default: 'before'
+    },
+    iconSize: {
+      type: 'string',
+      default: '16px'
+    },
+    iconColor: {
+      type: 'string',
+      default: ''
+    },
+    iconStyle: {
+      type: 'string',
+      default: 'filled'
+    },
+    backgroundColor: {
+      type: 'string'
+    },
+    textColor: {
+      type: 'string'
+    },
+    gradient: {
+      type: 'string'
+    },
+    customGradient: {
+      type: 'string'
+    },
+    borderRadius: {
+      type: 'number'
+    },
+    style: {
+      type: 'object'
+    },
+    className: {
+      type: 'string'
+    },
+    fontSize: {
+      type: 'string'
+    },
+    fontFamily: {
+      type: 'string'
+    },
+    fontWeight: {
+      type: 'string'
+    },
+    textTransform: {
+      type: 'string'
+    },
+    letterSpacing: {
+      type: 'string'
+    },
+    lineHeight: {
+      type: 'string'
+    },
+    width: {
+      type: 'number'
+    },
+    justification: {
+      type: 'string'
+    },
+    opensInNewTab: {
+      type: 'boolean',
+      default: false
+    }
+  },
+  edit: EnhancedEdit,
+  save: Save
 });
-
 })();
 
 /******/ })()

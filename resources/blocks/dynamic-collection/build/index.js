@@ -1406,230 +1406,257 @@ __webpack_require__.r(__webpack_exports__);
 
 const ALLOWED_BLOCKS = ['core/post-template', 'core/query-pagination', 'core/query-no-results', 'core/post-title', 'core/post-excerpt', 'core/post-featured-image', 'core/post-date', 'core/post-author', 'core/post-terms', 'core/read-more', 'jankx/icon-picker', 'jankx/icon-button'];
 const TEMPLATE = [['core/post-template', {}, [['core/post-featured-image', {}], ['core/post-title', {
-                    level: 2
-                }], ['core/post-excerpt', {}], ['core/post-meta', {}], ['core/read-more', {}]]], ['core/query-pagination', {}], ['core/query-no-results', {}]];
-function Edit({ attributes, setAttributes }) {
-    const { postType, postsPerPage, orderBy, order, offset, exclude, include, taxonomyFilters, metaFilters, presetFilters, customFilters, displayOptions, styling, responsive } = attributes;
-    const [activeTab, setActiveTab] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)('query');
-    const { postTypes, taxonomies } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_5__.useSelect)(select => {
-        const { getPostTypes, getTaxonomies } = select(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_6__.store);
-        return {
-            postTypes: getPostTypes({
-                per_page: -1
-            }),
-            taxonomies: getTaxonomies({
-                per_page: -1
-            })
-        };
-    }, []);
-    const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)({
-        className: 'jankx-dynamic-collection'
+  level: 2
+}], ['core/post-excerpt', {}], ['core/post-meta', {}], ['core/read-more', {}]]], ['core/query-pagination', {}], ['core/query-no-results', {}]];
+function Edit({
+  attributes,
+  setAttributes
+}) {
+  const {
+    postType,
+    postsPerPage,
+    orderBy,
+    order,
+    offset,
+    exclude,
+    include,
+    taxonomyFilters,
+    metaFilters,
+    presetFilters,
+    customFilters,
+    displayOptions,
+    styling,
+    responsive
+  } = attributes;
+  const [activeTab, setActiveTab] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)('query');
+  const {
+    postTypes,
+    taxonomies
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_5__.useSelect)(select => {
+    const {
+      getPostTypes,
+      getTaxonomies
+    } = select(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_6__.store);
+    return {
+      postTypes: getPostTypes({
+        per_page: -1
+      }),
+      taxonomies: getTaxonomies({
+        per_page: -1
+      })
+    };
+  }, []);
+  const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)({
+    className: 'jankx-dynamic-collection'
+  });
+  const updateAttribute = (key, value) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setAttributes({
+      [key]: value
     });
-    const updateAttribute = (key, value) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        setAttributes({
-            [key]: value
+  };
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'query':
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_components_QueryControls__WEBPACK_IMPORTED_MODULE_7__["default"], {
+          attributes: {
+            postType,
+            postsPerPage,
+            orderBy,
+            order,
+            offset,
+            exclude,
+            include
+          },
+          postTypes: postTypes,
+          onUpdate: updateAttribute
         });
-    };
-    const renderTabContent = () => {
-        switch (activeTab) {
-            case 'query':
-                return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_components_QueryControls__WEBPACK_IMPORTED_MODULE_7__["default"], {
-                    attributes: {
-                        postType,
-                        postsPerPage,
-                        orderBy,
-                        order,
-                        offset,
-                        exclude,
-                        include
-                    },
-                    postTypes: postTypes,
-                    onUpdate: updateAttribute
-                });
-            case 'filters':
-                return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_components_FilterBuilder__WEBPACK_IMPORTED_MODULE_8__["default"], {
-                    attributes: {
-                        taxonomyFilters,
-                        metaFilters,
-                        presetFilters,
-                        customFilters
-                    },
-                    postType: postType,
-                    taxonomies: taxonomies,
-                    onUpdate: updateAttribute
-                });
-            case 'display':
-                return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_components_DisplayOptions__WEBPACK_IMPORTED_MODULE_9__["default"], {
-                    displayOptions: displayOptions,
-                    onUpdate: updateAttribute
-                });
-            case 'styling':
-                return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_components_StylingControls__WEBPACK_IMPORTED_MODULE_10__["default"], {
-                    styling: styling,
-                    responsive: responsive,
-                    onUpdate: updateAttribute
-                });
-            default:
-                return null;
-        }
-    };
-    return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.Fragment, {
-        children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
-                ...blockProps,
-                children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
-                        className: "jankx-dynamic-collection__header",
-                        children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("h3", {
-                                className: "jankx-dynamic-collection__title",
-                                children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Dynamic Collection', 'jankx')
-                            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
-                                className: "jankx-dynamic-collection__info",
-                                children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("span", {
-                                        className: "jankx-dynamic-collection__post-type",
-                                        children: postType
-                                    }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("span", {
-                                        className: "jankx-dynamic-collection__count",
-                                        children: [postsPerPage, " ", (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('posts', 'jankx')]
-                                    })]
-                            })]
-                    }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
-                        className: "jankx-dynamic-collection__content",
-                        children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InnerBlocks, {
-                            allowedBlocks: ALLOWED_BLOCKS
-                            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                            ,
-                            template: TEMPLATE,
-                            templateLock: false
-                        })
-                    })]
-            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
-                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
-                    className: "jankx-dynamic-collection__inspector",
-                    children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
-                            className: "jankx-dynamic-collection__tabs",
-                            children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ButtonGroup, {
-                                className: "jankx-dynamic-collection__tab-buttons",
-                                children: [{
-                                        key: 'query',
-                                        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Query', 'jankx'),
-                                        icon: 'search'
-                                    }, {
-                                        key: 'filters',
-                                        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Filters', 'jankx'),
-                                        icon: 'filter'
-                                    }, {
-                                        key: 'display',
-                                        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Display', 'jankx'),
-                                        icon: 'visibility'
-                                    }, {
-                                        key: 'styling',
-                                        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Styling', 'jankx'),
-                                        icon: 'admin-appearance'
-                                    }].map(({ key, label, icon }) => /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Button, {
-                                    isPrimary: activeTab === key,
-                                    onClick: () => setActiveTab(key)
-                                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                    ,
-                                    icon: icon,
-                                    label: label,
-                                    children: label
-                                }, key))
-                            })
-                        }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
-                            className: "jankx-dynamic-collection__tab-content",
-                            children: renderTabContent()
-                        })]
-                })
-            })]
-    });
+      case 'filters':
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_components_FilterBuilder__WEBPACK_IMPORTED_MODULE_8__["default"], {
+          attributes: {
+            taxonomyFilters,
+            metaFilters,
+            presetFilters,
+            customFilters
+          },
+          postType: postType,
+          taxonomies: taxonomies,
+          onUpdate: updateAttribute
+        });
+      case 'display':
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_components_DisplayOptions__WEBPACK_IMPORTED_MODULE_9__["default"], {
+          displayOptions: displayOptions,
+          onUpdate: updateAttribute
+        });
+      case 'styling':
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_components_StylingControls__WEBPACK_IMPORTED_MODULE_10__["default"], {
+          styling: styling,
+          responsive: responsive,
+          onUpdate: updateAttribute
+        });
+      default:
+        return null;
+    }
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
+      ...blockProps,
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
+        className: "jankx-dynamic-collection__header",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("h3", {
+          className: "jankx-dynamic-collection__title",
+          children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Dynamic Collection', 'jankx')
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
+          className: "jankx-dynamic-collection__info",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("span", {
+            className: "jankx-dynamic-collection__post-type",
+            children: postType
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("span", {
+            className: "jankx-dynamic-collection__count",
+            children: [postsPerPage, " ", (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('posts', 'jankx')]
+          })]
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
+        className: "jankx-dynamic-collection__content",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InnerBlocks, {
+          allowedBlocks: ALLOWED_BLOCKS
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          ,
+          template: TEMPLATE,
+          templateLock: false
+        })
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
+        className: "jankx-dynamic-collection__inspector",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
+          className: "jankx-dynamic-collection__tabs",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ButtonGroup, {
+            className: "jankx-dynamic-collection__tab-buttons",
+            children: [{
+              key: 'query',
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Query', 'jankx'),
+              icon: 'search'
+            }, {
+              key: 'filters',
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Filters', 'jankx'),
+              icon: 'filter'
+            }, {
+              key: 'display',
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Display', 'jankx'),
+              icon: 'visibility'
+            }, {
+              key: 'styling',
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Styling', 'jankx'),
+              icon: 'admin-appearance'
+            }].map(({
+              key,
+              label,
+              icon
+            }) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Button, {
+              isPrimary: activeTab === key,
+              onClick: () => setActiveTab(key)
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              ,
+              icon: icon,
+              label: label,
+              children: label
+            }, key))
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
+          className: "jankx-dynamic-collection__tab-content",
+          children: renderTabContent()
+        })]
+      })
+    })]
+  });
 }
 (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__.registerBlockType)('jankx/dynamic-collection', {
-    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Dynamic Collection', 'jankx'),
-    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('A dynamic collection block for displaying posts with advanced filtering and layout options', 'jankx'),
-    category: 'jankx',
-    icon: 'grid-view',
-    keywords: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('collection', 'jankx'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('posts', 'jankx'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('query', 'jankx'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('filter', 'jankx'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('layout', 'jankx')],
-    supports: {
-        html: false,
-        align: ['wide', 'full'],
-        customClassName: true,
-        reusable: true
+  title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Dynamic Collection', 'jankx'),
+  description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('A dynamic collection block for displaying posts with advanced filtering and layout options', 'jankx'),
+  category: 'jankx',
+  icon: 'grid-view',
+  keywords: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('collection', 'jankx'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('posts', 'jankx'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('query', 'jankx'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('filter', 'jankx'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('layout', 'jankx')],
+  supports: {
+    html: false,
+    align: ['wide', 'full'],
+    customClassName: true,
+    reusable: true
+  },
+  attributes: {
+    postType: {
+      type: 'string',
+      default: 'post'
     },
-    attributes: {
-        postType: {
-            type: 'string',
-            default: 'post'
-        },
-        postsPerPage: {
-            type: 'number',
-            default: 6
-        },
-        orderBy: {
-            type: 'string',
-            default: 'date'
-        },
-        order: {
-            type: 'string',
-            default: 'DESC'
-        },
-        offset: {
-            type: 'number',
-            default: 0
-        },
-        exclude: {
-            type: 'array',
-            default: []
-        },
-        include: {
-            type: 'array',
-            default: []
-        },
-        taxonomyFilters: {
-            type: 'object',
-            default: {}
-        },
-        metaFilters: {
-            type: 'object',
-            default: {}
-        },
-        presetFilters: {
-            type: 'array',
-            default: []
-        },
-        customFilters: {
-            type: 'array',
-            default: []
-        },
-        displayOptions: {
-            type: 'object',
-            default: {
-                showImage: true,
-                showTitle: true,
-                showExcerpt: true,
-                showMeta: true
-            }
-        },
-        styling: {
-            type: 'object',
-            default: {
-                backgroundColor: '',
-                textColor: '',
-                borderColor: ''
-            }
-        },
-        responsive: {
-            type: 'object',
-            default: {
-                mobile: true,
-                tablet: true,
-                desktop: true
-            }
-        }
+    postsPerPage: {
+      type: 'number',
+      default: 6
     },
-    edit: Edit,
-    save: () => null
+    orderBy: {
+      type: 'string',
+      default: 'date'
+    },
+    order: {
+      type: 'string',
+      default: 'DESC'
+    },
+    offset: {
+      type: 'number',
+      default: 0
+    },
+    exclude: {
+      type: 'array',
+      default: []
+    },
+    include: {
+      type: 'array',
+      default: []
+    },
+    taxonomyFilters: {
+      type: 'object',
+      default: {}
+    },
+    metaFilters: {
+      type: 'object',
+      default: {}
+    },
+    presetFilters: {
+      type: 'array',
+      default: []
+    },
+    customFilters: {
+      type: 'array',
+      default: []
+    },
+    displayOptions: {
+      type: 'object',
+      default: {
+        showImage: true,
+        showTitle: true,
+        showExcerpt: true,
+        showMeta: true
+      }
+    },
+    styling: {
+      type: 'object',
+      default: {
+        backgroundColor: '',
+        textColor: '',
+        borderColor: ''
+      }
+    },
+    responsive: {
+      type: 'object',
+      default: {
+        mobile: true,
+        tablet: true,
+        desktop: true
+      }
+    }
+  },
+  edit: Edit,
+  save: () => null
 });
-
 })();
 
 /******/ })()

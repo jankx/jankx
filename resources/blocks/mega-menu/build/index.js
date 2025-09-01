@@ -146,87 +146,93 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const Edit = ({ attributes, setAttributes }) => {
-    const { toggleLabel, collapseBreakpoint, className } = attributes;
-    const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)({
-        className: `jankx-mega-menu ${className || ''}`.trim()
-    });
-    return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.Fragment, {
-        children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
-                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
-                    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Mega Menu Settings', 'jankx'),
-                    initialOpen: true,
-                    children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
-                            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Toggle Label', 'jankx'),
-                            value: toggleLabel,
-                            onChange: value => setAttributes({
-                                toggleLabel: value
-                            })
-                        }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RangeControl, {
-                            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Collapse Breakpoint (px)', 'jankx'),
-                            value: collapseBreakpoint,
-                            onChange: value => setAttributes({
-                                collapseBreakpoint: value !== null && value !== void 0 ? value : 959
-                            }),
-                            min: 480,
-                            max: 1440,
-                            step: 1
-                        })]
-                })
-            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("nav", {
-                ...blockProps,
-                "data-breakpoint": collapseBreakpoint,
-                children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
-                        className: "mega-menu__toggle",
-                        type: "button",
-                        "aria-expanded": "false",
-                        children: toggleLabel
-                    }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                        className: "mega-menu__nav",
-                        children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InnerBlocks, {
-                            templateLock: false,
-                            allowedBlocks: ['core/navigation', 'core/group', 'core/columns', 'core/column', 'core/list', 'core/paragraph', 'core/image']
-                        })
-                    })]
-            })]
-    });
+const Edit = ({
+  attributes,
+  setAttributes
+}) => {
+  const {
+    toggleLabel,
+    collapseBreakpoint,
+    className
+  } = attributes;
+  const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)({
+    className: `jankx-mega-menu ${className || ''}`.trim()
+  });
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Mega Menu Settings', 'jankx'),
+        initialOpen: true,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Toggle Label', 'jankx'),
+          value: toggleLabel,
+          onChange: value => setAttributes({
+            toggleLabel: value
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RangeControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Collapse Breakpoint (px)', 'jankx'),
+          value: collapseBreakpoint,
+          onChange: value => setAttributes({
+            collapseBreakpoint: value !== null && value !== void 0 ? value : 959
+          }),
+          min: 480,
+          max: 1440,
+          step: 1
+        })]
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("nav", {
+      ...blockProps,
+      "data-breakpoint": collapseBreakpoint,
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
+        className: "mega-menu__toggle",
+        type: "button",
+        "aria-expanded": "false",
+        children: toggleLabel
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+        className: "mega-menu__nav",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InnerBlocks, {
+          templateLock: false,
+          allowedBlocks: ['core/navigation', 'core/group', 'core/columns', 'core/column', 'core/list', 'core/paragraph', 'core/image']
+        })
+      })]
+    })]
+  });
 };
 const Save = () => {
-    const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps.save({
-        className: 'jankx-mega-menu'
-    });
-    return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("nav", {
-        ...blockProps,
-        children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
-                className: "mega-menu__toggle",
-                type: "button",
-                "aria-expanded": "false"
-            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                className: "mega-menu__nav",
-                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InnerBlocks.Content, {})
-            })]
-    });
+  const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps.save({
+    className: 'jankx-mega-menu'
+  });
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("nav", {
+    ...blockProps,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
+      className: "mega-menu__toggle",
+      type: "button",
+      "aria-expanded": "false"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+      className: "mega-menu__nav",
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InnerBlocks.Content, {})
+    })]
+  });
 };
 (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.registerBlockType)('jankx/mega-menu', {
-    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Mega Menu', 'jankx'),
-    category: 'widgets',
-    attributes: {
-        toggleLabel: {
-            type: 'string',
-            default: 'Menu'
-        },
-        collapseBreakpoint: {
-            type: 'number',
-            default: 959
-        },
-        className: {
-            type: 'string'
-        }
+  title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Mega Menu', 'jankx'),
+  category: 'widgets',
+  attributes: {
+    toggleLabel: {
+      type: 'string',
+      default: 'Menu'
     },
-    edit: Edit,
-    save: Save
+    collapseBreakpoint: {
+      type: 'number',
+      default: 959
+    },
+    className: {
+      type: 'string'
+    }
+  },
+  edit: Edit,
+  save: Save
 });
-
 })();
 
 /******/ })()

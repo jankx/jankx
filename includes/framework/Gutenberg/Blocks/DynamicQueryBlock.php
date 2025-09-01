@@ -5,10 +5,10 @@ namespace Jankx\Gutenberg\Blocks;
 use Jankx\Gutenberg\Block;
 
 /**
- * Image Button Block
+ * Dynamic Query Block
  *
- * This block displays a button with customizable styling options
- * based on WordPress core button block functionality.
+ * This block provides dynamic query functionality with enhanced pagination
+ * and server-side rendering capabilities.
  *
  * @package Jankx\Gutenberg\Blocks
  * @since 1.0.0
@@ -21,4 +21,143 @@ class DynamicQueryBlock extends Block
      * @var string
      */
     protected $blockId = 'jankx/query';
+
+    public function init() {
+        add_filter('render_block_data', array($this, 'disable_enhanced_pagination_for_plugin_blocks'), 10, 1);
+    }
+
+    /**
+     * Modifies the static `jankx/query` block on the server.
+     *
+     * @since 1.0.0
+     *
+     * @param array    $attributes Block attributes.
+     * @param string   $content    Block default content.
+     * @param \WP_Block $block      The block instance.
+     *
+     * @return string Returns the modified output of the query block.
+     */
+    public function render($attributes, $content, $block)
+    {
+        $is_interactive = isset($attributes['enhancedPagination'])
+            && true === $attributes['enhancedPagination']
+            && isset($attributes['queryId']);
+
+        // Enqueue the script module and add the necessary directives if the block is
+        // interactive.
+        if ($is_interactive) {
+            wp_enqueue_script_module('@wordpress/block-library/query/view');
+
+            $p = new \WP_HTML_Tag_Processor($content);
+            if ($p->next_tag()) {
+                // Add the necessary directives.
+                $p->set_attribute('data-wp-interactive', 'core/query');
+                $p->set_attribute('data-wp-router-region', 'query-' . $attributes['queryId']);
+                $p->set_attribute('data-wp-context', '{}');
+                $p->set_attribute('data-wp-key', $attributes['queryId']);
+                $content = $p->get_updated_html();
+            }
+        }
+
+        // Add the styles to the block type if the block is interactive and remove
+        // them if it's not.
+        $style_asset = 'wp-block-query';
+        if (!wp_style_is($style_asset)) {
+            $style_handles = $block->block_type->style_handles;
+            // If the styles are not needed, and they are still in the `style_handles`, remove them.
+            if (!$is_interactive && in_array($style_asset, $style_handles, true)) {
+                $block->block_type->style_handles = array_diff($style_handles, array($style_asset));
+            }
+            // If the styles are needed, but they were previously removed, add them again.
+            if ($is_interactive && !in_array($style_asset, $style_handles, true)) {
+                $block->block_type->style_handles = array_merge($style_handles, array($style_asset));
+            }
+        }
+
+        return $content;
+    }
+
+    /**
+     * Traverse the tree of blocks looking for any plugin block (i.e., a block from
+     * an installed plugin) inside a Query block with the enhanced pagination
+     * enabled. If at least one is found, the enhanced pagination is effectively
+     * disabled to prevent any potential incompatibilities.
+     *
+     * @since 1.0.0
+     *
+     * @param array $parsed_block The block being rendered.
+     * @return array Returns the parsed block, unmodified.
+     */
+    public function disable_enhanced_pagination_for_plugin_blocks($parsed_block)
+    {
+        static $enhanced_query_stack = array();
+        static $dirty_enhanced_queries = array();
+        static $render_query_callback = null;
+
+        $block_name = $parsed_block['blockName'];
+        $block_type = \WP_Block_Type_Registry::get_instance()->get_registered($block_name);
+        $has_enhanced_pagination = isset($parsed_block['attrs']['enhancedPagination']) && true === $parsed_block['attrs']['enhancedPagination'] && isset($parsed_block['attrs']['queryId']);
+
+        /*
+         * Client side navigation can be true in two states:
+         *  - supports.interactivity = true;
+         *  - supports.interactivity.clientNavigation = true;
+         */
+        $supports_client_navigation = (isset($block_type->supports['interactivity']['clientNavigation']) && true === $block_type->supports['interactivity']['clientNavigation'])
+            || (isset($block_type->supports['interactivity']) && true === $block_type->supports['interactivity']);
+
+        if ($this->blockId === $block_name && $has_enhanced_pagination) {
+            $enhanced_query_stack[] = $parsed_block['attrs']['queryId'];
+
+            if (!isset($render_query_callback)) {
+                /**
+                 * Filter that disables the enhanced pagination feature during block
+                 * rendering when a plugin block has been found inside. It does so
+                 * by adding an attribute called `data-wp-navigation-disabled` which
+                 * is later handled by the front-end logic.
+                 *
+                 * @param string   $content  The block content.
+                 * @param array    $block    The full block, including name and attributes.
+                 * @return string Returns the modified output of the query block.
+                 */
+                $block_id = $this->blockId;
+                $render_query_callback = function ($content, $block) use (&$enhanced_query_stack, &$dirty_enhanced_queries, &$render_query_callback, $block_id) {
+                    $has_enhanced_pagination = isset($block['attrs']['enhancedPagination']) && true === $block['attrs']['enhancedPagination'] && isset($block['attrs']['queryId']);
+
+                    if (!$has_enhanced_pagination) {
+                        return $content;
+                    }
+
+                    if (isset($dirty_enhanced_queries[$block['attrs']['queryId']])) {
+                        // Disable navigation in the router store config.
+                        wp_interactivity_config('core/router', array('clientNavigationDisabled' => true));
+                        $dirty_enhanced_queries[$block['attrs']['queryId']] = null;
+                    }
+
+                    array_pop($enhanced_query_stack);
+
+                    if (empty($enhanced_query_stack)) {
+                        remove_filter('render_block_' . $block_id, $render_query_callback);
+                        $render_query_callback = null;
+                    }
+
+                    return $content;
+                };
+
+                add_filter('render_block_' . $this->blockId, $render_query_callback, 10, 2);
+            }
+        } elseif (
+            !empty($enhanced_query_stack) &&
+            isset($block_name) &&
+            (!$supports_client_navigation)
+        ) {
+            foreach ($enhanced_query_stack as $query_id) {
+                $dirty_enhanced_queries[$query_id] = true;
+            }
+        }
+
+        return $parsed_block;
+    }
+
+
 }

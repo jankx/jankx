@@ -14,18 +14,31 @@ import {
 } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
 import { store as coreStore } from '@wordpress/core-data';
+import { PanelBody, SelectControl } from '@wordpress/components';
 
 /**
  * Internal dependencies
  */
 import EnhancedPaginationControl from './inspector-controls/enhanced-pagination-control';
-import { unlock } from '../../lock-unlock';
+import { unlock } from '../utils/lock-unlock';
 import QueryInspectorControls from './inspector-controls';
 import EnhancedPaginationModal from './enhanced-pagination-modal';
 import { getQueryContextFromTemplate } from '../utils';
 import QueryToolbar from './query-toolbar';
 
-const { HTMLElementControl } = unlock( blockEditorPrivateApis );
+// Simple HTML Element Control component
+const HTMLElementControl = ({ tagName, onChange, options }) => {
+	return (
+		<PanelBody title={__('HTML element')}>
+			<SelectControl
+				label={__('HTML element')}
+				value={tagName}
+				onChange={onChange}
+				options={options}
+			/>
+		</PanelBody>
+	);
+};
 
 const DEFAULTS_POSTS_PER_PAGE = 3;
 
@@ -158,7 +171,6 @@ export default function QueryContent( {
 					onChange={ ( value ) =>
 						setAttributes( { tagName: value } )
 					}
-					clientId={ clientId }
 					options={ [
 						{ label: __( 'Default (<div>)' ), value: 'div' },
 						{ label: '<main>', value: 'main' },

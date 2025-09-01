@@ -55,6 +55,12 @@ module.exports = {
     'blocks/image-button/build/index': './blocks/image-button/index.tsx',
     'blocks/image-button/build/style': './blocks/image-button/style.scss',
     'blocks/image-button/build/editor': './blocks/image-button/editor.scss',
+
+    'blocks/query/build/index': './blocks/query/index.js',
+    'blocks/query/build/save': './blocks/query/save.js',
+    'blocks/query/build/view': './blocks/query/view.js',
+    'blocks/query/build/init': './blocks/query/init.js',
+    'blocks/query/build/editor': './blocks/query/editor.scss',
   },
   output: {
     path: path.resolve(__dirname),
@@ -129,14 +135,6 @@ module.exports = {
   ],
   module: {
     rules: [
-      {
-        test: /\.tsx?$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'ts-loader',
-          options: { transpileOnly: true },
-        },
-      },
       {
         test: /\.[jt]sx?$/,
         exclude: /node_modules/,

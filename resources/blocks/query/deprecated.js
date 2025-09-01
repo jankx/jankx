@@ -12,9 +12,34 @@ import {
 /**
  * Internal dependencies
  */
-import { unlock } from '../lock-unlock';
+import { unlock } from './utils/lock-unlock';
 
-const { cleanEmptyObject } = unlock( blockEditorPrivateApis );
+// Helper function to clean empty objects (similar to cleanEmptyObject)
+const cleanEmptyObject = (obj) => {
+	if (!obj || typeof obj !== 'object') {
+		return obj;
+	}
+
+	const cleaned = {};
+	let hasValues = false;
+
+	for (const [key, value] of Object.entries(obj)) {
+		if (value !== undefined && value !== null && value !== '') {
+			if (typeof value === 'object' && !Array.isArray(value)) {
+				const cleanedValue = cleanEmptyObject(value);
+				if (cleanedValue && Object.keys(cleanedValue).length > 0) {
+					cleaned[key] = cleanedValue;
+					hasValues = true;
+				}
+			} else {
+				cleaned[key] = value;
+				hasValues = true;
+			}
+		}
+	}
+
+	return hasValues ? cleaned : undefined;
+};
 
 const migrateToTaxQuery = ( attributes ) => {
 	const { query } = attributes;

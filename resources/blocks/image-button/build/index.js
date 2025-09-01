@@ -28,7 +28,6 @@ const NEW_TAB_REL = 'noreferrer noopener';
 const NEW_TAB_TARGET = '_blank';
 const NOFOLLOW_REL = 'nofollow';
 
-
 /***/ }),
 
 /***/ "./blocks/image-button/deprecated.tsx":
@@ -43,11 +42,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__);
 /**
  * WordPress dependencies
  */
+
+
+
 
 /**
  * Deprecated version of the image button block.
@@ -55,101 +59,114 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 const deprecated = [{
-        attributes: {
-            tagName: {
-                type: 'string',
-                default: 'a'
-            },
-            text: {
-                type: 'string',
-                source: 'html',
-                selector: 'a,button'
-            },
-            url: {
-                type: 'string',
-                source: 'attribute',
-                selector: 'a',
-                attribute: 'href'
-            },
-            linkTarget: {
-                type: 'string',
-                source: 'attribute',
-                selector: 'a',
-                attribute: 'target'
-            },
-            rel: {
-                type: 'string',
-                source: 'attribute',
-                selector: 'a',
-                attribute: 'rel'
-            },
-            placeholder: {
-                type: 'string'
-            },
-            textAlign: {
-                type: 'string'
-            },
-            width: {
-                type: 'number'
-            },
-            imageId: {
-                type: 'number'
-            },
-            imageUrl: {
-                type: 'string'
-            },
-            imageAlt: {
-                type: 'string'
-            },
-            imageHeight: {
-                type: 'number',
-                default: 20
-            },
-            imageMarginRight: {
-                type: 'string',
-                default: '5px'
-            }
-        },
-        save: ({ attributes }) => {
-            const { tagName, text, url, linkTarget, rel, textAlign, width, imageUrl, imageAlt, imageHeight, imageMarginRight } = attributes;
-            const TagName = tagName || 'a';
-            const isButtonTag = 'button' === TagName;
-            const wrapperClasses = ['wp-block-jankx-image-button'];
-            if (width) {
-                wrapperClasses.push(`has-custom-width wp-block-jankx-image-button__width-${width}`);
-            }
-            const buttonClasses = ['wp-block-jankx-image-button__link'];
-            if (textAlign) {
-                buttonClasses.push(`has-text-align-${textAlign}`);
-            }
-            return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
-                ..._wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.useBlockProps.save({
-                    className: wrapperClasses.join(' ')
-                }),
-                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(TagName, {
-                    type: isButtonTag ? 'button' : null,
-                    className: buttonClasses.join(' '),
-                    href: isButtonTag ? null : url,
-                    target: isButtonTag ? null : linkTarget,
-                    rel: isButtonTag ? null : rel,
-                    children: [imageUrl && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("img", {
-                            src: imageUrl,
-                            alt: imageAlt || '',
-                            style: {
-                                height: imageHeight,
-                                width: 'auto',
-                                marginRight: imageMarginRight || '5px'
-                            },
-                            className: "wp-block-jankx-image-button__image"
-                        }), text && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.RichText.Content, {
-                            value: text
-                        })]
-                })
-            });
-        }
-    }];
+  attributes: {
+    tagName: {
+      type: 'string',
+      default: 'a'
+    },
+    text: {
+      type: 'string',
+      source: 'html',
+      selector: 'a,button'
+    },
+    url: {
+      type: 'string',
+      source: 'attribute',
+      selector: 'a',
+      attribute: 'href'
+    },
+    linkTarget: {
+      type: 'string',
+      source: 'attribute',
+      selector: 'a',
+      attribute: 'target'
+    },
+    rel: {
+      type: 'string',
+      source: 'attribute',
+      selector: 'a',
+      attribute: 'rel'
+    },
+    placeholder: {
+      type: 'string'
+    },
+    textAlign: {
+      type: 'string'
+    },
+    width: {
+      type: 'number'
+    },
+    imageId: {
+      type: 'number'
+    },
+    imageUrl: {
+      type: 'string'
+    },
+    imageAlt: {
+      type: 'string'
+    },
+    imageHeight: {
+      type: 'number',
+      default: 20
+    },
+    imageMarginRight: {
+      type: 'string',
+      default: '5px'
+    }
+  },
+  save: ({
+    attributes
+  }) => {
+    const {
+      tagName,
+      text,
+      url,
+      linkTarget,
+      rel,
+      textAlign,
+      width,
+      imageUrl,
+      imageAlt,
+      imageHeight,
+      imageMarginRight
+    } = attributes;
+    const TagName = tagName || 'a';
+    const isButtonTag = 'button' === TagName;
+    const wrapperClasses = ['wp-block-jankx-image-button'];
+    if (width) {
+      wrapperClasses.push(`has-custom-width wp-block-jankx-image-button__width-${width}`);
+    }
+    const buttonClasses = ['wp-block-jankx-image-button__link'];
+    if (textAlign) {
+      buttonClasses.push(`has-text-align-${textAlign}`);
+    }
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+      ..._wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.useBlockProps.save({
+        className: wrapperClasses.join(' ')
+      }),
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(TagName, {
+        type: isButtonTag ? 'button' : null,
+        className: buttonClasses.join(' '),
+        href: isButtonTag ? null : url,
+        target: isButtonTag ? null : linkTarget,
+        rel: isButtonTag ? null : rel,
+        children: [imageUrl && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("img", {
+          src: imageUrl,
+          alt: imageAlt || '',
+          style: {
+            height: imageHeight,
+            width: 'auto',
+            marginRight: imageMarginRight || '5px'
+          },
+          className: "wp-block-jankx-image-button__image"
+        }), text && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.RichText.Content, {
+          value: text
+        })]
+      })
+    });
+  }
+}];
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (deprecated);
-
 
 /***/ }),
 
@@ -191,9 +208,11 @@ __webpack_require__.r(__webpack_exports__);
  * External dependencies
  */
 
+
 /**
  * Internal dependencies
  */
+
 
 
 /**
@@ -210,379 +229,429 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const LINK_SETTINGS = [..._wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.LinkControl.DEFAULT_LINK_SETTINGS, {
-        id: 'nofollow',
-        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Mark as nofollow')
-    }];
+  id: 'nofollow',
+  title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Mark as nofollow')
+}];
 function useEnter(props) {
-    const { replaceBlocks, selectionChange } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_13__.useDispatch)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.store);
-    const { getBlock, getBlockRootClientId, getBlockIndex } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_13__.useSelect)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.store);
-    const propsRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useRef)(props);
-    propsRef.current = props;
-    return (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_12__.useRefEffect)(element => {
-        function onKeyDown(event) {
-            if (event.defaultPrevented || event.keyCode !== _wordpress_keycodes__WEBPACK_IMPORTED_MODULE_7__.ENTER) {
-                return;
-            }
-            const { content, clientId } = propsRef.current;
-            if (content.length) {
-                return;
-            }
-            event.preventDefault();
-            const topParentListBlock = getBlock(getBlockRootClientId(clientId));
-            const blockIndex = getBlockIndex(clientId);
-            const head = (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_11__.cloneBlock)({
-                ...topParentListBlock,
-                innerBlocks: topParentListBlock.innerBlocks.slice(0, blockIndex)
-            });
-            const middle = (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_11__.createBlock)((0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_11__.getDefaultBlockName)());
-            const after = topParentListBlock.innerBlocks.slice(blockIndex + 1);
-            const tail = after.length ? [(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_11__.cloneBlock)({
-                    ...topParentListBlock,
-                    innerBlocks: after
-                })] : [];
-            replaceBlocks(topParentListBlock.clientId, [head, middle, ...tail], 1);
-            // We manually change the selection here because we are replacing
-            // a different block than the selected one.
-            selectionChange(middle.clientId);
-        }
-        element.addEventListener('keydown', onKeyDown);
-        return () => {
-            element.removeEventListener('keydown', onKeyDown);
-        };
-    }, []);
+  const {
+    replaceBlocks,
+    selectionChange
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_13__.useDispatch)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.store);
+  const {
+    getBlock,
+    getBlockRootClientId,
+    getBlockIndex
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_13__.useSelect)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.store);
+  const propsRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useRef)(props);
+  propsRef.current = props;
+  return (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_12__.useRefEffect)(element => {
+    function onKeyDown(event) {
+      if (event.defaultPrevented || event.keyCode !== _wordpress_keycodes__WEBPACK_IMPORTED_MODULE_7__.ENTER) {
+        return;
+      }
+      const {
+        content,
+        clientId
+      } = propsRef.current;
+      if (content.length) {
+        return;
+      }
+      event.preventDefault();
+      const topParentListBlock = getBlock(getBlockRootClientId(clientId));
+      const blockIndex = getBlockIndex(clientId);
+      const head = (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_11__.cloneBlock)({
+        ...topParentListBlock,
+        innerBlocks: topParentListBlock.innerBlocks.slice(0, blockIndex)
+      });
+      const middle = (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_11__.createBlock)((0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_11__.getDefaultBlockName)());
+      const after = topParentListBlock.innerBlocks.slice(blockIndex + 1);
+      const tail = after.length ? [(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_11__.cloneBlock)({
+        ...topParentListBlock,
+        innerBlocks: after
+      })] : [];
+      replaceBlocks(topParentListBlock.clientId, [head, middle, ...tail], 1);
+      // We manually change the selection here because we are replacing
+      // a different block than the selected one.
+      selectionChange(middle.clientId);
+    }
+    element.addEventListener('keydown', onKeyDown);
+    return () => {
+      element.removeEventListener('keydown', onKeyDown);
+    };
+  }, []);
 }
-function WidthPanel({ selectedWidth, setAttributes }) {
-    return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalToolsPanel, {
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Settings'),
-        resetAll: () => setAttributes({
-            width: undefined
+function WidthPanel({
+  selectedWidth,
+  setAttributes
+}) {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalToolsPanel, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Settings'),
+    resetAll: () => setAttributes({
+      width: undefined
+    }),
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalToolsPanelItem, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Width'),
+      isShownByDefault: true,
+      hasValue: () => !!selectedWidth,
+      onDeselect: () => setAttributes({
+        width: undefined
+      }),
+      __nextHasNoMarginBottom: true,
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalToggleGroupControl, {
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Width'),
+        value: selectedWidth,
+        onChange: newWidth => setAttributes({
+          width: newWidth
         }),
-        children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalToolsPanelItem, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Width'),
-            isShownByDefault: true,
-            hasValue: () => !!selectedWidth,
-            onDeselect: () => setAttributes({
-                width: undefined
-            }),
-            __nextHasNoMarginBottom: true,
-            children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalToggleGroupControl, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Width'),
-                value: selectedWidth,
-                onChange: newWidth => setAttributes({
-                    width: newWidth
-                }),
-                isBlock: true,
-                __next40pxDefaultSize: true,
-                __nextHasNoMarginBottom: true,
-                children: [25, 50, 75, 100].map(widthValue => {
-                    return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalToggleGroupControlOption, {
-                        value: widthValue,
-                        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.sprintf)(/* translators: %d: Percentage value. */ (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('%d%%'), widthValue)
-                    }, widthValue);
-                })
-            })
+        isBlock: true,
+        __next40pxDefaultSize: true,
+        __nextHasNoMarginBottom: true,
+        children: [25, 50, 75, 100].map(widthValue => {
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalToggleGroupControlOption, {
+            value: widthValue,
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.sprintf)(/* translators: %d: Percentage value. */
+            (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('%d%%'), widthValue)
+          }, widthValue);
         })
-    });
+      })
+    })
+  });
 }
 function ButtonEdit(props) {
-    const { attributes, setAttributes, className, isSelected, onReplace, mergeBlocks, clientId, context } = props;
-    const { tagName, textAlign, linkTarget, placeholder, rel, style, text, url, width, metadata, imageId, imageUrl, imageAlt, imageHeight, imageMarginRight } = attributes;
-    const cleanText = text ? text.replace(/<img[^>]*>/g, '') : '';
-    const TagName = tagName || 'a';
-    function onKeyDown(event) {
-        if (_wordpress_keycodes__WEBPACK_IMPORTED_MODULE_7__.isKeyboardEvent.primary(event, 'k')) {
-            startEditing(event);
-        }
-        else if (_wordpress_keycodes__WEBPACK_IMPORTED_MODULE_7__.isKeyboardEvent.primaryShift(event, 'k')) {
-            unlink();
-            richTextRef.current?.focus();
-        }
+  const {
+    attributes,
+    setAttributes,
+    className,
+    isSelected,
+    onReplace,
+    mergeBlocks,
+    clientId,
+    context
+  } = props;
+  const {
+    tagName,
+    textAlign,
+    linkTarget,
+    placeholder,
+    rel,
+    style,
+    text,
+    url,
+    width,
+    metadata,
+    imageId,
+    imageUrl,
+    imageAlt,
+    imageHeight,
+    imageMarginRight
+  } = attributes;
+  const cleanText = text ? text.replace(/<img[^>]*>/g, '') : '';
+  const TagName = tagName || 'a';
+  function onKeyDown(event) {
+    if (_wordpress_keycodes__WEBPACK_IMPORTED_MODULE_7__.isKeyboardEvent.primary(event, 'k')) {
+      startEditing(event);
+    } else if (_wordpress_keycodes__WEBPACK_IMPORTED_MODULE_7__.isKeyboardEvent.primaryShift(event, 'k')) {
+      unlink();
+      richTextRef.current?.focus();
     }
-    // Use internal state instead of a ref to make sure that the component
-    // re-renders when the popover's anchor updates.
-    const [popoverAnchor, setPopoverAnchor] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(null);
-    const borderProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.__experimentalUseBorderProps)(attributes);
-    const colorProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.__experimentalUseColorProps)(attributes);
-    const spacingProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.__experimentalGetSpacingClassesAndStyles)(attributes);
-    const shadowProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.__experimentalGetShadowClassesAndStyles)(attributes);
-    const ref = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useRef)();
-    const richTextRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useRef)();
-    const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.useBlockProps)({
-        ref: (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_12__.useMergeRefs)([setPopoverAnchor, ref]),
-        onKeyDown
-    });
-    const blockEditingMode = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.useBlockEditingMode)();
-    const [isEditingURL, setIsEditingURL] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(false);
-    const isURLSet = !!url;
-    const opensInNewTab = linkTarget === _constants__WEBPACK_IMPORTED_MODULE_1__.NEW_TAB_TARGET;
-    const nofollow = !!rel?.includes(_constants__WEBPACK_IMPORTED_MODULE_1__.NOFOLLOW_REL);
-    const isLinkTag = 'a' === TagName;
-    const { createPageEntity, userCanCreatePages, lockUrlControls = false } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_13__.useSelect)(select => {
-        if (!isSelected) {
-            return {};
-        }
-        const _settings = select(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.store).getSettings();
-        const blockBindingsSource = (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_11__.getBlockBindingsSource)(metadata?.bindings?.url?.source);
-        return {
-            createPageEntity: _settings.__experimentalCreatePageEntity,
-            userCanCreatePages: _settings.__experimentalUserCanCreatePages,
-            lockUrlControls: !!metadata?.bindings?.url && !blockBindingsSource?.canUserEditValue?.({
-                select,
-                context,
-                args: metadata?.bindings?.url?.args
-            })
-        };
-    }, [context, isSelected, metadata?.bindings?.url]);
-    async function handleCreate(pageTitle) {
-        const page = await createPageEntity({
-            title: pageTitle,
-            status: 'draft'
-        });
-        return {
-            id: page.id,
-            type: page.type,
-            title: page.title.rendered,
-            url: page.link,
-            kind: 'post-type'
-        };
+  }
+
+  // Use internal state instead of a ref to make sure that the component
+  // re-renders when the popover's anchor updates.
+  const [popoverAnchor, setPopoverAnchor] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(null);
+  const borderProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.__experimentalUseBorderProps)(attributes);
+  const colorProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.__experimentalUseColorProps)(attributes);
+  const spacingProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.__experimentalGetSpacingClassesAndStyles)(attributes);
+  const shadowProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.__experimentalGetShadowClassesAndStyles)(attributes);
+  const ref = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useRef)();
+  const richTextRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useRef)();
+  const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.useBlockProps)({
+    ref: (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_12__.useMergeRefs)([setPopoverAnchor, ref]),
+    onKeyDown
+  });
+  const blockEditingMode = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.useBlockEditingMode)();
+  const [isEditingURL, setIsEditingURL] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(false);
+  const isURLSet = !!url;
+  const opensInNewTab = linkTarget === _constants__WEBPACK_IMPORTED_MODULE_1__.NEW_TAB_TARGET;
+  const nofollow = !!rel?.includes(_constants__WEBPACK_IMPORTED_MODULE_1__.NOFOLLOW_REL);
+  const isLinkTag = 'a' === TagName;
+  const {
+    createPageEntity,
+    userCanCreatePages,
+    lockUrlControls = false
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_13__.useSelect)(select => {
+    if (!isSelected) {
+      return {};
     }
-    function createButtonText(searchTerm) {
-        return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.createInterpolateElement)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.sprintf)(/* translators: %s: search term. */ (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Create page: <mark>%s</mark>'), searchTerm), {
-            mark: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("mark", {})
-        });
-    }
-    function startEditing(event) {
-        event.preventDefault();
-        setIsEditingURL(true);
-    }
-    function unlink() {
-        setAttributes({
-            url: undefined,
-            linkTarget: undefined,
-            rel: undefined
-        });
-        setIsEditingURL(false);
-    }
-    (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
-        if (!isSelected) {
-            setIsEditingURL(false);
-        }
-    }, [isSelected]);
-    // Memoize link value to avoid overriding the LinkControl's internal state.
-    // This is a temporary fix. See https://github.com/WordPress/gutenberg/issues/51256.
-    const linkValue = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => ({
-        url,
-        opensInNewTab,
-        nofollow
-    }), [url, opensInNewTab, nofollow]);
-    const useEnterRef = useEnter({
-        content: text,
-        clientId
-    });
-    const mergedRef = (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_12__.useMergeRefs)([useEnterRef, richTextRef]);
-    const [fluidTypographySettings, layout] = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.useSettings)('typography.fluid', 'layout');
-    const typographyProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.getTypographyClassesAndStyles)(attributes, {
-        typography: {
-            fluid: fluidTypographySettings
-        },
-        layout: {
-            wideSize: layout?.wideSize
-        }
-    });
-    const hasNonContentControls = blockEditingMode === 'default';
-    const hasBlockControls = hasNonContentControls || isLinkTag && !lockUrlControls;
-    // Handle media upload with wp.media API
-    const handleMediaUpload = () => {
-        if (typeof wp === 'undefined' || !wp.media) {
-            console.warn('WordPress media API not available');
-            return;
-        }
-        // Polyfill for _.contains if not available
-        if (typeof _ !== 'undefined' && !_.contains) {
-            _.contains = function (array, item) {
-                return array.indexOf(item) !== -1;
-            };
-        }
-        const frame = wp.media({
-            title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Select or Upload Image'),
-            button: {
-                text: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Use this image')
-            },
-            multiple: false,
-            library: {
-                type: 'image'
-            }
-        });
-        frame.on('select', () => {
-            const attachment = frame.state().get('selection').first().toJSON();
-            setAttributes({
-                imageId: attachment.id,
-                imageUrl: attachment.url,
-                imageAlt: attachment.alt || ''
-            });
-        });
-        frame.open();
+    const _settings = select(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.store).getSettings();
+    const blockBindingsSource = (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_11__.getBlockBindingsSource)(metadata?.bindings?.url?.source);
+    return {
+      createPageEntity: _settings.__experimentalCreatePageEntity,
+      userCanCreatePages: _settings.__experimentalUserCanCreatePages,
+      lockUrlControls: !!metadata?.bindings?.url && !blockBindingsSource?.canUserEditValue?.({
+        select,
+        context,
+        args: metadata?.bindings?.url?.args
+      })
     };
-    return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.Fragment, {
-        children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
-                ...blockProps,
-                className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])(blockProps.className, {
-                    [`has-custom-width wp-block-jankx-image-button__width-${width}`]: width
-                }),
-                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)("div", {
-                    className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])('wp-block-jankx-image-button__link-container', 'wp-block-jankx-image-button__link', colorProps.className, borderProps.className, typographyProps.className, {
-                        [`has-text-align-${textAlign}`]: textAlign,
-                        'no-border-radius': style?.border?.radius === 0,
-                        [`has-custom-font-size`]: blockProps.style.fontSize
-                    }, (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.__experimentalGetElementClassName)('button')),
-                    style: {
-                        ...borderProps.style,
-                        ...colorProps.style,
-                        ...spacingProps.style,
-                        ...shadowProps.style,
-                        ...typographyProps.style,
-                        writingMode: undefined
-                    },
-                    children: [imageUrl && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("img", {
-                            src: imageUrl,
-                            alt: imageAlt || '',
-                            style: {
-                                height: imageHeight ? `${imageHeight}px` : '20px',
-                                width: 'auto',
-                                marginRight: imageMarginRight || '5px'
-                            },
-                            className: "wp-block-jankx-image-button__image"
-                        }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.RichText, {
-                            ref: mergedRef,
-                            "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Button text'),
-                            placeholder: placeholder || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Add text…'),
-                            value: cleanText,
-                            onChange: value => setAttributes({
-                                text: value
-                            }),
-                            withoutInteractiveFormatting: true,
-                            allowedFormats: ['core/bold', 'core/italic', 'core/strikethrough', 'core/link'],
-                            className: "block-editor-rich-text__editable",
-                            onReplace: onReplace,
-                            onMerge: mergeBlocks,
-                            identifier: "text"
-                        })]
-                })
-            }), hasBlockControls && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockControls, {
-                group: "block",
-                children: [hasNonContentControls && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.AlignmentControl, {
-                        value: textAlign,
-                        onChange: nextAlign => {
-                            setAttributes({
-                                textAlign: nextAlign
-                            });
-                        }
-                    }), isLinkTag && !lockUrlControls && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.ToolbarButton, {
-                        name: "link",
-                        icon: !isURLSet ? _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__["default"] : _wordpress_icons__WEBPACK_IMPORTED_MODULE_9__["default"],
-                        title: !isURLSet ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Link') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Unlink'),
-                        shortcut: !isURLSet ? _wordpress_keycodes__WEBPACK_IMPORTED_MODULE_7__.displayShortcut.primary('k') : _wordpress_keycodes__WEBPACK_IMPORTED_MODULE_7__.displayShortcut.primaryShift('k'),
-                        onClick: !isURLSet ? startEditing : unlink,
-                        isActive: isURLSet
-                    }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.ToolbarButton, {
-                        icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_10__["default"],
-                        title: imageUrl ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Replace Image') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Choose Image'),
-                        onClick: handleMediaUpload,
-                        isActive: !!imageUrl
-                    })]
-            }), isLinkTag && isSelected && (isEditingURL || isURLSet) && !lockUrlControls && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Popover, {
-                placement: "bottom",
-                onClose: () => {
-                    setIsEditingURL(false);
-                    richTextRef.current?.focus();
-                },
-                anchor: popoverAnchor,
-                focusOnMount: isEditingURL ? 'firstElement' : false,
-                __unstableSlotName: "__unstable-block-tools-after",
-                shift: true,
-                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.LinkControl, {
-                    value: linkValue,
-                    onChange: ({ url: newURL, opensInNewTab: newOpensInNewTab, nofollow: newNofollow }) => setAttributes((0,_get_updated_link_attributes__WEBPACK_IMPORTED_MODULE_2__.getUpdatedLinkAttributes)({
-                        rel,
-                        url: newURL,
-                        opensInNewTab: newOpensInNewTab,
-                        nofollow: newNofollow
-                    })),
-                    onRemove: () => {
-                        unlink();
-                        richTextRef.current?.focus();
-                    },
-                    forceIsEditingLink: isEditingURL,
-                    settings: LINK_SETTINGS,
-                    createSuggestion: createPageEntity && handleCreate,
-                    withCreateSuggestion: userCanCreatePages,
-                    createSuggestionButtonText: createButtonText
-                })
-            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.InspectorControls, {
-                children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(WidthPanel, {
-                        selectedWidth: width,
-                        setAttributes: setAttributes
-                    }), imageUrl && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
-                        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Image Settings'),
-                        initialOpen: false,
-                        children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.RangeControl, {
-                                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Image Height'),
-                                value: imageHeight || 20,
-                                onChange: value => setAttributes({
-                                    imageHeight: value
-                                }),
-                                min: 10,
-                                max: 100,
-                                step: 1,
-                                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Adjust the height of the image in pixels.')
-                            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.RangeControl, {
-                                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Image Margin Right'),
-                                value: parseInt(imageMarginRight) || 8,
-                                onChange: value => setAttributes({
-                                    imageMarginRight: `${value}px`
-                                }),
-                                min: 0,
-                                max: 50,
-                                step: 1,
-                                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Adjust the margin between image and text.')
-                            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.TextControl, {
-                                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Image Alt Text'),
-                                value: imageAlt || '',
-                                onChange: value => setAttributes({
-                                    imageAlt: value
-                                }),
-                                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Alternative text for accessibility.')
-                            })]
-                    })]
-            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.InspectorControls, {
-                group: "advanced",
-                children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.SelectControl, {
-                        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('HTML Element'),
-                        value: tagName || 'a',
-                        onChange: value => setAttributes({
-                            tagName: value
-                        }),
-                        options: [{
-                                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Default (<a>)'),
-                                value: 'a'
-                            }, {
-                                label: '<button>',
-                                value: 'button'
-                            }]
-                    }), isLinkTag && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.TextControl, {
-                        __next40pxDefaultSize: true,
-                        __nextHasNoMarginBottom: true,
-                        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Link rel'),
-                        value: rel || '',
-                        onChange: newRel => setAttributes({
-                            rel: newRel
-                        })
-                    })]
-            })]
+  }, [context, isSelected, metadata?.bindings?.url]);
+  async function handleCreate(pageTitle) {
+    const page = await createPageEntity({
+      title: pageTitle,
+      status: 'draft'
     });
+    return {
+      id: page.id,
+      type: page.type,
+      title: page.title.rendered,
+      url: page.link,
+      kind: 'post-type'
+    };
+  }
+  function createButtonText(searchTerm) {
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.createInterpolateElement)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.sprintf)(/* translators: %s: search term. */
+    (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Create page: <mark>%s</mark>'), searchTerm), {
+      mark: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("mark", {})
+    });
+  }
+  function startEditing(event) {
+    event.preventDefault();
+    setIsEditingURL(true);
+  }
+  function unlink() {
+    setAttributes({
+      url: undefined,
+      linkTarget: undefined,
+      rel: undefined
+    });
+    setIsEditingURL(false);
+  }
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
+    if (!isSelected) {
+      setIsEditingURL(false);
+    }
+  }, [isSelected]);
+
+  // Memoize link value to avoid overriding the LinkControl's internal state.
+  // This is a temporary fix. See https://github.com/WordPress/gutenberg/issues/51256.
+  const linkValue = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => ({
+    url,
+    opensInNewTab,
+    nofollow
+  }), [url, opensInNewTab, nofollow]);
+  const useEnterRef = useEnter({
+    content: text,
+    clientId
+  });
+  const mergedRef = (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_12__.useMergeRefs)([useEnterRef, richTextRef]);
+  const [fluidTypographySettings, layout] = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.useSettings)('typography.fluid', 'layout');
+  const typographyProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.getTypographyClassesAndStyles)(attributes, {
+    typography: {
+      fluid: fluidTypographySettings
+    },
+    layout: {
+      wideSize: layout?.wideSize
+    }
+  });
+  const hasNonContentControls = blockEditingMode === 'default';
+  const hasBlockControls = hasNonContentControls || isLinkTag && !lockUrlControls;
+
+  // Handle media upload with wp.media API
+  const handleMediaUpload = () => {
+    if (typeof wp === 'undefined' || !wp.media) {
+      console.warn('WordPress media API not available');
+      return;
+    }
+
+    // Polyfill for _.contains if not available
+    if (typeof _ !== 'undefined' && !_.contains) {
+      _.contains = function (array, item) {
+        return array.indexOf(item) !== -1;
+      };
+    }
+    const frame = wp.media({
+      title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Select or Upload Image'),
+      button: {
+        text: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Use this image')
+      },
+      multiple: false,
+      library: {
+        type: 'image'
+      }
+    });
+    frame.on('select', () => {
+      const attachment = frame.state().get('selection').first().toJSON();
+      setAttributes({
+        imageId: attachment.id,
+        imageUrl: attachment.url,
+        imageAlt: attachment.alt || ''
+      });
+    });
+    frame.open();
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
+      ...blockProps,
+      className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])(blockProps.className, {
+        [`has-custom-width wp-block-jankx-image-button__width-${width}`]: width
+      }),
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)("div", {
+        className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])('wp-block-jankx-image-button__link-container', 'wp-block-jankx-image-button__link', colorProps.className, borderProps.className, typographyProps.className, {
+          [`has-text-align-${textAlign}`]: textAlign,
+          'no-border-radius': style?.border?.radius === 0,
+          [`has-custom-font-size`]: blockProps.style.fontSize
+        }, (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.__experimentalGetElementClassName)('button')),
+        style: {
+          ...borderProps.style,
+          ...colorProps.style,
+          ...spacingProps.style,
+          ...shadowProps.style,
+          ...typographyProps.style,
+          writingMode: undefined
+        },
+        children: [imageUrl && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("img", {
+          src: imageUrl,
+          alt: imageAlt || '',
+          style: {
+            height: imageHeight ? `${imageHeight}px` : '20px',
+            width: 'auto',
+            marginRight: imageMarginRight || '5px'
+          },
+          className: "wp-block-jankx-image-button__image"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.RichText, {
+          ref: mergedRef,
+          "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Button text'),
+          placeholder: placeholder || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Add text…'),
+          value: cleanText,
+          onChange: value => setAttributes({
+            text: value
+          }),
+          withoutInteractiveFormatting: true,
+          allowedFormats: ['core/bold', 'core/italic', 'core/strikethrough', 'core/link'],
+          className: "block-editor-rich-text__editable",
+          onReplace: onReplace,
+          onMerge: mergeBlocks,
+          identifier: "text"
+        })]
+      })
+    }), hasBlockControls && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockControls, {
+      group: "block",
+      children: [hasNonContentControls && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.AlignmentControl, {
+        value: textAlign,
+        onChange: nextAlign => {
+          setAttributes({
+            textAlign: nextAlign
+          });
+        }
+      }), isLinkTag && !lockUrlControls && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.ToolbarButton, {
+        name: "link",
+        icon: !isURLSet ? _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__["default"] : _wordpress_icons__WEBPACK_IMPORTED_MODULE_9__["default"],
+        title: !isURLSet ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Link') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Unlink'),
+        shortcut: !isURLSet ? _wordpress_keycodes__WEBPACK_IMPORTED_MODULE_7__.displayShortcut.primary('k') : _wordpress_keycodes__WEBPACK_IMPORTED_MODULE_7__.displayShortcut.primaryShift('k'),
+        onClick: !isURLSet ? startEditing : unlink,
+        isActive: isURLSet
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.ToolbarButton, {
+        icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_10__["default"],
+        title: imageUrl ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Replace Image') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Choose Image'),
+        onClick: handleMediaUpload,
+        isActive: !!imageUrl
+      })]
+    }), isLinkTag && isSelected && (isEditingURL || isURLSet) && !lockUrlControls && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Popover, {
+      placement: "bottom",
+      onClose: () => {
+        setIsEditingURL(false);
+        richTextRef.current?.focus();
+      },
+      anchor: popoverAnchor,
+      focusOnMount: isEditingURL ? 'firstElement' : false,
+      __unstableSlotName: "__unstable-block-tools-after",
+      shift: true,
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.LinkControl, {
+        value: linkValue,
+        onChange: ({
+          url: newURL,
+          opensInNewTab: newOpensInNewTab,
+          nofollow: newNofollow
+        }) => setAttributes((0,_get_updated_link_attributes__WEBPACK_IMPORTED_MODULE_2__.getUpdatedLinkAttributes)({
+          rel,
+          url: newURL,
+          opensInNewTab: newOpensInNewTab,
+          nofollow: newNofollow
+        })),
+        onRemove: () => {
+          unlink();
+          richTextRef.current?.focus();
+        },
+        forceIsEditingLink: isEditingURL,
+        settings: LINK_SETTINGS,
+        createSuggestion: createPageEntity && handleCreate,
+        withCreateSuggestion: userCanCreatePages,
+        createSuggestionButtonText: createButtonText
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.InspectorControls, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(WidthPanel, {
+        selectedWidth: width,
+        setAttributes: setAttributes
+      }), imageUrl && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Image Settings'),
+        initialOpen: false,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.RangeControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Image Height'),
+          value: imageHeight || 20,
+          onChange: value => setAttributes({
+            imageHeight: value
+          }),
+          min: 10,
+          max: 100,
+          step: 1,
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Adjust the height of the image in pixels.')
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.RangeControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Image Margin Right'),
+          value: parseInt(imageMarginRight) || 8,
+          onChange: value => setAttributes({
+            imageMarginRight: `${value}px`
+          }),
+          min: 0,
+          max: 50,
+          step: 1,
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Adjust the margin between image and text.')
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.TextControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Image Alt Text'),
+          value: imageAlt || '',
+          onChange: value => setAttributes({
+            imageAlt: value
+          }),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Alternative text for accessibility.')
+        })]
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.InspectorControls, {
+      group: "advanced",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.SelectControl, {
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('HTML Element'),
+        value: tagName || 'a',
+        onChange: value => setAttributes({
+          tagName: value
+        }),
+        options: [{
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Default (<a>)'),
+          value: 'a'
+        }, {
+          label: '<button>',
+          value: 'button'
+        }]
+      }), isLinkTag && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.TextControl, {
+        __next40pxDefaultSize: true,
+        __nextHasNoMarginBottom: true,
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Link rel'),
+        value: rel || '',
+        onChange: newRel => setAttributes({
+          rel: newRel
+        })
+      })]
+    })]
+  });
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ButtonEdit);
-
 
 /***/ }),
 
@@ -606,21 +675,25 @@ __webpack_require__.r(__webpack_exports__);
  * @param {boolean} attributes.nofollow - Whether the link should be marked as nofollow.
  * @return {Object} The updated attributes.
  */
-function getUpdatedLinkAttributes({ rel, url, opensInNewTab, nofollow }) {
-    const newRel = [];
-    if (rel) {
-        newRel.push(rel);
-    }
-    if (nofollow) {
-        newRel.push('nofollow');
-    }
-    return {
-        url,
-        linkTarget: opensInNewTab ? '_blank' : undefined,
-        rel: newRel.length > 0 ? newRel.join(' ') : undefined
-    };
+function getUpdatedLinkAttributes({
+  rel,
+  url,
+  opensInNewTab,
+  nofollow
+}) {
+  const newRel = [];
+  if (rel) {
+    newRel.push(rel);
+  }
+  if (nofollow) {
+    newRel.push('nofollow');
+  }
+  return {
+    url,
+    linkTarget: opensInNewTab ? '_blank' : undefined,
+    rel: newRel.length > 0 ? newRel.join(' ') : undefined
+  };
 }
-
 
 /***/ }),
 
@@ -643,74 +716,97 @@ __webpack_require__.r(__webpack_exports__);
  * External dependencies
  */
 
+
 /**
  * WordPress dependencies
  */
 
 
-function save({ attributes, className }) {
-    const { tagName, type, textAlign, fontSize, linkTarget, rel, style, text, title, url, width, imageId, imageUrl, imageAlt, imageHeight, imageMarginRight } = attributes;
-    const TagName = tagName || 'a';
-    const isButtonTag = 'button' === TagName;
-    const buttonType = type || 'button';
-    const borderProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.__experimentalGetBorderClassesAndStyles)(attributes);
-    const colorProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.__experimentalGetColorClassesAndStyles)(attributes);
-    const spacingProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.__experimentalGetSpacingClassesAndStyles)(attributes);
-    const shadowProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.__experimentalGetShadowClassesAndStyles)(attributes);
-    const typographyProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.getTypographyClassesAndStyles)(attributes);
-    const buttonClasses = (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])('wp-block-jankx-image-button__link', colorProps.className, borderProps.className, typographyProps.className, {
-        [`has-text-align-${textAlign}`]: textAlign,
-        // For backwards compatibility add style that isn't provided via
-        // block support.
-        'no-border-radius': style?.border?.radius === 0,
-        [`has-custom-font-size`]: fontSize || style?.typography?.fontSize
-    }, (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.__experimentalGetElementClassName)('button'));
-    const buttonStyle = {
-        ...borderProps.style,
-        ...colorProps.style,
-        ...spacingProps.style,
-        ...shadowProps.style,
-        ...typographyProps.style,
-        writingMode: undefined
-    };
-    // The use of a `title` attribute here is soft-deprecated, but still applied
-    // if it had already been assigned, for the sake of backward-compatibility.
-    // A title will no longer be assigned for new or updated button block links.
-    const wrapperClasses = (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])(className, {
-        [`has-custom-width wp-block-jankx-image-button__width-${width}`]: width
-    });
-    // Check if text contains img tags
-    const textContainsImg = text && text.includes('<img');
-    const richText = text && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.RichText.Content, {
-        value: text
-    });
-    const saveData = /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-        ..._wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps.save({
-            className: wrapperClasses
-        }),
-        children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(TagName, {
-            type: isButtonTag ? buttonType : null,
-            className: buttonClasses,
-            href: isButtonTag ? null : url,
-            title: title,
-            style: buttonStyle,
-            target: isButtonTag ? null : linkTarget,
-            rel: isButtonTag ? null : rel,
-            children: [!textContainsImg && imageUrl && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("img", {
-                    src: imageUrl,
-                    alt: imageAlt || '',
-                    style: {
-                        height: imageHeight ? `${imageHeight}px` : '20px',
-                        width: 'auto',
-                        marginRight: imageMarginRight || '5px'
-                    },
-                    className: "wp-block-jankx-image-button__image"
-                }), richText]
-        })
-    });
-    return saveData;
-}
+function save({
+  attributes,
+  className
+}) {
+  const {
+    tagName,
+    type,
+    textAlign,
+    fontSize,
+    linkTarget,
+    rel,
+    style,
+    text,
+    title,
+    url,
+    width,
+    imageId,
+    imageUrl,
+    imageAlt,
+    imageHeight,
+    imageMarginRight
+  } = attributes;
+  const TagName = tagName || 'a';
+  const isButtonTag = 'button' === TagName;
+  const buttonType = type || 'button';
+  const borderProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.__experimentalGetBorderClassesAndStyles)(attributes);
+  const colorProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.__experimentalGetColorClassesAndStyles)(attributes);
+  const spacingProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.__experimentalGetSpacingClassesAndStyles)(attributes);
+  const shadowProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.__experimentalGetShadowClassesAndStyles)(attributes);
+  const typographyProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.getTypographyClassesAndStyles)(attributes);
+  const buttonClasses = (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])('wp-block-jankx-image-button__link', colorProps.className, borderProps.className, typographyProps.className, {
+    [`has-text-align-${textAlign}`]: textAlign,
+    // For backwards compatibility add style that isn't provided via
+    // block support.
+    'no-border-radius': style?.border?.radius === 0,
+    [`has-custom-font-size`]: fontSize || style?.typography?.fontSize
+  }, (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.__experimentalGetElementClassName)('button'));
+  const buttonStyle = {
+    ...borderProps.style,
+    ...colorProps.style,
+    ...spacingProps.style,
+    ...shadowProps.style,
+    ...typographyProps.style,
+    writingMode: undefined
+  };
 
+  // The use of a `title` attribute here is soft-deprecated, but still applied
+  // if it had already been assigned, for the sake of backward-compatibility.
+  // A title will no longer be assigned for new or updated button block links.
+
+  const wrapperClasses = (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])(className, {
+    [`has-custom-width wp-block-jankx-image-button__width-${width}`]: width
+  });
+
+  // Check if text contains img tags
+  const textContainsImg = text && text.includes('<img');
+  const richText = text && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.RichText.Content, {
+    value: text
+  });
+  const saveData = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+    ..._wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps.save({
+      className: wrapperClasses
+    }),
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(TagName, {
+      type: isButtonTag ? buttonType : null,
+      className: buttonClasses,
+      href: isButtonTag ? null : url,
+      title: title,
+      style: buttonStyle,
+      target: isButtonTag ? null : linkTarget,
+      rel: isButtonTag ? null : rel,
+      children: [!textContainsImg && imageUrl && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("img", {
+        src: imageUrl,
+        alt: imageAlt || '',
+        style: {
+          height: imageHeight ? `${imageHeight}px` : '20px',
+          width: 'auto',
+          marginRight: imageMarginRight || '5px'
+        },
+        className: "wp-block-jankx-image-button__image"
+      }), richText]
+    })
+  });
+  return saveData;
+}
 
 /***/ }),
 
@@ -943,6 +1039,16 @@ module.exports = window["wp"]["primitives"];
 
 /***/ }),
 
+/***/ "react":
+/*!************************!*\
+  !*** external "React" ***!
+  \************************/
+/***/ ((module) => {
+
+module.exports = window["React"];
+
+/***/ }),
+
 /***/ "react/jsx-runtime":
 /*!**********************************!*\
   !*** external "ReactJSXRuntime" ***!
@@ -1048,6 +1154,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 /**
  * Internal dependencies
  */
@@ -1055,27 +1162,31 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const { name } = _block_json__WEBPACK_IMPORTED_MODULE_5__;
+const {
+  name
+} = _block_json__WEBPACK_IMPORTED_MODULE_5__;
 
 const settings = {
-    icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_1__["default"],
-    example: {
-        attributes: {
-            className: 'is-style-fill',
-            text: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Call to action')
-        }
-    },
-    edit: _edit__WEBPACK_IMPORTED_MODULE_4__["default"],
-    save: _save__WEBPACK_IMPORTED_MODULE_6__["default"],
-    deprecated: _deprecated__WEBPACK_IMPORTED_MODULE_3__["default"],
-    merge: (a, { text = '' }) => ({
-        ...a,
-        text: (a.text || '') + text
-    })
+  icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_1__["default"],
+  example: {
+    attributes: {
+      className: 'is-style-fill',
+      text: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Call to action')
+    }
+  },
+  edit: _edit__WEBPACK_IMPORTED_MODULE_4__["default"],
+  save: _save__WEBPACK_IMPORTED_MODULE_6__["default"],
+  deprecated: _deprecated__WEBPACK_IMPORTED_MODULE_3__["default"],
+  merge: (a, {
+    text = ''
+  }) => ({
+    ...a,
+    text: (a.text || '') + text
+  })
 };
+
 // Register the block
 (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_2__.registerBlockType)(name, settings);
-
 })();
 
 /******/ })()

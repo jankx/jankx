@@ -74,6 +74,11 @@ class GutenbergService
 
             foreach ($instances as $blockName => $block) {
                 try {
+                    // Init block
+                    if (method_exists($block, 'init')) {
+                        call_user_func([$block, 'init']);
+                    }
+
                     Log::info('Register block ' . $blockName . ' to Gutenberg editor');
                     $block->register();
                     $registeredCount++;
@@ -104,7 +109,7 @@ class GutenbergService
         $this->repository->registerBlock(SvgIconButtonBlock::class);
         $this->repository->registerBlock(OffcanvasSidebarBlock::class);
         $this->repository->registerBlock(IconPickerBlock::class);
-        $this->repository->registerBlock(DynamicCollectionBlock::class);
+        // $this->repository->registerBlock(DynamicCollectionBlock::class);
         $this->repository->registerBlock(IconButtonBlock::class);
         $this->repository->registerBlock(OffcanvasTriggerBlock::class);
         $this->repository->registerBlock(LanguageSwitcherBlock::class);

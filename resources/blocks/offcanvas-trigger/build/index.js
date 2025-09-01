@@ -119,10 +119,12 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const info = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.SVG, {
-  xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 24 24",
+  xmlns: "http://www.w3.org/2000/svg",
   children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.Path, {
-    d: "M12 3.2c-4.8 0-8.8 3.9-8.8 8.8 0 4.8 3.9 8.8 8.8 8.8 4.8 0 8.8-3.9 8.8-8.8 0-4.8-4-8.8-8.8-8.8zm0 16c-4 0-7.2-3.3-7.2-7.2C4.8 8 8 4.8 12 4.8s7.2 3.3 7.2 7.2c0 4-3.2 7.2-7.2 7.2zM11 17h2v-6h-2v6zm0-8h2V7h-2v2z"
+    fillRule: "evenodd",
+    clipRule: "evenodd",
+    d: "M5.5 12a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0ZM12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16Zm.75 4v1.5h-1.5V8h1.5Zm0 8v-5h-1.5v5h1.5Z"
   })
 });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (info);
@@ -332,290 +334,309 @@ __webpack_require__.r(__webpack_exports__);
 
 // Icon options
 const ICON_OPTIONS = [{
-        label: 'Menu',
-        value: 'menu'
-    }, {
-        label: 'Home',
-        value: 'home'
-    }, {
-        label: 'Info',
-        value: 'info'
-    }, {
-        label: 'Cog',
-        value: 'cog'
-    }, {
-        label: 'Email',
-        value: 'email'
-    }, {
-        label: 'User',
-        value: 'user'
-    }, {
-        label: 'Search',
-        value: 'search'
-    }, {
-        label: 'Settings',
-        value: 'settings'
-    }, {
-        label: 'Heart',
-        value: 'heart'
-    }, {
-        label: 'Star',
-        value: 'star'
-    }];
+  label: 'Menu',
+  value: 'menu'
+}, {
+  label: 'Home',
+  value: 'home'
+}, {
+  label: 'Info',
+  value: 'info'
+}, {
+  label: 'Cog',
+  value: 'cog'
+}, {
+  label: 'Email',
+  value: 'email'
+}, {
+  label: 'User',
+  value: 'user'
+}, {
+  label: 'Search',
+  value: 'search'
+}, {
+  label: 'Settings',
+  value: 'settings'
+}, {
+  label: 'Heart',
+  value: 'heart'
+}, {
+  label: 'Star',
+  value: 'star'
+}];
+
 // Button style options
 const BUTTON_STYLE_OPTIONS = [{
-        label: 'Default',
-        value: 'default'
-    }, {
-        label: 'Outline',
-        value: 'outline'
-    }, {
-        label: 'Ghost',
-        value: 'ghost'
-    }, {
-        label: 'Rounded',
-        value: 'rounded'
-    }, {
-        label: 'Pill',
-        value: 'pill'
-    }];
+  label: 'Default',
+  value: 'default'
+}, {
+  label: 'Outline',
+  value: 'outline'
+}, {
+  label: 'Ghost',
+  value: 'ghost'
+}, {
+  label: 'Rounded',
+  value: 'rounded'
+}, {
+  label: 'Pill',
+  value: 'pill'
+}];
+
 // Button size options
 const BUTTON_SIZE_OPTIONS = [{
-        label: 'Small',
-        value: 'small'
-    }, {
-        label: 'Medium',
-        value: 'medium'
-    }, {
-        label: 'Large',
-        value: 'large'
-    }];
-function OffcanvasTriggerEdit({ attributes, setAttributes }) {
-    const { triggerText, triggerIcon, targetSidebarId, buttonStyle, buttonSize, backgroundColor, textColor, borderRadius, showIcon, showText, className } = attributes;
-    const [isColorPickerOpen, setIsColorPickerOpen] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(false);
-    const [isTextColorPickerOpen, setIsTextColorPickerOpen] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(false);
-    const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)({
-        className: `offcanvas-trigger-block ${className || ''}`
-    });
-    // Get icon component
-    const getIconComponent = iconName => {
-        const iconMap = {
-            menu: _wordpress_icons__WEBPACK_IMPORTED_MODULE_9__["default"],
-            home: _wordpress_icons__WEBPACK_IMPORTED_MODULE_7__["default"],
-            info: _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__["default"],
-            cog: _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__["default"],
-            envelope: _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__["default"]
-        };
-        return iconMap[iconName] || _wordpress_icons__WEBPACK_IMPORTED_MODULE_9__["default"];
+  label: 'Small',
+  value: 'small'
+}, {
+  label: 'Medium',
+  value: 'medium'
+}, {
+  label: 'Large',
+  value: 'large'
+}];
+function OffcanvasTriggerEdit({
+  attributes,
+  setAttributes
+}) {
+  const {
+    triggerText,
+    triggerIcon,
+    targetSidebarId,
+    buttonStyle,
+    buttonSize,
+    backgroundColor,
+    textColor,
+    borderRadius,
+    showIcon,
+    showText,
+    className
+  } = attributes;
+  const [isColorPickerOpen, setIsColorPickerOpen] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(false);
+  const [isTextColorPickerOpen, setIsTextColorPickerOpen] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(false);
+  const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)({
+    className: `offcanvas-trigger-block ${className || ''}`
+  });
+
+  // Get icon component
+  const getIconComponent = iconName => {
+    const iconMap = {
+      menu: _wordpress_icons__WEBPACK_IMPORTED_MODULE_9__["default"],
+      home: _wordpress_icons__WEBPACK_IMPORTED_MODULE_7__["default"],
+      info: _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__["default"],
+      cog: _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__["default"],
+      envelope: _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__["default"]
     };
-    // Button styles
-    const getButtonStyles = () => {
-        const baseStyles = {
-            backgroundColor: buttonStyle === 'outline' || buttonStyle === 'ghost' ? 'transparent' : backgroundColor,
-            color: textColor,
-            border: buttonStyle === 'outline' ? `2px solid ${backgroundColor}` : 'none',
-            borderRadius: borderRadius,
-            padding: buttonSize === 'small' ? '8px 12px' : buttonSize === 'large' ? '16px 24px' : '12px 16px',
-            fontSize: buttonSize === 'small' ? '14px' : buttonSize === 'large' ? '18px' : '16px',
-            cursor: 'pointer',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            textDecoration: 'none',
-            transition: 'all 0.3s ease'
-        };
-        return baseStyles;
+    return iconMap[iconName] || _wordpress_icons__WEBPACK_IMPORTED_MODULE_9__["default"];
+  };
+
+  // Button styles
+  const getButtonStyles = () => {
+    const baseStyles = {
+      backgroundColor: buttonStyle === 'outline' || buttonStyle === 'ghost' ? 'transparent' : backgroundColor,
+      color: textColor,
+      border: buttonStyle === 'outline' ? `2px solid ${backgroundColor}` : 'none',
+      borderRadius: borderRadius,
+      padding: buttonSize === 'small' ? '8px 12px' : buttonSize === 'large' ? '16px 24px' : '12px 16px',
+      fontSize: buttonSize === 'small' ? '14px' : buttonSize === 'large' ? '18px' : '16px',
+      cursor: 'pointer',
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '8px',
+      textDecoration: 'none',
+      transition: 'all 0.3s ease'
     };
-    // Handle click in editor
-    const handleClick = e => {
-        e.preventDefault();
-        // In editor, just show a message
-        jQuery(e.target).parents('.is-root-container').toggleClass('sidebar-open');
-    };
-    return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
-        children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
-                children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
-                        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Trigger Settings', 'jankx'),
-                        initialOpen: true,
-                        children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
-                                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Button Text', 'jankx'),
-                                value: triggerText,
-                                onChange: value => setAttributes({
-                                    triggerText: value
-                                })
-                            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
-                                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Button Icon', 'jankx'),
-                                value: triggerIcon,
-                                options: ICON_OPTIONS,
-                                onChange: value => setAttributes({
-                                    triggerIcon: value
-                                })
-                            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
-                                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Target Sidebar ID', 'jankx'),
-                                value: targetSidebarId,
-                                onChange: value => setAttributes({
-                                    targetSidebarId: value
-                                }),
-                                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enter the ID of the offcanvas sidebar to trigger. Leave empty to trigger the first sidebar found.', 'jankx')
-                            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
-                                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Icon', 'jankx'),
-                                checked: showIcon,
-                                onChange: value => setAttributes({
-                                    showIcon: value
-                                })
-                            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
-                                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Text', 'jankx'),
-                                checked: showText,
-                                onChange: value => setAttributes({
-                                    showText: value
-                                })
-                            })]
-                    }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
-                        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Button Style', 'jankx'),
-                        initialOpen: false,
-                        children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
-                                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Button Style', 'jankx'),
-                                value: buttonStyle,
-                                options: BUTTON_STYLE_OPTIONS,
-                                onChange: value => setAttributes({
-                                    buttonStyle: value
-                                })
-                            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
-                                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Button Size', 'jankx'),
-                                value: buttonSize,
-                                options: BUTTON_SIZE_OPTIONS,
-                                onChange: value => setAttributes({
-                                    buttonSize: value
-                                })
-                            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("div", {
-                                className: "color-controls",
-                                children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("div", {
-                                        className: "color-control",
-                                        children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Button, {
-                                                variant: "secondary",
-                                                onClick: () => setIsColorPickerOpen(!isColorPickerOpen),
-                                                style: {
-                                                    backgroundColor: backgroundColor,
-                                                    color: textColor
-                                                },
-                                                children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Background Color', 'jankx')
-                                            }), isColorPickerOpen && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
-                                                className: "color-picker-popup",
-                                                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ColorPicker, {
-                                                    color: backgroundColor,
-                                                    onChange: color => setAttributes({
-                                                        backgroundColor: color
-                                                    })
-                                                })
-                                            })]
-                                    }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("div", {
-                                        className: "color-control",
-                                        children: [/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Button, {
-                                                variant: "secondary",
-                                                onClick: () => setIsTextColorPickerOpen(!isTextColorPickerOpen),
-                                                style: {
-                                                    backgroundColor: textColor,
-                                                    color: backgroundColor
-                                                },
-                                                children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Text Color', 'jankx')
-                                            }), isTextColorPickerOpen && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
-                                                className: "color-picker-popup",
-                                                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ColorPicker, {
-                                                    color: textColor,
-                                                    onChange: color => setAttributes({
-                                                        textColor: color
-                                                    })
-                                                })
-                                            })]
-                                    })]
-                            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RangeControl, {
-                                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Border Radius', 'jankx'),
-                                value: parseInt(borderRadius),
-                                onChange: value => {
-                                    if (value !== undefined) {
-                                        setAttributes({
-                                            borderRadius: `${value}px`
-                                        });
-                                    }
-                                },
-                                min: 0,
-                                max: 50,
-                                step: 1
-                            })]
-                    })]
-            }), /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
-                ...blockProps,
-                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("button", {
-                    className: `offcanvas-trigger style-${buttonStyle} size-${buttonSize}`,
-                    style: getButtonStyles(),
-                    onClick: handleClick,
-                    "data-target-sidebar": targetSidebarId,
-                    children: [showIcon && getIconComponent(triggerIcon) && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("span", {
-                            className: "trigger-icon",
-                            children: getIconComponent(triggerIcon)
-                        }), showText && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("span", {
-                            className: "trigger-text",
-                            children: triggerText
-                        })]
+    return baseStyles;
+  };
+
+  // Handle click in editor
+  const handleClick = e => {
+    e.preventDefault();
+    // In editor, just show a message
+    jQuery(e.target).parents('.is-root-container').toggleClass('sidebar-open');
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Trigger Settings', 'jankx'),
+        initialOpen: true,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Button Text', 'jankx'),
+          value: triggerText,
+          onChange: value => setAttributes({
+            triggerText: value
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Button Icon', 'jankx'),
+          value: triggerIcon,
+          options: ICON_OPTIONS,
+          onChange: value => setAttributes({
+            triggerIcon: value
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Target Sidebar ID', 'jankx'),
+          value: targetSidebarId,
+          onChange: value => setAttributes({
+            targetSidebarId: value
+          }),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enter the ID of the offcanvas sidebar to trigger. Leave empty to trigger the first sidebar found.', 'jankx')
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Icon', 'jankx'),
+          checked: showIcon,
+          onChange: value => setAttributes({
+            showIcon: value
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Text', 'jankx'),
+          checked: showText,
+          onChange: value => setAttributes({
+            showText: value
+          })
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Button Style', 'jankx'),
+        initialOpen: false,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Button Style', 'jankx'),
+          value: buttonStyle,
+          options: BUTTON_STYLE_OPTIONS,
+          onChange: value => setAttributes({
+            buttonStyle: value
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Button Size', 'jankx'),
+          value: buttonSize,
+          options: BUTTON_SIZE_OPTIONS,
+          onChange: value => setAttributes({
+            buttonSize: value
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("div", {
+          className: "color-controls",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("div", {
+            className: "color-control",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Button, {
+              variant: "secondary",
+              onClick: () => setIsColorPickerOpen(!isColorPickerOpen),
+              style: {
+                backgroundColor: backgroundColor,
+                color: textColor
+              },
+              children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Background Color', 'jankx')
+            }), isColorPickerOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
+              className: "color-picker-popup",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ColorPicker, {
+                color: backgroundColor,
+                onChange: color => setAttributes({
+                  backgroundColor: color
                 })
+              })
             })]
-    });
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("div", {
+            className: "color-control",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Button, {
+              variant: "secondary",
+              onClick: () => setIsTextColorPickerOpen(!isTextColorPickerOpen),
+              style: {
+                backgroundColor: textColor,
+                color: backgroundColor
+              },
+              children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Text Color', 'jankx')
+            }), isTextColorPickerOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
+              className: "color-picker-popup",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ColorPicker, {
+                color: textColor,
+                onChange: color => setAttributes({
+                  textColor: color
+                })
+              })
+            })]
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RangeControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Border Radius', 'jankx'),
+          value: parseInt(borderRadius),
+          onChange: value => {
+            if (value !== undefined) {
+              setAttributes({
+                borderRadius: `${value}px`
+              });
+            }
+          },
+          min: 0,
+          max: 50,
+          step: 1
+        })]
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
+      ...blockProps,
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("button", {
+        className: `offcanvas-trigger style-${buttonStyle} size-${buttonSize}`,
+        style: getButtonStyles(),
+        onClick: handleClick,
+        "data-target-sidebar": targetSidebarId,
+        children: [showIcon && getIconComponent(triggerIcon) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("span", {
+          className: "trigger-icon",
+          children: getIconComponent(triggerIcon)
+        }), showText && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("span", {
+          className: "trigger-text",
+          children: triggerText
+        })]
+      })
+    })]
+  });
 }
 function OffcanvasTriggerSave() {
-    return null; // Dynamic block
+  return null; // Dynamic block
 }
 (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.registerBlockType)('jankx/offcanvas-trigger', {
-    title: 'Offcanvas Trigger',
-    category: 'widgets',
-    attributes: {
-        triggerText: {
-            type: 'string',
-            default: 'Menu'
-        },
-        triggerIcon: {
-            type: 'string',
-            default: 'menu'
-        },
-        targetSidebarId: {
-            type: 'string',
-            default: ''
-        },
-        buttonStyle: {
-            type: 'string',
-            default: 'default'
-        },
-        buttonSize: {
-            type: 'string',
-            default: 'medium'
-        },
-        backgroundColor: {
-            type: 'string',
-            default: '#48a770'
-        },
-        textColor: {
-            type: 'string',
-            default: '#ffffff'
-        },
-        borderRadius: {
-            type: 'string',
-            default: '4px'
-        },
-        showIcon: {
-            type: 'boolean',
-            default: true
-        },
-        showText: {
-            type: 'boolean',
-            default: true
-        },
-        className: {
-            type: 'string'
-        }
+  title: 'Offcanvas Trigger',
+  category: 'widgets',
+  attributes: {
+    triggerText: {
+      type: 'string',
+      default: 'Menu'
     },
-    edit: OffcanvasTriggerEdit,
-    save: OffcanvasTriggerSave
+    triggerIcon: {
+      type: 'string',
+      default: 'menu'
+    },
+    targetSidebarId: {
+      type: 'string',
+      default: ''
+    },
+    buttonStyle: {
+      type: 'string',
+      default: 'default'
+    },
+    buttonSize: {
+      type: 'string',
+      default: 'medium'
+    },
+    backgroundColor: {
+      type: 'string',
+      default: '#48a770'
+    },
+    textColor: {
+      type: 'string',
+      default: '#ffffff'
+    },
+    borderRadius: {
+      type: 'string',
+      default: '4px'
+    },
+    showIcon: {
+      type: 'boolean',
+      default: true
+    },
+    showText: {
+      type: 'boolean',
+      default: true
+    },
+    className: {
+      type: 'string'
+    }
+  },
+  edit: OffcanvasTriggerEdit,
+  save: OffcanvasTriggerSave
 });
-
 })();
 
 /******/ })()
