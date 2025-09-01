@@ -1,11 +1,10 @@
 /**
  * Import base-styles variables and mixins
  */
-@use "../../base-styles/variables" as *;
-@use "../../base-styles/mixins" as *;
-@use "../../base-styles/breakpoints" as *;
-@use "../../base-styles/colors" as *;
-@use "../../base-styles/z-index" as *;
+@use "../../base-styles/woocommerce/variables" as *;
+@use "../../base-styles/woocommerce/mixins" as *;
+@use "../../base-styles/woocommerce/breakpoints" as *;
+@use "../../base-styles/woocommerce/colors" as *;
 
 .block-library-query-pattern__selection-modal {
 	.block-editor-block-patterns-list {

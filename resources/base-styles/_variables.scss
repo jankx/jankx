@@ -183,3 +183,73 @@ $block-selected-border-width: 1px;
 $block-selected-padding: 0;
 $block-selected-child-margin: 5px;
 $block-selected-to-content: $block-edge-to-content - $block-selected-margin - $block-selected-border-width;
+
+// WooCommerce Variables
+$white: #ffffff;
+$black: #000000;
+$gray-100: #f8f9fa;
+$gray-200: #e9ecef;
+$gray-300: #dee2e6;
+$gray-400: #ced4da;
+$gray-500: #adb5bd;
+$gray-600: #6c757d;
+$gray-700: #495057;
+$gray-800: #343a40;
+$gray-900: #212529;
+
+// Grid units
+$grid-unit-05: 4px;
+$grid-unit-10: 8px;
+$grid-unit-15: 12px;
+$grid-unit-20: 16px;
+$grid-unit-30: 24px;
+$grid-unit-40: 32px;
+$grid-unit-50: 40px;
+$grid-unit-60: 48px;
+
+// Gaps
+$gap: 16px;
+$gap-small: 8px;
+$gap-large: 24px;
+
+// Colors
+$primary: #007cba;
+$secondary: #6c757d;
+$success: #28a745;
+$danger: #dc3545;
+$warning: #ffc107;
+$info: #17a2b8;
+
+// Typography
+$font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$font-size-base: 1rem;
+$font-size-sm: 0.875rem;
+$font-size-lg: 1.25rem;
+
+// Spacing
+$spacing-1: 0.25rem;
+$spacing-2: 0.5rem;
+$spacing-3: 1rem;
+$spacing-4: 1.5rem;
+$spacing-5: 3rem;
+
+// Borders
+$border-radius: 4px;
+$border-radius-sm: 2px;
+$border-radius-lg: 8px;
+$border-width: 1px;
+$border-color: $gray-300;
+
+// Shadows
+$box-shadow: 0 0.125rem 0.25rem rgba($black, 0.075);
+$box-shadow-sm: 0 0.125rem 0.25rem rgba($black, 0.075);
+$box-shadow-lg: 0 1rem 3rem rgba($black, 0.175);
+
+// Z-index
+$z-index-dropdown: 1000;
+$z-index-sticky: 1020;
+$z-index-fixed: 1030;
+$z-index-modal-backdrop: 1040;
+$z-index-modal: 1050;
+$z-index-popover: 1060;
+$z-index-tooltip: 1070;

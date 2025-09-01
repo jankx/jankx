@@ -23,7 +23,7 @@ import {
 	LayoutOptions,
 	WidthOptions,
 } from './types';
-import { ImageSizing } from '../../atomic/blocks/product-elements/image/types';
+import { ImageSizing } from '@woocommerce/atomic-blocks/product-elements/image/types';
 
 export const PRODUCT_COLLECTION_BLOCK_NAME = blockJson.name;
 const PRODUCT_TITLE_NAME = `${ PRODUCT_COLLECTION_BLOCK_NAME }/product-title`;
@@ -201,4 +201,30 @@ export const INNER_BLOCKS_TEMPLATE: InnerBlockTemplate[] = [
 	INNER_BLOCKS_PRODUCT_TEMPLATE,
 	INNER_BLOCKS_PAGINATION_TEMPLATE,
 	INNER_BLOCKS_NO_RESULTS_TEMPLATE,
+];
+
+// Product Collection Constants
+export const PRODUCT_COLLECTION_CONSTANTS = {
+  DEFAULT_PER_PAGE: 12,
+  MAX_PER_PAGE: 100,
+  MIN_PER_PAGE: 1,
+  DEFAULT_ORDER: 'date',
+  DEFAULT_ORDER_BY: 'desc',
+  DEFAULT_COLUMNS: 3,
+  MIN_COLUMNS: 1,
+  MAX_COLUMNS: 6,
+};
+
+export const ORDERBY_OPTIONS = [
+  { value: 'date', label: 'Date' },
+  { value: 'title', label: 'Title' },
+  { value: 'price', label: 'Price' },
+  { value: 'popularity', label: 'Popularity' },
+  { value: 'rating', label: 'Rating' },
+  { value: 'menu_order', label: 'Menu Order' },
+];
+
+export const ORDER_OPTIONS = [
+  { value: 'desc', label: 'Descending' },
+  { value: 'asc', label: 'Ascending' },
 ];

@@ -1,3 +1,11 @@
+/**
+ * Import WooCommerce base-styles variables and mixins
+ */
+@use "../../base-styles/woocommerce/variables" as *;
+@use "../../base-styles/woocommerce/mixins" as *;
+@use "../../base-styles/woocommerce/colors" as *;
+@use "../../base-styles/woocommerce/breakpoints" as *;
+
 .wp-block-woocommerce-product-collection {
 	.wc-block-components-product-stock-indicator {
 		text-align: center;

@@ -1,3 +1,11 @@
+/**
+ * Import WooCommerce base-styles variables and mixins
+ */
+@use "../../base-styles/woocommerce/variables" as *;
+@use "../../base-styles/woocommerce/mixins" as *;
+@use "../../base-styles/woocommerce/colors" as *;
+@use "../../base-styles/woocommerce/breakpoints" as *;
+
 $max-button-columns: 6;
 $min-button-width: 80px;
 $max-button-width: calc(100% / #{$max-button-columns});

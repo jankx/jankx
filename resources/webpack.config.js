@@ -81,6 +81,26 @@ module.exports = {
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
+    alias: {
+      '@woocommerce/editor-components': path.resolve(__dirname, 'packages/editor-components'),
+      '@woocommerce/blocks/product-template': path.resolve(__dirname, 'blocks/product-template'),
+      '@woocommerce/block-hocs': path.resolve(__dirname, 'packages/hocs'),
+      '@woocommerce/blocks/product-collection': path.resolve(__dirname, 'blocks/product-collection'),
+      '@woocommerce/base-utils': path.resolve(__dirname, 'packages/base/utils'),
+      '@woocommerce/atomic-blocks/product-elements': path.resolve(__dirname, 'packages/atomic/blocks/product-elements'),
+      '@woocommerce/blocks/migration-products-to-product-collection': path.resolve(__dirname, 'blocks/migration-products-to-product-collection'),
+      '../../base-styles': path.resolve(__dirname, 'base-styles'),
+      '@woocommerce/base-components': path.resolve(__dirname, 'packages/base/components'),
+      '@woocommerce/base-context': path.resolve(__dirname, 'packages/base/context'),
+      '@woocommerce/base-context/hooks': path.resolve(__dirname, 'packages/base/context/hooks'),
+      '@woocommerce/editor-components/error-placeholder': path.resolve(__dirname, 'packages/editor-components/error-placeholder'),
+      '@woocommerce/editor-components/expandable-search-list-item': path.resolve(__dirname, 'packages/editor-components/expandable-search-list-item'),
+      '@woocommerce/atomic-blocks/product-elements': path.resolve(__dirname, 'packages/atomic/blocks/product-elements'),
+      '@woocommerce/atomic-blocks/product-elements/title/block.json': path.resolve(__dirname, 'blocks/product-collection/block.json'),
+      '@woocommerce/editor-components/error-placeholder': path.resolve(__dirname, 'packages/editor-components/error-placeholder'),
+      '@woocommerce/editor-components/expandable-search-list-item/expandable-search-list-item': path.resolve(__dirname, 'packages/editor-components/expandable-search-list-item/index.tsx'),
+      'PaginationControl': path.resolve(__dirname, 'packages/editor-components/pagination-control/index.tsx'),
+    },
   },
   externals: {
     react: 'React',
@@ -92,6 +112,16 @@ module.exports = {
     '@wordpress/element': ['wp', 'element'],
     '@wordpress/data': ['wp', 'data'],
     '@wordpress/core-data': ['wp', 'coreData'],
+    '@woocommerce/blocks-registry': ['wc', 'blocksRegistry'],
+    '@woocommerce/settings': ['wc', 'settings'],
+    '@woocommerce/utils': ['wc', 'utils'],
+    '@woocommerce/tracks': ['wc', 'tracks'],
+    '@woocommerce/editor-components': ['wc', 'editorComponents'],
+    '@woocommerce/block-settings': ['wc', 'blockSettings'],
+    '@woocommerce/types': ['wc', 'types'],
+    '@woocommerce/price-format': ['wc', 'priceFormat'],
+    '@woocommerce/base-hooks': ['wc', 'baseHooks'],
+    '@woocommerce/atomic-blocks': ['wc', 'atomicBlocks'],
     swiper: 'Swiper',
   },
   plugins: [
@@ -167,7 +197,19 @@ module.exports = {
           MiniCssExtractPlugin.loader,
           'css-loader',
           'postcss-loader',
-          'sass-loader'
+          {
+            loader: 'sass-loader',
+            options: {
+              sassOptions: {
+                includePaths: [
+                  path.resolve(__dirname, 'base-styles'),
+                  path.resolve(__dirname, 'base-styles/woocommerce'),
+                  path.resolve(__dirname, 'scss'),
+                ],
+                additionalData: `@import "woocommerce/functions"; @import "woocommerce/variables"; @import "woocommerce/colors"; @import "woocommerce/mixins"; @import "woocommerce/breakpoints";`
+              }
+            }
+          }
         ]
       },
       { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' },

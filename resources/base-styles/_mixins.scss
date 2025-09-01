@@ -681,3 +681,100 @@
 	left: 0;
 	@include selected-block-outline($widthRatio);
 }
+
+// WooCommerce Mixins
+
+// Visually hidden
+@mixin visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+// Screen reader only
+@mixin sr-only {
+  @include visually-hidden;
+}
+
+// Focus styles
+@mixin focus-visible {
+  outline: 2px solid $primary;
+  outline-offset: 2px;
+}
+
+// Button styles
+@mixin button-base {
+  display: inline-block;
+  font-weight: 400;
+  text-align: center;
+  vertical-align: middle;
+  user-select: none;
+  border: 1px solid transparent;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: $border-radius;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+// Flexbox utilities
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+// Text truncation
+@mixin text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Clearfix
+@mixin clearfix {
+  &::after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
+
+// Responsive breakpoints
+@mixin media-breakpoint-up($size) {
+  @if $size == sm {
+    @media (min-width: 576px) { @content; }
+  } @else if $size == md {
+    @media (min-width: 768px) { @content; }
+  } @else if $size == lg {
+    @media (min-width: 992px) { @content; }
+  } @else if $size == xl {
+    @media (min-width: 1200px) { @content; }
+  }
+}
+
+// Hover effects
+@mixin hover {
+  &:hover {
+    @content;
+  }
+}
+
+@mixin hover-focus {
+  &:hover,
+  &:focus {
+    @content;
+  }
+}

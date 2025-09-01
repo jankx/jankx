@@ -1,0 +1,37 @@
+// WooCommerce Functions
+
+// Custom rem function to fix @automattic/components compatibility
+@function rem($value, $base: 16px) {
+  @if unit($value) == 'px' {
+    @return ($value / $base) * 1rem;
+  }
+  @return $value;
+}
+
+// Convert px to em
+@function em($value, $base: 16px) {
+  @if unit($value) == 'px' {
+    @return ($value / $base) * 1em;
+  }
+  @return $value;
+}
+
+// Strip unit
+@function strip-unit($value) {
+  @if type-of($value) == 'number' {
+    @if unit($value) == 'px' {
+      @return $value / 1px;
+    }
+    @if unit($value) == 'em' {
+      @return $value / 1em;
+    }
+    @if unit($value) == 'rem' {
+      @return $value / 1rem;
+    }
+    @if unit($value) == '%' {
+      @return $value / 1%;
+    }
+  }
+  @return $value;
+}
+
