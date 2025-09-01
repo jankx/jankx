@@ -7074,46 +7074,6 @@ const parseTemplateSlug = (rawTemplateSlug = '') => {
 
 /***/ }),
 
-/***/ "./node_modules/@babel/runtime/helpers/esm/arrayLikeToArray.js":
-/*!*********************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/esm/arrayLikeToArray.js ***!
-  \*********************************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ _arrayLikeToArray)
-/* harmony export */ });
-function _arrayLikeToArray(r, a) {
-  (null == a || a > r.length) && (a = r.length);
-  for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e];
-  return n;
-}
-
-
-/***/ }),
-
-/***/ "./node_modules/@babel/runtime/helpers/esm/arrayWithoutHoles.js":
-/*!**********************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/esm/arrayWithoutHoles.js ***!
-  \**********************************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ _arrayWithoutHoles)
-/* harmony export */ });
-/* harmony import */ var _arrayLikeToArray_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./arrayLikeToArray.js */ "./node_modules/@babel/runtime/helpers/esm/arrayLikeToArray.js");
-
-function _arrayWithoutHoles(r) {
-  if (Array.isArray(r)) return (0,_arrayLikeToArray_js__WEBPACK_IMPORTED_MODULE_0__["default"])(r);
-}
-
-
-/***/ }),
-
 /***/ "./node_modules/@babel/runtime/helpers/esm/assertThisInitialized.js":
 /*!**************************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/esm/assertThisInitialized.js ***!
@@ -7128,31 +7088,6 @@ __webpack_require__.r(__webpack_exports__);
 function _assertThisInitialized(e) {
   if (void 0 === e) throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
   return e;
-}
-
-
-/***/ }),
-
-/***/ "./node_modules/@babel/runtime/helpers/esm/defineProperty.js":
-/*!*******************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/esm/defineProperty.js ***!
-  \*******************************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ _defineProperty)
-/* harmony export */ });
-/* harmony import */ var _toPropertyKey_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./toPropertyKey.js */ "./node_modules/@babel/runtime/helpers/esm/toPropertyKey.js");
-
-function _defineProperty(e, r, t) {
-  return (r = (0,_toPropertyKey_js__WEBPACK_IMPORTED_MODULE_0__["default"])(r)) in e ? Object.defineProperty(e, r, {
-    value: t,
-    enumerable: !0,
-    configurable: !0,
-    writable: !0
-  }) : e[r] = t, e;
 }
 
 
@@ -7202,42 +7137,6 @@ function _inheritsLoose(t, o) {
 
 /***/ }),
 
-/***/ "./node_modules/@babel/runtime/helpers/esm/iterableToArray.js":
-/*!********************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/esm/iterableToArray.js ***!
-  \********************************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ _iterableToArray)
-/* harmony export */ });
-function _iterableToArray(r) {
-  if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r);
-}
-
-
-/***/ }),
-
-/***/ "./node_modules/@babel/runtime/helpers/esm/nonIterableSpread.js":
-/*!**********************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/esm/nonIterableSpread.js ***!
-  \**********************************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ _nonIterableSpread)
-/* harmony export */ });
-function _nonIterableSpread() {
-  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-}
-
-
-/***/ }),
-
 /***/ "./node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js":
 /*!*********************************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js ***!
@@ -7277,130 +7176,6 @@ function _setPrototypeOf(t, e) {
   return _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function (t, e) {
     return t.__proto__ = e, t;
   }, _setPrototypeOf(t, e);
-}
-
-
-/***/ }),
-
-/***/ "./node_modules/@babel/runtime/helpers/esm/toConsumableArray.js":
-/*!**********************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/esm/toConsumableArray.js ***!
-  \**********************************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ _toConsumableArray)
-/* harmony export */ });
-/* harmony import */ var _arrayWithoutHoles_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./arrayWithoutHoles.js */ "./node_modules/@babel/runtime/helpers/esm/arrayWithoutHoles.js");
-/* harmony import */ var _iterableToArray_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./iterableToArray.js */ "./node_modules/@babel/runtime/helpers/esm/iterableToArray.js");
-/* harmony import */ var _unsupportedIterableToArray_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./unsupportedIterableToArray.js */ "./node_modules/@babel/runtime/helpers/esm/unsupportedIterableToArray.js");
-/* harmony import */ var _nonIterableSpread_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./nonIterableSpread.js */ "./node_modules/@babel/runtime/helpers/esm/nonIterableSpread.js");
-
-
-
-
-function _toConsumableArray(r) {
-  return (0,_arrayWithoutHoles_js__WEBPACK_IMPORTED_MODULE_0__["default"])(r) || (0,_iterableToArray_js__WEBPACK_IMPORTED_MODULE_1__["default"])(r) || (0,_unsupportedIterableToArray_js__WEBPACK_IMPORTED_MODULE_2__["default"])(r) || (0,_nonIterableSpread_js__WEBPACK_IMPORTED_MODULE_3__["default"])();
-}
-
-
-/***/ }),
-
-/***/ "./node_modules/@babel/runtime/helpers/esm/toPrimitive.js":
-/*!****************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/esm/toPrimitive.js ***!
-  \****************************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ toPrimitive)
-/* harmony export */ });
-/* harmony import */ var _typeof_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./typeof.js */ "./node_modules/@babel/runtime/helpers/esm/typeof.js");
-
-function toPrimitive(t, r) {
-  if ("object" != (0,_typeof_js__WEBPACK_IMPORTED_MODULE_0__["default"])(t) || !t) return t;
-  var e = t[Symbol.toPrimitive];
-  if (void 0 !== e) {
-    var i = e.call(t, r || "default");
-    if ("object" != (0,_typeof_js__WEBPACK_IMPORTED_MODULE_0__["default"])(i)) return i;
-    throw new TypeError("@@toPrimitive must return a primitive value.");
-  }
-  return ("string" === r ? String : Number)(t);
-}
-
-
-/***/ }),
-
-/***/ "./node_modules/@babel/runtime/helpers/esm/toPropertyKey.js":
-/*!******************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/esm/toPropertyKey.js ***!
-  \******************************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ toPropertyKey)
-/* harmony export */ });
-/* harmony import */ var _typeof_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./typeof.js */ "./node_modules/@babel/runtime/helpers/esm/typeof.js");
-/* harmony import */ var _toPrimitive_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./toPrimitive.js */ "./node_modules/@babel/runtime/helpers/esm/toPrimitive.js");
-
-
-function toPropertyKey(t) {
-  var i = (0,_toPrimitive_js__WEBPACK_IMPORTED_MODULE_1__["default"])(t, "string");
-  return "symbol" == (0,_typeof_js__WEBPACK_IMPORTED_MODULE_0__["default"])(i) ? i : i + "";
-}
-
-
-/***/ }),
-
-/***/ "./node_modules/@babel/runtime/helpers/esm/typeof.js":
-/*!***********************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/esm/typeof.js ***!
-  \***********************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ _typeof)
-/* harmony export */ });
-function _typeof(o) {
-  "@babel/helpers - typeof";
-
-  return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) {
-    return typeof o;
-  } : function (o) {
-    return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o;
-  }, _typeof(o);
-}
-
-
-/***/ }),
-
-/***/ "./node_modules/@babel/runtime/helpers/esm/unsupportedIterableToArray.js":
-/*!*******************************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/esm/unsupportedIterableToArray.js ***!
-  \*******************************************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ _unsupportedIterableToArray)
-/* harmony export */ });
-/* harmony import */ var _arrayLikeToArray_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./arrayLikeToArray.js */ "./node_modules/@babel/runtime/helpers/esm/arrayLikeToArray.js");
-
-function _unsupportedIterableToArray(r, a) {
-  if (r) {
-    if ("string" == typeof r) return (0,_arrayLikeToArray_js__WEBPACK_IMPORTED_MODULE_0__["default"])(r, a);
-    var t = {}.toString.call(r).slice(8, -1);
-    return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? (0,_arrayLikeToArray_js__WEBPACK_IMPORTED_MODULE_0__["default"])(r, a) : void 0;
-  }
 }
 
 
@@ -8969,7 +8744,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _woocommerce_data__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_woocommerce_data__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _woocommerce_navigation__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @woocommerce/navigation */ "./node_modules/@woocommerce/navigation/build-module/index.js");
+/* harmony import */ var _woocommerce_navigation__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @woocommerce/navigation */ "./node_modules/@woocommerce/navigation/build/index.js");
+/* harmony import */ var _woocommerce_navigation__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_woocommerce_navigation__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../constants */ "./node_modules/@woocommerce/customer-effort-score/build-module/constants.js");
 /**
  * External dependencies
@@ -10412,7 +10188,7 @@ exports.getTotalCountResourceName = exports.searchItemsByString = exports.getLea
 /**
  * External dependencies
  */
-const date_1 = __webpack_require__(/*! @woocommerce/date */ "./node_modules/@woocommerce/data/node_modules/@woocommerce/date/build-module/index.js");
+const date_1 = __webpack_require__(/*! @woocommerce/date */ "./node_modules/@woocommerce/date/build-module/index.js");
 /**
  * Internal dependencies
  */
@@ -10552,7 +10328,7 @@ exports.removeFavorite = exports.addFavorite = exports.onHistoryChange = exports
  * External dependencies
  */
 const api_fetch_1 = __importDefault(__webpack_require__(/*! @wordpress/api-fetch */ "@wordpress/api-fetch"));
-const navigation_1 = __webpack_require__(/*! @woocommerce/navigation */ "./node_modules/@woocommerce/data/node_modules/@woocommerce/navigation/build/index.js");
+const navigation_1 = __webpack_require__(/*! @woocommerce/navigation */ "./node_modules/@woocommerce/navigation/build/index.js");
 /**
  * Internal dependencies
  */
@@ -10738,7 +10514,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
  * External dependencies
  */
 const data_1 = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
-const navigation_1 = __webpack_require__(/*! @woocommerce/navigation */ "./node_modules/@woocommerce/data/node_modules/@woocommerce/navigation/build/index.js");
+const navigation_1 = __webpack_require__(/*! @woocommerce/navigation */ "./node_modules/@woocommerce/navigation/build/index.js");
 /**
  * Internal dependencies
  */
@@ -13590,8 +13366,8 @@ exports.getReportTableData = exports.getReportTableQuery = exports.getTooltipVal
  */
 const lodash_1 = __webpack_require__(/*! lodash */ "lodash");
 const moment_1 = __importDefault(__webpack_require__(/*! moment */ "moment"));
-const date_1 = __webpack_require__(/*! @woocommerce/date */ "./node_modules/@woocommerce/data/node_modules/@woocommerce/date/build-module/index.js");
-const navigation_1 = __webpack_require__(/*! @woocommerce/navigation */ "./node_modules/@woocommerce/data/node_modules/@woocommerce/navigation/build/index.js");
+const date_1 = __webpack_require__(/*! @woocommerce/date */ "./node_modules/@woocommerce/date/build-module/index.js");
+const navigation_1 = __webpack_require__(/*! @woocommerce/navigation */ "./node_modules/@woocommerce/navigation/build/index.js");
 /**
  * Internal dependencies
  */
@@ -15211,10 +14987,299 @@ exports.getResourceIdentifier = getResourceIdentifier;
 
 /***/ }),
 
-/***/ "./node_modules/@woocommerce/data/node_modules/@woocommerce/date/build-module/index.js":
-/*!*********************************************************************************************!*\
-  !*** ./node_modules/@woocommerce/data/node_modules/@woocommerce/date/build-module/index.js ***!
-  \*********************************************************************************************/
+/***/ "./node_modules/@woocommerce/data/node_modules/rememo/es/rememo.js":
+/*!*************************************************************************!*\
+  !*** ./node_modules/@woocommerce/data/node_modules/rememo/es/rememo.js ***!
+  \*************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* export default binding */ __WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+
+
+var LEAF_KEY, hasWeakMap;
+
+/**
+ * Arbitrary value used as key for referencing cache object in WeakMap tree.
+ *
+ * @type {Object}
+ */
+LEAF_KEY = {};
+
+/**
+ * Whether environment supports WeakMap.
+ *
+ * @type {boolean}
+ */
+hasWeakMap = typeof WeakMap !== 'undefined';
+
+/**
+ * Returns the first argument as the sole entry in an array.
+ *
+ * @param {*} value Value to return.
+ *
+ * @return {Array} Value returned as entry in array.
+ */
+function arrayOf( value ) {
+	return [ value ];
+}
+
+/**
+ * Returns true if the value passed is object-like, or false otherwise. A value
+ * is object-like if it can support property assignment, e.g. object or array.
+ *
+ * @param {*} value Value to test.
+ *
+ * @return {boolean} Whether value is object-like.
+ */
+function isObjectLike( value ) {
+	return !! value && 'object' === typeof value;
+}
+
+/**
+ * Creates and returns a new cache object.
+ *
+ * @return {Object} Cache object.
+ */
+function createCache() {
+	var cache = {
+		clear: function() {
+			cache.head = null;
+		},
+	};
+
+	return cache;
+}
+
+/**
+ * Returns true if entries within the two arrays are strictly equal by
+ * reference from a starting index.
+ *
+ * @param {Array}  a         First array.
+ * @param {Array}  b         Second array.
+ * @param {number} fromIndex Index from which to start comparison.
+ *
+ * @return {boolean} Whether arrays are shallowly equal.
+ */
+function isShallowEqual( a, b, fromIndex ) {
+	var i;
+
+	if ( a.length !== b.length ) {
+		return false;
+	}
+
+	for ( i = fromIndex; i < a.length; i++ ) {
+		if ( a[ i ] !== b[ i ] ) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+/**
+ * Returns a memoized selector function. The getDependants function argument is
+ * called before the memoized selector and is expected to return an immutable
+ * reference or array of references on which the selector depends for computing
+ * its own return value. The memoize cache is preserved only as long as those
+ * dependant references remain the same. If getDependants returns a different
+ * reference(s), the cache is cleared and the selector value regenerated.
+ *
+ * @param {Function} selector      Selector function.
+ * @param {Function} getDependants Dependant getter returning an immutable
+ *                                 reference or array of reference used in
+ *                                 cache bust consideration.
+ *
+ * @return {Function} Memoized selector.
+ */
+/* harmony default export */ function __WEBPACK_DEFAULT_EXPORT__(selector, getDependants ) {
+	var rootCache, getCache;
+
+	// Use object source as dependant if getter not provided
+	if ( ! getDependants ) {
+		getDependants = arrayOf;
+	}
+
+	/**
+	 * Returns the root cache. If WeakMap is supported, this is assigned to the
+	 * root WeakMap cache set, otherwise it is a shared instance of the default
+	 * cache object.
+	 *
+	 * @return {(WeakMap|Object)} Root cache object.
+	 */
+	function getRootCache() {
+		return rootCache;
+	}
+
+	/**
+	 * Returns the cache for a given dependants array. When possible, a WeakMap
+	 * will be used to create a unique cache for each set of dependants. This
+	 * is feasible due to the nature of WeakMap in allowing garbage collection
+	 * to occur on entries where the key object is no longer referenced. Since
+	 * WeakMap requires the key to be an object, this is only possible when the
+	 * dependant is object-like. The root cache is created as a hierarchy where
+	 * each top-level key is the first entry in a dependants set, the value a
+	 * WeakMap where each key is the next dependant, and so on. This continues
+	 * so long as the dependants are object-like. If no dependants are object-
+	 * like, then the cache is shared across all invocations.
+	 *
+	 * @see isObjectLike
+	 *
+	 * @param {Array} dependants Selector dependants.
+	 *
+	 * @return {Object} Cache object.
+	 */
+	function getWeakMapCache( dependants ) {
+		var caches = rootCache,
+			isUniqueByDependants = true,
+			i, dependant, map, cache;
+
+		for ( i = 0; i < dependants.length; i++ ) {
+			dependant = dependants[ i ];
+
+			// Can only compose WeakMap from object-like key.
+			if ( ! isObjectLike( dependant ) ) {
+				isUniqueByDependants = false;
+				break;
+			}
+
+			// Does current segment of cache already have a WeakMap?
+			if ( caches.has( dependant ) ) {
+				// Traverse into nested WeakMap.
+				caches = caches.get( dependant );
+			} else {
+				// Create, set, and traverse into a new one.
+				map = new WeakMap();
+				caches.set( dependant, map );
+				caches = map;
+			}
+		}
+
+		// We use an arbitrary (but consistent) object as key for the last item
+		// in the WeakMap to serve as our running cache.
+		if ( ! caches.has( LEAF_KEY ) ) {
+			cache = createCache();
+			cache.isUniqueByDependants = isUniqueByDependants;
+			caches.set( LEAF_KEY, cache );
+		}
+
+		return caches.get( LEAF_KEY );
+	}
+
+	// Assign cache handler by availability of WeakMap
+	getCache = hasWeakMap ? getWeakMapCache : getRootCache;
+
+	/**
+	 * Resets root memoization cache.
+	 */
+	function clear() {
+		rootCache = hasWeakMap ? new WeakMap() : createCache();
+	}
+
+	// eslint-disable-next-line jsdoc/check-param-names
+	/**
+	 * The augmented selector call, considering first whether dependants have
+	 * changed before passing it to underlying memoize function.
+	 *
+	 * @param {Object} source    Source object for derivation.
+	 * @param {...*}   extraArgs Additional arguments to pass to selector.
+	 *
+	 * @return {*} Selector result.
+	 */
+	function callSelector( /* source, ...extraArgs */ ) {
+		var len = arguments.length,
+			cache, node, i, args, dependants;
+
+		// Create copy of arguments (avoid leaking deoptimization).
+		args = new Array( len );
+		for ( i = 0; i < len; i++ ) {
+			args[ i ] = arguments[ i ];
+		}
+
+		dependants = getDependants.apply( null, args );
+		cache = getCache( dependants );
+
+		// If not guaranteed uniqueness by dependants (primitive type or lack
+		// of WeakMap support), shallow compare against last dependants and, if
+		// references have changed, destroy cache to recalculate result.
+		if ( ! cache.isUniqueByDependants ) {
+			if ( cache.lastDependants && ! isShallowEqual( dependants, cache.lastDependants, 0 ) ) {
+				cache.clear();
+			}
+
+			cache.lastDependants = dependants;
+		}
+
+		node = cache.head;
+		while ( node ) {
+			// Check whether node arguments match arguments
+			if ( ! isShallowEqual( node.args, args, 1 ) ) {
+				node = node.next;
+				continue;
+			}
+
+			// At this point we can assume we've found a match
+
+			// Surface matched node to head if not already
+			if ( node !== cache.head ) {
+				// Adjust siblings to point to each other.
+				node.prev.next = node.next;
+				if ( node.next ) {
+					node.next.prev = node.prev;
+				}
+
+				node.next = cache.head;
+				node.prev = null;
+				cache.head.prev = node;
+				cache.head = node;
+			}
+
+			// Return immediately
+			return node.val;
+		}
+
+		// No cached value found. Continue to insertion phase:
+
+		node = {
+			// Generate the result from original function
+			val: selector.apply( null, args ),
+		};
+
+		// Avoid including the source object in the cache.
+		args[ 0 ] = null;
+		node.args = args;
+
+		// Don't need to check whether node is already head, since it would
+		// have been returned above already if it was
+
+		// Shift existing head down list
+		if ( cache.head ) {
+			cache.head.prev = node;
+			node.next = cache.head;
+		}
+
+		cache.head = node;
+
+		return node.val;
+	}
+
+	callSelector.getDependants = getDependants;
+	callSelector.clear = clear;
+	clear();
+
+	return callSelector;
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/@woocommerce/date/build-module/index.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/@woocommerce/date/build-module/index.js ***!
+  \**************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -15963,834 +16028,6 @@ function validateDateInputForRange(type, value, before, after, format) {
         };
     }
     return { date };
-}
-
-
-/***/ }),
-
-/***/ "./node_modules/@woocommerce/data/node_modules/@woocommerce/navigation/build/filters.js":
-/*!**********************************************************************************************!*\
-  !*** ./node_modules/@woocommerce/data/node_modules/@woocommerce/navigation/build/filters.js ***!
-  \**********************************************************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getUrlKey = exports.getQueryFromActiveFilters = exports.getDefaultOptionValue = exports.getActiveFiltersFromQuery = exports.flattenFilters = void 0;
-/**
- * External dependencies
- */
-const lodash_1 = __webpack_require__(/*! lodash */ "lodash");
-/**
- * Collapse an array of filter values with subFilters into a 1-dimensional array.
- *
- * @param {Array} filters Set of filters with possible subfilters.
- * @return {Array} Flattened array of all filters.
- */
-function flattenFilters(filters) {
-    const allFilters = [];
-    filters.forEach((f) => {
-        if (!f.subFilters) {
-            allFilters.push(f);
-        }
-        else {
-            allFilters.push(lodash_1.omit(f, 'subFilters'));
-            const subFilters = flattenFilters(f.subFilters);
-            allFilters.push(...subFilters);
-        }
-    });
-    return allFilters;
-}
-exports.flattenFilters = flattenFilters;
-/**
- * Describe activeFilter object.
- *
- * @typedef {Object} activeFilter
- * @property {string} key - filter key.
- * @property {string} [rule] - a modifying rule for a filter, eg 'includes' or 'is_not'.
- * @property {string} value - filter value(s).
- */
-/**
- * Given a query object, return an array of activeFilters, if any.
- *
- * @param {Object} query - query oject
- * @param {Object} config - config object
- * @return {Array} - array of activeFilters
- */
-function getActiveFiltersFromQuery(query, config) {
-    return Object.keys(config).reduce((activeFilters, configKey) => {
-        const filter = config[configKey];
-        if (filter.rules) {
-            // Get all rules found in the query string.
-            const matches = filter.rules.filter((rule) => query.hasOwnProperty(getUrlKey(configKey, rule.value)));
-            if (matches.length) {
-                if (filter.allowMultiple) {
-                    // If rules were found in the query string, and this filter supports
-                    // multiple instances, add all matches to the active filters array.
-                    matches.forEach((match) => {
-                        const value = query[getUrlKey(configKey, match.value)];
-                        value.forEach((filterValue) => {
-                            activeFilters.push({
-                                key: configKey,
-                                rule: match.value,
-                                value: filterValue,
-                            });
-                        });
-                    });
-                }
-                else {
-                    // If the filter is a single instance, just process the first rule match.
-                    const value = query[getUrlKey(configKey, matches[0].value)];
-                    activeFilters.push({
-                        key: configKey,
-                        rule: matches[0].value,
-                        value,
-                    });
-                }
-            }
-        }
-        else if (query[configKey]) {
-            // If the filter doesn't have rules, but allows multiples.
-            if (filter.allowMultiple) {
-                const value = query[configKey];
-                value.forEach((filterValue) => {
-                    activeFilters.push({
-                        key: configKey,
-                        value: filterValue,
-                    });
-                });
-            }
-            else {
-                // Filter with no rules and only one instance.
-                activeFilters.push({
-                    key: configKey,
-                    value: query[configKey],
-                });
-            }
-        }
-        return activeFilters;
-    }, []);
-}
-exports.getActiveFiltersFromQuery = getActiveFiltersFromQuery;
-/**
- * Get the default option's value from the configuration object for a given filter. The first
- * option is used as default if no `defaultOption` is provided.
- *
- * @param {Object} config - a filter config object.
- * @param {Array} options - select options.
- * @return {string|undefined}  - the value of the default option.
- */
-function getDefaultOptionValue(config, options) {
-    const { defaultOption } = config.input;
-    if (config.input.defaultOption) {
-        const option = lodash_1.find(options, { value: defaultOption });
-        if (!option) {
-            /* eslint-disable no-console */
-            console.warn(`invalid defaultOption ${defaultOption} supplied to ${config.labels.add}`);
-            /* eslint-enable */
-            return undefined;
-        }
-        return option.value;
-    }
-    return lodash_1.get(options, [0, 'value']);
-}
-exports.getDefaultOptionValue = getDefaultOptionValue;
-/**
- * Given activeFilters, create a new query object to update the url. Use previousFilters to
- * Remove unused params.
- *
- * @param {Array} activeFilters - Array of activeFilters shown in the UI
- * @param {Object} query - the current url query object
- * @param {Object} config - config object
- * @return {Object} - query object representing the new parameters
- */
-function getQueryFromActiveFilters(activeFilters, query, config) {
-    const previousFilters = getActiveFiltersFromQuery(query, config);
-    const previousData = previousFilters.reduce((data, filter) => {
-        data[getUrlKey(filter.key, filter.rule)] = undefined;
-        return data;
-    }, {});
-    const nextData = activeFilters.reduce((data, filter) => {
-        if (filter.rule === 'between' &&
-            (!Array.isArray(filter.value) ||
-                filter.value.some((value) => !value))) {
-            return data;
-        }
-        if (filter.value) {
-            const urlKey = getUrlKey(filter.key, filter.rule);
-            if (config[filter.key] && config[filter.key].allowMultiple) {
-                if (!data.hasOwnProperty(urlKey)) {
-                    data[urlKey] = [];
-                }
-                data[urlKey].push(filter.value);
-            }
-            else {
-                data[urlKey] = filter.value;
-            }
-        }
-        return data;
-    }, {});
-    return Object.assign(Object.assign({}, previousData), nextData);
-}
-exports.getQueryFromActiveFilters = getQueryFromActiveFilters;
-/**
- * Get the url query key from the filter key and rule.
- *
- * @param {string} key - filter key.
- * @param {string} rule - filter rule.
- * @return {string} - url query key.
- */
-function getUrlKey(key, rule) {
-    if (rule && rule.length) {
-        return `${key}_${rule}`;
-    }
-    return key;
-}
-exports.getUrlKey = getUrlKey;
-
-
-/***/ }),
-
-/***/ "./node_modules/@woocommerce/data/node_modules/@woocommerce/navigation/build/history.js":
-/*!**********************************************************************************************!*\
-  !*** ./node_modules/@woocommerce/data/node_modules/@woocommerce/navigation/build/history.js ***!
-  \**********************************************************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getHistory = void 0;
-/**
- * External dependencies
- */
-const history_1 = __webpack_require__(/*! history */ "./node_modules/history/esm/history.js");
-const qs_1 = __webpack_require__(/*! qs */ "./node_modules/qs/lib/index.js");
-// See https://github.com/ReactTraining/react-router/blob/master/FAQ.md#how-do-i-access-the-history-object-outside-of-components
-let _history;
-/**
- * Recreate `history` to coerce React Router into accepting path arguments found in query
- * parameter `path`, allowing a url hash to be avoided. Since hash portions of the url are
- * not sent server side, full route information can be detected by the server.
- *
- * `<Router />` and `<Switch />` components use `history.location()` to match a url with a route.
- * Since they don't parse query arguments, recreate `get location` to return a `pathname` with the
- * query path argument's value.
- *
- * @return {Object} React-router history object with `get location` modified.
- */
-function getHistory() {
-    if (!_history) {
-        const path = document.location.pathname;
-        const browserHistory = history_1.createBrowserHistory({
-            basename: path.substring(0, path.lastIndexOf('/')),
-        });
-        _history = {
-            get length() {
-                return browserHistory.length;
-            },
-            get action() {
-                return browserHistory.action;
-            },
-            get location() {
-                const { location } = browserHistory;
-                const query = qs_1.parse(location.search.substring(1));
-                const pathname = query.path || '/';
-                return Object.assign(Object.assign({}, location), { pathname });
-            },
-            createHref: (...args) => browserHistory.createHref.apply(browserHistory, args),
-            push: (...args) => browserHistory.push.apply(browserHistory, args),
-            replace: (...args) => browserHistory.replace.apply(browserHistory, args),
-            go: (...args) => browserHistory.go.apply(browserHistory, args),
-            goBack: (...args) => browserHistory.goBack.apply(browserHistory, args),
-            goForward: (...args) => browserHistory.goForward.apply(browserHistory, args),
-            block: (...args) => browserHistory.block.apply(browserHistory, args),
-            listen(listener) {
-                return browserHistory.listen(() => {
-                    listener(this.location, this.action);
-                });
-            },
-        };
-    }
-    return _history;
-}
-exports.getHistory = getHistory;
-
-
-/***/ }),
-
-/***/ "./node_modules/@woocommerce/data/node_modules/@woocommerce/navigation/build/index.js":
-/*!********************************************************************************************!*\
-  !*** ./node_modules/@woocommerce/data/node_modules/@woocommerce/navigation/build/index.js ***!
-  \********************************************************************************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.WooNavigationItem = exports.addHistoryListener = exports.updateQueryString = exports.onQueryChange = exports.getQuery = exports.getNewPath = exports.getSearchWords = exports.getSetOfIdsFromQuery = exports.getIdsFromQuery = exports.getScreenFromPath = exports.pathIsExcluded = exports.getQueryExcludedScreens = exports.getPersistedQuery = exports.getPath = exports.getHistory = void 0;
-/**
- * External dependencies
- */
-const element_1 = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-const url_1 = __webpack_require__(/*! @wordpress/url */ "@wordpress/url");
-const qs_1 = __webpack_require__(/*! qs */ "./node_modules/qs/lib/index.js");
-const lodash_1 = __webpack_require__(/*! lodash */ "lodash");
-const hooks_1 = __webpack_require__(/*! @wordpress/hooks */ "@wordpress/hooks");
-const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-/**
- * Internal dependencies
- */
-const history_1 = __webpack_require__(/*! ./history */ "./node_modules/@woocommerce/data/node_modules/@woocommerce/navigation/build/history.js");
-Object.defineProperty(exports, "getHistory", ({ enumerable: true, get: function () { return history_1.getHistory; } }));
-const navUtils = __importStar(__webpack_require__(/*! ./index */ "./node_modules/@woocommerce/data/node_modules/@woocommerce/navigation/build/index.js"));
-// Export all filter utilities
-__exportStar(__webpack_require__(/*! ./filters */ "./node_modules/@woocommerce/data/node_modules/@woocommerce/navigation/build/filters.js"), exports);
-const TIME_EXCLUDED_SCREENS_FILTER = 'woocommerce_admin_time_excluded_screens';
-/**
- * Get the current path from history.
- *
- * @return {string}  Current path.
- */
-const getPath = () => history_1.getHistory().location.pathname;
-exports.getPath = getPath;
-/**
- * Gets query parameters that should persist between screens or updates
- * to reports, such as filtering.
- *
- * @param {Object} query Query containing the parameters.
- * @return {Object} Object containing the persisted queries.
- */
-const getPersistedQuery = (query = navUtils.getQuery()) => {
-    const params = hooks_1.applyFilters('woocommerce_admin_persisted_queries', [
-        'period',
-        'compare',
-        'before',
-        'after',
-        'interval',
-        'type',
-    ]);
-    return lodash_1.pick(query, params);
-};
-exports.getPersistedQuery = getPersistedQuery;
-/**
- * Get array of screens that should ignore persisted queries
- *
- * @return {Array} Array containing list of screens
- */
-const getQueryExcludedScreens = () => hooks_1.applyFilters(TIME_EXCLUDED_SCREENS_FILTER, [
-    'stock',
-    'settings',
-    'customers',
-    'homescreen',
-]);
-exports.getQueryExcludedScreens = getQueryExcludedScreens;
-/**
- * Given a path, return whether it is an excluded screen
- *
- * @param {Object} path Path to check
- *
- * @return {boolean} Boolean representing whether path is excluded
- */
-const pathIsExcluded = (path) => exports.getQueryExcludedScreens().includes(exports.getScreenFromPath(path));
-exports.pathIsExcluded = pathIsExcluded;
-/**
- * Retrieve a string 'name' representing the current screen
- *
- * @param {Object} path Path to resolve, default to current
- * @return {string} Screen name
- */
-const getScreenFromPath = (path = exports.getPath()) => {
-    return path === '/'
-        ? 'homescreen'
-        : path.replace('/analytics', '').replace('/', '');
-};
-exports.getScreenFromPath = getScreenFromPath;
-/**
- * Get an array of IDs from a comma-separated query parameter.
- *
- * @param {string} [queryString=''] string value extracted from URL.
- * @return {Array<number>} List of IDs converted to an array of unique integers.
- */
-function getIdsFromQuery(queryString = '') {
-    return [...getSetOfIdsFromQuery(queryString)];
-}
-exports.getIdsFromQuery = getIdsFromQuery;
-/**
- * Get an array of IDs from a comma-separated query parameter.
- *
- * @param {string} [queryString=''] string value extracted from URL.
- * @return {Set<number>} List of IDs converted to a set of integers.
- */
-function getSetOfIdsFromQuery(queryString = '') {
-    return new Set(// Return only unique ids.
-    queryString
-        .split(',')
-        .map((id) => parseInt(id, 10))
-        .filter((id) => !isNaN(id)));
-}
-exports.getSetOfIdsFromQuery = getSetOfIdsFromQuery;
-/**
- * Get an array of searched words given a query.
- *
- * @param {Object} query Query object.
- * @return {Array} List of search words.
- */
-function getSearchWords(query = navUtils.getQuery()) {
-    if (typeof query !== 'object') {
-        throw new Error('Invalid parameter passed to getSearchWords, it expects an object or no parameters.');
-    }
-    const { search } = query;
-    if (!search) {
-        return [];
-    }
-    if (typeof search !== 'string') {
-        throw new Error("Invalid 'search' type. getSearchWords expects query's 'search' property to be a string.");
-    }
-    return search
-        .split(',')
-        .map((searchWord) => searchWord.replace('%2C', ','));
-}
-exports.getSearchWords = getSearchWords;
-/**
- * Return a URL with set query parameters.
- *
- * @param {Object} query object of params to be updated.
- * @param {string} path Relative path (defaults to current path).
- * @param {Object} currentQuery object of current query params (defaults to current querystring).
- * @param {string} page Page key (defaults to "wc-admin")
- * @return {string}  Updated URL merging query params into existing params.
- */
-function getNewPath(query, path = exports.getPath(), currentQuery = getQuery(), page = 'wc-admin') {
-    const args = Object.assign(Object.assign({ page }, currentQuery), query);
-    if (path !== '/') {
-        args.path = path;
-    }
-    return url_1.addQueryArgs('admin.php', args);
-}
-exports.getNewPath = getNewPath;
-/**
- * Get the current query string, parsed into an object, from history.
- *
- * @return {Object}  Current query object, defaults to empty object.
- */
-function getQuery() {
-    const search = history_1.getHistory().location.search;
-    if (search.length) {
-        return qs_1.parse(search.substring(1)) || {};
-    }
-    return {};
-}
-exports.getQuery = getQuery;
-/**
- * This function returns an event handler for the given `param`
- *
- * @param {string} param The parameter in the querystring which should be updated (ex `page`, `per_page`)
- * @param {string} path Relative path (defaults to current path).
- * @param {string} query object of current query params (defaults to current querystring).
- * @return {Function} A callback which will update `param` to the passed value when called.
- */
-function onQueryChange(param, path = exports.getPath(), query = getQuery()) {
-    switch (param) {
-        case 'sort':
-            return (key, dir) => updateQueryString({ orderby: key, order: dir }, path, query);
-        case 'compare':
-            return (key, queryParam, ids) => updateQueryString({
-                [queryParam]: `compare-${key}`,
-                [key]: ids,
-                search: undefined,
-            }, path, query);
-        default:
-            return (value) => updateQueryString({ [param]: value }, path, query);
-    }
-}
-exports.onQueryChange = onQueryChange;
-/**
- * Updates the query parameters of the current page.
- *
- * @param {Object} query object of params to be updated.
- * @param {string} path Relative path (defaults to current path).
- * @param {Object} currentQuery object of current query params (defaults to current querystring).
- * @param {string} page Page key (defaults to "wc-admin")
- */
-function updateQueryString(query, path = exports.getPath(), currentQuery = getQuery(), page = 'wc-admin') {
-    const newPath = getNewPath(query, path, currentQuery, page);
-    history_1.getHistory().push(newPath);
-}
-exports.updateQueryString = updateQueryString;
-/**
- * Adds a listener that runs on history change.
- *
- * @param {Function} listener Listener to add on history change.
- * @return {Function} Function to remove listeners.
- */
-const addHistoryListener = (listener) => {
-    // Monkey patch pushState to allow trigger the pushstate event listener.
-    if (window.wcNavigation && !window.wcNavigation.historyPatched) {
-        ((history) => {
-            /* global CustomEvent */
-            const pushState = history.pushState;
-            const replaceState = history.replaceState;
-            history.pushState = function (state) {
-                const pushStateEvent = new CustomEvent('pushstate', {
-                    state,
-                });
-                window.dispatchEvent(pushStateEvent);
-                return pushState.apply(history, arguments);
-            };
-            history.replaceState = function (state) {
-                const replaceStateEvent = new CustomEvent('replacestate', {
-                    state,
-                });
-                window.dispatchEvent(replaceStateEvent);
-                return replaceState.apply(history, arguments);
-            };
-            window.wcNavigation.historyPatched = true;
-        })(window.history);
-    }
-    window.addEventListener('popstate', listener);
-    window.addEventListener('pushstate', listener);
-    window.addEventListener('replacestate', listener);
-    return () => {
-        window.removeEventListener('popstate', listener);
-        window.removeEventListener('pushstate', listener);
-        window.removeEventListener('replacestate', listener);
-    };
-};
-exports.addHistoryListener = addHistoryListener;
-/**
- * Create a Fill for extensions to add client facing custom Navigation Items.
- *
- * @slotFill WooNavigationItem
- * @example
- * const MyExtenstionNavItem = () => (
- * 	<WooNavigationItem item="my-extension">My Extension</WooNavigationItem>
- * );
- *
- * registerPlugin( 'my-extension', {
- * 	render: MyExtenstionNavItem,
- * 	scope: 'woocommerce-admin',
- * } );
- * @param {Object} param0
- * @param {Array} param0.children - Node children.
- * @param {string} param0.item - Navigation item slug.
- */
-const WooNavigationItem = ({ children, item }) => {
-    return element_1.createElement(components_1.Fill, { name: 'woocommerce_navigation_' + item }, children);
-};
-exports.WooNavigationItem = WooNavigationItem;
-exports.WooNavigationItem.Slot = ({ name }) => (element_1.createElement(components_1.Slot, { name: 'woocommerce_navigation_' + name }));
-
-
-/***/ }),
-
-/***/ "./node_modules/@woocommerce/data/node_modules/rememo/es/rememo.js":
-/*!*************************************************************************!*\
-  !*** ./node_modules/@woocommerce/data/node_modules/rememo/es/rememo.js ***!
-  \*************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* export default binding */ __WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-
-
-var LEAF_KEY, hasWeakMap;
-
-/**
- * Arbitrary value used as key for referencing cache object in WeakMap tree.
- *
- * @type {Object}
- */
-LEAF_KEY = {};
-
-/**
- * Whether environment supports WeakMap.
- *
- * @type {boolean}
- */
-hasWeakMap = typeof WeakMap !== 'undefined';
-
-/**
- * Returns the first argument as the sole entry in an array.
- *
- * @param {*} value Value to return.
- *
- * @return {Array} Value returned as entry in array.
- */
-function arrayOf( value ) {
-	return [ value ];
-}
-
-/**
- * Returns true if the value passed is object-like, or false otherwise. A value
- * is object-like if it can support property assignment, e.g. object or array.
- *
- * @param {*} value Value to test.
- *
- * @return {boolean} Whether value is object-like.
- */
-function isObjectLike( value ) {
-	return !! value && 'object' === typeof value;
-}
-
-/**
- * Creates and returns a new cache object.
- *
- * @return {Object} Cache object.
- */
-function createCache() {
-	var cache = {
-		clear: function() {
-			cache.head = null;
-		},
-	};
-
-	return cache;
-}
-
-/**
- * Returns true if entries within the two arrays are strictly equal by
- * reference from a starting index.
- *
- * @param {Array}  a         First array.
- * @param {Array}  b         Second array.
- * @param {number} fromIndex Index from which to start comparison.
- *
- * @return {boolean} Whether arrays are shallowly equal.
- */
-function isShallowEqual( a, b, fromIndex ) {
-	var i;
-
-	if ( a.length !== b.length ) {
-		return false;
-	}
-
-	for ( i = fromIndex; i < a.length; i++ ) {
-		if ( a[ i ] !== b[ i ] ) {
-			return false;
-		}
-	}
-
-	return true;
-}
-
-/**
- * Returns a memoized selector function. The getDependants function argument is
- * called before the memoized selector and is expected to return an immutable
- * reference or array of references on which the selector depends for computing
- * its own return value. The memoize cache is preserved only as long as those
- * dependant references remain the same. If getDependants returns a different
- * reference(s), the cache is cleared and the selector value regenerated.
- *
- * @param {Function} selector      Selector function.
- * @param {Function} getDependants Dependant getter returning an immutable
- *                                 reference or array of reference used in
- *                                 cache bust consideration.
- *
- * @return {Function} Memoized selector.
- */
-/* harmony default export */ function __WEBPACK_DEFAULT_EXPORT__(selector, getDependants ) {
-	var rootCache, getCache;
-
-	// Use object source as dependant if getter not provided
-	if ( ! getDependants ) {
-		getDependants = arrayOf;
-	}
-
-	/**
-	 * Returns the root cache. If WeakMap is supported, this is assigned to the
-	 * root WeakMap cache set, otherwise it is a shared instance of the default
-	 * cache object.
-	 *
-	 * @return {(WeakMap|Object)} Root cache object.
-	 */
-	function getRootCache() {
-		return rootCache;
-	}
-
-	/**
-	 * Returns the cache for a given dependants array. When possible, a WeakMap
-	 * will be used to create a unique cache for each set of dependants. This
-	 * is feasible due to the nature of WeakMap in allowing garbage collection
-	 * to occur on entries where the key object is no longer referenced. Since
-	 * WeakMap requires the key to be an object, this is only possible when the
-	 * dependant is object-like. The root cache is created as a hierarchy where
-	 * each top-level key is the first entry in a dependants set, the value a
-	 * WeakMap where each key is the next dependant, and so on. This continues
-	 * so long as the dependants are object-like. If no dependants are object-
-	 * like, then the cache is shared across all invocations.
-	 *
-	 * @see isObjectLike
-	 *
-	 * @param {Array} dependants Selector dependants.
-	 *
-	 * @return {Object} Cache object.
-	 */
-	function getWeakMapCache( dependants ) {
-		var caches = rootCache,
-			isUniqueByDependants = true,
-			i, dependant, map, cache;
-
-		for ( i = 0; i < dependants.length; i++ ) {
-			dependant = dependants[ i ];
-
-			// Can only compose WeakMap from object-like key.
-			if ( ! isObjectLike( dependant ) ) {
-				isUniqueByDependants = false;
-				break;
-			}
-
-			// Does current segment of cache already have a WeakMap?
-			if ( caches.has( dependant ) ) {
-				// Traverse into nested WeakMap.
-				caches = caches.get( dependant );
-			} else {
-				// Create, set, and traverse into a new one.
-				map = new WeakMap();
-				caches.set( dependant, map );
-				caches = map;
-			}
-		}
-
-		// We use an arbitrary (but consistent) object as key for the last item
-		// in the WeakMap to serve as our running cache.
-		if ( ! caches.has( LEAF_KEY ) ) {
-			cache = createCache();
-			cache.isUniqueByDependants = isUniqueByDependants;
-			caches.set( LEAF_KEY, cache );
-		}
-
-		return caches.get( LEAF_KEY );
-	}
-
-	// Assign cache handler by availability of WeakMap
-	getCache = hasWeakMap ? getWeakMapCache : getRootCache;
-
-	/**
-	 * Resets root memoization cache.
-	 */
-	function clear() {
-		rootCache = hasWeakMap ? new WeakMap() : createCache();
-	}
-
-	// eslint-disable-next-line jsdoc/check-param-names
-	/**
-	 * The augmented selector call, considering first whether dependants have
-	 * changed before passing it to underlying memoize function.
-	 *
-	 * @param {Object} source    Source object for derivation.
-	 * @param {...*}   extraArgs Additional arguments to pass to selector.
-	 *
-	 * @return {*} Selector result.
-	 */
-	function callSelector( /* source, ...extraArgs */ ) {
-		var len = arguments.length,
-			cache, node, i, args, dependants;
-
-		// Create copy of arguments (avoid leaking deoptimization).
-		args = new Array( len );
-		for ( i = 0; i < len; i++ ) {
-			args[ i ] = arguments[ i ];
-		}
-
-		dependants = getDependants.apply( null, args );
-		cache = getCache( dependants );
-
-		// If not guaranteed uniqueness by dependants (primitive type or lack
-		// of WeakMap support), shallow compare against last dependants and, if
-		// references have changed, destroy cache to recalculate result.
-		if ( ! cache.isUniqueByDependants ) {
-			if ( cache.lastDependants && ! isShallowEqual( dependants, cache.lastDependants, 0 ) ) {
-				cache.clear();
-			}
-
-			cache.lastDependants = dependants;
-		}
-
-		node = cache.head;
-		while ( node ) {
-			// Check whether node arguments match arguments
-			if ( ! isShallowEqual( node.args, args, 1 ) ) {
-				node = node.next;
-				continue;
-			}
-
-			// At this point we can assume we've found a match
-
-			// Surface matched node to head if not already
-			if ( node !== cache.head ) {
-				// Adjust siblings to point to each other.
-				node.prev.next = node.next;
-				if ( node.next ) {
-					node.next.prev = node.prev;
-				}
-
-				node.next = cache.head;
-				node.prev = null;
-				cache.head.prev = node;
-				cache.head = node;
-			}
-
-			// Return immediately
-			return node.val;
-		}
-
-		// No cached value found. Continue to insertion phase:
-
-		node = {
-			// Generate the result from original function
-			val: selector.apply( null, args ),
-		};
-
-		// Avoid including the source object in the cache.
-		args[ 0 ] = null;
-		node.args = args;
-
-		// Don't need to check whether node is already head, since it would
-		// have been returned above already if it was
-
-		// Shift existing head down list
-		if ( cache.head ) {
-			cache.head.prev = node;
-			node.next = cache.head;
-		}
-
-		cache.head = node;
-
-		return node.val;
-	}
-
-	callSelector.getDependants = getDependants;
-	callSelector.clear = clear;
-	clear();
-
-	return callSelector;
 }
 
 
@@ -19625,56 +18862,41 @@ var forceReflow = function forceReflow(node) {
 
 /***/ }),
 
-/***/ "./node_modules/@woocommerce/navigation/build-module/filters.js":
-/*!**********************************************************************!*\
-  !*** ./node_modules/@woocommerce/navigation/build-module/filters.js ***!
-  \**********************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ "./node_modules/@woocommerce/navigation/build/filters.js":
+/*!***************************************************************!*\
+  !*** ./node_modules/@woocommerce/navigation/build/filters.js ***!
+  \***************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   flattenFilters: () => (/* binding */ flattenFilters),
-/* harmony export */   getActiveFiltersFromQuery: () => (/* binding */ getActiveFiltersFromQuery),
-/* harmony export */   getDefaultOptionValue: () => (/* binding */ getDefaultOptionValue),
-/* harmony export */   getQueryFromActiveFilters: () => (/* binding */ getQueryFromActiveFilters),
-/* harmony export */   getUrlKey: () => (/* binding */ getUrlKey)
-/* harmony export */ });
-/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/defineProperty */ "./node_modules/@babel/runtime/helpers/esm/defineProperty.js");
-/* harmony import */ var _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/toConsumableArray */ "./node_modules/@babel/runtime/helpers/esm/toConsumableArray.js");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! lodash */ "lodash");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_2__);
 
-
-
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__["default"])(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getUrlKey = exports.getQueryFromActiveFilters = exports.getDefaultOptionValue = exports.getActiveFiltersFromQuery = exports.flattenFilters = void 0;
 /**
  * External dependencies
  */
-
+const lodash_1 = __webpack_require__(/*! lodash */ "lodash");
 /**
  * Collapse an array of filter values with subFilters into a 1-dimensional array.
  *
  * @param {Array} filters Set of filters with possible subfilters.
  * @return {Array} Flattened array of all filters.
  */
-
 function flattenFilters(filters) {
-  var allFilters = [];
-  filters.forEach(function (f) {
-    if (!f.subFilters) {
-      allFilters.push(f);
-    } else {
-      allFilters.push((0,lodash__WEBPACK_IMPORTED_MODULE_2__.omit)(f, 'subFilters'));
-      var subFilters = flattenFilters(f.subFilters);
-      allFilters.push.apply(allFilters, (0,_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_1__["default"])(subFilters));
-    }
-  });
-  return allFilters;
+    const allFilters = [];
+    filters.forEach((f) => {
+        if (!f.subFilters) {
+            allFilters.push(f);
+        }
+        else {
+            allFilters.push(lodash_1.omit(f, 'subFilters'));
+            const subFilters = flattenFilters(f.subFilters);
+            allFilters.push(...subFilters);
+        }
+    });
+    return allFilters;
 }
+exports.flattenFilters = flattenFilters;
 /**
  * Describe activeFilter object.
  *
@@ -19683,7 +18905,6 @@ function flattenFilters(filters) {
  * @property {string} [rule] - a modifying rule for a filter, eg 'includes' or 'is_not'.
  * @property {string} value - filter value(s).
  */
-
 /**
  * Given a query object, return an array of activeFilters, if any.
  *
@@ -19691,64 +18912,61 @@ function flattenFilters(filters) {
  * @param {Object} config - config object
  * @return {Array} - array of activeFilters
  */
-
 function getActiveFiltersFromQuery(query, config) {
-  return Object.keys(config).reduce(function (activeFilters, configKey) {
-    var filter = config[configKey];
-
-    if (filter.rules) {
-      // Get all rules found in the query string.
-      var matches = filter.rules.filter(function (rule) {
-        return query.hasOwnProperty(getUrlKey(configKey, rule.value));
-      });
-
-      if (matches.length) {
-        if (filter.allowMultiple) {
-          // If rules were found in the query string, and this filter supports
-          // multiple instances, add all matches to the active filters array.
-          matches.forEach(function (match) {
-            var value = query[getUrlKey(configKey, match.value)];
-            value.forEach(function (filterValue) {
-              activeFilters.push({
-                key: configKey,
-                rule: match.value,
-                value: filterValue
-              });
-            });
-          });
-        } else {
-          // If the filter is a single instance, just process the first rule match.
-          var value = query[getUrlKey(configKey, matches[0].value)];
-          activeFilters.push({
-            key: configKey,
-            rule: matches[0].value,
-            value: value
-          });
+    return Object.keys(config).reduce((activeFilters, configKey) => {
+        const filter = config[configKey];
+        if (filter.rules) {
+            // Get all rules found in the query string.
+            const matches = filter.rules.filter((rule) => query.hasOwnProperty(getUrlKey(configKey, rule.value)));
+            if (matches.length) {
+                if (filter.allowMultiple) {
+                    // If rules were found in the query string, and this filter supports
+                    // multiple instances, add all matches to the active filters array.
+                    matches.forEach((match) => {
+                        const value = query[getUrlKey(configKey, match.value)];
+                        value.forEach((filterValue) => {
+                            activeFilters.push({
+                                key: configKey,
+                                rule: match.value,
+                                value: filterValue,
+                            });
+                        });
+                    });
+                }
+                else {
+                    // If the filter is a single instance, just process the first rule match.
+                    const value = query[getUrlKey(configKey, matches[0].value)];
+                    activeFilters.push({
+                        key: configKey,
+                        rule: matches[0].value,
+                        value,
+                    });
+                }
+            }
         }
-      }
-    } else if (query[configKey]) {
-      // If the filter doesn't have rules, but allows multiples.
-      if (filter.allowMultiple) {
-        var _value = query[configKey];
-
-        _value.forEach(function (filterValue) {
-          activeFilters.push({
-            key: configKey,
-            value: filterValue
-          });
-        });
-      } else {
-        // Filter with no rules and only one instance.
-        activeFilters.push({
-          key: configKey,
-          value: query[configKey]
-        });
-      }
-    }
-
-    return activeFilters;
-  }, []);
+        else if (query[configKey]) {
+            // If the filter doesn't have rules, but allows multiples.
+            if (filter.allowMultiple) {
+                const value = query[configKey];
+                value.forEach((filterValue) => {
+                    activeFilters.push({
+                        key: configKey,
+                        value: filterValue,
+                    });
+                });
+            }
+            else {
+                // Filter with no rules and only one instance.
+                activeFilters.push({
+                    key: configKey,
+                    value: query[configKey],
+                });
+            }
+        }
+        return activeFilters;
+    }, []);
 }
+exports.getActiveFiltersFromQuery = getActiveFiltersFromQuery;
 /**
  * Get the default option's value from the configuration object for a given filter. The first
  * option is used as default if no `defaultOption` is provided.
@@ -19757,28 +18975,21 @@ function getActiveFiltersFromQuery(query, config) {
  * @param {Array} options - select options.
  * @return {string|undefined}  - the value of the default option.
  */
-
 function getDefaultOptionValue(config, options) {
-  var defaultOption = config.input.defaultOption;
-
-  if (config.input.defaultOption) {
-    var option = (0,lodash__WEBPACK_IMPORTED_MODULE_2__.find)(options, {
-      value: defaultOption
-    });
-
-    if (!option) {
-      /* eslint-disable no-console */
-      console.warn("invalid defaultOption ".concat(defaultOption, " supplied to ").concat(config.labels.add));
-      /* eslint-enable */
-
-      return undefined;
+    const { defaultOption } = config.input;
+    if (config.input.defaultOption) {
+        const option = lodash_1.find(options, { value: defaultOption });
+        if (!option) {
+            /* eslint-disable no-console */
+            console.warn(`invalid defaultOption ${defaultOption} supplied to ${config.labels.add}`);
+            /* eslint-enable */
+            return undefined;
+        }
+        return option.value;
     }
-
-    return option.value;
-  }
-
-  return (0,lodash__WEBPACK_IMPORTED_MODULE_2__.get)(options, [0, 'value']);
+    return lodash_1.get(options, [0, 'value']);
 }
+exports.getDefaultOptionValue = getDefaultOptionValue;
 /**
  * Given activeFilters, create a new query object to update the url. Use previousFilters to
  * Remove unused params.
@@ -19788,38 +18999,35 @@ function getDefaultOptionValue(config, options) {
  * @param {Object} config - config object
  * @return {Object} - query object representing the new parameters
  */
-
 function getQueryFromActiveFilters(activeFilters, query, config) {
-  var previousFilters = getActiveFiltersFromQuery(query, config);
-  var previousData = previousFilters.reduce(function (data, filter) {
-    data[getUrlKey(filter.key, filter.rule)] = undefined;
-    return data;
-  }, {});
-  var nextData = activeFilters.reduce(function (data, filter) {
-    if (filter.rule === 'between' && (!Array.isArray(filter.value) || filter.value.some(function (value) {
-      return !value;
-    }))) {
-      return data;
-    }
-
-    if (filter.value) {
-      var urlKey = getUrlKey(filter.key, filter.rule);
-
-      if (config[filter.key] && config[filter.key].allowMultiple) {
-        if (!data.hasOwnProperty(urlKey)) {
-          data[urlKey] = [];
+    const previousFilters = getActiveFiltersFromQuery(query, config);
+    const previousData = previousFilters.reduce((data, filter) => {
+        data[getUrlKey(filter.key, filter.rule)] = undefined;
+        return data;
+    }, {});
+    const nextData = activeFilters.reduce((data, filter) => {
+        if (filter.rule === 'between' &&
+            (!Array.isArray(filter.value) ||
+                filter.value.some((value) => !value))) {
+            return data;
         }
-
-        data[urlKey].push(filter.value);
-      } else {
-        data[urlKey] = filter.value;
-      }
-    }
-
-    return data;
-  }, {});
-  return _objectSpread(_objectSpread({}, previousData), nextData);
+        if (filter.value) {
+            const urlKey = getUrlKey(filter.key, filter.rule);
+            if (config[filter.key] && config[filter.key].allowMultiple) {
+                if (!data.hasOwnProperty(urlKey)) {
+                    data[urlKey] = [];
+                }
+                data[urlKey].push(filter.value);
+            }
+            else {
+                data[urlKey] = filter.value;
+            }
+        }
+        return data;
+    }, {});
+    return Object.assign(Object.assign({}, previousData), nextData);
 }
+exports.getQueryFromActiveFilters = getQueryFromActiveFilters;
 /**
  * Get the url query key from the filter key and rule.
  *
@@ -19827,46 +19035,34 @@ function getQueryFromActiveFilters(activeFilters, query, config) {
  * @param {string} rule - filter rule.
  * @return {string} - url query key.
  */
-
 function getUrlKey(key, rule) {
-  if (rule && rule.length) {
-    return "".concat(key, "_").concat(rule);
-  }
-
-  return key;
+    if (rule && rule.length) {
+        return `${key}_${rule}`;
+    }
+    return key;
 }
+exports.getUrlKey = getUrlKey;
 
 
 /***/ }),
 
-/***/ "./node_modules/@woocommerce/navigation/build-module/history.js":
-/*!**********************************************************************!*\
-  !*** ./node_modules/@woocommerce/navigation/build-module/history.js ***!
-  \**********************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ "./node_modules/@woocommerce/navigation/build/history.js":
+/*!***************************************************************!*\
+  !*** ./node_modules/@woocommerce/navigation/build/history.js ***!
+  \***************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   getHistory: () => (/* binding */ getHistory)
-/* harmony export */ });
-/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/defineProperty */ "./node_modules/@babel/runtime/helpers/esm/defineProperty.js");
-/* harmony import */ var history__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! history */ "./node_modules/history/esm/history.js");
-/* harmony import */ var qs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! qs */ "./node_modules/@woocommerce/navigation/node_modules/qs/lib/index.js");
-/* harmony import */ var qs__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(qs__WEBPACK_IMPORTED_MODULE_2__);
 
-
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__["default"])(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getHistory = void 0;
 /**
  * External dependencies
  */
-
- // See https://github.com/ReactTraining/react-router/blob/master/FAQ.md#how-do-i-access-the-history-object-outside-of-components
-
-var _history;
+const history_1 = __webpack_require__(/*! history */ "./node_modules/history/esm/history.js");
+const qs_1 = __webpack_require__(/*! qs */ "./node_modules/qs/lib/index.js");
+// See https://github.com/ReactTraining/react-router/blob/master/FAQ.md#how-do-i-access-the-history-object-outside-of-components
+let _history;
 /**
  * Recreate `history` to coerce React Router into accepting path arguments found in query
  * parameter `path`, allowing a url hash to be avoided. Since hash portions of the url are
@@ -19878,179 +19074,103 @@ var _history;
  *
  * @return {Object} React-router history object with `get location` modified.
  */
-
-
 function getHistory() {
-  if (!_history) {
-    var path = document.location.pathname;
-    var browserHistory = (0,history__WEBPACK_IMPORTED_MODULE_1__.createBrowserHistory)({
-      basename: path.substring(0, path.lastIndexOf('/'))
-    });
-    _history = {
-      get length() {
-        return browserHistory.length;
-      },
-
-      get action() {
-        return browserHistory.action;
-      },
-
-      get location() {
-        var location = browserHistory.location;
-        var query = (0,qs__WEBPACK_IMPORTED_MODULE_2__.parse)(location.search.substring(1));
-        var pathname = query.path || '/';
-        return _objectSpread(_objectSpread({}, location), {}, {
-          pathname: pathname
+    if (!_history) {
+        const path = document.location.pathname;
+        const browserHistory = history_1.createBrowserHistory({
+            basename: path.substring(0, path.lastIndexOf('/')),
         });
-      },
-
-      createHref: function createHref() {
-        for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-          args[_key] = arguments[_key];
-        }
-
-        return browserHistory.createHref.apply(browserHistory, args);
-      },
-      push: function push() {
-        for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-          args[_key2] = arguments[_key2];
-        }
-
-        return browserHistory.push.apply(browserHistory, args);
-      },
-      replace: function replace() {
-        for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-          args[_key3] = arguments[_key3];
-        }
-
-        return browserHistory.replace.apply(browserHistory, args);
-      },
-      go: function go() {
-        for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
-          args[_key4] = arguments[_key4];
-        }
-
-        return browserHistory.go.apply(browserHistory, args);
-      },
-      goBack: function goBack() {
-        for (var _len5 = arguments.length, args = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
-          args[_key5] = arguments[_key5];
-        }
-
-        return browserHistory.goBack.apply(browserHistory, args);
-      },
-      goForward: function goForward() {
-        for (var _len6 = arguments.length, args = new Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
-          args[_key6] = arguments[_key6];
-        }
-
-        return browserHistory.goForward.apply(browserHistory, args);
-      },
-      block: function block() {
-        for (var _len7 = arguments.length, args = new Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {
-          args[_key7] = arguments[_key7];
-        }
-
-        return browserHistory.block.apply(browserHistory, args);
-      },
-      listen: function listen(listener) {
-        var _this = this;
-
-        return browserHistory.listen(function () {
-          listener(_this.location, _this.action);
-        });
-      }
-    };
-  }
-
-  return _history;
+        _history = {
+            get length() {
+                return browserHistory.length;
+            },
+            get action() {
+                return browserHistory.action;
+            },
+            get location() {
+                const { location } = browserHistory;
+                const query = qs_1.parse(location.search.substring(1));
+                const pathname = query.path || '/';
+                return Object.assign(Object.assign({}, location), { pathname });
+            },
+            createHref: (...args) => browserHistory.createHref.apply(browserHistory, args),
+            push: (...args) => browserHistory.push.apply(browserHistory, args),
+            replace: (...args) => browserHistory.replace.apply(browserHistory, args),
+            go: (...args) => browserHistory.go.apply(browserHistory, args),
+            goBack: (...args) => browserHistory.goBack.apply(browserHistory, args),
+            goForward: (...args) => browserHistory.goForward.apply(browserHistory, args),
+            block: (...args) => browserHistory.block.apply(browserHistory, args),
+            listen(listener) {
+                return browserHistory.listen(() => {
+                    listener(this.location, this.action);
+                });
+            },
+        };
+    }
+    return _history;
 }
-
-
+exports.getHistory = getHistory;
 
 
 /***/ }),
 
-/***/ "./node_modules/@woocommerce/navigation/build-module/index.js":
-/*!********************************************************************!*\
-  !*** ./node_modules/@woocommerce/navigation/build-module/index.js ***!
-  \********************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ "./node_modules/@woocommerce/navigation/build/index.js":
+/*!*************************************************************!*\
+  !*** ./node_modules/@woocommerce/navigation/build/index.js ***!
+  \*************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   NavSlotFillProvider: () => (/* binding */ NavSlotFillProvider),
-/* harmony export */   WooNavigationItem: () => (/* binding */ WooNavigationItem),
-/* harmony export */   flattenFilters: () => (/* reexport safe */ _filters__WEBPACK_IMPORTED_MODULE_10__.flattenFilters),
-/* harmony export */   getActiveFiltersFromQuery: () => (/* reexport safe */ _filters__WEBPACK_IMPORTED_MODULE_10__.getActiveFiltersFromQuery),
-/* harmony export */   getDefaultOptionValue: () => (/* reexport safe */ _filters__WEBPACK_IMPORTED_MODULE_10__.getDefaultOptionValue),
-/* harmony export */   getHistory: () => (/* reexport safe */ _history__WEBPACK_IMPORTED_MODULE_8__.getHistory),
-/* harmony export */   getIdsFromQuery: () => (/* binding */ getIdsFromQuery),
-/* harmony export */   getNewPath: () => (/* binding */ getNewPath),
-/* harmony export */   getPath: () => (/* binding */ getPath),
-/* harmony export */   getPersistedQuery: () => (/* binding */ getPersistedQuery),
-/* harmony export */   getQuery: () => (/* binding */ getQuery),
-/* harmony export */   getQueryFromActiveFilters: () => (/* reexport safe */ _filters__WEBPACK_IMPORTED_MODULE_10__.getQueryFromActiveFilters),
-/* harmony export */   getSearchWords: () => (/* binding */ getSearchWords),
-/* harmony export */   getUrlKey: () => (/* reexport safe */ _filters__WEBPACK_IMPORTED_MODULE_10__.getUrlKey),
-/* harmony export */   onQueryChange: () => (/* binding */ onQueryChange),
-/* harmony export */   updateQueryString: () => (/* binding */ updateQueryString),
-/* harmony export */   useNavSlot: () => (/* binding */ useNavSlot)
-/* harmony export */ });
-/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/defineProperty */ "./node_modules/@babel/runtime/helpers/esm/defineProperty.js");
-/* harmony import */ var _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/typeof */ "./node_modules/@babel/runtime/helpers/esm/typeof.js");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _wordpress_url__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/url */ "@wordpress/url");
-/* harmony import */ var _wordpress_url__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_url__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var qs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! qs */ "./node_modules/@woocommerce/navigation/node_modules/qs/lib/index.js");
-/* harmony import */ var qs__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(qs__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! lodash */ "lodash");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _wordpress_hooks__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/hooks */ "@wordpress/hooks");
-/* harmony import */ var _wordpress_hooks__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_wordpress_hooks__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _history__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./history */ "./node_modules/@woocommerce/navigation/build-module/history.js");
-/* harmony import */ var _index__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./index */ "./node_modules/@woocommerce/navigation/build-module/index.js");
-/* harmony import */ var _filters__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./filters */ "./node_modules/@woocommerce/navigation/build-module/filters.js");
 
-
-
-
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__["default"])(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.WooNavigationItem = exports.addHistoryListener = exports.updateQueryString = exports.onQueryChange = exports.getQuery = exports.getNewPath = exports.getSearchWords = exports.getSetOfIdsFromQuery = exports.getIdsFromQuery = exports.getScreenFromPath = exports.pathIsExcluded = exports.getQueryExcludedScreens = exports.getPersistedQuery = exports.getPath = exports.getHistory = void 0;
 /**
  * External dependencies
  */
-
-
-
-
-
+const element_1 = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+const url_1 = __webpack_require__(/*! @wordpress/url */ "@wordpress/url");
+const qs_1 = __webpack_require__(/*! qs */ "./node_modules/qs/lib/index.js");
+const lodash_1 = __webpack_require__(/*! lodash */ "lodash");
+const hooks_1 = __webpack_require__(/*! @wordpress/hooks */ "@wordpress/hooks");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /**
  * Internal dependencies
  */
-
-
- // For the above, import the module into itself. Functions consumed from this import can be mocked in tests.
-// Expose history so all uses get the same history object.
-
- // Export all filter utilities
-
-
+const history_1 = __webpack_require__(/*! ./history */ "./node_modules/@woocommerce/navigation/build/history.js");
+Object.defineProperty(exports, "getHistory", ({ enumerable: true, get: function () { return history_1.getHistory; } }));
+const navUtils = __importStar(__webpack_require__(/*! ./index */ "./node_modules/@woocommerce/navigation/build/index.js"));
+// Export all filter utilities
+__exportStar(__webpack_require__(/*! ./filters */ "./node_modules/@woocommerce/navigation/build/filters.js"), exports);
+const TIME_EXCLUDED_SCREENS_FILTER = 'woocommerce_admin_time_excluded_screens';
 /**
  * Get the current path from history.
  *
  * @return {string}  Current path.
  */
-
-var getPath = function getPath() {
-  return (0,_history__WEBPACK_IMPORTED_MODULE_8__.getHistory)().location.pathname;
-};
+const getPath = () => history_1.getHistory().location.pathname;
+exports.getPath = getPath;
 /**
  * Gets query parameters that should persist between screens or updates
  * to reports, such as filtering.
@@ -20058,91 +19178,127 @@ var getPath = function getPath() {
  * @param {Object} query Query containing the parameters.
  * @return {Object} Object containing the persisted queries.
  */
-
-var getPersistedQuery = function getPersistedQuery() {
-  var query = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _index__WEBPACK_IMPORTED_MODULE_9__.getQuery();
-  var params = (0,_wordpress_hooks__WEBPACK_IMPORTED_MODULE_6__.applyFilters)('woocommerce_admin_persisted_queries', ['period', 'compare', 'before', 'after', 'interval', 'type']);
-  return (0,lodash__WEBPACK_IMPORTED_MODULE_5__.pick)(query, params);
+const getPersistedQuery = (query = navUtils.getQuery()) => {
+    const params = hooks_1.applyFilters('woocommerce_admin_persisted_queries', [
+        'period',
+        'compare',
+        'before',
+        'after',
+        'interval',
+        'type',
+    ]);
+    return lodash_1.pick(query, params);
 };
+exports.getPersistedQuery = getPersistedQuery;
+/**
+ * Get array of screens that should ignore persisted queries
+ *
+ * @return {Array} Array containing list of screens
+ */
+const getQueryExcludedScreens = () => hooks_1.applyFilters(TIME_EXCLUDED_SCREENS_FILTER, [
+    'stock',
+    'settings',
+    'customers',
+    'homescreen',
+]);
+exports.getQueryExcludedScreens = getQueryExcludedScreens;
+/**
+ * Given a path, return whether it is an excluded screen
+ *
+ * @param {Object} path Path to check
+ *
+ * @return {boolean} Boolean representing whether path is excluded
+ */
+const pathIsExcluded = (path) => exports.getQueryExcludedScreens().includes(exports.getScreenFromPath(path));
+exports.pathIsExcluded = pathIsExcluded;
+/**
+ * Retrieve a string 'name' representing the current screen
+ *
+ * @param {Object} path Path to resolve, default to current
+ * @return {string} Screen name
+ */
+const getScreenFromPath = (path = exports.getPath()) => {
+    return path === '/'
+        ? 'homescreen'
+        : path.replace('/analytics', '').replace('/', '');
+};
+exports.getScreenFromPath = getScreenFromPath;
 /**
  * Get an array of IDs from a comma-separated query parameter.
  *
- * @param {string} queryString string value extracted from URL.
- * @return {Array} List of IDs converted to numbers.
+ * @param {string} [queryString=''] string value extracted from URL.
+ * @return {Array<number>} List of IDs converted to an array of unique integers.
  */
-
-function getIdsFromQuery() {
-  var queryString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
-  return (0,lodash__WEBPACK_IMPORTED_MODULE_5__.uniq)(queryString.split(',').map(function (id) {
-    return parseInt(id, 10);
-  }).filter(Boolean));
+function getIdsFromQuery(queryString = '') {
+    return [...getSetOfIdsFromQuery(queryString)];
 }
+exports.getIdsFromQuery = getIdsFromQuery;
+/**
+ * Get an array of IDs from a comma-separated query parameter.
+ *
+ * @param {string} [queryString=''] string value extracted from URL.
+ * @return {Set<number>} List of IDs converted to a set of integers.
+ */
+function getSetOfIdsFromQuery(queryString = '') {
+    return new Set(// Return only unique ids.
+    queryString
+        .split(',')
+        .map((id) => parseInt(id, 10))
+        .filter((id) => !isNaN(id)));
+}
+exports.getSetOfIdsFromQuery = getSetOfIdsFromQuery;
 /**
  * Get an array of searched words given a query.
  *
  * @param {Object} query Query object.
  * @return {Array} List of search words.
  */
-
-function getSearchWords() {
-  var query = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _index__WEBPACK_IMPORTED_MODULE_9__.getQuery();
-
-  if ((0,_babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_1__["default"])(query) !== 'object') {
-    throw new Error('Invalid parameter passed to getSearchWords, it expects an object or no parameters.');
-  }
-
-  var search = query.search;
-
-  if (!search) {
-    return [];
-  }
-
-  if (typeof search !== 'string') {
-    throw new Error("Invalid 'search' type. getSearchWords expects query's 'search' property to be a string.");
-  }
-
-  return search.split(',').map(function (searchWord) {
-    return searchWord.replace('%2C', ',');
-  });
+function getSearchWords(query = navUtils.getQuery()) {
+    if (typeof query !== 'object') {
+        throw new Error('Invalid parameter passed to getSearchWords, it expects an object or no parameters.');
+    }
+    const { search } = query;
+    if (!search) {
+        return [];
+    }
+    if (typeof search !== 'string') {
+        throw new Error("Invalid 'search' type. getSearchWords expects query's 'search' property to be a string.");
+    }
+    return search
+        .split(',')
+        .map((searchWord) => searchWord.replace('%2C', ','));
 }
+exports.getSearchWords = getSearchWords;
 /**
  * Return a URL with set query parameters.
  *
  * @param {Object} query object of params to be updated.
  * @param {string} path Relative path (defaults to current path).
  * @param {Object} currentQuery object of current query params (defaults to current querystring).
+ * @param {string} page Page key (defaults to "wc-admin")
  * @return {string}  Updated URL merging query params into existing params.
  */
-
-function getNewPath(query) {
-  var path = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : getPath();
-  var currentQuery = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : getQuery();
-
-  var args = _objectSpread(_objectSpread({
-    page: 'wc-admin'
-  }, currentQuery), query);
-
-  if (path !== '/') {
-    args.path = path;
-  }
-
-  return (0,_wordpress_url__WEBPACK_IMPORTED_MODULE_3__.addQueryArgs)('admin.php', args);
+function getNewPath(query, path = exports.getPath(), currentQuery = getQuery(), page = 'wc-admin') {
+    const args = Object.assign(Object.assign({ page }, currentQuery), query);
+    if (path !== '/') {
+        args.path = path;
+    }
+    return url_1.addQueryArgs('admin.php', args);
 }
+exports.getNewPath = getNewPath;
 /**
  * Get the current query string, parsed into an object, from history.
  *
  * @return {Object}  Current query object, defaults to empty object.
  */
-
 function getQuery() {
-  var search = (0,_history__WEBPACK_IMPORTED_MODULE_8__.getHistory)().location.search;
-
-  if (search.length) {
-    return (0,qs__WEBPACK_IMPORTED_MODULE_4__.parse)(search.substring(1)) || {};
-  }
-
-  return {};
+    const search = history_1.getHistory().location.search;
+    if (search.length) {
+        return qs_1.parse(search.substring(1)) || {};
+    }
+    return {};
 }
+exports.getQuery = getQuery;
 /**
  * This function returns an event handler for the given `param`
  *
@@ -20151,967 +19307,96 @@ function getQuery() {
  * @param {string} query object of current query params (defaults to current querystring).
  * @return {Function} A callback which will update `param` to the passed value when called.
  */
-
-function onQueryChange(param) {
-  var path = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : getPath();
-  var query = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : getQuery();
-
-  switch (param) {
-    case 'sort':
-      return function (key, dir) {
-        return updateQueryString({
-          orderby: key,
-          order: dir
-        }, path, query);
-      };
-
-    case 'compare':
-      return function (key, queryParam, ids) {
-        var _updateQueryString;
-
-        return updateQueryString((_updateQueryString = {}, (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__["default"])(_updateQueryString, queryParam, "compare-".concat(key)), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__["default"])(_updateQueryString, key, ids), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__["default"])(_updateQueryString, "search", undefined), _updateQueryString), path, query);
-      };
-
-    default:
-      return function (value) {
-        return updateQueryString((0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__["default"])({}, param, value), path, query);
-      };
-  }
+function onQueryChange(param, path = exports.getPath(), query = getQuery()) {
+    switch (param) {
+        case 'sort':
+            return (key, dir) => updateQueryString({ orderby: key, order: dir }, path, query);
+        case 'compare':
+            return (key, queryParam, ids) => updateQueryString({
+                [queryParam]: `compare-${key}`,
+                [key]: ids,
+                search: undefined,
+            }, path, query);
+        default:
+            return (value) => updateQueryString({ [param]: value }, path, query);
+    }
 }
+exports.onQueryChange = onQueryChange;
 /**
  * Updates the query parameters of the current page.
  *
  * @param {Object} query object of params to be updated.
  * @param {string} path Relative path (defaults to current path).
  * @param {Object} currentQuery object of current query params (defaults to current querystring).
+ * @param {string} page Page key (defaults to "wc-admin")
  */
-
-function updateQueryString(query) {
-  var path = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : getPath();
-  var currentQuery = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : getQuery();
-  var newPath = getNewPath(query, path, currentQuery);
-  (0,_history__WEBPACK_IMPORTED_MODULE_8__.getHistory)().push(newPath);
+function updateQueryString(query, path = exports.getPath(), currentQuery = getQuery(), page = 'wc-admin') {
+    const newPath = getNewPath(query, path, currentQuery, page);
+    history_1.getHistory().push(newPath);
 }
+exports.updateQueryString = updateQueryString;
+/**
+ * Adds a listener that runs on history change.
+ *
+ * @param {Function} listener Listener to add on history change.
+ * @return {Function} Function to remove listeners.
+ */
+const addHistoryListener = (listener) => {
+    // Monkey patch pushState to allow trigger the pushstate event listener.
+    if (window.wcNavigation && !window.wcNavigation.historyPatched) {
+        ((history) => {
+            /* global CustomEvent */
+            const pushState = history.pushState;
+            const replaceState = history.replaceState;
+            history.pushState = function (state) {
+                const pushStateEvent = new CustomEvent('pushstate', {
+                    state,
+                });
+                window.dispatchEvent(pushStateEvent);
+                return pushState.apply(history, arguments);
+            };
+            history.replaceState = function (state) {
+                const replaceStateEvent = new CustomEvent('replacestate', {
+                    state,
+                });
+                window.dispatchEvent(replaceStateEvent);
+                return replaceState.apply(history, arguments);
+            };
+            window.wcNavigation.historyPatched = true;
+        })(window.history);
+    }
+    window.addEventListener('popstate', listener);
+    window.addEventListener('pushstate', listener);
+    window.addEventListener('replacestate', listener);
+    return () => {
+        window.removeEventListener('popstate', listener);
+        window.removeEventListener('pushstate', listener);
+        window.removeEventListener('replacestate', listener);
+    };
+};
+exports.addHistoryListener = addHistoryListener;
 /**
  * Create a Fill for extensions to add client facing custom Navigation Items.
  *
+ * @slotFill WooNavigationItem
+ * @example
+ * const MyExtenstionNavItem = () => (
+ * 	<WooNavigationItem item="my-extension">My Extension</WooNavigationItem>
+ * );
+ *
+ * registerPlugin( 'my-extension', {
+ * 	render: MyExtenstionNavItem,
+ * 	scope: 'woocommerce-admin',
+ * } );
  * @param {Object} param0
  * @param {Array} param0.children - Node children.
  * @param {string} param0.item - Navigation item slug.
  */
-
-var WooNavigationItem = function WooNavigationItem(_ref) {
-  var children = _ref.children,
-      item = _ref.item;
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Fill, {
-    name: 'woocommerce_navigation_' + item
-  }, children);
+const WooNavigationItem = ({ children, item }) => {
+    return element_1.createElement(components_1.Fill, { name: 'woocommerce_navigation_' + item }, children);
 };
-
-WooNavigationItem.Slot = function (_ref2) {
-  var name = _ref2.name;
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Slot, {
-    name: 'woocommerce_navigation_' + name
-  });
-};
-/**
- * Export @wordpress/components SlotFillProvider so that Slots, Fills, and useSlot
- * have access to the same context.
- *
- * This is a workaround because components exported from this package do not have
- * the same `context` as those created in the /client folder. This problem is due
- * to WC Admin bundling @wordpress/components instead of enqueuing and using
- * wp.components from the window.
- *
- * @param {Object} param0
- * @param {Array} param0.children - Node children.
- */
-
-
-var NavSlotFillProvider = function NavSlotFillProvider(_ref3) {
-  var children = _ref3.children;
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.SlotFillProvider, null, children);
-};
-/**
- * Similar to NavSlotFillProvider above, this is a workaround because components
- * exported from this package do not have the same `context` as those created
- * in the /client folder. This problem is due to WC Admin bundling @wordpress/components
- * instead of enqueuing and using wp.components from the window.
- *
- * @param {string} name - slot name.
- */
-
-var useNavSlot = function useNavSlot(name) {
-  return (0,_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.__experimentalUseSlot)(name);
-};
-
-
-/***/ }),
-
-/***/ "./node_modules/@woocommerce/navigation/node_modules/qs/lib/formats.js":
-/*!*****************************************************************************!*\
-  !*** ./node_modules/@woocommerce/navigation/node_modules/qs/lib/formats.js ***!
-  \*****************************************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-"use strict";
-
-
-var replace = String.prototype.replace;
-var percentTwenties = /%20/g;
-
-var util = __webpack_require__(/*! ./utils */ "./node_modules/@woocommerce/navigation/node_modules/qs/lib/utils.js");
-
-var Format = {
-    RFC1738: 'RFC1738',
-    RFC3986: 'RFC3986'
-};
-
-module.exports = util.assign(
-    {
-        'default': Format.RFC3986,
-        formatters: {
-            RFC1738: function (value) {
-                return replace.call(value, percentTwenties, '+');
-            },
-            RFC3986: function (value) {
-                return String(value);
-            }
-        }
-    },
-    Format
-);
-
-
-/***/ }),
-
-/***/ "./node_modules/@woocommerce/navigation/node_modules/qs/lib/index.js":
-/*!***************************************************************************!*\
-  !*** ./node_modules/@woocommerce/navigation/node_modules/qs/lib/index.js ***!
-  \***************************************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-"use strict";
-
-
-var stringify = __webpack_require__(/*! ./stringify */ "./node_modules/@woocommerce/navigation/node_modules/qs/lib/stringify.js");
-var parse = __webpack_require__(/*! ./parse */ "./node_modules/@woocommerce/navigation/node_modules/qs/lib/parse.js");
-var formats = __webpack_require__(/*! ./formats */ "./node_modules/@woocommerce/navigation/node_modules/qs/lib/formats.js");
-
-module.exports = {
-    formats: formats,
-    parse: parse,
-    stringify: stringify
-};
-
-
-/***/ }),
-
-/***/ "./node_modules/@woocommerce/navigation/node_modules/qs/lib/parse.js":
-/*!***************************************************************************!*\
-  !*** ./node_modules/@woocommerce/navigation/node_modules/qs/lib/parse.js ***!
-  \***************************************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-"use strict";
-
-
-var utils = __webpack_require__(/*! ./utils */ "./node_modules/@woocommerce/navigation/node_modules/qs/lib/utils.js");
-
-var has = Object.prototype.hasOwnProperty;
-var isArray = Array.isArray;
-
-var defaults = {
-    allowDots: false,
-    allowPrototypes: false,
-    arrayLimit: 20,
-    charset: 'utf-8',
-    charsetSentinel: false,
-    comma: false,
-    decoder: utils.decode,
-    delimiter: '&',
-    depth: 5,
-    ignoreQueryPrefix: false,
-    interpretNumericEntities: false,
-    parameterLimit: 1000,
-    parseArrays: true,
-    plainObjects: false,
-    strictNullHandling: false
-};
-
-var interpretNumericEntities = function (str) {
-    return str.replace(/&#(\d+);/g, function ($0, numberStr) {
-        return String.fromCharCode(parseInt(numberStr, 10));
-    });
-};
-
-var parseArrayValue = function (val, options) {
-    if (val && typeof val === 'string' && options.comma && val.indexOf(',') > -1) {
-        return val.split(',');
-    }
-
-    return val;
-};
-
-// This is what browsers will submit when the ✓ character occurs in an
-// application/x-www-form-urlencoded body and the encoding of the page containing
-// the form is iso-8859-1, or when the submitted form has an accept-charset
-// attribute of iso-8859-1. Presumably also with other charsets that do not contain
-// the ✓ character, such as us-ascii.
-var isoSentinel = 'utf8=%26%2310003%3B'; // encodeURIComponent('&#10003;')
-
-// These are the percent-encoded utf-8 octets representing a checkmark, indicating that the request actually is utf-8 encoded.
-var charsetSentinel = 'utf8=%E2%9C%93'; // encodeURIComponent('✓')
-
-var parseValues = function parseQueryStringValues(str, options) {
-    var obj = {};
-    var cleanStr = options.ignoreQueryPrefix ? str.replace(/^\?/, '') : str;
-    var limit = options.parameterLimit === Infinity ? undefined : options.parameterLimit;
-    var parts = cleanStr.split(options.delimiter, limit);
-    var skipIndex = -1; // Keep track of where the utf8 sentinel was found
-    var i;
-
-    var charset = options.charset;
-    if (options.charsetSentinel) {
-        for (i = 0; i < parts.length; ++i) {
-            if (parts[i].indexOf('utf8=') === 0) {
-                if (parts[i] === charsetSentinel) {
-                    charset = 'utf-8';
-                } else if (parts[i] === isoSentinel) {
-                    charset = 'iso-8859-1';
-                }
-                skipIndex = i;
-                i = parts.length; // The eslint settings do not allow break;
-            }
-        }
-    }
-
-    for (i = 0; i < parts.length; ++i) {
-        if (i === skipIndex) {
-            continue;
-        }
-        var part = parts[i];
-
-        var bracketEqualsPos = part.indexOf(']=');
-        var pos = bracketEqualsPos === -1 ? part.indexOf('=') : bracketEqualsPos + 1;
-
-        var key, val;
-        if (pos === -1) {
-            key = options.decoder(part, defaults.decoder, charset, 'key');
-            val = options.strictNullHandling ? null : '';
-        } else {
-            key = options.decoder(part.slice(0, pos), defaults.decoder, charset, 'key');
-            val = utils.maybeMap(
-                parseArrayValue(part.slice(pos + 1), options),
-                function (encodedVal) {
-                    return options.decoder(encodedVal, defaults.decoder, charset, 'value');
-                }
-            );
-        }
-
-        if (val && options.interpretNumericEntities && charset === 'iso-8859-1') {
-            val = interpretNumericEntities(val);
-        }
-
-        if (part.indexOf('[]=') > -1) {
-            val = isArray(val) ? [val] : val;
-        }
-
-        if (has.call(obj, key)) {
-            obj[key] = utils.combine(obj[key], val);
-        } else {
-            obj[key] = val;
-        }
-    }
-
-    return obj;
-};
-
-var parseObject = function (chain, val, options, valuesParsed) {
-    var leaf = valuesParsed ? val : parseArrayValue(val, options);
-
-    for (var i = chain.length - 1; i >= 0; --i) {
-        var obj;
-        var root = chain[i];
-
-        if (root === '[]' && options.parseArrays) {
-            obj = [].concat(leaf);
-        } else {
-            obj = options.plainObjects ? Object.create(null) : {};
-            var cleanRoot = root.charAt(0) === '[' && root.charAt(root.length - 1) === ']' ? root.slice(1, -1) : root;
-            var index = parseInt(cleanRoot, 10);
-            if (!options.parseArrays && cleanRoot === '') {
-                obj = { 0: leaf };
-            } else if (
-                !isNaN(index)
-                && root !== cleanRoot
-                && String(index) === cleanRoot
-                && index >= 0
-                && (options.parseArrays && index <= options.arrayLimit)
-            ) {
-                obj = [];
-                obj[index] = leaf;
-            } else {
-                obj[cleanRoot] = leaf;
-            }
-        }
-
-        leaf = obj; // eslint-disable-line no-param-reassign
-    }
-
-    return leaf;
-};
-
-var parseKeys = function parseQueryStringKeys(givenKey, val, options, valuesParsed) {
-    if (!givenKey) {
-        return;
-    }
-
-    // Transform dot notation to bracket notation
-    var key = options.allowDots ? givenKey.replace(/\.([^.[]+)/g, '[$1]') : givenKey;
-
-    // The regex chunks
-
-    var brackets = /(\[[^[\]]*])/;
-    var child = /(\[[^[\]]*])/g;
-
-    // Get the parent
-
-    var segment = options.depth > 0 && brackets.exec(key);
-    var parent = segment ? key.slice(0, segment.index) : key;
-
-    // Stash the parent if it exists
-
-    var keys = [];
-    if (parent) {
-        // If we aren't using plain objects, optionally prefix keys that would overwrite object prototype properties
-        if (!options.plainObjects && has.call(Object.prototype, parent)) {
-            if (!options.allowPrototypes) {
-                return;
-            }
-        }
-
-        keys.push(parent);
-    }
-
-    // Loop through children appending to the array until we hit depth
-
-    var i = 0;
-    while (options.depth > 0 && (segment = child.exec(key)) !== null && i < options.depth) {
-        i += 1;
-        if (!options.plainObjects && has.call(Object.prototype, segment[1].slice(1, -1))) {
-            if (!options.allowPrototypes) {
-                return;
-            }
-        }
-        keys.push(segment[1]);
-    }
-
-    // If there's a remainder, just add whatever is left
-
-    if (segment) {
-        keys.push('[' + key.slice(segment.index) + ']');
-    }
-
-    return parseObject(keys, val, options, valuesParsed);
-};
-
-var normalizeParseOptions = function normalizeParseOptions(opts) {
-    if (!opts) {
-        return defaults;
-    }
-
-    if (opts.decoder !== null && opts.decoder !== undefined && typeof opts.decoder !== 'function') {
-        throw new TypeError('Decoder has to be a function.');
-    }
-
-    if (typeof opts.charset !== 'undefined' && opts.charset !== 'utf-8' && opts.charset !== 'iso-8859-1') {
-        throw new TypeError('The charset option must be either utf-8, iso-8859-1, or undefined');
-    }
-    var charset = typeof opts.charset === 'undefined' ? defaults.charset : opts.charset;
-
-    return {
-        allowDots: typeof opts.allowDots === 'undefined' ? defaults.allowDots : !!opts.allowDots,
-        allowPrototypes: typeof opts.allowPrototypes === 'boolean' ? opts.allowPrototypes : defaults.allowPrototypes,
-        arrayLimit: typeof opts.arrayLimit === 'number' ? opts.arrayLimit : defaults.arrayLimit,
-        charset: charset,
-        charsetSentinel: typeof opts.charsetSentinel === 'boolean' ? opts.charsetSentinel : defaults.charsetSentinel,
-        comma: typeof opts.comma === 'boolean' ? opts.comma : defaults.comma,
-        decoder: typeof opts.decoder === 'function' ? opts.decoder : defaults.decoder,
-        delimiter: typeof opts.delimiter === 'string' || utils.isRegExp(opts.delimiter) ? opts.delimiter : defaults.delimiter,
-        // eslint-disable-next-line no-implicit-coercion, no-extra-parens
-        depth: (typeof opts.depth === 'number' || opts.depth === false) ? +opts.depth : defaults.depth,
-        ignoreQueryPrefix: opts.ignoreQueryPrefix === true,
-        interpretNumericEntities: typeof opts.interpretNumericEntities === 'boolean' ? opts.interpretNumericEntities : defaults.interpretNumericEntities,
-        parameterLimit: typeof opts.parameterLimit === 'number' ? opts.parameterLimit : defaults.parameterLimit,
-        parseArrays: opts.parseArrays !== false,
-        plainObjects: typeof opts.plainObjects === 'boolean' ? opts.plainObjects : defaults.plainObjects,
-        strictNullHandling: typeof opts.strictNullHandling === 'boolean' ? opts.strictNullHandling : defaults.strictNullHandling
-    };
-};
-
-module.exports = function (str, opts) {
-    var options = normalizeParseOptions(opts);
-
-    if (str === '' || str === null || typeof str === 'undefined') {
-        return options.plainObjects ? Object.create(null) : {};
-    }
-
-    var tempObj = typeof str === 'string' ? parseValues(str, options) : str;
-    var obj = options.plainObjects ? Object.create(null) : {};
-
-    // Iterate over the keys and setup the new object
-
-    var keys = Object.keys(tempObj);
-    for (var i = 0; i < keys.length; ++i) {
-        var key = keys[i];
-        var newObj = parseKeys(key, tempObj[key], options, typeof str === 'string');
-        obj = utils.merge(obj, newObj, options);
-    }
-
-    return utils.compact(obj);
-};
-
-
-/***/ }),
-
-/***/ "./node_modules/@woocommerce/navigation/node_modules/qs/lib/stringify.js":
-/*!*******************************************************************************!*\
-  !*** ./node_modules/@woocommerce/navigation/node_modules/qs/lib/stringify.js ***!
-  \*******************************************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-"use strict";
-
-
-var utils = __webpack_require__(/*! ./utils */ "./node_modules/@woocommerce/navigation/node_modules/qs/lib/utils.js");
-var formats = __webpack_require__(/*! ./formats */ "./node_modules/@woocommerce/navigation/node_modules/qs/lib/formats.js");
-var has = Object.prototype.hasOwnProperty;
-
-var arrayPrefixGenerators = {
-    brackets: function brackets(prefix) {
-        return prefix + '[]';
-    },
-    comma: 'comma',
-    indices: function indices(prefix, key) {
-        return prefix + '[' + key + ']';
-    },
-    repeat: function repeat(prefix) {
-        return prefix;
-    }
-};
-
-var isArray = Array.isArray;
-var push = Array.prototype.push;
-var pushToArray = function (arr, valueOrArray) {
-    push.apply(arr, isArray(valueOrArray) ? valueOrArray : [valueOrArray]);
-};
-
-var toISO = Date.prototype.toISOString;
-
-var defaultFormat = formats['default'];
-var defaults = {
-    addQueryPrefix: false,
-    allowDots: false,
-    charset: 'utf-8',
-    charsetSentinel: false,
-    delimiter: '&',
-    encode: true,
-    encoder: utils.encode,
-    encodeValuesOnly: false,
-    format: defaultFormat,
-    formatter: formats.formatters[defaultFormat],
-    // deprecated
-    indices: false,
-    serializeDate: function serializeDate(date) {
-        return toISO.call(date);
-    },
-    skipNulls: false,
-    strictNullHandling: false
-};
-
-var isNonNullishPrimitive = function isNonNullishPrimitive(v) {
-    return typeof v === 'string'
-        || typeof v === 'number'
-        || typeof v === 'boolean'
-        || typeof v === 'symbol'
-        || typeof v === 'bigint';
-};
-
-var stringify = function stringify(
-    object,
-    prefix,
-    generateArrayPrefix,
-    strictNullHandling,
-    skipNulls,
-    encoder,
-    filter,
-    sort,
-    allowDots,
-    serializeDate,
-    formatter,
-    encodeValuesOnly,
-    charset
-) {
-    var obj = object;
-    if (typeof filter === 'function') {
-        obj = filter(prefix, obj);
-    } else if (obj instanceof Date) {
-        obj = serializeDate(obj);
-    } else if (generateArrayPrefix === 'comma' && isArray(obj)) {
-        obj = utils.maybeMap(obj, function (value) {
-            if (value instanceof Date) {
-                return serializeDate(value);
-            }
-            return value;
-        }).join(',');
-    }
-
-    if (obj === null) {
-        if (strictNullHandling) {
-            return encoder && !encodeValuesOnly ? encoder(prefix, defaults.encoder, charset, 'key') : prefix;
-        }
-
-        obj = '';
-    }
-
-    if (isNonNullishPrimitive(obj) || utils.isBuffer(obj)) {
-        if (encoder) {
-            var keyValue = encodeValuesOnly ? prefix : encoder(prefix, defaults.encoder, charset, 'key');
-            return [formatter(keyValue) + '=' + formatter(encoder(obj, defaults.encoder, charset, 'value'))];
-        }
-        return [formatter(prefix) + '=' + formatter(String(obj))];
-    }
-
-    var values = [];
-
-    if (typeof obj === 'undefined') {
-        return values;
-    }
-
-    var objKeys;
-    if (isArray(filter)) {
-        objKeys = filter;
-    } else {
-        var keys = Object.keys(obj);
-        objKeys = sort ? keys.sort(sort) : keys;
-    }
-
-    for (var i = 0; i < objKeys.length; ++i) {
-        var key = objKeys[i];
-        var value = obj[key];
-
-        if (skipNulls && value === null) {
-            continue;
-        }
-
-        var keyPrefix = isArray(obj)
-            ? typeof generateArrayPrefix === 'function' ? generateArrayPrefix(prefix, key) : prefix
-            : prefix + (allowDots ? '.' + key : '[' + key + ']');
-
-        pushToArray(values, stringify(
-            value,
-            keyPrefix,
-            generateArrayPrefix,
-            strictNullHandling,
-            skipNulls,
-            encoder,
-            filter,
-            sort,
-            allowDots,
-            serializeDate,
-            formatter,
-            encodeValuesOnly,
-            charset
-        ));
-    }
-
-    return values;
-};
-
-var normalizeStringifyOptions = function normalizeStringifyOptions(opts) {
-    if (!opts) {
-        return defaults;
-    }
-
-    if (opts.encoder !== null && opts.encoder !== undefined && typeof opts.encoder !== 'function') {
-        throw new TypeError('Encoder has to be a function.');
-    }
-
-    var charset = opts.charset || defaults.charset;
-    if (typeof opts.charset !== 'undefined' && opts.charset !== 'utf-8' && opts.charset !== 'iso-8859-1') {
-        throw new TypeError('The charset option must be either utf-8, iso-8859-1, or undefined');
-    }
-
-    var format = formats['default'];
-    if (typeof opts.format !== 'undefined') {
-        if (!has.call(formats.formatters, opts.format)) {
-            throw new TypeError('Unknown format option provided.');
-        }
-        format = opts.format;
-    }
-    var formatter = formats.formatters[format];
-
-    var filter = defaults.filter;
-    if (typeof opts.filter === 'function' || isArray(opts.filter)) {
-        filter = opts.filter;
-    }
-
-    return {
-        addQueryPrefix: typeof opts.addQueryPrefix === 'boolean' ? opts.addQueryPrefix : defaults.addQueryPrefix,
-        allowDots: typeof opts.allowDots === 'undefined' ? defaults.allowDots : !!opts.allowDots,
-        charset: charset,
-        charsetSentinel: typeof opts.charsetSentinel === 'boolean' ? opts.charsetSentinel : defaults.charsetSentinel,
-        delimiter: typeof opts.delimiter === 'undefined' ? defaults.delimiter : opts.delimiter,
-        encode: typeof opts.encode === 'boolean' ? opts.encode : defaults.encode,
-        encoder: typeof opts.encoder === 'function' ? opts.encoder : defaults.encoder,
-        encodeValuesOnly: typeof opts.encodeValuesOnly === 'boolean' ? opts.encodeValuesOnly : defaults.encodeValuesOnly,
-        filter: filter,
-        formatter: formatter,
-        serializeDate: typeof opts.serializeDate === 'function' ? opts.serializeDate : defaults.serializeDate,
-        skipNulls: typeof opts.skipNulls === 'boolean' ? opts.skipNulls : defaults.skipNulls,
-        sort: typeof opts.sort === 'function' ? opts.sort : null,
-        strictNullHandling: typeof opts.strictNullHandling === 'boolean' ? opts.strictNullHandling : defaults.strictNullHandling
-    };
-};
-
-module.exports = function (object, opts) {
-    var obj = object;
-    var options = normalizeStringifyOptions(opts);
-
-    var objKeys;
-    var filter;
-
-    if (typeof options.filter === 'function') {
-        filter = options.filter;
-        obj = filter('', obj);
-    } else if (isArray(options.filter)) {
-        filter = options.filter;
-        objKeys = filter;
-    }
-
-    var keys = [];
-
-    if (typeof obj !== 'object' || obj === null) {
-        return '';
-    }
-
-    var arrayFormat;
-    if (opts && opts.arrayFormat in arrayPrefixGenerators) {
-        arrayFormat = opts.arrayFormat;
-    } else if (opts && 'indices' in opts) {
-        arrayFormat = opts.indices ? 'indices' : 'repeat';
-    } else {
-        arrayFormat = 'indices';
-    }
-
-    var generateArrayPrefix = arrayPrefixGenerators[arrayFormat];
-
-    if (!objKeys) {
-        objKeys = Object.keys(obj);
-    }
-
-    if (options.sort) {
-        objKeys.sort(options.sort);
-    }
-
-    for (var i = 0; i < objKeys.length; ++i) {
-        var key = objKeys[i];
-
-        if (options.skipNulls && obj[key] === null) {
-            continue;
-        }
-        pushToArray(keys, stringify(
-            obj[key],
-            key,
-            generateArrayPrefix,
-            options.strictNullHandling,
-            options.skipNulls,
-            options.encode ? options.encoder : null,
-            options.filter,
-            options.sort,
-            options.allowDots,
-            options.serializeDate,
-            options.formatter,
-            options.encodeValuesOnly,
-            options.charset
-        ));
-    }
-
-    var joined = keys.join(options.delimiter);
-    var prefix = options.addQueryPrefix === true ? '?' : '';
-
-    if (options.charsetSentinel) {
-        if (options.charset === 'iso-8859-1') {
-            // encodeURIComponent('&#10003;'), the "numeric entity" representation of a checkmark
-            prefix += 'utf8=%26%2310003%3B&';
-        } else {
-            // encodeURIComponent('✓')
-            prefix += 'utf8=%E2%9C%93&';
-        }
-    }
-
-    return joined.length > 0 ? prefix + joined : '';
-};
-
-
-/***/ }),
-
-/***/ "./node_modules/@woocommerce/navigation/node_modules/qs/lib/utils.js":
-/*!***************************************************************************!*\
-  !*** ./node_modules/@woocommerce/navigation/node_modules/qs/lib/utils.js ***!
-  \***************************************************************************/
-/***/ ((module) => {
-
-"use strict";
-
-
-var has = Object.prototype.hasOwnProperty;
-var isArray = Array.isArray;
-
-var hexTable = (function () {
-    var array = [];
-    for (var i = 0; i < 256; ++i) {
-        array.push('%' + ((i < 16 ? '0' : '') + i.toString(16)).toUpperCase());
-    }
-
-    return array;
-}());
-
-var compactQueue = function compactQueue(queue) {
-    while (queue.length > 1) {
-        var item = queue.pop();
-        var obj = item.obj[item.prop];
-
-        if (isArray(obj)) {
-            var compacted = [];
-
-            for (var j = 0; j < obj.length; ++j) {
-                if (typeof obj[j] !== 'undefined') {
-                    compacted.push(obj[j]);
-                }
-            }
-
-            item.obj[item.prop] = compacted;
-        }
-    }
-};
-
-var arrayToObject = function arrayToObject(source, options) {
-    var obj = options && options.plainObjects ? Object.create(null) : {};
-    for (var i = 0; i < source.length; ++i) {
-        if (typeof source[i] !== 'undefined') {
-            obj[i] = source[i];
-        }
-    }
-
-    return obj;
-};
-
-var merge = function merge(target, source, options) {
-    /* eslint no-param-reassign: 0 */
-    if (!source) {
-        return target;
-    }
-
-    if (typeof source !== 'object') {
-        if (isArray(target)) {
-            target.push(source);
-        } else if (target && typeof target === 'object') {
-            if ((options && (options.plainObjects || options.allowPrototypes)) || !has.call(Object.prototype, source)) {
-                target[source] = true;
-            }
-        } else {
-            return [target, source];
-        }
-
-        return target;
-    }
-
-    if (!target || typeof target !== 'object') {
-        return [target].concat(source);
-    }
-
-    var mergeTarget = target;
-    if (isArray(target) && !isArray(source)) {
-        mergeTarget = arrayToObject(target, options);
-    }
-
-    if (isArray(target) && isArray(source)) {
-        source.forEach(function (item, i) {
-            if (has.call(target, i)) {
-                var targetItem = target[i];
-                if (targetItem && typeof targetItem === 'object' && item && typeof item === 'object') {
-                    target[i] = merge(targetItem, item, options);
-                } else {
-                    target.push(item);
-                }
-            } else {
-                target[i] = item;
-            }
-        });
-        return target;
-    }
-
-    return Object.keys(source).reduce(function (acc, key) {
-        var value = source[key];
-
-        if (has.call(acc, key)) {
-            acc[key] = merge(acc[key], value, options);
-        } else {
-            acc[key] = value;
-        }
-        return acc;
-    }, mergeTarget);
-};
-
-var assign = function assignSingleSource(target, source) {
-    return Object.keys(source).reduce(function (acc, key) {
-        acc[key] = source[key];
-        return acc;
-    }, target);
-};
-
-var decode = function (str, decoder, charset) {
-    var strWithoutPlus = str.replace(/\+/g, ' ');
-    if (charset === 'iso-8859-1') {
-        // unescape never throws, no try...catch needed:
-        return strWithoutPlus.replace(/%[0-9a-f]{2}/gi, unescape);
-    }
-    // utf-8
-    try {
-        return decodeURIComponent(strWithoutPlus);
-    } catch (e) {
-        return strWithoutPlus;
-    }
-};
-
-var encode = function encode(str, defaultEncoder, charset) {
-    // This code was originally written by Brian White (mscdex) for the io.js core querystring library.
-    // It has been adapted here for stricter adherence to RFC 3986
-    if (str.length === 0) {
-        return str;
-    }
-
-    var string = str;
-    if (typeof str === 'symbol') {
-        string = Symbol.prototype.toString.call(str);
-    } else if (typeof str !== 'string') {
-        string = String(str);
-    }
-
-    if (charset === 'iso-8859-1') {
-        return escape(string).replace(/%u[0-9a-f]{4}/gi, function ($0) {
-            return '%26%23' + parseInt($0.slice(2), 16) + '%3B';
-        });
-    }
-
-    var out = '';
-    for (var i = 0; i < string.length; ++i) {
-        var c = string.charCodeAt(i);
-
-        if (
-            c === 0x2D // -
-            || c === 0x2E // .
-            || c === 0x5F // _
-            || c === 0x7E // ~
-            || (c >= 0x30 && c <= 0x39) // 0-9
-            || (c >= 0x41 && c <= 0x5A) // a-z
-            || (c >= 0x61 && c <= 0x7A) // A-Z
-        ) {
-            out += string.charAt(i);
-            continue;
-        }
-
-        if (c < 0x80) {
-            out = out + hexTable[c];
-            continue;
-        }
-
-        if (c < 0x800) {
-            out = out + (hexTable[0xC0 | (c >> 6)] + hexTable[0x80 | (c & 0x3F)]);
-            continue;
-        }
-
-        if (c < 0xD800 || c >= 0xE000) {
-            out = out + (hexTable[0xE0 | (c >> 12)] + hexTable[0x80 | ((c >> 6) & 0x3F)] + hexTable[0x80 | (c & 0x3F)]);
-            continue;
-        }
-
-        i += 1;
-        c = 0x10000 + (((c & 0x3FF) << 10) | (string.charCodeAt(i) & 0x3FF));
-        out += hexTable[0xF0 | (c >> 18)]
-            + hexTable[0x80 | ((c >> 12) & 0x3F)]
-            + hexTable[0x80 | ((c >> 6) & 0x3F)]
-            + hexTable[0x80 | (c & 0x3F)];
-    }
-
-    return out;
-};
-
-var compact = function compact(value) {
-    var queue = [{ obj: { o: value }, prop: 'o' }];
-    var refs = [];
-
-    for (var i = 0; i < queue.length; ++i) {
-        var item = queue[i];
-        var obj = item.obj[item.prop];
-
-        var keys = Object.keys(obj);
-        for (var j = 0; j < keys.length; ++j) {
-            var key = keys[j];
-            var val = obj[key];
-            if (typeof val === 'object' && val !== null && refs.indexOf(val) === -1) {
-                queue.push({ obj: obj, prop: key });
-                refs.push(val);
-            }
-        }
-    }
-
-    compactQueue(queue);
-
-    return value;
-};
-
-var isRegExp = function isRegExp(obj) {
-    return Object.prototype.toString.call(obj) === '[object RegExp]';
-};
-
-var isBuffer = function isBuffer(obj) {
-    if (!obj || typeof obj !== 'object') {
-        return false;
-    }
-
-    return !!(obj.constructor && obj.constructor.isBuffer && obj.constructor.isBuffer(obj));
-};
-
-var combine = function combine(a, b) {
-    return [].concat(a, b);
-};
-
-var maybeMap = function maybeMap(val, fn) {
-    if (isArray(val)) {
-        var mapped = [];
-        for (var i = 0; i < val.length; i += 1) {
-            mapped.push(fn(val[i]));
-        }
-        return mapped;
-    }
-    return fn(val);
-};
-
-module.exports = {
-    arrayToObject: arrayToObject,
-    assign: assign,
-    combine: combine,
-    compact: compact,
-    decode: decode,
-    encode: encode,
-    isBuffer: isBuffer,
-    isRegExp: isRegExp,
-    maybeMap: maybeMap,
-    merge: merge
-};
+exports.WooNavigationItem = WooNavigationItem;
+exports.WooNavigationItem.Slot = ({ name }) => (element_1.createElement(components_1.Slot, { name: 'woocommerce_navigation_' + name }));
 
 
 /***/ }),

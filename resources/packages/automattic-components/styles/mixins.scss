@@ -1,0 +1,20 @@
+@use "sass:math";
+
+@use "@wordpress/base-styles/breakpoints" as *;
+@use "@automattic/typography/styles/variables" as *;
+
+@mixin stats-section-header {
+	color: var(--studio-gray-100);
+	font-family: $brand-serif;
+	font-size: $font-title-large;
+	font-weight: 400;
+	line-height: 40px;
+
+	@media (max-width: $break-mobile) {
+		font-size: $font-title-medium;
+
+		.prefix {
+			display: none;
+		}
+	}
+}

@@ -1,0 +1,53 @@
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import clsx from 'clsx';
+import { iconsThatNeedOffset, iconsThatNeedOffsetX, iconsThatNeedOffsetY, } from 'gridicons/dist/util/icons-offset';
+import spritePath from 'gridicons/svg-sprite/gridicons.svg';
+import * as React from 'react';
+function isCrossOrigin(url) {
+    if (typeof window === 'undefined') {
+        return false;
+    }
+    return new URL(url, window.location.href).origin !== window.location.origin;
+}
+/**
+ * Fetches the SVG file and creates a proxy URL for it.
+ * @param url the original cross-origin URL
+ * @returns the proxied URL.
+ */
+function useProxiedURL(url) {
+    const [urlProxy, setUrlProxy] = React.useState(() => isCrossOrigin(url) ? undefined : url);
+    React.useEffect(() => {
+        if (isCrossOrigin(url)) {
+            setUrlProxy(undefined);
+            fetch(url)
+                .then((res) => res.blob())
+                .then((blob) => {
+                const urlProxy = URL.createObjectURL(blob);
+                setUrlProxy(urlProxy);
+            })
+                .catch(() => { });
+        }
+        else {
+            setUrlProxy(url);
+        }
+    }, [url]);
+    return urlProxy;
+}
+const Gridicon = React.memo(React.forwardRef((props, ref) => {
+    const { size = 24, icon, className, title, ...otherProps } = props;
+    const isModulo18 = size % 18 === 0;
+    // Proxy URL to support cross-origin SVGs.
+    const proxiedSpritePath = useProxiedURL(spritePath);
+    // Using a missing icon doesn't produce any errors, just a blank icon, which is the exact intended behaviour.
+    // This means we don't need to perform any checks on the icon name.
+    const iconName = `gridicons-${icon}`;
+    const iconClass = clsx('gridicon', iconName, className, {
+        'needs-offset': isModulo18 && iconsThatNeedOffset.includes(iconName),
+        'needs-offset-x': isModulo18 && iconsThatNeedOffsetX.includes(iconName),
+        'needs-offset-y': isModulo18 && iconsThatNeedOffsetY.includes(iconName),
+    });
+    return (_jsxs("svg", { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", className: iconClass, height: size, width: size, ref: ref, ...otherProps, children: [title && _jsx("title", { children: title }), proxiedSpritePath && _jsx("use", { xlinkHref: `${proxiedSpritePath}#${iconName}` })] }));
+}));
+Gridicon.displayName = 'Gridicon';
+export default Gridicon;
+//# sourceMappingURL=index.js.map

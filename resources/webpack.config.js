@@ -99,7 +99,13 @@ module.exports = {
       '@woocommerce/atomic-blocks/product-elements/title/block.json': path.resolve(__dirname, 'blocks/product-collection/block.json'),
       '@woocommerce/editor-components/error-placeholder': path.resolve(__dirname, 'packages/editor-components/error-placeholder'),
       '@woocommerce/editor-components/expandable-search-list-item/expandable-search-list-item': path.resolve(__dirname, 'packages/editor-components/expandable-search-list-item/index.tsx'),
-      'PaginationControl': path.resolve(__dirname, 'packages/editor-components/pagination-control/index.tsx'),
+      '@automattic/components': path.resolve(__dirname, 'packages/automattic-components'),
+      '@automattic/components/dist/esm/responsive-toolbar-group': path.resolve(__dirname, 'packages/automattic-components/responsive-toolbar-group'),
+      '@automattic/components/dist/esm/highlight-cards': path.resolve(__dirname, 'packages/automattic-components/highlight-cards'),
+      '@automattic/components/dist/esm/summary-button': path.resolve(__dirname, 'packages/automattic-components/summary-button'),
+      '@automattic/components/dist/esm/breadcrumbs': path.resolve(__dirname, 'packages/automattic-components/breadcrumbs'),
+      '@automattic/components/dist/esm/experience-control': path.resolve(__dirname, 'packages/automattic-components/experience-control'),
+      '@wordpress/base-styles': path.resolve(__dirname, 'packages/wordpress-base-styles'),
     },
   },
   externals: {
@@ -206,7 +212,7 @@ module.exports = {
                   path.resolve(__dirname, 'base-styles/woocommerce'),
                   path.resolve(__dirname, 'scss'),
                 ],
-                additionalData: `@import "woocommerce/functions"; @import "woocommerce/variables"; @import "woocommerce/colors"; @import "woocommerce/mixins"; @import "woocommerce/breakpoints";`
+                additionalData: `@import "woocommerce/patch"; @import "woocommerce/functions"; @import "woocommerce/variables"; @import "woocommerce/colors"; @import "woocommerce/mixins"; @import "woocommerce/breakpoints"; @import "woocommerce/overrides";`
               }
             }
           }

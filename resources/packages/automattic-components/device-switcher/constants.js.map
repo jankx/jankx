@@ -1,0 +1,1 @@
+{"version":3,"file":"constants.js","sourceRoot":"","sources":["../../../src/device-switcher/constants.ts"],"names":[],"mappings":"AAAA,MAAM,CAAC,MAAM,YAAY,GAAG;IAC3B,QAAQ,EAAE,UAAU;IACpB,MAAM,EAAE,QAAQ;IAChB,KAAK,EAAE,OAAO;CACL,CAAC;AAEX,MAAM,CAAC,MAAM,iBAAiB,GAAG,CAAE,YAAY,CAAC,QAAQ,EAAE,YAAY,CAAC,MAAM,EAAE,YAAY,CAAC,KAAK,CAAE,CAAC"}

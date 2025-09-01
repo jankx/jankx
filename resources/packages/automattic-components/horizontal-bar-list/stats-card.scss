@@ -1,0 +1,276 @@
+// ==========================================================================
+// Horizontal bar list
+// ==========================================================================
+@use "@wordpress/base-styles/breakpoints" as *;
+@use "@wordpress/base-styles/mixins" as *;
+@use "../styles/typography" as *;
+@use "./stats-variables" as *;
+
+.stats-card {
+	border: 1px solid var(--studio-gray-5);
+	border-radius: $border-radius;
+	padding: $padding-outside 0;
+	font-size: $row-font-size;
+	font-weight: 500;
+	line-height: $row-line-height;
+	color: $font-color;
+	background-color: var(--studio-white);
+
+	@media (max-width: $break-medium) {
+		min-width: 390px;
+		border-radius: 0;
+		border-left: 0;
+		border-right: 0;
+		border-bottom: 0;
+	}
+
+	.stats-card--hero {
+		padding-bottom: $card-vertical-space;
+	}
+
+	.stats-card-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 0 $padding-outside $header-spacer $padding-outside;
+
+		.stats-card-header__title {
+			display: flex;
+			align-items: center;
+		}
+
+		.stats-card-header__title,
+		.stats-card-header__title:visited {
+			font-size: $header-font-size;
+			line-height: $header-line-height;
+			color: var(--color-text);
+		}
+
+		.stats-card-header__title-nodes {
+			margin-left: 10px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			gap: 8px;
+		}
+
+		&.stats-card-header--split {
+			display: block;
+		}
+		.stats-card--column-header {
+			display: flex;
+			justify-content: space-between;
+			padding-top: $header-spacer;
+		}
+		.stats-card--column-header__left {
+			display: flex;
+			width: calc(100% - $value-column-width);
+			justify-content: space-between;
+		}
+		.stats-card--column-header__right {
+			width: $value-column-width;
+			text-align: right;
+		}
+
+		.stats-download-csv {
+			color: var(--color-link);
+			gap: 4px;
+
+			&[disabled],
+			&.disabled {
+				color: var(--color-neutral-20);
+			}
+
+			&:hover:not([disabled]) {
+				color: var(--color-link-dark);
+			}
+		}
+	}
+
+	.stats-card-sub-header {
+		display: flex;
+		justify-content: space-between;
+		padding: 0 $padding-outside $header-spacer $padding-outside;
+	}
+
+	.stats-card-header--main {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		flex-wrap: wrap;
+		// Add padding to wrapped elements in narrow viewports.
+		row-gap: 16px;
+
+		@media (max-width: $break-mobile) {
+			.stats-card-header--main__left,
+			.stats-card-header--main__right {
+				flex-grow: 1;
+			}
+		}
+	}
+
+	.stats-card-header__additional {
+		@include additional-columns-wrapper;
+	}
+
+	.stats-card--body-empty {
+		padding: 0 $padding-outside;
+		font-weight: 400;
+		padding-top: 4px;
+		color: var(--studio-gray-60);
+	}
+
+	.stats-card--footer {
+		font-weight: 600;
+		margin: $padding-outside $padding-outside 0;
+		display: block;
+		color: var(--color-text);
+		text-decoration: none; // TODO: Should this be a tertiary button component instead?
+
+		&:visited {
+			color: $font-color;
+		}
+
+		&:hover,
+		&:focus {
+			text-decoration: underline;
+		}
+	}
+
+	&.stats-card__hasoverlay {
+		display: grid;
+
+		.stats-card__content,
+		.stats-card__overlay {
+			grid-column: 1;
+			grid-row: 1;
+		}
+
+		.stats-card__content--hero {
+			grid-column: auto;
+			grid-row: auto;
+		}
+
+		.stats-card__content .stats-card--header-and-body .stats-card--body,
+		.stats-card__content .stats-card-header--split .stats-card--column-header,
+		.stats-card__content .stats-card--hero,
+		.stats-card__content .stats-card--footer {
+			filter: blur(10px);
+			z-index: 0;
+			margin-bottom: 24px;
+		}
+
+		.stats-card__overlay {
+			z-index: 1;
+		}
+
+		.stats-card__overlay--hero {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			top: 0;
+		}
+	}
+
+	.stats-card__content {
+		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		height: 100%;
+		position: relative;
+	}
+}
+
+.stats-card-avatar {
+	display: flex;
+
+	.stats-card-avatar-image {
+		width: $stats-avatar-size;
+		height: $stats-avatar-size;
+		border-radius: 50%;
+	}
+}
+
+.stats-module__extended-toggle {
+	display: flex;
+	gap: 0 5px;
+	justify-content: center;
+	padding-top: 2px; // for focus ring for Jetpack
+}
+
+.list-locations.stats-card, .list-locations.stats-card-skeleton,
+.list-utm.stats-card, .list-utm.stats-card-skeleton {
+	.stats-card-header.stats-card-header--split .stats-card-header--main__left {
+		display: flex;
+		justify-content: space-between;
+		width: 100%;
+
+		.stats-download-csv {
+			display: none;
+		}
+	}
+
+	.stats-card-header.stats-card-header--split .stats-card-header--main__right {
+		display: block;
+		width: 100%;
+
+		.stats-module__extended-toggle {
+			width: 100%;
+
+			> * {
+				flex-grow: 1;
+				width: 100%;
+			}
+			> div > .components-button {
+				width: 100%;
+				justify-content: center;
+			}
+
+			.components-button {
+				justify-content: center;
+			}
+		}
+	}
+}
+
+.stats-summary-view {
+	.list-locations.stats-card, .list-locations.stats-card-skeleton,
+	.list-utm.stats-card, .list-utm.stats-card-skeleton {
+		.stats-card-header.stats-card-header--split .stats-card-header--main__left .stats-download-csv {
+			display: inherit;
+		}
+	}
+}
+
+@include break-large {
+	.list-locations.stats-card, .list-locations.stats-card-skeleton,
+	.list-utm.stats-card, .list-utm.stats-card-skeleton {
+		.stats-card-header.stats-card-header--split .stats-card-header--main {
+			gap: 10px;
+		}
+
+		.stats-card-header.stats-card-header--split .stats-card-header--main__left {
+			flex-grow: 1;
+			width: auto;
+		}
+
+		.stats-card-header.stats-card-header--split .stats-card-header--main__right {
+			display: flex;
+			width: auto;
+			.stats-module__extended-toggle {
+				width: auto;
+
+				> * {
+					flex-grow: 0;
+					width: auto;
+				}
+
+				.components-button {
+					justify-content: space-between;
+				}
+			}
+		}
+	}
+}
