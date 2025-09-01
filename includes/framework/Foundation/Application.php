@@ -7,7 +7,7 @@ use Exception;
 use Illuminate\Container\Container;
 use Jankx\Config\Repository;
 use Jankx\Helper\Environment;
-use Jankx\Support\Providers\JankxAdminPagesServiceProvider;
+use Jankx\Support\Providers\Admin\JankxAdminPagesServiceProvider;
 use Jankx\Support\Providers\JankxFrameworkServiceProvider;
 use Jankx\Support\Providers\SystemServiceProvider;
 use Jankx\Support\Providers\TranslationServiceProvider;

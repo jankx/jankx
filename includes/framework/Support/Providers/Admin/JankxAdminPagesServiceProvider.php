@@ -1,6 +1,6 @@
 <?php
 
-namespace Jankx\Support\Providers;
+namespace Jankx\Support\Providers\Admin;
 
 use Jankx\Facades\Config;
 use Jankx\Facades\Framework;
