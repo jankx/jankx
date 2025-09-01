@@ -3,6 +3,7 @@
 namespace Jankx\Gutenberg\Blocks;
 
 use Jankx\Gutenberg\Block;
+use Jankx\Foundation\Application;
 
 /**
  * Icon Block
@@ -18,7 +19,6 @@ class SvgIconBlock extends Block
      * @var string
      */
     protected $blockId = 'jankx/svg-icon';
-
 
 
 
@@ -47,6 +47,24 @@ class SvgIconBlock extends Block
         $width = $attributes['width'] ?? '';
         $height = $attributes['height'] ?? '';
         $className = $attributes['className'] ?? '';
+
+        // Decide which icon markup to print on frontend
+        $printedIcon = '';
+        if (!empty($icon)) {
+            $printedIcon = $icon;
+        } elseif (!empty($iconName)) {
+            try {
+                $app = Application::getInstance();
+                if ($app && $app->bound('font-icons.svg')) {
+                    $provider = $app->make('font-icons.svg');
+                    if (method_exists($provider, 'getIconHtml')) {
+                        $printedIcon = $provider->getIconHtml($iconName);
+                    }
+                }
+            } catch (\Throwable $e) {
+                $printedIcon = '';
+            }
+        }
 
         // Build styles
         $styles = [];
@@ -110,19 +128,23 @@ class SvgIconBlock extends Block
         }
 
         ob_start();
+        if (!empty($printedIcon)):
         ?>
         <div class="<?php echo esc_attr($classString); ?>" style="<?php echo esc_attr($styleString); ?>">
             <?php if ($linkUrl) : ?>
                 <a <?php echo $linkAttrs; ?> <?php echo $titleAttr; ?> <?php echo $ariaLabel; ?>>
-                    <?php echo $icon; ?>
+                    <?php echo $printedIcon; ?>
                 </a>
             <?php else : ?>
                 <span <?php echo $titleAttr; ?> <?php echo $ariaLabel; ?>>
-                    <?php echo $icon; ?>
+                    <?php echo $printedIcon; ?>
                 </span>
             <?php endif; ?>
         </div>
         <?php
+        else:
+            echo $content;
+        endif;
         return ob_get_clean();
     }
 }
