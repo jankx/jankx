@@ -215,19 +215,6 @@ function OffcanvasSidebarEdit({ attributes, setAttributes }: OffcanvasSidebarEdi
 
         return (
             <div className={`offcanvas-sidebar-preview effect-${animationEffect} position-${sidebarPosition}`}>
-                {/* Trigger Button - Removed, use separate Offcanvas Trigger block */}
-                <div className="trigger-placeholder" style={{
-                    padding: '20px',
-                    textAlign: 'center',
-                    color: '#666',
-                    fontStyle: 'italic',
-                    border: '2px dashed #ddd',
-                    borderRadius: '8px',
-                    marginBottom: '20px'
-                }}>
-                    <p>{__('Add "Offcanvas Trigger" block to open this sidebar', 'jankx')}</p>
-                </div>
-
                 {/* Overlay */}
                 {showOverlay && (
                     <div
@@ -251,25 +238,7 @@ function OffcanvasSidebarEdit({ attributes, setAttributes }: OffcanvasSidebarEdi
                             ×
                         </button>
                     </div>
-
-                    <nav className="sidebar-menu">
-                        <ul>
-                            {menuItems.map(item => (
-                                <li key={item.id}>
-                                    <a href={item.url}>
-                                        {getIconComponent(item.icon) && (
-                                            <span className="menu-icon">
-                                                {getIconComponent(item.icon)}
-                                            </span>
-                                        )}
-                                        <span className="menu-text">{item.text}</span>
-                                    </a>
-                                </li>
-                            ))}
-                        </ul>
-                    </nav>
-
-                                         <div className="sidebar-content">
+                    <div className="sidebar-content">
                          <InnerBlocks
                              allowedBlocks={[
                                  'core/paragraph',

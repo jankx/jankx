@@ -1,74 +1,8 @@
 /*!*******************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./blocks/image-button/style.scss ***!
   \*******************************************************************************************************************************************************************/
-.wp-block-jankx-image-button__link {
-  cursor: pointer;
+.wp-block-jankx-image-button .wp-block-jankx-image-button__link {
   display: flex;
-  align-items: center;
-  text-align: center;
-  word-break: break-word;
-  box-sizing: border-box;
-  height: 100%;
-  align-content: center;
-}
-.wp-block-jankx-image-button__link.aligncenter {
-  text-align: center;
-}
-.wp-block-jankx-image-button__link.alignright {
-  /*rtl:ignore*/
-  text-align: right;
-}
-
-.wp-block-jankx-image-button[style*=text-decoration] .wp-block-jankx-image-button__link {
-  text-decoration: inherit;
-}
-
-.wp-block-jankx-buttons > .wp-block-jankx-image-button.has-custom-width {
-  max-width: none;
-}
-.wp-block-jankx-buttons > .wp-block-jankx-image-button.has-custom-width .wp-block-jankx-image-button__link {
-  width: 100%;
-}
-.wp-block-jankx-buttons > .wp-block-jankx-image-button.has-custom-font-size .wp-block-jankx-image-button__link {
-  font-size: inherit;
-}
-.wp-block-jankx-buttons > .wp-block-jankx-image-button.wp-block-jankx-image-button__width-25 {
-  width: calc(25% - var(--wp--style--block-gap, 0.5em) * 0.75);
-}
-.wp-block-jankx-buttons > .wp-block-jankx-image-button.wp-block-jankx-image-button__width-50 {
-  width: calc(50% - var(--wp--style--block-gap, 0.5em) * 0.5);
-}
-.wp-block-jankx-buttons > .wp-block-jankx-image-button.wp-block-jankx-image-button__width-75 {
-  width: calc(75% - var(--wp--style--block-gap, 0.5em) * 0.25);
-}
-.wp-block-jankx-buttons > .wp-block-jankx-image-button.wp-block-jankx-image-button__width-100 {
-  width: 100%;
-  flex-basis: 100%;
-}
-
-.wp-block-jankx-buttons.is-vertical > .wp-block-jankx-image-button.wp-block-jankx-image-button__width-25 {
-  width: 25%;
-}
-.wp-block-jankx-buttons.is-vertical > .wp-block-jankx-image-button.wp-block-jankx-image-button__width-50 {
-  width: 50%;
-}
-.wp-block-jankx-buttons.is-vertical > .wp-block-jankx-image-button.wp-block-jankx-image-button__width-75 {
-  width: 75%;
-}
-
-:root :where(.wp-block-jankx-image-button.is-style-outline > .wp-block-jankx-image-button__link),
-:root :where(.wp-block-jankx-image-button .wp-block-jankx-image-button__link.is-style-outline) {
-  border: 2px solid currentColor;
-  padding: 0.667em 1.333em;
-}
-:root :where(.wp-block-jankx-image-button.is-style-outline > .wp-block-jankx-image-button__link:not(.has-text-color)),
-:root :where(.wp-block-jankx-image-button .wp-block-jankx-image-button__link.is-style-outline:not(.has-text-color)) {
-  color: currentColor;
-}
-:root :where(.wp-block-jankx-image-button.is-style-outline > .wp-block-jankx-image-button__link:not(.has-background)),
-:root :where(.wp-block-jankx-image-button .wp-block-jankx-image-button__link.is-style-outline:not(.has-background)) {
-  background-color: transparent;
-  background-image: none;
 }
 
 /*# sourceMappingURL=style.css.map*/

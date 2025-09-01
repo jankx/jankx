@@ -48,6 +48,9 @@ class SvgIconBlock extends Block
         $height = $attributes['height'] ?? '';
         $className = $attributes['className'] ?? '';
 
+        // Generate unique ID for this block instance
+        $blockId = 'svg-icon-' . uniqid();
+
         // Decide which icon markup to print on frontend
         $printedIcon = '';
         if (!empty($icon)) {
@@ -102,6 +105,32 @@ class SvgIconBlock extends Block
         }
 
         $classString = implode(' ', $classes);
+        $classString .= ' ' . $blockId; // Add unique ID as class
+
+        // Add inline CSS for SVG styling
+        if ($iconColorValue) {
+            $inlineCSS = "
+                .{$blockId} svg {
+                    fill: {$iconColorValue} !important;
+                }
+                .{$blockId} svg path {
+                    fill: {$iconColorValue} !important;
+                }
+                .{$blockId} svg rect {
+                    fill: {$iconColorValue} !important;
+                }
+                .{$blockId} svg circle {
+                    fill: {$iconColorValue} !important;
+                }
+                .{$blockId} svg polygon {
+                    fill: {$iconColorValue} !important;
+                }
+                .{$blockId} svg polyline {
+                    fill: {$iconColorValue} !important;
+                }
+            ";
+            wp_add_inline_style('jankx-theme-style', $inlineCSS);
+        }
 
         // Build link attributes
         $linkAttrs = '';
