@@ -248,7 +248,7 @@ const color = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx
   })
 });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (color);
-
+//# sourceMappingURL=color.js.map
 
 /***/ }),
 
@@ -279,7 +279,7 @@ const link = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)
   })
 });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (link);
-
+//# sourceMappingURL=link.js.map
 
 /***/ }),
 
@@ -312,7 +312,7 @@ const settings = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.
   })]
 });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (settings);
-
+//# sourceMappingURL=settings.js.map
 
 /***/ }),
 

@@ -9,7 +9,6 @@ use Jankx\Gutenberg\Blocks\IconPickerBlock;
 use Jankx\Gutenberg\Blocks\IconButtonBlock;
 use Jankx\Gutenberg\Blocks\LanguageSwitcherBlock;
 use Jankx\Gutenberg\Blocks\MegaMenuBlock;
-use Jankx\Gutenberg\Blocks\ProductCollectionBlock;
 use Jankx\Gutenberg\Blocks\SvgIconBlock;
 use Jankx\Gutenberg\Blocks\SvgIconButtonBlock;
 use Jankx\Gutenberg\Blocks\ImageButtonBlock;
@@ -105,7 +104,6 @@ class GutenbergService
     protected function registerDefaultBlocks()
     {
         $this->repository->registerBlock(DynamicQueryBlock::class);
-        $this->repository->registerBlock(ProductCollectionBlock::class);
         $this->repository->registerBlock(SvgIconBlock::class);
         $this->repository->registerBlock(MegaMenuBlock::class);
         $this->repository->registerBlock(SvgIconButtonBlock::class);

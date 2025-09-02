@@ -3,6 +3,8 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
 const DependencyExtractionWebpackPlugin = require('@wordpress/dependency-extraction-webpack-plugin');
 
+
+
 module.exports = {
   mode: 'development',
   devtool: 'source-map',
@@ -60,15 +62,7 @@ module.exports = {
     'blocks/query/build/save': './blocks/query/save.js',
     'blocks/query/build/view': './blocks/query/view.js',
     'blocks/query/build/init': './blocks/query/init.js',
-    'blocks/query/build/editor': './blocks/query/editor.scss',
-
-
-    'blocks/product-collection/build/index': './blocks/product-collection/index.tsx',
-    'blocks/product-collection/build/save': './blocks/product-collection/save.tsx',
-    'blocks/product-collection/build/frontend': './blocks/product-collection/frontend.ts',
-    'blocks/product-collection/build/style': './blocks/product-collection/style.scss',
-    'blocks/product-collection/build/editor': './blocks/product-collection/editor.scss',
-
+    'blocks/query/build/editor': './blocks/query/editor.scss'
   },
   output: {
     path: path.resolve(__dirname),
@@ -82,30 +76,6 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
     alias: {
-      '@woocommerce/editor-components': path.resolve(__dirname, 'packages/editor-components'),
-      '@woocommerce/blocks/product-template': path.resolve(__dirname, 'blocks/product-template'),
-      '@woocommerce/block-hocs': path.resolve(__dirname, 'packages/hocs'),
-      '@woocommerce/blocks/product-collection': path.resolve(__dirname, 'blocks/product-collection'),
-      '@woocommerce/base-utils': path.resolve(__dirname, 'packages/base/utils'),
-      '@woocommerce/atomic-blocks/product-elements': path.resolve(__dirname, 'packages/atomic/blocks/product-elements'),
-      '@woocommerce/blocks/migration-products-to-product-collection': path.resolve(__dirname, 'blocks/migration-products-to-product-collection'),
-      '../../base-styles': path.resolve(__dirname, 'base-styles'),
-      '@woocommerce/base-components': path.resolve(__dirname, 'packages/base/components'),
-      '@woocommerce/base-context': path.resolve(__dirname, 'packages/base/context'),
-      '@woocommerce/base-context/hooks': path.resolve(__dirname, 'packages/base/context/hooks'),
-      '@woocommerce/editor-components/error-placeholder': path.resolve(__dirname, 'packages/editor-components/error-placeholder'),
-      '@woocommerce/editor-components/expandable-search-list-item': path.resolve(__dirname, 'packages/editor-components/expandable-search-list-item'),
-      '@woocommerce/atomic-blocks/product-elements': path.resolve(__dirname, 'packages/atomic/blocks/product-elements'),
-      '@woocommerce/atomic-blocks/product-elements/title/block.json': path.resolve(__dirname, 'blocks/product-collection/block.json'),
-      '@woocommerce/editor-components/error-placeholder': path.resolve(__dirname, 'packages/editor-components/error-placeholder'),
-      '@woocommerce/editor-components/expandable-search-list-item/expandable-search-list-item': path.resolve(__dirname, 'packages/editor-components/expandable-search-list-item/index.tsx'),
-      '@automattic/components': path.resolve(__dirname, 'packages/automattic-components'),
-      '@automattic/components/dist/esm/responsive-toolbar-group': path.resolve(__dirname, 'packages/automattic-components/responsive-toolbar-group'),
-      '@automattic/components/dist/esm/highlight-cards': path.resolve(__dirname, 'packages/automattic-components/highlight-cards'),
-      '@automattic/components/dist/esm/summary-button': path.resolve(__dirname, 'packages/automattic-components/summary-button'),
-      '@automattic/components/dist/esm/breadcrumbs': path.resolve(__dirname, 'packages/automattic-components/breadcrumbs'),
-      '@automattic/components/dist/esm/experience-control': path.resolve(__dirname, 'packages/automattic-components/experience-control'),
-      '@wordpress/base-styles': path.resolve(__dirname, 'packages/wordpress-base-styles'),
     },
   },
   externals: {
@@ -118,16 +88,6 @@ module.exports = {
     '@wordpress/element': ['wp', 'element'],
     '@wordpress/data': ['wp', 'data'],
     '@wordpress/core-data': ['wp', 'coreData'],
-    '@woocommerce/blocks-registry': ['wc', 'blocksRegistry'],
-    '@woocommerce/settings': ['wc', 'settings'],
-    '@woocommerce/utils': ['wc', 'utils'],
-    '@woocommerce/tracks': ['wc', 'tracks'],
-    '@woocommerce/editor-components': ['wc', 'editorComponents'],
-    '@woocommerce/block-settings': ['wc', 'blockSettings'],
-    '@woocommerce/types': ['wc', 'types'],
-    '@woocommerce/price-format': ['wc', 'priceFormat'],
-    '@woocommerce/base-hooks': ['wc', 'baseHooks'],
-    '@woocommerce/atomic-blocks': ['wc', 'atomicBlocks'],
     swiper: 'Swiper',
   },
   plugins: [
@@ -176,6 +136,7 @@ module.exports = {
         }
       },
     }),
+
   ],
   module: {
     rules: [
@@ -217,15 +178,7 @@ module.exports = {
             }
           }
         ]
-      },
-      { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' },
-      {
-        test: /\.(png|jpe?g|gif|svg|webp)$/i,
-        type: 'asset/resource',
-        generator: {
-          filename: 'blocks/carousel/build/[name][ext]'
-        }
-      },
+      }
     ],
   },
 };
