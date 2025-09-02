@@ -31,7 +31,6 @@ const cog = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(
   })
 });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (cog);
-//# sourceMappingURL=cog.js.map
 
 /***/ }),
 
@@ -64,7 +63,6 @@ const envelope = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.
   })
 });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (envelope);
-//# sourceMappingURL=envelope.js.map
 
 /***/ }),
 
@@ -95,7 +93,6 @@ const home = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)
   })
 });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (home);
-//# sourceMappingURL=home.js.map
 
 /***/ }),
 
@@ -128,7 +125,6 @@ const info = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)
   })
 });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (info);
-//# sourceMappingURL=info.js.map
 
 /***/ }),
 
@@ -159,7 +155,6 @@ const menu = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)
   })
 });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (menu);
-//# sourceMappingURL=menu.js.map
 
 /***/ }),
 

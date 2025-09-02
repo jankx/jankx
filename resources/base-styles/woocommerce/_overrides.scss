@@ -1,53 +1,48 @@
-// WooCommerce Overrides
-// Fix external package compatibility issues
+// WooCommerce Overrides - Missing Variables and Mixins
+// This file provides missing variables and mixins that WooCommerce blocks need
 
-// Override @automattic/components rem function
-@function rem($value, $base: 16px) {
-  @if unit($value) == 'px' {
-    @return ($value / $base) * 1rem;
-  }
-  @return $value;
-}
+// Import base styles first to get access to variables
+@import "../variables";
+@import "../colors";
+@import "../mixins";
+@import "../breakpoints";
 
-// Override @wordpress/base-styles functions
-@function strip-unit($value) {
-  @if type-of($value) == 'number' {
-    @if unit($value) == 'px' {
-      @return $value / 1px;
+// Define missing variables that WooCommerce blocks need
+$gap: $grid-unit-20; // 16px
+$gap-small: $grid-unit-10; // 8px
+$gap-large: $grid-unit-30; // 24px
+$gap-x-large: $grid-unit-40; // 32px
+
+// Override WooCommerce variables with theme values
+$gray-100: $gray-100;
+$gray-300: $gray-300;
+$white: $white;
+
+// Create a breakpoint mixin that WooCommerce blocks expect
+@mixin breakpoint($query) {
+  @if $query == "<600px" {
+    @media (max-width: 599px) {
+      @content;
     }
-    @if unit($value) == 'em' {
-      @return $value / 1em;
+  } @else if $query == ">600px" {
+    @media (min-width: 600px) {
+      @content;
     }
-    @if unit($value) == 'rem' {
-      @return $value / 1rem;
+  } @else if $query == "<960px" {
+    @media (max-width: 959px) {
+      @content;
     }
-    @if unit($value) == '%' {
-      @return $value / 1%;
+  } @else if $query == ">960px" {
+    @media (min-width: 960px) {
+      @content;
     }
-  }
-  @return $value;
-}
-
-// Override @automattic/components missing components
-.pagination-control {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-
-  &__prev,
-  &__next {
-    padding: 0.5rem 1rem;
-    border: 1px solid #ccc;
-    background: #fff;
-    cursor: pointer;
-
-    &:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
+  } @else if $query == "<1200px" {
+    @media (max-width: 1199px) {
+      @content;
     }
-  }
-
-  &__info {
-    margin: 0 1rem;
+  } @else if $query == ">1200px" {
+    @media (min-width: 1200px) {
+      @content;
+    }
   }
 }

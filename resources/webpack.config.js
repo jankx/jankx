@@ -83,6 +83,20 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
     alias: {
+      '@woocommerce/base-hooks': path.resolve(__dirname, '../node_modules/woocommerce-blocks/js/base/hooks'),
+      '@woocommerce/utils': path.resolve(__dirname, '../node_modules/woocommerce-blocks/js/utils'),
+      '@woocommerce/editor-components': path.resolve(__dirname, '../node_modules/woocommerce-blocks/js/editor-components'),
+      '@woocommerce/price-format': path.resolve(__dirname, '../node_modules/woocommerce-blocks/js/price-format'),
+      '@woocommerce/blocks': path.resolve(__dirname, '../node_modules/woocommerce-blocks/js/blocks'),
+      '@woocommerce/types': path.resolve(__dirname, '../node_modules/woocommerce-blocks/js/types'),
+      '@woocommerce/block-settings': path.resolve(__dirname, '../node_modules/woocommerce-blocks/js/settings/blocks'),
+      '@woocommerce/blocks-registry': path.resolve(__dirname, '../node_modules/woocommerce-blocks/js/blocks-registry'),
+      '@woocommerce/settings': path.resolve(__dirname, '../node_modules/woocommerce-blocks/js/settings'),
+      '@woocommerce/tracks': path.resolve(__dirname, '../node_modules/woocommerce-blocks/js/tracks'),
+      '@woocommerce/atomic-blocks': path.resolve(__dirname, '../node_modules/woocommerce-blocks/js/atomic-blocks'),
+              '@woocommerce/product-template': path.resolve(__dirname, '../node_modules/woocommerce-blocks/js/blocks/product-template'),
+        '@woocommerce/base-utils': path.resolve(__dirname, '../node_modules/woocommerce-blocks/js/base/utils'),
+        '@woocommerce/base-components': path.resolve(__dirname, '../node_modules/woocommerce-blocks/js/base/components'),
     },
   },
   externals: {
@@ -149,7 +163,7 @@ module.exports = {
     rules: [
       {
         test: /\.[jt]sx?$/,
-        exclude: /node_modules/,
+        exclude: /node_modules\/(?!woocommerce-blocks)/,
         use: {
           loader: 'babel-loader',
           options: {
@@ -180,7 +194,7 @@ module.exports = {
                   path.resolve(__dirname, 'base-styles/woocommerce'),
                   path.resolve(__dirname, 'scss'),
                 ],
-                additionalData: `@import "woocommerce/patch"; @import "woocommerce/functions"; @import "woocommerce/variables"; @import "woocommerce/colors"; @import "woocommerce/mixins"; @import "woocommerce/breakpoints"; @import "woocommerce/overrides";`
+                                  additionalData: `@import "woocommerce/all";`
               }
             }
           }

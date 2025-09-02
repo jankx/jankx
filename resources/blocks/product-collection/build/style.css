@@ -1,0 +1,24 @@
+/*!*****************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/product-collection/style.scss ***!
+  \*****************************************************************************************************************************************************************************************************/
+@keyframes wc-skeleton-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+/* stylelint-disable block-closing-brace-newline-after */
+/* stylelint-enable */
+.wp-block-woocommerce-product-collection .wc-block-components-product-stock-indicator {
+  text-align: center;
+}
+@media (max-width: 600px) {
+  .wp-block-woocommerce-product-collection:has(.is-product-collection-layout-carousel) :where(.wc-block-next-previous-buttons.wc-block-next-previous-buttons) {
+    display: none;
+  }
+}
+
+.wc-block-components-notice-banner .wc-block-components-button.wc-block-components-notice-banner__dismiss[hidden] {
+  display: none;
+}
+
+/*# sourceMappingURL=style.css.map*/
