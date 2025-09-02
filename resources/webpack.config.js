@@ -62,7 +62,14 @@ module.exports = {
     'blocks/query/build/save': './blocks/query/save.tsx',
     'blocks/query/build/view': './blocks/query/view.ts',
     'blocks/query/build/init': './blocks/query/init.ts',
-    'blocks/query/build/editor': './blocks/query/editor.scss'
+    'blocks/query/build/editor': './blocks/query/editor.scss',
+
+
+    'blocks/product-collection/build/index': './blocks/product-collection/index.tsx',
+    'blocks/product-collection/build/save': './blocks/product-collection/save.tsx',
+    'blocks/product-collection/build/frontend': './blocks/product-collection/frontend.ts',
+    'blocks/product-collection/build/editor': './blocks/product-collection/editor.scss',
+    'blocks/product-collection/build/style': './blocks/product-collection/style.scss'
   },
   output: {
     path: path.resolve(__dirname),
