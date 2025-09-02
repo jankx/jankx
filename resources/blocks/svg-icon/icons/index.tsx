@@ -142,7 +142,6 @@ import {
 	mobile,
 	more,
 	moreHorizontal,
-	moreHorizontalMobile,
 	moreVertical,
 	moveTo,
 	navigation,
@@ -1374,7 +1373,7 @@ const wordpressIcons = [
 	{
 		name: 'moreHorizontalMobile',
 		title: __( 'More Horizontal - Mobile', 'icon-block' ),
-		icon: moreHorizontalMobile,
+		icon: moreHorizontal,
 	},
 	{
 		name: 'moreVertical',
