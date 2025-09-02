@@ -14,11 +14,17 @@ import { __ } from '@wordpress/i18n';
  */
 import PatternSelection, { useBlockPatterns } from './pattern-selection';
 
+interface QueryToolbarProps {
+	clientId: string;
+	attributes: any;
+	hasInnerBlocks: boolean;
+}
+
 export default function QueryToolbar( {
 	clientId,
 	attributes,
 	hasInnerBlocks,
-} ) {
+}: QueryToolbarProps ) {
 	const hasPatterns = useBlockPatterns( clientId, attributes ).length;
 	if ( ! hasPatterns ) {
 		return null;

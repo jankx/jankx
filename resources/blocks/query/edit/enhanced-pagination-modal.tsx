@@ -14,40 +14,48 @@ import { useState, useEffect } from '@wordpress/element';
  */
 import { useUnsupportedBlocks } from '../utils';
 
+interface EnhancedPaginationModalProps {
+	clientId: string;
+	attributes: {
+		enhancedPagination: boolean;
+	};
+	setAttributes: (attributes: { enhancedPagination: boolean }) => void;
+}
+
 const modalDescriptionId =
 	'wp-block-query-enhanced-pagination-modal__description';
 
-export default function EnhancedPaginationModal( {
+export default function EnhancedPaginationModal({
 	clientId,
 	attributes: { enhancedPagination },
 	setAttributes,
-} ) {
-	const [ isOpen, setOpen ] = useState( false );
+}: EnhancedPaginationModalProps) {
+	const [isOpen, setOpen] = useState(false);
 	const { hasBlocksFromPlugins, hasPostContentBlock, hasUnsupportedBlocks } =
-		useUnsupportedBlocks( clientId );
+		useUnsupportedBlocks(clientId);
 
-	useEffect( () => {
-		if ( enhancedPagination && hasUnsupportedBlocks ) {
-			setAttributes( { enhancedPagination: false } );
-			setOpen( true );
+	useEffect(() => {
+		if (enhancedPagination && hasUnsupportedBlocks) {
+			setAttributes({ enhancedPagination: false });
+			setOpen(true);
 		}
-	}, [ enhancedPagination, hasUnsupportedBlocks, setAttributes ] );
+	}, [enhancedPagination, hasUnsupportedBlocks, setAttributes]);
 
 	const closeModal = () => {
-		setOpen( false );
+		setOpen(false);
 	};
 
 	let notice = __(
 		'If you still want to prevent full page reloads, remove that block, then disable "Reload full page" again in the Query Block settings.'
 	);
-	if ( hasBlocksFromPlugins ) {
+	if (hasBlocksFromPlugins) {
 		notice =
 			__(
 				'Currently, avoiding full page reloads is not possible when non-interactive or non-client Navigation compatible blocks from plugins are present inside the Query block.'
 			) +
 			' ' +
 			notice;
-	} else if ( hasPostContentBlock ) {
+	} else if (hasPostContentBlock) {
 		notice =
 			__(
 				'Currently, avoiding full page reloads is not possible when a Content block is present inside the Query block.'
@@ -59,24 +67,24 @@ export default function EnhancedPaginationModal( {
 	return (
 		isOpen && (
 			<Modal
-				title={ __( 'Query block: Reload full page enabled' ) }
+				title={__('Query block: Reload full page enabled')}
 				className="wp-block-query__enhanced-pagination-modal"
-				aria={ {
+				aria={{
 					describedby: modalDescriptionId,
-				} }
+				}}
 				role="alertdialog"
 				focusOnMount="firstElement"
-				isDismissible={ false }
-				onRequestClose={ closeModal }
+				isDismissible={false}
+				onRequestClose={closeModal}
 			>
-				<VStack alignment="right" spacing={ 5 }>
-					<span id={ modalDescriptionId }>{ notice }</span>
+				<VStack alignment="right" spacing={5}>
+					<span id={modalDescriptionId}>{notice}</span>
 					<Button
 						__next40pxDefaultSize
 						variant="primary"
-						onClick={ closeModal }
+						onClick={closeModal}
 					>
-						{ __( 'OK' ) }
+						{__('OK')}
 					</Button>
 				</VStack>
 			</Modal>

@@ -58,10 +58,10 @@ module.exports = {
     'blocks/image-button/build/style': './blocks/image-button/style.scss',
     'blocks/image-button/build/editor': './blocks/image-button/editor.scss',
 
-    'blocks/query/build/index': './blocks/query/index.js',
-    'blocks/query/build/save': './blocks/query/save.js',
-    'blocks/query/build/view': './blocks/query/view.js',
-    'blocks/query/build/init': './blocks/query/init.js',
+    'blocks/query/build/index': './blocks/query/index.tsx',
+    'blocks/query/build/save': './blocks/query/save.tsx',
+    'blocks/query/build/view': './blocks/query/view.ts',
+    'blocks/query/build/init': './blocks/query/init.ts',
     'blocks/query/build/editor': './blocks/query/editor.scss'
   },
   output: {

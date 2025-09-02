@@ -22,6 +22,11 @@ import {
  * @property {string}        name The entity's name.
  */
 
+interface IHasNameAndId {
+	id: string | number;
+	name: string;
+}
+
 /**
  * The object used in Query block that contains info and helper mappings
  * from an array of IHasNameAndId objects.
@@ -33,6 +38,13 @@ import {
  * @property {string[]}                      names     Array with the entities' names.
  */
 
+interface QueryEntitiesInfo {
+	entities: IHasNameAndId[];
+	mapById: Record<string, IHasNameAndId>;
+	mapByName: Record<string, IHasNameAndId>;
+	names: string[];
+}
+
 /**
  * Returns a helper object with mapping from Objects that implement
  * the `IHasNameAndId` interface. The returned object is used for
@@ -41,7 +53,7 @@ import {
  * @param {IHasNameAndId[]} entities The entities to extract of helper object.
  * @return {QueryEntitiesInfo} The object with the entities information.
  */
-export const getEntitiesInfo = ( entities ) => {
+export const getEntitiesInfo = ( entities?: IHasNameAndId[] ): QueryEntitiesInfo => {
 	const mapping = entities?.reduce(
 		( accumulator, entity ) => {
 			const { mapById, mapByName, names } = accumulator;
@@ -50,10 +62,10 @@ export const getEntitiesInfo = ( entities ) => {
 			names.push( entity.name );
 			return accumulator;
 		},
-		{ mapById: {}, mapByName: {}, names: [] }
+		{ mapById: {} as Record<string, IHasNameAndId>, mapByName: {} as Record<string, IHasNameAndId>, names: [] as string[] }
 	);
 	return {
-		entities,
+		entities: entities || [],
 		...mapping,
 	};
 };
@@ -67,7 +79,7 @@ export const getEntitiesInfo = ( entities ) => {
  * @param {string} path   Path to the object property.
  * @return {*} Value of the object property at the specified path.
  */
-export const getValueFromObjectPath = ( object, path ) => {
+export const getValueFromObjectPath = ( object: any, path: string ): any => {
 	const normalizedPath = path.split( '.' );
 	let value = object;
 	normalizedPath.forEach( ( fieldName ) => {
@@ -85,7 +97,7 @@ export const getValueFromObjectPath = ( object, path ) => {
  * @param {string}   path     The path to map a `name` property from the entity.
  * @return {IHasNameAndId[]} An array of entities that now implement the `IHasNameAndId` interface.
  */
-export const mapToIHasNameAndId = ( entities, path ) => {
+export const mapToIHasNameAndId = ( entities: any[], path: string ): IHasNameAndId[] => {
 	return ( entities || [] ).map( ( entity ) => ( {
 		...entity,
 		name: decodeEntities( getValueFromObjectPath( entity, path ) ),
@@ -117,7 +129,7 @@ export const usePostTypes = () => {
 		return postTypes.reduce( ( accumulator, type ) => {
 			accumulator[ type.slug ] = type.taxonomies;
 			return accumulator;
-		}, {} );
+		}, {} as Record<string, string[]> );
 	}, [ postTypes ] );
 	const postTypesSelectOptions = useMemo(
 		() =>
@@ -135,7 +147,7 @@ export const usePostTypes = () => {
 			accumulator[ type.slug ] =
 				type.supports?.[ 'post-formats' ] || false;
 			return accumulator;
-		}, {} );
+		}, {} as Record<string, boolean> );
 	}, [ postTypes ] );
 	return {
 		postTypesTaxonomiesMap,
@@ -150,7 +162,7 @@ export const usePostTypes = () => {
  * @param {string} postType The post type from which to retrieve the associated taxonomies.
  * @return {Object[]} An array of the associated taxonomies.
  */
-export const useTaxonomies = ( postType ) => {
+export const useTaxonomies = ( postType: string ) => {
 	const taxonomies = useSelect(
 		( select ) => {
 			const { getTaxonomies, getPostType } = select( coreStore );
@@ -178,7 +190,7 @@ export const useTaxonomies = ( postType ) => {
  * @param {string} postType The post type to check.
  * @return {boolean} Whether a specific post type is hierarchical.
  */
-export function useIsPostTypeHierarchical( postType ) {
+export function useIsPostTypeHierarchical( postType: string ): boolean {
 	return useSelect(
 		( select ) => {
 			const type = select( coreStore ).getPostType( postType );
@@ -194,7 +206,7 @@ export function useIsPostTypeHierarchical( postType ) {
  * @param {string} postType The post type to check.
  * @return {OrderByOption[]} List of order options.
  */
-export function useOrderByOptions( postType ) {
+export function useOrderByOptions( postType: string ): any[] {
 	const supportsCustomOrder = useSelect(
 		( select ) => {
 			const type = select( coreStore ).getPostType( postType );
@@ -251,7 +263,7 @@ export function useOrderByOptions( postType ) {
  * @param {Object} attributes Block attributes.
  * @return {string[]} An array of the query attributes.
  */
-export function useAllowedControls( attributes ) {
+export function useAllowedControls( attributes: any ): string[] | undefined {
 	return useSelect(
 		( select ) =>
 			select( blocksStore ).getActiveBlockVariation(
@@ -262,7 +274,7 @@ export function useAllowedControls( attributes ) {
 		[ attributes ]
 	);
 }
-export function isControlAllowed( allowedControls, key ) {
+export function isControlAllowed( allowedControls: string[] | undefined, key: string ): boolean {
 	// Every controls is allowed if the list is not defined.
 	if ( ! allowedControls ) {
 		return true;
@@ -285,15 +297,15 @@ export function isControlAllowed( allowedControls, key ) {
  * @return {{ newBlocks: WPBlock[], queryClientIds: string[] }} An object with the cloned/transformed blocks and all the Query Loop clients from these blocks.
  */
 export const getTransformedBlocksFromPattern = (
-	blocks,
-	queryBlockAttributes
-) => {
+	blocks: any[],
+	queryBlockAttributes: any
+): { newBlocks: any[]; queryClientIds: string[] } => {
 	const {
 		query: { postType, inherit },
 		namespace,
 	} = queryBlockAttributes;
 	const clonedBlocks = blocks.map( ( block ) => cloneBlock( block ) );
-	const queryClientIds = [];
+	const queryClientIds: string[] = [];
 	const blocksQueue = [ ...clonedBlocks ];
 	while ( blocksQueue.length > 0 ) {
 		const block = blocksQueue.shift();
@@ -308,7 +320,7 @@ export const getTransformedBlocksFromPattern = (
 			}
 			queryClientIds.push( block.clientId );
 		}
-		block.innerBlocks?.forEach( ( innerBlock ) => {
+		block.innerBlocks?.forEach( ( innerBlock: any ) => {
 			blocksQueue.push( innerBlock );
 		} );
 	}
@@ -329,7 +341,7 @@ export const getTransformedBlocksFromPattern = (
  * @param {Object} attributes The block's attributes.
  * @return {string} The block name to be used in the patterns suggestions.
  */
-export function useBlockNameForPatterns( clientId, attributes ) {
+export function useBlockNameForPatterns( clientId: string, attributes: any ): string {
 	return useSelect(
 		( select ) => {
 			const activeVariationName = select(
@@ -380,7 +392,7 @@ export function useBlockNameForPatterns( clientId, attributes ) {
  * @param {Object} attributes The block's attributes.
  * @return {WPBlockVariation[]} The block variations to be suggested in setup flow, when clicking to `start blank`.
  */
-export function useScopedBlockVariations( attributes ) {
+export function useScopedBlockVariations( attributes: any ): any[] {
 	const { activeVariationName, blockVariations } = useSelect(
 		( select ) => {
 			const { getActiveBlockVariation, getBlockVariations } =
@@ -398,12 +410,12 @@ export function useScopedBlockVariations( attributes ) {
 	const variations = useMemo( () => {
 		// Filter out the variations that have defined a `namespace` attribute,
 		// which means they are 'connected' to specific variations of the block.
-		const isNotConnected = ( variation ) =>
+		const isNotConnected = ( variation: any ) =>
 			! variation.attributes?.namespace;
 		if ( ! activeVariationName ) {
 			return blockVariations.filter( isNotConnected );
 		}
-		const connectedVariations = blockVariations.filter( ( variation ) =>
+		const connectedVariations = blockVariations.filter( ( variation: any ) =>
 			variation.attributes?.namespace?.includes( activeVariationName )
 		);
 		if ( !! connectedVariations.length ) {
@@ -421,7 +433,7 @@ export function useScopedBlockVariations( attributes ) {
  * @param {string} name     The block type name.
  * @return {Object[]} An array of valid block patterns.
  */
-export const usePatterns = ( clientId, name ) => {
+export const usePatterns = ( clientId: string, name: string ): any[] => {
 	return useSelect(
 		( select ) => {
 			const { getBlockRootClientId, getPatternsByBlockTypes } =
@@ -443,6 +455,12 @@ export const usePatterns = ( clientId, name ) => {
  * @property {boolean} hasUnsupportedBlocks True if there are any unsupported blocks.
  */
 
+interface UnsupportedBlocksInfo {
+	hasBlocksFromPlugins: boolean;
+	hasPostContentBlock: boolean;
+	hasUnsupportedBlocks: boolean;
+}
+
 /**
  * Hook that returns an object with information about the unsupported blocks
  * present inside a Query Loop with the given `clientId`. The returned object
@@ -452,12 +470,16 @@ export const usePatterns = ( clientId, name ) => {
  * @param {string} clientId The block's client ID.
  * @return {UnsupportedBlocksInfo} The object containing the information.
  */
-export const useUnsupportedBlocks = ( clientId ) => {
+export const useUnsupportedBlocks = ( clientId: string ): UnsupportedBlocksInfo => {
 	return useSelect(
 		( select ) => {
 			const { getClientIdsOfDescendants, getBlockName } =
 				select( blockEditorStore );
-			const blocks = {};
+			const blocks: UnsupportedBlocksInfo = {
+				hasBlocksFromPlugins: false,
+				hasPostContentBlock: false,
+				hasUnsupportedBlocks: false,
+			};
 			getClientIdsOfDescendants( clientId ).forEach(
 				( descendantClientId ) => {
 					const blockName = getBlockName( descendantClientId );
@@ -500,7 +522,7 @@ export const useUnsupportedBlocks = ( clientId ) => {
  * @param {string} templateSlug Current template slug based on context.
  * @return {Object} An object with isSingular and templateType properties.
  */
-export function getQueryContextFromTemplate( templateSlug ) {
+export function getQueryContextFromTemplate( templateSlug?: string ): { isSingular: boolean; templateType?: string } {
 	// In the Post Editor, the template slug is not available.
 	if ( ! templateSlug ) {
 		return { isSingular: true };

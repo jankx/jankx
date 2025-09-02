@@ -24,12 +24,26 @@ import { useScopedBlockVariations } from '../utils';
 import { useBlockPatterns } from './pattern-selection';
 import QueryToolbar from './query-toolbar';
 
+interface QueryPlaceholderProps {
+	attributes: any;
+	clientId: string;
+	name: string;
+	openPatternSelectionModal: () => void;
+}
+
+interface QueryVariationPickerProps {
+	clientId: string;
+	attributes: any;
+	icon: any;
+	label: string;
+}
+
 export default function QueryPlaceholder( {
 	attributes,
 	clientId,
 	name,
 	openPatternSelectionModal,
-} ) {
+}: QueryPlaceholderProps ) {
 	const [ isStartingBlank, setIsStartingBlank ] = useState( false );
 	const [ containerWidth, setContainerWidth ] = useState( 0 );
 
@@ -122,7 +136,7 @@ export default function QueryPlaceholder( {
 	);
 }
 
-function QueryVariationPicker( { clientId, attributes, icon, label } ) {
+function QueryVariationPicker( { clientId, attributes, icon, label }: QueryVariationPickerProps ) {
 	const scopeVariations = useScopedBlockVariations( attributes );
 	const { replaceInnerBlocks } = useDispatch( blockEditorStore );
 	const blockProps = useBlockProps();

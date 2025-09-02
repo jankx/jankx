@@ -15,12 +15,12 @@ import {
 // Function unlock is not needed - removed dependency on lock-unlock.js
 
 // Helper function to clean empty objects (similar to cleanEmptyObject)
-const cleanEmptyObject = (obj) => {
+const cleanEmptyObject = (obj: any): any => {
 	if (!obj || typeof obj !== 'object') {
 		return obj;
 	}
 
-	const cleaned = {};
+	const cleaned: any = {};
 	let hasValues = false;
 
 	for (const [key, value] of Object.entries(obj)) {
@@ -41,7 +41,7 @@ const cleanEmptyObject = (obj) => {
 	return hasValues ? cleaned : undefined;
 };
 
-const migrateToTaxQuery = ( attributes ) => {
+const migrateToTaxQuery = ( attributes: any ) => {
 	const { query } = attributes;
 	const { categoryIds, tagIds, ...newQuery } = query;
 
@@ -59,7 +59,7 @@ const migrateToTaxQuery = ( attributes ) => {
 	};
 };
 
-const migrateColors = ( attributes, innerBlocks ) => {
+const migrateColors = ( attributes: any, innerBlocks: any ) => {
 	// Remove color style attributes from the Query block.
 	const { style, backgroundColor, gradient, textColor, ...newAttributes } =
 		attributes;
@@ -148,10 +148,10 @@ const migrateColors = ( attributes, innerBlocks ) => {
 	return [ newAttributes, [ newGroupBlock ] ];
 };
 
-const hasSingleInnerGroupBlock = ( innerBlocks = [] ) =>
+const hasSingleInnerGroupBlock = ( innerBlocks: any[] = [] ): boolean =>
 	innerBlocks.length === 1 && innerBlocks[ 0 ].name === 'core/group';
 
-const migrateToConstrainedLayout = ( attributes ) => {
+const migrateToConstrainedLayout = ( attributes: any ) => {
 	const { layout = null } = attributes;
 	if ( ! layout ) {
 		return attributes;
@@ -172,7 +172,7 @@ const migrateToConstrainedLayout = ( attributes ) => {
 	return attributes;
 };
 
-const findPostTemplateBlock = ( innerBlocks = [] ) => {
+const findPostTemplateBlock = ( innerBlocks: any[] = [] ): any => {
 	let foundBlock = null;
 	for ( const block of innerBlocks ) {
 		if ( block.name === 'core/post-template' ) {
@@ -185,7 +185,7 @@ const findPostTemplateBlock = ( innerBlocks = [] ) => {
 	return foundBlock;
 };
 
-const replacePostTemplateBlock = ( innerBlocks = [], replacementBlock ) => {
+const replacePostTemplateBlock = ( innerBlocks: any[], replacementBlock: any ): any[] => {
 	innerBlocks.forEach( ( block, index ) => {
 		if ( block.name === 'core/post-template' ) {
 			innerBlocks.splice( index, 1, replacementBlock );
@@ -199,7 +199,7 @@ const replacePostTemplateBlock = ( innerBlocks = [], replacementBlock ) => {
 	return innerBlocks;
 };
 
-const migrateDisplayLayout = ( attributes, innerBlocks ) => {
+const migrateDisplayLayout = ( attributes: any, innerBlocks: any ) => {
 	const { displayLayout = null, ...newAttributes } = attributes;
 	if ( ! displayLayout ) {
 		return [ attributes, innerBlocks ];
@@ -265,7 +265,7 @@ const v1 = {
 	supports: {
 		html: false,
 	},
-	migrate( attributes, innerBlocks ) {
+	migrate( attributes: any, innerBlocks: any ) {
 		const withTaxQuery = migrateToTaxQuery( attributes );
 		const { layout, ...restWithTaxQuery } = withTaxQuery;
 		const newAttributes = {
@@ -323,9 +323,9 @@ const v2 = {
 		},
 		layout: true,
 	},
-	isEligible: ( { query: { categoryIds, tagIds } = {} } ) =>
+	isEligible: ( { query: { categoryIds, tagIds } = {} }: any ) =>
 		categoryIds || tagIds,
-	migrate( attributes, innerBlocks ) {
+	migrate( attributes: any, innerBlocks: any ) {
 		const withTaxQuery = migrateToTaxQuery( attributes );
 		const [ withColorAttributes, withColorInnerBlocks ] = migrateColors(
 			withTaxQuery,
@@ -338,7 +338,7 @@ const v2 = {
 			withColorInnerBlocks
 		);
 	},
-	save( { attributes: { tagName: Tag = 'div' } } ) {
+	save( { attributes: { tagName: Tag = 'div' } }: any ) {
 		const blockProps = useBlockProps.save();
 		const innerBlocksProps = useInnerBlocksProps.save( blockProps );
 		return <Tag { ...innerBlocksProps } />;
@@ -396,7 +396,7 @@ const v3 = {
 		},
 		layout: true,
 	},
-	isEligible( attributes ) {
+	isEligible( attributes: any ) {
 		const { style, backgroundColor, gradient, textColor } = attributes;
 		return (
 			backgroundColor ||
@@ -406,7 +406,7 @@ const v3 = {
 			style?.elements?.link
 		);
 	},
-	migrate( attributes, innerBlocks ) {
+	migrate( attributes: any, innerBlocks: any ) {
 		const [ withColorAttributes, withColorInnerBlocks ] = migrateColors(
 			attributes,
 			innerBlocks
@@ -418,7 +418,7 @@ const v3 = {
 			withColorInnerBlocks
 		);
 	},
-	save( { attributes: { tagName: Tag = 'div' } } ) {
+	save( { attributes: { tagName: Tag = 'div' } }: any ) {
 		const blockProps = useBlockProps.save();
 		const innerBlocksProps = useInnerBlocksProps.save( blockProps );
 		return <Tag { ...innerBlocksProps } />;
@@ -475,15 +475,15 @@ const v4 = {
 		},
 		layout: true,
 	},
-	save( { attributes: { tagName: Tag = 'div' } } ) {
+	save( { attributes: { tagName: Tag = 'div' } }: any ) {
 		const blockProps = useBlockProps.save();
 		const innerBlocksProps = useInnerBlocksProps.save( blockProps );
 		return <Tag { ...innerBlocksProps } />;
 	},
-	isEligible: ( { layout } ) =>
+	isEligible: ( { layout }: any ) =>
 		layout?.inherit ||
 		( layout?.contentSize && layout?.type !== 'constrained' ),
-	migrate( attributes, innerBlocks ) {
+	migrate( attributes: any, innerBlocks: any ) {
 		const withConstrainedLayoutAttributes =
 			migrateToConstrainedLayout( attributes );
 		return migrateDisplayLayout(
@@ -536,12 +536,12 @@ const v5 = {
 		html: false,
 		layout: true,
 	},
-	save( { attributes: { tagName: Tag = 'div' } } ) {
+	save( { attributes: { tagName: Tag = 'div' } }: any ) {
 		const blockProps = useBlockProps.save();
 		const innerBlocksProps = useInnerBlocksProps.save( blockProps );
 		return <Tag { ...innerBlocksProps } />;
 	},
-	isEligible: ( { displayLayout } ) => {
+	isEligible: ( { displayLayout }: any ) => {
 		return !! displayLayout;
 	},
 	migrate: migrateDisplayLayout,

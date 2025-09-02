@@ -26,8 +26,22 @@ import EnhancedPaginationModal from './enhanced-pagination-modal';
 import { getQueryContextFromTemplate } from '../utils';
 import QueryToolbar from './query-toolbar';
 
+interface HTMLElementControlProps {
+	tagName: string;
+	onChange: ( value: string ) => void;
+	options: Array<{ label: string; value: string }>;
+}
+
+interface QueryContentProps {
+	attributes: any;
+	setAttributes: ( attributes: any ) => void;
+	clientId: string;
+	context: any;
+	name: string;
+}
+
 // Simple HTML Element Control component
-const HTMLElementControl = ({ tagName, onChange, options }) => {
+const HTMLElementControl = ({ tagName, onChange, options }: HTMLElementControlProps ) => {
 	return (
 		<PanelBody title={__('HTML element')}>
 			<SelectControl
@@ -49,7 +63,7 @@ export default function QueryContent( {
 	clientId,
 	context,
 	name,
-} ) {
+}: QueryContentProps ) {
 	const {
 		queryId,
 		query,
@@ -100,14 +114,14 @@ export default function QueryContent( {
 	// because updates are batched after the render and changes in different query properties
 	// would cause to override previous wanted changes.
 	const updateQuery = useCallback(
-		( newQuery ) =>
-			setAttributes( ( prevAttributes ) => ( {
+		( newQuery: any ) =>
+			setAttributes( ( prevAttributes: any ) => ( {
 				query: { ...prevAttributes.query, ...newQuery },
 			} ) ),
 		[ setAttributes ]
 	);
 	useEffect( () => {
-		const newQuery = {};
+		const newQuery: any = {};
 		// When we inherit from global query always need to set the `perPage`
 		// based on the reading settings.
 		if ( inherit && query.perPage !== postsPerPage ) {

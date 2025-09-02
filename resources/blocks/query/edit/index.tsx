@@ -12,7 +12,13 @@ import QueryContent from './query-content';
 import QueryPlaceholder from './query-placeholder';
 import { PatternSelectionModal } from './pattern-selection';
 
-const QueryEdit = ( props ) => {
+interface QueryEditProps {
+	clientId: string;
+	attributes: any;
+	[name: string]: any;
+}
+
+const QueryEdit = ( props: QueryEditProps ) => {
 	const { clientId, attributes } = props;
 	const [ isPatternSelectionModalOpen, setIsPatternSelectionModalOpen ] =
 		useState( false );

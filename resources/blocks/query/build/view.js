@@ -124,7 +124,7 @@ var __webpack_exports__ = {};
 // This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
 (() => {
 /*!******************************!*\
-  !*** ./blocks/query/view.js ***!
+  !*** ./blocks/query/view.ts ***!
   \******************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_interactivity__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/interactivity */ "@wordpress/interactivity");
@@ -161,7 +161,7 @@ const isValidEvent = event => event.button === 0 &&
 
         // Focus the first anchor of the Query block.
         const firstAnchor = `.wp-block-post-template a[href]`;
-        queryRef.querySelector(firstAnchor)?.focus();
+        queryRef?.querySelector(firstAnchor)?.focus();
       }
     }),
     *prefetch() {

@@ -21,11 +21,24 @@ import {
 } from '../utils';
 import { searchPatterns } from '../../utils/search-patterns';
 
+interface PatternSelectionModalProps {
+	clientId: string;
+	attributes: any;
+	setIsPatternSelectionModalOpen: ( isOpen: boolean ) => void;
+}
+
+interface PatternSelectionProps {
+	clientId: string;
+	attributes: any;
+	showTitlesAsTooltip?: boolean;
+	showSearch?: boolean;
+}
+
 export function PatternSelectionModal( {
 	clientId,
 	attributes,
 	setIsPatternSelectionModalOpen,
-} ) {
+}: PatternSelectionModalProps ) {
 	return (
 		<Modal
 			overlayClassName="block-library-query-pattern__selection-modal"
@@ -38,7 +51,7 @@ export function PatternSelectionModal( {
 	);
 }
 
-export function useBlockPatterns( clientId, attributes ) {
+export function useBlockPatterns( clientId: string, attributes: any ) {
 	const blockNameForPatterns = useBlockNameForPatterns(
 		clientId,
 		attributes
@@ -51,7 +64,7 @@ export default function PatternSelection( {
 	attributes,
 	showTitlesAsTooltip = false,
 	showSearch = true,
-} ) {
+}: PatternSelectionProps ) {
 	const [ searchValue, setSearchValue ] = useState( '' );
 	const { replaceBlock, selectBlock } = useDispatch( blockEditorStore );
 	const blockPatterns = useBlockPatterns( clientId, attributes );
@@ -69,7 +82,7 @@ export default function PatternSelection( {
 		return searchPatterns( blockPatterns, searchValue );
 	}, [ blockPatterns, searchValue ] );
 
-	const onBlockPatternSelect = ( pattern, blocks ) => {
+	const onBlockPatternSelect = ( pattern: any, blocks: any ) => {
 		const { newBlocks, queryClientIds } = getTransformedBlocksFromPattern(
 			blocks,
 			attributes
