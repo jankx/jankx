@@ -27,9 +27,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _utils_lock_unlock__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils/lock-unlock */ "./blocks/query/utils/lock-unlock.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__);
 /**
  * WordPress dependencies
  */
@@ -39,7 +38,7 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * Internal dependencies
  */
-
+// Function unlock is not needed - removed dependency on lock-unlock.js
 
 // Helper function to clean empty objects (similar to cleanEmptyObject)
 
@@ -281,7 +280,7 @@ const v1 = {
     return migrateDisplayLayout(newAttributes, innerBlocks);
   },
   save() {
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InnerBlocks.Content, {});
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InnerBlocks.Content, {});
   }
 };
 
@@ -348,7 +347,7 @@ const v2 = {
   }) {
     const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps.save();
     const innerBlocksProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useInnerBlocksProps.save(blockProps);
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Tag, {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Tag, {
       ...innerBlocksProps
     });
   }
@@ -426,7 +425,7 @@ const v3 = {
   }) {
     const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps.save();
     const innerBlocksProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useInnerBlocksProps.save(blockProps);
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Tag, {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Tag, {
       ...innerBlocksProps
     });
   }
@@ -488,7 +487,7 @@ const v4 = {
   }) {
     const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps.save();
     const innerBlocksProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useInnerBlocksProps.save(blockProps);
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Tag, {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Tag, {
       ...innerBlocksProps
     });
   },
@@ -550,7 +549,7 @@ const v5 = {
   }) {
     const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps.save();
     const innerBlocksProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useInnerBlocksProps.save(blockProps);
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Tag, {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Tag, {
       ...innerBlocksProps
     });
   },
@@ -2179,13 +2178,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__);
 /* harmony import */ var _inspector_controls_enhanced_pagination_control__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./inspector-controls/enhanced-pagination-control */ "./blocks/query/edit/inspector-controls/enhanced-pagination-control.js");
-/* harmony import */ var _utils_lock_unlock__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../utils/lock-unlock */ "./blocks/query/utils/lock-unlock.js");
-/* harmony import */ var _inspector_controls__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./inspector-controls */ "./blocks/query/edit/inspector-controls/index.js");
-/* harmony import */ var _enhanced_pagination_modal__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./enhanced-pagination-modal */ "./blocks/query/edit/enhanced-pagination-modal.js");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../utils */ "./blocks/query/utils.js");
-/* harmony import */ var _query_toolbar__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./query-toolbar */ "./blocks/query/edit/query-toolbar.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__);
+/* harmony import */ var _inspector_controls__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./inspector-controls */ "./blocks/query/edit/inspector-controls/index.js");
+/* harmony import */ var _enhanced_pagination_modal__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./enhanced-pagination-modal */ "./blocks/query/edit/enhanced-pagination-modal.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../utils */ "./blocks/query/utils.js");
+/* harmony import */ var _query_toolbar__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./query-toolbar */ "./blocks/query/edit/query-toolbar.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__);
 /**
  * WordPress dependencies
  */
@@ -2201,7 +2199,7 @@ __webpack_require__.r(__webpack_exports__);
  * Internal dependencies
  */
 
-
+// Function unlock is not needed - removed dependency on lock-unlock.js
 
 
 
@@ -2214,9 +2212,9 @@ const HTMLElementControl = ({
   onChange,
   options
 }) => {
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelBody, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelBody, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('HTML element'),
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.SelectControl, {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.SelectControl, {
       label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('HTML element'),
       value: tagName,
       onChange: onChange,
@@ -2247,7 +2245,7 @@ function QueryContent({
   } = context;
   const {
     isSingular
-  } = (0,_utils__WEBPACK_IMPORTED_MODULE_11__.getQueryContextFromTemplate)(templateSlug);
+  } = (0,_utils__WEBPACK_IMPORTED_MODULE_10__.getQueryContextFromTemplate)(templateSlug);
   const {
     __unstableMarkNextChangeAsNotPersistent
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.store);
@@ -2319,19 +2317,19 @@ function QueryContent({
       });
     }
   }, [queryId, instanceId, __unstableMarkNextChangeAsNotPersistent, setAttributes]);
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.Fragment, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.BlockControls, {
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_query_toolbar__WEBPACK_IMPORTED_MODULE_12__["default"], {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.BlockControls, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_query_toolbar__WEBPACK_IMPORTED_MODULE_11__["default"], {
         clientId: clientId,
         attributes: attributes,
         hasInnerBlocks: true
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_enhanced_pagination_modal__WEBPACK_IMPORTED_MODULE_10__["default"], {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_enhanced_pagination_modal__WEBPACK_IMPORTED_MODULE_9__["default"], {
       attributes: attributes,
       setAttributes: setAttributes,
       clientId: clientId
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.InspectorControls, {
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_inspector_controls__WEBPACK_IMPORTED_MODULE_9__["default"], {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.InspectorControls, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_inspector_controls__WEBPACK_IMPORTED_MODULE_8__["default"], {
         name: name,
         attributes: attributes,
         setQuery: updateQuery,
@@ -2339,9 +2337,9 @@ function QueryContent({
         clientId: clientId,
         isSingular: isSingular
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.InspectorControls, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.InspectorControls, {
       group: "advanced",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(HTMLElementControl, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(HTMLElementControl, {
         tagName: TagName,
         onChange: value => setAttributes({
           tagName: value
@@ -2359,12 +2357,12 @@ function QueryContent({
           label: '<aside>',
           value: 'aside'
         }]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_inspector_controls_enhanced_pagination_control__WEBPACK_IMPORTED_MODULE_7__["default"], {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_inspector_controls_enhanced_pagination_control__WEBPACK_IMPORTED_MODULE_7__["default"], {
         enhancedPagination: enhancedPagination,
         setAttributes: setAttributes,
         clientId: clientId
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(TagName, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(TagName, {
       ...innerBlocksProps
     })]
   });
@@ -3189,123 +3187,6 @@ function getQueryContextFromTemplate(templateSlug) {
     templateType
   };
 }
-
-/***/ }),
-
-/***/ "./blocks/query/utils/lock-unlock.js":
-/*!*******************************************!*\
-  !*** ./blocks/query/utils/lock-unlock.js ***!
-  \*******************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   clearBlockSelection: () => (/* binding */ clearBlockSelection),
-/* harmony export */   getBlock: () => (/* binding */ getBlock),
-/* harmony export */   getBlockEditorSettings: () => (/* binding */ getBlockEditorSettings),
-/* harmony export */   getBlockTypes: () => (/* binding */ getBlockTypes),
-/* harmony export */   getBlocks: () => (/* binding */ getBlocks),
-/* harmony export */   insertBlock: () => (/* binding */ insertBlock),
-/* harmony export */   lock: () => (/* binding */ lock),
-/* harmony export */   multiSelect: () => (/* binding */ multiSelect),
-/* harmony export */   removeBlock: () => (/* binding */ removeBlock),
-/* harmony export */   replaceBlock: () => (/* binding */ replaceBlock),
-/* harmony export */   replaceInnerBlocks: () => (/* binding */ replaceInnerBlocks),
-/* harmony export */   selectBlock: () => (/* binding */ selectBlock),
-/* harmony export */   toggleBlockSelection: () => (/* binding */ toggleBlockSelection),
-/* harmony export */   unlock: () => (/* binding */ unlock),
-/* harmony export */   updateBlockAttributes: () => (/* binding */ updateBlockAttributes),
-/* harmony export */   updateBlockEditorSettings: () => (/* binding */ updateBlockEditorSettings)
-/* harmony export */ });
-/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
-/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__);
-/**
- * WordPress dependencies
- */
-
-
-
-/**
- * Wrapper functions to access block editor functionality
- * Instead of using private APIs, we use public APIs
- */
-
-// Get block editor settings
-function getBlockEditorSettings() {
-  return (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.select)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.store).getSettings();
-}
-
-// Update block editor settings
-function updateBlockEditorSettings(settings) {
-  (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.dispatch)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.store).updateSettings(settings);
-}
-
-// Get block types
-function getBlockTypes() {
-  return (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.select)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.store).getBlockTypes();
-}
-
-// Get block by client ID
-function getBlock(clientId) {
-  return (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.select)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.store).getBlock(clientId);
-}
-
-// Get blocks
-function getBlocks() {
-  return (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.select)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.store).getBlocks();
-}
-
-// Insert block
-function insertBlock(block, index) {
-  return (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.dispatch)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.store).insertBlock(block, index);
-}
-
-// Replace block
-function replaceBlock(clientId, block) {
-  return (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.dispatch)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.store).replaceBlock(clientId, block);
-}
-
-// Remove block
-function removeBlock(clientId) {
-  return (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.dispatch)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.store).removeBlock(clientId);
-}
-
-// Select block
-function selectBlock(clientId) {
-  return (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.dispatch)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.store).selectBlock(clientId);
-}
-
-// Multi select blocks
-function multiSelect(start, end) {
-  return (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.dispatch)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.store).multiSelect(start, end);
-}
-
-// Clear block selection
-function clearBlockSelection() {
-  return (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.dispatch)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.store).clearBlockSelection();
-}
-
-// Toggle block selection
-function toggleBlockSelection(clientId, isSelected) {
-  return (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.dispatch)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.store).toggleBlockSelection(clientId, isSelected);
-}
-
-// Replace inner blocks
-function replaceInnerBlocks(clientId, blocks, updateSelection) {
-  return (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.dispatch)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.store).replaceInnerBlocks(clientId, blocks, updateSelection);
-}
-
-// Update block attributes
-function updateBlockAttributes(clientId, attributes) {
-  return (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.dispatch)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.store).updateBlockAttributes(clientId, attributes);
-}
-
-// For backward compatibility, export empty lock/unlock functions
-const lock = () => {};
-const unlock = () => {};
 
 /***/ }),
 

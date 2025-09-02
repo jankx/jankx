@@ -20,7 +20,7 @@ import { PanelBody, SelectControl } from '@wordpress/components';
  * Internal dependencies
  */
 import EnhancedPaginationControl from './inspector-controls/enhanced-pagination-control';
-import { unlock } from '../utils/lock-unlock';
+// Function unlock is not needed - removed dependency on lock-unlock.js
 import QueryInspectorControls from './inspector-controls';
 import EnhancedPaginationModal from './enhanced-pagination-modal';
 import { getQueryContextFromTemplate } from '../utils';

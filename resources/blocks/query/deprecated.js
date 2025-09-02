@@ -12,7 +12,7 @@ import {
 /**
  * Internal dependencies
  */
-import { unlock } from './utils/lock-unlock';
+// Function unlock is not needed - removed dependency on lock-unlock.js
 
 // Helper function to clean empty objects (similar to cleanEmptyObject)
 const cleanEmptyObject = (obj) => {
