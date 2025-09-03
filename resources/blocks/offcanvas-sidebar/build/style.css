@@ -66,7 +66,6 @@
   height: 100vh;
   overflow: hidden;
   /* Base sidebar styles */
-  /* Right position */
 }
 .offcanvas-sidebar-preview .offcanvas-sidebar {
   position: fixed;
@@ -83,8 +82,6 @@
   opacity: 0;
   visibility: hidden;
   /* Sidebar Header */
-  /* Sidebar Menu */
-  /* Sidebar Content */
 }
 .offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-header {
   display: flex;
@@ -116,6 +113,9 @@
 }
 .offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-header .close-button:hover {
   background: rgba(255, 255, 255, 0.1);
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar {
+  /* Sidebar Menu */
 }
 .offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-menu {
   padding: 0;
@@ -157,28 +157,32 @@
 .offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-menu a .menu-text {
   flex: 1;
 }
+.offcanvas-sidebar-preview .offcanvas-sidebar {
+  /* Sidebar Content */
+}
 .offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content {
   padding: 20px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   margin-top: auto;
   flex: 1;
   overflow-y: auto;
-  /* Nested blocks styling */
-  /* Core blocks specific styling */
-  /* Jankx blocks specific styling */
-  /* Nested offcanvas sidebar */
-  /* Content appender styling */
 }
 .offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content p {
   margin: 0 0 16px 0;
   line-height: 1.6;
   opacity: 0.9;
 }
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content {
+  /* Nested blocks styling */
+}
 .offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block {
   margin-bottom: 16px;
 }
 .offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block:last-child {
   margin-bottom: 0;
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content {
+  /* Core blocks specific styling */
 }
 .offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-heading {
   color: inherit;
@@ -515,6 +519,9 @@
 .offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-embed iframe {
   border-radius: 4px;
 }
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content {
+  /* Jankx blocks specific styling */
+}
 .offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-jankx-language-switcher {
   margin: 20px 0;
 }
@@ -539,6 +546,9 @@
 }
 .offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-jankx-icon-button .icon-button:hover {
   background: rgba(255, 255, 255, 0.2);
+}
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content {
+  /* Nested offcanvas sidebar */
 }
 .offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-jankx-offcanvas-sidebar {
   margin: 20px 0;
@@ -581,6 +591,9 @@
 .offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-jankx-offcanvas-sidebar .offcanvas-sidebar-block .sidebar-content .wp-block-paragraph:last-child {
   margin-bottom: 0;
 }
+.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content {
+  /* Content appender styling */
+}
 .offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .sidebar-content-appender {
   text-align: center;
   padding: 20px;
@@ -593,6 +606,9 @@
   color: rgba(255, 255, 255, 0.7);
   font-style: italic;
   font-size: 0.9em;
+}
+.offcanvas-sidebar-preview {
+  /* Right position */
 }
 .offcanvas-sidebar-preview.position-right .offcanvas-sidebar {
   left: auto;
