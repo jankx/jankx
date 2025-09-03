@@ -1,6 +1,6 @@
-@import "../../../node_modules/@wordpress/base-styles/variables";
-@import "../../../node_modules/@wordpress/base-styles/mixins";
-@import "../../../node_modules/@wordpress/base-styles/breakpoints";
+@use "../../../node_modules/@wordpress/base-styles/variables" as *;
+@use "../../../node_modules/@wordpress/base-styles/mixins" as *;
+@use "../../../node_modules/@wordpress/base-styles/breakpoints" as *;
 
 .block-library-query-pattern__selection-modal {
 	.block-editor-block-patterns-list {

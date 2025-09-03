@@ -1,6 +1,6 @@
-@import "../../../node_modules/@wordpress/base-styles/variables";
-@import "../../../node_modules/@wordpress/base-styles/mixins";
-@import "../../../node_modules/@wordpress/base-styles/breakpoints";
+@use "../../../node_modules/@wordpress/base-styles/variables" as *;
+@use "../../../node_modules/@wordpress/base-styles/mixins" as *;
+@use "../../../node_modules/@wordpress/base-styles/breakpoints" as *;
 
 $max-button-columns: 6;
 $min-button-width: 80px;

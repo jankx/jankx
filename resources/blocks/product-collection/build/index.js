@@ -6050,7 +6050,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/heading.js");
-/* harmony import */ var _woocommerce_atomic_blocks_product_elements_title_block_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @woocommerce/atomic-blocks/product-elements/title/block.json */ "./node_modules/woocommerce-blocks/js/atomic/blocks/product-elements/title/block.json");
+/* harmony import */ var _woocommerce_atomic_blocks_product_elements_title_constants__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @woocommerce/atomic-blocks/product-elements/title/constants */ "./node_modules/woocommerce-blocks/js/atomic/blocks/product-elements/title/constants.tsx");
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utils */ "./blocks/product-collection/variations/elements/utils.tsx");
 /* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../block.json */ "./blocks/product-collection/block.json");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
@@ -6072,11 +6072,11 @@ const CORE_NAME = 'core/post-title';
 const VARIATION_NAME = `${_block_json__WEBPACK_IMPORTED_MODULE_4__.name}/product-title`;
 const registerProductTitle = () => {
   (0,_utils__WEBPACK_IMPORTED_MODULE_3__.registerElementVariation)(CORE_NAME, {
-    blockDescription: _woocommerce_atomic_blocks_product_elements_title_block_json__WEBPACK_IMPORTED_MODULE_2__.description,
+    blockDescription: _woocommerce_atomic_blocks_product_elements_title_constants__WEBPACK_IMPORTED_MODULE_2__.description,
     blockIcon: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.Icon, {
       icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_1__["default"]
     }),
-    blockTitle: _woocommerce_atomic_blocks_product_elements_title_block_json__WEBPACK_IMPORTED_MODULE_2__.title,
+    blockTitle: _woocommerce_atomic_blocks_product_elements_title_constants__WEBPACK_IMPORTED_MODULE_2__.title,
     variationName: VARIATION_NAME,
     scope: ['block', 'inserter']
   });
@@ -6935,99 +6935,6 @@ const compareVersions = (v1, v2) => {
 
 /***/ }),
 
-/***/ "./node_modules/compare-versions/lib/esm/index.js":
-/*!********************************************************!*\
-  !*** ./node_modules/compare-versions/lib/esm/index.js ***!
-  \********************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   compare: () => (/* reexport safe */ _compare_js__WEBPACK_IMPORTED_MODULE_0__.compare),
-/* harmony export */   compareVersions: () => (/* reexport safe */ _compareVersions_js__WEBPACK_IMPORTED_MODULE_1__.compareVersions),
-/* harmony export */   satisfies: () => (/* reexport safe */ _satisfies_js__WEBPACK_IMPORTED_MODULE_2__.satisfies),
-/* harmony export */   validate: () => (/* reexport safe */ _validate_js__WEBPACK_IMPORTED_MODULE_3__.validate),
-/* harmony export */   validateStrict: () => (/* reexport safe */ _validate_js__WEBPACK_IMPORTED_MODULE_3__.validateStrict)
-/* harmony export */ });
-/* harmony import */ var _compare_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./compare.js */ "./node_modules/compare-versions/lib/esm/compare.js");
-/* harmony import */ var _compareVersions_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./compareVersions.js */ "./node_modules/compare-versions/lib/esm/compareVersions.js");
-/* harmony import */ var _satisfies_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./satisfies.js */ "./node_modules/compare-versions/lib/esm/satisfies.js");
-/* harmony import */ var _validate_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./validate.js */ "./node_modules/compare-versions/lib/esm/validate.js");
-
-
-
-
-
-/***/ }),
-
-/***/ "./node_modules/compare-versions/lib/esm/satisfies.js":
-/*!************************************************************!*\
-  !*** ./node_modules/compare-versions/lib/esm/satisfies.js ***!
-  \************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   satisfies: () => (/* binding */ satisfies)
-/* harmony export */ });
-/* harmony import */ var _compare_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./compare.js */ "./node_modules/compare-versions/lib/esm/compare.js");
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils.js */ "./node_modules/compare-versions/lib/esm/utils.js");
-
-
-/**
- * Match [npm semver](https://docs.npmjs.com/cli/v6/using-npm/semver) version range.
- *
- * @param version Version number to match
- * @param range Range pattern for version
- * @returns `true` if the version number is within the range, `false` otherwise.
- *
- * @example
- * ```
- * satisfies('1.1.0', '^1.0.0'); // return true
- * satisfies('1.1.0', '~1.0.0'); // return false
- * ```
- */
-const satisfies = (version, range) => {
-  // clean input
-  range = range.replace(/([><=]+)\s+/g, '$1');
-  // handle multiple comparators
-  if (range.includes('||')) {
-    return range.split('||').some(r => satisfies(version, r));
-  } else if (range.includes(' - ')) {
-    const [a, b] = range.split(' - ', 2);
-    return satisfies(version, `>=${a} <=${b}`);
-  } else if (range.includes(' ')) {
-    return range.trim().replace(/\s{2,}/g, ' ').split(' ').every(r => satisfies(version, r));
-  }
-  // if no range operator then "="
-  const m = range.match(/^([<>=~^]+)/);
-  const op = m ? m[1] : '=';
-  // if gt/lt/eq then operator compare
-  if (op !== '^' && op !== '~') return (0,_compare_js__WEBPACK_IMPORTED_MODULE_0__.compare)(version, range, op);
-  // else range of either "~" or "^" is assumed
-  const [v1, v2, v3,, vp] = (0,_utils_js__WEBPACK_IMPORTED_MODULE_1__.validateAndParse)(version);
-  const [r1, r2, r3,, rp] = (0,_utils_js__WEBPACK_IMPORTED_MODULE_1__.validateAndParse)(range);
-  const v = [v1, v2, v3];
-  const r = [r1, r2 !== null && r2 !== void 0 ? r2 : 'x', r3 !== null && r3 !== void 0 ? r3 : 'x'];
-  // validate pre-release
-  if (rp) {
-    if (!vp) return false;
-    if ((0,_utils_js__WEBPACK_IMPORTED_MODULE_1__.compareSegments)(v, r) !== 0) return false;
-    if ((0,_utils_js__WEBPACK_IMPORTED_MODULE_1__.compareSegments)(vp.split('.'), rp.split('.')) === -1) return false;
-  }
-  // first non-zero number
-  const nonZero = r.findIndex(v => v !== '0') + 1;
-  // pointer to where segments can be >=
-  const i = op === '~' ? 2 : nonZero > 1 ? nonZero : 1;
-  // before pointer must be equal
-  if ((0,_utils_js__WEBPACK_IMPORTED_MODULE_1__.compareSegments)(v.slice(0, i), r.slice(0, i)) !== 0) return false;
-  // after pointer must be >=
-  if ((0,_utils_js__WEBPACK_IMPORTED_MODULE_1__.compareSegments)(v.slice(i), r.slice(i)) === -1) return false;
-  return true;
-};
-
-/***/ }),
-
 /***/ "./node_modules/compare-versions/lib/esm/utils.js":
 /*!********************************************************!*\
   !*** ./node_modules/compare-versions/lib/esm/utils.js ***!
@@ -7072,50 +6979,6 @@ const compareSegments = (a, b) => {
   }
   return 0;
 };
-
-/***/ }),
-
-/***/ "./node_modules/compare-versions/lib/esm/validate.js":
-/*!***********************************************************!*\
-  !*** ./node_modules/compare-versions/lib/esm/validate.js ***!
-  \***********************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   validate: () => (/* binding */ validate),
-/* harmony export */   validateStrict: () => (/* binding */ validateStrict)
-/* harmony export */ });
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils.js */ "./node_modules/compare-versions/lib/esm/utils.js");
-
-/**
- * Validate [semver](https://semver.org/) version strings.
- *
- * @param version Version number to validate
- * @returns `true` if the version number is a valid semver version number, `false` otherwise.
- *
- * @example
- * ```
- * validate('1.0.0-rc.1'); // return true
- * validate('1.0-rc.1'); // return false
- * validate('foo'); // return false
- * ```
- */
-const validate = version => typeof version === 'string' && /^[v\d]/.test(version) && _utils_js__WEBPACK_IMPORTED_MODULE_0__.semver.test(version);
-/**
- * Validate [semver](https://semver.org/) version strings strictly. Will not accept wildcards and version ranges.
- *
- * @param version Version number to validate
- * @returns `true` if the version number is a valid semver version number `false` otherwise
- *
- * @example
- * ```
- * validate('1.0.0-rc.1'); // return true
- * validate('1.0-rc.1'); // return false
- * validate('foo'); // return false
- * ```
- */
-const validateStrict = version => typeof version === 'string' && /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/.test(version);
 
 /***/ }),
 
@@ -9225,13 +9088,35 @@ const BLOCK_DESCRIPTION = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('D
 
 /***/ }),
 
-/***/ "./node_modules/woocommerce-blocks/js/atomic/blocks/product-elements/title/block.json":
-/*!********************************************************************************************!*\
-  !*** ./node_modules/woocommerce-blocks/js/atomic/blocks/product-elements/title/block.json ***!
-  \********************************************************************************************/
-/***/ ((module) => {
+/***/ "./node_modules/woocommerce-blocks/js/atomic/blocks/product-elements/title/constants.tsx":
+/*!***********************************************************************************************!*\
+  !*** ./node_modules/woocommerce-blocks/js/atomic/blocks/product-elements/title/constants.tsx ***!
+  \***********************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"woocommerce/product-title","version":"1.0.0","title":"Product Title","category":"woocommerce-product-elements","description":"Display the title of a product.","supports":{"html":false,"interactivity":{"clientNavigation":false},"typography":{"fontSize":true,"lineHeight":true,"__experimentalFontWeight":true,"__experimentalTextTransform":true,"__experimentalFontFamily":true},"color":{"text":true,"background":true,"link":false,"gradients":true,"__experimentalSkipSerialization":true},"spacing":{"margin":true,"__experimentalSkipSerialization":true},"__experimentalSelector":".wc-block-components-product-title"},"textdomain":"woocommerce","attributes":{"headingLevel":{"type":"number","default":2},"showProductLink":{"type":"boolean","default":true},"linkTarget":{"type":"string"},"productId":{"type":"number","default":0},"align":{"type":"string"}},"ancestor":["woocommerce/all-products"]}');
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   BLOCK_ICON: () => (/* binding */ BLOCK_ICON),
+/* harmony export */   description: () => (/* binding */ description),
+/* harmony export */   title: () => (/* binding */ title)
+/* harmony export */ });
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/icon/index.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/heading.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__);
+/**
+ * External dependencies
+ */
+
+
+const BLOCK_ICON = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_icons__WEBPACK_IMPORTED_MODULE_0__["default"], {
+  icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_1__["default"],
+  className: "wc-block-editor-components-block-icon"
+});
+
+// Export title and description for product title block
+const title = 'Product Title';
+const description = 'Display the product title.';
 
 /***/ }),
 
@@ -11249,7 +11134,7 @@ function getColorClassName(colorContextName, colorSlug) {
   if (!colorContextName || !colorSlug) {
     return '';
   }
-  return `has-${(0,change_case__WEBPACK_IMPORTED_MODULE_1__.paramCase)(colorSlug)}-${colorContextName}`;
+  return `has-${(0,change_case__WEBPACK_IMPORTED_MODULE_1__.kebabCase)(colorSlug)}-${colorContextName}`;
 }
 
 /**
@@ -13221,6 +13106,8 @@ const __experimentalRegisterProductCollection = config => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   CHECKOUT_EVENTS: () => (/* binding */ CHECKOUT_EVENTS),
+/* harmony export */   checkoutEventsEmitter: () => (/* binding */ checkoutEventsEmitter),
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
 /* harmony export */   triggerCheckoutEvent: () => (/* binding */ triggerCheckoutEvent)
 /* harmony export */ });
@@ -13233,8 +13120,36 @@ const triggerCheckoutEvent = (eventName, properties = {}) => {
     console.log('Mock checkout event:', eventName, properties);
   }
 };
+
+// Mock checkout events emitter
+const checkoutEventsEmitter = {
+  emit: (eventName, data) => {
+    if (true) {
+      console.log('Mock checkout event emitted:', eventName, data);
+    }
+  },
+  on: (eventName, callback) => {
+    if (true) {
+      console.log('Mock checkout event listener added:', eventName);
+    }
+  },
+  off: (eventName, callback) => {
+    if (true) {
+      console.log('Mock checkout event listener removed:', eventName);
+    }
+  }
+};
+
+// Mock checkout events constants
+const CHECKOUT_EVENTS = {
+  CHECKOUT_COMPLETE: 'checkout_complete',
+  CHECKOUT_START: 'checkout_start',
+  PAYMENT_COMPLETE: 'payment_complete'
+};
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  triggerCheckoutEvent
+  triggerCheckoutEvent,
+  checkoutEventsEmitter,
+  CHECKOUT_EVENTS
 });
 
 /***/ }),
@@ -14344,7 +14259,9 @@ const parseTemplateSlug = (rawTemplateSlug = '') => {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   CustomerEffortScore: () => (/* binding */ CustomerEffortScore),
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   CustomerEffortScoreModalContainer: () => (/* binding */ CustomerEffortScoreModalContainer),
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   useCustomerEffortScoreModal: () => (/* binding */ useCustomerEffortScoreModal)
 /* harmony export */ });
 // Mock customer-effort-score module for WooCommerce Blocks
 // This is a temporary fix for missing @woocommerce/customer-effort-score module
@@ -14369,6 +14286,33 @@ const CustomerEffortScore = ({
     });
   }
   return null;
+};
+
+// Mock hook for customer effort score modal
+const useCustomerEffortScoreModal = () => {
+  return {
+    showModal: () => {
+      if (true) {
+        console.log('Mock show customer effort score modal');
+      }
+    },
+    hideModal: () => {
+      if (true) {
+        console.log('Mock hide customer effort score modal');
+      }
+    }
+  };
+};
+
+// Mock container component
+const CustomerEffortScoreModalContainer = ({
+  children,
+  ...props
+}) => {
+  if (true) {
+    console.log('Mock CustomerEffortScoreModalContainer:', props);
+  }
+  return children || null;
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (CustomerEffortScore);
 
@@ -23388,8 +23332,6 @@ __webpack_require__.r(__webpack_exports__);
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   SelectedOption: () => (/* reexport safe */ _with_transform_single_select_to_multiple_select__WEBPACK_IMPORTED_MODULE_6__.SelectedOption),
-/* harmony export */   WithMaybeSelectedOption: () => (/* reexport safe */ _with_transform_single_select_to_multiple_select__WEBPACK_IMPORTED_MODULE_6__.WithMaybeSelectedOption),
 /* harmony export */   withAttributes: () => (/* reexport safe */ _with_attributes__WEBPACK_IMPORTED_MODULE_0__["default"]),
 /* harmony export */   withCategory: () => (/* reexport safe */ _with_category__WEBPACK_IMPORTED_MODULE_2__["default"]),
 /* harmony export */   withProduct: () => (/* reexport safe */ _with_product__WEBPACK_IMPORTED_MODULE_3__["default"]),
@@ -23412,7 +23354,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
+// Note: SelectedOption and WithMaybeSelectedOption are TypeScript types, not JavaScript exports
+// They are available for type checking but not for runtime use
 
 /***/ }),
 
@@ -25994,7 +25937,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   isWcVersion: () => (/* binding */ isWcVersion),
 /* harmony export */   isWpVersion: () => (/* binding */ isWpVersion)
 /* harmony export */ });
-/* harmony import */ var compare_versions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! compare-versions */ "./node_modules/compare-versions/lib/esm/index.js");
+/* harmony import */ var compare_versions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! compare-versions */ "./node_modules/compare-versions/lib/esm/compare.js");
 /* harmony import */ var _settings_init__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./settings-init */ "./node_modules/woocommerce-blocks/js/settings/shared/settings-init.ts");
 /**
  * External dependencies
@@ -26049,7 +25992,7 @@ const compareVersionSettingIgnorePrerelease = (setting, version, operator) => {
   const settingValue = getSetting(setting, '');
   let replacement = settingValue.replace(/-[a-zA-Z0-9]*[\-]*/, '.0-rc.');
   replacement = replacement.endsWith('.') ? replacement.substring(0, replacement.length - 1) : replacement;
-  return compare_versions__WEBPACK_IMPORTED_MODULE_0__["default"].compare(replacement, version, operator);
+  return (0,compare_versions__WEBPACK_IMPORTED_MODULE_0__.compare)(replacement, version, operator);
 };
 
 /**

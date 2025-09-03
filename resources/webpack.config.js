@@ -82,10 +82,10 @@ module.exports = {
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.scss', '.css'],
-          alias: {
-        // SCSS path aliases
-        'node_modules/@wordpress/base-styles': path.resolve(__dirname, './node_modules/@wordpress/base-styles'),
-        'node_modules/@automattic/color-studio': path.resolve(__dirname, './node_modules/@automattic/color-studio'),
+    alias: {
+      // SCSS path aliases
+      'node_modules/@wordpress/base-styles': path.resolve(__dirname, './node_modules/@wordpress/base-styles'),
+      'node_modules/@automattic/color-studio': path.resolve(__dirname, './node_modules/@automattic/color-studio'),
       '@woocommerce/base-hooks': path.resolve(__dirname, './node_modules/woocommerce-blocks/js/base/hooks'),
       '@woocommerce/utils': path.resolve(__dirname, './node_modules/woocommerce-blocks/js/utils'),
       '@woocommerce/editor-components': path.resolve(__dirname, './node_modules/woocommerce-blocks/js/editor-components'),
