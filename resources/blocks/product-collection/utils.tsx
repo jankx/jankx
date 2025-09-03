@@ -45,7 +45,7 @@ import blockJson from './block.json';
 import {
 	LocationType,
 	WooCommerceBlockLocation,
-} from '../product-template/utils';
+} from '@woocommerce/product-template/utils';
 
 /**
  * Sets the new query arguments of a Product Query block

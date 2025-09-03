@@ -1,10 +1,14 @@
+@import "../../../node_modules/@wordpress/base-styles/variables";
+@import "../../../node_modules/@wordpress/base-styles/mixins";
+@import "../../../node_modules/@wordpress/base-styles/breakpoints";
+
 .wp-block-woocommerce-product-collection {
 	.wc-block-components-product-stock-indicator {
 		text-align: center;
 	}
 
 	&:has(.is-product-collection-layout-carousel) {
-		@include breakpoint("<600px") {
+		@include break-small() {
 			// This rule is overriding a `display: flex` from WordPress core, that's
 			// why it needs a higher specificity.
 			:where(.wc-block-next-previous-buttons.wc-block-next-previous-buttons) {

@@ -1,3 +1,7 @@
+@import "../../../node_modules/@wordpress/base-styles/variables";
+@import "../../../node_modules/@wordpress/base-styles/mixins";
+@import "../../../node_modules/@wordpress/base-styles/breakpoints";
+
 $max-button-columns: 6;
 $min-button-width: 80px;
 $max-button-width: calc(100% / #{$max-button-columns});
@@ -38,7 +42,7 @@ $max-button-width: calc(100% / #{$max-button-columns});
 .wc-blocks-product-collection__modal {
 	.components-placeholder__instructions {
 		width: 100%;
-		margin: $gap-small 0;
+		margin: $grid-unit-15 0;
 		text-align: center;
 	}
 
@@ -56,7 +60,7 @@ $max-button-width: calc(100% / #{$max-button-columns});
 	}
 
 	.wc-blocks-product-collection__selection-subtitle {
-		margin-bottom: $gap-large;
+		margin-bottom: $grid-unit-30;
 	}
 
 	.wc-blocks-product-collection__collections-section {
@@ -66,7 +70,7 @@ $max-button-width: calc(100% / #{$max-button-columns});
 			minmax(max(#{$min-button-width}, #{$max-button-width}), 1fr)
 		);
 		grid-auto-rows: 1fr;
-		margin: $gap-small auto;
+		margin: $grid-unit-15 auto;
 		max-width: 1000px;
 		width: 100%;
 	}
@@ -78,7 +82,7 @@ $max-button-width: calc(100% / #{$max-button-columns});
 		align-items: center;
 		justify-items: center;
 		height: auto;
-		padding: $gap-small;
+		padding: $grid-unit-15;
 		margin: 0;
 
 		&:hover {
@@ -100,7 +104,7 @@ $max-button-width: calc(100% / #{$max-button-columns});
 		}
 
 		&-title {
-			@include font-size(small);
+			font-size: 13px;
 			width: 100%;
 			text-wrap: balance;
 			text-align: center;
@@ -109,13 +113,13 @@ $max-button-width: calc(100% / #{$max-button-columns});
 	}
 
 	.wc-blocks-product-collection__collections-create {
-		padding: 0 $gap-smallest;
+		padding: 0 $grid-unit-05;
 		text-align: center;
 
 		button {
 			color: var(--wp-admin-theme-color);
 			padding: 0;
-			margin-left: $gap-smallest;
+			margin-left: $grid-unit-05;
 
 			&:hover {
 				color: var(--wp-admin-theme-color-darker-20);
@@ -125,7 +129,7 @@ $max-button-width: calc(100% / #{$max-button-columns});
 
 	.wc-blocks-product-collection__footer {
 		text-align: end;
-		margin: $gap-small 0;
+		margin: $grid-unit-15 0;
 	}
 }
 
@@ -221,7 +225,7 @@ $max-button-width: calc(100% / #{$max-button-columns});
 		width: 100%;
 		height: 100%;
 		padding: 10px;
-		border: 1px solid $gray-300;
+		border: 1px solid #d1d5db;
 	}
 
 	&__image-container {
@@ -253,7 +257,7 @@ $max-button-width: calc(100% / #{$max-button-columns});
 }
 
 .wc-block-editor-product-collection__carousel-warning {
-	margin-bottom: $gap-small;
+			margin-bottom: $grid-unit-15;
 
 	.components-notice__content {
 		margin-right: 0;

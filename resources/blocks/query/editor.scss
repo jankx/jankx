@@ -1,10 +1,6 @@
-/**
- * Import base-styles variables and mixins
- */
-@use "../../base-styles/woocommerce/variables" as *;
-@use "../../base-styles/woocommerce/mixins" as *;
-@use "../../base-styles/woocommerce/breakpoints" as *;
-@use "../../base-styles/woocommerce/colors" as *;
+@import "../../../node_modules/@wordpress/base-styles/variables";
+@import "../../../node_modules/@wordpress/base-styles/mixins";
+@import "../../../node_modules/@wordpress/base-styles/breakpoints";
 
 .block-library-query-pattern__selection-modal {
 	.block-editor-block-patterns-list {
@@ -21,7 +17,7 @@
 	}
 
 	.block-library-query-pattern__selection-search {
-		background: $white;
+		background: #fff;
 		position: sticky;
 		top: 0;
 		padding: $grid-unit-20 0;
