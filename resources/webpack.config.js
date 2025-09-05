@@ -5,6 +5,7 @@ const DependencyExtractionWebpackPlugin = require('@wordpress/dependency-extract
 
 
 
+
 module.exports = {
   mode: 'development',
   devtool: 'source-map',
@@ -82,6 +83,7 @@ module.exports = {
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.scss', '.css'],
+
     alias: {
       // SCSS path aliases
       'node_modules/@wordpress/base-styles': path.resolve(__dirname, './node_modules/@wordpress/base-styles'),
@@ -143,12 +145,15 @@ module.exports = {
     '@wordpress/data': ['wp', 'data'],
     '@wordpress/core-data': ['wp', 'coreData'],
     swiper: 'Swiper',
+    // Chỉ external WooCommerce stores để tránh duplicate, không external tất cả modules
+    '@woocommerce/blocks-registry': ['wc', 'blocksRegistry'],
   },
   plugins: [
     new RemoveEmptyScriptsPlugin(),
     new MiniCssExtractPlugin({
       filename: '[name].css',
     }),
+
     new DependencyExtractionWebpackPlugin({
       // Output to a .asset.php file for each entry point
       outputFormat: 'php',
@@ -188,6 +193,10 @@ module.exports = {
         if (request === 'swiper') {
           return 'Swiper';
         }
+        // Chỉ external WooCommerce stores để tránh duplicate
+        if (request === '@woocommerce/blocks-registry') {
+          return ['wc', 'blocksRegistry'];
+        }
       },
     }),
 
@@ -204,6 +213,7 @@ module.exports = {
           },
         },
       },
+
       {
         test: /\.css$/i,
         use: [

@@ -1,17 +1,16 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "woocommerce/product-collection",
-	"title": "Product Collection",
+	"name": "jankx/product-collection",
+	"title": "Jankx Products",
 	"description": "Display a collection of products from your store.",
 	"category": "woocommerce",
 	"keywords": [
-		"WooCommerce",
-		"Products (Beta)",
-		"all products",
-		"by attribute",
-		"by category",
-		"by tag"
+		"products",
+		"collection",
+		"grid",
+		"woocommerce",
+		"shop"
 	],
 	"textdomain": "woocommerce",
 	"attributes": {
@@ -81,6 +80,8 @@
 		"__experimentalLayout": true,
 		"interactivity": true
 	},
-	"editorStyle": "file:../woocommerce/product-collection-editor.css",
-	"style": "file:../woocommerce/product-collection-style.css"
+	"editorScript": "file:./build/index.js",
+	"editorStyle": "file:./build/editor.css",
+	"style": "file:./build/style.css",
+	"viewScript": "file:./build/index.js"
 }

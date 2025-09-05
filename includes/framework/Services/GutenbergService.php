@@ -9,6 +9,7 @@ use Jankx\Gutenberg\Blocks\IconPickerBlock;
 use Jankx\Gutenberg\Blocks\IconButtonBlock;
 use Jankx\Gutenberg\Blocks\LanguageSwitcherBlock;
 use Jankx\Gutenberg\Blocks\MegaMenuBlock;
+use Jankx\Gutenberg\Blocks\ProductCollectionBlock;
 use Jankx\Gutenberg\Blocks\SvgIconBlock;
 use Jankx\Gutenberg\Blocks\SvgIconButtonBlock;
 use Jankx\Gutenberg\Blocks\ImageButtonBlock;
@@ -115,6 +116,7 @@ class GutenbergService
         $this->repository->registerBlock(LanguageSwitcherBlock::class);
         $this->repository->registerBlock(WplyrMediaBlock::class);
         $this->repository->registerBlock(ImageButtonBlock::class);
+        $this->repository->registerBlock(ProductCollectionBlock::class);
 
     }
 
