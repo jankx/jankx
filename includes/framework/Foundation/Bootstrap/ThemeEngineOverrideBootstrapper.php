@@ -112,7 +112,8 @@ class ThemeEngineOverrideBootstrapper
     {
         // Override get_header
         if (!function_exists('jankx_get_header')) {
-            function jankx_get_header($name = null) {
+            function jankx_get_header($name = null)
+            {
                 global $jankx_app;
                 if ($jankx_app && $jankx_app->bound('template.engine')) {
                     $templateEngine = $jankx_app->make('template.engine');
@@ -125,7 +126,8 @@ class ThemeEngineOverrideBootstrapper
 
         // Override get_footer
         if (!function_exists('jankx_get_footer')) {
-            function jankx_get_footer($name = null) {
+            function jankx_get_footer($name = null)
+            {
                 global $jankx_app;
                 if ($jankx_app && $jankx_app->bound('template.engine')) {
                     $templateEngine = $jankx_app->make('template.engine');
@@ -138,7 +140,8 @@ class ThemeEngineOverrideBootstrapper
 
         // Override get_sidebar
         if (!function_exists('jankx_get_sidebar')) {
-            function jankx_get_sidebar($name = null) {
+            function jankx_get_sidebar($name = null)
+            {
                 global $jankx_app;
                 if ($jankx_app && $jankx_app->bound('template.engine')) {
                     $templateEngine = $jankx_app->make('template.engine');
@@ -153,5 +156,4 @@ class ThemeEngineOverrideBootstrapper
         global $jankx_app;
         $jankx_app = $app;
     }
-
 }

@@ -56,11 +56,17 @@ class PlatesEngine implements EngineInterface
     protected function setupPlates()
     {
         if (class_exists('\League\Plates\Engine')) {
-            $this->plates = new \League\Plates\Engine(get_template_directory() . '/templates');
+            $templateDir = implode(DIRECTORY_SEPARATOR, [get_template_directory(), 'views']);
+            if (file_exists($templateDir)) {
+                $this->plates = new \League\Plates\Engine($templateDir);
+            }
 
             // Add child theme directory if exists
             if (get_template_directory() !== get_stylesheet_directory()) {
-                $this->plates->addFolder('child', get_stylesheet_directory() . '/templates');
+                $childTemplateDir = implode(DIRECTORY_SEPARATOR, [get_stylesheet_directory(), 'views']);
+                if (file_exists($childTemplateDir)) {
+                    $this->plates->addFolder('child', $childTemplateDir);
+                }
             }
         }
     }

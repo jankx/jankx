@@ -77,15 +77,6 @@ class Engine
         // Register Jankx native engine
         $this->engines['jankx'] = new PlatesEngine($this->app);
 
-        // Register Twig engine if available
-        if (class_exists('\Twig\Environment')) {
-            $this->engines['twig'] = new TwigEngine($this->app);
-        }
-
-        // Register Blade engine if available
-        if (class_exists('\Illuminate\View\Factory')) {
-            $this->engines['blade'] = new BladeEngine($this->app);
-        }
 
         // Register Plates engine
         $this->engines['plates'] = new PlatesEngine($this->app);
