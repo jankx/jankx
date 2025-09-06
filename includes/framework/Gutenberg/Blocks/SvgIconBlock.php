@@ -157,8 +157,8 @@ class SvgIconBlock extends Block
         }
 
         ob_start();
-        if (!empty($printedIcon)):
-        ?>
+        if (!empty($printedIcon)) :
+            ?>
         <div class="<?php echo esc_attr($classString); ?>" style="<?php echo esc_attr($styleString); ?>">
             <?php if ($linkUrl) : ?>
                 <a <?php echo $linkAttrs; ?> <?php echo $titleAttr; ?> <?php echo $ariaLabel; ?>>
@@ -170,8 +170,8 @@ class SvgIconBlock extends Block
                 </span>
             <?php endif; ?>
         </div>
-        <?php
-        else:
+            <?php
+        else :
             echo $content;
         endif;
         return ob_get_clean();

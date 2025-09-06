@@ -25,7 +25,7 @@ class NavigationBlockService
 
         // Emergency fix nếu cần
         if (defined('WP_DEBUG') && WP_DEBUG) {
-            add_action('wp_footer', function() {
+            add_action('wp_footer', function () {
                 echo '<!-- Navigation Block Patches Active -->';
             });
         }
@@ -41,7 +41,7 @@ class NavigationBlockService
             remove_filter('render_block', ['Themeisle_Blocks_Registration', 'load_font_awesome'], 10);
 
             // Thêm filter an toàn
-            add_filter('render_block', function($block_content, $block) {
+            add_filter('render_block', function ($block_content, $block) {
                 // Chỉ áp dụng cho các block không phải navigation
                 if (in_array($block['blockName'], ['core/navigation-link', 'core/navigation-submenu', 'core/navigation'])) {
                     return $block_content;
@@ -100,7 +100,7 @@ class NavigationBlockService
     public function setupErrorHandling()
     {
         if (defined('WP_DEBUG') && WP_DEBUG) {
-            set_error_handler(function($errno, $errstr, $errfile, $errline) {
+            set_error_handler(function ($errno, $errstr, $errfile, $errline) {
                 // Bỏ qua warnings về undefined array key
                 if (strpos($errstr, 'Undefined array key') !== false) {
                     return true; // Suppress warning

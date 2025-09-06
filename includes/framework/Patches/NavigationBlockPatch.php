@@ -4,7 +4,7 @@ namespace Jankx\Framework\Patches;
 
 /**
  * Navigation Block Patch
- * 
+ *
  * Khắc phục vấn đề "Undefined array key 'url'" trong navigation blocks
  * do plugin Otter Blocks hoặc các plugin khác gây ra
  */
@@ -66,7 +66,7 @@ class NavigationBlockPatch
             if (!isset($block['attrs']['overlayMenu'])) {
                 $block['attrs']['overlayMenu'] = 'never';
             }
-            
+
             if (!isset($block['attrs']['hasIcon'])) {
                 $block['attrs']['hasIcon'] = false;
             }
@@ -152,7 +152,7 @@ class NavigationBlockPatch
     public static function log_navigation_errors()
     {
         if (defined('WP_DEBUG') && WP_DEBUG) {
-            add_action('wp_footer', function() {
+            add_action('wp_footer', function () {
                 if (isset($GLOBALS['wp_theme_debug']) && $GLOBALS['wp_theme_debug']) {
                     echo '<!-- Navigation Block Patch Active -->';
                 }

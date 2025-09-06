@@ -72,12 +72,12 @@ class PatchesLoader
     private static function patch_otter_blocks()
     {
         // Vô hiệu hóa filter có thể gây xung đột
-        add_action('init', function() {
+        add_action('init', function () {
             if (has_filter('render_block', ['Themeisle_Blocks_Registration', 'load_font_awesome'])) {
                 remove_filter('render_block', ['Themeisle_Blocks_Registration', 'load_font_awesome'], 10);
 
                 // Thêm filter an toàn
-                add_filter('render_block', function($block_content, $block) {
+                add_filter('render_block', function ($block_content, $block) {
                     // Chỉ áp dụng cho các block không phải navigation
                     if (in_array($block['blockName'], ['core/navigation-link', 'core/navigation-submenu', 'core/navigation'])) {
                         return $block_content;

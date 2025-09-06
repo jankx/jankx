@@ -117,7 +117,6 @@ class GutenbergService
         $this->repository->registerBlock(WplyrMediaBlock::class);
         $this->repository->registerBlock(ImageButtonBlock::class);
         $this->repository->registerBlock(ProductCollectionBlock::class);
-
     }
 
     /**

@@ -22,7 +22,8 @@ class DynamicQueryBlock extends Block
      */
     protected $blockId = 'jankx/query';
 
-    public function init() {
+    public function init()
+    {
         add_filter('render_block_data', array($this, 'disable_enhanced_pagination_for_plugin_blocks'), 10, 1);
     }
 
@@ -158,6 +159,4 @@ class DynamicQueryBlock extends Block
 
         return $parsed_block;
     }
-
-
 }
