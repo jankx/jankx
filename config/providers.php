@@ -20,9 +20,9 @@ return [
             App\Providers\GutenbergServiceProvider::class,
             App\Providers\LanguageSwitcherServiceProvider::class,
             App\Providers\NavigationBlockServiceProvider::class,
-            // App\Providers\WordPress\ApplyTermHtmlDescriptionServiceProvider::class,
-            // App\Providers\Layouts\SlideoutMenuServiceProvider::class,
-            // App\Providers\WooCommerce\BuyNowServiceProvider::class,
+            App\Providers\WooCommerce\EmptyPriceServiceProvider::class,
+            App\Providers\WordPress\ApplyTermHtmlDescriptionServiceProvider::class,
+            App\Providers\WooCommerce\BuyNowServiceProvider::class,
         ],
 
         // Admin providers
@@ -36,7 +36,7 @@ return [
             Jankx\Support\Providers\JankxMenuItemsServiceProvider::class,
             App\Providers\GutenbergServiceProvider::class,
             App\Providers\NavigationBlockServiceProvider::class,
-            // App\Providers\WordPress\VisualTermDescriptionEditorServiceProvider::class,
+            App\Providers\WordPress\VisualTermDescriptionEditorServiceProvider::class,
         ],
 
         // REST API providers
@@ -51,7 +51,8 @@ return [
             App\Providers\GutenbergServiceProvider::class,
             App\Providers\LanguageSwitcherServiceProvider::class,
             App\Providers\NavigationBlockServiceProvider::class,
-            // App\Providers\WooCommerce\BuyNowServiceProvider::class,
+            App\Providers\WooCommerce\EmptyPriceServiceProvider::class,
+            App\Providers\WooCommerce\BuyNowServiceProvider::class,
         ],
     ],
 
