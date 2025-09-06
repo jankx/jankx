@@ -52,7 +52,8 @@ class LoadConfiguration
             'providers.php',
             'error.php',
             'layout.php',
-            'font-icons.php'
+            'font-icons.php',
+            'template.php'
         ];
 
         foreach ($configFiles as $configFile) {

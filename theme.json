@@ -87,6 +87,13 @@
 		"typography": {
 			"fontSize": "16px",
 			"lineHeight": "1.5"
+		},
+		"elements": {
+			"link": {
+				"typography": {
+					"textDecoration": "none"
+				}
+			}
 		}
 	},
 	"templateParts": [

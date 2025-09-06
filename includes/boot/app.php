@@ -1,7 +1,6 @@
 <?php
 
 use Jankx\Foundation\Application;
-use Jankx\Helper\Environment;
 
 /**
  * Initialize Jankx Application
@@ -21,10 +20,7 @@ if (!defined('ABSPATH')) {
  * @return \Jankx\Foundation\Application
  */
 
- $app = new Application(get_template_directory());
-
-if (Environment::isDebugLog()) {
-}
+$app = new Application(get_template_directory());
 
 // Return the application instance
 return $app;
