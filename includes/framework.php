@@ -200,6 +200,9 @@ if (!$framework->isLoaded()) {
         return;
 }
 
+// Load helpers
+require dirname(__FILE__) . '/boot/helpers.php';
+
 $app = require dirname(__FILE__) . '/boot/app.php';
 $framework->setApp($app);
 $framework->init();

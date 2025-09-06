@@ -17,6 +17,8 @@ return [
             Jankx\Support\Providers\AssetServiceProvider::class,
             Jankx\Support\Providers\PerformanceServiceProvider::class,
             Jankx\Support\Providers\PlatesServiceProvider::class,
+            Jankx\Framework\Providers\PageRendererServiceProvider::class,
+            Jankx\Framework\Providers\LegacyTemplateLoaderServiceProvider::class,
             App\Providers\GutenbergServiceProvider::class,
             App\Providers\LanguageSwitcherServiceProvider::class,
             App\Providers\NavigationBlockServiceProvider::class,
