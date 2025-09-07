@@ -1,0 +1,289 @@
+<?php
+
+namespace App\Services;
+
+/**
+ * Default Thumbnail Service
+ *
+ * Handles default thumbnail functionality for posts without featured images.
+ * Provides fallback thumbnails for supported post types.
+ *
+ * @package App\Services
+ * @since 1.0.0
+ */
+class DefaultThumbnailService
+{
+    /**
+     * Supported post types that will always have thumbnails
+     *
+     * @var array
+     */
+    protected $supportedPostTypes = [
+        'post',
+        'page',
+        'product', // WooCommerce product
+    ];
+
+    /**
+     * Option name for storing default thumbnail ID
+     *
+     * @var string
+     */
+    protected $optionName = 'jankx_default_thumbnail_id';
+
+    /**
+     * Default placeholder image path
+     *
+     * @var string
+     */
+    protected $placeholderImagePath = 'resources/assets/images/placeholder-image.png';
+
+    /**
+     * Check if post has thumbnail (including default)
+     *
+     * @param bool $has_thumbnail
+     * @param int $post_id
+     * @param int $thumbnail_id
+     * @return bool
+     */
+    public function hasPostThumbnail($has_thumbnail, $post_id, $thumbnail_id)
+    {
+        // If already has thumbnail, return true
+        if ($has_thumbnail) {
+            return true;
+        }
+
+        // Check if post type is supported
+        $post_type = get_post_type($post_id);
+        if (!in_array($post_type, $this->supportedPostTypes)) {
+            return $has_thumbnail;
+        }
+
+        // For supported post types, always return true if we have default thumbnail
+        return $this->getDefaultThumbnailId() !== false;
+    }
+
+    /**
+     * Get post thumbnail ID (including default)
+     *
+     * @param int $thumbnail_id
+     * @param int $post_id
+     * @return int|false
+     */
+    public function getPostThumbnailId($thumbnail_id, $post_id)
+    {
+        // If already has thumbnail, return it
+        if ($thumbnail_id) {
+            return $thumbnail_id;
+        }
+
+        // Check if post type is supported
+        $post_type = get_post_type($post_id);
+        if (!in_array($post_type, $this->supportedPostTypes)) {
+            return $thumbnail_id;
+        }
+
+        // Return default thumbnail ID
+        return $this->getDefaultThumbnailId();
+    }
+
+    /**
+     * Get attachment image source (including default)
+     *
+     * @param array|false $image
+     * @param int $attachment_id
+     * @param string|array $size
+     * @param bool $icon
+     * @return array|false
+     */
+    public function getAttachmentImageSrc($image, $attachment_id, $size, $icon)
+    {
+        // If image exists, return it
+        if ($image) {
+            return $image;
+        }
+
+        // Check if this is a default thumbnail request
+        $default_thumbnail_id = $this->getDefaultThumbnailId();
+        if ($default_thumbnail_id && $attachment_id == $default_thumbnail_id) {
+            return wp_get_attachment_image_src($default_thumbnail_id, $size, $icon);
+        }
+
+        return $image;
+    }
+
+    /**
+     * Get post thumbnail HTML (including default)
+     *
+     * @param string $html
+     * @param int $post_id
+     * @param int $post_thumbnail_id
+     * @param string|array $size
+     * @param string $attr
+     * @return string
+     */
+    public function getPostThumbnailHtml($html, $post_id, $post_thumbnail_id, $size, $attr)
+    {
+        // If already has thumbnail HTML, return it
+        if (!empty($html)) {
+            return $html;
+        }
+
+        // Check if post type is supported
+        $post_type = get_post_type($post_id);
+        if (!in_array($post_type, $this->supportedPostTypes)) {
+            return $html;
+        }
+
+        // Get default thumbnail ID
+        $default_thumbnail_id = $this->getDefaultThumbnailId();
+        if (!$default_thumbnail_id) {
+            return $html;
+        }
+
+        // Generate HTML for default thumbnail
+        return wp_get_attachment_image($default_thumbnail_id, $size, false, $attr);
+    }
+
+    /**
+     * Get default thumbnail ID
+     *
+     * @return int|false
+     */
+    protected function getDefaultThumbnailId()
+    {
+        // Get stored default thumbnail ID
+        $thumbnail_id = get_option($this->optionName, false);
+
+        // If we have a stored ID, check if the post still exists
+        if ($thumbnail_id) {
+            $post = get_post($thumbnail_id);
+            if ($post && $post->post_type === 'attachment') {
+                return $thumbnail_id;
+            }
+        }
+
+        // If no valid stored ID, try to upload default image
+        return $this->uploadDefaultThumbnail();
+    }
+
+    /**
+     * Upload default thumbnail to media library
+     *
+     * @return int|false
+     */
+    protected function uploadDefaultThumbnail()
+    {
+        // Get theme directory
+        $theme_dir = get_template_directory();
+        $image_path = $theme_dir . '/' . $this->placeholderImagePath;
+
+        // Check if placeholder image exists
+        if (!file_exists($image_path)) {
+            return false;
+        }
+
+        // Prepare file data
+        $filename = basename($image_path);
+        $upload_file = wp_upload_bits($filename, null, file_get_contents($image_path));
+
+        // Check if upload was successful
+        if (!$upload_file['error']) {
+            $wp_filetype = wp_check_filetype($filename, null);
+
+            $attachment = [
+                'post_mime_type' => $wp_filetype['type'],
+                'post_title' => 'Default Thumbnail',
+                'post_content' => '',
+                'post_status' => 'inherit'
+            ];
+
+            $attachment_id = wp_insert_attachment($attachment, $upload_file['file']);
+
+            if (!is_wp_error($attachment_id)) {
+                require_once(ABSPATH . 'wp-admin/includes/image.php');
+                $attachment_data = wp_generate_attachment_metadata($attachment_id, $upload_file['file']);
+                wp_update_attachment_metadata($attachment_id, $attachment_data);
+
+                // Store the attachment ID in options
+                update_option($this->optionName, $attachment_id);
+
+                return $attachment_id;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Get default thumbnail URL
+     *
+     * @param string|array $size
+     * @return string|false
+     */
+    public function getDefaultThumbnailUrl($size = 'thumbnail')
+    {
+        $thumbnail_id = $this->getDefaultThumbnailId();
+        if (!$thumbnail_id) {
+            return false;
+        }
+
+        $image = wp_get_attachment_image_src($thumbnail_id, $size);
+        return $image ? $image[0] : false;
+    }
+
+    /**
+     * Add supported post type
+     *
+     * @param string $post_type
+     * @return void
+     */
+    public function addSupportedPostType($post_type)
+    {
+        if (!in_array($post_type, $this->supportedPostTypes)) {
+            $this->supportedPostTypes[] = $post_type;
+        }
+    }
+
+    /**
+     * Remove supported post type
+     *
+     * @param string $post_type
+     * @return void
+     */
+    public function removeSupportedPostType($post_type)
+    {
+        $key = array_search($post_type, $this->supportedPostTypes);
+        if ($key !== false) {
+            unset($this->supportedPostTypes[$key]);
+        }
+    }
+
+    /**
+     * Get supported post types
+     *
+     * @return array
+     */
+    public function getSupportedPostTypes()
+    {
+        return $this->supportedPostTypes;
+    }
+
+    /**
+     * Reset default thumbnail (delete from media and clear option)
+     *
+     * @return bool
+     */
+    public function resetDefaultThumbnail()
+    {
+        $thumbnail_id = get_option($this->optionName, false);
+
+        if ($thumbnail_id) {
+            wp_delete_attachment($thumbnail_id, true);
+        }
+
+        delete_option($this->optionName);
+
+        return true;
+    }
+}
