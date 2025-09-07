@@ -145,8 +145,10 @@ class PageRenderer
      */
     protected function renderLegacyContent()
     {
+        echo '<div class="wp-block-group is-layout-constrained wp-block-group-is-layout-constrained">';
         // Get template hierarchy
         $templates = $this->generateTemplateNames();
+
 
         // Try to locate template
         $template = locate_template($templates);
@@ -157,6 +159,7 @@ class PageRenderer
             // Fallback to basic content
             $this->renderBasicContent();
         }
+        echo  '</div>';
     }
 
     /**

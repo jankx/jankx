@@ -20,7 +20,6 @@ class DefaultThumbnailService
      */
     protected $supportedPostTypes = [
         'post',
-        'page',
         'product', // WooCommerce product
     ];
 
