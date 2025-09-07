@@ -26,6 +26,7 @@ return [
             App\Providers\WooCommerce\EmptyPriceServiceProvider::class,
             App\Providers\WordPress\ApplyTermHtmlDescriptionServiceProvider::class,
             App\Providers\WooCommerce\BuyNowServiceProvider::class,
+            App\Providers\WooCommerce\SaleBadgeServiceProvider::class,
             App\Providers\DefaultThumbnailServiceProvider::class,
         ],
 
@@ -59,6 +60,7 @@ return [
             App\Providers\NavigationBlockServiceProvider::class,
             App\Providers\WooCommerce\EmptyPriceServiceProvider::class,
             App\Providers\WooCommerce\BuyNowServiceProvider::class,
+            App\Providers\WooCommerce\SaleBadgeServiceProvider::class,
             App\Providers\DefaultThumbnailServiceProvider::class,
         ],
     ],
