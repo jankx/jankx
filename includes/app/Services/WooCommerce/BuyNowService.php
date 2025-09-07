@@ -40,10 +40,11 @@ class BuyNowService
         $button_class = 'single_buy_now_button button alt';
 
         echo sprintf(
-            '<button type="button" class="%s" data-product-id="%d" data-action="buy-now">%s</button>',
+            '<button type="button" class="%s" data-product-id="%d" data-action="buy-now">%s%s</button>',
             esc_attr($button_class),
             esc_attr($product->get_id()),
-            esc_html($button_text)
+            apply_filters('jankx/product/buynow/text/prefix', ''),
+            apply_filters('jankx/product/buynow/text', esc_html($button_text))
         );
     }
 
@@ -58,7 +59,7 @@ class BuyNowService
 
         wp_enqueue_script(
             'jankx-buy-now',
-            get_template_directory_uri() . '/assets/js/buy-now.js',
+            get_template_directory_uri() . '/resources/assets/js/buy-now.js',
             ['jquery'],
             '1.0.0',
             true
@@ -70,12 +71,14 @@ class BuyNowService
             'redirectUrl' => wc_get_checkout_url(),
         ]);
 
-        wp_enqueue_style(
-            'jankx-buy-now',
-            get_template_directory_uri() . '/assets/css/buy-now.css',
-            [],
-            '1.0.0'
-        );
+        if (apply_filters('jankx/product/buynow/css/enabled', false)) {
+            wp_enqueue_style(
+                'jankx-buy-now',
+                get_template_directory_uri() . '/resources/assets/css/buy-now.css',
+                [],
+                '1.0.0'
+            );
+        }
     }
 
     /**
