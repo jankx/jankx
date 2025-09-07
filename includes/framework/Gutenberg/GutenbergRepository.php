@@ -43,6 +43,8 @@ class GutenbergRepository
      */
     protected $patternInstances = [];
 
+    protected $blockPaths = [];
+
     /**
      * Constructor
      */
@@ -55,9 +57,10 @@ class GutenbergRepository
      * Register a block
      *
      * @param string|Block $blockClass Block class name or instance
+     * @param string|null $blockPath Block directory path
      * @return void
      */
-    public function registerBlock($blockClass)
+    public function registerBlock($blockClass, $blockPath = null)
     {
         if (is_object($blockClass)) {
             if (!$blockClass instanceof Block) {
@@ -66,9 +69,19 @@ class GutenbergRepository
             // inited
             $this->blocks[get_class($blockClass)] = true;
             $this->instances[get_class($blockClass)] = $blockClass;
+
+            // Store block path if provided
+            if ($blockPath) {
+                $this->blockPaths[get_class($blockClass)] = $blockPath;
+            }
         } else {
             // not inited
             $this->blocks[$blockClass] = false;
+
+            // Store block path if provided
+            if ($blockPath) {
+                $this->blockPaths[$blockClass] = $blockPath;
+            }
         }
     }
 
@@ -81,6 +94,17 @@ class GutenbergRepository
     public function getBlock($blockName)
     {
         return $this->instances[$blockName] ?? null;
+    }
+
+    /**
+     * Get block path
+     *
+     * @param string $blockClass Block class name
+     * @return string|null
+     */
+    public function getBlockPath($blockClass)
+    {
+        return $this->blockPaths[$blockClass] ?? null;
     }
 
     /**

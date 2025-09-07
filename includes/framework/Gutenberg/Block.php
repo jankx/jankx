@@ -68,7 +68,21 @@ abstract class Block implements BlockInterface
     protected function resolveBlockPathFromContainer()
     {
         $app = Application::getInstance();
-        if (!$app || !$app->bound('blocks.path')) {
+        if (!$app) {
+            return false;
+        }
+
+        // First, try to get block path from repository
+        if ($app->bound('gutenberg.repository')) {
+            $repository = $app->make('gutenberg.repository');
+            $blockPath = $repository->getBlockPath(get_class($this));
+            if ($blockPath && is_dir($blockPath)) {
+                return $blockPath;
+            }
+        }
+
+        // Fallback to default blocks path
+        if (!$app->bound('blocks.path')) {
             return false;
         }
 
