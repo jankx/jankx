@@ -147,10 +147,10 @@ class PageRenderer
     {
         // Get template hierarchy
         $templates = $this->generateTemplateNames();
-        
+
         // Try to locate template
         $template = locate_template($templates);
-        
+
         if ($template) {
             load_template($template);
         } else {
