@@ -22,6 +22,13 @@ class LanguageSwitcherBlock extends Block
      */
     protected $blockId = 'jankx/language-switcher';
 
+    /**
+     * Block attributes
+     *
+     * @var array
+     */
+    protected $attributes = [];
+
 
 
     /**
@@ -33,6 +40,9 @@ class LanguageSwitcherBlock extends Block
      */
     public function render($attributes, $content = '')
     {
+        // Store attributes for use in other methods
+        $this->attributes = $attributes;
+
         $showFlags = $attributes['showFlags'] ?? true;
         $showNames = $attributes['showNames'] ?? true;
         $showCurrent = $attributes['showCurrent'] ?? true;
@@ -115,7 +125,7 @@ class LanguageSwitcherBlock extends Block
                     esc_attr($currentLangData['name'])
                 );
             }
-            if ($this->attributes['showNames']) {
+            if (isset($this->attributes['showNames']) && $this->attributes['showNames']) {
                 $html .= sprintf(
                     '<span class="language-name">%s</span>',
                     esc_html($currentLangData['name'])
@@ -145,7 +155,7 @@ class LanguageSwitcherBlock extends Block
                 );
             }
 
-            if ($this->attributes['showNames']) {
+            if (isset($this->attributes['showNames']) && $this->attributes['showNames']) {
                 $html .= sprintf(
                     '<span class="language-name">%s</span>',
                     esc_html($langData['name'])
@@ -188,7 +198,7 @@ class LanguageSwitcherBlock extends Block
                 );
             }
 
-            if ($this->attributes['showNames']) {
+            if (isset($this->attributes['showNames']) && $this->attributes['showNames']) {
                 $html .= sprintf(
                     '<span class="language-name">%s</span>',
                     esc_html($langData['name'])

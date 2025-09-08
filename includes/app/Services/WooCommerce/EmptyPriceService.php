@@ -386,7 +386,12 @@ class EmptyPriceService
         }
 
         // Fallback to config default
-        return Config::get('woocommerce.product.price.empty_text', __('Liên hệ', 'jankx'));
+        $text = Config::get('woocommerce.product.price.empty_text', 'Liên hệ');
+        // Apply translation only if WordPress is ready (after init action)
+        if (did_action('init')) {
+            return __($text, 'jankx');
+        }
+        return $text;
     }
 
     /**

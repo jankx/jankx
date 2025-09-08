@@ -19,7 +19,7 @@ return [
             | Text to display when product has no price
             |
             */
-            'empty_text' => __('Liên hệ', 'jankx'),
+            'empty_text' => 'Liên hệ',
 
             /*
             |--------------------------------------------------------------------------
