@@ -65,11 +65,10 @@ module.exports = {
     'blocks/query/build/init': './blocks/query/init.ts',
     'blocks/query/build/editor': './blocks/query/editor.scss',
 
-    'blocks/advanced-tabs/build/index': './blocks/advanced-tabs/index.tsx',
-    'blocks/advanced-tabs/build/tab': './blocks/advanced-tabs/tab.tsx',
-    'blocks/advanced-tabs/build/style': './blocks/advanced-tabs/style.scss',
-    'blocks/advanced-tabs/build/editor': './blocks/advanced-tabs/editor.scss',
-    'blocks/advanced-tabs/build/view': './blocks/advanced-tabs/view.js'
+
+    'blocks/image-masonry-gallery/build/index': './blocks/image-masonry-gallery/index.tsx',
+    'blocks/image-masonry-gallery/build/style': './blocks/image-masonry-gallery/style.scss',
+    'blocks/image-masonry-gallery/build/editor': './blocks/image-masonry-gallery/editor.scss'
   },
   output: {
     path: path.resolve(__dirname),

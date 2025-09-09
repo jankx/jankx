@@ -29,6 +29,15 @@ abstract class Block implements BlockInterface
      */
     protected $blockPath;
 
+    /**
+     * Get the block ID
+     *
+     * @return string
+     */
+    public function getBlockId()
+    {
+        return $this->blockId;
+    }
 
      /**
      * Constructor
@@ -43,7 +52,7 @@ abstract class Block implements BlockInterface
             $blockPath = $this->resolveBlockPathFromContainer();
             if (!$blockPath) {
                 throw new \RuntimeException(
-                    sprintf('Cannot resolve block path for block ID: %s', $this->blockId)
+                    sprintf('Cannot resolve block path for block ID: %s', $this->getBlockId())
                 );
             }
         }
@@ -87,7 +96,11 @@ abstract class Block implements BlockInterface
         }
 
         $blocksPath = $app->make('blocks.path');
-        $blockPath = $blocksPath . '/' . basename($this->blockId);
+        $blockId = $this->getBlockId();
+        if (empty($blockId)) {
+            return false;
+        }
+        $blockPath = $blocksPath . '/' . basename($blockId);
 
         if (!is_dir($blockPath)) {
             return false;
