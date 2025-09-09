@@ -65,12 +65,11 @@ module.exports = {
     'blocks/query/build/init': './blocks/query/init.ts',
     'blocks/query/build/editor': './blocks/query/editor.scss',
 
-
-    'blocks/product-collection/build/index': './blocks/product-collection/index.tsx',
-    'blocks/product-collection/build/save': './blocks/product-collection/save.tsx',
-    'blocks/product-collection/build/frontend': './blocks/product-collection/frontend.ts',
-    'blocks/product-collection/build/editor': './blocks/product-collection/editor.scss',
-    'blocks/product-collection/build/style': './blocks/product-collection/style.scss'
+    'blocks/advanced-tabs/build/index': './blocks/advanced-tabs/index.tsx',
+    'blocks/advanced-tabs/build/tab': './blocks/advanced-tabs/tab.tsx',
+    'blocks/advanced-tabs/build/style': './blocks/advanced-tabs/style.scss',
+    'blocks/advanced-tabs/build/editor': './blocks/advanced-tabs/editor.scss',
+    'blocks/advanced-tabs/build/view': './blocks/advanced-tabs/view.js'
   },
   output: {
     path: path.resolve(__dirname),

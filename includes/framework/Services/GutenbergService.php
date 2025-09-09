@@ -3,6 +3,7 @@
 namespace Jankx\Services;
 
 use Jankx\Foundation\Application;
+use Jankx\Gutenberg\Blocks\AdvancedTabsBlock;
 use Jankx\Gutenberg\Blocks\DynamicCollectionBlock;
 use Jankx\Gutenberg\Blocks\DynamicQueryBlock;
 use Jankx\Gutenberg\Blocks\IconPickerBlock;
@@ -103,6 +104,7 @@ class GutenbergService
      */
     protected function registerDefaultBlocks()
     {
+        $this->repository->registerBlock(AdvancedTabsBlock::class);
         $this->repository->registerBlock(DynamicQueryBlock::class);
         $this->repository->registerBlock(SvgIconBlock::class);
         $this->repository->registerBlock(MegaMenuBlock::class);

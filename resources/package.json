@@ -50,10 +50,6 @@
     "webpack-remove-empty-scripts": "^1.1.1"
   },
   "dependencies": {
-    "@fullcalendar/core": "^6.1.15",
-    "@fullcalendar/daygrid": "^6.1.15",
-    "@fullcalendar/interaction": "^6.1.15",
-    "@tanstack/react-virtual": "^3.13.12",
     "@types/wordpress__core-data": "^2.4.5",
     "@woocommerce/tracks": "^1.4.0",
     "@wordpress/api-fetch": "^6.47.0",
@@ -76,7 +72,6 @@
     "react-dom": "^18.3.1",
     "swiper": "^11.2.10",
     "use-debounce": "^10.0.5",
-    "usehooks-ts": "^3.1.1",
-    "woocommerce-blocks": "^10.1.7"
+    "usehooks-ts": "^3.1.1"
   }
 }
