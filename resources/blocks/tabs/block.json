@@ -2,7 +2,7 @@
   "apiVersion": 3,
   "name": "jankx/tabs",
   "title": "Tabs",
-  "category": "atbs-block",
+  "category": "jankx",
   "description": "Show your content in a horizontal tab.",
   "supports": {
     "html": false,
