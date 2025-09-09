@@ -68,7 +68,16 @@ module.exports = {
 
     'blocks/image-masonry-gallery/build/index': './blocks/image-masonry-gallery/index.tsx',
     'blocks/image-masonry-gallery/build/style': './blocks/image-masonry-gallery/style.scss',
-    'blocks/image-masonry-gallery/build/editor': './blocks/image-masonry-gallery/editor.scss'
+    'blocks/image-masonry-gallery/build/editor': './blocks/image-masonry-gallery/editor.scss',
+
+    'blocks/tabs/build/index': './blocks/tabs/index.tsx',
+    'blocks/tabs/build/style': './blocks/tabs/style.scss',
+    'blocks/tabs/build/editor': './blocks/tabs/editor.scss',
+    'blocks/tabs/build/view': './blocks/tabs/view.js',
+
+    'blocks/tab/build/index': './blocks/tab/index.tsx',
+    'blocks/tab/build/style': './blocks/tab/style.scss',
+    'blocks/tab/build/editor': './blocks/tab/editor.scss'
   },
   output: {
     path: path.resolve(__dirname),

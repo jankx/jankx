@@ -1,0 +1,19 @@
+{
+  "apiVersion": 3,
+  "name": "jankx/tab",
+  "title": "Tab",
+  "category": "atbs-block",
+  "description": "Show your content in a horizontal tab.",
+  "parent": [
+    "jankx/tabs"
+  ],
+  "supports": {
+    "html": false,
+    "anchor": false,
+    "customClassName": false
+  },
+  "textdomain": "jankx",
+  "editorScript": "file:./build/index.js",
+  "editorStyle": "file:./build/editor.css",
+  "style": "file:./build/style.css"
+}

@@ -9,6 +9,8 @@ use Jankx\Gutenberg\Blocks\IconPickerBlock;
 use Jankx\Gutenberg\Blocks\IconButtonBlock;
 use Jankx\Gutenberg\Blocks\LanguageSwitcherBlock;
 use Jankx\Gutenberg\Blocks\ImageMasonryGalleryBlock;
+use Jankx\Gutenberg\Blocks\TabsBlock;
+use Jankx\Gutenberg\Blocks\TabBlock;
 use Jankx\Gutenberg\Blocks\MegaMenuBlock;
 use Jankx\Gutenberg\Blocks\SvgIconBlock;
 use Jankx\Gutenberg\Blocks\SvgIconButtonBlock;
@@ -115,6 +117,8 @@ class GutenbergService
         $this->repository->registerBlock(OffcanvasTriggerBlock::class);
         $this->repository->registerBlock(LanguageSwitcherBlock::class);
         $this->repository->registerBlock(ImageMasonryGalleryBlock::class);
+        $this->repository->registerBlock(TabsBlock::class);
+        $this->repository->registerBlock(TabBlock::class);
         $this->repository->registerBlock(WplyrMediaBlock::class);
         $this->repository->registerBlock(ImageButtonBlock::class);
     }
