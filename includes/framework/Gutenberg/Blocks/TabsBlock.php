@@ -37,6 +37,9 @@ class TabsBlock extends Block
 
         // Enqueue block assets
         add_action('enqueue_block_assets', [$this, 'enqueueBlockAssets']);
+        
+        // Enqueue admin assets for editor
+        add_action('enqueue_block_editor_assets', [$this, 'enqueueBlockAssets']);
     }
 
     /**
@@ -51,6 +54,9 @@ class TabsBlock extends Block
         $asset_file = get_template_directory() . '/resources/assets/global.asset.php';
         $asset = file_exists($asset_file) ? require $asset_file : ['dependencies' => [], 'version' => '1.0.0'];
 
+        // Check if we're in admin/editor context
+        $is_admin = is_admin() || (defined('REST_REQUEST') && REST_REQUEST);
+
         // Enqueue global CSS
         wp_enqueue_style(
             'jankx-tabs-global-css',
@@ -60,32 +66,40 @@ class TabsBlock extends Block
             'all'
         );
 
-        // Enqueue global JS
+        // Enqueue global JS with proper WordPress dependencies
+        $dependencies = array_merge($asset['dependencies'], ['wp-hooks', 'wp-blocks']);
+        if ($is_admin) {
+            $dependencies = array_merge($dependencies, ['wp-element', 'wp-components', 'wp-editor']);
+        }
+
         wp_enqueue_script(
             'jankx-tabs-global-js',
             $theme_url . '/resources/assets/global.js',
-            $asset['dependencies'],
+            $dependencies,
             $asset['version'],
             true
         );
 
-        // Enqueue admin CSS
-        wp_enqueue_style(
-            'jankx-tabs-admin-css',
-            $theme_url . '/resources/assets/admin/admin.css',
-            ['jankx-tabs-global-css'],
-            '1.0.0',
-            'all'
-        );
+        // Only enqueue admin assets in admin context
+        if ($is_admin) {
+            // Enqueue admin CSS
+            wp_enqueue_style(
+                'jankx-tabs-admin-css',
+                $theme_url . '/resources/assets/admin/admin.css',
+                ['jankx-tabs-global-css'],
+                '1.0.0',
+                'all'
+            );
 
-        // Enqueue admin JS
-        wp_enqueue_script(
-            'jankx-tabs-admin-js',
-            $theme_url . '/resources/assets/admin/admin.js',
-            ['jquery', 'jankx-tabs-global-js'],
-            '1.0.0',
-            true
-        );
+            // Enqueue admin JS
+            wp_enqueue_script(
+                'jankx-tabs-admin-js',
+                $theme_url . '/resources/assets/admin/admin.js',
+                ['jquery', 'jankx-tabs-global-js'],
+                '1.0.0',
+                true
+            );
+        }
     }
 
     /**
