@@ -12,13 +12,14 @@ return [
     'http' => [
         // Frontend providers
         'frontend' => [
+            // Jankx\Support\Providers\LegacyTemplateLoaderServiceProvider::class,
+
             Jankx\Support\Providers\ThemeServiceProvider::class,
             Jankx\Support\Providers\LayoutServiceProvider::class,
             Jankx\Support\Providers\AssetServiceProvider::class,
             Jankx\Support\Providers\PerformanceServiceProvider::class,
             Jankx\Support\Providers\PlatesServiceProvider::class,
             Jankx\Support\Providers\PageRendererServiceProvider::class,
-            Jankx\Support\Providers\LegacyTemplateLoaderServiceProvider::class,
             Jankx\Support\Providers\SwiperServiceProvider::class,
 
             App\Providers\GutenbergServiceProvider::class,
