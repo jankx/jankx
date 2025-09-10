@@ -17,8 +17,9 @@ return [
             Jankx\Support\Providers\AssetServiceProvider::class,
             Jankx\Support\Providers\PerformanceServiceProvider::class,
             Jankx\Support\Providers\PlatesServiceProvider::class,
-            Jankx\Framework\Providers\PageRendererServiceProvider::class,
-            Jankx\Framework\Providers\LegacyTemplateLoaderServiceProvider::class,
+            Jankx\Support\Providers\PageRendererServiceProvider::class,
+            Jankx\Support\Providers\LegacyTemplateLoaderServiceProvider::class,
+            Jankx\Support\Providers\SwiperServiceProvider::class,
 
             App\Providers\GutenbergServiceProvider::class,
             App\Providers\LanguageSwitcherServiceProvider::class,
@@ -32,6 +33,7 @@ return [
 
         // Admin providers
         'admin' => [
+
             Jankx\Support\Providers\ThemeServiceProvider::class,
             Jankx\Support\Providers\PlatesServiceProvider::class,
             Jankx\Support\Providers\PerformanceServiceProvider::class,
@@ -39,6 +41,7 @@ return [
             Jankx\Support\Providers\JankxMenuItemsServiceProvider::class,
             Jankx\Support\Providers\ErrorSuppressionServiceProvider::class,
             Jankx\Support\Providers\AssetServiceProvider::class,
+            Jankx\Support\Providers\SwiperServiceProvider::class,
 
             App\Providers\WordPress\VisualTermDescriptionEditorServiceProvider::class,
             App\Providers\NavigationBlockServiceProvider::class,
@@ -54,6 +57,7 @@ return [
         'admin_ajax' => [
             Jankx\Support\Providers\ThemeServiceProvider::class,
             Jankx\Support\Providers\AjaxServiceProvider::class,
+            Jankx\Support\Providers\SwiperServiceProvider::class,
 
             App\Providers\GutenbergServiceProvider::class,
             App\Providers\LanguageSwitcherServiceProvider::class,

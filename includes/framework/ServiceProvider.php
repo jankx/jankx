@@ -1,6 +1,6 @@
 <?php
 
-namespace Jankx\Framework;
+namespace Jankx;
 
 if (!defined('ABSPATH')) {
     exit('Cheating huh?');

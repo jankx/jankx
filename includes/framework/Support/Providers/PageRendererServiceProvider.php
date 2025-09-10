@@ -1,9 +1,10 @@
 <?php
 
-namespace Jankx\Framework\Providers;
+namespace Jankx\Support\Providers;
 
+use Jankx\Foundation\Application;
 use Jankx\Foundation\PageRenderer;
-use Jankx\Framework\ServiceProvider;
+use Jankx\Support\Providers\ServiceProvider;
 
 class PageRendererServiceProvider extends ServiceProvider
 {
@@ -12,15 +13,15 @@ class PageRendererServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(Application $app)
     {
         // Register PageRenderer as singleton
-        $this->app->singleton('jankx.page.renderer', function ($app) {
+        $app->singleton('jankx.page.renderer', function ($app) {
             return PageRenderer::getInstance();
         });
 
         // Register alias for easier access
-        $this->app->alias('jankx.page.renderer', PageRenderer::class);
+        $app->alias('jankx.page.renderer', PageRenderer::class);
     }
 
     /**
@@ -28,7 +29,7 @@ class PageRendererServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(Application $app)
     {
         // Initialize PageRenderer
         $this->app->make('jankx.page.renderer');

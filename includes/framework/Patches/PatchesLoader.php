@@ -1,6 +1,6 @@
 <?php
 
-namespace Jankx\Framework\Patches;
+namespace Jankx\Patches;
 
 /**
  * Patches Loader

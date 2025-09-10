@@ -19,8 +19,8 @@ class NavigationBlockService
     public function initPatches()
     {
         // Kích hoạt patches để khắc phục vấn đề "Undefined array key 'url'"
-        if (class_exists('Jankx\Framework\Patches\PatchesLoader')) {
-            \Jankx\Framework\Patches\PatchesLoader::init();
+        if (class_exists('Jankx\Patches\PatchesLoader')) {
+            \Jankx\Patches\PatchesLoader::init();
         }
 
         // Emergency fix nếu cần

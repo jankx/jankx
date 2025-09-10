@@ -1,9 +1,10 @@
 <?php
 
-namespace Jankx\Framework\Providers;
+namespace Jankx\Support\Providers;
 
-use Jankx\Framework\Support\LegacyTemplateLoader;
-use Jankx\Framework\ServiceProvider;
+use Jankx\Foundation\Application;
+use Jankx\Support\LegacyTemplateLoader;
+use Jankx\Support\Providers\ServiceProvider;
 
 class LegacyTemplateLoaderServiceProvider extends ServiceProvider
 {
@@ -12,7 +13,7 @@ class LegacyTemplateLoaderServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(Application $app)
     {
         // Register LegacyTemplateLoader as singleton
         $this->app->singleton('jankx.legacy.template.loader', function ($app) {
@@ -28,7 +29,7 @@ class LegacyTemplateLoaderServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(Application $app)
     {
         // Initialize LegacyTemplateLoader
         $this->app->make('jankx.legacy.template.loader');

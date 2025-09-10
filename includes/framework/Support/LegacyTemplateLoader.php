@@ -1,6 +1,6 @@
 <?php
 
-namespace Jankx\Framework\Support;
+namespace Jankx\Support;
 
 if (!defined('ABSPATH')) {
     exit('Cheating huh?');
@@ -258,7 +258,11 @@ class LegacyTemplateLoader
         $context = $this->determineContext();
         $templates = $this->templateHierarchy;
 
-        jankx_render_page($context, $templates);
+        // Use PageRenderer to render the page
+        $pageRenderer = \Jankx\Foundation\PageRenderer::getInstance();
+        $pageRenderer->setContext($context);
+        $pageRenderer->setTemplates($templates);
+        $pageRenderer->render();
     }
 
     /**
