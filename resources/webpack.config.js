@@ -77,7 +77,21 @@ module.exports = {
 
     'blocks/tab/build/index': './blocks/tab/index.tsx',
     'blocks/tab/build/style': './blocks/tab/style.scss',
-    'blocks/tab/build/editor': './blocks/tab/editor.scss'
+    'blocks/tab/build/editor': './blocks/tab/editor.scss',
+
+    'blocks/base/build/index': './blocks/base/index.js',
+    'blocks/base/build/style': './blocks/base/style.scss',
+    'blocks/base/build/editor': './blocks/base/editor.scss',
+    'blocks/base/build/view': './blocks/base/view.js',
+
+    'blocks/swiper-flexible/build/index': './blocks/swiper-flexible/index.js',
+    'blocks/swiper-flexible/build/style-index': './blocks/swiper-flexible/style.scss',
+    'blocks/swiper-flexible/build/editor': './blocks/swiper-flexible/editor.scss',
+    'blocks/swiper-flexible/build/view': './blocks/swiper-flexible/view.js',
+
+    'blocks/swiper-flexible-item/build/index': './blocks/swiper-flexible-item/index.js',
+    'blocks/swiper-flexible-item/build/style-index': './blocks/swiper-flexible-item/style.scss',
+    'blocks/swiper-flexible-item/build/editor': './blocks/swiper-flexible-item/editor.scss'
   },
   output: {
     path: path.resolve(__dirname),
@@ -90,56 +104,6 @@ module.exports = {
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.scss', '.css'],
-
-    alias: {
-      // SCSS path aliases
-      'node_modules/@wordpress/base-styles': path.resolve(__dirname, './node_modules/@wordpress/base-styles'),
-      'node_modules/@automattic/color-studio': path.resolve(__dirname, './node_modules/@automattic/color-studio'),
-      '@woocommerce/base-hooks': path.resolve(__dirname, './node_modules/woocommerce-blocks/js/base/hooks'),
-      '@woocommerce/utils': path.resolve(__dirname, './node_modules/woocommerce-blocks/js/utils'),
-      '@woocommerce/editor-components': path.resolve(__dirname, './node_modules/woocommerce-blocks/js/editor-components'),
-      '@woocommerce/editor-components/*': path.resolve(__dirname, './node_modules/woocommerce-blocks/js/editor-components/*'),
-      // Core modules
-      '@woocommerce/types': path.resolve(__dirname, './node_modules/woocommerce-blocks/js/types'),
-      '@woocommerce/settings': path.resolve(__dirname, './node_modules/woocommerce-blocks/js/settings/shared'),
-      '@woocommerce/block-settings': path.resolve(__dirname, './node_modules/woocommerce-blocks/js/settings/blocks'),
-      '@woocommerce/blocks-registry': path.resolve(__dirname, './node_modules/woocommerce-blocks/js/blocks-registry'),
-      '@woocommerce/tracks': path.resolve(__dirname, './node_modules/woocommerce-blocks/js/tracks'),
-      '@woocommerce/blocks-checkout-events': path.resolve(__dirname, './node_modules/woocommerce-blocks/js/blocks/checkout-events'),
-      '@woocommerce/customer-effort-score': path.resolve(__dirname, './node_modules/woocommerce-blocks/js/customer-effort-score'),
-
-      // Blocks and data
-      '@woocommerce/blocks': path.resolve(__dirname, './node_modules/woocommerce-blocks/js/blocks'),
-      '@woocommerce/block-data': path.resolve(__dirname, './node_modules/woocommerce-blocks/js/data'),
-      '@woocommerce/block-hocs': path.resolve(__dirname, './node_modules/woocommerce-blocks/js/hocs'),
-      '@woocommerce/resource-previews': path.resolve(__dirname, './node_modules/woocommerce-blocks/js/previews'),
-
-      // Atomic blocks
-      '@woocommerce/atomic-blocks': path.resolve(__dirname, './node_modules/woocommerce-blocks/js/atomic/blocks'),
-      '@woocommerce/atomic-blocks/*': path.resolve(__dirname, './node_modules/woocommerce-blocks/js/atomic/blocks/*'),
-      '@woocommerce/atomic-blocks/product-elements': path.resolve(__dirname, './node_modules/woocommerce-blocks/js/atomic/blocks/product-elements'),
-      '@woocommerce/atomic-blocks/product-elements/*': path.resolve(__dirname, './node_modules/woocommerce-blocks/js/atomic/blocks/product-elements/*'),
-      '@woocommerce/atomic-blocks/product-elements/summary/constants': path.resolve(__dirname, './node_modules/woocommerce-blocks/js/atomic/blocks/product-elements/summary/constants'),
-      '@woocommerce/atomic-blocks/product-elements/title/block.json': path.resolve(__dirname, './node_modules/woocommerce-blocks/js/atomic/blocks/product-elements/title/block.json'),
-      '@woocommerce/atomic-blocks/product-elements/image/types': path.resolve(__dirname, './node_modules/woocommerce-blocks/js/atomic/blocks/product-elements/image/types'),
-      '../../atomic/blocks/product-elements/image/types': path.resolve(__dirname, './node_modules/woocommerce-blocks/js/atomic/blocks/product-elements/image/types'),
-
-      // Product template
-      '@woocommerce/product-template': path.resolve(__dirname, './node_modules/woocommerce-blocks/js/blocks/product-template'),
-      '@woocommerce/product-template/*': path.resolve(__dirname, './node_modules/woocommerce-blocks/js/blocks/product-template/*'),
-
-      // Price format (local package)
-      '@woocommerce/price-format': path.resolve(__dirname, 'packages/prices'),
-
-      // Base modules
-      '@woocommerce/base-utils': path.resolve(__dirname, './node_modules/woocommerce-blocks/js/base/utils'),
-      '@woocommerce/base-components': path.resolve(__dirname, './node_modules/woocommerce-blocks/js/base/components'),
-      '@woocommerce/base-context': path.resolve(__dirname, './node_modules/woocommerce-blocks/js/base/context'),
-      '@woocommerce/base-context/*': path.resolve(__dirname, './node_modules/woocommerce-blocks/js/base/context/*'),
-
-      // WordPress base styles
-      '@wordpress/base-styles': path.resolve(__dirname, './node_modules/@wordpress/base-styles'),
-    },
   },
   externals: {
     react: 'React',
@@ -152,8 +116,6 @@ module.exports = {
     '@wordpress/data': ['wp', 'data'],
     '@wordpress/core-data': ['wp', 'coreData'],
     swiper: 'Swiper',
-    // Chỉ external WooCommerce stores để tránh duplicate, không external tất cả modules
-    '@woocommerce/blocks-registry': ['wc', 'blocksRegistry'],
   },
   plugins: [
     new RemoveEmptyScriptsPlugin(),
@@ -200,10 +162,6 @@ module.exports = {
         if (request === 'swiper') {
           return 'Swiper';
         }
-        // Chỉ external WooCommerce stores để tránh duplicate
-        if (request === '@woocommerce/blocks-registry') {
-          return ['wc', 'blocksRegistry'];
-        }
       },
     }),
 
@@ -212,7 +170,6 @@ module.exports = {
     rules: [
       {
         test: /\.[jt]sx?$/,
-        exclude: /node_modules\/(?!woocommerce-blocks)/,
         use: {
           loader: 'babel-loader',
           options: {
@@ -242,11 +199,7 @@ module.exports = {
               sassOptions: {
                 includePaths: [
                   path.resolve(__dirname, './node_modules/@wordpress/base-styles'),
-                  path.resolve(__dirname, './node_modules/woocommerce-blocks/css/abstracts'),
-                  path.resolve(__dirname, './node_modules/woocommerce-blocks/css'),
-                  path.resolve(__dirname, './node_modules/woocommerce-blocks/js'),
                   path.resolve(__dirname, 'base-styles'),
-                  path.resolve(__dirname, 'base-styles/woocommerce'),
                   path.resolve(__dirname, 'scss'),
                 ],
 
