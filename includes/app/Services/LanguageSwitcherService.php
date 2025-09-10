@@ -58,18 +58,11 @@ class LanguageSwitcherService extends AbstractService
     protected function initLanguages(): void
     {
         if (!function_exists('pll_the_languages')) {
-            if (WP_DEBUG) {
-                error_log('LanguageSwitcherService: pll_the_languages function not found');
-            }
             return;
         }
 
         // Lấy current language
         $this->currentLanguage = pll_current_language() ?: '';
-
-        if (WP_DEBUG) {
-            error_log('LanguageSwitcherService: Current language: ' . $this->currentLanguage);
-        }
 
         // Lấy danh sách languages
         $this->languages = pll_the_languages([
@@ -79,11 +72,6 @@ class LanguageSwitcherService extends AbstractService
             'show_names' => 1,
             'hide_current' => 0
         ]);
-
-        if (WP_DEBUG) {
-            error_log('LanguageSwitcherService: Languages count: ' . count($this->languages));
-            error_log('LanguageSwitcherService: Languages data: ' . print_r($this->languages, true));
-        }
     }
 
     /**
