@@ -100,7 +100,9 @@ export default function save({ attributes, className }: AdvancedImageBoxSaveProp
 				animationDelay: `${overlayAnimationDelay}ms`,
 			}}
 		>
-			<InnerBlocks.Content />
+			<div className="wp-block-jankx-advanced-image-box__overlay__content">
+				<InnerBlocks.Content />
+			</div>
 		</div>
 	);
 

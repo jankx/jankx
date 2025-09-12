@@ -155,12 +155,6 @@
 			"duotone": true
 		}
 	},
-	"providesContext": {
-		"jankx/advanced-image-box/overlaySettings": "overlaySettings"
-	},
-	"usesContext": [
-		"jankx/advanced-image-box/overlaySettings"
-	],
 	"selectors": {
 		"border": ".wp-block-jankx-advanced-image-box img, .wp-block-jankx-advanced-image-box__overlay",
 		"shadow": ".wp-block-jankx-advanced-image-box img, .wp-block-jankx-advanced-image-box__overlay",

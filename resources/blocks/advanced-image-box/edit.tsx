@@ -62,29 +62,29 @@ export default function edit({
 }: AdvancedImageBoxEditProps) {
 	const {
 		url = '',
-		alt,
-		title,
-		id,
-		width,
-		height,
-		aspectRatio,
-		scale,
-		href,
-		linkTarget,
-		rel,
-		caption,
-		showOverlayOnHover,
-		overlayAnimation,
-		overlayAnimationDuration,
-		overlayAnimationDelay,
-		overlayPosition,
-		overlayBackground,
-		overlayOpacity,
-		imageHoverEffect,
-		borderRadius
-	} = attributes;
+		alt = '',
+		title = '',
+		id = 0,
+		width = '',
+		height = '',
+		aspectRatio = '',
+		scale = '',
+		href = '',
+		linkTarget = '',
+		rel = '',
+		caption = '',
+		showOverlayOnHover = false,
+		overlayAnimation = 'fadeIn',
+		overlayAnimationDuration = 1000,
+		overlayAnimationDelay = 0,
+		overlayPosition = 'bottom',
+		overlayBackground = 'rgba(0,0,0,0.5)',
+		overlayOpacity = 1,
+		imageHoverEffect = 'none',
+		borderRadius = '0px'
+	} = attributes || {};
 
-	const [validationIssues, setValidationIssues] = useState<ValidationIssue[]>([]);
+	// Validation state removed for better UX
 	const [isEditingURL, setIsEditingURL] = useState(false);
 	const [popoverAnchor, setPopoverAnchor] = useState<HTMLElement | null>(null);
 
@@ -96,17 +96,12 @@ export default function edit({
 	const { createErrorNotice } = useDispatch('core/notices');
 
 	// Get inner blocks for validation
-	const { getBlocks } = useSelect((select) => ({
-		getBlocks: select(blockEditorStore).getBlocks,
-	}));
+	const innerBlocks = useSelect((select) => {
+		const blocks = select(blockEditorStore).getBlocks(clientId);
+		return Array.isArray(blocks) ? blocks : [];
+	}, [clientId]);
 
-	const innerBlocks = getBlocks(clientId);
-
-	// Validate on attributes change
-	useEffect(() => {
-		const validation = validateBlockContent(attributes, innerBlocks);
-		setValidationIssues(validation.issues || []);
-	}, [attributes, innerBlocks]);
+	// Validation removed for better UX
 
 	const blockProps = useBlockProps({
 		ref: setPopoverAnchor,
@@ -175,21 +170,7 @@ export default function edit({
 		setIsEditingURL(false);
 	};
 
-	// Show validation notice
-	const validationNotice = validationIssues.length > 0 && (
-		<Notice
-			status={validationIssues.some(issue => issue.type === 'error') ? 'error' : 'warning'}
-			isDismissible={false}
-			className="wp-block-jankx-advanced-image-box__validation-notice"
-		>
-			<strong>{__('Validation Issues:')}</strong>
-			<ul>
-				{validationIssues.map((issue, index) => (
-					<li key={index}>{issue.message}</li>
-				))}
-			</ul>
-		</Notice>
-	);
+	// Validation notice removed for better UX
 
 	const imageElement = url ? (
 		<img
@@ -243,18 +224,18 @@ export default function edit({
 				animationDelay: `${overlayAnimationDelay}ms`,
 			}}
 		>
-			<InnerBlocks
-				allowedBlocks={ALLOWED_INNER_BLOCKS}
-				template={DEFAULT_INNER_BLOCKS_TEMPLATE}
-				templateLock={false}
-				renderAppender={InnerBlocks.ButtonBlockAppender}
-			/>
+			<div className="wp-block-jankx-advanced-image-box__overlay__content">
+				<InnerBlocks
+					allowedBlocks={ALLOWED_INNER_BLOCKS}
+					templateLock={false}
+					renderAppender={InnerBlocks.ButtonBlockAppender}
+				/>
+			</div>
 		</div>
 	);
 
 	return (
 		<>
-			{validationNotice}
 			<div {...blockProps}>
 				{imageElement}
 				{overlayContent}

@@ -103,7 +103,7 @@ export const validateBlockContent = (
 
 	return {
 		isValid: issues.length === 0,
-		issues: issues.length > 0 ? issues : undefined
+		...(issues.length > 0 && { issues })
 	};
 };
 
@@ -111,9 +111,21 @@ export const validateBlockContent = (
  * Validate inner blocks structure and content
  */
 export const validateInnerBlocks = (
-	innerBlocks: BlockInstance[]
+	innerBlocks: BlockInstance[] = []
 ): ValidationResult => {
 	const issues: ValidationIssue[] = [];
+
+	// Ensure innerBlocks is an array
+	if (!Array.isArray(innerBlocks)) {
+		issues.push({
+			type: 'error',
+			message: 'Inner blocks must be an array'
+		});
+		return {
+			isValid: false,
+			issues
+		};
+	}
 
 	// Check maximum number of inner blocks
 	if (innerBlocks.length > VALIDATION_RULES.maxInnerBlocks) {
@@ -124,17 +136,26 @@ export const validateInnerBlocks = (
 	}
 
 	innerBlocks.forEach((block, index) => {
-		// Validate block type
-		if (!isAllowedInnerBlock(block.name)) {
+		// Ensure block exists and has required properties
+		if (!block || typeof block !== 'object') {
 			issues.push({
 				type: 'error',
-				message: `Block type "${block.name}" is not allowed in overlay`,
-				block: block.name
+				message: `Invalid block at index ${index}`
+			});
+			return;
+		}
+
+		// Validate block type
+		if (!block.name || !isAllowedInnerBlock(block.name)) {
+			issues.push({
+				type: 'error',
+				message: `Block type "${block.name || 'unknown'}" is not allowed in overlay`,
+				block: block.name || 'unknown'
 			});
 		}
 
 		// Validate block attributes
-		if (block.attributes && Object.keys(block.attributes).length > 0) {
+		if (block.attributes && typeof block.attributes === 'object' && Object.keys(block.attributes).length > 0) {
 			const blockValidation = validateBlockAttributes(block.name, block.attributes);
 			if (!blockValidation.isValid) {
 				issues.push(...(blockValidation.issues || []));
@@ -142,7 +163,7 @@ export const validateInnerBlocks = (
 		}
 
 		// Recursively validate nested inner blocks
-		if (block.innerBlocks && block.innerBlocks.length > 0) {
+		if (block.innerBlocks && Array.isArray(block.innerBlocks) && block.innerBlocks.length > 0) {
 			const nestedValidation = validateInnerBlocks(block.innerBlocks);
 			if (!nestedValidation.isValid) {
 				issues.push(...(nestedValidation.issues || []));
@@ -152,7 +173,7 @@ export const validateInnerBlocks = (
 
 	return {
 		isValid: issues.length === 0,
-		issues: issues.length > 0 ? issues : undefined
+		...(issues.length > 0 && { issues })
 	};
 };
 
@@ -231,7 +252,7 @@ export const validateBlockAttributes = (
 
 	return {
 		isValid: issues.length === 0,
-		issues: issues.length > 0 ? issues : undefined
+		...(issues.length > 0 && { issues })
 	};
 };
 
@@ -282,7 +303,7 @@ export const validateAnimationSettings = (
 
 	return {
 		isValid: issues.length === 0,
-		issues: issues.length > 0 ? issues : undefined
+		...(issues.length > 0 && { issues })
 	};
 };
 
@@ -330,7 +351,7 @@ export const validateOverlaySettings = (
 
 	return {
 		isValid: issues.length === 0,
-		issues: issues.length > 0 ? issues : undefined
+		...(issues.length > 0 && { issues })
 	};
 };
 

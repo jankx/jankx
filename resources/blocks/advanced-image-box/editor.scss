@@ -103,7 +103,7 @@
 
 			// Editor-specific overlay styling
 			&::before {
-				content: 'Overlay Content';
+				content: '';
 				position: absolute;
 				top: 50%;
 				left: 50%;
@@ -161,18 +161,56 @@
 
 				.block-editor-inserter {
 					.block-editor-inserter__toggle {
-						background-color: rgba(255, 255, 255, 0.2);
-						border: 1px solid rgba(255, 255, 255, 0.5);
-						color: #fff;
+						background-color: #fff !important;
+						border: 2px solid #fff !important;
+						color: #000 !important;
 						border-radius: 4px;
-						padding: 0.5rem;
+						padding: 0.5rem 1rem;
 						transition: all 0.3s ease;
+						font-weight: 500;
+						box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
 						&:hover {
-							background-color: rgba(255, 255, 255, 0.3);
-							border-color: rgba(255, 255, 255, 0.7);
+							background-color: #f0f0f0 !important;
+							border-color: #f0f0f0 !important;
+							color: #000 !important;
+							box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+						}
+
+						&:focus {
+							background-color: #fff !important;
+							border-color: #007cba !important;
+							color: #000 !important;
+							box-shadow: 0 0 0 1px #007cba;
 						}
 					}
+				}
+			}
+
+			// Button block appender styling
+			.block-editor-button-block-appender {
+				background-color: #fff !important;
+				border: 2px solid #fff !important;
+				color: #000 !important;
+				border-radius: 4px;
+				padding: 0.5rem 1rem;
+				transition: all 0.3s ease;
+				font-weight: 500;
+				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+				margin: 0.5rem 0;
+
+				&:hover {
+					background-color: #f0f0f0 !important;
+					border-color: #f0f0f0 !important;
+					color: #000 !important;
+					box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+				}
+
+				&:focus {
+					background-color: #fff !important;
+					border-color: #007cba !important;
+					color: #000 !important;
+					box-shadow: 0 0 0 1px #007cba;
 				}
 			}
 		}

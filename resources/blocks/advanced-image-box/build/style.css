@@ -46,23 +46,27 @@
   right: 0;
   bottom: 0;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
+  align-items: flex-end;
+  justify-content: stretch;
+  padding: 0;
   opacity: 0;
   visibility: hidden;
   transition: all 0.3s ease;
   z-index: 2;
   border-radius: inherit;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.6) 30%, rgba(0, 0, 0, 0.3) 60%, rgba(0, 0, 0, 0.1) 80%, transparent 100%);
 }
 .wp-block-jankx-advanced-image-box__overlay--top {
   align-items: flex-start;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.6) 30%, rgba(0, 0, 0, 0.3) 60%, rgba(0, 0, 0, 0.1) 80%, transparent 100%);
 }
 .wp-block-jankx-advanced-image-box__overlay--center {
   align-items: center;
+  background: rgba(0, 0, 0, 0.7);
 }
 .wp-block-jankx-advanced-image-box__overlay--bottom {
   align-items: flex-end;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.6) 30%, rgba(0, 0, 0, 0.3) 60%, rgba(0, 0, 0, 0.1) 80%, transparent 100%);
 }
 .wp-block-jankx-advanced-image-box__overlay--left {
   justify-content: flex-start;
@@ -74,6 +78,13 @@
   opacity: 1;
   visibility: visible;
 }
+.wp-block-jankx-advanced-image-box__overlay__content {
+  width: 100%;
+  padding: 1.5rem;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(2px);
+  border-radius: 0 0 inherit inherit;
+}
 .wp-block-jankx-advanced-image-box__overlay .wp-block-heading,
 .wp-block-jankx-advanced-image-box__overlay .wp-block-paragraph,
 .wp-block-jankx-advanced-image-box__overlay .wp-block-button,
@@ -82,13 +93,21 @@
 .wp-block-jankx-advanced-image-box__overlay .wp-block-columns,
 .wp-block-jankx-advanced-image-box__overlay .wp-block-column {
   color: #fff;
-  text-align: center;
+  text-align: left;
 }
 .wp-block-jankx-advanced-image-box__overlay .wp-block-heading {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  line-height: 1.2;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 .wp-block-jankx-advanced-image-box__overlay .wp-block-paragraph {
   margin-bottom: 1rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  opacity: 0.95;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 .wp-block-jankx-advanced-image-box__overlay .wp-block-button {
   margin-top: 1rem;
