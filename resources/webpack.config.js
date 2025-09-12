@@ -79,10 +79,10 @@ module.exports = {
     'blocks/tab/build/style': './blocks/tab/style.scss',
     'blocks/tab/build/editor': './blocks/tab/editor.scss',
 
-    'blocks/base/build/index': './blocks/base/index.js',
-    'blocks/base/build/style': './blocks/base/style.scss',
-    'blocks/base/build/editor': './blocks/base/editor.scss',
-    'blocks/base/build/view': './blocks/base/view.js',
+    'blocks/swiper-base/build/index': './blocks/swiper-base/index.js',
+    'blocks/swiper-base/build/style': './blocks/swiper-base/style.scss',
+    'blocks/swiper-base/build/editor': './blocks/swiper-base/editor.scss',
+    'blocks/swiper-base/build/view': './blocks/swiper-base/view.js',
 
     'blocks/swiper-flexible/build/index': './blocks/swiper-flexible/index.js',
     'blocks/swiper-flexible/build/style-index': './blocks/swiper-flexible/style.scss',

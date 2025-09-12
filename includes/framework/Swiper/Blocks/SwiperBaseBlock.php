@@ -19,5 +19,5 @@ class SwiperBaseBlock extends Block
      *
      * @var string
      */
-    protected $blockId = 'jankx-swiper/base';
+    protected $blockId = 'jankx/swiper-base';
 }

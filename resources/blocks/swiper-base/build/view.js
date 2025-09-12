@@ -1,7 +1,7 @@
 /******/ (() => { // webpackBootstrap
-/*!*****************************!*\
-  !*** ./blocks/base/view.js ***!
-  \*****************************/
+/*!************************************!*\
+  !*** ./blocks/swiper-base/view.js ***!
+  \************************************/
 document.addEventListener("DOMContentLoaded", () => {
   const e = () => {
     document.querySelectorAll(".jankx-swiper-base-wrapper").forEach(e => {
