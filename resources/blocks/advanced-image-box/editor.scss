@@ -1,0 +1,513 @@
+/**
+ * Advanced Image Box - Editor Styles
+ */
+
+// Import Animate.css for animations in editor
+@import url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css');
+
+.block-editor-block-list__layout {
+	.wp-block-jankx-advanced-image-box {
+		position: relative;
+		overflow: hidden;
+		border-radius: var(--wp--custom--border-radius, 0);
+		transition: all 0.3s ease;
+
+		&__image {
+			display: block;
+			width: 100%;
+			height: auto;
+			transition: all 0.3s ease;
+			border-radius: inherit;
+
+			// Hover effects preview in editor
+			&.has-hover-zoom {
+				.wp-block-jankx-advanced-image-box:hover & {
+					transform: scale(1.05);
+				}
+			}
+
+			&.has-hover-fade {
+				.wp-block-jankx-advanced-image-box:hover & {
+					opacity: 0.8;
+				}
+			}
+
+			&.has-hover-blur {
+				.wp-block-jankx-advanced-image-box:hover & {
+					filter: blur(2px);
+				}
+			}
+
+			&.has-hover-grayscale {
+				.wp-block-jankx-advanced-image-box:hover & {
+					filter: grayscale(100%);
+				}
+			}
+
+			&.has-hover-sepia {
+				.wp-block-jankx-advanced-image-box:hover & {
+					filter: sepia(100%);
+				}
+			}
+
+			&.has-hover-brightness {
+				.wp-block-jankx-advanced-image-box:hover & {
+					filter: brightness(1.2);
+				}
+			}
+		}
+
+		&__overlay {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 1rem;
+			opacity: 0;
+			visibility: hidden;
+			transition: all 0.3s ease;
+			z-index: 2;
+			border-radius: inherit;
+			border: 2px dashed rgba(255, 255, 255, 0.5);
+
+			// Position variants
+			&--top {
+				align-items: flex-start;
+			}
+
+			&--center {
+				align-items: center;
+			}
+
+			&--bottom {
+				align-items: flex-end;
+			}
+
+			&--left {
+				justify-content: flex-start;
+			}
+
+			&--right {
+				justify-content: flex-end;
+			}
+
+			// Show overlay on hover in editor
+			.has-overlay:hover & {
+				opacity: 1;
+				visibility: visible;
+			}
+
+			// Editor-specific overlay styling
+			&::before {
+				content: 'Overlay Content';
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				color: rgba(255, 255, 255, 0.7);
+				font-size: 0.875rem;
+				font-weight: 500;
+				pointer-events: none;
+				z-index: 1;
+			}
+
+			// Content styling in editor
+			.wp-block-heading,
+			.wp-block-paragraph,
+			.wp-block-button,
+			.wp-block-list,
+			.wp-block-group,
+			.wp-block-columns,
+			.wp-block-column {
+				color: #fff;
+				text-align: center;
+				position: relative;
+				z-index: 2;
+			}
+
+			.wp-block-heading {
+				margin-bottom: 0.5rem;
+			}
+
+			.wp-block-paragraph {
+				margin-bottom: 1rem;
+			}
+
+			.wp-block-button {
+				margin-top: 1rem;
+
+				.wp-block-button__link {
+					background-color: transparent;
+					border: 2px solid #fff;
+					color: #fff;
+					transition: all 0.3s ease;
+
+					&:hover {
+						background-color: #fff;
+						color: #000;
+					}
+				}
+			}
+
+			// Inner blocks appender styling
+			.block-list-appender {
+				position: relative;
+				z-index: 2;
+				margin: 0.5rem 0;
+
+				.block-editor-inserter {
+					.block-editor-inserter__toggle {
+						background-color: rgba(255, 255, 255, 0.2);
+						border: 1px solid rgba(255, 255, 255, 0.5);
+						color: #fff;
+						border-radius: 4px;
+						padding: 0.5rem;
+						transition: all 0.3s ease;
+
+						&:hover {
+							background-color: rgba(255, 255, 255, 0.3);
+							border-color: rgba(255, 255, 255, 0.7);
+						}
+					}
+				}
+			}
+		}
+
+		&__placeholder {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			min-height: 200px;
+			background-color: #f0f0f0;
+			border: 2px dashed #ccc;
+			border-radius: 4px;
+			color: #666;
+			font-size: 0.875rem;
+
+			.block-editor-media-placeholder {
+				width: 100%;
+				height: 100%;
+				min-height: 200px;
+			}
+		}
+
+		&__caption {
+			margin-top: 0.5rem;
+			font-size: 0.875rem;
+			color: #666;
+			text-align: center;
+			font-style: italic;
+			border: 1px dashed transparent;
+			padding: 0.25rem;
+			border-radius: 2px;
+			transition: all 0.2s ease;
+
+			&:hover {
+				border-color: #ccc;
+			}
+
+			&:focus {
+				border-color: #007cba;
+				outline: none;
+			}
+		}
+
+		&__alt-text,
+		&__title {
+			margin-bottom: 0.5rem;
+			font-size: 0.875rem;
+			color: #666;
+			border: 1px dashed transparent;
+			padding: 0.25rem;
+			border-radius: 2px;
+			transition: all 0.2s ease;
+
+			&:hover {
+				border-color: #ccc;
+			}
+
+			&:focus {
+				border-color: #007cba;
+				outline: none;
+			}
+		}
+
+		// Validation notice styling
+		&__validation-notice {
+			margin-bottom: 1rem;
+			border-left: 4px solid #f56e28;
+
+			&.is-error {
+				border-left-color: #d63638;
+			}
+
+			&.is-warning {
+				border-left-color: #f56e28;
+			}
+
+			ul {
+				margin: 0.5rem 0 0 0;
+				padding-left: 1rem;
+			}
+
+			li {
+				margin-bottom: 0.25rem;
+			}
+		}
+
+		// Block styles in editor
+		&.is-style-card {
+			background: #fff;
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+			padding: 1rem;
+			border-radius: 8px;
+
+			.wp-block-jankx-advanced-image-box__image {
+				border-radius: 4px;
+			}
+		}
+
+		&.is-style-overlay {
+			.wp-block-jankx-advanced-image-box__overlay {
+				background: linear-gradient(45deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5));
+			}
+		}
+
+		&.is-style-modern {
+			border-radius: 12px;
+			overflow: hidden;
+			box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+
+			.wp-block-jankx-advanced-image-box__image {
+				border-radius: 0;
+			}
+
+			.wp-block-jankx-advanced-image-box__overlay {
+				background: rgba(0, 0, 0, 0.8);
+			}
+		}
+
+		// Selected state
+		&.is-selected {
+			outline: 2px solid #007cba;
+			outline-offset: 2px;
+		}
+
+		// Responsive adjustments in editor
+		@media (max-width: 768px) {
+			&__overlay {
+				padding: 0.75rem;
+
+				.wp-block-heading {
+					font-size: 1.25rem;
+				}
+
+				.wp-block-paragraph {
+					font-size: 0.875rem;
+				}
+			}
+		}
+
+		@media (max-width: 480px) {
+			&__overlay {
+				padding: 0.5rem;
+
+				.wp-block-heading {
+					font-size: 1.125rem;
+				}
+
+				.wp-block-paragraph {
+					font-size: 0.8rem;
+				}
+
+				.wp-block-button {
+					.wp-block-button__link {
+						font-size: 0.875rem;
+						padding: 0.5rem 1rem;
+					}
+				}
+			}
+		}
+	}
+}
+
+// Inspector controls styling
+.components-panel__body {
+	.wp-block-jankx-advanced-image-box__alt-text,
+	.wp-block-jankx-advanced-image-box__title {
+		.components-base-control__label {
+			font-weight: 600;
+			margin-bottom: 0.5rem;
+		}
+
+		.components-base-control__help {
+			font-size: 0.75rem;
+			color: #666;
+			margin-top: 0.25rem;
+		}
+	}
+}
+
+// Animation overrides for editor
+.animated {
+	animation-duration: 1s;
+	animation-fill-mode: both;
+
+	&.fadeIn {
+		animation-name: fadeIn;
+	}
+
+	&.fadeInUp {
+		animation-name: fadeInUp;
+	}
+
+	&.fadeInDown {
+		animation-name: fadeInDown;
+	}
+
+	&.fadeInLeft {
+		animation-name: fadeInLeft;
+	}
+
+	&.fadeInRight {
+		animation-name: fadeInRight;
+	}
+
+	&.slideInUp {
+		animation-name: slideInUp;
+	}
+
+	&.slideInDown {
+		animation-name: slideInDown;
+	}
+
+	&.slideInLeft {
+		animation-name: slideInLeft;
+	}
+
+	&.slideInRight {
+		animation-name: slideInRight;
+	}
+
+	&.zoomIn {
+		animation-name: zoomIn;
+	}
+
+	&.zoomInUp {
+		animation-name: zoomInUp;
+	}
+
+	&.zoomInDown {
+		animation-name: zoomInDown;
+	}
+
+	&.zoomInLeft {
+		animation-name: zoomInLeft;
+	}
+
+	&.zoomInRight {
+		animation-name: zoomInRight;
+	}
+
+	&.bounceIn {
+		animation-name: bounceIn;
+	}
+
+	&.bounceInUp {
+		animation-name: bounceInUp;
+	}
+
+	&.bounceInDown {
+		animation-name: bounceInDown;
+	}
+
+	&.bounceInLeft {
+		animation-name: bounceInLeft;
+	}
+
+	&.bounceInRight {
+		animation-name: bounceInRight;
+	}
+
+	&.flipInX {
+		animation-name: flipInX;
+	}
+
+	&.flipInY {
+		animation-name: flipInY;
+	}
+
+	&.rotateIn {
+		animation-name: rotateIn;
+	}
+
+	&.rotateInDownLeft {
+		animation-name: rotateInDownLeft;
+	}
+
+	&.rotateInDownRight {
+		animation-name: rotateInDownRight;
+	}
+
+	&.pulse {
+		animation-name: pulse;
+	}
+
+	&.shake {
+		animation-name: shake;
+	}
+
+	&.swing {
+		animation-name: swing;
+	}
+
+	&.tada {
+		animation-name: tada;
+	}
+
+	&.wobble {
+		animation-name: wobble;
+	}
+}
+
+// Accessibility improvements in editor
+@media (prefers-reduced-motion: reduce) {
+	.block-editor-block-list__layout {
+		.wp-block-jankx-advanced-image-box {
+			&__image,
+			&__overlay {
+				transition: none;
+			}
+
+			&__image {
+				&.has-hover-zoom,
+				&.has-hover-fade,
+				&.has-hover-blur,
+				&.has-hover-grayscale,
+				&.has-hover-sepia,
+				&.has-hover-brightness {
+					.wp-block-jankx-advanced-image-box:hover & {
+						transform: none;
+						opacity: 1;
+						filter: none;
+					}
+				}
+			}
+
+			&__overlay {
+				.has-overlay:hover & {
+					opacity: 1;
+					visibility: visible;
+				}
+			}
+		}
+	}
+
+	.animated {
+		animation: none !important;
+	}
+}

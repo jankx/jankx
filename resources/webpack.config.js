@@ -91,7 +91,11 @@ module.exports = {
 
     'blocks/swiper-flexible-item/build/index': './blocks/swiper-flexible-item/index.js',
     'blocks/swiper-flexible-item/build/style-index': './blocks/swiper-flexible-item/style.scss',
-    'blocks/swiper-flexible-item/build/editor': './blocks/swiper-flexible-item/editor.scss'
+    'blocks/swiper-flexible-item/build/editor': './blocks/swiper-flexible-item/editor.scss',
+
+    'blocks/advanced-image-box/build/index': './blocks/advanced-image-box/index.tsx',
+    'blocks/advanced-image-box/build/style': './blocks/advanced-image-box/style.scss',
+    'blocks/advanced-image-box/build/editor': './blocks/advanced-image-box/editor.scss',
   },
   output: {
     path: path.resolve(__dirname),

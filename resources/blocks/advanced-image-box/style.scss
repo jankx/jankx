@@ -1,0 +1,404 @@
+/**
+ * Advanced Image Box - Frontend Styles
+ */
+
+// Import Animate.css for animations
+@import url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css');
+
+.wp-block-jankx-advanced-image-box {
+	position: relative;
+	overflow: hidden;
+	border-radius: var(--wp--custom--border-radius, 0);
+	transition: all 0.3s ease;
+
+	&__image {
+		display: block;
+		width: 100%;
+		height: auto;
+		transition: all 0.3s ease;
+		border-radius: inherit;
+
+		// Hover effects
+		&.has-hover-zoom {
+			.wp-block-jankx-advanced-image-box:hover & {
+				transform: scale(1.05);
+			}
+		}
+
+		&.has-hover-fade {
+			.wp-block-jankx-advanced-image-box:hover & {
+				opacity: 0.8;
+			}
+		}
+
+		&.has-hover-blur {
+			.wp-block-jankx-advanced-image-box:hover & {
+				filter: blur(2px);
+			}
+		}
+
+		&.has-hover-grayscale {
+			.wp-block-jankx-advanced-image-box:hover & {
+				filter: grayscale(100%);
+			}
+		}
+
+		&.has-hover-sepia {
+			.wp-block-jankx-advanced-image-box:hover & {
+				filter: sepia(100%);
+			}
+		}
+
+		&.has-hover-brightness {
+			.wp-block-jankx-advanced-image-box:hover & {
+				filter: brightness(1.2);
+			}
+		}
+	}
+
+	&__overlay {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 1rem;
+		opacity: 0;
+		visibility: hidden;
+		transition: all 0.3s ease;
+		z-index: 2;
+		border-radius: inherit;
+
+		// Position variants
+		&--top {
+			align-items: flex-start;
+		}
+
+		&--center {
+			align-items: center;
+		}
+
+		&--bottom {
+			align-items: flex-end;
+		}
+
+		&--left {
+			justify-content: flex-start;
+		}
+
+		&--right {
+			justify-content: flex-end;
+		}
+
+		// Show overlay on hover
+		.has-overlay:hover & {
+			opacity: 1;
+			visibility: visible;
+		}
+
+		// Content styling
+		.wp-block-heading,
+		.wp-block-paragraph,
+		.wp-block-button,
+		.wp-block-list,
+		.wp-block-group,
+		.wp-block-columns,
+		.wp-block-column {
+			color: #fff;
+			text-align: center;
+		}
+
+		.wp-block-heading {
+			margin-bottom: 0.5rem;
+		}
+
+		.wp-block-paragraph {
+			margin-bottom: 1rem;
+		}
+
+		.wp-block-button {
+			margin-top: 1rem;
+
+			.wp-block-button__link {
+				background-color: transparent;
+				border: 2px solid #fff;
+				color: #fff;
+				transition: all 0.3s ease;
+
+				&:hover {
+					background-color: #fff;
+					color: #000;
+				}
+			}
+		}
+	}
+
+	&__caption {
+		margin-top: 0.5rem;
+		font-size: 0.875rem;
+		color: #666;
+		text-align: center;
+		font-style: italic;
+	}
+
+	&__link {
+		display: block;
+		text-decoration: none;
+		color: inherit;
+
+		&:hover {
+			text-decoration: none;
+		}
+	}
+
+	// Block styles
+	&.is-style-card {
+		background: #fff;
+		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+		padding: 1rem;
+		border-radius: 8px;
+
+		.wp-block-jankx-advanced-image-box__image {
+			border-radius: 4px;
+		}
+	}
+
+	&.is-style-overlay {
+		.wp-block-jankx-advanced-image-box__overlay {
+			background: linear-gradient(45deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5));
+		}
+	}
+
+	&.is-style-modern {
+		border-radius: 12px;
+		overflow: hidden;
+		box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+
+		.wp-block-jankx-advanced-image-box__image {
+			border-radius: 0;
+		}
+
+		.wp-block-jankx-advanced-image-box__overlay {
+			background: rgba(0, 0, 0, 0.8);
+		}
+	}
+
+	// Responsive adjustments
+	@media (max-width: 768px) {
+		&__overlay {
+			padding: 0.75rem;
+
+			.wp-block-heading {
+				font-size: 1.25rem;
+			}
+
+			.wp-block-paragraph {
+				font-size: 0.875rem;
+			}
+		}
+	}
+
+	@media (max-width: 480px) {
+		&__overlay {
+			padding: 0.5rem;
+
+			.wp-block-heading {
+				font-size: 1.125rem;
+			}
+
+			.wp-block-paragraph {
+				font-size: 0.8rem;
+			}
+
+			.wp-block-button {
+				.wp-block-button__link {
+					font-size: 0.875rem;
+					padding: 0.5rem 1rem;
+				}
+			}
+		}
+	}
+}
+
+// Animation overrides for better performance
+.animated {
+	animation-duration: 1s;
+	animation-fill-mode: both;
+
+	&.fadeIn {
+		animation-name: fadeIn;
+	}
+
+	&.fadeInUp {
+		animation-name: fadeInUp;
+	}
+
+	&.fadeInDown {
+		animation-name: fadeInDown;
+	}
+
+	&.fadeInLeft {
+		animation-name: fadeInLeft;
+	}
+
+	&.fadeInRight {
+		animation-name: fadeInRight;
+	}
+
+	&.slideInUp {
+		animation-name: slideInUp;
+	}
+
+	&.slideInDown {
+		animation-name: slideInDown;
+	}
+
+	&.slideInLeft {
+		animation-name: slideInLeft;
+	}
+
+	&.slideInRight {
+		animation-name: slideInRight;
+	}
+
+	&.zoomIn {
+		animation-name: zoomIn;
+	}
+
+	&.zoomInUp {
+		animation-name: zoomInUp;
+	}
+
+	&.zoomInDown {
+		animation-name: zoomInDown;
+	}
+
+	&.zoomInLeft {
+		animation-name: zoomInLeft;
+	}
+
+	&.zoomInRight {
+		animation-name: zoomInRight;
+	}
+
+	&.bounceIn {
+		animation-name: bounceIn;
+	}
+
+	&.bounceInUp {
+		animation-name: bounceInUp;
+	}
+
+	&.bounceInDown {
+		animation-name: bounceInDown;
+	}
+
+	&.bounceInLeft {
+		animation-name: bounceInLeft;
+	}
+
+	&.bounceInRight {
+		animation-name: bounceInRight;
+	}
+
+	&.flipInX {
+		animation-name: flipInX;
+	}
+
+	&.flipInY {
+		animation-name: flipInY;
+	}
+
+	&.rotateIn {
+		animation-name: rotateIn;
+	}
+
+	&.rotateInDownLeft {
+		animation-name: rotateInDownLeft;
+	}
+
+	&.rotateInDownRight {
+		animation-name: rotateInDownRight;
+	}
+
+	&.pulse {
+		animation-name: pulse;
+	}
+
+	&.shake {
+		animation-name: shake;
+	}
+
+	&.swing {
+		animation-name: swing;
+	}
+
+	&.tada {
+		animation-name: tada;
+	}
+
+	&.wobble {
+		animation-name: wobble;
+	}
+}
+
+// Accessibility improvements
+@media (prefers-reduced-motion: reduce) {
+	.wp-block-jankx-advanced-image-box {
+		&__image,
+		&__overlay {
+			transition: none;
+		}
+
+		&__image {
+			&.has-hover-zoom,
+			&.has-hover-fade,
+			&.has-hover-blur,
+			&.has-hover-grayscale,
+			&.has-hover-sepia,
+			&.has-hover-brightness {
+				.wp-block-jankx-advanced-image-box:hover & {
+					transform: none;
+					opacity: 1;
+					filter: none;
+				}
+			}
+		}
+
+		&__overlay {
+			.has-overlay:hover & {
+				opacity: 1;
+				visibility: visible;
+			}
+		}
+	}
+
+	.animated {
+		animation: none !important;
+	}
+}
+
+// Print styles
+@media print {
+	.wp-block-jankx-advanced-image-box {
+		&__overlay {
+			display: none;
+		}
+
+		&__image {
+			&.has-hover-zoom,
+			&.has-hover-fade,
+			&.has-hover-blur,
+			&.has-hover-grayscale,
+			&.has-hover-sepia,
+			&.has-hover-brightness {
+				transform: none;
+				opacity: 1;
+				filter: none;
+			}
+		}
+	}
+}

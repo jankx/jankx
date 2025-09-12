@@ -1,13 +1,9 @@
-@use "../../../node_modules/@wordpress/base-styles/variables" as *;
-@use "../../../node_modules/@wordpress/base-styles/mixins" as *;
-@use "../../../node_modules/@wordpress/base-styles/breakpoints" as *;
-
 .block-library-query-pattern__selection-modal {
 	.block-editor-block-patterns-list {
 		column-count: 2;
-		column-gap: $grid-unit-30;
+		column-gap: 1.875rem; // $grid-unit-30
 
-		@include break-wide() {
+		@media (min-width: 1200px) {
 			column-count: 3;
 		}
 
@@ -20,16 +16,16 @@
 		background: #fff;
 		position: sticky;
 		top: 0;
-		padding: $grid-unit-20 0;
-		transform: translateY(- $grid-unit-05); // Offsets the top padding on the modal content container
-		margin-bottom: - $grid-unit-05;
-		z-index: z-index(".block-library-query-pattern__selection-search");
+		padding: 1.25rem 0; // $grid-unit-20
+		transform: translateY(-0.3125rem); // $grid-unit-05
+		margin-bottom: -0.3125rem; // $grid-unit-05
+		z-index: 1000; // z-index(".block-library-query-pattern__selection-search")
 	}
 }
 
 .wp-block-query__enhanced-pagination-modal {
-	@include break-small() {
-		max-width: $break-mobile;
+	@media (min-width: 600px) {
+		max-width: 600px; // $break-mobile
 	}
 }
 
@@ -43,13 +39,11 @@
 	.block-editor-block-patterns-list {
 		display: grid;
 		grid-template-columns: 1fr;
-		grid-gap: $grid-unit-15;
-		min-width: $break-zoomed-in;
-		@include break-small() {
+		grid-gap: 0.9375rem; // $grid-unit-15
+		min-width: 320px; // $break-zoomed-in
+		@media (min-width: 600px) {
 			grid-template-columns: 1fr 1fr;
-		}
-		@include break-small() {
-			min-width: $break-mobile;
+			min-width: 600px; // $break-mobile
 		}
 	}
 	.block-editor-block-patterns-list__list-item {

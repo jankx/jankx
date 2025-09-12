@@ -3,6 +3,7 @@
 namespace Jankx\Services;
 
 use Jankx\Foundation\Application;
+use Jankx\Gutenberg\Blocks\AdvancedImageBoxBlock;
 use Jankx\Gutenberg\Blocks\DynamicCollectionBlock;
 use Jankx\Gutenberg\Blocks\DynamicQueryBlock;
 use Jankx\Gutenberg\Blocks\IconPickerBlock;
@@ -121,6 +122,7 @@ class GutenbergService
         $this->repository->registerBlock(TabBlock::class);
         $this->repository->registerBlock(WplyrMediaBlock::class);
         $this->repository->registerBlock(ImageButtonBlock::class);
+        $this->repository->registerBlock(AdvancedImageBoxBlock::class);
     }
 
     /**
