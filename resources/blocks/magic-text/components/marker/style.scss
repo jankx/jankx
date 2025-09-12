@@ -1,0 +1,143 @@
+.jankx-text-marker {
+  background-color: rgb(235, 164, 10);
+  color: #000;
+}
+/* Marker Styles */
+.jankx-marker-uneven {
+  background: linear-gradient(
+    104deg,
+    rgba(255, 235, 59, 0) 0.9%,
+    rgba(255, 235, 59, 0.8) 2.4%,
+    rgba(255, 235, 59, 0.6) 5.8%,
+    rgba(255, 235, 59, 0.4) 93%,
+    rgba(255, 235, 59, 0.9) 96%,
+    rgba(255, 235, 59, 0) 98%
+  );
+  border-radius: 255px 15px 225px 15px/25px 255px 25px 125px;
+  padding: 1px 3px;
+  margin: -1px -3px;
+}
+
+.jankx-marker-thick {
+  background: linear-gradient(
+      185deg,
+      rgba(255, 64, 129, 0.3) 0%,
+      rgba(255, 64, 129, 0.7) 50%,
+      rgba(255, 64, 129, 0.2) 100%
+    ),
+    linear-gradient(
+      95deg,
+      rgba(255, 64, 129, 0.1) 0%,
+      rgba(255, 64, 129, 0.8) 25%,
+      rgba(255, 64, 129, 0.6) 75%,
+      rgba(255, 64, 129, 0.1) 100%
+    );
+  border-radius: 125px 25px 155px 35px/35px 155px 25px 125px;
+  padding: 3px 5px;
+  margin: -3px -5px;
+  transform: rotate(-0.5deg);
+}
+.jankx-marker-messy {
+  background: radial-gradient(
+      ellipse at center,
+      rgba(33, 150, 243, 0.6) 0%,
+      rgba(33, 150, 243, 0.2) 70%,
+      rgba(33, 150, 243, 0.1) 100%
+    ),
+    linear-gradient(
+      92deg,
+      rgba(33, 150, 243, 0) 5%,
+      rgba(33, 150, 243, 0.7) 15%,
+      rgba(33, 150, 243, 0.4) 85%,
+      rgba(33, 150, 243, 0) 95%
+    );
+  border-radius: 235px 45px 185px 25px/15px 205px 35px 185px;
+  padding: 2px 4px;
+  margin: -2px -4px;
+  box-shadow: inset 0 0 5px rgba(33, 150, 243, 0.3);
+}
+
+.jankx-marker-double {
+  position: relative;
+  background: linear-gradient(
+    88deg,
+    rgba(76, 175, 80, 0.4) 0%,
+    rgba(76, 175, 80, 0.7) 50%,
+    rgba(76, 175, 80, 0.3) 100%
+  );
+  border-radius: 155px 25px 195px 35px/25px 185px 45px 155px;
+  padding: 2px 6px;
+  margin: -2px -6px;
+}
+
+.jankx-marker-double::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 2px;
+  right: -2px;
+  bottom: 1px;
+  background: linear-gradient(
+    92deg,
+    rgba(76, 175, 80, 0.2) 0%,
+    rgba(76, 175, 80, 0.5) 30%,
+    rgba(76, 175, 80, 0.1) 100%
+  );
+  border-radius: 185px 35px 165px 25px/35px 165px 25px 185px;
+  z-index: -1;
+}
+
+.jankx-marker-faded {
+  background: linear-gradient(
+    94deg,
+    rgba(255, 152, 0, 0) 0%,
+    rgba(255, 152, 0, 0.3) 8%,
+    rgba(255, 152, 0, 0.8) 25%,
+    rgba(255, 152, 0, 0.5) 60%,
+    rgba(255, 152, 0, 0.7) 85%,
+    rgba(255, 152, 0, 0.2) 92%,
+    rgba(255, 152, 0, 0) 100%
+  );
+  border-radius: 195px 55px 145px 25px/25px 145px 55px 195px;
+  padding: 1px 4px;
+  margin: -1px -4px;
+  transform: rotate(0.3deg);
+}
+
+.jankx-marker-wavy {
+  background: radial-gradient(
+      ellipse 200% 100% at 50% 90%,
+      rgba(156, 39, 176, 0.4) 0%,
+      transparent 50%
+    ),
+    linear-gradient(
+      86deg,
+      rgba(156, 39, 176, 0.1) 0%,
+      rgba(156, 39, 176, 0.6) 20%,
+      rgba(156, 39, 176, 0.8) 40%,
+      rgba(156, 39, 176, 0.5) 80%,
+      rgba(156, 39, 176, 0.2) 100%
+    );
+  border-radius: 255px 25px 155px 45px/45px 255px 25px 155px;
+  padding: 2px 5px;
+  margin: -2px -5px;
+  transform: rotate(-0.2deg) skew(1deg);
+}
+
+.jankx-marker-textured {
+  background: repeating-linear-gradient(
+      45deg,
+      rgba(255, 193, 7, 0.6) 0px,
+      rgba(255, 193, 7, 0.4) 2px,
+      rgba(255, 193, 7, 0.8) 4px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 193, 7, 0.3) 0%,
+      rgba(255, 193, 7, 0.7) 100%
+    );
+  border-radius: 165px 35px 205px 15px/15px 205px 35px 165px;
+  padding: 2px 4px;
+  margin: -2px -4px;
+  filter: blur(0.3px);
+}

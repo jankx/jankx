@@ -10,6 +10,7 @@ use Jankx\Gutenberg\Blocks\IconPickerBlock;
 use Jankx\Gutenberg\Blocks\IconButtonBlock;
 use Jankx\Gutenberg\Blocks\LanguageSwitcherBlock;
 use Jankx\Gutenberg\Blocks\ImageMasonryGalleryBlock;
+use Jankx\Gutenberg\Blocks\MagicTextBlock;
 use Jankx\Gutenberg\Blocks\TabsBlock;
 use Jankx\Gutenberg\Blocks\TabBlock;
 use Jankx\Gutenberg\Blocks\MegaMenuBlock;
@@ -123,6 +124,7 @@ class GutenbergService
         $this->repository->registerBlock(WplyrMediaBlock::class);
         $this->repository->registerBlock(ImageButtonBlock::class);
         $this->repository->registerBlock(AdvancedImageBoxBlock::class);
+        $this->repository->registerBlock(MagicTextBlock::class);
     }
 
     /**

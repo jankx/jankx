@@ -96,6 +96,10 @@ module.exports = {
     'blocks/advanced-image-box/build/index': './blocks/advanced-image-box/index.tsx',
     'blocks/advanced-image-box/build/style': './blocks/advanced-image-box/style.scss',
     'blocks/advanced-image-box/build/editor': './blocks/advanced-image-box/editor.scss',
+
+    'blocks/magic-text/build/index': './blocks/magic-text/index.js',
+    'blocks/magic-text/build/style': './blocks/magic-text/style.scss',
+    'blocks/magic-text/build/editor': './blocks/magic-text/editor.scss',
   },
   output: {
     path: path.resolve(__dirname),
