@@ -12,18 +12,9 @@ class FontsRepository
     protected $initialized = false;
 
     /**
-     * Lấy tất cả fonts
+     * Khởi tạo repository và load system fonts
      */
-    public function all()
-    {
-        $this->initialize();
-        return $this->fonts;
-    }
-
-    /**
-     * Khởi tạo repository với system fonts
-     */
-    protected function initialize()
+    public function initialize()
     {
         if ($this->initialized) {
             return;
@@ -34,187 +25,59 @@ class FontsRepository
     }
 
     /**
-     * Load system fonts
+     * Load system fonts vào memory
      */
     protected function loadSystemFonts()
     {
         $systemFonts = [
-            [
+            'Arial' => new FontEntity([
                 'name' => 'Arial',
                 'family' => 'Arial, sans-serif',
                 'category' => 'system',
-                'variants' => ['400'],
-                'subsets' => ['latin'],
                 'status' => 'active',
-            ],
-            [
+            ]),
+            'Helvetica' => new FontEntity([
                 'name' => 'Helvetica',
-                'family' => 'Helvetica, Arial, sans-serif',
+                'family' => 'Helvetica, sans-serif',
                 'category' => 'system',
-                'variants' => ['400'],
-                'subsets' => ['latin'],
                 'status' => 'active',
-            ],
-            [
+            ]),
+            'Times New Roman' => new FontEntity([
                 'name' => 'Times New Roman',
                 'family' => 'Times New Roman, serif',
                 'category' => 'system',
-                'variants' => ['400'],
-                'subsets' => ['latin'],
                 'status' => 'active',
-            ],
-            [
+            ]),
+            'Georgia' => new FontEntity([
                 'name' => 'Georgia',
                 'family' => 'Georgia, serif',
                 'category' => 'system',
-                'variants' => ['400'],
-                'subsets' => ['latin'],
                 'status' => 'active',
-            ],
-            [
+            ]),
+            'Verdana' => new FontEntity([
                 'name' => 'Verdana',
-                'family' => 'Verdana, Geneva, sans-serif',
+                'family' => 'Verdana, sans-serif',
                 'category' => 'system',
-                'variants' => ['400'],
-                'subsets' => ['latin'],
                 'status' => 'active',
-            ],
-            [
-                'name' => 'Tahoma',
-                'family' => 'Tahoma, Geneva, sans-serif',
-                'category' => 'system',
-                'variants' => ['400'],
-                'subsets' => ['latin'],
-                'status' => 'active',
-            ],
-            [
-                'name' => 'Trebuchet MS',
-                'family' => 'Trebuchet MS, sans-serif',
-                'category' => 'system',
-                'variants' => ['400'],
-                'subsets' => ['latin'],
-                'status' => 'active',
-            ],
-            [
-                'name' => 'Impact',
-                'family' => 'Impact, Charcoal, sans-serif',
-                'category' => 'system',
-                'variants' => ['400'],
-                'subsets' => ['latin'],
-                'status' => 'active',
-            ],
-            [
-                'name' => 'Comic Sans MS',
-                'family' => 'Comic Sans MS, cursive',
-                'category' => 'system',
-                'variants' => ['400'],
-                'subsets' => ['latin'],
-                'status' => 'active',
-            ],
-            [
+            ]),
+            'Courier New' => new FontEntity([
                 'name' => 'Courier New',
                 'family' => 'Courier New, monospace',
                 'category' => 'system',
-                'variants' => ['400'],
-                'subsets' => ['latin'],
                 'status' => 'active',
-            ],
+            ]),
         ];
 
-        foreach ($systemFonts as $fontData) {
-            $font = new FontEntity($fontData);
+        foreach ($systemFonts as $font) {
             $this->fonts[$font->getId()] = $font;
         }
     }
 
     /**
-     * Lấy fonts theo category
-     */
-    public function getByCategory($category)
-    {
-        $allFonts = $this->all();
-        $categoryFonts = [];
-
-        foreach ($allFonts as $font) {
-            if ($font->getCategory() === $category) {
-                $categoryFonts[$font->getId()] = $font;
-            }
-        }
-
-        return $categoryFonts;
-    }
-
-    /**
-     * Lấy font theo ID
-     */
-    public function find($id)
-    {
-        $allFonts = $this->all();
-        return $allFonts[$id] ?? null;
-    }
-
-    /**
-     * Lấy font theo name
-     */
-    public function findByName($name)
-    {
-        $allFonts = $this->all();
-
-        foreach ($allFonts as $font) {
-            if ($font->getName() === $name) {
-                return $font;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Lấy font theo family
-     */
-    public function findByFamily($family)
-    {
-        $allFonts = $this->all();
-
-        foreach ($allFonts as $font) {
-            if ($font->getFamily() === $family) {
-                return $font;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Tìm kiếm fonts
-     */
-    public function search($query, $category = null)
-    {
-        $allFonts = $this->all();
-        $results = [];
-
-        foreach ($allFonts as $font) {
-            // Filter by category if specified
-            if ($category && $font->getCategory() !== $category) {
-                continue;
-            }
-
-            // Search in name and family
-            if (stripos($font->getName(), $query) !== false ||
-                stripos($font->getFamily(), $query) !== false) {
-                $results[$font->getId()] = $font;
-            }
-        }
-
-        return $results;
-    }
-
-    /**
-     * Lưu font (chỉ trong memory)
+     * Lưu font vào repository
      */
     public function save(FontEntity $font)
     {
-
         // Validate font data
         $validation = $font->validate();
         if ($validation !== true) {
@@ -231,273 +94,106 @@ class FontsRepository
             $this->fonts[$fontId] = $font;
         }
 
-
         return $font;
     }
 
     /**
      * Cập nhật font
      */
-    public function update($id, FontEntity $font)
+    public function update(FontEntity $font)
     {
-        $this->initialize();
-        $existingFont = $this->find($id);
-        if (!$existingFont) {
-            throw new \InvalidArgumentException("Font with ID {$id} not found");
-        }
-
-        // Preserve original ID and created_at
-        $fontData = $font->toArray();
-        $fontData['id'] = $id;
-        $fontData['created_at'] = $existingFont->getCreatedAt();
-
-        $updatedFont = new FontEntity($fontData);
-        $this->fonts[$id] = $updatedFont;
-
-        return $updatedFont;
+        return $this->save($font);
     }
 
     /**
      * Xóa font
      */
-    public function delete($id)
+    public function delete($fontId)
     {
         $this->initialize();
 
-        if (!isset($this->fonts[$id])) {
-            return false;
+        if (isset($this->fonts[$fontId])) {
+            unset($this->fonts[$fontId]);
+            return true;
         }
 
-        unset($this->fonts[$id]);
-        return true;
+        return false;
     }
 
     /**
-     * Kiểm tra font có tồn tại không
+     * Tìm font theo ID
      */
-    public function exists($id)
+    public function find($fontId)
     {
-        return $this->find($id) !== null;
+        $this->initialize();
+
+        return isset($this->fonts[$fontId]) ? $this->fonts[$fontId] : null;
     }
 
     /**
-     * Đếm số lượng fonts
+     * Lấy tất cả fonts
      */
-    public function count($category = null)
+    public function all()
     {
-        if ($category) {
-            return count($this->getByCategory($category));
+        $this->initialize();
+
+        return $this->fonts;
+    }
+
+    /**
+     * Lấy fonts theo category
+     */
+    public function getByCategory($category)
+    {
+        $this->initialize();
+
+        $categoryFonts = [];
+        foreach ($this->fonts as $font) {
+            if ($font->getCategory() === $category) {
+                $categoryFonts[$font->getId()] = $font;
+            }
         }
 
-        return count($this->all());
+        return $categoryFonts;
     }
 
     /**
-     * Lấy fonts active
+     * Tìm kiếm fonts
      */
-    public function getActive($category = null)
+    public function search($query)
     {
-        $allFonts = $this->all();
+        $this->initialize();
+
+        $results = [];
+        $query = strtolower($query);
+
+        foreach ($this->fonts as $font) {
+            if (strpos(strtolower($font->getName()), $query) !== false ||
+                strpos(strtolower($font->getFamily()), $query) !== false) {
+                $results[$font->getId()] = $font;
+            }
+        }
+
+        return $results;
+    }
+
+    /**
+     * Lấy active fonts
+     */
+    public function getActive()
+    {
+        $this->initialize();
+
         $activeFonts = [];
-
-        foreach ($allFonts as $font) {
-            if (!$font->isActive()) {
-                continue;
+        foreach ($this->fonts as $font) {
+            if ($font->getStatus() === 'active') {
+                $activeFonts[] = $font;
             }
-
-            if ($category && $font->getCategory() !== $category) {
-                continue;
-            }
-
-            $activeFonts[$font->getId()] = $font;
         }
 
         return $activeFonts;
     }
 
-    /**
-     * Lấy fonts cho Gutenberg
-     */
-    public function getForGutenberg()
-    {
-        $activeFonts = $this->getActive();
-        $gutenbergFonts = [];
 
-        foreach ($activeFonts as $font) {
-            $gutenbergFonts[] = [
-                'name' => $font->getName(),
-                'family' => $font->getFamily(),
-                'category' => $font->getCategory(),
-                'variants' => $font->getVariants(),
-                'subsets' => $font->getSubsets(),
-                'cssFamily' => $font->getCssFamilyString(),
-            ];
-        }
 
-        return $gutenbergFonts;
-    }
-
-    /**
-     * Lấy fonts cho Customizer
-     */
-    public function getForCustomizer()
-    {
-        $activeFonts = $this->getActive();
-        $customizerFonts = [];
-
-        foreach ($activeFonts as $font) {
-            $customizerFonts[$font->getName()] = $font->getCssFamilyString();
-        }
-
-        return $customizerFonts;
-    }
-
-    /**
-     * Lấy fonts cho theme.json
-     */
-    public function getForThemeJson()
-    {
-        $activeFonts = $this->getActive();
-        $themeJsonFonts = [];
-
-        foreach ($activeFonts as $font) {
-            $themeJsonFonts[] = [
-                'fontFamily' => $font->getCssFamilyString(),
-                'name' => $font->getName(),
-                'slug' => sanitize_title($font->getName()),
-            ];
-        }
-
-        return $themeJsonFonts;
-    }
-
-    /**
-     * Bulk operations
-     */
-    public function bulkSave(array $fonts)
-    {
-        $this->initialize();
-        $savedCount = 0;
-
-        foreach ($fonts as $font) {
-            if ($font instanceof FontEntity) {
-                $this->fonts[$font->getId()] = $font;
-                $savedCount++;
-            }
-        }
-
-        return $savedCount;
-    }
-
-    public function bulkDelete(array $ids)
-    {
-        $this->initialize();
-        $deletedCount = 0;
-
-        foreach ($ids as $id) {
-            if (isset($this->fonts[$id])) {
-                unset($this->fonts[$id]);
-                $deletedCount++;
-            }
-        }
-
-        return $deletedCount;
-    }
-
-    /**
-     * Import fonts từ array
-     */
-    public function import(array $fontsData)
-    {
-        $importedCount = 0;
-
-        foreach ($fontsData as $fontData) {
-            try {
-                $font = new FontEntity($fontData);
-                $this->save($font);
-                $importedCount++;
-            } catch (\Exception $e) {
-                // Log error but continue importing
-                error_log("Failed to import font: " . $e->getMessage());
-            }
-        }
-
-        return $importedCount;
-    }
-
-    /**
-     * Export fonts to array
-     */
-    public function export($category = null)
-    {
-        $fonts = $category ? $this->getByCategory($category) : $this->all();
-        $exportData = [];
-
-        foreach ($fonts as $font) {
-            $exportData[] = $font->toArray();
-        }
-
-        return $exportData;
-    }
-
-    /**
-     * Clear all fonts (chỉ xóa fonts không phải system)
-     */
-    public function clear()
-    {
-        $this->initialize();
-        $systemFonts = $this->getByCategory('system');
-        $this->fonts = $systemFonts;
-        return true;
-    }
-
-    /**
-     * Get repository statistics
-     */
-    public function getStats()
-    {
-        $allFonts = $this->all();
-        $stats = [
-            'total' => count($allFonts),
-            'by_category' => [],
-            'active' => 0,
-            'inactive' => 0,
-        ];
-
-        foreach ($allFonts as $font) {
-            $category = $font->getCategory();
-            $stats['by_category'][$category] = ($stats['by_category'][$category] ?? 0) + 1;
-
-            if ($font->isActive()) {
-                $stats['active']++;
-            } else {
-                $stats['inactive']++;
-            }
-        }
-
-        return $stats;
-    }
-
-    /**
-     * Reset repository về trạng thái ban đầu
-     */
-    public function reset()
-    {
-        $this->fonts = [];
-        $this->initialized = false;
-        $this->initialize();
-    }
-
-    /**
-     * Get memory usage info
-     */
-    public function getMemoryInfo()
-    {
-        return [
-            'fonts_count' => count($this->fonts),
-            'memory_usage' => memory_get_usage(true),
-            'memory_peak' => memory_get_peak_usage(true),
-            'initialized' => $this->initialized,
-        ];
-    }
 }

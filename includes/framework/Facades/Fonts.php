@@ -45,27 +45,6 @@ class Fonts
         return $fontsService->getFontsByCategory($category);
     }
 
-    /**
-     * Lấy fonts cho Gutenberg
-     */
-    public static function forGutenberg()
-    {
-        $app = Application::getInstance();
-        $fontsService = $app->make(\Jankx\Services\FontsService::class);
-
-        return $fontsService->getGutenbergFonts();
-    }
-
-    /**
-     * Lấy fonts cho Customizer
-     */
-    public static function forCustomizer()
-    {
-        $app = Application::getInstance();
-        $fontsService = $app->make(\Jankx\Services\FontsService::class);
-
-        return $fontsService->getCustomizerFonts();
-    }
 
     /**
      * Đăng ký Google Font
@@ -171,7 +150,7 @@ class Fonts
         $app = Application::getInstance();
         $fontsService = $app->make(\Jankx\Services\FontsService::class);
 
-        return $fontsService->updateFont($fontName, $fontData, $category);
+        return $fontsService->updateFont($fontName, $fontData);
     }
 
     /**
@@ -220,67 +199,4 @@ class Fonts
         return $fontName;
     }
 
-    /**
-     * Tạo CSS cho font
-     */
-    public static function css($fontName)
-    {
-        $app = Application::getInstance();
-        $fontsService = $app->make(\Jankx\Services\FontsService::class);
-
-        return $fontsService->getFontCSS($fontName);
-    }
-
-    /**
-     * Tạo font preview HTML
-     */
-    public static function preview($fontName, $text = null)
-    {
-        $app = Application::getInstance();
-        $fontsService = $app->make(\Jankx\Services\FontsService::class);
-
-        return $fontsService->generateFontPreview($fontName, $text);
-    }
-
-    /**
-     * Lấy Google Fonts provider
-     */
-    public static function googleProvider()
-    {
-        $app = Application::getInstance();
-        return $app->make(\Jankx\Services\Fonts\GoogleFontsProvider::class);
-    }
-
-    /**
-     * Lấy Adobe Fonts provider
-     */
-    public static function adobeProvider()
-    {
-        $app = Application::getInstance();
-        return $app->make(\Jankx\Services\Fonts\AdobeFontsProvider::class);
-    }
-
-    /**
-     * Lấy Custom Fonts provider
-     */
-    public static function customProvider()
-    {
-        $app = Application::getInstance();
-        return $app->make(\Jankx\Services\Fonts\CustomFontsProvider::class);
-    }
-
-    /**
-     * Magic method để gọi các methods khác
-     */
-    public static function __callStatic($method, $arguments)
-    {
-        $app = Application::getInstance();
-        $fontsService = $app->make(\Jankx\Services\FontsService::class);
-
-        if (method_exists($fontsService, $method)) {
-            return call_user_func_array([$fontsService, $method], $arguments);
-        }
-
-        throw new \BadMethodCallException("Method {$method} does not exist on Fonts facade.");
-    }
 }
