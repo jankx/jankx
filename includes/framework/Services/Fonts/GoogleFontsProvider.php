@@ -24,6 +24,7 @@ class GoogleFontsProvider
         $variants = $fontData['variants'] ?? ['400'];
         $subsets = $fontData['subsets'] ?? ['latin'];
 
+
         // Tạo Google Fonts URL
         $url = $this->buildGoogleFontsUrl($fontName, $variants, $subsets);
 
@@ -32,12 +33,14 @@ class GoogleFontsProvider
             $this->addGoogleFontsPreconnect();
 
             // Enqueue Google Fonts CSS
-            wp_enqueue_style(
-                "google-font-{$fontName}",
-                $url,
-                [],
-                null
-            );
+            $sanitizedId = \Jankx\Helper\HtmlHelper::sanitizeFontClassName($fontName);
+            add_action('wp_head', function () use ($url, $sanitizedId) {
+                echo "<link rel=\"stylesheet\" id=\"google-font-{$sanitizedId}-css\" href=\"{$url}\" media=\"all\" />\n";
+            });
+            add_action('admin_head', function () use ($url, $sanitizedId) {
+                echo "<link rel=\"stylesheet\" id=\"google-font-{$sanitizedId}-css\" href=\"{$url}\" media=\"all\" />\n";
+            });
+        } else {
         }
     }
 

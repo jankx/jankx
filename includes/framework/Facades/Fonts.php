@@ -14,10 +14,13 @@ class Fonts
      */
     public static function register($fontData)
     {
+
         $app = Application::getInstance();
         $fontsService = $app->make(\Jankx\Services\FontsService::class);
 
-        return $fontsService->registerFont($fontData);
+        $result = $fontsService->registerFont($fontData);
+
+        return $result;
     }
 
     /**
@@ -104,18 +107,49 @@ class Fonts
     }
 
     /**
-     * Đăng ký Custom Font
+     * Đăng ký Custom Font với CSS file
      */
-    public static function custom($fontName, $fontFamily, $files)
+    public static function custom($fontName, $fontFamily, $cssFile = null)
     {
         $fontData = [
             'name' => $fontName,
             'family' => $fontFamily,
             'category' => 'custom',
-            'files' => $files,
         ];
 
+        // Nếu có CSS file, thêm vào metadata
+        if ($cssFile) {
+            $fontData['metadata'] = [
+                'css_file' => $cssFile,
+            ];
+        }
+
         return self::register($fontData);
+    }
+
+    /**
+     * Đăng ký Custom Font với CSS file từ webfont generator
+     */
+    public static function customFromCss($fontName, $cssFile)
+    {
+
+        $fontData = [
+            'name' => $fontName,
+            'family' => $fontName, // Sẽ được update từ CSS file
+            'category' => 'custom',
+            'metadata' => [
+                'css_file' => $cssFile,
+            ],
+        ];
+
+        $result = self::register($fontData);
+
+        // Update font data từ CSS file
+        if ($result instanceof \Jankx\Services\Fonts\FontEntity) {
+            $result->updateFromCssFile();
+        }
+
+        return $result;
     }
 
     /**
@@ -192,9 +226,9 @@ class Fonts
     public static function css($fontName)
     {
         $app = Application::getInstance();
-        $fontManager = $app->make(\Jankx\Services\Fonts\FontManager::class);
+        $fontsService = $app->make(\Jankx\Services\FontsService::class);
 
-        return $fontManager->getFontCSS($fontName);
+        return $fontsService->getFontCSS($fontName);
     }
 
     /**
@@ -203,9 +237,9 @@ class Fonts
     public static function preview($fontName, $text = null)
     {
         $app = Application::getInstance();
-        $fontManager = $app->make(\Jankx\Services\Fonts\FontManager::class);
+        $fontsService = $app->make(\Jankx\Services\FontsService::class);
 
-        return $fontManager->generateFontPreview($fontName, $text);
+        return $fontsService->generateFontPreview($fontName, $text);
     }
 
     /**

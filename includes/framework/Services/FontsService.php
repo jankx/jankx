@@ -2,10 +2,12 @@
 
 namespace Jankx\Services;
 
-use Jankx\Services\Fonts\FontManager;
 use Jankx\Services\Fonts\GoogleFontsProvider;
 use Jankx\Services\Fonts\AdobeFontsProvider;
 use Jankx\Services\Fonts\CustomFontsProvider;
+use Jankx\Services\Fonts\FontsRepository;
+use Jankx\Services\Fonts\FontEntity;
+use Jankx\Helper\HtmlHelper;
 
 /**
  * Service để quản lý fonts cho Jankx theme
@@ -13,22 +15,22 @@ use Jankx\Services\Fonts\CustomFontsProvider;
  */
 class FontsService
 {
-    protected $fontManager;
     protected $googleFontsProvider;
     protected $adobeFontsProvider;
     protected $customFontsProvider;
+    protected $fontsRepository;
+    protected $fontStyles = [];
 
-    protected $fonts = [];
     protected $fontCategories = [];
 
     public function __construct()
     {
-        $this->fontManager = new FontManager();
         $this->googleFontsProvider = new GoogleFontsProvider();
         $this->adobeFontsProvider = new AdobeFontsProvider();
         $this->customFontsProvider = new CustomFontsProvider();
+        $this->fontsRepository = new FontsRepository();
 
-        $this->loadFonts();
+        $this->loadFontCategories();
     }
 
     /**
@@ -36,56 +38,25 @@ class FontsService
      */
     public function init()
     {
-        // Load fonts từ database
-        $this->loadFontsFromDatabase();
+
+        // Repository sẽ tự động load system fonts khi cần
+        $this->fontsRepository->all(); // Trigger initialization
 
         // Đăng ký fonts với WordPress
         $this->registerFontsWithWordPress();
     }
 
     /**
-     * Load fonts từ memory
+     * Load font categories
      */
-    protected function loadFonts()
+    protected function loadFontCategories()
     {
-        $this->fonts = [
-            'system' => [
-                'Arial' => 'Arial, sans-serif',
-                'Helvetica' => 'Helvetica, Arial, sans-serif',
-                'Times New Roman' => 'Times New Roman, serif',
-                'Georgia' => 'Georgia, serif',
-                'Verdana' => 'Verdana, Geneva, sans-serif',
-                'Tahoma' => 'Tahoma, Geneva, sans-serif',
-                'Trebuchet MS' => 'Trebuchet MS, sans-serif',
-                'Impact' => 'Impact, Charcoal, sans-serif',
-                'Comic Sans MS' => 'Comic Sans MS, cursive',
-                'Courier New' => 'Courier New, monospace',
-            ]
-        ];
-
         $this->fontCategories = [
             'system' => 'System Fonts',
             'google' => 'Google Fonts',
             'adobe' => 'Adobe Fonts',
             'custom' => 'Custom Fonts',
         ];
-    }
-
-    /**
-     * Load fonts từ database
-     */
-    protected function loadFontsFromDatabase()
-    {
-        $storedFonts = get_option('jankx_fonts', []);
-
-        if (!empty($storedFonts)) {
-            foreach ($storedFonts as $category => $fonts) {
-                if (!isset($this->fonts[$category])) {
-                    $this->fonts[$category] = [];
-                }
-                $this->fonts[$category] = array_merge($this->fonts[$category], $fonts);
-            }
-        }
     }
 
         /**
@@ -108,74 +79,63 @@ class FontsService
      */
     public function registerFont($fontData)
     {
-        $fontData = $this->validateFontData($fontData);
 
-        if (!$fontData) {
+        try {
+            $font = new FontEntity($fontData);
+
+            $savedFont = $this->fontsRepository->save($font);
+
+            // Tạo CSS cho font
+            $this->generateFontCSS($savedFont);
+
+            return $savedFont;
+        } catch (\Exception $e) {
             return false;
         }
-
-        $category = $fontData['category'] ?? 'custom';
-        $fontName = $fontData['name'];
-
-        if (!isset($this->fonts[$category])) {
-            $this->fonts[$category] = [];
-        }
-
-        $this->fonts[$category][$fontName] = $fontData;
-
-        // Lưu vào database
-        $this->saveFontsToDatabase();
-
-        // Đăng ký với font manager
-        $this->fontManager->registerFont($fontData);
-
-        return true;
     }
 
     /**
      * Xóa font
      */
-    public function deleteFont($fontName, $category = 'custom')
+    public function deleteFont($fontId)
     {
-        if (isset($this->fonts[$category][$fontName])) {
-            unset($this->fonts[$category][$fontName]);
+        try {
+            $font = $this->fontsRepository->find($fontId);
+            if (!$font) {
+                return false;
+            }
 
-            // Lưu vào database
-            $this->saveFontsToDatabase();
+            $result = $this->fontsRepository->delete($fontId);
 
-            // Xóa khỏi font manager
-            $this->fontManager->unregisterFont($fontName);
+            if ($result) {
+                // Xóa CSS của font
+                $this->removeFontCSS($font->getName());
+            }
 
-            return true;
+            return $result;
+        } catch (\Exception $e) {
+            error_log("Failed to delete font: " . $e->getMessage());
+            return false;
         }
-
-        return false;
     }
 
     /**
      * Cập nhật font
      */
-    public function updateFont($fontName, $fontData, $category = 'custom')
+    public function updateFont($fontId, $fontData)
     {
-        if (isset($this->fonts[$category][$fontName])) {
-            $fontData = $this->validateFontData($fontData);
+        try {
+            $font = new FontEntity($fontData);
+            $updatedFont = $this->fontsRepository->update($fontId, $font);
 
-            if (!$fontData) {
+            // Cập nhật CSS cho font
+            $this->generateFontCSS($updatedFont);
+
+            return $updatedFont;
+        } catch (\Exception $e) {
+            error_log("Failed to update font: " . $e->getMessage());
                 return false;
-            }
-
-            $this->fonts[$category][$fontName] = $fontData;
-
-            // Lưu vào database
-            $this->saveFontsToDatabase();
-
-            // Cập nhật trong font manager
-            $this->fontManager->updateFont($fontData);
-
-            return true;
         }
-
-        return false;
     }
 
     /**
@@ -183,7 +143,7 @@ class FontsService
      */
     public function getAllFonts()
     {
-        return $this->fonts;
+        return $this->fontsRepository->all();
     }
 
     /**
@@ -191,7 +151,23 @@ class FontsService
      */
     public function getFontsByCategory($category)
     {
-        return $this->fonts[$category] ?? [];
+        return $this->fontsRepository->getByCategory($category);
+    }
+
+    /**
+     * Lấy font theo ID
+     */
+    public function getFont($fontId)
+    {
+        return $this->fontsRepository->find($fontId);
+    }
+
+    /**
+     * Tìm kiếm fonts
+     */
+    public function searchFonts($query, $category = null)
+    {
+        return $this->fontsRepository->search($query, $category);
     }
 
     /**
@@ -207,33 +183,14 @@ class FontsService
      */
     public function injectFontsIntoThemeJson($themeJson)
     {
-        // Lấy tất cả fonts đã đăng ký
-        $fonts = $this->getAllFonts();
+        // Lấy fonts cho theme.json từ repository
+        $themeJsonFonts = $this->fontsRepository->getForThemeJson();
 
-        if (empty($fonts)) {
+        if (empty($themeJsonFonts)) {
             return $themeJson;
         }
 
-        // Chuyển đổi fonts thành format theme.json
-        $themeJsonFonts = [];
-
-        // Duyệt qua từng category
-        foreach ($fonts as $category => $categoryFonts) {
-            foreach ($categoryFonts as $fontName => $fontData) {
-                $fontFamily = $fontData['family'] ?? $fontName;
-
-                if (!empty($fontFamily)) {
-                    $themeJsonFonts[] = [
-                        'fontFamily' => $fontFamily,
-                        'name' => $fontName,
-                        'slug' => sanitize_title($fontName),
-                    ];
-                }
-            }
-        }
-
         // Inject vào theme.json
-        if (!empty($themeJsonFonts)) {
             if (!isset($themeJson['settings']['typography']['fontFamilies'])) {
                 $themeJson['settings']['typography']['fontFamilies'] = [];
             }
@@ -243,7 +200,6 @@ class FontsService
                 $themeJson['settings']['typography']['fontFamilies'],
                 $themeJsonFonts
             );
-        }
 
         return $themeJson;
     }
@@ -253,33 +209,14 @@ class FontsService
      */
     public function injectFontsIntoEditorSettings($settings)
     {
-        // Lấy tất cả fonts đã đăng ký
-        $fonts = $this->getAllFonts();
+        // Lấy fonts cho Gutenberg editor từ repository
+        $editorFonts = $this->fontsRepository->getForGutenberg();
 
-        if (empty($fonts)) {
+        if (empty($editorFonts)) {
             return $settings;
         }
 
-        // Chuyển đổi fonts thành format Gutenberg editor
-        $editorFonts = [];
-
-        // Duyệt qua từng category
-        foreach ($fonts as $category => $categoryFonts) {
-            foreach ($categoryFonts as $fontName => $fontData) {
-                $fontFamily = $fontData['family'] ?? $fontName;
-
-                if (!empty($fontFamily)) {
-                    $editorFonts[] = [
-                        'fontFamily' => $fontFamily,
-                        'name' => $fontName,
-                        'slug' => sanitize_title($fontName),
-                    ];
-                }
-            }
-        }
-
         // Inject vào editor settings
-        if (!empty($editorFonts)) {
             if (!isset($settings['fontFamilies'])) {
                 $settings['fontFamilies'] = [];
             }
@@ -289,7 +226,6 @@ class FontsService
                 $settings['fontFamilies'],
                 $editorFonts
             );
-        }
 
         return $settings;
     }
@@ -299,20 +235,7 @@ class FontsService
      */
     public function getGutenbergFonts($fonts = [])
     {
-        $gutenbergFonts = [];
-
-        foreach ($this->fonts as $category => $categoryFonts) {
-            foreach ($categoryFonts as $fontName => $fontData) {
-                $gutenbergFonts[] = [
-                    'name' => $fontName,
-                    'family' => $fontData['family'] ?? $fontName,
-                    'category' => $category,
-                    'variants' => $fontData['variants'] ?? ['400'],
-                    'subsets' => $fontData['subsets'] ?? ['latin'],
-                ];
-            }
-        }
-
+        $gutenbergFonts = $this->fontsRepository->getForGutenberg();
         return array_merge($fonts, $gutenbergFonts);
     }
 
@@ -321,73 +244,224 @@ class FontsService
      */
     public function getCustomizerFonts($fonts = [])
     {
-        $customizerFonts = [];
-
-        foreach ($this->fonts as $category => $categoryFonts) {
-            foreach ($categoryFonts as $fontName => $fontData) {
-                $customizerFonts[$fontName] = $fontData['family'] ?? $fontName;
-            }
-        }
-
+        $customizerFonts = $this->fontsRepository->getForCustomizer();
         return array_merge($fonts, $customizerFonts);
     }
 
     /**
-     * Validate font data
+     * Lấy repository statistics
      */
-    protected function validateFontData($fontData)
+    public function getStats()
     {
-        $required = ['name', 'family'];
-
-        foreach ($required as $field) {
-            if (empty($fontData[$field])) {
-                return false;
-            }
-        }
-
-        // Set defaults
-        $fontData['category'] = $fontData['category'] ?? 'custom';
-        $fontData['variants'] = $fontData['variants'] ?? ['400'];
-        $fontData['subsets'] = $fontData['subsets'] ?? ['latin'];
-        $fontData['status'] = $fontData['status'] ?? 'active';
-        $fontData['created_at'] = $fontData['created_at'] ?? current_time('mysql');
-
-        return $fontData;
+        return $this->fontsRepository->getStats();
     }
 
     /**
-     * Lưu fonts vào database
+     * Import fonts
      */
-    protected function saveFontsToDatabase()
+    public function importFonts($fontsData)
     {
-        update_option('jankx_fonts', $this->fonts);
+        return $this->fontsRepository->import($fontsData);
+    }
+
+    /**
+     * Export fonts
+     */
+    public function exportFonts($category = null)
+    {
+        return $this->fontsRepository->export($category);
+    }
+
+    /**
+     * Tạo CSS cho font
+     */
+    protected function generateFontCSS(FontEntity $font)
+    {
+        $fontName = $font->getName();
+        $fontFamily = $font->getFamily();
+        $category = $font->getCategory();
+
+
+        $css = '';
+
+        switch ($category) {
+            case 'google':
+                $css = $this->generateGoogleFontCSS($font);
+                break;
+            case 'adobe':
+                $css = $this->generateAdobeFontCSS($font);
+                break;
+            case 'custom':
+                $css = $this->generateCustomFontCSS($font);
+                break;
+            case 'system':
+                // System fonts không cần CSS
+                $css = '';
+                break;
+        }
+
+        if ($css) {
+            $this->fontStyles[$fontName] = $css;
+            $this->injectFontCSS($fontName, $css);
+        }
+
+        return $css;
+    }
+
+    /**
+     * Tạo CSS cho Google Fonts
+     */
+    protected function generateGoogleFontCSS(FontEntity $font)
+    {
+        // Google Fonts sử dụng link tag, không cần CSS
+        return '';
+    }
+
+    /**
+     * Tạo CSS cho Adobe Fonts
+     */
+    protected function generateAdobeFontCSS(FontEntity $font)
+    {
+        // Adobe Fonts sử dụng link tag, không cần CSS
+        return '';
+    }
+
+    /**
+     * Tạo CSS cho Custom Fonts
+     */
+    protected function generateCustomFontCSS(FontEntity $font)
+    {
+        $fontName = $font->getName();
+        $fontFamily = $font->getFamily();
+
+
+        // Nếu font sử dụng CSS file, không tạo CSS mà sẽ enqueue CSS file
+        if ($font->usesCssFile()) {
+            $cssFile = $font->getCssFile();
+
+            // Chỉ tạo CSS class, không tạo @font-face
+            $cssClassName = HtmlHelper::sanitizeFontClassName($fontName);
+            $css = ".{$cssClassName} {\n";
+            $css .= "    font-family: '{$fontFamily}', sans-serif;\n";
+            $css .= "}\n";
+
+            return $css;
+        }
+
+        // Fallback: tạo CSS từ font files
+        $metadata = $font->getMetadata();
+        $fontFiles = $metadata['files'] ?? [];
+
+
+        if (empty($fontFiles)) {
+            return '';
+        }
+
+        $css = "@font-face {\n";
+        $css .= "    font-family: '{$fontFamily}';\n";
+        $css .= "    font-display: swap;\n";
+
+        // Xử lý các font files
+        foreach ($fontFiles as $format => $file) {
+            $format = strtoupper($format);
+            $css .= "    src: url('{$file}') format('{$format}');\n";
+        }
+
+        $css .= "}\n\n";
+
+        // Thêm CSS class cho font
+        $cssClassName = HtmlHelper::sanitizeFontClassName($fontName);
+        $css .= ".{$cssClassName} {\n";
+        $css .= "    font-family: '{$fontFamily}', sans-serif;\n";
+        $css .= "}\n";
+
+        return $css;
+    }
+
+    /**
+     * Xóa CSS của font
+     */
+    protected function removeFontCSS($fontName)
+    {
+        if (isset($this->fontStyles[$fontName])) {
+            unset($this->fontStyles[$fontName]);
+        }
+    }
+
+    /**
+     * Inject CSS vào WordPress
+     */
+    protected function injectFontCSS($fontName, $css)
+    {
+
+        // Hook để inject CSS
+        add_action('wp_head', function () use ($css, $fontName) {
+            $sanitizedId = HtmlHelper::sanitizeFontClassName($fontName);
+            echo "<style id=\"jankx-font-{$sanitizedId}\">\n{$css}\n</style>\n";
+        });
+
+        add_action('admin_head', function () use ($css, $fontName) {
+            $sanitizedId = HtmlHelper::sanitizeFontClassName($fontName);
+            echo "<style id=\"jankx-font-{$sanitizedId}\">\n{$css}\n</style>\n";
+        });
+    }
+
+    /**
+     * Lấy CSS của tất cả fonts
+     */
+    public function getAllFontsCSS()
+    {
+        return implode("\n", $this->fontStyles);
+    }
+
+    /**
+     * Lấy CSS của font cụ thể
+     */
+    public function getFontCSS($fontName)
+    {
+        return $this->fontStyles[$fontName] ?? '';
+    }
+
+    /**
+     * Tạo font preview HTML
+     */
+    public function generateFontPreview($fontName, $text = 'The quick brown fox jumps over the lazy dog')
+    {
+        $font = $this->fontsRepository->findByName($fontName);
+        if (!$font) {
+            return '';
+        }
+
+        $fontFamily = $font->getFamily();
+
+        $html = "<div class='font-preview' style='font-family: \"{$fontFamily}\", sans-serif;'>";
+        $html .= "<h3>{$fontName}</h3>";
+        $html .= "<p class='preview-text'>{$text}</p>";
+        $html .= "<p class='preview-sample'>ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>";
+        $html .= "abcdefghijklmnopqrstuvwxyz<br>";
+        $html .= "0123456789</p>";
+        $html .= "</div>";
+
+        return $html;
     }
 
     /**
      * Enqueue fonts cho Gutenberg
      * Fonts sẽ được inject thông qua filter theme.json
      */
-    public function enqueueGutenbergFonts()
-    {
-        // Không cần enqueue JavaScript nữa
-        // Fonts sẽ được inject thông qua filter theme.json
-        // Filter này đã được đăng ký trong registerFontsWithWordPress()
-    }
 
     /**
      * Enqueue fonts cho frontend
      */
     public function enqueueFrontendFonts()
     {
-        $fonts = $this->getAllFonts();
 
-        foreach ($fonts as $category => $categoryFonts) {
-            foreach ($categoryFonts as $fontName => $fontData) {
-                if (isset($fontData['status']) && $fontData['status'] === 'active') {
-                    $this->enqueueFont($fontData);
-                }
-            }
+        $activeFonts = $this->fontsRepository->getActive();
+
+        foreach ($activeFonts as $font) {
+            $this->enqueueFont($font->toArray());
         }
+
     }
 
     /**
@@ -395,13 +469,144 @@ class FontsService
      */
     public function enqueueAdminFonts()
     {
-        $fonts = $this->getAllFonts();
+        $activeFonts = $this->fontsRepository->getActive();
 
-        foreach ($fonts as $category => $categoryFonts) {
-            foreach ($categoryFonts as $fontName => $fontData) {
-                if (isset($fontData['status']) && $fontData['status'] === 'active') {
-                    $this->enqueueFont($fontData);
+        foreach ($activeFonts as $font) {
+            $this->enqueueFont($font->toArray());
+        }
+    }
+
+    /**
+     * Enqueue fonts cho Gutenberg editor
+     */
+    public function enqueueGutenbergFonts()
+    {
+        $activeFonts = $this->fontsRepository->getActive();
+
+        foreach ($activeFonts as $font) {
+            $this->enqueueFontForGutenberg($font->toArray());
+        }
+    }
+
+    /**
+     * Thêm fonts vào editor style để load trong iframe
+     */
+    protected function addFontsToEditorStyle()
+    {
+        $activeFonts = $this->fontsRepository->getActive();
+        $css = '';
+
+        foreach ($activeFonts as $font) {
+            $fontCss = $this->generateFontCSS($font);
+            if ($fontCss) {
+                $css .= $fontCss . "\n";
+            }
+        }
+
+        if (!empty($css)) {
+            // Inject CSS trực tiếp vào editor thông qua filter
+            add_filter('editor.BlockEditorSettings', function($settings) use ($css) {
+                if (!isset($settings['styles'])) {
+                    $settings['styles'] = [];
                 }
+
+                // Thêm CSS vào editor styles
+                $settings['styles'][] = [
+                    'css' => $css
+                ];
+
+                return $settings;
+            });
+        }
+    }
+
+    /**
+     * Enqueue font cho Gutenberg editor
+     */
+    protected function enqueueFontForGutenberg($fontData)
+    {
+        $fontName = $fontData['name'];
+        $category = $fontData['category'];
+
+        switch ($category) {
+            case 'google':
+                $this->enqueueGoogleFontForGutenberg($fontData);
+                break;
+            case 'adobe':
+                $this->enqueueAdobeFontForGutenberg($fontData);
+                break;
+            case 'custom':
+                $this->enqueueCustomFontForGutenberg($fontData);
+                break;
+            case 'system':
+                // System fonts không cần enqueue
+                break;
+        }
+    }
+
+    /**
+     * Enqueue Google Font cho Gutenberg editor
+     */
+    protected function enqueueGoogleFontForGutenberg($fontData)
+    {
+        $fontName = $fontData['name'];
+        $variants = $fontData['variants'] ?? ['400'];
+        $subsets = $fontData['subsets'] ?? ['latin'];
+
+        $url = $this->googleFontsProvider->buildGoogleFontsUrl($fontName, $variants, $subsets);
+        if ($url) {
+            $sanitizedId = HtmlHelper::sanitizeFontClassName($fontName);
+            wp_enqueue_style(
+                "google-font-{$sanitizedId}",
+                $url,
+                [],
+                null
+            );
+        }
+    }
+
+    /**
+     * Enqueue Adobe Font cho Gutenberg editor
+     */
+    protected function enqueueAdobeFontForGutenberg($fontData)
+    {
+        $fontName = $fontData['name'];
+        $metadata = $fontData['metadata'] ?? [];
+        $projectId = $metadata['project_id'] ?? '';
+
+        if ($projectId) {
+            $url = $this->adobeFontsProvider->buildAdobeFontsUrl($projectId);
+            if ($url) {
+                $sanitizedId = HtmlHelper::sanitizeFontClassName($fontName);
+                wp_enqueue_style(
+                    "adobe-font-{$sanitizedId}",
+                    $url,
+                    [],
+                    null
+                );
+            }
+        }
+    }
+
+    /**
+     * Enqueue Custom Font cho Gutenberg editor
+     */
+    protected function enqueueCustomFontForGutenberg($fontData)
+    {
+        $fontName = $fontData['name'];
+        $metadata = $fontData['metadata'] ?? [];
+
+        if (isset($metadata['css_file']) && !empty($metadata['css_file'])) {
+            $cssFile = $metadata['css_file'];
+            $cssUrl = $this->customFontsProvider->getCssFileUrl($cssFile);
+            if ($cssUrl) {
+                $sanitizedId = HtmlHelper::sanitizeFontClassName($fontName);
+                wp_enqueue_style(
+                    "custom-font-{$sanitizedId}",
+                    $cssUrl,
+                    [],
+                    null
+                );
             }
         }
     }
@@ -412,6 +617,8 @@ class FontsService
     protected function enqueueFont($fontData)
     {
         $category = $fontData['category'];
+        $fontName = $fontData['name'];
+
 
         switch ($category) {
             case 'google':
@@ -422,6 +629,8 @@ class FontsService
                 break;
             case 'custom':
                 $this->customFontsProvider->enqueueFont($fontData);
+                break;
+            case 'system':
                 break;
         }
     }
