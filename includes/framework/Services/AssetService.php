@@ -55,8 +55,8 @@ class AssetService
     protected function enqueueParentThemeStylesheet()
     {
         // Load compiled CSS if exists (development)
-        $compiled_css = $this->templateUrl('resources/assets/css/style.css');
-        if (file_exists(get_template_directory() . '/resources/assets/css/style.css')) {
+        $compiled_css = $this->templateUrl('style.css');
+        if (file_exists(get_template_directory() . 'style.css')) {
             wp_enqueue_style(
                 Config::get('template.textdomain', get_template()) . '-compiled',
                 $compiled_css,

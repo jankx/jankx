@@ -37,7 +37,6 @@ return [
 
             Jankx\Support\Providers\ThemeServiceProvider::class,
             Jankx\Support\Providers\PlatesServiceProvider::class,
-            Jankx\Support\Providers\PerarmanceServiceProvider::class,
             Jankx\Support\Providers\LayoutServiceProvider::class,
             Jankx\Support\Providers\JankxMenuItemsServiceProvider::class,
             Jankx\Support\Providers\ErrorSuppressionServiceProvider::class,
