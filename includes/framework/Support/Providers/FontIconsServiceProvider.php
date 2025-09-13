@@ -6,7 +6,6 @@ use Jankx\Support\Providers\ServiceProvider;
 use Jankx\Foundation\Application;
 use Jankx\Facades\Config;
 use Jankx\Services\FontIcons\IconRepository;
-use Jankx\Services\FontIcons\IconTypeManager;
 use Jankx\Services\FontIcons\IconRenderer;
 use Jankx\Services\FontIcons\IconTransformerService;
 use Jankx\Services\FontIcons\IconTypes\FontAwesomeProvider;
@@ -27,9 +26,6 @@ class FontIconsServiceProvider extends ServiceProvider
             return new IconRepository($app);
         });
 
-        $app->singleton('font-icons.manager', function ($app) {
-            return new IconTypeManager();
-        });
 
         $app->singleton('font-icons.renderer', function ($app) {
             return new IconRenderer();
@@ -86,7 +82,7 @@ class FontIconsServiceProvider extends ServiceProvider
 
     public function autoLoadActiveIcons()
     {
-        $activeTypes = $this->app->make('font-icons.manager')->getActiveTypes();
+        $activeTypes = $this->app->make('font-icons.repository')->getActiveTypes();
 
         foreach ($activeTypes as $type) {
             // Không auto-load FontAwesome

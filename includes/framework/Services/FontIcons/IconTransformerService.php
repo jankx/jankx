@@ -6,6 +6,7 @@ use Jankx\Foundation\Application;
 use Jankx\Services\FontIcons\Transformers\CssToJsonTransformer;
 use Jankx\Services\FontIcons\Transformers\FontAwesomeTransformer;
 use Jankx\Services\FontIcons\Transformers\MaterialIconsTransformer;
+use Jankx\Facades\Config;
 
 class IconTransformerService
 {
@@ -23,9 +24,6 @@ class IconTransformerService
     {
         $this->transformers = [
             'fontawesome' => new FontAwesomeTransformer(),
-            'material' => new MaterialIconsTransformer(),
-            'custom' => new CustomIconsTransformer(),
-            'svg' => new SvgIconsTransformer()
         ];
     }
 
@@ -43,7 +41,7 @@ class IconTransformerService
         }
 
         $transformer = $this->transformers[$type];
-        $result = $transformer->transform($cssUrl, $type);
+        $result = $transformer->transform($cssUrl);
 
         // Cache the result
         wp_cache_set($cacheKey, $result, 'jankx_font_icons', 86400); // 24 hours
@@ -98,5 +96,127 @@ class IconTransformerService
         }
 
         return false;
+    }
+
+    // Methods from IconImportService
+    public function importFromCssUrl($cssUrl, $iconType, $displayName = null)
+    {
+        try {
+            // Validate URL
+            if (!filter_var($cssUrl, FILTER_VALIDATE_URL)) {
+                throw new \Exception('Invalid CSS URL provided');
+            }
+
+            // Create transformer
+            $transformer = new \Jankx\Services\FontIcons\Transformers\GenericIconTransformer($iconType);
+
+            // Determine output path
+            $outputPath = $this->getIconOutputPath($iconType);
+
+            // Transform CSS to JSON
+            $jsonData = $transformer->transformFromUrl($cssUrl, $outputPath);
+
+            // Update configuration
+            $this->addIconTypeToConfig($iconType, $jsonData, $cssUrl, $displayName);
+
+            return [
+                'success' => true,
+                'message' => sprintf('Successfully imported %d icons for "%s"', count($jsonData['icons']), $displayName ?: $iconType),
+                'data' => $jsonData
+            ];
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'message' => 'Import failed: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    protected function getIconOutputPath($iconType)
+    {
+        $basePath = get_template_directory();
+        return $basePath . '/resources/icons/' . $iconType . '/icons.json';
+    }
+
+    protected function addIconTypeToConfig($iconType, $jsonData, $cssUrl, $displayName = null)
+    {
+        // Get current config
+        $config = Config::get('font-icons.icon_types', []);
+
+        // Create new icon type config
+        $newConfig = [
+            'enabled' => true,
+            'auto_load' => false,
+            'version' => $jsonData['version'] ?? '1.0.0',
+            'cdn_url' => $cssUrl,
+            'display_name' => $displayName ?: ucfirst($iconType),
+            'prefixes' => $jsonData['prefixes'] ?? [$iconType],
+            'categories' => $jsonData['categories'] ?? ['general'],
+            'font_family' => $jsonData['font_family'] ?? 'Unknown',
+            'total_icons' => count($jsonData['icons']),
+            'imported_at' => current_time('mysql')
+        ];
+
+        // Add to config
+        $config[$iconType] = $newConfig;
+
+        // Update config file
+        $this->updateConfigFile($config);
+    }
+
+    protected function updateConfigFile($config)
+    {
+        $configPath = get_template_directory() . '/config/font-icons.php';
+
+        // Create config content
+        $configContent = "<?php\n\nreturn " . var_export($config, true) . ";\n";
+
+        // Write to file
+        $bytesWritten = file_put_contents($configPath, $configContent);
+        if ($bytesWritten === false) {
+            throw new \Exception('Failed to update configuration file');
+        }
+    }
+
+    public function getAvailableIconTypes()
+    {
+        $suggestedTypes = [
+            'elusive' => 'Elusive Icons',
+            'feather' => 'Feather Icons',
+            'heroicons' => 'Heroicons',
+            'tabler' => 'Tabler Icons',
+            'bootstrap' => 'Bootstrap Icons',
+            'remix' => 'Remix Icons',
+            'lucide' => 'Lucide Icons',
+            'phosphor' => 'Phosphor Icons'
+        ];
+
+        // Filter out already existing types
+        $existingTypes = Config::get('font-icons.icon_types', []);
+        $availableTypes = [];
+
+        foreach ($suggestedTypes as $type => $name) {
+            if (!isset($existingTypes[$type])) {
+                $availableTypes[$type] = $name;
+            }
+        }
+
+        return $availableTypes;
+    }
+
+    public function validateIconType($iconType)
+    {
+        // Check if icon type already exists
+        $existingTypes = Config::get('font-icons.icon_types', []);
+        if (isset($existingTypes[$iconType])) {
+            throw new \Exception('Icon type "' . $iconType . '" already exists');
+        }
+
+        // Validate icon type format
+        if (!preg_match('/^[a-z][a-z0-9-]*$/', $iconType)) {
+            throw new \Exception('Icon type must contain only lowercase letters, numbers, and hyphens, and start with a letter');
+        }
+
+        return true;
     }
 }

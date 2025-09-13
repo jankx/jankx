@@ -71,8 +71,8 @@ class Application extends Container
         ThemeOptionsServiceProvider::class,
         JankxAdminPagesServiceProvider::class,
         ExtensionServiceProvider::class,
-        FontIconsServiceProvider::class,
         FontsServiceProvider::class,
+        FontIconsServiceProvider::class,
     ];
 
     /**
