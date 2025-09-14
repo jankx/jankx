@@ -4,6 +4,7 @@ namespace Jankx\Services\FontIcons;
 
 use Jankx\Foundation\Application;
 use Jankx\Facades\Config;
+use Jankx\Services\FontIcons\Transformers\GenericIconTransformer;
 
 class IconRepository
 {
@@ -39,7 +40,8 @@ class IconRepository
     {
         $this->iconTypes = [];
 
-        $iconTypes = Config::get('font-icons.icon_types', []);
+        // Lấy config từ database thay vì config file
+        $iconTypes = get_option('jankx_font_icons_config', []);
         foreach ($iconTypes as $type => $typeConfig) {
             if ($typeConfig['enabled']) {
                 $this->iconTypes[$type] = $this->loadIconTypeData($type, $typeConfig);
@@ -49,15 +51,17 @@ class IconRepository
 
     protected function loadIconTypeData($type, $config)
     {
-        // Sử dụng container để lấy base path
-        $basePath = $this->app->make('jankx.paths')['base'];
-        $dataFile = $basePath . "/resources/icons/{$type}/icons.json";
-
-        if (file_exists($dataFile)) {
-            $data = json_decode(file_get_contents($dataFile), true);
-            if ($data) {
-                $data['config'] = $config;
-                return $data;
+        // Lấy cache file path từ URL hash
+        $cssUrl = $config['css_url'] ?? '';
+        if ($cssUrl) {
+            $cacheFile = $this->getCacheFilePath($cssUrl);
+            
+            if (file_exists($cacheFile)) {
+                $data = json_decode(file_get_contents($cacheFile), true);
+                if ($data) {
+                    $data['config'] = $config;
+                    return $data;
+                }
             }
         }
 
@@ -251,18 +255,18 @@ class IconRepository
 
     public function getTypeConfig($type)
     {
-        $iconTypes = Config::get('font-icons.icon_types', []);
+        $iconTypes = get_option('jankx_font_icons_config', []);
         return $iconTypes[$type] ?? null;
     }
 
     public function getAllTypes()
     {
-        return Config::get('font-icons.icon_types', []);
+        return get_option('jankx_font_icons_config', []);
     }
 
     public function getEnabledTypes()
     {
-        $iconTypes = Config::get('font-icons.icon_types', []);
+        $iconTypes = get_option('jankx_font_icons_config', []);
         $enabled = [];
 
         foreach ($iconTypes as $type => $config) {
@@ -276,7 +280,7 @@ class IconRepository
 
     public function getAutoLoadTypes()
     {
-        $iconTypes = Config::get('font-icons.icon_types', []);
+        $iconTypes = get_option('jankx_font_icons_config', []);
         $autoLoad = [];
 
         foreach ($iconTypes as $type => $config) {
@@ -286,5 +290,222 @@ class IconRepository
         }
 
         return $autoLoad;
+    }
+
+    /**
+     * Import font icon từ CSS URL
+     */
+    public function importFromCssUrl($cssUrl, $iconType, $displayName = null, $autoLoad = false, $transformer = null)
+    {
+        try {
+            // Validate URL
+            if (!filter_var($cssUrl, FILTER_VALIDATE_URL)) {
+                throw new \Exception('Invalid CSS URL provided');
+            }
+
+            // Tạo hash từ URL để làm cache key
+            $urlHash = md5($cssUrl);
+            $cacheFile = $this->getCacheFilePath($cssUrl);
+
+            // Kiểm tra cache
+            if (file_exists($cacheFile)) {
+                $jsonData = json_decode(file_get_contents($cacheFile), true);
+            } else {
+                // Fetch CSS và transform
+                $jsonData = $this->fetchAndTransformCss($cssUrl, $iconType, $transformer);
+                
+                // Lưu cache
+                $this->saveCacheFile($jsonData, $cacheFile);
+            }
+
+            // Cập nhật config
+            $this->updateIconTypeConfig($iconType, $jsonData, $cssUrl, $displayName, $autoLoad, $transformer);
+
+            // Reload icon types
+            $this->loadIconTypes();
+
+            return [
+                'success' => true,
+                'message' => sprintf('Successfully imported %d icons for "%s"', count($jsonData['icons']), $displayName ?: $iconType),
+                'data' => $jsonData
+            ];
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'message' => 'Import failed: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Lấy cache file path từ CSS URL
+     */
+    protected function getCacheFilePath($cssUrl)
+    {
+        $urlHash = md5($cssUrl);
+        $cacheDir = $this->getCacheDirectory();
+        
+        return $cacheDir . '/' . $urlHash . '.json';
+    }
+
+    /**
+     * Lấy cache directory
+     */
+    protected function getCacheDirectory()
+    {
+        $uploadDir = wp_upload_dir();
+        $cacheDir = $uploadDir['basedir'] . '/jankx/icons';
+        
+        // Tạo thư mục nếu chưa có
+        if (!is_dir($cacheDir)) {
+            wp_mkdir_p($cacheDir);
+        }
+        
+        return $cacheDir;
+    }
+
+    /**
+     * Fetch CSS và transform thành JSON
+     */
+    protected function fetchAndTransformCss($cssUrl, $iconType, $transformer = null)
+    {
+        // Fetch CSS content
+        $response = wp_remote_get($cssUrl);
+        
+        if (is_wp_error($response)) {
+            throw new \Exception('Failed to fetch CSS: ' . $response->get_error_message());
+        }
+        
+        $css = wp_remote_retrieve_body($response);
+        
+        if (empty($css)) {
+            throw new \Exception('Empty CSS content received');
+        }
+
+        // Sử dụng transformer được cung cấp hoặc default
+        if ($transformer === null) {
+            $transformer = $this->getDefaultTransformer($iconType);
+        }
+
+        // Validate transformer
+        if (!$transformer instanceof \Jankx\Services\FontIcons\Transformers\CssToJsonTransformer) {
+            throw new \Exception('Invalid transformer provided');
+        }
+
+        // Transform CSS thành JSON
+        $jsonData = $transformer->transform($css);
+
+        return $jsonData;
+    }
+
+    /**
+     * Lấy default transformer cho icon type
+     */
+    protected function getDefaultTransformer($iconType)
+    {
+        // Sử dụng GenericIconTransformer cho tất cả icon types
+        // Có thể mở rộng sau này với các transformer chuyên biệt
+        return new \Jankx\Services\FontIcons\Transformers\GenericIconTransformer($iconType);
+    }
+
+    /**
+     * Lưu cache file
+     */
+    protected function saveCacheFile($jsonData, $cacheFile)
+    {
+        $json = json_encode($jsonData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        
+        if (file_put_contents($cacheFile, $json) === false) {
+            throw new \Exception('Failed to save cache file');
+        }
+    }
+
+    /**
+     * Cập nhật icon type config
+     */
+    protected function updateIconTypeConfig($iconType, $jsonData, $cssUrl, $displayName = null, $autoLoad = false, $transformer = null)
+    {
+        // Lấy config hiện tại
+        $config = get_option('jankx_font_icons_config', []);
+
+        // Tạo config mới
+        $newConfig = [
+            'enabled' => true,
+            'auto_load' => $autoLoad,
+            'css_url' => $cssUrl,
+            'display_name' => $displayName ?: ucfirst($iconType),
+            'version' => $jsonData['version'] ?? '1.0.0',
+            'font_family' => $jsonData['font_family'] ?? 'Unknown',
+            'prefixes' => $jsonData['prefixes'] ?? [$iconType],
+            'total_icons' => count($jsonData['icons']),
+            'transformer_class' => $transformer ? get_class($transformer) : null,
+            'imported_at' => current_time('mysql')
+        ];
+
+        // Cập nhật config
+        $config[$iconType] = $newConfig;
+        update_option('jankx_font_icons_config', $config);
+    }
+
+    /**
+     * Kiểm tra icon type có tồn tại không
+     */
+    public function hasIconType($iconType)
+    {
+        $config = get_option('jankx_font_icons_config', []);
+        return isset($config[$iconType]);
+    }
+
+    /**
+     * Xóa icon type
+     */
+    public function removeIconType($iconType)
+    {
+        $config = get_option('jankx_font_icons_config', []);
+        
+        if (isset($config[$iconType])) {
+            unset($config[$iconType]);
+            update_option('jankx_font_icons_config', $config);
+            
+            // Reload icon types
+            $this->loadIconTypes();
+            
+            return true;
+        }
+        
+        return false;
+    }
+
+    /**
+     * Lấy thống kê
+     */
+    public function getStats()
+    {
+        $config = get_option('jankx_font_icons_config', []);
+        $stats = [
+            'total_types' => count($config),
+            'enabled_types' => 0,
+            'auto_load_types' => 0,
+            'total_icons' => 0,
+            'cache_files' => 0
+        ];
+
+        foreach ($config as $type => $typeConfig) {
+            if ($typeConfig['enabled']) {
+                $stats['enabled_types']++;
+            }
+            if ($typeConfig['auto_load']) {
+                $stats['auto_load_types']++;
+            }
+            $stats['total_icons'] += $typeConfig['total_icons'] ?? 0;
+        }
+
+        // Đếm cache files
+        $cacheDir = $this->getCacheDirectory();
+        if (is_dir($cacheDir)) {
+            $stats['cache_files'] = count(glob($cacheDir . '/*.json'));
+        }
+
+        return $stats;
     }
 }

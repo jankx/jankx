@@ -83,13 +83,14 @@ class FontsService
         try {
             $font = new FontEntity($fontData);
 
-            $savedFont = $this->fontsRepository->save($font);
+            $savedFont = $this->fontsRepository->add($font);
 
             // Tạo CSS cho font
             $this->generateFontCSS($savedFont);
 
             return $savedFont;
         } catch (\Exception $e) {
+            error_log('Font registration error: ' . $e->getMessage());
             return false;
         }
     }
@@ -188,7 +189,7 @@ class FontsService
         $themeJsonFonts = [];
 
         foreach ($activeFonts as $font) {
-            $themeJsonFonts[] = [
+                    $themeJsonFonts[] = [
                 'fontFamily' => $font->getFamily(),
                 'name' => $font->getName(),
                 'slug' => $font->getId(),
@@ -223,7 +224,7 @@ class FontsService
         $editorFonts = [];
 
         foreach ($activeFonts as $font) {
-            $editorFonts[] = [
+                    $editorFonts[] = [
                 'fontFamily' => $font->getFamily(),
                 'name' => $font->getName(),
                 'slug' => $font->getId(),
@@ -515,8 +516,8 @@ class FontsService
                 break;
             case 'system':
                 break;
+            }
         }
-    }
 
 
     /**

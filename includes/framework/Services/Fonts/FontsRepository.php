@@ -74,9 +74,9 @@ class FontsRepository
     }
 
     /**
-     * Lưu font vào repository
+     * Thêm font vào memory repository
      */
-    public function save(FontEntity $font)
+    public function add(FontEntity $font)
     {
         // Validate font data
         $validation = $font->validate();
@@ -87,12 +87,8 @@ class FontsRepository
         $this->initialize();
         $fontId = $font->getId();
 
-        // Kiểm tra font đã tồn tại chưa
-        if (isset($this->fonts[$fontId])) {
-            $this->fonts[$fontId] = $font;
-        } else {
-            $this->fonts[$fontId] = $font;
-        }
+        // Thêm font vào memory
+        $this->fonts[$fontId] = $font;
 
         return $font;
     }

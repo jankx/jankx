@@ -410,6 +410,12 @@ class FontEntity
             return true; // Không có CSS file cũng OK
         }
 
+        // Nếu là URL, chỉ kiểm tra format
+        if (filter_var($cssFile, FILTER_VALIDATE_URL)) {
+            return true; // URL hợp lệ
+        }
+
+        // Nếu là local file
         if (!file_exists($cssFile)) {
             return false;
         }
@@ -424,8 +430,10 @@ class FontEntity
             return false;
         }
 
-        // Kiểm tra có chứa @font-face không
-        if (strpos($content, '@font-face') === false) {
+        // Kiểm tra có chứa @font-face hoặc icon classes
+        if (strpos($content, '@font-face') === false &&
+            strpos($content, ':before') === false &&
+            strpos($content, ':after') === false) {
             return false;
         }
 
