@@ -61,4 +61,12 @@
   --outermost--icon-block--transform-scale-y: -1;
 }
 
+.has-light-text-color .wp-block-jankx-svg-icon svg, .has-light-text-color .wp-block-jankx-svg-icon svg path {
+  fill: var(--wp--preset--color--light-text) !important;
+}
+
+.has-dark-text-color .wp-block-jankx-svg-icon svg, .has-dark-text-color .wp-block-jankx-svg-icon svg path {
+  fill: var(--wp--preset--color--dark-text) !important;
+}
+
 /*# sourceMappingURL=style.css.map*/
