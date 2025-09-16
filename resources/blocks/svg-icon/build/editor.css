@@ -471,6 +471,16 @@
   padding-left: 0;
 }
 
+.wp-block-outermost-icon-block.items-justified-left {
+  justify-content: flex-start;
+}
+.wp-block-outermost-icon-block.items-justified-center {
+  justify-content: center;
+}
+.wp-block-outermost-icon-block.items-justified-right {
+  justify-content: flex-end;
+}
+
 .wp-block-outermost-icon-block__toolbar_content {
   width: 250px;
 }

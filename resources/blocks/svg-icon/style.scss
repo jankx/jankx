@@ -3,7 +3,7 @@
  */
 
 /* Icon Block styles. */
-.wp-block-outermost-icon-block {
+.wp-block-jankx-svg-icon {
 	display: flex;
  	line-height: 0;
 
@@ -76,6 +76,19 @@
 	.flip-vertical.flip-horizontal {
 		--outermost--icon-block--transform-scale-x: -1;
 		--outermost--icon-block--transform-scale-y: -1;
+	}
+
+	// Justify alignment classes
+	&.items-justified-left {
+		justify-content: flex-start;
+	}
+
+	&.items-justified-center {
+		justify-content: center;
+	}
+
+	&.items-justified-right {
+		justify-content: flex-end;
 	}
  }
 

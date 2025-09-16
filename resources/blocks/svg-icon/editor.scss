@@ -606,6 +606,21 @@
 	padding-left: 0;
 }
 
+// Justify alignment classes for editor
+.wp-block-outermost-icon-block {
+	&.items-justified-left {
+		justify-content: flex-start;
+	}
+
+	&.items-justified-center {
+		justify-content: center;
+	}
+
+	&.items-justified-right {
+		justify-content: flex-end;
+	}
+}
+
 .wp-block-outermost-icon-block__toolbar_content {
 	width: 250px;
 }
