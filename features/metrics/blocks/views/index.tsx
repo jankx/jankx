@@ -1,14 +1,60 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
-import { PanelBody, ToggleControl, TextControl, NumberControl } from '@wordpress/components';
+import { PanelBody, ToggleControl, TextControl } from '@wordpress/components';
 import { useState, useEffect } from '@wordpress/element';
 import './style.css';
 
-registerBlockType('jankx/views', {
-    edit: function Edit({ attributes, setAttributes }) {
+// Define block attributes interface
+interface ViewsBlockAttributes {
+    showIcon: boolean;
+    showLabel: boolean;
+    label: string;
+    postId: number;
+}
+
+// Define block edit props
+interface ViewsBlockEditProps {
+    attributes: ViewsBlockAttributes;
+    setAttributes: (attributes: Partial<ViewsBlockAttributes>) => void;
+}
+
+// Format view count utility function
+const formatViews = (views: number): string => {
+    if (views >= 1000000) {
+        return Math.round(views / 1000000 * 10) / 10 + 'M';
+    } else if (views >= 1000) {
+        return Math.round(views / 1000 * 10) / 10 + 'K';
+    }
+    return views.toLocaleString();
+};
+
+registerBlockType<ViewsBlockAttributes>('jankx/views', {
+    title: __('Post Views', 'jankx'),
+    category: 'widgets',
+    icon: 'visibility',
+    description: __('Display post view count', 'jankx'),
+    attributes: {
+        showIcon: {
+            type: 'boolean',
+            default: true
+        },
+        showLabel: {
+            type: 'boolean',
+            default: true
+        },
+        label: {
+            type: 'string',
+            default: 'lượt xem'
+        },
+        postId: {
+            type: 'number',
+            default: 0
+        }
+    },
+    edit: function Edit({ attributes, setAttributes }: ViewsBlockEditProps) {
         const { showIcon, showLabel, label, postId } = attributes;
-        const [viewCount, setViewCount] = useState(0);
+        const [viewCount, setViewCount] = useState<number>(0);
 
         const blockProps = useBlockProps({
             className: 'jankx-views-block'
@@ -19,15 +65,6 @@ registerBlockType('jankx/views', {
             setViewCount(Math.floor(Math.random() * 1000) + 100);
         }, []);
 
-        const formatViews = (views) => {
-            if (views >= 1000000) {
-                return Math.round(views / 1000000 * 10) / 10 + 'M';
-            } else if (views >= 1000) {
-                return Math.round(views / 1000 * 10) / 10 + 'K';
-            }
-            return views.toLocaleString();
-        };
-
         return (
             <>
                 <InspectorControls>
@@ -35,25 +72,25 @@ registerBlockType('jankx/views', {
                         <ToggleControl
                             label={__('Show Icon', 'jankx')}
                             checked={showIcon}
-                            onChange={(value) => setAttributes({ showIcon: value })}
+                            onChange={(value: boolean) => setAttributes({ showIcon: value })}
                         />
                         <ToggleControl
                             label={__('Show Label', 'jankx')}
                             checked={showLabel}
-                            onChange={(value) => setAttributes({ showLabel: value })}
+                            onChange={(value: boolean) => setAttributes({ showLabel: value })}
                         />
                         {showLabel && (
                             <TextControl
                                 label={__('Label Text', 'jankx')}
                                 value={label}
-                                onChange={(value) => setAttributes({ label: value })}
+                                onChange={(value: string) => setAttributes({ label: value })}
                             />
                         )}
-                        <NumberControl
+                        <TextControl
                             label={__('Post ID (0 = current post)', 'jankx')}
-                            value={postId}
-                            onChange={(value) => setAttributes({ postId: parseInt(value) || 0 })}
-                            min={0}
+                            value={postId.toString()}
+                            onChange={(value: string) => setAttributes({ postId: parseInt(value) || 0 })}
+                            type="number"
                         />
                     </PanelBody>
                 </InspectorControls>
@@ -79,7 +116,7 @@ registerBlockType('jankx/views', {
         );
     },
 
-    save: function save() {
+    save: function save(): null {
         return null; // Dynamic block
     }
 });

@@ -1,26 +1,25 @@
 {
-  "name": "jankx-views-block",
-  "version": "1.0.0",
-  "description": "Post Views block for Jankx theme",
-  "main": "index.js",
-  "scripts": {
-    "build": "wp-scripts build",
-    "start": "wp-scripts start",
-    "dev": "wp-scripts start"
-  },
-  "keywords": [
-    "wordpress",
-    "gutenberg",
-    "block",
-    "views"
-  ],
-  "author": "Jankx Team",
-  "license": "GPL-2.0-or-later",
-  "devDependencies": {
-    "@wordpress/babel-preset-default": "^8.31.0",
-    "@wordpress/scripts": "^26.19.0",
-    "babel-loader": "^10.0.0",
-    "css-loader": "^7.1.2",
-    "style-loader": "^4.0.0"
+    "name": "jankx-views-block",
+    "version": "1.0.0",
+    "description": "Post Views block for Jankx theme",
+    "main": "index.js",
+    "scripts": {
+      "build": "wp-scripts build",
+      "start": "wp-scripts start",
+      "dev": "wp-scripts start",
+      "build:views": "webpack --config webpack.config.js",
+      "type-check": "tsc --noEmit --project metrics/blocks/views/tsconfig.json",
+      "type-check:watch": "tsc --noEmit --watch --project metrics/blocks/views/tsconfig.json"
+    },
+    "keywords": [
+      "wordpress",
+      "gutenberg",
+      "block",
+      "views"
+    ],
+    "author": "Jankx Team",
+    "license": "GPL-2.0-or-later",
+    "devDependencies": {
+      "@wordpress/scripts": "^26.0.0"
+    }
   }
-}

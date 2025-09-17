@@ -70,14 +70,22 @@ class PostViewService
             return;
         }
 
+        // Don't track views in admin area
+        if (is_admin()) {
+            return;
+        }
+
         // Get the post author ID for the specific post
         $post_author_id = get_post_field('post_author', $post_id);
         $current_user_id = get_current_user_id();
 
         // Don't track views for admins or post authors
-        if (apply_filters('jankx_post_view_service_should_track_view', false) && (current_user_can('manage_options') || $post_author_id == $current_user_id)) {
+        if (current_user_can('manage_options') || $post_author_id == $current_user_id) {
             return;
         }
+
+        // Debug logging (remove in production)
+        error_log("Jankx Post Views: Tracking view for post ID: $post_id, Author ID: $post_author_id, Current User: $current_user_id");
 
         $this->incrementPostViews($post_id);
     }
@@ -289,7 +297,8 @@ class PostViewService
     {
         // Enqueue scripts on singular pages
         add_action('wp_enqueue_scripts', array($this, 'enqueueFrontendScripts'));
-        add_action('jankx/gutenberg/register-blocks', function(GutenbergRepository $repository){
+
+        add_action('jankx/gutenberg/register-blocks', function (GutenbergRepository $repository) {
             $repository->registerBlock(ViewsBlock::class, implode(DIRECTORY_SEPARATOR, [dirname(__DIR__), 'blocks', 'views']));
         });
     }

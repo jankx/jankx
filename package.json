@@ -11,8 +11,11 @@
         "build": "run-p build:*"
     },
     "devDependencies": {
+        "@babel/preset-typescript": "^7.27.1",
+        "@types/react": "^19.1.13",
+        "@types/react-dom": "^19.1.9",
         "@wordpress/babel-preset-default": "^8.30.0",
-        "@wordpress/dependency-extraction-webpack-plugin": "^6.30.0",
+        "@wordpress/dependency-extraction-webpack-plugin": "^6.31.0",
         "@wordpress/scripts": "^30.23.0",
         "axios": "^1.8.1",
         "babel-loader": "^10.0.0",
@@ -26,6 +29,7 @@
         "resolve-url-loader": "^5.0.0",
         "sass": "^1.85.1",
         "sass-loader": "^16.0.5",
+        "typescript": "^5.9.2",
         "webpack-livereload-plugin": "^3.0.2",
         "webpack-remove-empty-scripts": "^1.1.1"
     }

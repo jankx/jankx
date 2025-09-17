@@ -26,14 +26,14 @@ class MetricServiceProvider extends ServiceProvider
         $postViewService->initFrontend();
 
         // Track post views on single post pages (fallback for non-JS users)
-        add_action('wp_head', function() use ($postViewService) {
+        add_action('wp_head', function () use ($postViewService) {
             if (is_single() && !is_admin()) {
                 $postViewService->trackPostView();
             }
         });
 
         // Make service available globally
-        add_action('init', function() use ($postViewService) {
+        add_action('init', function () use ($postViewService) {
             $GLOBALS['jankx_post_view_service'] = $postViewService;
         });
     }

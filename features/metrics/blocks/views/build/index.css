@@ -1,3 +1,6 @@
+/*!**********************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./metrics/blocks/views/style.css ***!
+  \**********************************************************************************/
 .jankx-views-block {
     display: inline-block;
     font-size: 14px;
@@ -50,9 +53,11 @@
     .jankx-views-block {
         font-size: 13px;
     }
-    
+
     .jankx-views-block .views-icon svg {
         width: 14px;
         height: 14px;
     }
 }
+
+/*# sourceMappingURL=index.css.map*/
