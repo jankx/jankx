@@ -1,6 +1,7 @@
 <?php
 
 namespace Jankx\Swiper\Classes;
+
 use Jankx\Swiper\Traits\SingletonTrait;
 
 if (!defined('ABSPATH')) {
@@ -9,8 +10,8 @@ if (!defined('ABSPATH')) {
 
 if (!class_exists('SupportSVG')) {
 
-    class SupportSVG {
-
+    class SupportSVG
+    {
         use SingletonTrait;
 
         private $wpFilesystem;
@@ -18,7 +19,8 @@ if (!class_exists('SupportSVG')) {
         /**
          * Register hooks and init filesystem
          */
-        public function register() {
+        public function register()
+        {
             add_filter('upload_mimes', [$this, 'allowSvgMimeType']);
             add_filter('wp_handle_upload_prefilter', [$this, 'validateSvgUpload']);
             add_filter('wp_prepare_attachment_for_js', [$this, 'fixSvgThumbnail']);
@@ -36,7 +38,8 @@ if (!class_exists('SupportSVG')) {
         /**
          * Allow SVG MIME type in uploads
          */
-        public function allowSvgMimeType(array $mimes): array {
+        public function allowSvgMimeType(array $mimes): array
+        {
             $mimes['svg'] = 'image/svg+xml';
             $mimes['svgz'] = 'image/svg+xml';
             return $mimes;
@@ -45,7 +48,8 @@ if (!class_exists('SupportSVG')) {
         /**
          * Validate the uploaded SVG file
          */
-        public function validateSvgUpload(array $file): array {
+        public function validateSvgUpload(array $file): array
+        {
             if ($file['type'] !== 'image/svg+xml') {
                 return $file;
             }
@@ -53,13 +57,13 @@ if (!class_exists('SupportSVG')) {
             // Validate file extension
             $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
             if (!in_array($extension, ['svg', 'svgz'], true)) {
-                $file['error'] = __('Invalid SVG file extension.', 'jankx'); 
+                $file['error'] = __('Invalid SVG file extension.', 'jankx');
                 return $file;
             }
 
             // Read file content
             if (!$this->wpFilesystem->exists($file['tmp_name'])) {
-                $file['error'] = __('Unable to locate uploaded file.', 'jankx'); 
+                $file['error'] = __('Unable to locate uploaded file.', 'jankx');
                 return $file;
             }
 
@@ -98,7 +102,8 @@ if (!class_exists('SupportSVG')) {
         /**
          * Fix SVG thumbnail display in the media library
          */
-        public function fixSvgThumbnail(array $response): array {
+        public function fixSvgThumbnail(array $response): array
+        {
             if ($response['mime'] === 'image/svg+xml') {
                 $response['sizes'] = [
                     'full' => [
@@ -115,7 +120,8 @@ if (!class_exists('SupportSVG')) {
         /**
          * Enable SVG support by updating file type checks
          */
-        public function enableSvgSupport(): void {
+        public function enableSvgSupport(): void
+        {
             add_filter('wp_check_filetype_and_ext', function ($data, $file, $filename, $mimes) {
                 $filetype = wp_check_filetype($filename, $mimes);
                 return [
@@ -129,7 +135,8 @@ if (!class_exists('SupportSVG')) {
         /**
          * Validate the SVG content for prohibited elements and attributes
          */
-        private function validateSvgContent(\DOMDocument $doc): bool {
+        private function validateSvgContent(\DOMDocument $doc): bool
+        {
             $xpath = new \DOMXPath($doc);
 
             // Prohibited elements
@@ -154,7 +161,8 @@ if (!class_exists('SupportSVG')) {
         /**
          * Sanitize SVG content to remove unwanted elements and attributes
          */
-        private function sanitizeSvgContent(string $content): string {
+        private function sanitizeSvgContent(string $content): string
+        {
             libxml_use_internal_errors(true);
             $doc = new \DOMDocument();
             $doc->loadXML($content);

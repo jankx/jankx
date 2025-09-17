@@ -2,18 +2,17 @@
 
 namespace Jankx\Foundation;
 
-use App\Providers\ThemeOptionsServiceProvider;
 use Exception;
 use Illuminate\Container\Container;
 use Jankx\Config\Repository;
-use Jankx\Helper\Environment;
 use Jankx\Support\Providers\Admin\JankxAdminPagesServiceProvider;
+use Jankx\Support\Providers\ExtensionServiceProvider;
 use Jankx\Support\Providers\FontIconsServiceProvider;
 use Jankx\Support\Providers\FontsServiceProvider;
 use Jankx\Support\Providers\JankxFrameworkServiceProvider;
 use Jankx\Support\Providers\SystemServiceProvider;
+use Jankx\Support\Providers\ThemeOptionsServiceProvider;
 use Jankx\Support\Providers\TranslationServiceProvider;
-use Jankx\Support\Providers\ExtensionServiceProvider;
 
 class Application extends Container
 {

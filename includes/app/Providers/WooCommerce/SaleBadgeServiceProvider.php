@@ -74,7 +74,7 @@ class SaleBadgeServiceProvider extends ServiceProvider
 
         // Hook into WooCommerce Blocks sale badge text for product loops
         add_filter('woocommerce_blocks_product_grid_item_sale_badge_text', [$service, 'filterSaleBadgeText'], 10, 2);
-        
+
         // Hook into WooCommerce Blocks sale badge for all contexts
         add_filter('woocommerce_blocks_product_sale_badge', [$service, 'filterSaleBadgeText'], 10, 2);
     }

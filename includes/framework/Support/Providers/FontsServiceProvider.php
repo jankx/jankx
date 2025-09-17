@@ -21,17 +21,17 @@ class FontsServiceProvider extends ServiceProvider
         $fontsService = $app->make(FontsService::class);
 
         // Khởi tạo fonts service
-        add_action('init', function() use ($fontsService) {
+        add_action('init', function () use ($fontsService) {
             $fontsService->init();
         });
 
         // Đăng ký fonts với Gutenberg thông qua theme.json filter
-        add_filter('theme_json_data', function($themeJson) use ($fontsService) {
+        add_filter('theme_json_data', function ($themeJson) use ($fontsService) {
             return $fontsService->injectFontsIntoThemeJson($themeJson);
         }, 10, 1);
 
         // Đăng ký fonts với frontend
-        add_action('wp_enqueue_scripts', function() use ($fontsService) {
+        add_action('wp_enqueue_scripts', function () use ($fontsService) {
             $activeFonts = $fontsService->getAllFonts();
             foreach ($activeFonts as $font) {
                 $fontsService->enqueueFont($font->toArray());
@@ -39,7 +39,7 @@ class FontsServiceProvider extends ServiceProvider
         });
 
         // Đăng ký fonts với admin
-        add_action('admin_enqueue_scripts', function() use ($fontsService) {
+        add_action('admin_enqueue_scripts', function () use ($fontsService) {
             $activeFonts = $fontsService->getAllFonts();
             foreach ($activeFonts as $font) {
                 $fontsService->enqueueFont($font->toArray());
@@ -47,17 +47,15 @@ class FontsServiceProvider extends ServiceProvider
         });
 
         // Đăng ký fonts với Gutenberg editor
-        add_action('enqueue_block_editor_assets', function() use ($fontsService) {
+        add_action('enqueue_block_editor_assets', function () use ($fontsService) {
             $fontsService->enqueueGutenbergFonts();
         }, 5);
 
         // Đăng ký fonts với Gutenberg editor (block assets) - chỉ trong admin
-        add_action('enqueue_block_assets', function() use ($fontsService) {
+        add_action('enqueue_block_assets', function () use ($fontsService) {
             if (is_admin()) {
                 $fontsService->enqueueGutenbergFonts();
             }
         }, 5);
-
-
     }
 }

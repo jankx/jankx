@@ -198,5 +198,4 @@ class Fonts
 
         return $fontName;
     }
-
 }

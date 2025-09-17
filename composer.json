@@ -30,6 +30,8 @@
   "autoload": {
     "psr-4": {
       "Jankx\\": "./includes/framework",
+      "Jankx\\Features\\": "./features",
+      "Jankx\\Features\\Metrics\\": "./features/metrics",
       "App\\": "./includes/app"
     }
   },

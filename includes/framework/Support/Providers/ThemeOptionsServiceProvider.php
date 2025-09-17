@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Providers;
+namespace Jankx\Support\Providers;
 
-use Jankx\Facades\Log;
 use Jankx\Foundation\Application;
 use App\Services\ThemeOptionsService;
 
-class ThemeOptionsServiceProvider extends \Jankx\Support\Providers\ServiceProvider
+class ThemeOptionsServiceProvider extends ServiceProvider
 {
     /**
      * Register the service provider.

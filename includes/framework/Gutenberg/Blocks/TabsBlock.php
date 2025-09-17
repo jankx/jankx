@@ -37,7 +37,7 @@ class TabsBlock extends Block
 
         // Enqueue block assets
         add_action('enqueue_block_assets', [$this, 'enqueueBlockAssets']);
-        
+
         // Enqueue admin assets for editor
         add_action('enqueue_block_editor_assets', [$this, 'enqueueBlockAssets']);
     }

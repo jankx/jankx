@@ -148,7 +148,7 @@ class SaleBadgeService
         }
 
         $productId = null;
-        
+
         if ($product) {
             if (is_object($product)) {
                 if (method_exists($product, 'get_id')) {
@@ -162,7 +162,7 @@ class SaleBadgeService
         }
 
         $percentage = $this->getDiscountPercentage($productId);
-        
+
         if ($percentage > 0) {
             // Replace "Khuyến mại" with percentage in the HTML
             $badgeHtml = str_replace(

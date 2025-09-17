@@ -27,5 +27,4 @@ class TabBlock extends Block
      * @var array
      */
     protected $attributes = [];
-
 }

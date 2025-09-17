@@ -164,8 +164,10 @@ class FontsRepository
         $query = strtolower($query);
 
         foreach ($this->fonts as $font) {
-            if (strpos(strtolower($font->getName()), $query) !== false ||
-                strpos(strtolower($font->getFamily()), $query) !== false) {
+            if (
+                strpos(strtolower($font->getName()), $query) !== false ||
+                strpos(strtolower($font->getFamily()), $query) !== false
+            ) {
                 $results[$font->getId()] = $font;
             }
         }
@@ -189,7 +191,4 @@ class FontsRepository
 
         return $activeFonts;
     }
-
-
-
 }

@@ -10,8 +10,8 @@ if (!defined('ABSPATH')) {
 
 if (!class_exists('RegistrationCategory')) {
 
-    class RegistrationCategory {
-
+    class RegistrationCategory
+    {
         use SingletonTrait;
 
         /**
@@ -22,14 +22,16 @@ if (!class_exists('RegistrationCategory')) {
         /**
          * Public method to attach WordPress hooks.
          */
-        public function register() {
+        public function register()
+        {
             add_filter('block_categories_all', [$this, 'register_category'], 99999999, 2);
         }
 
         /**
          * Register the custom block category.
          */
-        public function register_category($categories) {
+        public function register_category($categories)
+        {
             if (!is_array($categories)) {
                 return $categories;
             }

@@ -19,7 +19,7 @@ class FontIcons
 
         // Đầu tiên register font icon CSS như một font chữ bình thường
         $fontResult = \Jankx\Facades\Fonts::customFromCss($iconType, $cssUrl);
-        
+
         if (!$fontResult) {
             return [
                 'success' => false,
@@ -44,7 +44,7 @@ class FontIcons
     public static function fontAwesome($version = '6.5.1', $autoLoad = false)
     {
         $cssUrl = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/{$version}/css/all.min.css";
-        
+
         return self::register($cssUrl, 'fontawesome', 'Font Awesome', $autoLoad);
     }
 
@@ -54,7 +54,7 @@ class FontIcons
     public static function materialIcons($autoLoad = false)
     {
         $cssUrl = "https://fonts.googleapis.com/icon?family=Material+Icons";
-        
+
         return self::register($cssUrl, 'material', 'Material Icons', $autoLoad);
     }
 
@@ -64,7 +64,7 @@ class FontIcons
     public static function bootstrapIcons($version = '1.11.3', $autoLoad = false)
     {
         $cssUrl = "https://cdn.jsdelivr.net/npm/bootstrap-icons@{$version}/font/bootstrap-icons.css";
-        
+
         return self::register($cssUrl, 'bootstrap', 'Bootstrap Icons', $autoLoad);
     }
 
@@ -74,7 +74,7 @@ class FontIcons
     public static function featherIcons($version = '4.29.0', $autoLoad = false)
     {
         $cssUrl = "https://cdn.jsdelivr.net/npm/feather-icons@{$version}/dist/feather.min.css";
-        
+
         return self::register($cssUrl, 'feather', 'Feather Icons', $autoLoad);
     }
 
@@ -84,7 +84,7 @@ class FontIcons
     public static function heroIcons($version = '2.0.18', $autoLoad = false)
     {
         $cssUrl = "https://cdn.jsdelivr.net/npm/heroicons@{$version}/dist/heroicons.min.css";
-        
+
         return self::register($cssUrl, 'heroicons', 'Heroicons', $autoLoad);
     }
 
@@ -94,7 +94,7 @@ class FontIcons
     public static function tablerIcons($version = '2.44.0', $autoLoad = false)
     {
         $cssUrl = "https://cdn.jsdelivr.net/npm/@tabler/icons@{$version}/dist/tabler-icons.min.css";
-        
+
         return self::register($cssUrl, 'tabler', 'Tabler Icons', $autoLoad);
     }
 
@@ -104,7 +104,7 @@ class FontIcons
     public static function lucideIcons($version = '0.294.0', $autoLoad = false)
     {
         $cssUrl = "https://cdn.jsdelivr.net/npm/lucide@{$version}/dist/lucide.min.css";
-        
+
         return self::register($cssUrl, 'lucide', 'Lucide Icons', $autoLoad);
     }
 
@@ -114,7 +114,7 @@ class FontIcons
     public static function phosphorIcons($version = '1.4.2', $autoLoad = false)
     {
         $cssUrl = "https://cdn.jsdelivr.net/npm/phosphor-icons@{$version}/dist/phosphor-icons.min.css";
-        
+
         return self::register($cssUrl, 'phosphor', 'Phosphor Icons', $autoLoad);
     }
 

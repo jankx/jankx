@@ -32,7 +32,6 @@ class FontEntity
         if (empty($this->data['updated_at'])) {
             $this->data['updated_at'] = current_time('mysql');
         }
-
     }
 
     /**
@@ -431,9 +430,11 @@ class FontEntity
         }
 
         // Kiểm tra có chứa @font-face hoặc icon classes
-        if (strpos($content, '@font-face') === false &&
+        if (
+            strpos($content, '@font-face') === false &&
             strpos($content, ':before') === false &&
-            strpos($content, ':after') === false) {
+            strpos($content, ':after') === false
+        ) {
             return false;
         }
 

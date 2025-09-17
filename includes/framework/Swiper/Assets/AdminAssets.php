@@ -4,14 +4,17 @@ namespace Jankx\Swiper\Assets;
 
 use Jankx\Swiper\Traits\SingletonTrait;
 
-class AdminAssets {
+class AdminAssets
+{
     use SingletonTrait;
 
-    public function register() {
+    public function register()
+    {
         add_action('admin_enqueue_scripts', [$this, 'enqueue_assets']);
     }
 
-    public function enqueue_assets() {
+    public function enqueue_assets()
+    {
         $theme_url = get_template_directory_uri();
 
         wp_register_style(

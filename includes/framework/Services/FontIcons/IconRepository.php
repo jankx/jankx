@@ -55,7 +55,7 @@ class IconRepository
         $cssUrl = $config['css_url'] ?? '';
         if ($cssUrl) {
             $cacheFile = $this->getCacheFilePath($cssUrl);
-            
+
             if (file_exists($cacheFile)) {
                 $data = json_decode(file_get_contents($cacheFile), true);
                 if ($data) {
@@ -313,7 +313,7 @@ class IconRepository
             } else {
                 // Fetch CSS và transform
                 $jsonData = $this->fetchAndTransformCss($cssUrl, $iconType, $transformer);
-                
+
                 // Lưu cache
                 $this->saveCacheFile($jsonData, $cacheFile);
             }
@@ -344,7 +344,7 @@ class IconRepository
     {
         $urlHash = md5($cssUrl);
         $cacheDir = $this->getCacheDirectory();
-        
+
         return $cacheDir . '/' . $urlHash . '.json';
     }
 
@@ -355,12 +355,12 @@ class IconRepository
     {
         $uploadDir = wp_upload_dir();
         $cacheDir = $uploadDir['basedir'] . '/jankx/icons';
-        
+
         // Tạo thư mục nếu chưa có
         if (!is_dir($cacheDir)) {
             wp_mkdir_p($cacheDir);
         }
-        
+
         return $cacheDir;
     }
 
@@ -371,13 +371,13 @@ class IconRepository
     {
         // Fetch CSS content
         $response = wp_remote_get($cssUrl);
-        
+
         if (is_wp_error($response)) {
             throw new \Exception('Failed to fetch CSS: ' . $response->get_error_message());
         }
-        
+
         $css = wp_remote_retrieve_body($response);
-        
+
         if (empty($css)) {
             throw new \Exception('Empty CSS content received');
         }
@@ -414,7 +414,7 @@ class IconRepository
     protected function saveCacheFile($jsonData, $cacheFile)
     {
         $json = json_encode($jsonData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        
+
         if (file_put_contents($cacheFile, $json) === false) {
             throw new \Exception('Failed to save cache file');
         }
@@ -462,17 +462,17 @@ class IconRepository
     public function removeIconType($iconType)
     {
         $config = get_option('jankx_font_icons_config', []);
-        
+
         if (isset($config[$iconType])) {
             unset($config[$iconType]);
             update_option('jankx_font_icons_config', $config);
-            
+
             // Reload icon types
             $this->loadIconTypes();
-            
+
             return true;
         }
-        
+
         return false;
     }
 

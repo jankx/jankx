@@ -193,7 +193,7 @@ class FontsService
                 'fontFamily' => $font->getFamily(),
                 'name' => $font->getName(),
                 'slug' => $font->getId(),
-            ];
+                    ];
         }
 
         if (empty($themeJsonFonts)) {
@@ -201,9 +201,9 @@ class FontsService
         }
 
         // Inject vào theme.json
-            if (!isset($themeJson['settings']['typography']['fontFamilies'])) {
-                $themeJson['settings']['typography']['fontFamilies'] = [];
-            }
+        if (!isset($themeJson['settings']['typography']['fontFamilies'])) {
+            $themeJson['settings']['typography']['fontFamilies'] = [];
+        }
 
             // Merge với fonts hiện có
             $themeJson['settings']['typography']['fontFamilies'] = array_merge(
@@ -228,7 +228,7 @@ class FontsService
                 'fontFamily' => $font->getFamily(),
                 'name' => $font->getName(),
                 'slug' => $font->getId(),
-            ];
+                    ];
         }
 
         if (empty($editorFonts)) {
@@ -236,9 +236,9 @@ class FontsService
         }
 
         // Inject vào editor settings
-            if (!isset($settings['fontFamilies'])) {
-                $settings['fontFamilies'] = [];
-            }
+        if (!isset($settings['fontFamilies'])) {
+            $settings['fontFamilies'] = [];
+        }
 
             // Merge với fonts hiện có
             $settings['fontFamilies'] = array_merge(
@@ -516,8 +516,8 @@ class FontsService
                 break;
             case 'system':
                 break;
-            }
         }
+    }
 
 
     /**
@@ -542,6 +542,4 @@ class FontsService
         include get_template_directory() . '/templates/admin/fonts.php';
     }
     */
-
-
 }

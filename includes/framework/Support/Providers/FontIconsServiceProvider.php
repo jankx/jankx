@@ -105,12 +105,12 @@ class FontIconsServiceProvider extends ServiceProvider
     protected function enqueueIconCss($cssUrl, $type)
     {
         $sanitizedType = sanitize_title($type);
-        
-        add_action('wp_head', function() use ($cssUrl, $sanitizedType) {
+
+        add_action('wp_head', function () use ($cssUrl, $sanitizedType) {
             echo "<link rel=\"stylesheet\" id=\"jankx-icon-{$sanitizedType}-css\" href=\"{$cssUrl}\" media=\"all\" />\n";
         });
-        
-        add_action('admin_head', function() use ($cssUrl, $sanitizedType) {
+
+        add_action('admin_head', function () use ($cssUrl, $sanitizedType) {
             echo "<link rel=\"stylesheet\" id=\"jankx-icon-{$sanitizedType}-css\" href=\"{$cssUrl}\" media=\"all\" />\n";
         });
     }
@@ -149,7 +149,7 @@ class FontIconsServiceProvider extends ServiceProvider
         echo '<div class="wrap">';
         echo '<h1>Font Icons Repository</h1>';
         echo '<p>Manage your font icons collection.</p>';
-        
+
         if (!empty($iconTypes)) {
             echo '<h2>Registered Icon Types:</h2>';
             echo '<ul>';
@@ -165,7 +165,7 @@ class FontIconsServiceProvider extends ServiceProvider
         } else {
             echo '<p>No icon types registered yet.</p>';
         }
-        
+
         echo '</div>';
     }
 }

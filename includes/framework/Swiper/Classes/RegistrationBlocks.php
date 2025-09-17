@@ -10,20 +10,23 @@ if (!defined('ABSPATH')) {
 
 if (!class_exists('RegistrationBlocks')) {
 
-    class RegistrationBlocks {
+    class RegistrationBlocks
+    {
         use SingletonTrait;
 
         /**
          * Attach hooks for block registration.
          */
-        public function register() {
+        public function register()
+        {
             add_action('init', [$this, 'register_blocks']);
         }
 
         /**
          * Register all blocks dynamically from resources/blocks directory.
          */
-        public function register_blocks() {
+        public function register_blocks()
+        {
             $theme_dir = get_template_directory();
             $blocks_dir = trailingslashit($theme_dir) . 'resources/blocks/';
 
@@ -51,7 +54,8 @@ if (!class_exists('RegistrationBlocks')) {
          * @param string $block
          * @throws \Exception
          */
-        private function register_single_block(string $blocks_dir, string $block) {
+        private function register_single_block(string $blocks_dir, string $block)
+        {
             $block_dir = trailingslashit($blocks_dir . sanitize_file_name($block));
 
             if (!is_readable($block_dir)) {
@@ -73,7 +77,8 @@ if (!class_exists('RegistrationBlocks')) {
          * @param string $blocks_dir
          * @return array
          */
-        private function get_available_blocks(string $blocks_dir) {
+        private function get_available_blocks(string $blocks_dir)
+        {
             if (!is_dir($blocks_dir)) {
                 return [];
             }

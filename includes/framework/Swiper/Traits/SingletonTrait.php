@@ -2,7 +2,8 @@
 
 namespace Jankx\Swiper\Traits;
 
-trait SingletonTrait {
+trait SingletonTrait
+{
     /**
      * Instance
      */
@@ -11,14 +12,16 @@ trait SingletonTrait {
     /**
      * Constructor
      */
-    private function __construct() {
+    private function __construct()
+    {
         // Optional initialization code
     }
 
     /**
      * Get the instance
      */
-    public static function getInstance() {
+    public static function getInstance()
+    {
         if (!isset(self::$instance)) {
             self::$instance = new self();
         }
@@ -28,14 +31,16 @@ trait SingletonTrait {
     /**
      * Prevent cloning
      */
-    private function __clone() {
-        // Do nothing 
+    private function __clone()
+    {
+        // Do nothing
     }
 
     /**
     * Prevent unserialization
      */
-    public function __wakeup() {
+    public function __wakeup()
+    {
         // Do nothing
     }
 }
