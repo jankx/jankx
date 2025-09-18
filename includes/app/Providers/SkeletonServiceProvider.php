@@ -7,7 +7,6 @@ use Jankx\Support\Providers\ServiceProvider;
 
 class SkeletonServiceProvider extends ServiceProvider
 {
-    protected $service;
 
     protected $app;
 
@@ -16,8 +15,6 @@ class SkeletonServiceProvider extends ServiceProvider
     {
         $this->app = &$app;
     }
-
-
 
 
     public function boot(Application $app)
