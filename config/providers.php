@@ -30,6 +30,7 @@ return [
             App\Providers\WooCommerce\BuyNowServiceProvider::class,
             App\Providers\WooCommerce\SaleBadgeServiceProvider::class,
             App\Providers\DefaultThumbnailServiceProvider::class,
+            App\Providers\SkeletonServiceProvider::class,
         ],
 
         // Admin providers

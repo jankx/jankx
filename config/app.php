@@ -8,7 +8,8 @@ return [
     'version' => '2.0.0',
     'providers' => [
         Jankx\Support\Providers\FontsServiceProvider::class,
-        Jankx\Support\Providers\FontIconsServiceProvider::class
+        Jankx\Support\Providers\FontIconsServiceProvider::class,
+        Jankx\App\Providers\SkeletonServiceProvider::class
     ],
     'aliases' => [
         'log' => ['\Jankx\Foundation\Log\Logger'],
@@ -18,4 +19,7 @@ return [
     'options' => [
         'framework' => 'auto', // auto, jankx, kirki, redux, wordpress
     ],
+
+    // Skeleton loading config
+    'skeleton_url' => '', // Đặt URL ảnh skeleton hoặc để rỗng dùng mặc định
 ];
