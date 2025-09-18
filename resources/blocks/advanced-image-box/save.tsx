@@ -94,9 +94,6 @@ export default function save({ attributes, className }: AdvancedImageBoxSaveProp
 				overlayAnimation
 			)}
 			style={{
-				opacity: overlayOpacity,
-				animationDuration: `${overlayAnimationDuration}ms`,
-				animationDelay: `${overlayAnimationDelay}ms`,
 			}}
 		>
 			<div className="wp-block-jankx-advanced-image-box__overlay__content">

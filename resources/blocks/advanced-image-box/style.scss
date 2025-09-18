@@ -68,7 +68,6 @@
 		padding: 0;
 		opacity: 0;
 		visibility: hidden;
-		transition: all 0.3s ease;
 		z-index: 2;
 		border-radius: inherit;
 
@@ -100,6 +99,38 @@
 				opacity: 1;
 				visibility: visible;
 				background: none !important;
+			}
+
+			// Đồng bộ hiệu ứng hover với ảnh
+			&.has-hover-zoom {
+				.wp-block-jankx-advanced-image-box:hover & {
+					transform: scale(1.05);
+				}
+			}
+			&.has-hover-fade {
+				.wp-block-jankx-advanced-image-box:hover & {
+					opacity: 0.8;
+				}
+			}
+			&.has-hover-blur {
+				.wp-block-jankx-advanced-image-box:hover & {
+					filter: blur(2px);
+				}
+			}
+			&.has-hover-grayscale {
+				.wp-block-jankx-advanced-image-box:hover & {
+					filter: grayscale(100%);
+				}
+			}
+			&.has-hover-sepia {
+				.wp-block-jankx-advanced-image-box:hover & {
+					filter: sepia(100%);
+				}
+			}
+			&.has-hover-brightness {
+				.wp-block-jankx-advanced-image-box:hover & {
+					filter: brightness(1.2);
+				}
 			}
 
 			// Content styling
@@ -233,8 +264,10 @@
 
 // Animation overrides for better performance
 .animated {
-	animation-duration: 1s;
-	animation-fill-mode: both;
+	&:not(.none) {
+		animation-duration: 1s;
+		animation-fill-mode: both;
+	}
 
 	&.fadeIn {
 		animation-name: fadeIn;
@@ -357,9 +390,6 @@
 @media (prefers-reduced-motion: reduce) {
 	.wp-block-jankx-advanced-image-box {
 		&__image,
-		&__overlay {
-			transition: none;
-		}
 
 		&__image {
 			&.has-hover-zoom,
@@ -382,10 +412,6 @@
 				visibility: visible;
 			}
 		}
-	}
-
-	.animated {
-		animation: none !important;
 	}
 }
 
