@@ -86,6 +86,7 @@ class SkeletonServiceProvider extends ServiceProvider
                         <rect x="300" y="810" width="170" height="10" fill="#E8E8E8" />
                     </svg>
                 </div>
+
             </div>
         </div>
         <?php
@@ -95,7 +96,7 @@ class SkeletonServiceProvider extends ServiceProvider
     public function injectSkeletonStyles()
     {
         echo '<style>
-body{overflow:hidden !important;}
+body.jankx-skeleton-active{overflow:hidden !important;}
 #jankx-skeleton-overlay{background:#f4f4f4;}
 #jankx-skeleton-overlay-wrapper{pointer-events:none;}
 .jankx-skeleton-active .wp-site-blocks > *:not(header.wp-block-template-part) {display:none !important;}
