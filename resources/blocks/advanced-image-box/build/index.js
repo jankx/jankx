@@ -732,7 +732,6 @@ function edit({
   const overlayContent = showOverlayOnHover && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
     className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])('wp-block-jankx-advanced-image-box__overlay', `wp-block-jankx-advanced-image-box__overlay--${overlayPosition}`, 'animated', overlayAnimation),
     style: {
-      backgroundColor: overlayBackground,
       opacity: overlayOpacity,
       animationDuration: `${overlayAnimationDuration}ms`,
       animationDelay: `${overlayAnimationDelay}ms`
@@ -996,7 +995,6 @@ function save({
   const overlayContent = showOverlayOnHover && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
     className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])('wp-block-jankx-advanced-image-box__overlay', `wp-block-jankx-advanced-image-box__overlay--${overlayPosition}`, 'animated', overlayAnimation),
     style: {
-      backgroundColor: overlayBackground,
       opacity: overlayOpacity,
       animationDuration: `${overlayAnimationDuration}ms`,
       animationDelay: `${overlayAnimationDelay}ms`

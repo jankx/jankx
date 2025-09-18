@@ -74,6 +74,8 @@
 			border-radius: inherit;
 			border: 2px dashed rgba(255, 255, 255, 0.5);
 
+			color: #fff; // Đảm bảo mọi text trong overlay đều màu trắng
+
 			// Position variants
 			&--top {
 				align-items: flex-start;
@@ -123,7 +125,7 @@
 			.wp-block-group,
 			.wp-block-columns,
 			.wp-block-column {
-				color: #fff;
+				color: inherit; // Kế thừa từ overlay
 				text-align: center;
 				position: relative;
 				z-index: 2;

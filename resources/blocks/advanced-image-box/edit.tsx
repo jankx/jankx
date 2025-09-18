@@ -218,7 +218,6 @@ export default function edit({
 				overlayAnimation
 			)}
 			style={{
-				backgroundColor: overlayBackground,
 				opacity: overlayOpacity,
 				animationDuration: `${overlayAnimationDuration}ms`,
 				animationDelay: `${overlayAnimationDelay}ms`,
