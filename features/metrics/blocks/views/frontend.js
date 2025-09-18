@@ -58,7 +58,7 @@
 
         getPostId: function () {
             // Try to get post ID from various sources
-            var postId = window.jankxViewsData ? .postId ||
+            var postId = window.jankxViewsData?.postId ||
                         document.body.dataset.postId ||
                         this.getFirstViewsBlockPostId() ||
                         null;
@@ -94,8 +94,8 @@
 
         sendAjaxRequest: function (postId) {
             var self = this;
-            var ajaxUrl = window.jankxViewsData ? .ajaxUrl || '/wp-admin/admin-ajax.php';
-            var nonce = window.jankxViewsData ? .nonce || '';
+            var ajaxUrl = window.jankxViewsData?.ajaxUrl || '/wp-admin/admin-ajax.php';
+            var nonce = window.jankxViewsData?.nonce || '';
 
             // Set request in progress flag
             this.requestInProgress = true;
@@ -223,7 +223,7 @@
         // Public method to manually refresh view count
         refreshViewCount: function (postId) {
             var self = this;
-            var ajaxUrl = window.jankxViewsData ? .ajaxUrl || '/wp-admin/admin-ajax.php';
+            var ajaxUrl = window.jankxViewsData?.ajaxUrl || '/wp-admin/admin-ajax.php';
             var targetPostId = postId || this.getPostId();
 
             var formData = new FormData();
