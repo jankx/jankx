@@ -1,0 +1,62 @@
+/* Table of Contents Block Styles */
+
+.wp-block-jankx-toc {
+    margin: 1.5em 0;
+}
+
+.toc-title {
+    margin-bottom: 0.5em;
+    font-weight: 600;
+}
+
+.toc-list {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.toc-list:not(.no-indent) {
+    padding-left: 1.5em;
+}
+
+.toc-list li {
+    margin-bottom: 0.25em;
+}
+
+.toc-list a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    padding: 0.25em 0;
+    transition: color 0.2s ease;
+}
+
+.toc-list a:hover {
+    color: var(--wp--preset--color--primary, #0073aa);
+}
+
+/* Nested lists */
+.toc-list ul,
+.toc-list ol {
+    margin-top: 0.25em;
+    margin-bottom: 0;
+}
+
+/* Hidden/Accordion styles */
+.toc-hidden {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 1em;
+    background-color: #f9f9f9;
+}
+
+.toc-accordion {
+    /* Additional accordion styles can be added here */
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .toc-list:not(.no-indent) {
+        padding-left: 1em;
+    }
+}

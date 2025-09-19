@@ -1,0 +1,15 @@
+/*!***********************************************************************************************************************************************************************************************************!*\
+  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/table-of-content/src/editor.scss ***!
+  \***********************************************************************************************************************************************************************************************************/
+.wp-block-simpletoc-toc .components-notice {
+  margin: 1em;
+  font-size: 13px;
+  color: #333;
+  background-color: #fef8ee;
+}
+
+.wp-block-simpletoc-toc .components-notice span {
+  padding-left: 5px;
+}
+
+/*# sourceMappingURL=editor.css.map*/

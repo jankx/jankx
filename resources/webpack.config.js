@@ -102,7 +102,7 @@ module.exports = {
     'blocks/magic-text/build/editor': './blocks/magic-text/editor.scss',
 
     'blocks/table-of-content/build/index': './blocks/table-of-content/src/index.js',
-    'blocks/table-of-content/build/style': './blocks/table-of-content/style.css',
+    'blocks/table-of-content/build/style': './blocks/table-of-content/src/style.css',
     'blocks/table-of-content/build/editor': './blocks/table-of-content/src/editor.scss',
   },
   output: {
