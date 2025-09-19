@@ -100,6 +100,10 @@ module.exports = {
     'blocks/magic-text/build/index': './blocks/magic-text/index.js',
     'blocks/magic-text/build/style': './blocks/magic-text/style.scss',
     'blocks/magic-text/build/editor': './blocks/magic-text/editor.scss',
+
+    'blocks/table-of-content/build/index': './blocks/table-of-content/src/index.js',
+    'blocks/table-of-content/build/style': './blocks/table-of-content/style.css',
+    'blocks/table-of-content/build/editor': './blocks/table-of-content/src/editor.scss',
   },
   output: {
     path: path.resolve(__dirname),

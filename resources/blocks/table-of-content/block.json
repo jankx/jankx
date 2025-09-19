@@ -1,0 +1,76 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "jankx/table-of-content",
+	"version": "1.0.0",
+	"title": "Table of Contents",
+	"category": "widgets",
+	"icon": "list-view",
+	"keywords": [ "TOC", "Table of Contents", "Mục lục", "Index" ],
+	"supports": {
+		"align": [ "wide", "full" ],
+		"html": false
+	},
+	"description": "Hiển thị mục lục tự động từ các heading trong bài viết.",
+	"attributes": {
+		"no_title": {
+			"type": "boolean",
+			"default": false
+		},
+		"title_level": {
+			"type": "integer",
+			"default": 2
+		},
+		"title_text": {
+			"type": "string"
+		},
+		"use_ol": {
+			"type": "boolean",
+			"default": false
+		},
+		"remove_indent": {
+			"type": "boolean",
+			"default": false
+		},
+		"add_smooth": {
+			"type": "boolean",
+			"default": false
+		},
+		"use_absolute_urls": {
+			"type": "boolean",
+			"default": false
+		},
+		"max_level": {
+			"type": "integer",
+			"default": 6
+		},
+		"min_level": {
+			"type": "integer",
+			"default": 1
+		},
+		"updated": {
+			"type": "integer"
+		},
+		"accordion": {
+			"type": "boolean",
+			"default": false
+		},
+		"hidden": {
+			"type": "boolean",
+			"default": false
+		},
+		"wrapper": {
+			"type": "boolean",
+			"default": false
+		},
+		"autoupdate": {
+			"type": "boolean",
+			"default": true
+		}
+	},
+	"textdomain": "jankx",
+	"editorScript": "file:./build/index.js",
+	"editorStyle": "file:./build/editor.css",
+	"style": "file:./build/style.css",
+	"render": "file:./render.php"
+}

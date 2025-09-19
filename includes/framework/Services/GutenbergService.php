@@ -19,6 +19,7 @@ use Jankx\Gutenberg\Blocks\SvgIconButtonBlock;
 use Jankx\Gutenberg\Blocks\ImageButtonBlock;
 use Jankx\Gutenberg\Blocks\OffcanvasSidebarBlock;
 use Jankx\Gutenberg\Blocks\OffcanvasTriggerBlock;
+use Jankx\Gutenberg\Blocks\TableOfContentBlock;
 use Jankx\Gutenberg\Blocks\WplyrMediaBlock;
 use Jankx\Gutenberg\GutenbergPattern;
 use Jankx\Facades\Log;
@@ -125,6 +126,7 @@ class GutenbergService
         $this->repository->registerBlock(ImageButtonBlock::class);
         $this->repository->registerBlock(AdvancedImageBoxBlock::class);
         $this->repository->registerBlock(MagicTextBlock::class);
+        $this->repository->registerBlock(TableOfContentBlock::class);
     }
 
     /**
