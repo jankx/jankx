@@ -169,19 +169,33 @@ class LanguageSwitcherService extends AbstractService
     {
         $languages = [];
 
+
         if (!empty($this->languages)) {
             foreach ($this->languages as $lang) {
                 $languages[] = [
                     'code' => $lang['slug'],
                     'name' => $lang['name'],
                     'url' => $lang['url'],
-                    'flag' => $lang['flag'] ?? '',
+                    'flag' => $this->extractFlagSrc($lang['flag'] ?? ''),
                     'current' => $lang['current_lang'] ?? false
                 ];
             }
         }
-
         return new \WP_REST_Response($languages, 200);
+    }
+
+    /**
+     * Extract src attribute from Polylang flag HTML
+     *
+     * @param string $flagHtml
+     * @return string
+     */
+    protected function extractFlagSrc($flagHtml)
+    {
+        if (preg_match('/src=["\']([^"\']+)["\']/', $flagHtml, $matches)) {
+            return $matches[1];
+        }
+        return '';
     }
 
     /**
