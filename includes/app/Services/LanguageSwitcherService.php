@@ -22,6 +22,8 @@ class LanguageSwitcherService extends AbstractService
      */
     protected $currentLanguage = '';
 
+    protected $currentLanguageCode = null;
+
     public function __construct(Application $app)
     {
         parent::__construct($app);
@@ -62,16 +64,49 @@ class LanguageSwitcherService extends AbstractService
         }
 
         // Lấy current language
-        $this->currentLanguage = pll_current_language() ?: '';
+        $this->currentLanguageCode = pll_current_language();
 
         // Lấy danh sách languages
-        $this->languages = pll_the_languages([
+        $languages = pll_the_languages([
             'raw' => 1,
             'hide_if_empty' => 0,
             'show_flags' => 1,
             'show_names' => 1,
             'hide_current' => 0
         ]);
+        $languages = $this->processingLanguagesData($languages);
+
+        $this->languages = apply_filters('jankx/languages', $languages);
+    }
+
+    protected function processingLanguageData($language) {
+        if (!is_array($language)) {
+            return [];
+        }
+
+        return [
+            'code' => $language['slug'],
+            'name' => $language['name'],
+            'url' => $language['url'],
+            'flag' => $this->extractFlagSrc($language['flag'] ?? ''),
+            'current' => $language['current_lang'] ?? false
+        ];
+    }
+
+
+    protected function processingLanguagesData($languages) {
+        $ret = [];
+        foreach ($languages as $lang) {
+            $langData = $this->processingLanguageData($lang);
+            if ($langData['code'] === $this->currentLanguageCode) {
+                $this->currentLanguage = $langData;
+            }
+
+            $ret[] = $langData;
+        }
+        // free up memory
+        unset($languages, $lang);
+        return $ret;
     }
 
     /**
@@ -190,7 +225,7 @@ class LanguageSwitcherService extends AbstractService
      * @param string $flagHtml
      * @return string
      */
-    protected function extractFlagSrc($flagHtml)
+    public function extractFlagSrc($flagHtml)
     {
         if (preg_match('/src=["\']([^"\']+)["\']/', $flagHtml, $matches)) {
             return $matches[1];
@@ -213,7 +248,7 @@ class LanguageSwitcherService extends AbstractService
      *
      * @return string
      */
-    public function getCurrentLanguage(): string
+    public function getCurrentLanguage()
     {
         return $this->currentLanguage;
     }

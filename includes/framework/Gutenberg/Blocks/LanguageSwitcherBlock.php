@@ -2,6 +2,8 @@
 
 namespace Jankx\Gutenberg\Blocks;
 
+use App\Services\LanguageSwitcherService;
+use Jankx\Facades\App;
 use Jankx\Gutenberg\Block;
 
 /**
@@ -55,13 +57,7 @@ class LanguageSwitcherBlock extends Block
         }
 
         // Get available languages
-        $languages = pll_the_languages([
-            'raw' => 1,
-            'hide_if_empty' => 0,
-            'show_flags' => $showFlags,
-            'show_names' => $showNames,
-            'show_current' => $showCurrent
-        ]);
+        $languages = App::make(LanguageSwitcherService::class)->getLanguages();
 
         if (empty($languages)) {
             return $this->renderPlaceholder();
@@ -73,8 +69,9 @@ class LanguageSwitcherBlock extends Block
             $wrapperClasses[] = $className;
         }
 
-        // Build language switcher HTML
-        $switcherHtml = $this->renderLanguageSwitcher($languages, $displayType);
+
+    // Build language switcher HTML
+    $switcherHtml = $this->renderLanguageSwitcher($languages, $displayType, $showFlags, $showNames, $showCurrent);
 
         return sprintf(
             '<div class="%s">%s</div>',
@@ -90,38 +87,19 @@ class LanguageSwitcherBlock extends Block
      * @param string $displayType Display type
      * @return string HTML
      */
-    protected function renderLanguageSwitcher($languages, $displayType)
+    protected function renderLanguageSwitcher($languages, $displayType, $showFlags, $showNames, $showCurrent)
     {
         if ($displayType === 'dropdown') {
-            return $this->renderDropdown($languages);
+            return $this->renderDropdown($languages, $showFlags, $showNames, $showCurrent);
         } elseif ($displayType === 'list') {
-            return $this->renderList($languages);
+            return $this->renderList($languages, $showFlags, $showNames, $showCurrent);
         } elseif ($displayType === 'flags') {
-            return $this->renderFlags($languages);
+            return $this->renderFlags($languages, $showFlags, $showNames, $showCurrent);
         }
 
-        return $this->renderDropdown($languages); // Default
+        return $this->renderDropdown($languages, $showFlags, $showNames, $showCurrent); // Default
     }
 
-    /**
-     * Lấy dữ liệu ngôn ngữ hiện tại từ danh sách languages
-     * Có thể override để hỗ trợ nhiều plugin đa ngôn ngữ khác
-     *
-     * @param array $languages
-     * @return array|null
-     */
-    protected function getCurrentLanguageData($languages)
-    {
-        // Mặc định: tìm ngôn ngữ có current_lang = true (Polylang),
-        // hoặc fallback về key hiện tại nếu có
-        foreach ($languages as $lang) {
-            if (!empty($lang['current_lang']) || !empty($lang['current'])) {
-                return $lang;
-            }
-        }
-        // Fallback: lấy ngôn ngữ đầu tiên nếu không tìm thấy
-        return !empty($languages) ? reset($languages) : null;
-    }
 
     /**
      * Render dropdown style
@@ -129,18 +107,15 @@ class LanguageSwitcherBlock extends Block
      * @param array $languages Available languages
      * @return string HTML
      */
-    protected function renderDropdown($languages)
+    protected function renderDropdown($languages, $showFlags, $showNames, $showCurrent)
     {
-        // Lấy dữ liệu ngôn ngữ hiện tại từ service để dễ mở rộng
-        $currentLangData = $this->getCurrentLanguageData($languages);
-
-
+        // Lấy mã ngôn ngữ hiện tại
+        $currentLangData = App::make(LanguageSwitcherService::class)->getCurrentLanguage();
         $html = '<div class="language-switcher-dropdown-wrapper">';
         $html .= '<button class="language-switcher-dropdown" type="button">';
-
         if ($currentLangData) {
             if (
-                (!isset($this->attributes['showFlags']) || $this->attributes['showFlags']) &&
+                $showFlags &&
                 !empty($currentLangData['flag']) &&
                 (filter_var($currentLangData['flag'], FILTER_VALIDATE_URL) || strpos($currentLangData['flag'], 'data:image/') === 0)
             ) {
@@ -150,7 +125,7 @@ class LanguageSwitcherBlock extends Block
                     esc_attr($currentLangData['name'])
                 );
             }
-            if (isset($this->attributes['showNames']) && $this->attributes['showNames']) {
+            if ($showNames) {
                 $html .= sprintf(
                     '<span class="language-name">%s</span>',
                     esc_html($currentLangData['name'])
@@ -163,7 +138,7 @@ class LanguageSwitcherBlock extends Block
 
         $html .= '<ul class="language-switcher-dropdown-menu">';
         foreach ($languages as $langCode => $langData) {
-            $isCurrent = $langCode === $currentLangData;
+            $isCurrent = $langCode === $currentLangData['code'];
             $itemClasses = ['language-dropdown-item'];
             if ($isCurrent) {
                 $itemClasses[] = 'current-language';
@@ -173,7 +148,7 @@ class LanguageSwitcherBlock extends Block
             $html .= sprintf('<a href="%s" class="language-dropdown-link">', esc_url($langData['url']));
 
             if (
-                (!isset($this->attributes['showFlags']) || $this->attributes['showFlags']) &&
+                $showFlags &&
                 !empty($langData['flag']) &&
                 (filter_var($langData['flag'], FILTER_VALIDATE_URL) || strpos($langData['flag'], 'data:image/') === 0)
             ) {
@@ -184,7 +159,7 @@ class LanguageSwitcherBlock extends Block
                 );
             }
 
-            if (isset($this->attributes['showNames']) && $this->attributes['showNames']) {
+            if ($showNames) {
                 $html .= sprintf(
                     '<span class="language-name">%s</span>',
                     esc_html($langData['name'])
@@ -204,9 +179,9 @@ class LanguageSwitcherBlock extends Block
      * @param array $languages Available languages
      * @return string HTML
      */
-    protected function renderList($languages)
+    protected function renderList($languages, $showFlags, $showNames, $showCurrent)
     {
-        $currentLang = pll_current_language();
+    $currentLang = pll_current_language();
 
         $html = '<ul class="language-switcher-list">';
         foreach ($languages as $langCode => $langData) {
@@ -220,7 +195,7 @@ class LanguageSwitcherBlock extends Block
             $html .= sprintf('<a href="%s" class="language-link">', esc_url($langData['url']));
 
             if (
-                (!isset($this->attributes['showFlags']) || $this->attributes['showFlags']) &&
+                $showFlags &&
                 !empty($langData['flag']) &&
                 (filter_var($langData['flag'], FILTER_VALIDATE_URL) || strpos($langData['flag'], 'data:image/') === 0)
             ) {
@@ -231,7 +206,7 @@ class LanguageSwitcherBlock extends Block
                 );
             }
 
-            if (isset($this->attributes['showNames']) && $this->attributes['showNames']) {
+            if ($showNames) {
                 $html .= sprintf(
                     '<span class="language-name">%s</span>',
                     esc_html($langData['name'])
@@ -251,7 +226,7 @@ class LanguageSwitcherBlock extends Block
      * @param array $languages Available languages
      * @return string HTML
      */
-    protected function renderFlags($languages)
+    protected function renderFlags($languages, $showFlags, $showNames, $showCurrent)
     {
         $currentLang = pll_current_language();
 
@@ -271,7 +246,7 @@ class LanguageSwitcherBlock extends Block
             );
 
             if (
-                (!isset($this->attributes['showFlags']) || $this->attributes['showFlags']) &&
+                $showFlags &&
                 !empty($langData['flag']) &&
                 (filter_var($langData['flag'], FILTER_VALIDATE_URL) || strpos($langData['flag'], 'data:image/') === 0)
             ) {
