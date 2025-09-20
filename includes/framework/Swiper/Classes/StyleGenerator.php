@@ -14,7 +14,7 @@ if (!class_exists('StyleGenerator')) {
     {
         use SingletonTrait;
 
-        private const CSS_SUBDIR = '/jankx-swiper/css';
+        private const CSS_SUBDIR = '/jankx/swiper/css';
         private const FILE_PERMISSIONS = 0644;
         private static $styles = [];
 

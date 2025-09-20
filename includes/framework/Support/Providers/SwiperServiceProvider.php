@@ -32,10 +32,7 @@ class SwiperServiceProvider extends ServiceProvider
     public function boot(Application $app)
     {
         // Initialize SwiperService
-        error_log("SwiperServiceProvider: boot() method called");
         $swiperService = $this->app->make('jankx.swiper.service');
-        error_log("SwiperServiceProvider: SwiperService instance created");
         $swiperService->init();
-        error_log("SwiperServiceProvider: SwiperService init() called");
     }
 }
