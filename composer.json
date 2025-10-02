@@ -18,7 +18,8 @@
     "illuminate/container": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0",
     "jankx/option-adapter": "*",
     "jankx/dashboard-framework": "*",
-    "league/plates": "^3.6"
+    "league/plates": "^3.6",
+    "jankx/post-layout": "^1.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.5|^10.0",

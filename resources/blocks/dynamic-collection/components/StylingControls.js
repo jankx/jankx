@@ -11,13 +11,15 @@ export default function StylingControls({ styling, responsive, onUpdate }) {
         onUpdate('responsive', { ...responsive, ...updates });
     };
 
-    const cardStyleOptions = [
-        { label: __('Default', 'jankx'), value: 'default' },
-        { label: __('Minimal', 'jankx'), value: 'minimal' },
-        { label: __('Card', 'jankx'), value: 'card' },
-        { label: __('Elevated', 'jankx'), value: 'elevated' },
-        { label: __('Bordered', 'jankx'), value: 'bordered' },
-        { label: __('Glass', 'jankx'), value: 'glass' }
+    const viewTypeOptions = [
+        { label: __('Grid', 'jankx'), value: 'grid' },
+        { label: __('List', 'jankx'), value: 'list' },
+        { label: __('Masonry', 'jankx'), value: 'masonry' },
+        { label: __('Carousel', 'jankx'), value: 'carousel' },
+        { label: __('Timeline', 'jankx'), value: 'timeline' },
+        { label: __('Magazine', 'jankx'), value: 'magazine' },
+        { label: __('Portfolio', 'jankx'), value: 'portfolio' },
+        { label: __('Blog', 'jankx'), value: 'blog' }
     ];
 
     const hoverEffectOptions = [
@@ -39,13 +41,13 @@ export default function StylingControls({ styling, responsive, onUpdate }) {
 
     return (
         <div className="jankx-styling-controls">
-            <PanelBody title={__('Card Styling', 'jankx')} initialOpen={true}>
+            <PanelBody title={__('Layout Styling', 'jankx')} initialOpen={true}>
                 <SelectControl
-                    label={__('Card Style', 'jankx')}
-                    value={styling.cardStyle}
-                    options={cardStyleOptions}
-                    onChange={(value) => updateStyling({ cardStyle: value })}
-                    help={__('Choose the overall style for post cards', 'jankx')}
+                    label={__('View Type', 'jankx')}
+                    value={styling.viewType}
+                    options={viewTypeOptions}
+                    onChange={(value) => updateStyling({ viewType: value })}
+                    help={__('Choose the layout type for displaying posts', 'jankx')}
                 />
 
                 <SelectControl

@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import { useBlockProps, InspectorControls, InnerBlocks } from '@wordpress/block-editor';
 import { ButtonGroup, Button } from '@wordpress/components';
-import { useState } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
 import { store as coreDataStore } from '@wordpress/core-data';
 
@@ -56,7 +56,6 @@ const TEMPLATE: any[] = [
         ['core/post-featured-image', {}],
         ['core/post-title', { level: 2 }],
         ['core/post-excerpt', {}],
-        ['core/post-meta', {}],
         ['core/read-more', {}]
     ]],
     ['core/query-pagination', {}],
@@ -82,6 +81,8 @@ function Edit({ attributes, setAttributes }: EditProps): JSX.Element {
     } = attributes;
 
     const [activeTab, setActiveTab] = useState<'query' | 'filters' | 'display' | 'styling'>('query');
+    const [previewHtml, setPreviewHtml] = useState<string>('');
+    const [isLoadingPreview, setIsLoadingPreview] = useState<boolean>(false);
 
     const { postTypes, taxonomies } = useSelect((select: any) => {
         const { getPostTypes, getTaxonomies } = select(coreDataStore);
@@ -151,6 +152,42 @@ function Edit({ attributes, setAttributes }: EditProps): JSX.Element {
                 return null;
         }
     };
+
+    // Editor-only: fetch HTML preview using PostsFetcher via admin-ajax
+    useEffect(() => {
+        const controller = new AbortController();
+        const doFetch = async () => {
+            try {
+                setIsLoadingPreview(true);
+                const params = new URLSearchParams({
+                    action: 'jankx-post-layout-fetch-data',
+                    post_type: postType || 'post',
+                    // Jankx engine id is 'jankx'
+                    engine_id: 'jankx',
+                    layout: (styling as any)?.viewType || 'grid',
+                    posts_per_page: String(postsPerPage || 6),
+                });
+                const ajaxUrl = (window as any).ajaxurl || '/wp-admin/admin-ajax.php';
+                const res = await fetch(`${ajaxUrl}?${params.toString()}`, { signal: controller.signal, credentials: 'same-origin' });
+                const json = await res.json();
+                if (json && json.success && json.data && typeof json.data.content === 'string') {
+                    setPreviewHtml(json.data.content);
+                } else {
+                    setPreviewHtml('<div class="jankx-dynamic-collection__empty">No content</div>');
+                }
+            } catch (e) {
+                if (!(e as any)?.name || (e as any).name !== 'AbortError') {
+                    setPreviewHtml('<div class="jankx-dynamic-collection__error">Failed to load preview</div>');
+                }
+            } finally {
+                setIsLoadingPreview(false);
+            }
+        };
+
+        doFetch();
+        return () => controller.abort();
+        // Re-fetch when key attributes affecting query/layout change
+    }, [postType, postsPerPage, orderBy, order, offset, JSON.stringify(include), JSON.stringify(exclude), JSON.stringify(taxonomyFilters), JSON.stringify(metaFilters), (styling as any)?.viewType]);
 
     return (
         <>
@@ -243,7 +280,7 @@ registerBlockType('jankx/dynamic-collection', {
         presetFilters: { type: 'array', default: [] },
         customFilters: { type: 'array', default: [] },
         displayOptions: { type: 'object', default: { showImage: true, showTitle: true, showExcerpt: true, showMeta: true } },
-        styling: { type: 'object', default: { backgroundColor: '', textColor: '', borderColor: '' } },
+        styling: { type: 'object', default: { viewType: 'grid', hoverEffect: 'lift', borderRadius: 8, shadow: 'medium' } },
         responsive: { type: 'object', default: { mobile: true, tablet: true, desktop: true } }
     },
     edit: Edit,

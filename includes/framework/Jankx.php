@@ -182,4 +182,8 @@ class Jankx
             throw new \BadMethodCallException("Method {$method} does not exist on Jankx facade: " . $e->getMessage());
         }
     }
+
+    public static function getEngineId() {
+        return 'jankx';
+    }
 }

@@ -7,6 +7,7 @@ use Jankx\Foundation\PageRenderer;
  *
  * @return bool
  */
+if (!function_exists('jankx_is_support_block_template')) {
 function jankx_is_support_block_template()
 {
     // Check if WordPress supports block templates
@@ -27,6 +28,7 @@ function jankx_is_support_block_template()
 
     return true;
 }
+}
 
 /**
  * Render a page with the given context and templates.
@@ -35,6 +37,7 @@ function jankx_is_support_block_template()
  * @param array|string $templates Optional templates to use
  * @return void
  */
+if (!function_exists('jankx')) {
 function jankx($context = null, $templates = null)
 {
     $renderer = PageRenderer::getInstance();
@@ -46,6 +49,7 @@ function jankx($context = null, $templates = null)
 
     $renderer->render();
 }
+}
 
 
 
@@ -54,6 +58,7 @@ function jankx($context = null, $templates = null)
  *
  * @return string|null
  */
+if (!function_exists('jankx_get_the_block_template_html')) {
 function jankx_get_the_block_template_html()
 {
     if (!function_exists('get_the_block_template_html')) {
@@ -61,4 +66,5 @@ function jankx_get_the_block_template_html()
     }
 
     return get_the_block_template_html();
+}
 }

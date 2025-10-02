@@ -149,7 +149,7 @@
         "styling": {
             "type": "object",
             "default": {
-                "cardStyle": "default",
+                "viewType": "grid",
                 "hoverEffect": "lift",
                 "borderRadius": 8,
                 "shadow": "medium"

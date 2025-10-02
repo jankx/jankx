@@ -13,6 +13,9 @@
 namespace Jankx\Gutenberg\Blocks;
 
 use Jankx\Gutenberg\Block;
+use Jankx\Template\Template;
+use Jankx\PostLayout\Request\PostsFetcher;
+use Jankx\Jankx;
 
 class DynamicCollectionBlock extends Block
 {
@@ -461,8 +464,19 @@ class DynamicCollectionBlock extends Block
      */
     public function render($attributes, $content = '')
     {
-        // This will be handled by the frontend JavaScript
-        // The block configuration is embedded in the HTML
-        return $content;
+        // Server-side render preview shell and bootstrap AJAX preview using Post Layout
+        $postType   = isset($attributes['postType']) ? $attributes['postType'] : 'post';
+        $styling    = isset($attributes['styling']) && is_array($attributes['styling']) ? $attributes['styling'] : array();
+        $layoutName = isset($styling['viewType']) ? $styling['viewType'] : 'grid';
+        $perPage    = isset($attributes['postsPerPage']) ? intval($attributes['postsPerPage']) : 6;
+
+        // Lấy engine id trực tiếp, không cần instance engine ở đây
+        $engineId = Jankx::getEngineId();
+
+        $wrapId = 'jankx-dynamic-collection-' . wp_generate_uuid4();
+
+        // Frontend: render trực tiếp bằng PHP phía Post Layout (không AJAX ở đây)
+        // Trong editor, JS sẽ tự fetch preview. Ở frontend, trả container rỗng hoặc nội dung tối thiểu.
+        return sprintf('<div id="%s" class="jankx-dynamic-collection" data-engine-id="%s"></div>', esc_attr($wrapId), esc_attr($engineId));
     }
 }
