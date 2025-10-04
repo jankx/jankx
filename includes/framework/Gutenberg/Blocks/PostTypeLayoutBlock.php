@@ -17,7 +17,7 @@ use Jankx\Template\Template;
 use Jankx\PostLayout\Request\PostsFetcher;
 use Jankx\Jankx;
 
-class DynamicCollectionBlock extends Block
+class PostTypeLayoutBlock extends Block
 {
     /**
      * Block ID
