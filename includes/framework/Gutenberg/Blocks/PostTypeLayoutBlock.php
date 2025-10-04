@@ -14,8 +14,9 @@ namespace Jankx\Gutenberg\Blocks;
 
 use Jankx\Gutenberg\Block;
 use Jankx\Template\Template;
-use Jankx\PostLayout\Request\PostsFetcher;
+use Jankx\PostLayout\PostLayoutManager;
 use Jankx\Jankx;
+use Exception;
 
 class PostTypeLayoutBlock extends Block
 {
@@ -462,21 +463,169 @@ class PostTypeLayoutBlock extends Block
      * @param string $content Block content
      * @return string Rendered HTML
      */
+    /**
+     * Get PostLayout class based on layout name
+     *
+     * @param string $layoutName
+     * @return string
+     */
+    protected function getPostLayoutClass($layoutName)
+    {
+        $layoutMap = [
+            'grid' => \Jankx\PostLayout\Layout\Grid::class,
+            'card' => \Jankx\PostLayout\Layout\Card::class,
+            'list' => \Jankx\PostLayout\Layout\ListLayout::class,
+            'carousel' => \Jankx\PostLayout\Layout\Carousel::class,
+            'tabs' => \Jankx\PostLayout\Layout\Tabs::class,
+            'preset1' => \Jankx\PostLayout\Layout\Preset1::class,
+            'preset2' => \Jankx\PostLayout\Layout\Preset2::class,
+            'preset4' => \Jankx\PostLayout\Layout\Preset4::class,
+            'preset6' => \Jankx\PostLayout\Layout\Preset6::class,
+        ];
+
+        return $layoutMap[$layoutName] ?? \Jankx\PostLayout\Layout\Grid::class;
+    }
+
     public function render($attributes, $content = '')
     {
-        // Server-side render preview shell and bootstrap AJAX preview using Post Layout
-        $postType   = isset($attributes['postType']) ? $attributes['postType'] : 'post';
-        $styling    = isset($attributes['styling']) && is_array($attributes['styling']) ? $attributes['styling'] : array();
+        // Parse block attributes
+        $postType = isset($attributes['postType']) ? $attributes['postType'] : 'post';
+        $styling = isset($attributes['styling']) && is_array($attributes['styling']) ? $attributes['styling'] : array();
         $layoutName = isset($styling['viewType']) ? $styling['viewType'] : 'grid';
-        $perPage    = isset($attributes['postsPerPage']) ? intval($attributes['postsPerPage']) : 6;
+        $perPage = isset($attributes['postsPerPage']) ? intval($attributes['postsPerPage']) : 6;
 
-        // Lấy engine id trực tiếp, không cần instance engine ở đây
+        // Parse styling attributes
+        $columns = isset($styling['columns']) ? intval($styling['columns']) : 3;
+        $gap = isset($styling['gap']) ? $styling['gap'] : 'medium';
+        $showExcerpt = isset($styling['showExcerpt']) ? $styling['showExcerpt'] : true;
+        $showDate = isset($styling['showDate']) ? $styling['showDate'] : true;
+        $showAuthor = isset($styling['showAuthor']) ? $styling['showAuthor'] : false;
+        $showCategories = isset($styling['showCategories']) ? $styling['showCategories'] : false;
+        $showReadMore = isset($styling['showReadMore']) ? $styling['showReadMore'] : true;
+        $thumbnailPosition = isset($styling['thumbnailPosition']) ? $styling['thumbnailPosition'] : 'top';
+        $thumbnailSize = isset($styling['thumbnailSize']) ? $styling['thumbnailSize'] : 'medium';
+
+        // Parse query attributes
+        $orderBy = isset($attributes['orderBy']) ? $attributes['orderBy'] : 'date';
+        $order = isset($attributes['order']) ? $attributes['order'] : 'DESC';
+        $offset = isset($attributes['offset']) ? intval($attributes['offset']) : 0;
+        $category = isset($attributes['category']) ? $attributes['category'] : '';
+        $tag = isset($attributes['tag']) ? $attributes['tag'] : '';
+        $author = isset($attributes['author']) ? $attributes['author'] : '';
+        $excludePosts = isset($attributes['excludePosts']) ? $attributes['excludePosts'] : '';
+        $includePosts = isset($attributes['includePosts']) ? $attributes['includePosts'] : '';
+
+        // Get engine ID
         $engineId = Jankx::getEngineId();
-
         $wrapId = 'jankx-post-layout-' . wp_generate_uuid4();
 
-        // Frontend: render trực tiếp bằng PHP phía Post Layout (không AJAX ở đây)
-        // Trong editor, JS sẽ tự fetch preview. Ở frontend, trả container rỗng hoặc nội dung tối thiểu.
-        return sprintf('<div id="%s" class="jankx-post-layout" data-engine-id="%s"></div>', esc_attr($wrapId), esc_attr($engineId));
+        // Debug logging
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log("[PostTypeLayoutBlock Debug] Rendering block on frontend");
+            error_log("[PostTypeLayoutBlock Debug] Post type: " . $postType);
+            error_log("[PostTypeLayoutBlock Debug] Layout: " . $layoutName);
+            error_log("[PostTypeLayoutBlock Debug] Columns: " . $columns);
+            error_log("[PostTypeLayoutBlock Debug] Per page: " . $perPage);
+            error_log("[PostTypeLayoutBlock Debug] Engine ID: " . $engineId);
+            error_log("[PostTypeLayoutBlock Debug] Order by: " . $orderBy . " " . $order);
+        }
+
+        try {
+            // Get template engine
+            $templateEngine = \Jankx\Facades\App::make('template.engine.' . $engineId);
+
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log("[PostTypeLayoutBlock Debug] Template engine resolved: " . get_class($templateEngine));
+            }
+
+            // Get PostLayoutManager instance
+            $postLayoutManager = PostLayoutManager::getInstance($engineId);
+            if (!$postLayoutManager) {
+                $postLayoutManager = PostLayoutManager::createInstance($templateEngine);
+            }
+
+            // Create WP_Query
+            $queryArgs = [
+                'post_type' => $postType,
+                'posts_per_page' => $perPage,
+                'post_status' => 'publish',
+            ];
+
+            // Add ordering if specified
+            if (isset($attributes['orderBy'])) {
+                $queryArgs['orderby'] = $attributes['orderBy'];
+            }
+            if (isset($attributes['order'])) {
+                $queryArgs['order'] = $attributes['order'];
+            }
+            if (isset($attributes['offset'])) {
+                $queryArgs['offset'] = $attributes['offset'];
+            }
+
+            $wp_query = new \WP_Query($queryArgs);
+
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log("[PostTypeLayoutBlock Debug] WP_Query created, found posts: " . $wp_query->found_posts);
+            }
+
+            // Get layout template
+            $loopItemLayoutType = apply_filters("jankx/posts/fetcher/{$postType}/content_layout", null);
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log("[PostTypeLayoutBlock Debug] Loop item layout type: " . ($loopItemLayoutType ?: 'null'));
+            }
+
+            // If no layout type, use default based on post type
+            if (!$loopItemLayoutType) {
+                $loopItemLayoutType = 'default';
+                if (defined('WP_DEBUG') && WP_DEBUG) {
+                    error_log("[PostTypeLayoutBlock Debug] Using default layout type: " . $loopItemLayoutType);
+                }
+            }
+
+            $loopItemLayout = $postLayoutManager->getLoopItemContentByType($loopItemLayoutType);
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log("[PostTypeLayoutBlock Debug] Loop item layout: " . ($loopItemLayout ? get_class($loopItemLayout) : 'null'));
+            }
+
+            // Fallback: create DefaultContent directly if manager returns null
+            if (!$loopItemLayout) {
+                if (defined('WP_DEBUG') && WP_DEBUG) {
+                    error_log("[PostTypeLayoutBlock Debug] Creating DefaultContent fallback");
+                }
+                $loopItemLayout = new \Jankx\PostLayout\LoopItemContent\DefaultContent();
+            }
+
+            // Create PostLayout and render based on layout type
+            $postLayoutClass = $this->getPostLayoutClass($layoutName);
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log("[PostTypeLayoutBlock Debug] PostLayout class: " . $postLayoutClass);
+            }
+            $postLayout = new $postLayoutClass($wp_query, $loopItemLayout);
+            $postLayout->setOptions([
+                'thumbnail_position' => 'top',
+                'thumbnail_size' => 'medium',
+            ]);
+            $postLayout->disableLoopStartLoopEnd();
+
+            $renderedContent = $postLayout->render(false);
+
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log("[PostTypeLayoutBlock Debug] Content rendered successfully, length: " . ($renderedContent ? strlen($renderedContent) : 0));
+            }
+
+            return sprintf(
+                '<div id="%s" class="jankx-post-layout" data-engine-id="%s">%s</div>',
+                esc_attr($wrapId),
+                esc_attr($engineId),
+                $renderedContent
+            );
+        } catch (Exception $e) {
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log("[PostTypeLayoutBlock Debug] Error rendering content: " . $e->getMessage());
+            }
+
+            // Fallback: return empty container
+            return sprintf('<div id="%s" class="jankx-post-layout" data-engine-id="%s"></div>', esc_attr($wrapId), esc_attr($engineId));
+        }
     }
 }

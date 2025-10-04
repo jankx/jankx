@@ -6,7 +6,7 @@ if (!defined('ABSPATH')) {
 <div <?php post_class(array('loop-item', 'post-large-image')); ?>>
     <?php do_action('jankx_post_layout_before_loop_item', $post, $data_index); ?>
 
-    <?php jankx_template('post-layout/thumbnail', [
+    <?php jankx_template('post-layouts/thumbnail', [
         'post' => $post,
         'data_index' => $data_index,
         'thumbnail_size' => 'medium_large'

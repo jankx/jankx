@@ -11,7 +11,6 @@ use Jankx\Foundation\Bootstrap\RegisterFacades;
 use Jankx\Foundation\Bootstrap\RegisterLogger;
 use Jankx\Foundation\Bootstrap\RegisterProviders;
 use Jankx\Foundation\Bootstrap\ThemeDataLoader;
-use Jankx\Foundation\Bootstrap\ThemeEngineOverrideBootstrapper;
 
 abstract class Kernel implements KernelInterface
 {
@@ -28,7 +27,6 @@ abstract class Kernel implements KernelInterface
      * @var array
      */
     protected $bootstrappers = [
-        ThemeEngineOverrideBootstrapper::class,
         LoadConfiguration::class,
         RegisterLogger::class,
         RegisterFacades::class,

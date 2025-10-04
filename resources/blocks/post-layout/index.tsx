@@ -83,6 +83,7 @@ function Edit({ attributes, setAttributes }: EditProps): JSX.Element {
     const [activeTab, setActiveTab] = useState<'query' | 'filters' | 'display' | 'styling'>('query');
     const [previewHtml, setPreviewHtml] = useState<string>('');
     const [isLoadingPreview, setIsLoadingPreview] = useState<boolean>(false);
+    const [fetchInfo, setFetchInfo] = useState<{totalPosts?: number, foundPosts?: number, maxPages?: number}>({});
 
     const { postTypes, taxonomies } = useSelect((select: any) => {
         const { getPostTypes, getTaxonomies } = select(coreDataStore);
@@ -166,14 +167,44 @@ function Edit({ attributes, setAttributes }: EditProps): JSX.Element {
                     engine_id: 'jankx',
                     layout: (styling as any)?.viewType || 'grid',
                     posts_per_page: String(postsPerPage || 6),
+                    order_by: orderBy || 'date',
+                    order: order || 'DESC',
+                    offset: String(offset || 0),
                 });
+
+                // Add include/exclude posts if provided
+                if (include && include.length > 0) {
+                    params.append('include', JSON.stringify(include));
+                }
+                if (exclude && exclude.length > 0) {
+                    params.append('exclude', JSON.stringify(exclude));
+                }
+
+                // Add taxonomy filters if provided
+                if (taxonomyFilters && Object.keys(taxonomyFilters).length > 0) {
+                    params.append('taxonomy_filters', JSON.stringify(taxonomyFilters));
+                }
+
+                // Add meta filters if provided
+                if (metaFilters && Object.keys(metaFilters).length > 0) {
+                    params.append('meta_filters', JSON.stringify(metaFilters));
+                }
                 const ajaxUrl = (window as any).ajaxurl || '/wp-admin/admin-ajax.php';
                 const res = await fetch(`${ajaxUrl}?${params.toString()}`, { signal: controller.signal, credentials: 'same-origin' });
                 const json = await res.json();
                 if (json && json.success && json.data && typeof json.data.content === 'string') {
                     setPreviewHtml(json.data.content);
+                    // Update fetch info from response
+                    if (json.data.query_info) {
+                        setFetchInfo({
+                            totalPosts: json.data.query_info.total_posts || 0,
+                            foundPosts: json.data.query_info.found_posts || 0,
+                            maxPages: json.data.query_info.max_pages || 0
+                        });
+                    }
                 } else {
                     setPreviewHtml('<div class="jankx-post-layout__empty">No content</div>');
+                    setFetchInfo({});
                 }
             } catch (e) {
                 if (!(e as any)?.name || (e as any).name !== 'AbortError') {
@@ -198,11 +229,24 @@ function Edit({ attributes, setAttributes }: EditProps): JSX.Element {
                     </h3>
                     <div className="jankx-post-layout__info">
                         <span className="jankx-post-layout__post-type">
-                            {postType}
+                            {postType || 'post'}
                         </span>
                         <span className="jankx-post-layout__count">
-                            {postsPerPage} {__('posts', 'jankx')}
+                            {fetchInfo.foundPosts !== undefined ?
+                                `${fetchInfo.foundPosts} / ${fetchInfo.totalPosts} ${__('posts', 'jankx')}` :
+                                `${postsPerPage} ${__('posts', 'jankx')}`
+                            }
                         </span>
+                        {fetchInfo.maxPages > 1 && (
+                            <span className="jankx-post-layout__pages">
+                                {__('Pages:', 'jankx')} {fetchInfo.maxPages}
+                            </span>
+                        )}
+                        {isLoadingPreview && (
+                            <span className="jankx-post-layout__loading">
+                                {__('Loading...', 'jankx')}
+                            </span>
+                        )}
                     </div>
                 </div>
 

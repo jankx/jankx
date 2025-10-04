@@ -66,17 +66,9 @@ class BootChildThemeTest extends TestCase
             }
         }
 
-        if (!function_exists('jankx_app')) {
-            function jankx_app()
-            {
-                return $GLOBALS['test_jankx_app'] ?? null;
-            }
-        }
-
         // Set global test variables
         $GLOBALS['test_child_theme_path'] = $this->tempChildThemePath;
         $GLOBALS['test_parent_theme_path'] = '/tmp/test-parent-theme';
-        $GLOBALS['test_jankx_app'] = $this->app;
     }
 
     protected function tearDown(): void
@@ -98,7 +90,6 @@ class BootChildThemeTest extends TestCase
         // Clean up global variables
         unset($GLOBALS['test_child_theme_path']);
         unset($GLOBALS['test_parent_theme_path']);
-        unset($GLOBALS['test_jankx_app']);
     }
 
     /**
@@ -369,9 +360,6 @@ class BootChildThemeTest extends TestCase
      */
     public function testGetChildThemeComposerInfo()
     {
-        // Mock jankx_app function
-        $GLOBALS['test_jankx_app'] = $this->app;
-
         // Mock app make method
         $this->app->expects($this->once())
             ->method('make')
@@ -387,9 +375,6 @@ class BootChildThemeTest extends TestCase
      */
     public function testGetChildThemeComposerInfoWhenJankxAppNotExists()
     {
-        // Unset jankx_app function
-        $GLOBALS['test_jankx_app'] = null;
-
         $result = BootChildTheme::getChildThemeComposerInfo();
         $this->assertNull($result);
     }
@@ -399,9 +384,6 @@ class BootChildThemeTest extends TestCase
      */
     public function testGetChildThemeComposerInfoWhenAppIsNull()
     {
-        // Set jankx_app to return null
-        $GLOBALS['test_jankx_app'] = null;
-
         $result = BootChildTheme::getChildThemeComposerInfo();
         $this->assertNull($result);
     }
@@ -411,9 +393,6 @@ class BootChildThemeTest extends TestCase
      */
     public function testGetChildThemeComposerInfoWhenServiceNotExists()
     {
-        // Mock jankx_app function
-        $GLOBALS['test_jankx_app'] = $this->app;
-
         // Mock app make method to throw exception
         $this->app->expects($this->once())
             ->method('make')

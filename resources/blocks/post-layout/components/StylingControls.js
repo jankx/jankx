@@ -14,6 +14,7 @@ export default function StylingControls({ styling, responsive, onUpdate }) {
     const viewTypeOptions = [
         { label: __('Grid', 'jankx'), value: 'grid' },
         { label: __('List', 'jankx'), value: 'list' },
+        { label: __('Card', 'jankx'), value: 'card' },
         { label: __('Masonry', 'jankx'), value: 'masonry' },
         { label: __('Carousel', 'jankx'), value: 'carousel' },
         { label: __('Timeline', 'jankx'), value: 'timeline' },

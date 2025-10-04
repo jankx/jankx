@@ -155,7 +155,8 @@ class PlatesEngine extends Engine
             return [];
         }
 
-        return $this->plates->getFolders();
+        $folders = $this->plates->getFolders();
+        return is_array($folders) ? $folders : [];
     }
 
     /**
@@ -226,5 +227,19 @@ class PlatesEngine extends Engine
     public function getId(): string
     {
         return 'plates';
+    }
+
+    /**
+     * Register a function for use in templates.
+     *
+     * @param  string  $name
+     * @param  callable  $callable
+     * @return void
+     */
+    public function registerFunction($name, $callable)
+    {
+        if ($this->plates && is_callable($callable)) {
+            $this->plates->registerFunction($name, $callable);
+        }
     }
 }

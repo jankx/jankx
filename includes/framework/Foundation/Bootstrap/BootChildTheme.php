@@ -378,11 +378,8 @@ class BootChildTheme
      */
     public static function getChildThemeComposerInfo()
     {
-        if (!function_exists('jankx_app')) {
-            return null;
-        }
 
-        $app = jankx_app();
+        $app = Jankx\Facades\App::getInstance();
         if (!$app) {
             return null;
         }
@@ -401,11 +398,7 @@ class BootChildTheme
      */
     public static function getChildThemeTranslationInfo()
     {
-        if (!function_exists('jankx_app')) {
-            return null;
-        }
-
-        $app = jankx_app();
+        $app = Jankx\Facades\App::getInstance();
         if (!$app) {
             return null;
         }

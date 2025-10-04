@@ -7,7 +7,7 @@ if (!defined('ABSPATH')) {
     <?php do_action('jankx_post_layout_before_loop_item', $post, $data_index); ?>
 
     <?php if ($show_thumbnail) : ?>
-        <?php jankx_template('post-layout/thumbnail', [
+        <?php jankx_template('post-layouts/thumbnail', [
             'post' => $post,
             'data_index' => $data_index,
             'thumbnail_size' => $thumbnail_size

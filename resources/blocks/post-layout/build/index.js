@@ -833,6 +833,9 @@ function StylingControls({
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('List', 'jankx'),
     value: 'list'
   }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Card', 'jankx'),
+    value: 'card'
+  }, {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Masonry', 'jankx'),
     value: 'masonry'
   }, {
@@ -1433,6 +1436,7 @@ function Edit({
   const [activeTab, setActiveTab] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)('query');
   const [previewHtml, setPreviewHtml] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)('');
   const [isLoadingPreview, setIsLoadingPreview] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(false);
+  const [fetchInfo, setFetchInfo] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)({});
   const {
     postTypes,
     taxonomies
@@ -1515,8 +1519,29 @@ function Edit({
           // Jankx engine id is 'jankx'
           engine_id: 'jankx',
           layout: styling?.viewType || 'grid',
-          posts_per_page: String(postsPerPage || 6)
+          posts_per_page: String(postsPerPage || 6),
+          order_by: orderBy || 'date',
+          order: order || 'DESC',
+          offset: String(offset || 0)
         });
+
+        // Add include/exclude posts if provided
+        if (include && include.length > 0) {
+          params.append('include', JSON.stringify(include));
+        }
+        if (exclude && exclude.length > 0) {
+          params.append('exclude', JSON.stringify(exclude));
+        }
+
+        // Add taxonomy filters if provided
+        if (taxonomyFilters && Object.keys(taxonomyFilters).length > 0) {
+          params.append('taxonomy_filters', JSON.stringify(taxonomyFilters));
+        }
+
+        // Add meta filters if provided
+        if (metaFilters && Object.keys(metaFilters).length > 0) {
+          params.append('meta_filters', JSON.stringify(metaFilters));
+        }
         const ajaxUrl = window.ajaxurl || '/wp-admin/admin-ajax.php';
         const res = await fetch(`${ajaxUrl}?${params.toString()}`, {
           signal: controller.signal,
@@ -1525,8 +1550,17 @@ function Edit({
         const json = await res.json();
         if (json && json.success && json.data && typeof json.data.content === 'string') {
           setPreviewHtml(json.data.content);
+          // Update fetch info from response
+          if (json.data.query_info) {
+            setFetchInfo({
+              totalPosts: json.data.query_info.total_posts || 0,
+              foundPosts: json.data.query_info.found_posts || 0,
+              maxPages: json.data.query_info.max_pages || 0
+            });
+          }
         } else {
           setPreviewHtml('<div class="jankx-post-layout__empty">No content</div>');
+          setFetchInfo({});
         }
       } catch (e) {
         if (!e?.name || e.name !== 'AbortError') {
@@ -1552,10 +1586,16 @@ function Edit({
           className: "jankx-post-layout__info",
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("span", {
             className: "jankx-post-layout__post-type",
-            children: postType
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("span", {
+            children: postType || 'post'
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("span", {
             className: "jankx-post-layout__count",
-            children: [postsPerPage, " ", (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('posts', 'jankx')]
+            children: fetchInfo.foundPosts !== undefined ? `${fetchInfo.foundPosts} / ${fetchInfo.totalPosts} ${(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('posts', 'jankx')}` : `${postsPerPage} ${(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('posts', 'jankx')}`
+          }), fetchInfo.maxPages > 1 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("span", {
+            className: "jankx-post-layout__pages",
+            children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Pages:', 'jankx'), " ", fetchInfo.maxPages]
+          }), isLoadingPreview && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("span", {
+            className: "jankx-post-layout__loading",
+            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Loading...', 'jankx')
           })]
         })]
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {

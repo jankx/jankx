@@ -34,9 +34,24 @@ class TemplateEngineManager extends Engine
      */
     protected function registerEngines()
     {
-        // Get engines from container instead of creating new instances
-        $this->engines['jankx'] = $this->app->make('template.engine.jankx');
-        $this->engines['plates'] = $this->app->make('template.engine.plates');
+        // Debug: Log engine registration
+        error_log("[TemplateEngineManager Debug] Starting engine registration");
+
+        try {
+            // Get engines from container instead of creating new instances
+            error_log("[TemplateEngineManager Debug] Attempting to resolve template.engine.jankx");
+            $this->engines['jankx'] = $this->app->make('template.engine.jankx');
+            error_log("[TemplateEngineManager Debug] Successfully resolved template.engine.jankx: " . get_class($this->engines['jankx']));
+
+            error_log("[TemplateEngineManager Debug] Attempting to resolve template.engine.plates");
+            $this->engines['plates'] = $this->app->make('template.engine.plates');
+            error_log("[TemplateEngineManager Debug] Successfully resolved template.engine.plates: " . get_class($this->engines['plates']));
+
+            error_log("[TemplateEngineManager Debug] Engine registration completed. Available engines: " . implode(', ', array_keys($this->engines)));
+        } catch (Exception $e) {
+            error_log("[TemplateEngineManager Debug] Error during engine registration: " . $e->getMessage());
+            error_log("[TemplateEngineManager Debug] Error trace: " . $e->getTraceAsString());
+        }
     }
 
     /**
