@@ -4,7 +4,7 @@ namespace Jankx\Foundation\Bootstrap;
 
 use Jankx\Foundation\Application;
 use Jankx\Helper\Environment;
-use Jankx\Support\TemplateEngine\Engine;
+use Jankx\Support\TemplateEngine\TemplateEngineManager;
 
 /**
  * Template Engine Override Bootstrapper
@@ -58,7 +58,7 @@ class ThemeEngineOverrideBootstrapper
     protected function initializeTemplateEngine(Application $app)
     {
         // Create template engine instance
-        $templateEngine = new Engine($app);
+        $templateEngine = new TemplateEngineManager($app);
 
         // Register template engine in container
         $app->instance('template.engine', $templateEngine);
@@ -105,10 +105,10 @@ class ThemeEngineOverrideBootstrapper
      * Override template functions
      *
      * @param  \Jankx\Foundation\Application  $app
-     * @param  \Jankx\Support\TemplateEngine\Engine  $templateEngine
+     * @param  \Jankx\Support\TemplateEngine\TemplateEngineManager  $templateEngine
      * @return void
      */
-    protected function overrideTemplateFunctions(Application $app, Engine $templateEngine)
+    protected function overrideTemplateFunctions(Application $app, TemplateEngineManager $templateEngine)
     {
         // Override get_header
         if (!function_exists('jankx_get_header')) {

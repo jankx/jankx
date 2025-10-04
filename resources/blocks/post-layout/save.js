@@ -22,7 +22,7 @@ export default function save({ attributes }) {
     } = attributes;
 
     const blockProps = useBlockProps.save({
-        className: 'jankx-dynamic-collection'
+        className: 'jankx-post-layout'
     });
 
     // Embed configuration as JSON for frontend JavaScript
@@ -49,11 +49,11 @@ export default function save({ attributes }) {
     return (
         <div {...blockProps}>
             <div
-                className="jankx-dynamic-collection-config"
+                className="jankx-post-layout-config"
                 data-config={JSON.stringify(config)}
                 style={{ display: 'none' }}
             />
-            <div className="jankx-dynamic-collection-content">
+            <div className="jankx-post-layout-content">
                 <InnerBlocks.Content />
             </div>
         </div>

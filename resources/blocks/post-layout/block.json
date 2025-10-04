@@ -1,8 +1,8 @@
 {
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "apiVersion": 3,
-    "name": "jankx/dynamic-collection",
-    "title": "Dynamic Collection",
+    "name": "jankx/post-layout",
+    "title": "Post Layout",
     "category": "jankx",
     "icon": "grid-view",
     "description": "Hiển thị collection động với khả năng tùy chỉnh query, template và filters",

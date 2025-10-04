@@ -2,10 +2,10 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./blocks/dynamic-collection/components/DisplayOptions.js":
-/*!****************************************************************!*\
-  !*** ./blocks/dynamic-collection/components/DisplayOptions.js ***!
-  \****************************************************************/
+/***/ "./blocks/post-layout/components/DisplayOptions.js":
+/*!*********************************************************!*\
+  !*** ./blocks/post-layout/components/DisplayOptions.js ***!
+  \*********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -212,10 +212,10 @@ function DisplayOptions({
 
 /***/ }),
 
-/***/ "./blocks/dynamic-collection/components/FilterBuilder.js":
-/*!***************************************************************!*\
-  !*** ./blocks/dynamic-collection/components/FilterBuilder.js ***!
-  \***************************************************************/
+/***/ "./blocks/post-layout/components/FilterBuilder.js":
+/*!********************************************************!*\
+  !*** ./blocks/post-layout/components/FilterBuilder.js ***!
+  \********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -667,10 +667,10 @@ function FilterBuilder({
 
 /***/ }),
 
-/***/ "./blocks/dynamic-collection/components/QueryControls.js":
-/*!***************************************************************!*\
-  !*** ./blocks/dynamic-collection/components/QueryControls.js ***!
-  \***************************************************************/
+/***/ "./blocks/post-layout/components/QueryControls.js":
+/*!********************************************************!*\
+  !*** ./blocks/post-layout/components/QueryControls.js ***!
+  \********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -787,10 +787,10 @@ function QueryControls({
 
 /***/ }),
 
-/***/ "./blocks/dynamic-collection/components/StylingControls.js":
-/*!*****************************************************************!*\
-  !*** ./blocks/dynamic-collection/components/StylingControls.js ***!
-  \*****************************************************************/
+/***/ "./blocks/post-layout/components/StylingControls.js":
+/*!**********************************************************!*\
+  !*** ./blocks/post-layout/components/StylingControls.js ***!
+  \**********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -1370,9 +1370,9 @@ module.exports = window["ReactJSXRuntime"];
 var __webpack_exports__ = {};
 // This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
 (() => {
-/*!*********************************************!*\
-  !*** ./blocks/dynamic-collection/index.tsx ***!
-  \*********************************************/
+/*!**************************************!*\
+  !*** ./blocks/post-layout/index.tsx ***!
+  \**************************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
@@ -1388,10 +1388,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/core-data */ "@wordpress/core-data");
 /* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _components_QueryControls__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/QueryControls */ "./blocks/dynamic-collection/components/QueryControls.js");
-/* harmony import */ var _components_FilterBuilder__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./components/FilterBuilder */ "./blocks/dynamic-collection/components/FilterBuilder.js");
-/* harmony import */ var _components_DisplayOptions__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./components/DisplayOptions */ "./blocks/dynamic-collection/components/DisplayOptions.js");
-/* harmony import */ var _components_StylingControls__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./components/StylingControls */ "./blocks/dynamic-collection/components/StylingControls.js");
+/* harmony import */ var _components_QueryControls__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/QueryControls */ "./blocks/post-layout/components/QueryControls.js");
+/* harmony import */ var _components_FilterBuilder__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./components/FilterBuilder */ "./blocks/post-layout/components/FilterBuilder.js");
+/* harmony import */ var _components_DisplayOptions__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./components/DisplayOptions */ "./blocks/post-layout/components/DisplayOptions.js");
+/* harmony import */ var _components_StylingControls__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./components/StylingControls */ "./blocks/post-layout/components/StylingControls.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__);
 
@@ -1451,7 +1451,7 @@ function Edit({
     };
   }, []);
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)({
-    className: 'jankx-dynamic-collection'
+    className: 'jankx-post-layout'
   });
   const updateAttribute = (key, value) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -1526,11 +1526,11 @@ function Edit({
         if (json && json.success && json.data && typeof json.data.content === 'string') {
           setPreviewHtml(json.data.content);
         } else {
-          setPreviewHtml('<div class="jankx-dynamic-collection__empty">No content</div>');
+          setPreviewHtml('<div class="jankx-post-layout__empty">No content</div>');
         }
       } catch (e) {
         if (!e?.name || e.name !== 'AbortError') {
-          setPreviewHtml('<div class="jankx-dynamic-collection__error">Failed to load preview</div>');
+          setPreviewHtml('<div class="jankx-post-layout__error">Failed to load preview</div>');
         }
       } finally {
         setIsLoadingPreview(false);
@@ -1544,22 +1544,22 @@ function Edit({
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
       ...blockProps,
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
-        className: "jankx-dynamic-collection__header",
+        className: "jankx-post-layout__header",
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("h3", {
-          className: "jankx-dynamic-collection__title",
-          children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Dynamic Collection', 'jankx')
+          className: "jankx-post-layout__title",
+          children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Post Layout', 'jankx')
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
-          className: "jankx-dynamic-collection__info",
+          className: "jankx-post-layout__info",
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("span", {
-            className: "jankx-dynamic-collection__post-type",
+            className: "jankx-post-layout__post-type",
             children: postType
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("span", {
-            className: "jankx-dynamic-collection__count",
+            className: "jankx-post-layout__count",
             children: [postsPerPage, " ", (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('posts', 'jankx')]
           })]
         })]
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
-        className: "jankx-dynamic-collection__content",
+        className: "jankx-post-layout__content",
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InnerBlocks, {
           allowedBlocks: ALLOWED_BLOCKS
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -1570,11 +1570,11 @@ function Edit({
       })]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
-        className: "jankx-dynamic-collection__inspector",
+        className: "jankx-post-layout__inspector",
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
-          className: "jankx-dynamic-collection__tabs",
+          className: "jankx-post-layout__tabs",
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ButtonGroup, {
-            className: "jankx-dynamic-collection__tab-buttons",
+            className: "jankx-post-layout__tab-buttons",
             children: [{
               key: 'query',
               label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Query', 'jankx'),
@@ -1606,16 +1606,16 @@ function Edit({
             }, key))
           })
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
-          className: "jankx-dynamic-collection__tab-content",
+          className: "jankx-post-layout__tab-content",
           children: renderTabContent()
         })]
       })
     })]
   });
 }
-(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__.registerBlockType)('jankx/dynamic-collection', {
-  title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Dynamic Collection', 'jankx'),
-  description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('A dynamic collection block for displaying posts with advanced filtering and layout options', 'jankx'),
+(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__.registerBlockType)('jankx/post-layout', {
+  title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Post Layout', 'jankx'),
+  description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('A Post Layout block for displaying posts with advanced filtering and layout options', 'jankx'),
   category: 'jankx',
   icon: 'grid-view',
   keywords: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('collection', 'jankx'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('posts', 'jankx'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('query', 'jankx'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('filter', 'jankx'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('layout', 'jankx')],

@@ -10,15 +10,15 @@ use Jankx\Support\TemplateEngine\Engines\BladeEngine;
 use Jankx\Support\TemplateEngine\Engines\PlatesEngine;
 
 /**
- * Jankx Template Engine
+ * Abstract Jankx Template Engine
  *
- * Advanced template engine that overrides WordPress template system
+ * Base template engine class that provides common functionality for template engines
  * with support for multiple template engines, caching, and custom rendering.
  *
  * @package Jankx\Support\TemplateEngine
  * @since 2.0.0
  */
-class Engine implements EngineInterface
+abstract class Engine implements EngineInterface
 {
     /**
      * The application instance.
@@ -69,18 +69,19 @@ class Engine implements EngineInterface
 
     /**
      * Register available template engines.
+     * Must be implemented by concrete classes.
      *
      * @return void
      */
-    protected function registerEngines()
-    {
-        // Register Jankx native engine
-        $this->engines['jankx'] = new PlatesEngine($this->app);
+    abstract protected function registerEngines();
 
-
-        // Register Plates engine
-        $this->engines['plates'] = new PlatesEngine($this->app);
-    }
+    /**
+     * Get the engine name.
+     * Must be implemented by concrete classes.
+     *
+     * @return string
+     */
+    abstract public function getEngineName(): string;
 
     /**
      * Set current template engine.
@@ -439,24 +440,20 @@ class Engine implements EngineInterface
 
     /**
      * Get available engines.
+     * Must be implemented by concrete classes.
      *
      * @return array
      */
-    public function getAvailableEngines()
-    {
-        return array_keys($this->engines);
-    }
+    abstract public function getAvailableEngines();
 
     /**
      * Check if engine is available.
+     * Must be implemented by concrete classes.
      *
      * @param  string  $engine
      * @return bool
      */
-    public function isEngineAvailable($engine)
-    {
-        return isset($this->engines[$engine]);
-    }
+    abstract public function isEngineAvailable($engine);
 
     /**
      * Add template directory.

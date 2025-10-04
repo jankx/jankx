@@ -14,10 +14,10 @@ module.exports = {
     'blocks/language-switcher/build/style': './blocks/language-switcher/style.scss',
     'blocks/language-switcher/build/editor': './blocks/language-switcher/editor.scss',
 
-    'blocks/dynamic-collection/build/index': './blocks/dynamic-collection/index.tsx',
-    'blocks/dynamic-collection/build/save': './blocks/dynamic-collection/save.js',
-    'blocks/dynamic-collection/build/style': './blocks/dynamic-collection/style.scss',
-    'blocks/dynamic-collection/build/editor': './blocks/dynamic-collection/editor.scss',
+    'blocks/post-layout/build/index': './blocks/post-layout/index.tsx',
+    'blocks/post-layout/build/save': './blocks/post-layout/save.js',
+    'blocks/post-layout/build/style': './blocks/post-layout/style.scss',
+    'blocks/post-layout/build/editor': './blocks/post-layout/editor.scss',
 
     'blocks/icon-picker/build/index': './blocks/icon-picker/index.tsx',
     'blocks/icon-picker/build/save': './blocks/icon-picker/save.js',

@@ -93,9 +93,9 @@ module.exports = window["ReactJSXRuntime"];
 var __webpack_exports__ = {};
 // This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
 (() => {
-/*!*******************************************!*\
-  !*** ./blocks/dynamic-collection/save.js ***!
-  \*******************************************/
+/*!************************************!*\
+  !*** ./blocks/post-layout/save.js ***!
+  \************************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ save)
@@ -129,7 +129,7 @@ function save({
     responsive
   } = attributes;
   const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.useBlockProps.save({
-    className: 'jankx-dynamic-collection'
+    className: 'jankx-post-layout'
   });
 
   // Embed configuration as JSON for frontend JavaScript
@@ -155,13 +155,13 @@ function save({
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
     ...blockProps,
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
-      className: "jankx-dynamic-collection-config",
+      className: "jankx-post-layout-config",
       "data-config": JSON.stringify(config),
       style: {
         display: 'none'
       }
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
-      className: "jankx-dynamic-collection-content",
+      className: "jankx-post-layout-content",
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.InnerBlocks.Content, {})
     })]
   });

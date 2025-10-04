@@ -67,4 +67,11 @@ interface EngineInterface
      * @return array
      */
     public function getVariables();
+
+    /**
+     * Get engine ID.
+     *
+     * @return string
+     */
+    public function getId();
 }

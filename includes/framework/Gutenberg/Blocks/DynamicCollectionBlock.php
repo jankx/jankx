@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Dynamic Collection Block
+ * Post Layout Block
  *
  * A flexible collection block that can display any post type with customizable
  * queries, filters, templates, and styling options.
@@ -24,7 +24,7 @@ class DynamicCollectionBlock extends Block
      *
      * @var string
      */
-    protected $blockId = 'jankx/dynamic-collection';
+    protected $blockId = 'jankx/post-layout';
 
     /**
      * Register the block
@@ -43,7 +43,7 @@ class DynamicCollectionBlock extends Block
      */
     public function registerRestEndpoints()
     {
-        register_rest_route('jankx/v1', '/dynamic-collection/(?P<id>[a-zA-Z0-9-]+)', [
+        register_rest_route('jankx/v1', '/post-layout/(?P<id>[a-zA-Z0-9-]+)', [
             'methods' => 'GET',
             'callback' => [$this, 'getCollectionData'],
             'permission_callback' => '__return_true',
@@ -56,7 +56,7 @@ class DynamicCollectionBlock extends Block
             ]
         ]);
 
-        register_rest_route('jankx/v1', '/dynamic-collection/filters', [
+        register_rest_route('jankx/v1', '/post-layout/filters', [
             'methods' => 'GET',
             'callback' => [$this, 'getAvailableFilters'],
             'permission_callback' => '__return_true'
@@ -125,7 +125,7 @@ class DynamicCollectionBlock extends Block
         // Parse blocks from post content
         $blocks = parse_blocks($post->post_content);
 
-        if (isset($blocks[$blockIndex]) && $blocks[$blockIndex]['blockName'] === 'jankx/dynamic-collection') {
+        if (isset($blocks[$blockIndex]) && $blocks[$blockIndex]['blockName'] === 'jankx/post-layout') {
             return $blocks[$blockIndex]['attrs'] ?: [];
         }
 
@@ -473,10 +473,10 @@ class DynamicCollectionBlock extends Block
         // Lấy engine id trực tiếp, không cần instance engine ở đây
         $engineId = Jankx::getEngineId();
 
-        $wrapId = 'jankx-dynamic-collection-' . wp_generate_uuid4();
+        $wrapId = 'jankx-post-layout-' . wp_generate_uuid4();
 
         // Frontend: render trực tiếp bằng PHP phía Post Layout (không AJAX ở đây)
         // Trong editor, JS sẽ tự fetch preview. Ở frontend, trả container rỗng hoặc nội dung tối thiểu.
-        return sprintf('<div id="%s" class="jankx-dynamic-collection" data-engine-id="%s"></div>', esc_attr($wrapId), esc_attr($engineId));
+        return sprintf('<div id="%s" class="jankx-post-layout" data-engine-id="%s"></div>', esc_attr($wrapId), esc_attr($engineId));
     }
 }

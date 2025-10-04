@@ -93,7 +93,7 @@ function Edit({ attributes, setAttributes }: EditProps): JSX.Element {
     }, []);
 
     const blockProps = useBlockProps({
-        className: 'jankx-dynamic-collection'
+        className: 'jankx-post-layout'
     });
 
     const updateAttribute = (key: keyof DynamicCollectionAttributes, value: unknown): void => {
@@ -173,11 +173,11 @@ function Edit({ attributes, setAttributes }: EditProps): JSX.Element {
                 if (json && json.success && json.data && typeof json.data.content === 'string') {
                     setPreviewHtml(json.data.content);
                 } else {
-                    setPreviewHtml('<div class="jankx-dynamic-collection__empty">No content</div>');
+                    setPreviewHtml('<div class="jankx-post-layout__empty">No content</div>');
                 }
             } catch (e) {
                 if (!(e as any)?.name || (e as any).name !== 'AbortError') {
-                    setPreviewHtml('<div class="jankx-dynamic-collection__error">Failed to load preview</div>');
+                    setPreviewHtml('<div class="jankx-post-layout__error">Failed to load preview</div>');
                 }
             } finally {
                 setIsLoadingPreview(false);
@@ -192,21 +192,21 @@ function Edit({ attributes, setAttributes }: EditProps): JSX.Element {
     return (
         <>
             <div {...blockProps}>
-                <div className="jankx-dynamic-collection__header">
-                    <h3 className="jankx-dynamic-collection__title">
-                        {__('Dynamic Collection', 'jankx')}
+                <div className="jankx-post-layout__header">
+                    <h3 className="jankx-post-layout__title">
+                        {__('Post Layout', 'jankx')}
                     </h3>
-                    <div className="jankx-dynamic-collection__info">
-                        <span className="jankx-dynamic-collection__post-type">
+                    <div className="jankx-post-layout__info">
+                        <span className="jankx-post-layout__post-type">
                             {postType}
                         </span>
-                        <span className="jankx-dynamic-collection__count">
+                        <span className="jankx-post-layout__count">
                             {postsPerPage} {__('posts', 'jankx')}
                         </span>
                     </div>
                 </div>
 
-                <div className="jankx-dynamic-collection__content">
+                <div className="jankx-post-layout__content">
                     <InnerBlocks
                         allowedBlocks={ALLOWED_BLOCKS}
                         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -217,9 +217,9 @@ function Edit({ attributes, setAttributes }: EditProps): JSX.Element {
             </div>
 
             <InspectorControls>
-                <div className="jankx-dynamic-collection__inspector">
-                    <div className="jankx-dynamic-collection__tabs">
-                        <ButtonGroup className="jankx-dynamic-collection__tab-buttons">
+                <div className="jankx-post-layout__inspector">
+                    <div className="jankx-post-layout__tabs">
+                        <ButtonGroup className="jankx-post-layout__tab-buttons">
                             {[
                                 { key: 'query', label: __('Query', 'jankx'), icon: 'search' },
                                 { key: 'filters', label: __('Filters', 'jankx'), icon: 'filter' },
@@ -240,7 +240,7 @@ function Edit({ attributes, setAttributes }: EditProps): JSX.Element {
                         </ButtonGroup>
                     </div>
 
-                    <div className="jankx-dynamic-collection__tab-content">
+                    <div className="jankx-post-layout__tab-content">
                         {renderTabContent()}
                     </div>
                 </div>
@@ -249,9 +249,9 @@ function Edit({ attributes, setAttributes }: EditProps): JSX.Element {
     );
 }
 
-registerBlockType('jankx/dynamic-collection', {
-    title: __('Dynamic Collection', 'jankx'),
-    description: __('A dynamic collection block for displaying posts with advanced filtering and layout options', 'jankx'),
+registerBlockType('jankx/post-layout', {
+    title: __('Post Layout', 'jankx'),
+    description: __('A Post Layout block for displaying posts with advanced filtering and layout options', 'jankx'),
     category: 'jankx',
     icon: 'grid-view',
     keywords: [

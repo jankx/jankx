@@ -44,8 +44,29 @@ class PlatesEngine extends Engine
      */
     public function __construct(Application $app)
     {
-        $this->app = $app;
+        parent::__construct($app);
         $this->setupPlates();
+    }
+
+    /**
+     * Register available template engines.
+     *
+     * @return void
+     */
+    protected function registerEngines()
+    {
+        $this->engines['plates'] = $this;
+        $this->currentEngine = 'plates';
+    }
+
+    /**
+     * Get the engine name.
+     *
+     * @return string
+     */
+    public function getEngineName(): string
+    {
+        return 'Plates';
     }
 
     /**
@@ -174,5 +195,36 @@ class PlatesEngine extends Engine
     public function getVariables()
     {
         return $this->variables;
+    }
+
+    /**
+     * Get available engines.
+     *
+     * @return array
+     */
+    public function getAvailableEngines()
+    {
+        return ['plates'];
+    }
+
+    /**
+     * Check if engine is available.
+     *
+     * @param  string  $engine
+     * @return bool
+     */
+    public function isEngineAvailable($engine)
+    {
+        return $engine === 'plates';
+    }
+
+    /**
+     * Get engine ID.
+     *
+     * @return string
+     */
+    public function getId(): string
+    {
+        return 'plates';
     }
 }
