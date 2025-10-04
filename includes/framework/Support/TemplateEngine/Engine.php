@@ -2,8 +2,8 @@
 
 namespace Jankx\Support\TemplateEngine;
 
+use Jankx\Contracts\TemplateEngine\EngineInterface;
 use Jankx\Foundation\Application;
-use Jankx\Helper\Environment;
 use Jankx\Support\TemplateEngine\Engines\JankxEngine;
 use Jankx\Support\TemplateEngine\Engines\TwigEngine;
 use Jankx\Support\TemplateEngine\Engines\BladeEngine;
@@ -18,7 +18,7 @@ use Jankx\Support\TemplateEngine\Engines\PlatesEngine;
  * @package Jankx\Support\TemplateEngine
  * @since 2.0.0
  */
-class Engine
+class Engine implements EngineInterface
 {
     /**
      * The application instance.
@@ -98,7 +98,7 @@ class Engine
     /**
      * Get current template engine.
      *
-     * @return \Jankx\Support\TemplateEngine\Contracts\EngineInterface
+     * @return \Jankx\Contracts\TemplateEngine\EngineInterface
      */
     public function getCurrentEngine()
     {
@@ -456,5 +456,44 @@ class Engine
     public function isEngineAvailable($engine)
     {
         return isset($this->engines[$engine]);
+    }
+
+    /**
+     * Add template directory.
+     *
+     * @param  string  $directory
+     * @param  string  $namespace
+     * @return void
+     */
+    public function addTemplateDirectory($directory, $namespace = null)
+    {
+        $engine = $this->getCurrentEngine();
+        if (method_exists($engine, 'addTemplateDirectory')) {
+            $engine->addTemplateDirectory($directory, $namespace);
+        }
+    }
+
+    /**
+     * Get template directories.
+     *
+     * @return array
+     */
+    public function getTemplateDirectories()
+    {
+        $engine = $this->getCurrentEngine();
+        if (method_exists($engine, 'getTemplateDirectories')) {
+            return $engine->getTemplateDirectories();
+        }
+        return [];
+    }
+
+    /**
+     * Get template variables.
+     *
+     * @return array
+     */
+    public function getVariables()
+    {
+        return $this->variables;
     }
 }

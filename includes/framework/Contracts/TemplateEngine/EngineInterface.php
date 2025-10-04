@@ -1,6 +1,6 @@
 <?php
 
-namespace Jankx\Support\TemplateEngine\Contracts;
+namespace Jankx\Contracts\TemplateEngine;
 
 /**
  * Template Engine Interface

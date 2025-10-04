@@ -3,7 +3,7 @@
 namespace Jankx\Support\TemplateEngine\Engines;
 
 use Jankx\Foundation\Application;
-use Jankx\Support\TemplateEngine\Contracts\EngineInterface;
+use Jankx\Support\TemplateEngine\Engine;
 
 /**
  * Plates Template Engine
@@ -13,7 +13,7 @@ use Jankx\Support\TemplateEngine\Contracts\EngineInterface;
  * @package Jankx\Support\TemplateEngine\Engines
  * @since 2.0.0
  */
-class PlatesEngine implements EngineInterface
+class PlatesEngine extends Engine
 {
     /**
      * The application instance.

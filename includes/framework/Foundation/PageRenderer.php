@@ -6,6 +6,8 @@
 
 namespace Jankx\Foundation;
 
+use Jankx\Support\TemplateEngine\Engine;
+
 if (!defined('ABSPATH')) {
     exit('Cheating huh?');
 }
@@ -201,7 +203,7 @@ class PageRenderer
     }
 
     // Compatible with old WordPress versions.
-    public function legacyRender($engine)
+    public function legacyRender(Engine $engine)
     {
         /**
          * Get site header
