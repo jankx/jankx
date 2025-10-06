@@ -11,6 +11,12 @@
   background-color: #f9f9f9;
   margin: 10px 0;
 }
+.wp-block-jankx-modal .wp-block-jankx-modal__editor-content {
+  display: none;
+}
+.wp-block-jankx-modal .wp-block-jankx-modal__editor-content.show {
+  display: block;
+}
 .wp-block-jankx-modal .wp-block-jankx-modal__trigger {
   display: inline-block;
   padding: 12px 24px;
@@ -32,8 +38,6 @@
 .wp-block-jankx-modal .wp-block-jankx-modal {
   position: relative;
   display: block;
-  opacity: 1;
-  visibility: visible;
   background-color: rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   margin-top: 15px;

@@ -109,6 +109,10 @@ module.exports = {
     'blocks/modal/build/style': './blocks/modal/style.scss',
     'blocks/modal/build/editor': './blocks/modal/editor.scss',
     'blocks/modal/build/view': './blocks/modal/view.js',
+
+    'blocks/date-picker-calendar/build/index': './blocks/date-picker-calendar/src/index.js',
+    'blocks/date-picker-calendar/build/style-index': './blocks/date-picker-calendar/src/style.scss',
+    'blocks/date-picker-calendar/build/editor': './blocks/date-picker-calendar/src/editor.scss',
   },
   output: {
     path: path.resolve(__dirname),

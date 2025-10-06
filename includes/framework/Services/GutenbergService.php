@@ -23,6 +23,7 @@ use Jankx\Gutenberg\Blocks\OffcanvasSidebarBlock;
 use Jankx\Gutenberg\Blocks\OffcanvasTriggerBlock;
 use Jankx\Gutenberg\Blocks\TableOfContentBlock;
 use Jankx\Gutenberg\Blocks\WplyrMediaBlock;
+use Jankx\Gutenberg\Blocks\DatePickerCalendarBlock;
 use Jankx\Gutenberg\GutenbergPattern;
 use Jankx\Facades\Log;
 
@@ -131,6 +132,7 @@ class GutenbergService
         $this->repository->registerBlock(TableOfContentBlock::class);
         $this->repository->registerBlock(AdvancedFiltersBlock::class);
         $this->repository->registerBlock(ModalBlock::class);
+        $this->repository->registerBlock(DatePickerCalendarBlock::class);
     }
 
     /**

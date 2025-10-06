@@ -317,8 +317,8 @@ export default function Edit({ attributes, setAttributes, clientId }) {
                 <div className="wp-block-jankx-modal-wrapper">
                     {renderTrigger()}
 
-                    {/* Always show inner blocks in editor mode */}
-                    <div className="wp-block-jankx-modal__editor-content">
+                    {/* Show inner blocks only in preview mode */}
+                    <div className={`wp-block-jankx-modal__editor-content ${isPreviewMode ? 'show' : ''}`}>
                         <div className="wp-block-jankx-modal__editor-label">
                             <strong>{__('Modal Content:', 'jankx')}</strong>
                         </div>

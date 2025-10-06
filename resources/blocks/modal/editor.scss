@@ -12,6 +12,15 @@
         margin: 10px 0;
     }
 
+    // Hide modal content in editor when not in preview mode
+    .wp-block-jankx-modal__editor-content {
+        display: none;
+
+        &.show {
+            display: block;
+        }
+    }
+
     // Trigger preview in editor
     .wp-block-jankx-modal__trigger {
         display: inline-block;
@@ -37,8 +46,6 @@
     .wp-block-jankx-modal {
         position: relative;
         display: block;
-        opacity: 1;
-        visibility: visible;
         background-color: rgba(0, 0, 0, 0.1);
         border-radius: 8px;
         margin-top: 15px;
