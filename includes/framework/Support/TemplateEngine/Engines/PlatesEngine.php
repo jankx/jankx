@@ -107,7 +107,19 @@ class PlatesEngine extends Engine
 
         $variables = array_merge($this->variables, $variables);
 
-        return $this->plates->render($template, $variables);
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log("[PlatesEngine Debug] Rendering template: " . $template);
+            error_log("[PlatesEngine Debug] Variables: " . print_r(array_keys($variables), true));
+        }
+
+        $result = $this->plates->render($template, $variables);
+
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log("[PlatesEngine Debug] Render result length: " . strlen($result));
+            error_log("[PlatesEngine Debug] Render result preview: " . substr($result, 0, 200));
+        }
+
+        return $result;
     }
 
     /**

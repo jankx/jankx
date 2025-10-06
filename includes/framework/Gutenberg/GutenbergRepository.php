@@ -3,6 +3,7 @@
 namespace Jankx\Gutenberg;
 
 use Exception;
+use Jankx\Contracts\BlockInterface;
 
 /**
  * Gutenberg Repository
@@ -63,8 +64,8 @@ class GutenbergRepository
     public function registerBlock($blockClass, $blockPath = null)
     {
         if (is_object($blockClass)) {
-            if (!$blockClass instanceof Block) {
-                throw new Exception('Block class must be an instance of ' . Block::class);
+            if (!$blockClass instanceof BlockInterface) {
+                throw new Exception('Block class must be an instance of ' . BlockInterface::class);
             }
             // inited
             $this->blocks[get_class($blockClass)] = true;

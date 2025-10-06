@@ -22,14 +22,26 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function DisplayOptions({
-  displayOptions,
+  attributes,
   onUpdate
 }) {
+  const {
+    useDefaultQuery,
+    displayOptions,
+    pagination
+  } = attributes;
+
   // Guard against undefined nested fields
   const safeMetaFields = Array.isArray(displayOptions?.metaFields) ? displayOptions.metaFields : [];
   const updateDisplayOptions = updates => {
     onUpdate('displayOptions', {
       ...displayOptions,
+      ...updates
+    });
+  };
+  const updatePagination = updates => {
+    onUpdate('pagination', {
+      ...pagination,
       ...updates
     });
   };
@@ -71,21 +83,29 @@ function DisplayOptions({
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelBody, {
       title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Content Display', 'jankx'),
       initialOpen: true,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
+      children: [useDefaultQuery ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+        className: "jankx-default-query-info",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("p", {
+          className: "jankx-help-text",
+          children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Display options are limited when using default page query. Some options may not be available.', 'jankx')
+        })
+      }) : null, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Title', 'jankx'),
         checked: !!displayOptions.showTitle,
         onChange: value => updateDisplayOptions({
           showTitle: value
         }),
-        help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Display the post title', 'jankx')
+        help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Display the post title', 'jankx'),
+        disabled: useDefaultQuery
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Excerpt', 'jankx'),
         checked: !!displayOptions.showExcerpt,
         onChange: value => updateDisplayOptions({
           showExcerpt: value
         }),
-        help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Display the post excerpt or content preview', 'jankx')
-      }), displayOptions.showExcerpt && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.RangeControl, {
+        help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Display the post excerpt or content preview', 'jankx'),
+        disabled: useDefaultQuery
+      }), displayOptions.showExcerpt && !useDefaultQuery && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.RangeControl, {
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Excerpt Length', 'jankx'),
         value: displayOptions.excerptLength || 10,
         onChange: value => updateDisplayOptions({
@@ -101,8 +121,9 @@ function DisplayOptions({
         onChange: value => updateDisplayOptions({
           showMeta: value
         }),
-        help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Display post metadata (date, author, categories, etc.)', 'jankx')
-      }), displayOptions.showMeta && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+        help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Display post metadata (date, author, categories, etc.)', 'jankx'),
+        disabled: useDefaultQuery
+      }), displayOptions.showMeta && !useDefaultQuery && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
         className: "jankx-meta-fields",
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h5", {
           children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Meta Fields to Display', 'jankx')
@@ -120,16 +141,18 @@ function DisplayOptions({
         onChange: value => updateDisplayOptions({
           showThumbnail: value
         }),
-        help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Display the post featured image', 'jankx')
+        help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Display the post featured image', 'jankx'),
+        disabled: useDefaultQuery
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Read More Link', 'jankx'),
         checked: !!displayOptions.showReadMore,
         onChange: value => updateDisplayOptions({
           showReadMore: value
         }),
-        help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Display a "Read More" link to the full post', 'jankx')
+        help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Display a "Read More" link to the full post', 'jankx'),
+        disabled: useDefaultQuery
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelBody, {
+    }), !useDefaultQuery && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelBody, {
       title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Content Behavior', 'jankx'),
       initialOpen: false,
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
@@ -180,7 +203,7 @@ function DisplayOptions({
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Open posts in a new browser tab', 'jankx')
         })]
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelBody, {
+    }), !useDefaultQuery && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelBody, {
       title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Accessibility', 'jankx'),
       initialOpen: false,
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
@@ -204,6 +227,218 @@ function DisplayOptions({
             skipLinks: value
           }),
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Add skip links for keyboard navigation', 'jankx')
+        })]
+      })
+    }), !useDefaultQuery && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelBody, {
+      title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Pagination Settings', 'jankx'),
+      initialOpen: false,
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+        className: "jankx-pagination-settings",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enable Pagination', 'jankx'),
+          checked: !!pagination?.enabled,
+          onChange: value => updatePagination({
+            enabled: value
+          }),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show pagination controls for navigation between pages', 'jankx')
+        }), pagination?.enabled && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Pagination Type', 'jankx'),
+            value: pagination?.type || 'numbers',
+            options: [{
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Numbers', 'jankx'),
+              value: 'numbers'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Previous/Next', 'jankx'),
+              value: 'prev_next'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Load More', 'jankx'),
+              value: 'load_more'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Infinite Scroll', 'jankx'),
+              value: 'infinite'
+            }],
+            onChange: value => updatePagination({
+              type: value
+            }),
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Choose the type of pagination to display', 'jankx')
+          }), pagination?.type === 'numbers' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.RangeControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Max Page Numbers', 'jankx'),
+              value: pagination?.maxNumbers || 10,
+              onChange: value => updatePagination({
+                maxNumbers: value
+              }),
+              min: 3,
+              max: 20,
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Maximum number of page numbers to show', 'jankx')
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show First/Last', 'jankx'),
+              checked: !!pagination?.showFirstLast,
+              onChange: value => updatePagination({
+                showFirstLast: value
+              }),
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show first and last page buttons', 'jankx')
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Ellipsis', 'jankx'),
+              checked: !!pagination?.showEllipsis,
+              onChange: value => updatePagination({
+                showEllipsis: value
+              }),
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show ellipsis (...) for hidden pages', 'jankx')
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Current Page', 'jankx'),
+              checked: !!pagination?.showCurrentPage,
+              onChange: value => updatePagination({
+                showCurrentPage: value
+              }),
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Highlight the current page number', 'jankx')
+            })]
+          }), (pagination?.type === 'prev_next' || pagination?.type === 'numbers') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TextControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Previous Text', 'jankx'),
+              value: pagination?.prevText || 'Previous',
+              onChange: value => updatePagination({
+                prevText: value
+              }),
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Text for previous page button', 'jankx')
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TextControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Next Text', 'jankx'),
+              value: pagination?.nextText || 'Next',
+              onChange: value => updatePagination({
+                nextText: value
+              }),
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Text for next page button', 'jankx')
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Icons', 'jankx'),
+              checked: !!pagination?.showIcons,
+              onChange: value => updatePagination({
+                showIcons: value
+              }),
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show arrow icons on navigation buttons', 'jankx')
+            })]
+          }), (pagination?.type === 'load_more' || pagination?.type === 'infinite') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TextControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Load More Text', 'jankx'),
+              value: pagination?.loadMoreText || 'Load More',
+              onChange: value => updatePagination({
+                loadMoreText: value
+              }),
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Text for load more button', 'jankx')
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TextControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Loading Text', 'jankx'),
+              value: pagination?.loadingText || 'Loading...',
+              onChange: value => updatePagination({
+                loadingText: value
+              }),
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Text shown while loading', 'jankx')
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TextControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('No More Text', 'jankx'),
+              value: pagination?.noMoreText || 'No More Posts',
+              onChange: value => updatePagination({
+                noMoreText: value
+              }),
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Text shown when all posts are loaded', 'jankx')
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.RangeControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Posts Per Load', 'jankx'),
+              value: pagination?.postsPerLoad || 6,
+              onChange: value => updatePagination({
+                postsPerLoad: value
+              }),
+              min: 1,
+              max: 50,
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Number of posts to load each time', 'jankx')
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Spinner', 'jankx'),
+              checked: !!pagination?.showSpinner,
+              onChange: value => updatePagination({
+                showSpinner: value
+              }),
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show loading spinner', 'jankx')
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Hide When Complete', 'jankx'),
+              checked: !!pagination?.hideWhenComplete,
+              onChange: value => updatePagination({
+                hideWhenComplete: value
+              }),
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Hide button when all posts are loaded', 'jankx')
+            })]
+          }), pagination?.type === 'infinite' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.RangeControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Trigger Distance', 'jankx'),
+              value: pagination?.triggerDistance || 100,
+              onChange: value => updatePagination({
+                triggerDistance: value
+              }),
+              min: 50,
+              max: 500,
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Distance from bottom to trigger loading (px)', 'jankx')
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Loading Indicator', 'jankx'),
+              checked: !!pagination?.showLoadingIndicator,
+              onChange: value => updatePagination({
+                showLoadingIndicator: value
+              }),
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show loading indicator during infinite scroll', 'jankx')
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Back to Top', 'jankx'),
+              checked: !!pagination?.showBackToTop,
+              onChange: value => updatePagination({
+                showBackToTop: value
+              }),
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show back to top button after loading', 'jankx')
+            })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+            className: "jankx-pagination-advanced",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h5", {
+              children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Advanced Options', 'jankx')
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('AJAX Pagination', 'jankx'),
+              checked: !!pagination?.ajax,
+              onChange: value => updatePagination({
+                ajax: value
+              }),
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Load pages without refreshing the browser', 'jankx')
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Update URL', 'jankx'),
+              checked: !!pagination?.updateURL,
+              onChange: value => updatePagination({
+                updateURL: value
+              }),
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Update browser URL when navigating pages', 'jankx')
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Scroll to Top', 'jankx'),
+              checked: !!pagination?.scrollToTop,
+              onChange: value => updatePagination({
+                scrollToTop: value
+              }),
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Scroll to top when changing pages', 'jankx')
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Keyboard Navigation', 'jankx'),
+              checked: !!pagination?.keyboardNav,
+              onChange: value => updatePagination({
+                keyboardNav: value
+              }),
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Allow keyboard navigation (arrow keys)', 'jankx')
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Touch Support', 'jankx'),
+              checked: !!pagination?.touchSupport,
+              onChange: value => updatePagination({
+                touchSupport: value
+              }),
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enable touch/swipe navigation', 'jankx')
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.RangeControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Animation Duration', 'jankx'),
+              value: pagination?.animationDuration || 300,
+              onChange: value => updatePagination({
+                animationDuration: value
+              }),
+              min: 100,
+              max: 1000,
+              step: 50,
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Animation duration in milliseconds', 'jankx')
+            })]
+          })]
         })]
       })
     })]
@@ -244,6 +479,7 @@ function FilterBuilder({
   onUpdate
 }) {
   const {
+    useDefaultQuery,
     taxonomyFilters,
     metaFilters,
     presetFilters,
@@ -563,104 +799,112 @@ function FilterBuilder({
   }, filterId);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
     className: "jankx-filter-builder",
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
       title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Filter Builder', 'jankx'),
       initialOpen: true,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ButtonGroup, {
-        className: "jankx-filter-type-selector",
-        children: [{
-          key: 'taxonomy',
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Taxonomy', 'jankx')
-        }, {
-          key: 'meta',
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Meta', 'jankx')
-        }, {
-          key: 'preset',
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Preset', 'jankx')
-        }, {
-          key: 'custom',
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Custom', 'jankx')
-        }].map(({
-          key,
-          label
-        }) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
-          isPrimary: activeFilterType === key,
-          onClick: () => setActiveFilterType(key),
-          children: label
-        }, key))
-      }), activeFilterType === 'taxonomy' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
-        className: "jankx-filter-section",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
-          className: "jankx-filter-section-header",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("h4", {
-            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Taxonomy Filters', 'jankx')
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
-            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__["default"],
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Add Taxonomy Filter', 'jankx'),
-            onClick: addTaxonomyFilter,
-            isPrimary: true,
-            small: true
+      children: useDefaultQuery ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+        className: "jankx-default-query-info",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("p", {
+          className: "jankx-help-text",
+          children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Filters are disabled when using default page query. Switch to custom query to enable filtering options.', 'jankx')
+        })
+      }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ButtonGroup, {
+          className: "jankx-filter-type-selector",
+          children: [{
+            key: 'taxonomy',
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Taxonomy', 'jankx')
+          }, {
+            key: 'meta',
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Meta', 'jankx')
+          }, {
+            key: 'preset',
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Preset', 'jankx')
+          }, {
+            key: 'custom',
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Custom', 'jankx')
+          }].map(({
+            key,
+            label
+          }) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+            isPrimary: activeFilterType === key,
+            onClick: () => setActiveFilterType(key),
+            children: label
+          }, key))
+        }), activeFilterType === 'taxonomy' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+          className: "jankx-filter-section",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+            className: "jankx-filter-section-header",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("h4", {
+              children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Taxonomy Filters', 'jankx')
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+              icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__["default"],
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Add Taxonomy Filter', 'jankx'),
+              onClick: addTaxonomyFilter,
+              isPrimary: true,
+              small: true
+            })]
+          }), Object.entries(taxonomyFilters).map(([filterId, filter]) => renderTaxonomyFilter(filterId, filter)), Object.keys(taxonomyFilters).length === 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("p", {
+            className: "jankx-no-filters",
+            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('No taxonomy filters added yet.', 'jankx')
           })]
-        }), Object.entries(taxonomyFilters).map(([filterId, filter]) => renderTaxonomyFilter(filterId, filter)), Object.keys(taxonomyFilters).length === 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("p", {
-          className: "jankx-no-filters",
-          children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('No taxonomy filters added yet.', 'jankx')
-        })]
-      }), activeFilterType === 'meta' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
-        className: "jankx-filter-section",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
-          className: "jankx-filter-section-header",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("h4", {
-            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Meta Filters', 'jankx')
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
-            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__["default"],
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Add Meta Filter', 'jankx'),
-            onClick: addMetaFilter,
-            isPrimary: true,
-            small: true
+        }), activeFilterType === 'meta' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+          className: "jankx-filter-section",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+            className: "jankx-filter-section-header",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("h4", {
+              children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Meta Filters', 'jankx')
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+              icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__["default"],
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Add Meta Filter', 'jankx'),
+              onClick: addMetaFilter,
+              isPrimary: true,
+              small: true
+            })]
+          }), Object.entries(metaFilters).map(([filterId, filter]) => renderMetaFilter(filterId, filter)), Object.keys(metaFilters).length === 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("p", {
+            className: "jankx-no-filters",
+            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('No meta filters added yet.', 'jankx')
           })]
-        }), Object.entries(metaFilters).map(([filterId, filter]) => renderMetaFilter(filterId, filter)), Object.keys(metaFilters).length === 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("p", {
-          className: "jankx-no-filters",
-          children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('No meta filters added yet.', 'jankx')
-        })]
-      }), activeFilterType === 'preset' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
-        className: "jankx-filter-section",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("h4", {
-          children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Preset Filters', 'jankx')
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("p", {
-          className: "jankx-filter-help",
-          children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select from predefined filter presets', 'jankx')
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
-          className: "jankx-preset-filters",
-          children: presetFilterOptions.map(preset => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
-            label: preset.label,
-            checked: presetFilters.includes(preset.value),
-            onChange: checked => {
-              if (checked) {
-                addPresetFilter(preset.value);
-              } else {
-                removePresetFilter(preset.value);
+        }), activeFilterType === 'preset' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+          className: "jankx-filter-section",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("h4", {
+            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Preset Filters', 'jankx')
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("p", {
+            className: "jankx-filter-help",
+            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select from predefined filter presets', 'jankx')
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+            className: "jankx-preset-filters",
+            children: presetFilterOptions.map(preset => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+              label: preset.label,
+              checked: presetFilters.includes(preset.value),
+              onChange: checked => {
+                if (checked) {
+                  addPresetFilter(preset.value);
+                } else {
+                  removePresetFilter(preset.value);
+                }
               }
-            }
-          }, preset.value))
-        })]
-      }), activeFilterType === 'custom' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
-        className: "jankx-filter-section",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
-          className: "jankx-filter-section-header",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("h4", {
-            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Custom Filters', 'jankx')
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
-            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__["default"],
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Add Custom Filter', 'jankx'),
-            onClick: addCustomFilter,
-            isPrimary: true,
-            small: true
+            }, preset.value))
           })]
-        }), Object.entries(customFilters).map(([filterId, filter]) => renderCustomFilter(filterId, filter)), Object.keys(customFilters).length === 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("p", {
-          className: "jankx-no-filters",
-          children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('No custom filters added yet.', 'jankx')
+        }), activeFilterType === 'custom' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+          className: "jankx-filter-section",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+            className: "jankx-filter-section-header",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("h4", {
+              children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Custom Filters', 'jankx')
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+              icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__["default"],
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Add Custom Filter', 'jankx'),
+              onClick: addCustomFilter,
+              isPrimary: true,
+              small: true
+            })]
+          }), Object.entries(customFilters).map(([filterId, filter]) => renderCustomFilter(filterId, filter)), Object.keys(customFilters).length === 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("p", {
+            className: "jankx-no-filters",
+            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('No custom filters added yet.', 'jankx')
+          })]
         })]
-      })]
+      })
     })
   });
 }
@@ -692,6 +936,7 @@ function QueryControls({
   onUpdate
 }) {
   const {
+    useDefaultQuery,
     postType,
     postsPerPage,
     orderBy,
@@ -739,48 +984,61 @@ function QueryControls({
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelBody, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Query Settings', 'jankx'),
     initialOpen: true,
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Post Type', 'jankx'),
-      value: postType,
-      options: postTypeOptions,
-      onChange: value => onUpdate('postType', value),
-      help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select the post type to display', 'jankx')
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.RangeControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Posts Per Page', 'jankx'),
-      value: postsPerPage,
-      onChange: value => onUpdate('postsPerPage', value),
-      min: 1,
-      max: 100,
-      help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Number of posts to display per page', 'jankx')
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Order By', 'jankx'),
-      value: orderBy,
-      options: orderByOptions,
-      onChange: value => onUpdate('orderBy', value),
-      help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Sort posts by this field', 'jankx')
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Order', 'jankx'),
-      value: order,
-      options: orderOptions,
-      onChange: value => onUpdate('order', value),
-      help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Sort order (ascending or descending)', 'jankx')
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.RangeControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Offset', 'jankx'),
-      value: offset,
-      onChange: value => onUpdate('offset', value),
-      min: 0,
-      max: 1000,
-      help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Number of posts to skip', 'jankx')
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TextControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Include Posts', 'jankx'),
-      value: include.join(', '),
-      onChange: value => onUpdate('include', value.split(',').map(id => id.trim()).filter(Boolean)),
-      help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Comma-separated list of post IDs to include', 'jankx')
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TextControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Exclude Posts', 'jankx'),
-      value: exclude.join(', '),
-      onChange: value => onUpdate('exclude', value.split(',').map(id => id.trim()).filter(Boolean)),
-      help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Comma-separated list of post IDs to exclude', 'jankx')
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Use Default Page Query', 'jankx'),
+      checked: !!useDefaultQuery,
+      onChange: value => onUpdate('useDefaultQuery', value),
+      help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Use the default query from the current page instead of custom query', 'jankx')
+    }), !useDefaultQuery && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Post Type', 'jankx'),
+        value: postType,
+        options: postTypeOptions,
+        onChange: value => onUpdate('postType', value),
+        help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select the post type to display', 'jankx')
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.RangeControl, {
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Posts Per Page', 'jankx'),
+        value: postsPerPage,
+        onChange: value => onUpdate('postsPerPage', value),
+        min: 1,
+        max: 100,
+        help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Number of posts to display per page', 'jankx')
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Order By', 'jankx'),
+        value: orderBy,
+        options: orderByOptions,
+        onChange: value => onUpdate('orderBy', value),
+        help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Sort posts by this field', 'jankx')
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Order', 'jankx'),
+        value: order,
+        options: orderOptions,
+        onChange: value => onUpdate('order', value),
+        help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Sort order (ascending or descending)', 'jankx')
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.RangeControl, {
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Offset', 'jankx'),
+        value: offset,
+        onChange: value => onUpdate('offset', value),
+        min: 0,
+        max: 1000,
+        help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Number of posts to skip', 'jankx')
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TextControl, {
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Include Posts', 'jankx'),
+        value: include.join(', '),
+        onChange: value => onUpdate('include', value.split(',').map(id => id.trim()).filter(Boolean)),
+        help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Comma-separated list of post IDs to include', 'jankx')
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TextControl, {
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Exclude Posts', 'jankx'),
+        value: exclude.join(', '),
+        onChange: value => onUpdate('exclude', value.split(',').map(id => id.trim()).filter(Boolean)),
+        help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Comma-separated list of post IDs to exclude', 'jankx')
+      })]
+    }), useDefaultQuery && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+      className: "jankx-default-query-info",
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("p", {
+        className: "jankx-help-text",
+        children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('This block will use the default query from the current page. Custom query settings are disabled.', 'jankx')
+      })
     })]
   });
 }
@@ -1409,15 +1667,103 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const ALLOWED_BLOCKS = ['core/post-template', 'core/query-pagination', 'core/query-no-results', 'core/post-title', 'core/post-excerpt', 'core/post-featured-image', 'core/post-date', 'core/post-author', 'core/post-terms', 'core/read-more', 'jankx/icon-picker', 'jankx/icon-button'];
-const TEMPLATE = [['core/post-template', {}, [['core/post-featured-image', {}], ['core/post-title', {
-  level: 2
-}], ['core/post-excerpt', {}], ['core/read-more', {}]]], ['core/query-pagination', {}], ['core/query-no-results', {}]];
+// Removed ALLOWED_BLOCKS and TEMPLATE - using display options instead
+
+function PreviewContent({
+  attributes,
+  isPreview = false
+}) {
+  const [content, setContent] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)('');
+  const [loading, setLoading] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(true);
+  const [error, setError] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)('');
+  const {
+    postType,
+    postsPerPage,
+    orderBy,
+    order,
+    offset,
+    exclude,
+    include,
+    taxonomyFilters,
+    metaFilters,
+    layout,
+    displayOptions
+  } = attributes;
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
+    const fetchPreview = async () => {
+      setLoading(true);
+      setError('');
+      try {
+        const params = new URLSearchParams({
+          action: 'jankx-post-layout-fetch-data',
+          post_type: postType || 'post',
+          engine_id: 'jankx',
+          layout: layout?.type || 'grid',
+          posts_per_page: String(postsPerPage || 6),
+          order_by: orderBy || 'date',
+          order: order || 'DESC',
+          offset: String(offset || 0)
+        });
+
+        // Add filters if present
+        if (taxonomyFilters && Object.keys(taxonomyFilters).length > 0) {
+          params.append('taxonomy_filters', JSON.stringify(taxonomyFilters));
+        }
+        if (metaFilters && Object.keys(metaFilters).length > 0) {
+          params.append('meta_filters', JSON.stringify(metaFilters));
+        }
+        if (include && include.length > 0) {
+          params.append('include', JSON.stringify(include));
+        }
+        if (exclude && exclude.length > 0) {
+          params.append('exclude', JSON.stringify(exclude));
+        }
+        const response = await fetch(`${window.ajaxurl}?${params.toString()}`);
+        const data = await response.json();
+        if (data.success && data.data && data.data.content) {
+          setContent(data.data.content);
+        } else {
+          setError(data.data || 'Failed to load preview');
+        }
+      } catch (err) {
+        setError('Error fetching preview: ' + err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPreview();
+  }, [postType, postsPerPage, orderBy, order, offset, exclude, include, taxonomyFilters, metaFilters, layout]);
+  if (loading) {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
+      className: "jankx-post-layout-preview-loading",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
+        className: "jankx-post-layout-preview-loading__spinner"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("p", {
+        children: "\u0110ang t\u1EA3i preview..."
+      })]
+    });
+  }
+  if (error) {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
+      className: "jankx-post-layout-preview-error",
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("p", {
+        children: ["L\u1ED7i preview: ", error]
+      })
+    });
+  }
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
+    className: "jankx-post-layout-preview",
+    dangerouslySetInnerHTML: {
+      __html: content
+    }
+  });
+}
 function Edit({
   attributes,
   setAttributes
 }) {
   const {
+    useDefaultQuery,
     postType,
     postsPerPage,
     orderBy,
@@ -1430,6 +1776,7 @@ function Edit({
     presetFilters,
     customFilters,
     displayOptions,
+    pagination,
     styling,
     responsive
   } = attributes;
@@ -1468,6 +1815,7 @@ function Edit({
       case 'query':
         return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_components_QueryControls__WEBPACK_IMPORTED_MODULE_7__["default"], {
           attributes: {
+            useDefaultQuery,
             postType,
             postsPerPage,
             orderBy,
@@ -1482,6 +1830,7 @@ function Edit({
       case 'filters':
         return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_components_FilterBuilder__WEBPACK_IMPORTED_MODULE_8__["default"], {
           attributes: {
+            useDefaultQuery,
             taxonomyFilters,
             metaFilters,
             presetFilters,
@@ -1493,7 +1842,11 @@ function Edit({
         });
       case 'display':
         return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_components_DisplayOptions__WEBPACK_IMPORTED_MODULE_9__["default"], {
-          displayOptions: displayOptions,
+          attributes: {
+            useDefaultQuery,
+            displayOptions,
+            pagination
+          },
           onUpdate: updateAttribute
         });
       case 'styling':
@@ -1515,6 +1868,7 @@ function Edit({
         setIsLoadingPreview(true);
         const params = new URLSearchParams({
           action: 'jankx-post-layout-fetch-data',
+          use_default_query: useDefaultQuery ? '1' : '0',
           post_type: postType || 'post',
           // Jankx engine id is 'jankx'
           engine_id: 'jankx',
@@ -1525,22 +1879,25 @@ function Edit({
           offset: String(offset || 0)
         });
 
-        // Add include/exclude posts if provided
-        if (include && include.length > 0) {
-          params.append('include', JSON.stringify(include));
-        }
-        if (exclude && exclude.length > 0) {
-          params.append('exclude', JSON.stringify(exclude));
-        }
+        // Only add custom query parameters if not using default query
+        if (!useDefaultQuery) {
+          // Add include/exclude posts if provided
+          if (include && include.length > 0) {
+            params.append('include', JSON.stringify(include));
+          }
+          if (exclude && exclude.length > 0) {
+            params.append('exclude', JSON.stringify(exclude));
+          }
 
-        // Add taxonomy filters if provided
-        if (taxonomyFilters && Object.keys(taxonomyFilters).length > 0) {
-          params.append('taxonomy_filters', JSON.stringify(taxonomyFilters));
-        }
+          // Add taxonomy filters if provided
+          if (taxonomyFilters && Object.keys(taxonomyFilters).length > 0) {
+            params.append('taxonomy_filters', JSON.stringify(taxonomyFilters));
+          }
 
-        // Add meta filters if provided
-        if (metaFilters && Object.keys(metaFilters).length > 0) {
-          params.append('meta_filters', JSON.stringify(metaFilters));
+          // Add meta filters if provided
+          if (metaFilters && Object.keys(metaFilters).length > 0) {
+            params.append('meta_filters', JSON.stringify(metaFilters));
+          }
         }
         const ajaxUrl = window.ajaxurl || '/wp-admin/admin-ajax.php';
         const res = await fetch(`${ajaxUrl}?${params.toString()}`, {
@@ -1573,41 +1930,14 @@ function Edit({
     doFetch();
     return () => controller.abort();
     // Re-fetch when key attributes affecting query/layout change
-  }, [postType, postsPerPage, orderBy, order, offset, JSON.stringify(include), JSON.stringify(exclude), JSON.stringify(taxonomyFilters), JSON.stringify(metaFilters), styling?.viewType]);
+  }, [useDefaultQuery, postType, postsPerPage, orderBy, order, offset, JSON.stringify(include), JSON.stringify(exclude), JSON.stringify(taxonomyFilters), JSON.stringify(metaFilters), styling?.viewType]);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.Fragment, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
       ...blockProps,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
-        className: "jankx-post-layout__header",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("h3", {
-          className: "jankx-post-layout__title",
-          children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Post Layout', 'jankx')
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
-          className: "jankx-post-layout__info",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("span", {
-            className: "jankx-post-layout__post-type",
-            children: postType || 'post'
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("span", {
-            className: "jankx-post-layout__count",
-            children: fetchInfo.foundPosts !== undefined ? `${fetchInfo.foundPosts} / ${fetchInfo.totalPosts} ${(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('posts', 'jankx')}` : `${postsPerPage} ${(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('posts', 'jankx')}`
-          }), fetchInfo.maxPages > 1 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("span", {
-            className: "jankx-post-layout__pages",
-            children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Pages:', 'jankx'), " ", fetchInfo.maxPages]
-          }), isLoadingPreview && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("span", {
-            className: "jankx-post-layout__loading",
-            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Loading...', 'jankx')
-          })]
-        })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
-        className: "jankx-post-layout__content",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InnerBlocks, {
-          allowedBlocks: ALLOWED_BLOCKS
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-          ,
-          template: TEMPLATE,
-          templateLock: false
-        })
-      })]
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(PreviewContent, {
+        attributes: attributes,
+        isPreview: true
+      })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
         className: "jankx-post-layout__inspector",
@@ -1666,6 +1996,10 @@ function Edit({
     reusable: true
   },
   attributes: {
+    useDefaultQuery: {
+      type: 'boolean',
+      default: false
+    },
     postType: {
       type: 'string',
       default: 'post'
@@ -1717,6 +2051,40 @@ function Edit({
         showTitle: true,
         showExcerpt: true,
         showMeta: true
+      }
+    },
+    pagination: {
+      type: 'object',
+      default: {
+        enabled: true,
+        type: 'numbers',
+        maxNumbers: 10,
+        showFirstLast: false,
+        showEllipsis: true,
+        showCurrentPage: true,
+        ellipsisPosition: 'both',
+        prevText: 'Previous',
+        nextText: 'Next',
+        showIcons: true,
+        showPageInfo: false,
+        loadMoreText: 'Load More',
+        loadingText: 'Loading...',
+        noMoreText: 'No More Posts',
+        postsPerLoad: 6,
+        showSpinner: true,
+        hideWhenComplete: true,
+        triggerDistance: 100,
+        showLoadingIndicator: true,
+        showBackToTop: false,
+        loadingMessage: 'Loading more posts...',
+        completeMessage: 'All posts loaded',
+        ajax: false,
+        updateURL: true,
+        scrollToTop: false,
+        showLoadingState: true,
+        keyboardNav: false,
+        touchSupport: false,
+        animationDuration: 300
       }
     },
     styling: {

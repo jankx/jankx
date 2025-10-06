@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
-import { useBlockProps, InspectorControls, InnerBlocks } from '@wordpress/block-editor';
+import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { ButtonGroup, Button } from '@wordpress/components';
 import { useState, useEffect } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
@@ -14,6 +14,7 @@ import StylingControls from './components/StylingControls';
 type OrderDirection = 'ASC' | 'DESC';
 
 interface DynamicCollectionAttributes {
+    useDefaultQuery: boolean;
     postType: string;
     postsPerPage: number;
     orderBy: string;
@@ -26,6 +27,7 @@ interface DynamicCollectionAttributes {
     presetFilters: unknown[];
     customFilters: unknown[];
     displayOptions: Record<string, unknown>;
+    pagination: Record<string, unknown>;
     styling: Record<string, unknown>;
     responsive: Record<string, unknown>;
 }
@@ -36,34 +38,109 @@ interface EditProps {
     clientId: string;
 }
 
-const ALLOWED_BLOCKS: string[] = [
-    'core/post-template',
-    'core/query-pagination',
-    'core/query-no-results',
-    'core/post-title',
-    'core/post-excerpt',
-    'core/post-featured-image',
-    'core/post-date',
-    'core/post-author',
-    'core/post-terms',
-    'core/read-more',
-    'jankx/icon-picker',
-    'jankx/icon-button'
-];
+// Removed ALLOWED_BLOCKS and TEMPLATE - using display options instead
 
-const TEMPLATE: any[] = [
-    ['core/post-template', {}, [
-        ['core/post-featured-image', {}],
-        ['core/post-title', { level: 2 }],
-        ['core/post-excerpt', {}],
-        ['core/read-more', {}]
-    ]],
-    ['core/query-pagination', {}],
-    ['core/query-no-results', {}]
-];
+interface PreviewContentProps {
+    attributes: DynamicCollectionAttributes;
+    isPreview?: boolean;
+}
+
+function PreviewContent({ attributes, isPreview = false }: PreviewContentProps): JSX.Element {
+    const [content, setContent] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string>('');
+
+    const {
+        postType,
+        postsPerPage,
+        orderBy,
+        order,
+        offset,
+        exclude,
+        include,
+        taxonomyFilters,
+        metaFilters,
+        layout,
+        displayOptions
+    } = attributes;
+
+    useEffect(() => {
+        const fetchPreview = async () => {
+            setLoading(true);
+            setError('');
+
+            try {
+                const params = new URLSearchParams({
+                    action: 'jankx-post-layout-fetch-data',
+                    post_type: postType || 'post',
+                    engine_id: 'jankx',
+                    layout: layout?.type || 'grid',
+                    posts_per_page: String(postsPerPage || 6),
+                    order_by: orderBy || 'date',
+                    order: order || 'DESC',
+                    offset: String(offset || 0),
+                });
+
+                // Add filters if present
+                if (taxonomyFilters && Object.keys(taxonomyFilters).length > 0) {
+                    params.append('taxonomy_filters', JSON.stringify(taxonomyFilters));
+                }
+                if (metaFilters && Object.keys(metaFilters).length > 0) {
+                    params.append('meta_filters', JSON.stringify(metaFilters));
+                }
+                if (include && include.length > 0) {
+                    params.append('include', JSON.stringify(include));
+                }
+                if (exclude && exclude.length > 0) {
+                    params.append('exclude', JSON.stringify(exclude));
+                }
+
+                const response = await fetch(`${window.ajaxurl}?${params.toString()}`);
+                const data = await response.json();
+
+                if (data.success && data.data && data.data.content) {
+                    setContent(data.data.content);
+                } else {
+                    setError(data.data || 'Failed to load preview');
+                }
+            } catch (err) {
+                setError('Error fetching preview: ' + (err as Error).message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchPreview();
+    }, [postType, postsPerPage, orderBy, order, offset, exclude, include, taxonomyFilters, metaFilters, layout]);
+
+    if (loading) {
+        return (
+            <div className="jankx-post-layout-preview-loading">
+                <div className="jankx-post-layout-preview-loading__spinner"></div>
+                <p>Đang tải preview...</p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="jankx-post-layout-preview-error">
+                <p>Lỗi preview: {error}</p>
+            </div>
+        );
+    }
+
+    return (
+        <div
+            className="jankx-post-layout-preview"
+            dangerouslySetInnerHTML={{ __html: content }}
+        />
+    );
+}
 
 function Edit({ attributes, setAttributes }: EditProps): JSX.Element {
     const {
+        useDefaultQuery,
         postType,
         postsPerPage,
         orderBy,
@@ -76,6 +153,7 @@ function Edit({ attributes, setAttributes }: EditProps): JSX.Element {
         presetFilters,
         customFilters,
         displayOptions,
+        pagination,
         styling,
         responsive
     } = attributes;
@@ -108,6 +186,7 @@ function Edit({ attributes, setAttributes }: EditProps): JSX.Element {
                 return (
                     <QueryControls
                         attributes={{
+                            useDefaultQuery,
                             postType,
                             postsPerPage,
                             orderBy,
@@ -124,6 +203,7 @@ function Edit({ attributes, setAttributes }: EditProps): JSX.Element {
                 return (
                     <FilterBuilder
                         attributes={{
+                            useDefaultQuery,
                             taxonomyFilters,
                             metaFilters,
                             presetFilters,
@@ -137,7 +217,11 @@ function Edit({ attributes, setAttributes }: EditProps): JSX.Element {
             case 'display':
                 return (
                     <DisplayOptions
-                        displayOptions={displayOptions}
+                        attributes={{
+                            useDefaultQuery,
+                            displayOptions,
+                            pagination
+                        }}
                         onUpdate={updateAttribute}
                     />
                 );
@@ -162,6 +246,7 @@ function Edit({ attributes, setAttributes }: EditProps): JSX.Element {
                 setIsLoadingPreview(true);
                 const params = new URLSearchParams({
                     action: 'jankx-post-layout-fetch-data',
+                    use_default_query: useDefaultQuery ? '1' : '0',
                     post_type: postType || 'post',
                     // Jankx engine id is 'jankx'
                     engine_id: 'jankx',
@@ -172,22 +257,25 @@ function Edit({ attributes, setAttributes }: EditProps): JSX.Element {
                     offset: String(offset || 0),
                 });
 
-                // Add include/exclude posts if provided
-                if (include && include.length > 0) {
-                    params.append('include', JSON.stringify(include));
-                }
-                if (exclude && exclude.length > 0) {
-                    params.append('exclude', JSON.stringify(exclude));
-                }
+                // Only add custom query parameters if not using default query
+                if (!useDefaultQuery) {
+                    // Add include/exclude posts if provided
+                    if (include && include.length > 0) {
+                        params.append('include', JSON.stringify(include));
+                    }
+                    if (exclude && exclude.length > 0) {
+                        params.append('exclude', JSON.stringify(exclude));
+                    }
 
-                // Add taxonomy filters if provided
-                if (taxonomyFilters && Object.keys(taxonomyFilters).length > 0) {
-                    params.append('taxonomy_filters', JSON.stringify(taxonomyFilters));
-                }
+                    // Add taxonomy filters if provided
+                    if (taxonomyFilters && Object.keys(taxonomyFilters).length > 0) {
+                        params.append('taxonomy_filters', JSON.stringify(taxonomyFilters));
+                    }
 
-                // Add meta filters if provided
-                if (metaFilters && Object.keys(metaFilters).length > 0) {
-                    params.append('meta_filters', JSON.stringify(metaFilters));
+                    // Add meta filters if provided
+                    if (metaFilters && Object.keys(metaFilters).length > 0) {
+                        params.append('meta_filters', JSON.stringify(metaFilters));
+                    }
                 }
                 const ajaxUrl = (window as any).ajaxurl || '/wp-admin/admin-ajax.php';
                 const res = await fetch(`${ajaxUrl}?${params.toString()}`, { signal: controller.signal, credentials: 'same-origin' });
@@ -218,46 +306,15 @@ function Edit({ attributes, setAttributes }: EditProps): JSX.Element {
         doFetch();
         return () => controller.abort();
         // Re-fetch when key attributes affecting query/layout change
-    }, [postType, postsPerPage, orderBy, order, offset, JSON.stringify(include), JSON.stringify(exclude), JSON.stringify(taxonomyFilters), JSON.stringify(metaFilters), (styling as any)?.viewType]);
+    }, [useDefaultQuery, postType, postsPerPage, orderBy, order, offset, JSON.stringify(include), JSON.stringify(exclude), JSON.stringify(taxonomyFilters), JSON.stringify(metaFilters), (styling as any)?.viewType]);
 
     return (
         <>
             <div {...blockProps}>
-                <div className="jankx-post-layout__header">
-                    <h3 className="jankx-post-layout__title">
-                        {__('Post Layout', 'jankx')}
-                    </h3>
-                    <div className="jankx-post-layout__info">
-                        <span className="jankx-post-layout__post-type">
-                            {postType || 'post'}
-                        </span>
-                        <span className="jankx-post-layout__count">
-                            {fetchInfo.foundPosts !== undefined ?
-                                `${fetchInfo.foundPosts} / ${fetchInfo.totalPosts} ${__('posts', 'jankx')}` :
-                                `${postsPerPage} ${__('posts', 'jankx')}`
-                            }
-                        </span>
-                        {fetchInfo.maxPages > 1 && (
-                            <span className="jankx-post-layout__pages">
-                                {__('Pages:', 'jankx')} {fetchInfo.maxPages}
-                            </span>
-                        )}
-                        {isLoadingPreview && (
-                            <span className="jankx-post-layout__loading">
-                                {__('Loading...', 'jankx')}
-                            </span>
-                        )}
-                    </div>
-                </div>
-
-                <div className="jankx-post-layout__content">
-                    <InnerBlocks
-                        allowedBlocks={ALLOWED_BLOCKS}
-                        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                        template={TEMPLATE}
-                        templateLock={false}
-                    />
-                </div>
+                <PreviewContent
+                    attributes={attributes}
+                    isPreview={true}
+                />
             </div>
 
             <InspectorControls>
@@ -312,6 +369,7 @@ registerBlockType('jankx/post-layout', {
         reusable: true
     },
     attributes: {
+        useDefaultQuery: { type: 'boolean', default: false },
         postType: { type: 'string', default: 'post' },
         postsPerPage: { type: 'number', default: 6 },
         orderBy: { type: 'string', default: 'date' },
@@ -324,6 +382,7 @@ registerBlockType('jankx/post-layout', {
         presetFilters: { type: 'array', default: [] },
         customFilters: { type: 'array', default: [] },
         displayOptions: { type: 'object', default: { showImage: true, showTitle: true, showExcerpt: true, showMeta: true } },
+        pagination: { type: 'object', default: { enabled: true, type: 'numbers', maxNumbers: 10, showFirstLast: false, showEllipsis: true, showCurrentPage: true, ellipsisPosition: 'both', prevText: 'Previous', nextText: 'Next', showIcons: true, showPageInfo: false, loadMoreText: 'Load More', loadingText: 'Loading...', noMoreText: 'No More Posts', postsPerLoad: 6, showSpinner: true, hideWhenComplete: true, triggerDistance: 100, showLoadingIndicator: true, showBackToTop: false, loadingMessage: 'Loading more posts...', completeMessage: 'All posts loaded', ajax: false, updateURL: true, scrollToTop: false, showLoadingState: true, keyboardNav: false, touchSupport: false, animationDuration: 300 } },
         styling: { type: 'object', default: { viewType: 'grid', hoverEffect: 'lift', borderRadius: 8, shadow: 'medium' } },
         responsive: { type: 'object', default: { mobile: true, tablet: true, desktop: true } }
     },

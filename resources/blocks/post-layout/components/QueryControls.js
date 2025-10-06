@@ -3,6 +3,7 @@ import { PanelBody, SelectControl, RangeControl, TextControl, ToggleControl } fr
 
 export default function QueryControls({ attributes, postTypes, onUpdate }) {
     const {
+        useDefaultQuery,
         postType,
         postsPerPage,
         orderBy,
@@ -35,61 +36,80 @@ export default function QueryControls({ attributes, postTypes, onUpdate }) {
 
     return (
         <PanelBody title={__('Query Settings', 'jankx')} initialOpen={true}>
-            <SelectControl
-                label={__('Post Type', 'jankx')}
-                value={postType}
-                options={postTypeOptions}
-                onChange={(value) => onUpdate('postType', value)}
-                help={__('Select the post type to display', 'jankx')}
+            <ToggleControl
+                label={__('Use Default Page Query', 'jankx')}
+                checked={!!useDefaultQuery}
+                onChange={(value) => onUpdate('useDefaultQuery', value)}
+                help={__('Use the default query from the current page instead of custom query', 'jankx')}
             />
 
-            <RangeControl
-                label={__('Posts Per Page', 'jankx')}
-                value={postsPerPage}
-                onChange={(value) => onUpdate('postsPerPage', value)}
-                min={1}
-                max={100}
-                help={__('Number of posts to display per page', 'jankx')}
-            />
+            {!useDefaultQuery && (
+                <>
+                    <SelectControl
+                        label={__('Post Type', 'jankx')}
+                        value={postType}
+                        options={postTypeOptions}
+                        onChange={(value) => onUpdate('postType', value)}
+                        help={__('Select the post type to display', 'jankx')}
+                    />
 
-            <SelectControl
-                label={__('Order By', 'jankx')}
-                value={orderBy}
-                options={orderByOptions}
-                onChange={(value) => onUpdate('orderBy', value)}
-                help={__('Sort posts by this field', 'jankx')}
-            />
+                    <RangeControl
+                        label={__('Posts Per Page', 'jankx')}
+                        value={postsPerPage}
+                        onChange={(value) => onUpdate('postsPerPage', value)}
+                        min={1}
+                        max={100}
+                        help={__('Number of posts to display per page', 'jankx')}
+                    />
 
-            <SelectControl
-                label={__('Order', 'jankx')}
-                value={order}
-                options={orderOptions}
-                onChange={(value) => onUpdate('order', value)}
-                help={__('Sort order (ascending or descending)', 'jankx')}
-            />
+                    <SelectControl
+                        label={__('Order By', 'jankx')}
+                        value={orderBy}
+                        options={orderByOptions}
+                        onChange={(value) => onUpdate('orderBy', value)}
+                        help={__('Sort posts by this field', 'jankx')}
+                    />
 
-            <RangeControl
-                label={__('Offset', 'jankx')}
-                value={offset}
-                onChange={(value) => onUpdate('offset', value)}
-                min={0}
-                max={1000}
-                help={__('Number of posts to skip', 'jankx')}
-            />
+                    <SelectControl
+                        label={__('Order', 'jankx')}
+                        value={order}
+                        options={orderOptions}
+                        onChange={(value) => onUpdate('order', value)}
+                        help={__('Sort order (ascending or descending)', 'jankx')}
+                    />
 
-            <TextControl
-                label={__('Include Posts', 'jankx')}
-                value={include.join(', ')}
-                onChange={(value) => onUpdate('include', value.split(',').map(id => id.trim()).filter(Boolean))}
-                help={__('Comma-separated list of post IDs to include', 'jankx')}
-            />
+                    <RangeControl
+                        label={__('Offset', 'jankx')}
+                        value={offset}
+                        onChange={(value) => onUpdate('offset', value)}
+                        min={0}
+                        max={1000}
+                        help={__('Number of posts to skip', 'jankx')}
+                    />
 
-            <TextControl
-                label={__('Exclude Posts', 'jankx')}
-                value={exclude.join(', ')}
-                onChange={(value) => onUpdate('exclude', value.split(',').map(id => id.trim()).filter(Boolean))}
-                help={__('Comma-separated list of post IDs to exclude', 'jankx')}
-            />
+                    <TextControl
+                        label={__('Include Posts', 'jankx')}
+                        value={include.join(', ')}
+                        onChange={(value) => onUpdate('include', value.split(',').map(id => id.trim()).filter(Boolean))}
+                        help={__('Comma-separated list of post IDs to include', 'jankx')}
+                    />
+
+                    <TextControl
+                        label={__('Exclude Posts', 'jankx')}
+                        value={exclude.join(', ')}
+                        onChange={(value) => onUpdate('exclude', value.split(',').map(id => id.trim()).filter(Boolean))}
+                        help={__('Comma-separated list of post IDs to exclude', 'jankx')}
+                    />
+                </>
+            )}
+
+            {useDefaultQuery && (
+                <div className="jankx-default-query-info">
+                    <p className="jankx-help-text">
+                        {__('This block will use the default query from the current page. Custom query settings are disabled.', 'jankx')}
+                    </p>
+                </div>
+            )}
         </PanelBody>
     );
 }

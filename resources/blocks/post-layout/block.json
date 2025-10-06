@@ -5,8 +5,8 @@
     "title": "Post Layout",
     "category": "jankx",
     "icon": "grid-view",
-    "description": "Hiển thị collection động với khả năng tùy chỉnh query, template và filters",
-    "keywords": ["collection", "posts", "query", "template", "filter"],
+    "description": "Hiển thị collection động với khả năng tùy chỉnh query và filters",
+    "keywords": ["collection", "posts", "query", "filter"],
     "supports": {
         "html": false,
         "align": ["wide", "full"],
@@ -38,16 +38,6 @@
         "postType": {
             "type": "string",
             "default": "post"
-        },
-        "template": {
-            "type": "object",
-            "default": {
-                "type": "grid",
-                "columns": 3,
-                "gap": 20,
-                "equalHeights": false,
-                "responsive": true
-            }
         },
         "postsPerPage": {
             "type": "number",
@@ -169,6 +159,7 @@
     },
     "textdomain": "jankx",
     "editorScript": "file:./build/index.js",
+    "viewScript": "file:./frontend.js",
     "style": "file:./build/index.css",
     "editorStyle": "file:./build/index.css",
     "save": "file:./build/save.js"

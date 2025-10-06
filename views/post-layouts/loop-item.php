@@ -1,45 +1,53 @@
 <?php
+/**
+ * Post Layout Loop Item Template
+ *
+ * This template is used to render individual post items in post layouts.
+ */
+
 if (!defined('ABSPATH')) {
     exit('Cheating huh?');
 }
- ?>
-<div <?php post_class($post_classes); ?> <?php echo $attributes; ?>>
-    <?php do_action('jankx_post_layout_before_loop_item', $post, $data_index); ?>
 
-    <?php if ($show_thumbnail) : ?>
-        <?php jankx_template('post-layouts/thumbnail', [
-            'post' => $post,
-            'data_index' => $data_index,
-            'thumbnail_size' => $thumbnail_size
-        ]); ?>
+// Set default values for template variables
+$post_classes = isset($post_classes) ? $post_classes : ['post-item'];
+$attributes = isset($attributes) ? $attributes : '';
+$show_thumbnail = isset($show_thumbnail) ? $show_thumbnail : true;
+$show_title = isset($show_title) ? $show_title : true;
+$show_excerpt = isset($show_excerpt) ? $show_excerpt : true;
+$thumbnail_size = isset($thumbnail_size) ? $thumbnail_size : 'medium';
+$post_title_tag = isset($post_title_tag) ? $post_title_tag : 'h3';
+$data_index = isset($data_index) ? $data_index : 0;
+?>
+<div <?php post_class($post_classes); ?> <?php echo $attributes; ?>>
+    <?php if ($show_thumbnail && has_post_thumbnail($post->ID)) : ?>
+        <div class="post-thumbnail">
+            <a href="<?php echo get_permalink($post->ID); ?>">
+                <?php echo get_the_post_thumbnail($post->ID, $thumbnail_size); ?>
+            </a>
+        </div>
     <?php endif; ?>
 
-    <div class="post-infos">
+    <div class="post-content">
         <?php if ($show_title) : ?>
         <<?php echo $post_title_tag; ?> class="post-title">
-            <a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>"><?php the_title(); ?></a>
+            <a href="<?php echo get_permalink($post->ID); ?>">
+                <?php echo get_the_title($post->ID); ?>
+            </a>
         </<?php echo $post_title_tag; ?>>
         <?php endif; ?>
 
         <?php if ($show_excerpt) : ?>
-        <div class="post-exceprt"><?php the_excerpt(); ?></div>
+        <div class="post-excerpt">
+            <?php echo wp_trim_words(get_the_excerpt($post->ID), 20); ?>
+        </div>
         <?php endif; ?>
-        <?php if (!empty($post_meta_features)) : ?>
-            <ul class="post-metas">
-            <?php foreach ($post_meta_features as $feature => $value) : ?>
-                <li class=<?php echo $feature; ?>>
-                <?php
-                    do_action("jankx_post_layout_meta_before_{$feature}");
 
-                    echo $this->e($this->get_meta_value($value, $feature));
-
-                    do_action("jankx_post_layout_meta_after_{$feature}");
-                ?>
-                </li>
-            <?php endforeach; ?>
-            </ul>
-        <?php endif; ?>
+        <div class="post-meta">
+            <span class="post-date"><?php echo get_the_date('', $post->ID); ?></span>
+            <?php if ($post->post_type !== 'page') : ?>
+                <span class="post-type"><?php echo ucfirst($post->post_type); ?></span>
+            <?php endif; ?>
+        </div>
     </div>
-
-    <?php do_action('jankx_post_layout_after_loop_item', $post, $data_index); ?>
 </div>

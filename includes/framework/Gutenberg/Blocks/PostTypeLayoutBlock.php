@@ -538,11 +538,9 @@ class PostTypeLayoutBlock extends Block
                 error_log("[PostTypeLayoutBlock Debug] Template engine resolved: " . get_class($templateEngine));
             }
 
-            // Get PostLayoutManager instance
-            $postLayoutManager = PostLayoutManager::getInstance($engineId);
-            if (!$postLayoutManager) {
-                $postLayoutManager = PostLayoutManager::createInstance($templateEngine);
-            }
+            // Get PostLayoutManager instance from container
+            $jankxApp = \Jankx\Foundation\Application::getInstance();
+            $postLayoutManager = $jankxApp->make('postlayout.manager');
 
             // Create WP_Query
             $queryArgs = [
@@ -582,9 +580,19 @@ class PostTypeLayoutBlock extends Block
                 }
             }
 
-            $loopItemLayout = $postLayoutManager->getLoopItemContentByType($loopItemLayoutType);
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log("[PostTypeLayoutBlock Debug] Loop item layout: " . ($loopItemLayout ? get_class($loopItemLayout) : 'null'));
+            try {
+                $loopItemLayout = $postLayoutManager->getLoopItemContentByType($loopItemLayoutType);
+                if (defined('WP_DEBUG') && WP_DEBUG) {
+                    error_log("[PostTypeLayoutBlock Debug] Loop item layout: " . ($loopItemLayout ? get_class($loopItemLayout) : 'null'));
+                }
+            } catch (\InvalidArgumentException $e) {
+                if (defined('WP_DEBUG') && WP_DEBUG) {
+                    error_log("[PostTypeLayoutBlock Debug] Failed to get loop item layout: " . $e->getMessage());
+                }
+                return sprintf(
+                    '<div class="jankx-post-layout-error">%s</div>',
+                    esc_html__('Failed to get loop item layout: ' . $e->getMessage(), 'jankx')
+                );
             }
 
             // Fallback: create DefaultContent directly if manager returns null
@@ -601,6 +609,7 @@ class PostTypeLayoutBlock extends Block
                 error_log("[PostTypeLayoutBlock Debug] PostLayout class: " . $postLayoutClass);
             }
             $postLayout = new $postLayoutClass($wp_query, $loopItemLayout);
+            $postLayout->setTemplateEngine($templateEngine);
             $postLayout->setOptions([
                 'thumbnail_position' => 'top',
                 'thumbnail_size' => 'medium',
@@ -625,7 +634,11 @@ class PostTypeLayoutBlock extends Block
             }
 
             // Fallback: return empty container
-            return sprintf('<div id="%s" class="jankx-post-layout" data-engine-id="%s"></div>', esc_attr($wrapId), esc_attr($engineId));
+            return sprintf('<div id="%s" class="jankx-post-layout" data-engine-id="%s">%s</div>',
+                esc_attr($wrapId),
+                esc_attr($engineId),
+                '<div class="jankx-post-layout-error">' . esc_html__('Failed to render content: ' . $e->getMessage(), 'jankx') . '</div>'
+            );
         }
     }
 }

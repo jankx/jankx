@@ -8,6 +8,8 @@ use Jankx\Support\Providers\ServiceProvider;
 use Jankx\Support\TemplateEngine\TemplateEngineManager;
 use Jankx\Support\TemplateEngine\Engines\PlatesEngine;
 use Jankx\PostLayout\Request\PostsFetcher;
+use Jankx\PostLayout\PostLayoutManager;
+use Jankx\PostLayout\LoopItemContent\DefaultContent;
 
 /**
  * Theme Service Provider
@@ -97,6 +99,7 @@ class ThemeServiceProvider extends ServiceProvider
         $app->alias(TemplateEngineManager::class, 'template.engine');
         $app->alias(PlatesEngine::class, 'template.engine.plates');
         $app->alias(TemplateEngineManager::class, 'template');
+        $app->alias(PlatesEngine::class, 'template.engine.jankx');
 
         error_log("[ThemeServiceProvider Debug] Template engines registered successfully");
     }
@@ -140,6 +143,16 @@ class ThemeServiceProvider extends ServiceProvider
             return new PostsFetcher();
         });
 
+        // Register PostLayoutManager as singleton
+        $app->singleton('postlayout.manager', function (Application $app) {
+            error_log("[ThemeServiceProvider Debug] Creating PostLayoutManager instance");
+            // Get template engine
+            $templateEngine = $app->make('template.engine.jankx');
+
+            // Create PostLayoutManager instance
+            return PostLayoutManager::createInstance($templateEngine);
+        });
+
         error_log("[ThemeServiceProvider Debug] PostLayout services registered successfully");
     }
 
@@ -156,7 +169,7 @@ class ThemeServiceProvider extends ServiceProvider
         // Register loop item layouts
         add_filter('jankx/posts/loop/layouts', function($layouts) {
             error_log("[ThemeServiceProvider Debug] Registering loop item layouts");
-            $layouts['default'] = \Jankx\PostLayout\LoopItemContent\DefaultContent::class;
+            $layouts['default'] = DefaultContent::class;
             error_log("[ThemeServiceProvider Debug] Registered default layout: " . $layouts['default']);
             return $layouts;
         });

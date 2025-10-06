@@ -1,0 +1,41 @@
+{
+    "name": "jankx-advanced-filter",
+    "version": "1.0.0",
+    "description": "Advanced Filter Block for Jankx Theme",
+    "main": "index.tsx",
+    "scripts": {
+        "build": "webpack --mode=production",
+        "dev": "webpack --mode=development --watch",
+        "start": "npm run dev"
+    },
+    "dependencies": {
+        "@wordpress/blocks": "^12.0.0",
+        "@wordpress/components": "^25.0.0",
+        "@wordpress/block-editor": "^12.0.0",
+        "@wordpress/element": "^5.0.0",
+        "@wordpress/i18n": "^4.0.0",
+        "@wordpress/data": "^9.0.0",
+        "jquery": "^3.6.0"
+    },
+    "devDependencies": {
+        "webpack": "^5.88.0",
+        "webpack-cli": "^5.1.0",
+        "typescript": "^5.0.0",
+        "ts-loader": "^9.4.0",
+        "sass": "^1.60.0",
+        "sass-loader": "^13.0.0",
+        "css-loader": "^6.8.0",
+        "style-loader": "^3.3.0",
+        "file-loader": "^6.2.0"
+    },
+    "keywords": [
+        "wordpress",
+        "gutenberg",
+        "block",
+        "filter",
+        "ajax",
+        "jankx"
+    ],
+    "author": "Jankx Team",
+    "license": "GPL-2.0-or-later"
+}

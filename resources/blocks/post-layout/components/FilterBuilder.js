@@ -14,6 +14,7 @@ import { plus, minus, edit, trash } from '@wordpress/icons';
 
 export default function FilterBuilder({ attributes, postType, taxonomies, onUpdate }) {
     const {
+        useDefaultQuery,
         taxonomyFilters,
         metaFilters,
         presetFilters,
@@ -275,122 +276,132 @@ export default function FilterBuilder({ attributes, postType, taxonomies, onUpda
     return (
         <div className="jankx-filter-builder">
             <PanelBody title={__('Filter Builder', 'jankx')} initialOpen={true}>
-                <ButtonGroup className="jankx-filter-type-selector">
-                    {[
-                        { key: 'taxonomy', label: __('Taxonomy', 'jankx') },
-                        { key: 'meta', label: __('Meta', 'jankx') },
-                        { key: 'preset', label: __('Preset', 'jankx') },
-                        { key: 'custom', label: __('Custom', 'jankx') }
-                    ].map(({ key, label }) => (
-                        <Button
-                            key={key}
-                            isPrimary={activeFilterType === key}
-                            onClick={() => setActiveFilterType(key)}
-                        >
-                            {label}
-                        </Button>
-                    ))}
-                </ButtonGroup>
-
-                {activeFilterType === 'taxonomy' && (
-                    <div className="jankx-filter-section">
-                        <div className="jankx-filter-section-header">
-                            <h4>{__('Taxonomy Filters', 'jankx')}</h4>
-                            <Button
-                                icon={plus}
-                                label={__('Add Taxonomy Filter', 'jankx')}
-                                onClick={addTaxonomyFilter}
-                                isPrimary
-                                small
-                            />
-                        </div>
-
-                        {Object.entries(taxonomyFilters).map(([filterId, filter]) =>
-                            renderTaxonomyFilter(filterId, filter)
-                        )}
-
-                        {Object.keys(taxonomyFilters).length === 0 && (
-                            <p className="jankx-no-filters">
-                                {__('No taxonomy filters added yet.', 'jankx')}
-                            </p>
-                        )}
-                    </div>
-                )}
-
-                {activeFilterType === 'meta' && (
-                    <div className="jankx-filter-section">
-                        <div className="jankx-filter-section-header">
-                            <h4>{__('Meta Filters', 'jankx')}</h4>
-                            <Button
-                                icon={plus}
-                                label={__('Add Meta Filter', 'jankx')}
-                                onClick={addMetaFilter}
-                                isPrimary
-                                small
-                            />
-                        </div>
-
-                        {Object.entries(metaFilters).map(([filterId, filter]) =>
-                            renderMetaFilter(filterId, filter)
-                        )}
-
-                        {Object.keys(metaFilters).length === 0 && (
-                            <p className="jankx-no-filters">
-                                {__('No meta filters added yet.', 'jankx')}
-                            </p>
-                        )}
-                    </div>
-                )}
-
-                {activeFilterType === 'preset' && (
-                    <div className="jankx-filter-section">
-                        <h4>{__('Preset Filters', 'jankx')}</h4>
-                        <p className="jankx-filter-help">
-                            {__('Select from predefined filter presets', 'jankx')}
+                {useDefaultQuery ? (
+                    <div className="jankx-default-query-info">
+                        <p className="jankx-help-text">
+                            {__('Filters are disabled when using default page query. Switch to custom query to enable filtering options.', 'jankx')}
                         </p>
-
-                        <div className="jankx-preset-filters">
-                            {presetFilterOptions.map(preset => (
-                                <ToggleControl
-                                    key={preset.value}
-                                    label={preset.label}
-                                    checked={presetFilters.includes(preset.value)}
-                                    onChange={(checked) => {
-                                        if (checked) {
-                                            addPresetFilter(preset.value);
-                                        } else {
-                                            removePresetFilter(preset.value);
-                                        }
-                                    }}
-                                />
+                    </div>
+                ) : (
+                    <>
+                        <ButtonGroup className="jankx-filter-type-selector">
+                            {[
+                                { key: 'taxonomy', label: __('Taxonomy', 'jankx') },
+                                { key: 'meta', label: __('Meta', 'jankx') },
+                                { key: 'preset', label: __('Preset', 'jankx') },
+                                { key: 'custom', label: __('Custom', 'jankx') }
+                            ].map(({ key, label }) => (
+                                <Button
+                                    key={key}
+                                    isPrimary={activeFilterType === key}
+                                    onClick={() => setActiveFilterType(key)}
+                                >
+                                    {label}
+                                </Button>
                             ))}
-                        </div>
-                    </div>
-                )}
+                        </ButtonGroup>
 
-                {activeFilterType === 'custom' && (
-                    <div className="jankx-filter-section">
-                        <div className="jankx-filter-section-header">
-                            <h4>{__('Custom Filters', 'jankx')}</h4>
-                            <Button
-                                icon={plus}
-                                label={__('Add Custom Filter', 'jankx')}
-                                onClick={addCustomFilter}
-                                isPrimary
-                                small
-                            />
-                        </div>
+                        {activeFilterType === 'taxonomy' && (
+                            <div className="jankx-filter-section">
+                                <div className="jankx-filter-section-header">
+                                    <h4>{__('Taxonomy Filters', 'jankx')}</h4>
+                                    <Button
+                                        icon={plus}
+                                        label={__('Add Taxonomy Filter', 'jankx')}
+                                        onClick={addTaxonomyFilter}
+                                        isPrimary
+                                        small
+                                    />
+                                </div>
 
-                        {Object.entries(customFilters).map(([filterId, filter]) =>
-                            renderCustomFilter(filterId, filter)
+                                {Object.entries(taxonomyFilters).map(([filterId, filter]) =>
+                                    renderTaxonomyFilter(filterId, filter)
+                                )}
+
+                                {Object.keys(taxonomyFilters).length === 0 && (
+                                    <p className="jankx-no-filters">
+                                        {__('No taxonomy filters added yet.', 'jankx')}
+                                    </p>
+                                )}
+                            </div>
                         )}
 
-                        {Object.keys(customFilters).length === 0 && (
-                            <p className="jankx-no-filters">
-                                {__('No custom filters added yet.', 'jankx')}
-                            </p>
+                        {activeFilterType === 'meta' && (
+                            <div className="jankx-filter-section">
+                                <div className="jankx-filter-section-header">
+                                    <h4>{__('Meta Filters', 'jankx')}</h4>
+                                    <Button
+                                        icon={plus}
+                                        label={__('Add Meta Filter', 'jankx')}
+                                        onClick={addMetaFilter}
+                                        isPrimary
+                                        small
+                                    />
+                                </div>
+
+                                {Object.entries(metaFilters).map(([filterId, filter]) =>
+                                    renderMetaFilter(filterId, filter)
+                                )}
+
+                                {Object.keys(metaFilters).length === 0 && (
+                                    <p className="jankx-no-filters">
+                                        {__('No meta filters added yet.', 'jankx')}
+                                    </p>
+                                )}
+                            </div>
                         )}
-                    </div>
+
+                        {activeFilterType === 'preset' && (
+                            <div className="jankx-filter-section">
+                                <h4>{__('Preset Filters', 'jankx')}</h4>
+                                <p className="jankx-filter-help">
+                                    {__('Select from predefined filter presets', 'jankx')}
+                                </p>
+
+                                <div className="jankx-preset-filters">
+                                    {presetFilterOptions.map(preset => (
+                                        <ToggleControl
+                                            key={preset.value}
+                                            label={preset.label}
+                                            checked={presetFilters.includes(preset.value)}
+                                            onChange={(checked) => {
+                                                if (checked) {
+                                                    addPresetFilter(preset.value);
+                                                } else {
+                                                    removePresetFilter(preset.value);
+                                                }
+                                            }}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {activeFilterType === 'custom' && (
+                            <div className="jankx-filter-section">
+                                <div className="jankx-filter-section-header">
+                                    <h4>{__('Custom Filters', 'jankx')}</h4>
+                                    <Button
+                                        icon={plus}
+                                        label={__('Add Custom Filter', 'jankx')}
+                                        onClick={addCustomFilter}
+                                        isPrimary
+                                        small
+                                    />
+                                </div>
+
+                                {Object.entries(customFilters).map(([filterId, filter]) =>
+                                    renderCustomFilter(filterId, filter)
+                                )}
+
+                                {Object.keys(customFilters).length === 0 && (
+                                    <p className="jankx-no-filters">
+                                        {__('No custom filters added yet.', 'jankx')}
+                                    </p>
+                                )}
+                            </div>
+                        )}
+                    </>
                 )}
             </PanelBody>
         </div>

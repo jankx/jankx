@@ -3,7 +3,9 @@
 namespace Jankx\Services;
 
 use Jankx\Foundation\Application;
+use Jankx\Gutenberg\Blocks\AdvancedFiltersBlock;
 use Jankx\Gutenberg\Blocks\AdvancedImageBoxBlock;
+use Jankx\Gutenberg\Blocks\ModalBlock;
 use Jankx\Gutenberg\Blocks\PostTypeLayoutBlock;
 use Jankx\Gutenberg\Blocks\DynamicQueryBlock;
 use Jankx\Gutenberg\Blocks\IconPickerBlock;
@@ -127,6 +129,8 @@ class GutenbergService
         $this->repository->registerBlock(AdvancedImageBoxBlock::class);
         $this->repository->registerBlock(MagicTextBlock::class);
         $this->repository->registerBlock(TableOfContentBlock::class);
+        $this->repository->registerBlock(AdvancedFiltersBlock::class);
+        $this->repository->registerBlock(ModalBlock::class);
     }
 
     /**

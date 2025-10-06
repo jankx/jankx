@@ -104,6 +104,11 @@ module.exports = {
     'blocks/table-of-content/build/index': './blocks/table-of-content/src/index.js',
     'blocks/table-of-content/build/style': './blocks/table-of-content/src/style.css',
     'blocks/table-of-content/build/editor': './blocks/table-of-content/src/editor.scss',
+
+    'blocks/modal/build/index': './blocks/modal/index.js',
+    'blocks/modal/build/style': './blocks/modal/style.scss',
+    'blocks/modal/build/editor': './blocks/modal/editor.scss',
+    'blocks/modal/build/view': './blocks/modal/view.js',
   },
   output: {
     path: path.resolve(__dirname),
