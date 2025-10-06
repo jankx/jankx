@@ -166,8 +166,8 @@ function Edit({ attributes, setAttributes }: EditProps): JSX.Element {
     const { postTypes, taxonomies } = useSelect((select: any) => {
         const { getPostTypes, getTaxonomies } = select(coreDataStore);
         return {
-            postTypes: getPostTypes({ per_page: -1 }),
-            taxonomies: getTaxonomies({ per_page: -1 })
+            postTypes: getPostTypes({ per_page: -1 }) || [],
+            taxonomies: getTaxonomies({ per_page: -1 }) || []
         };
     }, []);
 
@@ -250,7 +250,7 @@ function Edit({ attributes, setAttributes }: EditProps): JSX.Element {
                     post_type: postType || 'post',
                     // Jankx engine id is 'jankx'
                     engine_id: 'jankx',
-                    layout: (styling as any)?.viewType || 'grid',
+                    layout: (styling && typeof styling === 'object' && 'viewType' in styling) ? (styling as any).viewType : 'grid',
                     posts_per_page: String(postsPerPage || 6),
                     order_by: orderBy || 'date',
                     order: order || 'DESC',
@@ -306,7 +306,7 @@ function Edit({ attributes, setAttributes }: EditProps): JSX.Element {
         doFetch();
         return () => controller.abort();
         // Re-fetch when key attributes affecting query/layout change
-    }, [useDefaultQuery, postType, postsPerPage, orderBy, order, offset, JSON.stringify(include), JSON.stringify(exclude), JSON.stringify(taxonomyFilters), JSON.stringify(metaFilters), (styling as any)?.viewType]);
+    }, [useDefaultQuery, postType, postsPerPage, orderBy, order, offset, include, exclude, taxonomyFilters, metaFilters, styling]);
 
     return (
         <>

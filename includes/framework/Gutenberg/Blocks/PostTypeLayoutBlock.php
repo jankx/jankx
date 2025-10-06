@@ -629,13 +629,28 @@ class PostTypeLayoutBlock extends Block
                 }
             }
 
+            // Set display options
+            $displayOptions = [];
+            if (isset($attributes['displayOptions'])) {
+                $displayOptions = [
+                    'show_title' => $attributes['displayOptions']['showTitle'] ?? true,
+                    'show_excerpt' => $attributes['displayOptions']['showExcerpt'] ?? true,
+                    'show_meta' => $attributes['displayOptions']['showMeta'] ?? true,
+                    'show_thumbnail' => $attributes['displayOptions']['showThumbnail'] ?? true,
+                    'show_read_more' => $attributes['displayOptions']['showReadMore'] ?? true,
+                    'excerpt_length' => $attributes['displayOptions']['excerptLength'] ?? 20,
+                    'meta_fields' => $attributes['displayOptions']['metaFields'] ?? ['date', 'author', 'categories'],
+                ];
+            }
+
             $allOptions = array_merge([
                 'thumbnail_position' => 'top',
                 'thumbnail_size' => 'medium',
-            ], $paginationOptions);
+            ], $paginationOptions, $displayOptions);
 
             if (defined('WP_DEBUG') && WP_DEBUG) {
                 error_log("[PostTypeLayoutBlock Debug] Pagination options: " . print_r($paginationOptions, true));
+                error_log("[PostTypeLayoutBlock Debug] Display options: " . print_r($displayOptions, true));
                 error_log("[PostTypeLayoutBlock Debug] All options: " . print_r($allOptions, true));
             }
 
@@ -649,8 +664,10 @@ class PostTypeLayoutBlock extends Block
             }
 
             return sprintf(
-                '<div id="%s" class="jankx-post-layout" data-engine-id="%s" data-layout="%s" data-post-type="%s" data-posts-per-page="%d">%s</div>',
+                '<div id="%s" class="jankx-post-layout jankx-layout-%s jankx-post-type-%s" data-engine-id="%s" data-layout="%s" data-post-type="%s" data-posts-per-page="%d">%s</div>',
                 esc_attr($wrapId),
+                esc_attr($layoutName),
+                esc_attr($postType),
                 esc_attr($engineId),
                 esc_attr($layoutName),
                 esc_attr($postType),

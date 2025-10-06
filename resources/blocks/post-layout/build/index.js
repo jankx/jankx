@@ -1112,7 +1112,6 @@ function StylingControls({
     }];
   };
   const viewTypeOptions = getViewTypeOptions();
-  console.log(viewTypeOptions);
   const hoverEffectOptions = [{
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('None', 'jankx'),
     value: 'none'
@@ -1796,10 +1795,10 @@ function Edit({
     return {
       postTypes: getPostTypes({
         per_page: -1
-      }),
+      }) || [],
       taxonomies: getTaxonomies({
         per_page: -1
-      })
+      }) || []
     };
   }, []);
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)({
@@ -1873,7 +1872,7 @@ function Edit({
           post_type: postType || 'post',
           // Jankx engine id is 'jankx'
           engine_id: 'jankx',
-          layout: styling?.viewType || 'grid',
+          layout: styling && typeof styling === 'object' && 'viewType' in styling ? styling.viewType : 'grid',
           posts_per_page: String(postsPerPage || 6),
           order_by: orderBy || 'date',
           order: order || 'DESC',
@@ -1931,7 +1930,7 @@ function Edit({
     doFetch();
     return () => controller.abort();
     // Re-fetch when key attributes affecting query/layout change
-  }, [useDefaultQuery, postType, postsPerPage, orderBy, order, offset, JSON.stringify(include), JSON.stringify(exclude), JSON.stringify(taxonomyFilters), JSON.stringify(metaFilters), styling?.viewType]);
+  }, [useDefaultQuery, postType, postsPerPage, orderBy, order, offset, include, exclude, taxonomyFilters, metaFilters, styling]);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
       ...blockProps,
