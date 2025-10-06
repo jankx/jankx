@@ -482,17 +482,7 @@ class PostTypeLayoutBlock extends Block
      */
     protected function getPostLayoutClass($layoutName)
     {
-        $layoutMap = [
-            'grid' => \Jankx\PostLayout\Layout\Grid::class,
-            'card' => \Jankx\PostLayout\Layout\Card::class,
-            'list' => \Jankx\PostLayout\Layout\ListLayout::class,
-            'carousel' => \Jankx\PostLayout\Layout\Carousel::class,
-            'tabs' => \Jankx\PostLayout\Layout\Tabs::class,
-            'preset1' => \Jankx\PostLayout\Layout\Preset1::class,
-            'preset2' => \Jankx\PostLayout\Layout\Preset2::class,
-            'preset4' => \Jankx\PostLayout\Layout\Preset4::class,
-            'preset6' => \Jankx\PostLayout\Layout\Preset6::class,
-        ];
+        $layoutMap = PostLayoutManager::getLayouts();
 
         return $layoutMap[$layoutName] ?? \Jankx\PostLayout\Layout\Grid::class;
     }
@@ -621,10 +611,35 @@ class PostTypeLayoutBlock extends Block
             }
             $postLayout = new $postLayoutClass($wp_query, $loopItemLayout);
             $postLayout->setTemplateEngine($templateEngine);
-            $postLayout->setOptions([
+
+            // Set pagination options
+            $paginationOptions = [];
+            if (isset($attributes['pagination']['enabled']) && $attributes['pagination']['enabled']) {
+                $paginationOptions['show_paginate'] = true;
+                $paginationOptions['pagination_type'] = $attributes['pagination']['type'] ?? 'numbers';
+                // Thêm các options khác nếu cần
+                if (isset($attributes['pagination']['maxNumbers'])) {
+                    $paginationOptions['max_numbers'] = $attributes['pagination']['maxNumbers'];
+                }
+                if (isset($attributes['pagination']['prevText'])) {
+                    $paginationOptions['prev_text'] = $attributes['pagination']['prevText'];
+                }
+                if (isset($attributes['pagination']['nextText'])) {
+                    $paginationOptions['next_text'] = $attributes['pagination']['nextText'];
+                }
+            }
+
+            $allOptions = array_merge([
                 'thumbnail_position' => 'top',
                 'thumbnail_size' => 'medium',
-            ]);
+            ], $paginationOptions);
+
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log("[PostTypeLayoutBlock Debug] Pagination options: " . print_r($paginationOptions, true));
+                error_log("[PostTypeLayoutBlock Debug] All options: " . print_r($allOptions, true));
+            }
+
+            $postLayout->setOptions($allOptions);
             $postLayout->disableLoopStartLoopEnd();
 
             $renderedContent = $postLayout->render(false);
@@ -634,9 +649,12 @@ class PostTypeLayoutBlock extends Block
             }
 
             return sprintf(
-                '<div id="%s" class="jankx-post-layout" data-engine-id="%s">%s</div>',
+                '<div id="%s" class="jankx-post-layout" data-engine-id="%s" data-layout="%s" data-post-type="%s" data-posts-per-page="%d">%s</div>',
                 esc_attr($wrapId),
                 esc_attr($engineId),
+                esc_attr($layoutName),
+                esc_attr($postType),
+                $perPage,
                 $renderedContent
             );
         } catch (Exception $e) {

@@ -265,7 +265,10 @@ class DefaultThumbnailService
      */
     public function getSupportedPostTypes()
     {
-        return $this->supportedPostTypes;
+        return apply_filters(
+            'jankx/default/thumbnails/post-types',
+            $this->supportedPostTypes
+        );
     }
 
     /**
