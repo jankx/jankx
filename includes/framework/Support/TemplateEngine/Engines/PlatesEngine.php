@@ -82,11 +82,16 @@ class PlatesEngine extends Engine
                 $this->plates = new \League\Plates\Engine($templateDir);
             }
 
-            // Add child theme directory if exists
+            // Add child theme directory for template override
             if (get_template_directory() !== get_stylesheet_directory()) {
                 $childTemplateDir = implode(DIRECTORY_SEPARATOR, [get_stylesheet_directory(), 'views']);
                 if (file_exists($childTemplateDir)) {
+                    // Add child theme directory as override (higher priority)
                     $this->plates->addFolder('child', $childTemplateDir);
+
+                    if (defined('WP_DEBUG') && WP_DEBUG) {
+                        error_log("[PlatesEngine Debug] Child theme template directory added: " . $childTemplateDir);
+                    }
                 }
             }
         }
@@ -112,6 +117,46 @@ class PlatesEngine extends Engine
             error_log("[PlatesEngine Debug] Variables: " . print_r(array_keys($variables), true));
         }
 
+        // Check child theme first
+        if (get_template_directory() !== get_stylesheet_directory()) {
+            $childTemplateDir = implode(DIRECTORY_SEPARATOR, [get_stylesheet_directory(), 'views']);
+            if (file_exists($childTemplateDir)) {
+                $childTemplatePath = implode(DIRECTORY_SEPARATOR, [$childTemplateDir, $template . '.php']);
+                if (file_exists($childTemplatePath)) {
+                    if (defined('WP_DEBUG') && WP_DEBUG) {
+                        error_log("[PlatesEngine Debug] Rendering from child theme: " . $childTemplatePath);
+                    }
+
+                    // Extract variables for template
+                    extract($variables);
+
+                    // Start output buffering
+                    ob_start();
+                    include $childTemplatePath;
+                    $result = ob_get_clean();
+
+                    if (defined('WP_DEBUG') && WP_DEBUG) {
+                        error_log("[PlatesEngine Debug] Child theme render result length: " . strlen($result));
+                        error_log("[PlatesEngine Debug] Child theme render result preview: " . substr($result, 0, 200));
+                    }
+
+                    return $result;
+                }
+            }
+        }
+
+        // Fallback to parent theme
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            // Get actual file path being loaded
+            try {
+                $templatePath = $this->plates->path($template);
+                error_log("[PlatesEngine Debug] Template file path: " . $templatePath);
+                error_log("[PlatesEngine Debug] Template file exists: " . (file_exists($templatePath) ? 'YES' : 'NO'));
+            } catch (\Exception $e) {
+                error_log("[PlatesEngine Debug] Could not resolve template path: " . $e->getMessage());
+            }
+        }
+
         $result = $this->plates->render($template, $variables);
 
         if (defined('WP_DEBUG') && WP_DEBUG) {
@@ -134,7 +179,36 @@ class PlatesEngine extends Engine
             return false;
         }
 
-        return $this->plates->exists($template);
+        // Check child theme first if it exists
+        if (get_template_directory() !== get_stylesheet_directory()) {
+            $childTemplateDir = implode(DIRECTORY_SEPARATOR, [get_stylesheet_directory(), 'views']);
+            if (file_exists($childTemplateDir)) {
+                $childTemplatePath = implode(DIRECTORY_SEPARATOR, [$childTemplateDir, $template . '.php']);
+                if (file_exists($childTemplatePath)) {
+                    if (defined('WP_DEBUG') && WP_DEBUG) {
+                        error_log("[PlatesEngine Debug] Found template in child theme: " . $childTemplatePath);
+                    }
+                    return true;
+                }
+            }
+        }
+
+        $exists = $this->plates->exists($template);
+
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log("[PlatesEngine Debug] Checking template exists: " . $template . " - Result: " . ($exists ? 'YES' : 'NO'));
+
+            if ($exists) {
+                try {
+                    $templatePath = $this->plates->path($template);
+                    error_log("[PlatesEngine Debug] Found template at: " . $templatePath);
+                } catch (\Exception $e) {
+                    error_log("[PlatesEngine Debug] Error getting template path: " . $e->getMessage());
+                }
+            }
+        }
+
+        return $exists;
     }
 
     /**

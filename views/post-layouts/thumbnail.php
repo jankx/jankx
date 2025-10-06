@@ -3,7 +3,7 @@ if (!defined('ABSPATH')) {
     exit('Cheating huh?');
 }
  ?>
-<div <?php echo jankx_generate_html_attributes([
+<div <?php echo \Jankx\PostLayout\Utils::jankx_generate_html_attributes([
     'class' => apply_filters('jankx/thumbnail/classes', ['post-thumbnail'], $post, $data_index),
 ]); ?>>
     <?php do_action('jankx/post_layout/thumbnail/before', $post, $data_index); ?>

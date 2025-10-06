@@ -5,6 +5,6 @@ if (!defined('ABSPATH')) {
  ?>
 <div class="loop-item term-item">
     <?php do_action('jankx_post_layout_before_loop_term_item', $term); ?>
-    <a href="<?= $this->e($term->link()); ?>"><?= $this->e($term->name); ?></a>
+    <a href="<?= esc_url($term->link()); ?>"><?= esc_html($term->name); ?></a>
     <?php do_action('jankx_post_layout_after_loop_term_item', $term); ?>
 </div>
