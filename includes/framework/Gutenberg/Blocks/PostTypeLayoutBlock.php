@@ -35,6 +35,17 @@ class PostTypeLayoutBlock extends Block
     public function init()
     {
         add_action('rest_api_init', [$this, 'registerRestEndpoints']);
+        add_action('admin_head', [$this, 'setupSupportedPostLayouts'], 5);
+    }
+
+
+    public function setupSupportedPostLayouts() {
+        $layouts = PostLayoutManager::getLayouts(['field' => 'names']);
+        ?>
+        <script>
+            window.jankxSupportedPostLayouts = <?php echo wp_json_encode($layouts, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>;
+        </script>
+        <?php
     }
 
     /**

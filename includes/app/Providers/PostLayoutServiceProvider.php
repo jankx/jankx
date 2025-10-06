@@ -55,11 +55,6 @@ class PostLayoutServiceProvider extends ServiceProvider
 
     public function addAjaxNonce()
     {
-        // Only add on frontend
-        if (is_admin()) {
-            return;
-        }
-
         echo '<script type="text/javascript">';
         echo 'window.jankx_ajax = {';
         echo '  url: "' . admin_url('admin-ajax.php') . '",';

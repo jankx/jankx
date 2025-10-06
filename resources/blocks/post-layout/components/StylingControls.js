@@ -11,17 +11,27 @@ export default function StylingControls({ styling, responsive, onUpdate }) {
         onUpdate('responsive', { ...responsive, ...updates });
     };
 
-    const viewTypeOptions = [
-        { label: __('Grid', 'jankx'), value: 'grid' },
-        { label: __('List', 'jankx'), value: 'list' },
-        { label: __('Card', 'jankx'), value: 'card' },
-        { label: __('Masonry', 'jankx'), value: 'masonry' },
-        { label: __('Carousel', 'jankx'), value: 'carousel' },
-        { label: __('Timeline', 'jankx'), value: 'timeline' },
-        { label: __('Magazine', 'jankx'), value: 'magazine' },
-        { label: __('Portfolio', 'jankx'), value: 'portfolio' },
-        { label: __('Blog', 'jankx'), value: 'blog' }
-    ];
+    // Sử dụng biến từ PHP thay vì array cố định
+    const getViewTypeOptions = () => {
+        // Kiểm tra xem biến từ PHP có tồn tại trên window object không
+        if (typeof window.jankxSupportedPostLayouts !== 'undefined' && window.jankxSupportedPostLayouts) {
+            // Chuyển đổi object thành array format cho SelectControl
+            return Object.entries(window.jankxSupportedPostLayouts).map(([value, label]) => ({
+                label: label,
+                value: value
+            }));
+        }
+
+        // Fallback nếu biến không tồn tại
+        return [
+            { label: __('Grid', 'jankx'), value: 'grid' },
+            { label: __('List', 'jankx'), value: 'list' },
+            { label: __('Card', 'jankx'), value: 'card' },
+            { label: __('Carousel', 'jankx'), value: 'carousel' }
+        ];
+    };
+
+    const viewTypeOptions = getViewTypeOptions();
 
     const hoverEffectOptions = [
         { label: __('None', 'jankx'), value: 'none' },

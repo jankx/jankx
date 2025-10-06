@@ -1084,34 +1084,35 @@ function StylingControls({
       ...updates
     });
   };
-  const viewTypeOptions = [{
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Grid', 'jankx'),
-    value: 'grid'
-  }, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('List', 'jankx'),
-    value: 'list'
-  }, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Card', 'jankx'),
-    value: 'card'
-  }, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Masonry', 'jankx'),
-    value: 'masonry'
-  }, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Carousel', 'jankx'),
-    value: 'carousel'
-  }, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Timeline', 'jankx'),
-    value: 'timeline'
-  }, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Magazine', 'jankx'),
-    value: 'magazine'
-  }, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Portfolio', 'jankx'),
-    value: 'portfolio'
-  }, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Blog', 'jankx'),
-    value: 'blog'
-  }];
+
+  // Sử dụng biến từ PHP thay vì array cố định
+  const getViewTypeOptions = () => {
+    // Kiểm tra xem biến từ PHP có tồn tại trên window object không
+    if (typeof window.jankxSupportedPostLayouts !== 'undefined' && window.jankxSupportedPostLayouts) {
+      // Chuyển đổi object thành array format cho SelectControl
+      return Object.entries(window.jankxSupportedPostLayouts).map(([value, label]) => ({
+        label: label,
+        value: value
+      }));
+    }
+
+    // Fallback nếu biến không tồn tại
+    return [{
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Grid', 'jankx'),
+      value: 'grid'
+    }, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('List', 'jankx'),
+      value: 'list'
+    }, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Card', 'jankx'),
+      value: 'card'
+    }, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Carousel', 'jankx'),
+      value: 'carousel'
+    }];
+  };
+  const viewTypeOptions = getViewTypeOptions();
+  console.log(viewTypeOptions);
   const hoverEffectOptions = [{
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('None', 'jankx'),
     value: 'none'
