@@ -1686,7 +1686,7 @@ function PreviewContent({
     include,
     taxonomyFilters,
     metaFilters,
-    layout,
+    styling,
     displayOptions
   } = attributes;
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
@@ -1698,11 +1698,12 @@ function PreviewContent({
           action: 'jankx-post-layout-fetch-data',
           post_type: postType || 'post',
           engine_id: 'jankx',
-          layout: layout?.type || 'grid',
+          layout: styling && typeof styling === 'object' && 'viewType' in styling ? styling.viewType : 'grid',
           posts_per_page: String(postsPerPage || 6),
           order_by: orderBy || 'date',
           order: order || 'DESC',
-          offset: String(offset || 0)
+          offset: String(offset || 0),
+          block_preview: '1'
         });
 
         // Add filters if present
@@ -1718,7 +1719,11 @@ function PreviewContent({
         if (exclude && exclude.length > 0) {
           params.append('exclude', JSON.stringify(exclude));
         }
-        const response = await fetch(`${window.ajaxurl}?${params.toString()}`);
+        const response = await fetch(`${window.ajaxurl}?${params.toString()}`, {
+          headers: {
+            'X-Jankx-Block-Preview': '1'
+          }
+        });
         const data = await response.json();
         if (data.success && data.data && data.data.content) {
           setContent(data.data.content);
@@ -1732,7 +1737,7 @@ function PreviewContent({
       }
     };
     fetchPreview();
-  }, [postType, postsPerPage, orderBy, order, offset, exclude, include, taxonomyFilters, metaFilters, layout]);
+  }, [postType, postsPerPage, orderBy, order, offset, exclude, include, taxonomyFilters, metaFilters, styling]);
   if (loading) {
     return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
       className: "jankx-post-layout-preview-loading",
@@ -1876,7 +1881,8 @@ function Edit({
           posts_per_page: String(postsPerPage || 6),
           order_by: orderBy || 'date',
           order: order || 'DESC',
-          offset: String(offset || 0)
+          offset: String(offset || 0),
+          block_preview: '1'
         });
 
         // Only add custom query parameters if not using default query
@@ -1902,7 +1908,10 @@ function Edit({
         const ajaxUrl = window.ajaxurl || '/wp-admin/admin-ajax.php';
         const res = await fetch(`${ajaxUrl}?${params.toString()}`, {
           signal: controller.signal,
-          credentials: 'same-origin'
+          credentials: 'same-origin',
+          headers: {
+            'X-Jankx-Block-Preview': '1'
+          }
         });
         const json = await res.json();
         if (json && json.success && json.data && typeof json.data.content === 'string') {

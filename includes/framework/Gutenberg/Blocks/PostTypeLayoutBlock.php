@@ -561,10 +561,37 @@ class PostTypeLayoutBlock extends Block
                 $queryArgs['offset'] = $attributes['offset'];
             }
 
-            $wp_query = new \WP_Query($queryArgs);
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log("[PostTypeLayoutBlock Debug] Query args before filters: " . print_r($queryArgs, true));
+            }
+
+            // Apply same filters as PostsFetcher for consistency
+            do_action("jankx/posts/fetcher/{$postType}/query/start", $queryArgs, $this);
+
+            // Allow filtering the query args
+            $queryArgs = apply_filters(
+                "jankx/layout/{$postType}/args",
+                $queryArgs,
+                $attributes,
+                null, // data_preset
+                $this
+            );
+
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log("[PostTypeLayoutBlock Debug] Query args after filters: " . print_r($queryArgs, true));
+            }
+
+            // Allow custom WP_Query
+            $wp_query = apply_filters("jankx/posts/fetcher/{$postType}/query", null, $queryArgs, $this);
+            if (is_null($wp_query)) {
+                $wp_query = new \WP_Query($queryArgs);
+            }
+
+            do_action("jankx/posts/fetcher/{$postType}/query/end", $queryArgs, $this);
 
             if (defined('WP_DEBUG') && WP_DEBUG) {
                 error_log("[PostTypeLayoutBlock Debug] WP_Query created, found posts: " . $wp_query->found_posts);
+                error_log("[PostTypeLayoutBlock Debug] Post IDs: " . implode(', ', wp_list_pluck($wp_query->posts, 'ID')));
             }
 
             // Get layout template
@@ -643,10 +670,41 @@ class PostTypeLayoutBlock extends Block
                 ];
             }
 
+            // Set styling options
+            $stylingOptions = [];
+            if (isset($attributes['styling'])) {
+                if (isset($attributes['styling']['hoverEffect'])) {
+                    $stylingOptions['hover_effect'] = $attributes['styling']['hoverEffect'];
+                }
+                if (isset($attributes['styling']['borderRadius'])) {
+                    $stylingOptions['border_radius'] = $attributes['styling']['borderRadius'];
+                }
+                if (isset($attributes['styling']['shadow'])) {
+                    $stylingOptions['shadow'] = $attributes['styling']['shadow'];
+                }
+            }
+
+            // Set layout options
+            $layoutOptions = [];
+            if (isset($attributes['layout'])) {
+                if (isset($attributes['layout']['columns'])) {
+                    $layoutOptions['columns'] = $attributes['layout']['columns'];
+                }
+                if (isset($attributes['layout']['columnsTablet'])) {
+                    $layoutOptions['columns_tablet'] = $attributes['layout']['columnsTablet'];
+                }
+                if (isset($attributes['layout']['columnsMobile'])) {
+                    $layoutOptions['columns_mobile'] = $attributes['layout']['columnsMobile'];
+                }
+                if (isset($attributes['layout']['gap'])) {
+                    $layoutOptions['gap'] = $attributes['layout']['gap'];
+                }
+            }
+
             $allOptions = array_merge([
                 'thumbnail_position' => 'top',
                 'thumbnail_size' => 'medium',
-            ], $paginationOptions, $displayOptions);
+            ], $paginationOptions, $displayOptions, $stylingOptions, $layoutOptions);
 
             if (defined('WP_DEBUG') && WP_DEBUG) {
                 error_log("[PostTypeLayoutBlock Debug] Pagination options: " . print_r($paginationOptions, true));
@@ -655,7 +713,6 @@ class PostTypeLayoutBlock extends Block
             }
 
             $postLayout->setOptions($allOptions);
-            $postLayout->disableLoopStartLoopEnd();
 
             $renderedContent = $postLayout->render(false);
 
@@ -663,17 +720,7 @@ class PostTypeLayoutBlock extends Block
                 error_log("[PostTypeLayoutBlock Debug] Content rendered successfully, length: " . ($renderedContent ? strlen($renderedContent) : 0));
             }
 
-            return sprintf(
-                '<div id="%s" class="jankx-post-layout jankx-layout-%s jankx-post-type-%s" data-engine-id="%s" data-layout="%s" data-post-type="%s" data-posts-per-page="%d">%s</div>',
-                esc_attr($wrapId),
-                esc_attr($layoutName),
-                esc_attr($postType),
-                esc_attr($engineId),
-                esc_attr($layoutName),
-                esc_attr($postType),
-                $perPage,
-                $renderedContent
-            );
+            return $renderedContent;
         } catch (Exception $e) {
             if (defined('WP_DEBUG') && WP_DEBUG) {
                 error_log("[PostTypeLayoutBlock Debug] Error rendering content: " . $e->getMessage());

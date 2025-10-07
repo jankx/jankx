@@ -60,7 +60,7 @@ function PreviewContent({ attributes, isPreview = false }: PreviewContentProps):
         include,
         taxonomyFilters,
         metaFilters,
-        layout,
+        styling,
         displayOptions
     } = attributes;
 
@@ -74,11 +74,12 @@ function PreviewContent({ attributes, isPreview = false }: PreviewContentProps):
                     action: 'jankx-post-layout-fetch-data',
                     post_type: postType || 'post',
                     engine_id: 'jankx',
-                    layout: layout?.type || 'grid',
+                    layout: (styling && typeof styling === 'object' && 'viewType' in styling) ? (styling as any).viewType : 'grid',
                     posts_per_page: String(postsPerPage || 6),
                     order_by: orderBy || 'date',
                     order: order || 'DESC',
                     offset: String(offset || 0),
+                    block_preview: '1',
                 });
 
                 // Add filters if present
@@ -95,7 +96,11 @@ function PreviewContent({ attributes, isPreview = false }: PreviewContentProps):
                     params.append('exclude', JSON.stringify(exclude));
                 }
 
-                const response = await fetch(`${window.ajaxurl}?${params.toString()}`);
+                const response = await fetch(`${window.ajaxurl}?${params.toString()}`, {
+                    headers: {
+                        'X-Jankx-Block-Preview': '1'
+                    }
+                });
                 const data = await response.json();
 
                 if (data.success && data.data && data.data.content) {
@@ -111,7 +116,7 @@ function PreviewContent({ attributes, isPreview = false }: PreviewContentProps):
         };
 
         fetchPreview();
-    }, [postType, postsPerPage, orderBy, order, offset, exclude, include, taxonomyFilters, metaFilters, layout]);
+    }, [postType, postsPerPage, orderBy, order, offset, exclude, include, taxonomyFilters, metaFilters, styling]);
 
     if (loading) {
         return (
@@ -255,6 +260,7 @@ function Edit({ attributes, setAttributes }: EditProps): JSX.Element {
                     order_by: orderBy || 'date',
                     order: order || 'DESC',
                     offset: String(offset || 0),
+                    block_preview: '1',
                 });
 
                 // Only add custom query parameters if not using default query
@@ -278,7 +284,13 @@ function Edit({ attributes, setAttributes }: EditProps): JSX.Element {
                     }
                 }
                 const ajaxUrl = (window as any).ajaxurl || '/wp-admin/admin-ajax.php';
-                const res = await fetch(`${ajaxUrl}?${params.toString()}`, { signal: controller.signal, credentials: 'same-origin' });
+                const res = await fetch(`${ajaxUrl}?${params.toString()}`, {
+                    signal: controller.signal,
+                    credentials: 'same-origin',
+                    headers: {
+                        'X-Jankx-Block-Preview': '1'
+                    }
+                });
                 const json = await res.json();
                 if (json && json.success && json.data && typeof json.data.content === 'string') {
                     setPreviewHtml(json.data.content);
