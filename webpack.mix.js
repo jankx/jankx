@@ -20,7 +20,7 @@ if (mix.inProduction()) {
         .sourceMaps();
 } else {
     // Development builds with hot reload
-    mix.sass('resources/scss/style.scss', 'resources/assets/css/style.css')
+    mix.sass('resources/scss/style.scss', 'style.css')
         .webpackConfig({
             plugins: [new LiveReloadPlugin({
                 useSourceHash: true
@@ -28,3 +28,4 @@ if (mix.inProduction()) {
         })
         .sourceMaps();
 }
+
