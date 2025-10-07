@@ -11,12 +11,14 @@ use Jankx\Gutenberg\Block;
  * Đăng ký filters để có thể chèn content vào các WordPress core blocks
  * như core/button và core/read-more
  *
+ * KHÔNG phải là một Block - đây là một Filter Service
+ *
  * @package Jankx\Gutenberg\Blocks
  * @since 2.0.0
  */
 class WordPressCoreFilterBlock extends Block
 {
-    protected $blockId = 'jankxcore-filters';
+    protected $blockId = 'jankx/core-filters';
 
     /**
      * Danh sách các blocks được hỗ trợ để chèn content
