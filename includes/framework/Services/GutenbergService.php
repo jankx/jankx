@@ -147,7 +147,7 @@ class GutenbergService
         $this->repository->registerBlock(ModalBlock::class);
         $this->repository->registerBlock(DatePickerCalendarBlock::class);
 
-        $this->repository->registerBlock(WordPressCoreFilterBlock::class);
+        // $this->repository->registerBlock(WordPressCoreFilterBlock::class);
     }
 
     /**
