@@ -30,6 +30,7 @@
         "sass": "^1.85.1",
         "sass-loader": "^16.0.5",
         "typescript": "^5.9.2",
+        "webpack-cli": "^6.0.1",
         "webpack-livereload-plugin": "^3.0.2",
         "webpack-remove-empty-scripts": "^1.1.1"
     }
