@@ -1,0 +1,143 @@
+/**
+ * Core Filters Editor Styles
+ */
+
+// Material Icons support
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Rounded|Material+Icons+Sharp|Material+Icons+Two+Tone');
+
+// Button block with icon
+.wp-block-button {
+    &.has-icon {
+        .wp-block-button__link,
+        a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            &.icon-position-before {
+                flex-direction: row;
+            }
+
+            &.icon-position-after {
+                flex-direction: row-reverse;
+            }
+
+            // Material icons
+            .material-icons,
+            .material-icons-outlined,
+            .material-icons-rounded,
+            .material-icons-sharp,
+            .material-icons-two-tone {
+                display: inline-flex;
+                align-items: center;
+                vertical-align: middle;
+                line-height: 1;
+            }
+
+            // Image icons
+            img {
+                display: inline-block;
+                vertical-align: middle;
+            }
+
+            // SVG icons
+            svg {
+                display: inline-block;
+                vertical-align: middle;
+                max-width: 100%;
+                height: auto;
+            }
+        }
+    }
+}
+
+// Read more block with icon
+.wp-block-read-more {
+    &.has-icon {
+        display: inline-flex !important;
+        align-items: center;
+        gap: 8px;
+
+        &.icon-position-before {
+            flex-direction: row;
+        }
+
+        &.icon-position-after {
+            flex-direction: row-reverse;
+        }
+
+        // Material icons
+        .material-icons,
+        .material-icons-outlined,
+        .material-icons-rounded,
+        .material-icons-sharp,
+        .material-icons-two-tone {
+            display: inline-flex;
+            align-items: center;
+            vertical-align: middle;
+            line-height: 1;
+        }
+
+        // Image icons
+        img {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        // SVG icons
+        svg {
+            display: inline-block;
+            vertical-align: middle;
+            max-width: 100%;
+            height: auto;
+        }
+    }
+}
+
+// Icon picker styles
+.jankx-icon-picker-wrapper {
+    .icon-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+        gap: 8px;
+        max-height: 300px;
+        overflow-y: auto;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+
+        .icon-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+
+            &:hover {
+                background-color: #f0f6fc;
+                border-color: #007cba;
+            }
+
+            &.selected {
+                background-color: #f0f6fc;
+                border-color: #007cba;
+                border-width: 2px;
+            }
+
+            .icon-preview {
+                font-size: 24px;
+                margin-bottom: 4px;
+            }
+
+            .icon-name {
+                font-size: 10px;
+                text-align: center;
+                word-break: break-word;
+            }
+        }
+    }
+}
+

@@ -320,13 +320,69 @@ function Edit({ attributes, setAttributes }: EditProps): JSX.Element {
         // Re-fetch when key attributes affecting query/layout change
     }, [useDefaultQuery, postType, postsPerPage, orderBy, order, offset, include, exclude, taxonomyFilters, metaFilters, styling, displayOptions, pagination, responsive]);
 
+    // Render preview with pagination and empty state
+    const renderPreview = () => {
+        if (isLoadingPreview) {
+            return (
+                <div className="jankx-post-layout-preview-loading">
+                    <div className="jankx-post-layout-preview-loading__spinner"></div>
+                    <p>{__('Loading preview...', 'jankx')}</p>
+                </div>
+            );
+        }
+
+        // Check if content is empty
+        const isEmpty = !previewHtml || previewHtml.includes('jankx-post-layout__empty');
+
+        if (isEmpty) {
+            return (
+                <div className="jankx-post-layout-preview-empty">
+                    <p>{__('No posts found. Try adjusting your query settings.', 'jankx')}</p>
+                </div>
+            );
+        }
+
+        return (
+            <div className="jankx-post-layout-preview-wrapper">
+                <div
+                    className="jankx-post-layout-preview"
+                    dangerouslySetInnerHTML={{ __html: previewHtml }}
+                />
+
+                {/* Show pagination preview if enabled */}
+                {pagination?.enabled && fetchInfo.maxPages && fetchInfo.maxPages > 1 && (
+                    <div className="jankx-post-layout-preview-pagination">
+                        <div className="jankx-pagination-info">
+                            <p>
+                                {__('Pagination enabled', 'jankx')}: {fetchInfo.foundPosts} {__('posts', 'jankx')}, {fetchInfo.maxPages} {__('pages', 'jankx')}
+                            </p>
+                        </div>
+                        {pagination.type === 'numbers' && (
+                            <div className="jankx-pagination-preview">
+                                <span className="jankx-pagination-demo">{__('« Previous', 'jankx')}</span>
+                                <span className="jankx-pagination-demo active">1</span>
+                                <span className="jankx-pagination-demo">2</span>
+                                <span className="jankx-pagination-demo">3</span>
+                                <span className="jankx-pagination-demo">{__('Next »', 'jankx')}</span>
+                            </div>
+                        )}
+                        {pagination.type === 'load_more' && (
+                            <div className="jankx-pagination-preview">
+                                <button className="jankx-load-more-demo" disabled>
+                                    {pagination.loadMoreText || __('Load More', 'jankx')}
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
+        );
+    };
+
     return (
         <>
             <div {...blockProps}>
-                <PreviewContent
-                    attributes={attributes}
-                    isPreview={true}
-                />
+                {renderPreview()}
             </div>
 
             <InspectorControls>

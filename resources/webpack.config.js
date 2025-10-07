@@ -113,6 +113,9 @@ module.exports = {
     'blocks/date-picker-calendar/build/index': './blocks/date-picker-calendar/src/index.js',
     'blocks/date-picker-calendar/build/style-index': './blocks/date-picker-calendar/src/style.scss',
     'blocks/date-picker-calendar/build/editor': './blocks/date-picker-calendar/src/editor.scss',
+
+    'blocks/core-filters/build/index': './blocks/core-filters/index.tsx',
+    'blocks/core-filters/build/editor': './blocks/core-filters/editor.scss',
   },
   output: {
     path: path.resolve(__dirname),

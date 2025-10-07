@@ -24,6 +24,7 @@ use Jankx\Gutenberg\Blocks\OffcanvasTriggerBlock;
 use Jankx\Gutenberg\Blocks\TableOfContentBlock;
 use Jankx\Gutenberg\Blocks\WplyrMediaBlock;
 use Jankx\Gutenberg\Blocks\DatePickerCalendarBlock;
+use Jankx\Gutenberg\Blocks\WordPressCoreFilterBlock;
 use Jankx\Gutenberg\GutenbergPattern;
 use Jankx\Facades\Log;
 
@@ -45,10 +46,19 @@ class GutenbergService
      */
     protected $repository;
 
+    /**
+     * WordPress Core Filter Block instance
+     * @var \Jankx\Gutenberg\Blocks\WordPressCoreFilterBlock
+     */
+    protected $coreFilterBlock;
+
     public function __construct(Application $app)
     {
         $this->app = $app;
         $this->repository = $app->make('gutenberg.repository');
+
+        // Khởi tạo WordPress Core Filter Block
+        $this->coreFilterBlock = new WordPressCoreFilterBlock();
 
         $this->registerPatternCategories();
     }
@@ -74,6 +84,9 @@ class GutenbergService
     public function init()
     {
         try {
+            // Khởi tạo WordPress Core Filter Block
+            $this->coreFilterBlock->init();
+
             // Register all blocks
             $this->initBlocks();
 
@@ -133,6 +146,7 @@ class GutenbergService
         $this->repository->registerBlock(AdvancedFiltersBlock::class);
         $this->repository->registerBlock(ModalBlock::class);
         $this->repository->registerBlock(DatePickerCalendarBlock::class);
+        $this->repository->registerBlock(WordPressCoreFilterBlock::class);
     }
 
     /**
