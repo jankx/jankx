@@ -116,7 +116,7 @@ function PreviewContent({ attributes, isPreview = false }: PreviewContentProps):
         };
 
         fetchPreview();
-    }, [postType, postsPerPage, orderBy, order, offset, exclude, include, taxonomyFilters, metaFilters, styling]);
+    }, [postType, postsPerPage, orderBy, order, offset, exclude, include, taxonomyFilters, metaFilters, styling, displayOptions]);
 
     if (loading) {
         return (
@@ -318,7 +318,7 @@ function Edit({ attributes, setAttributes }: EditProps): JSX.Element {
         doFetch();
         return () => controller.abort();
         // Re-fetch when key attributes affecting query/layout change
-    }, [useDefaultQuery, postType, postsPerPage, orderBy, order, offset, include, exclude, taxonomyFilters, metaFilters, styling]);
+    }, [useDefaultQuery, postType, postsPerPage, orderBy, order, offset, include, exclude, taxonomyFilters, metaFilters, styling, displayOptions, pagination, responsive]);
 
     return (
         <>

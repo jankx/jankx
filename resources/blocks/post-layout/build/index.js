@@ -1737,7 +1737,7 @@ function PreviewContent({
       }
     };
     fetchPreview();
-  }, [postType, postsPerPage, orderBy, order, offset, exclude, include, taxonomyFilters, metaFilters, styling]);
+  }, [postType, postsPerPage, orderBy, order, offset, exclude, include, taxonomyFilters, metaFilters, styling, displayOptions]);
   if (loading) {
     return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
       className: "jankx-post-layout-preview-loading",
@@ -1939,7 +1939,7 @@ function Edit({
     doFetch();
     return () => controller.abort();
     // Re-fetch when key attributes affecting query/layout change
-  }, [useDefaultQuery, postType, postsPerPage, orderBy, order, offset, include, exclude, taxonomyFilters, metaFilters, styling]);
+  }, [useDefaultQuery, postType, postsPerPage, orderBy, order, offset, include, exclude, taxonomyFilters, metaFilters, styling, displayOptions, pagination, responsive]);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
       ...blockProps,
