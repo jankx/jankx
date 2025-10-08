@@ -9,7 +9,6 @@ export default function Edit({ attributes, setAttributes }) {
         selectedDates = [],
         currentMonth = 3,
         currentYear = 2026,
-        dateMode = 'outline',
         showNavigation = true,
         showWeekdays = true
     } = attributes;
@@ -54,13 +53,16 @@ export default function Edit({ attributes, setAttributes }) {
 
         // Current month's days
         for (let day = 1; day <= daysInMonth; day++) {
-            const isSelected = localSelectedDates.includes(day);
+            const selectedDate = localSelectedDates.find(d => d.day === day);
+            const isSelected = !!selectedDate;
+            const mode = selectedDate ? selectedDate.mode : null;
             calendarDays.push({
                 day,
                 month,
                 year,
                 isCurrentMonth: true,
-                isSelected
+                isSelected,
+                mode
             });
         }
 
@@ -87,9 +89,23 @@ export default function Edit({ attributes, setAttributes }) {
     const handleDateClick = (day, isCurrentMonth) => {
         if (!isCurrentMonth) return;
 
-        const newSelectedDates = localSelectedDates.includes(day)
-            ? localSelectedDates.filter(d => d !== day)
-            : [...localSelectedDates, day];
+        const existingDateIndex = localSelectedDates.findIndex(d => d.day === day);
+        let newSelectedDates;
+
+        if (existingDateIndex === -1) {
+            // Not selected -> outline mode
+            newSelectedDates = [...localSelectedDates, { day, mode: 'outline' }];
+        } else {
+            const currentMode = localSelectedDates[existingDateIndex].mode;
+            if (currentMode === 'outline') {
+                // Outline -> fill mode
+                newSelectedDates = [...localSelectedDates];
+                newSelectedDates[existingDateIndex] = { day, mode: 'fill' };
+            } else {
+                // Fill -> remove
+                newSelectedDates = localSelectedDates.filter(d => d.day !== day);
+            }
+        }
 
         setLocalSelectedDates(newSelectedDates);
         setAttributes({ selectedDates: newSelectedDates });
@@ -109,7 +125,7 @@ export default function Edit({ attributes, setAttributes }) {
 
         setLocalMonth(newMonth);
         setLocalYear(newYear);
-        setAttributes({ 
+        setAttributes({
             currentMonth: newMonth,
             currentYear: newYear
         });
@@ -152,15 +168,6 @@ export default function Edit({ attributes, setAttributes }) {
                             setAttributes({ currentYear: newYear });
                         }}
                     />
-                    <SelectControl
-                        label={__('Date Mode', 'jankx')}
-                        value={dateMode}
-                        options={[
-                            { label: __('Outline', 'jankx'), value: 'outline' },
-                            { label: __('Fill', 'jankx'), value: 'fill' }
-                        ]}
-                        onChange={(value) => setAttributes({ dateMode: value })}
-                    />
                     <ToggleControl
                         label={__('Show Navigation', 'jankx')}
                         checked={showNavigation}
@@ -186,7 +193,7 @@ export default function Edit({ attributes, setAttributes }) {
             <div className="date-picker-calendar-editor">
                 {showNavigation && (
                     <div className="calendar-header">
-                        <button 
+                        <button
                             className="calendar-nav-btn prev-month"
                             onClick={() => handleMonthChange('prev')}
                         >
@@ -195,7 +202,7 @@ export default function Edit({ attributes, setAttributes }) {
                         <h3 className="calendar-title">
                             {monthNames[localMonth - 1]} - {localYear}
                         </h3>
-                        <button 
+                        <button
                             className="calendar-nav-btn next-month"
                             onClick={() => handleMonthChange('next')}
                         >
@@ -221,7 +228,7 @@ export default function Edit({ attributes, setAttributes }) {
                             className={`calendar-day ${
                                 dayData.isCurrentMonth ? 'current-month' : 'other-month'
                             } ${dayData.isSelected ? 'selected' : ''} ${
-                                dayData.isSelected ? `mode-${dateMode}` : ''
+                                dayData.isSelected && dayData.mode ? `mode-${dayData.mode}` : ''
                             }`}
                             onClick={() => handleDateClick(dayData.day, dayData.isCurrentMonth)}
                         >
@@ -233,13 +240,13 @@ export default function Edit({ attributes, setAttributes }) {
                 <div className="calendar-info">
                     <p>
                         <strong>{__('Selected Dates:', 'jankx')}</strong>{' '}
-                        {localSelectedDates.length > 0 
-                            ? localSelectedDates.sort((a, b) => a - b).join(', ')
+                        {localSelectedDates.length > 0
+                            ? localSelectedDates
+                                .sort((a, b) => a.day - b.day)
+                                .map(d => `${d.day} (${d.mode})`)
+                                .join(', ')
                             : __('None', 'jankx')
                         }
-                    </p>
-                    <p>
-                        <strong>{__('Mode:', 'jankx')}</strong> {dateMode}
                     </p>
                 </div>
             </div>

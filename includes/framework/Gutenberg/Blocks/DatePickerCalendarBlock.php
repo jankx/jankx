@@ -40,11 +40,6 @@ class DatePickerCalendarBlock extends Block
             'type' => 'number',
             'default' => 2026
         ],
-        'dateMode' => [
-            'type' => 'string',
-            'default' => 'outline',
-            'enum' => ['outline', 'fill']
-        ],
         'showNavigation' => [
             'type' => 'boolean',
             'default' => true
@@ -98,7 +93,6 @@ class DatePickerCalendarBlock extends Block
         $selected_dates = $attributes['selectedDates'] ?? [];
         $current_month = $attributes['currentMonth'] ?? 3;
         $current_year = $attributes['currentYear'] ?? 2026;
-        $date_mode = $attributes['dateMode'] ?? 'outline';
         $show_navigation = $attributes['showNavigation'] ?? true;
         $show_weekdays = $attributes['showWeekdays'] ?? true;
 
@@ -138,19 +132,30 @@ class DatePickerCalendarBlock extends Block
                 'month' => $prev_month,
                 'year' => $prev_year,
                 'is_current_month' => false,
-                'is_selected' => false
+                'is_selected' => false,
+                'mode' => null
             ];
         }
 
         // Current month's days
         for ($day = 1; $day <= $days_in_month; $day++) {
-            $is_selected = in_array($day, $selected_dates);
+            $selected_date = null;
+            foreach ($selected_dates as $date) {
+                if (isset($date['day']) && (int)$date['day'] == $day) {
+                    $selected_date = $date;
+                    break;
+                }
+            }
+            $is_selected = !is_null($selected_date);
+            $mode = $is_selected ? ($selected_date['mode'] ?? 'outline') : null;
+
             $calendar_days[] = [
                 'day' => $day,
                 'month' => $current_month,
                 'year' => $current_year,
                 'is_current_month' => true,
-                'is_selected' => $is_selected
+                'is_selected' => $is_selected,
+                'mode' => $mode
             ];
         }
 
@@ -162,7 +167,8 @@ class DatePickerCalendarBlock extends Block
                 'month' => $next_month,
                 'year' => $next_year,
                 'is_current_month' => false,
-                'is_selected' => false
+                'is_selected' => false,
+                'mode' => null
             ];
         }
 
@@ -200,11 +206,12 @@ class DatePickerCalendarBlock extends Block
                         <div class="calendar-day <?php
                             echo $day_data['is_current_month'] ? 'current-month' : 'other-month';
                             echo $day_data['is_selected'] ? ' selected' : '';
-                            echo $day_data['is_selected'] ? ' mode-' . esc_attr($date_mode) : '';
+                            echo ($day_data['is_selected'] && !empty($day_data['mode'])) ? ' mode-' . esc_attr($day_data['mode']) : '';
                         ?>"
                         data-day="<?php echo esc_attr($day_data['day']); ?>"
                         data-month="<?php echo esc_attr($day_data['month']); ?>"
-                        data-year="<?php echo esc_attr($day_data['year']); ?>">
+                        data-year="<?php echo esc_attr($day_data['year']); ?>"
+                        data-mode="<?php echo !empty($day_data['mode']) ? esc_attr($day_data['mode']) : ''; ?>">
                             <span class="day-number"><?php echo esc_html($day_data['day']); ?></span>
                         </div>
                     <?php endforeach; ?>
