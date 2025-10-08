@@ -208,11 +208,11 @@ class LanguageSwitcherService extends AbstractService
         if (!empty($this->languages)) {
             foreach ($this->languages as $lang) {
                 $languages[] = [
-                    'code' => $lang['slug'],
-                    'name' => $lang['name'],
-                    'url' => $lang['url'],
-                    'flag' => $this->extractFlagSrc($lang['flag'] ?? ''),
-                    'current' => $lang['current_lang'] ?? false
+                    'code' => $lang['code'] ?? '',
+                    'name' => $lang['name'] ?? '',
+                    'url' => $lang['url'] ?? '',
+                    'flag' => $lang['flag'] ?? '',
+                    'current' => $lang['current'] ?? false
                 ];
             }
         }
