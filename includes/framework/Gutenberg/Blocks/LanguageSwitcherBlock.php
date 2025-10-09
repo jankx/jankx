@@ -111,6 +111,15 @@ class LanguageSwitcherBlock extends Block
     {
         // Lấy mã ngôn ngữ hiện tại
         $currentLangData = App::make(LanguageSwitcherService::class)->getCurrentLanguage();
+        $currentLangData = apply_filters(
+            'jankx/languages/current-language/data',
+             $currentLangData
+        );
+        $languages = apply_filters(
+            'jankx/languages/data',
+             $languages
+        );
+        $dropdownIcon = apply_filters('jankx/languages/switcher/dropdown/icon', '▼');
         $html = '<div class="language-switcher-dropdown-wrapper">';
         $html .= '<button class="language-switcher-dropdown" type="button">';
         if ($currentLangData) {
@@ -133,7 +142,7 @@ class LanguageSwitcherBlock extends Block
             }
         }
 
-        $html .= '<span class="language-arrow">▼</span>';
+        $html .= '<span class="language-arrow">'. $dropdownIcon .'</span>';
         $html .= '</button>';
 
         $html .= '<ul class="language-switcher-dropdown-menu">';
