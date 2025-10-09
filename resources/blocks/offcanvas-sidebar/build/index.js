@@ -331,6 +331,9 @@ __webpack_require__.r(__webpack_exports__);
 const ANIMATION_EFFECTS = [{
   label: 'Slide In',
   value: 'slide-in'
+}, {
+  label: 'Slide Down',
+  value: 'slide-down'
 }];
 
 // Icon options

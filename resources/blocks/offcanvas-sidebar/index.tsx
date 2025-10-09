@@ -59,7 +59,8 @@ interface OffcanvasSidebarEditProps {
 
 // Animation effects available
 const ANIMATION_EFFECTS = [
-    { label: 'Slide In', value: 'slide-in' }
+    { label: 'Slide In', value: 'slide-in' },
+    { label: 'Slide Down', value: 'slide-down' }
 ];
 
 // Icon options
