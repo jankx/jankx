@@ -7,21 +7,7 @@ use Jankx\Contracts\LoggerInterface;
 class IntegrationLogger implements LoggerInterface
 {
     /**
-     * Log levels
-     */
-    const EMERGENCY = 'emergency';
-    const ALERT     = 'alert';
-    const CRITICAL  = 'critical';
-    const ERROR     = 'error';
-    const WARNING   = 'warning';
-    const NOTICE    = 'notice';
-    const INFO      = 'info';
-    const DEBUG     = 'debug';
-    const SUCCESS   = 'success';
-
-    /**
-     * Log a message.
-     * Only logs warning, error, critical, alert, and emergency levels.
+     * Log a message (internal use only).
      *
      * @param  string  $level
      * @param  string  $message
@@ -30,18 +16,7 @@ class IntegrationLogger implements LoggerInterface
      */
     public function log($level, $message, array $context = [])
     {
-        // Chỉ log các level quan trọng: warning trở lên
-        $importantLevels = [
-            self::EMERGENCY,
-            self::ALERT,
-            self::CRITICAL,
-            self::ERROR,
-            self::WARNING,
-        ];
-
-        if (in_array($level, $importantLevels)) {
-            $this->writeLog($level, $message, $context);
-        }
+        // Internal method - không nên gọi trực tiếp
     }
 
     /**
@@ -66,7 +41,7 @@ class IntegrationLogger implements LoggerInterface
     }
 
     /**
-     * Log an emergency message.
+     * Log an emergency message (does nothing).
      *
      * @param  string  $message
      * @param  array   $context
@@ -74,11 +49,11 @@ class IntegrationLogger implements LoggerInterface
      */
     public function emergency($message, array $context = [])
     {
-        $this->log(self::EMERGENCY, $message, $context);
+        // Do nothing
     }
 
     /**
-     * Log an alert message.
+     * Log an alert message (does nothing).
      *
      * @param  string  $message
      * @param  array   $context
@@ -86,11 +61,11 @@ class IntegrationLogger implements LoggerInterface
      */
     public function alert($message, array $context = [])
     {
-        $this->log(self::ALERT, $message, $context);
+        // Do nothing
     }
 
     /**
-     * Log a critical message.
+     * Log a critical message (does nothing).
      *
      * @param  string  $message
      * @param  array   $context
@@ -98,7 +73,7 @@ class IntegrationLogger implements LoggerInterface
      */
     public function critical($message, array $context = [])
     {
-        $this->log(self::CRITICAL, $message, $context);
+        // Do nothing
     }
 
     /**
@@ -110,7 +85,7 @@ class IntegrationLogger implements LoggerInterface
      */
     public function error($message, array $context = [])
     {
-        $this->log(self::ERROR, $message, $context);
+        $this->writeLog('error', $message, $context);
     }
 
     /**
@@ -122,11 +97,11 @@ class IntegrationLogger implements LoggerInterface
      */
     public function warning($message, array $context = [])
     {
-        $this->log(self::WARNING, $message, $context);
+        $this->writeLog('warning', $message, $context);
     }
 
     /**
-     * Log a notice message (does nothing in IntegrationLogger).
+     * Log a notice message (does nothing).
      *
      * @param  string  $message
      * @param  array   $context
@@ -134,11 +109,11 @@ class IntegrationLogger implements LoggerInterface
      */
     public function notice($message, array $context = [])
     {
-        // Do nothing - không log notice level
+        // Do nothing
     }
 
     /**
-     * Log an info message (does nothing in IntegrationLogger).
+     * Log an info message (does nothing).
      *
      * @param  string  $message
      * @param  array   $context
@@ -146,11 +121,11 @@ class IntegrationLogger implements LoggerInterface
      */
     public function info($message, array $context = [])
     {
-        // Do nothing - không log info level
+        // Do nothing
     }
 
     /**
-     * Log a debug message (does nothing in IntegrationLogger).
+     * Log a debug message (does nothing).
      *
      * @param  string  $message
      * @param  array   $context
@@ -158,7 +133,7 @@ class IntegrationLogger implements LoggerInterface
      */
     public function debug($message, array $context = [])
     {
-        // Do nothing - không log debug level
+        // Do nothing
     }
 }
 
