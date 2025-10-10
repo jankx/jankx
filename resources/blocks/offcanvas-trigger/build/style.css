@@ -23,8 +23,7 @@
   opacity: 0.8;
 }
 .offcanvas-trigger.hamburger-trigger:focus {
-  outline: 2px solid rgba(0, 0, 0, 0.1);
-  outline-offset: 2px;
+  outline: 0;
 }
 
 .hamburger-container {
@@ -214,29 +213,6 @@ html.sidebar-open .offcanvas-trigger.hamburger-trigger .hamburger-container.skin
   .hamburger-container {
     width: calc(var(--bar-width, 30px) * 0.9);
   }
-}
-/* ========================================
-   EDITOR SPECIFIC STYLES
-   ======================================== */
-.editor-styles-wrapper .offcanvas-trigger-block {
-  margin: 10px 0;
-  padding: 10px;
-  border: 2px dashed #ddd;
-  border-radius: 4px;
-  background: #f9f9f9;
-}
-.editor-styles-wrapper .offcanvas-trigger-block .offcanvas-trigger.hamburger-trigger {
-  position: relative;
-}
-.editor-styles-wrapper .offcanvas-trigger-block .offcanvas-trigger.hamburger-trigger::after {
-  content: "Click to preview animation";
-  position: absolute;
-  bottom: -25px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 11px;
-  color: #666;
-  white-space: nowrap;
 }
 
 /*# sourceMappingURL=style.css.map*/

@@ -275,32 +275,3 @@ html.sidebar-open {
         width: calc(var(--bar-width, 30px) * 0.9);
     }
 }
-
-/* ========================================
-   EDITOR SPECIFIC STYLES
-   ======================================== */
-
-.editor-styles-wrapper {
-    .offcanvas-trigger-block {
-        margin: 10px 0;
-        padding: 10px;
-        border: 2px dashed #ddd;
-        border-radius: 4px;
-        background: #f9f9f9;
-
-        .offcanvas-trigger.hamburger-trigger {
-            position: relative;
-
-            &::after {
-                content: 'Click to preview animation';
-                position: absolute;
-                bottom: -25px;
-                left: 50%;
-                transform: translateX(-50%);
-                font-size: 11px;
-                color: #666;
-                white-space: nowrap;
-            }
-        }
-    }
-}

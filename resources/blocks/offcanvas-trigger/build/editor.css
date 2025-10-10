@@ -18,13 +18,8 @@
   transition: all 0.3s ease;
   font-family: inherit;
 }
-.editor-styles-wrapper .offcanvas-trigger:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
 .editor-styles-wrapper .offcanvas-trigger:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(72, 167, 112, 0.5);
 }
 .editor-styles-wrapper .offcanvas-trigger .trigger-icon {
   display: flex;
