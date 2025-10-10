@@ -144,6 +144,9 @@ declare global {
             this.isOpen = true;
             document.documentElement.classList.add('sidebar-open');
 
+            // Add active class to all hamburger triggers
+            this.toggleHamburgerTriggers(true);
+
             // Focus management
             this.focusTrap();
 
@@ -162,6 +165,9 @@ declare global {
 
             this.isOpen = false;
             document.documentElement.classList.remove('sidebar-open');
+
+            // Remove active class from all hamburger triggers
+            this.toggleHamburgerTriggers(false);
 
             // Clear auto close timer
             this.clearAutoClose();
@@ -223,6 +229,25 @@ declare global {
                 clearTimeout(this.autoCloseTimer);
                 this.autoCloseTimer = null;
             }
+        }
+
+        private toggleHamburgerTriggers(isActive: boolean): void {
+            // Find all hamburger triggers that target this sidebar
+            const triggers = document.querySelectorAll('.offcanvas-trigger[data-target-sidebar="' + this.element.id + '"]');
+
+            // If no specific triggers, toggle all hamburger triggers
+            const allTriggers = triggers.length > 0 ? triggers : document.querySelectorAll('.offcanvas-trigger');
+
+            allTriggers.forEach((trigger) => {
+                const hamburgerContainer = trigger.querySelector('.hamburger-container');
+                if (hamburgerContainer) {
+                    if (isActive) {
+                        hamburgerContainer.classList.add('active');
+                    } else {
+                        hamburgerContainer.classList.remove('active');
+                    }
+                }
+            });
         }
 
         private dispatchEvent(eventName: string, detail: OffcanvasSidebarEventDetail): void {

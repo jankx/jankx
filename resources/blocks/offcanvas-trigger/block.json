@@ -15,45 +15,29 @@
         }
     },
     "attributes": {
-        "triggerText": {
-            "type": "string",
-            "default": "Menu"
-        },
-        "triggerIcon": {
-            "type": "string",
-            "default": "menu"
-        },
         "targetSidebarId": {
             "type": "string",
             "default": ""
         },
-        "buttonStyle": {
+        "animationSkin": {
             "type": "string",
-            "default": "default"
+            "default": "hamburger-to-x"
         },
-        "buttonSize": {
+        "barColor": {
             "type": "string",
-            "default": "medium"
+            "default": "#333333"
         },
-        "backgroundColor": {
-            "type": "string",
-            "default": "#48a770"
+        "barThickness": {
+            "type": "number",
+            "default": 3
         },
-        "textColor": {
-            "type": "string",
-            "default": "#ffffff"
+        "barWidth": {
+            "type": "number",
+            "default": 30
         },
-        "borderRadius": {
-            "type": "string",
-            "default": "4px"
-        },
-        "showIcon": {
-            "type": "boolean",
-            "default": true
-        },
-        "showText": {
-            "type": "boolean",
-            "default": true
+        "barSpacing": {
+            "type": "number",
+            "default": 5
         },
         "displayOn": {
             "type": "string",

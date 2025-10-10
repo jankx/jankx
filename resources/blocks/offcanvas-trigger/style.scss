@@ -1,123 +1,237 @@
 /**
- * Offcanvas Trigger Block - Frontend Styles
+ * Offcanvas Trigger Block - Hamburger Menu Animations
  */
 
 .offcanvas-trigger-block {
     display: inline-block;
 }
 
-.offcanvas-trigger {
+.offcanvas-trigger.hamburger-trigger {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 12px 16px;
-    background: #48a770;
-    color: #ffffff;
+    justify-content: center;
+    padding: 12px;
+    background: transparent;
     border: none;
-    border-radius: 4px;
     cursor: pointer;
-    font-size: 16px;
-    font-weight: 500;
-    text-decoration: none;
     transition: all 0.3s ease;
-    font-family: inherit;
+    outline: none;
 
     &:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        opacity: 0.8;
     }
 
     &:focus {
-        outline: none;
-        box-shadow: 0 0 0 2px rgba(72, 167, 112, 0.5);
+        outline: 2px solid rgba(0, 0, 0, 0.1);
+        outline-offset: 2px;
+    }
+}
+
+.hamburger-container {
+    width: var(--bar-width, 30px);
+    height: calc(var(--bar-thickness, 3px) * 3 + var(--bar-spacing, 5px) * 2);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+
+    .bar {
+        display: block;
+        width: 100%;
+        height: var(--bar-thickness, 3px);
+        background-color: var(--bar-color, #333);
+        border-radius: calc(var(--bar-thickness, 3px) / 2);
+        transition: all 0.3s ease;
+        transform-origin: center;
+        position: relative;
+    }
+}
+
+/* ========================================
+   SKIN 1: Hamburger to X
+   ======================================== */
+.hamburger-container.skin-hamburger-to-x {
+    .bar {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    &:active {
-        transform: translateY(0);
-    }
-
-    .trigger-icon {
-        display: flex;
-        align-items: center;
-        font-size: 16px;
-    }
-
-    .trigger-text {
-        font-weight: 500;
-    }
-
-    // Size variants
-    &.size-small {
-        padding: 8px 12px;
-        font-size: 14px;
-
-        .trigger-icon {
-            font-size: 14px;
-        }
-    }
-
-    &.size-large {
-        padding: 16px 24px;
-        font-size: 18px;
-
-        .trigger-icon {
-            font-size: 18px;
-        }
-    }
-
-    // Style variants
-    &.style-outline {
-        background: transparent;
-        border: 2px solid currentColor;
-
-        &:hover {
-            background: rgba(72, 167, 112, 0.1);
-        }
-    }
-
-    &.style-ghost {
-        background: transparent;
-        color: #48a770;
-
-        &:hover {
-            background: rgba(72, 167, 112, 0.1);
-        }
-    }
-
-    &.style-rounded {
-        border-radius: 8px;
-    }
-
-    &.style-pill {
-        border-radius: 50px;
-    }
-
-    // Icon only
-    &:not(.has-text) {
-        padding: 12px;
-        border-radius: 50%;
-
-        &.size-small {
-            padding: 8px;
+    &.active {
+        .bar-top {
+            transform: translateY(calc(var(--bar-thickness, 3px) + var(--bar-spacing, 5px))) rotate(45deg);
         }
 
-        &.size-large {
-            padding: 16px;
+        .bar-middle {
+            opacity: 0;
+            transform: scaleX(0);
         }
-    }
 
-    // Text only
-    &:not(.has-icon) {
-        .trigger-text {
-            margin: 0;
+        .bar-bottom {
+            transform: translateY(calc(-1 * (var(--bar-thickness, 3px) + var(--bar-spacing, 5px)))) rotate(-45deg);
         }
     }
 }
 
-// Display options
-// Desktop: >= 1025px
-// Tablet: 768px - 1024px
-// Mobile: <= 767px
+/* ========================================
+   SKIN 2: Hamburger Expand
+   ======================================== */
+.hamburger-container.skin-hamburger-expand {
+    .bar {
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    &.active {
+        .bar-top {
+            transform: translateY(calc(var(--bar-spacing, 5px) * -0.5));
+        }
+
+        .bar-middle {
+            transform: scaleX(1.2);
+        }
+
+        .bar-bottom {
+            transform: translateY(calc(var(--bar-spacing, 5px) * 0.5));
+        }
+    }
+}
+
+/* ========================================
+   SKIN 3: Hamburger Arrow
+   ======================================== */
+.hamburger-container.skin-hamburger-arrow {
+    .bar {
+        transition: all 0.3s ease;
+    }
+
+    &.active {
+        .bar-top {
+            transform: translateY(calc(var(--bar-thickness, 3px) + var(--bar-spacing, 5px))) rotate(135deg);
+            width: 60%;
+        }
+
+        .bar-middle {
+            transform: translateX(5px);
+        }
+
+        .bar-bottom {
+            transform: translateY(calc(-1 * (var(--bar-thickness, 3px) + var(--bar-spacing, 5px)))) rotate(-135deg);
+            width: 60%;
+        }
+    }
+}
+
+/* ========================================
+   SKIN 4: Hamburger Spin
+   ======================================== */
+.hamburger-container.skin-hamburger-spin {
+    transition: all 0.5s ease;
+
+    .bar {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    &.active {
+        transform: rotate(180deg);
+
+        .bar-top {
+            transform: translateY(calc(var(--bar-thickness, 3px) + var(--bar-spacing, 5px))) rotate(45deg);
+        }
+
+        .bar-middle {
+            opacity: 0;
+            transform: scaleX(0);
+        }
+
+        .bar-bottom {
+            transform: translateY(calc(-1 * (var(--bar-thickness, 3px) + var(--bar-spacing, 5px)))) rotate(-45deg);
+        }
+    }
+}
+
+/* ========================================
+   SKIN 5: Simple (No Animation)
+   ======================================== */
+.hamburger-container.skin-simple {
+    .bar {
+        transition: none;
+    }
+}
+
+/* ========================================
+   ACTIVE STATE - Applied by JavaScript
+   when html.sidebar-open
+   ======================================== */
+html.sidebar-open {
+    .offcanvas-trigger.hamburger-trigger {
+        .hamburger-container {
+            &.skin-hamburger-to-x {
+                .bar-top {
+                    transform: translateY(calc(var(--bar-thickness, 3px) + var(--bar-spacing, 5px))) rotate(45deg);
+                }
+
+                .bar-middle {
+                    opacity: 0;
+                    transform: scaleX(0);
+                }
+
+                .bar-bottom {
+                    transform: translateY(calc(-1 * (var(--bar-thickness, 3px) + var(--bar-spacing, 5px)))) rotate(-45deg);
+                }
+            }
+
+            &.skin-hamburger-expand {
+                .bar-top {
+                    transform: translateY(calc(var(--bar-spacing, 5px) * -0.5));
+                }
+
+                .bar-middle {
+                    transform: scaleX(1.2);
+                }
+
+                .bar-bottom {
+                    transform: translateY(calc(var(--bar-spacing, 5px) * 0.5));
+                }
+            }
+
+            &.skin-hamburger-arrow {
+                .bar-top {
+                    transform: translateY(calc(var(--bar-thickness, 3px) + var(--bar-spacing, 5px))) rotate(135deg);
+                    width: 60%;
+                }
+
+                .bar-middle {
+                    transform: translateX(5px);
+                }
+
+                .bar-bottom {
+                    transform: translateY(calc(-1 * (var(--bar-thickness, 3px) + var(--bar-spacing, 5px)))) rotate(-135deg);
+                    width: 60%;
+                }
+            }
+
+            &.skin-hamburger-spin {
+                transform: rotate(180deg);
+
+                .bar-top {
+                    transform: translateY(calc(var(--bar-thickness, 3px) + var(--bar-spacing, 5px))) rotate(45deg);
+                }
+
+                .bar-middle {
+                    opacity: 0;
+                    transform: scaleX(0);
+                }
+
+                .bar-bottom {
+                    transform: translateY(calc(-1 * (var(--bar-thickness, 3px) + var(--bar-spacing, 5px)))) rotate(-45deg);
+                }
+            }
+        }
+    }
+}
+
+/* ========================================
+   DISPLAY OPTIONS
+   ======================================== */
 
 // Desktop only - hide on tablet and mobile
 .offcanvas-trigger-block.display-desktop {
@@ -152,22 +266,41 @@
     display: inline-block !important;
 }
 
-// Responsive
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
 @media (max-width: 768px) {
-    .offcanvas-trigger {
-        padding: 10px 14px;
-        font-size: 14px;
+    .hamburger-container {
+        // Slightly smaller on mobile
+        width: calc(var(--bar-width, 30px) * 0.9);
+    }
+}
 
-        .trigger-icon {
-            font-size: 14px;
-        }
+/* ========================================
+   EDITOR SPECIFIC STYLES
+   ======================================== */
 
-        &.size-large {
-            padding: 14px 20px;
-            font-size: 16px;
+.editor-styles-wrapper {
+    .offcanvas-trigger-block {
+        margin: 10px 0;
+        padding: 10px;
+        border: 2px dashed #ddd;
+        border-radius: 4px;
+        background: #f9f9f9;
 
-            .trigger-icon {
-                font-size: 16px;
+        .offcanvas-trigger.hamburger-trigger {
+            position: relative;
+
+            &::after {
+                content: 'Click to preview animation';
+                position: absolute;
+                bottom: -25px;
+                left: 50%;
+                transform: translateX(-50%);
+                font-size: 11px;
+                color: #666;
+                white-space: nowrap;
             }
         }
     }

@@ -2,40 +2,25 @@ import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
 import {
     useBlockProps,
-    InspectorControls,
-    RichText
+    InspectorControls
 } from '@wordpress/block-editor';
 import {
     PanelBody,
     TextControl,
     SelectControl,
-    ToggleControl,
     ColorPicker,
     RangeControl,
     Button
 } from '@wordpress/components';
 import { useState } from '@wordpress/element';
-import {
-    menu,
-    home,
-    info,
-    cog,
-    envelope,
-    plus,
-    trash
-} from '@wordpress/icons';
 
 interface OffcanvasTriggerAttributes {
-    triggerText: string;
-    triggerIcon: string;
     targetSidebarId: string;
-    buttonStyle: string;
-    buttonSize: string;
-    backgroundColor: string;
-    textColor: string;
-    borderRadius: string;
-    showIcon: boolean;
-    showText: boolean;
+    animationSkin: string;
+    barColor: string;
+    barThickness: number;
+    barWidth: number;
+    barSpacing: number;
     displayOn: string;
     className?: string;
 }
@@ -45,34 +30,13 @@ interface OffcanvasTriggerEditProps {
     setAttributes: (attributes: Partial<OffcanvasTriggerAttributes>) => void;
 }
 
-// Icon options
-const ICON_OPTIONS = [
-    { label: 'Menu', value: 'menu' },
-    { label: 'Home', value: 'home' },
-    { label: 'Info', value: 'info' },
-    { label: 'Cog', value: 'cog' },
-    { label: 'Email', value: 'email' },
-    { label: 'User', value: 'user' },
-    { label: 'Search', value: 'search' },
-    { label: 'Settings', value: 'settings' },
-    { label: 'Heart', value: 'heart' },
-    { label: 'Star', value: 'star' }
-];
-
-// Button style options
-const BUTTON_STYLE_OPTIONS = [
-    { label: 'Default', value: 'default' },
-    { label: 'Outline', value: 'outline' },
-    { label: 'Ghost', value: 'ghost' },
-    { label: 'Rounded', value: 'rounded' },
-    { label: 'Pill', value: 'pill' }
-];
-
-// Button size options
-const BUTTON_SIZE_OPTIONS = [
-    { label: 'Small', value: 'small' },
-    { label: 'Medium', value: 'medium' },
-    { label: 'Large', value: 'large' }
+// Animation skin options
+const ANIMATION_SKIN_OPTIONS = [
+    { label: __('Hamburger to X', 'jankx'), value: 'hamburger-to-x' },
+    { label: __('Hamburger Expand', 'jankx'), value: 'hamburger-expand' },
+    { label: __('Hamburger Arrow', 'jankx'), value: 'hamburger-arrow' },
+    { label: __('Hamburger Spin', 'jankx'), value: 'hamburger-spin' },
+    { label: __('Simple (No Animation)', 'jankx'), value: 'simple' }
 ];
 
 // Display options
@@ -86,81 +50,68 @@ const DISPLAY_OPTIONS = [
 
 function OffcanvasTriggerEdit({ attributes, setAttributes }: OffcanvasTriggerEditProps): JSX.Element {
     const {
-        triggerText,
-        triggerIcon,
         targetSidebarId,
-        buttonStyle,
-        buttonSize,
-        backgroundColor,
-        textColor,
-        borderRadius,
-        showIcon,
-        showText,
+        animationSkin,
+        barColor,
+        barThickness,
+        barWidth,
+        barSpacing,
         displayOn,
         className
     } = attributes;
 
     const [isColorPickerOpen, setIsColorPickerOpen] = useState<boolean>(false);
-    const [isTextColorPickerOpen, setIsTextColorPickerOpen] = useState<boolean>(false);
+    const [isActive, setIsActive] = useState<boolean>(false);
 
     const blockProps = useBlockProps({
         className: `offcanvas-trigger-block display-${displayOn} ${className || ''} editor-always-visible`
     });
 
-    // Get icon component
-    const getIconComponent = (iconName: string) => {
-        const iconMap: { [key: string]: any } = {
-            menu,
-            home,
-            info,
-            cog,
-            envelope
-        };
-        return iconMap[iconName] || menu;
-    };
-
-    // Button styles
-    const getButtonStyles = () => {
-        const baseStyles = {
-            backgroundColor: buttonStyle === 'outline' || buttonStyle === 'ghost' ? 'transparent' : backgroundColor,
-            color: textColor,
-            border: buttonStyle === 'outline' ? `2px solid ${backgroundColor}` : 'none',
-            borderRadius: borderRadius,
-            padding: buttonSize === 'small' ? '8px 12px' : buttonSize === 'large' ? '16px 24px' : '12px 16px',
-            fontSize: buttonSize === 'small' ? '14px' : buttonSize === 'large' ? '18px' : '16px',
-            cursor: 'pointer',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            textDecoration: 'none',
-            transition: 'all 0.3s ease'
-        };
-
-        return baseStyles;
-    };
-
-    // Handle click in editor
+    // Handle click in editor - toggle active state for preview
     const handleClick = (e: React.MouseEvent) => {
         e.preventDefault();
-        // In editor, just show a message
+        setIsActive(!isActive);
+        // Also toggle sidebar in editor if available
         jQuery(e.target).parents('.is-root-container').toggleClass('sidebar-open');
+    };
+
+    // Render hamburger bars
+    const renderHamburger = () => {
+        const barStyle = {
+            backgroundColor: barColor,
+            height: `${barThickness}px`,
+            width: `${barWidth}px`
+        };
+
+        const containerStyle: React.CSSProperties = {
+            '--bar-spacing': `${barSpacing}px`,
+            '--bar-thickness': `${barThickness}px`,
+            '--bar-width': `${barWidth}px`,
+            '--bar-color': barColor
+        } as React.CSSProperties;
+
+        return (
+            <div
+                className={`hamburger-container skin-${animationSkin} ${isActive ? 'active' : ''}`}
+                style={containerStyle}
+            >
+                <span className="bar bar-top" style={barStyle}></span>
+                <span className="bar bar-middle" style={barStyle}></span>
+                <span className="bar bar-bottom" style={barStyle}></span>
+            </div>
+        );
     };
 
     return (
         <>
             <InspectorControls>
-                <PanelBody title={__('Trigger Settings', 'jankx')} initialOpen={true}>
-                    <TextControl
-                        label={__('Button Text', 'jankx')}
-                        value={triggerText}
-                        onChange={(value: string) => setAttributes({ triggerText: value })}
-                    />
-
+                <PanelBody title={__('Animation Settings', 'jankx')} initialOpen={true}>
                     <SelectControl
-                        label={__('Button Icon', 'jankx')}
-                        value={triggerIcon}
-                        options={ICON_OPTIONS}
-                        onChange={(value: string) => setAttributes({ triggerIcon: value })}
+                        label={__('Animation Skin', 'jankx')}
+                        value={animationSkin}
+                        options={ANIMATION_SKIN_OPTIONS}
+                        onChange={(value: string) => setAttributes({ animationSkin: value })}
+                        help={__('Choose the animation style for the hamburger menu toggle.', 'jankx')}
                     />
 
                     <TextControl
@@ -169,17 +120,72 @@ function OffcanvasTriggerEdit({ attributes, setAttributes }: OffcanvasTriggerEdi
                         onChange={(value: string) => setAttributes({ targetSidebarId: value })}
                         help={__('Enter the ID of the offcanvas sidebar to trigger. Leave empty to trigger the first sidebar found.', 'jankx')}
                     />
+                </PanelBody>
 
-                    <ToggleControl
-                        label={__('Show Icon', 'jankx')}
-                        checked={showIcon}
-                        onChange={(value: boolean) => setAttributes({ showIcon: value })}
+                <PanelBody title={__('Appearance', 'jankx')} initialOpen={false}>
+                    <div className="color-control">
+                        <label>{__('Bar Color', 'jankx')}</label>
+                        <Button
+                            variant="secondary"
+                            onClick={() => setIsColorPickerOpen(!isColorPickerOpen)}
+                            style={{
+                                backgroundColor: barColor,
+                                color: '#fff',
+                                width: '100%',
+                                justifyContent: 'center',
+                                marginTop: '8px'
+                            }}
+                        >
+                            {barColor}
+                        </Button>
+                        {isColorPickerOpen && (
+                            <div className="color-picker-popup" style={{ marginTop: '8px' }}>
+                                <ColorPicker
+                                    color={barColor}
+                                    onChange={(color: string) => setAttributes({ barColor: color })}
+                                />
+                            </div>
+                        )}
+                    </div>
+
+                    <RangeControl
+                        label={__('Bar Thickness (px)', 'jankx')}
+                        value={barThickness}
+                        onChange={(value: number | undefined) => {
+                            if (value !== undefined) {
+                                setAttributes({ barThickness: value });
+                            }
+                        }}
+                        min={1}
+                        max={10}
+                        step={1}
                     />
 
-                    <ToggleControl
-                        label={__('Show Text', 'jankx')}
-                        checked={showText}
-                        onChange={(value: boolean) => setAttributes({ showText: value })}
+                    <RangeControl
+                        label={__('Bar Width (px)', 'jankx')}
+                        value={barWidth}
+                        onChange={(value: number | undefined) => {
+                            if (value !== undefined) {
+                                setAttributes({ barWidth: value });
+                            }
+                        }}
+                        min={20}
+                        max={60}
+                        step={1}
+                    />
+
+                    <RangeControl
+                        label={__('Bar Spacing (px)', 'jankx')}
+                        value={barSpacing}
+                        onChange={(value: number | undefined) => {
+                            if (value !== undefined) {
+                                setAttributes({ barSpacing: value });
+                            }
+                        }}
+                        min={3}
+                        max={15}
+                        step={1}
+                        help={__('Distance between the bars.', 'jankx')}
                     />
                 </PanelBody>
 
@@ -192,90 +198,16 @@ function OffcanvasTriggerEdit({ attributes, setAttributes }: OffcanvasTriggerEdi
                         help={__('Control which devices this trigger button appears on. Note: The trigger is always visible in the editor for easy editing.', 'jankx')}
                     />
                 </PanelBody>
-
-                <PanelBody title={__('Button Style', 'jankx')} initialOpen={false}>
-                    <SelectControl
-                        label={__('Button Style', 'jankx')}
-                        value={buttonStyle}
-                        options={BUTTON_STYLE_OPTIONS}
-                        onChange={(value: string) => setAttributes({ buttonStyle: value })}
-                    />
-
-                    <SelectControl
-                        label={__('Button Size', 'jankx')}
-                        value={buttonSize}
-                        options={BUTTON_SIZE_OPTIONS}
-                        onChange={(value: string) => setAttributes({ buttonSize: value })}
-                    />
-
-                    <div className="color-controls">
-                        <div className="color-control">
-                            <Button
-                                variant="secondary"
-                                onClick={() => setIsColorPickerOpen(!isColorPickerOpen)}
-                                style={{ backgroundColor: backgroundColor, color: textColor }}
-                            >
-                                {__('Background Color', 'jankx')}
-                            </Button>
-                            {isColorPickerOpen && (
-                                <div className="color-picker-popup">
-                                    <ColorPicker
-                                        color={backgroundColor}
-                                        onChange={(color: string) => setAttributes({ backgroundColor: color })}
-                                    />
-                                </div>
-                            )}
-                        </div>
-
-                        <div className="color-control">
-                            <Button
-                                variant="secondary"
-                                onClick={() => setIsTextColorPickerOpen(!isTextColorPickerOpen)}
-                                style={{ backgroundColor: textColor, color: backgroundColor }}
-                            >
-                                {__('Text Color', 'jankx')}
-                            </Button>
-                            {isTextColorPickerOpen && (
-                                <div className="color-picker-popup">
-                                    <ColorPicker
-                                        color={textColor}
-                                        onChange={(color: string) => setAttributes({ textColor: color })}
-                                    />
-                                </div>
-                            )}
-                        </div>
-                    </div>
-
-                    <RangeControl
-                        label={__('Border Radius', 'jankx')}
-                        value={parseInt(borderRadius)}
-                        onChange={(value: number | undefined) => {
-                            if (value !== undefined) {
-                                setAttributes({ borderRadius: `${value}px` });
-                            }
-                        }}
-                        min={0}
-                        max={50}
-                        step={1}
-                    />
-                </PanelBody>
             </InspectorControls>
 
             <div {...blockProps}>
                 <button
-                    className={`offcanvas-trigger style-${buttonStyle} size-${buttonSize}`}
-                    style={getButtonStyles()}
+                    className="offcanvas-trigger hamburger-trigger"
                     onClick={handleClick}
                     data-target-sidebar={targetSidebarId}
+                    aria-label={__('Toggle menu', 'jankx')}
                 >
-                    {showIcon && getIconComponent(triggerIcon) && (
-                        <span className="trigger-icon">
-                            {getIconComponent(triggerIcon)}
-                        </span>
-                    )}
-                    {showText && (
-                        <span className="trigger-text">{triggerText}</span>
-                    )}
+                    {renderHamburger()}
                 </button>
             </div>
         </>
@@ -290,16 +222,12 @@ registerBlockType('jankx/offcanvas-trigger', {
     title: 'Offcanvas Trigger',
     category: 'widgets',
     attributes: {
-        triggerText: { type: 'string', default: 'Menu' },
-        triggerIcon: { type: 'string', default: 'menu' },
         targetSidebarId: { type: 'string', default: '' },
-        buttonStyle: { type: 'string', default: 'default' },
-        buttonSize: { type: 'string', default: 'medium' },
-        backgroundColor: { type: 'string', default: '#48a770' },
-        textColor: { type: 'string', default: '#ffffff' },
-        borderRadius: { type: 'string', default: '4px' },
-        showIcon: { type: 'boolean', default: true },
-        showText: { type: 'boolean', default: true },
+        animationSkin: { type: 'string', default: 'hamburger-to-x' },
+        barColor: { type: 'string', default: '#333333' },
+        barThickness: { type: 'number', default: 3 },
+        barWidth: { type: 'number', default: 30 },
+        barSpacing: { type: 'number', default: 5 },
         displayOn: { type: 'string', default: 'all' },
         className: { type: 'string' }
     },
