@@ -30,112 +30,85 @@ class OffcanvasSidebarBlock extends Block
      * Render the block content
      *
      * @param array $attributes Block attributes
-     * @param string $content Block content
+     * @param string $content Block content (InnerBlocks rendered HTML)
      * @return string Rendered HTML
      */
     public function render($attributes, $content = '')
     {
-        $sidebarPosition = $attributes['sidebarPosition'] ?? 'left';
-        $animationEffect = $attributes['animationEffect'] ?? 'slide-in';
-        $sidebarWidth = $attributes['sidebarWidth'] ?? '300px';
-        $overlayColor = $attributes['overlayColor'] ?? 'rgba(0,0,0,0.2)';
-        $sidebarBackground = $attributes['sidebarBackground'] ?? '#48a770';
-        $textColor = $attributes['textColor'] ?? '#f3efe0';
-        $triggerText = $attributes['triggerText'] ?? 'Menu';
-        $triggerIcon = $attributes['triggerIcon'] ?? 'menu';
-        $showOverlay = $attributes['showOverlay'] ?? true;
-        $closeOnOverlayClick = $attributes['closeOnOverlayClick'] ?? true;
-        $closeOnEscape = $attributes['closeOnEscape'] ?? true;
-        $autoClose = $attributes['autoClose'] ?? false;
-        $autoCloseDelay = $attributes['autoCloseDelay'] ?? 5000;
-        $menuItems = $attributes['menuItems'] ?? [];
-        $className = $attributes['className'] ?? '';
+        try {
+            $sidebarPosition = $attributes['sidebarPosition'] ?? 'left';
+            $animationEffect = $attributes['animationEffect'] ?? 'slide-in';
+            $sidebarWidth = $attributes['sidebarWidth'] ?? '300px';
+            $overlayColor = $attributes['overlayColor'] ?? 'rgba(0,0,0,0.2)';
+            $sidebarBackground = $attributes['sidebarBackground'] ?? '#48a770';
+            $textColor = $attributes['textColor'] ?? '#f3efe0';
+            $showOverlay = $attributes['showOverlay'] ?? true;
+            $closeOnOverlayClick = $attributes['closeOnOverlayClick'] ?? true;
+            $className = $attributes['className'] ?? '';
 
-        // Generate unique ID for this block instance
-        $blockId = 'offcanvas-sidebar-' . uniqid();
+            // Generate unique ID for this block instance
+            $blockId = 'offcanvas-sidebar-' . uniqid();
 
-        // Build wrapper classes
-        $wrapperClasses = ['offcanvas-sidebar-block'];
-        if (!empty($className)) {
-            $wrapperClasses[] = $className;
-        }
+            // Build wrapper classes
+            $wrapperClasses = ['offcanvas-sidebar-block'];
+            if (!empty($className)) {
+                $wrapperClasses[] = $className;
+            }
 
         // Build sidebar classes
         $sidebarClasses = [
-            'offcanvas-sidebar-preview',
+            'offcanvas-sidebar-container',
             'effect-' . $animationEffect,
             'position-' . $sidebarPosition
         ];
 
-        // Build inline styles
-        $sidebarStyle = sprintf(
-            'width: %s; background-color: %s; color: %s;',
-            esc_attr($sidebarWidth),
-            esc_attr($sidebarBackground),
-            esc_attr($textColor)
-        );
+            // Build inline styles
+            $sidebarStyle = sprintf(
+                'width: %s; background-color: %s; color: %s;',
+                esc_attr($sidebarWidth),
+                esc_attr($sidebarBackground),
+                esc_attr($textColor)
+            );
 
-        $overlayStyle = sprintf(
-            'background-color: %s;',
-            esc_attr($overlayColor)
-        );
+            $overlayStyle = sprintf(
+                'background-color: %s;',
+                esc_attr($overlayColor)
+            );
 
-        // Build overlay
-        $overlay = $showOverlay ? $this->renderOverlay($overlayStyle, $closeOnOverlayClick, $blockId) : '';
+            // Build overlay
+            $overlay = $showOverlay ? $this->renderOverlay($overlayStyle, $closeOnOverlayClick, $blockId) : '';
 
-        // Build sidebar content
-        $sidebarContent = $this->renderSidebarContent($menuItems, $content, $textColor, $blockId);
+            // Build sidebar content with InnerBlocks (no menu items)
+            $sidebarContent = $this->renderSidebarContent($content, $textColor, $blockId);
 
-        // Build data attributes for JavaScript
-        $dataAttributes = $this->buildDataAttributes([
-            'showOverlay' => $showOverlay,
-            'closeOnEscape' => $closeOnEscape,
-            'closeOnOverlayClick' => $closeOnOverlayClick,
-            'autoClose' => $autoClose,
-            'autoCloseDelay' => $autoCloseDelay
-        ]);
+            // Build data attributes for JavaScript
+            $dataAttributes = $this->buildDataAttributes([
+                'showOverlay' => $showOverlay,
+                'closeOnOverlayClick' => $closeOnOverlayClick
+            ]);
 
-        return sprintf(
-            '<div class="%s" id="%s" %s>
-                <div class="%s" data-effect="%s">
-                    %s
-                    <div class="offcanvas-sidebar" style="%s">
+            return sprintf(
+                '<div class="%s" id="%s" %s>
+                    <div class="%s" data-effect="%s">
                         %s
+                        <div class="offcanvas-sidebar" style="%s">
+                            %s
+                        </div>
                     </div>
-                </div>
-            </div>',
-            esc_attr(implode(' ', $wrapperClasses)),
-            esc_attr($blockId),
-            $dataAttributes,
-            esc_attr(implode(' ', $sidebarClasses)),
-            esc_attr($animationEffect),
-            $overlay,
-            $sidebarStyle,
-            $sidebarContent
-        );
-    }
-
-    /**
-     * Render trigger button
-     *
-     * @param string $text Button text
-     * @param string $icon Button icon
-     * @param string $blockId Block ID
-     * @return string HTML
-     */
-    protected function renderTriggerButton($text, $icon, $blockId)
-    {
-        $iconHtml = $this->getIconHtml($icon);
-
-        return sprintf(
-            '<button class="offcanvas-trigger" data-target="%s" type="button">
-                %s
-                <span class="trigger-text">%s</span>
-            </button>',
-            esc_attr($blockId),
-            $iconHtml,
-            esc_html($text)
-        );
+                </div>',
+                esc_attr(implode(' ', $wrapperClasses)),
+                esc_attr($blockId),
+                $dataAttributes,
+                esc_attr(implode(' ', $sidebarClasses)),
+                esc_attr($animationEffect),
+                $overlay,
+                $sidebarStyle,
+                $sidebarContent
+            );
+        } catch (\Exception $e) {
+            error_log('OffcanvasSidebarBlock render error: ' . $e->getMessage());
+            return '<!-- Offcanvas Sidebar Block: Rendering error -->';
+        }
     }
 
     /**
@@ -160,80 +133,37 @@ class OffcanvasSidebarBlock extends Block
     /**
      * Render sidebar content
      *
-     * @param array $menuItems Menu items
-     * @param string $content Block content
+     * @param string $content Block content (InnerBlocks)
      * @param string $textColor Text color
      * @param string $blockId Block ID
      * @return string HTML
      */
-    protected function renderSidebarContent($menuItems, $content, $textColor, $blockId)
+    protected function renderSidebarContent($content, $textColor, $blockId)
     {
-        $header = $this->renderSidebarHeader($textColor, $blockId);
-        $menu = $this->renderSidebarMenu($menuItems, $textColor);
+        $closeButton = $this->renderCloseButton($textColor, $blockId);
         $sidebarContent = $this->renderSidebarInnerContent($content);
 
-        return $header . $menu . $sidebarContent;
+        return $closeButton . $sidebarContent;
     }
 
     /**
-     * Render sidebar header
+     * Render close button
      *
      * @param string $textColor Text color
      * @param string $blockId Block ID
      * @return string HTML
      */
-    protected function renderSidebarHeader($textColor, $blockId)
+    protected function renderCloseButton($textColor, $blockId)
     {
         return sprintf(
-            '<div class="sidebar-header">
-                <h3>%s</h3>
-                <button class="close-button" data-target="%s" type="button" style="color: %s;">×</button>
-            </div>',
-            esc_html__('Navigation', 'jankx'),
+            '<button class="close-button" data-target="%s" type="button" style="color: %s;" aria-label="%s">×</button>',
             esc_attr($blockId),
-            esc_attr($textColor)
+            esc_attr($textColor),
+            esc_attr__('Close sidebar', 'jankx')
         );
     }
 
     /**
-     * Render sidebar menu
-     *
-     * @param array $menuItems Menu items
-     * @param string $textColor Text color
-     * @return string HTML
-     */
-    protected function renderSidebarMenu($menuItems, $textColor)
-    {
-        if (empty($menuItems)) {
-            return '';
-        }
-
-        $menuItemsHtml = '';
-        foreach ($menuItems as $item) {
-            $iconHtml = $this->getIconHtml($item['icon'] ?? '');
-            $menuItemsHtml .= sprintf(
-                '<li>
-                    <a href="%s" style="color: %s;">
-                        %s
-                        <span class="menu-text">%s</span>
-                    </a>
-                </li>',
-                esc_url($item['url'] ?? '#'),
-                esc_attr($textColor),
-                $iconHtml,
-                esc_html($item['text'] ?? '')
-            );
-        }
-
-        return sprintf(
-            '<nav class="sidebar-menu">
-                <ul>%s</ul>
-            </nav>',
-            $menuItemsHtml
-        );
-    }
-
-         /**
       * Render sidebar inner content
       *
       * @param string $content Block content
@@ -255,33 +185,21 @@ class OffcanvasSidebarBlock extends Block
      /**
       * Process nested blocks content
       *
-      * @param string $content Raw content
+      * @param string $content Raw content (InnerBlocks HTML)
       * @return string Processed content
       */
     protected function processNestedBlocks($content)
     {
-        // Handle case where content is an array (block data) instead of string
-        if (is_array($content)) {
-            // If content is an array, try to extract innerHTML or convert to string
-            if (isset($content['innerHTML'])) {
-                $content = $content['innerHTML'];
-            } elseif (isset($content['innerContent']) && is_array($content['innerContent'])) {
-                $content = implode('', array_filter($content['innerContent'], 'is_string'));
-            } else {
-                // If we can't extract content from array, return default message
-                return '<p>' . esc_html__('Add your content here using any available blocks.', 'jankx') . '</p>';
-            }
-        }
+        // Content is already rendered HTML from InnerBlocks
+        // Just clean whitespace and check if empty
+        $content = trim($content);
 
         if (empty($content)) {
-            return '<p>' . esc_html__('Add your content here using any available blocks.', 'jankx') . '</p>';
+            return '<p class="sidebar-placeholder">' . esc_html__('Add your content here using any available blocks.', 'jankx') . '</p>';
         }
 
-        // Apply WordPress content filters
-        $processedContent = apply_filters('the_content', $content);
-
-        // Add custom styling for nested blocks
-        $processedContent = $this->addNestedBlocksStyling($processedContent);
+        // Add wrapper class for better styling
+        $processedContent = '<div class="sidebar-inner-content">' . $content . '</div>';
 
         return $processedContent;
     }
@@ -490,40 +408,6 @@ class OffcanvasSidebarBlock extends Block
         );
 
         return $content;
-    }
-
-    /**
-     * Get icon HTML
-     *
-     * @param string $iconName Icon name
-     * @return string HTML
-     */
-    protected function getIconHtml($iconName)
-    {
-        if (empty($iconName)) {
-            return '';
-        }
-
-        // Map icon names to WordPress dashicons
-        $iconMap = [
-            'menu' => 'dashicons-menu',
-            'home' => 'dashicons-admin-home',
-            'info' => 'dashicons-info',
-            'cog' => 'dashicons-admin-generic',
-            'email' => 'dashicons-email',
-            'user' => 'dashicons-admin-users',
-            'search' => 'dashicons-search',
-            'settings' => 'dashicons-admin-settings',
-            'heart' => 'dashicons-heart',
-            'star' => 'dashicons-star-filled'
-        ];
-
-        $iconClass = $iconMap[$iconName] ?? 'dashicons-menu';
-
-        return sprintf(
-            '<span class="menu-icon dashicons %s"></span>',
-            esc_attr($iconClass)
-        );
     }
 
     /**

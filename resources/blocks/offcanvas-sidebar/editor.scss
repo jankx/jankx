@@ -22,3 +22,58 @@
     padding: 0!important;
 }
 
+
+.editor-styles-wrapper,
+.block-editor-block-list__layout {
+    .offcanvas-sidebar-block {
+        .offcanvas-sidebar-preview {
+            width: 300px !important;
+            height: auto !important;
+            min-height: 400px !important;
+
+            // Force sidebar to be always visible in editor
+            .offcanvas-sidebar,
+            .editor-sidebar {
+                position: relative !important;
+                transform: none !important;
+                opacity: 1 !important;
+                visibility: visible !important;
+                height: auto !important;
+                min-height: 400px !important;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+                border-radius: 4px !important;
+                left: auto !important;
+                right: auto !important;
+                top: auto !important;
+                bottom: auto !important;
+                z-index: 1 !important;
+            }
+
+            // Hide overlay in editor
+            .offcanvas-overlay {
+                display: none !important;
+            }
+
+            // Close button in editor
+            .close-button,
+            .editor-close-button {
+                position: absolute !important;
+                top: 15px !important;
+                right: 15px !important;
+                z-index: 10 !important;
+            }
+        }
+    }
+}
+
+// Extra specificity to override any inline styles
+.block-editor-block-list__block[data-type="jankx/offcanvas-sidebar"] {
+    .offcanvas-sidebar-preview {
+        .offcanvas-sidebar {
+            position: relative !important;
+            transform: translateX(0) !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+    }
+}

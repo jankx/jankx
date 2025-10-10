@@ -7,7 +7,7 @@
  * Handles sidebar interactions and animations
  */
 
-(function ($) {
+(function () {
   'use strict';
 
   // Offcanvas Sidebar Class
@@ -62,13 +62,10 @@
         });
       }
 
-      // Escape key
+      // Escape key to close sidebar
       document.addEventListener('keydown', e => {
         if (e.key === 'Escape' && this.isOpen) {
-          const closeOnEscape = this.element.dataset.closeOnEscape === 'true';
-          if (closeOnEscape) {
-            this.close();
-          }
+          this.close();
         }
       });
 
@@ -83,11 +80,6 @@
     }
     setupAccessibility() {
       // Add ARIA attributes for sidebar
-      if (this.sidebar) {
-        this.sidebar.setAttribute('role', 'dialog');
-        this.sidebar.setAttribute('aria-modal', 'true');
-        this.sidebar.setAttribute('aria-label', 'Sidebar navigation');
-      }
       if (this.sidebar) {
         this.sidebar.setAttribute('role', 'dialog');
         this.sidebar.setAttribute('aria-modal', 'true');
@@ -259,12 +251,17 @@
   };
 
   // Initialize on DOM ready
-  $(document).ready(function () {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () {
+      initOffcanvasSidebars();
+    });
+  } else {
+    // DOM already loaded
     initOffcanvasSidebars();
-  });
+  }
 
   // Re-initialize on AJAX content load
-  $(document).on('content-loaded', function () {
+  document.addEventListener('content-loaded', function () {
     initOffcanvasSidebars();
   });
 
@@ -296,7 +293,7 @@
       subtree: true
     });
   }
-})(jQuery);
+})();
 /******/ })()
 ;
 //# sourceMappingURL=frontend.js.map

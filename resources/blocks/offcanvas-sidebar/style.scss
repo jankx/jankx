@@ -53,8 +53,8 @@
     visibility: hidden;
 }
 
-/* Sidebar Container */
-.offcanvas-sidebar-preview {
+/* Sidebar Container - Shared styles for both preview (editor) and container (frontend) */
+.offcanvas-sidebar-container {
     position: relative;
     height: 100vh;
     overflow: hidden;
@@ -76,39 +76,41 @@
         visibility: hidden;
         min-width: 300px;
 
-        /* Sidebar Header */
-        .sidebar-header {
+        /* Close Button - positioned at top right */
+        .close-button {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.1);
+            border: none;
+            color: inherit;
+            font-size: 28px;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0;
+            width: 36px;
+            height: 36px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            z-index: 10;
+            font-weight: 300;
 
-            h3 {
-                margin: 0;
-                font-size: 18px;
-                font-weight: 600;
-                color: inherit;
+            &:hover {
+                background: rgba(0, 0, 0, 0.2);
+                transform: rotate(90deg);
             }
 
-            .close-button {
-                background: none;
-                border: none;
-                color: inherit;
-                font-size: 24px;
-                cursor: pointer;
-                padding: 0;
-                width: 30px;
-                height: 30px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                border-radius: 50%;
-                transition: background-color 0.3s ease;
+            &:focus {
+                outline: 2px solid rgba(255, 255, 255, 0.3);
+                outline-offset: 2px;
+            }
 
-                &:hover {
-                    background: rgba(255, 255, 255, 0.1);
-                }
+            &:disabled {
+                cursor: not-allowed;
+                opacity: 0.5;
             }
         }
 
@@ -732,7 +734,8 @@ html.sidebar-open {
         }
     }
 
-    .offcanvas-sidebar-preview {
+    .offcanvas-sidebar-preview,
+    .offcanvas-sidebar-container {
         .offcanvas-sidebar {
             transform: translateX(0);
             opacity: 1;
@@ -793,7 +796,8 @@ html.sidebar-open .effect-slide-down .offcanvas-sidebar {
    ======================================== */
 
 @media (max-width: 768px) {
-    .offcanvas-sidebar-preview {
+    .offcanvas-sidebar-preview,
+    .offcanvas-sidebar-container {
         .offcanvas-sidebar {
             width: 280px;
         }
@@ -810,7 +814,8 @@ html.sidebar-open .effect-slide-down .offcanvas-sidebar {
 }
 
 @media (max-width: 480px) {
-    .offcanvas-sidebar-preview {
+    .offcanvas-sidebar-preview,
+    .offcanvas-sidebar-container {
         .offcanvas-sidebar {
             width: 100%;
         }

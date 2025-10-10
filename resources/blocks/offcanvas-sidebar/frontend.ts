@@ -31,7 +31,7 @@ declare global {
     }
 }
 
-(function($: JQueryStatic) {
+(function() {
     'use strict';
 
     // Offcanvas Sidebar Class
@@ -99,13 +99,10 @@ declare global {
                 });
             }
 
-            // Escape key
+            // Escape key to close sidebar
             document.addEventListener('keydown', (e: KeyboardEvent) => {
                 if (e.key === 'Escape' && this.isOpen) {
-                    const closeOnEscape = this.element.dataset.closeOnEscape === 'true';
-                    if (closeOnEscape) {
-                        this.close();
-                    }
+                    this.close();
                 }
             });
 
@@ -121,12 +118,6 @@ declare global {
 
         private setupAccessibility(): void {
             // Add ARIA attributes for sidebar
-            if (this.sidebar) {
-                this.sidebar.setAttribute('role', 'dialog');
-                this.sidebar.setAttribute('aria-modal', 'true');
-                this.sidebar.setAttribute('aria-label', 'Sidebar navigation');
-            }
-
             if (this.sidebar) {
                 this.sidebar.setAttribute('role', 'dialog');
                 this.sidebar.setAttribute('aria-modal', 'true');
@@ -320,12 +311,17 @@ declare global {
     };
 
     // Initialize on DOM ready
-    $(document).ready(function() {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            initOffcanvasSidebars();
+        });
+    } else {
+        // DOM already loaded
         initOffcanvasSidebars();
-    });
+    }
 
     // Re-initialize on AJAX content load
-    $(document).on('content-loaded', function() {
+    document.addEventListener('content-loaded', function() {
         initOffcanvasSidebars();
     });
 
@@ -359,4 +355,4 @@ declare global {
         });
     }
 
-})(jQuery);
+})();
