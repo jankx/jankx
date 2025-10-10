@@ -16,8 +16,6 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 16px;
-  background: #48a770;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -27,14 +25,8 @@
   transition: all 0.3s ease;
   text-decoration: none;
 }
-.offcanvas-trigger:hover {
-  background: #3a8a5a;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
 .offcanvas-trigger:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(72, 167, 112, 0.5);
 }
 .offcanvas-trigger .trigger-icon {
   display: flex;
@@ -564,14 +556,6 @@
 .offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-jankx-offcanvas-sidebar .offcanvas-sidebar-block {
   position: relative;
 }
-.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-jankx-offcanvas-sidebar .offcanvas-sidebar-block .offcanvas-trigger {
-  background: rgba(255, 255, 255, 0.1);
-  color: inherit;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-.offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-jankx-offcanvas-sidebar .offcanvas-sidebar-block .offcanvas-trigger:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
 .offcanvas-sidebar-preview .offcanvas-sidebar .sidebar-content .wp-block-jankx-offcanvas-sidebar .offcanvas-sidebar-block .sidebar-content {
   padding: 0;
   border-top: none;
@@ -703,7 +687,6 @@ html.sidebar-open .effect-slide-down .offcanvas-sidebar {
     width: 100%;
   }
   .offcanvas-sidebar-preview .offcanvas-trigger {
-    padding: 8px 12px;
     font-size: 12px;
   }
   .offcanvas-sidebar-preview .offcanvas-trigger .trigger-text {
