@@ -744,10 +744,10 @@
 html.sidebar-open {
     overflow: hidden;
 
-    &.admin-bar {
-        .offcanvas-sidebar-preview {
+    body.admin-bar {
+        .offcanvas-sidebar-block {
             .offcanvas-sidebar {
-                padding-top: 35px;
+                padding-top: 40px;
             }
         }
     }

@@ -1,0 +1,22 @@
+@media(max-width: 767px) {
+    .wp-site-blocks {
+        .wp-block-site-logo {
+            flex: 1;
+            flex-basis: auto;
+            a {
+                min-width: 80px;
+            }
+
+            img {
+                width: auto;
+            }
+
+            .custom-logo-link {
+                display: flex;
+                width: 100%;
+                justify-content: center;
+                align-items: center;
+            }
+        }
+    }
+}

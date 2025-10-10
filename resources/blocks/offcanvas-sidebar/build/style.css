@@ -633,8 +633,8 @@
 html.sidebar-open {
   overflow: hidden;
 }
-html.sidebar-open.admin-bar .offcanvas-sidebar-preview .offcanvas-sidebar {
-  padding-top: 35px;
+html.sidebar-open body.admin-bar .offcanvas-sidebar-block .offcanvas-sidebar {
+  padding-top: 40px;
 }
 html.sidebar-open .offcanvas-sidebar-preview .offcanvas-sidebar {
   transform: translateX(0);
