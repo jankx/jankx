@@ -91,6 +91,34 @@
   margin: 0;
 }
 
+@media (max-width: 1024px) {
+  .offcanvas-trigger-block.display-desktop {
+    display: none !important;
+  }
+}
+
+@media (min-width: 1025px) {
+  .offcanvas-trigger-block.display-tablet-down {
+    display: none !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .offcanvas-trigger-block.display-mobile {
+    display: none !important;
+  }
+}
+
+@media (max-width: 767px), (min-width: 1025px) {
+  .offcanvas-trigger-block.display-tablet {
+    display: none !important;
+  }
+}
+
+.editor-styles-wrapper .offcanvas-trigger-block.editor-always-visible {
+  display: inline-block !important;
+}
+
 @media (max-width: 768px) {
   .offcanvas-trigger {
     padding: 10px 14px;

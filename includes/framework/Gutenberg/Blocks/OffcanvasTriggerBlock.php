@@ -27,6 +27,7 @@ class OffcanvasTriggerBlock extends Block
         $borderRadius = $attributes['borderRadius'] ?? '4px';
         $showIcon = $attributes['showIcon'] ?? true;
         $showText = $attributes['showText'] ?? true;
+        $displayOn = $attributes['displayOn'] ?? 'all';
         $className = $attributes['className'] ?? '';
 
         // Build button styles
@@ -45,7 +46,7 @@ class OffcanvasTriggerBlock extends Block
 
         ob_start();
         ?>
-        <div class="offcanvas-trigger-block <?php echo esc_attr($className); ?>">
+        <div class="offcanvas-trigger-block display-<?php echo esc_attr($displayOn); ?> <?php echo esc_attr($className); ?>">
             <button
                 class="offcanvas-trigger <?php echo esc_attr($cssClasses); ?>"
                 style="<?php echo esc_attr($buttonStyles); ?>"

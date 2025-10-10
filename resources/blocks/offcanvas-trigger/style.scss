@@ -114,6 +114,44 @@
     }
 }
 
+// Display options
+// Desktop: >= 1025px
+// Tablet: 768px - 1024px
+// Mobile: <= 767px
+
+// Desktop only - hide on tablet and mobile
+.offcanvas-trigger-block.display-desktop {
+    @media (max-width: 1024px) {
+        display: none !important;
+    }
+}
+
+// Tablet and below - hide on desktop
+.offcanvas-trigger-block.display-tablet-down {
+    @media (min-width: 1025px) {
+        display: none !important;
+    }
+}
+
+// Mobile only - hide on tablet and desktop
+.offcanvas-trigger-block.display-mobile {
+    @media (min-width: 768px) {
+        display: none !important;
+    }
+}
+
+// Tablet only - hide on mobile and desktop
+.offcanvas-trigger-block.display-tablet {
+    @media (max-width: 767px), (min-width: 1025px) {
+        display: none !important;
+    }
+}
+
+// Always visible in editor regardless of display setting
+.editor-styles-wrapper .offcanvas-trigger-block.editor-always-visible {
+    display: inline-block !important;
+}
+
 // Responsive
 @media (max-width: 768px) {
     .offcanvas-trigger {

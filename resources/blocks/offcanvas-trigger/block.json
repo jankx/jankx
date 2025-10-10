@@ -55,6 +55,10 @@
             "type": "boolean",
             "default": true
         },
+        "displayOn": {
+            "type": "string",
+            "default": "all"
+        },
         "className": {
             "type": "string"
         }

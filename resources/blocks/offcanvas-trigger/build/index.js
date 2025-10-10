@@ -389,6 +389,24 @@ const BUTTON_SIZE_OPTIONS = [{
   label: 'Large',
   value: 'large'
 }];
+
+// Display options
+const DISPLAY_OPTIONS = [{
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('All Devices', 'jankx'),
+  value: 'all'
+}, {
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Desktop Only', 'jankx'),
+  value: 'desktop'
+}, {
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Tablet & Below', 'jankx'),
+  value: 'tablet-down'
+}, {
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Mobile Only', 'jankx'),
+  value: 'mobile'
+}, {
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Tablet Only', 'jankx'),
+  value: 'tablet'
+}];
 function OffcanvasTriggerEdit({
   attributes,
   setAttributes
@@ -404,12 +422,13 @@ function OffcanvasTriggerEdit({
     borderRadius,
     showIcon,
     showText,
+    displayOn,
     className
   } = attributes;
   const [isColorPickerOpen, setIsColorPickerOpen] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(false);
   const [isTextColorPickerOpen, setIsTextColorPickerOpen] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(false);
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)({
-    className: `offcanvas-trigger-block ${className || ''}`
+    className: `offcanvas-trigger-block display-${displayOn} ${className || ''} editor-always-visible`
   });
 
   // Get icon component
@@ -487,6 +506,18 @@ function OffcanvasTriggerEdit({
             showText: value
           })
         })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display Settings', 'jankx'),
+        initialOpen: false,
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display On', 'jankx'),
+          value: displayOn,
+          options: DISPLAY_OPTIONS,
+          onChange: value => setAttributes({
+            displayOn: value
+          }),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Control which devices this trigger button appears on. Note: The trigger is always visible in the editor for easy editing.', 'jankx')
+        })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Button Style', 'jankx'),
         initialOpen: false,
@@ -624,6 +655,10 @@ function OffcanvasTriggerSave() {
     showText: {
       type: 'boolean',
       default: true
+    },
+    displayOn: {
+      type: 'string',
+      default: 'all'
     },
     className: {
       type: 'string'

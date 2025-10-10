@@ -36,6 +36,7 @@ interface OffcanvasTriggerAttributes {
     borderRadius: string;
     showIcon: boolean;
     showText: boolean;
+    displayOn: string;
     className?: string;
 }
 
@@ -74,6 +75,15 @@ const BUTTON_SIZE_OPTIONS = [
     { label: 'Large', value: 'large' }
 ];
 
+// Display options
+const DISPLAY_OPTIONS = [
+    { label: __('All Devices', 'jankx'), value: 'all' },
+    { label: __('Desktop Only', 'jankx'), value: 'desktop' },
+    { label: __('Tablet & Below', 'jankx'), value: 'tablet-down' },
+    { label: __('Mobile Only', 'jankx'), value: 'mobile' },
+    { label: __('Tablet Only', 'jankx'), value: 'tablet' }
+];
+
 function OffcanvasTriggerEdit({ attributes, setAttributes }: OffcanvasTriggerEditProps): JSX.Element {
     const {
         triggerText,
@@ -86,6 +96,7 @@ function OffcanvasTriggerEdit({ attributes, setAttributes }: OffcanvasTriggerEdi
         borderRadius,
         showIcon,
         showText,
+        displayOn,
         className
     } = attributes;
 
@@ -93,7 +104,7 @@ function OffcanvasTriggerEdit({ attributes, setAttributes }: OffcanvasTriggerEdi
     const [isTextColorPickerOpen, setIsTextColorPickerOpen] = useState<boolean>(false);
 
     const blockProps = useBlockProps({
-        className: `offcanvas-trigger-block ${className || ''}`
+        className: `offcanvas-trigger-block display-${displayOn} ${className || ''} editor-always-visible`
     });
 
     // Get icon component
@@ -169,6 +180,16 @@ function OffcanvasTriggerEdit({ attributes, setAttributes }: OffcanvasTriggerEdi
                         label={__('Show Text', 'jankx')}
                         checked={showText}
                         onChange={(value: boolean) => setAttributes({ showText: value })}
+                    />
+                </PanelBody>
+
+                <PanelBody title={__('Display Settings', 'jankx')} initialOpen={false}>
+                    <SelectControl
+                        label={__('Display On', 'jankx')}
+                        value={displayOn}
+                        options={DISPLAY_OPTIONS}
+                        onChange={(value: string) => setAttributes({ displayOn: value })}
+                        help={__('Control which devices this trigger button appears on. Note: The trigger is always visible in the editor for easy editing.', 'jankx')}
                     />
                 </PanelBody>
 
@@ -279,6 +300,7 @@ registerBlockType('jankx/offcanvas-trigger', {
         borderRadius: { type: 'string', default: '4px' },
         showIcon: { type: 'boolean', default: true },
         showText: { type: 'boolean', default: true },
+        displayOn: { type: 'string', default: 'all' },
         className: { type: 'string' }
     },
     edit: OffcanvasTriggerEdit,
