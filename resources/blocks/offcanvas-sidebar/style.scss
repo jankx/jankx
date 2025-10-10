@@ -740,8 +740,8 @@
 
 }
 
-/* Open state - applied to body */
-body.sidebar-open {
+/* Open state - applied to html */
+html.sidebar-open {
     overflow: hidden;
 
     &.admin-bar {
@@ -783,11 +783,11 @@ body.sidebar-open {
     transform: translateX(100%);
 }
 
-body.sidebar-open .effect-slide-in .offcanvas-sidebar {
+html.sidebar-open .effect-slide-in .offcanvas-sidebar {
     transform: translateX(0);
 }
 
-body.sidebar-open .effect-slide-in.position-right .offcanvas-sidebar {
+html.sidebar-open .effect-slide-in.position-right .offcanvas-sidebar {
     transform: translateX(0);
 }
 
@@ -802,7 +802,7 @@ body.sidebar-open .effect-slide-in.position-right .offcanvas-sidebar {
     transform: translateY(-100%);
 }
 
-body.sidebar-open .effect-slide-down .offcanvas-sidebar {
+html.sidebar-open .effect-slide-down .offcanvas-sidebar {
     transform: translateY(0);
 }
 

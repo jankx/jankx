@@ -142,7 +142,7 @@ declare global {
             if (this.isOpen) return;
 
             this.isOpen = true;
-            document.body.classList.add('sidebar-open');
+            document.documentElement.classList.add('sidebar-open');
 
             // Focus management
             this.focusTrap();
@@ -161,7 +161,7 @@ declare global {
             if (!this.isOpen) return;
 
             this.isOpen = false;
-            document.body.classList.remove('sidebar-open');
+            document.documentElement.classList.remove('sidebar-open');
 
             // Clear auto close timer
             this.clearAutoClose();
