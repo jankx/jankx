@@ -80,7 +80,6 @@
   position: absolute;
   top: 15px;
   right: 15px;
-  background: rgba(0, 0, 0, 0.1);
   border: none;
   color: inherit;
   font-size: 28px;
@@ -92,7 +91,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
   transition: all 0.3s ease;
   z-index: 10;
   font-weight: 300;
@@ -620,7 +618,10 @@ html.sidebar-open {
   overflow: hidden;
 }
 html.sidebar-open body.admin-bar .offcanvas-sidebar-block .offcanvas-sidebar {
-  padding-top: 40px;
+  padding-top: 45px;
+}
+html.sidebar-open body.admin-bar .offcanvas-sidebar-block .offcanvas-sidebar .close-button {
+  top: 50px;
 }
 html.sidebar-open .offcanvas-sidebar-preview .offcanvas-sidebar,
 html.sidebar-open .offcanvas-sidebar-container .offcanvas-sidebar {
