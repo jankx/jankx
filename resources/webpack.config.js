@@ -11,6 +11,7 @@ module.exports = {
   devtool: 'source-map',
   entry: {
     'blocks/language-switcher/build/index': './blocks/language-switcher/index.tsx',
+    'blocks/language-switcher/build/frontend': './blocks/language-switcher/frontend.ts',
     'blocks/language-switcher/build/style': './blocks/language-switcher/style.scss',
     'blocks/language-switcher/build/editor': './blocks/language-switcher/editor.scss',
 
