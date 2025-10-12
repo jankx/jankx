@@ -1,0 +1,38 @@
+/*!*********************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/smart-tab/editor.scss ***!
+  \*********************************************************************************************************************************************************************************************/
+/**
+ * Smart Tab Block - Editor Only Styles
+ */
+.editor-styles-wrapper .smart-tab {
+  min-height: 100px;
+  border: 2px solid #007cba;
+  border-radius: 4px;
+  padding: 20px;
+  background-color: rgba(0, 124, 186, 0.02);
+  box-shadow: 0 2px 8px rgba(0, 124, 186, 0.1);
+}
+.editor-styles-wrapper .smart-tab__header {
+  display: block !important;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #e0e0e0;
+}
+.editor-styles-wrapper .smart-tab__title-edit {
+  font-size: 18px;
+  font-weight: 600;
+  padding: 10px 15px;
+  border: 2px solid #007cba;
+  border-radius: 4px;
+  background: #e8f4f8;
+  color: #007cba;
+}
+.editor-styles-wrapper .smart-tab__title-edit:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 124, 186, 0.3);
+}
+.editor-styles-wrapper .smart-tab__content {
+  min-height: 150px;
+}
+
+/*# sourceMappingURL=editor.css.map*/

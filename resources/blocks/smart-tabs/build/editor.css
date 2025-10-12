@@ -1,0 +1,79 @@
+/*!**********************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/smart-tabs/editor.scss ***!
+  \**********************************************************************************************************************************************************************************************/
+@charset "UTF-8";
+/**
+ * Smart Tabs Block - Editor Only Styles
+ */
+.editor-styles-wrapper .smart-tabs {
+  border: 2px dashed #e0e0e0;
+  border-radius: 4px;
+  padding: 20px;
+  background: #fafafa;
+}
+.editor-styles-wrapper .smart-tabs__navigation {
+  margin-bottom: 25px;
+  background: white;
+  padding: 15px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.editor-styles-wrapper .smart-tabs__nav-list {
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 0;
+}
+.editor-styles-wrapper .smart-tabs__nav-item {
+  position: relative;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.editor-styles-wrapper .smart-tabs__nav-item:hover {
+  background: rgba(0, 124, 186, 0.05);
+}
+.editor-styles-wrapper .smart-tabs__nav-item.is-active {
+  background: rgba(0, 124, 186, 0.08);
+}
+.editor-styles-wrapper .smart-tabs__nav-item.is-active::after {
+  content: "✓ Đang edit";
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  font-size: 11px;
+  color: #007cba;
+  background: white;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-weight: 600;
+}
+.editor-styles-wrapper .smart-tabs__add-tab {
+  display: inline-flex !important;
+  margin-left: 10px;
+}
+.editor-styles-wrapper .smart-tabs__content {
+  background: white;
+  padding: 20px;
+  border-radius: 6px;
+  min-height: 250px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.block-editor-inserter__menu .smart-tab-icon-picker {
+  padding: 10px;
+}
+
+.smart-tabs__helper {
+  padding: 12px;
+  background: #e8f4f8;
+  border-left: 4px solid #007cba;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  font-size: 13px;
+  color: #555;
+}
+.smart-tabs__helper strong {
+  color: #007cba;
+  font-weight: 600;
+}
+
+/*# sourceMappingURL=editor.css.map*/

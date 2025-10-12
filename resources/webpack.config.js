@@ -110,6 +110,15 @@ module.exports = {
     'blocks/button/build/style': './blocks/button/style.scss',
     'blocks/button/build/editor': './blocks/button/editor.scss',
     'blocks/button/build/view': './blocks/button/view.js',
+
+    'blocks/smart-tabs/build/index': './blocks/smart-tabs/index.tsx',
+    'blocks/smart-tabs/build/style': './blocks/smart-tabs/style.scss',
+    'blocks/smart-tabs/build/editor': './blocks/smart-tabs/editor.scss',
+    'blocks/smart-tabs/build/view': './blocks/smart-tabs/view.js',
+
+    'blocks/smart-tab/build/index': './blocks/smart-tab/index.tsx',
+    'blocks/smart-tab/build/style': './blocks/smart-tab/style.scss',
+    'blocks/smart-tab/build/editor': './blocks/smart-tab/editor.scss',
   },
   output: {
     path: path.resolve(__dirname),

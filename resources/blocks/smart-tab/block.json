@@ -1,0 +1,107 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/smart-tab",
+    "title": "Smart Tab",
+    "category": "jankx",
+    "description": "Single tab item for Smart Tabs",
+    "keywords": ["tab", "smart", "panel"],
+    "textdomain": "jankx",
+    "parent": ["jankx/smart-tabs"],
+    "attributes": {
+        "title": {
+            "type": "string",
+            "default": "Tab"
+        },
+        "iconType": {
+            "type": "string",
+            "enum": ["none", "svg", "picker"],
+            "default": "none"
+        },
+        "icon": {
+            "type": "string",
+            "default": ""
+        },
+        "iconName": {
+            "type": "string",
+            "default": ""
+        },
+        "iconSet": {
+            "type": "string",
+            "default": "material"
+        },
+        "iconPosition": {
+            "type": "string",
+            "enum": ["before", "after"],
+            "default": "before"
+        },
+        "iconSize": {
+            "type": "string",
+            "default": "16px"
+        },
+        "iconColor": {
+            "type": "string",
+            "default": ""
+        },
+        "tabId": {
+            "type": "string"
+        },
+        "normalTabTextColor": {
+            "type": "string"
+        },
+        "normalTabBackgroundColor": {
+            "type": "string"
+        },
+        "normalTabGradient": {
+            "type": "string"
+        },
+        "activeTabTextColor": {
+            "type": "string"
+        },
+        "activeTabBackgroundColor": {
+            "type": "string"
+        },
+        "activeTabGradient": {
+            "type": "string"
+        },
+        "contentTextColor": {
+            "type": "string"
+        },
+        "contentBackgroundColor": {
+            "type": "string"
+        },
+        "contentGradient": {
+            "type": "string"
+        },
+        "style": {
+            "type": "object"
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": false,
+        "customClassName": false,
+        "reusable": false,
+        "spacing": {
+            "margin": true,
+            "padding": true,
+            "__experimentalDefaultControls": {
+                "padding": true
+            }
+        },
+        "__experimentalBorder": {
+            "color": true,
+            "radius": true,
+            "style": true,
+            "width": true,
+            "__experimentalDefaultControls": {
+                "radius": true
+            }
+        }
+    },
+    "usesContext": ["jankx/smartTabsId", "jankx/activeTab"],
+    "editorScript": "file:./build/index.js",
+    "editorStyle": "file:./build/editor.css",
+    "style": "file:./build/style.css"
+}
+

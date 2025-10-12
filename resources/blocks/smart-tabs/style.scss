@@ -1,0 +1,230 @@
+/**
+ * Smart Tabs Block - Frontend & Editor Styles
+ */
+
+.smart-tabs {
+    margin: 20px 0;
+
+    // Navigation
+    &__navigation {
+        margin-bottom: 20px;
+    }
+
+    &__nav-list {
+        display: flex;
+        gap: 10px;
+        border-bottom: 2px solid #e0e0e0;
+        position: relative;
+
+        // Alignment options
+        &.align-left {
+            justify-content: flex-start !important;
+            background: rgba(255, 0, 0, 0.1) !important; // DEBUG: Red tint for left
+        }
+
+        &.align-center {
+            justify-content: center !important;
+            background: rgba(0, 255, 0, 0.1) !important; // DEBUG: Green tint for center
+        }
+
+        &.align-right {
+            justify-content: flex-end !important;
+            background: rgba(0, 0, 255, 0.1) !important; // DEBUG: Blue tint for right
+        }
+
+        &.align-justify {
+            justify-content: space-between !important;
+            gap: 0 !important;
+            background: rgba(255, 255, 0, 0.1) !important; // DEBUG: Yellow tint for justify
+
+            .smart-tabs__nav-item {
+                flex: 1 !important;
+                justify-content: center !important;
+            }
+        }
+    }
+
+    // Additional high-specificity alignment rules
+    &.smart-tabs .smart-tabs__nav-list.align-center {
+        justify-content: center !important;
+        background: rgba(0, 255, 0, 0.2) !important; // Stronger green tint
+    }
+
+    &__nav-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 20px;
+        background: transparent;
+        border: none;
+        border-bottom: 3px solid transparent;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 500;
+        color: #666;
+        transition: all 0.3s ease;
+        margin-bottom: -2px;
+
+        &:hover {
+            color: #000;
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        &.is-active {
+            color: #007cba;
+            border-bottom-color: #007cba;
+        }
+    }
+
+    &__nav-icon {
+        display: inline-flex;
+        align-items: center;
+
+        svg {
+            width: 1em;
+            height: 1em;
+            fill: currentColor;
+        }
+    }
+
+    &__nav-label {
+        line-height: 1;
+    }
+
+    &__add-tab {
+        margin-left: auto;
+        opacity: 0.6;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    // Content
+    &__content {
+        padding: 20px 0;
+    }
+
+    // Vertical layout
+    &--vertical {
+        display: flex;
+        gap: 20px;
+
+        .smart-tabs__navigation {
+            margin-bottom: 0;
+            min-width: 200px;
+        }
+
+        .smart-tabs__nav-list {
+            flex-direction: column;
+            border-bottom: none;
+            border-right: 2px solid #e0e0e0;
+        }
+
+        .smart-tabs__nav-item {
+            border-bottom: none;
+            border-right: 3px solid transparent;
+            margin-bottom: 0;
+            margin-right: -2px;
+            justify-content: flex-start;
+
+            &.is-active {
+                border-bottom-color: transparent;
+                border-right-color: #007cba;
+            }
+        }
+
+        .smart-tabs__content {
+            flex: 1;
+            padding: 0;
+        }
+    }
+
+    // Style variations
+    &--style-minimal {
+        .smart-tabs__nav-list {
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .smart-tabs__nav-item {
+            padding: 8px 16px;
+            border-bottom-width: 2px;
+
+            &.is-active {
+                background: transparent;
+            }
+        }
+    }
+
+    &--style-modern {
+        .smart-tabs__nav-list {
+            border-bottom: none;
+            background: #f5f5f5;
+            border-radius: 8px;
+            padding: 4px;
+        }
+
+        .smart-tabs__nav-item {
+            border-bottom: none;
+            border-radius: 6px;
+            margin-bottom: 0;
+
+            &.is-active {
+                background: #fff;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+        }
+    }
+
+    &--style-boxed {
+        .smart-tabs__nav-item {
+            border: 1px solid #e0e0e0;
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+            margin-bottom: 0;
+
+            &.is-active {
+                border-color: #007cba;
+                border-bottom: 2px solid #fff;
+                position: relative;
+                z-index: 1;
+            }
+        }
+
+        .smart-tabs__content {
+            border: 1px solid #e0e0e0;
+            border-radius: 0 4px 4px 4px;
+            padding: 20px;
+            margin-top: -2px;
+        }
+    }
+}
+
+// Smart Tab Item
+.smart-tab {
+    &__header {
+        margin-bottom: 15px;
+        display: none; // Hidden in frontend, shown in editor
+    }
+
+    &__title-edit {
+        font-size: 18px;
+        font-weight: 600;
+        padding: 8px;
+        border: 1px dashed #ccc;
+        border-radius: 4px;
+        background: #f9f9f9;
+    }
+
+    &__content {
+        > * {
+            margin-top: 0;
+            margin-bottom: 1em;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+}
+

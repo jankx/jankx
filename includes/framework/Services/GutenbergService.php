@@ -22,6 +22,8 @@ use Jankx\Gutenberg\Blocks\OffcanvasTriggerBlock;
 use Jankx\Gutenberg\Blocks\TableOfContentBlock;
 use Jankx\Gutenberg\Blocks\WplyrMediaBlock;
 use Jankx\Gutenberg\Blocks\DatePickerCalendarBlock;
+use Jankx\Gutenberg\Blocks\SmartTabsBlock;
+use Jankx\Gutenberg\Blocks\SmartTabBlock;
 use Jankx\Gutenberg\Blocks\WordPressCoreFilterBlock; // Filter service, not a block
 use Jankx\Gutenberg\GutenbergPattern;
 use Jankx\Facades\Log;
@@ -142,6 +144,8 @@ class GutenbergService
         $this->repository->registerBlock(AdvancedFiltersBlock::class);
         $this->repository->registerBlock(ModalBlock::class);
         $this->repository->registerBlock(DatePickerCalendarBlock::class);
+        $this->repository->registerBlock(SmartTabsBlock::class);
+        $this->repository->registerBlock(SmartTabBlock::class);
 
         // $this->repository->registerBlock(WordPressCoreFilterBlock::class);
     }
