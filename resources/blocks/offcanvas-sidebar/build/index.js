@@ -208,6 +208,19 @@ function OffcanvasSidebarEdit({
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)({
     className: `offcanvas-sidebar-block ${className || ''}`
   });
+
+  // Extract WordPress generated classes for sidebar
+  const sidebarClasses = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => {
+    const classes = ['offcanvas-sidebar', 'editor-sidebar'];
+
+    // Add WordPress background classes to sidebar
+    if (blockProps.className) {
+      const blockClasses = blockProps.className.split(' ');
+      const backgroundClasses = blockClasses.filter(cls => cls.includes('has-') && (cls.includes('background') || cls.includes('text-color') || cls.includes('link-color')));
+      classes.push(...backgroundClasses);
+    }
+    return classes.join(' ');
+  }, [blockProps.className]);
   const innerBlocksProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useInnerBlocksProps)({
     className: 'sidebar-content'
   }, {
@@ -222,17 +235,45 @@ function OffcanvasSidebarEdit({
   });
 
   // Memoize sidebar style to prevent re-creation on every render
-  const sidebarStyle = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => ({
-    width: sidebarWidth,
-    ...style
-  }), [sidebarWidth, style]);
+  const sidebarStyle = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => {
+    const styles = {
+      width: sidebarWidth
+    };
+
+    // Add background styles from block supports
+    if (style?.color?.background) {
+      styles.backgroundColor = style.color.background;
+    }
+    if (style?.color?.gradient) {
+      styles.background = style.color.gradient;
+    }
+    if (style?.color?.text) {
+      styles.color = style.color.text;
+    }
+    if (style?.background?.backgroundImage) {
+      const bgImage = style.background.backgroundImage;
+      if (bgImage.url) {
+        styles.backgroundImage = `url(${bgImage.url})`;
+      }
+      if (bgImage.backgroundSize) {
+        styles.backgroundSize = bgImage.backgroundSize;
+      }
+      if (bgImage.backgroundPosition) {
+        styles.backgroundPosition = bgImage.backgroundPosition;
+      }
+      if (bgImage.backgroundRepeat) {
+        styles.backgroundRepeat = bgImage.backgroundRepeat;
+      }
+    }
+    return styles;
+  }, [sidebarWidth, style]);
 
   // Render sidebar preview (always visible in editor)
   const renderSidebarPreview = () => {
     return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
       className: `offcanvas-sidebar-preview effect-${animationEffect} position-${sidebarPosition}`,
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
-        className: "offcanvas-sidebar editor-sidebar",
+        className: sidebarClasses,
         style: sidebarStyle,
         children: [showCloseButton && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
           className: `close-button editor-close-button position-${closeButtonPosition} size-${closeButtonSize} style-${closeButtonStyle}`,
@@ -241,9 +282,20 @@ function OffcanvasSidebarEdit({
           style: {
             color: closeButtonColor
           },
+          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Close button preview', 'jankx'),
           children: "\xD7"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
-          ...innerBlocksProps
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+          className: "sidebar-content-wrapper",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+            className: "content-area-indicator",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("span", {
+              className: "dashicons dashicons-edit"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("span", {
+              children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Edit sidebar content here', 'jankx')
+            })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+            ...innerBlocksProps
+          })]
         })]
       })
     });
@@ -251,66 +303,118 @@ function OffcanvasSidebarEdit({
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
-        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Sidebar Settings', 'jankx'),
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Layout & Appearance', 'jankx'),
         initialOpen: true,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Position', 'jankx'),
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+          style: {
+            marginBottom: '16px',
+            padding: '12px',
+            background: '#f0f6fc',
+            borderRadius: '4px',
+            border: '1px solid #c5d9ed'
+          },
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("p", {
+            style: {
+              margin: '0 0 8px 0',
+              fontSize: '12px',
+              fontWeight: '600',
+              color: '#0073aa'
+            },
+            children: ["\uD83D\uDCA1 ", (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Quick Setup', 'jankx')]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("p", {
+            style: {
+              margin: '0',
+              fontSize: '11px',
+              color: '#666'
+            },
+            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Configure how your sidebar appears and behaves on the frontend.', 'jankx')
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Sidebar Position', 'jankx'),
           value: sidebarPosition,
           options: [{
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Left', 'jankx'),
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Left Side', 'jankx'),
             value: 'left'
           }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Right', 'jankx'),
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Right Side', 'jankx'),
             value: 'right'
           }],
           onChange: value => setAttributes({
             sidebarPosition: value
-          })
+          }),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Choose which side of the screen the sidebar slides in from', 'jankx')
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Animation Effect', 'jankx'),
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Animation Style', 'jankx'),
           value: animationEffect,
           options: ANIMATION_EFFECTS,
           onChange: value => setAttributes({
             animationEffect: value
-          })
+          }),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('How the sidebar appears and disappears', 'jankx')
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Sidebar Width', 'jankx'),
           value: sidebarWidth,
           onChange: value => setAttributes({
             sidebarWidth: value
           }),
-          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('e.g., 300px, 25vw, 20rem', 'jankx')
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Examples: 300px, 25vw, 20rem, 50%', 'jankx'),
+          placeholder: "300px"
         })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
-        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Overlay Settings', 'jankx'),
-        initialOpen: false,
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Background & Colors', 'jankx'),
+        initialOpen: true,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+          style: {
+            marginBottom: '12px',
+            padding: '8px',
+            background: '#fff3cd',
+            borderRadius: '4px',
+            border: '1px solid #ffeaa7'
+          },
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("p", {
+            style: {
+              margin: '0',
+              fontSize: '11px',
+              color: '#856404'
+            },
+            children: ["\uD83C\uDFA8 ", (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Use the color controls above to set background and text colors', 'jankx')]
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
           className: "color-picker-group",
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("label", {
-            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Overlay Color', 'jankx')
+            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Overlay Background', 'jankx')
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("input", {
             type: "color",
             value: overlayColor,
             onChange: e => setAttributes({
               overlayColor: e.target.value
             })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("small", {
+            style: {
+              display: 'block',
+              marginTop: '4px',
+              color: '#666'
+            },
+            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Background color when sidebar is open', 'jankx')
           })]
-        })
+        })]
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
-        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Behavior', 'jankx'),
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Behavior Settings', 'jankx'),
         initialOpen: false,
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Overlay', 'jankx'),
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Background Overlay', 'jankx'),
           checked: showOverlay,
           onChange: value => setAttributes({
             showOverlay: value
-          })
+          }),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display a semi-transparent overlay behind the sidebar', 'jankx')
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Close on Overlay Click', 'jankx'),
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Close When Clicking Overlay', 'jankx'),
           checked: closeOnOverlayClick,
           onChange: value => setAttributes({
             closeOnOverlayClick: value
-          })
+          }),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Allow users to close sidebar by clicking the overlay', 'jankx')
         })]
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Close Button', 'jankx'),
@@ -320,10 +424,11 @@ function OffcanvasSidebarEdit({
           checked: showCloseButton,
           onChange: value => setAttributes({
             showCloseButton: value
-          })
+          }),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display an X button to close the sidebar', 'jankx')
         }), showCloseButton && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Position', 'jankx'),
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Button Position', 'jankx'),
             value: closeButtonPosition,
             options: [{
               label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Top Right', 'jankx'),
@@ -347,58 +452,88 @@ function OffcanvasSidebarEdit({
             onChange: value => setAttributes({
               closeButtonPosition: value
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Size', 'jankx'),
-            value: closeButtonSize,
-            options: [{
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Small', 'jankx'),
-              value: 'small'
-            }, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Medium', 'jankx'),
-              value: 'medium'
-            }, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Large', 'jankx'),
-              value: 'large'
-            }],
-            onChange: value => setAttributes({
-              closeButtonSize: value
-            })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Style', 'jankx'),
-            value: closeButtonStyle,
-            options: [{
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Circle', 'jankx'),
-              value: 'circle'
-            }, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Square', 'jankx'),
-              value: 'square'
-            }, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Rounded', 'jankx'),
-              value: 'rounded'
-            }, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Minimal', 'jankx'),
-              value: 'minimal'
-            }],
-            onChange: value => setAttributes({
-              closeButtonStyle: value
-            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+            style: {
+              display: 'flex',
+              gap: '8px'
+            },
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+              style: {
+                flex: 1
+              },
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Size', 'jankx'),
+                value: closeButtonSize,
+                options: [{
+                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Small', 'jankx'),
+                  value: 'small'
+                }, {
+                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Medium', 'jankx'),
+                  value: 'medium'
+                }, {
+                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Large', 'jankx'),
+                  value: 'large'
+                }],
+                onChange: value => setAttributes({
+                  closeButtonSize: value
+                })
+              })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+              style: {
+                flex: 1
+              },
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Style', 'jankx'),
+                value: closeButtonStyle,
+                options: [{
+                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Circle', 'jankx'),
+                  value: 'circle'
+                }, {
+                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Square', 'jankx'),
+                  value: 'square'
+                }, {
+                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Rounded', 'jankx'),
+                  value: 'rounded'
+                }, {
+                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Minimal', 'jankx'),
+                  value: 'minimal'
+                }],
+                onChange: value => setAttributes({
+                  closeButtonStyle: value
+                })
+              })
+            })]
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
             className: "color-picker-group",
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("label", {
               children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Button Color', 'jankx')
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("input", {
-              type: "color",
-              value: closeButtonColor === 'inherit' ? '#ffffff' : closeButtonColor,
-              onChange: e => setAttributes({
-                closeButtonColor: e.target.value
-              })
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
-              type: "button",
-              className: "button button-small",
-              onClick: () => setAttributes({
-                closeButtonColor: 'inherit'
-              }),
-              children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Inherit', 'jankx')
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+              style: {
+                display: 'flex',
+                gap: '8px',
+                alignItems: 'center'
+              },
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("input", {
+                type: "color",
+                value: closeButtonColor === 'inherit' ? '#ffffff' : closeButtonColor,
+                onChange: e => setAttributes({
+                  closeButtonColor: e.target.value
+                }),
+                style: {
+                  width: '40px',
+                  height: '32px'
+                }
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
+                type: "button",
+                className: "button button-small",
+                onClick: () => setAttributes({
+                  closeButtonColor: 'inherit'
+                }),
+                style: {
+                  fontSize: '11px'
+                },
+                children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Inherit Text Color', 'jankx')
+              })]
             })]
           })]
         })]

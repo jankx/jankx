@@ -14,6 +14,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
+
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -59,22 +60,28 @@
     height: 100vh;
     overflow: hidden;
 
-    /* Base sidebar styles */
-    .offcanvas-sidebar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 300px;
-        height: 100%;
-        background: transparent;
-        color: inherit;
-        z-index: 9999;
-        transition: all 0.5s ease;
-        transform: translateX(-100%);
-        overflow: auto;
-        opacity: 0;
-        visibility: hidden;
-        min-width: 300px;
+        /* Base sidebar styles */
+        .offcanvas-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 300px;
+            height: 100vh;
+            min-height: 100vh;
+            background: transparent;
+            background-size: cover !important;
+            background-repeat: no-repeat !important;
+            background-position: center !important;
+            color: inherit;
+            z-index: 9999;
+            transition: all 0.5s ease;
+            transform: translateX(-100%);
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
 
         /* Close Button - Base styles */
         .close-button {
@@ -256,9 +263,8 @@
 
         /* Sidebar Content */
         .sidebar-content {
-            margin-top: auto;
+            flex: 1;
             overflow-y: auto;
-
             p {
                 margin: 0 0 16px 0;
                 line-height: 1.6;
@@ -702,7 +708,6 @@ html.sidebar-open {
         }
     }
 
-    .offcanvas-sidebar-preview,
     .offcanvas-sidebar-container {
         .offcanvas-sidebar {
             transform: translateX(0);
@@ -764,7 +769,6 @@ html.sidebar-open .effect-slide-down .offcanvas-sidebar {
    ======================================== */
 
 @media (max-width: 768px) {
-    .offcanvas-sidebar-preview,
     .offcanvas-sidebar-container {
         .offcanvas-sidebar {
             width: 280px;
@@ -782,7 +786,6 @@ html.sidebar-open .effect-slide-down .offcanvas-sidebar {
 }
 
 @media (max-width: 480px) {
-    .offcanvas-sidebar-preview,
     .offcanvas-sidebar-container {
         .offcanvas-sidebar {
             width: 100%;
@@ -797,79 +800,3 @@ html.sidebar-open .effect-slide-down .offcanvas-sidebar {
     }
 }
 
-/* ========================================
-   EDITOR SPECIFIC STYLES
-   ======================================== */
-
-.editor-styles-wrapper {
-    .offcanvas-sidebar-block {
-        .offcanvas-sidebar-preview {
-            min-height: 200px;
-            border: 2px dashed #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            background: #f9f9f9;
-            margin: 20px 0;
-
-            .offcanvas-trigger {
-                position: relative;
-                z-index: 1;
-            }
-
-            .offcanvas-sidebar {
-                position: relative;
-                transform: none;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-                border-radius: 8px;
-                margin-top: 20px;
-            }
-        }
-    }
-}
-
-/* Menu Items Editor */
-.menu-items-editor {
-    .menu-item-editor {
-        margin-bottom: 16px;
-        padding: 12px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        background: #f9f9f9;
-
-        .menu-item-preview {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-
-            .menu-item-text {
-                font-weight: 500;
-            }
-        }
-
-        .menu-item-edit-form {
-            .menu-item-actions {
-                display: flex;
-                gap: 8px;
-                margin-top: 12px;
-            }
-        }
-    }
-
-    .add-menu-item {
-        width: 100%;
-        margin-top: 12px;
-    }
-}
-
-/* Color Controls */
-.color-controls {
-    .color-picker-group {
-        margin-bottom: 16px;
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-    }
-}

@@ -64,16 +64,22 @@
   top: 0;
   left: 0;
   width: 300px;
-  height: 100%;
+  height: 100vh;
+  min-height: 100vh;
   background: transparent;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
   color: inherit;
   z-index: 9999;
   transition: all 0.5s ease;
   transform: translateX(-100%);
-  overflow: auto;
+  overflow: hidden;
   opacity: 0;
   visibility: hidden;
   min-width: 300px;
+  display: flex;
+  flex-direction: column;
   /* Close Button - Base styles */
 }
 .offcanvas-sidebar-container .offcanvas-sidebar .close-button {
@@ -234,7 +240,7 @@
   /* Sidebar Content */
 }
 .offcanvas-sidebar-container .offcanvas-sidebar .sidebar-content {
-  margin-top: auto;
+  flex: 1;
   overflow-y: auto;
 }
 .offcanvas-sidebar-container .offcanvas-sidebar .sidebar-content p {
@@ -594,17 +600,14 @@ html.sidebar-open body.admin-bar .offcanvas-sidebar-block .offcanvas-sidebar {
 html.sidebar-open body.admin-bar .offcanvas-sidebar-block .offcanvas-sidebar .close-button {
   top: 50px;
 }
-html.sidebar-open .offcanvas-sidebar-preview .offcanvas-sidebar,
 html.sidebar-open .offcanvas-sidebar-container .offcanvas-sidebar {
   transform: translateX(0);
   opacity: 1;
   visibility: visible;
 }
-html.sidebar-open .offcanvas-sidebar-preview.position-right .offcanvas-sidebar,
 html.sidebar-open .offcanvas-sidebar-container.position-right .offcanvas-sidebar {
   transform: translateX(0);
 }
-html.sidebar-open .offcanvas-sidebar-preview .offcanvas-overlay,
 html.sidebar-open .offcanvas-sidebar-container .offcanvas-overlay {
   opacity: 1;
   visibility: visible;
@@ -648,91 +651,27 @@ html.sidebar-open .effect-slide-down .offcanvas-sidebar {
    RESPONSIVE DESIGN
    ======================================== */
 @media (max-width: 768px) {
-  .offcanvas-sidebar-preview .offcanvas-sidebar,
   .offcanvas-sidebar-container .offcanvas-sidebar {
     width: 280px;
   }
-  .offcanvas-sidebar-preview .offcanvas-trigger,
   .offcanvas-sidebar-container .offcanvas-trigger {
     padding: 10px 14px;
     font-size: 13px;
   }
-  .offcanvas-sidebar-preview .offcanvas-trigger .trigger-icon,
   .offcanvas-sidebar-container .offcanvas-trigger .trigger-icon {
     font-size: 14px;
   }
 }
 @media (max-width: 480px) {
-  .offcanvas-sidebar-preview .offcanvas-sidebar,
   .offcanvas-sidebar-container .offcanvas-sidebar {
     width: 100%;
   }
-  .offcanvas-sidebar-preview .offcanvas-trigger,
   .offcanvas-sidebar-container .offcanvas-trigger {
     font-size: 12px;
   }
-  .offcanvas-sidebar-preview .offcanvas-trigger .trigger-text,
   .offcanvas-sidebar-container .offcanvas-trigger .trigger-text {
     display: none;
   }
-}
-/* ========================================
-   EDITOR SPECIFIC STYLES
-   ======================================== */
-.editor-styles-wrapper .offcanvas-sidebar-block .offcanvas-sidebar-preview {
-  min-height: 200px;
-  border: 2px dashed #ddd;
-  border-radius: 8px;
-  padding: 20px;
-  background: #f9f9f9;
-  margin: 20px 0;
-}
-.editor-styles-wrapper .offcanvas-sidebar-block .offcanvas-sidebar-preview .offcanvas-trigger {
-  position: relative;
-  z-index: 1;
-}
-.editor-styles-wrapper .offcanvas-sidebar-block .offcanvas-sidebar-preview .offcanvas-sidebar {
-  position: relative;
-  transform: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  border-radius: 8px;
-  margin-top: 20px;
-}
-
-/* Menu Items Editor */
-.menu-items-editor .menu-item-editor {
-  margin-bottom: 16px;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background: #f9f9f9;
-}
-.menu-items-editor .menu-item-editor .menu-item-preview {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.menu-items-editor .menu-item-editor .menu-item-preview .menu-item-text {
-  font-weight: 500;
-}
-.menu-items-editor .menu-item-editor .menu-item-edit-form .menu-item-actions {
-  display: flex;
-  gap: 8px;
-  margin-top: 12px;
-}
-.menu-items-editor .add-menu-item {
-  width: 100%;
-  margin-top: 12px;
-}
-
-/* Color Controls */
-.color-controls .color-picker-group {
-  margin-bottom: 16px;
-}
-.color-controls .color-picker-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 500;
 }
 
 /*# sourceMappingURL=style.css.map*/
