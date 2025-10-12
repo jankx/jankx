@@ -545,9 +545,8 @@ function OffcanvasSidebarEdit({
   });
 }
 function OffcanvasSidebarSave() {
-  // Return null to make this a fully dynamic block
-  // This ensures WordPress renders all InnerBlocks (including dynamic blocks like core/search) on the server-side
-  return null;
+  // For dynamic blocks with InnerBlocks, we need to save the InnerBlocks content
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InnerBlocks.Content, {});
 }
 
 // @ts-ignore

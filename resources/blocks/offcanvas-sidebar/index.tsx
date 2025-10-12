@@ -127,6 +127,7 @@ function OffcanvasSidebarEdit({ attributes, setAttributes }: OffcanvasSidebarEdi
                 'core/group',
                 'core/cover',
                 'core/embed',
+                'core/site-logo',
                 'jankx/language-switcher',
                 'jankx/icon-button',
                 'jankx/offcanvas-sidebar'
@@ -381,10 +382,9 @@ function OffcanvasSidebarEdit({ attributes, setAttributes }: OffcanvasSidebarEdi
     );
 }
 
-function OffcanvasSidebarSave(): null {
-    // Return null to make this a fully dynamic block
-    // This ensures WordPress renders all InnerBlocks (including dynamic blocks like core/search) on the server-side
-    return null;
+function OffcanvasSidebarSave(): JSX.Element {
+    // For dynamic blocks with InnerBlocks, we need to save the InnerBlocks content
+    return <InnerBlocks.Content />;
 }
 
 // @ts-ignore
