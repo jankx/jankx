@@ -40,11 +40,17 @@ class OffcanvasSidebarBlock extends Block
             $animationEffect = $attributes['animationEffect'] ?? 'slide-in';
             $sidebarWidth = $attributes['sidebarWidth'] ?? '300px';
             $overlayColor = $attributes['overlayColor'] ?? 'rgba(0,0,0,0.2)';
-            $sidebarBackground = $attributes['sidebarBackground'] ?? '#48a770';
-            $textColor = $attributes['textColor'] ?? '#f3efe0';
             $showOverlay = $attributes['showOverlay'] ?? true;
             $closeOnOverlayClick = $attributes['closeOnOverlayClick'] ?? true;
+            $showCloseButton = $attributes['showCloseButton'] ?? true;
+            $closeButtonPosition = $attributes['closeButtonPosition'] ?? 'top-right';
+            $closeButtonSize = $attributes['closeButtonSize'] ?? 'medium';
+            $closeButtonStyle = $attributes['closeButtonStyle'] ?? 'circle';
+            $closeButtonColor = $attributes['closeButtonColor'] ?? 'inherit';
             $className = $attributes['className'] ?? '';
+
+            // Get style from block supports (background, color, etc.)
+            $style = $attributes['style'] ?? [];
 
             // Generate unique ID for this block instance
             $blockId = 'offcanvas-sidebar-' . uniqid();
@@ -62,13 +68,37 @@ class OffcanvasSidebarBlock extends Block
             'position-' . $sidebarPosition
         ];
 
-            // Build inline styles
+            // Build inline styles from block supports
             $sidebarStyle = sprintf(
-                'width: %s; background-color: %s; color: %s;',
-                esc_attr($sidebarWidth),
-                esc_attr($sidebarBackground),
-                esc_attr($textColor)
+                'width: %s;',
+                esc_attr($sidebarWidth)
             );
+
+            // Add background styles from block supports
+            if (isset($style['color']['background'])) {
+                $sidebarStyle .= sprintf('background-color: %s;', esc_attr($style['color']['background']));
+            }
+            if (isset($style['color']['gradient'])) {
+                $sidebarStyle .= sprintf('background: %s;', esc_attr($style['color']['gradient']));
+            }
+            if (isset($style['color']['text'])) {
+                $sidebarStyle .= sprintf('color: %s;', esc_attr($style['color']['text']));
+            }
+            if (isset($style['background']['backgroundImage'])) {
+                $backgroundImage = $style['background']['backgroundImage'];
+                if (isset($backgroundImage['url'])) {
+                    $sidebarStyle .= sprintf('background-image: url(%s);', esc_attr($backgroundImage['url']));
+                }
+                if (isset($backgroundImage['backgroundSize'])) {
+                    $sidebarStyle .= sprintf('background-size: %s;', esc_attr($backgroundImage['backgroundSize']));
+                }
+                if (isset($backgroundImage['backgroundPosition'])) {
+                    $sidebarStyle .= sprintf('background-position: %s;', esc_attr($backgroundImage['backgroundPosition']));
+                }
+                if (isset($backgroundImage['backgroundRepeat'])) {
+                    $sidebarStyle .= sprintf('background-repeat: %s;', esc_attr($backgroundImage['backgroundRepeat']));
+                }
+            }
 
             $overlayStyle = sprintf(
                 'background-color: %s;',
@@ -79,7 +109,14 @@ class OffcanvasSidebarBlock extends Block
             $overlay = $showOverlay ? $this->renderOverlay($overlayStyle, $closeOnOverlayClick, $blockId) : '';
 
             // Build sidebar content with InnerBlocks (no menu items)
-            $sidebarContent = $this->renderSidebarContent($content, $textColor, $blockId);
+            $textColor = $style['color']['text'] ?? '#f3efe0'; // Fallback for close button
+            $sidebarContent = $this->renderSidebarContent($content, $textColor, $blockId, [
+                'showCloseButton' => $showCloseButton,
+                'closeButtonPosition' => $closeButtonPosition,
+                'closeButtonSize' => $closeButtonSize,
+                'closeButtonStyle' => $closeButtonStyle,
+                'closeButtonColor' => $closeButtonColor
+            ]);
 
             // Build data attributes for JavaScript
             $dataAttributes = $this->buildDataAttributes([
@@ -136,11 +173,15 @@ class OffcanvasSidebarBlock extends Block
      * @param string $content Block content (InnerBlocks)
      * @param string $textColor Text color
      * @param string $blockId Block ID
+     * @param array $closeButtonSettings Close button settings
      * @return string HTML
      */
-    protected function renderSidebarContent($content, $textColor, $blockId)
+    protected function renderSidebarContent($content, $textColor, $blockId, $closeButtonSettings = [])
     {
-        $closeButton = $this->renderCloseButton($textColor, $blockId);
+        $closeButton = '';
+        if ($closeButtonSettings['showCloseButton'] ?? true) {
+            $closeButton = $this->renderCloseButton($textColor, $blockId, $closeButtonSettings);
+        }
         $sidebarContent = $this->renderSidebarInnerContent($content);
 
         return $closeButton . $sidebarContent;
@@ -151,14 +192,30 @@ class OffcanvasSidebarBlock extends Block
      *
      * @param string $textColor Text color
      * @param string $blockId Block ID
+     * @param array $settings Close button settings
      * @return string HTML
      */
-    protected function renderCloseButton($textColor, $blockId)
+    protected function renderCloseButton($textColor, $blockId, $settings = [])
     {
+        $position = $settings['closeButtonPosition'] ?? 'top-right';
+        $size = $settings['closeButtonSize'] ?? 'medium';
+        $style = $settings['closeButtonStyle'] ?? 'circle';
+        $color = $settings['closeButtonColor'] ?? 'inherit';
+
+        $buttonColor = $color === 'inherit' ? $textColor : $color;
+
+        $classes = [
+            'close-button',
+            'position-' . $position,
+            'size-' . $size,
+            'style-' . $style
+        ];
+
         return sprintf(
-            '<button class="close-button" data-target="%s" type="button" style="color: %s;" aria-label="%s">×</button>',
+            '<button class="%s" data-target="%s" type="button" style="color: %s;" aria-label="%s">×</button>',
+            esc_attr(implode(' ', $classes)),
             esc_attr($blockId),
-            esc_attr($textColor),
+            esc_attr($buttonColor),
             esc_attr__('Close sidebar', 'jankx')
         );
     }

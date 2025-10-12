@@ -10,6 +10,16 @@
     "supports": {
         "html": false,
         "align": ["wide", "full"],
+        "color": {
+            "background": true,
+            "gradients": true,
+            "text": true,
+            "link": false
+        },
+        "background": {
+            "backgroundImage": true,
+            "backgroundSize": true
+        },
         "spacing": {
             "margin": true,
             "padding": true
@@ -74,13 +84,25 @@
             "type": "string",
             "default": "rgba(0,0,0,0.2)"
         },
-        "sidebarBackground": {
-            "type": "string",
-            "default": "#48a770"
+        "showCloseButton": {
+            "type": "boolean",
+            "default": true
         },
-        "textColor": {
+        "closeButtonPosition": {
             "type": "string",
-            "default": "#f3efe0"
+            "default": "top-right"
+        },
+        "closeButtonSize": {
+            "type": "string",
+            "default": "medium"
+        },
+        "closeButtonStyle": {
+            "type": "string",
+            "default": "circle"
+        },
+        "closeButtonColor": {
+            "type": "string",
+            "default": "inherit"
         },
         "triggerText": {
             "type": "string",

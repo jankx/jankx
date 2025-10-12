@@ -66,8 +66,8 @@
         left: 0;
         width: 300px;
         height: 100%;
-        background: #48a770;
-        color: #f3efe0;
+        background: transparent;
+        color: inherit;
         z-index: 9999;
         transition: all 0.5s ease;
         transform: translateX(-100%);
@@ -76,19 +76,15 @@
         visibility: hidden;
         min-width: 300px;
 
-        /* Close Button - positioned at top right */
+        /* Close Button - Base styles */
         .close-button {
             position: absolute;
-            top: 15px;
-            right: 15px;
             border: none;
             color: inherit;
             font-size: 28px;
             line-height: 1;
             cursor: pointer;
             padding: 0;
-            width: 36px;
-            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -97,7 +93,6 @@
             font-weight: 300;
 
             &:hover {
-                background: rgba(0, 0, 0, 0.2);
                 transform: rotate(90deg);
             }
 
@@ -109,6 +104,104 @@
             &:disabled {
                 cursor: not-allowed;
                 opacity: 0.5;
+            }
+
+            /* Position variants */
+            &.position-top-right {
+                top: 15px;
+                right: 15px;
+            }
+
+            &.position-top-left {
+                top: 15px;
+                left: 15px;
+            }
+
+            &.position-bottom-right {
+                bottom: 15px;
+                right: 15px;
+            }
+
+            &.position-bottom-left {
+                bottom: 15px;
+                left: 15px;
+            }
+
+            &.position-center-right {
+                top: 50%;
+                right: 15px;
+                transform: translateY(-50%);
+
+                &:hover {
+                    transform: translateY(-50%) rotate(90deg);
+                }
+            }
+
+            &.position-center-left {
+                top: 50%;
+                left: 15px;
+                transform: translateY(-50%);
+
+                &:hover {
+                    transform: translateY(-50%) rotate(90deg);
+                }
+            }
+
+            /* Size variants */
+            &.size-small {
+                width: 28px;
+                height: 28px;
+                font-size: 20px;
+            }
+
+            &.size-medium {
+                width: 36px;
+                height: 36px;
+                font-size: 28px;
+            }
+
+            &.size-large {
+                width: 44px;
+                height: 44px;
+                font-size: 32px;
+            }
+
+            /* Style variants */
+            &.style-circle {
+                border-radius: 50%;
+                background: rgba(0, 0, 0, 0.1);
+
+                &:hover {
+                    background: rgba(0, 0, 0, 0.2);
+                }
+            }
+
+            &.style-square {
+                border-radius: 0;
+                background: rgba(0, 0, 0, 0.1);
+
+                &:hover {
+                    background: rgba(0, 0, 0, 0.2);
+                }
+            }
+
+            &.style-rounded {
+                border-radius: 8px;
+                background: rgba(0, 0, 0, 0.1);
+
+                &:hover {
+                    background: rgba(0, 0, 0, 0.2);
+                }
+            }
+
+            &.style-minimal {
+                background: transparent;
+                border-radius: 0;
+
+                &:hover {
+                    background: rgba(0, 0, 0, 0.1);
+                    border-radius: 50%;
+                }
             }
         }
 
@@ -163,10 +256,7 @@
 
         /* Sidebar Content */
         .sidebar-content {
-            padding: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
             margin-top: auto;
-            flex: 1;
             overflow-y: auto;
 
             p {
@@ -583,129 +673,6 @@
                     &:last-child {
                         padding-right: 0;
                     }
-                }
-            }
-
-            .wp-block-group {
-                margin: 20px 0;
-                padding: 16px;
-                background: rgba(255, 255, 255, 0.05);
-                border-radius: 4px;
-                border: 1px solid rgba(255, 255, 255, 0.1);
-            }
-
-            .wp-block-cover {
-                margin: 20px 0;
-                border-radius: 4px;
-                overflow: hidden;
-
-                .wp-block-cover__inner-container {
-                    color: inherit;
-                }
-            }
-
-            .wp-block-embed {
-                margin: 20px 0;
-
-                iframe {
-                    border-radius: 4px;
-                }
-            }
-
-            /* Jankx blocks specific styling */
-            .wp-block-jankx-language-switcher {
-                margin: 20px 0;
-
-                .language-switcher {
-                    background: rgba(255, 255, 255, 0.1);
-                    border: 1px solid rgba(255, 255, 255, 0.2);
-                    border-radius: 4px;
-
-                    .language-option {
-                        color: inherit;
-
-                        &:hover {
-                            background: rgba(255, 255, 255, 0.2);
-                        }
-                    }
-                }
-            }
-
-            .wp-block-jankx-icon-button {
-                margin: 20px 0;
-
-                .icon-button {
-                    background: rgba(255, 255, 255, 0.1);
-                    color: inherit;
-                    border: 1px solid rgba(255, 255, 255, 0.2);
-
-                    &:hover {
-                        background: rgba(255, 255, 255, 0.2);
-                    }
-                }
-            }
-
-            /* Nested offcanvas sidebar */
-            .wp-block-jankx-offcanvas-sidebar {
-                margin: 20px 0;
-
-                .offcanvas-sidebar-block {
-                    position: relative;
-                    // Reset nested sidebar content styles
-                    .sidebar-content {
-                        padding: 0;
-                        border-top: none;
-                        margin-top: 0;
-                        flex: none;
-                        overflow-y: visible;
-                        background: none;
-                        border: none;
-
-                        .wp-block {
-                            margin-bottom: 8px;
-
-                            &:last-child {
-                                margin-bottom: 0;
-                            }
-                        }
-
-                        .wp-block-heading {
-                            margin-bottom: 8px;
-
-                            h1,
-                            h2,
-                            h3,
-                            h4,
-                            h5,
-                            h6 {
-                                margin: 0 0 8px 0;
-                            }
-                        }
-
-                        .wp-block-paragraph {
-                            margin-bottom: 8px;
-
-                            &:last-child {
-                                margin-bottom: 0;
-                            }
-                        }
-                    }
-                }
-            }
-
-            /* Content appender styling */
-            .sidebar-content-appender {
-                text-align: center;
-                padding: 20px;
-                border: 2px dashed rgba(255, 255, 255, 0.3);
-                border-radius: 4px;
-                margin: 20px 0;
-
-                .sidebar-content-hint {
-                    margin: 0;
-                    color: rgba(255, 255, 255, 0.7);
-                    font-style: italic;
-                    font-size: 0.9em;
                 }
             }
         }
