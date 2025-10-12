@@ -368,6 +368,24 @@
     }
 }
 
+// Generic color support for has-background-color and has-text-color classes
+// These are used when custom colors are applied via the editor
+.wp-block-button {
+    &.has-background-color {
+        .wp-block-button__link {
+            // Remove default background to allow inline styles
+            background: initial;
+        }
+    }
+
+    &.has-text-color {
+        .wp-block-button__link {
+            // Remove default color to allow inline styles
+            color: initial;
+        }
+    }
+}
+
 // Responsive adjustments
 @media (max-width: 768px) {
     .wp-block-button {

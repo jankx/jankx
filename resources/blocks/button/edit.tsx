@@ -1281,10 +1281,10 @@ export function Edit( props ) {
 	} );
 
 	const buttonStyles = {
-		backgroundColor: customBackgroundColor,
-		color: customTextColor,
 		...blockProps.style,
 		...borderProps.style,
+		backgroundColor: customBackgroundColor,
+		color: customTextColor,
 	};
 
 	const handleTextChange = useCallback( ( value ) => {

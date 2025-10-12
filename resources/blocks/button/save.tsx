@@ -228,10 +228,10 @@ export default function Save( props: any ) {
 	} );
 
 	const buttonStyles = {
-		backgroundColor: customBackgroundColor,
-		color: customTextColor,
 		...(blockProps.style as any),
 		...(borderProps.style as any),
+		backgroundColor: customBackgroundColor,
+		color: customTextColor,
 	};
 
 	const rel = isEmpty( linkRel ) ? undefined : linkRel;

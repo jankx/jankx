@@ -252,6 +252,13 @@
   color: var(--wp--preset--color--light-text, #ffffff) !important;
 }
 
+.wp-block-button.has-background-color .wp-block-button__link {
+  background: initial;
+}
+.wp-block-button.has-text-color .wp-block-button__link {
+  color: initial;
+}
+
 @media (max-width: 768px) {
   .wp-block-button.is-size-large .wp-block-button__link {
     padding: 14px 28px;

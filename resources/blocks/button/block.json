@@ -241,7 +241,7 @@
         "align": false,
         "alignWide": false,
         "color": {
-            "__experimentalSkipSerialization": true,
+            "__experimentalSkipSerialization": false,
             "gradients": true,
             "__experimentalDefaultControls": {
                 "background": true,
