@@ -107,13 +107,15 @@
     right: auto;
 }
 
-.language-switcher-dropdown-wrapper:hover .language-switcher-dropdown-menu {
+.language-switcher-dropdown-wrapper:hover .language-switcher-dropdown-menu,
+.language-switcher-dropdown-menu.is-open {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
 }
 
-.language-switcher-dropdown-wrapper:hover .language-switcher-dropdown-menu.align-top {
+.language-switcher-dropdown-wrapper:hover .language-switcher-dropdown-menu.align-top,
+.language-switcher-dropdown-menu.is-open.align-top {
     transform: translateY(0);
 }
 

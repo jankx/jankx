@@ -29,15 +29,56 @@ class LanguageSwitcherPositionEngine {
     const menu = wrapper.querySelector('.language-switcher-dropdown-menu');
     if (!dropdown || !menu) return;
 
-    // Adjust position on hover
+    // Track if dropdown is open
+    let isOpen = false;
+
+    // Toggle dropdown function
+    const toggleDropdown = open => {
+      isOpen = open;
+      if (open) {
+        this.adjustDropdownPosition(wrapper);
+        menu.classList.add('is-open');
+      } else {
+        menu.classList.remove('is-open');
+      }
+    };
+
+    // Desktop hover events
     wrapper.addEventListener('mouseenter', () => {
-      this.adjustDropdownPosition(wrapper);
+      if (!this.isMobile()) {
+        toggleDropdown(true);
+        this.adjustDropdownPosition(wrapper);
+      }
+    });
+    wrapper.addEventListener('mouseleave', () => {
+      if (!this.isMobile()) {
+        toggleDropdown(false);
+      }
+    });
+
+    // Mobile touch events
+    dropdown.addEventListener('click', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (this.isMobile()) {
+        toggleDropdown(!isOpen);
+      }
+    });
+
+    // Close on click outside
+    document.addEventListener('click', e => {
+      if (!wrapper.contains(e.target) && isOpen) {
+        toggleDropdown(false);
+      }
     });
 
     // Adjust position on focus
     dropdown.addEventListener('focus', () => {
       this.adjustDropdownPosition(wrapper);
     });
+  }
+  isMobile() {
+    return window.innerWidth <= 768 || 'ontouchstart' in window;
   }
   adjustDropdownPosition(wrapper) {
     const menu = wrapper.querySelector('.language-switcher-dropdown-menu');
