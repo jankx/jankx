@@ -1,5 +1,11 @@
 import { __ } from '@wordpress/i18n';
-import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import {
+    useBlockProps,
+    InspectorControls,
+    __experimentalColorGradientSettingsDropdown as ColorGradientSettingsDropdown,
+    __experimentalUseMultipleOriginColorsAndGradients as useMultipleOriginColorsAndGradients,
+    __experimentalBackgroundSettings as BackgroundSettings
+} from '@wordpress/block-editor';
 import { PanelBody, SelectControl, ToggleControl, Button } from '@wordpress/components';
 import { useState, useEffect } from '@wordpress/element';
 import './editor.scss';
@@ -13,6 +19,9 @@ export default function Edit({ attributes, setAttributes }) {
         showNavigation = true,
         showWeekdays = true
     } = attributes;
+
+    // Color and gradient settings
+    const colorGradientSettings = useMultipleOriginColorsAndGradients();
 
     const [localSelectedDates, setLocalSelectedDates] = useState(selectedDates);
     const [localMonth, setLocalMonth] = useState(currentMonth);
@@ -131,6 +140,104 @@ export default function Edit({ attributes, setAttributes }) {
     return (
         <div {...useBlockProps()}>
             <InspectorControls>
+                <ColorGradientSettingsDropdown
+                    settings={[
+                        {
+                            colorValue: attributes.style?.color?.background,
+                            gradientValue: attributes.style?.color?.gradient,
+                            label: __('Background', 'jankx'),
+                            onColorChange: (value) => {
+                                setAttributes({
+                                    style: {
+                                        ...attributes.style,
+                                        color: {
+                                            ...attributes.style?.color,
+                                            background: value
+                                        }
+                                    }
+                                });
+                            },
+                            onGradientChange: (value) => {
+                                setAttributes({
+                                    style: {
+                                        ...attributes.style,
+                                        color: {
+                                            ...attributes.style?.color,
+                                            gradient: value
+                                        }
+                                    }
+                                });
+                            },
+                            isShownByDefault: true
+                        },
+                        {
+                            colorValue: attributes.style?.color?.text,
+                            label: __('Text', 'jankx'),
+                            onColorChange: (value) => {
+                                setAttributes({
+                                    style: {
+                                        ...attributes.style,
+                                        color: {
+                                            ...attributes.style?.color,
+                                            text: value
+                                        }
+                                    }
+                                });
+                            },
+                            isShownByDefault: true
+                        }
+                    ]}
+                    {...colorGradientSettings}
+                />
+                <BackgroundSettings
+                    settings={[
+                        {
+                            colorValue: attributes.style?.color?.background,
+                            gradientValue: attributes.style?.color?.gradient,
+                            imageValue: attributes.style?.background?.backgroundImage,
+                            onColorChange: (value) => {
+                                setAttributes({
+                                    style: {
+                                        ...attributes.style,
+                                        color: {
+                                            ...attributes.style?.color,
+                                            background: value
+                                        }
+                                    }
+                                });
+                            },
+                            onGradientChange: (value) => {
+                                setAttributes({
+                                    style: {
+                                        ...attributes.style,
+                                        color: {
+                                            ...attributes.style?.color,
+                                            gradient: value
+                                        }
+                                    }
+                                });
+                            },
+                            onImageChange: (value) => {
+                                setAttributes({
+                                    style: {
+                                        ...attributes.style,
+                                        background: {
+                                            ...attributes.style?.background,
+                                            backgroundImage: value
+                                        }
+                                    }
+                                });
+                            },
+                            isShownByDefault: true
+                        }
+                    ]}
+                    {...colorGradientSettings}
+                />
+                <InspectorControls group="styles">
+                    <PanelBody title={__('Border Settings', 'jankx')}>
+                        <p>{__('Border settings will be available in the Styles panel.', 'jankx')}</p>
+                    </PanelBody>
+                </InspectorControls>
                 <PanelBody title={__('Calendar Settings', 'jankx')}>
                     <SelectControl
                         label={__('Month', 'jankx')}
