@@ -16,6 +16,8 @@
 .language-switcher-dropdown-wrapper {
     position: relative;
     display: inline-block;
+    /* Prevent dropdown from breaking layout */
+    overflow: visible;
 }
 
 .language-switcher-dropdown {
@@ -216,10 +218,15 @@
         font-size: 11px;
     }
 
-    .language-switcher-dropdown-menu {
+    .language-switcher-dropdown-wrapper .language-switcher-dropdown-menu {
         min-width: 100px;
         /* Force right alignment on mobile if near edge */
         max-width: calc(100vw - 20px);
+        /* Override default left/right positioning on mobile */
+        left: auto;
+        right: 0;
+        /* Ensure dropdown doesn't break layout */
+        contain: layout;
     }
 
     /* Force right alignment only when explicitly set by position engine */
