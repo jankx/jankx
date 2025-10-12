@@ -106,6 +106,9 @@ export function Edit( props ) {
 		triggerType = 'link',
 		buttonType = 'button',
 		modalId = '',
+		modalShareObjectId = false,
+		modalSharePostTitle = false,
+		modalShareCurrentUrl = false,
 		flipHorizontal,
 		flipVertical,
 		hasNoIconFill,
@@ -1151,21 +1154,60 @@ export function Edit( props ) {
 					) }
 
 					{ triggerType === 'modal' && (
-						<ToolsPanelItem
-							label={ __( 'Modal ID', 'jankx' ) }
-							isShownByDefault
-							hasValue={ () => !! modalId }
-							onDeselect={ () => setAttributes( { modalId: undefined } ) }
-						>
-							<TextControl
+						<>
+							<ToolsPanelItem
 								label={ __( 'Modal ID', 'jankx' ) }
-								value={ modalId || '' }
-								onChange={ ( value ) => setAttributes( { modalId: value } ) }
-								placeholder={ __( 'modal-123', 'jankx' ) }
-								help={ __( 'Enter the ID of the modal block to open', 'jankx' ) }
-								__nextHasNoMarginBottom
-							/>
-						</ToolsPanelItem>
+								isShownByDefault
+								hasValue={ () => !! modalId }
+								onDeselect={ () => setAttributes( { modalId: undefined } ) }
+							>
+								<TextControl
+									label={ __( 'Modal ID', 'jankx' ) }
+									value={ modalId || '' }
+									onChange={ ( value ) => setAttributes( { modalId: value } ) }
+									placeholder={ __( 'modal-123', 'jankx' ) }
+									help={ __( 'Enter the ID of the modal block to open', 'jankx' ) }
+									__nextHasNoMarginBottom
+								/>
+							</ToolsPanelItem>
+							<ToolsPanelItem
+								label={ __( 'Share Data with Modal', 'jankx' ) }
+								isShownByDefault={ true }
+								hasValue={ () => !! ( attributes.modalShareObjectId || attributes.modalSharePostTitle || attributes.modalShareCurrentUrl ) }
+								onDeselect={ () => setAttributes( {
+									modalShareObjectId: false,
+									modalSharePostTitle: false,
+									modalShareCurrentUrl: false
+								} ) }
+							>
+								<div style={{ marginBottom: '12px' }}>
+									<p style={{ fontSize: '12px', color: '#666', marginBottom: '8px' }}>
+										{ __( 'Share current post data with modal:', 'jankx' ) }
+									</p>
+									<ToggleControl
+										label={ __( 'Share Object ID', 'jankx' ) }
+										checked={ attributes.modalShareObjectId || false }
+										onChange={ ( value ) => setAttributes( { modalShareObjectId: value } ) }
+										help={ __( 'Share current post/page ID', 'jankx' ) }
+										__nextHasNoMarginBottom
+									/>
+									<ToggleControl
+										label={ __( 'Share Post Title', 'jankx' ) }
+										checked={ attributes.modalSharePostTitle || false }
+										onChange={ ( value ) => setAttributes( { modalSharePostTitle: value } ) }
+										help={ __( 'Share current post/page title', 'jankx' ) }
+										__nextHasNoMarginBottom
+									/>
+									<ToggleControl
+										label={ __( 'Share Current URL', 'jankx' ) }
+										checked={ attributes.modalShareCurrentUrl || false }
+										onChange={ ( value ) => setAttributes( { modalShareCurrentUrl: value } ) }
+										help={ __( 'Share current page URL', 'jankx' ) }
+										__nextHasNoMarginBottom
+									/>
+								</div>
+							</ToolsPanelItem>
+						</>
 					) }
 				</ToolsPanel>
 			</InspectorControls>
@@ -1393,20 +1435,24 @@ export function Edit( props ) {
 				) : (
 					buttonElement
 				) }
-				<IconDropZone
+				{ iconType === 'svg' && isSVGUploadAllowed && (
+					<IconDropZone
+						attributes={ attributes }
+						setAttributes={ setAttributes }
+						mediaUpload={ mediaUpload }
+						isSVGUploadAllowed={ isSVGUploadAllowed }
+					/>
+				) }
+			</div>
+			{ isInserterOpen && (
+				<InserterModal
+					isInserterOpen={ isInserterOpen }
+					setInserterOpen={ setInserterOpen }
 					attributes={ attributes }
 					setAttributes={ setAttributes }
-					mediaUpload={ mediaUpload }
-					isSVGUploadAllowed={ isSVGUploadAllowed }
 				/>
-			</div>
-			<InserterModal
-				isInserterOpen={ isInserterOpen }
-				setInserterOpen={ setInserterOpen }
-				attributes={ attributes }
-				setAttributes={ setAttributes }
-			/>
-			{ enableCustomIcons && (
+			) }
+			{ enableCustomIcons && isCustomInserterOpen && (
 				<CustomInserterModal
 					isCustomInserterOpen={ isCustomInserterOpen }
 					setCustomInserterOpen={ setCustomInserterOpen }

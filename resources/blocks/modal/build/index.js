@@ -8,7 +8,7 @@
   \*********************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/modal","title":"Modal","category":"jankx-blocks","description":"A modal block with trigger and content areas. Supports inner blocks and custom selectors.","keywords":["modal","popup","overlay","trigger","inner blocks"],"textdomain":"jankx","attributes":{"modalId":{"type":"string","default":""},"triggerType":{"type":"string","default":"button","enum":["button","anchor","custom"]},"triggerText":{"type":"string","default":"Open Modal"},"triggerUrl":{"type":"string","default":""},"triggerTarget":{"type":"string","default":"_self"},"customSelector":{"type":"string","default":""},"modalSize":{"type":"string","default":"medium","enum":["small","medium","large","fullscreen"]},"closeOnOverlayClick":{"type":"boolean","default":true},"closeOnEscape":{"type":"boolean","default":true},"showCloseButton":{"type":"boolean","default":true},"animationType":{"type":"string","default":"fade","enum":["fade","slide","zoom","none"]},"animationDuration":{"type":"number","default":300},"backdropColor":{"type":"string","default":"rgba(0, 0, 0, 0.5)"},"backdropBlur":{"type":"boolean","default":false},"zIndex":{"type":"number","default":9999}},"supports":{"anchor":true,"align":["left","center","right","wide","full"],"html":false,"innerBlocks":true,"reusable":false,"interactivity":{"clientNavigation":true},"color":{"text":false,"background":false,"gradients":true,"__experimentalSkipSerialization":true},"spacing":{"margin":true,"padding":true,"__experimentalDefaultControls":{"margin":true,"padding":true}},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true,"__experimentalSkipSerialization":true,"__experimentalDefaultControls":{"color":true,"radius":true,"style":true,"width":true}},"shadow":{"__experimentalSkipSerialization":true}},"selectors":{"border":".wp-block-jankx-modal__content","shadow":".wp-block-jankx-modal__content"},"styles":[{"name":"default","label":"Default","isDefault":true},{"name":"centered","label":"Centered"},{"name":"fullscreen","label":"Fullscreen"},{"name":"minimal","label":"Minimal"}],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css","viewScript":"file:./build/view.js"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/modal","title":"Modal","category":"jankx-blocks","description":"A modal block with trigger and content areas. Supports inner blocks and custom selectors.","keywords":["modal","popup","overlay","trigger","inner blocks"],"textdomain":"jankx","attributes":{"align":{"type":"string","default":"center"},"modalId":{"type":"string","default":""},"triggerType":{"type":"string","default":"button","enum":["button","anchor","custom"]},"triggerText":{"type":"string","default":"Open Modal"},"triggerUrl":{"type":"string","default":""},"triggerTarget":{"type":"string","default":"_self"},"customSelector":{"type":"string","default":""},"modalSize":{"type":"string","default":"medium","enum":["small","medium","large","fullscreen"]},"closeOnOverlayClick":{"type":"boolean","default":true},"closeOnEscape":{"type":"boolean","default":true},"showCloseButton":{"type":"boolean","default":true},"animationType":{"type":"string","default":"fade","enum":["fade","slide","zoom","none"]},"animationDuration":{"type":"number","default":300},"backdropColor":{"type":"string","default":"rgba(0, 0, 0, 0.5)"},"backdropBlur":{"type":"boolean","default":false},"zIndex":{"type":"number","default":999999},"disableScroll":{"type":"boolean","default":true},"disableFocus":{"type":"boolean","default":false},"awaitOpenAnimation":{"type":"boolean","default":false},"awaitCloseAnimation":{"type":"boolean","default":false}},"supports":{"anchor":true,"align":["left","center","right","wide","full"],"alignWide":true,"html":false,"innerBlocks":true,"reusable":false,"interactivity":{"clientNavigation":true},"color":{"text":false,"background":false,"gradients":true,"__experimentalSkipSerialization":true},"spacing":{"margin":true,"padding":true,"__experimentalDefaultControls":{"margin":true,"padding":true}},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true,"__experimentalSkipSerialization":true,"__experimentalDefaultControls":{"color":true,"radius":true,"style":true,"width":true}},"shadow":{"__experimentalSkipSerialization":true}},"selectors":{"border":".wp-block-jankx-modal__content","shadow":".wp-block-jankx-modal__content"},"styles":[{"name":"default","label":"Default","isDefault":true},{"name":"centered","label":"Centered"},{"name":"fullscreen","label":"Fullscreen"},{"name":"minimal","label":"Minimal"}],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css","viewScript":"file:./build/view.js"}');
 
 /***/ }),
 
@@ -68,9 +68,13 @@ function Edit({
     animationDuration,
     backdropColor,
     backdropBlur,
-    zIndex
+    zIndex,
+    disableScroll,
+    disableFocus,
+    awaitOpenAnimation,
+    awaitCloseAnimation
   } = attributes;
-  const [isPreviewMode, setIsPreviewMode] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
+  const [isPreviewMode, setIsPreviewMode] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(true); // Default to true so users can edit content
   const [generatedId, setGeneratedId] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)('');
 
   // Generate unique ID if not set
@@ -86,7 +90,12 @@ function Edit({
     }
   }, [modalId, clientId, setAttributes]);
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)({
-    className: `wp-block-jankx-modal ${isPreviewMode ? 'modal-preview' : ''}`
+    className: `wp-block-jankx-modal-wrapper ${isPreviewMode ? 'modal-preview' : ''}`,
+    'data-modal-id': generatedId,
+    'data-close-on-overlay-click': closeOnOverlayClick,
+    'data-close-on-escape': closeOnEscape,
+    'data-animation-type': animationType,
+    'data-backdrop-blur': backdropBlur
   });
   const innerBlocksProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useInnerBlocksProps)({
     className: 'wp-block-jankx-modal__inner'
@@ -316,6 +325,38 @@ function Edit({
           max: 99999,
           step: 100
         })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Advanced Settings', 'jankx'),
+        initialOpen: false,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Disable Scroll', 'jankx'),
+          checked: disableScroll,
+          onChange: value => setAttributes({
+            disableScroll: value
+          }),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Disable page scroll when modal is open', 'jankx')
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Disable Auto Focus', 'jankx'),
+          checked: disableFocus,
+          onChange: value => setAttributes({
+            disableFocus: value
+          }),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Disable auto focus on first focusable element', 'jankx')
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Await Open Animation', 'jankx'),
+          checked: awaitOpenAnimation,
+          onChange: value => setAttributes({
+            awaitOpenAnimation: value
+          }),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Wait for CSS animation to finish before focusing', 'jankx')
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Await Close Animation', 'jankx'),
+          checked: awaitCloseAnimation,
+          onChange: value => setAttributes({
+            awaitCloseAnimation: value
+          }),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Wait for CSS animation before removing from DOM', 'jankx')
+        })]
       })]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
       ...blockProps,
@@ -326,8 +367,15 @@ function Edit({
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
             className: "wp-block-jankx-modal__label",
             children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('🔘 Modal Trigger:', 'jankx')
-          }), renderTrigger()]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+          }), renderTrigger(), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+            style: {
+              marginTop: '8px',
+              fontSize: '12px',
+              color: '#666'
+            },
+            children: isPreviewMode ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('👁️ Preview mode is ON - Modal content shown below', 'jankx') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('👁️ Click toolbar button or trigger to show modal content', 'jankx')
+          })]
+        }), isPreviewMode && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
           className: "wp-block-jankx-modal__editor-content",
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
             className: "wp-block-jankx-modal__label",
@@ -343,6 +391,28 @@ function Edit({
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
               ...innerBlocksProps
             })]
+          })]
+        }), !isPreviewMode && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+          style: {
+            padding: '20px',
+            margin: '16px 0',
+            border: '2px dashed #ddd',
+            borderRadius: '8px',
+            textAlign: 'center',
+            background: '#f9f9f9'
+          },
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("p", {
+            style: {
+              margin: '0 0 12px 0',
+              fontSize: '14px',
+              color: '#666'
+            },
+            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('📝 Modal content is hidden', 'jankx')
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
+            type: "button",
+            className: "components-button is-primary",
+            onClick: () => setIsPreviewMode(true),
+            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Modal Content to Edit', 'jankx')
           })]
         })]
       })
@@ -393,20 +463,31 @@ function Save({
     animationDuration,
     backdropColor,
     backdropBlur,
-    zIndex
+    zIndex,
+    disableScroll,
+    disableFocus,
+    awaitOpenAnimation,
+    awaitCloseAnimation
   } = attributes;
-  const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.useBlockProps.save({
-    className: 'wp-block-jankx-modal-wrapper',
-    'data-close-on-overlay-click': closeOnOverlayClick,
-    'data-close-on-escape': closeOnEscape,
-    'data-animation-type': animationType
-  });
-  const innerBlocksProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.useInnerBlocksProps.save({
-    className: 'wp-block-jankx-modal__content'
-  });
 
   // Generate unique ID if not set
   const finalModalId = modalId || 'modal-' + Math.random().toString(36).substr(2, 9);
+
+  // No wrapper - apply block props directly to modal
+  const modalProps = {
+    'data-close-on-overlay-click': closeOnOverlayClick,
+    'data-close-on-escape': closeOnEscape,
+    'data-animation-type': animationType,
+    'data-backdrop-blur': backdropBlur,
+    'data-modal-id': finalModalId,
+    'data-disable-scroll': disableScroll,
+    'data-disable-focus': disableFocus,
+    'data-await-open-animation': awaitOpenAnimation,
+    'data-await-close-animation': awaitCloseAnimation
+  };
+  const innerBlocksProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.useInnerBlocksProps.save({
+    className: 'wp-block-jankx-modal__content-inner'
+  });
   const triggerId = finalModalId + '-trigger';
   const modalContentId = finalModalId + '-content';
 
@@ -441,13 +522,14 @@ function Save({
     }
   };
 
-  // Build modal HTML
+  // Build modal HTML - following Micromodal structure
   const renderModal = () => {
     return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+      ..._wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.useBlockProps.save(),
+      ...modalProps,
       id: finalModalId,
       className: "wp-block-jankx-modal",
       "aria-hidden": "true",
-      "data-micromodal-close": true,
       style: {
         '--modal-backdrop-color': backdropColor,
         '--modal-animation-duration': `${animationDuration}ms`,
@@ -478,8 +560,7 @@ function Save({
       })
     });
   };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
-    ...blockProps,
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.Fragment, {
     children: [renderTrigger(), renderModal()]
   });
 }

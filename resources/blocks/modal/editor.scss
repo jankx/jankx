@@ -12,13 +12,10 @@
         margin: 10px 0;
     }
 
-    // Hide modal content in editor when not in preview mode
+    // Editor content - Always visible for editing
     .wp-block-jankx-modal__editor-content {
-        display: none;
-
-        &.show {
-            display: block;
-        }
+        display: block;
+        margin-top: 20px;
     }
 
     // Trigger preview in editor
@@ -97,44 +94,83 @@
         }
     }
 
+    // Trigger preview section
+    .wp-block-jankx-modal__trigger-preview {
+        margin-bottom: 20px;
+        padding: 15px;
+        background: #f0f6fc;
+        border-radius: 6px;
+        border: 1px solid #c5d9ed;
+
+        .wp-block-jankx-modal__label {
+            margin-bottom: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #0073aa;
+        }
+    }
+
     // Editor content area for inner blocks
     .wp-block-jankx-modal__editor-content {
-        margin-top: 20px;
         padding: 15px;
         background-color: #ffffff;
-        border: 1px solid #e1e5e9;
+        border: 2px solid #007cba;
         border-radius: 6px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 2px 4px rgba(0, 124, 186, 0.1);
 
-        .wp-block-jankx-modal__editor-label {
-            margin-bottom: 10px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #e1e5e9;
-            color: #1e1e1e;
+        .wp-block-jankx-modal__label {
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #007cba;
+            color: #007cba;
+            font-size: 13px;
+            font-weight: 600;
+
+            code {
+                background: #f0f6fc;
+                padding: 2px 6px;
+                border-radius: 3px;
+                font-size: 11px;
+                color: #0073aa;
+            }
+        }
+
+        // Modal content editor wrapper
+        .wp-block-jankx-modal__content-editor {
+            position: relative;
+            background-color: #ffffff;
+            border: 1px dashed #c3c4c7;
+            border-radius: 4px;
+            padding: 20px;
+            min-height: 200px;
+        }
+
+        // Close button preview
+        .wp-block-jankx-modal__close-preview {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 24px;
+            height: 24px;
+            background: #f0f0f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 14px;
+            color: #666;
+            cursor: help;
+            z-index: 10;
         }
 
         // Style the inner blocks container
-        .wp-block-jankx-modal__content {
+        .wp-block-jankx-modal__inner {
             background-color: transparent;
             border: none;
             box-shadow: none;
             padding: 0;
             margin: 0;
             border-radius: 0;
-        }
-
-        // Add visual indicator for empty state
-        .wp-block-jankx-modal__content:empty::after {
-            content: "Click here to add modal content...";
-            display: block;
-            padding: 20px;
-            text-align: center;
-            color: #8c8f94;
-            font-style: italic;
-            background-color: #f6f7f7;
-            border: 1px dashed #c3c4c7;
-            border-radius: 4px;
         }
     }
 

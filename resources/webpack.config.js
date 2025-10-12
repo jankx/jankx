@@ -109,6 +109,7 @@ module.exports = {
     'blocks/button/build/index': './blocks/button/index.tsx',
     'blocks/button/build/style': './blocks/button/style.scss',
     'blocks/button/build/editor': './blocks/button/editor.scss',
+    'blocks/button/build/view': './blocks/button/view.js',
   },
   output: {
     path: path.resolve(__dirname),

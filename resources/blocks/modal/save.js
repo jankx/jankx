@@ -22,22 +22,32 @@ export default function Save({ attributes }) {
         animationDuration,
         backdropColor,
         backdropBlur,
-        zIndex
+        zIndex,
+        disableScroll,
+        disableFocus,
+        awaitOpenAnimation,
+        awaitCloseAnimation
     } = attributes;
-
-    const blockProps = useBlockProps.save({
-        className: 'wp-block-jankx-modal-wrapper',
-        'data-close-on-overlay-click': closeOnOverlayClick,
-        'data-close-on-escape': closeOnEscape,
-        'data-animation-type': animationType
-    });
-
-    const innerBlocksProps = useInnerBlocksProps.save({
-        className: 'wp-block-jankx-modal__content'
-    });
 
     // Generate unique ID if not set
     const finalModalId = modalId || 'modal-' + Math.random().toString(36).substr(2, 9);
+
+    // No wrapper - apply block props directly to modal
+    const modalProps = {
+        'data-close-on-overlay-click': closeOnOverlayClick,
+        'data-close-on-escape': closeOnEscape,
+        'data-animation-type': animationType,
+        'data-backdrop-blur': backdropBlur,
+        'data-modal-id': finalModalId,
+        'data-disable-scroll': disableScroll,
+        'data-disable-focus': disableFocus,
+        'data-await-open-animation': awaitOpenAnimation,
+        'data-await-close-animation': awaitCloseAnimation
+    };
+
+    const innerBlocksProps = useInnerBlocksProps.save({
+        className: 'wp-block-jankx-modal__content-inner'
+    });
     const triggerId = finalModalId + '-trigger';
     const modalContentId = finalModalId + '-content';
 
@@ -80,14 +90,15 @@ export default function Save({ attributes }) {
         }
     };
 
-    // Build modal HTML
+    // Build modal HTML - following Micromodal structure
     const renderModal = () => {
         return (
             <div
+                {...useBlockProps.save()}
+                {...modalProps}
                 id={finalModalId}
                 className="wp-block-jankx-modal"
                 aria-hidden="true"
-                data-micromodal-close
                 style={{
                     '--modal-backdrop-color': backdropColor,
                     '--modal-animation-duration': `${animationDuration}ms`,
@@ -95,13 +106,16 @@ export default function Save({ attributes }) {
                     '--modal-backdrop-blur': backdropBlur ? 'blur(5px)' : 'none'
                 }}
             >
+                {/* [2] Overlay layer with tabindex and close trigger */}
                 <div className="wp-block-jankx-modal__overlay" tabIndex="-1" data-micromodal-close>
+                    {/* [3] Dialog container with role and aria attributes */}
                     <div
                         className={`wp-block-jankx-modal__container wp-block-jankx-modal__container--${modalSize}`}
                         role="dialog"
                         aria-modal="true"
                         aria-labelledby={`${finalModalId}-title`}
                     >
+                        {/* Modal content area */}
                         <div className="wp-block-jankx-modal__content" id={modalContentId}>
                             {showCloseButton && (
                                 <button
@@ -119,10 +133,10 @@ export default function Save({ attributes }) {
     };
 
     return (
-        <div {...blockProps}>
+        <>
             {renderTrigger()}
             {renderModal()}
-        </div>
+        </>
     );
 }
 

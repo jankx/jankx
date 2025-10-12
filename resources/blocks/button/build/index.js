@@ -8,7 +8,7 @@
 /***/ ((module) => {
 
 "use strict";
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/button","title":"Button","category":"design","description":"Prompt visitors to take action with a button-style link. Supports icons, images, and all core button features.","keywords":["button","link","icon","image","cta","action"],"textdomain":"jankx","attributes":{"triggerType":{"type":"string","enum":["link","button","detail-link","modal"],"default":"link","source":"attribute","selector":".wp-block-button__link","attribute":"data-trigger-type"},"buttonType":{"type":"string","enum":["button","submit","reset"],"default":"button","source":"attribute","selector":"button","attribute":"type"},"modalId":{"type":"string","default":"","source":"attribute","selector":".wp-block-button__link","attribute":"data-modal-id"},"textAlign":{"type":"string"},"url":{"type":"string","source":"attribute","selector":"a","attribute":"href","role":"content"},"title":{"type":"string","source":"attribute","selector":"a,button","attribute":"title","role":"content"},"text":{"type":"string","source":"html","selector":".button-text"},"linkTarget":{"type":"string","source":"attribute","selector":"a","attribute":"target","role":"content"},"rel":{"type":"string","source":"attribute","selector":"a","attribute":"rel","role":"content"},"placeholder":{"type":"string"},"backgroundColor":{"type":"string"},"textColor":{"type":"string"},"gradient":{"type":"string"},"customGradient":{"type":"string"},"width":{"type":"number"},"borderRadius":{"type":"number"},"style":{"type":"object"},"className":{"type":"string"},"fontSize":{"type":"string"},"fontFamily":{"type":"string"},"fontWeight":{"type":"string"},"textTransform":{"type":"string"},"letterSpacing":{"type":"string"},"lineHeight":{"type":"string"},"justification":{"type":"string"},"opensInNewTab":{"type":"boolean","default":false},"iconType":{"type":"string","enum":["none","svg","image","upload","picker"],"default":"none"},"icon":{"type":"string","default":""},"iconName":{"type":"string","default":""},"iconSet":{"type":"string","default":"material"},"iconPosition":{"type":"string","enum":["before","after"],"default":"before"},"iconSize":{"type":"string","default":"16px"},"iconColor":{"type":"string","default":""},"iconStyle":{"type":"string","enum":["filled","outlined","rounded","sharp","two-tone"],"default":"filled"},"imageId":{"type":"number"},"imageUrl":{"type":"string"},"imageAlt":{"type":"string"},"imageWidth":{"type":"number"},"imageHeight":{"type":"number","default":20},"imageSizeSlug":{"type":"string"},"imageMarginRight":{"type":"string","default":"5px"},"iconBackgroundColor":{"type":"string"},"customIconBackgroundColor":{"type":"string"},"iconBackgroundColorValue":{"type":"string"},"customIconColor":{"type":"string"},"iconColorValue":{"type":"string"},"hasNoIconFill":{"type":"boolean"},"rotate":{"type":"number"},"flipHorizontal":{"type":"boolean"},"flipVertical":{"type":"boolean"},"hoverEffect":{"type":"string","default":"none"},"iconSpacing":{"type":"string","default":"8px"},"showIcon":{"type":"boolean","default":true},"showText":{"type":"boolean","default":true}},"supports":{"anchor":true,"splitting":true,"align":false,"alignWide":false,"color":{"__experimentalSkipSerialization":true,"gradients":true,"__experimentalDefaultControls":{"background":true,"text":true}},"typography":{"__experimentalSkipSerialization":["fontSize","lineHeight","fontFamily","fontWeight","fontStyle","textTransform","textDecoration","letterSpacing"],"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true,"__experimentalTextTransform":true,"__experimentalTextDecoration":true,"__experimentalLetterSpacing":true,"__experimentalWritingMode":true,"__experimentalDefaultControls":{"fontSize":true}},"reusable":false,"shadow":{"__experimentalSkipSerialization":true},"spacing":{"__experimentalSkipSerialization":true,"padding":["horizontal","vertical"],"__experimentalDefaultControls":{"padding":true}},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true,"__experimentalSkipSerialization":true,"__experimentalDefaultControls":{"color":true,"radius":true,"style":true,"width":true}},"interactivity":{"clientNavigation":true}},"styles":[{"name":"fill","label":"Fill","isDefault":true},{"name":"outline","label":"Outline"}],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css","selectors":{"root":".wp-block-jankx-button .wp-block-jankx-button__link","typography":{"writingMode":".wp-block-jankx-button"}}}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/button","title":"Button","category":"design","description":"Prompt visitors to take action with a button-style link. Supports icons, images, and all core button features.","keywords":["button","link","icon","image","cta","action"],"textdomain":"jankx","attributes":{"triggerType":{"type":"string","enum":["link","button","detail-link","modal"],"default":"link","source":"attribute","selector":".wp-block-button__link","attribute":"data-trigger-type"},"buttonType":{"type":"string","enum":["button","submit","reset"],"default":"button","source":"attribute","selector":"button","attribute":"type"},"modalId":{"type":"string","default":"","source":"attribute","selector":".wp-block-button__link","attribute":"data-modal-id"},"modalShareObjectId":{"type":"boolean","default":false},"modalSharePostTitle":{"type":"boolean","default":false},"modalShareCurrentUrl":{"type":"boolean","default":false},"textAlign":{"type":"string"},"url":{"type":"string","source":"attribute","selector":"a","attribute":"href","role":"content"},"title":{"type":"string","source":"attribute","selector":"a,button","attribute":"title","role":"content"},"text":{"type":"string","source":"html","selector":".button-text"},"linkTarget":{"type":"string","source":"attribute","selector":"a","attribute":"target","role":"content"},"rel":{"type":"string","source":"attribute","selector":"a","attribute":"rel","role":"content"},"placeholder":{"type":"string"},"backgroundColor":{"type":"string"},"textColor":{"type":"string"},"gradient":{"type":"string"},"customGradient":{"type":"string"},"width":{"type":"number"},"borderRadius":{"type":"number"},"style":{"type":"object"},"className":{"type":"string"},"fontSize":{"type":"string"},"fontFamily":{"type":"string"},"fontWeight":{"type":"string"},"textTransform":{"type":"string"},"letterSpacing":{"type":"string"},"lineHeight":{"type":"string"},"justification":{"type":"string"},"opensInNewTab":{"type":"boolean","default":false},"iconType":{"type":"string","enum":["none","svg","image","upload","picker"],"default":"none"},"icon":{"type":"string","default":""},"iconName":{"type":"string","default":""},"iconSet":{"type":"string","default":"material"},"iconPosition":{"type":"string","enum":["before","after"],"default":"before"},"iconSize":{"type":"string","default":"16px"},"iconColor":{"type":"string","default":""},"iconStyle":{"type":"string","enum":["filled","outlined","rounded","sharp","two-tone"],"default":"filled"},"imageId":{"type":"number"},"imageUrl":{"type":"string"},"imageAlt":{"type":"string"},"imageWidth":{"type":"number"},"imageHeight":{"type":"number","default":20},"imageSizeSlug":{"type":"string"},"imageMarginRight":{"type":"string","default":"5px"},"iconBackgroundColor":{"type":"string"},"customIconBackgroundColor":{"type":"string"},"iconBackgroundColorValue":{"type":"string"},"customIconColor":{"type":"string"},"iconColorValue":{"type":"string"},"hasNoIconFill":{"type":"boolean"},"rotate":{"type":"number"},"flipHorizontal":{"type":"boolean"},"flipVertical":{"type":"boolean"},"hoverEffect":{"type":"string","default":"none"},"iconSpacing":{"type":"string","default":"8px"},"showIcon":{"type":"boolean","default":true},"showText":{"type":"boolean","default":true}},"supports":{"anchor":true,"splitting":true,"align":false,"alignWide":false,"color":{"__experimentalSkipSerialization":true,"gradients":true,"__experimentalDefaultControls":{"background":true,"text":true}},"typography":{"__experimentalSkipSerialization":["fontSize","lineHeight","fontFamily","fontWeight","fontStyle","textTransform","textDecoration","letterSpacing"],"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true,"__experimentalTextTransform":true,"__experimentalTextDecoration":true,"__experimentalLetterSpacing":true,"__experimentalWritingMode":true,"__experimentalDefaultControls":{"fontSize":true}},"reusable":false,"shadow":{"__experimentalSkipSerialization":true},"spacing":{"__experimentalSkipSerialization":true,"padding":["horizontal","vertical"],"__experimentalDefaultControls":{"padding":true}},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true,"__experimentalSkipSerialization":true,"__experimentalDefaultControls":{"color":true,"radius":true,"style":true,"width":true}},"interactivity":{"clientNavigation":true}},"styles":[{"name":"fill","label":"Fill","isDefault":true},{"name":"outline","label":"Outline"}],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css","viewScript":"file:./build/view.js","selectors":{"root":".wp-block-jankx-button .wp-block-jankx-button__link","typography":{"writingMode":".wp-block-jankx-button"}}}');
 
 /***/ }),
 
@@ -114,6 +114,9 @@ function Edit(props) {
     triggerType = 'link',
     buttonType = 'button',
     modalId = '',
+    modalShareObjectId = false,
+    modalSharePostTitle = false,
+    modalShareCurrentUrl = false,
     flipHorizontal,
     flipVertical,
     hasNoIconFill,
@@ -1073,23 +1076,71 @@ function Edit(props) {
             },
             children: ["\uD83D\uDCC4 ", (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('This button will link to the current post/page permalink on the frontend.', 'jankx')]
           })
-        }), triggerType === 'modal' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_23__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalToolsPanelItem, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Modal ID', 'jankx'),
-          isShownByDefault: true,
-          hasValue: () => !!modalId,
-          onDeselect: () => setAttributes({
-            modalId: undefined
-          }),
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_23__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+        }), triggerType === 'modal' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_23__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_23__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_23__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalToolsPanelItem, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Modal ID', 'jankx'),
-            value: modalId || '',
-            onChange: value => setAttributes({
-              modalId: value
+            isShownByDefault: true,
+            hasValue: () => !!modalId,
+            onDeselect: () => setAttributes({
+              modalId: undefined
             }),
-            placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('modal-123', 'jankx'),
-            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Enter the ID of the modal block to open', 'jankx'),
-            __nextHasNoMarginBottom: true
-          })
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_23__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Modal ID', 'jankx'),
+              value: modalId || '',
+              onChange: value => setAttributes({
+                modalId: value
+              }),
+              placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('modal-123', 'jankx'),
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Enter the ID of the modal block to open', 'jankx'),
+              __nextHasNoMarginBottom: true
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_23__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalToolsPanelItem, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Share Data with Modal', 'jankx'),
+            isShownByDefault: true,
+            hasValue: () => !!(attributes.modalShareObjectId || attributes.modalSharePostTitle || attributes.modalShareCurrentUrl),
+            onDeselect: () => setAttributes({
+              modalShareObjectId: false,
+              modalSharePostTitle: false,
+              modalShareCurrentUrl: false
+            }),
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_23__.jsxs)("div", {
+              style: {
+                marginBottom: '12px'
+              },
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_23__.jsx)("p", {
+                style: {
+                  fontSize: '12px',
+                  color: '#666',
+                  marginBottom: '8px'
+                },
+                children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Share current post data with modal:', 'jankx')
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_23__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Share Object ID', 'jankx'),
+                checked: attributes.modalShareObjectId || false,
+                onChange: value => setAttributes({
+                  modalShareObjectId: value
+                }),
+                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Share current post/page ID', 'jankx'),
+                __nextHasNoMarginBottom: true
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_23__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Share Post Title', 'jankx'),
+                checked: attributes.modalSharePostTitle || false,
+                onChange: value => setAttributes({
+                  modalSharePostTitle: value
+                }),
+                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Share current post/page title', 'jankx'),
+                __nextHasNoMarginBottom: true
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_23__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Share Current URL', 'jankx'),
+                checked: attributes.modalShareCurrentUrl || false,
+                onChange: value => setAttributes({
+                  modalShareCurrentUrl: value
+                }),
+                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Share current page URL', 'jankx'),
+                __nextHasNoMarginBottom: true
+              })]
+            })
+          })]
         })]
       })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_23__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.InspectorControls, {
@@ -1282,18 +1333,18 @@ function Edit(props) {
           },
           children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Choose an icon from the sidebar', 'jankx'), " \u2192"]
         })
-      }) : buttonElement, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_23__.jsx)(_svg_icon_components__WEBPACK_IMPORTED_MODULE_17__.IconDropZone, {
+      }) : buttonElement, iconType === 'svg' && isSVGUploadAllowed && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_23__.jsx)(_svg_icon_components__WEBPACK_IMPORTED_MODULE_17__.IconDropZone, {
         attributes: attributes,
         setAttributes: setAttributes,
         mediaUpload: mediaUpload,
         isSVGUploadAllowed: isSVGUploadAllowed
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_23__.jsx)(_svg_icon_components__WEBPACK_IMPORTED_MODULE_17__.InserterModal, {
+    }), isInserterOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_23__.jsx)(_svg_icon_components__WEBPACK_IMPORTED_MODULE_17__.InserterModal, {
       isInserterOpen: isInserterOpen,
       setInserterOpen: setInserterOpen,
       attributes: attributes,
       setAttributes: setAttributes
-    }), enableCustomIcons && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_23__.jsx)(_svg_icon_components__WEBPACK_IMPORTED_MODULE_17__.CustomInserterModal, {
+    }), enableCustomIcons && isCustomInserterOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_23__.jsx)(_svg_icon_components__WEBPACK_IMPORTED_MODULE_17__.CustomInserterModal, {
       isCustomInserterOpen: isCustomInserterOpen,
       setCustomInserterOpen: setCustomInserterOpen,
       attributes: attributes,
@@ -1361,6 +1412,9 @@ function Save(props) {
     triggerType = 'link',
     buttonType = 'button',
     modalId = '',
+    modalShareObjectId = false,
+    modalSharePostTitle = false,
+    modalShareCurrentUrl = false,
     customGradient,
     flipHorizontal,
     flipVertical,
@@ -1593,11 +1647,33 @@ function Save(props) {
       });
       break;
     case 'modal':
+      // Build data attributes object for Micromodal
+      const modalDataAttrs = {
+        'data-micromodal-trigger': modalId || '',
+        // Micromodal standard attribute
+        'data-modal-id': modalId || '',
+        // Keep for backward compatibility
+        'data-trigger-type': 'modal'
+      };
+
+      // Add share data attributes if enabled
+      // These will be read by the modal's view.js when triggered
+      if (modalShareObjectId) {
+        modalDataAttrs['data-share-object-id'] = 'true';
+        modalDataAttrs['data-current-object-id'] = '{{CURRENT_POST_ID}}';
+      }
+      if (modalSharePostTitle) {
+        modalDataAttrs['data-share-post-title'] = 'true';
+        modalDataAttrs['data-current-post-title'] = '{{CURRENT_POST_TITLE}}';
+      }
+      if (modalShareCurrentUrl) {
+        modalDataAttrs['data-share-current-url'] = 'true';
+        modalDataAttrs['data-current-url'] = '{{CURRENT_POST_URL}}';
+      }
       buttonElement = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
         className: buttonClasses + ' jankx-button-modal-trigger',
         type: "button",
-        "data-modal-id": modalId || '',
-        "data-trigger-type": "modal",
+        ...modalDataAttrs,
         style: buttonStyles,
         title: title,
         children: buttonContent

@@ -72,14 +72,53 @@ class ButtonBlock extends Block
             }
         }
 
-        // Handle modal trigger: ensure data attributes are present
+        // Handle modal trigger: add dynamic data attributes
         if ($triggerType === 'modal') {
             $modalId = $attributes['modalId'] ?? '';
-            if ($modalId && strpos($content, 'data-modal-id') === false) {
-                // Add data-modal-id if missing
+
+            // Build data attributes to inject
+            $dataAttrs = [];
+
+            // Replace placeholder data attributes with actual post data
+            // Check if we're in a post context (single post, page, custom post type)
+            if (is_singular() && have_posts()) {
+                the_post();
+                $post_id = get_the_ID();
+                $post_title = get_the_title();
+                $post_url = get_permalink();
+                wp_reset_postdata();
+            } else {
+                // Fallback for archive pages or other contexts
+                global $post;
+                $post_id = $post ? $post->ID : '';
+                $post_title = $post ? $post->post_title : '';
+                $post_url = $post ? get_permalink($post) : '';
+            }
+
+            if ($post_id && $post_title && $post_url) {
+                // Escape data for HTML attributes
+                $post_id_escaped = esc_attr($post_id);
+                $post_title_escaped = esc_attr($post_title);
+                $post_url_escaped = esc_attr($post_url);
+
+                // Replace placeholders
+                $content = str_replace('{{CURRENT_POST_ID}}', $post_id_escaped, $content);
+                $content = str_replace('{{CURRENT_POST_TITLE}}', $post_title_escaped, $content);
+                $content = str_replace('{{CURRENT_POST_URL}}', $post_url_escaped, $content);
+            }
+
+            // Inject data attributes into button
+            if (!empty($dataAttrs)) {
+                // Build attributes string
+                $attrsString = '';
+                foreach ($dataAttrs as $attrName => $attrValue) {
+                    $attrsString .= ' ' . $attrName . '="' . $attrValue . '"';
+                }
+
+                // Inject after data-modal-id
                 $content = preg_replace(
-                    '/<(button|a)([^>]*)(class="[^"]*jankx-button-modal-trigger[^"]*")/',
-                    '<$1$2$3 data-modal-id="' . esc_attr($modalId) . '"',
+                    '/(data-modal-id="[^"]*")/',
+                    '$1' . $attrsString,
                     $content
                 );
             }

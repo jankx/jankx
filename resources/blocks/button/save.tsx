@@ -27,6 +27,9 @@ export default function Save( props: any ) {
 		triggerType = 'link',
 		buttonType = 'button',
 		modalId = '',
+		modalShareObjectId = false,
+		modalSharePostTitle = false,
+		modalShareCurrentUrl = false,
 		customGradient,
 		flipHorizontal,
 		flipVertical,
@@ -295,12 +298,33 @@ export default function Save( props: any ) {
 			break;
 
 		case 'modal':
+			// Build data attributes object for Micromodal
+			const modalDataAttrs: any = {
+				'data-micromodal-trigger': modalId || '', // Micromodal standard attribute
+				'data-modal-id': modalId || '', // Keep for backward compatibility
+				'data-trigger-type': 'modal'
+			};
+
+			// Add share data attributes if enabled
+			// These will be read by the modal's view.js when triggered
+			if ( modalShareObjectId ) {
+				modalDataAttrs['data-share-object-id'] = 'true';
+				modalDataAttrs['data-current-object-id'] = '{{CURRENT_POST_ID}}';
+			}
+			if ( modalSharePostTitle ) {
+				modalDataAttrs['data-share-post-title'] = 'true';
+				modalDataAttrs['data-current-post-title'] = '{{CURRENT_POST_TITLE}}';
+			}
+			if ( modalShareCurrentUrl ) {
+				modalDataAttrs['data-share-current-url'] = 'true';
+				modalDataAttrs['data-current-url'] = '{{CURRENT_POST_URL}}';
+			}
+
 			buttonElement = (
 				<button
 					className={ buttonClasses + ' jankx-button-modal-trigger' }
 					type="button"
-					data-modal-id={ modalId || '' }
-					data-trigger-type="modal"
+					{ ...modalDataAttrs }
 					style={ buttonStyles }
 					title={ title }
 				>

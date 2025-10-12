@@ -6,6 +6,7 @@
 .wp-block-button {
     display: inline-block;
     margin: 0;
+    box-sizing: border-box;  // ✅ Include padding in width calculation
 
     .wp-block-button__link {
         display: inline-flex;
@@ -25,6 +26,7 @@
         transition: all 0.2s ease;
         box-shadow: none;
         outline: none;
+        box-sizing: border-box;  // ✅ Include padding and border in width
 
         &:hover {
             background: #005a87;
@@ -250,8 +252,23 @@
 // Flex layout support - button in flex container
 .is-layout-flex {
     > .wp-block-button {
+        flex: 1 1 auto;       // Allow flex item to shrink/grow
+        min-width: 0;         // Prevent flex item overflow
+        box-sizing: border-box;
+
         .wp-block-button__link {
             width: 100%;
+            max-width: 100%;
+            padding: 10px 16px;  // ✅ Reduce padding in flex layout
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            box-sizing: border-box;
         }
     }
+}
+
+// Button container
+.wp-block-button {
+    max-width: 100%;         // Prevent overflow
+    box-sizing: border-box;
 }

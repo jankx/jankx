@@ -8,6 +8,10 @@
 	"keywords": [ "modal", "popup", "overlay", "trigger", "inner blocks" ],
 	"textdomain": "jankx",
 	"attributes": {
+		"align": {
+			"type": "string",
+			"default": "center"
+		},
 		"modalId": {
 			"type": "string",
 			"default": ""
@@ -69,12 +73,29 @@
 		},
 		"zIndex": {
 			"type": "number",
-			"default": 9999
+			"default": 999999
+		},
+		"disableScroll": {
+			"type": "boolean",
+			"default": true
+		},
+		"disableFocus": {
+			"type": "boolean",
+			"default": false
+		},
+		"awaitOpenAnimation": {
+			"type": "boolean",
+			"default": false
+		},
+		"awaitCloseAnimation": {
+			"type": "boolean",
+			"default": false
 		}
 	},
 	"supports": {
 		"anchor": true,
 		"align": [ "left", "center", "right", "wide", "full" ],
+		"alignWide": true,
 		"html": false,
 		"innerBlocks": true,
 		"reusable": false,

@@ -8,6 +8,7 @@
 .wp-block-button {
   display: inline-block;
   margin: 0;
+  box-sizing: border-box;
 }
 .wp-block-button .wp-block-button__link {
   display: inline-flex;
@@ -27,6 +28,7 @@
   transition: all 0.2s ease;
   box-shadow: none;
   outline: none;
+  box-sizing: border-box;
 }
 .wp-block-button .wp-block-button__link:hover {
   background: #005a87;
@@ -180,8 +182,23 @@
     transform: none;
   }
 }
+.is-layout-flex > .wp-block-button {
+  flex: 1 1 auto;
+  min-width: 0;
+  box-sizing: border-box;
+}
 .is-layout-flex > .wp-block-button .wp-block-button__link {
   width: 100%;
+  max-width: 100%;
+  padding: 10px 16px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  box-sizing: border-box;
+}
+
+.wp-block-button {
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 /*# sourceMappingURL=style.css.map*/

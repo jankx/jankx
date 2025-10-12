@@ -48,10 +48,14 @@ export default function Edit({ attributes, setAttributes, clientId }) {
         animationDuration,
         backdropColor,
         backdropBlur,
-        zIndex
+        zIndex,
+        disableScroll,
+        disableFocus,
+        awaitOpenAnimation,
+        awaitCloseAnimation
     } = attributes;
 
-    const [isPreviewMode, setIsPreviewMode] = useState(false);
+    const [isPreviewMode, setIsPreviewMode] = useState(true); // Default to true so users can edit content
     const [generatedId, setGeneratedId] = useState('');
 
     // Generate unique ID if not set
@@ -66,7 +70,12 @@ export default function Edit({ attributes, setAttributes, clientId }) {
     }, [modalId, clientId, setAttributes]);
 
     const blockProps = useBlockProps({
-        className: `wp-block-jankx-modal ${isPreviewMode ? 'modal-preview' : ''}`
+        className: `wp-block-jankx-modal-wrapper ${isPreviewMode ? 'modal-preview' : ''}`,
+        'data-modal-id': generatedId,
+        'data-close-on-overlay-click': closeOnOverlayClick,
+        'data-close-on-escape': closeOnEscape,
+        'data-animation-type': animationType,
+        'data-backdrop-blur': backdropBlur
     });
 
     const innerBlocksProps = useInnerBlocksProps(
@@ -281,6 +290,36 @@ export default function Edit({ attributes, setAttributes, clientId }) {
                         step={100}
                     />
                 </PanelBody>
+
+                <PanelBody title={__('Advanced Settings', 'jankx')} initialOpen={false}>
+                    <ToggleControl
+                        label={__('Disable Scroll', 'jankx')}
+                        checked={disableScroll}
+                        onChange={(value) => setAttributes({ disableScroll: value })}
+                        help={__('Disable page scroll when modal is open', 'jankx')}
+                    />
+
+                    <ToggleControl
+                        label={__('Disable Auto Focus', 'jankx')}
+                        checked={disableFocus}
+                        onChange={(value) => setAttributes({ disableFocus: value })}
+                        help={__('Disable auto focus on first focusable element', 'jankx')}
+                    />
+
+                    <ToggleControl
+                        label={__('Await Open Animation', 'jankx')}
+                        checked={awaitOpenAnimation}
+                        onChange={(value) => setAttributes({ awaitOpenAnimation: value })}
+                        help={__('Wait for CSS animation to finish before focusing', 'jankx')}
+                    />
+
+                    <ToggleControl
+                        label={__('Await Close Animation', 'jankx')}
+                        checked={awaitCloseAnimation}
+                        onChange={(value) => setAttributes({ awaitCloseAnimation: value })}
+                        help={__('Wait for CSS animation before removing from DOM', 'jankx')}
+                    />
+                </PanelBody>
             </InspectorControls>
 
             <div {...blockProps}>
@@ -291,22 +330,53 @@ export default function Edit({ attributes, setAttributes, clientId }) {
                             {__('🔘 Modal Trigger:', 'jankx')}
                         </div>
                         {renderTrigger()}
+                        <div style={{ marginTop: '8px', fontSize: '12px', color: '#666' }}>
+                            {isPreviewMode
+                                ? __('👁️ Preview mode is ON - Modal content shown below', 'jankx')
+                                : __('👁️ Click toolbar button or trigger to show modal content', 'jankx')
+                            }
+                        </div>
                     </div>
 
-                    {/* Modal Content - Always visible in editor */}
-                    <div className="wp-block-jankx-modal__editor-content">
-                        <div className="wp-block-jankx-modal__label">
-                            {__('📄 Modal Content (ID: ', 'jankx')}<code>{generatedId}</code>):
+                    {/* Modal Content - Show/Hide based on preview mode */}
+                    {isPreviewMode && (
+                        <div className="wp-block-jankx-modal__editor-content">
+                            <div className="wp-block-jankx-modal__label">
+                                {__('📄 Modal Content (ID: ', 'jankx')}<code>{generatedId}</code>):
+                            </div>
+                            <div className={`wp-block-jankx-modal__content-editor wp-block-jankx-modal__container--${modalSize}`}>
+                                {showCloseButton && (
+                                    <div className="wp-block-jankx-modal__close-preview" title={__('Close button will appear here', 'jankx')}>
+                                        ✕
+                                    </div>
+                                )}
+                                <div {...innerBlocksProps} />
+                            </div>
                         </div>
-                        <div className={`wp-block-jankx-modal__content-editor wp-block-jankx-modal__container--${modalSize}`}>
-                            {showCloseButton && (
-                                <div className="wp-block-jankx-modal__close-preview" title={__('Close button will appear here', 'jankx')}>
-                                    ✕
-                                </div>
-                            )}
-                            <div {...innerBlocksProps} />
+                    )}
+
+                    {/* Always show a placeholder when modal is hidden */}
+                    {!isPreviewMode && (
+                        <div style={{
+                            padding: '20px',
+                            margin: '16px 0',
+                            border: '2px dashed #ddd',
+                            borderRadius: '8px',
+                            textAlign: 'center',
+                            background: '#f9f9f9'
+                        }}>
+                            <p style={{ margin: '0 0 12px 0', fontSize: '14px', color: '#666' }}>
+                                {__('📝 Modal content is hidden', 'jankx')}
+                            </p>
+                            <button
+                                type="button"
+                                className="components-button is-primary"
+                                onClick={() => setIsPreviewMode(true)}
+                            >
+                                {__('Show Modal Content to Edit', 'jankx')}
+                            </button>
                         </div>
-                    </div>
+                    )}
                 </div>
             </div>
         </>
