@@ -31,9 +31,10 @@ class OffcanvasSidebarBlock extends Block
      *
      * @param array $attributes Block attributes
      * @param string $content Block content (InnerBlocks rendered HTML)
+     * @param WP_Block $block Block instance
      * @return string Rendered HTML
      */
-    public function render($attributes, $content = '')
+    public function render($attributes, $content = '', $block = null)
     {
         try {
             $sidebarPosition = $attributes['sidebarPosition'] ?? 'left';
@@ -51,6 +52,15 @@ class OffcanvasSidebarBlock extends Block
 
             // Get style from block supports (background, color, etc.)
             $style = $attributes['style'] ?? [];
+
+            // Render InnerBlocks content manually if block instance is available
+            // This ensures dynamic blocks like core/search are rendered properly
+            if ($block && !empty($block->inner_blocks)) {
+                $content = '';
+                foreach ($block->inner_blocks as $inner_block) {
+                    $content .= $inner_block->render();
+                }
+            }
 
             // Generate unique ID for this block instance
             $blockId = 'offcanvas-sidebar-' . uniqid();
@@ -254,6 +264,10 @@ class OffcanvasSidebarBlock extends Block
         if (empty($content)) {
             return '<p class="sidebar-placeholder">' . esc_html__('Add your content here using any available blocks.', 'jankx') . '</p>';
         }
+
+        // Re-render content to ensure dynamic blocks (like core/search) work properly
+        // The $content already contains the rendered HTML from WordPress, including dynamic blocks
+        // We don't need to parse and re-render, WordPress handles that in the render callback
 
         // Add wrapper class for better styling
         $processedContent = '<div class="sidebar-inner-content">' . $content . '</div>';
