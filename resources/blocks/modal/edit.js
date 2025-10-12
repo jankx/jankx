@@ -71,14 +71,15 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 
     const innerBlocksProps = useInnerBlocksProps(
         {
-            className: 'wp-block-jankx-modal__content'
+            className: 'wp-block-jankx-modal__inner'
         },
         {
-            allowedBlocks: ['core/paragraph', 'core/heading', 'core/image', 'core/button', 'core/group', 'core/columns'],
+            // Accept ALL blocks - no restrictions
             template: [
                 ['core/heading', { level: 3, placeholder: __('Modal Title', 'jankx') }],
                 ['core/paragraph', { placeholder: __('Add your modal content here...', 'jankx') }]
-            ]
+            ],
+            templateLock: false
         }
     );
 
@@ -119,38 +120,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
         }
     };
 
-    const renderModal = () => {
-        if (!isPreviewMode) return null;
-
-        return (
-            <div
-                id={generatedId}
-                className="wp-block-jankx-modal is-open"
-                style={{
-                    '--modal-backdrop-color': backdropColor,
-                    '--modal-animation-duration': `${animationDuration}ms`,
-                    '--modal-z-index': zIndex,
-                    '--modal-backdrop-blur': backdropBlur ? 'blur(5px)' : 'none'
-                }}
-            >
-                <div className="wp-block-jankx-modal__overlay">
-                    <div className={`wp-block-jankx-modal__container wp-block-jankx-modal__container--${modalSize}`}>
-                        <div className="wp-block-jankx-modal__content">
-                            {showCloseButton && (
-                                <button
-                                    className="wp-block-jankx-modal__close"
-                                    onClick={() => setIsPreviewMode(false)}
-                                >
-                                    <span className="screen-reader-text">{__('Close modal', 'jankx')}</span>
-                                </button>
-                            )}
-                            <div {...innerBlocksProps} />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
-    };
+    // Removed preview modal - just show content directly in editor
 
     return (
         <>
@@ -314,19 +284,29 @@ export default function Edit({ attributes, setAttributes, clientId }) {
             </InspectorControls>
 
             <div {...blockProps}>
-                <div className="wp-block-jankx-modal-wrapper">
-                    {renderTrigger()}
-
-                    {/* Show inner blocks only in preview mode */}
-                    <div className={`wp-block-jankx-modal__editor-content ${isPreviewMode ? 'show' : ''}`}>
-                        <div className="wp-block-jankx-modal__editor-label">
-                            <strong>{__('Modal Content:', 'jankx')}</strong>
+                <div className="wp-block-jankx-modal__editor-wrapper">
+                    {/* Trigger Preview */}
+                    <div className="wp-block-jankx-modal__trigger-preview">
+                        <div className="wp-block-jankx-modal__label">
+                            {__('🔘 Modal Trigger:', 'jankx')}
                         </div>
-                        <div {...innerBlocksProps} />
+                        {renderTrigger()}
                     </div>
 
-                    {/* Show preview modal when in preview mode */}
-                    {renderModal()}
+                    {/* Modal Content - Always visible in editor */}
+                    <div className="wp-block-jankx-modal__editor-content">
+                        <div className="wp-block-jankx-modal__label">
+                            {__('📄 Modal Content (ID: ', 'jankx')}<code>{generatedId}</code>):
+                        </div>
+                        <div className={`wp-block-jankx-modal__content-editor wp-block-jankx-modal__container--${modalSize}`}>
+                            {showCloseButton && (
+                                <div className="wp-block-jankx-modal__close-preview" title={__('Close button will appear here', 'jankx')}>
+                                    ✕
+                                </div>
+                            )}
+                            <div {...innerBlocksProps} />
+                        </div>
+                    </div>
                 </div>
             </div>
         </>

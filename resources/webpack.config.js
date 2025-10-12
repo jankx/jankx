@@ -35,10 +35,6 @@ module.exports = {
     'blocks/wplyr-media/build/editor': './blocks/wplyr-media/editor.scss',
     'blocks/wplyr-media/build/view': './blocks/wplyr-media/view.js',
 
-    'blocks/icon-button/build/index': './blocks/icon-button/index.tsx',
-    'blocks/icon-button/build/style': './blocks/icon-button/style.scss',
-    'blocks/icon-button/build/editor': './blocks/icon-button/editor.scss',
-
     'blocks/offcanvas-sidebar/build/index': './blocks/offcanvas-sidebar/index.tsx',
     'blocks/offcanvas-sidebar/build/frontend': './blocks/offcanvas-sidebar/frontend.ts',
     'blocks/offcanvas-sidebar/build/style': './blocks/offcanvas-sidebar/style.scss',
@@ -51,14 +47,6 @@ module.exports = {
     'blocks/svg-icon/build/index': './blocks/svg-icon/index.tsx',
     'blocks/svg-icon/build/style': './blocks/svg-icon/style.scss',
     'blocks/svg-icon/build/editor': './blocks/svg-icon/editor.scss',
-
-    'blocks/svg-icon-button/build/index': './blocks/svg-icon-button/index.tsx',
-    'blocks/svg-icon-button/build/style': './blocks/svg-icon-button/style.scss',
-    'blocks/svg-icon-button/build/editor': './blocks/svg-icon-button/editor.scss',
-
-    'blocks/image-button/build/index': './blocks/image-button/index.tsx',
-    'blocks/image-button/build/style': './blocks/image-button/style.scss',
-    'blocks/image-button/build/editor': './blocks/image-button/editor.scss',
 
     'blocks/query/build/index': './blocks/query/index.tsx',
     'blocks/query/build/save': './blocks/query/save.tsx',
@@ -117,6 +105,10 @@ module.exports = {
 
     'blocks/core-filters/build/index': './blocks/core-filters/index.tsx',
     'blocks/core-filters/build/editor': './blocks/core-filters/editor.scss',
+
+    'blocks/button/build/index': './blocks/button/index.tsx',
+    'blocks/button/build/style': './blocks/button/style.scss',
+    'blocks/button/build/editor': './blocks/button/editor.scss',
   },
   output: {
     path: path.resolve(__dirname),

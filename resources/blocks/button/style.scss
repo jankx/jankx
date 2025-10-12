@@ -1,0 +1,257 @@
+/**
+ * Jankx Button Block Styles
+ * Unified button block with icon support
+ */
+
+.wp-block-button {
+    display: inline-block;
+    margin: 0;
+
+    .wp-block-button__link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 24px;
+        border: 2px solid transparent;
+        border-radius: 4px;
+        background: #007cba;
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 1.2;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: none;
+        outline: none;
+
+        &:hover {
+            background: #005a87;
+            color: #ffffff;
+            text-decoration: none;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 124, 186, 0.3);
+        }
+
+        &:focus {
+            outline: 2px solid #007cba;
+            outline-offset: 2px;
+        }
+
+        &:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 124, 186, 0.3);
+        }
+
+        // Icon container styles
+        .icon-container {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            line-height: 1;
+
+            svg {
+                width: 100%;
+                height: 100%;
+                fill: currentColor;
+            }
+
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                border-radius: 2px;
+            }
+
+            // Material Icons support
+            .material-icons,
+            .material-icons-outlined,
+            .material-icons-rounded,
+            .material-icons-sharp,
+            .material-icons-two-tone {
+                font-family: 'Material Icons';
+                font-weight: normal;
+                font-style: normal;
+                font-size: inherit;
+                line-height: 1;
+                letter-spacing: normal;
+                text-transform: none;
+                display: inline-block;
+                white-space: nowrap;
+                word-wrap: normal;
+                direction: ltr;
+                -webkit-font-feature-settings: 'liga';
+                -webkit-font-smoothing: antialiased;
+            }
+
+            // FontAwesome support
+            .fas,
+            .far,
+            .fab {
+                display: inline-block;
+                line-height: 1;
+            }
+
+            // Dashicons support
+            .dashicons {
+                display: inline-block;
+                line-height: 1;
+                width: 1em;
+                height: 1em;
+            }
+        }
+
+        .button-text {
+            flex-shrink: 0;
+        }
+    }
+
+    // Button styles
+    &.is-style-fill {
+        .wp-block-button__link {
+            background: #007cba;
+            color: #ffffff;
+            border: 2px solid transparent;
+
+            &:hover {
+                background: #005a87;
+                color: #ffffff;
+            }
+        }
+    }
+
+    &.is-style-outline {
+        .wp-block-button__link {
+            background: transparent;
+            color: #007cba;
+            border: 2px solid #007cba;
+
+            &:hover {
+                background: #007cba;
+                color: #ffffff;
+                border-color: #007cba;
+            }
+        }
+    }
+
+    // Size variations
+    &.is-size-small {
+        .wp-block-button__link {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+    }
+
+    &.is-size-large {
+        .wp-block-button__link {
+            padding: 16px 32px;
+            font-size: 18px;
+        }
+    }
+
+    // Width variations
+    &.is-width-full {
+        width: 100%;
+
+        .wp-block-button__link {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    // Alignment
+    &.has-text-align-left {
+        text-align: left;
+    }
+
+    &.has-text-align-center {
+        text-align: center;
+    }
+
+    &.has-text-align-right {
+        text-align: right;
+    }
+
+    // Icon-only button
+    &.is-icon-only {
+        .wp-block-button__link {
+            padding: 12px;
+            border-radius: 50%;
+
+            .button-text {
+                display: none;
+            }
+        }
+    }
+
+    // Text-only button
+    &.is-text-only {
+        .wp-block-button__link {
+            .icon-container {
+                display: none;
+            }
+        }
+    }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+    .wp-block-button {
+        &.is-size-large {
+            .wp-block-button__link {
+                padding: 14px 28px;
+                font-size: 16px;
+            }
+        }
+    }
+}
+
+// Print styles
+@media print {
+    .wp-block-button {
+        .wp-block-button__link {
+            background: transparent !important;
+            color: #000000 !important;
+            border: 1px solid #000000 !important;
+            box-shadow: none !important;
+            text-decoration: underline;
+        }
+    }
+}
+
+// High contrast mode
+@media (prefers-contrast: high) {
+    .wp-block-button {
+        .wp-block-button__link {
+            border: 2px solid currentColor;
+        }
+    }
+}
+
+// Reduced motion
+@media (prefers-reduced-motion: reduce) {
+    .wp-block-button {
+        .wp-block-button__link {
+            transition: none;
+
+            &:hover {
+                transform: none;
+            }
+
+            &:active {
+                transform: none;
+            }
+        }
+    }
+}
+
+// Flex layout support - button in flex container
+.is-layout-flex {
+    > .wp-block-button {
+        .wp-block-button__link {
+            width: 100%;
+        }
+    }
+}

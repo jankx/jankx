@@ -224,7 +224,7 @@ function OffcanvasSidebarEdit({
   const innerBlocksProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useInnerBlocksProps)({
     className: 'sidebar-content'
   }, {
-    allowedBlocks: ['core/paragraph', 'core/heading', 'core/image', 'core/gallery', 'core/list', 'core/quote', 'core/buttons', 'core/separator', 'core/spacer', 'core/social-links', 'core/navigation', 'core/search', 'core/calendar', 'core/latest-posts', 'core/latest-comments', 'core/rss', 'core/audio', 'core/video', 'core/file', 'core/code', 'core/html', 'core/preformatted', 'core/pullquote', 'core/table', 'core/verse', 'core/media-text', 'core/columns', 'core/group', 'core/cover', 'core/embed', 'jankx/language-switcher', 'jankx/icon-button', 'jankx/offcanvas-sidebar'],
+    allowedBlocks: ['core/paragraph', 'core/heading', 'core/image', 'core/gallery', 'core/list', 'core/quote', 'core/buttons', 'core/separator', 'core/spacer', 'core/social-links', 'core/navigation', 'core/search', 'core/calendar', 'core/latest-posts', 'core/latest-comments', 'core/rss', 'core/audio', 'core/video', 'core/file', 'core/code', 'core/html', 'core/preformatted', 'core/pullquote', 'core/table', 'core/verse', 'core/media-text', 'core/columns', 'core/group', 'core/cover', 'core/embed', 'core/site-logo', 'jankx/language-switcher', 'jankx/icon-button', 'jankx/offcanvas-sidebar'],
     template: [['core/heading', {
       level: 3,
       content: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Sidebar Content', 'jankx')

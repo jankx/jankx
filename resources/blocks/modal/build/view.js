@@ -5,108 +5,132 @@
 /**
  * Modal Block Frontend JavaScript
  *
- * Handles modal functionality using Micromodal library
+ * Handles modal functionality - works standalone or with Micromodal library
  */
 
 (function () {
   'use strict';
 
-  // Wait for DOM to be ready and MicroModal to be available
-  function waitForMicroModal() {
-    if (typeof MicroModal !== 'undefined') {
-      initModals();
-    } else {
-      // Retry after a short delay
-      setTimeout(waitForMicroModal, 100);
-    }
-  }
   document.addEventListener('DOMContentLoaded', function () {
-    waitForMicroModal();
+    initModals();
   });
-  function initModals() {
-    // Initialize Micromodal once for all modals
-    try {
-      MicroModal.init({
-        onShow: function (modal) {
-          // Find the wrapper for this modal
-          const modalElement = document.getElementById(modal.id);
-          if (modalElement) {
-            const wrapper = modalElement.closest('.wp-block-jankx-modal-wrapper');
-            const animationType = wrapper ? wrapper.dataset.animationType || 'fade' : 'fade';
 
-            // Add animation classes
-            modalElement.classList.add('modal-showing');
-            modalElement.classList.add('modal-animation-' + animationType);
+  // Simple modal show/hide functions (no external library needed)
+  function showModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (!modal) {
+      console.warn('Modal not found:', modalId);
+      return;
+    }
+    const wrapper = modal.closest('.wp-block-jankx-modal-wrapper') || document.querySelector(`[data-modal-id="${modalId}"]`)?.closest('.wp-block-jankx-modal-wrapper');
+    const animationType = wrapper ? wrapper.dataset.animationType || 'fade' : 'fade';
 
-            // Add backdrop blur effect
-            if (wrapper && wrapper.dataset.backdropBlur === 'true') {
-              document.body.classList.add('modal-backdrop-blur');
-            }
-          }
+    // Add classes
+    modal.classList.add('is-open', 'modal-showing', 'modal-animation-' + animationType);
+    modal.setAttribute('aria-hidden', 'false');
 
-          // Dispatch custom event
-          document.dispatchEvent(new CustomEvent('jankx:modal:show', {
-            detail: {
-              modalId: modal.id,
-              modalElement: modalElement
-            }
-          }));
-        },
-        onClose: function (modal) {
-          // Find the wrapper for this modal
-          const modalElement = document.getElementById(modal.id);
-          if (modalElement) {
-            const wrapper = modalElement.closest('.wp-block-jankx-modal-wrapper');
-            const animationType = wrapper ? wrapper.dataset.animationType || 'fade' : 'fade';
+    // Disable scroll
+    document.body.style.overflow = 'hidden';
 
-            // Remove animation classes
-            modalElement.classList.remove('modal-showing');
-            modalElement.classList.remove('modal-animation-' + animationType);
-
-            // Remove backdrop blur effect
-            document.body.classList.remove('modal-backdrop-blur');
-          }
-
-          // Dispatch custom event
-          document.dispatchEvent(new CustomEvent('jankx:modal:close', {
-            detail: {
-              modalId: modal.id,
-              modalElement: modalElement
-            }
-          }));
-        },
-        openClass: 'is-open',
-        disableScroll: true,
-        disableFocus: false,
-        restoreFocus: true,
-        awaitOpenAnimation: true,
-        awaitCloseAnimation: true,
-        debugMode: false
-      });
-      console.log('Micromodal initialized successfully');
-    } catch (e) {
-      console.error('Failed to initialize Micromodal:', e);
+    // Add backdrop blur if enabled
+    if (wrapper && wrapper.dataset.backdropBlur === 'true') {
+      document.body.classList.add('modal-backdrop-blur');
     }
 
-    // Find all modal blocks
-    const modalBlocks = document.querySelectorAll('.wp-block-jankx-modal-wrapper');
-    modalBlocks.forEach(function (block) {
-      const triggerElement = block.querySelector('[data-micromodal-trigger]');
-      if (!triggerElement) return;
-      const modalId = triggerElement.getAttribute('data-micromodal-trigger');
+    // Dispatch event
+    document.dispatchEvent(new CustomEvent('jankx:modal:show', {
+      detail: {
+        modalId,
+        modalElement: modal
+      }
+    }));
+    console.log('Modal opened:', modalId);
+  }
+  function hideModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (!modal) return;
+    const wrapper = modal.closest('.wp-block-jankx-modal-wrapper');
+    const animationType = wrapper ? wrapper.dataset.animationType || 'fade' : 'fade';
+
+    // Remove classes
+    modal.classList.remove('is-open', 'modal-showing', 'modal-animation-' + animationType);
+    modal.setAttribute('aria-hidden', 'true');
+
+    // Re-enable scroll
+    document.body.style.overflow = '';
+    document.body.classList.remove('modal-backdrop-blur');
+
+    // Dispatch event
+    document.dispatchEvent(new CustomEvent('jankx:modal:close', {
+      detail: {
+        modalId,
+        modalElement: modal
+      }
+    }));
+    console.log('Modal closed:', modalId);
+  }
+  function initModals() {
+    // Find ALL trigger buttons (from modal block AND from button block)
+    const allTriggers = document.querySelectorAll('[data-micromodal-trigger], [data-modal-id], .jankx-button-modal-trigger');
+    allTriggers.forEach(function (trigger) {
+      // Get modal ID from various attributes
+      const modalId = trigger.getAttribute('data-micromodal-trigger') || trigger.getAttribute('data-modal-id') || trigger.dataset.modalId;
       if (!modalId) return;
       const modal = document.getElementById(modalId);
-      if (!modal) return;
+      if (!modal) {
+        console.warn('Modal not found for trigger:', modalId);
+        return;
+      }
 
-      // Debug log
-      console.log('Registered modal:', modalId);
+      // Add click handler
+      trigger.addEventListener('click', function (e) {
+        e.preventDefault();
+        showModal(modalId);
+      });
+      console.log('Registered trigger for modal:', modalId);
+    });
 
-      // Get configuration from data attributes
-      const closeOnOverlayClick = block.dataset.closeOnOverlayClick !== 'false';
-      const closeOnEscape = block.dataset.closeOnEscape !== 'false';
+    // Find all modals and set up close handlers
+    const allModals = document.querySelectorAll('.wp-block-jankx-modal');
+    allModals.forEach(function (modal) {
+      const modalId = modal.id;
+      if (!modalId) return;
+      const wrapper = modal.closest('.wp-block-jankx-modal-wrapper');
+      const closeOnOverlayClick = !wrapper || wrapper.dataset.closeOnOverlayClick !== 'false';
+      const closeOnEscape = !wrapper || wrapper.dataset.closeOnEscape !== 'false';
 
-      // Handle custom selectors
-      const customTrigger = block.querySelector('.wp-block-jankx-modal__custom-trigger');
+      // Close button
+      const closeButtons = modal.querySelectorAll('.wp-block-jankx-modal__close, [data-micromodal-close]');
+      closeButtons.forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+          e.preventDefault();
+          hideModal(modalId);
+        });
+      });
+
+      // Overlay click
+      if (closeOnOverlayClick) {
+        const overlay = modal.querySelector('.wp-block-jankx-modal__overlay');
+        if (overlay) {
+          overlay.addEventListener('click', function (e) {
+            if (e.target === overlay) {
+              hideModal(modalId);
+            }
+          });
+        }
+      }
+
+      // Escape key
+      if (closeOnEscape) {
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && modal.classList.contains('is-open')) {
+            hideModal(modalId);
+          }
+        });
+      }
+
+      // Custom selectors
+      const customTrigger = wrapper?.querySelector('.wp-block-jankx-modal__custom-trigger');
       if (customTrigger) {
         const customSelector = customTrigger.dataset.customSelector;
         if (customSelector) {
@@ -114,51 +138,19 @@
           customElements.forEach(function (element) {
             element.addEventListener('click', function (e) {
               e.preventDefault();
-              MicroModal.show(modalId);
+              showModal(modalId);
             });
           });
         }
       }
-
-      // Handle programmatic show/hide
-      window['showModal' + modalId.replace(/[^a-zA-Z0-9]/g, '')] = function () {
-        MicroModal.show(modalId);
-      };
-      window['hideModal' + modalId.replace(/[^a-zA-Z0-9]/g, '')] = function () {
-        MicroModal.close(modalId);
-      };
-
-      // Handle escape key
-      if (closeOnEscape) {
-        document.addEventListener('keydown', function (e) {
-          if (e.key === 'Escape' && modal.classList.contains('is-open')) {
-            MicroModal.close(modalId);
-          }
-        });
-      }
-
-      // Handle overlay click
-      if (closeOnOverlayClick) {
-        const overlay = modal.querySelector('.wp-block-jankx-modal__overlay');
-        if (overlay) {
-          overlay.addEventListener('click', function (e) {
-            if (e.target === overlay) {
-              MicroModal.close(modalId);
-            }
-          });
-        }
-      }
+      console.log('Registered modal:', modalId);
     });
   }
 
   // Expose global functions for external use
   window.JankxModal = {
-    show: function (modalId) {
-      MicroModal.show(modalId);
-    },
-    hide: function (modalId) {
-      MicroModal.close(modalId);
-    },
+    show: showModal,
+    hide: hideModal,
     init: initModals
   };
 })();

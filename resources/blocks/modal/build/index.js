@@ -89,15 +89,16 @@ function Edit({
     className: `wp-block-jankx-modal ${isPreviewMode ? 'modal-preview' : ''}`
   });
   const innerBlocksProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useInnerBlocksProps)({
-    className: 'wp-block-jankx-modal__content'
+    className: 'wp-block-jankx-modal__inner'
   }, {
-    allowedBlocks: ['core/paragraph', 'core/heading', 'core/image', 'core/button', 'core/group', 'core/columns'],
+    // Accept ALL blocks - no restrictions
     template: [['core/heading', {
       level: 3,
       placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Modal Title', 'jankx')
     }], ['core/paragraph', {
       placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Add your modal content here...', 'jankx')
-    }]]
+    }]],
+    templateLock: false
   });
   const renderTrigger = () => {
     switch (triggerType) {
@@ -128,38 +129,9 @@ function Edit({
         return null;
     }
   };
-  const renderModal = () => {
-    if (!isPreviewMode) return null;
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
-      id: generatedId,
-      className: "wp-block-jankx-modal is-open",
-      style: {
-        '--modal-backdrop-color': backdropColor,
-        '--modal-animation-duration': `${animationDuration}ms`,
-        '--modal-z-index': zIndex,
-        '--modal-backdrop-blur': backdropBlur ? 'blur(5px)' : 'none'
-      },
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
-        className: "wp-block-jankx-modal__overlay",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
-          className: `wp-block-jankx-modal__container wp-block-jankx-modal__container--${modalSize}`,
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
-            className: "wp-block-jankx-modal__content",
-            children: [showCloseButton && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
-              className: "wp-block-jankx-modal__close",
-              onClick: () => setIsPreviewMode(false),
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("span", {
-                className: "screen-reader-text",
-                children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Close modal', 'jankx')
-              })
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
-              ...innerBlocksProps
-            })]
-          })
-        })
-      })
-    });
-  };
+
+  // Removed preview modal - just show content directly in editor
+
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.BlockControls, {
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToolbarGroup, {
@@ -348,18 +320,31 @@ function Edit({
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
       ...blockProps,
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
-        className: "wp-block-jankx-modal-wrapper",
-        children: [renderTrigger(), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
-          className: `wp-block-jankx-modal__editor-content ${isPreviewMode ? 'show' : ''}`,
+        className: "wp-block-jankx-modal__editor-wrapper",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+          className: "wp-block-jankx-modal__trigger-preview",
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
-            className: "wp-block-jankx-modal__editor-label",
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("strong", {
-              children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Modal Content:', 'jankx')
-            })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
-            ...innerBlocksProps
+            className: "wp-block-jankx-modal__label",
+            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('🔘 Modal Trigger:', 'jankx')
+          }), renderTrigger()]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+          className: "wp-block-jankx-modal__editor-content",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+            className: "wp-block-jankx-modal__label",
+            children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('📄 Modal Content (ID: ', 'jankx'), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("code", {
+              children: generatedId
+            }), "):"]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+            className: `wp-block-jankx-modal__content-editor wp-block-jankx-modal__container--${modalSize}`,
+            children: [showCloseButton && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+              className: "wp-block-jankx-modal__close-preview",
+              title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Close button will appear here', 'jankx'),
+              children: "\u2715"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+              ...innerBlocksProps
+            })]
           })]
-        }), renderModal()]
+        })]
       })
     })]
   });
