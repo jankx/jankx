@@ -1254,6 +1254,13 @@ export function Edit( props ) {
 	const themeBackgroundColor = backgroundColor?.slug || attributes.backgroundColor;
 	const themeTextColor = textColor?.slug || attributes.textColor;
 
+	// Check if current style is outline
+	const isOutlineStyle = blockProps.className?.includes('is-style-outline');
+
+	// Only generate color classes if attributes are explicitly set (not defaults)
+	const hasExplicitBackgroundColor = customBackgroundColor || (backgroundColor.color && backgroundColor.slug !== 'primary');
+	const hasExplicitTextColor = customTextColor || (textColor.color && textColor.slug !== 'light-text');
+
 	const buttonClasses = classnames( 'wp-block-button__link', borderProps?.className, {
 		'has-icon-color': iconColor.color || iconColorValue,
 		'has-no-icon-fill-color': hasNoIconFill,
@@ -1262,13 +1269,13 @@ export function Edit( props ) {
 			iconBackgroundColorValue ||
 			gradientValue,
 		'has-background-gradient': gradientValue,
-		'has-background-color': backgroundColor.color || customBackgroundColor,
-		'has-text-color': textColor.color || customTextColor,
+		'has-background-color': !isOutlineStyle && hasExplicitBackgroundColor,
+		'has-text-color': hasExplicitTextColor,
 		[ `has-${ themeIconColor }-color` ]: themeIconColor,
 		[ `has-${ themeIconBackgroundColor }-background-color` ]:
 			themeIconBackgroundColor,
-		[ `has-${ themeBackgroundColor }-background-color` ]: themeBackgroundColor,
-		[ `has-${ themeTextColor }-color` ]: themeTextColor,
+		[ `has-${ themeBackgroundColor }-background-color` ]: !isOutlineStyle && hasExplicitBackgroundColor,
+		[ `has-${ themeTextColor }-color` ]: hasExplicitTextColor,
 		[ gradientClass ]: gradientClass,
 		[ `hover-effect-${ hoverEffect }` ]: hoverEffect && hoverEffect !== 'none',
 	} );

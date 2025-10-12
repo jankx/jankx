@@ -83,10 +83,12 @@
             "type": "string"
         },
         "backgroundColor": {
-            "type": "string"
+            "type": "string",
+            "default": "primary"
         },
         "textColor": {
-            "type": "string"
+            "type": "string",
+            "default": "light-text"
         },
         "gradient": {
             "type": "string"

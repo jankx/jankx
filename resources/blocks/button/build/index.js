@@ -8,7 +8,7 @@
 /***/ ((module) => {
 
 "use strict";
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/button","title":"Button","category":"design","description":"Prompt visitors to take action with a button-style link. Supports icons, images, and all core button features.","keywords":["button","link","icon","image","cta","action"],"textdomain":"jankx","attributes":{"triggerType":{"type":"string","enum":["link","button","detail-link","modal"],"default":"link","source":"attribute","selector":".wp-block-button__link","attribute":"data-trigger-type"},"buttonType":{"type":"string","enum":["button","submit","reset"],"default":"button","source":"attribute","selector":"button","attribute":"type"},"modalId":{"type":"string","default":"","source":"attribute","selector":".wp-block-button__link","attribute":"data-modal-id"},"modalShareObjectId":{"type":"boolean","default":false},"modalSharePostTitle":{"type":"boolean","default":false},"modalShareCurrentUrl":{"type":"boolean","default":false},"textAlign":{"type":"string"},"url":{"type":"string","source":"attribute","selector":"a","attribute":"href","role":"content"},"title":{"type":"string","source":"attribute","selector":"a,button","attribute":"title","role":"content"},"text":{"type":"string","source":"html","selector":".button-text"},"linkTarget":{"type":"string","source":"attribute","selector":"a","attribute":"target","role":"content"},"rel":{"type":"string","source":"attribute","selector":"a","attribute":"rel","role":"content"},"placeholder":{"type":"string"},"backgroundColor":{"type":"string"},"textColor":{"type":"string"},"gradient":{"type":"string"},"customGradient":{"type":"string"},"width":{"type":"number"},"borderRadius":{"type":"number"},"style":{"type":"object"},"className":{"type":"string"},"fontSize":{"type":"string"},"fontFamily":{"type":"string"},"fontWeight":{"type":"string"},"textTransform":{"type":"string"},"letterSpacing":{"type":"string"},"lineHeight":{"type":"string"},"justification":{"type":"string"},"opensInNewTab":{"type":"boolean","default":false},"iconType":{"type":"string","enum":["none","svg","image","upload","picker"],"default":"none"},"icon":{"type":"string","default":""},"iconName":{"type":"string","default":""},"iconSet":{"type":"string","default":"material"},"iconPosition":{"type":"string","enum":["before","after"],"default":"before"},"iconSize":{"type":"string","default":"16px"},"iconColor":{"type":"string","default":""},"iconStyle":{"type":"string","enum":["filled","outlined","rounded","sharp","two-tone"],"default":"filled"},"imageId":{"type":"number"},"imageUrl":{"type":"string"},"imageAlt":{"type":"string"},"imageWidth":{"type":"number"},"imageHeight":{"type":"number","default":20},"imageSizeSlug":{"type":"string"},"imageMarginRight":{"type":"string","default":"5px"},"iconBackgroundColor":{"type":"string"},"customIconBackgroundColor":{"type":"string"},"iconBackgroundColorValue":{"type":"string"},"customIconColor":{"type":"string"},"iconColorValue":{"type":"string"},"hasNoIconFill":{"type":"boolean"},"rotate":{"type":"number"},"flipHorizontal":{"type":"boolean"},"flipVertical":{"type":"boolean"},"hoverEffect":{"type":"string","default":"none"},"iconSpacing":{"type":"string","default":"8px"},"showIcon":{"type":"boolean","default":true},"showText":{"type":"boolean","default":true}},"supports":{"anchor":true,"splitting":true,"align":false,"alignWide":false,"color":{"__experimentalSkipSerialization":true,"gradients":true,"__experimentalDefaultControls":{"background":true,"text":true}},"typography":{"__experimentalSkipSerialization":["fontSize","lineHeight","fontFamily","fontWeight","fontStyle","textTransform","textDecoration","letterSpacing"],"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true,"__experimentalTextTransform":true,"__experimentalTextDecoration":true,"__experimentalLetterSpacing":true,"__experimentalWritingMode":true,"__experimentalDefaultControls":{"fontSize":true}},"reusable":false,"shadow":{"__experimentalSkipSerialization":true},"spacing":{"__experimentalSkipSerialization":true,"padding":["horizontal","vertical"],"__experimentalDefaultControls":{"padding":true}},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true,"__experimentalSkipSerialization":true,"__experimentalDefaultControls":{"color":true,"radius":true,"style":true,"width":true}},"interactivity":{"clientNavigation":true}},"styles":[{"name":"fill","label":"Fill","isDefault":true},{"name":"outline","label":"Outline"}],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css","viewScript":"file:./build/view.js","selectors":{"root":".wp-block-jankx-button .wp-block-jankx-button__link","typography":{"writingMode":".wp-block-jankx-button"}}}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/button","title":"Button","category":"design","description":"Prompt visitors to take action with a button-style link. Supports icons, images, and all core button features.","keywords":["button","link","icon","image","cta","action"],"textdomain":"jankx","attributes":{"triggerType":{"type":"string","enum":["link","button","detail-link","modal"],"default":"link","source":"attribute","selector":".wp-block-button__link","attribute":"data-trigger-type"},"buttonType":{"type":"string","enum":["button","submit","reset"],"default":"button","source":"attribute","selector":"button","attribute":"type"},"modalId":{"type":"string","default":"","source":"attribute","selector":".wp-block-button__link","attribute":"data-modal-id"},"modalShareObjectId":{"type":"boolean","default":false},"modalSharePostTitle":{"type":"boolean","default":false},"modalShareCurrentUrl":{"type":"boolean","default":false},"textAlign":{"type":"string"},"url":{"type":"string","source":"attribute","selector":"a","attribute":"href","role":"content"},"title":{"type":"string","source":"attribute","selector":"a,button","attribute":"title","role":"content"},"text":{"type":"string","source":"html","selector":".button-text"},"linkTarget":{"type":"string","source":"attribute","selector":"a","attribute":"target","role":"content"},"rel":{"type":"string","source":"attribute","selector":"a","attribute":"rel","role":"content"},"placeholder":{"type":"string"},"backgroundColor":{"type":"string","default":"primary"},"textColor":{"type":"string","default":"light-text"},"gradient":{"type":"string"},"customGradient":{"type":"string"},"width":{"type":"number"},"borderRadius":{"type":"number"},"style":{"type":"object"},"className":{"type":"string"},"fontSize":{"type":"string"},"fontFamily":{"type":"string"},"fontWeight":{"type":"string"},"textTransform":{"type":"string"},"letterSpacing":{"type":"string"},"lineHeight":{"type":"string"},"justification":{"type":"string"},"opensInNewTab":{"type":"boolean","default":false},"iconType":{"type":"string","enum":["none","svg","image","upload","picker"],"default":"none"},"icon":{"type":"string","default":""},"iconName":{"type":"string","default":""},"iconSet":{"type":"string","default":"material"},"iconPosition":{"type":"string","enum":["before","after"],"default":"before"},"iconSize":{"type":"string","default":"16px"},"iconColor":{"type":"string","default":""},"iconStyle":{"type":"string","enum":["filled","outlined","rounded","sharp","two-tone"],"default":"filled"},"imageId":{"type":"number"},"imageUrl":{"type":"string"},"imageAlt":{"type":"string"},"imageWidth":{"type":"number"},"imageHeight":{"type":"number","default":20},"imageSizeSlug":{"type":"string"},"imageMarginRight":{"type":"string","default":"5px"},"iconBackgroundColor":{"type":"string"},"customIconBackgroundColor":{"type":"string"},"iconBackgroundColorValue":{"type":"string"},"customIconColor":{"type":"string"},"iconColorValue":{"type":"string"},"hasNoIconFill":{"type":"boolean"},"rotate":{"type":"number"},"flipHorizontal":{"type":"boolean"},"flipVertical":{"type":"boolean"},"hoverEffect":{"type":"string","default":"none"},"iconSpacing":{"type":"string","default":"8px"},"showIcon":{"type":"boolean","default":true},"showText":{"type":"boolean","default":true}},"supports":{"anchor":true,"splitting":true,"align":false,"alignWide":false,"color":{"__experimentalSkipSerialization":true,"gradients":true,"__experimentalDefaultControls":{"background":true,"text":true}},"typography":{"__experimentalSkipSerialization":["fontSize","lineHeight","fontFamily","fontWeight","fontStyle","textTransform","textDecoration","letterSpacing"],"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true,"__experimentalTextTransform":true,"__experimentalTextDecoration":true,"__experimentalLetterSpacing":true,"__experimentalWritingMode":true,"__experimentalDefaultControls":{"fontSize":true}},"reusable":false,"shadow":{"__experimentalSkipSerialization":true},"spacing":{"__experimentalSkipSerialization":true,"padding":["horizontal","vertical"],"__experimentalDefaultControls":{"padding":true}},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true,"__experimentalSkipSerialization":true,"__experimentalDefaultControls":{"color":true,"radius":true,"style":true,"width":true}},"interactivity":{"clientNavigation":true}},"styles":[{"name":"fill","label":"Fill","isDefault":true},{"name":"outline","label":"Outline"}],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css","viewScript":"file:./build/view.js","selectors":{"root":".wp-block-jankx-button .wp-block-jankx-button__link","typography":{"writingMode":".wp-block-jankx-button"}}}');
 
 /***/ }),
 
@@ -1176,17 +1176,24 @@ function Edit(props) {
   const themeIconColor = iconColor?.slug || attributes.iconColor;
   const themeBackgroundColor = backgroundColor?.slug || attributes.backgroundColor;
   const themeTextColor = textColor?.slug || attributes.textColor;
+
+  // Check if current style is outline
+  const isOutlineStyle = blockProps.className?.includes('is-style-outline');
+
+  // Only generate color classes if attributes are explicitly set (not defaults)
+  const hasExplicitBackgroundColor = customBackgroundColor || backgroundColor.color && backgroundColor.slug !== 'primary';
+  const hasExplicitTextColor = customTextColor || textColor.color && textColor.slug !== 'light-text';
   const buttonClasses = classnames__WEBPACK_IMPORTED_MODULE_0___default()('wp-block-button__link', borderProps?.className, {
     'has-icon-color': iconColor.color || iconColorValue,
     'has-no-icon-fill-color': hasNoIconFill,
     'has-icon-background-color': iconBackgroundColor.color || iconBackgroundColorValue || gradientValue,
     'has-background-gradient': gradientValue,
-    'has-background-color': backgroundColor.color || customBackgroundColor,
-    'has-text-color': textColor.color || customTextColor,
+    'has-background-color': !isOutlineStyle && hasExplicitBackgroundColor,
+    'has-text-color': hasExplicitTextColor,
     [`has-${themeIconColor}-color`]: themeIconColor,
     [`has-${themeIconBackgroundColor}-background-color`]: themeIconBackgroundColor,
-    [`has-${themeBackgroundColor}-background-color`]: themeBackgroundColor,
-    [`has-${themeTextColor}-color`]: themeTextColor,
+    [`has-${themeBackgroundColor}-background-color`]: !isOutlineStyle && hasExplicitBackgroundColor,
+    [`has-${themeTextColor}-color`]: hasExplicitTextColor,
     [gradientClass]: gradientClass,
     [`hover-effect-${hoverEffect}`]: hoverEffect && hoverEffect !== 'none'
   });
@@ -1579,17 +1586,24 @@ function Save(props) {
     className: '',
     style: {}
   };
+
+  // Check if current style is outline from block props
+  const isOutlineStyle = blockProps.className?.includes('is-style-outline');
+
+  // Only generate color classes if attributes are explicitly set (not defaults)
+  const hasExplicitBackgroundColor = customBackgroundColor || backgroundColor && backgroundColor !== 'primary';
+  const hasExplicitTextColor = customTextColor || textColor && textColor !== 'light-text';
   const buttonClasses = classnames__WEBPACK_IMPORTED_MODULE_0___default()('wp-block-button__link', borderProps?.className, {
     'has-icon-color': iconColorValue,
     'has-no-icon-fill-color': hasNoIconFill,
     'has-icon-background-color': iconBackgroundColorValue || iconBackgroundColor || gradient || customGradient,
-    'has-background-color': customBackgroundColor || backgroundColor,
-    'has-text-color': customTextColor || textColor,
+    'has-background-color': !isOutlineStyle && hasExplicitBackgroundColor,
+    'has-text-color': hasExplicitTextColor,
     [`has-${iconBackgroundColor}-background-color`]: iconBackgroundColor,
     [`has-${iconColor}-color`]: iconColor,
     [`has-${gradient}-gradient-background`]: gradient,
-    [`has-${backgroundColor}-background-color`]: backgroundColor,
-    [`has-${textColor}-color`]: textColor,
+    [`has-${backgroundColor}-background-color`]: !isOutlineStyle && hasExplicitBackgroundColor,
+    [`has-${textColor}-color`]: hasExplicitTextColor,
     [`hover-effect-${hoverEffect}`]: hoverEffect && hoverEffect !== 'none'
   });
   const buttonStyles = {

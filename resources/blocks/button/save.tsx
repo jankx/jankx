@@ -201,6 +201,13 @@ export default function Save( props: any ) {
 	const blockProps = useBlockProps.save();
 	const borderProps = { className: '', style: {} };
 
+	// Check if current style is outline from block props
+	const isOutlineStyle = blockProps.className?.includes('is-style-outline');
+
+	// Only generate color classes if attributes are explicitly set (not defaults)
+	const hasExplicitBackgroundColor = customBackgroundColor || (backgroundColor && backgroundColor !== 'primary');
+	const hasExplicitTextColor = customTextColor || (textColor && textColor !== 'light-text');
+
 	const buttonClasses = classnames( 'wp-block-button__link', borderProps?.className, {
 		'has-icon-color': iconColorValue,
 		'has-no-icon-fill-color': hasNoIconFill,
@@ -209,14 +216,14 @@ export default function Save( props: any ) {
 			iconBackgroundColor ||
 			gradient ||
 			customGradient,
-		'has-background-color': customBackgroundColor || backgroundColor,
-		'has-text-color': customTextColor || textColor,
+		'has-background-color': !isOutlineStyle && hasExplicitBackgroundColor,
+		'has-text-color': hasExplicitTextColor,
 		[ `has-${ iconBackgroundColor }-background-color` ]:
 			iconBackgroundColor,
 		[ `has-${ iconColor }-color` ]: iconColor,
 		[ `has-${ gradient }-gradient-background` ]: gradient,
-		[ `has-${ backgroundColor }-background-color` ]: backgroundColor,
-		[ `has-${ textColor }-color` ]: textColor,
+		[ `has-${ backgroundColor }-background-color` ]: !isOutlineStyle && hasExplicitBackgroundColor,
+		[ `has-${ textColor }-color` ]: hasExplicitTextColor,
 		[ `hover-effect-${ hoverEffect }` ]: hoverEffect && hoverEffect !== 'none',
 	} );
 
