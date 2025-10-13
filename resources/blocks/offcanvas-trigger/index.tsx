@@ -52,8 +52,8 @@ const DISPLAY_OPTIONS = [
 // Bar length options
 const BAR_LENGTH_OPTIONS = [
     { label: __('Equal Length', 'jankx'), value: 'equal' },
-    { label: __('Long-Short-Long (Like Image)', 'jankx'), value: 'long-short-long' },
-    { label: __('Progressive (Long to Short)', 'jankx'), value: 'progressive' }
+    { label: __('Long-Short-Long', 'jankx'), value: 'long-short-long' },
+    { label: __('Progressive', 'jankx'), value: 'progressive' }
 ];
 
 function OffcanvasTriggerEdit({ attributes, setAttributes }: OffcanvasTriggerEditProps): JSX.Element {

@@ -196,10 +196,10 @@ const BAR_LENGTH_OPTIONS = [{
   label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Equal Length', 'jankx'),
   value: 'equal'
 }, {
-  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Long-Short-Long (Like Image)', 'jankx'),
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Long-Short-Long', 'jankx'),
   value: 'long-short-long'
 }, {
-  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Progressive (Long to Short)', 'jankx'),
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Progressive', 'jankx'),
   value: 'progressive'
 }];
 function OffcanvasTriggerEdit({
