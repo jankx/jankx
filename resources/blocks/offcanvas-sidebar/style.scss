@@ -74,10 +74,10 @@
             background-position: center !important;
             color: inherit;
             z-index: 9999;
-            transition: all 0.5s ease;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s;
             transform: translateX(-100%);
-            overflow: hidden;
-            opacity: 0;
+            overflow-x: hidden;
+            overflow-y: auto;
             visibility: hidden;
             min-width: 300px;
             display: flex;
@@ -212,6 +212,32 @@
             }
         }
 
+        /* Sidebar Content - Allow scrolling for long content */
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+
+            /* Custom scrollbar styling */
+            &::-webkit-scrollbar {
+                width: 8px;
+            }
+
+            &::-webkit-scrollbar-track {
+                background: rgba(255, 255, 255, 0.1);
+            }
+
+            &::-webkit-scrollbar-thumb {
+                background: rgba(255, 255, 255, 0.3);
+                border-radius: 4px;
+
+                &:hover {
+                    background: rgba(255, 255, 255, 0.5);
+                }
+            }
+        }
+
         /* Sidebar Menu */
         .sidebar-menu {
             padding: 0;
@@ -271,25 +297,26 @@
 
 }
 
+/* Admin bar offset - applied immediately, not on open */
+body.admin-bar {
+    .offcanvas-sidebar-block {
+        .offcanvas-sidebar {
+            padding-top: 45px;
+            .close-button.position-top-right,
+            .close-button.position-top-left {
+                top: 20px; /* Reduced from 60px to 20px for better alignment */
+            }
+        }
+    }
+}
+
 /* Open state - applied to html */
 html.sidebar-open {
     overflow: hidden;
 
-    body.admin-bar {
-        .offcanvas-sidebar-block {
-            .offcanvas-sidebar {
-                padding-top: 45px;
-                .close-button {
-                    top: 50px;
-                }
-            }
-        }
-    }
-
     .offcanvas-sidebar-container {
         .offcanvas-sidebar {
             transform: translateX(0);
-            opacity: 1;
             visibility: visible;
         }
 

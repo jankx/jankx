@@ -39,6 +39,10 @@
             "type": "number",
             "default": 5
         },
+        "barLengths": {
+            "type": "string",
+            "default": "equal"
+        },
         "displayOn": {
             "type": "string",
             "default": "all"

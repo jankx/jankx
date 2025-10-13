@@ -178,7 +178,10 @@ function OffcanvasSidebarEdit({ attributes, setAttributes }: OffcanvasSidebarEdi
     // Render sidebar preview (always visible in editor)
     const renderSidebarPreview = () => {
         return (
-            <div className={`offcanvas-sidebar-preview effect-${animationEffect} position-${sidebarPosition}`}>
+            <div
+                className={`offcanvas-sidebar-preview effect-${animationEffect} position-${sidebarPosition}`}
+                style={{ width: sidebarWidth }}
+            >
                 {/* Sidebar - Always visible in editor with actual background */}
                 <div
                     className={sidebarClasses}
@@ -383,7 +386,8 @@ function OffcanvasSidebarEdit({ attributes, setAttributes }: OffcanvasSidebarEdi
 }
 
 function OffcanvasSidebarSave(): JSX.Element {
-    // For dynamic blocks with InnerBlocks, we need to save the InnerBlocks content
+    // Save InnerBlocks content - required for blocks with inner content
+    // Style attributes will be passed to render callback via $block object
     return <InnerBlocks.Content />;
 }
 

@@ -23,15 +23,42 @@ class OffcanvasTriggerBlock extends Block
         $barThickness = $attributes['barThickness'] ?? 3;
         $barWidth = $attributes['barWidth'] ?? 30;
         $barSpacing = $attributes['barSpacing'] ?? 5;
+        $barLengths = $attributes['barLengths'] ?? 'equal';
         $displayOn = $attributes['displayOn'] ?? 'all';
         $className = $attributes['className'] ?? '';
 
-        // Build inline styles for bars
-        $barStyle = sprintf(
+        // Calculate bar widths based on barLengths setting
+        $getBarWidth = function($barType) use ($barWidth, $barLengths) {
+            switch ($barLengths) {
+                case 'long-short-long':
+                    return $barType === 'middle' ? $barWidth * 0.6 : $barWidth;
+                case 'progressive':
+                    return $barType === 'top' ? $barWidth :
+                           ($barType === 'middle' ? $barWidth * 0.8 : $barWidth * 0.6);
+                default: // equal
+                    return $barWidth;
+            }
+        };
+
+        $topBarStyle = sprintf(
             'background-color: %s; height: %dpx; width: %dpx;',
             esc_attr($barColor),
             (int)$barThickness,
-            (int)$barWidth
+            (int)$getBarWidth('top')
+        );
+
+        $middleBarStyle = sprintf(
+            'background-color: %s; height: %dpx; width: %dpx;',
+            esc_attr($barColor),
+            (int)$barThickness,
+            (int)$getBarWidth('middle')
+        );
+
+        $bottomBarStyle = sprintf(
+            'background-color: %s; height: %dpx; width: %dpx;',
+            esc_attr($barColor),
+            (int)$barThickness,
+            (int)$getBarWidth('bottom')
         );
 
         // Build CSS custom properties
@@ -51,10 +78,10 @@ class OffcanvasTriggerBlock extends Block
                 data-target-sidebar="<?php echo esc_attr($targetSidebarId); ?>"
                 aria-label="<?php esc_attr_e('Toggle menu', 'jankx'); ?>"
             >
-                <div class="hamburger-container skin-<?php echo esc_attr($animationSkin); ?>" style="<?php echo $containerStyle; ?>">
-                    <span class="bar bar-top" style="<?php echo $barStyle; ?>"></span>
-                    <span class="bar bar-middle" style="<?php echo $barStyle; ?>"></span>
-                    <span class="bar bar-bottom" style="<?php echo $barStyle; ?>"></span>
+                <div class="hamburger-container skin-<?php echo esc_attr($animationSkin); ?> lengths-<?php echo esc_attr($barLengths); ?>" style="<?php echo $containerStyle; ?>">
+                    <span class="bar bar-top" style="<?php echo $topBarStyle; ?>"></span>
+                    <span class="bar bar-middle" style="<?php echo $middleBarStyle; ?>"></span>
+                    <span class="bar bar-bottom" style="<?php echo $bottomBarStyle; ?>"></span>
                 </div>
             </button>
         </div>

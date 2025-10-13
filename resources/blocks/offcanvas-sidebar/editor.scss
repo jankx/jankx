@@ -24,7 +24,7 @@
 .editor-styles-wrapper {
     .offcanvas-sidebar-block {
         .offcanvas-sidebar-preview {
-            width: 366px;
+            /* Width is set dynamically via inline style from sidebarWidth attribute */
             min-height: 100vh;
             border: 2px dashed #007cba;
             border-radius: 8px;

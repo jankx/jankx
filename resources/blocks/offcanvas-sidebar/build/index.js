@@ -272,6 +272,9 @@ function OffcanvasSidebarEdit({
   const renderSidebarPreview = () => {
     return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
       className: `offcanvas-sidebar-preview effect-${animationEffect} position-${sidebarPosition}`,
+      style: {
+        width: sidebarWidth
+      },
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
         className: sidebarClasses,
         style: sidebarStyle,
@@ -545,7 +548,8 @@ function OffcanvasSidebarEdit({
   });
 }
 function OffcanvasSidebarSave() {
-  // For dynamic blocks with InnerBlocks, we need to save the InnerBlocks content
+  // Save InnerBlocks content - required for blocks with inner content
+  // Style attributes will be passed to render callback via $block object
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InnerBlocks.Content, {});
 }
 

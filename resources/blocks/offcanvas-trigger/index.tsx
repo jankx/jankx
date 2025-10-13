@@ -21,6 +21,7 @@ interface OffcanvasTriggerAttributes {
     barThickness: number;
     barWidth: number;
     barSpacing: number;
+    barLengths: string;
     displayOn: string;
     className?: string;
 }
@@ -48,6 +49,13 @@ const DISPLAY_OPTIONS = [
     { label: __('Tablet Only', 'jankx'), value: 'tablet' }
 ];
 
+// Bar length options
+const BAR_LENGTH_OPTIONS = [
+    { label: __('Equal Length', 'jankx'), value: 'equal' },
+    { label: __('Long-Short-Long (Like Image)', 'jankx'), value: 'long-short-long' },
+    { label: __('Progressive (Long to Short)', 'jankx'), value: 'progressive' }
+];
+
 function OffcanvasTriggerEdit({ attributes, setAttributes }: OffcanvasTriggerEditProps): JSX.Element {
     const {
         targetSidebarId,
@@ -56,6 +64,7 @@ function OffcanvasTriggerEdit({ attributes, setAttributes }: OffcanvasTriggerEdi
         barThickness,
         barWidth,
         barSpacing,
+        barLengths,
         displayOn,
         className
     } = attributes;
@@ -71,16 +80,46 @@ function OffcanvasTriggerEdit({ attributes, setAttributes }: OffcanvasTriggerEdi
     const handleClick = (e: React.MouseEvent) => {
         e.preventDefault();
         setIsActive(!isActive);
-        // Also toggle sidebar in editor if available
-        jQuery(e.target).parents('.is-root-container').toggleClass('sidebar-open');
+
+        // Use native DOM instead of jQuery for better performance
+        const target = e.currentTarget as HTMLElement;
+        const container = target.closest('.is-root-container');
+        if (container) {
+            container.classList.toggle('sidebar-open');
+        }
     };
 
     // Render hamburger bars
     const renderHamburger = () => {
-        const barStyle = {
+        // Calculate bar widths based on barLengths setting
+        const getBarWidth = (barType: 'top' | 'middle' | 'bottom') => {
+            switch (barLengths) {
+                case 'long-short-long':
+                    return barType === 'middle' ? barWidth * 0.6 : barWidth;
+                case 'progressive':
+                    return barType === 'top' ? barWidth :
+                           barType === 'middle' ? barWidth * 0.8 : barWidth * 0.6;
+                default: // equal
+                    return barWidth;
+            }
+        };
+
+        const topBarStyle = {
             backgroundColor: barColor,
             height: `${barThickness}px`,
-            width: `${barWidth}px`
+            width: `${getBarWidth('top')}px`
+        };
+
+        const middleBarStyle = {
+            backgroundColor: barColor,
+            height: `${barThickness}px`,
+            width: `${getBarWidth('middle')}px`
+        };
+
+        const bottomBarStyle = {
+            backgroundColor: barColor,
+            height: `${barThickness}px`,
+            width: `${getBarWidth('bottom')}px`
         };
 
         const containerStyle: React.CSSProperties = {
@@ -92,12 +131,12 @@ function OffcanvasTriggerEdit({ attributes, setAttributes }: OffcanvasTriggerEdi
 
         return (
             <div
-                className={`hamburger-container skin-${animationSkin} ${isActive ? 'active' : ''}`}
+                className={`hamburger-container skin-${animationSkin} lengths-${barLengths} ${isActive ? 'active' : ''}`}
                 style={containerStyle}
             >
-                <span className="bar bar-top" style={barStyle}></span>
-                <span className="bar bar-middle" style={barStyle}></span>
-                <span className="bar bar-bottom" style={barStyle}></span>
+                <span className="bar bar-top" style={topBarStyle}></span>
+                <span className="bar bar-middle" style={middleBarStyle}></span>
+                <span className="bar bar-bottom" style={bottomBarStyle}></span>
             </div>
         );
     };
@@ -119,6 +158,14 @@ function OffcanvasTriggerEdit({ attributes, setAttributes }: OffcanvasTriggerEdi
                         value={targetSidebarId}
                         onChange={(value: string) => setAttributes({ targetSidebarId: value })}
                         help={__('Enter the ID of the offcanvas sidebar to trigger. Leave empty to trigger the first sidebar found.', 'jankx')}
+                    />
+
+                    <SelectControl
+                        label={__('Bar Lengths', 'jankx')}
+                        value={barLengths}
+                        options={BAR_LENGTH_OPTIONS}
+                        onChange={(value: string) => setAttributes({ barLengths: value })}
+                        help={__('Choose the length pattern for hamburger bars.', 'jankx')}
                     />
                 </PanelBody>
 
@@ -218,19 +265,8 @@ function OffcanvasTriggerSave(): null {
     return null; // Dynamic block
 }
 
+// Register block - metadata loaded from block.json
 registerBlockType('jankx/offcanvas-trigger', {
-    title: 'Offcanvas Trigger',
-    category: 'widgets',
-    attributes: {
-        targetSidebarId: { type: 'string', default: '' },
-        animationSkin: { type: 'string', default: 'hamburger-to-x' },
-        barColor: { type: 'string', default: '#333333' },
-        barThickness: { type: 'number', default: 3 },
-        barWidth: { type: 'number', default: 30 },
-        barSpacing: { type: 'number', default: 5 },
-        displayOn: { type: 'string', default: 'all' },
-        className: { type: 'string' }
-    },
     edit: OffcanvasTriggerEdit,
     save: OffcanvasTriggerSave,
 });

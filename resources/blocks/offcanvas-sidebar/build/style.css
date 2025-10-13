@@ -72,10 +72,10 @@
   background-position: center !important;
   color: inherit;
   z-index: 9999;
-  transition: all 0.5s ease;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s;
   transform: translateX(-100%);
-  overflow: hidden;
-  opacity: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
   visibility: hidden;
   min-width: 300px;
   display: flex;
@@ -194,6 +194,29 @@
   border-radius: 50%;
 }
 .offcanvas-sidebar-container .offcanvas-sidebar {
+  /* Sidebar Content - Allow scrolling for long content */
+}
+.offcanvas-sidebar-container .offcanvas-sidebar .sidebar-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  /* Custom scrollbar styling */
+}
+.offcanvas-sidebar-container .offcanvas-sidebar .sidebar-content::-webkit-scrollbar {
+  width: 8px;
+}
+.offcanvas-sidebar-container .offcanvas-sidebar .sidebar-content::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+.offcanvas-sidebar-container .offcanvas-sidebar .sidebar-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+.offcanvas-sidebar-container .offcanvas-sidebar .sidebar-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+.offcanvas-sidebar-container .offcanvas-sidebar {
   /* Sidebar Menu */
 }
 .offcanvas-sidebar-container .offcanvas-sidebar .sidebar-menu {
@@ -245,19 +268,21 @@
   transform: translateX(100%);
 }
 
+/* Admin bar offset - applied immediately, not on open */
+body.admin-bar .offcanvas-sidebar-block .offcanvas-sidebar {
+  padding-top: 45px;
+}
+body.admin-bar .offcanvas-sidebar-block .offcanvas-sidebar .close-button.position-top-right,
+body.admin-bar .offcanvas-sidebar-block .offcanvas-sidebar .close-button.position-top-left {
+  top: 20px; /* Reduced from 60px to 20px for better alignment */
+}
+
 /* Open state - applied to html */
 html.sidebar-open {
   overflow: hidden;
 }
-html.sidebar-open body.admin-bar .offcanvas-sidebar-block .offcanvas-sidebar {
-  padding-top: 45px;
-}
-html.sidebar-open body.admin-bar .offcanvas-sidebar-block .offcanvas-sidebar .close-button {
-  top: 50px;
-}
 html.sidebar-open .offcanvas-sidebar-container .offcanvas-sidebar {
   transform: translateX(0);
-  opacity: 1;
   visibility: visible;
 }
 html.sidebar-open .offcanvas-sidebar-container.position-right .offcanvas-sidebar {

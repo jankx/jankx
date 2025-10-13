@@ -190,6 +190,18 @@ const DISPLAY_OPTIONS = [{
   label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Tablet Only', 'jankx'),
   value: 'tablet'
 }];
+
+// Bar length options
+const BAR_LENGTH_OPTIONS = [{
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Equal Length', 'jankx'),
+  value: 'equal'
+}, {
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Long-Short-Long (Like Image)', 'jankx'),
+  value: 'long-short-long'
+}, {
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Progressive (Long to Short)', 'jankx'),
+  value: 'progressive'
+}];
 function OffcanvasTriggerEdit({
   attributes,
   setAttributes
@@ -201,6 +213,7 @@ function OffcanvasTriggerEdit({
     barThickness,
     barWidth,
     barSpacing,
+    barLengths,
     displayOn,
     className
   } = attributes;
@@ -214,16 +227,43 @@ function OffcanvasTriggerEdit({
   const handleClick = e => {
     e.preventDefault();
     setIsActive(!isActive);
-    // Also toggle sidebar in editor if available
-    jQuery(e.target).parents('.is-root-container').toggleClass('sidebar-open');
+
+    // Use native DOM instead of jQuery for better performance
+    const target = e.currentTarget;
+    const container = target.closest('.is-root-container');
+    if (container) {
+      container.classList.toggle('sidebar-open');
+    }
   };
 
   // Render hamburger bars
   const renderHamburger = () => {
-    const barStyle = {
+    // Calculate bar widths based on barLengths setting
+    const getBarWidth = barType => {
+      switch (barLengths) {
+        case 'long-short-long':
+          return barType === 'middle' ? barWidth * 0.6 : barWidth;
+        case 'progressive':
+          return barType === 'top' ? barWidth : barType === 'middle' ? barWidth * 0.8 : barWidth * 0.6;
+        default:
+          // equal
+          return barWidth;
+      }
+    };
+    const topBarStyle = {
       backgroundColor: barColor,
       height: `${barThickness}px`,
-      width: `${barWidth}px`
+      width: `${getBarWidth('top')}px`
+    };
+    const middleBarStyle = {
+      backgroundColor: barColor,
+      height: `${barThickness}px`,
+      width: `${getBarWidth('middle')}px`
+    };
+    const bottomBarStyle = {
+      backgroundColor: barColor,
+      height: `${barThickness}px`,
+      width: `${getBarWidth('bottom')}px`
     };
     const containerStyle = {
       '--bar-spacing': `${barSpacing}px`,
@@ -232,17 +272,17 @@ function OffcanvasTriggerEdit({
       '--bar-color': barColor
     };
     return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
-      className: `hamburger-container skin-${animationSkin} ${isActive ? 'active' : ''}`,
+      className: `hamburger-container skin-${animationSkin} lengths-${barLengths} ${isActive ? 'active' : ''}`,
       style: containerStyle,
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("span", {
         className: "bar bar-top",
-        style: barStyle
+        style: topBarStyle
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("span", {
         className: "bar bar-middle",
-        style: barStyle
+        style: middleBarStyle
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("span", {
         className: "bar bar-bottom",
-        style: barStyle
+        style: bottomBarStyle
       })]
     });
   };
@@ -266,6 +306,14 @@ function OffcanvasTriggerEdit({
             targetSidebarId: value
           }),
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enter the ID of the offcanvas sidebar to trigger. Leave empty to trigger the first sidebar found.', 'jankx')
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Bar Lengths', 'jankx'),
+          value: barLengths,
+          options: BAR_LENGTH_OPTIONS,
+          onChange: value => setAttributes({
+            barLengths: value
+          }),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Choose the length pattern for hamburger bars.', 'jankx')
         })]
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Appearance', 'jankx'),
@@ -366,42 +414,9 @@ function OffcanvasTriggerEdit({
 function OffcanvasTriggerSave() {
   return null; // Dynamic block
 }
+
+// Register block - metadata loaded from block.json
 (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.registerBlockType)('jankx/offcanvas-trigger', {
-  title: 'Offcanvas Trigger',
-  category: 'widgets',
-  attributes: {
-    targetSidebarId: {
-      type: 'string',
-      default: ''
-    },
-    animationSkin: {
-      type: 'string',
-      default: 'hamburger-to-x'
-    },
-    barColor: {
-      type: 'string',
-      default: '#333333'
-    },
-    barThickness: {
-      type: 'number',
-      default: 3
-    },
-    barWidth: {
-      type: 'number',
-      default: 30
-    },
-    barSpacing: {
-      type: 'number',
-      default: 5
-    },
-    displayOn: {
-      type: 'string',
-      default: 'all'
-    },
-    className: {
-      type: 'string'
-    }
-  },
   edit: OffcanvasTriggerEdit,
   save: OffcanvasTriggerSave
 });

@@ -50,6 +50,14 @@ class OffcanvasSidebarBlock extends Block
             $closeButtonColor = $attributes['closeButtonColor'] ?? 'inherit';
             $className = $attributes['className'] ?? '';
 
+            // Get wrapper attributes including classes and styles from block supports
+            $wrapper_attributes = get_block_wrapper_attributes();
+
+            // Extract background color from wrapper attributes if exists
+            $backgroundColor = $attributes['backgroundColor'] ?? '';
+            $textColor = $attributes['textColor'] ?? '';
+            $gradient = $attributes['gradient'] ?? '';
+
             // Get style from block supports (background, color, etc.)
             $style = $attributes['style'] ?? [];
 
@@ -71,12 +79,29 @@ class OffcanvasSidebarBlock extends Block
                 $wrapperClasses[] = $className;
             }
 
-        // Build sidebar classes
-        $sidebarClasses = [
+        // Build container classes (no color classes here)
+        $containerClasses = [
             'offcanvas-sidebar-container',
             'effect-' . $animationEffect,
             'position-' . $sidebarPosition
         ];
+
+            // Build sidebar classes with color classes
+            $sidebarClasses = ['offcanvas-sidebar'];
+
+            // Add preset color classes from WordPress palette
+            if (!empty($backgroundColor)) {
+                $sidebarClasses[] = 'has-' . $backgroundColor . '-background-color';
+                $sidebarClasses[] = 'has-background';
+            }
+            if (!empty($textColor)) {
+                $sidebarClasses[] = 'has-' . $textColor . '-color';
+                $sidebarClasses[] = 'has-text-color';
+            }
+            if (!empty($gradient)) {
+                $sidebarClasses[] = 'has-' . $gradient . '-gradient-background';
+                $sidebarClasses[] = 'has-background';
+            }
 
             // Build inline styles from block supports
             $sidebarStyle = sprintf(
@@ -84,29 +109,31 @@ class OffcanvasSidebarBlock extends Block
                 esc_attr($sidebarWidth)
             );
 
-            // Add background styles from block supports
+            // Custom color styles (when user picks custom color not from palette)
             if (isset($style['color']['background'])) {
-                $sidebarStyle .= sprintf('background-color: %s;', esc_attr($style['color']['background']));
+                $sidebarStyle .= sprintf(' background-color: %s;', esc_attr($style['color']['background']));
             }
             if (isset($style['color']['gradient'])) {
-                $sidebarStyle .= sprintf('background: %s;', esc_attr($style['color']['gradient']));
+                $sidebarStyle .= sprintf(' background: %s;', esc_attr($style['color']['gradient']));
             }
             if (isset($style['color']['text'])) {
-                $sidebarStyle .= sprintf('color: %s;', esc_attr($style['color']['text']));
+                $sidebarStyle .= sprintf(' color: %s;', esc_attr($style['color']['text']));
             }
+
+            // Background image support
             if (isset($style['background']['backgroundImage'])) {
                 $backgroundImage = $style['background']['backgroundImage'];
                 if (isset($backgroundImage['url'])) {
-                    $sidebarStyle .= sprintf('background-image: url(%s);', esc_attr($backgroundImage['url']));
+                    $sidebarStyle .= sprintf(' background-image: url(%s);', esc_attr($backgroundImage['url']));
                 }
                 if (isset($backgroundImage['backgroundSize'])) {
-                    $sidebarStyle .= sprintf('background-size: %s;', esc_attr($backgroundImage['backgroundSize']));
+                    $sidebarStyle .= sprintf(' background-size: %s;', esc_attr($backgroundImage['backgroundSize']));
                 }
                 if (isset($backgroundImage['backgroundPosition'])) {
-                    $sidebarStyle .= sprintf('background-position: %s;', esc_attr($backgroundImage['backgroundPosition']));
+                    $sidebarStyle .= sprintf(' background-position: %s;', esc_attr($backgroundImage['backgroundPosition']));
                 }
                 if (isset($backgroundImage['backgroundRepeat'])) {
-                    $sidebarStyle .= sprintf('background-repeat: %s;', esc_attr($backgroundImage['backgroundRepeat']));
+                    $sidebarStyle .= sprintf(' background-repeat: %s;', esc_attr($backgroundImage['backgroundRepeat']));
                 }
             }
 
@@ -138,7 +165,7 @@ class OffcanvasSidebarBlock extends Block
                 '<div class="%s" id="%s" %s>
                     <div class="%s" data-effect="%s">
                         %s
-                        <div class="offcanvas-sidebar" style="%s">
+                        <div class="%s" style="%s" role="dialog" aria-modal="true" aria-label="%s">
                             %s
                         </div>
                     </div>
@@ -146,10 +173,12 @@ class OffcanvasSidebarBlock extends Block
                 esc_attr(implode(' ', $wrapperClasses)),
                 esc_attr($blockId),
                 $dataAttributes,
-                esc_attr(implode(' ', $sidebarClasses)),
+                esc_attr(implode(' ', $containerClasses)),
                 esc_attr($animationEffect),
                 $overlay,
+                esc_attr(implode(' ', $sidebarClasses)),
                 $sidebarStyle,
+                esc_attr__('Sidebar navigation', 'jankx'),
                 $sidebarContent
             );
         } catch (\Exception $e) {
