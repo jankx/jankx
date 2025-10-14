@@ -119,6 +119,22 @@ module.exports = {
     'blocks/smart-tab/build/index': './blocks/smart-tab/index.tsx',
     'blocks/smart-tab/build/style': './blocks/smart-tab/style.scss',
     'blocks/smart-tab/build/editor': './blocks/smart-tab/editor.scss',
+
+    'blocks/social-sharing/build/index': './blocks/social-sharing/index.tsx',
+    'blocks/social-sharing/build/frontend': './blocks/social-sharing/frontend.ts',
+    'blocks/social-sharing/build/style': './blocks/social-sharing/style.scss',
+    'blocks/social-sharing/build/editor': './blocks/social-sharing/editor.scss',
+
+    'blocks/author-box/build/index': './blocks/author-box/index.tsx',
+    'blocks/author-box/build/save': './blocks/author-box/save.js',
+    'blocks/author-box/build/frontend': './blocks/author-box/frontend.js',
+    'blocks/author-box/build/style': './blocks/author-box/style.scss',
+    'blocks/author-box/build/editor': './blocks/author-box/editor.scss',
+
+    'blocks/gallery-builder/build/index': './resources/blocks/gallery-builder/index.tsx',
+    'blocks/gallery-builder/build/view': './resources/blocks/gallery-builder/view.js',
+    'blocks/gallery-builder/build/style': './resources/blocks/gallery-builder/style.scss',
+    'blocks/gallery-builder/build/editor': './resources/blocks/gallery-builder/editor.scss',
   },
   output: {
     path: path.resolve(__dirname),

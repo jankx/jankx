@@ -8,6 +8,7 @@
         "hot": "mix watch --hot",
         "build:prod": "npm run production",
         "production": "mix --production",
+        "build:webpack": "webpack --mode=production --config resources/webpack.config.js",
         "build": "run-p build:*"
     },
     "devDependencies": {

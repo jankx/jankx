@@ -1,0 +1,283 @@
+/*!*********************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/author-box/style.scss ***!
+  \*********************************************************************************************************************************************************************************************/
+.jankx-author-box {
+  transition: all 0.3s ease;
+}
+.jankx-author-box:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+.jankx-author-box__content {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+@media (max-width: 768px) {
+  .jankx-author-box__content {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+.jankx-author-box--vertical .jankx-author-box__content {
+  flex-direction: column;
+  text-align: center;
+}
+.jankx-author-box--align-center {
+  text-align: center;
+}
+.jankx-author-box--align-right {
+  text-align: right;
+}
+.jankx-author-box__avatar {
+  flex-shrink: 0;
+}
+.jankx-author-box__avatar-img {
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  transition: transform 0.3s ease;
+}
+.jankx-author-box__avatar-img:hover {
+  transform: scale(1.05);
+}
+.jankx-author-box__info {
+  flex: 1;
+  min-width: 0;
+}
+.jankx-author-box__name {
+  margin: 0 0 10px 0;
+  font-size: 1.5em;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.jankx-author-box__name-link {
+  color: inherit;
+  text-decoration: none;
+  transition: opacity 0.3s ease;
+}
+.jankx-author-box__name-link:hover {
+  opacity: 0.8;
+}
+.jankx-author-box__bio {
+  margin: 0 0 15px 0;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+.jankx-author-box__social {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+.jankx-author-box__social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: inherit;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+.jankx-author-box__social-link:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+.jankx-author-box__social-link--facebook:hover {
+  background-color: #1877f2;
+}
+.jankx-author-box__social-link--twitter:hover {
+  background-color: #1da1f2;
+}
+.jankx-author-box__social-link--instagram:hover {
+  background-color: #e4405f;
+}
+.jankx-author-box__social-link--linkedin:hover {
+  background-color: #0077b5;
+}
+.jankx-author-box__social-link--youtube:hover {
+  background-color: #ff0000;
+}
+.jankx-author-box__social-link--website:hover {
+  background-color: #333;
+}
+.jankx-author-box__social-icon {
+  width: 16px;
+  height: 16px;
+}
+.jankx-author-box-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+}
+.jankx-author-box-loading__spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: jankx-spin 1s linear infinite;
+  margin: 0 auto 10px;
+}
+.jankx-author-box-loading p {
+  margin: 0;
+  opacity: 0.8;
+}
+.jankx-author-box-error {
+  padding: 20px;
+  background-color: rgba(255, 0, 0, 0.1);
+  border: 1px solid rgba(255, 0, 0, 0.3);
+  border-radius: 4px;
+  color: #d32f2f;
+}
+.jankx-author-box-error p {
+  margin: 0;
+}
+.jankx-author-box-no-results {
+  padding: 40px 20px;
+  text-align: center;
+  opacity: 0.7;
+}
+.jankx-author-box-no-results p {
+  margin: 0;
+}
+
+.jankx-author-box-preview {
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.jankx-author-box-preview__content {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+@media (max-width: 768px) {
+  .jankx-author-box-preview__content {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+.jankx-author-box-preview--vertical .jankx-author-box-preview__content {
+  flex-direction: column;
+  text-align: center;
+}
+.jankx-author-box-preview--align-center {
+  text-align: center;
+}
+.jankx-author-box-preview--align-right {
+  text-align: right;
+}
+.jankx-author-box-preview__avatar {
+  flex-shrink: 0;
+}
+.jankx-author-box-preview__avatar-img {
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+}
+.jankx-author-box-preview__info {
+  flex: 1;
+}
+.jankx-author-box-preview__name {
+  margin: 0 0 10px 0;
+  font-size: 1.5em;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.jankx-author-box-preview__bio {
+  margin: 0 0 15px 0;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+.jankx-author-box-preview__social {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+.jankx-author-box-preview__social-placeholder {
+  font-size: 0.9em;
+  opacity: 0.7;
+  font-style: italic;
+}
+.jankx-author-box-preview-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+}
+.jankx-author-box-preview-loading__spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: jankx-spin 1s linear infinite;
+  margin: 0 auto 10px;
+}
+.jankx-author-box-preview-loading p {
+  margin: 0;
+  opacity: 0.8;
+}
+.jankx-author-box-preview-empty {
+  padding: 40px 20px;
+  text-align: center;
+  opacity: 0.7;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
+.jankx-author-box-preview-empty p {
+  margin: 0;
+}
+
+.jankx-color-control {
+  margin-bottom: 16px;
+}
+.jankx-color-control label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+@keyframes jankx-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@media (max-width: 768px) {
+  .jankx-author-box {
+    padding: 15px;
+    margin: 15px 0;
+  }
+  .jankx-author-box__content {
+    gap: 15px;
+  }
+  .jankx-author-box__name {
+    font-size: 1.3em;
+  }
+  .jankx-author-box__social {
+    justify-content: center;
+  }
+}
+@media (max-width: 480px) {
+  .jankx-author-box {
+    padding: 12px;
+    margin: 12px 0;
+  }
+  .jankx-author-box__name {
+    font-size: 1.2em;
+  }
+  .jankx-author-box__bio {
+    font-size: 0.9em;
+  }
+}
+
+/*# sourceMappingURL=style.css.map*/

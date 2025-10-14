@@ -1,0 +1,339 @@
+// Author Box Block Styles
+.jankx-author-box {
+    // Let WordPress core styles handle spacing, colors, borders, etc.
+    transition: all 0.3s ease;
+
+    &:hover {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    &__content {
+        display: flex;
+        align-items: flex-start;
+        gap: 20px;
+
+        @media (max-width: 768px) {
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+
+    &--vertical {
+        .jankx-author-box__content {
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+
+    &--align-center {
+        text-align: center;
+    }
+
+    &--align-right {
+        text-align: right;
+    }
+
+    &__avatar {
+        flex-shrink: 0;
+
+        &-img {
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+
+            &:hover {
+                transform: scale(1.05);
+            }
+        }
+    }
+
+    &__info {
+        flex: 1;
+        min-width: 0; // Prevent flex item from overflowing
+    }
+
+    &__name {
+        margin: 0 0 10px 0;
+        font-size: 1.5em;
+        font-weight: 600;
+        line-height: 1.2;
+
+        &-link {
+            color: inherit;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+
+            &:hover {
+                opacity: 0.8;
+            }
+        }
+    }
+
+    &__bio {
+        margin: 0 0 15px 0;
+        line-height: 1.6;
+        opacity: 0.9;
+    }
+
+    &__social {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+
+        &-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: inherit;
+            text-decoration: none;
+            transition: all 0.3s ease;
+
+            &:hover {
+                background-color: rgba(255, 255, 255, 0.2);
+                transform: translateY(-2px);
+            }
+
+            &--facebook:hover {
+                background-color: #1877f2;
+            }
+
+            &--twitter:hover {
+                background-color: #1da1f2;
+            }
+
+            &--instagram:hover {
+                background-color: #e4405f;
+            }
+
+            &--linkedin:hover {
+                background-color: #0077b5;
+            }
+
+            &--youtube:hover {
+                background-color: #ff0000;
+            }
+
+            &--website:hover {
+                background-color: #333;
+            }
+        }
+
+        &-icon {
+            width: 16px;
+            height: 16px;
+        }
+    }
+
+    // Loading state
+    &-loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        text-align: center;
+
+        &__spinner {
+            width: 24px;
+            height: 24px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: jankx-spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        p {
+            margin: 0;
+            opacity: 0.8;
+        }
+    }
+
+    // Error state
+    &-error {
+        padding: 20px;
+        background-color: rgba(255, 0, 0, 0.1);
+        border: 1px solid rgba(255, 0, 0, 0.3);
+        border-radius: 4px;
+        color: #d32f2f;
+
+        p {
+            margin: 0;
+        }
+    }
+
+    // No results state
+    &-no-results {
+        padding: 40px 20px;
+        text-align: center;
+        opacity: 0.7;
+
+        p {
+            margin: 0;
+        }
+    }
+}
+
+// Editor preview styles
+.jankx-author-box-preview {
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    &__content {
+        display: flex;
+        align-items: flex-start;
+        gap: 20px;
+
+        @media (max-width: 768px) {
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+
+    &--vertical {
+        .jankx-author-box-preview__content {
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+
+    &--align-center {
+        text-align: center;
+    }
+
+    &--align-right {
+        text-align: right;
+    }
+
+    &__avatar {
+        flex-shrink: 0;
+
+        &-img {
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+        }
+    }
+
+    &__info {
+        flex: 1;
+    }
+
+    &__name {
+        margin: 0 0 10px 0;
+        font-size: 1.5em;
+        font-weight: 600;
+        line-height: 1.2;
+    }
+
+    &__bio {
+        margin: 0 0 15px 0;
+        line-height: 1.6;
+        opacity: 0.9;
+    }
+
+    &__social {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+
+        &-placeholder {
+            font-size: 0.9em;
+            opacity: 0.7;
+            font-style: italic;
+        }
+    }
+
+    &-loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        text-align: center;
+
+        &__spinner {
+            width: 24px;
+            height: 24px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: jankx-spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        p {
+            margin: 0;
+            opacity: 0.8;
+        }
+    }
+
+    &-empty {
+        padding: 40px 20px;
+        text-align: center;
+        opacity: 0.7;
+        background-color: rgba(0, 0, 0, 0.05);
+        border-radius: 4px;
+
+        p {
+            margin: 0;
+        }
+    }
+}
+
+// Color control styles for editor
+.jankx-color-control {
+    margin-bottom: 16px;
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+}
+
+// Animation keyframes
+@keyframes jankx-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+    .jankx-author-box {
+        padding: 15px;
+        margin: 15px 0;
+
+        &__content {
+            gap: 15px;
+        }
+
+        &__name {
+            font-size: 1.3em;
+        }
+
+        &__social {
+            justify-content: center;
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .jankx-author-box {
+        padding: 12px;
+        margin: 12px 0;
+
+        &__name {
+            font-size: 1.2em;
+        }
+
+        &__bio {
+            font-size: 0.9em;
+        }
+    }
+}

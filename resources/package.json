@@ -74,6 +74,7 @@
     "swiper": "^11.2.10",
     "use-debounce": "^10.0.5",
     "usehooks-ts": "^3.1.1",
+    "vanilla-sharing": "^5.2.1",
     "via": "^0.0.1",
     "yarn": "^1.22.22"
   }

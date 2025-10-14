@@ -8,7 +8,7 @@
   \********************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/table-of-content","version":"1.0.0","title":"Table of Contents","category":"widgets","icon":"list-view","keywords":["TOC","Table of Contents","Mục lục","Index"],"supports":{"align":["wide","full"],"html":false},"description":"Hiển thị mục lục tự động từ các heading trong bài viết.","attributes":{"no_title":{"type":"boolean","default":false},"title_level":{"type":"integer","default":2},"title_text":{"type":"string"},"use_ol":{"type":"boolean","default":false},"remove_indent":{"type":"boolean","default":false},"add_smooth":{"type":"boolean","default":false},"use_absolute_urls":{"type":"boolean","default":false},"max_level":{"type":"integer","default":6},"min_level":{"type":"integer","default":1},"updated":{"type":"integer"},"accordion":{"type":"boolean","default":false},"hidden":{"type":"boolean","default":false},"wrapper":{"type":"boolean","default":false},"autoupdate":{"type":"boolean","default":true}},"textdomain":"jankx","editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css","render":"file:./render.php"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/table-of-content","version":"1.0.0","title":"Table of Contents","category":"widgets","icon":"list-view","keywords":["TOC","Table of Contents","Mục lục","Index"],"supports":{"align":["wide","full"],"html":false,"color":{"background":true,"text":true,"gradients":true,"link":true},"spacing":{"margin":true,"padding":true,"blockGap":true},"border":{"color":true,"radius":true,"style":true,"width":true},"background":{"backgroundImage":true,"backgroundPosition":true,"backgroundRepeat":true,"backgroundSize":true},"dimensions":{"minHeight":true},"typography":{"fontSize":true,"lineHeight":true,"fontFamily":true,"fontWeight":true,"fontStyle":true,"textTransform":true,"textDecoration":true,"letterSpacing":true}},"description":"Hiển thị mục lục tự động từ các heading trong bài viết.","attributes":{"no_title":{"type":"boolean","default":false},"title_level":{"type":"integer","default":2},"title_text":{"type":"string"},"use_ol":{"type":"boolean","default":false},"remove_indent":{"type":"boolean","default":false},"add_smooth":{"type":"boolean","default":false},"use_absolute_urls":{"type":"boolean","default":false},"max_level":{"type":"integer","default":6},"min_level":{"type":"integer","default":1},"updated":{"type":"integer"},"accordion":{"type":"boolean","default":false},"hidden":{"type":"boolean","default":false},"wrapper":{"type":"boolean","default":false},"autoupdate":{"type":"boolean","default":true},"stylePreset":{"type":"string","default":"default"}},"textdomain":"jankx","editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css","render":"file:./render.php"}');
 
 /***/ }),
 
@@ -42,9 +42,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _heading_level_dropdown__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./heading-level-dropdown */ "./blocks/table-of-content/src/heading-level-dropdown.js");
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_12__);
-/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./editor.scss */ "./blocks/table-of-content/src/editor.scss");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__);
+/* harmony import */ var _style_presets__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./style-presets */ "./blocks/table-of-content/src/style-presets.js");
+/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./editor.scss */ "./blocks/table-of-content/src/editor.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__);
+
+
 
 
 
@@ -64,8 +67,14 @@ function Edit({
   const {
     hideTOC,
     hidden,
-    accordion
+    accordion,
+    stylePreset
   } = attributes;
+
+  // Get block props with core styling support
+  const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)({
+    className: ['wp-block-jankx-table-of-content', stylePreset && stylePreset !== 'default' ? `toc-style-${stylePreset}` : ''].filter(Boolean).join(' ')
+  });
 
   // Effect to adjust hideTOC based on hidden or accordion attributes
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
@@ -83,7 +92,7 @@ function Edit({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Empty dependency array ensures this runs once on mount
 
-  const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)();
+  // Remove the old blockProps line since we already defined it above
 
   // Get the autoupdate option from WordPress php.
   const autoupdateOption = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_12__.useSelect)(select => {
@@ -110,14 +119,14 @@ function Edit({
     };
   });
   const advpanelicon = 'settings';
-  const controls = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.BlockControls, {
+  const controls = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.BlockControls, {
     group: "block",
-    children: [!(attributes.no_title || attributes.accordion || attributes.hidden) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_heading_level_dropdown__WEBPACK_IMPORTED_MODULE_11__["default"], {
+    children: [!(attributes.no_title || attributes.accordion || attributes.hidden) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_heading_level_dropdown__WEBPACK_IMPORTED_MODULE_11__["default"], {
       selectedLevel: attributes.title_level,
       onChange: level => setAttributes({
         title_level: Number(level)
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.ToolbarButton, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.ToolbarButton, {
       icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__["default"],
       title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Convert to unordered list', 'jankx'),
       describedBy: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Convert to unordered list', 'jankx'),
@@ -127,7 +136,7 @@ function Edit({
           use_ol: false
         });
       }
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.ToolbarButton, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.ToolbarButton, {
       icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_7__["default"],
       title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Convert to ordered list', 'jankx'),
       describedBy: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Convert to ordered list', 'jankx'),
@@ -137,7 +146,7 @@ function Edit({
           use_ol: true
         });
       }
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.ToolbarButton, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.ToolbarButton, {
       icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__["default"],
       title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Indent list', 'jankx'),
       describedBy: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Indent list', 'jankx'),
@@ -147,7 +156,7 @@ function Edit({
           remove_indent: true
         });
       }
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.ToolbarButton, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.ToolbarButton, {
       icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__["default"],
       title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Outdent list', 'jankx'),
       describedBy: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Outdent list', 'jankx'),
@@ -157,7 +166,7 @@ function Edit({
           remove_indent: false
         });
       }
-    }), (!attributes.autoupdate || !autoupdateOption) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.ToolbarButton, {
+    }), (!attributes.autoupdate || !autoupdateOption) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.ToolbarButton, {
       icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_9__["default"],
       label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Update table of contents', 'jankx'),
       onClick: () => setAttributes({
@@ -165,11 +174,11 @@ function Edit({
       })
     })]
   });
-  const controlssidebar = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.Panel, {
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.PanelBody, {
-        children: [!attributes.no_title && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.PanelRow, {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.TextControl, {
+  const controlssidebar = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.Panel, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.PanelBody, {
+        children: [!attributes.no_title && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.PanelRow, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.TextControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Heading Text', 'jankx'),
             help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Set the heading text of the block.', 'jankx') + ' ' + (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Default value', 'jankx') + ': ' + (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Table of Contents', 'jankx'),
             value: attributes.title_text,
@@ -177,16 +186,16 @@ function Edit({
               title_text: value || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Table of Contents', 'jankx')
             })
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.PanelRow, {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.ToggleControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.PanelRow, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.ToggleControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Remove heading', 'jankx'),
             checked: attributes.no_title,
             onChange: () => setAttributes({
               no_title: !attributes.no_title
             })
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.PanelRow, {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.SelectControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.PanelRow, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.SelectControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Minimum level', 'jankx'),
             help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Minimum depth of the headings.', 'jankx'),
             value: attributes.min_level,
@@ -213,8 +222,8 @@ function Edit({
               min_level: Number(level)
             })
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.PanelRow, {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.SelectControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.PanelRow, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.SelectControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Maximum level', 'jankx'),
             help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Maximum depth of the headings.', 'jankx'),
             value: attributes.max_level,
@@ -243,30 +252,49 @@ function Edit({
           })
         })]
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.Panel, {
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.PanelBody, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.Panel, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Styles', 'jankx'),
+        icon: "admin-appearance",
+        initialOpen: false,
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.PanelRow, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.SelectControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Style Preset', 'jankx'),
+            value: stylePreset,
+            options: (0,_style_presets__WEBPACK_IMPORTED_MODULE_13__.getStylePresetOptions)().map(option => ({
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)(option.label, 'jankx'),
+              value: option.value
+            })),
+            onChange: value => setAttributes({
+              stylePreset: value
+            })
+          })
+        })
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.Panel, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Advanced Features', 'jankx'),
         icon: advpanelicon,
         initialOpen: false,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.PanelRow, {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)("div", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.PanelRow, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)("div", {
             style: {
               marginBottom: '1em',
               border: '1px solid rgba(0, 0, 0, 0.05)',
               padding: '0.5em',
               backgroundColor: '#f7f7f7'
             },
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("p", {
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("strong", {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("p", {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("strong", {
                 children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Think about making a donation if you use any of these features.', 'jankx')
               })
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.ExternalLink, {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.ExternalLink, {
               href: "https://marc.tv/out/donate",
               children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Donate here!', 'jankx')
             })]
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.PanelRow, {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.ToggleControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.PanelRow, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.ToggleControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Hide SimpleTOC', 'jankx'),
             checked: attributes.hideTOC,
             onChange: value => {
@@ -286,8 +314,8 @@ function Edit({
               }
             }
           })
-        }), attributes.hideTOC && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.PanelRow, {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.RadioControl, {
+        }), attributes.hideTOC && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.PanelRow, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.RadioControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Type', 'jankx'),
             selected: attributes.hidden ? 'hidden' : 'accordion',
             options: [{
@@ -304,8 +332,8 @@ function Edit({
               });
             }
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.PanelRow, {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.ToggleControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.PanelRow, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.ToggleControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Smooth scrolling support', 'jankx'),
             help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Adds the following CSS to the HTML element: "scroll-behavior: smooth;"', 'jankx'),
             checked: attributes.add_smooth,
@@ -313,8 +341,8 @@ function Edit({
               add_smooth: !attributes.add_smooth
             })
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.PanelRow, {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.ToggleControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.PanelRow, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.ToggleControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Use absolute urls', 'jankx'),
             help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Adds the permalink url to the fragment.', 'jankx'),
             checked: attributes.use_absolute_urls,
@@ -322,8 +350,8 @@ function Edit({
               use_absolute_urls: !attributes.use_absolute_urls
             })
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.PanelRow, {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.ToggleControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.PanelRow, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.ToggleControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Wrapper div', 'jankx'),
             help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Additionally adds the role "navigation" and ARIA attributes.', 'jankx'),
             checked: attributes.wrapper,
@@ -331,8 +359,8 @@ function Edit({
               wrapper: !attributes.wrapper
             })
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.PanelRow, {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.ToggleControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.PanelRow, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.ToggleControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Automatic refresh', 'jankx'),
             help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Automatic updating of the table of contents.', 'jankx'),
             checked: attributes.autoupdate,
@@ -344,9 +372,9 @@ function Edit({
       })
     })]
   });
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)("div", {
     ...blockProps,
-    children: [controls, controlssidebar, autoupdateOption && autoupdate && (returnisSaving || returnisSavingNonPostEntityChanges) ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.Spinner, {}) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)((_wordpress_server_side_render__WEBPACK_IMPORTED_MODULE_4___default()), {
+    children: [controls, controlssidebar, autoupdateOption && autoupdate && (returnisSaving || returnisSavingNonPostEntityChanges) ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_10__.Spinner, {}) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)((_wordpress_server_side_render__WEBPACK_IMPORTED_MODULE_4___default()), {
       block: "jankx/table-of-content",
       attributes: attributes
     })]
@@ -537,6 +565,124 @@ __webpack_require__.r(__webpack_exports__);
  */
 function save() {
   return null;
+}
+
+/***/ }),
+
+/***/ "./blocks/table-of-content/src/style-presets.js":
+/*!******************************************************!*\
+  !*** ./blocks/table-of-content/src/style-presets.js ***!
+  \******************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   STYLE_PRESETS: () => (/* binding */ STYLE_PRESETS),
+/* harmony export */   getAllStylePresets: () => (/* binding */ getAllStylePresets),
+/* harmony export */   getStylePreset: () => (/* binding */ getStylePreset),
+/* harmony export */   getStylePresetOptions: () => (/* binding */ getStylePresetOptions)
+/* harmony export */ });
+/**
+ * Style Presets Configuration for Table of Contents Block
+ *
+ * This file contains all available style presets and their configurations.
+ * To add a new style preset:
+ * 1. Add the preset object to the STYLE_PRESETS array
+ * 2. Add the corresponding CSS in style.css
+ * 3. The preset will automatically appear in the editor dropdown
+ */
+
+const STYLE_PRESETS = [{
+  value: 'default',
+  label: 'Disc Markers',
+  description: 'Standard disc, circle, and square markers',
+  preview: {
+    backgroundColor: 'transparent',
+    textColor: 'inherit',
+    borderColor: 'transparent'
+  }
+}, {
+  value: 'boxed',
+  label: 'Numbered Markers',
+  description: 'Numbered list with decimal, alpha, and roman markers',
+  preview: {
+    backgroundColor: '#f8f9fa',
+    textColor: '#333',
+    borderColor: '#e9ecef'
+  }
+}, {
+  value: 'minimal',
+  label: 'No Markers',
+  description: 'Clean list without any markers',
+  preview: {
+    backgroundColor: 'transparent',
+    textColor: '#6c757d',
+    borderColor: 'transparent'
+  }
+}, {
+  value: 'bordered',
+  label: 'Arrow Markers',
+  description: 'Arrow markers with left border accent',
+  preview: {
+    backgroundColor: 'rgba(0, 115, 170, 0.03)',
+    textColor: '#0073aa',
+    borderColor: '#0073aa'
+  }
+}, {
+  value: 'card',
+  label: 'Check Markers',
+  description: 'Check marks and symbols with card styling',
+  preview: {
+    backgroundColor: '#ffffff',
+    textColor: '#2c3e50',
+    borderColor: '#e0e0e0'
+  }
+}, {
+  value: 'highlight',
+  label: 'Star Markers',
+  description: 'Star markers with gradient background',
+  preview: {
+    backgroundColor: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    textColor: '#ffffff',
+    borderColor: 'transparent'
+  }
+}, {
+  value: 'dark-red',
+  label: 'Plus Markers',
+  description: 'Plus, minus, and bullet markers on dark red background',
+  preview: {
+    backgroundColor: '#8B0000',
+    textColor: '#ffffff',
+    borderColor: 'transparent'
+  }
+}];
+
+/**
+ * Get style preset by value
+ * @param {string} value - The preset value
+ * @returns {Object|null} - The preset object or null if not found
+ */
+function getStylePreset(value) {
+  return STYLE_PRESETS.find(preset => preset.value === value) || null;
+}
+
+/**
+ * Get all available style presets
+ * @returns {Array} - Array of all style presets
+ */
+function getAllStylePresets() {
+  return STYLE_PRESETS;
+}
+
+/**
+ * Get style presets formatted for WordPress SelectControl
+ * @returns {Array} - Array of options for SelectControl
+ */
+function getStylePresetOptions() {
+  return STYLE_PRESETS.map(preset => ({
+    label: preset.label,
+    value: preset.value
+  }));
 }
 
 /***/ }),

@@ -26,13 +26,28 @@ import {
 	ExternalLink,
 	Spinner,
 } from '@wordpress/components';
+import { useSetting } from '@wordpress/block-editor';
 import HeadingLevelDropdown from './heading-level-dropdown';
 import { useSelect } from '@wordpress/data';
+import { getStylePresetOptions } from './style-presets';
 import './editor.scss';
 // import './../assets/accordion.css'; // Commented out - file doesn't exist
 
 export default function Edit( { attributes, setAttributes } ) {
-	const { hideTOC, hidden, accordion } = attributes;
+	const {
+		hideTOC,
+		hidden,
+		accordion,
+		stylePreset
+	} = attributes;
+
+	// Get block props with core styling support
+	const blockProps = useBlockProps( {
+		className: [
+			'wp-block-jankx-table-of-content',
+			stylePreset && stylePreset !== 'default' ? `toc-style-${stylePreset}` : '',
+		].filter(Boolean).join(' '),
+	} );
 
 	// Effect to adjust hideTOC based on hidden or accordion attributes
 	useEffect( () => {
@@ -48,7 +63,7 @@ export default function Edit( { attributes, setAttributes } ) {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [] ); // Empty dependency array ensures this runs once on mount
 
-	const blockProps = useBlockProps();
+	// Remove the old blockProps line since we already defined it above
 
 	// Get the autoupdate option from WordPress php.
 	const autoupdateOption = useSelect( ( select ) => {
@@ -279,6 +294,25 @@ export default function Edit( { attributes, setAttributes } ) {
 									max_level: Number( level ),
 								} )
 							}
+						/>
+					</PanelRow>
+				</PanelBody>
+			</Panel>
+			<Panel>
+				<PanelBody
+					title={ __( 'Styles', 'jankx' ) }
+					icon="admin-appearance"
+					initialOpen={ false }
+				>
+					<PanelRow>
+						<SelectControl
+							label={ __( 'Style Preset', 'jankx' ) }
+							value={ stylePreset }
+							options={ getStylePresetOptions().map( option => ({
+								label: __( option.label, 'jankx' ),
+								value: option.value
+							}) ) }
+							onChange={ ( value ) => setAttributes( { stylePreset: value } ) }
 						/>
 					</PanelRow>
 				</PanelBody>

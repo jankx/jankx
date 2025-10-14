@@ -50,6 +50,9 @@ class TableOfContentBlock extends Block {
         $accordion = $attributes['accordion'] ?? false;
         $wrapper = $attributes['wrapper'] ?? false;
 
+        // Style attributes
+        $stylePreset = $attributes['stylePreset'] ?? 'default';
+
         // Check if we're in template editor context via AJAX
         $is_template_editor = $context === 'edit' && (
             (isset($_SERVER['HTTP_REFERER']) && (
@@ -110,6 +113,37 @@ class TableOfContentBlock extends Block {
             ], 200);
         }
 
+        // Generate CSS classes and inline styles using WordPress core styling
+        $classes = ['wp-block-jankx-table-of-content'];
+        $inline_styles = [];
+
+        // Add style preset class
+        if ($stylePreset && $stylePreset !== 'default') {
+            $classes[] = 'toc-style-' . sanitize_html_class($stylePreset);
+        }
+
+        // WordPress core styling attributes (if function exists)
+        if (function_exists('wp_style_engine_get_styles')) {
+            $style_attributes = wp_style_engine_get_styles($attributes, [
+                'selector' => '.wp-block-jankx-table-of-content',
+                'context' => 'block-supports',
+            ]);
+
+            // Add core styling classes
+            if (!empty($style_attributes['classnames'])) {
+                $classes = array_merge($classes, explode(' ', $style_attributes['classnames']));
+            }
+
+            // Add core styling inline styles
+            if (!empty($style_attributes['css'])) {
+                $inline_styles[] = $style_attributes['css'];
+            }
+        }
+
+
+        $class_attr = implode(' ', array_unique($classes));
+        $style_attr = !empty($inline_styles) ? ' style="' . implode('; ', $inline_styles) . '"' : '';
+
         // Generate TOC HTML
         $toc_html = '';
 
@@ -117,6 +151,9 @@ class TableOfContentBlock extends Block {
         if ($add_smooth) {
             $toc_html .= '<style>html { scroll-behavior: smooth; }</style>';
         }
+
+        // Start main wrapper with classes and styles
+        $toc_html .= '<div class="' . esc_attr($class_attr) . '"' . $style_attr . '>';
 
         // Start wrapper if enabled
         if ($wrapper) {
@@ -174,6 +211,9 @@ class TableOfContentBlock extends Block {
             $toc_html .= '</nav>';
         }
 
+        // Close main wrapper div
+        $toc_html .= '</div>';
+
         // Handle hidden/accordion functionality
         if ($hidden || $accordion) {
             $toc_class = 'toc-hidden';
@@ -204,6 +244,9 @@ class TableOfContentBlock extends Block {
         $accordion = $attributes['accordion'] ?? false;
         $wrapper = $attributes['wrapper'] ?? false;
 
+        // Style attributes
+        $stylePreset = $attributes['stylePreset'] ?? 'default';
+
         // Generate fake headings for preview
         $fake_headings = [
             ['level' => 1, 'text' => 'Giới thiệu', 'id' => 'gioi-thieu'],
@@ -224,6 +267,37 @@ class TableOfContentBlock extends Block {
             return $heading['level'] >= $min_level && $heading['level'] <= $max_level;
         });
 
+        // Generate CSS classes and inline styles using WordPress core styling
+        $classes = ['wp-block-jankx-table-of-content'];
+        $inline_styles = [];
+
+        // Add style preset class
+        if ($stylePreset && $stylePreset !== 'default') {
+            $classes[] = 'toc-style-' . sanitize_html_class($stylePreset);
+        }
+
+        // WordPress core styling attributes (if function exists)
+        if (function_exists('wp_style_engine_get_styles')) {
+            $style_attributes = wp_style_engine_get_styles($attributes, [
+                'selector' => '.wp-block-jankx-table-of-content',
+                'context' => 'block-supports',
+            ]);
+
+            // Add core styling classes
+            if (!empty($style_attributes['classnames'])) {
+                $classes = array_merge($classes, explode(' ', $style_attributes['classnames']));
+            }
+
+            // Add core styling inline styles
+            if (!empty($style_attributes['css'])) {
+                $inline_styles[] = $style_attributes['css'];
+            }
+        }
+
+
+        $class_attr = implode(' ', array_unique($classes));
+        $style_attr = !empty($inline_styles) ? ' style="' . implode('; ', $inline_styles) . '"' : '';
+
         // Generate TOC HTML
         $toc_html = '';
 
@@ -231,6 +305,9 @@ class TableOfContentBlock extends Block {
         if ($add_smooth) {
             $toc_html .= '<style>html { scroll-behavior: smooth; }</style>';
         }
+
+        // Start main wrapper with classes and styles
+        $toc_html .= '<div class="' . esc_attr($class_attr) . '"' . $style_attr . '>';
 
         // Start wrapper if enabled
         if ($wrapper) {
@@ -287,6 +364,9 @@ class TableOfContentBlock extends Block {
         if ($wrapper) {
             $toc_html .= '</nav>';
         }
+
+        // Close main wrapper div
+        $toc_html .= '</div>';
 
         // Handle hidden/accordion functionality
         if ($hidden || $accordion) {

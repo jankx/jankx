@@ -12,6 +12,7 @@ use Jankx\Gutenberg\Blocks\IconPickerBlock;
 use Jankx\Gutenberg\Blocks\ButtonBlock;
 use Jankx\Gutenberg\Blocks\LanguageSwitcherBlock;
 use Jankx\Gutenberg\Blocks\ImageMasonryGalleryBlock;
+use Jankx\Gutenberg\Blocks\GalleryBuilderBlock;
 use Jankx\Gutenberg\Blocks\MagicTextBlock;
 use Jankx\Gutenberg\Blocks\TabsBlock;
 use Jankx\Gutenberg\Blocks\TabBlock;
@@ -24,6 +25,8 @@ use Jankx\Gutenberg\Blocks\WplyrMediaBlock;
 use Jankx\Gutenberg\Blocks\DatePickerCalendarBlock;
 use Jankx\Gutenberg\Blocks\SmartTabsBlock;
 use Jankx\Gutenberg\Blocks\SmartTabBlock;
+use Jankx\Gutenberg\Blocks\AuthorBoxBlock;
+use Jankx\Gutenberg\Blocks\SocialSharingBlock;
 use Jankx\Gutenberg\Blocks\WordPressCoreFilterBlock; // Filter service, not a block
 use Jankx\Gutenberg\GutenbergPattern;
 use Jankx\Facades\Log;
@@ -135,6 +138,7 @@ class GutenbergService
         $this->repository->registerBlock(OffcanvasTriggerBlock::class);
         $this->repository->registerBlock(LanguageSwitcherBlock::class);
         $this->repository->registerBlock(ImageMasonryGalleryBlock::class);
+        $this->repository->registerBlock(GalleryBuilderBlock::class);
         $this->repository->registerBlock(TabsBlock::class);
         $this->repository->registerBlock(TabBlock::class);
         $this->repository->registerBlock(WplyrMediaBlock::class);
@@ -146,6 +150,8 @@ class GutenbergService
         $this->repository->registerBlock(DatePickerCalendarBlock::class);
         $this->repository->registerBlock(SmartTabsBlock::class);
         $this->repository->registerBlock(SmartTabBlock::class);
+        $this->repository->registerBlock(AuthorBoxBlock::class);
+        $this->repository->registerBlock(SocialSharingBlock::class);
 
         // $this->repository->registerBlock(WordPressCoreFilterBlock::class);
     }
