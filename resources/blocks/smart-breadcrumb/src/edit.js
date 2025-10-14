@@ -22,7 +22,7 @@ import { getBreadcrumbStylePresetOptions } from './style-presets';
 import './editor.scss';
 
 export default function Edit( { attributes, setAttributes } ) {
-	const { 
+	const {
 		showHome,
 		homeText,
 		separator,
@@ -144,7 +144,7 @@ export default function Edit( { attributes, setAttributes } ) {
 						/>
 					</PanelRow>
 					<PanelRow>
-						<div style={ { 
+						<div style={ {
 							marginTop: '1em',
 							padding: '0.5em',
 							backgroundColor: '#f0f8ff',
