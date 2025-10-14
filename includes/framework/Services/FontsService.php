@@ -2,6 +2,7 @@
 
 namespace Jankx\Services;
 
+use Jankx\Facades\Log;
 use Jankx\Services\Fonts\GoogleFontsProvider;
 use Jankx\Services\Fonts\AdobeFontsProvider;
 use Jankx\Services\Fonts\CustomFontsProvider;
@@ -90,7 +91,7 @@ class FontsService
 
             return $savedFont;
         } catch (\Exception $e) {
-            error_log('Font registration error: ' . $e->getMessage());
+            Log::error('Font registration error: ' . $e->getMessage());
             return false;
         }
     }
@@ -115,7 +116,7 @@ class FontsService
 
             return $result;
         } catch (\Exception $e) {
-            error_log("Failed to delete font: " . $e->getMessage());
+            Log::error("Failed to delete font: " . $e->getMessage());
             return false;
         }
     }
@@ -134,8 +135,8 @@ class FontsService
 
             return $updatedFont;
         } catch (\Exception $e) {
-            error_log("Failed to update font: " . $e->getMessage());
-                return false;
+            Log::error("Failed to update font: " . $e->getMessage());
+            return false;
         }
     }
 

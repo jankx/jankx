@@ -51,7 +51,6 @@ class NavigationBlockService
                 try {
                     return \Themeisle_Blocks_Registration::load_font_awesome($block_content, $block);
                 } catch (\Exception $e) {
-                    error_log('Otter Blocks safe filter error: ' . $e->getMessage());
                     return $block_content;
                 }
             }, 10, 2);
@@ -105,9 +104,6 @@ class NavigationBlockService
                 if (strpos($errstr, 'Undefined array key') !== false) {
                     return true; // Suppress warning
                 }
-
-                // Log các lỗi khác
-                error_log("PHP Error [$errno]: $errstr in $errfile on line $errline");
 
                 return false; // Let PHP handle other errors
             }, E_WARNING);

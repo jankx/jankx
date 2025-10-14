@@ -10,6 +10,7 @@ namespace Jankx\Extensions;
 
 use Jankx\Contracts\Extension\ExtensionInterface;
 use Jankx\Contracts\Extension\ExtensionManagerInterface;
+use Jankx\Facades\Log;
 
 class ExtensionManager implements ExtensionManagerInterface
 {
@@ -91,7 +92,6 @@ class ExtensionManager implements ExtensionManagerInterface
 
         // If extension with this ID already exists, skip loading
         if (isset($this->extension_ids[$extension_id])) {
-            error_log("Extension with ID '{$extension_id}' already loaded from '{$this->extension_ids[$extension_id]}', skipping '{$extensionName}' from '{$extensionsDir}'");
             return false;
         }
 
@@ -104,7 +104,7 @@ class ExtensionManager implements ExtensionManagerInterface
         // Load the caller file
         $caller_file = $extension_dir . '/' . $caller['file'];
         if (!file_exists($caller_file)) {
-            error_log("Extension caller file not found: {$caller_file}");
+            Log::notice("Extension caller file not found: {$caller_file}");
             return false;
         }
 

@@ -2,6 +2,8 @@
 
 namespace Jankx\Swiper\Classes;
 
+use Jankx\Facades\Log;
+use Jankx\Foundation\Log\Logger;
 use Jankx\Swiper\Traits\SingletonTrait;
 
 if (!defined('ABSPATH')) {
@@ -31,7 +33,7 @@ if (!class_exists('RegistrationBlocks')) {
             $blocks_dir = trailingslashit($theme_dir) . 'resources/blocks/';
 
             if (!is_readable($blocks_dir)) {
-                error_log('Jankx Swiper Blocks: Blocks directory is not readable: ' . $blocks_dir);
+                Log::debug('Jankx Swiper Blocks: Blocks directory is not readable: ' . $blocks_dir);
                 return;
             }
 
@@ -42,7 +44,7 @@ if (!class_exists('RegistrationBlocks')) {
                 try {
                     $this->register_single_block($blocks_dir, $block);
                 } catch (\Exception $e) {
-                    error_log('Jankx Swiper Blocks: Error registering block "' . $block . '": ' . $e->getMessage());
+                    Log::error('Jankx Swiper Blocks: Error registering block "' . $block . '": ' . $e->getMessage());
                 }
             }
         }

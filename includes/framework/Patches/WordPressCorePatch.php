@@ -2,6 +2,10 @@
 
 namespace Jankx\Patches;
 
+use Exception;
+use Jankx\Facades\Log;
+use Themeisle_Blocks_Registration;
+
 /**
  * WordPress Core Patch
  *
@@ -109,12 +113,12 @@ class WordPressCorePatch
         }
 
         // Áp dụng filter gốc một cách an toàn
-        if (class_exists('Themeisle_Blocks_Registration')) {
+        if (class_exists(Themeisle_Blocks_Registration::class)) {
             try {
                 return Themeisle_Blocks_Registration::load_font_awesome($block_content, $block);
             } catch (Exception $e) {
+                Log::error($e->getMessage());
                 // Log error nhưng không crash
-                error_log('Otter Blocks filter error: ' . $e->getMessage());
                 return $block_content;
             }
         }
@@ -135,7 +139,6 @@ class WordPressCorePatch
             // Render an toàn
             return self::render_navigation_link($attrs, $block_content);
         } catch (Exception $e) {
-            error_log('Navigation link render error: ' . $e->getMessage());
             return self::generate_fallback_navigation_link($block);
         }
     }
@@ -153,7 +156,6 @@ class WordPressCorePatch
             // Render an toàn
             return self::render_navigation_submenu($attrs, $block_content);
         } catch (Exception $e) {
-            error_log('Navigation submenu render error: ' . $e->getMessage());
             return self::generate_fallback_navigation_submenu($block);
         }
     }
@@ -276,9 +278,6 @@ class WordPressCorePatch
             return true; // Suppress warning
         }
 
-        // Log các lỗi khác
-        error_log("PHP Error [$errno]: $errstr in $errfile on line $errline");
-
         return false; // Let PHP handle other errors
     }
 
@@ -289,7 +288,7 @@ class WordPressCorePatch
     {
         $error = error_get_last();
         if ($error && $error['type'] === E_ERROR) {
-            error_log('Fatal Error: ' . $error['message'] . ' in ' . $error['file'] . ' on line ' . $error['line']);
+            Log::error('Fatal Error: ' . $error['message'] . ' in ' . $error['file'] . ' on line ' . $error['line']);
         }
     }
 }

@@ -12,6 +12,7 @@
 
 namespace Jankx\Gutenberg\Blocks;
 
+use Jankx\Facades\Log;
 use Jankx\Gutenberg\Block;
 use Jankx\Template\Template;
 use Jankx\PostLayout\PostLayoutManager;
@@ -520,24 +521,9 @@ class PostTypeLayoutBlock extends Block
         $engineId = Jankx::getEngineId();
         $wrapId = 'jankx-post-layout-' . wp_generate_uuid4();
 
-        // Debug logging
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log("[PostTypeLayoutBlock Debug] Rendering block on frontend");
-            error_log("[PostTypeLayoutBlock Debug] Post type: " . $postType);
-            error_log("[PostTypeLayoutBlock Debug] Layout: " . $layoutName);
-            error_log("[PostTypeLayoutBlock Debug] Columns: " . $columns);
-            error_log("[PostTypeLayoutBlock Debug] Per page: " . $perPage);
-            error_log("[PostTypeLayoutBlock Debug] Engine ID: " . $engineId);
-            error_log("[PostTypeLayoutBlock Debug] Order by: " . $orderBy . " " . $order);
-        }
-
         try {
             // Get template engine
             $templateEngine = \Jankx\Facades\App::make('template.engine.' . $engineId);
-
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log("[PostTypeLayoutBlock Debug] Template engine resolved: " . get_class($templateEngine));
-            }
 
             // Get PostLayoutManager instance from container
             $jankxApp = \Jankx\Foundation\Application::getInstance();
@@ -561,10 +547,6 @@ class PostTypeLayoutBlock extends Block
                 $queryArgs['offset'] = $attributes['offset'];
             }
 
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log("[PostTypeLayoutBlock Debug] Query args before filters: " . print_r($queryArgs, true));
-            }
-
             // Apply same filters as PostsFetcher for consistency
             do_action("jankx/posts/fetcher/{$postType}/query/start", $queryArgs, $this);
 
@@ -577,10 +559,6 @@ class PostTypeLayoutBlock extends Block
                 $this
             );
 
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log("[PostTypeLayoutBlock Debug] Query args after filters: " . print_r($queryArgs, true));
-            }
-
             // Allow custom WP_Query
             $wp_query = apply_filters("jankx/posts/fetcher/{$postType}/query", null, $queryArgs, $this);
             if (is_null($wp_query)) {
@@ -589,34 +567,17 @@ class PostTypeLayoutBlock extends Block
 
             do_action("jankx/posts/fetcher/{$postType}/query/end", $queryArgs, $this);
 
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log("[PostTypeLayoutBlock Debug] WP_Query created, found posts: " . $wp_query->found_posts);
-                error_log("[PostTypeLayoutBlock Debug] Post IDs: " . implode(', ', wp_list_pluck($wp_query->posts, 'ID')));
-            }
-
             // Get layout template
             $loopItemLayoutType = apply_filters("jankx/posts/fetcher/{$postType}/content_layout", null);
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log("[PostTypeLayoutBlock Debug] Loop item layout type: " . ($loopItemLayoutType ?: 'null'));
-            }
 
             // If no layout type, use default based on post type
             if (!$loopItemLayoutType) {
                 $loopItemLayoutType = 'default';
-                if (defined('WP_DEBUG') && WP_DEBUG) {
-                    error_log("[PostTypeLayoutBlock Debug] Using default layout type: " . $loopItemLayoutType);
-                }
             }
 
             try {
                 $loopItemLayout = $postLayoutManager->getLoopItemContentByType($loopItemLayoutType);
-                if (defined('WP_DEBUG') && WP_DEBUG) {
-                    error_log("[PostTypeLayoutBlock Debug] Loop item layout: " . ($loopItemLayout ? get_class($loopItemLayout) : 'null'));
-                }
             } catch (\InvalidArgumentException $e) {
-                if (defined('WP_DEBUG') && WP_DEBUG) {
-                    error_log("[PostTypeLayoutBlock Debug] Failed to get loop item layout: " . $e->getMessage());
-                }
                 return sprintf(
                     '<div class="jankx-post-layout-error">%s</div>',
                     esc_html__('Failed to get loop item layout: ' . $e->getMessage(), 'jankx')
@@ -625,17 +586,11 @@ class PostTypeLayoutBlock extends Block
 
             // Fallback: create DefaultContent directly if manager returns null
             if (!$loopItemLayout) {
-                if (defined('WP_DEBUG') && WP_DEBUG) {
-                    error_log("[PostTypeLayoutBlock Debug] Creating DefaultContent fallback");
-                }
                 $loopItemLayout = new \Jankx\PostLayout\LoopItemContent\DefaultContent();
             }
 
             // Create PostLayout and render based on layout type
             $postLayoutClass = $this->getPostLayoutClass($layoutName);
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log("[PostTypeLayoutBlock Debug] PostLayout class: " . $postLayoutClass);
-            }
             $postLayout = new $postLayoutClass($wp_query, $loopItemLayout);
             $postLayout->setTemplateEngine($templateEngine);
 
@@ -706,26 +661,14 @@ class PostTypeLayoutBlock extends Block
                 'thumbnail_size' => 'medium',
             ], $paginationOptions, $displayOptions, $stylingOptions, $layoutOptions);
 
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log("[PostTypeLayoutBlock Debug] Pagination options: " . print_r($paginationOptions, true));
-                error_log("[PostTypeLayoutBlock Debug] Display options: " . print_r($displayOptions, true));
-                error_log("[PostTypeLayoutBlock Debug] All options: " . print_r($allOptions, true));
-            }
-
             $postLayout->setOptions($allOptions);
 
             $renderedContent = $postLayout->render(false);
 
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log("[PostTypeLayoutBlock Debug] Content rendered successfully, length: " . ($renderedContent ? strlen($renderedContent) : 0));
-            }
 
             return $renderedContent;
         } catch (Exception $e) {
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log("[PostTypeLayoutBlock Debug] Error rendering content: " . $e->getMessage());
-            }
-
+            Log::error($e->getMessage());
             // Fallback: return empty container
             return sprintf('<div id="%s" class="jankx-post-layout" data-engine-id="%s">%s</div>',
                 esc_attr($wrapId),

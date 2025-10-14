@@ -2,6 +2,7 @@
 
 namespace Jankx\Swiper\Classes;
 
+use Jankx\Facades\Log;
 use Jankx\Swiper\Traits\SingletonTrait;
 
 if (!defined('ABSPATH')) {
@@ -117,7 +118,7 @@ if (!class_exists('FontLoader')) {
                     $this->load_google_font($fonts);
                 }
             } catch (\Exception $e) {
-                error_log('Font loading error: ' . $e->getMessage());
+                Log::error('Font loading error: ' . $e->getMessage());
             } finally {
                 self::$gfonts = [];
             }

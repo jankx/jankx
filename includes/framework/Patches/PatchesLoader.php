@@ -2,6 +2,9 @@
 
 namespace Jankx\Patches;
 
+use Jankx\Facades\Log;
+use Themeisle_Blocks_Registration;
+
 /**
  * Patches Loader
  *
@@ -23,10 +26,7 @@ class PatchesLoader
         // Kích hoạt các patch khác nếu cần
         self::init_additional_patches();
 
-        // Log activation
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log('Jankx Framework Patches activated');
-        }
+        Log::debug('Jankx Framework Patches activated');
     }
 
     /**
@@ -85,9 +85,9 @@ class PatchesLoader
 
                     // Áp dụng filter gốc một cách an toàn
                     try {
-                        return \Themeisle_Blocks_Registration::load_font_awesome($block_content, $block);
+                        return Themeisle_Blocks_Registration::load_font_awesome($block_content, $block);
                     } catch (Exception $e) {
-                        error_log('Otter Blocks safe filter error: ' . $e->getMessage());
+                        Log::error($e->getMessage());
                         return $block_content;
                     }
                 }, 10, 2);

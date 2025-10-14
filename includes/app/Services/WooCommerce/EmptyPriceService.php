@@ -175,18 +175,12 @@ class EmptyPriceService
             // Get product ID from block context or global variables
             $product_id = $this->getProductIdFromBlock($block);
 
-            // Debug logging
-            error_log('EmptyPriceService: Block content is empty, product_id: ' . ($product_id ?: 'null'));
-
             if ($product_id) {
                 $product = wc_get_product($product_id);
 
                 if ($product && !$this->hasPrice($product)) {
                     // Get empty price HTML
                     $emptyPriceHtml = $this->getEmptyPriceHtml($product);
-
-                    error_log('EmptyPriceService: Injecting empty price HTML: ' . $emptyPriceHtml);
-
                     // Inject empty price HTML into the block content
                     $block_content = preg_replace(
                         '/<div class="wc-block-components-product-price[^>]*>[\s]*<\/div>/s',

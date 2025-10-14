@@ -182,7 +182,6 @@ class OffcanvasSidebarBlock extends Block
                 $sidebarContent
             );
         } catch (\Exception $e) {
-            error_log('OffcanvasSidebarBlock render error: ' . $e->getMessage());
             return '<!-- Offcanvas Sidebar Block: Rendering error -->';
         }
     }

@@ -2,6 +2,7 @@
 
 namespace Jankx\Features\Metrics\Services;
 
+use Jankx\Facades\Log;
 use Jankx\Features\Metrics\ViewsBlock;
 use Jankx\Gutenberg\GutenbergRepository;
 
@@ -48,9 +49,6 @@ class PostViewService
 
         $result = update_post_meta($post_id, 'post_views_count', $new_views);
 
-        // Debug logging
-        error_log("Jankx Post Views: incrementPostViews - Post: $post_id, Current: $current_views, New: $new_views, Update result: " . ($result ? 'success' : 'failed'));
-
         return $new_views;
     }
 
@@ -83,9 +81,6 @@ class PostViewService
         if (current_user_can('manage_options') || $post_author_id == $current_user_id) {
             return;
         }
-
-        // Debug logging (remove in production)
-        error_log("Jankx Post Views: Tracking view for post ID: $post_id, Author ID: $post_author_id, Current User: $current_user_id");
 
         $this->incrementPostViews($post_id);
     }
@@ -128,25 +123,21 @@ class PostViewService
      */
     public function ajaxTrackPostView()
     {
-        // Debug logging
-        error_log("Jankx Post Views: AJAX request received - " . print_r($_POST, true));
-
         // Verify nonce for security
         if (!wp_verify_nonce($_POST['nonce'] ?? '', 'track_post_view_nonce')) {
-            error_log("Jankx Post Views: Nonce verification failed");
             wp_die('Security check failed');
         }
 
         $post_id = intval($_POST['post_id'] ?? 0);
 
         if (!$post_id) {
-            error_log("Jankx Post Views: Invalid post ID: $post_id");
+            Log::debug("Jankx Post Views: Invalid post ID: $post_id");
             wp_send_json_error('Invalid post ID');
         }
 
         // Check if post exists
         if (!get_post($post_id)) {
-            error_log("Jankx Post Views: Post not found: $post_id");
+            Log::debug("Jankx Post Views: Post not found: $post_id");
             wp_send_json_error('Post not found');
         }
 
@@ -156,7 +147,7 @@ class PostViewService
 
         // Don't track views for admins or post authors
         if (current_user_can('manage_options') || $post_author_id == $current_user_id) {
-            error_log("Jankx Post Views: View not tracked (admin/author) - Post: $post_id, Author: $post_author_id, User: $current_user_id");
+            Log::debug("Jankx Post Views: View not tracked (admin/author) - Post: $post_id, Author: $post_author_id, User: $current_user_id");
             wp_send_json_success(array(
                 'message' => 'View not tracked (admin/author)',
                 'views' => $this->getPostViews($post_id)
@@ -165,7 +156,7 @@ class PostViewService
 
         // Increment view count
         $new_views = $this->incrementPostViews($post_id);
-        error_log("Jankx Post Views: View tracked successfully - Post: $post_id, New views: $new_views");
+        Log::debug("Jankx Post Views: View tracked successfully - Post: $post_id, New views: $new_views");
 
         wp_send_json_success(array(
             'message' => 'View tracked successfully',
@@ -317,7 +308,7 @@ class PostViewService
         }
 
         $result = update_post_meta($post_id, 'post_views_count', $count);
-        error_log("Jankx Post Views: setTestViewCount - Post: $post_id, Count: $count, Result: " . ($result ? 'success' : 'failed'));
+        Log::debug("Jankx Post Views: setTestViewCount - Post: $post_id, Count: $count, Result: " . ($result ? 'success' : 'failed'));
 
         return $result;
     }

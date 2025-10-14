@@ -2,6 +2,7 @@
 
 namespace Jankx\Support\Providers;
 
+use Jankx\Facades\Log;
 use Jankx\Foundation\Application;
 use Jankx\Services\ThemeService;
 use Jankx\Support\Providers\ServiceProvider;
@@ -81,17 +82,15 @@ class ThemeServiceProvider extends ServiceProvider
      */
     protected function registerTemplateEngines(Application $app)
     {
-        error_log("[ThemeServiceProvider Debug] Registering template engines");
-
         // Register TemplateEngineManager as singleton
         $app->singleton(TemplateEngineManager::class, function (Application $app) {
-            error_log("[ThemeServiceProvider Debug] Creating TemplateEngineManager instance");
+            Log::debug("[ThemeServiceProvider Debug] Creating TemplateEngineManager instance");
             return new TemplateEngineManager($app);
         });
 
         // Register PlatesEngine as singleton
         $app->singleton(PlatesEngine::class, function (Application $app) {
-            error_log("[ThemeServiceProvider Debug] Creating PlatesEngine instance");
+            Log::debug("[ThemeServiceProvider Debug] Creating PlatesEngine instance");
             return new PlatesEngine($app);
         });
 
@@ -100,8 +99,6 @@ class ThemeServiceProvider extends ServiceProvider
         $app->alias(PlatesEngine::class, 'template.engine.plates');
         $app->alias(TemplateEngineManager::class, 'template');
         $app->alias(PlatesEngine::class, 'template.engine.jankx');
-
-        error_log("[ThemeServiceProvider Debug] Template engines registered successfully");
     }
 
     /**
@@ -112,19 +109,14 @@ class ThemeServiceProvider extends ServiceProvider
      */
     protected function initializeTemplateEngines(Application $app)
     {
-        error_log("[ThemeServiceProvider Debug] Initializing template engines");
-
         // Get TemplateEngineManager instance to trigger initialization
         $templateEngineManager = $app->make(TemplateEngineManager::class);
-        error_log("[ThemeServiceProvider Debug] TemplateEngineManager initialized: " . get_class($templateEngineManager));
 
         // Override WordPress template hierarchy
         add_filter('template_include', function ($template) use ($app, $templateEngineManager) {
-            error_log("[ThemeServiceProvider Debug] WordPress template_include filter triggered");
+            Log::debug("[ThemeServiceProvider Debug] WordPress template_include filter triggered");
             return $template;
         }, 999);
-
-        error_log("[ThemeServiceProvider Debug] Template engines initialization completed");
     }
 
     /**
@@ -135,25 +127,20 @@ class ThemeServiceProvider extends ServiceProvider
      */
     protected function registerPostLayoutServices(Application $app)
     {
-        error_log("[ThemeServiceProvider Debug] Registering PostLayout services");
-
         // Register PostsFetcher as singleton
         $app->singleton(PostsFetcher::class, function (Application $app) {
-            error_log("[ThemeServiceProvider Debug] Creating PostsFetcher instance");
+            Log::debug("[ThemeServiceProvider Debug] Creating PostsFetcher instance");
             return new PostsFetcher();
         });
 
         // Register PostLayoutManager as singleton
         $app->singleton('postlayout.manager', function (Application $app) {
-            error_log("[ThemeServiceProvider Debug] Creating PostLayoutManager instance");
             // Get template engine
             $templateEngine = $app->make('template.engine.jankx');
 
             // Create PostLayoutManager instance
             return PostLayoutManager::createInstance($templateEngine);
         });
-
-        error_log("[ThemeServiceProvider Debug] PostLayout services registered successfully");
     }
 
     /**
@@ -164,20 +151,14 @@ class ThemeServiceProvider extends ServiceProvider
      */
     protected function initializePostLayoutServices(Application $app)
     {
-        error_log("[ThemeServiceProvider Debug] Initializing PostLayout services");
-
         // Register loop item layouts
         add_filter('jankx/posts/loop/layouts', function($layouts) {
-            error_log("[ThemeServiceProvider Debug] Registering loop item layouts");
             $layouts['default'] = DefaultContent::class;
-            error_log("[ThemeServiceProvider Debug] Registered default layout: " . $layouts['default']);
             return $layouts;
         });
 
         // Initialize PostsFetcher to register AJAX actions
         $postsFetcher = $app->make(PostsFetcher::class);
         $postsFetcher->init();
-
-        error_log("[ThemeServiceProvider Debug] PostLayout services initialized successfully");
     }
 }
