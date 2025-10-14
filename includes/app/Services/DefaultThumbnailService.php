@@ -38,6 +38,13 @@ class DefaultThumbnailService
     protected $placeholderImagePath = 'resources/assets/images/placeholder-image.png';
 
     /**
+     * Cached default thumbnail ID for current request
+     *
+     * @var int|false|null
+     */
+    protected $cachedDefaultThumbnailId = null;
+
+    /**
      * Check if post has thumbnail (including default)
      *
      * @param bool $has_thumbnail
@@ -78,7 +85,9 @@ class DefaultThumbnailService
 
         // Check if post type is supported
         $post_type = get_post_type($post_id);
-        if (!in_array($post_type, $this->supportedPostTypes)) {
+        $supported_types = $this->getSupportedPostTypes();
+
+        if (!in_array($post_type, $supported_types)) {
             return $thumbnail_id;
         }
 
@@ -151,6 +160,11 @@ class DefaultThumbnailService
      */
     protected function getDefaultThumbnailId()
     {
+        // Return cached value if available (performance optimization)
+        if ($this->cachedDefaultThumbnailId !== null) {
+            return $this->cachedDefaultThumbnailId;
+        }
+
         // Get stored default thumbnail ID
         $thumbnail_id = get_option($this->optionName, false);
 
@@ -158,12 +172,18 @@ class DefaultThumbnailService
         if ($thumbnail_id) {
             $post = get_post($thumbnail_id);
             if ($post && $post->post_type === 'attachment') {
+                $this->cachedDefaultThumbnailId = $thumbnail_id;
                 return $thumbnail_id;
             }
         }
 
         // If no valid stored ID, try to upload default image
-        return $this->uploadDefaultThumbnail();
+        $uploaded_id = $this->uploadDefaultThumbnail();
+
+        // Cache the result
+        $this->cachedDefaultThumbnailId = $uploaded_id;
+
+        return $uploaded_id;
     }
 
     /**
@@ -187,31 +207,33 @@ class DefaultThumbnailService
         $upload_file = wp_upload_bits($filename, null, file_get_contents($image_path));
 
         // Check if upload was successful
-        if (!$upload_file['error']) {
-            $wp_filetype = wp_check_filetype($filename, null);
-
-            $attachment = [
-                'post_mime_type' => $wp_filetype['type'],
-                'post_title' => 'Default Thumbnail',
-                'post_content' => '',
-                'post_status' => 'inherit'
-            ];
-
-            $attachment_id = wp_insert_attachment($attachment, $upload_file['file']);
-
-            if (!is_wp_error($attachment_id)) {
-                require_once(ABSPATH . 'wp-admin/includes/image.php');
-                $attachment_data = wp_generate_attachment_metadata($attachment_id, $upload_file['file']);
-                wp_update_attachment_metadata($attachment_id, $attachment_data);
-
-                // Store the attachment ID in options
-                update_option($this->optionName, $attachment_id);
-
-                return $attachment_id;
-            }
+        if ($upload_file['error']) {
+            return false;
         }
 
-        return false;
+        $wp_filetype = wp_check_filetype($filename, null);
+
+        $attachment = [
+            'post_mime_type' => $wp_filetype['type'],
+            'post_title' => 'Default Thumbnail',
+            'post_content' => '',
+            'post_status' => 'inherit'
+        ];
+
+        $attachment_id = wp_insert_attachment($attachment, $upload_file['file']);
+
+        if (is_wp_error($attachment_id)) {
+            return false;
+        }
+
+        require_once(ABSPATH . 'wp-admin/includes/image.php');
+        $attachment_data = wp_generate_attachment_metadata($attachment_id, $upload_file['file']);
+        wp_update_attachment_metadata($attachment_id, $attachment_data);
+
+        // Store the attachment ID in options
+        update_option($this->optionName, $attachment_id);
+
+        return $attachment_id;
     }
 
     /**
@@ -269,6 +291,86 @@ class DefaultThumbnailService
             'jankx/default/thumbnails/post-types',
             $this->supportedPostTypes
         );
+    }
+
+    /**
+     * Render default thumbnail for Gutenberg Post Featured Image block
+     *
+     * @param string $block_content The block content
+     * @param array $block The block array
+     * @return string Modified block content
+     */
+    public function renderBlockFeaturedImage($block_content, $block)
+    {
+        // Quick return for non-featured-image blocks (99% of blocks)
+        if ($block['blockName'] !== 'core/post-featured-image') {
+            return $block_content;
+        }
+
+        // If block already has content (post has thumbnail), return immediately
+        if (!empty(trim($block_content))) {
+            return $block_content;
+        }
+
+        // Get current post ID
+        $post_id = get_the_ID();
+        if (!$post_id) {
+            return $block_content;
+        }
+
+        // Check if post already has thumbnail
+        if (has_post_thumbnail($post_id)) {
+            return $block_content;
+        }
+
+        // Check if post type is supported
+        $post_type = get_post_type($post_id);
+        $supported_types = $this->getSupportedPostTypes();
+
+        if (!in_array($post_type, $supported_types)) {
+            return $block_content;
+        }
+
+        // Get default thumbnail ID
+        $default_thumbnail_id = $this->getDefaultThumbnailId();
+        if (!$default_thumbnail_id) {
+            return $block_content;
+        }
+
+        // Get block attributes
+        $attrs = $block['attrs'] ?? [];
+        $size_slug = $attrs['sizeSlug'] ?? 'post-thumbnail';
+        $is_link = $attrs['isLink'] ?? false;
+        $link_target = $attrs['linkTarget'] ?? '_self';
+
+        // Generate thumbnail HTML
+        $thumbnail_html = wp_get_attachment_image($default_thumbnail_id, $size_slug, false, [
+            'class' => 'wp-post-image',
+            'style' => $attrs['style']['css'] ?? '',
+        ]);
+
+        if (!$thumbnail_html) {
+            return $block_content;
+        }
+
+        // Wrap in link if needed
+        if ($is_link) {
+            $permalink = get_permalink($post_id);
+            $thumbnail_html = sprintf(
+                '<a href="%s" target="%s">%s</a>',
+                esc_url($permalink),
+                esc_attr($link_target),
+                $thumbnail_html
+            );
+        }
+
+        // Wrap in figure with block classes
+        $block_content = sprintf(
+            '<figure class="wp-block-post-featured-image">%s</figure>',
+            $thumbnail_html
+        );
+
+        return $block_content;
     }
 
     /**

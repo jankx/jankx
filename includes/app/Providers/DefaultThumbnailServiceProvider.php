@@ -52,5 +52,8 @@ class DefaultThumbnailServiceProvider extends ServiceProvider
 
         // Hook to get default thumbnail ID
         add_filter('get_post_thumbnail_id', [$defaultThumbnailService, 'getPostThumbnailId'], 10, 2);
+
+        // Hook into Gutenberg block rendering to inject default thumbnail
+        add_filter('render_block', [$defaultThumbnailService, 'renderBlockFeaturedImage'], 10, 2);
     }
 }
