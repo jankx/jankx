@@ -25,6 +25,7 @@ export default function QueryControls({ attributes, postTypes, onUpdate }) {
         { label: __('Author', 'jankx'), value: 'author' },
         { label: __('Modified', 'jankx'), value: 'modified' },
         { label: __('Comment Count', 'jankx'), value: 'comment_count' },
+        { label: __('Views', 'jankx'), value: 'views' },
         { label: __('Menu Order', 'jankx'), value: 'menu_order' },
         { label: __('Random', 'jankx'), value: 'rand' }
     ];

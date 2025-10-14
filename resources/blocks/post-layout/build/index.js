@@ -968,6 +968,9 @@ function QueryControls({
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Comment Count', 'jankx'),
     value: 'comment_count'
   }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Views', 'jankx'),
+    value: 'views'
+  }, {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Menu Order', 'jankx'),
     value: 'menu_order'
   }, {

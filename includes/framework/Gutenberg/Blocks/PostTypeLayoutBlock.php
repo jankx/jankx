@@ -176,14 +176,22 @@ class PostTypeLayoutBlock extends Block
      */
     protected function buildQuery($config)
     {
+        $orderBy = $config['orderBy'] ?: 'date';
+
         $args = [
             'post_type' => $config['postType'] ?: 'post',
             'posts_per_page' => $config['postsPerPage'] ?: 12,
-            'orderby' => $config['orderBy'] ?: 'date',
+            'orderby' => $orderBy,
             'order' => $config['order'] ?: 'DESC',
             'offset' => $config['offset'] ?: 0,
             'post_status' => 'publish'
         ];
+
+        // Handle special orderby cases
+        if ($orderBy === 'views') {
+            $args['orderby'] = 'meta_value_num';
+            $args['meta_key'] = 'post_views_count';
+        }
 
         // Handle include/exclude
         if (!empty($config['include'])) {
@@ -301,7 +309,9 @@ class PostTypeLayoutBlock extends Block
                     break;
 
                 case 'popular':
-                    $args['orderby'] = 'comment_count';
+                    // Sort by views if available, fallback to comment count
+                    $args['orderby'] = 'meta_value_num';
+                    $args['meta_key'] = 'post_views_count';
                     break;
 
                 case 'recent':
@@ -537,9 +547,16 @@ class PostTypeLayoutBlock extends Block
             ];
 
             // Add ordering if specified
-            if (isset($attributes['orderBy'])) {
-                $queryArgs['orderby'] = $attributes['orderBy'];
+            $orderByValue = $attributes['orderBy'] ?? 'date';
+
+            if ($orderByValue === 'views') {
+                // Sort by post views count
+                $queryArgs['orderby'] = 'meta_value_num';
+                $queryArgs['meta_key'] = 'post_views_count';
+            } else {
+                $queryArgs['orderby'] = $orderByValue;
             }
+
             if (isset($attributes['order'])) {
                 $queryArgs['order'] = $attributes['order'];
             }

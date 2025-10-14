@@ -95,7 +95,7 @@ class PostLayoutAjaxHandler {
         }
 
         // Validate order_by
-        $allowed_order_by = ['date', 'title', 'menu_order', 'rand', 'comment_count', 'meta_value', 'meta_value_num'];
+        $allowed_order_by = ['date', 'title', 'menu_order', 'rand', 'comment_count', 'meta_value', 'meta_value_num', 'views'];
         if (!in_array($params['order_by'], $allowed_order_by)) {
             throw new Exception('Invalid order_by parameter');
         }
@@ -133,6 +133,12 @@ class PostLayoutAjaxHandler {
             'post_status' => 'publish',
             'suppress_filters' => false
         ];
+
+        // Handle special orderby cases
+        if ($params['order_by'] === 'views') {
+            $args['orderby'] = 'meta_value_num';
+            $args['meta_key'] = 'post_views_count';
+        }
 
         // Include/exclude posts
         if (!empty($params['include'])) {
