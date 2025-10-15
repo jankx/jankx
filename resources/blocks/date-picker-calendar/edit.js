@@ -1,11 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import {
-    useBlockProps,
-    InspectorControls,
-    __experimentalColorGradientSettingsDropdown as ColorGradientSettingsDropdown,
-    __experimentalUseMultipleOriginColorsAndGradients as useMultipleOriginColorsAndGradients,
-    __experimentalBackgroundSettings as BackgroundSettings
-} from '@wordpress/block-editor';
+import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { PanelBody, SelectControl, ToggleControl, Button } from '@wordpress/components';
 import { useState, useEffect } from '@wordpress/element';
 import './editor.scss';
@@ -15,13 +9,9 @@ export default function Edit({ attributes, setAttributes }) {
         selectedDates = [],
         currentMonth = 3,
         currentYear = 2026,
-        dateMode = 'outline',
         showNavigation = true,
         showWeekdays = true
     } = attributes;
-
-    // Color and gradient settings
-    const colorGradientSettings = useMultipleOriginColorsAndGradients();
 
     const [localSelectedDates, setLocalSelectedDates] = useState(selectedDates);
     const [localMonth, setLocalMonth] = useState(currentMonth);
@@ -63,13 +53,16 @@ export default function Edit({ attributes, setAttributes }) {
 
         // Current month's days
         for (let day = 1; day <= daysInMonth; day++) {
-            const isSelected = localSelectedDates.includes(day);
+            const selectedDate = localSelectedDates.find(d => d.day === day);
+            const isSelected = !!selectedDate;
+            const mode = selectedDate ? selectedDate.mode : null;
             calendarDays.push({
                 day,
                 month,
                 year,
                 isCurrentMonth: true,
-                isSelected
+                isSelected,
+                mode
             });
         }
 
@@ -96,9 +89,23 @@ export default function Edit({ attributes, setAttributes }) {
     const handleDateClick = (day, isCurrentMonth) => {
         if (!isCurrentMonth) return;
 
-        const newSelectedDates = localSelectedDates.includes(day)
-            ? localSelectedDates.filter(d => d !== day)
-            : [...localSelectedDates, day];
+        const existingDateIndex = localSelectedDates.findIndex(d => d.day === day);
+        let newSelectedDates;
+
+        if (existingDateIndex === -1) {
+            // Not selected -> outline mode
+            newSelectedDates = [...localSelectedDates, { day, mode: 'outline' }];
+        } else {
+            const currentMode = localSelectedDates[existingDateIndex].mode;
+            if (currentMode === 'outline') {
+                // Outline -> fill mode
+                newSelectedDates = [...localSelectedDates];
+                newSelectedDates[existingDateIndex] = { day, mode: 'fill' };
+            } else {
+                // Fill -> remove
+                newSelectedDates = localSelectedDates.filter(d => d.day !== day);
+            }
+        }
 
         setLocalSelectedDates(newSelectedDates);
         setAttributes({ selectedDates: newSelectedDates });
@@ -140,104 +147,6 @@ export default function Edit({ attributes, setAttributes }) {
     return (
         <div {...useBlockProps()}>
             <InspectorControls>
-                <ColorGradientSettingsDropdown
-                    settings={[
-                        {
-                            colorValue: attributes.style?.color?.background,
-                            gradientValue: attributes.style?.color?.gradient,
-                            label: __('Background', 'jankx'),
-                            onColorChange: (value) => {
-                                setAttributes({
-                                    style: {
-                                        ...attributes.style,
-                                        color: {
-                                            ...attributes.style?.color,
-                                            background: value
-                                        }
-                                    }
-                                });
-                            },
-                            onGradientChange: (value) => {
-                                setAttributes({
-                                    style: {
-                                        ...attributes.style,
-                                        color: {
-                                            ...attributes.style?.color,
-                                            gradient: value
-                                        }
-                                    }
-                                });
-                            },
-                            isShownByDefault: true
-                        },
-                        {
-                            colorValue: attributes.style?.color?.text,
-                            label: __('Text', 'jankx'),
-                            onColorChange: (value) => {
-                                setAttributes({
-                                    style: {
-                                        ...attributes.style,
-                                        color: {
-                                            ...attributes.style?.color,
-                                            text: value
-                                        }
-                                    }
-                                });
-                            },
-                            isShownByDefault: true
-                        }
-                    ]}
-                    {...colorGradientSettings}
-                />
-                <BackgroundSettings
-                    settings={[
-                        {
-                            colorValue: attributes.style?.color?.background,
-                            gradientValue: attributes.style?.color?.gradient,
-                            imageValue: attributes.style?.background?.backgroundImage,
-                            onColorChange: (value) => {
-                                setAttributes({
-                                    style: {
-                                        ...attributes.style,
-                                        color: {
-                                            ...attributes.style?.color,
-                                            background: value
-                                        }
-                                    }
-                                });
-                            },
-                            onGradientChange: (value) => {
-                                setAttributes({
-                                    style: {
-                                        ...attributes.style,
-                                        color: {
-                                            ...attributes.style?.color,
-                                            gradient: value
-                                        }
-                                    }
-                                });
-                            },
-                            onImageChange: (value) => {
-                                setAttributes({
-                                    style: {
-                                        ...attributes.style,
-                                        background: {
-                                            ...attributes.style?.background,
-                                            backgroundImage: value
-                                        }
-                                    }
-                                });
-                            },
-                            isShownByDefault: true
-                        }
-                    ]}
-                    {...colorGradientSettings}
-                />
-                <InspectorControls group="styles">
-                    <PanelBody title={__('Border Settings', 'jankx')}>
-                        <p>{__('Border settings will be available in the Styles panel.', 'jankx')}</p>
-                    </PanelBody>
-                </InspectorControls>
                 <PanelBody title={__('Calendar Settings', 'jankx')}>
                     <SelectControl
                         label={__('Month', 'jankx')}
@@ -258,15 +167,6 @@ export default function Edit({ attributes, setAttributes }) {
                             setLocalYear(newYear);
                             setAttributes({ currentYear: newYear });
                         }}
-                    />
-                    <SelectControl
-                        label={__('Date Mode', 'jankx')}
-                        value={dateMode}
-                        options={[
-                            { label: __('Outline', 'jankx'), value: 'outline' },
-                            { label: __('Fill', 'jankx'), value: 'fill' }
-                        ]}
-                        onChange={(value) => setAttributes({ dateMode: value })}
                     />
                     <ToggleControl
                         label={__('Show Navigation', 'jankx')}
@@ -328,26 +228,13 @@ export default function Edit({ attributes, setAttributes }) {
                             className={`calendar-day ${
                                 dayData.isCurrentMonth ? 'current-month' : 'other-month'
                             } ${dayData.isSelected ? 'selected' : ''} ${
-                                dayData.isSelected ? `mode-${dateMode}` : ''
+                                dayData.isSelected && dayData.mode ? `mode-${dayData.mode}` : ''
                             }`}
                             onClick={() => handleDateClick(dayData.day, dayData.isCurrentMonth)}
                         >
                             <span className="day-number">{dayData.day}</span>
                         </div>
                     ))}
-                </div>
-
-                <div className="calendar-info">
-                    <p>
-                        <strong>{__('Selected Dates:', 'jankx')}</strong>{' '}
-                        {localSelectedDates.length > 0
-                            ? localSelectedDates.sort((a, b) => a - b).join(', ')
-                            : __('None', 'jankx')
-                        }
-                    </p>
-                    <p>
-                        <strong>{__('Mode:', 'jankx')}</strong> {dateMode}
-                    </p>
                 </div>
             </div>
         </div>

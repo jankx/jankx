@@ -1,66 +1,13 @@
-/*!************************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/date-picker-calendar/src/editor.scss ***!
-  \************************************************************************************************************************************************************************************************************/
-.date-picker-calendar-editor .calendar-header .calendar-nav-btn:focus {
-  outline: 2px solid #007cba;
-  outline-offset: 2px;
-}
-.date-picker-calendar-editor .calendar-grid .calendar-day.current-month:focus {
-  outline: 2px solid #007cba;
-  outline-offset: 2px;
-}
-.date-picker-calendar-editor .calendar-info {
-  margin-top: 20px;
-  padding: 15px;
-  background: #f8f9fa;
-  border-radius: 6px;
-  border: 1px solid #e9ecef;
-}
-.date-picker-calendar-editor .calendar-info p {
-  margin: 5px 0;
-  font-size: 14px;
-  color: #666;
-}
-.date-picker-calendar-editor .calendar-info p strong {
-  color: #333;
-}
+/*!********************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/date-picker-calendar/editor.scss ***!
+  \********************************************************************************************************************************************************************************************************/
 
-.components-panel__body .components-base-control {
-  margin-bottom: 16px;
-}
-.components-panel__body .components-base-control .components-base-control__label {
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-.components-panel__body .components-button {
-  margin-top: 10px;
-}
-/*!***********************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/date-picker-calendar/src/style.scss ***!
-  \***********************************************************************************************************************************************************************************************************/
-.wp-block-jankx-date-picker-calendar {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  margin: 20px 0;
-}
+/*!*******************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/date-picker-calendar/style.scss ***!
+  \*******************************************************************************************************************************************************************************************************/
 .wp-block-jankx-date-picker-calendar .date-picker-calendar {
-  background: #fefefe;
-  border: 1px solid #d4a574;
-  border-radius: 8px;
-  padding: 20px;
-  max-width: 400px;
-  margin: 0 auto;
   position: relative;
   overflow: hidden;
-}
-.wp-block-jankx-date-picker-calendar .date-picker-calendar::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: radial-gradient(circle at 20% 20%, rgba(212, 165, 116, 0.05) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(212, 165, 116, 0.05) 0%, transparent 50%);
-  pointer-events: none;
 }
 .wp-block-jankx-date-picker-calendar .calendar-header {
   display: flex;
@@ -158,22 +105,6 @@
 .wp-block-jankx-date-picker-calendar .calendar-grid .calendar-day .day-number {
   font-size: 14px;
   font-weight: 500;
-}
-
-.date-picker-calendar-editor .calendar-info {
-  margin-top: 20px;
-  padding: 15px;
-  background: #f8f9fa;
-  border-radius: 6px;
-  border: 1px solid #e9ecef;
-}
-.date-picker-calendar-editor .calendar-info p {
-  margin: 5px 0;
-  font-size: 14px;
-  color: #666;
-}
-.date-picker-calendar-editor .calendar-info p strong {
-  color: #333;
 }
 
 @media (max-width: 480px) {

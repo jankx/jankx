@@ -1,31 +1,10 @@
 // Date Picker Calendar Block Styles
 .wp-block-jankx-date-picker-calendar {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    margin: 20px 0;
-
     .date-picker-calendar {
-        background: #fefefe;
-        border: 1px solid #d4a574;
-        border-radius: 8px;
-        padding: 20px;
-        max-width: 400px;
-        margin: 0 auto;
+        // Let WordPress block editor handle background, border, border-radius, margin, padding
+        // Remove hardcoded styles to match editor
         position: relative;
         overflow: hidden;
-
-        // Background pattern
-        &::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image:
-                radial-gradient(circle at 20% 20%, rgba(212, 165, 116, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(212, 165, 116, 0.05) 0%, transparent 50%);
-            pointer-events: none;
-        }
     }
 
     .calendar-header {
@@ -139,27 +118,6 @@
             .day-number {
                 font-size: 14px;
                 font-weight: 500;
-            }
-        }
-    }
-}
-
-// Editor specific styles
-.date-picker-calendar-editor {
-    .calendar-info {
-        margin-top: 20px;
-        padding: 15px;
-        background: #f8f9fa;
-        border-radius: 6px;
-        border: 1px solid #e9ecef;
-
-        p {
-            margin: 5px 0;
-            font-size: 14px;
-            color: #666;
-
-            strong {
-                color: #333;
             }
         }
     }
