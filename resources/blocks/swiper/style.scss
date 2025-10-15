@@ -1,0 +1,68 @@
+// Swiper Block Styles
+// Swiper CSS loaded from CDN, these are minimal overrides
+
+.wp-block-jankx-swiper {
+  position: relative;
+
+  .swiper {
+    width: 100%;
+    // PC: height cứng
+    height: var(--swiper-height, 500px);
+
+    // Tablet và mobile: max-height với auto adjustment
+    @media (max-width: 1024px) {
+      height: auto;
+      max-height: var(--swiper-height, 500px);
+      min-height: var(--swiper-min-height, 300px);
+    }
+  }
+
+  .swiper-wrapper {
+    display: flex;
+    height: 100%;
+  }
+
+  .swiper-slide {
+    flex-shrink: 0;
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+
+  // Navigation buttons
+  .swiper-button-prev,
+  .swiper-button-next {
+    color: var(--wp--preset--color--contrast, #000);
+
+    &::after {
+      font-size: 24px;
+    }
+  }
+
+  // Pagination
+  .swiper-pagination {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+
+    .swiper-pagination-bullet {
+      width: 10px;
+      height: 10px;
+      background: var(--wp--preset--color--contrast, #000);
+      opacity: 0.3;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &.swiper-pagination-bullet-active {
+        opacity: 1;
+        background: var(--wp--preset--color--primary, #000);
+      }
+    }
+  }
+}

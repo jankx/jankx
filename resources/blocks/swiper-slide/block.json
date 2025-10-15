@@ -1,0 +1,45 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "jankx/swiper-slide",
+  "title": "Swiper Slide",
+  "category": "jankx",
+  "description": "Single slide for Swiper slider",
+  "keywords": ["slide", "swiper"],
+  "textdomain": "jankx",
+  "parent": ["jankx/swiper"],
+  "attributes": {
+    "slideId": {
+      "type": "string"
+    }
+  },
+  "supports": {
+    "html": false,
+    "reusable": false,
+    "spacing": {
+      "margin": false,
+      "padding": true
+    },
+    "color": {
+      "background": true,
+      "text": true,
+      "gradients": true
+    },
+    "background": {
+      "backgroundImage": true,
+      "backgroundSize": true,
+      "backgroundPosition": true,
+      "backgroundRepeat": true,
+      "__experimentalDefaultControls": {
+        "backgroundImage": true
+      }
+    },
+    "dimensions": {
+      "minHeight": true
+    }
+  },
+  "usesContext": ["jankx/swiperId"],
+  "editorScript": "file:./build/index.js",
+  "editorStyle": "file:./build/editor.css",
+  "style": "file:./build/style.css"
+}
