@@ -9,6 +9,7 @@ const DependencyExtractionWebpackPlugin = require('@wordpress/dependency-extract
 module.exports = {
   mode: 'development',
   devtool: 'source-map',
+  context: path.resolve(__dirname),
   entry: {
     'blocks/language-switcher/build/index': './blocks/language-switcher/index.tsx',
     'blocks/language-switcher/build/frontend': './blocks/language-switcher/frontend.ts',
@@ -72,10 +73,6 @@ module.exports = {
     'blocks/core-filters/build/index': './blocks/core-filters/index.tsx',
     'blocks/core-filters/build/editor': './blocks/core-filters/editor.scss',
 
-    'blocks/button/build/index': './blocks/button/index.tsx',
-    'blocks/button/build/style': './blocks/button/style.scss',
-    'blocks/button/build/editor': './blocks/button/editor.scss',
-    'blocks/button/build/view': './blocks/button/view.js',
 
     'blocks/smart-tabs/build/index': './blocks/smart-tabs/index.tsx',
     'blocks/smart-tabs/build/style': './blocks/smart-tabs/style.scss',
@@ -121,6 +118,10 @@ module.exports = {
     'blocks/table-of-content/build/index': './blocks/table-of-content/src/index.tsx',
     'blocks/table-of-content/build/style': './blocks/table-of-content/src/style.scss',
     'blocks/table-of-content/build/editor': './blocks/table-of-content/src/editor.scss',
+
+    'blocks/advanced-button/build/index': './blocks/advanced-button/index.tsx',
+    'blocks/advanced-button/build/style': './blocks/advanced-button/style.scss',
+    'blocks/advanced-button/build/editor': './blocks/advanced-button/editor.scss',
   },
   output: {
     path: path.resolve(__dirname),

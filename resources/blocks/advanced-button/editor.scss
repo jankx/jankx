@@ -1,0 +1,33 @@
+/**
+ * Advanced Button Block Editor Styles
+ *
+ * Styles specific to the block editor
+ */
+
+.wp-block-jankx-advanced-button__link-popover {
+	z-index: 99999;
+}
+
+.editor-visual-editor {
+	.wp-block-jankx-advanced-button {
+		.components-button {
+			padding: 3px 2px;
+			height: 22px;
+		}
+	}
+}
+
+// Ensure editor matches frontend exactly
+.block-editor-block-list__block[data-type="jankx/advanced-button"] {
+	.wp-block-button {
+		.wp-block-button__link {
+			// Editor-specific adjustments to match frontend
+			pointer-events: auto;
+
+			&:focus {
+				outline: 2px solid var(--wp-admin-theme-color);
+				outline-offset: 2px;
+			}
+		}
+	}
+}

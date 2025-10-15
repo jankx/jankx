@@ -8,7 +8,7 @@
   \**************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/smart-tabs","title":"Smart Tabs","category":"jankx","description":"Create interactive tabs with customizable layouts and styles","keywords":["tabs","smart","accordion","vertical","horizontal"],"textdomain":"jankx","attributes":{"tabType":{"type":"string","enum":["horizontal","vertical"],"default":"horizontal"},"styleType":{"type":"string","enum":["default","minimal","modern","boxed"],"default":"default"},"activeTab":{"type":"number","default":0},"tabAlignment":{"type":"string","enum":["left","center","right","justify"],"default":"left"},"tabItemTextColor":{"type":"string"},"tabItemBackgroundColor":{"type":"string"},"tabItemGradient":{"type":"string"},"activeTabTextColor":{"type":"string"},"activeTabBackgroundColor":{"type":"string"},"activeTabGradient":{"type":"string"},"className":{"type":"string"},"anchor":{"type":"string"}},"supports":{"html":false,"anchor":true,"align":["wide","full"],"spacing":{"margin":true,"padding":true,"__experimentalDefaultControls":{"padding":true}},"color":{"background":true,"text":true,"__experimentalDefaultControls":{"background":true,"text":true}}},"providesContext":{"jankx/smartTabsId":"anchor","jankx/activeTab":"activeTab"},"example":{"attributes":{"tabType":"horizontal","styleType":"modern"}},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","viewScript":"file:./build/view.js","style":"file:./build/style.css"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/smart-tabs","title":"Smart Tabs","category":"jankx","description":"Create interactive tabs with customizable layouts and styles","keywords":["tabs","smart","accordion","vertical","horizontal"],"textdomain":"jankx","attributes":{"tabType":{"type":"string","enum":["horizontal","vertical"],"default":"horizontal"},"styleType":{"type":"string","enum":["default","minimal","modern","boxed","bordered"],"default":"default"},"activeTab":{"type":"number","default":0},"tabAlignment":{"type":"string","enum":["left","center","right","justify"],"default":"left"},"tabItemTextColor":{"type":"string"},"tabItemBackgroundColor":{"type":"string"},"tabItemGradient":{"type":"string"},"activeTabTextColor":{"type":"string"},"activeTabBackgroundColor":{"type":"string"},"activeTabGradient":{"type":"string"},"hideTabsBorderBottom":{"type":"boolean","default":false},"centerNavigation":{"type":"boolean","default":false},"className":{"type":"string"},"anchor":{"type":"string"}},"supports":{"html":false,"anchor":true,"align":["wide","full"],"spacing":{"margin":true,"padding":true,"__experimentalDefaultControls":{"padding":true}},"color":{"background":true,"text":true,"__experimentalDefaultControls":{"background":true,"text":true}}},"providesContext":{"jankx/smartTabsId":"anchor","jankx/activeTab":"activeTab"},"example":{"attributes":{"tabType":"horizontal","styleType":"modern"}},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","viewScript":"file:./build/view.js","style":"file:./build/style.css"}');
 
 /***/ }),
 
@@ -67,7 +67,9 @@ function Edit({
     tabItemGradient,
     activeTabTextColor,
     activeTabBackgroundColor,
-    activeTabGradient
+    activeTabGradient,
+    hideTabsBorderBottom,
+    centerNavigation
   } = attributes;
   const {
     innerBlocks,
@@ -86,6 +88,9 @@ function Edit({
     insertBlock,
     selectBlock
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useDispatch)('core/block-editor');
+
+  // Color and gradient settings
+  const colorGradientSettings = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.__experimentalUseMultipleOriginColorsAndGradients)();
   const tabItems = innerBlocks.map(block => ({
     clientId: block.clientId,
     title: block.attributes.title || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Tab', 'jankx'),
@@ -121,7 +126,7 @@ function Edit({
     });
   };
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)({
-    className: `smart-tabs smart-tabs--${tabType} smart-tabs--style-${styleType}`
+    className: `smart-tabs smart-tabs--${tabType} smart-tabs--style-${styleType}${hideTabsBorderBottom ? ' smart-tabs--hide-border-bottom' : ''}${centerNavigation ? ' smart-tabs--center-navigation' : ''}`
   });
   const innerBlocksProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useInnerBlocksProps)({
     className: 'smart-tabs__content'
@@ -175,7 +180,23 @@ function Edit({
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Tab Settings', 'jankx'),
         initialOpen: true,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Hide Tabs Border Bottom', 'jankx'),
+          checked: hideTabsBorderBottom,
+          onChange: value => setAttributes({
+            hideTabsBorderBottom: value
+          }),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Hide the border bottom of tabs navigation', 'jankx'),
+          __nextHasNoMarginBottom: true
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Center Navigation', 'jankx'),
+          checked: centerNavigation,
+          onChange: value => setAttributes({
+            centerNavigation: value
+          }),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Center the tabs navigation with fit-content width', 'jankx'),
+          __nextHasNoMarginBottom: true
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Tab Type', 'jankx'),
           value: tabType,
           options: [{
@@ -204,6 +225,9 @@ function Edit({
           }, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Boxed', 'jankx'),
             value: 'boxed'
+          }, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Bordered', 'jankx'),
+            value: 'bordered'
           }],
           onChange: value => setAttributes({
             styleType: value
@@ -233,46 +257,62 @@ function Edit({
       })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
       group: "styles",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.PanelColorGradientSettings, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Tab Items Style', 'jankx'),
         initialOpen: false,
-        settings: [{
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Text Color', 'jankx'),
-          colorValue: tabItemTextColor,
-          onColorChange: value => setAttributes({
-            tabItemTextColor: value
-          })
-        }, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Background', 'jankx'),
-          colorValue: tabItemBackgroundColor,
-          gradientValue: tabItemGradient,
-          onColorChange: value => setAttributes({
-            tabItemBackgroundColor: value
-          }),
-          onGradientChange: value => setAttributes({
-            tabItemGradient: value
-          })
-        }]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.PanelColorGradientSettings, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.PanelColorGradientSettings, {
+          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Text Color', 'jankx'),
+          settings: [{
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Text Color', 'jankx'),
+            colorValue: tabItemTextColor,
+            onColorChange: value => setAttributes({
+              tabItemTextColor: value
+            })
+          }],
+          ...colorGradientSettings
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.PanelColorGradientSettings, {
+          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Background', 'jankx'),
+          settings: [{
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Background', 'jankx'),
+            colorValue: tabItemBackgroundColor,
+            gradientValue: tabItemGradient,
+            onColorChange: value => setAttributes({
+              tabItemBackgroundColor: value
+            }),
+            onGradientChange: value => setAttributes({
+              tabItemGradient: value
+            })
+          }],
+          ...colorGradientSettings
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Active Tab Style', 'jankx'),
         initialOpen: false,
-        settings: [{
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Text Color', 'jankx'),
-          colorValue: activeTabTextColor,
-          onColorChange: value => setAttributes({
-            activeTabTextColor: value
-          })
-        }, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Background', 'jankx'),
-          colorValue: activeTabBackgroundColor,
-          gradientValue: activeTabGradient,
-          onColorChange: value => setAttributes({
-            activeTabBackgroundColor: value
-          }),
-          onGradientChange: value => setAttributes({
-            activeTabGradient: value
-          })
-        }]
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.PanelColorGradientSettings, {
+          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Text Color', 'jankx'),
+          settings: [{
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Text Color', 'jankx'),
+            colorValue: activeTabTextColor,
+            onColorChange: value => setAttributes({
+              activeTabTextColor: value
+            })
+          }],
+          ...colorGradientSettings
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.PanelColorGradientSettings, {
+          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Background', 'jankx'),
+          settings: [{
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Background', 'jankx'),
+            colorValue: activeTabBackgroundColor,
+            gradientValue: activeTabGradient,
+            onColorChange: value => setAttributes({
+              activeTabBackgroundColor: value
+            }),
+            onGradientChange: value => setAttributes({
+              activeTabGradient: value
+            })
+          }],
+          ...colorGradientSettings
+        })]
       })]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.BlockControls, {
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToolbarGroup, {
@@ -303,6 +343,10 @@ function Edit({
               } else if (activeTabBackgroundColor) {
                 tabStyles.backgroundColor = activeTabBackgroundColor;
               }
+              // Border color for active tab
+              if (activeTabBackgroundColor) {
+                tabStyles.borderColor = activeTabBackgroundColor;
+              }
             } else {
               // Normal tab styles from parent
               if (tabItemTextColor) {
@@ -312,6 +356,10 @@ function Edit({
                 tabStyles.background = tabItemGradient;
               } else if (tabItemBackgroundColor) {
                 tabStyles.backgroundColor = tabItemBackgroundColor;
+              }
+              // Border color for normal tab
+              if (tabItemBackgroundColor) {
+                tabStyles.borderColor = tabItemBackgroundColor;
               }
             }
             return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("button", {

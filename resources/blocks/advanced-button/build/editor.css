@@ -1,0 +1,26 @@
+/*!***************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/advanced-button/editor.scss ***!
+  \***************************************************************************************************************************************************************************************************/
+/**
+ * Advanced Button Block Editor Styles
+ *
+ * Styles specific to the block editor
+ */
+.wp-block-jankx-advanced-button__link-popover {
+  z-index: 99999;
+}
+
+.editor-visual-editor .wp-block-jankx-advanced-button .components-button {
+  padding: 3px 2px;
+  height: 22px;
+}
+
+.block-editor-block-list__block[data-type="jankx/advanced-button"] .wp-block-button .wp-block-button__link {
+  pointer-events: auto;
+}
+.block-editor-block-list__block[data-type="jankx/advanced-button"] .wp-block-button .wp-block-button__link:focus {
+  outline: 2px solid var(--wp-admin-theme-color);
+  outline-offset: 2px;
+}
+
+/*# sourceMappingURL=editor.css.map*/

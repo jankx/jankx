@@ -292,7 +292,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 						}}
 					/>
 				) : (
-					<div className="gallery-builder-preview">
+					<div className={`gallery-builder-preview caption-${captionPosition}`}>
 						{/* Thumbnails */}
 						{showThumbnails && thumbnailPosition === 'top' && (
 							<div className="gallery-thumbnails top">
@@ -404,48 +404,51 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 							</div>
 						)}
 
-						{/* Pagination */}
-						{showPagination && items.length > 1 && (
-							<div className="gallery-pagination">
-								{items.map((_, index) => (
-									<button
-										key={index}
-										className={`pagination-dot ${
-											index === currentSlide ? 'active' : ''
-										}`}
-										onClick={() => setCurrentSlide(index)}
-									>
-										{index + 1}
-									</button>
-								))}
-							</div>
-						)}
-
 						{/* Controls */}
 						<div className="gallery-controls">
-							{/* Fullscreen Button */}
-							{enableFullscreen && (
-								<Button
-									onClick={() => {/* Fullscreen functionality will be handled by frontend JS */}}
-									variant="secondary"
-									className="fullscreen-button"
-								>
-									<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-										<path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
-									</svg>
-									{__('Fullscreen', 'jankx')}
-								</Button>
-							)}
+							<div className="gallery-controls-left">
+								{/* Fullscreen Button */}
+								{enableFullscreen && (
+									<Button
+										onClick={() => {/* Fullscreen functionality will be handled by frontend JS */}}
+										variant="secondary"
+										className="fullscreen-button"
+										data-fslightbox={galleryId}
+									>
+										<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+											<path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+										</svg>
+										{fullscreenText || __('Xem tự động', 'jankx')}
+									</Button>
+								)}
 
-							{/* Autoplay Button */}
-							{autoplay && (
-								<Button
-									onClick={() => setAttributes({ autoplay: !autoplay })}
-									variant="secondary"
-								>
-									{autoplay ? __('Stop Autoplay', 'jankx') : __('Start Autoplay', 'jankx')}
-								</Button>
-							)}
+								{/* Autoplay Button */}
+								{autoplay && (
+									<Button
+										onClick={() => setAttributes({ autoplay: !autoplay })}
+										variant="secondary"
+									>
+										{autoplay ? __('Stop Autoplay', 'jankx') : __('Start Autoplay', 'jankx')}
+									</Button>
+								)}
+							</div>
+
+							<div className="gallery-controls-right">
+								{/* Pagination Numbers */}
+								{showPagination && items.length > 1 && (
+									<div className="gallery-pagination-numbers">
+										{items.map((_, index) => (
+											<button
+												key={index}
+												className={`pagination-number ${index === currentSlide ? 'active' : ''}`}
+												onClick={() => setCurrentSlide(index)}
+											>
+												{index + 1}
+											</button>
+										))}
+									</div>
+								)}
+							</div>
 						</div>
 					</div>
 				)}

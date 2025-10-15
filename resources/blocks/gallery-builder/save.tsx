@@ -61,9 +61,7 @@ export default function Save({ attributes }: SaveProps) {
 	}
 
 	// Use WordPress block props with built-in supports
-	const blockProps = useBlockProps.save({
-		className: `wp-block-jankx-gallery-builder gallery-${galleryId}`,
-	});
+	const blockProps = useBlockProps.save();
 
 	// Generate data attributes for JavaScript
 	const dataAttributes = {
@@ -86,9 +84,13 @@ export default function Save({ attributes }: SaveProps) {
 		'data-caption-position': captionPosition,
 	};
 
+	// Merge classes
+	const className = `${blockProps.className || ''} gallery-${galleryId} caption-${captionPosition}`.trim();
+
 	return (
 		<div
 			{...blockProps}
+			className={className}
 			{...dataAttributes}
 		>
 			<div className="gallery-builder-container">
@@ -144,6 +146,17 @@ export default function Save({ attributes }: SaveProps) {
 										className="main-image"
 										loading={index === 0 ? 'eager' : 'lazy'}
 									/>
+									{/* Hidden fslightbox trigger */}
+									<a
+										href={item.url}
+										data-fslightbox={galleryId}
+										data-caption={item.caption || ''}
+										data-autoplay="true"
+										style={{ display: 'none' }}
+										aria-hidden="true"
+									>
+										{item.alt}
+									</a>
 								</div>
 
 								{/* Caption */}
@@ -179,45 +192,54 @@ export default function Save({ attributes }: SaveProps) {
 					</div>
 				)}
 
-				{/* Pagination */}
-				{showPagination && items.length > 1 && (
-					<div className="gallery-pagination">
-						{items.map((_, index) => (
-							<button
-								key={index}
-								className="pagination-dot"
-								data-slide={index}
-								aria-label={`Go to slide ${index + 1}`}
-							>
-								{index + 1}
-							</button>
-						))}
-					</div>
-				)}
 
 				{/* Controls */}
 				<div className="gallery-controls">
-					{/* Fullscreen Button */}
-					{enableFullscreen && (
-						<button className="fullscreen-button" aria-label="Open fullscreen slideshow">
-							<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-								<path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
-							</svg>
-							{__('Fullscreen', 'jankx')}
-						</button>
-					)}
+					<div className="gallery-controls-left">
+						{/* Fullscreen Button */}
+						{enableFullscreen && (
+							<button
+								className="fullscreen-button"
+								aria-label="Open fullscreen slideshow"
+								data-fslightbox={galleryId}
+							>
+								<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+									<path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+								</svg>
+								{fullscreenText || __('Xem tự động', 'jankx')}
+							</button>
+						)}
 
-					{/* Autoplay Controls */}
-					{autoplay && (
-						<button className="autoplay-toggle" aria-label="Toggle autoplay">
-							<svg className="play-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-								<path d="M8 5v14l11-7z"/>
-							</svg>
-							<svg className="pause-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-								<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
-							</svg>
-						</button>
-					)}
+						{/* Autoplay Controls */}
+						{autoplay && (
+							<button className="autoplay-toggle" aria-label="Toggle autoplay">
+								<svg className="play-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+									<path d="M8 5v14l11-7z"/>
+								</svg>
+								<svg className="pause-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+									<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+								</svg>
+							</button>
+						)}
+					</div>
+
+					<div className="gallery-controls-right">
+						{/* Pagination Numbers */}
+						{showPagination && items.length > 1 && (
+							<div className="gallery-pagination-numbers">
+								{items.map((_, index) => (
+									<button
+										key={index}
+										className={`pagination-number ${index === 0 ? 'active' : ''}`}
+										data-slide={index}
+										aria-label={`Go to slide ${index + 1}`}
+									>
+										{index + 1}
+									</button>
+								))}
+							</div>
+						)}
+					</div>
 				</div>
 			</div>
 		</div>

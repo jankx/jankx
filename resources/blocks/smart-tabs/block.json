@@ -15,7 +15,7 @@
         },
         "styleType": {
             "type": "string",
-            "enum": ["default", "minimal", "modern", "boxed"],
+            "enum": ["default", "minimal", "modern", "boxed", "bordered"],
             "default": "default"
         },
         "activeTab": {
@@ -44,6 +44,14 @@
         },
         "activeTabGradient": {
             "type": "string"
+        },
+        "hideTabsBorderBottom": {
+            "type": "boolean",
+            "default": false
+        },
+        "centerNavigation": {
+            "type": "boolean",
+            "default": false
         },
         "className": {
             "type": "string"

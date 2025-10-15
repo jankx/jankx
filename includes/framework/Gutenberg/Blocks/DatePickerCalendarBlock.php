@@ -174,10 +174,15 @@ class DatePickerCalendarBlock extends Block
 
         $block_id = 'date-picker-calendar-' . uniqid();
 
+        // Get block wrapper attributes (includes border, spacing, colors, etc.)
+        $wrapper_attributes = get_block_wrapper_attributes([
+            'id' => $block_id
+        ]);
+
         // Start output buffering
         ob_start();
         ?>
-        <div class="wp-block-jankx-date-picker-calendar" id="<?php echo esc_attr($block_id); ?>">
+        <div <?php echo $wrapper_attributes; ?>>
             <div class="date-picker-calendar">
                 <?php if ($show_navigation): ?>
                 <div class="calendar-header">

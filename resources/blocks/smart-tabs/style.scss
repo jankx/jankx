@@ -45,7 +45,7 @@
         align-items: center;
         gap: 8px;
         padding: 12px 20px;
-        background: transparent;
+        background: transparent !important; // Allow inline styles to override
         border: none;
         border-bottom: 3px solid transparent;
         cursor: pointer;
@@ -55,9 +55,23 @@
         transition: all 0.3s ease;
         margin-bottom: -2px;
 
+        // Ensure inline styles have highest priority
+        &[style*="background"],
+        &[style*="backgroundColor"] {
+            background: var(--inline-bg, transparent) !important;
+        }
+
+        &[style*="color"] {
+            color: var(--inline-color, #666) !important;
+        }
+
+        &[style*="borderColor"] {
+            border-color: var(--inline-border-color, transparent) !important;
+        }
+
         &:hover {
             color: #000;
-            background: rgba(0, 0, 0, 0.05);
+            background: rgba(0, 0, 0, 0.05) !important;
         }
 
         &.is-active {
@@ -93,6 +107,21 @@
     // Content
     &__content {
         padding: 20px 0;
+    }
+
+    // Hide border bottom option
+    &--hide-border-bottom {
+        .smart-tabs__nav-list {
+            border-bottom: none;
+        }
+    }
+
+    // Center navigation option
+    &--center-navigation {
+        .smart-tabs__navigation .smart-tabs__nav-list {
+            width: fit-content;
+            margin: 0 auto;
+        }
     }
 
     // Vertical layout
@@ -186,6 +215,68 @@
             border-radius: 0 4px 4px 4px;
             padding: 20px;
             margin-top: -2px;
+        }
+    }
+
+    &--style-bordered {
+        .smart-tabs__nav-list {
+            border: 2px solid #d63384;
+            border-radius: 6px;
+            background: #fff;
+            padding: 0;
+            gap: 0;
+        }
+
+        .smart-tabs__nav-item {
+            border: none;
+            border-right: 1px solid #d63384;
+            border-radius: 0;
+            margin: 0;
+            padding: 12px 20px;
+            background: transparent !important; // Allow inline styles to override
+            color: #d63384;
+            font-weight: 500;
+            transition: all 0.3s ease;
+
+            // Ensure inline styles have highest priority
+            &[style*="background"],
+            &[style*="backgroundColor"] {
+                background: var(--inline-bg, transparent) !important;
+            }
+
+            &[style*="color"] {
+                color: var(--inline-color, #d63384) !important;
+            }
+
+            &:last-child {
+                border-right: none;
+            }
+
+            &:hover {
+                background: rgba(214, 51, 132, 0.1) !important;
+            }
+
+            &.is-active {
+                background: #d63384;
+                color: #fff;
+                border-bottom: none;
+                border-right: 1px solid #d63384;
+                position: relative;
+
+                &:last-child {
+                    border-right: none;
+                }
+
+                // Override with inline styles if present
+                &[style*="background"],
+                &[style*="backgroundColor"] {
+                    background: var(--inline-bg, #d63384) !important;
+                }
+
+                &[style*="color"] {
+                    color: var(--inline-color, #fff) !important;
+                }
+            }
         }
     }
 }

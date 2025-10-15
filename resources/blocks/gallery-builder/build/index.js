@@ -352,7 +352,7 @@ function Edit({
           instructions: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Select multiple images to create a professional gallery viewer', 'jankx')
         }
       }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
-        className: "gallery-builder-preview",
+        className: `gallery-builder-preview caption-${captionPosition}`,
         children: [showThumbnails && thumbnailPosition === 'top' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
           className: "gallery-thumbnails top",
           children: items.map((item, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
@@ -424,34 +424,41 @@ function Edit({
               alt: item.alt
             })
           }, item.id))
-        }), showPagination && items.length > 1 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
-          className: "gallery-pagination",
-          children: items.map((_, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("button", {
-            className: `pagination-dot ${index === currentSlide ? 'active' : ''}`,
-            onClick: () => setCurrentSlide(index),
-            children: index + 1
-          }, index))
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
           className: "gallery-controls",
-          children: [enableFullscreen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
-            onClick: () => {/* Fullscreen functionality will be handled by frontend JS */},
-            variant: "secondary",
-            className: "fullscreen-button",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("svg", {
-              width: "16",
-              height: "16",
-              viewBox: "0 0 24 24",
-              fill: "currentColor",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("path", {
-                d: "M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"
-              })
-            }), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Fullscreen', 'jankx')]
-          }), autoplay && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
-            onClick: () => setAttributes({
-              autoplay: !autoplay
-            }),
-            variant: "secondary",
-            children: autoplay ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Stop Autoplay', 'jankx') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Start Autoplay', 'jankx')
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+            className: "gallery-controls-left",
+            children: [enableFullscreen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+              onClick: () => {/* Fullscreen functionality will be handled by frontend JS */},
+              variant: "secondary",
+              className: "fullscreen-button",
+              "data-fslightbox": galleryId,
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("svg", {
+                width: "16",
+                height: "16",
+                viewBox: "0 0 24 24",
+                fill: "currentColor",
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("path", {
+                  d: "M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"
+                })
+              }), fullscreenText || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Xem tự động', 'jankx')]
+            }), autoplay && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+              onClick: () => setAttributes({
+                autoplay: !autoplay
+              }),
+              variant: "secondary",
+              children: autoplay ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Stop Autoplay', 'jankx') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Start Autoplay', 'jankx')
+            })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+            className: "gallery-controls-right",
+            children: showPagination && items.length > 1 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+              className: "gallery-pagination-numbers",
+              children: items.map((_, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("button", {
+                className: `pagination-number ${index === currentSlide ? 'active' : ''}`,
+                onClick: () => setCurrentSlide(index),
+                children: index + 1
+              }, index))
+            })
           })]
         })]
       })
@@ -520,9 +527,7 @@ function Save({
   }
 
   // Use WordPress block props with built-in supports
-  const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.useBlockProps.save({
-    className: `wp-block-jankx-gallery-builder gallery-${galleryId}`
-  });
+  const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.useBlockProps.save();
 
   // Generate data attributes for JavaScript
   const dataAttributes = {
@@ -544,8 +549,12 @@ function Save({
     'data-fullscreen-text': fullscreenText,
     'data-caption-position': captionPosition
   };
+
+  // Merge classes
+  const className = `${blockProps.className || ''} gallery-${galleryId} caption-${captionPosition}`.trim();
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
     ...blockProps,
+    className: className,
     ...dataAttributes,
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
       className: "gallery-builder-container",
@@ -593,14 +602,24 @@ function Save({
           children: items.map((item, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
             className: `gallery-slide ${index === 0 ? 'active' : ''}`,
             "data-slide": index,
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
               className: "slide-image-container",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("img", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("img", {
                 src: item.url,
                 alt: item.alt,
                 className: "main-image",
                 loading: index === 0 ? 'eager' : 'lazy'
-              })
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("a", {
+                href: item.url,
+                "data-fslightbox": galleryId,
+                "data-caption": item.caption || '',
+                "data-autoplay": "true",
+                style: {
+                  display: 'none'
+                },
+                "aria-hidden": "true",
+                children: item.alt
+              })]
             }), showCaptions && item.caption && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
               className: "slide-caption",
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
@@ -623,50 +642,57 @@ function Save({
             loading: "lazy"
           })
         }, item.id))
-      }), showPagination && items.length > 1 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-        className: "gallery-pagination",
-        children: items.map((_, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
-          className: "pagination-dot",
-          "data-slide": index,
-          "aria-label": `Go to slide ${index + 1}`,
-          children: index + 1
-        }, index))
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
         className: "gallery-controls",
-        children: [enableFullscreen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("button", {
-          className: "fullscreen-button",
-          "aria-label": "Open fullscreen slideshow",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("svg", {
-            width: "16",
-            height: "16",
-            viewBox: "0 0 24 24",
-            fill: "currentColor",
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("path", {
-              d: "M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"
-            })
-          }), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Fullscreen', 'jankx')]
-        }), autoplay && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("button", {
-          className: "autoplay-toggle",
-          "aria-label": "Toggle autoplay",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("svg", {
-            className: "play-icon",
-            width: "20",
-            height: "20",
-            viewBox: "0 0 24 24",
-            fill: "currentColor",
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("path", {
-              d: "M8 5v14l11-7z"
-            })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("svg", {
-            className: "pause-icon",
-            width: "20",
-            height: "20",
-            viewBox: "0 0 24 24",
-            fill: "currentColor",
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("path", {
-              d: "M6 19h4V5H6v14zm8-14v14h4V5h-4z"
-            })
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+          className: "gallery-controls-left",
+          children: [enableFullscreen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("button", {
+            className: "fullscreen-button",
+            "aria-label": "Open fullscreen slideshow",
+            "data-fslightbox": galleryId,
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("svg", {
+              width: "16",
+              height: "16",
+              viewBox: "0 0 24 24",
+              fill: "currentColor",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("path", {
+                d: "M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"
+              })
+            }), fullscreenText || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Xem tự động', 'jankx')]
+          }), autoplay && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("button", {
+            className: "autoplay-toggle",
+            "aria-label": "Toggle autoplay",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("svg", {
+              className: "play-icon",
+              width: "20",
+              height: "20",
+              viewBox: "0 0 24 24",
+              fill: "currentColor",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("path", {
+                d: "M8 5v14l11-7z"
+              })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("svg", {
+              className: "pause-icon",
+              width: "20",
+              height: "20",
+              viewBox: "0 0 24 24",
+              fill: "currentColor",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("path", {
+                d: "M6 19h4V5H6v14zm8-14v14h4V5h-4z"
+              })
+            })]
           })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+          className: "gallery-controls-right",
+          children: showPagination && items.length > 1 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+            className: "gallery-pagination-numbers",
+            children: items.map((_, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+              className: `pagination-number ${index === 0 ? 'active' : ''}`,
+              "data-slide": index,
+              "aria-label": `Go to slide ${index + 1}`,
+              children: index + 1
+            }, index))
+          })
         })]
       })]
     })

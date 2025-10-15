@@ -2,7 +2,11 @@
  * Gallery Builder Frontend JavaScript
  *
  * Handles gallery navigation, autoplay, and interactive features
+ * Integrated with fslightbox for fullscreen functionality
  */
+
+// Import fslightbox
+import 'fslightbox';
 
 class GalleryBuilder {
     constructor(container) {
@@ -17,6 +21,7 @@ class GalleryBuilder {
         this.fullscreenModal = null;
         this.fullscreenAutoplayInterval = null;
         this.isFullscreenAutoplayActive = false;
+        this.fslightboxInstance = null;
 
         // Get settings from data attributes
         this.settings = {
@@ -43,6 +48,7 @@ class GalleryBuilder {
         this.cacheElements();
         this.bindEvents();
         this.setupInitialState();
+        this.setupFslightbox();
 
         if (this.settings.autoplay) {
             this.startAutoplay();
@@ -52,7 +58,7 @@ class GalleryBuilder {
     cacheElements() {
         this.slides = this.container.querySelectorAll('.gallery-slide');
         this.thumbnails = this.container.querySelectorAll('.thumbnail');
-        this.paginationDots = this.container.querySelectorAll('.pagination-dot');
+        this.paginationNumbers = this.container.querySelectorAll('.pagination-number');
         this.navPrev = this.container.querySelector('.gallery-nav.prev');
         this.navNext = this.container.querySelector('.gallery-nav.next');
         this.autoplayToggle = this.container.querySelector('.autoplay-toggle');
@@ -74,9 +80,9 @@ class GalleryBuilder {
             thumbnail.addEventListener('click', () => this.goToSlide(index));
         });
 
-        // Pagination dots
-        this.paginationDots.forEach((dot, index) => {
-            dot.addEventListener('click', () => this.goToSlide(index));
+        // Pagination numbers
+        this.paginationNumbers.forEach((number, index) => {
+            number.addEventListener('click', () => this.goToSlide(index));
         });
 
         // Autoplay toggle
@@ -121,6 +127,58 @@ class GalleryBuilder {
 
         // Make container focusable for keyboard navigation
         this.container.setAttribute('tabindex', '0');
+    }
+
+    setupFslightbox() {
+        // Create fslightbox instance for this gallery
+        this.fslightboxInstance = new FsLightbox();
+
+        // Prepare sources array from gallery images
+        const sources = Array.from(this.slides).map(slide => {
+            const img = slide.querySelector('img');
+            return {
+                src: img.src,
+                alt: img.alt,
+                caption: slide.querySelector('.caption-content')?.innerHTML || ''
+            };
+        });
+
+        // Configure fslightbox
+        this.fslightboxInstance.props.sources = sources.map(source => source.src);
+        this.fslightboxInstance.props.captions = sources.map(source => source.caption);
+        this.fslightboxInstance.props.types = sources.map(() => 'image');
+        this.fslightboxInstance.props.maxYoutubeVideoDimensions = {
+            width: 1920,
+            height: 1080
+        };
+        this.fslightboxInstance.props.loadOnlyCurrentSource = true;
+        this.fslightboxInstance.props.showThumbsOnMount = this.settings.showThumbnails;
+        this.fslightboxInstance.props.thumbsPosition = this.settings.thumbnailPosition === 'top' ? 'top' : 'bottom';
+
+        // Autoplay settings - Always enable autoplay in fullscreen
+        this.fslightboxInstance.props.autoplay = true;
+
+        // Event handlers
+        this.fslightboxInstance.props.onOpen = () => {
+            this.pauseAutoplay(); // Pause main gallery autoplay
+            this.container.classList.add('fslightbox-open');
+        };
+
+        this.fslightboxInstance.props.onClose = () => {
+            this.container.classList.remove('fslightbox-open');
+            // Resume main gallery autoplay if it was active
+            if (this.settings.autoplay && this.isAutoplayActive) {
+                this.startAutoplay();
+            }
+        };
+
+        this.fslightboxInstance.props.onSlideChange = (index) => {
+            // Sync with main gallery
+            if (index !== this.currentSlide) {
+                this.currentSlide = index;
+                this.updateActiveStates();
+            }
+        };
     }
 
     goToSlide(index) {
@@ -236,8 +294,8 @@ class GalleryBuilder {
         });
 
         // Update pagination dots
-        this.paginationDots.forEach((dot, index) => {
-            dot.classList.toggle('active', index === this.currentSlide);
+        this.paginationNumbers.forEach((number, index) => {
+            number.classList.toggle('active', index === this.currentSlide);
         });
     }
 
@@ -323,171 +381,20 @@ class GalleryBuilder {
     }
 
     openFullscreen() {
-        this.createFullscreenModal();
-        this.showFullscreenModal();
-
-        if (this.settings.fullscreenAutoplay) {
-            this.startFullscreenAutoplay();
+        if (this.fslightboxInstance) {
+            // Open fslightbox at current slide
+            this.fslightboxInstance.open(this.currentSlide);
         }
     }
 
-    createFullscreenModal() {
-        if (this.fullscreenModal) {
-            return;
-        }
-
-        const modal = document.createElement('div');
-        modal.className = 'gallery-fullscreen-modal';
-        modal.innerHTML = `
-            <div class="fullscreen-content">
-                <div class="fullscreen-header">
-                    <div class="fullscreen-text">${this.settings.fullscreenText}</div>
-                    <button class="fullscreen-close" aria-label="Close fullscreen">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-                        </svg>
-                    </button>
-                </div>
-                <div class="fullscreen-slides">
-                    ${this.slides.map((slide, index) => `
-                        <div class="fullscreen-slide ${index === this.currentSlide ? 'active' : ''}" data-slide="${index}">
-                            <img src="${slide.querySelector('img').src}" alt="${slide.querySelector('img').alt}" />
-                        </div>
-                    `).join('')}
-                </div>
-                <div class="fullscreen-controls">
-                    <button class="fullscreen-nav prev" aria-label="Previous image">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-                        </svg>
-                    </button>
-                    <div class="fullscreen-pagination">
-                        ${this.slides.map((_, index) => `
-                            <button class="pagination-dot ${index === this.currentSlide ? 'active' : ''}" data-slide="${index}"></button>
-                        `).join('')}
-                    </div>
-                    <button class="fullscreen-nav next" aria-label="Next image">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        `;
-
-        // Add event listeners
-        const closeBtn = modal.querySelector('.fullscreen-close');
-        const prevBtn = modal.querySelector('.fullscreen-nav.prev');
-        const nextBtn = modal.querySelector('.fullscreen-nav.next');
-        const paginationDots = modal.querySelectorAll('.fullscreen-pagination .pagination-dot');
-
-        closeBtn.addEventListener('click', () => this.closeFullscreen());
-        prevBtn.addEventListener('click', () => this.fullscreenPreviousSlide());
-        nextBtn.addEventListener('click', () => this.fullscreenNextSlide());
-
-        paginationDots.forEach((dot, index) => {
-            dot.addEventListener('click', () => this.fullscreenGoToSlide(index));
-        });
-
-        // Close on background click
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                this.closeFullscreen();
-            }
-        });
-
-        // Keyboard navigation
-        modal.addEventListener('keydown', (e) => {
-            switch (e.key) {
-                case 'Escape':
-                    this.closeFullscreen();
-                    break;
-                case 'ArrowLeft':
-                    this.fullscreenPreviousSlide();
-                    break;
-                case 'ArrowRight':
-                    this.fullscreenNextSlide();
-                    break;
-            }
-        });
-
-        document.body.appendChild(modal);
-        this.fullscreenModal = modal;
-    }
-
-    showFullscreenModal() {
-        if (this.fullscreenModal) {
-            this.fullscreenModal.classList.add('active');
-            this.fullscreenModal.focus();
-        }
-    }
-
-    closeFullscreen() {
-        if (this.fullscreenModal) {
-            this.fullscreenModal.classList.remove('active');
-            setTimeout(() => {
-                if (this.fullscreenModal) {
-                    document.body.removeChild(this.fullscreenModal);
-                    this.fullscreenModal = null;
-                }
-            }, 300);
-        }
-        this.stopFullscreenAutoplay();
-    }
-
-    fullscreenGoToSlide(index) {
-        if (index < 0 || index >= this.totalSlides || index === this.currentSlide) {
-            return;
-        }
-
-        const fullscreenSlides = this.fullscreenModal.querySelectorAll('.fullscreen-slide');
-        const fullscreenDots = this.fullscreenModal.querySelectorAll('.fullscreen-pagination .pagination-dot');
-
-        // Update slides
-        fullscreenSlides.forEach((slide, i) => {
-            slide.classList.toggle('active', i === index);
-        });
-
-        // Update pagination
-        fullscreenDots.forEach((dot, i) => {
-            dot.classList.toggle('active', i === index);
-        });
-
-        this.currentSlide = index;
-    }
-
-    fullscreenNextSlide() {
-        const nextIndex = (this.currentSlide + 1) % this.totalSlides;
-        this.fullscreenGoToSlide(nextIndex);
-    }
-
-    fullscreenPreviousSlide() {
-        const prevIndex = this.currentSlide === 0 ? this.totalSlides - 1 : this.currentSlide - 1;
-        this.fullscreenGoToSlide(prevIndex);
-    }
-
-    startFullscreenAutoplay() {
-        if (this.fullscreenAutoplayInterval) {
-            clearInterval(this.fullscreenAutoplayInterval);
-        }
-
-        this.isFullscreenAutoplayActive = true;
-        this.fullscreenAutoplayInterval = setInterval(() => {
-            this.fullscreenNextSlide();
-        }, this.settings.fullscreenAutoplayDelay);
-    }
-
-    stopFullscreenAutoplay() {
-        if (this.fullscreenAutoplayInterval) {
-            clearInterval(this.fullscreenAutoplayInterval);
-            this.fullscreenAutoplayInterval = null;
-        }
-        this.isFullscreenAutoplayActive = false;
-    }
 
     destroy() {
         this.pauseAutoplay();
-        this.closeFullscreen();
+
+        // Close fslightbox if open
+        if (this.fslightboxInstance) {
+            this.fslightboxInstance.close();
+        }
 
         // Remove event listeners
         this.container.removeEventListener('keydown', this.handleKeyboard);

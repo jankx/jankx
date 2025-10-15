@@ -66,95 +66,25 @@ class GalleryBuilderBlock extends Block
             true
         );
 
+        // Enqueue fslightbox from node_modules
+        wp_enqueue_script(
+            'jankx-fslightbox',
+            $theme_url . '/node_modules/fslightbox/index.js',
+            [],
+            '1.0.0',
+            true
+        );
+
         // Enqueue custom gallery builder JS
         wp_enqueue_script(
             'jankx-gallery-builder',
             $theme_url . '/resources/blocks/gallery-builder/build/view.js',
-            ['jankx-swiper-js'],
+            ['jankx-swiper-js', 'jankx-fslightbox'],
             '1.0.0',
             true
         );
     }
 
-    /**
-     * Render the block content
-     *
-     * @param array $attributes Block attributes
-     * @param string $content Block content
-     * @return string Rendered HTML
-     */
-    public function render($attributes, $content = '')
-    {
-        // Store attributes for use in other methods
-        $this->attributes = $attributes;
-
-        $galleryId = $attributes['galleryId'] ?? '';
-        $items = $attributes['items'] ?? [];
-        $autoplay = $attributes['autoplay'] ?? false;
-        $autoplayDelay = $attributes['autoplayDelay'] ?? 5000;
-        $showThumbnails = $attributes['showThumbnails'] ?? true;
-        $showNavigation = $attributes['showNavigation'] ?? true;
-        $showPagination = $attributes['showPagination'] ?? true;
-        $showCaptions = $attributes['showCaptions'] ?? true;
-        $thumbnailPosition = $attributes['thumbnailPosition'] ?? 'top';
-        $imageSize = $attributes['imageSize'] ?? 'large';
-        $aspectRatio = $attributes['aspectRatio'] ?? '16:9';
-        $transitionEffect = $attributes['transitionEffect'] ?? 'slide';
-        $transitionDuration = $attributes['transitionDuration'] ?? 500;
-        $enableFullscreen = $attributes['enableFullscreen'] ?? true;
-        $fullscreenAutoplay = $attributes['fullscreenAutoplay'] ?? true;
-        $fullscreenAutoplayDelay = $attributes['fullscreenAutoplayDelay'] ?? 4000;
-        $fullscreenText = $attributes['fullscreenText'] ?? '';
-        $captionPosition = $attributes['captionPosition'] ?? 'overlay';
-        $className = $attributes['className'] ?? '';
-
-        if (empty($items)) {
-            return $this->renderPlaceholder();
-        }
-
-        // Build wrapper classes
-        $aspectRatioClass = str_replace(':', '-', $aspectRatio);
-        $wrapperClasses = [
-            'wp-block-jankx-gallery-builder',
-            "gallery-{$galleryId}",
-            "thumbnail-{$thumbnailPosition}",
-            "aspect-{$aspectRatioClass}",
-            "transition-{$transitionEffect}",
-            "caption-{$captionPosition}"
-        ];
-
-        if (!empty($className)) {
-            $wrapperClasses[] = $className;
-        }
-
-        // Build inline styles from WordPress block supports
-        $inlineStyles = $this->buildInlineStyles($attributes);
-
-        // Build gallery HTML
-        $galleryHtml = $this->renderGallery(
-            $items,
-            $autoplay,
-            $autoplayDelay,
-            $showThumbnails,
-            $showNavigation,
-            $showPagination,
-            $showCaptions,
-            $thumbnailPosition,
-            $imageSize,
-            $aspectRatio,
-            $transitionEffect,
-            $transitionDuration
-        );
-
-        return sprintf(
-            '<div class="%s" data-gallery-id="%s" id="%s"%s>%s</div>',
-            esc_attr(implode(' ', $wrapperClasses)),
-            esc_attr($galleryId),
-            esc_attr($galleryId),
-            $inlineStyles ? ' style="' . esc_attr($inlineStyles) . '"' : '',
-            $galleryHtml
-        );
-    }
 
     /**
      * Render gallery content

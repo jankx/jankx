@@ -4,6 +4,7 @@ namespace Jankx\Services;
 
 use Jankx\Foundation\Application;
 use Jankx\Facades\Log;
+use Jankx\Gutenberg\Blocks\AdvancedButtonBlock;
 use Jankx\Gutenberg\Blocks\AdvancedFiltersBlock;
 use Jankx\Gutenberg\Blocks\AdvancedImageBoxBlock;
 use Jankx\Gutenberg\Blocks\ModalBlock;
@@ -130,7 +131,7 @@ class GutenbergService
     {
         $this->repository->registerBlock(SvgIconBlock::class);
         // $this->repository->registerBlock(MegaMenuBlock::class);
-        $this->repository->registerBlock(ButtonBlock::class);
+        $this->repository->registerBlock(AdvancedButtonBlock::class);
         $this->repository->registerBlock(OffcanvasSidebarBlock::class);
         $this->repository->registerBlock(IconPickerBlock::class);
         $this->repository->registerBlock(PostTypeLayoutBlock::class);

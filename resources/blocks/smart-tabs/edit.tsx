@@ -14,6 +14,7 @@ import {
 import {
     PanelBody,
     SelectControl,
+    ToggleControl,
     Button,
     ToolbarGroup,
     ToolbarButton,
@@ -42,6 +43,8 @@ export default function Edit({ attributes, setAttributes, clientId }: SmartTabsP
         activeTabTextColor,
         activeTabBackgroundColor,
         activeTabGradient,
+        hideTabsBorderBottom,
+        centerNavigation,
     } = attributes;
 
     const { innerBlocks, selectedBlockClientId } = useSelect(
@@ -56,6 +59,9 @@ export default function Edit({ attributes, setAttributes, clientId }: SmartTabsP
     );
 
     const { insertBlock, selectBlock } = useDispatch('core/block-editor');
+
+    // Color and gradient settings
+    const colorGradientSettings = useMultipleOriginColorsAndGradients();
 
     const tabItems: TabItem[] = innerBlocks.map((block: any) => ({
         clientId: block.clientId,
@@ -90,7 +96,7 @@ export default function Edit({ attributes, setAttributes, clientId }: SmartTabsP
     };
 
     const blockProps = useBlockProps({
-        className: `smart-tabs smart-tabs--${tabType} smart-tabs--style-${styleType}`,
+        className: `smart-tabs smart-tabs--${tabType} smart-tabs--style-${styleType}${hideTabsBorderBottom ? ' smart-tabs--hide-border-bottom' : ''}${centerNavigation ? ' smart-tabs--center-navigation' : ''}`,
     });
 
     const innerBlocksProps = useInnerBlocksProps(
@@ -142,6 +148,22 @@ export default function Edit({ attributes, setAttributes, clientId }: SmartTabsP
 
             <InspectorControls>
                 <PanelBody title={__('Tab Settings', 'jankx')} initialOpen={true}>
+                    <ToggleControl
+                        label={__('Hide Tabs Border Bottom', 'jankx')}
+                        checked={hideTabsBorderBottom}
+                        onChange={(value: boolean) => setAttributes({ hideTabsBorderBottom: value })}
+                        help={__('Hide the border bottom of tabs navigation', 'jankx')}
+                        __nextHasNoMarginBottom
+                    />
+
+                    <ToggleControl
+                        label={__('Center Navigation', 'jankx')}
+                        checked={centerNavigation}
+                        onChange={(value: boolean) => setAttributes({ centerNavigation: value })}
+                        help={__('Center the tabs navigation with fit-content width', 'jankx')}
+                        __nextHasNoMarginBottom
+                    />
+
                     <SelectControl
                         label={__('Tab Type', 'jankx')}
                         value={tabType}
@@ -160,9 +182,10 @@ export default function Edit({ attributes, setAttributes, clientId }: SmartTabsP
                             { label: __('Minimal', 'jankx'), value: 'minimal' },
                             { label: __('Modern', 'jankx'), value: 'modern' },
                             { label: __('Boxed', 'jankx'), value: 'boxed' },
+                            { label: __('Bordered', 'jankx'), value: 'bordered' },
                         ]}
                         onChange={(value: string) =>
-                            setAttributes({ styleType: value as 'default' | 'minimal' | 'modern' | 'boxed' })
+                            setAttributes({ styleType: value as 'default' | 'minimal' | 'modern' | 'boxed' | 'bordered' })
                         }
                         help={__('Choose the visual style for tabs', 'jankx')}
                     />
@@ -185,43 +208,59 @@ export default function Edit({ attributes, setAttributes, clientId }: SmartTabsP
             </InspectorControls>
 
             <InspectorControls group="styles">
-                <PanelColorGradientSettings
-                    title={__('Tab Items Style', 'jankx')}
-                    initialOpen={false}
-                    settings={[
-                        {
-                            label: __('Text Color', 'jankx'),
-                            colorValue: tabItemTextColor,
-                            onColorChange: (value: string) => setAttributes({ tabItemTextColor: value }),
-                        },
-                        {
-                            label: __('Background', 'jankx'),
-                            colorValue: tabItemBackgroundColor,
-                            gradientValue: tabItemGradient,
-                            onColorChange: (value: string) => setAttributes({ tabItemBackgroundColor: value }),
-                            onGradientChange: (value: string) => setAttributes({ tabItemGradient: value }),
-                        },
-                    ]}
-                />
+                <PanelBody title={__('Tab Items Style', 'jankx')} initialOpen={false}>
+                    <PanelColorGradientSettings
+                        title={__('Text Color', 'jankx')}
+                        settings={[
+                            {
+                                label: __('Text Color', 'jankx'),
+                                colorValue: tabItemTextColor,
+                                onColorChange: (value: string | undefined) => setAttributes({ tabItemTextColor: value }),
+                            },
+                        ]}
+                        {...colorGradientSettings}
+                    />
+                    <PanelColorGradientSettings
+                        title={__('Background', 'jankx')}
+                        settings={[
+                            {
+                                label: __('Background', 'jankx'),
+                                colorValue: tabItemBackgroundColor,
+                                gradientValue: tabItemGradient,
+                                onColorChange: (value: string | undefined) => setAttributes({ tabItemBackgroundColor: value }),
+                                onGradientChange: (value: string | undefined) => setAttributes({ tabItemGradient: value }),
+                            },
+                        ]}
+                        {...colorGradientSettings}
+                    />
+                </PanelBody>
 
-                <PanelColorGradientSettings
-                    title={__('Active Tab Style', 'jankx')}
-                    initialOpen={false}
-                    settings={[
-                        {
-                            label: __('Text Color', 'jankx'),
-                            colorValue: activeTabTextColor,
-                            onColorChange: (value: string) => setAttributes({ activeTabTextColor: value }),
-                        },
-                        {
-                            label: __('Background', 'jankx'),
-                            colorValue: activeTabBackgroundColor,
-                            gradientValue: activeTabGradient,
-                            onColorChange: (value: string) => setAttributes({ activeTabBackgroundColor: value }),
-                            onGradientChange: (value: string) => setAttributes({ activeTabGradient: value }),
-                        },
-                    ]}
-                />
+                <PanelBody title={__('Active Tab Style', 'jankx')} initialOpen={false}>
+                    <PanelColorGradientSettings
+                        title={__('Text Color', 'jankx')}
+                        settings={[
+                            {
+                                label: __('Text Color', 'jankx'),
+                                colorValue: activeTabTextColor,
+                                onColorChange: (value: string | undefined) => setAttributes({ activeTabTextColor: value }),
+                            },
+                        ]}
+                        {...colorGradientSettings}
+                    />
+                    <PanelColorGradientSettings
+                        title={__('Background', 'jankx')}
+                        settings={[
+                            {
+                                label: __('Background', 'jankx'),
+                                colorValue: activeTabBackgroundColor,
+                                gradientValue: activeTabGradient,
+                                onColorChange: (value: string | undefined) => setAttributes({ activeTabBackgroundColor: value }),
+                                onGradientChange: (value: string | undefined) => setAttributes({ activeTabGradient: value }),
+                            },
+                        ]}
+                        {...colorGradientSettings}
+                    />
+                </PanelBody>
             </InspectorControls>
 
             <BlockControls>
@@ -236,7 +275,7 @@ export default function Edit({ attributes, setAttributes, clientId }: SmartTabsP
 
             <div {...blockProps}>
                 <div className="smart-tabs__navigation">
-                    <div className={`smart-tabs__nav-list align-${tabAlignment}`}>
+                        <div className={`smart-tabs__nav-list align-${tabAlignment}`}>
                         {tabItems.map((tab, index) => {
                             const isActiveTab = index === currentActiveTab;
 
@@ -253,6 +292,10 @@ export default function Edit({ attributes, setAttributes, clientId }: SmartTabsP
                                 } else if (activeTabBackgroundColor) {
                                     tabStyles.backgroundColor = activeTabBackgroundColor;
                                 }
+                                // Border color for active tab
+                                if (activeTabBackgroundColor) {
+                                    tabStyles.borderColor = activeTabBackgroundColor;
+                                }
                             } else {
                                 // Normal tab styles from parent
                                 if (tabItemTextColor) {
@@ -262,6 +305,10 @@ export default function Edit({ attributes, setAttributes, clientId }: SmartTabsP
                                     tabStyles.background = tabItemGradient;
                                 } else if (tabItemBackgroundColor) {
                                     tabStyles.backgroundColor = tabItemBackgroundColor;
+                                }
+                                // Border color for normal tab
+                                if (tabItemBackgroundColor) {
+                                    tabStyles.borderColor = tabItemBackgroundColor;
                                 }
                             }
 

@@ -1,1 +1,0 @@
-{"version":3,"file":"blocks/image-button/build/style.css","mappings":";;;AACI;EACI;AAAR,C","sources":["webpack://jankx/./blocks/image-button/style.scss"],"sourcesContent":[".wp-block-jankx-image-button {\n    .wp-block-jankx-image-button__link {\n        display: flex;\n    }\n}\n"],"names":[],"sourceRoot":""}

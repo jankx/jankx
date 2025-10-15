@@ -32,7 +32,7 @@
     "@types/wordpress__blocks": "^12.5.16",
     "@wordpress/babel-preset-default": "^8.9.0",
     "@wordpress/dependency-extraction-webpack-plugin": "^6.29.0",
-    "@wordpress/scripts": "^30.22.0",
+    "@wordpress/scripts": "^19.2.4",
     "babel-loader": "^10.0.0",
     "css-loader": "^7.1.2",
     "i": "^0.3.7",
@@ -61,10 +61,11 @@
     "@wordpress/data": "^10.9.0",
     "@wordpress/element": "^5.24.0",
     "@wordpress/i18n": "^4.58.0",
-    "@wordpress/icons": "^10.29.0",
+    "@wordpress/icons": "^10.9.0",
     "@wordpress/patterns": "^2.9.0",
     "change-case": "^5.4.4",
     "classnames": "^2.5.1",
+    "fslightbox": "^3.7.4",
     "fuse.js": "^7.1.0",
     "html-react-parser": "^5.2.6",
     "lucide-react": "^0.542.0",
@@ -75,7 +76,7 @@
     "use-debounce": "^10.0.5",
     "usehooks-ts": "^3.1.1",
     "vanilla-sharing": "^5.2.1",
-    "via": "^0.0.1",
+    "via": "^0.0.0",
     "yarn": "^1.22.22"
   }
 }

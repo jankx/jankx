@@ -277,4 +277,54 @@
 			}
 		}
 	}
+
+	// Caption Position Variations
+	&.caption-below {
+		.gallery-slide {
+			.slide-caption {
+				position: relative !important;
+				bottom: auto !important;
+				background: #f8f9fa;
+				color: #333;
+				border-top: 1px solid #dee2e6;
+
+				.caption-content {
+					color: #333;
+				}
+			}
+		}
+	}
+
+	&.caption-stack {
+		.gallery-main {
+			.gallery-slide {
+				display: flex;
+				flex-direction: column;
+
+				.slide-image-container {
+					aspect-ratio: auto !important;
+					flex-shrink: 0;
+
+					img {
+						width: 100%;
+						height: auto;
+						display: block;
+					}
+				}
+
+				.slide-caption {
+					position: relative !important;
+					bottom: auto !important;
+					background: #f8f9fa;
+					color: #333;
+					border-top: 3px solid #007cba;
+					padding: 20px;
+
+					.caption-content {
+						color: #333;
+					}
+				}
+			}
+		}
+	}
 }

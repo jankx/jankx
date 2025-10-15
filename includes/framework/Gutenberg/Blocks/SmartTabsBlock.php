@@ -44,6 +44,8 @@ class SmartTabsBlock extends Block
         $style_type = $attributes['styleType'] ?? 'default';
         $active_tab = $attributes['activeTab'] ?? 0;
         $tab_alignment = $attributes['tabAlignment'] ?? 'left';
+        $hide_tabs_border_bottom = $attributes['hideTabsBorderBottom'] ?? false;
+        $center_navigation = $attributes['centerNavigation'] ?? false;
         $class_name = $attributes['className'] ?? '';
         $anchor = $attributes['anchor'] ?? '';
 
@@ -53,6 +55,15 @@ class SmartTabsBlock extends Block
             'smart-tabs--' . esc_attr($tab_type),
             'smart-tabs--style-' . esc_attr($style_type),
         ];
+
+        // Add conditional classes
+        if ($hide_tabs_border_bottom) {
+            $wrapper_classes[] = 'smart-tabs--hide-border-bottom';
+        }
+
+        if ($center_navigation) {
+            $wrapper_classes[] = 'smart-tabs--center-navigation';
+        }
 
         if (!empty($class_name)) {
             $wrapper_classes[] = esc_attr($class_name);

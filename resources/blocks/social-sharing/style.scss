@@ -1,3 +1,5 @@
+@use "sass:color";
+
 .wp-block-jankx-social-sharing {
     margin: 2rem 0;
 
@@ -91,47 +93,47 @@
 
         &.facebook {
             background: #1877f2;
-            &:hover { background: darken(#1877f2, 10%); }
+            &:hover { background: color.adjust(#1877f2, $lightness: -10%); }
         }
 
         &.twitter {
             background: #1da1f2;
-            &:hover { background: darken(#1da1f2, 10%); }
+            &:hover { background: color.adjust(#1da1f2, $lightness: -10%); }
         }
 
         &.linkedin {
             background: #0077b5;
-            &:hover { background: darken(#0077b5, 10%); }
+            &:hover { background: color.adjust(#0077b5, $lightness: -10%); }
         }
 
         &.whatsapp {
             background: #25d366;
-            &:hover { background: darken(#25d366, 10%); }
+            &:hover { background: color.adjust(#25d366, $lightness: -10%); }
         }
 
         &.telegram {
             background: #0088cc;
-            &:hover { background: darken(#0088cc, 10%); }
+            &:hover { background: color.adjust(#0088cc, $lightness: -10%); }
         }
 
         &.pinterest {
             background: #bd081c;
-            &:hover { background: darken(#bd081c, 10%); }
+            &:hover { background: color.adjust(#bd081c, $lightness: -10%); }
         }
 
         &.reddit {
             background: #ff4500;
-            &:hover { background: darken(#ff4500, 10%); }
+            &:hover { background: color.adjust(#ff4500, $lightness: -10%); }
         }
 
         &.email {
             background: #666;
-            &:hover { background: darken(#666, 10%); }
+            &:hover { background: color.adjust(#666, $lightness: -10%); }
         }
 
         &.copy {
             background: #999;
-            &:hover { background: darken(#999, 10%); }
+            &:hover { background: color.adjust(#999, $lightness: -10%); }
         }
     }
 
