@@ -3,11 +3,11 @@
 namespace Jankx\Services;
 
 use Jankx\Foundation\Application;
+use Jankx\Facades\Log;
 use Jankx\Gutenberg\Blocks\AdvancedFiltersBlock;
 use Jankx\Gutenberg\Blocks\AdvancedImageBoxBlock;
 use Jankx\Gutenberg\Blocks\ModalBlock;
 use Jankx\Gutenberg\Blocks\PostTypeLayoutBlock;
-use Jankx\Gutenberg\Blocks\DynamicQueryBlock;
 use Jankx\Gutenberg\Blocks\IconPickerBlock;
 use Jankx\Gutenberg\Blocks\ButtonBlock;
 use Jankx\Gutenberg\Blocks\LanguageSwitcherBlock;
@@ -27,9 +27,9 @@ use Jankx\Gutenberg\Blocks\SwiperBlock;
 use Jankx\Gutenberg\Blocks\SwiperSlideBlock;
 use Jankx\Gutenberg\Blocks\AuthorBoxBlock;
 use Jankx\Gutenberg\Blocks\SocialSharingBlock;
-use Jankx\Gutenberg\Blocks\WordPressCoreFilterBlock; // Filter service, not a block
+use Jankx\Gutenberg\Blocks\SocialSharingIconBlock;
+use Jankx\Gutenberg\Blocks\WordPressCoreFilterBlock;
 use Jankx\Gutenberg\GutenbergPattern;
-use Jankx\Facades\Log;
 
 /**
  * Gutenberg Service
@@ -141,7 +141,6 @@ class GutenbergService
         $this->repository->registerBlock(WplyrMediaBlock::class);
         $this->repository->registerBlock(AdvancedImageBoxBlock::class);
         $this->repository->registerBlock(MagicTextBlock::class);
-        $this->repository->registerBlock(TableOfContentBlock::class);
         $this->repository->registerBlock(AdvancedFiltersBlock::class);
         $this->repository->registerBlock(ModalBlock::class);
         $this->repository->registerBlock(DatePickerCalendarBlock::class);
@@ -151,7 +150,9 @@ class GutenbergService
         $this->repository->registerBlock(SwiperSlideBlock::class);
         $this->repository->registerBlock(AuthorBoxBlock::class);
         $this->repository->registerBlock(SocialSharingBlock::class);
+        $this->repository->registerBlock(SocialSharingIconBlock::class);
         $this->repository->registerBlock(SmartBreadcrumbBlock::class);
+        $this->repository->registerBlock(TableOfContentBlock::class);
         // $this->repository->registerBlock(WordPressCoreFilterBlock::class);
     }
 

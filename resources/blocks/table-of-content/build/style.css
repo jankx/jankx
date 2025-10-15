@@ -1,415 +1,178 @@
-/*!***********************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./blocks/table-of-content/src/style.css ***!
-  \***********************************************************************************************************************************/
-/* Table of Contents Block Styles */
-
+/*!*******************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/table-of-content/src/style.scss ***!
+  \*******************************************************************************************************************************************************************************************************/
+@charset "UTF-8";
 .wp-block-jankx-table-of-content {
-    margin: 1.5em 0;
+  margin: 1.5em 0;
 }
 
 .toc-title {
-    margin-bottom: 0.5em;
-    font-weight: 600;
+  margin-bottom: 0.5em;
+  font-weight: 600;
 }
 
 .toc-list {
-    list-style: none;
-    padding-left: 0;
-    margin: 0;
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
 }
 
 .toc-list:not(.no-indent) {
-    padding-left: 1.5em;
+  padding-left: 1.5em;
 }
 
 .toc-list li {
-    margin-bottom: 0.25em;
+  margin-bottom: 0.25em;
 }
 
 .toc-list a {
-    text-decoration: none;
-    color: inherit;
-    display: block;
-    padding: 0.25em 0;
-    transition: all 0.2s ease;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  padding: 0.25em 0;
+  transition: all 0.2s ease;
 }
 
 .toc-list a:hover {
-    color: var(--wp--preset--color--primary, #0073aa);
+  color: var(--wp--preset--color--primary, #0073aa);
 }
 
-/* Nested lists */
 .toc-list ul,
 .toc-list ol {
-    margin-top: 0.25em;
-    margin-bottom: 0;
+  margin-top: 0.25em;
+  margin-bottom: 0;
 }
 
-/* Hidden/Accordion styles */
-.toc-hidden {
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 1em;
-    background-color: #f9f9f9;
+.wp-block-jankx-table-of-content.marker-list .toc-list {
+  list-style-type: disc;
 }
 
-.toc-accordion {
-    /* Additional accordion styles can be added here */
+.wp-block-jankx-table-of-content.marker-list .toc-list ul {
+  list-style-type: circle;
 }
 
-/* ==================== Style Presets - List Marker Styles ==================== */
-
-/* Default Style - Standard Disc Markers */
-.wp-block-jankx-table-of-content.toc-style-default .toc-list {
-    list-style-type: disc;
+.wp-block-jankx-table-of-content.marker-list .toc-list ul ul {
+  list-style-type: square;
 }
 
-.wp-block-jankx-table-of-content.toc-style-default .toc-list ul {
-    list-style-type: circle;
+.wp-block-jankx-table-of-content.marker-numbers .toc-list {
+  list-style-type: decimal;
 }
 
-.wp-block-jankx-table-of-content.toc-style-default .toc-list ul ul {
-    list-style-type: square;
+.wp-block-jankx-table-of-content.marker-numbers .toc-list ul {
+  list-style-type: lower-alpha;
 }
 
-/* Boxed Style - Numbered Markers */
-.wp-block-jankx-table-of-content.toc-style-boxed {
-    background: #f8f9fa;
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    padding: 1.5em;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+.wp-block-jankx-table-of-content.marker-numbers .toc-list ul ul {
+  list-style-type: lower-roman;
 }
 
-.wp-block-jankx-table-of-content.toc-style-boxed .toc-title {
-    padding-bottom: 0.75em;
-    border-bottom: 2px solid #dee2e6;
-    margin-bottom: 1em;
+.wp-block-jankx-table-of-content.marker-circles .toc-list {
+  list-style: none;
 }
 
-.wp-block-jankx-table-of-content.toc-style-boxed .toc-list {
-    list-style-type: decimal;
+.wp-block-jankx-table-of-content.marker-circles .toc-list li {
+  position: relative;
+  padding-left: 1.5em;
 }
 
-.wp-block-jankx-table-of-content.toc-style-boxed .toc-list ul {
-    list-style-type: lower-alpha;
+.wp-block-jankx-table-of-content.marker-circles .toc-list li::before {
+  content: "○";
+  position: absolute;
+  left: 0;
+  color: var(--wp--preset--color--primary, #0073aa);
+  font-weight: bold;
 }
 
-.wp-block-jankx-table-of-content.toc-style-boxed .toc-list ul ul {
-    list-style-type: lower-roman;
+.wp-block-jankx-table-of-content.marker-circles .toc-list ul li::before {
+  content: "●";
+  font-size: 0.8em;
 }
 
-/* Minimal Style - No Markers */
-.wp-block-jankx-table-of-content.toc-style-minimal {
-    padding: 0;
+.wp-block-jankx-table-of-content.marker-circles .toc-list ul ul li::before {
+  content: "◐";
+  font-size: 0.7em;
 }
 
-.wp-block-jankx-table-of-content.toc-style-minimal .toc-title {
-    font-size: 0.9em;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #6c757d;
-    font-weight: 500;
+.wp-block-jankx-table-of-content.marker-roman .toc-list {
+  list-style: none;
+  counter-reset: toc-counter;
 }
 
-.wp-block-jankx-table-of-content.toc-style-minimal .toc-list {
-    list-style: none;
+.wp-block-jankx-table-of-content.marker-roman .toc-list li {
+  counter-increment: toc-counter;
+  position: relative;
+  padding-left: 2em;
 }
 
-.wp-block-jankx-table-of-content.toc-style-minimal .toc-list a {
-    padding: 0.15em 0;
-    font-size: 0.95em;
+.wp-block-jankx-table-of-content.marker-roman .toc-list li::before {
+  content: counter(toc-counter, upper-roman) ".";
+  position: absolute;
+  left: 0;
+  color: var(--wp--preset--color--primary, #0073aa);
+  font-weight: bold;
 }
 
-/* Bordered Style - Arrow Markers */
-.wp-block-jankx-table-of-content.toc-style-bordered {
-    border-left: 4px solid var(--wp--preset--color--primary, #0073aa);
-    padding-left: 1.5em;
-    background: linear-gradient(to right, rgba(0, 115, 170, 0.03) 0%, transparent 100%);
+.wp-block-jankx-table-of-content.marker-roman .toc-list ul {
+  counter-reset: toc-counter-2;
 }
 
-.wp-block-jankx-table-of-content.toc-style-bordered .toc-title {
-    color: var(--wp--preset--color--primary, #0073aa);
+.wp-block-jankx-table-of-content.marker-roman .toc-list ul li {
+  counter-increment: toc-counter-2;
 }
 
-.wp-block-jankx-table-of-content.toc-style-bordered .toc-list {
-    list-style: none;
+.wp-block-jankx-table-of-content.marker-roman .toc-list ul li::before {
+  content: counter(toc-counter-2, lower-alpha) ".";
+  color: var(--wp--preset--color--secondary, #666);
 }
 
-.wp-block-jankx-table-of-content.toc-style-bordered .toc-list li {
-    position: relative;
-    padding-left: 1.2em;
+.wp-block-jankx-table-of-content.marker-roman .toc-list ul ul {
+  counter-reset: toc-counter-3;
 }
 
-.wp-block-jankx-table-of-content.toc-style-bordered .toc-list li::before {
-    content: "→";
-    position: absolute;
-    left: 0;
-    color: var(--wp--preset--color--primary, #0073aa);
-    font-weight: bold;
+.wp-block-jankx-table-of-content.marker-roman .toc-list ul ul li {
+  counter-increment: toc-counter-3;
 }
 
-.wp-block-jankx-table-of-content.toc-style-bordered .toc-list ul li::before {
-    content: "▶";
-    font-size: 0.8em;
+.wp-block-jankx-table-of-content.marker-roman .toc-list ul ul li::before {
+  content: counter(toc-counter-3, lower-roman) ".";
+  color: var(--wp--preset--color--tertiary, #999);
 }
 
-.wp-block-jankx-table-of-content.toc-style-bordered .toc-list ul ul li::before {
-    content: "▷";
-    font-size: 0.7em;
+.wp-block-jankx-table-of-content.marker-plus-minus .toc-list {
+  list-style: none;
 }
 
-/* Card Style - Check Markers */
-.wp-block-jankx-table-of-content.toc-style-card {
-    background: #ffffff;
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
-    padding: 2em;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.06);
+.wp-block-jankx-table-of-content.marker-plus-minus .toc-list li {
+  position: relative;
+  padding-left: 1.5em;
 }
 
-.wp-block-jankx-table-of-content.toc-style-card .toc-title {
-    font-size: 1.2em;
-    margin-bottom: 1em;
-    color: #2c3e50;
+.wp-block-jankx-table-of-content.marker-plus-minus .toc-list li::before {
+  content: "+";
+  position: absolute;
+  left: 0;
+  color: var(--wp--preset--color--primary, #0073aa);
+  font-weight: bold;
+  font-size: 1.1em;
 }
 
-.wp-block-jankx-table-of-content.toc-style-card .toc-list {
-    list-style: none;
+.wp-block-jankx-table-of-content.marker-plus-minus .toc-list ul li::before {
+  content: "−";
+  color: var(--wp--preset--color--secondary, #666);
+  font-size: 1em;
 }
 
-.wp-block-jankx-table-of-content.toc-style-card .toc-list li {
-    position: relative;
-    padding-left: 1.5em;
+.wp-block-jankx-table-of-content.marker-plus-minus .toc-list ul ul li::before {
+  content: "•";
+  color: var(--wp--preset--color--tertiary, #999);
+  font-size: 0.9em;
 }
 
-.wp-block-jankx-table-of-content.toc-style-card .toc-list li::before {
-    content: "✓";
-    position: absolute;
-    left: 0;
-    color: #28a745;
-    font-weight: bold;
-}
-
-.wp-block-jankx-table-of-content.toc-style-card .toc-list ul li::before {
-    content: "○";
-    color: #6c757d;
-}
-
-.wp-block-jankx-table-of-content.toc-style-card .toc-list ul ul li::before {
-    content: "▪";
-    color: #adb5bd;
-}
-
-.wp-block-jankx-table-of-content.toc-style-card .toc-list a:hover {
-    padding-left: 0.5em;
-    color: var(--wp--preset--color--primary, #0073aa);
-}
-
-/* Highlight Style - Star Markers */
-.wp-block-jankx-table-of-content.toc-style-highlight {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: #ffffff;
-    padding: 1.5em;
-    border-radius: 10px;
-}
-
-.wp-block-jankx-table-of-content.toc-style-highlight .toc-title {
-    color: #ffffff;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
-    padding-bottom: 0.5em;
-}
-
-.wp-block-jankx-table-of-content.toc-style-highlight .toc-list {
-    list-style: none;
-}
-
-.wp-block-jankx-table-of-content.toc-style-highlight .toc-list li {
-    position: relative;
-    padding-left: 1.5em;
-}
-
-.wp-block-jankx-table-of-content.toc-style-highlight .toc-list li::before {
-    content: "★";
-    position: absolute;
-    left: 0;
-    color: #ffd700;
-    font-weight: bold;
-}
-
-.wp-block-jankx-table-of-content.toc-style-highlight .toc-list ul li::before {
-    content: "☆";
-    color: rgba(255, 215, 0, 0.8);
-}
-
-.wp-block-jankx-table-of-content.toc-style-highlight .toc-list ul ul li::before {
-    content: "✦";
-    color: rgba(255, 215, 0, 0.6);
-    font-size: 0.9em;
-}
-
-.wp-block-jankx-table-of-content.toc-style-highlight .toc-list a {
-    color: rgba(255, 255, 255, 0.9);
-}
-
-.wp-block-jankx-table-of-content.toc-style-highlight .toc-list a:hover {
-    color: #ffffff;
-    background: rgba(255, 255, 255, 0.1);
-    padding-left: 0.5em;
-    border-radius: 4px;
-}
-
-/* Dark Red Style */
-.wp-block-jankx-table-of-content.toc-style-dark-red {
-    background: #8B0000; /* Dark red background */
-    color: #ffffff;
-    padding: 1.5em;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(139, 0, 0, 0.3);
-}
-
-.wp-block-jankx-table-of-content.toc-style-dark-red .toc-title {
-    color: #ffffff;
-    font-weight: 700;
-    margin-bottom: 1em;
-    font-size: 1.1em;
-}
-
-.wp-block-jankx-table-of-content.toc-style-dark-red .toc-list {
-    padding-left: 0;
-    list-style: none;
-}
-
-.wp-block-jankx-table-of-content.toc-style-dark-red .toc-list:not(.no-indent) {
-    padding-left: 1.2em;
-}
-
-/* Custom list markers for Dark Red style */
-.wp-block-jankx-table-of-content.toc-style-dark-red .toc-list li {
-    position: relative;
-    margin-bottom: 0.2em;
-    padding-left: 1.5em;
-}
-
-.wp-block-jankx-table-of-content.toc-style-dark-red .toc-list li::before {
-    content: "+";
-    position: absolute;
-    left: 0;
-    top: 0;
-    color: rgba(255, 255, 255, 0.7);
-    font-weight: bold;
-    font-size: 1.1em;
-    line-height: 1.4;
-}
-
-/* Nested items use different markers */
-.wp-block-jankx-table-of-content.toc-style-dark-red .toc-list ul li::before,
-.wp-block-jankx-table-of-content.toc-style-dark-red .toc-list ol li::before {
-    content: "−";
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 1em;
-}
-
-/* Third level uses different marker */
-.wp-block-jankx-table-of-content.toc-style-dark-red .toc-list ul ul li::before,
-.wp-block-jankx-table-of-content.toc-style-dark-red .toc-list ol ol li::before {
-    content: "•";
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 0.9em;
-}
-
-.wp-block-jankx-table-of-content.toc-style-dark-red .toc-list a {
-    color: rgba(255, 255, 255, 0.85);
-    padding: 0.3em 0;
-    display: block;
-    transition: all 0.2s ease;
-    border-radius: 3px;
-    text-decoration: none;
-}
-
-.wp-block-jankx-table-of-content.toc-style-dark-red .toc-list a:hover {
-    color: #ffffff;
-    background: rgba(255, 255, 255, 0.1);
-    padding-left: 0.5em;
-}
-
-/* Nested items in dark red style */
-.wp-block-jankx-table-of-content.toc-style-dark-red .toc-list ul,
-.wp-block-jankx-table-of-content.toc-style-dark-red .toc-list ol {
-    margin-top: 0.2em;
-    margin-bottom: 0;
-    padding-left: 0;
-}
-
-/* Override default list styles for ordered lists in dark red */
-.wp-block-jankx-table-of-content.toc-style-dark-red .toc-list ol {
-    list-style: none;
-    counter-reset: toc-counter;
-}
-
-.wp-block-jankx-table-of-content.toc-style-dark-red .toc-list ol li {
-    counter-increment: toc-counter;
-}
-
-.wp-block-jankx-table-of-content.toc-style-dark-red .toc-list ol li::before {
-    content: counter(toc-counter) ".";
-    color: rgba(255, 255, 255, 0.7);
-    font-weight: bold;
-    font-size: 1em;
-}
-
-/* Nested ordered lists */
-.wp-block-jankx-table-of-content.toc-style-dark-red .toc-list ol ol {
-    counter-reset: toc-counter-2;
-}
-
-.wp-block-jankx-table-of-content.toc-style-dark-red .toc-list ol ol li {
-    counter-increment: toc-counter-2;
-}
-
-.wp-block-jankx-table-of-content.toc-style-dark-red .toc-list ol ol li::before {
-    content: counter(toc-counter-2, lower-alpha) ".";
-    color: rgba(255, 255, 255, 0.6);
-}
-
-/* Third level ordered lists */
-.wp-block-jankx-table-of-content.toc-style-dark-red .toc-list ol ol ol {
-    counter-reset: toc-counter-3;
-}
-
-.wp-block-jankx-table-of-content.toc-style-dark-red .toc-list ol ol ol li {
-    counter-increment: toc-counter-3;
-}
-
-.wp-block-jankx-table-of-content.toc-style-dark-red .toc-list ol ol ol li::before {
-    content: counter(toc-counter-3, lower-roman) ".";
-    color: rgba(255, 255, 255, 0.5);
-}
-
-/* ==================== Font Size Variants ==================== */
-
-.wp-block-jankx-table-of-content.toc-font-small {
-    font-size: 0.875em;
-}
-
-.wp-block-jankx-table-of-content.toc-font-medium {
-    font-size: 1em;
-}
-
-.wp-block-jankx-table-of-content.toc-font-large {
-    font-size: 1.125em;
-}
-
-/* Responsive */
 @media (max-width: 768px) {
-    .toc-list:not(.no-indent) {
-        padding-left: 1em;
-    }
-
-    .wp-block-jankx-table-of-content.toc-style-boxed,
-    .wp-block-jankx-table-of-content.toc-style-card {
-        padding: 1em;
-    }
+  .toc-list:not(.no-indent) {
+    padding-left: 1em;
+  }
 }
 
 /*# sourceMappingURL=style.css.map*/

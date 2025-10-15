@@ -14,24 +14,41 @@
 			"background": true,
 			"text": true,
 			"gradients": true,
-			"link": true
+			"link": true,
+			"__experimentalDefaultControls": {
+				"background": true,
+				"text": true
+			}
 		},
 		"spacing": {
 			"margin": true,
 			"padding": true,
-			"blockGap": true
+			"blockGap": true,
+			"__experimentalDefaultControls": {
+				"margin": true,
+				"padding": true
+			}
 		},
 		"border": {
 			"color": true,
 			"radius": true,
 			"style": true,
-			"width": true
+			"width": true,
+			"__experimentalDefaultControls": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true
+			}
 		},
 		"background": {
 			"backgroundImage": true,
 			"backgroundPosition": true,
 			"backgroundRepeat": true,
-			"backgroundSize": true
+			"backgroundSize": true,
+			"__experimentalDefaultControls": {
+				"backgroundImage": true
+			}
 		},
 		"dimensions": {
 			"minHeight": true
@@ -44,73 +61,58 @@
 			"fontStyle": true,
 			"textTransform": true,
 			"textDecoration": true,
-			"letterSpacing": true
+			"letterSpacing": true,
+			"__experimentalDefaultControls": {
+				"fontSize": true,
+				"fontWeight": true
+			}
 		}
 	},
 	"description": "Hiển thị mục lục tự động từ các heading trong bài viết.",
 	"attributes": {
-		"no_title": {
-			"type": "boolean",
-			"default": false
+		"title": {
+			"type": "string",
+			"default": "Table of Contents"
 		},
-		"title_level": {
-			"type": "integer",
+		"showTitle": {
+			"type": "boolean",
+			"default": true
+		},
+		"titleLevel": {
+			"type": "number",
 			"default": 2
 		},
-		"title_text": {
-			"type": "string"
-		},
-		"use_ol": {
-			"type": "boolean",
-			"default": false
-		},
-		"remove_indent": {
-			"type": "boolean",
-			"default": false
-		},
-		"add_smooth": {
-			"type": "boolean",
-			"default": false
-		},
-		"use_absolute_urls": {
-			"type": "boolean",
-			"default": false
-		},
-		"max_level": {
-			"type": "integer",
-			"default": 6
-		},
-		"min_level": {
-			"type": "integer",
+		"minLevel": {
+			"type": "number",
 			"default": 1
 		},
-		"updated": {
-			"type": "integer"
+		"maxLevel": {
+			"type": "number",
+			"default": 6
 		},
-		"accordion": {
+		"markerStyle": {
+			"type": "string",
+			"default": "list"
+		},
+		"useNumbers": {
 			"type": "boolean",
 			"default": false
 		},
-		"hidden": {
+		"removeIndent": {
 			"type": "boolean",
 			"default": false
 		},
-		"wrapper": {
+		"smoothScroll": {
 			"type": "boolean",
 			"default": false
 		},
-	"autoupdate": {
-		"type": "boolean",
-		"default": true
+		"absoluteUrls": {
+			"type": "boolean",
+			"default": false
+		}
 	},
-	"stylePreset": {
-		"type": "string",
-		"default": "default"
-	}
-},
-"textdomain": "jankx",
+	"textdomain": "jankx",
 	"editorScript": "file:./build/index.js",
 	"editorStyle": "file:./build/editor.css",
-	"style": "file:./build/style.css",
-	"render": "file:./render.php"
+	"style": "file:./build/style.css"
 }

@@ -3,91 +3,149 @@ namespace Jankx\Gutenberg\Blocks;
 
 use Jankx\Gutenberg\Block;
 
-class TableOfContentBlock extends Block {
+/**
+ * Table of Contents Block
+ *
+ * @package Jankx\Gutenberg\Blocks
+ * @since 1.0.0
+ */
+class TableOfContentBlock extends Block
+{
     protected $blockId = 'jankx/table-of-content';
 
-    public function init() {
-        // Register REST endpoint for server-side rendering
-        add_action('rest_api_init', [$this, 'registerRestEndpoint']);
+    public function __construct()
+    {
+        parent::__construct();
 
-        // Enqueue block assets if needed
-        add_action('wp_enqueue_scripts', [$this, 'enqueueAssets']);
+        // Add anchor IDs to headings
+        add_filter('the_content', [$this, 'addHeadingAnchors'], 20);
     }
 
-    public function registerRestEndpoint() {
-        register_rest_route('wp/v2', '/block-renderer/' . $this->blockId, [
-            'methods' => 'GET',
-            'callback' => [$this, 'renderBlock'],
-            'permission_callback' => '__return_true',
-            'args' => [
-                'context' => [
-                    'default' => 'view',
-                    'type' => 'string',
-                ],
-                'attributes' => [
-                    'default' => [],
-                    'type' => 'object',
-                ],
-            ],
-        ]);
-    }
+    public function render($attributes, $content = '', $block = null)
+    {
+        // Get block attributes with defaults
+        $title = $attributes['title'] ?? __('Table of Contents', 'jankx');
+        $show_title = $attributes['showTitle'] ?? true;
+        $title_level = $attributes['titleLevel'] ?? 2;
+        $min_level = $attributes['minLevel'] ?? 1;
+        $max_level = $attributes['maxLevel'] ?? 6;
+        $marker_style = $attributes['markerStyle'] ?? 'list';
+        $use_numbers = $attributes['useNumbers'] ?? false;
+        $remove_indent = $attributes['removeIndent'] ?? false;
+        $smooth_scroll = $attributes['smoothScroll'] ?? false;
+        $absolute_urls = $attributes['absoluteUrls'] ?? false;
 
-    public function renderBlock($request) {
-        $attributes = $request->get_param('attributes');
-        $context = $request->get_param('context');
-
-        // Set default values
-        $no_title = $attributes['no_title'] ?? false;
-        $title_level = $attributes['title_level'] ?? 2;
-        $title_text = $attributes['title_text'] ?? __('Table of Contents', 'jankx');
-        $use_ol = $attributes['use_ol'] ?? false;
-        $remove_indent = $attributes['remove_indent'] ?? false;
-        $add_smooth = $attributes['add_smooth'] ?? false;
-        $use_absolute_urls = $attributes['use_absolute_urls'] ?? false;
-        $max_level = $attributes['max_level'] ?? 6;
-        $min_level = $attributes['min_level'] ?? 1;
-        $hidden = $attributes['hidden'] ?? false;
-        $accordion = $attributes['accordion'] ?? false;
-        $wrapper = $attributes['wrapper'] ?? false;
-
-        // Style attributes
-        $stylePreset = $attributes['stylePreset'] ?? 'default';
-
-        // Check if we're in template editor context via AJAX
-        $is_template_editor = $context === 'edit' && (
-            (isset($_SERVER['HTTP_REFERER']) && (
-                strpos($_SERVER['HTTP_REFERER'], 'post_type=wp_template') !== false ||
-                strpos($_SERVER['HTTP_REFERER'], 'post_type=wp_template_part') !== false ||
-                strpos($_SERVER['HTTP_REFERER'], 'page=gutenberg-edit-site') !== false ||
-                strpos($_SERVER['HTTP_REFERER'], '/wp-admin/site-editor.php') !== false ||
-                strpos($_SERVER['HTTP_REFERER'], '/wp-admin/themes.php') !== false
-            ))
+        // Check if we're in template editor context
+        $is_template_editor = (
+            is_admin() &&
+            (isset($_GET['post_type']) && in_array($_GET['post_type'], ['wp_template', 'wp_template_part'])) ||
+            (isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], 'site-editor.php') !== false)
         );
 
-        // If in template editor, return fake data for preview
-        if ($is_template_editor) {
-            return new \WP_REST_Response([
-                'rendered' => $this->generateFakeTOC($attributes)
-            ], 200);
-        }
-
-        // Get post content
+        // Get current post content
         $post_id = get_the_ID();
-        if (!$post_id) {
-            return new \WP_REST_Response([
-                'rendered' => '<p>' . __('No post content available', 'jankx') . '</p>'
-            ], 200);
+        $post_content = '';
+
+        if ($post_id) {
+            $post_content = get_post_field('post_content', $post_id);
         }
 
-        $post_content = get_post_field('post_content', $post_id);
-        if (empty($post_content)) {
-            return new \WP_REST_Response([
-                'rendered' => '<p>' . __('No headings found in this post', 'jankx') . '</p>'
-            ], 200);
+        // If in template editor or no content, use sample headings
+        if ($is_template_editor || empty($post_content)) {
+            $headings = $this->generateSampleHeadings($min_level, $max_level);
+        } else {
+            $headings = $this->extractHeadingsFromContent($post_content, $min_level, $max_level);
         }
 
-        // Extract headings from content
-        $headings = array();
+        // If no headings found, return empty
+        if (empty($headings)) {
+            return '<p>' . __('No headings found in this post', 'jankx') . '</p>';
+        }
+
+        // Build CSS classes
+        $classes = ['wp-block-jankx-table-of-content'];
+        if ($marker_style !== 'list') {
+            $classes[] = 'marker-' . sanitize_html_class($marker_style);
+        }
+        if ($use_numbers) {
+            $classes[] = 'use-numbers';
+        }
+        if ($remove_indent) {
+            $classes[] = 'no-indent';
+        }
+
+        // Get WordPress block wrapper attributes
+        $wrapper_attributes = get_block_wrapper_attributes([
+            'class' => implode(' ', $classes)
+        ]);
+
+        // Start output
+        ob_start();
+        ?>
+        <div <?php echo $wrapper_attributes; ?>>
+            <?php if ($smooth_scroll): ?>
+                <style>html { scroll-behavior: smooth; }</style>
+            <?php endif; ?>
+
+            <?php if ($show_title): ?>
+                <h<?php echo $title_level; ?> class="toc-title"><?php echo esc_html($title); ?></h<?php echo $title_level; ?>>
+            <?php endif; ?>
+
+            <?php
+            // Determine list type
+            $list_tag = ($use_numbers || $marker_style === 'numbers') ? 'ol' : 'ul';
+            $list_class = 'toc-list';
+            if ($remove_indent) {
+                $list_class .= ' no-indent';
+            }
+            ?>
+
+            <<?php echo $list_tag; ?> class="<?php echo esc_attr($list_class); ?>">
+                <?php
+                $current_level = $min_level;
+                foreach ($headings as $heading) {
+                    $level = $heading['level'];
+                    $text = $heading['text'];
+                    $id = $heading['id'];
+
+                    // Generate URL
+                    if ($absolute_urls) {
+                        $url = get_permalink() . '#' . $id;
+                    } else {
+                        $url = '#' . $id;
+                    }
+
+                    // Add list items for missing levels
+                    while ($current_level < $level) {
+                        echo '<li><' . $list_tag . '>';
+                        $current_level++;
+                    }
+
+                    // Close list items for higher levels
+                    while ($current_level > $level) {
+                        echo '</' . $list_tag . '></li>';
+                        $current_level--;
+                    }
+
+                    // Add current heading
+                    echo '<li><a href="' . esc_url($url) . '">' . esc_html($text) . '</a></li>';
+                }
+
+                // Close remaining list items
+                while ($current_level > $min_level) {
+                    echo '</' . $list_tag . '></li>';
+                    $current_level--;
+                }
+                ?>
+            </<?php echo $list_tag; ?>>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    private function extractHeadingsFromContent($post_content, $min_level, $max_level)
+    {
+        $headings = [];
         $pattern = '/<h([1-6])[^>]*>(.*?)<\/h[1-6]>/i';
         preg_match_all($pattern, $post_content, $matches, PREG_SET_ORDER);
 
@@ -98,157 +156,20 @@ class TableOfContentBlock extends Block {
             // Check if heading level is within range
             if ($level >= $min_level && $level <= $max_level) {
                 $id = sanitize_title($text);
-                $headings[] = array(
+                $headings[] = [
                     'level' => $level,
                     'text' => $text,
                     'id' => $id
-                );
+                ];
             }
         }
 
-        // If no headings found, return empty
-        if (empty($headings)) {
-            return new \WP_REST_Response([
-                'rendered' => '<p>' . __('No headings found in this post', 'jankx') . '</p>'
-            ], 200);
-        }
-
-        // Generate CSS classes and inline styles using WordPress core styling
-        $classes = ['wp-block-jankx-table-of-content'];
-        $inline_styles = [];
-
-        // Add style preset class
-        if ($stylePreset && $stylePreset !== 'default') {
-            $classes[] = 'toc-style-' . sanitize_html_class($stylePreset);
-        }
-
-        // WordPress core styling attributes (if function exists)
-        if (function_exists('wp_style_engine_get_styles')) {
-            $style_attributes = wp_style_engine_get_styles($attributes, [
-                'selector' => '.wp-block-jankx-table-of-content',
-                'context' => 'block-supports',
-            ]);
-
-            // Add core styling classes
-            if (!empty($style_attributes['classnames'])) {
-                $classes = array_merge($classes, explode(' ', $style_attributes['classnames']));
-            }
-
-            // Add core styling inline styles
-            if (!empty($style_attributes['css'])) {
-                $inline_styles[] = $style_attributes['css'];
-            }
-        }
-
-
-        $class_attr = implode(' ', array_unique($classes));
-        $style_attr = !empty($inline_styles) ? ' style="' . implode('; ', $inline_styles) . '"' : '';
-
-        // Generate TOC HTML
-        $toc_html = '';
-
-        // Add smooth scrolling CSS if enabled
-        if ($add_smooth) {
-            $toc_html .= '<style>html { scroll-behavior: smooth; }</style>';
-        }
-
-        // Start main wrapper with classes and styles
-        $toc_html .= '<div class="' . esc_attr($class_attr) . '"' . $style_attr . '>';
-
-        // Start wrapper if enabled
-        if ($wrapper) {
-            $toc_html .= '<nav role="navigation" aria-label="' . esc_attr__('Table of Contents', 'jankx') . '">';
-        }
-
-        // Add title if not disabled
-        if (!$no_title) {
-            $toc_html .= sprintf('<h%d class="toc-title">%s</h%d>', $title_level, esc_html($title_text), $title_level);
-        }
-
-        // Determine list type
-        $list_tag = $use_ol ? 'ol' : 'ul';
-        $toc_html .= '<' . $list_tag . ' class="toc-list' . ($remove_indent ? ' no-indent' : '') . '">';
-
-        $current_level = $min_level;
-        foreach ($headings as $heading) {
-            $level = $heading['level'];
-            $text = $heading['text'];
-            $id = $heading['id'];
-
-            // Generate URL
-            if ($use_absolute_urls) {
-                $url = get_permalink() . '#' . $id;
-            } else {
-                $url = '#' . $id;
-            }
-
-            // Add list items for missing levels
-            while ($current_level < $level) {
-                $toc_html .= '<li><' . $list_tag . '>';
-                $current_level++;
-            }
-
-            // Close list items for higher levels
-            while ($current_level > $level) {
-                $toc_html .= '</' . $list_tag . '></li>';
-                $current_level--;
-            }
-
-            // Add current heading
-            $toc_html .= '<li><a href="' . esc_url($url) . '">' . esc_html($text) . '</a></li>';
-        }
-
-        // Close remaining list items
-        while ($current_level > $min_level) {
-            $toc_html .= '</' . $list_tag . '></li>';
-            $current_level--;
-        }
-
-        $toc_html .= '</' . $list_tag . '>';
-
-        // Close wrapper if enabled
-        if ($wrapper) {
-            $toc_html .= '</nav>';
-        }
-
-        // Close main wrapper div
-        $toc_html .= '</div>';
-
-        // Handle hidden/accordion functionality
-        if ($hidden || $accordion) {
-            $toc_class = 'toc-hidden';
-            if ($accordion) {
-                $toc_class .= ' toc-accordion';
-            }
-
-            $toc_html = '<div class="' . $toc_class . '">' . $toc_html . '</div>';
-        }
-
-        return new \WP_REST_Response([
-            'rendered' => $toc_html
-        ], 200);
+        return $headings;
     }
 
-    private function generateFakeTOC($attributes) {
-        // Set default values
-        $no_title = $attributes['no_title'] ?? false;
-        $title_level = $attributes['title_level'] ?? 2;
-        $title_text = $attributes['title_text'] ?? __('Table of Contents', 'jankx');
-        $use_ol = $attributes['use_ol'] ?? false;
-        $remove_indent = $attributes['remove_indent'] ?? false;
-        $add_smooth = $attributes['add_smooth'] ?? false;
-        $use_absolute_urls = $attributes['use_absolute_urls'] ?? false;
-        $max_level = $attributes['max_level'] ?? 6;
-        $min_level = $attributes['min_level'] ?? 1;
-        $hidden = $attributes['hidden'] ?? false;
-        $accordion = $attributes['accordion'] ?? false;
-        $wrapper = $attributes['wrapper'] ?? false;
-
-        // Style attributes
-        $stylePreset = $attributes['stylePreset'] ?? 'default';
-
-        // Generate fake headings for preview
-        $fake_headings = [
+    private function generateSampleHeadings($min_level, $max_level)
+    {
+        $sample_headings = [
             ['level' => 1, 'text' => 'Giới thiệu', 'id' => 'gioi-thieu'],
             ['level' => 2, 'text' => 'Tính năng chính', 'id' => 'tinh-nang-chinh'],
             ['level' => 3, 'text' => 'Giao diện thân thiện', 'id' => 'giao-dien-than-thien'],
@@ -263,138 +184,45 @@ class TableOfContentBlock extends Block {
         ];
 
         // Filter headings based on min/max level
-        $filtered_headings = array_filter($fake_headings, function($heading) use ($min_level, $max_level) {
+        return array_filter($sample_headings, function($heading) use ($min_level, $max_level) {
             return $heading['level'] >= $min_level && $heading['level'] <= $max_level;
         });
-
-        // Generate CSS classes and inline styles using WordPress core styling
-        $classes = ['wp-block-jankx-table-of-content'];
-        $inline_styles = [];
-
-        // Add style preset class
-        if ($stylePreset && $stylePreset !== 'default') {
-            $classes[] = 'toc-style-' . sanitize_html_class($stylePreset);
-        }
-
-        // WordPress core styling attributes (if function exists)
-        if (function_exists('wp_style_engine_get_styles')) {
-            $style_attributes = wp_style_engine_get_styles($attributes, [
-                'selector' => '.wp-block-jankx-table-of-content',
-                'context' => 'block-supports',
-            ]);
-
-            // Add core styling classes
-            if (!empty($style_attributes['classnames'])) {
-                $classes = array_merge($classes, explode(' ', $style_attributes['classnames']));
-            }
-
-            // Add core styling inline styles
-            if (!empty($style_attributes['css'])) {
-                $inline_styles[] = $style_attributes['css'];
-            }
-        }
-
-
-        $class_attr = implode(' ', array_unique($classes));
-        $style_attr = !empty($inline_styles) ? ' style="' . implode('; ', $inline_styles) . '"' : '';
-
-        // Generate TOC HTML
-        $toc_html = '';
-
-        // Add smooth scrolling CSS if enabled
-        if ($add_smooth) {
-            $toc_html .= '<style>html { scroll-behavior: smooth; }</style>';
-        }
-
-        // Start main wrapper with classes and styles
-        $toc_html .= '<div class="' . esc_attr($class_attr) . '"' . $style_attr . '>';
-
-        // Start wrapper if enabled
-        if ($wrapper) {
-            $toc_html .= '<nav role="navigation" aria-label="' . esc_attr__('Table of Contents', 'jankx') . '">';
-        }
-
-        // Add title if not disabled
-        if (!$no_title) {
-            $toc_html .= sprintf('<h%d class="toc-title">%s</h%d>', $title_level, esc_html($title_text), $title_level);
-        }
-
-        // Determine list type
-        $list_tag = $use_ol ? 'ol' : 'ul';
-        $toc_html .= '<' . $list_tag . ' class="toc-list' . ($remove_indent ? ' no-indent' : '') . '">';
-
-        $current_level = $min_level;
-        foreach ($filtered_headings as $heading) {
-            $level = $heading['level'];
-            $text = $heading['text'];
-            $id = $heading['id'];
-
-            // Generate URL
-            if ($use_absolute_urls) {
-                $url = '#' . $id;
-            } else {
-                $url = '#' . $id;
-            }
-
-            // Add list items for missing levels
-            while ($current_level < $level) {
-                $toc_html .= '<li><' . $list_tag . '>';
-                $current_level++;
-            }
-
-            // Close list items for higher levels
-            while ($current_level > $level) {
-                $toc_html .= '</' . $list_tag . '></li>';
-                $current_level--;
-            }
-
-            // Add current heading
-            $toc_html .= '<li><a href="' . esc_url($url) . '">' . esc_html($text) . '</a></li>';
-        }
-
-        // Close remaining list items
-        while ($current_level > $min_level) {
-            $toc_html .= '</' . $list_tag . '></li>';
-            $current_level--;
-        }
-
-        $toc_html .= '</' . $list_tag . '>';
-
-        // Close wrapper if enabled
-        if ($wrapper) {
-            $toc_html .= '</nav>';
-        }
-
-        // Close main wrapper div
-        $toc_html .= '</div>';
-
-        // Handle hidden/accordion functionality
-        if ($hidden || $accordion) {
-            $toc_class = 'toc-hidden';
-            if ($accordion) {
-                $toc_class .= ' toc-accordion';
-            }
-
-            $toc_html = '<div class="' . $toc_class . '">' . $toc_html . '</div>';
-        }
-
-        // Add preview notice
-        $toc_html .= '<div style="margin-top: 10px; padding: 8px; background: #f0f0f0; border-left: 3px solid #0073aa; font-size: 12px; color: #666;">';
-        $toc_html .= '<strong>' . __('Preview:', 'jankx') . '</strong> ' . __('This is a preview of the Table of Contents. The actual content will be generated from the post headings.', 'jankx');
-        $toc_html .= '</div>';
-
-        return $toc_html;
     }
 
-    public function enqueueAssets() {
-        // Enqueue frontend styles if needed
-        if (is_singular() && has_block('jankx/table-of-content')) {
-            wp_enqueue_style(
-                'jankx-toc-style',
-                get_template_directory_uri() . '/resources/blocks/table-of-content/build/style.css',
-                array(),
-                '1.0.0'
-            );
+    public function addHeadingAnchors($content)
+    {
+        // Only add anchors if TOC block is present
+        if (!has_block('jankx/table-of-content', $content)) {
+            return $content;
         }
+
+        // Add anchor IDs to headings
+        $content = preg_replace_callback(
+            '/<h([1-6])([^>]*)>(.*?)<\/h[1-6]>/i',
+            [$this, 'addAnchorToHeading'],
+            $content
+        );
+
+        return $content;
+    }
+
+    private function addAnchorToHeading($matches)
+    {
+        $level = $matches[1];
+        $attributes = $matches[2];
+        $text = $matches[3];
+
+        // Extract text content (remove HTML tags)
+        $text_content = strip_tags($text);
+
+        // Generate anchor ID
+        $anchor_id = sanitize_title($text_content);
+
+        // Check if ID already exists in attributes
+        if (strpos($attributes, 'id=') === false) {
+            $attributes .= ' id="' . esc_attr($anchor_id) . '"';
+        }
+
+        return '<h' . $level . $attributes . '>' . $text . '</h' . $level . '>';
     }
 }

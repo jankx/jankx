@@ -56,8 +56,8 @@ module.exports = {
     'blocks/magic-text/build/style': './blocks/magic-text/style.scss',
     'blocks/magic-text/build/editor': './blocks/magic-text/editor.scss',
 
-    'blocks/table-of-content/build/index': './blocks/table-of-content/src/index.js',
-    'blocks/table-of-content/build/style': './blocks/table-of-content/src/style.css',
+    'blocks/table-of-content/build/index': './blocks/table-of-content/src/index.tsx',
+    'blocks/table-of-content/build/style': './blocks/table-of-content/src/style.scss',
     'blocks/table-of-content/build/editor': './blocks/table-of-content/src/editor.scss',
 
     'blocks/modal/build/index': './blocks/modal/index.js',
@@ -91,11 +91,14 @@ module.exports = {
     'blocks/social-sharing/build/style': './blocks/social-sharing/style.scss',
     'blocks/social-sharing/build/editor': './blocks/social-sharing/editor.scss',
 
-    'blocks/author-box/build/index': './blocks/author-box/index.tsx',
-    'blocks/author-box/build/save': './blocks/author-box/save.js',
-    'blocks/author-box/build/frontend': './blocks/author-box/frontend.js',
-    'blocks/author-box/build/style': './blocks/author-box/style.scss',
-    'blocks/author-box/build/editor': './blocks/author-box/editor.scss',
+    'blocks/social-sharing-icon/build/index': './blocks/social-sharing-icon/index.tsx',
+    'blocks/social-sharing-icon/build/frontend': './blocks/social-sharing-icon/frontend.ts',
+    'blocks/social-sharing-icon/build/style': './blocks/social-sharing-icon/style.scss',
+    'blocks/social-sharing-icon/build/editor': './blocks/social-sharing-icon/editor.scss',
+
+    'blocks/author-box/build/index': './blocks/author-box/src/index.tsx',
+    'blocks/author-box/build/style': './blocks/author-box/src/style.scss',
+    'blocks/author-box/build/editor': './blocks/author-box/src/editor.scss',
 
     'blocks/gallery-builder/build/index': './blocks/gallery-builder/index.tsx',
     'blocks/gallery-builder/build/view': './blocks/gallery-builder/view.js',
@@ -114,6 +117,10 @@ module.exports = {
     'blocks/smart-breadcrumb/build/index': './blocks/smart-breadcrumb/src/index.js',
     'blocks/smart-breadcrumb/build/style': './blocks/smart-breadcrumb/src/style.scss',
     'blocks/smart-breadcrumb/build/editor': './blocks/smart-breadcrumb/src/editor.scss',
+
+    'blocks/table-of-content/build/index': './blocks/table-of-content/src/index.tsx',
+    'blocks/table-of-content/build/style': './blocks/table-of-content/src/style.scss',
+    'blocks/table-of-content/build/editor': './blocks/table-of-content/src/editor.scss',
   },
   output: {
     path: path.resolve(__dirname),
@@ -137,7 +144,8 @@ module.exports = {
     '@wordpress/element': ['wp', 'element'],
     '@wordpress/data': ['wp', 'data'],
     '@wordpress/core-data': ['wp', 'coreData'],
-    // Swiper will be bundled, not external
+    // Swiper core is external, modules will be bundled
+    'swiper': 'Swiper',
   },
   plugins: [
     new RemoveEmptyScriptsPlugin(),
@@ -181,7 +189,10 @@ module.exports = {
         if (request === 'react-dom') {
           return 'ReactDOM';
         }
-        // Swiper will be bundled, not external
+        if (request === 'swiper') {
+          return 'Swiper';
+        }
+        // Swiper modules will be bundled
       },
     }),
 

@@ -1,0 +1,12 @@
+.wp-block-jankx-social-sharing-icon {
+    // Editor specific overrides if needed
+
+    .sharing-icon-button {
+        cursor: default;
+
+        &:hover {
+            transform: none;
+        }
+    }
+}
+

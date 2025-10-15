@@ -1,113 +1,110 @@
 {
-    "$schema": "https://schemas.wp.org/trunk/block.json",
-    "apiVersion": 3,
-    "name": "jankx/author-box",
-    "title": "Author Box",
-    "category": "jankx",
-    "icon": "admin-users",
-    "description": "Hiển thị thông tin tác giả với avatar, tên và tiểu sử",
-    "keywords": ["author", "profile", "bio", "avatar"],
-    "supports": {
-        "html": false,
-        "align": ["wide", "full"],
-        "spacing": {
-            "margin": true,
-            "padding": true,
-            "blockGap": true
-        },
-        "color": {
-            "text": true,
-            "background": true,
-            "gradients": true,
-            "link": true,
-            "duotone": true
-        },
-        "background": {
-            "backgroundImage": true,
-            "backgroundPosition": true,
-            "backgroundRepeat": true,
-            "backgroundSize": true
-        },
-        "typography": {
-            "fontSize": true,
-            "lineHeight": true,
-            "fontFamily": true,
-            "fontWeight": true,
-            "fontStyle": true,
-            "letterSpacing": true,
-            "textDecoration": true,
-            "textTransform": true
-        },
-        "border": {
-            "color": true,
-            "radius": true,
-            "style": true,
-            "width": true
-        },
-        "dimensions": {
-            "minHeight": true
-        },
-        "layout": {
-            "allowSwitching": false,
-            "allowInheriting": false,
-            "default": {
-                "type": "constrained"
-            }
-        }
-    },
-    "attributes": {
-        "authorId": {
-            "type": "number",
-            "default": 0
-        },
-        "showAvatar": {
-            "type": "boolean",
-            "default": true
-        },
-        "showBio": {
-            "type": "boolean",
-            "default": true
-        },
-        "showSocial": {
-            "type": "boolean",
-            "default": false
-        },
-        "layout": {
-            "type": "string",
-            "default": "horizontal",
-            "enum": ["horizontal", "vertical"]
-        },
-        "avatarSize": {
-            "type": "string",
-            "default": "medium",
-            "enum": ["small", "medium", "large", "xlarge"]
-        },
-        "textAlign": {
-            "type": "string",
-            "default": "left",
-            "enum": ["left", "center", "right"]
-        },
-        "authorTitle": {
-            "type": "string",
-            "default": "Tác giả"
-        },
-        "backgroundColor": {
-            "type": "string",
-            "default": "#8B0000"
-        },
-        "textColor": {
-            "type": "string",
-            "default": "#FFFFFF"
-        },
-        "borderColor": {
-            "type": "string",
-            "default": "#D2B48C"
-        }
-    },
-    "textdomain": "jankx",
-    "editorScript": "file:./build/index.js",
-    "viewScript": "file:./frontend.js",
-    "style": "file:./build/index.css",
-    "editorStyle": "file:./build/index.css",
-    "save": "file:./build/save.js"
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "jankx/author-box",
+	"version": "1.0.0",
+	"title": "Author Box",
+	"category": "widgets",
+	"icon": "admin-users",
+	"keywords": [ "Author", "Profile", "Bio", "Tác giả" ],
+	"supports": {
+		"align": [ "wide", "full" ],
+		"html": false,
+		"color": {
+			"background": true,
+			"text": true,
+			"gradients": true,
+			"link": true,
+			"__experimentalDefaultControls": {
+				"background": true,
+				"text": true
+			}
+		},
+		"spacing": {
+			"margin": true,
+			"padding": true,
+			"blockGap": true,
+			"__experimentalDefaultControls": {
+				"margin": true,
+				"padding": true
+			}
+		},
+		"border": {
+			"color": true,
+			"radius": true,
+			"style": true,
+			"width": true,
+			"__experimentalDefaultControls": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true
+			}
+		},
+		"background": {
+			"backgroundImage": true,
+			"backgroundPosition": true,
+			"backgroundRepeat": true,
+			"backgroundSize": true,
+			"__experimentalDefaultControls": {
+				"backgroundImage": true
+			}
+		},
+		"dimensions": {
+			"minHeight": true
+		},
+		"typography": {
+			"fontSize": true,
+			"lineHeight": true,
+			"fontFamily": true,
+			"fontWeight": true,
+			"fontStyle": true,
+			"textTransform": true,
+			"textDecoration": true,
+			"letterSpacing": true,
+			"__experimentalDefaultControls": {
+				"fontSize": true,
+				"fontWeight": true
+			}
+		}
+	},
+	"description": "Hiển thị thông tin tác giả với avatar, tên, bio và social links.",
+	"attributes": {
+		"authorId": {
+			"type": "number",
+			"default": 0
+		},
+		"showAvatar": {
+			"type": "boolean",
+			"default": true
+		},
+		"avatarSize": {
+			"type": "number",
+			"default": 80
+		},
+		"showBio": {
+			"type": "boolean",
+			"default": true
+		},
+		"showSocial": {
+			"type": "boolean",
+			"default": true
+		},
+		"showPosts": {
+			"type": "boolean",
+			"default": false
+		},
+		"postsCount": {
+			"type": "number",
+			"default": 3
+		},
+		"layout": {
+			"type": "string",
+			"default": "horizontal"
+		}
+	},
+	"textdomain": "jankx",
+	"editorScript": "file:./build/index.js",
+	"editorStyle": "file:./build/editor.css",
+	"style": "file:./build/style.css"
 }

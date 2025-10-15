@@ -61,6 +61,14 @@
     "alignment": {
       "type": "string",
       "default": "left"
+    },
+    "showHeading": {
+      "type": "boolean",
+      "default": true
+    },
+    "headingText": {
+      "type": "string",
+      "default": "Chia sẻ:"
     }
   }
 }
