@@ -204,8 +204,23 @@ class SmartBreadcrumbBlock extends Block {
         $queried_object = get_queried_object();
         $current_page = get_post();
 
+        // Check if we're in editor/REST context without real post data
+        $is_editor_preview = (defined('REST_REQUEST') && REST_REQUEST) ||
+                             (!$current_page && !$queried_object) ||
+                             (is_admin() && !wp_doing_ajax());
+
+        // If in editor preview, show sample breadcrumb items
+        if ($is_editor_preview) {
+            // Add sample category
+            $breadcrumb_items[] = '<a href="#">' . __('Sample Category', 'jankx') . '</a>';
+
+            // Add sample post title if showCurrent is enabled
+            if ($showCurrent) {
+                $breadcrumb_items[] = '<span class="current">' . __('Sample Post Title', 'jankx') . '</span>';
+            }
+        }
         // Handle different page types
-        if (is_home() || is_front_page()) {
+        elseif (is_home() || is_front_page()) {
             // Home page - no additional items needed
         } elseif (is_category() || is_tag() || is_tax()) {
             // Category, tag, or custom taxonomy
@@ -227,8 +242,8 @@ class SmartBreadcrumbBlock extends Block {
             $breadcrumb_items[] = '<span>' . __('Trang không tìm thấy', 'jankx') . '</span>';
         }
 
-        // Add current page if not already added and showCurrent is true
-        if ($showCurrent && !empty($breadcrumb_items)) {
+        // Add current page if not already added and showCurrent is true (but not in editor preview)
+        if (!$is_editor_preview && $showCurrent && !empty($breadcrumb_items)) {
             $current_title = $this->getCurrentPageTitle();
             if ($current_title) {
                 $breadcrumb_items[] = '<span class="current">' . esc_html($current_title) . '</span>';

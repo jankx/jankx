@@ -51,14 +51,13 @@ export default function Edit( { attributes, setAttributes } ) {
 		return false;
 	}, [] );
 
-	const { returnisSaving, returnisSavingNonPostEntityChanges } = useSelect(
+	const { isSaving, isSavingNonPostChanges } = useSelect(
 		( select ) => {
 			const { isSavingPost, isSavingNonPostEntityChanges } =
 				select( editorStore );
 			return {
-				returnisSaving: isSavingPost(),
-				returnisSavingNonPostEntityChanges:
-					returnisSavingNonPostEntityChanges(),
+				isSaving: isSavingPost(),
+				isSavingNonPostChanges: isSavingNonPostEntityChanges(),
 			};
 		}
 	);
@@ -143,24 +142,6 @@ export default function Edit( { attributes, setAttributes } ) {
 							onChange={ ( value ) => setAttributes( { fallbackToCustom: value } ) }
 						/>
 					</PanelRow>
-					<PanelRow>
-						<div style={ {
-							marginTop: '1em',
-							padding: '0.5em',
-							backgroundColor: '#f0f8ff',
-							border: '1px solid #b3d9ff',
-							borderRadius: '4px',
-							fontSize: '12px',
-							color: '#0066cc'
-						} }>
-							<strong>{ __( 'Supported SEO Plugins:', 'jankx' ) }</strong><br/>
-							• RankMath<br/>
-							• Yoast SEO<br/>
-							• SEOPress<br/>
-							• Breadcrumb NavXT<br/>
-							• WooCommerce
-						</div>
-					</PanelRow>
 				</PanelBody>
 			</Panel>
 			<Panel>
@@ -189,16 +170,16 @@ export default function Edit( { attributes, setAttributes } ) {
 		<div { ...blockProps }>
 			{ controls }
 			{ controlssidebar }
-			{ /* Conditional rendering based on autoupdate attribute */ }
-			{ autoupdateOption &&
-			( returnisSaving || returnisSavingNonPostEntityChanges ) ? (
-				<Spinner />
-			) : (
-				<ServerSideRender
-					block="jankx/smart-breadcrumb"
-					attributes={ attributes }
-				/>
-			) }
+		{ /* Conditional rendering based on autoupdate attribute */ }
+		{ autoupdateOption &&
+		( isSaving || isSavingNonPostChanges ) ? (
+			<Spinner />
+		) : (
+			<ServerSideRender
+				block="jankx/smart-breadcrumb"
+				attributes={ attributes }
+			/>
+		) }
 		</div>
 	);
 }
