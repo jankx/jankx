@@ -1,49 +1,49 @@
 # Content Templates
 
-Thư mục này chứa các template HTML mặc định cho các post types. Khi tạo một post mới thuộc một post type, hệ thống sẽ tự động load nội dung từ file template tương ứng.
+This directory contains default HTML templates for post types. When creating a new post of a specific post type, the system will automatically load content from the corresponding template file.
 
-## Cách sử dụng
+## Usage
 
-### 1. Tạo file template
+### 1. Create Template File
 
-Tạo file HTML với tên theo format: `<post-type-name>.html`
+Create an HTML file with the naming format: `<post-type-name>.html`
 
-**Ví dụ:**
-- `tour.html` - Template cho post type "tour"
-- `product.html` - Template cho post type "product"
-- `event.html` - Template cho post type "event"
+**Examples:**
+- `tour.html` - Template for "tour" post type
+- `product.html` - Template for "product" post type
+- `event.html` - Template for "event" post type
 
-### 2. Nội dung template
+### 2. Template Content
 
-File template sử dụng cú pháp **Block Editor (Gutenberg)** của WordPress:
+Template files use WordPress **Block Editor (Gutenberg)** syntax:
 
 ```html
 <!-- wp:paragraph -->
-<p>Nội dung mẫu của bạn</p>
+<p>Your sample content</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading -->
-<h2 class="wp-block-heading">Tiêu đề</h2>
+<h2 class="wp-block-heading">Heading</h2>
 <!-- /wp:heading -->
 ```
 
-### 3. Thứ tự ưu tiên
+### 3. Priority Order
 
-Hệ thống sẽ tìm kiếm template theo thứ tự sau:
+The system will search for templates in the following order:
 
-1. **Child Theme** (Ưu tiên cao nhất): `wp-content/themes/buocchandisan/resources/content-templates/<post-type>.html`
+1. **Child Theme** (Highest priority): `wp-content/themes/buocchandisan/resources/content-templates/<post-type>.html`
 2. **Parent Theme**: `wp-content/themes/jankx/resources/content-templates/<post-type>.html`
 
-### 4. Hoạt động
+### 4. How It Works
 
-- Template chỉ được load **1 lần duy nhất** khi mở trang tạo post mới (auto-draft status)
-- Nếu post đã có nội dung, template sẽ không ghi đè
-- Hệ thống sử dụng:
-  - **Block Editor (Gutenberg)**: REST API filter `rest_prepare_{post_type}`
-  - **Classic Editor**: Filter `default_content`
-- Template không tự động save, chỉ hiển thị trong editor cho user chỉnh sửa
+- Template is loaded **only once** when opening the new post creation page (auto-draft status)
+- If the post already has content, the template will not override it
+- The system uses:
+  - **Block Editor (Gutenberg)**: `wp_insert_post` action hook
+  - **Classic Editor**: `default_content` filter
+- Template does not automatically save, it only displays in the editor for user editing
 
-## Ví dụ thực tế
+## Real-World Example
 
 ### File: `tour.html`
 
@@ -51,11 +51,11 @@ Hệ thống sẽ tìm kiếm template theo thứ tự sau:
 <!-- wp:group {"layout":{"type":"constrained"}} -->
 <div class="wp-block-group">
     <!-- wp:heading -->
-    <h2 class="wp-block-heading">Giới thiệu Tour</h2>
+    <h2 class="wp-block-heading">Tour Introduction</h2>
     <!-- /wp:heading -->
 
     <!-- wp:paragraph -->
-    <p>Mô tả tour của bạn...</p>
+    <p>Describe your tour...</p>
     <!-- /wp:paragraph -->
 
     <!-- wp:columns -->
@@ -71,16 +71,15 @@ Hệ thống sẽ tìm kiếm template theo thứ tự sau:
 <!-- /wp:group -->
 ```
 
-## Lưu ý
+## Notes
 
-- Template phải là HTML hợp lệ theo chuẩn Block Editor
-- Sử dụng các block có sẵn trong WordPress hoặc custom blocks đã đăng ký
-- Child theme có quyền override template từ parent theme
-- File template không bắt buộc phải tồn tại cho tất cả post types
+- Templates must be valid HTML according to Block Editor standards
+- Use built-in WordPress blocks or registered custom blocks
+- Child theme has the right to override templates from the parent theme
+- Template files are not required to exist for all post types
 
-## Hỗ trợ kỹ thuật
+## Technical Support
 
-Feature này được quản lý bởi `ContentTemplateServiceProvider` trong `features/content-templates/`
+This feature is managed by `ContentTemplateServiceProvider` in `features/content-templates/`
 
 Service class: `Jankx\Features\ContentTemplates\Services\ContentTemplateService`
-
