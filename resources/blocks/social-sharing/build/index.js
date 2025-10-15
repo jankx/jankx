@@ -270,7 +270,7 @@ const Edit = props => {
       iconSize,
       showLabel: showLabels
     }]),
-    templateLock: 'all',
+    templateLock: 'insert',
     renderAppender: false
   });
   const toggleNetwork = network => {

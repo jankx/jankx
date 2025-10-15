@@ -1,7 +1,8 @@
 import { registerBlockType } from '@wordpress/blocks';
-import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
+import { InspectorControls, useBlockProps, InnerBlocks } from '@wordpress/block-editor';
 import { PanelBody, SelectControl, ToggleControl, TextControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
+import { useSelect } from '@wordpress/data';
 
 // Available social networks
 const AVAILABLE_NETWORKS = [
@@ -23,27 +24,22 @@ const getNetworkData = (network: string) => {
     return AVAILABLE_NETWORKS.find((n) => n.value === network) || AVAILABLE_NETWORKS[0];
 };
 
-const SharingIconButton = ({ attributes }) => {
+const Edit = (props) => {
+    const { attributes, setAttributes, clientId } = props;
     const { network, iconStyle, iconSize, showLabel, customIcon, customLabel } = attributes;
+
+    // Check if block has inner blocks
+    const hasInnerBlocks = useSelect(
+        (select) => {
+            const { getBlockCount } = select('core/block-editor');
+            return getBlockCount(clientId) > 0;
+        },
+        [clientId]
+    );
+
     const networkData = getNetworkData(network);
     const displayIcon = customIcon || networkData.icon;
     const displayLabel = customLabel || networkData.label;
-
-    return (
-        <button
-            className={`sharing-icon-button ${network} style-${iconStyle} size-${iconSize}`}
-            data-network={network}
-            type="button"
-        >
-            <span className="sharing-icon">{displayIcon}</span>
-            {showLabel && <span className="sharing-label">{displayLabel}</span>}
-        </button>
-    );
-};
-
-const Edit = (props) => {
-    const { attributes, setAttributes } = props;
-    const { network, iconStyle, iconSize, showLabel, customIcon, customLabel } = attributes;
 
     const blockProps = useBlockProps({
         className: 'social-sharing-icon-block',
@@ -97,11 +93,15 @@ const Edit = (props) => {
                 </PanelBody>
 
                 <PanelBody title={__('Tùy chỉnh', 'jankx')} initialOpen={false}>
+                    <p className="components-base-control__help">
+                        {__('Chèn block icon (Icon Picker, SVG Icon, hoặc Image) bên dưới để custom icon. Nếu không chèn, sẽ dùng icon mặc định hoặc icon text.', 'jankx')}
+                    </p>
+
                     <TextControl
-                        label={__('Icon tùy chỉnh', 'jankx')}
+                        label={__('Icon tùy chỉnh (text)', 'jankx')}
                         value={customIcon}
                         onChange={(value) => setAttributes({ customIcon: value })}
-                        help={__('Để trống để dùng icon mặc định', 'jankx')}
+                        help={__('Chỉ dùng khi không chèn block icon', 'jankx')}
                     />
 
                     <TextControl
@@ -114,7 +114,21 @@ const Edit = (props) => {
             </InspectorControls>
 
             <div {...blockProps}>
-                <SharingIconButton attributes={attributes} />
+                <button
+                    className={`sharing-icon-button ${network} style-${iconStyle} size-${iconSize}`}
+                    data-network={network}
+                    type="button"
+                >
+                    <span className="sharing-icon sharing-icon-with-fallback" data-fallback-icon={displayIcon}>
+                        <InnerBlocks
+                            allowedBlocks={['jankx/icon-picker', 'jankx/svg-icon', 'core/image']}
+                            template={[]}
+                            templateLock={false}
+                            renderAppender={hasInnerBlocks ? undefined : InnerBlocks.ButtonBlockAppender}
+                        />
+                    </span>
+                    {showLabel && <span className="sharing-label">{displayLabel}</span>}
+                </button>
             </div>
         </>
     );
@@ -122,13 +136,27 @@ const Edit = (props) => {
 
 const Save = (props) => {
     const { attributes } = props;
+    const { network, iconStyle, iconSize, showLabel, customIcon, customLabel } = attributes;
+    const networkData = getNetworkData(network);
+    const displayIcon = customIcon || networkData.icon;
+    const displayLabel = customLabel || networkData.label;
+
     const blockProps = useBlockProps.save({
         className: 'social-sharing-icon-block',
     });
 
     return (
         <div {...blockProps}>
-            <SharingIconButton attributes={attributes} />
+            <button
+                className={`sharing-icon-button ${network} style-${iconStyle} size-${iconSize}`}
+                data-network={network}
+                type="button"
+            >
+                <span className="sharing-icon sharing-icon-with-fallback" data-fallback-icon={displayIcon}>
+                    <InnerBlocks.Content />
+                </span>
+                {showLabel && <span className="sharing-label">{displayLabel}</span>}
+            </button>
         </div>
     );
 };

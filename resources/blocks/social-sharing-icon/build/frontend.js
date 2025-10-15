@@ -342,7 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Map network names to vanilla-sharing functions
       const sharingMap = {
-        'facebook': vanilla_sharing__WEBPACK_IMPORTED_MODULE_0__.fbShare,
+        'facebook': vanilla_sharing__WEBPACK_IMPORTED_MODULE_0__.fbButton,
         'twitter': vanilla_sharing__WEBPACK_IMPORTED_MODULE_0__.tw,
         'linkedin': vanilla_sharing__WEBPACK_IMPORTED_MODULE_0__.linkedin,
         'whatsapp': vanilla_sharing__WEBPACK_IMPORTED_MODULE_0__.whatsapp,

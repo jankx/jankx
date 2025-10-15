@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Map network names to vanilla-sharing functions
             const sharingMap: { [key: string]: Function } = {
-                'facebook': VanillaSharing.fbShare,
+                'facebook': VanillaSharing.fbButton,
                 'twitter': VanillaSharing.tw,
                 'linkedin': VanillaSharing.linkedin,
                 'whatsapp': VanillaSharing.whatsapp,

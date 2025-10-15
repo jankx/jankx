@@ -85,7 +85,7 @@ const Edit = (props) => {
                     showLabel: showLabels,
                 }
             ]),
-            templateLock: 'all',
+            templateLock: 'insert',
             renderAppender: false,
         }
     );

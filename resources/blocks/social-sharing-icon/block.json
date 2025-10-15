@@ -21,6 +21,8 @@
       "padding": false
     }
   },
+  "providesContext": {},
+  "usesContext": [],
   "attributes": {
     "network": {
       "type": "string",
