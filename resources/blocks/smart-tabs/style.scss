@@ -45,7 +45,6 @@
         align-items: center;
         gap: 8px;
         padding: 12px 20px;
-        background: transparent !important; // Allow inline styles to override
         border: none;
         border-bottom: 3px solid transparent;
         cursor: pointer;
@@ -55,24 +54,6 @@
         transition: all 0.3s ease;
         margin-bottom: -2px;
 
-        // Ensure inline styles have highest priority
-        &[style*="background"],
-        &[style*="backgroundColor"] {
-            background: var(--inline-bg, transparent) !important;
-        }
-
-        &[style*="color"] {
-            color: var(--inline-color, #666) !important;
-        }
-
-        &[style*="borderColor"] {
-            border-color: var(--inline-border-color, transparent) !important;
-        }
-
-        &:hover {
-            color: #000;
-            background: rgba(0, 0, 0, 0.05) !important;
-        }
 
         &.is-active {
             color: #007cba;
@@ -168,10 +149,6 @@
         .smart-tabs__nav-item {
             padding: 8px 16px;
             border-bottom-width: 2px;
-
-            &.is-active {
-                background: transparent;
-            }
         }
     }
 
@@ -188,9 +165,13 @@
             border-radius: 6px;
             margin-bottom: 0;
 
+
+
             &.is-active {
                 background: #fff;
                 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+
             }
         }
     }
@@ -201,6 +182,8 @@
             border-bottom: none;
             border-radius: 4px 4px 0 0;
             margin-bottom: 0;
+
+
 
             &.is-active {
                 border-color: #007cba;
@@ -220,7 +203,7 @@
 
     &--style-bordered {
         .smart-tabs__nav-list {
-            border: 2px solid #d63384;
+            border: 2px solid rgb(0, 124, 186);
             border-radius: 6px;
             background: #fff;
             padding: 0;
@@ -229,52 +212,24 @@
 
         .smart-tabs__nav-item {
             border: none;
-            border-right: 1px solid #d63384;
+            border-right: 1px solid rgb(0, 124, 186);
             border-radius: 0;
             margin: 0;
             padding: 12px 20px;
-            background: transparent !important; // Allow inline styles to override
-            color: #d63384;
+            color: rgb(0, 124, 186);
             font-weight: 500;
             transition: all 0.3s ease;
 
-            // Ensure inline styles have highest priority
-            &[style*="background"],
-            &[style*="backgroundColor"] {
-                background: var(--inline-bg, transparent) !important;
-            }
-
-            &[style*="color"] {
-                color: var(--inline-color, #d63384) !important;
-            }
-
-            &:last-child {
-                border-right: none;
-            }
-
-            &:hover {
-                background: rgba(214, 51, 132, 0.1) !important;
-            }
 
             &.is-active {
-                background: #d63384;
+                background: rgb(0, 124, 186);
                 color: #fff;
                 border-bottom: none;
-                border-right: 1px solid #d63384;
+                border-right: 1px solid rgb(0, 124, 186);
                 position: relative;
 
                 &:last-child {
                     border-right: none;
-                }
-
-                // Override with inline styles if present
-                &[style*="background"],
-                &[style*="backgroundColor"] {
-                    background: var(--inline-bg, #d63384) !important;
-                }
-
-                &[style*="color"] {
-                    color: var(--inline-color, #fff) !important;
                 }
             }
         }

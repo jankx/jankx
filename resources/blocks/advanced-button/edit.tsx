@@ -146,13 +146,13 @@ export function Edit(props: EditProps) {
 	}, [unlink]);
 
 	const blockProps = useBlockProps({
-		className: 'wp-block-button',
+		className: 'jankx-advanced-button',
 		onKeyDown,
 	});
 
 	const borderProps = getBorderClassesAndStyles(attributes);
 
-	const buttonClasses = classnames('wp-block-button__link', borderProps?.className, {
+	const buttonClasses = classnames('jankx-advanced-button__link', borderProps?.className, {
 		[`has-${backgroundColor?.slug}-background-color`]: backgroundColor?.slug,
 		[`has-${textColor?.slug}-color`]: textColor?.slug,
 		'has-background': backgroundColor?.color,

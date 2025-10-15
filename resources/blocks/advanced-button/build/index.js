@@ -133,11 +133,11 @@ function Edit(props) {
     }
   }, [unlink]);
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.useBlockProps)({
-    className: 'wp-block-button',
+    className: 'jankx-advanced-button',
     onKeyDown
   });
   const borderProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.__experimentalGetBorderClassesAndStyles)(attributes);
-  const buttonClasses = classnames__WEBPACK_IMPORTED_MODULE_0___default()('wp-block-button__link', borderProps?.className, {
+  const buttonClasses = classnames__WEBPACK_IMPORTED_MODULE_0___default()('jankx-advanced-button__link', borderProps?.className, {
     [`has-${backgroundColor?.slug}-background-color`]: backgroundColor?.slug,
     [`has-${textColor?.slug}-color`]: textColor?.slug,
     'has-background': backgroundColor?.color,
@@ -561,10 +561,8 @@ function Save(props) {
   if (!text) {
     return null;
   }
-  const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps.save({
-    className: 'wp-block-button'
-  });
-  const buttonClasses = classnames__WEBPACK_IMPORTED_MODULE_0___default()('wp-block-button__link', {
+  const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps.save();
+  const buttonClasses = classnames__WEBPACK_IMPORTED_MODULE_0___default()('jankx-advanced-button__link', {
     [`has-${backgroundColor}-background-color`]: backgroundColor,
     [`has-${textColor}-color`]: textColor,
     [`has-${gradient}-gradient-background`]: gradient

@@ -8,12 +8,10 @@
 	z-index: 99999;
 }
 
-.editor-visual-editor {
-	.wp-block-jankx-advanced-button {
-		.components-button {
-			padding: 3px 2px;
-			height: 22px;
-		}
+.wp-block-jankx-advanced-button {
+	.components-button {
+		padding: 3px 2px!important;
+		height: 22px!important;
 	}
 }
 

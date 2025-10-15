@@ -60,18 +60,16 @@ export default function Save(props: SaveProps) {
 		return null;
 	}
 
-	const blockProps = useBlockProps.save({
-		className: 'wp-block-button',
-	});
+	const blockProps = useBlockProps.save();
 
-	const buttonClasses = classnames('wp-block-button__link', {
+	const buttonClasses = classnames('jankx-advanced-button__link', {
 		[`has-${backgroundColor}-background-color`]: backgroundColor,
 		[`has-${textColor}-color`]: textColor,
 		[`has-${gradient}-gradient-background`]: gradient,
 	});
 
 	const buttonStyles = {
-		...(blockProps.style as any),
+		...blockProps.style,
 	};
 
 	const textMarkup = (
