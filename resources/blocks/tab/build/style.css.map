@@ -1,1 +1,0 @@
-{"version":3,"file":"blocks/tab/build/style.css","mappings":";;;AAAA;AACA;EACE;AACF,C","sources":["webpack://jankx/./blocks/tab/style.scss"],"sourcesContent":["/* Tab Block Styles */\n.wp-block-jankx-tab {\n  /* Tab content styles */\n}"],"names":[],"sourceRoot":""}

@@ -1,1 +1,0 @@
-{"version":3,"file":"blocks/mega-menu/build/editor.css","mappings":";;;AAAA;EACE;EACA;AACF;;AACA;EAA8C;AAG9C,C","sources":["webpack://jankx/./blocks/mega-menu/editor.scss"],"sourcesContent":[".wp-block-jankx-mega-menu{\n  border:1px dashed #ddd;\n  padding:12px;\n}\n.wp-block-jankx-mega-menu .mega-menu__toggle{ cursor:pointer; }\n\n\n"],"names":[],"sourceRoot":""}

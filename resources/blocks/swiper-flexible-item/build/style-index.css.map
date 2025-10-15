@@ -1,1 +1,0 @@
-{"version":3,"file":"blocks/swiper-flexible-item/build/style-index.css","mappings":";;;AAAA;EACI;AACJ,C","sources":["webpack://jankx/./blocks/swiper-flexible-item/style.scss"],"sourcesContent":[".flexi-content-item {\n    background-color: #ededed\n}\n"],"names":[],"sourceRoot":""}
