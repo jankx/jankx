@@ -18,36 +18,26 @@
 
         // Alignment options
         &.align-left {
-            justify-content: flex-start !important;
-            background: rgba(255, 0, 0, 0.1) !important; // DEBUG: Red tint for left
+            justify-content: flex-start;
         }
 
         &.align-center {
-            justify-content: center !important;
-            background: rgba(0, 255, 0, 0.1) !important; // DEBUG: Green tint for center
+            justify-content: center;
         }
 
         &.align-right {
-            justify-content: flex-end !important;
-            background: rgba(0, 0, 255, 0.1) !important; // DEBUG: Blue tint for right
+            justify-content: flex-end;
         }
 
         &.align-justify {
-            justify-content: space-between !important;
-            gap: 0 !important;
-            background: rgba(255, 255, 0, 0.1) !important; // DEBUG: Yellow tint for justify
+            justify-content: space-between;
+            gap: 0;
 
             .smart-tabs__nav-item {
-                flex: 1 !important;
-                justify-content: center !important;
+                flex: 1;
+                justify-content: center;
             }
         }
-    }
-
-    // Additional high-specificity alignment rules
-    &.smart-tabs .smart-tabs__nav-list.align-center {
-        justify-content: center !important;
-        background: rgba(0, 255, 0, 0.2) !important; // Stronger green tint
     }
 
     &__nav-item {

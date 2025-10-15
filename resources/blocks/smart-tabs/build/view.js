@@ -13,13 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Query tabs trong smart-tabs__content scope
     const tabsContent = tabsBlock.querySelector('.smart-tabs__content');
     const tabPanels = tabsContent ? tabsContent.querySelectorAll('.smart-tab') : [];
-    console.log('Smart Tabs Debug:', {
-      navItems: navItems.length,
-      tabPanels: tabPanels.length,
-      tabsContent: !!tabsContent
-    });
     if (navItems.length === 0 || tabPanels.length === 0) {
-      console.warn('Smart Tabs: Missing navigation or panels');
       return;
     }
 

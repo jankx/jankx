@@ -27,6 +27,24 @@
             "enum": ["left", "center", "right", "justify"],
             "default": "left"
         },
+        "tabItemTextColor": {
+            "type": "string"
+        },
+        "tabItemBackgroundColor": {
+            "type": "string"
+        },
+        "tabItemGradient": {
+            "type": "string"
+        },
+        "activeTabTextColor": {
+            "type": "string"
+        },
+        "activeTabBackgroundColor": {
+            "type": "string"
+        },
+        "activeTabGradient": {
+            "type": "string"
+        },
         "className": {
             "type": "string"
         },

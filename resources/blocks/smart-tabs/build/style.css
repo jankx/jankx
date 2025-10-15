@@ -17,29 +17,21 @@
   position: relative;
 }
 .smart-tabs__nav-list.align-left {
-  justify-content: flex-start !important;
-  background: rgba(255, 0, 0, 0.1) !important;
+  justify-content: flex-start;
 }
 .smart-tabs__nav-list.align-center {
-  justify-content: center !important;
-  background: rgba(0, 255, 0, 0.1) !important;
+  justify-content: center;
 }
 .smart-tabs__nav-list.align-right {
-  justify-content: flex-end !important;
-  background: rgba(0, 0, 255, 0.1) !important;
+  justify-content: flex-end;
 }
 .smart-tabs__nav-list.align-justify {
-  justify-content: space-between !important;
-  gap: 0 !important;
-  background: rgba(255, 255, 0, 0.1) !important;
+  justify-content: space-between;
+  gap: 0;
 }
 .smart-tabs__nav-list.align-justify .smart-tabs__nav-item {
-  flex: 1 !important;
-  justify-content: center !important;
-}
-.smart-tabs.smart-tabs .smart-tabs__nav-list.align-center {
-  justify-content: center !important;
-  background: rgba(0, 255, 0, 0.2) !important;
+  flex: 1;
+  justify-content: center;
 }
 .smart-tabs__nav-item {
   display: flex;

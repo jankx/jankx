@@ -11,6 +11,12 @@ export interface SmartTabsAttributes {
     styleType: StyleType;
     activeTab: number;
     tabAlignment: TabAlignment;
+    tabItemTextColor?: string;
+    tabItemBackgroundColor?: string;
+    tabItemGradient?: string;
+    activeTabTextColor?: string;
+    activeTabBackgroundColor?: string;
+    activeTabGradient?: string;
     className?: string;
     anchor?: string;
 }

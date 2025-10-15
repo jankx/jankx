@@ -8,7 +8,7 @@
   \**************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/smart-tabs","title":"Smart Tabs","category":"jankx","description":"Create interactive tabs with customizable layouts and styles","keywords":["tabs","smart","accordion","vertical","horizontal"],"textdomain":"jankx","attributes":{"tabType":{"type":"string","enum":["horizontal","vertical"],"default":"horizontal"},"styleType":{"type":"string","enum":["default","minimal","modern","boxed"],"default":"default"},"activeTab":{"type":"number","default":0},"tabAlignment":{"type":"string","enum":["left","center","right","justify"],"default":"left"},"className":{"type":"string"},"anchor":{"type":"string"}},"supports":{"html":false,"anchor":true,"align":["wide","full"],"spacing":{"margin":true,"padding":true,"__experimentalDefaultControls":{"padding":true}},"color":{"background":true,"text":true,"__experimentalDefaultControls":{"background":true,"text":true}}},"providesContext":{"jankx/smartTabsId":"anchor","jankx/activeTab":"activeTab"},"example":{"attributes":{"tabType":"horizontal","styleType":"modern"}},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","viewScript":"file:./build/view.js","style":"file:./build/style.css"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/smart-tabs","title":"Smart Tabs","category":"jankx","description":"Create interactive tabs with customizable layouts and styles","keywords":["tabs","smart","accordion","vertical","horizontal"],"textdomain":"jankx","attributes":{"tabType":{"type":"string","enum":["horizontal","vertical"],"default":"horizontal"},"styleType":{"type":"string","enum":["default","minimal","modern","boxed"],"default":"default"},"activeTab":{"type":"number","default":0},"tabAlignment":{"type":"string","enum":["left","center","right","justify"],"default":"left"},"tabItemTextColor":{"type":"string"},"tabItemBackgroundColor":{"type":"string"},"tabItemGradient":{"type":"string"},"activeTabTextColor":{"type":"string"},"activeTabBackgroundColor":{"type":"string"},"activeTabGradient":{"type":"string"},"className":{"type":"string"},"anchor":{"type":"string"}},"supports":{"html":false,"anchor":true,"align":["wide","full"],"spacing":{"margin":true,"padding":true,"__experimentalDefaultControls":{"padding":true}},"color":{"background":true,"text":true,"__experimentalDefaultControls":{"background":true,"text":true}}},"providesContext":{"jankx/smartTabsId":"anchor","jankx/activeTab":"activeTab"},"example":{"attributes":{"tabType":"horizontal","styleType":"modern"}},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","viewScript":"file:./build/view.js","style":"file:./build/style.css"}');
 
 /***/ }),
 
@@ -61,7 +61,13 @@ function Edit({
     tabType,
     styleType,
     activeTab,
-    tabAlignment
+    tabAlignment,
+    tabItemTextColor,
+    tabItemBackgroundColor,
+    tabItemGradient,
+    activeTabTextColor,
+    activeTabBackgroundColor,
+    activeTabGradient
   } = attributes;
   const {
     innerBlocks,
@@ -225,6 +231,49 @@ function Edit({
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Align tabs horizontally', 'jankx')
         })]
       })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
+      group: "styles",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.PanelColorGradientSettings, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Tab Items Style', 'jankx'),
+        initialOpen: false,
+        settings: [{
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Text Color', 'jankx'),
+          colorValue: tabItemTextColor,
+          onColorChange: value => setAttributes({
+            tabItemTextColor: value
+          })
+        }, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Background', 'jankx'),
+          colorValue: tabItemBackgroundColor,
+          gradientValue: tabItemGradient,
+          onColorChange: value => setAttributes({
+            tabItemBackgroundColor: value
+          }),
+          onGradientChange: value => setAttributes({
+            tabItemGradient: value
+          })
+        }]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.PanelColorGradientSettings, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Active Tab Style', 'jankx'),
+        initialOpen: false,
+        settings: [{
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Text Color', 'jankx'),
+          colorValue: activeTabTextColor,
+          onColorChange: value => setAttributes({
+            activeTabTextColor: value
+          })
+        }, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Background', 'jankx'),
+          colorValue: activeTabBackgroundColor,
+          gradientValue: activeTabGradient,
+          onColorChange: value => setAttributes({
+            activeTabBackgroundColor: value
+          }),
+          onGradientChange: value => setAttributes({
+            activeTabGradient: value
+          })
+        }]
+      })]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.BlockControls, {
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToolbarGroup, {
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToolbarButton, {
@@ -235,57 +284,39 @@ function Edit({
       })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
       ...blockProps,
-      children: [tabItems.length > 1 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
-        className: "smart-tabs__helper",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("strong", {
-          children: "\uD83D\uDCA1 H\u01B0\u1EDBng d\u1EABn:"
-        }), " Click v\xE0o tab b\xEAn d\u01B0\u1EDBi \u0111\u1EC3 ch\u1EC9nh s\u1EEDa n\u1ED9i dung c\u1EE7a tab \u0111\xF3"]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
-        style: {
-          padding: '8px',
-          background: '#fff3cd',
-          border: '1px solid #ffeaa7',
-          borderRadius: '4px',
-          marginBottom: '10px'
-        },
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("strong", {
-          children: "\uD83D\uDD0D DEBUG:"
-        }), " Tab Alignment = ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("code", {
-          children: tabAlignment
-        }), " | Class: ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("code", {
-          children: ["align-", tabAlignment]
-        })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
         className: "smart-tabs__navigation",
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
           className: `smart-tabs__nav-list align-${tabAlignment}`,
           children: [tabItems.map((tab, index) => {
             const isActiveTab = index === currentActiveTab;
 
-            // Build inline styles for tab
+            // Build inline styles for tab using parent settings
             const tabStyles = {};
             if (isActiveTab) {
-              if (tab.activeTabTextColor) {
-                tabStyles.color = tab.activeTabTextColor;
+              // Active tab styles from parent
+              if (activeTabTextColor) {
+                tabStyles.color = activeTabTextColor;
               }
-              if (tab.activeTabGradient) {
-                tabStyles.background = tab.activeTabGradient;
-              } else if (tab.activeTabBackgroundColor) {
-                tabStyles.backgroundColor = tab.activeTabBackgroundColor;
+              if (activeTabGradient) {
+                tabStyles.background = activeTabGradient;
+              } else if (activeTabBackgroundColor) {
+                tabStyles.backgroundColor = activeTabBackgroundColor;
               }
             } else {
-              if (tab.normalTabTextColor) {
-                tabStyles.color = tab.normalTabTextColor;
+              // Normal tab styles from parent
+              if (tabItemTextColor) {
+                tabStyles.color = tabItemTextColor;
               }
-              if (tab.normalTabGradient) {
-                tabStyles.background = tab.normalTabGradient;
-              } else if (tab.normalTabBackgroundColor) {
-                tabStyles.backgroundColor = tab.normalTabBackgroundColor;
+              if (tabItemGradient) {
+                tabStyles.background = tabItemGradient;
+              } else if (tabItemBackgroundColor) {
+                tabStyles.backgroundColor = tabItemBackgroundColor;
               }
             }
             return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("button", {
               className: `smart-tabs__nav-item${isActiveTab ? ' is-active' : ''}`,
-              style: tabStyles,
+              style: Object.keys(tabStyles).length > 0 ? tabStyles : undefined,
               onClick: () => handleTabClick(index, tab.clientId),
               type: "button",
               children: [tab.iconType !== 'none' && tab.icon && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("span", {

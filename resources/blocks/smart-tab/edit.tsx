@@ -248,48 +248,7 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
                 </PanelBody>
             </InspectorControls>
 
-            <InspectorControls group="styles">
-                <PanelBody title={__('Normal Tab Style', 'jankx')} initialOpen={true}>
-                    <div style={{ padding: '12px', background: '#ffeb3b', border: '2px solid #f57f17', borderRadius: '4px' }}>
-                        <h3 style={{ margin: '0 0 8px 0', color: '#e65100' }}>🔍 DEBUG: Normal Tab Style Panel</h3>
-                        <p style={{ margin: '0', fontSize: '12px', color: '#bf360c' }}>
-                            Nếu bạn thấy text này, PanelBody đã hoạt động!
-                        </p>
-                        <p style={{ margin: '8px 0 0 0', fontSize: '11px', color: '#d84315' }}>
-                            ColorGradientSettingsDropdown: {ColorGradientSettingsDropdown ? 'CÓ' : 'KHÔNG'}
-                        </p>
-                    </div>
-                </PanelBody>
-
-                <PanelBody title={__('Active Tab Style', 'jankx')} initialOpen={true}>
-                    <div style={{ padding: '12px', background: '#4caf50', border: '2px solid #2e7d32', borderRadius: '4px' }}>
-                        <h3 style={{ margin: '0 0 8px 0', color: '#1b5e20' }}>🔍 DEBUG: Active Tab Style Panel</h3>
-                        <p style={{ margin: '0', fontSize: '12px', color: '#2e7d32' }}>
-                            Nếu bạn thấy text này, PanelBody đã hoạt động!
-                        </p>
-                    </div>
-                </PanelBody>
-
-                <PanelBody title={__('Tab Content Style', 'jankx')} initialOpen={true}>
-                    <div style={{ padding: '12px', background: '#2196f3', border: '2px solid #1565c0', borderRadius: '4px' }}>
-                        <h3 style={{ margin: '0 0 8px 0', color: '#0d47a1' }}>🔍 DEBUG: Tab Content Style Panel</h3>
-                        <p style={{ margin: '0', fontSize: '12px', color: '#1565c0' }}>
-                            Nếu bạn thấy text này, PanelBody đã hoạt động!
-                        </p>
-                    </div>
-                </PanelBody>
-            </InspectorControls>
-
             <div {...blockProps}>
-                <div className="smart-tab__header">
-                    <RichText
-                        tagName="div"
-                        className="smart-tab__title-edit"
-                        value={title}
-                        onChange={(value: string) => setAttributes({ title: value })}
-                        placeholder={__('Tab title...', 'jankx')}
-                    />
-                </div>
                 <div {...innerBlocksProps} />
             </div>
         </>

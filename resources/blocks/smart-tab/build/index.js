@@ -254,107 +254,11 @@ function Edit({
           })]
         })]
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
-      group: "styles",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
-        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Normal Tab Style', 'jankx'),
-        initialOpen: true,
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
-          style: {
-            padding: '12px',
-            background: '#ffeb3b',
-            border: '2px solid #f57f17',
-            borderRadius: '4px'
-          },
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("h3", {
-            style: {
-              margin: '0 0 8px 0',
-              color: '#e65100'
-            },
-            children: "\uD83D\uDD0D DEBUG: Normal Tab Style Panel"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("p", {
-            style: {
-              margin: '0',
-              fontSize: '12px',
-              color: '#bf360c'
-            },
-            children: "N\u1EBFu b\u1EA1n th\u1EA5y text n\xE0y, PanelBody \u0111\xE3 ho\u1EA1t \u0111\u1ED9ng!"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("p", {
-            style: {
-              margin: '8px 0 0 0',
-              fontSize: '11px',
-              color: '#d84315'
-            },
-            children: ["ColorGradientSettingsDropdown: ", _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.__experimentalColorGradientSettingsDropdown ? 'CÓ' : 'KHÔNG']
-          })]
-        })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
-        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Active Tab Style', 'jankx'),
-        initialOpen: true,
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
-          style: {
-            padding: '12px',
-            background: '#4caf50',
-            border: '2px solid #2e7d32',
-            borderRadius: '4px'
-          },
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("h3", {
-            style: {
-              margin: '0 0 8px 0',
-              color: '#1b5e20'
-            },
-            children: "\uD83D\uDD0D DEBUG: Active Tab Style Panel"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("p", {
-            style: {
-              margin: '0',
-              fontSize: '12px',
-              color: '#2e7d32'
-            },
-            children: "N\u1EBFu b\u1EA1n th\u1EA5y text n\xE0y, PanelBody \u0111\xE3 ho\u1EA1t \u0111\u1ED9ng!"
-          })]
-        })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
-        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Tab Content Style', 'jankx'),
-        initialOpen: true,
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
-          style: {
-            padding: '12px',
-            background: '#2196f3',
-            border: '2px solid #1565c0',
-            borderRadius: '4px'
-          },
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("h3", {
-            style: {
-              margin: '0 0 8px 0',
-              color: '#0d47a1'
-            },
-            children: "\uD83D\uDD0D DEBUG: Tab Content Style Panel"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("p", {
-            style: {
-              margin: '0',
-              fontSize: '12px',
-              color: '#1565c0'
-            },
-            children: "N\u1EBFu b\u1EA1n th\u1EA5y text n\xE0y, PanelBody \u0111\xE3 ho\u1EA1t \u0111\u1ED9ng!"
-          })]
-        })
-      })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
       ...blockProps,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
-        className: "smart-tab__header",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.RichText, {
-          tagName: "div",
-          className: "smart-tab__title-edit",
-          value: title,
-          onChange: value => setAttributes({
-            title: value
-          }),
-          placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Tab title...', 'jankx')
-        })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
         ...innerBlocksProps
-      })]
+      })
     })]
   });
 }

@@ -69,7 +69,7 @@ class SmartTabsBlock extends Block
 
         // Parse inner blocks to build tab navigation
         $inner_blocks = $block->parsed_block['innerBlocks'] ?? [];
-        $tab_nav_html = $this->renderTabNavigation($inner_blocks, $active_tab, $tab_alignment);
+        $tab_nav_html = $this->renderTabNavigation($inner_blocks, $active_tab, $tab_alignment, $attributes);
 
         // Build attributes string
         $attrs_string = '';
@@ -92,13 +92,22 @@ class SmartTabsBlock extends Block
      * @param array $inner_blocks Inner blocks
      * @param int $active_tab Active tab index
      * @param string $tab_alignment Tab alignment
+     * @param array $parent_attributes Parent block attributes (for global tab styles)
      * @return string Navigation HTML
      */
-    protected function renderTabNavigation($inner_blocks, $active_tab, $tab_alignment = 'left')
+    protected function renderTabNavigation($inner_blocks, $active_tab, $tab_alignment = 'left', $parent_attributes = [])
     {
         if (empty($inner_blocks)) {
             return '';
         }
+
+        // Get parent tab styles (applied to all tabs as defaults)
+        $parent_tab_item_text_color = $parent_attributes['tabItemTextColor'] ?? '';
+        $parent_tab_item_bg_color = $parent_attributes['tabItemBackgroundColor'] ?? '';
+        $parent_tab_item_gradient = $parent_attributes['tabItemGradient'] ?? '';
+        $parent_active_tab_text_color = $parent_attributes['activeTabTextColor'] ?? '';
+        $parent_active_tab_bg_color = $parent_attributes['activeTabBackgroundColor'] ?? '';
+        $parent_active_tab_gradient = $parent_attributes['activeTabGradient'] ?? '';
 
         $nav_items = [];
         foreach ($inner_blocks as $index => $block) {
@@ -114,13 +123,13 @@ class SmartTabsBlock extends Block
             $icon_size = $attributes['iconSize'] ?? '16px';
             $icon_color = $attributes['iconColor'] ?? '';
 
-            // Tab style attributes
-            $normal_tab_text_color = $attributes['normalTabTextColor'] ?? '';
-            $normal_tab_bg_color = $attributes['normalTabBackgroundColor'] ?? '';
-            $normal_tab_gradient = $attributes['normalTabGradient'] ?? '';
-            $active_tab_text_color = $attributes['activeTabTextColor'] ?? '';
-            $active_tab_bg_color = $attributes['activeTabBackgroundColor'] ?? '';
-            $active_tab_gradient = $attributes['activeTabGradient'] ?? '';
+            // Individual tab style attributes (can override parent styles)
+            $individual_normal_text_color = $attributes['normalTabTextColor'] ?? '';
+            $individual_normal_bg_color = $attributes['normalTabBackgroundColor'] ?? '';
+            $individual_normal_gradient = $attributes['normalTabGradient'] ?? '';
+            $individual_active_text_color = $attributes['activeTabTextColor'] ?? '';
+            $individual_active_bg_color = $attributes['activeTabBackgroundColor'] ?? '';
+            $individual_active_gradient = $attributes['activeTabGradient'] ?? '';
 
             $is_active = $index === $active_tab;
             $item_classes = ['smart-tabs__nav-item'];
@@ -128,25 +137,35 @@ class SmartTabsBlock extends Block
                 $item_classes[] = 'is-active';
             }
 
-            // Build tab inline styles
+            // Build tab inline styles (parent styles as default, individual styles can override)
             $tab_styles = [];
             if ($is_active) {
-                if (!empty($active_tab_text_color)) {
-                    $tab_styles[] = sprintf('color: %s', esc_attr($active_tab_text_color));
+                // Active tab: use parent styles first, then individual overrides
+                $text_color = !empty($individual_active_text_color) ? $individual_active_text_color : $parent_active_tab_text_color;
+                $gradient = !empty($individual_active_gradient) ? $individual_active_gradient : $parent_active_tab_gradient;
+                $bg_color = !empty($individual_active_bg_color) ? $individual_active_bg_color : $parent_active_tab_bg_color;
+
+                if (!empty($text_color)) {
+                    $tab_styles[] = sprintf('color: %s', esc_attr($text_color));
                 }
-                if (!empty($active_tab_gradient)) {
-                    $tab_styles[] = sprintf('background: %s', esc_attr($active_tab_gradient));
-                } elseif (!empty($active_tab_bg_color)) {
-                    $tab_styles[] = sprintf('background-color: %s', esc_attr($active_tab_bg_color));
+                if (!empty($gradient)) {
+                    $tab_styles[] = sprintf('background: %s', esc_attr($gradient));
+                } elseif (!empty($bg_color)) {
+                    $tab_styles[] = sprintf('background-color: %s', esc_attr($bg_color));
                 }
             } else {
-                if (!empty($normal_tab_text_color)) {
-                    $tab_styles[] = sprintf('color: %s', esc_attr($normal_tab_text_color));
+                // Normal tab: use parent styles first, then individual overrides
+                $text_color = !empty($individual_normal_text_color) ? $individual_normal_text_color : $parent_tab_item_text_color;
+                $gradient = !empty($individual_normal_gradient) ? $individual_normal_gradient : $parent_tab_item_gradient;
+                $bg_color = !empty($individual_normal_bg_color) ? $individual_normal_bg_color : $parent_tab_item_bg_color;
+
+                if (!empty($text_color)) {
+                    $tab_styles[] = sprintf('color: %s', esc_attr($text_color));
                 }
-                if (!empty($normal_tab_gradient)) {
-                    $tab_styles[] = sprintf('background: %s', esc_attr($normal_tab_gradient));
-                } elseif (!empty($normal_tab_bg_color)) {
-                    $tab_styles[] = sprintf('background-color: %s', esc_attr($normal_tab_bg_color));
+                if (!empty($gradient)) {
+                    $tab_styles[] = sprintf('background: %s', esc_attr($gradient));
+                } elseif (!empty($bg_color)) {
+                    $tab_styles[] = sprintf('background-color: %s', esc_attr($bg_color));
                 }
             }
             $tab_style_attr = !empty($tab_styles) ? sprintf(' style="%s"', implode('; ', $tab_styles)) : '';
