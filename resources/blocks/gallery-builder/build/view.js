@@ -1,1 +1,512 @@
-(()=>{var t={963:t=>{class e{constructor(t){this.container=t,this.galleryId=t.dataset.galleryId,this.currentSlide=0,this.totalSlides=0,this.autoplayInterval=null,this.isAutoplayActive=!1,this.touchStartX=0,this.touchEndX=0,this.fullscreenModal=null,this.fullscreenAutoplayInterval=null,this.isFullscreenAutoplayActive=!1,this.settings={autoplay:"true"===t.dataset.autoplay,autoplayDelay:parseInt(t.dataset.autoplayDelay)||5e3,showThumbnails:"true"===t.dataset.showThumbnails,showNavigation:"true"===t.dataset.showNavigation,showPagination:"true"===t.dataset.showPagination,showCaptions:"true"===t.dataset.showCaptions,thumbnailPosition:t.dataset.thumbnailPosition||"top",transitionEffect:t.dataset.transitionEffect||"slide",transitionDuration:parseInt(t.dataset.transitionDuration)||500,enableFullscreen:"true"===t.dataset.enableFullscreen,fullscreenAutoplay:"true"===t.dataset.fullscreenAutoplay,fullscreenAutoplayDelay:parseInt(t.dataset.fullscreenAutoplayDelay)||4e3,fullscreenText:t.dataset.fullscreenText||"",captionPosition:t.dataset.captionPosition||"overlay"},this.init()}init(){this.cacheElements(),this.bindEvents(),this.setupInitialState(),this.settings.autoplay&&this.startAutoplay()}cacheElements(){this.slides=this.container.querySelectorAll(".gallery-slide"),this.thumbnails=this.container.querySelectorAll(".thumbnail"),this.paginationDots=this.container.querySelectorAll(".pagination-dot"),this.navPrev=this.container.querySelector(".gallery-nav.prev"),this.navNext=this.container.querySelector(".gallery-nav.next"),this.autoplayToggle=this.container.querySelector(".autoplay-toggle"),this.totalSlides=this.slides.length}bindEvents(){this.navPrev&&this.navPrev.addEventListener("click",()=>this.previousSlide()),this.navNext&&this.navNext.addEventListener("click",()=>this.nextSlide()),this.thumbnails.forEach((t,e)=>{t.addEventListener("click",()=>this.goToSlide(e))}),this.paginationDots.forEach((t,e)=>{t.addEventListener("click",()=>this.goToSlide(e))}),this.autoplayToggle&&this.autoplayToggle.addEventListener("click",()=>this.toggleAutoplay());const t=this.container.querySelector(".fullscreen-button");t&&t.addEventListener("click",()=>this.openFullscreen()),this.container.addEventListener("keydown",t=>this.handleKeyboard(t)),this.container.addEventListener("touchstart",t=>this.handleTouchStart(t),{passive:!0}),this.container.addEventListener("touchend",t=>this.handleTouchEnd(t),{passive:!0}),this.container.addEventListener("mouseenter",()=>this.pauseAutoplay()),this.container.addEventListener("mouseleave",()=>{this.settings.autoplay&&this.isAutoplayActive&&this.startAutoplay()}),document.addEventListener("visibilitychange",()=>{document.hidden?this.pauseAutoplay():this.settings.autoplay&&this.isAutoplayActive&&this.startAutoplay()})}setupInitialState(){this.updateActiveStates(),this.container.setAttribute("tabindex","0")}goToSlide(t){if(t<0||t>=this.totalSlides||t===this.currentSlide)return;const e=this.currentSlide;this.currentSlide=t,this.animateSlide(e,this.currentSlide),this.updateActiveStates()}nextSlide(){const t=(this.currentSlide+1)%this.totalSlides;this.goToSlide(t)}previousSlide(){const t=0===this.currentSlide?this.totalSlides-1:this.currentSlide-1;this.goToSlide(t)}animateSlide(t,e){const s=this.slides[t],l=this.slides[e];s&&l&&(s.classList.remove("active"),l.classList.add("active"),this.applyTransitionEffect(s,l))}applyTransitionEffect(t,e){const s=this.settings.transitionDuration;switch(this.settings.transitionEffect){case"fade":default:this.applyFadeTransition(t,e,s);break;case"slide":this.applySlideTransition(t,e,s);break;case"zoom":this.applyZoomTransition(t,e,s)}}applyFadeTransition(t,e,s){}applySlideTransition(t,e,s){const l=this.currentSlide>this.previousSlide?"next":"prev";t.style.transition=`transform ${s}ms ease-in-out`,e.style.transition=`transform ${s}ms ease-in-out`,"next"===l?(t.style.transform="translateX(-100%)",e.style.transform="translateX(0)"):(t.style.transform="translateX(100%)",e.style.transform="translateX(0)"),setTimeout(()=>{t.style.transition="",e.style.transition="",t.style.transform="",e.style.transform=""},s)}applyZoomTransition(t,e,s){t.style.transition=`transform ${s}ms ease-in-out`,e.style.transition=`transform ${s}ms ease-in-out`,t.style.transform="scale(1.1)",e.style.transform="scale(1)",setTimeout(()=>{t.style.transition="",e.style.transition="",t.style.transform="",e.style.transform=""},s)}updateActiveStates(){this.slides.forEach((t,e)=>{t.classList.toggle("active",e===this.currentSlide)}),this.thumbnails.forEach((t,e)=>{t.classList.toggle("active",e===this.currentSlide)}),this.paginationDots.forEach((t,e)=>{t.classList.toggle("active",e===this.currentSlide)})}startAutoplay(){this.autoplayInterval&&clearInterval(this.autoplayInterval),this.isAutoplayActive=!0,this.autoplayInterval=setInterval(()=>{this.nextSlide()},this.settings.autoplayDelay),this.autoplayToggle&&this.autoplayToggle.classList.remove("paused")}pauseAutoplay(){this.autoplayInterval&&(clearInterval(this.autoplayInterval),this.autoplayInterval=null),this.isAutoplayActive=!1,this.autoplayToggle&&this.autoplayToggle.classList.add("paused")}toggleAutoplay(){this.isAutoplayActive?this.pauseAutoplay():this.startAutoplay()}handleKeyboard(t){switch(t.key){case"ArrowLeft":t.preventDefault(),this.previousSlide();break;case"ArrowRight":t.preventDefault(),this.nextSlide();break;case" ":t.preventDefault(),this.toggleAutoplay();break;case"Escape":this.pauseAutoplay()}}handleTouchStart(t){this.touchStartX=t.changedTouches[0].screenX}handleTouchEnd(t){this.touchEndX=t.changedTouches[0].screenX,this.handleSwipe()}handleSwipe(){const t=this.touchStartX-this.touchEndX;Math.abs(t)>50&&(t>0?this.nextSlide():this.previousSlide())}openFullscreen(){this.createFullscreenModal(),this.showFullscreenModal(),this.settings.fullscreenAutoplay&&this.startFullscreenAutoplay()}createFullscreenModal(){if(this.fullscreenModal)return;const t=document.createElement("div");t.className="gallery-fullscreen-modal",t.innerHTML=`\n            <div class="fullscreen-content">\n                <div class="fullscreen-header">\n                    <div class="fullscreen-text">${this.settings.fullscreenText}</div>\n                    <button class="fullscreen-close" aria-label="Close fullscreen">\n                        <svg viewBox="0 0 24 24" fill="currentColor">\n                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>\n                        </svg>\n                    </button>\n                </div>\n                <div class="fullscreen-slides">\n                    ${this.slides.map((t,e)=>`\n                        <div class="fullscreen-slide ${e===this.currentSlide?"active":""}" data-slide="${e}">\n                            <img src="${t.querySelector("img").src}" alt="${t.querySelector("img").alt}" />\n                        </div>\n                    `).join("")}\n                </div>\n                <div class="fullscreen-controls">\n                    <button class="fullscreen-nav prev" aria-label="Previous image">\n                        <svg viewBox="0 0 24 24" fill="currentColor">\n                            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>\n                        </svg>\n                    </button>\n                    <div class="fullscreen-pagination">\n                        ${this.slides.map((t,e)=>`\n                            <button class="pagination-dot ${e===this.currentSlide?"active":""}" data-slide="${e}"></button>\n                        `).join("")}\n                    </div>\n                    <button class="fullscreen-nav next" aria-label="Next image">\n                        <svg viewBox="0 0 24 24" fill="currentColor">\n                            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>\n                        </svg>\n                    </button>\n                </div>\n            </div>\n        `;const e=t.querySelector(".fullscreen-close"),s=t.querySelector(".fullscreen-nav.prev"),l=t.querySelector(".fullscreen-nav.next"),i=t.querySelectorAll(".fullscreen-pagination .pagination-dot");e.addEventListener("click",()=>this.closeFullscreen()),s.addEventListener("click",()=>this.fullscreenPreviousSlide()),l.addEventListener("click",()=>this.fullscreenNextSlide()),i.forEach((t,e)=>{t.addEventListener("click",()=>this.fullscreenGoToSlide(e))}),t.addEventListener("click",e=>{e.target===t&&this.closeFullscreen()}),t.addEventListener("keydown",t=>{switch(t.key){case"Escape":this.closeFullscreen();break;case"ArrowLeft":this.fullscreenPreviousSlide();break;case"ArrowRight":this.fullscreenNextSlide()}}),document.body.appendChild(t),this.fullscreenModal=t}showFullscreenModal(){this.fullscreenModal&&(this.fullscreenModal.classList.add("active"),this.fullscreenModal.focus())}closeFullscreen(){this.fullscreenModal&&(this.fullscreenModal.classList.remove("active"),setTimeout(()=>{this.fullscreenModal&&(document.body.removeChild(this.fullscreenModal),this.fullscreenModal=null)},300)),this.stopFullscreenAutoplay()}fullscreenGoToSlide(t){if(t<0||t>=this.totalSlides||t===this.currentSlide)return;const e=this.fullscreenModal.querySelectorAll(".fullscreen-slide"),s=this.fullscreenModal.querySelectorAll(".fullscreen-pagination .pagination-dot");e.forEach((e,s)=>{e.classList.toggle("active",s===t)}),s.forEach((e,s)=>{e.classList.toggle("active",s===t)}),this.currentSlide=t}fullscreenNextSlide(){const t=(this.currentSlide+1)%this.totalSlides;this.fullscreenGoToSlide(t)}fullscreenPreviousSlide(){const t=0===this.currentSlide?this.totalSlides-1:this.currentSlide-1;this.fullscreenGoToSlide(t)}startFullscreenAutoplay(){this.fullscreenAutoplayInterval&&clearInterval(this.fullscreenAutoplayInterval),this.isFullscreenAutoplayActive=!0,this.fullscreenAutoplayInterval=setInterval(()=>{this.fullscreenNextSlide()},this.settings.fullscreenAutoplayDelay)}stopFullscreenAutoplay(){this.fullscreenAutoplayInterval&&(clearInterval(this.fullscreenAutoplayInterval),this.fullscreenAutoplayInterval=null),this.isFullscreenAutoplayActive=!1}destroy(){this.pauseAutoplay(),this.closeFullscreen(),this.container.removeEventListener("keydown",this.handleKeyboard),this.container.removeEventListener("touchstart",this.handleTouchStart),this.container.removeEventListener("touchend",this.handleTouchEnd)}}document.addEventListener("DOMContentLoaded",function(){document.querySelectorAll(".wp-block-jankx-gallery-builder").forEach(t=>{new e(t)})}),t.exports&&(t.exports=e)}},e={};!function s(l){var i=e[l];if(void 0!==i)return i.exports;var a=e[l]={exports:{}};return t[l](a,a.exports,s),a.exports}(963)})();
+/******/ (() => { // webpackBootstrap
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./blocks/gallery-builder/view.js":
+/*!****************************************!*\
+  !*** ./blocks/gallery-builder/view.js ***!
+  \****************************************/
+/***/ ((module) => {
+
+/**
+ * Gallery Builder Frontend JavaScript
+ *
+ * Handles gallery navigation, autoplay, and interactive features
+ */
+
+class GalleryBuilder {
+  constructor(container) {
+    this.container = container;
+    this.galleryId = container.dataset.galleryId;
+    this.currentSlide = 0;
+    this.totalSlides = 0;
+    this.autoplayInterval = null;
+    this.isAutoplayActive = false;
+    this.touchStartX = 0;
+    this.touchEndX = 0;
+    this.fullscreenModal = null;
+    this.fullscreenAutoplayInterval = null;
+    this.isFullscreenAutoplayActive = false;
+
+    // Get settings from data attributes
+    this.settings = {
+      autoplay: container.dataset.autoplay === 'true',
+      autoplayDelay: parseInt(container.dataset.autoplayDelay) || 5000,
+      showThumbnails: container.dataset.showThumbnails === 'true',
+      showNavigation: container.dataset.showNavigation === 'true',
+      showPagination: container.dataset.showPagination === 'true',
+      showCaptions: container.dataset.showCaptions === 'true',
+      thumbnailPosition: container.dataset.thumbnailPosition || 'top',
+      transitionEffect: container.dataset.transitionEffect || 'slide',
+      transitionDuration: parseInt(container.dataset.transitionDuration) || 500,
+      enableFullscreen: container.dataset.enableFullscreen === 'true',
+      fullscreenAutoplay: container.dataset.fullscreenAutoplay === 'true',
+      fullscreenAutoplayDelay: parseInt(container.dataset.fullscreenAutoplayDelay) || 4000,
+      fullscreenText: container.dataset.fullscreenText || '',
+      captionPosition: container.dataset.captionPosition || 'overlay'
+    };
+    this.init();
+  }
+  init() {
+    this.cacheElements();
+    this.bindEvents();
+    this.setupInitialState();
+    if (this.settings.autoplay) {
+      this.startAutoplay();
+    }
+  }
+  cacheElements() {
+    this.slides = this.container.querySelectorAll('.gallery-slide');
+    this.thumbnails = this.container.querySelectorAll('.thumbnail');
+    this.paginationDots = this.container.querySelectorAll('.pagination-dot');
+    this.navPrev = this.container.querySelector('.gallery-nav.prev');
+    this.navNext = this.container.querySelector('.gallery-nav.next');
+    this.autoplayToggle = this.container.querySelector('.autoplay-toggle');
+    this.totalSlides = this.slides.length;
+  }
+  bindEvents() {
+    // Navigation arrows
+    if (this.navPrev) {
+      this.navPrev.addEventListener('click', () => this.previousSlide());
+    }
+    if (this.navNext) {
+      this.navNext.addEventListener('click', () => this.nextSlide());
+    }
+
+    // Thumbnails
+    this.thumbnails.forEach((thumbnail, index) => {
+      thumbnail.addEventListener('click', () => this.goToSlide(index));
+    });
+
+    // Pagination dots
+    this.paginationDots.forEach((dot, index) => {
+      dot.addEventListener('click', () => this.goToSlide(index));
+    });
+
+    // Autoplay toggle
+    if (this.autoplayToggle) {
+      this.autoplayToggle.addEventListener('click', () => this.toggleAutoplay());
+    }
+
+    // Fullscreen button
+    const fullscreenButton = this.container.querySelector('.fullscreen-button');
+    if (fullscreenButton) {
+      fullscreenButton.addEventListener('click', () => this.openFullscreen());
+    }
+
+    // Keyboard navigation
+    this.container.addEventListener('keydown', e => this.handleKeyboard(e));
+
+    // Touch/swipe support
+    this.container.addEventListener('touchstart', e => this.handleTouchStart(e), {
+      passive: true
+    });
+    this.container.addEventListener('touchend', e => this.handleTouchEnd(e), {
+      passive: true
+    });
+
+    // Pause autoplay on hover
+    this.container.addEventListener('mouseenter', () => this.pauseAutoplay());
+    this.container.addEventListener('mouseleave', () => {
+      if (this.settings.autoplay && this.isAutoplayActive) {
+        this.startAutoplay();
+      }
+    });
+
+    // Visibility API - pause when tab is not visible
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        this.pauseAutoplay();
+      } else if (this.settings.autoplay && this.isAutoplayActive) {
+        this.startAutoplay();
+      }
+    });
+  }
+  setupInitialState() {
+    // Set initial active states
+    this.updateActiveStates();
+
+    // Make container focusable for keyboard navigation
+    this.container.setAttribute('tabindex', '0');
+  }
+  goToSlide(index) {
+    if (index < 0 || index >= this.totalSlides || index === this.currentSlide) {
+      return;
+    }
+    const previousSlide = this.currentSlide;
+    this.currentSlide = index;
+    this.animateSlide(previousSlide, this.currentSlide);
+    this.updateActiveStates();
+  }
+  nextSlide() {
+    const nextIndex = (this.currentSlide + 1) % this.totalSlides;
+    this.goToSlide(nextIndex);
+  }
+  previousSlide() {
+    const prevIndex = this.currentSlide === 0 ? this.totalSlides - 1 : this.currentSlide - 1;
+    this.goToSlide(prevIndex);
+  }
+  animateSlide(fromIndex, toIndex) {
+    const fromSlide = this.slides[fromIndex];
+    const toSlide = this.slides[toIndex];
+    if (!fromSlide || !toSlide) return;
+
+    // Remove active class from previous slide
+    fromSlide.classList.remove('active');
+
+    // Add active class to new slide
+    toSlide.classList.add('active');
+
+    // Apply transition effect
+    this.applyTransitionEffect(fromSlide, toSlide);
+  }
+  applyTransitionEffect(fromSlide, toSlide) {
+    const duration = this.settings.transitionDuration;
+    switch (this.settings.transitionEffect) {
+      case 'fade':
+        this.applyFadeTransition(fromSlide, toSlide, duration);
+        break;
+      case 'slide':
+        this.applySlideTransition(fromSlide, toSlide, duration);
+        break;
+      case 'zoom':
+        this.applyZoomTransition(fromSlide, toSlide, duration);
+        break;
+      default:
+        // Default fade effect
+        this.applyFadeTransition(fromSlide, toSlide, duration);
+    }
+  }
+  applyFadeTransition(fromSlide, toSlide, duration) {
+    // Fade effect is handled by CSS opacity transition
+    // No additional JavaScript needed
+  }
+  applySlideTransition(fromSlide, toSlide, duration) {
+    const direction = this.currentSlide > this.previousSlide ? 'next' : 'prev';
+
+    // Add transition classes
+    fromSlide.style.transition = `transform ${duration}ms ease-in-out`;
+    toSlide.style.transition = `transform ${duration}ms ease-in-out`;
+    if (direction === 'next') {
+      fromSlide.style.transform = 'translateX(-100%)';
+      toSlide.style.transform = 'translateX(0)';
+    } else {
+      fromSlide.style.transform = 'translateX(100%)';
+      toSlide.style.transform = 'translateX(0)';
+    }
+
+    // Clean up after transition
+    setTimeout(() => {
+      fromSlide.style.transition = '';
+      toSlide.style.transition = '';
+      fromSlide.style.transform = '';
+      toSlide.style.transform = '';
+    }, duration);
+  }
+  applyZoomTransition(fromSlide, toSlide, duration) {
+    fromSlide.style.transition = `transform ${duration}ms ease-in-out`;
+    toSlide.style.transition = `transform ${duration}ms ease-in-out`;
+    fromSlide.style.transform = 'scale(1.1)';
+    toSlide.style.transform = 'scale(1)';
+    setTimeout(() => {
+      fromSlide.style.transition = '';
+      toSlide.style.transition = '';
+      fromSlide.style.transform = '';
+      toSlide.style.transform = '';
+    }, duration);
+  }
+  updateActiveStates() {
+    // Update slides
+    this.slides.forEach((slide, index) => {
+      slide.classList.toggle('active', index === this.currentSlide);
+    });
+
+    // Update thumbnails
+    this.thumbnails.forEach((thumbnail, index) => {
+      thumbnail.classList.toggle('active', index === this.currentSlide);
+    });
+
+    // Update pagination dots
+    this.paginationDots.forEach((dot, index) => {
+      dot.classList.toggle('active', index === this.currentSlide);
+    });
+  }
+  startAutoplay() {
+    if (this.autoplayInterval) {
+      clearInterval(this.autoplayInterval);
+    }
+    this.isAutoplayActive = true;
+    this.autoplayInterval = setInterval(() => {
+      this.nextSlide();
+    }, this.settings.autoplayDelay);
+
+    // Update toggle button state
+    if (this.autoplayToggle) {
+      this.autoplayToggle.classList.remove('paused');
+    }
+  }
+  pauseAutoplay() {
+    if (this.autoplayInterval) {
+      clearInterval(this.autoplayInterval);
+      this.autoplayInterval = null;
+    }
+    this.isAutoplayActive = false;
+
+    // Update toggle button state
+    if (this.autoplayToggle) {
+      this.autoplayToggle.classList.add('paused');
+    }
+  }
+  toggleAutoplay() {
+    if (this.isAutoplayActive) {
+      this.pauseAutoplay();
+    } else {
+      this.startAutoplay();
+    }
+  }
+  handleKeyboard(e) {
+    switch (e.key) {
+      case 'ArrowLeft':
+        e.preventDefault();
+        this.previousSlide();
+        break;
+      case 'ArrowRight':
+        e.preventDefault();
+        this.nextSlide();
+        break;
+      case ' ':
+        e.preventDefault();
+        this.toggleAutoplay();
+        break;
+      case 'Escape':
+        this.pauseAutoplay();
+        break;
+    }
+  }
+  handleTouchStart(e) {
+    this.touchStartX = e.changedTouches[0].screenX;
+  }
+  handleTouchEnd(e) {
+    this.touchEndX = e.changedTouches[0].screenX;
+    this.handleSwipe();
+  }
+  handleSwipe() {
+    const swipeThreshold = 50;
+    const diff = this.touchStartX - this.touchEndX;
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0) {
+        // Swipe left - next slide
+        this.nextSlide();
+      } else {
+        // Swipe right - previous slide
+        this.previousSlide();
+      }
+    }
+  }
+  openFullscreen() {
+    this.createFullscreenModal();
+    this.showFullscreenModal();
+    if (this.settings.fullscreenAutoplay) {
+      this.startFullscreenAutoplay();
+    }
+  }
+  createFullscreenModal() {
+    if (this.fullscreenModal) {
+      return;
+    }
+    const modal = document.createElement('div');
+    modal.className = 'gallery-fullscreen-modal';
+    modal.innerHTML = `
+            <div class="fullscreen-content">
+                <div class="fullscreen-header">
+                    <div class="fullscreen-text">${this.settings.fullscreenText}</div>
+                    <button class="fullscreen-close" aria-label="Close fullscreen">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="fullscreen-slides">
+                    ${this.slides.map((slide, index) => `
+                        <div class="fullscreen-slide ${index === this.currentSlide ? 'active' : ''}" data-slide="${index}">
+                            <img src="${slide.querySelector('img').src}" alt="${slide.querySelector('img').alt}" />
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="fullscreen-controls">
+                    <button class="fullscreen-nav prev" aria-label="Previous image">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                        </svg>
+                    </button>
+                    <div class="fullscreen-pagination">
+                        ${this.slides.map((_, index) => `
+                            <button class="pagination-dot ${index === this.currentSlide ? 'active' : ''}" data-slide="${index}"></button>
+                        `).join('')}
+                    </div>
+                    <button class="fullscreen-nav next" aria-label="Next image">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        `;
+
+    // Add event listeners
+    const closeBtn = modal.querySelector('.fullscreen-close');
+    const prevBtn = modal.querySelector('.fullscreen-nav.prev');
+    const nextBtn = modal.querySelector('.fullscreen-nav.next');
+    const paginationDots = modal.querySelectorAll('.fullscreen-pagination .pagination-dot');
+    closeBtn.addEventListener('click', () => this.closeFullscreen());
+    prevBtn.addEventListener('click', () => this.fullscreenPreviousSlide());
+    nextBtn.addEventListener('click', () => this.fullscreenNextSlide());
+    paginationDots.forEach((dot, index) => {
+      dot.addEventListener('click', () => this.fullscreenGoToSlide(index));
+    });
+
+    // Close on background click
+    modal.addEventListener('click', e => {
+      if (e.target === modal) {
+        this.closeFullscreen();
+      }
+    });
+
+    // Keyboard navigation
+    modal.addEventListener('keydown', e => {
+      switch (e.key) {
+        case 'Escape':
+          this.closeFullscreen();
+          break;
+        case 'ArrowLeft':
+          this.fullscreenPreviousSlide();
+          break;
+        case 'ArrowRight':
+          this.fullscreenNextSlide();
+          break;
+      }
+    });
+    document.body.appendChild(modal);
+    this.fullscreenModal = modal;
+  }
+  showFullscreenModal() {
+    if (this.fullscreenModal) {
+      this.fullscreenModal.classList.add('active');
+      this.fullscreenModal.focus();
+    }
+  }
+  closeFullscreen() {
+    if (this.fullscreenModal) {
+      this.fullscreenModal.classList.remove('active');
+      setTimeout(() => {
+        if (this.fullscreenModal) {
+          document.body.removeChild(this.fullscreenModal);
+          this.fullscreenModal = null;
+        }
+      }, 300);
+    }
+    this.stopFullscreenAutoplay();
+  }
+  fullscreenGoToSlide(index) {
+    if (index < 0 || index >= this.totalSlides || index === this.currentSlide) {
+      return;
+    }
+    const fullscreenSlides = this.fullscreenModal.querySelectorAll('.fullscreen-slide');
+    const fullscreenDots = this.fullscreenModal.querySelectorAll('.fullscreen-pagination .pagination-dot');
+
+    // Update slides
+    fullscreenSlides.forEach((slide, i) => {
+      slide.classList.toggle('active', i === index);
+    });
+
+    // Update pagination
+    fullscreenDots.forEach((dot, i) => {
+      dot.classList.toggle('active', i === index);
+    });
+    this.currentSlide = index;
+  }
+  fullscreenNextSlide() {
+    const nextIndex = (this.currentSlide + 1) % this.totalSlides;
+    this.fullscreenGoToSlide(nextIndex);
+  }
+  fullscreenPreviousSlide() {
+    const prevIndex = this.currentSlide === 0 ? this.totalSlides - 1 : this.currentSlide - 1;
+    this.fullscreenGoToSlide(prevIndex);
+  }
+  startFullscreenAutoplay() {
+    if (this.fullscreenAutoplayInterval) {
+      clearInterval(this.fullscreenAutoplayInterval);
+    }
+    this.isFullscreenAutoplayActive = true;
+    this.fullscreenAutoplayInterval = setInterval(() => {
+      this.fullscreenNextSlide();
+    }, this.settings.fullscreenAutoplayDelay);
+  }
+  stopFullscreenAutoplay() {
+    if (this.fullscreenAutoplayInterval) {
+      clearInterval(this.fullscreenAutoplayInterval);
+      this.fullscreenAutoplayInterval = null;
+    }
+    this.isFullscreenAutoplayActive = false;
+  }
+  destroy() {
+    this.pauseAutoplay();
+    this.closeFullscreen();
+
+    // Remove event listeners
+    this.container.removeEventListener('keydown', this.handleKeyboard);
+    this.container.removeEventListener('touchstart', this.handleTouchStart);
+    this.container.removeEventListener('touchend', this.handleTouchEnd);
+  }
+}
+
+// Initialize all gallery builders on page load
+document.addEventListener('DOMContentLoaded', function () {
+  const galleryContainers = document.querySelectorAll('.wp-block-jankx-gallery-builder');
+  galleryContainers.forEach(container => {
+    new GalleryBuilder(container);
+  });
+});
+
+// Export for potential external use
+if ( true && module.exports) {
+  module.exports = GalleryBuilder;
+}
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module is referenced by other modules so it can't be inlined
+/******/ 	var __webpack_exports__ = __webpack_require__("./blocks/gallery-builder/view.js");
+/******/ 	
+/******/ })()
+;
+//# sourceMappingURL=view.js.map
