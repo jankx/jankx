@@ -33,6 +33,7 @@
       "Jankx\\": "./includes/framework",
       "Jankx\\Features\\": "./features",
       "Jankx\\Features\\Metrics\\": "./features/metrics",
+      "Jankx\\Features\\ContentTemplates\\": "./features/content-templates",
       "App\\": "./includes/app"
     }
   },
