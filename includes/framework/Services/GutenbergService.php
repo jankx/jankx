@@ -14,9 +14,7 @@ use Jankx\Gutenberg\Blocks\LanguageSwitcherBlock;
 use Jankx\Gutenberg\Blocks\ImageMasonryGalleryBlock;
 use Jankx\Gutenberg\Blocks\GalleryBuilderBlock;
 use Jankx\Gutenberg\Blocks\MagicTextBlock;
-use Jankx\Gutenberg\Blocks\TabsBlock;
-use Jankx\Gutenberg\Blocks\TabBlock;
-use Jankx\Gutenberg\Blocks\MegaMenuBlock;
+use Jankx\Gutenberg\Blocks\SmartBreadcrumbBlock;
 use Jankx\Gutenberg\Blocks\SvgIconBlock;
 use Jankx\Gutenberg\Blocks\OffcanvasSidebarBlock;
 use Jankx\Gutenberg\Blocks\OffcanvasTriggerBlock;
@@ -25,6 +23,8 @@ use Jankx\Gutenberg\Blocks\WplyrMediaBlock;
 use Jankx\Gutenberg\Blocks\DatePickerCalendarBlock;
 use Jankx\Gutenberg\Blocks\SmartTabsBlock;
 use Jankx\Gutenberg\Blocks\SmartTabBlock;
+use Jankx\Gutenberg\Blocks\SwiperBlock;
+use Jankx\Gutenberg\Blocks\SwiperSlideBlock;
 use Jankx\Gutenberg\Blocks\AuthorBoxBlock;
 use Jankx\Gutenberg\Blocks\SocialSharingBlock;
 use Jankx\Gutenberg\Blocks\WordPressCoreFilterBlock; // Filter service, not a block
@@ -128,9 +128,8 @@ class GutenbergService
      */
     protected function registerDefaultBlocks()
     {
-        $this->repository->registerBlock(DynamicQueryBlock::class);
         $this->repository->registerBlock(SvgIconBlock::class);
-        $this->repository->registerBlock(MegaMenuBlock::class);
+        // $this->repository->registerBlock(MegaMenuBlock::class);
         $this->repository->registerBlock(ButtonBlock::class);
         $this->repository->registerBlock(OffcanvasSidebarBlock::class);
         $this->repository->registerBlock(IconPickerBlock::class);
@@ -139,8 +138,6 @@ class GutenbergService
         $this->repository->registerBlock(LanguageSwitcherBlock::class);
         $this->repository->registerBlock(ImageMasonryGalleryBlock::class);
         $this->repository->registerBlock(GalleryBuilderBlock::class);
-        $this->repository->registerBlock(TabsBlock::class);
-        $this->repository->registerBlock(TabBlock::class);
         $this->repository->registerBlock(WplyrMediaBlock::class);
         $this->repository->registerBlock(AdvancedImageBoxBlock::class);
         $this->repository->registerBlock(MagicTextBlock::class);
@@ -150,9 +147,11 @@ class GutenbergService
         $this->repository->registerBlock(DatePickerCalendarBlock::class);
         $this->repository->registerBlock(SmartTabsBlock::class);
         $this->repository->registerBlock(SmartTabBlock::class);
+        $this->repository->registerBlock(SwiperBlock::class);
+        $this->repository->registerBlock(SwiperSlideBlock::class);
         $this->repository->registerBlock(AuthorBoxBlock::class);
         $this->repository->registerBlock(SocialSharingBlock::class);
-
+        $this->repository->registerBlock(SmartBreadcrumbBlock::class);
         // $this->repository->registerBlock(WordPressCoreFilterBlock::class);
     }
 

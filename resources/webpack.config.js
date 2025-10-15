@@ -25,11 +25,6 @@ module.exports = {
     'blocks/icon-picker/build/style': './blocks/icon-picker/style.scss',
     'blocks/icon-picker/build/editor': './blocks/icon-picker/editor.scss',
 
-    'blocks/mega-menu/build/index': './blocks/mega-menu/index.tsx',
-    'blocks/mega-menu/build/view': './blocks/mega-menu/view.js',
-    'blocks/mega-menu/build/style': './blocks/mega-menu/style.scss',
-    'blocks/mega-menu/build/editor': './blocks/mega-menu/editor.scss',
-
     'blocks/wplyr-media/build/index': './blocks/wplyr-media/index.tsx',
     'blocks/wplyr-media/build/style': './blocks/wplyr-media/style.scss',
     'blocks/wplyr-media/build/editor': './blocks/wplyr-media/editor.scss',
@@ -48,39 +43,10 @@ module.exports = {
     'blocks/svg-icon/build/style': './blocks/svg-icon/style.scss',
     'blocks/svg-icon/build/editor': './blocks/svg-icon/editor.scss',
 
-    'blocks/query/build/index': './blocks/query/index.tsx',
-    'blocks/query/build/save': './blocks/query/save.tsx',
-    'blocks/query/build/view': './blocks/query/view.ts',
-    'blocks/query/build/init': './blocks/query/init.ts',
-    'blocks/query/build/editor': './blocks/query/editor.scss',
-
-
     'blocks/image-masonry-gallery/build/index': './blocks/image-masonry-gallery/index.tsx',
     'blocks/image-masonry-gallery/build/style': './blocks/image-masonry-gallery/style.scss',
     'blocks/image-masonry-gallery/build/editor': './blocks/image-masonry-gallery/editor.scss',
 
-    'blocks/tabs/build/index': './blocks/tabs/index.tsx',
-    'blocks/tabs/build/style': './blocks/tabs/style.scss',
-    'blocks/tabs/build/editor': './blocks/tabs/editor.scss',
-    'blocks/tabs/build/view': './blocks/tabs/view.js',
-
-    'blocks/tab/build/index': './blocks/tab/index.tsx',
-    'blocks/tab/build/style': './blocks/tab/style.scss',
-    'blocks/tab/build/editor': './blocks/tab/editor.scss',
-
-    'blocks/swiper-base/build/index': './blocks/swiper-base/index.js',
-    'blocks/swiper-base/build/style': './blocks/swiper-base/style.scss',
-    'blocks/swiper-base/build/editor': './blocks/swiper-base/editor.scss',
-    'blocks/swiper-base/build/view': './blocks/swiper-base/view.js',
-
-    'blocks/swiper-flexible/build/index': './blocks/swiper-flexible/index.js',
-    'blocks/swiper-flexible/build/style-index': './blocks/swiper-flexible/style.scss',
-    'blocks/swiper-flexible/build/editor': './blocks/swiper-flexible/editor.scss',
-    'blocks/swiper-flexible/build/view': './blocks/swiper-flexible/view.js',
-
-    'blocks/swiper-flexible-item/build/index': './blocks/swiper-flexible-item/index.js',
-    'blocks/swiper-flexible-item/build/style-index': './blocks/swiper-flexible-item/style.scss',
-    'blocks/swiper-flexible-item/build/editor': './blocks/swiper-flexible-item/editor.scss',
 
     'blocks/advanced-image-box/build/index': './blocks/advanced-image-box/index.tsx',
     'blocks/advanced-image-box/build/style': './blocks/advanced-image-box/style.scss',
@@ -99,9 +65,9 @@ module.exports = {
     'blocks/modal/build/editor': './blocks/modal/editor.scss',
     'blocks/modal/build/view': './blocks/modal/view.js',
 
-    'blocks/date-picker-calendar/build/index': './blocks/date-picker-calendar/src/index.js',
-    'blocks/date-picker-calendar/build/style-index': './blocks/date-picker-calendar/src/style.scss',
-    'blocks/date-picker-calendar/build/editor': './blocks/date-picker-calendar/src/editor.scss',
+    'blocks/date-picker-calendar/build/index': './blocks/date-picker-calendar/index.js',
+    'blocks/date-picker-calendar/build/style-index': './blocks/date-picker-calendar/style.scss',
+    'blocks/date-picker-calendar/build/editor': './blocks/date-picker-calendar/editor.scss',
 
     'blocks/core-filters/build/index': './blocks/core-filters/index.tsx',
     'blocks/core-filters/build/editor': './blocks/core-filters/editor.scss',
@@ -131,10 +97,23 @@ module.exports = {
     'blocks/author-box/build/style': './blocks/author-box/style.scss',
     'blocks/author-box/build/editor': './blocks/author-box/editor.scss',
 
-    'blocks/gallery-builder/build/index': './resources/blocks/gallery-builder/index.tsx',
-    'blocks/gallery-builder/build/view': './resources/blocks/gallery-builder/view.js',
-    'blocks/gallery-builder/build/style': './resources/blocks/gallery-builder/style.scss',
-    'blocks/gallery-builder/build/editor': './resources/blocks/gallery-builder/editor.scss',
+    'blocks/gallery-builder/build/index': './blocks/gallery-builder/index.tsx',
+    'blocks/gallery-builder/build/view': './blocks/gallery-builder/view.js',
+    'blocks/gallery-builder/build/style': './blocks/gallery-builder/style.scss',
+    'blocks/gallery-builder/build/editor': './blocks/gallery-builder/editor.scss',
+
+    'blocks/swiper/build/index': './blocks/swiper/index.tsx',
+    'blocks/swiper/build/view': './blocks/swiper/view.js',
+    'blocks/swiper/build/style': './blocks/swiper/style.scss',
+    'blocks/swiper/build/editor': './blocks/swiper/editor.scss',
+
+    'blocks/swiper-slide/build/index': './blocks/swiper-slide/index.tsx',
+    'blocks/swiper-slide/build/style': './blocks/swiper-slide/style.scss',
+    'blocks/swiper-slide/build/editor': './blocks/swiper-slide/editor.scss',
+
+    'blocks/smart-breadcrumb/build/index': './blocks/smart-breadcrumb/src/index.js',
+    'blocks/smart-breadcrumb/build/style': './blocks/smart-breadcrumb/src/style.scss',
+    'blocks/smart-breadcrumb/build/editor': './blocks/smart-breadcrumb/src/editor.scss',
   },
   output: {
     path: path.resolve(__dirname),
@@ -158,7 +137,7 @@ module.exports = {
     '@wordpress/element': ['wp', 'element'],
     '@wordpress/data': ['wp', 'data'],
     '@wordpress/core-data': ['wp', 'coreData'],
-    swiper: 'Swiper',
+    // Swiper will be bundled, not external
   },
   plugins: [
     new RemoveEmptyScriptsPlugin(),
@@ -202,9 +181,7 @@ module.exports = {
         if (request === 'react-dom') {
           return 'ReactDOM';
         }
-        if (request === 'swiper') {
-          return 'Swiper';
-        }
+        // Swiper will be bundled, not external
       },
     }),
 
