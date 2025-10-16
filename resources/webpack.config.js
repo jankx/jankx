@@ -57,9 +57,10 @@ module.exports = {
     'blocks/magic-text/build/style': './blocks/magic-text/style.scss',
     'blocks/magic-text/build/editor': './blocks/magic-text/editor.scss',
 
-    'blocks/table-of-content/build/index': './blocks/table-of-content/src/index.tsx',
-    'blocks/table-of-content/build/style': './blocks/table-of-content/src/style.scss',
-    'blocks/table-of-content/build/editor': './blocks/table-of-content/src/editor.scss',
+    'blocks/table-of-content/build/index': './blocks/table-of-content/index.tsx',
+    'blocks/table-of-content/build/style': './blocks/table-of-content/style.scss',
+    'blocks/table-of-content/build/editor': './blocks/table-of-content/editor.scss',
+    'blocks/table-of-content/build/view': './blocks/table-of-content/view.ts',
 
     'blocks/modal/build/index': './blocks/modal/index.js',
     'blocks/modal/build/style': './blocks/modal/style.scss',
@@ -97,11 +98,6 @@ module.exports = {
     'blocks/author-box/build/style': './blocks/author-box/src/style.scss',
     'blocks/author-box/build/editor': './blocks/author-box/src/editor.scss',
 
-    'blocks/gallery-builder/build/index': './blocks/gallery-builder/index.tsx',
-    'blocks/gallery-builder/build/view': './blocks/gallery-builder/view.js',
-    'blocks/gallery-builder/build/style': './blocks/gallery-builder/style.scss',
-    'blocks/gallery-builder/build/editor': './blocks/gallery-builder/editor.scss',
-
     'blocks/swiper/build/index': './blocks/swiper/index.tsx',
     'blocks/swiper/build/view': './blocks/swiper/view.js',
     'blocks/swiper/build/style': './blocks/swiper/style.scss',
@@ -114,10 +110,6 @@ module.exports = {
     'blocks/smart-breadcrumb/build/index': './blocks/smart-breadcrumb/src/index.js',
     'blocks/smart-breadcrumb/build/style': './blocks/smart-breadcrumb/src/style.scss',
     'blocks/smart-breadcrumb/build/editor': './blocks/smart-breadcrumb/src/editor.scss',
-
-    'blocks/table-of-content/build/index': './blocks/table-of-content/src/index.tsx',
-    'blocks/table-of-content/build/style': './blocks/table-of-content/src/style.scss',
-    'blocks/table-of-content/build/editor': './blocks/table-of-content/src/editor.scss',
 
     'blocks/advanced-button/build/index': './blocks/advanced-button/index.tsx',
     'blocks/advanced-button/build/style': './blocks/advanced-button/style.scss',

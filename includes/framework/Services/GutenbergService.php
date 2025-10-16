@@ -12,7 +12,6 @@ use Jankx\Gutenberg\Blocks\PostTypeLayoutBlock;
 use Jankx\Gutenberg\Blocks\IconPickerBlock;
 use Jankx\Gutenberg\Blocks\LanguageSwitcherBlock;
 use Jankx\Gutenberg\Blocks\ImageMasonryGalleryBlock;
-use Jankx\Gutenberg\Blocks\GalleryBuilderBlock;
 use Jankx\Gutenberg\Blocks\MagicTextBlock;
 use Jankx\Gutenberg\Blocks\SmartBreadcrumbBlock;
 use Jankx\Gutenberg\Blocks\SvgIconBlock;
@@ -31,6 +30,7 @@ use Jankx\Gutenberg\Blocks\WordPressCoreFilterBlock;
 use Jankx\Gutenberg\Blocks\MasterTableBlock;
 use Jankx\Gutenberg\Blocks\TableRowBlock;
 use Jankx\Gutenberg\Blocks\TableCellBlock;
+use Jankx\Gutenberg\Blocks\TableOfContentBlock;
 use Jankx\Gutenberg\GutenbergPattern;
 
 /**
@@ -131,7 +131,6 @@ class GutenbergService
     protected function registerDefaultBlocks()
     {
         $this->repository->registerBlock(SvgIconBlock::class);
-        // $this->repository->registerBlock(MegaMenuBlock::class);
         $this->repository->registerBlock(AdvancedButtonBlock::class);
         $this->repository->registerBlock(OffcanvasSidebarBlock::class);
         $this->repository->registerBlock(IconPickerBlock::class);
@@ -139,7 +138,6 @@ class GutenbergService
         $this->repository->registerBlock(OffcanvasTriggerBlock::class);
         $this->repository->registerBlock(LanguageSwitcherBlock::class);
         $this->repository->registerBlock(ImageMasonryGalleryBlock::class);
-        $this->repository->registerBlock(GalleryBuilderBlock::class);
         $this->repository->registerBlock(WplyrMediaBlock::class);
         $this->repository->registerBlock(AdvancedImageBoxBlock::class);
         $this->repository->registerBlock(MagicTextBlock::class);
@@ -157,7 +155,7 @@ class GutenbergService
         $this->repository->registerBlock(MasterTableBlock::class);
         $this->repository->registerBlock(TableRowBlock::class);
         $this->repository->registerBlock(TableCellBlock::class);
-        // $this->repository->registerBlock(WordPressCoreFilterBlock::class);
+        $this->repository->registerBlock(TableOfContentBlock::class);
     }
 
     /**

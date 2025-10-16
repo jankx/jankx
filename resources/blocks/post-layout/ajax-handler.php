@@ -36,6 +36,9 @@ class PostLayoutAjaxHandler {
             // Execute query
             $query = new WP_Query($query_args);
 
+            // Render using PostLayoutManager for consistency with block render
+            $content = $this->renderWithPostLayoutManager($query, $params);
+
             if ($query->have_posts()) {
                 $posts = $this->formatPosts($query->posts);
 
@@ -47,7 +50,7 @@ class PostLayoutAjaxHandler {
                         'max_pages' => $query->max_num_pages,
                         'current_page' => $params['page']
                     ],
-                    'content' => $this->renderPostsHTML($posts)
+                    'content' => $content
                 ]);
             } else {
                 wp_send_json_success([
@@ -58,7 +61,7 @@ class PostLayoutAjaxHandler {
                         'max_pages' => 0,
                         'current_page' => $params['page']
                     ],
-                    'content' => '<div class="jankx-post-layout-no-results"><p>Không tìm thấy bài viết nào.</p></div>'
+                    'content' => $content ?: '<div class="jankx-post-layout-no-results"><p>Không tìm thấy bài viết nào.</p></div>'
                 ]);
             }
 
@@ -75,10 +78,10 @@ class PostLayoutAjaxHandler {
 
         // Required parameters
         $params['post_type'] = sanitize_text_field($_REQUEST['post_type'] ?? 'post');
-        $params['posts_per_page'] = intval($_REQUEST['posts_per_page'] ?? 6);
+        $params['posts_per_page'] = intval($_REQUEST['posts_per_page'] ?? 12);
         $params['page'] = intval($_REQUEST['page'] ?? 1);
 
-        // Optional parameters
+        // Optional query parameters
         $params['order_by'] = sanitize_text_field($_REQUEST['order_by'] ?? 'date');
         $params['order'] = strtoupper(sanitize_text_field($_REQUEST['order'] ?? 'DESC'));
         $params['offset'] = intval($_REQUEST['offset'] ?? 0);
@@ -104,11 +107,21 @@ class PostLayoutAjaxHandler {
             throw new Exception('Invalid order_by parameter');
         }
 
-        // Parse JSON parameters
+        // Parse JSON parameters for filters
         $params['include'] = $this->parseJsonParam($_REQUEST['include'] ?? '[]');
         $params['exclude'] = $this->parseJsonParam($_REQUEST['exclude'] ?? '[]');
         $params['taxonomy_filters'] = $this->parseJsonParam($_REQUEST['taxonomy_filters'] ?? '{}');
         $params['meta_filters'] = $this->parseJsonParam($_REQUEST['meta_filters'] ?? '{}');
+
+        // Parse block configuration options
+        $params['layout'] = sanitize_text_field($_REQUEST['layout'] ?? 'grid');
+        $params['engine_id'] = sanitize_text_field($_REQUEST['engine_id'] ?? 'jankx');
+
+        // Parse display options if provided
+        $params['display_options'] = $this->parseJsonParam($_REQUEST['display_options'] ?? '{}');
+        $params['styling'] = $this->parseJsonParam($_REQUEST['styling'] ?? '{}');
+        $params['layout_options'] = $this->parseJsonParam($_REQUEST['layout_options'] ?? '{}');
+        $params['pagination'] = $this->parseJsonParam($_REQUEST['pagination'] ?? '{}');
 
         return $params;
     }
@@ -276,6 +289,117 @@ class PostLayoutAjaxHandler {
         $html .= '</div>';
 
         return $html;
+    }
+
+    private function renderWithPostLayoutManager($wp_query, $params) {
+        try {
+            // Get Jankx application instance
+            if (!class_exists('\Jankx\Foundation\Application')) {
+                // Fallback to simple HTML rendering if Jankx not available
+                return $this->renderPostsHTML($this->formatPosts($wp_query->posts));
+            }
+
+            $jankxApp = \Jankx\Foundation\Application::getInstance();
+            if (!$jankxApp || !$jankxApp->bound('postlayout.manager')) {
+                return $this->renderPostsHTML($this->formatPosts($wp_query->posts));
+            }
+
+            // Get template engine
+            $engineId = $params['engine_id'] ?? 'jankx';
+            if (!$jankxApp->bound('template.engine.' . $engineId)) {
+                return $this->renderPostsHTML($this->formatPosts($wp_query->posts));
+            }
+
+            $templateEngine = $jankxApp->make('template.engine.' . $engineId);
+            $postLayoutManager = $jankxApp->make('postlayout.manager');
+
+            // Get loop item layout type
+            $postType = $params['post_type'] ?? 'post';
+            $loopItemLayoutType = apply_filters("jankx/posts/fetcher/{$postType}/content_layout", 'default');
+
+            try {
+                $loopItemLayout = $postLayoutManager->getLoopItemContentByType($loopItemLayoutType);
+            } catch (\InvalidArgumentException $e) {
+                // Fallback to default
+                if (class_exists('\Jankx\PostLayout\LoopItemContent\DefaultContent')) {
+                    $loopItemLayout = new \Jankx\PostLayout\LoopItemContent\DefaultContent();
+                } else {
+                    return $this->renderPostsHTML($this->formatPosts($wp_query->posts));
+                }
+            }
+
+            if (!$loopItemLayout && class_exists('\Jankx\PostLayout\LoopItemContent\DefaultContent')) {
+                $loopItemLayout = new \Jankx\PostLayout\LoopItemContent\DefaultContent();
+            }
+
+            // Get layout class
+            $layoutName = $params['layout'] ?? 'grid';
+            $layouts = \Jankx\PostLayout\PostLayoutManager::getLayouts();
+            $layoutClass = $layouts[$layoutName] ?? \Jankx\PostLayout\Layout\Grid::class;
+
+            // Create PostLayout instance
+            $postLayout = new $layoutClass($wp_query, $loopItemLayout);
+            $postLayout->setTemplateEngine($templateEngine);
+
+            // Build options from params
+            $options = $this->buildOptionsFromParams($params);
+            $postLayout->setOptions($options);
+
+            // Render and return
+            return $postLayout->render(false);
+
+        } catch (Exception $e) {
+            // Fallback to simple rendering on error
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log('[PostLayoutAjaxHandler] Render error: ' . $e->getMessage());
+            }
+            return $this->renderPostsHTML($this->formatPosts($wp_query->posts));
+        }
+    }
+
+    private function buildOptionsFromParams($params) {
+        $options = [];
+
+        // Layout options
+        $layoutOpts = $params['layout_options'] ?? [];
+        $options['columns'] = $layoutOpts['columns'] ?? 3;
+        $options['columns_tablet'] = $layoutOpts['columnsTablet'] ?? 2;
+        $options['columns_mobile'] = $layoutOpts['columnsMobile'] ?? 1;
+        $options['gap'] = $layoutOpts['gap'] ?? 20;
+        $options['gap_tablet'] = $layoutOpts['gapTablet'] ?? 15;
+        $options['gap_mobile'] = $layoutOpts['gapMobile'] ?? 10;
+
+        // Display options
+        $displayOpts = $params['display_options'] ?? [];
+        $options['show_title'] = $displayOpts['showTitle'] ?? true;
+        $options['show_excerpt'] = $displayOpts['showExcerpt'] ?? true;
+        $options['show_meta'] = $displayOpts['showMeta'] ?? true;
+        $options['show_thumbnail'] = $displayOpts['showThumbnail'] ?? true;
+        $options['show_read_more'] = $displayOpts['showReadMore'] ?? true;
+        $options['excerpt_length'] = $displayOpts['excerptLength'] ?? 20;
+        $options['meta_fields'] = $displayOpts['metaFields'] ?? ['date', 'author', 'categories'];
+        $options['thumbnail_position'] = $displayOpts['thumbnailPosition'] ?? 'top';
+        $options['thumbnail_size'] = $displayOpts['thumbnailSize'] ?? 'medium';
+
+        // Styling options
+        $stylingOpts = $params['styling'] ?? [];
+        $options['hover_effect'] = $stylingOpts['hoverEffect'] ?? 'lift';
+        $options['border_radius'] = $stylingOpts['borderRadius'] ?? 8;
+        $options['shadow'] = $stylingOpts['shadow'] ?? 'medium';
+
+        // Pagination options
+        $paginationOpts = $params['pagination'] ?? [];
+        if (!empty($paginationOpts['enabled'])) {
+            $options['show_paginate'] = true;
+            $options['pagination_type'] = $paginationOpts['type'] ?? 'numbers';
+            $options['max_numbers'] = $paginationOpts['maxNumbers'] ?? 10;
+            $options['prev_text'] = $paginationOpts['prevText'] ?? __('Previous', 'jankx');
+            $options['next_text'] = $paginationOpts['nextText'] ?? __('Next', 'jankx');
+        } else {
+            $options['show_paginate'] = false;
+        }
+
+        return $options;
     }
 }
 

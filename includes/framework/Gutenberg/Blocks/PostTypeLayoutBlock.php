@@ -487,6 +487,133 @@ class PostTypeLayoutBlock extends Block
      * @return string Rendered HTML
      */
     /**
+     * Build PostLayout options from block attributes
+     *
+     * @param array $attributes All block attributes
+     * @param array $layout Layout attributes
+     * @param array $displayOptions Display options
+     * @param array $pagination Pagination options
+     * @param array $styling Styling options
+     * @param array $responsive Responsive options
+     * @return array Complete options array for PostLayout
+     */
+    protected function buildPostLayoutOptions(
+        array $attributes,
+        array $layout,
+        array $displayOptions,
+        array $pagination,
+        array $styling,
+        array $responsive
+    ): array {
+        $options = [];
+
+        // Layout options - columns and gap
+        $options['columns'] = $layout['columns'] ?? 3;
+        $options['columns_tablet'] = $layout['columnsTablet'] ?? 2;
+        $options['columns_mobile'] = $layout['columnsMobile'] ?? 1;
+        $options['gap'] = $layout['gap'] ?? 20;
+        $options['gap_tablet'] = $layout['gapTablet'] ?? 15;
+        $options['gap_mobile'] = $layout['gapMobile'] ?? 10;
+
+        // Display options - what to show/hide
+        $options['show_title'] = $displayOptions['showTitle'] ?? true;
+        $options['show_excerpt'] = $displayOptions['showExcerpt'] ?? true;
+        $options['show_meta'] = $displayOptions['showMeta'] ?? true;
+        $options['show_thumbnail'] = $displayOptions['showThumbnail'] ?? true;
+        $options['show_read_more'] = $displayOptions['showReadMore'] ?? true;
+        $options['excerpt_length'] = $displayOptions['excerptLength'] ?? 20;
+        $options['meta_fields'] = $displayOptions['metaFields'] ?? ['date', 'author', 'categories'];
+
+        // Thumbnail options (can be in displayOptions or root)
+        $options['thumbnail_position'] = $displayOptions['thumbnailPosition'] ?? 'top';
+        $options['thumbnail_size'] = $displayOptions['thumbnailSize'] ?? 'medium';
+
+        // Styling options - visual effects
+        $options['hover_effect'] = $styling['hoverEffect'] ?? 'lift';
+        $options['border_radius'] = $styling['borderRadius'] ?? 8;
+        $options['shadow'] = $styling['shadow'] ?? 'medium';
+
+        // Animation options
+        if (isset($styling['enableAnimations'])) {
+            $options['enable_animations'] = $styling['enableAnimations'];
+            $options['animation_duration'] = $styling['animationDuration'] ?? 300;
+        }
+
+        // Performance options
+        if (isset($styling['lazyLoading'])) {
+            $options['lazy_loading'] = $styling['lazyLoading'];
+        }
+        if (isset($styling['cssContainment'])) {
+            $options['css_containment'] = $styling['cssContainment'];
+        }
+
+        // Responsive styling overrides
+        if (!empty($responsive['enabled'])) {
+            if (isset($styling['borderRadiusTablet'])) {
+                $options['border_radius_tablet'] = $styling['borderRadiusTablet'];
+            }
+            if (isset($styling['borderRadiusMobile'])) {
+                $options['border_radius_mobile'] = $styling['borderRadiusMobile'];
+            }
+            if (isset($styling['shadowTablet'])) {
+                $options['shadow_tablet'] = $styling['shadowTablet'];
+            }
+            if (isset($styling['shadowMobile'])) {
+                $options['shadow_mobile'] = $styling['shadowMobile'];
+            }
+        }
+
+        // Pagination options
+        if (!empty($pagination['enabled'])) {
+            $options['show_paginate'] = true;
+            $options['pagination_type'] = $pagination['type'] ?? 'numbers';
+            $options['max_numbers'] = $pagination['maxNumbers'] ?? 10;
+            $options['show_first_last'] = $pagination['showFirstLast'] ?? false;
+            $options['show_ellipsis'] = $pagination['showEllipsis'] ?? true;
+            $options['show_current_page'] = $pagination['showCurrentPage'] ?? true;
+            $options['ellipsis_position'] = $pagination['ellipsisPosition'] ?? 'both';
+            $options['prev_text'] = $pagination['prevText'] ?? __('Previous', 'jankx');
+            $options['next_text'] = $pagination['nextText'] ?? __('Next', 'jankx');
+            $options['show_icons'] = $pagination['showIcons'] ?? true;
+            $options['show_page_info'] = $pagination['showPageInfo'] ?? false;
+
+            // Load more specific options
+            if ($pagination['type'] === 'load_more' || $pagination['type'] === 'infinite_scroll') {
+                $options['load_more_text'] = $pagination['loadMoreText'] ?? __('Load More', 'jankx');
+                $options['loading_text'] = $pagination['loadingText'] ?? __('Loading...', 'jankx');
+                $options['no_more_text'] = $pagination['noMoreText'] ?? __('No More Posts', 'jankx');
+                $options['posts_per_load'] = $pagination['postsPerLoad'] ?? 6;
+                $options['show_spinner'] = $pagination['showSpinner'] ?? true;
+                $options['hide_when_complete'] = $pagination['hideWhenComplete'] ?? true;
+
+                if ($pagination['type'] === 'infinite_scroll') {
+                    $options['trigger_distance'] = $pagination['triggerDistance'] ?? 100;
+                    $options['show_loading_indicator'] = $pagination['showLoadingIndicator'] ?? true;
+                    $options['show_back_to_top'] = $pagination['showBackToTop'] ?? false;
+                }
+            }
+
+            // AJAX options
+            $options['ajax'] = $pagination['ajax'] ?? false;
+            $options['update_url'] = $pagination['updateURL'] ?? true;
+            $options['scroll_to_top'] = $pagination['scrollToTop'] ?? false;
+            $options['show_loading_state'] = $pagination['showLoadingState'] ?? true;
+
+            // Accessibility options
+            if (isset($pagination['keyboardNav'])) {
+                $options['keyboard_nav'] = $pagination['keyboardNav'];
+            }
+            if (isset($pagination['touchSupport'])) {
+                $options['touch_support'] = $pagination['touchSupport'];
+            }
+        } else {
+            $options['show_paginate'] = false;
+        }
+
+        return $options;
+    }
+
+    /**
      * Get PostLayout class based on layout name
      *
      * @param string $layoutName
@@ -501,32 +628,25 @@ class PostTypeLayoutBlock extends Block
 
     public function render(array $attributes, string $content = ''): string
     {
-        // Parse block attributes
-        $postType = isset($attributes['postType']) ? $attributes['postType'] : 'post';
-        $styling = isset($attributes['styling']) && is_array($attributes['styling']) ? $attributes['styling'] : array();
-        $layoutName = isset($styling['viewType']) ? $styling['viewType'] : 'grid';
-        $perPage = isset($attributes['postsPerPage']) ? intval($attributes['postsPerPage']) : 6;
+        // Parse block attributes with proper defaults from block.json
+        $postType = $attributes['postType'] ?? 'post';
+        $perPage = isset($attributes['postsPerPage']) ? intval($attributes['postsPerPage']) : 12;
 
-        // Parse styling attributes
-        $columns = isset($styling['columns']) ? intval($styling['columns']) : 3;
-        $gap = isset($styling['gap']) ? $styling['gap'] : 'medium';
-        $showExcerpt = isset($styling['showExcerpt']) ? $styling['showExcerpt'] : true;
-        $showDate = isset($styling['showDate']) ? $styling['showDate'] : true;
-        $showAuthor = isset($styling['showAuthor']) ? $styling['showAuthor'] : false;
-        $showCategories = isset($styling['showCategories']) ? $styling['showCategories'] : false;
-        $showReadMore = isset($styling['showReadMore']) ? $styling['showReadMore'] : true;
-        $thumbnailPosition = isset($styling['thumbnailPosition']) ? $styling['thumbnailPosition'] : 'top';
-        $thumbnailSize = isset($styling['thumbnailSize']) ? $styling['thumbnailSize'] : 'medium';
+        // Parse styling attributes (correct location)
+        $styling = $attributes['styling'] ?? [];
+        $layoutName = $styling['viewType'] ?? 'grid';
 
-        // Parse query attributes
-        $orderBy = isset($attributes['orderBy']) ? $attributes['orderBy'] : 'date';
-        $order = isset($attributes['order']) ? $attributes['order'] : 'DESC';
-        $offset = isset($attributes['offset']) ? intval($attributes['offset']) : 0;
-        $category = isset($attributes['category']) ? $attributes['category'] : '';
-        $tag = isset($attributes['tag']) ? $attributes['tag'] : '';
-        $author = isset($attributes['author']) ? $attributes['author'] : '';
-        $excludePosts = isset($attributes['excludePosts']) ? $attributes['excludePosts'] : '';
-        $includePosts = isset($attributes['includePosts']) ? $attributes['includePosts'] : '';
+        // Parse layout attributes (correct location)
+        $layout = $attributes['layout'] ?? [];
+
+        // Parse display options (correct location)
+        $displayOptions = $attributes['displayOptions'] ?? [];
+
+        // Parse pagination options
+        $pagination = $attributes['pagination'] ?? [];
+
+        // Parse responsive options
+        $responsive = $attributes['responsive'] ?? [];
 
         // Get engine ID
         $engineId = Jankx::getEngineId();
@@ -540,29 +660,55 @@ class PostTypeLayoutBlock extends Block
             $jankxApp = \Jankx\Foundation\Application::getInstance();
             $postLayoutManager = $jankxApp->make('postlayout.manager');
 
-            // Create WP_Query
+            // Build WP_Query args
             $queryArgs = [
                 'post_type' => $postType,
                 'posts_per_page' => $perPage,
                 'post_status' => 'publish',
             ];
 
-            // Add ordering if specified
+            // Add ordering
             $orderByValue = $attributes['orderBy'] ?? 'date';
-
             if ($orderByValue === 'views') {
-                // Sort by post views count
                 $queryArgs['orderby'] = 'meta_value_num';
                 $queryArgs['meta_key'] = 'post_views_count';
             } else {
                 $queryArgs['orderby'] = $orderByValue;
             }
+            $queryArgs['order'] = $attributes['order'] ?? 'DESC';
 
-            if (isset($attributes['order'])) {
-                $queryArgs['order'] = $attributes['order'];
+            // Add offset
+            if (isset($attributes['offset']) && $attributes['offset'] > 0) {
+                $queryArgs['offset'] = intval($attributes['offset']);
             }
-            if (isset($attributes['offset'])) {
-                $queryArgs['offset'] = $attributes['offset'];
+
+            // Add include/exclude
+            if (!empty($attributes['include'])) {
+                $queryArgs['post__in'] = array_map('intval', (array) $attributes['include']);
+            }
+            if (!empty($attributes['exclude'])) {
+                $queryArgs['post__not_in'] = array_map('intval', (array) $attributes['exclude']);
+            }
+
+            // Add taxonomy filters
+            if (!empty($attributes['taxonomyFilters'])) {
+                $taxQuery = $this->buildTaxonomyQuery($attributes['taxonomyFilters']);
+                if ($taxQuery) {
+                    $queryArgs['tax_query'] = $taxQuery;
+                }
+            }
+
+            // Add meta filters
+            if (!empty($attributes['metaFilters'])) {
+                $metaQuery = $this->buildMetaQuery($attributes['metaFilters']);
+                if ($metaQuery) {
+                    $queryArgs['meta_query'] = $metaQuery;
+                }
+            }
+
+            // Apply preset filters
+            if (!empty($attributes['presetFilters'])) {
+                $this->applyPresetFilters($queryArgs, $attributes['presetFilters']);
             }
 
             // Apply same filters as PostsFetcher for consistency
@@ -612,72 +758,8 @@ class PostTypeLayoutBlock extends Block
             $postLayout = new $postLayoutClass($wp_query, $loopItemLayout);
             $postLayout->setTemplateEngine($templateEngine);
 
-            // Set pagination options
-            $paginationOptions = [];
-            if (isset($attributes['pagination']['enabled']) && $attributes['pagination']['enabled']) {
-                $paginationOptions['show_paginate'] = true;
-                $paginationOptions['pagination_type'] = $attributes['pagination']['type'] ?? 'numbers';
-                // Thêm các options khác nếu cần
-                if (isset($attributes['pagination']['maxNumbers'])) {
-                    $paginationOptions['max_numbers'] = $attributes['pagination']['maxNumbers'];
-                }
-                if (isset($attributes['pagination']['prevText'])) {
-                    $paginationOptions['prev_text'] = $attributes['pagination']['prevText'];
-                }
-                if (isset($attributes['pagination']['nextText'])) {
-                    $paginationOptions['next_text'] = $attributes['pagination']['nextText'];
-                }
-            }
-
-            // Set display options
-            $displayOptions = [];
-            if (isset($attributes['displayOptions'])) {
-                $displayOptions = [
-                    'show_title' => $attributes['displayOptions']['showTitle'] ?? true,
-                    'show_excerpt' => $attributes['displayOptions']['showExcerpt'] ?? true,
-                    'show_meta' => $attributes['displayOptions']['showMeta'] ?? true,
-                    'show_thumbnail' => $attributes['displayOptions']['showThumbnail'] ?? true,
-                    'show_read_more' => $attributes['displayOptions']['showReadMore'] ?? true,
-                    'excerpt_length' => $attributes['displayOptions']['excerptLength'] ?? 20,
-                    'meta_fields' => $attributes['displayOptions']['metaFields'] ?? ['date', 'author', 'categories'],
-                ];
-            }
-
-            // Set styling options
-            $stylingOptions = [];
-            if (isset($attributes['styling'])) {
-                if (isset($attributes['styling']['hoverEffect'])) {
-                    $stylingOptions['hover_effect'] = $attributes['styling']['hoverEffect'];
-                }
-                if (isset($attributes['styling']['borderRadius'])) {
-                    $stylingOptions['border_radius'] = $attributes['styling']['borderRadius'];
-                }
-                if (isset($attributes['styling']['shadow'])) {
-                    $stylingOptions['shadow'] = $attributes['styling']['shadow'];
-                }
-            }
-
-            // Set layout options
-            $layoutOptions = [];
-            if (isset($attributes['layout'])) {
-                if (isset($attributes['layout']['columns'])) {
-                    $layoutOptions['columns'] = $attributes['layout']['columns'];
-                }
-                if (isset($attributes['layout']['columnsTablet'])) {
-                    $layoutOptions['columns_tablet'] = $attributes['layout']['columnsTablet'];
-                }
-                if (isset($attributes['layout']['columnsMobile'])) {
-                    $layoutOptions['columns_mobile'] = $attributes['layout']['columnsMobile'];
-                }
-                if (isset($attributes['layout']['gap'])) {
-                    $layoutOptions['gap'] = $attributes['layout']['gap'];
-                }
-            }
-
-            $allOptions = array_merge([
-                'thumbnail_position' => 'top',
-                'thumbnail_size' => 'medium',
-            ], $paginationOptions, $displayOptions, $stylingOptions, $layoutOptions);
+            // Build complete options array from all attributes
+            $allOptions = $this->buildPostLayoutOptions($attributes, $layout, $displayOptions, $pagination, $styling, $responsive);
 
             $postLayout->setOptions($allOptions);
 

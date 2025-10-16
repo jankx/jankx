@@ -1,0 +1,139 @@
+/*!***************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/table-of-content/style.scss ***!
+  \***************************************************************************************************************************************************************************************************/
+/**
+ * Table of Content Block Styles
+ * Using CSS variables from theme.json color presets
+ * Consistent styling for both editor and frontend
+ */
+.jankx-table-of-content {
+  --toc-primary-color: var(--wp--preset--color--primary, #503AA8);
+  --toc-text-color: var(--wp--preset--color--contrast, #111111);
+  --toc-border-color: var(--wp--preset--color--accent-5, #FBFAF3);
+  --toc-bg-color: var(--wp--preset--color--base, #FFFFFF);
+  --toc-hover-bg: var(--wp--preset--color--accent-5, #FBFAF3);
+  --toc-link-hover: var(--wp--preset--color--primary, #503AA8);
+  padding: 1.5rem;
+  border: 1px solid var(--toc-border-color);
+  border-radius: 8px;
+  background: var(--toc-bg-color);
+}
+.jankx-table-of-content .toc-header {
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--toc-primary-color);
+}
+.jankx-table-of-content .toc-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--toc-text-color);
+}
+.jankx-table-of-content .toc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.jankx-table-of-content .toc-list--root > .toc-item:not(:last-child) {
+  margin-bottom: 0.5rem;
+}
+.jankx-table-of-content .toc-list:not(.toc-list--root) {
+  margin-top: 0.5rem;
+  margin-left: 1.5rem;
+  padding-left: 0.75rem;
+  border-left: 2px solid var(--toc-border-color);
+}
+.jankx-table-of-content .toc-list--numbered {
+  counter-reset: toc-counter;
+}
+.jankx-table-of-content .toc-list--numbered > .toc-item {
+  counter-increment: toc-counter;
+}
+.jankx-table-of-content .toc-list--numbered > .toc-item::before {
+  content: counter(toc-counter) ". ";
+  color: var(--toc-primary-color);
+  font-weight: 600;
+}
+.jankx-table-of-content .toc-item {
+  position: relative;
+  line-height: 1.6;
+}
+.jankx-table-of-content .toc-item__wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.jankx-table-of-content .toc-item__toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid var(--toc-primary-color);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--toc-primary-color);
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+.jankx-table-of-content .toc-item__toggle:hover {
+  background: var(--toc-primary-color);
+  color: var(--toc-bg-color);
+}
+.jankx-table-of-content .toc-item__toggle.is-expanded {
+  background: var(--toc-primary-color);
+  color: var(--toc-bg-color);
+}
+.jankx-table-of-content .toc-item__icon {
+  display: inline-block;
+  font-weight: bold;
+}
+.jankx-table-of-content .toc-item__link {
+  color: var(--toc-text-color);
+  text-decoration: none;
+  transition: color 0.2s ease;
+  flex: 1;
+}
+.jankx-table-of-content .toc-item__link:hover {
+  color: var(--toc-link-hover);
+  text-decoration: underline;
+}
+.jankx-table-of-content .toc-item__link:focus {
+  outline: 2px solid var(--toc-primary-color);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+.jankx-table-of-content .toc-item--level-2 .toc-item__link {
+  font-weight: 600;
+  font-size: 1rem;
+}
+.jankx-table-of-content .toc-item--level-3 .toc-item__link {
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+.jankx-table-of-content .toc-item--level-4 .toc-item__link, .jankx-table-of-content .toc-item--level-5 .toc-item__link, .jankx-table-of-content .toc-item--level-6 .toc-item__link {
+  font-weight: 400;
+  font-size: 0.9rem;
+}
+.jankx-table-of-content .toc-placeholder {
+  padding: 2rem;
+  text-align: center;
+  color: var(--toc-text-color);
+  opacity: 0.7;
+}
+.jankx-table-of-content .toc-placeholder p {
+  margin: 0.5rem 0;
+}
+.jankx-table-of-content .toc-placeholder p:first-child {
+  font-weight: 500;
+}
+.jankx-table-of-content .toc-placeholder p em {
+  font-size: 0.9rem;
+  color: var(--toc-primary-color);
+}
+
+/*# sourceMappingURL=style.css.map*/
