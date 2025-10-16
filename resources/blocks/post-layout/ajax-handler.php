@@ -18,9 +18,13 @@ class PostLayoutAjaxHandler {
 
     public function handleFetchData() {
         try {
-            // Validate nonce for security (skip for admin users in site editor)
-            if (!is_admin() && !wp_verify_nonce($_REQUEST['_wpnonce'] ?? '', 'jankx_post_layout_nonce')) {
-                throw new Exception('Invalid nonce');
+            // Validate nonce for security
+            // Allow preview requests from block editor without nonce
+            $isBlockPreview = !empty($_SERVER['HTTP_X_JANKX_BLOCK_PREVIEW']);
+            if (!$isBlockPreview && !current_user_can('edit_posts')) {
+                if (!wp_verify_nonce($_REQUEST['_wpnonce'] ?? '', 'jankx_post_layout_nonce')) {
+                    throw new Exception('Invalid nonce');
+                }
             }
 
             // Get and validate parameters

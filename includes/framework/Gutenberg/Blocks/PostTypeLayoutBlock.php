@@ -33,14 +33,15 @@ class PostTypeLayoutBlock extends Block
      *
      * @return void
      */
-    public function init()
+    public function init(): void
     {
         add_action('rest_api_init', [$this, 'registerRestEndpoints']);
         add_action('admin_head', [$this, 'setupSupportedPostLayouts'], 5);
     }
 
 
-    public function setupSupportedPostLayouts() {
+    public function setupSupportedPostLayouts(): void
+    {
         $layouts = PostLayoutManager::getLayouts(['field' => 'names']);
         ?>
         <script>
@@ -54,7 +55,7 @@ class PostTypeLayoutBlock extends Block
      *
      * @return void
      */
-    public function registerRestEndpoints()
+    public function registerRestEndpoints(): void
     {
         register_rest_route('jankx/v1', '/post-layout/(?P<id>[a-zA-Z0-9-]+)', [
             'methods' => 'GET',
@@ -119,7 +120,7 @@ class PostTypeLayoutBlock extends Block
      * @param string $blockId
      * @return array|null
      */
-    protected function getBlockConfig($blockId)
+    protected function getBlockConfig(string $blockId): ?array
     {
         // Parse block ID to get post ID and block index
         $parts = explode('-', $blockId);
@@ -174,7 +175,7 @@ class PostTypeLayoutBlock extends Block
      * @param array $config
      * @return \WP_Query
      */
-    protected function buildQuery($config)
+    protected function buildQuery(array $config): \WP_Query
     {
         $orderBy = $config['orderBy'] ?: 'date';
 
@@ -237,7 +238,7 @@ class PostTypeLayoutBlock extends Block
      * @param array $filters
      * @return array|null
      */
-    protected function buildTaxonomyQuery($filters)
+    protected function buildTaxonomyQuery(array $filters): ?array
     {
         $taxQueries = [];
 
@@ -264,7 +265,7 @@ class PostTypeLayoutBlock extends Block
      * @param array $filters
      * @return array|null
      */
-    protected function buildMetaQuery($filters)
+    protected function buildMetaQuery(array $filters): ?array
     {
         $metaQueries = [];
 
@@ -296,7 +297,7 @@ class PostTypeLayoutBlock extends Block
      * @param array $presets
      * @return void
      */
-    protected function applyPresetFilters(&$args, $presets)
+    protected function applyPresetFilters(array &$args, array $presets): void
     {
         foreach ($presets as $preset) {
             switch ($preset) {
@@ -341,7 +342,7 @@ class PostTypeLayoutBlock extends Block
      * @param array $filters
      * @return void
      */
-    protected function applyCustomFilters(&$args, $filters)
+    protected function applyCustomFilters(array &$args, array $filters): void
     {
         foreach ($filters as $filter) {
             if (!empty($filter['callback']) && function_exists($filter['callback'])) {
@@ -357,7 +358,7 @@ class PostTypeLayoutBlock extends Block
      * @param array $args
      * @return void
      */
-    protected function applyTrendingLogic(&$args)
+    protected function applyTrendingLogic(array &$args): void
     {
         // Simple trending logic: order by comment count and recent activity
         $args['orderby'] = 'comment_count';
@@ -381,7 +382,7 @@ class PostTypeLayoutBlock extends Block
      * @param string $postType
      * @return array
      */
-    protected function getTaxonomiesForPostType($postType)
+    protected function getTaxonomiesForPostType(string $postType): array
     {
         $taxonomies = get_object_taxonomies($postType, 'objects');
         $formatted = [];
@@ -414,7 +415,7 @@ class PostTypeLayoutBlock extends Block
      * @param string $postType
      * @return array
      */
-    protected function getMetaFieldsForPostType($postType)
+    protected function getMetaFieldsForPostType(string $postType): array
     {
         // This would typically come from a custom fields plugin or theme options
         // For now, return common meta fields
@@ -433,7 +434,7 @@ class PostTypeLayoutBlock extends Block
      *
      * @return array
      */
-    protected function getPresetFilters()
+    protected function getPresetFilters(): array
     {
         return [
             'featured' => __('Featured Posts', 'jankx'),
@@ -449,7 +450,7 @@ class PostTypeLayoutBlock extends Block
      *
      * @return array
      */
-    protected function getCustomFilters()
+    protected function getCustomFilters(): array
     {
         // This would return filters registered by themes/plugins
         return apply_filters('jankx_dynamic_collection_custom_filters', []);
@@ -461,7 +462,7 @@ class PostTypeLayoutBlock extends Block
      * @param \WP_Post $post
      * @return array
      */
-    protected function formatPost($post)
+    protected function formatPost(\WP_Post $post): array
     {
         return [
             'ID' => $post->ID,
@@ -491,14 +492,14 @@ class PostTypeLayoutBlock extends Block
      * @param string $layoutName
      * @return string
      */
-    protected function getPostLayoutClass($layoutName)
+    protected function getPostLayoutClass(string $layoutName): string
     {
         $layoutMap = PostLayoutManager::getLayouts();
 
         return $layoutMap[$layoutName] ?? \Jankx\PostLayout\Layout\Grid::class;
     }
 
-    public function render($attributes, $content = '')
+    public function render(array $attributes, string $content = ''): string
     {
         // Parse block attributes
         $postType = isset($attributes['postType']) ? $attributes['postType'] : 'post';
@@ -686,11 +687,17 @@ class PostTypeLayoutBlock extends Block
             return $renderedContent;
         } catch (Exception $e) {
             Log::error($e->getMessage());
+
+            // Show detailed error only in debug mode
+            $errorMessage = defined('WP_DEBUG') && WP_DEBUG
+                ? sprintf(__('Failed to render content: %s', 'jankx'), $e->getMessage())
+                : __('Failed to render content. Please check your block settings.', 'jankx');
+
             // Fallback: return empty container
-            return sprintf('<div id="%s" class="jankx-post-layout" data-engine-id="%s">%s</div>',
+            return sprintf('<div id="%s" class="jankx-post-layout jankx-post-layout--error" data-engine-id="%s">%s</div>',
                 esc_attr($wrapId),
                 esc_attr($engineId),
-                '<div class="jankx-post-layout-error">' . esc_html__('Failed to render content: ' . $e->getMessage(), 'jankx') . '</div>'
+                '<div class="jankx-post-layout-error">' . esc_html($errorMessage) . '</div>'
             );
         }
     }

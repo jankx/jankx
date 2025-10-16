@@ -21,12 +21,24 @@
 .wp-block-jankx-gallery-builder .gallery-main {
   position: relative;
   width: 100%;
-  aspect-ratio: 16/9;
   overflow: hidden;
   background: #000;
+  aspect-ratio: 16/9;
+  min-height: inherit;
 }
 @media (max-width: 768px) {
   .wp-block-jankx-gallery-builder .gallery-main {
+    aspect-ratio: 4/3;
+  }
+}
+.wp-block-jankx-gallery-builder.caption-below .gallery-main, .wp-block-jankx-gallery-builder.caption-stack .gallery-main {
+  aspect-ratio: unset;
+}
+.wp-block-jankx-gallery-builder.caption-below .gallery-main .slide-image-container, .wp-block-jankx-gallery-builder.caption-stack .gallery-main .slide-image-container {
+  aspect-ratio: 16/9;
+}
+@media (max-width: 768px) {
+  .wp-block-jankx-gallery-builder.caption-below .gallery-main .slide-image-container, .wp-block-jankx-gallery-builder.caption-stack .gallery-main .slide-image-container {
     aspect-ratio: 4/3;
   }
 }
@@ -99,10 +111,45 @@
   color: #333;
   padding: 15px 20px;
   border-top: 1px solid #e9ecef;
+  min-height: 80px;
+  display: flex;
+  align-items: flex-start;
 }
 .wp-block-jankx-gallery-builder.caption-below .slide-caption .caption-content {
   color: #333;
   text-align: left;
+}
+.wp-block-jankx-gallery-builder.caption-stack .gallery-main {
+  display: flex;
+  flex-direction: column;
+  height: 600px;
+}
+@media (max-width: 768px) {
+  .wp-block-jankx-gallery-builder.caption-stack .gallery-main {
+    height: 500px;
+  }
+}
+.wp-block-jankx-gallery-builder.caption-stack .slide-image-container {
+  flex: 1;
+  aspect-ratio: unset;
+  height: 50%;
+}
+.wp-block-jankx-gallery-builder.caption-stack .slide-caption {
+  position: static;
+  flex: 1;
+  height: 50%;
+  background: #f8f9fa;
+  color: #333;
+  padding: 20px;
+  border-top: 1px solid #e9ecef;
+  display: flex;
+  align-items: center;
+  overflow-y: auto;
+}
+.wp-block-jankx-gallery-builder.caption-stack .slide-caption .caption-content {
+  color: #333;
+  text-align: left;
+  width: 100%;
 }
 .wp-block-jankx-gallery-builder .gallery-nav {
   position: absolute;
