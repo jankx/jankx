@@ -69,6 +69,7 @@
   position: relative;
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 .slideshow-block .slideshow-block .slideshow-main .slideshow-track {
   display: flex;
@@ -77,22 +78,20 @@
   transition: transform var(--slideshow-transition-speed) ease-in-out;
 }
 .slideshow-block .slideshow-block .slideshow-main .slideshow-track .slideshow-slide {
-  flex: 0 0 100%;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  transition: opacity var(--slideshow-transition-speed) ease-in-out, transform var(--slideshow-transition-speed) ease-in-out;
-}
-.slideshow-effect-fade .slideshow-block .slideshow-block .slideshow-main .slideshow-track .slideshow-slide {
   position: absolute;
   top: 0;
   left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+  transition: opacity var(--slideshow-transition-speed) ease-in-out, transform var(--slideshow-transition-speed) ease-in-out;
 }
-.slideshow-effect-slide .slideshow-block .slideshow-block .slideshow-main .slideshow-track .slideshow-slide {
-  position: relative;
+.slideshow-effect-fade .slideshow-block .slideshow-block .slideshow-main .slideshow-track .slideshow-slide {
+  transform: translateX(0) !important;
 }
 .slideshow-block .slideshow-block .slideshow-main .slideshow-track .slideshow-slide.active {
   opacity: 1;
+  z-index: 1;
 }
 .slideshow-block .slideshow-block .slideshow-main .slideshow-track .slideshow-slide img {
   width: 100%;

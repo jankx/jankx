@@ -37,12 +37,10 @@
     getImages() {
       const images = [];
       const slides = this.element.querySelectorAll('.slideshow-slide');
-      console.log('Slideshow: Found', slides.length, 'slides');
       slides.forEach((slide, index) => {
         const img = slide.querySelector('img');
         const caption = slide.querySelector('.slideshow-caption');
         if (img) {
-          console.log('Slideshow: Slide', index, 'has image:', img.src);
           images.push({
             id: index,
             src: img.src,
@@ -53,11 +51,8 @@
             caption: caption ? caption.innerHTML : '',
             element: slide
           });
-        } else {
-          console.warn('Slideshow: Slide', index, 'has no image');
         }
       });
-      console.log('Slideshow: Total images loaded:', images.length);
       return images;
     }
     init() {
@@ -170,8 +165,7 @@
       });
     }
     loadPhotoSwipe() {
-      // Skip PhotoSwipe loading for now and use custom lightbox with autoplay
-      console.log('Using custom lightbox with autoplay functionality');
+      // Use custom lightbox with autoplay functionality
       return Promise.resolve();
     }
     initSlideshow() {
@@ -197,7 +191,6 @@
       const track = this.element.querySelector('.slideshow-track');
       const slides = this.element.querySelectorAll('.slideshow-slide');
       if (!track || !slides.length) return;
-      console.log('Slideshow: Updating to slide', this.currentSlide, 'of', slides.length);
 
       // Update slide visibility
       slides.forEach((slide, index) => {
@@ -207,12 +200,10 @@
           const translateX = (index - this.currentSlide) * 100;
           slide.style.transform = `translateX(${translateX}%)`;
           slide.style.opacity = '1';
-          console.log('Slideshow: Slide', index, 'transform:', translateX + '%');
         } else if (this.settings.transitionEffect === 'fade') {
           // For fade effect, use opacity
           slide.style.opacity = index === this.currentSlide ? '1' : '0';
           slide.style.transform = 'translateX(0)';
-          console.log('Slideshow: Slide', index, 'opacity:', slide.style.opacity);
         }
       });
     }
