@@ -62,12 +62,6 @@ function Edit({
     styleType,
     activeTab,
     tabAlignment,
-    tabItemTextColor,
-    tabItemBackgroundColor,
-    tabItemGradient,
-    activeTabTextColor,
-    activeTabBackgroundColor,
-    activeTabGradient,
     hideTabsBorderBottom,
     centerNavigation
   } = attributes;
@@ -75,36 +69,31 @@ function Edit({
     innerBlocks,
     selectedBlockClientId
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useSelect)(select => {
-    const {
-      getBlocks,
-      getSelectedBlockClientId
-    } = select('core/block-editor');
+    const blockEditorSelect = select('core/block-editor');
     return {
-      innerBlocks: getBlocks(clientId),
-      selectedBlockClientId: getSelectedBlockClientId()
+      innerBlocks: blockEditorSelect.getBlocks(clientId),
+      selectedBlockClientId: blockEditorSelect.getSelectedBlockClientId()
     };
   }, [clientId]);
+  const dispatch = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useDispatch)('core/block-editor');
   const {
     insertBlock,
     selectBlock
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useDispatch)('core/block-editor');
-
-  // Color and gradient settings
-  const colorGradientSettings = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.__experimentalUseMultipleOriginColorsAndGradients)();
+  } = dispatch;
   const tabItems = innerBlocks.map(block => ({
     clientId: block.clientId,
     title: block.attributes.title || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Tab', 'jankx'),
-    icon: block.attributes.icon,
-    iconType: block.attributes.iconType,
-    normalTabTextColor: block.attributes.normalTabTextColor,
-    normalTabBackgroundColor: block.attributes.normalTabBackgroundColor,
-    normalTabGradient: block.attributes.normalTabGradient,
-    activeTabTextColor: block.attributes.activeTabTextColor,
-    activeTabBackgroundColor: block.attributes.activeTabBackgroundColor,
-    activeTabGradient: block.attributes.activeTabGradient,
-    contentTextColor: block.attributes.contentTextColor,
-    contentBackgroundColor: block.attributes.contentBackgroundColor,
-    contentGradient: block.attributes.contentGradient
+    icon: block.attributes.icon || '',
+    iconType: block.attributes.iconType || '',
+    normalTabTextColor: block.attributes.normalTabTextColor || '',
+    normalTabBackgroundColor: block.attributes.normalTabBackgroundColor || '',
+    normalTabGradient: block.attributes.normalTabGradient || '',
+    activeTabTextColor: block.attributes.activeTabTextColor || '',
+    activeTabBackgroundColor: block.attributes.activeTabBackgroundColor || '',
+    activeTabGradient: block.attributes.activeTabGradient || '',
+    contentTextColor: block.attributes.contentTextColor || '',
+    contentBackgroundColor: block.attributes.contentBackgroundColor || '',
+    contentGradient: block.attributes.contentGradient || ''
   }));
 
   // Handle tab click in editor
@@ -255,65 +244,6 @@ function Edit({
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Align tabs horizontally', 'jankx')
         })]
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
-      group: "styles",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
-        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Tab Items Style', 'jankx'),
-        initialOpen: false,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.PanelColorGradientSettings, {
-          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Text Color', 'jankx'),
-          settings: [{
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Text Color', 'jankx'),
-            colorValue: tabItemTextColor,
-            onColorChange: value => setAttributes({
-              tabItemTextColor: value
-            })
-          }],
-          ...colorGradientSettings
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.PanelColorGradientSettings, {
-          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Background', 'jankx'),
-          settings: [{
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Background', 'jankx'),
-            colorValue: tabItemBackgroundColor,
-            gradientValue: tabItemGradient,
-            onColorChange: value => setAttributes({
-              tabItemBackgroundColor: value
-            }),
-            onGradientChange: value => setAttributes({
-              tabItemGradient: value
-            })
-          }],
-          ...colorGradientSettings
-        })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
-        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Active Tab Style', 'jankx'),
-        initialOpen: false,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.PanelColorGradientSettings, {
-          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Text Color', 'jankx'),
-          settings: [{
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Text Color', 'jankx'),
-            colorValue: activeTabTextColor,
-            onColorChange: value => setAttributes({
-              activeTabTextColor: value
-            })
-          }],
-          ...colorGradientSettings
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.PanelColorGradientSettings, {
-          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Background', 'jankx'),
-          settings: [{
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Background', 'jankx'),
-            colorValue: activeTabBackgroundColor,
-            gradientValue: activeTabGradient,
-            onColorChange: value => setAttributes({
-              activeTabBackgroundColor: value
-            }),
-            onGradientChange: value => setAttributes({
-              activeTabGradient: value
-            })
-          }],
-          ...colorGradientSettings
-        })]
-      })]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.BlockControls, {
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToolbarGroup, {
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToolbarButton, {
@@ -330,41 +260,8 @@ function Edit({
           className: `smart-tabs__nav-list align-${tabAlignment}`,
           children: [tabItems.map((tab, index) => {
             const isActiveTab = index === currentActiveTab;
-
-            // Build inline styles for tab using parent settings
-            const tabStyles = {};
-            if (isActiveTab) {
-              // Active tab styles from parent
-              if (activeTabTextColor) {
-                tabStyles.color = activeTabTextColor;
-              }
-              if (activeTabGradient) {
-                tabStyles.background = activeTabGradient;
-              } else if (activeTabBackgroundColor) {
-                tabStyles.backgroundColor = activeTabBackgroundColor;
-              }
-              // Border color for active tab
-              if (activeTabBackgroundColor) {
-                tabStyles.borderColor = activeTabBackgroundColor;
-              }
-            } else {
-              // Normal tab styles from parent
-              if (tabItemTextColor) {
-                tabStyles.color = tabItemTextColor;
-              }
-              if (tabItemGradient) {
-                tabStyles.background = tabItemGradient;
-              } else if (tabItemBackgroundColor) {
-                tabStyles.backgroundColor = tabItemBackgroundColor;
-              }
-              // Border color for normal tab
-              if (tabItemBackgroundColor) {
-                tabStyles.borderColor = tabItemBackgroundColor;
-              }
-            }
             return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("button", {
               className: `smart-tabs__nav-item${isActiveTab ? ' is-active' : ''}`,
-              style: Object.keys(tabStyles).length > 0 ? tabStyles : undefined,
               onClick: () => handleTabClick(index, tab.clientId),
               type: "button",
               children: [tab.iconType !== 'none' && tab.icon && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("span", {

@@ -7,9 +7,6 @@ import {
     useBlockProps,
     useInnerBlocksProps,
     BlockControls,
-    __experimentalColorGradientSettingsDropdown as ColorGradientSettingsDropdown,
-    __experimentalUseMultipleOriginColorsAndGradients as useMultipleOriginColorsAndGradients,
-    PanelColorGradientSettings,
 } from '@wordpress/block-editor';
 import {
     PanelBody,
@@ -26,7 +23,7 @@ import { plus } from '@wordpress/icons';
 /**
  * Internal dependencies
  */
-import type { SmartTabsProps, TabItem } from './types';
+import type { SmartTabsProps, TabItem, WPBlock, BlockEditorSelect, BlockEditorDispatch } from './types';
 
 /**
  * Edit component for Smart Tabs block
@@ -37,46 +34,38 @@ export default function Edit({ attributes, setAttributes, clientId }: SmartTabsP
         styleType,
         activeTab,
         tabAlignment,
-        tabItemTextColor,
-        tabItemBackgroundColor,
-        tabItemGradient,
-        activeTabTextColor,
-        activeTabBackgroundColor,
-        activeTabGradient,
         hideTabsBorderBottom,
         centerNavigation,
     } = attributes;
 
     const { innerBlocks, selectedBlockClientId } = useSelect(
-        (select: any) => {
-            const { getBlocks, getSelectedBlockClientId } = select('core/block-editor');
+        (select) => {
+            const blockEditorSelect = select('core/block-editor') as BlockEditorSelect;
             return {
-                innerBlocks: getBlocks(clientId),
-                selectedBlockClientId: getSelectedBlockClientId(),
+                innerBlocks: blockEditorSelect.getBlocks(clientId),
+                selectedBlockClientId: blockEditorSelect.getSelectedBlockClientId(),
             };
         },
         [clientId]
     );
 
-    const { insertBlock, selectBlock } = useDispatch('core/block-editor');
+    const dispatch = useDispatch('core/block-editor') as BlockEditorDispatch;
+    const { insertBlock, selectBlock } = dispatch;
 
-    // Color and gradient settings
-    const colorGradientSettings = useMultipleOriginColorsAndGradients();
-
-    const tabItems: TabItem[] = innerBlocks.map((block: any) => ({
+    const tabItems: TabItem[] = innerBlocks.map((block: WPBlock): TabItem => ({
         clientId: block.clientId,
-        title: block.attributes.title || __('Tab', 'jankx'),
-        icon: block.attributes.icon,
-        iconType: block.attributes.iconType,
-        normalTabTextColor: block.attributes.normalTabTextColor,
-        normalTabBackgroundColor: block.attributes.normalTabBackgroundColor,
-        normalTabGradient: block.attributes.normalTabGradient,
-        activeTabTextColor: block.attributes.activeTabTextColor,
-        activeTabBackgroundColor: block.attributes.activeTabBackgroundColor,
-        activeTabGradient: block.attributes.activeTabGradient,
-        contentTextColor: block.attributes.contentTextColor,
-        contentBackgroundColor: block.attributes.contentBackgroundColor,
-        contentGradient: block.attributes.contentGradient,
+        title: (block.attributes.title as string) || __('Tab', 'jankx'),
+        icon: (block.attributes.icon as string) || '',
+        iconType: (block.attributes.iconType as string) || '',
+        normalTabTextColor: (block.attributes.normalTabTextColor as string) || '',
+        normalTabBackgroundColor: (block.attributes.normalTabBackgroundColor as string) || '',
+        normalTabGradient: (block.attributes.normalTabGradient as string) || '',
+        activeTabTextColor: (block.attributes.activeTabTextColor as string) || '',
+        activeTabBackgroundColor: (block.attributes.activeTabBackgroundColor as string) || '',
+        activeTabGradient: (block.attributes.activeTabGradient as string) || '',
+        contentTextColor: (block.attributes.contentTextColor as string) || '',
+        contentBackgroundColor: (block.attributes.contentBackgroundColor as string) || '',
+        contentGradient: (block.attributes.contentGradient as string) || '',
     }));
 
     // Handle tab click in editor
@@ -207,62 +196,6 @@ export default function Edit({ attributes, setAttributes, clientId }: SmartTabsP
                 </PanelBody>
             </InspectorControls>
 
-            <InspectorControls group="styles">
-                <PanelBody title={__('Tab Items Style', 'jankx')} initialOpen={false}>
-                    <PanelColorGradientSettings
-                        title={__('Text Color', 'jankx')}
-                        settings={[
-                            {
-                                label: __('Text Color', 'jankx'),
-                                colorValue: tabItemTextColor,
-                                onColorChange: (value: string | undefined) => setAttributes({ tabItemTextColor: value }),
-                            },
-                        ]}
-                        {...colorGradientSettings}
-                    />
-                    <PanelColorGradientSettings
-                        title={__('Background', 'jankx')}
-                        settings={[
-                            {
-                                label: __('Background', 'jankx'),
-                                colorValue: tabItemBackgroundColor,
-                                gradientValue: tabItemGradient,
-                                onColorChange: (value: string | undefined) => setAttributes({ tabItemBackgroundColor: value }),
-                                onGradientChange: (value: string | undefined) => setAttributes({ tabItemGradient: value }),
-                            },
-                        ]}
-                        {...colorGradientSettings}
-                    />
-                </PanelBody>
-
-                <PanelBody title={__('Active Tab Style', 'jankx')} initialOpen={false}>
-                    <PanelColorGradientSettings
-                        title={__('Text Color', 'jankx')}
-                        settings={[
-                            {
-                                label: __('Text Color', 'jankx'),
-                                colorValue: activeTabTextColor,
-                                onColorChange: (value: string | undefined) => setAttributes({ activeTabTextColor: value }),
-                            },
-                        ]}
-                        {...colorGradientSettings}
-                    />
-                    <PanelColorGradientSettings
-                        title={__('Background', 'jankx')}
-                        settings={[
-                            {
-                                label: __('Background', 'jankx'),
-                                colorValue: activeTabBackgroundColor,
-                                gradientValue: activeTabGradient,
-                                onColorChange: (value: string | undefined) => setAttributes({ activeTabBackgroundColor: value }),
-                                onGradientChange: (value: string | undefined) => setAttributes({ activeTabGradient: value }),
-                            },
-                        ]}
-                        {...colorGradientSettings}
-                    />
-                </PanelBody>
-            </InspectorControls>
-
             <BlockControls>
                 <ToolbarGroup>
                     <ToolbarButton
@@ -279,46 +212,12 @@ export default function Edit({ attributes, setAttributes, clientId }: SmartTabsP
                         {tabItems.map((tab, index) => {
                             const isActiveTab = index === currentActiveTab;
 
-                            // Build inline styles for tab using parent settings
-                            const tabStyles: React.CSSProperties = {};
-
-                            if (isActiveTab) {
-                                // Active tab styles from parent
-                                if (activeTabTextColor) {
-                                    tabStyles.color = activeTabTextColor;
-                                }
-                                if (activeTabGradient) {
-                                    tabStyles.background = activeTabGradient;
-                                } else if (activeTabBackgroundColor) {
-                                    tabStyles.backgroundColor = activeTabBackgroundColor;
-                                }
-                                // Border color for active tab
-                                if (activeTabBackgroundColor) {
-                                    tabStyles.borderColor = activeTabBackgroundColor;
-                                }
-                            } else {
-                                // Normal tab styles from parent
-                                if (tabItemTextColor) {
-                                    tabStyles.color = tabItemTextColor;
-                                }
-                                if (tabItemGradient) {
-                                    tabStyles.background = tabItemGradient;
-                                } else if (tabItemBackgroundColor) {
-                                    tabStyles.backgroundColor = tabItemBackgroundColor;
-                                }
-                                // Border color for normal tab
-                                if (tabItemBackgroundColor) {
-                                    tabStyles.borderColor = tabItemBackgroundColor;
-                                }
-                            }
-
                             return (
                                 <button
                                     key={tab.clientId}
                                     className={`smart-tabs__nav-item${
                                         isActiveTab ? ' is-active' : ''
                                     }`}
-                                    style={Object.keys(tabStyles).length > 0 ? tabStyles : undefined}
                                     onClick={() => handleTabClick(index, tab.clientId)}
                                     type="button"
                                 >
