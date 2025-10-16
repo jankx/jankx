@@ -16,7 +16,7 @@
         z-index: 1;
 
         .calendar-title {
-            color: #8b4513;
+            color: var(--wp--preset--color--primary);
             font-size: 18px;
             font-weight: 600;
             margin: 0;
@@ -27,7 +27,7 @@
         .calendar-nav-btn {
             background: none;
             border: none;
-            color: #8b4513;
+            color: var(--wp--preset--color--primary);
             cursor: pointer;
             padding: 8px;
             border-radius: 4px;
@@ -37,7 +37,7 @@
             justify-content: center;
 
             &:hover {
-                background-color: rgba(139, 69, 19, 0.1);
+                background-color: color-mix(in srgb, var(--wp--preset--color--primary) 10%, transparent);
             }
 
             .dashicons {
@@ -58,7 +58,7 @@
 
         .weekday {
             text-align: center;
-            color: #a0522d;
+            color: color-mix(in srgb, var(--wp--preset--color--primary) 80%, transparent);
             font-size: 14px;
             font-weight: 500;
             padding: 8px 4px;
@@ -88,12 +88,12 @@
                 font-weight: 500;
 
                 &:hover {
-                    background-color: rgba(212, 165, 116, 0.1);
+                    background-color: color-mix(in srgb, var(--wp--preset--color--primary) 10%, transparent);
                 }
             }
 
             &.other-month {
-                color: #d4a574;
+                color: color-mix(in srgb, var(--wp--preset--color--primary) 60%, transparent);
                 cursor: default;
 
                 &:hover {
@@ -103,13 +103,13 @@
 
             &.selected {
                 &.mode-outline {
-                    border: 2px solid #d4a574;
-                    color: #d4a574;
+                    border: 2px solid var(--wp--preset--color--primary);
+                    color: var(--wp--preset--color--primary);
                     background: transparent;
                 }
 
                 &.mode-fill {
-                    background-color: #8b4513;
+                    background-color: var(--wp--preset--color--primary);
                     color: white;
                     border: none;
                 }
