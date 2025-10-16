@@ -30,6 +30,26 @@
             "type": "boolean",
             "default": false
         },
+        "showHeading": {
+            "type": "boolean",
+            "default": true
+        },
+        "customHeadingText": {
+            "type": "string",
+            "default": ""
+        },
+        "minHeadingLevel": {
+            "type": "number",
+            "default": 2,
+            "minimum": 2,
+            "maximum": 6
+        },
+        "maxHeadingLevel": {
+            "type": "number",
+            "default": 6,
+            "minimum": 2,
+            "maximum": 6
+        },
         "className": {
             "type": "string",
             "default": ""

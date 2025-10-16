@@ -8,7 +8,7 @@
   \********************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/table-of-content","title":"Table of Content","category":"text","description":"Display interactive table of content for the current post","keywords":["toc","table","content","index","mục lục"],"textdomain":"jankx","attributes":{"listingType":{"type":"string","enum":["ul","ol"],"default":"ul"},"expandIconType":{"type":"string","enum":["plus-minus","chevron","arrow","caret"],"default":"plus-minus"},"defaultExpanded":{"type":"boolean","default":false},"expandFirstItem":{"type":"boolean","default":true},"showNumbers":{"type":"boolean","default":false},"className":{"type":"string","default":""},"anchor":{"type":"string","default":""}},"supports":{"html":false,"anchor":true,"align":["wide","full"],"spacing":{"margin":true,"padding":true,"blockGap":true,"__experimentalDefaultControls":{"padding":true,"margin":false}},"color":{"background":true,"gradients":true,"text":true,"link":true,"__experimentalDefaultControls":{"background":true,"text":true}},"typography":{"fontSize":true,"lineHeight":true,"fontFamily":true,"fontWeight":true,"fontStyle":true,"textTransform":true,"textDecoration":true,"letterSpacing":true,"__experimentalDefaultControls":{"fontSize":true}},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true,"__experimentalDefaultControls":{"radius":true}},"shadow":true},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","viewScript":"file:./build/view.js","style":"file:./build/style.css"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/table-of-content","title":"Table of Content","category":"text","description":"Display interactive table of content for the current post","keywords":["toc","table","content","index","mục lục"],"textdomain":"jankx","attributes":{"listingType":{"type":"string","enum":["ul","ol"],"default":"ul"},"expandIconType":{"type":"string","enum":["plus-minus","chevron","arrow","caret"],"default":"plus-minus"},"defaultExpanded":{"type":"boolean","default":false},"expandFirstItem":{"type":"boolean","default":true},"showNumbers":{"type":"boolean","default":false},"showHeading":{"type":"boolean","default":true},"customHeadingText":{"type":"string","default":""},"minHeadingLevel":{"type":"number","default":2,"minimum":2,"maximum":6},"maxHeadingLevel":{"type":"number","default":6,"minimum":2,"maximum":6},"className":{"type":"string","default":""},"anchor":{"type":"string","default":""}},"supports":{"html":false,"anchor":true,"align":["wide","full"],"spacing":{"margin":true,"padding":true,"blockGap":true,"__experimentalDefaultControls":{"padding":true,"margin":false}},"color":{"background":true,"gradients":true,"text":true,"link":true,"__experimentalDefaultControls":{"background":true,"text":true}},"typography":{"fontSize":true,"lineHeight":true,"fontFamily":true,"fontWeight":true,"fontStyle":true,"textTransform":true,"textDecoration":true,"letterSpacing":true,"__experimentalDefaultControls":{"fontSize":true}},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true,"__experimentalDefaultControls":{"radius":true}},"shadow":true},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","viewScript":"file:./build/view.js","style":"file:./build/style.css"}');
 
 /***/ }),
 
@@ -172,7 +172,11 @@ function Edit({
     expandIconType,
     defaultExpanded,
     expandFirstItem,
-    showNumbers
+    showNumbers,
+    showHeading,
+    customHeadingText,
+    minHeadingLevel,
+    maxHeadingLevel
   } = attributes;
 
   // Check if we're editing a template (no post content)
@@ -223,10 +227,64 @@ function Edit({
           isActive: listingType === 'ol'
         })]
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
-        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Table of Content Settings', 'jankx'),
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Display Settings', 'jankx'),
         initialOpen: true,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Heading', 'jankx'),
+          checked: showHeading,
+          onChange: value => setAttributes({
+            showHeading: value
+          }),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show or hide the table of content heading', 'jankx'),
+          __nextHasNoMarginBottom: true
+        }), showHeading && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Custom Heading Text', 'jankx'),
+          value: customHeadingText,
+          onChange: value => setAttributes({
+            customHeadingText: value
+          }),
+          placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Table of Contents', 'jankx'),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Leave empty to use default heading text', 'jankx'),
+          __nextHasNoMarginBottom: true,
+          __next40pxDefaultSize: true
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Minimum Heading Level', 'jankx'),
+          value: minHeadingLevel,
+          onChange: value => {
+            const newMin = value || 2;
+            setAttributes({
+              minHeadingLevel: newMin,
+              maxHeadingLevel: Math.max(newMin, maxHeadingLevel)
+            });
+          },
+          min: 2,
+          max: 6,
+          step: 1,
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Start building TOC from this heading level (H2-H6)', 'jankx'),
+          __nextHasNoMarginBottom: true,
+          __next40pxDefaultSize: true
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Maximum Heading Level', 'jankx'),
+          value: maxHeadingLevel,
+          onChange: value => {
+            const newMax = value || 6;
+            setAttributes({
+              maxHeadingLevel: newMax,
+              minHeadingLevel: Math.min(minHeadingLevel, newMax)
+            });
+          },
+          min: 2,
+          max: 6,
+          step: 1,
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Stop building TOC at this heading level (H2-H6)', 'jankx'),
+          __nextHasNoMarginBottom: true,
+          __next40pxDefaultSize: true
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('List Settings', 'jankx'),
+        initialOpen: false,
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Listing Type', 'jankx'),
           value: listingType,
@@ -290,17 +348,17 @@ function Edit({
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show hierarchical numbers (1.1, 1.2, etc.)', 'jankx'),
           __nextHasNoMarginBottom: true
         })]
-      })
+      })]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
       ...blockProps,
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("nav", {
         className: "toc-wrapper",
-        "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Table of Contents', 'jankx'),
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+        "aria-label": customHeadingText || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Table of Contents', 'jankx'),
+        children: [showHeading && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
           className: "toc-header",
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("h2", {
             className: "toc-title",
-            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Table of Contents', 'jankx')
+            children: customHeadingText || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Table of Contents', 'jankx')
           })
         }), tocData.length > 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(ListTag, {
           className: `toc-list toc-list--root ${showNumbers ? 'toc-list--numbered' : ''}`,

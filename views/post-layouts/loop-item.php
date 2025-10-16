@@ -45,9 +45,6 @@ $data_index = isset($data_index) ? $data_index : 0;
 
         <div class="post-meta">
             <span class="post-date"><?php echo get_the_date('', $post->ID); ?></span>
-            <?php if ($post->post_type !== 'page') : ?>
-                <span class="post-type"><?php echo ucfirst($post->post_type); ?></span>
-            <?php endif; ?>
         </div>
     </div>
 </div>

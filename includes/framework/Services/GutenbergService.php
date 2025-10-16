@@ -31,6 +31,8 @@ use Jankx\Gutenberg\Blocks\MasterTableBlock;
 use Jankx\Gutenberg\Blocks\TableRowBlock;
 use Jankx\Gutenberg\Blocks\TableCellBlock;
 use Jankx\Gutenberg\Blocks\TableOfContentBlock;
+use Jankx\Gutenberg\Blocks\SlideshowBlock;
+use Jankx\Gutenberg\Blocks\SlideshowItemBlock;
 use Jankx\Gutenberg\GutenbergPattern;
 
 /**
@@ -156,6 +158,8 @@ class GutenbergService
         $this->repository->registerBlock(TableRowBlock::class);
         $this->repository->registerBlock(TableCellBlock::class);
         $this->repository->registerBlock(TableOfContentBlock::class);
+        $this->repository->registerBlock(SlideshowBlock::class);
+        $this->repository->registerBlock(SlideshowItemBlock::class);
     }
 
     /**

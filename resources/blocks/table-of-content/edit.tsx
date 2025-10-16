@@ -13,6 +13,8 @@ import {
     ToggleControl,
     ToolbarGroup,
     ToolbarButton,
+    TextControl,
+    RangeControl,
 } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { useState } from '@wordpress/element';
@@ -171,6 +173,10 @@ export default function Edit({ attributes, setAttributes, clientId }: TableOfCon
         defaultExpanded,
         expandFirstItem,
         showNumbers,
+        showHeading,
+        customHeadingText,
+        minHeadingLevel,
+        maxHeadingLevel,
     } = attributes;
 
     // Check if we're editing a template (no post content)
@@ -226,7 +232,65 @@ export default function Edit({ attributes, setAttributes, clientId }: TableOfCon
             </BlockControls>
 
             <InspectorControls>
-                <PanelBody title={__('Table of Content Settings', 'jankx')} initialOpen={true}>
+                <PanelBody title={__('Display Settings', 'jankx')} initialOpen={true}>
+                    <ToggleControl
+                        label={__('Show Heading', 'jankx')}
+                        checked={showHeading}
+                        onChange={(value) => setAttributes({ showHeading: value })}
+                        help={__('Show or hide the table of content heading', 'jankx')}
+                        __nextHasNoMarginBottom
+                    />
+
+                    {showHeading && (
+                        <TextControl
+                            label={__('Custom Heading Text', 'jankx')}
+                            value={customHeadingText}
+                            onChange={(value) => setAttributes({ customHeadingText: value })}
+                            placeholder={__('Table of Contents', 'jankx')}
+                            help={__('Leave empty to use default heading text', 'jankx')}
+                            __nextHasNoMarginBottom
+                            __next40pxDefaultSize
+                        />
+                    )}
+
+                    <RangeControl
+                        label={__('Minimum Heading Level', 'jankx')}
+                        value={minHeadingLevel}
+                        onChange={(value) => {
+                            const newMin = value || 2;
+                            setAttributes({ 
+                                minHeadingLevel: newMin,
+                                maxHeadingLevel: Math.max(newMin, maxHeadingLevel)
+                            });
+                        }}
+                        min={2}
+                        max={6}
+                        step={1}
+                        help={__('Start building TOC from this heading level (H2-H6)', 'jankx')}
+                        __nextHasNoMarginBottom
+                        __next40pxDefaultSize
+                    />
+
+                    <RangeControl
+                        label={__('Maximum Heading Level', 'jankx')}
+                        value={maxHeadingLevel}
+                        onChange={(value) => {
+                            const newMax = value || 6;
+                            setAttributes({ 
+                                maxHeadingLevel: newMax,
+                                minHeadingLevel: Math.min(minHeadingLevel, newMax)
+                            });
+                        }}
+                        min={2}
+                        max={6}
+                        step={1}
+                        help={__('Stop building TOC at this heading level (H2-H6)', 'jankx')}
+                        __nextHasNoMarginBottom
+                        __next40pxDefaultSize
+                    />
+                </PanelBody>
+
+                <PanelBody title={__('List Settings', 'jankx')} initialOpen={false}>
                     <SelectControl
                         label={__('Listing Type', 'jankx')}
                         value={listingType}
@@ -284,10 +348,12 @@ export default function Edit({ attributes, setAttributes, clientId }: TableOfCon
             </InspectorControls>
 
             <div {...blockProps}>
-                <nav className="toc-wrapper" aria-label={__('Table of Contents', 'jankx')}>
-                    <div className="toc-header">
-                        <h2 className="toc-title">{__('Table of Contents', 'jankx')}</h2>
-                    </div>
+                <nav className="toc-wrapper" aria-label={customHeadingText || __('Table of Contents', 'jankx')}>
+                    {showHeading && (
+                        <div className="toc-header">
+                            <h2 className="toc-title">{customHeadingText || __('Table of Contents', 'jankx')}</h2>
+                        </div>
+                    )}
                     {tocData.length > 0 ? (
                         <ListTag className={`toc-list toc-list--root ${showNumbers ? 'toc-list--numbered' : ''}`}>
                             {tocData.map((item) =>

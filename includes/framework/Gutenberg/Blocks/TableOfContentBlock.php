@@ -149,9 +149,11 @@ class TableOfContentBlock extends Block
      * Parse Gutenberg blocks directly to avoid infinite loop
      *
      * @param string $content Post content (raw block markup)
+     * @param int $min_level Minimum heading level to include
+     * @param int $max_level Maximum heading level to include
      * @return array Headings data
      */
-    protected function extractHeadings($content)
+    protected function extractHeadings($content, $min_level = 2, $max_level = 6)
     {
         if (empty($content)) {
             return [];
@@ -163,7 +165,7 @@ class TableOfContentBlock extends Block
         $blocks = parse_blocks($content);
 
         // Recursively extract heading blocks
-        $this->extractHeadingsFromBlocks($blocks, $headings);
+        $this->extractHeadingsFromBlocks($blocks, $headings, $min_level, $max_level);
 
         return $this->buildHierarchy($headings);
     }
@@ -173,8 +175,10 @@ class TableOfContentBlock extends Block
      *
      * @param array $blocks Parsed blocks
      * @param array &$headings Reference to headings array
+     * @param int $min_level Minimum heading level to include
+     * @param int $max_level Maximum heading level to include
      */
-    protected function extractHeadingsFromBlocks($blocks, &$headings)
+    protected function extractHeadingsFromBlocks($blocks, &$headings, $min_level = 2, $max_level = 6)
     {
         foreach ($blocks as $block) {
             // Skip table-of-content block to avoid self-reference
@@ -185,6 +189,11 @@ class TableOfContentBlock extends Block
             // Check if this is a heading block
             if ($block['blockName'] === 'core/heading') {
                 $level = $block['attrs']['level'] ?? 2;
+
+                // Filter by min/max level
+                if ($level < $min_level || $level > $max_level) {
+                    continue;
+                }
 
                 // Extract text from innerHTML
                 $text = wp_strip_all_tags($block['innerHTML']);
@@ -216,7 +225,7 @@ class TableOfContentBlock extends Block
 
             // Recursively process inner blocks
             if (!empty($block['innerBlocks'])) {
-                $this->extractHeadingsFromBlocks($block['innerBlocks'], $headings);
+                $this->extractHeadingsFromBlocks($block['innerBlocks'], $headings, $min_level, $max_level);
             }
         }
     }
@@ -380,6 +389,10 @@ class TableOfContentBlock extends Block
         $default_expanded = $attributes['defaultExpanded'] ?? false;
         $expand_first_item = $attributes['expandFirstItem'] ?? true;
         $show_numbers = $attributes['showNumbers'] ?? false;
+        $show_heading = $attributes['showHeading'] ?? true;
+        $custom_heading_text = $attributes['customHeadingText'] ?? '';
+        $min_heading_level = $attributes['minHeadingLevel'] ?? 2;
+        $max_heading_level = $attributes['maxHeadingLevel'] ?? 6;
         $class_name = $attributes['className'] ?? '';
         $anchor = $attributes['anchor'] ?? '';
 
@@ -393,8 +406,8 @@ class TableOfContentBlock extends Block
             $post_content = $post->post_content;
         }
 
-        // Extract headings from content
-        $toc_items = $this->extractHeadings($post_content);
+        // Extract headings from content with min/max level filtering
+        $toc_items = $this->extractHeadings($post_content, $min_heading_level, $max_heading_level);
 
         // If no headings found, show placeholder
         if (empty($toc_items)) {
@@ -440,11 +453,23 @@ class TableOfContentBlock extends Block
             true
         );
 
+        // Determine heading text
+        $heading_text = !empty($custom_heading_text) ? $custom_heading_text : __('Table of Contents', 'jankx');
+
+        // Build heading HTML
+        $heading_html = '';
+        if ($show_heading) {
+            $heading_html = sprintf(
+                '<div class="toc-header"><h2 class="toc-title">%s</h2></div>',
+                esc_html($heading_text)
+            );
+        }
+
         return sprintf(
-            '<div%s><nav class="toc-wrapper" aria-label="%s"><div class="toc-header"><h2 class="toc-title">%s</h2></div>%s</nav></div>',
+            '<div%s><nav class="toc-wrapper" aria-label="%s">%s%s</nav></div>',
             $attrs_string,
-            esc_attr__('Table of Contents', 'jankx'),
-            esc_html__('Table of Contents', 'jankx'),
+            esc_attr($heading_text),
+            $heading_html,
             $toc_html
         );
     }

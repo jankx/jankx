@@ -107,6 +107,15 @@ module.exports = {
     'blocks/swiper-slide/build/style': './blocks/swiper-slide/style.scss',
     'blocks/swiper-slide/build/editor': './blocks/swiper-slide/editor.scss',
 
+    'blocks/slide-show/build/index': './blocks/slide-show/index.tsx',
+    'blocks/slide-show/build/style': './blocks/slide-show/style.scss',
+    'blocks/slide-show/build/editor': './blocks/slide-show/editor.scss',
+    'blocks/slide-show/build/view': './blocks/slide-show/view.js',
+
+    'blocks/slide-show-item/build/index': './blocks/slide-show-item/index.tsx',
+    'blocks/slide-show-item/build/style': './blocks/slide-show-item/style.scss',
+    'blocks/slide-show-item/build/editor': './blocks/slide-show-item/editor.scss',
+
     'blocks/smart-breadcrumb/build/index': './blocks/smart-breadcrumb/src/index.js',
     'blocks/smart-breadcrumb/build/style': './blocks/smart-breadcrumb/src/style.scss',
     'blocks/smart-breadcrumb/build/editor': './blocks/smart-breadcrumb/src/editor.scss',
@@ -126,6 +135,15 @@ module.exports = {
     'blocks/table-cell/build/index': './blocks/table-cell/index.tsx',
     'blocks/table-cell/build/style': './blocks/table-cell/style.scss',
     'blocks/table-cell/build/editor': './blocks/table-cell/editor.scss',
+
+    'blocks/slide-show/build/index': './blocks/slide-show/index.tsx',
+    'blocks/slide-show/build/style': './blocks/slide-show/style.scss',
+    'blocks/slide-show/build/editor': './blocks/slide-show/editor.scss',
+    'blocks/slide-show/build/view': './blocks/slide-show/view.js',
+
+    'blocks/slide-show-item/build/index': './blocks/slide-show-item/index.tsx',
+    'blocks/slide-show-item/build/style': './blocks/slide-show-item/style.scss',
+    'blocks/slide-show-item/build/editor': './blocks/slide-show-item/editor.scss',
   },
   output: {
     path: path.resolve(__dirname),

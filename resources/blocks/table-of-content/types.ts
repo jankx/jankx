@@ -20,6 +20,10 @@ export interface TableOfContentAttributes {
     defaultExpanded: boolean;
     expandFirstItem: boolean;
     showNumbers: boolean;
+    showHeading: boolean;
+    customHeadingText: string;
+    minHeadingLevel: number;
+    maxHeadingLevel: number;
     className: string;
     anchor: string;
 }
