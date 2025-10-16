@@ -9,23 +9,47 @@
 }
 
 .wp-block-jankx-advanced-button {
-	.components-button {
-		padding: 3px 2px!important;
-		height: 22px!important;
-	}
-}
+	// Inner blocks should be inline with button content
+	.jankx-advanced-button__link {
+		// Icon wrapper contains InnerBlocks
+		.button-icon-wrapper {
+			display: inline-flex;
+			align-items: center;
 
-// Ensure editor matches frontend exactly
-.block-editor-block-list__block[data-type="jankx/advanced-button"] {
-	.wp-block-button {
-		.wp-block-button__link {
-			// Editor-specific adjustments to match frontend
-			pointer-events: auto;
+			> .block-editor-inner-blocks {
+				display: inline-flex;
+				align-items: center;
 
-			&:focus {
-				outline: 2px solid var(--wp-admin-theme-color);
-				outline-offset: 2px;
+				> .block-editor-block-list__layout {
+					display: inline-flex;
+					align-items: center;
+					gap: 4px;
+					margin: 0;
+				}
 			}
+
+			// Icon blocks in editor
+			.wp-block-jankx-icon-picker,
+			.wp-block-jankx-svg-icon,
+			.wp-block-image {
+				margin: 0;
+			}
+		}
+
+		// Empty wrapper should be hidden
+		.button-icon-wrapper:empty {
+			display: none;
+		}
+	}
+
+	// Button appender styling
+	.block-list-appender {
+		display: inline-flex;
+
+		button {
+			padding: 2px;
+			min-width: 24px;
+			min-height: 24px;
 		}
 	}
 }

@@ -1,0 +1,92 @@
+/**
+ * Advanced Button Block Styles
+ *
+ * Styles for icon positioning using flex order
+ */
+
+.jankx-advanced-button__link {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+
+	// Icon wrapper
+	.button-icon-wrapper {
+		display: inline-flex;
+		align-items: center;
+		order: 1; // Default: icon first
+
+		&:empty {
+			display: none;
+		}
+	}
+
+	// Text container
+	.button-text {
+		display: inline-block;
+		order: 2; // Default: text second
+	}
+
+	// Icon position: left (default)
+	&.icon-position-left {
+		flex-direction: row;
+
+		.button-icon-wrapper {
+			order: 1;
+		}
+
+		.button-text {
+			order: 2;
+		}
+	}
+
+	// Icon position: right
+	&.icon-position-right {
+		flex-direction: row;
+
+		.button-icon-wrapper {
+			order: 2;
+		}
+
+		.button-text {
+			order: 1;
+		}
+	}
+
+	// Icon position: top
+	&.icon-position-top {
+		flex-direction: column;
+
+		.button-icon-wrapper {
+			order: 1;
+		}
+
+		.button-text {
+			order: 2;
+		}
+	}
+
+	// Icon position: bottom
+	&.icon-position-bottom {
+		flex-direction: column;
+
+		.button-icon-wrapper {
+			order: 2;
+		}
+
+		.button-text {
+			order: 1;
+		}
+	}
+
+	// Icon blocks styling (các block con như jankx/icon-picker, jankx/svg-icon, core/image)
+	.button-icon-wrapper > *,
+	> .wp-block-jankx-icon-picker,
+	> .wp-block-jankx-svg-icon,
+	> .wp-block-image {
+		display: inline-flex;
+		align-items: center;
+		flex-shrink: 0;
+		margin: 0;
+	}
+}
+

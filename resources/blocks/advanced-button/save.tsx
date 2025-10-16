@@ -30,6 +30,7 @@ interface SaveProps {
 		gradient: string;
 		style: Record<string, any>;
 		useIconBlocks: boolean;
+		iconPosition: string;
 	};
 }
 
@@ -53,6 +54,7 @@ export default function Save(props: SaveProps) {
 		textColor,
 		gradient,
 		useIconBlocks = false,
+		iconPosition = 'left',
 	} = props.attributes;
 
 	// If there is no text, don't save anything.
@@ -66,15 +68,17 @@ export default function Save(props: SaveProps) {
 		[`has-${backgroundColor}-background-color`]: backgroundColor,
 		[`has-${textColor}-color`]: textColor,
 		[`has-${gradient}-gradient-background`]: gradient,
+		[`icon-position-${iconPosition}`]: iconPosition,
 	});
 
 	const buttonStyles = {
 		...blockProps.style,
 	};
 
+	// Always render in same order - use CSS to control visual position
 	const textMarkup = (
 		<>
-			<span className="button-icon-blocks">
+			<span className="button-icon-wrapper">
 				<InnerBlocks.Content />
 			</span>
 			<RichText.Content

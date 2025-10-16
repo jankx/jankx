@@ -1,4 +1,72 @@
 /*!**************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/advanced-button/style.scss ***!
   \**************************************************************************************************************************************************************************************************/
+/**
+ * Advanced Button Block Styles
+ *
+ * Styles for icon positioning using flex order
+ */
+.jankx-advanced-button__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.jankx-advanced-button__link .button-icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  order: 1;
+}
+.jankx-advanced-button__link .button-icon-wrapper:empty {
+  display: none;
+}
+.jankx-advanced-button__link .button-text {
+  display: inline-block;
+  order: 2;
+}
+.jankx-advanced-button__link.icon-position-left {
+  flex-direction: row;
+}
+.jankx-advanced-button__link.icon-position-left .button-icon-wrapper {
+  order: 1;
+}
+.jankx-advanced-button__link.icon-position-left .button-text {
+  order: 2;
+}
+.jankx-advanced-button__link.icon-position-right {
+  flex-direction: row;
+}
+.jankx-advanced-button__link.icon-position-right .button-icon-wrapper {
+  order: 2;
+}
+.jankx-advanced-button__link.icon-position-right .button-text {
+  order: 1;
+}
+.jankx-advanced-button__link.icon-position-top {
+  flex-direction: column;
+}
+.jankx-advanced-button__link.icon-position-top .button-icon-wrapper {
+  order: 1;
+}
+.jankx-advanced-button__link.icon-position-top .button-text {
+  order: 2;
+}
+.jankx-advanced-button__link.icon-position-bottom {
+  flex-direction: column;
+}
+.jankx-advanced-button__link.icon-position-bottom .button-icon-wrapper {
+  order: 2;
+}
+.jankx-advanced-button__link.icon-position-bottom .button-text {
+  order: 1;
+}
+.jankx-advanced-button__link .button-icon-wrapper > *,
+.jankx-advanced-button__link > .wp-block-jankx-icon-picker,
+.jankx-advanced-button__link > .wp-block-jankx-svg-icon,
+.jankx-advanced-button__link > .wp-block-image {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin: 0;
+}
 
+/*# sourceMappingURL=style.css.map*/

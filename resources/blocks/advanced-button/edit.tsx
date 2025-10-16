@@ -53,6 +53,7 @@ interface EditProps {
 		width: number;
 		style: Record<string, any>;
 		useIconBlocks: boolean;
+		iconPosition: string;
 	};
 	setAttributes: (attrs: Partial<EditProps['attributes']>) => void;
 	backgroundColor: any;
@@ -94,6 +95,7 @@ export function Edit(props: EditProps) {
 		placeholder,
 		style,
 		useIconBlocks = false,
+		iconPosition = 'left',
 	} = attributes;
 
 	// Check if block has inner blocks (icon blocks)
@@ -146,7 +148,9 @@ export function Edit(props: EditProps) {
 	}, [unlink]);
 
 	const blockProps = useBlockProps({
-		className: 'jankx-advanced-button',
+		className: classnames('jankx-advanced-button', {
+			[`icon-position-${iconPosition}`]: hasInnerBlocks && iconPosition,
+		}),
 		onKeyDown,
 	});
 
@@ -157,6 +161,7 @@ export function Edit(props: EditProps) {
 		[`has-${textColor?.slug}-color`]: textColor?.slug,
 		'has-background': backgroundColor?.color,
 		'has-text-color': textColor?.color,
+		[`icon-position-${iconPosition}`]: hasInnerBlocks && iconPosition,
 	});
 
 	const buttonStyles = {
@@ -166,15 +171,17 @@ export function Edit(props: EditProps) {
 		color: textColor?.color,
 	};
 
-	// Render button content
+	// Render button content - Always render InnerBlocks at the same position
+	// Use CSS flex-order to control visual position
 	const renderButtonContent = () => (
 		<>
-			<span className="button-icon-blocks">
+			<span className="button-icon-wrapper">
 				<InnerBlocks
 					allowedBlocks={ALLOWED_BLOCKS}
 					template={ICON_TEMPLATE}
 					templateLock={hasInnerBlocks ? 'all' : false}
-					renderAppender={hasInnerBlocks ? undefined : () => <ButtonBlockAppender />}
+					renderAppender={hasInnerBlocks ? false : ButtonBlockAppender}
+					orientation="horizontal"
 				/>
 			</span>
 			<RichText
@@ -491,6 +498,28 @@ export function Edit(props: EditProps) {
 								</div>
 							</ToolsPanelItem>
 						</>
+					)}
+
+					{hasInnerBlocks && (
+						<ToolsPanelItem
+							label={__('Icon Position', 'jankx')}
+							isShownByDefault
+							hasValue={() => iconPosition !== 'left'}
+							onDeselect={() => setAttributes({ iconPosition: 'left' })}
+						>
+							<SelectControl
+								label={__('Icon Position', 'jankx')}
+								value={iconPosition}
+								options={[
+									{ label: __('⬅️ Left', 'jankx'), value: 'left' },
+									{ label: __('➡️ Right', 'jankx'), value: 'right' },
+									{ label: __('⬆️ Top', 'jankx'), value: 'top' },
+									{ label: __('⬇️ Bottom', 'jankx'), value: 'bottom' }
+								]}
+								onChange={(value) => setAttributes({ iconPosition: value })}
+								help={__('Choose where to display the icon relative to text', 'jankx')}
+							/>
+						</ToolsPanelItem>
 					)}
 				</ToolsPanel>
 			</InspectorControls>
