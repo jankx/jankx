@@ -1,15 +1,16 @@
 <?php
 
-use Jankx\Foundation\Application;
-use Jankx\Http\Request as JankxRequest;
+use App\Console\WpCliKernel;
+use App\Console\WpCronKernel;
 use App\Http\AdminAjaxKernel;
-use App\Http\RestApiKernel;
 use App\Http\DashboardKernel;
 use App\Http\FrontendKernel;
-use Jankx\Foundation\Cli\ConsoleDetector;
-use App\Console\WpCronKernel;
-use App\Console\WpCliKernel;
+use App\Http\RestApiKernel;
+
 use Jankx\Helper\Environment;
+use Jankx\Foundation\Application;
+use Jankx\Foundation\Cli\ConsoleDetector;
+use Jankx\Http\Request as JankxRequest;
 
 /**
  * Jankx Framework Class
