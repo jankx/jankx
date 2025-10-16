@@ -122,6 +122,18 @@ module.exports = {
     'blocks/advanced-button/build/index': './blocks/advanced-button/index.tsx',
     'blocks/advanced-button/build/style': './blocks/advanced-button/style.scss',
     'blocks/advanced-button/build/editor': './blocks/advanced-button/editor.scss',
+
+    'blocks/master-table/build/index': './blocks/master-table/index.tsx',
+    'blocks/master-table/build/style': './blocks/master-table/style.scss',
+    'blocks/master-table/build/editor': './blocks/master-table/editor.scss',
+
+    'blocks/table-row/build/index': './blocks/table-row/index.tsx',
+    'blocks/table-row/build/style': './blocks/table-row/style.scss',
+    'blocks/table-row/build/editor': './blocks/table-row/editor.scss',
+
+    'blocks/table-cell/build/index': './blocks/table-cell/index.tsx',
+    'blocks/table-cell/build/style': './blocks/table-cell/style.scss',
+    'blocks/table-cell/build/editor': './blocks/table-cell/editor.scss',
   },
   output: {
     path: path.resolve(__dirname),

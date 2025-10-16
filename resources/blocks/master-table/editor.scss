@@ -1,0 +1,9 @@
+// Editor-specific styles - minimal vì chúng ta muốn editor giống frontend
+.wp-block-jankx-master-table__wrapper {
+  // Thêm outline nhẹ trong editor để dễ nhìn
+  .block-editor-block-list__layout & {
+    outline: 1px dashed rgba(0, 0, 0, 0.1);
+    outline-offset: 2px;
+  }
+}
+

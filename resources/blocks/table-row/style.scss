@@ -1,0 +1,32 @@
+// Table Row Block Styles - đồng nhất giữa editor và frontend
+.wp-block-jankx-table-row {
+  &.is-header {
+    font-weight: 700;
+    background-color: color-mix(in srgb, var(--wp--preset--color--primary, #000) 10%, transparent);
+    border-bottom: 2px solid var(--wp--preset--color--primary, #000);
+  }
+
+  &.is-footer {
+    font-weight: 600;
+    background-color: color-mix(in srgb, var(--wp--preset--color--primary, #000) 5%, transparent);
+    border-top: 2px solid var(--wp--preset--color--primary, #000);
+  }
+
+  // Cascade text color từ row xuống cells và content
+  &.has-text-color {
+    color: inherit;
+
+    td, th {
+      color: inherit;
+
+      p, h1, h2, h3, h4, h5, h6, li, span {
+        color: inherit;
+      }
+    }
+  }
+
+  tr {
+    border-bottom: 1px solid color-mix(in srgb, var(--wp--preset--color--primary, #000) 30%, transparent);
+  }
+}
+

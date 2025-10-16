@@ -1,0 +1,31 @@
+/*!********************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/table-row/style.scss ***!
+  \********************************************************************************************************************************************************************************************/
+.wp-block-jankx-table-row.is-header {
+  font-weight: 700;
+  background-color: color-mix(in srgb, var(--wp--preset--color--primary, #000) 10%, transparent);
+  border-bottom: 2px solid var(--wp--preset--color--primary, #000);
+}
+.wp-block-jankx-table-row.is-footer {
+  font-weight: 600;
+  background-color: color-mix(in srgb, var(--wp--preset--color--primary, #000) 5%, transparent);
+  border-top: 2px solid var(--wp--preset--color--primary, #000);
+}
+.wp-block-jankx-table-row.has-text-color {
+  color: inherit;
+}
+.wp-block-jankx-table-row.has-text-color td, .wp-block-jankx-table-row.has-text-color th {
+  color: inherit;
+}
+.wp-block-jankx-table-row.has-text-color td p, .wp-block-jankx-table-row.has-text-color td h1, .wp-block-jankx-table-row.has-text-color td h2, .wp-block-jankx-table-row.has-text-color td h3, .wp-block-jankx-table-row.has-text-color td h4, .wp-block-jankx-table-row.has-text-color td h5, .wp-block-jankx-table-row.has-text-color td h6, .wp-block-jankx-table-row.has-text-color td li, .wp-block-jankx-table-row.has-text-color td span, .wp-block-jankx-table-row.has-text-color th p, .wp-block-jankx-table-row.has-text-color th h1, .wp-block-jankx-table-row.has-text-color th h2, .wp-block-jankx-table-row.has-text-color th h3, .wp-block-jankx-table-row.has-text-color th h4, .wp-block-jankx-table-row.has-text-color th h5, .wp-block-jankx-table-row.has-text-color th h6, .wp-block-jankx-table-row.has-text-color th li, .wp-block-jankx-table-row.has-text-color th span {
+  color: inherit;
+}
+.wp-block-jankx-table-row tr {
+  border-bottom: 1px solid color-mix(in srgb, var(--wp--preset--color--primary, #000) 30%, transparent);
+}
+/*!*********************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/table-row/editor.scss ***!
+  \*********************************************************************************************************************************************************************************************/
+
+
+/*# sourceMappingURL=index.css.map*/

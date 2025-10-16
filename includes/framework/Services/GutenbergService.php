@@ -30,6 +30,9 @@ use Jankx\Gutenberg\Blocks\AuthorBoxBlock;
 use Jankx\Gutenberg\Blocks\SocialSharingBlock;
 use Jankx\Gutenberg\Blocks\SocialSharingIconBlock;
 use Jankx\Gutenberg\Blocks\WordPressCoreFilterBlock;
+use Jankx\Gutenberg\Blocks\MasterTableBlock;
+use Jankx\Gutenberg\Blocks\TableRowBlock;
+use Jankx\Gutenberg\Blocks\TableCellBlock;
 use Jankx\Gutenberg\GutenbergPattern;
 
 /**
@@ -154,6 +157,9 @@ class GutenbergService
         $this->repository->registerBlock(SocialSharingIconBlock::class);
         $this->repository->registerBlock(SmartBreadcrumbBlock::class);
         $this->repository->registerBlock(TableOfContentBlock::class);
+        $this->repository->registerBlock(MasterTableBlock::class);
+        $this->repository->registerBlock(TableRowBlock::class);
+        $this->repository->registerBlock(TableCellBlock::class);
         // $this->repository->registerBlock(WordPressCoreFilterBlock::class);
     }
 
