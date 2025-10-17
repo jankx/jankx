@@ -66,26 +66,20 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: auto;
+  min-width: 20px;
   padding: 0;
-  border: 1px solid var(--toc-primary-color);
-  border-radius: 4px;
+  border: none;
   background: transparent;
   color: var(--toc-primary-color);
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease;
   flex-shrink: 0;
 }
 .jankx-table-of-content .toc-item__toggle:hover {
-  background: var(--toc-primary-color);
-  color: var(--toc-bg-color);
-}
-.jankx-table-of-content .toc-item__toggle.is-expanded {
-  background: var(--toc-primary-color);
-  color: var(--toc-bg-color);
+  color: var(--toc-link-hover-color);
 }
 .jankx-table-of-content .toc-item__icon {
   display: inline-block;

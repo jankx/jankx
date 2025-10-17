@@ -8,12 +8,30 @@
  */
 
 /**
+ * Get expand/collapse icon based on type
+ */
+function getExpandIcon(type, isExpanded) {
+  switch (type) {
+    case 'chevron':
+      return isExpanded ? '▼' : '▶';
+    case 'arrow':
+      return isExpanded ? '↓' : '→';
+    case 'caret':
+      return isExpanded ? '▾' : '▸';
+    case 'plus-minus':
+    default:
+      return isExpanded ? '−' : '+';
+  }
+}
+
+/**
  * Initialize Table of Content functionality
  */
 function initTableOfContent() {
   const tocBlocks = document.querySelectorAll('.jankx-table-of-content');
   tocBlocks.forEach(tocBlock => {
     const toggleButtons = tocBlock.querySelectorAll('.toc-item__toggle');
+    const expandIconType = tocBlock.dataset.expandIconType || 'plus-minus';
     toggleButtons.forEach(button => {
       button.addEventListener('click', e => {
         e.preventDefault();
@@ -22,12 +40,19 @@ function initTableOfContent() {
         const listItem = button.closest('li');
         if (!listItem) return;
         const nestedList = listItem.querySelector(':scope > ul, :scope > ol');
+        const iconSpan = button.querySelector('.toc-item__icon');
         if (nestedList) {
           // Toggle state
-          button.setAttribute('aria-expanded', String(!isExpanded));
+          const newExpandedState = !isExpanded;
+          button.setAttribute('aria-expanded', String(newExpandedState));
           button.classList.toggle('is-expanded');
           button.classList.toggle('is-collapsed');
           nestedList.style.display = isExpanded ? 'none' : 'block';
+
+          // Update icon text
+          if (iconSpan) {
+            iconSpan.textContent = getExpandIcon(expandIconType, newExpandedState);
+          }
         }
       });
     });

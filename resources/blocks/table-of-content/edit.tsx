@@ -205,6 +205,7 @@ export default function Edit({ attributes, setAttributes, clientId }: TableOfCon
 
     const blockProps = useBlockProps({
         className: 'jankx-table-of-content',
+        'data-expand-icon-type': expandIconType,
     });
 
     const ListTag = listingType === 'ol' ? 'ol' : 'ul';

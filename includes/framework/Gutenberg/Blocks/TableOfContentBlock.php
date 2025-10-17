@@ -30,6 +30,21 @@ class TableOfContentBlock extends Block
     protected $headings = [];
 
     /**
+     * Track generated anchors for headings
+     * Key: heading text hash (level:text), Value: generated anchor
+     *
+     * @var array
+     */
+    protected $headingAnchors = [];
+
+    /**
+     * Track anchor counts to handle duplicates
+     *
+     * @var array
+     */
+    protected $anchorCounts = [];
+
+    /**
      * Initialize block filters and hooks
      * Called automatically by GutenbergService
      *
@@ -55,21 +70,38 @@ class TableOfContentBlock extends Block
             return $block_content;
         }
 
-        // Extract heading text
-        preg_match('/<h[1-6][^>]*>(.*?)<\/h[1-6]>/i', $block_content, $matches);
-        if (empty($matches[1])) {
-            return $block_content;
-        }
-
-        $heading_text = strip_tags($matches[1]);
-
-        // Check if anchor already exists
+        // Check if anchor already exists in rendered content
         if (preg_match('/id=["\']([^"\']+)["\']/', $block_content)) {
             return $block_content;
         }
 
-        // Generate anchor from heading text
-        $anchor = $this->generateAnchor($heading_text);
+        // Extract heading text and level
+        preg_match('/<h([1-6])[^>]*>(.*?)<\/h[1-6]>/i', $block_content, $matches);
+        if (empty($matches[2])) {
+            return $block_content;
+        }
+
+        $level = (int) $matches[1];
+        $heading_text = strip_tags($matches[2]);
+        $heading_text = trim($heading_text);
+
+        // Create unique key for this heading
+        $heading_key = $level . ':' . $heading_text;
+
+        // Check if we have pre-generated anchor for this heading
+        $anchor = '';
+        if (isset($this->headingAnchors[$heading_key])) {
+            $anchor = $this->headingAnchors[$heading_key];
+        }
+        // Check if block has anchor attribute
+        elseif (!empty($block['attrs']['anchor'])) {
+            $anchor = $block['attrs']['anchor'];
+        }
+        // Generate new anchor
+        else {
+            $anchor = $this->generateAnchor($heading_text);
+            $this->headingAnchors[$heading_key] = $anchor;
+        }
 
         // Add anchor to heading
         $block_content = preg_replace(
@@ -102,17 +134,13 @@ class TableOfContentBlock extends Block
         // Remove leading/trailing hyphens
         $anchor = trim($anchor, '-');
 
-        // Ensure unique anchor
-        static $used_anchors = [];
-        $original_anchor = $anchor;
-        $counter = 1;
-
-        while (isset($used_anchors[$anchor])) {
-            $anchor = $original_anchor . '-' . $counter;
-            $counter++;
+        // Handle duplicates
+        if (isset($this->anchorCounts[$anchor])) {
+            $this->anchorCounts[$anchor]++;
+            $anchor = $anchor . '-' . $this->anchorCounts[$anchor];
+        } else {
+            $this->anchorCounts[$anchor] = 0;
         }
-
-        $used_anchors[$anchor] = true;
 
         return $anchor;
     }
@@ -145,43 +173,18 @@ class TableOfContentBlock extends Block
     }
 
     /**
-     * Extract headings from post content
-     * Parse Gutenberg blocks directly to avoid infinite loop
-     *
-     * @param string $content Post content (raw block markup)
-     * @param int $min_level Minimum heading level to include
-     * @param int $max_level Maximum heading level to include
-     * @return array Headings data
-     */
-    protected function extractHeadings($content, $min_level = 2, $max_level = 6)
-    {
-        if (empty($content)) {
-            return [];
-        }
-
-        $headings = [];
-
-        // Parse blocks from raw content
-        $blocks = parse_blocks($content);
-
-        // Recursively extract heading blocks
-        $this->extractHeadingsFromBlocks($blocks, $headings, $min_level, $max_level);
-
-        return $this->buildHierarchy($headings);
-    }
-
-    /**
-     * Recursively extract heading blocks
+     * Parse blocks and pre-generate heading anchors
+     * This ensures consistent IDs between TOC and actual headings
      *
      * @param array $blocks Parsed blocks
      * @param array &$headings Reference to headings array
-     * @param int $min_level Minimum heading level to include
-     * @param int $max_level Maximum heading level to include
+     * @param int $min_level Minimum heading level
+     * @param int $max_level Maximum heading level
      */
-    protected function extractHeadingsFromBlocks($blocks, &$headings, $min_level = 2, $max_level = 6)
+    protected function parseBlocksForHeadings($blocks, &$headings, $min_level = 2, $max_level = 6)
     {
         foreach ($blocks as $block) {
-            // Skip table-of-content block to avoid self-reference
+            // Skip table-of-content block
             if ($block['blockName'] === 'jankx/table-of-content') {
                 continue;
             }
@@ -195,24 +198,26 @@ class TableOfContentBlock extends Block
                     continue;
                 }
 
-                // Extract text from innerHTML
+                // Extract heading text
                 $text = wp_strip_all_tags($block['innerHTML']);
                 $text = trim($text);
 
                 if (!empty($text)) {
-                    // Extract or generate anchor
+                    // Generate or get anchor
                     $anchor = '';
                     if (!empty($block['attrs']['anchor'])) {
                         $anchor = $block['attrs']['anchor'];
                     } else {
-                        // Try to extract from innerHTML
-                        if (preg_match('/id=["\']([^"\']+)["\']/', $block['innerHTML'], $id_match)) {
-                            $anchor = $id_match[1];
-                        } else {
-                            $anchor = $this->generateAnchor($text);
-                        }
+                        $anchor = $this->generateAnchor($text);
                     }
 
+                    // Create unique key for this heading
+                    $heading_key = $level . ':' . $text;
+
+                    // Store anchor for later use by filterHeadingBlock
+                    $this->headingAnchors[$heading_key] = $anchor;
+
+                    // Add to headings list
                     $headings[] = [
                         'id' => $anchor,
                         'text' => $text,
@@ -225,10 +230,42 @@ class TableOfContentBlock extends Block
 
             // Recursively process inner blocks
             if (!empty($block['innerBlocks'])) {
-                $this->extractHeadingsFromBlocks($block['innerBlocks'], $headings, $min_level, $max_level);
+                $this->parseBlocksForHeadings($block['innerBlocks'], $headings, $min_level, $max_level);
             }
         }
     }
+
+    /**
+     * Extract headings from post content
+     * Parse blocks first to pre-generate anchors, then build hierarchy
+     *
+     * @param string $content Post content (raw block markup)
+     * @param int $min_level Minimum heading level to include
+     * @param int $max_level Maximum heading level to include
+     * @return array Headings data
+     */
+    protected function extractHeadings($content, $min_level = 2, $max_level = 6)
+    {
+        if (empty($content)) {
+            return [];
+        }
+
+        // Reset tracking arrays for fresh parse
+        $this->headingAnchors = [];
+        $this->anchorCounts = [];
+
+        $headings = [];
+
+        // Parse blocks from raw content
+        $blocks = parse_blocks($content);
+
+        // Parse blocks and pre-generate all heading anchors
+        $this->parseBlocksForHeadings($blocks, $headings, $min_level, $max_level);
+
+        // Build hierarchy from flat list
+        return $this->buildHierarchy($headings);
+    }
+
 
     /**
      * Build hierarchical structure from flat headings array
@@ -429,6 +466,7 @@ class TableOfContentBlock extends Block
             'class' => implode(' ', $wrapper_classes),
             'data-default-expanded' => $default_expanded ? 'true' : 'false',
             'data-expand-first-item' => $expand_first_item ? 'true' : 'false',
+            'data-expand-icon-type' => $expand_icon_type,
         ];
 
         if (!empty($anchor)) {

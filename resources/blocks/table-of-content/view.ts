@@ -7,7 +7,25 @@ interface TOCElement extends HTMLElement {
     dataset: {
         defaultExpanded?: string;
         expandFirstItem?: string;
+        expandIconType?: string;
     };
+}
+
+/**
+ * Get expand/collapse icon based on type
+ */
+function getExpandIcon(type: string, isExpanded: boolean): string {
+    switch (type) {
+        case 'chevron':
+            return isExpanded ? '▼' : '▶';
+        case 'arrow':
+            return isExpanded ? '↓' : '→';
+        case 'caret':
+            return isExpanded ? '▾' : '▸';
+        case 'plus-minus':
+        default:
+            return isExpanded ? '−' : '+';
+    }
 }
 
 /**
@@ -18,6 +36,7 @@ function initTableOfContent(): void {
 
     tocBlocks.forEach((tocBlock) => {
         const toggleButtons = tocBlock.querySelectorAll<HTMLButtonElement>('.toc-item__toggle');
+        const expandIconType = tocBlock.dataset.expandIconType || 'plus-minus';
 
         toggleButtons.forEach((button) => {
             button.addEventListener('click', (e) => {
@@ -30,13 +49,20 @@ function initTableOfContent(): void {
                 if (!listItem) return;
 
                 const nestedList = listItem.querySelector<HTMLElement>(':scope > ul, :scope > ol');
+                const iconSpan = button.querySelector<HTMLElement>('.toc-item__icon');
 
                 if (nestedList) {
                     // Toggle state
-                    button.setAttribute('aria-expanded', String(!isExpanded));
+                    const newExpandedState = !isExpanded;
+                    button.setAttribute('aria-expanded', String(newExpandedState));
                     button.classList.toggle('is-expanded');
                     button.classList.toggle('is-collapsed');
                     nestedList.style.display = isExpanded ? 'none' : 'block';
+
+                    // Update icon text
+                    if (iconSpan) {
+                        iconSpan.textContent = getExpandIcon(expandIconType, newExpandedState);
+                    }
                 }
             });
         });

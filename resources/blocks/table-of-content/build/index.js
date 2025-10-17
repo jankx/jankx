@@ -202,7 +202,8 @@ function Edit({
     }));
   };
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)({
-    className: 'jankx-table-of-content'
+    className: 'jankx-table-of-content',
+    'data-expand-icon-type': expandIconType
   });
   const ListTag = listingType === 'ol' ? 'ol' : 'ul';
 
