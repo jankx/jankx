@@ -34,7 +34,8 @@ export default function Edit({ attributes, setAttributes, clientId }: SlideshowE
     className: `slideshow-block slideshow-effect-${transitionEffect}`,
     style: {
       '--slideshow-height': `${mainImageHeight}px`,
-      '--slideshow-transition-speed': `${transitionSpeed}ms`
+      '--slideshow-transition-speed': `${transitionSpeed}ms`,
+      '--slideshow-thumbnail-size': thumbnailSize === 'small' ? '60px' : thumbnailSize === 'large' ? '100px' : '80px',
     } as React.CSSProperties
   });
 

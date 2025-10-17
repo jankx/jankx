@@ -57,7 +57,7 @@
     "captionPosition": {
       "type": "string",
       "enum": ["top", "bottom", "overlay", "hidden"],
-      "default": "bottom"
+      "default": "hidden"
     },
     "enableLightbox": {
       "type": "boolean",

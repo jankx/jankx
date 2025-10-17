@@ -23,19 +23,27 @@ class SlideshowBlock extends Block
         $transitionSpeed = $attributes['transitionSpeed'] ?? 300;
         $thumbnailSize = $attributes['thumbnailSize'] ?? 'medium';
         $mainImageHeight = $attributes['mainImageHeight'] ?? 400;
-        $captionPosition = $attributes['captionPosition'] ?? 'bottom';
+        $captionPosition = $attributes['captionPosition'] ?? 'hidden';
         $enableLightbox = $attributes['enableLightbox'] ?? false;
         $className = $attributes['className'] ?? '';
         $anchor = $attributes['anchor'] ?? '';
+
+        // Calculate thumbnail size CSS variable
+        $thumbnail_size_css = match($thumbnailSize) {
+            'small' => '60px',
+            'large' => '100px',
+            default => '80px'
+        };
 
         // Build block wrapper attributes
         $block_wrapper_attrs = get_block_wrapper_attributes([
             'class' => trim('slideshow-block ' . ($enableLightbox ? 'photoswipe-enabled' : '') . ' ' . $className),
             'id' => $anchor ? esc_attr($anchor) : null,
             'style' => sprintf(
-                '--slideshow-height: %dpx; --slideshow-transition-speed: %dms;',
+                '--slideshow-height: %dpx; --slideshow-transition-speed: %dms; --slideshow-thumbnail-size: %s;',
                 $mainImageHeight,
-                $transitionSpeed
+                $transitionSpeed,
+                $thumbnail_size_css
             ),
             'data-slideshow' => 'true'
         ]);
