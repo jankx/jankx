@@ -20,9 +20,7 @@
 .slideshow-block .slideshow-thumbnails {
   display: flex;
   gap: var(--slideshow-thumbnail-gap);
-  padding: 16px;
-  background: #f8f9fa;
-  border-bottom: 1px solid #e9ecef;
+  padding: 15px 0;
   overflow-x: auto;
   scrollbar-width: thin;
   scrollbar-color: #ccc transparent;
@@ -103,13 +101,13 @@
   cursor: pointer;
 }
 .slideshow-block .slideshow-main .slideshow-track .slideshow-slide .slideshow-caption {
-  position: absolute;
-  left: 0;
-  right: 0;
-  color: white;
-  padding: 20px;
-  font-size: 14px;
-  line-height: 1.5;
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  color: white !important;
+  padding: 20px !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
 }
 .slideshow-block .slideshow-main .slideshow-track .slideshow-slide .slideshow-caption p {
   margin: 0 0 8px 0;
@@ -125,26 +123,26 @@
   text-decoration: none;
 }
 .slideshow-block .slideshow-main .slideshow-track .slideshow-slide.slideshow-caption-bottom .slideshow-caption {
-  bottom: 0;
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+  bottom: 0 !important;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7)) !important;
 }
 .slideshow-block .slideshow-main .slideshow-track .slideshow-slide.slideshow-caption-top .slideshow-caption {
-  top: 0;
-  background: linear-gradient(rgba(0, 0, 0, 0.7), transparent);
+  top: 0 !important;
+  background: linear-gradient(rgba(0, 0, 0, 0.7), transparent) !important;
 }
 .slideshow-block .slideshow-main .slideshow-track .slideshow-slide.slideshow-caption-overlay .slideshow-caption {
-  top: 50%;
-  left: 50%;
-  right: auto;
-  bottom: auto;
-  transform: translate(-50%, -50%);
-  background: rgba(0, 0, 0, 0.8);
-  border-radius: 8px;
-  max-width: 80%;
-  text-align: center;
+  top: 50% !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: translate(-50%, -50%) !important;
+  background: rgba(0, 0, 0, 0.8) !important;
+  border-radius: 8px !important;
+  max-width: 80% !important;
+  text-align: center !important;
 }
 .slideshow-block .slideshow-main .slideshow-track .slideshow-slide.slideshow-caption-hidden .slideshow-caption {
-  display: none;
+  display: none !important;
 }
 .slideshow-block .slideshow-main .slideshow-nav {
   position: absolute;

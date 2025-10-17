@@ -2,7 +2,50 @@
 // Đồng nhất với frontend styles để đảm bảo WYSIWYG
 @use 'style.scss';
 
-.slideshow-block {
+// Editor-specific overrides - Higher specificity for WordPress editor
+.block-editor-block-list__layout .slideshow-block,
+.wp-block-jankx-slide-show {
+
+  // Force caption styles in editor
+  .slideshow-slide {
+    .slideshow-caption {
+      position: absolute !important;
+      left: 0 !important;
+      right: 0 !important;
+      color: white !important;
+      padding: 20px !important;
+      font-size: 14px !important;
+      line-height: 1.5 !important;
+      z-index: 10 !important;
+    }
+
+    // Caption position variants in editor
+    &.slideshow-caption-bottom .slideshow-caption {
+      bottom: 0 !important;
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.7)) !important;
+    }
+
+    &.slideshow-caption-top .slideshow-caption {
+      top: 0 !important;
+      background: linear-gradient(rgba(0, 0, 0, 0.7), transparent) !important;
+    }
+
+    &.slideshow-caption-overlay .slideshow-caption {
+      top: 50% !important;
+      left: 50% !important;
+      right: auto !important;
+      bottom: auto !important;
+      transform: translate(-50%, -50%) !important;
+      background: rgba(0, 0, 0, 0.8) !important;
+      border-radius: 8px !important;
+      max-width: 80% !important;
+      text-align: center !important;
+    }
+
+    &.slideshow-caption-hidden .slideshow-caption {
+      display: none !important;
+    }
+  }
 
   // Editor-specific overrides
   .slideshow-thumbnail {

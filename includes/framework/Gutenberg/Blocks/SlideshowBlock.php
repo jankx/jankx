@@ -24,12 +24,13 @@ class SlideshowBlock extends Block
         $thumbnailSize = $attributes['thumbnailSize'] ?? 'medium';
         $mainImageHeight = $attributes['mainImageHeight'] ?? 400;
         $captionPosition = $attributes['captionPosition'] ?? 'bottom';
+        $enableLightbox = $attributes['enableLightbox'] ?? false;
         $className = $attributes['className'] ?? '';
         $anchor = $attributes['anchor'] ?? '';
 
         // Build block wrapper attributes
         $block_wrapper_attrs = get_block_wrapper_attributes([
-            'class' => trim('slideshow-block ' . $className),
+            'class' => trim('slideshow-block ' . ($enableLightbox ? 'photoswipe-enabled' : '') . ' ' . $className),
             'id' => $anchor ? esc_attr($anchor) : null,
             'style' => sprintf(
                 '--slideshow-height: %dpx; --slideshow-transition-speed: %dms;',
@@ -41,7 +42,7 @@ class SlideshowBlock extends Block
 
         // Build data attributes for JavaScript
         $data_attrs = sprintf(
-            'data-autoplay="%s" data-autoplay-delay="%s" data-fullscreen="%s" data-show-thumbnails="%s" data-show-navigation="%s" data-show-pagination="%s" data-transition-effect="%s" data-transition-speed="%s" data-thumbnail-size="%s"',
+            'data-autoplay="%s" data-autoplay-delay="%s" data-fullscreen="%s" data-show-thumbnails="%s" data-show-navigation="%s" data-show-pagination="%s" data-transition-effect="%s" data-transition-speed="%s" data-thumbnail-size="%s" data-enable-lightbox="%s"',
             $autoplay ? 'true' : 'false',
             esc_attr($autoplayDelay),
             $fullscreen ? 'true' : 'false',
@@ -50,7 +51,8 @@ class SlideshowBlock extends Block
             $showPagination ? 'true' : 'false',
             esc_attr($transitionEffect),
             esc_attr($transitionSpeed),
-            esc_attr($thumbnailSize)
+            esc_attr($thumbnailSize),
+            $enableLightbox ? 'true' : 'false'
         );
 
         ob_start();
@@ -84,14 +86,14 @@ class SlideshowBlock extends Block
                                 $caption = $image['caption'] ?? '';
                                 $active_class = $index === 0 ? 'active' : '';
                                 ?>
-                                <div class="slideshow-slide <?php echo $active_class; ?>">
+                                <div class="slideshow-slide slideshow-caption-<?php echo esc_attr($captionPosition); ?> <?php echo $active_class; ?>">
                                     <?php if ($image_url) : ?>
                                         <img src="<?php echo esc_url($image_url); ?>"
                                              alt="<?php echo esc_attr($alt_text); ?>" />
                                     <?php endif; ?>
 
                                     <?php if (!empty($caption) && $captionPosition !== 'hidden') : ?>
-                                        <div class="slideshow-caption slideshow-caption-<?php echo esc_attr($captionPosition); ?>">
+                                        <div class="slideshow-caption">
                                             <?php echo wp_kses_post($caption); ?>
                                         </div>
                                     <?php endif; ?>
