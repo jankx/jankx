@@ -23,9 +23,7 @@
   .slideshow-thumbnails {
     display: flex;
     gap: var(--slideshow-thumbnail-gap);
-    padding: 16px;
-    background: #f8f9fa;
-    border-bottom: 1px solid #e9ecef;
+    padding: 15px 0;
     overflow-x: auto;
     scrollbar-width: thin;
     scrollbar-color: #ccc transparent;
