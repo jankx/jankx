@@ -115,6 +115,36 @@ function getExpandIcon(type: string, isExpanded: boolean): string {
 }
 
 /**
+ * Build hierarchical structure from flat headings array
+ */
+function buildHierarchy(headings: TOCItem[]): TOCItem[] {
+    const hierarchy: TOCItem[] = [];
+    const stack: TOCItem[] = [];
+
+    headings.forEach((heading) => {
+        const level = heading.level;
+
+        // Pop stack until we find the correct parent level
+        while (stack.length > 0 && stack[stack.length - 1].level >= level) {
+            stack.pop();
+        }
+
+        if (stack.length === 0) {
+            // Top level item
+            hierarchy.push(heading);
+            stack.push(heading);
+        } else {
+            // Child item
+            const parent = stack[stack.length - 1];
+            parent.children.push(heading);
+            stack.push(heading);
+        }
+    });
+
+    return hierarchy;
+}
+
+/**
  * Render TOC item recursively
  */
 function renderTOCItem(
@@ -144,13 +174,9 @@ function renderTOCItem(
                         </span>
                     </button>
                 )}
-                <a
-                    href={`#${item.id}`}
-                    className="toc-item__link"
-                    onClick={(e) => e.preventDefault()}
-                >
+                <span className="toc-item__link">
                     {item.text}
-                </a>
+                </span>
             </div>
             {hasChildren && isExpanded && (
                 <ListTag className={`toc-list toc-list--level-${item.level + 1}`}>
@@ -179,13 +205,49 @@ export default function Edit({ attributes, setAttributes, clientId }: TableOfCon
         maxHeadingLevel,
     } = attributes;
 
-    // Check if we're editing a template (no post content)
-    const isTemplate = useSelect((select) => {
-        const editor = select('core/editor') as any;
-        if (!editor) return true;
-        const postType = editor.getCurrentPostType?.();
-        return postType === 'wp_template' || postType === 'wp_template_part';
-    }, []);
+    // Get headings from editor content
+    const editorHeadings = useSelect((select) => {
+        const editor = select('core/block-editor') as any;
+        if (!editor) return [];
+
+        const blocks = editor.getBlocks?.();
+        if (!blocks) return [];
+
+        const headings: TOCItem[] = [];
+
+        const extractHeadings = (blocks: any[]) => {
+            blocks.forEach((block: any) => {
+                // Check if this is a heading block
+                if (block.name === 'core/heading') {
+                    const level = block.attributes?.level || 2;
+                    const content = block.attributes?.content || '';
+
+                    // Filter by min/max level
+                    if (level >= minHeadingLevel && level <= maxHeadingLevel) {
+                        const text = content.replace(/<[^>]+>/g, '').trim();
+                        if (text) {
+                            const id = block.attributes?.anchor || `heading-${headings.length}`;
+                            headings.push({
+                                id,
+                                text,
+                                level,
+                                children: [],
+                                isExpanded: false
+                            });
+                        }
+                    }
+                }
+
+                // Process inner blocks
+                if (block.innerBlocks && block.innerBlocks.length > 0) {
+                    extractHeadings(block.innerBlocks);
+                }
+            });
+        };
+
+        extractHeadings(blocks);
+        return headings;
+    }, [minHeadingLevel, maxHeadingLevel]);
 
     // Manage expand/collapse state
     const [expandState, setExpandState] = useState<ExpandState>(() => {
@@ -210,8 +272,8 @@ export default function Edit({ attributes, setAttributes, clientId }: TableOfCon
 
     const ListTag = listingType === 'ol' ? 'ol' : 'ul';
 
-    // Use mock data for template editing, real data will be rendered by PHP
-    const tocData = isTemplate ? MOCK_TOC_DATA : [];
+    // Build hierarchy from editor headings or use mock data
+    const tocData = editorHeadings.length > 0 ? buildHierarchy(editorHeadings) : MOCK_TOC_DATA;
 
     return (
         <>
@@ -364,9 +426,7 @@ export default function Edit({ attributes, setAttributes, clientId }: TableOfCon
                     ) : (
                         <div className="toc-placeholder">
                             <p>{__('Table of content will be generated from headings in the post content.', 'jankx')}</p>
-                            {!isTemplate && (
-                                <p><em>{__('Add headings (H2, H3, H4, etc.) to your post to see the table of content.', 'jankx')}</em></p>
-                            )}
+                            <p><em>{__('Add headings (H2, H3, H4, etc.) to your post to see the table of content.', 'jankx')}</em></p>
                         </div>
                     )}
                 </nav>

@@ -127,6 +127,33 @@ function getExpandIcon(type, isExpanded) {
 }
 
 /**
+ * Build hierarchical structure from flat headings array
+ */
+function buildHierarchy(headings) {
+  const hierarchy = [];
+  const stack = [];
+  headings.forEach(heading => {
+    const level = heading.level;
+
+    // Pop stack until we find the correct parent level
+    while (stack.length > 0 && stack[stack.length - 1].level >= level) {
+      stack.pop();
+    }
+    if (stack.length === 0) {
+      // Top level item
+      hierarchy.push(heading);
+      stack.push(heading);
+    } else {
+      // Child item
+      const parent = stack[stack.length - 1];
+      parent.children.push(heading);
+      stack.push(heading);
+    }
+  });
+  return hierarchy;
+}
+
+/**
  * Render TOC item recursively
  */
 function renderTOCItem(item, listingType, expandIconType, expandState, onToggle, showNumbers) {
@@ -146,10 +173,8 @@ function renderTOCItem(item, listingType, expandIconType, expandState, onToggle,
           className: "toc-item__icon",
           children: getExpandIcon(expandIconType, isExpanded)
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("a", {
-        href: `#${item.id}`,
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("span", {
         className: "toc-item__link",
-        onClick: e => e.preventDefault(),
         children: item.text
       })]
     }), hasChildren && isExpanded && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(ListTag, {
@@ -179,13 +204,45 @@ function Edit({
     maxHeadingLevel
   } = attributes;
 
-  // Check if we're editing a template (no post content)
-  const isTemplate = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useSelect)(select => {
-    const editor = select('core/editor');
-    if (!editor) return true;
-    const postType = editor.getCurrentPostType?.();
-    return postType === 'wp_template' || postType === 'wp_template_part';
-  }, []);
+  // Get headings from editor content
+  const editorHeadings = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useSelect)(select => {
+    const editor = select('core/block-editor');
+    if (!editor) return [];
+    const blocks = editor.getBlocks?.();
+    if (!blocks) return [];
+    const headings = [];
+    const extractHeadings = blocks => {
+      blocks.forEach(block => {
+        // Check if this is a heading block
+        if (block.name === 'core/heading') {
+          const level = block.attributes?.level || 2;
+          const content = block.attributes?.content || '';
+
+          // Filter by min/max level
+          if (level >= minHeadingLevel && level <= maxHeadingLevel) {
+            const text = content.replace(/<[^>]+>/g, '').trim();
+            if (text) {
+              const id = block.attributes?.anchor || `heading-${headings.length}`;
+              headings.push({
+                id,
+                text,
+                level,
+                children: [],
+                isExpanded: false
+              });
+            }
+          }
+        }
+
+        // Process inner blocks
+        if (block.innerBlocks && block.innerBlocks.length > 0) {
+          extractHeadings(block.innerBlocks);
+        }
+      });
+    };
+    extractHeadings(blocks);
+    return headings;
+  }, [minHeadingLevel, maxHeadingLevel]);
 
   // Manage expand/collapse state
   const [expandState, setExpandState] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(() => {
@@ -207,8 +264,8 @@ function Edit({
   });
   const ListTag = listingType === 'ol' ? 'ol' : 'ul';
 
-  // Use mock data for template editing, real data will be rendered by PHP
-  const tocData = isTemplate ? MOCK_TOC_DATA : [];
+  // Build hierarchy from editor headings or use mock data
+  const tocData = editorHeadings.length > 0 ? buildHierarchy(editorHeadings) : MOCK_TOC_DATA;
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.BlockControls, {
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToolbarGroup, {
@@ -368,7 +425,7 @@ function Edit({
           className: "toc-placeholder",
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {
             children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Table of content will be generated from headings in the post content.', 'jankx')
-          }), !isTemplate && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {
             children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("em", {
               children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Add headings (H2, H3, H4, etc.) to your post to see the table of content.', 'jankx')
             })
