@@ -31,11 +31,16 @@ class SlideshowBlock extends Block
         $anchor = $attributes['anchor'] ?? '';
 
         // Calculate thumbnail size CSS variable
-        $thumbnail_size_css = match($thumbnailSize) {
-            'small' => '60px',
-            'large' => '100px',
-            default => '80px'
-        };
+        switch($thumbnailSize) {
+            case 'small':
+                $thumbnail_size_css = '60px';
+                break;
+            case 'large':
+                $thumbnail_size_css = '100px';
+                break;
+            default:
+                $thumbnail_size_css = '80px';
+        }
 
         // Build block wrapper attributes
         $block_wrapper_attrs = get_block_wrapper_attributes([
