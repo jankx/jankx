@@ -1,7 +1,7 @@
 // Slideshow Item Block Editor Styles
+@use 'style.scss';
+
 .slideshow-item-block {
-  // Import all styles from main style.scss
-  @import 'style.scss';
 
   // Editor-specific overrides
   .slideshow-item-content {

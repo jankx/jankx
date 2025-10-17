@@ -41,6 +41,7 @@ export interface SlideshowAttributes {
   thumbnailSize: 'small' | 'medium' | 'large';
   mainImageHeight: number;
   captionPosition: 'top' | 'bottom' | 'overlay' | 'hidden';
+  enableLightbox: boolean;
   className?: string;
   anchor?: string;
 }

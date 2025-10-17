@@ -128,36 +128,6 @@
           font-size: 14px;
           line-height: 1.5;
 
-          // Bottom position (default)
-          &.slideshow-caption-bottom {
-            bottom: 0;
-            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
-          }
-
-          // Top position
-          &.slideshow-caption-top {
-            top: 0;
-            background: linear-gradient(rgba(0, 0, 0, 0.7), transparent);
-          }
-
-          // Overlay position (center)
-          &.slideshow-caption-overlay {
-            top: 50%;
-            left: 50%;
-            right: auto;
-            bottom: auto;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.8);
-            border-radius: 8px;
-            max-width: 80%;
-            text-align: center;
-          }
-
-          // Hidden
-          &.slideshow-caption-hidden {
-            display: none;
-          }
-
           p {
             margin: 0 0 8px 0;
 
@@ -174,6 +144,33 @@
               text-decoration: none;
             }
           }
+        }
+
+        // Caption position variants - applied to .slideshow-slide
+        &.slideshow-caption-bottom .slideshow-caption {
+          bottom: 0;
+          background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+        }
+
+        &.slideshow-caption-top .slideshow-caption {
+          top: 0;
+          background: linear-gradient(rgba(0, 0, 0, 0.7), transparent);
+        }
+
+        &.slideshow-caption-overlay .slideshow-caption {
+          top: 50%;
+          left: 50%;
+          right: auto;
+          bottom: auto;
+          transform: translate(-50%, -50%);
+          background: rgba(0, 0, 0, 0.8);
+          border-radius: 8px;
+          max-width: 80%;
+          text-align: center;
+        }
+
+        &.slideshow-caption-hidden .slideshow-caption {
+          display: none;
         }
       }
     }
@@ -345,26 +342,29 @@
     }
   }
 
-  // PhotoSwipe Integration Styles
+  // PhotoSwipe Integration Styles - Only when lightbox is enabled
   &.photoswipe-enabled {
     .slideshow-slide {
-      cursor: pointer;
+      img {
+        cursor: pointer;
+      }
 
       &::after {
         content: '';
         position: absolute;
         top: 16px;
         right: 16px;
-        width: 24px;
-        height: 24px;
-        background: rgba(0, 0, 0, 0.6);
-        border-radius: 50%;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='white' viewBox='0 0 24 24'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/%3E%3C/svg%3E");
-        background-size: 16px;
+        width: 32px;
+        height: 32px;
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 4px;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='white' viewBox='0 0 24 24'%3E%3Cpath d='M21 11V3h-8l3.29 3.29-10 10L3 13v8h8l-3.29-3.29 10-10L21 11z'/%3E%3C/svg%3E");
+        background-size: 18px;
         background-position: center;
         background-repeat: no-repeat;
-        opacity: 0.7;
+        opacity: 0;
         transition: opacity 0.2s ease;
+        pointer-events: none;
       }
 
       &:hover::after {

@@ -19,7 +19,8 @@ export default function Edit({ attributes, setAttributes, clientId }: SlideshowE
     transitionSpeed,
     thumbnailSize,
     mainImageHeight,
-    captionPosition
+    captionPosition,
+    enableLightbox
   } = attributes;
 
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -274,6 +275,12 @@ export default function Edit({ attributes, setAttributes, clientId }: SlideshowE
             onChange={(val) => setAttributes({ fullscreen: val })}
           />
           <ToggleControl
+            label={__('Enable Lightbox on Click', 'jankx')}
+            help={__('Open lightbox when clicking on slide images', 'jankx')}
+            checked={enableLightbox}
+            onChange={(val) => setAttributes({ enableLightbox: val })}
+          />
+          <ToggleControl
             label={__('Show Thumbnails', 'jankx')}
             checked={showThumbnails}
             onChange={(val) => setAttributes({ showThumbnails: val })}
@@ -360,7 +367,7 @@ export default function Edit({ attributes, setAttributes, clientId }: SlideshowE
             {images.map((image, index) => (
               <div
                 key={image.id}
-                className={`slideshow-slide ${index === currentSlide ? 'active' : ''}`}
+                className={`slideshow-slide slideshow-caption-${captionPosition} ${index === currentSlide ? 'active' : ''}`}
                 style={{
                   transform: transitionEffect === 'slide'
                     ? `translateX(${(index - currentSlide) * 100}%)`
@@ -372,7 +379,7 @@ export default function Edit({ attributes, setAttributes, clientId }: SlideshowE
               >
                 <img src={image.url} alt={image.alt} />
                 {image.caption && captionPosition !== 'hidden' && (
-                  <div className={`slideshow-caption slideshow-caption-${captionPosition}`}>
+                  <div className="slideshow-caption">
                     <div dangerouslySetInnerHTML={{ __html: image.caption }} />
                   </div>
                 )}

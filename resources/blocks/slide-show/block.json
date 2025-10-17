@@ -59,6 +59,10 @@
       "enum": ["top", "bottom", "overlay", "hidden"],
       "default": "bottom"
     },
+    "enableLightbox": {
+      "type": "boolean",
+      "default": false
+    },
     "className": {
       "type": "string"
     },

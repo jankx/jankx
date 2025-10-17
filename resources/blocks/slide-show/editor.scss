@@ -1,9 +1,8 @@
 // Slideshow Block Editor Styles
 // Đồng nhất với frontend styles để đảm bảo WYSIWYG
+@use 'style.scss';
 
 .slideshow-block {
-  // Import all styles from main style.scss
-  @import 'style.scss';
 
   // Editor-specific overrides
   .slideshow-thumbnail {
