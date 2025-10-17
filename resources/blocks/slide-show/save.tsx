@@ -1,4 +1,4 @@
-import { useBlockProps } from '@wordpress/block-editor';
+import { useBlockProps, RichText } from '@wordpress/block-editor';
 import type { BlockSaveProps } from '@wordpress/blocks';
 import type { SlideshowAttributes } from './types';
 
@@ -16,7 +16,9 @@ export default function Save({ attributes }: BlockSaveProps<SlideshowAttributes>
     thumbnailSize,
     mainImageHeight,
     captionPosition,
-    enableLightbox
+    enableLightbox,
+    showFooterText,
+    footerText
   } = attributes;
 
   const blockProps = useBlockProps.save({
@@ -108,6 +110,13 @@ export default function Save({ attributes }: BlockSaveProps<SlideshowAttributes>
           </>
         )}
       </div>
+
+      {/* Footer Text */}
+      {showFooterText && footerText && (
+        <div className="slideshow-footer-text">
+          <RichText.Content tagName="p" value={footerText} />
+        </div>
+      )}
 
       {/* Footer Controls */}
       <div className="slideshow-footer">

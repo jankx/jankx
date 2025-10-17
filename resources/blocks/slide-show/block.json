@@ -63,6 +63,14 @@
       "type": "boolean",
       "default": false
     },
+    "showFooterText": {
+      "type": "boolean",
+      "default": false
+    },
+    "footerText": {
+      "type": "string",
+      "default": ""
+    },
     "className": {
       "type": "string"
     },

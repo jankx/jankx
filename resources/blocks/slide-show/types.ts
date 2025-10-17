@@ -42,6 +42,8 @@ export interface SlideshowAttributes {
   mainImageHeight: number;
   captionPosition: 'top' | 'bottom' | 'overlay' | 'hidden';
   enableLightbox: boolean;
+  showFooterText: boolean;
+  footerText: string;
   className?: string;
   anchor?: string;
 }

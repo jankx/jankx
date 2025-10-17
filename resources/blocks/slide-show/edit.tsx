@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { useBlockProps, InspectorControls, MediaUpload, MediaUploadCheck, InnerBlocks, useInnerBlocksProps } from '@wordpress/block-editor';
+import { useBlockProps, InspectorControls, MediaUpload, MediaUploadCheck, InnerBlocks, useInnerBlocksProps, RichText } from '@wordpress/block-editor';
 import { PanelBody, Button, ToggleControl, RangeControl, SelectControl, Placeholder } from '@wordpress/components';
 import { useState, useEffect, useRef } from '@wordpress/element';
 import { createBlock } from '@wordpress/blocks';
@@ -20,7 +20,9 @@ export default function Edit({ attributes, setAttributes, clientId }: SlideshowE
     thumbnailSize,
     mainImageHeight,
     captionPosition,
-    enableLightbox
+    enableLightbox,
+    showFooterText,
+    footerText
   } = attributes;
 
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -282,6 +284,11 @@ export default function Edit({ attributes, setAttributes, clientId }: SlideshowE
             onChange={(val) => setAttributes({ enableLightbox: val })}
           />
           <ToggleControl
+            label={__('Show Footer Text', 'jankx')}
+            checked={showFooterText}
+            onChange={(val) => setAttributes({ showFooterText: val })}
+          />
+          <ToggleControl
             label={__('Show Thumbnails', 'jankx')}
             checked={showThumbnails}
             onChange={(val) => setAttributes({ showThumbnails: val })}
@@ -409,6 +416,19 @@ export default function Edit({ attributes, setAttributes, clientId }: SlideshowE
           </>
         )}
       </div>
+
+      {/* Footer Text */}
+      {showFooterText && (
+        <div className="slideshow-footer-text">
+          <RichText
+            tagName="p"
+            value={footerText}
+            onChange={(value) => setAttributes({ footerText: value })}
+            placeholder={__('Nhập nội dung footer...', 'jankx')}
+            allowedFormats={['core/bold', 'core/italic', 'core/link', 'core/text-color']}
+          />
+        </div>
+      )}
 
       {/* Footer Controls */}
       <div className="slideshow-footer">

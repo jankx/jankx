@@ -25,6 +25,8 @@ class SlideshowBlock extends Block
         $mainImageHeight = $attributes['mainImageHeight'] ?? 400;
         $captionPosition = $attributes['captionPosition'] ?? 'hidden';
         $enableLightbox = $attributes['enableLightbox'] ?? false;
+        $showFooterText = $attributes['showFooterText'] ?? false;
+        $footerText = $attributes['footerText'] ?? '';
         $className = $attributes['className'] ?? '';
         $anchor = $attributes['anchor'] ?? '';
 
@@ -122,20 +124,26 @@ class SlideshowBlock extends Block
                     <?php endif; ?>
                 </div>
 
-                <div class="slideshow-footer">
-                    <div class="slideshow-controls">
-                        <?php if ($fullscreen) : ?>
-                            <button class="slideshow-fullscreen-btn">
-                                <?php _e('Fullscreen', 'jankx'); ?>
-                            </button>
-                        <?php endif; ?>
+                 <?php if ($showFooterText && !empty($footerText)) : ?>
+                     <div class="slideshow-footer-text">
+                         <?php echo wp_kses_post($footerText); ?>
+                     </div>
+                 <?php endif; ?>
 
-                        <?php if ($autoplay) : ?>
-                            <button class="slideshow-autoplay-btn">
-                                <?php _e('Xem tự động', 'jankx'); ?>
-                            </button>
-                        <?php endif; ?>
-                    </div>
+                 <div class="slideshow-footer">
+                     <div class="slideshow-controls">
+                         <?php if ($fullscreen) : ?>
+                             <button class="slideshow-fullscreen-btn">
+                                 <?php _e('Fullscreen', 'jankx'); ?>
+                             </button>
+                         <?php endif; ?>
+
+                         <?php if ($autoplay) : ?>
+                             <button class="slideshow-autoplay-btn">
+                                 <?php _e('Xem tự động', 'jankx'); ?>
+                             </button>
+                         <?php endif; ?>
+                     </div>
 
                     <?php if ($showPagination && count($images) > 1) : ?>
                         <div class="slideshow-pagination">
