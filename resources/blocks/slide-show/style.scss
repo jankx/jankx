@@ -1,11 +1,17 @@
 // Slideshow Block Styles
 .slideshow-block {
+  // Custom properties
   --slideshow-height: 400px;
   --slideshow-transition-speed: 300ms;
   --slideshow-thumbnail-size: 60px;
   --slideshow-thumbnail-gap: 8px;
   --slideshow-border-radius: 8px;
   --slideshow-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+  // Color variables using WordPress theme primary color
+  --slideshow-primary-color: var(--wp--preset--color--primary);
+  --slideshow-primary-dark: color-mix(in srgb, var(--wp--preset--color--primary) 80%, black);
+  --slideshow-primary-light: color-mix(in srgb, var(--wp--preset--color--primary) 20%, white);
 
   position: relative;
   background: #fff;
@@ -48,14 +54,14 @@
       padding: 0;
 
       &:hover {
-        border-color: #007cba;
+        border-color: var(--slideshow-primary-color);
         transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 124, 186, 0.2);
+        box-shadow: 0 4px 8px color-mix(in srgb, var(--slideshow-primary-color) 20%, transparent);
       }
 
       &.active {
-        border-color: #007cba;
-        box-shadow: 0 0 0 2px rgba(0, 124, 186, 0.2);
+        border-color: var(--slideshow-primary-color);
+        box-shadow: 0 0 0 2px color-mix(in srgb, var(--slideshow-primary-color) 20%, transparent);
       }
 
       img {
@@ -228,7 +234,7 @@
 
       .slideshow-fullscreen-btn,
       .slideshow-autoplay-btn {
-        background: #007cba;
+        background: var(--slideshow-primary-color);
         color: white;
         border: none;
         border-radius: 4px;
@@ -238,7 +244,7 @@
         transition: background 0.2s ease;
 
         &:hover {
-          background: #005a87;
+          background: var(--slideshow-primary-dark);
         }
       }
     }
@@ -260,7 +266,7 @@
 
         &:hover:not(:disabled) {
           background: #f0f0f0;
-          border-color: #007cba;
+          border-color: var(--slideshow-primary-color);
         }
 
         &:disabled {
@@ -282,12 +288,12 @@
 
         &:hover {
           background: #f0f0f0;
-          border-color: #007cba;
+          border-color: var(--slideshow-primary-color);
         }
 
         &.active {
-          background: #007cba;
-          border-color: #007cba;
+          background: var(--slideshow-primary-color);
+          border-color: var(--slideshow-primary-color);
           color: white;
         }
       }
@@ -380,7 +386,7 @@
         width: 40px;
         height: 40px;
         border: 3px solid #e9ecef;
-        border-top: 3px solid #007cba;
+        border-top: 3px solid var(--slideshow-primary-color);
         border-radius: 50%;
         animation: spin 1s linear infinite;
       }

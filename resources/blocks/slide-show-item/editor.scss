@@ -22,12 +22,12 @@
     }
 
     &:hover::before {
-      border-color: #007cba;
+      border-color: var(--wp--preset--color--primary);
     }
 
     &.selected::before {
-      border-color: #007cba;
-      box-shadow: 0 0 0 2px rgba(0, 124, 186, 0.2);
+      border-color: var(--wp--preset--color--primary);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--wp--preset--color--primary) 20%, transparent);
     }
   }
 
@@ -35,11 +35,11 @@
     // Show editing indicators
     .slideshow-item-overlay {
       .change-image-btn {
-        background: #007cba;
+        background: var(--wp--preset--color--primary);
         color: white;
 
         &:hover {
-          background: #005a87;
+          background: color-mix(in srgb, var(--wp--preset--color--primary) 80%, black);
         }
 
         &::after {
@@ -68,7 +68,7 @@
 
       &:focus,
       &:hover {
-        border-color: #007cba;
+        border-color: var(--wp--preset--color--primary);
         outline: none;
       }
 
@@ -88,9 +88,9 @@
       transition: all 0.2s ease;
 
       &:focus {
-        border-color: #007cba;
+        border-color: var(--wp--preset--color--primary);
         outline: none;
-        box-shadow: 0 0 0 2px rgba(0, 124, 186, 0.2);
+        box-shadow: 0 0 0 2px color-mix(in srgb, var(--wp--preset--color--primary) 20%, transparent);
       }
 
       &:hover {
@@ -111,14 +111,14 @@
   // WordPress block editor specific styles
   &.is-selected {
     .slideshow-item-content {
-      outline: 2px solid #007cba;
+      outline: 2px solid var(--wp--preset--color--primary);
       outline-offset: 2px;
     }
   }
 
   &.is-hovered {
     .slideshow-item-content {
-      outline: 1px dashed #007cba;
+      outline: 1px dashed var(--wp--preset--color--primary);
       outline-offset: 1px;
     }
   }
@@ -126,7 +126,7 @@
   // Block toolbar
   .block-editor-block-toolbar {
     .components-toolbar-group {
-      background: rgba(0, 124, 186, 0.9);
+      background: color-mix(in srgb, var(--wp--preset--color--primary) 90%, transparent);
       border-radius: 4px;
     }
   }
@@ -148,8 +148,8 @@
 
       &:hover {
         background: #e0e0e0;
-        border-color: #007cba;
-        color: #007cba;
+        border-color: var(--wp--preset--color--primary);
+        color: var(--wp--preset--color--primary);
       }
 
       &::before {
@@ -196,7 +196,7 @@
 
     // Selection styling
     &::selection {
-      background: rgba(0, 124, 186, 0.2);
+      background: color-mix(in srgb, var(--wp--preset--color--primary) 20%, transparent);
     }
   }
 }

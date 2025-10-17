@@ -8,6 +8,9 @@
   --slideshow-thumbnail-gap: 8px;
   --slideshow-border-radius: 8px;
   --slideshow-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --slideshow-primary-color: var(--wp--preset--color--primary);
+  --slideshow-primary-dark: color-mix(in srgb, var(--wp--preset--color--primary) 80%, black);
+  --slideshow-primary-light: color-mix(in srgb, var(--wp--preset--color--primary) 20%, white);
   position: relative;
   background: #fff;
   border-radius: var(--slideshow-border-radius);
@@ -45,13 +48,13 @@
   padding: 0;
 }
 .slideshow-block .slideshow-thumbnails .slideshow-thumbnail:hover {
-  border-color: #007cba;
+  border-color: var(--slideshow-primary-color);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 124, 186, 0.2);
+  box-shadow: 0 4px 8px color-mix(in srgb, var(--slideshow-primary-color) 20%, transparent);
 }
 .slideshow-block .slideshow-thumbnails .slideshow-thumbnail.active {
-  border-color: #007cba;
-  box-shadow: 0 0 0 2px rgba(0, 124, 186, 0.2);
+  border-color: var(--slideshow-primary-color);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--slideshow-primary-color) 20%, transparent);
 }
 .slideshow-block .slideshow-thumbnails .slideshow-thumbnail img {
   width: 100%;
@@ -191,7 +194,7 @@
 }
 .slideshow-block .slideshow-footer .slideshow-controls .slideshow-fullscreen-btn,
 .slideshow-block .slideshow-footer .slideshow-controls .slideshow-autoplay-btn {
-  background: #007cba;
+  background: var(--slideshow-primary-color);
   color: white;
   border: none;
   border-radius: 4px;
@@ -202,7 +205,7 @@
 }
 .slideshow-block .slideshow-footer .slideshow-controls .slideshow-fullscreen-btn:hover,
 .slideshow-block .slideshow-footer .slideshow-controls .slideshow-autoplay-btn:hover {
-  background: #005a87;
+  background: var(--slideshow-primary-dark);
 }
 .slideshow-block .slideshow-footer .slideshow-pagination {
   display: flex;
@@ -222,7 +225,7 @@
 .slideshow-block .slideshow-footer .slideshow-pagination .slideshow-pagination-prev:hover:not(:disabled),
 .slideshow-block .slideshow-footer .slideshow-pagination .slideshow-pagination-next:hover:not(:disabled) {
   background: #f0f0f0;
-  border-color: #007cba;
+  border-color: var(--slideshow-primary-color);
 }
 .slideshow-block .slideshow-footer .slideshow-pagination .slideshow-pagination-prev:disabled,
 .slideshow-block .slideshow-footer .slideshow-pagination .slideshow-pagination-next:disabled {
@@ -242,11 +245,11 @@
 }
 .slideshow-block .slideshow-footer .slideshow-pagination .slideshow-pagination-dot:hover {
   background: #f0f0f0;
-  border-color: #007cba;
+  border-color: var(--slideshow-primary-color);
 }
 .slideshow-block .slideshow-footer .slideshow-pagination .slideshow-pagination-dot.active {
-  background: #007cba;
-  border-color: #007cba;
+  background: var(--slideshow-primary-color);
+  border-color: var(--slideshow-primary-color);
   color: white;
 }
 @media (max-width: 768px) {
@@ -317,7 +320,7 @@
   width: 40px;
   height: 40px;
   border: 3px solid #e9ecef;
-  border-top: 3px solid #007cba;
+  border-top: 3px solid var(--slideshow-primary-color);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -378,6 +381,9 @@
   --slideshow-thumbnail-gap: 8px;
   --slideshow-border-radius: 8px;
   --slideshow-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --slideshow-primary-color: var(--wp--preset--color--primary);
+  --slideshow-primary-dark: color-mix(in srgb, var(--wp--preset--color--primary) 80%, black);
+  --slideshow-primary-light: color-mix(in srgb, var(--wp--preset--color--primary) 20%, white);
   position: relative;
   background: #fff;
   border-radius: var(--slideshow-border-radius);
@@ -415,13 +421,13 @@
   padding: 0;
 }
 .slideshow-block .slideshow-block .slideshow-thumbnails .slideshow-thumbnail:hover {
-  border-color: #007cba;
+  border-color: var(--slideshow-primary-color);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 124, 186, 0.2);
+  box-shadow: 0 4px 8px color-mix(in srgb, var(--slideshow-primary-color) 20%, transparent);
 }
 .slideshow-block .slideshow-block .slideshow-thumbnails .slideshow-thumbnail.active {
-  border-color: #007cba;
-  box-shadow: 0 0 0 2px rgba(0, 124, 186, 0.2);
+  border-color: var(--slideshow-primary-color);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--slideshow-primary-color) 20%, transparent);
 }
 .slideshow-block .slideshow-block .slideshow-thumbnails .slideshow-thumbnail img {
   width: 100%;
@@ -561,7 +567,7 @@
 }
 .slideshow-block .slideshow-block .slideshow-footer .slideshow-controls .slideshow-fullscreen-btn,
 .slideshow-block .slideshow-block .slideshow-footer .slideshow-controls .slideshow-autoplay-btn {
-  background: #007cba;
+  background: var(--slideshow-primary-color);
   color: white;
   border: none;
   border-radius: 4px;
@@ -572,7 +578,7 @@
 }
 .slideshow-block .slideshow-block .slideshow-footer .slideshow-controls .slideshow-fullscreen-btn:hover,
 .slideshow-block .slideshow-block .slideshow-footer .slideshow-controls .slideshow-autoplay-btn:hover {
-  background: #005a87;
+  background: var(--slideshow-primary-dark);
 }
 .slideshow-block .slideshow-block .slideshow-footer .slideshow-pagination {
   display: flex;
@@ -592,7 +598,7 @@
 .slideshow-block .slideshow-block .slideshow-footer .slideshow-pagination .slideshow-pagination-prev:hover:not(:disabled),
 .slideshow-block .slideshow-block .slideshow-footer .slideshow-pagination .slideshow-pagination-next:hover:not(:disabled) {
   background: #f0f0f0;
-  border-color: #007cba;
+  border-color: var(--slideshow-primary-color);
 }
 .slideshow-block .slideshow-block .slideshow-footer .slideshow-pagination .slideshow-pagination-prev:disabled,
 .slideshow-block .slideshow-block .slideshow-footer .slideshow-pagination .slideshow-pagination-next:disabled {
@@ -612,11 +618,11 @@
 }
 .slideshow-block .slideshow-block .slideshow-footer .slideshow-pagination .slideshow-pagination-dot:hover {
   background: #f0f0f0;
-  border-color: #007cba;
+  border-color: var(--slideshow-primary-color);
 }
 .slideshow-block .slideshow-block .slideshow-footer .slideshow-pagination .slideshow-pagination-dot.active {
-  background: #007cba;
-  border-color: #007cba;
+  background: var(--slideshow-primary-color);
+  border-color: var(--slideshow-primary-color);
   color: white;
 }
 @media (max-width: 768px) {
@@ -687,7 +693,7 @@
   width: 40px;
   height: 40px;
   border: 3px solid #e9ecef;
-  border-top: 3px solid #007cba;
+  border-top: 3px solid var(--slideshow-primary-color);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -742,7 +748,7 @@
   top: 4px;
   right: 4px;
   font-size: 12px;
-  background: rgba(0, 124, 186, 0.8);
+  background: color-mix(in srgb, var(--wp--preset--color--primary) 80%, transparent);
   color: white;
   border-radius: 50%;
   width: 20px;
@@ -760,7 +766,7 @@
   position: absolute;
   top: 16px;
   left: 16px;
-  background: rgba(0, 124, 186, 0.9);
+  background: color-mix(in srgb, var(--wp--preset--color--primary) 90%, transparent);
   color: white;
   padding: 4px 8px;
   border-radius: 4px;
@@ -783,7 +789,7 @@
   top: -20px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(0, 124, 186, 0.9);
+  background: color-mix(in srgb, var(--wp--preset--color--primary) 90%, transparent);
   color: white;
   padding: 2px 6px;
   border-radius: 3px;
@@ -846,7 +852,7 @@
 }
 
 .slideshow-block .block-editor-block-toolbar .block-editor-block-toolbar__slot {
-  background: rgba(0, 124, 186, 0.9);
+  background: color-mix(in srgb, var(--wp--preset--color--primary) 90%, transparent);
   border-radius: 4px;
   padding: 4px;
 }

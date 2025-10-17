@@ -6,9 +6,9 @@
 
 .jankx-table-of-content {
     // CSS Custom Properties with theme.json color presets
-    // Using WordPress standard color variables for text and link
-    --toc-text-color: var(--wp--preset--color--contrast, currentColor);
-    --toc-link-color: var(--wp--preset--color--contrast, currentColor);
+    // Using WordPress standard color variables for text and link with dark fallback
+    --toc-text-color: var(--wp--preset--color--dark, #333333);
+    --toc-link-color: var(--wp--preset--color--dark, #000000);
     --toc-link-hover-color: var(--wp--preset--color--primary, #503AA8);
     --toc-primary-color: var(--wp--preset--color--primary, #503AA8);
     --toc-border-color: var(--wp--preset--color--accent-5, #FBFAF3);

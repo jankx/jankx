@@ -17,7 +17,7 @@
         top: 4px;
         right: 4px;
         font-size: 12px;
-        background: rgba(0, 124, 186, 0.8);
+        background: color-mix(in srgb, var(--wp--preset--color--primary) 80%, transparent);
         color: white;
         border-radius: 50%;
         width: 20px;
@@ -40,7 +40,7 @@
         position: absolute;
         top: 16px;
         left: 16px;
-        background: rgba(0, 124, 186, 0.9);
+        background: color-mix(in srgb, var(--wp--preset--color--primary) 90%, transparent);
         color: white;
         padding: 4px 8px;
         border-radius: 4px;
@@ -68,7 +68,7 @@
         top: -20px;
         left: 50%;
         transform: translateX(-50%);
-        background: rgba(0, 124, 186, 0.9);
+        background: color-mix(in srgb, var(--wp--preset--color--primary) 90%, transparent);
         color: white;
         padding: 2px 6px;
         border-radius: 3px;
@@ -156,7 +156,7 @@
 .block-editor-block-toolbar {
   .slideshow-block & {
     .block-editor-block-toolbar__slot {
-      background: rgba(0, 124, 186, 0.9);
+      background: color-mix(in srgb, var(--wp--preset--color--primary) 90%, transparent);
       border-radius: 4px;
       padding: 4px;
     }

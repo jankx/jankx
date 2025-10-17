@@ -258,7 +258,7 @@ export default function Edit({ attributes, setAttributes, clientId }: TableOfCon
                         value={minHeadingLevel}
                         onChange={(value) => {
                             const newMin = value || 2;
-                            setAttributes({ 
+                            setAttributes({
                                 minHeadingLevel: newMin,
                                 maxHeadingLevel: Math.max(newMin, maxHeadingLevel)
                             });
@@ -276,7 +276,7 @@ export default function Edit({ attributes, setAttributes, clientId }: TableOfCon
                         value={maxHeadingLevel}
                         onChange={(value) => {
                             const newMax = value || 6;
-                            setAttributes({ 
+                            setAttributes({
                                 maxHeadingLevel: newMax,
                                 minHeadingLevel: Math.min(minHeadingLevel, newMax)
                             });

@@ -1,5 +1,10 @@
 // Slideshow Item Block Styles
 .slideshow-item-block {
+  // Color variables using WordPress theme primary color
+  --slideshow-item-primary-color: var(--wp--preset--color--primary);
+  --slideshow-item-primary-dark: color-mix(in srgb, var(--wp--preset--color--primary) 80%, black);
+  --slideshow-item-primary-light: color-mix(in srgb, var(--wp--preset--color--primary) 20%, white);
+
   // When inside slideshow, behave as a slide
   .slideshow-block & {
     flex: 0 0 100%;
@@ -134,7 +139,7 @@
       }
 
       a {
-        color: #007cba;
+        color: var(--slideshow-item-primary-color);
         text-decoration: underline;
 
         &:hover {
@@ -187,7 +192,7 @@
         width: 24px;
         height: 24px;
         border: 2px solid #e9ecef;
-        border-top: 2px solid #007cba;
+        border-top: 2px solid var(--slideshow-item-primary-color);
         border-radius: 50%;
         animation: spin 1s linear infinite;
       }
@@ -220,7 +225,7 @@
         }
 
         .placeholder-button {
-          background: #007cba;
+          background: var(--slideshow-item-primary-color);
           color: white;
           border: none;
           border-radius: 4px;
@@ -230,7 +235,7 @@
           transition: background 0.2s ease;
 
           &:hover {
-            background: #005a87;
+            background: var(--slideshow-item-primary-dark);
           }
         }
       }

@@ -7,8 +7,8 @@
  * Consistent styling for both editor and frontend
  */
 .jankx-table-of-content {
-  --toc-text-color: var(--wp--preset--color--contrast, currentColor);
-  --toc-link-color: var(--wp--preset--color--contrast, currentColor);
+  --toc-text-color: var(--wp--preset--color--dark, #333333);
+  --toc-link-color: var(--wp--preset--color--dark, #000000);
   --toc-link-hover-color: var(--wp--preset--color--primary, #503AA8);
   --toc-primary-color: var(--wp--preset--color--primary, #503AA8);
   --toc-border-color: var(--wp--preset--color--accent-5, #FBFAF3);
