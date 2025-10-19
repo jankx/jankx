@@ -67,6 +67,10 @@
     "seekTime": {
       "type": "number",
       "default": 10
+    },
+    "videoHeight": {
+      "type": "number",
+      "default": 400
     }
   },
   "example": {

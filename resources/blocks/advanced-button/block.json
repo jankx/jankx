@@ -110,6 +110,10 @@
             "type": "string",
             "enum": ["left", "right", "top", "bottom"],
             "default": "left"
+        },
+        "showLabel": {
+            "type": "boolean",
+            "default": true
         }
     },
     "supports": {

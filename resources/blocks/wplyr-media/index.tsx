@@ -7,6 +7,7 @@ import {
   TextControl,
   CheckboxControl,
   ColorPicker,
+  RangeControl,
   Button,
   Notice
 } from '@wordpress/components';
@@ -32,6 +33,7 @@ interface Attributes {
   controls: string[];
   settings: string[];
   seekTime: number;
+  videoHeight: number;
 }
 
 const Edit = ({ attributes, setAttributes }: { attributes: Attributes; setAttributes: (a: Partial<Attributes>) => void; }) => {
@@ -47,12 +49,16 @@ const Edit = ({ attributes, setAttributes }: { attributes: Attributes; setAttrib
     playerColor = '#fca311',
     controls = ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'],
     settings = ['captions', 'quality', 'speed'],
-    seekTime = 10
+    seekTime = 10,
+    videoHeight = 400
   } = attributes;
 
   const blockProps = useBlockProps({
     className: 'jankx-wplyr-player',
-    style: { '--plyr-color': playerColor }
+    style: {
+      '--plyr-color': playerColor,
+      '--video-height': `${videoHeight}px`
+    } as React.CSSProperties
   });
 
   const mediaTypeOptions = [
@@ -332,6 +338,18 @@ const Edit = ({ attributes, setAttributes }: { attributes: Attributes; setAttrib
             )}
           </PanelBody>
         )}
+
+        <PanelBody title={__('Display Settings', 'jankx')} initialOpen={false}>
+          <RangeControl
+            label={__('Video Height (px)', 'jankx')}
+            value={videoHeight}
+            onChange={(value) => setAttributes({ videoHeight: value || 400 })}
+            min={200}
+            max={1000}
+            step={50}
+            help={__('Set the height of the video player', 'jankx')}
+          />
+        </PanelBody>
       </InspectorControls>
 
       <div className="jankx-wplyr-container">

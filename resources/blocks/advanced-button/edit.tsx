@@ -54,6 +54,7 @@ interface EditProps {
 		style: Record<string, any>;
 		useIconBlocks: boolean;
 		iconPosition: string;
+		showLabel: boolean;
 	};
 	setAttributes: (attrs: Partial<EditProps['attributes']>) => void;
 	backgroundColor: any;
@@ -96,6 +97,7 @@ export function Edit(props: EditProps) {
 		style,
 		useIconBlocks = false,
 		iconPosition = 'left',
+		showLabel = true,
 	} = attributes;
 
 	// Check if block has inner blocks (icon blocks)
@@ -184,14 +186,16 @@ export function Edit(props: EditProps) {
 					orientation="horizontal"
 				/>
 			</span>
-			<RichText
-				tagName="span"
-				className="button-text"
-				value={text}
-				onChange={(value: string) => setAttributes({ text: value })}
-				placeholder={placeholder || __('Button text...', 'jankx')}
-				allowedFormats={[]}
-			/>
+			{showLabel && (
+				<RichText
+					tagName="span"
+					className="button-text"
+					value={text}
+					onChange={(value: string) => setAttributes({ text: value })}
+					placeholder={placeholder || __('Button text...', 'jankx')}
+					allowedFormats={[]}
+				/>
+			)}
 		</>
 	);
 
@@ -499,6 +503,21 @@ export function Edit(props: EditProps) {
 							</ToolsPanelItem>
 						</>
 					)}
+
+					<ToolsPanelItem
+						label={__('Show Label', 'jankx')}
+						isShownByDefault
+						hasValue={() => !showLabel}
+						onDeselect={() => setAttributes({ showLabel: true })}
+					>
+						<ToggleControl
+							label={__('Show Label', 'jankx')}
+							checked={showLabel}
+							onChange={(value) => setAttributes({ showLabel: value })}
+							help={__('Show or hide button label text', 'jankx')}
+							__nextHasNoMarginBottom
+						/>
+					</ToolsPanelItem>
 
 					{hasInnerBlocks && (
 						<ToolsPanelItem

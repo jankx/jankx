@@ -428,6 +428,7 @@ class TableOfContentBlock extends Block
         $show_numbers = $attributes['showNumbers'] ?? false;
         $show_heading = $attributes['showHeading'] ?? true;
         $custom_heading_text = $attributes['customHeadingText'] ?? '';
+        $heading_style = $attributes['headingStyle'] ?? 'underline';
         $min_heading_level = $attributes['minHeadingLevel'] ?? 2;
         $max_heading_level = $attributes['maxHeadingLevel'] ?? 6;
         $class_name = $attributes['className'] ?? '';
@@ -455,29 +456,32 @@ class TableOfContentBlock extends Block
             );
         }
 
-        // Build wrapper classes
-        $wrapper_classes = ['jankx-table-of-content'];
-        if (!empty($class_name)) {
-            $wrapper_classes[] = esc_attr($class_name);
-        }
-
-        // Build wrapper attributes
-        $wrapper_attrs = [
-            'class' => implode(' ', $wrapper_classes),
+        // Build outer wrapper attributes (for data attributes only)
+        $outer_attrs = [
+            'class' => 'jankx-table-of-content heading-style-' . esc_attr($heading_style),
             'data-default-expanded' => $default_expanded ? 'true' : 'false',
             'data-expand-first-item' => $expand_first_item ? 'true' : 'false',
             'data-expand-icon-type' => $expand_icon_type,
         ];
 
         if (!empty($anchor)) {
-            $wrapper_attrs['id'] = esc_attr($anchor);
+            $outer_attrs['id'] = esc_attr($anchor);
         }
 
-        // Build attributes string
-        $attrs_string = '';
-        foreach ($wrapper_attrs as $key => $value) {
-            $attrs_string .= sprintf(' %s="%s"', esc_attr($key), esc_attr($value));
+        // Build outer attributes string
+        $outer_attrs_string = '';
+        foreach ($outer_attrs as $key => $value) {
+            $outer_attrs_string .= sprintf(' %s="%s"', esc_attr($key), esc_attr($value));
         }
+
+        // Build inner wrapper attributes using WordPress block supports
+        // This applies background, colors, spacing to .toc-wrapper
+        $inner_attrs = [
+            'class' => 'toc-wrapper',
+        ];
+
+        // Get block wrapper attributes for inner wrapper
+        $inner_attrs_string = get_block_wrapper_attributes($inner_attrs);
 
         // Render TOC
         $toc_html = $this->renderTOCList(
@@ -504,8 +508,9 @@ class TableOfContentBlock extends Block
         }
 
         return sprintf(
-            '<div%s><nav class="toc-wrapper" aria-label="%s">%s%s</nav></div>',
-            $attrs_string,
+            '<div%s><nav %s aria-label="%s">%s%s</nav></div>',
+            $outer_attrs_string,
+            $inner_attrs_string,
             esc_attr($heading_text),
             $heading_html,
             $toc_html

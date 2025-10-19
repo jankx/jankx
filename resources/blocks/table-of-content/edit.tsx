@@ -201,6 +201,7 @@ export default function Edit({ attributes, setAttributes, clientId }: TableOfCon
         showNumbers,
         showHeading,
         customHeadingText,
+        headingStyle,
         minHeadingLevel,
         maxHeadingLevel,
     } = attributes;
@@ -266,7 +267,7 @@ export default function Edit({ attributes, setAttributes, clientId }: TableOfCon
     };
 
     const blockProps = useBlockProps({
-        className: 'jankx-table-of-content',
+        className: `jankx-table-of-content heading-style-${headingStyle}`,
         'data-expand-icon-type': expandIconType,
     });
 
@@ -305,15 +306,30 @@ export default function Edit({ attributes, setAttributes, clientId }: TableOfCon
                     />
 
                     {showHeading && (
-                        <TextControl
-                            label={__('Custom Heading Text', 'jankx')}
-                            value={customHeadingText}
-                            onChange={(value) => setAttributes({ customHeadingText: value })}
-                            placeholder={__('Table of Contents', 'jankx')}
-                            help={__('Leave empty to use default heading text', 'jankx')}
-                            __nextHasNoMarginBottom
-                            __next40pxDefaultSize
-                        />
+                        <>
+                            <TextControl
+                                label={__('Custom Heading Text', 'jankx')}
+                                value={customHeadingText}
+                                onChange={(value) => setAttributes({ customHeadingText: value })}
+                                placeholder={__('Table of Contents', 'jankx')}
+                                help={__('Leave empty to use default heading text', 'jankx')}
+                                __nextHasNoMarginBottom
+                                __next40pxDefaultSize
+                            />
+                            <SelectControl
+                                label={__('Heading Style', 'jankx')}
+                                value={headingStyle}
+                                options={[
+                                    { label: __('Underline', 'jankx'), value: 'underline' },
+                                    { label: __('Tabbed', 'jankx'), value: 'tabbed' },
+                                    { label: __('Bordered', 'jankx'), value: 'bordered' },
+                                ]}
+                                onChange={(value) => setAttributes({ headingStyle: value as any })}
+                                help={__('Choose heading style for table of contents', 'jankx')}
+                                __nextHasNoMarginBottom
+                                __next40pxDefaultSize
+                            />
+                        </>
                     )}
 
                     <RangeControl

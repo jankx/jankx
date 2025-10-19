@@ -8,7 +8,7 @@
   \***************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/wplyr-media","version":"1.0.0","title":"WPlyr Media Player","category":"media","icon":"video-alt3","description":"A simple, lightweight and accessible HTML5, YouTube and Vimeo media player that supports modern browsers.","supports":{"html":false,"align":["wide","full"],"color":{"background":true,"text":true},"spacing":{"margin":true,"padding":true}},"attributes":{"mediaType":{"type":"string","default":"video"},"mediaUrl":{"type":"string","default":""},"mediaOptions":{"type":"array","default":[]},"videoPoster":{"type":"object","default":null},"videoCaptions":{"type":"array","default":[]},"audioPoster":{"type":"object","default":null},"youtubeUrl":{"type":"string","default":""},"vimeoUrl":{"type":"string","default":""},"playerColor":{"type":"string","default":"#fca311"},"controls":{"type":"array","default":["play-large","play","progress","current-time","mute","volume","captions","settings","pip","airplay","fullscreen"]},"settings":{"type":"array","default":["captions","quality","speed"]},"seekTime":{"type":"number","default":10}},"example":{"attributes":{"mediaType":"video","mediaUrl":"https://example.com/video.mp4","playerColor":"#fca311"}},"textdomain":"jankx","editorScript":"file:./build/index.js","viewScript":"file:./build/view.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/wplyr-media","version":"1.0.0","title":"WPlyr Media Player","category":"media","icon":"video-alt3","description":"A simple, lightweight and accessible HTML5, YouTube and Vimeo media player that supports modern browsers.","supports":{"html":false,"align":["wide","full"],"color":{"background":true,"text":true},"spacing":{"margin":true,"padding":true}},"attributes":{"mediaType":{"type":"string","default":"video"},"mediaUrl":{"type":"string","default":""},"mediaOptions":{"type":"array","default":[]},"videoPoster":{"type":"object","default":null},"videoCaptions":{"type":"array","default":[]},"audioPoster":{"type":"object","default":null},"youtubeUrl":{"type":"string","default":""},"vimeoUrl":{"type":"string","default":""},"playerColor":{"type":"string","default":"#fca311"},"controls":{"type":"array","default":["play-large","play","progress","current-time","mute","volume","captions","settings","pip","airplay","fullscreen"]},"settings":{"type":"array","default":["captions","quality","speed"]},"seekTime":{"type":"number","default":10},"videoHeight":{"type":"number","default":400}},"example":{"attributes":{"mediaType":"video","mediaUrl":"https://example.com/video.mp4","playerColor":"#fca311"}},"textdomain":"jankx","editorScript":"file:./build/index.js","viewScript":"file:./build/view.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
 
 /***/ }),
 
@@ -170,12 +170,14 @@ const Edit = ({
     playerColor = '#fca311',
     controls = ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'],
     settings = ['captions', 'quality', 'speed'],
-    seekTime = 10
+    seekTime = 10,
+    videoHeight = 400
   } = attributes;
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)({
     className: 'jankx-wplyr-player',
     style: {
-      '--plyr-color': playerColor
+      '--plyr-color': playerColor,
+      '--video-height': `${videoHeight}px`
     }
   });
   const mediaTypeOptions = [{
@@ -518,6 +520,20 @@ const Edit = ({
             })
           })]
         })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display Settings', 'jankx'),
+        initialOpen: false,
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RangeControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Video Height (px)', 'jankx'),
+          value: videoHeight,
+          onChange: value => setAttributes({
+            videoHeight: value || 400
+          }),
+          min: 200,
+          max: 1000,
+          step: 50,
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Set the height of the video player', 'jankx')
+        })
       })]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
       className: "jankx-wplyr-container",

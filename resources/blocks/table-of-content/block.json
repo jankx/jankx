@@ -38,6 +38,11 @@
             "type": "string",
             "default": ""
         },
+        "headingStyle": {
+            "type": "string",
+            "enum": ["underline", "tabbed", "bordered"],
+            "default": "underline"
+        },
         "minHeadingLevel": {
             "type": "number",
             "default": 2,

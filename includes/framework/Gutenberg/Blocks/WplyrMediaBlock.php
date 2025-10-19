@@ -79,6 +79,7 @@ class WplyrMediaBlock extends Block
             'controls' => ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'],
             'settings' => ['captions', 'quality', 'speed'],
             'seekTime' => 10,
+            'videoHeight' => 400,
         ];
         $attributes = wp_parse_args($attributes, $defaults);
 
@@ -105,7 +106,7 @@ class WplyrMediaBlock extends Block
 
         ob_start();
         ?>
-        <div class="jankx-wplyr-player" style="--plyr-color: <?php echo esc_attr($attributes['playerColor']); ?>"<?php echo $data_attr_string; ?>>
+        <div class="jankx-wplyr-player" style="--plyr-color: <?php echo esc_attr($attributes['playerColor']); ?>; --video-height: <?php echo esc_attr($attributes['videoHeight']); ?>px;"<?php echo $data_attr_string; ?>>
             <div class="jankx-wplyr-container">
                 <?php if ($attributes['mediaType'] === 'video' && $attributes['mediaUrl']) : ?>
                     <video

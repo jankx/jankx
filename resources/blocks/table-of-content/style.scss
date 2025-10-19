@@ -19,7 +19,7 @@
     border: 1px solid var(--toc-border-color);
     border-radius: 8px;
 
-    // Header
+    // Header - Default (underline style)
     .toc-header {
         margin-bottom: 1rem;
         padding-bottom: 0.75rem;
@@ -31,6 +31,61 @@
         font-size: 1.25rem;
         font-weight: 600;
         color: var(--toc-text-color);
+    }
+
+    // Heading Style: Underline (default)
+    &.heading-style-underline {
+        .toc-header {
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--toc-primary-color);
+        }
+    }
+
+    // Heading Style: Tabbed
+    &.heading-style-tabbed {
+        .toc-header {
+            margin-bottom: 1rem;
+            padding-bottom: 0;
+            border-bottom: none;
+            position: relative;
+
+            &::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 2px;
+                background: var(--toc-border-color);
+            }
+        }
+
+        .toc-title {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            background: var(--toc-primary-color);
+            color: #fff;
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            z-index: 1;
+        }
+    }
+
+    // Heading Style: Bordered
+    &.heading-style-bordered {
+        .toc-header {
+            margin-bottom: 1rem;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--toc-primary-color);
+            border-radius: 4px;
+            background: var(--toc-bg-color);
+        }
+
+        .toc-title {
+            color: var(--toc-primary-color);
+            text-align: center;
+        }
     }
 
     // Lists

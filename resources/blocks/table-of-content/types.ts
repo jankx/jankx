@@ -5,6 +5,7 @@
 
 export type ListingType = 'ul' | 'ol';
 export type ExpandIconType = 'plus-minus' | 'chevron' | 'arrow' | 'caret';
+export type HeadingStyle = 'underline' | 'tabbed' | 'bordered';
 
 export interface TOCItem {
     id: string;
@@ -22,6 +23,7 @@ export interface TableOfContentAttributes {
     showNumbers: boolean;
     showHeading: boolean;
     customHeadingText: string;
+    headingStyle: HeadingStyle;
     minHeadingLevel: number;
     maxHeadingLevel: number;
     className: string;

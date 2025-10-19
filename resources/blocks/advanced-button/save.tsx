@@ -31,6 +31,7 @@ interface SaveProps {
 		style: Record<string, any>;
 		useIconBlocks: boolean;
 		iconPosition: string;
+		showLabel: boolean;
 	};
 }
 
@@ -55,10 +56,11 @@ export default function Save(props: SaveProps) {
 		gradient,
 		useIconBlocks = false,
 		iconPosition = 'left',
+		showLabel = true,
 	} = props.attributes;
 
-	// If there is no text, don't save anything.
-	if (!text) {
+	// If there is no text and label is shown, don't save anything.
+	if (!text && showLabel) {
 		return null;
 	}
 
@@ -81,11 +83,13 @@ export default function Save(props: SaveProps) {
 			<span className="button-icon-wrapper">
 				<InnerBlocks.Content />
 			</span>
-			<RichText.Content
-				tagName="span"
-				className="button-text"
-				value={text}
-			/>
+			{showLabel && (
+				<RichText.Content
+					tagName="span"
+					className="button-text"
+					value={text}
+				/>
+			)}
 		</>
 	);
 
