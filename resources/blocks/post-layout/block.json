@@ -9,25 +9,30 @@
     "keywords": ["collection", "posts", "query", "filter"],
     "supports": {
         "html": false,
+        "anchor": true,
         "align": ["wide", "full"],
         "spacing": {
             "margin": true,
-            "padding": true
+            "padding": true,
+            "blockGap": true
         },
         "color": {
             "text": true,
             "background": true,
+            "link": true,
             "gradients": true
         },
         "typography": {
             "fontSize": true,
             "lineHeight": true,
-            "fontFamily": true,
-            "fontWeight": true,
-            "fontStyle": true,
-            "letterSpacing": true
+            "__experimentalFontFamily": true,
+            "__experimentalFontWeight": true,
+            "__experimentalFontStyle": true,
+            "__experimentalTextTransform": true,
+            "__experimentalTextDecoration": true,
+            "__experimentalLetterSpacing": true
         },
-        "border": {
+        "__experimentalBorder": {
             "color": true,
             "radius": true,
             "style": true,

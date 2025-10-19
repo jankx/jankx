@@ -8,7 +8,7 @@ use Jankx\Gutenberg\Blocks\AdvancedButtonBlock;
 use Jankx\Gutenberg\Blocks\AdvancedFiltersBlock;
 use Jankx\Gutenberg\Blocks\AdvancedImageBoxBlock;
 use Jankx\Gutenberg\Blocks\ModalBlock;
-use Jankx\Gutenberg\Blocks\PostTypeLayoutBlock;
+use Jankx\Gutenberg\Blocks\PostLayoutBlock;
 use Jankx\Gutenberg\Blocks\IconPickerBlock;
 use Jankx\Gutenberg\Blocks\LanguageSwitcherBlock;
 use Jankx\Gutenberg\Blocks\ImageMasonryGalleryBlock;
@@ -136,7 +136,7 @@ class GutenbergService
         $this->repository->registerBlock(AdvancedButtonBlock::class);
         $this->repository->registerBlock(OffcanvasSidebarBlock::class);
         $this->repository->registerBlock(IconPickerBlock::class);
-        $this->repository->registerBlock(PostTypeLayoutBlock::class);
+        $this->repository->registerBlock(PostLayoutBlock::class);
         $this->repository->registerBlock(OffcanvasTriggerBlock::class);
         $this->repository->registerBlock(LanguageSwitcherBlock::class);
         $this->repository->registerBlock(ImageMasonryGalleryBlock::class);

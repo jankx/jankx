@@ -19,7 +19,7 @@ use Jankx\PostLayout\PostLayoutManager;
 use Jankx\Jankx;
 use Exception;
 
-class PostTypeLayoutBlock extends Block
+class PostLayoutBlock extends Block
 {
     /**
      * Block ID
