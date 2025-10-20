@@ -3,6 +3,7 @@
 namespace Jankx\Gutenberg\Blocks;
 
 use Jankx\Gutenberg\Block;
+use Jankx\Gutenberg\QueryOptions;
 use Jankx\Layouts\PostLayout\PostLayoutManager;
 use Jankx\Facades\PostLayout;
 use WP_Query;
@@ -41,6 +42,9 @@ class PostTypeLayoutBlock extends Block
     {
         // Output supported layouts to JavaScript
         add_action('admin_head', [$this, 'setupSupportedLayouts'], 5);
+
+        // Output query options to JavaScript
+        add_action('admin_head', [$this, 'setupQueryOptions'], 5);
     }
 
     /**
@@ -174,6 +178,16 @@ class PostTypeLayoutBlock extends Block
             window.jankxSupportedPostTypeLayouts = <?php echo wp_json_encode($layouts, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>;
         </script>
         <?php
+    }
+
+    /**
+     * Setup query options for JavaScript
+     *
+     * @return void
+     */
+    public function setupQueryOptions(): void
+    {
+        QueryOptions::outputToJavaScript();
     }
 
     /**

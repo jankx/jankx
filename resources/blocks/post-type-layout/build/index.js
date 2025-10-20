@@ -757,7 +757,7 @@ function Edit({
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Order By', 'jankx'),
           value: orderBy,
-          options: [{
+          options: window.jankxQueryOptions?.orderBy || [{
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Date (Ngày đăng)', 'jankx'),
             value: 'date'
           }, {
@@ -766,45 +766,6 @@ function Edit({
           }, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Title (Tiêu đề)', 'jankx'),
             value: 'title'
-          }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Name (Slug)', 'jankx'),
-            value: 'name'
-          }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Author (Tác giả)', 'jankx'),
-            value: 'author'
-          }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Type (Post Type)', 'jankx'),
-            value: 'type'
-          }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('ID', 'jankx'),
-            value: 'ID'
-          }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Menu Order', 'jankx'),
-            value: 'menu_order'
-          }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Random (Ngẫu nhiên)', 'jankx'),
-            value: 'rand'
-          }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Comment Count (Số bình luận)', 'jankx'),
-            value: 'comment_count'
-          }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Relevance (Độ liên quan)', 'jankx'),
-            value: 'relevance'
-          }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Meta Value (Giá trị meta)', 'jankx'),
-            value: 'meta_value'
-          }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Meta Value Num (Giá trị meta số)', 'jankx'),
-            value: 'meta_value_num'
-          }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Post__in (Thứ tự trong mảng)', 'jankx'),
-            value: 'post__in'
-          }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Post Name__in (Thứ tự slug)', 'jankx'),
-            value: 'post_name__in'
-          }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Post Parent__in (Thứ tự parent)', 'jankx'),
-            value: 'post_parent__in'
           }],
           onChange: value => setAttributes({
             orderBy: value
@@ -813,7 +774,7 @@ function Edit({
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Order', 'jankx'),
           value: order,
-          options: [{
+          options: window.jankxQueryOptions?.order || [{
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Descending (Giảm dần)', 'jankx'),
             value: 'DESC'
           }, {
@@ -835,24 +796,12 @@ function Edit({
           }), orderBy === 'meta_value' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Meta Type', 'jankx'),
             value: metaType,
-            options: [{
+            options: window.jankxQueryOptions?.metaTypes || [{
               label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('-- Auto --', 'jankx'),
               value: ''
             }, {
               label: 'NUMERIC',
               value: 'NUMERIC'
-            }, {
-              label: 'CHAR',
-              value: 'CHAR'
-            }, {
-              label: 'DATE',
-              value: 'DATE'
-            }, {
-              label: 'DATETIME',
-              value: 'DATETIME'
-            }, {
-              label: 'DECIMAL',
-              value: 'DECIMAL'
             }],
             onChange: value => setAttributes({
               metaType: value

@@ -468,23 +468,10 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                     <SelectControl
                         label={__('Order By', 'jankx')}
                         value={orderBy}
-                        options={[
+                        options={(window as any).jankxQueryOptions?.orderBy || [
                             { label: __('Date (Ngày đăng)', 'jankx'), value: 'date' },
                             { label: __('Modified (Ngày sửa)', 'jankx'), value: 'modified' },
                             { label: __('Title (Tiêu đề)', 'jankx'), value: 'title' },
-                            { label: __('Name (Slug)', 'jankx'), value: 'name' },
-                            { label: __('Author (Tác giả)', 'jankx'), value: 'author' },
-                            { label: __('Type (Post Type)', 'jankx'), value: 'type' },
-                            { label: __('ID', 'jankx'), value: 'ID' },
-                            { label: __('Menu Order', 'jankx'), value: 'menu_order' },
-                            { label: __('Random (Ngẫu nhiên)', 'jankx'), value: 'rand' },
-                            { label: __('Comment Count (Số bình luận)', 'jankx'), value: 'comment_count' },
-                            { label: __('Relevance (Độ liên quan)', 'jankx'), value: 'relevance' },
-                            { label: __('Meta Value (Giá trị meta)', 'jankx'), value: 'meta_value' },
-                            { label: __('Meta Value Num (Giá trị meta số)', 'jankx'), value: 'meta_value_num' },
-                            { label: __('Post__in (Thứ tự trong mảng)', 'jankx'), value: 'post__in' },
-                            { label: __('Post Name__in (Thứ tự slug)', 'jankx'), value: 'post_name__in' },
-                            { label: __('Post Parent__in (Thứ tự parent)', 'jankx'), value: 'post_parent__in' },
                         ]}
                         onChange={(value) => setAttributes({ orderBy: value })}
                         help={__('Sắp xếp posts theo tiêu chí nào', 'jankx')}
@@ -492,7 +479,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                     <SelectControl
                         label={__('Order', 'jankx')}
                         value={order}
-                        options={[
+                        options={(window as any).jankxQueryOptions?.order || [
                             { label: __('Descending (Giảm dần)', 'jankx'), value: 'DESC' },
                             { label: __('Ascending (Tăng dần)', 'jankx'), value: 'ASC' },
                         ]}
@@ -513,13 +500,9 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                 <SelectControl
                                     label={__('Meta Type', 'jankx')}
                                     value={metaType}
-                                    options={[
+                                    options={(window as any).jankxQueryOptions?.metaTypes || [
                                         { label: __('-- Auto --', 'jankx'), value: '' },
                                         { label: 'NUMERIC', value: 'NUMERIC' },
-                                        { label: 'CHAR', value: 'CHAR' },
-                                        { label: 'DATE', value: 'DATE' },
-                                        { label: 'DATETIME', value: 'DATETIME' },
-                                        { label: 'DECIMAL', value: 'DECIMAL' },
                                     ]}
                                     onChange={(value) => setAttributes({ metaType: value })}
                                     help={__('Xác định kiểu dữ liệu để sắp xếp chính xác', 'jankx')}

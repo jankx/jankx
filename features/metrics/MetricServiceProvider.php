@@ -36,5 +36,50 @@ class MetricServiceProvider extends ServiceProvider
         add_action('init', function () use ($postViewService) {
             $GLOBALS['jankx_post_view_service'] = $postViewService;
         });
+
+        // Add "Post Views" option to Gutenberg query options
+        add_filter('jankx/gutenberg/query-options/order-by', [$this, 'addPostViewsOrderByOption']);
+
+        // Filter WP_Query to handle post_views orderby
+        add_action('pre_get_posts', [$this, 'handlePostViewsOrderBy'], 10);
+    }
+
+    /**
+     * Add "Post Views" option to order by dropdown
+     *
+     * @param array $options Existing order by options
+     * @return array Modified options
+     */
+    public function addPostViewsOrderByOption(array $options): array
+    {
+        $options[] = [
+            'value' => 'post_views',
+            'label' => __('Post Views (Lượt xem)', 'jankx'),
+        ];
+
+        return $options;
+    }
+
+    /**
+     * Handle post views orderby in WP_Query
+     *
+     * @param \WP_Query $query The WP_Query instance
+     * @return void
+     */
+    public function handlePostViewsOrderBy(\WP_Query $query): void
+    {
+        // Only modify if orderby is post_views
+        if ($query->get('orderby') !== 'post_views') {
+            return;
+        }
+
+        // Set meta query parameters
+        $query->set('meta_key', 'post_views_count');
+        $query->set('orderby', 'meta_value_num');
+
+        // Default to DESC if order not specified
+        if (!$query->get('order')) {
+            $query->set('order', 'DESC');
+        }
     }
 }
