@@ -4,10 +4,50 @@
  * Styles for icon positioning using flex order
  */
 
+// Block wrapper - Default filled primary color
+.wp-block-jankx-advanced-button {
+	// Default padding và margin
+	padding: var(--wp--preset--spacing--20, 0.5rem) var(--wp--preset--spacing--40, 1rem);
+	margin: 0;
+
+	// Default background primary color
+	background-color: var(--wp--preset--color--primary, #503AA8);
+	border-radius: var(--wp--style--border--radius, 0);
+	border: 2px solid transparent;
+
+	// Default text color (white trên primary background)
+	color: var(--wp--preset--color--base, #fff);
+
+	// Outline style variant
+	&.is-style-outline {
+		background-color: transparent;
+		border-color: var(--wp--preset--color--primary, #503AA8);
+		color: var(--wp--preset--color--primary, #503AA8);
+
+		// Hover state
+		&:hover {
+			background-color: var(--wp--preset--color--primary, #503AA8);
+			color: var(--wp--preset--color--base, #fff);
+		}
+	}
+
+	// Hover state cho filled button
+	&:not(.is-style-outline):hover {
+		opacity: 0.9;
+	}
+}
+
+// Link trong flex layout group
+.wp-block-group.is-layout-flex .wp-block-jankx-advanced-button .jankx-advanced-button__link {
+	display: flex;
+}
+
 .jankx-advanced-button__link {
 	display: inline-flex;
 	align-items: center;
 	gap: 8px;
+	text-decoration: none;
+	color: inherit;
 
 	// Icon wrapper
 	.button-icon-wrapper {
@@ -20,22 +60,12 @@
 		}
 	}
 
-	// Text container
-	.button-text {
-		display: inline-block;
-		order: 2; // Default: text second
-	}
-
 	// Icon position: left (default)
 	&.icon-position-left {
 		flex-direction: row;
 
 		.button-icon-wrapper {
 			order: 1;
-		}
-
-		.button-text {
-			order: 2;
 		}
 	}
 
@@ -46,10 +76,6 @@
 		.button-icon-wrapper {
 			order: 2;
 		}
-
-		.button-text {
-			order: 1;
-		}
 	}
 
 	// Icon position: top
@@ -59,10 +85,6 @@
 		.button-icon-wrapper {
 			order: 1;
 		}
-
-		.button-text {
-			order: 2;
-		}
 	}
 
 	// Icon position: bottom
@@ -71,10 +93,6 @@
 
 		.button-icon-wrapper {
 			order: 2;
-		}
-
-		.button-text {
-			order: 1;
 		}
 	}
 
