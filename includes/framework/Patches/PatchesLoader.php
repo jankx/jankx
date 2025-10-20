@@ -25,8 +25,6 @@ class PatchesLoader
 
         // Kích hoạt các patch khác nếu cần
         self::init_additional_patches();
-
-        Log::debug('Jankx Framework Patches activated');
     }
 
     /**

@@ -96,9 +96,6 @@ class WordPressCoreFilterBlock extends Block
 
         // Enqueue editor assets
         add_action('enqueue_block_editor_assets', [$this, 'enqueueEditorAssets']);
-
-        // Log để debug
-        Log::info('WordPressCoreFilterBlock: Đã đăng ký filters cho ' . count($this->coreBlocks) . ' core blocks');
     }
 
     /**
@@ -151,8 +148,6 @@ class WordPressCoreFilterBlock extends Block
             'supportedBlocks' => $this->supportedBlocks,
             'coreBlocks' => $this->coreBlocks,
         ]);
-
-        Log::info('WordPressCoreFilterBlock: Đã enqueue editor assets');
     }
 
     /**

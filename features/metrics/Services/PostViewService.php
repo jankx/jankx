@@ -131,13 +131,11 @@ class PostViewService
         $post_id = intval($_POST['post_id'] ?? 0);
 
         if (!$post_id) {
-            Log::debug("Jankx Post Views: Invalid post ID: $post_id");
             wp_send_json_error('Invalid post ID');
         }
 
         // Check if post exists
         if (!get_post($post_id)) {
-            Log::debug("Jankx Post Views: Post not found: $post_id");
             wp_send_json_error('Post not found');
         }
 
@@ -147,7 +145,6 @@ class PostViewService
 
         // Don't track views for admins or post authors
         if (current_user_can('manage_options') || $post_author_id == $current_user_id) {
-            Log::debug("Jankx Post Views: View not tracked (admin/author) - Post: $post_id, Author: $post_author_id, User: $current_user_id");
             wp_send_json_success(array(
                 'message' => 'View not tracked (admin/author)',
                 'views' => $this->getPostViews($post_id)
@@ -156,7 +153,6 @@ class PostViewService
 
         // Increment view count
         $new_views = $this->incrementPostViews($post_id);
-        Log::debug("Jankx Post Views: View tracked successfully - Post: $post_id, New views: $new_views");
 
         wp_send_json_success(array(
             'message' => 'View tracked successfully',
@@ -308,7 +304,6 @@ class PostViewService
         }
 
         $result = update_post_meta($post_id, 'post_views_count', $count);
-        Log::debug("Jankx Post Views: setTestViewCount - Post: $post_id, Count: $count, Result: " . ($result ? 'success' : 'failed'));
 
         return $result;
     }

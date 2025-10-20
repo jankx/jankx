@@ -84,13 +84,11 @@ class ThemeServiceProvider extends ServiceProvider
     {
         // Register TemplateEngineManager as singleton
         $app->singleton(TemplateEngineManager::class, function (Application $app) {
-            Log::debug("[ThemeServiceProvider Debug] Creating TemplateEngineManager instance");
             return new TemplateEngineManager($app);
         });
 
         // Register PlatesEngine as singleton
         $app->singleton(PlatesEngine::class, function (Application $app) {
-            Log::debug("[ThemeServiceProvider Debug] Creating PlatesEngine instance");
             return new PlatesEngine($app);
         });
 
@@ -114,7 +112,6 @@ class ThemeServiceProvider extends ServiceProvider
 
         // Override WordPress template hierarchy
         add_filter('template_include', function ($template) use ($app, $templateEngineManager) {
-            Log::debug("[ThemeServiceProvider Debug] WordPress template_include filter triggered");
             return $template;
         }, 999);
     }
@@ -129,7 +126,6 @@ class ThemeServiceProvider extends ServiceProvider
     {
         // Register PostsFetcher as singleton
         $app->singleton(PostsFetcher::class, function (Application $app) {
-            Log::debug("[ThemeServiceProvider Debug] Creating PostsFetcher instance");
             return new PostsFetcher();
         });
 

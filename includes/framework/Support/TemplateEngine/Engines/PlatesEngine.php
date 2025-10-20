@@ -89,7 +89,6 @@ class PlatesEngine extends Engine
                 if (file_exists($childTemplateDir)) {
                     // Add child theme directory as override (higher priority)
                     $this->plates->addFolder('child', $childTemplateDir);
-                    Log::debug("[PlatesEngine Debug] Child theme template directory added: " . $childTemplateDir);
                 }
             }
         }
@@ -135,8 +134,6 @@ class PlatesEngine extends Engine
             // Get actual file path being loaded
             try {
                 $templatePath = $this->plates->path($template);
-                Log::debug("[PlatesEngine Debug] Template file path: " . $templatePath);
-                Log::debug("[PlatesEngine Debug] Template file exists: " . (file_exists($templatePath) ? 'YES' : 'NO'));
             } catch (\Exception $e) {
                 Log::debug("[PlatesEngine Debug] Could not resolve template path: " . $e->getMessage());
             }

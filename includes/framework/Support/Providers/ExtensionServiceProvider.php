@@ -156,11 +156,9 @@ class ExtensionServiceProvider extends ServiceProvider
         }
 
         if (class_exists($className)) {
-            Log::debug("Extension class found: {$className}");
             $extension = new $className();
 
             if ($extension instanceof Extension) {
-                Log::debug("Extension instance created successfully: {$extensionName}");
                 // Set extension path and URL
                 $extension->set_extension_path($extensionDir);
                 $extension->set_extension_url($this->getExtensionUrl($extensionDir, $isChildThemeExtension));
@@ -170,7 +168,6 @@ class ExtensionServiceProvider extends ServiceProvider
 
                 // Call initialization method if specified
                 if (isset($caller['method']) && method_exists($extension, $caller['method'])) {
-                    Log::debug("Calling extension method: {$caller['method']} for extension: {$extensionName}");
                     $args = $caller['args'] ?? [];
                     if (is_array($args)) {
                         call_user_func_array([$extension, $caller['method']], $args);

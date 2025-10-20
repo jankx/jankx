@@ -41,10 +41,6 @@ class LanguageSwitcherServiceProvider extends \Jankx\Support\Providers\ServicePr
                 $languageSwitcher = $app->get('language-switcher');
 
                 $languageSwitcher->init();
-
-                if (WP_DEBUG) {
-                    Log::info('Language Switcher initialized successfully');
-                }
             } catch (\Exception $e) {
                 Log::error('Language Switcher Error: ' . $e->getMessage());
             }
@@ -58,10 +54,6 @@ class LanguageSwitcherServiceProvider extends \Jankx\Support\Providers\ServicePr
                 // Khởi tạo lại nếu chưa có dữ liệu
                 if (empty($languageSwitcher->getLanguages())) {
                     $languageSwitcher->init();
-
-                    if (WP_DEBUG) {
-                        Log::info('Language Switcher re-initialized after plugins loaded');
-                    }
                 }
             } catch (\Exception $e) {
                 Log::error('Language Switcher Re-init Error: ' . $e->getMessage());
