@@ -15,13 +15,14 @@ import {
     Spinner,
     Placeholder,
     TextControl,
-    Button,
     FormTokenField,
+    Button,
 } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { useEffect, useState, useCallback, useMemo } from '@wordpress/element';
 import ServerSideRender from '@wordpress/server-side-render';
 import { debounce } from '@wordpress/compose';
+import { ResponsiveControl, ResponsiveValue } from '../../shared/components';
 import metadata from './block.json';
 import './style.scss';
 import './editor.scss';
@@ -40,10 +41,15 @@ interface MetaQueryItem {
 }
 
 interface PostTypeLayoutAttributes {
+    queryPreset: 'default' | 'related' | 'custom';
     postType: string;
     postsPerPage: number;
     layout: string;
     columns: number;
+    columnsTablet: number;
+    columnsMobile: number;
+    // For future use with ResponsiveValue
+    responsiveColumns?: ResponsiveValue;
     showTitle: boolean;
     showExcerpt: boolean;
     showFeaturedImage: boolean;
@@ -79,10 +85,13 @@ interface EditProps {
 
 function Edit({ attributes, setAttributes, clientId }: EditProps) {
     const {
+        queryPreset,
         postType,
         postsPerPage,
         layout,
         columns,
+        columnsTablet,
+        columnsMobile,
         showTitle,
         showExcerpt,
         showFeaturedImage,
@@ -202,7 +211,12 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     }, [taxonomyTerms]);
 
     const blockProps = useBlockProps({
-        className: `post-type-layout layout-${layout} columns-${columns}`,
+        className: `post-type-layout layout-${layout} columns-${columns} columns-tablet-${columnsTablet} columns-mobile-${columnsMobile}`,
+        style: {
+            '--columns-desktop': columns,
+            '--columns-tablet': columnsTablet,
+            '--columns-mobile': columnsMobile,
+        } as React.CSSProperties,
     });
 
     // Get available post types
@@ -298,10 +312,40 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             <InspectorControls group="settings">
                 <PanelBody title={__('Query Settings', 'jankx')} initialOpen={true}>
                     <SelectControl
-                        label={__('Post Type', 'jankx')}
-                        value={postType}
-                        options={postTypeOptions}
-                        onChange={(value) => setAttributes({ postType: value })}
+                        label={__('Query Preset', 'jankx')}
+                        value={queryPreset}
+                        options={[
+                            { label: __('Default (Main Query)', 'jankx'), value: 'default' },
+                            { label: __('Related Posts (Same Taxonomy)', 'jankx'), value: 'related' },
+                            { label: __('Custom Query', 'jankx'), value: 'custom' },
+                        ]}
+                        onChange={(value) => setAttributes({ queryPreset: value as 'default' | 'related' | 'custom' })}
+                        help={
+                            queryPreset === 'default'
+                                ? __('Sử dụng main query của WordPress. Các query parameters sẽ bị ẩn.', 'jankx')
+                                : queryPreset === 'related'
+                                ? __('Hiển thị posts liên quan (cùng taxonomy với post hiện tại).', 'jankx')
+                                : __('Tùy chỉnh query parameters theo ý bạn.', 'jankx')
+                        }
+                    />
+
+                    {queryPreset !== 'default' && (
+                        <SelectControl
+                            label={__('Post Type', 'jankx')}
+                            value={postType}
+                            options={postTypeOptions}
+                            onChange={(value) => setAttributes({ postType: value })}
+                        />
+                    )}
+
+                    {/* Posts Per Page - Show for all presets */}
+                    <RangeControl
+                        label={__('Posts Per Page', 'jankx')}
+                        value={postsPerPage}
+                        onChange={(value) => setAttributes({ postsPerPage: value || 10 })}
+                        min={1}
+                        max={50}
+                        help={__('Số lượng posts hiển thị', 'jankx')}
                     />
                 </PanelBody>
 
@@ -324,12 +368,25 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         onChange={(value) => setAttributes({ layout: value })}
                     />
                     {supportedOptions.includes('columns') && (
-                        <RangeControl
+                        <ResponsiveControl
                             label={__('Columns', 'jankx')}
-                            value={columns}
-                            onChange={(value) => setAttributes({ columns: value || 3 })}
+                            values={{
+                                desktop: columns,
+                                tablet: columnsTablet,
+                                mobile: columnsMobile
+                            }}
+                            onChange={(values) => setAttributes({
+                                columns: values.desktop,
+                                columnsTablet: values.tablet,
+                                columnsMobile: values.mobile
+                            })}
                             min={1}
                             max={6}
+                            help={{
+                                desktop: __('Số cột trên màn hình lớn (>1024px)', 'jankx'),
+                                tablet: __('Số cột trên tablet (768px - 1024px)', 'jankx'),
+                                mobile: __('Số cột trên mobile (<768px)', 'jankx')
+                            }}
                         />
                     )}
                 </PanelBody>
@@ -390,8 +447,9 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                     )}
                 </PanelBody>
 
-                {/* Query Parameters */}
-                <PanelBody title={__('Query Parameters', 'jankx')} initialOpen={false}>
+                {/* Query Parameters - Only show for custom preset */}
+                {queryPreset === 'custom' && (
+                    <PanelBody title={__('Query Parameters', 'jankx')} initialOpen={false}>
                     <RangeControl
                         label={__('Posts Per Page', 'jankx')}
                         value={postsPerPage}
@@ -477,8 +535,10 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         help={__('Hiển thị pagination để phân trang posts', 'jankx')}
                     />
                 </PanelBody>
+                )}
 
-                {/* Advanced Query Parameters */}
+                {/* Advanced Query Parameters - Only show for custom preset */}
+                {queryPreset === 'custom' && (
                 <PanelBody title={__('🔧 Advanced Query Parameters', 'jankx')} initialOpen={false}>
                     <TextControl
                         label={__('Query ID', 'jankx')}
@@ -526,8 +586,10 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         placeholder={__('Ví dụ: 4, 5, 6', 'jankx')}
                     />
                 </PanelBody>
+                )}
 
-                {/* Keyword Search Filter */}
+                {/* Keyword Search Filter - Only show for custom preset */}
+                {queryPreset === 'custom' && (
                 <PanelBody title={__('🔍 Keyword Search', 'jankx')} initialOpen={false}>
                     <TextControl
                         label={__('Từ khóa tìm kiếm', 'jankx')}
@@ -537,9 +599,10 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         placeholder={__('Nhập từ khóa...', 'jankx')}
                     />
                 </PanelBody>
+                )}
 
-                {/* Author Filters */}
-                {authors.length > 0 && (
+                {/* Author Filters - Only show for custom preset */}
+                {queryPreset === 'custom' && authors.length > 0 && (
                     <PanelBody title={__('👤 Author Filters', 'jankx')} initialOpen={false}>
                         <FormTokenField
                             label={__('Authors (Include)', 'jankx')}
@@ -570,7 +633,8 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                     </PanelBody>
                 )}
 
-                {/* Post ID Filters */}
+                {/* Post ID Filters - Only show for custom preset */}
+                {queryPreset === 'custom' && (
                 <PanelBody title={__('🔢 Post ID Filters', 'jankx')} initialOpen={false}>
                     <TextControl
                         label={__('Post IDs (Include)', 'jankx')}
@@ -593,8 +657,10 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         placeholder={__('Ví dụ: 4, 5, 6', 'jankx')}
                     />
                 </PanelBody>
+                )}
 
-                {/* Meta Query Filters */}
+                {/* Meta Query Filters - Only show for custom preset */}
+                {queryPreset === 'custom' && (
                 <PanelBody title={__('⚙️ Meta Query Filters', 'jankx')} initialOpen={false}>
                     <Button
                         variant="primary"
@@ -698,9 +764,10 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         </div>
                     ))}
                 </PanelBody>
+                )}
 
-                {/* Taxonomy Filters */}
-                {taxonomies.length > 0 && taxonomies.map((taxonomy: any) => {
+                {/* Taxonomy Filters - Only show for custom preset */}
+                {queryPreset === 'custom' && taxonomies.length > 0 && taxonomies.map((taxonomy: any) => {
                     // Find existing query for this taxonomy
                     const existingQueryIndex = taxQuery.findIndex(tq => tq.taxonomy === taxonomy.slug);
                     const hasQuery = existingQueryIndex >= 0;

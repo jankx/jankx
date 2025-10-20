@@ -62,6 +62,11 @@
     }
   },
   "attributes": {
+    "queryPreset": {
+      "type": "string",
+      "default": "custom",
+      "enum": ["default", "related", "custom"]
+    },
     "postType": {
       "type": "string",
       "default": "post"
@@ -77,6 +82,14 @@
     "columns": {
       "type": "number",
       "default": 3
+    },
+    "columnsTablet": {
+      "type": "number",
+      "default": 2
+    },
+    "columnsMobile": {
+      "type": "number",
+      "default": 1
     },
     "showTitle": {
       "type": "boolean",

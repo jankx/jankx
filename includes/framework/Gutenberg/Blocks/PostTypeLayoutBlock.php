@@ -91,6 +91,77 @@ class PostTypeLayoutBlock extends Block
     }
 
     /**
+     * Build related posts query (same taxonomy)
+     *
+     * @param array $attributes Block attributes
+     * @return array Modified attributes with tax_query for related posts
+     */
+    protected function buildRelatedQuery(array $attributes): array
+    {
+        // Only works in singular context
+        if (!is_singular()) {
+            return $attributes;
+        }
+
+        $current_post = get_queried_object();
+        if (!$current_post || !isset($current_post->ID)) {
+            return $attributes;
+        }
+
+        // Get post type
+        $post_type = $attributes['postType'] ?? 'post';
+
+        // Exclude current post
+        $attributes['postNotIn'] = array_merge(
+            $attributes['postNotIn'] ?? [],
+            [$current_post->ID]
+        );
+
+        // Get all public taxonomies for this post type
+        $taxonomies = get_object_taxonomies($post_type, 'objects');
+        $tax_queries = [];
+
+        foreach ($taxonomies as $taxonomy) {
+            if (!$taxonomy->public) {
+                continue;
+            }
+
+            // Get terms of current post
+            $terms = get_the_terms($current_post->ID, $taxonomy->name);
+
+            if ($terms && !is_wp_error($terms)) {
+                $term_ids = array_map(function ($term) {
+                    return $term->term_id;
+                }, $terms);
+
+                if (!empty($term_ids)) {
+                    $tax_queries[] = [
+                        'taxonomy' => $taxonomy->name,
+                        'field' => 'term_id',
+                        'terms' => $term_ids,
+                        'operator' => 'IN',
+                    ];
+                }
+            }
+        }
+
+        // If we have taxonomy queries, add them
+        if (!empty($tax_queries)) {
+            // Merge with existing tax queries if any
+            $existing_tax_query = $attributes['taxQuery'] ?? [];
+
+            // Convert to WP_Query format
+            foreach ($tax_queries as $tq) {
+                $existing_tax_query[] = $tq;
+            }
+
+            $attributes['taxQuery'] = $existing_tax_query;
+        }
+
+        return $attributes;
+    }
+
+    /**
      * Setup supported layouts for JavaScript
      *
      * @return void
@@ -156,6 +227,9 @@ class PostTypeLayoutBlock extends Block
      */
     public function render($attributes, $content, $block)
     {
+        // Get query preset
+        $queryPreset = $attributes['queryPreset'] ?? 'custom';
+
         // Get layout name
         $layout_name = $attributes['layout'] ?? 'grid';
 
@@ -176,10 +250,39 @@ class PostTypeLayoutBlock extends Block
         // Sanitize attributes based on layout's supported options
         $attributes = $this->sanitizeAttributes($layout_name, $attributes);
 
-        // Create decorator và build query để có thể access query sau này
-        $decorator = $layoutManager->createLayout($layout_name, $attributes);
-        $query = $decorator->buildQuery($attributes);
-        $decorator->withQuery($query);
+        // Handle query preset
+        if ($queryPreset === 'default') {
+            // Use main WordPress query but respect posts_per_page
+            global $wp_query;
+
+            // Clone main query to avoid modifying global
+            $query_args = $wp_query->query_vars;
+
+            // Apply posts_per_page if specified
+            if (!empty($attributes['postsPerPage'])) {
+                $query_args['posts_per_page'] = intval($attributes['postsPerPage']);
+            }
+
+            // Create new query with modified args
+            $query = new WP_Query($query_args);
+
+            // Create decorator with the query
+            $decorator = $layoutManager->createLayout($layout_name, $attributes);
+            $decorator->withQuery($query);
+        } elseif ($queryPreset === 'related') {
+            // Build related posts query
+            $attributes = $this->buildRelatedQuery($attributes);
+
+            // Create decorator and build query
+            $decorator = $layoutManager->createLayout($layout_name, $attributes);
+            $query = $decorator->buildQuery($attributes);
+            $decorator->withQuery($query);
+        } else {
+            // Custom query (default behavior)
+            $decorator = $layoutManager->createLayout($layout_name, $attributes);
+            $query = $decorator->buildQuery($attributes);
+            $decorator->withQuery($query);
+        }
 
         // Render layout
         $html = $decorator->render();
@@ -200,9 +303,22 @@ class PostTypeLayoutBlock extends Block
             'layout-' . $layout_name,
         ];
 
+        // Build inline styles for responsive columns
+        $inline_styles = [];
+        if (!empty($attributes['columns'])) {
+            $inline_styles[] = '--columns-desktop: ' . intval($attributes['columns']);
+        }
+        if (!empty($attributes['columnsTablet'])) {
+            $inline_styles[] = '--columns-tablet: ' . intval($attributes['columnsTablet']);
+        }
+        if (!empty($attributes['columnsMobile'])) {
+            $inline_styles[] = '--columns-mobile: ' . intval($attributes['columnsMobile']);
+        }
+
         // Get block wrapper attributes
         $wrapper_attributes = get_block_wrapper_attributes([
             'class' => implode(' ', $wrapper_classes),
+            'style' => !empty($inline_styles) ? implode('; ', $inline_styles) : '',
         ]);
 
         // Wrap output

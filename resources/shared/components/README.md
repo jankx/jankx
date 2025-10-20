@@ -1,170 +1,192 @@
-# Shared Components cho InspectorControls
+# Shared Components
 
-Bộ shared components này được thiết kế để chuẩn hóa cấu trúc InspectorControls trong các blocks, giống như core blocks và svg-icon block.
+Thư viện các component dùng chung cho Gutenberg blocks trong Jankx theme.
 
-## Các Components Chính
+## ResponsiveControl
 
-### 1. InspectorControls
-Wrapper cho WordPress InspectorControls với support ToolsPanel.
+Component để tạo responsive controls cho các thuộc tính có giá trị khác nhau trên Desktop, Tablet và Mobile.
+
+### Usage
 
 ```tsx
-import { InspectorGroups } from '../../shared/components';
+import { ResponsiveControl, ResponsiveValue } from '../../shared/components';
 
-// Sử dụng ToolsPanel (giống svg-icon block)
-<InspectorGroups.Settings useToolsPanel={true} resetAll={resetAll}>
-  <InspectorToolsPanelItem
-    label="Setting Name"
-    isShownByDefault={true}
-    hasValue={() => hasCustomValue}
-    onDeselect={() => resetToDefault()}
-  >
-    <YourControl />
-  </InspectorToolsPanelItem>
-</InspectorGroups.Settings>
+function MyBlockEdit({ attributes, setAttributes }) {
+    const { columns, columnsTablet, columnsMobile } = attributes;
 
-// Sử dụng PanelBody thông thường
-<InspectorGroups.Settings>
-  <PanelBody title="Settings">
-    <YourControl />
-  </PanelBody>
-</InspectorGroups.Settings>
+    return (
+        <ResponsiveControl
+            label={__('Columns', 'jankx')}
+            values={{
+                desktop: columns,
+                tablet: columnsTablet,
+                mobile: columnsMobile
+            }}
+            onChange={(values) => setAttributes({
+                columns: values.desktop,
+                columnsTablet: values.tablet,
+                columnsMobile: values.mobile
+            })}
+            min={1}
+            max={6}
+            help={{
+                desktop: __('Số cột trên màn hình lớn (>1024px)', 'jankx'),
+                tablet: __('Số cột trên tablet (768px - 1024px)', 'jankx'),
+                mobile: __('Số cột trên mobile (<768px)', 'jankx')
+            }}
+        />
+    );
+}
 ```
 
-### 2. InspectorPanel
-Wrapper cho PanelBody với các predefined panels.
+### Props
 
-```tsx
-import { CommonPanels } from '../../shared/components';
+| Prop | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `label` | `string` | Yes | - | Nhãn hiển thị cho control |
+| `values` | `ResponsiveValue` | Yes | - | Object chứa giá trị cho desktop, tablet, mobile |
+| `onChange` | `(values: ResponsiveValue) => void` | Yes | - | Callback khi giá trị thay đổi |
+| `min` | `number` | No | `1` | Giá trị tối thiểu |
+| `max` | `number` | No | `6` | Giá trị tối đa |
+| `step` | `number` | No | `1` | Bước nhảy |
+| `help` | `object` | No | `{}` | Object chứa help text cho mỗi device |
+| `className` | `string` | No | `''` | CSS class tùy chỉnh |
 
-<CommonPanels.Settings initialOpen={true}>
-  <YourControls />
-</CommonPanels.Settings>
+### Types
 
-<CommonPanels.Typography initialOpen={false}>
-  <TypographyControls />
-</CommonPanels.Typography>
+```typescript
+export interface ResponsiveValue {
+    desktop: number;
+    tablet: number;
+    mobile: number;
+}
 
-<CommonPanels.Colors initialOpen={false}>
-  <ColorControls />
-</CommonPanels.Colors>
+export interface ResponsiveControlProps {
+    label: string;
+    values: ResponsiveValue;
+    onChange: (values: ResponsiveValue) => void;
+    min?: number;
+    max?: number;
+    step?: number;
+    help?: {
+        desktop?: string;
+        tablet?: string;
+        mobile?: string;
+    };
+    className?: string;
+}
 ```
 
-### 3. InspectorTabs
-Component để tạo cấu trúc tabs giống core blocks.
+### Features
 
-```tsx
-import { InspectorTabs } from '../../shared/components';
+- ✅ UI toggle giữa Desktop (🖥️), Tablet (📱), Mobile (📱)
+- ✅ RangeControl riêng cho mỗi device
+- ✅ Help text riêng cho mỗi device
+- ✅ Tùy chỉnh min, max, step
+- ✅ TypeScript support
+- ✅ Reusable cho bất kỳ block nào
 
-<InspectorTabs
-  showSettings={true}
-  showColor={true}
-  showTypography={true}
-  showAdvanced={true}
->
-  {/* Settings content */}
-</InspectorTabs>
+### Example với block.json
+
+```json
+{
+    "attributes": {
+        "columns": {
+            "type": "number",
+            "default": 3
+        },
+        "columnsTablet": {
+            "type": "number",
+            "default": 2
+        },
+        "columnsMobile": {
+            "type": "number",
+            "default": 1
+        }
+    }
+}
 ```
 
-## Cấu trúc Groups
+### Example CSS variables
 
-Các groups được hỗ trợ:
-- `settings` - Cài đặt cơ bản
-- `color` - Màu sắc
-- `typography` - Typography
-- `layout` - Layout
-- `spacing` - Spacing
-- `border` - Border
-- `effects` - Effects
-- `advanced` - Advanced
-- `custom-css` - Custom CSS
+```scss
+.my-block {
+    --columns-desktop: 3;
+    --columns-tablet: 2;
+    --columns-mobile: 1;
 
-## Ví dụ Sử Dụng
+    display: grid;
+    grid-template-columns: repeat(var(--columns-desktop), 1fr);
 
-### Block đơn giản
+    @media (max-width: 1024px) {
+        grid-template-columns: repeat(var(--columns-tablet), 1fr);
+    }
+
+    @media (max-width: 768px) {
+        grid-template-columns: repeat(var(--columns-mobile), 1fr);
+    }
+}
+```
+
+### PHP Side - Inline Styles
+
+```php
+// Build inline styles for responsive columns
+$inline_styles = [];
+if (!empty($attributes['columns'])) {
+    $inline_styles[] = '--columns-desktop: ' . intval($attributes['columns']);
+}
+if (!empty($attributes['columnsTablet'])) {
+    $inline_styles[] = '--columns-tablet: ' . intval($attributes['columnsTablet']);
+}
+if (!empty($attributes['columnsMobile'])) {
+    $inline_styles[] = '--columns-mobile: ' . intval($attributes['columnsMobile']);
+}
+
+$wrapper_attributes = get_block_wrapper_attributes([
+    'style' => !empty($inline_styles) ? implode('; ', $inline_styles) : '',
+]);
+```
+
+## useResponsiveValue (Hook)
+
+Custom hook để quản lý responsive values (dành cho future use).
+
+### Usage
+
 ```tsx
-import { InspectorGroups, InspectorToolsPanelItem } from '../../shared/components';
+import { useResponsiveValue } from '../../shared/components';
 
-const Edit = ({ attributes, setAttributes }) => {
-  const resetAll = () => {
-    setAttributes({
-      // Reset về giá trị mặc định
+function MyComponent() {
+    const { values, updateValue, updateValues, resetToDefaults } = useResponsiveValue({
+        desktop: 3,
+        tablet: 2,
+        mobile: 1
     });
-  };
 
-  return (
-    <div {...blockProps}>
-      <InspectorGroups.Settings useToolsPanel={true} resetAll={resetAll}>
-        <InspectorToolsPanelItem
-          label="Setting Name"
-          isShownByDefault={true}
-          hasValue={() => attributes.setting !== 'default'}
-          onDeselect={() => setAttributes({ setting: 'default' })}
-        >
-          <SelectControl
-            label="Setting"
-            value={attributes.setting}
-            onChange={(value) => setAttributes({ setting: value })}
-            options={[...]}
-          />
-        </InspectorToolsPanelItem>
-      </InspectorGroups.Settings>
-    </div>
-  );
-};
+    return (
+        <div>
+            <button onClick={() => updateValue('desktop', 4)}>
+                Set Desktop to 4
+            </button>
+            <button onClick={() => updateValues({ desktop: 5, tablet: 3 })}>
+                Update Multiple
+            </button>
+            <button onClick={() => resetToDefaults({ desktop: 3, tablet: 2, mobile: 1 })}>
+                Reset
+            </button>
+        </div>
+    );
+}
 ```
 
-### Block phức tạp với nhiều tabs
-```tsx
-import { InspectorGroups, CommonPanels } from '../../shared/components';
+---
 
-const Edit = ({ attributes, setAttributes }) => {
-  return (
-    <div {...blockProps}>
-      {/* Settings Tab */}
-      <InspectorGroups.Settings>
-        <CommonPanels.Settings>
-          <BasicSettings />
-        </CommonPanels.Settings>
-      </InspectorGroups.Settings>
+## Contributing
 
-      {/* Color Tab */}
-      <InspectorGroups.Color>
-        <CommonPanels.Colors>
-          <ColorControls />
-        </CommonPanels.Colors>
-      </InspectorGroups.Color>
-
-      {/* Typography Tab */}
-      <InspectorGroups.Typography>
-        <CommonPanels.Typography>
-          <TypographyControls />
-        </CommonPanels.Typography>
-      </InspectorGroups.Typography>
-
-      {/* Advanced Tab */}
-      <InspectorGroups.Advanced>
-        <CommonPanels.Advanced>
-          <AdvancedControls />
-        </CommonPanels.Advanced>
-      </InspectorGroups.Advanced>
-    </div>
-  );
-};
-```
-
-## Lợi ích
-
-1. **Chuẩn hóa**: Tất cả blocks có cấu trúc InspectorControls giống nhau
-2. **DRY**: Tránh lặp lại code
-3. **Consistency**: UI/UX nhất quán với core blocks
-4. **Maintainability**: Dễ bảo trì và cập nhật
-5. **TypeScript**: Hỗ trợ TypeScript đầy đủ
-
-## Migration Guide
-
-Để migrate từ InspectorControls cũ:
-
-1. Thay `InspectorControls` bằng `InspectorGroups.Settings`
-2. Thay `PanelBody` bằng `CommonPanels.Settings`
-3. Wrap controls trong `InspectorToolsPanelItem` nếu sử dụng ToolsPanel
-4. Thêm `resetAll` function và `hasValue`/`onDeselect` cho ToolsPanel
+Khi tạo component mới, đảm bảo:
+1. ✅ TypeScript types đầy đủ
+2. ✅ Props documentation
+3. ✅ Usage examples
+4. ✅ Reusable và không phụ thuộc vào business logic cụ thể
+5. ✅ Export đúng cách trong `index.ts`
