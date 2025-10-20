@@ -14,6 +14,9 @@ import {
     ToggleControl,
     Spinner,
     Placeholder,
+    TextControl,
+    Button,
+    FormTokenField,
 } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { useEffect, useState, useCallback, useMemo } from '@wordpress/element';
@@ -22,6 +25,19 @@ import { debounce } from '@wordpress/compose';
 import metadata from './block.json';
 import './style.scss';
 import './editor.scss';
+
+interface TaxQueryItem {
+    taxonomy: string;
+    terms: number[];
+    operator: 'IN' | 'NOT IN' | 'AND' | 'EXISTS' | 'NOT EXISTS';
+}
+
+interface MetaQueryItem {
+    key: string;
+    value: string;
+    compare: '=' | '!=' | '>' | '>=' | '<' | '<=' | 'LIKE' | 'NOT LIKE' | 'IN' | 'NOT IN' | 'EXISTS' | 'NOT EXISTS';
+    type?: 'NUMERIC' | 'BINARY' | 'CHAR' | 'DATE' | 'DATETIME' | 'DECIMAL' | 'SIGNED' | 'TIME' | 'UNSIGNED';
+}
 
 interface PostTypeLayoutAttributes {
     postType: string;
@@ -39,6 +55,20 @@ interface PostTypeLayoutAttributes {
     queryId?: number;
     enablePagination: boolean;
     offset: number;
+    taxQuery: TaxQueryItem[];
+    metaQuery: MetaQueryItem[];
+    keyword: string;
+    authorIn: number[];
+    authorNotIn: number[];
+    postIn: number[];
+    postNotIn: number[];
+    metaKey: string;
+    metaType: string;
+    postStatus: string[];
+    postParent: number;
+    postParentIn: number[];
+    postParentNotIn: number[];
+    customQueryId: string;
 }
 
 interface EditProps {
@@ -64,12 +94,32 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         queryId,
         enablePagination,
         offset,
+        taxQuery,
+        metaQuery,
+        keyword,
+        authorIn,
+        authorNotIn,
+        postIn,
+        postNotIn,
+        metaKey,
+        metaType,
+        postStatus,
+        postParent,
+        postParentIn,
+        postParentNotIn,
+        customQueryId,
     } = attributes;
 
     // Debounced attributes for ServerSideRender
     const [debouncedAttributes, setDebouncedAttributes] = useState(attributes);
     const [cachedHtml, setCachedHtml] = useState<string>('');
     const [isLoading, setIsLoading] = useState(true);
+
+    // States for taxonomies and authors
+    const [taxonomies, setTaxonomies] = useState<any[]>([]);
+    const [authors, setAuthors] = useState<any[]>([]);
+    const [loadingTaxonomies, setLoadingTaxonomies] = useState(false);
+    const [taxonomyTerms, setTaxonomyTerms] = useState<{[key: string]: any[]}>({});
 
     // Debounce attributes update để giảm số lần re-render
     const updateDebouncedAttributes = useCallback(
@@ -95,7 +145,61 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         }
     }, [queryId, clientId, setAttributes]);
 
+    // Fetch taxonomies and authors when postType changes
+    useEffect(() => {
+        const fetchTaxonomiesAndAuthors = async () => {
+            setLoadingTaxonomies(true);
 
+            try {
+                // Fetch taxonomies for this post type
+                const taxonomiesData = await (window as any).wp.apiFetch({
+                    path: `/wp/v2/taxonomies?type=${postType}`,
+                });
+
+                // Convert object to array
+                const taxArray = Object.values(taxonomiesData || {});
+                setTaxonomies(taxArray);
+
+                // Fetch authors
+                const authorsData = await (window as any).wp.apiFetch({
+                    path: '/wp/v2/users?who=authors&per_page=100',
+                });
+                setAuthors(authorsData || []);
+            } catch (error) {
+                console.error('Error fetching taxonomies/authors:', error);
+                setTaxonomies([]);
+                setAuthors([]);
+            } finally {
+                setLoadingTaxonomies(false);
+            }
+        };
+
+        fetchTaxonomiesAndAuthors();
+    }, [postType]);
+
+    // Function to fetch terms for a specific taxonomy
+    const fetchTermsForTaxonomy = useCallback(async (taxonomy: string) => {
+        if (taxonomyTerms[taxonomy]) {
+            return; // Already loaded
+        }
+
+        try {
+            const terms = await (window as any).wp.apiFetch({
+                path: `/wp/v2/${taxonomy}?per_page=100&orderby=name&order=asc`,
+            });
+
+            setTaxonomyTerms(prev => ({
+                ...prev,
+                [taxonomy]: terms || []
+            }));
+        } catch (error) {
+            console.error(`Error fetching terms for ${taxonomy}:`, error);
+            setTaxonomyTerms(prev => ({
+                ...prev,
+                [taxonomy]: []
+            }));
+        }
+    }, [taxonomyTerms]);
 
     const blockProps = useBlockProps({
         className: `post-type-layout layout-${layout} columns-${columns}`,
@@ -138,6 +242,20 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             order: debouncedAttributes.order,
             enablePagination: debouncedAttributes.enablePagination,
             offset: debouncedAttributes.offset,
+            taxQuery: debouncedAttributes.taxQuery,
+            metaQuery: debouncedAttributes.metaQuery,
+            keyword: debouncedAttributes.keyword,
+            authorIn: debouncedAttributes.authorIn,
+            authorNotIn: debouncedAttributes.authorNotIn,
+            postIn: debouncedAttributes.postIn,
+            postNotIn: debouncedAttributes.postNotIn,
+            metaKey: debouncedAttributes.metaKey,
+            metaType: debouncedAttributes.metaType,
+            postStatus: debouncedAttributes.postStatus,
+            postParent: debouncedAttributes.postParent,
+            postParentIn: debouncedAttributes.postParentIn,
+            postParentNotIn: debouncedAttributes.postParentNotIn,
+            customQueryId: debouncedAttributes.customQueryId,
         };
         return JSON.stringify(keyAttributes);
     }, [debouncedAttributes]);
@@ -185,51 +303,9 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         options={postTypeOptions}
                         onChange={(value) => setAttributes({ postType: value })}
                     />
-                    <RangeControl
-                        label={__('Posts Per Page', 'jankx')}
-                        value={postsPerPage}
-                        onChange={(value) => setAttributes({ postsPerPage: value || 10 })}
-                        min={1}
-                        max={50}
-                    />
-                    <RangeControl
-                        label={__('Offset', 'jankx')}
-                        value={offset}
-                        onChange={(value) => setAttributes({ offset: value || 0 })}
-                        min={0}
-                        max={50}
-                        help={__('Bỏ qua N bài viết đầu tiên', 'jankx')}
-                    />
-                    <SelectControl
-                        label={__('Order By', 'jankx')}
-                        value={orderBy}
-                        options={[
-                            { label: __('Date', 'jankx'), value: 'date' },
-                            { label: __('Title', 'jankx'), value: 'title' },
-                            { label: __('Random', 'jankx'), value: 'rand' },
-                            { label: __('Menu Order', 'jankx'), value: 'menu_order' },
-                        ]}
-                        onChange={(value) => setAttributes({ orderBy: value })}
-                    />
-                    <SelectControl
-                        label={__('Order', 'jankx')}
-                        value={order}
-                        options={[
-                            { label: __('Descending', 'jankx'), value: 'DESC' },
-                            { label: __('Ascending', 'jankx'), value: 'ASC' },
-                        ]}
-                        onChange={(value) => setAttributes({ order: value })}
-                    />
-                    <ToggleControl
-                        label={__('Bật phân trang', 'jankx')}
-                        checked={enablePagination}
-                        onChange={(value) => setAttributes({ enablePagination: value })}
-                        help={__('Hiển thị pagination để phân trang posts', 'jankx')}
-                    />
                 </PanelBody>
-            </InspectorControls>
 
-            <InspectorControls>
+                {/* Layout Settings */}
                 <PanelBody title={__('Layout', 'jankx')} initialOpen={true}>
                     <SelectControl
                         label={__('Layout Type', 'jankx')}
@@ -258,6 +334,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                     )}
                 </PanelBody>
 
+                {/* Display Settings */}
                 <PanelBody title={__('Display Settings', 'jankx')} initialOpen={false}>
                     {supportedOptions.includes('showFeaturedImage') && (
                         <ToggleControl
@@ -312,6 +389,416 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         />
                     )}
                 </PanelBody>
+
+                {/* Query Parameters */}
+                <PanelBody title={__('Query Parameters', 'jankx')} initialOpen={false}>
+                    <RangeControl
+                        label={__('Posts Per Page', 'jankx')}
+                        value={postsPerPage}
+                        onChange={(value) => setAttributes({ postsPerPage: value || 10 })}
+                        min={1}
+                        max={50}
+                    />
+                    <RangeControl
+                        label={__('Offset', 'jankx')}
+                        value={offset}
+                        onChange={(value) => setAttributes({ offset: value || 0 })}
+                        min={0}
+                        max={50}
+                        help={__('Bỏ qua N bài viết đầu tiên', 'jankx')}
+                    />
+                    <SelectControl
+                        label={__('Order By', 'jankx')}
+                        value={orderBy}
+                        options={[
+                            { label: __('Date (Ngày đăng)', 'jankx'), value: 'date' },
+                            { label: __('Modified (Ngày sửa)', 'jankx'), value: 'modified' },
+                            { label: __('Title (Tiêu đề)', 'jankx'), value: 'title' },
+                            { label: __('Name (Slug)', 'jankx'), value: 'name' },
+                            { label: __('Author (Tác giả)', 'jankx'), value: 'author' },
+                            { label: __('Type (Post Type)', 'jankx'), value: 'type' },
+                            { label: __('ID', 'jankx'), value: 'ID' },
+                            { label: __('Menu Order', 'jankx'), value: 'menu_order' },
+                            { label: __('Random (Ngẫu nhiên)', 'jankx'), value: 'rand' },
+                            { label: __('Comment Count (Số bình luận)', 'jankx'), value: 'comment_count' },
+                            { label: __('Relevance (Độ liên quan)', 'jankx'), value: 'relevance' },
+                            { label: __('Meta Value (Giá trị meta)', 'jankx'), value: 'meta_value' },
+                            { label: __('Meta Value Num (Giá trị meta số)', 'jankx'), value: 'meta_value_num' },
+                            { label: __('Post__in (Thứ tự trong mảng)', 'jankx'), value: 'post__in' },
+                            { label: __('Post Name__in (Thứ tự slug)', 'jankx'), value: 'post_name__in' },
+                            { label: __('Post Parent__in (Thứ tự parent)', 'jankx'), value: 'post_parent__in' },
+                        ]}
+                        onChange={(value) => setAttributes({ orderBy: value })}
+                        help={__('Sắp xếp posts theo tiêu chí nào', 'jankx')}
+                    />
+                    <SelectControl
+                        label={__('Order', 'jankx')}
+                        value={order}
+                        options={[
+                            { label: __('Descending (Giảm dần)', 'jankx'), value: 'DESC' },
+                            { label: __('Ascending (Tăng dần)', 'jankx'), value: 'ASC' },
+                        ]}
+                        onChange={(value) => setAttributes({ order: value })}
+                    />
+
+                    {/* Meta Key for meta_value ordering */}
+                    {(orderBy === 'meta_value' || orderBy === 'meta_value_num') && (
+                        <>
+                            <TextControl
+                                label={__('Meta Key', 'jankx')}
+                                value={metaKey}
+                                onChange={(value) => setAttributes({ metaKey: value })}
+                                help={__('Meta key để sắp xếp (bắt buộc khi dùng meta_value)', 'jankx')}
+                                placeholder={__('Ví dụ: price, views, rating', 'jankx')}
+                            />
+                            {orderBy === 'meta_value' && (
+                                <SelectControl
+                                    label={__('Meta Type', 'jankx')}
+                                    value={metaType}
+                                    options={[
+                                        { label: __('-- Auto --', 'jankx'), value: '' },
+                                        { label: 'NUMERIC', value: 'NUMERIC' },
+                                        { label: 'CHAR', value: 'CHAR' },
+                                        { label: 'DATE', value: 'DATE' },
+                                        { label: 'DATETIME', value: 'DATETIME' },
+                                        { label: 'DECIMAL', value: 'DECIMAL' },
+                                    ]}
+                                    onChange={(value) => setAttributes({ metaType: value })}
+                                    help={__('Xác định kiểu dữ liệu để sắp xếp chính xác', 'jankx')}
+                                />
+                            )}
+                        </>
+                    )}
+
+                    <ToggleControl
+                        label={__('Bật phân trang', 'jankx')}
+                        checked={enablePagination}
+                        onChange={(value) => setAttributes({ enablePagination: value })}
+                        help={__('Hiển thị pagination để phân trang posts', 'jankx')}
+                    />
+                </PanelBody>
+
+                {/* Advanced Query Parameters */}
+                <PanelBody title={__('🔧 Advanced Query Parameters', 'jankx')} initialOpen={false}>
+                    <TextControl
+                        label={__('Query ID', 'jankx')}
+                        value={customQueryId}
+                        onChange={(value) => setAttributes({ customQueryId: value })}
+                        help={__('Đặt tên cho query này để apply filters cuối cùng: jankx/post-layout/query-args/{query_id}', 'jankx')}
+                        placeholder={__('Ví dụ: featured-posts, sidebar-posts', 'jankx')}
+                    />
+
+                    <FormTokenField
+                        label={__('Post Status', 'jankx')}
+                        value={postStatus}
+                        suggestions={['publish', 'pending', 'draft', 'auto-draft', 'future', 'private', 'inherit', 'trash', 'any']}
+                        onChange={(tokens) => setAttributes({ postStatus: tokens })}
+                        help={__('Trạng thái bài viết cần lấy (mặc định: publish)', 'jankx')}
+                    />
+
+                    <TextControl
+                        label={__('Post Parent ID', 'jankx')}
+                        type="number"
+                        value={postParent}
+                        onChange={(value) => setAttributes({ postParent: parseInt(value) || 0 })}
+                        help={__('Lọc posts theo parent ID (0 = tất cả)', 'jankx')}
+                    />
+
+                    <TextControl
+                        label={__('Post Parent IDs (Include)', 'jankx')}
+                        value={postParentIn.join(', ')}
+                        onChange={(value) => {
+                            const ids = value.split(',').map(v => parseInt(v.trim())).filter(v => !isNaN(v));
+                            setAttributes({ postParentIn: ids });
+                        }}
+                        help={__('Chỉ lấy posts có parent trong danh sách này', 'jankx')}
+                        placeholder={__('Ví dụ: 1, 2, 3', 'jankx')}
+                    />
+
+                    <TextControl
+                        label={__('Post Parent IDs (Exclude)', 'jankx')}
+                        value={postParentNotIn.join(', ')}
+                        onChange={(value) => {
+                            const ids = value.split(',').map(v => parseInt(v.trim())).filter(v => !isNaN(v));
+                            setAttributes({ postParentNotIn: ids });
+                        }}
+                        help={__('Loại trừ posts có parent trong danh sách này', 'jankx')}
+                        placeholder={__('Ví dụ: 4, 5, 6', 'jankx')}
+                    />
+                </PanelBody>
+
+                {/* Keyword Search Filter */}
+                <PanelBody title={__('🔍 Keyword Search', 'jankx')} initialOpen={false}>
+                    <TextControl
+                        label={__('Từ khóa tìm kiếm', 'jankx')}
+                        value={keyword}
+                        onChange={(value) => setAttributes({ keyword: value })}
+                        help={__('Tìm kiếm theo title, content, excerpt', 'jankx')}
+                        placeholder={__('Nhập từ khóa...', 'jankx')}
+                    />
+                </PanelBody>
+
+                {/* Author Filters */}
+                {authors.length > 0 && (
+                    <PanelBody title={__('👤 Author Filters', 'jankx')} initialOpen={false}>
+                        <FormTokenField
+                            label={__('Authors (Include)', 'jankx')}
+                            value={authors.filter((a: any) => authorIn.includes(a.id)).map((a: any) => a.name)}
+                            suggestions={authors.map((a: any) => a.name)}
+                            onChange={(tokens) => {
+                                const selectedIds = tokens.map((token) => {
+                                    const author = authors.find((a: any) => a.name === token);
+                                    return author?.id || 0;
+                                }).filter(id => id > 0);
+                                setAttributes({ authorIn: selectedIds });
+                            }}
+                            help={__('Chỉ hiển thị bài viết của các tác giả này', 'jankx')}
+                        />
+                        <FormTokenField
+                            label={__('Authors (Exclude)', 'jankx')}
+                            value={authors.filter((a: any) => authorNotIn.includes(a.id)).map((a: any) => a.name)}
+                            suggestions={authors.map((a: any) => a.name)}
+                            onChange={(tokens) => {
+                                const selectedIds = tokens.map((token) => {
+                                    const author = authors.find((a: any) => a.name === token);
+                                    return author?.id || 0;
+                                }).filter(id => id > 0);
+                                setAttributes({ authorNotIn: selectedIds });
+                            }}
+                            help={__('Loại trừ bài viết của các tác giả này', 'jankx')}
+                        />
+                    </PanelBody>
+                )}
+
+                {/* Post ID Filters */}
+                <PanelBody title={__('🔢 Post ID Filters', 'jankx')} initialOpen={false}>
+                    <TextControl
+                        label={__('Post IDs (Include)', 'jankx')}
+                        value={postIn.join(', ')}
+                        onChange={(value) => {
+                            const ids = value.split(',').map(v => parseInt(v.trim())).filter(v => !isNaN(v));
+                            setAttributes({ postIn: ids });
+                        }}
+                        help={__('Chỉ hiển thị các bài viết có ID này (phân cách bằng dấu phẩy)', 'jankx')}
+                        placeholder={__('Ví dụ: 1, 2, 3', 'jankx')}
+                    />
+                    <TextControl
+                        label={__('Post IDs (Exclude)', 'jankx')}
+                        value={postNotIn.join(', ')}
+                        onChange={(value) => {
+                            const ids = value.split(',').map(v => parseInt(v.trim())).filter(v => !isNaN(v));
+                            setAttributes({ postNotIn: ids });
+                        }}
+                        help={__('Loại trừ các bài viết có ID này (phân cách bằng dấu phẩy)', 'jankx')}
+                        placeholder={__('Ví dụ: 4, 5, 6', 'jankx')}
+                    />
+                </PanelBody>
+
+                {/* Meta Query Filters */}
+                <PanelBody title={__('⚙️ Meta Query Filters', 'jankx')} initialOpen={false}>
+                    <Button
+                        variant="primary"
+                        onClick={() => {
+                            const newMetaQuery = [...metaQuery];
+                            newMetaQuery.push({
+                                key: '',
+                                value: '',
+                                compare: '=',
+                            });
+                            setAttributes({ metaQuery: newMetaQuery });
+                        }}
+                    >
+                        {__('+ Thêm Meta Query', 'jankx')}
+                    </Button>
+
+                    {metaQuery.map((mq, index) => (
+                        <div key={index} style={{ marginTop: '15px', padding: '10px', border: '1px solid #ddd', borderRadius: '4px', backgroundColor: '#f9f9f9' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                                <strong>{__('Meta Query', 'jankx')} #{index + 1}</strong>
+                                <Button
+                                    isDestructive
+                                    isSmall
+                                    onClick={() => {
+                                        const newMetaQuery = metaQuery.filter((_, i) => i !== index);
+                                        setAttributes({ metaQuery: newMetaQuery });
+                                    }}
+                                >
+                                    {__('Xóa', 'jankx')}
+                                </Button>
+                            </div>
+
+                            <TextControl
+                                label={__('Meta Key', 'jankx')}
+                                value={mq.key}
+                                onChange={(value) => {
+                                    const newMetaQuery = [...metaQuery];
+                                    newMetaQuery[index].key = value;
+                                    setAttributes({ metaQuery: newMetaQuery });
+                                }}
+                                placeholder={__('Ví dụ: price, rating, views', 'jankx')}
+                            />
+
+                            <SelectControl
+                                label={__('Compare', 'jankx')}
+                                value={mq.compare}
+                                options={[
+                                    { label: '= (Bằng)', value: '=' },
+                                    { label: '!= (Khác)', value: '!=' },
+                                    { label: '> (Lớn hơn)', value: '>' },
+                                    { label: '>= (Lớn hơn hoặc bằng)', value: '>=' },
+                                    { label: '< (Nhỏ hơn)', value: '<' },
+                                    { label: '<= (Nhỏ hơn hoặc bằng)', value: '<=' },
+                                    { label: 'LIKE (Chứa)', value: 'LIKE' },
+                                    { label: 'NOT LIKE (Không chứa)', value: 'NOT LIKE' },
+                                    { label: 'IN (Trong danh sách)', value: 'IN' },
+                                    { label: 'NOT IN (Không trong danh sách)', value: 'NOT IN' },
+                                    { label: 'EXISTS (Tồn tại)', value: 'EXISTS' },
+                                    { label: 'NOT EXISTS (Không tồn tại)', value: 'NOT EXISTS' },
+                                ]}
+                                onChange={(value) => {
+                                    const newMetaQuery = [...metaQuery];
+                                    newMetaQuery[index].compare = value as any;
+                                    setAttributes({ metaQuery: newMetaQuery });
+                                }}
+                            />
+
+                            {!['EXISTS', 'NOT EXISTS'].includes(mq.compare) && (
+                                <TextControl
+                                    label={__('Value', 'jankx')}
+                                    value={mq.value}
+                                    onChange={(value) => {
+                                        const newMetaQuery = [...metaQuery];
+                                        newMetaQuery[index].value = value;
+                                        setAttributes({ metaQuery: newMetaQuery });
+                                    }}
+                                    placeholder={__('Nhập giá trị...', 'jankx')}
+                                />
+                            )}
+
+                            <SelectControl
+                                label={__('Type (Optional)', 'jankx')}
+                                value={mq.type || ''}
+                                options={[
+                                    { label: __('-- Auto --', 'jankx'), value: '' },
+                                    { label: 'NUMERIC', value: 'NUMERIC' },
+                                    { label: 'CHAR', value: 'CHAR' },
+                                    { label: 'DATE', value: 'DATE' },
+                                    { label: 'DATETIME', value: 'DATETIME' },
+                                    { label: 'DECIMAL', value: 'DECIMAL' },
+                                    { label: 'SIGNED', value: 'SIGNED' },
+                                    { label: 'UNSIGNED', value: 'UNSIGNED' },
+                                ]}
+                                onChange={(value) => {
+                                    const newMetaQuery = [...metaQuery];
+                                    newMetaQuery[index].type = value as any;
+                                    setAttributes({ metaQuery: newMetaQuery });
+                                }}
+                                help={__('Xác định kiểu dữ liệu để so sánh chính xác', 'jankx')}
+                            />
+                        </div>
+                    ))}
+                </PanelBody>
+
+                {/* Taxonomy Filters */}
+                {taxonomies.length > 0 && taxonomies.map((taxonomy: any) => {
+                    // Find existing query for this taxonomy
+                    const existingQueryIndex = taxQuery.findIndex(tq => tq.taxonomy === taxonomy.slug);
+                    const hasQuery = existingQueryIndex >= 0;
+                    const currentQuery = hasQuery ? taxQuery[existingQueryIndex] : null;
+
+                    return (
+                        <PanelBody
+                            key={taxonomy.slug}
+                            title={`🏷️ ${taxonomy.name}`}
+                            initialOpen={hasQuery}
+                            onToggle={(isOpen) => {
+                                if (isOpen) {
+                                    // Fetch terms when panel opens
+                                    fetchTermsForTaxonomy(taxonomy.slug);
+                                }
+                            }}
+                        >
+                            {!hasQuery ? (
+                                <Button
+                                    variant="secondary"
+                                    onClick={() => {
+                                        const newTaxQuery = [...taxQuery];
+                                        newTaxQuery.push({
+                                            taxonomy: taxonomy.slug,
+                                            terms: [],
+                                            operator: 'IN'
+                                        });
+                                        setAttributes({ taxQuery: newTaxQuery });
+                                        fetchTermsForTaxonomy(taxonomy.slug);
+                                    }}
+                                >
+                                    {__('Thêm bộ lọc', 'jankx')} {taxonomy.name}
+                                </Button>
+                            ) : (
+                                <>
+                                    <SelectControl
+                                        label={__('Operator', 'jankx')}
+                                        value={currentQuery.operator}
+                                        options={[
+                                            { label: __('IN (Bao gồm)', 'jankx'), value: 'IN' },
+                                            { label: __('NOT IN (Loại trừ)', 'jankx'), value: 'NOT IN' },
+                                            { label: __('AND (Phải có tất cả)', 'jankx'), value: 'AND' },
+                                            { label: __('EXISTS (Tồn tại)', 'jankx'), value: 'EXISTS' },
+                                            { label: __('NOT EXISTS (Không tồn tại)', 'jankx'), value: 'NOT EXISTS' },
+                                        ]}
+                                        onChange={(value) => {
+                                            const newTaxQuery = [...taxQuery];
+                                            newTaxQuery[existingQueryIndex].operator = value as any;
+                                            setAttributes({ taxQuery: newTaxQuery });
+                                        }}
+                                        help={__('EXISTS/NOT EXISTS kiểm tra taxonomy có term nào không', 'jankx')}
+                                    />
+
+                                    {/* Only show term selection if operator is not EXISTS/NOT EXISTS */}
+                                    {!['EXISTS', 'NOT EXISTS'].includes(currentQuery.operator) && (
+                                        <>
+                                            {taxonomyTerms[taxonomy.slug] ? (
+                                                <FormTokenField
+                                                    label={__('Select Terms', 'jankx')}
+                                                    value={taxonomyTerms[taxonomy.slug]
+                                                        .filter((term: any) => currentQuery.terms.includes(term.id))
+                                                        .map((term: any) => term.name)
+                                                    }
+                                                    suggestions={taxonomyTerms[taxonomy.slug].map((term: any) => term.name)}
+                                                    onChange={(tokens) => {
+                                                        const selectedIds = tokens.map((token) => {
+                                                            const term = taxonomyTerms[taxonomy.slug].find((t: any) => t.name === token);
+                                                            return term?.id || 0;
+                                                        }).filter(id => id > 0);
+
+                                                        const newTaxQuery = [...taxQuery];
+                                                        newTaxQuery[existingQueryIndex].terms = selectedIds;
+                                                        setAttributes({ taxQuery: newTaxQuery });
+                                                    }}
+                                                    help={__('Chọn các terms từ dropdown', 'jankx')}
+                                                />
+                                            ) : (
+                                                <Spinner />
+                                            )}
+                                        </>
+                                    )}
+
+                                    <Button
+                                        isDestructive
+                                        variant="secondary"
+                                        onClick={() => {
+                                            const newTaxQuery = taxQuery.filter((_, i) => i !== existingQueryIndex);
+                                            setAttributes({ taxQuery: newTaxQuery });
+                                        }}
+                                        style={{ marginTop: '10px' }}
+                                    >
+                                        {__('Xóa bộ lọc', 'jankx')}
+                                    </Button>
+                                </>
+                            )}
+                        </PanelBody>
+                    );
+                })}
             </InspectorControls>
 
             <div {...blockProps}>

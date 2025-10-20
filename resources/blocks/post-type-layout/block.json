@@ -120,6 +120,62 @@
     "offset": {
       "type": "number",
       "default": 0
+    },
+    "taxQuery": {
+      "type": "array",
+      "default": []
+    },
+    "metaQuery": {
+      "type": "array",
+      "default": []
+    },
+    "keyword": {
+      "type": "string",
+      "default": ""
+    },
+    "authorIn": {
+      "type": "array",
+      "default": []
+    },
+    "authorNotIn": {
+      "type": "array",
+      "default": []
+    },
+    "postIn": {
+      "type": "array",
+      "default": []
+    },
+    "postNotIn": {
+      "type": "array",
+      "default": []
+    },
+    "metaKey": {
+      "type": "string",
+      "default": ""
+    },
+    "metaType": {
+      "type": "string",
+      "default": ""
+    },
+    "postStatus": {
+      "type": "array",
+      "default": ["publish"]
+    },
+    "postParent": {
+      "type": "number",
+      "default": 0
+    },
+    "postParentIn": {
+      "type": "array",
+      "default": []
+    },
+    "postParentNotIn": {
+      "type": "array",
+      "default": []
+    },
+    "customQueryId": {
+      "type": "string",
+      "default": ""
     }
   }
 }

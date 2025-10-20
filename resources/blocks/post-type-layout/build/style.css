@@ -1,3 +1,6 @@
+/*!***************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/post-type-layout/style.scss ***!
+  \***************************************************************************************************************************************************************************************************/
 .wp-block-jankx-post-type-layout {
   --post-layout-text-color: #000;
   --post-layout-link-color: #000;
@@ -232,4 +235,4 @@
   }
 }
 
-/*# sourceMappingURL=style.css.map */
+/*# sourceMappingURL=style.css.map*/
