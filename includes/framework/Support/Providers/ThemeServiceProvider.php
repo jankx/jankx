@@ -8,9 +8,8 @@ use Jankx\Services\ThemeService;
 use Jankx\Support\Providers\ServiceProvider;
 use Jankx\Support\TemplateEngine\TemplateEngineManager;
 use Jankx\Support\TemplateEngine\Engines\PlatesEngine;
-use Jankx\PostLayout\Request\PostsFetcher;
-use Jankx\PostLayout\PostLayoutManager;
-use Jankx\PostLayout\LoopItemContent\DefaultContent;
+use Jankx\Layouts\PostLayout\PostLayoutManager;
+use Jankx\Layouts\PostLayout\Supports\DefaultContent;
 
 /**
  * Theme Service Provider
@@ -124,18 +123,9 @@ class ThemeServiceProvider extends ServiceProvider
      */
     protected function registerPostLayoutServices(Application $app)
     {
-        // Register PostsFetcher as singleton
-        $app->singleton(PostsFetcher::class, function (Application $app) {
-            return new PostsFetcher();
-        });
-
         // Register PostLayoutManager as singleton
         $app->singleton('postlayout.manager', function (Application $app) {
-            // Get template engine
-            $templateEngine = $app->make('template.engine.jankx');
-
-            // Create PostLayoutManager instance
-            return PostLayoutManager::createInstance($templateEngine);
+            return PostLayoutManager::getInstance();
         });
     }
 
@@ -147,14 +137,7 @@ class ThemeServiceProvider extends ServiceProvider
      */
     protected function initializePostLayoutServices(Application $app)
     {
-        // Register loop item layouts
-        add_filter('jankx/posts/loop/layouts', function($layouts) {
-            $layouts['default'] = DefaultContent::class;
-            return $layouts;
-        });
-
-        // Initialize PostsFetcher to register AJAX actions
-        $postsFetcher = $app->make(PostsFetcher::class);
-        $postsFetcher->init();
+        // PostLayoutManager is already initialized as singleton
+        // No additional initialization needed
     }
 }

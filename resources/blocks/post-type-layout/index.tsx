@@ -38,6 +38,7 @@ interface PostTypeLayoutAttributes {
     order: string;
     queryId?: number;
     enablePagination: boolean;
+    offset: number;
 }
 
 interface EditProps {
@@ -62,6 +63,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         order,
         queryId,
         enablePagination,
+        offset,
     } = attributes;
 
     // Debounced attributes for ServerSideRender
@@ -135,6 +137,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             orderBy: debouncedAttributes.orderBy,
             order: debouncedAttributes.order,
             enablePagination: debouncedAttributes.enablePagination,
+            offset: debouncedAttributes.offset,
         };
         return JSON.stringify(keyAttributes);
     }, [debouncedAttributes]);
@@ -188,6 +191,14 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         onChange={(value) => setAttributes({ postsPerPage: value || 10 })}
                         min={1}
                         max={50}
+                    />
+                    <RangeControl
+                        label={__('Offset', 'jankx')}
+                        value={offset}
+                        onChange={(value) => setAttributes({ offset: value || 0 })}
+                        min={0}
+                        max={50}
+                        help={__('Bỏ qua N bài viết đầu tiên', 'jankx')}
                     />
                     <SelectControl
                         label={__('Order By', 'jankx')}

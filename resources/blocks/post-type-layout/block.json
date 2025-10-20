@@ -17,7 +17,7 @@
       "postType": "postType",
       "perPage": "postsPerPage",
       "pages": 0,
-      "offset": 0,
+      "offset": "offset",
       "order": "order",
       "orderBy": "orderBy",
       "inherit": false
@@ -116,6 +116,10 @@
     "enablePagination": {
       "type": "boolean",
       "default": false
+    },
+    "offset": {
+      "type": "number",
+      "default": 0
     }
   }
 }

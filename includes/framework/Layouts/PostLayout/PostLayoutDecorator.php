@@ -91,10 +91,20 @@ class PostLayoutDecorator
             'post_status' => 'publish',
         ];
 
+        // Add offset if specified
+        if (isset($attributes['offset']) && $attributes['offset'] > 0) {
+            $args['offset'] = intval($attributes['offset']);
+        }
+
         // Handle pagination if enabled
         if (!empty($attributes['enablePagination'])) {
             $paged = get_query_var('paged') ? get_query_var('paged') : 1;
             $args['paged'] = $paged;
+            
+            // Adjust offset for pagination
+            if (isset($args['offset']) && $paged > 1) {
+                $args['offset'] = $args['offset'] + ($args['posts_per_page'] * ($paged - 1));
+            }
         }
 
         // Apply filters to allow customization

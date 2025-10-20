@@ -4,7 +4,7 @@
     --post-layout-text-color: #000;
     --post-layout-link-color: #000;
     --post-layout-link-hover-color: var(--wp--preset--color--primary, #503AA8);
-    
+
     margin: 2rem 0;
 
     .post-type-layout-grid {
@@ -64,12 +64,12 @@
                 line-height: 1.4;
 
                 a {
-                    color: var(--wp--preset--color--primary, #503AA8);
+                    color: var(--post-layout-link-color);
                     text-decoration: none;
                     transition: color 0.2s ease;
 
                     &:hover {
-                        color: var(--wp--preset--color--accent-1, #FFEE58);
+                        color: var(--post-layout-link-hover-color);
                     }
                 }
             }
@@ -92,7 +92,7 @@
                 margin: 0;
                 font-size: 0.9rem;
                 line-height: 1.6;
-                color: var(--wp--preset--color--contrast, #111);
+                color: var(--post-layout-text-color);
             }
         }
     }
@@ -183,7 +183,7 @@
                 border: 1px solid var(--wp--preset--color--accent-4, #ddd);
                 border-radius: 4px;
                 background: #fff;
-                color: var(--wp--preset--color--contrast, #333);
+                color: var(--post-layout-text-color);
                 text-decoration: none;
                 font-weight: 500;
                 transition: all 0.2s ease;
