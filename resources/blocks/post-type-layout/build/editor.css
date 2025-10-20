@@ -1,0 +1,43 @@
+/*!****************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/post-type-layout/editor.scss ***!
+  \****************************************************************************************************************************************************************************************************/
+@charset "UTF-8";
+/**
+ * Post Type Layout Block - Editor Styles
+ *
+ * Editor hiển thị real posts qua ServerSideRender
+ * Style thực tế được load từ style.scss
+ */
+.wp-block-jankx-post-type-layout .components-placeholder {
+  min-height: 200px;
+  padding: 2rem;
+}
+.wp-block-jankx-post-type-layout .components-placeholder .components-spinner {
+  margin-right: 1rem;
+}
+.wp-block-jankx-post-type-layout .post-layout-inner-blocks {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border: 2px dashed var(--wp--preset--color--accent-4, #ddd);
+  border-radius: 8px;
+  background: var(--wp--preset--color--accent-5, #f9f9f9);
+  min-height: 60px;
+}
+.wp-block-jankx-post-type-layout .post-layout-inner-blocks:empty::before {
+  content: "💡 " attr(data-tip);
+  display: block;
+  text-align: center;
+  color: var(--wp--preset--color--accent-4, #666);
+  font-size: 0.875rem;
+}
+.wp-block-jankx-post-type-layout .post-layout-inner-blocks * {
+  pointer-events: auto !important;
+}
+.editor-styles-wrapper .wp-block-jankx-post-type-layout > :not(.post-layout-inner-blocks) {
+  pointer-events: none;
+}
+.editor-styles-wrapper .wp-block-jankx-post-type-layout > :not(.post-layout-inner-blocks) * {
+  pointer-events: none;
+}
+
+/*# sourceMappingURL=editor.css.map*/

@@ -16,11 +16,6 @@ module.exports = {
     'blocks/language-switcher/build/style': './blocks/language-switcher/style.scss',
     'blocks/language-switcher/build/editor': './blocks/language-switcher/editor.scss',
 
-    'blocks/post-layout/build/index': './blocks/post-layout/index.tsx',
-    'blocks/post-layout/build/save': './blocks/post-layout/save.js',
-    'blocks/post-layout/build/style': './blocks/post-layout/style.scss',
-    'blocks/post-layout/build/editor': './blocks/post-layout/editor.scss',
-
     'blocks/icon-picker/build/index': './blocks/icon-picker/index.tsx',
     'blocks/icon-picker/build/save': './blocks/icon-picker/save.js',
     'blocks/icon-picker/build/style': './blocks/icon-picker/style.scss',
@@ -93,6 +88,10 @@ module.exports = {
     'blocks/social-sharing-icon/build/frontend': './blocks/social-sharing-icon/frontend.ts',
     'blocks/social-sharing-icon/build/style': './blocks/social-sharing-icon/style.scss',
     'blocks/social-sharing-icon/build/editor': './blocks/social-sharing-icon/editor.scss',
+
+    'blocks/post-type-layout/build/index': './blocks/post-type-layout/index.tsx',
+    'blocks/post-type-layout/build/style': './blocks/post-type-layout/style.scss',
+    'blocks/post-type-layout/build/editor': './blocks/post-type-layout/editor.scss',
 
     'blocks/author-box/build/index': './blocks/author-box/src/index.tsx',
     'blocks/author-box/build/style': './blocks/author-box/src/style.scss',

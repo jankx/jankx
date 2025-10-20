@@ -1,0 +1,121 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "jankx/post-type-layout",
+  "version": "1.0.0",
+  "title": "Post Type Layout",
+  "category": "design",
+  "icon": "layout",
+  "description": "Hiển thị danh sách posts theo layout tùy chỉnh",
+  "textdomain": "jankx",
+  "editorScript": "file:./build/index.js",
+  "editorStyle": "file:./build/editor.css",
+  "style": "file:./build/style.css",
+  "providesContext": {
+    "queryId": "queryId",
+    "query": {
+      "postType": "postType",
+      "perPage": "postsPerPage",
+      "pages": 0,
+      "offset": 0,
+      "order": "order",
+      "orderBy": "orderBy",
+      "inherit": false
+    }
+  },
+  "usesContext": ["queryId", "query"],
+  "supports": {
+    "html": false,
+    "align": ["wide", "full"],
+    "anchor": true,
+    "spacing": {
+      "margin": true,
+      "padding": true,
+      "blockGap": true
+    },
+    "color": {
+      "background": true,
+      "text": true,
+      "link": true,
+      "gradients": true
+    },
+    "background": {
+      "backgroundImage": true,
+      "backgroundSize": true
+    },
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true
+    },
+    "__experimentalBorder": {
+      "color": true,
+      "radius": true,
+      "style": true,
+      "width": true
+    },
+    "__experimentalLayout": {
+      "allowSwitching": true,
+      "allowInheriting": true,
+      "default": {
+        "type": "constrained"
+      }
+    }
+  },
+  "attributes": {
+    "postType": {
+      "type": "string",
+      "default": "post"
+    },
+    "postsPerPage": {
+      "type": "number",
+      "default": 10
+    },
+    "layout": {
+      "type": "string",
+      "default": "grid"
+    },
+    "columns": {
+      "type": "number",
+      "default": 3
+    },
+    "showTitle": {
+      "type": "boolean",
+      "default": true
+    },
+    "showExcerpt": {
+      "type": "boolean",
+      "default": true
+    },
+    "showFeaturedImage": {
+      "type": "boolean",
+      "default": true
+    },
+    "showDate": {
+      "type": "boolean",
+      "default": true
+    },
+    "showAuthor": {
+      "type": "boolean",
+      "default": false
+    },
+    "excerptLength": {
+      "type": "number",
+      "default": 55
+    },
+    "orderBy": {
+      "type": "string",
+      "default": "date"
+    },
+    "order": {
+      "type": "string",
+      "default": "DESC"
+    },
+    "queryId": {
+      "type": "number"
+    },
+    "enablePagination": {
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

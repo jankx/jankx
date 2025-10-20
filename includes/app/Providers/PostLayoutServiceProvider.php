@@ -4,11 +4,20 @@ namespace Jankx\App\Providers;
 
 use Jankx\Support\Providers\ServiceProvider;
 use Jankx\Foundation\Application;
+use Jankx\Layouts\PostLayout\PostLayoutManager;
 
 class PostLayoutServiceProvider extends ServiceProvider
 {
     public function register(Application $app)
     {
+        // Register PostLayoutManager as singleton in container
+        $app->singleton('post.layout.manager', function (Application $app) {
+            return PostLayoutManager::getInstance();
+        });
+
+        // Alias for easier access
+        $app->alias('post.layout.manager', PostLayoutManager::class);
+
         // Register AJAX handler
         add_action('init', [$this, 'registerAjaxHandler']);
     }

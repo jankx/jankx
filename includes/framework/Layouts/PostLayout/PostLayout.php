@@ -1,0 +1,221 @@
+<?php
+
+namespace Jankx\Layouts\PostLayout;
+
+use Jankx\Layouts\PostLayout\Contracts\PostLayoutInterface;
+use WP_Query;
+
+/**
+ * Base Post Layout Abstract Class
+ *
+ * Class cơ sở cho tất cả post layout implementations
+ *
+ * @package Jankx\Layouts\PostLayout
+ */
+abstract class PostLayout implements PostLayoutInterface
+{
+    /**
+     * Layout name/slug
+     *
+     * @var string
+     */
+    protected $name = '';
+
+    /**
+     * Layout display title
+     *
+     * @var string
+     */
+    protected $title = '';
+
+    /**
+     * Layout options
+     *
+     * @var array
+     */
+    protected $options = [];
+
+    /**
+     * WP_Query instance
+     *
+     * @var WP_Query|null
+     */
+    protected $query = null;
+
+    /**
+     * Default options
+     *
+     * @var array
+     */
+    protected $defaultOptions = [
+        'columns' => 3,
+        'showFeaturedImage' => true,
+        'showTitle' => true,
+        'showExcerpt' => true,
+        'showDate' => true,
+        'showAuthor' => false,
+        'imageSize' => 'large',
+        'excerptLength' => 55,
+    ];
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->options = $this->defaultOptions;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setOptions($options): self
+    {
+        $this->options = array_merge($this->options, $options);
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getOptions(): array
+    {
+        return $this->options;
+    }
+
+    /**
+     * Get option value
+     *
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
+    protected function getOption(string $key, $default = null)
+    {
+        return $this->options[$key] ?? $default;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setQuery(WP_Query $query): PostLayoutInterface
+    {
+        $this->query = $query;
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSupportedOptions(): array
+    {
+        return array_keys($this->defaultOptions);
+    }
+
+    /**
+     * Render single post item
+     *
+     * @param \WP_Post|null $post
+     * @return string
+     */
+    protected function renderPostItem($post = null): string
+    {
+        if (!$post) {
+            global $post;
+        }
+
+        ob_start();
+        ?>
+        <article id="post-<?php echo esc_attr($post->ID); ?>" class="<?php echo esc_attr(implode(' ', get_post_class('post-item', $post->ID))); ?>">
+            <?php if ($this->getOption('showFeaturedImage') && has_post_thumbnail($post->ID)) : ?>
+                <div class="post-thumbnail">
+                    <a href="<?php echo esc_url(get_permalink($post->ID)); ?>" aria-hidden="true" tabindex="-1">
+                        <?php echo get_the_post_thumbnail($post->ID, $this->getOption('imageSize', 'large')); ?>
+                    </a>
+                </div>
+            <?php endif; ?>
+
+            <div class="post-content">
+                <?php if ($this->getOption('showTitle')) : ?>
+                    <h3 class="post-title">
+                        <a href="<?php echo esc_url(get_permalink($post->ID)); ?>">
+                            <?php echo esc_html(get_the_title($post->ID)); ?>
+                        </a>
+                    </h3>
+                <?php endif; ?>
+
+                <?php if ($this->getOption('showDate') || $this->getOption('showAuthor')) : ?>
+                    <div class="post-meta">
+                        <?php if ($this->getOption('showDate')) : ?>
+                            <span class="post-date">
+                                <time datetime="<?php echo esc_attr(get_the_date('c', $post->ID)); ?>">
+                                    <?php echo esc_html(get_the_date('', $post->ID)); ?>
+                                </time>
+                            </span>
+                        <?php endif; ?>
+
+                        <?php if ($this->getOption('showAuthor')) : ?>
+                            <span class="post-author">
+                                <?php
+                                $author_id = get_post_field('post_author', $post->ID);
+                                printf(
+                                    esc_html__('By %s', 'jankx'),
+                                    '<a href="' . esc_url(get_author_posts_url($author_id)) . '">' . esc_html(get_the_author_meta('display_name', $author_id)) . '</a>'
+                                );
+                                ?>
+                            </span>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
+
+                <?php if ($this->getOption('showExcerpt')) : ?>
+                    <div class="post-excerpt">
+                        <?php
+                        $excerpt = get_the_excerpt($post->ID);
+                        $length = $this->getOption('excerptLength', 55);
+                        echo wp_trim_words($excerpt, $length, '...');
+                        ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </article>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    abstract public function render(): string;
+
+    /**
+     * {@inheritDoc}
+     */
+    abstract public function renderPreview(): array;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getReadOnlyOptions(): array
+    {
+        return [
+            'showTitle', // Title luôn phải hiển thị, không thể ẩn
+        ];
+    }
+}

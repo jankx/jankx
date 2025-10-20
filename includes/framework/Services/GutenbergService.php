@@ -8,7 +8,6 @@ use Jankx\Gutenberg\Blocks\AdvancedButtonBlock;
 use Jankx\Gutenberg\Blocks\AdvancedFiltersBlock;
 use Jankx\Gutenberg\Blocks\AdvancedImageBoxBlock;
 use Jankx\Gutenberg\Blocks\ModalBlock;
-use Jankx\Gutenberg\Blocks\PostLayoutBlock;
 use Jankx\Gutenberg\Blocks\IconPickerBlock;
 use Jankx\Gutenberg\Blocks\LanguageSwitcherBlock;
 use Jankx\Gutenberg\Blocks\ImageMasonryGalleryBlock;
@@ -26,6 +25,7 @@ use Jankx\Gutenberg\Blocks\SwiperSlideBlock;
 use Jankx\Gutenberg\Blocks\AuthorBoxBlock;
 use Jankx\Gutenberg\Blocks\SocialSharingBlock;
 use Jankx\Gutenberg\Blocks\SocialSharingIconBlock;
+use Jankx\Gutenberg\Blocks\PostTypeLayoutBlock;
 use Jankx\Gutenberg\Blocks\WordPressCoreFilterBlock;
 use Jankx\Gutenberg\Blocks\MasterTableBlock;
 use Jankx\Gutenberg\Blocks\TableRowBlock;
@@ -107,8 +107,6 @@ class GutenbergService
                     if (method_exists($block, 'init')) {
                         call_user_func([$block, 'init']);
                     }
-
-                    Log::info('Register block ' . $blockName . ' to Gutenberg editor');
                     $block->register();
                     $registeredCount++;
                 } catch (\Exception $e) {
@@ -136,7 +134,6 @@ class GutenbergService
         $this->repository->registerBlock(AdvancedButtonBlock::class);
         $this->repository->registerBlock(OffcanvasSidebarBlock::class);
         $this->repository->registerBlock(IconPickerBlock::class);
-        $this->repository->registerBlock(PostLayoutBlock::class);
         $this->repository->registerBlock(OffcanvasTriggerBlock::class);
         $this->repository->registerBlock(LanguageSwitcherBlock::class);
         $this->repository->registerBlock(ImageMasonryGalleryBlock::class);
@@ -160,6 +157,7 @@ class GutenbergService
         $this->repository->registerBlock(TableOfContentBlock::class);
         $this->repository->registerBlock(SlideshowBlock::class);
         $this->repository->registerBlock(SlideshowItemBlock::class);
+        $this->repository->registerBlock(PostTypeLayoutBlock::class);
     }
 
     /**
