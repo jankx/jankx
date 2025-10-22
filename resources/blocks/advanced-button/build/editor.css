@@ -78,5 +78,8 @@
   pointer-events: auto !important;
   cursor: pointer !important;
 }
+.wp-block-jankx-advanced-button .block-list-appender .components-button {
+  height: 24px !important;
+}
 
 /*# sourceMappingURL=editor.css.map*/

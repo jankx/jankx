@@ -161,12 +161,23 @@ export function Edit(props: EditProps) {
 
 	const borderProps = getBorderClassesAndStyles(attributes);
 
+	// Check if button has no color settings
+	const hasNoColorSettings = !backgroundColor?.slug && 
+	                           !backgroundColor?.color && 
+	                           !textColor?.slug && 
+	                           !textColor?.color && 
+	                           !attributes.gradient && 
+	                           !attributes.style?.color?.background && 
+	                           !attributes.style?.color?.text;
+
+
 	const buttonClasses = classnames('jankx-advanced-button__link', borderProps?.className, {
 		[`has-${backgroundColor?.slug}-background-color`]: backgroundColor?.slug,
 		[`has-${textColor?.slug}-color`]: textColor?.slug,
 		'has-background': backgroundColor?.color,
 		'has-text-color': textColor?.color,
 		[`icon-position-${iconPosition}`]: hasInnerBlocks && iconPosition,
+		'has-base-color': hasNoColorSettings,
 	});
 
 	const buttonStyles = {

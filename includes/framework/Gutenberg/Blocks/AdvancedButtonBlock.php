@@ -116,15 +116,80 @@ class AdvancedButtonBlock extends Block
             }
         }
 
-        // Remove existing wrapper with color classes and create clean wrapper
+        // Extract existing wrapper classes including style classes (is-style-fill, is-style-outline)
+        $existing_classes = [];
+        if (preg_match('/<div[^>]*class="([^"]*)"[^>]*>/', $content, $matches)) {
+            $existing_classes = explode(' ', $matches[1]);
+        }
+
+        // Determine if it's outline mode
+        $is_outline_mode = in_array('is-style-outline', $existing_classes);
+
+        // Remove existing wrapper
         $content = preg_replace('/<div[^>]*class="[^"]*wp-block-jankx-advanced-button[^"]*"[^>]*>/', '', $content);
         $content = preg_replace('/<\/div>$/', '', $content);
 
-        // Create clean wrapper without color classes
+        // Check if button has background color set
+        $has_background_color = (
+            !empty($attributes['backgroundColor']) ||
+            preg_match('/has-[a-z0-9\-]+-background-color/', $content) ||
+            preg_match('/background-color\s*:\s*[^;]+/', $content)
+        );
+
+        // Apply default color classes based on mode if no background color is set
+        if (!$has_background_color) {
+            if ($is_outline_mode) {
+                // Outline mode: Add primary color for border and text
+                // Add has-primary-color for text color
+                $content = preg_replace(
+                    '/(class="jankx-advanced-button__link[^"]*")/',
+                    '$1',
+                    $content
+                );
+
+                // Add primary color classes to button element
+                if (preg_match('/<(a|button)([^>]*class="[^"]*jankx-advanced-button__link[^"]*")([^>]*)>/', $content, $button_matches)) {
+                    $button_classes = $button_matches[2];
+
+                    // Add has-primary-color and has-base-color classes
+                    $new_button_classes = str_replace(
+                        'class="jankx-advanced-button__link',
+                        'class="jankx-advanced-button__link has-primary-color has-base-color',
+                        $button_classes
+                    );
+
+                    $content = str_replace($button_classes, $new_button_classes, $content);
+                }
+            } else {
+                // Fill mode: Add primary background and contrast text color
+                // Add has-primary-background-color and has-contrast-color
+                if (preg_match('/<(a|button)([^>]*class="[^"]*jankx-advanced-button__link[^"]*")([^>]*)>/', $content, $button_matches)) {
+                    $button_classes = $button_matches[2];
+
+                    // Add color classes
+                    $new_button_classes = str_replace(
+                        'class="jankx-advanced-button__link',
+                        'class="jankx-advanced-button__link has-primary-background-color has-contrast-color has-base-color',
+                        $button_classes
+                    );
+
+                    $content = str_replace($button_classes, $new_button_classes, $content);
+                }
+            }
+        }
+
+        // Build wrapper classes
         $wrapper_classes = [
             'wp-block-jankx-advanced-button',
             'jankx-advanced-button'
         ];
+
+        // Preserve style classes (is-style-fill, is-style-outline, etc.)
+        foreach ($existing_classes as $class) {
+            if (strpos($class, 'is-style-') === 0) {
+                $wrapper_classes[] = $class;
+            }
+        }
 
         // Add icon position class if needed
         $iconPosition = $attributes['iconPosition'] ?? 'left';
