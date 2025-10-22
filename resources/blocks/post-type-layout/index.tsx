@@ -63,6 +63,8 @@ interface PostTypeLayoutAttributes {
     paginationStyle: 'numbers' | 'simple' | 'arrows' | 'load-more';
     paginationAlignment: 'left' | 'center' | 'right';
     showPaginationNumbers: boolean;
+    paginationPrevText: string;
+    paginationNextText: string;
     offset: number;
     taxQuery: TaxQueryItem[];
     metaQuery: MetaQueryItem[];
@@ -108,6 +110,8 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         paginationStyle,
         paginationAlignment,
         showPaginationNumbers,
+        paginationPrevText,
+        paginationNextText,
         offset,
         taxQuery,
         metaQuery,
@@ -264,6 +268,8 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             paginationStyle: debouncedAttributes.paginationStyle,
             paginationAlignment: debouncedAttributes.paginationAlignment,
             showPaginationNumbers: debouncedAttributes.showPaginationNumbers,
+            paginationPrevText: debouncedAttributes.paginationPrevText,
+            paginationNextText: debouncedAttributes.paginationNextText,
             offset: debouncedAttributes.offset,
             taxQuery: debouncedAttributes.taxQuery,
             metaQuery: debouncedAttributes.metaQuery,
@@ -527,7 +533,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         help={__('Hiển thị pagination để phân trang posts', 'jankx')}
                     />
 
-                    {enablePagination && (
+                    {enablePagination ? (
                         <>
                             <SelectControl
                                 label={__('Pagination Style', 'jankx')}
@@ -562,8 +568,24 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                     help={__('Hiển thị tất cả số trang thay vì rút gọn', 'jankx')}
                                 />
                             )}
+
+                            <TextControl
+                                label={__('Text nút "Trước"', 'jankx')}
+                                value={paginationPrevText}
+                                onChange={(value) => setAttributes({ paginationPrevText: value })}
+                                help={__('Để trống sẽ dùng text mặc định. Có thể dùng HTML/SVG.', 'jankx')}
+                                placeholder={__('Ví dụ: « Previous hoặc <svg>...</svg>', 'jankx')}
+                            />
+
+                            <TextControl
+                                label={__('Text nút "Sau"', 'jankx')}
+                                value={paginationNextText}
+                                onChange={(value) => setAttributes({ paginationNextText: value })}
+                                help={__('Để trống sẽ dùng text mặc định. Có thể dùng HTML/SVG.', 'jankx')}
+                                placeholder={__('Ví dụ: Next » hoặc <svg>...</svg>', 'jankx')}
+                            />
                         </>
-                    )}
+                    ) : null}
                 </PanelBody>
                 )}
 

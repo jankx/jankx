@@ -79,6 +79,8 @@ class PostTypeLayoutBlock extends Block
         $paginationStyle = $attributes['paginationStyle'] ?? 'numbers';
         $paginationAlignment = $attributes['paginationAlignment'] ?? 'center';
         $showPaginationNumbers = $attributes['showPaginationNumbers'] ?? true;
+        $paginationPrevText = $attributes['paginationPrevText'] ?? '';
+        $paginationNextText = $attributes['paginationNextText'] ?? '';
 
         // Get current page
         $paged = max(1, get_query_var('paged'));
@@ -86,14 +88,18 @@ class PostTypeLayoutBlock extends Block
             $paged = max(1, get_query_var('page'));
         }
 
+        // Determine prev/next text
+        $prevText = !empty($paginationPrevText) ? $paginationPrevText : __('&laquo; Trước', 'jankx');
+        $nextText = !empty($paginationNextText) ? $paginationNextText : __('Sau &raquo;', 'jankx');
+
         // Build pagination args
         $pagination_args = [
             'total' => $query->max_num_pages,
             'current' => $paged,
             'mid_size' => 2,
             'end_size' => 1,
-            'prev_text' => __('&laquo; Trước', 'jankx'),
-            'next_text' => __('Sau &raquo;', 'jankx'),
+            'prev_text' => $prevText,
+            'next_text' => $nextText,
         ];
 
         // Adjust based on style
@@ -104,8 +110,12 @@ class PostTypeLayoutBlock extends Block
             $pagination_args['prev_next'] = true;
         } elseif ($paginationStyle === 'arrows') {
             // Arrows: Minimal prev/next with arrow icons
-            $pagination_args['prev_text'] = '<span aria-hidden="true">&larr;</span> ' . __('Trước', 'jankx');
-            $pagination_args['next_text'] = __('Sau', 'jankx') . ' <span aria-hidden="true">&rarr;</span>';
+            if (empty($paginationPrevText)) {
+                $pagination_args['prev_text'] = '<span aria-hidden="true">&larr;</span> ' . __('Trước', 'jankx');
+            }
+            if (empty($paginationNextText)) {
+                $pagination_args['next_text'] = __('Sau', 'jankx') . ' <span aria-hidden="true">&rarr;</span>';
+            }
             $pagination_args['type'] = 'list';
             $pagination_args['show_all'] = false;
         } elseif ($paginationStyle === 'load-more') {

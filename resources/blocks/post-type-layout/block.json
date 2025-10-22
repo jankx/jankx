@@ -203,6 +203,14 @@
     "showPaginationNumbers": {
       "type": "boolean",
       "default": true
+    },
+    "paginationPrevText": {
+      "type": "string",
+      "default": ""
+    },
+    "paginationNextText": {
+      "type": "string",
+      "default": ""
     }
   }
 }
