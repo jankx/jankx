@@ -189,6 +189,20 @@
     "customQueryId": {
       "type": "string",
       "default": ""
+    },
+    "paginationStyle": {
+      "type": "string",
+      "default": "numbers",
+      "enum": ["numbers", "simple", "arrows", "load-more"]
+    },
+    "paginationAlignment": {
+      "type": "string",
+      "default": "center",
+      "enum": ["left", "center", "right"]
+    },
+    "showPaginationNumbers": {
+      "type": "boolean",
+      "default": true
     }
   }
 }

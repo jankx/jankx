@@ -65,32 +65,106 @@ class PostTypeLayoutBlock extends Block
      *
      * @param string $content Inner blocks content (may contain pagination blocks)
      * @param \WP_Query $query The query instance
+     * @param array $attributes Block attributes
      * @return string
      */
-    protected function renderPagination(string $content, $query): string
+    protected function renderPagination(string $content, $query, array $attributes): string
     {
         // Extract pagination blocks from inner blocks if exists
         if (strpos($content, 'wp-block-query-pagination') !== false) {
             return $content;
         }
 
-        // Default WordPress pagination
-        $pagination = paginate_links([
-            'type' => 'list',
+        // Get pagination settings
+        $paginationStyle = $attributes['paginationStyle'] ?? 'numbers';
+        $paginationAlignment = $attributes['paginationAlignment'] ?? 'center';
+        $showPaginationNumbers = $attributes['showPaginationNumbers'] ?? true;
+
+        // Get current page
+        $paged = max(1, get_query_var('paged'));
+        if ($paged === 1) {
+            $paged = max(1, get_query_var('page'));
+        }
+
+        // Build pagination args
+        $pagination_args = [
+            'total' => $query->max_num_pages,
+            'current' => $paged,
+            'mid_size' => 2,
+            'end_size' => 1,
             'prev_text' => __('&laquo; Trước', 'jankx'),
             'next_text' => __('Sau &raquo;', 'jankx'),
-            'total' => $query->max_num_pages,
-            'current' => max(1, get_query_var('paged')),
-        ]);
+        ];
+
+        // Adjust based on style
+        if ($paginationStyle === 'simple') {
+            // Simple: Only prev/next buttons
+            $pagination_args['show_all'] = false;
+            $pagination_args['type'] = 'list';
+            $pagination_args['prev_next'] = true;
+        } elseif ($paginationStyle === 'arrows') {
+            // Arrows: Minimal prev/next with arrow icons
+            $pagination_args['prev_text'] = '<span aria-hidden="true">&larr;</span> ' . __('Trước', 'jankx');
+            $pagination_args['next_text'] = __('Sau', 'jankx') . ' <span aria-hidden="true">&rarr;</span>';
+            $pagination_args['type'] = 'list';
+            $pagination_args['show_all'] = false;
+        } elseif ($paginationStyle === 'load-more') {
+            // Load more button (future enhancement - for now show as simple)
+            return $this->renderLoadMoreButton($query, $paged);
+        } else {
+            // Default: Numbers with prev/next
+            $pagination_args['type'] = 'list';
+            $pagination_args['show_all'] = $showPaginationNumbers;
+        }
+
+        // Generate pagination
+        $pagination = paginate_links($pagination_args);
 
         if (!$pagination) {
             return '';
         }
 
+        // Build wrapper classes
+        $wrapper_classes = [
+            'post-layout-pagination',
+            'wp-block-query-pagination',
+            'pagination-style-' . esc_attr($paginationStyle),
+            'pagination-align-' . esc_attr($paginationAlignment),
+        ];
+
         return sprintf(
-            '<nav class="post-layout-pagination wp-block-query-pagination" aria-label="%s">%s</nav>',
+            '<nav class="%s" aria-label="%s" role="navigation">%s</nav>',
+            esc_attr(implode(' ', $wrapper_classes)),
             esc_attr__('Posts navigation', 'jankx'),
             $pagination
+        );
+    }
+
+    /**
+     * Render load more button
+     *
+     * @param \WP_Query $query The query instance
+     * @param int $current_page Current page number
+     * @return string
+     */
+    protected function renderLoadMoreButton($query, int $current_page): string
+    {
+        // Check if there are more pages
+        if ($current_page >= $query->max_num_pages) {
+            return '';
+        }
+
+        $next_page = $current_page + 1;
+
+        return sprintf(
+            '<div class="post-layout-pagination pagination-style-load-more">
+                <button class="load-more-button" data-page="%d" data-max-pages="%d">
+                    %s
+                </button>
+            </div>',
+            esc_attr($next_page),
+            esc_attr($query->max_num_pages),
+            esc_html__('Tải thêm', 'jankx')
         );
     }
 
@@ -308,7 +382,7 @@ class PostTypeLayoutBlock extends Block
 
         // Add default pagination if enabled
         if (!empty($attributes['enablePagination']) && !empty($html) && $query->max_num_pages > 1) {
-            $html .= $this->renderPagination($content, $query);
+            $html .= $this->renderPagination($content, $query, $attributes);
         }
 
         // Build wrapper classes

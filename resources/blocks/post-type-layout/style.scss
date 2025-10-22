@@ -231,6 +231,104 @@
                 }
             }
         }
+
+        // Alignment variations
+        &.pagination-align-left {
+            .page-numbers {
+                justify-content: flex-start;
+            }
+        }
+
+        &.pagination-align-right {
+            .page-numbers {
+                justify-content: flex-end;
+            }
+        }
+
+        &.pagination-align-center {
+            .page-numbers {
+                justify-content: center;
+            }
+        }
+
+        // Simple style (only prev/next)
+        &.pagination-style-simple {
+            .page-numbers {
+                .page-numbers:not(.prev):not(.next) {
+                    display: none;
+                }
+            }
+        }
+
+        // Arrows style
+        &.pagination-style-arrows {
+            .page-numbers {
+                gap: 1rem;
+
+                a,
+                span {
+                    min-width: auto;
+                    padding: 0.5rem 1rem;
+                    border-radius: 50px;
+                    font-size: 0.9rem;
+
+                    span[aria-hidden] {
+                        font-size: 1.2rem;
+                        font-weight: bold;
+                    }
+                }
+            }
+        }
+
+        // Load more style
+        &.pagination-style-load-more {
+            display: flex;
+            justify-content: center;
+
+            .load-more-button {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0.875rem 2rem;
+                border: 2px solid var(--wp--preset--color--primary, #503AA8);
+                border-radius: 50px;
+                background: transparent;
+                color: var(--wp--preset--color--primary, #503AA8);
+                font-size: 1rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+
+                &:hover {
+                    background: var(--wp--preset--color--primary, #503AA8);
+                    color: #fff;
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 12px rgba(80, 58, 168, 0.3);
+                }
+
+                &:active {
+                    transform: translateY(0);
+                }
+
+                &:disabled {
+                    opacity: 0.5;
+                    cursor: not-allowed;
+                    transform: none;
+                }
+            }
+        }
+
+        // Numbers style enhancements
+        &.pagination-style-numbers {
+            .page-numbers {
+                gap: 0.5rem;
+
+                a,
+                span {
+                    border-radius: 6px;
+                }
+            }
+        }
     }
 
     // Responsive - Tablet

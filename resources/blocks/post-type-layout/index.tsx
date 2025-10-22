@@ -60,6 +60,9 @@ interface PostTypeLayoutAttributes {
     order: string;
     queryId?: number;
     enablePagination: boolean;
+    paginationStyle: 'numbers' | 'simple' | 'arrows' | 'load-more';
+    paginationAlignment: 'left' | 'center' | 'right';
+    showPaginationNumbers: boolean;
     offset: number;
     taxQuery: TaxQueryItem[];
     metaQuery: MetaQueryItem[];
@@ -102,6 +105,9 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         order,
         queryId,
         enablePagination,
+        paginationStyle,
+        paginationAlignment,
+        showPaginationNumbers,
         offset,
         taxQuery,
         metaQuery,
@@ -255,6 +261,9 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             orderBy: debouncedAttributes.orderBy,
             order: debouncedAttributes.order,
             enablePagination: debouncedAttributes.enablePagination,
+            paginationStyle: debouncedAttributes.paginationStyle,
+            paginationAlignment: debouncedAttributes.paginationAlignment,
+            showPaginationNumbers: debouncedAttributes.showPaginationNumbers,
             offset: debouncedAttributes.offset,
             taxQuery: debouncedAttributes.taxQuery,
             metaQuery: debouncedAttributes.metaQuery,
@@ -517,6 +526,44 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         onChange={(value) => setAttributes({ enablePagination: value })}
                         help={__('Hiển thị pagination để phân trang posts', 'jankx')}
                     />
+
+                    {enablePagination && (
+                        <>
+                            <SelectControl
+                                label={__('Pagination Style', 'jankx')}
+                                value={paginationStyle}
+                                options={[
+                                    { label: __('Numbers (Số trang)', 'jankx'), value: 'numbers' },
+                                    { label: __('Simple (Trước/Sau)', 'jankx'), value: 'simple' },
+                                    { label: __('Arrows (Mũi tên)', 'jankx'), value: 'arrows' },
+                                    { label: __('Load More (Tải thêm)', 'jankx'), value: 'load-more' },
+                                ]}
+                                onChange={(value) => setAttributes({ paginationStyle: value as 'numbers' | 'simple' | 'arrows' | 'load-more' })}
+                                help={__('Chọn kiểu hiển thị pagination', 'jankx')}
+                            />
+
+                            <SelectControl
+                                label={__('Pagination Alignment', 'jankx')}
+                                value={paginationAlignment}
+                                options={[
+                                    { label: __('Left (Trái)', 'jankx'), value: 'left' },
+                                    { label: __('Center (Giữa)', 'jankx'), value: 'center' },
+                                    { label: __('Right (Phải)', 'jankx'), value: 'right' },
+                                ]}
+                                onChange={(value) => setAttributes({ paginationAlignment: value as 'left' | 'center' | 'right' })}
+                                help={__('Căn chỉnh vị trí pagination', 'jankx')}
+                            />
+
+                            {paginationStyle === 'numbers' && (
+                                <ToggleControl
+                                    label={__('Hiển thị tất cả số trang', 'jankx')}
+                                    checked={showPaginationNumbers}
+                                    onChange={(value) => setAttributes({ showPaginationNumbers: value })}
+                                    help={__('Hiển thị tất cả số trang thay vì rút gọn', 'jankx')}
+                                />
+                            )}
+                        </>
+                    )}
                 </PanelBody>
                 )}
 
