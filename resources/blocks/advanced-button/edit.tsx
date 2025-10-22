@@ -27,6 +27,8 @@ import {
 	ButtonBlockAppender,
 	__experimentalLinkControl as LinkControl,
 	__experimentalGetBorderClassesAndStyles as getBorderClassesAndStyles,
+	useBlockEditingMode,
+	BlockEdit,
 } from '@wordpress/block-editor';
 import { useState, useRef, useCallback } from '@wordpress/element';
 import { displayShortcut, isKeyboardEvent } from '@wordpress/keycodes';
@@ -64,7 +66,7 @@ interface EditProps {
 }
 
 const NEW_TAB_REL = 'noreferrer noopener';
-const ALLOWED_BLOCKS = ['jankx/icon-picker', 'jankx/svg-icon', 'core/image'];
+const ALLOWED_BLOCKS = ['jankx/icon-picker', 'jankx/svg-icon', 'core/image', 'core/html'];
 const ICON_TEMPLATE: any[] = [];
 
 /**
@@ -178,13 +180,14 @@ export function Edit(props: EditProps) {
 	const renderButtonContent = () => (
 		<>
 			<span className="button-icon-wrapper">
-				<InnerBlocks
-					allowedBlocks={ALLOWED_BLOCKS}
-					template={ICON_TEMPLATE}
-					templateLock={hasInnerBlocks ? 'all' : false}
-					renderAppender={hasInnerBlocks ? false : ButtonBlockAppender}
-					orientation="horizontal"
-				/>
+		<InnerBlocks
+			allowedBlocks={ALLOWED_BLOCKS}
+			template={ICON_TEMPLATE}
+			templateLock={false}
+			renderAppender={hasInnerBlocks ? false : InnerBlocks.ButtonBlockAppender}
+			orientation="horizontal"
+			__experimentalCaptureToolbars={false}
+		/>
 			</span>
 			{showLabel && (
 				<RichText
@@ -207,18 +210,21 @@ export function Edit(props: EditProps) {
 			buttonElement = (
 				<a
 					className={buttonClasses}
-					href={url || '#'}
+					href="#"
 					target={linkTarget}
 					rel={rel}
 					style={buttonStyles}
 					title={title}
 					onClick={(e: React.MouseEvent) => {
+						// In editor, prevent default navigation completely
 						e.preventDefault();
-						e.stopPropagation();
 					}}
-					onMouseDown={(e: React.MouseEvent) => {
-						if (e.button !== 0 || !url || url === '#') {
-							e.preventDefault();
+					onClickCapture={(e: React.MouseEvent) => {
+						// Stop propagation to prevent any parent handlers
+						const target = e.target as HTMLElement;
+						// Only stop propagation if clicking on inner blocks, not the link itself
+						if (target.closest('.block-editor-block-list__block')) {
+							e.stopPropagation();
 						}
 					}}
 				>
@@ -248,12 +254,15 @@ export function Edit(props: EditProps) {
 					style={buttonStyles}
 					title={title}
 					onClick={(e: React.MouseEvent) => {
+						// In editor, prevent default navigation completely
 						e.preventDefault();
-						e.stopPropagation();
 					}}
-					onMouseDown={(e: React.MouseEvent) => {
-						if (e.button === 0) {
-							e.preventDefault();
+					onClickCapture={(e: React.MouseEvent) => {
+						// Stop propagation to prevent any parent handlers
+						const target = e.target as HTMLElement;
+						// Only stop propagation if clicking on inner blocks, not the link itself
+						if (target.closest('.block-editor-block-list__block')) {
+							e.stopPropagation();
 						}
 					}}
 				>

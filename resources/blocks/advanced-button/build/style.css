@@ -7,12 +7,14 @@
  * Styles for icon positioning using flex order
  */
 .wp-block-jankx-advanced-button {
+  box-sizing: border-box;
   padding: var(--wp--preset--spacing--20, 0.5rem) var(--wp--preset--spacing--40, 1rem);
   margin: 0;
-  background-color: var(--wp--preset--color--primary, #503AA8);
   border-radius: var(--wp--style--border--radius, 0);
   border: 2px solid transparent;
-  color: var(--wp--preset--color--base, #fff);
+}
+.wp-block-jankx-advanced-button[style*=width] {
+  width: var(--wp--custom--button--width, auto);
 }
 .wp-block-jankx-advanced-button.is-style-outline {
   background-color: transparent;
@@ -32,6 +34,7 @@
 }
 
 .jankx-advanced-button__link {
+  box-sizing: border-box;
   display: inline-flex;
   align-items: center;
   gap: 8px;

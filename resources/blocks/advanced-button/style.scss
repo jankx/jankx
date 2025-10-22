@@ -4,19 +4,23 @@
  * Styles for icon positioning using flex order
  */
 
-// Block wrapper - Default filled primary color
+// Block wrapper
 .wp-block-jankx-advanced-button {
+	// Box sizing để width fixed bao gồm padding và border
+	box-sizing: border-box;
+
 	// Default padding và margin
 	padding: var(--wp--preset--spacing--20, 0.5rem) var(--wp--preset--spacing--40, 1rem);
 	margin: 0;
 
-	// Default background primary color
-	background-color: var(--wp--preset--color--primary, #503AA8);
+	// Default border
 	border-radius: var(--wp--style--border--radius, 0);
 	border: 2px solid transparent;
 
-	// Default text color (white trên primary background)
-	color: var(--wp--preset--color--base, #fff);
+	// Width settings support
+	&[style*="width"] {
+		width: var(--wp--custom--button--width, auto);
+	}
 
 	// Outline style variant
 	&.is-style-outline {
@@ -31,7 +35,7 @@
 		}
 	}
 
-	// Hover state cho filled button
+	// Hover state cho filled button (khi có background)
 	&:not(.is-style-outline):hover {
 		opacity: 0.9;
 	}
@@ -43,6 +47,7 @@
 }
 
 .jankx-advanced-button__link {
+	box-sizing: border-box;
 	display: inline-flex;
 	align-items: center;
 	gap: 8px;

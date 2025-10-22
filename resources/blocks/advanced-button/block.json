@@ -10,7 +10,8 @@
     "allowedBlocks": [
         "jankx/icon-picker",
         "jankx/svg-icon",
-        "core/image"
+        "core/image",
+        "core/html"
     ],
     "attributes": {
         "triggerType": {
@@ -88,10 +89,12 @@
             "default": ""
         },
         "backgroundColor": {
-            "type": "string"
+            "type": "string",
+            "default": "primary"
         },
         "textColor": {
-            "type": "string"
+            "type": "string",
+            "default": "base"
         },
         "gradient": {
             "type": "string"
@@ -145,9 +148,23 @@
         "shadow": true,
         "spacing": {
             "padding": ["horizontal", "vertical"],
+            "margin": true,
             "__experimentalDefaultControls": {
-                "padding": true
+                "padding": true,
+                "margin": false
             }
+        },
+        "layout": {
+            "default": {
+                "type": "flex",
+                "justifyContent": "center"
+            },
+            "allowSwitching": false,
+            "allowInheriting": false,
+            "allowEditing": false
+        },
+        "dimensions": {
+            "minHeight": true
         },
         "__experimentalBorder": {
             "color": true,

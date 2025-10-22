@@ -28,11 +28,32 @@
 				}
 			}
 
-			// Icon blocks in editor
-			.wp-block-jankx-icon-picker,
-			.wp-block-jankx-svg-icon,
-			.wp-block-image {
-				margin: 0;
+			// Icon blocks in editor - completely disable all interactions
+			.block-editor-block-list__layout > .wp-block {
+				// Disable all pointer events and interactions
+				pointer-events: none !important;
+				user-select: none !important;
+				-webkit-user-select: none !important;
+				-moz-user-select: none !important;
+				-ms-user-select: none !important;
+
+				// Disable all child elements
+				* {
+					pointer-events: none !important;
+					user-select: none !important;
+					-webkit-user-select: none !important;
+					-moz-user-select: none !important;
+					-ms-user-select: none !important;
+				}
+
+				// Specific blocks styling
+				.wp-block-jankx-icon-picker,
+				.wp-block-jankx-svg-icon,
+				.wp-block-image,
+				.wp-block-html {
+					margin: 0;
+					pointer-events: none !important;
+				}
 			}
 		}
 
@@ -43,13 +64,17 @@
 	}
 
 	// Button appender styling
-	.block-list-appender {
-		display: inline-flex;
+	.button-icon-wrapper {
+		.block-list-appender {
+			display: inline-flex;
+			pointer-events: auto; // Cho phép click vào appender
 
-		button {
-			padding: 2px;
-			min-width: 24px;
-			min-height: 24px;
+			button {
+				padding: 2px;
+				min-width: 24px;
+				min-height: 24px;
+				pointer-events: auto; // Cho phép click vào nút add
+			}
 		}
 	}
 }
