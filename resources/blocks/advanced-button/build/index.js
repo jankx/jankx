@@ -100,7 +100,34 @@ function Edit(props) {
     } = select('core/block-editor');
     return getBlockCount(clientId) > 0;
   }, [clientId]);
+
+  // Get all modal blocks from the page
+  const modalBlocks = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_7__.useSelect)(select => {
+    const {
+      getBlocks
+    } = select('core/block-editor');
+    const allBlocks = getBlocks();
+
+    // Recursively find all jankx/modal blocks
+    const findModalBlocks = blocks => {
+      let modals = [];
+      blocks.forEach(block => {
+        if (block.name === 'jankx/modal' && block.attributes?.modalId) {
+          modals.push({
+            id: block.attributes.modalId,
+            title: block.attributes.modalTitle || block.attributes.modalId
+          });
+        }
+        if (block.innerBlocks && block.innerBlocks.length > 0) {
+          modals = [...modals, ...findModalBlocks(block.innerBlocks)];
+        }
+      });
+      return modals;
+    };
+    return findModalBlocks(allBlocks);
+  }, []);
   const [isEditingURL, setIsEditingURL] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(false);
+  const [isCustomModalId, setIsCustomModalId] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(false);
   const linkRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useRef)(null);
   const isURLSet = !!url;
   const opensInNewTab = linkTarget === '_blank';
@@ -425,23 +452,59 @@ function Edit(props) {
             children: ["\uD83D\uDCC4 ", (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('This button will link to the current post/page permalink on the frontend.', 'jankx')]
           })
         }), triggerType === 'modal' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalToolsPanelItem, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalToolsPanelItem, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Modal ID', 'jankx'),
             isShownByDefault: true,
             hasValue: () => !!modalId,
-            onDeselect: () => setAttributes({
-              modalId: undefined
-            }),
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+            onDeselect: () => {
+              setAttributes({
+                modalId: undefined
+              });
+              setIsCustomModalId(false);
+            },
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
               label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Modal ID', 'jankx'),
-              value: modalId || '',
-              onChange: value => setAttributes({
-                modalId: value
-              }),
-              placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('modal-123', 'jankx'),
-              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enter the ID of the modal block to open', 'jankx'),
+              value: isCustomModalId ? '__custom__' : modalId || '',
+              options: [{
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select a modal...', 'jankx'),
+                value: ''
+              }, ...modalBlocks.map(modal => ({
+                label: modal.title,
+                value: modal.id
+              })), {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('✏️ Custom ID (Manual Input)', 'jankx'),
+                value: '__custom__'
+              }],
+              onChange: value => {
+                if (value === '__custom__') {
+                  setIsCustomModalId(true);
+                  setAttributes({
+                    modalId: ''
+                  });
+                } else {
+                  setIsCustomModalId(false);
+                  setAttributes({
+                    modalId: value
+                  });
+                }
+              },
+              help: isCustomModalId ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enter custom modal ID in the field below', 'jankx') : modalBlocks.length === 0 ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('No modal blocks found on this page. Add a modal block first or use custom ID.', 'jankx') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select a modal block to trigger, or choose custom ID', 'jankx'),
               __nextHasNoMarginBottom: true
-            })
+            }), isCustomModalId && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+              style: {
+                marginTop: '12px'
+              },
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Custom Modal ID', 'jankx'),
+                value: modalId || '',
+                onChange: value => setAttributes({
+                  modalId: value
+                }),
+                placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('e.g. modal-contact-form', 'jankx'),
+                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enter the ID of your modal. Must match exactly with the modal block ID.', 'jankx'),
+                __nextHasNoMarginBottom: true
+              })
+            })]
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalToolsPanelItem, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Share Data with Modal', 'jankx'),
             isShownByDefault: true,

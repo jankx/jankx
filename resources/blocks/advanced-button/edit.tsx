@@ -112,7 +112,35 @@ export function Edit(props: EditProps) {
 		[clientId]
 	);
 
+	// Get all modal blocks from the page
+	const modalBlocks = useSelect(
+		(select: any) => {
+			const { getBlocks } = select('core/block-editor');
+			const allBlocks = getBlocks();
+
+			// Recursively find all jankx/modal blocks
+			const findModalBlocks = (blocks: any[]): any[] => {
+				let modals: any[] = [];
+				blocks.forEach((block: any) => {
+					if (block.name === 'jankx/modal' && block.attributes?.modalId) {
+						modals.push({
+							id: block.attributes.modalId,
+							title: block.attributes.modalTitle || block.attributes.modalId,
+						});
+					}
+					if (block.innerBlocks && block.innerBlocks.length > 0) {
+						modals = [...modals, ...findModalBlocks(block.innerBlocks)];
+					}
+				});
+				return modals;
+			};
+
+			return findModalBlocks(allBlocks);
+		},
+		[]
+	);
 	const [isEditingURL, setIsEditingURL] = useState<boolean>(false);
+	const [isCustomModalId, setIsCustomModalId] = useState<boolean>(false);
 	const linkRef = useRef<HTMLButtonElement>(null);
 	const isURLSet = !!url;
 	const opensInNewTab = linkTarget === '_blank';
@@ -162,13 +190,13 @@ export function Edit(props: EditProps) {
 	const borderProps = getBorderClassesAndStyles(attributes);
 
 	// Check if button has no color settings
-	const hasNoColorSettings = !backgroundColor?.slug && 
-	                           !backgroundColor?.color && 
-	                           !textColor?.slug && 
-	                           !textColor?.color && 
-	                           !attributes.gradient && 
-	                           !attributes.style?.color?.background && 
-	                           !attributes.style?.color?.text;
+	const hasNoColorSettings = !backgroundColor?.slug &&
+		!backgroundColor?.color &&
+		!textColor?.slug &&
+		!textColor?.color &&
+		!attributes.gradient &&
+		!attributes.style?.color?.background &&
+		!attributes.style?.color?.text;
 
 
 	const buttonClasses = classnames('jankx-advanced-button__link', borderProps?.className, {
@@ -192,14 +220,14 @@ export function Edit(props: EditProps) {
 	const renderButtonContent = () => (
 		<>
 			<span className="button-icon-wrapper">
-		<InnerBlocks
-			allowedBlocks={ALLOWED_BLOCKS}
-			template={ICON_TEMPLATE}
-			templateLock={false}
-			renderAppender={hasInnerBlocks ? false : InnerBlocks.ButtonBlockAppender}
-			orientation="horizontal"
-			__experimentalCaptureToolbars={false}
-		/>
+				<InnerBlocks
+					allowedBlocks={ALLOWED_BLOCKS}
+					template={ICON_TEMPLATE}
+					templateLock={false}
+					renderAppender={hasInnerBlocks ? false : InnerBlocks.ButtonBlockAppender}
+					orientation="horizontal"
+					__experimentalCaptureToolbars={false}
+				/>
 			</span>
 			{showLabel && (
 				<RichText
@@ -477,16 +505,52 @@ export function Edit(props: EditProps) {
 								label={__('Modal ID', 'jankx')}
 								isShownByDefault
 								hasValue={() => !!modalId}
-								onDeselect={() => setAttributes({ modalId: undefined })}
+								onDeselect={() => {
+									setAttributes({ modalId: undefined });
+									setIsCustomModalId(false);
+								}}
 							>
-								<TextControl
+								<SelectControl
 									label={__('Modal ID', 'jankx')}
-									value={modalId || ''}
-									onChange={(value) => setAttributes({ modalId: value })}
-									placeholder={__('modal-123', 'jankx')}
-									help={__('Enter the ID of the modal block to open', 'jankx')}
+									value={isCustomModalId ? '__custom__' : (modalId || '')}
+									options={[
+										{ label: __('Select a modal...', 'jankx'), value: '' },
+										...modalBlocks.map((modal: any) => ({
+											label: modal.title,
+											value: modal.id,
+										})),
+										{ label: __('✏️ Custom ID (Manual Input)', 'jankx'), value: '__custom__' },
+									]}
+									onChange={(value) => {
+										if (value === '__custom__') {
+											setIsCustomModalId(true);
+											setAttributes({ modalId: '' });
+										} else {
+											setIsCustomModalId(false);
+											setAttributes({ modalId: value });
+										}
+									}}
+									help={
+										isCustomModalId
+											? __('Enter custom modal ID in the field below', 'jankx')
+											: modalBlocks.length === 0
+												? __('No modal blocks found on this page. Add a modal block first or use custom ID.', 'jankx')
+												: __('Select a modal block to trigger, or choose custom ID', 'jankx')
+									}
 									__nextHasNoMarginBottom
 								/>
+								{isCustomModalId && (
+									<div style={{ marginTop: '12px' }}>
+										<TextControl
+											label={__('Custom Modal ID', 'jankx')}
+											value={modalId || ''}
+											onChange={(value) => setAttributes({ modalId: value })}
+											placeholder={__('e.g. modal-contact-form', 'jankx')}
+											help={__('Enter the ID of your modal. Must match exactly with the modal block ID.', 'jankx')}
+											__nextHasNoMarginBottom
+										/>
+									</div>
+								)}
 							</ToolsPanelItem>
 							<ToolsPanelItem
 								label={__('Share Data with Modal', 'jankx')}
