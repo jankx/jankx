@@ -5,6 +5,7 @@ namespace Jankx\Support\Providers;
 use Jankx\Facades\Log;
 use Jankx\Foundation\Application;
 use Jankx\Services\ThemeService;
+use Jankx\Services\DefaultThumbnailService;
 use Jankx\Support\Providers\ServiceProvider;
 use Jankx\Support\TemplateEngine\TemplateEngineManager;
 use Jankx\Support\TemplateEngine\Engines\PlatesEngine;
@@ -52,6 +53,9 @@ class ThemeServiceProvider extends ServiceProvider
 
         // Register PostLayout services
         $this->registerPostLayoutServices($app);
+
+        // Register DefaultThumbnail service
+        $this->registerDefaultThumbnailService($app);
     }
 
     /**
@@ -71,6 +75,9 @@ class ThemeServiceProvider extends ServiceProvider
 
         // Initialize PostLayout services
         $this->initializePostLayoutServices($app);
+
+        // Initialize DefaultThumbnail service
+        $this->initializeDefaultThumbnailService($app);
     }
 
     /**
@@ -139,5 +146,39 @@ class ThemeServiceProvider extends ServiceProvider
     {
         // PostLayoutManager is already initialized as singleton
         // No additional initialization needed
+    }
+
+    /**
+     * Register DefaultThumbnail service in the container
+     *
+     * @param  \Jankx\Foundation\Application  $app
+     * @return void
+     */
+    protected function registerDefaultThumbnailService(Application $app)
+    {
+        // Register DefaultThumbnailService as singleton
+        $app->singleton(DefaultThumbnailService::class, function (Application $app) {
+            return new DefaultThumbnailService();
+        });
+
+        // Register alias for easy access
+        $app->alias(DefaultThumbnailService::class, 'thumbnail.default');
+    }
+
+    /**
+     * Initialize DefaultThumbnail service
+     *
+     * @param  \Jankx\Foundation\Application  $app
+     * @return void
+     */
+    protected function initializeDefaultThumbnailService(Application $app)
+    {
+        // Boot the service on 'wp' hook to ensure WordPress is fully loaded
+        add_action('wp', function () use ($app) {
+            $service = $app->make(DefaultThumbnailService::class);
+            if ($service->isEnabled()) {
+                $service->boot();
+            }
+        });
     }
 }

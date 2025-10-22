@@ -21,7 +21,6 @@ return [
         Jankx\Support\Providers\ThemeServiceProvider::class,
         Jankx\Support\Providers\WordPressCliServiceProvider::class,
 
-        App\Providers\DefaultThumbnailServiceProvider::class,
         App\Providers\GutenbergServiceProvider::class,
         App\Providers\LanguageSwitcherServiceProvider::class,
         App\Providers\NavigationBlockServiceProvider::class,
