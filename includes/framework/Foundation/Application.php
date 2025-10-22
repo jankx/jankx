@@ -13,7 +13,6 @@ use Jankx\Support\Providers\JankxFrameworkServiceProvider;
 use Jankx\Support\Providers\SystemServiceProvider;
 use Jankx\Support\Providers\ThemeOptionsServiceProvider;
 use Jankx\Support\Providers\TranslationServiceProvider;
-use Jankx\App\Providers\PostLayoutServiceProvider;
 
 class Application extends Container
 {
@@ -73,7 +72,6 @@ class Application extends Container
         ExtensionServiceProvider::class,
         FontsServiceProvider::class,
         FontIconsServiceProvider::class,
-        PostLayoutServiceProvider::class,
     ];
 
     /**
