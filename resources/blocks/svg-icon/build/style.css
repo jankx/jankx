@@ -17,7 +17,25 @@
   color: currentColor;
 }
 .wp-block-jankx-svg-icon.has-icon-color:not(.has-no-icon-fill-color) svg,
-.wp-block-jankx-svg-icon .has-icon-color:not(.has-no-icon-fill-color) svg {
+.wp-block-jankx-svg-icon.has-icon-color:not(.has-no-icon-fill-color) svg path,
+.wp-block-jankx-svg-icon.has-icon-color:not(.has-no-icon-fill-color) svg g,
+.wp-block-jankx-svg-icon.has-icon-color:not(.has-no-icon-fill-color) svg rect,
+.wp-block-jankx-svg-icon.has-icon-color:not(.has-no-icon-fill-color) svg circle,
+.wp-block-jankx-svg-icon.has-icon-color:not(.has-no-icon-fill-color) svg polygon,
+.wp-block-jankx-svg-icon.has-icon-color:not(.has-no-icon-fill-color) svg polyline,
+.wp-block-jankx-svg-icon.has-icon-color:not(.has-no-icon-fill-color) svg line,
+.wp-block-jankx-svg-icon.has-icon-color:not(.has-no-icon-fill-color) svg ellipse,
+.wp-block-jankx-svg-icon.has-icon-color:not(.has-no-icon-fill-color) svg text,
+.wp-block-jankx-svg-icon .has-icon-color:not(.has-no-icon-fill-color) svg,
+.wp-block-jankx-svg-icon .has-icon-color:not(.has-no-icon-fill-color) svg path,
+.wp-block-jankx-svg-icon .has-icon-color:not(.has-no-icon-fill-color) svg g,
+.wp-block-jankx-svg-icon .has-icon-color:not(.has-no-icon-fill-color) svg rect,
+.wp-block-jankx-svg-icon .has-icon-color:not(.has-no-icon-fill-color) svg circle,
+.wp-block-jankx-svg-icon .has-icon-color:not(.has-no-icon-fill-color) svg polygon,
+.wp-block-jankx-svg-icon .has-icon-color:not(.has-no-icon-fill-color) svg polyline,
+.wp-block-jankx-svg-icon .has-icon-color:not(.has-no-icon-fill-color) svg line,
+.wp-block-jankx-svg-icon .has-icon-color:not(.has-no-icon-fill-color) svg ellipse,
+.wp-block-jankx-svg-icon .has-icon-color:not(.has-no-icon-fill-color) svg text {
   fill: currentColor;
 }
 .wp-block-jankx-svg-icon .icon-container {
@@ -70,11 +88,29 @@
   justify-content: flex-end;
 }
 
-.has-light-text-color .wp-block-jankx-svg-icon svg, .has-light-text-color .wp-block-jankx-svg-icon svg path {
+.has-light-text-color .wp-block-jankx-svg-icon svg,
+.has-light-text-color .wp-block-jankx-svg-icon svg path,
+.has-light-text-color .wp-block-jankx-svg-icon svg g,
+.has-light-text-color .wp-block-jankx-svg-icon svg rect,
+.has-light-text-color .wp-block-jankx-svg-icon svg circle,
+.has-light-text-color .wp-block-jankx-svg-icon svg polygon,
+.has-light-text-color .wp-block-jankx-svg-icon svg polyline,
+.has-light-text-color .wp-block-jankx-svg-icon svg line,
+.has-light-text-color .wp-block-jankx-svg-icon svg ellipse,
+.has-light-text-color .wp-block-jankx-svg-icon svg text {
   fill: var(--wp--preset--color--light-text) !important;
 }
 
-.has-dark-text-color .wp-block-jankx-svg-icon svg, .has-dark-text-color .wp-block-jankx-svg-icon svg path {
+.has-dark-text-color .wp-block-jankx-svg-icon svg,
+.has-dark-text-color .wp-block-jankx-svg-icon svg path,
+.has-dark-text-color .wp-block-jankx-svg-icon svg g,
+.has-dark-text-color .wp-block-jankx-svg-icon svg rect,
+.has-dark-text-color .wp-block-jankx-svg-icon svg circle,
+.has-dark-text-color .wp-block-jankx-svg-icon svg polygon,
+.has-dark-text-color .wp-block-jankx-svg-icon svg polyline,
+.has-dark-text-color .wp-block-jankx-svg-icon svg line,
+.has-dark-text-color .wp-block-jankx-svg-icon svg ellipse,
+.has-dark-text-color .wp-block-jankx-svg-icon svg text {
   fill: var(--wp--preset--color--dark-text) !important;
 }
 

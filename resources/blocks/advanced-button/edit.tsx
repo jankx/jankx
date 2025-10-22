@@ -63,6 +63,7 @@ interface EditProps {
 	textColor: any;
 	setBackgroundColor: (color: string | undefined) => void;
 	setTextColor: (color: string | undefined) => void;
+	clientId: string;
 }
 
 const NEW_TAB_REL = 'noreferrer noopener';
@@ -219,10 +220,15 @@ export function Edit(props: EditProps) {
 						e.preventDefault();
 					}}
 					onClickCapture={(e: React.MouseEvent) => {
-						// Stop propagation to prevent any parent handlers
+						// Allow appender clicks to work normally
 						const target = e.target as HTMLElement;
-						// Only stop propagation if clicking on inner blocks, not the link itself
-						if (target.closest('.block-editor-block-list__block')) {
+						if (target.closest('.block-list-appender')) {
+							// Don't prevent appender clicks
+							return;
+						}
+						// Only prevent clicks on actual inner blocks (not appender)
+						if (target.closest('.block-editor-block-list__block:not(.block-list-appender)')) {
+							e.preventDefault();
 							e.stopPropagation();
 						}
 					}}

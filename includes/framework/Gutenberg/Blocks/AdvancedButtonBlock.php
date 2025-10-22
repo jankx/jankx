@@ -22,6 +22,7 @@ class AdvancedButtonBlock extends Block
      */
     protected $blockId = 'jankx/advanced-button';
 
+
     /**
      * Render the block content
      *
@@ -115,6 +116,31 @@ class AdvancedButtonBlock extends Block
             }
         }
 
-        return $content;
+        // Remove existing wrapper with color classes and create clean wrapper
+        $content = preg_replace('/<div[^>]*class="[^"]*wp-block-jankx-advanced-button[^"]*"[^>]*>/', '', $content);
+        $content = preg_replace('/<\/div>$/', '', $content);
+
+        // Create clean wrapper without color classes
+        $wrapper_classes = [
+            'wp-block-jankx-advanced-button',
+            'jankx-advanced-button'
+        ];
+
+        // Add icon position class if needed
+        $iconPosition = $attributes['iconPosition'] ?? 'left';
+        if (!empty($attributes['useIconBlocks']) && $iconPosition) {
+            $wrapper_classes[] = "icon-position-{$iconPosition}";
+        }
+
+        $wrapper_attributes = sprintf(
+            'class="%s"',
+            esc_attr(implode(' ', $wrapper_classes))
+        );
+
+        return sprintf(
+            '<div %s>%s</div>',
+            $wrapper_attributes,
+            $content
+        );
     }
 }

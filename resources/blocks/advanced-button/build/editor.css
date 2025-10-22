@@ -24,39 +24,59 @@
   gap: 4px;
   margin: 0;
 }
-.wp-block-jankx-advanced-button .jankx-advanced-button__link .button-icon-wrapper .block-editor-block-list__layout > .wp-block {
-  pointer-events: none !important;
+.wp-block-jankx-advanced-button .jankx-advanced-button__link .button-icon-wrapper .block-editor-block-list__layout > .wp-block:not(.block-list-appender) {
+  opacity: 0.7;
+  position: relative;
+}
+.wp-block-jankx-advanced-button .jankx-advanced-button__link .button-icon-wrapper .block-editor-block-list__layout > .wp-block:not(.block-list-appender)::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: transparent;
+  z-index: 10;
+  pointer-events: auto;
+}
+.wp-block-jankx-advanced-button .jankx-advanced-button__link .button-icon-wrapper .block-editor-block-list__layout > .wp-block:not(.block-list-appender) * {
   user-select: none !important;
   -webkit-user-select: none !important;
   -moz-user-select: none !important;
   -ms-user-select: none !important;
 }
-.wp-block-jankx-advanced-button .jankx-advanced-button__link .button-icon-wrapper .block-editor-block-list__layout > .wp-block * {
-  pointer-events: none !important;
-  user-select: none !important;
-  -webkit-user-select: none !important;
-  -moz-user-select: none !important;
-  -ms-user-select: none !important;
+.wp-block-jankx-advanced-button .jankx-advanced-button__link .button-icon-wrapper .block-editor-block-list__layout > .wp-block.block-list-appender {
+  opacity: 1;
+  position: relative;
 }
-.wp-block-jankx-advanced-button .jankx-advanced-button__link .button-icon-wrapper .block-editor-block-list__layout > .wp-block .wp-block-jankx-icon-picker,
-.wp-block-jankx-advanced-button .jankx-advanced-button__link .button-icon-wrapper .block-editor-block-list__layout > .wp-block .wp-block-jankx-svg-icon,
-.wp-block-jankx-advanced-button .jankx-advanced-button__link .button-icon-wrapper .block-editor-block-list__layout > .wp-block .wp-block-image,
-.wp-block-jankx-advanced-button .jankx-advanced-button__link .button-icon-wrapper .block-editor-block-list__layout > .wp-block .wp-block-html {
-  margin: 0;
-  pointer-events: none !important;
+.wp-block-jankx-advanced-button .jankx-advanced-button__link .button-icon-wrapper .block-editor-block-list__layout > .wp-block.block-list-appender::after {
+  display: none;
+}
+.wp-block-jankx-advanced-button .jankx-advanced-button__link .button-icon-wrapper .block-editor-block-list__layout > .wp-block.block-list-appender * {
+  pointer-events: auto !important;
+  user-select: auto !important;
+  cursor: pointer !important;
 }
 .wp-block-jankx-advanced-button .jankx-advanced-button__link .button-icon-wrapper:empty {
   display: none;
 }
 .wp-block-jankx-advanced-button .button-icon-wrapper .block-list-appender {
   display: inline-flex;
-  pointer-events: auto;
+  pointer-events: auto !important;
 }
 .wp-block-jankx-advanced-button .button-icon-wrapper .block-list-appender button {
   padding: 2px;
   min-width: 24px;
   min-height: 24px;
-  pointer-events: auto;
+  pointer-events: auto !important;
+}
+
+.wp-block-jankx-advanced-button .block-list-appender {
+  pointer-events: auto !important;
+}
+.wp-block-jankx-advanced-button .block-list-appender *, .wp-block-jankx-advanced-button .block-list-appender button, .wp-block-jankx-advanced-button .block-list-appender .components-button, .wp-block-jankx-advanced-button .block-list-appender .block-editor-button-block-appender, .wp-block-jankx-advanced-button .block-list-appender .components-dropdown, .wp-block-jankx-advanced-button .block-list-appender svg {
+  pointer-events: auto !important;
+  cursor: pointer !important;
 }
 
 /*# sourceMappingURL=editor.css.map*/

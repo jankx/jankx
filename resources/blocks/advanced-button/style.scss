@@ -9,13 +9,11 @@
 	// Box sizing để width fixed bao gồm padding và border
 	box-sizing: border-box;
 
-	// Default padding và margin
-	padding: var(--wp--preset--spacing--20, 0.5rem) var(--wp--preset--spacing--40, 1rem);
-	margin: 0;
-
-	// Default border
-	border-radius: var(--wp--style--border--radius, 0);
-	border: 2px solid transparent;
+	// Remove padding from wrapper - padding will be applied to link instead
+	padding: 0 !important;
+	
+	// Margin stays on wrapper (WordPress controls apply here)
+	// No default margin, let WordPress controls handle it
 
 	// Width settings support
 	&[style*="width"] {
@@ -24,20 +22,82 @@
 
 	// Outline style variant
 	&.is-style-outline {
-		background-color: transparent;
-		border-color: var(--wp--preset--color--primary, #503AA8);
-		color: var(--wp--preset--color--primary, #503AA8);
+		// Force remove background and use transparent
+		background-color: transparent !important;
+		background: transparent !important;
+
+		// Use primary color for border and text
+		border-color: var(--wp--preset--color--primary, #503AA8) !important;
+		color: var(--wp--preset--color--primary, #503AA8) !important;
+
+		// Ensure link inherits the color
+		.jankx-advanced-button__link {
+			color: inherit !important;
+		}
 
 		// Hover state
 		&:hover {
-			background-color: var(--wp--preset--color--primary, #503AA8);
-			color: var(--wp--preset--color--base, #fff);
+			background-color: var(--wp--preset--color--primary, #503AA8) !important;
+			color: var(--wp--preset--color--base, #fff) !important;
+
+			.jankx-advanced-button__link {
+				color: inherit !important;
+			}
 		}
 	}
 
 	// Hover state cho filled button (khi có background)
 	&:not(.is-style-outline):hover {
 		opacity: 0.9;
+	}
+
+	// Icon position classes
+	&.icon-position-left .jankx-advanced-button__link {
+		flex-direction: row;
+
+		.button-icon-wrapper {
+			order: 0;
+		}
+
+		.button-text {
+			order: 1;
+		}
+	}
+
+	&.icon-position-right .jankx-advanced-button__link {
+		flex-direction: row;
+
+		.button-icon-wrapper {
+			order: 1;
+		}
+
+		.button-text {
+			order: 0;
+		}
+	}
+
+	&.icon-position-top .jankx-advanced-button__link {
+		flex-direction: column;
+
+		.button-icon-wrapper {
+			order: 0;
+		}
+
+		.button-text {
+			order: 1;
+		}
+	}
+
+	&.icon-position-bottom .jankx-advanced-button__link {
+		flex-direction: column;
+
+		.button-icon-wrapper {
+			order: 1;
+		}
+
+		.button-text {
+			order: 0;
+		}
 	}
 }
 
@@ -53,51 +113,21 @@
 	gap: 8px;
 	text-decoration: none;
 	color: inherit;
+	width: 100%;
+
+	// Default padding - inherit from parent or use default
+	padding: var(--wp--custom--button--padding-top, 0.5rem)
+	         var(--wp--custom--button--padding-right, 1rem)
+	         var(--wp--custom--button--padding-bottom, 0.5rem)
+	         var(--wp--custom--button--padding-left, 1rem);
 
 	// Icon wrapper
 	.button-icon-wrapper {
 		display: inline-flex;
 		align-items: center;
-		order: 1; // Default: icon first
 
 		&:empty {
 			display: none;
-		}
-	}
-
-	// Icon position: left (default)
-	&.icon-position-left {
-		flex-direction: row;
-
-		.button-icon-wrapper {
-			order: 1;
-		}
-	}
-
-	// Icon position: right
-	&.icon-position-right {
-		flex-direction: row;
-
-		.button-icon-wrapper {
-			order: 2;
-		}
-	}
-
-	// Icon position: top
-	&.icon-position-top {
-		flex-direction: column;
-
-		.button-icon-wrapper {
-			order: 1;
-		}
-	}
-
-	// Icon position: bottom
-	&.icon-position-bottom {
-		flex-direction: column;
-
-		.button-icon-wrapper {
-			order: 2;
 		}
 	}
 
@@ -112,4 +142,3 @@
 		margin: 0;
 	}
 }
-

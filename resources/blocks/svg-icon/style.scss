@@ -19,7 +19,16 @@
 		}
 
 		&:not(.has-no-icon-fill-color) {
-			svg {
+			svg,
+			svg path,
+			svg g,
+			svg rect,
+			svg circle,
+			svg polygon,
+			svg polyline,
+			svg line,
+			svg ellipse,
+			svg text {
 				fill: currentColor;
 			}
 		}
@@ -95,14 +104,32 @@
 
 .has-light-text-color {
 	.wp-block-jankx-svg-icon {
-		svg, svg path {
+		svg,
+		svg path,
+		svg g,
+		svg rect,
+		svg circle,
+		svg polygon,
+		svg polyline,
+		svg line,
+		svg ellipse,
+		svg text {
 			fill: var(--wp--preset--color--light-text) !important;
 		}
 	}
 }
 .has-dark-text-color {
 	.wp-block-jankx-svg-icon {
-		svg, svg path {
+		svg,
+		svg path,
+		svg g,
+		svg rect,
+		svg circle,
+		svg polygon,
+		svg polyline,
+		svg line,
+		svg ellipse,
+		svg text {
 			fill: var(--wp--preset--color--dark-text) !important;
 		}
 	}

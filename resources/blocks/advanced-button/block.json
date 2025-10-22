@@ -103,7 +103,17 @@
             "type": "number"
         },
         "style": {
-            "type": "object"
+            "type": "object",
+            "default": {
+                "spacing": {
+                    "padding": {
+                        "top": "0.5rem",
+                        "right": "1rem",
+                        "bottom": "0.5rem",
+                        "left": "1rem"
+                    }
+                }
+            }
         },
         "useIconBlocks": {
             "type": "boolean",
@@ -124,7 +134,7 @@
         "align": false,
         "alignWide": false,
         "color": {
-            "__experimentalSkipSerialization": false,
+            "__experimentalSkipSerialization": true,
             "gradients": true,
             "__experimentalDefaultControls": {
                 "background": true,

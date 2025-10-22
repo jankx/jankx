@@ -28,31 +28,53 @@
 				}
 			}
 
-			// Icon blocks in editor - completely disable all interactions
-			.block-editor-block-list__layout > .wp-block {
-				// Disable all pointer events and interactions
-				pointer-events: none !important;
-				user-select: none !important;
-				-webkit-user-select: none !important;
-				-moz-user-select: none !important;
-				-ms-user-select: none !important;
+			// Icon blocks in editor - style them to look disabled but keep appender working
+			.block-editor-block-list__layout {
+				// Style icon blocks to look disabled
+				> .wp-block {
+					&:not(.block-list-appender) {
+						opacity: 0.7;
+						position: relative;
 
-				// Disable all child elements
-				* {
-					pointer-events: none !important;
-					user-select: none !important;
-					-webkit-user-select: none !important;
-					-moz-user-select: none !important;
-					-ms-user-select: none !important;
-				}
+						// Add overlay to prevent interactions
+						&::after {
+							content: '';
+							position: absolute;
+							top: 0;
+							left: 0;
+							right: 0;
+							bottom: 0;
+							background: transparent;
+							z-index: 10;
+							pointer-events: auto;
+						}
 
-				// Specific blocks styling
-				.wp-block-jankx-icon-picker,
-				.wp-block-jankx-svg-icon,
-				.wp-block-image,
-				.wp-block-html {
-					margin: 0;
-					pointer-events: none !important;
+						// Disable user selection
+						* {
+							user-select: none !important;
+							-webkit-user-select: none !important;
+							-moz-user-select: none !important;
+							-ms-user-select: none !important;
+						}
+					}
+
+					// Appender should be fully enabled
+					&.block-list-appender {
+						opacity: 1;
+						position: relative;
+
+						// No overlay for appender
+						&::after {
+							display: none;
+						}
+
+						// Enable all interactions
+						* {
+							pointer-events: auto !important;
+							user-select: auto !important;
+							cursor: pointer !important;
+						}
+					}
 				}
 			}
 		}
@@ -63,18 +85,29 @@
 		}
 	}
 
-	// Button appender styling
+	// Button appender styling - ensure it's always clickable
 	.button-icon-wrapper {
 		.block-list-appender {
 			display: inline-flex;
-			pointer-events: auto; // Cho phép click vào appender
+			pointer-events: auto !important; // Override any parent disabled pointer events
 
 			button {
 				padding: 2px;
 				min-width: 24px;
 				min-height: 24px;
-				pointer-events: auto; // Cho phép click vào nút add
+				pointer-events: auto !important;
 			}
 		}
 	}
 }
+
+// Global override for appender - highest specificity
+.wp-block-jankx-advanced-button .block-list-appender {
+	pointer-events: auto !important;
+
+	*, button, .components-button, .block-editor-button-block-appender, .components-dropdown, svg {
+		pointer-events: auto !important;
+		cursor: pointer !important;
+	}
+}
+
