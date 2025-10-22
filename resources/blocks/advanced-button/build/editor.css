@@ -10,6 +10,16 @@
   z-index: 99999;
 }
 
+button.jankx-advanced-button__link {
+  appearance: none;
+  background: none;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  cursor: pointer;
+  margin: 0;
+}
+
 .wp-block-jankx-advanced-button .jankx-advanced-button__link .button-icon-wrapper {
   display: inline-flex;
   align-items: center;

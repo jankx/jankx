@@ -66,11 +66,19 @@ export default function Save(props: SaveProps) {
 
 	const blockProps = useBlockProps.save();
 
+	// Check if button has no color settings
+	const hasNoColorSettings = !backgroundColor &&
+	                           !textColor &&
+	                           !gradient &&
+	                           !props.attributes.style?.color?.background &&
+	                           !props.attributes.style?.color?.text;
+
 	const buttonClasses = classnames('jankx-advanced-button__link', {
 		[`has-${backgroundColor}-background-color`]: backgroundColor,
 		[`has-${textColor}-color`]: textColor,
 		[`has-${gradient}-gradient-background`]: gradient,
 		[`icon-position-${iconPosition}`]: iconPosition,
+		'has-base-color': hasNoColorSettings,
 	});
 
 	const buttonStyles = {

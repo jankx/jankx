@@ -629,11 +629,15 @@ function Save(props) {
     return null;
   }
   const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps.save();
+
+  // Check if button has no color settings
+  const hasNoColorSettings = !backgroundColor && !textColor && !gradient && !props.attributes.style?.color?.background && !props.attributes.style?.color?.text;
   const buttonClasses = classnames__WEBPACK_IMPORTED_MODULE_0___default()('jankx-advanced-button__link', {
     [`has-${backgroundColor}-background-color`]: backgroundColor,
     [`has-${textColor}-color`]: textColor,
     [`has-${gradient}-gradient-background`]: gradient,
-    [`icon-position-${iconPosition}`]: iconPosition
+    [`icon-position-${iconPosition}`]: iconPosition,
+    'has-base-color': hasNoColorSettings
   });
   const buttonStyles = {
     ...blockProps.style

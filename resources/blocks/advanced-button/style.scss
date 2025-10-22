@@ -21,54 +21,36 @@
 	}
 
 	.jankx-advanced-button__link {
+		box-sizing: border-box;
 		border-width: 2px;
 		border-style: solid;
 		border-color: transparent;
 	}
 
 	// Default fill style - khi button không có background color được set
-	&:not(.is-style-outline) .jankx-advanced-button__link.has-base-color {
+	// Only apply when NO other background color class exists
+	&:not(.is-style-outline) .jankx-advanced-button__link.has-base-color:not([class*="-background-color"]) {
 		background-color: var(--wp--preset--color--primary, #503AA8);
 		color: var(--wp--preset--color--contrast, #fff);
 	}
 
 	// Outline style variant
 	&.is-style-outline {
-		// Force remove background and use transparent
-		background-color: transparent !important;
-		background: transparent !important;
-
-		// Use primary color for border and text
-		border-color: var(--wp--preset--color--primary, #503AA8) !important;
-		color: var(--wp--preset--color--primary, #503AA8) !important;
-
-		// Ensure link inherits the color
-		.jankx-advanced-button__link {
-			color: inherit !important;
-		}
-
 		// Khi button không có background/color được set - dùng primary cho border và text
-		.jankx-advanced-button__link.has-base-color {
-			border: 2px solid var(--wp--preset--color--primary, #503AA8);
+		// Only apply when NO other background color class exists
+		.jankx-advanced-button__link.has-base-color:not([class*="-background-color"]) {
+			border-color: var(--wp--preset--color--primary, #503AA8);
 			color: var(--wp--preset--color--primary, #503AA8);
 			background-color: transparent;
 		}
 
 		// Hover state
-		&:hover {
+		&:hover .jankx-advanced-button__link {
 			background-color: var(--wp--preset--color--primary, #503AA8) !important;
 			color: var(--wp--preset--color--contrast, #fff) !important;
-
-			.jankx-advanced-button__link {
-				color: inherit !important;
-			}
 		}
 	}
 
-	// Hover state cho filled button (khi có background)
-	&:not(.is-style-outline):hover {
-		opacity: 0.9;
-	}
 
 	// Icon position classes
 	&.icon-position-left .jankx-advanced-button__link {
@@ -139,7 +121,20 @@
 	         var(--wp--custom--button--padding-right, 1rem)
 	         var(--wp--custom--button--padding-bottom, 0.5rem)
 	         var(--wp--custom--button--padding-left, 1rem);
+}
 
+// Reset button element defaults to match link appearance
+button.jankx-advanced-button__link {
+	appearance: none;
+	background: none;
+	font-family: inherit;
+	font-size: inherit;
+	line-height: inherit;
+	cursor: pointer;
+	margin: 0;
+}
+
+.jankx-advanced-button__link {
 	// Icon wrapper
 	.button-icon-wrapper {
 		display: inline-flex;
