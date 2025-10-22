@@ -210,7 +210,6 @@ export function Edit(props: EditProps) {
 			buttonElement = (
 				<a
 					className={buttonClasses}
-					href="#"
 					target={linkTarget}
 					rel={rel}
 					style={buttonStyles}
@@ -250,20 +249,19 @@ export function Edit(props: EditProps) {
 			buttonElement = (
 				<a
 					className={buttonClasses}
-					href="#"
+					href="javascript:void(0)"
 					style={buttonStyles}
 					title={title}
 					onClick={(e: React.MouseEvent) => {
-						// In editor, prevent default navigation completely
+						// Prevent all navigation in editor
 						e.preventDefault();
+						e.stopPropagation();
+						return false;
 					}}
-					onClickCapture={(e: React.MouseEvent) => {
-						// Stop propagation to prevent any parent handlers
-						const target = e.target as HTMLElement;
-						// Only stop propagation if clicking on inner blocks, not the link itself
-						if (target.closest('.block-editor-block-list__block')) {
-							e.stopPropagation();
-						}
+					onMouseDown={(e: React.MouseEvent) => {
+						// Also prevent on mousedown
+						e.preventDefault();
+						e.stopPropagation();
 					}}
 				>
 					{renderButtonContent()}
