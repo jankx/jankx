@@ -7,7 +7,7 @@ use Jankx\Gutenberg\GutenbergPattern;
 
 class SlideshowBlock extends Block
 {
-    protected $blockId = 'jankx/slide-show';
+    protected $blockId = 'jankx/slideshow';
 
     public function render($attributes, $content = '', $block = null)
     {

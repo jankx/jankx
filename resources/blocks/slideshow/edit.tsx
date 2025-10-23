@@ -45,7 +45,7 @@ export default function Edit({ attributes, setAttributes, clientId }: SlideshowE
   const innerBlocksProps = useInnerBlocksProps(
     { className: 'slideshow-items' },
     {
-      allowedBlocks: ['jankx/slide-show-item'],
+      allowedBlocks: ['jankx/slideshow-item'],
       template: [], // Empty template, we'll populate dynamically
       templateLock: false, // Allow editing
       orientation: 'horizontal'
@@ -80,7 +80,7 @@ export default function Edit({ attributes, setAttributes, clientId }: SlideshowE
     const blocksToCreate = mediaList.map(media => {
       const thumbnailUrl = media.sizes?.thumbnail?.url || media.sizes?.medium?.url || media.url;
 
-      return createBlock('jankx/slide-show-item', {
+      return createBlock('jankx/slideshow-item', {
         imageId: media.id,
         imageUrl: media.url,
         imageAlt: media.alt || '',

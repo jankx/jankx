@@ -2,19 +2,19 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./blocks/slide-show-item/block.json":
+/***/ "./blocks/slideshow-item/block.json":
 /*!*******************************************!*\
-  !*** ./blocks/slide-show-item/block.json ***!
+  !*** ./blocks/slideshow-item/block.json ***!
   \*******************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/slide-show-item","title":"Slideshow Item","category":"jankx","description":"Single slide item for slideshow (locked block)","keywords":["slide","image","caption"],"textdomain":"jankx","parent":["jankx/slide-show"],"attributes":{"imageId":{"type":"number"},"imageUrl":{"type":"string"},"imageAlt":{"type":"string"},"imageCaption":{"type":"string"},"thumbnailUrl":{"type":"string"},"slideId":{"type":"string"}},"supports":{"html":false,"reusable":false,"lock":false,"spacing":{"margin":false,"padding":true},"color":{"background":true,"text":true},"typography":{"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true}},"usesContext":["jankx/slideShowId"],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/slideshow-item","title":"Slideshow Item","category":"jankx","description":"Single slide item for slideshow (locked block)","keywords":["slide","image","caption"],"textdomain":"jankx","parent":["jankx/slideshow"],"attributes":{"imageId":{"type":"number"},"imageUrl":{"type":"string"},"imageAlt":{"type":"string"},"imageCaption":{"type":"string"},"thumbnailUrl":{"type":"string"},"slideId":{"type":"string"}},"supports":{"html":false,"reusable":false,"lock":false,"spacing":{"margin":false,"padding":true},"color":{"background":true,"text":true},"typography":{"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true}},"usesContext":["jankx/slideShowId"],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
 
 /***/ }),
 
-/***/ "./blocks/slide-show-item/edit.tsx":
+/***/ "./blocks/slideshow-item/edit.tsx":
 /*!*****************************************!*\
-  !*** ./blocks/slide-show-item/edit.tsx ***!
+  !*** ./blocks/slideshow-item/edit.tsx ***!
   \*****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -164,9 +164,9 @@ function Edit({
 
 /***/ }),
 
-/***/ "./blocks/slide-show-item/editor.scss":
+/***/ "./blocks/slideshow-item/editor.scss":
 /*!********************************************!*\
-  !*** ./blocks/slide-show-item/editor.scss ***!
+  !*** ./blocks/slideshow-item/editor.scss ***!
   \********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -176,9 +176,9 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./blocks/slide-show-item/style.scss":
+/***/ "./blocks/slideshow-item/style.scss":
 /*!*******************************************!*\
-  !*** ./blocks/slide-show-item/style.scss ***!
+  !*** ./blocks/slideshow-item/style.scss ***!
   \*******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -320,15 +320,15 @@ var __webpack_exports__ = {};
 // This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
 (() => {
 /*!******************************************!*\
-  !*** ./blocks/slide-show-item/index.tsx ***!
+  !*** ./blocks/slideshow-item/index.tsx ***!
   \******************************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _edit__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./edit */ "./blocks/slide-show-item/edit.tsx");
-/* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./block.json */ "./blocks/slide-show-item/block.json");
-/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./style.scss */ "./blocks/slide-show-item/style.scss");
-/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./editor.scss */ "./blocks/slide-show-item/editor.scss");
+/* harmony import */ var _edit__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./edit */ "./blocks/slideshow-item/edit.tsx");
+/* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./block.json */ "./blocks/slideshow-item/block.json");
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./style.scss */ "./blocks/slideshow-item/style.scss");
+/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./editor.scss */ "./blocks/slideshow-item/editor.scss");
 
 
 

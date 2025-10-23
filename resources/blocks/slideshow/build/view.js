@@ -1,6 +1,6 @@
 /******/ (() => { // webpackBootstrap
 /*!***********************************!*\
-  !*** ./blocks/slide-show/view.js ***!
+  !*** ./blocks/slideshow/view.js ***!
   \***********************************/
 /**
  * Slideshow Block Frontend Script

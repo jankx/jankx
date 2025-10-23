@@ -37,13 +37,13 @@ Advanced slideshow block with thumbnails, captions, and PhotoSwipe integration f
 
 ## Block Structure
 
-### Main Slideshow Block (`jankx/slide-show`)
+### Main Slideshow Block (`jankx/slideshow`)
 - Container for the entire slideshow
 - Manages settings and configuration
 - Creates and manages slideshow-item blocks
 - Handles navigation and controls
 
-### Slideshow Item Block (`jankx/slide-show-item`)
+### Slideshow Item Block (`jankx/slideshow-item`)
 - Individual slide content (locked block)
 - Contains image and caption
 - Automatically created when selecting images
@@ -116,7 +116,7 @@ The block uses CSS custom properties for easy theming:
 ## File Structure
 
 ```
-blocks/slide-show/
+blocks/slideshow/
 ├── block.json          # Block metadata and attributes
 ├── index.tsx           # Block registration
 ├── edit.tsx            # Editor component (WYSIWYG)
@@ -126,7 +126,7 @@ blocks/slide-show/
 ├── types.ts            # TypeScript interfaces
 └── README.md           # This file
 
-blocks/slide-show-item/
+blocks/slideshow-item/
 ├── block.json          # Item block metadata
 ├── index.tsx           # Item block registration
 ├── edit.tsx            # Item editor component

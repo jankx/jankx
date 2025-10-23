@@ -6,7 +6,7 @@ use Jankx\Gutenberg\Block;
 
 class SlideshowItemBlock extends Block
 {
-    protected $blockId = 'jankx/slide-show-item';
+    protected $blockId = 'jankx/slideshow-item';
 
     public function render($attributes, $content = '', $block = null)
     {

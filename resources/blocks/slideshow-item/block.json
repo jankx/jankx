@@ -1,13 +1,13 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 3,
-  "name": "jankx/slide-show-item",
+  "name": "jankx/slideshow-item",
   "title": "Slideshow Item",
   "category": "jankx",
   "description": "Single slide item for slideshow (locked block)",
   "keywords": ["slide", "image", "caption"],
   "textdomain": "jankx",
-  "parent": ["jankx/slide-show"],
+  "parent": ["jankx/slideshow"],
   "attributes": {
     "imageId": {
       "type": "number"

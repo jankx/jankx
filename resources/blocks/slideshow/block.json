@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 3,
-  "name": "jankx/slide-show",
+  "name": "jankx/slideshow",
   "title": "Slideshow",
   "category": "jankx",
   "description": "Advanced slideshow with thumbnails, captions and PhotoSwipe integration",

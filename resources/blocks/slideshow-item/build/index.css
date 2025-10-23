@@ -1,5 +1,5 @@
 /*!**************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/slide-show-item/style.scss ***!
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/slideshow-item/style.scss ***!
   \**************************************************************************************************************************************************************************************************/
 .slideshow-item-block {
   --slideshow-item-primary-color: var(--wp--preset--color--primary);
@@ -244,7 +244,7 @@
   }
 }
 /*!***************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/slide-show-item/editor.scss ***!
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/slideshow-item/editor.scss ***!
   \***************************************************************************************************************************************************************************************************/
 @charset "UTF-8";
 .slideshow-item-block {
