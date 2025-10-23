@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { useBlockProps, InspectorControls, InnerBlocks } from '@wordpress/block-editor';
 import { PanelBody, ToggleControl, RangeControl, SelectControl, TextControl } from '@wordpress/components';
-import { useEffect } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
 import type { SlideshowEditProps } from './types';
@@ -24,6 +24,7 @@ export default function Edit({ attributes, setAttributes, clientId }: SlideshowE
     fullscreenText
   } = attributes;
 
+  const [currentSlide, setCurrentSlide] = useState(0);
   const { insertBlock } = useDispatch('core/block-editor');
 
   // Get images and block info from slideshow-container child block
@@ -184,41 +185,60 @@ export default function Edit({ attributes, setAttributes, clientId }: SlideshowE
         templateLock={false}
       />
 
-      {/* Footer Controls and Pagination */}
-      <div className="slideshow-footer">
-        <div className="slideshow-controls">
-          {fullscreen && (
-            <button className="slideshow-fullscreen-btn">
-              {fullscreenText || __('Fullscreen', 'jankx')}
-            </button>
-          )}
-          {autoplay && (
-            <button className="slideshow-autoplay-btn">
-              {__('Xem tự động', 'jankx')}
-            </button>
+      {/* Footer Controls and Pagination - Only show when images exist */}
+      {images.length > 0 && (
+        <div className="slideshow-footer">
+          <div className="slideshow-controls">
+            {fullscreen && (
+              <button className="slideshow-fullscreen-btn">
+                {fullscreenText || __('Fullscreen', 'jankx')}
+              </button>
+            )}
+            {autoplay && (
+              <button className="slideshow-autoplay-btn">
+                {__('Xem tự động', 'jankx')}
+              </button>
+            )}
+          </div>
+
+          {showPagination && images.length > 1 && (
+            <div className="slideshow-pagination">
+              <button 
+                className="slideshow-pagination-prev"
+                onClick={() => {
+                  if (currentSlide > 0) {
+                    setCurrentSlide(currentSlide - 1);
+                  }
+                }}
+                disabled={currentSlide === 0}
+              >
+                &lt;
+              </button>
+              {images.map((_, index) => (
+                <button
+                  key={index}
+                  className={`slideshow-pagination-dot ${index === currentSlide ? 'active' : ''}`}
+                  data-slide={index}
+                  onClick={() => setCurrentSlide(index)}
+                >
+                  {index + 1}
+                </button>
+              ))}
+              <button 
+                className="slideshow-pagination-next"
+                onClick={() => {
+                  if (currentSlide < images.length - 1) {
+                    setCurrentSlide(currentSlide + 1);
+                  }
+                }}
+                disabled={currentSlide === images.length - 1}
+              >
+                &gt;
+              </button>
+            </div>
           )}
         </div>
-
-        {showPagination && images.length > 1 && (
-          <div className="slideshow-pagination">
-            <button className="slideshow-pagination-prev" disabled>
-              &lt;
-            </button>
-            {images.map((_, index) => (
-              <button
-                key={index}
-                className={`slideshow-pagination-dot ${index === 0 ? 'active' : ''}`}
-                data-slide={index}
-              >
-                {index + 1}
-              </button>
-            ))}
-            <button className="slideshow-pagination-next">
-              &gt;
-            </button>
-          </div>
-        )}
-      </div>
+      )}
     </div>
   );
 }

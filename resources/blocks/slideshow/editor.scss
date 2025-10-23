@@ -220,24 +220,3 @@
     }
   }
 }
-
-// Center alignment for footer text blocks - match frontend
-.wp-block-jankx-slideshow {
-  // Make sure all core blocks in slideshow are centered
-  > .block-editor-inner-blocks {
-    .wp-block[data-type^="core/"] {
-      p, h1, h2, h3, h4, h5, h6, li, blockquote {
-        text-align: center !important;
-      }
-
-      .block-editor-rich-text__editable {
-        text-align: center !important;
-      }
-    }
-  }
-  
-  // Footer text area styling
-  .slideshow-footer-text {
-    text-align: center !important;
-  }
-}

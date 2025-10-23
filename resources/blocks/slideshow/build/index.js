@@ -64,6 +64,7 @@ function Edit({
     showFooterText,
     fullscreenText
   } = attributes;
+  const [currentSlide, setCurrentSlide] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useState)(0);
   const {
     insertBlock
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_4__.useDispatch)('core/block-editor');
@@ -248,7 +249,7 @@ function Edit({
       allowedBlocks: ['jankx/slideshow-container', 'core/paragraph', 'core/heading', 'core/list', 'core/list-item', 'core/quote', 'core/group'],
       template: [['jankx/slideshow-container', {}]],
       templateLock: false
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+    }), images.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
       className: "slideshow-footer",
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
         className: "slideshow-controls",
@@ -263,14 +264,26 @@ function Edit({
         className: "slideshow-pagination",
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
           className: "slideshow-pagination-prev",
-          disabled: true,
+          onClick: () => {
+            if (currentSlide > 0) {
+              setCurrentSlide(currentSlide - 1);
+            }
+          },
+          disabled: currentSlide === 0,
           children: "<"
         }), images.map((_, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
-          className: `slideshow-pagination-dot ${index === 0 ? 'active' : ''}`,
+          className: `slideshow-pagination-dot ${index === currentSlide ? 'active' : ''}`,
           "data-slide": index,
+          onClick: () => setCurrentSlide(index),
           children: index + 1
         }, index)), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
           className: "slideshow-pagination-next",
+          onClick: () => {
+            if (currentSlide < images.length - 1) {
+              setCurrentSlide(currentSlide + 1);
+            }
+          },
+          disabled: currentSlide === images.length - 1,
           children: ">"
         })]
       })]

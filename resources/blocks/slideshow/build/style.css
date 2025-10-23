@@ -178,12 +178,6 @@
 .slideshow-block .slideshow-main .slideshow-nav.slideshow-nav-next {
   right: 16px;
 }
-.slideshow-block .slideshow-footer-text p {
-  margin: 0;
-  font-size: 14px;
-  line-height: 1.6;
-  color: #333;
-}
 .slideshow-block .slideshow-footer {
   display: flex;
   justify-content: space-between;
