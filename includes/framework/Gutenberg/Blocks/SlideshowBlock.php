@@ -100,45 +100,48 @@ class SlideshowBlock extends Block
                     }
                 }
             }
-            if (!empty($footer_content)) : ?>
-                <div class="slideshow-footer-text">
-                    <?php echo $footer_content; ?>
-                </div>
-            <?php endif; ?>
-
+            ?>
             <?php if (!empty($images)) : ?>
                 <div class="slideshow-footer">
-                    <div class="slideshow-controls">
-                        <?php if ($fullscreen) : ?>
-                            <button class="slideshow-fullscreen-btn">
-                                <?php _e('Fullscreen', 'jankx'); ?>
-                            </button>
-                        <?php endif; ?>
-
-                        <?php if ($autoplay) : ?>
-                            <button class="slideshow-autoplay-btn">
-                                <?php _e('Xem tự động', 'jankx'); ?>
-                            </button>
-                        <?php endif; ?>
-                    </div>
-
-                    <?php if ($showPagination && count($images) > 1) : ?>
-                        <div class="slideshow-pagination">
-                            <button class="slideshow-pagination-prev" disabled>
-                                &lt;
-                            </button>
-                            <?php foreach ($images as $index => $image) : ?>
-                                <?php $active_class = $index === 0 ? 'active' : ''; ?>
-                                <button class="slideshow-pagination-dot <?php echo $active_class; ?>"
-                                        data-slide="<?php echo $index; ?>">
-                                    <?php echo $index + 1; ?>
-                                </button>
-                            <?php endforeach; ?>
-                            <button class="slideshow-pagination-next">
-                                &gt;
-                            </button>
+                    <?php if (!empty($footer_content)) : ?>
+                        <div class="slideshow-footer-text">
+                            <?php echo $footer_content; ?>
                         </div>
                     <?php endif; ?>
+
+                    <div class="slideshow-footer-bottom">
+                        <div class="slideshow-controls">
+                            <?php if ($fullscreen) : ?>
+                                <button class="slideshow-fullscreen-btn">
+                                    <?php _e('Fullscreen', 'jankx'); ?>
+                                </button>
+                            <?php endif; ?>
+
+                            <?php if ($autoplay) : ?>
+                                <button class="slideshow-autoplay-btn">
+                                    <?php _e('Xem tự động', 'jankx'); ?>
+                                </button>
+                            <?php endif; ?>
+                        </div>
+
+                        <?php if ($showPagination && count($images) > 1) : ?>
+                            <div class="slideshow-pagination">
+                                <button class="slideshow-pagination-prev" disabled>
+                                    &lt;
+                                </button>
+                                <?php foreach ($images as $index => $image) : ?>
+                                    <?php $active_class = $index === 0 ? 'active' : ''; ?>
+                                    <button class="slideshow-pagination-dot <?php echo $active_class; ?>"
+                                            data-slide="<?php echo $index; ?>">
+                                        <?php echo $index + 1; ?>
+                                    </button>
+                                <?php endforeach; ?>
+                                <button class="slideshow-pagination-next">
+                                    &gt;
+                                </button>
+                            </div>
+                        <?php endif; ?>
+                    </div>
                 </div>
             <?php endif; ?>
         </div>

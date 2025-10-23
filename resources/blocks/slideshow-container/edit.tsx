@@ -3,7 +3,7 @@ import { useBlockProps, MediaUpload, MediaUploadCheck, InnerBlocks } from '@word
 import { Button, Placeholder } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 import { createBlock } from '@wordpress/blocks';
-import { useDispatch } from '@wordpress/data';
+import { useDispatch, useSelect } from '@wordpress/data';
 import { SlideImage, SlideshowContainerAttributes } from './types';
 
 export default function Edit({ 
@@ -25,7 +25,14 @@ export default function Edit({
   const { images } = attributes;
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const { replaceInnerBlocks } = useDispatch('core/block-editor');
+  const { replaceInnerBlocks, selectBlock } = useDispatch('core/block-editor');
+  
+  // Get parent block ID
+  const parentClientId = useSelect((select) => {
+    const { getBlock } = select('core/block-editor');
+    const block = getBlock(clientId);
+    return block?.parentClientId;
+  }, [clientId]);
 
   // Get settings from parent slideshow
   const showThumbnails = context['jankx/showThumbnails'] ?? true;
@@ -69,12 +76,26 @@ export default function Edit({
 
     setAttributes({ images: newImages });
     setIsLoading(false);
+    
+    // Focus back to parent slideshow block after a short delay
+    if (parentClientId) {
+      setTimeout(() => {
+        selectBlock(parentClientId);
+      }, 100);
+    }
   };
 
   const onRemoveAllImages = () => {
     replaceInnerBlocks(clientId, [], false);
     setAttributes({ images: [] });
     setCurrentSlide(0);
+    
+    // Focus back to parent slideshow block after a short delay
+    if (parentClientId) {
+      setTimeout(() => {
+        selectBlock(parentClientId);
+      }, 100);
+    }
   };
 
   const goToSlide = (index: number) => {

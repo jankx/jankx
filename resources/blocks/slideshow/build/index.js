@@ -89,7 +89,7 @@ function Edit({
       images,
       innerBlocks: block?.innerBlocks || []
     };
-  }, [clientId]);
+  }, [clientId, currentSlide, showPagination]);
 
   // Auto-add footer text paragraph when showFooterText is enabled
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useEffect)(() => {
@@ -249,44 +249,63 @@ function Edit({
       allowedBlocks: ['jankx/slideshow-container', 'core/paragraph', 'core/heading', 'core/list', 'core/list-item', 'core/quote', 'core/group'],
       template: [['jankx/slideshow-container', {}]],
       templateLock: false
-    }), images.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+    }), images.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
       className: "slideshow-footer",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
-        className: "slideshow-controls",
-        children: [fullscreen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
-          className: "slideshow-fullscreen-btn",
-          children: fullscreenText || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Fullscreen', 'jankx')
-        }), autoplay && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
-          className: "slideshow-autoplay-btn",
-          children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Xem tự động', 'jankx')
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+        className: "slideshow-footer-bottom",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+          className: "slideshow-controls",
+          children: [fullscreen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
+            className: "slideshow-fullscreen-btn",
+            children: fullscreenText || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Fullscreen', 'jankx')
+          }), autoplay && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
+            className: "slideshow-autoplay-btn",
+            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Xem tự động', 'jankx')
+          })]
+        }), showPagination && images.length > 1 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+          className: "slideshow-pagination",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
+            className: "slideshow-pagination-prev",
+            onClick: e => {
+              e.preventDefault();
+              e.stopPropagation();
+              if (currentSlide > 0) {
+                setCurrentSlide(currentSlide - 1);
+              }
+            },
+            disabled: currentSlide === 0,
+            type: "button",
+            style: {
+              pointerEvents: 'auto'
+            },
+            children: "<"
+          }), images.map((_, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
+            className: `slideshow-pagination-dot ${index === currentSlide ? 'active' : ''}`,
+            "data-slide": index,
+            onClick: e => {
+              e.preventDefault();
+              setCurrentSlide(index);
+            },
+            type: "button",
+            children: index + 1
+          }, index)), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
+            className: "slideshow-pagination-next",
+            onClick: e => {
+              e.preventDefault();
+              e.stopPropagation();
+              if (currentSlide < images.length - 1) {
+                setCurrentSlide(currentSlide + 1);
+              }
+            },
+            disabled: currentSlide === images.length - 1,
+            type: "button",
+            style: {
+              pointerEvents: 'auto'
+            },
+            children: ">"
+          })]
         })]
-      }), showPagination && images.length > 1 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
-        className: "slideshow-pagination",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
-          className: "slideshow-pagination-prev",
-          onClick: () => {
-            if (currentSlide > 0) {
-              setCurrentSlide(currentSlide - 1);
-            }
-          },
-          disabled: currentSlide === 0,
-          children: "<"
-        }), images.map((_, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
-          className: `slideshow-pagination-dot ${index === currentSlide ? 'active' : ''}`,
-          "data-slide": index,
-          onClick: () => setCurrentSlide(index),
-          children: index + 1
-        }, index)), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
-          className: "slideshow-pagination-next",
-          onClick: () => {
-            if (currentSlide < images.length - 1) {
-              setCurrentSlide(currentSlide + 1);
-            }
-          },
-          disabled: currentSlide === images.length - 1,
-          children: ">"
-        })]
-      })]
+      })
     })]
   });
 }

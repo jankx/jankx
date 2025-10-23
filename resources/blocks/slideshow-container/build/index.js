@@ -56,8 +56,18 @@ function Edit({
   const [currentSlide, setCurrentSlide] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useState)(0);
   const [isLoading, setIsLoading] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useState)(false);
   const {
-    replaceInnerBlocks
+    replaceInnerBlocks,
+    selectBlock
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_5__.useDispatch)('core/block-editor');
+
+  // Get parent block ID
+  const parentClientId = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_5__.useSelect)(select => {
+    const {
+      getBlock
+    } = select('core/block-editor');
+    const block = getBlock(clientId);
+    return block?.parentClientId;
+  }, [clientId]);
 
   // Get settings from parent slideshow
   const showThumbnails = (_context$jankxShowTh = context['jankx/showThumbnails']) !== null && _context$jankxShowTh !== void 0 ? _context$jankxShowTh : true;
@@ -100,6 +110,13 @@ function Edit({
       images: newImages
     });
     setIsLoading(false);
+
+    // Focus back to parent slideshow block after a short delay
+    if (parentClientId) {
+      setTimeout(() => {
+        selectBlock(parentClientId);
+      }, 100);
+    }
   };
   const onRemoveAllImages = () => {
     replaceInnerBlocks(clientId, [], false);
@@ -107,6 +124,13 @@ function Edit({
       images: []
     });
     setCurrentSlide(0);
+
+    // Focus back to parent slideshow block after a short delay
+    if (parentClientId) {
+      setTimeout(() => {
+        selectBlock(parentClientId);
+      }, 100);
+    }
   };
   const goToSlide = index => {
     setCurrentSlide(index);

@@ -214,12 +214,28 @@
     }
   }
 
-  // Footer Controls
+  // Footer
   .slideshow-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     padding: 15px 0;
+
+    // Footer Text
+    .slideshow-footer-text {
+      margin-bottom: 16px;
+
+      p {
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.6;
+        color: #333;
+      }
+    }
+
+    // Footer bottom: controls + pagination with flex
+    .slideshow-footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
     .slideshow-controls {
       display: flex;

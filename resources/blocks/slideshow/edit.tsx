@@ -40,11 +40,12 @@ export default function Edit({ attributes, setAttributes, clientId }: SlideshowE
       }
     }
     
+    
     return {
       images,
       innerBlocks: block?.innerBlocks || []
     };
-  }, [clientId]);
+  }, [clientId, currentSlide, showPagination]);
 
   // Auto-add footer text paragraph when showFooterText is enabled
   useEffect(() => {
@@ -61,6 +62,7 @@ export default function Edit({ attributes, setAttributes, clientId }: SlideshowE
       }
     }
   }, [showFooterText, innerBlocks, insertBlock, clientId]);
+
 
   const blockProps = useBlockProps({
     className: `slideshow-block slideshow-effect-${transitionEffect}`,
@@ -185,32 +187,39 @@ export default function Edit({ attributes, setAttributes, clientId }: SlideshowE
         templateLock={false}
       />
 
-      {/* Footer Controls and Pagination - Only show when images exist */}
+      {/* Footer - Only show when images exist */}
       {images.length > 0 && (
         <div className="slideshow-footer">
-          <div className="slideshow-controls">
-            {fullscreen && (
-              <button className="slideshow-fullscreen-btn">
-                {fullscreenText || __('Fullscreen', 'jankx')}
-              </button>
-            )}
-            {autoplay && (
-              <button className="slideshow-autoplay-btn">
-                {__('Xem tự động', 'jankx')}
-              </button>
-            )}
-          </div>
+          {/* Footer text will be injected here via CSS order */}
+          
+          <div className="slideshow-footer-bottom">
+            <div className="slideshow-controls">
+              {fullscreen && (
+                <button className="slideshow-fullscreen-btn">
+                  {fullscreenText || __('Fullscreen', 'jankx')}
+                </button>
+              )}
+              {autoplay && (
+                <button className="slideshow-autoplay-btn">
+                  {__('Xem tự động', 'jankx')}
+                </button>
+              )}
+            </div>
 
-          {showPagination && images.length > 1 && (
-            <div className="slideshow-pagination">
+            {showPagination && images.length > 1 && (
+              <div className="slideshow-pagination">
               <button 
                 className="slideshow-pagination-prev"
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
                   if (currentSlide > 0) {
                     setCurrentSlide(currentSlide - 1);
                   }
                 }}
                 disabled={currentSlide === 0}
+                type="button"
+                style={{ pointerEvents: 'auto' }}
               >
                 &lt;
               </button>
@@ -219,24 +228,33 @@ export default function Edit({ attributes, setAttributes, clientId }: SlideshowE
                   key={index}
                   className={`slideshow-pagination-dot ${index === currentSlide ? 'active' : ''}`}
                   data-slide={index}
-                  onClick={() => setCurrentSlide(index)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setCurrentSlide(index);
+                  }}
+                  type="button"
                 >
                   {index + 1}
                 </button>
               ))}
               <button 
                 className="slideshow-pagination-next"
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
                   if (currentSlide < images.length - 1) {
                     setCurrentSlide(currentSlide + 1);
                   }
                 }}
                 disabled={currentSlide === images.length - 1}
+                type="button"
+                style={{ pointerEvents: 'auto' }}
               >
                 &gt;
               </button>
             </div>
-          )}
+            )}
+          </div>
         </div>
       )}
     </div>
