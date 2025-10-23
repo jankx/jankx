@@ -67,6 +67,17 @@
     z-index: 999999; // Ensure overlay is on top
 }
 
+// Fullscreen overlay - minimal padding
+.wp-block-jankx-modal__container--fullscreen {
+    .wp-block-jankx-modal__overlay {
+        padding: 20px;
+        
+        @media (min-width: 768px) {
+            padding: 40px;
+        }
+    }
+}
+
 // Modal Container - Centered by parent flexbox
 .wp-block-jankx-modal__container {
     position: relative;
@@ -90,10 +101,19 @@
     }
 
     &--fullscreen {
-        max-width: calc(100% - 40px);
-        max-height: calc(100% - 40px);
-        width: 100%;
-        height: auto;
+        max-width: calc(100vw - 40px);
+        max-height: calc(100vh - 40px);
+        width: calc(100vw - 40px);
+        height: calc(100vh - 40px);
+        margin: 0;
+        padding: 0;
+        
+        @media (min-width: 768px) {
+            max-width: calc(100vw - 80px);
+            max-height: calc(100vh - 80px);
+            width: calc(100vw - 80px);
+            height: calc(100vh - 80px);
+        }
     }
 
     &--custom {
@@ -111,6 +131,19 @@
     overflow-y: auto;
     box-sizing: border-box;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); // Add shadow for depth
+}
+
+// Fullscreen modal content
+.wp-block-jankx-modal__container--fullscreen .wp-block-jankx-modal__content {
+    max-height: calc(100vh - 40px);
+    height: calc(100vh - 40px);
+    border-radius: 0;
+    padding: 40px;
+    
+    @media (min-width: 768px) {
+        max-height: calc(100vh - 80px);
+        height: calc(100vh - 80px);
+    }
 }
 
 // Modal Content Inner - For inner blocks

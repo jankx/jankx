@@ -99,7 +99,7 @@ export default function Save({ attributes }) {
                 {...useBlockProps.save()}
                 {...modalProps}
                 id={finalModalId}
-                className="wp-block-jankx-modal"
+                className={`wp-block-jankx-modal ${modalSize === 'fullscreen' ? 'modal-fullscreen' : ''}`}
                 aria-hidden="true"
                 style={{
                     '--modal-backdrop-color': backdropColor,

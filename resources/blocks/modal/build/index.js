@@ -589,7 +589,7 @@ function Save({
       ..._wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.useBlockProps.save(),
       ...modalProps,
       id: finalModalId,
-      className: "wp-block-jankx-modal",
+      className: `wp-block-jankx-modal ${modalSize === 'fullscreen' ? 'modal-fullscreen' : ''}`,
       "aria-hidden": "true",
       style: {
         '--modal-backdrop-color': backdropColor,
