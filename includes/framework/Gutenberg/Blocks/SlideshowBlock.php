@@ -31,7 +31,7 @@ class SlideshowBlock extends Block
         $anchor = $attributes['anchor'] ?? '';
 
         // Calculate thumbnail size CSS variable
-        switch($thumbnailSize) {
+        switch ($thumbnailSize) {
             case 'small':
                 $thumbnail_size_css = '60px';
                 break;
@@ -92,30 +92,7 @@ class SlideshowBlock extends Block
                 <?php endif; ?>
 
                 <div class="slideshow-main">
-                    <div class="slideshow-container">
-                        <div class="slideshow-track">
-                            <?php foreach ($images as $index => $image) : ?>
-                                <?php
-                                $image_url = $image['url'] ?? '';
-                                $alt_text = $image['alt'] ?? '';
-                                $caption = $image['caption'] ?? '';
-                                $active_class = $index === 0 ? 'active' : '';
-                                ?>
-                                <div class="slideshow-slide slideshow-caption-<?php echo esc_attr($captionPosition); ?> <?php echo $active_class; ?>">
-                                    <?php if ($image_url) : ?>
-                                        <img src="<?php echo esc_url($image_url); ?>"
-                                             alt="<?php echo esc_attr($alt_text); ?>" />
-                                    <?php endif; ?>
-
-                                    <?php if (!empty($caption) && $captionPosition !== 'hidden') : ?>
-                                        <div class="slideshow-caption">
-                                            <?php echo wp_kses_post($caption); ?>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
+                    <?php echo $content; // Render slideshow-container and its children ?>
 
                     <?php if ($showNavigation && count($images) > 1) : ?>
                         <button class="slideshow-nav slideshow-nav-prev"

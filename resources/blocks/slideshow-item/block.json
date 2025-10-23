@@ -7,7 +7,7 @@
   "description": "Single slide item for slideshow (locked block)",
   "keywords": ["slide", "image", "caption"],
   "textdomain": "jankx",
-  "parent": ["jankx/slideshow"],
+  "parent": ["jankx/slideshow-container"],
   "attributes": {
     "imageId": {
       "type": "number"
@@ -48,7 +48,7 @@
       "__experimentalFontStyle": true
     }
   },
-  "usesContext": ["jankx/slideShowId"],
+  "usesContext": ["jankx/slideShowId", "jankx/slideshowContainerId"],
   "editorScript": "file:./build/index.js",
   "editorStyle": "file:./build/editor.css",
   "style": "file:./build/style.css"

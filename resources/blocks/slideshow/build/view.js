@@ -1,7 +1,7 @@
 /******/ (() => { // webpackBootstrap
-/*!***********************************!*\
+/*!**********************************!*\
   !*** ./blocks/slideshow/view.js ***!
-  \***********************************/
+  \**********************************/
 /**
  * Slideshow Block Frontend Script
  * Handles PhotoSwipe integration and slideshow functionality

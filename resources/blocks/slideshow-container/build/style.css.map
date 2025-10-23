@@ -1,0 +1,1 @@
+{"version":3,"file":"blocks/slideshow-container/build/style.css","mappings":";;;AAAA;EACE;EACA;AACF,C","sources":["webpack://jankx/./blocks/slideshow-container/style.scss"],"sourcesContent":[".slideshow-container-block {\r\n  display: block;\r\n  width: 100%;\r\n}\r\n\r\n"],"names":[],"sourceRoot":""}

@@ -17,36 +17,26 @@ class SlideshowItemBlock extends Block
         $imageCaption = $attributes['imageCaption'] ?? '';
         $slideId = $attributes['slideId'] ?? '';
 
-        // Build block wrapper attributes
-        $block_wrapper_attrs = get_block_wrapper_attributes([
-            'class' => 'slideshow-item-block',
-            'data-slide-id' => $slideId
-        ]);
+        // Get parent block context for caption position
+        $captionPosition = 'hidden';
+        if (isset($block->context['jankx/slideShowId'])) {
+            // Try to get caption position from parent slideshow
+            $captionPosition = 'hidden'; // Default, will be styled by parent
+        }
 
         ob_start();
         ?>
-        <div <?php echo $block_wrapper_attrs; ?>>
-            <div class="slideshow-slide">
-                <?php if ($imageUrl) : ?>
-                    <div class="slideshow-item-image">
-                        <img src="<?php echo esc_url($imageUrl); ?>"
-                             alt="<?php echo esc_attr($imageAlt); ?>" />
-                    </div>
-                <?php else : ?>
-                    <div class="slideshow-item-image">
-                        <div class="slideshow-placeholder">
-                            <div class="placeholder-icon">📷</div>
-                            <div class="placeholder-text">No image selected</div>
-                        </div>
-                    </div>
-                <?php endif; ?>
+        <div class="slideshow-slide slideshow-caption-<?php echo esc_attr($captionPosition); ?>" data-slide-id="<?php echo esc_attr($slideId); ?>">
+            <?php if ($imageUrl) : ?>
+                <img src="<?php echo esc_url($imageUrl); ?>"
+                     alt="<?php echo esc_attr($imageAlt); ?>" />
+            <?php endif; ?>
 
-                <?php if (!empty($imageCaption)) : ?>
-                    <div class="slideshow-caption">
-                        <?php echo wp_kses_post($imageCaption); ?>
-                    </div>
-                <?php endif; ?>
-            </div>
+            <?php if (!empty($imageCaption) && $captionPosition !== 'hidden') : ?>
+                <div class="slideshow-caption">
+                    <?php echo wp_kses_post($imageCaption); ?>
+                </div>
+            <?php endif; ?>
         </div>
         <?php
         return ob_get_clean();

@@ -3,19 +3,19 @@
 /******/ 	var __webpack_modules__ = ({
 
 /***/ "./blocks/slideshow-item/block.json":
-/*!*******************************************!*\
+/*!******************************************!*\
   !*** ./blocks/slideshow-item/block.json ***!
-  \*******************************************/
+  \******************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/slideshow-item","title":"Slideshow Item","category":"jankx","description":"Single slide item for slideshow (locked block)","keywords":["slide","image","caption"],"textdomain":"jankx","parent":["jankx/slideshow"],"attributes":{"imageId":{"type":"number"},"imageUrl":{"type":"string"},"imageAlt":{"type":"string"},"imageCaption":{"type":"string"},"thumbnailUrl":{"type":"string"},"slideId":{"type":"string"}},"supports":{"html":false,"reusable":false,"lock":false,"spacing":{"margin":false,"padding":true},"color":{"background":true,"text":true},"typography":{"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true}},"usesContext":["jankx/slideShowId"],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/slideshow-item","title":"Slideshow Item","category":"jankx","description":"Single slide item for slideshow (locked block)","keywords":["slide","image","caption"],"textdomain":"jankx","parent":["jankx/slideshow-container"],"attributes":{"imageId":{"type":"number"},"imageUrl":{"type":"string"},"imageAlt":{"type":"string"},"imageCaption":{"type":"string"},"thumbnailUrl":{"type":"string"},"slideId":{"type":"string"}},"supports":{"html":false,"reusable":false,"lock":false,"spacing":{"margin":false,"padding":true},"color":{"background":true,"text":true},"typography":{"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true}},"usesContext":["jankx/slideShowId","jankx/slideshowContainerId"],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
 
 /***/ }),
 
 /***/ "./blocks/slideshow-item/edit.tsx":
-/*!*****************************************!*\
+/*!****************************************!*\
   !*** ./blocks/slideshow-item/edit.tsx ***!
-  \*****************************************/
+  \****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -165,9 +165,9 @@ function Edit({
 /***/ }),
 
 /***/ "./blocks/slideshow-item/editor.scss":
-/*!********************************************!*\
+/*!*******************************************!*\
   !*** ./blocks/slideshow-item/editor.scss ***!
-  \********************************************/
+  \*******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -177,9 +177,9 @@ __webpack_require__.r(__webpack_exports__);
 /***/ }),
 
 /***/ "./blocks/slideshow-item/style.scss":
-/*!*******************************************!*\
+/*!******************************************!*\
   !*** ./blocks/slideshow-item/style.scss ***!
-  \*******************************************/
+  \******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -319,9 +319,9 @@ module.exports = window["ReactJSXRuntime"];
 var __webpack_exports__ = {};
 // This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
 (() => {
-/*!******************************************!*\
+/*!*****************************************!*\
   !*** ./blocks/slideshow-item/index.tsx ***!
-  \******************************************/
+  \*****************************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__);

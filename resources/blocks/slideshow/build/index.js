@@ -3,9 +3,9 @@
 /******/ 	var __webpack_modules__ = ({
 
 /***/ "./blocks/slideshow/block.json":
-/*!**************************************!*\
+/*!*************************************!*\
   !*** ./blocks/slideshow/block.json ***!
-  \**************************************/
+  \*************************************/
 /***/ ((module) => {
 
 module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/slideshow","title":"Slideshow","category":"jankx","description":"Advanced slideshow with thumbnails, captions and PhotoSwipe integration","keywords":["slideshow","gallery","photoswipe","carousel","images"],"textdomain":"jankx","attributes":{"images":{"type":"array","default":[]},"autoplay":{"type":"boolean","default":false},"autoplayDelay":{"type":"number","default":3000},"fullscreen":{"type":"boolean","default":true},"showThumbnails":{"type":"boolean","default":true},"showNavigation":{"type":"boolean","default":true},"showPagination":{"type":"boolean","default":true},"transitionEffect":{"type":"string","enum":["slide","fade"],"default":"slide"},"transitionSpeed":{"type":"number","default":300},"thumbnailSize":{"type":"string","enum":["small","medium","large"],"default":"medium"},"mainImageHeight":{"type":"number","default":400},"captionPosition":{"type":"string","enum":["top","bottom","overlay","hidden"],"default":"hidden"},"enableLightbox":{"type":"boolean","default":false},"showFooterText":{"type":"boolean","default":false},"footerText":{"type":"string","default":""},"fullscreenText":{"type":"string","default":"Fullscreen"},"className":{"type":"string"},"anchor":{"type":"string"}},"supports":{"html":false,"anchor":true,"align":["wide","full"],"spacing":{"margin":true,"padding":true},"color":{"background":true,"text":true,"gradients":true,"link":true},"border":{"color":true,"radius":true,"style":true,"width":true,"__experimentalDefaultControls":{"radius":true}},"typography":{"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true,"__experimentalTextTransform":true,"__experimentalTextDecoration":true,"__experimentalLetterSpacing":true},"dimensions":{"minHeight":true}},"providesContext":{"jankx/slideShowId":"anchor"},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","viewScript":"file:./build/view.js","style":"file:./build/style.css"}');
@@ -13,9 +13,9 @@ module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/tru
 /***/ }),
 
 /***/ "./blocks/slideshow/edit.tsx":
-/*!************************************!*\
+/*!***********************************!*\
   !*** ./blocks/slideshow/edit.tsx ***!
-  \************************************/
+  \***********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -85,9 +85,9 @@ function Edit({
   const innerBlocksProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useInnerBlocksProps)({
     className: 'slideshow-items'
   }, {
-    allowedBlocks: ['jankx/slideshow-item'],
-    template: [],
-    // Empty template, we'll populate dynamically
+    allowedBlocks: ['jankx/slideshow-container'],
+    template: [['jankx/slideshow-container', {}]],
+    // Create container by default
     templateLock: false,
     // Allow editing
     orientation: 'horizontal'
@@ -117,7 +117,7 @@ function Edit({
     setIsLoading(true);
 
     // Create slideshow-item blocks for each selected image
-    const blocksToCreate = mediaList.map(media => {
+    const slideshowItems = mediaList.map(media => {
       const thumbnailUrl = media.sizes?.thumbnail?.url || media.sizes?.medium?.url || media.url;
       return (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.createBlock)('jankx/slideshow-item', {
         imageId: media.id,
@@ -129,8 +129,13 @@ function Edit({
       });
     });
 
-    // Replace existing inner blocks with new ones
-    replaceInnerBlocks(clientId, blocksToCreate, false);
+    // Create slideshow-container block with slideshow-items as children
+    const containerBlock = (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.createBlock)('jankx/slideshow-container', {
+      containerId: `container-${Date.now()}`
+    }, slideshowItems);
+
+    // Replace existing inner blocks with new container
+    replaceInnerBlocks(clientId, [containerBlock], false);
 
     // Also save images to attributes for PHP rendering
     const newImages = mediaList.map(media => ({
@@ -506,9 +511,7 @@ function Edit({
           footerText: value
         }),
         placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Nhập nội dung footer...', 'jankx'),
-        allowedFormats: ['core/bold', 'core/italic', 'core/link', 'core/text-color', 'core/list', 'core/align'],
-        multiline: "p",
-        __unstableOnSplitAtEnd: () => null
+        allowedFormats: ['core/bold', 'core/italic', 'core/link', 'core/text-color']
       })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
       className: "slideshow-footer",
@@ -551,9 +554,9 @@ function Edit({
 /***/ }),
 
 /***/ "./blocks/slideshow/editor.scss":
-/*!***************************************!*\
+/*!**************************************!*\
   !*** ./blocks/slideshow/editor.scss ***!
-  \***************************************/
+  \**************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -563,9 +566,9 @@ __webpack_require__.r(__webpack_exports__);
 /***/ }),
 
 /***/ "./blocks/slideshow/save.tsx":
-/*!************************************!*\
+/*!***********************************!*\
   !*** ./blocks/slideshow/save.tsx ***!
-  \************************************/
+  \***********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -713,9 +716,9 @@ function Save({
 /***/ }),
 
 /***/ "./blocks/slideshow/style.scss":
-/*!**************************************!*\
+/*!*************************************!*\
   !*** ./blocks/slideshow/style.scss ***!
-  \**************************************/
+  \*************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -865,9 +868,9 @@ module.exports = window["ReactJSXRuntime"];
 var __webpack_exports__ = {};
 // This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
 (() => {
-/*!*************************************!*\
+/*!************************************!*\
   !*** ./blocks/slideshow/index.tsx ***!
-  \*************************************/
+  \************************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__);

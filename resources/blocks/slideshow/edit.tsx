@@ -45,8 +45,8 @@ export default function Edit({ attributes, setAttributes, clientId }: SlideshowE
   const innerBlocksProps = useInnerBlocksProps(
     { className: 'slideshow-items' },
     {
-      allowedBlocks: ['jankx/slideshow-item'],
-      template: [], // Empty template, we'll populate dynamically
+      allowedBlocks: ['jankx/slideshow-container'],
+      template: [['jankx/slideshow-container', {}]], // Create container by default
       templateLock: false, // Allow editing
       orientation: 'horizontal'
     }
@@ -77,7 +77,7 @@ export default function Edit({ attributes, setAttributes, clientId }: SlideshowE
     setIsLoading(true);
 
     // Create slideshow-item blocks for each selected image
-    const blocksToCreate = mediaList.map(media => {
+    const slideshowItems = mediaList.map(media => {
       const thumbnailUrl = media.sizes?.thumbnail?.url || media.sizes?.medium?.url || media.url;
 
       return createBlock('jankx/slideshow-item', {
@@ -90,8 +90,13 @@ export default function Edit({ attributes, setAttributes, clientId }: SlideshowE
       });
     });
 
-    // Replace existing inner blocks with new ones
-    replaceInnerBlocks(clientId, blocksToCreate, false);
+    // Create slideshow-container block with slideshow-items as children
+    const containerBlock = createBlock('jankx/slideshow-container', {
+      containerId: `container-${Date.now()}`
+    }, slideshowItems);
+
+    // Replace existing inner blocks with new container
+    replaceInnerBlocks(clientId, [containerBlock], false);
 
     // Also save images to attributes for PHP rendering
     const newImages: SlideImage[] = mediaList.map(media => ({
