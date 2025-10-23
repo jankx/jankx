@@ -179,10 +179,6 @@
 .slideshow-block .slideshow-main .slideshow-nav.slideshow-nav-next {
   right: 16px;
 }
-.slideshow-block .slideshow-footer-text {
-  padding: 16px 0;
-  text-align: center;
-}
 .slideshow-block .slideshow-footer-text p {
   margin: 0;
   font-size: 14px;
@@ -560,6 +556,16 @@
 .block-editor-block-preview__container .slideshow-block .slideshow-footer {
   padding: 8px;
   font-size: 12px;
+}
+
+.wp-block-jankx-slideshow > .block-editor-inner-blocks .wp-block[data-type^="core/"] p, .wp-block-jankx-slideshow > .block-editor-inner-blocks .wp-block[data-type^="core/"] h1, .wp-block-jankx-slideshow > .block-editor-inner-blocks .wp-block[data-type^="core/"] h2, .wp-block-jankx-slideshow > .block-editor-inner-blocks .wp-block[data-type^="core/"] h3, .wp-block-jankx-slideshow > .block-editor-inner-blocks .wp-block[data-type^="core/"] h4, .wp-block-jankx-slideshow > .block-editor-inner-blocks .wp-block[data-type^="core/"] h5, .wp-block-jankx-slideshow > .block-editor-inner-blocks .wp-block[data-type^="core/"] h6, .wp-block-jankx-slideshow > .block-editor-inner-blocks .wp-block[data-type^="core/"] li, .wp-block-jankx-slideshow > .block-editor-inner-blocks .wp-block[data-type^="core/"] blockquote {
+  text-align: center !important;
+}
+.wp-block-jankx-slideshow > .block-editor-inner-blocks .wp-block[data-type^="core/"] .block-editor-rich-text__editable {
+  text-align: center !important;
+}
+.wp-block-jankx-slideshow .slideshow-footer-text {
+  text-align: center !important;
 }
 
 /*# sourceMappingURL=editor.css.map*/

@@ -11,6 +11,10 @@
   "attributes": {
     "containerId": {
       "type": "string"
+    },
+    "images": {
+      "type": "array",
+      "default": []
     }
   },
   "supports": {
@@ -29,7 +33,7 @@
   "providesContext": {
     "jankx/slideshowContainerId": "containerId"
   },
-  "usesContext": ["jankx/slideShowId"],
+  "usesContext": ["jankx/slideShowId", "jankx/showThumbnails", "jankx/showNavigation", "jankx/transitionEffect", "jankx/captionPosition"],
   "editorScript": "file:./build/index.js",
   "editorStyle": "file:./build/editor.css",
   "style": "file:./build/style.css"

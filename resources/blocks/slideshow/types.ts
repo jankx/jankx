@@ -29,7 +29,6 @@ export interface SlideImage {
 }
 
 export interface SlideshowAttributes {
-  images: SlideImage[];
   autoplay: boolean;
   autoplayDelay: number;
   fullscreen: boolean;
@@ -43,7 +42,7 @@ export interface SlideshowAttributes {
   captionPosition: 'top' | 'bottom' | 'overlay' | 'hidden';
   enableLightbox: boolean;
   showFooterText: boolean;
-  footerText: string;
+  fullscreenText: string;
   className?: string;
   anchor?: string;
 }

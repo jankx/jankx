@@ -1,8 +1,18 @@
 .wp-block-jankx-slideshow-container {
+  // Disable direct selection - parent slideshow should be selected instead
+  &:not(.is-selected) {
+    pointer-events: none;
+    
+    // Re-enable pointer events for child blocks
+    .slideshow-item-block,
+    .components-button,
+    button {
+      pointer-events: auto;
+    }
+  }
+
   .slideshow-container-block {
     min-height: 50px;
-    border: 1px dashed #ccc;
-    padding: 10px;
   }
 }
 

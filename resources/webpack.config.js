@@ -107,15 +107,18 @@ module.exports = {
     'blocks/swiper-slide/build/editor': './blocks/swiper-slide/editor.scss',
 
     'blocks/slideshow/build/index': './blocks/slideshow/index.tsx',
+    'blocks/slideshow/build/save': './blocks/slideshow/save.tsx',
     'blocks/slideshow/build/style': './blocks/slideshow/style.scss',
     'blocks/slideshow/build/editor': './blocks/slideshow/editor.scss',
     'blocks/slideshow/build/view': './blocks/slideshow/view.js',
 
     'blocks/slideshow-container/build/index': './blocks/slideshow-container/index.tsx',
+    'blocks/slideshow-container/build/save': './blocks/slideshow-container/save.tsx',
     'blocks/slideshow-container/build/style': './blocks/slideshow-container/style.scss',
     'blocks/slideshow-container/build/editor': './blocks/slideshow-container/editor.scss',
 
     'blocks/slideshow-item/build/index': './blocks/slideshow-item/index.tsx',
+    'blocks/slideshow-item/build/save': './blocks/slideshow-item/save.tsx',
     'blocks/slideshow-item/build/style': './blocks/slideshow-item/style.scss',
     'blocks/slideshow-item/build/editor': './blocks/slideshow-item/editor.scss',
 

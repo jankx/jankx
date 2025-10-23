@@ -8,10 +8,6 @@
   "keywords": ["slideshow", "gallery", "photoswipe", "carousel", "images"],
   "textdomain": "jankx",
   "attributes": {
-    "images": {
-      "type": "array",
-      "default": []
-    },
     "autoplay": {
       "type": "boolean",
       "default": false
@@ -67,10 +63,6 @@
       "type": "boolean",
       "default": false
     },
-    "footerText": {
-      "type": "string",
-      "default": ""
-    },
     "fullscreenText": {
       "type": "string",
       "default": "Fullscreen"
@@ -120,7 +112,11 @@
     }
   },
   "providesContext": {
-    "jankx/slideShowId": "anchor"
+    "jankx/slideShowId": "anchor",
+    "jankx/showThumbnails": "showThumbnails",
+    "jankx/showNavigation": "showNavigation",
+    "jankx/transitionEffect": "transitionEffect",
+    "jankx/captionPosition": "captionPosition"
   },
   "editorScript": "file:./build/index.js",
   "editorStyle": "file:./build/editor.css",

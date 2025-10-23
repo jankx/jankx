@@ -11,8 +11,18 @@ class SlideshowBlock extends Block
 
     public function render($attributes, $content = '', $block = null)
     {
+        // Get images from slideshow-container child block
+        $images = [];
+        if ($block && !empty($block->inner_blocks)) {
+            foreach ($block->inner_blocks as $inner_block) {
+                if ($inner_block->name === 'jankx/slideshow-container') {
+                    $images = $inner_block->attributes['images'] ?? [];
+                    break;
+                }
+            }
+        }
+
         // Extract attributes with defaults
-        $images = $attributes['images'] ?? [];
         $autoplay = $attributes['autoplay'] ?? false;
         $autoplayDelay = $attributes['autoplayDelay'] ?? 3000;
         $fullscreen = $attributes['fullscreen'] ?? true;
@@ -25,8 +35,6 @@ class SlideshowBlock extends Block
         $mainImageHeight = $attributes['mainImageHeight'] ?? 400;
         $captionPosition = $attributes['captionPosition'] ?? 'hidden';
         $enableLightbox = $attributes['enableLightbox'] ?? false;
-        $showFooterText = $attributes['showFooterText'] ?? false;
-        $footerText = $attributes['footerText'] ?? '';
         $className = $attributes['className'] ?? '';
         $anchor = $attributes['anchor'] ?? '';
 
@@ -73,59 +81,46 @@ class SlideshowBlock extends Block
         ob_start();
         ?>
         <div <?php echo $block_wrapper_attrs; ?> <?php echo $data_attrs; ?>>
-            <?php if (!empty($images)) : ?>
-                <?php if ($showThumbnails && count($images) > 1) : ?>
-                    <div class="slideshow-thumbnails">
-                        <?php foreach ($images as $index => $image) : ?>
-                            <?php
-                            $thumbnail_url = $image['thumbnailUrl'] ?? $image['url'];
-                            $alt_text = $image['alt'] ?? '';
-                            $active_class = $index === 0 ? 'active' : '';
-                            ?>
-                            <button class="slideshow-thumbnail <?php echo $active_class; ?>"
-                                    data-slide="<?php echo $index; ?>">
-                                <img src="<?php echo esc_url($thumbnail_url); ?>"
-                                     alt="<?php echo esc_attr($alt_text); ?>" />
-                            </button>
-                        <?php endforeach; ?>
-                    </div>
-                <?php endif; ?>
+            <?php
+            // Render slideshow-container and core/paragraph blocks from InnerBlocks
+            if ($block && !empty($block->inner_blocks)) {
+                foreach ($block->inner_blocks as $inner_block) {
+                    if ($inner_block->name === 'jankx/slideshow-container') {
+                        echo $inner_block->render();
+                    }
+                }
+            }
 
-                <div class="slideshow-main">
-                    <?php echo $content; // Render slideshow-container and its children ?>
-
-                    <?php if ($showNavigation && count($images) > 1) : ?>
-                        <button class="slideshow-nav slideshow-nav-prev"
-                                aria-label="<?php esc_attr_e('Previous slide', 'jankx'); ?>">
-                            ←
-                        </button>
-                        <button class="slideshow-nav slideshow-nav-next"
-                                aria-label="<?php esc_attr_e('Next slide', 'jankx'); ?>">
-                            →
-                        </button>
-                    <?php endif; ?>
+            // Render footer text blocks (core/paragraph, core/heading, core/list, core/group, etc.)
+            $footer_content = '';
+            if ($block && !empty($block->inner_blocks)) {
+                foreach ($block->inner_blocks as $inner_block) {
+                    if (in_array($inner_block->name, ['core/paragraph', 'core/heading', 'core/list', 'core/list-item', 'core/quote', 'core/group'])) {
+                        $footer_content .= $inner_block->render();
+                    }
+                }
+            }
+            if (!empty($footer_content)) : ?>
+                <div class="slideshow-footer-text">
+                    <?php echo $footer_content; ?>
                 </div>
+            <?php endif; ?>
 
-                 <?php if ($showFooterText && !empty($footerText)) : ?>
-                     <div class="slideshow-footer-text">
-                         <?php echo wp_kses_post($footerText); ?>
-                     </div>
-                 <?php endif; ?>
+            <?php if (!empty($images)) : ?>
+                <div class="slideshow-footer">
+                    <div class="slideshow-controls">
+                        <?php if ($fullscreen) : ?>
+                            <button class="slideshow-fullscreen-btn">
+                                <?php _e('Fullscreen', 'jankx'); ?>
+                            </button>
+                        <?php endif; ?>
 
-                 <div class="slideshow-footer">
-                     <div class="slideshow-controls">
-                         <?php if ($fullscreen) : ?>
-                             <button class="slideshow-fullscreen-btn">
-                                 <?php _e('Fullscreen', 'jankx'); ?>
-                             </button>
-                         <?php endif; ?>
-
-                         <?php if ($autoplay) : ?>
-                             <button class="slideshow-autoplay-btn">
-                                 <?php _e('Xem tự động', 'jankx'); ?>
-                             </button>
-                         <?php endif; ?>
-                     </div>
+                        <?php if ($autoplay) : ?>
+                            <button class="slideshow-autoplay-btn">
+                                <?php _e('Xem tự động', 'jankx'); ?>
+                            </button>
+                        <?php endif; ?>
+                    </div>
 
                     <?php if ($showPagination && count($images) > 1) : ?>
                         <div class="slideshow-pagination">

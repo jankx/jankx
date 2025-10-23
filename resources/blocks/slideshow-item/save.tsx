@@ -1,8 +1,8 @@
 import { InnerBlocks } from '@wordpress/block-editor';
 import type { BlockSaveProps } from '@wordpress/blocks';
-import type { SlideshowAttributes } from './types';
+import type { SlideshowItemAttributes } from './types';
 
-export default function Save({ attributes }: BlockSaveProps<SlideshowAttributes>) {
+export default function Save({ attributes }: BlockSaveProps<SlideshowItemAttributes>) {
   return <InnerBlocks.Content />;
 }
 
