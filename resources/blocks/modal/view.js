@@ -62,8 +62,26 @@ import MicroModal from 'micromodal';
             });
         });
 
-        // Disable scroll
+        // Calculate scrollbar width before hiding
+        const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+        
+        // Store current scroll position
+        const scrollY = window.scrollY;
+        
+        // Disable scroll - add class to html element
+        document.documentElement.classList.add('modal-open');
         document.body.style.overflow = 'hidden';
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${scrollY}px`;
+        document.body.style.width = '100%';
+        
+        // Add padding to prevent layout shift
+        if (scrollbarWidth > 0) {
+            document.body.style.paddingRight = scrollbarWidth + 'px';
+        }
+        
+        // Store scroll position for restoration
+        modal.setAttribute('data-scroll-y', scrollY);
 
         // Add backdrop blur if enabled
         if (wrapper && (wrapper.dataset.backdropBlur === 'true' || wrapper.dataset.backdropBlur === true)) {
@@ -99,9 +117,20 @@ import MicroModal from 'micromodal';
             modal.style.display = 'none';
         }, animationDuration);
 
-        // Re-enable scroll
+        // Get stored scroll position
+        const scrollY = modal.getAttribute('data-scroll-y') || 0;
+        
+        // Re-enable scroll - remove class from html element
+        document.documentElement.classList.remove('modal-open');
         document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        document.body.style.paddingRight = '';
         document.body.classList.remove('modal-backdrop-blur');
+        
+        // Restore scroll position
+        window.scrollTo(0, parseInt(scrollY));
 
         // Dispatch event
         document.dispatchEvent(new CustomEvent('jankx:modal:close', {
@@ -186,6 +215,27 @@ import MicroModal from 'micromodal';
                     }
                 }
 
+                // Calculate scrollbar width before hiding
+                const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+                
+                // Store current scroll position
+                const scrollY = window.scrollY;
+                
+                // Lock scroll on html element
+                document.documentElement.classList.add('modal-open');
+                document.body.style.overflow = 'hidden';
+                document.body.style.position = 'fixed';
+                document.body.style.top = `-${scrollY}px`;
+                document.body.style.width = '100%';
+                
+                // Add padding to prevent layout shift
+                if (scrollbarWidth > 0) {
+                    document.body.style.paddingRight = scrollbarWidth + 'px';
+                }
+                
+                // Store scroll position for restoration
+                modal.setAttribute('data-scroll-y', scrollY);
+                
                 // Apply backdrop blur if enabled
                 const config = modalConfigs[modal.id];
                 if (config && config.backdropBlur) {
@@ -204,8 +254,24 @@ import MicroModal from 'micromodal';
             onClose: function(modal) {
                 console.log('Modal closed:', modal.id);
 
+                // Get stored scroll position
+                const scrollY = modal.getAttribute('data-scroll-y') || 0;
+                
+                // Remove scroll lock from html element
+                document.documentElement.classList.remove('modal-open');
+                
+                // Remove styles
+                document.body.style.overflow = '';
+                document.body.style.position = '';
+                document.body.style.top = '';
+                document.body.style.width = '';
+                document.body.style.paddingRight = '';
+                
                 // Remove backdrop blur
                 document.body.classList.remove('modal-backdrop-blur');
+                
+                // Restore scroll position
+                window.scrollTo(0, parseInt(scrollY));
 
                 // Dispatch custom event
                 document.dispatchEvent(new CustomEvent('jankx:modal:close', {

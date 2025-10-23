@@ -311,14 +311,15 @@
 
   // Responsive Design
   @media (max-width: 768px) {
-    --slideshow-height: 250px;
-
     .slideshow-thumbnails {
       padding: 12px;
       gap: 6px;
     }
 
     .slideshow-main {
+      height: auto;
+      aspect-ratio: 16 / 9;
+
       .slideshow-nav {
         width: 36px;
         height: 36px;
@@ -341,15 +342,30 @@
 
     .slideshow-footer {
       padding: 12px;
+      display: flex;
       flex-direction: column;
       gap: 12px;
 
+      .slideshow-footer-text {
+        order: 3;
+        margin-bottom: 0;
+      }
+
+      .slideshow-footer-bottom {
+        order: 1;
+        flex-direction: column;
+        gap: 12px;
+      }
+
       .slideshow-controls {
         order: 2;
+        width: 100%;
+        justify-content: center;
       }
 
       .slideshow-pagination {
         order: 1;
+        justify-content: center;
       }
     }
   }

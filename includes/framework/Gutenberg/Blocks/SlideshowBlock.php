@@ -26,6 +26,7 @@ class SlideshowBlock extends Block
         $autoplay = $attributes['autoplay'] ?? false;
         $autoplayDelay = $attributes['autoplayDelay'] ?? 3000;
         $fullscreen = $attributes['fullscreen'] ?? true;
+        $fullscreenText = $attributes['fullscreenText'] ?? __('Fullscreen', 'jankx');
         $showThumbnails = $attributes['showThumbnails'] ?? true;
         $showNavigation = $attributes['showNavigation'] ?? true;
         $showPagination = $attributes['showPagination'] ?? true;
@@ -113,7 +114,7 @@ class SlideshowBlock extends Block
                         <div class="slideshow-controls">
                             <?php if ($fullscreen) : ?>
                                 <button class="slideshow-fullscreen-btn">
-                                    <?php _e('Fullscreen', 'jankx'); ?>
+                                    <?php echo esc_html($fullscreenText); ?>
                                 </button>
                             <?php endif; ?>
 
