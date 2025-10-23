@@ -416,7 +416,7 @@ class PostTypeLayoutBlock extends Block
         // Get block wrapper attributes
         $wrapper_attributes = get_block_wrapper_attributes([
             'class' => implode(' ', $wrapper_classes),
-            'style' => !empty($inline_styles) ? implode('; ', $inline_styles) : '',
+            'style' => !empty($inline_styles) ? implode('; ', $inline_styles) . ';' : '',
         ]);
 
         // Wrap output
