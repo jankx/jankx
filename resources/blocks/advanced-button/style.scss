@@ -52,6 +52,19 @@
 	}
 
 
+	// Text alignment support
+	&.has-text-align-left .jankx-advanced-button__link {
+		justify-content: flex-start;
+	}
+
+	&.has-text-align-center .jankx-advanced-button__link {
+		justify-content: center;
+	}
+
+	&.has-text-align-right .jankx-advanced-button__link {
+		justify-content: flex-end;
+	}
+
 	// Icon position classes
 	&.icon-position-left .jankx-advanced-button__link {
 		flex-direction: row;
@@ -115,6 +128,7 @@
 	text-decoration: none;
 	color: inherit;
 	width: 100%;
+	cursor: pointer;
 
 	// Default padding - inherit from parent or use default
 	padding: var(--wp--custom--button--padding-top, 0.5rem)

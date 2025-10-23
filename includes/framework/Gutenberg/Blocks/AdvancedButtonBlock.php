@@ -122,6 +122,21 @@ class AdvancedButtonBlock extends Block
             $existing_classes = explode(' ', $matches[1]);
         }
 
+        // Get alignment from block attributes (WordPress stores this separately)
+        $text_align = '';
+        if (!empty($attributes['textAlign'])) {
+            $text_align = $attributes['textAlign'];
+        } elseif (!empty($attributes['align'])) {
+            $text_align = $attributes['align'];
+        }
+
+        // Check className attribute for text alignment
+        if (empty($text_align) && !empty($attributes['className'])) {
+            if (preg_match('/has-text-align-(\w+)/', $attributes['className'], $align_match)) {
+                $text_align = $align_match[1];
+            }
+        }
+
         // Determine if it's outline mode
         $is_outline_mode = in_array('is-style-outline', $existing_classes);
 
@@ -185,9 +200,18 @@ class AdvancedButtonBlock extends Block
         ];
 
         // Preserve style classes (is-style-fill, is-style-outline, etc.)
+        // and alignment classes (has-text-align-*)
         foreach ($existing_classes as $class) {
-            if (strpos($class, 'is-style-') === 0) {
+            if (strpos($class, 'is-style-') === 0 || strpos($class, 'has-text-align-') === 0) {
                 $wrapper_classes[] = $class;
+            }
+        }
+
+        // Add text alignment class from attributes (avoid duplicates)
+        if (!empty($text_align)) {
+            $align_class = "has-text-align-{$text_align}";
+            if (!in_array($align_class, $wrapper_classes)) {
+                $wrapper_classes[] = $align_class;
             }
         }
 

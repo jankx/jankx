@@ -39,7 +39,7 @@
       "background": true,
       "text": true
     },
-    "border": {
+    "__experimentalBorder": {
       "color": true,
       "style": true,
       "width": true,

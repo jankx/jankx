@@ -1,7 +1,6 @@
 // Table Cell Block Styles - đồng nhất giữa editor và frontend
 .wp-block-jankx-table-cell {
   padding: 12px 16px;
-  border: 1px solid color-mix(in srgb, var(--wp--preset--color--primary, #000) 30%, transparent);
 
   &.is-header-cell {
     font-weight: 700;
