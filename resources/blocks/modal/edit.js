@@ -41,6 +41,8 @@ export default function Edit({ attributes, setAttributes, clientId }) {
         triggerTarget,
         customSelector,
         modalSize,
+        customWidth,
+        customWidthUnit,
         closeOnOverlayClick,
         closeOnEscape,
         showCloseButton,
@@ -75,7 +77,10 @@ export default function Edit({ attributes, setAttributes, clientId }) {
         'data-close-on-overlay-click': closeOnOverlayClick,
         'data-close-on-escape': closeOnEscape,
         'data-animation-type': animationType,
-        'data-backdrop-blur': backdropBlur
+        'data-backdrop-blur': backdropBlur,
+        style: modalSize === 'custom' ? {
+            '--modal-custom-width': `${customWidth}${customWidthUnit}`
+        } : {}
     });
 
     const innerBlocksProps = useInnerBlocksProps(
@@ -214,13 +219,46 @@ export default function Edit({ attributes, setAttributes, clientId }) {
                         label={__('Modal Size', 'jankx')}
                         value={modalSize}
                         options={[
-                            { label: __('Small', 'jankx'), value: 'small' },
-                            { label: __('Medium', 'jankx'), value: 'medium' },
-                            { label: __('Large', 'jankx'), value: 'large' },
-                            { label: __('Fullscreen', 'jankx'), value: 'fullscreen' }
+                            { label: __('Small (400px)', 'jankx'), value: 'small' },
+                            { label: __('Medium (600px)', 'jankx'), value: 'medium' },
+                            { label: __('Large (800px)', 'jankx'), value: 'large' },
+                            { label: __('Fullscreen', 'jankx'), value: 'fullscreen' },
+                            { label: __('Custom Width', 'jankx'), value: 'custom' }
                         ]}
                         onChange={(value) => setAttributes({ modalSize: value })}
                     />
+
+                    {modalSize === 'custom' && (
+                        <>
+                            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-end' }}>
+                                <div style={{ flex: 1 }}>
+                                    <RangeControl
+                                        label={__('Custom Width', 'jankx')}
+                                        value={customWidth}
+                                        onChange={(value) => setAttributes({ customWidth: value })}
+                                        min={200}
+                                        max={1200}
+                                        step={10}
+                                        help={__('Width of the modal content', 'jankx')}
+                                    />
+                                </div>
+                                <div style={{ minWidth: '80px' }}>
+                                    <SelectControl
+                                        label={__('Unit', 'jankx')}
+                                        value={customWidthUnit}
+                                        options={[
+                                            { label: 'px', value: 'px' },
+                                            { label: '%', value: '%' },
+                                            { label: 'rem', value: 'rem' },
+                                            { label: 'em', value: 'em' },
+                                            { label: 'vw', value: 'vw' }
+                                        ]}
+                                        onChange={(value) => setAttributes({ customWidthUnit: value })}
+                                    />
+                                </div>
+                            </div>
+                        </>
+                    )}
 
                     <ToggleControl
                         label={__('Close on Overlay Click', 'jankx')}

@@ -8,7 +8,7 @@
   \*********************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/modal","title":"Modal","category":"jankx-blocks","description":"A modal block with trigger and content areas. Supports inner blocks and custom selectors.","keywords":["modal","popup","overlay","trigger","inner blocks"],"textdomain":"jankx","attributes":{"align":{"type":"string","default":"center"},"modalId":{"type":"string","default":""},"triggerType":{"type":"string","default":"button","enum":["button","anchor","custom"]},"triggerText":{"type":"string","default":"Open Modal"},"triggerUrl":{"type":"string","default":""},"triggerTarget":{"type":"string","default":"_self"},"customSelector":{"type":"string","default":""},"modalSize":{"type":"string","default":"medium","enum":["small","medium","large","fullscreen"]},"closeOnOverlayClick":{"type":"boolean","default":true},"closeOnEscape":{"type":"boolean","default":true},"showCloseButton":{"type":"boolean","default":true},"animationType":{"type":"string","default":"fade","enum":["fade","slide","zoom","none"]},"animationDuration":{"type":"number","default":300},"backdropColor":{"type":"string","default":"rgba(0, 0, 0, 0.5)"},"backdropBlur":{"type":"boolean","default":false},"zIndex":{"type":"number","default":999999},"disableScroll":{"type":"boolean","default":true},"disableFocus":{"type":"boolean","default":false},"awaitOpenAnimation":{"type":"boolean","default":false},"awaitCloseAnimation":{"type":"boolean","default":false}},"supports":{"anchor":true,"align":["left","center","right","wide","full"],"alignWide":true,"html":false,"innerBlocks":true,"reusable":false,"interactivity":{"clientNavigation":true},"color":{"text":false,"background":false,"gradients":true,"__experimentalSkipSerialization":true},"spacing":{"margin":true,"padding":true,"__experimentalDefaultControls":{"margin":true,"padding":true}},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true,"__experimentalSkipSerialization":true,"__experimentalDefaultControls":{"color":true,"radius":true,"style":true,"width":true}},"shadow":{"__experimentalSkipSerialization":true}},"selectors":{"border":".wp-block-jankx-modal__content","shadow":".wp-block-jankx-modal__content"},"styles":[{"name":"default","label":"Default","isDefault":true},{"name":"centered","label":"Centered"},{"name":"fullscreen","label":"Fullscreen"},{"name":"minimal","label":"Minimal"}],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css","viewScript":"file:./build/view.js"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/modal","title":"Modal","category":"jankx-blocks","description":"A modal block with trigger and content areas. Supports inner blocks and custom selectors.","keywords":["modal","popup","overlay","trigger","inner blocks"],"textdomain":"jankx","attributes":{"align":{"type":"string","default":"center"},"modalId":{"type":"string","default":""},"triggerType":{"type":"string","default":"button","enum":["button","anchor","custom"]},"triggerText":{"type":"string","default":"Open Modal"},"triggerUrl":{"type":"string","default":""},"triggerTarget":{"type":"string","default":"_self"},"customSelector":{"type":"string","default":""},"modalSize":{"type":"string","default":"medium","enum":["small","medium","large","fullscreen","custom"]},"customWidth":{"type":"number","default":600},"customWidthUnit":{"type":"string","default":"px","enum":["px","%","rem","em","vw"]},"closeOnOverlayClick":{"type":"boolean","default":true},"closeOnEscape":{"type":"boolean","default":true},"showCloseButton":{"type":"boolean","default":true},"animationType":{"type":"string","default":"fade","enum":["fade","slide","zoom","none"]},"animationDuration":{"type":"number","default":300},"backdropColor":{"type":"string","default":"rgba(0, 0, 0, 0.5)"},"backdropBlur":{"type":"boolean","default":false},"zIndex":{"type":"number","default":999999},"disableScroll":{"type":"boolean","default":true},"disableFocus":{"type":"boolean","default":false},"awaitOpenAnimation":{"type":"boolean","default":false},"awaitCloseAnimation":{"type":"boolean","default":false}},"supports":{"anchor":true,"align":["left","center","right","wide","full"],"alignWide":true,"html":false,"innerBlocks":true,"reusable":false,"interactivity":{"clientNavigation":true},"color":{"text":false,"background":false,"gradients":true,"__experimentalSkipSerialization":true},"spacing":{"margin":true,"padding":true,"__experimentalDefaultControls":{"margin":true,"padding":true}},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true,"__experimentalSkipSerialization":true,"__experimentalDefaultControls":{"color":true,"radius":true,"style":true,"width":true}},"shadow":{"__experimentalSkipSerialization":true}},"selectors":{"border":".wp-block-jankx-modal__content","shadow":".wp-block-jankx-modal__content"},"styles":[{"name":"default","label":"Default","isDefault":true},{"name":"centered","label":"Centered"},{"name":"fullscreen","label":"Fullscreen"},{"name":"minimal","label":"Minimal"}],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css","viewScript":"file:./build/view.js"}');
 
 /***/ }),
 
@@ -61,6 +61,8 @@ function Edit({
     triggerTarget,
     customSelector,
     modalSize,
+    customWidth,
+    customWidthUnit,
     closeOnOverlayClick,
     closeOnEscape,
     showCloseButton,
@@ -95,7 +97,10 @@ function Edit({
     'data-close-on-overlay-click': closeOnOverlayClick,
     'data-close-on-escape': closeOnEscape,
     'data-animation-type': animationType,
-    'data-backdrop-blur': backdropBlur
+    'data-backdrop-blur': backdropBlur,
+    style: modalSize === 'custom' ? {
+      '--modal-custom-width': `${customWidth}${customWidthUnit}`
+    } : {}
   });
   const innerBlocksProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useInnerBlocksProps)({
     className: 'wp-block-jankx-modal__inner'
@@ -229,20 +234,74 @@ function Edit({
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Modal Size', 'jankx'),
           value: modalSize,
           options: [{
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Small', 'jankx'),
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Small (400px)', 'jankx'),
             value: 'small'
           }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Medium', 'jankx'),
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Medium (600px)', 'jankx'),
             value: 'medium'
           }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Large', 'jankx'),
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Large (800px)', 'jankx'),
             value: 'large'
           }, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Fullscreen', 'jankx'),
             value: 'fullscreen'
+          }, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Custom Width', 'jankx'),
+            value: 'custom'
           }],
           onChange: value => setAttributes({
             modalSize: value
+          })
+        }), modalSize === 'custom' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+            style: {
+              display: 'flex',
+              gap: '8px',
+              alignItems: 'flex-end'
+            },
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+              style: {
+                flex: 1
+              },
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RangeControl, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Custom Width', 'jankx'),
+                value: customWidth,
+                onChange: value => setAttributes({
+                  customWidth: value
+                }),
+                min: 200,
+                max: 1200,
+                step: 10,
+                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Width of the modal content', 'jankx')
+              })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+              style: {
+                minWidth: '80px'
+              },
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Unit', 'jankx'),
+                value: customWidthUnit,
+                options: [{
+                  label: 'px',
+                  value: 'px'
+                }, {
+                  label: '%',
+                  value: '%'
+                }, {
+                  label: 'rem',
+                  value: 'rem'
+                }, {
+                  label: 'em',
+                  value: 'em'
+                }, {
+                  label: 'vw',
+                  value: 'vw'
+                }],
+                onChange: value => setAttributes({
+                  customWidthUnit: value
+                })
+              })
+            })]
           })
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Close on Overlay Click', 'jankx'),
@@ -456,6 +515,8 @@ function Save({
     triggerTarget,
     customSelector,
     modalSize,
+    customWidth,
+    customWidthUnit,
     closeOnOverlayClick,
     closeOnEscape,
     showCloseButton,
@@ -534,7 +595,10 @@ function Save({
         '--modal-backdrop-color': backdropColor,
         '--modal-animation-duration': `${animationDuration}ms`,
         '--modal-z-index': zIndex,
-        '--modal-backdrop-blur': backdropBlur ? 'blur(5px)' : 'none'
+        '--modal-backdrop-blur': backdropBlur ? 'blur(5px)' : 'none',
+        ...(modalSize === 'custom' && {
+          '--modal-custom-width': `${customWidth}${customWidthUnit}`
+        })
       },
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
         className: "wp-block-jankx-modal__overlay",

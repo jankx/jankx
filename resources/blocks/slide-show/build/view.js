@@ -640,7 +640,7 @@
           stopAutoplay();
         }
       };
-      const closeLightbox = () => {
+      let closeLightbox = () => {
         stopAutoplay();
         document.body.removeChild(lightbox);
         document.head.removeChild(styles);

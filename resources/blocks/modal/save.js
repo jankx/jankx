@@ -15,6 +15,8 @@ export default function Save({ attributes }) {
         triggerTarget,
         customSelector,
         modalSize,
+        customWidth,
+        customWidthUnit,
         closeOnOverlayClick,
         closeOnEscape,
         showCloseButton,
@@ -103,7 +105,10 @@ export default function Save({ attributes }) {
                     '--modal-backdrop-color': backdropColor,
                     '--modal-animation-duration': `${animationDuration}ms`,
                     '--modal-z-index': zIndex,
-                    '--modal-backdrop-blur': backdropBlur ? 'blur(5px)' : 'none'
+                    '--modal-backdrop-blur': backdropBlur ? 'blur(5px)' : 'none',
+                    ...(modalSize === 'custom' && {
+                        '--modal-custom-width': `${customWidth}${customWidthUnit}`
+                    })
                 }}
             >
                 {/* [2] Overlay layer with tabindex and close trigger */}

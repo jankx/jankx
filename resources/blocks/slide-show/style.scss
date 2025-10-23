@@ -14,9 +14,7 @@
   --slideshow-primary-light: color-mix(in srgb, var(--wp--preset--color--primary) 20%, white);
 
   position: relative;
-  background: #fff;
   border-radius: var(--slideshow-border-radius);
-  box-shadow: var(--slideshow-shadow);
   overflow: hidden;
 
   // Thumbnails Section

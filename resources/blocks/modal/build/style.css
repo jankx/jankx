@@ -85,6 +85,10 @@
   width: 100%;
   height: auto;
 }
+.wp-block-jankx-modal__container--custom {
+  max-width: var(--modal-custom-width, 600px);
+  width: 100%;
+}
 
 .wp-block-jankx-modal__content {
   position: relative;

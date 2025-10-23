@@ -64,6 +64,22 @@
             "default": ""
         }
     },
+    "style": {
+        "spacing": {
+            "padding": {
+                "top": "0",
+                "right": "0",
+                "bottom": "0",
+                "left": "0"
+            },
+            "margin": {
+                "top": "2",
+                "right": "0",
+                "bottom": "2",
+                "left": "0"
+            }
+        }
+    },
     "supports": {
         "html": false,
         "anchor": true,
@@ -74,7 +90,7 @@
             "blockGap": true,
             "__experimentalDefaultControls": {
                 "padding": true,
-                "margin": false
+                "margin": true
             }
         },
         "color": {

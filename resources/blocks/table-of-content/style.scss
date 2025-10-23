@@ -14,8 +14,9 @@
     --toc-border-color: var(--wp--preset--color--accent-5, #FBFAF3);
     --toc-bg-color: var(--wp--preset--color--base, #FFFFFF);
 
-    // Layout
-    padding: 1.5rem;
+    // Layout - Default spacing overridden by block.json style
+    padding: 0;
+    margin: 1rem 0;
     border: 1px solid var(--toc-border-color);
     border-radius: 8px;
 

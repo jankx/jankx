@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { useBlockProps, InspectorControls, MediaUpload, MediaUploadCheck, InnerBlocks, useInnerBlocksProps, RichText } from '@wordpress/block-editor';
-import { PanelBody, Button, ToggleControl, RangeControl, SelectControl, Placeholder } from '@wordpress/components';
+import { PanelBody, Button, ToggleControl, RangeControl, SelectControl, Placeholder, TextControl } from '@wordpress/components';
 import { useState, useEffect, useRef } from '@wordpress/element';
 import { createBlock } from '@wordpress/blocks';
 import { useDispatch } from '@wordpress/data';
@@ -22,7 +22,8 @@ export default function Edit({ attributes, setAttributes, clientId }: SlideshowE
     captionPosition,
     enableLightbox,
     showFooterText,
-    footerText
+    footerText,
+    fullscreenText
   } = attributes;
 
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -288,6 +289,12 @@ export default function Edit({ attributes, setAttributes, clientId }: SlideshowE
             checked={showFooterText}
             onChange={(val) => setAttributes({ showFooterText: val })}
           />
+          <TextControl
+            label={__('Fullscreen Button Text', 'jankx')}
+            value={fullscreenText}
+            onChange={(value) => setAttributes({ fullscreenText: value })}
+            help={__('Text hiển thị trên nút Fullscreen', 'jankx')}
+          />
           <ToggleControl
             label={__('Show Thumbnails', 'jankx')}
             checked={showThumbnails}
@@ -421,7 +428,7 @@ export default function Edit({ attributes, setAttributes, clientId }: SlideshowE
       {showFooterText && (
         <div className="slideshow-footer-text">
           <RichText
-            tagName="p"
+            tagName="div"
             value={footerText}
             onChange={(value) => setAttributes({ footerText: value })}
             placeholder={__('Nhập nội dung footer...', 'jankx')}
@@ -435,7 +442,7 @@ export default function Edit({ attributes, setAttributes, clientId }: SlideshowE
         <div className="slideshow-controls">
           {fullscreen && (
             <button className="slideshow-fullscreen-btn">
-              {__('Fullscreen', 'jankx')}
+              {fullscreenText || __('Fullscreen', 'jankx')}
             </button>
           )}
           {autoplay && (

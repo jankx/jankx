@@ -40,7 +40,16 @@
 		"modalSize": {
 			"type": "string",
 			"default": "medium",
-			"enum": ["small", "medium", "large", "fullscreen"]
+			"enum": ["small", "medium", "large", "fullscreen", "custom"]
+		},
+		"customWidth": {
+			"type": "number",
+			"default": 600
+		},
+		"customWidthUnit": {
+			"type": "string",
+			"default": "px",
+			"enum": ["px", "%", "rem", "em", "vw"]
 		},
 		"closeOnOverlayClick": {
 			"type": "boolean",

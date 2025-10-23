@@ -71,6 +71,10 @@
       "type": "string",
       "default": ""
     },
+    "fullscreenText": {
+      "type": "string",
+      "default": "Fullscreen"
+    },
     "className": {
       "type": "string"
     },
