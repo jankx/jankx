@@ -49,7 +49,7 @@ function Edit({
   clientId,
   context
 }) {
-  var _context$jankxShowTh, _context$jankxShowNa, _context$jankxTransi;
+  var _context$jankxShowTh, _context$jankxShowNa, _context$jankxTransi, _context$jankxPrevTe, _context$jankxNextTe;
   const {
     images
   } = attributes;
@@ -73,6 +73,8 @@ function Edit({
   const showThumbnails = (_context$jankxShowTh = context['jankx/showThumbnails']) !== null && _context$jankxShowTh !== void 0 ? _context$jankxShowTh : true;
   const showNavigation = (_context$jankxShowNa = context['jankx/showNavigation']) !== null && _context$jankxShowNa !== void 0 ? _context$jankxShowNa : true;
   const transitionEffect = (_context$jankxTransi = context['jankx/transitionEffect']) !== null && _context$jankxTransi !== void 0 ? _context$jankxTransi : 'slide';
+  const prevText = (_context$jankxPrevTe = context['jankx/prevText']) !== null && _context$jankxPrevTe !== void 0 ? _context$jankxPrevTe : '←';
+  const nextText = (_context$jankxNextTe = context['jankx/nextText']) !== null && _context$jankxNextTe !== void 0 ? _context$jankxNextTe : '→';
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)({
     className: 'slideshow-container-block'
   });
@@ -229,12 +231,16 @@ function Edit({
           className: "slideshow-nav slideshow-nav-prev",
           onClick: goToPrevious,
           "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Previous slide', 'jankx'),
-          children: "\u2190"
+          dangerouslySetInnerHTML: {
+            __html: prevText
+          }
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
           className: "slideshow-nav slideshow-nav-next",
           onClick: goToNext,
           "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Next slide', 'jankx'),
-          children: "\u2192"
+          dangerouslySetInnerHTML: {
+            __html: nextText
+          }
         })]
       })]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {

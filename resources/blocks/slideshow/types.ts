@@ -43,6 +43,8 @@ export interface SlideshowAttributes {
   enableLightbox: boolean;
   showFooterText: boolean;
   fullscreenText: string;
+  prevText: string;
+  nextText: string;
   className?: string;
   anchor?: string;
 }

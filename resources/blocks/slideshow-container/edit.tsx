@@ -20,6 +20,8 @@ export default function Edit({
     'jankx/showNavigation'?: boolean;
     'jankx/transitionEffect'?: string;
     'jankx/captionPosition'?: string;
+    'jankx/prevText'?: string;
+    'jankx/nextText'?: string;
   };
 }) {
   const { images } = attributes;
@@ -38,6 +40,8 @@ export default function Edit({
   const showThumbnails = context['jankx/showThumbnails'] ?? true;
   const showNavigation = context['jankx/showNavigation'] ?? true;
   const transitionEffect = context['jankx/transitionEffect'] ?? 'slide';
+  const prevText = context['jankx/prevText'] ?? '←';
+  const nextText = context['jankx/nextText'] ?? '→';
 
   const blockProps = useBlockProps({
     className: 'slideshow-container-block'
@@ -205,16 +209,14 @@ export default function Edit({
               className="slideshow-nav slideshow-nav-prev"
               onClick={goToPrevious}
               aria-label={__('Previous slide', 'jankx')}
-            >
-              ←
-            </button>
+              dangerouslySetInnerHTML={{ __html: prevText }}
+            />
             <button
               className="slideshow-nav slideshow-nav-next"
               onClick={goToNext}
               aria-label={__('Next slide', 'jankx')}
-            >
-              →
-            </button>
+              dangerouslySetInnerHTML={{ __html: nextText }}
+            />
           </>
         )}
       </div>

@@ -9,6 +9,60 @@ class SlideshowBlock extends Block
 {
     protected $blockId = 'jankx/slideshow';
 
+    /**
+     * Allow SVG tags in content and replace fill with currentColor
+     */
+    private function allow_svg_tags($content) {
+        $allowed_tags = wp_kses_allowed_html('post');
+        $allowed_tags['svg'] = [
+            'width' => true,
+            'height' => true,
+            'viewBox' => true,
+            'fill' => true,
+            'xmlns' => true,
+            'class' => true,
+            'style' => true,
+        ];
+        $allowed_tags['path'] = [
+            'd' => true,
+            'fill' => true,
+            'stroke' => true,
+            'stroke-width' => true,
+            'stroke-linecap' => true,
+            'stroke-linejoin' => true,
+        ];
+        $allowed_tags['circle'] = [
+            'cx' => true,
+            'cy' => true,
+            'r' => true,
+            'fill' => true,
+            'stroke' => true,
+        ];
+        $allowed_tags['rect'] = [
+            'x' => true,
+            'y' => true,
+            'width' => true,
+            'height' => true,
+            'fill' => true,
+            'stroke' => true,
+        ];
+        $allowed_tags['line'] = [
+            'x1' => true,
+            'y1' => true,
+            'x2' => true,
+            'y2' => true,
+            'stroke' => true,
+            'stroke-width' => true,
+        ];
+        
+        $sanitized = wp_kses($content, $allowed_tags);
+        
+        // Replace fill attributes with currentColor for better color inheritance
+        $sanitized = preg_replace('/fill="[^"]*"/', 'fill="currentColor"', $sanitized);
+        
+        return $sanitized;
+    }
+
     public function render($attributes, $content = '', $block = null)
     {
         // Get images from slideshow-container child block
@@ -27,6 +81,8 @@ class SlideshowBlock extends Block
         $autoplayDelay = $attributes['autoplayDelay'] ?? 3000;
         $fullscreen = $attributes['fullscreen'] ?? true;
         $fullscreenText = $attributes['fullscreenText'] ?? __('Fullscreen', 'jankx');
+        $prevText = $attributes['prevText'] ?? '&lt;';
+        $nextText = $attributes['nextText'] ?? '&gt;';
         $showThumbnails = $attributes['showThumbnails'] ?? true;
         $showNavigation = $attributes['showNavigation'] ?? true;
         $showPagination = $attributes['showPagination'] ?? true;
@@ -87,6 +143,15 @@ class SlideshowBlock extends Block
             if ($block && !empty($block->inner_blocks)) {
                 foreach ($block->inner_blocks as $inner_block) {
                     if ($inner_block->name === 'jankx/slideshow-container') {
+                        // Pass context to inner block
+                        $inner_block->context = array_merge($inner_block->context ?? [], [
+                            'jankx/showThumbnails' => $showThumbnails,
+                            'jankx/showNavigation' => $showNavigation,
+                            'jankx/transitionEffect' => $transitionEffect,
+                            'jankx/captionPosition' => $captionPosition,
+                            'jankx/prevText' => $prevText,
+                            'jankx/nextText' => $nextText,
+                        ]);
                         echo $inner_block->render();
                     }
                 }
@@ -128,7 +193,7 @@ class SlideshowBlock extends Block
                         <?php if ($showPagination && count($images) > 1) : ?>
                             <div class="slideshow-pagination">
                                 <button class="slideshow-pagination-prev" disabled>
-                                    &lt;
+                                    <?php echo $this->allow_svg_tags($prevText); ?>
                                 </button>
                                 <?php foreach ($images as $index => $image) : ?>
                                     <?php $active_class = $index === 0 ? 'active' : ''; ?>
@@ -138,7 +203,7 @@ class SlideshowBlock extends Block
                                     </button>
                                 <?php endforeach; ?>
                                 <button class="slideshow-pagination-next">
-                                    &gt;
+                                    <?php echo $this->allow_svg_tags($nextText); ?>
                                 </button>
                             </div>
                         <?php endif; ?>

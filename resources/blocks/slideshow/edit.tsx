@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { useBlockProps, InspectorControls, InnerBlocks } from '@wordpress/block-editor';
-import { PanelBody, ToggleControl, RangeControl, SelectControl, TextControl } from '@wordpress/components';
+import { PanelBody, ToggleControl, RangeControl, SelectControl, TextControl, TextareaControl } from '@wordpress/components';
 import { useState, useEffect } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
@@ -21,7 +21,9 @@ export default function Edit({ attributes, setAttributes, clientId }: SlideshowE
     captionPosition,
     enableLightbox,
     showFooterText,
-    fullscreenText
+    fullscreenText,
+    prevText,
+    nextText
   } = attributes;
 
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -115,6 +117,20 @@ export default function Edit({ attributes, setAttributes, clientId }: SlideshowE
             value={fullscreenText}
             onChange={(value) => setAttributes({ fullscreenText: value })}
             help={__('Text hiển thị trên nút Fullscreen', 'jankx')}
+          />
+          <TextareaControl
+            label={__('Previous Button Text/HTML', 'jankx')}
+            value={prevText}
+            onChange={(value) => setAttributes({ prevText: value })}
+            help={__('Text hoặc HTML/SVG cho nút Previous. Mặc định: &lt;', 'jankx')}
+            rows={3}
+          />
+          <TextareaControl
+            label={__('Next Button Text/HTML', 'jankx')}
+            value={nextText}
+            onChange={(value) => setAttributes({ nextText: value })}
+            help={__('Text hoặc HTML/SVG cho nút Next. Mặc định: &gt;', 'jankx')}
+            rows={3}
           />
           <ToggleControl
             label={__('Show Thumbnails', 'jankx')}
@@ -220,9 +236,8 @@ export default function Edit({ attributes, setAttributes, clientId }: SlideshowE
                 disabled={currentSlide === 0}
                 type="button"
                 style={{ pointerEvents: 'auto' }}
-              >
-                &lt;
-              </button>
+                dangerouslySetInnerHTML={{ __html: prevText || '&lt;' }}
+              />
               {images.map((_, index) => (
                 <button
                   key={index}
@@ -249,9 +264,8 @@ export default function Edit({ attributes, setAttributes, clientId }: SlideshowE
                 disabled={currentSlide === images.length - 1}
                 type="button"
                 style={{ pointerEvents: 'auto' }}
-              >
-                &gt;
-              </button>
+                dangerouslySetInnerHTML={{ __html: nextText || '&gt;' }}
+              />
             </div>
             )}
           </div>

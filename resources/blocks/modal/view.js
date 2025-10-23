@@ -100,6 +100,30 @@ import MicroModal from 'micromodal';
         console.log('Modal opened:', modalId);
     }
 
+    function stopMediaInModal(modal) {
+        // Stop all iframes (YouTube, Vimeo, etc.)
+        const iframes = modal.querySelectorAll('iframe');
+        iframes.forEach(iframe => {
+            const src = iframe.src;
+            iframe.src = ''; // Clear src to stop playback
+            iframe.src = src; // Restore src
+        });
+
+        // Pause all HTML5 videos
+        const videos = modal.querySelectorAll('video');
+        videos.forEach(video => {
+            video.pause();
+            video.currentTime = 0;
+        });
+
+        // Pause all HTML5 audios
+        const audios = modal.querySelectorAll('audio');
+        audios.forEach(audio => {
+            audio.pause();
+            audio.currentTime = 0;
+        });
+    }
+
     function hideModal(modalId) {
         const modal = document.getElementById(modalId);
         if (!modal) return;
@@ -107,6 +131,9 @@ import MicroModal from 'micromodal';
         const wrapper = modal.closest('.wp-block-jankx-modal-wrapper') || document.querySelector(`[data-modal-id="${modalId}"]`);
         const animationType = wrapper ? (wrapper.dataset.animationType || 'fade') : 'fade';
         const animationDuration = wrapper ? (parseInt(wrapper.dataset.animationDuration) || 300) : 300;
+
+        // Stop all media playback
+        stopMediaInModal(modal);
 
         // Remove classes first to trigger transition
         modal.classList.remove('is-open', 'modal-showing', 'modal-animation-' + animationType);
@@ -253,6 +280,9 @@ import MicroModal from 'micromodal';
             },
             onClose: function(modal) {
                 console.log('Modal closed:', modal.id);
+
+                // Stop all media playback in modal
+                stopMediaInModal(modal);
 
                 // Get stored scroll position
                 const scrollY = modal.getAttribute('data-scroll-y') || 0;

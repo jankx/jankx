@@ -8,7 +8,7 @@
   \*************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/slideshow","title":"Slideshow","category":"jankx","description":"Advanced slideshow with thumbnails, captions and PhotoSwipe integration","keywords":["slideshow","gallery","photoswipe","carousel","images"],"textdomain":"jankx","attributes":{"autoplay":{"type":"boolean","default":false},"autoplayDelay":{"type":"number","default":3000},"fullscreen":{"type":"boolean","default":true},"showThumbnails":{"type":"boolean","default":true},"showNavigation":{"type":"boolean","default":true},"showPagination":{"type":"boolean","default":true},"transitionEffect":{"type":"string","enum":["slide","fade"],"default":"slide"},"transitionSpeed":{"type":"number","default":300},"thumbnailSize":{"type":"string","enum":["small","medium","large"],"default":"medium"},"mainImageHeight":{"type":"number","default":400},"captionPosition":{"type":"string","enum":["top","bottom","overlay","hidden"],"default":"hidden"},"enableLightbox":{"type":"boolean","default":false},"showFooterText":{"type":"boolean","default":false},"fullscreenText":{"type":"string","default":"Fullscreen"},"className":{"type":"string"},"anchor":{"type":"string"}},"supports":{"html":false,"anchor":true,"align":["wide","full"],"spacing":{"margin":true,"padding":true},"color":{"background":true,"text":true,"gradients":true,"link":true},"border":{"color":true,"radius":true,"style":true,"width":true,"__experimentalDefaultControls":{"radius":true}},"typography":{"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true,"__experimentalTextTransform":true,"__experimentalTextDecoration":true,"__experimentalLetterSpacing":true},"dimensions":{"minHeight":true}},"providesContext":{"jankx/slideShowId":"anchor","jankx/showThumbnails":"showThumbnails","jankx/showNavigation":"showNavigation","jankx/transitionEffect":"transitionEffect","jankx/captionPosition":"captionPosition"},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","viewScript":"file:./build/view.js","style":"file:./build/style.css"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/slideshow","title":"Slideshow","category":"jankx","description":"Advanced slideshow with thumbnails, captions and PhotoSwipe integration","keywords":["slideshow","gallery","photoswipe","carousel","images"],"textdomain":"jankx","attributes":{"autoplay":{"type":"boolean","default":false},"autoplayDelay":{"type":"number","default":3000},"fullscreen":{"type":"boolean","default":true},"showThumbnails":{"type":"boolean","default":true},"showNavigation":{"type":"boolean","default":true},"showPagination":{"type":"boolean","default":true},"transitionEffect":{"type":"string","enum":["slide","fade"],"default":"slide"},"transitionSpeed":{"type":"number","default":300},"thumbnailSize":{"type":"string","enum":["small","medium","large"],"default":"medium"},"mainImageHeight":{"type":"number","default":400},"captionPosition":{"type":"string","enum":["top","bottom","overlay","hidden"],"default":"hidden"},"enableLightbox":{"type":"boolean","default":false},"showFooterText":{"type":"boolean","default":false},"fullscreenText":{"type":"string","default":"Fullscreen"},"prevText":{"type":"string","default":"&lt;"},"nextText":{"type":"string","default":"&gt;"},"className":{"type":"string"},"anchor":{"type":"string"}},"supports":{"html":false,"anchor":true,"align":["wide","full"],"spacing":{"margin":true,"padding":true},"color":{"background":true,"text":true,"gradients":true,"link":true},"border":{"color":true,"radius":true,"style":true,"width":true,"__experimentalDefaultControls":{"radius":true}},"typography":{"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true,"__experimentalTextTransform":true,"__experimentalTextDecoration":true,"__experimentalLetterSpacing":true},"dimensions":{"minHeight":true}},"providesContext":{"jankx/slideShowId":"anchor","jankx/showThumbnails":"showThumbnails","jankx/showNavigation":"showNavigation","jankx/transitionEffect":"transitionEffect","jankx/captionPosition":"captionPosition","jankx/prevText":"prevText","jankx/nextText":"nextText"},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","viewScript":"file:./build/view.js","style":"file:./build/style.css"}');
 
 /***/ }),
 
@@ -62,7 +62,9 @@ function Edit({
     captionPosition,
     enableLightbox,
     showFooterText,
-    fullscreenText
+    fullscreenText,
+    prevText,
+    nextText
   } = attributes;
   const [currentSlide, setCurrentSlide] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useState)(0);
   const {
@@ -159,6 +161,22 @@ function Edit({
             fullscreenText: value
           }),
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Text hiển thị trên nút Fullscreen', 'jankx')
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextareaControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Previous Button Text/HTML', 'jankx'),
+          value: prevText,
+          onChange: value => setAttributes({
+            prevText: value
+          }),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Text hoặc HTML/SVG cho nút Previous. Mặc định: &lt;', 'jankx'),
+          rows: 3
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextareaControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Next Button Text/HTML', 'jankx'),
+          value: nextText,
+          onChange: value => setAttributes({
+            nextText: value
+          }),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Text hoặc HTML/SVG cho nút Next. Mặc định: &gt;', 'jankx'),
+          rows: 3
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Thumbnails', 'jankx'),
           checked: showThumbnails,
@@ -278,7 +296,9 @@ function Edit({
             style: {
               pointerEvents: 'auto'
             },
-            children: "<"
+            dangerouslySetInnerHTML: {
+              __html: prevText || '&lt;'
+            }
           }), images.map((_, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
             className: `slideshow-pagination-dot ${index === currentSlide ? 'active' : ''}`,
             "data-slide": index,
@@ -302,7 +322,9 @@ function Edit({
             style: {
               pointerEvents: 'auto'
             },
-            children: ">"
+            dangerouslySetInnerHTML: {
+              __html: nextText || '&gt;'
+            }
           })]
         })]
       })

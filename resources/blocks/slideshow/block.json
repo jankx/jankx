@@ -67,6 +67,14 @@
       "type": "string",
       "default": "Fullscreen"
     },
+    "prevText": {
+      "type": "string",
+      "default": "&lt;"
+    },
+    "nextText": {
+      "type": "string",
+      "default": "&gt;"
+    },
     "className": {
       "type": "string"
     },
@@ -116,7 +124,9 @@
     "jankx/showThumbnails": "showThumbnails",
     "jankx/showNavigation": "showNavigation",
     "jankx/transitionEffect": "transitionEffect",
-    "jankx/captionPosition": "captionPosition"
+    "jankx/captionPosition": "captionPosition",
+    "jankx/prevText": "prevText",
+    "jankx/nextText": "nextText"
   },
   "editorScript": "file:./build/index.js",
   "editorStyle": "file:./build/editor.css",
