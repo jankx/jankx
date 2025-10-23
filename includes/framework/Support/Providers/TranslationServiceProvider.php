@@ -37,9 +37,6 @@ class TranslationServiceProvider extends ServiceProvider
 
         // Add direction support
         add_filter('body_class', [$this, 'addDirectionBodyClass']);
-
-        // Add language switcher
-        add_action('wp_footer', [$this, 'renderLanguageSwitcher']);
     }
 
     /**
@@ -142,38 +139,6 @@ class TranslationServiceProvider extends ServiceProvider
 
         // Fallback to WordPress locale
         return [get_locale()];
-    }
-
-    /**
-     * Render language switcher
-     *
-     * @return void
-     */
-    public function renderLanguageSwitcher()
-    {
-        $languages = $this->getLanguages();
-        $currentLanguage = $this->getCurrentLanguage();
-
-        if (count($languages) <= 1) {
-            return;
-        }
-
-        echo '<div class="language-switcher">';
-        echo '<ul>';
-
-        foreach ($languages as $language) {
-            $isCurrent = ($language === $currentLanguage);
-            $class = $isCurrent ? 'current' : '';
-
-            echo '<li class="' . esc_attr($class) . '">';
-            echo '<a href="' . esc_url($this->getLanguageUrl($language)) . '">';
-            echo esc_html($this->getLanguageName($language));
-            echo '</a>';
-            echo '</li>';
-        }
-
-        echo '</ul>';
-        echo '</div>';
     }
 
     /**
