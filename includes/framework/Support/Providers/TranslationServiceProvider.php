@@ -3,8 +3,6 @@
 namespace Jankx\Support\Providers;
 
 use Jankx\Foundation\Application;
-use Jankx\Facades\Log;
-use Jankx\Helper\Environment;
 
 /**
  * Translation Service Provider
@@ -39,6 +37,7 @@ class TranslationServiceProvider extends ServiceProvider
         add_filter('body_class', [$this, 'addDirectionBodyClass']);
     }
 
+
     /**
      * Bootstrap any application services.
      *
@@ -47,6 +46,43 @@ class TranslationServiceProvider extends ServiceProvider
      */
     public function boot(Application $app)
     {
+        add_filter('frontpage_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('404_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('archive_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('attachment_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('author_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('category_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('date_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('embed_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('frontpage_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('home_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('index_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('page_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('paged_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('privacypolicy_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('search_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('single_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('singular_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('tag_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('taxonomy_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+    }
+
+    public function filterFrontpageTemplateHierarchy($templates)
+    {
+        $currentLanguage = $this->getCurrentLanguage();
+        foreach ($templates as $index => $template) {
+            if (strpos($template, '.php') === false) {
+                continue;
+            }
+
+            $templateFile = 'templates/' . str_replace('.php', '-' . $currentLanguage . '.html', $template);
+            $exitings = locate_template($templateFile, false);
+            if (!empty($exitings)) {
+                $languageTemplate = str_replace('.php', '-' . $currentLanguage . '.php', $template);            
+                $templates[$index] = $languageTemplate;
+            }
+        }
+        return $templates;
     }
 
     /**
