@@ -1,524 +1,378 @@
-# Vietnamese translation for Jankx Framework
-# Copyright (C) 2024 Jankx Framework
+# Copyright (C) 2025 Jankx Framework
 # This file is distributed under the same license as the Jankx Framework package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Jankx Framework 2.0.0\n"
+"Project-Id-Version: Jankx Framework 2.0.0.3\n"
 "Report-Msgid-Bugs-To: https://github.com/jankx/framework/issues\n"
-"POT-Creation-Date: 2024-12-19 00:00+0000\n"
-"PO-Revision-Date: 2024-12-19 00:00+0000\n"
+"POT-Creation-Date: 2025-10-25 08:51+0000\n"
+"PO-Revision-Date: 2025-10-25 08:53:39+0000\n"
 "Last-Translator: Puleeno Nguyen <puleeno@gmail.com>\n"
 "Language-Team: Vietnamese <vi@li.org>\n"
 "Language: vi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-KeywordsList: __;_e;_ex:1,2c;_n:1,2;_n_noop:1,2;_nx:1,2,4c;"
+"_nx_noop:1,2,3c;_x:1,2c;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;"
+"esc_html_e;esc_html_x:1,2c\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Jankx POT/PO Merger\n"
 
-#: includes/framework/Jankx.php:47
+#: ../features/metrics/MetricServiceProvider.php:57
+msgid "Post Views (Lượt xem)"
+msgstr "Lượt xem"
+
+#: ../includes/app/Services/NavigationBlockService.php:72,
+#: ../includes/framework/Patches/NavigationBlockPatch.php:35,
+#: ../includes/framework/Patches/NavigationBlockPatch.php:102,
+#: ../includes/framework/Patches/PatchesLoader.php:139,
+#: ../includes/framework/Patches/PatchesLoader.php:189,
+#: ../includes/framework/Patches/WordPressCorePatch.php:170
+msgid "Link"
+msgstr ""
+
+#: ../includes/app/Services/NavigationBlockService.php:90,
+#: ../includes/framework/Patches/NavigationBlockPatch.php:53,
+#: ../includes/framework/Patches/NavigationBlockPatch.php:114
+msgid "Submenu"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:25
+msgid "Date (Ngày đăng)"
+msgstr "Ngày đăng"
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:29
+msgid "Modified (Ngày sửa)"
+msgstr "Ngày sửa"
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:33
+msgid "Title (Tiêu đề)"
+msgstr "Tiêu đề"
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:37
+msgid "Name (Slug)"
+msgstr "Slug"
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:41
+msgid "Author (Tác giả)"
+msgstr "Tác giả"
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:45
+msgid "Type (Post Type)"
+msgstr "Post Type"
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:49
+msgid "ID"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:53
+msgid "Menu Order"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:57
+msgid "Random (Ngẫu nhiên)"
+msgstr "Ngẫu nhiên"
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:61
+msgid "Comment Count (Số bình luận)"
+msgstr "Số bình luận"
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:65
+msgid "Relevance (Độ liên quan)"
+msgstr "Độ liên quan"
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:69
+msgid "Meta Value (Giá trị meta)"
+msgstr "Giá trị meta"
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:73
+msgid "Meta Value Num (Giá trị meta số)"
+msgstr "Giá trị meta số"
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:77
+msgid "Post__in (Thứ tự trong mảng)"
+msgstr "Thứ tự trong mảng"
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:81
+msgid "Post Name__in (Thứ tự slug)"
+msgstr "Thứ tự slug"
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:85
+msgid "Post Parent__in (Thứ tự parent)"
+msgstr "Thứ tự parent"
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:120
+msgid "Descending (Giảm dần)"
+msgstr "Giảm dần"
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:124
+msgid "Ascending (Tăng dần)"
+msgstr "Tăng dần"
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:150
+msgid "Equal (=)"
+msgstr "="
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:154
+msgid "Not Equal (!=)"
+msgstr "!="
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:158
+msgid "Greater Than (>)"
+msgstr ">"
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:162
+msgid "Greater Than or Equal (>=)"
+msgstr ">="
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:166
+msgid "Less Than (<)"
+msgstr "<"
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:170
+msgid "Less Than or Equal (<=)"
+msgstr "<="
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:174
+msgid "Like (LIKE)"
+msgstr "LIKE"
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:178
+msgid "Not Like (NOT LIKE)"
+msgstr "NOT LIKE"
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:182,
+#: ../includes/framework/Gutenberg/QueryOptions.php:262
+msgid "In (IN)"
+msgstr "IN"
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:186,
+#: ../includes/framework/Gutenberg/QueryOptions.php:266
+msgid "Not In (NOT IN)"
+msgstr "NOT IN"
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:190,
+#: ../includes/framework/Gutenberg/QueryOptions.php:274
+msgid "Exists (EXISTS)"
+msgstr "EXISTS"
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:194,
+#: ../includes/framework/Gutenberg/QueryOptions.php:278
+msgid "Not Exists (NOT EXISTS)"
+msgstr "NOT EXISTS"
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:218
+msgid "-- Auto --"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:270
+msgid "And (AND)"
+msgstr "AND"
+
+#: ../includes/framework/Services/JankxMenuItemsService.php:211,
+#: ../includes/framework/Services/JankxMenuItemsService.php:215
+msgid "Add to menu"
+msgstr ""
+
+#: ../includes/app/Services/WooCommerce/BuyNowService.php:42
+msgid "MUA NGAY"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/AuthorBoxBlock.php:44
+msgid "No author found"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/AuthorBoxBlock.php:51
+msgid "Author not found"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/AuthorBoxBlock.php:93
+msgid "Recent Posts"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/AuthorBoxBlock.php:185
+msgid "No posts found"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/IconPickerBlock.php:174
+msgid "Chọn icon từ Jankx Font Icons System để hiển thị ở đây."
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/ImageMasonryGalleryBlock.php:161
+msgid "Gallery Image"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/ImageMasonryGalleryBlock.php:192
+msgid "No images selected. Please add images to the gallery."
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/LanguageSwitcherBlock.php:284
+msgid "Polylang plugin is not active. Language switcher cannot be displayed."
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/OffcanvasSidebarBlock.php:181
+msgid "Sidebar navigation"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/OffcanvasSidebarBlock.php:257
+msgid "Close sidebar"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/OffcanvasSidebarBlock.php:293
+msgid "Add your content here using any available blocks."
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/OffcanvasTriggerBlock.php:79
+msgid "Toggle menu"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/PostTypeLayoutBlock.php:92
+msgid "&laquo; Trước"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/PostTypeLayoutBlock.php:93
+msgid "Sau &raquo;"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/PostTypeLayoutBlock.php:114
+msgid "Trước"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/PostTypeLayoutBlock.php:117
+msgid "Sau"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/PostTypeLayoutBlock.php:148,
+#: ../views/post-layouts/common/pagination.php:8
+msgid "Posts navigation"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/PostTypeLayoutBlock.php:177
+msgid "Tải thêm"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/PostTypeLayoutBlock.php:342
+msgid "Layout \"%s\" không tồn tại."
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/SlideshowBlock.php:83
+msgid "Fullscreen"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/SlideshowBlock.php:188
+msgid "Xem tự động"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/SlideshowContainerBlock.php:105
+msgid "Previous slide"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/SlideshowContainerBlock.php:109
+msgid "Next slide"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:13,
+#: ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:191
+msgid "Trang chủ"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:35
+msgid "No breadcrumb available"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:69,
+#: ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:175
+msgid "Breadcrumb"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:179
+msgctxt "breadcrumb"
+msgid "Home"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:242,
+#: ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:374
+msgid "Trang không tìm thấy"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:239,
+#: ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:372
+msgid "Kết quả tìm kiếm cho: \"%s\""
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:215
+msgid "Sample Category"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:219
+msgid "Sample Post Title"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:334
+msgid "Tác giả: %s"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/SmartTabsBlock.php:130
+msgid "Tab %d"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/TableOfContentBlock.php:455
+msgid "No headings found in the post content."
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/TableOfContentBlock.php:499
+msgid "Table of Contents"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/WplyrMediaBlock.php:148
+msgid "Please configure media settings."
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/WplyrMediaBlock.php:136
+msgid "Your browser does not support the audio tag."
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/WplyrMediaBlock.php:127
+msgid "Your browser does not support the video tag."
+msgstr ""
+
+#: ../includes/framework/Layouts/PostLayout/PostLayout.php:178
+msgid "By %s"
+msgstr ""
+
+#: ../includes/framework/Layouts/PostLayout/Supports/CardLayout.php:76,
+#: ../includes/framework/Layouts/PostLayout/Supports/GridLayout.php:74,
+#: ../includes/framework/Layouts/PostLayout/Supports/ListLayout.php:70,
+#: ../includes/framework/Layouts/PostLayout/Supports/MasonryLayout.php:76
+msgid "Post Title %d"
+msgstr ""
+
+#: ../includes/framework/Layouts/PostLayout/Supports/CardLayout.php:77
+msgid ""
+"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod "
+"tempor..."
+msgstr ""
+
+#: ../includes/framework/Layouts/PostLayout/Supports/GridLayout.php:75,
+#: ../includes/framework/Layouts/PostLayout/Supports/ListLayout.php:71
+msgid "Lorem ipsum dolor sit amet, consectetur adipiscing elit..."
+msgstr ""
+
+#: ../includes/framework/Layouts/PostLayout/Supports/MasonryLayout.php:77
+msgid "Lorem ipsum dolor sit amet..."
+msgstr ""
+
+#: ../resources/blocks/advanced-filter/init.php:33
 msgid "Jankx"
 msgstr "Jankx"
 
-#: includes/framework/Jankx.php:55
-msgid "Jankx is a powerful WordPress theme framework. High performance, compatible, easy to use and develop"
-msgstr "Jankx là một framework WordPress theme mạnh mẽ. Hiệu suất cao, tương thích, dễ sử dụng và phát triển"
-
-#: includes/framework/Support/Providers/TranslationServiceProvider.php:213
-msgid "English"
-msgstr "Tiếng Anh"
-
-#: includes/framework/Support/Providers/TranslationServiceProvider.php:214
-msgid "Tiếng Việt"
-msgstr "Tiếng Việt"
-
-#: includes/framework/Support/Providers/TranslationServiceProvider.php:215
-msgid "العربية"
-msgstr "العربية"
-
-#: includes/framework/Support/Providers/TranslationServiceProvider.php:216
-msgid "עברית"
-msgstr "עברית"
-
-#: includes/framework/Support/Providers/TranslationServiceProvider.php:217
-msgid "فارسی"
-msgstr "فارسی"
-
-#: includes/framework/Support/Providers/TranslationServiceProvider.php:218
-msgid "اردو"
-msgstr "اردو"
-
-#: includes/framework/Support/Providers/TranslationServiceProvider.php:219
-msgid "پښتو"
-msgstr "پښتو"
-
-#: includes/framework/Support/Providers/TranslationServiceProvider.php:220
-msgid "سنڌي"
-msgstr "سنڌي"
-
-#: includes/framework/Support/Providers/TranslationServiceProvider.php:221
-msgid "کوردی"
-msgstr "کوردی"
-
-#: includes/framework/Support/Providers/TranslationServiceProvider.php:222
-msgid "יידיש"
-msgstr "יידיש"
-
-#: includes/framework/Services/AdminPageService.php:166
-#: includes/framework/Services/AdminPageService.php:282
-#: includes/framework/Services/AdminPageService.php:374
-#: includes/framework/Services/AdminPageService.php:456
-msgid "Manage Icons"
-msgstr "Quản lý Icons"
-
-#: includes/framework/Services/AdminPageService.php:167
-msgid "Import Icons"
-msgstr "Nhập Icons"
-
-#: includes/framework/Services/AdminPageService.php:168
-msgid "View Framework Info"
-msgstr "Xem thông tin Framework"
-
-#: includes/framework/Services/AdminPageService.php:176
-#: includes/framework/Services/AdminPageService.php:1188
-msgid "Framework Version"
-msgstr "Phiên bản Framework"
-
-#: includes/framework/Services/AdminPageService.php:177
-#: includes/framework/Services/AdminPageService.php:1189
-msgid "Environment"
-msgstr "Môi trường"
-
-#: includes/framework/Services/AdminPageService.php:239
-msgid "Jankx Native"
-msgstr "Jankx Native"
-
-#: includes/framework/Services/AdminPageService.php:239
-msgid "Built-in options framework"
-msgstr "Framework tùy chọn tích hợp"
-
-#: includes/framework/Services/AdminPageService.php:281
-msgid "Icon Sets"
-msgstr "Bộ Icons"
-
-#: includes/framework/Services/AdminPageService.php:283
-#: includes/framework/Services/AdminPageService.php:375
-msgid "Import/Export"
-msgstr "Nhập/Xuất"
-
-#: includes/framework/Services/AdminPageService.php:473
-#: includes/framework/Services/AdminPageService.php:484
-msgid "← Back to Type Selection"
-msgstr "← Quay lại chọn loại"
-
-#: includes/framework/Services/AdminPageService.php:538
-#: includes/framework/Services/AdminPageService.php:664
-msgid "Loading icons..."
-msgstr "Đang tải icons..."
-
-#: includes/framework/Services/AdminPageService.php:576
-msgid "Total Icons"
-msgstr "Tổng số Icons"
-
-#: includes/framework/Services/AdminPageService.php:581
-msgid "Categories"
-msgstr "Danh mục"
-
-#: includes/framework/Services/AdminPageService.php:586
-msgid "Version"
-msgstr "Phiên bản"
-
-#: includes/framework/Services/AdminPageService.php:591
-msgid "Last Updated"
-msgstr "Cập nhật lần cuối"
-
-#: includes/framework/Services/AdminPageService.php:597
-msgid "Status"
-msgstr "Trạng thái"
-
-#: includes/framework/Services/AdminPageService.php:603
-msgid "Auto Load"
-msgstr "Tự động tải"
-
-#: includes/framework/Services/AdminPageService.php:1180
-msgid "Jankx Framework Information"
-msgstr "Thông tin Jankx Framework"
-
-#: includes/framework/Services/AdminPageService.php:1185
-msgid "Framework Information"
-msgstr "Thông tin Framework"
-
-#: includes/framework/Services/AdminPageService.php:1190
-msgid "Base Path"
-msgstr "Đường dẫn cơ sở"
-
-#: includes/framework/Services/AdminPageService.php:1191
-msgid "Base URL"
-msgstr "URL cơ sở"
-
-#: includes/framework/Services/AdminPageService.php:1198
-msgid "System Information"
-msgstr "Thông tin hệ thống"
-
-#: includes/framework/Services/AdminPageService.php:1258
-msgid "Welcome to Jankx Framework"
-msgstr "Chào mừng đến với Jankx Framework"
-
-#: includes/framework/Services/AdminPageService.php:1258
-msgid "This is the main dashboard for Jankx Framework. Use the navigation above to access different features."
-msgstr "Đây là bảng điều khiển chính của Jankx Framework. Sử dụng menu điều hướng ở trên để truy cập các tính năng khác nhau."
-
-#: includes/framework/Support/Blocks/IconPickerBlock.php:20
-msgid "Icon Picker"
-msgstr "Chọn Icon"
-
-#: includes/framework/Support/Blocks/IconPickerBlock.php:21
-msgid "Select and display icons from various icon libraries"
-msgstr "Chọn và hiển thị icons từ các thư viện icon khác nhau"
-
-#: includes/framework/Support/Blocks/IconPickerBlock.php:22
-msgid "jankx"
-msgstr "jankx"
-
-#: includes/framework/Support/Blocks/IconPickerBlock.php:23
-msgid "icon"
-msgstr "icon"
-
-#: includes/framework/Support/Blocks/IconPickerBlock.php:24
-msgid "symbol"
-msgstr "symbol"
-
-#: includes/framework/Support/Blocks/IconPickerBlock.php:25
-msgid "fontawesome"
-msgstr "fontawesome"
-
-#: includes/framework/Support/Blocks/IconPickerBlock.php:26
-msgid "material"
-msgstr "material"
-
-#: includes/framework/Support/Blocks/IconPickerBlock.php:27
-msgid "Select Icon"
-msgstr "Chọn Icon"
-
-#: includes/framework/Support/Blocks/IconPickerBlock.php:28
-msgid "Icon Name"
-msgstr "Tên Icon"
-
-#: includes/framework/Support/Blocks/IconPickerBlock.php:29
-msgid "Icon Type"
-msgstr "Loại Icon"
-
-#: includes/framework/Support/Blocks/IconPickerBlock.php:30
-msgid "Icon Size"
-msgstr "Kích thước Icon"
-
-#: includes/framework/Support/Blocks/IconPickerBlock.php:31
-msgid "Icon Color"
-msgstr "Màu Icon"
-
-#: includes/framework/Support/Blocks/IconPickerBlock.php:32
-msgid "Icon Style"
-msgstr "Kiểu Icon"
-
-#: includes/framework/Support/Blocks/IconPickerBlock.php:33
-msgid "No icon selected"
-msgstr "Chưa chọn icon"
-
-#: includes/framework/Support/Blocks/LanguageSwitcherBlock.php:20
-msgid "Language Switcher"
-msgstr "Chuyển đổi ngôn ngữ"
-
-#: includes/framework/Support/Blocks/LanguageSwitcherBlock.php:21
-msgid "Display language switcher for multilingual sites"
-msgstr "Hiển thị bộ chuyển đổi ngôn ngữ cho các trang web đa ngôn ngữ"
-
-#: includes/framework/Support/Blocks/LanguageSwitcherBlock.php:22
-msgid "language"
-msgstr "ngôn ngữ"
-
-#: includes/framework/Support/Blocks/LanguageSwitcherBlock.php:23
-msgid "translation"
-msgstr "bản dịch"
-
-#: includes/framework/Support/Blocks/LanguageSwitcherBlock.php:24
-msgid "multilingual"
-msgstr "đa ngôn ngữ"
-
-#: includes/framework/Support/Blocks/LanguageSwitcherBlock.php:25
-msgid "Display Type"
-msgstr "Kiểu hiển thị"
-
-#: includes/framework/Support/Blocks/LanguageSwitcherBlock.php:26
-msgid "Dropdown"
-msgstr "Dropdown"
-
-#: includes/framework/Support/Blocks/LanguageSwitcherBlock.php:27
-msgid "List"
-msgstr "Danh sách"
-
-#: includes/framework/Support/Blocks/LanguageSwitcherBlock.php:28
-msgid "Flags"
-msgstr "Cờ"
-
-#: includes/framework/Support/Blocks/LanguageSwitcherBlock.php:29
-msgid "Show Flags"
-msgstr "Hiển thị cờ"
-
-#: includes/framework/Support/Blocks/LanguageSwitcherBlock.php:30
-msgid "Show Language Names"
-msgstr "Hiển thị tên ngôn ngữ"
-
-#: includes/framework/Support/Blocks/LanguageSwitcherBlock.php:31
-msgid "No languages available"
-msgstr "Không có ngôn ngữ nào khả dụng"
-
-#: includes/framework/Support/Blocks/MegaMenuBlock.php:28
-msgid "Mega Menu"
-msgstr "Mega Menu"
-
-#: includes/framework/Support/Blocks/MegaMenuBlock.php:29
-msgid "Display mega menu with advanced navigation options"
-msgstr "Hiển thị mega menu với các tùy chọn điều hướng nâng cao"
-
-#: includes/framework/Support/Blocks/MegaMenuBlock.php:30
-msgid "menu"
-msgstr "menu"
-
-#: includes/framework/Support/Blocks/MegaMenuBlock.php:31
-msgid "navigation"
-msgstr "điều hướng"
-
-#: includes/framework/Support/Blocks/MegaMenuBlock.php:32
-msgid "mega"
-msgstr "mega"
-
-#: includes/framework/Support/Blocks/MegaMenuBlock.php:33
-msgid "Menu Location"
-msgstr "Vị trí Menu"
-
-#: includes/framework/Support/Blocks/MegaMenuBlock.php:34
-msgid "Primary Menu"
-msgstr "Menu chính"
-
-#: includes/framework/Support/Blocks/MegaMenuBlock.php:35
-msgid "Secondary Menu"
-msgstr "Menu phụ"
-
-#: includes/framework/Support/Blocks/MegaMenuBlock.php:36
-msgid "Menu Depth"
-msgstr "Độ sâu Menu"
-
-#: includes/framework/Support/Blocks/MegaMenuBlock.php:37
-msgid "Show Description"
-msgstr "Hiển thị mô tả"
-
-#: includes/framework/Support/Blocks/MegaMenuBlock.php:38
-msgid "No menu assigned to this location"
-msgstr "Không có menu nào được gán cho vị trí này"
-
-#: includes/framework/Support/Blocks/ComposeTabBlock.php:20
-msgid "Compose Tab"
-msgstr "Tạo Tab"
-
-#: includes/framework/Support/Blocks/ComposeTabBlock.php:21
-msgid "Create tabbed content with multiple sections"
-msgstr "Tạo nội dung tab với nhiều phần"
-
-#: includes/framework/Support/Blocks/ComposeTabBlock.php:22
-msgid "tab"
-msgstr "tab"
-
-#: includes/framework/Support/Blocks/ComposeTabBlock.php:23
-msgid "tabs"
-msgstr "tabs"
-
-#: includes/framework/Support/Blocks/ComposeTabBlock.php:24
-msgid "content"
-msgstr "nội dung"
-
-#: includes/framework/Support/Blocks/ComposeTabBlock.php:25
-msgid "Tab Title"
-msgstr "Tiêu đề Tab"
-
-#: includes/framework/Support/Blocks/ComposeTabBlock.php:26
-msgid "Tab Content"
-msgstr "Nội dung Tab"
-
-#: includes/framework/Support/Blocks/ComposeTabBlock.php:27
-msgid "Add Tab"
-msgstr "Thêm Tab"
-
-#: includes/framework/Support/Blocks/ComposeTabBlock.php:28
-msgid "Remove Tab"
-msgstr "Xóa Tab"
-
-#: includes/framework/Support/Blocks/ComposeTabBlock.php:29
-msgid "No tabs added yet"
-msgstr "Chưa có tab nào được thêm"
-
-#: includes/framework/Support/Blocks/WidgetRendererBlock.php:20
-msgid "Widget Renderer"
-msgstr "Hiển thị Widget"
-
-#: includes/framework/Support/Blocks/WidgetRendererBlock.php:21
-msgid "Display WordPress widgets in Gutenberg blocks"
-msgstr "Hiển thị WordPress widgets trong Gutenberg blocks"
-
-#: includes/framework/Support/Blocks/WidgetRendererBlock.php:22
-msgid "widget"
-msgstr "widget"
-
-#: includes/framework/Support/Blocks/WidgetRendererBlock.php:23
-msgid "sidebar"
-msgstr "sidebar"
-
-#: includes/framework/Support/Blocks/WidgetRendererBlock.php:24
-msgid "Widget Type"
-msgstr "Loại Widget"
-
-#: includes/framework/Support/Blocks/WidgetRendererBlock.php:25
-msgid "Widget ID"
-msgstr "ID Widget"
-
-#: includes/framework/Support/Blocks/WidgetRendererBlock.php:26
-msgid "Show Title"
-msgstr "Hiển thị tiêu đề"
-
-#: includes/framework/Support/Blocks/WidgetRendererBlock.php:27
-msgid "Widget not found"
-msgstr "Không tìm thấy Widget"
-
-#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:14
-msgid "Swiper Slider"
-msgstr "Swiper Slider"
-
-#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:15
-msgid "Create responsive sliders and carousels"
-msgstr "Tạo sliders và carousels responsive"
-
-#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:16
-msgid "slider"
-msgstr "slider"
-
-#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:17
-msgid "carousel"
-msgstr "carousel"
-
-#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:18
-msgid "swiper"
-msgstr "swiper"
-
-#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:19
-msgid "Slides"
-msgstr "Slides"
-
-#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:20
-msgid "Effect"
-msgstr "Hiệu ứng"
-
-#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:21
-msgid "Slide"
-msgstr "Slide"
-
-#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:22
-msgid "Fade"
-msgstr "Fade"
-
-#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:23
-msgid "Cube"
-msgstr "Cube"
-
-#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:24
-msgid "Coverflow"
-msgstr "Coverflow"
-
-#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:25
-msgid "Flip"
-msgstr "Flip"
-
-#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:26
-msgid "Cards"
-msgstr "Cards"
-
-#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:27
-msgid "Autoplay"
-msgstr "Tự động phát"
-
-#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:28
-msgid "Loop"
-msgstr "Lặp lại"
-
-#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:29
-msgid "Navigation"
-msgstr "Điều hướng"
-
-#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:30
-msgid "Pagination"
-msgstr "Phân trang"
-
-#: includes/framework/Support/Blocks/SwiperSlider/SwiperSlider.php:31
-msgid "No slides added"
-msgstr "Chưa có slide nào được thêm"
-
-#: includes/framework/Support/Blocks/Patterns/HeroSectionPattern.php:16
-msgid "Hero Section"
-msgstr "Phần Hero"
-
-#: includes/framework/Support/Blocks/Patterns/HeroSectionPattern.php:17
-msgid "A hero section with title, description and call-to-action"
-msgstr "Phần hero với tiêu đề, mô tả và call-to-action"
-
-#: includes/framework/Support/Blocks/Patterns/HeroSectionPattern.php:18
-msgid "hero"
-msgstr "hero"
-
-#: includes/framework/Support/Blocks/Patterns/HeroSectionPattern.php:19
-msgid "banner"
-msgstr "banner"
-
-#: includes/framework/Support/Blocks/Patterns/HeroSectionPattern.php:20
-msgid "header"
-msgstr "header"
-
-#: includes/framework/Support/Blocks/Patterns/HeroSectionPattern.php:21
-msgid "Welcome to our website"
-msgstr "Chào mừng đến với website của chúng tôi"
-
-#: includes/framework/Support/Blocks/Patterns/HeroSectionPattern.php:22
-msgid "Discover amazing features and services"
-msgstr "Khám phá các tính năng và dịch vụ tuyệt vời"
-
-#: includes/framework/Support/Blocks/Patterns/HeroSectionPattern.php:23
-msgid "Get Started"
-msgstr "Bắt đầu"
-
-#: includes/framework/Support/Blocks/Patterns/CardGridPattern.php:16
-msgid "Card Grid"
-msgstr "Lưới Card"
-
-#: includes/framework/Support/Blocks/Patterns/CardGridPattern.php:17
-msgid "Display content in a responsive card grid layout"
-msgstr "Hiển thị nội dung trong layout lưới card responsive"
-
-#: includes/framework/Support/Blocks/Patterns/CardGridPattern.php:18
-msgid "card"
-msgstr "card"
-
-#: includes/framework/Support/Blocks/Patterns/CardGridPattern.php:19
-msgid "grid"
-msgstr "lưới"
-
-#: includes/framework/Support/Blocks/Patterns/CardGridPattern.php:20
-msgid "layout"
-msgstr "layout"
-
-#: includes/framework/Support/Blocks/Patterns/CardGridPattern.php:21
-msgid "Card Title"
-msgstr "Tiêu đề Card"
-
-#: includes/framework/Support/Blocks/Patterns/CardGridPattern.php:22
-msgid "Card description goes here"
-msgstr "Mô tả card ở đây"
-
-#: includes/framework/Support/Blocks/Patterns/CardGridPattern.php:23
-msgid "Read More"
-msgstr "Đọc thêm"
+#: ../vendor/jankx/dashboard-framework/src/OptionFramework.php:297,
+#: ../vendor/jankx/dashboard-framework/src/OptionFramework.php:298,
+#: ../vendor/jankx/dashboard-framework/src/OptionFramework.php:287,
+#: ../vendor/jankx/dashboard-framework/src/OptionFramework.php:288
+msgid "Theme Options"
+msgstr ""
