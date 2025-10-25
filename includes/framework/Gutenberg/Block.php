@@ -66,7 +66,32 @@ abstract class Block implements BlockInterface
         if (method_exists($this, 'render')) {
             $args['render_callback'] = [$this, 'render'];
         }
-        register_block_type_from_metadata($this->blockPath, $args);
+        $registered = register_block_type_from_metadata($this->blockPath, $args);
+        
+        // Load JavaScript translations for the block
+        if ($registered && !empty($registered->editor_script)) {
+            $this->loadScriptTranslations($registered->editor_script);
+        }
+        if ($registered && !empty($registered->view_script)) {
+            $this->loadScriptTranslations($registered->view_script);
+        }
+    }
+    
+    /**
+     * Load script translations for a block
+     *
+     * @param string $handle Script handle
+     * @return void
+     */
+    protected function loadScriptTranslations($handle)
+    {
+        if (is_string($handle)) {
+            wp_set_script_translations(
+                $handle,
+                'jankx',
+                get_template_directory() . '/languages'
+            );
+        }
     }
 
     /**
