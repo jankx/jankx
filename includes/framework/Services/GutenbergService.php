@@ -26,7 +26,6 @@ use Jankx\Gutenberg\Blocks\AuthorBoxBlock;
 use Jankx\Gutenberg\Blocks\SocialSharingBlock;
 use Jankx\Gutenberg\Blocks\SocialSharingIconBlock;
 use Jankx\Gutenberg\Blocks\PostTypeLayoutBlock;
-use Jankx\Gutenberg\Blocks\WordPressCoreFilterBlock;
 use Jankx\Gutenberg\Blocks\MasterTableBlock;
 use Jankx\Gutenberg\Blocks\TableRowBlock;
 use Jankx\Gutenberg\Blocks\TableCellBlock;
@@ -54,19 +53,11 @@ class GutenbergService
      */
     protected $repository;
 
-    /**
-     * WordPress Core Filter Block instance
-     * @var \Jankx\Gutenberg\Blocks\WordPressCoreFilterBlock
-     */
-    protected $coreFilterBlock;
 
     public function __construct(Application $app)
     {
         $this->app = $app;
         $this->repository = $app->make('gutenberg.repository');
-
-        // Khởi tạo WordPress Core Filter Block
-        $this->coreFilterBlock = new WordPressCoreFilterBlock();
 
         $this->registerPatternCategories();
     }
@@ -92,9 +83,6 @@ class GutenbergService
     public function init()
     {
         try {
-            // Khởi tạo WordPress Core Filter Block
-            $this->coreFilterBlock->init();
-
             // Register all blocks
             $this->initBlocks();
 
