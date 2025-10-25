@@ -12,8 +12,6 @@ return [
         Jankx\Support\Providers\ErrorSuppressionServiceProvider::class,
         Jankx\Support\Providers\FontIconsServiceProvider::class,
         Jankx\Support\Providers\FontsServiceProvider::class,
-        Jankx\Support\Providers\JankxMenuItemsServiceProvider::class,
-        Jankx\Support\Providers\LayoutServiceProvider::class,
         // Jankx\Support\Providers\LegacyTemplateLoaderServiceProvider::class,
         Jankx\Support\Providers\PageRendererServiceProvider::class,
         Jankx\Support\Providers\PerformanceServiceProvider::class,
