@@ -290,19 +290,30 @@ class QueryOptions
     }
 
     /**
-     * Output all query options as JavaScript object
+     * Get all query options as array
      *
-     * @return void
+     * @return array Array of all query options
      */
-    public static function outputToJavaScript(): void
+    public static function getOptions(): array
     {
-        $options = [
+        return [
             'orderBy' => self::getOrderByOptions(),
             'order' => self::getOrderOptions(),
             'metaCompare' => self::getMetaCompareOperators(),
             'metaTypes' => self::getMetaTypes(),
             'taxonomyOperators' => self::getTaxonomyOperators(),
         ];
+    }
+
+    /**
+     * Output all query options as JavaScript object
+     *
+     * @return void
+     * @deprecated Use wp_localize_script() with getOptions() instead
+     */
+    public static function outputToJavaScript(): void
+    {
+        $options = self::getOptions();
 
         ?>
         <script>

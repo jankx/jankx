@@ -86,6 +86,7 @@ module.exports = {
     'blocks/social-sharing-icon/build/editor': './blocks/social-sharing-icon/editor.scss',
 
     'blocks/post-type-layout/build/index': './blocks/post-type-layout/index.tsx',
+    'blocks/post-type-layout/build/load-more': './blocks/post-type-layout/load-more.ts',
     'blocks/post-type-layout/build/style': './blocks/post-type-layout/style.scss',
     'blocks/post-type-layout/build/editor': './blocks/post-type-layout/editor.scss',
 

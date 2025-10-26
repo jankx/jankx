@@ -40,11 +40,15 @@ class PostTypeLayoutBlock extends Block
      */
     public function init(): void
     {
-        // Output supported layouts to JavaScript
-        add_action('admin_head', [$this, 'setupSupportedLayouts'], 5);
+        // Enqueue editor scripts with localized data
+        add_action('enqueue_block_editor_assets', [$this, 'enqueueEditorAssets']);
 
-        // Output query options to JavaScript
-        add_action('admin_head', [$this, 'setupQueryOptions'], 5);
+        // Enqueue frontend scripts for Load More
+        add_action('wp_enqueue_scripts', [$this, 'enqueueFrontendAssets']);
+
+        // Register AJAX handlers for Load More
+        add_action('wp_ajax_jankx_load_more_posts', [$this, 'handleLoadMoreAjax']);
+        add_action('wp_ajax_nopriv_jankx_load_more_posts', [$this, 'handleLoadMoreAjax']);
     }
 
     /**
@@ -119,8 +123,8 @@ class PostTypeLayoutBlock extends Block
             $pagination_args['type'] = 'list';
             $pagination_args['show_all'] = false;
         } elseif ($paginationStyle === 'load-more') {
-            // Load more button (future enhancement - for now show as simple)
-            return $this->renderLoadMoreButton($query, $paged);
+            // Load more button
+            return $this->renderLoadMoreButton($query, $paged, $attributes);
         } else {
             // Default: Numbers with prev/next
             $pagination_args['type'] = 'list';
@@ -155,9 +159,10 @@ class PostTypeLayoutBlock extends Block
      *
      * @param \WP_Query $query The query instance
      * @param int $current_page Current page number
+     * @param array $attributes Block attributes (for AJAX)
      * @return string
      */
-    protected function renderLoadMoreButton($query, int $current_page): string
+    protected function renderLoadMoreButton($query, int $current_page, array $attributes = []): string
     {
         // Check if there are more pages
         if ($current_page >= $query->max_num_pages) {
@@ -166,15 +171,24 @@ class PostTypeLayoutBlock extends Block
 
         $next_page = $current_page + 1;
 
+        // Encode attributes for AJAX request
+        $ajax_data = wp_json_encode([
+            'attributes' => $attributes,
+            'page' => $next_page,
+        ]);
+
         return sprintf(
             '<div class="post-layout-pagination pagination-style-load-more">
-                <button class="load-more-button" data-page="%d" data-max-pages="%d">
-                    %s
+                <button class="jankx-load-more-button" data-page="%d" data-max-pages="%d" data-ajax-params="%s">
+                    <span class="load-more-text">%s</span>
+                    <span class="load-more-spinner" style="display:none;">%s</span>
                 </button>
             </div>',
             esc_attr($next_page),
             esc_attr($query->max_num_pages),
-            esc_html__('Tải thêm', 'jankx')
+            esc_attr($ajax_data),
+            esc_html__('Tải thêm', 'jankx'),
+            esc_html__('Đang tải...', 'jankx')
         );
     }
 
@@ -250,28 +264,81 @@ class PostTypeLayoutBlock extends Block
     }
 
     /**
-     * Setup supported layouts for JavaScript
+     * Enqueue editor assets with localized data
      *
      * @return void
      */
-    public function setupSupportedLayouts(): void
+    public function enqueueEditorAssets(): void
     {
+        // Get editor script handle from block metadata
+        $asset_file = $this->blockPath . '/build/index.asset.php';
+        
+        if (!file_exists($asset_file)) {
+            return;
+        }
+
+        $asset = require $asset_file;
+        $script_handle = 'jankx-post-type-layout-editor';
+
+        // Localize supported layouts
         $layouts = $this->getLayoutManager()->getLayouts(['field' => 'all']);
-        ?>
-        <script>
-            window.jankxSupportedPostTypeLayouts = <?php echo wp_json_encode($layouts, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>;
-        </script>
-        <?php
+        
+        wp_localize_script(
+            $script_handle,
+            'jankxSupportedPostTypeLayouts',
+            $layouts
+        );
+
+        // Localize query options
+        $query_options = QueryOptions::getOptions();
+        
+        wp_localize_script(
+            $script_handle,
+            'jankxQueryOptions',
+            $query_options
+        );
     }
 
     /**
-     * Setup query options for JavaScript
+     * Enqueue frontend assets for Load More functionality
      *
      * @return void
      */
-    public function setupQueryOptions(): void
+    public function enqueueFrontendAssets(): void
     {
-        QueryOptions::outputToJavaScript();
+        // Only enqueue if block is used on the page
+        if (!has_block('jankx/post-type-layout')) {
+            return;
+        }
+
+        $asset_file = $this->blockPath . '/build/load-more.asset.php';
+        $script_path = $this->blockPath . '/build/load-more.js';
+
+        // If built file doesn't exist, skip
+        if (!file_exists($asset_file) || !file_exists($script_path)) {
+            return;
+        }
+
+        $asset = require $asset_file;
+        $script_handle = 'jankx-post-type-layout-load-more';
+
+        wp_enqueue_script(
+            $script_handle,
+            get_template_directory_uri() . '/resources/blocks/post-type-layout/build/load-more.js',
+            $asset['dependencies'] ?? ['wp-api-fetch'],
+            $asset['version'] ?? filemtime($script_path),
+            true
+        );
+
+        // Localize AJAX data
+        wp_localize_script(
+            $script_handle,
+            'jankxLoadMore',
+            [
+                'ajaxUrl' => admin_url('admin-ajax.php'),
+                'nonce' => wp_create_nonce('jankx_load_more'),
+            ]
+        );
     }
 
     /**
@@ -425,5 +492,89 @@ class PostTypeLayoutBlock extends Block
             $wrapper_attributes,
             $html
         );
+    }
+
+    /**
+     * Handle AJAX request for Load More functionality
+     *
+     * @return void
+     */
+    public function handleLoadMoreAjax(): void
+    {
+        // Verify nonce
+        check_ajax_referer('jankx_load_more', 'nonce');
+
+        // Get parameters
+        $attributes = isset($_POST['attributes']) ? json_decode(stripslashes($_POST['attributes']), true) : [];
+        $page = isset($_POST['page']) ? intval($_POST['page']) : 1;
+
+        // Validate attributes
+        if (empty($attributes)) {
+            wp_send_json_error(['message' => __('Invalid attributes', 'jankx')]);
+            return;
+        }
+
+        // Get layout name
+        $layout_name = $attributes['layout'] ?? 'grid';
+
+        // Get layout manager
+        $layoutManager = $this->getLayoutManager();
+
+        // Check if layout exists
+        if (!$layoutManager->hasLayout($layout_name)) {
+            wp_send_json_error(['message' => __('Layout không tồn tại', 'jankx')]);
+            return;
+        }
+
+        // Sanitize attributes
+        $attributes = $this->sanitizeAttributes($layout_name, $attributes);
+
+        // Get query preset
+        $queryPreset = $attributes['queryPreset'] ?? 'custom';
+
+        // Build query with pagination
+        if ($queryPreset === 'default') {
+            global $wp_query;
+            $query_args = $wp_query->query_vars;
+            
+            if (!empty($attributes['postsPerPage'])) {
+                $query_args['posts_per_page'] = intval($attributes['postsPerPage']);
+            }
+            $query_args['paged'] = $page;
+            
+            $query = new WP_Query($query_args);
+            $decorator = $layoutManager->createLayout($layout_name, $attributes);
+            $decorator->withQuery($query);
+        } elseif ($queryPreset === 'related') {
+            $attributes = $this->buildRelatedQuery($attributes);
+            
+            // Inject page number into attributes before building query
+            $attributes['_internal_paged'] = $page;
+            
+            $decorator = $layoutManager->createLayout($layout_name, $attributes);
+            $query = $decorator->buildQuery($attributes);
+            $decorator->withQuery($query);
+        } else {
+            // Custom query - inject page number into attributes
+            $attributes['_internal_paged'] = $page;
+            
+            $decorator = $layoutManager->createLayout($layout_name, $attributes);
+            $query = $decorator->buildQuery($attributes);
+            $decorator->withQuery($query);
+        }
+
+        // Render posts
+        $html = $decorator->render();
+
+        // Check if there are more posts
+        $has_more = $page < $query->max_num_pages;
+
+        // Send response
+        wp_send_json_success([
+            'html' => $html,
+            'page' => $page,
+            'max_pages' => $query->max_num_pages,
+            'has_more' => $has_more,
+        ]);
     }
 }

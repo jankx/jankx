@@ -319,7 +319,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         };
 
         fetchPosts();
-    }, [renderKey, debouncedAttributes]);
+    }, [renderKey]); // Only depend on renderKey since it already includes debouncedAttributes
 
 
     return (

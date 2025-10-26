@@ -91,6 +91,11 @@ class PostLayoutDecorator
             'post_status' => 'publish',
         ];
 
+        // Add pagination if specified (for AJAX load more)
+        if (isset($attributes['_internal_paged']) && $attributes['_internal_paged'] > 0) {
+            $args['paged'] = intval($attributes['_internal_paged']);
+        }
+
         // Add offset if specified
         if (isset($attributes['offset']) && $attributes['offset'] > 0) {
             $args['offset'] = intval($attributes['offset']);
