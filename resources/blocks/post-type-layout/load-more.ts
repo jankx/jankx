@@ -154,7 +154,7 @@ function initLoadMore(): void {
             const errorMessage = document.createElement('div');
             errorMessage.className = 'load-more-error';
             errorMessage.style.cssText = 'color: red; margin-top: 10px; text-align: center;';
-            errorMessage.textContent = error instanceof Error ? error.message : 'Có lỗi xảy ra khi tải thêm bài viết';
+            errorMessage.textContent = error instanceof Error ? error.message : 'An error occurred while loading more posts';
             
             button.parentElement?.appendChild(errorMessage);
             

@@ -94,8 +94,8 @@ class PostTypeLayoutBlock extends Block
         }
 
         // Determine prev/next text
-        $prevText = !empty($paginationPrevText) ? $paginationPrevText : __('&laquo; Trước', 'jankx');
-        $nextText = !empty($paginationNextText) ? $paginationNextText : __('Sau &raquo;', 'jankx');
+        $prevText = !empty($paginationPrevText) ? $paginationPrevText : __('&laquo; Previous', 'jankx');
+        $nextText = !empty($paginationNextText) ? $paginationNextText : __('Next &raquo;', 'jankx');
 
         // Build pagination args
         $pagination_args = [
@@ -116,10 +116,10 @@ class PostTypeLayoutBlock extends Block
         } elseif ($paginationStyle === 'arrows') {
             // Arrows: Minimal prev/next with arrow icons
             if (empty($paginationPrevText)) {
-                $pagination_args['prev_text'] = '<span aria-hidden="true">&larr;</span> ' . __('Trước', 'jankx');
+                $pagination_args['prev_text'] = '<span aria-hidden="true">&larr;</span> ' . __('Previous', 'jankx');
             }
             if (empty($paginationNextText)) {
-                $pagination_args['next_text'] = __('Sau', 'jankx') . ' <span aria-hidden="true">&rarr;</span>';
+                $pagination_args['next_text'] = __('Next', 'jankx') . ' <span aria-hidden="true">&rarr;</span>';
             }
             $pagination_args['type'] = 'list';
             $pagination_args['show_all'] = false;
@@ -188,8 +188,8 @@ class PostTypeLayoutBlock extends Block
             esc_attr($next_page),
             esc_attr($query->max_num_pages),
             esc_attr($ajax_data),
-            esc_html__('Tải thêm', 'jankx'),
-            esc_html__('Đang tải...', 'jankx')
+            esc_html__('Load More', 'jankx'),
+            esc_html__('Loading...', 'jankx')
         );
     }
 
@@ -323,9 +323,16 @@ class PostTypeLayoutBlock extends Block
         $asset = require $asset_file;
         $script_handle = 'jankx-post-type-layout-load-more';
 
+        // Get block URL dynamically to support child themes
+        $block_url = str_replace(
+            [wp_normalize_path(WP_CONTENT_DIR), '\\'],
+            [content_url(), '/'],
+            wp_normalize_path($this->blockPath)
+        );
+
         wp_enqueue_script(
             $script_handle,
-            get_template_directory_uri() . '/resources/blocks/post-type-layout/build/load-more.js',
+            $block_url . '/build/load-more.js',
             $asset['dependencies'] ?? ['wp-api-fetch'],
             $asset['version'] ?? filemtime($script_path),
             true
@@ -414,7 +421,7 @@ class PostTypeLayoutBlock extends Block
             return sprintf(
                 '<div class="post-layout-error">%s</div>',
                 sprintf(
-                    esc_html__('Layout "%s" không tồn tại.', 'jankx'),
+                    esc_html__('Layout "%s" does not exist.', 'jankx'),
                     esc_html($layout_name)
                 )
             );
@@ -512,13 +519,28 @@ class PostTypeLayoutBlock extends Block
         // Verify nonce
         check_ajax_referer('jankx_load_more', 'nonce');
 
-        // Get parameters
-        $attributes = isset($_POST['attributes']) ? json_decode(stripslashes($_POST['attributes']), true) : [];
-        $page = isset($_POST['page']) ? intval($_POST['page']) : 1;
+        // Get parameters with proper sanitization
+        $attributes_json = isset($_POST['attributes']) ? sanitize_text_field(wp_unslash($_POST['attributes'])) : '';
+        $page = isset($_POST['page']) ? absint($_POST['page']) : 1;
+
+        // Decode and validate JSON
+        $attributes = [];
+        if (!empty($attributes_json)) {
+            $decoded = json_decode($attributes_json, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                $attributes = $decoded;
+            }
+        }
 
         // Validate attributes
         if (empty($attributes)) {
             wp_send_json_error(['message' => __('Invalid attributes', 'jankx')]);
+            return;
+        }
+
+        // Validate page number
+        if ($page < 1) {
+            wp_send_json_error(['message' => __('Invalid page number', 'jankx')]);
             return;
         }
 
@@ -533,7 +555,7 @@ class PostTypeLayoutBlock extends Block
 
         // Check if layout exists
         if (!$layoutManager->hasLayout($layout_name)) {
-            wp_send_json_error(['message' => __('Layout không tồn tại', 'jankx')]);
+            wp_send_json_error(['message' => __('Layout does not exist', 'jankx')]);
             return;
         }
 

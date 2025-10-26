@@ -8,7 +8,7 @@
   \********************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/post-type-layout","version":"1.0.0","title":"Post Type Layout","category":"design","icon":"layout","description":"Hiển thị danh sách posts theo layout tùy chỉnh","textdomain":"jankx","editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css","providesContext":{"queryId":"queryId","query":{"postType":"postType","perPage":"postsPerPage","pages":0,"offset":"offset","order":"order","orderBy":"orderBy","inherit":false}},"usesContext":["queryId","query"],"supports":{"html":false,"align":["wide","full"],"anchor":true,"spacing":{"margin":true,"padding":true,"blockGap":true},"color":{"background":true,"text":true,"link":true,"gradients":true},"background":{"backgroundImage":true,"backgroundSize":true},"typography":{"fontSize":true,"lineHeight":true},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true},"__experimentalLayout":{"allowSwitching":true,"allowInheriting":true,"default":{"type":"constrained"}}},"attributes":{"queryPreset":{"type":"string","default":"custom","enum":["default","related","custom"]},"postType":{"type":"string","default":"post"},"postsPerPage":{"type":"number","default":10},"layout":{"type":"string","default":"grid"},"columns":{"type":"number","default":3},"columnsTablet":{"type":"number","default":2},"columnsMobile":{"type":"number","default":1},"showTitle":{"type":"boolean","default":true},"showExcerpt":{"type":"boolean","default":true},"showFeaturedImage":{"type":"boolean","default":true},"showDate":{"type":"boolean","default":true},"showAuthor":{"type":"boolean","default":false},"excerptLength":{"type":"number","default":55},"orderBy":{"type":"string","default":"date"},"order":{"type":"string","default":"DESC"},"queryId":{"type":"number"},"enablePagination":{"type":"boolean","default":false},"offset":{"type":"number","default":0},"taxQuery":{"type":"array","default":[]},"metaQuery":{"type":"array","default":[]},"keyword":{"type":"string","default":""},"authorIn":{"type":"array","default":[]},"authorNotIn":{"type":"array","default":[]},"postIn":{"type":"array","default":[]},"postNotIn":{"type":"array","default":[]},"metaKey":{"type":"string","default":""},"metaType":{"type":"string","default":""},"postStatus":{"type":"array","default":["publish"]},"postParent":{"type":"number","default":0},"postParentIn":{"type":"array","default":[]},"postParentNotIn":{"type":"array","default":[]},"customQueryId":{"type":"string","default":""},"paginationStyle":{"type":"string","default":"numbers","enum":["numbers","simple","arrows","load-more"]},"paginationAlignment":{"type":"string","default":"center","enum":["left","center","right"]},"showPaginationNumbers":{"type":"boolean","default":true},"paginationPrevText":{"type":"string","default":""},"paginationNextText":{"type":"string","default":""}}}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/post-type-layout","version":"1.0.0","title":"Post Type Layout","category":"jankx","icon":"layout","description":"Hiển thị danh sách posts theo layout tùy chỉnh","textdomain":"jankx","editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css","providesContext":{"queryId":"queryId","query":{"postType":"postType","perPage":"postsPerPage","pages":0,"offset":"offset","order":"order","orderBy":"orderBy","inherit":false}},"usesContext":["queryId","query"],"supports":{"html":false,"align":["wide","full"],"anchor":true,"spacing":{"margin":true,"padding":true,"blockGap":true},"color":{"background":true,"text":true,"link":true,"gradients":true},"background":{"backgroundImage":true,"backgroundSize":true},"typography":{"fontSize":true,"lineHeight":true},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true},"__experimentalLayout":{"allowSwitching":true,"allowInheriting":true,"default":{"type":"constrained"}}},"attributes":{"queryPreset":{"type":"string","default":"custom","enum":["default","related","custom"]},"postType":{"type":"string","default":"post"},"postsPerPage":{"type":"number","default":10},"layout":{"type":"string","default":"grid"},"columns":{"type":"number","default":3},"columnsTablet":{"type":"number","default":2},"columnsMobile":{"type":"number","default":1},"showTitle":{"type":"boolean","default":true},"showExcerpt":{"type":"boolean","default":true},"showFeaturedImage":{"type":"boolean","default":true},"showDate":{"type":"boolean","default":true},"showAuthor":{"type":"boolean","default":false},"excerptLength":{"type":"number","default":55},"orderBy":{"type":"string","default":"date"},"order":{"type":"string","default":"DESC"},"queryId":{"type":"number"},"enablePagination":{"type":"boolean","default":false},"offset":{"type":"number","default":0},"taxQuery":{"type":"array","default":[]},"metaQuery":{"type":"array","default":[]},"keyword":{"type":"string","default":""},"authorIn":{"type":"array","default":[]},"authorNotIn":{"type":"array","default":[]},"postIn":{"type":"array","default":[]},"postNotIn":{"type":"array","default":[]},"metaKey":{"type":"string","default":""},"metaType":{"type":"string","default":""},"postStatus":{"type":"array","default":["publish"]},"postParent":{"type":"number","default":0},"postParentIn":{"type":"array","default":[]},"postParentNotIn":{"type":"array","default":[]},"customQueryId":{"type":"string","default":""},"paginationStyle":{"type":"string","default":"numbers","enum":["numbers","simple","arrows","load-more"]},"paginationAlignment":{"type":"string","default":"center","enum":["left","center","right"]},"showPaginationNumbers":{"type":"boolean","default":true},"paginationPrevText":{"type":"string","default":""},"paginationNextText":{"type":"string","default":""}}}');
 
 /***/ }),
 
@@ -608,7 +608,8 @@ function Edit({
       }
     };
     fetchPosts();
-  }, [renderKey, debouncedAttributes]);
+  }, [renderKey]); // Only depend on renderKey since it already includes debouncedAttributes
+
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
       group: "settings",
@@ -631,7 +632,7 @@ function Edit({
           onChange: value => setAttributes({
             queryPreset: value
           }),
-          help: queryPreset === 'default' ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Sử dụng main query của WordPress. Các query parameters sẽ bị ẩn.', 'jankx') : queryPreset === 'related' ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Hiển thị posts liên quan (cùng taxonomy với post hiện tại).', 'jankx') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Tùy chỉnh query parameters theo ý bạn.', 'jankx')
+          help: queryPreset === 'default' ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Use WordPress main query. Query parameters will be hidden.', 'jankx') : queryPreset === 'related' ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display related posts (same taxonomy as current post).', 'jankx') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Customize query parameters as you wish.', 'jankx')
         }), queryPreset !== 'default' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Post Type', 'jankx'),
           value: postType,
@@ -647,7 +648,7 @@ function Edit({
           }),
           min: 1,
           max: 50,
-          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Số lượng posts hiển thị', 'jankx')
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Number of posts to display', 'jankx')
         })]
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Layout', 'jankx'),
@@ -689,9 +690,9 @@ function Edit({
           min: 1,
           max: 6,
           help: {
-            desktop: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Số cột trên màn hình lớn (>1024px)', 'jankx'),
-            tablet: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Số cột trên tablet (768px - 1024px)', 'jankx'),
-            mobile: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Số cột trên mobile (<768px)', 'jankx')
+            desktop: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Number of columns on large screens (>1024px)', 'jankx'),
+            tablet: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Number of columns on tablet (768px - 1024px)', 'jankx'),
+            mobile: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Number of columns on mobile (<768px)', 'jankx')
           }
         })]
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
@@ -727,7 +728,7 @@ function Edit({
             }),
             min: 10,
             max: 200,
-            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Số ký tự hiển thị trong excerpt', 'jankx')
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Number of characters to display in excerpt', 'jankx')
           })]
         }), supportedOptions.includes('showDate') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Date', 'jankx'),
@@ -763,32 +764,32 @@ function Edit({
           }),
           min: 0,
           max: 50,
-          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Bỏ qua N bài viết đầu tiên', 'jankx')
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Skip the first N posts', 'jankx')
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Order By', 'jankx'),
           value: orderBy,
           options: window.jankxQueryOptions?.orderBy || [{
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Date (Ngày đăng)', 'jankx'),
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Date (Published)', 'jankx'),
             value: 'date'
           }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Modified (Ngày sửa)', 'jankx'),
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Modified (Last Modified)', 'jankx'),
             value: 'modified'
           }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Title (Tiêu đề)', 'jankx'),
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Title', 'jankx'),
             value: 'title'
           }],
           onChange: value => setAttributes({
             orderBy: value
           }),
-          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Sắp xếp posts theo tiêu chí nào', 'jankx')
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Sort posts by which criteria', 'jankx')
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Order', 'jankx'),
           value: order,
           options: window.jankxQueryOptions?.order || [{
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Descending (Giảm dần)', 'jankx'),
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Descending', 'jankx'),
             value: 'DESC'
           }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Ascending (Tăng dần)', 'jankx'),
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Ascending', 'jankx'),
             value: 'ASC'
           }],
           onChange: value => setAttributes({
@@ -801,8 +802,8 @@ function Edit({
             onChange: value => setAttributes({
               metaKey: value
             }),
-            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Meta key để sắp xếp (bắt buộc khi dùng meta_value)', 'jankx'),
-            placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Ví dụ: price, views, rating', 'jankx')
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Meta key for sorting (required when using meta_value)', 'jankx'),
+            placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Example: price, views, rating', 'jankx')
           }), orderBy === 'meta_value' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Meta Type', 'jankx'),
             value: metaType,
@@ -816,76 +817,76 @@ function Edit({
             onChange: value => setAttributes({
               metaType: value
             }),
-            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Xác định kiểu dữ liệu để sắp xếp chính xác', 'jankx')
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Specify data type for accurate sorting', 'jankx')
           })]
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Bật phân trang', 'jankx'),
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable Pagination', 'jankx'),
           checked: enablePagination,
           onChange: value => setAttributes({
             enablePagination: value
           }),
-          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Hiển thị pagination để phân trang posts', 'jankx')
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display pagination to paginate posts', 'jankx')
         }), enablePagination ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.Fragment, {
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Pagination Style', 'jankx'),
             value: paginationStyle,
             options: [{
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Numbers (Số trang)', 'jankx'),
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Numbers', 'jankx'),
               value: 'numbers'
             }, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Simple (Trước/Sau)', 'jankx'),
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Simple (Prev/Next)', 'jankx'),
               value: 'simple'
             }, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Arrows (Mũi tên)', 'jankx'),
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Arrows', 'jankx'),
               value: 'arrows'
             }, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Load More (Tải thêm)', 'jankx'),
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Load More', 'jankx'),
               value: 'load-more'
             }],
             onChange: value => setAttributes({
               paginationStyle: value
             }),
-            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Chọn kiểu hiển thị pagination', 'jankx')
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Choose pagination display style', 'jankx')
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Pagination Alignment', 'jankx'),
             value: paginationAlignment,
             options: [{
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Left (Trái)', 'jankx'),
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Left', 'jankx'),
               value: 'left'
             }, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Center (Giữa)', 'jankx'),
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Center', 'jankx'),
               value: 'center'
             }, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Right (Phải)', 'jankx'),
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Right', 'jankx'),
               value: 'right'
             }],
             onChange: value => setAttributes({
               paginationAlignment: value
             }),
-            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Căn chỉnh vị trí pagination', 'jankx')
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Align pagination position', 'jankx')
           }), paginationStyle === 'numbers' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Hiển thị tất cả số trang', 'jankx'),
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show All Page Numbers', 'jankx'),
             checked: showPaginationNumbers,
             onChange: value => setAttributes({
               showPaginationNumbers: value
             }),
-            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Hiển thị tất cả số trang thay vì rút gọn', 'jankx')
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show all page numbers instead of abbreviated', 'jankx')
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Text nút "Trước"', 'jankx'),
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Previous Button Text', 'jankx'),
             value: paginationPrevText,
             onChange: value => setAttributes({
               paginationPrevText: value
             }),
-            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Để trống sẽ dùng text mặc định. Có thể dùng HTML/SVG.', 'jankx'),
-            placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Ví dụ: « Previous hoặc <svg>...</svg>', 'jankx')
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Leave empty to use default text. Can use HTML/SVG.', 'jankx'),
+            placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Example: « Previous or <svg>...</svg>', 'jankx')
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Text nút "Sau"', 'jankx'),
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Next Button Text', 'jankx'),
             value: paginationNextText,
             onChange: value => setAttributes({
               paginationNextText: value
             }),
-            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Để trống sẽ dùng text mặc định. Có thể dùng HTML/SVG.', 'jankx'),
-            placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Ví dụ: Next » hoặc <svg>...</svg>', 'jankx')
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Leave empty to use default text. Can use HTML/SVG.', 'jankx'),
+            placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Example: Next » or <svg>...</svg>', 'jankx')
           })]
         }) : null]
       }), queryPreset === 'custom' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
@@ -897,8 +898,8 @@ function Edit({
           onChange: value => setAttributes({
             customQueryId: value
           }),
-          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Đặt tên cho query này để apply filters cuối cùng: jankx/post-layout/query-args/{query_id}', 'jankx'),
-          placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Ví dụ: featured-posts, sidebar-posts', 'jankx')
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Set a name for this query to apply final filters: jankx/post-layout/query-args/{query_id}', 'jankx'),
+          placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Example: featured-posts, sidebar-posts', 'jankx')
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FormTokenField, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Post Status', 'jankx'),
           value: postStatus,
@@ -906,7 +907,7 @@ function Edit({
           onChange: tokens => setAttributes({
             postStatus: tokens
           }),
-          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Trạng thái bài viết cần lấy (mặc định: publish)', 'jankx')
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Post status to fetch (default: publish)', 'jankx')
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Post Parent ID', 'jankx'),
           type: "number",
@@ -914,7 +915,7 @@ function Edit({
           onChange: value => setAttributes({
             postParent: parseInt(value) || 0
           }),
-          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Lọc posts theo parent ID (0 = tất cả)', 'jankx')
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter posts by parent ID (0 = all)', 'jankx')
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Post Parent IDs (Include)', 'jankx'),
           value: postParentIn.join(', '),
@@ -924,8 +925,8 @@ function Edit({
               postParentIn: ids
             });
           },
-          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Chỉ lấy posts có parent trong danh sách này', 'jankx'),
-          placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Ví dụ: 1, 2, 3', 'jankx')
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Only fetch posts with parents in this list', 'jankx'),
+          placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Example: 1, 2, 3', 'jankx')
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Post Parent IDs (Exclude)', 'jankx'),
           value: postParentNotIn.join(', '),
@@ -935,20 +936,20 @@ function Edit({
               postParentNotIn: ids
             });
           },
-          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Loại trừ posts có parent trong danh sách này', 'jankx'),
-          placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Ví dụ: 4, 5, 6', 'jankx')
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Exclude posts with parents in this list', 'jankx'),
+          placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Example: 4, 5, 6', 'jankx')
         })]
       }), queryPreset === 'custom' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('🔍 Keyword Search', 'jankx'),
         initialOpen: false,
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Từ khóa tìm kiếm', 'jankx'),
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Search Keyword', 'jankx'),
           value: keyword,
           onChange: value => setAttributes({
             keyword: value
           }),
-          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Tìm kiếm theo title, content, excerpt', 'jankx'),
-          placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Nhập từ khóa...', 'jankx')
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Search by title, content, excerpt', 'jankx'),
+          placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enter keyword...', 'jankx')
         })
       }), queryPreset === 'custom' && authors.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('👤 Author Filters', 'jankx'),
@@ -966,7 +967,7 @@ function Edit({
               authorIn: selectedIds
             });
           },
-          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Chỉ hiển thị bài viết của các tác giả này', 'jankx')
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Only display posts from these authors', 'jankx')
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FormTokenField, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Authors (Exclude)', 'jankx'),
           value: authors.filter(a => authorNotIn.includes(a.id)).map(a => a.name),
@@ -980,7 +981,7 @@ function Edit({
               authorNotIn: selectedIds
             });
           },
-          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Loại trừ bài viết của các tác giả này', 'jankx')
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Exclude posts from these authors', 'jankx')
         })]
       }), queryPreset === 'custom' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('🔢 Post ID Filters', 'jankx'),
@@ -994,8 +995,8 @@ function Edit({
               postIn: ids
             });
           },
-          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Chỉ hiển thị các bài viết có ID này (phân cách bằng dấu phẩy)', 'jankx'),
-          placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Ví dụ: 1, 2, 3', 'jankx')
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Only display posts with these IDs (comma separated)', 'jankx'),
+          placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Example: 1, 2, 3', 'jankx')
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Post IDs (Exclude)', 'jankx'),
           value: postNotIn.join(', '),
@@ -1005,8 +1006,8 @@ function Edit({
               postNotIn: ids
             });
           },
-          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Loại trừ các bài viết có ID này (phân cách bằng dấu phẩy)', 'jankx'),
-          placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Ví dụ: 4, 5, 6', 'jankx')
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Exclude posts with these IDs (comma separated)', 'jankx'),
+          placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Example: 4, 5, 6', 'jankx')
         })]
       }), queryPreset === 'custom' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('⚙️ Meta Query Filters', 'jankx'),
@@ -1024,7 +1025,7 @@ function Edit({
               metaQuery: newMetaQuery
             });
           },
-          children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('+ Thêm Meta Query', 'jankx')
+          children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('+ Add Meta Query', 'jankx')
         }), metaQuery.map((mq, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
           style: {
             marginTop: '15px',
@@ -1051,7 +1052,7 @@ function Edit({
                   metaQuery: newMetaQuery
                 });
               },
-              children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Xóa', 'jankx')
+              children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Remove', 'jankx')
             })]
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Meta Key', 'jankx'),
@@ -1063,45 +1064,45 @@ function Edit({
                 metaQuery: newMetaQuery
               });
             },
-            placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Ví dụ: price, rating, views', 'jankx')
+            placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Example: price, rating, views', 'jankx')
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Compare', 'jankx'),
             value: mq.compare,
             options: [{
-              label: '= (Bằng)',
+              label: '= (Equal)',
               value: '='
             }, {
-              label: '!= (Khác)',
+              label: '!= (Not Equal)',
               value: '!='
             }, {
-              label: '> (Lớn hơn)',
+              label: '> (Greater Than)',
               value: '>'
             }, {
-              label: '>= (Lớn hơn hoặc bằng)',
+              label: '>= (Greater or Equal)',
               value: '>='
             }, {
-              label: '< (Nhỏ hơn)',
+              label: '< (Less Than)',
               value: '<'
             }, {
-              label: '<= (Nhỏ hơn hoặc bằng)',
+              label: '<= (Less or Equal)',
               value: '<='
             }, {
-              label: 'LIKE (Chứa)',
+              label: 'LIKE (Contains)',
               value: 'LIKE'
             }, {
-              label: 'NOT LIKE (Không chứa)',
+              label: 'NOT LIKE (Not Contains)',
               value: 'NOT LIKE'
             }, {
-              label: 'IN (Trong danh sách)',
+              label: 'IN (In List)',
               value: 'IN'
             }, {
-              label: 'NOT IN (Không trong danh sách)',
+              label: 'NOT IN (Not In List)',
               value: 'NOT IN'
             }, {
-              label: 'EXISTS (Tồn tại)',
+              label: 'EXISTS (Exists)',
               value: 'EXISTS'
             }, {
-              label: 'NOT EXISTS (Không tồn tại)',
+              label: 'NOT EXISTS (Not Exists)',
               value: 'NOT EXISTS'
             }],
             onChange: value => {
@@ -1121,7 +1122,7 @@ function Edit({
                 metaQuery: newMetaQuery
               });
             },
-            placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Nhập giá trị...', 'jankx')
+            placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enter value...', 'jankx')
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Type (Optional)', 'jankx'),
             value: mq.type || '',
@@ -1157,7 +1158,7 @@ function Edit({
                 metaQuery: newMetaQuery
               });
             },
-            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Xác định kiểu dữ liệu để so sánh chính xác', 'jankx')
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Specify data type for accurate comparison', 'jankx')
           })]
         }, index))]
       }), queryPreset === 'custom' && taxonomies.length > 0 && taxonomies.map(taxonomy => {
@@ -1188,25 +1189,25 @@ function Edit({
               });
               fetchTermsForTaxonomy(taxonomy.slug);
             },
-            children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Thêm bộ lọc', 'jankx'), " ", taxonomy.name]
+            children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Add Filter', 'jankx'), " ", taxonomy.name]
           }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.Fragment, {
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
               label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Operator', 'jankx'),
               value: currentQuery.operator,
               options: [{
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('IN (Bao gồm)', 'jankx'),
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('IN (Include)', 'jankx'),
                 value: 'IN'
               }, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('NOT IN (Loại trừ)', 'jankx'),
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('NOT IN (Exclude)', 'jankx'),
                 value: 'NOT IN'
               }, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('AND (Phải có tất cả)', 'jankx'),
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('AND (Must Have All)', 'jankx'),
                 value: 'AND'
               }, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('EXISTS (Tồn tại)', 'jankx'),
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('EXISTS (Has Terms)', 'jankx'),
                 value: 'EXISTS'
               }, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('NOT EXISTS (Không tồn tại)', 'jankx'),
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('NOT EXISTS (No Terms)', 'jankx'),
                 value: 'NOT EXISTS'
               }],
               onChange: value => {
@@ -1216,7 +1217,7 @@ function Edit({
                   taxQuery: newTaxQuery
                 });
               },
-              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('EXISTS/NOT EXISTS kiểm tra taxonomy có term nào không', 'jankx')
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('EXISTS/NOT EXISTS checks if taxonomy has any terms', 'jankx')
             }), !['EXISTS', 'NOT EXISTS'].includes(currentQuery.operator) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.Fragment, {
               children: taxonomyTerms[taxonomy.slug] ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FormTokenField, {
                 label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select Terms', 'jankx'),
@@ -1233,7 +1234,7 @@ function Edit({
                     taxQuery: newTaxQuery
                   });
                 },
-                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Chọn các terms từ dropdown', 'jankx')
+                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select terms from dropdown', 'jankx')
               }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Spinner, {})
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Button, {
               isDestructive: true,
@@ -1247,7 +1248,7 @@ function Edit({
               style: {
                 marginTop: '10px'
               },
-              children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Xóa bộ lọc', 'jankx')
+              children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Remove Filter', 'jankx')
             })]
           })
         }, taxonomy.slug);
@@ -1256,7 +1257,7 @@ function Edit({
       ...blockProps,
       children: isLoading ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Placeholder, {
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Spinner, {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("p", {
-          children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Đang tải posts...', 'jankx')
+          children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Loading posts...', 'jankx')
         })]
       }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
         dangerouslySetInnerHTML: {

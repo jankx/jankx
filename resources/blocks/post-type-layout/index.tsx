@@ -337,10 +337,10 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         onChange={(value) => setAttributes({ queryPreset: value as 'default' | 'related' | 'custom' })}
                         help={
                             queryPreset === 'default'
-                                ? __('Sử dụng main query của WordPress. Các query parameters sẽ bị ẩn.', 'jankx')
+                                ? __('Use WordPress main query. Query parameters will be hidden.', 'jankx')
                                 : queryPreset === 'related'
-                                ? __('Hiển thị posts liên quan (cùng taxonomy với post hiện tại).', 'jankx')
-                                : __('Tùy chỉnh query parameters theo ý bạn.', 'jankx')
+                                ? __('Display related posts (same taxonomy as current post).', 'jankx')
+                                : __('Customize query parameters as you wish.', 'jankx')
                         }
                     />
 
@@ -360,7 +360,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         onChange={(value) => setAttributes({ postsPerPage: value || 10 })}
                         min={1}
                         max={50}
-                        help={__('Số lượng posts hiển thị', 'jankx')}
+                        help={__('Number of posts to display', 'jankx')}
                     />
                 </PanelBody>
 
@@ -398,9 +398,9 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                             min={1}
                             max={6}
                             help={{
-                                desktop: __('Số cột trên màn hình lớn (>1024px)', 'jankx'),
-                                tablet: __('Số cột trên tablet (768px - 1024px)', 'jankx'),
-                                mobile: __('Số cột trên mobile (<768px)', 'jankx')
+                                desktop: __('Number of columns on large screens (>1024px)', 'jankx'),
+                                tablet: __('Number of columns on tablet (768px - 1024px)', 'jankx'),
+                                mobile: __('Number of columns on mobile (<768px)', 'jankx')
                             }}
                         />
                     )}
@@ -439,7 +439,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                     onChange={(value) => setAttributes({ excerptLength: value || 55 })}
                                     min={10}
                                     max={200}
-                                    help={__('Số ký tự hiển thị trong excerpt', 'jankx')}
+                                    help={__('Number of characters to display in excerpt', 'jankx')}
                                 />
                             )}
                         </>
@@ -478,25 +478,25 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         onChange={(value) => setAttributes({ offset: value || 0 })}
                         min={0}
                         max={50}
-                        help={__('Bỏ qua N bài viết đầu tiên', 'jankx')}
+                        help={__('Skip the first N posts', 'jankx')}
                     />
                     <SelectControl
                         label={__('Order By', 'jankx')}
                         value={orderBy}
                         options={(window as any).jankxQueryOptions?.orderBy || [
-                            { label: __('Date (Ngày đăng)', 'jankx'), value: 'date' },
-                            { label: __('Modified (Ngày sửa)', 'jankx'), value: 'modified' },
-                            { label: __('Title (Tiêu đề)', 'jankx'), value: 'title' },
+                            { label: __('Date (Published)', 'jankx'), value: 'date' },
+                            { label: __('Modified (Last Modified)', 'jankx'), value: 'modified' },
+                            { label: __('Title', 'jankx'), value: 'title' },
                         ]}
                         onChange={(value) => setAttributes({ orderBy: value })}
-                        help={__('Sắp xếp posts theo tiêu chí nào', 'jankx')}
+                        help={__('Sort posts by which criteria', 'jankx')}
                     />
                     <SelectControl
                         label={__('Order', 'jankx')}
                         value={order}
                         options={(window as any).jankxQueryOptions?.order || [
-                            { label: __('Descending (Giảm dần)', 'jankx'), value: 'DESC' },
-                            { label: __('Ascending (Tăng dần)', 'jankx'), value: 'ASC' },
+                            { label: __('Descending', 'jankx'), value: 'DESC' },
+                            { label: __('Ascending', 'jankx'), value: 'ASC' },
                         ]}
                         onChange={(value) => setAttributes({ order: value })}
                     />
@@ -508,8 +508,8 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                 label={__('Meta Key', 'jankx')}
                                 value={metaKey}
                                 onChange={(value) => setAttributes({ metaKey: value })}
-                                help={__('Meta key để sắp xếp (bắt buộc khi dùng meta_value)', 'jankx')}
-                                placeholder={__('Ví dụ: price, views, rating', 'jankx')}
+                                help={__('Meta key for sorting (required when using meta_value)', 'jankx')}
+                                placeholder={__('Example: price, views, rating', 'jankx')}
                             />
                             {orderBy === 'meta_value' && (
                                 <SelectControl
@@ -520,17 +520,17 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                         { label: 'NUMERIC', value: 'NUMERIC' },
                                     ]}
                                     onChange={(value) => setAttributes({ metaType: value })}
-                                    help={__('Xác định kiểu dữ liệu để sắp xếp chính xác', 'jankx')}
+                                    help={__('Specify data type for accurate sorting', 'jankx')}
                                 />
                             )}
                         </>
                     )}
 
                     <ToggleControl
-                        label={__('Bật phân trang', 'jankx')}
+                        label={__('Enable Pagination', 'jankx')}
                         checked={enablePagination}
                         onChange={(value) => setAttributes({ enablePagination: value })}
-                        help={__('Hiển thị pagination để phân trang posts', 'jankx')}
+                        help={__('Display pagination to paginate posts', 'jankx')}
                     />
 
                     {enablePagination ? (
@@ -539,50 +539,50 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                 label={__('Pagination Style', 'jankx')}
                                 value={paginationStyle}
                                 options={[
-                                    { label: __('Numbers (Số trang)', 'jankx'), value: 'numbers' },
-                                    { label: __('Simple (Trước/Sau)', 'jankx'), value: 'simple' },
-                                    { label: __('Arrows (Mũi tên)', 'jankx'), value: 'arrows' },
-                                    { label: __('Load More (Tải thêm)', 'jankx'), value: 'load-more' },
+                                    { label: __('Numbers', 'jankx'), value: 'numbers' },
+                                    { label: __('Simple (Prev/Next)', 'jankx'), value: 'simple' },
+                                    { label: __('Arrows', 'jankx'), value: 'arrows' },
+                                    { label: __('Load More', 'jankx'), value: 'load-more' },
                                 ]}
                                 onChange={(value) => setAttributes({ paginationStyle: value as 'numbers' | 'simple' | 'arrows' | 'load-more' })}
-                                help={__('Chọn kiểu hiển thị pagination', 'jankx')}
+                                help={__('Choose pagination display style', 'jankx')}
                             />
 
                             <SelectControl
                                 label={__('Pagination Alignment', 'jankx')}
                                 value={paginationAlignment}
                                 options={[
-                                    { label: __('Left (Trái)', 'jankx'), value: 'left' },
-                                    { label: __('Center (Giữa)', 'jankx'), value: 'center' },
-                                    { label: __('Right (Phải)', 'jankx'), value: 'right' },
+                                    { label: __('Left', 'jankx'), value: 'left' },
+                                    { label: __('Center', 'jankx'), value: 'center' },
+                                    { label: __('Right', 'jankx'), value: 'right' },
                                 ]}
                                 onChange={(value) => setAttributes({ paginationAlignment: value as 'left' | 'center' | 'right' })}
-                                help={__('Căn chỉnh vị trí pagination', 'jankx')}
+                                help={__('Align pagination position', 'jankx')}
                             />
 
                             {paginationStyle === 'numbers' && (
                                 <ToggleControl
-                                    label={__('Hiển thị tất cả số trang', 'jankx')}
+                                    label={__('Show All Page Numbers', 'jankx')}
                                     checked={showPaginationNumbers}
                                     onChange={(value) => setAttributes({ showPaginationNumbers: value })}
-                                    help={__('Hiển thị tất cả số trang thay vì rút gọn', 'jankx')}
+                                    help={__('Show all page numbers instead of abbreviated', 'jankx')}
                                 />
                             )}
 
                             <TextControl
-                                label={__('Text nút "Trước"', 'jankx')}
+                                label={__('Previous Button Text', 'jankx')}
                                 value={paginationPrevText}
                                 onChange={(value) => setAttributes({ paginationPrevText: value })}
-                                help={__('Để trống sẽ dùng text mặc định. Có thể dùng HTML/SVG.', 'jankx')}
-                                placeholder={__('Ví dụ: « Previous hoặc <svg>...</svg>', 'jankx')}
+                                help={__('Leave empty to use default text. Can use HTML/SVG.', 'jankx')}
+                                placeholder={__('Example: « Previous or <svg>...</svg>', 'jankx')}
                             />
 
                             <TextControl
-                                label={__('Text nút "Sau"', 'jankx')}
+                                label={__('Next Button Text', 'jankx')}
                                 value={paginationNextText}
                                 onChange={(value) => setAttributes({ paginationNextText: value })}
-                                help={__('Để trống sẽ dùng text mặc định. Có thể dùng HTML/SVG.', 'jankx')}
-                                placeholder={__('Ví dụ: Next » hoặc <svg>...</svg>', 'jankx')}
+                                help={__('Leave empty to use default text. Can use HTML/SVG.', 'jankx')}
+                                placeholder={__('Example: Next » or <svg>...</svg>', 'jankx')}
                             />
                         </>
                     ) : null}
@@ -596,8 +596,8 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         label={__('Query ID', 'jankx')}
                         value={customQueryId}
                         onChange={(value) => setAttributes({ customQueryId: value })}
-                        help={__('Đặt tên cho query này để apply filters cuối cùng: jankx/post-layout/query-args/{query_id}', 'jankx')}
-                        placeholder={__('Ví dụ: featured-posts, sidebar-posts', 'jankx')}
+                        help={__('Set a name for this query to apply final filters: jankx/post-layout/query-args/{query_id}', 'jankx')}
+                        placeholder={__('Example: featured-posts, sidebar-posts', 'jankx')}
                     />
 
                     <FormTokenField
@@ -605,7 +605,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         value={postStatus}
                         suggestions={['publish', 'pending', 'draft', 'auto-draft', 'future', 'private', 'inherit', 'trash', 'any']}
                         onChange={(tokens) => setAttributes({ postStatus: tokens })}
-                        help={__('Trạng thái bài viết cần lấy (mặc định: publish)', 'jankx')}
+                        help={__('Post status to fetch (default: publish)', 'jankx')}
                     />
 
                     <TextControl
@@ -613,7 +613,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         type="number"
                         value={postParent}
                         onChange={(value) => setAttributes({ postParent: parseInt(value) || 0 })}
-                        help={__('Lọc posts theo parent ID (0 = tất cả)', 'jankx')}
+                        help={__('Filter posts by parent ID (0 = all)', 'jankx')}
                     />
 
                     <TextControl
@@ -623,8 +623,8 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                             const ids = value.split(',').map(v => parseInt(v.trim())).filter(v => !isNaN(v));
                             setAttributes({ postParentIn: ids });
                         }}
-                        help={__('Chỉ lấy posts có parent trong danh sách này', 'jankx')}
-                        placeholder={__('Ví dụ: 1, 2, 3', 'jankx')}
+                        help={__('Only fetch posts with parents in this list', 'jankx')}
+                        placeholder={__('Example: 1, 2, 3', 'jankx')}
                     />
 
                     <TextControl
@@ -634,8 +634,8 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                             const ids = value.split(',').map(v => parseInt(v.trim())).filter(v => !isNaN(v));
                             setAttributes({ postParentNotIn: ids });
                         }}
-                        help={__('Loại trừ posts có parent trong danh sách này', 'jankx')}
-                        placeholder={__('Ví dụ: 4, 5, 6', 'jankx')}
+                        help={__('Exclude posts with parents in this list', 'jankx')}
+                        placeholder={__('Example: 4, 5, 6', 'jankx')}
                     />
                 </PanelBody>
                 )}
@@ -644,11 +644,11 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                 {queryPreset === 'custom' && (
                 <PanelBody title={__('🔍 Keyword Search', 'jankx')} initialOpen={false}>
                     <TextControl
-                        label={__('Từ khóa tìm kiếm', 'jankx')}
+                        label={__('Search Keyword', 'jankx')}
                         value={keyword}
                         onChange={(value) => setAttributes({ keyword: value })}
-                        help={__('Tìm kiếm theo title, content, excerpt', 'jankx')}
-                        placeholder={__('Nhập từ khóa...', 'jankx')}
+                        help={__('Search by title, content, excerpt', 'jankx')}
+                        placeholder={__('Enter keyword...', 'jankx')}
                     />
                 </PanelBody>
                 )}
@@ -667,7 +667,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                 }).filter(id => id > 0);
                                 setAttributes({ authorIn: selectedIds });
                             }}
-                            help={__('Chỉ hiển thị bài viết của các tác giả này', 'jankx')}
+                            help={__('Only display posts from these authors', 'jankx')}
                         />
                         <FormTokenField
                             label={__('Authors (Exclude)', 'jankx')}
@@ -680,7 +680,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                 }).filter(id => id > 0);
                                 setAttributes({ authorNotIn: selectedIds });
                             }}
-                            help={__('Loại trừ bài viết của các tác giả này', 'jankx')}
+                            help={__('Exclude posts from these authors', 'jankx')}
                         />
                     </PanelBody>
                 )}
@@ -695,8 +695,8 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                             const ids = value.split(',').map(v => parseInt(v.trim())).filter(v => !isNaN(v));
                             setAttributes({ postIn: ids });
                         }}
-                        help={__('Chỉ hiển thị các bài viết có ID này (phân cách bằng dấu phẩy)', 'jankx')}
-                        placeholder={__('Ví dụ: 1, 2, 3', 'jankx')}
+                        help={__('Only display posts with these IDs (comma separated)', 'jankx')}
+                        placeholder={__('Example: 1, 2, 3', 'jankx')}
                     />
                     <TextControl
                         label={__('Post IDs (Exclude)', 'jankx')}
@@ -705,8 +705,8 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                             const ids = value.split(',').map(v => parseInt(v.trim())).filter(v => !isNaN(v));
                             setAttributes({ postNotIn: ids });
                         }}
-                        help={__('Loại trừ các bài viết có ID này (phân cách bằng dấu phẩy)', 'jankx')}
-                        placeholder={__('Ví dụ: 4, 5, 6', 'jankx')}
+                        help={__('Exclude posts with these IDs (comma separated)', 'jankx')}
+                        placeholder={__('Example: 4, 5, 6', 'jankx')}
                     />
                 </PanelBody>
                 )}
@@ -726,7 +726,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                             setAttributes({ metaQuery: newMetaQuery });
                         }}
                     >
-                        {__('+ Thêm Meta Query', 'jankx')}
+                        {__('+ Add Meta Query', 'jankx')}
                     </Button>
 
                     {metaQuery.map((mq, index) => (
@@ -741,7 +741,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                         setAttributes({ metaQuery: newMetaQuery });
                                     }}
                                 >
-                                    {__('Xóa', 'jankx')}
+                                    {__('Remove', 'jankx')}
                                 </Button>
                             </div>
 
@@ -753,25 +753,25 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                     newMetaQuery[index].key = value;
                                     setAttributes({ metaQuery: newMetaQuery });
                                 }}
-                                placeholder={__('Ví dụ: price, rating, views', 'jankx')}
+                                placeholder={__('Example: price, rating, views', 'jankx')}
                             />
 
                             <SelectControl
                                 label={__('Compare', 'jankx')}
                                 value={mq.compare}
                                 options={[
-                                    { label: '= (Bằng)', value: '=' },
-                                    { label: '!= (Khác)', value: '!=' },
-                                    { label: '> (Lớn hơn)', value: '>' },
-                                    { label: '>= (Lớn hơn hoặc bằng)', value: '>=' },
-                                    { label: '< (Nhỏ hơn)', value: '<' },
-                                    { label: '<= (Nhỏ hơn hoặc bằng)', value: '<=' },
-                                    { label: 'LIKE (Chứa)', value: 'LIKE' },
-                                    { label: 'NOT LIKE (Không chứa)', value: 'NOT LIKE' },
-                                    { label: 'IN (Trong danh sách)', value: 'IN' },
-                                    { label: 'NOT IN (Không trong danh sách)', value: 'NOT IN' },
-                                    { label: 'EXISTS (Tồn tại)', value: 'EXISTS' },
-                                    { label: 'NOT EXISTS (Không tồn tại)', value: 'NOT EXISTS' },
+                                    { label: '= (Equal)', value: '=' },
+                                    { label: '!= (Not Equal)', value: '!=' },
+                                    { label: '> (Greater Than)', value: '>' },
+                                    { label: '>= (Greater or Equal)', value: '>=' },
+                                    { label: '< (Less Than)', value: '<' },
+                                    { label: '<= (Less or Equal)', value: '<=' },
+                                    { label: 'LIKE (Contains)', value: 'LIKE' },
+                                    { label: 'NOT LIKE (Not Contains)', value: 'NOT LIKE' },
+                                    { label: 'IN (In List)', value: 'IN' },
+                                    { label: 'NOT IN (Not In List)', value: 'NOT IN' },
+                                    { label: 'EXISTS (Exists)', value: 'EXISTS' },
+                                    { label: 'NOT EXISTS (Not Exists)', value: 'NOT EXISTS' },
                                 ]}
                                 onChange={(value) => {
                                     const newMetaQuery = [...metaQuery];
@@ -789,7 +789,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                         newMetaQuery[index].value = value;
                                         setAttributes({ metaQuery: newMetaQuery });
                                     }}
-                                    placeholder={__('Nhập giá trị...', 'jankx')}
+                                    placeholder={__('Enter value...', 'jankx')}
                                 />
                             )}
 
@@ -811,7 +811,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                     newMetaQuery[index].type = value as any;
                                     setAttributes({ metaQuery: newMetaQuery });
                                 }}
-                                help={__('Xác định kiểu dữ liệu để so sánh chính xác', 'jankx')}
+                                help={__('Specify data type for accurate comparison', 'jankx')}
                             />
                         </div>
                     ))}
@@ -851,7 +851,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                         fetchTermsForTaxonomy(taxonomy.slug);
                                     }}
                                 >
-                                    {__('Thêm bộ lọc', 'jankx')} {taxonomy.name}
+                                    {__('Add Filter', 'jankx')} {taxonomy.name}
                                 </Button>
                             ) : (
                                 <>
@@ -859,18 +859,18 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                         label={__('Operator', 'jankx')}
                                         value={currentQuery.operator}
                                         options={[
-                                            { label: __('IN (Bao gồm)', 'jankx'), value: 'IN' },
-                                            { label: __('NOT IN (Loại trừ)', 'jankx'), value: 'NOT IN' },
-                                            { label: __('AND (Phải có tất cả)', 'jankx'), value: 'AND' },
-                                            { label: __('EXISTS (Tồn tại)', 'jankx'), value: 'EXISTS' },
-                                            { label: __('NOT EXISTS (Không tồn tại)', 'jankx'), value: 'NOT EXISTS' },
+                                            { label: __('IN (Include)', 'jankx'), value: 'IN' },
+                                            { label: __('NOT IN (Exclude)', 'jankx'), value: 'NOT IN' },
+                                            { label: __('AND (Must Have All)', 'jankx'), value: 'AND' },
+                                            { label: __('EXISTS (Has Terms)', 'jankx'), value: 'EXISTS' },
+                                            { label: __('NOT EXISTS (No Terms)', 'jankx'), value: 'NOT EXISTS' },
                                         ]}
                                         onChange={(value) => {
                                             const newTaxQuery = [...taxQuery];
                                             newTaxQuery[existingQueryIndex].operator = value as any;
                                             setAttributes({ taxQuery: newTaxQuery });
                                         }}
-                                        help={__('EXISTS/NOT EXISTS kiểm tra taxonomy có term nào không', 'jankx')}
+                                        help={__('EXISTS/NOT EXISTS checks if taxonomy has any terms', 'jankx')}
                                     />
 
                                     {/* Only show term selection if operator is not EXISTS/NOT EXISTS */}
@@ -894,7 +894,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                                         newTaxQuery[existingQueryIndex].terms = selectedIds;
                                                         setAttributes({ taxQuery: newTaxQuery });
                                                     }}
-                                                    help={__('Chọn các terms từ dropdown', 'jankx')}
+                                                    help={__('Select terms from dropdown', 'jankx')}
                                                 />
                                             ) : (
                                                 <Spinner />
@@ -911,7 +911,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                         }}
                                         style={{ marginTop: '10px' }}
                                     >
-                                        {__('Xóa bộ lọc', 'jankx')}
+                                        {__('Remove Filter', 'jankx')}
                                     </Button>
                                 </>
                             )}
@@ -924,7 +924,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                 {isLoading ? (
                     <Placeholder>
                         <Spinner />
-                        <p>{__('Đang tải posts...', 'jankx')}</p>
+                        <p>{__('Loading posts...', 'jankx')}</p>
                     </Placeholder>
                 ) : (
                     <div dangerouslySetInnerHTML={{ __html: cachedHtml }} />
