@@ -202,11 +202,15 @@ class LanguageSwitcherService extends AbstractService
      */
     public function getLanguagesApi(\WP_REST_Request $request): \WP_REST_Response
     {
+        // Check if should get current page URLs
+        $currentPage = $request->get_param('current_page') === 'true' || $request->get_param('current_page') === '1';
+        
+        // Get languages based on context
+        $languagesData = $this->getLanguages($currentPage);
+        
         $languages = [];
-
-
-        if (!empty($this->languages)) {
-            foreach ($this->languages as $lang) {
+        if (!empty($languagesData)) {
+            foreach ($languagesData as $lang) {
                 $languages[] = [
                     'code' => $lang['code'] ?? '',
                     'name' => $lang['name'] ?? '',
@@ -216,6 +220,7 @@ class LanguageSwitcherService extends AbstractService
                 ];
             }
         }
+        
         return new \WP_REST_Response($languages, 200);
     }
 
@@ -236,11 +241,53 @@ class LanguageSwitcherService extends AbstractService
     /**
      * Lấy danh sách languages
      *
+     * @param bool $withCurrentPageUrls Get URLs for current page translations instead of homepage
      * @return array
      */
-    public function getLanguages(): array
+    public function getLanguages($withCurrentPageUrls = false): array
     {
-        return $this->languages;
+        if (!$withCurrentPageUrls) {
+            return $this->languages;
+        }
+
+        // Get languages with URLs for current page
+        return $this->getLanguagesForCurrentPage();
+    }
+
+    /**
+     * Get languages with URLs for current page translations
+     *
+     * @return array
+     */
+    protected function getLanguagesForCurrentPage(): array
+    {
+        if (!function_exists('pll_the_languages')) {
+            return $this->languages;
+        }
+
+        // Get languages with current page context
+        $currentPageLanguages = pll_the_languages([
+            'raw' => 1,
+            'hide_if_empty' => 0,
+            'show_flags' => 1,
+            'show_names' => 1,
+            'hide_current' => 0
+        ]);
+
+        if (empty($currentPageLanguages) || !is_array($currentPageLanguages)) {
+            return $this->languages;
+        }
+
+        // Process and return languages with current page URLs
+        $languages = [];
+        foreach ($currentPageLanguages as $lang) {
+            $langData = $this->processingLanguageData($lang);
+            if (!empty($langData)) {
+                $languages[] = $langData;
+            }
+        }
+
+        return apply_filters('jankx/languages/current-page', $languages, $this->languages);
     }
 
     /**

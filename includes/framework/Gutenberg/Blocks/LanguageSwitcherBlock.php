@@ -56,8 +56,10 @@ class LanguageSwitcherBlock extends Block
             return $this->renderPlaceholder();
         }
 
-        // Get available languages
-        $languages = App::make(LanguageSwitcherService::class)->getLanguages();
+        // Get available languages with current page URLs
+        /** @var LanguageSwitcherService $languageService */
+        $languageService = App::make(LanguageSwitcherService::class);
+        $languages = $languageService->getLanguages(true); // true = get URLs for current page translations
 
         if (empty($languages)) {
             return $this->renderPlaceholder();
@@ -105,20 +107,40 @@ class LanguageSwitcherBlock extends Block
      * Render dropdown style
      *
      * @param array $languages Available languages
+     * @param bool $showFlags Show flags
+     * @param bool $showNames Show language names
+     * @param bool $showCurrent Show current language in dropdown
      * @return string HTML
      */
     protected function renderDropdown($languages, $showFlags, $showNames, $showCurrent)
     {
-        // Lấy mã ngôn ngữ hiện tại
-        $currentLangData = App::make(LanguageSwitcherService::class)->getCurrentLanguage();
+        // Get current language data
+        /** @var LanguageSwitcherService $languageService */
+        $languageService = App::make(LanguageSwitcherService::class);
+        $currentLangData = $languageService->getCurrentLanguage();
         $currentLangData = apply_filters(
             'jankx/languages/current-language/data',
-             $currentLangData
+            $currentLangData
         );
+
+        // Validate current language data
+        if (!is_array($currentLangData) || empty($currentLangData['code'])) {
+            $currentLangData = null;
+        }
+
+        // Apply filters
         $languages = apply_filters(
             'jankx/languages/data',
-             $languages
+            $languages
         );
+
+        // Filter out current language if showCurrent is false
+        if (!$showCurrent && $currentLangData) {
+            $languages = array_filter($languages, function ($langData) use ($currentLangData) {
+                return isset($langData['code']) && $langData['code'] !== $currentLangData['code'];
+            });
+        }
+
         $dropdownIcon = apply_filters('jankx/languages/switcher/dropdown/icon', '▼');
         $html = '<div class="language-switcher-dropdown-wrapper">';
         $html .= '<button class="language-switcher-dropdown" type="button">';
@@ -142,12 +164,17 @@ class LanguageSwitcherBlock extends Block
             }
         }
 
-        $html .= '<span class="language-arrow">'. $dropdownIcon .'</span>';
+        $html .= '<span class="language-arrow">' . $dropdownIcon . '</span>';
         $html .= '</button>';
 
         $html .= '<ul class="language-switcher-dropdown-menu">';
-        foreach ($languages as $langCode => $langData) {
-            $isCurrent = $langCode === $currentLangData['code'];
+        foreach ($languages as $langData) {
+            // Validate language data
+            if (!is_array($langData) || empty($langData['code'])) {
+                continue;
+            }
+
+            $isCurrent = $currentLangData && $langData['code'] === $currentLangData['code'];
             $itemClasses = ['language-dropdown-item'];
             if ($isCurrent) {
                 $itemClasses[] = 'current-language';
@@ -186,15 +213,38 @@ class LanguageSwitcherBlock extends Block
      * Render list style
      *
      * @param array $languages Available languages
+     * @param bool $showFlags Show flags
+     * @param bool $showNames Show language names
+     * @param bool $showCurrent Show current language in list
      * @return string HTML
      */
     protected function renderList($languages, $showFlags, $showNames, $showCurrent)
     {
-    $currentLang = pll_current_language();
+        // Get current language data consistently
+        /** @var LanguageSwitcherService $languageService */
+        $languageService = App::make(LanguageSwitcherService::class);
+        $currentLangData = $languageService->getCurrentLanguage();
+
+        // Validate current language data
+        if (!is_array($currentLangData) || empty($currentLangData['code'])) {
+            $currentLangData = null;
+        }
+
+        // Filter out current language if showCurrent is false
+        if (!$showCurrent && $currentLangData) {
+            $languages = array_filter($languages, function ($langData) use ($currentLangData) {
+                return isset($langData['code']) && $langData['code'] !== $currentLangData['code'];
+            });
+        }
 
         $html = '<ul class="language-switcher-list">';
-        foreach ($languages as $langCode => $langData) {
-            $isCurrent = $langCode === $currentLang;
+        foreach ($languages as $langData) {
+            // Validate language data
+            if (!is_array($langData) || empty($langData['code'])) {
+                continue;
+            }
+
+            $isCurrent = $currentLangData && $langData['code'] === $currentLangData['code'];
             $itemClasses = ['language-item'];
             if ($isCurrent) {
                 $itemClasses[] = 'current-language';
@@ -233,15 +283,38 @@ class LanguageSwitcherBlock extends Block
      * Render flags only style
      *
      * @param array $languages Available languages
+     * @param bool $showFlags Show flags
+     * @param bool $showNames Show language names
+     * @param bool $showCurrent Show current language in flags
      * @return string HTML
      */
     protected function renderFlags($languages, $showFlags, $showNames, $showCurrent)
     {
-        $currentLang = pll_current_language();
+        // Get current language data consistently
+        /** @var LanguageSwitcherService $languageService */
+        $languageService = App::make(LanguageSwitcherService::class);
+        $currentLangData = $languageService->getCurrentLanguage();
+
+        // Validate current language data
+        if (!is_array($currentLangData) || empty($currentLangData['code'])) {
+            $currentLangData = null;
+        }
+
+        // Filter out current language if showCurrent is false
+        if (!$showCurrent && $currentLangData) {
+            $languages = array_filter($languages, function ($langData) use ($currentLangData) {
+                return isset($langData['code']) && $langData['code'] !== $currentLangData['code'];
+            });
+        }
 
         $html = '<div class="language-switcher-flags">';
-        foreach ($languages as $langCode => $langData) {
-            $isCurrent = $langCode === $currentLang;
+        foreach ($languages as $langData) {
+            // Validate language data
+            if (!is_array($langData) || empty($langData['code'])) {
+                continue;
+            }
+
+            $isCurrent = $currentLangData && $langData['code'] === $currentLangData['code'];
             $itemClasses = ['language-flag-item'];
             if ($isCurrent) {
                 $itemClasses[] = 'current-language';
