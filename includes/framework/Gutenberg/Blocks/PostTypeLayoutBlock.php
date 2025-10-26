@@ -393,7 +393,8 @@ class PostTypeLayoutBlock extends Block
      */
     public function render($attributes, $content, $block)
     {
-        // Inject current language for multilingual support
+        // Inject current language for multilingual support (optional)
+        // Block works perfectly fine without any multilingual plugin
         $current_language = MultilingualFactory::getCurrentLanguage();
         if ($current_language) {
             $attributes['_current_language'] = $current_language;
@@ -594,12 +595,15 @@ class PostTypeLayoutBlock extends Block
      * Uses MultilingualFactory to support multiple multilingual plugins
      * (Polylang, WPML, and any custom adapters)
      *
+     * IMPORTANT: This is completely optional. If no multilingual plugin
+     * is installed, this method does nothing and block works normally.
+     *
      * @param array $attributes Block attributes containing language info
      * @return void
      */
     protected function setLanguageContext(array $attributes): void
     {
-        // Check if we have language info
+        // Early return if no language info (no multilingual plugin active)
         if (empty($attributes['_current_language'])) {
             return;
         }

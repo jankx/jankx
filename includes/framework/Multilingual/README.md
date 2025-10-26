@@ -2,6 +2,17 @@
 
 Hệ thống hỗ trợ đa ngôn ngữ cho Jankx Framework sử dụng **Strategy Pattern** để dễ dàng tích hợp với nhiều plugin đa ngôn ngữ khác nhau.
 
+## ⚠️ IMPORTANT: Fully Optional & Compatible
+
+**This system is completely optional and does NOT require any multilingual plugin to work.**
+
+- ✅ **Without multilingual plugin**: Block works perfectly, returns all posts
+- ✅ **With Polylang**: Automatically filters posts by current language
+- ✅ **With WPML**: Automatically filters posts by current language
+- ✅ **No breaking changes**: Existing functionality remains unchanged
+
+All methods gracefully handle the case when no multilingual plugin is installed.
+
 ## Architecture
 
 ```
@@ -182,6 +193,23 @@ use Jankx\Multilingual\MultilingualFactory;
 
 class MultilingualTest extends WP_UnitTestCase
 {
+    public function test_works_without_multilingual_plugin()
+    {
+        // When no plugin is active
+        $adapter = MultilingualFactory::getAdapter();
+        
+        $this->assertNull($adapter);
+        $this->assertFalse(MultilingualFactory::hasActivePlugin());
+        $this->assertNull(MultilingualFactory::getCurrentLanguage());
+        
+        // Query should work normally
+        $args = ['post_type' => 'post'];
+        $args = MultilingualFactory::addLanguageToQueryArgs($args, 'vi');
+        
+        // Args should be unchanged
+        $this->assertEquals(['post_type' => 'post'], $args);
+    }
+    
     public function test_factory_detects_polylang()
     {
         // Assuming Polylang is active
@@ -193,6 +221,7 @@ class MultilingualTest extends WP_UnitTestCase
     
     public function test_language_filter_in_query()
     {
+        // Assuming Polylang is active
         $args = ['post_type' => 'post'];
         $args = MultilingualFactory::addLanguageToQueryArgs($args, 'vi');
         
