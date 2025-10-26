@@ -6,6 +6,7 @@ use Jankx\Gutenberg\Block;
 use Jankx\Gutenberg\QueryOptions;
 use Jankx\Layouts\PostLayout\PostLayoutManager;
 use Jankx\Facades\PostLayout;
+use Jankx\Multilingual\MultilingualFactory;
 use WP_Query;
 
 /**
@@ -392,6 +393,12 @@ class PostTypeLayoutBlock extends Block
      */
     public function render($attributes, $content, $block)
     {
+        // Inject current language for multilingual support
+        $current_language = MultilingualFactory::getCurrentLanguage();
+        if ($current_language) {
+            $attributes['_current_language'] = $current_language;
+        }
+
         // Get query preset
         $queryPreset = $attributes['queryPreset'] ?? 'custom';
 
@@ -514,6 +521,9 @@ class PostTypeLayoutBlock extends Block
             return;
         }
 
+        // Set language context for multilingual plugins
+        $this->setLanguageContext($attributes);
+
         // Get layout name
         $layout_name = $attributes['layout'] ?? 'grid';
 
@@ -576,5 +586,35 @@ class PostTypeLayoutBlock extends Block
             'max_pages' => $query->max_num_pages,
             'has_more' => $has_more,
         ]);
+    }
+
+    /**
+     * Set language context for multilingual plugins
+     *
+     * Uses MultilingualFactory to support multiple multilingual plugins
+     * (Polylang, WPML, and any custom adapters)
+     *
+     * @param array $attributes Block attributes containing language info
+     * @return void
+     */
+    protected function setLanguageContext(array $attributes): void
+    {
+        // Check if we have language info
+        if (empty($attributes['_current_language'])) {
+            return;
+        }
+
+        $language_code = $attributes['_current_language'];
+
+        // Set current language using factory (supports all plugins)
+        MultilingualFactory::setCurrentLanguage($language_code);
+
+        // Add filter to ensure queries are filtered by language
+        add_filter('pre_get_posts', function ($query) use ($language_code) {
+            if (!$query->is_main_query()) {
+                MultilingualFactory::filterQuery($query, $language_code);
+            }
+            return $query;
+        });
     }
 }
