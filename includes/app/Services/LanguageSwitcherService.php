@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use Jankx\Foundation\Application;
+use Jankx\Gutenberg\Blocks\LanguageSwitcherBlock;
+use Jankx\Gutenberg\GutenbergRepository;
 use Jankx\Services\AbstractService;
 
 class LanguageSwitcherService extends AbstractService
@@ -115,11 +117,9 @@ class LanguageSwitcherService extends AbstractService
      * @deprecated Block registration is now handled by LanguageSwitcherBlock class
      * @return void
      */
-    public function registerBlock(): void
+    public function registerBlock(GutenbergRepository $repository)
     {
-        // Block registration is now handled by LanguageSwitcherBlock class
-        // This method is kept for backward compatibility but should not be used
-        return;
+        $repository->registerBlock(LanguageSwitcherBlock::class);
     }
 
 

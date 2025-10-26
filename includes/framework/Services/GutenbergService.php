@@ -124,7 +124,6 @@ class GutenbergService
         $this->repository->registerBlock(OffcanvasSidebarBlock::class);
         $this->repository->registerBlock(IconPickerBlock::class);
         $this->repository->registerBlock(OffcanvasTriggerBlock::class);
-        $this->repository->registerBlock(LanguageSwitcherBlock::class);
         $this->repository->registerBlock(ImageMasonryGalleryBlock::class);
         $this->repository->registerBlock(WplyrMediaBlock::class);
         $this->repository->registerBlock(AdvancedImageBoxBlock::class);
