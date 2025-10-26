@@ -86,25 +86,33 @@ class PostLayoutDecorator
     public function buildQuery(array $attributes): WP_Query
     {
         $orderby = $attributes['orderBy'] ?? 'date';
+        $order = $attributes['order'] ?? 'DESC';
         
         // Add ID as secondary ordering to ensure consistent order when primary values are same
         // This prevents posts from "jumping" positions between queries
         if ($orderby !== 'rand' && $orderby !== 'none') {
-            $orderby = [$orderby => $attributes['order'] ?? 'DESC', 'ID' => 'DESC'];
+            // Use array syntax for multi-column sorting
+            $orderby = [$orderby => $order, 'ID' => 'DESC'];
+            // Don't set 'order' param when using array orderby
+            $order = null;
         }
         
         $args = [
             'post_type' => $attributes['postType'] ?? 'post',
             'posts_per_page' => $attributes['postsPerPage'] ?? 10,
             'orderby' => $orderby,
-            'order' => $attributes['order'] ?? 'DESC',
             'post_status' => 'publish',
         ];
+
+        // Only set 'order' if orderby is not array (string orderby)
+        if ($order !== null) {
+            $args['order'] = $order;
+        }
 
         // Debug log: Initial query args
         Log::warning('PostLayoutDecorator::buildQuery - Initial args', [
             'orderby' => $orderby,
-            'order' => $args['order'],
+            'order' => $args['order'] ?? 'using array orderby',
             'post_type' => $args['post_type'],
             'posts_per_page' => $args['posts_per_page'],
         ]);
@@ -136,9 +144,12 @@ class PostLayoutDecorator
             // Override orderby to add ID as secondary sort
             $meta_orderby = $attributes['orderBy'];
             $args['orderby'] = [$meta_orderby => $attributes['order'] ?? 'DESC', 'ID' => 'DESC'];
+            
+            // Remove 'order' param when using array orderby
+            unset($args['order']);
 
             // Debug log: Meta value ordering
-            if (defined('JANKX_LOG_ALL') && JANKX_LOG_ALL) {
+            if (defined('JANKX_LOG_ALL') && \JANKX_LOG_ALL) {
                 Jankx::log()->debug('PostLayoutDecorator::buildQuery - Meta value ordering', [
                     'meta_key' => $args['meta_key'],
                     'meta_type' => $args['meta_type'] ?? 'not set',
@@ -288,10 +299,10 @@ class PostLayoutDecorator
         }
 
         // Debug log: Final query args before WP_Query
-        if (defined('JANKX_LOG_ALL') && JANKX_LOG_ALL) {
+        if (defined('JANKX_LOG_ALL') && \JANKX_LOG_ALL) {
             Jankx::log()->debug('PostLayoutDecorator::buildQuery - Final query args', [
                 'orderby' => $args['orderby'],
-                'order' => $args['order'],
+                'order' => $args['order'] ?? 'using array orderby',
                 'post_type' => $args['post_type'],
                 'posts_per_page' => $args['posts_per_page'],
                 'has_tax_query' => !empty($args['tax_query']),
