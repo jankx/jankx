@@ -229,6 +229,14 @@ class PostLayoutDecorator
             }
         }
 
+        // Apply language filter to query args (for multilingual support)
+        if (!empty($attributes['_current_language'])) {
+            $args = \Jankx\Multilingual\MultilingualFactory::addLanguageToQueryArgs(
+                $args,
+                $attributes['_current_language']
+            );
+        }
+
         // Apply filters to allow customization
         $args = apply_filters('jankx/post-layout/query-args', $args, $attributes);
         $args = apply_filters('jankx/post-layout/query-args/' . $this->layout->getName(), $args, $attributes);

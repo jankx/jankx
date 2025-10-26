@@ -460,6 +460,11 @@ class PostTypeLayoutBlock extends Block
                 }
             }
 
+            // Apply language filter to query args
+            if (!empty($attributes['_current_language'])) {
+                $query_args = MultilingualFactory::addLanguageToQueryArgs($query_args, $attributes['_current_language']);
+            }
+
             // Create new query with modified args
             $query = new WP_Query($query_args);
 
@@ -608,6 +613,11 @@ class PostTypeLayoutBlock extends Block
                     $query_args['meta_type'] = $attributes['metaType'];
                 }
             }
+
+            // Apply language filter to query args
+            if (!empty($attributes['_current_language'])) {
+                $query_args = MultilingualFactory::addLanguageToQueryArgs($query_args, $attributes['_current_language']);
+            }
             
             $query = new WP_Query($query_args);
             $decorator = $layoutManager->createLayout($layout_name, $attributes);
@@ -618,6 +628,7 @@ class PostTypeLayoutBlock extends Block
             // Inject page number into attributes before building query
             $attributes['_internal_paged'] = $page;
             
+            // Language filter will be applied in PostLayoutDecorator::buildQuery()
             $decorator = $layoutManager->createLayout($layout_name, $attributes);
             $query = $decorator->buildQuery($attributes);
             $decorator->withQuery($query);
@@ -625,6 +636,7 @@ class PostTypeLayoutBlock extends Block
             // Custom query - inject page number into attributes
             $attributes['_internal_paged'] = $page;
             
+            // Language filter will be applied in PostLayoutDecorator::buildQuery()
             $decorator = $layoutManager->createLayout($layout_name, $attributes);
             $query = $decorator->buildQuery($attributes);
             $decorator->withQuery($query);
@@ -654,6 +666,9 @@ class PostTypeLayoutBlock extends Block
      * IMPORTANT: This is completely optional. If no multilingual plugin
      * is installed, this method does nothing and block works normally.
      *
+     * Note: Language filtering is now handled via MultilingualFactory::addLanguageToQueryArgs()
+     * in the query building phase, so this method only sets the current language context.
+     *
      * @param array $attributes Block attributes containing language info
      * @return void
      */
@@ -667,14 +682,7 @@ class PostTypeLayoutBlock extends Block
         $language_code = $attributes['_current_language'];
 
         // Set current language using factory (supports all plugins)
+        // This ensures template functions like pll_current_language() return correct value
         MultilingualFactory::setCurrentLanguage($language_code);
-
-        // Add filter to ensure queries are filtered by language
-        add_filter('pre_get_posts', function ($query) use ($language_code) {
-            if (!$query->is_main_query()) {
-                MultilingualFactory::filterQuery($query, $language_code);
-            }
-            return $query;
-        });
     }
 }
