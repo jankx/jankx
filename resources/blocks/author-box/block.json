@@ -4,7 +4,7 @@
 	"name": "jankx/author-box",
 	"version": "1.0.0",
 	"title": "Author Box",
-	"category": "widgets",
+	"category": "jankx",
 	"icon": "admin-users",
 	"keywords": [ "Author", "Profile", "Bio", "Tác giả" ],
 	"supports": {

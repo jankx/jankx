@@ -4,7 +4,7 @@
   "name": "jankx/post-type-layout",
   "version": "1.0.0",
   "title": "Post Type Layout",
-  "category": "design",
+  "category": "jankx",
   "icon": "layout",
   "description": "Hiển thị danh sách posts theo layout tùy chỉnh",
   "textdomain": "jankx",

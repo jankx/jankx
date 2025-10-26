@@ -4,7 +4,7 @@
   "name": "jankx/social-sharing-icon",
   "version": "1.0.0",
   "title": "Social Sharing Icon",
-  "category": "widgets",
+  "category": "jankx",
   "parent": ["jankx/social-sharing"],
   "icon": "share-alt",
   "description": "Icon chia sẻ mạng xã hội đơn lẻ",

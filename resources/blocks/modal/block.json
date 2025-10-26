@@ -3,7 +3,7 @@
 	"apiVersion": 3,
 	"name": "jankx/modal",
 	"title": "Modal",
-	"category": "jankx-blocks",
+	"category": "jankx",
 	"description": "A modal block with trigger and content areas. Supports inner blocks and custom selectors.",
 	"keywords": [ "modal", "popup", "overlay", "trigger", "inner blocks" ],
 	"textdomain": "jankx",

@@ -3,7 +3,7 @@
     "apiVersion": 3,
     "name": "jankx/table-of-content",
     "title": "Table of Content",
-    "category": "text",
+    "category": "jankx",
     "description": "Display interactive table of content for the current post",
     "keywords": ["toc", "table", "content", "index", "mục lục"],
     "textdomain": "jankx",

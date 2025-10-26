@@ -4,7 +4,7 @@
   "name": "jankx/date-picker-calendar",
   "version": "1.0.0",
   "title": "Date Picker Calendar",
-  "category": "widgets",
+  "category": "jankx",
   "icon": "calendar-alt",
   "description": "A calendar block with date picker functionality supporting outline and fill modes",
   "keywords": ["calendar", "date", "picker", "schedule"],

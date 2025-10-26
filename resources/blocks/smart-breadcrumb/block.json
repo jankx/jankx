@@ -4,7 +4,7 @@
 	"name": "jankx/smart-breadcrumb",
 	"version": "1.0.0",
 	"title": "Smart Breadcrumb",
-	"category": "widgets",
+	"category": "jankx",
 	"icon": "arrow-right-alt",
 	"keywords": [ "breadcrumb", "navigation", "seo", "rankmath", "yoast" ],
 	"supports": {

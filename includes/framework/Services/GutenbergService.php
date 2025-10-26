@@ -59,6 +59,7 @@ class GutenbergService
         $this->app = $app;
         $this->repository = $app->make('gutenberg.repository');
 
+        $this->registerBlockCategories();
         $this->registerPatternCategories();
     }
 
@@ -250,6 +251,39 @@ class GutenbergService
             Log::error('GutenbergService: Failed to clear block cache - ' . $e->getMessage());
             throw $e;
         }
+    }
+
+    // ========================================
+    // BLOCK CATEGORY METHODS
+    // ========================================
+
+    /**
+     * Register block categories
+     *
+     * @return void
+     */
+    protected function registerBlockCategories(): void
+    {
+        add_filter('block_categories_all', [$this, 'addBlockCategories'], 10, 2);
+    }
+
+    /**
+     * Add Jankx block category to WordPress
+     *
+     * @param array $categories Existing block categories
+     * @param \WP_Block_Editor_Context $editor_context The current block editor context
+     * @return array Modified categories
+     */
+    public function addBlockCategories(array $categories, $editor_context): array
+    {
+        // Add Jankx category at the beginning
+        array_unshift($categories, [
+            'slug' => 'jankx',
+            'title' => __('Jankx', 'jankx'),
+            'icon' => null,
+        ]);
+
+        return $categories;
     }
 
     // ========================================

@@ -2,7 +2,7 @@
     "apiVersion": 2,
     "name": "jankx/offcanvas-trigger",
     "title": "Offcanvas Trigger",
-    "category": "widgets",
+    "category": "jankx",
     "icon": "button",
     "description": "A trigger button to open offcanvas sidebar",
     "keywords": ["button", "trigger", "sidebar", "offcanvas", "menu"],

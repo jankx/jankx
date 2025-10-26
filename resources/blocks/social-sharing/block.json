@@ -4,7 +4,7 @@
   "name": "jankx/social-sharing",
   "version": "1.0.0",
   "title": "Social Sharing",
-  "category": "widgets",
+  "category": "jankx",
   "icon": "share",
   "description": "Chia sẻ nội dung lên mạng xã hội",
   "textdomain": "jankx",

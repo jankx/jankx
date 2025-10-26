@@ -2,7 +2,7 @@
 	"apiVersion": 3,
 	"name": "jankx/svg-icon",
 	"title": "SVG Icon",
-	"category": "media",
+	"category": "jankx",
 	"description": "Insert an SVG icon or graphic.",
 	"keywords": [ "icon", "svg" ],
 	"attributes": {

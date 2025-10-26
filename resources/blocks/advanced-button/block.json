@@ -3,7 +3,7 @@
     "apiVersion": 3,
     "name": "jankx/advanced-button",
     "title": "Advanced Button",
-    "category": "design",
+    "category": "jankx",
     "description": "Advanced button block with enhanced features and styling options.",
     "keywords": ["button", "link", "advanced", "cta", "action"],
     "textdomain": "jankx",

@@ -2,7 +2,7 @@
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "name": "jankx/offcanvas-sidebar",
     "title": "Offcanvas Sidebar",
-    "category": "widgets",
+    "category": "jankx",
     "icon": "menu",
     "description": "Create animated offcanvas sidebar with multiple transition effects",
     "keywords": ["sidebar", "offcanvas", "menu", "navigation", "animation", "transition"],

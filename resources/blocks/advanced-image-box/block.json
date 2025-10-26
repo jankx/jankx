@@ -3,7 +3,7 @@
 	"apiVersion": 3,
 	"name": "jankx/advanced-image-box",
 	"title": "Advanced Image Box",
-	"category": "jankx-blocks",
+	"category": "jankx",
 	"description": "An advanced image block with overlay info box and inner content support.",
 	"keywords": [ "image", "overlay", "hover", "animation", "inner blocks" ],
 	"textdomain": "jankx",

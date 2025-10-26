@@ -2,7 +2,7 @@
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "name": "jankx/image-masonry-gallery",
     "title": "Image Masonry Gallery",
-    "category": "media",
+    "category": "jankx",
     "icon": "format-gallery",
     "description": "Showcase Images in a Masonry Gallery View with responsive columns and lightbox support.",
     "keywords": ["masonry", "gallery", "images", "image gallery", "lightbox"],

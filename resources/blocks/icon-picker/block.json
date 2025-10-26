@@ -3,7 +3,7 @@
     "apiVersion": 3,
     "name": "jankx/icon-picker",
     "title": "Icon Picker",
-    "category": "widgets",
+    "category": "jankx",
     "icon": "star-filled",
     "description": "Chọn và hiển thị icon từ Jankx Font Icons System với khả năng thêm link và tùy chỉnh style",
     "keywords": ["icon", "font", "link", "button", "symbol", "jankx"],
