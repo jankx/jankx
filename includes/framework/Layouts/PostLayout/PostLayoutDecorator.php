@@ -102,14 +102,12 @@ class PostLayoutDecorator
         ];
 
         // Debug log: Initial query args
-        if (defined('JANKX_LOG_ALL') && JANKX_LOG_ALL) {
-            Log::debug('PostLayoutDecorator::buildQuery - Initial args', [
-                'orderby' => $orderby,
-                'order' => $args['order'],
-                'post_type' => $args['post_type'],
-                'posts_per_page' => $args['posts_per_page'],
-            ]);
-        }
+        Log::warning('PostLayoutDecorator::buildQuery - Initial args', [
+            'orderby' => $orderby,
+            'order' => $args['order'],
+            'post_type' => $args['post_type'],
+            'posts_per_page' => $args['posts_per_page'],
+        ]);
 
         // Add pagination if specified (for AJAX load more)
         if (isset($attributes['_internal_paged']) && $attributes['_internal_paged'] > 0) {
