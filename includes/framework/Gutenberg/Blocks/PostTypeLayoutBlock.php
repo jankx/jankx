@@ -443,6 +443,23 @@ class PostTypeLayoutBlock extends Block
                 $query_args['posts_per_page'] = intval($attributes['postsPerPage']);
             }
 
+            // Apply orderBy and order from attributes
+            if (!empty($attributes['orderBy'])) {
+                $query_args['orderby'] = sanitize_key($attributes['orderBy']);
+            }
+            if (!empty($attributes['order'])) {
+                $query_args['order'] = strtoupper(sanitize_key($attributes['order']));
+            }
+
+            // Apply meta_key if ordering by meta_value
+            if (!empty($attributes['metaKey']) && in_array($attributes['orderBy'], ['meta_value', 'meta_value_num'])) {
+                $query_args['meta_key'] = sanitize_key($attributes['metaKey']);
+                
+                if (!empty($attributes['metaType'])) {
+                    $query_args['meta_type'] = $attributes['metaType'];
+                }
+            }
+
             // Create new query with modified args
             $query = new WP_Query($query_args);
 
@@ -574,6 +591,23 @@ class PostTypeLayoutBlock extends Block
                 $query_args['posts_per_page'] = intval($attributes['postsPerPage']);
             }
             $query_args['paged'] = $page;
+
+            // Apply orderBy and order from attributes
+            if (!empty($attributes['orderBy'])) {
+                $query_args['orderby'] = sanitize_key($attributes['orderBy']);
+            }
+            if (!empty($attributes['order'])) {
+                $query_args['order'] = strtoupper(sanitize_key($attributes['order']));
+            }
+
+            // Apply meta_key if ordering by meta_value
+            if (!empty($attributes['metaKey']) && in_array($attributes['orderBy'], ['meta_value', 'meta_value_num'])) {
+                $query_args['meta_key'] = sanitize_key($attributes['metaKey']);
+                
+                if (!empty($attributes['metaType'])) {
+                    $query_args['meta_type'] = $attributes['metaType'];
+                }
+            }
             
             $query = new WP_Query($query_args);
             $decorator = $layoutManager->createLayout($layout_name, $attributes);
