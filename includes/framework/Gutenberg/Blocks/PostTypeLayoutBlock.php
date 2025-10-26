@@ -42,7 +42,8 @@ class PostTypeLayoutBlock extends Block
     public function init(): void
     {
         // Enqueue editor scripts with localized data
-        add_action('enqueue_block_editor_assets', [$this, 'enqueueEditorAssets']);
+        // Priority 20 to ensure block scripts are registered first (default is 10)
+        add_action('enqueue_block_editor_assets', [$this, 'enqueueEditorAssets'], 20);
 
         // Enqueue frontend scripts for Load More
         add_action('wp_enqueue_scripts', [$this, 'enqueueFrontendAssets']);
@@ -279,7 +280,15 @@ class PostTypeLayoutBlock extends Block
         }
 
         $asset = require $asset_file;
-        $script_handle = 'jankx-post-type-layout-editor';
+        
+        // WordPress generates script handle from block.json: {namespace}-{block-name}-editor-script
+        $script_handle = 'jankx-post-type-layout-editor-script';
+
+        // Verify script is registered
+        if (!wp_script_is($script_handle, 'registered')) {
+            // Fallback: try without -script suffix
+            $script_handle = 'jankx-post-type-layout-editor';
+        }
 
         // Localize supported layouts
         $layouts = $this->getLayoutManager()->getLayouts(['field' => 'all']);
@@ -353,16 +362,25 @@ class PostTypeLayoutBlock extends Block
      * Sanitize attributes based on layout's supported options
      * Unsupported options will be set to false
      *
+     * Note: This method should only be called during render phase,
+     * not during query building, to preserve user's attribute values.
+     *
      * @param string $layout_name Layout name
      * @param array $attributes Block attributes
+     * @param bool $for_render Whether sanitizing for render (true) or just validation (false)
      * @return array Sanitized attributes
      */
-    protected function sanitizeAttributes(string $layout_name, array $attributes): array
+    protected function sanitizeAttributes(string $layout_name, array $attributes, bool $for_render = true): array
     {
         $layoutManager = $this->getLayoutManager();
         $layout = $layoutManager->getLayout($layout_name);
 
         if (!$layout) {
+            return $attributes;
+        }
+
+        // Only apply strict sanitization for render phase
+        if (!$for_render) {
             return $attributes;
         }
 
@@ -380,7 +398,7 @@ class PostTypeLayoutBlock extends Block
             'itemStyle',
         ];
 
-        // Set unsupported options to false
+        // Set unsupported options to false (only for render)
         foreach ($optionKeys as $key) {
             if (!in_array($key, $supportedOptions, true)) {
                 $attributes[$key] = false;
@@ -427,8 +445,8 @@ class PostTypeLayoutBlock extends Block
             );
         }
 
-        // Sanitize attributes based on layout's supported options
-        $attributes = $this->sanitizeAttributes($layout_name, $attributes);
+        // Sanitize attributes based on layout's supported options (for render)
+        $attributes = $this->sanitizeAttributes($layout_name, $attributes, true);
 
         // Handle query preset
         if ($queryPreset === 'default') {
@@ -581,8 +599,9 @@ class PostTypeLayoutBlock extends Block
             return;
         }
 
-        // Sanitize attributes
-        $attributes = $this->sanitizeAttributes($layout_name, $attributes);
+        // Validate layout exists (don't sanitize attributes for AJAX to preserve values)
+        // Sanitization happens in PostLayoutDecorator during render
+        $attributes = $this->sanitizeAttributes($layout_name, $attributes, false);
 
         // Get query preset
         $queryPreset = $attributes['queryPreset'] ?? 'custom';
