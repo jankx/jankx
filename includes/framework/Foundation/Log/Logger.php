@@ -20,6 +20,27 @@ class Logger implements LoggerInterface
 
     const SUCCESS     = 'success';
 
+    /**
+     * Telegram logger instance
+     *
+     * @var TelegramLogger|null
+     */
+    protected $telegramLogger = null;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        // Initialize Telegram logger if enabled via config
+        if (defined('JANKX_USE_TELEGRAM_LOGGER') && \JANKX_USE_TELEGRAM_LOGGER) {
+            $telegramLogger = new TelegramLogger();
+            if ($telegramLogger->isEnabled()) {
+                $this->telegramLogger = $telegramLogger;
+            }
+        }
+    }
+
 
     /**
      * Log a message.
@@ -53,6 +74,11 @@ class Logger implements LoggerInterface
         );
 
         error_log($logMessage);
+
+        // Also send to Telegram if available
+        if ($this->telegramLogger) {
+            $this->telegramLogger->log($level, $message, $context);
+        }
     }
 
     /**

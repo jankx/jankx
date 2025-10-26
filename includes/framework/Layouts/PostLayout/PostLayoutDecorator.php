@@ -3,6 +3,8 @@
 namespace Jankx\Layouts\PostLayout;
 
 use Jankx\Layouts\PostLayout\Contracts\PostLayoutInterface;
+use Jankx\Facades\Jankx;
+use Jankx\Facades\Log;
 use WP_Query;
 
 /**
@@ -83,13 +85,31 @@ class PostLayoutDecorator
      */
     public function buildQuery(array $attributes): WP_Query
     {
+        $orderby = $attributes['orderBy'] ?? 'date';
+        
+        // Add ID as secondary ordering to ensure consistent order when primary values are same
+        // This prevents posts from "jumping" positions between queries
+        if ($orderby !== 'rand' && $orderby !== 'none') {
+            $orderby = [$orderby => $attributes['order'] ?? 'DESC', 'ID' => 'DESC'];
+        }
+        
         $args = [
             'post_type' => $attributes['postType'] ?? 'post',
             'posts_per_page' => $attributes['postsPerPage'] ?? 10,
-            'orderby' => $attributes['orderBy'] ?? 'date',
+            'orderby' => $orderby,
             'order' => $attributes['order'] ?? 'DESC',
             'post_status' => 'publish',
         ];
+
+        // Debug log: Initial query args
+        if (defined('JANKX_LOG_ALL') && JANKX_LOG_ALL) {
+            Log::debug('PostLayoutDecorator::buildQuery - Initial args', [
+                'orderby' => $orderby,
+                'order' => $args['order'],
+                'post_type' => $args['post_type'],
+                'posts_per_page' => $args['posts_per_page'],
+            ]);
+        }
 
         // Add pagination if specified (for AJAX load more)
         if (isset($attributes['_internal_paged']) && $attributes['_internal_paged'] > 0) {
@@ -112,6 +132,20 @@ class PostLayoutDecorator
 
             if (!empty($attributes['metaType'])) {
                 $args['meta_type'] = $attributes['metaType'];
+            }
+            
+            // Ensure consistent ordering when meta values are same
+            // Override orderby to add ID as secondary sort
+            $meta_orderby = $attributes['orderBy'];
+            $args['orderby'] = [$meta_orderby => $attributes['order'] ?? 'DESC', 'ID' => 'DESC'];
+
+            // Debug log: Meta value ordering
+            if (defined('JANKX_LOG_ALL') && JANKX_LOG_ALL) {
+                Jankx::log()->debug('PostLayoutDecorator::buildQuery - Meta value ordering', [
+                    'meta_key' => $args['meta_key'],
+                    'meta_type' => $args['meta_type'] ?? 'not set',
+                    'orderby' => $args['orderby'],
+                ]);
             }
         }
 
@@ -235,6 +269,14 @@ class PostLayoutDecorator
                 $args,
                 $attributes['_current_language']
             );
+
+            // Debug log: Language filter applied
+            if (defined('JANKX_LOG_ALL') && JANKX_LOG_ALL) {
+                Jankx::log()->debug('PostLayoutDecorator::buildQuery - Language filter applied', [
+                    'language' => $attributes['_current_language'],
+                    'lang_args' => array_diff_key($args, ['post_type' => '', 'posts_per_page' => '', 'orderby' => '', 'order' => '']),
+                ]);
+            }
         }
 
         // Apply filters to allow customization
@@ -245,6 +287,19 @@ class PostLayoutDecorator
         if (!empty($attributes['customQueryId'])) {
             $custom_query_id = sanitize_key($attributes['customQueryId']);
             $args = apply_filters('jankx/post-layout/query-args/' . $custom_query_id, $args, $attributes);
+        }
+
+        // Debug log: Final query args before WP_Query
+        if (defined('JANKX_LOG_ALL') && JANKX_LOG_ALL) {
+            Jankx::log()->debug('PostLayoutDecorator::buildQuery - Final query args', [
+                'orderby' => $args['orderby'],
+                'order' => $args['order'],
+                'post_type' => $args['post_type'],
+                'posts_per_page' => $args['posts_per_page'],
+                'has_tax_query' => !empty($args['tax_query']),
+                'has_meta_query' => !empty($args['meta_query']),
+                'has_meta_key' => !empty($args['meta_key']),
+            ]);
         }
 
         return new WP_Query($args);

@@ -16,8 +16,12 @@ class RegisterLogger
     public function bootstrap(Application $app)
     {
         $app->singleton('log', function ($app) {
-            // 1. Nếu JANKX_DEBUG_LOG được bật → dùng DebugLogger (log tất cả)
+            // 1. Nếu JANKX_DEBUG_LOG được bật → dùng Logger (log tất cả)
+            //    Logger tự động tích hợp TelegramLogger nếu JANKX_USE_TELEGRAM_LOGGER = true
             if (defined('JANKX_DEBUG_LOG') && JANKX_DEBUG_LOG === true) {
+                if (defined('JANKX_USE_TELEGRAM_LOGGER') && constant('JANKX_USE_TELEGRAM_LOGGER') === true) {
+                    return new \Jankx\Foundation\Log\TelegramLogger();
+                }
                 return new \Jankx\Foundation\Log\Logger();
             }
 
