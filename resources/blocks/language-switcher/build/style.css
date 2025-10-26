@@ -14,15 +14,12 @@
   font-size: 12px;
   margin: 0.5rem 0;
   max-width: 100%;
-  overflow: visible;
 }
 
 /* Dropdown Style */
 .language-switcher-dropdown-wrapper {
   position: relative;
   display: inline-block;
-  /* Prevent dropdown from breaking layout */
-  overflow: visible;
   max-width: 100%;
 }
 
@@ -62,8 +59,7 @@
 .language-switcher-dropdown-menu {
   position: absolute;
   top: 100%;
-  left: 0;
-  right: 0;
+  right: 0; /* Default align right to prevent overflow */
   margin-top: 2px;
   padding: 2px 0;
   list-style: none;
@@ -76,8 +72,8 @@
   transform: translateY(-5px);
   transition: all 0.2s ease;
   min-width: 120px;
-  max-width: 100vw;
-  width: auto;
+  max-width: calc(100vw - 20px);
+  width: max-content;
 }
 
 /* Position engine classes */
@@ -117,15 +113,16 @@
   right: auto;
 }
 
-.language-switcher-dropdown-wrapper:hover .language-switcher-dropdown-menu,
-.language-switcher-dropdown-menu.is-open {
+/* Show dropdown only after position is calculated */
+.language-switcher-dropdown-wrapper.is-positioned:hover .language-switcher-dropdown-menu,
+.language-switcher-dropdown-wrapper.is-positioned .language-switcher-dropdown-menu.is-open {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
 }
 
-.language-switcher-dropdown-wrapper:hover .language-switcher-dropdown-menu.align-top,
-.language-switcher-dropdown-menu.is-open.align-top {
+.language-switcher-dropdown-wrapper.is-positioned:hover .language-switcher-dropdown-menu.align-top,
+.language-switcher-dropdown-wrapper.is-positioned .language-switcher-dropdown-menu.is-open.align-top {
   transform: translateY(0);
 }
 

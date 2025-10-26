@@ -1,3 +1,16 @@
+@media(min-width: 768px) {
+    .wp-site-blocks {
+        .wp-block-site-logo {
+            img {
+                height: auto;
+                min-width: 90px;
+                min-height: 60px;
+                width: auto;
+            }
+        }
+    }
+}
+
 @media(max-width: 767px) {
     .wp-site-blocks {
         .wp-block-site-logo {
@@ -20,3 +33,4 @@
         }
     }
 }
+

@@ -66,10 +66,6 @@ module.exports = {
     'blocks/date-picker-calendar/build/style-index': './blocks/date-picker-calendar/style.scss',
     'blocks/date-picker-calendar/build/editor': './blocks/date-picker-calendar/editor.scss',
 
-    'blocks/core-filters/build/index': './blocks/core-filters/index.tsx',
-    'blocks/core-filters/build/editor': './blocks/core-filters/editor.scss',
-
-
     'blocks/smart-tabs/build/index': './blocks/smart-tabs/index.tsx',
     'blocks/smart-tabs/build/style': './blocks/smart-tabs/style.scss',
     'blocks/smart-tabs/build/editor': './blocks/smart-tabs/editor.scss',

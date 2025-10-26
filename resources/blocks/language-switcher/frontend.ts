@@ -37,12 +37,21 @@ class LanguageSwitcherPositionEngine {
 
         // Track if dropdown is open
         let isOpen = false;
+        let isPositioned = false;
+
+        // Calculate position first time
+        const ensurePositioned = () => {
+            if (!isPositioned) {
+                this.adjustDropdownPosition(wrapper);
+                isPositioned = true;
+            }
+        };
 
         // Toggle dropdown function
         const toggleDropdown = (open: boolean) => {
             isOpen = open;
             if (open) {
-                this.adjustDropdownPosition(wrapper);
+                ensurePositioned(); // Calculate position before showing
                 menu.classList.add('is-open');
             } else {
                 menu.classList.remove('is-open');
@@ -52,8 +61,8 @@ class LanguageSwitcherPositionEngine {
         // Desktop hover events
         wrapper.addEventListener('mouseenter', () => {
             if (!this.isMobile()) {
+                ensurePositioned(); // Calculate before hover
                 toggleDropdown(true);
-                this.adjustDropdownPosition(wrapper);
             }
         });
 
@@ -68,6 +77,7 @@ class LanguageSwitcherPositionEngine {
             e.preventDefault();
             e.stopPropagation();
             if (this.isMobile()) {
+                ensurePositioned(); // Calculate before click
                 toggleDropdown(!isOpen);
             }
         });
@@ -81,7 +91,7 @@ class LanguageSwitcherPositionEngine {
 
         // Adjust position on focus
         dropdown.addEventListener('focus', () => {
-            this.adjustDropdownPosition(wrapper);
+            ensurePositioned();
         });
     }
 
@@ -110,6 +120,9 @@ class LanguageSwitcherPositionEngine {
         } else {
             menu.classList.add('align-bottom');
         }
+
+        // Mark as positioned to allow overflow
+        wrapper.classList.add('is-positioned');
     }
 
     private calculateOptimalPosition(wrapper: HTMLElement, menu: HTMLElement): DropdownPosition {
