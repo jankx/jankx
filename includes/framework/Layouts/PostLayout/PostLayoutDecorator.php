@@ -110,7 +110,7 @@ class PostLayoutDecorator
         }
 
         // Debug log: Initial query args
-        Log::warning('PostLayoutDecorator::buildQuery - Initial args', [
+        Log::debug('PostLayoutDecorator::buildQuery - Initial args', [
             'orderby' => $orderby,
             'order' => $args['order'] ?? 'using array orderby',
             'post_type' => $args['post_type'],
