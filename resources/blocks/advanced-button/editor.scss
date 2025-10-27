@@ -54,52 +54,29 @@ button.jankx-advanced-button__link {
 				}
 			}
 
-			// Icon blocks in editor - style them to look disabled but keep appender working
+			// Reset size constraints for icon blocks
+			.components-resizable-box__container {
+				max-width: none !important;
+				max-height: none !important;
+				min-width: auto !important;
+				min-height: auto !important;
+			}
+
+			// Icon blocks in editor - allow interactions
 			.block-editor-block-list__layout {
-				// Style icon blocks to look disabled
+				// Icon blocks should be fully interactive
 				> .wp-block {
 					&:not(.block-list-appender) {
-						opacity: 0.7;
 						position: relative;
 
-						// Add overlay to prevent interactions
-						&::after {
-							content: '';
-							position: absolute;
-							top: 0;
-							left: 0;
-							right: 0;
-							bottom: 0;
-							background: transparent;
-							z-index: 10;
-							pointer-events: auto;
-						}
-
-						// Disable user selection
-						* {
-							user-select: none !important;
-							-webkit-user-select: none !important;
-							-moz-user-select: none !important;
-							-ms-user-select: none !important;
-						}
+						// Allow all interactions with icon blocks
+						pointer-events: auto;
 					}
 
 					// Appender should be fully enabled
 					&.block-list-appender {
 						opacity: 1;
 						position: relative;
-
-						// No overlay for appender
-						&::after {
-							display: none;
-						}
-
-						// Enable all interactions
-						* {
-							pointer-events: auto !important;
-							user-select: auto !important;
-							cursor: pointer !important;
-						}
 					}
 				}
 			}

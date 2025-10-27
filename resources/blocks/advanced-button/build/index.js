@@ -232,10 +232,11 @@ function Edit(props) {
             // Don't prevent appender clicks
             return;
           }
-          // Only prevent clicks on actual inner blocks (not appender)
+          // Allow clicks within inner blocks to propagate normally
+          // This ensures icon blocks can handle their own events
           if (target.closest('.block-editor-block-list__block:not(.block-list-appender)')) {
-            e.preventDefault();
-            e.stopPropagation();
+            // Let inner blocks handle their own interactions
+            return;
           }
         },
         children: renderButtonContent()
@@ -257,15 +258,15 @@ function Edit(props) {
         style: buttonStyles,
         title: title,
         onClick: e => {
-          // Prevent all navigation in editor
+          // Prevent navigation in editor
           e.preventDefault();
-          e.stopPropagation();
-          return false;
         },
-        onMouseDown: e => {
-          // Also prevent on mousedown
-          e.preventDefault();
-          e.stopPropagation();
+        onClickCapture: e => {
+          // Allow clicks within inner blocks to propagate normally
+          const target = e.target;
+          if (target.closest('.block-list-appender') || target.closest('.block-editor-block-list__block:not(.block-list-appender)')) {
+            return; // Let inner blocks handle their own interactions
+          }
         },
         children: renderButtonContent()
       });
