@@ -3,6 +3,8 @@
 namespace Jankx\Layouts\PostLayout;
 
 use Jankx\Layouts\PostLayout\Contracts\PostLayoutInterface;
+use Jankx\Layouts\PostLayout\Contracts\ContentGeneratorInterface;
+use Jankx\Layouts\PostLayout\Generators\DefaultContentGenerator;
 use WP_Query;
 
 /**
@@ -43,6 +45,13 @@ abstract class PostLayout implements PostLayoutInterface
     protected $query = null;
 
     /**
+     * Content generator instance
+     *
+     * @var ContentGeneratorInterface|null
+     */
+    protected $contentGenerator = null;
+
+    /**
      * Default options
      *
      * @var array
@@ -64,6 +73,7 @@ abstract class PostLayout implements PostLayoutInterface
     public function __construct()
     {
         $this->options = $this->defaultOptions;
+        $this->contentGenerator = new DefaultContentGenerator($this);
     }
 
     /**
@@ -118,6 +128,38 @@ abstract class PostLayout implements PostLayoutInterface
     {
         $this->query = $query;
         return $this;
+    }
+
+    /**
+     * Set content generator
+     *
+     * @param ContentGeneratorInterface $generator
+     * @return self
+     */
+    public function setContentGenerator(ContentGeneratorInterface $generator): self
+    {
+        $this->contentGenerator = $generator;
+        return $this;
+    }
+
+    /**
+     * Get content generator
+     *
+     * @return ContentGeneratorInterface
+     */
+    public function getContentGenerator(): ContentGeneratorInterface
+    {
+        return $this->contentGenerator;
+    }
+
+    /**
+     * Check if using custom content generator
+     *
+     * @return bool
+     */
+    public function hasCustomGenerator(): bool
+    {
+        return !($this->contentGenerator instanceof DefaultContentGenerator);
     }
 
     /**
@@ -202,12 +244,37 @@ abstract class PostLayout implements PostLayoutInterface
     /**
      * {@inheritDoc}
      */
-    abstract public function render(): string;
+    public function render(): string
+    {
+        if (!$this->query) {
+            return '';
+        }
+
+        // Sử dụng content generator để render
+        return $this->contentGenerator->generate($this->query, $this->options);
+    }
+
+    /**
+     * Render using default layout logic (for backward compatibility)
+     *
+     * @return string
+     */
+    abstract protected function renderDefault(): string;
 
     /**
      * {@inheritDoc}
      */
-    abstract public function renderPreview(): array;
+    public function renderPreview(): array
+    {
+        return $this->contentGenerator->generatePreview($this->options);
+    }
+
+    /**
+     * Render preview using default logic (for backward compatibility)
+     *
+     * @return array
+     */
+    abstract protected function renderDefaultPreview(): array;
 
     /**
      * {@inheritDoc}
