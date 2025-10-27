@@ -6,26 +6,40 @@ class ContentTemplateService
 {
     /**
      * Find template file in child theme first, then parent theme
+     * Supports multilingual templates: {post-type}-{lang}.html
      *
      * @param string $postType
      * @return string|false
      */
     protected function findTemplateFile($postType)
     {
-        $templateName = sanitize_file_name($postType) . '.html';
-        $paths = [];
+        $sanitizedPostType = sanitize_file_name($postType);
+        $templateNames = [$sanitizedPostType . '.html'];
+
+        // Add language-specific template if multilingual plugin is active
+        $currentLang = \Jankx\Multilingual\MultilingualFactory::getCurrentLanguage();
+        if ($currentLang) {
+            // Priority: {post-type}-{lang}.html first, then {post-type}.html
+            array_unshift($templateNames, $sanitizedPostType . '-' . $currentLang . '.html');
+        }
+
+        $basePaths = [];
 
         // Check child theme first (priority)
         if (is_child_theme()) {
-            $paths[] = get_stylesheet_directory() . '/resources/content-templates/' . $templateName;
+            $basePaths[] = get_stylesheet_directory() . '/resources/content-templates/';
         }
 
         // Check parent theme
-        $paths[] = get_template_directory() . '/resources/content-templates/' . $templateName;
+        $basePaths[] = get_template_directory() . '/resources/content-templates/';
 
-        foreach ($paths as $path) {
-            if (file_exists($path)) {
-                return $path;
+        // Try each combination: language-specific first, then default
+        foreach ($basePaths as $basePath) {
+            foreach ($templateNames as $templateName) {
+                $fullPath = $basePath . $templateName;
+                if (file_exists($fullPath)) {
+                    return $fullPath;
+                }
             }
         }
 

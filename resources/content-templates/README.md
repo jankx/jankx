@@ -27,14 +27,32 @@ Template files use WordPress **Block Editor (Gutenberg)** syntax:
 <!-- /wp:heading -->
 ```
 
-### 3. Priority Order
+### 3. Multilingual Support
+
+The system supports **multilingual templates** when using Polylang or other multilingual plugins:
+
+**Naming format:** `<post-type>-<language-code>.html`
+
+**Examples:**
+- `tour-vi.html` - Template for Vietnamese tour posts
+- `tour-en.html` - Template for English tour posts
+- `tour.html` - Default template (fallback)
+
+**How it works:**
+- System detects current language from multilingual plugin
+- Searches for language-specific template first: `tour-vi.html`
+- Falls back to default template if language-specific not found: `tour.html`
+
+### 4. Priority Order
 
 The system will search for templates in the following order:
 
-1. **Child Theme** (Highest priority): `wp-content/themes/buocchandisan/resources/content-templates/<post-type>.html`
-2. **Parent Theme**: `wp-content/themes/jankx/resources/content-templates/<post-type>.html`
+1. **Child Theme + Language** (Highest priority): `buocchandisan/resources/content-templates/tour-vi.html`
+2. **Child Theme + Default**: `buocchandisan/resources/content-templates/tour.html`
+3. **Parent Theme + Language**: `jankx/resources/content-templates/tour-vi.html`
+4. **Parent Theme + Default**: `jankx/resources/content-templates/tour.html`
 
-### 4. How It Works
+### 5. How It Works
 
 - Template is loaded **only once** when opening the new post creation page (auto-draft status)
 - If the post already has content, the template will not override it
@@ -43,9 +61,11 @@ The system will search for templates in the following order:
   - **Classic Editor**: `default_content` filter
 - Template does not automatically save, it only displays in the editor for user editing
 
-## Real-World Example
+## Real-World Examples
 
-### File: `tour.html`
+### Example 1: Single Language Template
+
+**File: `tour.html`**
 
 ```html
 <!-- wp:group {"layout":{"type":"constrained"}} -->
@@ -70,6 +90,37 @@ The system will search for templates in the following order:
 </div>
 <!-- /wp:group -->
 ```
+
+### Example 2: Multilingual Templates
+
+**File: `tour-vi.html` (Vietnamese)**
+
+```html
+<!-- wp:heading -->
+<h2 class="wp-block-heading">Giới thiệu tour</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>Mô tả tour của bạn bằng tiếng Việt...</p>
+<!-- /wp:paragraph -->
+```
+
+**File: `tour-en.html` (English)**
+
+```html
+<!-- wp:heading -->
+<h2 class="wp-block-heading">Tour Introduction</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>Describe your tour in English...</p>
+<!-- /wp:paragraph -->
+```
+
+**Result:**
+- Creating new Vietnamese tour → Loads `tour-vi.html`
+- Creating new English tour → Loads `tour-en.html`
+- If language-specific template not found → Loads `tour.html` (fallback)
 
 ## Notes
 
