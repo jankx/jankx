@@ -706,6 +706,15 @@ function Save(props) {
     ...blockProps.style
   };
 
+  // Sanitize text content to remove any nested anchor tags
+  // This prevents invalid HTML like <a><a>text</a></a>
+  const sanitizeText = html => {
+    if (!html) return '';
+    // Remove any anchor tags but keep their content
+    return html.replace(/<\/?a[^>]*>/gi, '');
+  };
+  const sanitizedText = text ? sanitizeText(text) : '';
+
   // Always render in same order - use CSS to control visual position
   const textMarkup = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("span", {
@@ -714,7 +723,7 @@ function Save(props) {
     }), showLabel && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.RichText.Content, {
       tagName: "span",
       className: "button-text",
-      value: text
+      value: sanitizedText
     })]
   });
 

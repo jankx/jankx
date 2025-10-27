@@ -85,6 +85,16 @@ export default function Save(props: SaveProps) {
 		...blockProps.style,
 	};
 
+	// Sanitize text content to remove any nested anchor tags
+	// This prevents invalid HTML like <a><a>text</a></a>
+	const sanitizeText = (html: string): string => {
+		if (!html) return '';
+		// Remove any anchor tags but keep their content
+		return html.replace(/<\/?a[^>]*>/gi, '');
+	};
+
+	const sanitizedText = text ? sanitizeText(text) : '';
+
 	// Always render in same order - use CSS to control visual position
 	const textMarkup = (
 		<>
@@ -95,7 +105,7 @@ export default function Save(props: SaveProps) {
 				<RichText.Content
 					tagName="span"
 					className="button-text"
-					value={text}
+					value={sanitizedText}
 				/>
 			)}
 		</>

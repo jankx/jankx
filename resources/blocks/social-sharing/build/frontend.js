@@ -14,18 +14,29 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   fbButton: () => (/* binding */ fbButton),
 /* harmony export */   fbFeed: () => (/* binding */ fbFeed),
 /* harmony export */   fbShare: () => (/* binding */ fbShare),
-/* harmony export */   getVkUrl: () => (/* binding */ getUrl),
+/* harmony export */   getEmailUrl: () => (/* binding */ getEmailUrl),
+/* harmony export */   getFbButtonUrl: () => (/* binding */ getFbButtonUrl),
+/* harmony export */   getFbFeedUrl: () => (/* binding */ getFbFeedUrl),
+/* harmony export */   getFbShareUrl: () => (/* binding */ getFbShareUrl),
+/* harmony export */   getOkUrl: () => (/* binding */ getOkUrl),
+/* harmony export */   getTelegramUrl: () => (/* binding */ getTelegramUrl),
+/* harmony export */   getTwUrl: () => (/* binding */ getTwUrl),
+/* harmony export */   getViberUrl: () => (/* binding */ getViberUrl),
+/* harmony export */   getVkUrl: () => (/* binding */ getVkUrl),
+/* harmony export */   getWhatsappUrl: () => (/* binding */ getWhatsappUrl),
 /* harmony export */   gp: () => (/* binding */ gp),
 /* harmony export */   line: () => (/* binding */ line),
 /* harmony export */   linkedin: () => (/* binding */ linkedin),
 /* harmony export */   mail: () => (/* binding */ mail),
 /* harmony export */   messenger: () => (/* binding */ messenger),
 /* harmony export */   ok: () => (/* binding */ ok),
+/* harmony export */   pinterest: () => (/* binding */ pinterest),
 /* harmony export */   reddit: () => (/* binding */ reddit),
 /* harmony export */   telegram: () => (/* binding */ telegram),
+/* harmony export */   tumblr: () => (/* binding */ tumblr),
 /* harmony export */   tw: () => (/* binding */ tw),
 /* harmony export */   viber: () => (/* binding */ viber),
-/* harmony export */   vk: () => (/* binding */ share),
+/* harmony export */   vk: () => (/* binding */ vk),
 /* harmony export */   whatsapp: () => (/* binding */ whatsapp)
 /* harmony export */ });
 var WIN_PARAMS = 'scrollbars=0, resizable=1, menubar=0, left=100, top=100, width=550, height=440, toolbar=0, status=0'; // eslint-disable-line import/prefer-default-export
@@ -34,10 +45,10 @@ function encodeParams(obj) {
   return Object.keys(obj).filter(function (k) {
     return typeof obj[k] !== 'undefined' && obj[k] !== '';
   }).map(function (k) {
-    return encodeURIComponent(k) + '=' + encodeURIComponent(obj[k]);
+    return "".concat(encodeURIComponent(k), "=").concat(encodeURIComponent(obj[k]));
   }).join('&');
 }
-function fbFeed() {
+function getFbFeedUrl() {
   var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   var fbAppId = options.fbAppId,
     url = options.url,
@@ -51,9 +62,13 @@ function fbFeed() {
     redirect_uri: redirectUri,
     link: url
   });
-  return window.open('https://www.facebook.com/dialog/feed?' + params, '_blank', WIN_PARAMS);
+  return "https://www.facebook.com/dialog/feed?".concat(params);
 }
-function fbShare() {
+function fbFeed() {
+  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  return window.open(getFbFeedUrl(options), '_blank', WIN_PARAMS);
+}
+function getFbShareUrl() {
   var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   var fbAppId = options.fbAppId,
     url = options.url,
@@ -69,9 +84,13 @@ function fbShare() {
     href: url,
     hashtag: hashtag
   });
-  return window.open('https://www.facebook.com/dialog/share?' + params, '_blank', WIN_PARAMS);
+  return "https://www.facebook.com/dialog/share?".concat(params);
 }
-function fbButton() {
+function fbShare() {
+  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  return window.open(getFbShareUrl(options), '_blank', WIN_PARAMS);
+}
+function getFbButtonUrl() {
   var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   var url = options.url;
   if (!url) {
@@ -85,7 +104,11 @@ function fbButton() {
     ref: 'plugin',
     src: 'share_button'
   });
-  return window.open('https://www.facebook.com/sharer/sharer.php?' + params, '_blank', WIN_PARAMS);
+  return "https://www.facebook.com/sharer/sharer.php?".concat(params);
+}
+function fbButton() {
+  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  return window.open(getFbButtonUrl(options), '_blank', WIN_PARAMS);
 }
 function gp() {
   var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -93,7 +116,7 @@ function gp() {
   var params = encodeParams({
     url: url
   });
-  return window.open('https://plus.google.com/share?' + params, '_blank', WIN_PARAMS);
+  return window.open("https://plus.google.com/share?".concat(params), '_blank', WIN_PARAMS);
 }
 function mail() {
   var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -107,29 +130,42 @@ function mail() {
     description: description,
     imageurl: image
   });
-  return window.open('http://connect.mail.ru/share?' + params, '_blank', WIN_PARAMS);
+  return window.open("http://connect.mail.ru/share?".concat(params), '_blank', WIN_PARAMS);
+}
+function getEmailUrl() {
+  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var to = options.to,
+    url = options.url,
+    title = options.title,
+    description = options.description,
+    subject = options.subject;
+  var params = encodeParams({
+    subject: subject,
+    body: "".concat(title || '', "\r\n").concat(description || '', "\r\n").concat(url || '')
+  });
+  return "mailto:".concat(to || '', "?").concat(params);
 }
 function email() {
   var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  return window.location.assign(getEmailUrl(options));
+}
+function getOkUrl() {
+  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   var url = options.url,
     title = options.title,
-    description = options.description;
-  var body = (title || '') + '\r\n' + (description || '') + '\r\n' + (url || '');
-  var uri = 'mailto:?subject=&body=' + encodeURIComponent(body);
-  return window.location.assign(uri);
+    image = options.image;
+  var params = encodeParams({
+    url: url,
+    title: title,
+    imageUrl: image
+  });
+  return "https://connect.ok.ru/offer?".concat(params);
 }
 function ok() {
   var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  var url = options.url,
-    title = options.title;
-  var params = encodeParams({
-    'st.cmd': 'addShare',
-    'st._surl': url,
-    title: title
-  });
-  return window.open('https://ok.ru/dk?' + params, '_blank', WIN_PARAMS);
+  return window.open(getOkUrl(options), '_blank', WIN_PARAMS);
 }
-function telegram() {
+function getTelegramUrl() {
   var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   var url = options.url,
     title = options.title;
@@ -137,25 +173,68 @@ function telegram() {
     url: url,
     text: title
   });
-  return window.open('https://t.me/share/url?' + params, '_blank', WIN_PARAMS);
+  return "https://t.me/share/url?".concat(params);
+}
+function telegram() {
+  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  return window.open(getTelegramUrl(options), '_blank', WIN_PARAMS);
+}
+function getTwUrl() {
+  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var title = options.title,
+    url = options.url,
+    _options$hashtags = options.hashtags,
+    hashtags = _options$hashtags === void 0 ? [] : _options$hashtags;
+  var params = encodeParams({
+    text: title,
+    url: url,
+    hashtags: hashtags.join(',')
+  });
+  return "https://twitter.com/intent/tweet?".concat(params);
 }
 function tw() {
   var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  var title = options.title,
-    url = options.url;
-  var params = encodeParams({
-    text: title,
-    url: url
-  });
-  return window.open('https://twitter.com/intent/tweet?' + params, '_blank', WIN_PARAMS);
+  return window.open(getTwUrl(options), '_blank', WIN_PARAMS);
 }
 function reddit() {
   var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  var url = options.url;
+  var url = options.url,
+    title = options.title;
   var params = encodeParams({
-    url: url
+    url: url,
+    title: title
   });
-  return window.open('https://www.reddit.com/submit?' + params, '_blank', WIN_PARAMS);
+  return window.open("https://www.reddit.com/submit?".concat(params), '_blank', WIN_PARAMS);
+}
+function pinterest() {
+  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var description = options.description,
+    url = options.url,
+    media = options.media;
+  var params = encodeParams({
+    url: url,
+    description: description,
+    media: media
+  });
+  return window.open("https://pinterest.com/pin/create/button/?".concat(params), '_blank', WIN_PARAMS);
+}
+function tumblr() {
+  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var url = options.url,
+    title = options.title,
+    caption = options.caption,
+    _options$tags = options.tags,
+    tags = _options$tags === void 0 ? [] : _options$tags,
+    _options$posttype = options.posttype,
+    posttype = _options$posttype === void 0 ? 'link' : _options$posttype;
+  var params = encodeParams({
+    canonicalUrl: url,
+    title: title,
+    caption: caption,
+    tags: tags.join(','),
+    posttype: posttype
+  });
+  return window.open("https://www.tumblr.com/widgets/share/tool?".concat(params), '_blank', WIN_PARAMS);
 }
 function isMobileSafari() {
   return !!window.navigator.userAgent.match(/Version\/[\d.]+.*Safari/);
@@ -163,7 +242,7 @@ function isMobileSafari() {
 function mobileShare(link) {
   return isMobileSafari() ? window.open(link) : window.location.assign(link);
 }
-function viber() {
+function getViberUrl() {
   var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   var url = options.url,
     title = options.title;
@@ -175,10 +254,14 @@ function viber() {
       return item;
     }).join(' ')
   });
-  return mobileShare('viber://forward?' + params);
+  return "viber://forward?".concat(params);
+}
+function viber() {
+  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  return mobileShare(getViberUrl(options));
 }
 var VK_MAX_LENGTH = 80;
-function getUrl() {
+function getVkUrl() {
   var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   var url = options.url,
     image = options.image,
@@ -186,12 +269,12 @@ function getUrl() {
   var description = options.description,
     title = options.title;
   if (description && description.length > VK_MAX_LENGTH) {
-    description = description.substr(0, VK_MAX_LENGTH) + '...';
+    description = "".concat(description.substr(0, VK_MAX_LENGTH), "...");
   }
   if (title && title.length > VK_MAX_LENGTH) {
-    title = title.substr(0, VK_MAX_LENGTH) + '...';
+    title = "".concat(title.substr(0, VK_MAX_LENGTH), "...");
   }
-  var params = void 0;
+  var params;
   if (isVkParse) {
     params = encodeParams({
       url: url
@@ -205,13 +288,13 @@ function getUrl() {
       noparse: true
     });
   }
-  return 'https://vk.com/share.php?' + params;
+  return "https://vk.com/share.php?".concat(params);
 }
-function share() {
+function vk() {
   var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  return window.open(getUrl(options), '_blank', WIN_PARAMS);
+  return window.open(getVkUrl(options), '_blank', WIN_PARAMS);
 }
-function whatsapp() {
+function getWhatsappUrl() {
   var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   var phone = options.phone,
     title = options.title,
@@ -222,7 +305,11 @@ function whatsapp() {
     }).join(' '),
     phone: phone
   });
-  return window.open('https://api.whatsapp.com/send?' + params, '_blank', WIN_PARAMS);
+  return "https://api.whatsapp.com/send?".concat(params);
+}
+function whatsapp() {
+  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  return window.open(getWhatsappUrl(options), '_blank', WIN_PARAMS);
 }
 function linkedin() {
   var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -234,7 +321,7 @@ function linkedin() {
     summary: description,
     url: url
   });
-  return window.open('https://www.linkedin.com/shareArticle?mini=true&' + params, '_blank', WIN_PARAMS);
+  return window.open("https://www.linkedin.com/shareArticle?mini=true&".concat(params), '_blank', WIN_PARAMS);
 }
 function messenger() {
   var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -247,7 +334,7 @@ function messenger() {
     app_id: fbAppId,
     link: url
   });
-  return window.location.assign('fb-messenger://share?' + params);
+  return window.location.assign("fb-messenger://share?".concat(params));
 }
 function line() {
   var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -256,11 +343,11 @@ function line() {
   if (!url) {
     throw new Error('url is not defined');
   }
-  var params = encodeURIComponent('' + url);
+  var params = encodeURIComponent("".concat(url));
   if (title) {
-    params = '' + encodeURIComponent(title + ' ') + params;
+    params = "".concat(encodeURIComponent("".concat(title, " "))).concat(params);
   }
-  return window.open('https://line.me/R/msg/text/?' + params, '_blank', WIN_PARAMS);
+  return window.open("https://line.me/R/msg/text/?".concat(params), '_blank', WIN_PARAMS);
 }
 
 
