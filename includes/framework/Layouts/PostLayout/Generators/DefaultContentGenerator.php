@@ -40,7 +40,7 @@ class DefaultContentGenerator implements ContentGeneratorInterface
         $this->layout->setOptions($options);
         $this->layout->setQuery($query);
 
-        // Sử dụng logic render mặc định
+        // Call renderDefault() directly - it's public
         return $this->layout->renderDefault();
     }
 

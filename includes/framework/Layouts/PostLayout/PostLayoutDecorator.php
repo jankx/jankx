@@ -3,7 +3,6 @@
 namespace Jankx\Layouts\PostLayout;
 
 use Jankx\Layouts\PostLayout\Contracts\PostLayoutInterface;
-use Jankx\Facades\Jankx;
 use Jankx\Facades\Log;
 use WP_Query;
 
@@ -41,6 +40,22 @@ class PostLayoutDecorator
      */
     public function withAttributes(array $attributes): self
     {
+        // Auto-detect and apply generator based on post type via filter
+        $post_type = $attributes['postType'] ?? 'post';
+        
+        // Allow external packages to hook in and provide generators
+        // WooCommerce plugin will hook into this filter
+        $generator = apply_filters('jankx/post-layout/generator', null, $post_type, $attributes);
+        
+        // Debug: Check if generator was provided
+        if (defined('WP_DEBUG') && WP_DEBUG && $generator !== null) {
+            error_log('PostLayoutDecorator: post_type=' . $post_type . ', generator=' . get_class($generator));
+        }
+        
+        if ($generator && is_a($generator, 'Jankx\Layouts\PostLayout\Contracts\ContentGeneratorInterface')) {
+            $this->layout->setContentGenerator($generator);
+        }
+
         // Map block attributes to layout options
         $options = [
             'columns' => $attributes['columns'] ?? 3,
@@ -52,6 +67,9 @@ class PostLayoutDecorator
             'postsPerPage' => $attributes['postsPerPage'] ?? 10,
             'excerptLength' => $attributes['excerptLength'] ?? 55,
         ];
+
+        // Allow external packages to add their specific options
+        $options = apply_filters('jankx/post-layout/options', $options, $post_type, $attributes);
 
         $this->layout->setOptions($options);
 
@@ -149,8 +167,8 @@ class PostLayoutDecorator
             unset($args['order']);
 
             // Debug log: Meta value ordering
-            if (defined('JANKX_LOG_ALL') && \JANKX_LOG_ALL) {
-                Jankx::log()->debug('PostLayoutDecorator::buildQuery - Meta value ordering', [
+            if (defined('JANKX_LOG_ALL') && JANKX_LOG_ALL) {
+                Log::debug('PostLayoutDecorator::buildQuery - Meta value ordering', [
                     'meta_key' => $args['meta_key'],
                     'meta_type' => $args['meta_type'] ?? 'not set',
                     'orderby' => $args['orderby'],
@@ -281,7 +299,7 @@ class PostLayoutDecorator
 
             // Debug log: Language filter applied
             if (defined('JANKX_LOG_ALL') && JANKX_LOG_ALL) {
-                Jankx::log()->debug('PostLayoutDecorator::buildQuery - Language filter applied', [
+                Log::debug('PostLayoutDecorator::buildQuery - Language filter applied', [
                     'language' => $attributes['_current_language'],
                     'lang_args' => array_diff_key($args, ['post_type' => '', 'posts_per_page' => '', 'orderby' => '', 'order' => '']),
                 ]);
@@ -299,8 +317,8 @@ class PostLayoutDecorator
         }
 
         // Debug log: Final query args before WP_Query
-        if (defined('JANKX_LOG_ALL') && \JANKX_LOG_ALL) {
-            Jankx::log()->debug('PostLayoutDecorator::buildQuery - Final query args', [
+        if (defined('JANKX_LOG_ALL') && JANKX_LOG_ALL) {
+            Log::debug('PostLayoutDecorator::buildQuery - Final query args', [
                 'orderby' => $args['orderby'],
                 'order' => $args['order'] ?? 'using array orderby',
                 'post_type' => $args['post_type'],

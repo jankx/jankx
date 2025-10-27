@@ -79,4 +79,26 @@ interface PostLayoutInterface
      * @return array
      */
     public function getReadOnlyOptions(): array;
+
+    /**
+     * Set content generator
+     *
+     * @param \Jankx\Layouts\PostLayout\Contracts\ContentGeneratorInterface $generator
+     * @return self
+     */
+    public function setContentGenerator($generator): self;
+
+    /**
+     * Get content generator
+     *
+     * @return \Jankx\Layouts\PostLayout\Contracts\ContentGeneratorInterface
+     */
+    public function getContentGenerator();
+
+    /**
+     * Check if using custom content generator
+     *
+     * @return bool
+     */
+    public function hasCustomGenerator(): bool;
 }

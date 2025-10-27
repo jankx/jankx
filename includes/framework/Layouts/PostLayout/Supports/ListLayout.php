@@ -19,7 +19,7 @@ class ListLayout extends PostLayout
     /**
      * {@inheritDoc}
      */
-    public function render(): string
+    public function renderDefault(): string
     {
         if (!$this->query || !$this->query->have_posts()) {
             return '';
@@ -43,7 +43,7 @@ class ListLayout extends PostLayout
     /**
      * {@inheritDoc}
      */
-    public function renderPreview(): array
+    public function renderDefaultPreview(): array
     {
         return [
             'name' => $this->name,

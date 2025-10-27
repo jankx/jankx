@@ -134,9 +134,9 @@ abstract class PostLayout implements PostLayoutInterface
      * Set content generator
      *
      * @param ContentGeneratorInterface $generator
-     * @return self
+     * @return PostLayoutInterface
      */
-    public function setContentGenerator(ContentGeneratorInterface $generator): self
+    public function setContentGenerator($generator): PostLayoutInterface
     {
         $this->contentGenerator = $generator;
         return $this;
@@ -147,7 +147,7 @@ abstract class PostLayout implements PostLayoutInterface
      *
      * @return ContentGeneratorInterface
      */
-    public function getContentGenerator(): ContentGeneratorInterface
+    public function getContentGenerator()
     {
         return $this->contentGenerator;
     }
@@ -250,8 +250,13 @@ abstract class PostLayout implements PostLayoutInterface
             return '';
         }
 
-        // Sử dụng content generator để render
-        return $this->contentGenerator->generate($this->query, $this->options);
+        // Only use generator if it's custom generator
+        if ($this->hasCustomGenerator()) {
+            return $this->contentGenerator->generate($this->query, $this->options);
+        }
+
+        // Otherwise use default render
+        return $this->renderDefault();
     }
 
     /**
@@ -259,14 +264,24 @@ abstract class PostLayout implements PostLayoutInterface
      *
      * @return string
      */
-    abstract protected function renderDefault(): string;
+    public function renderDefault(): string
+    {
+        // This will be overridden in child classes
+        return '';
+    }
 
     /**
      * {@inheritDoc}
      */
     public function renderPreview(): array
     {
-        return $this->contentGenerator->generatePreview($this->options);
+        // Only use generator if it's custom generator
+        if ($this->hasCustomGenerator()) {
+            return $this->contentGenerator->generatePreview($this->options);
+        }
+
+        // Otherwise use default preview
+        return $this->renderDefaultPreview();
     }
 
     /**
@@ -274,7 +289,11 @@ abstract class PostLayout implements PostLayoutInterface
      *
      * @return array
      */
-    abstract protected function renderDefaultPreview(): array;
+    public function renderDefaultPreview(): array
+    {
+        // This will be overridden in child classes
+        return [];
+    }
 
     /**
      * {@inheritDoc}

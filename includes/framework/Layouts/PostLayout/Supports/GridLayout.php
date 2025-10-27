@@ -19,7 +19,7 @@ class GridLayout extends PostLayout
     /**
      * {@inheritDoc}
      */
-    protected function renderDefault(): string
+    public function renderDefault(): string
     {
         if (!$this->query || !$this->query->have_posts()) {
             return '';
@@ -46,7 +46,7 @@ class GridLayout extends PostLayout
     /**
      * {@inheritDoc}
      */
-    protected function renderDefaultPreview(): array
+    public function renderDefaultPreview(): array
     {
         return [
             'name' => $this->name,
