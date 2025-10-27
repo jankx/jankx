@@ -22,7 +22,7 @@ return [
         App\Providers\GutenbergServiceProvider::class,
         App\Providers\LanguageSwitcherServiceProvider::class,
         App\Providers\NavigationBlockServiceProvider::class,
-        App\Providers\SkeletonServiceProvider::class,
+        // App\Providers\SkeletonServiceProvider::class,
 
         // App\Providers\WooCommerce\BuyNowServiceProvider::class,
         // App\Providers\WooCommerce\EmptyPriceServiceProvider::class,
