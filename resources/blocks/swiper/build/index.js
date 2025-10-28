@@ -8,7 +8,7 @@
   \**********************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/swiper","title":"Swiper","category":"jankx","description":"Modern touch slider with hardware accelerated transitions","keywords":["slider","swiper","carousel","gallery","slideshow"],"textdomain":"jankx","attributes":{"slidesPerView":{"type":"number","default":1},"spaceBetween":{"type":"number","default":30},"loop":{"type":"boolean","default":true},"autoplay":{"type":"boolean","default":false},"autoplayDelay":{"type":"number","default":3000},"speed":{"type":"number","default":300},"navigation":{"type":"boolean","default":true},"pagination":{"type":"boolean","default":true},"effect":{"type":"string","enum":["slide","fade","cube","coverflow","flip","cards"],"default":"slide"},"height":{"type":"number","default":500},"minHeight":{"type":"number","default":300},"className":{"type":"string"},"anchor":{"type":"string"}},"supports":{"html":false,"anchor":true,"align":["wide","full"],"spacing":{"margin":true,"padding":true},"color":{"background":true,"text":true},"border":{"color":true,"radius":true,"style":true,"width":true,"__experimentalDefaultControls":{"radius":true}}},"providesContext":{"jankx/swiperId":"anchor"},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","viewScript":"file:./build/view.js","style":"file:./build/style.css"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/swiper","title":"Swiper","category":"jankx","description":"Modern touch slider with hardware accelerated transitions","keywords":["slider","swiper","carousel","gallery","slideshow"],"textdomain":"jankx","attributes":{"slidesPerView":{"type":"number","default":1},"spaceBetween":{"type":"number","default":30},"loop":{"type":"boolean","default":true},"autoplay":{"type":"boolean","default":false},"autoplayDelay":{"type":"number","default":3000},"speed":{"type":"number","default":300},"navigation":{"type":"boolean","default":true},"pagination":{"type":"boolean","default":true},"effect":{"type":"string","enum":["slide","fade","cube","coverflow","flip","cards"],"default":"slide"},"height":{"type":"number","default":500},"minHeight":{"type":"number","default":300},"contentMode":{"type":"string","enum":["slides","gallery"],"default":"slides"},"galleryImages":{"type":"array","default":[]},"className":{"type":"string"},"anchor":{"type":"string"}},"supports":{"html":false,"anchor":true,"align":["wide","full"],"spacing":{"margin":true,"padding":true},"color":{"background":true,"text":true},"border":{"color":true,"radius":true,"style":true,"width":true,"__experimentalDefaultControls":{"radius":true}}},"providesContext":{"jankx/swiperId":"anchor"},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","viewScript":"file:./build/view.js","style":"file:./build/style.css"}');
 
 /***/ }),
 
@@ -30,8 +30,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
+/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__);
+
 
 
 
@@ -53,7 +56,9 @@ function Edit({
     pagination,
     effect,
     height,
-    minHeight
+    minHeight,
+    contentMode,
+    galleryImages
   } = attributes;
   const swiperRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useRef)(null);
   const containerRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useRef)(null);
@@ -68,11 +73,35 @@ function Edit({
   const innerBlocksProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useInnerBlocksProps)({
     className: 'swiper-wrapper'
   }, {
-    allowedBlocks: ['jankx/swiper-slide'],
-    template: [['jankx/swiper-slide'], ['jankx/swiper-slide'], ['jankx/swiper-slide']],
+    allowedBlocks: contentMode === 'slides' ? ['jankx/swiper-slide'] : ['jankx/swiper-banner'],
+    template: contentMode === 'slides' ? [['jankx/swiper-slide'], ['jankx/swiper-slide'], ['jankx/swiper-slide']] : [],
     templateLock: false,
     orientation: 'horizontal'
   });
+
+  // Handle gallery image selection
+  const onSelectGalleryImages = images => {
+    const galleryData = images.map(img => ({
+      id: img.id,
+      url: img.url,
+      alt: img.alt || '',
+      caption: img.caption || ''
+    }));
+    setAttributes({
+      galleryImages: galleryData
+    });
+
+    // Create swiper-banner blocks for each image
+    const bannerBlocks = images.map(img => (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.createBlock)('jankx/swiper-banner', {
+      imageId: img.id,
+      imageUrl: img.url,
+      imageAlt: img.alt || '',
+      imageCaption: img.caption || ''
+    }));
+
+    // Replace inner blocks with banner blocks
+    wp.data.dispatch('core/block-editor').replaceInnerBlocks(clientId, bannerBlocks);
+  };
 
   // Initialize Swiper in editor
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useEffect)(() => {
@@ -214,13 +243,69 @@ function Edit({
       }
     };
   }, []);
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
     ...blockProps,
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TabPanel, {
+        className: "swiper-tabs",
+        activeClass: "is-active",
+        onSelect: tabName => {
+          if (tabName === 'gallery') {
+            setAttributes({
+              contentMode: 'gallery'
+            });
+          } else {
+            setAttributes({
+              contentMode: 'slides'
+            });
+          }
+        },
+        tabs: [{
+          name: 'slides',
+          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Slides', 'jankx'),
+          className: 'tab-slides'
+        }, {
+          name: 'gallery',
+          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Gallery', 'jankx'),
+          className: 'tab-gallery'
+        }],
+        children: tab => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
+          children: [tab.name === 'slides' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+            title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Add Slides', 'jankx'),
+            initialOpen: true,
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("p", {
+              children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Use the + button to add individual slides', 'jankx')
+            })
+          }), tab.name === 'gallery' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+            title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select Images', 'jankx'),
+            initialOpen: true,
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.MediaUploadCheck, {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.MediaUpload, {
+                onSelect: onSelectGalleryImages,
+                allowedTypes: ['image'],
+                multiple: true,
+                value: galleryImages.map(img => img.id),
+                render: ({
+                  open
+                }) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+                  variant: "primary",
+                  onClick: open,
+                  style: {
+                    width: '100%',
+                    marginBottom: '10px'
+                  },
+                  children: galleryImages.length > 0 ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Change Images', 'jankx') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select Images', 'jankx')
+                })
+              })
+            }), galleryImages.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("p", {
+              children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Selected', 'jankx'), ": ", galleryImages.length, " ", (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('images', 'jankx')]
+            })]
+          })]
+        })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Slider Settings', 'jankx'),
         initialOpen: true,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Slides Per View', 'jankx'),
           value: slidesPerView,
           onChange: val => setAttributes({
@@ -229,7 +314,7 @@ function Edit({
           min: 1,
           max: 4,
           step: 1
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Space Between (px)', 'jankx'),
           value: spaceBetween,
           onChange: val => setAttributes({
@@ -238,7 +323,7 @@ function Edit({
           min: 0,
           max: 100,
           step: 10
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Speed (ms)', 'jankx'),
           value: speed,
           onChange: val => setAttributes({
@@ -247,7 +332,7 @@ function Edit({
           min: 100,
           max: 2000,
           step: 100
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Height (px)', 'jankx'),
           value: height,
           onChange: val => setAttributes({
@@ -257,7 +342,7 @@ function Edit({
           max: 1000,
           step: 50,
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Height for desktop (max-height on mobile)', 'jankx')
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Min Height (px)', 'jankx'),
           value: minHeight,
           onChange: val => setAttributes({
@@ -267,7 +352,7 @@ function Edit({
           max: 600,
           step: 50,
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Minimum height on mobile devices', 'jankx')
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Effect', 'jankx'),
           value: effect,
           options: [{
@@ -292,31 +377,31 @@ function Edit({
           onChange: val => setAttributes({
             effect: val
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Loop', 'jankx'),
           checked: loop,
           onChange: val => setAttributes({
             loop: val
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Navigation', 'jankx'),
           checked: navigation,
           onChange: val => setAttributes({
             navigation: val
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Pagination', 'jankx'),
           checked: pagination,
           onChange: val => setAttributes({
             pagination: val
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Autoplay', 'jankx'),
           checked: autoplay,
           onChange: val => setAttributes({
             autoplay: val
           })
-        }), autoplay && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
+        }), autoplay && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Autoplay Delay (ms)', 'jankx'),
           value: autoplayDelay,
           onChange: val => setAttributes({
@@ -326,18 +411,18 @@ function Edit({
           max: 10000,
           step: 500
         })]
-      })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
       className: "swiper",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
         ...innerBlocksProps
-      }), navigation && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.Fragment, {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+      }), navigation && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
           className: "swiper-button-prev"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
           className: "swiper-button-next"
         })]
-      }), pagination && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+      }), pagination && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
         className: "swiper-pagination"
       })]
     })]

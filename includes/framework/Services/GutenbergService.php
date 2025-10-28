@@ -22,6 +22,7 @@ use Jankx\Gutenberg\Blocks\SmartTabsBlock;
 use Jankx\Gutenberg\Blocks\SmartTabBlock;
 use Jankx\Gutenberg\Blocks\SwiperBlock;
 use Jankx\Gutenberg\Blocks\SwiperSlideBlock;
+use Jankx\Gutenberg\Blocks\SwiperBannerBlock;
 use Jankx\Gutenberg\Blocks\AuthorBoxBlock;
 use Jankx\Gutenberg\Blocks\SocialSharingBlock;
 use Jankx\Gutenberg\Blocks\SocialSharingIconBlock;
@@ -136,6 +137,7 @@ class GutenbergService
         $this->repository->registerBlock(SmartTabBlock::class);
         $this->repository->registerBlock(SwiperBlock::class);
         $this->repository->registerBlock(SwiperSlideBlock::class);
+        $this->repository->registerBlock(SwiperBannerBlock::class, get_template_directory() . '/resources/blocks/swiper-banner');
         $this->repository->registerBlock(AuthorBoxBlock::class);
         $this->repository->registerBlock(SocialSharingBlock::class);
         $this->repository->registerBlock(SocialSharingIconBlock::class);

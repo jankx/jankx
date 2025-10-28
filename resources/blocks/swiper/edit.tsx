@@ -1,7 +1,8 @@
 import { __ } from '@wordpress/i18n';
-import { useBlockProps, InspectorControls, useInnerBlocksProps } from '@wordpress/block-editor';
-import { PanelBody, RangeControl, ToggleControl, SelectControl } from '@wordpress/components';
+import { useBlockProps, InspectorControls, useInnerBlocksProps, MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
+import { PanelBody, RangeControl, ToggleControl, SelectControl, Button, TabPanel } from '@wordpress/components';
 import { useEffect, useRef } from '@wordpress/element';
+import { createBlock } from '@wordpress/blocks';
 import type { SwiperProps } from './types';
 
 export default function Edit({ attributes, setAttributes, clientId }: SwiperProps): JSX.Element {
@@ -16,7 +17,9 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
     pagination,
     effect,
     height,
-    minHeight
+    minHeight,
+    contentMode,
+    galleryImages
   } = attributes;
 
   const swiperRef = useRef<any>(null);
@@ -34,16 +37,41 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
   const innerBlocksProps = useInnerBlocksProps(
     { className: 'swiper-wrapper' },
     {
-      allowedBlocks: ['jankx/swiper-slide'],
-      template: [
+      allowedBlocks: contentMode === 'slides' ? ['jankx/swiper-slide'] : ['jankx/swiper-banner'],
+      template: contentMode === 'slides' ? [
         ['jankx/swiper-slide'],
         ['jankx/swiper-slide'],
         ['jankx/swiper-slide']
-      ],
+      ] : [],
       templateLock: false,
       orientation: 'horizontal'
     }
   );
+
+  // Handle gallery image selection
+  const onSelectGalleryImages = (images: any[]) => {
+    const galleryData = images.map(img => ({
+      id: img.id,
+      url: img.url,
+      alt: img.alt || '',
+      caption: img.caption || ''
+    }));
+    
+    setAttributes({ galleryImages: galleryData });
+    
+    // Create swiper-banner blocks for each image
+    const bannerBlocks = images.map(img => 
+      createBlock('jankx/swiper-banner', {
+        imageId: img.id,
+        imageUrl: img.url,
+        imageAlt: img.alt || '',
+        imageCaption: img.caption || ''
+      })
+    );
+    
+    // Replace inner blocks with banner blocks
+    wp.data.dispatch('core/block-editor').replaceInnerBlocks(clientId, bannerBlocks);
+  };
 
   // Initialize Swiper in editor
   useEffect(() => {
@@ -184,6 +212,71 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
   return (
     <div {...blockProps}>
       <InspectorControls>
+        <TabPanel
+          className="swiper-tabs"
+          activeClass="is-active"
+          onSelect={(tabName: string) => {
+            if (tabName === 'gallery') {
+              setAttributes({ contentMode: 'gallery' });
+            } else {
+              setAttributes({ contentMode: 'slides' });
+            }
+          }}
+          tabs={[
+            {
+              name: 'slides',
+              title: __('Slides', 'jankx'),
+              className: 'tab-slides'
+            },
+            {
+              name: 'gallery',
+              title: __('Gallery', 'jankx'),
+              className: 'tab-gallery'
+            }
+          ]}
+        >
+          {(tab) => (
+            <>
+              {tab.name === 'slides' && (
+                <PanelBody title={__('Add Slides', 'jankx')} initialOpen={true}>
+                  <p>{__('Use the + button to add individual slides', 'jankx')}</p>
+                </PanelBody>
+              )}
+              
+              {tab.name === 'gallery' && (
+                <PanelBody title={__('Select Images', 'jankx')} initialOpen={true}>
+                  <MediaUploadCheck>
+                    <MediaUpload
+                      onSelect={onSelectGalleryImages}
+                      allowedTypes={['image']}
+                      multiple={true}
+                      value={galleryImages.map(img => img.id)}
+                      render={({ open }) => (
+                        <Button
+                          variant="primary"
+                          onClick={open}
+                          style={{ width: '100%', marginBottom: '10px' }}
+                        >
+                          {galleryImages.length > 0 
+                            ? __('Change Images', 'jankx') 
+                            : __('Select Images', 'jankx')
+                          }
+                        </Button>
+                      )}
+                    />
+                  </MediaUploadCheck>
+                  
+                  {galleryImages.length > 0 && (
+                    <p>
+                      {__('Selected', 'jankx')}: {galleryImages.length} {__('images', 'jankx')}
+                    </p>
+                  )}
+                </PanelBody>
+              )}
+            </>
+          )}
+        </TabPanel>
+
         <PanelBody title={__('Slider Settings', 'jankx')} initialOpen={true}>
           <RangeControl
             label={__('Slides Per View', 'jankx')}

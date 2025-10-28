@@ -103,6 +103,10 @@ module.exports = {
     'blocks/swiper-slide/build/style': './blocks/swiper-slide/style.scss',
     'blocks/swiper-slide/build/editor': './blocks/swiper-slide/editor.scss',
 
+    'blocks/swiper-banner/build/index': './blocks/swiper-banner/index.tsx',
+    'blocks/swiper-banner/build/style': './blocks/swiper-banner/style.scss',
+    'blocks/swiper-banner/build/editor': './blocks/swiper-banner/editor.scss',
+
     'blocks/slideshow/build/index': './blocks/slideshow/index.tsx',
     'blocks/slideshow/build/save': './blocks/slideshow/save.tsx',
     'blocks/slideshow/build/style': './blocks/slideshow/style.scss',

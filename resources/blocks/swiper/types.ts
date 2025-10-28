@@ -10,6 +10,13 @@ export interface SwiperAttributes {
   effect: 'slide' | 'fade' | 'cube' | 'coverflow' | 'flip' | 'cards';
   height: number;
   minHeight: number;
+  contentMode: 'slides' | 'gallery';
+  galleryImages: Array<{
+    id: number;
+    url: string;
+    alt: string;
+    caption?: string;
+  }>;
   className?: string;
   anchor?: string;
 }
