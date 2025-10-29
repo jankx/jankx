@@ -25,6 +25,21 @@ document.addEventListener('DOMContentLoaded', () => {
       const navigation = container.dataset.navigation === 'true';
       const pagination = container.dataset.pagination === 'true';
       const effect = container.dataset.effect || 'slide';
+      
+      // Get banner style settings from data attributes
+      const bannerStyle = container.dataset.bannerStyle || 'default';
+      const bannerTextColor = container.dataset.bannerTextColor || '#ffffff';
+      const bannerBackgroundColor = container.dataset.bannerBackgroundColor || 'rgba(0,0,0,0.5)';
+      const bannerPadding = parseInt(container.dataset.bannerPadding) || 20;
+      const bannerBorderRadius = parseInt(container.dataset.bannerBorderRadius) || 0;
+      
+      // Apply banner style class and CSS variables to the block
+      block.classList.add(`banner-style-${bannerStyle}`);
+      block.style.setProperty('--banner-style', bannerStyle);
+      block.style.setProperty('--banner-text-color', bannerTextColor);
+      block.style.setProperty('--banner-background-color', bannerBackgroundColor);
+      block.style.setProperty('--banner-padding', `${bannerPadding}px`);
+      block.style.setProperty('--banner-border-radius', `${bannerBorderRadius}px`);
 
       // Initialize Swiper
       new Swiper(container, {

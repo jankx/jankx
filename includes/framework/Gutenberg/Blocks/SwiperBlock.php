@@ -36,6 +36,13 @@ class SwiperBlock extends Block
         $min_height = $attributes['minHeight'] ?? 300;
         $class_name = $attributes['className'] ?? '';
         $anchor = $attributes['anchor'] ?? '';
+        
+        // Banner style attributes
+        $banner_style = $attributes['bannerStyle'] ?? 'default';
+        $banner_text_color = $attributes['bannerTextColor'] ?? '#ffffff';
+        $banner_background_color = $attributes['bannerBackgroundColor'] ?? 'rgba(0,0,0,0.5)';
+        $banner_padding = $attributes['bannerPadding'] ?? 20;
+        $banner_border_radius = $attributes['bannerBorderRadius'] ?? 0;
 
         // Build wrapper attributes using WordPress block wrapper
         $wrapper_attributes = [
@@ -55,7 +62,7 @@ class SwiperBlock extends Block
         $block_wrapper_attrs = get_block_wrapper_attributes($wrapper_attributes);
 
         $container_attrs = sprintf(
-            'data-slides-per-view="%s" data-space-between="%s" data-loop="%s" data-autoplay="%s" data-autoplay-delay="%s" data-speed="%s" data-navigation="%s" data-pagination="%s" data-effect="%s"',
+            'data-slides-per-view="%s" data-space-between="%s" data-loop="%s" data-autoplay="%s" data-autoplay-delay="%s" data-speed="%s" data-navigation="%s" data-pagination="%s" data-effect="%s" data-banner-style="%s" data-banner-text-color="%s" data-banner-background-color="%s" data-banner-padding="%s" data-banner-border-radius="%s"',
             esc_attr($slides_per_view),
             esc_attr($space_between),
             $loop ? 'true' : 'false',
@@ -64,7 +71,12 @@ class SwiperBlock extends Block
             esc_attr($speed),
             $navigation ? 'true' : 'false',
             $pagination ? 'true' : 'false',
-            esc_attr($effect)
+            esc_attr($effect),
+            esc_attr($banner_style),
+            esc_attr($banner_text_color),
+            esc_attr($banner_background_color),
+            esc_attr($banner_padding),
+            esc_attr($banner_border_radius)
         );
 
         ob_start();
