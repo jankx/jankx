@@ -100,11 +100,11 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
               disableOnInteraction: false
             } : false,
             navigation: navigation ? {
-              nextEl: '.swiper-button-next',
-              prevEl: '.swiper-button-prev'
+              nextEl: swiperEl.querySelector('.swiper-button-next'),
+              prevEl: swiperEl.querySelector('.swiper-button-prev')
             } : false,
             pagination: pagination ? {
-              el: '.swiper-pagination',
+              el: swiperEl.querySelector('.swiper-pagination'),
               clickable: true
             } : false
           });
@@ -146,11 +146,11 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
               disableOnInteraction: false
             } : false,
             navigation: navigation ? {
-              nextEl: '.swiper-button-next',
-              prevEl: '.swiper-button-prev'
+              nextEl: swiperEl.querySelector('.swiper-button-next'),
+              prevEl: swiperEl.querySelector('.swiper-button-prev')
             } : false,
             pagination: pagination ? {
-              el: '.swiper-pagination',
+              el: swiperEl.querySelector('.swiper-pagination'),
               clickable: true
             } : false,
             fadeEffect: { crossFade: true },
