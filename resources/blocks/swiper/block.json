@@ -47,11 +47,11 @@
     },
     "height": {
       "type": "number",
-      "default": 500
+      "default": 50
     },
     "minHeight": {
-      "type": "number",
-      "default": 300
+      "type": "number", 
+      "default": 50
     },
     "contentMode": {
       "type": "string",

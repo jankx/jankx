@@ -291,7 +291,7 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
             label={__('Height (px)', 'jankx')}
             value={height}
             onChange={(val: number) => setAttributes({ height: val })}
-            min={200}
+            min={50}
             max={1000}
             step={50}
             help={__('Height for desktop (max-height on mobile)', 'jankx')}
@@ -301,7 +301,7 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
             label={__('Min Height (px)', 'jankx')}
             value={minHeight}
             onChange={(val: number) => setAttributes({ minHeight: val })}
-            min={150}
+            min={50}
             max={600}
             step={50}
             help={__('Minimum height on mobile devices', 'jankx')}

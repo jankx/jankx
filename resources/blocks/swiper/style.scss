@@ -5,18 +5,18 @@
 .wp-block-jankx-swiper {
   position: relative;
 
-  .swiper {
-    width: 100%;
-    // PC: height cứng
-    height: var(--swiper-height, 500px);
+         .swiper {
+           width: 100%;
+           // PC: height cứng
+           height: var(--swiper-height, 50px);
 
-    // Tablet và mobile: max-height với auto adjustment
-    @media (max-width: 1024px) {
-      height: auto;
-      max-height: var(--swiper-height, 500px);
-      min-height: var(--swiper-min-height, 300px);
-    }
-  }
+           // Tablet và mobile: max-height với auto adjustment
+           @media (max-width: 1024px) {
+             height: auto;
+             max-height: var(--swiper-height, 50px);
+             min-height: var(--swiper-min-height, 50px);
+           }
+         }
 
   .swiper-wrapper {
     display: flex;

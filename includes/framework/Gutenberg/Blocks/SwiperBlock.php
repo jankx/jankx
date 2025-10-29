@@ -32,8 +32,8 @@ class SwiperBlock extends Block
         $navigation = $attributes['navigation'] ?? true;
         $pagination = $attributes['pagination'] ?? true;
         $effect = $attributes['effect'] ?? 'slide';
-        $height = $attributes['height'] ?? 500;
-        $min_height = $attributes['minHeight'] ?? 300;
+        $height = $attributes['height'] ?? 50;
+        $min_height = $attributes['minHeight'] ?? 50;
         $class_name = $attributes['className'] ?? '';
         $anchor = $attributes['anchor'] ?? '';
         
