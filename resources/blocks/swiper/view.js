@@ -2,6 +2,9 @@
  * Swiper Block Frontend JavaScript
  */
 
+import Swiper from 'swiper/bundle';
+import 'swiper/css/bundle';
+
 document.addEventListener('DOMContentLoaded', () => {
   const swiperBlocks = document.querySelectorAll('.wp-block-jankx-swiper');
 
@@ -10,26 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!container) return;
 
     const loadSwiper = async () => {
-      if (typeof window.Swiper === 'undefined') {
-        // Load CSS
-        if (!document.querySelector('link[href*="swiper-bundle"]')) {
-          const link = document.createElement('link');
-          link.rel = 'stylesheet';
-          link.href = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css';
-          document.head.appendChild(link);
-        }
-
-        // Load JS
-        if (!document.querySelector('script[src*="swiper-bundle"]')) {
-          await new Promise((resolve) => {
-            const script = document.createElement('script');
-            script.src = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js';
-            script.onload = resolve;
-            document.head.appendChild(script);
-          });
-        }
-      }
-
       await new Promise(resolve => setTimeout(resolve, 100));
 
       // Get settings from data attributes
@@ -44,17 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const effect = container.dataset.effect || 'slide';
 
       // Initialize Swiper
-      new window.Swiper(container, {
-        modules: [
-          window.Swiper.Navigation,
-          window.Swiper.Pagination,
-          window.Swiper.Autoplay,
-          window.Swiper.EffectFade,
-          window.Swiper.EffectCube,
-          window.Swiper.EffectCoverflow,
-          window.Swiper.EffectFlip,
-          window.Swiper.EffectCards
-        ].filter(Boolean),
+      new Swiper(container, {
         slidesPerView,
         spaceBetween,
         loop,

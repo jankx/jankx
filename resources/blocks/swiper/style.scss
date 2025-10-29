@@ -1,5 +1,6 @@
 // Swiper Block Styles
-// Swiper CSS loaded from CDN, these are minimal overrides
+// Import Swiper CSS from npm package
+@import 'swiper/css/bundle';
 
 .wp-block-jankx-swiper {
   position: relative;
@@ -39,29 +40,4 @@
     }
   }
 
-  // Pagination
-  .swiper-pagination {
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    z-index: 10;
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-
-    .swiper-pagination-bullet {
-      width: 10px;
-      height: 10px;
-      background: var(--wp--preset--color--contrast, #000);
-      opacity: 0.3;
-      border-radius: 50%;
-      cursor: pointer;
-      transition: all 0.3s ease;
-
-      &.swiper-pagination-bullet-active {
-        opacity: 1;
-        background: var(--wp--preset--color--primary, #000);
-      }
-    }
-  }
 }

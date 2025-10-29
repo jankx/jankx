@@ -3,6 +3,8 @@ import { useBlockProps, InspectorControls, useInnerBlocksProps, MediaUpload, Med
 import { PanelBody, RangeControl, ToggleControl, SelectControl, Button, TabPanel } from '@wordpress/components';
 import { useEffect, useRef } from '@wordpress/element';
 import { createBlock } from '@wordpress/blocks';
+import Swiper from 'swiper/bundle';
+import 'swiper/css/bundle';
 import type { SwiperProps } from './types';
 
 export default function Edit({ attributes, setAttributes, clientId }: SwiperProps): JSX.Element {
@@ -78,29 +80,9 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
     if (!containerRef.current) return;
 
     const loadSwiper = async () => {
-      if (typeof window.Swiper === 'undefined') {
-        // Load CSS
-        if (!document.querySelector('link[href*="swiper-bundle"]')) {
-          const link = document.createElement('link');
-          link.rel = 'stylesheet';
-          link.href = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css';
-          document.head.appendChild(link);
-        }
-
-        // Load JS
-        if (!document.querySelector('script[src*="swiper-bundle"]')) {
-          await new Promise((resolve) => {
-            const script = document.createElement('script');
-            script.src = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js';
-            script.onload = resolve;
-            document.head.appendChild(script);
-          });
-        }
-      }
-
       await new Promise(resolve => setTimeout(resolve, 200));
 
-      if (window.Swiper && containerRef.current) {
+      if (containerRef.current) {
         const swiperEl = containerRef.current.querySelector('.swiper');
         if (!swiperEl) return;
 
@@ -153,17 +135,7 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
           }
         } else {
           // Create new instance only if doesn't exist
-          swiperRef.current = new window.Swiper(swiperEl, {
-            modules: [
-              window.Swiper.Navigation,
-              window.Swiper.Pagination,
-              window.Swiper.Autoplay,
-              window.Swiper.EffectFade,
-              window.Swiper.EffectCube,
-              window.Swiper.EffectCoverflow,
-              window.Swiper.EffectFlip,
-              window.Swiper.EffectCards
-            ].filter(Boolean),
+          swiperRef.current = new Swiper(swiperEl, {
             slidesPerView,
             spaceBetween,
             loop,

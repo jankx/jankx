@@ -165,8 +165,7 @@ module.exports = {
     '@wordpress/element': ['wp', 'element'],
     '@wordpress/data': ['wp', 'data'],
     '@wordpress/core-data': ['wp', 'coreData'],
-    // Swiper core is external, modules will be bundled
-    'swiper': 'Swiper',
+    // Swiper will be bundled, not external
   },
   plugins: [
     new RemoveEmptyScriptsPlugin(),
@@ -210,10 +209,7 @@ module.exports = {
         if (request === 'react-dom') {
           return 'ReactDOM';
         }
-        if (request === 'swiper') {
-          return 'Swiper';
-        }
-        // Swiper modules will be bundled
+        // Swiper will be bundled, not external
       },
     }),
 
