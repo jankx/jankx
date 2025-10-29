@@ -62,6 +62,27 @@
       "type": "array",
       "default": []
     },
+    "bannerStyle": {
+      "type": "string",
+      "enum": ["default", "circles", "square", "banner"],
+      "default": "default"
+    },
+    "bannerTextColor": {
+      "type": "string",
+      "default": "#ffffff"
+    },
+    "bannerBackgroundColor": {
+      "type": "string",
+      "default": "rgba(0,0,0,0.5)"
+    },
+    "bannerPadding": {
+      "type": "number",
+      "default": 20
+    },
+    "bannerBorderRadius": {
+      "type": "number",
+      "default": 0
+    },
     "className": {
       "type": "string"
     },

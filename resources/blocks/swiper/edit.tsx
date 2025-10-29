@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { useBlockProps, InspectorControls, useInnerBlocksProps, MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
-import { PanelBody, RangeControl, ToggleControl, SelectControl, Button, TabPanel } from '@wordpress/components';
+import { PanelBody, RangeControl, ToggleControl, SelectControl, Button, TabPanel, ColorPicker } from '@wordpress/components';
 import { useEffect, useRef } from '@wordpress/element';
 import { createBlock } from '@wordpress/blocks';
 import Swiper from 'swiper/bundle';
@@ -21,7 +21,12 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
     height,
     minHeight,
     contentMode,
-    galleryImages
+    galleryImages,
+    bannerStyle,
+    bannerTextColor,
+    bannerBackgroundColor,
+    bannerPadding,
+    bannerBorderRadius
   } = attributes;
 
   const swiperRef = useRef<any>(null);
@@ -29,10 +34,15 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
 
   const blockProps = useBlockProps({
     ref: containerRef,
-    className: `swiper-block swiper-effect-${effect}`,
+    className: `swiper-block swiper-effect-${effect} banner-style-${bannerStyle}`,
     style: {
       '--swiper-height': `${height}px`,
-      '--swiper-min-height': `${minHeight}px`
+      '--swiper-min-height': `${minHeight}px`,
+      '--banner-style': bannerStyle,
+      '--banner-text-color': bannerTextColor,
+      '--banner-background-color': bannerBackgroundColor,
+      '--banner-padding': `${bannerPadding}px`,
+      '--banner-border-radius': `${bannerBorderRadius}px`
     } as React.CSSProperties
   });
 
@@ -345,6 +355,60 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
               step={500}
             />
           )}
+        </PanelBody>
+
+        <PanelBody title={__('Banner Style Settings', 'jankx')} initialOpen={false}>
+          <SelectControl
+            label={__('Banner Style', 'jankx')}
+            value={bannerStyle}
+            options={[
+              { label: __('Default', 'jankx'), value: 'default' },
+              { label: __('Circles', 'jankx'), value: 'circles' },
+              { label: __('Square', 'jankx'), value: 'square' },
+              { label: __('Banner', 'jankx'), value: 'banner' }
+            ]}
+            onChange={(val: string) => setAttributes({ bannerStyle: val })}
+          />
+
+          <div style={{ marginBottom: '16px' }}>
+            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+              {__('Text Color', 'jankx')}
+            </label>
+            <ColorPicker
+              color={bannerTextColor}
+              onChange={(color: string) => setAttributes({ bannerTextColor: color })}
+              disableAlpha={false}
+            />
+          </div>
+
+          <div style={{ marginBottom: '16px' }}>
+            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+              {__('Background Color', 'jankx')}
+            </label>
+            <ColorPicker
+              color={bannerBackgroundColor}
+              onChange={(color: string) => setAttributes({ bannerBackgroundColor: color })}
+              disableAlpha={false}
+            />
+          </div>
+
+          <RangeControl
+            label={__('Padding (px)', 'jankx')}
+            value={bannerPadding}
+            onChange={(val: number) => setAttributes({ bannerPadding: val })}
+            min={0}
+            max={50}
+            step={5}
+          />
+
+          <RangeControl
+            label={__('Border Radius (px)', 'jankx')}
+            value={bannerBorderRadius}
+            onChange={(val: number) => setAttributes({ bannerBorderRadius: val })}
+            min={0}
+            max={20}
+            step={1}
+          />
         </PanelBody>
       </InspectorControls>
 

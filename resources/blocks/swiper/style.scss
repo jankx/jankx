@@ -40,4 +40,70 @@
     }
   }
 
+  // Global Banner Styles - Applied to all banner items
+  .swiper-banner {
+    // Default banner content styling
+    .banner-content {
+      color: var(--banner-text-color, #ffffff);
+      background-color: var(--banner-background-color, rgba(0,0,0,0.5));
+      padding: var(--banner-padding, 20px);
+      border-radius: var(--banner-border-radius, 0px);
+    }
+  }
+
+  // Banner Style Variations - Apply to all banner items
+  &.banner-style-circles {
+    .swiper-banner {
+      border-radius: 50% !important;
+      aspect-ratio: 1 !important;
+      
+      .banner-content {
+        border-radius: 50% !important;
+        width: 200px !important;
+        height: 200px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin: 0 auto !important;
+      }
+    }
+  }
+
+  &.banner-style-square {
+    .swiper-banner {
+      aspect-ratio: 1 !important;
+      
+      .banner-content {
+        border-radius: 0 !important;
+        width: 250px !important;
+        height: 250px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin: 0 auto !important;
+      }
+    }
+  }
+
+  &.banner-style-banner {
+    .swiper-banner {
+      .banner-content {
+        border-radius: var(--banner-border-radius, 8px) !important;
+        width: 100% !important;
+        min-height: 100px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+      }
+    }
+  }
+
+  // Individual banner override - Higher specificity
+  .swiper-banner[data-custom-style="true"] {
+    .banner-content {
+      // Individual settings will override global CSS variables
+      // This allows individual banners to have their own styles
+    }
+  }
 }
