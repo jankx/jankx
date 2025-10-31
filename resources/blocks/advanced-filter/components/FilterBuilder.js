@@ -13,12 +13,13 @@ import {
     CardHeader,
     Flex,
     FlexItem,
-    Spinner
+    Spinner,
+    Notice
 } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { store as coreDataStore } from '@wordpress/core-data';
 
-const FilterBuilder = ({ attributes, setAttributes, postType = 'post' }) => {
+const FilterBuilder = ({ attributes, setAttributes, postType: propPostType = null }) => {
     const {
         filterType,
         filterConfig,
@@ -35,22 +36,80 @@ const FilterBuilder = ({ attributes, setAttributes, postType = 'post' }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [availableTaxonomies, setAvailableTaxonomies] = useState([]);
     const [availableMetaKeys, setAvailableMetaKeys] = useState([]);
+    const [detectedPostType, setDetectedPostType] = useState(propPostType || 'post');
 
-    // Lấy danh sách taxonomies
+    // Auto-detect post type từ target blocks
+    useEffect(() => {
+        if (targetBlocks && targetBlocks.length > 0) {
+            // Fetch post type từ target blocks
+            const fetchTargetBlockPostTypes = async () => {
+                const postTypes = new Set();
+                
+                for (const target of targetBlocks) {
+                    if (!target.enabled || !target.blockId) continue;
+                    
+                    try {
+                        // Get block data để lấy postType - sử dụng POST method
+                        const formData = new FormData();
+                        formData.append('action', 'jankx_get_block_post_type');
+                        formData.append('block_id', target.blockId);
+                        
+                        const response = await fetch(window.ajaxurl || '/wp-admin/admin-ajax.php', {
+                            method: 'POST',
+                            body: formData,
+                            credentials: 'same-origin'
+                        });
+                        
+                        const data = await response.json();
+                        if (data.success && data.data) {
+                            postTypes.add(data.data);
+                        }
+                    } catch (error) {
+                        console.error('Error fetching block post type:', error);
+                    }
+                }
+                
+                // Use first detected post type, or default to 'post'
+                if (postTypes.size > 0) {
+                    const newPostType = Array.from(postTypes)[0];
+                    if (newPostType !== detectedPostType) {
+                        setDetectedPostType(newPostType);
+                    }
+                } else if (!propPostType && detectedPostType !== 'post') {
+                    setDetectedPostType('post');
+                }
+            };
+            
+            fetchTargetBlockPostTypes();
+        } else if (propPostType) {
+            if (detectedPostType !== propPostType) {
+                setDetectedPostType(propPostType);
+            }
+        } else {
+            // Nếu không có target blocks và không có propPostType, reset về 'post'
+            if (detectedPostType !== 'post') {
+                setDetectedPostType('post');
+            }
+        }
+    }, [targetBlocks, propPostType]); // Removed detectedPostType from dependencies to avoid infinite loop
+
+    // Lấy danh sách taxonomies dựa trên detected post type
     const { taxonomies } = useSelect((select) => {
         const { getTaxonomies } = select(coreDataStore);
         return {
-            taxonomies: getTaxonomies({ per_page: -1, post_type: postType })
+            taxonomies: getTaxonomies({ per_page: -1, post_type: detectedPostType })
         };
-    }, [postType]);
+    }, [detectedPostType]);
 
     // Lấy danh sách meta keys
     useEffect(() => {
+        if (!detectedPostType) return;
+        
         const fetchMetaKeys = async () => {
             setIsLoading(true);
             try {
                 const response = await fetch(
-                    `${window.ajaxurl}?action=jankx_get_meta_keys&post_type=${postType}`,
+                    `${window.ajaxurl}?action=jankx_get_meta_keys&post_type=${detectedPostType}`,
                     { credentials: 'same-origin' }
                 );
                 const data = await response.json();
@@ -65,17 +124,20 @@ const FilterBuilder = ({ attributes, setAttributes, postType = 'post' }) => {
         };
 
         fetchMetaKeys();
-    }, [postType]);
+    }, [detectedPostType]);
 
     // Cập nhật available taxonomies
     useEffect(() => {
-        if (taxonomies) {
+        if (taxonomies && detectedPostType) {
             const filtered = taxonomies.filter(tax =>
-                tax.types.includes(postType) && tax.visibility.public
+                tax.types.includes(detectedPostType) && tax.visibility.public
             );
             setAvailableTaxonomies(filtered);
         }
-    }, [taxonomies, postType]);
+    }, [taxonomies, detectedPostType]);
+
+    // Use detected post type
+    const postType = detectedPostType;
 
     const updateFilterConfig = (key, value) => {
         setAttributes({
@@ -119,6 +181,7 @@ const FilterBuilder = ({ attributes, setAttributes, postType = 'post' }) => {
             label: 'Meta Filter',
             type: 'text',
             operator: 'equals',
+            compare: '=',  // WP_Query compare format
             value: '',
             enabled: true
         };
@@ -372,16 +435,40 @@ const FilterBuilder = ({ attributes, setAttributes, postType = 'post' }) => {
                         />
                         <SelectControl
                             label={__('Toán tử', 'jankx')}
-                            value={filter.operator}
+                            value={filter.operator || filter.compare || 'equals'}
                             options={[
-                                { label: __('Bằng', 'jankx'), value: 'equals' },
-                                { label: __('Chứa', 'jankx'), value: 'contains' },
-                                { label: __('Lớn hơn', 'jankx'), value: 'greater_than' },
-                                { label: __('Nhỏ hơn', 'jankx'), value: 'less_than' },
-                                { label: __('Tồn tại', 'jankx'), value: 'exists' },
-                                { label: __('Không tồn tại', 'jankx'), value: 'not_exists' }
+                                { label: __('Bằng (=)', 'jankx'), value: 'equals' },
+                                { label: __('Không bằng (!=)', 'jankx'), value: 'not_equals' },
+                                { label: __('Chứa (LIKE)', 'jankx'), value: 'contains' },
+                                { label: __('Không chứa (NOT LIKE)', 'jankx'), value: 'not_contains' },
+                                { label: __('Lớn hơn (>)', 'jankx'), value: 'greater_than' },
+                                { label: __('Lớn hơn hoặc bằng (>=)', 'jankx'), value: 'greater_equal' },
+                                { label: __('Nhỏ hơn (<)', 'jankx'), value: 'less_than' },
+                                { label: __('Nhỏ hơn hoặc bằng (<=)', 'jankx'), value: 'less_equal' },
+                                { label: __('Trong danh sách (IN)', 'jankx'), value: 'in' },
+                                { label: __('Không trong danh sách (NOT IN)', 'jankx'), value: 'not_in' },
+                                { label: __('Tồn tại (EXISTS)', 'jankx'), value: 'exists' },
+                                { label: __('Không tồn tại (NOT EXISTS)', 'jankx'), value: 'not_exists' }
                             ]}
-                            onChange={(value) => updateMetaFilter(index, 'operator', value)}
+                            onChange={(value) => {
+                                // Map operator to WP_Query compare format
+                                const compareMap = {
+                                    'equals': '=',
+                                    'not_equals': '!=',
+                                    'contains': 'LIKE',
+                                    'not_contains': 'NOT LIKE',
+                                    'greater_than': '>',
+                                    'greater_equal': '>=',
+                                    'less_than': '<',
+                                    'less_equal': '<=',
+                                    'in': 'IN',
+                                    'not_in': 'NOT IN',
+                                    'exists': 'EXISTS',
+                                    'not_exists': 'NOT EXISTS'
+                                };
+                                updateMetaFilter(index, 'operator', value);
+                                updateMetaFilter(index, 'compare', compareMap[value] || '=');
+                            }}
                         />
                         <TextControl
                             label={__('Giá trị', 'jankx')}
@@ -409,6 +496,26 @@ const FilterBuilder = ({ attributes, setAttributes, postType = 'post' }) => {
 
     return (
         <div className="jankx-advanced-filter-builder">
+            {/* Hiển thị Post Type hiện tại */}
+            {postType && (
+                <PanelBody title={__('Post Type', 'jankx')} initialOpen={false}>
+                    <Notice status="info" isDismissible={false}>
+                        <p>
+                            <strong>{__('Post Type:', 'jankx')}</strong> {postType}
+                        </p>
+                        {targetBlocks && targetBlocks.length > 0 && targetBlocks.some(t => t.enabled) ? (
+                            <p style={{ fontSize: '12px', marginTop: '8px', marginBottom: 0 }}>
+                                {__('Post type được tự động detect từ target blocks. Filters sẽ chỉ áp dụng cho post type này.', 'jankx')}
+                            </p>
+                        ) : (
+                            <p style={{ fontSize: '12px', marginTop: '8px', marginBottom: 0, color: '#856404' }}>
+                                {__('⚠️ Chưa có target blocks. Hãy chọn target blocks trong tab "Targets" để auto-detect post type.', 'jankx')}
+                            </p>
+                        )}
+                    </Notice>
+                </PanelBody>
+            )}
+
             <PanelBody title={__('Loại bộ lọc', 'jankx')} initialOpen={true}>
                 <SelectControl
                     label={__('Loại bộ lọc chính', 'jankx')}
@@ -427,6 +534,18 @@ const FilterBuilder = ({ attributes, setAttributes, postType = 'post' }) => {
             {filterType === 'taxonomy' && renderTaxonomyConfig()}
             {renderCustomFilters()}
             {renderMetaFilters()}
+
+            {/* Debug info (chỉ trong development) */}
+            {process.env.NODE_ENV === 'development' && (
+                <PanelBody title={__('Debug Info', 'jankx')} initialOpen={false}>
+                    <div style={{ fontSize: '12px', color: '#666', fontFamily: 'monospace' }}>
+                        <p><strong>Detected Post Type:</strong> {detectedPostType}</p>
+                        <p><strong>Target Blocks:</strong> {targetBlocks?.length || 0}</p>
+                        <p><strong>Available Taxonomies:</strong> {availableTaxonomies.length}</p>
+                        <p><strong>Available Meta Keys:</strong> {availableMetaKeys.length}</p>
+                    </div>
+                </PanelBody>
+            )}
         </div>
     );
 };

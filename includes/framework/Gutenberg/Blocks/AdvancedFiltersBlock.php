@@ -25,19 +25,6 @@ class AdvancedFiltersBlock extends Block
     protected $blockId = 'jankx/advanced-filter';
 
     /**
-     * Constructor
-     *
-     * @param string|null $blockPath Path to the directory containing block.json
-     */
-    public function __construct($blockPath = null)
-    {
-        if (!$blockPath) {
-            $blockPath = get_template_directory() . '/resources/blocks/advanced-filter';
-        }
-        parent::__construct($blockPath);
-    }
-
-    /**
      * Register the block
      *
      * @return void
@@ -53,10 +40,6 @@ class AdvancedFiltersBlock extends Block
         add_action('wp_ajax_nopriv_jankx_advanced_filter_get_meta_keys', [$this, 'handleGetMetaKeysRequest']);
         add_action('wp_ajax_jankx_get_filterable_blocks', [$this, 'handleGetFilterableBlocksRequest']);
         add_action('wp_ajax_nopriv_jankx_get_filterable_blocks', [$this, 'handleGetFilterableBlocksRequest']);
-
-        // Enqueue scripts and styles
-        add_action('wp_enqueue_scripts', [$this, 'enqueueScripts']);
-        add_action('admin_enqueue_scripts', [$this, 'enqueueAdminScripts']);
     }
 
     /**
@@ -705,78 +688,6 @@ class AdvancedFiltersBlock extends Block
     }
 
     /**
-     * Enqueue scripts
-     *
-     * @return void
-     */
-    public function enqueueScripts()
-    {
-        if (!is_admin()) {
-            $block_dir = get_template_directory() . '/resources/blocks/advanced-filter';
-            $block_url = get_template_directory_uri() . '/resources/blocks/advanced-filter';
-
-            // Check if build files exist
-            if (file_exists($block_dir . '/build/frontend.js')) {
-                wp_enqueue_script(
-                    'jankx-advanced-filter-frontend',
-                    $block_url . '/build/frontend.js',
-                    ['jquery'],
-                    filemtime($block_dir . '/build/frontend.js'),
-                    true
-                );
-            }
-
-            if (file_exists($block_dir . '/build/style.css')) {
-                wp_enqueue_style(
-                    'jankx-advanced-filter-style',
-                    $block_url . '/build/style.css',
-                    [],
-                    filemtime($block_dir . '/build/style.css')
-                );
-            }
-
-            // Localize script
-            wp_localize_script('jankx-advanced-filter-frontend', 'jankx_advanced_filter', [
-                'ajax_url' => admin_url('admin-ajax.php'),
-                'nonce' => wp_create_nonce('jankx_advanced_filter_nonce')
-            ]);
-        }
-    }
-
-    /**
-     * Enqueue admin scripts
-     *
-     * @return void
-     */
-    public function enqueueAdminScripts($hook)
-    {
-        if (in_array($hook, ['post.php', 'post-new.php', 'site-editor.php'])) {
-            $block_dir = get_template_directory() . '/resources/blocks/advanced-filter';
-            $block_url = get_template_directory_uri() . '/resources/blocks/advanced-filter';
-
-            // Check if build files exist
-            if (file_exists($block_dir . '/build/index.js')) {
-                wp_enqueue_script(
-                    'jankx-advanced-filter-editor',
-                    $block_url . '/build/index.js',
-                    ['wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-i18n'],
-                    filemtime($block_dir . '/build/index.js'),
-                    true
-                );
-            }
-
-            if (file_exists($block_dir . '/build/editor.css')) {
-                wp_enqueue_style(
-                    'jankx-advanced-filter-editor-style',
-                    $block_url . '/build/editor.css',
-                    ['wp-edit-blocks'],
-                    filemtime($block_dir . '/build/editor.css')
-                );
-            }
-        }
-    }
-
-    /**
      * Render the block content
      *
      * @param array $attributes Block attributes
@@ -797,6 +708,9 @@ class AdvancedFiltersBlock extends Block
         $date_filters = $attributes['dateFilters'] ?? [];
         $price_filters = $attributes['priceFilters'] ?? [];
         $custom_fields = $attributes['customFields'] ?? [];
+
+        // Try detect post type from target post-type-layout blocks
+        $detected_post_type = $this->detectPostTypeFromTargets($target_blocks) ?: 'post';
 
         // Build filter configuration
         $config = [
@@ -832,6 +746,7 @@ class AdvancedFiltersBlock extends Block
                 'backgroundColor' => 'transparent',
                 'textColor' => 'inherit'
             ], $styling),
+            'postType' => $detected_post_type,
             'filters' => [
                 'custom' => array_filter($custom_filters, function($filter) {
                     return $filter['enabled'] ?? false;
@@ -887,6 +802,46 @@ class AdvancedFiltersBlock extends Block
         $output = apply_filters('jankx_advanced_filter_output', $output, $config, $attributes);
 
         return $output;
+    }
+
+    /**
+     * Detect post type from first enabled target post-type-layout block
+     */
+    private function detectPostTypeFromTargets(array $target_blocks)
+    {
+        if (empty($target_blocks)) {
+            return null;
+        }
+
+        // Collect blocks content from posts and try to match blockId
+        $posts = get_posts([
+            'post_type' => 'any',
+            'post_status' => 'publish',
+            'posts_per_page' => -1,
+        ]);
+
+        foreach ($target_blocks as $target) {
+            if (empty($target['enabled']) || empty($target['blockId'])) {
+                continue;
+            }
+            $target_id = $target['blockId'];
+
+            foreach ($posts as $post) {
+                $parsed = parse_blocks($post->post_content);
+                foreach ($parsed as $block) {
+                    if (($block['blockName'] ?? '') !== 'jankx/post-type-layout') {
+                        continue;
+                    }
+                    // Build block id same as handler fallback
+                    $block_id = $block['attrs']['blockId'] ?? ('block_' . md5(serialize($block)));
+                    if ($block_id === $target_id) {
+                        return $block['attrs']['postType'] ?? null;
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 
     /**

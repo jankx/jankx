@@ -45,7 +45,9 @@ function Edit({ attributes, setAttributes, clientId }: EditProps): JSX.Element {
         displaySettings,
         styling,
         customFilters,
-        metaFilters
+        metaFilters,
+        dateFilters,
+        priceFilters
     } = attributes;
 
     const [activeTab, setActiveTab] = useState<'filters' | 'display' | 'targets'>('filters');
@@ -70,7 +72,6 @@ function Edit({ attributes, setAttributes, clientId }: EditProps): JSX.Element {
                     <FilterBuilder
                         attributes={attributes}
                         setAttributes={setAttributes}
-                        postType="post"
                     />
                 );
             case 'display':
@@ -93,100 +94,107 @@ function Edit({ attributes, setAttributes, clientId }: EditProps): JSX.Element {
     };
 
     const renderPreview = (): JSX.Element => {
-        const hasFilters = customFilters.length > 0 || metaFilters.length > 0 || filterType !== 'custom';
-        const hasTargets = targetBlocks.length > 0;
+        const hasFilters = customFilters.length > 0 || metaFilters.length > 0 || (filterType === 'taxonomy' && filterConfig?.taxonomy);
+        const hasTargets = targetBlocks.length > 0 && targetBlocks.some((t: any) => t.enabled);
+
+        // Count filters
+        const dateFilters = attributes.dateFilters || [];
+        const priceFilters = attributes.priceFilters || [];
+        
+        const filterCount = 
+            (filterType === 'taxonomy' && filterConfig?.taxonomy ? 1 : 0) +
+            (customFilters?.length || 0) +
+            (metaFilters?.length || 0) +
+            (dateFilters?.length || 0) +
+            (priceFilters?.length || 0);
 
         return (
             <div className="jankx-advanced-filter__preview">
-                <div className="jankx-advanced-filter__header">
-                    <h3 className="jankx-advanced-filter__title">
-                        {__('Advanced Filter', 'jankx')}
-                        {filterId && (
-                            <span className="jankx-advanced-filter__id">
-                                ID: {filterId}
-                            </span>
-                        )}
-                    </h3>
-                    <div className="jankx-advanced-filter__status">
-                        {hasFilters && (
-                            <span className="jankx-advanced-filter__status-item status-filters">
-                                {__('Có bộ lọc', 'jankx')}
-                            </span>
-                        )}
-                        {hasTargets && (
-                            <span className="jankx-advanced-filter__status-item status-targets">
-                                {__('Có target', 'jankx')}
-                            </span>
-                        )}
-                        {ajaxSettings?.enabled && (
-                            <span className="jankx-advanced-filter__status-item status-ajax">
-                                {__('AJAX', 'jankx')}
-                            </span>
-                        )}
+                <div className="jankx-advanced-filter__preview-header">
+                    <div className="jankx-advanced-filter__preview-icon">
+                        <span className="dashicons dashicons-filter"></span>
+                    </div>
+                    <div className="jankx-advanced-filter__preview-info">
+                        <div className="jankx-advanced-filter__preview-title">
+                            {__('Advanced Filter', 'jankx')}
+                            {filterId && (
+                                <span className="jankx-advanced-filter__preview-id">({filterId})</span>
+                            )}
+                        </div>
+                        <div className="jankx-advanced-filter__preview-stats">
+                            {filterCount > 0 && (
+                                <span className="jankx-advanced-filter__stat">
+                                    <span className="dashicons dashicons-filter"></span>
+                                    {filterCount} {filterCount === 1 ? __('filter', 'jankx') : __('filters', 'jankx')}
+                                </span>
+                            )}
+                            {hasTargets && (
+                                <span className="jankx-advanced-filter__stat">
+                                    <span className="dashicons dashicons-admin-links"></span>
+                                    {targetBlocks.filter((t: any) => t.enabled).length} {__('targets', 'jankx')}
+                                </span>
+                            )}
+                            {ajaxSettings?.enabled && (
+                                <span className="jankx-advanced-filter__stat">
+                                    <span className="dashicons dashicons-update"></span>
+                                    {__('AJAX', 'jankx')}
+                                </span>
+                            )}
+                        </div>
                     </div>
                 </div>
 
-                <div className="jankx-advanced-filter__content">
-                    {filterType === 'taxonomy' && (
-                        <div className="jankx-advanced-filter__preview-item">
-                            <label className="jankx-advanced-filter__label">
-                                {displaySettings?.showLabel ? (displaySettings.labelText || __('Lọc theo:', 'jankx')) : ''}
-                            </label>
-                            <select className="jankx-advanced-filter__select" disabled>
-                                <option>{filterConfig?.placeholder || __('Chọn danh mục...', 'jankx')}</option>
-                                <option>Danh mục 1 (5)</option>
-                                <option>Danh mục 2 (3)</option>
-                                <option>Danh mục 3 (8)</option>
-                            </select>
+                {!hasFilters ? (
+                    <div className="jankx-advanced-filter__preview-empty">
+                        <span className="dashicons dashicons-info"></span>
+                        <p>{__('Chưa có bộ lọc nào được cấu hình.', 'jankx')}</p>
+                        <p className="jankx-advanced-filter__preview-hint">
+                            {__('Hãy cấu hình bộ lọc trong panel bên phải → tab "Bộ lọc".', 'jankx')}
+                        </p>
+                    </div>
+                ) : (
+                    <div className="jankx-advanced-filter__preview-content">
+                        <div className="jankx-advanced-filter__preview-label">
+                            {__('Preview:', 'jankx')}
                         </div>
-                    )}
-
-                    {customFilters.map((filter, index) => (
-                        <div key={filter.id || index} className="jankx-advanced-filter__preview-item">
-                            <label className="jankx-advanced-filter__label">
-                                {filter.label || __('Custom Filter', 'jankx')}
-                            </label>
-                            <input
-                                type="text"
-                                className="jankx-advanced-filter__input"
-                                placeholder={__('Nhập giá trị...', 'jankx')}
-                                disabled
-                            />
+                        <div className="jankx-advanced-filter__preview-filters">
+                            {filterType === 'taxonomy' && filterConfig?.taxonomy && (
+                                <div className="jankx-advanced-filter__preview-filter-item">
+                                    <span className="jankx-advanced-filter__preview-filter-icon">🏷️</span>
+                                    <span className="jankx-advanced-filter__preview-filter-label">
+                                        {filterConfig.taxonomy === 'category' ? __('Categories', 'jankx') : 
+                                         filterConfig.taxonomy === 'post_tag' ? __('Tags', 'jankx') : 
+                                         filterConfig.taxonomy}
+                                    </span>
+                                </div>
+                            )}
+                            {customFilters.map((filter: any, index: number) => (
+                                <div key={filter.id || index} className="jankx-advanced-filter__preview-filter-item">
+                                    <span className="jankx-advanced-filter__preview-filter-icon">⚙️</span>
+                                    <span className="jankx-advanced-filter__preview-filter-label">
+                                        {filter.label || __('Custom Filter', 'jankx')}
+                                    </span>
+                                </div>
+                            ))}
+                            {metaFilters.map((filter: any, index: number) => (
+                                <div key={filter.id || index} className="jankx-advanced-filter__preview-filter-item">
+                                    <span className="jankx-advanced-filter__preview-filter-icon">📊</span>
+                                    <span className="jankx-advanced-filter__preview-filter-label">
+                                        {filter.label || filter.metaKey || __('Meta Filter', 'jankx')}
+                                    </span>
+                                </div>
+                            ))}
                         </div>
-                    ))}
-
-                    {metaFilters.map((filter, index) => (
-                        <div key={filter.id || index} className="jankx-advanced-filter__preview-item">
-                            <label className="jankx-advanced-filter__label">
-                                {filter.label || __('Meta Filter', 'jankx')}
-                            </label>
-                            <input
-                                type="text"
-                                className="jankx-advanced-filter__input"
-                                placeholder={__('Nhập giá trị...', 'jankx')}
-                                disabled
-                            />
-                        </div>
-                    ))}
-
-                    {displaySettings?.showReset && (
-                        <div className="jankx-advanced-filter__preview-item">
-                            <button className="jankx-advanced-filter__reset" disabled>
-                                {displaySettings.resetText || __('Xóa bộ lọc', 'jankx')}
-                            </button>
-                        </div>
-                    )}
-                </div>
-
-                {!hasFilters && (
-                    <div className="jankx-advanced-filter__empty">
-                        {__('Chưa có bộ lọc nào. Hãy thêm bộ lọc trong tab "Bộ lọc".', 'jankx')}
                     </div>
                 )}
 
                 {!hasTargets && (
-                    <div className="jankx-advanced-filter__warning">
-                        {__('Chưa có block đích nào. Hãy thêm block đích trong tab "Targets".', 'jankx')}
+                    <div className="jankx-advanced-filter__preview-warning">
+                        <span className="dashicons dashicons-warning"></span>
+                        <p>{__('Chưa có block đích nào được chọn.', 'jankx')}</p>
+                        <p className="jankx-advanced-filter__preview-hint">
+                            {__('Hãy chọn block đích trong panel bên phải → tab "Targets".', 'jankx')}
+                        </p>
                     </div>
                 )}
             </div>
@@ -204,21 +212,30 @@ function Edit({ attributes, setAttributes, clientId }: EditProps): JSX.Element {
                     <PanelBody title={__('Cài đặt Filter', 'jankx')} initialOpen={true}>
                         <div className="jankx-advanced-filter__tabs">
                             <ButtonGroup className="jankx-advanced-filter__tab-buttons">
-                                {[
-                                    { key: 'filters', label: __('Bộ lọc', 'jankx'), icon: 'filter' },
-                                    { key: 'display', label: __('Hiển thị', 'jankx'), icon: 'visibility' },
-                                    { key: 'targets', label: __('Targets', 'jankx'), icon: 'admin-links' }
-                                ].map(({ key, label, icon }) => (
-                                    <Button
-                                        key={key}
-                                        isPrimary={activeTab === (key as typeof activeTab)}
-                                        onClick={() => setActiveTab(key as typeof activeTab)}
-                                        icon={icon}
-                                        label={label}
-                                    >
-                                        {label}
-                                    </Button>
-                                ))}
+                                <Button
+                                    isPrimary={activeTab === 'filters'}
+                                    onClick={() => setActiveTab('filters')}
+                                    icon="filter"
+                                    label={__('Bộ lọc', 'jankx')}
+                                >
+                                    {__('Bộ lọc', 'jankx')}
+                                </Button>
+                                <Button
+                                    isPrimary={activeTab === 'display'}
+                                    onClick={() => setActiveTab('display')}
+                                    icon="visibility"
+                                    label={__('Hiển thị', 'jankx')}
+                                >
+                                    {__('Hiển thị', 'jankx')}
+                                </Button>
+                                <Button
+                                    isPrimary={activeTab === 'targets'}
+                                    onClick={() => setActiveTab('targets')}
+                                    icon="admin-links"
+                                    label={__('Targets', 'jankx')}
+                                >
+                                    {__('Targets', 'jankx')}
+                                </Button>
                             </ButtonGroup>
                         </div>
 
@@ -232,6 +249,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps): JSX.Element {
     );
 }
 
+console.log('Advanced Filter');
 registerBlockType('jankx/advanced-filter', {
     title: __('Advanced Filter', 'jankx'),
     description: __('Bộ lọc nâng cao với khả năng tương tác AJAX và tích hợp với Post Layout', 'jankx'),

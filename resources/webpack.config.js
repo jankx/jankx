@@ -87,6 +87,7 @@ module.exports = {
 
     'blocks/post-type-layout/build/index': './blocks/post-type-layout/index.tsx',
     'blocks/post-type-layout/build/load-more': './blocks/post-type-layout/load-more.ts',
+    'blocks/post-type-layout/build/carousel': './blocks/post-type-layout/carousel.ts',
     'blocks/post-type-layout/build/style': './blocks/post-type-layout/style.scss',
     'blocks/post-type-layout/build/editor': './blocks/post-type-layout/editor.scss',
 
@@ -166,6 +167,8 @@ module.exports = {
     '@wordpress/data': ['wp', 'data'],
     '@wordpress/core-data': ['wp', 'coreData'],
     // Swiper will be bundled, not external
+    // embla-carousel-react will be bundled into editor script
+    // embla-carousel will be bundled into frontend carousel script
   },
   plugins: [
     new RemoveEmptyScriptsPlugin(),
@@ -208,6 +211,9 @@ module.exports = {
         }
         if (request === 'react-dom') {
           return 'ReactDOM';
+        }
+        if (request === 'jquery') {
+          return 'jQuery';
         }
         // Swiper will be bundled, not external
       },

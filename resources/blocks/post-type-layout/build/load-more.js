@@ -1,2 +1,163 @@
-(()=>{function e(){document.addEventListener("click",async e=>{const t=e.target.closest(".jankx-load-more-button");if(!t)return;if(e.preventDefault(),t.disabled)return;const o=t.getAttribute("data-ajax-params");if(!o)return void console.error("No AJAX params found on load more button");let a;try{a=JSON.parse(o)}catch(e){return void console.error("Failed to parse AJAX params:",e)}const n=t.closest(".wp-block-jankx-post-type-layout");if(!n)return void console.error("Block wrapper not found");const r=n.querySelector('.post-layout, .jankx-posts-layout, [class*="layout-"]');if(!r)return void console.error("Posts container not found");t.disabled=!0;const s=t.querySelector(".load-more-text"),l=t.querySelector(".load-more-spinner");s&&(s.style.display="none"),l&&(l.style.display="inline");try{const e=new FormData;e.append("action","jankx_load_more_posts"),e.append("nonce",jankxLoadMore.nonce),e.append("attributes",JSON.stringify(a.attributes)),e.append("page",a.page.toString());const o=await fetch(jankxLoadMore.ajaxUrl,{method:"POST",body:e}),n=await o.json();if(!n.success)throw new Error(n.data?.html||"Failed to load more posts");const{html:s,page:l,max_pages:d,has_more:i}=n.data,c=document.createElement("div");c.innerHTML=s;const p=c.querySelectorAll('.post-item, .jankx-post-item, [class*="post-"], article');if(p.forEach(e=>{r.appendChild(e)}),i)a.page=l+1,t.setAttribute("data-ajax-params",JSON.stringify(a)),t.setAttribute("data-page",(l+1).toString());else{const e=t.closest(".post-layout-pagination");e?e.remove():t.remove()}const m=new CustomEvent("jankx:loadMoreComplete",{detail:{page:l,max_pages:d,has_more:i,newItems:p}});document.dispatchEvent(m)}catch(e){console.error("Load More error:",e);const o=document.createElement("div");o.className="load-more-error",o.style.cssText="color: red; margin-top: 10px; text-align: center;",o.textContent=e instanceof Error?e.message:"An error occurred while loading more posts",t.parentElement?.appendChild(o),setTimeout(()=>{o.remove()},5e3)}finally{t.disabled=!1,s&&(s.style.display="inline"),l&&(l.style.display="none")}})}"loading"===document.readyState?document.addEventListener("DOMContentLoaded",e):e()})();
+/******/ (() => { // webpackBootstrap
+/*!**********************************************!*\
+  !*** ./blocks/post-type-layout/load-more.ts ***!
+  \**********************************************/
+/**
+ * Load More functionality for Post Type Layout Block
+ * 
+ * @package Jankx
+ * @since 1.0.0
+ */
+
+/**
+ * Initialize Load More functionality
+ */
+function initLoadMore() {
+  document.addEventListener('click', async event => {
+    const target = event.target;
+    const button = target.closest('.jankx-load-more-button');
+    if (!button) {
+      return;
+    }
+    event.preventDefault();
+
+    // Prevent double-click
+    if (button.disabled) {
+      return;
+    }
+
+    // Get data from button
+    const ajaxParams = button.getAttribute('data-ajax-params');
+    if (!ajaxParams) {
+      console.error('No AJAX params found on load more button');
+      return;
+    }
+    let loadMoreData;
+    try {
+      loadMoreData = JSON.parse(ajaxParams);
+    } catch (error) {
+      console.error('Failed to parse AJAX params:', error);
+      return;
+    }
+
+    // Get block wrapper (parent container for posts)
+    const blockWrapper = button.closest('.wp-block-jankx-post-type-layout');
+    if (!blockWrapper) {
+      console.error('Block wrapper not found');
+      return;
+    }
+
+    // Get posts container (should be first child before pagination)
+    const postsContainer = blockWrapper.querySelector('.post-layout, .jankx-posts-layout, [class*="layout-"]');
+    if (!postsContainer) {
+      console.error('Posts container not found');
+      return;
+    }
+
+    // Show loading state
+    button.disabled = true;
+    const loadMoreText = button.querySelector('.load-more-text');
+    const loadMoreSpinner = button.querySelector('.load-more-spinner');
+    if (loadMoreText) {
+      loadMoreText.style.display = 'none';
+    }
+    if (loadMoreSpinner) {
+      loadMoreSpinner.style.display = 'inline';
+    }
+    try {
+      // Make AJAX request
+      const formData = new FormData();
+      formData.append('action', 'jankx_load_more_posts');
+      formData.append('nonce', jankxLoadMore.nonce);
+      formData.append('attributes', JSON.stringify(loadMoreData.attributes));
+      formData.append('page', loadMoreData.page.toString());
+      const response = await fetch(jankxLoadMore.ajaxUrl, {
+        method: 'POST',
+        body: formData
+      });
+      const jsonResponse = await response.json();
+      if (!jsonResponse.success) {
+        throw new Error(jsonResponse.data?.html || 'Failed to load more posts');
+      }
+      const {
+        html,
+        page,
+        max_pages,
+        has_more
+      } = jsonResponse.data;
+
+      // Create temporary container to parse HTML
+      const tempContainer = document.createElement('div');
+      tempContainer.innerHTML = html;
+
+      // Extract post items from the new HTML
+      // Look for common post item selectors
+      const newPostItems = tempContainer.querySelectorAll('.post-item, .jankx-post-item, [class*="post-"], article');
+
+      // Append new posts to container
+      newPostItems.forEach(item => {
+        postsContainer.appendChild(item);
+      });
+
+      // Update button state
+      if (has_more) {
+        // Update page number for next load
+        loadMoreData.page = page + 1;
+        button.setAttribute('data-ajax-params', JSON.stringify(loadMoreData));
+        button.setAttribute('data-page', (page + 1).toString());
+      } else {
+        // No more posts, hide button
+        const paginationWrapper = button.closest('.post-layout-pagination');
+        if (paginationWrapper) {
+          paginationWrapper.remove();
+        } else {
+          button.remove();
+        }
+      }
+
+      // Trigger custom event for third-party integrations
+      const loadMoreEvent = new CustomEvent('jankx:loadMoreComplete', {
+        detail: {
+          page,
+          max_pages,
+          has_more,
+          newItems: newPostItems
+        }
+      });
+      document.dispatchEvent(loadMoreEvent);
+    } catch (error) {
+      console.error('Load More error:', error);
+
+      // Show error message
+      const errorMessage = document.createElement('div');
+      errorMessage.className = 'load-more-error';
+      errorMessage.style.cssText = 'color: red; margin-top: 10px; text-align: center;';
+      errorMessage.textContent = error instanceof Error ? error.message : 'An error occurred while loading more posts';
+      button.parentElement?.appendChild(errorMessage);
+
+      // Remove error after 5 seconds
+      setTimeout(() => {
+        errorMessage.remove();
+      }, 5000);
+    } finally {
+      // Restore button state
+      button.disabled = false;
+      if (loadMoreText) {
+        loadMoreText.style.display = 'inline';
+      }
+      if (loadMoreSpinner) {
+        loadMoreSpinner.style.display = 'none';
+      }
+    }
+  });
+}
+
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initLoadMore);
+} else {
+  initLoadMore();
+}
+/******/ })()
+;
 //# sourceMappingURL=load-more.js.map

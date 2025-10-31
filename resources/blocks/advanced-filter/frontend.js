@@ -110,7 +110,7 @@
                 data: {
                     action: 'jankx_advanced_filter_get_terms',
                     taxonomy: taxonomy,
-                    post_type: 'post'
+                    post_type: this.config.postType || 'post'
                 },
                 success: (response) => {
                     if (response.success) {

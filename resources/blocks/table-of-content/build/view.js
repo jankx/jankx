@@ -1,2 +1,99 @@
-(()=>{function t(){document.querySelectorAll(".jankx-table-of-content").forEach(t=>{const e=t.querySelectorAll(".toc-item__toggle"),o=t.dataset.expandIconType||"plus-minus";e.forEach(t=>{t.addEventListener("click",e=>{e.preventDefault(),e.stopPropagation();const n="true"===t.getAttribute("aria-expanded"),r=t.closest("li");if(!r)return;const c=r.querySelector(":scope > ul, :scope > ol"),s=t.querySelector(".toc-item__icon");if(c){const e=!n;t.setAttribute("aria-expanded",String(e)),t.classList.toggle("is-expanded"),t.classList.toggle("is-collapsed"),c.style.display=n?"none":"block",s&&(s.textContent=function(t,e){switch(t){case"chevron":return e?"▼":"▶";case"arrow":return e?"↓":"→";case"caret":return e?"▾":"▸";default:return e?"−":"+"}}(o,e))}})}),t.querySelectorAll(".toc-item__link").forEach(t=>{t.addEventListener("click",e=>{const o=t.getAttribute("href");if(o&&o.startsWith("#")){const t=o.substring(1),n=document.getElementById(t);n&&(e.preventDefault(),n.scrollIntoView({behavior:"smooth",block:"start"}),window.history&&window.history.pushState&&window.history.pushState(null,"",o))}})})})}"loading"===document.readyState?document.addEventListener("DOMContentLoaded",t):t(),window.wp&&window.wp.domReady&&window.wp.domReady(t)})();
+/******/ (() => { // webpackBootstrap
+/*!*****************************************!*\
+  !*** ./blocks/table-of-content/view.ts ***!
+  \*****************************************/
+/**
+ * Frontend JavaScript for Table of Content block
+ * Handles expand/collapse functionality
+ */
+
+/**
+ * Get expand/collapse icon based on type
+ */
+function getExpandIcon(type, isExpanded) {
+  switch (type) {
+    case 'chevron':
+      return isExpanded ? '▼' : '▶';
+    case 'arrow':
+      return isExpanded ? '↓' : '→';
+    case 'caret':
+      return isExpanded ? '▾' : '▸';
+    case 'plus-minus':
+    default:
+      return isExpanded ? '−' : '+';
+  }
+}
+
+/**
+ * Initialize Table of Content functionality
+ */
+function initTableOfContent() {
+  const tocBlocks = document.querySelectorAll('.jankx-table-of-content');
+  tocBlocks.forEach(tocBlock => {
+    const toggleButtons = tocBlock.querySelectorAll('.toc-item__toggle');
+    const expandIconType = tocBlock.dataset.expandIconType || 'plus-minus';
+    toggleButtons.forEach(button => {
+      button.addEventListener('click', e => {
+        e.preventDefault();
+        e.stopPropagation();
+        const isExpanded = button.getAttribute('aria-expanded') === 'true';
+        const listItem = button.closest('li');
+        if (!listItem) return;
+        const nestedList = listItem.querySelector(':scope > ul, :scope > ol');
+        const iconSpan = button.querySelector('.toc-item__icon');
+        if (nestedList) {
+          // Toggle state
+          const newExpandedState = !isExpanded;
+          button.setAttribute('aria-expanded', String(newExpandedState));
+          button.classList.toggle('is-expanded');
+          button.classList.toggle('is-collapsed');
+          nestedList.style.display = isExpanded ? 'none' : 'block';
+
+          // Update icon text
+          if (iconSpan) {
+            iconSpan.textContent = getExpandIcon(expandIconType, newExpandedState);
+          }
+        }
+      });
+    });
+
+    // Handle smooth scroll to heading
+    const links = tocBlock.querySelectorAll('.toc-item__link');
+    links.forEach(link => {
+      link.addEventListener('click', e => {
+        const href = link.getAttribute('href');
+        if (href && href.startsWith('#')) {
+          const targetId = href.substring(1);
+          const target = document.getElementById(targetId);
+          if (target) {
+            e.preventDefault();
+            target.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+
+            // Update URL without triggering scroll
+            if (window.history && window.history.pushState) {
+              window.history.pushState(null, '', href);
+            }
+          }
+        }
+      });
+    });
+  });
+}
+
+// Initialize on DOM ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initTableOfContent);
+} else {
+  initTableOfContent();
+}
+
+// Re-initialize on block editor updates (for block preview)
+if (window.wp && window.wp.domReady) {
+  window.wp.domReady(initTableOfContent);
+}
+/******/ })()
+;
 //# sourceMappingURL=view.js.map

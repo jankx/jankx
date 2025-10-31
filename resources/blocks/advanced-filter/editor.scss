@@ -152,132 +152,178 @@
 
     // Preview styles
     &__preview {
-        border: 1px solid #e0e0e0;
-        border-radius: 4px;
-        padding: 20px;
-        background: #f9f9f9;
-        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 24px;
+        background: linear-gradient(to bottom, #ffffff, #f8f9fa);
+        margin: 0;
 
-        .jankx-advanced-filter__header {
+        &-header {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
+            gap: 16px;
             margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #e0e0e0;
         }
 
-        .jankx-advanced-filter__title {
-            margin: 0;
+        &-icon {
+            flex-shrink: 0;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #007cba 0%, #005a87 100%);
+            border-radius: 8px;
+            color: #fff;
+
+            .dashicons {
+                font-size: 24px;
+                width: 24px;
+                height: 24px;
+            }
+        }
+
+        &-info {
+            flex: 1;
+        }
+
+        &-title {
             font-size: 18px;
             font-weight: 600;
             color: #1e1e1e;
+            margin: 0 0 8px 0;
+            line-height: 1.4;
         }
 
-        .jankx-advanced-filter__id {
+        &-id {
             font-size: 12px;
             color: #666;
             font-weight: normal;
-            margin-left: 10px;
+            margin-left: 8px;
+            opacity: 0.7;
         }
 
-        .jankx-advanced-filter__status {
+        &-stats {
             display: flex;
-            gap: 8px;
             flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 8px;
         }
 
-        .jankx-advanced-filter__status-item {
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 11px;
+        &-stat {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: #f0f0f0;
+            border-radius: 16px;
+            font-size: 12px;
+            color: #555;
             font-weight: 500;
+
+            .dashicons {
+                font-size: 14px;
+                width: 14px;
+                height: 14px;
+                color: #007cba;
+            }
+        }
+
+        &-content {
+            margin-top: 16px;
+        }
+
+        &-label {
+            font-size: 12px;
+            font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-
-            &.status-filters {
-                background: #d4edda;
-                color: #155724;
-            }
-
-            &.status-targets {
-                background: #cce5ff;
-                color: #004085;
-            }
-
-            &.status-ajax {
-                background: #fff3cd;
-                color: #856404;
-            }
+            color: #666;
+            margin-bottom: 12px;
         }
 
-        .jankx-advanced-filter__content {
+        &-filters {
             display: flex;
             flex-wrap: wrap;
-            gap: 15px;
-            align-items: flex-start;
+            gap: 8px;
         }
 
-        .jankx-advanced-filter__preview-item {
-            display: flex;
-            flex-direction: column;
-            min-width: 200px;
-        }
-
-        .jankx-advanced-filter__label {
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #1e1e1e;
-            font-size: 14px;
-        }
-
-        .jankx-advanced-filter__select,
-        .jankx-advanced-filter__input {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
+        &-filter-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
             background: #fff;
-            color: #1e1e1e;
+            border: 1px solid #e0e0e0;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #333;
+            transition: all 0.2s ease;
 
-            &:disabled {
-                background: #f5f5f5;
-                color: #999;
-                cursor: not-allowed;
+            &:hover {
+                border-color: #007cba;
+                background: #f0f8ff;
             }
         }
 
-        .jankx-advanced-filter__reset {
-            padding: 8px 16px;
-            background: #dc3545;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-
-            &:disabled {
-                background: #ccc;
-                cursor: not-allowed;
-            }
+        &-filter-icon {
+            font-size: 16px;
         }
 
-        .jankx-advanced-filter__empty,
-        .jankx-advanced-filter__warning {
-            padding: 20px;
+        &-filter-label {
+            font-weight: 500;
+        }
+
+        &-empty,
+        &-warning {
+            padding: 24px;
             text-align: center;
-            color: #666;
-            font-style: italic;
-            background: #fff;
-            border: 1px dashed #ddd;
-            border-radius: 4px;
-            margin-top: 15px;
+            border-radius: 8px;
+            margin-top: 16px;
+
+            .dashicons {
+                font-size: 32px;
+                width: 32px;
+                height: 32px;
+                margin-bottom: 12px;
+                color: #999;
+            }
+
+            p {
+                margin: 0 0 8px 0;
+                font-size: 14px;
+                color: #666;
+            }
+
+            &-hint {
+                font-size: 12px !important;
+                color: #999 !important;
+                font-style: italic;
+            }
         }
 
-        .jankx-advanced-filter__warning {
+        &-empty {
+            background: #f8f9fa;
+            border: 2px dashed #ddd;
+
+            .dashicons {
+                color: #bbb;
+            }
+        }
+
+        &-warning {
             background: #fff3cd;
-            border-color: #ffeaa7;
-            color: #856404;
+            border: 2px solid #ffc107;
+
+            .dashicons {
+                color: #ff9800;
+            }
+
+            p {
+                color: #856404;
+            }
         }
     }
 

@@ -3,6 +3,7 @@ import { useState, useEffect } from '@wordpress/element';
 import {
     PanelBody,
     TextControl,
+    SelectControl,
     Button,
     Card,
     CardBody,
@@ -23,16 +24,21 @@ const TargetBlocks = ({ attributes, setAttributes }) => {
         const fetchAvailableBlocks = async () => {
             setIsLoading(true);
             try {
-                const response = await fetch(
-                    `${window.ajaxurl}?action=jankx_get_filterable_blocks`,
-                    { credentials: 'same-origin' }
-                );
-                const data = await response.json();
-                if (data.success) {
+                // Use REST API to avoid ajaxurl issues in Site Editor iframe
+                const data = await (window).wp.apiFetch({
+                    path: '/jankx/v1/advanced-filter/filterable-blocks',
+                    method: 'GET'
+                });
+                if (Array.isArray(data)) {
+                    setAvailableBlocks(data);
+                } else if (data && data.success) {
                     setAvailableBlocks(data.data || []);
+                } else {
+                    setAvailableBlocks([]);
                 }
             } catch (error) {
                 console.error('Error fetching available blocks:', error);
+                setAvailableBlocks([]);
             } finally {
                 setIsLoading(false);
             }
