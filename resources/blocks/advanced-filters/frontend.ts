@@ -38,6 +38,14 @@ class AdvancedFilters {
             const configData = configElement.getAttribute('data-config');
             if (configData) {
                 this.config = JSON.parse(configData);
+                // Get nonce and AJAX URL from data attributes (fallback to localized script)
+                const nonce = configElement.getAttribute('data-nonce') || (window as any).jankxAdvancedFilters?.nonce || '';
+                const ajaxUrl = configElement.getAttribute('data-ajax-url') || (window as any).jankxAdvancedFilters?.ajaxUrl || '/wp-admin/admin-ajax.php';
+                
+                // Store nonce and AJAX URL in config for later use
+                (this.config as any).nonce = nonce;
+                (this.config as any).ajaxUrl = ajaxUrl;
+                
                 this.setupEventListeners();
             }
         } catch (error) {
@@ -194,22 +202,85 @@ class AdvancedFilters {
         this.showLoading();
 
         try {
-            const response = await fetch((window as any).jankxAdvancedFilters?.ajaxUrl || '/wp-admin/admin-ajax.php', {
+            // Get nonce from config (set in init) or fallback to localized script
+            const nonce = (this.config as any)?.nonce || (window as any).jankxAdvancedFilters?.nonce || '';
+            const ajaxUrl = (this.config as any)?.ajaxUrl || (window as any).jankxAdvancedFilters?.ajaxUrl || '/wp-admin/admin-ajax.php';
+
+            if (!nonce) {
+                console.error('Nonce is missing! Cannot proceed with AJAX request.');
+                alert('Security error: Please refresh the page and try again.');
+                this.hideLoading();
+                return;
+            }
+
+            // Get current post ID if available - try multiple methods
+            let postId = 0;
+            
+            // Method 1: From WordPress editor (admin)
+            try {
+                postId = (window as any).wp?.data?.select('core/editor')?.getCurrentPostId?.() || 0;
+            } catch (e) {
+                // Not in editor
+            }
+            
+            // Method 2: From body data attribute
+            if (!postId) {
+                const bodyPostId = document.body.getAttribute('data-post-id');
+                if (bodyPostId) {
+                    postId = parseInt(bodyPostId) || 0;
+                }
+            }
+            
+            // Method 3: From URL query string
+            if (!postId) {
+                const urlParams = new URLSearchParams(window.location.search);
+                const urlPostId = urlParams.get('p') || urlParams.get('post') || urlParams.get('post_id');
+                if (urlPostId) {
+                    postId = parseInt(urlPostId) || 0;
+                }
+            }
+            
+            // Method 4: From body classes (WordPress adds postid-{ID} class)
+            if (!postId) {
+                const bodyClasses = document.body.className;
+                const postIdMatch = bodyClasses.match(/postid-(\d+)/);
+                if (postIdMatch) {
+                    postId = parseInt(postIdMatch[1]) || 0;
+                }
+            }
+
+            const params = new URLSearchParams({
+                action: 'jankx_advanced_filters_update',
+                nonce: nonce,
+                target_blocks: JSON.stringify(this.config.targetBlockIds),
+                filters: JSON.stringify(this.currentFilters),
+            });
+
+            // Always send post_id if we have it
+            if (postId > 0) {
+                params.append('post_id', String(postId));
+                console.log('AdvancedFilters: Sending post_id:', postId);
+            } else {
+                console.warn('AdvancedFilters: Could not determine post_id, server will try to detect it');
+            }
+
+            const response = await fetch(ajaxUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: new URLSearchParams({
-                    action: 'jankx_advanced_filters_update',
-                    nonce: (window as any).jankxAdvancedFilters?.nonce || '',
-                    target_blocks: JSON.stringify(this.config.targetBlockIds),
-                    filters: JSON.stringify(this.currentFilters),
-                }),
+                body: params,
             });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Filter update failed:', response.status, errorText);
+                throw new Error(`HTTP ${response.status}: ${errorText}`);
+            }
 
             const data = await response.json();
 
-            if (data.success) {
+            if (data.success && data.data) {
                 this.updateTargetBlocks(data.data);
                 if (this.config.updateUrl) {
                     this.updateUrl();
@@ -218,10 +289,13 @@ class AdvancedFilters {
                     this.scrollToResults();
                 }
             } else {
-                console.error('Filter update failed:', data.data);
+                const errorMessage = data?.data?.message || data?.data || 'Unknown error';
+                console.error('Filter update failed:', errorMessage);
+                alert(`Filter update failed: ${errorMessage}`);
             }
         } catch (error) {
             console.error('Error updating filters:', error);
+            alert(`Error updating filters: ${error instanceof Error ? error.message : 'Unknown error'}`);
         } finally {
             this.hideLoading();
         }
@@ -238,11 +312,71 @@ class AdvancedFilters {
 
     private updateTargetBlocks(data: Record<string, string>): void {
         Object.entries(data).forEach(([blockId, html]) => {
-            const targetElement = document.querySelector(`[data-block-id="${blockId}"]`);
+            // Try multiple selectors to find the target block
+            let targetElement = document.querySelector(`[data-block-id="${blockId}"]`);
+            
+            if (!targetElement) {
+                // Try by queryId attribute if present in the rendered HTML
+                targetElement = document.querySelector(`[data-query-id="${blockId}"]`);
+            }
+            
+            if (!targetElement) {
+                // Try by ID
+                targetElement = document.getElementById(`block-${blockId}`);
+            }
+            
+            if (!targetElement) {
+                // Try finding by class and queryId data attribute
+                const blocks = document.querySelectorAll('.wp-block-jankx-post-type-layout');
+                blocks.forEach((block) => {
+                    const queryId = (block as HTMLElement).getAttribute('data-query-id');
+                    if (queryId === blockId) {
+                        targetElement = block as HTMLElement;
+                    }
+                });
+            }
+            
             if (targetElement) {
-                targetElement.innerHTML = html;
+                // Parse the returned HTML and replace only the inner content
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = html.trim();
+                const newContent = tempDiv.firstElementChild;
+                
+                if (newContent) {
+                    targetElement.replaceWith(newContent);
+                    // Update reference to the new element
+                    targetElement = newContent as HTMLElement;
+                    
+                    // Re-initialize any scripts that might be needed (e.g., carousel, load-more)
+                    this.reinitializeBlockScripts(targetElement);
+                } else {
+                    // Fallback: just replace innerHTML
+                    (targetElement as HTMLElement).innerHTML = html;
+                }
+            } else {
+                console.warn(`AdvancedFiltersBlock: Target block with ID "${blockId}" not found in DOM`);
             }
         });
+    }
+
+    private reinitializeBlockScripts(element: HTMLElement): void {
+        // Re-initialize carousel if present
+        if (element.querySelector('.post-type-layout-carousel')) {
+            // Trigger any carousel initialization scripts
+            const event = new CustomEvent('jankx:reinitialize-carousel', {
+                detail: { element },
+            });
+            document.dispatchEvent(event);
+        }
+
+        // Re-initialize load-more buttons if present
+        if (element.querySelector('.jankx-load-more-button')) {
+            // Trigger load-more initialization
+            const event = new CustomEvent('jankx:reinitialize-load-more', {
+                detail: { element },
+            });
+            document.dispatchEvent(event);
+        }
     }
 
     private updateUrl(): void {

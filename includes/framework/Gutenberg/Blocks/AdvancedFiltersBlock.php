@@ -41,7 +41,7 @@ class AdvancedFiltersBlock extends Block
         add_action('wp_ajax_jankx_get_filterable_blocks', [$this, 'handleGetFilterableBlocksRequest']);
         add_action('wp_ajax_nopriv_jankx_get_filterable_blocks', [$this, 'handleGetFilterableBlocksRequest']);
         
-        // AJAX handler for updating post-type-layout blocks
+        // Register filter AJAX handler that uses PostTypeLayoutBlock's render logic
         add_action('wp_ajax_jankx_advanced_filters_update', [$this, 'handleFiltersUpdate']);
         add_action('wp_ajax_nopriv_jankx_advanced_filters_update', [$this, 'handleFiltersUpdate']);
         
@@ -872,11 +872,19 @@ class AdvancedFiltersBlock extends Block
             'id' => $instance_id,
         ]);
 
+        // Create nonce for AJAX requests
+        $ajax_nonce = wp_create_nonce('jankx_advanced_filters');
+        $ajax_url = admin_url('admin-ajax.php');
+
         // Start output buffering
         ob_start();
         ?>
         <div <?php echo $wrapper_attributes; ?>>
-            <div class="advanced-filters-config" data-config="<?php echo esc_attr(wp_json_encode($config)); ?>" style="display: none;"></div>
+            <div class="advanced-filters-config" 
+                 data-config="<?php echo esc_attr(wp_json_encode($config)); ?>"
+                 data-nonce="<?php echo esc_attr($ajax_nonce); ?>"
+                 data-ajax-url="<?php echo esc_attr($ajax_url); ?>"
+                 style="display: none;"></div>
             <div class="advanced-filters-container">
                 <?php $this->renderFilterContentNew($attributes, $config); ?>
             </div>
@@ -1371,13 +1379,18 @@ class AdvancedFiltersBlock extends Block
 
     /**
      * Handle AJAX request to update post-type-layout blocks with filters
+     * Uses PostTypeLayoutBlock's render logic
      *
      * @return void
      */
     public function handleFiltersUpdate(): void
     {
-        // Verify nonce
-        check_ajax_referer('jankx_advanced_filters', 'nonce');
+        // Verify nonce - use wp_verify_nonce to avoid dying
+        $nonce = isset($_POST['nonce']) ? sanitize_text_field(wp_unslash($_POST['nonce'])) : '';
+        if (!wp_verify_nonce($nonce, 'jankx_advanced_filters')) {
+            wp_send_json_error(['message' => __('Security check failed. Please refresh the page.', 'jankx')]);
+            return;
+        }
 
         // Get parameters
         $target_blocks_json = isset($_POST['target_blocks']) ? sanitize_text_field(wp_unslash($_POST['target_blocks'])) : '';
@@ -1408,12 +1421,66 @@ class AdvancedFiltersBlock extends Block
 
         try {
             $results = [];
+            $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : get_the_ID();
 
-            // Process each target block
+            // If no post_id, try to get from URL or global
+            if (!$post_id) {
+                if (isset($_SERVER['HTTP_REFERER'])) {
+                    $referer = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_QUERY);
+                    if ($referer) {
+                        parse_str($referer, $params);
+                        if (isset($params['p'])) {
+                            $post_id = intval($params['p']);
+                        } elseif (isset($params['post'])) {
+                            $post_id = intval($params['post']);
+                        }
+                    }
+                }
+            }
+
+            // Still no post_id, try global $post
+            if (!$post_id) {
+                global $post;
+                $post_id = $post->ID ?? 0;
+            }
+
+            // Process each target block - use PostTypeLayoutBlock's render logic
+            $post_type_layout_block = new \Jankx\Gutenberg\Blocks\PostTypeLayoutBlock();
+            
             foreach ($target_blocks as $block_id) {
-                $block_data = $this->getPostTypeLayoutBlockData($block_id, $filters);
-                if ($block_data) {
-                    $results[$block_id] = $block_data;
+                // Get block attributes from post content
+                $block_attributes = $this->getBlockAttributesFromPost($post_id, $block_id);
+                
+                if (!$block_attributes) {
+                    continue;
+                }
+
+                // Apply filters to attributes
+                $block_attributes = $this->applyFiltersToAttributes($block_attributes, $filters);
+
+                // Use PostTypeLayoutBlock's render method
+                $mock_block = (object) [
+                    'attributes' => $block_attributes,
+                    'innerBlocks' => [],
+                    'innerHTML' => '',
+                    'innerContent' => [],
+                ];
+
+                $rendered_html = $post_type_layout_block->render($block_attributes, '', $mock_block);
+                
+                if ($rendered_html) {
+                    // Ensure data attributes are present
+                    $query_id = $block_attributes['queryId'] ?? null;
+                    if ($query_id && (strpos($rendered_html, 'data-block-id') === false || strpos($rendered_html, 'data-query-id') === false)) {
+                        $rendered_html = preg_replace(
+                            '/(<div\s+[^>]*class=["\'][^"\']*wp-block-jankx-post-type-layout[^"\']*["\'][^>]*)(>)/i',
+                            '$1 data-block-id="' . esc_attr($query_id) . '" data-query-id="' . esc_attr($query_id) . '"$2',
+                            $rendered_html,
+                            1
+                        );
+                    }
+                    
+                    $results[$block_id] = $rendered_html;
                 }
             }
 
@@ -1425,43 +1492,58 @@ class AdvancedFiltersBlock extends Block
     }
 
     /**
-     * Get post-type-layout block data with filters applied
+     * Get block attributes from post content by block ID
      *
-     * @param string $block_id Block ID to filter
-     * @param array $filters Filter parameters
-     * @return string|null Rendered HTML
+     * @param int $post_id Post ID
+     * @param string $block_id Block queryId
+     * @return array|null Block attributes or null if not found
      */
-    private function getPostTypeLayoutBlockData(string $block_id, array $filters): ?string
+    private function getBlockAttributesFromPost(int $post_id, string $block_id): ?array
     {
-        // Find block in post content
-        $posts = get_posts([
-            'post_type' => 'any',
-            'post_status' => 'publish',
-            'posts_per_page' => -1,
-        ]);
+        if (!$post_id) {
+            return null;
+        }
 
-        foreach ($posts as $post) {
-            $blocks = parse_blocks($post->post_content);
-            foreach ($blocks as $block) {
-                if (($block['blockName'] ?? '') !== 'jankx/post-type-layout') {
-                    continue;
+        $post_obj = get_post($post_id);
+        if (!$post_obj) {
+            return null;
+        }
+
+        $blocks = parse_blocks($post_obj->post_content);
+        
+        // Recursively search for block
+        return $this->findBlockAttributesById($blocks, $block_id);
+    }
+
+    /**
+     * Recursively find block attributes by queryId
+     *
+     * @param array $blocks Parsed blocks
+     * @param string $target_block_id Target block queryId
+     * @return array|null Block attributes or null
+     */
+    private function findBlockAttributesById(array $blocks, string $target_block_id): ?array
+    {
+        foreach ($blocks as $block) {
+            if (($block['blockName'] ?? '') === 'jankx/post-type-layout') {
+                $query_id = $block['attrs']['queryId'] ?? null;
+                if ($query_id && strval($query_id) === $target_block_id) {
+                    return $block['attrs'] ?? [];
                 }
+            }
 
-                // Check if this is the target block
-                $current_block_id = $block['attrs']['queryId'] ?? null;
-                if ($current_block_id && strval($current_block_id) === $block_id) {
-                    // Apply filters to block attributes
-                    $attributes = $block['attrs'];
-                    $attributes = $this->applyFiltersToAttributes($attributes, $filters);
-
-                    // Render block with updated attributes
-                    return $this->renderPostTypeLayoutBlock($attributes);
+            // Search in inner blocks
+            if (!empty($block['innerBlocks'])) {
+                $result = $this->findBlockAttributesById($block['innerBlocks'], $target_block_id);
+                if ($result !== null) {
+                    return $result;
                 }
             }
         }
 
         return null;
     }
+
 
     /**
      * Apply filters to post-type-layout block attributes
@@ -1530,25 +1612,4 @@ class AdvancedFiltersBlock extends Block
         return $attributes;
     }
 
-    /**
-     * Render post-type-layout block with given attributes
-     *
-     * @param array $attributes Block attributes
-     * @return string Rendered HTML
-     */
-    private function renderPostTypeLayoutBlock(array $attributes): string
-    {
-        // Use PostTypeLayoutBlock's render method
-        $post_type_layout_block = new \Jankx\Gutenberg\Blocks\PostTypeLayoutBlock();
-        
-        // Create a mock block instance for rendering
-        $mock_block = (object) [
-            'attributes' => $attributes,
-            'innerBlocks' => [],
-            'innerHTML' => '',
-            'innerContent' => [],
-        ];
-
-        return $post_type_layout_block->render($attributes, '', $mock_block);
-    }
 }
