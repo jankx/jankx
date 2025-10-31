@@ -1,0 +1,239 @@
+/*!****************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/advanced-filters/editor.scss ***!
+  \****************************************************************************************************************************************************************************************************/
+/**
+ * Advanced Filters Block - Editor Styles
+ *
+ * Editor should look exactly like frontend
+ * Import all styles from style.scss
+ */
+.wp-block-jankx-advanced-filters {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: var(--wp--preset--color--base, #fff);
+  border-radius: 8px;
+}
+.wp-block-jankx-advanced-filters.layout-horizontal .advanced-filters-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-start;
+}
+.wp-block-jankx-advanced-filters.layout-vertical .advanced-filters-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.wp-block-jankx-advanced-filters.layout-accordion .advanced-filters-container .filter-group {
+  border-bottom: 1px solid var(--wp--preset--color--neutral, #ddd);
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+.wp-block-jankx-advanced-filters.layout-accordion .advanced-filters-container .filter-group:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+.wp-block-jankx-advanced-filters.layout-accordion .advanced-filters-container .filter-group .filter-group-header {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+}
+.wp-block-jankx-advanced-filters.layout-accordion .advanced-filters-container .filter-group .filter-group-header .filter-group-title {
+  font-weight: 600;
+  margin: 0;
+}
+.wp-block-jankx-advanced-filters.layout-accordion .advanced-filters-container .filter-group .filter-group-header .filter-group-toggle {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0;
+  color: var(--wp--preset--color--contrast, #000);
+}
+.wp-block-jankx-advanced-filters.layout-accordion .advanced-filters-container .filter-group .filter-group-header .filter-group-toggle:hover {
+  color: var(--wp--preset--color--primary, #503AA8);
+}
+.wp-block-jankx-advanced-filters.layout-accordion .advanced-filters-container .filter-group .filter-group-content {
+  padding-top: 1rem;
+  display: none;
+}
+.wp-block-jankx-advanced-filters.layout-accordion .advanced-filters-container .filter-group .filter-group-content.expanded {
+  display: block;
+}
+.wp-block-jankx-advanced-filters .filter-group {
+  flex: 0 0 auto;
+}
+.wp-block-jankx-advanced-filters .filter-group .filter-group-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--wp--preset--color--contrast, #000);
+}
+.wp-block-jankx-advanced-filters .filter-group .filter-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.wp-block-jankx-advanced-filters .filter-group .filter-options.display-buttons .filter-option {
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--wp--preset--color--neutral, #ddd);
+  background: var(--wp--preset--color--base, #fff);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.wp-block-jankx-advanced-filters .filter-group .filter-options.display-buttons .filter-option:hover {
+  border-color: var(--wp--preset--color--primary, #503AA8);
+  color: var(--wp--preset--color--primary, #503AA8);
+}
+.wp-block-jankx-advanced-filters .filter-group .filter-options.display-buttons .filter-option.active {
+  background: var(--wp--preset--color--primary, #503AA8);
+  border-color: var(--wp--preset--color--primary, #503AA8);
+  color: var(--wp--preset--color--base, #fff);
+}
+.wp-block-jankx-advanced-filters .filter-group .filter-options.display-checkboxes .filter-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+.wp-block-jankx-advanced-filters .filter-group .filter-options.display-checkboxes .filter-option input[type=checkbox] {
+  margin: 0;
+}
+.wp-block-jankx-advanced-filters .filter-group .filter-options.display-checkboxes .filter-option label {
+  cursor: pointer;
+  margin: 0;
+}
+.wp-block-jankx-advanced-filters .filter-group .filter-options.display-dropdown .filter-select, .wp-block-jankx-advanced-filters .filter-group .filter-options.display-select .filter-select {
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--wp--preset--color--neutral, #ddd);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  background: var(--wp--preset--color--base, #fff);
+  min-width: 200px;
+}
+.wp-block-jankx-advanced-filters .filter-group .filter-input {
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--wp--preset--color--neutral, #ddd);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  min-width: 200px;
+}
+.wp-block-jankx-advanced-filters .filter-group .filter-input:focus {
+  outline: none;
+  border-color: var(--wp--preset--color--primary, #503AA8);
+}
+.wp-block-jankx-advanced-filters .filter-group .filter-range {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+.wp-block-jankx-advanced-filters .filter-group .filter-range .filter-range-input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 2px solid var(--wp--preset--color--neutral, #ddd);
+  border-radius: 6px;
+}
+.wp-block-jankx-advanced-filters .filter-group .filter-range .filter-range-input:focus {
+  outline: none;
+  border-color: var(--wp--preset--color--primary, #503AA8);
+}
+.wp-block-jankx-advanced-filters .filter-group .filter-range .filter-range-separator {
+  color: var(--wp--preset--color--contrast, #000);
+}
+.wp-block-jankx-advanced-filters .filter-reset-button {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--wp--preset--color--contrast, #000);
+  color: var(--wp--preset--color--base, #fff);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+.wp-block-jankx-advanced-filters .filter-reset-button:hover {
+  background: var(--wp--preset--color--primary, #503AA8);
+}
+.wp-block-jankx-advanced-filters .filter-loading {
+  display: none;
+  padding: 1rem;
+  text-align: center;
+}
+.wp-block-jankx-advanced-filters .filter-loading.active {
+  display: block;
+}
+.wp-block-jankx-advanced-filters .filter-loading .filter-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid var(--wp--preset--color--neutral, #ddd);
+  border-top-color: var(--wp--preset--color--primary, #503AA8);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (max-width: 768px) {
+  .wp-block-jankx-advanced-filters .layout-horizontal .advanced-filters-container {
+    flex-direction: column;
+  }
+  .wp-block-jankx-advanced-filters .filter-group {
+    width: 100%;
+  }
+  .wp-block-jankx-advanced-filters .filter-group .filter-options.display-buttons {
+    flex-direction: column;
+  }
+  .wp-block-jankx-advanced-filters .filter-group .filter-options.display-buttons .filter-option {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.wp-block-jankx-advanced-filters .components-placeholder {
+  min-height: 100px;
+  padding: 1.5rem;
+  text-align: center;
+}
+.wp-block-jankx-advanced-filters .components-placeholder .components-placeholder__label {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+.wp-block-jankx-advanced-filters .wp-block-embed__wrapper,
+.wp-block-jankx-advanced-filters .wp-block-jankx-advanced-filters-wrapper {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+.wp-block-jankx-advanced-filters .wp-block-embed__wrapper > div,
+.wp-block-jankx-advanced-filters .wp-block-jankx-advanced-filters-wrapper > div {
+  margin: 0;
+  padding: 0;
+}
+.wp-block-jankx-advanced-filters .block-editor-block-list__block.wp-block-jankx-advanced-filters {
+  border: none;
+  box-shadow: none;
+  background: transparent;
+}
+.wp-block-jankx-advanced-filters .wp-block-jankx-advanced-filters {
+  margin: 2rem 0 !important;
+  padding: 1.5rem !important;
+  outline: none;
+  border: none;
+  box-shadow: none;
+}
+
+/*# sourceMappingURL=index.css.map*/

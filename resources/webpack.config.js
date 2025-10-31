@@ -132,6 +132,11 @@ module.exports = {
     'blocks/advanced-button/build/style': './blocks/advanced-button/style.scss',
     'blocks/advanced-button/build/editor': './blocks/advanced-button/editor.scss',
 
+    'blocks/advanced-filters/build/index': './blocks/advanced-filters/index.tsx',
+    'blocks/advanced-filters/build/frontend': './blocks/advanced-filters/frontend.ts',
+    'blocks/advanced-filters/build/style': './blocks/advanced-filters/style.scss',
+    'blocks/advanced-filters/build/editor': './blocks/advanced-filters/editor.scss',
+
     'blocks/master-table/build/index': './blocks/master-table/index.tsx',
     'blocks/master-table/build/style': './blocks/master-table/style.scss',
     'blocks/master-table/build/editor': './blocks/master-table/editor.scss',

@@ -143,10 +143,14 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         showDots,
     } = attributes;
 
-    // Debounced attributes for ServerSideRender
+    // Use ServerSideRender for initial render (better UX, SSR)
+    // Only use AJAX fetch when needed for complex interactions
+    const [useAjaxRender, setUseAjaxRender] = useState(false);
+    
+    // Debounced attributes for AJAX render (only when useAjaxRender is true)
     const [debouncedAttributes, setDebouncedAttributes] = useState(attributes);
     const [cachedHtml, setCachedHtml] = useState<string>('');
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     
     // Embla Carousel refs for carousel layout preview in editor
     // Always initialize hook, but only use it when layout is carousel
@@ -171,18 +175,22 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     const [loadingTaxonomies, setLoadingTaxonomies] = useState(false);
     const [taxonomyTerms, setTaxonomyTerms] = useState<{[key: string]: any[]}>({});
 
-    // Debounce attributes update để giảm số lần re-render
+    // Debounce attributes update để giảm số lần re-render (only when using AJAX)
     const updateDebouncedAttributes = useCallback(
         debounce((newAttributes: PostTypeLayoutAttributes) => {
             setDebouncedAttributes(newAttributes);
-            setIsLoading(true);
+            if (useAjaxRender) {
+                setIsLoading(true);
+            }
         }, 800),
-        []
+        [useAjaxRender]
     );
 
     useEffect(() => {
-        updateDebouncedAttributes(attributes);
-    }, [attributes, updateDebouncedAttributes]);
+        if (useAjaxRender) {
+            updateDebouncedAttributes(attributes);
+        }
+    }, [attributes, updateDebouncedAttributes, useAjaxRender]);
 
     // Generate unique queryId if not set
     useEffect(() => {
@@ -279,9 +287,12 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     const supportedOptions = currentLayout?.supportedOptions || [];
     const readOnlyOptions = currentLayout?.readOnlyOptions || [];
 
-    // Create stable key based on actual query attributes only
+    // Create stable key based on actual query attributes only (for AJAX render)
     // Chỉ re-render khi các attributes này thay đổi
     const renderKey = useMemo(() => {
+        if (!useAjaxRender) {
+            return '';
+        }
         const keyAttributes = {
             postType: debouncedAttributes.postType,
             postsPerPage: debouncedAttributes.postsPerPage,
@@ -324,10 +335,14 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             showDots: debouncedAttributes.showDots,
         };
         return JSON.stringify(keyAttributes);
-    }, [debouncedAttributes]);
+    }, [debouncedAttributes, useAjaxRender]);
 
-    // Fetch posts từ REST API thay vì dùng ServerSideRender
+    // Fetch posts từ REST API (only when useAjaxRender is true)
     useEffect(() => {
+        if (!useAjaxRender) {
+            return;
+        }
+
         const fetchPosts = async () => {
             try {
                 setIsLoading(true);
@@ -356,7 +371,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         };
 
         fetchPosts();
-    }, [renderKey]); // Only depend on renderKey since it already includes debouncedAttributes
+    }, [renderKey, useAjaxRender]); // Only fetch when useAjaxRender is true
 
 
     return (
@@ -1008,13 +1023,13 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             </InspectorControls>
 
             <div {...blockProps}>
-                {isLoading ? (
+                {useAjaxRender && isLoading ? (
                     <Placeholder>
                         <Spinner />
                         <p>{__('Loading posts...', 'jankx')}</p>
                     </Placeholder>
-                ) : layout === 'carousel' && cachedHtml ? (
-                    // Render carousel preview in editor using Embla Carousel React
+                ) : useAjaxRender && layout === 'carousel' && cachedHtml ? (
+                    // Render carousel preview in editor using Embla Carousel React (AJAX mode)
                     <div className="post-type-layout-carousel-editor" ref={layout === 'carousel' ? emblaRef : undefined}>
                         <div className="embla__viewport">
                             <div className="embla__container">
@@ -1048,8 +1063,62 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                             </>
                         )}
                     </div>
-                ) : (
+                ) : useAjaxRender && cachedHtml ? (
+                    // AJAX mode - render cached HTML
                     <div dangerouslySetInnerHTML={{ __html: cachedHtml }} />
+                ) : (
+                    // Default: Use ServerSideRender (SSR) - better UX, no loading state
+                    <div className={layout === 'carousel' ? 'post-type-layout-carousel-editor' : ''}>
+                        {layout === 'carousel' ? (
+                            <div ref={emblaRef} className="embla__viewport">
+                                <ServerSideRender
+                                    block="jankx/post-type-layout"
+                                    attributes={attributes}
+                                    EmptyResponsePlaceholder={() => (
+                                        <Placeholder>
+                                            <p>{__('No posts found.', 'jankx')}</p>
+                                        </Placeholder>
+                                    )}
+                                />
+                            </div>
+                        ) : (
+                            <ServerSideRender
+                                block="jankx/post-type-layout"
+                                attributes={attributes}
+                                EmptyResponsePlaceholder={() => (
+                                    <Placeholder>
+                                        <p>{__('No posts found.', 'jankx')}</p>
+                                    </Placeholder>
+                                )}
+                            />
+                        )}
+                        {layout === 'carousel' && showArrows !== false && emblaApi && (
+                            <>
+                                <button 
+                                    className="embla__button embla__button--prev" 
+                                    type="button"
+                                    onClick={() => emblaApi.scrollPrev()}
+                                    aria-label={__('Previous slide', 'jankx')}
+                                    disabled={loop === false && !emblaApi.canScrollPrev()}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M15 18l-6-6 6-6"/>
+                                    </svg>
+                                </button>
+                                <button 
+                                    className="embla__button embla__button--next" 
+                                    type="button"
+                                    onClick={() => emblaApi.scrollNext()}
+                                    aria-label={__('Next slide', 'jankx')}
+                                    disabled={loop === false && !emblaApi.canScrollNext()}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M9 18l6-6-6-6"/>
+                                    </svg>
+                                </button>
+                            </>
+                        )}
+                    </div>
                 )}
             </div>
         </>

@@ -22,7 +22,7 @@ class AdvancedFiltersBlock extends Block
      *
      * @var string
      */
-    protected $blockId = 'jankx/advanced-filter';
+    protected $blockId = 'jankx/advanced-filters';
 
     /**
      * Register the block
@@ -40,6 +40,13 @@ class AdvancedFiltersBlock extends Block
         add_action('wp_ajax_nopriv_jankx_advanced_filter_get_meta_keys', [$this, 'handleGetMetaKeysRequest']);
         add_action('wp_ajax_jankx_get_filterable_blocks', [$this, 'handleGetFilterableBlocksRequest']);
         add_action('wp_ajax_nopriv_jankx_get_filterable_blocks', [$this, 'handleGetFilterableBlocksRequest']);
+        
+        // AJAX handler for updating post-type-layout blocks
+        add_action('wp_ajax_jankx_advanced_filters_update', [$this, 'handleFiltersUpdate']);
+        add_action('wp_ajax_nopriv_jankx_advanced_filters_update', [$this, 'handleFiltersUpdate']);
+        
+        // Enqueue frontend assets
+        add_action('wp_enqueue_scripts', [$this, 'enqueueFrontendAssets']);
     }
 
     /**
@@ -108,8 +115,19 @@ class AdvancedFiltersBlock extends Block
         register_rest_route('jankx/v1', '/advanced-filter/filterable-blocks', [
             'methods' => 'GET',
             'callback' => [$this, 'handleGetFilterableBlocksRequest'],
-            'permission_callback' => '__return_true'
+            'permission_callback' => '__return_true',
+            'args' => [
+                'post_id' => [
+                    'required' => false,
+                    'type' => 'integer',
+                    'description' => __('Current post ID', 'jankx'),
+                ],
+            ],
         ]);
+
+        // Also register AJAX handler for backward compatibility
+        add_action('wp_ajax_jankx_get_filterable_blocks', [$this, 'handleGetFilterableBlocksRequestAjax']);
+        add_action('wp_ajax_nopriv_jankx_get_filterable_blocks', [$this, 'handleGetFilterableBlocksRequestAjax']);
     }
 
     /**
@@ -223,36 +241,122 @@ class AdvancedFiltersBlock extends Block
 
     /**
      * Handle get filterable blocks request
+     * Only scans current post/page for jankx/post-type-layout blocks
+     *
+     * @param \WP_REST_Request $request REST request object
+     * @return \WP_REST_Response|WP_Error
+     */
+    public function handleGetFilterableBlocksRequest($request)
+    {
+        // Get current post ID from request or global context
+        $post_id = $request->get_param('post_id') ?: get_the_ID();
+
+        if (!$post_id) {
+            return rest_ensure_response([]);
+        }
+
+        $post = get_post($post_id);
+        if (!$post) {
+            return rest_ensure_response([]);
+        }
+
+        $blocks = [];
+        $parsed_blocks = parse_blocks($post->post_content);
+        
+        $this->findPostTypeLayoutBlocks($parsed_blocks, $blocks, [
+            'source' => 'current_page',
+            'postId' => $post->ID,
+            'postTitle' => $post->post_title,
+            'postType' => $post->post_type,
+        ]);
+
+        // Return array for REST API
+        return rest_ensure_response($blocks);
+    }
+
+    /**
+     * Handle get filterable blocks request via AJAX (for backward compatibility)
+     * Only scans current post/page
      *
      * @return void
      */
-    public function handleGetFilterableBlocksRequest()
+    public function handleGetFilterableBlocksRequestAjax(): void
     {
         $blocks = [];
 
-        // Find all post-layout blocks
-        $posts = get_posts([
-            'post_type' => 'any',
-            'post_status' => 'publish',
-            'posts_per_page' => -1
+        // Get current post ID
+        $post_id = isset($_REQUEST['post_id']) ? intval($_REQUEST['post_id']) : get_the_ID();
+
+        if (!$post_id) {
+            wp_send_json_success(['blocks' => []]);
+            return;
+        }
+
+        $post = get_post($post_id);
+        if (!$post) {
+            wp_send_json_success(['blocks' => []]);
+            return;
+        }
+
+        // Only scan current post
+        $parsed_blocks = parse_blocks($post->post_content);
+        $this->findPostTypeLayoutBlocks($parsed_blocks, $blocks, [
+            'source' => 'current_page',
+            'postId' => $post->ID,
+            'postTitle' => $post->post_title,
+            'postType' => $post->post_type,
         ]);
 
-        foreach ($posts as $post) {
-            $parsed_blocks = parse_blocks($post->post_content);
-            foreach ($parsed_blocks as $block) {
-                if ($block['blockName'] === 'jankx/post-layout') {
-                    $block_id = 'block_' . md5(serialize($block));
-                    $blocks[] = [
+        wp_send_json_success(['blocks' => $blocks]);
+    }
+
+    /**
+     * Recursively find jankx/post-type-layout blocks in parsed blocks
+     *
+     * @param array $blocks Parsed blocks array
+     * @param array &$found_blocks Reference to array to collect found blocks
+     * @param array $context Context information (source, postId, postTitle, postType)
+     * @return void
+     */
+    private function findPostTypeLayoutBlocks(array $blocks, array &$found_blocks, array $context): void
+    {
+        foreach ($blocks as $block) {
+            // Check if this is a post-type-layout block
+            if (($block['blockName'] ?? '') === 'jankx/post-type-layout') {
+                $attributes = $block['attrs'] ?? [];
+                $query_id = $attributes['queryId'] ?? null;
+                
+                // Use queryId if available, otherwise generate a hash
+                $block_id = $query_id ? strval($query_id) : 'block_' . md5(serialize($block));
+                
+                // Check if block already exists (by queryId)
+                $exists = false;
+                foreach ($found_blocks as $existing_block) {
+                    if ($existing_block['id'] === $block_id) {
+                        $exists = true;
+                        break;
+                    }
+                }
+                
+                if (!$exists) {
+                    $found_blocks[] = [
                         'id' => $block_id,
-                        'name' => 'Post Layout - ' . $post->post_title,
-                        'postId' => $post->ID,
-                        'postTitle' => $post->post_title
+                        'name' => ($attributes['postType'] ?? 'post') . ' Layout - ' . $context['postTitle'],
+                        'postId' => $context['postId'],
+                        'postTitle' => $context['postTitle'],
+                        'postType' => $context['postType'],
+                        'source' => $context['source'],
+                        'blockType' => $attributes['postType'] ?? 'post',
+                        'layout' => $attributes['layout'] ?? 'grid',
                     ];
                 }
             }
-        }
 
-        wp_send_json_success($blocks);
+            // Recursively search inner blocks
+            if (!empty($block['innerBlocks'])) {
+                $this->findPostTypeLayoutBlocks($block['innerBlocks'], $found_blocks, $context);
+            }
+        }
     }
 
     /**
@@ -692,106 +796,97 @@ class AdvancedFiltersBlock extends Block
      *
      * @param array $attributes Block attributes
      * @param string $content Block content
+     * @param \WP_Block $block Block instance
      * @return string Rendered HTML
      */
-    public function render($attributes, $content = '')
+    public function render($attributes, $content = '', $block = null)
     {
-        $filter_id = $attributes['filterId'] ?? 'filter_' . uniqid();
+        // Use new attributes structure from block.json
+        $target_block_ids = $attributes['targetBlockIds'] ?? [];
         $filter_type = $attributes['filterType'] ?? 'taxonomy';
-        $filter_config = $attributes['filterConfig'] ?? [];
-        $target_blocks = $attributes['targetBlocks'] ?? [];
-        $ajax_settings = $attributes['ajaxSettings'] ?? [];
-        $display_settings = $attributes['displaySettings'] ?? [];
-        $styling = $attributes['styling'] ?? [];
-        $custom_filters = $attributes['customFilters'] ?? [];
+        $layout = $attributes['layout'] ?? 'horizontal';
+        $show_labels = $attributes['showLabels'] ?? true;
+        $show_reset_button = $attributes['showResetButton'] ?? true;
+        $reset_button_text = $attributes['resetButtonText'] ?? __('Reset Filters', 'jankx');
+        $ajax_enabled = $attributes['ajaxEnabled'] ?? true;
+        $update_url = $attributes['updateUrl'] ?? true;
+        $scroll_to_results = $attributes['scrollToResults'] ?? false;
+        $taxonomy_filters = $attributes['taxonomyFilters'] ?? [];
         $meta_filters = $attributes['metaFilters'] ?? [];
-        $date_filters = $attributes['dateFilters'] ?? [];
         $price_filters = $attributes['priceFilters'] ?? [];
-        $custom_fields = $attributes['customFields'] ?? [];
+        $date_filters = $attributes['dateFilters'] ?? [];
+        $author_filters = $attributes['authorFilters'] ?? [];
+        $keyword_filter = $attributes['keywordFilter'] ?? [];
+        $display_style = $attributes['displayStyle'] ?? 'buttons';
+        $show_count = $attributes['showCount'] ?? false;
+        $multiple_selection = $attributes['multipleSelection'] ?? true;
+        $collapsible = $attributes['collapsible'] ?? false;
+        $default_expanded = $attributes['defaultExpanded'] ?? true;
+
+        // Generate unique filter ID
+        $filter_id = 'filter_' . uniqid();
 
         // Try detect post type from target post-type-layout blocks
-        $detected_post_type = $this->detectPostTypeFromTargets($target_blocks) ?: 'post';
+        $detected_post_type = $this->detectPostTypeFromTargetIds($target_block_ids) ?: 'post';
 
-        // Build filter configuration
+        // Build filter configuration for frontend JavaScript
         $config = [
             'filterId' => $filter_id,
+            'targetBlockIds' => $target_block_ids,
             'filterType' => $filter_type,
-            'filterConfig' => $filter_config,
-            'targetBlocks' => array_filter($target_blocks, function($target) {
-                return $target['enabled'] ?? false;
+            'ajaxEnabled' => $ajax_enabled,
+            'updateUrl' => $update_url,
+            'scrollToResults' => $scroll_to_results,
+            'taxonomyFilters' => array_filter($taxonomy_filters, function($filter) {
+                return $filter['enabled'] ?? false;
             }),
-            'ajaxSettings' => array_merge([
-                'enabled' => true,
-                'loadingText' => 'Đang tải...',
-                'errorText' => 'Có lỗi xảy ra',
-                'updateURL' => true,
-                'scrollToResults' => true,
-                'animationDuration' => 300,
-                'debounceDelay' => 300
-            ], $ajax_settings),
-            'displaySettings' => array_merge([
-                'showLabel' => true,
-                'labelText' => 'Lọc theo:',
-                'showReset' => true,
-                'resetText' => 'Xóa bộ lọc',
-                'showCount' => true,
-                'showLoading' => true,
-                'responsive' => true
-            ], $display_settings),
-            'styling' => array_merge([
-                'layout' => 'horizontal',
-                'gap' => 15,
-                'borderRadius' => 8,
-                'shadow' => 'none',
-                'backgroundColor' => 'transparent',
-                'textColor' => 'inherit'
-            ], $styling),
+            'metaFilters' => array_filter($meta_filters, function($filter) {
+                return $filter['enabled'] ?? false;
+            }),
+            'priceFilters' => array_filter($price_filters, function($filter) {
+                return $filter['enabled'] ?? false;
+            }),
+            'dateFilters' => array_filter($date_filters, function($filter) {
+                return $filter['enabled'] ?? false;
+            }),
+            'authorFilters' => array_filter($author_filters, function($filter) {
+                return $filter['enabled'] ?? false;
+            }),
+            'keywordFilter' => $keyword_filter,
             'postType' => $detected_post_type,
-            'filters' => [
-                'custom' => array_filter($custom_filters, function($filter) {
-                    return $filter['enabled'] ?? false;
-                }),
-                'meta' => array_filter($meta_filters, function($filter) {
-                    return $filter['enabled'] ?? false;
-                }),
-                'date' => array_filter($date_filters, function($filter) {
-                    return $filter['enabled'] ?? false;
-                }),
-                'price' => array_filter($price_filters, function($filter) {
-                    return $filter['enabled'] ?? false;
-                }),
-                'customFields' => array_filter($custom_fields, function($field) {
-                    return $field['enabled'] ?? false;
-                })
-            ]
         ];
 
         // Apply filters to custom config
-        $config = apply_filters('jankx_advanced_filter_config', $config, $attributes);
+        $config = apply_filters('jankx_advanced_filters_config', $config, $attributes);
 
         // Generate unique ID for this filter instance
-        $instance_id = 'jankx-advanced-filter-' . $filter_id;
+        $instance_id = 'jankx-advanced-filters-' . $filter_id;
 
         // Build CSS classes
-        $classes = [
-            'jankx-advanced-filter',
-            'jankx-advanced-filter-' . $filter_type,
-            'jankx-advanced-filter-layout-' . ($styling['layout'] ?? 'horizontal')
-        ];
-
-        if ($styling['responsive'] ?? true) {
-            $classes[] = 'jankx-advanced-filter-responsive';
-        }
-
-        $classes = apply_filters('jankx_advanced_filter_classes', $classes, $attributes);
+        $wrapper_attributes = get_block_wrapper_attributes([
+            'class' => implode(' ', [
+                'wp-block-jankx-advanced-filters',
+                'layout-' . esc_attr($layout),
+                'display-' . esc_attr($display_style),
+            ]),
+            'id' => $instance_id,
+        ]);
 
         // Start output buffering
         ob_start();
         ?>
-        <div class="<?php echo esc_attr(implode(' ', $classes)); ?>" id="<?php echo esc_attr($instance_id); ?>">
-            <div class="jankx-advanced-filter-config" data-config="<?php echo esc_attr(json_encode($config)); ?>" style="display: none;"></div>
-            <div class="jankx-advanced-filter-content">
-                <?php $this->renderFilterContent($config, $attributes); ?>
+        <div <?php echo $wrapper_attributes; ?>>
+            <div class="advanced-filters-config" data-config="<?php echo esc_attr(wp_json_encode($config)); ?>" style="display: none;"></div>
+            <div class="advanced-filters-container">
+                <?php $this->renderFilterContentNew($attributes, $config); ?>
+            </div>
+            <?php if ($show_reset_button) : ?>
+                <button type="button" class="filter-reset-button">
+                    <?php echo esc_html($reset_button_text); ?>
+                </button>
+            <?php endif; ?>
+            <div class="filter-loading">
+                <div class="filter-spinner"></div>
             </div>
         </div>
         <?php
@@ -799,9 +894,128 @@ class AdvancedFiltersBlock extends Block
         $output = ob_get_clean();
 
         // Apply filters to custom output
-        $output = apply_filters('jankx_advanced_filter_output', $output, $config, $attributes);
+        $output = apply_filters('jankx_advanced_filters_output', $output, $config, $attributes);
 
         return $output;
+    }
+
+    /**
+     * Render filter content with new attributes structure
+     *
+     * @param array $attributes Block attributes
+     * @param array $config Filter configuration
+     * @return void
+     */
+    private function renderFilterContentNew(array $attributes, array $config): void
+    {
+        $taxonomy_filters = $attributes['taxonomyFilters'] ?? [];
+        $meta_filters = $attributes['metaFilters'] ?? [];
+        $price_filters = $attributes['priceFilters'] ?? [];
+        $date_filters = $attributes['dateFilters'] ?? [];
+        $author_filters = $attributes['authorFilters'] ?? [];
+        $keyword_filter = $attributes['keywordFilter'] ?? [];
+        $show_labels = $attributes['showLabels'] ?? true;
+        $display_style = $attributes['displayStyle'] ?? 'buttons';
+        $show_count = $attributes['showCount'] ?? false;
+        $multiple_selection = $attributes['multipleSelection'] ?? true;
+        $post_type = $config['postType'] ?? 'post';
+
+        // Render taxonomy filters
+        if (!empty($taxonomy_filters)) {
+            foreach ($taxonomy_filters as $filter) {
+                if (empty($filter['enabled']) || empty($filter['taxonomy'])) {
+                    continue;
+                }
+
+                $taxonomy = get_taxonomy($filter['taxonomy']);
+                if (!$taxonomy) {
+                    continue;
+                }
+
+                $terms = get_terms([
+                    'taxonomy' => $filter['taxonomy'],
+                    'hide_empty' => false,
+                    'orderby' => 'name',
+                    'order' => 'ASC',
+                ]);
+
+                if (is_wp_error($terms) || empty($terms)) {
+                    continue;
+                }
+
+                $label = !empty($filter['label']) ? $filter['label'] : $taxonomy->label;
+                $input_type = $multiple_selection ? 'checkbox' : 'radio';
+                $name_attr = $multiple_selection ? $filter['taxonomy'] . '[]' : $filter['taxonomy'];
+
+                echo '<div class="filter-group filter-taxonomy" data-taxonomy="' . esc_attr($filter['taxonomy']) . '">';
+                if ($show_labels) {
+                    echo '<label class="filter-group-label">' . esc_html($label) . '</label>';
+                }
+                echo '<div class="filter-options display-' . esc_attr($display_style) . '">';
+                foreach ($terms as $term) {
+                    $count_text = $show_count ? ' (' . intval($term->count) . ')' : '';
+                    if ($display_style === 'buttons') {
+                        echo '<span class="filter-option" data-value="' . esc_attr($term->term_id) . '">';
+                        echo esc_html($term->name) . esc_html($count_text);
+                        echo '</span>';
+                    } else {
+                        echo '<label class="filter-option">';
+                        echo '<input type="' . esc_attr($input_type) . '" name="' . esc_attr($name_attr) . '" value="' . esc_attr($term->term_id) . '">';
+                        echo '<span>' . esc_html($term->name) . esc_html($count_text) . '</span>';
+                        echo '</label>';
+                    }
+                }
+                echo '</div></div>';
+            }
+        }
+
+        // Render keyword filter
+        if (!empty($keyword_filter['enabled'])) {
+            $placeholder = $keyword_filter['placeholder'] ?? __('Search...', 'jankx');
+            echo '<div class="filter-group filter-keyword">';
+            if ($show_labels) {
+                echo '<label class="filter-group-label">' . esc_html__('Keyword', 'jankx') . '</label>';
+            }
+            echo '<input type="text" class="filter-input" placeholder="' . esc_attr($placeholder) . '">';
+            echo '</div>';
+        }
+    }
+
+    /**
+     * Detect post type from target block IDs
+     *
+     * @param array $target_block_ids Array of block IDs
+     * @return string|null Post type or null
+     */
+    private function detectPostTypeFromTargetIds(array $target_block_ids): ?string
+    {
+        if (empty($target_block_ids)) {
+            return null;
+        }
+
+        // Find blocks in post content
+        $posts = get_posts([
+            'post_type' => 'any',
+            'post_status' => 'publish',
+            'posts_per_page' => -1,
+        ]);
+
+        foreach ($target_block_ids as $block_id) {
+            foreach ($posts as $post) {
+                $blocks = parse_blocks($post->post_content);
+                foreach ($blocks as $block) {
+                    if (($block['blockName'] ?? '') !== 'jankx/post-type-layout') {
+                        continue;
+                    }
+                    $current_block_id = $block['attrs']['queryId'] ?? null;
+                    if ($current_block_id && strval($current_block_id) === strval($block_id)) {
+                        return $block['attrs']['postType'] ?? null;
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -1107,5 +1321,234 @@ class AdvancedFiltersBlock extends Block
         echo esc_html($display_settings['resetText'] ?? 'Xóa bộ lọc');
         echo '</button>';
         echo '</div>';
+    }
+
+    /**
+     * Enqueue frontend assets
+     *
+     * @return void
+     */
+    public function enqueueFrontendAssets(): void
+    {
+        // Only enqueue if block is used on the page
+        if (!has_block('jankx/advanced-filters')) {
+            return;
+        }
+
+        $frontend_asset_file = $this->blockPath . '/build/frontend.asset.php';
+        $frontend_script_path = $this->blockPath . '/build/frontend.js';
+
+        if (file_exists($frontend_asset_file) && file_exists($frontend_script_path)) {
+            $asset = require $frontend_asset_file;
+            $script_handle = 'jankx-advanced-filters-frontend';
+
+            // Get block URL dynamically to support child themes
+            $block_url = str_replace(
+                [wp_normalize_path(WP_CONTENT_DIR), '\\'],
+                [content_url(), '/'],
+                wp_normalize_path($this->blockPath)
+            );
+
+            wp_enqueue_script(
+                $script_handle,
+                $block_url . '/build/frontend.js',
+                $asset['dependencies'] ?? [],
+                $asset['version'] ?? filemtime($frontend_script_path),
+                true
+            );
+
+            // Localize AJAX data
+            wp_localize_script(
+                $script_handle,
+                'jankxAdvancedFilters',
+                [
+                    'ajaxUrl' => admin_url('admin-ajax.php'),
+                    'nonce' => wp_create_nonce('jankx_advanced_filters'),
+                ]
+            );
+        }
+    }
+
+    /**
+     * Handle AJAX request to update post-type-layout blocks with filters
+     *
+     * @return void
+     */
+    public function handleFiltersUpdate(): void
+    {
+        // Verify nonce
+        check_ajax_referer('jankx_advanced_filters', 'nonce');
+
+        // Get parameters
+        $target_blocks_json = isset($_POST['target_blocks']) ? sanitize_text_field(wp_unslash($_POST['target_blocks'])) : '';
+        $filters_json = isset($_POST['filters']) ? sanitize_text_field(wp_unslash($_POST['filters'])) : '[]';
+
+        // Decode JSON
+        $target_blocks = [];
+        $filters = [];
+
+        if (!empty($target_blocks_json)) {
+            $decoded = json_decode($target_blocks_json, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                $target_blocks = $decoded;
+            }
+        }
+
+        if (!empty($filters_json)) {
+            $decoded = json_decode($filters_json, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                $filters = $decoded;
+            }
+        }
+
+        if (empty($target_blocks)) {
+            wp_send_json_error(['message' => __('No target blocks specified', 'jankx')]);
+            return;
+        }
+
+        try {
+            $results = [];
+
+            // Process each target block
+            foreach ($target_blocks as $block_id) {
+                $block_data = $this->getPostTypeLayoutBlockData($block_id, $filters);
+                if ($block_data) {
+                    $results[$block_id] = $block_data;
+                }
+            }
+
+            wp_send_json_success($results);
+        } catch (\Exception $e) {
+            Log::error('AdvancedFiltersBlock: Error updating filters - ' . $e->getMessage());
+            wp_send_json_error(['message' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Get post-type-layout block data with filters applied
+     *
+     * @param string $block_id Block ID to filter
+     * @param array $filters Filter parameters
+     * @return string|null Rendered HTML
+     */
+    private function getPostTypeLayoutBlockData(string $block_id, array $filters): ?string
+    {
+        // Find block in post content
+        $posts = get_posts([
+            'post_type' => 'any',
+            'post_status' => 'publish',
+            'posts_per_page' => -1,
+        ]);
+
+        foreach ($posts as $post) {
+            $blocks = parse_blocks($post->post_content);
+            foreach ($blocks as $block) {
+                if (($block['blockName'] ?? '') !== 'jankx/post-type-layout') {
+                    continue;
+                }
+
+                // Check if this is the target block
+                $current_block_id = $block['attrs']['queryId'] ?? null;
+                if ($current_block_id && strval($current_block_id) === $block_id) {
+                    // Apply filters to block attributes
+                    $attributes = $block['attrs'];
+                    $attributes = $this->applyFiltersToAttributes($attributes, $filters);
+
+                    // Render block with updated attributes
+                    return $this->renderPostTypeLayoutBlock($attributes);
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Apply filters to post-type-layout block attributes
+     *
+     * @param array $attributes Original block attributes
+     * @param array $filters Filter parameters
+     * @return array Modified attributes
+     */
+    private function applyFiltersToAttributes(array $attributes, array $filters): array
+    {
+        // Apply taxonomy filters
+        if (!empty($filters) && is_array($filters)) {
+            $tax_query = $attributes['taxQuery'] ?? [];
+
+            foreach ($filters as $key => $value) {
+                // Check if it's a taxonomy filter
+                $taxonomy = get_taxonomy($key);
+                if ($taxonomy) {
+                    $term_ids = is_array($value) ? $value : [$value];
+                    $tax_query[] = [
+                        'taxonomy' => $key,
+                        'field' => 'term_id',
+                        'terms' => array_map('intval', $term_ids),
+                        'operator' => 'IN',
+                    ];
+                } elseif ($key === 'keyword' && !empty($value)) {
+                    $attributes['keyword'] = sanitize_text_field($value);
+                } elseif (strpos($key, 'meta_') === 0) {
+                    // Meta filter
+                    $meta_key = substr($key, 5);
+                    $meta_query = $attributes['metaQuery'] ?? [];
+                    $meta_query[] = [
+                        'key' => $meta_key,
+                        'value' => sanitize_text_field($value),
+                        'compare' => '=',
+                    ];
+                    $attributes['metaQuery'] = $meta_query;
+                } elseif ($key === 'price' && is_array($value)) {
+                    // Price filter
+                    $meta_query = $attributes['metaQuery'] ?? [];
+                    if (!empty($value['min'])) {
+                        $meta_query[] = [
+                            'key' => 'price',
+                            'value' => floatval($value['min']),
+                            'compare' => '>=',
+                            'type' => 'NUMERIC',
+                        ];
+                    }
+                    if (!empty($value['max'])) {
+                        $meta_query[] = [
+                            'key' => 'price',
+                            'value' => floatval($value['max']),
+                            'compare' => '<=',
+                            'type' => 'NUMERIC',
+                        ];
+                    }
+                    $attributes['metaQuery'] = $meta_query;
+                }
+            }
+
+            if (!empty($tax_query)) {
+                $attributes['taxQuery'] = $tax_query;
+            }
+        }
+
+        return $attributes;
+    }
+
+    /**
+     * Render post-type-layout block with given attributes
+     *
+     * @param array $attributes Block attributes
+     * @return string Rendered HTML
+     */
+    private function renderPostTypeLayoutBlock(array $attributes): string
+    {
+        // Use PostTypeLayoutBlock's render method
+        $post_type_layout_block = new \Jankx\Gutenberg\Blocks\PostTypeLayoutBlock();
+        
+        // Create a mock block instance for rendering
+        $mock_block = (object) [
+            'attributes' => $attributes,
+            'innerBlocks' => [],
+            'innerHTML' => '',
+            'innerContent' => [],
+        ];
+
+        return $post_type_layout_block->render($attributes, '', $mock_block);
     }
 }
