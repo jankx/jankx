@@ -6,7 +6,7 @@
  */
 
 // Import frontend styles to ensure editor looks exactly like frontend
-@import './style.scss';
+@use './style.scss';
 
 // Minimal editor-specific overrides
 .wp-block-jankx-advanced-filters {

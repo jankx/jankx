@@ -124,6 +124,22 @@
       "type": "boolean",
       "default": false
     },
+    "showEmptyTerms": {
+      "type": "boolean",
+      "default": true
+    },
+    "showOnlyTopLevel": {
+      "type": "boolean",
+      "default": false
+    },
+    "showHierarchy": {
+      "type": "boolean",
+      "default": false
+    },
+    "displayAsDropdown": {
+      "type": "boolean",
+      "default": false
+    },
     "multipleSelection": {
       "type": "boolean",
       "default": true

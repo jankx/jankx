@@ -1,159 +1,170 @@
 @use "sass:color";
 
-.wp-block-jankx-advanced-filters {
-    margin: 2rem 0;
-    padding: 1.5rem;
-    background: var(--wp--preset--color--base, #fff);
-    border-radius: 8px;
-
-    &.layout-horizontal {
-        .advanced-filters-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            align-items: flex-start;
-        }
+.layout-horizontal {
+    .advanced-filters-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: flex-start;
     }
+}
 
-    &.layout-vertical {
-        .advanced-filters-container {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
+.layout-vertical {
+    .advanced-filters-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
     }
+}
 
-    &.layout-accordion {
-        .advanced-filters-container {
-            .filter-group {
-                border-bottom: 1px solid var(--wp--preset--color--neutral, #ddd);
-                padding-bottom: 1rem;
-                margin-bottom: 1rem;
+.layout-accordion {
+    .advanced-filters-container {
+        .filter-group {
+            border-bottom: 1px solid var(--wp--preset--color--neutral, #ddd);
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
 
-                &:last-child {
-                    border-bottom: none;
-                    margin-bottom: 0;
-                }
-
-                .filter-group-header {
-                    cursor: pointer;
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    padding: 0.75rem 0;
-
-                    .filter-group-title {
-                        font-weight: 600;
-                        margin: 0;
-                    }
-
-                    .filter-group-toggle {
-                        background: none;
-                        border: none;
-                        font-size: 1.2rem;
-                        cursor: pointer;
-                        padding: 0;
-                        color: var(--wp--preset--color--contrast, #000);
-
-                        &:hover {
-                            color: var(--wp--preset--color--primary, #503AA8);
-                        }
-                    }
-                }
-
-                .filter-group-content {
-                    padding-top: 1rem;
-                    display: none;
-
-                    &.expanded {
-                        display: block;
-                    }
-                }
+            &:last-child {
+                border-bottom: none;
+                margin-bottom: 0;
             }
-        }
-    }
 
-    .filter-group {
-        flex: 0 0 auto;
+            .filter-group-header {
+                cursor: pointer;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0.75rem 0;
 
-        .filter-group-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            font-size: 0.9rem;
-            color: var(--wp--preset--color--contrast, #000);
-        }
+                .filter-group-title {
+                    font-weight: 600;
+                    margin: 0;
+                }
 
-        .filter-options {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-
-            &.display-buttons {
-                .filter-option {
-                    padding: 0.5rem 1rem;
-                    border: 2px solid var(--wp--preset--color--neutral, #ddd);
-                    background: var(--wp--preset--color--base, #fff);
-                    border-radius: 6px;
+                .filter-group-toggle {
+                    background: none;
+                    border: none;
+                    font-size: 1.2rem;
                     cursor: pointer;
-                    transition: all 0.2s ease;
-                    font-size: 0.9rem;
-                    text-decoration: none;
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 0.5rem;
+                    padding: 0;
+                    color: var(--wp--preset--color--contrast, #000);
 
                     &:hover {
-                        border-color: var(--wp--preset--color--primary, #503AA8);
                         color: var(--wp--preset--color--primary, #503AA8);
                     }
-
-                    &.active {
-                        background: var(--wp--preset--color--primary, #503AA8);
-                        border-color: var(--wp--preset--color--primary, #503AA8);
-                        color: var(--wp--preset--color--base, #fff);
-                    }
                 }
             }
 
-            &.display-checkboxes {
-                .filter-option {
-                    display: flex;
-                    align-items: center;
-                    gap: 0.5rem;
-                    padding: 0.5rem;
-                    cursor: pointer;
+            .filter-group-content {
+                padding-top: 1rem;
+                display: none;
 
-                    input[type="checkbox"] {
-                        margin: 0;
-                    }
-
-                    label {
-                        cursor: pointer;
-                        margin: 0;
-                    }
+                &.expanded {
+                    display: block;
                 }
             }
+        }
+    }
+}
 
-            &.display-dropdown,
-            &.display-select {
-                .filter-select {
-                    padding: 0.5rem 1rem;
-                    border: 2px solid var(--wp--preset--color--neutral, #ddd);
-                    border-radius: 6px;
-                    font-size: 0.9rem;
-                    background: var(--wp--preset--color--base, #fff);
-                    min-width: 200px;
+.filter-group {
+    flex: 0 0 auto;
+
+    .filter-group-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        font-size: 0.9rem;
+        color: var(--wp--preset--color--contrast, #000);
+    }
+
+    .filter-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+
+        &.display-buttons {
+            .filter-option {
+                padding: 0.5rem 1rem;
+                border: 2px solid var(--wp--preset--color--neutral, #ddd);
+                background: var(--wp--preset--color--base, #fff);
+                border-radius: 6px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                font-size: 0.9rem;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+
+                &:hover {
+                    border-color: var(--wp--preset--color--primary, #503AA8);
+                    color: var(--wp--preset--color--primary, #503AA8);
+                }
+
+                &.active {
+                    background: var(--wp--preset--color--primary, #503AA8);
+                    border-color: var(--wp--preset--color--primary, #503AA8);
+                    color: var(--wp--preset--color--base, #fff);
                 }
             }
         }
 
-        .filter-input {
-            padding: 0.5rem 1rem;
+        &.display-checkboxes {
+            .filter-option {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.5rem;
+                cursor: pointer;
+
+                input[type="checkbox"] {
+                    margin: 0;
+                }
+
+                label {
+                    cursor: pointer;
+                    margin: 0;
+                }
+            }
+        }
+
+        &.display-dropdown,
+        &.display-select {
+            .filter-select {
+                padding: 0.5rem 1rem;
+                border: 2px solid var(--wp--preset--color--neutral, #ddd);
+                border-radius: 6px;
+                font-size: 0.9rem;
+                background: var(--wp--preset--color--base, #fff);
+                min-width: 200px;
+            }
+        }
+    }
+
+    .filter-input {
+        padding: 0.5rem 1rem;
+        border: 2px solid var(--wp--preset--color--neutral, #ddd);
+        border-radius: 6px;
+        font-size: 0.9rem;
+        min-width: 200px;
+
+        &:focus {
+            outline: none;
+            border-color: var(--wp--preset--color--primary, #503AA8);
+        }
+    }
+
+    .filter-range {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+
+        .filter-range-input {
+            flex: 1;
+            padding: 0.5rem;
             border: 2px solid var(--wp--preset--color--neutral, #ddd);
             border-radius: 6px;
-            font-size: 0.9rem;
-            min-width: 200px;
 
             &:focus {
                 outline: none;
@@ -161,89 +172,76 @@
             }
         }
 
-        .filter-range {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-
-            .filter-range-input {
-                flex: 1;
-                padding: 0.5rem;
-                border: 2px solid var(--wp--preset--color--neutral, #ddd);
-                border-radius: 6px;
-
-                &:focus {
-                    outline: none;
-                    border-color: var(--wp--preset--color--primary, #503AA8);
-                }
-            }
-
-            .filter-range-separator {
-                color: var(--wp--preset--color--contrast, #000);
-            }
-        }
-    }
-
-    .filter-reset-button {
-        margin-top: 1rem;
-        padding: 0.75rem 1.5rem;
-        background: var(--wp--preset--color--contrast, #000);
-        color: var(--wp--preset--color--base, #fff);
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 0.9rem;
-        transition: all 0.2s ease;
-
-        &:hover {
-            background: var(--wp--preset--color--primary, #503AA8);
-        }
-    }
-
-    .filter-loading {
-        display: none;
-        padding: 1rem;
-        text-align: center;
-
-        &.active {
-            display: block;
-        }
-
-        .filter-spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid var(--wp--preset--color--neutral, #ddd);
-            border-top-color: var(--wp--preset--color--primary, #503AA8);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-    }
-
-    @keyframes spin {
-        to {
-            transform: rotate(360deg);
-        }
-    }
-
-    // Responsive
-    @media (max-width: 768px) {
-        .layout-horizontal .advanced-filters-container {
-            flex-direction: column;
-        }
-
-        .filter-group {
-            width: 100%;
-
-            .filter-options.display-buttons {
-                flex-direction: column;
-
-                .filter-option {
-                    width: 100%;
-                    justify-content: center;
-                }
-            }
+        .filter-range-separator {
+            color: var(--wp--preset--color--contrast, #000);
         }
     }
 }
 
+.filter-reset-button {
+    margin-top: 1rem;
+    padding: 0.75rem 1.5rem;
+    background: var(--wp--preset--color--contrast, #000);
+    color: var(--wp--preset--color--base, #fff);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+
+    &:hover {
+        background: var(--wp--preset--color--primary, #503AA8);
+    }
+}
+
+.filter-loading {
+    display: none;
+    padding: 1rem;
+    text-align: center;
+
+    &.active {
+        display: block;
+    }
+
+    .filter-spinner {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid var(--wp--preset--color--neutral, #ddd);
+        border-top-color: var(--wp--preset--color--primary, #503AA8);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+// Hierarchy styles
+.filter-term-child {
+    font-size: 0.95em;
+    opacity: 0.95;
+}
+
+// Responsive
+@media (max-width: 768px) {
+    .layout-horizontal .advanced-filters-container {
+        flex-direction: column;
+    }
+
+    .filter-group {
+        width: 100%;
+
+        .filter-options.display-buttons {
+            flex-direction: column;
+
+            .filter-option {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    }
+}

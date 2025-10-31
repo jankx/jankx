@@ -819,6 +819,10 @@ class AdvancedFiltersBlock extends Block
         $keyword_filter = $attributes['keywordFilter'] ?? [];
         $display_style = $attributes['displayStyle'] ?? 'buttons';
         $show_count = $attributes['showCount'] ?? false;
+        $show_empty_terms = $attributes['showEmptyTerms'] ?? true;
+        $show_only_top_level = $attributes['showOnlyTopLevel'] ?? false;
+        $show_hierarchy = $attributes['showHierarchy'] ?? false;
+        $display_as_dropdown = $attributes['displayAsDropdown'] ?? false;
         $multiple_selection = $attributes['multipleSelection'] ?? true;
         $collapsible = $attributes['collapsible'] ?? false;
         $default_expanded = $attributes['defaultExpanded'] ?? true;
@@ -908,6 +912,87 @@ class AdvancedFiltersBlock extends Block
     }
 
     /**
+     * Render terms with hierarchy structure
+     *
+     * @param array $terms Array of term objects
+     * @param string $display_style Display style
+     * @param bool $show_count Show post count
+     * @param string $input_type Input type (checkbox/radio)
+     * @param string $name_attr Name attribute
+     * @param bool $is_dropdown Whether rendering in dropdown
+     * @return void
+     */
+    private function renderTermsHierarchy(array $terms, string $display_style, bool $show_count, string $input_type, string $name_attr, bool $is_dropdown): void
+    {
+        // Organize terms into hierarchy
+        $term_tree = [];
+        $term_index = [];
+
+        foreach ($terms as $term) {
+            $term_index[$term->term_id] = $term;
+            if ($term->parent === 0) {
+                $term_tree[] = $term;
+            }
+        }
+
+        // Build parent-child relationships
+        foreach ($terms as $term) {
+            if ($term->parent > 0 && isset($term_index[$term->parent])) {
+                if (!isset($term_index[$term->parent]->children)) {
+                    $term_index[$term->parent]->children = [];
+                }
+                $term_index[$term->parent]->children[] = $term;
+            }
+        }
+
+        // Render recursively
+        $this->renderTermRecursive($term_tree, $display_style, $show_count, $input_type, $name_attr, $is_dropdown, 0);
+    }
+
+    /**
+     * Recursively render term with hierarchy
+     *
+     * @param array $terms Array of term objects
+     * @param string $display_style Display style
+     * @param bool $show_count Show post count
+     * @param string $input_type Input type
+     * @param string $name_attr Name attribute
+     * @param bool $is_dropdown Whether rendering in dropdown
+     * @param int $depth Current depth
+     * @return void
+     */
+    private function renderTermRecursive(array $terms, string $display_style, bool $show_count, string $input_type, string $name_attr, bool $is_dropdown, int $depth): void
+    {
+        foreach ($terms as $term) {
+            $count_text = $show_count ? ' (' . intval($term->count) . ')' : '';
+            $indent_class = $depth > 0 ? ' filter-term-child' : '';
+            
+            if ($is_dropdown) {
+                $indent = str_repeat('&nbsp;&nbsp;', $depth);
+                echo '<option value="' . esc_attr($term->term_id) . '">';
+                echo $indent . esc_html($term->name) . esc_html($count_text);
+                echo '</option>';
+            } else {
+                if ($display_style === 'buttons') {
+                    echo '<span class="filter-option filter-term-item' . esc_attr($indent_class) . '" style="padding-left: ' . ($depth * 20) . 'px;" data-value="' . esc_attr($term->term_id) . '">';
+                    echo esc_html($term->name) . esc_html($count_text);
+                    echo '</span>';
+                } else {
+                    echo '<label class="filter-option filter-term-item' . esc_attr($indent_class) . '" style="padding-left: ' . ($depth * 20) . 'px;">';
+                    echo '<input type="' . esc_attr($input_type) . '" name="' . esc_attr($name_attr) . '" value="' . esc_attr($term->term_id) . '">';
+                    echo '<span>' . esc_html($term->name) . esc_html($count_text) . '</span>';
+                    echo '</label>';
+                }
+            }
+
+            // Render children if exist
+            if (!empty($term->children)) {
+                $this->renderTermRecursive($term->children, $display_style, $show_count, $input_type, $name_attr, $is_dropdown, $depth + 1);
+            }
+        }
+    }
+
+    /**
      * Render filter content with new attributes structure
      *
      * @param array $attributes Block attributes
@@ -925,6 +1010,10 @@ class AdvancedFiltersBlock extends Block
         $show_labels = $attributes['showLabels'] ?? true;
         $display_style = $attributes['displayStyle'] ?? 'buttons';
         $show_count = $attributes['showCount'] ?? false;
+        $show_empty_terms = $attributes['showEmptyTerms'] ?? true;
+        $show_only_top_level = $attributes['showOnlyTopLevel'] ?? false;
+        $show_hierarchy = $attributes['showHierarchy'] ?? false;
+        $display_as_dropdown = $attributes['displayAsDropdown'] ?? false;
         $multiple_selection = $attributes['multipleSelection'] ?? true;
         $post_type = $config['postType'] ?? 'post';
 
@@ -940,12 +1029,23 @@ class AdvancedFiltersBlock extends Block
                     continue;
                 }
 
-                $terms = get_terms([
+                // Build get_terms args based on options
+                $term_args = [
                     'taxonomy' => $filter['taxonomy'],
-                    'hide_empty' => false,
+                    'hide_empty' => !$show_empty_terms,
                     'orderby' => 'name',
                     'order' => 'ASC',
-                ]);
+                ];
+
+                if ($show_only_top_level) {
+                    $term_args['parent'] = 0;
+                }
+
+                if ($show_hierarchy) {
+                    $term_args['hierarchical'] = true;
+                }
+
+                $terms = get_terms($term_args);
 
                 if (is_wp_error($terms) || empty($terms)) {
                     continue;
@@ -959,21 +1059,50 @@ class AdvancedFiltersBlock extends Block
                 if ($show_labels) {
                     echo '<label class="filter-group-label">' . esc_html($label) . '</label>';
                 }
-                echo '<div class="filter-options display-' . esc_attr($display_style) . '">';
-                foreach ($terms as $term) {
-                    $count_text = $show_count ? ' (' . intval($term->count) . ')' : '';
-                    if ($display_style === 'buttons') {
-                        echo '<span class="filter-option" data-value="' . esc_attr($term->term_id) . '">';
-                        echo esc_html($term->name) . esc_html($count_text);
-                        echo '</span>';
+                
+                // Use dropdown if displayAsDropdown is enabled
+                if ($display_as_dropdown) {
+                    echo '<select class="filter-select">';
+                    echo '<option value="">' . esc_html__('All', 'jankx') . '</option>';
+                    
+                    if ($show_hierarchy && !$show_only_top_level) {
+                        // Render hierarchy in dropdown
+                        $this->renderTermsHierarchy($terms, $display_style, $show_count, $input_type, $name_attr, true);
                     } else {
-                        echo '<label class="filter-option">';
-                        echo '<input type="' . esc_attr($input_type) . '" name="' . esc_attr($name_attr) . '" value="' . esc_attr($term->term_id) . '">';
-                        echo '<span>' . esc_html($term->name) . esc_html($count_text) . '</span>';
-                        echo '</label>';
+                        // Render flat list
+                        foreach ($terms as $term) {
+                            $count_text = $show_count ? ' (' . intval($term->count) . ')' : '';
+                            echo '<option value="' . esc_attr($term->term_id) . '">';
+                            echo esc_html($term->name) . esc_html($count_text);
+                            echo '</option>';
+                        }
                     }
+                    echo '</select>';
+                } else {
+                    echo '<div class="filter-options display-' . esc_attr($display_style) . '">';
+                    
+                    if ($show_hierarchy && !$show_only_top_level) {
+                        // Render hierarchy
+                        $this->renderTermsHierarchy($terms, $display_style, $show_count, $input_type, $name_attr, false);
+                    } else {
+                        // Render flat list
+                        foreach ($terms as $term) {
+                            $count_text = $show_count ? ' (' . intval($term->count) . ')' : '';
+                            if ($display_style === 'buttons') {
+                                echo '<span class="filter-option" data-value="' . esc_attr($term->term_id) . '">';
+                                echo esc_html($term->name) . esc_html($count_text);
+                                echo '</span>';
+                            } else {
+                                echo '<label class="filter-option">';
+                                echo '<input type="' . esc_attr($input_type) . '" name="' . esc_attr($name_attr) . '" value="' . esc_attr($term->term_id) . '">';
+                                echo '<span>' . esc_html($term->name) . esc_html($count_text) . '</span>';
+                                echo '</label>';
+                            }
+                        }
+                    }
+                    echo '</div>';
                 }
-                echo '</div></div>';
+                echo '</div>';
             }
         }
 

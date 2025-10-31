@@ -227,5 +227,261 @@
             }
         }
     }
+
+    // Style Variations
+
+    // Minimal Style - Clean and simple, no borders
+    &.is-style-minimal {
+        border: none;
+        border-radius: 0;
+        padding: 0;
+        margin: 1.5rem 0;
+        background: transparent;
+
+        .toc-header {
+            border-bottom: 1px solid var(--toc-border-color);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+        }
+
+        .toc-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .toc-list {
+            &:not(.toc-list--root) {
+                border-left: 1px solid var(--toc-border-color);
+                margin-left: 1rem;
+                padding-left: 0.5rem;
+            }
+        }
+
+        .toc-item {
+            &__link {
+                padding: 0.25rem 0;
+                
+                &:hover {
+                    text-decoration: none;
+                    color: var(--toc-link-hover-color);
+                }
+            }
+        }
+    }
+
+    // Boxed Style - Prominent box with padding and background
+    &.is-style-boxed {
+        border: 2px solid var(--toc-primary-color);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin: 2rem 0;
+        background: var(--toc-bg-color);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+        .toc-wrapper {
+            padding: 0;
+        }
+
+        .toc-header {
+            border-bottom: 2px solid var(--toc-primary-color);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .toc-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--toc-primary-color);
+        }
+
+        .toc-list {
+            &--root {
+                > .toc-item {
+                    &:not(:last-child) {
+                        margin-bottom: 0.75rem;
+                    }
+                }
+            }
+
+            &:not(.toc-list--root) {
+                margin-left: 2rem;
+                padding-left: 1rem;
+                border-left: 3px solid var(--toc-primary-color);
+            }
+        }
+
+        .toc-item {
+            &__link {
+                padding: 0.5rem 0;
+                font-weight: 500;
+
+                &:hover {
+                    color: var(--toc-link-hover-color);
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+
+    // Sidebar Style - Compact for sidebar placement
+    &.is-style-sidebar {
+        border: 1px solid var(--toc-border-color);
+        border-radius: 6px;
+        padding: 1rem;
+        margin: 1rem 0;
+        background: var(--toc-bg-color);
+
+        .toc-header {
+            border-bottom: 1px solid var(--toc-border-color);
+            padding-bottom: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .toc-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .toc-list {
+            &--root {
+                > .toc-item {
+                    &:not(:last-child) {
+                        margin-bottom: 0.4rem;
+                    }
+                }
+            }
+
+            &:not(.toc-list--root) {
+                margin-top: 0.4rem;
+                margin-left: 1rem;
+                padding-left: 0.5rem;
+                border-left: 1px solid var(--toc-border-color);
+            }
+        }
+
+        .toc-item {
+            line-height: 1.5;
+
+            &__link {
+                font-size: 0.9rem;
+                padding: 0.2rem 0;
+
+                &:hover {
+                    text-decoration: none;
+                    color: var(--toc-link-hover-color);
+                }
+            }
+
+            &__toggle {
+                font-size: 14px;
+                min-width: 18px;
+            }
+
+            &--level-2 .toc-item__link {
+                font-size: 0.95rem;
+                font-weight: 600;
+            }
+
+            &--level-3 .toc-item__link {
+                font-size: 0.9rem;
+                font-weight: 500;
+            }
+
+            &--level-4,
+            &--level-5,
+            &--level-6 .toc-item__link {
+                font-size: 0.85rem;
+                font-weight: 400;
+            }
+        }
+    }
+
+    // Floating Style - Sticky/floating style with shadow
+    &.is-style-floating {
+        border: none;
+        border-radius: 12px;
+        padding: 1.25rem;
+        margin: 1.5rem 0;
+        background: var(--toc-bg-color);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--toc-primary-color), var(--toc-link-hover-color));
+        }
+
+        .toc-header {
+            border-bottom: none;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            position: relative;
+
+            &::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 2px;
+                background: linear-gradient(90deg, transparent, var(--toc-border-color), transparent);
+            }
+        }
+
+        .toc-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--toc-primary-color);
+            text-align: center;
+        }
+
+        .toc-list {
+            &--root {
+                > .toc-item {
+                    &:not(:last-child) {
+                        margin-bottom: 0.6rem;
+                    }
+                }
+            }
+
+            &:not(.toc-list--root) {
+                margin-left: 1.5rem;
+                padding-left: 0.75rem;
+                border-left: 2px solid var(--toc-border-color);
+            }
+        }
+
+        .toc-item {
+            &__link {
+                padding: 0.35rem 0.5rem;
+                border-radius: 4px;
+                transition: all 0.2s ease;
+                display: inline-block;
+                width: 100%;
+
+                &:hover {
+                    background: color-mix(in srgb, var(--toc-primary-color) 10%, transparent);
+                    color: var(--toc-link-hover-color);
+                    text-decoration: none;
+                    transform: translateX(4px);
+                }
+            }
+
+            &__toggle {
+                transition: transform 0.2s ease;
+
+                &:hover {
+                    transform: scale(1.1);
+                }
+            }
+        }
+    }
 }
 

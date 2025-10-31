@@ -414,6 +414,32 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         max={50}
                         help={__('Number of posts to display', 'jankx')}
                     />
+
+                    {/* Order By and Order - Show for related and custom presets */}
+                    {queryPreset !== 'default' && (
+                        <>
+                            <SelectControl
+                                label={__('Order By', 'jankx')}
+                                value={orderBy}
+                                options={(window as any).jankxQueryOptions?.orderBy || [
+                                    { label: __('Date (Published)', 'jankx'), value: 'date' },
+                                    { label: __('Modified (Last Modified)', 'jankx'), value: 'modified' },
+                                    { label: __('Title', 'jankx'), value: 'title' },
+                                ]}
+                                onChange={(value) => setAttributes({ orderBy: value })}
+                                help={__('Sort posts by which criteria', 'jankx')}
+                            />
+                            <SelectControl
+                                label={__('Order', 'jankx')}
+                                value={order}
+                                options={(window as any).jankxQueryOptions?.order || [
+                                    { label: __('Descending', 'jankx'), value: 'DESC' },
+                                    { label: __('Ascending', 'jankx'), value: 'ASC' },
+                                ]}
+                                onChange={(value) => setAttributes({ order: value })}
+                            />
+                        </>
+                    )}
                 </PanelBody>
 
                 {/* Layout Settings */}
@@ -508,8 +534,8 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                     )}
                 </PanelBody>
 
-                {/* Display Settings */}
-                <PanelBody title={__('Display Settings', 'jankx')} initialOpen={false}>
+                {/* Display Options */}
+                <PanelBody title={__('Display Options', 'jankx')} initialOpen={false}>
                     {supportedOptions.includes('showFeaturedImage') && (
                         <ToggleControl
                             label={__('Show Featured Image', 'jankx')}
@@ -562,72 +588,8 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                             disabled={readOnlyOptions.includes('showAuthor')}
                         />
                     )}
-                </PanelBody>
 
-                {/* Query Parameters - Only show for custom preset */}
-                {queryPreset === 'custom' && (
-                    <PanelBody title={__('Query Parameters', 'jankx')} initialOpen={false}>
-                    <RangeControl
-                        label={__('Posts Per Page', 'jankx')}
-                        value={postsPerPage}
-                        onChange={(value) => setAttributes({ postsPerPage: value || 10 })}
-                        min={1}
-                        max={50}
-                    />
-                    <RangeControl
-                        label={__('Offset', 'jankx')}
-                        value={offset}
-                        onChange={(value) => setAttributes({ offset: value || 0 })}
-                        min={0}
-                        max={50}
-                        help={__('Skip the first N posts', 'jankx')}
-                    />
-                    <SelectControl
-                        label={__('Order By', 'jankx')}
-                        value={orderBy}
-                        options={(window as any).jankxQueryOptions?.orderBy || [
-                            { label: __('Date (Published)', 'jankx'), value: 'date' },
-                            { label: __('Modified (Last Modified)', 'jankx'), value: 'modified' },
-                            { label: __('Title', 'jankx'), value: 'title' },
-                        ]}
-                        onChange={(value) => setAttributes({ orderBy: value })}
-                        help={__('Sort posts by which criteria', 'jankx')}
-                    />
-                    <SelectControl
-                        label={__('Order', 'jankx')}
-                        value={order}
-                        options={(window as any).jankxQueryOptions?.order || [
-                            { label: __('Descending', 'jankx'), value: 'DESC' },
-                            { label: __('Ascending', 'jankx'), value: 'ASC' },
-                        ]}
-                        onChange={(value) => setAttributes({ order: value })}
-                    />
-
-                    {/* Meta Key for meta_value ordering */}
-                    {(orderBy === 'meta_value' || orderBy === 'meta_value_num') && (
-                        <>
-                            <TextControl
-                                label={__('Meta Key', 'jankx')}
-                                value={metaKey}
-                                onChange={(value) => setAttributes({ metaKey: value })}
-                                help={__('Meta key for sorting (required when using meta_value)', 'jankx')}
-                                placeholder={__('Example: price, views, rating', 'jankx')}
-                            />
-                            {orderBy === 'meta_value' && (
-                                <SelectControl
-                                    label={__('Meta Type', 'jankx')}
-                                    value={metaType}
-                                    options={(window as any).jankxQueryOptions?.metaTypes || [
-                                        { label: __('-- Auto --', 'jankx'), value: '' },
-                                        { label: 'NUMERIC', value: 'NUMERIC' },
-                                    ]}
-                                    onChange={(value) => setAttributes({ metaType: value })}
-                                    help={__('Specify data type for accurate sorting', 'jankx')}
-                                />
-                            )}
-                        </>
-                    )}
-
+                    {/* Pagination Settings */}
                     <ToggleControl
                         label={__('Enable Pagination', 'jankx')}
                         checked={enablePagination}
@@ -635,7 +597,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         help={__('Display pagination to paginate posts', 'jankx')}
                     />
 
-                    {enablePagination ? (
+                    {enablePagination && (
                         <>
                             <SelectControl
                                 label={__('Pagination Style', 'jankx')}
@@ -687,7 +649,45 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                 placeholder={__('Example: Next » or <svg>...</svg>', 'jankx')}
                             />
                         </>
-                    ) : null}
+                    )}
+                </PanelBody>
+
+                {/* Query Parameters - Only show for custom preset */}
+                {queryPreset === 'custom' && (
+                    <PanelBody title={__('Query Parameters', 'jankx')} initialOpen={false}>
+                    <RangeControl
+                        label={__('Offset', 'jankx')}
+                        value={offset}
+                        onChange={(value) => setAttributes({ offset: value || 0 })}
+                        min={0}
+                        max={50}
+                        help={__('Skip the first N posts', 'jankx')}
+                    />
+
+                    {/* Meta Key for meta_value ordering */}
+                    {(orderBy === 'meta_value' || orderBy === 'meta_value_num') && (
+                        <>
+                            <TextControl
+                                label={__('Meta Key', 'jankx')}
+                                value={metaKey}
+                                onChange={(value) => setAttributes({ metaKey: value })}
+                                help={__('Meta key for sorting (required when using meta_value)', 'jankx')}
+                                placeholder={__('Example: price, views, rating', 'jankx')}
+                            />
+                            {orderBy === 'meta_value' && (
+                                <SelectControl
+                                    label={__('Meta Type', 'jankx')}
+                                    value={metaType}
+                                    options={(window as any).jankxQueryOptions?.metaTypes || [
+                                        { label: __('-- Auto --', 'jankx'), value: '' },
+                                        { label: 'NUMERIC', value: 'NUMERIC' },
+                                    ]}
+                                    onChange={(value) => setAttributes({ metaType: value })}
+                                    help={__('Specify data type for accurate sorting', 'jankx')}
+                                />
+                            )}
+                        </>
+                    )}
                 </PanelBody>
                 )}
 

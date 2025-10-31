@@ -130,6 +130,29 @@
     "editorScript": "file:./build/index.js",
     "editorStyle": "file:./build/editor.css",
     "viewScript": "file:./build/view.js",
-    "style": "file:./build/style.css"
+    "style": "file:./build/style.css",
+    "styles": [
+        {
+            "name": "default",
+            "label": "Default",
+            "isDefault": true
+        },
+        {
+            "name": "minimal",
+            "label": "Minimal"
+        },
+        {
+            "name": "boxed",
+            "label": "Boxed"
+        },
+        {
+            "name": "sidebar",
+            "label": "Sidebar"
+        },
+        {
+            "name": "floating",
+            "label": "Floating"
+        }
+    ]
 }
 

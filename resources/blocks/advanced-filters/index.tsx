@@ -40,6 +40,10 @@ interface AdvancedFiltersAttributes {
     };
     displayStyle: 'buttons' | 'checkboxes' | 'dropdown' | 'select';
     showCount: boolean;
+    showEmptyTerms: boolean;
+    showOnlyTopLevel: boolean;
+    showHierarchy: boolean;
+    displayAsDropdown: boolean;
     multipleSelection: boolean;
     collapsible: boolean;
     defaultExpanded: boolean;
@@ -70,6 +74,10 @@ function Edit({ attributes, setAttributes }: EditProps) {
         keywordFilter,
         displayStyle,
         showCount,
+        showEmptyTerms,
+        showOnlyTopLevel,
+        showHierarchy,
+        displayAsDropdown,
         multipleSelection,
         collapsible,
         defaultExpanded,
@@ -328,10 +336,38 @@ function Edit({ attributes, setAttributes }: EditProps) {
                     />
 
                     <ToggleControl
-                        label={__('Show Count', 'jankx')}
+                        label={__('Show Post Counts', 'jankx')}
                         checked={showCount}
                         onChange={(value) => setAttributes({ showCount: value })}
                         help={__('Show post count next to each filter option', 'jankx')}
+                    />
+
+                    <ToggleControl
+                        label={__('Show Empty Terms', 'jankx')}
+                        checked={showEmptyTerms}
+                        onChange={(value) => setAttributes({ showEmptyTerms: value })}
+                        help={__('Show terms that have no posts', 'jankx')}
+                    />
+
+                    <ToggleControl
+                        label={__('Show Only Top Level Terms', 'jankx')}
+                        checked={showOnlyTopLevel}
+                        onChange={(value) => setAttributes({ showOnlyTopLevel: value })}
+                        help={__('Show only parent terms', 'jankx')}
+                    />
+
+                    <ToggleControl
+                        label={__('Show Hierarchy', 'jankx')}
+                        checked={showHierarchy}
+                        onChange={(value) => setAttributes({ showHierarchy: value })}
+                        help={__('Display terms with hierarchical structure', 'jankx')}
+                    />
+
+                    <ToggleControl
+                        label={__('Display as Dropdown', 'jankx')}
+                        checked={displayAsDropdown}
+                        onChange={(value) => setAttributes({ displayAsDropdown: value })}
+                        help={__('Show terms in dropdown format', 'jankx')}
                     />
 
                     <ToggleControl
