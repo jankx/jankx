@@ -73,7 +73,23 @@ class PostLayoutDecorator
             'autoplayDelay' => $attributes['autoplayDelay'] ?? 3000,
             'showArrows' => $attributes['showArrows'] ?? true,
             'showDots' => $attributes['showDots'] ?? true,
+            // Carousel DOM selection hints (for custom generators)
+            // The generator can also expose these via filters
+            'itemsWrapperClass' => isset($attributes['itemsWrapperClass']) ? sanitize_html_class($attributes['itemsWrapperClass']) : '',
+            'itemClass' => isset($attributes['itemClass']) ? sanitize_html_class($attributes['itemClass']) : '',
         ];
+        
+        // Auto-detect carousel item classes for WooCommerce products
+        $layout_name = $attributes['layout'] ?? 'grid';
+        if ($layout_name === 'carousel' && $post_type === 'product' && class_exists('WooCommerce')) {
+            // Auto-detect WooCommerce product template structure
+            if (empty($options['itemsWrapperClass'])) {
+                $options['itemsWrapperClass'] = 'wc-block-product-template';
+            }
+            if (empty($options['itemClass'])) {
+                $options['itemClass'] = 'wc-block-product';
+            }
+        }
 
         // Allow external packages to add their specific options
         $options = apply_filters('jankx/post-layout/options', $options, $post_type, $attributes);
