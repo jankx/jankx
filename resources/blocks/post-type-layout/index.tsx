@@ -19,13 +19,14 @@ import {
     Button,
 } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
-import { useEffect, useState, useCallback, useMemo } from '@wordpress/element';
+import { useEffect, useState, useCallback, useMemo, useRef } from '@wordpress/element';
 import ServerSideRender from '@wordpress/server-side-render';
 import { debounce } from '@wordpress/compose';
 import { ResponsiveControl, ResponsiveValue } from '../../shared/components';
 import metadata from './block.json';
 import './style.scss';
 import './editor.scss';
+import useEmblaCarousel from 'embla-carousel-react';
 
 interface TaxQueryItem {
     taxonomy: string;
@@ -80,6 +81,13 @@ interface PostTypeLayoutAttributes {
     postParentIn: number[];
     postParentNotIn: number[];
     customQueryId: string;
+    // Carousel specific attributes
+    slidesToScroll?: number;
+    loop?: boolean;
+    autoplay?: boolean;
+    autoplayDelay?: number;
+    showArrows?: boolean;
+    showDots?: boolean;
 }
 
 interface EditProps {
@@ -127,12 +135,35 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         postParentIn,
         postParentNotIn,
         customQueryId,
+        slidesToScroll,
+        loop,
+        autoplay,
+        autoplayDelay,
+        showArrows,
+        showDots,
     } = attributes;
 
     // Debounced attributes for ServerSideRender
     const [debouncedAttributes, setDebouncedAttributes] = useState(attributes);
     const [cachedHtml, setCachedHtml] = useState<string>('');
     const [isLoading, setIsLoading] = useState(true);
+    
+    // Embla Carousel refs for carousel layout preview in editor
+    // Always initialize hook, but only use it when layout is carousel
+    const [emblaRef, emblaApi] = useEmblaCarousel({
+        slidesToScroll: slidesToScroll ?? 1,
+        loop: loop ?? false,
+        skipSnaps: false,
+        dragFree: false,
+    });
+    
+    // Re-initialize carousel when settings change (for carousel layout only)
+    useEffect(() => {
+        if (layout === 'carousel' && emblaApi && cachedHtml) {
+            // Embla will auto-update when options change via props
+            emblaApi.reInit();
+        }
+    }, [layout, slidesToScroll, loop, cachedHtml, emblaApi]);
 
     // States for taxonomies and authors
     const [taxonomies, setTaxonomies] = useState<any[]>([]);
@@ -285,6 +316,12 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             postParentIn: debouncedAttributes.postParentIn,
             postParentNotIn: debouncedAttributes.postParentNotIn,
             customQueryId: debouncedAttributes.customQueryId,
+            slidesToScroll: debouncedAttributes.slidesToScroll,
+            loop: debouncedAttributes.loop,
+            autoplay: debouncedAttributes.autoplay,
+            autoplayDelay: debouncedAttributes.autoplayDelay,
+            showArrows: debouncedAttributes.showArrows,
+            showDots: debouncedAttributes.showDots,
         };
         return JSON.stringify(keyAttributes);
     }, [debouncedAttributes]);
@@ -378,6 +415,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                 { label: __('List', 'jankx'), value: 'list' },
                                 { label: __('Masonry', 'jankx'), value: 'masonry' },
                                 { label: __('Card', 'jankx'), value: 'card' },
+                                { label: __('Carousel', 'jankx'), value: 'carousel' },
                             ]
                         }
                         onChange={(value) => setAttributes({ layout: value })}
@@ -403,6 +441,55 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                 mobile: __('Number of columns on mobile (<768px)', 'jankx')
                             }}
                         />
+                    )}
+                    
+                    {/* Carousel Specific Settings */}
+                    {layout === 'carousel' && (
+                        <>
+                            <RangeControl
+                                label={__('Slides To Scroll', 'jankx')}
+                                value={slidesToScroll ?? 1}
+                                onChange={(value) => setAttributes({ slidesToScroll: value || 1 })}
+                                min={1}
+                                max={columns || 3}
+                                help={__('Number of slides to scroll at a time', 'jankx')}
+                            />
+                            <ToggleControl
+                                label={__('Loop', 'jankx')}
+                                checked={loop ?? false}
+                                onChange={(value) => setAttributes({ loop: value })}
+                                help={__('Enable infinite loop', 'jankx')}
+                            />
+                            <ToggleControl
+                                label={__('Autoplay', 'jankx')}
+                                checked={autoplay ?? false}
+                                onChange={(value) => setAttributes({ autoplay: value })}
+                                help={__('Automatically advance slides', 'jankx')}
+                            />
+                            {autoplay && (
+                                <RangeControl
+                                    label={__('Autoplay Delay (ms)', 'jankx')}
+                                    value={autoplayDelay ?? 3000}
+                                    onChange={(value) => setAttributes({ autoplayDelay: value || 3000 })}
+                                    min={1000}
+                                    max={10000}
+                                    step={500}
+                                    help={__('Time between autoplay transitions', 'jankx')}
+                                />
+                            )}
+                            <ToggleControl
+                                label={__('Show Arrows', 'jankx')}
+                                checked={showArrows ?? true}
+                                onChange={(value) => setAttributes({ showArrows: value })}
+                                help={__('Display navigation arrows', 'jankx')}
+                            />
+                            <ToggleControl
+                                label={__('Show Dots', 'jankx')}
+                                checked={showDots ?? true}
+                                onChange={(value) => setAttributes({ showDots: value })}
+                                help={__('Display pagination dots', 'jankx')}
+                            />
+                        </>
                     )}
                 </PanelBody>
 
@@ -926,10 +1013,44 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         <Spinner />
                         <p>{__('Loading posts...', 'jankx')}</p>
                     </Placeholder>
+                ) : layout === 'carousel' && cachedHtml ? (
+                    // Render carousel preview in editor using Embla Carousel React
+                    <div className="post-type-layout-carousel-editor" ref={layout === 'carousel' ? emblaRef : undefined}>
+                        <div className="embla__viewport">
+                            <div className="embla__container">
+                                <div dangerouslySetInnerHTML={{ __html: cachedHtml }} />
+                            </div>
+                        </div>
+                        {showArrows !== false && emblaApi && layout === 'carousel' && (
+                            <>
+                                <button 
+                                    className="embla__button embla__button--prev" 
+                                    type="button"
+                                    onClick={() => emblaApi.scrollPrev()}
+                                    aria-label={__('Previous slide', 'jankx')}
+                                    disabled={loop === false && !emblaApi.canScrollPrev()}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M15 18l-6-6 6-6"/>
+                                    </svg>
+                                </button>
+                                <button 
+                                    className="embla__button embla__button--next" 
+                                    type="button"
+                                    onClick={() => emblaApi.scrollNext()}
+                                    aria-label={__('Next slide', 'jankx')}
+                                    disabled={loop === false && !emblaApi.canScrollNext()}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M9 18l6-6-6-6"/>
+                                    </svg>
+                                </button>
+                            </>
+                        )}
+                    </div>
                 ) : (
                     <div dangerouslySetInnerHTML={{ __html: cachedHtml }} />
                 )}
-
             </div>
         </>
     );

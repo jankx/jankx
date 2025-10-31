@@ -66,6 +66,13 @@ class PostLayoutDecorator
             'showAuthor' => $attributes['showAuthor'] ?? false,
             'postsPerPage' => $attributes['postsPerPage'] ?? 10,
             'excerptLength' => $attributes['excerptLength'] ?? 55,
+            // Carousel specific options
+            'slidesToScroll' => $attributes['slidesToScroll'] ?? 1,
+            'loop' => $attributes['loop'] ?? false,
+            'autoplay' => $attributes['autoplay'] ?? false,
+            'autoplayDelay' => $attributes['autoplayDelay'] ?? 3000,
+            'showArrows' => $attributes['showArrows'] ?? true,
+            'showDots' => $attributes['showDots'] ?? true,
         ];
 
         // Allow external packages to add their specific options

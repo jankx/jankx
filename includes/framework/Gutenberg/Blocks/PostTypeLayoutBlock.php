@@ -310,7 +310,7 @@ class PostTypeLayoutBlock extends Block
     }
 
     /**
-     * Enqueue frontend assets for Load More functionality
+     * Enqueue frontend assets for Load More and Carousel functionality
      *
      * @return void
      */
@@ -321,41 +321,64 @@ class PostTypeLayoutBlock extends Block
             return;
         }
 
-        $asset_file = $this->blockPath . '/build/load-more.asset.php';
-        $script_path = $this->blockPath . '/build/load-more.js';
+        // Enqueue Load More script
+        $load_more_asset_file = $this->blockPath . '/build/load-more.asset.php';
+        $load_more_script_path = $this->blockPath . '/build/load-more.js';
 
-        // If built file doesn't exist, skip
-        if (!file_exists($asset_file) || !file_exists($script_path)) {
-            return;
+        if (file_exists($load_more_asset_file) && file_exists($load_more_script_path)) {
+            $asset = require $load_more_asset_file;
+            $script_handle = 'jankx-post-type-layout-load-more';
+
+            // Get block URL dynamically to support child themes
+            $block_url = str_replace(
+                [wp_normalize_path(WP_CONTENT_DIR), '\\'],
+                [content_url(), '/'],
+                wp_normalize_path($this->blockPath)
+            );
+
+            wp_enqueue_script(
+                $script_handle,
+                $block_url . '/build/load-more.js',
+                $asset['dependencies'] ?? ['wp-api-fetch'],
+                $asset['version'] ?? filemtime($load_more_script_path),
+                true
+            );
+
+            // Localize AJAX data
+            wp_localize_script(
+                $script_handle,
+                'jankxLoadMore',
+                [
+                    'ajaxUrl' => admin_url('admin-ajax.php'),
+                    'nonce' => wp_create_nonce('jankx_load_more'),
+                ]
+            );
         }
 
-        $asset = require $asset_file;
-        $script_handle = 'jankx-post-type-layout-load-more';
+        // Enqueue Carousel script
+        $carousel_asset_file = $this->blockPath . '/build/carousel.asset.php';
+        $carousel_script_path = $this->blockPath . '/build/carousel.js';
 
-        // Get block URL dynamically to support child themes
-        $block_url = str_replace(
-            [wp_normalize_path(WP_CONTENT_DIR), '\\'],
-            [content_url(), '/'],
-            wp_normalize_path($this->blockPath)
-        );
+        // Only enqueue if carousel layout is used on the page
+        if (file_exists($carousel_asset_file) && file_exists($carousel_script_path)) {
+            $asset = require $carousel_asset_file;
+            $script_handle = 'jankx-post-type-layout-carousel';
 
-        wp_enqueue_script(
-            $script_handle,
-            $block_url . '/build/load-more.js',
-            $asset['dependencies'] ?? ['wp-api-fetch'],
-            $asset['version'] ?? filemtime($script_path),
-            true
-        );
+            // Get block URL dynamically to support child themes
+            $block_url = str_replace(
+                [wp_normalize_path(WP_CONTENT_DIR), '\\'],
+                [content_url(), '/'],
+                wp_normalize_path($this->blockPath)
+            );
 
-        // Localize AJAX data
-        wp_localize_script(
-            $script_handle,
-            'jankxLoadMore',
-            [
-                'ajaxUrl' => admin_url('admin-ajax.php'),
-                'nonce' => wp_create_nonce('jankx_load_more'),
-            ]
-        );
+            wp_enqueue_script(
+                $script_handle,
+                $block_url . '/build/carousel.js',
+                $asset['dependencies'] ?? [],
+                $asset['version'] ?? filemtime($carousel_script_path),
+                true
+            );
+        }
     }
 
     /**
@@ -447,6 +470,30 @@ class PostTypeLayoutBlock extends Block
 
         // Sanitize attributes based on layout's supported options (for render)
         $attributes = $this->sanitizeAttributes($layout_name, $attributes, true);
+
+        // Ensure frontend carousel script is enqueued when using carousel layout
+        if ($layout_name === 'carousel') {
+            $carousel_asset_file = $this->blockPath . '/build/carousel.asset.php';
+            $carousel_script_path = $this->blockPath . '/build/carousel.js';
+            if (file_exists($carousel_asset_file) && file_exists($carousel_script_path)) {
+                $asset = require $carousel_asset_file;
+                $script_handle = 'jankx-post-type-layout-carousel';
+
+                $block_url = str_replace(
+                    [wp_normalize_path(WP_CONTENT_DIR), '\\'],
+                    [content_url(), '/'],
+                    wp_normalize_path($this->blockPath)
+                );
+
+                wp_enqueue_script(
+                    $script_handle,
+                    $block_url . '/build/carousel.js',
+                    $asset['dependencies'] ?? [],
+                    $asset['version'] ?? filemtime($carousel_script_path),
+                    true
+                );
+            }
+        }
 
         // Handle query preset
         if ($queryPreset === 'default') {

@@ -211,6 +211,30 @@
     "paginationNextText": {
       "type": "string",
       "default": ""
+    },
+    "slidesToScroll": {
+      "type": "number",
+      "default": 1
+    },
+    "loop": {
+      "type": "boolean",
+      "default": false
+    },
+    "autoplay": {
+      "type": "boolean",
+      "default": false
+    },
+    "autoplayDelay": {
+      "type": "number",
+      "default": 3000
+    },
+    "showArrows": {
+      "type": "boolean",
+      "default": true
+    },
+    "showDots": {
+      "type": "boolean",
+      "default": true
     }
   }
 }

@@ -408,4 +408,158 @@
             }
         }
     }
+
+    // Carousel layout
+    .post-type-layout-carousel {
+        position: relative;
+        
+        .embla__viewport {
+            overflow: hidden;
+        }
+        
+        .embla__container {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .embla__slide {
+            flex: 0 0 calc(100% / var(--carousel-columns, 3));
+            min-width: 0;
+            padding: 0 1rem;
+            
+            @media (max-width: 768px) {
+                flex: 0 0 calc(100% / var(--carousel-columns-mobile, 1));
+            }
+            
+            @media (min-width: 769px) and (max-width: 1024px) {
+                flex: 0 0 calc(100% / var(--carousel-columns-tablet, 2));
+            }
+        }
+        
+        .embla__button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            width: 3rem;
+            height: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.2s ease;
+            
+            &:hover {
+                background: var(--wp--preset--color--primary, #503AA8);
+                color: #fff;
+                border-color: var(--wp--preset--color--primary, #503AA8);
+            }
+            
+            &:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+            
+            svg {
+                width: 1.5rem;
+                height: 1.5rem;
+            }
+            
+            &--prev {
+                left: 1rem;
+            }
+            
+            &--next {
+                right: 1rem;
+            }
+        }
+        
+        .embla__dots {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+            list-style: none;
+            padding: 0;
+        }
+        
+        .embla__dot {
+            width: 0.75rem;
+            height: 0.75rem;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.2);
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 0;
+            
+            &--selected {
+                background: var(--wp--preset--color--primary, #503AA8);
+                transform: scale(1.2);
+            }
+            
+            &:hover {
+                background: rgba(0, 0, 0, 0.4);
+            }
+        }
+        
+        // Responsive columns for carousel
+        --carousel-columns: var(--columns-desktop, 3);
+        --carousel-columns-tablet: var(--columns-tablet, 2);
+        --carousel-columns-mobile: var(--columns-mobile, 1);
+        
+        &.columns-1 { --carousel-columns: 1; }
+        &.columns-2 { --carousel-columns: 2; }
+        &.columns-3 { --carousel-columns: 3; }
+        &.columns-4 { --carousel-columns: 4; }
+        &.columns-5 { --carousel-columns: 5; }
+        &.columns-6 { --carousel-columns: 6; }
+    }
+    
+    // Editor carousel preview
+    .post-type-layout-carousel-editor {
+        position: relative;
+        
+        .embla__viewport {
+            overflow: hidden;
+        }
+        
+        .embla__container {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .embla__button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            width: 2.5rem;
+            height: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            
+            svg {
+                width: 1.25rem;
+                height: 1.25rem;
+            }
+            
+            &--prev {
+                left: 0.5rem;
+            }
+            
+            &--next {
+                right: 0.5rem;
+            }
+        }
+    }
 }

@@ -7,6 +7,7 @@ use Jankx\Layouts\PostLayout\Supports\GridLayout;
 use Jankx\Layouts\PostLayout\Supports\ListLayout;
 use Jankx\Layouts\PostLayout\Supports\MasonryLayout;
 use Jankx\Layouts\PostLayout\Supports\CardLayout;
+use Jankx\Layouts\PostLayout\Supports\CarouselLayout;
 use InvalidArgumentException;
 
 /**
@@ -34,6 +35,7 @@ class PostLayoutFactory
         self::register('list', ListLayout::class);
         self::register('masonry', MasonryLayout::class);
         self::register('card', CardLayout::class);
+        self::register('carousel', CarouselLayout::class);
     }
 
     /**
