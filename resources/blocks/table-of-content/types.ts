@@ -4,7 +4,7 @@
  */
 
 export type ListingType = 'ul' | 'ol' | 'none';
-export type ExpandIconType = 'plus-minus' | 'chevron' | 'arrow' | 'caret';
+export type ExpandIconType = 'plus-minus' | 'chevron' | 'arrow' | 'caret' | 'none';
 export type HeadingStyle = 'underline' | 'tabbed' | 'bordered';
 
 export interface TOCItem {
@@ -20,7 +20,6 @@ export interface TableOfContentAttributes {
     expandIconType: ExpandIconType;
     defaultExpanded: boolean;
     expandFirstItem: boolean;
-    showNumbers: boolean;
     showHeading: boolean;
     customHeadingText: string;
     headingStyle: HeadingStyle;

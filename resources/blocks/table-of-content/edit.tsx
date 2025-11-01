@@ -17,7 +17,7 @@ import {
     RangeControl,
 } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
-import { useState } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 import { list, formatListNumbered } from '@wordpress/icons';
 
 /**
@@ -152,18 +152,18 @@ function renderTOCItem(
     listingType: string,
     expandIconType: string,
     expandState: ExpandState,
-    onToggle: (id: string) => void,
-    showNumbers: boolean
+    onToggle: (id: string) => void
 ): JSX.Element {
     const hasChildren = item.children.length > 0;
-    const isExpanded = expandState[item.id] !== undefined ? expandState[item.id] : item.isExpanded;
+    // When expand icon type is 'none', always show all items expanded
+    const isExpanded = expandIconType === 'none' ? true : (expandState[item.id] !== undefined ? expandState[item.id] : item.isExpanded);
     const ListTag = listingType === 'none' ? 'div' : (listingType === 'ol' ? 'ol' : 'ul');
     const ItemTag = listingType === 'none' ? 'div' : 'li';
 
     return (
         <ItemTag key={item.id} className={`toc-item toc-item--level-${item.level}`}>
             <div className="toc-item__wrapper">
-                {hasChildren && (
+                {hasChildren && expandIconType !== 'none' && (
                     <button
                         className={`toc-item__toggle ${isExpanded ? 'is-expanded' : 'is-collapsed'}`}
                         onClick={() => onToggle(item.id)}
@@ -182,7 +182,7 @@ function renderTOCItem(
             {hasChildren && isExpanded && (
                 <ListTag className={`toc-list toc-list--level-${item.level + 1}${listingType === 'none' ? ' toc-list--none' : ''}`}>
                     {item.children.map((child) =>
-                        renderTOCItem(child, listingType, expandIconType, expandState, onToggle, showNumbers)
+                        renderTOCItem(child, listingType, expandIconType, expandState, onToggle)
                     )}
                 </ListTag>
             )}
@@ -199,7 +199,6 @@ export default function Edit({ attributes, setAttributes, clientId }: TableOfCon
         expandIconType,
         defaultExpanded,
         expandFirstItem,
-        showNumbers,
         showHeading,
         customHeadingText,
         headingStyle,
@@ -296,6 +295,25 @@ export default function Edit({ attributes, setAttributes, clientId }: TableOfCon
         className: `jankx-table-of-content heading-style-${headingStyle}`,
         'data-expand-icon-type': expandIconType,
     });
+
+    // Sync style variant with listingType attribute
+    useEffect(() => {
+        const className = blockProps.className || attributes.className || '';
+        let newListingType: 'ul' | 'ol' | 'none' | null = null;
+
+        if (className.includes('is-style-ul-list')) {
+            newListingType = 'ul';
+        } else if (className.includes('is-style-ol-list')) {
+            newListingType = 'ol';
+        } else if (className.includes('is-style-none-list')) {
+            newListingType = 'none';
+        }
+
+        // Update attribute if style variant changed
+        if (newListingType && newListingType !== listingType) {
+            setAttributes({ listingType: newListingType });
+        }
+    }, [blockProps.className, attributes.className, listingType, setAttributes]);
 
     const ListTag = listingType === 'none' ? 'div' : (listingType === 'ol' ? 'ol' : 'ul');
 
@@ -441,6 +459,7 @@ export default function Edit({ attributes, setAttributes, clientId }: TableOfCon
                             { label: __('Chevron (▶/▼)', 'jankx'), value: 'chevron' },
                             { label: __('Arrow (→/↓)', 'jankx'), value: 'arrow' },
                             { label: __('Caret (▸/▾)', 'jankx'), value: 'caret' },
+                            { label: __('None (Don\'t apply)', 'jankx'), value: 'none' },
                         ]}
                         onChange={(value) => setAttributes({ expandIconType: value as any })}
                         help={__('Choose icon style for expand/collapse buttons', 'jankx')}
@@ -466,13 +485,6 @@ export default function Edit({ attributes, setAttributes, clientId }: TableOfCon
                         />
                     )}
 
-                    <ToggleControl
-                        label={__('Show Numbers', 'jankx')}
-                        checked={showNumbers}
-                        onChange={(value) => setAttributes({ showNumbers: value })}
-                        help={__('Show hierarchical numbers (1.1, 1.2, etc.)', 'jankx')}
-                        __nextHasNoMarginBottom
-                    />
                 </PanelBody>
             </InspectorControls>
 
@@ -484,9 +496,9 @@ export default function Edit({ attributes, setAttributes, clientId }: TableOfCon
                         </div>
                     )}
                     {tocData.length > 0 ? (
-                        <ListTag className={`toc-list toc-list--root ${showNumbers ? 'toc-list--numbered' : ''}${listingType === 'none' ? ' toc-list--none' : ''}`}>
+                        <ListTag className={`toc-list toc-list--root${listingType === 'none' ? ' toc-list--none' : ''}`}>
                             {tocData.map((item) =>
-                                renderTOCItem(item, listingType, expandIconType, expandState, handleToggle, showNumbers)
+                                renderTOCItem(item, listingType, expandIconType, expandState, handleToggle)
                             )}
                         </ListTag>
                     ) : (

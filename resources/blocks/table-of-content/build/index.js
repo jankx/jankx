@@ -8,7 +8,7 @@
   \********************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/table-of-content","title":"Table of Content","category":"jankx","description":"Display interactive table of content for the current post","keywords":["toc","table","content","index","mục lục"],"textdomain":"jankx","attributes":{"listingType":{"type":"string","enum":["ul","ol","none"],"default":"ul"},"expandIconType":{"type":"string","enum":["plus-minus","chevron","arrow","caret"],"default":"plus-minus"},"defaultExpanded":{"type":"boolean","default":false},"expandFirstItem":{"type":"boolean","default":true},"showNumbers":{"type":"boolean","default":false},"showHeading":{"type":"boolean","default":true},"customHeadingText":{"type":"string","default":""},"headingStyle":{"type":"string","enum":["underline","tabbed","bordered"],"default":"underline"},"minHeadingLevel":{"type":"number","default":1,"minimum":1,"maximum":6},"maxHeadingLevel":{"type":"number","default":6,"minimum":2,"maximum":6},"className":{"type":"string","default":""},"anchor":{"type":"string","default":""}},"style":"file:./build/style.css","supports":{"html":false,"anchor":true,"align":["wide","full"],"spacing":{"margin":true,"padding":true,"blockGap":true,"__experimentalDefaultControls":{"padding":true,"margin":true}},"color":{"background":true,"gradients":true,"text":true,"link":true,"__experimentalDefaultControls":{"background":true,"text":true}},"typography":{"fontSize":true,"lineHeight":true,"fontFamily":true,"fontWeight":true,"fontStyle":true,"textTransform":true,"textDecoration":true,"letterSpacing":true,"__experimentalDefaultControls":{"fontSize":true}},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true,"__experimentalDefaultControls":{"radius":true}},"shadow":true},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","viewScript":"file:./build/view.js","styles":[{"name":"default","label":"Default","isDefault":true},{"name":"minimal","label":"Minimal"},{"name":"boxed","label":"Boxed"},{"name":"sidebar","label":"Sidebar"},{"name":"sidebar-icon","label":"Sidebar with Icons"}]}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/table-of-content","title":"Table of Content","category":"jankx","description":"Display interactive table of content for the current post","keywords":["toc","table","content","index","mục lục"],"textdomain":"jankx","attributes":{"listingType":{"type":"string","enum":["ul","ol","none"],"default":"ul"},"expandIconType":{"type":"string","enum":["plus-minus","chevron","arrow","caret","none"],"default":"plus-minus"},"defaultExpanded":{"type":"boolean","default":false},"expandFirstItem":{"type":"boolean","default":true},"showHeading":{"type":"boolean","default":true},"customHeadingText":{"type":"string","default":""},"headingStyle":{"type":"string","enum":["underline","tabbed","bordered"],"default":"underline"},"minHeadingLevel":{"type":"number","default":1,"minimum":1,"maximum":6},"maxHeadingLevel":{"type":"number","default":6,"minimum":2,"maximum":6},"className":{"type":"string","default":""},"anchor":{"type":"string","default":""}},"style":"file:./build/style.css","supports":{"html":false,"anchor":true,"align":["wide","full"],"spacing":{"margin":true,"padding":true,"blockGap":true,"__experimentalDefaultControls":{"padding":true,"margin":true}},"color":{"background":true,"gradients":true,"text":true,"link":true,"__experimentalDefaultControls":{"background":true,"text":true}},"typography":{"fontSize":true,"lineHeight":true,"fontFamily":true,"fontWeight":true,"fontStyle":true,"textTransform":true,"textDecoration":true,"letterSpacing":true,"__experimentalDefaultControls":{"fontSize":true}},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true,"__experimentalDefaultControls":{"radius":true}},"shadow":true},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","viewScript":"file:./build/view.js","styles":[{"name":"default","label":"Default","isDefault":true},{"name":"minimal","label":"Minimal"},{"name":"boxed","label":"Boxed"},{"name":"sidebar","label":"Sidebar"}]}');
 
 /***/ }),
 
@@ -156,16 +156,17 @@ function buildHierarchy(headings) {
 /**
  * Render TOC item recursively
  */
-function renderTOCItem(item, listingType, expandIconType, expandState, onToggle, showNumbers) {
+function renderTOCItem(item, listingType, expandIconType, expandState, onToggle) {
   const hasChildren = item.children.length > 0;
-  const isExpanded = expandState[item.id] !== undefined ? expandState[item.id] : item.isExpanded;
+  // When expand icon type is 'none', always show all items expanded
+  const isExpanded = expandIconType === 'none' ? true : expandState[item.id] !== undefined ? expandState[item.id] : item.isExpanded;
   const ListTag = listingType === 'none' ? 'div' : listingType === 'ol' ? 'ol' : 'ul';
   const ItemTag = listingType === 'none' ? 'div' : 'li';
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(ItemTag, {
     className: `toc-item toc-item--level-${item.level}`,
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
       className: "toc-item__wrapper",
-      children: [hasChildren && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("button", {
+      children: [hasChildren && expandIconType !== 'none' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("button", {
         className: `toc-item__toggle ${isExpanded ? 'is-expanded' : 'is-collapsed'}`,
         onClick: () => onToggle(item.id),
         type: "button",
@@ -180,7 +181,7 @@ function renderTOCItem(item, listingType, expandIconType, expandState, onToggle,
       })]
     }), hasChildren && isExpanded && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(ListTag, {
       className: `toc-list toc-list--level-${item.level + 1}${listingType === 'none' ? ' toc-list--none' : ''}`,
-      children: item.children.map(child => renderTOCItem(child, listingType, expandIconType, expandState, onToggle, showNumbers))
+      children: item.children.map(child => renderTOCItem(child, listingType, expandIconType, expandState, onToggle))
     })]
   }, item.id);
 }
@@ -198,7 +199,6 @@ function Edit({
     expandIconType,
     defaultExpanded,
     expandFirstItem,
-    showNumbers,
     showHeading,
     customHeadingText,
     headingStyle,
@@ -287,6 +287,26 @@ function Edit({
     className: `jankx-table-of-content heading-style-${headingStyle}`,
     'data-expand-icon-type': expandIconType
   });
+
+  // Sync style variant with listingType attribute
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
+    const className = blockProps.className || attributes.className || '';
+    let newListingType = null;
+    if (className.includes('is-style-ul-list')) {
+      newListingType = 'ul';
+    } else if (className.includes('is-style-ol-list')) {
+      newListingType = 'ol';
+    } else if (className.includes('is-style-none-list')) {
+      newListingType = 'none';
+    }
+
+    // Update attribute if style variant changed
+    if (newListingType && newListingType !== listingType) {
+      setAttributes({
+        listingType: newListingType
+      });
+    }
+  }, [blockProps.className, attributes.className, listingType, setAttributes]);
   const ListTag = listingType === 'none' ? 'div' : listingType === 'ol' ? 'ol' : 'ul';
 
   // Helper function to filter by level recursively
@@ -443,6 +463,9 @@ function Edit({
           }, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Caret (▸/▾)', 'jankx'),
             value: 'caret'
+          }, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('None (Don\'t apply)', 'jankx'),
+            value: 'none'
           }],
           onChange: value => setAttributes({
             expandIconType: value
@@ -466,14 +489,6 @@ function Edit({
           }),
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Expand the first item by default', 'jankx'),
           __nextHasNoMarginBottom: true
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Numbers', 'jankx'),
-          checked: showNumbers,
-          onChange: value => setAttributes({
-            showNumbers: value
-          }),
-          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show hierarchical numbers (1.1, 1.2, etc.)', 'jankx'),
-          __nextHasNoMarginBottom: true
         })]
       })]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
@@ -488,8 +503,8 @@ function Edit({
             children: customHeadingText || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Table of Contents', 'jankx')
           })
         }), tocData.length > 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(ListTag, {
-          className: `toc-list toc-list--root ${showNumbers ? 'toc-list--numbered' : ''}${listingType === 'none' ? ' toc-list--none' : ''}`,
-          children: tocData.map(item => renderTOCItem(item, listingType, expandIconType, expandState, handleToggle, showNumbers))
+          className: `toc-list toc-list--root${listingType === 'none' ? ' toc-list--none' : ''}`,
+          children: tocData.map(item => renderTOCItem(item, listingType, expandIconType, expandState, handleToggle))
         }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
           className: "toc-placeholder",
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {

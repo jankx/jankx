@@ -15,7 +15,7 @@
         },
         "expandIconType": {
             "type": "string",
-            "enum": ["plus-minus", "chevron", "arrow", "caret"],
+            "enum": ["plus-minus", "chevron", "arrow", "caret", "none"],
             "default": "plus-minus"
         },
         "defaultExpanded": {
@@ -25,10 +25,6 @@
         "expandFirstItem": {
             "type": "boolean",
             "default": true
-        },
-        "showNumbers": {
-            "type": "boolean",
-            "default": false
         },
         "showHeading": {
             "type": "boolean",
@@ -148,10 +144,6 @@
         {
             "name": "sidebar",
             "label": "Sidebar"
-        },
-        {
-            "name": "sidebar-icon",
-            "label": "Sidebar with Icons"
         }
     ]
 }

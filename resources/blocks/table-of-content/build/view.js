@@ -30,32 +30,42 @@ function getExpandIcon(type, isExpanded) {
 function initTableOfContent() {
   const tocBlocks = document.querySelectorAll('.jankx-table-of-content');
   tocBlocks.forEach(tocBlock => {
-    const toggleButtons = tocBlock.querySelectorAll('.toc-item__toggle');
     const expandIconType = tocBlock.dataset.expandIconType || 'plus-minus';
-    toggleButtons.forEach(button => {
-      button.addEventListener('click', e => {
-        e.preventDefault();
-        e.stopPropagation();
-        const isExpanded = button.getAttribute('aria-expanded') === 'true';
-        const listItem = button.closest('li');
-        if (!listItem) return;
-        const nestedList = listItem.querySelector(':scope > ul, :scope > ol');
-        const iconSpan = button.querySelector('.toc-item__icon');
-        if (nestedList) {
-          // Toggle state
-          const newExpandedState = !isExpanded;
-          button.setAttribute('aria-expanded', String(newExpandedState));
-          button.classList.toggle('is-expanded');
-          button.classList.toggle('is-collapsed');
-          nestedList.style.display = isExpanded ? 'none' : 'block';
 
-          // Update icon text
-          if (iconSpan) {
-            iconSpan.textContent = getExpandIcon(expandIconType, newExpandedState);
-          }
-        }
+    // If icon type is 'none', hide all toggle buttons
+    if (expandIconType === 'none') {
+      const toggleButtons = tocBlock.querySelectorAll('.toc-item__toggle');
+      toggleButtons.forEach(button => {
+        button.style.display = 'none';
       });
-    });
+    } else {
+      // Set up toggle buttons only if icon type is not 'none'
+      const toggleButtons = tocBlock.querySelectorAll('.toc-item__toggle');
+      toggleButtons.forEach(button => {
+        button.addEventListener('click', e => {
+          e.preventDefault();
+          e.stopPropagation();
+          const isExpanded = button.getAttribute('aria-expanded') === 'true';
+          const listItem = button.closest('li');
+          if (!listItem) return;
+          const nestedList = listItem.querySelector(':scope > ul, :scope > ol');
+          const iconSpan = button.querySelector('.toc-item__icon');
+          if (nestedList) {
+            // Toggle state
+            const newExpandedState = !isExpanded;
+            button.setAttribute('aria-expanded', String(newExpandedState));
+            button.classList.toggle('is-expanded');
+            button.classList.toggle('is-collapsed');
+            nestedList.style.display = isExpanded ? 'none' : 'block';
+
+            // Update icon text (only if icon type is not 'none')
+            if (iconSpan && expandIconType !== 'none') {
+              iconSpan.textContent = getExpandIcon(expandIconType, newExpandedState);
+            }
+          }
+        });
+      });
+    }
 
     // Handle smooth scroll to heading
     const links = tocBlock.querySelectorAll('.toc-item__link');

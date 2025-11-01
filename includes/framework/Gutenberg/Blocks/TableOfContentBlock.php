@@ -714,13 +714,11 @@ class TableOfContentBlock extends Block
      * @param string $expand_icon_type Icon type
      * @param bool $default_expanded Default expand state
      * @param bool $expand_first_item Expand first item
-     * @param bool $show_numbers Show numbers
      * @param int $depth Current depth
      * @param bool $is_first_item Is this the first item
-     * @param bool $is_sidebar_icon_style Is sidebar-icon style
      * @return string HTML output
      */
-    protected function renderTOCList($items, $listing_type, $expand_icon_type, $default_expanded, $expand_first_item, $show_numbers, $depth = 0, $is_first_item = false, $is_sidebar_icon_style = false)
+    protected function renderTOCList($items, $listing_type, $expand_icon_type, $default_expanded, $expand_first_item, $depth = 0, $is_first_item = false)
     {
         if (empty($items)) {
             return '';
@@ -739,15 +737,16 @@ class TableOfContentBlock extends Block
             $list_class .= ' toc-list--none';
         }
 
-        if ($show_numbers && $depth === 0) {
-            $list_class .= ' toc-list--numbered';
-        }
-
         $html = sprintf('<%s class="%s">', $list_tag, esc_attr($list_class));
 
         foreach ($items as $index => $item) {
             $has_children = !empty($item['children']);
-            $is_expanded = $default_expanded || ($is_first_item && $index === 0 && $expand_first_item);
+            // When expand icon type is 'none', always show all items expanded
+            if ($expand_icon_type === 'none') {
+                $is_expanded = true;
+            } else {
+                $is_expanded = $default_expanded || ($is_first_item && $index === 0 && $expand_first_item);
+            }
 
             $item_class = 'toc-item toc-item--level-' . $item['level'];
             
@@ -760,8 +759,8 @@ class TableOfContentBlock extends Block
 
             $html .= '<div class="toc-item__wrapper">';
 
-            // Expand/collapse button
-            if ($has_children) {
+            // Expand/collapse button (only if icon type is not 'none')
+            if ($has_children && $expand_icon_type !== 'none') {
                 $toggle_class = $is_expanded ? 'toc-item__toggle is-expanded' : 'toc-item__toggle is-collapsed';
                 $icon = $this->getExpandIcon($expand_icon_type, $is_expanded);
                 $html .= sprintf(
@@ -770,11 +769,6 @@ class TableOfContentBlock extends Block
                     $is_expanded ? 'true' : 'false',
                     esc_html($icon)
                 );
-            }
-
-            // Icon for sidebar-icon style when no children (CSS will style it via ::before pseudo-element)
-            if ($is_sidebar_icon_style && !$has_children) {
-                $html .= '<span class="toc-item__icon"></span>';
             }
 
             // Link
@@ -794,13 +788,12 @@ class TableOfContentBlock extends Block
                     $expand_icon_type,
                     $default_expanded,
                     $expand_first_item,
-                    $show_numbers,
                     $depth + 1,
-                    false,
-                    $is_sidebar_icon_style
+                    false
                 );
 
-                if (!$is_expanded) {
+                // Only hide children if icon type is not 'none' and item is not expanded
+                if ($expand_icon_type !== 'none' && !$is_expanded) {
                     $child_html = str_replace('<' . $list_tag, '<' . $list_tag . ' style="display:none"', $child_html);
                 }
 
@@ -857,7 +850,6 @@ class TableOfContentBlock extends Block
         $expand_icon_type = $attributes['expandIconType'] ?? 'plus-minus';
         $default_expanded = $attributes['defaultExpanded'] ?? false;
         $expand_first_item = $attributes['expandFirstItem'] ?? true;
-        $show_numbers = $attributes['showNumbers'] ?? false;
         $show_heading = $attributes['showHeading'] ?? true;
         $custom_heading_text = $attributes['customHeadingText'] ?? '';
         $heading_style = $attributes['headingStyle'] ?? 'underline';
@@ -904,15 +896,6 @@ class TableOfContentBlock extends Block
             }
         }
 
-        // Check if sidebar-icon style is active
-        $is_sidebar_icon_style = false;
-        if (isset($block) && !empty($block->attributes['className'])) {
-            $is_sidebar_icon_style = strpos($block->attributes['className'], 'is-style-sidebar-icon') !== false;
-        }
-        if (!$is_sidebar_icon_style && !empty($class_name)) {
-            $is_sidebar_icon_style = strpos($class_name, 'is-style-sidebar-icon') !== false;
-        }
-
         // Build outer wrapper attributes (for data attributes only)
         $outer_attrs = [
             'class' => 'jankx-table-of-content heading-style-' . esc_attr($heading_style),
@@ -947,10 +930,8 @@ class TableOfContentBlock extends Block
             $expand_icon_type,
             $default_expanded,
             $expand_first_item,
-            $show_numbers,
             0,
-            true,
-            $is_sidebar_icon_style
+            true
         );
 
         // Determine heading text

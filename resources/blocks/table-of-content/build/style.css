@@ -70,9 +70,29 @@
   text-align: center;
 }
 .jankx-table-of-content .toc-list {
-  list-style: none;
   margin: 0;
   padding: 0;
+}
+.jankx-table-of-content .toc-list:is(ul) {
+  list-style: disc;
+  padding-left: 1.5em;
+}
+.jankx-table-of-content .toc-list.toc-list--root:is(ol) {
+  counter-reset: toc-ol-counter;
+}
+.jankx-table-of-content .toc-list:is(ol) {
+  list-style: none;
+  padding-left: 0;
+}
+.jankx-table-of-content .toc-list:is(ol) .toc-item {
+  counter-increment: toc-ol-counter;
+}
+.jankx-table-of-content .toc-list:is(ol) .toc-item::before {
+  content: counter(toc-ol-counter) ". ";
+  display: inline-block;
+  min-width: 1.5em;
+  margin-right: 0.25em;
+  color: var(--toc-text-color);
 }
 .jankx-table-of-content .toc-list--root > .toc-item:not(:last-child) {
   margin-bottom: 0.5rem;
@@ -82,17 +102,6 @@
   margin-left: 1.5rem;
   padding-left: 0.75rem;
   border-left: 2px solid var(--toc-border-color);
-}
-.jankx-table-of-content .toc-list--numbered {
-  counter-reset: toc-counter;
-}
-.jankx-table-of-content .toc-list--numbered > .toc-item {
-  counter-increment: toc-counter;
-}
-.jankx-table-of-content .toc-list--numbered > .toc-item::before {
-  content: counter(toc-counter) ". ";
-  color: var(--toc-primary-color);
-  font-weight: 600;
 }
 .jankx-table-of-content .toc-list--none {
   display: block;
@@ -201,11 +210,6 @@
   color: var(--toc-link-hover-color);
 }
 .jankx-table-of-content.is-style-boxed {
-  border: 2px solid var(--toc-primary-color);
-  border-radius: 12px;
-  padding: 1.5rem;
-  margin: 2rem 0;
-  background: var(--toc-bg-color);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 .jankx-table-of-content.is-style-boxed .toc-wrapper {
@@ -236,13 +240,6 @@
 .jankx-table-of-content.is-style-boxed .toc-item__link:hover {
   color: var(--toc-link-hover-color);
   text-decoration: underline;
-}
-.jankx-table-of-content.is-style-sidebar {
-  border: 1px solid var(--toc-border-color);
-  border-radius: 6px;
-  padding: 1rem;
-  margin: 1rem 0;
-  background: var(--toc-bg-color);
 }
 .jankx-table-of-content.is-style-sidebar .toc-header {
   border-bottom: 1px solid var(--toc-border-color);
@@ -289,136 +286,6 @@
 .jankx-table-of-content.is-style-sidebar .toc-item--level-4, .jankx-table-of-content.is-style-sidebar .toc-item--level-5, .jankx-table-of-content.is-style-sidebar .toc-item--level-6 .toc-item__link {
   font-size: 0.85rem;
   font-weight: 400;
-}
-.jankx-table-of-content.is-style-sidebar-icon {
-  border: none;
-  border-radius: 0;
-  padding: 0;
-  margin: 1rem 0;
-  background: transparent;
-}
-.jankx-table-of-content.is-style-sidebar-icon .toc-header {
-  border-bottom: none;
-  margin-bottom: 0.75rem;
-  padding-bottom: 0;
-  position: relative;
-}
-.jankx-table-of-content.is-style-sidebar-icon .toc-header::after {
-  content: "";
-  position: absolute;
-  bottom: -0.5rem;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: var(--toc-border-color);
-}
-.jankx-table-of-content.is-style-sidebar-icon .toc-title {
-  font-size: 0.95rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--toc-primary-color);
-  margin: 0;
-  padding: 0 0 0.5rem 0;
-}
-.jankx-table-of-content.is-style-sidebar-icon .toc-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.jankx-table-of-content.is-style-sidebar-icon .toc-list--root > .toc-item {
-  margin-bottom: 0.25rem;
-}
-.jankx-table-of-content.is-style-sidebar-icon .toc-list:not(.toc-list--root) {
-  margin-top: 0.25rem;
-  margin-left: 0;
-  padding-left: 1.5rem;
-  border-left: none;
-}
-.jankx-table-of-content.is-style-sidebar-icon .toc-item {
-  position: relative;
-  line-height: 1.5;
-}
-.jankx-table-of-content.is-style-sidebar-icon .toc-item__wrapper {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.35rem 0;
-}
-.jankx-table-of-content.is-style-sidebar-icon .toc-item__icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
-  font-size: 14px;
-  color: var(--toc-primary-color);
-  flex-shrink: 0;
-}
-.jankx-table-of-content.is-style-sidebar-icon .toc-item__toggle {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
-  padding: 0;
-  border: none;
-  background: transparent;
-  color: var(--toc-text-color);
-  font-size: 12px;
-  line-height: 1;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-  order: -1;
-  margin-right: 0.25rem;
-}
-.jankx-table-of-content.is-style-sidebar-icon .toc-item__toggle:hover {
-  color: var(--toc-primary-color);
-}
-.jankx-table-of-content.is-style-sidebar-icon .toc-item__toggle .toc-item__icon {
-  display: inline-block;
-}
-.jankx-table-of-content.is-style-sidebar-icon .toc-item__link {
-  color: var(--toc-link-color);
-  text-decoration: none;
-  font-size: 0.9rem;
-  transition: color 0.2s ease;
-  flex: 1;
-  line-height: 1.5;
-}
-.jankx-table-of-content.is-style-sidebar-icon .toc-item__link:hover {
-  color: var(--toc-link-hover-color);
-  text-decoration: none;
-}
-.jankx-table-of-content.is-style-sidebar-icon .toc-item__link:focus {
-  outline: 2px solid var(--toc-primary-color);
-  outline-offset: 2px;
-  border-radius: 2px;
-}
-.jankx-table-of-content.is-style-sidebar-icon .toc-item--level-2 .toc-item__link {
-  font-weight: 600;
-  font-size: 0.95rem;
-  color: var(--toc-primary-color);
-}
-.jankx-table-of-content.is-style-sidebar-icon .toc-item--level-3 .toc-item__link {
-  font-weight: 500;
-  font-size: 0.9rem;
-}
-.jankx-table-of-content.is-style-sidebar-icon .toc-item--level-4 .toc-item__link, .jankx-table-of-content.is-style-sidebar-icon .toc-item--level-5 .toc-item__link, .jankx-table-of-content.is-style-sidebar-icon .toc-item--level-6 .toc-item__link {
-  font-weight: 400;
-  font-size: 0.85rem;
-}
-.jankx-table-of-content.is-style-sidebar-icon .toc-item:has(> .toc-list) .toc-item__link {
-  font-weight: 600;
-}
-.jankx-table-of-content.is-style-sidebar-icon .toc-item > .toc-list {
-  display: none;
-  margin-top: 0.25rem;
-}
-.jankx-table-of-content.is-style-sidebar-icon .toc-item > .toc-list.is-expanded,
-.jankx-table-of-content.is-style-sidebar-icon .toc-item > .toc-list [style*="display: block"] {
-  display: block !important;
 }
 
 /*# sourceMappingURL=style.css.map*/
