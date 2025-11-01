@@ -21,6 +21,7 @@ use Jankx\Gutenberg\Blocks\SlideshowBlock;
 use Jankx\Gutenberg\Blocks\SlideshowContainerBlock;
 use Jankx\Gutenberg\Blocks\SlideshowItemBlock;
 use Jankx\Gutenberg\Blocks\SmartBreadcrumbBlock;
+use Jankx\Gutenberg\Blocks\SmartSearchBlock;
 use Jankx\Gutenberg\Blocks\SmartTabBlock;
 use Jankx\Gutenberg\Blocks\SmartTabsBlock;
 use Jankx\Gutenberg\Blocks\SocialSharingBlock;
@@ -137,6 +138,7 @@ class GutenbergService
         $this->repository->registerBlock(SlideshowContainerBlock::class);
         $this->repository->registerBlock(SlideshowItemBlock::class);
         $this->repository->registerBlock(SmartBreadcrumbBlock::class);
+        $this->repository->registerBlock(SmartSearchBlock::class);
         $this->repository->registerBlock(SmartTabBlock::class);
         $this->repository->registerBlock(SmartTabsBlock::class);
         $this->repository->registerBlock(SocialSharingBlock::class);

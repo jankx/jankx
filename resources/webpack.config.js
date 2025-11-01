@@ -148,6 +148,11 @@ module.exports = {
     'blocks/table-cell/build/index': './blocks/table-cell/index.tsx',
     'blocks/table-cell/build/style': './blocks/table-cell/style.scss',
     'blocks/table-cell/build/editor': './blocks/table-cell/editor.scss',
+
+    'blocks/smart-search/build/index': './blocks/smart-search/index.tsx',
+    'blocks/smart-search/build/frontend': './blocks/smart-search/frontend.ts',
+    'blocks/smart-search/build/style': './blocks/smart-search/style.scss',
+    'blocks/smart-search/build/editor': './blocks/smart-search/editor.scss',
   },
   output: {
     path: path.resolve(__dirname),
