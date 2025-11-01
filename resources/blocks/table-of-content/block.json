@@ -10,7 +10,7 @@
     "attributes": {
         "listingType": {
             "type": "string",
-            "enum": ["ul", "ol"],
+            "enum": ["ul", "ol", "none"],
             "default": "ul"
         },
         "expandIconType": {
@@ -45,8 +45,8 @@
         },
         "minHeadingLevel": {
             "type": "number",
-            "default": 2,
-            "minimum": 2,
+            "default": 1,
+            "minimum": 1,
             "maximum": 6
         },
         "maxHeadingLevel": {
@@ -150,8 +150,8 @@
             "label": "Sidebar"
         },
         {
-            "name": "floating",
-            "label": "Floating"
+            "name": "sidebar-icon",
+            "label": "Sidebar with Icons"
         }
     ]
 }

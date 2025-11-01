@@ -125,6 +125,11 @@
                 }
             }
         }
+
+        // No list style (div instead of ul/ol)
+        &--none {
+            display: block;
+        }
     }
 
     // List items
@@ -397,88 +402,170 @@
         }
     }
 
-    // Floating Style - Sticky/floating style with shadow
-    &.is-style-floating {
+    // Sidebar Icon Style - With icons on the left, like menu structure
+    &.is-style-sidebar-icon {
         border: none;
-        border-radius: 12px;
-        padding: 1.25rem;
-        margin: 1.5rem 0;
-        background: var(--toc-bg-color);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        position: relative;
-        overflow: hidden;
-
-        &::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--toc-primary-color), var(--toc-link-hover-color));
-        }
+        border-radius: 0;
+        padding: 0;
+        margin: 1rem 0;
+        background: transparent;
 
         .toc-header {
             border-bottom: none;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0;
             position: relative;
 
             &::after {
                 content: '';
                 position: absolute;
-                bottom: 0;
+                bottom: -0.5rem;
                 left: 0;
                 right: 0;
-                height: 2px;
-                background: linear-gradient(90deg, transparent, var(--toc-border-color), transparent);
+                height: 1px;
+                background: var(--toc-border-color);
             }
         }
 
         .toc-title {
-            font-size: 1.2rem;
-            font-weight: 700;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
             color: var(--toc-primary-color);
-            text-align: center;
+            margin: 0;
+            padding: 0 0 0.5rem 0;
         }
 
         .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+
             &--root {
                 > .toc-item {
-                    &:not(:last-child) {
-                        margin-bottom: 0.6rem;
-                    }
+                    margin-bottom: 0.25rem;
                 }
             }
 
             &:not(.toc-list--root) {
-                margin-left: 1.5rem;
-                padding-left: 0.75rem;
-                border-left: 2px solid var(--toc-border-color);
+                margin-top: 0.25rem;
+                margin-left: 0;
+                padding-left: 1.5rem;
+                border-left: none;
             }
         }
 
         .toc-item {
-            &__link {
-                padding: 0.35rem 0.5rem;
-                border-radius: 4px;
-                transition: all 0.2s ease;
-                display: inline-block;
-                width: 100%;
+            position: relative;
+            line-height: 1.5;
 
-                &:hover {
-                    background: color-mix(in srgb, var(--toc-primary-color) 10%, transparent);
-                    color: var(--toc-link-hover-color);
-                    text-decoration: none;
-                    transform: translateX(4px);
-                }
+            &__wrapper {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.35rem 0;
+            }
+
+            &__icon {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 18px;
+                height: 18px;
+                font-size: 14px;
+                color: var(--toc-primary-color);
+                flex-shrink: 0;
             }
 
             &__toggle {
-                transition: transform 0.2s ease;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 18px;
+                height: 18px;
+                padding: 0;
+                border: none;
+                background: transparent;
+                color: var(--toc-text-color);
+                font-size: 12px;
+                line-height: 1;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                flex-shrink: 0;
+                order: -1; // Place before icon
+                margin-right: 0.25rem;
 
                 &:hover {
-                    transform: scale(1.1);
+                    color: var(--toc-primary-color);
+                }
+
+                // Icon inside toggle button uses standard expand icon from settings
+                .toc-item__icon {
+                    display: inline-block;
+                }
+            }
+
+            &__link {
+                color: var(--toc-link-color);
+                text-decoration: none;
+                font-size: 0.9rem;
+                transition: color 0.2s ease;
+                flex: 1;
+                line-height: 1.5;
+
+                &:hover {
+                    color: var(--toc-link-hover-color);
+                    text-decoration: none;
+                }
+
+                &:focus {
+                    outline: 2px solid var(--toc-primary-color);
+                    outline-offset: 2px;
+                    border-radius: 2px;
+                }
+            }
+
+            // Level styling - only style links, icons use standard from settings
+            &--level-2 {
+                .toc-item__link {
+                    font-weight: 600;
+                    font-size: 0.95rem;
+                    color: var(--toc-primary-color);
+                }
+            }
+
+            &--level-3 {
+                .toc-item__link {
+                    font-weight: 500;
+                    font-size: 0.9rem;
+                }
+            }
+
+            &--level-4,
+            &--level-5,
+            &--level-6 {
+                .toc-item__link {
+                    font-weight: 400;
+                    font-size: 0.85rem;
+                }
+            }
+
+            // Nested items styling
+            &:has(> .toc-list) {
+                .toc-item__link {
+                    font-weight: 600;
+                }
+            }
+
+            // Hidden children list
+            > .toc-list {
+                display: none;
+                margin-top: 0.25rem;
+
+                &.is-expanded,
+                [style*="display: block"] {
+                    display: block !important;
                 }
             }
         }

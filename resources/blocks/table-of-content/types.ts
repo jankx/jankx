@@ -3,7 +3,7 @@
  * Strict mode - no null or any types
  */
 
-export type ListingType = 'ul' | 'ol';
+export type ListingType = 'ul' | 'ol' | 'none';
 export type ExpandIconType = 'plus-minus' | 'chevron' | 'arrow' | 'caret';
 export type HeadingStyle = 'underline' | 'tabbed' | 'bordered';
 

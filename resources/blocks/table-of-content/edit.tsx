@@ -26,31 +26,31 @@ import { list, formatListNumbered } from '@wordpress/icons';
 import type { TableOfContentProps, TOCItem, ExpandState } from './types';
 
 /**
- * Mock data for template editing
+ * Mock data for template editing - Example structure to preview TOC layout
  */
 const MOCK_TOC_DATA: TOCItem[] = [
     {
-        id: 'heading-1',
-        text: 'Giới Thiệu Chung',
+        id: 'example-heading-1',
+        text: 'Example Heading 1',
         level: 2,
         isExpanded: true,
         children: [
             {
-                id: 'heading-1-1',
-                text: 'Lịch Sử Hình Thành',
+                id: 'example-heading-1-1',
+                text: 'Example Subheading 1.1',
                 level: 3,
                 isExpanded: false,
                 children: [
                     {
-                        id: 'heading-1-1-1',
-                        text: 'Giai Đoạn Đầu',
+                        id: 'example-heading-1-1-1',
+                        text: 'Example Subheading 1.1.1',
                         level: 4,
                         isExpanded: false,
                         children: []
                     },
                     {
-                        id: 'heading-1-1-2',
-                        text: 'Giai Đoạn Phát Triển',
+                        id: 'example-heading-1-1-2',
+                        text: 'Example Subheading 1.1.2',
                         level: 4,
                         isExpanded: false,
                         children: []
@@ -58,8 +58,8 @@ const MOCK_TOC_DATA: TOCItem[] = [
                 ]
             },
             {
-                id: 'heading-1-2',
-                text: 'Đặc Điểm Nổi Bật',
+                id: 'example-heading-1-2',
+                text: 'Example Subheading 1.2',
                 level: 3,
                 isExpanded: false,
                 children: []
@@ -67,21 +67,21 @@ const MOCK_TOC_DATA: TOCItem[] = [
         ]
     },
     {
-        id: 'heading-2',
-        text: 'Nội Dung Chi Tiết',
+        id: 'example-heading-2',
+        text: 'Example Heading 2',
         level: 2,
         isExpanded: false,
         children: [
             {
-                id: 'heading-2-1',
-                text: 'Phần Thứ Nhất',
+                id: 'example-heading-2-1',
+                text: 'Example Subheading 2.1',
                 level: 3,
                 isExpanded: false,
                 children: []
             },
             {
-                id: 'heading-2-2',
-                text: 'Phần Thứ Hai',
+                id: 'example-heading-2-2',
+                text: 'Example Subheading 2.2',
                 level: 3,
                 isExpanded: false,
                 children: []
@@ -89,8 +89,8 @@ const MOCK_TOC_DATA: TOCItem[] = [
         ]
     },
     {
-        id: 'heading-3',
-        text: 'Kết Luận',
+        id: 'example-heading-3',
+        text: 'Example Heading 3',
         level: 2,
         isExpanded: false,
         children: []
@@ -157,10 +157,11 @@ function renderTOCItem(
 ): JSX.Element {
     const hasChildren = item.children.length > 0;
     const isExpanded = expandState[item.id] !== undefined ? expandState[item.id] : item.isExpanded;
-    const ListTag = listingType === 'ol' ? 'ol' : 'ul';
+    const ListTag = listingType === 'none' ? 'div' : (listingType === 'ol' ? 'ol' : 'ul');
+    const ItemTag = listingType === 'none' ? 'div' : 'li';
 
     return (
-        <li key={item.id} className={`toc-item toc-item--level-${item.level}`}>
+        <ItemTag key={item.id} className={`toc-item toc-item--level-${item.level}`}>
             <div className="toc-item__wrapper">
                 {hasChildren && (
                     <button
@@ -179,13 +180,13 @@ function renderTOCItem(
                 </span>
             </div>
             {hasChildren && isExpanded && (
-                <ListTag className={`toc-list toc-list--level-${item.level + 1}`}>
+                <ListTag className={`toc-list toc-list--level-${item.level + 1}${listingType === 'none' ? ' toc-list--none' : ''}`}>
                     {item.children.map((child) =>
                         renderTOCItem(child, listingType, expandIconType, expandState, onToggle, showNumbers)
                     )}
                 </ListTag>
             )}
-        </li>
+        </ItemTag>
     );
 }
 
@@ -206,8 +207,33 @@ export default function Edit({ attributes, setAttributes, clientId }: TableOfCon
         maxHeadingLevel,
     } = attributes;
 
-    // Get headings from editor content
+    // Check if we're in template editor
+    const isTemplateEditor = useSelect((select) => {
+        const editor = select('core/block-editor') as any;
+        if (!editor) return false;
+
+        // Check if we're in template editor context
+        const currentPost = select('core/editor')?.getCurrentPost?.();
+        if (currentPost && (currentPost.type === 'wp_template' || currentPost.type === 'wp_template_part')) {
+            return true;
+        }
+
+        // Alternative check via editor settings
+        const settings = editor.getSettings?.();
+        if (settings && (settings.__experimentalTemplateMode || settings.__experimentalBlockSettings)) {
+            // Additional checks can be added here
+        }
+
+        return false;
+    }, []);
+
+    // Get headings from editor content (only if not in template editor)
     const editorHeadings = useSelect((select) => {
+        // If in template editor, return empty to use mock data
+        if (isTemplateEditor) {
+            return [];
+        }
+
         const editor = select('core/block-editor') as any;
         if (!editor) return [];
 
@@ -248,7 +274,7 @@ export default function Edit({ attributes, setAttributes, clientId }: TableOfCon
 
         extractHeadings(blocks);
         return headings;
-    }, [minHeadingLevel, maxHeadingLevel]);
+    }, [minHeadingLevel, maxHeadingLevel, isTemplateEditor]);
 
     // Manage expand/collapse state
     const [expandState, setExpandState] = useState<ExpandState>(() => {
@@ -271,10 +297,27 @@ export default function Edit({ attributes, setAttributes, clientId }: TableOfCon
         'data-expand-icon-type': expandIconType,
     });
 
-    const ListTag = listingType === 'ol' ? 'ol' : 'ul';
+    const ListTag = listingType === 'none' ? 'div' : (listingType === 'ol' ? 'ol' : 'ul');
+
+    // Helper function to filter by level recursively
+    const filterByLevel = (item: TOCItem): TOCItem | null => {
+        if (item.level < minHeadingLevel || item.level > maxHeadingLevel) {
+            return null;
+        }
+        const filtered: TOCItem = {
+            ...item,
+            children: item.children
+                .map(child => filterByLevel(child))
+                .filter((child): child is TOCItem => child !== null)
+        };
+        return filtered;
+    };
 
     // Build hierarchy from editor headings or use mock data
-    const tocData = editorHeadings.length > 0 ? buildHierarchy(editorHeadings) : MOCK_TOC_DATA;
+    // In template editor, always use mock data filtered by min/max level
+    const tocData = isTemplateEditor 
+        ? MOCK_TOC_DATA.map(item => filterByLevel(item)).filter((item): item is TOCItem => item !== null)
+        : (editorHeadings.length > 0 ? buildHierarchy(editorHeadings) : MOCK_TOC_DATA);
 
     return (
         <>
@@ -291,6 +334,12 @@ export default function Edit({ attributes, setAttributes, clientId }: TableOfCon
                         title={__('Ordered List', 'jankx')}
                         onClick={() => setAttributes({ listingType: 'ol' })}
                         isActive={listingType === 'ol'}
+                    />
+                    <ToolbarButton
+                        icon={list}
+                        title={__('No List', 'jankx')}
+                        onClick={() => setAttributes({ listingType: 'none' })}
+                        isActive={listingType === 'none'}
                     />
                 </ToolbarGroup>
             </BlockControls>
@@ -336,16 +385,16 @@ export default function Edit({ attributes, setAttributes, clientId }: TableOfCon
                         label={__('Minimum Heading Level', 'jankx')}
                         value={minHeadingLevel}
                         onChange={(value) => {
-                            const newMin = value || 2;
+                            const newMin = value || 1;
                             setAttributes({
                                 minHeadingLevel: newMin,
                                 maxHeadingLevel: Math.max(newMin, maxHeadingLevel)
                             });
                         }}
-                        min={2}
+                        min={1}
                         max={6}
                         step={1}
-                        help={__('Start building TOC from this heading level (H2-H6)', 'jankx')}
+                        help={__('Start building TOC from this heading level (H1-H6)', 'jankx')}
                         __nextHasNoMarginBottom
                         __next40pxDefaultSize
                     />
@@ -360,10 +409,10 @@ export default function Edit({ attributes, setAttributes, clientId }: TableOfCon
                                 minHeadingLevel: Math.min(minHeadingLevel, newMax)
                             });
                         }}
-                        min={2}
+                        min={1}
                         max={6}
                         step={1}
-                        help={__('Stop building TOC at this heading level (H2-H6)', 'jankx')}
+                        help={__('Stop building TOC at this heading level (H1-H6)', 'jankx')}
                         __nextHasNoMarginBottom
                         __next40pxDefaultSize
                     />
@@ -376,8 +425,9 @@ export default function Edit({ attributes, setAttributes, clientId }: TableOfCon
                         options={[
                             { label: __('Unordered List (•)', 'jankx'), value: 'ul' },
                             { label: __('Ordered List (1, 2, 3)', 'jankx'), value: 'ol' },
+                            { label: __('No List', 'jankx'), value: 'none' },
                         ]}
-                        onChange={(value) => setAttributes({ listingType: value as 'ul' | 'ol' })}
+                        onChange={(value) => setAttributes({ listingType: value as 'ul' | 'ol' | 'none' })}
                         help={__('Choose how to display the table of content list', 'jankx')}
                         __nextHasNoMarginBottom
                         __next40pxDefaultSize
@@ -434,7 +484,7 @@ export default function Edit({ attributes, setAttributes, clientId }: TableOfCon
                         </div>
                     )}
                     {tocData.length > 0 ? (
-                        <ListTag className={`toc-list toc-list--root ${showNumbers ? 'toc-list--numbered' : ''}`}>
+                        <ListTag className={`toc-list toc-list--root ${showNumbers ? 'toc-list--numbered' : ''}${listingType === 'none' ? ' toc-list--none' : ''}`}>
                             {tocData.map((item) =>
                                 renderTOCItem(item, listingType, expandIconType, expandState, handleToggle, showNumbers)
                             )}
