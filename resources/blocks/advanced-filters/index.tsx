@@ -85,9 +85,12 @@ function Edit({ attributes, setAttributes }: EditProps) {
 
     const [availableBlocks, setAvailableBlocks] = useState<any[]>([]);
     const [loadingBlocks, setLoadingBlocks] = useState(false);
-    const [postTypes, setPostTypes] = useState<any[]>([]);
     const [taxonomies, setTaxonomies] = useState<any[]>([]);
-    const [selectedPostType, setSelectedPostType] = useState<string>('post');
+    
+    // Get post type from target block
+    const targetPostType = targetBlockIds.length > 0 && availableBlocks.length > 0
+        ? availableBlocks.find(b => b.id === targetBlockIds[0])?.postType || 'post'
+        : 'post';
 
     const blockProps = useBlockProps({
         className: `advanced-filters-block layout-${layout} display-${displayStyle}`,
@@ -104,6 +107,7 @@ function Edit({ attributes, setAttributes }: EditProps) {
                     found.push({
                         id: String(queryId || block.clientId),
                         name: `${block.attributes?.postType || 'post'} Layout`,
+                        postType: block.attributes?.postType || 'post',
                         source: 'current_page',
                     });
                 }
@@ -167,30 +171,14 @@ function Edit({ attributes, setAttributes }: EditProps) {
         };
     }, []);
 
-    // Fetch post types
-    useEffect(() => {
-        const fetchPostTypes = async () => {
-            try {
-                const types = await (window as any).wp.data.select('core').getPostTypes({ per_page: -1 });
-                setPostTypes(
-                    types.filter((type: any) => type.viewable && type.slug !== 'attachment')
-                );
-            } catch (error) {
-                console.error('Error fetching post types:', error);
-            }
-        };
-
-        fetchPostTypes();
-    }, []);
-
-    // Fetch taxonomies for selected post type
+    // Fetch taxonomies for target post type (from target block)
     useEffect(() => {
         const fetchTaxonomies = async () => {
-            if (!selectedPostType) return;
+            if (!targetPostType) return;
 
             try {
                 const taxData = await (window as any).wp.apiFetch({
-                    path: `/wp/v2/taxonomies?type=${selectedPostType}`,
+                    path: `/wp/v2/taxonomies?type=${targetPostType}`,
                 });
                 setTaxonomies(Object.values(taxData || {}));
             } catch (error) {
@@ -200,7 +188,7 @@ function Edit({ attributes, setAttributes }: EditProps) {
         };
 
         fetchTaxonomies();
-    }, [selectedPostType]);
+    }, [targetPostType]);
 
     const handleAddTaxonomyFilter = () => {
         setAttributes({
@@ -210,7 +198,18 @@ function Edit({ attributes, setAttributes }: EditProps) {
                     taxonomy: '',
                     label: '',
                     enabled: true,
-                    multiple: multipleSelection,
+                    filterType: filterType,
+                    layout: layout,
+                    showLabels: showLabels,
+                    displayStyle: displayStyle,
+                    showCount: showCount,
+                    showEmptyTerms: showEmptyTerms,
+                    showOnlyTopLevel: showOnlyTopLevel,
+                    showHierarchy: showHierarchy,
+                    displayAsDropdown: displayAsDropdown,
+                    multipleSelection: multipleSelection,
+                    collapsible: collapsible,
+                    defaultExpanded: defaultExpanded,
                 },
             ],
         });
@@ -289,153 +288,311 @@ function Edit({ attributes, setAttributes }: EditProps) {
                     )}
                 </PanelBody>
 
-                <PanelBody title={__('Filter Settings', 'jankx')} initialOpen={true}>
-                    <SelectControl
-                        label={__('Filter Type', 'jankx')}
-                        value={filterType}
-                        options={[
-                            { label: __('Taxonomy', 'jankx'), value: 'taxonomy' },
-                            { label: __('Meta Field', 'jankx'), value: 'meta' },
-                            { label: __('Price', 'jankx'), value: 'price' },
-                            { label: __('Date', 'jankx'), value: 'date' },
-                            { label: __('Author', 'jankx'), value: 'author' },
-                            { label: __('Keyword', 'jankx'), value: 'keyword' },
-                            { label: __('Mixed (All Types)', 'jankx'), value: 'mixed' },
-                        ]}
-                        onChange={(value) => setAttributes({ filterType: value as any })}
-                    />
+                <PanelBody title={__('Filters', 'jankx')} initialOpen={false}>
+                        {targetBlockIds.length === 0 ? (
+                            <p style={{ color: '#d63638', marginBottom: '10px' }}>
+                                {__('Please select a target block first to configure filters.', 'jankx')}
+                            </p>
+                        ) : (
+                            <p style={{ marginBottom: '10px', fontSize: '12px', color: '#666' }}>
+                                {__('Post Type:', 'jankx')} <strong>{targetPostType}</strong>
+                            </p>
+                        )}
 
-                    <SelectControl
-                        label={__('Layout', 'jankx')}
-                        value={layout}
-                        options={[
-                            { label: __('Horizontal', 'jankx'), value: 'horizontal' },
-                            { label: __('Vertical', 'jankx'), value: 'vertical' },
-                            { label: __('Dropdown', 'jankx'), value: 'dropdown' },
-                            { label: __('Accordion', 'jankx'), value: 'accordion' },
-                        ]}
-                        onChange={(value) => setAttributes({ layout: value as any })}
-                    />
-
-                    <SelectControl
-                        label={__('Display Style', 'jankx')}
-                        value={displayStyle}
-                        options={[
-                            { label: __('Buttons', 'jankx'), value: 'buttons' },
-                            { label: __('Checkboxes', 'jankx'), value: 'checkboxes' },
-                            { label: __('Dropdown', 'jankx'), value: 'dropdown' },
-                            { label: __('Select', 'jankx'), value: 'select' },
-                        ]}
-                        onChange={(value) => setAttributes({ displayStyle: value as any })}
-                    />
-
-                    <ToggleControl
-                        label={__('Show Labels', 'jankx')}
-                        checked={showLabels}
-                        onChange={(value) => setAttributes({ showLabels: value })}
-                    />
-
-                    <ToggleControl
-                        label={__('Show Post Counts', 'jankx')}
-                        checked={showCount}
-                        onChange={(value) => setAttributes({ showCount: value })}
-                        help={__('Show post count next to each filter option', 'jankx')}
-                    />
-
-                    <ToggleControl
-                        label={__('Show Empty Terms', 'jankx')}
-                        checked={showEmptyTerms}
-                        onChange={(value) => setAttributes({ showEmptyTerms: value })}
-                        help={__('Show terms that have no posts', 'jankx')}
-                    />
-
-                    <ToggleControl
-                        label={__('Show Only Top Level Terms', 'jankx')}
-                        checked={showOnlyTopLevel}
-                        onChange={(value) => setAttributes({ showOnlyTopLevel: value })}
-                        help={__('Show only parent terms', 'jankx')}
-                    />
-
-                    <ToggleControl
-                        label={__('Show Hierarchy', 'jankx')}
-                        checked={showHierarchy}
-                        onChange={(value) => setAttributes({ showHierarchy: value })}
-                        help={__('Display terms with hierarchical structure', 'jankx')}
-                    />
-
-                    <ToggleControl
-                        label={__('Display as Dropdown', 'jankx')}
-                        checked={displayAsDropdown}
-                        onChange={(value) => setAttributes({ displayAsDropdown: value })}
-                        help={__('Show terms in dropdown format', 'jankx')}
-                    />
-
-                    <ToggleControl
-                        label={__('Multiple Selection', 'jankx')}
-                        checked={multipleSelection}
-                        onChange={(value) => setAttributes({ multipleSelection: value })}
-                        help={__('Allow users to select multiple filter options', 'jankx')}
-                    />
-                </PanelBody>
-
-                {(filterType === 'taxonomy' || filterType === 'mixed') && (
-                    <PanelBody title={__('Taxonomy Filters', 'jankx')} initialOpen={false}>
-                        <SelectControl
-                            label={__('Post Type', 'jankx')}
-                            value={selectedPostType}
-                            options={postTypes.map((type: any) => ({
-                                label: type.name,
-                                value: type.slug,
-                            }))}
-                            onChange={(value) => setSelectedPostType(value)}
-                        />
-
-                        <Button variant="primary" onClick={handleAddTaxonomyFilter} style={{ marginTop: '10px' }}>
-                            {__('+ Add Taxonomy Filter', 'jankx')}
+                        <Button 
+                            variant="primary" 
+                            onClick={handleAddTaxonomyFilter} 
+                            style={{ marginTop: '10px' }}
+                            disabled={targetBlockIds.length === 0}
+                        >
+                            {__('+ Add Filter', 'jankx')}
                         </Button>
 
                         {taxonomyFilters.map((filter, index) => (
-                            <div key={index} style={{ marginTop: '15px', padding: '10px', border: '1px solid #ddd', borderRadius: '4px' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                                    <strong>{__('Taxonomy Filter', 'jankx')} #{index + 1}</strong>
-                                    <Button
-                                        isDestructive
-                                        isSmall
-                                        onClick={() => handleRemoveTaxonomyFilter(index)}
-                                    >
-                                        {__('Remove', 'jankx')}
-                                    </Button>
+                            <PanelBody 
+                                key={index} 
+                                title={`${__('Filter', 'jankx')} #${index + 1}${filter.filterType ? ` - ${filter.filterType}` : ''}${filter.taxonomy ? ` (${filter.taxonomy})` : ''}`}
+                                initialOpen={false}
+                            >
+                                <div style={{ marginBottom: '15px' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+                                        <strong>{__('Filter Configuration', 'jankx')}</strong>
+                                        <Button
+                                            isDestructive
+                                            isSmall
+                                            onClick={() => handleRemoveTaxonomyFilter(index)}
+                                        >
+                                            {__('Remove', 'jankx')}
+                                        </Button>
+                                    </div>
+
+                                    <SelectControl
+                                        label={__('Filter Type', 'jankx')}
+                                        value={filter.filterType || filterType}
+                                        options={[
+                                            { label: __('Taxonomy', 'jankx'), value: 'taxonomy' },
+                                            { label: __('Meta Field', 'jankx'), value: 'meta' },
+                                            { label: __('Price', 'jankx'), value: 'price' },
+                                            { label: __('Date', 'jankx'), value: 'date' },
+                                            { label: __('Author', 'jankx'), value: 'author' },
+                                            { label: __('Keyword', 'jankx'), value: 'keyword' },
+                                        ]}
+                                        onChange={(value) => handleUpdateTaxonomyFilter(index, { filterType: value })}
+                                    />
+
+                                    <TextControl
+                                        label={__('Label (Optional)', 'jankx')}
+                                        value={filter.label || ''}
+                                        onChange={(value) => handleUpdateTaxonomyFilter(index, { label: value })}
+                                        placeholder={__('Custom label for this filter', 'jankx')}
+                                    />
+
+                                    <ToggleControl
+                                        label={__('Enabled', 'jankx')}
+                                        checked={filter.enabled !== false}
+                                        onChange={(value) => handleUpdateTaxonomyFilter(index, { enabled: value })}
+                                    />
                                 </div>
 
-                                <SelectControl
-                                    label={__('Taxonomy', 'jankx')}
-                                    value={filter.taxonomy || ''}
-                                    options={[
-                                        { label: __('-- Select --', 'jankx'), value: '' },
-                                        ...taxonomies.map((tax: any) => ({
-                                            label: tax.name,
-                                            value: tax.slug,
-                                        })),
-                                    ]}
-                                    onChange={(value) => handleUpdateTaxonomyFilter(index, { taxonomy: value })}
-                                />
+                                <div style={{ marginTop: '20px', paddingTop: '15px', borderTop: '1px solid #ddd' }}>
+                                    <strong style={{ display: 'block', marginBottom: '15px' }}>{__('Filter Settings', 'jankx')}</strong>
+                                    
+                                    {/* Taxonomy Filter Options */}
+                                    {(filter.filterType || filterType) === 'taxonomy' && (
+                                        <>
+                                            <SelectControl
+                                                label={__('Taxonomy', 'jankx')}
+                                                value={filter.taxonomy || ''}
+                                                options={[
+                                                    { label: __('-- Select --', 'jankx'), value: '' },
+                                                    ...taxonomies.map((tax: any) => ({
+                                                        label: tax.name,
+                                                        value: tax.slug,
+                                                    })),
+                                                ]}
+                                                onChange={(value) => handleUpdateTaxonomyFilter(index, { taxonomy: value })}
+                                            />
 
-                                <TextControl
-                                    label={__('Label (Optional)', 'jankx')}
-                                    value={filter.label || ''}
-                                    onChange={(value) => handleUpdateTaxonomyFilter(index, { label: value })}
-                                    placeholder={__('Leave empty to use taxonomy name', 'jankx')}
-                                />
+                                            <SelectControl
+                                                label={__('Display Style', 'jankx')}
+                                                value={filter.displayStyle || displayStyle}
+                                                options={[
+                                                    { label: __('Buttons', 'jankx'), value: 'buttons' },
+                                                    { label: __('Checkboxes', 'jankx'), value: 'checkboxes' },
+                                                    { label: __('Dropdown', 'jankx'), value: 'dropdown' },
+                                                    { label: __('Select', 'jankx'), value: 'select' },
+                                                ]}
+                                                onChange={(value) => handleUpdateTaxonomyFilter(index, { displayStyle: value })}
+                                            />
 
-                                <ToggleControl
-                                    label={__('Enabled', 'jankx')}
-                                    checked={filter.enabled !== false}
-                                    onChange={(value) => handleUpdateTaxonomyFilter(index, { enabled: value })}
-                                />
-                            </div>
+                                            <ToggleControl
+                                                label={__('Show Post Counts', 'jankx')}
+                                                checked={filter.showCount !== undefined ? filter.showCount : showCount}
+                                                onChange={(value) => handleUpdateTaxonomyFilter(index, { showCount: value })}
+                                                help={__('Show post count next to each term', 'jankx')}
+                                            />
+
+                                            <ToggleControl
+                                                label={__('Show Empty Terms', 'jankx')}
+                                                checked={filter.showEmptyTerms !== undefined ? filter.showEmptyTerms : showEmptyTerms}
+                                                onChange={(value) => handleUpdateTaxonomyFilter(index, { showEmptyTerms: value })}
+                                                help={__('Show terms that have no posts', 'jankx')}
+                                            />
+
+                                            <ToggleControl
+                                                label={__('Show Only Top Level Terms', 'jankx')}
+                                                checked={filter.showOnlyTopLevel !== undefined ? filter.showOnlyTopLevel : showOnlyTopLevel}
+                                                onChange={(value) => handleUpdateTaxonomyFilter(index, { showOnlyTopLevel: value })}
+                                                help={__('Show only parent terms', 'jankx')}
+                                            />
+
+                                            <ToggleControl
+                                                label={__('Show Hierarchy', 'jankx')}
+                                                checked={filter.showHierarchy !== undefined ? filter.showHierarchy : showHierarchy}
+                                                onChange={(value) => handleUpdateTaxonomyFilter(index, { showHierarchy: value })}
+                                                help={__('Display terms with hierarchical structure', 'jankx')}
+                                            />
+
+                                            <ToggleControl
+                                                label={__('Multiple Selection', 'jankx')}
+                                                checked={filter.multipleSelection !== undefined ? filter.multipleSelection : multipleSelection}
+                                                onChange={(value) => handleUpdateTaxonomyFilter(index, { multipleSelection: value })}
+                                                help={__('Allow users to select multiple terms', 'jankx')}
+                                            />
+                                        </>
+                                    )}
+
+                                    {/* Meta Field Filter Options */}
+                                    {(filter.filterType || filterType) === 'meta' && (
+                                        <>
+                                            <TextControl
+                                                label={__('Meta Key', 'jankx')}
+                                                value={filter.metaKey || ''}
+                                                onChange={(value) => handleUpdateTaxonomyFilter(index, { metaKey: value })}
+                                                placeholder={__('e.g., _price, custom_field', 'jankx')}
+                                            />
+
+                                            <SelectControl
+                                                label={__('Input Type', 'jankx')}
+                                                value={filter.inputType || 'text'}
+                                                options={[
+                                                    { label: __('Text', 'jankx'), value: 'text' },
+                                                    { label: __('Number', 'jankx'), value: 'number' },
+                                                    { label: __('Number Range', 'jankx'), value: 'range' },
+                                                    { label: __('Date', 'jankx'), value: 'date' },
+                                                    { label: __('Date Range', 'jankx'), value: 'date-range' },
+                                                ]}
+                                                onChange={(value) => handleUpdateTaxonomyFilter(index, { inputType: value })}
+                                            />
+
+                                            {filter.inputType === 'range' && (
+                                                <>
+                                                    <TextControl
+                                                        label={__('Min Value', 'jankx')}
+                                                        value={filter.minValue || ''}
+                                                        onChange={(value) => handleUpdateTaxonomyFilter(index, { minValue: value })}
+                                                        type="number"
+                                                    />
+                                                    <TextControl
+                                                        label={__('Max Value', 'jankx')}
+                                                        value={filter.maxValue || ''}
+                                                        onChange={(value) => handleUpdateTaxonomyFilter(index, { maxValue: value })}
+                                                        type="number"
+                                                    />
+                                                </>
+                                            )}
+
+                                            <TextControl
+                                                label={__('Placeholder', 'jankx')}
+                                                value={filter.placeholder || ''}
+                                                onChange={(value) => handleUpdateTaxonomyFilter(index, { placeholder: value })}
+                                            />
+                                        </>
+                                    )}
+
+                                    {/* Price Filter Options */}
+                                    {(filter.filterType || filterType) === 'price' && (
+                                        <>
+                                            <TextControl
+                                                label={__('Min Price', 'jankx')}
+                                                value={filter.minPrice || ''}
+                                                onChange={(value) => handleUpdateTaxonomyFilter(index, { minPrice: value })}
+                                                type="number"
+                                            />
+                                            <TextControl
+                                                label={__('Max Price', 'jankx')}
+                                                value={filter.maxPrice || ''}
+                                                onChange={(value) => handleUpdateTaxonomyFilter(index, { maxPrice: value })}
+                                                type="number"
+                                            />
+                                            <TextControl
+                                                label={__('Currency Symbol', 'jankx')}
+                                                value={filter.currency || 'VND'}
+                                                onChange={(value) => handleUpdateTaxonomyFilter(index, { currency: value })}
+                                            />
+                                        </>
+                                    )}
+
+                                    {/* Date Filter Options */}
+                                    {(filter.filterType || filterType) === 'date' && (
+                                        <>
+                                            <SelectControl
+                                                label={__('Date Field', 'jankx')}
+                                                value={filter.dateField || 'post_date'}
+                                                options={[
+                                                    { label: __('Post Date', 'jankx'), value: 'post_date' },
+                                                    { label: __('Modified Date', 'jankx'), value: 'post_modified' },
+                                                ]}
+                                                onChange={(value) => handleUpdateTaxonomyFilter(index, { dateField: value })}
+                                            />
+                                            <ToggleControl
+                                                label={__('Date Range', 'jankx')}
+                                                checked={filter.dateRange !== undefined ? filter.dateRange : true}
+                                                onChange={(value) => handleUpdateTaxonomyFilter(index, { dateRange: value })}
+                                                help={__('Allow users to select a date range', 'jankx')}
+                                            />
+                                        </>
+                                    )}
+
+                                    {/* Author Filter Options */}
+                                    {(filter.filterType || filterType) === 'author' && (
+                                        <>
+                                            <SelectControl
+                                                label={__('Display Style', 'jankx')}
+                                                value={filter.displayStyle || displayStyle}
+                                                options={[
+                                                    { label: __('Dropdown', 'jankx'), value: 'dropdown' },
+                                                    { label: __('Checkboxes', 'jankx'), value: 'checkboxes' },
+                                                ]}
+                                                onChange={(value) => handleUpdateTaxonomyFilter(index, { displayStyle: value })}
+                                            />
+                                            <ToggleControl
+                                                label={__('Multiple Selection', 'jankx')}
+                                                checked={filter.multipleSelection !== undefined ? filter.multipleSelection : multipleSelection}
+                                                onChange={(value) => handleUpdateTaxonomyFilter(index, { multipleSelection: value })}
+                                                help={__('Allow users to select multiple authors', 'jankx')}
+                                            />
+                                        </>
+                                    )}
+
+                                    {/* Keyword Filter Options */}
+                                    {(filter.filterType || filterType) === 'keyword' && (
+                                        <>
+                                            <TextControl
+                                                label={__('Placeholder', 'jankx')}
+                                                value={filter.placeholder || __('Search...', 'jankx')}
+                                                onChange={(value) => handleUpdateTaxonomyFilter(index, { placeholder: value })}
+                                            />
+                                            <ToggleControl
+                                                label={__('Show Search Button', 'jankx')}
+                                                checked={filter.showSearchButton !== undefined ? filter.showSearchButton : false}
+                                                onChange={(value) => handleUpdateTaxonomyFilter(index, { showSearchButton: value })}
+                                            />
+                                        </>
+                                    )}
+
+                                    {/* Common Display Options */}
+                                    <div style={{ marginTop: '15px', paddingTop: '15px', borderTop: '1px solid #ddd' }}>
+                                        <strong style={{ display: 'block', marginBottom: '10px' }}>{__('Display Options', 'jankx')}</strong>
+                                        
+                                        <SelectControl
+                                            label={__('Layout', 'jankx')}
+                                            value={filter.layout || layout}
+                                            options={[
+                                                { label: __('Horizontal', 'jankx'), value: 'horizontal' },
+                                                { label: __('Vertical', 'jankx'), value: 'vertical' },
+                                                { label: __('Dropdown', 'jankx'), value: 'dropdown' },
+                                                { label: __('Accordion', 'jankx'), value: 'accordion' },
+                                            ]}
+                                            onChange={(value) => handleUpdateTaxonomyFilter(index, { layout: value })}
+                                        />
+
+                                        <ToggleControl
+                                            label={__('Show Labels', 'jankx')}
+                                            checked={filter.showLabels !== undefined ? filter.showLabels : showLabels}
+                                            onChange={(value) => handleUpdateTaxonomyFilter(index, { showLabels: value })}
+                                        />
+
+                                        <ToggleControl
+                                            label={__('Collapsible', 'jankx')}
+                                            checked={filter.collapsible !== undefined ? filter.collapsible : collapsible}
+                                            onChange={(value) => handleUpdateTaxonomyFilter(index, { collapsible: value })}
+                                            help={__('Make filter collapsible', 'jankx')}
+                                        />
+
+                                        {filter.collapsible && (
+                                            <ToggleControl
+                                                label={__('Default Expanded', 'jankx')}
+                                                checked={filter.defaultExpanded !== undefined ? filter.defaultExpanded : defaultExpanded}
+                                                onChange={(value) => handleUpdateTaxonomyFilter(index, { defaultExpanded: value })}
+                                                help={__('Show filter expanded by default', 'jankx')}
+                                            />
+                                        )}
+                                    </div>
+                                </div>
+                            </PanelBody>
                         ))}
                     </PanelBody>
-                )}
 
                 <PanelBody title={__('AJAX Settings', 'jankx')} initialOpen={false}>
                     <ToggleControl

@@ -1015,63 +1015,111 @@ class AdvancedFiltersBlock extends Block
         $show_hierarchy = $attributes['showHierarchy'] ?? false;
         $display_as_dropdown = $attributes['displayAsDropdown'] ?? false;
         $multiple_selection = $attributes['multipleSelection'] ?? true;
+        $layout = $attributes['layout'] ?? 'horizontal';
+        $filter_type = $attributes['filterType'] ?? 'taxonomy';
         $post_type = $config['postType'] ?? 'post';
 
-        // Render taxonomy filters
+        // Render taxonomy filters (now supports all filter types)
         if (!empty($taxonomy_filters)) {
             foreach ($taxonomy_filters as $filter) {
-                if (empty($filter['enabled']) || empty($filter['taxonomy'])) {
+                if (empty($filter['enabled'])) {
                     continue;
                 }
 
-                $taxonomy = get_taxonomy($filter['taxonomy']);
-                if (!$taxonomy) {
+                // Get filter type for this filter
+                $filter_filter_type = $filter['filterType'] ?? $filter_type;
+                
+                // Skip if not taxonomy type and taxonomy is not set
+                if ($filter_filter_type === 'taxonomy' && empty($filter['taxonomy'])) {
                     continue;
                 }
 
-                // Build get_terms args based on options
-                $term_args = [
-                    'taxonomy' => $filter['taxonomy'],
-                    'hide_empty' => !$show_empty_terms,
-                    'orderby' => 'name',
-                    'order' => 'ASC',
-                ];
+                // Get filter-specific settings, fallback to global settings
+                $filter_layout = $filter['layout'] ?? $layout;
+                $filter_show_labels = isset($filter['showLabels']) ? $filter['showLabels'] : $show_labels;
+                $filter_display_style = $filter['displayStyle'] ?? $display_style;
+                $filter_show_count = isset($filter['showCount']) ? $filter['showCount'] : $show_count;
+                $filter_show_empty_terms = isset($filter['showEmptyTerms']) ? $filter['showEmptyTerms'] : $show_empty_terms;
+                $filter_show_only_top_level = isset($filter['showOnlyTopLevel']) ? $filter['showOnlyTopLevel'] : $show_only_top_level;
+                $filter_show_hierarchy = isset($filter['showHierarchy']) ? $filter['showHierarchy'] : $show_hierarchy;
+                $filter_display_as_dropdown = isset($filter['displayAsDropdown']) ? $filter['displayAsDropdown'] : $display_as_dropdown;
+                $filter_multiple_selection = isset($filter['multipleSelection']) ? $filter['multipleSelection'] : $multiple_selection;
+                $filter_collapsible = $filter['collapsible'] ?? false;
+                $filter_default_expanded = isset($filter['defaultExpanded']) ? $filter['defaultExpanded'] : true;
 
-                if ($show_only_top_level) {
-                    $term_args['parent'] = 0;
-                }
+                // Render based on filter type
+                if ($filter_filter_type === 'taxonomy') {
+                    $taxonomy = get_taxonomy($filter['taxonomy']);
+                    if (!$taxonomy) {
+                        continue;
+                    }
 
-                if ($show_hierarchy) {
-                    $term_args['hierarchical'] = true;
-                }
+                    // Build get_terms args based on filter-specific options
+                    $term_args = [
+                        'taxonomy' => $filter['taxonomy'],
+                        'hide_empty' => !$filter_show_empty_terms,
+                        'orderby' => 'name',
+                        'order' => 'ASC',
+                    ];
 
-                $terms = get_terms($term_args);
+                    if ($filter_show_only_top_level) {
+                        $term_args['parent'] = 0;
+                    }
 
-                if (is_wp_error($terms) || empty($terms)) {
-                    continue;
-                }
+                    if ($filter_show_hierarchy) {
+                        $term_args['hierarchical'] = true;
+                    }
 
-                $label = !empty($filter['label']) ? $filter['label'] : $taxonomy->label;
-                $input_type = $multiple_selection ? 'checkbox' : 'radio';
-                $name_attr = $multiple_selection ? $filter['taxonomy'] . '[]' : $filter['taxonomy'];
+                    $terms = get_terms($term_args);
 
-                echo '<div class="filter-group filter-taxonomy" data-taxonomy="' . esc_attr($filter['taxonomy']) . '">';
-                if ($show_labels) {
-                    echo '<label class="filter-group-label">' . esc_html($label) . '</label>';
+                    if (is_wp_error($terms) || empty($terms)) {
+                        continue;
+                    }
+
+                    $label = !empty($filter['label']) ? $filter['label'] : $taxonomy->label;
+                    $input_type = $filter_multiple_selection ? 'checkbox' : 'radio';
+                    $name_attr = $filter_multiple_selection ? $filter['taxonomy'] . '[]' : $filter['taxonomy'];
+
+                    // Build filter group classes
+                    $group_classes = ['filter-group', 'filter-taxonomy', 'layout-' . esc_attr($filter_layout)];
+                    if ($filter_collapsible) {
+                        $group_classes[] = 'filter-collapsible';
+                        if ($filter_default_expanded) {
+                            $group_classes[] = 'filter-expanded';
+                        }
+                    }
+
+                    echo '<div class="' . esc_attr(implode(' ', $group_classes)) . '" data-filter-type="taxonomy" data-taxonomy="' . esc_attr($filter['taxonomy']) . '" data-layout="' . esc_attr($filter_layout) . '">';
+                
+                // Collapsible header
+                if ($filter_collapsible) {
+                    echo '<div class="filter-group-header">';
+                    if ($filter_show_labels) {
+                        echo '<label class="filter-group-label">' . esc_html($label) . '</label>';
+                    }
+                    echo '<button type="button" class="filter-group-toggle" aria-expanded="' . ($filter_default_expanded ? 'true' : 'false') . '">';
+                    echo '<span class="filter-toggle-icon">' . ($filter_default_expanded ? '▼' : '▶') . '</span>';
+                    echo '</button>';
+                    echo '</div>';
+                    echo '<div class="filter-group-content" style="display: ' . ($filter_default_expanded ? 'block' : 'none') . ';">';
+                } else {
+                    if ($filter_show_labels) {
+                        echo '<label class="filter-group-label">' . esc_html($label) . '</label>';
+                    }
                 }
                 
                 // Use dropdown if displayAsDropdown is enabled
-                if ($display_as_dropdown) {
+                if ($filter_display_as_dropdown) {
                     echo '<select class="filter-select">';
                     echo '<option value="">' . esc_html__('All', 'jankx') . '</option>';
                     
-                    if ($show_hierarchy && !$show_only_top_level) {
+                    if ($filter_show_hierarchy && !$filter_show_only_top_level) {
                         // Render hierarchy in dropdown
-                        $this->renderTermsHierarchy($terms, $display_style, $show_count, $input_type, $name_attr, true);
+                        $this->renderTermsHierarchy($terms, $filter_display_style, $filter_show_count, $input_type, $name_attr, true);
                     } else {
                         // Render flat list
                         foreach ($terms as $term) {
-                            $count_text = $show_count ? ' (' . intval($term->count) . ')' : '';
+                            $count_text = $filter_show_count ? ' (' . intval($term->count) . ')' : '';
                             echo '<option value="' . esc_attr($term->term_id) . '">';
                             echo esc_html($term->name) . esc_html($count_text);
                             echo '</option>';
@@ -1079,16 +1127,16 @@ class AdvancedFiltersBlock extends Block
                     }
                     echo '</select>';
                 } else {
-                    echo '<div class="filter-options display-' . esc_attr($display_style) . '">';
+                    echo '<div class="filter-options display-' . esc_attr($filter_display_style) . '">';
                     
-                    if ($show_hierarchy && !$show_only_top_level) {
+                    if ($filter_show_hierarchy && !$filter_show_only_top_level) {
                         // Render hierarchy
-                        $this->renderTermsHierarchy($terms, $display_style, $show_count, $input_type, $name_attr, false);
+                        $this->renderTermsHierarchy($terms, $filter_display_style, $filter_show_count, $input_type, $name_attr, false);
                     } else {
                         // Render flat list
                         foreach ($terms as $term) {
-                            $count_text = $show_count ? ' (' . intval($term->count) . ')' : '';
-                            if ($display_style === 'buttons') {
+                            $count_text = $filter_show_count ? ' (' . intval($term->count) . ')' : '';
+                            if ($filter_display_style === 'buttons') {
                                 echo '<span class="filter-option" data-value="' . esc_attr($term->term_id) . '">';
                                 echo esc_html($term->name) . esc_html($count_text);
                                 echo '</span>';
@@ -1102,19 +1150,284 @@ class AdvancedFiltersBlock extends Block
                     }
                     echo '</div>';
                 }
-                echo '</div>';
-            }
-        }
+                
+                    if ($filter_collapsible) {
+                        echo '</div>'; // End filter-group-content
+                    }
+                    echo '</div>'; // End filter-group
+                } elseif ($filter_filter_type === 'meta') {
+                    // Meta Field Filter
+                    $meta_key = $filter['metaKey'] ?? '';
+                    $input_type = $filter['inputType'] ?? 'text';
+                    $placeholder = $filter['placeholder'] ?? '';
+                    $min_value = $filter['minValue'] ?? '';
+                    $max_value = $filter['maxValue'] ?? '';
+                    $label = !empty($filter['label']) ? $filter['label'] : __('Meta Field', 'jankx');
 
-        // Render keyword filter
-        if (!empty($keyword_filter['enabled'])) {
-            $placeholder = $keyword_filter['placeholder'] ?? __('Search...', 'jankx');
-            echo '<div class="filter-group filter-keyword">';
-            if ($show_labels) {
-                echo '<label class="filter-group-label">' . esc_html__('Keyword', 'jankx') . '</label>';
+                    // Build filter group classes
+                    $group_classes = ['filter-group', 'filter-meta', 'layout-' . esc_attr($filter_layout)];
+                    if ($filter_collapsible) {
+                        $group_classes[] = 'filter-collapsible';
+                        if ($filter_default_expanded) {
+                            $group_classes[] = 'filter-expanded';
+                        }
+                    }
+
+                    echo '<div class="' . esc_attr(implode(' ', $group_classes)) . '" data-filter-type="meta" data-meta-key="' . esc_attr($meta_key) . '" data-layout="' . esc_attr($filter_layout) . '">';
+                    
+                    // Render collapsible header or label
+                    if ($filter_collapsible) {
+                        echo '<div class="filter-group-header">';
+                        if ($filter_show_labels) {
+                            echo '<label class="filter-group-label">' . esc_html($label) . '</label>';
+                        }
+                        echo '<button type="button" class="filter-group-toggle" aria-expanded="' . ($filter_default_expanded ? 'true' : 'false') . '">';
+                        echo '<span class="filter-toggle-icon">' . ($filter_default_expanded ? '▼' : '▶') . '</span>';
+                        echo '</button>';
+                        echo '</div>';
+                        echo '<div class="filter-group-content" style="display: ' . ($filter_default_expanded ? 'block' : 'none') . ';">';
+                    } else {
+                        if ($filter_show_labels) {
+                            echo '<label class="filter-group-label">' . esc_html($label) . '</label>';
+                        }
+                    }
+
+                    if ($input_type === 'range') {
+                        // Number range input
+                        echo '<div class="filter-meta-range">';
+                        echo '<input type="number" class="filter-input filter-input-min" name="meta_' . esc_attr($meta_key) . '_min" placeholder="' . esc_attr($min_value ?: __('Min', 'jankx')) . '" min="' . esc_attr($min_value) . '">';
+                        echo '<span class="filter-range-separator">-</span>';
+                        echo '<input type="number" class="filter-input filter-input-max" name="meta_' . esc_attr($meta_key) . '_max" placeholder="' . esc_attr($max_value ?: __('Max', 'jankx')) . '" max="' . esc_attr($max_value) . '">';
+                        echo '</div>';
+                    } elseif ($input_type === 'date-range') {
+                        // Date range input
+                        echo '<div class="filter-meta-date-range">';
+                        echo '<input type="date" class="filter-input filter-input-date-start" name="meta_' . esc_attr($meta_key) . '_start" placeholder="' . esc_attr__('Start Date', 'jankx') . '">';
+                        echo '<span class="filter-range-separator">-</span>';
+                        echo '<input type="date" class="filter-input filter-input-date-end" name="meta_' . esc_attr($meta_key) . '_end" placeholder="' . esc_attr__('End Date', 'jankx') . '">';
+                        echo '</div>';
+                    } else {
+                        // Single input (text, number, date)
+                        $html_input_type = in_array($input_type, ['text', 'number', 'date']) ? $input_type : 'text';
+                        echo '<input type="' . esc_attr($html_input_type) . '" class="filter-input" name="meta_' . esc_attr($meta_key) . '" placeholder="' . esc_attr($placeholder) . '">';
+                    }
+
+                    if ($filter_collapsible) {
+                        echo '</div>'; // End filter-group-content
+                    }
+                    echo '</div>'; // End filter-group
+
+                } elseif ($filter_filter_type === 'price') {
+                    // Price Filter
+                    $min_price = $filter['minPrice'] ?? '';
+                    $max_price = $filter['maxPrice'] ?? '';
+                    $currency = $filter['currency'] ?? 'VND';
+                    $label = !empty($filter['label']) ? $filter['label'] : __('Price Range', 'jankx');
+
+                    // Build filter group classes
+                    $group_classes = ['filter-group', 'filter-price', 'layout-' . esc_attr($filter_layout)];
+                    if ($filter_collapsible) {
+                        $group_classes[] = 'filter-collapsible';
+                        if ($filter_default_expanded) {
+                            $group_classes[] = 'filter-expanded';
+                        }
+                    }
+
+                    echo '<div class="' . esc_attr(implode(' ', $group_classes)) . '" data-filter-type="price" data-layout="' . esc_attr($filter_layout) . '">';
+                    
+                    // Render collapsible header or label
+                    if ($filter_collapsible) {
+                        echo '<div class="filter-group-header">';
+                        if ($filter_show_labels) {
+                            echo '<label class="filter-group-label">' . esc_html($label) . '</label>';
+                        }
+                        echo '<button type="button" class="filter-group-toggle" aria-expanded="' . ($filter_default_expanded ? 'true' : 'false') . '">';
+                        echo '<span class="filter-toggle-icon">' . ($filter_default_expanded ? '▼' : '▶') . '</span>';
+                        echo '</button>';
+                        echo '</div>';
+                        echo '<div class="filter-group-content" style="display: ' . ($filter_default_expanded ? 'block' : 'none') . ';">';
+                    } else {
+                        if ($filter_show_labels) {
+                            echo '<label class="filter-group-label">' . esc_html($label) . '</label>';
+                        }
+                    }
+
+                    echo '<div class="filter-price-range">';
+                    echo '<input type="number" class="filter-input filter-input-price-min" name="price_min" placeholder="' . esc_attr($min_price ?: __('Min Price', 'jankx')) . '" min="' . esc_attr($min_price) . '">';
+                    echo '<span class="filter-range-separator">-</span>';
+                    echo '<input type="number" class="filter-input filter-input-price-max" name="price_max" placeholder="' . esc_attr($max_price ?: __('Max Price', 'jankx')) . '" max="' . esc_attr($max_price) . '">';
+                    echo '<span class="filter-currency">' . esc_html($currency) . '</span>';
+                    echo '</div>';
+
+                    if ($filter_collapsible) {
+                        echo '</div>'; // End filter-group-content
+                    }
+                    echo '</div>'; // End filter-group
+
+                } elseif ($filter_filter_type === 'date') {
+                    // Date Filter
+                    $date_field = $filter['dateField'] ?? 'post_date';
+                    $date_range = isset($filter['dateRange']) ? $filter['dateRange'] : true;
+                    $label = !empty($filter['label']) ? $filter['label'] : __('Date', 'jankx');
+
+                    // Build filter group classes
+                    $group_classes = ['filter-group', 'filter-date', 'layout-' . esc_attr($filter_layout)];
+                    if ($filter_collapsible) {
+                        $group_classes[] = 'filter-collapsible';
+                        if ($filter_default_expanded) {
+                            $group_classes[] = 'filter-expanded';
+                        }
+                    }
+
+                    echo '<div class="' . esc_attr(implode(' ', $group_classes)) . '" data-filter-type="date" data-date-field="' . esc_attr($date_field) . '" data-layout="' . esc_attr($filter_layout) . '">';
+                    
+                    // Render collapsible header or label
+                    if ($filter_collapsible) {
+                        echo '<div class="filter-group-header">';
+                        if ($filter_show_labels) {
+                            echo '<label class="filter-group-label">' . esc_html($label) . '</label>';
+                        }
+                        echo '<button type="button" class="filter-group-toggle" aria-expanded="' . ($filter_default_expanded ? 'true' : 'false') . '">';
+                        echo '<span class="filter-toggle-icon">' . ($filter_default_expanded ? '▼' : '▶') . '</span>';
+                        echo '</button>';
+                        echo '</div>';
+                        echo '<div class="filter-group-content" style="display: ' . ($filter_default_expanded ? 'block' : 'none') . ';">';
+                    } else {
+                        if ($filter_show_labels) {
+                            echo '<label class="filter-group-label">' . esc_html($label) . '</label>';
+                        }
+                    }
+
+                    if ($date_range) {
+                        echo '<div class="filter-date-range">';
+                        echo '<input type="date" class="filter-input filter-input-date-start" name="date_start" placeholder="' . esc_attr__('Start Date', 'jankx') . '">';
+                        echo '<span class="filter-range-separator">-</span>';
+                        echo '<input type="date" class="filter-input filter-input-date-end" name="date_end" placeholder="' . esc_attr__('End Date', 'jankx') . '">';
+                        echo '</div>';
+                    } else {
+                        echo '<input type="date" class="filter-input" name="date_' . esc_attr($date_field) . '" placeholder="' . esc_attr__('Select Date', 'jankx') . '">';
+                    }
+
+                    if ($filter_collapsible) {
+                        echo '</div>'; // End filter-group-content
+                    }
+                    echo '</div>'; // End filter-group
+
+                } elseif ($filter_filter_type === 'author') {
+                    // Author Filter
+                    $label = !empty($filter['label']) ? $filter['label'] : __('Author', 'jankx');
+                    $input_type = $filter_multiple_selection ? 'checkbox' : 'radio';
+                    $name_attr = $filter_multiple_selection ? 'author[]' : 'author';
+
+                    // Get authors
+                    $authors = get_users([
+                        'who' => 'authors',
+                        'has_published_posts' => true,
+                    ]);
+
+                    if (empty($authors)) {
+                        continue;
+                    }
+
+                    // Build filter group classes
+                    $group_classes = ['filter-group', 'filter-author', 'layout-' . esc_attr($filter_layout)];
+                    if ($filter_collapsible) {
+                        $group_classes[] = 'filter-collapsible';
+                        if ($filter_default_expanded) {
+                            $group_classes[] = 'filter-expanded';
+                        }
+                    }
+
+                    echo '<div class="' . esc_attr(implode(' ', $group_classes)) . '" data-filter-type="author" data-layout="' . esc_attr($filter_layout) . '">';
+                    
+                    // Render collapsible header or label
+                    if ($filter_collapsible) {
+                        echo '<div class="filter-group-header">';
+                        if ($filter_show_labels) {
+                            echo '<label class="filter-group-label">' . esc_html($label) . '</label>';
+                        }
+                        echo '<button type="button" class="filter-group-toggle" aria-expanded="' . ($filter_default_expanded ? 'true' : 'false') . '">';
+                        echo '<span class="filter-toggle-icon">' . ($filter_default_expanded ? '▼' : '▶') . '</span>';
+                        echo '</button>';
+                        echo '</div>';
+                        echo '<div class="filter-group-content" style="display: ' . ($filter_default_expanded ? 'block' : 'none') . ';">';
+                    } else {
+                        if ($filter_show_labels) {
+                            echo '<label class="filter-group-label">' . esc_html($label) . '</label>';
+                        }
+                    }
+
+                    if ($filter_display_style === 'dropdown') {
+                        echo '<select class="filter-select" name="' . esc_attr($name_attr) . '">';
+                        echo '<option value="">' . esc_html__('All Authors', 'jankx') . '</option>';
+                        foreach ($authors as $author) {
+                            echo '<option value="' . esc_attr($author->ID) . '">' . esc_html($author->display_name) . '</option>';
+                        }
+                        echo '</select>';
+                    } else {
+                        // Checkboxes
+                        echo '<div class="filter-options display-checkboxes">';
+                        foreach ($authors as $author) {
+                            echo '<label class="filter-option">';
+                            echo '<input type="' . esc_attr($input_type) . '" name="' . esc_attr($name_attr) . '" value="' . esc_attr($author->ID) . '">';
+                            echo '<span>' . esc_html($author->display_name) . '</span>';
+                            echo '</label>';
+                        }
+                        echo '</div>';
+                    }
+
+                    if ($filter_collapsible) {
+                        echo '</div>'; // End filter-group-content
+                    }
+                    echo '</div>'; // End filter-group
+
+                } elseif ($filter_filter_type === 'keyword') {
+                    // Keyword Filter
+                    $placeholder = $filter['placeholder'] ?? __('Search...', 'jankx');
+                    $show_search_button = isset($filter['showSearchButton']) ? $filter['showSearchButton'] : false;
+                    $label = !empty($filter['label']) ? $filter['label'] : __('Keyword', 'jankx');
+
+                    // Build filter group classes
+                    $group_classes = ['filter-group', 'filter-keyword', 'layout-' . esc_attr($filter_layout)];
+                    if ($filter_collapsible) {
+                        $group_classes[] = 'filter-collapsible';
+                        if ($filter_default_expanded) {
+                            $group_classes[] = 'filter-expanded';
+                        }
+                    }
+
+                    echo '<div class="' . esc_attr(implode(' ', $group_classes)) . '" data-filter-type="keyword" data-layout="' . esc_attr($filter_layout) . '">';
+                    
+                    // Render collapsible header or label
+                    if ($filter_collapsible) {
+                        echo '<div class="filter-group-header">';
+                        if ($filter_show_labels) {
+                            echo '<label class="filter-group-label">' . esc_html($label) . '</label>';
+                        }
+                        echo '<button type="button" class="filter-group-toggle" aria-expanded="' . ($filter_default_expanded ? 'true' : 'false') . '">';
+                        echo '<span class="filter-toggle-icon">' . ($filter_default_expanded ? '▼' : '▶') . '</span>';
+                        echo '</button>';
+                        echo '</div>';
+                        echo '<div class="filter-group-content" style="display: ' . ($filter_default_expanded ? 'block' : 'none') . ';">';
+                    } else {
+                        if ($filter_show_labels) {
+                            echo '<label class="filter-group-label">' . esc_html($label) . '</label>';
+                        }
+                    }
+
+                    echo '<div class="filter-keyword-wrapper">';
+                    echo '<input type="text" class="filter-input filter-input-keyword" name="keyword" placeholder="' . esc_attr($placeholder) . '">';
+                    if ($show_search_button) {
+                        echo '<button type="button" class="filter-search-button">' . esc_html__('Search', 'jankx') . '</button>';
+                    }
+                    echo '</div>';
+
+                    if ($filter_collapsible) {
+                        echo '</div>'; // End filter-group-content
+                    }
+                    echo '</div>'; // End filter-group
+                }
             }
-            echo '<input type="text" class="filter-input" placeholder="' . esc_attr($placeholder) . '">';
-            echo '</div>';
         }
     }
 
