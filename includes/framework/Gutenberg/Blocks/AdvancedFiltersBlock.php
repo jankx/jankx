@@ -866,13 +866,14 @@ class AdvancedFiltersBlock extends Block
         // Generate unique ID for this filter instance
         $instance_id = 'jankx-advanced-filters-' . $filter_id;
 
-        // Build CSS classes
+        // Build CSS classes - add global layout class for consistent styling
+        $wrapper_classes = ['wp-block-jankx-advanced-filters'];
+        if ($layout) {
+            $wrapper_classes[] = 'layout-' . esc_attr($layout);
+        }
+        
         $wrapper_attributes = get_block_wrapper_attributes([
-            'class' => implode(' ', [
-                'wp-block-jankx-advanced-filters',
-                'layout-' . esc_attr($layout),
-                'display-' . esc_attr($display_style),
-            ]),
+            'class' => implode(' ', $wrapper_classes),
             'id' => $instance_id,
         ]);
 
@@ -1080,8 +1081,8 @@ class AdvancedFiltersBlock extends Block
                     $input_type = $filter_multiple_selection ? 'checkbox' : 'radio';
                     $name_attr = $filter_multiple_selection ? $filter['taxonomy'] . '[]' : $filter['taxonomy'];
 
-                    // Build filter group classes
-                    $group_classes = ['filter-group', 'filter-taxonomy', 'layout-' . esc_attr($filter_layout)];
+                    // Build filter group classes - consistent with frontend
+                    $group_classes = ['filter-group', 'filter-taxonomy'];
                     if ($filter_collapsible) {
                         $group_classes[] = 'filter-collapsible';
                         if ($filter_default_expanded) {
@@ -1089,7 +1090,7 @@ class AdvancedFiltersBlock extends Block
                         }
                     }
 
-                    echo '<div class="' . esc_attr(implode(' ', $group_classes)) . '" data-filter-type="taxonomy" data-taxonomy="' . esc_attr($filter['taxonomy']) . '" data-layout="' . esc_attr($filter_layout) . '">';
+                    echo '<div class="' . esc_attr(implode(' ', $group_classes)) . '" data-filter-type="taxonomy" data-taxonomy="' . esc_attr($filter['taxonomy']) . '" data-layout="' . esc_attr($filter_layout) . '" data-display-style="' . esc_attr($filter_display_style) . '">';
                 
                 // Collapsible header
                 if ($filter_collapsible) {
@@ -1164,8 +1165,8 @@ class AdvancedFiltersBlock extends Block
                     $max_value = $filter['maxValue'] ?? '';
                     $label = !empty($filter['label']) ? $filter['label'] : __('Meta Field', 'jankx');
 
-                    // Build filter group classes
-                    $group_classes = ['filter-group', 'filter-meta', 'layout-' . esc_attr($filter_layout)];
+                    // Build filter group classes - consistent with frontend
+                    $group_classes = ['filter-group', 'filter-meta'];
                     if ($filter_collapsible) {
                         $group_classes[] = 'filter-collapsible';
                         if ($filter_default_expanded) {
@@ -1173,7 +1174,7 @@ class AdvancedFiltersBlock extends Block
                         }
                     }
 
-                    echo '<div class="' . esc_attr(implode(' ', $group_classes)) . '" data-filter-type="meta" data-meta-key="' . esc_attr($meta_key) . '" data-layout="' . esc_attr($filter_layout) . '">';
+                    echo '<div class="' . esc_attr(implode(' ', $group_classes)) . '" data-filter-type="meta" data-meta-key="' . esc_attr($meta_key) . '" data-layout="' . esc_attr($filter_layout) . '" data-input-type="' . esc_attr($input_type) . '">';
                     
                     // Render collapsible header or label
                     if ($filter_collapsible) {
@@ -1193,21 +1194,21 @@ class AdvancedFiltersBlock extends Block
                     }
 
                     if ($input_type === 'range') {
-                        // Number range input
-                        echo '<div class="filter-meta-range">';
-                        echo '<input type="number" class="filter-input filter-input-min" name="meta_' . esc_attr($meta_key) . '_min" placeholder="' . esc_attr($min_value ?: __('Min', 'jankx')) . '" min="' . esc_attr($min_value) . '">';
+                        // Number range input - consistent with frontend
+                        echo '<div class="filter-range">';
+                        echo '<input type="number" class="filter-input filter-range-input filter-input-min" name="meta_' . esc_attr($meta_key) . '_min" placeholder="' . esc_attr($min_value ?: __('Min', 'jankx')) . '" min="' . esc_attr($min_value) . '">';
                         echo '<span class="filter-range-separator">-</span>';
-                        echo '<input type="number" class="filter-input filter-input-max" name="meta_' . esc_attr($meta_key) . '_max" placeholder="' . esc_attr($max_value ?: __('Max', 'jankx')) . '" max="' . esc_attr($max_value) . '">';
+                        echo '<input type="number" class="filter-input filter-range-input filter-input-max" name="meta_' . esc_attr($meta_key) . '_max" placeholder="' . esc_attr($max_value ?: __('Max', 'jankx')) . '" max="' . esc_attr($max_value) . '">';
                         echo '</div>';
                     } elseif ($input_type === 'date-range') {
-                        // Date range input
-                        echo '<div class="filter-meta-date-range">';
-                        echo '<input type="date" class="filter-input filter-input-date-start" name="meta_' . esc_attr($meta_key) . '_start" placeholder="' . esc_attr__('Start Date', 'jankx') . '">';
+                        // Date range input - consistent with frontend
+                        echo '<div class="filter-range">';
+                        echo '<input type="date" class="filter-input filter-range-input filter-input-date-start" name="meta_' . esc_attr($meta_key) . '_start" placeholder="' . esc_attr__('Start Date', 'jankx') . '">';
                         echo '<span class="filter-range-separator">-</span>';
-                        echo '<input type="date" class="filter-input filter-input-date-end" name="meta_' . esc_attr($meta_key) . '_end" placeholder="' . esc_attr__('End Date', 'jankx') . '">';
+                        echo '<input type="date" class="filter-input filter-range-input filter-input-date-end" name="meta_' . esc_attr($meta_key) . '_end" placeholder="' . esc_attr__('End Date', 'jankx') . '">';
                         echo '</div>';
                     } else {
-                        // Single input (text, number, date)
+                        // Single input (text, number, date) - consistent with frontend
                         $html_input_type = in_array($input_type, ['text', 'number', 'date']) ? $input_type : 'text';
                         echo '<input type="' . esc_attr($html_input_type) . '" class="filter-input" name="meta_' . esc_attr($meta_key) . '" placeholder="' . esc_attr($placeholder) . '">';
                     }
@@ -1224,8 +1225,8 @@ class AdvancedFiltersBlock extends Block
                     $currency = $filter['currency'] ?? 'VND';
                     $label = !empty($filter['label']) ? $filter['label'] : __('Price Range', 'jankx');
 
-                    // Build filter group classes
-                    $group_classes = ['filter-group', 'filter-price', 'layout-' . esc_attr($filter_layout)];
+                    // Build filter group classes - consistent with frontend
+                    $group_classes = ['filter-group', 'filter-price'];
                     if ($filter_collapsible) {
                         $group_classes[] = 'filter-collapsible';
                         if ($filter_default_expanded) {
@@ -1253,9 +1254,11 @@ class AdvancedFiltersBlock extends Block
                     }
 
                     echo '<div class="filter-price-range">';
-                    echo '<input type="number" class="filter-input filter-input-price-min" name="price_min" placeholder="' . esc_attr($min_price ?: __('Min Price', 'jankx')) . '" min="' . esc_attr($min_price) . '">';
+                    echo '<div class="filter-range">';
+                    echo '<input type="number" class="filter-input filter-range-input filter-input-price-min" name="price_min" placeholder="' . esc_attr($min_price ?: __('Min Price', 'jankx')) . '" min="' . esc_attr($min_price) . '">';
                     echo '<span class="filter-range-separator">-</span>';
-                    echo '<input type="number" class="filter-input filter-input-price-max" name="price_max" placeholder="' . esc_attr($max_price ?: __('Max Price', 'jankx')) . '" max="' . esc_attr($max_price) . '">';
+                    echo '<input type="number" class="filter-input filter-range-input filter-input-price-max" name="price_max" placeholder="' . esc_attr($max_price ?: __('Max Price', 'jankx')) . '" max="' . esc_attr($max_price) . '">';
+                    echo '</div>';
                     echo '<span class="filter-currency">' . esc_html($currency) . '</span>';
                     echo '</div>';
 
@@ -1270,8 +1273,8 @@ class AdvancedFiltersBlock extends Block
                     $date_range = isset($filter['dateRange']) ? $filter['dateRange'] : true;
                     $label = !empty($filter['label']) ? $filter['label'] : __('Date', 'jankx');
 
-                    // Build filter group classes
-                    $group_classes = ['filter-group', 'filter-date', 'layout-' . esc_attr($filter_layout)];
+                    // Build filter group classes - consistent with frontend
+                    $group_classes = ['filter-group', 'filter-date'];
                     if ($filter_collapsible) {
                         $group_classes[] = 'filter-collapsible';
                         if ($filter_default_expanded) {
@@ -1279,7 +1282,7 @@ class AdvancedFiltersBlock extends Block
                         }
                     }
 
-                    echo '<div class="' . esc_attr(implode(' ', $group_classes)) . '" data-filter-type="date" data-date-field="' . esc_attr($date_field) . '" data-layout="' . esc_attr($filter_layout) . '">';
+                    echo '<div class="' . esc_attr(implode(' ', $group_classes)) . '" data-filter-type="date" data-date-field="' . esc_attr($date_field) . '" data-layout="' . esc_attr($filter_layout) . '" data-date-range="' . ($date_range ? 'true' : 'false') . '">';
                     
                     // Render collapsible header or label
                     if ($filter_collapsible) {
@@ -1299,12 +1302,14 @@ class AdvancedFiltersBlock extends Block
                     }
 
                     if ($date_range) {
-                        echo '<div class="filter-date-range">';
-                        echo '<input type="date" class="filter-input filter-input-date-start" name="date_start" placeholder="' . esc_attr__('Start Date', 'jankx') . '">';
+                        // Date range - consistent with frontend
+                        echo '<div class="filter-range">';
+                        echo '<input type="date" class="filter-input filter-range-input filter-input-date-start" name="date_start" placeholder="' . esc_attr__('Start Date', 'jankx') . '">';
                         echo '<span class="filter-range-separator">-</span>';
-                        echo '<input type="date" class="filter-input filter-input-date-end" name="date_end" placeholder="' . esc_attr__('End Date', 'jankx') . '">';
+                        echo '<input type="date" class="filter-input filter-range-input filter-input-date-end" name="date_end" placeholder="' . esc_attr__('End Date', 'jankx') . '">';
                         echo '</div>';
                     } else {
+                        // Single date - consistent with frontend
                         echo '<input type="date" class="filter-input" name="date_' . esc_attr($date_field) . '" placeholder="' . esc_attr__('Select Date', 'jankx') . '">';
                     }
 
@@ -1329,8 +1334,8 @@ class AdvancedFiltersBlock extends Block
                         continue;
                     }
 
-                    // Build filter group classes
-                    $group_classes = ['filter-group', 'filter-author', 'layout-' . esc_attr($filter_layout)];
+                    // Build filter group classes - consistent with frontend
+                    $group_classes = ['filter-group', 'filter-author'];
                     if ($filter_collapsible) {
                         $group_classes[] = 'filter-collapsible';
                         if ($filter_default_expanded) {
@@ -1338,7 +1343,7 @@ class AdvancedFiltersBlock extends Block
                         }
                     }
 
-                    echo '<div class="' . esc_attr(implode(' ', $group_classes)) . '" data-filter-type="author" data-layout="' . esc_attr($filter_layout) . '">';
+                    echo '<div class="' . esc_attr(implode(' ', $group_classes)) . '" data-filter-type="author" data-layout="' . esc_attr($filter_layout) . '" data-display-style="' . esc_attr($filter_display_style) . '">';
                     
                     // Render collapsible header or label
                     if ($filter_collapsible) {
@@ -1387,8 +1392,8 @@ class AdvancedFiltersBlock extends Block
                     $show_search_button = isset($filter['showSearchButton']) ? $filter['showSearchButton'] : false;
                     $label = !empty($filter['label']) ? $filter['label'] : __('Keyword', 'jankx');
 
-                    // Build filter group classes
-                    $group_classes = ['filter-group', 'filter-keyword', 'layout-' . esc_attr($filter_layout)];
+                    // Build filter group classes - consistent with frontend
+                    $group_classes = ['filter-group', 'filter-keyword'];
                     if ($filter_collapsible) {
                         $group_classes[] = 'filter-collapsible';
                         if ($filter_default_expanded) {

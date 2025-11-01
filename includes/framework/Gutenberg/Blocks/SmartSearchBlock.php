@@ -112,8 +112,32 @@ class SmartSearchBlock extends Block
         check_ajax_referer('jankx_smart_search_nonce', 'nonce');
 
         $query = sanitize_text_field($_POST['query'] ?? '');
-        $post_types = isset($_POST['post_types']) ? (array) $_POST['post_types'] : ['post'];
-        $taxonomies = isset($_POST['taxonomies']) ? (array) $_POST['taxonomies'] : [];
+        
+        // Parse JSON strings for post_types and taxonomies
+        $post_types = ['post'];
+        if (isset($_POST['post_types'])) {
+            if (is_array($_POST['post_types'])) {
+                $post_types = $_POST['post_types'];
+            } else {
+                $decoded = json_decode(stripslashes($_POST['post_types']), true);
+                if (is_array($decoded)) {
+                    $post_types = $decoded;
+                }
+            }
+        }
+        
+        $taxonomies = [];
+        if (isset($_POST['taxonomies'])) {
+            if (is_array($_POST['taxonomies'])) {
+                $taxonomies = $_POST['taxonomies'];
+            } else {
+                $decoded = json_decode(stripslashes($_POST['taxonomies']), true);
+                if (is_array($decoded)) {
+                    $taxonomies = $decoded;
+                }
+            }
+        }
+        
         $show_posts = isset($_POST['show_posts']) ? filter_var($_POST['show_posts'], FILTER_VALIDATE_BOOLEAN) : true;
         $show_post_types = isset($_POST['show_post_types']) ? filter_var($_POST['show_post_types'], FILTER_VALIDATE_BOOLEAN) : false;
         $show_users = isset($_POST['show_users']) ? filter_var($_POST['show_users'], FILTER_VALIDATE_BOOLEAN) : false;

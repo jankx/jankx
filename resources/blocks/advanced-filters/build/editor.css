@@ -7,40 +7,42 @@
  * Editor should look exactly like frontend
  * Import all styles from style.scss
  */
-.layout-horizontal .advanced-filters-container {
+.wp-block-jankx-advanced-filters.layout-horizontal .advanced-filters-container {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
   align-items: flex-start;
 }
-
-.layout-vertical .advanced-filters-container {
+.wp-block-jankx-advanced-filters.layout-vertical .advanced-filters-container {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
-
-.layout-accordion .advanced-filters-container .filter-group {
+.wp-block-jankx-advanced-filters.layout-accordion .advanced-filters-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.wp-block-jankx-advanced-filters.layout-accordion .advanced-filters-container .filter-group {
   border-bottom: 1px solid var(--wp--preset--color--neutral, #ddd);
   padding-bottom: 1rem;
   margin-bottom: 1rem;
 }
-.layout-accordion .advanced-filters-container .filter-group:last-child {
+.wp-block-jankx-advanced-filters.layout-accordion .advanced-filters-container .filter-group:last-child {
   border-bottom: none;
   margin-bottom: 0;
 }
-.layout-accordion .advanced-filters-container .filter-group .filter-group-header {
+.wp-block-jankx-advanced-filters .filter-collapsible .filter-group-header {
   cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0.75rem 0;
 }
-.layout-accordion .advanced-filters-container .filter-group .filter-group-header .filter-group-title {
-  font-weight: 600;
+.wp-block-jankx-advanced-filters .filter-collapsible .filter-group-header .filter-group-label {
   margin: 0;
 }
-.layout-accordion .advanced-filters-container .filter-group .filter-group-header .filter-group-toggle {
+.wp-block-jankx-advanced-filters .filter-collapsible .filter-group-header .filter-group-toggle {
   background: none;
   border: none;
   font-size: 1.2rem;
@@ -48,15 +50,18 @@
   padding: 0;
   color: var(--wp--preset--color--contrast, #000);
 }
-.layout-accordion .advanced-filters-container .filter-group .filter-group-header .filter-group-toggle:hover {
+.wp-block-jankx-advanced-filters .filter-collapsible .filter-group-header .filter-group-toggle:hover {
   color: var(--wp--preset--color--primary, #503AA8);
 }
-.layout-accordion .advanced-filters-container .filter-group .filter-group-content {
+.wp-block-jankx-advanced-filters .filter-collapsible .filter-group-content {
   padding-top: 1rem;
   display: none;
 }
-.layout-accordion .advanced-filters-container .filter-group .filter-group-content.expanded {
-  display: block;
+.wp-block-jankx-advanced-filters .filter-collapsible .filter-group-content[style*="display: block"], .wp-block-jankx-advanced-filters .filter-collapsible .filter-group-content.expanded {
+  display: block !important;
+}
+.wp-block-jankx-advanced-filters .filter-collapsible.filter-expanded .filter-group-content {
+  display: block !important;
 }
 
 .filter-group {
@@ -136,9 +141,11 @@
 }
 .filter-group .filter-range .filter-range-input {
   flex: 1;
-  padding: 0.5rem;
+  padding: 0.5rem 1rem;
   border: 2px solid var(--wp--preset--color--neutral, #ddd);
   border-radius: 6px;
+  font-size: 0.9rem;
+  min-width: 0;
 }
 .filter-group .filter-range .filter-range-input:focus {
   outline: none;
@@ -146,6 +153,40 @@
 }
 .filter-group .filter-range .filter-range-separator {
   color: var(--wp--preset--color--contrast, #000);
+  font-weight: 500;
+}
+.filter-group .filter-price-range {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.filter-group .filter-price-range .filter-range {
+  margin-bottom: 0.5rem;
+}
+.filter-group .filter-price-range .filter-currency {
+  font-size: 0.85rem;
+  color: var(--wp--preset--color--contrast, #666);
+}
+.filter-group .filter-keyword-wrapper {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.filter-group .filter-keyword-wrapper .filter-input-keyword {
+  flex: 1;
+}
+.filter-group .filter-keyword-wrapper .filter-search-button {
+  padding: 0.5rem 1.5rem;
+  background: var(--wp--preset--color--primary, #503AA8);
+  color: var(--wp--preset--color--base, #fff);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+.filter-group .filter-keyword-wrapper .filter-search-button:hover {
+  background: var(--wp--preset--color--contrast, #000);
 }
 
 .filter-reset-button {

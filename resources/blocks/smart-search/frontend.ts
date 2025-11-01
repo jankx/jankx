@@ -108,6 +108,10 @@ class SmartSearch {
 			existingForm.remove();
 		}
 
+		// Create wrapper for form and suggestions (to position suggestions correctly)
+		const formWrapper = document.createElement('div');
+		formWrapper.className = 'smart-search-form-wrapper';
+		
 		// Create form structure
 		const form = document.createElement('form');
 		form.className = 'smart-search-form';
@@ -143,8 +147,8 @@ class SmartSearch {
 		const filtersWrapper = document.createElement('div');
 		filtersWrapper.className = 'search-filters-wrapper';
 
-		// Post type filter
-		if (this.config.showPostTypeFilter && this.config.postTypes.length > 0) {
+		// Post type filter - only show if more than 1 post type is selected
+		if (this.config.showPostTypeFilter && this.config.postTypes.length > 1) {
 			const postTypeSelect = document.createElement('select');
 			postTypeSelect.name = 'post_type';
 			postTypeSelect.className = 'post-type-filter';
@@ -158,6 +162,13 @@ class SmartSearch {
 			});
 
 			filtersWrapper.appendChild(postTypeSelect);
+		} else if (this.config.postTypes.length === 1) {
+			// If only 1 post type, add it as a hidden field
+			const hiddenInput = document.createElement('input');
+			hiddenInput.type = 'hidden';
+			hiddenInput.name = 'post_type';
+			hiddenInput.value = this.config.postTypes[0];
+			form.appendChild(hiddenInput);
 		}
 
 		// Taxonomy filter
@@ -226,17 +237,18 @@ class SmartSearch {
 		}
 
 		form.appendChild(inputWrapper);
+		formWrapper.appendChild(form);
 
 		// Create suggestion dropdown
 		if (this.config.enableAutoSuggestion) {
 			const dropdown = document.createElement('div');
 			dropdown.className = 'search-suggestions';
 			dropdown.style.display = 'none';
-			form.appendChild(dropdown);
+			formWrapper.appendChild(dropdown);
 			this.suggestionDropdown = dropdown;
 		}
 
-		this.container.appendChild(form);
+		this.container.appendChild(formWrapper);
 		this.form = form;
 	}
 

@@ -1,4 +1,10 @@
 .wp-block-jankx-smart-search {
+	position: relative; // For absolute positioning of suggestions
+	
+	.smart-search-form-wrapper {
+		position: relative;
+	}
+	
 	.smart-search-form {
 		display: flex;
 		flex-direction: column;
@@ -111,8 +117,11 @@
 
 		// Suggestions dropdown
 		.search-suggestions {
-			position: relative;
-			margin-top: 0.5rem;
+			position: absolute;
+			top: 100%;
+			left: 0;
+			right: 0;
+			margin-top: 0.25rem;
 			background: #fff;
 			border: 1px solid #ccc;
 			border-radius: 4px;
