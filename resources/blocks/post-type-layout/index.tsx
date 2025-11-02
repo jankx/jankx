@@ -549,22 +549,79 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                 disabled={readOnlyOptions.includes('showFeaturedImage')}
                             />
                             {showFeaturedImage && (
-                                <SelectControl
-                                    label={__('Image Aspect Ratio', 'jankx')}
-                                    value={imageRatio || ''}
-                                    onChange={(value) => setAttributes({ imageRatio: value || '' })}
-                                    help={__('Set the aspect ratio for featured images', 'jankx')}
-                                    options={[
-                                        { label: __('Default (3:2)', 'jankx'), value: '' },
-                                        { label: __('16:9 (Landscape)', 'jankx'), value: '16/9' },
-                                        { label: __('4:3 (Landscape)', 'jankx'), value: '4/3' },
-                                        { label: __('21:9 (Ultra Wide)', 'jankx'), value: '21/9' },
-                                        { label: __('1:1 (Square)', 'jankx'), value: '1/1' },
-                                        { label: __('3:4 (Portrait)', 'jankx'), value: '3/4' },
-                                        { label: __('2:3 (Portrait)', 'jankx'), value: '2/3' },
-                                        { label: __('9:16 (Vertical)', 'jankx'), value: '9/16' },
-                                    ]}
-                                />
+                                <>
+                                    <SelectControl
+                                        label={__('Image Aspect Ratio', 'jankx')}
+                                        value={(() => {
+                                            const presetRatios = ['16/9', '4/3', '21/9', '1/1', '3/4', '2/3', '9/16'];
+                                            if (!imageRatio || imageRatio === '') {
+                                                return '';
+                                            }
+                                            if (presetRatios.includes(imageRatio)) {
+                                                return imageRatio;
+                                            }
+                                            return 'custom';
+                                        })()}
+                                        onChange={(value) => {
+                                            if (value === 'custom') {
+                                                // Set to empty string to show TextControl, user will enter custom value
+                                                setAttributes({ imageRatio: '' });
+                                            } else {
+                                                setAttributes({ imageRatio: value || '' });
+                                            }
+                                        }}
+                                        help={__('Set the aspect ratio for featured images', 'jankx')}
+                                        options={[
+                                            { label: __('Default (3:2)', 'jankx'), value: '' },
+                                            { label: __('16:9 (Landscape)', 'jankx'), value: '16/9' },
+                                            { label: __('4:3 (Landscape)', 'jankx'), value: '4/3' },
+                                            { label: __('21:9 (Ultra Wide)', 'jankx'), value: '21/9' },
+                                            { label: __('1:1 (Square)', 'jankx'), value: '1/1' },
+                                            { label: __('3:4 (Portrait)', 'jankx'), value: '3/4' },
+                                            { label: __('2:3 (Portrait)', 'jankx'), value: '2/3' },
+                                            { label: __('9:16 (Vertical)', 'jankx'), value: '9/16' },
+                                            { label: __('Custom', 'jankx'), value: 'custom' },
+                                        ]}
+                                    />
+                                    {(() => {
+                                        const presetRatios = ['16/9', '4/3', '21/9', '1/1', '3/4', '2/3', '9/16'];
+                                        const selectValue = (() => {
+                                            if (!imageRatio || imageRatio === '') {
+                                                return '';
+                                            }
+                                            if (presetRatios.includes(imageRatio)) {
+                                                return imageRatio;
+                                            }
+                                            return 'custom';
+                                        })();
+                                        
+                                        // Show TextControl when "Custom" is selected or when ratio is not in preset list
+                                        const isCustom = selectValue === 'custom' || (imageRatio && imageRatio !== '' && !presetRatios.includes(imageRatio));
+                                        
+                                        return isCustom;
+                                    })() && (
+                                        <TextControl
+                                            label={__('Custom Ratio', 'jankx')}
+                                            value={(() => {
+                                                const presetRatios = ['16/9', '4/3', '21/9', '1/1', '3/4', '2/3', '9/16'];
+                                                // If current value is a preset, show empty (user just selected Custom)
+                                                if (!imageRatio || presetRatios.includes(imageRatio)) {
+                                                    return '';
+                                                }
+                                                return imageRatio;
+                                            })()}
+                                            onChange={(value) => {
+                                                // Validate format: should be "number/number" or empty
+                                                const ratioPattern = /^\d+\/\d+$/;
+                                                if (!value || ratioPattern.test(value)) {
+                                                    setAttributes({ imageRatio: value || '' });
+                                                }
+                                            }}
+                                            help={__('Enter aspect ratio in format: width/height (e.g., 16/9, 3/4)', 'jankx')}
+                                            placeholder="16/9"
+                                        />
+                                    )}
+                                </>
                             )}
                         </>
                     )}
