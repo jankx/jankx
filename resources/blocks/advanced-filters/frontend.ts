@@ -46,6 +46,9 @@ class AdvancedFilters {
                 (this.config as any).nonce = nonce;
                 (this.config as any).ajaxUrl = ajaxUrl;
                 
+                // Load filter values from URL on page load
+                this.loadFiltersFromUrl();
+                
                 this.setupEventListeners();
             }
         } catch (error) {
@@ -249,49 +252,79 @@ class AdvancedFilters {
                 }
             }
 
-            const params = new URLSearchParams({
-                action: 'jankx_advanced_filters_update',
-                nonce: nonce,
-                target_blocks: JSON.stringify(this.config.targetBlockIds),
-                filters: JSON.stringify(this.currentFilters),
+            // Use PostTypeLayoutBlock's AJAX handler
+            // Process each target block individually
+            const updatePromises = this.config.targetBlockIds.map(async (blockId) => {
+                // Get block attributes from DOM if available
+                const targetBlock = document.querySelector(`[data-query-id="${blockId}"], [data-block-id="${blockId}"]`) as HTMLElement;
+                let attributesJson = '';
+                
+                if (targetBlock) {
+                    const blockSettings = targetBlock.getAttribute('data-block-settings');
+                    if (blockSettings) {
+                        attributesJson = blockSettings;
+                    }
+                }
+
+                const params = new URLSearchParams({
+                    action: 'jankx_post_type_layout_filter',
+                    nonce: nonce,
+                    block_id: blockId,
+                    attributes: attributesJson,
+                    filters: JSON.stringify(this.currentFilters),
+                });
+
+                // Always send post_id if we have it
+                if (postId > 0) {
+                    params.append('post_id', String(postId));
+                    console.log('AdvancedFilters: Sending post_id:', postId);
+                } else {
+                    console.warn('AdvancedFilters: Could not determine post_id, server will try to detect it');
+                }
+
+                const response = await fetch(ajaxUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: params,
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error(`Filter update failed for block ${blockId}:`, response.status, errorText);
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+
+                const data = await response.json();
+
+                if (data.success && data.data) {
+                    return {
+                        blockId: blockId,
+                        html: data.data.html,
+                    };
+                } else {
+                    const errorMessage = data?.data?.message || data?.data || 'Unknown error';
+                    console.error(`Filter update failed for block ${blockId}:`, errorMessage);
+                    throw new Error(errorMessage);
+                }
             });
 
-            // Always send post_id if we have it
-            if (postId > 0) {
-                params.append('post_id', String(postId));
-                console.log('AdvancedFilters: Sending post_id:', postId);
-            } else {
-                console.warn('AdvancedFilters: Could not determine post_id, server will try to detect it');
-            }
+            // Wait for all blocks to update
+            const results = await Promise.all(updatePromises);
 
-            const response = await fetch(ajaxUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: params,
+            // Update target blocks
+            const resultsMap: Record<string, string> = {};
+            results.forEach((result) => {
+                resultsMap[result.blockId] = result.html;
             });
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('Filter update failed:', response.status, errorText);
-                throw new Error(`HTTP ${response.status}: ${errorText}`);
+            this.updateTargetBlocks(resultsMap);
+            if (this.config.updateUrl) {
+                this.updateUrl();
             }
-
-            const data = await response.json();
-
-            if (data.success && data.data) {
-                this.updateTargetBlocks(data.data);
-                if (this.config.updateUrl) {
-                    this.updateUrl();
-                }
-                if (this.config.scrollToResults) {
-                    this.scrollToResults();
-                }
-            } else {
-                const errorMessage = data?.data?.message || data?.data || 'Unknown error';
-                console.error('Filter update failed:', errorMessage);
-                alert(`Filter update failed: ${errorMessage}`);
+            if (this.config.scrollToResults) {
+                this.scrollToResults();
             }
         } catch (error) {
             console.error('Error updating filters:', error);
@@ -337,6 +370,12 @@ class AdvancedFilters {
             }
             
             if (targetElement) {
+                // Remove loading spinner before updating content
+                const existingLoading = targetElement.querySelector('.post-type-layout-loading');
+                if (existingLoading) {
+                    existingLoading.remove();
+                }
+                
                 // Parse the returned HTML and replace only the inner content
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = html.trim();
@@ -429,19 +468,65 @@ class AdvancedFilters {
     }
 
     private showLoading(): void {
-        if (!this.container) return;
-        const loading = this.container.querySelector('.filter-loading');
-        if (loading) {
-            loading.classList.add('active');
-        }
+        if (!this.config || !this.config.targetBlockIds) return;
+        
+        // Show loading spinner on target blocks (post-type-layout blocks)
+        this.config.targetBlockIds.forEach((blockId: string) => {
+            let targetElement = document.querySelector(`[data-block-id="${blockId}"], [data-query-id="${blockId}"]`) as HTMLElement;
+            
+            if (!targetElement) {
+                // Try finding by class and queryId data attribute
+                const blocks = document.querySelectorAll('.wp-block-jankx-post-type-layout');
+                blocks.forEach((block) => {
+                    const queryId = (block as HTMLElement).getAttribute('data-query-id');
+                    if (queryId === blockId) {
+                        targetElement = block as HTMLElement;
+                    }
+                });
+            }
+            
+            if (targetElement) {
+                // Create or get loading element
+                let loading = targetElement.querySelector('.post-type-layout-loading');
+                
+                if (!loading) {
+                    // Create loading element if it doesn't exist
+                    loading = document.createElement('div');
+                    loading.className = 'post-type-layout-loading';
+                    loading.innerHTML = '<div class="post-type-layout-spinner"></div>';
+                    targetElement.appendChild(loading);
+                }
+                
+                loading.classList.add('active');
+            }
+        });
     }
 
     private hideLoading(): void {
-        if (!this.container) return;
-        const loading = this.container.querySelector('.filter-loading');
-        if (loading) {
-            loading.classList.remove('active');
-        }
+        if (!this.config || !this.config.targetBlockIds) return;
+        
+        // Hide loading spinner on target blocks
+        this.config.targetBlockIds.forEach((blockId: string) => {
+            let targetElement = document.querySelector(`[data-block-id="${blockId}"], [data-query-id="${blockId}"]`) as HTMLElement;
+            
+            if (!targetElement) {
+                // Try finding by class and queryId data attribute
+                const blocks = document.querySelectorAll('.wp-block-jankx-post-type-layout');
+                blocks.forEach((block) => {
+                    const queryId = (block as HTMLElement).getAttribute('data-query-id');
+                    if (queryId === blockId) {
+                        targetElement = block as HTMLElement;
+                    }
+                });
+            }
+            
+            if (targetElement) {
+                const loading = targetElement.querySelector('.post-type-layout-loading');
+                if (loading) {
+                    loading.classList.remove('active');
+                }
+            }
+        });
     }
 
     private debounce<T extends (...args: any[]) => any>(func: T, wait: number): (...args: Parameters<T>) => void {
@@ -450,6 +535,142 @@ class AdvancedFilters {
             clearTimeout(timeout);
             timeout = setTimeout(() => func(...args), wait);
         };
+    }
+
+    /**
+     * Load filter values from URL query string on page load
+     * This ensures filters persist after page reload
+     */
+    private loadFiltersFromUrl(): void {
+        if (!this.container) return;
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const filters: Record<string, any> = {};
+
+        // Get all public taxonomies from config
+        const taxonomyFilters = this.config?.taxonomyFilters || [];
+        const taxonomySlugs = taxonomyFilters.map((f: any) => f.taxonomy).filter(Boolean);
+
+        // Load taxonomy filters
+        taxonomySlugs.forEach((taxonomy: string) => {
+            const value = urlParams.get(taxonomy);
+            if (value) {
+                const termIds = value.split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id));
+                if (termIds.length > 0) {
+                    filters[taxonomy] = termIds;
+                }
+            }
+        });
+
+        // Load keyword filter
+        const keyword = urlParams.get('keyword');
+        if (keyword) {
+            filters.keyword = keyword;
+        }
+
+        // Load meta filters
+        urlParams.forEach((value, key) => {
+            if (key.startsWith('meta_')) {
+                filters[key] = value;
+            }
+        });
+
+        // Load price filters
+        const priceMin = urlParams.get('price_min');
+        const priceMax = urlParams.get('price_max');
+        if (priceMin || priceMax) {
+            filters.price = {};
+            if (priceMin) filters.price.min = priceMin;
+            if (priceMax) filters.price.max = priceMax;
+        }
+
+        // Load date filters
+        const dateStart = urlParams.get('date_start');
+        const dateEnd = urlParams.get('date_end');
+        if (dateStart || dateEnd) {
+            filters.date = {};
+            if (dateStart) filters.date.start = dateStart;
+            if (dateEnd) filters.date.end = dateEnd;
+        }
+
+        // Load author filter
+        const author = urlParams.get('author');
+        if (author) {
+            const authorIds = author.split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id));
+            if (authorIds.length > 0) {
+                filters.author = authorIds;
+            }
+        }
+
+        // Apply filters to UI
+        if (Object.keys(filters).length > 0) {
+            this.currentFilters = filters;
+            this.applyFiltersToUI(filters);
+        }
+    }
+
+    /**
+     * Apply filter values to UI elements
+     */
+    private applyFiltersToUI(filters: Record<string, any>): void {
+        if (!this.container) return;
+
+        // Apply taxonomy filters
+        Object.entries(filters).forEach(([key, value]) => {
+            if (Array.isArray(value)) {
+                // Taxonomy or author filters
+                const filterGroup = this.container!.querySelector(`[data-taxonomy="${key}"], [data-filter-type="author"]`);
+                if (filterGroup) {
+                    value.forEach((termId: number) => {
+                        const input = filterGroup.querySelector(`input[value="${termId}"]`) as HTMLInputElement;
+                        if (input) {
+                            input.checked = true;
+                        } else {
+                            // Try button/option style
+                            const option = filterGroup.querySelector(`[data-value="${termId}"]`) as HTMLElement;
+                            if (option) {
+                                option.classList.add('active');
+                            }
+                        }
+                    });
+                }
+            } else if (typeof value === 'object' && value !== null) {
+                // Price or date filters
+                if (key === 'price') {
+                    const priceGroup = this.container!.querySelector('.filter-price');
+                    if (priceGroup) {
+                        const minInput = priceGroup.querySelector('[name="price_min"]') as HTMLInputElement;
+                        const maxInput = priceGroup.querySelector('[name="price_max"]') as HTMLInputElement;
+                        if (minInput && value.min) minInput.value = value.min;
+                        if (maxInput && value.max) maxInput.value = value.max;
+                    }
+                } else if (key === 'date') {
+                    const dateGroup = this.container!.querySelector('.filter-date');
+                    if (dateGroup) {
+                        const startInput = dateGroup.querySelector('[name="date_start"]') as HTMLInputElement;
+                        const endInput = dateGroup.querySelector('[name="date_end"]') as HTMLInputElement;
+                        if (startInput && value.start) startInput.value = value.start;
+                        if (endInput && value.end) endInput.value = value.end;
+                    }
+                }
+            } else if (key === 'keyword') {
+                // Keyword filter
+                const keywordInput = this.container!.querySelector('.filter-keyword input') as HTMLInputElement;
+                if (keywordInput) {
+                    keywordInput.value = value;
+                }
+            } else if (key.startsWith('meta_')) {
+                // Meta filter
+                const metaKey = key.replace('meta_', '');
+                const metaGroup = this.container!.querySelector(`[data-meta-key="${metaKey}"]`);
+                if (metaGroup) {
+                    const input = metaGroup.querySelector('input, select') as HTMLInputElement | HTMLSelectElement;
+                    if (input) {
+                        input.value = value;
+                    }
+                }
+            }
+        });
     }
 }
 

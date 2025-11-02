@@ -202,6 +202,7 @@ function Edit({ attributes, setAttributes }: EditProps) {
                     layout: layout,
                     showLabels: showLabels,
                     displayStyle: displayStyle,
+                    listingType: 'ul', // Default listing type
                     showCount: showCount,
                     showEmptyTerms: showEmptyTerms,
                     showOnlyTopLevel: showOnlyTopLevel,
@@ -326,16 +327,16 @@ function Edit({ attributes, setAttributes }: EditProps) {
                                         </Button>
                                     </div>
 
-                                    <SelectControl
-                                        label={__('Filter Type', 'jankx')}
+                    <SelectControl
+                        label={__('Filter Type', 'jankx')}
                                         value={filter.filterType || filterType}
-                                        options={[
-                                            { label: __('Taxonomy', 'jankx'), value: 'taxonomy' },
-                                            { label: __('Meta Field', 'jankx'), value: 'meta' },
-                                            { label: __('Price', 'jankx'), value: 'price' },
-                                            { label: __('Date', 'jankx'), value: 'date' },
-                                            { label: __('Author', 'jankx'), value: 'author' },
-                                            { label: __('Keyword', 'jankx'), value: 'keyword' },
+                        options={[
+                            { label: __('Taxonomy', 'jankx'), value: 'taxonomy' },
+                            { label: __('Meta Field', 'jankx'), value: 'meta' },
+                            { label: __('Price', 'jankx'), value: 'price' },
+                            { label: __('Date', 'jankx'), value: 'date' },
+                            { label: __('Author', 'jankx'), value: 'author' },
+                            { label: __('Keyword', 'jankx'), value: 'keyword' },
                                         ]}
                                         onChange={(value) => handleUpdateTaxonomyFilter(index, { filterType: value })}
                                     />
@@ -360,10 +361,10 @@ function Edit({ attributes, setAttributes }: EditProps) {
                                     {/* Taxonomy Filter Options */}
                                     {(filter.filterType || filterType) === 'taxonomy' && (
                                         <>
-                                            <SelectControl
+                    <SelectControl
                                                 label={__('Taxonomy', 'jankx')}
                                                 value={filter.taxonomy || ''}
-                                                options={[
+                        options={[
                                                     { label: __('-- Select --', 'jankx'), value: '' },
                                                     ...taxonomies.map((tax: any) => ({
                                                         label: tax.name,
@@ -371,7 +372,7 @@ function Edit({ attributes, setAttributes }: EditProps) {
                                                     })),
                                                 ]}
                                                 onChange={(value) => handleUpdateTaxonomyFilter(index, { taxonomy: value })}
-                                            />
+                    />
 
                                             <SelectControl
                                                 label={__('Display Style', 'jankx')}
@@ -385,35 +386,51 @@ function Edit({ attributes, setAttributes }: EditProps) {
                                                 onChange={(value) => handleUpdateTaxonomyFilter(index, { displayStyle: value })}
                                             />
 
-                                            <ToggleControl
-                                                label={__('Show Post Counts', 'jankx')}
+                                            {(filter.displayStyle || displayStyle) === 'checkboxes' && (
+                                                <SelectControl
+                                                    label={__('Listing Type', 'jankx')}
+                                                    value={filter.listingType || 'ul'}
+                                                    options={[
+                                                        { label: __('Unordered List (•)', 'jankx'), value: 'ul' },
+                                                        { label: __('Ordered List (1, 2, 3)', 'jankx'), value: 'ol' },
+                                                        { label: __('No List', 'jankx'), value: 'none' },
+                                                    ]}
+                                                    onChange={(value) => handleUpdateTaxonomyFilter(index, { listingType: value as 'ul' | 'ol' | 'none' })}
+                                                    help={__('Choose how to display the terms list (only applies to checkboxes)', 'jankx')}
+                                                    __nextHasNoMarginBottom
+                                                    __next40pxDefaultSize
+                                                />
+                                            )}
+
+                    <ToggleControl
+                        label={__('Show Post Counts', 'jankx')}
                                                 checked={filter.showCount !== undefined ? filter.showCount : showCount}
                                                 onChange={(value) => handleUpdateTaxonomyFilter(index, { showCount: value })}
                                                 help={__('Show post count next to each term', 'jankx')}
-                                            />
+                    />
 
-                                            <ToggleControl
-                                                label={__('Show Empty Terms', 'jankx')}
+                    <ToggleControl
+                        label={__('Show Empty Terms', 'jankx')}
                                                 checked={filter.showEmptyTerms !== undefined ? filter.showEmptyTerms : showEmptyTerms}
                                                 onChange={(value) => handleUpdateTaxonomyFilter(index, { showEmptyTerms: value })}
-                                                help={__('Show terms that have no posts', 'jankx')}
-                                            />
+                        help={__('Show terms that have no posts', 'jankx')}
+                    />
 
-                                            <ToggleControl
-                                                label={__('Show Only Top Level Terms', 'jankx')}
+                    <ToggleControl
+                        label={__('Show Only Top Level Terms', 'jankx')}
                                                 checked={filter.showOnlyTopLevel !== undefined ? filter.showOnlyTopLevel : showOnlyTopLevel}
                                                 onChange={(value) => handleUpdateTaxonomyFilter(index, { showOnlyTopLevel: value })}
-                                                help={__('Show only parent terms', 'jankx')}
-                                            />
+                        help={__('Show only parent terms', 'jankx')}
+                    />
 
-                                            <ToggleControl
-                                                label={__('Show Hierarchy', 'jankx')}
+                    <ToggleControl
+                        label={__('Show Hierarchy', 'jankx')}
                                                 checked={filter.showHierarchy !== undefined ? filter.showHierarchy : showHierarchy}
                                                 onChange={(value) => handleUpdateTaxonomyFilter(index, { showHierarchy: value })}
-                                                help={__('Display terms with hierarchical structure', 'jankx')}
-                                            />
+                        help={__('Display terms with hierarchical structure', 'jankx')}
+                    />
 
-                                            <ToggleControl
+                    <ToggleControl
                                                 label={__('Multiple Selection', 'jankx')}
                                                 checked={filter.multipleSelection !== undefined ? filter.multipleSelection : multipleSelection}
                                                 onChange={(value) => handleUpdateTaxonomyFilter(index, { multipleSelection: value })}
@@ -505,7 +522,7 @@ function Edit({ attributes, setAttributes }: EditProps) {
                                                 ]}
                                                 onChange={(value) => handleUpdateTaxonomyFilter(index, { dateField: value })}
                                             />
-                                            <ToggleControl
+                    <ToggleControl
                                                 label={__('Date Range', 'jankx')}
                                                 checked={filter.dateRange !== undefined ? filter.dateRange : true}
                                                 onChange={(value) => handleUpdateTaxonomyFilter(index, { dateRange: value })}
@@ -517,7 +534,7 @@ function Edit({ attributes, setAttributes }: EditProps) {
                                     {/* Author Filter Options */}
                                     {(filter.filterType || filterType) === 'author' && (
                                         <>
-                                            <SelectControl
+                        <SelectControl
                                                 label={__('Display Style', 'jankx')}
                                                 value={filter.displayStyle || displayStyle}
                                                 options={[
@@ -554,11 +571,11 @@ function Edit({ attributes, setAttributes }: EditProps) {
                                     {/* Common Display Options */}
                                     <div style={{ marginTop: '15px', paddingTop: '15px', borderTop: '1px solid #ddd' }}>
                                         <strong style={{ display: 'block', marginBottom: '10px' }}>{__('Display Options', 'jankx')}</strong>
-                                        
-                                        <SelectControl
+
+                                <SelectControl
                                             label={__('Layout', 'jankx')}
                                             value={filter.layout || layout}
-                                            options={[
+                                    options={[
                                                 { label: __('Horizontal', 'jankx'), value: 'horizontal' },
                                                 { label: __('Vertical', 'jankx'), value: 'vertical' },
                                                 { label: __('Dropdown', 'jankx'), value: 'dropdown' },
@@ -571,9 +588,9 @@ function Edit({ attributes, setAttributes }: EditProps) {
                                             label={__('Show Labels', 'jankx')}
                                             checked={filter.showLabels !== undefined ? filter.showLabels : showLabels}
                                             onChange={(value) => handleUpdateTaxonomyFilter(index, { showLabels: value })}
-                                        />
+                                />
 
-                                        <ToggleControl
+                                <ToggleControl
                                             label={__('Collapsible', 'jankx')}
                                             checked={filter.collapsible !== undefined ? filter.collapsible : collapsible}
                                             onChange={(value) => handleUpdateTaxonomyFilter(index, { collapsible: value })}
@@ -589,7 +606,7 @@ function Edit({ attributes, setAttributes }: EditProps) {
                                             />
                                         )}
                                     </div>
-                                </div>
+                            </div>
                             </PanelBody>
                         ))}
                     </PanelBody>

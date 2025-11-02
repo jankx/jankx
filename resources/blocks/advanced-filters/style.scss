@@ -127,6 +127,69 @@
         }
 
         &.display-checkboxes {
+            // Default flex layout for div-based lists
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+
+            // List types (ul, ol)
+            &.filter-list-ul,
+            &.filter-list-ol {
+                list-style: none;
+                padding-left: 1.5em;
+                margin: 0;
+                display: block;
+                flex-direction: column;
+            }
+
+            &.filter-list-ul {
+                list-style: disc;
+                padding-left: 1.5em;
+            }
+
+            &.filter-list-ol {
+                list-style: decimal;
+                padding-left: 1.5em;
+                
+                // Use CSS counter for hierarchical numbering
+                counter-reset: filter-term-counter;
+                
+                > .filter-option-wrapper {
+                    counter-increment: filter-term-counter;
+                    
+                    &::before {
+                        content: counter(filter-term-counter) '. ';
+                        display: inline-block;
+                        min-width: 1.5em;
+                        margin-right: 0.25em;
+                    }
+                }
+                
+                // Nested lists - reset counter for each nested level
+                .filter-terms-nested {
+                    counter-reset: filter-term-counter;
+                    
+                    > .filter-option-wrapper {
+                        counter-increment: filter-term-counter;
+                        
+                        &::before {
+                            content: counter(filter-term-counter) '. ';
+                        }
+                    }
+                }
+            }
+
+            &.filter-list-none {
+                display: block;
+                list-style: none;
+                padding-left: 0;
+            }
+
+            .filter-option-wrapper {
+                display: list-item;
+                list-style: inherit;
+            }
+
             .filter-option {
                 display: flex;
                 align-items: center;
@@ -134,7 +197,8 @@
                 padding: 0.5rem;
                 cursor: pointer;
 
-                input[type="checkbox"] {
+                input[type="checkbox"],
+                input[type="radio"] {
                     margin: 0;
                 }
 
@@ -256,24 +320,40 @@
     }
 }
 
-.filter-loading {
+// Loading spinner for post-type-layout blocks (target blocks)
+.post-type-layout-loading {
     display: none;
-    padding: 1rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
     text-align: center;
 
     &.active {
-        display: block;
+        display: flex;
     }
 
-    .filter-spinner {
+    .post-type-layout-spinner {
         display: inline-block;
-        width: 20px;
-        height: 20px;
-        border: 3px solid var(--wp--preset--color--neutral, #ddd);
+        width: 40px;
+        height: 40px;
+        border: 4px solid var(--wp--preset--color--neutral, #ddd);
         border-top-color: var(--wp--preset--color--primary, #503AA8);
         border-radius: 50%;
         animation: spin 1s linear infinite;
     }
+}
+
+// Ensure post-type-layout block has relative positioning for absolute loading overlay
+.wp-block-jankx-post-type-layout {
+    position: relative;
+    min-height: 100px; // Ensure there's space for loading overlay
 }
 
 @keyframes spin {

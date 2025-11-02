@@ -259,23 +259,31 @@ function Edit({ attributes, setAttributes }: EditProps) {
 							<div style={{ marginTop: '16px' }}>
 								<strong>{__('Show in Suggestions:', 'jankx')}</strong>
 								{availablePostTypes.length > 0 && (
-									<>
-										<CheckboxControl
-											label={__('Posts', 'jankx')}
-											checked={showPosts}
-											onChange={(value) => setAttributes({ showPosts: value })}
-										/>
-										<div style={{ fontSize: '12px', color: '#666', marginLeft: '24px', marginTop: '-8px' }}>
-											{__('From post types:', 'jankx')} {availablePostTypes.map(pt => pt.label).join(', ')}
-										</div>
-									</>
-								)}
-								{availablePostTypes.length > 0 && (
-									<CheckboxControl
-										label={__('Post Types', 'jankx')}
-										checked={showPostTypes}
-										onChange={(value) => setAttributes({ showPostTypes: value })}
-									/>
+									<div style={{ marginLeft: '8px', marginTop: '8px' }}>
+										{availablePostTypes.map((pt) => (
+											<CheckboxControl
+												key={pt.value}
+												label={pt.label}
+												checked={showPosts && postTypes.includes(pt.value)}
+												onChange={(checked) => {
+													if (checked) {
+														// If enabling this post type, ensure showPosts is true
+														setAttributes({ 
+															postTypes: [...postTypes, pt.value],
+															showPosts: true 
+														});
+													} else {
+														// If disabling, remove from postTypes but keep showPosts if others remain
+														const newPostTypes = postTypes.filter((p) => p !== pt.value);
+														setAttributes({ 
+															postTypes: newPostTypes,
+															showPosts: newPostTypes.length > 0 
+														});
+													}
+												}}
+											/>
+										))}
+									</div>
 								)}
 								<CheckboxControl
 									label={__('Users', 'jankx')}
@@ -283,23 +291,29 @@ function Edit({ attributes, setAttributes }: EditProps) {
 									onChange={(value) => setAttributes({ showUsers: value })}
 								/>
 								{filteredTaxonomies.length > 0 && (
-									<>
-										<CheckboxControl
-											label={__('Taxonomy Terms', 'jankx')}
-											checked={showTaxonomy}
-											onChange={(value) => setAttributes({ showTaxonomy: value })}
-										/>
-										<div style={{ fontSize: '12px', color: '#666', marginLeft: '24px', marginTop: '-8px' }}>
-											{__('From taxonomies:', 'jankx')} {filteredTaxonomies.map(tax => tax.label).join(', ')}
-										</div>
-									</>
-								)}
-								{filteredTaxonomies.some(tax => tax.value === 'post_tag') && (
-									<CheckboxControl
-										label={__('Tags', 'jankx')}
-										checked={showTags}
-										onChange={(value) => setAttributes({ showTags: value })}
-									/>
+									<div style={{ marginLeft: '8px', marginTop: '8px' }}>
+										{filteredTaxonomies.map((tax) => (
+											<CheckboxControl
+												key={tax.value}
+												label={tax.label}
+												checked={showTaxonomy && taxonomies.includes(tax.value)}
+												onChange={(checked) => {
+													if (checked) {
+														setAttributes({ 
+															taxonomies: [...taxonomies, tax.value],
+															showTaxonomy: true 
+														});
+													} else {
+														const newTaxonomies = taxonomies.filter((t) => t !== tax.value);
+														setAttributes({ 
+															taxonomies: newTaxonomies,
+															showTaxonomy: newTaxonomies.length > 0 
+														});
+													}
+												}}
+											/>
+										))}
+									</div>
 								)}
 							</div>
 						</>

@@ -333,6 +333,8 @@ function Edit({
         layout: layout,
         showLabels: showLabels,
         displayStyle: displayStyle,
+        listingType: 'ul',
+        // Default listing type
         showCount: showCount,
         showEmptyTerms: showEmptyTerms,
         showOnlyTopLevel: showOnlyTopLevel,
@@ -554,6 +556,25 @@ function Edit({
                 onChange: value => handleUpdateTaxonomyFilter(index, {
                   displayStyle: value
                 })
+              }), (filter.displayStyle || displayStyle) === 'checkboxes' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Listing Type', 'jankx'),
+                value: filter.listingType || 'ul',
+                options: [{
+                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Unordered List (•)', 'jankx'),
+                  value: 'ul'
+                }, {
+                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Ordered List (1, 2, 3)', 'jankx'),
+                  value: 'ol'
+                }, {
+                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('No List', 'jankx'),
+                  value: 'none'
+                }],
+                onChange: value => handleUpdateTaxonomyFilter(index, {
+                  listingType: value
+                }),
+                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Choose how to display the terms list (only applies to checkboxes)', 'jankx'),
+                __nextHasNoMarginBottom: true,
+                __next40pxDefaultSize: true
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
                 label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Post Counts', 'jankx'),
                 checked: filter.showCount !== undefined ? filter.showCount : showCount,

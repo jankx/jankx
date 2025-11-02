@@ -150,10 +150,31 @@ class SmartSearchBlock extends Block
         }
 
         $results = [];
+        $count_enabled_types = 0;
+        
+        // Count how many types are enabled
+        if ($show_posts && !empty($post_types)) {
+            $count_enabled_types++;
+        }
+        if ($show_post_types) {
+            $count_enabled_types++;
+        }
+        if ($show_users) {
+            $count_enabled_types++;
+        }
+        if ($show_taxonomy && !empty($taxonomies)) {
+            $count_enabled_types++;
+        }
+        if ($show_tags) {
+            $count_enabled_types++;
+        }
+        
+        // Calculate limit per type (at least 2, or distribute evenly)
+        $limit_per_type = $count_enabled_types > 0 ? max(2, floor($limit / $count_enabled_types)) : $limit;
 
         // Search posts
         if ($show_posts && !empty($post_types)) {
-            $post_results = $this->searchPosts($query, $post_types, $limit);
+            $post_results = $this->searchPosts($query, $post_types, $limit_per_type);
             if (!empty($post_results)) {
                 $results['posts'] = $post_results;
             }
@@ -163,13 +184,13 @@ class SmartSearchBlock extends Block
         if ($show_post_types) {
             $post_type_results = $this->searchPostTypes($query);
             if (!empty($post_type_results)) {
-                $results['post_types'] = $post_type_results;
+                $results['post_types'] = array_slice($post_type_results, 0, $limit_per_type);
             }
         }
 
         // Search users
         if ($show_users) {
-            $user_results = $this->searchUsers($query, $limit);
+            $user_results = $this->searchUsers($query, $limit_per_type);
             if (!empty($user_results)) {
                 $results['users'] = $user_results;
             }
@@ -177,7 +198,7 @@ class SmartSearchBlock extends Block
 
         // Search taxonomy terms
         if ($show_taxonomy && !empty($taxonomies)) {
-            $taxonomy_results = $this->searchTaxonomyTerms($query, $taxonomies, $limit);
+            $taxonomy_results = $this->searchTaxonomyTerms($query, $taxonomies, $limit_per_type);
             if (!empty($taxonomy_results)) {
                 $results['taxonomies'] = $taxonomy_results;
             }
@@ -185,7 +206,7 @@ class SmartSearchBlock extends Block
 
         // Search tags
         if ($show_tags) {
-            $tag_results = $this->searchTags($query, $limit);
+            $tag_results = $this->searchTags($query, $limit_per_type);
             if (!empty($tag_results)) {
                 $results['tags'] = $tag_results;
             }
