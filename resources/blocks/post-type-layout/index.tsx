@@ -556,11 +556,13 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                     help={__('Set the aspect ratio for featured images', 'jankx')}
                                     options={[
                                         { label: __('Default (3:2)', 'jankx'), value: '' },
-                                        { label: __('16:9', 'jankx'), value: '16/9' },
-                                        { label: __('4:3', 'jankx'), value: '4/3' },
-                                        { label: __('1:1', 'jankx'), value: '1/1' },
-                                        { label: __('21:9', 'jankx'), value: '21/9' },
-                                        { label: __('2:3', 'jankx'), value: '2/3' },
+                                        { label: __('16:9 (Landscape)', 'jankx'), value: '16/9' },
+                                        { label: __('4:3 (Landscape)', 'jankx'), value: '4/3' },
+                                        { label: __('21:9 (Ultra Wide)', 'jankx'), value: '21/9' },
+                                        { label: __('1:1 (Square)', 'jankx'), value: '1/1' },
+                                        { label: __('3:4 (Portrait)', 'jankx'), value: '3/4' },
+                                        { label: __('2:3 (Portrait)', 'jankx'), value: '2/3' },
+                                        { label: __('9:16 (Vertical)', 'jankx'), value: '9/16' },
                                     ]}
                                 />
                             )}
