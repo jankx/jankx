@@ -128,8 +128,21 @@ function Edit({
     className: 'wp-block-jankx-smart-search-editor'
   });
 
-  // Filter taxonomies based on selected post types
+  // Filter taxonomies based on selected post types for filter
   const filteredTaxonomies = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useMemo)(() => {
+    if (postTypes.length === 0) {
+      // If no post types selected, show all available taxonomies
+      return availableTaxonomies;
+    }
+    // Only show taxonomies that are associated with at least one selected post type
+    return availableTaxonomies.filter(tax => {
+      // Check if taxonomy is associated with any selected post type
+      return tax.postTypes.some(pt => postTypes.includes(pt.name));
+    });
+  }, [availableTaxonomies, postTypes]);
+
+  // Filter taxonomies for suggestion based on selected post types
+  const filteredTaxonomiesForSuggestion = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useMemo)(() => {
     if (postTypes.length === 0) {
       return availableTaxonomies;
     }
@@ -166,11 +179,87 @@ function Edit({
           onChange: value => setAttributes({
             showPostTypeFilter: value
           })
+        }), showPostTypeFilter && availablePostTypes.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+          style: {
+            marginTop: '16px',
+            marginBottom: '16px'
+          },
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("strong", {
+            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select Post Types for Filter:', 'jankx')
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+            style: {
+              marginLeft: '8px',
+              marginTop: '8px'
+            },
+            children: availablePostTypes.map(pt => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.CheckboxControl, {
+              label: pt.label,
+              checked: postTypes.includes(pt.value),
+              onChange: checked => {
+                if (checked) {
+                  setAttributes({
+                    postTypes: [...postTypes, pt.value]
+                  });
+                } else {
+                  const newPostTypes = postTypes.filter(p => p !== pt.value);
+                  setAttributes({
+                    postTypes: newPostTypes
+                  });
+                }
+              }
+            }, pt.value))
+          })]
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Taxonomy Filter', 'jankx'),
           checked: showTaxonomyFilter,
           onChange: value => setAttributes({
             showTaxonomyFilter: value
+          })
+        }), showTaxonomyFilter && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+          style: {
+            marginTop: '16px',
+            marginBottom: '16px'
+          },
+          children: postTypes.length === 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+            style: {
+              padding: '8px',
+              background: '#fff3cd',
+              borderRadius: '4px',
+              color: '#856404'
+            },
+            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Please select post types first to see available taxonomies', 'jankx')
+          }) : filteredTaxonomies.length > 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("strong", {
+              children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select Taxonomies for Filter:', 'jankx')
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+              style: {
+                marginLeft: '8px',
+                marginTop: '8px'
+              },
+              children: filteredTaxonomies.map(tax => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.CheckboxControl, {
+                label: tax.label,
+                checked: taxonomies.includes(tax.value),
+                onChange: checked => {
+                  if (checked) {
+                    setAttributes({
+                      taxonomies: [...taxonomies, tax.value]
+                    });
+                  } else {
+                    const newTaxonomies = taxonomies.filter(t => t !== tax.value);
+                    setAttributes({
+                      taxonomies: newTaxonomies
+                    });
+                  }
+                }
+              }, tax.value))
+            })]
+          }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+            style: {
+              padding: '8px',
+              background: '#f8d7da',
+              borderRadius: '4px',
+              color: '#721c24'
+            },
+            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('No taxonomies available for selected post types', 'jankx')
           })
         })]
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
@@ -228,12 +317,12 @@ function Edit({
               onChange: value => setAttributes({
                 showUsers: value
               })
-            }), filteredTaxonomies.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+            }), filteredTaxonomiesForSuggestion.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
               style: {
                 marginLeft: '8px',
                 marginTop: '8px'
               },
-              children: filteredTaxonomies.map(tax => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.CheckboxControl, {
+              children: filteredTaxonomiesForSuggestion.map(tax => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.CheckboxControl, {
                 label: tax.label,
                 checked: showTaxonomy && taxonomies.includes(tax.value),
                 onChange: checked => {
@@ -306,52 +395,62 @@ function Edit({
       })]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
       ...blockProps,
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-        className: "smart-search-form-preview",
-        children: [showLabel && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("label", {
-          className: "search-label",
-          children: labelText
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-          className: `search-input-wrapper ${iconPosition === 'inside' ? 'icon-inside' : 'icon-outside'} ${buttonPosition === 'inside' ? 'button-inside' : 'button-outside'}`,
-          children: [showIcon && iconPosition === 'outside' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
-            className: "search-icon-outside",
-            children: "\uD83D\uDD0D"
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+        className: "smart-search-form-wrapper",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("form", {
+          className: "smart-search-form",
+          method: "get",
+          children: [showLabel && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("label", {
+            className: "search-label",
+            children: labelText
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-            className: "search-filters-wrapper",
-            children: [showPostTypeFilter && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("select", {
-              className: "post-type-filter",
-              disabled: true,
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("option", {
-                children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('All Post Types', 'jankx')
-              })
-            }), showTaxonomyFilter && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("select", {
-              className: "taxonomy-filter",
-              disabled: true,
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("option", {
-                children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('All Taxonomies', 'jankx')
-              })
-            })]
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-            className: "search-input-inner",
-            children: [showIcon && iconPosition === 'inside' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
-              className: "search-icon-inside",
+            className: `search-input-wrapper ${iconPosition === 'inside' ? 'icon-inside' : 'icon-outside'} ${buttonPosition === 'inside' ? 'button-inside' : 'button-outside'}`,
+            children: [showIcon && iconPosition === 'outside' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+              className: "search-icon-outside",
               children: "\uD83D\uDD0D"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("input", {
-              type: "text",
-              className: "search-input",
-              placeholder: placeholder,
-              disabled: true
-            }), buttonPosition === 'inside' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
+            }), (showPostTypeFilter || showTaxonomyFilter) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+              className: "search-filters-wrapper",
+              children: [showPostTypeFilter && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("select", {
+                className: "post-type-filter",
+                disabled: true,
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("option", {
+                  children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('All Post Types', 'jankx')
+                }), postTypes.length > 0 && postTypes.map(postType => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("option", {
+                  value: postType,
+                  children: postType
+                }, postType))]
+              }), showTaxonomyFilter && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("select", {
+                className: "taxonomy-filter",
+                disabled: true,
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("option", {
+                  children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('All Taxonomies', 'jankx')
+                }), taxonomies.length > 0 && taxonomies.map(taxonomy => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("option", {
+                  value: taxonomy,
+                  children: taxonomy
+                }, taxonomy))]
+              })]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+              className: "search-input-inner",
+              children: [showIcon && iconPosition === 'inside' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+                className: "search-icon-inside",
+                children: "\uD83D\uDD0D"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("input", {
+                type: "text",
+                className: "search-input",
+                placeholder: placeholder,
+                disabled: true
+              }), buttonPosition === 'inside' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
+                type: "submit",
+                className: "search-button",
+                children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Search', 'jankx')
+              })]
+            }), buttonPosition === 'outside' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
               type: "submit",
               className: "search-button",
               children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Search', 'jankx')
             })]
-          }), buttonPosition === 'outside' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
-            type: "submit",
-            className: "search-button",
-            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Search', 'jankx')
           })]
-        })]
+        })
       })
     })]
   });
