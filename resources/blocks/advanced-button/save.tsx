@@ -59,10 +59,12 @@ export default function Save(props: SaveProps) {
 		showLabel = true,
 	} = props.attributes;
 
-	// If there is no text and label is shown, don't save anything.
-	if (!text && showLabel) {
-		return null;
-	}
+	// Always render the button - InnerBlocks.Content will handle inner blocks if they exist
+	// Don't return null here because:
+	// 1. If showLabel=true and text exists → render text
+	// 2. If showLabel=true and no text but has inner blocks → InnerBlocks.Content will render them
+	// 3. If showLabel=false → button can still have inner blocks (icon-only buttons)
+	// We can't reliably check for inner blocks in save function, so we always render
 
 	const blockProps = useBlockProps.save();
 

@@ -120,5 +120,20 @@ button.jankx-advanced-button__link {
   flex-shrink: 0;
   margin: 0;
 }
+.jankx-advanced-button__link .button-icon-wrapper svg {
+  color: inherit;
+  fill: currentColor;
+  stroke: currentColor;
+}
+.jankx-advanced-button__link .button-icon-wrapper svg path,
+.jankx-advanced-button__link .button-icon-wrapper svg circle,
+.jankx-advanced-button__link .button-icon-wrapper svg rect,
+.jankx-advanced-button__link .button-icon-wrapper svg polygon,
+.jankx-advanced-button__link .button-icon-wrapper svg line,
+.jankx-advanced-button__link .button-icon-wrapper svg polyline,
+.jankx-advanced-button__link .button-icon-wrapper svg ellipse {
+  fill: currentColor;
+  stroke: currentColor;
+}
 
 /*# sourceMappingURL=style.css.map*/

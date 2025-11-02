@@ -169,4 +169,30 @@ button.jankx-advanced-button__link {
 		flex-shrink: 0;
 		margin: 0;
 	}
+
+	// SVG icons inherit text color from button by default
+	.button-icon-wrapper {
+		svg {
+			// SVG elements inherit color from parent button
+			color: inherit;
+			
+			// Apply currentColor to fill and stroke
+			// This makes SVG icons match the button text color
+			fill: currentColor;
+			stroke: currentColor;
+			
+			// Ensure all SVG shapes inherit the color
+			// This applies to path, circle, rect, etc.
+			path,
+			circle,
+			rect,
+			polygon,
+			line,
+			polyline,
+			ellipse {
+				fill: currentColor;
+				stroke: currentColor;
+			}
+		}
+	}
 }

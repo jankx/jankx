@@ -37,6 +37,33 @@ class AdvancedButtonBlock extends Block
      */
     public function render($attributes, $content = '', $block = null)
     {
+        // If content is empty but we have inner blocks, render them
+        // This handles cases where save function might not have included inner blocks
+        if (empty($content) && $block && !empty($block->inner_blocks)) {
+            $inner_content = '';
+            foreach ($block->inner_blocks as $inner_block) {
+                // $inner_block is a WP_Block object, use render() method instead of render_block()
+                if ($inner_block instanceof \WP_Block) {
+                    $inner_content .= $inner_block->render();
+                } else {
+                    // Fallback: if it's an array, use render_block()
+                    $inner_content .= render_block($inner_block);
+                }
+            }
+            // If we only have inner blocks, create a basic button structure
+            if (!empty($inner_content)) {
+                $text = $attributes['text'] ?? '';
+                $showLabel = $attributes['showLabel'] ?? true;
+                $button_text = ($showLabel && !empty($text)) ? '<span class="button-text">' . esc_html($text) . '</span>' : '';
+                $content = sprintf(
+                    '<a class="jankx-advanced-button__link" href="%s" data-trigger-type="link">%s<span class="button-icon-wrapper">%s</span></a>',
+                    esc_url($attributes['url'] ?? '#'),
+                    $button_text,
+                    $inner_content
+                );
+            }
+        }
+        
         $triggerType = $attributes['triggerType'] ?? 'link';
 
         // Fallback: Check HTML content for data-trigger-type if attribute parsing fails
@@ -140,9 +167,12 @@ class AdvancedButtonBlock extends Block
         // Determine if it's outline mode
         $is_outline_mode = in_array('is-style-outline', $existing_classes);
 
-        // Remove existing wrapper
+        // Remove wrapper div but preserve all content inside (button element, text, inner blocks)
+        // This preserves the button element and all its content including inner blocks
+        // Match opening wrapper div and remove it
         $content = preg_replace('/<div[^>]*class="[^"]*wp-block-jankx-advanced-button[^"]*"[^>]*>/', '', $content);
-        $content = preg_replace('/<\/div>$/', '', $content);
+        // Match closing wrapper div at the end and remove it
+        $content = preg_replace('/<\/div>\s*$/', '', $content);
 
         // Check if button has background color or gradient set
         // This includes preset colors (backgroundColor), custom colors (style.color.background), gradients, and inline styles
@@ -221,6 +251,57 @@ class AdvancedButtonBlock extends Block
             }
         }
 
+        // Check if content has inner blocks (button-icon-wrapper) with content
+        // If not, and we have inner blocks in $block, inject them
+        $has_inner_blocks_in_content = false;
+        if (preg_match('/<span[^>]*class="[^"]*button-icon-wrapper[^"]*"[^>]*>.*?<\/span>/s', $content, $wrapper_match)) {
+            // Check if wrapper has content (not just empty or whitespace)
+            $wrapper_content = preg_replace('/<[^>]+>/', '', $wrapper_match[0]);
+            $has_inner_blocks_in_content = !empty(trim($wrapper_content));
+        }
+        
+        if (!$has_inner_blocks_in_content && $block && !empty($block->inner_blocks)) {
+            // Render inner blocks
+            $inner_content = '';
+            foreach ($block->inner_blocks as $inner_block) {
+                // $inner_block is a WP_Block object, use render() method instead of render_block()
+                if ($inner_block instanceof \WP_Block) {
+                    $inner_content .= $inner_block->render();
+                } else {
+                    // Fallback: if it's an array, use render_block()
+                    $inner_content .= render_block($inner_block);
+                }
+            }
+            
+            if (!empty($inner_content)) {
+                // Try to inject inner blocks into button-icon-wrapper
+                // First, check if button-icon-wrapper exists (even if empty)
+                if (preg_match('/<span[^>]*class="[^"]*button-icon-wrapper[^"]*"[^>]*>.*?<\/span>/s', $content)) {
+                    // Already has wrapper, replace its content with inner blocks
+                    $content = preg_replace(
+                        '/(<span[^>]*class="[^"]*button-icon-wrapper[^"]*"[^>]*>)(.*?)(<\/span>)/s',
+                        '$1' . $inner_content . '$3',
+                        $content
+                    );
+                } else {
+                    // No button-icon-wrapper, add it with inner blocks
+                    $text = $attributes['text'] ?? '';
+                    $showLabel = $attributes['showLabel'] ?? true;
+                    $button_text = ($showLabel && !empty($text)) ? '<span class="button-text">' . esc_html($text) . '</span>' : '';
+                    
+                    // Find button element and inject inner blocks and text after opening tag
+                    if (preg_match('/(<(a|button)[^>]*class="[^"]*jankx-advanced-button__link[^"]*"[^>]*>)/', $content, $button_match)) {
+                        // Inject inner blocks and text after opening tag
+                        $content = str_replace(
+                            $button_match[0],
+                            $button_match[0] . '<span class="button-icon-wrapper">' . $inner_content . '</span>' . $button_text,
+                            $content
+                        );
+                    }
+                }
+            }
+        }
+        
         // Add icon position class if needed
         $iconPosition = $attributes['iconPosition'] ?? 'left';
         if (!empty($attributes['useIconBlocks']) && $iconPosition) {
