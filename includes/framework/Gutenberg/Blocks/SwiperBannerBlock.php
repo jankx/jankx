@@ -25,7 +25,7 @@ class SwiperBannerBlock extends Block
      * Render the banner block
      *
      * @param array $attributes Block attributes
-     * @param string $content Block content
+     * @param string $content Block content (may contain old HTML structure with .swiper-banner__content)
      * @param \WP_Block $block Block instance
      * @return string Rendered HTML
      */
@@ -73,7 +73,7 @@ class SwiperBannerBlock extends Block
         // Get WordPress block wrapper attributes
         $block_wrapper_attrs = get_block_wrapper_attributes($wrapper_attributes);
 
-        // Build banner content
+        // Always build fresh banner content (WordPress will handle migration automatically)
         $banner_content = $this->buildBannerContent(
             $image_url,
             $image_alt,

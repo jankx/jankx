@@ -400,14 +400,13 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         }
                     />
 
-                    {queryPreset !== 'default' && (
-                        <SelectControl
-                            label={__('Post Type', 'jankx')}
-                            value={postType}
-                            options={postTypeOptions}
-                            onChange={(value) => setAttributes({ postType: value })}
-                        />
-                    )}
+                    <SelectControl
+                        label={__('Post Type', 'jankx')}
+                        value={postType}
+                        options={postTypeOptions}
+                        onChange={(value) => setAttributes({ postType: value })}
+                        help={queryPreset === 'default' ? __('Select post type for the main query', 'jankx') : undefined}
+                    />
 
                     {/* Posts Per Page - Show for all presets */}
                     <RangeControl
