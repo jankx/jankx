@@ -11,6 +11,7 @@ export interface SwiperBannerAttributes {
   textAlign: 'left' | 'center' | 'right';
   textPosition: 'top' | 'middle' | 'bottom';
   showCaption: boolean;
+  height?: number;
   className?: string;
 }
 

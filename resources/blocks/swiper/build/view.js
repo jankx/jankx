@@ -10559,7 +10559,7 @@ document.addEventListener('DOMContentLoaded', () => {
       block.style.setProperty('--banner-border-radius', `${bannerBorderRadius}px`);
 
       // Initialize Swiper
-      new swiper_bundle__WEBPACK_IMPORTED_MODULE_0__["default"](container, {
+      const swiper = new swiper_bundle__WEBPACK_IMPORTED_MODULE_0__["default"](container, {
         slidesPerView,
         spaceBetween,
         loop,
@@ -10600,8 +10600,46 @@ document.addEventListener('DOMContentLoaded', () => {
         cardsEffect: {
           perSlideOffset: 8,
           perSlideRotate: 2
+        },
+        on: {
+          init: function () {
+            // Fix width for circle style banners to match height
+            updateCircleBannerWidths(container);
+          },
+          slideChange: function () {
+            updateCircleBannerWidths(container);
+          },
+          resize: function () {
+            updateCircleBannerWidths(container);
+          }
         }
       });
+
+      // Function to update banner widths to match heights from Swiper block settings
+      // For all banners (circles, banner, square), width should equal height from Swiper settings
+      function updateCircleBannerWidths(swiperContainer) {
+        // Get height from Swiper block settings (parent block)
+        const swiperHeight = swiperContainer.dataset.swiperHeight;
+
+        // Get all swiper banners (not just circles)
+        const allBanners = swiperContainer.querySelectorAll('.swiper-banner');
+        if (!swiperHeight || parseFloat(swiperHeight) <= 0) {
+          // No height set in Swiper settings, remove width override to let Swiper handle it
+          allBanners.forEach(banner => {
+            banner.style.removeProperty('width');
+          });
+          return;
+        }
+
+        // Set width = height for all banners from Swiper settings
+        allBanners.forEach(banner => {
+          // Set width to match height from Swiper block settings
+          banner.style.setProperty('width', `${swiperHeight}px`, 'important');
+        });
+      }
+
+      // Initial call to fix widths
+      updateCircleBannerWidths(container);
     };
     loadSwiper();
   });

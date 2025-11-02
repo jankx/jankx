@@ -8,7 +8,7 @@
   \*****************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/swiper-banner","title":"Swiper Banner","category":"jankx","description":"Banner slide for Swiper with customizable styles and links","keywords":["banner","slide","swiper","image","link"],"textdomain":"jankx","parent":["jankx/swiper"],"attributes":{"imageId":{"type":"number","default":0},"imageUrl":{"type":"string","default":""},"imageAlt":{"type":"string","default":""},"imageCaption":{"type":"string","default":""},"linkUrl":{"type":"string","default":""},"linkTarget":{"type":"string","enum":["_self","_blank"],"default":"_self"},"bannerStyle":{"type":"string","enum":["banner","circles","square"],"default":"banner"},"overlayOpacity":{"type":"number","default":0.3},"overlayColor":{"type":"string","default":"#000000"},"textAlign":{"type":"string","enum":["left","center","right"],"default":"center"},"textPosition":{"type":"string","enum":["top","middle","bottom"],"default":"middle"},"showCaption":{"type":"boolean","default":true},"className":{"type":"string"}},"supports":{"html":false,"anchor":true,"spacing":{"margin":true,"padding":true},"color":{"background":true,"text":true},"border":{"color":true,"radius":true,"style":true,"width":true}},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/swiper-banner","title":"Swiper Banner","category":"jankx","description":"Banner slide for Swiper with customizable styles and links","keywords":["banner","slide","swiper","image","link"],"textdomain":"jankx","parent":["jankx/swiper"],"attributes":{"imageId":{"type":"number","default":0},"imageUrl":{"type":"string","default":""},"imageAlt":{"type":"string","default":""},"imageCaption":{"type":"string","default":""},"linkUrl":{"type":"string","default":""},"linkTarget":{"type":"string","enum":["_self","_blank"],"default":"_self"},"bannerStyle":{"type":"string","enum":["banner","circles","square"],"default":"banner"},"overlayOpacity":{"type":"number","default":0.3},"overlayColor":{"type":"string","default":"#000000"},"textAlign":{"type":"string","enum":["left","center","right"],"default":"center"},"textPosition":{"type":"string","enum":["top","middle","bottom"],"default":"middle"},"showCaption":{"type":"boolean","default":true},"height":{"type":"number","default":0},"className":{"type":"string"}},"supports":{"html":false,"anchor":true,"spacing":{"margin":true,"padding":true},"color":{"background":true,"text":true},"border":{"color":true,"radius":true,"style":true,"width":true}},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
 
 /***/ }),
 
@@ -50,7 +50,8 @@ function Edit({
     overlayColor,
     textAlign,
     textPosition,
-    showCaption
+    showCaption,
+    height = 0
   } = attributes;
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)({
     className: `swiper-slide swiper-banner swiper-banner--${bannerStyle} text-${textAlign} text-position-${textPosition}`
@@ -93,25 +94,22 @@ function Edit({
         })
       });
     }
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
-      className: "swiper-banner__content",
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
-        className: "swiper-banner__image",
-        style: {
-          backgroundImage: `url(${imageUrl})`,
-          '--overlay-color': overlayColor,
-          '--overlay-opacity': overlayOpacity
-        },
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
-          className: "swiper-banner__overlay"
-        }), showCaption && imageCaption && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
-          className: "swiper-banner__caption",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
-            className: "swiper-banner__caption-content",
-            children: imageCaption
-          })
-        })]
-      })
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+      className: "swiper-banner__image",
+      style: {
+        backgroundImage: `url(${imageUrl})`,
+        '--overlay-color': overlayColor,
+        '--overlay-opacity': overlayOpacity
+      },
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+        className: "swiper-banner__overlay"
+      }), showCaption && imageCaption && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+        className: "swiper-banner__caption",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+          className: "swiper-banner__caption-content",
+          children: imageCaption
+        })
+      })]
     });
   };
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
@@ -212,6 +210,16 @@ function Edit({
           onChange: val => setAttributes({
             bannerStyle: val
           })
+        }), bannerStyle === 'circles' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Height (px)', 'jankx'),
+          value: height || 0,
+          onChange: val => setAttributes({
+            height: val || 0
+          }),
+          min: 50,
+          max: 1000,
+          step: 10,
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Set height for circle banner. Width will automatically match height.', 'jankx')
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Text Alignment', 'jankx'),
           value: textAlign,
@@ -319,25 +327,22 @@ function Save({
   const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.useBlockProps.save({
     className: `swiper-slide swiper-banner swiper-banner--${bannerStyle} text-${textAlign} text-position-${textPosition}`
   });
-  const content = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
-    className: "swiper-banner__content",
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
-      className: "swiper-banner__image",
-      style: {
-        backgroundImage: `url(${imageUrl})`,
-        '--overlay-color': overlayColor,
-        '--overlay-opacity': overlayOpacity
-      },
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
-        className: "swiper-banner__overlay"
-      }), showCaption && imageCaption && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
-        className: "swiper-banner__caption",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
-          className: "swiper-banner__caption-content",
-          children: imageCaption
-        })
-      })]
-    })
+  const content = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+    className: "swiper-banner__image",
+    style: {
+      backgroundImage: `url(${imageUrl})`,
+      '--overlay-color': overlayColor,
+      '--overlay-opacity': overlayOpacity
+    },
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+      className: "swiper-banner__overlay"
+    }), showCaption && imageCaption && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+      className: "swiper-banner__caption",
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+        className: "swiper-banner__caption-content",
+        children: imageCaption
+      })
+    })]
   });
   if (linkUrl) {
     return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {

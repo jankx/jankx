@@ -21,12 +21,6 @@
   font-size: 14px;
   margin-bottom: 15px;
 }
-.swiper-banner__content {
-  position: relative;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
 .swiper-banner__image {
   position: relative;
   min-height: 200px;
@@ -58,9 +52,6 @@
   font-weight: 600;
   line-height: 1.4;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-}
-.swiper-banner--banner .swiper-banner__image {
-  min-height: 300px;
 }
 .swiper-banner--banner .swiper-banner__caption-content {
   font-size: 2rem;

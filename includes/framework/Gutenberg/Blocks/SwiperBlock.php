@@ -62,7 +62,7 @@ class SwiperBlock extends Block
         $block_wrapper_attrs = get_block_wrapper_attributes($wrapper_attributes);
 
         $container_attrs = sprintf(
-            'data-slides-per-view="%s" data-space-between="%s" data-loop="%s" data-autoplay="%s" data-autoplay-delay="%s" data-speed="%s" data-navigation="%s" data-pagination="%s" data-effect="%s" data-banner-style="%s" data-banner-text-color="%s" data-banner-background-color="%s" data-banner-padding="%s" data-banner-border-radius="%s"',
+            'data-slides-per-view="%s" data-space-between="%s" data-loop="%s" data-autoplay="%s" data-autoplay-delay="%s" data-speed="%s" data-navigation="%s" data-pagination="%s" data-effect="%s" data-banner-style="%s" data-banner-text-color="%s" data-banner-background-color="%s" data-banner-padding="%s" data-banner-border-radius="%s" data-swiper-height="%s"',
             esc_attr($slides_per_view),
             esc_attr($space_between),
             $loop ? 'true' : 'false',
@@ -76,7 +76,8 @@ class SwiperBlock extends Block
             esc_attr($banner_text_color),
             esc_attr($banner_background_color),
             esc_attr($banner_padding),
-            esc_attr($banner_border_radius)
+            esc_attr($banner_border_radius),
+            intval($height)
         );
 
         ob_start();

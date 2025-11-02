@@ -43,6 +43,7 @@ class SwiperBannerBlock extends Block
         $text_align = $attributes['textAlign'] ?? 'center';
         $text_position = $attributes['textPosition'] ?? 'middle';
         $show_caption = $attributes['showCaption'] ?? true;
+        $height = $attributes['height'] ?? 0;
 
         // Build wrapper attributes
         $wrapper_attributes = [
@@ -54,13 +55,19 @@ class SwiperBannerBlock extends Block
             )
         ];
 
+        // Add height data attribute if set (for circle style width calculation)
+        if ($height > 0) {
+            $wrapper_attributes['data-banner-height'] = intval($height);
+        }
+
         // Add custom CSS variables for overlay
+        $overlay_styles = [];
         if ($image_url) {
-            $wrapper_attributes['style'] = sprintf(
-                '--overlay-color: %s; --overlay-opacity: %s;',
-                esc_attr($overlay_color),
-                esc_attr($overlay_opacity)
-            );
+            $overlay_styles[] = sprintf('--overlay-color: %s', esc_attr($overlay_color));
+            $overlay_styles[] = sprintf('--overlay-opacity: %s', esc_attr($overlay_opacity));
+        }
+        if (!empty($overlay_styles)) {
+            $wrapper_attributes['style'] = implode('; ', $overlay_styles);
         }
 
         // Get WordPress block wrapper attributes
@@ -123,10 +130,8 @@ class SwiperBannerBlock extends Block
                    '</div>';
         }
 
-        $content = '<div class="swiper-banner__content">';
-        
         // Image container
-        $content .= sprintf(
+        $content = sprintf(
             '<div class="swiper-banner__image" style="background-image: url(%s);">',
             esc_url($image_url)
         );
@@ -145,7 +150,6 @@ class SwiperBannerBlock extends Block
         }
         
         $content .= '</div>'; // Close image container
-        $content .= '</div>'; // Close content container
 
         return $content;
     }

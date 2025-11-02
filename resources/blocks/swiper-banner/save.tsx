@@ -21,25 +21,23 @@ export default function Save({ attributes }: SwiperBannerProps): JSX.Element {
   });
 
   const content = (
-    <div className="swiper-banner__content">
-      <div 
-        className="swiper-banner__image"
-        style={{
-          backgroundImage: `url(${imageUrl})`,
-          '--overlay-color': overlayColor,
-          '--overlay-opacity': overlayOpacity
-        } as React.CSSProperties}
-      >
-        <div className="swiper-banner__overlay"></div>
-        
-        {showCaption && imageCaption && (
-          <div className="swiper-banner__caption">
-            <div className="swiper-banner__caption-content">
-              {imageCaption}
-            </div>
+    <div 
+      className="swiper-banner__image"
+      style={{
+        backgroundImage: `url(${imageUrl})`,
+        '--overlay-color': overlayColor,
+        '--overlay-opacity': overlayOpacity
+      } as React.CSSProperties}
+    >
+      <div className="swiper-banner__overlay"></div>
+      
+      {showCaption && imageCaption && (
+        <div className="swiper-banner__caption">
+          <div className="swiper-banner__caption-content">
+            {imageCaption}
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 

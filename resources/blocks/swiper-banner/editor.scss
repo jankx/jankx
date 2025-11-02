@@ -23,13 +23,6 @@
     }
   }
   
-  &__content {
-    position: relative;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-  
   &__image {
     position: relative;
     min-height: 200px;
@@ -68,10 +61,6 @@
   
   // Style variations in editor
   &--banner {
-    .swiper-banner__image {
-      min-height: 300px;
-    }
-    
     .swiper-banner__caption {
       &-content {
         font-size: 2rem;

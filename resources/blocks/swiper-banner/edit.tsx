@@ -26,7 +26,8 @@ export default function Edit({ attributes, setAttributes }: SwiperBannerProps): 
     overlayColor,
     textAlign,
     textPosition,
-    showCaption
+    showCaption,
+    height = 0
   } = attributes;
 
   const blockProps = useBlockProps({
@@ -79,25 +80,23 @@ export default function Edit({ attributes, setAttributes }: SwiperBannerProps): 
     }
 
     return (
-      <div className="swiper-banner__content">
-        <div 
-          className="swiper-banner__image"
-          style={{
-            backgroundImage: `url(${imageUrl})`,
-            '--overlay-color': overlayColor,
-            '--overlay-opacity': overlayOpacity
-          } as React.CSSProperties}
-        >
-          <div className="swiper-banner__overlay"></div>
-          
-          {showCaption && imageCaption && (
-            <div className="swiper-banner__caption">
-              <div className="swiper-banner__caption-content">
-                {imageCaption}
-              </div>
+      <div 
+        className="swiper-banner__image"
+        style={{
+          backgroundImage: `url(${imageUrl})`,
+          '--overlay-color': overlayColor,
+          '--overlay-opacity': overlayOpacity
+        } as React.CSSProperties}
+      >
+        <div className="swiper-banner__overlay"></div>
+        
+        {showCaption && imageCaption && (
+          <div className="swiper-banner__caption">
+            <div className="swiper-banner__caption-content">
+              {imageCaption}
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     );
   };
@@ -190,6 +189,18 @@ export default function Edit({ attributes, setAttributes }: SwiperBannerProps): 
             ]}
             onChange={(val: string) => setAttributes({ bannerStyle: val as 'banner' | 'circles' | 'square' })}
           />
+
+          {bannerStyle === 'circles' && (
+            <RangeControl
+              label={__('Height (px)', 'jankx')}
+              value={height || 0}
+              onChange={(val: number) => setAttributes({ height: val || 0 })}
+              min={50}
+              max={1000}
+              step={10}
+              help={__('Set height for circle banner. Width will automatically match height.', 'jankx')}
+            />
+          )}
 
           <SelectControl
             label={__('Text Alignment', 'jankx')}
