@@ -78,6 +78,17 @@ class SmartSearchBlock extends Block
             return;
         }
 
+        // Enqueue style
+        $style_path = $block_path . '/build/style.css';
+        if (file_exists($style_path)) {
+            wp_enqueue_style(
+                'jankx-smart-search-style',
+                get_template_directory_uri() . str_replace(get_template_directory(), '', $block_path) . '/build/style.css',
+                [],
+                filemtime($style_path)
+            );
+        }
+
         $asset_file = include $block_path . '/build/frontend.asset.php';
         if (!$asset_file) {
             return;
@@ -170,7 +181,7 @@ class SmartSearchBlock extends Block
         }
         
         // Calculate limit per type (at least 2, or distribute evenly)
-        $limit_per_type = $count_enabled_types > 0 ? max(2, floor($limit / $count_enabled_types)) : $limit;
+        $limit_per_type = $count_enabled_types > 0 ? max(2, floor($limit / $count_enabled_types)) : 10;
 
         // Search posts
         if ($show_posts && !empty($post_types)) {
@@ -182,9 +193,9 @@ class SmartSearchBlock extends Block
 
         // Search post types
         if ($show_post_types) {
-            $post_type_results = $this->searchPostTypes($query);
+            $post_type_results = $this->searchPostTypes($query, $limit_per_type);
             if (!empty($post_type_results)) {
-                $results['post_types'] = array_slice($post_type_results, 0, $limit_per_type);
+                $results['post_types'] = $post_type_results;
             }
         }
 
@@ -258,14 +269,19 @@ class SmartSearchBlock extends Block
      * Search post types
      *
      * @param string $query Search query
+     * @param int $limit Result limit
      * @return array
      */
-    protected function searchPostTypes($query)
+    protected function searchPostTypes($query, $limit = 10)
     {
         $post_types = get_post_types(['public' => true], 'objects');
         $results = [];
 
         foreach ($post_types as $post_type) {
+            if (count($results) >= $limit) {
+                break;
+            }
+            
             $name = $post_type->name;
             $label = $post_type->label;
             

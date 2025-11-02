@@ -127,28 +127,6 @@ function Edit({
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)({
     className: 'wp-block-jankx-smart-search-editor'
   });
-  const handlePostTypeChange = (value, checked) => {
-    if (checked) {
-      setAttributes({
-        postTypes: [...postTypes, value]
-      });
-    } else {
-      setAttributes({
-        postTypes: postTypes.filter(pt => pt !== value)
-      });
-    }
-  };
-  const handleTaxonomyChange = (value, checked) => {
-    if (checked) {
-      setAttributes({
-        taxonomies: [...taxonomies, value]
-      });
-    } else {
-      setAttributes({
-        taxonomies: taxonomies.filter(tax => tax !== value)
-      });
-    }
-  };
 
   // Filter taxonomies based on selected post types
   const filteredTaxonomies = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useMemo)(() => {
@@ -188,66 +166,13 @@ function Edit({
           onChange: value => setAttributes({
             showPostTypeFilter: value
           })
-        }), showPostTypeFilter && (loading ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-          style: {
-            marginTop: '10px',
-            color: '#666'
-          },
-          children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Loading post types...', 'jankx')
-        }) : availablePostTypes.length > 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-          style: {
-            marginTop: '10px'
-          },
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("strong", {
-            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Post Types:', 'jankx')
-          }), availablePostTypes.map(pt => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.CheckboxControl, {
-            label: pt.label,
-            checked: postTypes.includes(pt.value),
-            onChange: checked => handlePostTypeChange(pt.value, checked)
-          }, pt.value))]
-        }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-          style: {
-            marginTop: '10px',
-            color: '#666'
-          },
-          children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('No post types available', 'jankx')
-        })), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Taxonomy Filter', 'jankx'),
           checked: showTaxonomyFilter,
           onChange: value => setAttributes({
             showTaxonomyFilter: value
           })
-        }), showTaxonomyFilter && (loading ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-          style: {
-            marginTop: '10px',
-            color: '#666'
-          },
-          children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Loading taxonomies...', 'jankx')
-        }) : filteredTaxonomies.length > 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-          style: {
-            marginTop: '10px'
-          },
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("strong", {
-            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Taxonomies:', 'jankx')
-          }), postTypes.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-            style: {
-              fontSize: '12px',
-              color: '#666',
-              marginBottom: '8px'
-            },
-            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Showing taxonomies for selected post types', 'jankx')
-          }), filteredTaxonomies.map(tax => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.CheckboxControl, {
-            label: tax.label,
-            checked: taxonomies.includes(tax.value),
-            onChange: checked => handleTaxonomyChange(tax.value, checked)
-          }, tax.value))]
-        }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-          style: {
-            marginTop: '10px',
-            color: '#666'
-          },
-          children: postTypes.length > 0 ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('No taxonomies available for selected post types', 'jankx') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('No taxonomies available', 'jankx')
-        }))]
+        })]
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Auto Suggestion', 'jankx'),
         initialOpen: false,

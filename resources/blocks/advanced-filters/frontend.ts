@@ -66,7 +66,21 @@ class AdvancedFilters {
                 if (element instanceof HTMLElement && element.classList.contains('filter-option')) {
                     element.addEventListener('click', (e) => {
                         e.preventDefault();
-                        element.classList.toggle('active');
+                        
+                        // Find the parent filter group to check multiple selection setting
+                        const filterGroup = element.closest('[data-taxonomy]');
+                        const multipleSelection = filterGroup?.getAttribute('data-multiple-selection') === 'true';
+                        
+                        if (multipleSelection) {
+                            // Toggle: allow multiple selections
+                            element.classList.toggle('active');
+                        } else {
+                            // Single selection: deactivate siblings, then toggle this one
+                            const siblings = filterGroup?.querySelectorAll('.filter-option');
+                            siblings?.forEach(sibling => sibling.classList.remove('active'));
+                            element.classList.toggle('active');
+                        }
+                        
                         this.handleFilterChange();
                     });
                 }
@@ -625,12 +639,11 @@ class AdvancedFilters {
                         const input = filterGroup.querySelector(`input[value="${termId}"]`) as HTMLInputElement;
                         if (input) {
                             input.checked = true;
-                        } else {
-                            // Try button/option style
-                            const option = filterGroup.querySelector(`[data-value="${termId}"]`) as HTMLElement;
-                            if (option) {
-                                option.classList.add('active');
-                            }
+                        }
+                        // Also add active class for styling consistency
+                        const option = filterGroup.querySelector(`[data-value="${termId}"]`) as HTMLElement;
+                        if (option) {
+                            option.classList.add('active');
                         }
                     });
                 }

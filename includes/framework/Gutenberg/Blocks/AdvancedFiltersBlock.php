@@ -20,7 +20,6 @@ use Jankx\Layouts\PostLayout\PostLayoutManager;
 use Jankx\Layouts\PostLayout\PostLayoutDecorator;
 use Jankx\Rest\AdvancedFiltersRestApiHandler;
 use Jankx\Rest\AdvancedFiltersAjaxHandler;
-use Jankx\Gutenberg\Blocks\AdvancedFilters404Prevention;
 use WP_Query;
 
 class AdvancedFiltersBlock extends Block
@@ -45,13 +44,6 @@ class AdvancedFiltersBlock extends Block
      * @var AdvancedFiltersAjaxHandler|null
      */
     protected $ajaxHandler = null;
-
-    /**
-     * 404 Prevention instance
-     *
-     * @var AdvancedFilters404Prevention|null
-     */
-    protected $prevention = null;
 
     /**
      * Query Builder instance
@@ -84,7 +76,6 @@ class AdvancedFiltersBlock extends Block
         // Initialize handlers
         $this->restHandler = new AdvancedFiltersRestApiHandler();
         $this->ajaxHandler = new AdvancedFiltersAjaxHandler();
-        $this->prevention = new AdvancedFilters404Prevention();
         $this->queryBuilder = new AdvancedFiltersQueryBuilder();
         $this->filterRenderer = new FilterRenderer();
         $this->layoutManager = PostLayoutManager::getInstance();
@@ -92,12 +83,11 @@ class AdvancedFiltersBlock extends Block
         // Register handlers
         add_action('rest_api_init', [$this->restHandler, 'registerEndpoints']);
         $this->ajaxHandler->registerHandlers();
-        $this->prevention->init();
         
         // Register filter hooks for handlers to use
         add_filter('jankx_advanced_filter_get_block_data', [$this, 'handleGetBlockDataFilter'], 10, 3);
         add_filter('jankx_advanced_filter_find_blocks', [$this, 'handleFindBlocksFilter'], 10, 2);
-        
+
         // Localize data for block viewScript
         add_action('wp_footer', [$this, 'localizeFrontendData']);
     }
@@ -124,7 +114,7 @@ class AdvancedFiltersBlock extends Block
         }
 
         return $results;
-    }
+        }
 
     /**
      * Filter callback to find blocks

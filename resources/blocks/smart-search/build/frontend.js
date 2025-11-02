@@ -305,16 +305,45 @@ class SmartSearch {
       return;
     }
     try {
+      // Check if all show_* flags are false
+      const allShowFlagsFalse = !this.config.showPosts && !this.config.showPostTypes && !this.config.showUsers && !this.config.showTaxonomy && !this.config.showTags;
+
+      // Determine what to search based on filters if nothing is explicitly selected
+      let showPosts = this.config.showPosts;
+      let showTaxonomy = this.config.showTaxonomy;
+      let postTypes = this.config.postTypes;
+      let taxonomies = this.config.taxonomies;
+
+      // If all show flags are false, check filters
+      if (allShowFlagsFalse) {
+        // If post type filter is enabled and has post types, auto-enable posts search
+        if (this.config.showPostTypeFilter && this.config.postTypes.length > 0) {
+          showPosts = true;
+          postTypes = this.config.postTypes; // Use filter post types
+        }
+
+        // If taxonomy filter is enabled and has taxonomies, auto-enable taxonomy search
+        if (this.config.showTaxonomyFilter && this.config.taxonomies.length > 0) {
+          showTaxonomy = true;
+          taxonomies = this.config.taxonomies; // Use filter taxonomies
+        }
+
+        // If still no search type is enabled, fail (don't search)
+        if (!showPosts && !showTaxonomy && !this.config.showPostTypes && !this.config.showUsers && !this.config.showTags) {
+          this.hideSuggestions();
+          return;
+        }
+      }
       const params = new URLSearchParams({
         action: 'jankx_smart_search_suggestions',
         nonce: nonce,
         query: query,
-        post_types: JSON.stringify(this.config.postTypes),
-        taxonomies: JSON.stringify(this.config.taxonomies),
-        show_posts: String(this.config.showPosts),
+        post_types: JSON.stringify(postTypes),
+        taxonomies: JSON.stringify(taxonomies),
+        show_posts: String(showPosts),
         show_post_types: String(this.config.showPostTypes),
         show_users: String(this.config.showUsers),
-        show_taxonomy: String(this.config.showTaxonomy),
+        show_taxonomy: String(showTaxonomy),
         show_tags: String(this.config.showTags),
         limit: String(this.config.suggestionLimit)
       });

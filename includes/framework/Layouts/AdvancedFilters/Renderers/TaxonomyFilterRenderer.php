@@ -84,7 +84,7 @@ class TaxonomyFilterRenderer extends BaseFilterRenderer
         // Build classes
         $group_classes = $this->buildGroupClasses('taxonomy', $filter, $layout);
 
-        echo '<div class="' . esc_attr(implode(' ', $group_classes)) . '" data-filter-type="taxonomy" data-taxonomy="' . esc_attr($filter['taxonomy']) . '" data-layout="' . esc_attr($layout) . '" data-display-style="' . esc_attr($display_style) . '">';
+        echo '<div class="' . esc_attr(implode(' ', $group_classes)) . '" data-filter-type="taxonomy" data-taxonomy="' . esc_attr($filter['taxonomy']) . '" data-layout="' . esc_attr($layout) . '" data-display-style="' . esc_attr($display_style) . '" data-multiple-selection="' . ($multiple_selection ? 'true' : 'false') . '">';
 
         // Render header/label
         if ($collapsible) {

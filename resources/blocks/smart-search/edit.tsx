@@ -131,30 +131,6 @@ function Edit({ attributes, setAttributes }: EditProps) {
 		className: 'wp-block-jankx-smart-search-editor',
 	});
 
-	const handlePostTypeChange = (value: string, checked: boolean) => {
-		if (checked) {
-			setAttributes({
-				postTypes: [...postTypes, value],
-			});
-		} else {
-			setAttributes({
-				postTypes: postTypes.filter((pt) => pt !== value),
-			});
-		}
-	};
-
-	const handleTaxonomyChange = (value: string, checked: boolean) => {
-		if (checked) {
-			setAttributes({
-				taxonomies: [...taxonomies, value],
-			});
-		} else {
-			setAttributes({
-				taxonomies: taxonomies.filter((tax) => tax !== value),
-			});
-		}
-	};
-
 	// Filter taxonomies based on selected post types
 	const filteredTaxonomies = useMemo(() => {
 		if (postTypes.length === 0) {
@@ -189,56 +165,11 @@ function Edit({ attributes, setAttributes }: EditProps) {
 						checked={showPostTypeFilter}
 						onChange={(value) => setAttributes({ showPostTypeFilter: value })}
 					/>
-					{showPostTypeFilter && (loading ? (
-						<div style={{ marginTop: '10px', color: '#666' }}>{__('Loading post types...', 'jankx')}</div>
-					) : availablePostTypes.length > 0 ? (
-						<div style={{ marginTop: '10px' }}>
-							<strong>{__('Post Types:', 'jankx')}</strong>
-							{availablePostTypes.map((pt) => (
-								<CheckboxControl
-									key={pt.value}
-									label={pt.label}
-									checked={postTypes.includes(pt.value)}
-									onChange={(checked) => handlePostTypeChange(pt.value, checked)}
-								/>
-							))}
-						</div>
-					) : (
-						<div style={{ marginTop: '10px', color: '#666' }}>{__('No post types available', 'jankx')}</div>
-					))}
-
 					<ToggleControl
 						label={__('Show Taxonomy Filter', 'jankx')}
 						checked={showTaxonomyFilter}
 						onChange={(value) => setAttributes({ showTaxonomyFilter: value })}
 					/>
-					{showTaxonomyFilter && (loading ? (
-						<div style={{ marginTop: '10px', color: '#666' }}>{__('Loading taxonomies...', 'jankx')}</div>
-					) : filteredTaxonomies.length > 0 ? (
-						<div style={{ marginTop: '10px' }}>
-							<strong>{__('Taxonomies:', 'jankx')}</strong>
-							{postTypes.length > 0 && (
-								<div style={{ fontSize: '12px', color: '#666', marginBottom: '8px' }}>
-									{__('Showing taxonomies for selected post types', 'jankx')}
-								</div>
-							)}
-							{filteredTaxonomies.map((tax) => (
-								<CheckboxControl
-									key={tax.value}
-									label={tax.label}
-									checked={taxonomies.includes(tax.value)}
-									onChange={(checked) => handleTaxonomyChange(tax.value, checked)}
-								/>
-							))}
-						</div>
-					) : (
-						<div style={{ marginTop: '10px', color: '#666' }}>
-							{postTypes.length > 0 
-								? __('No taxonomies available for selected post types', 'jankx')
-								: __('No taxonomies available', 'jankx')
-							}
-						</div>
-					))}
 				</PanelBody>
 
 				<PanelBody title={__('Auto Suggestion', 'jankx')} initialOpen={false}>
