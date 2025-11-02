@@ -170,7 +170,7 @@ function Edit(props) {
   const borderProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.__experimentalGetBorderClassesAndStyles)(attributes);
 
   // Check if button has no color settings
-  const hasNoColorSettings = !backgroundColor?.slug && !backgroundColor?.color && !textColor?.slug && !textColor?.color && !attributes.gradient && !attributes.style?.color?.background && !attributes.style?.color?.text;
+  const hasNoColorSettings = !backgroundColor?.slug && !backgroundColor?.color && !textColor?.slug && !textColor?.color && !attributes.gradient && !attributes.style?.color?.background && !attributes.style?.color?.text && !attributes.style?.color?.gradient;
   const buttonClasses = classnames__WEBPACK_IMPORTED_MODULE_0___default()('jankx-advanced-button__link', borderProps?.className, {
     [`has-${backgroundColor?.slug}-background-color`]: backgroundColor?.slug,
     [`has-${textColor?.slug}-color`]: textColor?.slug,
@@ -179,12 +179,35 @@ function Edit(props) {
     [`icon-position-${iconPosition}`]: hasInnerBlocks && iconPosition,
     'has-base-color': hasNoColorSettings
   });
+
+  // Build button styles - gradient takes priority over background color
   const buttonStyles = {
     ...blockProps.style,
-    ...borderProps?.style,
-    backgroundColor: backgroundColor?.color,
-    color: textColor?.color
+    ...borderProps?.style
   };
+
+  // Apply preset colors if set
+  if (backgroundColor?.color) {
+    buttonStyles.backgroundColor = backgroundColor.color;
+  }
+  if (textColor?.color) {
+    buttonStyles.color = textColor.color;
+  }
+
+  // Apply custom colors from style.color if set (overrides preset colors)
+  if (attributes.style?.color?.text) {
+    buttonStyles.color = attributes.style.color.text;
+  }
+
+  // Apply gradient if set (gradient takes priority over background color)
+  if (attributes.style?.color?.gradient) {
+    buttonStyles.background = attributes.style.color.gradient;
+    // Remove backgroundColor when gradient is set
+    delete buttonStyles.backgroundColor;
+  } else if (attributes.style?.color?.background) {
+    // Only apply background color if no gradient is set
+    buttonStyles.backgroundColor = attributes.style.color.background;
+  }
 
   // Render button content - Always render InnerBlocks at the same position
   // Use CSS flex-order to control visual position
@@ -695,17 +718,46 @@ function Save(props) {
   const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps.save();
 
   // Check if button has no color settings
-  const hasNoColorSettings = !backgroundColor && !textColor && !gradient && !props.attributes.style?.color?.background && !props.attributes.style?.color?.text;
+  const hasNoColorSettings = !backgroundColor && !textColor && !gradient && !props.attributes.style?.color?.background && !props.attributes.style?.color?.text && !props.attributes.style?.color?.gradient;
   const buttonClasses = classnames__WEBPACK_IMPORTED_MODULE_0___default()('jankx-advanced-button__link', {
     [`has-${backgroundColor}-background-color`]: backgroundColor,
     [`has-${textColor}-color`]: textColor,
     [`has-${gradient}-gradient-background`]: gradient,
     [`icon-position-${iconPosition}`]: iconPosition,
-    'has-base-color': hasNoColorSettings
+    'has-base-color': hasNoColorSettings,
+    // Add classes for custom colors (WordPress may add these automatically)
+    'has-background': props.attributes.style?.color?.background || props.attributes.style?.color?.gradient,
+    'has-text-color': props.attributes.style?.color?.text
   });
-  const buttonStyles = {
-    ...blockProps.style
-  };
+
+  // Build button styles - include custom background/text colors from style.color
+  const buttonStyles = {};
+
+  // Copy padding and other spacing from blockProps
+  if (blockProps.style) {
+    Object.keys(blockProps.style).forEach(key => {
+      if (key.startsWith('padding') || key.startsWith('margin')) {
+        buttonStyles[key] = blockProps.style[key];
+      }
+    });
+  }
+
+  // Apply custom background color from style.color.background if set
+  if (props.attributes.style?.color?.background) {
+    buttonStyles.backgroundColor = props.attributes.style.color.background;
+  }
+
+  // Apply custom text color from style.color.text if set
+  if (props.attributes.style?.color?.text) {
+    buttonStyles.color = props.attributes.style.color.text;
+  }
+
+  // Apply gradient if set (gradient takes priority over background color)
+  if (props.attributes.style?.color?.gradient) {
+    buttonStyles.background = props.attributes.style.color.gradient;
+    // Remove backgroundColor when gradient is set
+    delete buttonStyles.backgroundColor;
+  }
 
   // Sanitize text content to remove any nested anchor tags
   // This prevents invalid HTML like <a><a>text</a></a>

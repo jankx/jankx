@@ -71,7 +71,8 @@ export default function Save(props: SaveProps) {
 	                           !textColor &&
 	                           !gradient &&
 	                           !props.attributes.style?.color?.background &&
-	                           !props.attributes.style?.color?.text;
+	                           !props.attributes.style?.color?.text &&
+	                           !props.attributes.style?.color?.gradient;
 
 	const buttonClasses = classnames('jankx-advanced-button__link', {
 		[`has-${backgroundColor}-background-color`]: backgroundColor,
@@ -79,11 +80,39 @@ export default function Save(props: SaveProps) {
 		[`has-${gradient}-gradient-background`]: gradient,
 		[`icon-position-${iconPosition}`]: iconPosition,
 		'has-base-color': hasNoColorSettings,
+		// Add classes for custom colors (WordPress may add these automatically)
+		'has-background': props.attributes.style?.color?.background || props.attributes.style?.color?.gradient,
+		'has-text-color': props.attributes.style?.color?.text,
 	});
 
-	const buttonStyles = {
-		...blockProps.style,
-	};
+	// Build button styles - include custom background/text colors from style.color
+	const buttonStyles: Record<string, any> = {};
+	
+	// Copy padding and other spacing from blockProps
+	if (blockProps.style) {
+		Object.keys(blockProps.style).forEach((key) => {
+			if (key.startsWith('padding') || key.startsWith('margin')) {
+				buttonStyles[key] = blockProps.style[key];
+			}
+		});
+	}
+	
+	// Apply custom background color from style.color.background if set
+	if (props.attributes.style?.color?.background) {
+		buttonStyles.backgroundColor = props.attributes.style.color.background;
+	}
+	
+	// Apply custom text color from style.color.text if set
+	if (props.attributes.style?.color?.text) {
+		buttonStyles.color = props.attributes.style.color.text;
+	}
+	
+	// Apply gradient if set (gradient takes priority over background color)
+	if (props.attributes.style?.color?.gradient) {
+		buttonStyles.background = props.attributes.style.color.gradient;
+		// Remove backgroundColor when gradient is set
+		delete buttonStyles.backgroundColor;
+	}
 
 	// Sanitize text content to remove any nested anchor tags
 	// This prevents invalid HTML like <a><a>text</a></a>

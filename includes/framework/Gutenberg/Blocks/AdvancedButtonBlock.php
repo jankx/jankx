@@ -144,11 +144,17 @@ class AdvancedButtonBlock extends Block
         $content = preg_replace('/<div[^>]*class="[^"]*wp-block-jankx-advanced-button[^"]*"[^>]*>/', '', $content);
         $content = preg_replace('/<\/div>$/', '', $content);
 
-        // Check if button has background color set
+        // Check if button has background color or gradient set
+        // This includes preset colors (backgroundColor), custom colors (style.color.background), gradients, and inline styles
         $has_background_color = (
             !empty($attributes['backgroundColor']) ||
+            !empty($attributes['gradient']) ||
+            !empty($attributes['style']['color']['background']) ||
+            !empty($attributes['style']['color']['gradient']) ||
             preg_match('/has-[a-z0-9\-]+-background-color/', $content) ||
-            preg_match('/background-color\s*:\s*[^;]+/', $content)
+            preg_match('/has-[a-z0-9\-]+-gradient-background/', $content) ||
+            preg_match('/background-color\s*:\s*[^;]+/', $content) ||
+            preg_match('/background\s*:\s*[^;]*gradient/', $content)
         );
 
         // Apply default color classes based on mode if no background color is set

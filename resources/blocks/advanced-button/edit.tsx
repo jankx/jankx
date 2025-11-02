@@ -196,7 +196,8 @@ export function Edit(props: EditProps) {
 		!textColor?.color &&
 		!attributes.gradient &&
 		!attributes.style?.color?.background &&
-		!attributes.style?.color?.text;
+		!attributes.style?.color?.text &&
+		!attributes.style?.color?.gradient;
 
 
 	const buttonClasses = classnames('jankx-advanced-button__link', borderProps?.className, {
@@ -208,12 +209,34 @@ export function Edit(props: EditProps) {
 		'has-base-color': hasNoColorSettings,
 	});
 
-	const buttonStyles = {
+	// Build button styles - gradient takes priority over background color
+	const buttonStyles: Record<string, any> = {
 		...blockProps.style,
 		...borderProps?.style,
-		backgroundColor: backgroundColor?.color,
-		color: textColor?.color,
 	};
+	
+	// Apply preset colors if set
+	if (backgroundColor?.color) {
+		buttonStyles.backgroundColor = backgroundColor.color;
+	}
+	if (textColor?.color) {
+		buttonStyles.color = textColor.color;
+	}
+	
+	// Apply custom colors from style.color if set (overrides preset colors)
+	if (attributes.style?.color?.text) {
+		buttonStyles.color = attributes.style.color.text;
+	}
+	
+	// Apply gradient if set (gradient takes priority over background color)
+	if (attributes.style?.color?.gradient) {
+		buttonStyles.background = attributes.style.color.gradient;
+		// Remove backgroundColor when gradient is set
+		delete buttonStyles.backgroundColor;
+	} else if (attributes.style?.color?.background) {
+		// Only apply background color if no gradient is set
+		buttonStyles.backgroundColor = attributes.style.color.background;
+	}
 
 	// Render button content - Always render InnerBlocks at the same position
 	// Use CSS flex-order to control visual position
