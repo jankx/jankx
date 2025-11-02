@@ -186,9 +186,40 @@ abstract class PostLayout implements PostLayoutInterface
         ?>
         <article id="post-<?php echo esc_attr($post->ID); ?>" class="<?php echo esc_attr(implode(' ', get_post_class('post-item', $post->ID))); ?>">
             <?php if ($this->getOption('showFeaturedImage') && has_post_thumbnail($post->ID)) : ?>
-                <div class="post-thumbnail">
+                <?php
+                $image_ratio = $this->getOption('imageRatio', '');
+                $thumbnail_classes = ['post-thumbnail'];
+                $thumbnail_styles = [];
+                
+                // Apply aspect ratio if set (similar to core/image block)
+                if (!empty($image_ratio)) {
+                    // Parse aspect ratio (e.g., "16/9", "4/3", "1/1")
+                    if (preg_match('/^(\d+)\/(\d+)$/', $image_ratio, $matches)) {
+                        $width_ratio = floatval($matches[1]);
+                        $height_ratio = floatval($matches[2]);
+                        $aspect_ratio_value = ($height_ratio / $width_ratio) * 100;
+                        $thumbnail_classes[] = 'has-aspect-ratio';
+                        // Store aspect ratio value in data attribute for CSS use
+                        $thumbnail_styles[] = 'padding-bottom: ' . $aspect_ratio_value . '%';
+                    } else {
+                        // Handle preset ratios like "16-9", "4-3"
+                        $thumbnail_classes[] = 'aspect-ratio-' . esc_attr(str_replace('/', '-', $image_ratio));
+                    }
+                }
+                ?>
+                <div class="<?php echo esc_attr(implode(' ', $thumbnail_classes)); ?>"<?php echo !empty($thumbnail_styles) ? ' style="' . esc_attr(implode('; ', $thumbnail_styles)) . '"' : ''; ?>>
                     <a href="<?php echo esc_url(get_permalink($post->ID)); ?>" aria-hidden="true" tabindex="-1">
-                        <?php echo get_the_post_thumbnail($post->ID, $this->getOption('imageSize', 'large')); ?>
+                        <?php 
+                        $thumbnail_html = get_the_post_thumbnail($post->ID, $this->getOption('imageSize', 'large'));
+                        
+                        // Apply aspect ratio container if set
+                        if (!empty($image_ratio) && preg_match('/^(\d+)\/(\d+)$/', $image_ratio)) {
+                            // Wrap image with aspect ratio container for proper positioning
+                            $thumbnail_html = '<span class="aspect-ratio-container">' . $thumbnail_html . '</span>';
+                        }
+                        
+                        echo $thumbnail_html;
+                        ?>
                     </a>
                 </div>
             <?php endif; ?>

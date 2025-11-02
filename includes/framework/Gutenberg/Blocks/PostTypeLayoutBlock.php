@@ -239,6 +239,7 @@ class PostTypeLayoutBlock extends Block
             'data-order-by' => esc_attr($order_by),
             'data-order' => esc_attr($order),
             'data-query-preset' => esc_attr($queryPreset),
+            'data-image-ratio' => !empty($attributes['imageRatio']) ? esc_attr($attributes['imageRatio']) : '',
             'data-block-settings' => esc_attr(wp_json_encode($block_settings)),
         ]);
 
@@ -530,6 +531,7 @@ class PostTypeLayoutBlock extends Block
             'data-order-by' => esc_attr($order_by),
             'data-order' => esc_attr($order),
             'data-query-preset' => esc_attr($queryPreset),
+            'data-image-ratio' => !empty($attributes['imageRatio']) ? esc_attr($attributes['imageRatio']) : '',
             'data-block-settings' => esc_attr(wp_json_encode($block_settings)),
         ]);
 

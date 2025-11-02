@@ -103,6 +103,10 @@
       "type": "boolean",
       "default": true
     },
+    "imageRatio": {
+      "type": "string",
+      "default": ""
+    },
     "showDate": {
       "type": "boolean",
       "default": true

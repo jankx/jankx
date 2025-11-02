@@ -60,6 +60,7 @@ class PostLayoutDecorator
         $options = [
             'columns' => $attributes['columns'] ?? 3,
             'showFeaturedImage' => $attributes['showFeaturedImage'] ?? true,
+            'imageRatio' => $attributes['imageRatio'] ?? '',
             'showTitle' => $attributes['showTitle'] ?? true,
             'showExcerpt' => $attributes['showExcerpt'] ?? true,
             'showDate' => $attributes['showDate'] ?? true,

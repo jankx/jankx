@@ -6,6 +6,7 @@ import {
     InspectorAdvancedControls,
     BlockControls,
     store as blockEditorStore,
+    __experimentalImageSizeControl as ImageSizeControl,
 } from '@wordpress/block-editor';
 import {
     PanelBody,
@@ -54,6 +55,7 @@ interface PostTypeLayoutAttributes {
     showTitle: boolean;
     showExcerpt: boolean;
     showFeaturedImage: boolean;
+    imageRatio: string;
     showDate: boolean;
     showAuthor: boolean;
     excerptLength: number;
@@ -108,6 +110,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         showTitle,
         showExcerpt,
         showFeaturedImage,
+        imageRatio,
         showDate,
         showAuthor,
         excerptLength,
@@ -301,6 +304,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             showTitle: debouncedAttributes.showTitle,
             showExcerpt: debouncedAttributes.showExcerpt,
             showFeaturedImage: debouncedAttributes.showFeaturedImage,
+            imageRatio: debouncedAttributes.imageRatio,
             showDate: debouncedAttributes.showDate,
             showAuthor: debouncedAttributes.showAuthor,
             excerptLength: debouncedAttributes.excerptLength,
@@ -537,12 +541,30 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                 {/* Display Options */}
                 <PanelBody title={__('Display Options', 'jankx')} initialOpen={false}>
                     {supportedOptions.includes('showFeaturedImage') && (
-                        <ToggleControl
-                            label={__('Show Featured Image', 'jankx')}
-                            checked={showFeaturedImage}
-                            onChange={(value) => setAttributes({ showFeaturedImage: value })}
-                            disabled={readOnlyOptions.includes('showFeaturedImage')}
-                        />
+                        <>
+                            <ToggleControl
+                                label={__('Show Featured Image', 'jankx')}
+                                checked={showFeaturedImage}
+                                onChange={(value) => setAttributes({ showFeaturedImage: value })}
+                                disabled={readOnlyOptions.includes('showFeaturedImage')}
+                            />
+                            {showFeaturedImage && (
+                                <SelectControl
+                                    label={__('Image Aspect Ratio', 'jankx')}
+                                    value={imageRatio || ''}
+                                    onChange={(value) => setAttributes({ imageRatio: value || '' })}
+                                    help={__('Set the aspect ratio for featured images', 'jankx')}
+                                    options={[
+                                        { label: __('Default (3:2)', 'jankx'), value: '' },
+                                        { label: __('16:9', 'jankx'), value: '16/9' },
+                                        { label: __('4:3', 'jankx'), value: '4/3' },
+                                        { label: __('1:1', 'jankx'), value: '1/1' },
+                                        { label: __('21:9', 'jankx'), value: '21/9' },
+                                        { label: __('2:3', 'jankx'), value: '2/3' },
+                                    ]}
+                                />
+                            )}
+                        </>
                     )}
                     {supportedOptions.includes('showTitle') && (
                         <ToggleControl
