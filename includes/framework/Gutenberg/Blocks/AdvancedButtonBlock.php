@@ -3,12 +3,17 @@
 namespace Jankx\Gutenberg\Blocks;
 
 use Jankx\Gutenberg\Block;
+use Jankx\Gutenberg\Blocks\AdvancedButton\ButtonRendererFactory;
+use Jankx\Gutenberg\Blocks\AdvancedButton\ContentExtractor;
+use Jankx\Gutenberg\Blocks\AdvancedButton\ButtonStyler;
+use Jankx\Gutenberg\Blocks\AdvancedButton\InnerBlocksHandler;
+use Jankx\Gutenberg\Blocks\AdvancedButton\WrapperRenderer;
 
 /**
  * Advanced Button Block
  *
  * An enhanced button block with advanced styling and functionality options.
- * Includes trigger type support: link, button, detail-link, and modal.
+ * Uses Strategy Pattern for button rendering based on trigger type.
  *
  * @package Jankx\Gutenberg\Blocks
  * @since 1.0.0
@@ -22,13 +27,11 @@ class AdvancedButtonBlock extends Block
      */
     protected $blockId = 'jankx/advanced-button';
 
-
     /**
      * Render the block content
      *
-     * This block uses JavaScript save function for most rendering,
-     * but we need to handle special trigger types like detail-link
-     * which requires PHP to get the current post permalink.
+     * Uses Strategy Pattern to delegate rendering to specific renderers
+     * based on trigger type. Matches JavaScript save function structure.
      *
      * @param array $attributes Block attributes
      * @param string $content Block content (HTML from save function)
@@ -37,347 +40,252 @@ class AdvancedButtonBlock extends Block
      */
     public function render($attributes, $content = '', $block = null)
     {
-        // If content is empty but we have inner blocks, render them
-        // This handles cases where save function might not have included inner blocks
+        // Handle empty content with inner blocks (fallback case)
         if (empty($content) && $block && !empty($block->inner_blocks)) {
-            $inner_content = '';
-            foreach ($block->inner_blocks as $inner_block) {
-                // $inner_block is a WP_Block object, use render() method instead of render_block()
-                if ($inner_block instanceof \WP_Block) {
-                    $inner_content .= $inner_block->render();
-                } else {
-                    // Fallback: if it's an array, use render_block()
-                    $inner_content .= render_block($inner_block);
-                }
-            }
-            // If we only have inner blocks, create a basic button structure
-            if (!empty($inner_content)) {
-                $text = $attributes['text'] ?? '';
-                $showLabel = $attributes['showLabel'] ?? true;
-                $button_text = ($showLabel && !empty($text)) ? '<span class="button-text">' . esc_html($text) . '</span>' : '';
-                $content = sprintf(
-                    '<a class="jankx-advanced-button__link" href="%s" data-trigger-type="link">%s<span class="button-icon-wrapper">%s</span></a>',
-                    esc_url($attributes['url'] ?? '#'),
-                    $button_text,
-                    $inner_content
-                );
-            }
+            $content = $this->renderFallbackContent($attributes, $block);
+        }
+
+        // Detect trigger type
+        $triggerType = ButtonRendererFactory::detectTriggerType($attributes, $content);
+
+        // Extract wrapper classes before processing
+        $existingClasses = ContentExtractor::extractWrapperClasses($content);
+
+        // Extract button content from wrapper div
+        $buttonContent = ContentExtractor::extractButtonContent($content);
+
+        // If content is empty or invalid, render using renderer
+        if (empty($buttonContent) || !ContentExtractor::getButtonElement($buttonContent)) {
+            $renderedButton = $this->renderFromScratch($attributes, $block, $triggerType);
+        } else {
+            // Content exists from JS save function, just apply PHP-specific processing
+            $renderedButton = $this->processExistingContent($buttonContent, $attributes, $block, $triggerType);
+        }
+
+        // Render wrapper
+        return WrapperRenderer::render($renderedButton, $attributes, $existingClasses);
+    }
+
+    /**
+     * Render button from scratch when content is missing
+     *
+     * @param array $attributes Block attributes
+     * @param \WP_Block|null $block Block instance
+     * @param string $triggerType Trigger type
+     * @return string Rendered button HTML
+     */
+    protected function renderFromScratch(array $attributes, ?\WP_Block $block, string $triggerType): string
+    {
+        // Render inner blocks
+        $innerContent = '';
+        if ($block && !empty($block->inner_blocks)) {
+            $innerContent = InnerBlocksHandler::renderInnerBlocks($block);
+        }
+
+        // Build button content
+        $text = $attributes['text'] ?? '';
+        $showLabel = $attributes['showLabel'] ?? true;
+        $buttonInnerContent = '';
+        
+        if ($showLabel && !empty($text)) {
+            $buttonInnerContent .= '<span class="button-text">' . esc_html($text) . '</span>';
         }
         
-        $triggerType = $attributes['triggerType'] ?? 'link';
-
-        // Fallback: Check HTML content for data-trigger-type if attribute parsing fails
-        // This is important for query loops where attributes come from template, not individual posts
-        if ($triggerType === 'link' && strpos($content, 'data-trigger-type="detail-link"') !== false) {
-            $triggerType = 'detail-link';
-        } elseif ($triggerType === 'link' && strpos($content, 'data-trigger-type="modal"') !== false) {
-            $triggerType = 'modal';
-        } elseif ($triggerType === 'link' && strpos($content, 'data-trigger-type="button"') !== false) {
-            $triggerType = 'button';
+        if (!empty($innerContent)) {
+            $buttonInnerContent .= '<span class="button-icon-wrapper">' . $innerContent . '</span>';
         }
 
-        // Handle detail-link: Replace placeholder href with actual permalink
+        // Build button classes and styles
+        $buttonClasses = ButtonStyler::buildButtonClasses($attributes);
+        $buttonStyles = ButtonStyler::buildButtonStyles($attributes);
+
+        // Render using appropriate renderer
+        $renderer = ButtonRendererFactory::create($triggerType);
+        
+        return $renderer->render($attributes, $buttonInnerContent, $buttonClasses, $buttonStyles);
+    }
+
+    /**
+     * Process existing content from JS save function
+     *
+     * @param string $buttonContent Button content HTML
+     * @param array $attributes Block attributes
+     * @param \WP_Block|null $block Block instance
+     * @param string $triggerType Trigger type
+     * @return string Processed button HTML
+     */
+    protected function processExistingContent(string $buttonContent, array $attributes, ?\WP_Block $block, string $triggerType): string
+    {
+        // Inject inner blocks if missing
+        if ($block && !ContentExtractor::hasInnerBlocks($buttonContent)) {
+            $buttonContent = InnerBlocksHandler::injectInnerBlocks($buttonContent, $block, $attributes);
+        }
+
+        // Apply PHP-specific processing based on trigger type
+        // For detail-link and modal, use renderers to handle placeholders
         if ($triggerType === 'detail-link') {
-            $permalink = get_permalink();
-
-            if ($permalink) {
-                // Use regex to replace href="#" with actual permalink
-                // This handles cases where there might be spaces or other variations
-                $content = preg_replace(
-                    '/href\s*=\s*["\']#["\']/',
-                    'href="' . esc_url($permalink) . '"',
-                    $content
-                );
-            }
-        }
-
-        // Handle modal trigger: add dynamic data attributes
-        if ($triggerType === 'modal') {
-            $modalId = $attributes['modalId'] ?? '';
-
-            // Build data attributes to inject
-            $dataAttrs = [];
-
-            // Replace placeholder data attributes with actual post data
-            // Check if we're in a post context (single post, page, custom post type)
-            if (is_singular() && have_posts()) {
-                the_post();
-                $post_id = get_the_ID();
-                $post_title = get_the_title();
-                $post_url = get_permalink();
-                wp_reset_postdata();
-            } else {
-                // Fallback for archive pages or other contexts
-                global $post;
-                $post_id = $post ? $post->ID : '';
-                $post_title = $post ? $post->post_title : '';
-                $post_url = $post ? get_permalink($post) : '';
-            }
-
-            if ($post_id && $post_title && $post_url) {
-                // Escape data for HTML attributes
-                $post_id_escaped = esc_attr($post_id);
-                $post_title_escaped = esc_attr($post_title);
-                $post_url_escaped = esc_attr($post_url);
-
-                // Replace placeholders
-                $content = str_replace('{{CURRENT_POST_ID}}', $post_id_escaped, $content);
-                $content = str_replace('{{CURRENT_POST_TITLE}}', $post_title_escaped, $content);
-                $content = str_replace('{{CURRENT_POST_URL}}', $post_url_escaped, $content);
-            }
-
-            // Inject data attributes into button
-            if (!empty($dataAttrs)) {
-                // Build attributes string
-                $attrsString = '';
-                foreach ($dataAttrs as $attrName => $attrValue) {
-                    $attrsString .= ' ' . $attrName . '="' . $attrValue . '"';
-                }
-
-                // Inject after data-modal-id
-                $content = preg_replace(
-                    '/(data-modal-id="[^"]*")/',
-                    '$1' . $attrsString,
-                    $content
-                );
-            }
-        }
-
-        // Extract existing wrapper classes including style classes (is-style-fill, is-style-outline)
-        $existing_classes = [];
-        if (preg_match('/<div[^>]*class="([^"]*)"[^>]*>/', $content, $matches)) {
-            $existing_classes = explode(' ', $matches[1]);
-        }
-
-        // Get alignment from block attributes (WordPress stores this separately)
-        $text_align = '';
-        if (!empty($attributes['textAlign'])) {
-            $text_align = $attributes['textAlign'];
-        } elseif (!empty($attributes['align'])) {
-            $text_align = $attributes['align'];
-        }
-
-        // Check className attribute for text alignment
-        if (empty($text_align) && !empty($attributes['className'])) {
-            if (preg_match('/has-text-align-(\w+)/', $attributes['className'], $align_match)) {
-                $text_align = $align_match[1];
-            }
-        }
-
-        // Determine if it's outline mode
-        $is_outline_mode = in_array('is-style-outline', $existing_classes);
-
-        // Remove wrapper div but preserve all content inside (button element, text, inner blocks)
-        // This preserves the button element and all its content including inner blocks
-        // Match opening wrapper div and remove it
-        $content = preg_replace('/<div[^>]*class="[^"]*wp-block-jankx-advanced-button[^"]*"[^>]*>/', '', $content);
-        // Match closing wrapper div at the end and remove it
-        $content = preg_replace('/<\/div>\s*$/', '', $content);
-
-        // Check if button has background color or gradient set
-        // This includes preset colors (backgroundColor), custom colors (style.color.background), gradients, and inline styles
-        $has_background_color = (
-            !empty($attributes['backgroundColor']) ||
-            !empty($attributes['gradient']) ||
-            !empty($attributes['style']['color']['background']) ||
-            !empty($attributes['style']['color']['gradient']) ||
-            preg_match('/has-[a-z0-9\-]+-background-color/', $content) ||
-            preg_match('/has-[a-z0-9\-]+-gradient-background/', $content) ||
-            preg_match('/background-color\s*:\s*[^;]+/', $content) ||
-            preg_match('/background\s*:\s*[^;]*gradient/', $content)
-        );
-
-        // Apply default color classes based on mode if no background color is set
-        if (!$has_background_color) {
-            if ($is_outline_mode) {
-                // Outline mode: Add primary color for border and text
-                // Add has-primary-color for text color
-                $content = preg_replace(
-                    '/(class="jankx-advanced-button__link[^"]*")/',
-                    '$1',
-                    $content
-                );
-
-                // Add primary color classes to button element
-                if (preg_match('/<(a|button)([^>]*class="[^"]*jankx-advanced-button__link[^"]*")([^>]*)>/', $content, $button_matches)) {
-                    $button_classes = $button_matches[2];
-
-                    // Add has-primary-color and has-base-color classes
-                    $new_button_classes = str_replace(
-                        'class="jankx-advanced-button__link',
-                        'class="jankx-advanced-button__link has-primary-color has-base-color',
-                        $button_classes
-                    );
-
-                    $content = str_replace($button_classes, $new_button_classes, $content);
-                }
-            } else {
-                // Fill mode: Add primary background and contrast text color
-                // Add has-primary-background-color and has-contrast-color
-                if (preg_match('/<(a|button)([^>]*class="[^"]*jankx-advanced-button__link[^"]*")([^>]*)>/', $content, $button_matches)) {
-                    $button_classes = $button_matches[2];
-
-                    // Add color classes
-                    $new_button_classes = str_replace(
-                        'class="jankx-advanced-button__link',
-                        'class="jankx-advanced-button__link has-primary-background-color has-contrast-color has-base-color',
-                        $button_classes
-                    );
-
-                    $content = str_replace($button_classes, $new_button_classes, $content);
-                }
-            }
-        }
-
-        // Extract and apply border radius from attributes
-        // Border radius should be applied to button element (not wrapper)
-        $border_radius = null;
-        
-        // Get border radius from attributes.style.border.radius
-        if (!empty($attributes['style']['border']['radius'])) {
-            $border_radius = $attributes['style']['border']['radius'];
-        }
-        
-        // If not found in attributes, check if it's already in content HTML
-        if (empty($border_radius) && preg_match('/style\s*=\s*["\'][^"\']*border-radius\s*:\s*([^;]+)/i', $content, $radius_matches)) {
-            // Border radius already exists in content, keep it
-            $border_radius = trim($radius_matches[1]);
-        }
-        
-        // Apply border radius to button element if we have it
-        if (!empty($border_radius)) {
-            // Find button element and add/update border-radius in style attribute
-            if (preg_match('/<(a|button)([^>]*class="[^"]*jankx-advanced-button__link[^"]*")([^>]*)>/', $content, $button_matches)) {
-                $button_tag = $button_matches[0];
-                $button_attrs = $button_matches[3]; // Everything after class attribute
-                
-                // Check if style attribute already exists
-                if (preg_match('/style\s*=\s*["\']([^"\']*)["\']/', $button_attrs, $style_matches)) {
-                    $existing_styles = $style_matches[1];
-                    
-                    // Remove existing border-radius if any
-                    $existing_styles = preg_replace('/border-radius\s*:\s*[^;]+;?/i', '', $existing_styles);
-                    $existing_styles = trim($existing_styles, '; ');
-                    
-                    // Add border-radius
-                    $new_styles = $existing_styles;
-                    if (!empty($new_styles)) {
-                        $new_styles .= '; ';
-                    }
-                    $new_styles .= 'border-radius: ' . esc_attr($border_radius);
-                    
-                    // Replace existing style attribute in button_attrs
-                    $new_button_attrs = preg_replace(
-                        '/style\s*=\s*["\'][^"\']*["\']/',
-                        'style="' . esc_attr($new_styles) . '"',
-                        $button_attrs
-                    );
-                    
-                    // Reconstruct button tag
-                    $new_button_tag = '<' . $button_matches[1] . $button_matches[2] . ' ' . $new_button_attrs . '>';
-                    $content = str_replace($button_tag, $new_button_tag, $content);
-                } else {
-                    // No style attribute, add it
-                    $new_button_attrs = 'style="border-radius: ' . esc_attr($border_radius) . ';"';
-                    if (!empty(trim($button_attrs))) {
-                        $new_button_attrs = ' ' . $new_button_attrs;
-                    }
-                    
-                    // Reconstruct button tag
-                    $new_button_tag = '<' . $button_matches[1] . $button_matches[2] . $new_button_attrs . $button_attrs . '>';
-                    $content = str_replace($button_tag, $new_button_tag, $content);
-                }
-            }
-        }
-
-        // Build wrapper classes
-        $wrapper_classes = [
-            'wp-block-jankx-advanced-button',
-            'jankx-advanced-button'
-        ];
-
-        // Preserve style classes (is-style-fill, is-style-outline, etc.)
-        // and alignment classes (has-text-align-*)
-        foreach ($existing_classes as $class) {
-            if (strpos($class, 'is-style-') === 0 || strpos($class, 'has-text-align-') === 0) {
-                $wrapper_classes[] = $class;
-            }
-        }
-
-        // Add text alignment class from attributes (avoid duplicates)
-        if (!empty($text_align)) {
-            $align_class = "has-text-align-{$text_align}";
-            if (!in_array($align_class, $wrapper_classes)) {
-                $wrapper_classes[] = $align_class;
-            }
-        }
-
-        // Check if content has inner blocks (button-icon-wrapper) with content
-        // If not, and we have inner blocks in $block, inject them
-        $has_inner_blocks_in_content = false;
-        if (preg_match('/<span[^>]*class="[^"]*button-icon-wrapper[^"]*"[^>]*>.*?<\/span>/s', $content, $wrapper_match)) {
-            // Check if wrapper has content (not just empty or whitespace)
-            $wrapper_content = preg_replace('/<[^>]+>/', '', $wrapper_match[0]);
-            $has_inner_blocks_in_content = !empty(trim($wrapper_content));
-        }
-        
-        if (!$has_inner_blocks_in_content && $block && !empty($block->inner_blocks)) {
-            // Render inner blocks
-            $inner_content = '';
-            foreach ($block->inner_blocks as $inner_block) {
-                // $inner_block is a WP_Block object, use render() method instead of render_block()
-                if ($inner_block instanceof \WP_Block) {
-                    $inner_content .= $inner_block->render();
-                } else {
-                    // Fallback: if it's an array, use render_block()
-                    $inner_content .= render_block($inner_block);
-                }
-            }
+            $renderer = new \Jankx\Gutenberg\Blocks\AdvancedButton\DetailLinkRenderer();
+            $innerContent = $this->extractButtonInnerContent($buttonContent);
+            $buttonElement = ContentExtractor::getButtonElement($buttonContent);
             
-            if (!empty($inner_content)) {
-                // Try to inject inner blocks into button-icon-wrapper
-                // First, check if button-icon-wrapper exists (even if empty)
-                if (preg_match('/<span[^>]*class="[^"]*button-icon-wrapper[^"]*"[^>]*>.*?<\/span>/s', $content)) {
-                    // Already has wrapper, replace its content with inner blocks
-                    $content = preg_replace(
-                        '/(<span[^>]*class="[^"]*button-icon-wrapper[^"]*"[^>]*>)(.*?)(<\/span>)/s',
-                        '$1' . $inner_content . '$3',
-                        $content
-                    );
-                } else {
-                    // No button-icon-wrapper, add it with inner blocks
+            if ($buttonElement) {
+                // Extract existing classes and styles
+                preg_match('/class="([^"]*)"/', $buttonElement['full'], $classMatches);
+                $classes = $classMatches[1] ?? '';
+                preg_match('/style="([^"]*)"/', $buttonElement['other_attrs'], $styleMatches);
+                $existingStylesString = $styleMatches[1] ?? '';
+                
+                // Parse styles
+                $styles = $this->parseStylesString($existingStylesString);
+                $attributeStyles = ButtonStyler::buildButtonStyles($attributes);
+                $styles = array_merge($styles, $attributeStyles);
+                
+                return $renderer->render($attributes, $innerContent, $classes, $styles);
+            }
+        } elseif ($triggerType === 'modal') {
+            $renderer = new \Jankx\Gutenberg\Blocks\AdvancedButton\ModalRenderer();
+            $innerContent = $this->extractButtonInnerContent($buttonContent);
+            $buttonElement = ContentExtractor::getButtonElement($buttonContent);
+            
+            if ($buttonElement) {
+                // Extract existing classes and styles
+                preg_match('/class="([^"]*)"/', $buttonElement['full'], $classMatches);
+                $classes = $classMatches[1] ?? '';
+                preg_match('/style="([^"]*)"/', $buttonElement['other_attrs'], $styleMatches);
+                $existingStylesString = $styleMatches[1] ?? '';
+                
+                // Parse styles
+                $styles = $this->parseStylesString($existingStylesString);
+                $attributeStyles = ButtonStyler::buildButtonStyles($attributes);
+                $styles = array_merge($styles, $attributeStyles);
+                
+                return $renderer->render($attributes, $innerContent, $classes, $styles);
+            }
+        }
+
+        // For link and button, just apply styling to existing content
+        $existingClasses = ContentExtractor::extractWrapperClasses($buttonContent);
+        return $this->applyStyling($buttonContent, $attributes, $existingClasses);
+    }
+
+    /**
+     * Parse styles string into array
+     *
+     * @param string $stylesString Styles string
+     * @return array Styles array
+     */
+    protected function parseStylesString(string $stylesString): array
+    {
+        $styles = [];
+        
+        if (empty($stylesString)) {
+            return $styles;
+        }
+
+        foreach (explode(';', $stylesString) as $style) {
+            $style = trim($style);
+            if (strpos($style, ':') !== false) {
+                [$prop, $value] = explode(':', $style, 2);
+                $styles[trim($prop)] = trim($value);
+            }
+        }
+
+        return $styles;
+    }
+
+    /**
+     * Render fallback content when content is empty
+     *
+     * @param array $attributes Block attributes
+     * @param \WP_Block $block Block instance
+     * @return string Fallback HTML content
+     */
+    protected function renderFallbackContent(array $attributes, \WP_Block $block): string
+    {
+        $innerContent = InnerBlocksHandler::renderInnerBlocks($block);
+        
+        if (empty($innerContent)) {
+            return '';
+        }
+
                     $text = $attributes['text'] ?? '';
                     $showLabel = $attributes['showLabel'] ?? true;
-                    $button_text = ($showLabel && !empty($text)) ? '<span class="button-text">' . esc_html($text) . '</span>' : '';
-                    
-                    // Find button element and inject inner blocks and text after opening tag
-                    if (preg_match('/(<(a|button)[^>]*class="[^"]*jankx-advanced-button__link[^"]*"[^>]*>)/', $content, $button_match)) {
-                        // Inject inner blocks and text after opening tag
-                        $content = str_replace(
-                            $button_match[0],
-                            $button_match[0] . '<span class="button-icon-wrapper">' . $inner_content . '</span>' . $button_text,
-                            $content
-                        );
-                    }
-                }
-            }
-        }
+        $buttonText = ($showLabel && !empty($text)) ? '<span class="button-text">' . esc_html($text) . '</span>' : '';
         
-        // Add icon position class if needed
-        $iconPosition = $attributes['iconPosition'] ?? 'left';
-        if (!empty($attributes['useIconBlocks']) && $iconPosition) {
-            $wrapper_classes[] = "icon-position-{$iconPosition}";
+        return sprintf(
+            '<a class="jankx-advanced-button__link" href="%s" data-trigger-type="link">%s<span class="button-icon-wrapper">%s</span></a>',
+            esc_url($attributes['url'] ?? '#'),
+            $buttonText,
+            $innerContent
+        );
+    }
+
+    /**
+     * Apply styling to button content
+     *
+     * @param string $content Button content HTML
+     * @param array $attributes Block attributes
+     * @param array $existingClasses Existing wrapper classes
+     * @return string Updated content
+     */
+    protected function applyStyling(string $content, array $attributes, array $existingClasses): string
+    {
+        // Check background color and outline mode
+        $hasBackgroundColor = ButtonStyler::hasBackgroundColor($attributes, $content);
+        $isOutlineMode = ButtonStyler::isOutlineMode($existingClasses);
+
+        // Apply default colors if needed
+        $content = ButtonStyler::applyDefaultColors(
+            $content,
+            $attributes,
+            $isOutlineMode,
+            $hasBackgroundColor
+        );
+
+        // Apply border radius
+        $borderRadius = ButtonStyler::getBorderRadius($attributes, $content);
+        if ($borderRadius) {
+            $content = ButtonStyler::applyBorderRadius($content, $borderRadius);
         }
 
-        $wrapper_attributes = sprintf(
-            'class="%s"',
-            esc_attr(implode(' ', $wrapper_classes))
-        );
+        return $content;
+    }
 
-        return sprintf(
-            '<div %s>%s</div>',
-            $wrapper_attributes,
-            $content
-        );
+    /**
+     * Extract inner content from button element
+     *
+     * @param string $buttonContent Full button HTML
+     * @return string Inner content (text and icon wrapper)
+     */
+    protected function extractButtonInnerContent(string $buttonContent): string
+    {
+        // Extract content between opening and closing tags
+        if (preg_match('/<(a|button)[^>]*>(.*?)<\/(a|button)>/s', $buttonContent, $matches)) {
+            return $matches[2];
+        }
+
+        // If no match, return as-is (should not happen with valid HTML)
+        return $buttonContent;
+    }
+
+    /**
+     * Apply post-processing to rendered button
+     *
+     * Ensures all styles are correctly applied after renderer processes it
+     *
+     * @param string $renderedButton Rendered button HTML
+     * @param string $originalContent Original button content (for reference)
+     * @param array $attributes Block attributes
+     * @return string Updated button HTML
+     */
+    protected function applyPostProcessing(string $renderedButton, string $originalContent, array $attributes): string
+    {
+        // Ensure border radius is applied (in case renderer didn't apply it)
+        $borderRadius = ButtonStyler::getBorderRadius($attributes, $renderedButton);
+        if ($borderRadius) {
+            $renderedButton = ButtonStyler::applyBorderRadius($renderedButton, $borderRadius);
+        }
+
+        return $renderedButton;
     }
 }
