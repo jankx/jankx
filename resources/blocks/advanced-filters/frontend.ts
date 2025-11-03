@@ -126,6 +126,107 @@ class AdvancedFilters {
         if (resetButton) {
             resetButton.addEventListener('click', () => this.handleReset());
         }
+
+        // WooCommerce ordering form
+        this.setupWooCommerceOrderingListener();
+    }
+
+    /**
+     * Setup event listener for WooCommerce ordering form
+     * 
+     * @return void
+     */
+    private setupWooCommerceOrderingListener(): void {
+        // Try to find WooCommerce ordering form
+        let woocommerceOrdering = document.querySelector('.woocommerce-ordering .orderby') as HTMLSelectElement;
+        
+        if (!woocommerceOrdering) {
+            // Form not found, might not be loaded yet, try again after DOM is ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => {
+                    this.setupWooCommerceOrderingListener();
+                });
+            } else {
+                // If DOM is ready but form not found, try again after a short delay
+                // This handles cases where form is rendered dynamically
+                setTimeout(() => {
+                    this.setupWooCommerceOrderingListener();
+                }, 500);
+            }
+            return;
+        }
+
+        // Check if listener already attached to avoid duplicate listeners
+        if ((woocommerceOrdering as any).__jankxAdvancedFiltersListenerAttached) {
+            return;
+        }
+
+        // Mark as attached
+        (woocommerceOrdering as any).__jankxAdvancedFiltersListenerAttached = true;
+
+        // Prevent default form submission behavior
+        const orderingForm = woocommerceOrdering.closest('form.woocommerce-ordering') as HTMLFormElement;
+        if (orderingForm && !(orderingForm as any).__jankxAdvancedFiltersPreventDefaultAttached) {
+            (orderingForm as any).__jankxAdvancedFiltersPreventDefaultAttached = true;
+            orderingForm.addEventListener('submit', (e) => {
+                // Only prevent default if AJAX is enabled
+                if (this.config && this.config.ajaxEnabled) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                // If AJAX is not enabled, allow normal form submission
+            });
+        }
+
+        // Listen for change event on orderby select
+        woocommerceOrdering.addEventListener('change', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Trigger filter update when orderby changes
+            if (this.config && this.config.ajaxEnabled) {
+                // Small delay to ensure form doesn't submit
+                setTimeout(() => {
+                    this.handleFilterChange();
+                }, 50);
+            } else {
+                // If AJAX is not enabled, submit the form normally
+                if (orderingForm) {
+                    orderingForm.submit();
+                }
+            }
+        });
+
+        // Also listen for dynamically added forms
+        // Use MutationObserver to handle cases where form is added after page load
+        if (!(document as any).__jankxAdvancedFiltersOrderingObserver) {
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    mutation.addedNodes.forEach((node) => {
+                        if (node.nodeType === Node.ELEMENT_NODE) {
+                            const element = node as HTMLElement;
+                            // Check if the added node or its children contain the ordering form
+                            const newOrdering = element.querySelector?.('.woocommerce-ordering .orderby') || 
+                                              (element.classList?.contains('woocommerce-ordering') ? 
+                                               element.querySelector('.orderby') : null) as HTMLSelectElement;
+                            
+                            if (newOrdering && !(newOrdering as any).__jankxAdvancedFiltersListenerAttached) {
+                                // New form found, setup listener
+                                this.setupWooCommerceOrderingListener();
+                            }
+                        }
+                    });
+                });
+            });
+
+            // Observe the document body for new elements
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true,
+            });
+
+            (document as any).__jankxAdvancedFiltersOrderingObserver = observer;
+        }
     }
 
     private handleFilterChange(): void {
@@ -210,6 +311,12 @@ class AdvancedFilters {
             filters.keyword = keywordInput.value;
         }
 
+        // Collect WooCommerce ordering
+        const woocommerceOrdering = document.querySelector('.woocommerce-ordering .orderby') as HTMLSelectElement;
+        if (woocommerceOrdering?.value) {
+            filters.orderby = woocommerceOrdering.value;
+        }
+
         this.currentFilters = filters;
     }
 
@@ -221,7 +328,16 @@ class AdvancedFilters {
         try {
             // Get nonce from config (set in init) or fallback to localized script
             const nonce = (this.config as any)?.nonce || (window as any).jankxAdvancedFilters?.nonce || '';
-            const ajaxUrl = (this.config as any)?.ajaxUrl || (window as any).jankxAdvancedFilters?.ajaxUrl || '/wp-admin/admin-ajax.php';
+            let ajaxUrl = (this.config as any)?.ajaxUrl || (window as any).jankxAdvancedFilters?.ajaxUrl || '/wp-admin/admin-ajax.php';
+            
+            // Ensure AJAX URL is absolute
+            if (ajaxUrl.startsWith('/')) {
+                // Relative URL, make it absolute
+                ajaxUrl = window.location.origin + ajaxUrl;
+            } else if (!ajaxUrl.startsWith('http://') && !ajaxUrl.startsWith('https://')) {
+                // Relative URL without leading slash, add origin
+                ajaxUrl = window.location.origin + '/' + ajaxUrl.replace(/^\//, '');
+            }
 
             if (!nonce) {
                 console.error('Nonce is missing! Cannot proceed with AJAX request.');
@@ -268,7 +384,7 @@ class AdvancedFilters {
 
             // Use PostTypeLayoutBlock's AJAX handler
             // Process each target block individually
-            const updatePromises = this.config.targetBlockIds.map(async (blockId) => {
+            const updatePromises = this.config.targetBlockIds.map(async (blockId): Promise<{ blockId: string; html: string } | null> => {
                 // Get block attributes from DOM if available
                 const targetBlock = document.querySelector(`[data-query-id="${blockId}"], [data-block-id="${blockId}"]`) as HTMLElement;
                 let attributesJson = '';
@@ -296,21 +412,48 @@ class AdvancedFilters {
                     console.warn('AdvancedFilters: Could not determine post_id, server will try to detect it');
                 }
 
-                const response = await fetch(ajaxUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: params,
-                });
+                let response: Response;
+                try {
+                    response = await fetch(ajaxUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: params,
+                        credentials: 'same-origin', // Include cookies for WordPress
+                    });
+                } catch (fetchError) {
+                    // Network error - could be CORS, connection issue, or page redirect
+                    console.error(`Network error when fetching filter update for block ${blockId}:`, fetchError);
+                    
+                    // If it's a NetworkError, the page might be redirecting
+                    if (fetchError instanceof TypeError && fetchError.message.includes('fetch')) {
+                        console.warn('Possible page redirect detected, falling back to form submission');
+                        // Don't throw error, just return null to skip this block update
+                        return null;
+                    }
+                    
+                    throw fetchError;
+                }
 
                 if (!response.ok) {
-                    const errorText = await response.text();
+                    let errorText = '';
+                    try {
+                        errorText = await response.text();
+                    } catch (e) {
+                        errorText = `HTTP ${response.status} ${response.statusText}`;
+                    }
                     console.error(`Filter update failed for block ${blockId}:`, response.status, errorText);
                     throw new Error(`HTTP ${response.status}: ${errorText}`);
                 }
 
-                const data = await response.json();
+                let data: any;
+                try {
+                    data = await response.json();
+                } catch (jsonError) {
+                    console.error(`Failed to parse JSON response for block ${blockId}:`, jsonError);
+                    throw new Error('Invalid JSON response from server');
+                }
 
                 if (data.success && data.data) {
                     return {
@@ -324,12 +467,19 @@ class AdvancedFilters {
                 }
             });
 
-            // Wait for all blocks to update
+            // Wait for all blocks to update (filter out null results)
             const results = await Promise.all(updatePromises);
+            const validResults = results.filter((result): result is { blockId: string; html: string } => result !== null);
+
+            if (validResults.length === 0) {
+                console.warn('No valid results from filter update');
+                this.hideLoading();
+                return;
+            }
 
             // Update target blocks
             const resultsMap: Record<string, string> = {};
-            results.forEach((result) => {
+            validResults.forEach((result) => {
                 resultsMap[result.blockId] = result.html;
             });
 

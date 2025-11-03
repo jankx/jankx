@@ -10,6 +10,7 @@ import {
 	useBlockProps,
 	RichText,
 	InnerBlocks,
+	__experimentalGetBorderClassesAndStyles as getBorderClassesAndStyles,
 } from '@wordpress/block-editor';
 
 interface SaveProps {
@@ -67,6 +68,9 @@ export default function Save(props: SaveProps) {
 	// We can't reliably check for inner blocks in save function, so we always render
 
 	const blockProps = useBlockProps.save();
+	
+	// Get border props (includes border radius)
+	const borderProps = getBorderClassesAndStyles(props.attributes);
 
 	// Check if button has no color settings
 	const hasNoColorSettings = !backgroundColor &&
@@ -76,7 +80,7 @@ export default function Save(props: SaveProps) {
 	                           !props.attributes.style?.color?.text &&
 	                           !props.attributes.style?.color?.gradient;
 
-	const buttonClasses = classnames('jankx-advanced-button__link', {
+	const buttonClasses = classnames('jankx-advanced-button__link', borderProps?.className, {
 		[`has-${backgroundColor}-background-color`]: backgroundColor,
 		[`has-${textColor}-color`]: textColor,
 		[`has-${gradient}-gradient-background`]: gradient,
@@ -88,16 +92,13 @@ export default function Save(props: SaveProps) {
 	});
 
 	// Build button styles - include custom background/text colors from style.color
-	const buttonStyles: Record<string, any> = {};
+	const buttonStyles: Record<string, any> = {
+		...blockProps.style,
+		...borderProps?.style,
+	};
 	
-	// Copy padding and other spacing from blockProps
-	if (blockProps.style) {
-		Object.keys(blockProps.style).forEach((key) => {
-			if (key.startsWith('padding') || key.startsWith('margin')) {
-				buttonStyles[key] = blockProps.style[key];
-			}
-		});
-	}
+	// Copy spacing (padding, margin) from blockProps if needed
+	// Border radius is already included from borderProps.style above
 	
 	// Apply custom background color from style.color.background if set
 	if (props.attributes.style?.color?.background) {

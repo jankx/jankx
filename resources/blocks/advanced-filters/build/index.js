@@ -231,9 +231,9 @@ function Edit({
 
   // Get post type from target block
   const targetPostType = targetBlockIds.length > 0 && availableBlocks.length > 0 ? availableBlocks.find(b => b.id === targetBlockIds[0])?.postType || 'post' : 'post';
-  const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)({
-    className: `advanced-filters-block layout-${layout} display-${displayStyle}`
-  });
+
+  // Use blockProps without additional classes since PHP render already includes full wrapper
+  const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)();
 
   // Helper function to find post-type-layout blocks recursively
   const findPostTypeLayoutBlocks = blocks => {
@@ -851,13 +851,9 @@ function Edit({
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("p", {
           children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Please select at least one target block to filter in the sidebar.', 'jankx')
         })
-      }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
-        className: "wp-block-jankx-advanced-filters-wrapper",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)((_wordpress_server_side_render__WEBPACK_IMPORTED_MODULE_5___default()), {
-          block: "jankx/advanced-filters",
-          attributes: attributes,
-          className: "wp-block-jankx-advanced-filters"
-        })
+      }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)((_wordpress_server_side_render__WEBPACK_IMPORTED_MODULE_5___default()), {
+        block: "jankx/advanced-filters",
+        attributes: attributes
       })
     })]
   });

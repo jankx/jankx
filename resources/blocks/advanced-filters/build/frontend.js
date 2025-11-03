@@ -108,6 +108,101 @@ class AdvancedFilters {
     if (resetButton) {
       resetButton.addEventListener('click', () => this.handleReset());
     }
+
+    // WooCommerce ordering form
+    this.setupWooCommerceOrderingListener();
+  }
+
+  /**
+   * Setup event listener for WooCommerce ordering form
+   * 
+   * @return void
+   */
+  setupWooCommerceOrderingListener() {
+    // Try to find WooCommerce ordering form
+    let woocommerceOrdering = document.querySelector('.woocommerce-ordering .orderby');
+    if (!woocommerceOrdering) {
+      // Form not found, might not be loaded yet, try again after DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+          this.setupWooCommerceOrderingListener();
+        });
+      } else {
+        // If DOM is ready but form not found, try again after a short delay
+        // This handles cases where form is rendered dynamically
+        setTimeout(() => {
+          this.setupWooCommerceOrderingListener();
+        }, 500);
+      }
+      return;
+    }
+
+    // Check if listener already attached to avoid duplicate listeners
+    if (woocommerceOrdering.__jankxAdvancedFiltersListenerAttached) {
+      return;
+    }
+
+    // Mark as attached
+    woocommerceOrdering.__jankxAdvancedFiltersListenerAttached = true;
+
+    // Prevent default form submission behavior
+    const orderingForm = woocommerceOrdering.closest('form.woocommerce-ordering');
+    if (orderingForm && !orderingForm.__jankxAdvancedFiltersPreventDefaultAttached) {
+      orderingForm.__jankxAdvancedFiltersPreventDefaultAttached = true;
+      orderingForm.addEventListener('submit', e => {
+        e.preventDefault();
+
+        // If AJAX is not enabled, fall back to form submission
+        if (!this.config || !this.config.ajaxEnabled) {
+          const formData = new FormData(orderingForm);
+          const url = new URL(window.location.href);
+          Array.from(formData.entries()).forEach(([key, value]) => {
+            url.searchParams.set(key, String(value));
+          });
+          window.location.href = url.toString();
+        }
+      });
+    }
+
+    // Listen for change event on orderby select
+    woocommerceOrdering.addEventListener('change', () => {
+      // Trigger filter update when orderby changes
+      if (this.config && this.config.ajaxEnabled) {
+        this.handleFilterChange();
+      } else {
+        // If AJAX is not enabled, submit the form
+        if (orderingForm) {
+          orderingForm.submit();
+        }
+      }
+    });
+
+    // Also listen for dynamically added forms
+    // Use MutationObserver to handle cases where form is added after page load
+    if (!document.__jankxAdvancedFiltersOrderingObserver) {
+      const observer = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+          mutation.addedNodes.forEach(node => {
+            if (node.nodeType === Node.ELEMENT_NODE) {
+              const element = node;
+              // Check if the added node or its children contain the ordering form
+              const newOrdering = element.querySelector?.('.woocommerce-ordering .orderby') || (element.classList?.contains('woocommerce-ordering') ? element.querySelector('.orderby') : null);
+              if (newOrdering && !newOrdering.__jankxAdvancedFiltersListenerAttached) {
+                // New form found, setup listener
+                this.setupWooCommerceOrderingListener();
+              }
+            }
+          });
+        });
+      });
+
+      // Observe the document body for new elements
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+      document.__jankxAdvancedFiltersOrderingObserver = observer;
+    }
   }
   handleFilterChange() {
     if (!this.config) return;
@@ -180,6 +275,12 @@ class AdvancedFilters {
     const keywordInput = this.container.querySelector('.filter-keyword input');
     if (keywordInput?.value) {
       filters.keyword = keywordInput.value;
+    }
+
+    // Collect WooCommerce ordering
+    const woocommerceOrdering = document.querySelector('.woocommerce-ordering .orderby');
+    if (woocommerceOrdering?.value) {
+      filters.orderby = woocommerceOrdering.value;
     }
     this.currentFilters = filters;
   }

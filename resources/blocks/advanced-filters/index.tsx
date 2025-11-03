@@ -92,9 +92,8 @@ function Edit({ attributes, setAttributes }: EditProps) {
         ? availableBlocks.find(b => b.id === targetBlockIds[0])?.postType || 'post'
         : 'post';
 
-    const blockProps = useBlockProps({
-        className: `advanced-filters-block layout-${layout} display-${displayStyle}`,
-    });
+    // Use blockProps without additional classes since PHP render already includes full wrapper
+    const blockProps = useBlockProps();
 
     // Helper function to find post-type-layout blocks recursively
     const findPostTypeLayoutBlocks = (blocks: any[]): any[] => {
@@ -659,13 +658,10 @@ function Edit({ attributes, setAttributes }: EditProps) {
                         <p>{__('Please select at least one target block to filter in the sidebar.', 'jankx')}</p>
                     </Placeholder>
                 ) : (
-                    <div className="wp-block-jankx-advanced-filters-wrapper">
-                        <ServerSideRender
-                            block="jankx/advanced-filters"
-                            attributes={attributes}
-                            className="wp-block-jankx-advanced-filters"
-                        />
-                    </div>
+                    <ServerSideRender
+                        block="jankx/advanced-filters"
+                        attributes={attributes}
+                    />
                 )}
             </div>
         </>

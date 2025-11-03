@@ -23,42 +23,23 @@
     }
 
     // ServerSideRender container should not have extra spacing
-    .wp-block-embed__wrapper,
-    .wp-block-jankx-advanced-filters-wrapper {
+    .wp-block-embed__wrapper {
         margin: 0;
         padding: 0;
         border: none;
         background: transparent;
-
-        // Ensure ServerSideRender content has no extra wrapper
-        > div {
-            margin: 0;
-            padding: 0;
-        }
     }
 
     // Override any editor-specific wrapper styles that might interfere
-    .block-editor-block-list__block {
-        // Ensure no extra margins/padding from editor
-        &.wp-block-jankx-advanced-filters {
-            // Remove any editor-specific borders or backgrounds
-            border: none;
-            box-shadow: none;
-            background: transparent;
-        }
+    // Remove editor-specific styling from block wrapper
+    &.block-editor-block-list__block {
+        // Remove any editor-specific borders or backgrounds
+        border: none;
+        box-shadow: none;
+        background: transparent;
     }
 
     // Ensure rendered content from ServerSideRender looks exactly like frontend
-    // Remove any editor-specific spacing or visual elements
-    .wp-block-jankx-advanced-filters {
-        // Ensure no double margins/padding
-        margin: 2rem 0 !important;
-        padding: 1.5rem !important;
-
-        // Remove any editor-specific styling
-        outline: none;
-        border: none;
-        box-shadow: none;
-    }
+    // ServerSideRender content should be identical to frontend
 }
 

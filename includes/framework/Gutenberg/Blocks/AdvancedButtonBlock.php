@@ -229,6 +229,67 @@ class AdvancedButtonBlock extends Block
             }
         }
 
+        // Extract and apply border radius from attributes
+        // Border radius should be applied to button element (not wrapper)
+        $border_radius = null;
+        
+        // Get border radius from attributes.style.border.radius
+        if (!empty($attributes['style']['border']['radius'])) {
+            $border_radius = $attributes['style']['border']['radius'];
+        }
+        
+        // If not found in attributes, check if it's already in content HTML
+        if (empty($border_radius) && preg_match('/style\s*=\s*["\'][^"\']*border-radius\s*:\s*([^;]+)/i', $content, $radius_matches)) {
+            // Border radius already exists in content, keep it
+            $border_radius = trim($radius_matches[1]);
+        }
+        
+        // Apply border radius to button element if we have it
+        if (!empty($border_radius)) {
+            // Find button element and add/update border-radius in style attribute
+            if (preg_match('/<(a|button)([^>]*class="[^"]*jankx-advanced-button__link[^"]*")([^>]*)>/', $content, $button_matches)) {
+                $button_tag = $button_matches[0];
+                $button_attrs = $button_matches[3]; // Everything after class attribute
+                
+                // Check if style attribute already exists
+                if (preg_match('/style\s*=\s*["\']([^"\']*)["\']/', $button_attrs, $style_matches)) {
+                    $existing_styles = $style_matches[1];
+                    
+                    // Remove existing border-radius if any
+                    $existing_styles = preg_replace('/border-radius\s*:\s*[^;]+;?/i', '', $existing_styles);
+                    $existing_styles = trim($existing_styles, '; ');
+                    
+                    // Add border-radius
+                    $new_styles = $existing_styles;
+                    if (!empty($new_styles)) {
+                        $new_styles .= '; ';
+                    }
+                    $new_styles .= 'border-radius: ' . esc_attr($border_radius);
+                    
+                    // Replace existing style attribute in button_attrs
+                    $new_button_attrs = preg_replace(
+                        '/style\s*=\s*["\'][^"\']*["\']/',
+                        'style="' . esc_attr($new_styles) . '"',
+                        $button_attrs
+                    );
+                    
+                    // Reconstruct button tag
+                    $new_button_tag = '<' . $button_matches[1] . $button_matches[2] . ' ' . $new_button_attrs . '>';
+                    $content = str_replace($button_tag, $new_button_tag, $content);
+                } else {
+                    // No style attribute, add it
+                    $new_button_attrs = 'style="border-radius: ' . esc_attr($border_radius) . ';"';
+                    if (!empty(trim($button_attrs))) {
+                        $new_button_attrs = ' ' . $new_button_attrs;
+                    }
+                    
+                    // Reconstruct button tag
+                    $new_button_tag = '<' . $button_matches[1] . $button_matches[2] . $new_button_attrs . $button_attrs . '>';
+                    $content = str_replace($button_tag, $new_button_tag, $content);
+                }
+            }
+        }
+
         // Build wrapper classes
         $wrapper_classes = [
             'wp-block-jankx-advanced-button',
