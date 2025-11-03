@@ -76,4 +76,13 @@ class DefaultContentGenerator implements ContentGeneratorInterface
     {
         return true; // Default generator hỗ trợ tất cả options
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function wrapCarouselHtml(WP_Query $query, array $options, string $carouselHtml): string
+    {
+        // Default generator doesn't need special wrapper, return as is
+        return $carouselHtml;
+    }
 }

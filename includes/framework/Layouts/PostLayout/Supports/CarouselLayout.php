@@ -73,6 +73,7 @@ class CarouselLayout extends PostLayout
                 $slidesHtml = '<div class="embla__slide">' . $generated . '</div>';
             }
 
+            // Build carousel HTML structure
             ob_start();
             ?>
             <div class="<?php echo esc_attr($wrapper_class); ?>" <?php
@@ -104,7 +105,15 @@ class CarouselLayout extends PostLayout
                 <?php endif; ?>
             </div>
             <?php
-            return ob_get_clean();
+            $carouselHtml = ob_get_clean();
+
+            // Allow generator to wrap carousel HTML with its own container
+            // This enables generators like WooCommerceContentGenerator to add necessary wrappers
+            if (method_exists($this->contentGenerator, 'wrapCarouselHtml')) {
+                return $this->contentGenerator->wrapCarouselHtml($this->query, $this->options, $carouselHtml);
+            }
+
+            return $carouselHtml;
         }
 
         // Non-custom generator: use default renderer

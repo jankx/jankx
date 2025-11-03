@@ -131,4 +131,14 @@ class CustomContentGenerator implements ContentGeneratorInterface
 
         return true;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function wrapCarouselHtml(WP_Query $query, array $options, string $carouselHtml): string
+    {
+        // Custom generator doesn't need special wrapper by default, return as is
+        // Can be overridden by custom callback if needed
+        return $carouselHtml;
+    }
 }

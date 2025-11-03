@@ -51,4 +51,18 @@ interface ContentGeneratorInterface
      * @return bool
      */
     public function supportsOptions(array $options): bool;
+
+    /**
+     * Wrap carousel HTML with generator-specific container
+     *
+     * This method allows generators to wrap carousel structure in their own
+     * container (e.g., WooCommerce product-collection container).
+     * If generator doesn't need special container, return carousel HTML as is.
+     *
+     * @param WP_Query $query
+     * @param array $options
+     * @param string $carouselHtml Carousel HTML structure to wrap
+     * @return string Wrapped HTML or original carousel HTML if no wrapper needed
+     */
+    public function wrapCarouselHtml(WP_Query $query, array $options, string $carouselHtml): string;
 }

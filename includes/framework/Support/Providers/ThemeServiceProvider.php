@@ -131,7 +131,13 @@ class ThemeServiceProvider extends ServiceProvider
     protected function registerPostLayoutServices(Application $app)
     {
         // Register PostLayoutManager as singleton
+        // Use both names for backward compatibility
         $app->singleton('postlayout.manager', function (Application $app) {
+            return PostLayoutManager::getInstance();
+        });
+        
+        // Also register with dot notation for facade compatibility
+        $app->singleton('post.layout.manager', function (Application $app) {
             return PostLayoutManager::getInstance();
         });
     }

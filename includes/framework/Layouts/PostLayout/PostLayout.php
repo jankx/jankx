@@ -335,4 +335,94 @@ abstract class PostLayout implements PostLayoutInterface
             'showTitle', // Title luôn phải hiển thị, không thể ẩn
         ];
     }
+
+    /**
+     * Locate and load template file
+     * 
+     * Search order:
+     * 1. Child theme: views/post-layout/{layout-name}.php
+     * 2. Child theme: views/post-layout/default.php
+     * 3. Parent theme: includes/framework/Layouts/PostLayout/templates/{layout-name}.php
+     * 4. Parent theme: includes/framework/Layouts/PostLayout/templates/default.php
+     *
+     * @param string $template_name Template filename (without .php extension)
+     * @param array $args Variables to pass to template
+     * @return string Rendered template or empty string if not found
+     */
+    protected function loadTemplate(string $template_name, array $args = []): string
+    {
+        // Search in child theme first, then parent theme
+        $search_paths = [
+            // Child theme views
+            get_stylesheet_directory() . '/views/post-layout/',
+            // Parent theme templates
+            get_template_directory() . '/includes/framework/Layouts/PostLayout/templates/',
+        ];
+
+        $template_names = [
+            $template_name . '.php',
+            'default.php',
+        ];
+
+        foreach ($search_paths as $base_path) {
+            foreach ($template_names as $filename) {
+                $template_path = $base_path . $filename;
+                if (file_exists($template_path)) {
+                    return $this->renderTemplate($template_path, $args);
+                }
+            }
+        }
+
+        // Template not found
+        return '';
+    }
+
+    /**
+     * Render template file with provided variables
+     *
+     * @param string $template_path Full path to template file
+     * @param array $args Variables to pass to template
+     * @return string Rendered template
+     */
+    protected function renderTemplate(string $template_path, array $args = []): string
+    {
+        if (!file_exists($template_path)) {
+            return '';
+        }
+
+        // Extract args to variables
+        extract($args, EXTR_SKIP);
+
+        // Start output buffering
+        ob_start();
+
+        // Include template
+        include $template_path;
+
+        // Get output and clean buffer
+        return ob_get_clean();
+    }
+
+    /**
+     * Get template path for a layout
+     * 
+     * @return string Template path if found, empty string otherwise
+     */
+    protected function getTemplatePath(): string
+    {
+        $layout_name = $this->getName();
+        $search_paths = [
+            get_stylesheet_directory() . '/views/post-layout/',
+            get_template_directory() . '/includes/framework/Layouts/PostLayout/templates/',
+        ];
+
+        foreach ($search_paths as $base_path) {
+            $template_path = $base_path . $layout_name . '.php';
+            if (file_exists($template_path)) {
+                return $template_path;
+            }
+        }
+
+        return '';
+    }
 }
