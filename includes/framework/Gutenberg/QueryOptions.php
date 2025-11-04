@@ -290,6 +290,57 @@ class QueryOptions
     }
 
     /**
+     * Get query preset options
+     *
+     * @return array Array of query preset options with value, label, and postType
+     */
+    public static function getQueryPresets(): array
+    {
+        $presets = [
+            [
+                'value' => 'default',
+                'label' => __('Default (Main Query)', 'jankx'),
+                'postType' => null, // Available for all post types
+                'help' => __('Use WordPress main query. Query parameters will be hidden.', 'jankx'),
+            ],
+            [
+                'value' => 'related',
+                'label' => __('Related Posts (Same Taxonomy)', 'jankx'),
+                'postType' => null, // Available for all post types
+                'help' => __('Display related posts (same taxonomy as current post).', 'jankx'),
+            ],
+            [
+                'value' => 'custom',
+                'label' => __('Custom Query', 'jankx'),
+                'postType' => null, // Available for all post types
+                'help' => __('Customize query parameters as you wish.', 'jankx'),
+            ],
+        ];
+
+        /**
+         * Filter query preset options
+         *
+         * Allows packages (like WooCommerce) to add custom presets
+         *
+         * @param array $presets Array of query preset options
+         *
+         * @since 1.0.0
+         *
+         * @example
+         * add_filter('jankx/gutenberg/query-options/query-presets', function($presets) {
+         *     $presets[] = [
+         *         'value' => 'on-sale',
+         *         'label' => __('On Sale Products', 'jankx'),
+         *         'postType' => 'product',
+         *         'help' => __('Display products that are currently on sale.', 'jankx'),
+         *     ];
+         *     return $presets;
+         * });
+         */
+        return apply_filters('jankx/gutenberg/query-options/query-presets', $presets);
+    }
+
+    /**
      * Get all query options as array
      *
      * @return array Array of all query options
@@ -302,6 +353,7 @@ class QueryOptions
             'metaCompare' => self::getMetaCompareOperators(),
             'metaTypes' => self::getMetaTypes(),
             'taxonomyOperators' => self::getTaxonomyOperators(),
+            'queryPresets' => self::getQueryPresets(),
         ];
     }
 

@@ -65,7 +65,7 @@
     "queryPreset": {
       "type": "string",
       "default": "custom",
-      "enum": ["default", "related", "custom"]
+      "enum": ["default", "related", "custom", "on-sale"]
     },
     "postType": {
       "type": "string",

@@ -115,6 +115,12 @@ class PostTypeLayoutBlock extends Block
             $decorator = $layoutManager->createLayout($layout_name, $attributes);
             $query = $decorator->buildQuery($attributes);
             $decorator->withQuery($query);
+        } elseif ($queryPreset === 'on-sale') {
+            $attributes = PostTypeLayoutQueryHelper::buildOnSaleQuery($attributes);
+            $attributes['_internal_paged'] = $page;
+            $decorator = $layoutManager->createLayout($layout_name, $attributes);
+            $query = $decorator->buildQuery($attributes);
+            $decorator->withQuery($query);
         } else {
             $attributes['_internal_paged'] = $page;
             $decorator = $layoutManager->createLayout($layout_name, $attributes);
@@ -165,6 +171,11 @@ class PostTypeLayoutBlock extends Block
             $decorator->withQuery($query);
         } elseif ($queryPreset === 'related') {
             $attributes = PostTypeLayoutQueryHelper::buildRelatedQuery($attributes);
+            $decorator = $layoutManager->createLayout($layout_name, $attributes);
+            $query = $decorator->buildQuery($attributes);
+            $decorator->withQuery($query);
+        } elseif ($queryPreset === 'on-sale') {
+            $attributes = PostTypeLayoutQueryHelper::buildOnSaleQuery($attributes);
             $decorator = $layoutManager->createLayout($layout_name, $attributes);
             $query = $decorator->buildQuery($attributes);
             $decorator->withQuery($query);
@@ -383,6 +394,15 @@ class PostTypeLayoutBlock extends Block
             'jankxSupportedPostTypeLayouts',
             $layouts
         );
+
+        // Localize query options including query presets
+        $query_options = \Jankx\Gutenberg\QueryOptions::getOptions();
+        
+        wp_localize_script(
+            $script_handle,
+            'jankxQueryOptions',
+            $query_options
+        );
     }
 
     /**
@@ -458,6 +478,11 @@ class PostTypeLayoutBlock extends Block
             $decorator->withQuery($query);
         } elseif ($queryPreset === 'related') {
             $attributes = PostTypeLayoutQueryHelper::buildRelatedQuery($attributes);
+            $decorator = $layoutManager->createLayout($layout_name, $attributes);
+            $query = $decorator->buildQuery($attributes);
+            $decorator->withQuery($query);
+        } elseif ($queryPreset === 'on-sale') {
+            $attributes = PostTypeLayoutQueryHelper::buildOnSaleQuery($attributes);
             $decorator = $layoutManager->createLayout($layout_name, $attributes);
             $query = $decorator->buildQuery($attributes);
             $decorator->withQuery($query);

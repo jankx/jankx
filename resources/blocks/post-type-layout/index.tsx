@@ -43,7 +43,7 @@ interface MetaQueryItem {
 }
 
 interface PostTypeLayoutAttributes {
-    queryPreset: 'default' | 'related' | 'custom';
+    queryPreset: 'default' | 'related' | 'custom' | 'on-sale';
     postType: string;
     postsPerPage: number;
     layout: string;
@@ -205,6 +205,20 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             setAttributes({ queryId: Math.abs(hash) });
         }
     }, [queryId, clientId, setAttributes]);
+
+    // Reset queryPreset if current preset is not valid for the current postType
+    useEffect(() => {
+        const allPresets = (window as any).jankxQueryOptions?.queryPresets || [];
+        const validPresets = allPresets.filter((preset: any) => 
+            !preset.postType || preset.postType === postType
+        );
+        const currentPresetValid = validPresets.some((preset: any) => preset.value === queryPreset);
+        
+        if (!currentPresetValid && validPresets.length > 0) {
+            // Reset to first valid preset
+            setAttributes({ queryPreset: validPresets[0].value as 'default' | 'related' | 'custom' | 'on-sale' });
+        }
+    }, [postType, queryPreset, setAttributes]);
 
     // Fetch taxonomies and authors when postType changes
     useEffect(() => {
@@ -385,19 +399,26 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                     <SelectControl
                         label={__('Query Preset', 'jankx')}
                         value={queryPreset}
-                        options={[
-                            { label: __('Default (Main Query)', 'jankx'), value: 'default' },
-                            { label: __('Related Posts (Same Taxonomy)', 'jankx'), value: 'related' },
-                            { label: __('Custom Query', 'jankx'), value: 'custom' },
-                        ]}
-                        onChange={(value) => setAttributes({ queryPreset: value as 'default' | 'related' | 'custom' })}
-                        help={
-                            queryPreset === 'default'
-                                ? __('Use WordPress main query. Query parameters will be hidden.', 'jankx')
-                                : queryPreset === 'related'
-                                ? __('Display related posts (same taxonomy as current post).', 'jankx')
-                                : __('Customize query parameters as you wish.', 'jankx')
-                        }
+                        options={useMemo(() => {
+                            const allPresets = (window as any).jankxQueryOptions?.queryPresets || [];
+                            // Filter presets based on postType:
+                            // - Common presets: postType is null (available for all post types)
+                            // - Specific presets: postType matches current postType
+                            return allPresets
+                                .filter((preset: any) => 
+                                    !preset.postType || preset.postType === postType
+                                )
+                                .map((preset: any) => ({
+                                    label: preset.label,
+                                    value: preset.value,
+                                }));
+                        }, [postType])}
+                        onChange={(value) => setAttributes({ queryPreset: value as 'default' | 'related' | 'custom' | 'on-sale' })}
+                        help={useMemo(() => {
+                            const allPresets = (window as any).jankxQueryOptions?.queryPresets || [];
+                            const currentPreset = allPresets.find((p: any) => p.value === queryPreset);
+                            return currentPreset?.help || __('Select a query preset', 'jankx');
+                        }, [queryPreset])}
                     />
 
                     <SelectControl
@@ -424,12 +445,36 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                             <SelectControl
                                 label={__('Order By', 'jankx')}
                                 value={orderBy}
-                                options={(window as any).jankxQueryOptions?.orderBy || [
-                                    { label: __('Date (Published)', 'jankx'), value: 'date' },
-                                    { label: __('Modified (Last Modified)', 'jankx'), value: 'modified' },
-                                    { label: __('Title', 'jankx'), value: 'title' },
-                                ]}
-                                onChange={(value) => setAttributes({ orderBy: value })}
+                                options={useMemo(() => {
+                                    const allOrderByOptions = (window as any).jankxQueryOptions?.orderBy || [];
+                                    // Filter order by options based on postType:
+                                    // - Common options: postType is null (available for all post types)
+                                    // - Specific options: postType matches current postType
+                                    return allOrderByOptions
+                                        .filter((option: any) => 
+                                            !option.postType || option.postType === postType
+                                        )
+                                        .map((option: any) => ({
+                                            label: option.label,
+                                            value: option.value,
+                                        }));
+                                }, [postType])}
+                                onChange={(value) => {
+                                    const allOrderByOptions = (window as any).jankxQueryOptions?.orderBy || [];
+                                    const selectedOption = allOrderByOptions.find((opt: any) => opt.value === value);
+                                    
+                                    // Auto-set metaKey if option has metaKey property
+                                    const updates: any = { orderBy: value };
+                                    if (selectedOption?.metaKey) {
+                                        updates.metaKey = selectedOption.metaKey;
+                                        // Set orderBy to meta_value_num if value is numeric (like total_sales, _price)
+                                        if (['total_sales', '_price'].includes(value)) {
+                                            updates.orderBy = 'meta_value_num';
+                                        }
+                                    }
+                                    
+                                    setAttributes(updates);
+                                }}
                                 help={__('Sort posts by which criteria', 'jankx')}
                             />
                             <SelectControl
