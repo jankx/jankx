@@ -300,12 +300,73 @@
   }
   .slideshow-block .slideshow-footer .slideshow-controls {
     order: 2;
-    width: 100%;
+    width: auto;
     justify-content: center;
+    gap: 8px;
+  }
+  .slideshow-block .slideshow-footer .slideshow-controls .slideshow-fullscreen-btn,
+  .slideshow-block .slideshow-footer .slideshow-controls .slideshow-autoplay-btn {
+    padding: 6px 12px;
+    font-size: 11px;
+    white-space: nowrap;
   }
   .slideshow-block .slideshow-footer .slideshow-pagination {
     order: 1;
     justify-content: center;
+    gap: 6px;
+  }
+  .slideshow-block .slideshow-footer .slideshow-pagination .slideshow-pagination-prev,
+  .slideshow-block .slideshow-footer .slideshow-pagination .slideshow-pagination-next {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+  .slideshow-block .slideshow-footer .slideshow-pagination .slideshow-pagination-dot {
+    width: 28px;
+    height: 28px;
+    font-size: 11px;
+  }
+}
+@media (max-width: 480px) {
+  .slideshow-block .slideshow-footer {
+    padding: 8px;
+  }
+  .slideshow-block .slideshow-footer .slideshow-controls {
+    gap: 6px;
+  }
+  .slideshow-block .slideshow-footer .slideshow-controls .slideshow-fullscreen-btn,
+  .slideshow-block .slideshow-footer .slideshow-controls .slideshow-autoplay-btn {
+    padding: 5px 10px;
+    font-size: 10px;
+  }
+  .slideshow-block .slideshow-footer .slideshow-pagination {
+    gap: 4px;
+  }
+  .slideshow-block .slideshow-footer .slideshow-pagination .slideshow-pagination-prev,
+  .slideshow-block .slideshow-footer .slideshow-pagination .slideshow-pagination-next,
+  .slideshow-block .slideshow-footer .slideshow-pagination .slideshow-pagination-dot {
+    width: 24px;
+    height: 24px;
+    font-size: 10px;
+  }
+  .slideshow-block .slideshow-main .slideshow-nav {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+  .slideshow-block .slideshow-main .slideshow-nav.slideshow-nav-prev {
+    left: 8px;
+  }
+  .slideshow-block .slideshow-main .slideshow-nav.slideshow-nav-next {
+    right: 8px;
+  }
+  .slideshow-block .slideshow-thumbnails {
+    padding: 8px;
+    gap: 4px;
+  }
+  .slideshow-block .slideshow-thumbnails .slideshow-thumbnail {
+    width: 48px;
+    height: 48px;
   }
 }
 .slideshow-block.photoswipe-enabled .slideshow-slide img {
