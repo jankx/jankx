@@ -720,9 +720,12 @@ function Save(props) {
 
   const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps.save();
 
+  // Get border props (includes border radius)
+  const borderProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.__experimentalGetBorderClassesAndStyles)(props.attributes);
+
   // Check if button has no color settings
   const hasNoColorSettings = !backgroundColor && !textColor && !gradient && !props.attributes.style?.color?.background && !props.attributes.style?.color?.text && !props.attributes.style?.color?.gradient;
-  const buttonClasses = classnames__WEBPACK_IMPORTED_MODULE_0___default()('jankx-advanced-button__link', {
+  const buttonClasses = classnames__WEBPACK_IMPORTED_MODULE_0___default()('jankx-advanced-button__link', borderProps?.className, {
     [`has-${backgroundColor}-background-color`]: backgroundColor,
     [`has-${textColor}-color`]: textColor,
     [`has-${gradient}-gradient-background`]: gradient,
@@ -734,16 +737,13 @@ function Save(props) {
   });
 
   // Build button styles - include custom background/text colors from style.color
-  const buttonStyles = {};
+  const buttonStyles = {
+    ...blockProps.style,
+    ...borderProps?.style
+  };
 
-  // Copy padding and other spacing from blockProps
-  if (blockProps.style) {
-    Object.keys(blockProps.style).forEach(key => {
-      if (key.startsWith('padding') || key.startsWith('margin')) {
-        buttonStyles[key] = blockProps.style[key];
-      }
-    });
-  }
+  // Copy spacing (padding, margin) from blockProps if needed
+  // Border radius is already included from borderProps.style above
 
   // Apply custom background color from style.color.background if set
   if (props.attributes.style?.color?.background) {

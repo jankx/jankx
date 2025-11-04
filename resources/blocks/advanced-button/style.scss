@@ -66,7 +66,9 @@
 	}
 
 	// Icon position classes
-	&.icon-position-left .jankx-advanced-button__link {
+	// Support both: class on wrapper div OR class on button element
+	&.icon-position-left .jankx-advanced-button__link,
+	.jankx-advanced-button__link.icon-position-left {
 		flex-direction: row;
 
 		.button-icon-wrapper {
@@ -78,7 +80,8 @@
 		}
 	}
 
-	&.icon-position-right .jankx-advanced-button__link {
+	&.icon-position-right .jankx-advanced-button__link,
+	.jankx-advanced-button__link.icon-position-right {
 		flex-direction: row;
 
 		.button-icon-wrapper {
@@ -90,7 +93,8 @@
 		}
 	}
 
-	&.icon-position-top .jankx-advanced-button__link {
+	&.icon-position-top .jankx-advanced-button__link,
+	.jankx-advanced-button__link.icon-position-top {
 		flex-direction: column;
 
 		.button-icon-wrapper {
@@ -102,7 +106,8 @@
 		}
 	}
 
-	&.icon-position-bottom .jankx-advanced-button__link {
+	&.icon-position-bottom .jankx-advanced-button__link,
+	.jankx-advanced-button__link.icon-position-bottom {
 		flex-direction: column;
 
 		.button-icon-wrapper {
@@ -112,6 +117,65 @@
 		.button-text {
 			order: 0;
 		}
+	}
+}
+
+// Global icon position classes (for button element directly)
+// This ensures icon-position works even when class is on button element
+.jankx-advanced-button__link.icon-position-left,
+.jankx-advanced-button__link.icon-position-right,
+.jankx-advanced-button__link.icon-position-top,
+.jankx-advanced-button__link.icon-position-bottom {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.jankx-advanced-button__link.icon-position-right {
+	flex-direction: row;
+
+	.button-icon-wrapper {
+		order: 1;
+	}
+
+	.button-text {
+		order: 0;
+	}
+}
+
+.jankx-advanced-button__link.icon-position-left {
+	flex-direction: row;
+
+	.button-icon-wrapper {
+		order: 0;
+	}
+
+	.button-text {
+		order: 1;
+	}
+}
+
+.jankx-advanced-button__link.icon-position-top {
+	flex-direction: column;
+
+	.button-icon-wrapper {
+		order: 0;
+	}
+
+	.button-text {
+		order: 1;
+	}
+}
+
+.jankx-advanced-button__link.icon-position-bottom {
+	flex-direction: column;
+
+	.button-icon-wrapper {
+		order: 1;
+	}
+
+	.button-text {
+		order: 0;
 	}
 }
 

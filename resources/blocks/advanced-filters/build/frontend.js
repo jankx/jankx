@@ -150,27 +150,28 @@ class AdvancedFilters {
     if (orderingForm && !orderingForm.__jankxAdvancedFiltersPreventDefaultAttached) {
       orderingForm.__jankxAdvancedFiltersPreventDefaultAttached = true;
       orderingForm.addEventListener('submit', e => {
-        e.preventDefault();
-
-        // If AJAX is not enabled, fall back to form submission
-        if (!this.config || !this.config.ajaxEnabled) {
-          const formData = new FormData(orderingForm);
-          const url = new URL(window.location.href);
-          Array.from(formData.entries()).forEach(([key, value]) => {
-            url.searchParams.set(key, String(value));
-          });
-          window.location.href = url.toString();
+        // Only prevent default if AJAX is enabled
+        if (this.config && this.config.ajaxEnabled) {
+          e.preventDefault();
+          e.stopPropagation();
         }
+        // If AJAX is not enabled, allow normal form submission
       });
     }
 
     // Listen for change event on orderby select
-    woocommerceOrdering.addEventListener('change', () => {
+    woocommerceOrdering.addEventListener('change', e => {
+      e.preventDefault();
+      e.stopPropagation();
+
       // Trigger filter update when orderby changes
       if (this.config && this.config.ajaxEnabled) {
-        this.handleFilterChange();
+        // Small delay to ensure form doesn't submit
+        setTimeout(() => {
+          this.handleFilterChange();
+        }, 50);
       } else {
-        // If AJAX is not enabled, submit the form
+        // If AJAX is not enabled, submit the form normally
         if (orderingForm) {
           orderingForm.submit();
         }
@@ -290,7 +291,16 @@ class AdvancedFilters {
     try {
       // Get nonce from config (set in init) or fallback to localized script
       const nonce = this.config?.nonce || window.jankxAdvancedFilters?.nonce || '';
-      const ajaxUrl = this.config?.ajaxUrl || window.jankxAdvancedFilters?.ajaxUrl || '/wp-admin/admin-ajax.php';
+      let ajaxUrl = this.config?.ajaxUrl || window.jankxAdvancedFilters?.ajaxUrl || '/wp-admin/admin-ajax.php';
+
+      // Ensure AJAX URL is absolute
+      if (ajaxUrl.startsWith('/')) {
+        // Relative URL, make it absolute
+        ajaxUrl = window.location.origin + ajaxUrl;
+      } else if (!ajaxUrl.startsWith('http://') && !ajaxUrl.startsWith('https://')) {
+        // Relative URL without leading slash, add origin
+        ajaxUrl = window.location.origin + '/' + ajaxUrl.replace(/^\//, '');
+      }
       if (!nonce) {
         console.error('Nonce is missing! Cannot proceed with AJAX request.');
         alert('Security error: Please refresh the page and try again.');
@@ -361,19 +371,45 @@ class AdvancedFilters {
         } else {
           console.warn('AdvancedFilters: Could not determine post_id, server will try to detect it');
         }
-        const response = await fetch(ajaxUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          body: params
-        });
+        let response;
+        try {
+          response = await fetch(ajaxUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: params,
+            credentials: 'same-origin' // Include cookies for WordPress
+          });
+        } catch (fetchError) {
+          // Network error - could be CORS, connection issue, or page redirect
+          console.error(`Network error when fetching filter update for block ${blockId}:`, fetchError);
+
+          // If it's a NetworkError, the page might be redirecting
+          if (fetchError instanceof TypeError && fetchError.message.includes('fetch')) {
+            console.warn('Possible page redirect detected, falling back to form submission');
+            // Don't throw error, just return null to skip this block update
+            return null;
+          }
+          throw fetchError;
+        }
         if (!response.ok) {
-          const errorText = await response.text();
+          let errorText = '';
+          try {
+            errorText = await response.text();
+          } catch (e) {
+            errorText = `HTTP ${response.status} ${response.statusText}`;
+          }
           console.error(`Filter update failed for block ${blockId}:`, response.status, errorText);
           throw new Error(`HTTP ${response.status}: ${errorText}`);
         }
-        const data = await response.json();
+        let data;
+        try {
+          data = await response.json();
+        } catch (jsonError) {
+          console.error(`Failed to parse JSON response for block ${blockId}:`, jsonError);
+          throw new Error('Invalid JSON response from server');
+        }
         if (data.success && data.data) {
           return {
             blockId: blockId,
@@ -386,12 +422,18 @@ class AdvancedFilters {
         }
       });
 
-      // Wait for all blocks to update
+      // Wait for all blocks to update (filter out null results)
       const results = await Promise.all(updatePromises);
+      const validResults = results.filter(result => result !== null);
+      if (validResults.length === 0) {
+        console.warn('No valid results from filter update');
+        this.hideLoading();
+        return;
+      }
 
       // Update target blocks
       const resultsMap = {};
-      results.forEach(result => {
+      validResults.forEach(result => {
         resultsMap[result.blockId] = result.html;
       });
       this.updateTargetBlocks(resultsMap);
