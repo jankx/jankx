@@ -118,5 +118,24 @@
   "editorScript": "file:./build/index.js",
   "editorStyle": "file:./build/editor.css",
   "viewScript": "file:./build/view.js",
-  "style": "file:./build/style.css"
+  "style": "file:./build/style.css",
+  "styles": [
+    {
+      "name": "default",
+      "label": "Default",
+      "isDefault": true
+    },
+    {
+      "name": "banner",
+      "label": "Banner"
+    },
+    {
+      "name": "carousel",
+      "label": "Carousel"
+    },
+    {
+      "name": "testimonial",
+      "label": "Testimonial"
+    }
+  ]
 }

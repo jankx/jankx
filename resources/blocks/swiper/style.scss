@@ -106,4 +106,144 @@
       // This allows individual banners to have their own styles
     }
   }
+
+  // Style Variations
+  &.is-style-banner {
+    .swiper {
+      height: 100vh;
+      min-height: 500px;
+      max-height: 800px;
+    }
+
+    .swiper-slide {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .swiper-button-prev,
+    .swiper-button-next {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+      &::after {
+        font-size: 20px;
+        color: #000;
+      }
+
+      &:hover {
+        background: rgba(255, 255, 255, 1);
+      }
+    }
+
+    .swiper-pagination-bullet {
+      background: rgba(255, 255, 255, 0.6);
+      width: 12px;
+      height: 12px;
+
+      &.swiper-pagination-bullet-active {
+        background: rgba(255, 255, 255, 1);
+      }
+    }
+  }
+
+  &.is-style-carousel {
+    .swiper {
+      padding: 20px 0 40px;
+    }
+
+    .swiper-slide {
+      padding: 0 10px;
+      opacity: 0.6;
+      transition: opacity 0.3s, transform 0.3s;
+      transform: scale(0.95);
+
+      &.swiper-slide-active {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .swiper-button-prev,
+    .swiper-button-next {
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      top: 50%;
+
+      &::after {
+        font-size: 18px;
+        color: #fff;
+      }
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.9);
+      }
+    }
+
+    .swiper-pagination {
+      bottom: 0;
+
+      .swiper-pagination-bullet {
+        width: 10px;
+        height: 10px;
+        margin: 0 6px;
+      }
+    }
+  }
+
+  &.is-style-testimonial {
+    .swiper {
+      padding: 40px 0;
+    }
+
+    .swiper-slide {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px 40px;
+    }
+
+    .swiper-button-prev,
+    .swiper-button-next {
+      color: var(--wp--preset--color--contrast, #666);
+      width: 40px;
+      height: 40px;
+      margin-top: 0;
+
+      &::after {
+        font-size: 24px;
+        font-weight: bold;
+      }
+
+      &:hover {
+        color: var(--wp--preset--color--contrast, #000);
+      }
+    }
+
+    .swiper-pagination {
+      position: relative;
+      margin-top: 30px;
+
+      .swiper-pagination-bullet {
+        width: 12px;
+        height: 12px;
+        margin: 0 8px;
+        opacity: 0.3;
+
+        &.swiper-pagination-bullet-active {
+          opacity: 1;
+          width: 30px;
+          border-radius: 6px;
+        }
+      }
+    }
+  }
 }
