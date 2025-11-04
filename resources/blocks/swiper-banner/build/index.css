@@ -17,16 +17,6 @@
   align-items: center;
   justify-content: center;
 }
-.swiper-banner__overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: var(--overlay-color, #000000);
-  opacity: var(--overlay-opacity, 0.3);
-  transition: opacity 0.3s ease;
-}
 .swiper-banner__caption {
   position: relative;
   z-index: 2;
@@ -44,9 +34,6 @@
   display: block;
   text-decoration: none;
   color: inherit;
-}
-.swiper-banner__link:hover .swiper-banner__overlay {
-  opacity: calc(var(--overlay-opacity, 0.3) + 0.1);
 }
 .swiper-banner--banner .swiper-banner__caption-content {
   font-size: 2rem;

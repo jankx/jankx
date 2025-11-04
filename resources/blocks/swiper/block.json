@@ -12,6 +12,14 @@
       "type": "number",
       "default": 1
     },
+    "slidesPerViewTablet": {
+      "type": "number",
+      "default": 1
+    },
+    "slidesPerViewMobile": {
+      "type": "number",
+      "default": 1
+    },
     "spaceBetween": {
       "type": "number",
       "default": 30

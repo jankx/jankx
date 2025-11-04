@@ -1,5 +1,7 @@
 export interface SwiperAttributes {
   slidesPerView: number;
+  slidesPerViewTablet: number;
+  slidesPerViewMobile: number;
   spaceBetween: number;
   loop: boolean;
   autoplay: boolean;

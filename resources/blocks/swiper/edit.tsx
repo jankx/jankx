@@ -1,15 +1,19 @@
 import { __ } from '@wordpress/i18n';
-import { useBlockProps, InspectorControls, useInnerBlocksProps, MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
-import { PanelBody, RangeControl, ToggleControl, SelectControl, Button, TabPanel, ColorPicker } from '@wordpress/components';
+import { useBlockProps, InspectorControls, useInnerBlocksProps, MediaUpload, MediaUploadCheck, BlockControls } from '@wordpress/block-editor';                                 
+import { PanelBody, RangeControl, ToggleControl, SelectControl, Button, TabPanel, ColorPicker, ToolbarGroup, ToolbarButton } from '@wordpress/components';
+import { gallery, cover, layout, quote } from '@wordpress/icons';                                   
 import { useEffect, useRef } from '@wordpress/element';
 import { createBlock } from '@wordpress/blocks';
+import { useSelect } from '@wordpress/data';
 import Swiper from 'swiper/bundle';
 import 'swiper/css/bundle';
 import type { SwiperProps } from './types';
 
-export default function Edit({ attributes, setAttributes, clientId }: SwiperProps): JSX.Element {
+export default function Edit({ attributes, setAttributes, clientId }: SwiperProps): JSX.Element {                                                               
   const {
     slidesPerView,
+    slidesPerViewTablet,
+    slidesPerViewMobile,
     spaceBetween,
     loop,
     autoplay,
@@ -26,15 +30,41 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
     bannerTextColor,
     bannerBackgroundColor,
     bannerPadding,
-    bannerBorderRadius
+    bannerBorderRadius,
+    className
   } = attributes;
+
+  // Get block's style variation
+  const styleVariation = useSelect((select) => {
+    const block = select('core/block-editor').getBlock(clientId);
+    if (!block) return 'default';
+    
+    // Extract style variation from className
+    const match = className?.match(/is-style-(\w+)/);
+    return match ? match[1] : 'default';
+  }, [clientId, className]);
+
+  // Function to update style variation
+  const updateStyleVariation = (variation: string) => {
+    // Remove existing variation classes
+    const currentClassName = className || '';
+    const cleanedClassName = currentClassName
+      .replace(/\bis-style-\w+\b/g, '')
+      .trim();
+    
+    // Add new variation class
+    const newVariationClass = variation === 'default' ? '' : `is-style-${variation}`;
+    const newClassName = [cleanedClassName, newVariationClass].filter(Boolean).join(' ');
+    
+    setAttributes({ className: newClassName });
+  };
 
   const swiperRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const blockProps = useBlockProps({
+    const blockProps = useBlockProps({
     ref: containerRef,
-    className: `swiper-block swiper-effect-${effect} banner-style-${bannerStyle}`,
+    className: `swiper-block swiper-effect-${effect} banner-style-${bannerStyle} ${className || ''}`.trim(),                                                                              
     style: {
       '--swiper-height': `${height}px`,
       '--swiper-min-height': `${minHeight}px`,
@@ -42,7 +72,10 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
       '--banner-text-color': bannerTextColor,
       '--banner-background-color': bannerBackgroundColor,
       '--banner-padding': `${bannerPadding}px`,
-      '--banner-border-radius': `${bannerBorderRadius}px`
+      '--banner-border-radius': `${bannerBorderRadius}px`,
+      '--slides-per-view-desktop': slidesPerView,
+      '--slides-per-view-tablet': slidesPerViewTablet,
+      '--slides-per-view-mobile': slidesPerViewMobile
     } as React.CSSProperties
   });
 
@@ -105,6 +138,20 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
             loop,
             speed,
             effect,
+            breakpoints: {
+              320: {
+                slidesPerView: slidesPerViewMobile,
+                spaceBetween: spaceBetween
+              },
+              768: {
+                slidesPerView: slidesPerViewTablet,
+                spaceBetween: spaceBetween
+              },
+              1024: {
+                slidesPerView: slidesPerView,
+                spaceBetween: spaceBetween
+              }
+            },
             autoplay: autoplay ? {
               delay: autoplayDelay,
               disableOnInteraction: false
@@ -120,17 +167,30 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
           });
 
           // Update navigation
-          if (navigation && swiperRef.current.navigation) {
-            swiperRef.current.navigation.init();
-            swiperRef.current.navigation.update();
+          if (navigation) {
+            const nextEl = swiperEl.querySelector('.swiper-button-next');
+            const prevEl = swiperEl.querySelector('.swiper-button-prev');
+            if (nextEl && prevEl) {
+              if (swiperRef.current.navigation) {
+                swiperRef.current.navigation.init();
+                swiperRef.current.navigation.update();
+              }
+            }
+          } else if (swiperRef.current.navigation) {
+            swiperRef.current.navigation.destroy();
           }
 
           // Update pagination
-          if (pagination && swiperRef.current.pagination) {
-            swiperRef.current.pagination.init();
-            swiperRef.current.pagination.render();
-            swiperRef.current.pagination.update();
-          } else if (!pagination && swiperRef.current.pagination) {
+          if (pagination) {
+            const paginationEl = swiperEl.querySelector('.swiper-pagination');
+            if (paginationEl) {
+              if (swiperRef.current.pagination) {
+                swiperRef.current.pagination.init();
+                swiperRef.current.pagination.render();
+                swiperRef.current.pagination.update();
+              }
+            }
+          } else if (swiperRef.current.pagination) {
             swiperRef.current.pagination.destroy();
           }
 
@@ -143,32 +203,60 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
           } else if (swiperRef.current.autoplay) {
             swiperRef.current.autoplay.stop();
           }
-        } else {
+                } else {
           // Create new instance only if doesn't exist
-          swiperRef.current = new Swiper(swiperEl, {
+          const nextEl = swiperEl.querySelector('.swiper-button-next');
+          const prevEl = swiperEl.querySelector('.swiper-button-prev');
+          const paginationEl = swiperEl.querySelector('.swiper-pagination');
+          
+          const swiperConfig: any = {
             slidesPerView,
             spaceBetween,
             loop,
             speed,
             effect,
+            breakpoints: {
+              320: {
+                slidesPerView: slidesPerViewMobile,
+                spaceBetween: spaceBetween
+              },
+              768: {
+                slidesPerView: slidesPerViewTablet,
+                spaceBetween: spaceBetween
+              },
+              1024: {
+                slidesPerView: slidesPerView,
+                spaceBetween: spaceBetween
+              }
+            },
             autoplay: autoplay ? {
               delay: autoplayDelay,
               disableOnInteraction: false
             } : false,
-            navigation: navigation ? {
-              nextEl: swiperEl.querySelector('.swiper-button-next'),
-              prevEl: swiperEl.querySelector('.swiper-button-prev')
-            } : false,
-            pagination: pagination ? {
-              el: swiperEl.querySelector('.swiper-pagination'),
-              clickable: true
-            } : false,
             fadeEffect: { crossFade: true },
-            cubeEffect: { shadow: true, slideShadows: true, shadowOffset: 20, shadowScale: 0.94 },
-            coverflowEffect: { rotate: 50, stretch: 0, depth: 100, modifier: 1, slideShadows: true },
+            cubeEffect: { shadow: true, slideShadows: true, shadowOffset: 20, shadowScale: 0.94 },                                                              
+            coverflowEffect: { rotate: 50, stretch: 0, depth: 100, modifier: 1, slideShadows: true },                                                               
             flipEffect: { slideShadows: true, limitRotation: true },
             cardsEffect: { perSlideOffset: 8, perSlideRotate: 2 }
-          });
+          };
+
+          // Only add navigation if enabled and elements exist
+          if (navigation && nextEl && prevEl) {
+            swiperConfig.navigation = {
+              nextEl,
+              prevEl
+            };
+          }
+
+          // Only add pagination if enabled and element exists
+          if (pagination && paginationEl) {
+            swiperConfig.pagination = {
+              el: paginationEl,
+              clickable: true
+            };
+          }
+
+          swiperRef.current = new Swiper(swiperEl, swiperConfig);
         }
       }
     };
@@ -179,7 +267,7 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
       clearTimeout(timeoutId);
       // Don't destroy on settings change, only update
     };
-  }, [slidesPerView, spaceBetween, loop, autoplay, autoplayDelay, speed, navigation, pagination, effect, height, minHeight]);
+  }, [slidesPerView, slidesPerViewTablet, slidesPerViewMobile, spaceBetween, loop, autoplay, autoplayDelay, speed, navigation, pagination, effect, height, minHeight]);
 
   // Cleanup only on unmount
   useEffect(() => {
@@ -192,8 +280,38 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
   }, []);
 
   return (
-    <div {...blockProps}>
-      <InspectorControls>
+    <>
+      <BlockControls>
+        <ToolbarGroup>
+          <ToolbarButton
+            icon={gallery}
+            title={__('Default', 'jankx')}
+            onClick={() => updateStyleVariation('default')}
+            isActive={styleVariation === 'default'}
+          />
+          <ToolbarButton
+            icon={cover}
+            title={__('Banner', 'jankx')}
+            onClick={() => updateStyleVariation('banner')}
+            isActive={styleVariation === 'banner'}
+          />
+          <ToolbarButton
+            icon={layout}
+            title={__('Carousel', 'jankx')}
+            onClick={() => updateStyleVariation('carousel')}
+            isActive={styleVariation === 'carousel'}
+          />
+          <ToolbarButton
+            icon={quote}
+            title={__('Testimonial', 'jankx')}
+            onClick={() => updateStyleVariation('testimonial')}
+            isActive={styleVariation === 'testimonial'}
+          />
+        </ToolbarGroup>
+      </BlockControls>
+
+      <div {...blockProps}>
+        <InspectorControls>
         <TabPanel
           className="swiper-tabs"
           activeClass="is-active"
@@ -259,15 +377,49 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
           )}
         </TabPanel>
 
-        <PanelBody title={__('Slider Settings', 'jankx')} initialOpen={true}>
-          <RangeControl
-            label={__('Slides Per View', 'jankx')}
-            value={slidesPerView}
-            onChange={(val: number) => setAttributes({ slidesPerView: val })}
-            min={1}
-            max={4}
-            step={1}
-          />
+                <PanelBody title={__('Slider Settings', 'jankx')} initialOpen={true}>
+          {(styleVariation === 'carousel' || styleVariation === 'testimonial') ? (
+            <>
+              <RangeControl
+                label={__('Slides Per View (Desktop)', 'jankx')}
+                value={slidesPerView}
+                onChange={(val: number) => setAttributes({ slidesPerView: val })}   
+                min={1}
+                max={6}
+                step={1}
+                help={__('Number of slides visible on desktop screens (≥1024px)', 'jankx')}
+              />
+
+              <RangeControl
+                label={__('Slides Per View (Tablet)', 'jankx')}
+                value={slidesPerViewTablet}
+                onChange={(val: number) => setAttributes({ slidesPerViewTablet: val })}   
+                min={1}
+                max={4}
+                step={1}
+                help={__('Number of slides visible on tablet screens (768px - 1023px)', 'jankx')}
+              />
+
+              <RangeControl
+                label={__('Slides Per View (Mobile)', 'jankx')}
+                value={slidesPerViewMobile}
+                onChange={(val: number) => setAttributes({ slidesPerViewMobile: val })}   
+                min={1}
+                max={2}
+                step={1}
+                help={__('Number of slides visible on mobile screens (<768px)', 'jankx')}
+              />
+            </>
+          ) : (
+            <RangeControl
+              label={__('Slides Per View', 'jankx')}
+              value={slidesPerView}
+              onChange={(val: number) => setAttributes({ slidesPerView: val })}   
+              min={1}
+              max={4}
+              step={1}
+            />
+          )}
 
           <RangeControl
             label={__('Space Between (px)', 'jankx')}
@@ -426,6 +578,7 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
           <div className="swiper-pagination"></div>
         )}
       </div>
-    </div>
+      </div>
+    </>
   );
 }

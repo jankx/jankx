@@ -16,21 +16,17 @@ class SwiperBannerBlock extends Block
 {
     protected $blockId = 'jankx/swiper-banner';
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     /**
-     * Render the banner block
+     * Render the Swiper Banner block
      *
      * @param array $attributes Block attributes
-     * @param string $content Block content (may contain old HTML structure with .swiper-banner__content)
-     * @param \WP_Block $block Block instance
+     * @param string $content Inner blocks content
+     * @param object|null $block Block object
      * @return string Rendered HTML
      */
     public function render($attributes, $content = '', $block = null)
     {
+        // Get attributes with defaults
         $image_id = $attributes['imageId'] ?? 0;
         $image_url = $attributes['imageUrl'] ?? '';
         $image_alt = $attributes['imageAlt'] ?? '';
@@ -44,113 +40,119 @@ class SwiperBannerBlock extends Block
         $text_position = $attributes['textPosition'] ?? 'middle';
         $show_caption = $attributes['showCaption'] ?? true;
         $height = $attributes['height'] ?? 0;
+        $class_name = $attributes['className'] ?? '';
+
+        // Get image URL from WordPress attachment if imageId is provided
+        if ($image_id > 0 && empty($image_url)) {
+            $image_url = wp_get_attachment_image_url($image_id, 'full');
+            if (empty($image_alt)) {
+                $image_alt = get_post_meta($image_id, '_wp_attachment_image_alt', true);
+            }
+            if (empty($image_caption)) {
+                $attachment = get_post($image_id);
+                $image_caption = $attachment ? $attachment->post_excerpt : '';
+            }
+        }
+
+        // If no image, return empty
+        if (empty($image_url)) {
+            return '';
+        }
+
+        // Build wrapper classes
+        $wrapper_classes = ['swiper-slide', 'swiper-banner'];
+        if (!empty($banner_style)) {
+            $wrapper_classes[] = 'banner-style-' . esc_attr($banner_style);
+        }
+        if (!empty($text_position)) {
+            $wrapper_classes[] = 'text-position-' . esc_attr($text_position);
+        }
+        if (!empty($text_align)) {
+            $wrapper_classes[] = 'text-align-' . esc_attr($text_align);
+        }
+        if (!empty($class_name)) {
+            $wrapper_classes[] = esc_attr($class_name);
+        }
 
         // Build wrapper attributes
         $wrapper_attributes = [
-            'class' => sprintf(
-                'swiper-slide swiper-banner swiper-banner--%s text-%s text-position-%s',
-                esc_attr($banner_style),
-                esc_attr($text_align),
-                esc_attr($text_position)
-            )
+            'class' => implode(' ', $wrapper_classes),
+            'style' => ''
         ];
 
-        // Add height data attribute if set (for circle style width calculation)
+        // Add height if specified
         if ($height > 0) {
-            $wrapper_attributes['data-banner-height'] = intval($height);
-        }
-
-        // Add custom CSS variables for overlay
-        $overlay_styles = [];
-        if ($image_url) {
-            $overlay_styles[] = sprintf('--overlay-color: %s', esc_attr($overlay_color));
-            $overlay_styles[] = sprintf('--overlay-opacity: %s', esc_attr($overlay_opacity));
-        }
-        if (!empty($overlay_styles)) {
-            $wrapper_attributes['style'] = implode('; ', $overlay_styles);
+            $wrapper_attributes['style'] .= sprintf('--banner-height: %dpx;', $height);
         }
 
         // Get WordPress block wrapper attributes
         $block_wrapper_attrs = get_block_wrapper_attributes($wrapper_attributes);
 
-        // Always build fresh banner content (WordPress will handle migration automatically)
-        $banner_content = $this->buildBannerContent(
-            $image_url,
-            $image_alt,
-            $image_caption,
-            $show_caption
-        );
 
-        // Wrap with link if provided
-        if ($link_url) {
-            $link_attributes = [
-                'href' => esc_url($link_url),
-                'target' => esc_attr($link_target),
-                'class' => 'swiper-banner__link'
-            ];
 
-            if ($link_target === '_blank') {
-                $link_attributes['rel'] = 'noopener noreferrer';
+
+
+        // Build banner wrapper classes using BEM
+        $banner_classes = ['swiper-banner'];
+        if (!empty($banner_style)) {
+            $banner_classes[] = 'swiper-banner--' . esc_attr($banner_style);
+        }
+        if (!empty($text_align)) {
+            $banner_classes[] = 'text-' . esc_attr($text_align);
+        }
+        if (!empty($text_position)) {
+            $banner_classes[] = 'text-position-' . esc_attr($text_position);
+        }
+
+        // Process content - swiper-banner doesn't support inner blocks normally
+        // But if content exists and contains nested swiper-banner blocks, ignore it
+        $processed_content = '';
+        if (!empty($content)) {
+            // Check if content contains nested swiper-banner block (this shouldn't happen but WordPress might render it)
+            if (strpos($content, 'wp-block-jankx-swiper-banner') !== false || strpos($content, 'swiper-banner__image') !== false) {
+                // Content contains a nested banner block, ignore it completely
+                // This prevents double rendering of banner structure
+                $processed_content = '';
+            } else {
+                // Normal content (text, HTML), use it
+                $processed_content = trim($content);
             }
-
-            $link_attrs = '';
-            foreach ($link_attributes as $key => $value) {
-                $link_attrs .= sprintf(' %s="%s"', $key, $value);
-            }
-
-            return sprintf(
-                '<div %s><a%s>%s</a></div>',
-                $block_wrapper_attrs,
-                $link_attrs,
-                $banner_content
-            );
         }
 
-        return sprintf(
-            '<div %s>%s</div>',
-            $block_wrapper_attrs,
-            $banner_content
-        );
-    }
-
-    /**
-     * Build banner content HTML
-     *
-     * @param string $image_url Image URL
-     * @param string $image_alt Image alt text
-     * @param string $image_caption Image caption
-     * @param bool $show_caption Whether to show caption
-     * @return string Banner content HTML
-     */
-    protected function buildBannerContent($image_url, $image_alt, $image_caption, $show_caption)
-    {
-        if (!$image_url) {
-            return '<div class="swiper-banner__placeholder">' . 
-                   __('No image selected', 'jankx') . 
-                   '</div>';
-        }
-
-        // Image container
-        $content = sprintf(
-            '<div class="swiper-banner__image" style="background-image: url(%s);">',
-            esc_url($image_url)
-        );
-        
-        // Overlay
-        $content .= '<div class="swiper-banner__overlay"></div>';
-        
-        // Caption
-        if ($show_caption && $image_caption) {
-            $content .= sprintf(
-                '<div class="swiper-banner__caption">
-                    <div class="swiper-banner__caption-content">%s</div>
-                </div>',
-                esc_html($image_caption)
-            );
-        }
-        
-        $content .= '</div>'; // Close image container
-
-        return $content;
+        ob_start();
+        ?>
+        <div <?php echo $block_wrapper_attrs; ?>>
+            <?php if (!empty($link_url)) : ?>
+                <a href="<?php echo esc_url($link_url); ?>" 
+                   target="<?php echo esc_attr($link_target); ?>"
+                   class="swiper-banner__link"
+                   aria-label="<?php echo esc_attr($image_alt); ?>">
+            <?php endif; ?>
+            
+            <div class="<?php echo esc_attr(implode(' ', $banner_classes)); ?>">
+                <div class="swiper-banner__image" style="background-image: url('<?php echo esc_url($image_url); ?>');">
+                    <?php if (!empty($processed_content) || ($show_caption && !empty($image_caption))) : ?>
+                        <div class="swiper-banner__caption">
+                            <?php if (!empty($processed_content)) : ?>
+                                <div class="swiper-banner__caption-content">
+                                    <?php echo wp_kses_post($processed_content); ?>
+                                </div>
+                            <?php endif; ?>
+                            <?php if ($show_caption && !empty($image_caption)) : ?>
+                                <div class="swiper-banner__caption-text">
+                                    <?php echo esc_html($image_caption); ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+            
+            <?php if (!empty($link_url)) : ?>
+                </a>
+            <?php endif; ?>
+        </div>
+        <?php
+        return ob_get_clean();
     }
 }

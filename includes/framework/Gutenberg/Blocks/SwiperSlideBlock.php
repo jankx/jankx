@@ -16,31 +16,44 @@ class SwiperSlideBlock extends Block
 {
     protected $blockId = 'jankx/swiper-slide';
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
+    /**
+     * Render the Swiper Slide block
+     *
+     * @param array $attributes Block attributes
+     * @param string $content Inner blocks content
+     * @param object|null $block Block object
+     * @return string Rendered HTML
+     */
     public function render($attributes, $content = '', $block = null)
     {
+        // Get attributes with defaults
         $slide_id = $attributes['slideId'] ?? '';
+        $class_name = $attributes['className'] ?? '';
+
+        // Build wrapper classes
+        $wrapper_classes = ['swiper-slide'];
+        if (!empty($class_name)) {
+            $wrapper_classes[] = esc_attr($class_name);
+        }
 
         // Build wrapper attributes
         $wrapper_attributes = [
-            'class' => 'swiper-slide'
+            'class' => implode(' ', $wrapper_classes),
         ];
 
-        if ($slide_id) {
+        if (!empty($slide_id)) {
             $wrapper_attributes['data-slide-id'] = esc_attr($slide_id);
         }
 
-        // Get WordPress block wrapper attributes (includes spacing, colors, background, etc.)
+        // Get WordPress block wrapper attributes
         $block_wrapper_attrs = get_block_wrapper_attributes($wrapper_attributes);
 
-        return sprintf(
-            '<div %s>%s</div>',
-            $block_wrapper_attrs,
-            $content
-        );
+        ob_start();
+        ?>
+        <div <?php echo $block_wrapper_attrs; ?>>
+            <?php echo $content; ?>
+        </div>
+        <?php
+        return ob_get_clean();
     }
 }

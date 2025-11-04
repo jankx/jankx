@@ -40,104 +40,36 @@
     }
   }
 
-  // Global Banner Styles - Applied to all banner items
-  .swiper-banner {
-    // Default banner content styling
-    .banner-content {
-      color: var(--banner-text-color, #ffffff);
-      background-color: var(--banner-background-color, rgba(0,0,0,0.5));
-      padding: var(--banner-padding, 20px);
-      border-radius: var(--banner-border-radius, 0px);
-    }
-  }
-
-  // Banner Style Variations - Apply to all banner items
-  &.banner-style-circles {
+    // Banner variation specific styles
+  &.is-style-banner {
     .swiper-banner {
-      border-radius: 50% !important;
-      aspect-ratio: 1 !important;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: stretch;
       
-      .banner-content {
-        border-radius: 50% !important;
-        width: 200px !important;
-        height: 200px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        margin: 0 auto !important;
+      &__image {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        min-height: 500px;
       }
-    }
-  }
 
-  &.banner-style-square {
-    .swiper-banner {
-      aspect-ratio: 1 !important;
-      
-      .banner-content {
-        border-radius: 0 !important;
-        width: 250px !important;
-        height: 250px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        margin: 0 auto !important;
+      &__link {
+        display: block;
+        width: 100%;
+        height: 100%;
       }
-    }
-  }
-
-  &.banner-style-banner {
-    .swiper-banner {
-      .banner-content {
-        border-radius: var(--banner-border-radius, 8px) !important;
-        width: 100% !important;
-        min-height: 100px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        text-align: center !important;
-      }
-    }
-  }
-
-  // Individual banner override - Higher specificity
-  .swiper-banner[data-custom-style="true"] {
-    .banner-content {
-      // Individual settings will override global CSS variables
-      // This allows individual banners to have their own styles
     }
   }
 
   // Style Variations
   &.is-style-banner {
-    .swiper {
-      height: 100vh;
-      min-height: 500px;
-      max-height: 800px;
-    }
-
     .swiper-slide {
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
-    }
-
-    .swiper-button-prev,
-    .swiper-button-next {
-      background: rgba(255, 255, 255, 0.9);
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-
-      &::after {
-        font-size: 20px;
-        color: #000;
-      }
-
-      &:hover {
-        background: rgba(255, 255, 255, 1);
-      }
     }
 
     .swiper-pagination-bullet {
@@ -153,19 +85,37 @@
 
   &.is-style-carousel {
     .swiper {
-      padding: 20px 0 40px;
+      padding: 20px 0 50px;
+      overflow: visible;
+    }
+
+    .swiper-wrapper {
+      align-items: stretch;
     }
 
     .swiper-slide {
+      height: auto;
       padding: 0 10px;
-      opacity: 0.6;
-      transition: opacity 0.3s, transform 0.3s;
+      opacity: 0.7;
+      transition: opacity 0.3s ease, transform 0.3s ease;
       transform: scale(0.95);
 
       &.swiper-slide-active {
         opacity: 1;
         transform: scale(1);
+        z-index: 1;
       }
+
+      // Hover effect for better UX
+      &:hover:not(.swiper-slide-active) {
+        opacity: 0.85;
+      }
+    }
+
+    // Ensure slides content displays properly
+    .swiper-slide > * {
+      width: 100%;
+      height: 100%;
     }
 
     .swiper-button-prev,
@@ -175,24 +125,77 @@
       width: 44px;
       height: 44px;
       top: 50%;
+      margin-top: -22px;
+      transition: background 0.3s ease, transform 0.2s ease;
 
       &::after {
         font-size: 18px;
         color: #fff;
+        font-weight: bold;
       }
 
       &:hover {
         background: rgba(0, 0, 0, 0.9);
+        transform: scale(1.1);
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
+
+      // Hide on mobile if needed
+      @media (max-width: 768px) {
+        width: 36px;
+        height: 36px;
+        margin-top: -18px;
+
+        &::after {
+          font-size: 14px;
+        }
       }
     }
 
     .swiper-pagination {
-      bottom: 0;
+      bottom: 10px;
+      position: absolute;
 
       .swiper-pagination-bullet {
         width: 10px;
         height: 10px;
         margin: 0 6px;
+        background: rgba(0, 0, 0, 0.4);
+        transition: all 0.3s ease;
+
+        &-active {
+          background: rgba(0, 0, 0, 0.8);
+          transform: scale(1.2);
+        }
+      }
+    }
+
+    // Responsive adjustments
+    @media (max-width: 768px) {
+      .swiper {
+        padding: 15px 0 40px;
+      }
+
+      .swiper-slide {
+        padding: 0 8px;
+        opacity: 0.8;
+
+        &.swiper-slide-active {
+          opacity: 1;
+        }
+      }
+    }
+
+    @media (max-width: 480px) {
+      .swiper {
+        padding: 10px 0 35px;
+      }
+
+      .swiper-slide {
+        padding: 0 5px;
       }
     }
   }

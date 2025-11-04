@@ -16,16 +16,7 @@
     justify-content: center;
   }
   
-  &__overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: var(--overlay-color, #000000);
-    opacity: var(--overlay-opacity, 0.3);
-    transition: opacity 0.3s ease;
-  }
+
   
   &__caption {
     position: relative;
@@ -42,16 +33,10 @@
     }
   }
   
-  &__link {
+    &__link {
     display: block;
     text-decoration: none;
     color: inherit;
-    
-    &:hover {
-      .swiper-banner__overlay {
-        opacity: calc(var(--overlay-opacity, 0.3) + 0.1);
-      }
-    }
   }
   
   // Style variations
