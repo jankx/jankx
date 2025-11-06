@@ -115,13 +115,9 @@ class PostTypeLayoutBlock extends Block
             $decorator = $layoutManager->createLayout($layout_name, $attributes);
             $query = $decorator->buildQuery($attributes);
             $decorator->withQuery($query);
-        } elseif ($queryPreset === 'on-sale') {
-            $attributes = PostTypeLayoutQueryHelper::buildOnSaleQuery($attributes);
-            $attributes['_internal_paged'] = $page;
-            $decorator = $layoutManager->createLayout($layout_name, $attributes);
-            $query = $decorator->buildQuery($attributes);
-            $decorator->withQuery($query);
         } else {
+            // Apply query builder filter for custom presets (packages can hook into this)
+            $attributes = PostTypeLayoutQueryHelper::applyQueryBuilderFilter($attributes, $queryPreset);
             $attributes['_internal_paged'] = $page;
             $decorator = $layoutManager->createLayout($layout_name, $attributes);
             $query = $decorator->buildQuery($attributes);
@@ -174,16 +170,13 @@ class PostTypeLayoutBlock extends Block
             $decorator = $layoutManager->createLayout($layout_name, $attributes);
             $query = $decorator->buildQuery($attributes);
             $decorator->withQuery($query);
-        } elseif ($queryPreset === 'on-sale') {
-            $attributes = PostTypeLayoutQueryHelper::buildOnSaleQuery($attributes);
-            $decorator = $layoutManager->createLayout($layout_name, $attributes);
-            $query = $decorator->buildQuery($attributes);
-            $decorator->withQuery($query);
         } else {
+            // Apply query builder filter for custom presets (packages can hook into this)
+            $attributes = PostTypeLayoutQueryHelper::applyQueryBuilderFilter($attributes, $queryPreset);
             $decorator = $layoutManager->createLayout($layout_name, $attributes);
             $query = $decorator->buildQuery($attributes);
             $decorator->withQuery($query);
-            }
+        }
 
         $html = $decorator->render();
 
@@ -481,12 +474,9 @@ class PostTypeLayoutBlock extends Block
             $decorator = $layoutManager->createLayout($layout_name, $attributes);
             $query = $decorator->buildQuery($attributes);
             $decorator->withQuery($query);
-        } elseif ($queryPreset === 'on-sale') {
-            $attributes = PostTypeLayoutQueryHelper::buildOnSaleQuery($attributes);
-            $decorator = $layoutManager->createLayout($layout_name, $attributes);
-            $query = $decorator->buildQuery($attributes);
-            $decorator->withQuery($query);
         } else {
+            // Apply query builder filter for custom presets (packages can hook into this)
+            $attributes = PostTypeLayoutQueryHelper::applyQueryBuilderFilter($attributes, $queryPreset);
             $decorator = $layoutManager->createLayout($layout_name, $attributes);
             $query = $decorator->buildQuery($attributes);
             $decorator->withQuery($query);

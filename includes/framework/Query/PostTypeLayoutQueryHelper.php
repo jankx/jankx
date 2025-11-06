@@ -214,94 +214,24 @@ class PostTypeLayoutQueryHelper
     }
 
     /**
-     * Build on-sale products query
+     * Apply query builder filter for query presets
+     *
+     * Allows packages to modify attributes based on query preset
      *
      * @param array $attributes Block attributes
-     * @return array Modified attributes with meta_query for on-sale products
+     * @param string $queryPreset Query preset name
+     * @return array Modified attributes
      */
-    public static function buildOnSaleQuery(array $attributes): array
+    public static function applyQueryBuilderFilter(array $attributes, string $queryPreset): array
     {
-        $post_type = $attributes['postType'] ?? 'post';
-        
-        // Only apply for product post type
-        if ($post_type !== 'product') {
-            return $attributes;
-        }
-
-        // Check if WooCommerce is active
-        if (!class_exists('WooCommerce') && !class_exists('WC') && !function_exists('WC')) {
-            return $attributes;
-        }
-
-        $current_time = current_time('timestamp');
-        $meta_query = $attributes['metaQuery'] ?? [];
-
-        // Build meta query for on-sale products
-        // A product is on sale if:
-        // 1. _sale_price exists and is not empty
-        // 2. _sale_price_dates_from <= current time (if exists) or doesn't exist
-        // 3. _sale_price_dates_to >= current time (if exists) or doesn't exist
-        
-        $sale_meta_query = [
-            'relation' => 'AND',
-            // _sale_price must exist and not be empty
-            [
-                'key' => '_sale_price',
-                'value' => '',
-                'compare' => '!=',
-            ],
-            // Check sale price dates from (if exists, must be <= current time, or doesn't exist)
-            [
-                'relation' => 'OR',
-                [
-                    'key' => '_sale_price_dates_from',
-                    'compare' => 'NOT EXISTS',
-                ],
-                [
-                    'key' => '_sale_price_dates_from',
-                    'value' => '',
-                    'compare' => '=',
-                ],
-                [
-                    'key' => '_sale_price_dates_from',
-                    'value' => $current_time,
-                    'compare' => '<=',
-                    'type' => 'NUMERIC',
-                ],
-            ],
-            // Check sale price dates to (if exists, must be >= current time, or doesn't exist)
-            [
-                'relation' => 'OR',
-                [
-                    'key' => '_sale_price_dates_to',
-                    'compare' => 'NOT EXISTS',
-                ],
-                [
-                    'key' => '_sale_price_dates_to',
-                    'value' => '',
-                    'compare' => '=',
-                ],
-                [
-                    'key' => '_sale_price_dates_to',
-                    'value' => $current_time,
-                    'compare' => '>=',
-                    'type' => 'NUMERIC',
-                ],
-            ],
-        ];
-
-        // Add to existing meta query
-        if (!empty($meta_query)) {
-            $attributes['metaQuery'] = [
-                'relation' => 'AND',
-                $sale_meta_query,
-                $meta_query,
-            ];
-        } else {
-            $attributes['metaQuery'] = $sale_meta_query;
-        }
-
-        return $attributes;
+        /**
+         * Filter to allow packages to build query for specific presets
+         *
+         * @param array $attributes Block attributes
+         * @param string $queryPreset Query preset name
+         * @return array Modified attributes
+         */
+        return apply_filters('jankx/post-layout/query-builder', $attributes, $queryPreset);
     }
 
     /**
