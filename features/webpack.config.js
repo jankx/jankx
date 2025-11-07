@@ -7,13 +7,21 @@ module.exports = {
     mode: 'development',
     devtool: 'source-map',
     entry: {
-        'index': './metrics/blocks/views/index.tsx',
-        'style': './metrics/blocks/views/style.css'
+        'views/index': './metrics/blocks/views/index.tsx',
+        'views/style': './metrics/blocks/views/style.css',
+        'trend-posts/index': './metrics/blocks/trend-posts/index.tsx',
+        'trend-posts/style': './metrics/blocks/trend-posts/style.css'
     },
     output: {
-        path: path.resolve(__dirname, 'metrics/blocks/views/build'),
-        filename: '[name].js',
-        clean: true
+        path: path.resolve(__dirname, 'metrics/blocks'),
+        filename: (pathData) => {
+            const chunkName = pathData.chunk.name;
+            const parts = chunkName.split('/');
+            const blockName = parts[0];
+            const fileName = parts[1] || 'index';
+            return `${blockName}/build/${fileName}.js`;
+        },
+        clean: false
     },
     module: {
         rules: [
@@ -41,7 +49,14 @@ module.exports = {
     },
     plugins: [
         new MiniCssExtractPlugin({
-            filename: '[name].css'
+            filename: (pathData) => {
+                const chunkName = pathData.chunk.name;
+                const parts = chunkName.split('/');
+                const blockName = parts[0];
+                const fileName = parts[1] || 'index';
+                return `${blockName}/build/${fileName}.css`;
+            },
+            chunkFilename: '[id].css'
         }),
         new RemoveEmptyScriptsPlugin(),
         new DependencyExtractionWebpackPlugin({

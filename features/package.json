@@ -7,7 +7,7 @@
       "build": "wp-scripts build",
       "start": "wp-scripts start",
       "dev": "wp-scripts start",
-      "build:views": "webpack --config webpack.config.js",
+      "build:features": "webpack --config webpack.config.js",
       "type-check": "tsc --noEmit --project metrics/blocks/views/tsconfig.json",
       "type-check:watch": "tsc --noEmit --watch --project metrics/blocks/views/tsconfig.json"
     },

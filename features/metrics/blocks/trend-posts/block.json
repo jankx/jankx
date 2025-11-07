@@ -1,0 +1,57 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/trend-posts",
+    "version": "1.0.0",
+    "title": "Trend Posts",
+    "category": "widgets",
+    "icon": "chart-line",
+    "description": "Display trending posts based on view count",
+    "keywords": ["trend", "posts", "popular", "views", "metrics"],
+    "textdomain": "jankx",
+    "editorScript": "file:./build/index.js",
+    "editorStyle": "file:./build/index.css",
+    "style": "file:./build/style.css",
+    "supports": {
+        "html": false,
+        "align": ["wide", "full"]
+    },
+    "styles": [
+        {
+            "name": "default",
+            "label": "Default",
+            "isDefault": true
+        },
+        {
+            "name": "hot-badge",
+            "label": "Hot Badge"
+        }
+    ],
+    "attributes": {
+        "postsPerPage": {
+            "type": "number",
+            "default": 1
+        },
+        "showThumbnail": {
+            "type": "boolean",
+            "default": true
+        },
+        "showTitle": {
+            "type": "boolean",
+            "default": true
+        },
+        "showExcerpt": {
+            "type": "boolean",
+            "default": false
+        },
+        "showDate": {
+            "type": "boolean",
+            "default": true
+        },
+        "showViews": {
+            "type": "boolean",
+            "default": true
+        }
+    }
+}
+

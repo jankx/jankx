@@ -5,6 +5,8 @@ namespace Jankx\Features\Metrics;
 use Jankx\Foundation\Application;
 use Jankx\Support\Providers\ServiceProvider;
 use Jankx\Features\Metrics\Services\PostViewService;
+use Jankx\Features\Metrics\Render\TrendPostsBlock;
+use Jankx\Gutenberg\GutenbergRepository;
 
 class MetricServiceProvider extends ServiceProvider
 {
@@ -42,6 +44,25 @@ class MetricServiceProvider extends ServiceProvider
 
         // Filter WP_Query to handle post_views orderby
         add_action('pre_get_posts', [$this, 'handlePostViewsOrderBy'], 10);
+
+        // Register Trend Posts block
+        add_action('jankx/gutenberg/register-blocks', [$this, 'registerTrendPostsBlock']);
+    }
+
+    /**
+     * Register Trend Posts block
+     *
+     * @param GutenbergRepository $repository
+     * @return void
+     */
+    public function registerTrendPostsBlock(GutenbergRepository $repository)
+    {
+        $block_path = implode(DIRECTORY_SEPARATOR, [
+            dirname(__FILE__),
+            'blocks',
+            'trend-posts'
+        ]);
+        $repository->registerBlock(TrendPostsBlock::class, $block_path);
     }
 
     /**
