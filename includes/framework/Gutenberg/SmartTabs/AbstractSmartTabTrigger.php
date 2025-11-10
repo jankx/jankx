@@ -58,6 +58,14 @@ abstract class AbstractSmartTabTrigger implements SmartTabTriggerInterface
     /**
      * {@inheritdoc}
      */
+    public function shouldDisplay(array $attributes, array $context = []): bool
+    {
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function filterContent(string $content, array $attributes, array $context = []): string
     {
         return $content;
