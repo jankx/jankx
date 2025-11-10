@@ -65,7 +65,19 @@
     "queryPreset": {
       "type": "string",
       "default": "custom",
-      "enum": ["default", "related", "custom", "on-sale"]
+      "enum": [
+        "default",
+        "related",
+        "custom",
+        "on-sale",
+        "featured",
+        "related-products",
+        "best-sellers",
+        "top-rated",
+        "upsells",
+        "new-arrivals",
+        "recently-viewed"
+      ]
     },
     "postType": {
       "type": "string",

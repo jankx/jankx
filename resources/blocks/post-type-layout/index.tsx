@@ -42,8 +42,21 @@ interface MetaQueryItem {
     type?: 'NUMERIC' | 'BINARY' | 'CHAR' | 'DATE' | 'DATETIME' | 'DECIMAL' | 'SIGNED' | 'TIME' | 'UNSIGNED';
 }
 
+type QueryPreset =
+    | 'default'
+    | 'related'
+    | 'custom'
+    | 'on-sale'
+    | 'featured'
+    | 'related-products'
+    | 'best-sellers'
+    | 'top-rated'
+    | 'upsells'
+    | 'new-arrivals'
+    | 'recently-viewed';
+
 interface PostTypeLayoutAttributes {
-    queryPreset: 'default' | 'related' | 'custom' | 'on-sale';
+    queryPreset: QueryPreset;
     postType: string;
     postsPerPage: number;
     layout: string;
@@ -419,7 +432,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                     value: preset.value,
                                 }));
                         }, [postType])}
-                        onChange={(value) => setAttributes({ queryPreset: value as 'default' | 'related' | 'custom' | 'on-sale' })}
+                        onChange={(value) => setAttributes({ queryPreset: value as QueryPreset })}
                         help={useMemo(() => {
                             const allPresets = (window as any).jankxQueryOptions?.queryPresets || [];
                             const currentPreset = allPresets.find((p: any) => p.value === queryPreset);
