@@ -3,6 +3,9 @@
 namespace Jankx\Gutenberg\Blocks;
 
 use Jankx\Gutenberg\Block;
+use Jankx\Gutenberg\SmartTabs\SmartTabTriggerInterface;
+use Jankx\Gutenberg\SmartTabs\SmartTabTriggerRegistry;
+use WP_Block;
 
 /**
  * Smart Tabs Block
@@ -15,6 +18,12 @@ use Jankx\Gutenberg\Block;
  */
 class SmartTabsBlock extends Block
 {
+    /**
+     * Track localization to prevent duplicates.
+     *
+     * @var bool
+     */
+    protected static $editorDataLocalized = false;
     /**
      * Block ID
      *
@@ -31,6 +40,53 @@ class SmartTabsBlock extends Block
     }
 
     /**
+     * Initialise block specific logic.
+     *
+     * @return void
+     */
+    public function init()
+    {
+        add_action('init', function () {
+            SmartTabTriggerRegistry::instance()->boot();
+        }, 50);
+
+        add_action('enqueue_block_editor_assets', [$this, 'enqueueEditorAssets']);
+    }
+
+    /**
+     * Localise trigger configuration for the block editor.
+     *
+     * @return void
+     */
+    public function enqueueEditorAssets(): void
+    {
+        if (self::$editorDataLocalized) {
+            return;
+        }
+
+        SmartTabTriggerRegistry::instance()->boot();
+
+        $handle = 'jankx-smart-tab-editor-script';
+
+        if (!wp_script_is($handle, 'registered')) {
+            return;
+        }
+
+        wp_enqueue_script($handle);
+
+        $context = $this->resolveEditorContext();
+        $config = SmartTabTriggerRegistry::instance()->toEditorConfig($context);
+
+        wp_add_inline_script(
+            $handle,
+            'window.JankxSmartTabTriggers = ' . wp_json_encode(['items' => $config]) . ';',
+            'before'
+        );
+
+        self::$editorDataLocalized = true;
+    }
+
+    /**
      * Render the block content
      *
      * @param array $attributes Block attributes
@@ -40,6 +96,8 @@ class SmartTabsBlock extends Block
      */
     public function render($attributes, $content = '', $block = null)
     {
+        SmartTabTriggerRegistry::instance()->boot();
+
         $tab_type = $attributes['tabType'] ?? 'horizontal';
         $style_type = $attributes['styleType'] ?? 'default';
         $active_tab = $attributes['activeTab'] ?? 0;
@@ -80,7 +138,8 @@ class SmartTabsBlock extends Block
 
         // Parse inner blocks to build tab navigation
         $inner_blocks = $block->parsed_block['innerBlocks'] ?? [];
-        $tab_nav_html = $this->renderTabNavigation($inner_blocks, $active_tab, $tab_alignment, $attributes);
+        $render_context = $this->resolveRenderContext($block);
+        $tab_nav_html = $this->renderTabNavigation($inner_blocks, $active_tab, $tab_alignment, $attributes, $render_context);
 
         // Build attributes string
         $attrs_string = '';
@@ -106,7 +165,7 @@ class SmartTabsBlock extends Block
      * @param array $parent_attributes Parent block attributes (for global tab styles)
      * @return string Navigation HTML
      */
-    protected function renderTabNavigation($inner_blocks, $active_tab, $tab_alignment = 'left', $parent_attributes = [])
+    protected function renderTabNavigation($inner_blocks, $active_tab, $tab_alignment = 'left', $parent_attributes = [], $context = [])
     {
         if (empty($inner_blocks)) {
             return '';
@@ -120,6 +179,7 @@ class SmartTabsBlock extends Block
         $parent_active_tab_bg_color = $parent_attributes['activeTabBackgroundColor'] ?? '';
         $parent_active_tab_gradient = $parent_attributes['activeTabGradient'] ?? '';
 
+        $registry = SmartTabTriggerRegistry::instance();
         $nav_items = [];
         foreach ($inner_blocks as $index => $block) {
             if ($block['blockName'] !== 'jankx/smart-tab') {
@@ -127,12 +187,37 @@ class SmartTabsBlock extends Block
             }
 
             $attributes = $block['attrs'] ?? [];
-            $title = $attributes['title'] ?? sprintf(__('Tab %d', 'jankx'), $index + 1);
+            $trigger_key = $attributes['trigger'] ?? 'manual';
+            $trigger = $registry->getTrigger($trigger_key);
+
+            $supports = [];
+            if ($trigger instanceof SmartTabTriggerInterface) {
+                $attributes = $trigger->prepareAttributes($attributes);
+                $editor_settings = $trigger->getEditorSettings($tab_context);
+                $supports = $editor_settings['supports'] ?? [];
+            }
+
+            $tab_context = $context;
+            $tab_context['tab_index'] = $index;
+            $tab_context['tab_attributes'] = $attributes;
+            $tab_context['parent_attributes'] = $parent_attributes;
+
+            if ($trigger instanceof SmartTabTriggerInterface) {
+                $title = $trigger->resolveTitle($attributes, $tab_context);
+            } else {
+                $title = $attributes['title'] ?? sprintf(__('Tab %d', 'jankx'), $index + 1);
+            }
+
             $icon_type = $attributes['iconType'] ?? 'none';
             $icon = $attributes['icon'] ?? '';
             $icon_position = $attributes['iconPosition'] ?? 'before';
             $icon_size = $attributes['iconSize'] ?? '16px';
             $icon_color = $attributes['iconColor'] ?? '';
+
+            if (($supports['icon'] ?? true) === false) {
+                $icon_type = 'none';
+                $icon = '';
+            }
 
             // Individual tab style attributes (can override parent styles)
             $individual_normal_text_color = $attributes['normalTabTextColor'] ?? '';
@@ -210,9 +295,10 @@ class SmartTabsBlock extends Block
             }
 
             $nav_items[] = sprintf(
-                '<button class="%s" data-tab-index="%d" type="button"%s>%s</button>',
+                '<button class="%s" data-tab-index="%d" data-trigger="%s" type="button"%s>%s</button>',
                 implode(' ', $item_classes),
                 $index,
+                esc_attr($trigger_key),
                 $tab_style_attr,
                 $content_html
             );
@@ -225,5 +311,63 @@ class SmartTabsBlock extends Block
         );
     }
 
+    /**
+     * Build editor context.
+     *
+     * @return array<string, mixed>
+     */
+    protected function resolveEditorContext(): array
+    {
+        $post_id = get_the_ID();
+
+        if (!$post_id) {
+            $post = get_post();
+            if ($post) {
+                $post_id = $post->ID;
+            }
+        }
+
+        $post_type = $post_id ? get_post_type($post_id) : '';
+
+        return [
+            'post_id' => $post_id ? (int) $post_id : 0,
+            'post_type' => $post_type ?: '',
+            'is_admin' => is_admin(),
+        ];
+    }
+
+    /**
+     * Build render context used when resolving triggers.
+     *
+     * @param WP_Block|\WP_Block|null $block
+     * @return array<string, mixed>
+     */
+    protected function resolveRenderContext($block): array
+    {
+        $post_id = 0;
+        $post_type = '';
+
+        if ($block instanceof WP_Block && isset($block->context['postId'])) {
+            $post_id = (int) $block->context['postId'];
+        }
+
+        if ($block instanceof WP_Block && isset($block->context['postType'])) {
+            $post_type = (string) $block->context['postType'];
+        }
+
+        if (!$post_id) {
+            $post_id = get_the_ID() ?: 0;
+        }
+
+        if (!$post_type && $post_id) {
+            $post_type = get_post_type($post_id) ?: '';
+        }
+
+        return [
+            'post_id' => $post_id,
+            'post_type' => $post_type ?: '',
+            'is_admin' => is_admin(),
+        ];
+    }
 }
 

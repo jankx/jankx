@@ -8,7 +8,7 @@
 /***/ ((module) => {
 
 "use strict";
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/smart-tab","title":"Smart Tab","category":"jankx","description":"Single tab item for Smart Tabs","keywords":["tab","smart","panel"],"textdomain":"jankx","parent":["jankx/smart-tabs"],"attributes":{"title":{"type":"string","default":"Tab"},"iconType":{"type":"string","enum":["none","svg","picker"],"default":"none"},"icon":{"type":"string","default":""},"iconName":{"type":"string","default":""},"iconSet":{"type":"string","default":"material"},"iconPosition":{"type":"string","enum":["before","after"],"default":"before"},"iconSize":{"type":"string","default":"16px"},"iconColor":{"type":"string","default":""},"tabId":{"type":"string"},"normalTabTextColor":{"type":"string"},"normalTabBackgroundColor":{"type":"string"},"normalTabGradient":{"type":"string"},"activeTabTextColor":{"type":"string"},"activeTabBackgroundColor":{"type":"string"},"activeTabGradient":{"type":"string"},"contentTextColor":{"type":"string"},"contentBackgroundColor":{"type":"string"},"contentGradient":{"type":"string"},"style":{"type":"object"}},"supports":{"html":false,"anchor":false,"customClassName":false,"reusable":false,"spacing":{"margin":true,"padding":true,"__experimentalDefaultControls":{"padding":true}},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true,"__experimentalDefaultControls":{"radius":true}}},"usesContext":["jankx/smartTabsId","jankx/activeTab"],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/smart-tab","title":"Smart Tab","category":"jankx","description":"Single tab item for Smart Tabs","keywords":["tab","smart","panel"],"textdomain":"jankx","parent":["jankx/smart-tabs"],"attributes":{"title":{"type":"string","default":"Tab"},"trigger":{"type":"string","default":"manual"},"triggerSettings":{"type":"object","default":{}},"iconType":{"type":"string","enum":["none","svg","picker"],"default":"none"},"icon":{"type":"string","default":""},"iconName":{"type":"string","default":""},"iconSet":{"type":"string","default":"material"},"iconPosition":{"type":"string","enum":["before","after"],"default":"before"},"iconSize":{"type":"string","default":"16px"},"iconColor":{"type":"string","default":""},"tabId":{"type":"string"},"normalTabTextColor":{"type":"string"},"normalTabBackgroundColor":{"type":"string"},"normalTabGradient":{"type":"string"},"activeTabTextColor":{"type":"string"},"activeTabBackgroundColor":{"type":"string"},"activeTabGradient":{"type":"string"},"contentTextColor":{"type":"string"},"contentBackgroundColor":{"type":"string"},"contentGradient":{"type":"string"},"style":{"type":"object"}},"supports":{"html":false,"anchor":false,"customClassName":false,"reusable":false,"spacing":{"margin":true,"padding":true,"__experimentalDefaultControls":{"padding":true}},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true,"__experimentalDefaultControls":{"radius":true}}},"usesContext":["jankx/smartTabsId","jankx/activeTab"],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
 
 /***/ }),
 
@@ -31,16 +31,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/brush.js");
-/* harmony import */ var _shared_components_IconPicker__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../shared/components/IconPicker */ "./shared/components/IconPicker.tsx");
-/* harmony import */ var _svg_icon_components__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../svg-icon/components */ "./blocks/svg-icon/components/index.tsx");
-/* harmony import */ var _svg_icon_utils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../svg-icon/utils */ "./blocks/svg-icon/utils/index.ts");
-/* harmony import */ var _svg_icon_icons__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../svg-icon/icons */ "./blocks/svg-icon/icons/index.tsx");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/brush.js");
+/* harmony import */ var _shared_components_IconPicker__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../shared/components/IconPicker */ "./shared/components/IconPicker.tsx");
+/* harmony import */ var _svg_icon_components__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../svg-icon/components */ "./blocks/svg-icon/components/index.tsx");
+/* harmony import */ var _svg_icon_utils__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../svg-icon/utils */ "./blocks/svg-icon/utils/index.ts");
+/* harmony import */ var _svg_icon_icons__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../svg-icon/icons */ "./blocks/svg-icon/icons/index.tsx");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__);
 /**
  * WordPress dependencies
  */
+
 
 
 
@@ -66,9 +69,10 @@ function Edit({
   clientId,
   context
 }) {
-  var _context$jankxActive;
+  var _context$jankxActive, _window$JankxSmartTab, _ref, _triggersMap$trigger;
   const {
     title,
+    trigger = 'manual',
     iconType,
     icon,
     iconName,
@@ -87,6 +91,40 @@ function Edit({
     contentGradient
   } = attributes;
   const activeTabIndex = (_context$jankxActive = context?.['jankx/activeTab']) !== null && _context$jankxActive !== void 0 ? _context$jankxActive : 0;
+  const rawTriggerConfig = (_window$JankxSmartTab = window?.JankxSmartTabTriggers?.items) !== null && _window$JankxSmartTab !== void 0 ? _window$JankxSmartTab : {};
+  const fallbackTrigger = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => ({
+    key: 'manual',
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Custom Content', 'jankx'),
+    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Use manual tab title and content.', 'jankx'),
+    previewTitle: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Tab', 'jankx'),
+    supports: {
+      customTitle: true,
+      customContent: true,
+      icon: true
+    },
+    settingsSchema: []
+  }), []);
+  const triggersMap = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => {
+    if (Object.keys(rawTriggerConfig).length === 0) {
+      return {
+        manual: fallbackTrigger
+      };
+    }
+    return {
+      manual: fallbackTrigger,
+      ...rawTriggerConfig
+    };
+  }, [rawTriggerConfig, fallbackTrigger]);
+  const triggerOptions = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => Object.values(triggersMap).map(config => ({
+    label: config.label,
+    value: config.key
+  })), [triggersMap]);
+  const triggerConfig = (_ref = (_triggersMap$trigger = triggersMap[trigger]) !== null && _triggersMap$trigger !== void 0 ? _triggersMap$trigger : triggersMap.manual) !== null && _ref !== void 0 ? _ref : fallbackTrigger;
+  const triggerSupports = triggerConfig?.supports || {};
+  const allowCustomTitle = triggerSupports.customTitle !== false;
+  const allowCustomContent = triggerSupports.customContent !== false;
+  const allowCustomIcon = triggerSupports.icon !== false;
+  const previewTitle = triggerConfig.previewTitle || triggerConfig.label || (title ? title : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Tab', 'jankx'));
 
   // Color and gradient settings
   const colorGradientSettings = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.__experimentalUseMultipleOriginColorsAndGradients)() || {};
@@ -114,6 +152,7 @@ function Edit({
   }
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)({
     className: `smart-tab${isActive ? ' is-active' : ''}`,
+    'data-trigger': trigger,
     // Chỉ hiển thị tab đang active để tập trung edit
     style: {
       display: isActive ? 'block' : 'none'
@@ -141,7 +180,7 @@ function Edit({
 
   // Parse and set SVG icon
   const handleCustomSvg = svgContent => {
-    const parsedIcon = (0,_svg_icon_utils__WEBPACK_IMPORTED_MODULE_7__.parseIcon)(svgContent);
+    const parsedIcon = (0,_svg_icon_utils__WEBPACK_IMPORTED_MODULE_8__.parseIcon)(svgContent);
     if (parsedIcon) {
       setAttributes({
         icon: parsedIcon,
@@ -149,24 +188,55 @@ function Edit({
       });
     }
   };
-  const allIcons = (0,_svg_icon_utils__WEBPACK_IMPORTED_MODULE_7__.flattenIconsArray)((0,_svg_icon_icons__WEBPACK_IMPORTED_MODULE_8__["default"])());
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.Fragment, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+  const allIcons = (0,_svg_icon_utils__WEBPACK_IMPORTED_MODULE_8__.flattenIconsArray)((0,_svg_icon_icons__WEBPACK_IMPORTED_MODULE_9__["default"])());
+  const handleTriggerChange = value => {
+    var _ref2, _triggersMap$newTrigg;
+    const newTriggerKey = triggersMap[value] ? value : 'manual';
+    const config = (_ref2 = (_triggersMap$newTrigg = triggersMap[newTriggerKey]) !== null && _triggersMap$newTrigg !== void 0 ? _triggersMap$newTrigg : triggersMap.manual) !== null && _ref2 !== void 0 ? _ref2 : fallbackTrigger;
+    const updatedAttributes = {
+      trigger: newTriggerKey,
+      triggerSettings: {}
+    };
+    if (config?.supports?.customTitle === false) {
+      updatedAttributes.title = '';
+    }
+    if (config?.supports?.icon === false) {
+      updatedAttributes.iconType = 'none';
+      updatedAttributes.icon = '';
+      updatedAttributes.iconName = '';
+    }
+    setAttributes(updatedAttributes);
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Tab Settings', 'jankx'),
         initialOpen: true,
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Trigger', 'jankx'),
+          value: trigger,
+          options: triggerOptions,
+          onChange: handleTriggerChange,
+          help: triggerConfig?.description || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select behaviour for this tab.', 'jankx')
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Tab Title', 'jankx'),
-          value: title,
-          onChange: value => setAttributes({
-            title: value
-          }),
-          placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enter tab title', 'jankx')
-        })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+          value: allowCustomTitle ? title : previewTitle,
+          onChange: value => {
+            if (!allowCustomTitle) {
+              return;
+            }
+            setAttributes({
+              title: value
+            });
+          },
+          placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enter tab title', 'jankx'),
+          disabled: !allowCustomTitle,
+          help: allowCustomTitle ? undefined : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Title is managed by the selected trigger.', 'jankx')
+        })]
+      }), allowCustomIcon && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Tab Icon', 'jankx'),
         initialOpen: false,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Icon Type', 'jankx'),
           value: iconType,
           options: [{
@@ -182,8 +252,8 @@ function Edit({
           onChange: value => setAttributes({
             iconType: value
           })
-        }), iconType === 'svg' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.Fragment, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_svg_icon_components__WEBPACK_IMPORTED_MODULE_6__.InserterModal, {
+        }), iconType === 'svg' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_svg_icon_components__WEBPACK_IMPORTED_MODULE_7__.InserterModal, {
             isInserterOpen: false,
             setInserterOpen: () => {},
             onSelect: selectedIcon => {
@@ -192,22 +262,22 @@ function Edit({
               }
             },
             icons: allIcons
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('SVG Code', 'jankx'),
             value: icon,
             onChange: handleCustomSvg,
             placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Paste SVG code here', 'jankx'),
             help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Paste your SVG code', 'jankx')
           })]
-        }), iconType === 'picker' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
+        }), iconType === 'picker' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
           className: "smart-tab-icon-picker",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_shared_components_IconPicker__WEBPACK_IMPORTED_MODULE_5__["default"], {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_shared_components_IconPicker__WEBPACK_IMPORTED_MODULE_6__["default"], {
             value: iconName,
             onChange: handleIconSelect,
             iconSet: iconSet
           })
-        }), iconType !== 'none' && icon && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.Fragment, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+        }), iconType !== 'none' && icon && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Icon Position', 'jankx'),
             value: iconPosition,
             options: [{
@@ -220,29 +290,29 @@ function Edit({
             onChange: value => setAttributes({
               iconPosition: value
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalUnitControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalUnitControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Icon Size', 'jankx'),
             value: iconSize,
             onChange: value => setAttributes({
               iconSize: value || '16px'
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("div", {
             className: "components-base-control",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("label", {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("label", {
               className: "components-base-control__label",
               children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Icon Color', 'jankx')
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Dropdown, {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Dropdown, {
               renderToggle: ({
                 isOpen,
                 onToggle
-              }) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
-                icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__["default"],
+              }) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+                icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__["default"],
                 onClick: onToggle,
                 "aria-expanded": isOpen,
                 variant: "secondary",
                 children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Choose Color', 'jankx')
               }),
-              renderContent: () => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ColorPicker, {
+              renderContent: () => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ColorPicker, {
                 color: iconColor,
                 onChange: value => setAttributes({
                   iconColor: value
@@ -254,10 +324,15 @@ function Edit({
           })]
         })]
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
       ...blockProps,
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
+      children: allowCustomContent ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
         ...innerBlocksProps
+      }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
+        className: "smart-tab__content smart-tab__content--locked",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("p", {
+          children: triggerConfig?.description || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Content is generated by the selected trigger.', 'jankx')
+        })
       })
     })]
   });
@@ -18381,14 +18456,7 @@ const tabIcon = () => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE
     })
   })
 });
-
-/**
- * Register Smart Tab block
- */
-(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.registerBlockType)(_block_json__WEBPACK_IMPORTED_MODULE_4__.name, {
-  ..._block_json__WEBPACK_IMPORTED_MODULE_4__,
-  icon: tabIcon,
-  edit: _edit__WEBPACK_IMPORTED_MODULE_3__["default"],
+const deprecated = [{
   save: ({
     attributes
   }) => {
@@ -18397,8 +18465,6 @@ const tabIcon = () => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE
       contentBackgroundColor,
       contentGradient
     } = attributes;
-
-    // Build content styles
     const contentStyles = {};
     if (contentTextColor) {
       contentStyles.color = contentTextColor;
@@ -18420,6 +18486,17 @@ const tabIcon = () => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE
       })
     });
   }
+}];
+
+/**
+ * Register Smart Tab block
+ */
+(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.registerBlockType)(_block_json__WEBPACK_IMPORTED_MODULE_4__.name, {
+  ..._block_json__WEBPACK_IMPORTED_MODULE_4__,
+  icon: tabIcon,
+  edit: _edit__WEBPACK_IMPORTED_MODULE_3__["default"],
+  save: () => null,
+  deprecated
 });
 })();
 

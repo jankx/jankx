@@ -13,6 +13,14 @@
             "type": "string",
             "default": "Tab"
         },
+        "trigger": {
+            "type": "string",
+            "default": "manual"
+        },
+        "triggerSettings": {
+            "type": "object",
+            "default": {}
+        },
         "iconType": {
             "type": "string",
             "enum": ["none", "svg", "picker"],

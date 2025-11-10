@@ -3,7 +3,7 @@
  */
 
 export type TabType = 'horizontal' | 'vertical';
-export type StyleType = 'default' | 'minimal' | 'modern' | 'boxed';
+export type StyleType = 'default' | 'minimal' | 'modern' | 'boxed' | 'bordered';
 export type TabAlignment = 'left' | 'center' | 'right' | 'justify';
 
 export interface SmartTabsAttributes {
@@ -31,6 +31,8 @@ export interface SmartTabsProps {
 export interface TabItem {
     clientId: string;
     title: string;
+    trigger?: string;
+    previewTitle?: string;
     icon?: string;
     iconType?: string;
     normalTabTextColor?: string;

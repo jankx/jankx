@@ -3,6 +3,9 @@
 namespace Jankx\Gutenberg\Blocks;
 
 use Jankx\Gutenberg\Block;
+use Jankx\Gutenberg\SmartTabs\SmartTabTriggerInterface;
+use Jankx\Gutenberg\SmartTabs\SmartTabTriggerRegistry;
+use WP_Block;
 
 /**
  * Smart Tab Block
@@ -33,7 +36,95 @@ class SmartTabBlock extends Block
         parent::__construct();
     }
 
-    // No render callback needed - content is saved statically via InnerBlocks.Content
-    // Parent SmartTabsBlock handles the dynamic rendering
+    /**
+     * Render tab content after applying trigger logic.
+     *
+     * @param array $attributes
+     * @param string $content
+     * @param WP_Block|null $block
+     * @return string
+     */
+    public function render($attributes, $content = '', $block = null)
+    {
+        SmartTabTriggerRegistry::instance()->boot();
+
+        $trigger_key = $attributes['trigger'] ?? 'manual';
+        $registry = SmartTabTriggerRegistry::instance();
+        $trigger = $registry->getTrigger($trigger_key);
+
+        if ($trigger instanceof SmartTabTriggerInterface) {
+            $attributes = $trigger->prepareAttributes($attributes);
+        }
+
+        $context = $this->resolveRenderContext($block);
+
+        if ($trigger instanceof SmartTabTriggerInterface) {
+            $content = $trigger->filterContent($content, $attributes, $context);
+        }
+
+        $wrapper_attributes = [
+            'class' => 'smart-tab',
+            'data-trigger' => $trigger_key,
+        ];
+
+        if (!empty($attributes['tabId'])) {
+            $wrapper_attributes['id'] = sanitize_html_class($attributes['tabId']);
+        }
+
+        if (!empty($attributes['triggerSettings']) && is_array($attributes['triggerSettings'])) {
+            $wrapper_attributes['data-trigger-settings'] = wp_json_encode($attributes['triggerSettings']);
+        }
+
+        $attrs_string = '';
+        foreach ($wrapper_attributes as $key => $value) {
+            if ($value === null || $value === '') {
+                continue;
+            }
+
+            $attrs_string .= sprintf(' %s="%s"', esc_attr($key), esc_attr(is_string($value) ? $value : (string) $value));
+        }
+
+        $content_styles = [];
+        if (!empty($attributes['contentTextColor'])) {
+            $content_styles[] = sprintf('color: %s', esc_attr($attributes['contentTextColor']));
+        }
+        if (!empty($attributes['contentGradient'])) {
+            $content_styles[] = sprintf('background: %s', esc_attr($attributes['contentGradient']));
+        } elseif (!empty($attributes['contentBackgroundColor'])) {
+            $content_styles[] = sprintf('background-color: %s', esc_attr($attributes['contentBackgroundColor']));
+        }
+
+        $content_style_attr = !empty($content_styles) ? sprintf(' style="%s"', implode('; ', $content_styles)) : '';
+        $content_wrapper = sprintf('<div class="smart-tab__content"%s>%s</div>', $content_style_attr, $content);
+
+        return sprintf('<div%s>%s</div>', $attrs_string, $content_wrapper);
+    }
+
+    /**
+     * Build render context for triggers.
+     *
+     * @param WP_Block|null $block
+     * @return array<string, mixed>
+     */
+    protected function resolveRenderContext($block): array
+    {
+        $post_id = 0;
+
+        if ($block instanceof WP_Block && isset($block->context['postId'])) {
+            $post_id = (int) $block->context['postId'];
+        }
+
+        if (!$post_id) {
+            $post_id = get_the_ID() ?: 0;
+        }
+
+        $post_type = $post_id ? get_post_type($post_id) : '';
+
+        return [
+            'post_id' => $post_id,
+            'post_type' => $post_type ?: '',
+            'is_admin' => is_admin(),
+        ];
+    }
 }
 

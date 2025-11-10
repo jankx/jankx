@@ -7,6 +7,8 @@ export type IconPosition = 'before' | 'after';
 
 export interface SmartTabAttributes {
     title: string;
+    trigger: string;
+    triggerSettings?: Record<string, unknown>;
     iconType: IconType;
     icon: string;
     iconName: string;
@@ -39,4 +41,26 @@ export interface SmartTabProps {
         'jankx/activeTab'?: number;
     };
 }
+
+export interface SmartTabTriggerConfig {
+    key: string;
+    label: string;
+    description: string;
+    previewTitle: string;
+    supports?: {
+        customTitle?: boolean;
+        customContent?: boolean;
+        icon?: boolean;
+    };
+    settingsSchema?: Array<Record<string, unknown>>;
+}
+
+declare global {
+    interface Window {
+        JankxSmartTabTriggers?: {
+            items: Record<string, SmartTabTriggerConfig>;
+        };
+    }
+}
+
 

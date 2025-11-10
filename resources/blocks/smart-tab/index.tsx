@@ -23,6 +23,43 @@ const tabIcon = () => (
     } />
 );
 
+const deprecated = [
+    {
+        save: ({ attributes }: any) => {
+            const {
+                contentTextColor,
+                contentBackgroundColor,
+                contentGradient,
+            } = attributes;
+
+            const contentStyles: Record<string, string> = {};
+            if (contentTextColor) {
+                contentStyles.color = contentTextColor;
+            }
+            if (contentGradient) {
+                contentStyles.background = contentGradient;
+            } else if (contentBackgroundColor) {
+                contentStyles.backgroundColor = contentBackgroundColor;
+            }
+
+            const blockProps = useBlockProps.save({
+                className: 'smart-tab',
+            });
+
+            return (
+                <div {...blockProps}>
+                    <div
+                        className="smart-tab__content"
+                        style={Object.keys(contentStyles).length > 0 ? contentStyles : undefined}
+                    >
+                        <InnerBlocks.Content />
+                    </div>
+                </div>
+            );
+        },
+    },
+];
+
 /**
  * Register Smart Tab block
  */
@@ -30,38 +67,7 @@ registerBlockType(metadata.name, {
     ...metadata,
     icon: tabIcon,
     edit: Edit,
-    save: ({ attributes }: any) => {
-        const {
-            contentTextColor,
-            contentBackgroundColor,
-            contentGradient,
-        } = attributes;
-
-        // Build content styles
-        const contentStyles: React.CSSProperties = {};
-        if (contentTextColor) {
-            contentStyles.color = contentTextColor;
-        }
-        if (contentGradient) {
-            contentStyles.background = contentGradient;
-        } else if (contentBackgroundColor) {
-            contentStyles.backgroundColor = contentBackgroundColor;
-        }
-
-        const blockProps = useBlockProps.save({
-            className: 'smart-tab',
-        });
-
-        return (
-            <div {...blockProps}>
-                <div
-                    className="smart-tab__content"
-                    style={Object.keys(contentStyles).length > 0 ? contentStyles : undefined}
-                >
-                    <InnerBlocks.Content />
-                </div>
-            </div>
-        );
-    },
+    save: () => null,
+    deprecated,
 } as any);
 

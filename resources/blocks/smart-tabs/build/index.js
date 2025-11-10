@@ -33,11 +33,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/plus.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__);
 /**
  * WordPress dependencies
  */
+
 
 
 
@@ -80,9 +83,49 @@ function Edit({
     insertBlock,
     selectBlock
   } = dispatch;
+  const manualTriggerFallback = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_6__.useMemo)(() => ({
+    key: 'manual',
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Custom Content', 'jankx'),
+    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Use manual tab title and content.', 'jankx'),
+    previewTitle: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Tab', 'jankx'),
+    supports: {
+      customTitle: true,
+      customContent: true,
+      icon: true
+    }
+  }), []);
+  const triggersMap = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_6__.useMemo)(() => {
+    var _window$JankxSmartTab;
+    const items = (_window$JankxSmartTab = window?.JankxSmartTabTriggers?.items) !== null && _window$JankxSmartTab !== void 0 ? _window$JankxSmartTab : {};
+    if (Object.keys(items).length === 0) {
+      return {
+        manual: manualTriggerFallback
+      };
+    }
+    return {
+      manual: manualTriggerFallback,
+      ...items
+    };
+  }, [manualTriggerFallback]);
   const tabItems = innerBlocks.map(block => ({
     clientId: block.clientId,
-    title: block.attributes.title || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Tab', 'jankx'),
+    title: (_triggersMap$triggerK => {
+      const triggerKey = block.attributes.trigger || 'manual';
+      const triggerConfig = (_triggersMap$triggerK = triggersMap[triggerKey]) !== null && _triggersMap$triggerK !== void 0 ? _triggersMap$triggerK : triggersMap.manual;
+      const supports = triggerConfig?.supports || {};
+      const allowCustomTitle = supports.customTitle !== false;
+      const blockTitle = block.attributes.title || '';
+      if (allowCustomTitle && blockTitle) {
+        return blockTitle;
+      }
+      return triggerConfig?.previewTitle || triggerConfig?.label || blockTitle || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Tab', 'jankx');
+    })(),
+    trigger: block.attributes.trigger || 'manual',
+    previewTitle: (_triggersMap$triggerK2 => {
+      const triggerKey = block.attributes.trigger || 'manual';
+      const triggerConfig = (_triggersMap$triggerK2 = triggersMap[triggerKey]) !== null && _triggersMap$triggerK2 !== void 0 ? _triggersMap$triggerK2 : triggersMap.manual;
+      return triggerConfig?.previewTitle || triggerConfig?.label || '';
+    })(),
     icon: block.attributes.icon || '',
     iconType: block.attributes.iconType || '',
     normalTabTextColor: block.attributes.normalTabTextColor || '',
@@ -107,7 +150,8 @@ function Edit({
   // Add new tab
   const addNewTab = () => {
     const newTab = (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.createBlock)('jankx/smart-tab', {
-      title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('New Tab', 'jankx')
+      title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('New Tab', 'jankx'),
+      trigger: 'manual'
     });
     insertBlock(newTab, innerBlocks.length, clientId, false);
     setAttributes({
@@ -132,31 +176,31 @@ function Edit({
 
   // Determine which tab is active
   const currentActiveTab = Math.min(activeTab, tabItems.length - 1);
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.BlockControls, {
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToolbarGroup, {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToolbarButton, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.BlockControls, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToolbarGroup, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToolbarButton, {
           icon: "editor-alignleft",
           title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Align Left', 'jankx'),
           onClick: () => setAttributes({
             tabAlignment: 'left'
           }),
           isActive: tabAlignment === 'left'
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToolbarButton, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToolbarButton, {
           icon: "editor-aligncenter",
           title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Align Center', 'jankx'),
           onClick: () => setAttributes({
             tabAlignment: 'center'
           }),
           isActive: tabAlignment === 'center'
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToolbarButton, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToolbarButton, {
           icon: "editor-alignright",
           title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Align Right', 'jankx'),
           onClick: () => setAttributes({
             tabAlignment: 'right'
           }),
           isActive: tabAlignment === 'right'
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToolbarButton, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToolbarButton, {
           icon: "editor-justify",
           title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Justify', 'jankx'),
           onClick: () => setAttributes({
@@ -165,11 +209,11 @@ function Edit({
           isActive: tabAlignment === 'justify'
         })]
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Tab Settings', 'jankx'),
         initialOpen: true,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Hide Tabs Border Bottom', 'jankx'),
           checked: hideTabsBorderBottom,
           onChange: value => setAttributes({
@@ -177,7 +221,7 @@ function Edit({
           }),
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Hide the border bottom of tabs navigation', 'jankx'),
           __nextHasNoMarginBottom: true
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Center Navigation', 'jankx'),
           checked: centerNavigation,
           onChange: value => setAttributes({
@@ -185,7 +229,7 @@ function Edit({
           }),
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Center the tabs navigation with fit-content width', 'jankx'),
           __nextHasNoMarginBottom: true
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Tab Type', 'jankx'),
           value: tabType,
           options: [{
@@ -199,7 +243,7 @@ function Edit({
             tabType: value
           }),
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Choose the tab layout orientation', 'jankx')
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Style Type', 'jankx'),
           value: styleType,
           options: [{
@@ -222,7 +266,7 @@ function Edit({
             styleType: value
           }),
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Choose the visual style for tabs', 'jankx')
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Tab Alignment', 'jankx'),
           value: tabAlignment,
           options: [{
@@ -244,37 +288,37 @@ function Edit({
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Align tabs horizontally', 'jankx')
         })]
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.BlockControls, {
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToolbarGroup, {
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToolbarButton, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.BlockControls, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToolbarGroup, {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToolbarButton, {
           icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__["default"],
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Add Tab', 'jankx'),
           onClick: addNewTab
         })
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
       ...blockProps,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
         className: "smart-tabs__navigation",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
           className: `smart-tabs__nav-list align-${tabAlignment}`,
           children: [tabItems.map((tab, index) => {
             const isActiveTab = index === currentActiveTab;
-            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("button", {
+            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("button", {
               className: `smart-tabs__nav-item${isActiveTab ? ' is-active' : ''}`,
               onClick: () => handleTabClick(index, tab.clientId),
               type: "button",
-              children: [tab.iconType !== 'none' && tab.icon && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("span", {
+              children: [tab.iconType !== 'none' && tab.icon && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("span", {
                 className: "smart-tabs__nav-icon",
                 dangerouslySetInnerHTML: {
                   __html: tab.icon
                 }
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("span", {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("span", {
                 className: "smart-tabs__nav-label",
                 children: tab.title
               })]
             }, tab.clientId);
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
             className: "smart-tabs__add-tab",
             icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__["default"],
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Add Tab', 'jankx'),
@@ -282,7 +326,7 @@ function Edit({
             variant: "secondary"
           })]
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
         ...innerBlocksProps
       })]
     })]
@@ -388,6 +432,16 @@ module.exports = window["wp"]["components"];
 /***/ ((module) => {
 
 module.exports = window["wp"]["data"];
+
+/***/ }),
+
+/***/ "@wordpress/element":
+/*!*********************************!*\
+  !*** external ["wp","element"] ***!
+  \*********************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["element"];
 
 /***/ }),
 

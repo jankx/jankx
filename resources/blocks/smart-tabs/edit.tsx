@@ -19,11 +19,13 @@ import {
 import { useSelect, useDispatch } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
 import { plus } from '@wordpress/icons';
+import { useMemo } from '@wordpress/element';
 
 /**
  * Internal dependencies
  */
 import type { SmartTabsProps, TabItem, WPBlock, BlockEditorSelect, BlockEditorDispatch } from './types';
+import type { SmartTabTriggerConfig } from '../smart-tab/types';
 
 /**
  * Edit component for Smart Tabs block
@@ -52,9 +54,59 @@ export default function Edit({ attributes, setAttributes, clientId }: SmartTabsP
     const dispatch = useDispatch('core/block-editor') as BlockEditorDispatch;
     const { insertBlock, selectBlock } = dispatch;
 
+    const manualTriggerFallback: SmartTabTriggerConfig = useMemo(
+        () => ({
+            key: 'manual',
+            label: __('Custom Content', 'jankx'),
+            description: __('Use manual tab title and content.', 'jankx'),
+            previewTitle: __('Tab', 'jankx'),
+            supports: {
+                customTitle: true,
+                customContent: true,
+                icon: true,
+            },
+        }),
+        []
+    );
+
+    const triggersMap = useMemo(() => {
+        const items = (window?.JankxSmartTabTriggers?.items ?? {}) as Record<string, SmartTabTriggerConfig>;
+        if (Object.keys(items).length === 0) {
+            return { manual: manualTriggerFallback };
+        }
+
+        return {
+            manual: manualTriggerFallback,
+            ...items,
+        };
+    }, [manualTriggerFallback]);
+
     const tabItems: TabItem[] = innerBlocks.map((block: WPBlock): TabItem => ({
         clientId: block.clientId,
-        title: (block.attributes.title as string) || __('Tab', 'jankx'),
+        title: (() => {
+            const triggerKey = (block.attributes.trigger as string) || 'manual';
+            const triggerConfig = triggersMap[triggerKey] ?? triggersMap.manual;
+            const supports = triggerConfig?.supports || {};
+            const allowCustomTitle = supports.customTitle !== false;
+            const blockTitle = (block.attributes.title as string) || '';
+
+            if (allowCustomTitle && blockTitle) {
+                return blockTitle;
+            }
+
+            return (
+                triggerConfig?.previewTitle ||
+                triggerConfig?.label ||
+                blockTitle ||
+                __('Tab', 'jankx')
+            );
+        })(),
+        trigger: (block.attributes.trigger as string) || 'manual',
+        previewTitle: (() => {
+            const triggerKey = (block.attributes.trigger as string) || 'manual';
+            const triggerConfig = triggersMap[triggerKey] ?? triggersMap.manual;
+            return triggerConfig?.previewTitle || triggerConfig?.label || '';
+        })(),
         icon: (block.attributes.icon as string) || '',
         iconType: (block.attributes.iconType as string) || '',
         normalTabTextColor: (block.attributes.normalTabTextColor as string) || '',
@@ -78,6 +130,7 @@ export default function Edit({ attributes, setAttributes, clientId }: SmartTabsP
     const addNewTab = (): void => {
         const newTab = createBlock('jankx/smart-tab', {
             title: __('New Tab', 'jankx'),
+            trigger: 'manual',
         });
 
         insertBlock(newTab, innerBlocks.length, clientId, false);
