@@ -4,19 +4,7 @@
 .jankx-comment-count {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  font-weight: 600;
-}
-
-.jankx-comment-count .comment-count-number {
-  font-size: 1.125rem;
-  line-height: 1;
-}
-
-.jankx-comment-count .comment-count-text {
-  font-size: 0.875rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  gap: 5px;
 }
 
 .jankx-comment-count {

@@ -8,7 +8,7 @@
   \*****************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/comment-count","title":"Comment Count","category":"jankx","description":"Display the number of comments for the current post.","keywords":["comments","count","meta"],"textdomain":"jankx","supports":{"html":false,"align":["left","center","right"]},"editorScript":"file:./build/index.js","style":"file:./build/style.css","editorStyle":"file:./build/editor.css"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/comment-count","title":"Comment Count","category":"jankx","description":"Display the number of comments for the current post.","keywords":["comments","count","meta"],"textdomain":"jankx","supports":{"html":false,"align":["left","center","right"],"typography":{"fontSize":true,"lineHeight":true,"fontFamily":true,"fontStyle":true,"fontWeight":true,"letterSpacing":true,"textTransform":true,"textDecoration":true},"color":{"text":true},"spacing":{"margin":true,"padding":true}},"editorScript":"file:./build/index.js","style":"file:./build/style.css","editorStyle":"file:./build/editor.css"}');
 
 /***/ }),
 

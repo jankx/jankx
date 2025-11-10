@@ -17,7 +17,24 @@
             "left",
             "center",
             "right"
-        ]
+        ],
+        "typography": {
+            "fontSize": true,
+            "lineHeight": true,
+            "fontFamily": true,
+            "fontStyle": true,
+            "fontWeight": true,
+            "letterSpacing": true,
+            "textTransform": true,
+            "textDecoration": true
+        },
+        "color": {
+            "text": true
+        },
+        "spacing": {
+            "margin": true,
+            "padding": true
+        }
     },
     "editorScript": "file:./build/index.js",
     "style": "file:./build/style.css",

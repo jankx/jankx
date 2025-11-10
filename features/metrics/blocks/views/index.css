@@ -15,7 +15,7 @@
 }
 
 .jankx-views-block .views-icon {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     color: #999;
 }
