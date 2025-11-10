@@ -66,6 +66,7 @@ abstract class PostLayout implements PostLayoutInterface
         'imageSize' => 'large',
         'excerptLength' => 55,
         'thumbnailPosition' => 'top',
+        'includeStickyPosts' => false,
     ];
 
     /**

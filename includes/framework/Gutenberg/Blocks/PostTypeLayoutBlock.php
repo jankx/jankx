@@ -233,6 +233,7 @@ class PostTypeLayoutBlock extends Block
             'order' => $order,
             'queryPreset' => $queryPreset,
             'thumbnailPosition' => $thumbnail_position,
+            'includeStickyPosts' => !empty($attributes['includeStickyPosts']),
         ];
 
         $wrapper_attributes = get_block_wrapper_attributes([
@@ -316,6 +317,12 @@ class PostTypeLayoutBlock extends Block
 
         if (!in_array('thumbnailPosition', $supportedOptions, true)) {
             $attributes['thumbnailPosition'] = 'top';
+        }
+
+        if (($attributes['postType'] ?? 'post') !== 'post') {
+            $attributes['includeStickyPosts'] = false;
+        } else {
+            $attributes['includeStickyPosts'] = !empty($attributes['includeStickyPosts']);
         }
 
         return $attributes;

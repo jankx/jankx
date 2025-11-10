@@ -73,6 +73,7 @@ class PostLayoutDecorator
             'showAuthor' => $attributes['showAuthor'] ?? false,
             'postsPerPage' => $attributes['postsPerPage'] ?? 10,
             'excerptLength' => $attributes['excerptLength'] ?? 55,
+            'includeStickyPosts' => !empty($attributes['includeStickyPosts']),
             // Carousel specific options
             'slidesToScroll' => $attributes['slidesToScroll'] ?? 1,
             'loop' => $attributes['loop'] ?? false,
@@ -151,6 +152,11 @@ class PostLayoutDecorator
             'orderby' => $orderby,
             'post_status' => 'publish',
         ];
+
+        if (($attributes['postType'] ?? 'post') === 'post') {
+            $include_sticky = !empty($attributes['includeStickyPosts']);
+            $args['ignore_sticky_posts'] = $include_sticky ? 0 : 1;
+        }
 
         // Only set 'order' if orderby is not array (string orderby)
         if ($order !== null) {

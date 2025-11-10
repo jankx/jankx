@@ -75,6 +75,10 @@
       "type": "number",
       "default": 10
     },
+    "includeStickyPosts": {
+      "type": "boolean",
+      "default": false
+    },
     "layout": {
       "type": "string",
       "default": "grid"

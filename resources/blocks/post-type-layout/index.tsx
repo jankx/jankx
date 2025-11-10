@@ -55,6 +55,7 @@ interface PostTypeLayoutAttributes {
     showTitle: boolean;
     showExcerpt: boolean;
     showFeaturedImage: boolean;
+    includeStickyPosts: boolean;
     thumbnailPosition: 'top' | 'bottom' | 'left' | 'right';
     imageRatio: string;
     showDate: boolean;
@@ -111,6 +112,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         showTitle,
         showExcerpt,
         showFeaturedImage,
+        includeStickyPosts = false,
         thumbnailPosition = 'top',
         imageRatio,
         showDate,
@@ -320,6 +322,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             showTitle: debouncedAttributes.showTitle,
             showExcerpt: debouncedAttributes.showExcerpt,
             showFeaturedImage: debouncedAttributes.showFeaturedImage,
+            includeStickyPosts: debouncedAttributes.includeStickyPosts,
             thumbnailPosition: debouncedAttributes.thumbnailPosition,
             imageRatio: debouncedAttributes.imageRatio,
             showDate: debouncedAttributes.showDate,
@@ -441,6 +444,15 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         max={50}
                         help={__('Number of posts to display', 'jankx')}
                     />
+
+                    {postType === 'post' && (
+                        <ToggleControl
+                            label={__('Include Sticky Posts', 'jankx')}
+                            checked={includeStickyPosts}
+                            onChange={(value) => setAttributes({ includeStickyPosts: value })}
+                            help={__('Include sticky posts in the query (disabled by default).', 'jankx')}
+                        />
+                    )}
 
                     {/* Order By and Order - Show for related and custom presets */}
                     {queryPreset !== 'default' && (
