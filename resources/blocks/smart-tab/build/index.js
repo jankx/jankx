@@ -18495,7 +18495,7 @@ const deprecated = [{
   ..._block_json__WEBPACK_IMPORTED_MODULE_4__,
   icon: tabIcon,
   edit: _edit__WEBPACK_IMPORTED_MODULE_3__["default"],
-  save: () => null,
+  save: () => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InnerBlocks.Content, {}),
   deprecated
 });
 })();

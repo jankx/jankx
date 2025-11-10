@@ -67,7 +67,7 @@ registerBlockType(metadata.name, {
     ...metadata,
     icon: tabIcon,
     edit: Edit,
-    save: () => null,
+    save: () => <InnerBlocks.Content />,
     deprecated,
 } as any);
 
