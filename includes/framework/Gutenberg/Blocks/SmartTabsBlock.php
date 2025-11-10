@@ -190,17 +190,22 @@ class SmartTabsBlock extends Block
             $trigger_key = $attributes['trigger'] ?? 'manual';
             $trigger = $registry->getTrigger($trigger_key);
 
-            $supports = [];
-            if ($trigger instanceof SmartTabTriggerInterface) {
-                $attributes = $trigger->prepareAttributes($attributes);
-                $editor_settings = $trigger->getEditorSettings($tab_context);
-                $supports = $editor_settings['supports'] ?? [];
-            }
-
             $tab_context = $context;
             $tab_context['tab_index'] = $index;
             $tab_context['tab_attributes'] = $attributes;
             $tab_context['parent_attributes'] = $parent_attributes;
+
+            $supports = [];
+            if ($trigger instanceof SmartTabTriggerInterface) {
+                $attributes = $trigger->prepareAttributes($attributes);
+                $tab_context['tab_attributes'] = $attributes;
+                $editor_settings = $trigger->getEditorSettings($tab_context);
+                $supports = $editor_settings['supports'] ?? [];
+
+                if (method_exists($trigger, 'shouldDisplay') && $trigger->shouldDisplay($attributes, $tab_context) === false) {
+                    continue;
+                }
+            }
 
             if ($trigger instanceof SmartTabTriggerInterface) {
                 $title = $trigger->resolveTitle($attributes, $tab_context);
