@@ -8,7 +8,7 @@
   \********************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/table-of-content","title":"Table of Content","category":"jankx","description":"Display interactive table of content for the current post","keywords":["toc","table","content","index","mục lục"],"textdomain":"jankx","attributes":{"listingType":{"type":"string","enum":["ul","ol","none"],"default":"ul"},"expandIconType":{"type":"string","enum":["plus-minus","chevron","arrow","caret","none"],"default":"plus-minus"},"defaultExpanded":{"type":"boolean","default":false},"expandFirstItem":{"type":"boolean","default":true},"showHeading":{"type":"boolean","default":true},"customHeadingText":{"type":"string","default":""},"headingStyle":{"type":"string","enum":["underline","tabbed","bordered"],"default":"underline"},"minHeadingLevel":{"type":"number","default":1,"minimum":1,"maximum":6},"maxHeadingLevel":{"type":"number","default":6,"minimum":2,"maximum":6},"className":{"type":"string","default":""},"anchor":{"type":"string","default":""}},"style":"file:./build/style.css","supports":{"html":false,"anchor":true,"align":["wide","full"],"spacing":{"margin":true,"padding":true,"blockGap":true,"__experimentalDefaultControls":{"padding":true,"margin":true}},"color":{"background":true,"gradients":true,"text":true,"link":true,"__experimentalDefaultControls":{"background":true,"text":true}},"typography":{"fontSize":true,"lineHeight":true,"fontFamily":true,"fontWeight":true,"fontStyle":true,"textTransform":true,"textDecoration":true,"letterSpacing":true,"__experimentalDefaultControls":{"fontSize":true}},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true,"__experimentalDefaultControls":{"radius":true}},"shadow":true},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","viewScript":"file:./build/view.js","styles":[{"name":"default","label":"Default","isDefault":true},{"name":"minimal","label":"Minimal"},{"name":"boxed","label":"Boxed"},{"name":"sidebar","label":"Sidebar"}]}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/table-of-content","title":"Table of Content","category":"jankx","description":"Display interactive table of content for the current post","keywords":["toc","table","content","index","mục lục"],"textdomain":"jankx","attributes":{"listingType":{"type":"string","enum":["ul","ol","none"],"default":"ul"},"expandIconType":{"type":"string","enum":["plus-minus","chevron","arrow","caret","none"],"default":"plus-minus"},"defaultExpanded":{"type":"boolean","default":false},"expandFirstItem":{"type":"boolean","default":true},"showHeading":{"type":"boolean","default":true},"hideEmptyMessage":{"type":"boolean","default":true},"customHeadingText":{"type":"string","default":""},"headingStyle":{"type":"string","enum":["underline","tabbed","bordered"],"default":"underline"},"minHeadingLevel":{"type":"number","default":1,"minimum":1,"maximum":6},"maxHeadingLevel":{"type":"number","default":6,"minimum":2,"maximum":6},"className":{"type":"string","default":""},"anchor":{"type":"string","default":""}},"style":"file:./build/style.css","supports":{"html":false,"anchor":true,"align":["wide","full"],"spacing":{"margin":true,"padding":true,"blockGap":true,"__experimentalDefaultControls":{"padding":true,"margin":true}},"color":{"background":true,"gradients":true,"text":true,"link":true,"__experimentalDefaultControls":{"background":true,"text":true}},"typography":{"fontSize":true,"lineHeight":true,"fontFamily":true,"fontWeight":true,"fontStyle":true,"textTransform":true,"textDecoration":true,"letterSpacing":true,"__experimentalDefaultControls":{"fontSize":true}},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true,"__experimentalDefaultControls":{"radius":true}},"shadow":true},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","viewScript":"file:./build/view.js","styles":[{"name":"default","label":"Default","isDefault":true},{"name":"minimal","label":"Minimal"},{"name":"boxed","label":"Boxed"},{"name":"sidebar","label":"Sidebar"}]}');
 
 /***/ }),
 
@@ -200,6 +200,7 @@ function Edit({
     defaultExpanded,
     expandFirstItem,
     showHeading,
+    hideEmptyMessage,
     customHeadingText,
     headingStyle,
     minHeadingLevel,
@@ -361,6 +362,14 @@ function Edit({
             showHeading: value
           }),
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show or hide the table of content heading', 'jankx'),
+          __nextHasNoMarginBottom: true
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Hide empty message', 'jankx'),
+          checked: hideEmptyMessage,
+          onChange: value => setAttributes({
+            hideEmptyMessage: value
+          }),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('When enabled, the block renders nothing on the frontend if no headings are found.', 'jankx'),
           __nextHasNoMarginBottom: true
         }), showHeading && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {

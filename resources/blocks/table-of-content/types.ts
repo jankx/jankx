@@ -21,6 +21,7 @@ export interface TableOfContentAttributes {
     defaultExpanded: boolean;
     expandFirstItem: boolean;
     showHeading: boolean;
+    hideEmptyMessage: boolean;
     customHeadingText: string;
     headingStyle: HeadingStyle;
     minHeadingLevel: number;

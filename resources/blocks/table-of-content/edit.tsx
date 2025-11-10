@@ -200,6 +200,7 @@ export default function Edit({ attributes, setAttributes, clientId }: TableOfCon
         defaultExpanded,
         expandFirstItem,
         showHeading,
+        hideEmptyMessage,
         customHeadingText,
         headingStyle,
         minHeadingLevel,
@@ -369,6 +370,14 @@ export default function Edit({ attributes, setAttributes, clientId }: TableOfCon
                         checked={showHeading}
                         onChange={(value) => setAttributes({ showHeading: value })}
                         help={__('Show or hide the table of content heading', 'jankx')}
+                        __nextHasNoMarginBottom
+                    />
+
+                    <ToggleControl
+                        label={__('Hide empty message', 'jankx')}
+                        checked={hideEmptyMessage}
+                        onChange={(value) => setAttributes({ hideEmptyMessage: value })}
+                        help={__('When enabled, the block renders nothing on the frontend if no headings are found.', 'jankx')}
                         __nextHasNoMarginBottom
                     />
 

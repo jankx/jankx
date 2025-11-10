@@ -851,6 +851,7 @@ class TableOfContentBlock extends Block
         $default_expanded = $attributes['defaultExpanded'] ?? false;
         $expand_first_item = $attributes['expandFirstItem'] ?? true;
         $show_heading = $attributes['showHeading'] ?? true;
+        $hide_empty_message = $attributes['hideEmptyMessage'] ?? true;
         $custom_heading_text = $attributes['customHeadingText'] ?? '';
         $heading_style = $attributes['headingStyle'] ?? 'underline';
         $min_heading_level = $attributes['minHeadingLevel'] ?? 1;
@@ -888,6 +889,10 @@ class TableOfContentBlock extends Block
                 $toc_items = $this->getMockHeadings($min_heading_level, $max_heading_level);
             } else {
                 // Show placeholder for normal posts without headings
+                if ($hide_empty_message) {
+                    return '';
+                }
+
                 return sprintf(
                     '<div class="jankx-table-of-content %s"><div class="toc-placeholder"><p>%s</p></div></div>',
                     esc_attr($class_name),

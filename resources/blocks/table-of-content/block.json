@@ -30,6 +30,10 @@
             "type": "boolean",
             "default": true
         },
+        "hideEmptyMessage": {
+            "type": "boolean",
+            "default": true
+        },
         "customHeadingText": {
             "type": "string",
             "default": ""
