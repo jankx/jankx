@@ -13,8 +13,8 @@
     "plugin-zip": "wp-scripts plugin-zip",
     "test:e2e": "wp-scripts test-e2e",
     "test:unit": "wp-scripts test-unit-js",
-    "build:webpack": "webpack --config webpack.config.js",
-    "watch:webpack": "webpack --watch --config webpack.config.js"
+    "build:blocks": "webpack --config webpack.config.js",
+    "watch:blocks": "webpack --watch --config webpack.config.js"
   },
   "keywords": [
     "wordpress",

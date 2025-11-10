@@ -10,7 +10,7 @@ module.exports = {
         'views/index': './metrics/blocks/views/index.tsx',
         'views/style': './metrics/blocks/views/style.css',
         'trend-posts/index': './metrics/blocks/trend-posts/index.tsx',
-        'trend-posts/style': './metrics/blocks/trend-posts/style.css'
+        'trend-posts/style': './metrics/blocks/trend-posts/style.scss'
     },
     output: {
         path: path.resolve(__dirname, 'metrics/blocks'),
@@ -43,6 +43,14 @@ module.exports = {
                 use: [
                     MiniCssExtractPlugin.loader,
                     'css-loader'
+                ]
+            },
+            {
+                test: /\.s[ac]ss$/,
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    'css-loader',
+                    'sass-loader'
                 ]
             }
         ]

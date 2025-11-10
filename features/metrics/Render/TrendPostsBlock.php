@@ -24,6 +24,7 @@ class TrendPostsBlock extends Block
         $showExcerpt = $attributes['showExcerpt'] ?? false;
         $showDate = $attributes['showDate'] ?? true;
         $showViews = $attributes['showViews'] ?? true;
+        $includeStickyPosts = $attributes['includeStickyPosts'] ?? false;
 
         $blockClasses = $attributes['className'] ?? '';
         $hasHotBadgeStyle = strpos($blockClasses, 'is-style-hot-badge') !== false;
@@ -33,13 +34,13 @@ class TrendPostsBlock extends Block
         $stickyPosts = get_option('sticky_posts', []);
         $queryArgs = [
             'post_type' => 'post',
-            'posts_per_page' => 10,
+            'posts_per_page' => max($postsPerPage, 5),
             'meta_key' => 'post_views_count',
             'orderby' => 'meta_value_num',
             'order' => 'DESC',
             'post_status' => 'publish',
             'ignore_sticky_posts' => true,
-            'post__not_in' => is_array($stickyPosts) ? $stickyPosts : [],
+            'post__not_in' => $includeStickyPosts ? [] : (is_array($stickyPosts) ? $stickyPosts : []),
         ];
 
         $topPostsQuery = new WP_Query($queryArgs);
@@ -53,19 +54,27 @@ class TrendPostsBlock extends Block
             wp_reset_postdata();
         }
 
-        $selectedPosts = [];
-        if (!empty($topPosts)) {
-            $count = min($postsPerPage, count($topPosts));
-            if ($count > 0) {
-                $randomKeys = array_rand($topPosts, $count);
-                if (!is_array($randomKeys)) {
-                    $randomKeys = [$randomKeys];
+        if (empty($topPosts)) {
+            $fallbackQuery = new WP_Query([
+                'post_type' => 'post',
+                'posts_per_page' => $postsPerPage,
+                'orderby' => 'date',
+                'order' => 'DESC',
+                'post_status' => 'publish',
+                'ignore_sticky_posts' => true,
+                'post__not_in' => $includeStickyPosts ? [] : (is_array($stickyPosts) ? $stickyPosts : []),
+            ]);
+
+            if ($fallbackQuery->have_posts()) {
+                while ($fallbackQuery->have_posts()) {
+                    $fallbackQuery->the_post();
+                    $topPosts[] = get_post();
                 }
-                foreach ($randomKeys as $key) {
-                    $selectedPosts[] = $topPosts[$key];
-                }
+                wp_reset_postdata();
             }
         }
+
+        $selectedPosts = array_slice($topPosts, 0, $postsPerPage);
 
         if ($hasHotBadgeStyle) {
             $selectedPosts = array_slice($selectedPosts, 0, 1);

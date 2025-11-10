@@ -2,10 +2,10 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./metrics/blocks/trend-posts/style.css":
-/*!**********************************************!*\
-  !*** ./metrics/blocks/trend-posts/style.css ***!
-  \**********************************************/
+/***/ "./metrics/blocks/trend-posts/style.scss":
+/*!***********************************************!*\
+  !*** ./metrics/blocks/trend-posts/style.scss ***!
+  \***********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -147,7 +147,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./style.css */ "./metrics/blocks/trend-posts/style.css");
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./style.scss */ "./metrics/blocks/trend-posts/style.scss");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__);
 
@@ -191,6 +191,10 @@ const mockViews = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('12.3K vie
     showViews: {
       type: 'boolean',
       default: true
+    },
+    includeStickyPosts: {
+      type: 'boolean',
+      default: false
     }
   },
   edit: function Edit({
@@ -204,7 +208,8 @@ const mockViews = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('12.3K vie
       showTitle,
       showExcerpt,
       showDate,
-      showViews
+      showViews,
+      includeStickyPosts
     } = attributes;
     const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)({
       className: 'jankx-trend-posts-block'
@@ -271,6 +276,13 @@ const mockViews = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('12.3K vie
             }),
             disabled: isHotBadgeStyle,
             help: isHotBadgeStyle ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('View counter is hidden in Hot Badge style.', 'jankx') : undefined
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Include Sticky Posts', 'jankx'),
+            checked: includeStickyPosts,
+            onChange: value => setAttributes({
+              includeStickyPosts: value
+            }),
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable to allow sticky posts to appear in the trending list.', 'jankx')
           })]
         })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {

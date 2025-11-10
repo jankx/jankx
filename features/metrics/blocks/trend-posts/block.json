@@ -51,6 +51,10 @@
         "showViews": {
             "type": "boolean",
             "default": true
+        },
+        "includeStickyPosts": {
+            "type": "boolean",
+            "default": false
         }
     }
 }

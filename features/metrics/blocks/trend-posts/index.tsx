@@ -2,7 +2,7 @@ import { registerBlockType } from '@wordpress/blocks';
 import { __, sprintf } from '@wordpress/i18n';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { PanelBody, RangeControl, ToggleControl } from '@wordpress/components';
-import './style.css';
+import './style.scss';
 
 interface TrendPostsBlockAttributes {
     postsPerPage: number;
@@ -11,6 +11,7 @@ interface TrendPostsBlockAttributes {
     showExcerpt: boolean;
     showDate: boolean;
     showViews: boolean;
+    includeStickyPosts: boolean;
 }
 
 interface TrendPostsBlockEditProps {
@@ -57,10 +58,22 @@ registerBlockType<TrendPostsBlockAttributes>('jankx/trend-posts', {
         showViews: {
             type: 'boolean',
             default: true
+        },
+        includeStickyPosts: {
+            type: 'boolean',
+            default: false
         }
     },
     edit: function Edit({ attributes, setAttributes }: TrendPostsBlockEditProps) {
-        const { postsPerPage, showThumbnail, showTitle, showExcerpt, showDate, showViews } = attributes;
+        const {
+            postsPerPage,
+            showThumbnail,
+            showTitle,
+            showExcerpt,
+            showDate,
+            showViews,
+            includeStickyPosts,
+        } = attributes;
 
         const blockProps = useBlockProps({
             className: 'jankx-trend-posts-block'
@@ -121,6 +134,12 @@ registerBlockType<TrendPostsBlockAttributes>('jankx/trend-posts', {
                             onChange={(value: boolean) => setAttributes({ showViews: value })}
                             disabled={isHotBadgeStyle}
                             help={isHotBadgeStyle ? __('View counter is hidden in Hot Badge style.', 'jankx') : undefined}
+                        />
+                        <ToggleControl
+                            label={__('Include Sticky Posts', 'jankx')}
+                            checked={includeStickyPosts}
+                            onChange={(value: boolean) => setAttributes({ includeStickyPosts: value })}
+                            help={__('Enable to allow sticky posts to appear in the trending list.', 'jankx')}
                         />
                     </PanelBody>
                 </InspectorControls>
