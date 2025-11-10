@@ -57,6 +57,10 @@ module.exports = {
     'blocks/table-of-content/build/editor': './blocks/table-of-content/editor.scss',
     'blocks/table-of-content/build/view': './blocks/table-of-content/view.ts',
 
+    'blocks/comment-count/build/index': './blocks/comment-count/index.tsx',
+    'blocks/comment-count/build/style': './blocks/comment-count/style.scss',
+    'blocks/comment-count/build/editor': './blocks/comment-count/editor.scss',
+
     'blocks/modal/build/index': './blocks/modal/index.js',
     'blocks/modal/build/style': './blocks/modal/style.scss',
     'blocks/modal/build/editor': './blocks/modal/editor.scss',
