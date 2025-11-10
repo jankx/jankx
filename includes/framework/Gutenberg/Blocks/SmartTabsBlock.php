@@ -130,6 +130,7 @@ class SmartTabsBlock extends Block
         // Build wrapper attributes
         $wrapper_attrs = [
             'class' => implode(' ', $wrapper_classes),
+            'data-active-tab' => (string) max(0, (int) $active_tab),
         ];
 
         if (!empty($anchor)) {

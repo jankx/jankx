@@ -2,82 +2,199 @@
  * Smart Tabs Block - Frontend JavaScript
  */
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
     const smartTabsBlocks = document.querySelectorAll('.smart-tabs');
 
+    const generateUid = (prefix = 'smart-tabs') =>
+        `${prefix}-${Math.random().toString(36).slice(2, 10)}`;
+
     smartTabsBlocks.forEach((tabsBlock) => {
-        const navItems = tabsBlock.querySelectorAll('.smart-tabs__nav-item');
-        // Query tabs trong smart-tabs__content scope
+        const navItems = Array.from(tabsBlock.querySelectorAll('.smart-tabs__nav-item'));
         const tabsContent = tabsBlock.querySelector('.smart-tabs__content');
-        const tabPanels = tabsContent ? tabsContent.querySelectorAll('.smart-tab') : [];
+        const tabPanels = tabsContent ? Array.from(tabsContent.querySelectorAll('.smart-tab')) : [];
 
         if (navItems.length === 0 || tabPanels.length === 0) {
             return;
         }
 
-        // Initialize first tab as active
-        let activeIndex = 0;
-        navItems[0]?.classList.add('is-active');
+        const uid =
+            tabsBlock.dataset.smartTabsUid && tabsBlock.dataset.smartTabsUid.length > 0
+                ? tabsBlock.dataset.smartTabsUid
+                : generateUid();
+        tabsBlock.dataset.smartTabsUid = uid;
+
+        const panelHashMap = {};
+
+        navItems.forEach((navItem, index) => {
+            if (!navItem.id) {
+                navItem.id = `${uid}-tab-${index}`;
+            }
+            navItem.setAttribute('role', 'tab');
+            navItem.setAttribute('aria-selected', 'false');
+            navItem.setAttribute('tabindex', '-1');
+        });
+
         tabPanels.forEach((panel, index) => {
-            if (index === 0) {
-                panel.classList.add('is-active');
-                panel.style.display = 'block';
-            } else {
-                panel.classList.remove('is-active');
-                panel.style.display = 'none';
+            panel.setAttribute('role', 'tabpanel');
+            panel.setAttribute('aria-hidden', 'true');
+
+            let panelId = panel.getAttribute('id');
+            if (!panelId) {
+                panelId = `${uid}-panel-${index}`;
+                panel.setAttribute('id', panelId);
+            }
+
+            panelHashMap[`#${panelId}`] = index;
+
+            const controller = navItems[index];
+            if (controller) {
+                controller.setAttribute('aria-controls', panelId);
+                panel.setAttribute('aria-labelledby', controller.id);
             }
         });
 
-        // Handle tab clicks
-        navItems.forEach((navItem, index) => {
-            navItem.addEventListener('click', function (e) {
-                e.preventDefault();
+        let activeIndex = -1;
 
-                // Update active nav item
-                navItems.forEach((item) => item.classList.remove('is-active'));
-                navItem.classList.add('is-active');
+        const clampIndex = (index) => Math.max(0, Math.min(index, navItems.length - 1));
 
-                // Update active tab panel
-                tabPanels.forEach((panel, panelIndex) => {
-                    if (panelIndex === index) {
-                        panel.classList.add('is-active');
-                        panel.style.display = 'block';
-                    } else {
-                        panel.classList.remove('is-active');
-                        panel.style.display = 'none';
-                    }
+        const scrollToPanel = (index) => {
+            const panel = tabPanels[index];
+            if (!panel) {
+                return;
+            }
+
+            window.requestAnimationFrame(() => {
+                panel.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start',
                 });
+            });
+        };
 
-                activeIndex = index;
+        const activateTab = (index, options = {}) => {
+            if (!navItems.length) {
+                return;
+            }
+
+            const targetIndex = clampIndex(index);
+
+            if (activeIndex === targetIndex && !options.force) {
+                if (options.scroll) {
+                    scrollToPanel(targetIndex);
+                }
+                return;
+            }
+
+            activeIndex = targetIndex;
+
+            navItems.forEach((navItem, navIndex) => {
+                const isActive = navIndex === targetIndex;
+                navItem.classList.toggle('is-active', isActive);
+                navItem.setAttribute('aria-selected', isActive ? 'true' : 'false');
+                navItem.setAttribute('tabindex', isActive ? '0' : '-1');
+            });
+
+            tabPanels.forEach((panel, panelIndex) => {
+                const isActive = panelIndex === targetIndex;
+                panel.classList.toggle('is-active', isActive);
+                panel.style.display = isActive ? 'block' : 'none';
+                panel.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+            });
+
+            if (options.focusNav) {
+                navItems[targetIndex]?.focus({
+                    preventScroll: true,
+                });
+            }
+
+            if (options.scroll) {
+                scrollToPanel(targetIndex);
+            }
+        };
+
+        navItems.forEach((navItem, index) => {
+            navItem.addEventListener('click', (event) => {
+                event.preventDefault();
+                activateTab(index, { focusNav: true, force: true });
+
+                const panel = tabPanels[index];
+                if (panel && panel.id) {
+                    const newHash = `#${panel.id}`;
+                    if (window.location.hash !== newHash) {
+                        history.replaceState(
+                            null,
+                            '',
+                            `${window.location.pathname}${window.location.search}${newHash}`
+                        );
+                    }
+                    scrollToPanel(index);
+                }
             });
         });
 
-        // Handle keyboard navigation
-        tabsBlock.addEventListener('keydown', function (e) {
-            if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-                e.preventDefault();
-
-                let newIndex = activeIndex;
-                if (e.key === 'ArrowLeft') {
-                    newIndex = activeIndex > 0 ? activeIndex - 1 : navItems.length - 1;
-                } else {
-                    newIndex = activeIndex < navItems.length - 1 ? activeIndex + 1 : 0;
-                }
-
-                navItems[newIndex]?.click();
-                navItems[newIndex]?.focus();
+        tabsBlock.addEventListener('keydown', (event) => {
+            const keys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'];
+            if (!keys.includes(event.key)) {
+                return;
             }
+
+            event.preventDefault();
+
+            const lastIndex = navItems.length - 1;
+            let nextIndex = activeIndex;
+
+            switch (event.key) {
+                case 'ArrowLeft':
+                case 'ArrowUp':
+                    nextIndex = activeIndex > 0 ? activeIndex - 1 : lastIndex;
+                    break;
+                case 'ArrowRight':
+                case 'ArrowDown':
+                    nextIndex = activeIndex < lastIndex ? activeIndex + 1 : 0;
+                    break;
+                case 'Home':
+                    nextIndex = 0;
+                    break;
+                case 'End':
+                    nextIndex = lastIndex;
+                    break;
+                default:
+                    break;
+            }
+
+            activateTab(nextIndex, { focusNav: true, force: true });
         });
 
-        // Make nav items focusable
-        navItems.forEach((item) => {
-            item.setAttribute('tabindex', '0');
-            item.setAttribute('role', 'tab');
-        });
+        const handleHashNavigation = (hash, options = {}) => {
+            if (!hash) {
+                return false;
+            }
 
-        // Set ARIA attributes
-        tabPanels.forEach((panel) => {
-            panel.setAttribute('role', 'tabpanel');
+            const targetIndex = panelHashMap[hash];
+            if (typeof targetIndex === 'number') {
+                activateTab(targetIndex, {
+                    scroll: options.scroll !== false,
+                    force: true,
+                    focusNav: false,
+                });
+                return true;
+            }
+
+            return false;
+        };
+
+        const datasetActive = parseInt(
+            tabsBlock.getAttribute('data-active-tab') ?? '0',
+            10
+        );
+        const defaultIndex = Number.isNaN(datasetActive) ? 0 : datasetActive;
+
+        if (!handleHashNavigation(window.location.hash)) {
+            activateTab(defaultIndex, { force: true });
+        }
+
+        window.addEventListener('hashchange', () => {
+            handleHashNavigation(window.location.hash);
         });
     });
 });
