@@ -188,7 +188,12 @@ class PostTypeLayoutBlock extends Block
             $html .= PaginationRenderer::render('', $query, $attributes);
         }
 
-        $wrapper_classes = ['wp-block-jankx-post-type-layout', 'layout-' . $layout_name];
+        $thumbnail_position = $attributes['thumbnailPosition'] ?? 'top';
+        if (!in_array($thumbnail_position, ['top', 'bottom', 'left', 'right'], true)) {
+            $thumbnail_position = 'top';
+        }
+
+        $wrapper_classes = ['wp-block-jankx-post-type-layout', 'layout-' . $layout_name, 'thumbnail-position-' . $thumbnail_position];
 
         $inline_styles = [];
         if (!empty($attributes['columns'])) {
@@ -227,6 +232,7 @@ class PostTypeLayoutBlock extends Block
             'orderBy' => $order_by,
             'order' => $order,
             'queryPreset' => $queryPreset,
+            'thumbnailPosition' => $thumbnail_position,
         ];
 
         $wrapper_attributes = get_block_wrapper_attributes([
@@ -244,6 +250,7 @@ class PostTypeLayoutBlock extends Block
             'data-order' => esc_attr($order),
             'data-query-preset' => esc_attr($queryPreset),
             'data-image-ratio' => !empty($attributes['imageRatio']) ? esc_attr($attributes['imageRatio']) : '',
+            'data-thumbnail-position' => esc_attr($thumbnail_position),
             'data-block-settings' => esc_attr(wp_json_encode($block_settings)),
         ]);
 
@@ -305,6 +312,10 @@ class PostTypeLayoutBlock extends Block
             if (!in_array($key, $supportedOptions, true)) {
                 $attributes[$key] = false;
             }
+        }
+
+        if (!in_array('thumbnailPosition', $supportedOptions, true)) {
+            $attributes['thumbnailPosition'] = 'top';
         }
 
         return $attributes;
@@ -492,7 +503,12 @@ class PostTypeLayoutBlock extends Block
             $html .= PaginationRenderer::render($content, $query, $attributes);
         }
 
-        $wrapper_classes = ['wp-block-jankx-post-type-layout', 'layout-' . $layout_name];
+        $thumbnail_position = $attributes['thumbnailPosition'] ?? 'top';
+        if (!in_array($thumbnail_position, ['top', 'bottom', 'left', 'right'], true)) {
+            $thumbnail_position = 'top';
+        }
+
+        $wrapper_classes = ['wp-block-jankx-post-type-layout', 'layout-' . $layout_name, 'thumbnail-position-' . $thumbnail_position];
 
         $inline_styles = [];
         if (!empty($attributes['columns'])) {
@@ -530,6 +546,7 @@ class PostTypeLayoutBlock extends Block
             'orderBy' => $order_by,
             'order' => $order,
             'queryPreset' => $queryPreset,
+            'thumbnailPosition' => $thumbnail_position,
         ];
 
         $wrapper_attributes = get_block_wrapper_attributes([
@@ -547,6 +564,7 @@ class PostTypeLayoutBlock extends Block
             'data-order' => esc_attr($order),
             'data-query-preset' => esc_attr($queryPreset),
             'data-image-ratio' => !empty($attributes['imageRatio']) ? esc_attr($attributes['imageRatio']) : '',
+            'data-thumbnail-position' => esc_attr($thumbnail_position),
             'data-block-settings' => esc_attr(wp_json_encode($block_settings)),
         ]);
 

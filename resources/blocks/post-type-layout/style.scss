@@ -370,6 +370,86 @@
         }
     }
 
+    // Thumbnail position modifiers
+    .post-item.has-thumbnail.thumbnail-position-bottom {
+        flex-direction: column-reverse;
+
+        .post-thumbnail {
+            margin-top: 1.5rem;
+        }
+    }
+
+    .post-item.has-thumbnail.thumbnail-position-left,
+    .post-item.has-thumbnail.thumbnail-position-right {
+        flex-direction: row;
+    }
+
+    .post-item.has-thumbnail.thumbnail-position-right {
+        flex-direction: row-reverse;
+    }
+
+    &:not(.layout-list) {
+        .post-item.has-thumbnail.thumbnail-position-left,
+        .post-item.has-thumbnail.thumbnail-position-right {
+            align-items: stretch;
+
+            .post-thumbnail {
+                width: clamp(200px, 45%, 320px);
+                max-width: 320px;
+                padding-top: 0;
+                height: auto;
+                flex-shrink: 0;
+                position: relative;
+
+                &.has-aspect-ratio {
+                    padding-top: 0;
+                    padding-bottom: 0;
+
+                    > a {
+                        position: relative;
+                        top: auto;
+                        left: auto;
+                        width: 100%;
+                        height: 100%;
+                        display: block;
+                    }
+
+                    .aspect-ratio-container {
+                        position: relative;
+                        width: 100%;
+                        height: auto;
+                        display: block;
+
+                        img {
+                            position: relative;
+                            width: 100%;
+                            height: auto;
+                            object-fit: cover;
+                        }
+                    }
+
+                    > a > img {
+                        position: relative;
+                        width: 100%;
+                        height: auto;
+                        object-fit: cover;
+                    }
+                }
+
+                img {
+                    position: relative;
+                    width: 100%;
+                    height: auto;
+                    object-fit: cover;
+                }
+            }
+
+            .post-content {
+                flex: 1;
+            }
+        }
+    }
+
     // Masonry layout
     .post-type-layout-masonry {
         display: grid;

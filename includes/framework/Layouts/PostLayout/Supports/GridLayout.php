@@ -96,6 +96,7 @@ class GridLayout extends PostLayout
             'showDate',
             'showAuthor',
             'excerptLength',
+            'thumbnailPosition',
             'itemStyle',
         ];
     }

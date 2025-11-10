@@ -57,9 +57,15 @@ class PostLayoutDecorator
         }
 
         // Map block attributes to layout options
+        $thumbnail_position = $attributes['thumbnailPosition'] ?? 'top';
+        if (!in_array($thumbnail_position, ['top', 'bottom', 'left', 'right'], true)) {
+            $thumbnail_position = 'top';
+        }
+
         $options = [
             'columns' => $attributes['columns'] ?? 3,
             'showFeaturedImage' => $attributes['showFeaturedImage'] ?? true,
+            'thumbnailPosition' => $thumbnail_position,
             'imageRatio' => $attributes['imageRatio'] ?? '',
             'showTitle' => $attributes['showTitle'] ?? true,
             'showExcerpt' => $attributes['showExcerpt'] ?? true,

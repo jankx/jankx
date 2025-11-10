@@ -103,6 +103,11 @@
       "type": "boolean",
       "default": true
     },
+    "thumbnailPosition": {
+      "type": "string",
+      "default": "top",
+      "enum": ["top", "bottom", "left", "right"]
+    },
     "imageRatio": {
       "type": "string",
       "default": ""

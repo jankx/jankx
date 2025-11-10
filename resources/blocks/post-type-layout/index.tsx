@@ -55,6 +55,7 @@ interface PostTypeLayoutAttributes {
     showTitle: boolean;
     showExcerpt: boolean;
     showFeaturedImage: boolean;
+    thumbnailPosition: 'top' | 'bottom' | 'left' | 'right';
     imageRatio: string;
     showDate: boolean;
     showAuthor: boolean;
@@ -110,6 +111,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         showTitle,
         showExcerpt,
         showFeaturedImage,
+        thumbnailPosition = 'top',
         imageRatio,
         showDate,
         showAuthor,
@@ -318,6 +320,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             showTitle: debouncedAttributes.showTitle,
             showExcerpt: debouncedAttributes.showExcerpt,
             showFeaturedImage: debouncedAttributes.showFeaturedImage,
+            thumbnailPosition: debouncedAttributes.thumbnailPosition,
             imageRatio: debouncedAttributes.imageRatio,
             showDate: debouncedAttributes.showDate,
             showAuthor: debouncedAttributes.showAuthor,
@@ -594,6 +597,20 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                             />
                             {showFeaturedImage && (
                                 <>
+                                    {supportedOptions.includes('thumbnailPosition') && (
+                                        <SelectControl
+                                            label={__('Thumbnail Position', 'jankx')}
+                                            value={thumbnailPosition || 'top'}
+                                            options={[
+                                                { label: __('Top (Default)', 'jankx'), value: 'top' },
+                                                { label: __('Bottom', 'jankx'), value: 'bottom' },
+                                                { label: __('Left', 'jankx'), value: 'left' },
+                                                { label: __('Right', 'jankx'), value: 'right' },
+                                            ]}
+                                            onChange={(value) => setAttributes({ thumbnailPosition: value as PostTypeLayoutAttributes['thumbnailPosition'] })}
+                                            help={__('Choose where the featured image appears relative to the content.', 'jankx')}
+                                        />
+                                    )}
                                     <SelectControl
                                         label={__('Image Aspect Ratio', 'jankx')}
                                         value={(() => {

@@ -391,6 +391,7 @@ class CarouselLayout extends PostLayout
             'showDate',
             'showAuthor',
             'excerptLength',
+            'thumbnailPosition',
             'slidesToScroll',
             'loop',
             'autoplay',

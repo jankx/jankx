@@ -65,6 +65,7 @@ abstract class PostLayout implements PostLayoutInterface
         'showAuthor' => false,
         'imageSize' => 'large',
         'excerptLength' => 55,
+        'thumbnailPosition' => 'top',
     ];
 
     /**
@@ -182,10 +183,21 @@ abstract class PostLayout implements PostLayoutInterface
             global $post;
         }
 
+        $thumbnail_position = $this->getOption('thumbnailPosition', 'top');
+        if (!in_array($thumbnail_position, ['top', 'bottom', 'left', 'right'], true)) {
+            $thumbnail_position = 'top';
+        }
+
+        $has_featured_image = $this->getOption('showFeaturedImage') && has_post_thumbnail($post->ID);
+
+        $article_classes = get_post_class('post-item', $post->ID);
+        $article_classes[] = 'thumbnail-position-' . $thumbnail_position;
+        $article_classes[] = $has_featured_image ? 'has-thumbnail' : 'no-thumbnail';
+
         ob_start();
         ?>
-        <article id="post-<?php echo esc_attr($post->ID); ?>" class="<?php echo esc_attr(implode(' ', get_post_class('post-item', $post->ID))); ?>">
-            <?php if ($this->getOption('showFeaturedImage') && has_post_thumbnail($post->ID)) : ?>
+        <article id="post-<?php echo esc_attr($post->ID); ?>" class="<?php echo esc_attr(implode(' ', array_unique($article_classes))); ?>">
+            <?php if ($has_featured_image) : ?>
                 <?php
                 $image_ratio = $this->getOption('imageRatio', '');
                 $thumbnail_classes = ['post-thumbnail'];

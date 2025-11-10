@@ -91,6 +91,7 @@ class ListLayout extends PostLayout
             'showDate',
             'showAuthor',
             'excerptLength',
+            'thumbnailPosition',
             'itemStyle',
         ];
     }

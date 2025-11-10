@@ -98,6 +98,7 @@ class CardLayout extends PostLayout
             'showDate',
             'showAuthor',
             'excerptLength',
+            'thumbnailPosition',
             'itemStyle',
         ];
     }

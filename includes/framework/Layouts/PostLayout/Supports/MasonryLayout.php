@@ -99,6 +99,7 @@ class MasonryLayout extends PostLayout
             'showDate',
             'showAuthor',
             'excerptLength',
+            'thumbnailPosition',
             'itemStyle',
         ];
     }
