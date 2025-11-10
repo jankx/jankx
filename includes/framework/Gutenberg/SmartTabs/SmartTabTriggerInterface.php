@@ -77,6 +77,16 @@ interface SmartTabTriggerInterface
      */
     public function resolveTitle(string $baseTitle, array $attributes, array $context = []): string;
 
+
+    /**
+     * Determine if tab should be displayed.
+     *
+     * @param array $attributes
+     * @param array $context
+     * @return bool
+     */
+    public function shouldDisplay(array $attributes, array $context = []): bool;
+
     /**
      * Filter tab content before output.
      *

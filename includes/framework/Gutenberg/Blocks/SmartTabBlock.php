@@ -57,6 +57,14 @@ class SmartTabBlock extends Block
         }
 
         $context = $this->resolveRenderContext($block);
+        if ($trigger instanceof SmartTabTriggerInterface && method_exists($trigger, 'shouldDisplay')) {
+            $display_context = $context;
+            $display_context['tab_attributes'] = $attributes;
+
+            if ($trigger->shouldDisplay($attributes, $display_context) === false) {
+                return '';
+            }
+        }
 
         if ($trigger instanceof SmartTabTriggerInterface) {
             $content = $trigger->filterContent($content, $attributes, $context);
