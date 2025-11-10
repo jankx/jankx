@@ -135,8 +135,9 @@ class SmartTabTriggerRegistry
             $settings['label'] = $settings['label'] ?? $trigger->getLabel();
             $settings['description'] = $settings['description'] ?? $trigger->getDescription();
 
-            // Provide preview title for the editor.
-            $settings['previewTitle'] = $trigger->resolveTitle([], $context);
+            if (empty($settings['previewTitle'])) {
+                $settings['previewTitle'] = $trigger->resolveTitle(__('Tab', 'jankx'), [], $context);
+            }
 
             $config[$key] = $settings;
         }

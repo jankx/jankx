@@ -10,6 +10,11 @@ namespace Jankx\Gutenberg\SmartTabs;
  */
 interface SmartTabTriggerInterface
 {
+    public const TITLE_BEHAVIOR_INHERIT = 'inherit';
+    public const TITLE_BEHAVIOR_REPLACE = 'replace';
+    public const TITLE_BEHAVIOR_APPEND = 'append';
+    public const TITLE_BEHAVIOR_PREPEND = 'prepend';
+
     /**
      * Unique key for the trigger (snake-case).
      *
@@ -65,11 +70,12 @@ interface SmartTabTriggerInterface
     /**
      * Resolve tab title for navigation.
      *
+     * @param string $baseTitle Current tab title before trigger modifies it.
      * @param array $attributes Tab attributes.
      * @param array $context Contextual data (post id, etc.).
      * @return string
      */
-    public function resolveTitle(array $attributes, array $context = []): string;
+    public function resolveTitle(string $baseTitle, array $attributes, array $context = []): string;
 
     /**
      * Filter tab content before output.

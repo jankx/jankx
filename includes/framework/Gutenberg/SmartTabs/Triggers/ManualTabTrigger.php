@@ -51,10 +51,10 @@ class ManualTabTrigger extends AbstractSmartTabTrigger
     /**
      * {@inheritdoc}
      */
-    public function resolveTitle(array $attributes, array $context = []): string
+    public function resolveTitle(string $baseTitle, array $attributes, array $context = []): string
     {
-        if (!empty($attributes['title'])) {
-            return (string) $attributes['title'];
+        if (!empty($baseTitle)) {
+            return $baseTitle;
         }
 
         $index = $context['tab_index'] ?? null;

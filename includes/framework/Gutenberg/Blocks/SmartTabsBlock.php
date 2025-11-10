@@ -207,10 +207,17 @@ class SmartTabsBlock extends Block
                 }
             }
 
-            if ($trigger instanceof SmartTabTriggerInterface) {
-                $title = $trigger->resolveTitle($attributes, $tab_context);
+            $base_title = '';
+            if (!empty($attributes['title'])) {
+                $base_title = (string) $attributes['title'];
             } else {
-                $title = $attributes['title'] ?? sprintf(__('Tab %d', 'jankx'), $index + 1);
+                $base_title = sprintf(__('Tab %d', 'jankx'), $index + 1);
+            }
+
+            if ($trigger instanceof SmartTabTriggerInterface) {
+                $title = $trigger->resolveTitle($base_title, $attributes, $tab_context);
+            } else {
+                $title = $base_title;
             }
 
             $icon_type = $attributes['iconType'] ?? 'none';
