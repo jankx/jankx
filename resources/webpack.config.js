@@ -95,6 +95,10 @@ module.exports = {
     'blocks/post-type-layout/build/style': './blocks/post-type-layout/style.scss',
     'blocks/post-type-layout/build/editor': './blocks/post-type-layout/editor.scss',
 
+    'blocks/post-layout-template/build/index': './blocks/post-layout-template/index.tsx',
+    'blocks/post-layout-template/build/style': './blocks/post-layout-template/style.scss',
+    'blocks/post-layout-template/build/editor': './blocks/post-layout-template/editor.scss',
+
     'blocks/author-box/build/index': './blocks/author-box/src/index.tsx',
     'blocks/author-box/build/style': './blocks/author-box/src/style.scss',
     'blocks/author-box/build/editor': './blocks/author-box/src/editor.scss',

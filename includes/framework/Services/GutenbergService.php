@@ -17,6 +17,7 @@ use Jankx\Gutenberg\Blocks\MasterTableBlock;
 use Jankx\Gutenberg\Blocks\ModalBlock;
 use Jankx\Gutenberg\Blocks\OffcanvasSidebarBlock;
 use Jankx\Gutenberg\Blocks\OffcanvasTriggerBlock;
+use Jankx\Gutenberg\Blocks\PostLayoutTemplateBlock;
 use Jankx\Gutenberg\Blocks\PostTypeLayoutBlock;
 use Jankx\Gutenberg\Blocks\SlideshowBlock;
 use Jankx\Gutenberg\Blocks\SlideshowContainerBlock;
@@ -136,6 +137,7 @@ class GutenbergService
         $this->repository->registerBlock(OffcanvasSidebarBlock::class);
         $this->repository->registerBlock(OffcanvasTriggerBlock::class);
         $this->repository->registerBlock(PostTypeLayoutBlock::class);
+        $this->repository->registerBlock(PostLayoutTemplateBlock::class);
         $this->repository->registerBlock(SlideshowBlock::class);
         $this->repository->registerBlock(SlideshowContainerBlock::class);
         $this->repository->registerBlock(SlideshowItemBlock::class);

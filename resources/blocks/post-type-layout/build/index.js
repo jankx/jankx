@@ -2213,7 +2213,7 @@ function Edit({
 
   // Use ServerSideRender for initial render (better UX, SSR)
   // Only use AJAX fetch when needed for complex interactions
-  const [useAjaxRender, setUseAjaxRender] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useState)(false);
+  const useAjaxRender = true;
 
   // Debounced attributes for AJAX render (only when useAjaxRender is true)
   const [debouncedAttributes, setDebouncedAttributes] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useState)(attributes);
@@ -2250,11 +2250,19 @@ function Edit({
       setIsLoading(true);
     }
   }, 800), [useAjaxRender]);
+  const attributesHash = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useMemo)(() => JSON.stringify(attributes), [attributes]);
+  const previousAttributesHashRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useRef)(null);
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useEffect)(() => {
-    if (useAjaxRender) {
-      updateDebouncedAttributes(attributes);
+    if (!useAjaxRender) {
+      return;
     }
-  }, [attributes, updateDebouncedAttributes, useAjaxRender]);
+    if (previousAttributesHashRef.current === attributesHash) {
+      return;
+    }
+    previousAttributesHashRef.current = attributesHash;
+    setIsLoading(true);
+    updateDebouncedAttributes(attributes);
+  }, [attributes, attributesHash, updateDebouncedAttributes, useAjaxRender]);
 
   // Generate unique queryId if not set
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useEffect)(() => {

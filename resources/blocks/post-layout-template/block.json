@@ -1,0 +1,71 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/post-layout-template",
+    "title": "Post Layout Template",
+    "category": "jankx",
+    "parent": ["jankx/post-type-layout"],
+    "description": "Defines the markup template used to render a single post inside the Post Type Layout block.",
+    "textdomain": "jankx",
+    "editorScript": "file:./build/index.js",
+    "style": "file:./build/style.css",
+    "editorStyle": "file:./build/editor.css",
+    "usesContext": [
+        "queryId",
+        "query",
+        "displayLayout",
+        "templateSlug",
+        "previewPostType",
+        "enhancedPagination",
+        "postType"
+    ],
+    "supports": {
+        "reusable": false,
+        "html": false,
+        "align": ["wide", "full"],
+        "layout": true,
+        "color": {
+            "gradients": true,
+            "link": true,
+            "__experimentalDefaultControls": {
+                "background": true,
+                "text": true
+            }
+        },
+        "typography": {
+            "fontSize": true,
+            "lineHeight": true,
+            "__experimentalFontFamily": true,
+            "__experimentalFontWeight": true,
+            "__experimentalFontStyle": true,
+            "__experimentalTextTransform": true,
+            "__experimentalTextDecoration": true,
+            "__experimentalLetterSpacing": true,
+            "__experimentalDefaultControls": {
+                "fontSize": true
+            }
+        },
+        "spacing": {
+            "margin": true,
+            "padding": true,
+            "blockGap": {
+                "__experimentalDefault": "1.25em"
+            },
+            "__experimentalDefaultControls": {
+                "blockGap": true,
+                "padding": false,
+                "margin": false
+            }
+        },
+        "interactivity": {
+            "clientNavigation": true
+        },
+        "__experimentalBorder": {
+            "radius": true,
+            "color": true,
+            "width": true,
+            "style": true
+        }
+    }
+}
+

@@ -165,7 +165,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
 
     // Use ServerSideRender for initial render (better UX, SSR)
     // Only use AJAX fetch when needed for complex interactions
-    const [useAjaxRender, setUseAjaxRender] = useState(false);
+    const useAjaxRender = true;
     
     // Debounced attributes for AJAX render (only when useAjaxRender is true)
     const [debouncedAttributes, setDebouncedAttributes] = useState(attributes);
@@ -206,11 +206,20 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         [useAjaxRender]
     );
 
+    const attributesHash = useMemo(() => JSON.stringify(attributes), [attributes]);
+    const previousAttributesHashRef = useRef<string | null>(null);
+
     useEffect(() => {
-        if (useAjaxRender) {
-            updateDebouncedAttributes(attributes);
+        if (!useAjaxRender) {
+            return;
         }
-    }, [attributes, updateDebouncedAttributes, useAjaxRender]);
+        if (previousAttributesHashRef.current === attributesHash) {
+            return;
+        }
+        previousAttributesHashRef.current = attributesHash;
+        setIsLoading(true);
+        updateDebouncedAttributes(attributes);
+    }, [attributes, attributesHash, updateDebouncedAttributes, useAjaxRender]);
 
     // Generate unique queryId if not set
     useEffect(() => {
