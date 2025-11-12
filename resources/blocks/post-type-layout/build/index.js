@@ -2157,6 +2157,18 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+const PRESET_IMAGE_RATIOS = ['16/9', '4/3', '21/9', '1/1', '3/4', '2/3', '9/16'];
+const normalizeTokens = tokens => {
+  return tokens.map(token => {
+    if (typeof token === 'string') {
+      return token.trim();
+    }
+    if (token && typeof token.value === 'string') {
+      return token.value.trim();
+    }
+    return '';
+  }).filter(value => value.length > 0);
+};
 function Edit({
   attributes,
   setAttributes,
@@ -2186,29 +2198,29 @@ function Edit({
     paginationStyle,
     paginationAlignment,
     showPaginationNumbers,
-    paginationPrevText,
-    paginationNextText,
-    offset,
-    taxQuery,
-    metaQuery,
-    keyword,
-    authorIn,
-    authorNotIn,
-    postIn,
-    postNotIn,
-    metaKey,
-    metaType,
-    postStatus,
-    postParent,
-    postParentIn,
-    postParentNotIn,
-    customQueryId,
-    slidesToScroll,
-    loop,
-    autoplay,
-    autoplayDelay,
-    showArrows,
-    showDots
+    paginationPrevText = '',
+    paginationNextText = '',
+    offset = 0,
+    taxQuery = [],
+    metaQuery = [],
+    keyword = '',
+    authorIn = [],
+    authorNotIn = [],
+    postIn = [],
+    postNotIn = [],
+    metaKey = '',
+    metaType = '',
+    postStatus = ['publish'],
+    postParent = 0,
+    postParentIn = [],
+    postParentNotIn = [],
+    customQueryId = '',
+    slidesToScroll = 1,
+    loop = false,
+    autoplay = false,
+    autoplayDelay = 3000,
+    showArrows = true,
+    showDots = true
   } = attributes;
 
   // Use ServerSideRender for initial render (better UX, SSR)
@@ -2223,8 +2235,8 @@ function Edit({
   // Embla Carousel refs for carousel layout preview in editor
   // Always initialize hook, but only use it when layout is carousel
   const [emblaRef, emblaApi] = (0,embla_carousel_react__WEBPACK_IMPORTED_MODULE_12__["default"])({
-    slidesToScroll: slidesToScroll !== null && slidesToScroll !== void 0 ? slidesToScroll : 1,
-    loop: loop !== null && loop !== void 0 ? loop : false,
+    slidesToScroll,
+    loop,
     skipSnaps: false,
     dragFree: false
   });
@@ -2240,18 +2252,28 @@ function Edit({
   // States for taxonomies and authors
   const [taxonomies, setTaxonomies] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useState)([]);
   const [authors, setAuthors] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useState)([]);
-  const [loadingTaxonomies, setLoadingTaxonomies] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useState)(false);
   const [taxonomyTerms, setTaxonomyTerms] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useState)({});
 
   // Debounce attributes update để giảm số lần re-render (only when using AJAX)
-  const updateDebouncedAttributes = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useCallback)((0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_7__.debounce)(newAttributes => {
-    setDebouncedAttributes(newAttributes);
-    if (useAjaxRender) {
-      setIsLoading(true);
-    }
-  }, 800), [useAjaxRender]);
+  const updateDebouncedAttributes = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useMemo)(() => {
+    const debounced = (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_7__.debounce)((...args) => {
+      const [newAttributes] = args;
+      setDebouncedAttributes(newAttributes);
+      if (useAjaxRender) {
+        setIsLoading(true);
+      }
+    }, 800);
+    return debounced;
+  }, [setDebouncedAttributes, setIsLoading, useAjaxRender]);
   const attributesHash = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useMemo)(() => JSON.stringify(attributes), [attributes]);
   const previousAttributesHashRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useRef)(null);
+  const isMountedRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useRef)(true);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useEffect)(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useEffect)(() => {
     if (!useAjaxRender) {
       return;
@@ -2263,6 +2285,11 @@ function Edit({
     setIsLoading(true);
     updateDebouncedAttributes(attributes);
   }, [attributes, attributesHash, updateDebouncedAttributes, useAjaxRender]);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useEffect)(() => {
+    return () => {
+      updateDebouncedAttributes.cancel();
+    };
+  }, [updateDebouncedAttributes]);
 
   // Generate unique queryId if not set
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useEffect)(() => {
@@ -2293,28 +2320,37 @@ function Edit({
   // Fetch taxonomies and authors when postType changes
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useEffect)(() => {
     const fetchTaxonomiesAndAuthors = async () => {
-      setLoadingTaxonomies(true);
       try {
-        // Fetch taxonomies for this post type
         const taxonomiesData = await window.wp.apiFetch({
           path: `/wp/v2/taxonomies?type=${postType}`
         });
-
-        // Convert object to array
-        const taxArray = Object.values(taxonomiesData || {});
+        if (!isMountedRef.current) {
+          return;
+        }
+        const taxArray = Object.values(taxonomiesData || {}).filter(item => typeof item?.slug === 'string' && typeof item?.name === 'string');
         setTaxonomies(taxArray);
-
-        // Fetch authors
         const authorsData = await window.wp.apiFetch({
           path: '/wp/v2/users?who=authors&per_page=100'
         });
-        setAuthors(authorsData || []);
+        if (!isMountedRef.current) {
+          return;
+        }
+        const normalizedAuthors = (authorsData || []).map(author => {
+          const id = typeof author?.id === 'number' ? author.id : Number(author?.id);
+          const name = typeof author?.name === 'string' && author.name.length > 0 ? author.name : typeof author?.slug === 'string' ? author.slug : '';
+          return {
+            id: Number.isFinite(id) ? id : 0,
+            name
+          };
+        }).filter(author => author.id > 0 && author.name.length > 0);
+        setAuthors(normalizedAuthors);
       } catch (error) {
         console.error('Error fetching taxonomies/authors:', error);
+        if (!isMountedRef.current) {
+          return;
+        }
         setTaxonomies([]);
         setAuthors([]);
-      } finally {
-        setLoadingTaxonomies(false);
       }
     };
     fetchTaxonomiesAndAuthors();
@@ -2326,15 +2362,29 @@ function Edit({
       return; // Already loaded
     }
     try {
-      const terms = await window.wp.apiFetch({
+      const termsResponse = await window.wp.apiFetch({
         path: `/wp/v2/${taxonomy}?per_page=100&orderby=name&order=asc`
       });
+      if (!isMountedRef.current) {
+        return;
+      }
+      const normalizedTerms = (termsResponse || []).map(term => {
+        const id = typeof term?.id === 'number' ? term.id : Number(term?.id);
+        const name = typeof term?.name === 'string' ? term.name : '';
+        return {
+          id: Number.isFinite(id) ? id : 0,
+          name
+        };
+      }).filter(term => term.id > 0 && term.name.length > 0);
       setTaxonomyTerms(prev => ({
         ...prev,
-        [taxonomy]: terms || []
+        [taxonomy]: normalizedTerms
       }));
     } catch (error) {
       console.error(`Error fetching terms for ${taxonomy}:`, error);
+      if (!isMountedRef.current) {
+        return;
+      }
       setTaxonomyTerms(prev => ({
         ...prev,
         [taxonomy]: []
@@ -2349,6 +2399,17 @@ function Edit({
       '--columns-mobile': columnsMobile
     }
   });
+  const imageRatioSelectValue = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useMemo)(() => {
+    if (!imageRatio) {
+      return '';
+    }
+    if (PRESET_IMAGE_RATIOS.includes(imageRatio)) {
+      return imageRatio;
+    }
+    return 'custom';
+  }, [imageRatio]);
+  const isCustomImageRatio = imageRatioSelectValue === 'custom';
+  const customImageRatioValue = isCustomImageRatio && imageRatio ? imageRatio : '';
 
   // Get available post types
   const postTypes = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_4__.useSelect)(select => {
@@ -2430,7 +2491,9 @@ function Edit({
     }
     const fetchPosts = async () => {
       try {
-        setIsLoading(true);
+        if (isMountedRef.current) {
+          setIsLoading(true);
+        }
 
         // Use wp.apiFetch để tự động handle authentication
         const data = await window.wp.apiFetch({
@@ -2440,14 +2503,22 @@ function Edit({
             attributes: debouncedAttributes
           }
         });
+        if (!isMountedRef.current) {
+          return;
+        }
         if (data.rendered) {
           setCachedHtml(data.rendered);
         } else {
           setCachedHtml('<div class="placeholder">No content</div>');
         }
-        setIsLoading(false);
+        if (isMountedRef.current) {
+          setIsLoading(false);
+        }
       } catch (error) {
         console.error('Error fetching posts:', error);
+        if (!isMountedRef.current) {
+          return;
+        }
         setCachedHtml(`<div class="error">${error?.message || 'Error rendering block'}</div>`);
         setIsLoading(false);
       }
@@ -2603,7 +2674,7 @@ function Edit({
         }), layout === 'carousel' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.Fragment, {
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RangeControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Slides To Scroll', 'jankx'),
-            value: slidesToScroll !== null && slidesToScroll !== void 0 ? slidesToScroll : 1,
+            value: slidesToScroll,
             onChange: value => setAttributes({
               slidesToScroll: value || 1
             }),
@@ -2612,21 +2683,21 @@ function Edit({
             help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Number of slides to scroll at a time', 'jankx')
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Loop', 'jankx'),
-            checked: loop !== null && loop !== void 0 ? loop : false,
+            checked: loop,
             onChange: value => setAttributes({
               loop: value
             }),
             help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable infinite loop', 'jankx')
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Autoplay', 'jankx'),
-            checked: autoplay !== null && autoplay !== void 0 ? autoplay : false,
+            checked: autoplay,
             onChange: value => setAttributes({
               autoplay: value
             }),
             help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Automatically advance slides', 'jankx')
           }), autoplay && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RangeControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Autoplay Delay (ms)', 'jankx'),
-            value: autoplayDelay !== null && autoplayDelay !== void 0 ? autoplayDelay : 3000,
+            value: autoplayDelay,
             onChange: value => setAttributes({
               autoplayDelay: value || 3000
             }),
@@ -2636,14 +2707,14 @@ function Edit({
             help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Time between autoplay transitions', 'jankx')
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Arrows', 'jankx'),
-            checked: showArrows !== null && showArrows !== void 0 ? showArrows : true,
+            checked: showArrows,
             onChange: value => setAttributes({
               showArrows: value
             }),
             help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display navigation arrows', 'jankx')
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Dots', 'jankx'),
-            checked: showDots !== null && showDots !== void 0 ? showDots : true,
+            checked: showDots,
             onChange: value => setAttributes({
               showDots: value
             }),
@@ -2684,16 +2755,7 @@ function Edit({
               help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Choose where the featured image appears relative to the content.', 'jankx')
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
               label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Image Aspect Ratio', 'jankx'),
-              value: (() => {
-                const presetRatios = ['16/9', '4/3', '21/9', '1/1', '3/4', '2/3', '9/16'];
-                if (!imageRatio || imageRatio === '') {
-                  return '';
-                }
-                if (presetRatios.includes(imageRatio)) {
-                  return imageRatio;
-                }
-                return 'custom';
-              })(),
+              value: imageRatioSelectValue,
               onChange: value => {
                 if (value === 'custom') {
                   // Set to empty string to show TextControl, user will enter custom value
@@ -2735,31 +2797,9 @@ function Edit({
                 label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Custom', 'jankx'),
                 value: 'custom'
               }]
-            }), (() => {
-              const presetRatios = ['16/9', '4/3', '21/9', '1/1', '3/4', '2/3', '9/16'];
-              const selectValue = (() => {
-                if (!imageRatio || imageRatio === '') {
-                  return '';
-                }
-                if (presetRatios.includes(imageRatio)) {
-                  return imageRatio;
-                }
-                return 'custom';
-              })();
-
-              // Show TextControl when "Custom" is selected or when ratio is not in preset list
-              const isCustom = selectValue === 'custom' || imageRatio && imageRatio !== '' && !presetRatios.includes(imageRatio);
-              return isCustom;
-            })() && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+            }), isCustomImageRatio && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
               label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Custom Ratio', 'jankx'),
-              value: (() => {
-                const presetRatios = ['16/9', '4/3', '21/9', '1/1', '3/4', '2/3', '9/16'];
-                // If current value is a preset, show empty (user just selected Custom)
-                if (!imageRatio || presetRatios.includes(imageRatio)) {
-                  return '';
-                }
-                return imageRatio;
-              })(),
+              value: customImageRatioValue,
               onChange: value => {
                 // Validate format: should be "number/number" or empty
                 const ratioPattern = /^\d+\/\d+$/;
@@ -2930,14 +2970,16 @@ function Edit({
           }),
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Set a name for this query to apply final filters: jankx/post-layout/query-args/{query_id}', 'jankx'),
           placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Example: featured-posts, sidebar-posts', 'jankx')
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FormTokenField, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.BaseControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Post Status', 'jankx'),
-          value: postStatus,
-          suggestions: ['publish', 'pending', 'draft', 'auto-draft', 'future', 'private', 'inherit', 'trash', 'any'],
-          onChange: tokens => setAttributes({
-            postStatus: tokens
-          }),
-          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Post status to fetch (default: publish)', 'jankx')
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Post status to fetch (default: publish)', 'jankx'),
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FormTokenField, {
+            value: postStatus,
+            suggestions: ['publish', 'pending', 'draft', 'auto-draft', 'future', 'private', 'inherit', 'trash', 'any'],
+            onChange: tokens => setAttributes({
+              postStatus: normalizeTokens(tokens)
+            })
+          })
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Post Parent ID', 'jankx'),
           type: "number",
@@ -2984,34 +3026,42 @@ function Edit({
       }), queryPreset === 'custom' && authors.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('👤 Author Filters', 'jankx'),
         initialOpen: false,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FormTokenField, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.BaseControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Authors (Include)', 'jankx'),
-          value: authors.filter(a => authorIn.includes(a.id)).map(a => a.name),
-          suggestions: authors.map(a => a.name),
-          onChange: tokens => {
-            const selectedIds = tokens.map(token => {
-              const author = authors.find(a => a.name === token);
-              return author?.id || 0;
-            }).filter(id => id > 0);
-            setAttributes({
-              authorIn: selectedIds
-            });
-          },
-          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Only display posts from these authors', 'jankx')
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FormTokenField, {
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Only display posts from these authors', 'jankx'),
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FormTokenField, {
+            value: authors.filter(author => authorIn.includes(author.id)).map(author => author.name),
+            suggestions: authors.map(author => author.name),
+            onChange: tokens => {
+              const normalizedTokens = normalizeTokens(tokens);
+              const selectedIds = normalizedTokens.map(tokenName => {
+                var _author$id;
+                const author = authors.find(item => item.name === tokenName);
+                return (_author$id = author?.id) !== null && _author$id !== void 0 ? _author$id : 0;
+              }).filter(id => id > 0);
+              setAttributes({
+                authorIn: selectedIds
+              });
+            }
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.BaseControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Authors (Exclude)', 'jankx'),
-          value: authors.filter(a => authorNotIn.includes(a.id)).map(a => a.name),
-          suggestions: authors.map(a => a.name),
-          onChange: tokens => {
-            const selectedIds = tokens.map(token => {
-              const author = authors.find(a => a.name === token);
-              return author?.id || 0;
-            }).filter(id => id > 0);
-            setAttributes({
-              authorNotIn: selectedIds
-            });
-          },
-          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Exclude posts from these authors', 'jankx')
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Exclude posts from these authors', 'jankx'),
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FormTokenField, {
+            value: authors.filter(author => authorNotIn.includes(author.id)).map(author => author.name),
+            suggestions: authors.map(author => author.name),
+            onChange: tokens => {
+              const normalizedTokens = normalizeTokens(tokens);
+              const selectedIds = normalizedTokens.map(tokenName => {
+                var _author$id2;
+                const author = authors.find(item => item.name === tokenName);
+                return (_author$id2 = author?.id) !== null && _author$id2 !== void 0 ? _author$id2 : 0;
+              }).filter(id => id > 0);
+              setAttributes({
+                authorNotIn: selectedIds
+              });
+            }
+          })
         })]
       }), queryPreset === 'custom' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('🔢 Post ID Filters', 'jankx'),
@@ -3089,7 +3139,14 @@ function Edit({
             value: mq.key,
             onChange: value => {
               const newMetaQuery = [...metaQuery];
-              newMetaQuery[index].key = value;
+              const targetQuery = newMetaQuery[index];
+              if (!targetQuery) {
+                return;
+              }
+              newMetaQuery[index] = {
+                ...targetQuery,
+                key: value
+              };
               setAttributes({
                 metaQuery: newMetaQuery
               });
@@ -3137,7 +3194,14 @@ function Edit({
             }],
             onChange: value => {
               const newMetaQuery = [...metaQuery];
-              newMetaQuery[index].compare = value;
+              const targetQuery = newMetaQuery[index];
+              if (!targetQuery) {
+                return;
+              }
+              newMetaQuery[index] = {
+                ...targetQuery,
+                compare: value
+              };
               setAttributes({
                 metaQuery: newMetaQuery
               });
@@ -3147,7 +3211,14 @@ function Edit({
             value: mq.value,
             onChange: value => {
               const newMetaQuery = [...metaQuery];
-              newMetaQuery[index].value = value;
+              const targetQuery = newMetaQuery[index];
+              if (!targetQuery) {
+                return;
+              }
+              newMetaQuery[index] = {
+                ...targetQuery,
+                value
+              };
               setAttributes({
                 metaQuery: newMetaQuery
               });
@@ -3163,6 +3234,9 @@ function Edit({
               label: 'NUMERIC',
               value: 'NUMERIC'
             }, {
+              label: 'BINARY',
+              value: 'BINARY'
+            }, {
               label: 'CHAR',
               value: 'CHAR'
             }, {
@@ -3175,6 +3249,9 @@ function Edit({
               label: 'DECIMAL',
               value: 'DECIMAL'
             }, {
+              label: 'TIME',
+              value: 'TIME'
+            }, {
               label: 'SIGNED',
               value: 'SIGNED'
             }, {
@@ -3183,7 +3260,20 @@ function Edit({
             }],
             onChange: value => {
               const newMetaQuery = [...metaQuery];
-              newMetaQuery[index].type = value;
+              const targetQuery = newMetaQuery[index];
+              if (!targetQuery) {
+                return;
+              }
+              const updatedQuery = {
+                ...targetQuery
+              };
+              const nextType = value ? value : undefined;
+              if (nextType) {
+                updatedQuery.type = nextType;
+              } else if ('type' in updatedQuery) {
+                delete updatedQuery.type;
+              }
+              newMetaQuery[index] = updatedQuery;
               setAttributes({
                 metaQuery: newMetaQuery
               });
@@ -3195,7 +3285,8 @@ function Edit({
         // Find existing query for this taxonomy
         const existingQueryIndex = taxQuery.findIndex(tq => tq.taxonomy === taxonomy.slug);
         const hasQuery = existingQueryIndex >= 0;
-        const currentQuery = hasQuery ? taxQuery[existingQueryIndex] : null;
+        const currentQuery = hasQuery ? taxQuery[existingQueryIndex] : undefined;
+        const terms = taxonomyTerms[taxonomy.slug];
         return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
           title: `🏷️ ${taxonomy.name}`,
           initialOpen: hasQuery,
@@ -3220,7 +3311,7 @@ function Edit({
               fetchTermsForTaxonomy(taxonomy.slug);
             },
             children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Add Filter', 'jankx'), " ", taxonomy.name]
-          }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.Fragment, {
+          }) : currentQuery && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.Fragment, {
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
               label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Operator', 'jankx'),
               value: currentQuery.operator,
@@ -3242,29 +3333,47 @@ function Edit({
               }],
               onChange: value => {
                 const newTaxQuery = [...taxQuery];
-                newTaxQuery[existingQueryIndex].operator = value;
+                const targetQuery = newTaxQuery[existingQueryIndex];
+                if (!targetQuery) {
+                  return;
+                }
+                newTaxQuery[existingQueryIndex] = {
+                  ...targetQuery,
+                  operator: value
+                };
                 setAttributes({
                   taxQuery: newTaxQuery
                 });
               },
               help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('EXISTS/NOT EXISTS checks if taxonomy has any terms', 'jankx')
             }), !['EXISTS', 'NOT EXISTS'].includes(currentQuery.operator) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.Fragment, {
-              children: taxonomyTerms[taxonomy.slug] ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FormTokenField, {
+              children: terms ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.BaseControl, {
                 label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select Terms', 'jankx'),
-                value: taxonomyTerms[taxonomy.slug].filter(term => currentQuery.terms.includes(term.id)).map(term => term.name),
-                suggestions: taxonomyTerms[taxonomy.slug].map(term => term.name),
-                onChange: tokens => {
-                  const selectedIds = tokens.map(token => {
-                    const term = taxonomyTerms[taxonomy.slug].find(t => t.name === token);
-                    return term?.id || 0;
-                  }).filter(id => id > 0);
-                  const newTaxQuery = [...taxQuery];
-                  newTaxQuery[existingQueryIndex].terms = selectedIds;
-                  setAttributes({
-                    taxQuery: newTaxQuery
-                  });
-                },
-                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select terms from dropdown', 'jankx')
+                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select terms from dropdown', 'jankx'),
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FormTokenField, {
+                  value: terms.filter(term => currentQuery.terms.includes(term.id)).map(term => term.name),
+                  suggestions: terms.map(term => term.name),
+                  onChange: tokens => {
+                    const selectedNames = normalizeTokens(tokens);
+                    const selectedIds = selectedNames.map(tokenName => {
+                      var _term$id;
+                      const term = terms.find(item => item.name === tokenName);
+                      return (_term$id = term?.id) !== null && _term$id !== void 0 ? _term$id : 0;
+                    }).filter(id => id > 0);
+                    const newTaxQuery = [...taxQuery];
+                    const targetQuery = newTaxQuery[existingQueryIndex];
+                    if (!targetQuery) {
+                      return;
+                    }
+                    newTaxQuery[existingQueryIndex] = {
+                      ...targetQuery,
+                      terms: selectedIds
+                    };
+                    setAttributes({
+                      taxQuery: newTaxQuery
+                    });
+                  }
+                })
               }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Spinner, {})
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Button, {
               isDestructive: true,

@@ -1,13 +1,6 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
-import {
-    useBlockProps,
-    InspectorControls,
-    InspectorAdvancedControls,
-    BlockControls,
-    store as blockEditorStore,
-    __experimentalImageSizeControl as ImageSizeControl,
-} from '@wordpress/block-editor';
+import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import {
     PanelBody,
     SelectControl,
@@ -18,9 +11,12 @@ import {
     TextControl,
     FormTokenField,
     Button,
+    BaseControl,
 } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
-import { useEffect, useState, useCallback, useMemo, useRef } from '@wordpress/element';
+import { useCallback, useEffect, useState, useMemo, useRef } from '@wordpress/element';
+import type { CSSProperties } from 'react';
+type TokenLike = string | { value: string; [key: string]: unknown };
 import ServerSideRender from '@wordpress/server-side-render';
 import { debounce } from '@wordpress/compose';
 import { ResponsiveControl, ResponsiveValue } from '../../shared/components';
@@ -41,6 +37,40 @@ interface MetaQueryItem {
     compare: '=' | '!=' | '>' | '>=' | '<' | '<=' | 'LIKE' | 'NOT LIKE' | 'IN' | 'NOT IN' | 'EXISTS' | 'NOT EXISTS';
     type?: 'NUMERIC' | 'BINARY' | 'CHAR' | 'DATE' | 'DATETIME' | 'DECIMAL' | 'SIGNED' | 'TIME' | 'UNSIGNED';
 }
+
+interface TaxonomyItem {
+    slug: string;
+    name: string;
+}
+
+interface TermItem {
+    id: number;
+    name: string;
+}
+
+interface AuthorItem {
+    id: number;
+    name: string;
+}
+
+const PRESET_IMAGE_RATIOS = ['16/9', '4/3', '21/9', '1/1', '3/4', '2/3', '9/16'] as const;
+
+type PresetImageRatio = typeof PRESET_IMAGE_RATIOS[number];
+type ImageRatioSelectValue = '' | 'custom' | PresetImageRatio;
+
+const normalizeTokens = (tokens: TokenLike[]): string[] => {
+    return tokens
+        .map((token) => {
+            if (typeof token === 'string') {
+                return token.trim();
+            }
+            if (token && typeof token.value === 'string') {
+                return token.value.trim();
+            }
+            return '';
+        })
+        .filter((value): value is string => value.length > 0);
+};
 
 type QueryPreset =
     | 'default'
@@ -113,6 +143,12 @@ interface EditProps {
     clientId: string;
 }
 
+type DebouncedAttributesUpdater = ((attrs: PostTypeLayoutAttributes) => void) & {
+    cancel: () => void;
+    flush: () => void;
+    pending: () => boolean;
+};
+
 function Edit({ attributes, setAttributes, clientId }: EditProps) {
     const {
         queryPreset,
@@ -138,29 +174,29 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         paginationStyle,
         paginationAlignment,
         showPaginationNumbers,
-        paginationPrevText,
-        paginationNextText,
-        offset,
-        taxQuery,
-        metaQuery,
-        keyword,
-        authorIn,
-        authorNotIn,
-        postIn,
-        postNotIn,
-        metaKey,
-        metaType,
-        postStatus,
-        postParent,
-        postParentIn,
-        postParentNotIn,
-        customQueryId,
-        slidesToScroll,
-        loop,
-        autoplay,
-        autoplayDelay,
-        showArrows,
-        showDots,
+        paginationPrevText = '',
+        paginationNextText = '',
+        offset = 0,
+        taxQuery = [],
+        metaQuery = [],
+        keyword = '',
+        authorIn = [],
+        authorNotIn = [],
+        postIn = [],
+        postNotIn = [],
+        metaKey = '',
+        metaType = '',
+        postStatus = ['publish'],
+        postParent = 0,
+        postParentIn = [],
+        postParentNotIn = [],
+        customQueryId = '',
+        slidesToScroll = 1,
+        loop = false,
+        autoplay = false,
+        autoplayDelay = 3000,
+        showArrows = true,
+        showDots = true,
     } = attributes;
 
     // Use ServerSideRender for initial render (better UX, SSR)
@@ -175,8 +211,8 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     // Embla Carousel refs for carousel layout preview in editor
     // Always initialize hook, but only use it when layout is carousel
     const [emblaRef, emblaApi] = useEmblaCarousel({
-        slidesToScroll: slidesToScroll ?? 1,
-        loop: loop ?? false,
+        slidesToScroll,
+        loop,
         skipSnaps: false,
         dragFree: false,
     });
@@ -190,24 +226,33 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     }, [layout, slidesToScroll, loop, cachedHtml, emblaApi]);
 
     // States for taxonomies and authors
-    const [taxonomies, setTaxonomies] = useState<any[]>([]);
-    const [authors, setAuthors] = useState<any[]>([]);
-    const [loadingTaxonomies, setLoadingTaxonomies] = useState(false);
-    const [taxonomyTerms, setTaxonomyTerms] = useState<{[key: string]: any[]}>({});
+    const [taxonomies, setTaxonomies] = useState<TaxonomyItem[]>([]);
+    const [authors, setAuthors] = useState<AuthorItem[]>([]);
+    const [taxonomyTerms, setTaxonomyTerms] = useState<Record<string, TermItem[]>>({});
 
     // Debounce attributes update để giảm số lần re-render (only when using AJAX)
-    const updateDebouncedAttributes = useCallback(
-        debounce((newAttributes: PostTypeLayoutAttributes) => {
+    const updateDebouncedAttributes = useMemo<DebouncedAttributesUpdater>(() => {
+        const debounced = debounce((...args: unknown[]) => {
+            const [newAttributes] = args as [PostTypeLayoutAttributes];
             setDebouncedAttributes(newAttributes);
             if (useAjaxRender) {
                 setIsLoading(true);
             }
-        }, 800),
-        [useAjaxRender]
-    );
+        }, 800);
+
+        return debounced as DebouncedAttributesUpdater;
+    }, [setDebouncedAttributes, setIsLoading, useAjaxRender]);
 
     const attributesHash = useMemo(() => JSON.stringify(attributes), [attributes]);
     const previousAttributesHashRef = useRef<string | null>(null);
+    const isMountedRef = useRef(true);
+
+    useEffect(() => {
+        isMountedRef.current = true;
+        return () => {
+            isMountedRef.current = false;
+        };
+    }, []);
 
     useEffect(() => {
         if (!useAjaxRender) {
@@ -220,6 +265,12 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         setIsLoading(true);
         updateDebouncedAttributes(attributes);
     }, [attributes, attributesHash, updateDebouncedAttributes, useAjaxRender]);
+
+    useEffect(() => {
+        return () => {
+            updateDebouncedAttributes.cancel();
+        };
+    }, [updateDebouncedAttributes]);
 
     // Generate unique queryId if not set
     useEffect(() => {
@@ -249,29 +300,55 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     // Fetch taxonomies and authors when postType changes
     useEffect(() => {
         const fetchTaxonomiesAndAuthors = async () => {
-            setLoadingTaxonomies(true);
-
             try {
-                // Fetch taxonomies for this post type
                 const taxonomiesData = await (window as any).wp.apiFetch({
                     path: `/wp/v2/taxonomies?type=${postType}`,
-                });
+                }) as Record<string, TaxonomyItem> | undefined;
 
-                // Convert object to array
-                const taxArray = Object.values(taxonomiesData || {});
+                if (!isMountedRef.current) {
+                    return;
+                }
+
+                const taxArray = Object.values(taxonomiesData || {}).filter(
+                    (item): item is TaxonomyItem => typeof item?.slug === 'string' && typeof item?.name === 'string'
+                );
                 setTaxonomies(taxArray);
 
-                // Fetch authors
                 const authorsData = await (window as any).wp.apiFetch({
                     path: '/wp/v2/users?who=authors&per_page=100',
-                });
-                setAuthors(authorsData || []);
+                }) as Array<Record<string, unknown>> | undefined;
+
+                if (!isMountedRef.current) {
+                    return;
+                }
+
+                const normalizedAuthors = (authorsData || [])
+                    .map((author) => {
+                        const id = typeof author?.id === 'number' ? author.id : Number(author?.id);
+                        const name =
+                            typeof author?.name === 'string' && author.name.length > 0
+                                ? author.name
+                                : typeof author?.slug === 'string'
+                                    ? author.slug
+                                    : '';
+
+                        return {
+                            id: Number.isFinite(id) ? id : 0,
+                            name,
+                        };
+                    })
+                    .filter((author): author is AuthorItem => author.id > 0 && author.name.length > 0);
+
+                setAuthors(normalizedAuthors);
             } catch (error) {
                 console.error('Error fetching taxonomies/authors:', error);
+
+                if (!isMountedRef.current) {
+                    return;
+                }
+
                 setTaxonomies([]);
                 setAuthors([]);
-            } finally {
-                setLoadingTaxonomies(false);
             }
         };
 
@@ -285,19 +362,39 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         }
 
         try {
-            const terms = await (window as any).wp.apiFetch({
+            const termsResponse = await (window as any).wp.apiFetch({
                 path: `/wp/v2/${taxonomy}?per_page=100&orderby=name&order=asc`,
-            });
+            }) as Array<Record<string, unknown>> | undefined;
+
+            if (!isMountedRef.current) {
+                return;
+            }
+
+            const normalizedTerms = (termsResponse || [])
+                .map((term) => {
+                    const id = typeof term?.id === 'number' ? term.id : Number(term?.id);
+                    const name = typeof term?.name === 'string' ? term.name : '';
+                    return {
+                        id: Number.isFinite(id) ? id : 0,
+                        name,
+                    };
+                })
+                .filter((term): term is TermItem => term.id > 0 && term.name.length > 0);
 
             setTaxonomyTerms(prev => ({
                 ...prev,
-                [taxonomy]: terms || []
+                [taxonomy]: normalizedTerms,
             }));
         } catch (error) {
             console.error(`Error fetching terms for ${taxonomy}:`, error);
+
+            if (!isMountedRef.current) {
+                return;
+            }
+
             setTaxonomyTerms(prev => ({
                 ...prev,
-                [taxonomy]: []
+                [taxonomy]: [],
             }));
         }
     }, [taxonomyTerms]);
@@ -308,8 +405,23 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             '--columns-desktop': columns,
             '--columns-tablet': columnsTablet,
             '--columns-mobile': columnsMobile,
-        } as React.CSSProperties,
+        } as CSSProperties,
     });
+
+    const imageRatioSelectValue = useMemo<ImageRatioSelectValue>(() => {
+        if (!imageRatio) {
+            return '';
+        }
+
+        if ((PRESET_IMAGE_RATIOS as readonly string[]).includes(imageRatio)) {
+            return imageRatio as PresetImageRatio;
+        }
+
+        return 'custom';
+    }, [imageRatio]);
+
+    const isCustomImageRatio = imageRatioSelectValue === 'custom';
+    const customImageRatioValue = isCustomImageRatio && imageRatio ? imageRatio : '';
 
     // Get available post types
     const postTypes = useSelect((select: any) => {
@@ -391,7 +503,9 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
 
         const fetchPosts = async () => {
             try {
-                setIsLoading(true);
+                if (isMountedRef.current) {
+                    setIsLoading(true);
+                }
 
                 // Use wp.apiFetch để tự động handle authentication
                 const data = await (window as any).wp.apiFetch({
@@ -402,15 +516,26 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                     },
                 });
 
+                if (!isMountedRef.current) {
+                    return;
+                }
+
                 if (data.rendered) {
                     setCachedHtml(data.rendered);
                 } else {
                     setCachedHtml('<div class="placeholder">No content</div>');
                 }
 
-                setIsLoading(false);
+                if (isMountedRef.current) {
+                    setIsLoading(false);
+                }
             } catch (error: any) {
                 console.error('Error fetching posts:', error);
+
+                if (!isMountedRef.current) {
+                    return;
+                }
+
                 setCachedHtml(`<div class="error">${error?.message || 'Error rendering block'}</div>`);
                 setIsLoading(false);
             }
@@ -574,7 +699,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         <>
                             <RangeControl
                                 label={__('Slides To Scroll', 'jankx')}
-                                value={slidesToScroll ?? 1}
+                                value={slidesToScroll}
                                 onChange={(value) => setAttributes({ slidesToScroll: value || 1 })}
                                 min={1}
                                 max={columns || 3}
@@ -582,21 +707,21 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                             />
                             <ToggleControl
                                 label={__('Loop', 'jankx')}
-                                checked={loop ?? false}
+                                checked={loop}
                                 onChange={(value) => setAttributes({ loop: value })}
                                 help={__('Enable infinite loop', 'jankx')}
                             />
                             <ToggleControl
                                 label={__('Autoplay', 'jankx')}
-                                checked={autoplay ?? false}
+                                checked={autoplay}
                                 onChange={(value) => setAttributes({ autoplay: value })}
                                 help={__('Automatically advance slides', 'jankx')}
                             />
                             {autoplay && (
                                 <RangeControl
                                     label={__('Autoplay Delay (ms)', 'jankx')}
-                                    value={autoplayDelay ?? 3000}
-                                    onChange={(value) => setAttributes({ autoplayDelay: value || 3000 })}
+                                        value={autoplayDelay}
+                                        onChange={(value) => setAttributes({ autoplayDelay: value || 3000 })}
                                     min={1000}
                                     max={10000}
                                     step={500}
@@ -605,13 +730,13 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                             )}
                             <ToggleControl
                                 label={__('Show Arrows', 'jankx')}
-                                checked={showArrows ?? true}
+                                checked={showArrows}
                                 onChange={(value) => setAttributes({ showArrows: value })}
                                 help={__('Display navigation arrows', 'jankx')}
                             />
                             <ToggleControl
                                 label={__('Show Dots', 'jankx')}
-                                checked={showDots ?? true}
+                                checked={showDots}
                                 onChange={(value) => setAttributes({ showDots: value })}
                                 help={__('Display pagination dots', 'jankx')}
                             />
@@ -647,16 +772,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                     )}
                                     <SelectControl
                                         label={__('Image Aspect Ratio', 'jankx')}
-                                        value={(() => {
-                                            const presetRatios = ['16/9', '4/3', '21/9', '1/1', '3/4', '2/3', '9/16'];
-                                            if (!imageRatio || imageRatio === '') {
-                                                return '';
-                                            }
-                                            if (presetRatios.includes(imageRatio)) {
-                                                return imageRatio;
-                                            }
-                                            return 'custom';
-                                        })()}
+                                        value={imageRatioSelectValue}
                                         onChange={(value) => {
                                             if (value === 'custom') {
                                                 // Set to empty string to show TextControl, user will enter custom value
@@ -678,33 +794,10 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                             { label: __('Custom', 'jankx'), value: 'custom' },
                                         ]}
                                     />
-                                    {(() => {
-                                        const presetRatios = ['16/9', '4/3', '21/9', '1/1', '3/4', '2/3', '9/16'];
-                                        const selectValue = (() => {
-                                            if (!imageRatio || imageRatio === '') {
-                                                return '';
-                                            }
-                                            if (presetRatios.includes(imageRatio)) {
-                                                return imageRatio;
-                                            }
-                                            return 'custom';
-                                        })();
-                                        
-                                        // Show TextControl when "Custom" is selected or when ratio is not in preset list
-                                        const isCustom = selectValue === 'custom' || (imageRatio && imageRatio !== '' && !presetRatios.includes(imageRatio));
-                                        
-                                        return isCustom;
-                                    })() && (
+                                    {isCustomImageRatio && (
                                         <TextControl
                                             label={__('Custom Ratio', 'jankx')}
-                                            value={(() => {
-                                                const presetRatios = ['16/9', '4/3', '21/9', '1/1', '3/4', '2/3', '9/16'];
-                                                // If current value is a preset, show empty (user just selected Custom)
-                                                if (!imageRatio || presetRatios.includes(imageRatio)) {
-                                                    return '';
-                                                }
-                                                return imageRatio;
-                                            })()}
+                                            value={customImageRatioValue}
                                             onChange={(value) => {
                                                 // Validate format: should be "number/number" or empty
                                                 const ratioPattern = /^\d+\/\d+$/;
@@ -878,13 +971,16 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         placeholder={__('Example: featured-posts, sidebar-posts', 'jankx')}
                     />
 
-                    <FormTokenField
+                    <BaseControl
                         label={__('Post Status', 'jankx')}
-                        value={postStatus}
-                        suggestions={['publish', 'pending', 'draft', 'auto-draft', 'future', 'private', 'inherit', 'trash', 'any']}
-                        onChange={(tokens) => setAttributes({ postStatus: tokens })}
                         help={__('Post status to fetch (default: publish)', 'jankx')}
-                    />
+                    >
+                        <FormTokenField
+                            value={postStatus}
+                            suggestions={['publish', 'pending', 'draft', 'auto-draft', 'future', 'private', 'inherit', 'trash', 'any']}
+                            onChange={(tokens) => setAttributes({ postStatus: normalizeTokens(tokens as TokenLike[]) })}
+                        />
+                    </BaseControl>
 
                     <TextControl
                         label={__('Post Parent ID', 'jankx')}
@@ -934,32 +1030,44 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                 {/* Author Filters - Only show for custom preset */}
                 {queryPreset === 'custom' && authors.length > 0 && (
                     <PanelBody title={__('👤 Author Filters', 'jankx')} initialOpen={false}>
-                        <FormTokenField
+                        <BaseControl
                             label={__('Authors (Include)', 'jankx')}
-                            value={authors.filter((a: any) => authorIn.includes(a.id)).map((a: any) => a.name)}
-                            suggestions={authors.map((a: any) => a.name)}
-                            onChange={(tokens) => {
-                                const selectedIds = tokens.map((token) => {
-                                    const author = authors.find((a: any) => a.name === token);
-                                    return author?.id || 0;
-                                }).filter(id => id > 0);
-                                setAttributes({ authorIn: selectedIds });
-                            }}
                             help={__('Only display posts from these authors', 'jankx')}
-                        />
-                        <FormTokenField
+                        >
+                            <FormTokenField
+                                value={authors.filter((author) => authorIn.includes(author.id)).map((author) => author.name)}
+                                suggestions={authors.map((author) => author.name)}
+                                onChange={(tokens) => {
+                                    const normalizedTokens = normalizeTokens(tokens as TokenLike[]);
+                                    const selectedIds = normalizedTokens
+                                        .map((tokenName) => {
+                                            const author = authors.find((item) => item.name === tokenName);
+                                            return author?.id ?? 0;
+                                        })
+                                        .filter((id) => id > 0);
+                                    setAttributes({ authorIn: selectedIds });
+                                }}
+                            />
+                        </BaseControl>
+                        <BaseControl
                             label={__('Authors (Exclude)', 'jankx')}
-                            value={authors.filter((a: any) => authorNotIn.includes(a.id)).map((a: any) => a.name)}
-                            suggestions={authors.map((a: any) => a.name)}
-                            onChange={(tokens) => {
-                                const selectedIds = tokens.map((token) => {
-                                    const author = authors.find((a: any) => a.name === token);
-                                    return author?.id || 0;
-                                }).filter(id => id > 0);
-                                setAttributes({ authorNotIn: selectedIds });
-                            }}
                             help={__('Exclude posts from these authors', 'jankx')}
-                        />
+                        >
+                            <FormTokenField
+                                value={authors.filter((author) => authorNotIn.includes(author.id)).map((author) => author.name)}
+                                suggestions={authors.map((author) => author.name)}
+                                onChange={(tokens) => {
+                                    const normalizedTokens = normalizeTokens(tokens as TokenLike[]);
+                                    const selectedIds = normalizedTokens
+                                        .map((tokenName) => {
+                                            const author = authors.find((item) => item.name === tokenName);
+                                            return author?.id ?? 0;
+                                        })
+                                        .filter((id) => id > 0);
+                                    setAttributes({ authorNotIn: selectedIds });
+                                }}
+                            />
+                        </BaseControl>
                     </PanelBody>
                 )}
 
@@ -1028,7 +1136,14 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                 value={mq.key}
                                 onChange={(value) => {
                                     const newMetaQuery = [...metaQuery];
-                                    newMetaQuery[index].key = value;
+                                    const targetQuery = newMetaQuery[index];
+                                    if (!targetQuery) {
+                                        return;
+                                    }
+                                    newMetaQuery[index] = {
+                                        ...targetQuery,
+                                        key: value,
+                                    };
                                     setAttributes({ metaQuery: newMetaQuery });
                                 }}
                                 placeholder={__('Example: price, rating, views', 'jankx')}
@@ -1053,7 +1168,14 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                 ]}
                                 onChange={(value) => {
                                     const newMetaQuery = [...metaQuery];
-                                    newMetaQuery[index].compare = value as any;
+                                    const targetQuery = newMetaQuery[index];
+                                    if (!targetQuery) {
+                                        return;
+                                    }
+                                    newMetaQuery[index] = {
+                                        ...targetQuery,
+                                        compare: value as MetaQueryItem['compare'],
+                                    };
                                     setAttributes({ metaQuery: newMetaQuery });
                                 }}
                             />
@@ -1064,7 +1186,14 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                     value={mq.value}
                                     onChange={(value) => {
                                         const newMetaQuery = [...metaQuery];
-                                        newMetaQuery[index].value = value;
+                                        const targetQuery = newMetaQuery[index];
+                                        if (!targetQuery) {
+                                            return;
+                                        }
+                                        newMetaQuery[index] = {
+                                            ...targetQuery,
+                                            value,
+                                        };
                                         setAttributes({ metaQuery: newMetaQuery });
                                     }}
                                     placeholder={__('Enter value...', 'jankx')}
@@ -1077,16 +1206,29 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                 options={[
                                     { label: __('-- Auto --', 'jankx'), value: '' },
                                     { label: 'NUMERIC', value: 'NUMERIC' },
+                                    { label: 'BINARY', value: 'BINARY' },
                                     { label: 'CHAR', value: 'CHAR' },
                                     { label: 'DATE', value: 'DATE' },
                                     { label: 'DATETIME', value: 'DATETIME' },
                                     { label: 'DECIMAL', value: 'DECIMAL' },
+                                    { label: 'TIME', value: 'TIME' },
                                     { label: 'SIGNED', value: 'SIGNED' },
                                     { label: 'UNSIGNED', value: 'UNSIGNED' },
                                 ]}
                                 onChange={(value) => {
                                     const newMetaQuery = [...metaQuery];
-                                    newMetaQuery[index].type = value as any;
+                                    const targetQuery = newMetaQuery[index];
+                                    if (!targetQuery) {
+                                        return;
+                                    }
+                                    const updatedQuery: MetaQueryItem = { ...targetQuery };
+                                    const nextType = value ? (value as MetaQueryItem['type']) : undefined;
+                                    if (nextType) {
+                                        updatedQuery.type = nextType;
+                                    } else if ('type' in updatedQuery) {
+                                        delete (updatedQuery as { type?: MetaQueryItem['type'] }).type;
+                                    }
+                                    newMetaQuery[index] = updatedQuery;
                                     setAttributes({ metaQuery: newMetaQuery });
                                 }}
                                 help={__('Specify data type for accurate comparison', 'jankx')}
@@ -1097,11 +1239,12 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                 )}
 
                 {/* Taxonomy Filters - Only show for custom preset */}
-                {queryPreset === 'custom' && taxonomies.length > 0 && taxonomies.map((taxonomy: any) => {
+                {queryPreset === 'custom' && taxonomies.length > 0 && taxonomies.map((taxonomy: TaxonomyItem) => {
                     // Find existing query for this taxonomy
                     const existingQueryIndex = taxQuery.findIndex(tq => tq.taxonomy === taxonomy.slug);
                     const hasQuery = existingQueryIndex >= 0;
-                    const currentQuery = hasQuery ? taxQuery[existingQueryIndex] : null;
+                    const currentQuery = hasQuery ? taxQuery[existingQueryIndex] : undefined;
+                    const terms = taxonomyTerms[taxonomy.slug];
 
                     return (
                         <PanelBody
@@ -1132,66 +1275,87 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                     {__('Add Filter', 'jankx')} {taxonomy.name}
                                 </Button>
                             ) : (
-                                <>
-                                    <SelectControl
-                                        label={__('Operator', 'jankx')}
-                                        value={currentQuery.operator}
-                                        options={[
-                                            { label: __('IN (Include)', 'jankx'), value: 'IN' },
-                                            { label: __('NOT IN (Exclude)', 'jankx'), value: 'NOT IN' },
-                                            { label: __('AND (Must Have All)', 'jankx'), value: 'AND' },
-                                            { label: __('EXISTS (Has Terms)', 'jankx'), value: 'EXISTS' },
-                                            { label: __('NOT EXISTS (No Terms)', 'jankx'), value: 'NOT EXISTS' },
-                                        ]}
-                                        onChange={(value) => {
-                                            const newTaxQuery = [...taxQuery];
-                                            newTaxQuery[existingQueryIndex].operator = value as any;
-                                            setAttributes({ taxQuery: newTaxQuery });
-                                        }}
-                                        help={__('EXISTS/NOT EXISTS checks if taxonomy has any terms', 'jankx')}
-                                    />
+                                currentQuery && (
+                                    <>
+                                        <SelectControl
+                                            label={__('Operator', 'jankx')}
+                                            value={currentQuery.operator}
+                                            options={[
+                                                { label: __('IN (Include)', 'jankx'), value: 'IN' },
+                                                { label: __('NOT IN (Exclude)', 'jankx'), value: 'NOT IN' },
+                                                { label: __('AND (Must Have All)', 'jankx'), value: 'AND' },
+                                                { label: __('EXISTS (Has Terms)', 'jankx'), value: 'EXISTS' },
+                                                { label: __('NOT EXISTS (No Terms)', 'jankx'), value: 'NOT EXISTS' },
+                                            ]}
+                                            onChange={(value) => {
+                                                const newTaxQuery = [...taxQuery];
+                                                const targetQuery = newTaxQuery[existingQueryIndex];
+                                                if (!targetQuery) {
+                                                    return;
+                                                }
+                                                newTaxQuery[existingQueryIndex] = {
+                                                    ...targetQuery,
+                                                    operator: value as TaxQueryItem['operator'],
+                                                };
+                                                setAttributes({ taxQuery: newTaxQuery });
+                                            }}
+                                            help={__('EXISTS/NOT EXISTS checks if taxonomy has any terms', 'jankx')}
+                                        />
 
-                                    {/* Only show term selection if operator is not EXISTS/NOT EXISTS */}
-                                    {!['EXISTS', 'NOT EXISTS'].includes(currentQuery.operator) && (
-                                        <>
-                                            {taxonomyTerms[taxonomy.slug] ? (
-                                                <FormTokenField
-                                                    label={__('Select Terms', 'jankx')}
-                                                    value={taxonomyTerms[taxonomy.slug]
-                                                        .filter((term: any) => currentQuery.terms.includes(term.id))
-                                                        .map((term: any) => term.name)
-                                                    }
-                                                    suggestions={taxonomyTerms[taxonomy.slug].map((term: any) => term.name)}
-                                                    onChange={(tokens) => {
-                                                        const selectedIds = tokens.map((token) => {
-                                                            const term = taxonomyTerms[taxonomy.slug].find((t: any) => t.name === token);
-                                                            return term?.id || 0;
-                                                        }).filter(id => id > 0);
+                                        {/* Only show term selection if operator is not EXISTS/NOT EXISTS */}
+                                        {!['EXISTS', 'NOT EXISTS'].includes(currentQuery.operator) && (
+                                            <>
+                                                {terms ? (
+                                                    <BaseControl
+                                                        label={__('Select Terms', 'jankx')}
+                                                        help={__('Select terms from dropdown', 'jankx')}
+                                                    >
+                                                        <FormTokenField
+                                                            value={terms
+                                                                .filter((term) => currentQuery.terms.includes(term.id))
+                                                                .map((term) => term.name)}
+                                                            suggestions={terms.map((term) => term.name)}
+                                                            onChange={(tokens) => {
+                                                                const selectedNames = normalizeTokens(tokens as TokenLike[]);
+                                                                const selectedIds = selectedNames
+                                                                    .map((tokenName) => {
+                                                                        const term = terms.find((item) => item.name === tokenName);
+                                                                        return term?.id ?? 0;
+                                                                    })
+                                                                    .filter((id) => id > 0);
 
-                                                        const newTaxQuery = [...taxQuery];
-                                                        newTaxQuery[existingQueryIndex].terms = selectedIds;
-                                                        setAttributes({ taxQuery: newTaxQuery });
-                                                    }}
-                                                    help={__('Select terms from dropdown', 'jankx')}
-                                                />
-                                            ) : (
-                                                <Spinner />
-                                            )}
-                                        </>
-                                    )}
+                                                                const newTaxQuery = [...taxQuery];
+                                                                const targetQuery = newTaxQuery[existingQueryIndex];
+                                                                if (!targetQuery) {
+                                                                    return;
+                                                                }
+                                                                newTaxQuery[existingQueryIndex] = {
+                                                                    ...targetQuery,
+                                                                    terms: selectedIds,
+                                                                };
+                                                                setAttributes({ taxQuery: newTaxQuery });
+                                                            }}
+                                                        />
+                                                    </BaseControl>
+                                                ) : (
+                                                    <Spinner />
+                                                )}
+                                            </>
+                                        )}
 
-                                    <Button
-                                        isDestructive
-                                        variant="secondary"
-                                        onClick={() => {
-                                            const newTaxQuery = taxQuery.filter((_, i) => i !== existingQueryIndex);
-                                            setAttributes({ taxQuery: newTaxQuery });
-                                        }}
-                                        style={{ marginTop: '10px' }}
-                                    >
-                                        {__('Remove Filter', 'jankx')}
-                                    </Button>
-                                </>
+                                        <Button
+                                            isDestructive
+                                            variant="secondary"
+                                            onClick={() => {
+                                                const newTaxQuery = taxQuery.filter((_, i) => i !== existingQueryIndex);
+                                                setAttributes({ taxQuery: newTaxQuery });
+                                            }}
+                                            style={{ marginTop: '10px' }}
+                                        >
+                                            {__('Remove Filter', 'jankx')}
+                                        </Button>
+                                    </>
+                                )
                             )}
                         </PanelBody>
                     );
