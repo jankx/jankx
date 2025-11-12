@@ -2169,6 +2169,8 @@ const normalizeTokens = tokens => {
     return '';
   }).filter(value => value.length > 0);
 };
+const DEFAULT_TEMPLATE = [['jankx/post-layout-template']];
+const ALLOWED_TEMPLATE_BLOCKS = ['jankx/post-layout-template'];
 function Edit({
   attributes,
   setAttributes,
@@ -2254,6 +2256,27 @@ function Edit({
   const [taxonomies, setTaxonomies] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useState)([]);
   const [authors, setAuthors] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useState)([]);
   const [taxonomyTerms, setTaxonomyTerms] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useState)({});
+  const [isEditingTemplate, setIsEditingTemplate] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useState)(false);
+  const innerBlocks = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_4__.useSelect)(select => {
+    var _select$getBlock$inne;
+    return (_select$getBlock$inne = select(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.store).getBlock(clientId)?.innerBlocks) !== null && _select$getBlock$inne !== void 0 ? _select$getBlock$inne : [];
+  }, [clientId]);
+  const {
+    insertBlock
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_4__.useDispatch)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.store);
+  const hasInsertedTemplateRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useRef)(false);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useEffect)(() => {
+    if (hasInsertedTemplateRef.current) {
+      return;
+    }
+    if (innerBlocks.length === 0 && typeof insertBlock === 'function') {
+      const templateBlock = (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.createBlock)('jankx/post-layout-template');
+      insertBlock(templateBlock, 0, clientId);
+      hasInsertedTemplateRef.current = true;
+    } else if (innerBlocks.length > 0) {
+      hasInsertedTemplateRef.current = true;
+    }
+  }, [innerBlocks, insertBlock, clientId]);
 
   // Debounce attributes update để giảm số lần re-render (only when using AJAX)
   const updateDebouncedAttributes = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useMemo)(() => {
@@ -2550,7 +2573,16 @@ function Edit({
   }, [layout, renderKey, useAjaxRender]); // Only fetch when useAjaxRender is true
 
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.Fragment, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.BlockControls, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToolbarGroup, {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToolbarButton, {
+          icon: "edit",
+          isPressed: isEditingTemplate,
+          onClick: () => setIsEditingTemplate(value => !value),
+          children: isEditingTemplate ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Done Editing Template', 'jankx') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Edit Item Template', 'jankx')
+        })
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
       group: "settings",
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Query Settings', 'jankx'),
@@ -3417,7 +3449,17 @@ function Edit({
       })]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("div", {
       ...blockProps,
-      children: useAjaxRender && isLoading ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Placeholder, {
+      children: isEditingTemplate ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)("div", {
+        className: "post-type-layout-template-editor",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("p", {
+          className: "post-type-layout-template-editor__description",
+          children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Customize the layout for each item. These changes affect the live output.', 'jankx')
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InnerBlocks, {
+          allowedBlocks: ALLOWED_TEMPLATE_BLOCKS,
+          template: DEFAULT_TEMPLATE,
+          templateLock: "all"
+        })]
+      }) : useAjaxRender && isLoading ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Placeholder, {
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Spinner, {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("p", {
           children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Loading posts...', 'jankx')
         })]

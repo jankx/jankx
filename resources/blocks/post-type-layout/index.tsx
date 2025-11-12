@@ -1,6 +1,12 @@
-import { registerBlockType } from '@wordpress/blocks';
+import { createBlock, registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
-import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import {
+    useBlockProps,
+    InspectorControls,
+    BlockControls,
+    InnerBlocks,
+    store as blockEditorStore,
+} from '@wordpress/block-editor';
 import {
     PanelBody,
     SelectControl,
@@ -12,8 +18,10 @@ import {
     FormTokenField,
     Button,
     BaseControl,
+    ToolbarGroup,
+    ToolbarButton,
 } from '@wordpress/components';
-import { useSelect } from '@wordpress/data';
+import { useDispatch, useSelect } from '@wordpress/data';
 import { useCallback, useEffect, useState, useMemo, useRef } from '@wordpress/element';
 import type { CSSProperties } from 'react';
 type TokenLike = string | { value: string; [key: string]: unknown };
@@ -71,6 +79,9 @@ const normalizeTokens = (tokens: TokenLike[]): string[] => {
         })
         .filter((value): value is string => value.length > 0);
 };
+
+const DEFAULT_TEMPLATE: [string][] = [['jankx/post-layout-template']];
+const ALLOWED_TEMPLATE_BLOCKS = ['jankx/post-layout-template'];
 
 type QueryPreset =
     | 'default'
@@ -230,6 +241,29 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     const [taxonomies, setTaxonomies] = useState<TaxonomyItem[]>([]);
     const [authors, setAuthors] = useState<AuthorItem[]>([]);
     const [taxonomyTerms, setTaxonomyTerms] = useState<Record<string, TermItem[]>>({});
+    const [isEditingTemplate, setIsEditingTemplate] = useState(false);
+
+    const innerBlocks = useSelect(
+        (select: any) => select(blockEditorStore).getBlock(clientId)?.innerBlocks ?? [],
+        [clientId]
+    );
+
+    const { insertBlock } = useDispatch<any>(blockEditorStore);
+    const hasInsertedTemplateRef = useRef(false);
+
+    useEffect(() => {
+        if (hasInsertedTemplateRef.current) {
+            return;
+        }
+
+        if (innerBlocks.length === 0 && typeof insertBlock === 'function') {
+            const templateBlock = createBlock('jankx/post-layout-template');
+            insertBlock(templateBlock, 0, clientId);
+            hasInsertedTemplateRef.current = true;
+        } else if (innerBlocks.length > 0) {
+            hasInsertedTemplateRef.current = true;
+        }
+    }, [innerBlocks, insertBlock, clientId]);
 
     // Debounce attributes update để giảm số lần re-render (only when using AJAX)
     const updateDebouncedAttributes = useMemo<DebouncedAttributesUpdater>(() => {
@@ -574,6 +608,19 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
 
     return (
         <>
+            <BlockControls>
+                <ToolbarGroup>
+                    <ToolbarButton
+                        icon="edit"
+                        isPressed={isEditingTemplate}
+                        onClick={() => setIsEditingTemplate((value) => !value)}
+                    >
+                        {isEditingTemplate
+                            ? __('Done Editing Template', 'jankx')
+                            : __('Edit Item Template', 'jankx')}
+                    </ToolbarButton>
+                </ToolbarGroup>
+            </BlockControls>
             <InspectorControls group="settings">
                 <PanelBody title={__('Query Settings', 'jankx')} initialOpen={true}>
                     <SelectControl
@@ -1390,7 +1437,21 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             </InspectorControls>
 
             <div {...blockProps}>
-                {useAjaxRender && isLoading ? (
+                {isEditingTemplate ? (
+                    <div className="post-type-layout-template-editor">
+                        <p className="post-type-layout-template-editor__description">
+                            {__(
+                                'Customize the layout for each item. These changes affect the live output.',
+                                'jankx'
+                            )}
+                        </p>
+                        <InnerBlocks
+                            allowedBlocks={ALLOWED_TEMPLATE_BLOCKS}
+                            template={DEFAULT_TEMPLATE}
+                            templateLock="all"
+                        />
+                    </div>
+                ) : useAjaxRender && isLoading ? (
                     <Placeholder>
                         <Spinner />
                         <p>{__('Loading posts...', 'jankx')}</p>

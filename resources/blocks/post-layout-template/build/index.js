@@ -56,7 +56,8 @@ function PostLayoutTemplateInnerBlocks({
     className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])('wp-block-post', classList)
   }, {
     template: TEMPLATE,
-    __unstableDisableLayoutClassNames: true
+    __unstableDisableLayoutClassNames: true,
+    renderAppender: _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.InnerBlocks.ButtonBlockAppender
   });
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("li", {
     ...innerBlocksProps

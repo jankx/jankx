@@ -8,6 +8,7 @@ import {
     __experimentalUseBlockPreview as useBlockPreview,
     useBlockProps,
     useInnerBlocksProps,
+    InnerBlocks,
     store as blockEditorStore,
 } from '@wordpress/block-editor';
 import { Spinner, ToolbarGroup } from '@wordpress/components';
@@ -36,7 +37,11 @@ interface PostLayoutTemplateEditProps {
 function PostLayoutTemplateInnerBlocks({ classList }: { classList?: string }) {
     const innerBlocksProps = useInnerBlocksProps(
         { className: clsx('wp-block-post', classList) },
-        { template: TEMPLATE, __unstableDisableLayoutClassNames: true }
+        {
+            template: TEMPLATE,
+            __unstableDisableLayoutClassNames: true,
+            renderAppender: InnerBlocks.ButtonBlockAppender,
+        }
     );
     return <li {...innerBlocksProps} />;
 }
