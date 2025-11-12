@@ -206,6 +206,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     // Debounced attributes for AJAX render (only when useAjaxRender is true)
     const [debouncedAttributes, setDebouncedAttributes] = useState(attributes);
     const [cachedHtml, setCachedHtml] = useState<string>('');
+    const [carouselSlidesHtml, setCarouselSlidesHtml] = useState<string>('');
     const [isLoading, setIsLoading] = useState(false);
     
     // Embla Carousel refs for carousel layout preview in editor
@@ -507,6 +508,10 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                     setIsLoading(true);
                 }
 
+                if (layout === 'carousel') {
+                    setCarouselSlidesHtml('');
+                }
+
                 // Use wp.apiFetch để tự động handle authentication
                 const data = await (window as any).wp.apiFetch({
                     path: `/wp/v2/block-renderer/jankx/post-type-layout?context=edit`,
@@ -522,8 +527,30 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
 
                 if (data.rendered) {
                     setCachedHtml(data.rendered);
+                    if (layout === 'carousel') {
+                        let slidesHtml = '';
+
+                        try {
+                            if (typeof window !== 'undefined' && typeof (window as any).DOMParser !== 'undefined') {
+                                const parser = new window.DOMParser();
+                                const parsedDocument = parser.parseFromString(data.rendered, 'text/html');
+                                const containerElement = parsedDocument.querySelector('.post-type-layout-carousel .embla__container');
+
+                                if (containerElement) {
+                                    slidesHtml = containerElement.innerHTML;
+                                }
+                            }
+                        } catch (parseError) {
+                            console.warn('Failed to parse carousel markup for editor preview:', parseError);
+                        }
+
+                        setCarouselSlidesHtml(slidesHtml);
+                    } else {
+                        setCarouselSlidesHtml('');
+                    }
                 } else {
                     setCachedHtml('<div class="placeholder">No content</div>');
+                    setCarouselSlidesHtml('');
                 }
 
                 if (isMountedRef.current) {
@@ -542,7 +569,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         };
 
         fetchPosts();
-    }, [renderKey, useAjaxRender]); // Only fetch when useAjaxRender is true
+    }, [layout, renderKey, useAjaxRender]); // Only fetch when useAjaxRender is true
 
 
     return (
@@ -1370,13 +1397,14 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                     </Placeholder>
                 ) : useAjaxRender && layout === 'carousel' && cachedHtml ? (
                     // Render carousel preview in editor using Embla Carousel React (AJAX mode)
-                    <div className="post-type-layout-carousel-editor" ref={layout === 'carousel' ? emblaRef : undefined}>
-                        <div className="embla__viewport">
-                            <div className="embla__container">
-                                <div dangerouslySetInnerHTML={{ __html: cachedHtml }} />
-                            </div>
+                    <div className="post-type-layout-carousel-editor">
+                        <div className="embla__viewport" ref={emblaRef}>
+                            <div
+                                className="embla__container"
+                                dangerouslySetInnerHTML={{ __html: carouselSlidesHtml || '' }}
+                            />
                         </div>
-                        {showArrows !== false && emblaApi && layout === 'carousel' && (
+                        {showArrows !== false && emblaApi && (
                             <>
                                 <button 
                                     className="embla__button embla__button--prev" 

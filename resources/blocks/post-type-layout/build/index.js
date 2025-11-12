@@ -2230,6 +2230,7 @@ function Edit({
   // Debounced attributes for AJAX render (only when useAjaxRender is true)
   const [debouncedAttributes, setDebouncedAttributes] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useState)(attributes);
   const [cachedHtml, setCachedHtml] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useState)('');
+  const [carouselSlidesHtml, setCarouselSlidesHtml] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useState)('');
   const [isLoading, setIsLoading] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useState)(false);
 
   // Embla Carousel refs for carousel layout preview in editor
@@ -2494,6 +2495,9 @@ function Edit({
         if (isMountedRef.current) {
           setIsLoading(true);
         }
+        if (layout === 'carousel') {
+          setCarouselSlidesHtml('');
+        }
 
         // Use wp.apiFetch để tự động handle authentication
         const data = await window.wp.apiFetch({
@@ -2508,8 +2512,27 @@ function Edit({
         }
         if (data.rendered) {
           setCachedHtml(data.rendered);
+          if (layout === 'carousel') {
+            let slidesHtml = '';
+            try {
+              if (typeof window !== 'undefined' && typeof window.DOMParser !== 'undefined') {
+                const parser = new window.DOMParser();
+                const parsedDocument = parser.parseFromString(data.rendered, 'text/html');
+                const containerElement = parsedDocument.querySelector('.post-type-layout-carousel .embla__container');
+                if (containerElement) {
+                  slidesHtml = containerElement.innerHTML;
+                }
+              }
+            } catch (parseError) {
+              console.warn('Failed to parse carousel markup for editor preview:', parseError);
+            }
+            setCarouselSlidesHtml(slidesHtml);
+          } else {
+            setCarouselSlidesHtml('');
+          }
         } else {
           setCachedHtml('<div class="placeholder">No content</div>');
+          setCarouselSlidesHtml('');
         }
         if (isMountedRef.current) {
           setIsLoading(false);
@@ -2524,7 +2547,7 @@ function Edit({
       }
     };
     fetchPosts();
-  }, [renderKey, useAjaxRender]); // Only fetch when useAjaxRender is true
+  }, [layout, renderKey, useAjaxRender]); // Only fetch when useAjaxRender is true
 
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
@@ -3403,18 +3426,16 @@ function Edit({
       // Render carousel preview in editor using Embla Carousel React (AJAX mode)
       (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)("div", {
         className: "post-type-layout-carousel-editor",
-        ref: layout === 'carousel' ? emblaRef : undefined,
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("div", {
           className: "embla__viewport",
+          ref: emblaRef,
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("div", {
             className: "embla__container",
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("div", {
-              dangerouslySetInnerHTML: {
-                __html: cachedHtml
-              }
-            })
+            dangerouslySetInnerHTML: {
+              __html: carouselSlidesHtml || ''
+            }
           })
-        }), showArrows !== false && emblaApi && layout === 'carousel' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.Fragment, {
+        }), showArrows !== false && emblaApi && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.Fragment, {
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("button", {
             className: "embla__button embla__button--prev",
             type: "button",
