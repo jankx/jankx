@@ -101,4 +101,13 @@ interface PostLayoutInterface
      * @return bool
      */
     public function hasCustomGenerator(): bool;
+
+    /**
+     * Wrap template HTML theo layout
+     *
+     * @param string $html
+     * @param array $options
+     * @return string
+     */
+    public function wrapTemplateHtml(string $html, array $options = []): string;
 }

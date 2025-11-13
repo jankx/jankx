@@ -110,4 +110,54 @@ class GridLayout extends PostLayout
             'showTitle', // Grid layout cần title để có ý nghĩa
         ];
     }
+
+    public function wrapTemplateHtml(string $html, array $options = []): string
+    {
+        $columns = (int)($options['columns'] ?? $this->getOption('columns', 3));
+        $columnsTablet = (int)($options['columnsTablet'] ?? $this->getOption('columnsTablet', 2));
+        $columnsMobile = (int)($options['columnsMobile'] ?? $this->getOption('columnsMobile', 1));
+
+        $columns = max(1, $columns);
+        $columnsTablet = max(1, $columnsTablet);
+        $columnsMobile = max(1, $columnsMobile);
+
+        $dom = new \DOMDocument('1.0', 'UTF-8');
+        libxml_use_internal_errors(true);
+        $dom->loadHTML('<?xml encoding="utf-8" ?><div>' . $html . '</div>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        libxml_clear_errors();
+
+        $ul = $dom->getElementsByTagName('ul')->item(0);
+
+        $classList = [
+            'post-type-layout-grid',
+            'wp-block-jankx-post-layout-template',
+            'is-flex-container',
+            'columns-' . $columns,
+            'columns-tablet-' . $columnsTablet,
+            'columns-mobile-' . $columnsMobile,
+        ];
+
+        if ($ul) {
+            $existing = $ul->getAttribute('class');
+            $classList = array_unique(array_filter(array_merge(
+                preg_split('/\s+/', $existing) ?: [],
+                $classList
+            )));
+            $ul->setAttribute('class', implode(' ', $classList));
+
+            $existingStyle = $ul->getAttribute('style');
+            $styleParts = array_filter(array_map('trim', explode(';', $existingStyle)));
+            $styleParts[] = '--columns-desktop: ' . $columns;
+            $styleParts[] = '--columns-tablet: ' . $columnsTablet;
+            $styleParts[] = '--columns-mobile: ' . $columnsMobile;
+            $ul->setAttribute('style', implode('; ', array_unique($styleParts)));
+        }
+
+        $innerHTML = '';
+        foreach ($dom->documentElement->childNodes as $child) {
+            $innerHTML .= $dom->saveHTML($child);
+        }
+
+        return $innerHTML;
+    }
 }

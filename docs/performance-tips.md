@@ -26,14 +26,14 @@
 ```php
 // wp-config.php
 define('WP_DEBUG', false);
-define('JANKX_DEBUG_LOG', false);
+define('JANKX_DEBUG_ALL_LOG', false);
 ```
 
 ### Development Environment
 ```php
 // wp-config.php
 define('WP_DEBUG', true);
-define('JANKX_DEBUG_LOG', true);
+define('JANKX_DEBUG_ALL_LOG', true);
 ```
 
 ## Best Practices

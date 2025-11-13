@@ -8,7 +8,7 @@
   \************************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/post-layout-template","title":"Post Layout Template","category":"jankx","parent":["jankx/post-type-layout"],"description":"Defines the markup template used to render a single post inside the Post Type Layout block.","textdomain":"jankx","editorScript":"file:./build/index.js","style":"file:./build/style.css","editorStyle":"file:./build/editor.css","usesContext":["queryId","query","displayLayout","templateSlug","previewPostType","enhancedPagination","postType"],"supports":{"reusable":false,"html":false,"align":["wide","full"],"layout":true,"color":{"gradients":true,"link":true,"__experimentalDefaultControls":{"background":true,"text":true}},"typography":{"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true,"__experimentalTextTransform":true,"__experimentalTextDecoration":true,"__experimentalLetterSpacing":true,"__experimentalDefaultControls":{"fontSize":true}},"spacing":{"margin":true,"padding":true,"blockGap":{"__experimentalDefault":"1.25em"},"__experimentalDefaultControls":{"blockGap":true,"padding":false,"margin":false}},"interactivity":{"clientNavigation":true},"__experimentalBorder":{"radius":true,"color":true,"width":true,"style":true}}}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/post-layout-template","title":"Post Layout Template","category":"jankx","parent":["jankx/post-type-layout"],"description":"Defines the markup template used to render a single post inside the Post Type Layout block.","textdomain":"jankx","editorScript":"file:./build/index.js","style":"file:./build/style.css","editorStyle":"file:./build/editor.css","usesContext":["queryId","query","displayLayout","templateSlug","previewPostType","enhancedPagination","postType","jankxPostTypeLayout"],"supports":{"reusable":false,"html":false,"align":["wide","full"],"layout":true,"color":{"gradients":true,"link":true,"__experimentalDefaultControls":{"background":true,"text":true}},"typography":{"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true,"__experimentalTextTransform":true,"__experimentalTextDecoration":true,"__experimentalLetterSpacing":true,"__experimentalDefaultControls":{"fontSize":true}},"spacing":{"margin":true,"padding":true,"blockGap":{"__experimentalDefault":"1.25em"},"__experimentalDefaultControls":{"blockGap":true,"padding":false,"margin":false}},"interactivity":{"clientNavigation":true},"__experimentalBorder":{"radius":true,"color":true,"width":true,"style":true}}}');
 
 /***/ }),
 
@@ -37,8 +37,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_6__);
 /* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/grid.js");
 /* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/list.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var _templateBlocks__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./templateBlocks */ "./blocks/post-layout-template/templateBlocks.ts");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__);
+
 
 
 
@@ -50,16 +52,19 @@ __webpack_require__.r(__webpack_exports__);
 
 const TEMPLATE = [['core/post-title'], ['core/post-date'], ['core/post-excerpt']];
 function PostLayoutTemplateInnerBlocks({
-  classList
+  classList,
+  allowedBlocks
 }) {
   const innerBlocksProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.useInnerBlocksProps)({
     className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])('wp-block-post', classList)
   }, {
     template: TEMPLATE,
     __unstableDisableLayoutClassNames: true,
-    renderAppender: _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.InnerBlocks.ButtonBlockAppender
+    renderAppender: _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.InnerBlocks.ButtonBlockAppender,
+    allowedBlocks,
+    templateLock: false
   });
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("li", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("li", {
     ...innerBlocksProps
   });
 }
@@ -82,7 +87,7 @@ function PostLayoutTemplateBlockPreview({
   const style = {
     display: isHidden ? 'none' : undefined
   };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("li", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("li", {
     ...blockPreviewProps,
     tabIndex: 0,
     role: "button",
@@ -101,6 +106,7 @@ function PostLayoutTemplateEdit({
   },
   __unstableLayoutClassNames
 }) {
+  var _primaryTemplateBlock;
   const {
     query: {
       perPage,
@@ -232,19 +238,22 @@ function PostLayoutTemplateEdit({
       };
     })) !== null && _posts$map !== void 0 ? _posts$map : [];
   }, [posts]);
+  const primaryTemplateBlock = blocks?.find(block => block.name === 'jankx/post-layout-template');
+  const innerBlockCount = (_primaryTemplateBlock = primaryTemplateBlock?.innerBlocks?.length) !== null && _primaryTemplateBlock !== void 0 ? _primaryTemplateBlock : 0;
+  const allowedBlocks = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useMemo)(() => (0,_templateBlocks__WEBPACK_IMPORTED_MODULE_9__.getAllowedTemplateBlocks)(previewPostType || postType), [previewPostType, postType]);
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.useBlockProps)({
     className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])(__unstableLayoutClassNames, {
       [`columns-${columnCount}`]: layoutType === 'grid' && columnCount
     })
   });
   if (!posts) {
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("p", {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("p", {
       ...blockProps,
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Spinner, {})
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Spinner, {})
     });
   }
   if (!posts.length) {
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("p", {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("p", {
       ...blockProps,
       children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('No results found.', 'jankx')
     });
@@ -271,25 +280,33 @@ function PostLayoutTemplateEdit({
     }),
     isActive: layoutType === 'grid'
   }];
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.Fragment, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.BlockControls, {
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.ToolbarGroup, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.BlockControls, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.ToolbarGroup, {
         controls: displayLayoutControls
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("ul", {
-      ...blockProps,
-      children: blockContexts.map(blockContext => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.BlockContextProvider, {
-        value: blockContext,
-        children: [blockContext.postId === (activeBlockContextId || blockContexts[0]?.postId) ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(PostLayoutTemplateInnerBlocks, {
-          classList: blockContext.classList
-        }) : null, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(MemoizedPostLayoutTemplateBlockPreview, {
-          blocks: blocks,
-          blockContextId: blockContext.postId,
-          classList: blockContext.classList,
-          setActiveBlockContextId: setActiveBlockContextId,
-          isHidden: blockContext.postId === (activeBlockContextId || blockContexts[0]?.postId)
-        })]
-      }, blockContext.postId))
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
+      children: [innerBlockCount === 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
+        className: "jankx-post-layout-template__notice",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("p", {
+          children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('This template has no blocks yet. Use the Toggle controls in Post Type Layout to enable elements (title, image, price…).', 'jankx')
+        })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("ul", {
+        ...blockProps,
+        children: blockContexts.map(blockContext => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.BlockContextProvider, {
+          value: blockContext,
+          children: [blockContext.postId === (activeBlockContextId || blockContexts[0]?.postId) ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(PostLayoutTemplateInnerBlocks, {
+            classList: blockContext.classList,
+            allowedBlocks: allowedBlocks
+          }) : null, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(MemoizedPostLayoutTemplateBlockPreview, {
+            blocks: blocks,
+            blockContextId: blockContext.postId,
+            classList: blockContext.classList,
+            setActiveBlockContextId: setActiveBlockContextId,
+            isHidden: blockContext.postId === (activeBlockContextId || blockContexts[0]?.postId)
+          })]
+        }, blockContext.postId))
+      })]
     })]
   });
 }
@@ -339,6 +356,27 @@ function PostLayoutTemplateSave() {
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
+
+/***/ }),
+
+/***/ "./blocks/post-layout-template/templateBlocks.ts":
+/*!*******************************************************!*\
+  !*** ./blocks/post-layout-template/templateBlocks.ts ***!
+  \*******************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   getAllowedTemplateBlocks: () => (/* binding */ getAllowedTemplateBlocks)
+/* harmony export */ });
+const BASE_TEMPLATE_BLOCKS = ['core/template-part', 'core/post-title', 'core/post-author', 'core/post-author-name', 'core/post-date', 'core/post-featured-image', 'core/post-excerpt', 'core/post-terms', 'core/post-content', 'core/read-more', 'core/buttons', 'core/button', 'core/paragraph', 'core/heading', 'core/image', 'core/list', 'core/separator', 'core/spacer', 'core/group', 'core/columns', 'core/column', 'core/media-text', 'core/image', 'core/cover', 'core/gallery'];
+const PRODUCT_TEMPLATE_BLOCKS = ['woocommerce/product-title', 'woocommerce/product-price', 'woocommerce/product-rating', 'woocommerce/product-summary', 'woocommerce/product-details', 'woocommerce/product-content', 'woocommerce/product-gallery', 'woocommerce/product-image', 'woocommerce/product-images', 'woocommerce/product-stock-indicator', 'woocommerce/product-meta', 'woocommerce/product-add-to-cart', 'woocommerce/product-sku', 'woocommerce/product-sale-badge'];
+const getAllowedTemplateBlocks = postType => {
+  if (postType === 'product') {
+    return [...new Set([...BASE_TEMPLATE_BLOCKS, ...PRODUCT_TEMPLATE_BLOCKS])];
+  }
+  return BASE_TEMPLATE_BLOCKS;
+};
 
 /***/ }),
 

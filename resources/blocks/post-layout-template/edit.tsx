@@ -15,7 +15,13 @@ import { Spinner, ToolbarGroup } from '@wordpress/components';
 import { store as coreStore } from '@wordpress/core-data';
 import { list, grid } from '@wordpress/icons';
 
-const TEMPLATE: [string][] = [['core/post-title'], ['core/post-date'], ['core/post-excerpt']];
+import { getAllowedTemplateBlocks } from './templateBlocks';
+
+const TEMPLATE: [string][] = [
+    ['core/post-title'],
+    ['core/post-date'],
+    ['core/post-excerpt'],
+];
 
 interface PostLayoutTemplateEditProps {
     attributes: {
@@ -34,13 +40,15 @@ interface PostLayoutTemplateEditProps {
     __unstableLayoutClassNames?: string;
 }
 
-function PostLayoutTemplateInnerBlocks({ classList }: { classList?: string }) {
+function PostLayoutTemplateInnerBlocks({ classList, allowedBlocks }: { classList?: string; allowedBlocks?: string[] }) {
     const innerBlocksProps = useInnerBlocksProps(
         { className: clsx('wp-block-post', classList) },
         {
             template: TEMPLATE,
             __unstableDisableLayoutClassNames: true,
             renderAppender: InnerBlocks.ButtonBlockAppender,
+            allowedBlocks,
+            templateLock: false,
         }
     );
     return <li {...innerBlocksProps} />;
@@ -257,6 +265,14 @@ export default function PostLayoutTemplateEdit({
         [posts]
     );
 
+    const primaryTemplateBlock = blocks?.find((block: any) => block.name === 'jankx/post-layout-template');
+    const innerBlockCount = primaryTemplateBlock?.innerBlocks?.length ?? 0;
+
+    const allowedBlocks = useMemo(
+        () => getAllowedTemplateBlocks(previewPostType || postType),
+        [previewPostType, postType]
+    );
+
     const blockProps = useBlockProps({
         className: clsx(__unstableLayoutClassNames, {
             [`columns-${columnCount}`]: layoutType === 'grid' && columnCount,
@@ -309,22 +325,32 @@ export default function PostLayoutTemplateEdit({
                 <ToolbarGroup controls={displayLayoutControls} />
             </BlockControls>
 
-            <ul {...blockProps}>
-                {blockContexts.map((blockContext) => (
-                    <BlockContextProvider key={blockContext.postId} value={blockContext}>
-                        {blockContext.postId === (activeBlockContextId || blockContexts[0]?.postId) ? (
-                            <PostLayoutTemplateInnerBlocks classList={blockContext.classList} />
-                        ) : null}
-                        <MemoizedPostLayoutTemplateBlockPreview
-                            blocks={blocks}
-                            blockContextId={blockContext.postId}
-                            classList={blockContext.classList}
-                            setActiveBlockContextId={setActiveBlockContextId}
-                            isHidden={blockContext.postId === (activeBlockContextId || blockContexts[0]?.postId)}
-                        />
-                    </BlockContextProvider>
-                ))}
-            </ul>
+            <>
+                {innerBlockCount === 0 && (
+                    <div className="jankx-post-layout-template__notice">
+                        <p>{__('This template has no blocks yet. Use the Toggle controls in Post Type Layout to enable elements (title, image, price…).', 'jankx')}</p>
+                    </div>
+                )}
+                <ul {...blockProps}>
+                    {blockContexts.map((blockContext) => (
+                        <BlockContextProvider key={blockContext.postId} value={blockContext}>
+                            {blockContext.postId === (activeBlockContextId || blockContexts[0]?.postId) ? (
+                                <PostLayoutTemplateInnerBlocks
+                                    classList={blockContext.classList}
+                                    allowedBlocks={allowedBlocks}
+                                />
+                            ) : null}
+                            <MemoizedPostLayoutTemplateBlockPreview
+                                blocks={blocks}
+                                blockContextId={blockContext.postId}
+                                classList={blockContext.classList}
+                                setActiveBlockContextId={setActiveBlockContextId}
+                                isHidden={blockContext.postId === (activeBlockContextId || blockContexts[0]?.postId)}
+                            />
+                        </BlockContextProvider>
+                    ))}
+                </ul>
+            </>
         </>
     );
 }

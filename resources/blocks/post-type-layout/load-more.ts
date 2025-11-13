@@ -66,18 +66,53 @@ function initLoadMore(): void {
             return;
         }
 
-        // Get posts container (should be first child before pagination)
-        const postsContainer = blockWrapper.querySelector('.post-layout, .jankx-posts-layout, [class*="layout-"]');
+        const layoutType = (blockWrapper.getAttribute('data-layout') || '').toLowerCase();
+        const containerSelectors: string[] = [];
+
+        if (layoutType === 'carousel') {
+            containerSelectors.push('.post-type-layout-carousel .embla__container');
+        }
+
+        containerSelectors.push(
+            '.wp-block-jankx-post-layout-template',
+            '.post-type-layout-grid',
+            '.post-type-layout-list',
+            '.post-type-layout-masonry',
+            '.post-type-layout-card',
+            '.jankx-posts-layout',
+            '.post-layout'
+        );
+
+        const uniqueSelectors = Array.from(new Set(containerSelectors));
+
+        const loadMoreText = button.querySelector('.load-more-text') as HTMLElement;
+        const loadMoreSpinner = button.querySelector('.load-more-spinner') as HTMLElement;
+
+        const postsContainer = uniqueSelectors.reduce<HTMLElement | null>((found, selector) => {
+            if (found) {
+                return found;
+            }
+            return blockWrapper.querySelector<HTMLElement>(selector);
+        }, null);
+
+        const handleResetButtonState = () => {
+            button.disabled = false;
+            if (loadMoreText) {
+                loadMoreText.style.display = 'inline';
+            }
+            if (loadMoreSpinner) {
+                loadMoreSpinner.style.display = 'none';
+            }
+        };
+
         if (!postsContainer) {
             console.error('Posts container not found');
+            handleResetButtonState();
             return;
         }
 
         // Show loading state
         button.disabled = true;
-        const loadMoreText = button.querySelector('.load-more-text') as HTMLElement;
-        const loadMoreSpinner = button.querySelector('.load-more-spinner') as HTMLElement;
-        
         if (loadMoreText) {
             loadMoreText.style.display = 'none';
         }
@@ -110,15 +145,39 @@ function initLoadMore(): void {
             const tempContainer = document.createElement('div');
             tempContainer.innerHTML = html;
 
-            // Extract post items from the new HTML
-            // Look for common post item selectors
-            const newPostItems = tempContainer.querySelectorAll(
-                '.post-item, .jankx-post-item, [class*="post-"], article'
-            );
+            // Tìm container tương ứng trong HTML trả về
+            let sourceContainer: Element | null = null;
+            for (const selector of uniqueSelectors) {
+                sourceContainer = tempContainer.querySelector(selector);
+                if (sourceContainer) {
+                    break;
+                }
+            }
 
-            // Append new posts to container
-            newPostItems.forEach((item) => {
-                postsContainer.appendChild(item);
+            const newNodes: HTMLElement[] = [];
+
+            if (sourceContainer) {
+                newNodes.push(
+                    ...Array.from(sourceContainer.children).filter(
+                        (child): child is HTMLElement => child instanceof HTMLElement
+                    )
+                );
+            }
+
+            if (newNodes.length === 0) {
+                tempContainer
+                    .querySelectorAll<HTMLElement>('.embla__slide, .post-item, .jankx-post-item, article')
+                    .forEach((item) => {
+                        newNodes.push(item);
+                    });
+            }
+
+            if (newNodes.length === 0) {
+                throw new Error('Không tìm thấy bài viết mới để chèn');
+            }
+
+            newNodes.forEach((node) => {
+                postsContainer.appendChild(node);
             });
 
             // Update button state
@@ -143,7 +202,8 @@ function initLoadMore(): void {
                     page,
                     max_pages,
                     has_more,
-                    newItems: newPostItems,
+                    newItems: newNodes,
+                    layoutType,
                 },
             });
             document.dispatchEvent(loadMoreEvent);

@@ -5,6 +5,7 @@ namespace Jankx\Foundation;
 use Exception;
 use Illuminate\Container\Container;
 use Jankx\Config\Repository;
+use Jankx\Contracts\LoggerInterface;
 use Jankx\Support\Providers\Admin\JankxAdminPagesServiceProvider;
 use Jankx\Support\Providers\ExtensionServiceProvider;
 use Jankx\Support\Providers\FontIconsServiceProvider;
@@ -179,6 +180,8 @@ class Application extends Container
         $this->singleton('log', function () {
             return new \Jankx\Foundation\Log\Logger();
         });
+
+        $this->alias(LoggerInterface::class, 'log');
 
         // Register template engines
         $this->registerTemplateEngines();

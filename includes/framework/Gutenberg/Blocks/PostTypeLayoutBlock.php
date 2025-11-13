@@ -13,11 +13,15 @@
 namespace Jankx\Gutenberg\Blocks;
 
 use Jankx\Gutenberg\Block;
+use Jankx\Gutenberg\Blocks\PostTypeLayout\AjaxResponder;
+use Jankx\Gutenberg\Blocks\PostTypeLayout\AttributeSanitizer;
+use Jankx\Gutenberg\Blocks\PostTypeLayout\LayoutRenderCache;
+use Jankx\Gutenberg\Blocks\PostTypeLayout\Renderer;
 use Jankx\Layouts\PostLayout\PostLayoutManager;
-use Jankx\Layouts\PostLayout\PaginationRenderer;
 use Jankx\Multilingual\MultilingualFactory;
 use Jankx\Query\PostTypeLayoutQueryHelper;
 use Jankx\Rest\PostTypeLayoutAjaxHandler;
+use WP_Post;
 
 class PostTypeLayoutBlock extends Block
 {
@@ -42,6 +46,10 @@ class PostTypeLayoutBlock extends Block
      */
     protected $ajaxHandler = null;
 
+    protected ?AttributeSanitizer $attributeSanitizer = null;
+    protected ?AjaxResponder $ajaxResponder = null;
+    protected ?Renderer $rendererService = null;
+
     /**
      * Initialize the block
      *
@@ -63,6 +71,9 @@ class PostTypeLayoutBlock extends Block
         add_filter('jankx_post_type_layout_load_more', [$this, 'handleLoadMoreAjax'], 10, 2);
         add_filter('jankx_post_type_layout_filter_update', [$this, 'handleFilterUpdate'], 10, 2);
         add_filter('jankx_post_type_layout_get_block_attributes', [$this, 'handleGetBlockAttributes'], 10, 3);
+
+        $this->ensureServices();
+        $this->registerInvalidationHooks();
     }
 
     /**
@@ -87,52 +98,8 @@ class PostTypeLayoutBlock extends Block
      */
     public function handleLoadMoreAjax(array $attributes, int $page): array
     {
-        if (empty($attributes)) {
-            return ['error' => __('Invalid attributes', 'jankx')];
-        }
-
-        // Set language context
-        $this->setLanguageContext($attributes);
-
-        $layout_name = $attributes['layout'] ?? 'grid';
-        $layoutManager = $this->getLayoutManager();
-
-        if (!$layoutManager->hasLayout($layout_name)) {
-            return ['error' => __('Layout does not exist', 'jankx')];
-        }
-
-        $attributes = $this->sanitizeAttributes($layout_name, $attributes, false);
-        $queryPreset = $attributes['queryPreset'] ?? 'custom';
-
-        // Build query with pagination
-        if ($queryPreset === 'default') {
-            $query = PostTypeLayoutQueryHelper::buildDefaultQuery($attributes, $page);
-            $decorator = $layoutManager->createLayout($layout_name, $attributes);
-            $decorator->withQuery($query);
-        } elseif ($queryPreset === 'related') {
-            $attributes = PostTypeLayoutQueryHelper::buildRelatedQuery($attributes);
-            $attributes['_internal_paged'] = $page;
-            $decorator = $layoutManager->createLayout($layout_name, $attributes);
-            $query = $decorator->buildQuery($attributes);
-            $decorator->withQuery($query);
-        } else {
-            // Apply query builder filter for custom presets (packages can hook into this)
-            $attributes = PostTypeLayoutQueryHelper::applyQueryBuilderFilter($attributes, $queryPreset);
-            $attributes['_internal_paged'] = $page;
-            $decorator = $layoutManager->createLayout($layout_name, $attributes);
-            $query = $decorator->buildQuery($attributes);
-            $decorator->withQuery($query);
-        }
-
-        $html = $decorator->render();
-        $has_more = $page < $query->max_num_pages;
-
-        return [
-            'html' => $html,
-            'page' => $page,
-            'max_pages' => $query->max_num_pages,
-            'has_more' => $has_more,
-        ];
+        $this->ensureServices();
+        return $this->ajaxResponder->handleLoadMore($attributes, $page);
     }
 
     /**
@@ -144,121 +111,8 @@ class PostTypeLayoutBlock extends Block
      */
     public function handleFilterUpdate(array $attributes, array $filters): array
     {
-        // Apply filters to attributes
-        $attributes = PostTypeLayoutQueryHelper::applyFiltersToAttributes($attributes, $filters);
-
-        // Set language context
-        $this->setLanguageContext($attributes);
-
-        $layout_name = $attributes['layout'] ?? 'grid';
-        $layoutManager = $this->getLayoutManager();
-
-        if (!$layoutManager->hasLayout($layout_name)) {
-            return ['error' => __('Layout does not exist', 'jankx')];
-        }
-
-        $attributes = $this->sanitizeAttributes($layout_name, $attributes, false);
-        $queryPreset = $attributes['queryPreset'] ?? 'custom';
-
-        // Build query
-        if ($queryPreset === 'default') {
-            $query = PostTypeLayoutQueryHelper::buildDefaultQuery($attributes);
-            $decorator = $layoutManager->createLayout($layout_name, $attributes);
-            $decorator->withQuery($query);
-        } elseif ($queryPreset === 'related') {
-            $attributes = PostTypeLayoutQueryHelper::buildRelatedQuery($attributes);
-            $decorator = $layoutManager->createLayout($layout_name, $attributes);
-            $query = $decorator->buildQuery($attributes);
-            $decorator->withQuery($query);
-        } else {
-            // Apply query builder filter for custom presets (packages can hook into this)
-            $attributes = PostTypeLayoutQueryHelper::applyQueryBuilderFilter($attributes, $queryPreset);
-            $decorator = $layoutManager->createLayout($layout_name, $attributes);
-            $query = $decorator->buildQuery($attributes);
-            $decorator->withQuery($query);
-        }
-
-        $html = $decorator->render();
-
-        if (empty($html) && !empty($attributes['innerHTML'])) {
-            $html = '<div class="post-layout-no-results">' . $attributes['innerHTML'] . '</div>';
-        }
-
-        if (!empty($attributes['enablePagination']) && $query->max_num_pages > 1) {
-            $html .= PaginationRenderer::render('', $query, $attributes);
-        }
-
-        $thumbnail_position = $attributes['thumbnailPosition'] ?? 'top';
-        if (!in_array($thumbnail_position, ['top', 'bottom', 'left', 'right'], true)) {
-            $thumbnail_position = 'top';
-        }
-
-        $wrapper_classes = ['wp-block-jankx-post-type-layout', 'layout-' . $layout_name, 'thumbnail-position-' . $thumbnail_position];
-
-        $inline_styles = [];
-        if (!empty($attributes['columns'])) {
-            $inline_styles[] = '--columns-desktop: ' . intval($attributes['columns']);
-        }
-        if (!empty($attributes['columnsTablet'])) {
-            $inline_styles[] = '--columns-tablet: ' . intval($attributes['columnsTablet']);
-        }
-        if (!empty($attributes['columnsMobile'])) {
-            $inline_styles[] = '--columns-mobile: ' . intval($attributes['columnsMobile']);
-        }
-
-        $query_id = $attributes['queryId'] ?? null;
-        if (empty($query_id)) {
-            $query_id = 'query_' . uniqid();
-        }
-        $query_id = strval($query_id);
-
-        $post_type = $attributes['postType'] ?? 'post';
-        $posts_per_page = $attributes['postsPerPage'] ?? 10;
-        $columns = $attributes['columns'] ?? 3;
-        $columns_tablet = $attributes['columnsTablet'] ?? 2;
-        $columns_mobile = $attributes['columnsMobile'] ?? 1;
-        $order_by = $attributes['orderBy'] ?? 'date';
-        $order = $attributes['order'] ?? 'DESC';
-        $queryPreset = $attributes['queryPreset'] ?? 'custom';
-
-        $block_settings = [
-            'queryId' => $query_id,
-            'postType' => $post_type,
-            'postsPerPage' => $posts_per_page,
-            'layout' => $layout_name,
-            'columns' => $columns,
-            'columnsTablet' => $columns_tablet,
-            'columnsMobile' => $columns_mobile,
-            'orderBy' => $order_by,
-            'order' => $order,
-            'queryPreset' => $queryPreset,
-            'thumbnailPosition' => $thumbnail_position,
-            'includeStickyPosts' => !empty($attributes['includeStickyPosts']),
-        ];
-
-        $wrapper_attributes = get_block_wrapper_attributes([
-            'class' => implode(' ', $wrapper_classes),
-            'style' => !empty($inline_styles) ? implode('; ', $inline_styles) : '',
-            'data-block-id' => $query_id,
-            'data-query-id' => $query_id,
-            'data-post-type' => esc_attr($post_type),
-            'data-layout' => esc_attr($layout_name),
-            'data-posts-per-page' => intval($posts_per_page),
-            'data-columns' => intval($columns),
-            'data-columns-tablet' => intval($columns_tablet),
-            'data-columns-mobile' => intval($columns_mobile),
-            'data-order-by' => esc_attr($order_by),
-            'data-order' => esc_attr($order),
-            'data-query-preset' => esc_attr($queryPreset),
-            'data-image-ratio' => !empty($attributes['imageRatio']) ? esc_attr($attributes['imageRatio']) : '',
-            'data-thumbnail-position' => esc_attr($thumbnail_position),
-            'data-block-settings' => esc_attr(wp_json_encode($block_settings)),
-        ]);
-
-        return [
-            'html' => sprintf('<div %s>%s</div>', $wrapper_attributes, $html),
-            'block_id' => $query_id,
-        ];
+        $this->ensureServices();
+        return $this->ajaxResponder->handleFilterUpdate($attributes, $filters);
     }
 
     /**
@@ -280,13 +134,46 @@ class PostTypeLayoutBlock extends Block
      * @param array $attributes Block attributes
      * @return void
      */
-    protected function setLanguageContext(array $attributes): void
+    protected function setLanguageContext(array $attributes): ?callable
     {
-        if (empty($attributes['_current_language'])) {
-            return;
+        $restorers = [];
+
+        $adapter = MultilingualFactory::getAdapter();
+        if ($adapter && !empty($attributes['_current_language'])) {
+            $previousLanguage = $adapter->getCurrentLanguage();
+            $targetLanguage = $attributes['_current_language'];
+
+            if ($previousLanguage !== $targetLanguage) {
+                $adapter->setCurrentLanguage($targetLanguage);
+                $restorers[] = function () use ($adapter, $previousLanguage): void {
+                    if ($previousLanguage) {
+                        $adapter->setCurrentLanguage($previousLanguage);
+                    }
+                };
+            }
         }
 
-        MultilingualFactory::setCurrentLanguage($attributes['_current_language']);
+        $targetLocale = $attributes['_locale'] ?? get_locale();
+        if ($targetLocale && function_exists('switch_to_locale')) {
+            $currentLocale = determine_locale();
+            if ($currentLocale !== $targetLocale && switch_to_locale($targetLocale)) {
+                $restorers[] = function (): void {
+                    restore_previous_locale();
+                };
+            }
+        }
+
+        if (empty($restorers)) {
+            return null;
+        }
+
+        return function () use ($restorers): void {
+            foreach (array_reverse($restorers) as $restore) {
+                if (is_callable($restore)) {
+                    $restore();
+                }
+            }
+        };
     }
 
     /**
@@ -299,33 +186,8 @@ class PostTypeLayoutBlock extends Block
      */
     protected function sanitizeAttributes(string $layout_name, array $attributes, bool $for_render = true): array
     {
-        $layoutManager = $this->getLayoutManager();
-        $layout = $layoutManager->getLayout($layout_name);
-
-        if (!$layout || !$for_render) {
-            return $attributes;
-        }
-
-        $supportedOptions = $layout->getSupportedOptions();
-        $optionKeys = ['columns', 'showFeaturedImage', 'showTitle', 'showExcerpt', 'showDate', 'showAuthor', 'itemStyle'];
-
-        foreach ($optionKeys as $key) {
-            if (!in_array($key, $supportedOptions, true)) {
-                $attributes[$key] = false;
-            }
-        }
-
-        if (!in_array('thumbnailPosition', $supportedOptions, true)) {
-            $attributes['thumbnailPosition'] = 'top';
-        }
-
-        if (($attributes['postType'] ?? 'post') !== 'post') {
-            $attributes['includeStickyPosts'] = false;
-        } else {
-            $attributes['includeStickyPosts'] = !empty($attributes['includeStickyPosts']);
-        }
-
-        return $attributes;
+        $this->ensureServices();
+        return $this->attributeSanitizer->sanitize($layout_name, $attributes, $for_render);
     }
 
     /**
@@ -376,6 +238,79 @@ class PostTypeLayoutBlock extends Block
         }
 
         return null;
+    }
+
+    protected function enqueueCarouselAssets(): void
+    {
+        $carousel_asset_file = $this->blockPath . '/build/carousel.asset.php';
+        $carousel_script_path = $this->blockPath . '/build/carousel.js';
+        if (!file_exists($carousel_asset_file) || !file_exists($carousel_script_path)) {
+            return;
+        }
+
+        $asset = require $carousel_asset_file;
+        $script_handle = 'jankx-post-type-layout-carousel';
+
+        $block_url = str_replace(
+            [wp_normalize_path(WP_CONTENT_DIR), '\\'],
+            [content_url(), '/'],
+            wp_normalize_path($this->blockPath)
+        );
+
+        wp_enqueue_script(
+            $script_handle,
+            $block_url . '/build/carousel.js',
+            $asset['dependencies'] ?? [],
+            $asset['version'] ?? filemtime($carousel_script_path),
+            true
+        );
+    }
+
+    protected function extractTemplateBlockFromParsedBlock(array $parsedBlock): ?array
+    {
+        if (empty($parsedBlock)) {
+            return null;
+        }
+
+        if (($parsedBlock['blockName'] ?? '') === 'jankx/post-layout-template') {
+            return $parsedBlock;
+        }
+
+        if (!empty($parsedBlock['innerBlocks'])) {
+            foreach ($parsedBlock['innerBlocks'] as $inner) {
+                $found = $this->extractTemplateBlockFromParsedBlock($inner);
+                if ($found !== null) {
+                    return $found;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    protected function sanitizeTemplateBlock(array $block): array
+    {
+        $sanitized = [
+            'blockName' => $block['blockName'] ?? '',
+            'attrs' => is_array($block['attrs'] ?? null) ? $block['attrs'] : [],
+            'innerBlocks' => [],
+            'innerHTML' => $block['innerHTML'] ?? '',
+            'innerContent' => is_array($block['innerContent'] ?? null) ? $block['innerContent'] : [],
+        ];
+
+        if (!empty($block['originalContent'])) {
+            $sanitized['originalContent'] = $block['originalContent'];
+        }
+
+        if (!empty($block['innerBlocks']) && is_array($block['innerBlocks'])) {
+            foreach ($block['innerBlocks'] as $inner) {
+                if (is_array($inner)) {
+                    $sanitized['innerBlocks'][] = $this->sanitizeTemplateBlock($inner);
+                }
+            }
+        }
+
+        return $sanitized;
     }
 
     /**
@@ -441,140 +376,91 @@ class PostTypeLayoutBlock extends Block
         if ($current_language) {
             $attributes['_current_language'] = $current_language;
         }
+        $attributes['_locale'] = get_locale();
 
-        $queryPreset = $attributes['queryPreset'] ?? 'custom';
-        $layout_name = $attributes['layout'] ?? 'grid';
+        $this->ensureServices();
+        return $this->rendererService->render($attributes, $content, $block);
+    }
+
+    protected function ensureServices(): void
+    {
+        if ($this->attributeSanitizer && $this->ajaxResponder && $this->rendererService) {
+            return;
+        }
+
         $layoutManager = $this->getLayoutManager();
 
-        if (!$layoutManager->hasLayout($layout_name)) {
-            return sprintf(
-                '<div class="post-layout-error">%s</div>',
-                sprintf(esc_html__('Layout "%s" does not exist.', 'jankx'), esc_html($layout_name))
+        if (!$this->attributeSanitizer) {
+            $this->attributeSanitizer = new AttributeSanitizer($layoutManager);
+        }
+
+        if (!$this->ajaxResponder) {
+            $this->ajaxResponder = new AjaxResponder(
+                $layoutManager,
+                $this->attributeSanitizer,
+                function ($template) {
+                    return $this->sanitizeTemplateBlock($template);
+                },
+                function (array $attributes) {
+                    return $this->setLanguageContext($attributes);
+                }
             );
         }
 
-        $filters_from_url = PostTypeLayoutQueryHelper::getFiltersFromUrl();
-        if (!empty($filters_from_url)) {
-            $attributes = PostTypeLayoutQueryHelper::applyFiltersToAttributes($attributes, $filters_from_url);
+        if (!$this->rendererService) {
+            $this->rendererService = new Renderer(
+                $layoutManager,
+                $this->attributeSanitizer,
+                function (array $parsedBlock) {
+                    return $this->extractTemplateBlockFromParsedBlock($parsedBlock);
+                },
+                function ($template) {
+                    return $this->sanitizeTemplateBlock($template);
+                },
+                function (): void {
+                    $this->enqueueCarouselAssets();
+                }
+            );
+        }
+    }
+
+    protected function registerInvalidationHooks(): void
+    {
+        add_action('save_post', [$this, 'handlePostCacheInvalidation'], 10, 3);
+        add_action('transition_post_status', [$this, 'handlePostStatusTransition'], 10, 3);
+        add_action('before_delete_post', [$this, 'handleBeforeDeletePost']);
+    }
+
+    public function handlePostCacheInvalidation(int $postId, $post, $update): void
+    {
+        if (wp_is_post_revision($postId)) {
+            return;
         }
 
-        $attributes = $this->sanitizeAttributes($layout_name, $attributes, true);
-
-        if ($layout_name === 'carousel') {
-            $carousel_asset_file = $this->blockPath . '/build/carousel.asset.php';
-            $carousel_script_path = $this->blockPath . '/build/carousel.js';
-            if (file_exists($carousel_asset_file) && file_exists($carousel_script_path)) {
-                $asset = require $carousel_asset_file;
-                $script_handle = 'jankx-post-type-layout-carousel';
-
-                $block_url = str_replace(
-                    [wp_normalize_path(WP_CONTENT_DIR), '\\'],
-                    [content_url(), '/'],
-                    wp_normalize_path($this->blockPath)
-                );
-
-                wp_enqueue_script(
-                    $script_handle,
-                    $block_url . '/build/carousel.js',
-                    $asset['dependencies'] ?? [],
-                    $asset['version'] ?? filemtime($carousel_script_path),
-                    true
-                );
-            }
+        $postType = $post instanceof WP_Post ? $post->post_type : get_post_type($postId);
+        if (!$postType) {
+            return;
         }
 
-        if ($queryPreset === 'default') {
-            $query = PostTypeLayoutQueryHelper::buildDefaultQuery($attributes);
-            $decorator = $layoutManager->createLayout($layout_name, $attributes);
-            $decorator->withQuery($query);
-        } elseif ($queryPreset === 'related') {
-            $attributes = PostTypeLayoutQueryHelper::buildRelatedQuery($attributes);
-            $decorator = $layoutManager->createLayout($layout_name, $attributes);
-            $query = $decorator->buildQuery($attributes);
-            $decorator->withQuery($query);
-        } else {
-            // Apply query builder filter for custom presets (packages can hook into this)
-            $attributes = PostTypeLayoutQueryHelper::applyQueryBuilderFilter($attributes, $queryPreset);
-            $decorator = $layoutManager->createLayout($layout_name, $attributes);
-            $query = $decorator->buildQuery($attributes);
-            $decorator->withQuery($query);
+        LayoutRenderCache::flushByPostType($postType);
+    }
+
+    public function handlePostStatusTransition(string $newStatus, string $oldStatus, $post): void
+    {
+        if (!$post instanceof WP_Post) {
+            return;
         }
 
-        $html = $decorator->render();
+        LayoutRenderCache::flushByPostType($post->post_type);
+    }
 
-        if (empty($html) && !empty($content)) {
-            $html = '<div class="post-layout-no-results">' . $content . '</div>';
+    public function handleBeforeDeletePost(int $postId): void
+    {
+        $postType = get_post_type($postId);
+        if (!$postType) {
+            return;
         }
 
-        if (!empty($attributes['enablePagination']) && !empty($html) && $query->max_num_pages > 1) {
-            $html .= PaginationRenderer::render($content, $query, $attributes);
-        }
-
-        $thumbnail_position = $attributes['thumbnailPosition'] ?? 'top';
-        if (!in_array($thumbnail_position, ['top', 'bottom', 'left', 'right'], true)) {
-            $thumbnail_position = 'top';
-        }
-
-        $wrapper_classes = ['wp-block-jankx-post-type-layout', 'layout-' . $layout_name, 'thumbnail-position-' . $thumbnail_position];
-
-        $inline_styles = [];
-        if (!empty($attributes['columns'])) {
-            $inline_styles[] = '--columns-desktop: ' . intval($attributes['columns']);
-        }
-        if (!empty($attributes['columnsTablet'])) {
-            $inline_styles[] = '--columns-tablet: ' . intval($attributes['columnsTablet']);
-        }
-        if (!empty($attributes['columnsMobile'])) {
-            $inline_styles[] = '--columns-mobile: ' . intval($attributes['columnsMobile']);
-        }
-
-        $query_id = $attributes['queryId'] ?? null;
-        if (empty($query_id)) {
-            $query_id = 'query_' . uniqid();
-        }
-        $query_id = strval($query_id);
-
-        $post_type = $attributes['postType'] ?? 'post';
-        $posts_per_page = $attributes['postsPerPage'] ?? 10;
-        $columns = $attributes['columns'] ?? 3;
-        $columns_tablet = $attributes['columnsTablet'] ?? 2;
-        $columns_mobile = $attributes['columnsMobile'] ?? 1;
-        $order_by = $attributes['orderBy'] ?? 'date';
-        $order = $attributes['order'] ?? 'DESC';
-
-        $block_settings = [
-            'queryId' => $query_id,
-            'postType' => $post_type,
-            'postsPerPage' => $posts_per_page,
-            'layout' => $layout_name,
-            'columns' => $columns,
-            'columnsTablet' => $columns_tablet,
-            'columnsMobile' => $columns_mobile,
-            'orderBy' => $order_by,
-            'order' => $order,
-            'queryPreset' => $queryPreset,
-            'thumbnailPosition' => $thumbnail_position,
-        ];
-
-        $wrapper_attributes = get_block_wrapper_attributes([
-            'class' => implode(' ', $wrapper_classes),
-            'style' => !empty($inline_styles) ? implode('; ', $inline_styles) : '',
-            'data-block-id' => $query_id,
-            'data-query-id' => $query_id,
-            'data-post-type' => esc_attr($post_type),
-            'data-layout' => esc_attr($layout_name),
-            'data-posts-per-page' => intval($posts_per_page),
-            'data-columns' => intval($columns),
-            'data-columns-tablet' => intval($columns_tablet),
-            'data-columns-mobile' => intval($columns_mobile),
-            'data-order-by' => esc_attr($order_by),
-            'data-order' => esc_attr($order),
-            'data-query-preset' => esc_attr($queryPreset),
-            'data-image-ratio' => !empty($attributes['imageRatio']) ? esc_attr($attributes['imageRatio']) : '',
-            'data-thumbnail-position' => esc_attr($thumbnail_position),
-            'data-block-settings' => esc_attr(wp_json_encode($block_settings)),
-        ]);
-
-        return sprintf('<div %s>%s</div>', $wrapper_attributes, $html);
+        LayoutRenderCache::flushByPostType($postType);
     }
 }

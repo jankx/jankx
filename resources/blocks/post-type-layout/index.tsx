@@ -1,12 +1,6 @@
 import { createBlock, registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
-import {
-    useBlockProps,
-    InspectorControls,
-    BlockControls,
-    InnerBlocks,
-    store as blockEditorStore,
-} from '@wordpress/block-editor';
+import { useBlockProps, InspectorControls, InnerBlocks, store as blockEditorStore } from '@wordpress/block-editor';
 import {
     PanelBody,
     SelectControl,
@@ -18,8 +12,6 @@ import {
     FormTokenField,
     Button,
     BaseControl,
-    ToolbarGroup,
-    ToolbarButton,
 } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { useCallback, useEffect, useState, useMemo, useRef } from '@wordpress/element';
@@ -80,9 +72,6 @@ const normalizeTokens = (tokens: TokenLike[]): string[] => {
         .filter((value): value is string => value.length > 0);
 };
 
-const DEFAULT_TEMPLATE: [string][] = [['jankx/post-layout-template']];
-const ALLOWED_TEMPLATE_BLOCKS = ['jankx/post-layout-template'];
-
 type QueryPreset =
     | 'default'
     | 'related'
@@ -104,8 +93,7 @@ interface PostTypeLayoutAttributes {
     columns: number;
     columnsTablet: number;
     columnsMobile: number;
-    // For future use with ResponsiveValue
-    responsiveColumns?: ResponsiveValue;
+    responsiveColumns: ResponsiveValue;
     showTitle: boolean;
     showExcerpt: boolean;
     showFeaturedImage: boolean;
@@ -114,6 +102,9 @@ interface PostTypeLayoutAttributes {
     imageRatio: string;
     showDate: boolean;
     showAuthor: boolean;
+    showPrice: boolean;
+    showAddToCart: boolean;
+    showRating: boolean;
     excerptLength: number;
     orderBy: string;
     order: string;
@@ -169,6 +160,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         columns,
         columnsTablet,
         columnsMobile,
+        responsiveColumns,
         showTitle,
         showExcerpt,
         showFeaturedImage,
@@ -177,6 +169,9 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         imageRatio,
         showDate,
         showAuthor,
+        showPrice = true,
+        showAddToCart = true,
+        showRating = false,
         excerptLength,
         orderBy,
         order,
@@ -241,29 +236,12 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     const [taxonomies, setTaxonomies] = useState<TaxonomyItem[]>([]);
     const [authors, setAuthors] = useState<AuthorItem[]>([]);
     const [taxonomyTerms, setTaxonomyTerms] = useState<Record<string, TermItem[]>>({});
-    const [isEditingTemplate, setIsEditingTemplate] = useState(false);
 
     const innerBlocks = useSelect(
         (select: any) => select(blockEditorStore).getBlock(clientId)?.innerBlocks ?? [],
         [clientId]
     );
-
-    const { insertBlock } = useDispatch<any>(blockEditorStore);
-    const hasInsertedTemplateRef = useRef(false);
-
-    useEffect(() => {
-        if (hasInsertedTemplateRef.current) {
-            return;
-        }
-
-        if (innerBlocks.length === 0 && typeof insertBlock === 'function') {
-            const templateBlock = createBlock('jankx/post-layout-template');
-            insertBlock(templateBlock, 0, clientId);
-            hasInsertedTemplateRef.current = true;
-        } else if (innerBlocks.length > 0) {
-            hasInsertedTemplateRef.current = true;
-        }
-    }, [innerBlocks, insertBlock, clientId]);
+    const { replaceInnerBlocks } = useDispatch<any>(blockEditorStore);
 
     // Debounce attributes update để giảm số lần re-render (only when using AJAX)
     const updateDebouncedAttributes = useMemo<DebouncedAttributesUpdater>(() => {
@@ -434,14 +412,111 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         }
     }, [taxonomyTerms]);
 
-    const blockProps = useBlockProps({
-        className: `post-type-layout layout-${layout} columns-${columns} columns-tablet-${columnsTablet} columns-mobile-${columnsMobile}`,
-        style: {
-            '--columns-desktop': columns,
-            '--columns-tablet': columnsTablet,
-            '--columns-mobile': columnsMobile,
-        } as CSSProperties,
-    });
+const blockProps = useBlockProps({
+    className: `post-type-layout layout-${layout} columns-${columns} columns-tablet-${columnsTablet} columns-mobile-${columnsMobile}`,
+    style: {
+        '--columns-desktop': columns,
+        '--columns-tablet': columnsTablet,
+        '--columns-mobile': columnsMobile,
+    } as CSSProperties,
+});
+
+const isProduct = postType === 'product';
+
+const resolvedResponsiveColumns = responsiveColumns && typeof responsiveColumns === 'object'
+    ? responsiveColumns
+    : { desktop: columns, tablet: columnsTablet, mobile: columnsMobile };
+
+useEffect(() => {
+    const expected = {
+        desktop: columns,
+        tablet: columnsTablet,
+        mobile: columnsMobile,
+    };
+
+    const needsUpdate =
+        !responsiveColumns ||
+        responsiveColumns.desktop !== expected.desktop ||
+        responsiveColumns.tablet !== expected.tablet ||
+        responsiveColumns.mobile !== expected.mobile;
+
+    if (needsUpdate) {
+        setAttributes({ responsiveColumns: expected });
+    }
+}, [columns, columnsTablet, columnsMobile, responsiveColumns, setAttributes]);
+ 
+const desiredInnerBlocks = useMemo(() => {
+    const templateInnerBlocks = [];
+
+    if (showFeaturedImage) {
+        templateInnerBlocks.push('core/post-featured-image');
+    }
+
+    if (showTitle) {
+        templateInnerBlocks.push(isProduct ? 'woocommerce/product-title' : 'core/post-title');
+    }
+
+    if (!isProduct && showDate) {
+        templateInnerBlocks.push('core/post-date');
+    }
+
+    if (showAuthor) {
+        templateInnerBlocks.push('core/post-author');
+    }
+
+    if (!isProduct && showExcerpt) {
+        templateInnerBlocks.push('core/post-excerpt');
+    }
+
+    if (isProduct && showPrice) {
+        templateInnerBlocks.push('woocommerce/product-price');
+    }
+
+    if (isProduct && showAddToCart) {
+        templateInnerBlocks.push('woocommerce/product-button');
+    }
+
+    if (isProduct && showRating) {
+        templateInnerBlocks.push('woocommerce/product-rating');
+    }
+
+    return templateInnerBlocks;
+}, [
+    showFeaturedImage,
+    showTitle,
+    showDate,
+    showAuthor,
+    showExcerpt,
+    showPrice,
+    showAddToCart,
+    showRating,
+    isProduct,
+]);
+
+useEffect(() => {
+    if (!replaceInnerBlocks) {
+        return;
+    }
+
+    const templateBlock = innerBlocks[0];
+    const existingInnerBlocks = templateBlock?.innerBlocks ?? [];
+
+    const existingNames = templateBlock ? existingInnerBlocks.map((block: any) => block.name) : [];
+    const desiredNames = desiredInnerBlocks;
+
+    const hasDifferences =
+        existingNames.length !== desiredNames.length ||
+        !existingNames.every((name: string) => desiredNames.includes(name));
+
+    if (!templateBlock || templateBlock.name !== 'jankx/post-layout-template' || hasDifferences) {
+        const newInnerBlocks = desiredNames.map((name) => createBlock(name));
+        replaceInnerBlocks(
+            clientId,
+            [createBlock('jankx/post-layout-template', {}, newInnerBlocks)],
+            false
+        );
+    }
+}, [desiredInnerBlocks, innerBlocks, replaceInnerBlocks, clientId]);
 
     const imageRatioSelectValue = useMemo<ImageRatioSelectValue>(() => {
         if (!imageRatio) {
@@ -488,6 +563,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             postsPerPage: debouncedAttributes.postsPerPage,
             layout: debouncedAttributes.layout,
             columns: debouncedAttributes.columns,
+            responsiveColumns: debouncedAttributes.responsiveColumns,
             showTitle: debouncedAttributes.showTitle,
             showExcerpt: debouncedAttributes.showExcerpt,
             showFeaturedImage: debouncedAttributes.showFeaturedImage,
@@ -608,19 +684,6 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
 
     return (
         <>
-            <BlockControls>
-                <ToolbarGroup>
-                    <ToolbarButton
-                        icon="edit"
-                        isPressed={isEditingTemplate}
-                        onClick={() => setIsEditingTemplate((value) => !value)}
-                    >
-                        {isEditingTemplate
-                            ? __('Done Editing Template', 'jankx')
-                            : __('Edit Item Template', 'jankx')}
-                    </ToolbarButton>
-                </ToolbarGroup>
-            </BlockControls>
             <InspectorControls group="settings">
                 <PanelBody title={__('Query Settings', 'jankx')} initialOpen={true}>
                     <SelectControl
@@ -748,15 +811,12 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                     {supportedOptions.includes('columns') && (
                         <ResponsiveControl
                             label={__('Columns', 'jankx')}
-                            values={{
-                                desktop: columns,
-                                tablet: columnsTablet,
-                                mobile: columnsMobile
-                            }}
+                            values={resolvedResponsiveColumns}
                             onChange={(values) => setAttributes({
                                 columns: values.desktop,
                                 columnsTablet: values.tablet,
-                                columnsMobile: values.mobile
+                                columnsMobile: values.mobile,
+                                responsiveColumns: values
                             })}
                             min={1}
                             max={6}
@@ -895,7 +955,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                             disabled={readOnlyOptions.includes('showTitle')}
                         />
                     )}
-                    {supportedOptions.includes('showExcerpt') && (
+                    {!isProduct && supportedOptions.includes('showExcerpt') && (
                         <>
                             <ToggleControl
                                 label={__('Show Excerpt', 'jankx')}
@@ -915,7 +975,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                             )}
                         </>
                     )}
-                    {supportedOptions.includes('showDate') && (
+                    {!isProduct && supportedOptions.includes('showDate') && (
                         <ToggleControl
                             label={__('Show Date', 'jankx')}
                             checked={showDate}
@@ -930,6 +990,25 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                             onChange={(value) => setAttributes({ showAuthor: value })}
                             disabled={readOnlyOptions.includes('showAuthor')}
                         />
+                    )}
+                    {isProduct && (
+                        <>
+                            <ToggleControl
+                                label={__('Show Price', 'jankx')}
+                                checked={showPrice}
+                                onChange={(value) => setAttributes({ showPrice: value })}
+                            />
+                            <ToggleControl
+                                label={__('Show Add To Cart Button', 'jankx')}
+                                checked={showAddToCart}
+                                onChange={(value) => setAttributes({ showAddToCart: value })}
+                            />
+                            <ToggleControl
+                                label={__('Show Rating', 'jankx')}
+                                checked={showRating}
+                                onChange={(value) => setAttributes({ showRating: value })}
+                            />
+                        </>
                     )}
 
                     {/* Pagination Settings */}
@@ -1437,117 +1516,97 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             </InspectorControls>
 
             <div {...blockProps}>
-                {isEditingTemplate ? (
-                    <div className="post-type-layout-template-editor">
-                        <p className="post-type-layout-template-editor__description">
-                            {__(
-                                'Customize the layout for each item. These changes affect the live output.',
-                                'jankx'
-                            )}
-                        </p>
-                        <InnerBlocks
-                            allowedBlocks={ALLOWED_TEMPLATE_BLOCKS}
-                            template={DEFAULT_TEMPLATE}
-                            templateLock="all"
-                        />
-                    </div>
-                ) : useAjaxRender && isLoading ? (
+                {useAjaxRender && isLoading ? (
                     <Placeholder>
                         <Spinner />
                         <p>{__('Loading posts...', 'jankx')}</p>
                     </Placeholder>
                 ) : useAjaxRender && layout === 'carousel' && cachedHtml ? (
                     // Render carousel preview in editor using Embla Carousel React (AJAX mode)
-                    <div className="post-type-layout-carousel-editor">
-                        <div className="embla__viewport" ref={emblaRef}>
+                    (() => {
+                        const carouselClasses = [
+                            'post-type-layout-carousel',
+                        ];
+
+                        if (columns) {
+                            carouselClasses.push(`columns-${columns}`);
+                        }
+                        if (columnsTablet) {
+                            carouselClasses.push(`columns-tablet-${columnsTablet}`);
+                        }
+                        if (columnsMobile) {
+                            carouselClasses.push(`columns-mobile-${columnsMobile}`);
+                        }
+                        if ((postType || '').toLowerCase() === 'product') {
+                            carouselClasses.push('wc-block-product-template');
+                        }
+
+                        const carouselStyle: CSSProperties = {};
+                        (carouselStyle as any)['--carousel-columns'] = String(columns || 3);
+                        (carouselStyle as any)['--carousel-columns-tablet'] = String(columnsTablet || 2);
+                        (carouselStyle as any)['--carousel-columns-mobile'] = String(columnsMobile || 1);
+
+                        const carouselAttributes: Record<string, string> = {
+                            'data-embla-carousel': '',
+                            'data-slides-per-view': String(columns || 3),
+                            'data-slides-to-scroll': String(slidesToScroll || 1),
+                        };
+
+                        if (loop) {
+                            carouselAttributes['data-loop'] = 'true';
+                        }
+
+                        if (autoplay) {
+                            carouselAttributes['data-autoplay'] = 'true';
+                            carouselAttributes['data-autoplay-delay'] = String(autoplayDelay || 3000);
+                        }
+
+                        return (
                             <div
-                                className="embla__container"
-                                dangerouslySetInnerHTML={{ __html: carouselSlidesHtml || '' }}
-                            />
-                        </div>
-                        {showArrows !== false && emblaApi && (
-                            <>
-                                <button 
-                                    className="embla__button embla__button--prev" 
-                                    type="button"
-                                    onClick={() => emblaApi.scrollPrev()}
-                                    aria-label={__('Previous slide', 'jankx')}
-                                    disabled={loop === false && !emblaApi.canScrollPrev()}
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                        <path d="M15 18l-6-6 6-6"/>
-                                    </svg>
-                                </button>
-                                <button 
-                                    className="embla__button embla__button--next" 
-                                    type="button"
-                                    onClick={() => emblaApi.scrollNext()}
-                                    aria-label={__('Next slide', 'jankx')}
-                                    disabled={loop === false && !emblaApi.canScrollNext()}
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                        <path d="M9 18l6-6-6-6"/>
-                                    </svg>
-                                </button>
-                            </>
-                        )}
-                    </div>
+                                className={carouselClasses.join(' ')}
+                                style={carouselStyle}
+                                {...carouselAttributes}
+                            >
+                                <div className="embla__viewport" ref={emblaRef}>
+                                    <div
+                                        className="embla__container"
+                                        dangerouslySetInnerHTML={{ __html: carouselSlidesHtml || '' }}
+                                    />
+                                </div>
+                                {showArrows !== false && emblaApi && (
+                                    <>
+                                        <button
+                                            className="embla__button embla__button--prev"
+                                            type="button"
+                                            onClick={() => emblaApi.scrollPrev()}
+                                            aria-label={__('Previous slide', 'jankx')}
+                                            disabled={loop === false && !emblaApi.canScrollPrev()}
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                <path d="M15 18l-6-6 6-6" />
+                                            </svg>
+                                        </button>
+                                        <button
+                                            className="embla__button embla__button--next"
+                                            type="button"
+                                            onClick={() => emblaApi.scrollNext()}
+                                            aria-label={__('Next slide', 'jankx')}
+                                            disabled={loop === false && !emblaApi.canScrollNext()}
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                <path d="M9 18l6-6-6-6" />
+                                            </svg>
+                                        </button>
+                                    </>
+                                )}
+                            </div>
+                        );
+                    })()
                 ) : useAjaxRender && cachedHtml ? (
                     // AJAX mode - render cached HTML
                     <div dangerouslySetInnerHTML={{ __html: cachedHtml }} />
                 ) : (
-                    // Default: Use ServerSideRender (SSR) - better UX, no loading state
-                    <div className={layout === 'carousel' ? 'post-type-layout-carousel-editor' : ''}>
-                        {layout === 'carousel' ? (
-                            <div ref={emblaRef} className="embla__viewport">
-                                <ServerSideRender
-                                    block="jankx/post-type-layout"
-                                    attributes={attributes}
-                                    EmptyResponsePlaceholder={() => (
-                                        <Placeholder>
-                                            <p>{__('No posts found.', 'jankx')}</p>
-                                        </Placeholder>
-                                    )}
-                                />
-                            </div>
-                        ) : (
-                            <ServerSideRender
-                                block="jankx/post-type-layout"
-                                attributes={attributes}
-                                EmptyResponsePlaceholder={() => (
-                                    <Placeholder>
-                                        <p>{__('No posts found.', 'jankx')}</p>
-                                    </Placeholder>
-                                )}
-                            />
-                        )}
-                        {layout === 'carousel' && showArrows !== false && emblaApi && (
-                            <>
-                                <button 
-                                    className="embla__button embla__button--prev" 
-                                    type="button"
-                                    onClick={() => emblaApi.scrollPrev()}
-                                    aria-label={__('Previous slide', 'jankx')}
-                                    disabled={loop === false && !emblaApi.canScrollPrev()}
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                        <path d="M15 18l-6-6 6-6"/>
-                                    </svg>
-                                </button>
-                                <button 
-                                    className="embla__button embla__button--next" 
-                                    type="button"
-                                    onClick={() => emblaApi.scrollNext()}
-                                    aria-label={__('Next slide', 'jankx')}
-                                    disabled={loop === false && !emblaApi.canScrollNext()}
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                        <path d="M9 18l6-6-6-6"/>
-                                    </svg>
-                                </button>
-                            </>
-                        )}
-                    </div>
+                    <InnerBlocks templateLock={false} renderAppender={undefined} />
                 )}
             </div>
         </>

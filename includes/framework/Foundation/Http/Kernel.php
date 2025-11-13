@@ -8,7 +8,6 @@ use Jankx\Foundation\Bootstrap\BootChildTheme;
 use Jankx\Foundation\Bootstrap\BootProviders;
 use Jankx\Foundation\Bootstrap\LoadConfiguration;
 use Jankx\Foundation\Bootstrap\RegisterFacades;
-use Jankx\Foundation\Bootstrap\RegisterLogger;
 use Jankx\Foundation\Bootstrap\RegisterProviders;
 use Jankx\Foundation\Bootstrap\ThemeDataLoader;
 
@@ -28,7 +27,6 @@ abstract class Kernel implements KernelInterface
      */
     protected $bootstrappers = [
         LoadConfiguration::class,
-        RegisterLogger::class,
         RegisterFacades::class,
         ThemeDataLoader::class,
         BootChildTheme::class,

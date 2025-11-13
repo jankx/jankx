@@ -65,4 +65,13 @@ interface ContentGeneratorInterface
      * @return string Wrapped HTML or original carousel HTML if no wrapper needed
      */
     public function wrapCarouselHtml(WP_Query $query, array $options, string $carouselHtml): string;
+
+    /**
+     * Allow generator to append extra classes to wrapper
+     *
+     * @param array<string> $classes
+     * @param array $options
+     * @return array<string> Updated classes list
+     */
+    public function appendClassesToWrapper(array $classes, array $options = []): array;
 }

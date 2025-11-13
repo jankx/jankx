@@ -12,8 +12,6 @@ return [
         Jankx\Support\Providers\ErrorSuppressionServiceProvider::class,
         Jankx\Support\Providers\FontIconsServiceProvider::class,
         Jankx\Support\Providers\FontsServiceProvider::class,
-        // Jankx\Support\Providers\LegacyTemplateLoaderServiceProvider::class,
-        Jankx\Support\Providers\PageRendererServiceProvider::class,
         Jankx\Support\Providers\PerformanceServiceProvider::class,
         Jankx\Support\Providers\PlatesServiceProvider::class,
         Jankx\Support\Providers\ThemeServiceProvider::class,
@@ -31,11 +29,10 @@ return [
         // App\Providers\WordPress\VisualTermDescriptionEditorServiceProvider::class,
     ],
     'aliases' => [
-        'log' => ['\Jankx\Foundation\Log\Logger'],
         'cache' => ['\Jankx\Services\CacheService'],
         'url' => ['\Jankx\Managers\UrlManager'],
     ],
     'options' => [
-        'framework' => 'auto', // auto, jankx, kirki, redux, wordpress
+        'framework' => 'jankx', // auto, jankx, kirki, redux, wordpress
     ],
 ];

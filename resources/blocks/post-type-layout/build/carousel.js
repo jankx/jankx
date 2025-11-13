@@ -1720,20 +1720,19 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 
-
 /**
  * Initialize Embla Carousel for all carousel layouts on the page
  */
-function initCarousels() {
+function initCarousels(containerScope = document) {
   // Find all carousel containers
-  const carouselContainers = document.querySelectorAll('.post-type-layout-carousel[data-embla-carousel]');
+  const carouselContainers = containerScope.querySelectorAll('.post-type-layout-carousel[data-embla-carousel]');
   if (!carouselContainers.length) {
     return;
   }
-  carouselContainers.forEach(container => {
-    // Check if already initialized
-    if (container.emblaCarousel) {
-      return;
+  carouselContainers.forEach(element => {
+    const container = element;
+    if (typeof container.emblaCleanup === 'function') {
+      container.emblaCleanup();
     }
     const viewport = container.querySelector('.embla__viewport');
     if (!viewport) {
@@ -1760,6 +1759,8 @@ function initCarousels() {
 
     // Store reference
     container.emblaCarousel = embla;
+    const handlerMap = {};
+    container.__emblaHandlers = handlerMap;
 
     // Setup autoplay if enabled
     let autoplayTimeout = null;
@@ -1772,29 +1773,42 @@ function initCarousels() {
         }
         autoplayTimeout = setTimeout(playEmbla, autoplayDelay);
       };
-      autoplayTimeout = setTimeout(playEmbla, autoplayDelay);
-
-      // Pause on hover
-      container.addEventListener('mouseenter', () => {
+      const startAutoplay = () => {
+        autoplayTimeout = setTimeout(playEmbla, autoplayDelay);
+      };
+      const stopAutoplay = () => {
         if (autoplayTimeout) {
           clearTimeout(autoplayTimeout);
           autoplayTimeout = null;
         }
-      });
-      container.addEventListener('mouseleave', () => {
+      };
+      startAutoplay();
+      const mouseEnterHandler = () => {
+        stopAutoplay();
+      };
+      const mouseLeaveHandler = () => {
         if (autoplay) {
-          autoplayTimeout = setTimeout(playEmbla, autoplayDelay);
+          startAutoplay();
         }
-      });
+      };
+      container.addEventListener('mouseenter', mouseEnterHandler);
+      container.addEventListener('mouseleave', mouseLeaveHandler);
+      handlerMap.mouseEnter = mouseEnterHandler;
+      handlerMap.mouseLeave = mouseLeaveHandler;
     }
 
     // Setup navigation arrows if present
     const prevButton = container.querySelector('.embla__button--prev');
     const nextButton = container.querySelector('.embla__button--next');
     if (prevButton) {
-      prevButton.addEventListener('click', () => {
+      const prevClickHandler = () => {
         embla.scrollPrev();
-      });
+      };
+      prevButton.addEventListener('click', prevClickHandler);
+      handlerMap.prevButton = {
+        button: prevButton,
+        handler: prevClickHandler
+      };
 
       // Update button state
       const updatePrevButton = () => {
@@ -1808,9 +1822,14 @@ function initCarousels() {
       updatePrevButton();
     }
     if (nextButton) {
-      nextButton.addEventListener('click', () => {
+      const nextClickHandler = () => {
         embla.scrollNext();
-      });
+      };
+      nextButton.addEventListener('click', nextClickHandler);
+      handlerMap.nextButton = {
+        button: nextButton,
+        handler: nextClickHandler
+      };
 
       // Update button state
       const updateNextButton = () => {
@@ -1827,6 +1846,7 @@ function initCarousels() {
     // Setup dots navigation if present
     const dotsContainer = container.querySelector('.embla__dots');
     if (dotsContainer) {
+      dotsContainer.innerHTML = '';
       const dots = [];
       const slides = embla.slideNodes();
 
@@ -1864,24 +1884,106 @@ function initCarousels() {
         clearTimeout(autoplayTimeout);
       }
       embla.destroy();
+      if (handlerMap.mouseEnter) {
+        container.removeEventListener('mouseenter', handlerMap.mouseEnter);
+      }
+      if (handlerMap.mouseLeave) {
+        container.removeEventListener('mouseleave', handlerMap.mouseLeave);
+      }
+      if (handlerMap.prevButton) {
+        handlerMap.prevButton.button.removeEventListener('click', handlerMap.prevButton.handler);
+      }
+      if (handlerMap.nextButton) {
+        handlerMap.nextButton.button.removeEventListener('click', handlerMap.nextButton.handler);
+      }
+      if (dotsContainer) {
+        dotsContainer.innerHTML = '';
+      }
       container.emblaCarousel = null;
+      container.__emblaHandlers = undefined;
+      container.emblaCleanup = undefined;
     };
 
     // Store cleanup function
     container.emblaCleanup = cleanup;
   });
 }
+function initCarouselsFromPayload(root = document) {
+  const blocks = root.querySelectorAll('.wp-block-jankx-post-type-layout[data-layout="carousel"]');
+  blocks.forEach(block => {
+    const layoutDataAttr = block.getAttribute('data-layout-js');
+    if (!layoutDataAttr) {
+      return;
+    }
+    try {
+      var _payload$columns, _payload$slidesToScro;
+      const layoutData = JSON.parse(layoutDataAttr);
+      if (!layoutData || layoutData.key !== 'carousel') {
+        return;
+      }
+      const payload = layoutData.payload || {};
+      const container = block.querySelector('.post-type-layout-carousel-editor');
+      if (!container) {
+        return;
+      }
+
+      // Replace editor container with frontend structure
+      container.className = 'post-type-layout-carousel';
+      container.setAttribute('data-embla-carousel', '');
+      container.setAttribute('data-slides-per-view', String((_payload$columns = payload.columns) !== null && _payload$columns !== void 0 ? _payload$columns : 3));
+      container.setAttribute('data-slides-to-scroll', String((_payload$slidesToScro = payload.slidesToScroll) !== null && _payload$slidesToScro !== void 0 ? _payload$slidesToScro : 1));
+      if (payload.loop) {
+        container.setAttribute('data-loop', 'true');
+      } else {
+        container.removeAttribute('data-loop');
+      }
+      if (payload.autoplay) {
+        var _payload$autoplayDela;
+        container.setAttribute('data-autoplay', 'true');
+        container.setAttribute('data-autoplay-delay', String((_payload$autoplayDela = payload.autoplayDelay) !== null && _payload$autoplayDela !== void 0 ? _payload$autoplayDela : 3000));
+      } else {
+        container.removeAttribute('data-autoplay');
+        container.removeAttribute('data-autoplay-delay');
+      }
+      const classes = ['post-type-layout-carousel'];
+      if (payload.columns) {
+        classes.push(`columns-${payload.columns}`);
+        container.style.setProperty('--carousel-columns', String(payload.columns));
+      }
+      if (payload.columnsTablet) {
+        classes.push(`columns-tablet-${payload.columnsTablet}`);
+        container.style.setProperty('--carousel-columns-tablet', String(payload.columnsTablet));
+      }
+      if (payload.columnsMobile) {
+        classes.push(`columns-mobile-${payload.columnsMobile}`);
+        container.style.setProperty('--carousel-columns-mobile', String(payload.columnsMobile));
+      }
+      classes.forEach(className => container.classList.add(className));
+    } catch (error) {
+      console.error('Failed to parse layout js payload', error);
+    }
+  });
+  initCarousels(root);
+}
 
 // Initialize when DOM is ready
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initCarousels);
+  document.addEventListener('DOMContentLoaded', () => initCarouselsFromPayload());
 } else {
-  initCarousels();
+  initCarouselsFromPayload();
 }
 
 // Re-initialize carousels after AJAX load more (if needed)
-document.addEventListener('jankx:loadMoreComplete', () => {
-  setTimeout(initCarousels, 100);
+document.addEventListener('jankx:loadMoreComplete', event => {
+  const detail = event.detail;
+  const newItems = detail?.newItems || [];
+  if (newItems.length === 0) {
+    initCarousels();
+    return;
+  }
+  const tempContainer = document.createElement('div');
+  newItems.forEach(item => tempContainer.appendChild(item.cloneNode(true)));
+  initCarouselsFromPayload(tempContainer);
 });
 })();
 

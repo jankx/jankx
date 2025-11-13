@@ -7,12 +7,25 @@
 
 import EmblaCarousel from 'embla-carousel';
 
+type EmblaHandlerMap = {
+    mouseEnter?: (event: MouseEvent) => void;
+    mouseLeave?: (event: MouseEvent) => void;
+    prevButton?: { button: HTMLButtonElement; handler: EventListener };
+    nextButton?: { button: HTMLButtonElement; handler: EventListener };
+};
+
+type EmblaContainerElement = HTMLElement & {
+    emblaCarousel?: ReturnType<typeof EmblaCarousel>;
+    emblaCleanup?: () => void;
+    __emblaHandlers?: EmblaHandlerMap;
+};
+
 /**
  * Initialize Embla Carousel for all carousel layouts on the page
  */
-function initCarousels(): void {
+function initCarousels(containerScope: ParentNode | Document = document): void {
     // Find all carousel containers
-    const carouselContainers = document.querySelectorAll<HTMLElement>(
+    const carouselContainers = containerScope.querySelectorAll<HTMLElement>(
         '.post-type-layout-carousel[data-embla-carousel]'
     );
 
@@ -20,10 +33,11 @@ function initCarousels(): void {
         return;
     }
 
-    carouselContainers.forEach((container) => {
-        // Check if already initialized
-        if ((container as any).emblaCarousel) {
-            return;
+    carouselContainers.forEach((element) => {
+        const container = element as EmblaContainerElement;
+
+        if (typeof container.emblaCleanup === 'function') {
+            container.emblaCleanup();
         }
 
         const viewport = container.querySelector<HTMLElement>('.embla__viewport');
@@ -60,7 +74,9 @@ function initCarousels(): void {
         const embla = EmblaCarousel(viewport, emblaOptions);
 
         // Store reference
-        (container as any).emblaCarousel = embla;
+        container.emblaCarousel = embla;
+        const handlerMap: EmblaHandlerMap = {};
+        container.__emblaHandlers = handlerMap;
 
         // Setup autoplay if enabled
         let autoplayTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -74,21 +90,33 @@ function initCarousels(): void {
                 autoplayTimeout = setTimeout(playEmbla, autoplayDelay);
             };
 
-            autoplayTimeout = setTimeout(playEmbla, autoplayDelay);
+            const startAutoplay = () => {
+                autoplayTimeout = setTimeout(playEmbla, autoplayDelay);
+            };
 
-            // Pause on hover
-            container.addEventListener('mouseenter', () => {
+            const stopAutoplay = () => {
                 if (autoplayTimeout) {
                     clearTimeout(autoplayTimeout);
                     autoplayTimeout = null;
                 }
-            });
+            };
 
-            container.addEventListener('mouseleave', () => {
+            startAutoplay();
+
+            const mouseEnterHandler = () => {
+                stopAutoplay();
+            };
+
+            const mouseLeaveHandler = () => {
                 if (autoplay) {
-                    autoplayTimeout = setTimeout(playEmbla, autoplayDelay);
+                    startAutoplay();
                 }
-            });
+            };
+
+            container.addEventListener('mouseenter', mouseEnterHandler);
+            container.addEventListener('mouseleave', mouseLeaveHandler);
+            handlerMap.mouseEnter = mouseEnterHandler;
+            handlerMap.mouseLeave = mouseLeaveHandler;
         }
 
         // Setup navigation arrows if present
@@ -100,9 +128,11 @@ function initCarousels(): void {
         );
 
         if (prevButton) {
-            prevButton.addEventListener('click', () => {
+            const prevClickHandler = () => {
                 embla.scrollPrev();
-            });
+            };
+            prevButton.addEventListener('click', prevClickHandler);
+            handlerMap.prevButton = { button: prevButton, handler: prevClickHandler };
 
             // Update button state
             const updatePrevButton = () => {
@@ -118,9 +148,11 @@ function initCarousels(): void {
         }
 
         if (nextButton) {
-            nextButton.addEventListener('click', () => {
+            const nextClickHandler = () => {
                 embla.scrollNext();
-            });
+            };
+            nextButton.addEventListener('click', nextClickHandler);
+            handlerMap.nextButton = { button: nextButton, handler: nextClickHandler };
 
             // Update button state
             const updateNextButton = () => {
@@ -141,6 +173,7 @@ function initCarousels(): void {
         );
 
         if (dotsContainer) {
+            dotsContainer.innerHTML = '';
             const dots: HTMLElement[] = [];
             const slides = embla.slideNodes();
 
@@ -179,23 +212,112 @@ function initCarousels(): void {
                 clearTimeout(autoplayTimeout);
             }
             embla.destroy();
-            (container as any).emblaCarousel = null;
+            if (handlerMap.mouseEnter) {
+                container.removeEventListener('mouseenter', handlerMap.mouseEnter);
+            }
+            if (handlerMap.mouseLeave) {
+                container.removeEventListener('mouseleave', handlerMap.mouseLeave);
+            }
+            if (handlerMap.prevButton) {
+                handlerMap.prevButton.button.removeEventListener('click', handlerMap.prevButton.handler);
+            }
+            if (handlerMap.nextButton) {
+                handlerMap.nextButton.button.removeEventListener('click', handlerMap.nextButton.handler);
+            }
+            if (dotsContainer) {
+                dotsContainer.innerHTML = '';
+            }
+            container.emblaCarousel = null;
+            container.__emblaHandlers = undefined;
+            container.emblaCleanup = undefined;
         };
 
         // Store cleanup function
-        (container as any).emblaCleanup = cleanup;
+        container.emblaCleanup = cleanup;
     });
+}
+
+function initCarouselsFromPayload(root: ParentNode | Document = document): void {
+    const blocks = root.querySelectorAll<HTMLElement>('.wp-block-jankx-post-type-layout[data-layout="carousel"]');
+
+    blocks.forEach((block) => {
+        const layoutDataAttr = block.getAttribute('data-layout-js');
+        if (!layoutDataAttr) {
+            return;
+        }
+
+        try {
+            const layoutData = JSON.parse(layoutDataAttr);
+            if (!layoutData || layoutData.key !== 'carousel') {
+                return;
+            }
+
+            const payload = layoutData.payload || {};
+            const container = block.querySelector<HTMLElement>('.post-type-layout-carousel-editor');
+            if (!container) {
+                return;
+            }
+
+            // Replace editor container with frontend structure
+            container.className = 'post-type-layout-carousel';
+            container.setAttribute('data-embla-carousel', '');
+            container.setAttribute('data-slides-per-view', String(payload.columns ?? 3));
+            container.setAttribute('data-slides-to-scroll', String(payload.slidesToScroll ?? 1));
+
+            if (payload.loop) {
+                container.setAttribute('data-loop', 'true');
+            } else {
+                container.removeAttribute('data-loop');
+            }
+
+            if (payload.autoplay) {
+                container.setAttribute('data-autoplay', 'true');
+                container.setAttribute('data-autoplay-delay', String(payload.autoplayDelay ?? 3000));
+            } else {
+                container.removeAttribute('data-autoplay');
+                container.removeAttribute('data-autoplay-delay');
+            }
+
+            const classes: string[] = ['post-type-layout-carousel'];
+            if (payload.columns) {
+                classes.push(`columns-${payload.columns}`);
+                container.style.setProperty('--carousel-columns', String(payload.columns));
+            }
+            if (payload.columnsTablet) {
+                classes.push(`columns-tablet-${payload.columnsTablet}`);
+                container.style.setProperty('--carousel-columns-tablet', String(payload.columnsTablet));
+            }
+            if (payload.columnsMobile) {
+                classes.push(`columns-mobile-${payload.columnsMobile}`);
+                container.style.setProperty('--carousel-columns-mobile', String(payload.columnsMobile));
+            }
+            classes.forEach((className) => container.classList.add(className));
+        } catch (error) {
+            console.error('Failed to parse layout js payload', error);
+        }
+    });
+
+    initCarousels(root);
 }
 
 // Initialize when DOM is ready
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initCarousels);
+    document.addEventListener('DOMContentLoaded', () => initCarouselsFromPayload());
 } else {
-    initCarousels();
+    initCarouselsFromPayload();
 }
 
 // Re-initialize carousels after AJAX load more (if needed)
-document.addEventListener('jankx:loadMoreComplete', () => {
-    setTimeout(initCarousels, 100);
+document.addEventListener('jankx:loadMoreComplete', (event: Event) => {
+    const detail = (event as CustomEvent).detail;
+    const newItems: HTMLElement[] = detail?.newItems || [];
+    if (newItems.length === 0) {
+        initCarousels();
+        return;
+    }
+
+    const tempContainer = document.createElement('div');
+    newItems.forEach((item) => tempContainer.appendChild(item.cloneNode(true)));
+    initCarouselsFromPayload(tempContainer);
 });
 

@@ -107,6 +107,14 @@
       "type": "number",
       "default": 1
     },
+    "responsiveColumns": {
+      "type": "object",
+      "default": {
+        "desktop": 3,
+        "tablet": 2,
+        "mobile": 1
+      }
+    },
     "showTitle": {
       "type": "boolean",
       "default": true
@@ -133,6 +141,18 @@
       "default": true
     },
     "showAuthor": {
+      "type": "boolean",
+      "default": false
+    },
+    "showPrice": {
+      "type": "boolean",
+      "default": true
+    },
+    "showAddToCart": {
+      "type": "boolean",
+      "default": true
+    },
+    "showRating": {
       "type": "boolean",
       "default": false
     },

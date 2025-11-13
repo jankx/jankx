@@ -18,6 +18,85 @@ class NavigationBlockPatch
         add_filter('render_block_core/navigation-link', [__CLASS__, 'fix_navigation_link_url'], 10, 2);
         add_filter('render_block_core/navigation-submenu', [__CLASS__, 'fix_navigation_submenu_url'], 10, 2);
         add_filter('render_block_core/navigation', [__CLASS__, 'fix_navigation_url'], 10, 2);
+        add_filter('render_block_data', [__CLASS__, 'ensure_navigation_attrs'], 9, 2);
+        add_filter('register_block_type_args', [__CLASS__, 'override_navigation_render_callback'], 10, 2);
+    }
+
+    public static function override_navigation_render_callback($args, $name)
+    {
+        if ($name === 'core/navigation-link' || $name === 'core/navigation-submenu') {
+            $originalCallback = $args['render_callback'] ?? null;
+
+            $args['render_callback'] = function ($attributes, $content, $block) use ($name, $originalCallback) {
+                $attributes = NavigationBlockPatch::prepareNavigationAttributes($attributes, $name);
+
+                if (is_callable($originalCallback)) {
+                    return call_user_func($originalCallback, $attributes, $content, $block);
+                }
+
+                if ($name === 'core/navigation-submenu') {
+                    return render_block_core_navigation_submenu($attributes, $content, $block);
+                }
+
+                if ($name === 'core/navigation-link') {
+                    return render_block_core_navigation_link($attributes, $content, $block);
+                }
+
+                return $content;
+            };
+        }
+
+        return $args;
+    }
+
+    protected static function prepareNavigationAttributes($attributes, string $blockName): array
+    {
+        if (!is_array($attributes)) {
+            $attributes = [];
+        }
+
+        if (!array_key_exists('label', $attributes) || $attributes['label'] === null) {
+            $attributes['label'] = $blockName === 'core/navigation-submenu' ? __('Submenu', 'jankx') : __('Link', 'jankx');
+        }
+
+        if (!array_key_exists('url', $attributes) || $attributes['url'] === null) {
+            $attributes['url'] = '#';
+        }
+
+        if (!array_key_exists('opensInNewTab', $attributes)) {
+            $attributes['opensInNewTab'] = false;
+        }
+
+        return $attributes;
+    }
+
+    public static function ensure_navigation_attrs($parsed_block, $source_block)
+    {
+        if (!isset($parsed_block['blockName'])) {
+            return $parsed_block;
+        }
+
+        if (!in_array($parsed_block['blockName'], ['core/navigation-link', 'core/navigation-submenu'], true)) {
+            return $parsed_block;
+        }
+
+        if (!isset($parsed_block['attrs']) || !is_array($parsed_block['attrs'])) {
+            $parsed_block['attrs'] = [];
+        }
+
+        if (!array_key_exists('url', $parsed_block['attrs']) || $parsed_block['attrs']['url'] === null) {
+            $parsed_block['attrs']['url'] = '#';
+        }
+
+        if (!array_key_exists('label', $parsed_block['attrs']) || $parsed_block['attrs']['label'] === null) {
+            $parsed_block['attrs']['label'] = __('Link', 'jankx');
+        }
+
+        if (!array_key_exists('opensInNewTab', $parsed_block['attrs'])) {
+            $parsed_block['attrs']['opensInNewTab'] = false;
+        }
+
+        return $parsed_block;
     }
 
     /**

@@ -155,6 +155,83 @@
     }
 }
 
+.wp-block-jankx-post-layout-template.has-image-ratio:not(.post-type-layout-masonry) {
+    .wc-block-components-product-image,
+    .wc-block-product-image {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+
+        &::before {
+            content: "";
+            display: block;
+            padding-bottom: var(--jankx-image-ratio, 66.6667%);
+        }
+
+        a {
+            position: absolute;
+            inset: 0;
+            display: block;
+        }
+
+        img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+    }
+}
+
+.post-type-layout-carousel, .post-type-layout-carousel-editor {
+    .wp-block-jankx-post-layout-template.has-image-ratio {
+        .wc-block-components-product-image,
+        .wc-block-product-image {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            height: 0;
+
+            &,
+            &.wc-block-components-product-image--aspect-ratio-auto {
+                aspect-ratio: auto !important;
+            }
+
+            &::before {
+                content: "";
+                display: block;
+                padding-bottom: var(--jankx-image-ratio, 66.6667%);
+            }
+
+            a,
+            .wc-block-components-product-image__wrapper,
+            .wc-block-product-image__wrapper,
+            .woocommerce-loop-product__link {
+                position: absolute;
+                inset: 0;
+                display: block;
+            }
+
+            .wc-block-components-product-image__inner-container,
+            .wc-block-product-image__inner-container {
+                position: absolute;
+                inset: 0;
+            }
+
+            img {
+                position: absolute;
+                inset: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                object-position: center;
+            }
+        }
+    }
+}
+
 .wp-block-jankx-post-type-layout {
     --post-layout-text-color: #000;
     --post-layout-link-color: #000;
