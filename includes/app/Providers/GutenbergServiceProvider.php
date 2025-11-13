@@ -18,12 +18,11 @@ class GutenbergServiceProvider extends FrameworkGutenbergServiceProvider
     {
         // Register Gutenberg service
         $app->singleton('gutenberg.service', function ($app) {
-
             return new GutenbergService($app);
         });
-// Register Gutenberg repository
-        $app->singleton('gutenberg.repository', function ($app) {
 
+        // Register Gutenberg repository
+        $app->singleton('gutenberg.repository', function ($app) {
             return new \Jankx\Gutenberg\GutenbergRepository();
         });
     }

@@ -8,10 +8,11 @@
 
 namespace Jankx\Extensions;
 
-use Jankx\Contracts\ExtensionManager as ExtensionManagerContract;
-use Jankx\Contracts\Extension;
+use Jankx\Contracts\Extension\ExtensionInterface;
+use Jankx\Contracts\Extension\ExtensionManagerInterface;
+use Jankx\Facades\Log;
 
-class ExtensionManager implements ExtensionManagerContract
+class ExtensionManager implements ExtensionManagerInterface
 {
     private static $instance = null;
     private $extensions = [];
@@ -91,7 +92,6 @@ class ExtensionManager implements ExtensionManagerContract
 
         // If extension with this ID already exists, skip loading
         if (isset($this->extension_ids[$extension_id])) {
-            error_log("Extension with ID '{$extension_id}' already loaded from '{$this->extension_ids[$extension_id]}', skipping '{$extensionName}' from '{$extensionsDir}'");
             return false;
         }
 
@@ -104,7 +104,7 @@ class ExtensionManager implements ExtensionManagerContract
         // Load the caller file
         $caller_file = $extension_dir . '/' . $caller['file'];
         if (!file_exists($caller_file)) {
-            error_log("Extension caller file not found: {$caller_file}");
+            Log::notice("Extension caller file not found: {$caller_file}");
             return false;
         }
 
@@ -199,7 +199,7 @@ class ExtensionManager implements ExtensionManagerContract
     /**
      * Get a specific extension
      */
-    public function get_extension(string $name): ?Extension
+    public function get_extension(string $name): ?ExtensionInterface
     {
         return $this->extensions[$name] ?? null;
     }
@@ -207,7 +207,7 @@ class ExtensionManager implements ExtensionManagerContract
     /**
      * Get extension by ID
      */
-    public function get_extension_by_id(string $extensionId): ?Extension
+    public function get_extension_by_id(string $extensionId): ?ExtensionInterface
     {
         if (!isset($this->extension_ids[$extensionId])) {
             return null;

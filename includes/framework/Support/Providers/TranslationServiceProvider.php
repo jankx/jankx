@@ -3,8 +3,6 @@
 namespace Jankx\Support\Providers;
 
 use Jankx\Foundation\Application;
-use Jankx\Facades\Log;
-use Jankx\Helper\Environment;
 
 /**
  * Translation Service Provider
@@ -37,10 +35,8 @@ class TranslationServiceProvider extends ServiceProvider
 
         // Add direction support
         add_filter('body_class', [$this, 'addDirectionBodyClass']);
-
-        // Add language switcher
-        add_action('wp_footer', [$this, 'renderLanguageSwitcher']);
     }
+
 
     /**
      * Bootstrap any application services.
@@ -50,6 +46,43 @@ class TranslationServiceProvider extends ServiceProvider
      */
     public function boot(Application $app)
     {
+        add_filter('frontpage_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('404_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('archive_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('attachment_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('author_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('category_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('date_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('embed_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('frontpage_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('home_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('index_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('page_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('paged_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('privacypolicy_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('search_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('single_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('singular_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('tag_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        add_filter('taxonomy_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+    }
+
+    public function filterFrontpageTemplateHierarchy($templates)
+    {
+        $currentLanguage = $this->getCurrentLanguage();
+        foreach ($templates as $index => $template) {
+            if (strpos($template, '.php') === false) {
+                continue;
+            }
+
+            $templateFile = 'templates/' . str_replace('.php', '-' . $currentLanguage . '.html', $template);
+            $exitings = locate_template($templateFile, false);
+            if (!empty($exitings)) {
+                $languageTemplate = str_replace('.php', '-' . $currentLanguage . '.php', $template);            
+                $templates[$index] = $languageTemplate;
+            }
+        }
+        return $templates;
     }
 
     /**
@@ -142,38 +175,6 @@ class TranslationServiceProvider extends ServiceProvider
 
         // Fallback to WordPress locale
         return [get_locale()];
-    }
-
-    /**
-     * Render language switcher
-     *
-     * @return void
-     */
-    public function renderLanguageSwitcher()
-    {
-        $languages = $this->getLanguages();
-        $currentLanguage = $this->getCurrentLanguage();
-
-        if (count($languages) <= 1) {
-            return;
-        }
-
-        echo '<div class="language-switcher">';
-        echo '<ul>';
-
-        foreach ($languages as $language) {
-            $isCurrent = ($language === $currentLanguage);
-            $class = $isCurrent ? 'current' : '';
-
-            echo '<li class="' . esc_attr($class) . '">';
-            echo '<a href="' . esc_url($this->getLanguageUrl($language)) . '">';
-            echo esc_html($this->getLanguageName($language));
-            echo '</a>';
-            echo '</li>';
-        }
-
-        echo '</ul>';
-        echo '</div>';
     }
 
     /**

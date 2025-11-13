@@ -2,6 +2,7 @@
 
 namespace Jankx\Support\Providers;
 
+use Jankx\Facades\App;
 use Jankx\Services\GutenbergService;
 use Jankx\Services\AdvancedGutenbergService;
 use Jankx\Foundation\Application;
@@ -47,6 +48,12 @@ class GutenbergServiceProvider extends ServiceProvider
      */
     public function boot(Application $app)
     {
+
+        // Register blocks path
+        $app->bind('blocks.path', function ($app) {
+            return get_template_directory() . '/resources/blocks';
+        });
+
         // Initialize Gutenberg blocks
         $this->registerGutenbergHooks();
     }
@@ -64,11 +71,9 @@ class GutenbergServiceProvider extends ServiceProvider
         wp_cache_flush_group('jankx_blocks');
 
         // Clear Gutenberg service cache if available
-        if (function_exists('jankx')) {
-            $app = jankx();
-            if ($app && $app->bound('gutenberg.service')) {
-                $app->make('gutenberg.service')->clearCache();
-            }
+        $app = Application::getInstance();
+        if ($app && $app->bound('gutenberg.service')) {
+            $app->make('gutenberg.service')->clearCache();
         }
     }
 
@@ -78,6 +83,17 @@ class GutenbergServiceProvider extends ServiceProvider
     protected function registerGutenbergHooks()
     {
         // Initialize Gutenberg service (includes both blocks and patterns)
-        add_action('init', [$this->app->make('gutenberg.service'), 'init']);
+        add_action(
+            'init',
+            [$this->app->make('gutenberg.service'), 'registerBlocks'],
+            5
+        );
+
+
+        // init blocks
+        add_action(
+            'init',
+            [$this->app->make('gutenberg.service'), 'init']
+        );
     }
 }

@@ -20,9 +20,7 @@ class Environment
         // Cache the result to avoid repeated checks
         if (self::$debugLogCache === null) {
             self::$debugLogCache = (
-                defined('JANKX_DEBUG_LOG') && boolval(JANKX_DEBUG_LOG)
-            ) || (
-                defined('JANKX_LOG_ALL') && boolval(JANKX_LOG_ALL)
+                defined('JANKX_DEBUG_ALL_LOG') && constant('JANKX_DEBUG_ALL_LOG') === true
             );
         }
 

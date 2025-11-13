@@ -8,9 +8,10 @@
 
 namespace Jankx\Extensions;
 
+use Jankx\Contracts\Extension\ExtensionInterface;
 use Jankx\Facades\App;
 
-abstract class Extension implements \Jankx\Contracts\Extension
+abstract class Extension implements ExtensionInterface
 {
     protected $name;
     protected $version;

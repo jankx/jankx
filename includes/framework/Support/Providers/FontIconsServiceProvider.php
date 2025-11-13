@@ -6,13 +6,9 @@ use Jankx\Support\Providers\ServiceProvider;
 use Jankx\Foundation\Application;
 use Jankx\Facades\Config;
 use Jankx\Services\FontIcons\IconRepository;
-use Jankx\Services\FontIcons\IconTypeManager;
 use Jankx\Services\FontIcons\IconRenderer;
 use Jankx\Services\FontIcons\IconTransformerService;
-use Jankx\Services\FontIcons\IconTypes\FontAwesomeProvider;
-use Jankx\Services\FontIcons\IconTypes\MaterialIconsProvider;
-use Jankx\Services\FontIcons\IconTypes\CustomIconsProvider;
-use Jankx\Services\FontIcons\IconTypes\SvgIconsProvider;
+use Jankx\Facades\FontIcons;
 
 class FontIconsServiceProvider extends ServiceProvider
 {
@@ -27,9 +23,6 @@ class FontIconsServiceProvider extends ServiceProvider
             return new IconRepository($app);
         });
 
-        $app->singleton('font-icons.manager', function ($app) {
-            return new IconTypeManager();
-        });
 
         $app->singleton('font-icons.renderer', function ($app) {
             return new IconRenderer();
@@ -38,36 +31,21 @@ class FontIconsServiceProvider extends ServiceProvider
         $app->singleton('font-icons.transformer', function ($app) {
             return new IconTransformerService($app);
         });
-
-        // Register icon type providers (FontAwesome không được register mặc định)
-        $app->singleton('font-icons.material', function ($app) {
-            return new MaterialIconsProvider(Config::get('font-icons.icon_types.material', []));
-        });
-
-        $app->singleton('font-icons.custom', function ($app) {
-            return new CustomIconsProvider(Config::get('font-icons.icon_types.custom', []));
-        });
-
-        $app->singleton('font-icons.svg', function ($app) {
-            return new SvgIconsProvider(Config::get('font-icons.icon_types.svg', []));
-        });
-
-        // FontAwesome chỉ được register khi cần thiết
-        $app->singleton('font-icons.fontawesome', function ($app) {
-            return new FontAwesomeProvider(Config::get('font-icons.icon_types.fontawesome', []));
-        });
     }
 
     public function boot(Application $app)
     {
-        // Admin menu được quản lý bởi JankxAdminMenuServiceProvider
-        // add_action('admin_menu', [$this, 'registerAdminMenu']);
+        // Register default icons
+        add_action('init', [$this, 'registerDefaultIcons'], 5);
 
-        // Auto-load active icon types (không bao gồm FontAwesome mặc định)
+        // Action hook để register thêm icons
+        add_action('jankx_register_font_icons', [$this, 'registerAdditionalIcons']);
+
+        // Auto-load active icon types
         add_action('wp_enqueue_scripts', [$this, 'autoLoadActiveIcons']);
         add_action('admin_enqueue_scripts', [$this, 'autoLoadActiveIcons']);
 
-        // Không schedule auto-update cho FontAwesome mặc định
+        // Schedule auto-update
         add_action('init', [$this, 'scheduleAutoUpdate']);
         add_action('jankx_icons_auto_update', [$this, 'autoUpdateIcons']);
     }
@@ -84,23 +62,57 @@ class FontIconsServiceProvider extends ServiceProvider
         );
     }
 
+    /**
+     * Register default icons (FontAwesome và Material Icons)
+     */
+    public function registerDefaultIcons()
+    {
+        // Register FontAwesome (không auto-load)
+        if (!FontIcons::has('fontawesome')) {
+            FontIcons::fontAwesome('6.5.1', false);
+        }
+
+        // Register Material Icons (auto-load)
+        if (!FontIcons::has('material')) {
+            FontIcons::materialIcons(true);
+        }
+    }
+
+    /**
+     * Register additional icons từ action hook
+     */
+    public function registerAdditionalIcons()
+    {
+        // Có thể được extend bởi themes/plugins
+        do_action('jankx_register_additional_font_icons');
+    }
+
     public function autoLoadActiveIcons()
     {
-        $activeTypes = $this->app->make('font-icons.manager')->getActiveTypes();
+        $autoLoadTypes = $this->app->make('font-icons.repository')->getAutoLoadTypes();
 
-        foreach ($activeTypes as $type) {
-            // Không auto-load FontAwesome
-            if ($type === 'fontawesome') {
-                continue;
-            }
-
-            try {
-                $provider = $this->app->make("font-icons.{$type}");
-                $provider->enqueue();
-            } catch (\Exception $e) {
-                // Log error but don't break
+        foreach ($autoLoadTypes as $type => $config) {
+            $cssUrl = $config['css_url'] ?? '';
+            if ($cssUrl) {
+                $this->enqueueIconCss($cssUrl, $type);
             }
         }
+    }
+
+    /**
+     * Enqueue icon CSS
+     */
+    protected function enqueueIconCss($cssUrl, $type)
+    {
+        $sanitizedType = sanitize_title($type);
+
+        add_action('wp_head', function () use ($cssUrl, $sanitizedType) {
+            echo "<link rel=\"stylesheet\" id=\"jankx-icon-{$sanitizedType}-css\" href=\"{$cssUrl}\" media=\"all\" />\n";
+        });
+
+        add_action('admin_head', function () use ($cssUrl, $sanitizedType) {
+            echo "<link rel=\"stylesheet\" id=\"jankx-icon-{$sanitizedType}-css\" href=\"{$cssUrl}\" media=\"all\" />\n";
+        });
     }
 
 
@@ -113,20 +125,17 @@ class FontIconsServiceProvider extends ServiceProvider
 
     public function autoUpdateIcons()
     {
-        $transformer = $this->app->make('font-icons.transformer');
+        $repository = $this->app->make('font-icons.repository');
+        $autoLoadTypes = $repository->getAutoLoadTypes();
 
-        // Chỉ update các icon types mặc định, không bao gồm FontAwesome
-        $iconTypes = Config::get('font-icons.auto_update.types', ['material', 'custom']);
-
-        foreach ($iconTypes as $type) {
-            $typeConfig = Config::get("font-icons.icon_types.{$type}", []);
-            if (isset($typeConfig['cdn_url'])) {
+        foreach ($autoLoadTypes as $type => $config) {
+            $cssUrl = $config['css_url'] ?? '';
+            if ($cssUrl) {
                 try {
-                    $cssUrl = $typeConfig['cdn_url'];
-                    $outputPath = $this->app->make('jankx.paths')['base'] . "/resources/icons/{$type}/icons.json";
-
-                    $transformer->transformAndSave($cssUrl, $type, $outputPath);
+                    // Re-import để update cache
+                    $repository->importFromCssUrl($cssUrl, $type, $config['display_name'], $config['auto_load']);
                 } catch (\Exception $e) {
+                    // Log error but don't break
                 }
             }
         }
@@ -137,12 +146,26 @@ class FontIconsServiceProvider extends ServiceProvider
         $activeTab = $_GET['tab'] ?? 'icon-sets';
         $iconTypes = $this->app->make('font-icons.repository')->getIconTypes();
 
-        $templatePath = $this->app->make('jankx.paths')['base'] . '/templates/admin/icons-repository.php';
+        echo '<div class="wrap">';
+        echo '<h1>Font Icons Repository</h1>';
+        echo '<p>Manage your font icons collection.</p>';
 
-        if (file_exists($templatePath)) {
-            include $templatePath;
+        if (!empty($iconTypes)) {
+            echo '<h2>Registered Icon Types:</h2>';
+            echo '<ul>';
+            foreach ($iconTypes as $type => $data) {
+                $config = $data['config'] ?? [];
+                echo '<li>';
+                echo '<strong>' . ($config['display_name'] ?? $type) . '</strong> ';
+                echo '(' . count($data['icons'] ?? []) . ' icons) ';
+                echo $config['auto_load'] ? '[Auto-load]' : '[Manual]';
+                echo '</li>';
+            }
+            echo '</ul>';
         } else {
-            echo '<div class="wrap"><h1>Icons Repository</h1><p>Template file not found.</p></div>';
+            echo '<p>No icon types registered yet.</p>';
         }
+
+        echo '</div>';
     }
 }

@@ -2,6 +2,9 @@
 
 namespace Jankx\Gutenberg;
 
+use Exception;
+use Jankx\Contracts\BlockInterface;
+
 /**
  * Gutenberg Repository
  *
@@ -41,6 +44,8 @@ class GutenbergRepository
      */
     protected $patternInstances = [];
 
+    protected $blockPaths = [];
+
     /**
      * Constructor
      */
@@ -52,28 +57,33 @@ class GutenbergRepository
     /**
      * Register a block
      *
-     * @param string $blockClass Block class name
+     * @param string|Block $blockClass Block class name or instance
+     * @param string|null $blockPath Block directory path
      * @return void
      */
-    public function registerBlock($blockClass)
+    public function registerBlock($blockClass, $blockPath = null)
     {
-        if (!class_exists($blockClass)) {
-            return;
+        if (is_object($blockClass)) {
+            if (!$blockClass instanceof BlockInterface) {
+                throw new Exception('Block class must be an instance of ' . BlockInterface::class);
+            }
+            // inited
+            $this->blocks[get_class($blockClass)] = true;
+            $this->instances[get_class($blockClass)] = $blockClass;
+
+            // Store block path if provided
+            if ($blockPath) {
+                $this->blockPaths[get_class($blockClass)] = $blockPath;
+            }
+        } else {
+            // not inited
+            $this->blocks[$blockClass] = false;
+
+            // Store block path if provided
+            if ($blockPath) {
+                $this->blockPaths[$blockClass] = $blockPath;
+            }
         }
-
-        $block = new $blockClass();
-
-        if (!$block instanceof Block) {
-            return;
-        }
-
-        // Check if block is already registered
-        if (isset($this->blocks[$block->getName()])) {
-            return;
-        }
-
-        $this->blocks[$block->getName()] = $blockClass;
-        $this->instances[$block->getName()] = $block;
     }
 
     /**
@@ -85,6 +95,17 @@ class GutenbergRepository
     public function getBlock($blockName)
     {
         return $this->instances[$blockName] ?? null;
+    }
+
+    /**
+     * Get block path
+     *
+     * @param string $blockClass Block class name
+     * @return string|null
+     */
+    public function getBlockPath($blockClass)
+    {
+        return $this->blockPaths[$blockClass] ?? null;
     }
 
     /**
@@ -183,7 +204,7 @@ class GutenbergRepository
         $pattern = $app ? new $patternClass($app) : new $patternClass();
 
         // Check if pattern is valid
-        if (!$pattern instanceof \Jankx\Gutenberg\Blocks\Patterns\GutenbergPattern) {
+        if (!$pattern instanceof \Jankx\Gutenberg\Patterns\GutenbergPattern) {
             return;
         }
 
@@ -205,7 +226,7 @@ class GutenbergRepository
      * Get pattern instance
      *
      * @param string $patternSlug Pattern slug
-     * @return \Jankx\Gutenberg\Blocks\Patterns\GutenbergPattern|null
+     * @return \Jankx\Gutenberg\Patterns\GutenbergPattern|null
      */
     public function getPattern($patternSlug)
     {

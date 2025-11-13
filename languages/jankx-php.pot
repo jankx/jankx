@@ -1,0 +1,344 @@
+# Copyright (C) 2025 Jankx Framework
+# This file is distributed under the same license as the Jankx Framework package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Jankx Framework\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2025-10-25 14:10+0000\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-KeywordsList: __;_e;_ex:1,2c;_n:1,2;_n_noop:1,2;_nx:1,2,4c;_nx_noop:1,2,3c;_x:1,2c;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../features/metrics/MetricServiceProvider.php:57
+msgid "Post Views (Lượt xem)"
+msgstr ""
+
+#: ../includes/app/Services/NavigationBlockService.php:72, ../includes/framework/Patches/NavigationBlockPatch.php:35, ../includes/framework/Patches/NavigationBlockPatch.php:102, ../includes/framework/Patches/PatchesLoader.php:139, ../includes/framework/Patches/PatchesLoader.php:189, ../includes/framework/Patches/WordPressCorePatch.php:170
+msgid "Link"
+msgstr ""
+
+#: ../includes/app/Services/NavigationBlockService.php:90, ../includes/framework/Patches/NavigationBlockPatch.php:53, ../includes/framework/Patches/NavigationBlockPatch.php:114
+msgid "Submenu"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:25
+msgid "Date (Ngày đăng)"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:29
+msgid "Modified (Ngày sửa)"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:33
+msgid "Title (Tiêu đề)"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:37
+msgid "Name (Slug)"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:41
+msgid "Author (Tác giả)"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:45
+msgid "Type (Post Type)"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:49
+msgid "ID"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:53
+msgid "Menu Order"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:57
+msgid "Random (Ngẫu nhiên)"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:61
+msgid "Comment Count (Số bình luận)"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:65
+msgid "Relevance (Độ liên quan)"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:69
+msgid "Meta Value (Giá trị meta)"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:73
+msgid "Meta Value Num (Giá trị meta số)"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:77
+msgid "Post__in (Thứ tự trong mảng)"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:81
+msgid "Post Name__in (Thứ tự slug)"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:85
+msgid "Post Parent__in (Thứ tự parent)"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:120
+msgid "Descending (Giảm dần)"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:124
+msgid "Ascending (Tăng dần)"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:150
+msgid "Equal (=)"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:154
+msgid "Not Equal (!=)"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:158
+msgid "Greater Than (>)"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:162
+msgid "Greater Than or Equal (>=)"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:166
+msgid "Less Than (<)"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:170
+msgid "Less Than or Equal (<=)"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:174
+msgid "Like (LIKE)"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:178
+msgid "Not Like (NOT LIKE)"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:182, ../includes/framework/Gutenberg/QueryOptions.php:262
+msgid "In (IN)"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:186, ../includes/framework/Gutenberg/QueryOptions.php:266
+msgid "Not In (NOT IN)"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:190, ../includes/framework/Gutenberg/QueryOptions.php:274
+msgid "Exists (EXISTS)"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:194, ../includes/framework/Gutenberg/QueryOptions.php:278
+msgid "Not Exists (NOT EXISTS)"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:218
+msgid "-- Auto --"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/QueryOptions.php:270
+msgid "And (AND)"
+msgstr ""
+
+#: ../includes/framework/Services/JankxMenuItemsService.php:211, ../includes/framework/Services/JankxMenuItemsService.php:215
+msgid "Add to menu"
+msgstr ""
+
+#: ../includes/app/Services/WooCommerce/BuyNowService.php:42
+msgid "MUA NGAY"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/AuthorBoxBlock.php:44
+msgid "No author found"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/AuthorBoxBlock.php:51
+msgid "Author not found"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/AuthorBoxBlock.php:93
+msgid "Recent Posts"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/AuthorBoxBlock.php:185
+msgid "No posts found"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/IconPickerBlock.php:174
+msgid "Chọn icon từ Jankx Font Icons System để hiển thị ở đây."
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/ImageMasonryGalleryBlock.php:161
+msgid "Gallery Image"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/ImageMasonryGalleryBlock.php:192
+msgid "No images selected. Please add images to the gallery."
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/LanguageSwitcherBlock.php:284
+msgid "Polylang plugin is not active. Language switcher cannot be displayed."
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/OffcanvasSidebarBlock.php:181
+msgid "Sidebar navigation"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/OffcanvasSidebarBlock.php:257
+msgid "Close sidebar"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/OffcanvasSidebarBlock.php:293
+msgid "Add your content here using any available blocks."
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/OffcanvasTriggerBlock.php:79
+msgid "Toggle menu"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/PostTypeLayoutBlock.php:92
+msgid "&laquo; Trước"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/PostTypeLayoutBlock.php:93
+msgid "Sau &raquo;"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/PostTypeLayoutBlock.php:114
+msgid "Trước"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/PostTypeLayoutBlock.php:117
+msgid "Sau"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/PostTypeLayoutBlock.php:148, ../views/post-layouts/common/pagination.php:8
+msgid "Posts navigation"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/PostTypeLayoutBlock.php:177
+msgid "Tải thêm"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/PostTypeLayoutBlock.php:342
+msgid "Layout \"%s\" không tồn tại."
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/SlideshowBlock.php:83
+msgid "Fullscreen"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/SlideshowBlock.php:188
+msgid "Xem tự động"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/SlideshowContainerBlock.php:105
+msgid "Previous slide"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/SlideshowContainerBlock.php:109
+msgid "Next slide"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:13, ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:191
+msgid "Trang chủ"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:35
+msgid "No breadcrumb available"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:69, ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:175
+msgid "Breadcrumb"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:179
+msgctxt "breadcrumb"
+msgid "Home"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:242, ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:374
+msgid "Trang không tìm thấy"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:239, ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:372
+msgid "Kết quả tìm kiếm cho: \"%s\""
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:215
+msgid "Sample Category"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:219
+msgid "Sample Post Title"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:334
+msgid "Tác giả: %s"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/SmartTabsBlock.php:130
+msgid "Tab %d"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/TableOfContentBlock.php:455
+msgid "No headings found in the post content."
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/TableOfContentBlock.php:499
+msgid "Table of Contents"
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/WplyrMediaBlock.php:148
+msgid "Please configure media settings."
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/WplyrMediaBlock.php:136
+msgid "Your browser does not support the audio tag."
+msgstr ""
+
+#: ../includes/framework/Gutenberg/Blocks/WplyrMediaBlock.php:127
+msgid "Your browser does not support the video tag."
+msgstr ""
+
+#: ../includes/framework/Layouts/PostLayout/PostLayout.php:178
+msgid "By %s"
+msgstr ""
+
+#: ../includes/framework/Layouts/PostLayout/Supports/CardLayout.php:76, ../includes/framework/Layouts/PostLayout/Supports/GridLayout.php:74, ../includes/framework/Layouts/PostLayout/Supports/ListLayout.php:70, ../includes/framework/Layouts/PostLayout/Supports/MasonryLayout.php:76
+msgid "Post Title %d"
+msgstr ""
+
+#: ../includes/framework/Layouts/PostLayout/Supports/CardLayout.php:77
+msgid "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor..."
+msgstr ""
+
+#: ../includes/framework/Layouts/PostLayout/Supports/GridLayout.php:75, ../includes/framework/Layouts/PostLayout/Supports/ListLayout.php:71
+msgid "Lorem ipsum dolor sit amet, consectetur adipiscing elit..."
+msgstr ""
+
+#: ../includes/framework/Layouts/PostLayout/Supports/MasonryLayout.php:77
+msgid "Lorem ipsum dolor sit amet..."
+msgstr ""
+
+#: ../resources/blocks/advanced-filter/init.php:33
+msgid "Jankx"
+msgstr ""
+
+#: ../vendor/jankx/dashboard-framework/src/OptionFramework.php:297, ../vendor/jankx/dashboard-framework/src/OptionFramework.php:298, ../vendor/jankx/dashboard-framework/src/OptionFramework.php:287, ../vendor/jankx/dashboard-framework/src/OptionFramework.php:288
+msgid "Theme Options"
+msgstr ""

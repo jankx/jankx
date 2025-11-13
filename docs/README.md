@@ -1,259 +1,35 @@
 # Jankx Framework Documentation
 
-## Triết lý phát triển
+Chào mừng đến với tài liệu Jankx Framework! Đây là nơi chứa tất cả các hướng dẫn, API reference, và best practices cho việc phát triển với Jankx Framework.
 
-### Nguyên tắc cốt lõi
+## 📚 Tài liệu có sẵn
 
-**"Tất cả tính năng đều load qua Service Provider"**
+### Core Framework
+- [Getting Started](getting-started.md) - Hướng dẫn bắt đầu với Jankx Framework
+- [Architecture Overview](architecture.md) - Tổng quan kiến trúc framework
+- [Service Providers](service-providers.md) - Hướng dẫn tạo và sử dụng service providers
+- [Configuration](configuration.md) - Cấu hình framework và ứng dụng
 
-Đây là triết lý phát triển cốt lõi của Jankx Framework, đảm bảo tính nhất quán và modularity trong toàn bộ hệ thống:
+### Integrations
+- [WooCommerce Integration](woocommerce-integration.md) - Tích hợp với WooCommerce
+- [Gutenberg Integration](gutenberg-integration.md) - Tích hợp với Gutenberg blocks
+- [WordPress Integration](wordpress-integration.md) - Tích hợp với WordPress core
 
-- **Modularity**: Mọi tính năng được đóng gói trong Service Provider riêng biệt
-- **Lazy Loading**: Services chỉ được load khi cần thiết
-- **Dependency Injection**: Tất cả dependencies được inject qua Application Container
-- **Testability**: Dễ dàng test và mock từng service
-- **Extensibility**: Dễ dàng thêm/xóa tính năng bằng cách đăng ký/hủy Service Provider
-- **Consistency**: Tất cả features follow cùng một pattern
+### Development
+- [Block Development](block-development.md) - Phát triển custom blocks
+- [Template Engine](template-engine.md) - Sử dụng template engine
+- [Asset Management](asset-management.md) - Quản lý CSS, JS, và assets
+- [Testing Guide](testing.md) - Hướng dẫn testing
 
-## 📚 Tài liệu chính
+### Advanced Topics
+- [Performance Optimization](performance.md) - Tối ưu hóa hiệu suất
+- [Security Best Practices](security.md) - Bảo mật và best practices
+- [Deployment Guide](deployment.md) - Hướng dẫn deploy
+- [Troubleshooting](troubleshooting.md) - Xử lý sự cố
 
-### 🚀 Getting Started
-- [Getting Started](./getting-started.md) - Hướng dẫn bắt đầu với Jankx Framework
-- [Architecture](./architecture.md) - Kiến trúc tổng quan của framework
-- [Coding Rules](./coding-rules.md) - Quy tắc coding và best practices
+## 🚀 Bắt đầu nhanh
 
-### 🔧 Core Components
-- [Package Architecture](./package-architecture.md) - Kiến trúc package system
-- [Translation Guide](./translation-guide.md) - Hướng dẫn đa ngôn ngữ
-- [WP CLI Commands](./wp-cli-commands.md) - Các lệnh WP CLI
-
-### 🎨 Gutenberg Integration
-- [Gutenberg Block Development Flow](./gutenberg/gutenberg-block-development-flow.md)
-- [Gutenberg Simple Architecture](./gutenberg/gutenberg-simple-architecture.md)
-- [Register Custom Patterns](./gutenberg/register-custom-patterns.md)
-
-### 🌟 Child Theme Boot
-- [Child Theme Boot](./child-theme-boot.md) - Tài liệu chi tiết về Child Theme Boot
-- [Child Theme Quick Start](./child-theme-quick-start.md) - Hướng dẫn nhanh cho Child Theme Boot
-
-### ⚡ Performance & Optimization
-- [Lazy Loading System](./lazy-loading.md) - Hệ thống lazy loading chuẩn hóa
-
-## 🎯 Tính năng chính
-
-### ✅ Framework Features
-- **Dependency Injection Container** - Quản lý services và dependencies
-- **Service Providers** - Modular service registration
-- **Facades** - Simplified access to framework services
-- **Configuration Management** - Centralized configuration system
-- **Logging System** - Advanced logging with multiple handlers
-- **Asset Management** - CSS/JS asset optimization
-- **Menu & Sidebar Management** - Dynamic menu and sidebar system
-
-### ✅ Gutenberg Integration
-- **Custom Blocks** - Tạo custom Gutenberg blocks
-- **Block Patterns** - Reusable block patterns
-- **Query Loop Blocks** - Advanced query loop functionality
-- **Block Registration** - Easy block registration system
-
-### ✅ Child Theme Boot
-- **Composer Integration** - Child theme composer dependencies
-- **PSR-4 Autoloading** - Modern PHP autoloading
-- **Service Classes** - Business logic organization
-- **Helper Functions** - Global helper functions
-- **Error Handling** - Graceful error handling
-- **Testing Support** - Comprehensive unit testing
-
-## 🚀 Quick Start
-
-### 1. Cài đặt Jankx Framework
-```bash
-# Clone repository
-git clone https://github.com/your-org/jankx-framework.git
-
-# Install dependencies
-composer install
-```
-
-### 2. Tạo Child Theme với Composer
-```bash
-# Tạo child theme
-mkdir wp-content/themes/my-child-theme
-cd wp-content/themes/my-child-theme
-
-# Tạo composer.json
-cat > composer.json << 'EOF'
-{
-    "name": "my-theme/child-theme",
-    "autoload": {
-        "psr-4": {
-            "MyChildTheme\\": "src/"
-        }
-    }
-}
-EOF
-
-# Install dependencies
-composer install
-```
-
-### 3. Tạo Service Class
-```php
-// src/Services/ExampleService.php
-<?php
-
-namespace MyChildTheme\Services;
-
-class ExampleService
-{
-    public function test() {
-        return 'Child theme is working!';
-    }
-}
-```
-
-### 4. Sử dụng trong Functions.php
-```php
-// functions.php
-<?php
-
-require_once get_template_directory() . '/includes/framework.php';
-
-if (class_exists('Jankx\Foundation\Bootstrap\BootChildTheme') &&
-    \Jankx\Foundation\Bootstrap\BootChildTheme::hasChildThemeComposer()) {
-    $service = new \MyChildTheme\Services\ExampleService();
-    echo $service->test();
-}
-```
-
-## 🧪 Testing
-
-### Unit Tests
-```bash
-# Chạy tất cả tests
-vendor/bin/phpunit
-
-# Chạy specific test
-vendor/bin/phpunit tests/Foundation/Bootstrap/BootChildThemeTest.php
-```
-
-### Child Theme Testing
-```bash
-# Test child theme composer
-php wp-content/themes/my-child-theme/test-composer.php
-```
-
-## 📖 Examples
-
-### Gutenberg Block
-```php
-// Tạo custom block
-class MyCustomBlock extends Block
-{
-    public function render($attributes, $content)
-    {
-        return '<div class="my-block">' . $content . '</div>';
-    }
-}
-```
-
-### Service Provider
-```php
-// Tạo service provider
-class MyServiceProvider extends ServiceProvider
-{
-    public function register()
-    {
-        $this->app->singleton('my-service', MyService::class);
-    }
-}
-```
-
-### Child Theme Service
-```php
-// Child theme service
-namespace MyChildTheme\Services;
-
-class ThemeService
-{
-    public function getOption($key, $default = null)
-    {
-        return get_option("child_theme_{$key}", $default);
-    }
-}
-```
-
-## 🔧 Development
-
-### Debug Mode
-```php
-// Enable debug logging
-define('JANKX_DEBUG_LOG', true);
-```
-
-### Asset Development
-```bash
-# Watch assets for development
-npm run watch
-
-# Build for production
-npm run build
-```
-
-### Composer Development
-```bash
-# Update autoloader
-composer dump-autoload
-
-# Install new package
-composer require monolog/monolog
-```
-
-## 📚 API Reference
-
-### Facades
-- `App` - Application container access
-- `Config` - Configuration management
-- `Log` - Logging system
-- `Asset` - Asset management
-- `Menu` - Menu management
-- `Sidebar` - Sidebar management
-
-### Static Methods
-- `App::getFacadeRoot()` - Get application instance
-- `Config::get()` - Get configuration value
-- `BootChildTheme::hasChildThemeComposer()` - Check child theme composer
-- `BootChildTheme::getChildThemeComposerInfo()` - Get composer info
-
-### Bootstrap Classes
-- `LoadConfiguration` - Load framework configuration
-- `RegisterFacades` - Register framework facades
-- `BootChildTheme` - Child theme composer boot
-- `RegisterProviders` - Register service providers
-
-## 🐛 Troubleshooting
-
-### Common Issues
-1. **Composer not loading** - Check composer.json and vendor directory
-2. **Classes not autoloading** - Run `composer dump-autoload`
-3. **Assets not loading** - Check asset paths and permissions
-4. **Configuration not loading** - Check config files and permissions
-
-### Debug Commands
-```bash
-# Check framework info
-wp jankx info
-
-# Clear cache
-wp jankx cache clear
-
-# Check cache status
-wp jankx cache status
-```
-
-## 🤝 Contributing
-
-### Development Setup
+### 1. Cài đặt
 ```bash
 # Clone repository
 git clone https://github.com/your-org/jankx-framework.git
@@ -261,27 +37,226 @@ git clone https://github.com/your-org/jankx-framework.git
 # Install dependencies
 composer install
 npm install
-
-# Run tests
-vendor/bin/phpunit
 ```
 
-### Code Standards
-- Follow PSR-4 autoloading standards
-- Use PHP 7.4+ features
-- Follow WordPress coding standards
-- Write comprehensive tests
+### 2. Cấu hình
+```php
+// config/app.php
+return [
+    'name' => 'Your Theme',
+    'version' => '1.0.0',
+    // ... other config
+];
+```
+
+### 3. Tạo Service Provider
+```php
+// includes/app/Providers/YourServiceProvider.php
+<?php
+namespace App\Providers;
+
+use Jankx\Foundation\Application;
+use Jankx\Support\Providers\ServiceProvider;
+
+class YourServiceProvider extends ServiceProvider
+{
+    public function register(Application $app)
+    {
+        // Register services
+    }
+
+    public function boot(Application $app)
+    {
+        // Bootstrap services
+    }
+}
+```
+
+### 4. Đăng ký Provider
+```php
+// config/providers.php
+'frontend' => [
+    App\Providers\YourServiceProvider::class,
+],
+```
+
+## 📖 Cấu trúc Framework
+
+```
+includes/
+├── app/                    # Application code
+│   ├── Providers/         # Service providers
+│   ├── Services/          # Business logic
+│   ├── Http/             # HTTP kernels
+│   └── Console/          # Console commands
+├── framework/             # Core framework
+│   ├── Foundation/       # Application foundation
+│   ├── Support/          # Support classes
+│   ├── Gutenberg/        # Gutenberg integration
+│   └── Services/         # Core services
+└── config/               # Configuration files
+    ├── app.php
+    ├── providers.php
+    └── ...
+```
+
+## 🛠️ Development Tools
+
+### Composer Scripts
+```bash
+# Install dependencies
+composer install
+
+# Update dependencies
+composer update
+
+# Run tests
+composer test
+
+# Code style check
+composer cs-check
+
+# Code style fix
+composer cs-fix
+```
+
+### NPM Scripts
+```bash
+# Install dependencies
+npm install
+
+# Build assets
+npm run build
+
+# Watch for changes
+npm run watch
+
+# Development build
+npm run dev
+```
+
+## 🔧 Configuration
+
+### Environment Variables
+```bash
+# .env
+WP_DEBUG=true
+JANKX_TEMPLATE_ENGINE=jankx
+JANKX_TEMPLATE_CACHE=false
+```
+
+### Application Config
+```php
+// config/app.php
+return [
+    'name' => env('APP_NAME', 'Jankx Theme'),
+    'version' => env('APP_VERSION', '1.0.0'),
+    'debug' => env('WP_DEBUG', false),
+    'template_engine' => env('JANKX_TEMPLATE_ENGINE', 'jankx'),
+];
+```
+
+## 📝 Coding Standards
+
+### PHP
+- PSR-12 coding standard
+- Type declarations
+- DocBlocks for all methods
+- Dependency injection
+
+### JavaScript
+- ES6+ syntax
+- JSDoc comments
+- ESLint configuration
+- Prettier formatting
+
+### CSS/SCSS
+- BEM methodology
+- SCSS variables
+- Mobile-first approach
+- Autoprefixer
+
+## 🧪 Testing
+
+### Unit Tests
+```bash
+# Run unit tests
+composer test:unit
+
+# Run with coverage
+composer test:coverage
+```
+
+### Integration Tests
+```bash
+# Run integration tests
+composer test:integration
+```
+
+### E2E Tests
+```bash
+# Run end-to-end tests
+npm run test:e2e
+```
+
+## 📦 Deployment
+
+### Production Build
+```bash
+# Build for production
+npm run build:prod
+composer install --no-dev --optimize-autoloader
+```
+
+### Docker
+```dockerfile
+# Dockerfile
+FROM wordpress:latest
+COPY . /var/www/html/wp-content/themes/jankx/
+```
+
+## 🤝 Contributing
+
+### Pull Request Process
+1. Fork repository
+2. Create feature branch
+3. Make changes
+4. Add tests
+5. Submit pull request
+
+### Code Review
+- All code must be reviewed
+- Tests must pass
+- Documentation must be updated
+- Coding standards must be followed
+
+## 📞 Support
+
+### Getting Help
+- 📖 Check documentation
+- 🐛 Search GitHub issues
+- 💬 Join Discord community
+- 📧 Contact team
+
+### Reporting Issues
+- Use GitHub issues
+- Provide reproduction steps
+- Include environment details
+- Add relevant logs
 
 ## 📄 License
 
-Jankx Framework is licensed under the GPL v2 or later.
+This project is licensed under the GPL v3 or later License - see the [LICENSE](LICENSE) file for details.
 
-## 🆘 Support
+## 🙏 Acknowledgments
 
-- **Documentation**: [docs/](./)
-- **Issues**: [GitHub Issues](https://github.com/your-org/jankx-framework/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/your-org/jankx-framework/discussions)
+- WordPress community
+- Laravel framework inspiration
+- All contributors
+- Beta testers
 
 ---
 
-**Jankx Framework** - Modern WordPress theme framework with Gutenberg integration and Child Theme Boot support.
+**Cập nhật lần cuối:** 2024-01-01
+**Phiên bản:** 2.0.0
+**Tác giả:** Jankx Team

@@ -3,6 +3,7 @@
 namespace Jankx\Gutenberg\Blocks;
 
 use Jankx\Gutenberg\Block;
+use Jankx\Foundation\Application;
 
 /**
  * Icon Block
@@ -13,137 +14,13 @@ use Jankx\Gutenberg\Block;
 class SvgIconBlock extends Block
 {
     /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        parent::__construct('jankx/svg-icon', [
-            'title' => __('SVG Icon', 'jankx'),
-            'category' => 'media',
-            'icon' => 'star-filled',
-            'description' => __('Insert an SVG icon or graphic.', 'jankx'),
-            'keywords' => ['icon', 'svg'],
-            'supports' => [
-                'anchor' => true,
-                'align' => true,
-                'html' => false,
-                'interactivity' => [
-                    'clientNavigation' => true
-                ],
-                '__experimentalBorder' => [
-                    'color' => true,
-                    'radius' => true,
-                    'style' => true,
-                    'width' => true,
-                    '__experimentalSelector' => '.icon-container',
-                    '__experimentalSkipSerialization' => true,
-                    '__experimentalDefaultControls' => [
-                        'color' => false,
-                        'radius' => false,
-                        'style' => false,
-                        'width' => false
-                    ]
-                ],
-                'spacing' => [
-                    'padding' => true,
-                    'margin' => true,
-                    '__experimentalDefaultControls' => [
-                        'margin' => false,
-                        'padding' => false
-                    ]
-                ]
-            ],
-            'attributes' => [
-                'icon' => [
-                    'type' => 'string',
-                    'source' => 'html',
-                    'selector' => '.icon-container',
-                    'default' => '',
-                    '__experimentalRole' => 'content'
-                ],
-                'iconName' => [
-                    'type' => 'string',
-                    '__experimentalRole' => 'content'
-                ],
-                'itemsJustification' => [
-                    'type' => 'string'
-                ],
-                'iconBackgroundColor' => [
-                    'type' => 'string'
-                ],
-                'customIconBackgroundColor' => [
-                    'type' => 'string'
-                ],
-                'iconBackgroundColorValue' => [
-                    'type' => 'string'
-                ],
-                'iconColor' => [
-                    'type' => 'string'
-                ],
-                'customIconColor' => [
-                    'type' => 'string'
-                ],
-                'iconColorValue' => [
-                    'type' => 'string'
-                ],
-                'gradient' => [
-                    'type' => 'string'
-                ],
-                'customGradient' => [
-                    'type' => 'string'
-                ],
-                'hasNoIconFill' => [
-                    'type' => 'boolean'
-                ],
-                'label' => [
-                    'type' => 'string'
-                ],
-                'title' => [
-                    'type' => 'string'
-                ],
-                'linkUrl' => [
-                    'type' => 'string'
-                ],
-                'linkRel' => [
-                    'type' => 'string'
-                ],
-                'linkTarget' => [
-                    'type' => 'string'
-                ],
-                'rotate' => [
-                    'type' => 'number'
-                ],
-                'flipHorizontal' => [
-                    'type' => 'boolean'
-                ],
-                'flipVertical' => [
-                    'type' => 'boolean'
-                ],
-                'width' => [
-                    'type' => ['string', 'number']
-                ],
-                'height' => [
-                    'type' => 'string'
-                ],
-                'percentWidth' => [
-                    'type' => 'number'
-                ]
-            ]
-        ]);
-    }
-
-    /**
-     * Register the block
+     * Block ID
      *
-     * @return void
+     * @var string
      */
-    public function register()
-    {
-        $blockPath = $this->getBlockPath();
-        $metadata = $this->getBlockMetadata($blockPath);
+    protected $blockId = 'jankx/svg-icon';
 
-        $this->registerBlock($blockPath, $metadata);
-    }
+
 
     /**
      * Render the block content
@@ -170,6 +47,27 @@ class SvgIconBlock extends Block
         $width = $attributes['width'] ?? '';
         $height = $attributes['height'] ?? '';
         $className = $attributes['className'] ?? '';
+
+        // Generate unique ID for this block instance
+        $blockId = 'svg-icon-' . uniqid();
+
+        // Decide which icon markup to print on frontend
+        $printedIcon = '';
+        if (!empty($icon)) {
+            $printedIcon = $icon;
+        } elseif (!empty($iconName)) {
+            try {
+                $app = Application::getInstance();
+                if ($app && $app->bound('font-icons.svg')) {
+                    $provider = $app->make('font-icons.svg');
+                    if (method_exists($provider, 'getIconHtml')) {
+                        $printedIcon = $provider->getIconHtml($iconName);
+                    }
+                }
+            } catch (\Throwable $e) {
+                $printedIcon = '';
+            }
+        }
 
         // Build styles
         $styles = [];
@@ -207,6 +105,32 @@ class SvgIconBlock extends Block
         }
 
         $classString = implode(' ', $classes);
+        $classString .= ' ' . $blockId; // Add unique ID as class
+
+        // Add inline CSS for SVG styling
+        if ($iconColorValue) {
+            $inlineCSS = "
+                .{$blockId} svg {
+                    fill: {$iconColorValue} !important;
+                }
+                .{$blockId} svg path {
+                    fill: {$iconColorValue} !important;
+                }
+                .{$blockId} svg rect {
+                    fill: {$iconColorValue} !important;
+                }
+                .{$blockId} svg circle {
+                    fill: {$iconColorValue} !important;
+                }
+                .{$blockId} svg polygon {
+                    fill: {$iconColorValue} !important;
+                }
+                .{$blockId} svg polyline {
+                    fill: {$iconColorValue} !important;
+                }
+            ";
+            wp_add_inline_style('jankx-theme-style', $inlineCSS);
+        }
 
         // Build link attributes
         $linkAttrs = '';
@@ -233,19 +157,23 @@ class SvgIconBlock extends Block
         }
 
         ob_start();
-        ?>
+        if (!empty($printedIcon)) :
+            ?>
         <div class="<?php echo esc_attr($classString); ?>" style="<?php echo esc_attr($styleString); ?>">
             <?php if ($linkUrl) : ?>
                 <a <?php echo $linkAttrs; ?> <?php echo $titleAttr; ?> <?php echo $ariaLabel; ?>>
-                    <?php echo $icon; ?>
+                    <?php echo $printedIcon; ?>
                 </a>
             <?php else : ?>
                 <span <?php echo $titleAttr; ?> <?php echo $ariaLabel; ?>>
-                    <?php echo $icon; ?>
+                    <?php echo $printedIcon; ?>
                 </span>
             <?php endif; ?>
         </div>
-        <?php
+            <?php
+        else :
+            echo $content;
+        endif;
         return ob_get_clean();
     }
 }

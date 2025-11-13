@@ -186,7 +186,7 @@ mkdir -p includes/extensions/your-extension-name/{includes,assets/{css,js},block
 <?php
 namespace Jankx\Extensions\YourExtension;
 
-use Jankx\Framework\Extension\AbstractExtension;
+use Jankx\Extension\AbstractExtension;
 
 class YourExtensionClass extends AbstractExtension
 {

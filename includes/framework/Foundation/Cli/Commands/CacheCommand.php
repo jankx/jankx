@@ -26,7 +26,6 @@ class CacheCommand extends WP_CLI_Command
     {
         $this->clearConfigCache();
         $this->clearBlockCache();
-        $this->clearWidgetCache();
         $this->clearUserCache();
 
         WP_CLI::success('All Jankx caches cleared successfully!');
@@ -62,20 +61,6 @@ class CacheCommand extends WP_CLI_Command
         WP_CLI::success('Block cache cleared successfully!');
     }
 
-    /**
-     * Clear widget cache
-     *
-     * ## EXAMPLES
-     *
-     *     wp jankx cache clear-widgets
-     *
-     * @when after_wp_load
-     */
-    public function clear_widgets()
-    {
-        $this->clearWidgetCache();
-        WP_CLI::success('Widget cache cleared successfully!');
-    }
 
     /**
      * Clear user cache
@@ -140,18 +125,6 @@ class CacheCommand extends WP_CLI_Command
             \Jankx\Support\Providers\GutenbergServiceProvider::clearBlockCache();
         } else {
             wp_cache_flush_group('jankx_blocks');
-        }
-    }
-
-    /**
-     * Clear widget cache
-     */
-    protected function clearWidgetCache()
-    {
-        if (class_exists('Jankx\Support\Blocks\WidgetRendererBlock')) {
-            \Jankx\Support\Blocks\WidgetRendererBlock::clearWidgetCache();
-        } else {
-            wp_cache_flush_group('jankx_widgets');
         }
     }
 

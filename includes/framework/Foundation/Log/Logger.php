@@ -2,7 +2,9 @@
 
 namespace Jankx\Foundation\Log;
 
-class Logger
+use Jankx\Contracts\LoggerInterface;
+
+class Logger implements LoggerInterface
 {
     /**
      * Log levels
@@ -18,7 +20,6 @@ class Logger
 
     const SUCCESS     = 'success';
 
-
     /**
      * Log a message.
      *
@@ -29,44 +30,7 @@ class Logger
      */
     public function log($level, $message, array $context = [])
     {
-        // Only log if level is warning or above, or if JANKX_LOG_ALL is defined
-        if ($this->shouldLog($level)) {
-            $this->writeLog($level, $message, $context);
-        }
-    }
-
-    /**
-     * Determine if the message should be logged.
-     *
-     * @param  string  $level
-     * @return bool
-     */
-    protected function shouldLog($level)
-    {
-        if (defined('JANKX_LOG_ALL')) {
-            return true;
-        }
-
-        // Debug level only shows when JANKX_DEBUG_LOG is defined and true
-        if ($level === self::DEBUG) {
-            return defined('JANKX_DEBUG_LOG') && JANKX_DEBUG_LOG === true;
-        }
-
-        $levels = [
-            self::EMERGENCY => 0,
-            self::ALERT     => 1,
-            self::CRITICAL  => 2,
-            self::ERROR     => 3,
-            self::WARNING   => 4,
-            self::NOTICE    => 5,
-            self::INFO      => 6,
-            self::SUCCESS   => 7,
-        ];
-
-        $currentLevel = $levels[self::WARNING] ?? 4;
-        $messageLevel = $levels[$level] ?? 7;
-
-        return $messageLevel <= $currentLevel;
+        $this->writeLog($level, $message, $context);
     }
 
     /**
@@ -79,6 +43,8 @@ class Logger
      */
     protected function writeLog($level, $message, array $context = [])
     {
+        debug_print_backtrace();
+        die;
         $logMessage = sprintf(
             '[%s] %s: %s %s',
             date('Y-m-d H:i:s'),

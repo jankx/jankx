@@ -2,15 +2,14 @@
 
 namespace Jankx\Foundation\Http;
 
+use Jankx\Contracts\KernelInterface;
 use Jankx\Foundation\Application;
+use Jankx\Foundation\Bootstrap\BootChildTheme;
+use Jankx\Foundation\Bootstrap\BootProviders;
 use Jankx\Foundation\Bootstrap\LoadConfiguration;
-use Jankx\Foundation\Bootstrap\RegisterLogger;
 use Jankx\Foundation\Bootstrap\RegisterFacades;
 use Jankx\Foundation\Bootstrap\RegisterProviders;
-use Jankx\Foundation\Bootstrap\BootProviders;
 use Jankx\Foundation\Bootstrap\ThemeDataLoader;
-use Jankx\Foundation\Bootstrap\BootChildTheme;
-use Jankx\Contracts\KernelInterface;
 
 abstract class Kernel implements KernelInterface
 {
@@ -28,7 +27,6 @@ abstract class Kernel implements KernelInterface
      */
     protected $bootstrappers = [
         LoadConfiguration::class,
-        RegisterLogger::class,
         RegisterFacades::class,
         ThemeDataLoader::class,
         BootChildTheme::class,

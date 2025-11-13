@@ -22,7 +22,30 @@ class CustomFontsProvider
     {
         $fontName = $fontData['name'];
         $fontFiles = $fontData['files'] ?? [];
+        $metadata = $fontData['metadata'] ?? [];
 
+
+        // Kiểm tra nếu font sử dụng CSS file
+        if (isset($metadata['css_file']) && !empty($metadata['css_file'])) {
+            $cssFile = $metadata['css_file'];
+
+            // Enqueue CSS file thay vì tạo CSS
+            $cssUrl = $this->getCssFileUrl($cssFile);
+            if ($cssUrl) {
+                $sanitizedId = \Jankx\Helper\HtmlHelper::sanitizeFontClassName($fontName);
+                add_action('wp_head', function () use ($cssUrl, $sanitizedId) {
+                    echo "<link rel=\"stylesheet\" id=\"custom-font-{$sanitizedId}-css\" href=\"{$cssUrl}\" media=\"all\" />\n";
+                });
+                add_action('admin_head', function () use ($cssUrl, $sanitizedId) {
+                    echo "<link rel=\"stylesheet\" id=\"custom-font-{$sanitizedId}-css\" href=\"{$cssUrl}\" media=\"all\" />\n";
+                });
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        // Fallback: xử lý font files như cũ
         if (empty($fontFiles)) {
             return false;
         }
@@ -32,15 +55,43 @@ class CustomFontsProvider
 
         if ($css) {
             // Inject CSS vào head
-            add_action('wp_head', function () use ($css, $fontName) {
-                echo "<style id='custom-font-{$fontName}'>\n{$css}\n</style>\n";
+            $cssId = sanitize_title($fontName);
+            add_action('wp_head', function () use ($css, $cssId) {
+                echo "<style id=\"custom-font-{$cssId}\">\n{$css}\n</style>\n";
             });
 
-            add_action('admin_head', function () use ($css, $fontName) {
-                echo "<style id='custom-font-{$fontName}'>\n{$css}\n</style>\n";
+            add_action('admin_head', function () use ($css, $cssId) {
+                echo "<style id=\"custom-font-{$cssId}\">\n{$css}\n</style>\n";
             });
 
             return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Lấy URL của CSS file
+     */
+    public function getCssFileUrl($cssFile)
+    {
+        if (empty($cssFile) || !file_exists($cssFile)) {
+            return false;
+        }
+
+        // Nếu là absolute path, convert thành URL
+        if (strpos($cssFile, ABSPATH) === 0) {
+            return str_replace(ABSPATH, home_url('/'), $cssFile);
+        }
+
+        // Nếu là relative path, convert thành URL
+        if (strpos($cssFile, '/') !== 0) {
+            return home_url('/') . $cssFile;
+        }
+
+        // Nếu đã là URL, return as is
+        if (filter_var($cssFile, FILTER_VALIDATE_URL)) {
+            return $cssFile;
         }
 
         return false;
@@ -59,6 +110,12 @@ class CustomFontsProvider
             return '';
         }
 
+        // Clean font family name - remove extra quotes and commas
+        $fontFamily = trim($fontFamily, '"\'');
+        // Remove any trailing ", sans-serif" or similar fallbacks
+        $fontFamily = preg_replace('/,\s*sans-serif.*$/', '', $fontFamily);
+        $fontFamily = trim($fontFamily, '"\'');
+
         $css = "@font-face {\n";
         $css .= "    font-family: '{$fontFamily}';\n";
         $css .= "    font-display: swap;\n";
@@ -71,8 +128,9 @@ class CustomFontsProvider
 
         $css .= "}\n\n";
 
-        // Thêm CSS class cho font
-        $css .= ".font-{$fontName} {\n";
+        // Thêm CSS class cho font - sanitize font name for CSS class
+        $cssClassName = sanitize_title($fontName);
+        $css .= ".font-{$cssClassName} {\n";
         $css .= "    font-family: '{$fontFamily}', sans-serif;\n";
         $css .= "}\n";
 
@@ -278,6 +336,7 @@ class CustomFontsProvider
         if (!in_array($extension, $this->allowedFormats)) {
             return false;
         }
+
 
         // Kiểm tra file size (giới hạn 10MB)
         $fileSize = filesize($filePath);

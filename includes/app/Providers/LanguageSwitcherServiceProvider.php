@@ -30,21 +30,15 @@ class LanguageSwitcherServiceProvider extends \Jankx\Support\Providers\ServicePr
 
         // Kiểm tra Polylang plugin có được kích hoạt không
         if (!function_exists('pll_current_language')) {
-            Log::warning('LanguageSwitcherServiceProvider: Polylang plugin not active');
             return;
         }
 
                 // Đăng ký init hook để khởi tạo language switcher
         add_action('init', function () use ($app) {
-
             try {
                 $languageSwitcher = $app->get('language-switcher');
 
                 $languageSwitcher->init();
-
-                if (WP_DEBUG) {
-                    Log::info('Language Switcher initialized successfully');
-                }
             } catch (\Exception $e) {
                 Log::error('Language Switcher Error: ' . $e->getMessage());
             }
@@ -58,10 +52,6 @@ class LanguageSwitcherServiceProvider extends \Jankx\Support\Providers\ServicePr
                 // Khởi tạo lại nếu chưa có dữ liệu
                 if (empty($languageSwitcher->getLanguages())) {
                     $languageSwitcher->init();
-
-                    if (WP_DEBUG) {
-                        Log::info('Language Switcher re-initialized after plugins loaded');
-                    }
                 }
             } catch (\Exception $e) {
                 Log::error('Language Switcher Re-init Error: ' . $e->getMessage());
@@ -78,6 +68,14 @@ class LanguageSwitcherServiceProvider extends \Jankx\Support\Providers\ServicePr
                 $languageSwitcher->registerRestRoutes();
             } catch (\Exception $e) {
                 Log::error('Language Switcher REST Error: ' . $e->getMessage());
+            }
+        });
+        add_action('jankx/gutenberg/register-blocks', function ($repository) use ($app) {
+            try {
+                $languageSwitcher = $app->get('language-switcher');
+                $languageSwitcher->registerBlock($repository);
+            } catch (\Exception $e) {
+                Log::error('Language Switcher Gutenberg Block Error: ' . $e->getMessage());
             }
         });
     }

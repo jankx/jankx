@@ -42,6 +42,11 @@
 					"slug": "contrast"
 				},
 				{
+					"color": "#503AA8",
+					"name": "Primary",
+					"slug": "primary"
+				},
+				{
 					"color": "#FFEE58",
 					"name": "Accent 1",
 					"slug": "accent-1"
@@ -87,6 +92,13 @@
 		"typography": {
 			"fontSize": "16px",
 			"lineHeight": "1.5"
+		},
+		"elements": {
+			"link": {
+				"typography": {
+					"textDecoration": "none"
+				}
+			}
 		}
 	},
 	"templateParts": [

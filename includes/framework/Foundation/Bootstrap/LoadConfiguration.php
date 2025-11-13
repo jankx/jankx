@@ -45,23 +45,36 @@ class LoadConfiguration
         }
 
 
+        // Load all config files using glob
+        $this->loadConfigFiles($config, $parentConfigPath, $childConfigPath);
+    }
 
-        // Load all config files
-        $configFiles = [
-            'app.php',
-            'providers.php',
-            'error.php',
-            'layout.php',
-            'font-icons.php'
-        ];
+    /**
+     * Load all config files using glob
+     *
+     * @param  \Jankx\Config\Repository  $config
+     * @param  string  $parentConfigPath
+     * @param  string  $childConfigPath
+     * @return void
+     */
+    protected function loadConfigFiles(Repository $config, $parentConfigPath, $childConfigPath)
+    {
+        // Get all PHP files from parent config directory
+        $parentConfigFiles = glob($parentConfigPath . '/*.php');
+        $childConfigFiles = is_dir($childConfigPath) ? glob($childConfigPath . '/*.php') : [];
 
-        foreach ($configFiles as $configFile) {
-            $parentFile = $parentConfigPath . '/' . $configFile;
-            $childFile = $childConfigPath . '/' . $configFile;
+        // Combine all config files
+        $allConfigFiles = array_unique(array_merge($parentConfigFiles, $childConfigFiles));
 
-            $configKey = str_replace('.php', '', $configFile);
-            $parentConfig = $this->loadCachedConfig($parentFile, $configKey);
-            $childConfig = $this->loadCachedConfig($childFile, $configKey);
+        foreach ($allConfigFiles as $configFile) {
+            $configKey = pathinfo($configFile, PATHINFO_FILENAME);
+
+            // Load parent config
+            $parentConfig = $this->loadCachedConfig($configFile, $configKey);
+
+            // Load child config if exists
+            $childConfigFile = $childConfigPath . '/' . basename($configFile);
+            $childConfig = $this->loadCachedConfig($childConfigFile, $configKey);
 
             // Deep merge: child override parent
             $mergedConfig = $this->deepMergeConfig($parentConfig, $childConfig);

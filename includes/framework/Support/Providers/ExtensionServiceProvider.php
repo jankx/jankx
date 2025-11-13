@@ -6,6 +6,7 @@ use Jankx\Extensions\ExtensionService;
 use Jankx\Extensions\ExtensionManager;
 use Jankx\Extensions\ExtensionManifest;
 use Jankx\Extensions\Extension;
+use Jankx\Facades\Log;
 
 class ExtensionServiceProvider extends ServiceProvider
 {
@@ -99,7 +100,6 @@ class ExtensionServiceProvider extends ServiceProvider
 
                     // Only load extensions that have manifest.json
             if (file_exists($manifestFile)) {
-                error_log("Loading extension: {$extensionName} from {$extensionsDir}");
                 $this->loadExtensionFromManifest($extensionManager, $extensionName, $manifestFile, $extensionsDir);
             }
         }
@@ -122,11 +122,8 @@ class ExtensionServiceProvider extends ServiceProvider
 
         // If extension with this ID already exists, skip loading
         if ($extensionManager->has_extension_id($extensionId)) {
-            error_log("Extension with ID '{$extensionId}' already loaded, skipping '{$extensionName}' from '{$extensionsDir}'");
             return;
         }
-
-        error_log("Loading extension with ID '{$extensionId}' from '{$extensionsDir}/{$extensionName}'");
 
         $caller = $manifestData['caller'];
         $extensionDir = dirname($manifestFile);
@@ -144,7 +141,7 @@ class ExtensionServiceProvider extends ServiceProvider
         $callerFile = $extensionDir . '/' . $caller['file'];
 
         if (!file_exists($callerFile)) {
-            error_log("Extension caller file not found: {$callerFile}");
+            Log::debug("Extension caller file not found: {$callerFile}");
             return;
         }
 
@@ -159,11 +156,9 @@ class ExtensionServiceProvider extends ServiceProvider
         }
 
         if (class_exists($className)) {
-            error_log("Extension class found: {$className}");
             $extension = new $className();
 
             if ($extension instanceof Extension) {
-                error_log("Extension instance created successfully: {$extensionName}");
                 // Set extension path and URL
                 $extension->set_extension_path($extensionDir);
                 $extension->set_extension_url($this->getExtensionUrl($extensionDir, $isChildThemeExtension));
@@ -173,7 +168,6 @@ class ExtensionServiceProvider extends ServiceProvider
 
                 // Call initialization method if specified
                 if (isset($caller['method']) && method_exists($extension, $caller['method'])) {
-                    error_log("Calling extension method: {$caller['method']} for extension: {$extensionName}");
                     $args = $caller['args'] ?? [];
                     if (is_array($args)) {
                         call_user_func_array([$extension, $caller['method']], $args);
@@ -181,7 +175,7 @@ class ExtensionServiceProvider extends ServiceProvider
                         $extension->{$caller['method']}($args);
                     }
                 } else {
-                    error_log("Method not found or not specified: " . ($caller['method'] ?? 'none') . " for extension: {$extensionName}");
+                    Log::debug("Method not found or not specified: " . ($caller['method'] ?? 'none') . " for extension: {$extensionName}");
                 }
 
                 // Track extension ID to prevent duplicates

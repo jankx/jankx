@@ -8,17 +8,40 @@
         "hot": "mix watch --hot",
         "build:prod": "npm run production",
         "production": "mix --production",
-        "build": "run-p build:*"
+        "build:webpack": "webpack --mode=production --config resources/webpack.config.js",
+        "build": "run-p build:*",
+        "i18n:pot:php": "wp-pot --src '**/*.php' --dest-file languages/jankx.pot --domain jankx --package \"Jankx Framework\"",
+        "i18n:pot": "npm run i18n:pot:php",
+        "i18n:update": "node -e \"require('child_process').execSync('\\\"C:\\\\Program Files\\\\Git\\\\usr\\\\bin\\\\msgmerge.exe\\\" --update --backup=none languages/jankx-vi.po languages/jankx.pot', {stdio: 'inherit'})\"",
+        "i18n:compile": "node -e \"require('child_process').execSync('\\\"C:\\\\Program Files\\\\Git\\\\usr\\\\bin\\\\msgfmt.exe\\\" -o languages/jankx-vi.mo languages/jankx-vi.po', {stdio: 'inherit'})\" && po2json languages/jankx-vi.po languages/jankx-vi.json --format=jed1.x",
+        "i18n:make": "npm run i18n:pot && npm run i18n:update && npm run i18n:compile"
     },
     "devDependencies": {
+        "@babel/preset-typescript": "^7.27.1",
+        "@types/react": "^19.1.13",
+        "@types/react-dom": "^19.1.9",
+        "@wordpress/babel-preset-default": "^8.30.0",
+        "@wordpress/dependency-extraction-webpack-plugin": "^6.31.0",
+        "@wordpress/i18n": "^6.6.0",
+        "@wordpress/scripts": "^30.23.0",
         "axios": "^1.8.1",
+        "babel-loader": "^10.0.0",
+        "css-loader": "^7.1.2",
+        "gettext-parser": "^8.0.0",
+        "gettext.js": "^2.0.3",
         "laravel-mix": "^6.0.6",
         "lodash": "^4.17.19",
+        "mini-css-extract-plugin": "^2.9.4",
+        "npm-run-all": "^4.1.5",
         "postcss": "^8.1.14",
+        "postcss-loader": "^8.2.0",
         "resolve-url-loader": "^5.0.0",
         "sass": "^1.85.1",
         "sass-loader": "^16.0.5",
+        "typescript": "^5.9.2",
+        "webpack-cli": "^6.0.1",
         "webpack-livereload-plugin": "^3.0.2",
-        "npm-run-all": "^4.1.5"
+        "webpack-remove-empty-scripts": "^1.1.1",
+        "wp-pot-cli": "^1.5.0"
     }
 }

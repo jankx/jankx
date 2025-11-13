@@ -2,6 +2,9 @@
 
 namespace App\Services\WooCommerce;
 
+use Exception;
+use Jankx\Facades\Log;
+
 class BuyNowService
 {
     /**
@@ -40,10 +43,11 @@ class BuyNowService
         $button_class = 'single_buy_now_button button alt';
 
         echo sprintf(
-            '<button type="button" class="%s" data-product-id="%d" data-action="buy-now">%s</button>',
+            '<button type="button" class="%s" data-product-id="%d" data-action="buy-now">%s%s</button>',
             esc_attr($button_class),
             esc_attr($product->get_id()),
-            esc_html($button_text)
+            apply_filters('jankx/product/buynow/text/prefix', ''),
+            apply_filters('jankx/product/buynow/text', esc_html($button_text))
         );
     }
 
@@ -58,7 +62,7 @@ class BuyNowService
 
         wp_enqueue_script(
             'jankx-buy-now',
-            get_template_directory_uri() . '/assets/js/buy-now.js',
+            get_template_directory_uri() . '/resources/assets/js/buy-now.js',
             ['jquery'],
             '1.0.0',
             true
@@ -70,12 +74,14 @@ class BuyNowService
             'redirectUrl' => wc_get_checkout_url(),
         ]);
 
-        wp_enqueue_style(
-            'jankx-buy-now',
-            get_template_directory_uri() . '/assets/css/buy-now.css',
-            [],
-            '1.0.0'
-        );
+        if (apply_filters('jankx/product/buynow/css/enabled', false)) {
+            wp_enqueue_style(
+                'jankx-buy-now',
+                get_template_directory_uri() . '/resources/assets/css/buy-now.css',
+                [],
+                '1.0.0'
+            );
+        }
     }
 
     /**
@@ -83,12 +89,8 @@ class BuyNowService
      */
     public function handleBuyNowAjax()
     {
-        // Debug logging
-        error_log('Buy Now AJAX called with POST data: ' . print_r($_POST, true));
-
         // Verify nonce
         if (!wp_verify_nonce($_POST['nonce'], 'jankx_buy_now_nonce')) {
-            error_log('Buy Now nonce verification failed');
             wp_send_json_error([
                 'message' => 'Security check failed',
                 'debug' => 'nonce_failed'
@@ -103,11 +105,8 @@ class BuyNowService
             $quantity = 1;
         }
 
-        error_log("Processing Buy Now: Product ID: $product_id, Quantity: $quantity");
-
         // Check if WooCommerce is loaded
         if (!function_exists('WC') || !WC()->cart) {
-            error_log('WooCommerce cart not available');
             wp_send_json_error([
                 'message' => 'WooCommerce not available',
                 'debug' => 'wc_not_loaded'
@@ -118,30 +117,24 @@ class BuyNowService
         try {
             // Clear cart first
             WC()->cart->empty_cart();
-            error_log('Cart cleared successfully');
-
             // Add product to cart
             $cart_item_key = WC()->cart->add_to_cart($product_id, $quantity);
-            error_log("Add to cart result: " . ($cart_item_key ? $cart_item_key : 'failed'));
 
             if ($cart_item_key) {
                 $checkout_url = wc_get_checkout_url();
-                error_log("Redirecting to checkout: $checkout_url");
-
                 wp_send_json_success([
                     'redirect_url' => $checkout_url,
                     'debug' => 'success',
                     'cart_item_key' => $cart_item_key
                 ]);
             } else {
-                error_log('Failed to add product to cart');
                 wp_send_json_error([
                     'message' => 'Failed to add product to cart',
                     'debug' => 'add_to_cart_failed'
                 ]);
             }
         } catch (Exception $e) {
-            error_log('Buy Now exception: ' . $e->getMessage());
+            Log::error($e->getMessage());
             wp_send_json_error([
                 'message' => 'An error occurred: ' . $e->getMessage(),
                 'debug' => 'exception',

@@ -69,14 +69,6 @@ class BootChildTheme
 
                 // Manual load MO file if automatic loading fails
                 $this->ensureTranslationLoaded($textDomain, $languagesPath);
-
-                if (Environment::isDebugLog()) {
-                    Log::info('Child theme translations loaded successfully', [
-                        'text_domain' => $textDomain,
-                        'languages_path' => $languagesPath,
-                        'child_theme_path' => $childThemePath
-                    ]);
-                }
             } else {
                 if (Environment::isDebugLog()) {
                     Log::warning('Child theme languages directory not found', [
@@ -119,23 +111,12 @@ class BootChildTheme
                 $mo = new \MO();
                 $mo->import_from_file($moFile);
                 $l10n[$textDomain] = $mo;
-
-                if (Environment::isDebugLog()) {
-                    Log::info('Child theme MO file loaded manually', [
-                        'text_domain' => $textDomain,
-                        'locale' => $locale,
-                        'mo_file' => $moFile,
-                        'entries_count' => count($mo->entries)
-                    ]);
-                }
             } else {
-                if (Environment::isDebugLog()) {
-                    Log::warning('Child theme MO file not found for manual loading', [
-                        'text_domain' => $textDomain,
-                        'locale' => $locale,
-                        'mo_file' => $moFile
-                    ]);
-                }
+                Log::warning('Child theme MO file not found for manual loading', [
+                    'text_domain' => $textDomain,
+                    'locale' => $locale,
+                    'mo_file' => $moFile
+                ]);
             }
         }
     }
@@ -189,14 +170,6 @@ class BootChildTheme
                 $app->singleton('child_theme.translations', function () use ($translationInfo) {
                     return $translationInfo;
                 });
-
-                if (Environment::isDebugLog()) {
-                    Log::info('Child theme translation info registered', [
-                        'text_domain' => $translationInfo['text_domain'],
-                        'locale' => $translationInfo['locale'],
-                        'available_files' => $translationInfo['available_files']
-                    ]);
-                }
             }
         } catch (\Exception $e) {
             if (Environment::isDebugLog()) {
@@ -293,26 +266,15 @@ class BootChildTheme
             // Load composer autoloader
             $autoloadPath = $vendorPath . '/autoload.php';
             require_once $autoloadPath;
-
-            if (Environment::isDebugLog()) {
-                Log::info('Child theme composer autoloader loaded successfully', [
-                    'child_theme_path' => $childThemePath,
-                    'composer_json' => $composerJsonPath,
-                    'vendor_path' => $vendorPath
-                ]);
-            }
-
             // Register child theme composer info with application
             $this->registerChildThemeComposerInfo($childThemePath, $composerJsonPath);
         } catch (\Exception $e) {
-            if (Environment::isDebugLog()) {
-                Log::error('Failed to load child theme composer autoloader', [
-                    'error' => $e->getMessage(),
-                    'child_theme_path' => $childThemePath,
-                    'composer_json' => $composerJsonPath,
-                    'vendor_path' => $vendorPath
-                ]);
-            }
+            Log::error('Failed to load child theme composer autoloader', [
+                'error' => $e->getMessage(),
+                'child_theme_path' => $childThemePath,
+                'composer_json' => $composerJsonPath,
+                'vendor_path' => $vendorPath
+            ]);
         }
     }
 
@@ -350,15 +312,6 @@ class BootChildTheme
                     $app->singleton('child_theme.composer', function () use ($packageInfo) {
                         return $packageInfo;
                     });
-
-                    if (Environment::isDebugLog()) {
-                        Log::info('Child theme composer info registered', [
-                            'package_name' => $packageInfo['name'],
-                            'version' => $packageInfo['version'],
-                            'autoload_psr4' => $packageInfo['autoload']['psr-4'] ?? [],
-                            'autoload_files' => $packageInfo['autoload']['files'] ?? []
-                        ]);
-                    }
                 }
             }
         } catch (\Exception $e) {
@@ -378,11 +331,8 @@ class BootChildTheme
      */
     public static function getChildThemeComposerInfo()
     {
-        if (!function_exists('jankx_app')) {
-            return null;
-        }
 
-        $app = jankx_app();
+        $app = Jankx\Facades\App::getInstance();
         if (!$app) {
             return null;
         }
@@ -401,11 +351,7 @@ class BootChildTheme
      */
     public static function getChildThemeTranslationInfo()
     {
-        if (!function_exists('jankx_app')) {
-            return null;
-        }
-
-        $app = jankx_app();
+        $app = Jankx\Facades\App::getInstance();
         if (!$app) {
             return null;
         }

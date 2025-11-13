@@ -2,170 +2,233 @@
 
 namespace Jankx\Services\FontIcons\Transformers;
 
+/**
+ * Generic Icon Transformer để transform CSS thành JSON
+ */
 class GenericIconTransformer extends CssToJsonTransformer
 {
-        /**
-     * Transform CSS content to JSON metadata
-     */
-    public function transform($cssContent)
+    protected $iconType;
+
+    public function __construct($iconType)
     {
-
-        $this->cssContent = $cssContent;
-
-        // Extract icon classes
-                $iconClasses = $this->extractIconClasses($cssContent);
-
-        // Extract font information
-                $fontInfo = $this->extractFontInfo($cssContent);
-
-        // Generate metadata
-                $metadata = [
-            'type' => $this->iconType,
-            'version' => $this->extractVersion($cssContent),
-            'font_family' => $fontInfo['font_family'] ?? 'Unknown',
-            'prefixes' => $this->extractPrefixes($iconClasses),
-            'categories' => $this->extractCategories($iconClasses),
-            'icons' => $this->formatIcons($iconClasses),
-            'metadata' => [
-                'parsed_at' => current_time('mysql'),
-                'source' => 'css_parser',
-                'total_icons' => count($iconClasses)
-            ]
-                ];
-
-
-                return $metadata;
+        $this->iconType = $iconType;
     }
 
     /**
-     * Extract font information from CSS
+     * Transform CSS content thành JSON data
      */
-    protected function extractFontInfo($cssContent)
+    public function transform($css)
     {
-        $fontInfo = [];
+        $icons = $this->parseCssForIcons($css);
+        $fontFamily = $this->extractFontFamily($css);
+        $prefixes = $this->extractPrefixes($css);
 
-        // Extract @font-face information
-        if (preg_match('/@font-face\s*\{[^}]*font-family:\s*["\']([^"\']+)["\'][^}]*\}/', $cssContent, $matches)) {
-            $fontInfo['font_family'] = $matches[1];
+        return [
+            'version' => '1.0.0',
+            'font_family' => $fontFamily,
+            'prefixes' => $prefixes,
+            'categories' => $this->extractCategories($icons),
+            'icons' => $icons
+        ];
+    }
+
+    /**
+     * Parse CSS để extract icons
+     */
+    protected function parseCssForIcons($css)
+    {
+        $icons = [];
+
+        // Pattern 1: .icon-name:before { content: "\unicode"; }
+        preg_match_all('/\.([a-zA-Z0-9-_]+):before\s*\{[^}]*content:\s*["\']\\\\([0-9a-fA-F]+)["\']/', $css, $matches1);
+
+        if (!empty($matches1[1])) {
+            for ($i = 0; $i < count($matches1[1]); $i++) {
+                $iconName = $matches1[1][$i];
+                $unicode = $matches1[2][$i];
+
+                $icons[] = $this->createIconData($iconName, $unicode);
+            }
         }
 
-        return $fontInfo;
+        // Pattern 2: .fa-icon:before { content: "\f000"; }
+        preg_match_all('/\.fa-([a-zA-Z0-9-_]+):before\s*\{[^}]*content:\s*["\']\\\\([0-9a-fA-F]+)["\']/', $css, $matches2);
+
+        if (!empty($matches2[1])) {
+            for ($i = 0; $i < count($matches2[1]); $i++) {
+                $iconName = $matches2[1][$i];
+                $unicode = $matches2[2][$i];
+
+                $icons[] = $this->createIconData($iconName, $unicode);
+            }
+        }
+
+        // Pattern 3: .material-icons { font-family: "Material Icons"; }
+        if (strpos($css, 'material-icons') !== false) {
+            $materialIcons = $this->getMaterialIconsList();
+            foreach ($materialIcons as $iconName) {
+                $icons[] = $this->createIconData($iconName, '', 'material');
+            }
+        }
+
+        // Pattern 4: .bi-icon::before { content: "\unicode"; }
+        preg_match_all('/\.bi-([a-zA-Z0-9-_]+)::before\s*\{[^}]*content:\s*["\']\\\\([0-9a-fA-F]+)["\']/', $css, $matches3);
+
+        if (!empty($matches3[1])) {
+            for ($i = 0; $i < count($matches3[1]); $i++) {
+                $iconName = $matches3[1][$i];
+                $unicode = $matches3[2][$i];
+
+                $icons[] = $this->createIconData($iconName, $unicode);
+            }
+        }
+
+        // Remove duplicates
+        $icons = array_unique($icons, SORT_REGULAR);
+
+        return array_values($icons);
     }
 
     /**
-     * Extract version from CSS
+     * Tạo icon data
      */
-    protected function extractVersion($cssContent)
+    protected function createIconData($iconName, $unicode = '', $category = 'general')
     {
-        // Look for version in comments or URLs
-        if (preg_match('/version\s*[=:]\s*([0-9.]+)/i', $cssContent, $matches)) {
+        return [
+            'name' => $iconName,
+            'unicode' => $unicode,
+            'category' => $category,
+            'tags' => $this->generateTags($iconName),
+            'description' => $this->generateDescription($iconName)
+        ];
+    }
+
+    /**
+     * Generate tags từ icon name
+     */
+    protected function generateTags($iconName)
+    {
+        $tags = [$iconName];
+
+        // Thêm tags từ tên icon
+        $words = explode('-', $iconName);
+        foreach ($words as $word) {
+            if (strlen($word) > 2) {
+                $tags[] = $word;
+            }
+        }
+
+        return array_unique($tags);
+    }
+
+    /**
+     * Generate description từ icon name
+     */
+    protected function generateDescription($iconName)
+    {
+        return ucfirst(str_replace('-', ' ', $iconName)) . ' icon';
+    }
+
+    /**
+     * Extract font family từ CSS
+     */
+    protected function extractFontFamily($css)
+    {
+        // Pattern 1: font-family: "Font Name";
+        preg_match('/font-family:\s*["\']([^"\']+)["\']/', $css, $matches);
+        if (!empty($matches[1])) {
             return $matches[1];
         }
 
-        if (preg_match('/v=([0-9.]+)/', $cssContent, $matches)) {
-            return $matches[1];
+        // Pattern 2: font-family: Font Name;
+        preg_match('/font-family:\s*([^;]+);/', $css, $matches);
+        if (!empty($matches[1])) {
+            return trim($matches[1]);
         }
 
-        return '1.0.0';
+        // Default based on icon type
+        switch ($this->iconType) {
+            case 'fontawesome':
+                return 'Font Awesome';
+            case 'material':
+                return 'Material Icons';
+            case 'bootstrap':
+                return 'Bootstrap Icons';
+            case 'feather':
+                return 'Feather Icons';
+            default:
+                return ucfirst($this->iconType) . ' Icons';
+        }
     }
 
     /**
-     * Extract prefixes from icon classes
+     * Extract prefixes từ CSS
      */
-    protected function extractPrefixes($iconClasses)
+    protected function extractPrefixes($css)
     {
         $prefixes = [];
 
-        foreach ($iconClasses as $icon) {
-            $className = $icon['name'];
+        // Tìm các class prefixes
+        preg_match_all('/\.([a-zA-Z0-9-_]+)-[a-zA-Z0-9-_]+:/', $css, $matches);
 
-            // Extract prefix (e.g., 'el' from 'el-home')
-            if (preg_match('/^([a-zA-Z]+)-/', $className, $matches)) {
-                $prefix = $matches[1];
-                if (!in_array($prefix, $prefixes)) {
-                    $prefixes[] = $prefix;
-                }
+        foreach ($matches[1] as $prefix) {
+            if (strlen($prefix) > 1 && !in_array($prefix, $prefixes)) {
+                $prefixes[] = $prefix;
             }
         }
 
-        // If no prefixes found, use icon type as default
+        // Default prefixes
         if (empty($prefixes)) {
-            $prefixes[] = $this->iconType;
+            switch ($this->iconType) {
+                case 'fontawesome':
+                    $prefixes = ['fa', 'fas', 'far', 'fab'];
+                    break;
+                case 'material':
+                    $prefixes = ['material-icons'];
+                    break;
+                case 'bootstrap':
+                    $prefixes = ['bi'];
+                    break;
+                default:
+                    $prefixes = [$this->iconType];
+            }
         }
 
-        return $prefixes;
+        return array_unique($prefixes);
     }
 
     /**
-     * Extract categories from icon classes
+     * Extract categories từ icons
      */
-    protected function extractCategories($iconClasses)
+    protected function extractCategories($icons)
     {
         $categories = [];
+        $categoryNames = array_unique(array_column($icons, 'category'));
 
-        foreach ($iconClasses as $icon) {
-            $category = $icon['category'];
-            if (!in_array($category, $categories)) {
-                $categories[] = $category;
-            }
+        foreach ($categoryNames as $category) {
+            $categories[] = [
+                'name' => $category,
+                'display_name' => ucfirst($category),
+                'description' => ucfirst($category) . ' icons'
+            ];
         }
 
         return $categories;
     }
 
     /**
-     * Format icons for output
+     * Get Material Icons list (fallback)
      */
-    protected function formatIcons($iconClasses)
+    protected function getMaterialIconsList()
     {
-        $formattedIcons = [];
-
-        foreach ($iconClasses as $icon) {
-            $formattedIcons[] = [
-                'name' => $icon['name'],
-                'category' => $icon['category'],
-                'unicode' => $this->extractUnicode($icon['content']),
-                'prefixes' => $this->getPrefixesForIcon($icon['name'])
-            ];
-        }
-
-        return $formattedIcons;
-    }
-
-    /**
-     * Extract unicode from content
-     */
-    protected function extractUnicode($content)
-    {
-        // Remove quotes and backslashes
-        $content = trim($content, '"\'');
-
-        // Convert hex to unicode
-        if (preg_match('/^\\\\([0-9a-fA-F]{4})/', $content, $matches)) {
-            return $matches[1];
-        }
-
-        // If no hex found, return content as is
-        return $content;
-    }
-
-    /**
-     * Get prefixes for specific icon
-     */
-    protected function getPrefixesForIcon($iconName)
-    {
-        $prefixes = [];
-
-        // Extract prefix from icon name
-        if (preg_match('/^([a-zA-Z]+)-/', $iconName, $matches)) {
-            $prefixes[] = $matches[1];
-        }
-
-        // Add icon type as fallback
-        if (empty($prefixes)) {
-            $prefixes[] = $this->iconType;
-        }
-
-        return $prefixes;
+        return [
+            'home', 'user', 'settings', 'search', 'menu', 'close', 'add', 'remove',
+            'edit', 'delete', 'save', 'cancel', 'check', 'warning', 'error', 'info',
+            'star', 'favorite', 'share', 'download', 'upload', 'refresh', 'back',
+            'forward', 'play', 'pause', 'stop', 'volume', 'mute', 'camera', 'image',
+            'video', 'audio', 'file', 'folder', 'link', 'email', 'phone', 'location',
+            'time', 'date', 'calendar', 'notification', 'bell', 'lock', 'unlock',
+            'key', 'shield', 'security', 'privacy', 'visibility', 'visibility-off'
+        ];
     }
 }

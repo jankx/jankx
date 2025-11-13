@@ -31,12 +31,13 @@ class AdobeFontsProvider
         $url = $this->buildAdobeFontsUrl($projectId);
 
         if ($url) {
-            wp_enqueue_style(
-                "adobe-font-{$fontName}",
-                $url,
-                [],
-                null
-            );
+            $sanitizedId = \Jankx\Helper\HtmlHelper::sanitizeFontClassName($fontName);
+            add_action('wp_head', function () use ($url, $sanitizedId) {
+                echo "<link rel=\"stylesheet\" id=\"adobe-font-{$sanitizedId}-css\" href=\"{$url}\" media=\"all\" />\n";
+            });
+            add_action('admin_head', function () use ($url, $sanitizedId) {
+                echo "<link rel=\"stylesheet\" id=\"adobe-font-{$sanitizedId}-css\" href=\"{$url}\" media=\"all\" />\n";
+            });
 
             return true;
         }
@@ -47,7 +48,7 @@ class AdobeFontsProvider
     /**
      * Tạo Adobe Fonts URL
      */
-    protected function buildAdobeFontsUrl($projectId)
+    public function buildAdobeFontsUrl($projectId)
     {
         return "https://use.typekit.net/{$projectId}.css";
     }

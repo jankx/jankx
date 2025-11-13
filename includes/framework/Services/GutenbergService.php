@@ -3,25 +3,9 @@
 namespace Jankx\Services;
 
 use Jankx\Foundation\Application;
-use Jankx\Gutenberg\Blocks\DynamicCollectionBlock;
-use Jankx\Gutenberg\Blocks\IconPickerBlock;
-use Jankx\Gutenberg\Blocks\IconButtonBlock;
-use Jankx\Gutenberg\Blocks\LanguageSwitcherBlock;
-use Jankx\Gutenberg\Blocks\MegaMenuBlock;
-use Jankx\Gutenberg\Blocks\SvgIconBlock;
-use Jankx\Gutenberg\Blocks\SvgIconButtonBlock;
-use Jankx\Gutenberg\Blocks\ImageButtonBlock;
-use Jankx\Gutenberg\Blocks\OffcanvasSidebarBlock;
-use Jankx\Gutenberg\Blocks\OffcanvasTriggerBlock;
-use Jankx\Gutenberg\Blocks\CategoriesGridBlock;
-use Jankx\Gutenberg\Blocks\WooCommerce\ProductCollection;
-use Jankx\Gutenberg\Blocks\TabsBlock;
-use Jankx\Gutenberg\Blocks\WplyrMediaBlock;
-use Jankx\Gutenberg\Blocks\LookbookRevealBlock;
-use Jankx\Gutenberg\GutenbergPattern;
 use Jankx\Facades\Log;
-use Jankx\Helper\Environment;
-use WP_Block_Type_Registry;
+use Jankx\Gutenberg\Blocks\SvgIconBlock;
+use Jankx\Gutenberg\GutenbergPattern;
 
 /**
  * Gutenberg Service
@@ -34,17 +18,35 @@ use WP_Block_Type_Registry;
 class GutenbergService
 {
     protected $app;
+
+    /**
+     * Summary of repository
+     * @var \Jankx\Gutenberg\GutenbergRepository
+     */
     protected $repository;
+
 
     public function __construct(Application $app)
     {
         $this->app = $app;
         $this->repository = $app->make('gutenberg.repository');
-        $this->registerPatternCategories();
 
-        // Hook để enqueue assets
-        add_action('enqueue_block_editor_assets', [$this, 'enqueueAllBlockAssets']);
+        $this->registerBlockCategories();
+        $this->registerPatternCategories();
     }
+
+    public function initBlocks()
+    {
+        foreach ($this->getBlocks() as $blockClass => $initialized) {
+            $block = $initialized
+                ? $this->repository->getBlock($blockClass)
+                : new $blockClass();
+
+            $this->repository->registerBlock($block);
+        }
+    }
+
+
 
     /**
      * Initialize Gutenberg blocks and patterns
@@ -53,14 +55,26 @@ class GutenbergService
      */
     public function init()
     {
-
-
         try {
-            // Discover blocks from directory
-            $this->discoverBlocks();
-
             // Register all blocks
-            $this->registerAllBlocks();
+            $this->initBlocks();
+
+            // Register discovered blocks
+            $instances = $this->repository->getInstances();
+            $registeredCount = 0;
+
+            foreach ($instances as $blockName => $block) {
+                try {
+                    // Init block
+                    if (method_exists($block, 'init')) {
+                        call_user_func([$block, 'init']);
+                    }
+                    $block->register();
+                    $registeredCount++;
+                } catch (\Exception $e) {
+                    Log::error('GutenbergService: Failed to register block ' . $blockName . ' - ' . $e->getMessage());
+                }
+            }
 
             // Discover and register patterns
             $this->discoverPatterns();
@@ -70,55 +84,6 @@ class GutenbergService
         }
     }
 
-    /**
-     * Discover blocks from resources/blocks directory
-     *
-     * @return void
-     */
-    public function discoverBlocks()
-    {
-
-
-        $blocksPath = get_template_directory() . '/resources/blocks';
-
-        if (!is_dir($blocksPath)) {
-            return;
-        }
-
-        $blockDirs = glob($blocksPath . '/*', GLOB_ONLYDIR);
-        $discoveredCount = 0;
-
-        foreach ($blockDirs as $blockDir) {
-            $blockName = basename($blockDir);
-            $blockClass = $this->getBlockClassFromName($blockName);
-
-            if ($blockClass && class_exists($blockClass)) {
-                try {
-                    $this->repository->registerBlock($blockClass);
-                    $discoveredCount++;
-                    if (Environment::isDebugLog()) {
-                    }
-                } catch (\Exception $e) {
-                    Log::error('GutenbergService: Failed to register block ' . $blockName . ' - ' . $e->getMessage());
-                }
-            } else {
-            }
-        }
-    }
-
-    /**
-     * Get block class name from block directory name
-     *
-     * @param string $blockName Block directory name
-     * @return string|null
-     */
-    protected function getBlockClassFromName($blockName)
-    {
-        // Convert kebab-case to PascalCase
-        $className = str_replace('-', '', ucwords($blockName, '-')) . 'Block';
-
-        return 'Jankx\\Support\\Blocks\\' . $className;
-    }
 
     /**
      * Register default blocks
@@ -127,23 +92,7 @@ class GutenbergService
      */
     protected function registerDefaultBlocks()
     {
-        $this->repository->registerBlock(ImageButtonBlock::class);
-        $this->repository->registerBlock(IconButtonBlock::class);
         $this->repository->registerBlock(SvgIconBlock::class);
-        $this->repository->registerBlock(SvgIconButtonBlock::class);
-        $this->repository->registerBlock(OffcanvasTriggerBlock::class);
-        $this->repository->registerBlock(CategoriesGridBlock::class);
-        $this->repository->registerBlock(WplyrMediaBlock::class);
-        $this->repository->registerBlock(LookbookRevealBlock::class);
-
-
-        $this->repository->registerBlock(DynamicCollectionBlock::class);
-        $this->repository->registerBlock(IconPickerBlock::class);
-        $this->repository->registerBlock(LanguageSwitcherBlock::class);
-        $this->repository->registerBlock(MegaMenuBlock::class);
-        $this->repository->registerBlock(OffcanvasSidebarBlock::class);
-        $this->repository->registerBlock(TabsBlock::class);
-        $this->repository->registerBlock(ProductCollection::class);
     }
 
     /**
@@ -151,14 +100,11 @@ class GutenbergService
      *
      * @return void
      */
-    public function registerAllBlocks()
+    public function registerBlocks()
     {
-
-
         try {
             // Register default blocks first
             $this->registerDefaultBlocks();
-
 
             // Fire action hook for plugins and child themes to register their blocks
             do_action(
@@ -166,21 +112,6 @@ class GutenbergService
                 $this->repository,
                 $this->app
             );
-
-            // Register discovered blocks
-            $instances = $this->repository->getInstances();
-            $registeredCount = 0;
-
-            foreach ($instances as $blockName => $block) {
-                try {
-                    $block->register();
-                    $registeredCount++;
-                    if (Environment::isDebugLog()) {
-                    }
-                } catch (\Exception $e) {
-                    Log::error('GutenbergService: Failed to register block ' . $blockName . ' - ' . $e->getMessage());
-                }
-            }
         } catch (\Exception $e) {
             Log::error('GutenbergService: Failed to register blocks - ' . $e->getMessage());
             throw $e;
@@ -188,112 +119,10 @@ class GutenbergService
     }
 
     /**
-     * Get block metadata from resources/blocks directory
-     *
-     * @return array
-     */
-    public function getBlocksMetadata()
-    {
-        $metadata = [];
-        $blocksPath = get_template_directory() . '/resources/blocks';
-
-        if (!is_dir($blocksPath)) {
-            return $metadata;
-        }
-
-        $blockDirs = glob($blocksPath . '/*', GLOB_ONLYDIR);
-
-        foreach ($blockDirs as $blockDir) {
-            $blockName = basename($blockDir);
-            $blockJsonPath = $blockDir . '/block.json';
-
-            if (file_exists($blockJsonPath)) {
-                $blockJson = file_get_contents($blockJsonPath);
-                $blockData = json_decode($blockJson, true);
-
-                if ($blockData) {
-                    $metadata[$blockName] = $blockData;
-                }
-            }
-        }
-
-        return $metadata;
-    }
-
-    /**
-     * Enqueue all block assets
-     *
-     * @return void
-     */
-    public function enqueueAllBlockAssets()
-    {
-
-
-        try {
-            $metadata = $this->getBlocksMetadata();
-            $enqueuedCount = 0;
-
-            foreach ($metadata as $blockName => $blockData) {
-                try {
-                    $this->enqueueBlockAssets($blockName, $blockData);
-                    $enqueuedCount++;
-                    if (Environment::isDebugLog()) {
-                    }
-                } catch (\Exception $e) {
-                    Log::error('GutenbergService: Failed to enqueue assets for block ' . $blockName . ' - ' . $e->getMessage());
-                }
-            }
-
-            // Enqueue enhance blocks script
-            $this->enqueueEnhanceBlocksScript();
-        } catch (\Exception $e) {
-            Log::error('GutenbergService: Failed to enqueue block assets - ' . $e->getMessage());
-            throw $e;
-        }
-    }
-
-    /**
-     * Enqueue block assets
-     *
-     * @param string $blockName
-     * @param array $blockData
-     */
-    protected function enqueueBlockAssets($blockName, $blockData)
-    {
-        // Enqueue editor script
-        if (!empty($blockData['editorScript'])) {
-            $scriptPath = get_template_directory() . '/resources/blocks/' . $blockName . '/' . $blockData['editorScript'];
-            $scriptDir = dirname($scriptPath);
-            $scriptName = basename($scriptPath, '.js');
-
-            // Look for corresponding asset.php file
-            $assetFile = $scriptDir . '/' . $scriptName . '.asset.php';
-
-            if (file_exists($scriptPath)) {
-                // Load dependencies and version from asset.php
-                $asset = file_exists($assetFile) ? include($assetFile) : [];
-                $scriptDependencies = $asset['dependencies'] ?? ['wp-blocks', 'wp-element', 'wp-editor'];
-                $scriptVersion = $asset['version'] ?? filemtime($scriptPath);
-
-                wp_enqueue_script(
-                    $blockData['name'] . '-editor',
-                    \Jankx\Facades\Url::blockAsset($blockName . '/' . $blockData['editorScript']),
-                    $scriptDependencies,
-                    $scriptVersion,
-                    true
-                );
-            }
-        }
-
-        // CSS is handled automatically by block.json
-        // No manual CSS enqueue to avoid iframe warnings
-    }
-
-    /**
      * Get block instance
      *
      * @param string $blockName Block name
-     * @return \Jankx\Gutenberg\Blocks\Block|null
+     * @return \Jankx\Gutenberg\Block|null
      */
     public function getBlock($blockName)
     {
@@ -359,8 +188,6 @@ class GutenbergService
      */
     public function clearCache()
     {
-
-
         try {
             // Clear any cached block data
             wp_cache_delete('jankx_blocks', 'jankx_blocks');
@@ -369,6 +196,39 @@ class GutenbergService
             Log::error('GutenbergService: Failed to clear block cache - ' . $e->getMessage());
             throw $e;
         }
+    }
+
+    // ========================================
+    // BLOCK CATEGORY METHODS
+    // ========================================
+
+    /**
+     * Register block categories
+     *
+     * @return void
+     */
+    protected function registerBlockCategories(): void
+    {
+        add_filter('block_categories_all', [$this, 'addBlockCategories'], 10, 2);
+    }
+
+    /**
+     * Add Jankx block category to WordPress
+     *
+     * @param array $categories Existing block categories
+     * @param \WP_Block_Editor_Context $editor_context The current block editor context
+     * @return array Modified categories
+     */
+    public function addBlockCategories(array $categories, $editor_context): array
+    {
+        // Add Jankx category at the beginning
+        array_unshift($categories, [
+            'slug' => 'jankx',
+            'title' => __('Jankx', 'jankx'),
+            'icon' => null,
+        ]);
+
+        return $categories;
     }
 
     // ========================================
@@ -422,7 +282,11 @@ class GutenbergService
             $this->registerDefaultPatterns();
 
             // Fire action hook for plugins and child themes to register their patterns
-            do_action('jankx/gutenberg/register-patterns', $this->repository, $this->app);
+            do_action(
+                'jankx/gutenberg/register-patterns',
+                $this->repository,
+                $this->app
+            );
         } catch (\Exception $e) {
             Log::error('GutenbergService: Failed to discover patterns - ' . $e->getMessage());
             throw $e;
@@ -434,8 +298,6 @@ class GutenbergService
      */
     protected function registerDefaultPatterns(): void
     {
-
-
         // Register built-in patterns
         $defaultPatterns = [
             \Jankx\Gutenberg\Patterns\HeroSectionPattern::class,
@@ -571,8 +433,6 @@ class GutenbergService
      */
     public function clearPatternCache(): void
     {
-
-
         try {
             // Clear pattern cache
             wp_cache_delete('jankx_patterns', 'jankx_patterns');
@@ -606,80 +466,6 @@ class GutenbergService
         $method = $reflection->getMethod('getTemplateData');
         $method->setAccessible(true);
         return $method->invoke($pattern);
-    }
-
-    // ========================================
-    // ENHANCE BLOCKS METHODS
-    // ========================================
-
-    /**
-     * Enqueue enhance blocks script for debugging and monitoring
-     *
-     * @return void
-     */
-    public function enqueueEnhanceBlocksScript()
-    {
-        // Chỉ enqueue trong editor
-        if (!is_admin() || !function_exists('get_current_screen')) {
-            return;
-        }
-
-        $screen = get_current_screen();
-        if (!$screen || !in_array($screen->id, ['post', 'page', 'post-new', 'post-edit'])) {
-            return;
-        }
-
-        $enhanceBlocksPath = get_template_directory() . '/resources/enhance-blocks/build/index.js';
-
-        // Kiểm tra file tồn tại
-        if (!file_exists($enhanceBlocksPath)) {
-            Log::warning('GutenbergService: Enhance blocks script not found at ' . $enhanceBlocksPath);
-            return;
-        }
-
-        // Enqueue enhance blocks script
-        wp_enqueue_script(
-            'jankx-enhance-blocks',
-            get_template_directory_uri() . '/resources/enhance-blocks/build/index.js',
-            ['wp-blocks', 'wp-dom-ready', 'wp-edit-post', 'wp-element', 'wp-components', 'wp-data'],
-            filemtime($enhanceBlocksPath),
-            true
-        );
-
-        // Localize script với data cần thiết
-        wp_localize_script('jankx-enhance-blocks', 'jankxEnhanceBlocks', [
-            'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('jankx_enhance_blocks_nonce'),
-            'debug' => Environment::isDebugLog(),
-            'blocks' => $this->getBlocksMetadata(),
-            'patterns' => $this->getPatternStats(),
-        ]);
-
-        Log::info('GutenbergService: Enhance blocks script enqueued successfully');
-    }
-
-    /**
-     * Get enhance blocks configuration
-     *
-     * @return array
-     */
-    public function getEnhanceBlocksConfig(): array
-    {
-        return [
-            'enabled' => true,
-            'debug' => Environment::isDebugLog(),
-            'logLevel' => Environment::isDebugLog() ? 'debug' : 'info',
-            'monitoredBlocks' => [
-                'core' => $this->getCoreBlocksList(),
-                'custom' => $this->getCustomBlocksList(),
-            ],
-            'features' => [
-                'blockLogging' => true,
-                'coreBlockEnhancement' => true,
-                'customBlockEnhancement' => true,
-                'performanceMonitoring' => true,
-            ]
-        ];
     }
 
     /**
@@ -773,66 +559,5 @@ class GutenbergService
             'core/template-part',
             'core/pattern',
         ];
-    }
-
-    /**
-     * Get list of custom blocks to monitor
-     *
-     * @return array
-     */
-    protected function getCustomBlocksList(): array
-    {
-        $customBlocks = [];
-        $instances = $this->getInstances();
-
-        foreach ($instances as $blockName => $block) {
-            if (method_exists($block, 'getBlockName')) {
-                $customBlocks[] = $block->getBlockName();
-            }
-        }
-
-        return $customBlocks;
-    }
-
-    /**
-     * Enable enhance blocks debugging
-     *
-     * @return void
-     */
-    public function enableEnhanceBlocksDebug()
-    {
-        if (!Environment::isDebugLog()) {
-            return;
-        }
-
-        // Add debug action hooks
-        add_action('wp_ajax_jankx_enhance_blocks_debug', [$this, 'handleEnhanceBlocksDebug']);
-        add_action('wp_ajax_nopriv_jankx_enhance_blocks_debug', [$this, 'handleEnhanceBlocksDebug']);
-
-        if (Environment::isDebugLog()) {
-            Log::info('GutenbergService: Enhance blocks debug mode enabled');
-        }
-    }
-
-    /**
-     * Handle enhance blocks debug AJAX request
-     *
-     * @return void
-     */
-    public function handleEnhanceBlocksDebug()
-    {
-        check_ajax_referer('jankx_enhance_blocks_nonce', 'nonce');
-
-        $response = [
-            'success' => true,
-            'data' => [
-                'config' => $this->getEnhanceBlocksConfig(),
-                'blocks' => $this->getBlocksMetadata(),
-                'patterns' => $this->getPatternStats(),
-                'timestamp' => current_time('mysql'),
-            ]
-        ];
-
-        wp_send_json($response);
     }
 }
