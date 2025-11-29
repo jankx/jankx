@@ -1523,85 +1523,59 @@ useEffect(() => {
                     </Placeholder>
                 ) : useAjaxRender && layout === 'carousel' && cachedHtml ? (
                     // Render carousel preview in editor using Embla Carousel React (AJAX mode)
-                    (() => {
-                        const carouselClasses = [
+                    <div
+                        className={[
                             'post-type-layout-carousel',
-                        ];
-
-                        if (columns) {
-                            carouselClasses.push(`columns-${columns}`);
-                        }
-                        if (columnsTablet) {
-                            carouselClasses.push(`columns-tablet-${columnsTablet}`);
-                        }
-                        if (columnsMobile) {
-                            carouselClasses.push(`columns-mobile-${columnsMobile}`);
-                        }
-                        if ((postType || '').toLowerCase() === 'product') {
-                            carouselClasses.push('wc-block-product-template');
-                        }
-
-                        const carouselStyle: CSSProperties = {};
-                        (carouselStyle as any)['--carousel-columns'] = String(columns || 3);
-                        (carouselStyle as any)['--carousel-columns-tablet'] = String(columnsTablet || 2);
-                        (carouselStyle as any)['--carousel-columns-mobile'] = String(columnsMobile || 1);
-
-                        const carouselAttributes: Record<string, string> = {
-                            'data-embla-carousel': '',
-                            'data-slides-per-view': String(columns || 3),
-                            'data-slides-to-scroll': String(slidesToScroll || 1),
-                        };
-
-                        if (loop) {
-                            carouselAttributes['data-loop'] = 'true';
-                        }
-
-                        if (autoplay) {
-                            carouselAttributes['data-autoplay'] = 'true';
-                            carouselAttributes['data-autoplay-delay'] = String(autoplayDelay || 3000);
-                        }
-
-                        return (
+                            columns ? `columns-${columns}` : '',
+                            columnsTablet ? `columns-tablet-${columnsTablet}` : '',
+                            columnsMobile ? `columns-mobile-${columnsMobile}` : '',
+                            (postType || '').toLowerCase() === 'product' ? 'wc-block-product-template' : '',
+                        ].filter(Boolean).join(' ')}
+                        style={{
+                            '--carousel-columns': String(columns || 3),
+                            '--carousel-columns-tablet': String(columnsTablet || 2),
+                            '--carousel-columns-mobile': String(columnsMobile || 1),
+                        } as CSSProperties}
+                        data-embla-carousel=""
+                        data-slides-per-view={String(columns || 3)}
+                        data-slides-to-scroll={String(slidesToScroll || 1)}
+                        data-loop={loop ? 'true' : undefined}
+                        data-autoplay={autoplay ? 'true' : undefined}
+                        data-autoplay-delay={autoplay ? String(autoplayDelay || 3000) : undefined}
+                    >
+                        <div className="embla__viewport" ref={emblaRef}>
                             <div
-                                className={carouselClasses.join(' ')}
-                                style={carouselStyle}
-                                {...carouselAttributes}
-                            >
-                                <div className="embla__viewport" ref={emblaRef}>
-                                    <div
-                                        className="embla__container"
-                                        dangerouslySetInnerHTML={{ __html: carouselSlidesHtml || '' }}
-                                    />
-                                </div>
-                                {showArrows !== false && emblaApi && (
-                                    <>
-                                        <button
-                                            className="embla__button embla__button--prev"
-                                            type="button"
-                                            onClick={() => emblaApi.scrollPrev()}
-                                            aria-label={__('Previous slide', 'jankx')}
-                                            disabled={loop === false && !emblaApi.canScrollPrev()}
-                                        >
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                <path d="M15 18l-6-6 6-6" />
-                                            </svg>
-                                        </button>
-                                        <button
-                                            className="embla__button embla__button--next"
-                                            type="button"
-                                            onClick={() => emblaApi.scrollNext()}
-                                            aria-label={__('Next slide', 'jankx')}
-                                            disabled={loop === false && !emblaApi.canScrollNext()}
-                                        >
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                <path d="M9 18l6-6-6-6" />
-                                            </svg>
-                                        </button>
-                                    </>
-                                )}
-                            </div>
-                        );
-                    })()
+                                className="embla__container"
+                                dangerouslySetInnerHTML={{ __html: carouselSlidesHtml || '' }}
+                            />
+                        </div>
+                        {showArrows !== false && emblaApi ? (
+                            <>
+                                <button
+                                    className="embla__button embla__button--prev"
+                                    type="button"
+                                    onClick={() => emblaApi.scrollPrev()}
+                                    aria-label={__('Previous slide', 'jankx')}
+                                    disabled={loop === false && !emblaApi.canScrollPrev()}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M15 18l-6-6 6-6" />
+                                    </svg>
+                                </button>
+                                <button
+                                    className="embla__button embla__button--next"
+                                    type="button"
+                                    onClick={() => emblaApi.scrollNext()}
+                                    aria-label={__('Next slide', 'jankx')}
+                                    disabled={loop === false && !emblaApi.canScrollNext()}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M9 18l6-6-6-6" />
+                                    </svg>
+                                </button>
+                            </>
+                        ) : null}
+                    </div>
                 ) : useAjaxRender && cachedHtml ? (
                     // AJAX mode - render cached HTML
                     <div dangerouslySetInnerHTML={{ __html: cachedHtml }} />

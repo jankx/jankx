@@ -8,7 +8,7 @@
   \********************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/post-type-layout","version":"1.0.0","title":"Post Type Layout","category":"jankx","icon":"layout","description":"Hiển thị danh sách posts theo layout tùy chỉnh","textdomain":"jankx","editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css","providesContext":{"queryId":"queryId","query":{"postType":"postType","perPage":"postsPerPage","pages":0,"offset":"offset","order":"order","orderBy":"orderBy","inherit":false}},"usesContext":["queryId","query"],"supports":{"html":false,"align":["wide","full"],"anchor":true,"spacing":{"margin":true,"padding":true,"blockGap":true},"color":{"background":true,"text":true,"link":true,"gradients":true},"background":{"backgroundImage":true,"backgroundSize":true},"typography":{"fontSize":true,"lineHeight":true},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true},"__experimentalLayout":{"allowSwitching":true,"allowInheriting":true,"default":{"type":"constrained"}}},"attributes":{"queryPreset":{"type":"string","default":"custom","enum":["default","related","custom","on-sale","featured","related-products","best-sellers","top-rated","upsells","new-arrivals","recently-viewed"]},"postType":{"type":"string","default":"post"},"postsPerPage":{"type":"number","default":10},"includeStickyPosts":{"type":"boolean","default":false},"layout":{"type":"string","default":"grid"},"columns":{"type":"number","default":3},"columnsTablet":{"type":"number","default":2},"columnsMobile":{"type":"number","default":1},"showTitle":{"type":"boolean","default":true},"showExcerpt":{"type":"boolean","default":true},"showFeaturedImage":{"type":"boolean","default":true},"thumbnailPosition":{"type":"string","default":"top","enum":["top","bottom","left","right"]},"imageRatio":{"type":"string","default":""},"showDate":{"type":"boolean","default":true},"showAuthor":{"type":"boolean","default":false},"showPrice":{"type":"boolean","default":true},"showAddToCart":{"type":"boolean","default":true},"showRating":{"type":"boolean","default":false},"excerptLength":{"type":"number","default":55},"orderBy":{"type":"string","default":"date"},"order":{"type":"string","default":"DESC"},"queryId":{"type":"number"},"enablePagination":{"type":"boolean","default":false},"offset":{"type":"number","default":0},"taxQuery":{"type":"array","default":[]},"metaQuery":{"type":"array","default":[]},"keyword":{"type":"string","default":""},"authorIn":{"type":"array","default":[]},"authorNotIn":{"type":"array","default":[]},"postIn":{"type":"array","default":[]},"postNotIn":{"type":"array","default":[]},"metaKey":{"type":"string","default":""},"metaType":{"type":"string","default":""},"postStatus":{"type":"array","default":["publish"]},"postParent":{"type":"number","default":0},"postParentIn":{"type":"array","default":[]},"postParentNotIn":{"type":"array","default":[]},"customQueryId":{"type":"string","default":""},"paginationStyle":{"type":"string","default":"numbers","enum":["numbers","simple","arrows","load-more"]},"paginationAlignment":{"type":"string","default":"center","enum":["left","center","right"]},"showPaginationNumbers":{"type":"boolean","default":true},"paginationPrevText":{"type":"string","default":""},"paginationNextText":{"type":"string","default":""},"slidesToScroll":{"type":"number","default":1},"loop":{"type":"boolean","default":false},"autoplay":{"type":"boolean","default":false},"autoplayDelay":{"type":"number","default":3000},"showArrows":{"type":"boolean","default":true},"showDots":{"type":"boolean","default":true}}}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/post-type-layout","version":"1.0.0","title":"Post Type Layout","category":"jankx","icon":"layout","description":"Hiển thị danh sách posts theo layout tùy chỉnh","textdomain":"jankx","editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css","providesContext":{"queryId":"queryId","query":{"postType":"postType","perPage":"postsPerPage","pages":0,"offset":"offset","order":"order","orderBy":"orderBy","inherit":false}},"usesContext":["queryId","query"],"supports":{"html":false,"align":["wide","full"],"anchor":true,"spacing":{"margin":true,"padding":true,"blockGap":true},"color":{"background":true,"text":true,"link":true,"gradients":true},"background":{"backgroundImage":true,"backgroundSize":true},"typography":{"fontSize":true,"lineHeight":true},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true},"__experimentalLayout":{"allowSwitching":true,"allowInheriting":true,"default":{"type":"constrained"}}},"attributes":{"queryPreset":{"type":"string","default":"custom","enum":["default","related","custom","on-sale","featured","related-products","best-sellers","top-rated","upsells","new-arrivals","recently-viewed"]},"postType":{"type":"string","default":"post"},"postsPerPage":{"type":"number","default":10},"includeStickyPosts":{"type":"boolean","default":false},"layout":{"type":"string","default":"grid"},"columns":{"type":"number","default":3},"columnsTablet":{"type":"number","default":2},"columnsMobile":{"type":"number","default":1},"responsiveColumns":{"type":"object","default":{"desktop":3,"tablet":2,"mobile":1}},"showTitle":{"type":"boolean","default":true},"showExcerpt":{"type":"boolean","default":true},"showFeaturedImage":{"type":"boolean","default":true},"thumbnailPosition":{"type":"string","default":"top","enum":["top","bottom","left","right"]},"imageRatio":{"type":"string","default":""},"showDate":{"type":"boolean","default":true},"showAuthor":{"type":"boolean","default":false},"showPrice":{"type":"boolean","default":true},"showAddToCart":{"type":"boolean","default":true},"showRating":{"type":"boolean","default":false},"excerptLength":{"type":"number","default":55},"orderBy":{"type":"string","default":"date"},"order":{"type":"string","default":"DESC"},"queryId":{"type":"number"},"enablePagination":{"type":"boolean","default":false},"offset":{"type":"number","default":0},"taxQuery":{"type":"array","default":[]},"metaQuery":{"type":"array","default":[]},"keyword":{"type":"string","default":""},"authorIn":{"type":"array","default":[]},"authorNotIn":{"type":"array","default":[]},"postIn":{"type":"array","default":[]},"postNotIn":{"type":"array","default":[]},"metaKey":{"type":"string","default":""},"metaType":{"type":"string","default":""},"postStatus":{"type":"array","default":["publish"]},"postParent":{"type":"number","default":0},"postParentIn":{"type":"array","default":[]},"postParentNotIn":{"type":"array","default":[]},"customQueryId":{"type":"string","default":""},"paginationStyle":{"type":"string","default":"numbers","enum":["numbers","simple","arrows","load-more"]},"paginationAlignment":{"type":"string","default":"center","enum":["left","center","right"]},"showPaginationNumbers":{"type":"boolean","default":true},"paginationPrevText":{"type":"string","default":""},"paginationNextText":{"type":"string","default":""},"slidesToScroll":{"type":"number","default":1},"loop":{"type":"boolean","default":false},"autoplay":{"type":"boolean","default":false},"autoplayDelay":{"type":"number","default":3000},"showArrows":{"type":"boolean","default":true},"showDots":{"type":"boolean","default":true}}}');
 
 /***/ }),
 
@@ -2169,6 +2169,7 @@ function Edit({
     columns,
     columnsTablet,
     columnsMobile,
+    responsiveColumns,
     showTitle,
     showExcerpt,
     showFeaturedImage,
@@ -2398,6 +2399,24 @@ function Edit({
     }
   });
   const isProduct = postType === 'product';
+  const resolvedResponsiveColumns = responsiveColumns && typeof responsiveColumns === 'object' ? responsiveColumns : {
+    desktop: columns,
+    tablet: columnsTablet,
+    mobile: columnsMobile
+  };
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useEffect)(() => {
+    const expected = {
+      desktop: columns,
+      tablet: columnsTablet,
+      mobile: columnsMobile
+    };
+    const needsUpdate = !responsiveColumns || responsiveColumns.desktop !== expected.desktop || responsiveColumns.tablet !== expected.tablet || responsiveColumns.mobile !== expected.mobile;
+    if (needsUpdate) {
+      setAttributes({
+        responsiveColumns: expected
+      });
+    }
+  }, [columns, columnsTablet, columnsMobile, responsiveColumns, setAttributes]);
   const desiredInnerBlocks = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useMemo)(() => {
     const templateInnerBlocks = [];
     if (showFeaturedImage) {
@@ -2484,6 +2503,7 @@ function Edit({
       postsPerPage: debouncedAttributes.postsPerPage,
       layout: debouncedAttributes.layout,
       columns: debouncedAttributes.columns,
+      responsiveColumns: debouncedAttributes.responsiveColumns,
       showTitle: debouncedAttributes.showTitle,
       showExcerpt: debouncedAttributes.showExcerpt,
       showFeaturedImage: debouncedAttributes.showFeaturedImage,
@@ -2718,15 +2738,12 @@ function Edit({
           })
         }), supportedOptions.includes('columns') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_shared_components__WEBPACK_IMPORTED_MODULE_7__.ResponsiveControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Columns', 'jankx'),
-          values: {
-            desktop: columns,
-            tablet: columnsTablet,
-            mobile: columnsMobile
-          },
+          values: resolvedResponsiveColumns,
           onChange: values => setAttributes({
             columns: values.desktop,
             columnsTablet: values.tablet,
-            columnsMobile: values.mobile
+            columnsMobile: values.mobile,
+            responsiveColumns: values
           }),
           min: 1,
           max: 6,
@@ -3483,91 +3500,70 @@ function Edit({
           children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Loading posts...', 'jankx')
         })]
       }) : useAjaxRender && layout === 'carousel' && cachedHtml ?
+      /*#__PURE__*/
       // Render carousel preview in editor using Embla Carousel React (AJAX mode)
-      (() => {
-        const carouselClasses = ['post-type-layout-carousel'];
-        if (columns) {
-          carouselClasses.push(`columns-${columns}`);
-        }
-        if (columnsTablet) {
-          carouselClasses.push(`columns-tablet-${columnsTablet}`);
-        }
-        if (columnsMobile) {
-          carouselClasses.push(`columns-mobile-${columnsMobile}`);
-        }
-        if ((postType || '').toLowerCase() === 'product') {
-          carouselClasses.push('wc-block-product-template');
-        }
-        const carouselStyle = {};
-        carouselStyle['--carousel-columns'] = String(columns || 3);
-        carouselStyle['--carousel-columns-tablet'] = String(columnsTablet || 2);
-        carouselStyle['--carousel-columns-mobile'] = String(columnsMobile || 1);
-        const carouselAttributes = {
-          'data-embla-carousel': '',
-          'data-slides-per-view': String(columns || 3),
-          'data-slides-to-scroll': String(slidesToScroll || 1)
-        };
-        if (loop) {
-          carouselAttributes['data-loop'] = 'true';
-        }
-        if (autoplay) {
-          carouselAttributes['data-autoplay'] = 'true';
-          carouselAttributes['data-autoplay-delay'] = String(autoplayDelay || 3000);
-        }
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {
-          className: carouselClasses.join(' '),
-          style: carouselStyle,
-          ...carouselAttributes,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("div", {
-            className: "embla__viewport",
-            ref: emblaRef,
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("div", {
-              className: "embla__container",
-              dangerouslySetInnerHTML: {
-                __html: carouselSlidesHtml || ''
-              }
+      (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {
+        className: ['post-type-layout-carousel', columns ? `columns-${columns}` : '', columnsTablet ? `columns-tablet-${columnsTablet}` : '', columnsMobile ? `columns-mobile-${columnsMobile}` : '', (postType || '').toLowerCase() === 'product' ? 'wc-block-product-template' : ''].filter(Boolean).join(' '),
+        style: {
+          '--carousel-columns': String(columns || 3),
+          '--carousel-columns-tablet': String(columnsTablet || 2),
+          '--carousel-columns-mobile': String(columnsMobile || 1)
+        },
+        "data-embla-carousel": "",
+        "data-slides-per-view": String(columns || 3),
+        "data-slides-to-scroll": String(slidesToScroll || 1),
+        "data-loop": loop ? 'true' : undefined,
+        "data-autoplay": autoplay ? 'true' : undefined,
+        "data-autoplay-delay": autoplay ? String(autoplayDelay || 3000) : undefined,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("div", {
+          className: "embla__viewport",
+          ref: emblaRef,
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("div", {
+            className: "embla__container",
+            dangerouslySetInnerHTML: {
+              __html: carouselSlidesHtml || ''
+            }
+          })
+        }), showArrows !== false && emblaApi ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("button", {
+            className: "embla__button embla__button--prev",
+            type: "button",
+            onClick: () => emblaApi.scrollPrev(),
+            "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Previous slide', 'jankx'),
+            disabled: loop === false && !emblaApi.canScrollPrev(),
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("svg", {
+              xmlns: "http://www.w3.org/2000/svg",
+              viewBox: "0 0 24 24",
+              fill: "none",
+              stroke: "currentColor",
+              strokeWidth: "2",
+              strokeLinecap: "round",
+              strokeLinejoin: "round",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("path", {
+                d: "M15 18l-6-6 6-6"
+              })
             })
-          }), showArrows !== false && emblaApi && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.Fragment, {
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("button", {
-              className: "embla__button embla__button--prev",
-              type: "button",
-              onClick: () => emblaApi.scrollPrev(),
-              "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Previous slide', 'jankx'),
-              disabled: loop === false && !emblaApi.canScrollPrev(),
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("svg", {
-                xmlns: "http://www.w3.org/2000/svg",
-                viewBox: "0 0 24 24",
-                fill: "none",
-                stroke: "currentColor",
-                strokeWidth: "2",
-                strokeLinecap: "round",
-                strokeLinejoin: "round",
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("path", {
-                  d: "M15 18l-6-6 6-6"
-                })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("button", {
+            className: "embla__button embla__button--next",
+            type: "button",
+            onClick: () => emblaApi.scrollNext(),
+            "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Next slide', 'jankx'),
+            disabled: loop === false && !emblaApi.canScrollNext(),
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("svg", {
+              xmlns: "http://www.w3.org/2000/svg",
+              viewBox: "0 0 24 24",
+              fill: "none",
+              stroke: "currentColor",
+              strokeWidth: "2",
+              strokeLinecap: "round",
+              strokeLinejoin: "round",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("path", {
+                d: "M9 18l6-6-6-6"
               })
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("button", {
-              className: "embla__button embla__button--next",
-              type: "button",
-              onClick: () => emblaApi.scrollNext(),
-              "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Next slide', 'jankx'),
-              disabled: loop === false && !emblaApi.canScrollNext(),
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("svg", {
-                xmlns: "http://www.w3.org/2000/svg",
-                viewBox: "0 0 24 24",
-                fill: "none",
-                stroke: "currentColor",
-                strokeWidth: "2",
-                strokeLinecap: "round",
-                strokeLinejoin: "round",
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("path", {
-                  d: "M9 18l6-6-6-6"
-                })
-              })
-            })]
+            })
           })]
-        });
-      })() : useAjaxRender && cachedHtml ?
+        }) : null]
+      }) : useAjaxRender && cachedHtml ?
       /*#__PURE__*/
       // AJAX mode - render cached HTML
       (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("div", {
@@ -3576,7 +3572,7 @@ function Edit({
         }
       }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InnerBlocks, {
         templateLock: false,
-        renderAppender: false
+        renderAppender: undefined
       })
     })]
   });
