@@ -1,0 +1,608 @@
+# Jankx Framework - LLMs Documentation
+
+## Tổng quan
+
+Jankx Framework là một WordPress theme framework mạnh mẽ, hiện đại với hiệu suất cao, tương thích tốt, dễ sử dụng và phát triển. Framework này được xây dựng trên nền tảng modular architecture với Service Provider pattern, tương tự như Laravel framework.
+
+**Thông tin cơ bản:**
+- **Tên Theme**: Jankx Framework
+- **Phiên bản**: 2.0.0
+- **Tác giả**: Puleeno Nguyen
+- **Website**: https://puleeno.com
+- **Text Domain**: jankx
+- **Yêu cầu PHP**: >= 7.4
+- **License**: GPL-3.0-or-later
+
+## Triết lý phát triển
+
+**Nguyên tắc cốt lõi: "Tất cả tính năng đều load qua Service Provider"**
+
+- **Modularity**: Mọi tính năng được đóng gói trong Service Provider riêng biệt
+- **Lazy Loading**: Services chỉ được load khi cần thiết
+- **Dependency Injection**: Tất cả dependencies được inject qua Application Container
+- **Testability**: Mỗi service có thể được test độc lập
+- **Extensibility**: Dễ dàng thêm/xóa tính năng bằng cách đăng ký/hủy Service Provider
+
+## Cấu trúc thư mục
+
+```
+cheephub/
+├── config/                    # Configuration files
+│   ├── app.php               # Application settings, providers, aliases
+│   ├── error.php             # Error suppression rules
+│   ├── font-icons.php        # Font icon configuration
+│   ├── layout.php            # Layout configuration
+│   └── woocommerce.php       # WooCommerce settings
+│
+├── includes/                  # Core framework code
+│   ├── app/                  # Application-specific code
+│   │   ├── Console/          # WP CLI & WP Cron kernels
+│   │   ├── Http/             # HTTP kernels (Frontend, Admin, AJAX, REST API)
+│   │   ├── Providers/        # Application service providers
+│   │   └── Services/         # Application services & business logic
+│   ├── boot/                 # Bootstrap files
+│   │   ├── app.php           # Application initialization
+│   │   └── helpers.php       # Helper functions
+│   └── framework/            # Core Jankx Framework
+│       ├── Foundation/       # Application foundation & bootstrap
+│       ├── Support/          # Support classes & service providers
+│       ├── Gutenberg/        # Gutenberg blocks integration
+│       ├── Layouts/          # Layout management system
+│       ├── Services/         # Core services
+│       ├── Facades/          # Facade classes
+│       └── ...
+│
+├── features/                  # Feature modules
+│   ├── content-templates/    # Content template system
+│   └── metrics/              # Post metrics & analytics
+│
+├── resources/                 # Frontend assets source
+│   ├── blocks/               # Gutenberg blocks source code
+│   ├── js/                   # JavaScript source files
+│   ├── scss/                 # SCSS source files
+│   └── ...
+│
+├── templates/                 # Template files (HTML/Gutenberg templates)
+│   ├── index.html
+│   ├── home.html
+│   ├── archive.html
+│   ├── single.html
+│   └── ...
+│
+├── views/                     # PHP view templates
+│   └── post-layouts/         # Post layout templates
+│
+├── parts/                     # Template parts (header, footer, sidebar)
+├── languages/                 # Translation files
+├── tests/                     # PHPUnit test files
+├── docs/                      # Documentation
+│
+├── functions.php              # Main entry point (loads framework)
+├── framework.php              # Framework loader
+├── style.css                  # Theme stylesheet header
+├── theme.json                 # WordPress theme.json configuration
+├── composer.json              # PHP dependencies
+└── package.json               # Node.js dependencies
+```
+
+## Core Components
+
+### 1. Framework Bootstrap
+
+**Entry Point**: `functions.php`
+- Đơn giản chỉ load `includes/framework.php`
+- Framework tự động khởi tạo và route requests
+
+**Framework Loader**: `includes/framework.php`
+- Load Composer autoloader
+- Khởi tạo `Jankx_Framework` class
+- Xử lý routing dựa trên request type (HTTP/Console)
+- Load helpers và khởi tạo Application
+
+### 2. Application Container
+
+**Location**: `includes/framework/Foundation/Application.php`
+- Dependency injection container
+- Service locator pattern
+- Singleton management
+- Configuration management
+
+**Usage**:
+```php
+use Jankx\Foundation\Application;
+
+$app = Application::getInstance();
+$service = $app->make('service.name');
+```
+
+### 3. Kernel System
+
+Framework sử dụng kernel pattern để xử lý các loại request khác nhau:
+
+**HTTP Kernels** (`includes/app/Http/`):
+- `FrontendKernel.php` - Frontend requests (visitors)
+- `DashboardKernel.php` - Admin dashboard requests
+- `AdminAjaxKernel.php` - AJAX requests
+- `RestApiKernel.php` - WordPress REST API requests
+
+**Console Kernels** (`includes/app/Console/`):
+- `WpCliKernel.php` - WP CLI commands
+- `WpCronKernel.php` - WordPress cron jobs
+
+Mỗi kernel tự động load service providers phù hợp với context.
+
+### 4. Service Providers
+
+**Core Providers** (tự động load):
+- `SystemServiceProvider` - Core system services
+- `AssetServiceProvider` - Asset management
+- `AjaxServiceProvider` - AJAX handling
+- `ErrorSuppressionServiceProvider` - Error management
+- `FontIconsServiceProvider` - Font icon system
+- `FontsServiceProvider` - Font management
+- `PerformanceServiceProvider` - Performance optimizations
+- `PlatesServiceProvider` - Template engine
+- `ThemeServiceProvider` - Theme-specific features
+- `WordPressCliServiceProvider` - WP CLI commands
+
+**Application Providers** (được đăng ký trong `config/app.php`):
+- `GutenbergServiceProvider` - Gutenberg blocks
+- `LanguageSwitcherServiceProvider` - Multi-language support
+- `NavigationBlockServiceProvider` - Navigation blocks
+
+**Service Provider Structure**:
+```php
+namespace App\Providers;
+
+use Jankx\Foundation\Application;
+use Jankx\Support\Providers\ServiceProvider;
+
+class CustomServiceProvider extends ServiceProvider
+{
+    public function register(Application $app)
+    {
+        // Register services in container
+    }
+
+    public function boot(Application $app)
+    {
+        // Bootstrap services (hooks, filters, etc.)
+    }
+}
+```
+
+### 5. Facades
+
+Facades cung cấp static interface để truy cập services:
+
+**Available Facades**:
+- `App` - Application container
+- `Config` - Configuration access
+- `Log` - Logging system
+- `Url` - URL generation
+- `Asset` - Asset management
+
+**Usage**:
+```php
+use Jankx\Facades\Config;
+use Jankx\Facades\Url;
+
+$value = Config::get('app.version');
+$url = Url::asset('css/style.css');
+```
+
+### 6. Services & Managers
+
+**URL Management** (`Jankx\Managers\UrlManager`):
+- `Url::theme()` - Theme directory URL
+- `Url::asset()` - Asset URL (CSS/JS/images)
+- `Url::blockAsset()` - Gutenberg block asset URL
+- `Url::image()` - Image URL
+- `Url::wordpress()` - WordPress URLs
+
+**Asset Service** (`Jankx\Services\AssetService`):
+- Enqueue stylesheets
+- Enqueue scripts
+- Asset versioning
+- Dependency management
+
+**Configuration Repository** (`Jankx\Framework\Config\Repository`):
+- Load config files từ `config/` directory
+- Support child theme override với deep merge
+- CRC32-based caching
+- Access via `Config` facade
+
+### 7. Gutenberg Integration
+
+**Block Structure**:
+```
+resources/blocks/{block-name}/
+├── index.js                  # Block editor logic (React/JSX)
+├── block.json                # Block configuration
+├── style.css                 # Block styles
+├── editor.css                # Editor-only styles
+└── build/                    # Compiled assets
+```
+
+**Block Registration**:
+- Blocks tự động được discover từ `resources/blocks/`
+- Sử dụng `GutenbergRepository` để register blocks
+- Support cả PHP và JavaScript-based blocks
+
+**Custom Blocks**:
+- Extend `Jankx\Gutenberg\Block` class cho PHP blocks
+- Extend `WidgetRendererBlock` cho widget rendering blocks
+
+### 8. Template System
+
+**Template Engine**: League Plates (via `PlatesServiceProvider`)
+- Location: `templates/` directory
+- Support child theme override
+- Template inheritance
+- Partial rendering
+
+**WordPress Templates**: Standard WordPress template hierarchy
+- `index.php`, `single.php`, `archive.php`, etc.
+- Gutenberg block templates: `parts/header.html`, `parts/footer.html`
+
+**View System**: PHP views trong `views/` directory
+- Post layouts: `views/post-layouts/`
+- Reusable components
+
+### 9. Multi-Language Support
+
+**TranslationServiceProvider**:
+- Automatic text domain loading
+- RTL/LTR language support
+- Polylang/WPML integration
+- Language switcher widget
+- Direction classes on body tag
+
+**Translation Files**: `languages/` directory
+- `.pot` files - Template files
+- `.po/.mo` files - Compiled translations
+- `.json` files - JavaScript translations
+
+**Supported Languages**:
+- RTL: Arabic, Hebrew, Persian, Urdu, Pashto, Sindhi, Kurdish, Yiddish
+- LTR: English, Vietnamese, và others
+
+### 10. Layout System
+
+**Layout Management**:
+- Multiple layout options
+- Customizable header/footer/sidebar
+- Mobile-responsive layouts
+- Layout transitions và animations
+
+**Configuration**: `config/layout.php`
+- Layout options
+- Header/footer/sidebar configurations
+- Mobile layout settings
+
+## Configuration
+
+### Application Config (`config/app.php`)
+
+```php
+return [
+    'name' => 'Jankx Framework',
+    'version' => '2.0.0',
+    'providers' => [
+        // Service providers array
+    ],
+    'aliases' => [
+        'cache' => ['\Jankx\Services\CacheService'],
+        'url' => ['\Jankx\Managers\UrlManager'],
+    ],
+    'options' => [
+        'framework' => 'jankx',
+    ],
+];
+```
+
+### Error Suppression (`config/error.php`)
+
+Cấu hình để suppress WordPress warnings/notices:
+- `doing_it_wrong` notices
+- PHP errors
+- Admin notices
+- Granular control per function/pattern
+
+### Theme.json (`theme.json`)
+
+WordPress theme configuration:
+- Color palette
+- Typography settings
+- Spacing scales
+- Template parts (header, footer, sidebar)
+- Custom templates
+
+## Dependencies
+
+### PHP Dependencies (Composer)
+- `psr/container` - PSR-11 container interface
+- `illuminate/container` - Laravel container implementation
+- `jankx/option-adapter` - Options framework adapter
+- `jankx/dashboard-framework` - Dashboard framework
+- `league/plates` - Template engine
+
+### Development Dependencies
+- `phpunit/phpunit` - Testing framework
+- `mockery/mockery` - Mocking library
+- `brain/monkey` - WordPress testing utilities
+
+### JavaScript Dependencies (NPM)
+- `@wordpress/scripts` - WordPress build tools
+- `@wordpress/blocks` - Gutenberg blocks API
+- `laravel-mix` - Asset compilation
+- `sass` - SCSS compiler
+- `typescript` - TypeScript support
+
+## Development Workflow
+
+### 1. Tạo Service Provider mới
+
+```php
+// includes/app/Providers/CustomServiceProvider.php
+namespace App\Providers;
+
+use Jankx\Foundation\Application;
+use Jankx\Support\Providers\ServiceProvider;
+
+class CustomServiceProvider extends ServiceProvider
+{
+    public function register(Application $app)
+    {
+        $app->singleton('custom.service', function ($app) {
+            return new CustomService();
+        });
+    }
+
+    public function boot(Application $app)
+    {
+        // Add hooks, filters, etc.
+        add_action('init', [$this, 'init']);
+    }
+
+    public function init()
+    {
+        // Initialization code
+    }
+}
+```
+
+Đăng ký trong `config/app.php`:
+```php
+'providers' => [
+    // ... existing providers
+    App\Providers\CustomServiceProvider::class,
+],
+```
+
+### 2. Tạo Gutenberg Block
+
+**Bước 1**: Tạo block structure
+```bash
+resources/blocks/my-block/
+├── index.js
+├── block.json
+└── style.css
+```
+
+**Bước 2**: Đăng ký block trong PHP (nếu cần custom logic)
+```php
+use Jankx\Gutenberg\Block;
+
+class MyBlock extends Block
+{
+    protected $name = 'jankx/my-block';
+    
+    public function render($attributes, $content)
+    {
+        // Block rendering logic
+    }
+}
+```
+
+### 3. Sử dụng Facades
+
+```php
+use Jankx\Facades\Config;
+use Jankx\Facades\Url;
+use Jankx\Facades\Log;
+
+// Configuration
+$version = Config::get('app.version');
+
+// URL generation
+$cssUrl = Url::asset('css/style.css');
+$themeUrl = Url::theme();
+
+// Logging
+Log::info('Something happened', ['context' => 'data']);
+```
+
+### 4. Asset Management
+
+```php
+use Jankx\Facades\Asset;
+
+// Enqueue stylesheet
+Asset::enqueueStyle('theme-style', 'css/style.css', ['dependencies']);
+
+// Enqueue script
+Asset::enqueueScript('theme-script', 'js/script.js', ['dependencies'], true);
+```
+
+### 5. Child Theme Development
+
+**Bootstrap**: Tạo `functions.php` trong child theme:
+```php
+// Load parent theme framework
+require_once get_template_directory() . '/includes/framework.php';
+```
+
+**Override Config**: Tạo file tương ứng trong child theme `config/`:
+```php
+// config/app.php trong child theme
+return [
+    'providers' => [
+        // Add/override providers
+    ],
+];
+```
+
+**Override Templates**: Copy template files vào child theme và modify
+
+## Build System
+
+### NPM Scripts
+
+```bash
+# Development
+npm run development      # Build assets (development)
+npm run watch            # Watch for changes
+npm run hot              # Hot reload
+
+# Production
+npm run production       # Build assets (production)
+npm run build:prod       # Alias for production
+
+# Internationalization
+npm run i18n:pot         # Generate .pot file
+npm run i18n:update      # Update .po file
+npm run i18n:compile     # Compile .mo and .json files
+npm run i18n:make        # All i18n tasks
+```
+
+### Asset Compilation
+
+Framework sử dụng Laravel Mix (webpack wrapper):
+- SCSS → CSS compilation
+- JavaScript bundling
+- Asset versioning
+- Source maps (development)
+
+**Config**: `webpack.mix.js`
+
+## Testing
+
+### Test Structure
+
+```
+tests/
+├── Foundation/         # Core framework tests
+├── Support/            # Service provider tests
+├── Managers/           # Manager class tests
+├── Services/           # Service tests
+└── bootstrap.php       # Test bootstrap
+```
+
+### Running Tests
+
+```bash
+# Run all tests
+./vendor/bin/phpunit
+
+# Run specific test
+./vendor/bin/phpunit tests/Foundation/ApplicationTest.php
+
+# With coverage
+./vendor/bin/phpunit --coverage-html coverage/
+```
+
+## API Reference
+
+### Core Classes
+
+**Application**: `Jankx\Foundation\Application`
+- `getInstance()` - Get singleton instance
+- `make($abstract)` - Resolve service from container
+- `singleton($abstract, $concrete)` - Register singleton
+- `instance($abstract, $instance)` - Register instance
+
+**Config Repository**: `Jankx\Framework\Config\Repository`
+- `get($key, $default)` - Get config value
+- `set($key, $value)` - Set config value
+- `has($key)` - Check if key exists
+- `all()` - Get all config
+
+**UrlManager**: `Jankx\Managers\UrlManager`
+- `theme($path = '')` - Theme directory URL
+- `asset($path)` - Asset URL
+- `blockAsset($blockName, $assetPath)` - Block asset URL
+- `image($path)` - Image URL
+- `wordpress($path)` - WordPress URL
+
+**AssetService**: `Jankx\Services\AssetService`
+- `enqueueStyle($handle, $src, $deps = [], $media = 'all')`
+- `enqueueScript($handle, $src, $deps = [], $inFooter = false)`
+- `registerStyle($handle, $src, $deps = [], $version = null, $media = 'all')`
+- `registerScript($handle, $src, $deps = [], $version = null, $inFooter = false)`
+
+### Helper Functions
+
+**Location**: `includes/boot/helpers.php`
+
+Common helper functions được load tự động khi framework khởi động.
+
+## Best Practices
+
+1. **Service Providers**: Luôn sử dụng Service Providers để đăng ký features
+2. **Facades**: Sử dụng Facades thay vì direct service access khi có thể
+3. **URL Generation**: Không bao giờ hardcode URLs, luôn dùng `Url` facade
+4. **Configuration**: Sử dụng `Config` facade để access configuration
+5. **Error Handling**: Log errors qua `Log` facade
+6. **Testing**: Viết tests cho mọi service và feature mới
+7. **Documentation**: Document code với DocBlocks
+8. **PSR Standards**: Tuân thủ PSR-12 coding standards
+
+## File Naming Conventions
+
+- **Classes**: PascalCase (e.g., `MyServiceProvider.php`)
+- **Files**: Match class names
+- **Services**: Suffix với `Service` (e.g., `AssetService.php`)
+- **Providers**: Suffix với `ServiceProvider` (e.g., `ThemeServiceProvider.php`)
+- **Managers**: Suffix với `Manager` (e.g., `UrlManager.php`)
+- **Blocks**: Kebab-case (e.g., `my-custom-block`)
+
+## Troubleshooting
+
+### Framework không load
+- Kiểm tra Composer autoloader: `vendor/autoload.php`
+- Kiểm tra PHP version >= 7.4
+- Kiểm tra WordPress hooks timing
+
+### Service không được register
+- Kiểm tra Service Provider đã được đăng ký trong `config/app.php`
+- Kiểm tra `register()` method có được gọi
+- Kiểm tra namespace và autoloading
+
+### Assets không load
+- Kiểm tra build assets đã được compile chưa (`npm run build`)
+- Kiểm tra `AssetService` provider đã được load
+- Kiểm tra asset paths trong `Url::asset()`
+
+## Tài liệu thêm
+
+Xem thêm trong `docs/` directory:
+- `architecture.md` - Kiến trúc chi tiết
+- `getting-started.md` - Hướng dẫn bắt đầu
+- `development-guide.md` - Hướng dẫn phát triển
+- `api-reference.md` - API reference
+- `woocommerce-integration.md` - WooCommerce integration
+- `gutenberg/` - Gutenberg development guides
+
+## Liên hệ & Support
+
+- **Author**: Puleeno Nguyen
+- **Email**: puleeno@gmail.com
+- **Website**: https://puleeno.com
+- **Theme URI**: https://wordpress.puleeno.com/jankx
+
+---
+
+**Version**: 2.0.0
+**Last Updated**: 2024
+**License**: GPL-3.0-or-later
