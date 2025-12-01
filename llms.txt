@@ -99,6 +99,12 @@ cheephub/
 - Xử lý routing dựa trên request type (HTTP/Console)
 - Load helpers và khởi tạo Application
 
+**Composer Auto-Loading**:
+- Jankx theme tự động phát hiện và load Composer autoloader nếu phát hiện cấu trúc Composer (`vendor/autoload.php`)
+- Không cần khai báo `require_once` Composer autoloader trong `functions.php` của child theme
+- Framework sẽ tự động tìm và load `vendor/autoload.php` từ theme directory hoặc parent theme directory
+- Tính năng này giúp đơn giản hóa việc setup child theme và đảm bảo Composer dependencies được load đúng cách
+
 ### 2. Application Container
 
 **Location**: `includes/framework/Foundation/Application.php`
@@ -442,6 +448,11 @@ Asset::enqueueScript('theme-script', 'js/script.js', ['dependencies'], true);
 // Load parent theme framework
 require_once get_template_directory() . '/includes/framework.php';
 ```
+
+**Composer Auto-Loading**: 
+- Nếu child theme có cấu trúc Composer (`vendor/autoload.php`), Jankx framework sẽ tự động phát hiện và load
+- Không cần khai báo `require_once 'vendor/autoload.php'` trong `functions.php` của child theme
+- Framework tự động tìm và load Composer autoloader từ cả child theme và parent theme
 
 **Override Config**: Tạo file tương ứng trong child theme `config/`:
 ```php
