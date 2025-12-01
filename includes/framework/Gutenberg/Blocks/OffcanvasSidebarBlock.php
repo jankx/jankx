@@ -547,6 +547,45 @@ class OffcanvasSidebarBlock extends Block
     }
 
     /**
+     * Convert WordPress preset spacing value to CSS variable format
+     * WordPress format: var:preset|spacing|40 or var:preset|spacing|medium
+     * CSS format: var(--wp--preset--spacing--40) or var(--wp--preset--spacing--medium)
+     *
+     * @param string|mixed $value Spacing value
+     * @return string Converted CSS value
+     */
+    protected function convertPresetSpacing($value)
+    {
+        if (!is_string($value)) {
+            return $value;
+        }
+        
+        // Trim whitespace
+        $value = trim($value);
+        
+        // Check if it's already a CSS variable format
+        if (strpos($value, 'var(--wp--preset--') === 0) {
+            return $value;
+        }
+        
+        // Check if it's a WordPress preset format: var:preset|spacing|40
+        // Convert format: var:preset|TYPE|NAME -> var(--wp--preset--TYPE--NAME)
+        if (strpos($value, 'var:preset|') === 0) {
+            // Extract parts after "var:preset|"
+            $parts = explode('|', $value);
+            if (count($parts) === 3) {
+                $type = trim($parts[1]); // e.g., "spacing"
+                $name = trim($parts[2]); // e.g., "40" or "medium"
+                // Convert to CSS variable format
+                return sprintf('var(--wp--preset--%s--%s)', esc_attr($type), esc_attr($name));
+            }
+        }
+        
+        // Return as-is if not a preset format (could be px, rem, em, etc.)
+        return $value;
+    }
+
+    /**
      * Get spacing styles (margin/padding) from block supports
      *
      * @param array $style Style attributes from block supports
@@ -567,20 +606,25 @@ class OffcanvasSidebarBlock extends Block
             $margin = $spacing['margin'];
             if (is_string($margin)) {
                 // Single value for all sides
-                $spacingStyles .= sprintf(' margin: %s;', esc_attr($margin));
+                $convertedMargin = $this->convertPresetSpacing($margin);
+                $spacingStyles .= sprintf(' margin: %s;', esc_attr($convertedMargin));
             } elseif (is_array($margin)) {
                 // Individual sides
                 if (isset($margin['top'])) {
-                    $spacingStyles .= sprintf(' margin-top: %s;', esc_attr($margin['top']));
+                    $convertedValue = $this->convertPresetSpacing($margin['top']);
+                    $spacingStyles .= sprintf(' margin-top: %s;', esc_attr($convertedValue));
                 }
                 if (isset($margin['right'])) {
-                    $spacingStyles .= sprintf(' margin-right: %s;', esc_attr($margin['right']));
+                    $convertedValue = $this->convertPresetSpacing($margin['right']);
+                    $spacingStyles .= sprintf(' margin-right: %s;', esc_attr($convertedValue));
                 }
                 if (isset($margin['bottom'])) {
-                    $spacingStyles .= sprintf(' margin-bottom: %s;', esc_attr($margin['bottom']));
+                    $convertedValue = $this->convertPresetSpacing($margin['bottom']);
+                    $spacingStyles .= sprintf(' margin-bottom: %s;', esc_attr($convertedValue));
                 }
                 if (isset($margin['left'])) {
-                    $spacingStyles .= sprintf(' margin-left: %s;', esc_attr($margin['left']));
+                    $convertedValue = $this->convertPresetSpacing($margin['left']);
+                    $spacingStyles .= sprintf(' margin-left: %s;', esc_attr($convertedValue));
                 }
             }
         }
@@ -590,20 +634,25 @@ class OffcanvasSidebarBlock extends Block
             $padding = $spacing['padding'];
             if (is_string($padding)) {
                 // Single value for all sides
-                $spacingStyles .= sprintf(' padding: %s;', esc_attr($padding));
+                $convertedPadding = $this->convertPresetSpacing($padding);
+                $spacingStyles .= sprintf(' padding: %s;', esc_attr($convertedPadding));
             } elseif (is_array($padding)) {
                 // Individual sides
                 if (isset($padding['top'])) {
-                    $spacingStyles .= sprintf(' padding-top: %s;', esc_attr($padding['top']));
+                    $convertedValue = $this->convertPresetSpacing($padding['top']);
+                    $spacingStyles .= sprintf(' padding-top: %s;', esc_attr($convertedValue));
                 }
                 if (isset($padding['right'])) {
-                    $spacingStyles .= sprintf(' padding-right: %s;', esc_attr($padding['right']));
+                    $convertedValue = $this->convertPresetSpacing($padding['right']);
+                    $spacingStyles .= sprintf(' padding-right: %s;', esc_attr($convertedValue));
                 }
                 if (isset($padding['bottom'])) {
-                    $spacingStyles .= sprintf(' padding-bottom: %s;', esc_attr($padding['bottom']));
+                    $convertedValue = $this->convertPresetSpacing($padding['bottom']);
+                    $spacingStyles .= sprintf(' padding-bottom: %s;', esc_attr($convertedValue));
                 }
                 if (isset($padding['left'])) {
-                    $spacingStyles .= sprintf(' padding-left: %s;', esc_attr($padding['left']));
+                    $convertedValue = $this->convertPresetSpacing($padding['left']);
+                    $spacingStyles .= sprintf(' padding-left: %s;', esc_attr($convertedValue));
                 }
             }
         }
