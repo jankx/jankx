@@ -62,20 +62,31 @@ class OffcanvasSidebarBlock extends Block
                 $wrapperClasses[] = $className;
             }
 
-            // Get wrapper attributes including classes and styles from block supports (spacing, etc.)
-            // This includes margin and padding from block supports
-            $wrapper_attributes = get_block_wrapper_attributes([
-                'class' => implode(' ', $wrapperClasses),
-                'id' => $blockId
-            ]);
+            // Build wrapper attributes WITHOUT spacing (spacing will be applied to .offcanvas-sidebar)
+            // Check for align attribute first
+            $align = $attributes['align'] ?? '';
+            if (!empty($align)) {
+                $wrapperClasses[] = 'align' . esc_attr($align);
+            }
+            
+            // Build wrapper attributes manually to exclude spacing styles
+            // WordPress might inject spacing via get_block_wrapper_attributes, so we build it manually
+            $wrapper_attributes = sprintf(
+                'class="%s" id="%s"',
+                esc_attr(implode(' ', $wrapperClasses)),
+                esc_attr($blockId)
+            );
 
             // Extract background color from wrapper attributes if exists
             $backgroundColor = $attributes['backgroundColor'] ?? '';
             $textColor = $attributes['textColor'] ?? '';
             $gradient = $attributes['gradient'] ?? '';
 
-            // Get style from block supports (background, color, etc.)
+            // Get style from block supports (background, color, spacing, etc.)
             $style = $attributes['style'] ?? [];
+            
+            // Extract spacing (margin/padding) to apply to .offcanvas-sidebar instead of wrapper
+            $spacingStyles = $this->getSpacingStyles($style);
 
             // Render InnerBlocks content manually if block instance is available
             // This ensures dynamic blocks like core/search are rendered properly
@@ -111,10 +122,11 @@ class OffcanvasSidebarBlock extends Block
             }
 
             // Build inline styles from block supports
-            $sidebarStyle = sprintf(
-                'width: %s;',
-                esc_attr($sidebarWidth)
-            );
+            // Start with width and spacing (margin/padding)
+            $sidebarStyle = 'width: ' . esc_attr($sidebarWidth) . ';';
+            if (!empty($spacingStyles)) {
+                $sidebarStyle .= ' ' . trim($spacingStyles);
+            }
 
             // Custom color styles (when user picks custom color not from palette)
             if (isset($style['color']['background'])) {
@@ -532,6 +544,71 @@ class OffcanvasSidebarBlock extends Block
         );
 
         return $content;
+    }
+
+    /**
+     * Get spacing styles (margin/padding) from block supports
+     *
+     * @param array $style Style attributes from block supports
+     * @return string CSS spacing styles
+     */
+    protected function getSpacingStyles($style)
+    {
+        $spacingStyles = '';
+        
+        if (!isset($style['spacing'])) {
+            return $spacingStyles;
+        }
+        
+        $spacing = $style['spacing'];
+        
+        // Handle margin
+        if (isset($spacing['margin'])) {
+            $margin = $spacing['margin'];
+            if (is_string($margin)) {
+                // Single value for all sides
+                $spacingStyles .= sprintf(' margin: %s;', esc_attr($margin));
+            } elseif (is_array($margin)) {
+                // Individual sides
+                if (isset($margin['top'])) {
+                    $spacingStyles .= sprintf(' margin-top: %s;', esc_attr($margin['top']));
+                }
+                if (isset($margin['right'])) {
+                    $spacingStyles .= sprintf(' margin-right: %s;', esc_attr($margin['right']));
+                }
+                if (isset($margin['bottom'])) {
+                    $spacingStyles .= sprintf(' margin-bottom: %s;', esc_attr($margin['bottom']));
+                }
+                if (isset($margin['left'])) {
+                    $spacingStyles .= sprintf(' margin-left: %s;', esc_attr($margin['left']));
+                }
+            }
+        }
+        
+        // Handle padding
+        if (isset($spacing['padding'])) {
+            $padding = $spacing['padding'];
+            if (is_string($padding)) {
+                // Single value for all sides
+                $spacingStyles .= sprintf(' padding: %s;', esc_attr($padding));
+            } elseif (is_array($padding)) {
+                // Individual sides
+                if (isset($padding['top'])) {
+                    $spacingStyles .= sprintf(' padding-top: %s;', esc_attr($padding['top']));
+                }
+                if (isset($padding['right'])) {
+                    $spacingStyles .= sprintf(' padding-right: %s;', esc_attr($padding['right']));
+                }
+                if (isset($padding['bottom'])) {
+                    $spacingStyles .= sprintf(' padding-bottom: %s;', esc_attr($padding['bottom']));
+                }
+                if (isset($padding['left'])) {
+                    $spacingStyles .= sprintf(' padding-left: %s;', esc_attr($padding['left']));
+                }
+            }
+        }
+        
+        return $spacingStyles;
     }
 
     /**
