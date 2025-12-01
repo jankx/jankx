@@ -43,6 +43,9 @@ class OffcanvasSidebarBlock extends Block
             $overlayColor = $attributes['overlayColor'] ?? 'rgba(0,0,0,0.2)';
             $showOverlay = $attributes['showOverlay'] ?? true;
             $closeOnOverlayClick = $attributes['closeOnOverlayClick'] ?? true;
+            $closeOnEscape = $attributes['closeOnEscape'] ?? true;
+            $autoClose = $attributes['autoClose'] ?? false;
+            $autoCloseDelay = $attributes['autoCloseDelay'] ?? 5000;
             $showCloseButton = $attributes['showCloseButton'] ?? true;
             $closeButtonPosition = $attributes['closeButtonPosition'] ?? 'top-right';
             $closeButtonSize = $attributes['closeButtonSize'] ?? 'medium';
@@ -50,8 +53,21 @@ class OffcanvasSidebarBlock extends Block
             $closeButtonColor = $attributes['closeButtonColor'] ?? 'inherit';
             $className = $attributes['className'] ?? '';
 
-            // Get wrapper attributes including classes and styles from block supports
-            $wrapper_attributes = get_block_wrapper_attributes();
+            // Generate unique ID for this block instance
+            $blockId = 'offcanvas-sidebar-' . uniqid();
+
+            // Build wrapper classes
+            $wrapperClasses = ['offcanvas-sidebar-block'];
+            if (!empty($className)) {
+                $wrapperClasses[] = $className;
+            }
+
+            // Get wrapper attributes including classes and styles from block supports (spacing, etc.)
+            // This includes margin and padding from block supports
+            $wrapper_attributes = get_block_wrapper_attributes([
+                'class' => implode(' ', $wrapperClasses),
+                'id' => $blockId
+            ]);
 
             // Extract background color from wrapper attributes if exists
             $backgroundColor = $attributes['backgroundColor'] ?? '';
@@ -68,15 +84,6 @@ class OffcanvasSidebarBlock extends Block
                 foreach ($block->inner_blocks as $inner_block) {
                     $content .= $inner_block->render();
                 }
-            }
-
-            // Generate unique ID for this block instance
-            $blockId = 'offcanvas-sidebar-' . uniqid();
-
-            // Build wrapper classes
-            $wrapperClasses = ['offcanvas-sidebar-block'];
-            if (!empty($className)) {
-                $wrapperClasses[] = $className;
             }
 
         // Build container classes (no color classes here)
@@ -123,18 +130,34 @@ class OffcanvasSidebarBlock extends Block
             // Background image support
             if (isset($style['background']['backgroundImage'])) {
                 $backgroundImage = $style['background']['backgroundImage'];
-                if (isset($backgroundImage['url'])) {
-                    $sidebarStyle .= sprintf(' background-image: url(%s);', esc_attr($backgroundImage['url']));
+                
+                // Handle different structures: object or string
+                if (is_array($backgroundImage)) {
+                    // URL can be in 'url' key or 'source' key
+                    $imageUrl = $backgroundImage['url'] ?? $backgroundImage['source'] ?? '';
+                    if ($imageUrl) {
+                        $sidebarStyle .= sprintf(' background-image: url(%s);', esc_url($imageUrl));
+                    }
+                    
+                    // Background size can be in the image object or at style.background level
+                    if (isset($backgroundImage['backgroundSize'])) {
+                        $sidebarStyle .= sprintf(' background-size: %s;', esc_attr($backgroundImage['backgroundSize']));
+                    }
+                    if (isset($backgroundImage['backgroundPosition'])) {
+                        $sidebarStyle .= sprintf(' background-position: %s;', esc_attr($backgroundImage['backgroundPosition']));
+                    }
+                    if (isset($backgroundImage['backgroundRepeat'])) {
+                        $sidebarStyle .= sprintf(' background-repeat: %s;', esc_attr($backgroundImage['backgroundRepeat']));
+                    }
+                } elseif (is_string($backgroundImage)) {
+                    // Direct URL string
+                    $sidebarStyle .= sprintf(' background-image: url(%s);', esc_url($backgroundImage));
                 }
-                if (isset($backgroundImage['backgroundSize'])) {
-                    $sidebarStyle .= sprintf(' background-size: %s;', esc_attr($backgroundImage['backgroundSize']));
-                }
-                if (isset($backgroundImage['backgroundPosition'])) {
-                    $sidebarStyle .= sprintf(' background-position: %s;', esc_attr($backgroundImage['backgroundPosition']));
-                }
-                if (isset($backgroundImage['backgroundRepeat'])) {
-                    $sidebarStyle .= sprintf(' background-repeat: %s;', esc_attr($backgroundImage['backgroundRepeat']));
-                }
+            }
+            
+            // Background size can also be at style.background level
+            if (isset($style['background']['backgroundSize']) && !isset($style['background']['backgroundImage']['backgroundSize'])) {
+                $sidebarStyle .= sprintf(' background-size: %s;', esc_attr($style['background']['backgroundSize']));
             }
 
             $overlayStyle = sprintf(
@@ -158,11 +181,14 @@ class OffcanvasSidebarBlock extends Block
             // Build data attributes for JavaScript
             $dataAttributes = $this->buildDataAttributes([
                 'showOverlay' => $showOverlay,
-                'closeOnOverlayClick' => $closeOnOverlayClick
+                'closeOnOverlayClick' => $closeOnOverlayClick,
+                'closeOnEscape' => $closeOnEscape,
+                'autoClose' => $autoClose,
+                'autoCloseDelay' => $autoCloseDelay
             ]);
 
             return sprintf(
-                '<div class="%s" id="%s" %s>
+                '<div %s %s>
                     <div class="%s" data-effect="%s">
                         %s
                         <div class="%s" style="%s" role="dialog" aria-modal="true" aria-label="%s">
@@ -170,8 +196,7 @@ class OffcanvasSidebarBlock extends Block
                         </div>
                     </div>
                 </div>',
-                esc_attr(implode(' ', $wrapperClasses)),
-                esc_attr($blockId),
+                $wrapper_attributes,
                 $dataAttributes,
                 esc_attr(implode(' ', $containerClasses)),
                 esc_attr($animationEffect),
@@ -519,7 +544,14 @@ class OffcanvasSidebarBlock extends Block
     {
         $dataAttrs = [];
         foreach ($attributes as $key => $value) {
-            $dataAttrs[] = sprintf('data-%s="%s"', esc_attr($key), esc_attr($value ? 'true' : 'false'));
+            // Handle different data types
+            if (is_bool($value)) {
+                $dataAttrs[] = sprintf('data-%s="%s"', esc_attr($key), esc_attr($value ? 'true' : 'false'));
+            } elseif (is_numeric($value)) {
+                $dataAttrs[] = sprintf('data-%s="%s"', esc_attr($key), esc_attr($value));
+            } else {
+                $dataAttrs[] = sprintf('data-%s="%s"', esc_attr($key), esc_attr($value));
+            }
         }
         return implode(' ', $dataAttrs);
     }
