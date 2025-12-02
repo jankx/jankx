@@ -568,6 +568,7 @@ Common helper functions được load tự động khi framework khởi động.
 6. **Testing**: Viết tests cho mọi service và feature mới
 7. **Documentation**: Document code với DocBlocks
 8. **PSR Standards**: Tuân thủ PSR-12 coding standards
+9. **No Fallback Processing**: Không chấp nhận fallback trong xử lý, khi lỗi sẽ handle lỗi chứ không tạo fallback.
 
 ## File Naming Conventions
 
