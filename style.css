@@ -2,13 +2,23 @@
 Theme Name: Jankx Framework
 Theme URI: https://wordpress.puleeno.com/jankx
 Version: 2.0.0
-Build Times: 5
+Build Times: 6
 Description: Jankx is a powerful WordPress theme framework. High performance, compatible, easy to use and develop.
 Tags: SEO, landing-page, muli-layouts
 Author: Puleeno Nguyen
 Author URI: https://puleeno.com
 Text Domain: jankx
 */
+iframe {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  vertical-align: middle;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+}
+
 @media (min-width: 768px) {
   .wp-site-blocks .wp-block-site-logo img {
     height: auto;
@@ -63,6 +73,64 @@ Text Domain: jankx
 
 .text-line-6 {
   -webkit-line-clamp: 6;
+}
+
+@media (max-width: 767.98px) {
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023.98px) {
+  .hide-tablet {
+    display: none !important;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1439.98px) {
+  .hide-desktop {
+    display: none !important;
+  }
+}
+
+@media (min-width: 1440px) {
+  .hide-fluid {
+    display: none !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .only-mobile {
+    display: none !important;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .only-tablet {
+    display: none !important;
+  }
+}
+@media (min-width: 1024px) {
+  .only-tablet {
+    display: none !important;
+  }
+}
+
+@media (max-width: 1023.98px) {
+  .only-desktop {
+    display: none !important;
+  }
+}
+@media (min-width: 1440px) {
+  .only-desktop {
+    display: none !important;
+  }
+}
+
+@media (max-width: 1439.98px) {
+  .only-fluid {
+    display: none !important;
+  }
 }
 
 /*!************ =*= ****************
