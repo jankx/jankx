@@ -220,20 +220,237 @@ $url = Url::asset('css/style.css');
 
 ### 7. Gutenberg Integration
 
-**Block Structure**:
+Hệ thống Gutenberg blocks trong Jankx Framework cho phép tạo các custom blocks với editor và frontend tương đồng. Blocks được khai báo trong `resources/blocks/`, đăng ký qua PHP class extends `Block.php`, và quản lý bởi `GutenbergService`.
+
+#### 7.1. Cấu trúc Block
+
+Blocks được khai báo trong thư mục `resources/blocks/<block-name>/` với cấu trúc như sau:
+
 ```
 resources/blocks/{block-name}/
-├── index.js                  # Block editor logic (React/JSX)
-├── block.json                # Block configuration
-├── style.css                 # Block styles
-├── editor.css                # Editor-only styles
-└── build/                    # Compiled assets
+├── block.json                # Block configuration (metadata, attributes, supports)
+├── index.tsx (hoặc index.js) # Block editor logic (React/JSX)
+├── edit.tsx                  # Editor component (optional)
+├── save.tsx                  # Save component (optional, nếu dynamic thì return null)
+├── frontend.ts               # Frontend JavaScript (nếu cần)
+├── style.scss                # Block styles (frontend)
+├── editor.scss               # Editor-only styles
+└── build/                    # Compiled assets (tự động generate)
+    ├── index.js              # Compiled editor script
+    ├── index.asset.php       # Asset dependencies
+    ├── style.css             # Compiled frontend styles
+    ├── editor.css            # Compiled editor styles
+    └── frontend.js           # Compiled frontend script (nếu có)
 ```
 
-**Block Registration**:
-- Blocks tự động được discover từ `resources/blocks/`
-- Sử dụng `GutenbergRepository` để register blocks
-- Support cả PHP và JavaScript-based blocks
+**Ví dụ**: Block `language-switcher` được khai báo tại:
+```
+resources/blocks/language-switcher/
+```
+
+#### 7.2. Block Configuration (block.json)
+
+File `block.json` định nghĩa metadata và cấu hình của block:
+
+```json
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "name": "jankx/block-name",
+    "title": "Block Title",
+    "category": "jankx",
+    "icon": "icon-name",
+    "description": "Block description",
+    "keywords": ["keyword1", "keyword2"],
+    "textdomain": "jankx",
+    "supports": {
+        "html": false,
+        "align": ["wide", "full"],
+        "spacing": {
+            "margin": true,
+            "padding": true
+        }
+    },
+    "attributes": {
+        "attributeName": {
+            "type": "string",
+            "default": "defaultValue"
+        }
+    },
+    "editorScript": "file:./build/index.js",
+    "viewScript": "file:./build/frontend.js",
+    "style": "file:./build/style.css",
+    "editorStyle": "file:./build/editor.css"
+}
+```
+
+**Quan trọng**: 
+- Block name phải có prefix `jankx/` (ví dụ: `jankx/language-switcher`)
+- Category nên là `jankx` để hiển thị trong category riêng
+- Attributes phải khớp giữa `block.json` và TypeScript/PHP code
+
+#### 7.3. Editor và Frontend Phải Tương Đồng
+
+**Nguyên tắc quan trọng**: Editor preview và frontend rendering phải tương đồng, không có sai lệch.
+
+- **Editor (index.tsx)**: Hiển thị preview trong Gutenberg editor, phải giống với frontend
+- **Frontend (PHP render)**: Render block trên frontend, phải giống với editor preview
+- **Styles**: CSS/SCSS phải áp dụng đồng nhất cho cả editor và frontend
+
+Để đảm bảo tương đồng:
+- Sử dụng cùng class names cho cả editor và frontend
+- Logic rendering nên được tái sử dụng giữa editor và frontend
+- Test block trên cả editor và frontend để đảm bảo không có sai lệch
+
+#### 7.4. Đăng Ký Block trong PHP
+
+Để đăng ký block, bạn cần tạo một PHP class extends class `Block` và đăng ký vào registry:
+
+**Bước 1: Tạo Block Class**
+
+Tạo file PHP class trong thư mục:
+```
+includes/framework/Gutenberg/Blocks/{BlockName}Block.php
+```
+
+Ví dụ: `LanguageSwitcherBlock.php` tại:
+```
+includes/framework/Gutenberg/Blocks/LanguageSwitcherBlock.php
+```
+
+**Bước 2: Extend Block Base Class**
+
+Block class phải extends `Jankx\Gutenberg\Block`:
+
+```php
+<?php
+
+namespace Jankx\Gutenberg\Blocks;
+
+use Jankx\Gutenberg\Block;
+
+class LanguageSwitcherBlock extends Block
+{
+    /**
+     * Block ID - phải khớp với name trong block.json
+     *
+     * @var string
+     */
+    protected $blockId = 'jankx/language-switcher';
+
+    /**
+     * Render the block content
+     *
+     * @param array $attributes Block attributes
+     * @param string $content Block content
+     * @return string Rendered HTML
+     */
+    public function render($attributes, $content = '')
+    {
+        // Block rendering logic
+        // Phải tương đồng với editor preview
+        
+        return '<div class="my-block">...</div>';
+    }
+}
+```
+
+**Các method quan trọng của Block class**:
+
+- `getBlockId()`: Trả về block ID (name của block)
+- `register()`: Đăng ký block với WordPress (tự động gọi)
+- `render($attributes, $content)`: Render block trên frontend (optional, nếu block là dynamic)
+
+**Block Base Class Location**:
+```
+includes/framework/Gutenberg/Block.php
+```
+
+**Bước 3: Đăng ký Block vào Registry**
+
+Sau khi tạo Block class, bạn cần đăng ký nó trong `GutenbergService`:
+
+**File**: `includes/framework/Services/GutenbergService.php`
+
+Đăng ký block bằng cách:
+
+**Option 1: Đăng ký trong method `getBlocks()`** (nếu method này tồn tại và được sử dụng)
+
+**Option 2: Đăng ký trực tiếp trong repository** thông qua `GutenbergService`:
+
+```php
+use Jankx\Gutenberg\Blocks\LanguageSwitcherBlock;
+
+// Trong GutenbergService hoặc Service Provider
+$this->repository->registerBlock(LanguageSwitcherBlock::class);
+```
+
+**Option 3: Sử dụng action hook** (nếu có):
+
+```php
+add_action('jankx/gutenberg/register-blocks', function($repository, $app) {
+    $repository->registerBlock(LanguageSwitcherBlock::class);
+}, 10, 2);
+```
+
+**Cách đăng ký hiện tại**:
+
+Blocks được đăng ký trong `GutenbergService` thông qua:
+- Method `initBlocks()`: Khởi tạo và đăng ký blocks từ repository
+- Method `registerDefaultBlocks()`: Đăng ký các blocks mặc định (nếu có)
+
+Để thêm block mới, bạn có thể:
+1. Thêm vào method `registerDefaultBlocks()` trong `GutenbergService.php`
+2. Hoặc đăng ký qua action hook `jankx/gutenberg/register-blocks`
+
+#### 7.5. Block Repository
+
+`GutenbergRepository` quản lý việc lưu trữ và đăng ký blocks:
+
+**Location**: `includes/framework/Gutenberg/GutenbergRepository.php`
+
+**Các method chính**:
+- `registerBlock($blockClass, $blockPath = null)`: Đăng ký block
+- `getBlock($blockName)`: Lấy block instance
+- `getBlockPath($blockClass)`: Lấy đường dẫn của block
+- `getBlocks()`: Lấy tất cả registered blocks
+- `getInstances()`: Lấy tất cả block instances
+
+#### 7.6. Quy trình Tạo Block Mới
+
+1. **Tạo cấu trúc thư mục block**:
+   ```
+   resources/blocks/my-new-block/
+   ├── block.json
+   ├── index.tsx
+   ├── style.scss
+   └── editor.scss
+   ```
+
+2. **Định nghĩa block.json** với metadata và attributes
+
+3. **Viết editor logic** trong `index.tsx` (React/TypeScript)
+
+4. **Tạo Block PHP class**:
+   ```
+   includes/framework/Gutenberg/Blocks/MyNewBlock.php
+   ```
+
+5. **Implement render method** trong Block class (nếu block là dynamic)
+
+6. **Đăng ký block** trong `GutenbergService.php`
+
+7. **Build assets**: Chạy `npm run build` để compile TypeScript/SCSS
+
+8. **Test block**: Kiểm tra trên editor và frontend để đảm bảo tương đồng
+
+#### 7.7. Ví dụ Hoàn Chỉnh
+
+**Block: Language Switcher**
+
+- **Block folder**: `resources/blocks/language-switcher/`
+- **Block PHP class**: `includes/framework/Gutenberg/Blocks/LanguageSwitcherBlock.php`
+- **Block ID**: `jankx/language-switcher`
+- **Đăng ký**: Trong `GutenbergService.php` qua repository
 
 **Custom Blocks**:
 - Extend `Jankx\Gutenberg\Block` class cho PHP blocks
@@ -388,28 +605,117 @@ class CustomServiceProvider extends ServiceProvider
 
 ### 2. Tạo Gutenberg Block
 
-**Bước 1**: Tạo block structure
-```bash
+Quy trình đầy đủ để tạo một Gutenberg block mới:
+
+**Bước 1**: Tạo cấu trúc thư mục block
+```
 resources/blocks/my-block/
-├── index.js
-├── block.json
-└── style.css
+├── block.json          # Block metadata và attributes
+├── index.tsx           # Editor logic (React/TypeScript)
+├── style.scss          # Frontend styles
+├── editor.scss         # Editor-only styles
+└── frontend.ts         # Frontend JavaScript (nếu cần)
 ```
 
-**Bước 2**: Đăng ký block trong PHP (nếu cần custom logic)
+**Bước 2**: Định nghĩa `block.json`
+```json
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "name": "jankx/my-block",
+    "title": "My Block",
+    "category": "jankx",
+    "icon": "star",
+    "description": "Block description",
+    "attributes": {
+        "myAttribute": {
+            "type": "string",
+            "default": "defaultValue"
+        }
+    },
+    "editorScript": "file:./build/index.js",
+    "style": "file:./build/style.css",
+    "editorStyle": "file:./build/editor.css"
+}
+```
+
+**Bước 3**: Viết editor logic trong `index.tsx`
+```typescript
+import { registerBlockType } from '@wordpress/blocks';
+import { useBlockProps } from '@wordpress/block-editor';
+
+registerBlockType('jankx/my-block', {
+    edit: ({ attributes, setAttributes }) => {
+        const blockProps = useBlockProps();
+        return (
+            <div {...blockProps}>
+                {/* Editor preview - phải tương đồng với frontend */}
+            </div>
+        );
+    },
+    save: () => null // Dynamic block
+});
+```
+
+**Bước 4**: Tạo Block PHP class
 ```php
+// includes/framework/Gutenberg/Blocks/MyBlock.php
+<?php
+
+namespace Jankx\Gutenberg\Blocks;
+
 use Jankx\Gutenberg\Block;
 
 class MyBlock extends Block
 {
-    protected $name = 'jankx/my-block';
+    /**
+     * Block ID - phải khớp với name trong block.json
+     *
+     * @var string
+     */
+    protected $blockId = 'jankx/my-block';
     
-    public function render($attributes, $content)
+    /**
+     * Render block trên frontend
+     * Phải tương đồng với editor preview
+     *
+     * @param array $attributes Block attributes
+     * @param string $content Block content
+     * @return string Rendered HTML
+     */
+    public function render($attributes, $content = '')
     {
         // Block rendering logic
+        // Đảm bảo output tương đồng với editor preview
+        
+        return '<div class="my-block">...</div>';
     }
 }
 ```
+
+**Bước 5**: Đăng ký block trong `GutenbergService.php`
+```php
+// includes/framework/Services/GutenbergService.php
+use Jankx\Gutenberg\Blocks\MyBlock;
+
+// Trong method getBlocks() hoặc registerDefaultBlocks()
+$this->repository->registerBlock(MyBlock::class);
+```
+
+**Bước 6**: Build assets
+```bash
+npm run build
+```
+
+**Bước 7**: Test block
+- Kiểm tra block hiển thị đúng trong editor
+- Kiểm tra block render đúng trên frontend
+- Đảm bảo editor và frontend tương đồng, không có sai lệch
+
+**Lưu ý quan trọng**:
+- Block ID (`$blockId`) phải khớp với `name` trong `block.json`
+- Editor preview và frontend render phải tương đồng
+- Block class phải extends `Jankx\Gutenberg\Block`
+- File Block class lưu tại `includes/framework/Gutenberg/Blocks/{BlockName}Block.php`
 
 ### 3. Sử dụng Facades
 
