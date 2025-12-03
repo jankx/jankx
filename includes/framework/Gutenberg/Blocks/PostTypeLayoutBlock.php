@@ -21,6 +21,7 @@ use Jankx\Layouts\PostLayout\PostLayoutManager;
 use Jankx\Multilingual\MultilingualFactory;
 use Jankx\Query\PostTypeLayoutQueryHelper;
 use Jankx\Rest\PostTypeLayoutAjaxHandler;
+use Jankx\Services\DefaultThumbnailService;
 use WP_Post;
 
 class PostTypeLayoutBlock extends Block
@@ -49,6 +50,7 @@ class PostTypeLayoutBlock extends Block
     protected ?AttributeSanitizer $attributeSanitizer = null;
     protected ?AjaxResponder $ajaxResponder = null;
     protected ?Renderer $rendererService = null;
+    protected ?DefaultThumbnailService $thumbnailService = null;
 
     /**
      * Initialize the block
@@ -379,16 +381,31 @@ class PostTypeLayoutBlock extends Block
         $attributes['_locale'] = get_locale();
 
         $this->ensureServices();
-        return $this->rendererService->render($attributes, $content, $block);
+
+        if ($this->thumbnailService->isEnabled()) {
+            $this->thumbnailService->boot();
+        }
+
+        try {
+            return $this->rendererService->render($attributes, $content, $block);
+        } finally {
+            if ($this->thumbnailService->isEnabled()) {
+                $this->thumbnailService->unload();
+            }
+        }
     }
 
     protected function ensureServices(): void
     {
-        if ($this->attributeSanitizer && $this->ajaxResponder && $this->rendererService) {
+        if ($this->attributeSanitizer && $this->ajaxResponder && $this->rendererService && $this->thumbnailService) {
             return;
         }
 
         $layoutManager = $this->getLayoutManager();
+
+        if (!$this->thumbnailService) {
+            $this->thumbnailService = new DefaultThumbnailService();
+        }
 
         if (!$this->attributeSanitizer) {
             $this->attributeSanitizer = new AttributeSanitizer($layoutManager);
