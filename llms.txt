@@ -876,6 +876,315 @@ Common helper functions được load tự động khi framework khởi động.
 8. **PSR Standards**: Tuân thủ PSR-12 coding standards
 9. **No Fallback Processing**: Không chấp nhận fallback trong xử lý, khi lỗi sẽ handle lỗi chứ không tạo fallback.
 
+## JavaScript/TypeScript Coding Rules
+
+### Quy tắc Bắt Buộc
+
+**1. TypeScript là Bắt Buộc**
+- Tất cả code JavaScript phải được viết bằng TypeScript
+- Không chấp nhận file `.js` cho code mới, chỉ sử dụng `.ts` hoặc `.tsx`
+- File extension: `.ts` cho logic thuần, `.tsx` cho React components
+
+**2. Type Annotations là Bắt Buộc**
+- Tất cả biến, tham số (parameters), và return types phải có type annotations rõ ràng
+- Không được bỏ qua type annotations, kể cả khi TypeScript có thể infer được
+
+**Ví dụ Đúng**:
+```typescript
+// ✅ Đúng: Có type annotations đầy đủ
+function calculateTotal(items: Item[]): number {
+    return items.reduce((sum: number, item: Item): number => {
+        return sum + item.price;
+    }, 0);
+}
+
+interface User {
+    id: number;
+    name: string;
+    email: string;
+}
+
+const user: User = {
+    id: 1,
+    name: 'John',
+    email: 'john@example.com'
+};
+
+// ✅ Đúng: Function parameters có type
+function greetUser(user: User, message: string): void {
+    console.log(`${message}, ${user.name}!`);
+}
+```
+
+**Ví dụ Sai**:
+```typescript
+// ❌ Sai: Thiếu type annotations
+function calculateTotal(items) {
+    return items.reduce((sum, item) => {
+        return sum + item.price;
+    }, 0);
+}
+
+// ❌ Sai: Biến không có type
+const user = {
+    id: 1,
+    name: 'John',
+    email: 'john@example.com'
+};
+
+// ❌ Sai: Parameters không có type
+function greetUser(user, message) {
+    console.log(`${message}, ${user.name}!`);
+}
+```
+
+**3. Cấm Sử Dụng `any`**
+- **Tuyệt đối không được sử dụng type `any`**
+- Nếu không biết chính xác type, sử dụng `unknown` và type guard
+- Sử dụng `unknown` khi cần xử lý dữ liệu không chắc chắn type
+
+**Ví dụ Đúng**:
+```typescript
+// ✅ Đúng: Sử dụng unknown và type guard
+function processData(data: unknown): string {
+    if (typeof data === 'string') {
+        return data.toUpperCase();
+    }
+    if (typeof data === 'number') {
+        return data.toString();
+    }
+    throw new Error('Invalid data type');
+}
+
+// ✅ Đúng: Sử dụng generic types
+function getValue<T>(obj: Record<string, T>, key: string): T | undefined {
+    return obj[key];
+}
+
+// ✅ Đúng: Sử dụng union types
+function formatValue(value: string | number): string {
+    if (typeof value === 'number') {
+        return value.toFixed(2);
+    }
+    return value;
+}
+```
+
+**Ví dụ Sai**:
+```typescript
+// ❌ Sai: Sử dụng any
+function processData(data: any): string {
+    return data.toString();
+}
+
+// ❌ Sai: Biến có type any
+const result: any = fetchData();
+
+// ❌ Sai: Parameter có type any
+function handleEvent(event: any): void {
+    console.log(event.target);
+}
+```
+
+**4. Interface và Type Definitions**
+- Định nghĩa interface cho tất cả objects, props, và data structures
+- Sử dụng interface cho objects, type aliases cho unions/primitives
+- Đặt tên interface với prefix `I` hoặc không (tuỳ convention của project)
+
+**Ví dụ Đúng**:
+```typescript
+// ✅ Đúng: Interface cho object
+interface BlockAttributes {
+    title: string;
+    content: string;
+    isVisible: boolean;
+}
+
+// ✅ Đúng: Interface cho component props
+interface ButtonProps {
+    label: string;
+    onClick: (event: MouseEvent) => void;
+    disabled?: boolean;
+}
+
+// ✅ Đúng: Type alias cho union
+type Status = 'pending' | 'approved' | 'rejected';
+
+// ✅ Đúng: Generic interface
+interface ApiResponse<T> {
+    data: T;
+    status: number;
+    message: string;
+}
+```
+
+**5. Function Signatures**
+- Tất cả functions phải có return type annotations
+- Arrow functions cũng phải có return type
+- Async functions phải có return type `Promise<T>`
+
+**Ví dụ Đúng**:
+```typescript
+// ✅ Đúng: Function có return type
+function multiply(a: number, b: number): number {
+    return a * b;
+}
+
+// ✅ Đúng: Arrow function có return type
+const divide = (a: number, b: number): number => {
+    return a / b;
+};
+
+// ✅ Đúng: Async function có return type
+async function fetchUser(id: number): Promise<User> {
+    const response = await fetch(`/api/users/${id}`);
+    return response.json();
+}
+
+// ✅ Đúng: Void return type
+function logMessage(message: string): void {
+    console.log(message);
+}
+```
+
+**6. React Components**
+- Tất cả component props phải có interface riêng
+- Component function phải có return type `JSX.Element` hoặc `React.ReactElement`
+- Hooks phải có type annotations cho state và setters
+
+**Ví dụ Đúng**:
+```typescript
+// ✅ Đúng: Component với typed props
+interface MyComponentProps {
+    title: string;
+    count: number;
+    onUpdate: (value: number) => void;
+}
+
+function MyComponent({ title, count, onUpdate }: MyComponentProps): JSX.Element {
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [data, setData] = useState<string[]>([]);
+
+    return <div>{title}</div>;
+}
+
+// ✅ Đúng: Functional component với explicit return type
+const Button: React.FC<ButtonProps> = ({ label, onClick }): JSX.Element => {
+    return <button onClick={onClick}>{label}</button>;
+};
+```
+
+**7. Event Handlers**
+- Tất cả event handlers phải có type annotations cho event parameter
+- Sử dụng React types: `React.MouseEvent`, `React.ChangeEvent`, etc.
+
+**Ví dụ Đúng**:
+```typescript
+// ✅ Đúng: Event handler có type
+function handleClick(event: React.MouseEvent<HTMLButtonElement>): void {
+    event.preventDefault();
+    console.log('Button clicked');
+}
+
+// ✅ Đúng: Form event handler
+function handleSubmit(event: React.FormEvent<HTMLFormElement>): void {
+    event.preventDefault();
+    // Handle form submission
+}
+
+// ✅ Đúng: Input change handler
+function handleInputChange(event: React.ChangeEvent<HTMLInputElement>): void {
+    const value: string = event.target.value;
+    setValue(value);
+}
+```
+
+**8. Arrays và Collections**
+- Arrays phải có type annotations: `string[]`, `number[]`, `Item[]`
+- Sử dụng generic types cho complex collections: `Array<T>`, `Map<K, V>`, `Set<T>`
+
+**Ví dụ Đúng**:
+```typescript
+// ✅ Đúng: Array với type
+const names: string[] = ['John', 'Jane', 'Bob'];
+const numbers: number[] = [1, 2, 3, 4, 5];
+
+// ✅ Đúng: Generic array
+const items: Array<Item> = [];
+
+// ✅ Đúng: Map và Set với types
+const userMap: Map<number, User> = new Map();
+const userIds: Set<number> = new Set();
+```
+
+**9. Optional và Nullable Types**
+- Sử dụng `?` cho optional properties: `name?: string`
+- Sử dụng union với `null` cho nullable: `value: string | null`
+- Luôn kiểm tra null/undefined trước khi sử dụng
+
+**Ví dụ Đúng**:
+```typescript
+// ✅ Đúng: Optional property
+interface Config {
+    apiKey: string;
+    timeout?: number;
+    retries?: number;
+}
+
+// ✅ Đúng: Nullable type
+function findUser(id: number): User | null {
+    // Return null if not found
+}
+
+// ✅ Đúng: Null check
+const user: User | null = findUser(1);
+if (user !== null) {
+    console.log(user.name);
+}
+```
+
+**10. Type Guards và Assertions**
+- Sử dụng type guards để narrow types
+- Sử dụng `as` assertions chỉ khi thực sự cần thiết và đã verify type
+- Prefer type guards over type assertions
+
+**Ví dụ Đúng**:
+```typescript
+// ✅ Đúng: Type guard
+function isString(value: unknown): value is string {
+    return typeof value === 'string';
+}
+
+function process(value: unknown): void {
+    if (isString(value)) {
+        // TypeScript knows value is string here
+        console.log(value.toUpperCase());
+    }
+}
+
+// ✅ Đúng: Type assertion khi đã verify
+const element = document.getElementById('myId') as HTMLInputElement;
+```
+
+### Tóm Tắt Quy Tắc
+
+1. ✅ **TypeScript bắt buộc** - Không dùng `.js`, chỉ dùng `.ts`/`.tsx`
+2. ✅ **Type annotations bắt buộc** - Tất cả biến, params, return types phải có type
+3. ❌ **Cấm `any`** - Tuyệt đối không sử dụng `any`, dùng `unknown` thay thế
+4. ✅ **Interface cho objects** - Định nghĩa interface cho mọi object structure
+5. ✅ **Function return types** - Tất cả functions phải có return type
+6. ✅ **React component types** - Props phải có interface, component có return type
+7. ✅ **Event handler types** - Event handlers phải có type annotations
+8. ✅ **Array types** - Arrays phải có type annotations
+9. ✅ **Optional/Nullable** - Sử dụng `?` và union types đúng cách
+10. ✅ **Type guards** - Prefer type guards over type assertions
+
+### Linter và Type Checking
+
+- Sử dụng TypeScript strict mode trong `tsconfig.json`
+- Enable `noImplicitAny`, `strictNullChecks`, `strictFunctionTypes`
+- ESLint rules: `@typescript-eslint/no-explicit-any`, `@typescript-eslint/explicit-function-return-type`
+
 ## File Naming Conventions
 
 - **Classes**: PascalCase (e.g., `MyServiceProvider.php`)
