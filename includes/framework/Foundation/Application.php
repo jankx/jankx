@@ -7,6 +7,7 @@ use Illuminate\Container\Container;
 use Jankx\Config\Repository;
 use Jankx\Contracts\LoggerInterface;
 use Jankx\Support\Providers\Admin\JankxAdminPagesServiceProvider;
+use Jankx\Support\Providers\ContentLayoutServiceProvider;
 use Jankx\Support\Providers\ExtensionServiceProvider;
 use Jankx\Support\Providers\FontIconsServiceProvider;
 use Jankx\Support\Providers\FontsServiceProvider;
@@ -73,6 +74,7 @@ class Application extends Container
         ExtensionServiceProvider::class,
         FontsServiceProvider::class,
         FontIconsServiceProvider::class,
+        ContentLayoutServiceProvider::class,
     ];
 
     /**

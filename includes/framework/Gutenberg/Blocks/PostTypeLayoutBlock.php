@@ -323,7 +323,7 @@ class PostTypeLayoutBlock extends Block
     public function enqueueEditorAssets(): void
     {
         $asset_file = $this->blockPath . '/build/index.asset.php';
-        
+
         if (!file_exists($asset_file)) {
             return;
         }
@@ -336,7 +336,7 @@ class PostTypeLayoutBlock extends Block
         }
 
         $layouts = $this->getLayoutManager()->getLayouts(['field' => 'all']);
-        
+
         wp_localize_script(
             $script_handle,
             'jankxSupportedPostTypeLayouts',
@@ -345,7 +345,7 @@ class PostTypeLayoutBlock extends Block
 
         // Localize query options including query presets
         $query_options = \Jankx\Gutenberg\QueryOptions::getOptions();
-        
+
         wp_localize_script(
             $script_handle,
             'jankxQueryOptions',
@@ -387,7 +387,7 @@ class PostTypeLayoutBlock extends Block
         }
 
         try {
-            return $this->rendererService->render($attributes, $content, $block);
+        return $this->rendererService->render($attributes, $content, $block);
         } finally {
             if ($this->thumbnailService->isEnabled()) {
                 $this->thumbnailService->unload();

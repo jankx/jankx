@@ -67,6 +67,23 @@
             "width": true,
             "style": true
         }
+    },
+    "attributes": {
+        "layout": {
+            "type": "object",
+            "default": {
+                "type": "default",
+                "columnCount": 3
+            }
+        },
+        "contentLayout": {
+            "type": "string",
+            "default": "default"
+        },
+        "className": {
+            "type": "string",
+            "default": ""
+        }
     }
 }
 

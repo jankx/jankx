@@ -273,6 +273,11 @@ trait PostTemplateRendererTrait
             $classes[] = 'post-type-layout-' . sanitize_html_class($wrapperLayout);
         }
 
+        // Content layout from template block attribute (e.g., default, fullwidth, boxed, grid)
+        if (!empty($templateAttrs['contentLayout'])) {
+            $classes[] = 'post-layout--' . sanitize_html_class($templateAttrs['contentLayout']);
+        }
+
         $layoutType = $this->getOption('layout', $options['layout'] ?? '');
         $columns = (int) $this->getOption('columns', $options['columns'] ?? 0);
 

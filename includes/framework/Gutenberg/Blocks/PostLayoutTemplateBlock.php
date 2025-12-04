@@ -3,6 +3,7 @@
 namespace Jankx\Gutenberg\Blocks;
 
 use Jankx\Gutenberg\Block;
+use Jankx\Layouts\ContentLayout\ContentLayoutManager;
 use Jankx\Layouts\PostLayout\Contracts\PostLayoutInterface;
 use Jankx\Layouts\PostLayout\Generators\PostTemplateBlockGenerator;
 use WP_Query;
@@ -22,6 +23,35 @@ class PostLayoutTemplateBlock extends Block
      * @var string
      */
     protected $blockId = 'jankx/post-layout-template';
+
+    /**
+     * Initialize the block
+     *
+     * @return void
+     */
+    public function init()
+    {
+        add_action('enqueue_block_editor_assets', [$this, 'enqueueEditorAssets']);
+    }
+
+    /**
+     * Enqueue editor assets and localize data
+     *
+     * @return void
+     */
+    public function enqueueEditorAssets()
+    {
+        $manager = ContentLayoutManager::getInstance();
+        $presets = $manager->getForJs();
+        
+        // Inject data using wp_add_inline_script with a script that's always loaded in editor
+        // Use wp-block-editor which is always available in Gutenberg editor
+        wp_add_inline_script(
+            'wp-block-editor',
+            'window.jankxContentLayoutPresets = ' . wp_json_encode($presets) . ';',
+            'before'
+        );
+    }
 
     /**
      * Render callback cho block post layout template.
