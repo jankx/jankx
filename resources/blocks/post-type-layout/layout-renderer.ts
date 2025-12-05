@@ -224,6 +224,7 @@ export function renderLayout(
     options: Record<string, any> = {}
 ): string {
     const { itemWrapper, container, emptyState } = structure;
+    const isCarousel = structure.layout === 'carousel';
 
     if (posts.length === 0 && emptyState) {
         return renderElement(emptyState);
@@ -233,7 +234,29 @@ export function renderLayout(
         const itemHtml = renderPostItem(postItemStructure, post, options);
         
         if (itemWrapper) {
-            // Replace post-id placeholder with actual post ID
+            // For carousel layout, itemWrapper has nested structure: embla__slide -> article
+            if (isCarousel && itemWrapper.children && itemWrapper.children.length > 0) {
+                // Find the article element inside embla__slide
+                const articleElement = itemWrapper.children[0];
+                const articleWithContent = {
+                    ...articleElement,
+                    attributes: {
+                        ...articleElement.attributes,
+                        id: articleElement.attributes?.id?.toString().replace('{{post-id}}', String(post.id || '')) || `post-${post.id || ''}`,
+                    },
+                    text: itemHtml,
+                    placeholder: undefined, // Remove placeholder since we have content
+                };
+                
+                // Wrap in embla__slide
+                const slideWithArticle = {
+                    ...itemWrapper,
+                    children: [articleWithContent],
+                };
+                return renderElement(slideWithArticle);
+            }
+            
+            // For non-carousel layouts, use simple wrapper
             const wrapperWithId = {
                 ...itemWrapper,
                 attributes: {
@@ -248,6 +271,33 @@ export function renderLayout(
         return itemHtml;
     }).join('');
 
+    // For carousel layout, container has nested structure: div -> embla__viewport -> embla__container
+    if (isCarousel && container.children && container.children.length > 0) {
+        const viewportElement = container.children[0];
+        if (viewportElement.children && viewportElement.children.length > 0) {
+            const containerElement = viewportElement.children[0];
+            // Replace placeholder with actual slides HTML
+            const containerWithSlides = {
+                ...containerElement,
+                text: itemsHtml,
+                placeholder: undefined, // Remove placeholder since we have content
+            };
+            
+            const viewportWithContainer = {
+                ...viewportElement,
+                children: [containerWithSlides],
+            };
+            
+            const carouselWithViewport = {
+                ...container,
+                children: [viewportWithContainer],
+            };
+            
+            return renderElement(carouselWithViewport);
+        }
+    }
+
+    // For non-carousel layouts, use simple container
     const containerWithChildren: LayoutElement = {
         ...container,
         text: itemsHtml,

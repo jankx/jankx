@@ -14,6 +14,7 @@ use Tests\Helpers\HtmlAssertions;
 use Jankx\Layouts\PostLayout\PostLayoutManager;
 use Jankx\Layouts\PostLayout\Supports\GridLayout;
 use Jankx\Layouts\PostLayout\Supports\ListLayout;
+use Jankx\Layouts\PostLayout\Supports\CarouselLayout;
 use Jankx\Gutenberg\Blocks\PostTypeLayoutBlock;
 use WP_Query;
 
@@ -128,6 +129,19 @@ class PostLayoutPhpJsComparisonTest extends TestCase
         $this->assertEquals('list', $listStructure['layout']);
         $this->assertEquals('div', $listStructure['container']['tag']);
         $this->assertEquals('article', $listStructure['itemWrapper']['tag']);
+
+        // Should have carousel layout
+        $this->assertArrayHasKey('carousel', $structures['layouts']);
+        $carouselStructure = $structures['layouts']['carousel'];
+
+        // Verify carousel structure
+        $this->assertEquals('carousel', $carouselStructure['layout']);
+        $this->assertEquals('div', $carouselStructure['container']['tag']);
+        $this->assertContains('post-type-layout-carousel', $carouselStructure['container']['classes']);
+        // Carousel has nested structure: embla__slide -> article
+        $this->assertArrayHasKey('children', $carouselStructure['itemWrapper']);
+        $this->assertEquals('div', $carouselStructure['itemWrapper']['tag']);
+        $this->assertContains('embla__slide', $carouselStructure['itemWrapper']['classes']);
 
         // Post item structure should be complete
         $postItem = $structures['postItem'];
@@ -292,5 +306,91 @@ class PostLayoutPhpJsComparisonTest extends TestCase
             $json = json_encode($structure);
             $this->assertNotFalse($json, "Layout {$layoutName} structure should be JSON serializable");
         }
+    }
+
+    /**
+     * Test that CarouselLayout structure includes all Embla carousel options
+     */
+    public function testCarouselLayoutIncludesAllEmblaOptions()
+    {
+        $layout = new CarouselLayout();
+        $layout->setOptions([
+            'columns' => 4,
+            'slidesToScroll' => 2,
+            'loop' => true,
+            'autoplay' => true,
+            'autoplayDelay' => 5000,
+            'carouselAlign' => 'center',
+            'carouselAxis' => 'x',
+            'carouselDirection' => 'ltr',
+            'carouselStartIndex' => 1,
+            'carouselDuration' => 50,
+            'carouselDragFree' => true,
+            'carouselDragThreshold' => 15,
+            'carouselSkipSnaps' => true,
+            'carouselContainScroll' => 'keepSnaps',
+            'carouselInViewThreshold' => 0.5,
+        ]);
+
+        $structure = $layout->getHtmlStructure();
+        $container = $structure['container'];
+        $attributes = $container['attributes'];
+
+        // Verify all Embla options are present in data attributes
+        $this->assertArrayHasKey('data-embla-carousel', $attributes);
+        $this->assertArrayHasKey('data-align', $attributes);
+        $this->assertArrayHasKey('data-axis', $attributes);
+        $this->assertArrayHasKey('data-direction', $attributes);
+        $this->assertArrayHasKey('data-start-index', $attributes);
+        $this->assertArrayHasKey('data-duration', $attributes);
+        $this->assertArrayHasKey('data-drag-threshold', $attributes);
+        $this->assertArrayHasKey('data-contain-scroll', $attributes);
+        $this->assertArrayHasKey('data-in-view-threshold', $attributes);
+        $this->assertArrayHasKey('data-loop', $attributes);
+        $this->assertArrayHasKey('data-autoplay', $attributes);
+        $this->assertArrayHasKey('data-autoplay-delay', $attributes);
+        $this->assertArrayHasKey('data-drag-free', $attributes);
+        $this->assertArrayHasKey('data-skip-snaps', $attributes);
+
+        // Verify values
+        $this->assertEquals('center', $attributes['data-align']);
+        $this->assertEquals('x', $attributes['data-axis']);
+        $this->assertEquals('ltr', $attributes['data-direction']);
+        $this->assertEquals('1', $attributes['data-start-index']);
+        $this->assertEquals('50', $attributes['data-duration']);
+        $this->assertEquals('15', $attributes['data-drag-threshold']);
+        $this->assertEquals('keepSnaps', $attributes['data-contain-scroll']);
+        $this->assertEquals('0.5', $attributes['data-in-view-threshold']);
+        $this->assertEquals('true', $attributes['data-loop']);
+        $this->assertEquals('true', $attributes['data-autoplay']);
+        $this->assertEquals('5000', $attributes['data-autoplay-delay']);
+        $this->assertEquals('true', $attributes['data-drag-free']);
+        $this->assertEquals('true', $attributes['data-skip-snaps']);
+    }
+
+    /**
+     * Test that CarouselLayout structure has correct nested viewport/container structure
+     */
+    public function testCarouselLayoutNestedStructure()
+    {
+        $layout = new CarouselLayout();
+        $layout->setOptions(['columns' => 3]);
+
+        $structure = $layout->getHtmlStructure();
+        $container = $structure['container'];
+
+        // Should have nested children: viewport -> container
+        $this->assertArrayHasKey('children', $container);
+        $this->assertCount(1, $container['children']);
+
+        $viewport = $container['children'][0];
+        $this->assertEquals('div', $viewport['tag']);
+        $this->assertContains('embla__viewport', $viewport['classes']);
+        $this->assertArrayHasKey('children', $viewport);
+        $this->assertCount(1, $viewport['children']);
+
+        $emblaContainer = $viewport['children'][0];
+        $this->assertEquals('div', $emblaContainer['tag']);
+        $this->assertContains('embla__container', $emblaContainer['classes']);
     }
 }

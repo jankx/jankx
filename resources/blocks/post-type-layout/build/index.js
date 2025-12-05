@@ -8,7 +8,7 @@
   \********************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/post-type-layout","version":"1.0.0","title":"Post Type Layout","category":"jankx","icon":"layout","description":"Hiển thị danh sách posts theo layout tùy chỉnh","textdomain":"jankx","editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css","providesContext":{"queryId":"queryId","query":{"postType":"postType","perPage":"postsPerPage","pages":0,"offset":"offset","order":"order","orderBy":"orderBy","inherit":false}},"usesContext":["queryId","query"],"supports":{"html":false,"align":["wide","full"],"anchor":true,"innerBlocks":true,"spacing":{"margin":true,"padding":true,"blockGap":true},"color":{"background":true,"text":true,"link":true,"gradients":true},"background":{"backgroundImage":true,"backgroundSize":true},"typography":{"fontSize":true,"lineHeight":true},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true},"__experimentalLayout":{"allowSwitching":true,"allowInheriting":true,"default":{"type":"constrained"}}},"attributes":{"queryPreset":{"type":"string","default":"custom","enum":["default","related","custom","on-sale","featured","related-products","best-sellers","top-rated","upsells","new-arrivals","recently-viewed"]},"postType":{"type":"string","default":"post"},"postsPerPage":{"type":"number","default":10},"includeStickyPosts":{"type":"boolean","default":false},"layout":{"type":"string","default":"grid"},"columns":{"type":"number","default":3},"columnsTablet":{"type":"number","default":2},"columnsMobile":{"type":"number","default":1},"responsiveColumns":{"type":"object","default":{"desktop":3,"tablet":2,"mobile":1}},"showTitle":{"type":"boolean","default":true},"showExcerpt":{"type":"boolean","default":true},"showFeaturedImage":{"type":"boolean","default":true},"thumbnailPosition":{"type":"string","default":"top","enum":["top","bottom","left","right"]},"imageRatio":{"type":"string","default":""},"showDate":{"type":"boolean","default":true},"showAuthor":{"type":"boolean","default":false},"showPrice":{"type":"boolean","default":true},"showAddToCart":{"type":"boolean","default":true},"showRating":{"type":"boolean","default":false},"excerptLength":{"type":"number","default":55},"orderBy":{"type":"string","default":"date"},"order":{"type":"string","default":"DESC"},"queryId":{"type":"number"},"enablePagination":{"type":"boolean","default":false},"offset":{"type":"number","default":0},"taxQuery":{"type":"array","default":[]},"metaQuery":{"type":"array","default":[]},"keyword":{"type":"string","default":""},"authorIn":{"type":"array","default":[]},"authorNotIn":{"type":"array","default":[]},"postIn":{"type":"array","default":[]},"postNotIn":{"type":"array","default":[]},"metaKey":{"type":"string","default":""},"metaType":{"type":"string","default":""},"postStatus":{"type":"array","default":["publish"]},"postParent":{"type":"number","default":0},"postParentIn":{"type":"array","default":[]},"postParentNotIn":{"type":"array","default":[]},"customQueryId":{"type":"string","default":""},"paginationStyle":{"type":"string","default":"numbers","enum":["numbers","simple","arrows","load-more"]},"paginationAlignment":{"type":"string","default":"center","enum":["left","center","right"]},"showPaginationNumbers":{"type":"boolean","default":true},"paginationPrevText":{"type":"string","default":""},"paginationNextText":{"type":"string","default":""},"slidesToScroll":{"type":"number","default":1},"loop":{"type":"boolean","default":false},"autoplay":{"type":"boolean","default":false},"autoplayDelay":{"type":"number","default":3000},"showArrows":{"type":"boolean","default":true},"showDots":{"type":"boolean","default":true}}}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/post-type-layout","version":"1.0.0","title":"Post Type Layout","category":"jankx","icon":"layout","description":"Hiển thị danh sách posts theo layout tùy chỉnh","textdomain":"jankx","editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css","providesContext":{"queryId":"queryId","query":{"postType":"postType","perPage":"postsPerPage","pages":0,"offset":"offset","order":"order","orderBy":"orderBy","inherit":false}},"usesContext":["queryId","query"],"supports":{"html":false,"align":["wide","full"],"anchor":true,"innerBlocks":true,"spacing":{"margin":true,"padding":true,"blockGap":true},"color":{"background":true,"text":true,"link":true,"gradients":true},"background":{"backgroundImage":true,"backgroundSize":true},"typography":{"fontSize":true,"lineHeight":true},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true},"__experimentalLayout":{"allowSwitching":true,"allowInheriting":true,"default":{"type":"constrained"}}},"attributes":{"queryPreset":{"type":"string","default":"custom","enum":["default","related","custom","on-sale","featured","related-products","best-sellers","top-rated","upsells","new-arrivals","recently-viewed"]},"postType":{"type":"string","default":"post"},"postsPerPage":{"type":"number","default":10},"includeStickyPosts":{"type":"boolean","default":false},"layout":{"type":"string","default":"grid"},"columns":{"type":"number","default":3},"columnsTablet":{"type":"number","default":2},"columnsMobile":{"type":"number","default":1},"responsiveColumns":{"type":"object","default":{"desktop":3,"tablet":2,"mobile":1}},"showTitle":{"type":"boolean","default":true},"showExcerpt":{"type":"boolean","default":true},"showFeaturedImage":{"type":"boolean","default":true},"thumbnailPosition":{"type":"string","default":"top","enum":["top","bottom","left","right"]},"imageRatio":{"type":"string","default":""},"showDate":{"type":"boolean","default":true},"showAuthor":{"type":"boolean","default":false},"showPrice":{"type":"boolean","default":true},"showAddToCart":{"type":"boolean","default":true},"showRating":{"type":"boolean","default":false},"excerptLength":{"type":"number","default":55},"orderBy":{"type":"string","default":"date"},"order":{"type":"string","default":"DESC"},"queryId":{"type":"number"},"enablePagination":{"type":"boolean","default":false},"offset":{"type":"number","default":0},"taxQuery":{"type":"array","default":[]},"metaQuery":{"type":"array","default":[]},"keyword":{"type":"string","default":""},"authorIn":{"type":"array","default":[]},"authorNotIn":{"type":"array","default":[]},"postIn":{"type":"array","default":[]},"postNotIn":{"type":"array","default":[]},"metaKey":{"type":"string","default":""},"metaType":{"type":"string","default":""},"postStatus":{"type":"array","default":["publish"]},"postParent":{"type":"number","default":0},"postParentIn":{"type":"array","default":[]},"postParentNotIn":{"type":"array","default":[]},"customQueryId":{"type":"string","default":""},"paginationStyle":{"type":"string","default":"numbers","enum":["numbers","simple","arrows","load-more"]},"paginationAlignment":{"type":"string","default":"center","enum":["left","center","right"]},"showPaginationNumbers":{"type":"boolean","default":true},"paginationPrevText":{"type":"string","default":""},"paginationNextText":{"type":"string","default":""},"slidesToScroll":{"type":"number","default":1},"loop":{"type":"boolean","default":false},"autoplay":{"type":"boolean","default":false},"autoplayDelay":{"type":"number","default":3000},"showArrows":{"type":"boolean","default":true},"showDots":{"type":"boolean","default":true},"carouselAlign":{"type":"string","default":"start","enum":["start","center","end"]},"carouselAxis":{"type":"string","default":"x","enum":["x","y"]},"carouselDirection":{"type":"string","default":"ltr","enum":["ltr","rtl"]},"carouselStartIndex":{"type":"number","default":0},"carouselDuration":{"type":"number","default":25},"carouselDragFree":{"type":"boolean","default":false},"carouselDragThreshold":{"type":"number","default":10},"carouselSkipSnaps":{"type":"boolean","default":false},"carouselContainScroll":{"type":"string","default":"trimSnaps","enum":["false","trimSnaps","keepSnaps"]},"carouselInViewThreshold":{"type":"number","default":0}}}');
 
 /***/ }),
 
@@ -246,13 +246,36 @@ function renderLayout(structure, posts, postItemStructure, options = {}) {
     container,
     emptyState
   } = structure;
+  const isCarousel = structure.layout === 'carousel';
   if (posts.length === 0 && emptyState) {
     return renderElement(emptyState);
   }
   const itemsHtml = posts.map(post => {
     const itemHtml = renderPostItem(postItemStructure, post, options);
     if (itemWrapper) {
-      // Replace post-id placeholder with actual post ID
+      // For carousel layout, itemWrapper has nested structure: embla__slide -> article
+      if (isCarousel && itemWrapper.children && itemWrapper.children.length > 0) {
+        // Find the article element inside embla__slide
+        const articleElement = itemWrapper.children[0];
+        const articleWithContent = {
+          ...articleElement,
+          attributes: {
+            ...articleElement.attributes,
+            id: articleElement.attributes?.id?.toString().replace('{{post-id}}', String(post.id || '')) || `post-${post.id || ''}`
+          },
+          text: itemHtml,
+          placeholder: undefined // Remove placeholder since we have content
+        };
+
+        // Wrap in embla__slide
+        const slideWithArticle = {
+          ...itemWrapper,
+          children: [articleWithContent]
+        };
+        return renderElement(slideWithArticle);
+      }
+
+      // For non-carousel layouts, use simple wrapper
       const wrapperWithId = {
         ...itemWrapper,
         attributes: {
@@ -265,6 +288,31 @@ function renderLayout(structure, posts, postItemStructure, options = {}) {
     }
     return itemHtml;
   }).join('');
+
+  // For carousel layout, container has nested structure: div -> embla__viewport -> embla__container
+  if (isCarousel && container.children && container.children.length > 0) {
+    const viewportElement = container.children[0];
+    if (viewportElement.children && viewportElement.children.length > 0) {
+      const containerElement = viewportElement.children[0];
+      // Replace placeholder with actual slides HTML
+      const containerWithSlides = {
+        ...containerElement,
+        text: itemsHtml,
+        placeholder: undefined // Remove placeholder since we have content
+      };
+      const viewportWithContainer = {
+        ...viewportElement,
+        children: [containerWithSlides]
+      };
+      const carouselWithViewport = {
+        ...container,
+        children: [viewportWithContainer]
+      };
+      return renderElement(carouselWithViewport);
+    }
+  }
+
+  // For non-carousel layouts, use simple container
   const containerWithChildren = {
     ...container,
     text: itemsHtml
@@ -2545,7 +2593,17 @@ function Edit({
     autoplay = false,
     autoplayDelay = 3000,
     showArrows = true,
-    showDots = true
+    showDots = true,
+    carouselAlign = 'start',
+    carouselAxis = 'x',
+    carouselDirection = 'ltr',
+    carouselStartIndex = 0,
+    carouselDuration = 25,
+    carouselDragFree = false,
+    carouselDragThreshold = 10,
+    carouselSkipSnaps = false,
+    carouselContainScroll = 'trimSnaps',
+    carouselInViewThreshold = 0
   } = attributes;
 
   // Preview HTML for editor (generated from structure)
@@ -2553,13 +2611,39 @@ function Edit({
   const [previewHtml, setPreviewHtml] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useState)('');
 
   // Embla Carousel refs for carousel layout preview in editor
-  // Always initialize hook, but only use it when layout is carousel
-  const [emblaRef, emblaApi] = (0,embla_carousel_react__WEBPACK_IMPORTED_MODULE_10__["default"])({
+  // Use a ref to store the viewport element for carousel
+  const carouselViewportRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useRef)(null);
+
+  // Initialize Embla carousel only when layout is carousel
+  const [emblaRef, emblaApi] = (0,embla_carousel_react__WEBPACK_IMPORTED_MODULE_10__["default"])(layout === 'carousel' ? {
     slidesToScroll,
     loop,
-    skipSnaps: false,
-    dragFree: false
-  });
+    skipSnaps: carouselSkipSnaps,
+    dragFree: carouselDragFree,
+    align: carouselAlign,
+    axis: carouselAxis,
+    direction: carouselDirection,
+    startIndex: carouselStartIndex,
+    duration: carouselDuration,
+    dragThreshold: carouselDragThreshold,
+    containScroll: carouselContainScroll === 'false' ? false : carouselContainScroll,
+    inViewThreshold: carouselInViewThreshold
+  } : undefined, [] // Plugins array - autoplay will be handled by frontend JS
+  );
+
+  // Attach emblaRef to viewport element when carousel HTML is rendered
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useEffect)(() => {
+    if (layout === 'carousel' && previewHtml && carouselViewportRef.current && emblaRef) {
+      const viewport = carouselViewportRef.current.querySelector('.embla__viewport');
+      if (viewport) {
+        if (typeof emblaRef === 'function') {
+          emblaRef(viewport);
+        } else if (emblaRef && typeof emblaRef === 'object' && 'current' in emblaRef) {
+          emblaRef.current = viewport;
+        }
+      }
+    }
+  }, [layout, previewHtml, emblaRef]);
 
   // Re-initialize carousel when settings change (for carousel layout only)
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useEffect)(() => {
@@ -2567,7 +2651,7 @@ function Edit({
       // Embla will auto-update when options change via props
       emblaApi.reInit();
     }
-  }, [layout, slidesToScroll, loop, previewHtml, emblaApi]);
+  }, [layout, slidesToScroll, loop, autoplay, autoplayDelay, carouselAlign, carouselAxis, carouselDirection, carouselStartIndex, carouselDuration, carouselDragFree, carouselDragThreshold, carouselSkipSnaps, carouselContainScroll, carouselInViewThreshold, previewHtml, emblaApi]);
 
   // States for taxonomies and authors
   const [taxonomies, setTaxonomies] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useState)([]);
@@ -3735,67 +3819,15 @@ function Edit({
       })]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("div", {
       ...blockProps,
-      children: previewHtml ? layout === 'carousel' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)("div", {
-        className: ['post-type-layout-carousel', columns ? `columns-${columns}` : '', columnsTablet ? `columns-tablet-${columnsTablet}` : '', columnsMobile ? `columns-mobile-${columnsMobile}` : '', (postType || '').toLowerCase() === 'product' ? 'wc-block-product-template' : ''].filter(Boolean).join(' '),
-        style: {
-          '--carousel-columns': String(columns || 3),
-          '--carousel-columns-tablet': String(columnsTablet || 2),
-          '--carousel-columns-mobile': String(columnsMobile || 1)
-        },
-        "data-embla-carousel": "",
-        "data-slides-per-view": String(columns || 3),
-        "data-slides-to-scroll": String(slidesToScroll || 1),
-        "data-loop": loop ? 'true' : undefined,
-        "data-autoplay": autoplay ? 'true' : undefined,
-        "data-autoplay-delay": autoplay ? String(autoplayDelay || 3000) : undefined,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("div", {
-          className: "embla__viewport",
-          ref: emblaRef,
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("div", {
-            className: "embla__container",
-            dangerouslySetInnerHTML: {
-              __html: previewHtml
-            }
-          })
-        }), showArrows !== false && emblaApi ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.Fragment, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("button", {
-            className: "embla__button embla__button--prev",
-            type: "button",
-            onClick: () => emblaApi.scrollPrev(),
-            "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Previous slide', 'jankx'),
-            disabled: loop === false && !emblaApi.canScrollPrev(),
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("svg", {
-              xmlns: "http://www.w3.org/2000/svg",
-              viewBox: "0 0 24 24",
-              fill: "none",
-              stroke: "currentColor",
-              strokeWidth: "2",
-              strokeLinecap: "round",
-              strokeLinejoin: "round",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("path", {
-                d: "M15 18l-6-6 6-6"
-              })
-            })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("button", {
-            className: "embla__button embla__button--next",
-            type: "button",
-            onClick: () => emblaApi.scrollNext(),
-            "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Next slide', 'jankx'),
-            disabled: loop === false && !emblaApi.canScrollNext(),
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("svg", {
-              xmlns: "http://www.w3.org/2000/svg",
-              viewBox: "0 0 24 24",
-              fill: "none",
-              stroke: "currentColor",
-              strokeWidth: "2",
-              strokeLinecap: "round",
-              strokeLinejoin: "round",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("path", {
-                d: "M9 18l6-6-6-6"
-              })
-            })
-          })]
-        }) : null]
+      children: previewHtml ? layout === 'carousel' ?
+      /*#__PURE__*/
+      // For carousel, previewHtml already contains full structure from PHP
+      // Structure: div.post-type-layout-carousel -> div.embla__viewport -> div.embla__container -> div.embla__slide items
+      (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("div", {
+        ref: carouselViewportRef,
+        dangerouslySetInnerHTML: {
+          __html: previewHtml
+        }
       }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("div", {
         dangerouslySetInnerHTML: {
           __html: previewHtml

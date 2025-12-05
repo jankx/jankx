@@ -600,7 +600,7 @@ class PostTypeLayoutBlock extends Block
         }
 
         try {
-        return $this->rendererService->render($attributes, $content, $block);
+            return $this->rendererService->render($attributes, $content, $block);
         } finally {
             if ($this->thumbnailService->isEnabled()) {
                 $this->thumbnailService->unload();

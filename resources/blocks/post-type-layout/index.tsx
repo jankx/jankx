@@ -137,6 +137,16 @@ interface PostTypeLayoutAttributes {
     autoplayDelay?: number;
     showArrows?: boolean;
     showDots?: boolean;
+    carouselAlign?: 'start' | 'center' | 'end';
+    carouselAxis?: 'x' | 'y';
+    carouselDirection?: 'ltr' | 'rtl';
+    carouselStartIndex?: number;
+    carouselDuration?: number;
+    carouselDragFree?: boolean;
+    carouselDragThreshold?: number;
+    carouselSkipSnaps?: boolean;
+    carouselContainScroll?: 'false' | 'trimSnaps' | 'keepSnaps';
+    carouselInViewThreshold?: number;
 }
 
 interface EditProps {
@@ -203,6 +213,16 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         autoplayDelay = 3000,
         showArrows = true,
         showDots = true,
+        carouselAlign = 'start',
+        carouselAxis = 'x',
+        carouselDirection = 'ltr',
+        carouselStartIndex = 0,
+        carouselDuration = 25,
+        carouselDragFree = false,
+        carouselDragThreshold = 10,
+        carouselSkipSnaps = false,
+        carouselContainScroll = 'trimSnaps',
+        carouselInViewThreshold = 0,
     } = attributes;
 
     // Preview HTML for editor (generated from structure)
@@ -210,13 +230,41 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     const [previewHtml, setPreviewHtml] = useState<string>('');
     
     // Embla Carousel refs for carousel layout preview in editor
-    // Always initialize hook, but only use it when layout is carousel
-    const [emblaRef, emblaApi] = useEmblaCarousel({
-        slidesToScroll,
-        loop,
-        skipSnaps: false,
-        dragFree: false,
-    });
+    // Use a ref to store the viewport element for carousel
+    const carouselViewportRef = useRef<HTMLDivElement | null>(null);
+    
+    // Initialize Embla carousel only when layout is carousel
+    const [emblaRef, emblaApi] = useEmblaCarousel(
+        layout === 'carousel' ? {
+            slidesToScroll,
+            loop,
+            skipSnaps: carouselSkipSnaps,
+            dragFree: carouselDragFree,
+            align: carouselAlign,
+            axis: carouselAxis,
+            direction: carouselDirection,
+            startIndex: carouselStartIndex,
+            duration: carouselDuration,
+            dragThreshold: carouselDragThreshold,
+            containScroll: carouselContainScroll === 'false' ? false : carouselContainScroll,
+            inViewThreshold: carouselInViewThreshold,
+        } : undefined,
+        [] // Plugins array - autoplay will be handled by frontend JS
+    );
+    
+    // Attach emblaRef to viewport element when carousel HTML is rendered
+    useEffect(() => {
+        if (layout === 'carousel' && previewHtml && carouselViewportRef.current && emblaRef) {
+            const viewport = carouselViewportRef.current.querySelector('.embla__viewport') as HTMLElement;
+            if (viewport) {
+                if (typeof emblaRef === 'function') {
+                    emblaRef(viewport);
+                } else if (emblaRef && typeof emblaRef === 'object' && 'current' in emblaRef) {
+                    (emblaRef as React.MutableRefObject<HTMLElement | null>).current = viewport;
+                }
+            }
+        }
+    }, [layout, previewHtml, emblaRef]);
     
     // Re-initialize carousel when settings change (for carousel layout only)
     useEffect(() => {
@@ -224,7 +272,25 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             // Embla will auto-update when options change via props
             emblaApi.reInit();
         }
-    }, [layout, slidesToScroll, loop, previewHtml, emblaApi]);
+    }, [
+        layout,
+        slidesToScroll,
+        loop,
+        autoplay,
+        autoplayDelay,
+        carouselAlign,
+        carouselAxis,
+        carouselDirection,
+        carouselStartIndex,
+        carouselDuration,
+        carouselDragFree,
+        carouselDragThreshold,
+        carouselSkipSnaps,
+        carouselContainScroll,
+        carouselInViewThreshold,
+        previewHtml,
+        emblaApi
+    ]);
 
     // States for taxonomies and authors
     const [taxonomies, setTaxonomies] = useState<TaxonomyItem[]>([]);
@@ -1442,59 +1508,12 @@ useEffect(() => {
                 {/* This ensures editor preview matches frontend output for consistency */}
                 {previewHtml ? (
                     layout === 'carousel' ? (
-                    <div
-                        className={[
-                            'post-type-layout-carousel',
-                            columns ? `columns-${columns}` : '',
-                            columnsTablet ? `columns-tablet-${columnsTablet}` : '',
-                            columnsMobile ? `columns-mobile-${columnsMobile}` : '',
-                            (postType || '').toLowerCase() === 'product' ? 'wc-block-product-template' : '',
-                        ].filter(Boolean).join(' ')}
-                        style={{
-                            '--carousel-columns': String(columns || 3),
-                            '--carousel-columns-tablet': String(columnsTablet || 2),
-                            '--carousel-columns-mobile': String(columnsMobile || 1),
-                        } as CSSProperties}
-                        data-embla-carousel=""
-                        data-slides-per-view={String(columns || 3)}
-                        data-slides-to-scroll={String(slidesToScroll || 1)}
-                        data-loop={loop ? 'true' : undefined}
-                        data-autoplay={autoplay ? 'true' : undefined}
-                        data-autoplay-delay={autoplay ? String(autoplayDelay || 3000) : undefined}
-                    >
-                        <div className="embla__viewport" ref={emblaRef}>
-                            <div
-                                className="embla__container"
-                                    dangerouslySetInnerHTML={{ __html: previewHtml }}
-                            />
-                        </div>
-                        {showArrows !== false && emblaApi ? (
-                            <>
-                                <button
-                                    className="embla__button embla__button--prev"
-                                    type="button"
-                                    onClick={() => emblaApi.scrollPrev()}
-                                    aria-label={__('Previous slide', 'jankx')}
-                                    disabled={loop === false && !emblaApi.canScrollPrev()}
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                        <path d="M15 18l-6-6 6-6" />
-                                    </svg>
-                                </button>
-                                <button
-                                    className="embla__button embla__button--next"
-                                    type="button"
-                                    onClick={() => emblaApi.scrollNext()}
-                                    aria-label={__('Next slide', 'jankx')}
-                                    disabled={loop === false && !emblaApi.canScrollNext()}
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                        <path d="M9 18l6-6-6-6" />
-                                    </svg>
-                                </button>
-                            </>
-                        ) : null}
-                    </div>
+                        // For carousel, previewHtml already contains full structure from PHP
+                        // Structure: div.post-type-layout-carousel -> div.embla__viewport -> div.embla__container -> div.embla__slide items
+                        <div
+                            ref={carouselViewportRef}
+                            dangerouslySetInnerHTML={{ __html: previewHtml }}
+                        />
                     ) : (
                         <div dangerouslySetInnerHTML={{ __html: previewHtml }} />
                     )

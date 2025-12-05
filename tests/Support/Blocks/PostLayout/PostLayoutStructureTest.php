@@ -11,6 +11,7 @@ use Tests\Helpers\HtmlAssertions;
 use Jankx\Layouts\PostLayout\PostLayout;
 use Jankx\Layouts\PostLayout\Supports\GridLayout;
 use Jankx\Layouts\PostLayout\Supports\ListLayout;
+use Jankx\Layouts\PostLayout\Supports\CarouselLayout;
 use Jankx\Layouts\PostLayout\PostLayoutManager;
 
 class PostLayoutStructureTest extends TestCase
@@ -238,5 +239,142 @@ class PostLayoutStructureTest extends TestCase
         $this->assertIsString($styles['--columns-desktop']);
         $this->assertStringNotContainsString('px', $styles['--columns-desktop']);
         $this->assertEquals('4', $styles['--columns-desktop']);
+    }
+
+    public function testCarouselLayoutContainerStructure()
+    {
+        $layout = new CarouselLayout();
+        $layout->setOptions([
+            'columns' => 3,
+            'columnsTablet' => 2,
+            'columnsMobile' => 1,
+            'slidesToScroll' => 1,
+            'loop' => false,
+            'autoplay' => false,
+        ]);
+
+        $structure = $layout->getHtmlStructure();
+        
+        $this->assertIsArray($structure);
+        $this->assertEquals('carousel', $structure['layout']);
+        $this->assertArrayHasKey('container', $structure);
+        
+        $container = $structure['container'];
+        $this->assertEquals('div', $container['tag']);
+        $this->assertContains('post-type-layout-carousel', $container['classes']);
+        $this->assertContains('columns-3', $container['classes']);
+        $this->assertArrayHasKey('attributes', $container);
+        $this->assertEquals('', $container['attributes']['data-embla-carousel']);
+        $this->assertEquals('3', $container['attributes']['data-slides-per-view']);
+        $this->assertEquals('1', $container['attributes']['data-slides-to-scroll']);
+        
+        // Carousel should have nested structure: viewport -> container
+        $this->assertArrayHasKey('children', $container);
+        $this->assertCount(1, $container['children']);
+        $viewport = $container['children'][0];
+        $this->assertEquals('div', $viewport['tag']);
+        $this->assertContains('embla__viewport', $viewport['classes']);
+        $this->assertArrayHasKey('children', $viewport);
+        $this->assertCount(1, $viewport['children']);
+        $emblaContainer = $viewport['children'][0];
+        $this->assertEquals('div', $emblaContainer['tag']);
+        $this->assertContains('embla__container', $emblaContainer['classes']);
+    }
+
+    public function testCarouselLayoutItemWrapperStructure()
+    {
+        $layout = new CarouselLayout();
+        $layout->setOptions([
+            'thumbnailPosition' => 'top',
+            'showFeaturedImage' => true,
+        ]);
+
+        // Pass options directly to getHtmlStructure to ensure they're used
+        $structure = $layout->getHtmlStructure([
+            'thumbnailPosition' => 'top',
+            'showFeaturedImage' => true,
+        ]);
+        
+        $this->assertArrayHasKey('itemWrapper', $structure);
+        $itemWrapper = $structure['itemWrapper'];
+        $this->assertEquals('div', $itemWrapper['tag']);
+        $this->assertContains('embla__slide', $itemWrapper['classes']);
+        
+        // Carousel item wrapper should have nested structure: embla__slide -> article
+        $this->assertArrayHasKey('children', $itemWrapper);
+        $this->assertCount(1, $itemWrapper['children']);
+        $article = $itemWrapper['children'][0];
+        $this->assertEquals('article', $article['tag']);
+        $this->assertIsArray($article['classes']);
+        $this->assertContains('post-item', $article['classes']);
+        $this->assertContains('thumbnail-position-top', $article['classes']);
+        $this->assertContains('has-thumbnail', $article['classes']);
+    }
+
+    public function testCarouselLayoutWithAllOptions()
+    {
+        $layout = new CarouselLayout();
+        $layout->setOptions([
+            'columns' => 4,
+            'columnsTablet' => 3,
+            'columnsMobile' => 2,
+            'slidesToScroll' => 2,
+            'loop' => true,
+            'autoplay' => true,
+            'autoplayDelay' => 5000,
+            'carouselAlign' => 'center',
+            'carouselAxis' => 'x',
+            'carouselDirection' => 'ltr',
+            'carouselStartIndex' => 1,
+            'carouselDuration' => 50,
+            'carouselDragFree' => true,
+            'carouselDragThreshold' => 15,
+            'carouselSkipSnaps' => true,
+            'carouselContainScroll' => 'keepSnaps',
+            'carouselInViewThreshold' => 0.5,
+        ]);
+
+        $structure = $layout->getHtmlStructure();
+        $container = $structure['container'];
+        $attributes = $container['attributes'];
+        
+        // Test all carousel options are included in attributes
+        $this->assertEquals('center', $attributes['data-align']);
+        $this->assertEquals('x', $attributes['data-axis']);
+        $this->assertEquals('ltr', $attributes['data-direction']);
+        $this->assertEquals('1', $attributes['data-start-index']);
+        $this->assertEquals('50', $attributes['data-duration']);
+        $this->assertEquals('15', $attributes['data-drag-threshold']);
+        $this->assertEquals('keepSnaps', $attributes['data-contain-scroll']);
+        $this->assertEquals('0.5', $attributes['data-in-view-threshold']);
+        $this->assertEquals('true', $attributes['data-loop']);
+        $this->assertEquals('true', $attributes['data-autoplay']);
+        $this->assertEquals('5000', $attributes['data-autoplay-delay']);
+        $this->assertEquals('true', $attributes['data-drag-free']);
+        $this->assertEquals('true', $attributes['data-skip-snaps']);
+    }
+
+    public function testCarouselLayoutStructureIsJsonSerializable()
+    {
+        $layout = new CarouselLayout();
+        $layout->setOptions([
+            'columns' => 3,
+            'carouselAlign' => 'start',
+            'carouselAxis' => 'x',
+        ]);
+
+        $structure = $layout->getHtmlStructure();
+        
+        // Should be JSON serializable
+        $json = json_encode($structure, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        $this->assertNotFalse($json, 'Carousel structure should be JSON serializable');
+        
+        // Should decode back to same structure
+        $decoded = json_decode($json, true);
+        $this->assertIsArray($decoded);
+        $this->assertEquals('carousel', $decoded['layout']);
+        $this->assertArrayHasKey('container', $decoded);
+        $this->assertArrayHasKey('itemWrapper', $decoded);
+        $this->assertArrayHasKey('children', $decoded['container']);
     }
 }

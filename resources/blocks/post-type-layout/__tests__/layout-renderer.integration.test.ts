@@ -449,4 +449,153 @@ describe('Layout Renderer Integration Tests', () => {
             expect(html).toContain('No posts found.');
         });
     });
+
+    describe('Carousel Layout Structure Matching PHP', () => {
+        const carouselStructure: LayoutStructure = {
+            layout: 'carousel',
+            container: {
+                tag: 'div',
+                classes: ['post-type-layout-carousel', 'columns-3'],
+                attributes: {
+                    'data-embla-carousel': '',
+                    'data-slides-per-view': '3',
+                    'data-slides-to-scroll': '1',
+                    'data-align': 'start',
+                    'data-axis': 'x',
+                    'data-direction': 'ltr',
+                    'data-start-index': '0',
+                    'data-duration': '25',
+                    'data-drag-threshold': '10',
+                    'data-contain-scroll': 'trimSnaps',
+                    'data-in-view-threshold': '0',
+                },
+                styles: {
+                    '--carousel-columns': '3',
+                    '--carousel-columns-tablet': '2',
+                    '--carousel-columns-mobile': '1',
+                },
+                children: [
+                    {
+                        tag: 'div',
+                        classes: ['embla__viewport'],
+                        children: [
+                            {
+                                tag: 'div',
+                                classes: ['embla__container'],
+                            },
+                        ],
+                    },
+                ],
+            },
+            itemWrapper: {
+                tag: 'div',
+                classes: ['embla__slide'],
+                children: [
+                    {
+                        tag: 'article',
+                        classes: ['post-item', 'thumbnail-position-top', 'has-thumbnail'],
+                        attributes: {
+                            id: 'post-{{post-id}}',
+                        },
+                    },
+                ],
+            },
+        };
+
+        const postItemStructure: PostItemStructure = {
+            title: {
+                tag: 'h3',
+                classes: ['post-title'],
+                children: [
+                    {
+                        tag: 'a',
+                        attributes: { href: '#' },
+                        placeholder: 'post-title',
+                    },
+                ],
+            },
+            contentWrapper: {
+                tag: 'div',
+                classes: ['post-content'],
+            },
+        };
+
+        it('should match PHP CarouselLayout structure with nested viewport/container', () => {
+            const posts = [
+                { id: 1, title: 'Post 1' },
+                { id: 2, title: 'Post 2' },
+                { id: 3, title: 'Post 3' },
+            ];
+
+            const html = renderLayout(carouselStructure, posts, postItemStructure, {
+                showTitle: true,
+            });
+
+            // Should match PHP structure:
+            // <div class="post-type-layout-carousel columns-3">
+            //   <div class="embla__viewport">
+            //     <div class="embla__container">
+            //       <div class="embla__slide">
+            //         <article class="post-item" id="post-1">...</article>
+            //       </div>
+            //       ...
+            //     </div>
+            //   </div>
+            // </div>
+
+            expect(html).toContain('<div');
+            expect(html).toContain('post-type-layout-carousel');
+            expect(html).toContain('columns-3');
+            expect(html).toContain('embla__viewport');
+            expect(html).toContain('embla__container');
+            expect(html).toContain('embla__slide');
+            expect(html).toContain('<article');
+            expect(html).toContain('post-item');
+            expect(html).toContain('id="post-1"');
+            expect(html).toContain('id="post-2"');
+            expect(html).toContain('id="post-3"');
+        });
+
+        it('should include all Embla carousel data attributes', () => {
+            const posts = [{ id: 1, title: 'Test' }];
+            const html = renderLayout(carouselStructure, posts, postItemStructure);
+
+            expect(html).toContain('data-embla-carousel');
+            expect(html).toContain('data-slides-per-view="3"');
+            expect(html).toContain('data-slides-to-scroll="1"');
+            expect(html).toContain('data-align="start"');
+            expect(html).toContain('data-axis="x"');
+            expect(html).toContain('data-direction="ltr"');
+            expect(html).toContain('data-start-index="0"');
+            expect(html).toContain('data-duration="25"');
+            expect(html).toContain('data-drag-threshold="10"');
+            expect(html).toContain('data-contain-scroll="trimSnaps"');
+            expect(html).toContain('data-in-view-threshold="0"');
+        });
+
+        it('should include carousel CSS variables', () => {
+            const posts = [{ id: 1, title: 'Test' }];
+            const html = renderLayout(carouselStructure, posts, postItemStructure);
+
+            expect(html).toContain('--carousel-columns');
+            expect(html).toContain('--carousel-columns-tablet');
+            expect(html).toContain('--carousel-columns-mobile');
+        });
+
+        it('should wrap each post item in embla__slide', () => {
+            const posts = [
+                { id: 1, title: 'Post 1' },
+                { id: 2, title: 'Post 2' },
+            ];
+
+            const html = renderLayout(carouselStructure, posts, postItemStructure);
+
+            // Count embla__slide occurrences
+            const slideMatches = html.match(/embla__slide/g);
+            expect(slideMatches).toHaveLength(2);
+
+            // Each slide should contain an article
+            expect(html).toContain('<div class="embla__slide"><article');
+        });
+    });
 });
