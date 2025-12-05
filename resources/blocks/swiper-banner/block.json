@@ -65,6 +65,11 @@
       "type": "number",
       "default": 0
     },
+    "imageSize": {
+      "type": "string",
+      "enum": ["contain", "cover", "fullwidth"],
+      "default": "cover"
+    },
     "className": {
       "type": "string"
     }

@@ -53,6 +53,14 @@
             "type": "boolean",
             "default": false
         },
+        "label": {
+            "type": "string",
+            "default": ""
+        },
+        "showLabel": {
+            "type": "boolean",
+            "default": false
+        },
         "className": {
             "type": "string"
         },

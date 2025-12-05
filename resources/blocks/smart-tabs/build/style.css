@@ -16,12 +16,28 @@
 }
 .smart-tabs__navigation {
   margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+}
+.smart-tabs__label {
+  background-color: #000000;
+  color: #ffffff;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.4;
+  white-space: nowrap;
+  margin-right: 0;
+  flex-shrink: 0;
 }
 .smart-tabs__nav-list {
   display: flex;
   gap: 10px;
   border-bottom: 2px solid var(--smart-tabs-border-color);
   position: relative;
+  flex: 1;
 }
 .smart-tabs__nav-list.align-left {
   justify-content: flex-start;

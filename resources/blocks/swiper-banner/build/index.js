@@ -8,7 +8,7 @@
   \*****************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/swiper-banner","title":"Swiper Banner","category":"jankx","description":"Banner slide for Swiper with customizable styles and links","keywords":["banner","slide","swiper","image","link"],"textdomain":"jankx","parent":["jankx/swiper"],"attributes":{"imageId":{"type":"number","default":0},"imageUrl":{"type":"string","default":""},"imageAlt":{"type":"string","default":""},"imageCaption":{"type":"string","default":""},"linkUrl":{"type":"string","default":""},"linkTarget":{"type":"string","enum":["_self","_blank"],"default":"_self"},"bannerStyle":{"type":"string","enum":["banner","circles","square"],"default":"banner"},"overlayOpacity":{"type":"number","default":0.3},"overlayColor":{"type":"string","default":"#000000"},"textAlign":{"type":"string","enum":["left","center","right"],"default":"center"},"textPosition":{"type":"string","enum":["top","middle","bottom"],"default":"middle"},"showCaption":{"type":"boolean","default":true},"height":{"type":"number","default":0},"className":{"type":"string"}},"supports":{"html":false,"anchor":true,"spacing":{"margin":true,"padding":true},"color":{"background":true,"text":true},"border":{"color":true,"radius":true,"style":true,"width":true}},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/swiper-banner","title":"Swiper Banner","category":"jankx","description":"Banner slide for Swiper with customizable styles and links","keywords":["banner","slide","swiper","image","link"],"textdomain":"jankx","parent":["jankx/swiper"],"attributes":{"imageId":{"type":"number","default":0},"imageUrl":{"type":"string","default":""},"imageAlt":{"type":"string","default":""},"imageCaption":{"type":"string","default":""},"linkUrl":{"type":"string","default":""},"linkTarget":{"type":"string","enum":["_self","_blank"],"default":"_self"},"bannerStyle":{"type":"string","enum":["banner","circles","square"],"default":"banner"},"overlayOpacity":{"type":"number","default":0.3},"overlayColor":{"type":"string","default":"#000000"},"textAlign":{"type":"string","enum":["left","center","right"],"default":"center"},"textPosition":{"type":"string","enum":["top","middle","bottom"],"default":"middle"},"showCaption":{"type":"boolean","default":true},"height":{"type":"number","default":0},"imageSize":{"type":"string","enum":["contain","cover","fullwidth"],"default":"cover"},"className":{"type":"string"}},"supports":{"html":false,"anchor":true,"spacing":{"margin":true,"padding":true},"color":{"background":true,"text":true},"border":{"color":true,"radius":true,"style":true,"width":true}},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
 
 /***/ }),
 
@@ -51,10 +51,11 @@ function Edit({
     textAlign,
     textPosition,
     showCaption,
-    height = 0
+    height = 0,
+    imageSize = 'cover'
   } = attributes;
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)({
-    className: `swiper-slide swiper-banner swiper-banner--${bannerStyle} text-${textAlign} text-position-${textPosition}`
+    className: `swiper-slide swiper-banner swiper-banner--${bannerStyle} text-${textAlign} text-position-${textPosition} image-size-${imageSize}`
   });
   const onSelectImage = media => {
     setAttributes({
@@ -94,13 +95,24 @@ function Edit({
         })
       });
     }
+    const imageStyles = {
+      backgroundImage: `url(${imageUrl})`,
+      '--overlay-color': overlayColor,
+      '--overlay-opacity': overlayOpacity
+    };
+
+    // Apply fullwidth styles
+    if (imageSize === 'fullwidth') {
+      imageStyles.backgroundSize = '100% 100%';
+      imageStyles.backgroundPosition = 'center';
+    } else if (imageSize === 'contain') {
+      imageStyles.backgroundSize = 'contain';
+    } else {
+      imageStyles.backgroundSize = 'cover';
+    }
     return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
-      className: "swiper-banner__image",
-      style: {
-        backgroundImage: `url(${imageUrl})`,
-        '--overlay-color': overlayColor,
-        '--overlay-opacity': overlayOpacity
-      },
+      className: `swiper-banner__image image-size-${imageSize}`,
+      style: imageStyles,
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
         className: "swiper-banner__overlay"
       }), showCaption && imageCaption && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
@@ -144,7 +156,24 @@ function Edit({
           },
           children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Remove Image', 'jankx')
         }), imageUrl && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Image Size', 'jankx'),
+            value: imageSize,
+            options: [{
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Cover', 'jankx'),
+              value: 'cover'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Contain', 'jankx'),
+              value: 'contain'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Fullwidth', 'jankx'),
+              value: 'fullwidth'
+            }],
+            onChange: val => setAttributes({
+              imageSize: val
+            }),
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Cover: Fill entire area, Contain: Fit entire image, Fullwidth: Stretch to 100% width and height', 'jankx')
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Alt Text', 'jankx'),
             value: imageAlt,
             onChange: val => setAttributes({
@@ -322,18 +351,31 @@ function Save({
     overlayColor,
     textAlign,
     textPosition,
-    showCaption
+    showCaption,
+    imageSize = 'cover'
   } = attributes;
   const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.useBlockProps.save({
-    className: `swiper-slide swiper-banner swiper-banner--${bannerStyle} text-${textAlign} text-position-${textPosition}`
+    className: `swiper-slide swiper-banner swiper-banner--${bannerStyle} text-${textAlign} text-position-${textPosition} image-size-${imageSize}`,
+    'data-image-size': imageSize
   });
+  const imageStyles = {
+    backgroundImage: `url(${imageUrl})`,
+    '--overlay-color': overlayColor,
+    '--overlay-opacity': overlayOpacity
+  };
+
+  // Apply fullwidth styles
+  if (imageSize === 'fullwidth') {
+    imageStyles.backgroundSize = '100% 100%';
+    imageStyles.backgroundPosition = 'center';
+  } else if (imageSize === 'contain') {
+    imageStyles.backgroundSize = 'contain';
+  } else {
+    imageStyles.backgroundSize = 'cover';
+  }
   const content = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
-    className: "swiper-banner__image",
-    style: {
-      backgroundImage: `url(${imageUrl})`,
-      '--overlay-color': overlayColor,
-      '--overlay-opacity': overlayOpacity
-    },
+    className: `swiper-banner__image image-size-${imageSize}`,
+    style: imageStyles,
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
       className: "swiper-banner__overlay"
     }), showCaption && imageCaption && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
@@ -547,18 +589,28 @@ __webpack_require__.r(__webpack_exports__);
         overlayColor,
         textAlign,
         textPosition,
-        showCaption
+        showCaption,
+        imageSize = 'cover'
       } = attributes;
       const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps.save({
-        className: `swiper-slide swiper-banner swiper-banner--${bannerStyle} text-${textAlign} text-position-${textPosition}`
+        className: `swiper-slide swiper-banner swiper-banner--${bannerStyle} text-${textAlign} text-position-${textPosition} image-size-${imageSize}`
       });
+      const imageStyles = {
+        backgroundImage: `url(${imageUrl})`,
+        '--overlay-color': overlayColor,
+        '--overlay-opacity': overlayOpacity
+      };
+      if (imageSize === 'fullwidth') {
+        imageStyles.backgroundSize = '100% 100%';
+        imageStyles.backgroundPosition = 'center';
+      } else if (imageSize === 'contain') {
+        imageStyles.backgroundSize = 'contain';
+      } else {
+        imageStyles.backgroundSize = 'cover';
+      }
       const imageContent = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-        className: "swiper-banner__image",
-        style: {
-          backgroundImage: `url(${imageUrl})`,
-          '--overlay-color': overlayColor,
-          '--overlay-opacity': overlayOpacity
-        },
+        className: `swiper-banner__image image-size-${imageSize}`,
+        style: imageStyles,
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
           className: "swiper-banner__overlay"
         }), showCaption && imageCaption && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {

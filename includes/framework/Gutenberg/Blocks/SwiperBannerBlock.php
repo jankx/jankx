@@ -40,6 +40,7 @@ class SwiperBannerBlock extends Block
         $text_position = $attributes['textPosition'] ?? 'middle';
         $show_caption = $attributes['showCaption'] ?? true;
         $height = $attributes['height'] ?? 0;
+        $image_size = $attributes['imageSize'] ?? 'cover';
         $class_name = $attributes['className'] ?? '';
 
         // Get image URL from WordPress attachment if imageId is provided
@@ -69,6 +70,9 @@ class SwiperBannerBlock extends Block
         }
         if (!empty($text_align)) {
             $wrapper_classes[] = 'text-align-' . esc_attr($text_align);
+        }
+        if (!empty($image_size)) {
+            $wrapper_classes[] = 'image-size-' . esc_attr($image_size);
         }
         if (!empty($class_name)) {
             $wrapper_classes[] = esc_attr($class_name);
@@ -130,7 +134,22 @@ class SwiperBannerBlock extends Block
             <?php endif; ?>
             
             <div class="<?php echo esc_attr(implode(' ', $banner_classes)); ?>">
-                <div class="swiper-banner__image" style="background-image: url('<?php echo esc_url($image_url); ?>');">
+                <?php
+                // Build image styles based on imageSize
+                $image_styles = ['background-image: url(\'' . esc_url($image_url) . '\')'];
+                
+                if ($image_size === 'fullwidth') {
+                    $image_styles[] = 'background-size: 100% 100%';
+                    $image_styles[] = 'background-position: center';
+                } elseif ($image_size === 'contain') {
+                    $image_styles[] = 'background-size: contain';
+                } else {
+                    $image_styles[] = 'background-size: cover';
+                }
+                
+                $image_style_attr = implode('; ', $image_styles);
+                ?>
+                <div class="swiper-banner__image image-size-<?php echo esc_attr($image_size); ?>" style="<?php echo esc_attr($image_style_attr); ?>">
                     <?php if (!empty($processed_content) || ($show_caption && !empty($image_caption))) : ?>
                         <div class="swiper-banner__caption">
                             <?php if (!empty($processed_content)) : ?>

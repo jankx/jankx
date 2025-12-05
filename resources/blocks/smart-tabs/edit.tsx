@@ -12,6 +12,7 @@ import {
     PanelBody,
     SelectControl,
     ToggleControl,
+    TextControl,
     Button,
     ToolbarGroup,
     ToolbarButton,
@@ -38,6 +39,8 @@ export default function Edit({ attributes, setAttributes, clientId }: SmartTabsP
         tabAlignment,
         hideTabsBorderBottom,
         centerNavigation,
+        label = '',
+        showLabel = false,
     } = attributes;
 
     const { innerBlocks, selectedBlockClientId } = useSelect(
@@ -247,6 +250,26 @@ export default function Edit({ attributes, setAttributes, clientId }: SmartTabsP
                         help={__('Align tabs horizontally', 'jankx')}
                     />
                 </PanelBody>
+
+                <PanelBody title={__('Label Settings', 'jankx')} initialOpen={false}>
+                    <ToggleControl
+                        label={__('Show Label', 'jankx')}
+                        checked={showLabel}
+                        onChange={(value: boolean) => setAttributes({ showLabel: value })}
+                        help={__('Display a label before the tabs navigation', 'jankx')}
+                        __nextHasNoMarginBottom
+                    />
+
+                    {showLabel && (
+                        <TextControl
+                            label={__('Label Text', 'jankx')}
+                            value={label}
+                            onChange={(value: string) => setAttributes({ label: value })}
+                            placeholder={__('Enter label text', 'jankx')}
+                            help={__('Text to display as label before tabs', 'jankx')}
+                        />
+                    )}
+                </PanelBody>
             </InspectorControls>
 
             <BlockControls>
@@ -261,7 +284,12 @@ export default function Edit({ attributes, setAttributes, clientId }: SmartTabsP
 
             <div {...blockProps}>
                 <div className="smart-tabs__navigation">
-                        <div className={`smart-tabs__nav-list align-${tabAlignment}`}>
+                    {showLabel && label && (
+                        <div className="smart-tabs__label">
+                            {label}
+                        </div>
+                    )}
+                    <div className={`smart-tabs__nav-list align-${tabAlignment}`}>
                         {tabItems.map((tab, index) => {
                             const isActiveTab = index === currentActiveTab;
 

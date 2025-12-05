@@ -8,5 +8,15 @@
   justify-content: center;
   align-items: center;
 }
+.wp-block-jankx-swiper-slide.image-size-contain {
+  background-size: contain !important;
+}
+.wp-block-jankx-swiper-slide.image-size-cover {
+  background-size: cover !important;
+}
+.wp-block-jankx-swiper-slide.image-size-fullwidth {
+  background-size: 100% 100% !important;
+  background-position: center !important;
+}
 
 /*# sourceMappingURL=style.css.map*/

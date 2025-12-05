@@ -13,21 +13,35 @@ export default function Save({ attributes }: SwiperBannerProps): JSX.Element {
     overlayColor,
     textAlign,
     textPosition,
-    showCaption
+    showCaption,
+    imageSize = 'cover'
   } = attributes;
 
   const blockProps = useBlockProps.save({
-    className: `swiper-slide swiper-banner swiper-banner--${bannerStyle} text-${textAlign} text-position-${textPosition}`
+    className: `swiper-slide swiper-banner swiper-banner--${bannerStyle} text-${textAlign} text-position-${textPosition} image-size-${imageSize}`,
+    'data-image-size': imageSize
   });
+
+  const imageStyles: React.CSSProperties = {
+    backgroundImage: `url(${imageUrl})`,
+    '--overlay-color': overlayColor,
+    '--overlay-opacity': overlayOpacity
+  };
+
+  // Apply fullwidth styles
+  if (imageSize === 'fullwidth') {
+    imageStyles.backgroundSize = '100% 100%';
+    imageStyles.backgroundPosition = 'center';
+  } else if (imageSize === 'contain') {
+    imageStyles.backgroundSize = 'contain';
+  } else {
+    imageStyles.backgroundSize = 'cover';
+  }
 
   const content = (
     <div 
-      className="swiper-banner__image"
-      style={{
-        backgroundImage: `url(${imageUrl})`,
-        '--overlay-color': overlayColor,
-        '--overlay-opacity': overlayOpacity
-      } as React.CSSProperties}
+      className={`swiper-banner__image image-size-${imageSize}`}
+      style={imageStyles}
     >
       <div className="swiper-banner__overlay"></div>
       

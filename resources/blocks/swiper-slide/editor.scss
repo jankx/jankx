@@ -3,6 +3,18 @@
 
 .editor-styles-wrapper {
   .wp-block-jankx-swiper-slide {
-    // No visual difference from frontend
+    // Image size variations for background images in editor
+    &.image-size-contain {
+      background-size: contain !important;
+    }
+    
+    &.image-size-cover {
+      background-size: cover !important;
+    }
+    
+    &.image-size-fullwidth {
+      background-size: 100% 100% !important;
+      background-position: center !important;
+    }
   }
 }

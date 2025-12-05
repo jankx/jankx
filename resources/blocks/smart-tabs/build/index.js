@@ -8,7 +8,7 @@
   \**************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/smart-tabs","title":"Smart Tabs","category":"jankx","description":"Create interactive tabs with customizable layouts and styles","keywords":["tabs","smart","accordion","vertical","horizontal"],"textdomain":"jankx","attributes":{"tabType":{"type":"string","enum":["horizontal","vertical"],"default":"horizontal"},"styleType":{"type":"string","enum":["default","minimal","modern","boxed","bordered"],"default":"default"},"activeTab":{"type":"number","default":0},"tabAlignment":{"type":"string","enum":["left","center","right","justify"],"default":"left"},"tabItemTextColor":{"type":"string"},"tabItemBackgroundColor":{"type":"string"},"tabItemGradient":{"type":"string"},"activeTabTextColor":{"type":"string"},"activeTabBackgroundColor":{"type":"string"},"activeTabGradient":{"type":"string"},"hideTabsBorderBottom":{"type":"boolean","default":false},"centerNavigation":{"type":"boolean","default":false},"className":{"type":"string"},"anchor":{"type":"string"}},"supports":{"html":false,"anchor":true,"align":["wide","full"],"spacing":{"margin":true,"padding":true,"__experimentalDefaultControls":{"padding":true}},"color":{"background":true,"text":true,"__experimentalDefaultControls":{"background":true,"text":true}}},"providesContext":{"jankx/smartTabsId":"anchor","jankx/activeTab":"activeTab"},"example":{"attributes":{"tabType":"horizontal","styleType":"modern"}},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","viewScript":"file:./build/view.js","style":"file:./build/style.css"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/smart-tabs","title":"Smart Tabs","category":"jankx","description":"Create interactive tabs with customizable layouts and styles","keywords":["tabs","smart","accordion","vertical","horizontal"],"textdomain":"jankx","attributes":{"tabType":{"type":"string","enum":["horizontal","vertical"],"default":"horizontal"},"styleType":{"type":"string","enum":["default","minimal","modern","boxed","bordered"],"default":"default"},"activeTab":{"type":"number","default":0},"tabAlignment":{"type":"string","enum":["left","center","right","justify"],"default":"left"},"tabItemTextColor":{"type":"string"},"tabItemBackgroundColor":{"type":"string"},"tabItemGradient":{"type":"string"},"activeTabTextColor":{"type":"string"},"activeTabBackgroundColor":{"type":"string"},"activeTabGradient":{"type":"string"},"hideTabsBorderBottom":{"type":"boolean","default":false},"centerNavigation":{"type":"boolean","default":false},"label":{"type":"string","default":""},"showLabel":{"type":"boolean","default":false},"className":{"type":"string"},"anchor":{"type":"string"}},"supports":{"html":false,"anchor":true,"align":["wide","full"],"spacing":{"margin":true,"padding":true,"__experimentalDefaultControls":{"padding":true}},"color":{"background":true,"text":true,"__experimentalDefaultControls":{"background":true,"text":true}}},"providesContext":{"jankx/smartTabsId":"anchor","jankx/activeTab":"activeTab"},"example":{"attributes":{"tabType":"horizontal","styleType":"modern"}},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","viewScript":"file:./build/view.js","style":"file:./build/style.css"}');
 
 /***/ }),
 
@@ -66,7 +66,9 @@ function Edit({
     activeTab,
     tabAlignment,
     hideTabsBorderBottom,
-    centerNavigation
+    centerNavigation,
+    label = '',
+    showLabel = false
   } = attributes;
   const {
     innerBlocks,
@@ -209,8 +211,8 @@ function Edit({
           isActive: tabAlignment === 'justify'
         })]
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Tab Settings', 'jankx'),
         initialOpen: true,
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
@@ -287,7 +289,27 @@ function Edit({
           }),
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Align tabs horizontally', 'jankx')
         })]
-      })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Label Settings', 'jankx'),
+        initialOpen: false,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Label', 'jankx'),
+          checked: showLabel,
+          onChange: value => setAttributes({
+            showLabel: value
+          }),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Display a label before the tabs navigation', 'jankx'),
+          __nextHasNoMarginBottom: true
+        }), showLabel && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Label Text', 'jankx'),
+          value: label,
+          onChange: value => setAttributes({
+            label: value
+          }),
+          placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enter label text', 'jankx'),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Text to display as label before tabs', 'jankx')
+        })]
+      })]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.BlockControls, {
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToolbarGroup, {
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToolbarButton, {
@@ -298,9 +320,12 @@ function Edit({
       })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
       ...blockProps,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
         className: "smart-tabs__navigation",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+        children: [showLabel && label && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+          className: "smart-tabs__label",
+          children: label
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
           className: `smart-tabs__nav-list align-${tabAlignment}`,
           children: [tabItems.map((tab, index) => {
             const isActiveTab = index === currentActiveTab;
@@ -325,7 +350,7 @@ function Edit({
             onClick: addNewTab,
             variant: "secondary"
           })]
-        })
+        })]
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
         ...innerBlocksProps
       })]

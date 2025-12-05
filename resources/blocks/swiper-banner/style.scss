@@ -17,6 +17,20 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    
+    // Image size variations
+    &.image-size-contain {
+      background-size: contain;
+    }
+    
+    &.image-size-cover {
+      background-size: cover;
+    }
+    
+    &.image-size-fullwidth {
+      background-size: 100% 100% !important;
+      background-position: center !important;
+    }
   }
   
 
@@ -126,6 +140,26 @@
     .swiper-banner__caption {
       align-items: flex-end;
       padding-bottom: 1rem;
+    }
+  }
+  
+  // Image size classes on wrapper
+  &.image-size-contain {
+    .swiper-banner__image {
+      background-size: contain !important;
+    }
+  }
+  
+  &.image-size-cover {
+    .swiper-banner__image {
+      background-size: cover !important;
+    }
+  }
+  
+  &.image-size-fullwidth {
+    .swiper-banner__image {
+      background-size: 100% 100% !important;
+      background-position: center !important;
     }
   }
 }
