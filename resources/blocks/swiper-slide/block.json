@@ -11,6 +11,11 @@
   "attributes": {
     "slideId": {
       "type": "string"
+    },
+    "imageSize": {
+      "type": "string",
+      "enum": ["contain", "cover", "fullwidth"],
+      "default": "cover"
     }
   },
   "supports": {

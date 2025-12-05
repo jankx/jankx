@@ -18,6 +18,23 @@
     // Navigation
     &__navigation {
         margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 0;
+        flex-wrap: wrap;
+    }
+
+    // Label
+    &__label {
+        background-color: #000000;
+        color: #ffffff;
+        padding: 0.625rem 1.25rem; // 10px 20px
+        font-size: 0.875rem; // 14px
+        font-weight: 700;
+        line-height: 1.4;
+        white-space: nowrap;
+        margin-right: 0;
+        flex-shrink: 0;
     }
 
     &__nav-list {
@@ -25,6 +42,7 @@
         gap: 10px;
         border-bottom: 2px solid var(--smart-tabs-border-color);
         position: relative;
+        flex: 1;
 
         // Alignment options
         &.align-left {

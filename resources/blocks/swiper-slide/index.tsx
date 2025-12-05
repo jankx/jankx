@@ -1,12 +1,24 @@
 import { registerBlockType } from '@wordpress/blocks';
-import { InnerBlocks } from '@wordpress/block-editor';
+import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 import Edit from './edit';
 import metadata from './block.json';
 import './style.scss';
 import './editor.scss';
+import type { SwiperSlideProps } from './types';
 
 registerBlockType(metadata.name, {
   ...metadata,
   edit: Edit,
-  save: () => <InnerBlocks.Content />
+  save: ({ attributes }: SwiperSlideProps) => {
+    const { imageSize = 'cover' } = attributes;
+    const blockProps = useBlockProps.save({
+      className: `swiper-slide image-size-${imageSize}`,
+      'data-image-size': imageSize
+    });
+    return (
+      <div {...blockProps}>
+        <InnerBlocks.Content />
+      </div>
+    );
+  }
 } as any);

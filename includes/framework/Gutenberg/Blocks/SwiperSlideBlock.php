@@ -28,10 +28,14 @@ class SwiperSlideBlock extends Block
     {
         // Get attributes with defaults
         $slide_id = $attributes['slideId'] ?? '';
+        $image_size = $attributes['imageSize'] ?? 'cover';
         $class_name = $attributes['className'] ?? '';
 
         // Build wrapper classes
         $wrapper_classes = ['swiper-slide'];
+        if (!empty($image_size)) {
+            $wrapper_classes[] = 'image-size-' . esc_attr($image_size);
+        }
         if (!empty($class_name)) {
             $wrapper_classes[] = esc_attr($class_name);
         }
@@ -43,6 +47,10 @@ class SwiperSlideBlock extends Block
 
         if (!empty($slide_id)) {
             $wrapper_attributes['data-slide-id'] = esc_attr($slide_id);
+        }
+        
+        if (!empty($image_size)) {
+            $wrapper_attributes['data-image-size'] = esc_attr($image_size);
         }
 
         // Get WordPress block wrapper attributes

@@ -104,6 +104,8 @@ class SmartTabsBlock extends Block
         $tab_alignment = $attributes['tabAlignment'] ?? 'left';
         $hide_tabs_border_bottom = $attributes['hideTabsBorderBottom'] ?? false;
         $center_navigation = $attributes['centerNavigation'] ?? false;
+        $label = $attributes['label'] ?? '';
+        $show_label = $attributes['showLabel'] ?? false;
         $class_name = $attributes['className'] ?? '';
         $anchor = $attributes['anchor'] ?? '';
 
@@ -142,6 +144,15 @@ class SmartTabsBlock extends Block
         $render_context = $this->resolveRenderContext($block);
         $tab_nav_html = $this->renderTabNavigation($inner_blocks, $active_tab, $tab_alignment, $attributes, $render_context);
 
+        // Build label HTML
+        $label_html = '';
+        if ($show_label && !empty($label)) {
+            $label_html = sprintf(
+                '<div class="smart-tabs__label">%s</div>',
+                esc_html($label)
+            );
+        }
+
         // Build attributes string
         $attrs_string = '';
         foreach ($wrapper_attrs as $key => $value) {
@@ -150,8 +161,9 @@ class SmartTabsBlock extends Block
 
         // Wrap saved content với navigation
         return sprintf(
-            '<div%s><div class="smart-tabs__navigation">%s</div><div class="smart-tabs__content">%s</div></div>',
+            '<div%s><div class="smart-tabs__navigation">%s%s</div><div class="smart-tabs__content">%s</div></div>',
             $attrs_string,
+            $label_html,
             $tab_nav_html,
             $content  // Content đã được save sẵn từ JavaScript
         );

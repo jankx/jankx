@@ -18,6 +18,8 @@ export interface SmartTabsAttributes {
     activeTabBackgroundColor?: string;
     activeTabGradient?: string;
     hideTabsNavigation?: boolean;
+    label?: string;
+    showLabel?: boolean;
     className?: string;
     anchor?: string;
 }

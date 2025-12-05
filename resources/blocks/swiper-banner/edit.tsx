@@ -27,11 +27,12 @@ export default function Edit({ attributes, setAttributes }: SwiperBannerProps): 
     textAlign,
     textPosition,
     showCaption,
-    height = 0
+    height = 0,
+    imageSize = 'cover'
   } = attributes;
 
   const blockProps = useBlockProps({
-    className: `swiper-slide swiper-banner swiper-banner--${bannerStyle} text-${textAlign} text-position-${textPosition}`
+    className: `swiper-slide swiper-banner swiper-banner--${bannerStyle} text-${textAlign} text-position-${textPosition} image-size-${imageSize}`
   });
 
   const onSelectImage = (media: any) => {
@@ -79,14 +80,26 @@ export default function Edit({ attributes, setAttributes }: SwiperBannerProps): 
       );
     }
 
+    const imageStyles: React.CSSProperties = {
+      backgroundImage: `url(${imageUrl})`,
+      '--overlay-color': overlayColor,
+      '--overlay-opacity': overlayOpacity
+    };
+
+    // Apply fullwidth styles
+    if (imageSize === 'fullwidth') {
+      imageStyles.backgroundSize = '100% 100%';
+      imageStyles.backgroundPosition = 'center';
+    } else if (imageSize === 'contain') {
+      imageStyles.backgroundSize = 'contain';
+    } else {
+      imageStyles.backgroundSize = 'cover';
+    }
+
     return (
       <div 
-        className="swiper-banner__image"
-        style={{
-          backgroundImage: `url(${imageUrl})`,
-          '--overlay-color': overlayColor,
-          '--overlay-opacity': overlayOpacity
-        } as React.CSSProperties}
+        className={`swiper-banner__image image-size-${imageSize}`}
+        style={imageStyles}
       >
         <div className="swiper-banner__overlay"></div>
         
@@ -135,6 +148,18 @@ export default function Edit({ attributes, setAttributes }: SwiperBannerProps): 
 
           {imageUrl && (
             <>
+              <SelectControl
+                label={__('Image Size', 'jankx')}
+                value={imageSize}
+                options={[
+                  { label: __('Cover', 'jankx'), value: 'cover' },
+                  { label: __('Contain', 'jankx'), value: 'contain' },
+                  { label: __('Fullwidth', 'jankx'), value: 'fullwidth' }
+                ]}
+                onChange={(val: string) => setAttributes({ imageSize: val as 'contain' | 'cover' | 'fullwidth' })}
+                help={__('Cover: Fill entire area, Contain: Fit entire image, Fullwidth: Stretch to 100% width and height', 'jankx')}
+              />
+
               <TextControl
                 label={__('Alt Text', 'jankx')}
                 value={imageAlt}

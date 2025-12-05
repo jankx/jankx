@@ -12,6 +12,7 @@ export interface SwiperBannerAttributes {
   textPosition: 'top' | 'middle' | 'bottom';
   showCaption: boolean;
   height?: number;
+  imageSize?: 'contain' | 'cover' | 'fullwidth';
   className?: string;
 }
 
