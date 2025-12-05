@@ -377,4 +377,167 @@ class PostLayoutStructureTest extends TestCase
         $this->assertArrayHasKey('itemWrapper', $decoded);
         $this->assertArrayHasKey('children', $decoded['container']);
     }
+
+    public function testCarouselLayoutOptionsUpdate()
+    {
+        $layout = new CarouselLayout();
+        
+        // Test with default options
+        $structure1 = $layout->getHtmlStructure([
+            'columns' => 3,
+            'carouselAlign' => 'start',
+            'carouselAxis' => 'x',
+            'carouselDirection' => 'ltr',
+            'carouselStartIndex' => 0,
+            'carouselDuration' => 25,
+            'carouselDragFree' => false,
+            'carouselDragThreshold' => 10,
+            'carouselSkipSnaps' => false,
+            'carouselContainScroll' => 'trimSnaps',
+            'carouselInViewThreshold' => 0,
+        ]);
+        
+        $container1 = $structure1['container'];
+        $attrs1 = $container1['attributes'];
+        
+        $this->assertEquals('start', $attrs1['data-align']);
+        $this->assertEquals('x', $attrs1['data-axis']);
+        $this->assertEquals('ltr', $attrs1['data-direction']);
+        $this->assertEquals('0', $attrs1['data-start-index']);
+        $this->assertEquals('25', $attrs1['data-duration']);
+        $this->assertEquals('10', $attrs1['data-drag-threshold']);
+        $this->assertEquals('trimSnaps', $attrs1['data-contain-scroll']);
+        $this->assertEquals('0', $attrs1['data-in-view-threshold']);
+        $this->assertArrayNotHasKey('data-loop', $attrs1);
+        $this->assertArrayNotHasKey('data-autoplay', $attrs1);
+        $this->assertArrayNotHasKey('data-drag-free', $attrs1);
+        $this->assertArrayNotHasKey('data-skip-snaps', $attrs1);
+        
+        // Test with updated options
+        $structure2 = $layout->getHtmlStructure([
+            'columns' => 4,
+            'carouselAlign' => 'center',
+            'carouselAxis' => 'y',
+            'carouselDirection' => 'rtl',
+            'carouselStartIndex' => 2,
+            'carouselDuration' => 50,
+            'carouselDragFree' => true,
+            'carouselDragThreshold' => 20,
+            'carouselSkipSnaps' => true,
+            'carouselContainScroll' => 'keepSnaps',
+            'carouselInViewThreshold' => 0.5,
+            'loop' => true,
+            'autoplay' => true,
+            'autoplayDelay' => 5000,
+        ]);
+        
+        $container2 = $structure2['container'];
+        $attrs2 = $container2['attributes'];
+        
+        // Verify all options are updated
+        $this->assertEquals('center', $attrs2['data-align']);
+        $this->assertEquals('y', $attrs2['data-axis']);
+        $this->assertEquals('rtl', $attrs2['data-direction']);
+        $this->assertEquals('2', $attrs2['data-start-index']);
+        $this->assertEquals('50', $attrs2['data-duration']);
+        $this->assertEquals('20', $attrs2['data-drag-threshold']);
+        $this->assertEquals('keepSnaps', $attrs2['data-contain-scroll']);
+        $this->assertEquals('0.5', $attrs2['data-in-view-threshold']);
+        $this->assertEquals('true', $attrs2['data-loop']);
+        $this->assertEquals('true', $attrs2['data-autoplay']);
+        $this->assertEquals('5000', $attrs2['data-autoplay-delay']);
+        $this->assertEquals('true', $attrs2['data-drag-free']);
+        $this->assertEquals('true', $attrs2['data-skip-snaps']);
+        
+        // Verify old values are not present
+        $this->assertNotEquals('start', $attrs2['data-align']);
+        $this->assertNotEquals('x', $attrs2['data-axis']);
+        $this->assertNotEquals('ltr', $attrs2['data-direction']);
+    }
+
+    public function testCarouselLayoutAlignOptionsUpdate()
+    {
+        $layout = new CarouselLayout();
+        
+        $aligns = ['start', 'center', 'end'];
+        
+        foreach ($aligns as $align) {
+            $structure = $layout->getHtmlStructure([
+                'carouselAlign' => $align,
+            ]);
+            
+            $attrs = $structure['container']['attributes'];
+            $this->assertEquals($align, $attrs['data-align'], "Align should be {$align}");
+        }
+    }
+
+    public function testCarouselLayoutAxisOptionsUpdate()
+    {
+        $layout = new CarouselLayout();
+        
+        // Test x axis
+        $structureX = $layout->getHtmlStructure(['carouselAxis' => 'x']);
+        $this->assertEquals('x', $structureX['container']['attributes']['data-axis']);
+        
+        // Test y axis
+        $structureY = $layout->getHtmlStructure(['carouselAxis' => 'y']);
+        $this->assertEquals('y', $structureY['container']['attributes']['data-axis']);
+    }
+
+    public function testCarouselLayoutDirectionOptionsUpdate()
+    {
+        $layout = new CarouselLayout();
+        
+        // Test ltr
+        $structureLtr = $layout->getHtmlStructure(['carouselDirection' => 'ltr']);
+        $this->assertEquals('ltr', $structureLtr['container']['attributes']['data-direction']);
+        
+        // Test rtl
+        $structureRtl = $layout->getHtmlStructure(['carouselDirection' => 'rtl']);
+        $this->assertEquals('rtl', $structureRtl['container']['attributes']['data-direction']);
+    }
+
+    public function testCarouselLayoutContainScrollOptionsUpdate()
+    {
+        $layout = new CarouselLayout();
+        
+        $options = ['false', 'trimSnaps', 'keepSnaps'];
+        
+        foreach ($options as $option) {
+            $structure = $layout->getHtmlStructure([
+                'carouselContainScroll' => $option,
+            ]);
+            
+            $attrs = $structure['container']['attributes'];
+            $this->assertEquals($option, $attrs['data-contain-scroll'], "ContainScroll should be {$option}");
+        }
+    }
+
+    public function testCarouselLayoutPreservesOtherAttributesWhenOptionsChange()
+    {
+        $layout = new CarouselLayout();
+        
+        $structure1 = $layout->getHtmlStructure([
+            'columns' => 3,
+            'carouselAlign' => 'start',
+            'slidesToScroll' => 1,
+        ]);
+        
+        $structure2 = $layout->getHtmlStructure([
+            'columns' => 3,
+            'carouselAlign' => 'center', // Changed
+            'slidesToScroll' => 1,
+        ]);
+        
+        $attrs1 = $structure1['container']['attributes'];
+        $attrs2 = $structure2['container']['attributes'];
+        
+        // Align should be different
+        $this->assertNotEquals($attrs1['data-align'], $attrs2['data-align']);
+        
+        // Other attributes should be preserved
+        $this->assertEquals($attrs1['data-slides-per-view'], $attrs2['data-slides-per-view']);
+        $this->assertEquals($attrs1['data-slides-to-scroll'], $attrs2['data-slides-to-scroll']);
+        $this->assertEquals($attrs1['data-embla-carousel'], $attrs2['data-embla-carousel']);
+    }
 }

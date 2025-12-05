@@ -83,6 +83,28 @@
         "className": {
             "type": "string",
             "default": ""
+        },
+        "itemSpacing": {
+            "type": "string",
+            "default": "normal",
+            "enum": ["none", "compact", "normal", "loose"]
+        },
+        "showItemBorder": {
+            "type": "boolean",
+            "default": false
+        },
+        "itemBorderRadius": {
+            "type": "number",
+            "default": 0
+        },
+        "itemPadding": {
+            "type": "object",
+            "default": {
+                "top": "0",
+                "right": "0",
+                "bottom": "0",
+                "left": "0"
+            }
         }
     }
 }

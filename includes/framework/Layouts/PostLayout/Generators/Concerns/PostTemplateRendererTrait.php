@@ -194,7 +194,21 @@ trait PostTemplateRendererTrait
 
             $output = '';
             foreach ($innerBlocks as $innerBlock) {
-                $blockInstance = new WP_Block($innerBlock, $context);
+                // Ensure inner block has all necessary structure for WP_Block
+                // WP_Block expects: blockName, attrs, innerBlocks, innerContent
+                $normalizedBlock = [
+                    'blockName' => $innerBlock['blockName'] ?? '',
+                    'attrs' => is_array($innerBlock['attrs'] ?? null) ? $innerBlock['attrs'] : [],
+                    'innerBlocks' => is_array($innerBlock['innerBlocks'] ?? null) ? $innerBlock['innerBlocks'] : [],
+                    'innerContent' => is_array($innerBlock['innerContent'] ?? null) ? $innerBlock['innerContent'] : [],
+                ];
+
+                // Preserve originalContent if exists (for dynamic blocks)
+                if (!empty($innerBlock['originalContent'])) {
+                    $normalizedBlock['originalContent'] = $innerBlock['originalContent'];
+                }
+
+                $blockInstance = new WP_Block($normalizedBlock, $context);
                 $output .= $blockInstance->render();
             }
 

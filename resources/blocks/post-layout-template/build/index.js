@@ -8,7 +8,7 @@
   \************************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/post-layout-template","title":"Post Layout Template","category":"jankx","parent":["jankx/post-type-layout"],"description":"Defines the markup template used to render a single post inside the Post Type Layout block.","textdomain":"jankx","editorScript":"file:./build/index.js","style":"file:./build/style.css","editorStyle":"file:./build/editor.css","usesContext":["queryId","query","displayLayout","templateSlug","previewPostType","enhancedPagination","postType","jankxPostTypeLayout"],"supports":{"reusable":false,"html":false,"align":["wide","full"],"layout":true,"color":{"gradients":true,"link":true,"__experimentalDefaultControls":{"background":true,"text":true}},"typography":{"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true,"__experimentalTextTransform":true,"__experimentalTextDecoration":true,"__experimentalLetterSpacing":true,"__experimentalDefaultControls":{"fontSize":true}},"spacing":{"margin":true,"padding":true,"blockGap":{"__experimentalDefault":"1.25em"},"__experimentalDefaultControls":{"blockGap":true,"padding":false,"margin":false}},"interactivity":{"clientNavigation":true},"__experimentalBorder":{"radius":true,"color":true,"width":true,"style":true}},"attributes":{"layout":{"type":"object","default":{"type":"default","columnCount":3}},"contentLayout":{"type":"string","default":"default"},"className":{"type":"string","default":""}}}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/post-layout-template","title":"Post Layout Template","category":"jankx","parent":["jankx/post-type-layout"],"description":"Defines the markup template used to render a single post inside the Post Type Layout block.","textdomain":"jankx","editorScript":"file:./build/index.js","style":"file:./build/style.css","editorStyle":"file:./build/editor.css","usesContext":["queryId","query","displayLayout","templateSlug","previewPostType","enhancedPagination","postType","jankxPostTypeLayout"],"supports":{"reusable":false,"html":false,"align":["wide","full"],"layout":true,"color":{"gradients":true,"link":true,"__experimentalDefaultControls":{"background":true,"text":true}},"typography":{"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true,"__experimentalTextTransform":true,"__experimentalTextDecoration":true,"__experimentalLetterSpacing":true,"__experimentalDefaultControls":{"fontSize":true}},"spacing":{"margin":true,"padding":true,"blockGap":{"__experimentalDefault":"1.25em"},"__experimentalDefaultControls":{"blockGap":true,"padding":false,"margin":false}},"interactivity":{"clientNavigation":true},"__experimentalBorder":{"radius":true,"color":true,"width":true,"style":true}},"attributes":{"layout":{"type":"object","default":{"type":"default","columnCount":3}},"contentLayout":{"type":"string","default":"default"},"className":{"type":"string","default":""},"itemSpacing":{"type":"string","default":"normal","enum":["none","compact","normal","loose"]},"showItemBorder":{"type":"boolean","default":false},"itemBorderRadius":{"type":"number","default":0},"itemPadding":{"type":"object","default":{"top":"0","right":"0","bottom":"0","left":"0"}}}}');
 
 /***/ }),
 
@@ -56,11 +56,14 @@ function PostLayoutTemplateInnerBlocks({
   allowedBlocks
 }) {
   const innerBlocksProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.useInnerBlocksProps)({
-    className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])('wp-block-post', classList)
+    className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])('wp-block-post', classList, 'is-editing'),
+    style: {
+      minHeight: '50px',
+      position: 'relative'
+    }
   }, {
     template: TEMPLATE,
     __unstableDisableLayoutClassNames: true,
-    renderAppender: _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.InnerBlocks.ButtonBlockAppender,
     allowedBlocks,
     templateLock: false
   });
@@ -102,7 +105,18 @@ function PostLayoutTemplateEdit({
   clientId,
   context,
   attributes: {
-    layout
+    layout,
+    contentLayout = 'default',
+    className = '',
+    itemSpacing = 'normal',
+    showItemBorder = false,
+    itemBorderRadius = 0,
+    itemPadding = {
+      top: '0',
+      right: '0',
+      bottom: '0',
+      left: '0'
+    }
   },
   __unstableLayoutClassNames
 }) {
@@ -242,20 +256,30 @@ function PostLayoutTemplateEdit({
   const innerBlockCount = (_primaryTemplateBlock = primaryTemplateBlock?.innerBlocks?.length) !== null && _primaryTemplateBlock !== void 0 ? _primaryTemplateBlock : 0;
   const allowedBlocks = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useMemo)(() => (0,_templateBlocks__WEBPACK_IMPORTED_MODULE_9__.getAllowedTemplateBlocks)(previewPostType || postType), [previewPostType, postType]);
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.useBlockProps)({
-    className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])(__unstableLayoutClassNames, {
-      [`columns-${columnCount}`]: layoutType === 'grid' && columnCount
-    })
+    className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])(__unstableLayoutClassNames, className, {
+      [`columns-${columnCount}`]: layoutType === 'grid' && columnCount,
+      [`content-layout-${contentLayout}`]: contentLayout && contentLayout !== 'default',
+      [`item-spacing-${itemSpacing}`]: itemSpacing && itemSpacing !== 'normal',
+      'has-item-border': showItemBorder
+    }),
+    style: showItemBorder && itemBorderRadius > 0 ? {
+      '--item-border-radius': `${itemBorderRadius}px`
+    } : undefined
   });
   if (!posts) {
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("p", {
-      ...blockProps,
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Spinner, {})
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
+      children: [inspectorControls, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("p", {
+        ...blockProps,
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Spinner, {})
+      })]
     });
   }
   if (!posts.length) {
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("p", {
-      ...blockProps,
-      children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('No results found.', 'jankx')
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
+      children: [inspectorControls, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("p", {
+        ...blockProps,
+        children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('No results found.', 'jankx')
+      })]
     });
   }
   const setDisplayLayout = newDisplayLayout => setAttributes({
@@ -280,11 +304,257 @@ function PostLayoutTemplateEdit({
     }),
     isActive: layoutType === 'grid'
   }];
+  if (!posts) {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.BlockControls, {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.ToolbarGroup, {
+          controls: displayLayoutControls
+        })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.InspectorControls, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Template Settings', 'jankx'),
+          initialOpen: true,
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.SelectControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Content Layout', 'jankx'),
+            value: contentLayout,
+            options: [{
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Default', 'jankx'),
+              value: 'default'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Compact', 'jankx'),
+              value: 'compact'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Full', 'jankx'),
+              value: 'full'
+            }],
+            onChange: value => setAttributes({
+              contentLayout: value
+            }),
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Control the layout style of the post template', 'jankx')
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Item Styling', 'jankx'),
+          initialOpen: false,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.SelectControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Item Spacing', 'jankx'),
+            value: itemSpacing,
+            options: [{
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('None', 'jankx'),
+              value: 'none'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Compact', 'jankx'),
+              value: 'compact'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Normal', 'jankx'),
+              value: 'normal'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Loose', 'jankx'),
+              value: 'loose'
+            }],
+            onChange: value => setAttributes({
+              itemSpacing: value
+            }),
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Control spacing between post items', 'jankx')
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.ToggleControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Show Item Border', 'jankx'),
+            checked: showItemBorder,
+            onChange: value => setAttributes({
+              showItemBorder: value
+            }),
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Add border around each post item', 'jankx')
+          }), showItemBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.RangeControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Border Radius', 'jankx'),
+            value: itemBorderRadius,
+            onChange: value => setAttributes({
+              itemBorderRadius: value || 0
+            }),
+            min: 0,
+            max: 50,
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Border radius in pixels', 'jankx')
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Advanced', 'jankx'),
+          initialOpen: false,
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("p", {
+            style: {
+              fontSize: '12px',
+              color: '#757575',
+              marginTop: '8px'
+            },
+            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Note: Individual inner blocks (Title, Date, Excerpt, etc.) have their own settings that appear when you select them directly.', 'jankx')
+          })
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("p", {
+        ...blockProps,
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Spinner, {})
+      })]
+    });
+  }
+  if (!posts.length) {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.BlockControls, {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.ToolbarGroup, {
+          controls: displayLayoutControls
+        })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.InspectorControls, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Template Settings', 'jankx'),
+          initialOpen: true,
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.SelectControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Content Layout', 'jankx'),
+            value: contentLayout,
+            options: [{
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Default', 'jankx'),
+              value: 'default'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Compact', 'jankx'),
+              value: 'compact'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Full', 'jankx'),
+              value: 'full'
+            }],
+            onChange: value => setAttributes({
+              contentLayout: value
+            }),
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Control the layout style of the post template', 'jankx')
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Item Styling', 'jankx'),
+          initialOpen: false,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.SelectControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Item Spacing', 'jankx'),
+            value: itemSpacing,
+            options: [{
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('None', 'jankx'),
+              value: 'none'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Compact', 'jankx'),
+              value: 'compact'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Normal', 'jankx'),
+              value: 'normal'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Loose', 'jankx'),
+              value: 'loose'
+            }],
+            onChange: value => setAttributes({
+              itemSpacing: value
+            }),
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Control spacing between post items', 'jankx')
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.ToggleControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Show Item Border', 'jankx'),
+            checked: showItemBorder,
+            onChange: value => setAttributes({
+              showItemBorder: value
+            }),
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Add border around each post item', 'jankx')
+          }), showItemBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.RangeControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Border Radius', 'jankx'),
+            value: itemBorderRadius,
+            onChange: value => setAttributes({
+              itemBorderRadius: value || 0
+            }),
+            min: 0,
+            max: 50,
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Border radius in pixels', 'jankx')
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Advanced', 'jankx'),
+          initialOpen: false,
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("p", {
+            style: {
+              fontSize: '12px',
+              color: '#757575',
+              marginTop: '8px'
+            },
+            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Note: Individual inner blocks (Title, Date, Excerpt, etc.) have their own settings that appear when you select them directly.', 'jankx')
+          })
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("p", {
+        ...blockProps,
+        children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('No results found.', 'jankx')
+      })]
+    });
+  }
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.BlockControls, {
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.ToolbarGroup, {
         controls: displayLayoutControls
       })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.InspectorControls, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Template Settings', 'jankx'),
+        initialOpen: true,
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.SelectControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Content Layout', 'jankx'),
+          value: contentLayout,
+          options: [{
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Default', 'jankx'),
+            value: 'default'
+          }, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Compact', 'jankx'),
+            value: 'compact'
+          }, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Full', 'jankx'),
+            value: 'full'
+          }],
+          onChange: value => setAttributes({
+            contentLayout: value
+          }),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Control the layout style of the post template', 'jankx')
+        })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Item Styling', 'jankx'),
+        initialOpen: false,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.SelectControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Item Spacing', 'jankx'),
+          value: itemSpacing,
+          options: [{
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('None', 'jankx'),
+            value: 'none'
+          }, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Compact', 'jankx'),
+            value: 'compact'
+          }, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Normal', 'jankx'),
+            value: 'normal'
+          }, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Loose', 'jankx'),
+            value: 'loose'
+          }],
+          onChange: value => setAttributes({
+            itemSpacing: value
+          }),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Control spacing between post items', 'jankx')
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.ToggleControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Show Item Border', 'jankx'),
+          checked: showItemBorder,
+          onChange: value => setAttributes({
+            showItemBorder: value
+          }),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Add border around each post item', 'jankx')
+        }), showItemBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.RangeControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Border Radius', 'jankx'),
+          value: itemBorderRadius,
+          onChange: value => setAttributes({
+            itemBorderRadius: value || 0
+          }),
+          min: 0,
+          max: 50,
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Border radius in pixels', 'jankx')
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Advanced', 'jankx'),
+        initialOpen: false,
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("p", {
+          style: {
+            fontSize: '12px',
+            color: '#757575',
+            marginTop: '8px'
+          },
+          children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Note: Individual inner blocks (Title, Date, Excerpt, etc.) have their own settings that appear when you select them directly.', 'jankx')
+        })
+      })]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
       children: [innerBlockCount === 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
         className: "jankx-post-layout-template__notice",
@@ -333,16 +603,36 @@ __webpack_require__.r(__webpack_exports__);
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ PostLayoutTemplateSave)
+/* harmony export */   "default": () => (/* binding */ Save)
 /* harmony export */ });
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__);
+/**
+ * Save component for post-layout-template block
+ * 
+ * For dynamic blocks with render_callback, we need to save InnerBlocks
+ * so WordPress can parse them correctly. The render_callback will handle
+ * the actual rendering on frontend.
+ * Attributes are saved automatically via block.json.
+ */
 
 
-function PostLayoutTemplateSave() {
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.InnerBlocks.Content, {});
+
+function Save({
+  attributes
+}) {
+  const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.useBlockProps.save({
+    className: attributes.className || ''
+  });
+
+  // Save InnerBlocks so WordPress can parse them correctly
+  // The render_callback will use $block->parsed_block to access InnerBlocks
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+    ...blockProps,
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.InnerBlocks.Content, {})
+  });
 }
 
 /***/ }),

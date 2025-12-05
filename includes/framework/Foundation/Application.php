@@ -409,7 +409,17 @@ class Application extends Container
     public function register($provider)
     {
         if (is_string($provider)) {
-            $provider = new $provider($this);
+            $reflection = new \ReflectionClass($provider);
+            $constructor = $reflection->getConstructor();
+
+            if ($constructor && !$constructor->isPublic()) {
+                $constructor->setAccessible(true);
+                $instance = $reflection->newInstanceWithoutConstructor();
+                $constructor->invoke($instance, $this);
+                $provider = $instance;
+            } else {
+                $provider = new $provider($this);
+            }
         }
 
         $provider->register($this);
