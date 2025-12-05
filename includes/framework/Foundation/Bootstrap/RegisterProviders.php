@@ -23,6 +23,12 @@ class RegisterProviders
             $config->get('app.providers', [])
         );
 
+        $providers = apply_filters('jankx.foundation.providers', $providers);
+        $providers = array_unique($providers);
+
+        // Trigger event to allow other plugins to add providers
+        do_action('jankx.foundation.providers.before_register', $app, $providers);
+
         // Register all providers
         foreach ($providers as $provider) {
             if (is_string($provider) && class_exists($provider)) {
