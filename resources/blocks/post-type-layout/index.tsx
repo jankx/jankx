@@ -17,13 +17,13 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import { useCallback, useEffect, useState, useMemo, useRef } from '@wordpress/element';
 import type { CSSProperties } from 'react';
 type TokenLike = string | { value: string; [key: string]: unknown };
-import ServerSideRender from '@wordpress/server-side-render';
-import { debounce } from '@wordpress/compose';
 import { ResponsiveControl, ResponsiveValue } from '../../shared/components';
 import metadata from './block.json';
 import './style.scss';
 import './editor.scss';
 import useEmblaCarousel from 'embla-carousel-react';
+import { renderLayout, getLayoutStructure, getPostItemStructure } from './layout-renderer';
+import Save from './save';
 
 interface TaxQueryItem {
     taxonomy: string;
@@ -205,15 +205,9 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         showDots = true,
     } = attributes;
 
-    // Use ServerSideRender for initial render (better UX, SSR)
-    // Only use AJAX fetch when needed for complex interactions
-    const useAjaxRender = true;
-    
-    // Debounced attributes for AJAX render (only when useAjaxRender is true)
-    const [debouncedAttributes, setDebouncedAttributes] = useState(attributes);
-    const [cachedHtml, setCachedHtml] = useState<string>('');
-    const [carouselSlidesHtml, setCarouselSlidesHtml] = useState<string>('');
-    const [isLoading, setIsLoading] = useState(false);
+    // Preview HTML for editor (generated from structure)
+    // Preview should match frontend output exactly
+    const [previewHtml, setPreviewHtml] = useState<string>('');
     
     // Embla Carousel refs for carousel layout preview in editor
     // Always initialize hook, but only use it when layout is carousel
@@ -226,11 +220,11 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     
     // Re-initialize carousel when settings change (for carousel layout only)
     useEffect(() => {
-        if (layout === 'carousel' && emblaApi && cachedHtml) {
+        if (layout === 'carousel' && emblaApi && previewHtml) {
             // Embla will auto-update when options change via props
             emblaApi.reInit();
         }
-    }, [layout, slidesToScroll, loop, cachedHtml, emblaApi]);
+    }, [layout, slidesToScroll, loop, previewHtml, emblaApi]);
 
     // States for taxonomies and authors
     const [taxonomies, setTaxonomies] = useState<TaxonomyItem[]>([]);
@@ -243,21 +237,6 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     );
     const { replaceInnerBlocks } = useDispatch<any>(blockEditorStore);
 
-    // Debounce attributes update để giảm số lần re-render (only when using AJAX)
-    const updateDebouncedAttributes = useMemo<DebouncedAttributesUpdater>(() => {
-        const debounced = debounce((...args: unknown[]) => {
-            const [newAttributes] = args as [PostTypeLayoutAttributes];
-            setDebouncedAttributes(newAttributes);
-            if (useAjaxRender) {
-                setIsLoading(true);
-            }
-        }, 800);
-
-        return debounced as DebouncedAttributesUpdater;
-    }, [setDebouncedAttributes, setIsLoading, useAjaxRender]);
-
-    const attributesHash = useMemo(() => JSON.stringify(attributes), [attributes]);
-    const previousAttributesHashRef = useRef<string | null>(null);
     const isMountedRef = useRef(true);
 
     useEffect(() => {
@@ -266,24 +245,6 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             isMountedRef.current = false;
         };
     }, []);
-
-    useEffect(() => {
-        if (!useAjaxRender) {
-            return;
-        }
-        if (previousAttributesHashRef.current === attributesHash) {
-            return;
-        }
-        previousAttributesHashRef.current = attributesHash;
-        setIsLoading(true);
-        updateDebouncedAttributes(attributes);
-    }, [attributes, attributesHash, updateDebouncedAttributes, useAjaxRender]);
-
-    useEffect(() => {
-        return () => {
-            updateDebouncedAttributes.cancel();
-        };
-    }, [updateDebouncedAttributes]);
 
     // Generate unique queryId if not set
     useEffect(() => {
@@ -493,6 +454,7 @@ const desiredInnerBlocks = useMemo(() => {
     isProduct,
 ]);
 
+// Auto-create template block with inner blocks based on display options
 useEffect(() => {
     if (!replaceInnerBlocks) {
         return;
@@ -552,134 +514,94 @@ useEffect(() => {
     const supportedOptions = currentLayout?.supportedOptions || [];
     const readOnlyOptions = currentLayout?.readOnlyOptions || [];
 
-    // Create stable key based on actual query attributes only (for AJAX render)
-    // Chỉ re-render khi các attributes này thay đổi
-    const renderKey = useMemo(() => {
-        if (!useAjaxRender) {
-            return '';
-        }
-        const keyAttributes = {
-            postType: debouncedAttributes.postType,
-            postsPerPage: debouncedAttributes.postsPerPage,
-            layout: debouncedAttributes.layout,
-            columns: debouncedAttributes.columns,
-            responsiveColumns: debouncedAttributes.responsiveColumns,
-            showTitle: debouncedAttributes.showTitle,
-            showExcerpt: debouncedAttributes.showExcerpt,
-            showFeaturedImage: debouncedAttributes.showFeaturedImage,
-            includeStickyPosts: debouncedAttributes.includeStickyPosts,
-            thumbnailPosition: debouncedAttributes.thumbnailPosition,
-            imageRatio: debouncedAttributes.imageRatio,
-            showDate: debouncedAttributes.showDate,
-            showAuthor: debouncedAttributes.showAuthor,
-            excerptLength: debouncedAttributes.excerptLength,
-            orderBy: debouncedAttributes.orderBy,
-            order: debouncedAttributes.order,
-            enablePagination: debouncedAttributes.enablePagination,
-            paginationStyle: debouncedAttributes.paginationStyle,
-            paginationAlignment: debouncedAttributes.paginationAlignment,
-            showPaginationNumbers: debouncedAttributes.showPaginationNumbers,
-            paginationPrevText: debouncedAttributes.paginationPrevText,
-            paginationNextText: debouncedAttributes.paginationNextText,
-            offset: debouncedAttributes.offset,
-            taxQuery: debouncedAttributes.taxQuery,
-            metaQuery: debouncedAttributes.metaQuery,
-            keyword: debouncedAttributes.keyword,
-            authorIn: debouncedAttributes.authorIn,
-            authorNotIn: debouncedAttributes.authorNotIn,
-            postIn: debouncedAttributes.postIn,
-            postNotIn: debouncedAttributes.postNotIn,
-            metaKey: debouncedAttributes.metaKey,
-            metaType: debouncedAttributes.metaType,
-            postStatus: debouncedAttributes.postStatus,
-            postParent: debouncedAttributes.postParent,
-            postParentIn: debouncedAttributes.postParentIn,
-            postParentNotIn: debouncedAttributes.postParentNotIn,
-            customQueryId: debouncedAttributes.customQueryId,
-            slidesToScroll: debouncedAttributes.slidesToScroll,
-            loop: debouncedAttributes.loop,
-            autoplay: debouncedAttributes.autoplay,
-            autoplayDelay: debouncedAttributes.autoplayDelay,
-            showArrows: debouncedAttributes.showArrows,
-            showDots: debouncedAttributes.showDots,
-        };
-        return JSON.stringify(keyAttributes);
-    }, [debouncedAttributes, useAjaxRender]);
-
-    // Fetch posts từ REST API (only when useAjaxRender is true)
+    // Generate preview HTML from structure when attributes change
     useEffect(() => {
-        if (!useAjaxRender) {
+        const generatePreview = () => {
+            const layoutStructure = getLayoutStructure(layout);
+            const postItemStructure = getPostItemStructure();
+
+            if (!layoutStructure || !postItemStructure) {
+                setPreviewHtml('');
             return;
         }
 
-        const fetchPosts = async () => {
-            try {
-                if (isMountedRef.current) {
-                    setIsLoading(true);
-                }
-
-                if (layout === 'carousel') {
-                    setCarouselSlidesHtml('');
-                }
-
-                // Use wp.apiFetch để tự động handle authentication
-                const data = await (window as any).wp.apiFetch({
-                    path: `/wp/v2/block-renderer/jankx/post-type-layout?context=edit`,
-                    method: 'POST',
-                    data: {
-                        attributes: debouncedAttributes,
+            // Update container structure with current columns
+            const updatedStructure = {
+                ...layoutStructure,
+                container: {
+                    ...layoutStructure.container,
+                    classes: [
+                        ...(layoutStructure.container.classes || []).filter((cls: string) => 
+                            !cls.startsWith('columns-')
+                        ),
+                        `columns-${columns}`,
+                        `columns-tablet-${columnsTablet}`,
+                        `columns-mobile-${columnsMobile}`,
+                    ],
+                    styles: {
+                        ...(layoutStructure.container.styles || {}),
+                        '--columns-desktop': String(columns),
+                        '--columns-tablet': String(columnsTablet),
+                        '--columns-mobile': String(columnsMobile),
                     },
-                });
+                },
+            };
 
-                if (!isMountedRef.current) {
-                    return;
+            // Generate preview with sample posts data
+            const samplePosts = Array.from({ length: Math.min(postsPerPage, 6) }, (_, i) => ({
+                id: i + 1,
+                title: `Sample Post ${i + 1}`,
+                date: new Date().toLocaleDateString(),
+                excerpt: 'This is a sample excerpt for preview purposes...',
+                author: 'Sample Author',
+                featuredImage: '<img src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'800\' height=\'600\'%3E%3Crect fill=\'%23ddd\' width=\'800\' height=\'600\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23999\'%3E800x600%3C/text%3E%3C/svg%3E" alt="Sample" />',
+                link: '#',
+            }));
+
+            const renderedHtml = renderLayout(
+                updatedStructure,
+                samplePosts,
+                postItemStructure,
+                {
+                    showFeaturedImage,
+                    showTitle,
+                    showDate,
+                    showAuthor,
+                    showExcerpt,
+                    showPrice,
+                    showAddToCart,
+                    showRating,
+                    thumbnailPosition,
+                    imageRatio,
                 }
+            );
 
-                if (data.rendered) {
-                    setCachedHtml(data.rendered);
-                    if (layout === 'carousel') {
-                        let slidesHtml = '';
-
-                        try {
-                            if (typeof window !== 'undefined' && typeof (window as any).DOMParser !== 'undefined') {
-                                const parser = new window.DOMParser();
-                                const parsedDocument = parser.parseFromString(data.rendered, 'text/html');
-                                const containerElement = parsedDocument.querySelector('.post-type-layout-carousel .embla__container');
-
-                                if (containerElement) {
-                                    slidesHtml = containerElement.innerHTML;
-                                }
-                            }
-                        } catch (parseError) {
-                            console.warn('Failed to parse carousel markup for editor preview:', parseError);
-                        }
-
-                        setCarouselSlidesHtml(slidesHtml);
-                    } else {
-                        setCarouselSlidesHtml('');
-                    }
-                } else {
-                    setCachedHtml('<div class="placeholder">No content</div>');
-                    setCarouselSlidesHtml('');
-                }
-
-                if (isMountedRef.current) {
-                    setIsLoading(false);
-                }
-            } catch (error: any) {
-                console.error('Error fetching posts:', error);
-
-                if (!isMountedRef.current) {
-                    return;
-                }
-
-                setCachedHtml(`<div class="error">${error?.message || 'Error rendering block'}</div>`);
-                setIsLoading(false);
-            }
+            setPreviewHtml(renderedHtml);
         };
 
-        fetchPosts();
-    }, [layout, renderKey, useAjaxRender]); // Only fetch when useAjaxRender is true
+        // Debounce preview generation
+        const timeoutId = setTimeout(() => {
+            generatePreview();
+        }, 300);
+
+        return () => clearTimeout(timeoutId);
+    }, [
+        layout,
+        columns,
+        columnsTablet,
+        columnsMobile,
+        showFeaturedImage,
+        showTitle,
+        showDate,
+        showAuthor,
+        showExcerpt,
+        showPrice,
+        showAddToCart,
+        showRating,
+        thumbnailPosition,
+        imageRatio,
+        postsPerPage,
+    ]);
 
 
     return (
@@ -1516,13 +1438,10 @@ useEffect(() => {
             </InspectorControls>
 
             <div {...blockProps}>
-                {useAjaxRender && isLoading ? (
-                    <Placeholder>
-                        <Spinner />
-                        <p>{__('Loading posts...', 'jankx')}</p>
-                    </Placeholder>
-                ) : useAjaxRender && layout === 'carousel' && cachedHtml ? (
-                    // Render carousel preview in editor using Embla Carousel React (AJAX mode)
+                {/* Preview - render exactly like frontend, no labels, borders, or extra styling */}
+                {/* This ensures editor preview matches frontend output for consistency */}
+                {previewHtml ? (
+                    layout === 'carousel' ? (
                     <div
                         className={[
                             'post-type-layout-carousel',
@@ -1546,7 +1465,7 @@ useEffect(() => {
                         <div className="embla__viewport" ref={emblaRef}>
                             <div
                                 className="embla__container"
-                                dangerouslySetInnerHTML={{ __html: carouselSlidesHtml || '' }}
+                                    dangerouslySetInnerHTML={{ __html: previewHtml }}
                             />
                         </div>
                         {showArrows !== false && emblaApi ? (
@@ -1576,11 +1495,16 @@ useEffect(() => {
                             </>
                         ) : null}
                     </div>
-                ) : useAjaxRender && cachedHtml ? (
-                    // AJAX mode - render cached HTML
-                    <div dangerouslySetInnerHTML={{ __html: cachedHtml }} />
+                    ) : (
+                        <div dangerouslySetInnerHTML={{ __html: previewHtml }} />
+                    )
                 ) : (
-                    <InnerBlocks templateLock={false} renderAppender={undefined} />
+                    // Show InnerBlocks for editing when preview is not ready
+                    <InnerBlocks 
+                        templateLock={false} 
+                        renderAppender={InnerBlocks.ButtonBlockAppender}
+                        allowedBlocks={['jankx/post-layout-template']}
+                    />
                 )}
             </div>
         </>
@@ -1590,5 +1514,5 @@ useEffect(() => {
 registerBlockType(metadata.name, {
     ...metadata,
     edit: Edit,
-    save: () => null, // Server-side rendering
+    save: Save,
 } as any);

@@ -22,6 +22,45 @@ class PostTypeLayoutAjaxHandler
         add_action('wp_ajax_nopriv_jankx_load_more_posts', [$this, 'ajaxLoadMore']);
         add_action('wp_ajax_jankx_post_type_layout_filter', [$this, 'ajaxFilterUpdate']);
         add_action('wp_ajax_nopriv_jankx_post_type_layout_filter', [$this, 'ajaxFilterUpdate']);
+        
+        // Register REST API endpoint for posts data
+        add_action('rest_api_init', [$this, 'registerRestRoutes']);
+    }
+
+    /**
+     * Register REST API routes
+     *
+     * @return void
+     */
+    public function registerRestRoutes(): void
+    {
+        register_rest_route('jankx/v1', '/post-type-layout/posts', [
+            'methods' => 'POST',
+            'callback' => [$this, 'getPostsData'],
+            'permission_callback' => function () {
+                return current_user_can('edit_posts');
+            },
+        ]);
+    }
+
+    /**
+     * Get posts data for editor preview
+     *
+     * @param \WP_REST_Request $request
+     * @return \WP_REST_Response
+     */
+    public function getPostsData(\WP_REST_Request $request): \WP_REST_Response
+    {
+        $attributes = $request->get_json_params()['attributes'] ?? [];
+        
+        // Delegate to Block handler via filter to get posts data
+        $result = apply_filters('jankx_post_type_layout_get_posts_data', null, $attributes);
+        
+        if ($result === null) {
+            return new \WP_REST_Response(['error' => __('Failed to fetch posts data', 'jankx')], 400);
+        }
+        
+        return new \WP_REST_Response($result, 200);
     }
 
     /**

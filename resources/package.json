@@ -13,6 +13,10 @@
     "plugin-zip": "wp-scripts plugin-zip",
     "test:e2e": "wp-scripts test-e2e",
     "test:unit": "wp-scripts test-unit-js",
+    "test:js": "wp-scripts test-unit-js blocks/post-type-layout/__tests__",
+    "test:js:watch": "wp-scripts test-unit-js blocks/post-type-layout/__tests__ --watch",
+    "test:js:coverage": "wp-scripts test-unit-js blocks/post-type-layout/__tests__ --coverage",
+    "test:all": "npm run test:js && cd .. && vendor/bin/phpunit tests/Support/Blocks/PostLayout tests/Integration/PostLayout",
     "build:blocks": "webpack --config webpack.config.js",
     "watch:blocks": "webpack --watch --config webpack.config.js"
   },

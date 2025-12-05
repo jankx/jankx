@@ -43,11 +43,12 @@ abstract class TestCase extends BaseTestCase
     /**
      * Assert that a class has a specific method
      */
-    protected function assertHasMethod($class, $method)
+    protected function assertHasMethod($classOrObject, $method)
     {
+        $className = is_object($classOrObject) ? get_class($classOrObject) : $classOrObject;
         $this->assertTrue(
-            method_exists($class, $method),
-            "Class {$class} should have method {$method}"
+            method_exists($classOrObject, $method),
+            "Class {$className} should have method {$method}"
         );
     }
 
@@ -342,7 +343,7 @@ abstract class TestCase extends BaseTestCase
     /**
      * Assert that a file exists
      */
-    public function assertFileExists(string $filename, string $message = ''): void
+    protected function assertFileExistsCustom(string $filename, string $message = ''): void
     {
         $this->assertTrue(file_exists($filename), $message ?: "File {$filename} should exist");
     }
@@ -350,7 +351,7 @@ abstract class TestCase extends BaseTestCase
     /**
      * Assert that a directory exists
      */
-    public function assertDirectoryExists(string $directory, string $message = ''): void
+    protected function assertDirectoryExistsCustom(string $directory, string $message = ''): void
     {
         $this->assertTrue(is_dir($directory), $message ?: "Directory {$directory} should exist");
     }
@@ -358,7 +359,7 @@ abstract class TestCase extends BaseTestCase
     /**
      * Assert that a file is readable
      */
-    public function assertFileIsReadable(string $file, string $message = ''): void
+    protected function assertFileIsReadableCustom(string $file, string $message = ''): void
     {
         $this->assertTrue(is_readable($file), $message ?: "File {$file} should be readable");
     }
@@ -366,7 +367,7 @@ abstract class TestCase extends BaseTestCase
     /**
      * Assert that a file is writable
      */
-    public function assertFileIsWritable(string $file, string $message = ''): void
+    protected function assertFileIsWritableCustom(string $file, string $message = ''): void
     {
         $this->assertTrue(is_writable($file), $message ?: "File {$file} should be writable");
     }

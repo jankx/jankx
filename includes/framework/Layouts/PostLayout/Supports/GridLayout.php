@@ -111,6 +111,52 @@ class GridLayout extends PostLayout
         ];
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    protected function getContainerStructure(array $options): array
+    {
+        $classes = [
+            'post-type-layout-grid',
+            'wp-block-jankx-post-layout-template',
+            'is-flex-container',
+        ];
+        
+        $columns = intval($options['columns'] ?? $this->getOption('columns', 3));
+        $columnsTablet = intval($options['columnsTablet'] ?? $this->getOption('columnsTablet', 2));
+        $columnsMobile = intval($options['columnsMobile'] ?? $this->getOption('columnsMobile', 1));
+
+        $classes[] = 'columns-' . $columns;
+        $classes[] = 'columns-tablet-' . $columnsTablet;
+        $classes[] = 'columns-mobile-' . $columnsMobile;
+
+        $styles = [
+            '--columns-desktop' => (string) $columns,
+            '--columns-tablet' => (string) $columnsTablet,
+            '--columns-mobile' => (string) $columnsMobile,
+        ];
+
+        return [
+            'tag' => 'ul', // Grid layout uses <ul> as container
+            'classes' => $classes,
+            'styles' => $styles,
+            'attributes' => [
+                'data-layout' => $this->name,
+            ],
+        ];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getItemWrapperStructure(array $options): array
+    {
+        // Grid layout uses <li> for items
+        $structure = parent::getItemWrapperStructure($options);
+        $structure['tag'] = 'li';
+        return $structure;
+    }
+
     public function wrapTemplateHtml(string $html, array $options = []): string
     {
         $columns = (int)($options['columns'] ?? $this->getOption('columns', 3));

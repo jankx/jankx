@@ -18,6 +18,16 @@
         <testsuite name="Providers">
             <directory>tests/App/Providers</directory>
         </testsuite>
+        <testsuite name="PostLayout">
+            <directory>tests/Support/Blocks/PostLayout</directory>
+        </testsuite>
+        <testsuite name="Integration">
+            <directory>tests/Integration</directory>
+        </testsuite>
+        <testsuite name="PostLayout">
+            <directory>tests/Support/Blocks/PostLayout</directory>
+            <directory>tests/Integration/PostLayout</directory>
+        </testsuite>
     </testsuites>
 
     <coverage>

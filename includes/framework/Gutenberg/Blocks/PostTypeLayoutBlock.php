@@ -73,6 +73,7 @@ class PostTypeLayoutBlock extends Block
         add_filter('jankx_post_type_layout_load_more', [$this, 'handleLoadMoreAjax'], 10, 2);
         add_filter('jankx_post_type_layout_filter_update', [$this, 'handleFilterUpdate'], 10, 2);
         add_filter('jankx_post_type_layout_get_block_attributes', [$this, 'handleGetBlockAttributes'], 10, 3);
+        add_filter('jankx_post_type_layout_get_posts_data', [$this, 'handleGetPostsData'], 10, 2);
 
         $this->ensureServices();
         $this->registerInvalidationHooks();
@@ -129,6 +130,80 @@ class PostTypeLayoutBlock extends Block
     {
         return $this->getBlockAttributesFromPost($post_id, $block_id);
     }
+
+    /**
+     * Handle Get Posts Data request via filter
+     *
+     * @param mixed $default Default return value
+     * @param array $attributes Block attributes
+     * @return array|null Posts data
+     */
+    public function handleGetPostsData($default, array $attributes)
+    {
+        $this->ensureServices();
+        
+        $layoutName = $attributes['layout'] ?? 'grid';
+        
+        // Sanitize attributes
+        $attributes = $this->attributeSanitizer->sanitize($layoutName, $attributes, true);
+        
+        // Build query using same logic as Renderer
+        $decorator = $this->layoutManager->createLayout($layoutName, $attributes);
+        $originalPreset = $attributes['queryPreset'] ?? 'custom';
+        
+        if ($originalPreset === 'default') {
+            $query = PostTypeLayoutQueryHelper::buildDefaultQuery($attributes);
+        } elseif ($originalPreset === 'related') {
+            $attributes = PostTypeLayoutQueryHelper::buildRelatedQuery($attributes);
+            $decorator->withAttributes($attributes);
+            $query = $decorator->buildQuery($attributes);
+        } else {
+            if ($originalPreset !== 'custom') {
+                $attributes = PostTypeLayoutQueryHelper::applyQueryBuilderFilter($attributes, $originalPreset);
+            }
+            $decorator->withAttributes($attributes);
+            $query = $decorator->buildQuery($attributes);
+        }
+        
+        if (!$query || !$query->have_posts()) {
+            return ['posts' => []];
+        }
+        
+        // Transform posts to data structure
+        $postsData = [];
+        while ($query->have_posts()) {
+            $query->the_post();
+            $post = get_post();
+            
+            $postData = [
+                'id' => $post->ID,
+                'title' => get_the_title($post->ID),
+                'date' => get_the_date('', $post->ID),
+                'excerpt' => get_the_excerpt($post->ID),
+                'link' => get_permalink($post->ID),
+            ];
+            
+            // Featured image
+            if (has_post_thumbnail($post->ID)) {
+                $thumbnailId = get_post_thumbnail_id($post->ID);
+                $thumbnailUrl = wp_get_attachment_image_url($thumbnailId, 'large');
+                $postData['featuredImage'] = $thumbnailUrl ? `<img src="${esc_url($thumbnailUrl)}" alt="${esc_attr(get_the_title($post->ID))}" />` : '';
+            }
+            
+            // Author
+            $authorId = get_post_field('post_author', $post->ID);
+            if ($authorId) {
+                $postData['author'] = get_the_author_meta('display_name', $authorId);
+            }
+            
+            $postsData[] = $postData;
+        }
+        
+        wp_reset_postdata();
+        
+        return ['posts' => $postsData];
+    }
+
 
     /**
      * Set language context
@@ -351,6 +426,143 @@ class PostTypeLayoutBlock extends Block
             'jankxQueryOptions',
             $query_options
         );
+
+        // Localize layout structures for JavaScript rendering
+        $layout_structures = $this->getLayoutStructures();
+        wp_localize_script(
+            $script_handle,
+            'jankxLayoutStructures',
+            $layout_structures
+        );
+    }
+
+    /**
+     * Get layout structures for all registered layouts
+     *
+     * @return array Layout structures indexed by layout name
+     */
+    protected function getLayoutStructures(): array
+    {
+        $layoutManager = $this->getLayoutManager();
+        $allLayouts = $layoutManager->getLayouts(['field' => 'all']);
+        $structures = [];
+
+        foreach ($allLayouts as $layoutInfo) {
+            $layoutName = $layoutInfo['name'] ?? '';
+            if (empty($layoutName)) {
+                continue;
+            }
+
+            try {
+                $decorator = $layoutManager->createLayout($layoutName, []);
+                $layout = $decorator->getLayout();
+                
+                if ($layout && method_exists($layout, 'getHtmlStructure')) {
+                    $structures[$layoutName] = $layout->getHtmlStructure([]);
+                }
+            } catch (\Exception $e) {
+                // Skip layouts that fail to load
+                continue;
+            }
+        }
+
+        // Get post item structure template
+        $postItemStructure = $this->getPostItemStructure();
+
+        return [
+            'layouts' => $structures,
+            'postItem' => $postItemStructure,
+        ];
+    }
+
+    /**
+     * Get post item structure template
+     * Matches the structure from PostLayout::renderPostItem()
+     *
+     * @return array
+     */
+    protected function getPostItemStructure(): array
+    {
+        return [
+            'featuredImage' => [
+                'tag' => 'div',
+                'classes' => ['post-thumbnail'],
+                'children' => [
+                    [
+                        'tag' => 'a',
+                        'attributes' => ['href' => '#', 'aria-hidden' => 'true', 'tabindex' => '-1'],
+                        'children' => [
+                            [
+                                'tag' => 'span',
+                                'classes' => ['aspect-ratio-container'],
+                                'children' => [
+                                    [
+                                        'tag' => 'img',
+                                        'attributes' => ['src' => '', 'alt' => ''],
+                                        'placeholder' => 'featured-image',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'title' => [
+                'tag' => 'h3',
+                'classes' => ['post-title'],
+                'children' => [
+                    [
+                        'tag' => 'a',
+                        'attributes' => ['href' => '#'],
+                        'placeholder' => 'post-title',
+                    ],
+                ],
+            ],
+            'date' => [
+                'tag' => 'span',
+                'classes' => ['post-date'],
+                'children' => [
+                    [
+                        'tag' => 'time',
+                        'attributes' => ['datetime' => ''],
+                        'placeholder' => 'post-date',
+                    ],
+                ],
+            ],
+            'author' => [
+                'tag' => 'span',
+                'classes' => ['post-author'],
+                'placeholder' => 'post-author',
+            ],
+            'metaWrapper' => [
+                'tag' => 'div',
+                'classes' => ['post-meta'],
+            ],
+            'excerpt' => [
+                'tag' => 'div',
+                'classes' => ['post-excerpt'],
+                'placeholder' => 'post-excerpt',
+            ],
+            'price' => [
+                'tag' => 'div',
+                'classes' => ['product-price'],
+                'placeholder' => 'product-price',
+            ],
+            'addToCart' => [
+                'tag' => 'div',
+                'classes' => ['product-button'],
+                'placeholder' => 'product-button',
+            ],
+            'rating' => [
+                'tag' => 'div',
+                'classes' => ['product-rating'],
+                'placeholder' => 'product-rating',
+            ],
+            'contentWrapper' => [
+                'tag' => 'div',
+                'classes' => ['post-content'],
+            ],
+        ];
     }
 
     /**
@@ -374,6 +586,7 @@ class PostTypeLayoutBlock extends Block
      */
     public function render($attributes, $content, $block)
     {
+
         $current_language = MultilingualFactory::getCurrentLanguage();
         if ($current_language) {
             $attributes['_current_language'] = $current_language;

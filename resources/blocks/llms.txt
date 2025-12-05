@@ -1,0 +1,532 @@
+# Jankx Gutenberg Blocks - Style Options Specification
+
+## Tổng quan
+Tài liệu này mô tả chi tiết các style options và attributes của các Jankx Gutenberg blocks, cách chúng ảnh hưởng đến styling, và các CSS classes được tạo ra. File này được sử dụng để AI có thể tự động tạo theme và template blocks với styling chính xác.
+
+## Nguyên tắc chung
+
+### 1. Block Supports
+WordPress block supports là các tính năng được WordPress core cung cấp, tự động tạo CSS classes và inline styles:
+
+- **Spacing**: margin, padding, blockGap
+  - Classes: `has-{property}-{value}` (ví dụ: `has-padding-large`)
+  - CSS variables: `--wp--preset--spacing--{size}`
+  
+- **Color**: background, text, link, gradients
+  - Classes: `has-{color-name}-{type}-color` (ví dụ: `has-primary-background-color`)
+  
+- **Typography**: fontSize, lineHeight, textAlign, fontFamily, fontWeight
+  - Classes: `has-{size}-font-size`, `has-text-align-{position}`
+  
+- **Border**: color, radius, style, width
+  - Classes: `has-border-color`, `has-{radius}-border-radius`
+  
+- **Shadow**: box-shadow
+  - Classes: `has-shadow-{value}`
+
+### 2. CSS Classes từ Attributes
+Các blocks tự định nghĩa CSS classes dựa trên attributes, format: `{block-name}--{attribute-value}`
+
+### 3. Data Attributes
+Một số blocks sử dụng data attributes để lưu trữ giá trị cho JavaScript và CSS:
+- Format: `data-{attribute-name}="{value}"`
+- Ví dụ: `data-image-size="fullwidth"`, `data-columns="4"`
+
+---
+
+## Block Specifications
+
+### jankx/post-type-layout
+
+**Mục đích**: Hiển thị danh sách posts theo layout tùy chỉnh với query options đầy đủ.
+
+#### Attributes ảnh hưởng đến Styles:
+
+1. **layout** (string, default: "grid")
+   - Values: `"grid"`, `"list"`, `"carousel"`, `"masonry"`
+   - CSS Classes:
+     - `layout-grid`: Grid layout với columns
+     - `layout-list`: List layout với items dọc
+     - `layout-carousel`: Carousel/slider layout
+     - `layout-masonry`: Masonry layout
+   - CSS Variables:
+     - `--columns-desktop`: Số cột desktop
+     - `--columns-tablet`: Số cột tablet
+     - `--columns-mobile`: Số cột mobile
+
+2. **columns** (number, default: 3)
+   - CSS Classes: `columns-{value}` (ví dụ: `columns-4`)
+   - CSS Variables:
+     - `--columns-desktop: {value}`
+     - `grid-template-columns: repeat({value}, 1fr)`
+   - Data Attribute: `data-columns="{value}"`
+
+3. **columnsTablet** (number, default: 2)
+   - CSS Classes: `columns-tablet-{value}`
+   - CSS Variables: `--columns-tablet: {value}`
+   - Data Attribute: `data-columns-tablet="{value}"`
+
+4. **columnsMobile** (number, default: 1)
+   - CSS Classes: `columns-mobile-{value}`
+   - CSS Variables: `--columns-mobile: {value}`
+   - Data Attribute: `data-columns-mobile="{value}"`
+
+5. **thumbnailPosition** (string, default: "top")
+   - Values: `"top"`, `"bottom"`, `"left"`, `"right"`
+   - CSS Classes: `thumbnail-position-{value}`
+   - Ảnh hưởng đến flex direction và image order
+
+6. **imageRatio** (string, default: "")
+   - Values: `"1/1"`, `"16/9"`, `"4/3"`, `"3/2"`, custom ratios
+   - CSS Classes: `image-ratio-{value}` (ví dụ: `image-ratio-1-1`)
+   - CSS: `aspect-ratio: {value}`
+
+7. **postType** (string, default: "post")
+   - CSS Classes: `post-type-{value}` (ví dụ: `post-type-store`)
+   - Đặc biệt: Nếu `postType === "product"` → thêm class `wc-block-product-template`
+
+8. **layout** cho carousel:
+   - CSS Classes: `post-type-layout-carousel`
+   - Data Attributes:
+     - `data-embla-carousel=""`
+     - `data-slides-per-view="{columns}"`
+     - `data-slides-to-scroll="{slidesToScroll}"`
+     - `data-loop="{loop}"`
+     - `data-autoplay="{autoplay}"`
+     - `data-autoplay-delay="{autoplayDelay}"`
+
+#### Block Supports:
+- **align**: `["wide", "full"]`
+- **spacing**: margin, padding, blockGap
+- **color**: background, text, link, gradients
+- **background**: backgroundImage, backgroundSize
+- **typography**: fontSize, lineHeight
+- **border**: color, radius, style, width
+
+#### Responsive Behavior:
+- Desktop: sử dụng `columns` attribute
+- Tablet: sử dụng `columnsTablet` attribute
+- Mobile: sử dụng `columnsMobile` attribute
+- CSS sử dụng media queries:
+  ```scss
+  @media (max-width: 768px) { /* tablet */ }
+  @media (max-width: 480px) { /* mobile */ }
+  ```
+
+---
+
+### jankx/swiper-banner
+
+**Mục đích**: Banner slide cho Swiper với styles và links tùy chỉnh.
+
+#### Attributes ảnh hưởng đến Styles:
+
+1. **bannerStyle** (string, default: "banner")
+   - Values: `"banner"`, `"circles"`, `"square"`
+   - CSS Classes: `swiper-banner--{value}`
+   - Styles:
+     - `banner`: Default banner style
+     - `circles`: `border-radius: 50%`, `aspect-ratio: 1`
+     - `square`: `aspect-ratio: 1`
+
+2. **imageSize** (string, default: "cover")
+   - Values: `"cover"`, `"contain"`, `"fullwidth"`
+   - CSS Classes:
+     - Wrapper: `image-size-{value}`
+     - Image: `.swiper-banner__image.image-size-{value}`
+   - CSS:
+     - `cover`: `background-size: cover`
+     - `contain`: `background-size: contain`
+     - `fullwidth`: `background-size: 100% 100%`
+   - Data Attribute: `data-image-size="{value}"`
+
+3. **textAlign** (string, default: "center")
+   - Values: `"left"`, `"center"`, `"right"`
+   - CSS Classes: `text-{value}`
+
+4. **textPosition** (string, default: "middle")
+   - Values: `"top"`, `"middle"`, `"bottom"`
+   - CSS Classes: `text-position-{value}`
+   - CSS:
+     - `top`: `align-items: flex-start`, `padding-top: 1rem`
+     - `middle`: `align-items: center`
+     - `bottom`: `align-items: flex-end`, `padding-bottom: 1rem`
+
+5. **overlayOpacity** (number, default: 0.3)
+   - CSS Variable: `--overlay-opacity: {value}`
+   - Applied to: `.swiper-banner__overlay`
+
+6. **overlayColor** (string, default: "#000000")
+   - CSS Variable: `--overlay-color: {value}`
+   - Applied to: `.swiper-banner__overlay`
+
+7. **height** (number, default: 0)
+   - CSS Variable: `--banner-height: {value}px`
+   - Chỉ áp dụng khi `bannerStyle === "circles"`
+
+8. **showCaption** (boolean, default: true)
+   - Conditional rendering, không tạo CSS class
+
+#### Block Supports:
+- **spacing**: margin, padding
+- **color**: background, text
+- **border**: color, radius, style, width
+
+#### CSS Structure:
+```html
+<div class="swiper-slide swiper-banner swiper-banner--{bannerStyle} text-{textAlign} text-position-{textPosition} image-size-{imageSize}">
+  <div class="swiper-banner__image" style="background-image: url(...); --overlay-color: ...; --overlay-opacity: ...;">
+    <div class="swiper-banner__overlay"></div>
+    <div class="swiper-banner__caption">
+      <div class="swiper-banner__caption-content">{caption}</div>
+    </div>
+  </div>
+</div>
+```
+
+---
+
+### jankx/swiper-slide
+
+**Mục đích**: Slide đơn lẻ cho Swiper slider, hỗ trợ inner blocks.
+
+#### Attributes ảnh hưởng đến Styles:
+
+1. **imageSize** (string, default: "cover")
+   - Values: `"cover"`, `"contain"`, `"fullwidth"`
+   - CSS Classes: `image-size-{value}`
+   - CSS (cho background images):
+     - `cover`: `background-size: cover !important`
+     - `contain`: `background-size: contain !important`
+     - `fullwidth`: `background-size: 100% 100% !important`, `background-position: center !important`
+   - Data Attribute: `data-image-size="{value}"`
+
+2. **slideId** (string)
+   - Data Attribute: `data-slide-id="{value}"`
+   - Không tạo CSS class
+
+#### Block Supports:
+- **spacing**: padding (margin disabled)
+- **color**: background, text, gradients
+- **background**: backgroundImage, backgroundSize, backgroundPosition, backgroundRepeat
+- **dimensions**: minHeight
+
+#### CSS Structure:
+```html
+<div class="swiper-slide image-size-{imageSize}" data-slide-id="{slideId}" data-image-size="{imageSize}">
+  <!-- Inner blocks content -->
+</div>
+```
+
+---
+
+### jankx/advanced-button
+
+**Mục đích**: Advanced button block với enhanced features.
+
+#### Attributes ảnh hưởng đến Styles:
+
+1. **triggerType** (string, default: "link")
+   - Values: `"link"`, `"button"`, `"detail-link"`, `"modal"`
+   - Data Attribute: `data-trigger-type="{value}"`
+   - CSS Classes: Không tự động tạo, nhưng có thể dùng trong CSS
+
+2. **iconPosition** (string, default: "left")
+   - Values: `"left"`, `"right"`, `"top"`, `"bottom"`
+   - CSS Classes: `icon-position-{value}`
+
+3. **showLabel** (boolean, default: true)
+   - Conditional rendering, không tạo CSS class
+
+4. **useIconBlocks** (boolean, default: false)
+   - Conditional rendering, không tạo CSS class
+
+#### Block Supports:
+- **typography**: fontSize, lineHeight, textAlign, fontFamily, fontWeight, fontStyle, textTransform, textDecoration, letterSpacing
+- **color**: background, text, gradients (skipSerialization: true)
+- **spacing**: padding (horizontal, vertical), margin
+- **border**: color, radius, style, width
+- **shadow**: box-shadow
+- **dimensions**: minHeight
+- **layout**: flex (justifyContent: center)
+
+#### Block Styles:
+- `fill` (default): Filled button style
+- `outline`: Outline button style
+
+#### CSS Structure:
+```html
+<div class="wp-block-jankx-advanced-button">
+  <a class="jankx-advanced-button__link icon-position-{iconPosition} has-{color}-background-color" 
+     data-trigger-type="{triggerType}" 
+     data-modal-id="{modalId}">
+    <span class="button-icon-wrapper">
+      <!-- Icon blocks -->
+    </span>
+    <span class="button-text">{text}</span>
+  </a>
+</div>
+```
+
+---
+
+### jankx/advanced-image-box
+
+**Mục đích**: Advanced image block với overlay info box và inner blocks support.
+
+#### Attributes ảnh hưởng đến Styles:
+
+1. **overlayPosition** (string, default: "center")
+   - Values: `"center"`, `"top"`, `"bottom"`, `"left"`, `"right"`, `"top-left"`, `"top-right"`, `"bottom-left"`, `"bottom-right"`
+   - CSS Classes: `wp-block-jankx-advanced-image-box__overlay--{value}`
+
+2. **overlayAnimation** (string, default: "fadeIn")
+   - Values: `"fadeIn"`, `"slideUp"`, `"slideDown"`, `"zoomIn"`, etc.
+   - CSS Classes: `animated {value}`
+
+3. **imageHoverEffect** (string, default: "zoom")
+   - Values: `"zoom"`, `"fade"`, `"scale"`, `"none"`
+   - CSS Classes: `has-hover-{value}` (ví dụ: `has-hover-zoom`)
+
+4. **showOverlayOnHover** (boolean, default: true)
+   - CSS Classes: `has-overlay` (khi true)
+
+5. **borderRadius** (string, default: "0px")
+   - Inline style: `border-radius: {value}`
+   - Applied to: `img` element
+
+6. **overlayBackground** (string, default: "rgba(0, 0, 0, 0.7)")
+   - Inline style: `background-color: {value}`
+
+7. **overlayOpacity** (number, default: 1)
+   - Inline style: `opacity: {value}`
+
+#### Block Supports:
+- **align**: `["left", "center", "right", "wide", "full"]`
+- **spacing**: margin, padding
+- **border**: color, radius, style, width (applied to `img` and overlay)
+- **shadow**: box-shadow (applied to `img` and overlay)
+- **filter**: duotone (applied to `img`)
+- **innerBlocks**: true
+
+#### Block Styles:
+- `default` (default): Default image box style
+- `card`: Card style with shadow
+- `overlay`: Overlay style
+- `modern`: Modern style
+
+#### CSS Structure:
+```html
+<figure class="wp-block-jankx-advanced-image-box has-overlay has-hover-effect has-hover-{imageHoverEffect}">
+  <img src="..." alt="..." class="wp-block-jankx-advanced-image-box__image has-hover-zoom" 
+       style="border-radius: {borderRadius}"/>
+  <div class="wp-block-jankx-advanced-image-box__overlay 
+              wp-block-jankx-advanced-image-box__overlay--{overlayPosition} 
+              animated {overlayAnimation}"
+       style="background-color: {overlayBackground}; opacity: {overlayOpacity}">
+    <div class="wp-block-jankx-advanced-image-box__overlay__content">
+      <!-- Inner blocks content -->
+    </div>
+  </div>
+  <figcaption class="wp-block-jankx-advanced-image-box__caption">{caption}</figcaption>
+</figure>
+```
+
+---
+
+### jankx/smart-tabs
+
+**Mục đích**: Tạo interactive tabs với layouts và styles tùy chỉnh.
+
+#### Attributes ảnh hưởng đến Styles:
+
+1. **tabType** (string, default: "horizontal")
+   - Values: `"horizontal"`, `"vertical"`
+   - CSS Classes: `smart-tabs--{value}`
+
+2. **styleType** (string, default: "default")
+   - Values: `"default"`, `"minimal"`, `"modern"`, `"boxed"`, `"bordered"`
+   - CSS Classes: `smart-tabs--{value}`
+
+3. **tabAlignment** (string, default: "left")
+   - Values: `"left"`, `"center"`, `"right"`, `"justify"`
+   - CSS Classes: `tabs-align-{value}`
+
+4. **centerNavigation** (boolean, default: false)
+   - CSS Classes: `tabs-center-navigation` (khi true)
+
+5. **hideTabsBorderBottom** (boolean, default: false)
+   - CSS Classes: `tabs-no-border-bottom` (khi true)
+
+6. **tabItemTextColor** (string)
+   - Inline style: `color: {value}` (applied to tab items)
+
+7. **tabItemBackgroundColor** (string)
+   - Inline style: `background-color: {value}` (applied to tab items)
+
+8. **tabItemGradient** (string)
+   - Inline style: `background: {value}` (applied to tab items)
+
+9. **activeTabTextColor** (string)
+   - Inline style: `color: {value}` (applied to active tab)
+
+10. **activeTabBackgroundColor** (string)
+    - Inline style: `background-color: {value}` (applied to active tab)
+
+11. **activeTabGradient** (string)
+    - Inline style: `background: {value}` (applied to active tab)
+
+12. **label** (string, default: "")
+    - Text content for the label displayed before tabs
+    - CSS Classes: Không tạo class, chỉ render khi `showLabel === true`
+
+13. **showLabel** (boolean, default: false)
+    - Controls visibility of the label
+    - CSS Classes: Không tạo class, chỉ conditional rendering
+    - Khi `true` và `label` có giá trị → hiển thị label với style:
+      - Background: `#000000` (black)
+      - Text color: `#ffffff` (white)
+      - Font size: `0.875rem` (14px)
+      - Font weight: `700` (bold)
+      - Padding: `0.625rem 1.25rem` (10px 20px)
+
+#### Block Supports:
+- **align**: `["wide", "full"]`
+- **spacing**: margin, padding
+- **color**: background, text
+
+#### CSS Structure:
+```html
+<div class="wp-block-jankx-smart-tabs 
+            smart-tabs--{tabType} 
+            smart-tabs--{styleType} 
+            tabs-align-{tabAlignment}
+            tabs-center-navigation
+            tabs-no-border-bottom">
+  <div class="smart-tabs__navigation">
+    {showLabel && label && (
+      <div class="smart-tabs__label">{label}</div>
+    )}
+    <div class="smart-tabs__nav-list align-{tabAlignment}">
+      <button class="smart-tabs__nav-item" 
+              style="color: {tabItemTextColor}; background-color: {tabItemBackgroundColor};">
+        {title}
+      </button>
+      <button class="smart-tabs__nav-item is-active"
+              style="color: {activeTabTextColor}; background-color: {activeTabBackgroundColor};">
+        {title}
+      </button>
+    </div>
+  </div>
+  <div class="smart-tabs__content">
+    <!-- Tab content (inner blocks) -->
+  </div>
+</div>
+```
+
+#### Label Styling:
+- **Container**: `.smart-tabs__label`
+- **Layout**: Flex container với `display: flex`, `align-items: center`
+- **Label styles**:
+  - Background: `#000000` (black)
+  - Color: `#ffffff` (white)
+  - Font size: `0.875rem` (14px)
+  - Font weight: `700` (bold)
+  - Padding: `0.625rem 1.25rem` (10px 20px)
+  - `white-space: nowrap` để text không wrap
+  - `flex-shrink: 0` để không bị shrink
+- **Position**: Nằm bên trái của `.smart-tabs__nav-list`
+
+---
+
+## Patterns & Conventions
+
+### 1. CSS Class Naming
+- **Block prefix**: `wp-block-jankx-{block-name}`
+- **BEM methodology**: `{block}__{element}--{modifier}`
+- **Attribute classes**: `{attribute-name}-{value}` (ví dụ: `image-size-fullwidth`)
+- **State classes**: `is-{state}` (ví dụ: `is-active`, `is-loading`)
+
+### 2. CSS Variables
+- **Custom properties**: `--{property-name}: {value}`
+- **WordPress presets**: `--wp--preset--{type}--{name}` (ví dụ: `--wp--preset--spacing--large`)
+- **Block-specific**: `--{block-name}--{property}` (ví dụ: `--swiper-banner--height`)
+
+### 3. Data Attributes
+- Format: `data-{attribute-name}="{value}"`
+- Sử dụng cho JavaScript và CSS selectors
+- Ví dụ: `data-image-size="fullwidth"`, `data-columns="4"`
+
+### 4. Responsive Breakpoints
+- **Desktop**: Default (no media query)
+- **Tablet**: `@media (max-width: 768px)`
+- **Mobile**: `@media (max-width: 480px)`
+
+### 5. Conditional Classes
+- Classes chỉ được thêm khi attribute có giá trị truthy
+- Format: `{condition} && '{class-name}'`
+- Ví dụ: `columns ? `columns-${columns}` : ''`
+
+### 6. Inline Styles
+- Sử dụng cho dynamic values (colors, sizes từ attributes)
+- Format: `style={{ property: value }}`
+- CSS Variables thường được dùng thay vì inline styles khi có thể
+
+---
+
+## Implementation Guidelines
+
+### Khi tạo template blocks:
+
+1. **Luôn sử dụng đúng attribute names** như đã định nghĩa trong block.json
+2. **Áp dụng CSS classes** theo pattern đã mô tả
+3. **Sử dụng data attributes** cho JavaScript functionality
+4. **Respect block supports** - WordPress sẽ tự động thêm classes
+5. **Responsive design** - luôn có mobile và tablet variants
+6. **Editor = Frontend** - editor preview phải match frontend output
+
+### Ví dụ template block:
+
+```html
+<!-- wp:jankx/post-type-layout {
+  "layout": "grid",
+  "columns": 4,
+  "columnsTablet": 2,
+  "columnsMobile": 1,
+  "postType": "store",
+  "imageRatio": "1/1",
+  "thumbnailPosition": "top"
+} -->
+<div class="wp-block-jankx-post-type-layout 
+            layout-grid 
+            columns-4 
+            columns-tablet-2 
+            columns-mobile-1 
+            post-type-store 
+            image-ratio-1-1 
+            thumbnail-position-top"
+     data-columns="4"
+     data-columns-tablet="2"
+     data-columns-mobile="1">
+  <!-- Inner blocks -->
+</div>
+<!-- /wp:jankx/post-type-layout -->
+```
+
+---
+
+## Notes quan trọng
+
+1. **Frontend và Editor phải tương đồng**: Không có editor-specific styling, chỉ preview giống frontend
+2. **Dynamic blocks**: Sử dụng PHP render_callback cho frontend, JavaScript chỉ cho editor
+3. **InnerBlocks**: Một số blocks hỗ trợ inner blocks để tùy chỉnh content structure
+4. **Context API**: Một số blocks sử dụng providesContext và usesContext để share data
+5. **Migration**: Luôn có migration path cho old blocks khi thay đổi structure
+
+---
+
+## Additional Resources
+
+- WordPress Block Editor Handbook: https://developer.wordpress.org/block-editor/
+- Block Supports Reference: https://developer.wordpress.org/block-editor/reference-guides/block-api/block-supports/
+- Jankx Framework Documentation: (internal)

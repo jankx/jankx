@@ -105,4 +105,18 @@ class ListLayout extends PostLayout
             'showTitle', // List layout cần title để có ý nghĩa
         ];
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getContainerStructure(array $options): array
+    {
+        return [
+            'tag' => 'div',
+            'classes' => ['post-type-layout-list'],
+            'attributes' => [
+                'data-layout' => $this->name,
+            ],
+        ];
+    }
 }
