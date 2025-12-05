@@ -1,0 +1,318 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "jankx/master-data-layout",
+  "version": "1.0.0",
+  "title": "Master Data Layout",
+  "category": "jankx",
+  "icon": "layout",
+  "description": "Hiển thị danh sách posts theo layout tùy chỉnh (Master Data)",
+  "textdomain": "jankx",
+  "editorScript": "file:./build/index.js",
+  "editorStyle": "file:./build/editor.css",
+  "style": "file:./build/style.css",
+  "providesContext": {
+    "queryId": "queryId",
+    "query": {
+      "postType": "postType",
+      "perPage": "postsPerPage",
+      "pages": 0,
+      "offset": "offset",
+      "order": "order",
+      "orderBy": "orderBy",
+      "inherit": false
+    },
+    "displayLayout": "layout"
+  },
+  "usesContext": ["queryId", "query"],
+  "supports": {
+    "html": false,
+    "align": ["wide", "full"],
+    "anchor": true,
+    "innerBlocks": true,
+    "spacing": {
+      "margin": true,
+      "padding": true,
+      "blockGap": true
+    },
+    "color": {
+      "background": true,
+      "text": true,
+      "link": true,
+      "gradients": true
+    },
+    "background": {
+      "backgroundImage": true,
+      "backgroundSize": true
+    },
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true
+    },
+    "__experimentalBorder": {
+      "color": true,
+      "radius": true,
+      "style": true,
+      "width": true
+    },
+    "__experimentalLayout": {
+      "allowSwitching": true,
+      "allowInheriting": true,
+      "default": {
+        "type": "constrained"
+      }
+    }
+  },
+  "attributes": {
+    "queryPreset": {
+      "type": "string",
+      "default": "custom"
+    },
+    "postType": {
+      "type": "string",
+      "default": "post"
+    },
+    "postsPerPage": {
+      "type": "number",
+      "default": 10
+    },
+    "includeStickyPosts": {
+      "type": "boolean",
+      "default": false
+    },
+    "layout": {
+      "type": "string",
+      "default": "grid"
+    },
+    "columns": {
+      "type": "number",
+      "default": 3
+    },
+    "columnsTablet": {
+      "type": "number",
+      "default": 2
+    },
+    "columnsMobile": {
+      "type": "number",
+      "default": 1
+    },
+    "responsiveColumns": {
+      "type": "object",
+      "default": {
+        "desktop": 3,
+        "tablet": 2,
+        "mobile": 1
+      }
+    },
+    "showTitle": {
+      "type": "boolean",
+      "default": true
+    },
+    "showExcerpt": {
+      "type": "boolean",
+      "default": true
+    },
+    "showFeaturedImage": {
+      "type": "boolean",
+      "default": true
+    },
+    "thumbnailPosition": {
+      "type": "string",
+      "default": "top",
+      "enum": ["top", "bottom", "left", "right"]
+    },
+    "imageRatio": {
+      "type": "string",
+      "default": ""
+    },
+    "showDate": {
+      "type": "boolean",
+      "default": true
+    },
+    "showAuthor": {
+      "type": "boolean",
+      "default": false
+    },
+    "showPrice": {
+      "type": "boolean",
+      "default": true
+    },
+    "showAddToCart": {
+      "type": "boolean",
+      "default": true
+    },
+    "showRating": {
+      "type": "boolean",
+      "default": false
+    },
+    "excerptLength": {
+      "type": "number",
+      "default": 55
+    },
+    "orderBy": {
+      "type": "string",
+      "default": "date"
+    },
+    "order": {
+      "type": "string",
+      "default": "DESC"
+    },
+    "queryId": {
+      "type": "number"
+    },
+    "enablePagination": {
+      "type": "boolean",
+      "default": false
+    },
+    "offset": {
+      "type": "number",
+      "default": 0
+    },
+    "taxQuery": {
+      "type": "array",
+      "default": []
+    },
+    "metaQuery": {
+      "type": "array",
+      "default": []
+    },
+    "keyword": {
+      "type": "string",
+      "default": ""
+    },
+    "authorIn": {
+      "type": "array",
+      "default": []
+    },
+    "authorNotIn": {
+      "type": "array",
+      "default": []
+    },
+    "postIn": {
+      "type": "array",
+      "default": []
+    },
+    "postNotIn": {
+      "type": "array",
+      "default": []
+    },
+    "metaKey": {
+      "type": "string",
+      "default": ""
+    },
+    "metaType": {
+      "type": "string",
+      "default": ""
+    },
+    "postStatus": {
+      "type": "array",
+      "default": ["publish"]
+    },
+    "postParent": {
+      "type": "number",
+      "default": 0
+    },
+    "postParentIn": {
+      "type": "array",
+      "default": []
+    },
+    "postParentNotIn": {
+      "type": "array",
+      "default": []
+    },
+    "customQueryId": {
+      "type": "string",
+      "default": ""
+    },
+    "paginationStyle": {
+      "type": "string",
+      "default": "numbers",
+      "enum": ["numbers", "simple", "arrows", "load-more"]
+    },
+    "paginationAlignment": {
+      "type": "string",
+      "default": "center",
+      "enum": ["left", "center", "right"]
+    },
+    "showPaginationNumbers": {
+      "type": "boolean",
+      "default": true
+    },
+    "paginationPrevText": {
+      "type": "string",
+      "default": ""
+    },
+    "paginationNextText": {
+      "type": "string",
+      "default": ""
+    },
+    "slidesToScroll": {
+      "type": "number",
+      "default": 1
+    },
+    "loop": {
+      "type": "boolean",
+      "default": false
+    },
+    "autoplay": {
+      "type": "boolean",
+      "default": false
+    },
+    "autoplayDelay": {
+      "type": "number",
+      "default": 3000
+    },
+    "showArrows": {
+      "type": "boolean",
+      "default": true
+    },
+    "showDots": {
+      "type": "boolean",
+      "default": true
+    },
+    "carouselAlign": {
+      "type": "string",
+      "default": "start",
+      "enum": ["start", "center", "end"]
+    },
+    "carouselAxis": {
+      "type": "string",
+      "default": "x",
+      "enum": ["x", "y"]
+    },
+    "carouselDirection": {
+      "type": "string",
+      "default": "ltr",
+      "enum": ["ltr", "rtl"]
+    },
+    "carouselStartIndex": {
+      "type": "number",
+      "default": 0
+    },
+    "carouselDuration": {
+      "type": "number",
+      "default": 25
+    },
+    "carouselDragFree": {
+      "type": "boolean",
+      "default": false
+    },
+    "carouselDragThreshold": {
+      "type": "number",
+      "default": 10
+    },
+    "carouselSkipSnaps": {
+      "type": "boolean",
+      "default": false
+    },
+    "carouselContainScroll": {
+      "type": "string",
+      "default": "trimSnaps",
+      "enum": ["false", "trimSnaps", "keepSnaps"]
+    },
+    "carouselInViewThreshold": {
+      "type": "number",
+      "default": 0
+    }
+  }
+}

@@ -161,6 +161,14 @@ module.exports = {
     'blocks/smart-search/build/frontend': './blocks/smart-search/frontend.ts',
     'blocks/smart-search/build/style': './blocks/smart-search/style.scss',
     'blocks/smart-search/build/editor': './blocks/smart-search/editor.scss',
+
+    'blocks/master-data-layout/build/index': './blocks/master-data-layout/index.tsx',
+    'blocks/master-data-layout/build/style': './blocks/master-data-layout/style.scss',
+    'blocks/master-data-layout/build/editor': './blocks/master-data-layout/editor.scss',
+
+    'blocks/master-data-template/build/index': './blocks/master-data-template/index.tsx',
+    'blocks/master-data-template/build/style': './blocks/master-data-template/style.scss',
+    'blocks/master-data-template/build/editor': './blocks/master-data-template/editor.scss',
   },
   output: {
     path: path.resolve(__dirname),

@@ -307,6 +307,8 @@ class CarouselLayout extends PostLayout implements PostLayoutJsCallbackInterface
     {
         $classes = [
             'post-type-layout-carousel',
+            'jankx-carousel',
+            'embla',
             'columns-' . intval($options['columns'] ?? 3),
             'columns-tablet-' . intval($options['columnsTablet'] ?? 2),
             'columns-mobile-' . intval($options['columnsMobile'] ?? 1),
