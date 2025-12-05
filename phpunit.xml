@@ -18,6 +18,12 @@
         <testsuite name="Providers">
             <directory>tests/App/Providers</directory>
         </testsuite>
+        <testsuite name="Gutenberg">
+            <directory>tests/Gutenberg</directory>
+        </testsuite>
+        <testsuite name="GutenbergBlocks">
+            <directory>tests/Gutenberg/Blocks</directory>
+        </testsuite>
     </testsuites>
 
     <coverage>
