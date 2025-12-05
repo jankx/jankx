@@ -525,8 +525,270 @@ Một số blocks sử dụng data attributes để lưu trữ giá trị cho Ja
 
 ---
 
+## PHP-Driven Block Customization Pattern
+
+### ⚠️ NGUYÊN TẮC CỐT LÕI ⚠️
+
+**"Tất cả tính năng customize phải được thực hiện ở level PHP qua interfaces và abstract classes theo design pattern. Code JavaScript của block CHỈ dùng để hiển thị các tính năng được PHP hỗ trợ."**
+
+### Tại Sao?
+
+❌ **KHÔNG BAO GIỜ** hard-code options, features, business logic trong JavaScript vì:
+- Khó customize cho developers (phải rebuild JS)
+- Không extensible (không thể override bằng hooks/filters)
+- Khó maintain (logic scattered giữa PHP và JS)
+- Performance kém (large JS bundles)
+
+✅ **LUÔN LUÔN** define features trong PHP vì:
+- Developers có thể customize bằng PHP hooks/filters (WordPress standard)
+- Extensible qua interfaces và abstract classes
+- Maintainable (centralized logic)
+- Performance tốt (server-side processing)
+
+### Architecture
+
+```
+PHP (Controller) ────wp_localize_script()───→ JavaScript (View)
+   │                                              │
+   ├─ Interfaces                                 ├─ Read PHP data
+   ├─ Abstract Classes                           ├─ Render UI
+   ├─ Business Logic                             ├─ Handle user input
+   ├─ Features & Options                         └─ NO business logic!
+   ├─ Hooks & Filters
+   └─ Data Processing
+```
+
+### Quick Example
+
+**❌ BAD: Hard-coded trong JavaScript**
+
+```typescript
+// BAD - Don't do this!
+const layoutOptions = [
+    { label: 'Grid', value: 'grid' },
+    { label: 'List', value: 'list' },
+]; // Hard-coded! Developer không thể add layout mới!
+
+<SelectControl options={layoutOptions} />
+```
+
+**✅ GOOD: Dynamic từ PHP**
+
+```php
+// PHP: Define layouts
+class PostLayoutManager {
+    public function getLayouts(): array {
+        $layouts = [
+            ['name' => 'grid', 'title' => 'Grid'],
+            ['name' => 'list', 'title' => 'List'],
+        ];
+        
+        // Allow developers to add more
+        return apply_filters('jankx/post-layout/layouts', $layouts);
+    }
+}
+
+// Pass to JS
+wp_localize_script('my-block-editor', 'myBlockConfig', [
+    'layouts' => $layoutManager->getLayouts(),
+]);
+```
+
+```typescript
+// JavaScript: Read from PHP
+const supportedLayouts = (window as any).myBlockConfig?.layouts || [];
+
+<SelectControl
+    options={supportedLayouts.map((l: any) => ({
+        label: l.title,
+        value: l.name,
+    }))}
+/>
+```
+
+### Development Rules
+
+#### ✅ DO (Làm)
+
+1. **Define features trong PHP classes**
+   ```php
+   abstract class AbstractBlockLayout {
+       abstract public function getSupportedOptions(): array;
+       abstract public function getHtmlStructure(): array;
+   }
+   ```
+
+2. **Pass configuration to JavaScript**
+   ```php
+   wp_localize_script('block-editor', 'blockConfig', [
+       'options' => $this->getOptions(),
+       'features' => $this->getFeatures(),
+   ]);
+   ```
+
+3. **JavaScript chỉ render UI**
+   ```typescript
+   const config = (window as any).blockConfig;
+   // Just render, no logic!
+   ```
+
+4. **Provide hooks cho developers**
+   ```php
+   do_action('jankx/block/register-features', $this);
+   $options = apply_filters('jankx/block/options', $options);
+   ```
+
+5. **Dynamic options based on PHP**
+   ```typescript
+   const supportedOptions = currentLayout?.supportedOptions || [];
+   {supportedOptions.includes('columns') && (
+       <RangeControl label="Columns" />
+   )}
+   ```
+
+#### ❌ DON'T (Không Làm)
+
+1. **Hard-code options trong JS**
+   ```typescript
+   // ❌ BAD
+   const options = ['grid', 'list', 'carousel'];
+   ```
+
+2. **Business logic trong JS**
+   ```typescript
+   // ❌ BAD
+   function calculatePrice(product) {
+       return product.price * (1 + tax);
+   }
+   ```
+
+3. **Conditional features trong JS**
+   ```typescript
+   // ❌ BAD
+   {postType === 'product' && <PriceControl />}
+   // Should check supportedOptions from PHP!
+   ```
+
+4. **Fixed feature sets**
+   ```typescript
+   // ❌ BAD
+   const features = {
+       showTitle: true,
+       showExcerpt: true,
+   };
+   // Should come from PHP configuration!
+   ```
+
+### Checklist
+
+Trước khi commit block code, kiểm tra:
+
+- [ ] ✅ Features defined trong PHP (classes/interfaces)
+- [ ] ✅ Configuration passed qua `wp_localize_script()`
+- [ ] ✅ JavaScript chỉ render UI, không có logic
+- [ ] ✅ Options dynamically loaded from PHP
+- [ ] ✅ Hooks/filters provided cho developers
+- [ ] ❌ KHÔNG có hard-coded options trong JS
+- [ ] ❌ KHÔNG có business logic trong JS
+- [ ] ❌ KHÔNG có conditional features trong JS
+
+### Real Example: master-data-layout Block
+
+**PHP Side**:
+
+```php
+class PostLayoutManager {
+    protected $layouts = [];
+    
+    public function registerLayout(AbstractBlockLayout $layout) {
+        $this->layouts[$layout->getName()] = $layout;
+    }
+    
+    public function getLayoutsForJavaScript(): array {
+        return array_map(function($layout) {
+            return [
+                'name' => $layout->getName(),
+                'title' => $layout->getTitle(),
+                'supportedOptions' => $layout->getSupportedOptions(),
+                'readOnlyOptions' => $layout->getReadOnlyOptions(),
+            ];
+        }, $this->layouts);
+    }
+}
+
+// In Block class
+public function enqueueEditorAssets() {
+    wp_localize_script(
+        'jankx-master-data-layout-editor',
+        'jankxSupportedPostTypeLayouts',
+        $layoutManager->getLayoutsForJavaScript()
+    );
+}
+```
+
+**JavaScript Side**:
+
+```typescript
+// Read from PHP
+const supportedLayouts = (window as any).jankxSupportedPostTypeLayouts || [];
+const currentLayout = supportedLayouts.find((l: any) => l.name === layout);
+const supportedOptions = currentLayout?.supportedOptions || [];
+
+// Dynamic rendering based on PHP config
+<SelectControl
+    label={__('Layout Type', 'jankx')}
+    value={layout}
+    options={supportedLayouts.map((l: any) => ({
+        label: l.title,
+        value: l.name,
+    }))}
+    onChange={(value: string): void => setAttributes({ layout: value })}
+/>
+
+{supportedOptions.includes('columns') && (
+    <RangeControl
+        label={__('Columns', 'jankx')}
+        value={columns}
+        onChange={(value: number | undefined): void => setAttributes({ columns: value || 3 })}
+        min={1}
+        max={6}
+    />
+)}
+```
+
+### Developer Extension Example
+
+Developers có thể extend dễ dàng bằng PHP:
+
+```php
+// Child theme hoặc plugin
+add_action('jankx/post-layout/register-layouts', function($manager) {
+    $manager->registerLayout(new MyCustomLayout());
+});
+
+add_filter('jankx/post-layout/layouts', function($layouts) {
+    // Add or modify layouts
+    return $layouts;
+});
+```
+
+**KHÔNG CẦN** rebuild JavaScript! 🎉
+
+### Summary
+
+- **PHP = Controller**: Defines features, options, business logic
+- **JavaScript = View**: Renders UI, displays PHP data
+- **Extensibility**: Hooks & filters in PHP
+- **Developer-Friendly**: No JS rebuild needed
+- **Performance**: Smaller JS bundles, server-side processing
+
+**Remember**: JavaScript developers might leave, but PHP WordPress developers will maintain your code! 😊
+
+---
+
 ## Additional Resources
 
 - WordPress Block Editor Handbook: https://developer.wordpress.org/block-editor/
 - Block Supports Reference: https://developer.wordpress.org/block-editor/reference-guides/block-api/block-supports/
 - Jankx Framework Documentation: (internal)
+- PHP-Driven Architecture: See main llms.txt for detailed guide

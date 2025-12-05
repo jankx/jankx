@@ -31,13 +31,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/core-data */ "@wordpress/core-data");
-/* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _templateBlocks__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./templateBlocks */ "./blocks/master-data-template/templateBlocks.ts");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
+/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/core-data */ "@wordpress/core-data");
+/* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _templateBlocks__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./templateBlocks */ "./blocks/master-data-template/templateBlocks.ts");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__);
 
 
 
@@ -47,11 +49,24 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const TEMPLATE = [['core/post-title'], ['core/post-date'], ['core/post-excerpt']];
+
 function MasterDataTemplateInnerBlocks({
   classList,
-  allowedBlocks
+  allowedBlocks,
+  postType
 }) {
+  // Get default template based on post type
+  const getDefaultTemplate = postType => {
+    const isProduct = postType === 'product';
+    if (isProduct) {
+      // Products: featured image, product title, product price, product button
+      return [['core/post-featured-image'], ['woocommerce/product-title'], ['woocommerce/product-price'], ['woocommerce/product-button']];
+    }
+
+    // Posts: featured image, post title, post date, post excerpt
+    return [['core/post-featured-image'], ['core/post-title'], ['core/post-date'], ['core/post-excerpt']];
+  };
+  const defaultTemplate = getDefaultTemplate(postType);
   const innerBlocksProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.useInnerBlocksProps)({
     className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])('wp-block-post', 'post-item', classList, 'is-editing'),
     style: {
@@ -61,14 +76,14 @@ function MasterDataTemplateInnerBlocks({
       pointerEvents: 'auto'
     }
   }, {
-    template: TEMPLATE,
+    template: defaultTemplate,
     __unstableDisableLayoutClassNames: true,
     allowedBlocks,
     templateLock: false // Allow editing inner blocks
   });
   // Render as li for Grid layout
   // Inner blocks rendered here can be selected and will show their InspectorControls
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("li", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("li", {
     ...innerBlocksProps
   });
 }
@@ -91,7 +106,7 @@ function MasterDataTemplateBlockPreview({
   const style = {
     display: isHidden ? 'none' : undefined
   };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("li", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("li", {
     ...blockPreviewProps,
     tabIndex: 0,
     role: "button",
@@ -120,7 +135,6 @@ function MasterDataTemplateEdit({
   },
   __unstableLayoutClassNames
 }) {
-  var _primaryTemplateBlock;
   const {
     query: {
       perPage,
@@ -145,13 +159,25 @@ function MasterDataTemplateEdit({
   } = context;
   const [activeBlockContextId, setActiveBlockContextId] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)();
   const {
+    replaceInnerBlocks
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useDispatch)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.store);
+
+  // Get inner blocks separately
+  const innerBlocks = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useSelect)(select => {
+    const {
+      getBlocks
+    } = select(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.store);
+    const block = getBlocks(clientId);
+    return block?.innerBlocks || [];
+  }, [clientId]);
+  const {
     posts,
     blocks
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useSelect)(select => {
     const {
       getEntityRecords,
       getTaxonomies
-    } = select(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_6__.store);
+    } = select(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_7__.store);
     const {
       getBlocks
     } = select(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.store);
@@ -249,9 +275,46 @@ function MasterDataTemplateEdit({
       };
     })) !== null && _posts$map !== void 0 ? _posts$map : [];
   }, [posts]);
-  const primaryTemplateBlock = blocks?.find(block => block.name === 'jankx/master-data-template');
-  const innerBlockCount = (_primaryTemplateBlock = primaryTemplateBlock?.innerBlocks?.length) !== null && _primaryTemplateBlock !== void 0 ? _primaryTemplateBlock : 0;
-  const allowedBlocks = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useMemo)(() => (0,_templateBlocks__WEBPACK_IMPORTED_MODULE_7__.getAllowedTemplateBlocks)(previewPostType || postType), [previewPostType, postType]);
+  const innerBlockCount = innerBlocks.length;
+  const allowedBlocks = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useMemo)(() => (0,_templateBlocks__WEBPACK_IMPORTED_MODULE_8__.getAllowedTemplateBlocks)(previewPostType || postType), [previewPostType, postType]);
+
+  // Get default template blocks based on post type
+  const desiredInnerBlocks = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useMemo)(() => {
+    const usedPostType = previewPostType || postType;
+    const isProduct = usedPostType === 'product';
+    const templateInnerBlocks = [];
+
+    // Always include featured image
+    templateInnerBlocks.push('core/post-featured-image');
+    if (isProduct) {
+      // Products: product title, product price, product button
+      templateInnerBlocks.push('woocommerce/product-title');
+      templateInnerBlocks.push('woocommerce/product-price');
+      templateInnerBlocks.push('woocommerce/product-button');
+    } else {
+      // Posts: post title, post date, post excerpt
+      templateInnerBlocks.push('core/post-title');
+      templateInnerBlocks.push('core/post-date');
+      templateInnerBlocks.push('core/post-excerpt');
+    }
+    return templateInnerBlocks;
+  }, [previewPostType, postType]);
+
+  // Auto-create template with default inner blocks if empty
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    if (!replaceInnerBlocks) {
+      return;
+    }
+    const existingNames = innerBlocks.map(block => block.name);
+    const desiredNames = desiredInnerBlocks;
+    const hasDifferences = existingNames.length !== desiredNames.length || !existingNames.every(name => desiredNames.includes(name));
+
+    // Only auto-create if no inner blocks exist or structure is different
+    if (innerBlocks.length === 0 || hasDifferences) {
+      const newInnerBlocks = desiredNames.map(name => (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_5__.createBlock)(name));
+      replaceInnerBlocks(clientId, newInnerBlocks, false);
+    }
+  }, [desiredInnerBlocks, innerBlocks, replaceInnerBlocks, clientId]);
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.useBlockProps)({
     className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])(__unstableLayoutClassNames, className, {
       [`content-layout-${contentLayout}`]: contentLayout && contentLayout !== 'default',
@@ -266,11 +329,11 @@ function MasterDataTemplateEdit({
 
   // Always render InspectorControls to ensure they appear when block is selected
   // This ensures block options are always available regardless of loading state
-  const inspectorControls = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.InspectorControls, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+  const inspectorControls = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.InspectorControls, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelBody, {
       title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Template Settings', 'jankx'),
       initialOpen: true,
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.SelectControl, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.SelectControl, {
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Content Layout', 'jankx'),
         value: contentLayout,
         options: [{
@@ -288,10 +351,10 @@ function MasterDataTemplateEdit({
         }),
         help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Control the layout style of the post template', 'jankx')
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelBody, {
       title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Item Styling', 'jankx'),
       initialOpen: false,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.SelectControl, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.SelectControl, {
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Item Spacing', 'jankx'),
         value: itemSpacing,
         options: [{
@@ -311,14 +374,14 @@ function MasterDataTemplateEdit({
           itemSpacing: value
         }),
         help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Control spacing between post items', 'jankx')
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.ToggleControl, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.ToggleControl, {
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Show Item Border', 'jankx'),
         checked: showItemBorder,
         onChange: value => setAttributes({
           showItemBorder: value
         }),
         help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Add border around each post item', 'jankx')
-      }), showItemBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.RangeControl, {
+      }), showItemBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.RangeControl, {
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Border Radius', 'jankx'),
         value: itemBorderRadius,
         onChange: value => setAttributes({
@@ -328,10 +391,10 @@ function MasterDataTemplateEdit({
         max: 50,
         help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Border radius in pixels', 'jankx')
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelBody, {
       title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Advanced', 'jankx'),
       initialOpen: false,
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("p", {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("p", {
         style: {
           fontSize: '12px',
           color: '#757575',
@@ -342,16 +405,16 @@ function MasterDataTemplateEdit({
     })]
   });
   if (!posts) {
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
-      children: [inspectorControls, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("p", {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.Fragment, {
+      children: [inspectorControls, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("p", {
         ...blockProps,
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Spinner, {})
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.Spinner, {})
       })]
     });
   }
   if (!posts.length) {
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
-      children: [inspectorControls, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("p", {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.Fragment, {
+      children: [inspectorControls, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("p", {
         ...blockProps,
         children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('No results found.', 'jankx')
       })]
@@ -360,21 +423,22 @@ function MasterDataTemplateEdit({
 
   // Determine wrapper tag based on layout
   const TagName = displayLayout === 'grid' ? 'ul' : 'div';
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
-    children: [inspectorControls, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
-      children: [innerBlockCount === 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.Fragment, {
+    children: [inspectorControls, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.Fragment, {
+      children: [innerBlockCount === 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
         className: "jankx-master-data-template__notice",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("p", {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("p", {
           children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('This template has no blocks yet. Add blocks to define the post item structure.', 'jankx')
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(TagName, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(TagName, {
         ...blockProps,
-        children: blockContexts.map(blockContext => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.BlockContextProvider, {
+        children: blockContexts.map(blockContext => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.BlockContextProvider, {
           value: blockContext,
-          children: [blockContext.postId === (activeBlockContextId || blockContexts[0]?.postId) ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(MasterDataTemplateInnerBlocks, {
+          children: [blockContext.postId === (activeBlockContextId || blockContexts[0]?.postId) ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(MasterDataTemplateInnerBlocks, {
             classList: blockContext.classList,
-            allowedBlocks: allowedBlocks
-          }) : null, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(MemoizedMasterDataTemplateBlockPreview, {
+            allowedBlocks: allowedBlocks,
+            postType: previewPostType || postType
+          }) : null, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(MemoizedMasterDataTemplateBlockPreview, {
             blocks: blocks,
             blockContextId: blockContext.postId,
             classList: blockContext.classList,

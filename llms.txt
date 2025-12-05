@@ -864,6 +864,475 @@ tests/
 
 Common helper functions được load tự động khi framework khởi động.
 
+## Gutenberg Block Design Pattern: PHP-Driven Customization
+
+### Nguyên Tắc Cốt Lõi
+
+**"Tất cả tính năng customize phải được thực hiện ở level PHP qua interfaces và abstract classes theo design pattern. Code JavaScript của block chỉ dùng để hiển thị các tính năng được PHP hỗ trợ."**
+
+### 1. Philosophy: PHP là Center of Control
+
+Trong Jankx Framework, **PHP controls everything**, JavaScript chỉ là presentation layer:
+
+- ✅ **PHP Layer**: Định nghĩa features, business logic, data processing, customization
+- ❌ **JavaScript Layer**: Chỉ hiển thị UI, render options từ PHP, không có hard-coded logic
+
+**Tại sao?**
+- **Developer-friendly**: Developers có thể customize blocks bằng PHP (quen thuộc với WordPress devs)
+- **Extensibility**: Dễ dàng extend và override bằng interfaces, abstract classes, hooks
+- **Maintainability**: Không cần rebuild JavaScript khi thay đổi logic
+- **Performance**: Giảm JavaScript bundle size, logic chạy server-side
+- **Type Safety**: PHP có type system mạnh hơn JavaScript
+
+### 2. Architecture Pattern
+
+```
+┌─────────────────────────────────────────────────┐
+│           PHP Backend (Controller)              │
+│  - Interfaces & Abstract Classes                │
+│  - Business Logic & Data Processing             │
+│  - Feature Registration & Configuration         │
+│  - Hooks & Filters for Extension                │
+└─────────────┬───────────────────────────────────┘
+              │ wp_localize_script()
+              │ (Pass data to JS)
+              ▼
+┌─────────────────────────────────────────────────┐
+│         JavaScript Frontend (View)              │
+│  - Read configuration from PHP                  │
+│  - Render UI based on PHP data                  │
+│  - No hard-coded options or logic               │
+│  - Dynamic dropdowns, selects from PHP          │
+└─────────────────────────────────────────────────┘
+```
+
+### 3. Implementation Pattern
+
+#### 3.1. PHP: Define Features & Configuration
+
+**Bước 1**: Tạo Interface cho Block Feature
+
+```php
+// includes/framework/Gutenberg/Interfaces/BlockFeatureInterface.php
+namespace Jankx\Gutenberg\Interfaces;
+
+interface BlockFeatureInterface
+{
+    /**
+     * Get feature name
+     */
+    public function getName(): string;
+    
+    /**
+     * Get feature configuration for JavaScript
+     */
+    public function getConfiguration(): array;
+    
+    /**
+     * Process feature data
+     */
+    public function process(array $attributes, array $context): array;
+}
+```
+
+**Bước 2**: Tạo Abstract Class cho Base Functionality
+
+```php
+// includes/framework/Gutenberg/Abstracts/AbstractBlockLayout.php
+namespace Jankx\Gutenberg\Abstracts;
+
+abstract class AbstractBlockLayout
+{
+    /**
+     * Get layout name
+     */
+    abstract public function getName(): string;
+    
+    /**
+     * Get supported options (for JavaScript rendering)
+     */
+    abstract public function getSupportedOptions(): array;
+    
+    /**
+     * Get HTML structure (for consistent rendering)
+     */
+    abstract public function getHtmlStructure(array $options): array;
+    
+    /**
+     * Render layout
+     */
+    abstract public function render(array $posts, array $options): string;
+}
+```
+
+**Bước 3**: Implement Concrete Class
+
+```php
+// includes/framework/Layouts/PostLayout/GridLayout.php
+namespace Jankx\Layouts\PostLayout;
+
+use Jankx\Gutenberg\Abstracts\AbstractBlockLayout;
+
+class GridLayout extends AbstractBlockLayout
+{
+    public function getName(): string
+    {
+        return 'grid';
+    }
+    
+    public function getSupportedOptions(): array
+    {
+        return [
+            'columns' => [
+                'type' => 'number',
+                'default' => 3,
+                'min' => 1,
+                'max' => 6,
+                'label' => __('Columns', 'jankx'),
+            ],
+            'showFeaturedImage' => [
+                'type' => 'boolean',
+                'default' => true,
+                'label' => __('Show Featured Image', 'jankx'),
+            ],
+            'thumbnailPosition' => [
+                'type' => 'select',
+                'default' => 'top',
+                'options' => [
+                    'top' => __('Top', 'jankx'),
+                    'left' => __('Left', 'jankx'),
+                    'right' => __('Right', 'jankx'),
+                ],
+            ],
+        ];
+    }
+    
+    public function getHtmlStructure(array $options): array
+    {
+        return [
+            'container' => [
+                'tag' => 'div',
+                'classes' => ['post-grid', 'columns-' . ($options['columns'] ?? 3)],
+                'styles' => [
+                    '--columns-desktop' => $options['columns'] ?? 3,
+                    '--columns-tablet' => $options['columnsTablet'] ?? 2,
+                    '--columns-mobile' => $options['columnsMobile'] ?? 1,
+                ],
+            ],
+            'item' => [
+                'tag' => 'article',
+                'classes' => ['post-item', 'grid-item'],
+            ],
+        ];
+    }
+    
+    public function render(array $posts, array $options): string
+    {
+        // Render implementation
+        // Return HTML string
+    }
+}
+```
+
+**Bước 4**: Register Layout và Pass Data to JavaScript
+
+```php
+// includes/framework/Services/PostLayoutService.php
+namespace Jankx\Services;
+
+class PostLayoutService
+{
+    protected $layouts = [];
+    
+    public function registerLayout(AbstractBlockLayout $layout): void
+    {
+        $this->layouts[$layout->getName()] = $layout;
+    }
+    
+    public function getLayoutsForJavaScript(): array
+    {
+        $result = [];
+        foreach ($this->layouts as $name => $layout) {
+            $result[] = [
+                'name' => $name,
+                'title' => $layout->getTitle(),
+                'supportedOptions' => $layout->getSupportedOptions(),
+                'htmlStructure' => $layout->getHtmlStructure([]),
+            ];
+        }
+        return $result;
+    }
+    
+    public function enqueueEditorAssets(): void
+    {
+        wp_localize_script(
+            'jankx-post-layout-editor',
+            'jankxSupportedPostTypeLayouts',
+            $this->getLayoutsForJavaScript()
+        );
+    }
+}
+```
+
+#### 3.2. JavaScript: Consume PHP Data
+
+**Không làm như thế này** (❌ Hard-coded):
+
+```typescript
+// ❌ BAD: Hard-coded options in JavaScript
+const layoutOptions = [
+    { label: 'Grid', value: 'grid' },
+    { label: 'List', value: 'list' },
+    { label: 'Carousel', value: 'carousel' }, // Hard-coded!
+];
+
+<SelectControl
+    label="Layout"
+    value={layout}
+    options={layoutOptions} // Fixed options!
+    onChange={(value) => setAttributes({ layout: value })}
+/>
+```
+
+**Làm như thế này** (✅ Dynamic from PHP):
+
+```typescript
+// ✅ GOOD: Read options from PHP
+const supportedLayouts = (window as any).jankxSupportedPostTypeLayouts || [];
+
+<SelectControl
+    label={__('Layout Type', 'jankx')}
+    value={layout}
+    options={
+        supportedLayouts.map((layout: any) => ({
+            label: layout.title,
+            value: layout.name,
+        }))
+    }
+    onChange={(value: string): void => setAttributes({ layout: value })}
+/>
+```
+
+**Hiển thị options dựa trên layout hiện tại**:
+
+```typescript
+// ✅ GOOD: Dynamic options based on current layout
+const currentLayout = supportedLayouts.find((l: any) => l.name === layout);
+const supportedOptions = currentLayout?.supportedOptions || [];
+const readOnlyOptions = currentLayout?.readOnlyOptions || [];
+
+{supportedOptions.includes('columns') && (
+    <RangeControl
+        label={__('Columns', 'jankx')}
+        value={columns}
+        onChange={(value) => setAttributes({ columns: value })}
+        min={1}
+        max={6}
+        disabled={readOnlyOptions.includes('columns')}
+    />
+)}
+```
+
+### 4. Ví dụ Thực Tế: Post Layout Block
+
+#### PHP Side: Layout Manager
+
+```php
+// includes/framework/Layouts/PostLayout/PostLayoutManager.php
+class PostLayoutManager
+{
+    protected $layouts = [];
+    
+    public function __construct()
+    {
+        // Register default layouts
+        $this->registerLayout(new GridLayout());
+        $this->registerLayout(new ListLayout());
+        $this->registerLayout(new CarouselLayout());
+        
+        // Allow extensions via hook
+        do_action('jankx/post-layout/register-layouts', $this);
+    }
+    
+    public function registerLayout(AbstractBlockLayout $layout): void
+    {
+        $this->layouts[$layout->getName()] = $layout;
+    }
+    
+    public function getLayouts(array $args = []): array
+    {
+        $layouts = [];
+        foreach ($this->layouts as $name => $layout) {
+            $layouts[] = [
+                'name' => $name,
+                'title' => $layout->getTitle(),
+                'supportedOptions' => $layout->getSupportedOptions(),
+                'readOnlyOptions' => $layout->getReadOnlyOptions(),
+                'htmlStructure' => $layout->getHtmlStructure([]),
+            ];
+        }
+        
+        return apply_filters('jankx/post-layout/layouts', $layouts, $args);
+    }
+}
+```
+
+#### Developer Extension (Child Theme hoặc Plugin)
+
+```php
+// Developer có thể extend dễ dàng
+add_action('jankx/post-layout/register-layouts', function($manager) {
+    $manager->registerLayout(new CustomMasonryLayout());
+});
+
+// Hoặc modify existing layouts
+add_filter('jankx/post-layout/layouts', function($layouts) {
+    foreach ($layouts as &$layout) {
+        if ($layout['name'] === 'grid') {
+            // Add custom option
+            $layout['supportedOptions']['customSpacing'] = [
+                'type' => 'range',
+                'default' => 20,
+                'min' => 0,
+                'max' => 100,
+                'label' => __('Custom Spacing', 'my-theme'),
+            ];
+        }
+    }
+    return $layouts;
+});
+```
+
+#### JavaScript chỉ đọc và render
+
+```typescript
+// JavaScript chỉ đọc data từ PHP và render UI
+const supportedLayouts = (window as any).jankxSupportedPostTypeLayouts || [];
+const currentLayout = supportedLayouts.find((l: any) => l.name === layout);
+
+// Render options động based on PHP configuration
+{currentLayout?.supportedOptions?.forEach((option: any) => {
+    if (option.type === 'range') {
+        return (
+            <RangeControl
+                key={option.key}
+                label={option.label}
+                value={attributes[option.key]}
+                onChange={(value) => setAttributes({ [option.key]: value })}
+                min={option.min}
+                max={option.max}
+            />
+        );
+    }
+    // ... other types
+})}
+```
+
+### 5. Benefits (Lợi Ích)
+
+✅ **Developer-Friendly**
+- Developers chỉ cần biết PHP (WordPress standard)
+- Không cần rebuild JavaScript khi customize
+- Có thể extend bằng hooks/filters như mọi WordPress code
+
+✅ **Maintainable**
+- Centralized logic ở PHP
+- JavaScript không chứa business logic
+- Dễ debug và test
+
+✅ **Extensible**
+- Child themes có thể override bằng PHP
+- Plugins có thể add features bằng hooks
+- Không cần fork code
+
+✅ **Performance**
+- Giảm JavaScript bundle size
+- Server-side processing nhanh hơn
+- Caching-friendly
+
+✅ **Type-Safe**
+- PHP có type declarations mạnh
+- Interface contracts rõ ràng
+- IDE autocomplete support
+
+### 6. Anti-Patterns (Không Làm)
+
+❌ **Hard-code options trong JavaScript**
+```typescript
+// BAD
+const layouts = ['grid', 'list', 'carousel']; // Hard-coded!
+```
+
+❌ **Business logic trong JavaScript**
+```typescript
+// BAD
+function calculatePrice(product) {
+    return product.price * (1 + tax); // Logic should be in PHP!
+}
+```
+
+❌ **Conditional features trong JavaScript**
+```typescript
+// BAD
+{postType === 'product' && (
+    <ToggleControl label="Show Price" /> // Condition should come from PHP!
+)}
+```
+
+✅ **Đúng cách: Đọc từ PHP**
+```typescript
+// GOOD
+const supportedOptions = currentLayout?.supportedOptions || [];
+{supportedOptions.includes('price') && (
+    <ToggleControl label="Show Price" />
+)}
+```
+
+### 7. Checklist cho Block Development
+
+Khi develop một Gutenberg block mới, đảm bảo:
+
+- [ ] ✅ Tất cả features được định nghĩa trong PHP classes
+- [ ] ✅ Sử dụng interfaces/abstract classes cho extensibility
+- [ ] ✅ Pass configuration to JavaScript qua `wp_localize_script()`
+- [ ] ✅ JavaScript chỉ render UI, không chứa business logic
+- [ ] ✅ Options dynamically loaded from PHP data
+- [ ] ✅ Provide hooks/filters cho developers extend
+- [ ] ✅ Document PHP APIs cho developers
+- [ ] ❌ Không hard-code options trong JavaScript
+- [ ] ❌ Không có business logic trong JavaScript
+- [ ] ❌ Không có conditional features trong JavaScript
+
+### 8. Migration Guide
+
+Nếu block hiện tại đang hard-code trong JavaScript:
+
+**Step 1**: Extract logic to PHP
+```php
+// Move logic from JS to PHP
+class MyBlockController {
+    public function getOptions() {
+        return [
+            'layouts' => $this->getLayouts(),
+            'features' => $this->getFeatures(),
+        ];
+    }
+}
+```
+
+**Step 2**: Pass to JavaScript
+```php
+wp_localize_script('my-block-editor', 'myBlockConfig', [
+    'options' => $controller->getOptions(),
+]);
+```
+
+**Step 3**: Update JavaScript to read from PHP
+```typescript
+const config = (window as any).myBlockConfig;
+const options = config.options.layouts.map(...);
+```
+
 ## Best Practices
 
 1. **Service Providers**: Luôn sử dụng Service Providers để đăng ký features
@@ -875,6 +1344,7 @@ Common helper functions được load tự động khi framework khởi động.
 7. **Documentation**: Document code với DocBlocks
 8. **PSR Standards**: Tuân thủ PSR-12 coding standards
 9. **No Fallback Processing**: Không chấp nhận fallback trong xử lý, khi lỗi sẽ handle lỗi chứ không tạo fallback.
+10. **PHP-Driven Blocks**: Tất cả block customization qua PHP, JavaScript chỉ là presentation layer
 
 ## JavaScript/TypeScript Coding Rules
 

@@ -25,6 +25,7 @@
     "displayLayout": "layout"
   },
   "usesContext": ["queryId", "query"],
+  "allowedBlocks": ["jankx/master-data-template"],
   "supports": {
     "html": false,
     "align": ["wide", "full"],

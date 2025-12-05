@@ -1,6 +1,6 @@
 import clsx from 'clsx';
-import { memo, useMemo, useState } from '@wordpress/element';
-import { useSelect } from '@wordpress/data';
+import { memo, useMemo, useState, useEffect } from '@wordpress/element';
+import { useSelect, useDispatch } from '@wordpress/data';
 import { __, _x } from '@wordpress/i18n';
 import {
     BlockControls,
@@ -12,17 +12,12 @@ import {
     InnerBlocks,
     store as blockEditorStore,
 } from '@wordpress/block-editor';
+import { createBlock } from '@wordpress/blocks';
 import { Spinner, ToolbarGroup, PanelBody, SelectControl, ToggleControl, RangeControl } from '@wordpress/components';
 import { store as coreStore } from '@wordpress/core-data';
 import { list, grid } from '@wordpress/icons';
 
 import { getAllowedTemplateBlocks } from './templateBlocks';
-
-const TEMPLATE: [string][] = [
-    ['core/post-title'],
-    ['core/post-date'],
-    ['core/post-excerpt'],
-];
 
 interface MasterDataTemplateEditProps {
     attributes: {
@@ -49,7 +44,40 @@ interface MasterDataTemplateEditProps {
     __unstableLayoutClassNames?: string;
 }
 
-function MasterDataTemplateInnerBlocks({ classList, allowedBlocks }: { classList?: string; allowedBlocks?: string[] }) {
+function MasterDataTemplateInnerBlocks({ 
+    classList, 
+    allowedBlocks,
+    postType 
+}: { 
+    classList?: string; 
+    allowedBlocks?: string[];
+    postType?: string;
+}) {
+    // Get default template based on post type
+    const getDefaultTemplate = (postType?: string): [string][] => {
+        const isProduct = postType === 'product';
+        
+        if (isProduct) {
+            // Products: featured image, product title, product price, product button
+            return [
+                ['core/post-featured-image'],
+                ['woocommerce/product-title'],
+                ['woocommerce/product-price'],
+                ['woocommerce/product-button'],
+            ];
+        }
+        
+        // Posts: featured image, post title, post date, post excerpt
+        return [
+            ['core/post-featured-image'],
+            ['core/post-title'],
+            ['core/post-date'],
+            ['core/post-excerpt'],
+        ];
+    };
+
+    const defaultTemplate = getDefaultTemplate(postType);
+
     const innerBlocksProps = useInnerBlocksProps(
         { 
             className: clsx('wp-block-post', 'post-item', classList, 'is-editing'),
@@ -61,7 +89,7 @@ function MasterDataTemplateInnerBlocks({ classList, allowedBlocks }: { classList
             }
         },
         {
-            template: TEMPLATE,
+            template: defaultTemplate,
             __unstableDisableLayoutClassNames: true,
             allowedBlocks,
             templateLock: false, // Allow editing inner blocks
@@ -154,6 +182,20 @@ export default function MasterDataTemplateEdit({
     } = context;
 
     const [activeBlockContextId, setActiveBlockContextId] = useState<number | undefined>();
+    const { replaceInnerBlocks } = useDispatch(blockEditorStore);
+    const isInitializedRef = useRef<string | false>(false);
+    const previousInnerBlocksLengthRef = useRef<number>(0);
+    
+    // Get inner blocks separately
+    const innerBlocks = useSelect(
+        (select: unknown) => {
+            const { getBlocks } = select(blockEditorStore) as { getBlocks: (clientId: string) => any };
+            const block = getBlocks(clientId);
+            return block?.innerBlocks || [];
+        },
+        [clientId]
+    );
+    
     const { posts, blocks } = useSelect(
         (select) => {
             const { getEntityRecords, getTaxonomies } = select(coreStore);
@@ -290,13 +332,74 @@ export default function MasterDataTemplateEdit({
         [posts]
     );
 
-    const primaryTemplateBlock = blocks?.find((block: any) => block.name === 'jankx/master-data-template');
-    const innerBlockCount = primaryTemplateBlock?.innerBlocks?.length ?? 0;
+    const innerBlockCount = innerBlocks.length;
     
     const allowedBlocks = useMemo(
         () => getAllowedTemplateBlocks(previewPostType || postType),
         [previewPostType, postType]
     );
+
+    // Get default template blocks based on post type
+    const desiredInnerBlocks = useMemo(() => {
+        const usedPostType = previewPostType || postType;
+        const isProduct = usedPostType === 'product';
+        const templateInnerBlocks: string[] = [];
+
+        // Always include featured image
+        templateInnerBlocks.push('core/post-featured-image');
+
+        if (isProduct) {
+            // Products: product title, product price, product button
+            templateInnerBlocks.push('woocommerce/product-title');
+            templateInnerBlocks.push('woocommerce/product-price');
+            templateInnerBlocks.push('woocommerce/product-button');
+        } else {
+            // Posts: post title, post date, post excerpt
+            templateInnerBlocks.push('core/post-title');
+            templateInnerBlocks.push('core/post-date');
+            templateInnerBlocks.push('core/post-excerpt');
+        }
+
+        return templateInnerBlocks;
+    }, [previewPostType, postType]);
+
+    // Create stable key for desired blocks
+    const desiredBlocksKey = useMemo(
+        () => desiredInnerBlocks.join(','),
+        [desiredInnerBlocks]
+    );
+
+    // Auto-create template with default inner blocks if empty
+    // Only run when postType changes or on initial mount
+    useEffect(() => {
+        if (!replaceInnerBlocks || !desiredInnerBlocks.length) {
+            return;
+        }
+
+        // Create a stable key based on postType to track initialization per post type
+        const currentPostType = previewPostType || postType;
+        const initKey = `${clientId}-${currentPostType}-${desiredBlocksKey}`;
+        
+        // Skip if already initialized for this post type and template
+        if (isInitializedRef.current === initKey) {
+            return;
+        }
+
+        // Only auto-create if no inner blocks exist
+        // Don't auto-update if user has already customized the template
+        if (innerBlocks.length === 0) {
+            try {
+                const newInnerBlocks = desiredInnerBlocks.map((name) => createBlock(name));
+                replaceInnerBlocks(clientId, newInnerBlocks, false);
+                isInitializedRef.current = initKey;
+            } catch (error) {
+                console.error('Error creating inner blocks:', error);
+            }
+        } else {
+            // Mark as initialized if inner blocks already exist
+            isInitializedRef.current = initKey;
+        }
+    }, [previewPostType, postType, desiredBlocksKey, clientId, replaceInnerBlocks]);
 
     const blockProps = useBlockProps({
         className: clsx(__unstableLayoutClassNames, className, {
@@ -404,6 +507,7 @@ export default function MasterDataTemplateEdit({
                                 <MasterDataTemplateInnerBlocks
                                     classList={blockContext.classList}
                                     allowedBlocks={allowedBlocks}
+                                    postType={previewPostType || postType}
                                 />
                             ) : null}
                             <MemoizedMasterDataTemplateBlockPreview
