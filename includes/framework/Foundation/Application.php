@@ -272,8 +272,8 @@ class Application extends Container
     {
         // Default aliases
         $defaultAliases = [
-            'app'      => [\Jankx\Foundation\Application::class],
-            'config'   => [\Jankx\Config\Repository::class],
+            'app'      => [Application::class],
+            'config'   => [Repository::class],
             'template' => [\Jankx\Support\TemplateEngine\TemplateEngineManager::class],
         ];
 

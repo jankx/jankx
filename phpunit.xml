@@ -20,13 +20,16 @@
         </testsuite>
         <testsuite name="PostLayout">
             <directory>tests/Support/Blocks/PostLayout</directory>
+            <directory>tests/Integration/PostLayout</directory>
         </testsuite>
         <testsuite name="Integration">
             <directory>tests/Integration</directory>
         </testsuite>
-        <testsuite name="PostLayout">
-            <directory>tests/Support/Blocks/PostLayout</directory>
-            <directory>tests/Integration/PostLayout</directory>
+        <testsuite name="Gutenberg">
+            <directory>tests/Gutenberg</directory>
+        </testsuite>
+        <testsuite name="GutenbergBlocks">
+            <directory>tests/Gutenberg/Blocks</directory>
         </testsuite>
     </testsuites>
 

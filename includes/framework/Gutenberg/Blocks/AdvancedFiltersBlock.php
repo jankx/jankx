@@ -241,21 +241,71 @@ class AdvancedFiltersBlock extends Block
      */
     private function getBlockContent($block_id)
     {
-        // Find block in post content
+        // First, try to find in current post/page context
+        global $post;
+        if ($post && !empty($post->post_content)) {
+            $blocks = parse_blocks($post->post_content);
+            $found_block = $this->findBlockInBlocks($blocks, $block_id);
+            if ($found_block) {
+                return $found_block;
+            }
+        }
+
+        // If not found, search in limited posts to avoid memory issues
+        // Only search in recent posts with post-type-layout blocks
         $posts = get_posts([
-            'post_type' => 'any',
+            'post_type' => ['page', 'post'], // Limit to common post types
             'post_status' => 'publish',
-            'posts_per_page' => -1
+            'posts_per_page' => 50, // Limit to 50 posts instead of -1
+            'orderby' => 'modified',
+            'order' => 'DESC',
+            'suppress_filters' => true, // Disable filters for performance
+            'no_found_rows' => true, // Skip pagination counting
+            'update_post_term_cache' => false, // Skip term cache
+            'update_post_meta_cache' => false, // Skip meta cache
         ]);
 
-        foreach ($posts as $post) {
-            $blocks = parse_blocks($post->post_content);
+        foreach ($posts as $post_item) {
+            if (empty($post_item->post_content)) {
+                continue;
+            }
+            $blocks = parse_blocks($post_item->post_content);
+            $found_block = $this->findBlockInBlocks($blocks, $block_id);
+            if ($found_block) {
+                return $found_block;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Find block in parsed blocks array
+     *
+     * @param array $blocks Parsed blocks array
+     * @param string $block_id Target block ID
+     * @return array|null Block array or null
+     */
+    private function findBlockInBlocks(array $blocks, string $block_id): ?array
+    {
             foreach ($blocks as $block) {
-                if ($block['blockName'] === 'jankx/post-type-layout') {
-                    $current_block_id = 'block_' . md5(serialize($block));
-                    if ($current_block_id === $block_id) {
+            if (($block['blockName'] ?? '') === 'jankx/post-type-layout') {
+                $current_block_id = $block['attrs']['queryId'] ?? null;
+                // Check both queryId and generated ID
+                if ($current_block_id && strval($current_block_id) === strval($block_id)) {
+                    return $block;
+                }
+                $generated_block_id = 'block_' . md5(serialize($block));
+                if ($generated_block_id === $block_id) {
                         return $block;
                     }
+            }
+
+            // Recursively check inner blocks
+            if (!empty($block['innerBlocks'])) {
+                $found = $this->findBlockInBlocks($block['innerBlocks'], $block_id);
+                if ($found) {
+                    return $found;
                 }
             }
         }
@@ -428,24 +478,71 @@ class AdvancedFiltersBlock extends Block
             return null;
         }
 
-        // Find blocks in post content
+        // First, try to find blocks in current post/page context
+        global $post;
+        if ($post && !empty($post->post_content)) {
+            $blocks = parse_blocks($post->post_content);
+            foreach ($target_block_ids as $block_id) {
+                $found_type = $this->findPostTypeInBlocks($blocks, $block_id);
+                if ($found_type) {
+                    return $found_type;
+                }
+            }
+        }
+
+        // If not found, try to find in template parts (limited query to avoid memory issues)
+        // Only search in recent posts with post-type-layout blocks to avoid memory exhaustion
         $posts = get_posts([
-            'post_type' => 'any',
+            'post_type' => ['page', 'post'], // Limit to common post types
             'post_status' => 'publish',
-            'posts_per_page' => -1,
+            'posts_per_page' => 50, // Limit to 50 posts instead of -1
+            'orderby' => 'modified',
+            'order' => 'DESC',
+            'suppress_filters' => true, // Disable filters for performance
+            'no_found_rows' => true, // Skip pagination counting
+            'update_post_term_cache' => false, // Skip term cache
+            'update_post_meta_cache' => false, // Skip meta cache
         ]);
 
         foreach ($target_block_ids as $block_id) {
-            foreach ($posts as $post) {
-                $blocks = parse_blocks($post->post_content);
-                foreach ($blocks as $block) {
-                    if (($block['blockName'] ?? '') !== 'jankx/post-type-layout') {
+            foreach ($posts as $post_item) {
+                if (empty($post_item->post_content)) {
                         continue;
                     }
+                $blocks = parse_blocks($post_item->post_content);
+                $found_type = $this->findPostTypeInBlocks($blocks, $block_id);
+                if ($found_type) {
+                    return $found_type;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Find post type in parsed blocks
+     *
+     * @param array $blocks Parsed blocks array
+     * @param string $block_id Target block ID
+     * @return string|null Post type or null
+     */
+    private function findPostTypeInBlocks(array $blocks, string $block_id): ?string
+    {
+        foreach ($blocks as $block) {
+            // Check current block
+            if (($block['blockName'] ?? '') === 'jankx/post-type-layout') {
                     $current_block_id = $block['attrs']['queryId'] ?? null;
                     if ($current_block_id && strval($current_block_id) === strval($block_id)) {
                         return $block['attrs']['postType'] ?? null;
                     }
+            }
+
+            // Recursively check inner blocks
+            if (!empty($block['innerBlocks'])) {
+                $found = $this->findPostTypeInBlocks($block['innerBlocks'], $block_id);
+                if ($found) {
+                    return $found;
                 }
             }
         }
