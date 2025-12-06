@@ -6,6 +6,13 @@
  * Nếu value không set (null hoặc empty) thì sẽ fallback sang theme options.
  * 
  * @package CheepHub
+ * 
+ * APPLY EXPAND/COLLAPSE LAYOUT:
+ * 1. Set 'use_accordion' => true trong product_category_block
+ * 2. Set 'default_layout' => 'expand-collapse-category'
+ * 3. Include functions-woocommerce-layouts.php trong functions.php
+ * 
+ * Xem: themes/cheephub/functions-woocommerce-layouts.php để biết cách khai báo
  */
 
 return [
@@ -94,15 +101,22 @@ return [
      * Product Category Block Layout Configuration
      * 
      * Layout cho hiển thị danh mục sản phẩm
+     * Layouts available: grid-category-block, expand-collapse-category
+     * 
+     * Apply Expand/Collapse cho WooCommerce Product Categories block:
+     * Set use_accordion = true và default_layout = 'expand-collapse-category'
      */
     'product_category_block' => [
-        'default_layout' => 'grid-category-block',
+        'default_layout' => 'grid-category-block', // grid-category-block hoặc expand-collapse-category
         'enabled' => true,
+        
+        // Enable accordion transform cho WooCommerce block
+        'use_accordion' => true,
         'settings' => [
-            // Số cột
+            // Số cột (for grid layout)
             'columns' => 4,
             
-            // Display type: grid, list, masonry
+            // Display type: grid, list, masonry, accordion
             'display_type' => 'grid',
             
             // Show product count
@@ -116,6 +130,26 @@ return [
             
             // Show empty categories
             'show_empty_categories' => false,
+            
+            // === Expand/Collapse Layout Settings ===
+            
+            // Show subcategories when expanded
+            'show_subcategories' => true,
+            
+            // Show product preview when expanded
+            'show_product_preview' => true,
+            
+            // Default expanded state
+            'default_expanded' => false,
+            
+            // Animation speed (ms)
+            'animation_speed' => 300,
+            
+            // Accordion style: default, minimal, bordered, card
+            'accordion_style' => 'card',
+            
+            // Icon style: plus-minus, arrow, chevron
+            'icon_style' => 'plus-minus',
         ],
     ],
 
@@ -125,17 +159,23 @@ return [
      * Layout cho gallery ảnh sản phẩm
      */
     'product_gallery' => [
-        'default_layout' => 'slider-gallery',
+        'default_layout' => 'flatsome-gallery',
         'enabled' => true,
         'settings' => [
-            // Gallery type: slider, grid, stacked, horizontal
-            'gallery_type' => 'slider',
+            // Gallery type: slider, grid, stacked, horizontal, flatsome
+            'gallery_type' => 'flatsome',
             
             // Thumbnail position: bottom, left, right
             'thumbnail_position' => 'bottom',
             
             // Thumbnail size (px)
-            'thumbnail_size' => 100,
+            'thumbnail_size' => 80,
+            
+            // Thumbnail columns (for grid layout)
+            'thumbnail_columns' => 5,
+            
+            // Zoom level (scale factor)
+            'zoom_level' => 2,
             
             // Gallery width (%)
             'gallery_width' => 100,
