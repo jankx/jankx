@@ -59,7 +59,20 @@
   "attributes": {
     "queryPreset": {
       "type": "string",
-      "default": "custom"
+      "default": "custom",
+      "enum": [
+        "default",
+        "related",
+        "custom",
+        "on-sale",
+        "featured",
+        "related-products",
+        "best-sellers",
+        "top-rated",
+        "upsells",
+        "new-arrivals",
+        "recently-viewed"
+      ]
     },
     "postType": {
       "type": "string",
@@ -166,6 +179,32 @@
       "default": []
     },
     "customQueryId": {
+      "type": "string",
+      "default": ""
+    },
+    "enablePagination": {
+      "type": "boolean",
+      "default": false
+    },
+    "paginationStyle": {
+      "type": "string",
+      "default": "numbers",
+      "enum": ["numbers", "simple", "arrows", "load-more"]
+    },
+    "paginationAlignment": {
+      "type": "string",
+      "default": "center",
+      "enum": ["left", "center", "right"]
+    },
+    "showPaginationNumbers": {
+      "type": "boolean",
+      "default": true
+    },
+    "paginationPrevText": {
+      "type": "string",
+      "default": ""
+    },
+    "paginationNextText": {
       "type": "string",
       "default": ""
     },

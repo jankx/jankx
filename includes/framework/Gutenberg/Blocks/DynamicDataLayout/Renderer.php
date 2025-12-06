@@ -8,6 +8,7 @@ use Jankx\Layouts\PostLayout\Generators\PostTemplateBlockGenerator;
 use Jankx\Layouts\PostLayout\PaginationRenderer;
 use Jankx\Layouts\PostLayout\Contracts\PostLayoutJsCallbackInterface;
 use Jankx\Layouts\PostLayout\Contracts\ContentGeneratorInterface;
+use Jankx\Query\DynamicDataLayoutQueryHelper;
 use WP_Query;
 
 /**
@@ -71,6 +72,12 @@ class Renderer
             $attributes['postTemplate'] = $templateBlock;
         }
 
+        // Handle filters from URL
+        $filtersFromUrl = DynamicDataLayoutQueryHelper::getFiltersFromUrl();
+        if (!empty($filtersFromUrl)) {
+            $attributes = DynamicDataLayoutQueryHelper::applyFiltersToAttributes($attributes, $filtersFromUrl);
+        }
+
         // Sanitize attributes
         $attributes = $this->sanitizer->sanitize($layoutName, $attributes, true);
 
@@ -79,11 +86,14 @@ class Renderer
             ($this->enqueueCarouselAssets)();
         }
 
+        // Get query preset
+        $originalPreset = $attributes['queryPreset'] ?? 'custom';
+
         // Create layout decorator
         $decorator = $this->layoutManager->createLayout($layoutName, $postType, $attributes);
 
-        // Build query
-        $query = $this->buildQuery($attributes, $postType);
+        // Build query based on preset
+        $query = $this->buildQueryForPreset($decorator, $attributes, $originalPreset, $postType);
         $decorator->withQuery($query);
         $decorator->withAttributes($attributes);
 
@@ -162,77 +172,37 @@ class Renderer
     }
 
     /**
-     * Build WP_Query from attributes
+     * Build query based on preset
      *
-     * @param array $attributes Block attributes
+     * @param PostLayoutDecorator $decorator Layout decorator
+     * @param array $attributes Block attributes (passed by reference, may be modified)
+     * @param string $preset Query preset name
      * @param string $postType Post type
      * @return WP_Query
      */
-    protected function buildQuery(array $attributes, string $postType): WP_Query
+    protected function buildQueryForPreset(PostLayoutDecorator $decorator, array &$attributes, string $preset, string $postType): WP_Query
     {
-        $query_args = [
-            'post_type' => $postType,
-            'posts_per_page' => $attributes['postsPerPage'] ?? 10,
-            'post_status' => 'publish',
-            'ignore_sticky_posts' => !($attributes['includeStickyPosts'] ?? false),
-        ];
-
-        // Handle Order
-        if (isset($attributes['orderBy'])) {
-            $query_args['orderby'] = $attributes['orderBy'];
-        }
-        if (isset($attributes['order'])) {
-            $query_args['order'] = $attributes['order'];
+        // Handle 'default' preset - use current query
+        if ($preset === 'default') {
+            return DynamicDataLayoutQueryHelper::buildDefaultQuery($attributes);
         }
 
-        // Handle Offset
-        if (!empty($attributes['offset'])) {
-            $query_args['offset'] = (int) $attributes['offset'];
+        // Handle 'related' preset - build related posts query
+        if ($preset === 'related') {
+            $attributes = DynamicDataLayoutQueryHelper::buildRelatedQuery($attributes);
+            $decorator->withAttributes($attributes);
+            return $decorator->buildQuery($attributes);
         }
 
-        // Handle Tax Query
-        if (!empty($attributes['taxQuery']) && is_array($attributes['taxQuery'])) {
-            $query_args['tax_query'] = $attributes['taxQuery'];
+        // Handle other presets (on-sale, featured, related-products, etc.)
+        // These are handled via filter hook for extensibility
+        if ($preset !== 'custom') {
+            $attributes = DynamicDataLayoutQueryHelper::applyQueryBuilderFilter($attributes, $preset);
         }
 
-        // Handle Meta Query
-        if (!empty($attributes['metaQuery']) && is_array($attributes['metaQuery'])) {
-            $query_args['meta_query'] = $attributes['metaQuery'];
-        }
-
-        // Handle Keyword Search
-        if (!empty($attributes['keyword'])) {
-            $query_args['s'] = $attributes['keyword'];
-        }
-
-        // Handle Author
-        if (!empty($attributes['authorIn']) && is_array($attributes['authorIn'])) {
-            $query_args['author__in'] = array_map('intval', $attributes['authorIn']);
-        }
-        if (!empty($attributes['authorNotIn']) && is_array($attributes['authorNotIn'])) {
-            $query_args['author__not_in'] = array_map('intval', $attributes['authorNotIn']);
-        }
-
-        // Handle Post IDs
-        if (!empty($attributes['postIn']) && is_array($attributes['postIn'])) {
-            $query_args['post__in'] = array_map('intval', $attributes['postIn']);
-        }
-        if (!empty($attributes['postNotIn']) && is_array($attributes['postNotIn'])) {
-            $query_args['post__not_in'] = array_map('intval', $attributes['postNotIn']);
-        }
-
-        // Handle Post Parent
-        if (!empty($attributes['postParent'])) {
-            $query_args['post_parent'] = (int) $attributes['postParent'];
-        }
-        if (!empty($attributes['postParentIn']) && is_array($attributes['postParentIn'])) {
-            $query_args['post_parent__in'] = array_map('intval', $attributes['postParentIn']);
-        }
-        if (!empty($attributes['postParentNotIn']) && is_array($attributes['postParentNotIn'])) {
-            $query_args['post_parent__not_in'] = array_map('intval', $attributes['postParentNotIn']);
-        }
-
-        return new WP_Query($query_args);
+        // Build query using decorator
+        $decorator->withAttributes($attributes);
+        return $decorator->buildQuery($attributes);
     }
 
     /**

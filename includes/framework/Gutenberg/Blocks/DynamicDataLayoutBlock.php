@@ -322,6 +322,14 @@ class DynamicDataLayoutBlock extends Block
             ]
         );
 
+        // Localize query options including query presets
+        $query_options = \Jankx\Gutenberg\QueryOptions::getOptions();
+        wp_localize_script(
+            $script_handle,
+            'jankxQueryOptions',
+            $query_options
+        );
+
         // Localize layout structures for JavaScript rendering
         $layout_structures = $this->getLayoutStructures();
         wp_localize_script(
