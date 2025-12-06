@@ -1,0 +1,36 @@
+/**
+ * Dynamic Data Template Block Styles
+ */
+
+.wp-block-jankx-dynamic-data-template {
+    &.dynamic-data-template {
+        // Base styles
+    }
+
+    .dynamic-data-template__inner-blocks {
+        // Inner blocks container
+    }
+
+    // Item spacing
+    &.dynamic-data-template--spacing-none {
+        gap: 0;
+    }
+
+    &.dynamic-data-template--spacing-compact {
+        gap: var(--wp--preset--spacing--small, 0.5rem);
+    }
+
+    &.dynamic-data-template--spacing-normal {
+        gap: var(--wp--preset--spacing--medium, 1rem);
+    }
+
+    &.dynamic-data-template--spacing-loose {
+        gap: var(--wp--preset--spacing--large, 2rem);
+    }
+
+    // Item border
+    &.dynamic-data-template--has-border {
+        border: 1px solid var(--wp--preset--color--contrast, #ccc);
+    }
+}
+

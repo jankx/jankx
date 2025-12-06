@@ -169,6 +169,14 @@ module.exports = {
     'blocks/master-data-template/build/index': './blocks/master-data-template/index.tsx',
     'blocks/master-data-template/build/style': './blocks/master-data-template/style.scss',
     'blocks/master-data-template/build/editor': './blocks/master-data-template/editor.scss',
+
+    'blocks/dynamic-data-layout/build/index': './blocks/dynamic-data-layout/index.tsx',
+    'blocks/dynamic-data-layout/build/style': './blocks/dynamic-data-layout/style.scss',
+    'blocks/dynamic-data-layout/build/editor': './blocks/dynamic-data-layout/editor.scss',
+
+    'blocks/dynamic-data-template/build/index': './blocks/dynamic-data-template/index.tsx',
+    'blocks/dynamic-data-template/build/style': './blocks/dynamic-data-template/style.scss',
+    'blocks/dynamic-data-template/build/editor': './blocks/dynamic-data-template/editor.scss',
   },
   output: {
     path: path.resolve(__dirname),

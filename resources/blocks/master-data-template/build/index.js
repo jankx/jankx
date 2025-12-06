@@ -161,6 +161,8 @@ function MasterDataTemplateEdit({
   const {
     replaceInnerBlocks
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useDispatch)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.store);
+  const isInitializedRef = useRef(false);
+  const previousInnerBlocksLengthRef = useRef(0);
 
   // Get inner blocks separately
   const innerBlocks = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useSelect)(select => {
@@ -300,21 +302,40 @@ function MasterDataTemplateEdit({
     return templateInnerBlocks;
   }, [previewPostType, postType]);
 
+  // Create stable key for desired blocks
+  const desiredBlocksKey = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useMemo)(() => desiredInnerBlocks.join(','), [desiredInnerBlocks]);
+
   // Auto-create template with default inner blocks if empty
+  // Only run when postType changes or on initial mount
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
-    if (!replaceInnerBlocks) {
+    if (!replaceInnerBlocks || !desiredInnerBlocks.length) {
       return;
     }
-    const existingNames = innerBlocks.map(block => block.name);
-    const desiredNames = desiredInnerBlocks;
-    const hasDifferences = existingNames.length !== desiredNames.length || !existingNames.every(name => desiredNames.includes(name));
 
-    // Only auto-create if no inner blocks exist or structure is different
-    if (innerBlocks.length === 0 || hasDifferences) {
-      const newInnerBlocks = desiredNames.map(name => (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_5__.createBlock)(name));
-      replaceInnerBlocks(clientId, newInnerBlocks, false);
+    // Create a stable key based on postType to track initialization per post type
+    const currentPostType = previewPostType || postType;
+    const initKey = `${clientId}-${currentPostType}-${desiredBlocksKey}`;
+
+    // Skip if already initialized for this post type and template
+    if (isInitializedRef.current === initKey) {
+      return;
     }
-  }, [desiredInnerBlocks, innerBlocks, replaceInnerBlocks, clientId]);
+
+    // Only auto-create if no inner blocks exist
+    // Don't auto-update if user has already customized the template
+    if (innerBlocks.length === 0) {
+      try {
+        const newInnerBlocks = desiredInnerBlocks.map(name => (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_5__.createBlock)(name));
+        replaceInnerBlocks(clientId, newInnerBlocks, false);
+        isInitializedRef.current = initKey;
+      } catch (error) {
+        console.error('Error creating inner blocks:', error);
+      }
+    } else {
+      // Mark as initialized if inner blocks already exist
+      isInitializedRef.current = initKey;
+    }
+  }, [previewPostType, postType, desiredBlocksKey, clientId, replaceInnerBlocks]);
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.useBlockProps)({
     className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])(__unstableLayoutClassNames, className, {
       [`content-layout-${contentLayout}`]: contentLayout && contentLayout !== 'default',

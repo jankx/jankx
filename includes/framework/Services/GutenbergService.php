@@ -12,6 +12,8 @@ use Jankx\Gutenberg\Blocks\DatePickerCalendarBlock;
 use Jankx\Gutenberg\Blocks\IconPickerBlock;
 use Jankx\Gutenberg\Blocks\ImageMasonryGalleryBlock;
 use Jankx\Gutenberg\Blocks\CommentCountBlock;
+use Jankx\Gutenberg\Blocks\DynamicDataLayoutBlock;
+use Jankx\Gutenberg\Blocks\DynamicDataTemplateBlock;
 use Jankx\Gutenberg\Blocks\MagicTextBlock;
 use Jankx\Gutenberg\Blocks\MasterDataLayoutBlock;
 use Jankx\Gutenberg\Blocks\MasterDataTemplateBlock;
@@ -133,6 +135,8 @@ class GutenbergService
         $this->repository->registerBlock(IconPickerBlock::class);
         $this->repository->registerBlock(ImageMasonryGalleryBlock::class);
         $this->repository->registerBlock(CommentCountBlock::class);
+        $this->repository->registerBlock(DynamicDataLayoutBlock::class);
+        $this->repository->registerBlock(DynamicDataTemplateBlock::class);
         $this->repository->registerBlock(MagicTextBlock::class);
         $this->repository->registerBlock(MasterDataLayoutBlock::class);
         $this->repository->registerBlock(MasterDataTemplateBlock::class);

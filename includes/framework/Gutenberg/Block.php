@@ -68,13 +68,9 @@ abstract class Block implements BlockInterface
         }
         $registered = register_block_type_from_metadata($this->blockPath, $args);
         
-        // Load JavaScript translations for the block
-        if ($registered && !empty($registered->editor_script)) {
-            $this->loadScriptTranslations($registered->editor_script);
-        }
-        if ($registered && !empty($registered->view_script)) {
-            $this->loadScriptTranslations($registered->view_script);
-        }
+        // Note: Script translations are loaded automatically by WordPress
+        // when scripts are enqueued. We don't need to manually load them here
+        // to avoid warnings when scripts haven't been built yet.
     }
     
     /**
@@ -85,12 +81,20 @@ abstract class Block implements BlockInterface
      */
     protected function loadScriptTranslations($handle)
     {
-        if (is_string($handle)) {
-            wp_set_script_translations(
-                $handle,
-                'jankx',
-                get_template_directory() . '/languages'
-            );
+        if (!is_string($handle) || empty($handle)) {
+            return;
+        }
+        
+        // Only load translations if script is registered and languages directory exists
+        if (wp_script_is($handle, 'registered')) {
+            $languages_path = get_template_directory() . '/languages';
+            if (is_dir($languages_path)) {
+                wp_set_script_translations(
+                    $handle,
+                    'jankx',
+                    $languages_path
+                );
+            }
         }
     }
 

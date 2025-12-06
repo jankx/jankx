@@ -1,0 +1,30 @@
+/**
+ * Dynamic Data Layout Block Styles
+ */
+
+.wp-block-jankx-dynamic-data-layout {
+    &.dynamic-data-layout {
+        // Base styles
+    }
+
+    &.dynamic-data-layout--grid {
+        display: grid;
+        gap: var(--wp--preset--spacing--medium, 1.5rem);
+    }
+
+    &.dynamic-data-layout--list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--wp--preset--spacing--medium, 1.5rem);
+    }
+
+    &.dynamic-data-layout--card {
+        display: grid;
+        gap: var(--wp--preset--spacing--medium, 1.5rem);
+    }
+
+    &.dynamic-data-layout--carousel {
+        // Carousel styles will be handled by JavaScript
+    }
+}
+

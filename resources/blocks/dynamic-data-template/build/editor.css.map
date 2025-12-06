@@ -1,0 +1,1 @@
+{"version":3,"file":"blocks/dynamic-data-template/build/editor.css","mappings":";;;AAAA;;EAAA,C","sources":["webpack://jankx/./blocks/dynamic-data-template/editor.scss"],"sourcesContent":["/**\r\n * Dynamic Data Template Block Editor Styles\r\n */\r\n\r\n.wp-block-jankx-dynamic-data-template {\r\n    // Editor specific styles\r\n}\r\n\r\n"],"names":[],"sourceRoot":""}
