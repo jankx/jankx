@@ -107,7 +107,7 @@ return [
      * Set use_accordion = true và default_layout = 'expand-collapse-category'
      */
     'product_category_block' => [
-        'default_layout' => 'grid-category-block', // grid-category-block hoặc expand-collapse-category
+        'default_layout' => 'expand-collapse-category', // grid-category-block hoặc expand-collapse-category
         'enabled' => true,
         
         // Enable accordion transform cho WooCommerce block
@@ -159,11 +159,11 @@ return [
      * Layout cho gallery ảnh sản phẩm
      */
     'product_gallery' => [
-        'default_layout' => 'flatsome-gallery',
+        'default_layout' => 'modern-gallery',
         'enabled' => true,
         'settings' => [
-            // Gallery type: slider, grid, stacked, horizontal, flatsome
-            'gallery_type' => 'flatsome',
+            // Gallery type: slider, grid, stacked, horizontal, modern
+            'gallery_type' => 'modern',
             
             // Thumbnail position: bottom, left, right
             'thumbnail_position' => 'bottom',
