@@ -47,7 +47,6 @@ import MicroModal from 'micromodal';
             // Store in global object with modal ID as key
             if (Object.keys(shareData).length > 0) {
                 window.jankxShareData[modalId] = shareData;
-                console.log('Shared data for modal:', modalId, shareData);
             }
         }
 
@@ -96,8 +95,6 @@ import MicroModal from 'micromodal';
                 sharedData: window.jankxShareData[modalId] || {}
             }
         }));
-
-        console.log('Modal opened:', modalId);
     }
 
     function stopMediaInModal(modal) {
@@ -163,8 +160,6 @@ import MicroModal from 'micromodal';
         document.dispatchEvent(new CustomEvent('jankx:modal:close', {
             detail: { modalId, modalElement: modal }
         }));
-
-        console.log('Modal closed:', modalId);
     }
 
     function initModals() {
@@ -214,10 +209,6 @@ import MicroModal from 'micromodal';
         // Initialize Micromodal with global config
         MicroModal.init({
             onShow: function(modal, trigger) {
-                console.log('Modal opened:', modal.id);
-                console.log('Modal element:', modal);
-                console.log('Modal has is-open class:', modal.classList.contains('is-open'));
-
                 // Collect and share data from trigger element
                 if (trigger) {
                     const shareData = {};
@@ -238,7 +229,6 @@ import MicroModal from 'micromodal';
                     // Store in global object with modal ID as key
                     if (Object.keys(shareData).length > 0) {
                         window.jankxShareData[modal.id] = shareData;
-                        console.log('Shared data for modal:', modal.id, shareData);
                     }
                 }
 
@@ -279,8 +269,6 @@ import MicroModal from 'micromodal';
                 }));
             },
             onClose: function(modal) {
-                console.log('Modal closed:', modal.id);
-
                 // Stop all media playback in modal
                 stopMediaInModal(modal);
 
@@ -331,12 +319,9 @@ import MicroModal from 'micromodal';
                             MicroModal.show(modalId);
                         });
                     });
-                    console.log('Registered custom triggers for modal:', modalId);
                 }
             }
         });
-
-        console.log('Micromodal initialized with configs:', modalConfigs);
     }
 
     // Expose global functions for external use (both custom and Micromodal methods)

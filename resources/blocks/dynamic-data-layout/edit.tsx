@@ -47,6 +47,78 @@ interface AuthorItem {
     name: string;
 }
 
+interface QueryPresetOption {
+    value: string;
+    label: string;
+    postType?: string | null;
+    help?: string;
+}
+
+interface OrderByOption {
+    value: string;
+    label: string;
+    postType?: string | null;
+    metaKey?: string;
+}
+
+interface OrderOption {
+    value: 'ASC' | 'DESC';
+    label: string;
+}
+
+interface MetaTypeOption {
+    value: string;
+    label: string;
+}
+
+interface QueryOptions {
+    queryPresets?: QueryPresetOption[];
+    orderBy?: OrderByOption[];
+    order?: OrderOption[];
+    metaTypes?: MetaTypeOption[];
+}
+
+interface LayoutInfo {
+    name: string;
+    title: string;
+    postType?: string;
+    supportedOptions?: string[];
+    readOnlyOptions?: string[];
+}
+
+interface LayoutsData {
+    layoutsByPostType: Record<string, LayoutInfo[]>;
+    commonLayouts: LayoutInfo[];
+}
+
+interface PostType {
+    name: string;
+    slug: string;
+    viewable: boolean;
+}
+
+interface WordPressApiFetch {
+    (options: { path: string }): Promise<unknown>;
+}
+
+interface WordPressWindow {
+    wp?: {
+        apiFetch: WordPressApiFetch;
+    };
+    jankxQueryOptions?: QueryOptions;
+    jankxDynamicDataLayouts?: LayoutsData;
+}
+
+interface WordPressSelect {
+    (store: 'core'): {
+        getPostTypes: (options: { per_page: number }) => PostType[];
+    };
+}
+
+declare global {
+    interface Window extends WordPressWindow {}
+}
+
 const normalizeTokens = (tokens: TokenLike[]): string[] => {
     return tokens
         .map((token) => {
@@ -134,6 +206,10 @@ interface EditProps {
 }
 
 function Edit({ attributes, setAttributes, clientId }: EditProps) {
+    console.log('[DEBUG Edit] ========== EDIT FUNCTION START ==========');
+    console.log('[DEBUG Edit] Function called with:', { attributes, clientId });
+    console.log('[DEBUG Edit] Component render timestamp:', new Date().toISOString());
+    
     const {
         queryPreset = 'custom',
         postType = 'post',
@@ -185,68 +261,133 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         carouselContainScroll = 'trimSnaps',
         carouselInViewThreshold = 0,
     } = attributes;
+    
+    console.log('[DEBUG Edit] Destructured attributes:', {
+        queryPreset,
+        postType,
+        postsPerPage,
+        layout,
+        columns,
+        columnsTablet,
+        columnsMobile,
+        queryId,
+        orderBy,
+        order
+    });
 
     // States for taxonomies and authors
+    console.log('[DEBUG Edit] [HOOK-1] About to call useState for taxonomies');
     const [taxonomies, setTaxonomies] = useState<TaxonomyItem[]>([]);
+    console.log('[DEBUG Edit] [HOOK-1] useState taxonomies completed, value:', taxonomies);
+    
+    console.log('[DEBUG Edit] [HOOK-2] About to call useState for authors');
     const [authors, setAuthors] = useState<AuthorItem[]>([]);
+    console.log('[DEBUG Edit] [HOOK-2] useState authors completed, value:', authors);
+    
+    console.log('[DEBUG Edit] [HOOK-3] About to call useState for taxonomyTerms');
     const [taxonomyTerms, setTaxonomyTerms] = useState<Record<string, TermItem[]>>({});
+    console.log('[DEBUG Edit] [HOOK-3] useState taxonomyTerms completed, value:', taxonomyTerms);
 
+    console.log('[DEBUG Edit] [HOOK-4] About to call useRef for isMountedRef');
     const isMountedRef = useRef(true);
+    console.log('[DEBUG Edit] [HOOK-4] useRef isMountedRef completed, value:', isMountedRef.current);
 
+    console.log('[DEBUG Edit] [HOOK-5] About to call useEffect (mount effect)');
     useEffect(() => {
+        console.log('[DEBUG Edit] [HOOK-5] Mount effect running');
         isMountedRef.current = true;
+        console.log('[DEBUG Edit] [HOOK-5] isMountedRef set to true');
         return () => {
+            console.log('[DEBUG Edit] [HOOK-5] Unmount effect running');
             isMountedRef.current = false;
+            console.log('[DEBUG Edit] [HOOK-5] isMountedRef set to false');
         };
     }, []);
+    console.log('[DEBUG Edit] [HOOK-5] useEffect (mount effect) registered');
 
     // Generate unique queryId if not set
+    console.log('[DEBUG Edit] [HOOK-6] About to call useEffect (queryId effect)');
     useEffect(() => {
+        console.log('[DEBUG Edit] [HOOK-6] queryId effect - queryId:', queryId, 'clientId:', clientId);
         if (!queryId) {
+            console.log('[DEBUG Edit] [HOOK-6] Generating new queryId from clientId');
             // Generate unique ID from clientId hash
             const hash = clientId.split('').reduce((acc, char) => {
                 return char.charCodeAt(0) + ((acc << 5) - acc);
             }, 0);
-            setAttributes({ queryId: String(Math.abs(hash)) });
+            const newQueryId = String(Math.abs(hash));
+            console.log('[DEBUG Edit] [HOOK-6] Generated queryId:', newQueryId);
+            setAttributes({ queryId: newQueryId });
+        } else {
+            console.log('[DEBUG Edit] [HOOK-6] queryId already exists, skipping generation');
         }
     }, [queryId, clientId, setAttributes]);
+    console.log('[DEBUG Edit] [HOOK-6] useEffect (queryId effect) registered');
 
     // Reset queryPreset if current preset is not valid for the current postType
+    console.log('[DEBUG Edit] [HOOK-7] About to call useEffect (queryPreset validation)');
     useEffect(() => {
-        const allPresets = (window as any).jankxQueryOptions?.queryPresets || [];
-        const validPresets = allPresets.filter((preset: any) => 
+        console.log('[DEBUG Edit] [HOOK-7] queryPreset validation effect - postType:', postType, 'queryPreset:', queryPreset);
+        const allPresets: QueryPresetOption[] = window.jankxQueryOptions?.queryPresets || [];
+        console.log('[DEBUG Edit] [HOOK-7] All presets:', allPresets);
+        
+        const validPresets = allPresets.filter((preset: QueryPresetOption) => 
             !preset.postType || preset.postType === postType
         );
-        const currentPresetValid = validPresets.some((preset: any) => preset.value === queryPreset);
+        console.log('[DEBUG Edit] [HOOK-7] Valid presets for postType:', validPresets);
         
-        if (!currentPresetValid && validPresets.length > 0) {
+        const currentPresetValid = validPresets.some((preset: QueryPresetOption) => preset.value === queryPreset);
+        console.log('[DEBUG Edit] [HOOK-7] Current preset valid?', currentPresetValid);
+        
+        if (!currentPresetValid && validPresets.length > 0 && validPresets[0]?.value) {
             // Reset to first valid preset
-            setAttributes({ queryPreset: validPresets[0].value as QueryPreset });
+            const newPreset = validPresets[0].value as QueryPreset;
+            console.log('[DEBUG Edit] [HOOK-7] Resetting queryPreset to:', newPreset);
+            setAttributes({ queryPreset: newPreset });
         }
     }, [postType, queryPreset, setAttributes]);
+    console.log('[DEBUG Edit] [HOOK-7] useEffect (queryPreset validation) registered');
 
     // Fetch taxonomies and authors when postType changes
+    console.log('[DEBUG Edit] [HOOK-8] About to call useEffect (fetch taxonomies/authors)');
     useEffect(() => {
+        console.log('[DEBUG Edit] [HOOK-8] Fetch taxonomies/authors effect - postType:', postType);
+        
         const fetchTaxonomiesAndAuthors = async () => {
+            console.log('[DEBUG Edit] fetchTaxonomiesAndAuthors called');
+            
+            if (!window.wp?.apiFetch) {
+                console.log('[DEBUG Edit] window.wp.apiFetch not available');
+                return;
+            }
+
             try {
-                const taxonomiesData = await (window as any).wp.apiFetch({
+                console.log('[DEBUG Edit] Fetching taxonomies for postType:', postType);
+                const taxonomiesData = await window.wp.apiFetch({
                     path: `/wp/v2/taxonomies?type=${postType}`,
                 }) as Record<string, TaxonomyItem> | undefined;
+                console.log('[DEBUG Edit] Raw taxonomiesData:', taxonomiesData);
 
                 if (!isMountedRef.current) {
+                    console.log('[DEBUG Edit] Component unmounted, skipping state update');
                     return;
                 }
 
                 const taxArray = Object.values(taxonomiesData || {}).filter(
                     (item): item is TaxonomyItem => typeof item?.slug === 'string' && typeof item?.name === 'string'
                 );
+                console.log('[DEBUG Edit] Filtered taxonomies array:', taxArray);
                 setTaxonomies(taxArray);
+                console.log('[DEBUG Edit] setTaxonomies called with:', taxArray);
 
-                const authorsData = await (window as any).wp.apiFetch({
+                console.log('[DEBUG Edit] Fetching authors');
+                const authorsData = await window.wp.apiFetch({
                     path: '/wp/v2/users?who=authors&per_page=100',
                 }) as Array<Record<string, unknown>> | undefined;
+                console.log('[DEBUG Edit] Raw authorsData:', authorsData);
 
                 if (!isMountedRef.current) {
+                    console.log('[DEBUG Edit] Component unmounted, skipping state update');
                     return;
                 }
 
@@ -266,35 +407,52 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         };
                     })
                     .filter((author): author is AuthorItem => author.id > 0 && author.name.length > 0);
-
+                
+                console.log('[DEBUG Edit] Normalized authors:', normalizedAuthors);
                 setAuthors(normalizedAuthors);
+                console.log('[DEBUG Edit] setAuthors called with:', normalizedAuthors);
             } catch (error) {
-                console.error('Error fetching taxonomies/authors:', error);
+                console.error('[DEBUG Edit] Error fetching taxonomies/authors:', error);
 
                 if (!isMountedRef.current) {
+                    console.log('[DEBUG Edit] Component unmounted, skipping error state update');
                     return;
                 }
 
                 setTaxonomies([]);
                 setAuthors([]);
+                console.log('[DEBUG Edit] Reset taxonomies and authors to empty arrays');
             }
         };
 
         fetchTaxonomiesAndAuthors();
     }, [postType]);
+    console.log('[DEBUG Edit] [HOOK-8] useEffect (fetch taxonomies/authors) registered');
 
     // Function to fetch terms for a specific taxonomy
+    console.log('[DEBUG Edit] [HOOK-9] About to call useCallback (fetchTermsForTaxonomy)');
     const fetchTermsForTaxonomy = useCallback(async (taxonomy: string) => {
+        console.log('[DEBUG Edit] fetchTermsForTaxonomy called with taxonomy:', taxonomy);
+        
         if (taxonomyTerms[taxonomy]) {
+            console.log('[DEBUG Edit] Terms already loaded for taxonomy:', taxonomy);
             return; // Already loaded
         }
 
+        if (!window.wp?.apiFetch) {
+            console.log('[DEBUG Edit] window.wp.apiFetch not available');
+            return;
+        }
+
         try {
-            const termsResponse = await (window as any).wp.apiFetch({
+            console.log('[DEBUG Edit] Fetching terms for taxonomy:', taxonomy);
+            const termsResponse = await window.wp.apiFetch({
                 path: `/wp/v2/${taxonomy}?per_page=100&orderby=name&order=asc`,
             }) as Array<Record<string, unknown>> | undefined;
+            console.log('[DEBUG Edit] Raw termsResponse:', termsResponse);
 
             if (!isMountedRef.current) {
+                console.log('[DEBUG Edit] Component unmounted, skipping state update');
                 return;
             }
 
@@ -308,25 +466,38 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                     };
                 })
                 .filter((term): term is TermItem => term.id > 0 && term.name.length > 0);
+            
+            console.log('[DEBUG Edit] Normalized terms:', normalizedTerms);
 
-            setTaxonomyTerms(prev => ({
-                ...prev,
-                [taxonomy]: normalizedTerms,
-            }));
+            setTaxonomyTerms(prev => {
+                const newState = {
+                    ...prev,
+                    [taxonomy]: normalizedTerms,
+                };
+                console.log('[DEBUG Edit] Setting taxonomyTerms to:', newState);
+                return newState;
+            });
         } catch (error) {
-            console.error(`Error fetching terms for ${taxonomy}:`, error);
+            console.error(`[DEBUG Edit] Error fetching terms for ${taxonomy}:`, error);
 
             if (!isMountedRef.current) {
+                console.log('[DEBUG Edit] Component unmounted, skipping error state update');
                 return;
             }
 
-            setTaxonomyTerms(prev => ({
-                ...prev,
-                [taxonomy]: [],
-            }));
+            setTaxonomyTerms(prev => {
+                const newState = {
+                    ...prev,
+                    [taxonomy]: [],
+                };
+                console.log('[DEBUG Edit] Setting taxonomyTerms to empty array for taxonomy:', taxonomy);
+                return newState;
+            });
         }
     }, [taxonomyTerms]);
+    console.log('[DEBUG Edit] [HOOK-9] useCallback (fetchTermsForTaxonomy) registered');
 
+    console.log('[DEBUG Edit] [HOOK-10] About to call useBlockProps');
     const blockProps = useBlockProps({
         className: `dynamic-data-layout layout-${layout} columns-${columns} columns-tablet-${columnsTablet} columns-mobile-${columnsMobile}`,
         style: {
@@ -335,87 +506,208 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             '--columns-mobile': columnsMobile,
         } as CSSProperties,
     });
+    console.log('[DEBUG Edit] [HOOK-10] useBlockProps completed, blockProps:', blockProps);
 
     const resolvedResponsiveColumns = responsiveColumns && typeof responsiveColumns === 'object'
         ? responsiveColumns
         : { desktop: columns, tablet: columnsTablet, mobile: columnsMobile };
+    console.log('[DEBUG Edit] resolvedResponsiveColumns:', resolvedResponsiveColumns);
 
+    console.log('[DEBUG Edit] [HOOK-11] About to call useEffect (responsiveColumns sync)');
     useEffect(() => {
+        console.log('[DEBUG Edit] [HOOK-11] responsiveColumns sync effect');
         const expected = {
             desktop: columns,
             tablet: columnsTablet,
             mobile: columnsMobile,
         };
+        console.log('[DEBUG Edit] [HOOK-11] Expected responsiveColumns:', expected);
+        console.log('[DEBUG Edit] [HOOK-11] Current responsiveColumns:', responsiveColumns);
 
         const needsUpdate =
             !responsiveColumns ||
             responsiveColumns.desktop !== expected.desktop ||
             responsiveColumns.tablet !== expected.tablet ||
             responsiveColumns.mobile !== expected.mobile;
+        
+        console.log('[DEBUG Edit] [HOOK-11] Needs update?', needsUpdate);
 
         if (needsUpdate) {
+            console.log('[DEBUG Edit] [HOOK-11] Updating responsiveColumns to:', expected);
             setAttributes({ responsiveColumns: expected });
         }
     }, [columns, columnsTablet, columnsMobile, responsiveColumns, setAttributes]);
+    console.log('[DEBUG Edit] [HOOK-11] useEffect (responsiveColumns sync) registered');
 
     // Get available post types
-    const postTypes = useSelect((select: any) => {
+    console.log('[DEBUG Edit] [HOOK-12] About to call useSelect (postTypes)');
+    const postTypes = useSelect((select: WordPressSelect) => {
         const { getPostTypes } = select('core');
-        return getPostTypes({ per_page: -1 }) || [];
+        const types = getPostTypes({ per_page: -1 }) || [];
+        console.log('[DEBUG Edit] [HOOK-12] useSelect postTypes:', types);
+        return types;
     }, []);
+    console.log('[DEBUG Edit] [HOOK-12] useSelect (postTypes) completed, value:', postTypes);
 
     const postTypeOptions = postTypes
-        .filter((type: any) => type.viewable && type.slug !== 'attachment')
-        .map((type: any) => ({
+        .filter((type: PostType) => type.viewable && type.slug !== 'attachment')
+        .map((type: PostType) => ({
             label: type.name,
             value: type.slug,
         }));
+    console.log('[DEBUG Edit] postTypeOptions:', postTypeOptions);
 
     // Get layouts data from PHP
-    const layoutsData = (window as any).jankxDynamicDataLayouts || {
+    const layoutsData: LayoutsData = window.jankxDynamicDataLayouts || {
         layoutsByPostType: {},
         commonLayouts: [],
     };
+    console.log('[DEBUG Edit] layoutsData:', layoutsData);
 
     // Get available layouts for current post type
+    console.log('[DEBUG Edit] [HOOK-13] About to call useMemo (availableLayouts)');
     const availableLayouts = useMemo(() => {
-        const layouts: Array<{ name: string; title: string }> = [];
+        console.log('[DEBUG Edit] [HOOK-13] useMemo availableLayouts - postType:', postType);
+        const layouts: Array<{ name: string; title: string; supportedOptions?: string[] }> = [];
         
         // Add common layouts
         if (layoutsData.commonLayouts) {
-            layoutsData.commonLayouts.forEach((layoutInfo: any) => {
-                layouts.push({
+            console.log('[DEBUG Edit] Processing commonLayouts:', layoutsData.commonLayouts);
+            layoutsData.commonLayouts.forEach((layoutInfo: LayoutInfo) => {
+                const layoutItem: { name: string; title: string; supportedOptions?: string[] } = {
                     name: layoutInfo.name || '',
                     title: layoutInfo.title || layoutInfo.name || '',
-                });
+                };
+                if (layoutInfo.supportedOptions) {
+                    layoutItem.supportedOptions = layoutInfo.supportedOptions;
+                }
+                layouts.push(layoutItem);
             });
         }
         
         // Add post type specific layouts
         if (layoutsData.layoutsByPostType && layoutsData.layoutsByPostType[postType]) {
-            layoutsData.layoutsByPostType[postType].forEach((layoutInfo: any) => {
-                layouts.push({
+            console.log('[DEBUG Edit] Processing layoutsByPostType for', postType, ':', layoutsData.layoutsByPostType[postType]);
+            layoutsData.layoutsByPostType[postType].forEach((layoutInfo: LayoutInfo) => {
+                const layoutItem: { name: string; title: string; supportedOptions?: string[] } = {
                     name: layoutInfo.name || '',
                     title: layoutInfo.title || layoutInfo.name || '',
-                });
+                };
+                if (layoutInfo.supportedOptions) {
+                    layoutItem.supportedOptions = layoutInfo.supportedOptions;
+                }
+                layouts.push(layoutItem);
             });
         }
         
+        console.log('[DEBUG Edit] [HOOK-13] Final availableLayouts:', layouts);
         return layouts;
     }, [postType, layoutsData]);
+    console.log('[DEBUG Edit] [HOOK-13] useMemo (availableLayouts) completed, value:', availableLayouts);
 
     // Layout options for SelectControl
+    console.log('[DEBUG Edit] [HOOK-14] About to call useMemo (layoutOptions)');
     const layoutOptions = useMemo(() => {
-        return availableLayouts.map((layoutInfo) => ({
+        const options = availableLayouts.map((layoutInfo) => ({
             label: layoutInfo.title,
             value: layoutInfo.name,
         }));
+        console.log('[DEBUG Edit] [HOOK-14] layoutOptions:', options);
+        return options;
     }, [availableLayouts]);
+    console.log('[DEBUG Edit] [HOOK-14] useMemo (layoutOptions) completed, value:', layoutOptions);
 
     // Get current layout's supported options
     const currentLayout = availableLayouts.find((l) => l.name === layout);
-    const supportedOptions = currentLayout ? (currentLayout as any).supportedOptions || [] : [];
+    console.log('[DEBUG Edit] currentLayout:', currentLayout, 'for layout:', layout);
+    
+    const supportedOptions: string[] = currentLayout?.supportedOptions || [];
+    console.log('[DEBUG Edit] supportedOptions:', supportedOptions);
 
+    // Pre-compute orderBy options outside conditional render to avoid React hooks error
+    console.log('[DEBUG Edit] [HOOK-15] About to call useMemo (orderByOptions)');
+    const orderByOptions = useMemo(() => {
+        const allOrderByOptions: OrderByOption[] = window.jankxQueryOptions?.orderBy || [];
+        console.log('[DEBUG Edit] [HOOK-15] Computing orderByOptions - allOrderByOptions:', allOrderByOptions);
+        // Filter order by options based on postType:
+        // - Common options: postType is null (available for all post types)
+        // - Specific options: postType matches current postType
+        const filtered = allOrderByOptions
+            .filter((option: OrderByOption) => 
+                !option.postType || option.postType === postType
+            )
+            .map((option: OrderByOption) => ({
+                label: option.label,
+                value: option.value,
+            }));
+        console.log('[DEBUG Edit] [HOOK-15] Filtered orderByOptions:', filtered);
+        return filtered;
+    }, [postType]);
+    console.log('[DEBUG Edit] [HOOK-15] useMemo (orderByOptions) completed, value:', orderByOptions);
+
+    // Pre-compute order options outside conditional render
+    console.log('[DEBUG Edit] [HOOK-16] About to call useMemo (orderOptions)');
+    const orderOptions = useMemo(() => {
+        const options = window.jankxQueryOptions?.order || [
+            { label: __('Descending', 'jankx'), value: 'DESC' as const },
+            { label: __('Ascending', 'jankx'), value: 'ASC' as const },
+        ];
+        console.log('[DEBUG Edit] [HOOK-16] orderOptions:', options);
+        return options;
+    }, []);
+    console.log('[DEBUG Edit] [HOOK-16] useMemo (orderOptions) completed, value:', orderOptions);
+
+    // Pre-compute query preset options outside JSX
+    console.log('[DEBUG Edit] [HOOK-17] About to call useMemo (queryPresetOptions)');
+    const queryPresetOptions = useMemo(() => {
+        const allPresets: QueryPresetOption[] = window.jankxQueryOptions?.queryPresets || [];
+        console.log('[DEBUG Edit] [HOOK-17] All query presets:', allPresets);
+        // Filter presets based on postType:
+        // - Common presets: postType is null (available for all post types)
+        // - Specific presets: postType matches current postType
+        const filtered = allPresets
+            .filter((preset: QueryPresetOption) => 
+                !preset.postType || preset.postType === postType
+            )
+            .map((preset: QueryPresetOption) => ({
+                label: preset.label,
+                value: preset.value,
+            }));
+        console.log('[DEBUG Edit] [HOOK-17] Filtered query preset options:', filtered);
+        return filtered;
+    }, [postType]);
+    console.log('[DEBUG Edit] [HOOK-17] useMemo (queryPresetOptions) completed, value:', queryPresetOptions);
+
+    // Pre-compute query preset help text outside JSX
+    console.log('[DEBUG Edit] [HOOK-18] About to call useMemo (queryPresetHelp)');
+    const queryPresetHelp = useMemo(() => {
+        const allPresets: QueryPresetOption[] = window.jankxQueryOptions?.queryPresets || [];
+        const currentPreset = allPresets.find((p: QueryPresetOption) => p.value === queryPreset);
+        const helpText = currentPreset?.help || __('Select a query preset', 'jankx');
+        console.log('[DEBUG Edit] [HOOK-18] queryPresetHelp:', helpText);
+        return helpText;
+    }, [queryPreset]);
+    console.log('[DEBUG Edit] [HOOK-18] useMemo (queryPresetHelp) completed, value:', queryPresetHelp);
+
+    // Debug: Log when queryPreset is 'default'
+    console.log('[DEBUG Edit] ===== START RENDER =====');
+    console.log('[DEBUG Edit] queryPreset:', queryPreset);
+    console.log('[DEBUG Edit] postType:', postType);
+    console.log('[DEBUG Edit] layout:', layout);
+    console.log('[DEBUG Edit] columns:', { desktop: columns, tablet: columnsTablet, mobile: columnsMobile });
+    console.log('[DEBUG Edit] supportedOptions:', supportedOptions);
+    console.log('[DEBUG Edit] currentLayout:', currentLayout);
+    console.log('[DEBUG Edit] All attributes:', attributes);
+
+    console.log('[DEBUG Edit] ========== ALL HOOKS COMPLETED ==========');
+    console.log('[DEBUG Edit] Total hooks called: 18');
+    console.log('[DEBUG Edit] ========== ABOUT TO RENDER JSX ==========');
+    console.log('[DEBUG Edit] queryPreset at render time:', queryPreset);
+    console.log('[DEBUG Edit] Will render Order By controls?', queryPreset !== 'default');
+    console.log('[DEBUG Edit] Will render custom panels?', queryPreset === 'custom');
+    console.log('[DEBUG Edit] Conditional render check - queryPreset !== "default":', queryPreset !== 'default');
+    console.log('[DEBUG Edit] Conditional render check - queryPreset === "custom":', queryPreset === 'custom');
+    
     return (
         <>
             <InspectorControls group="settings">
@@ -423,33 +715,22 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                     <SelectControl
                         label={__('Query Preset', 'jankx')}
                         value={queryPreset}
-                        options={useMemo(() => {
-                            const allPresets = (window as any).jankxQueryOptions?.queryPresets || [];
-                            // Filter presets based on postType:
-                            // - Common presets: postType is null (available for all post types)
-                            // - Specific presets: postType matches current postType
-                            return allPresets
-                                .filter((preset: any) => 
-                                    !preset.postType || preset.postType === postType
-                                )
-                                .map((preset: any) => ({
-                                    label: preset.label,
-                                    value: preset.value,
-                                }));
-                        }, [postType])}
-                        onChange={(value) => setAttributes({ queryPreset: value as QueryPreset })}
-                        help={useMemo(() => {
-                            const allPresets = (window as any).jankxQueryOptions?.queryPresets || [];
-                            const currentPreset = allPresets.find((p: any) => p.value === queryPreset);
-                            return currentPreset?.help || __('Select a query preset', 'jankx');
-                        }, [queryPreset])}
+                        options={queryPresetOptions}
+                        onChange={(value) => {
+                            console.log('[DEBUG Edit] queryPreset onChange:', value);
+                            setAttributes({ queryPreset: value as QueryPreset });
+                        }}
+                        help={queryPresetHelp}
                     />
 
                     <SelectControl
                         label={__('Post Type', 'jankx')}
                         value={postType}
                         options={postTypeOptions}
-                        onChange={(value) => setAttributes({ postType: value })}
+                        onChange={(value) => {
+                            console.log('[DEBUG Edit] postType onChange:', value);
+                            setAttributes({ postType: value });
+                        }}
                         help={queryPreset === 'default' ? __('Select post type for the main query', 'jankx') : undefined}
                     />
 
@@ -463,101 +744,103 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         help={__('Number of posts to display', 'jankx')}
                     />
 
-                    {postType === 'post' && (
+                    {postType === 'post' ? (
                         <ToggleControl
                             label={__('Include Sticky Posts', 'jankx')}
                             checked={includeStickyPosts}
                             onChange={(value) => setAttributes({ includeStickyPosts: value })}
                             help={__('Include sticky posts in the query (disabled by default).', 'jankx')}
                         />
-                    )}
+                    ) : null}
 
                     {/* Order By and Order - Show for related and custom presets */}
-                    {queryPreset !== 'default' && (
-                        <>
-                            <SelectControl
-                                label={__('Order By', 'jankx')}
-                                value={orderBy}
-                                options={useMemo(() => {
-                                    const allOrderByOptions = (window as any).jankxQueryOptions?.orderBy || [];
-                                    // Filter order by options based on postType:
-                                    // - Common options: postType is null (available for all post types)
-                                    // - Specific options: postType matches current postType
-                                    return allOrderByOptions
-                                        .filter((option: any) => 
-                                            !option.postType || option.postType === postType
-                                        )
-                                        .map((option: any) => ({
-                                            label: option.label,
-                                            value: option.value,
-                                        }));
-                                }, [postType])}
-                                onChange={(value) => {
-                                    const allOrderByOptions = (window as any).jankxQueryOptions?.orderBy || [];
-                                    const selectedOption = allOrderByOptions.find((opt: any) => opt.value === value);
-                                    
-                                    // Auto-set metaKey if option has metaKey property
-                                    const updates: any = { orderBy: value };
-                                    if (selectedOption?.metaKey) {
-                                        updates.metaKey = selectedOption.metaKey;
-                                        // Set orderBy to meta_value_num if value is numeric (like total_sales, _price)
-                                        if (['total_sales', '_price'].includes(value)) {
-                                            updates.orderBy = 'meta_value_num';
+                    {(() => {
+                        const shouldRender = queryPreset !== 'default';
+                        console.log('[DEBUG Edit] [CONDITIONAL-1] Checking queryPreset !== "default":', shouldRender, 'queryPreset:', queryPreset);
+                        if (!shouldRender) {
+                            console.log('[DEBUG Edit] [CONDITIONAL-1] Not rendering Order By controls (queryPreset is "default")');
+                            return null;
+                        }
+                        console.log('[DEBUG Edit] [CONDITIONAL-1] Rendering Order By controls');
+                        return (
+                            <>
+                                <SelectControl
+                                    label={__('Order By', 'jankx')}
+                                    value={orderBy}
+                                    options={orderByOptions}
+                                    onChange={(value) => {
+                                        console.log('[DEBUG Edit] orderBy onChange:', value);
+                                        const allOrderByOptions: OrderByOption[] = window.jankxQueryOptions?.orderBy || [];
+                                        const selectedOption = allOrderByOptions.find((opt: OrderByOption) => opt.value === value);
+                                        
+                                        // Auto-set metaKey if option has metaKey property
+                                        const updates: Partial<DynamicDataLayoutAttributes> = { orderBy: value };
+                                        if (selectedOption?.metaKey) {
+                                            updates.metaKey = selectedOption.metaKey;
+                                            // Set orderBy to meta_value_num if value is numeric (like total_sales, _price)
+                                            if (['total_sales', '_price'].includes(value)) {
+                                                updates.orderBy = 'meta_value_num';
+                                            }
                                         }
-                                    }
-                                    
-                                    setAttributes(updates);
-                                }}
-                                help={__('Sort posts by which criteria', 'jankx')}
-                            />
-                            <SelectControl
-                                label={__('Order', 'jankx')}
-                                value={order}
-                                options={(window as any).jankxQueryOptions?.order || [
-                                    { label: __('Descending', 'jankx'), value: 'DESC' },
-                                    { label: __('Ascending', 'jankx'), value: 'ASC' },
-                                ]}
-                                onChange={(value) => setAttributes({ order: value })}
-                            />
-                        </>
-                    )}
+                                        
+                                        console.log('[DEBUG Edit] Setting attributes:', updates);
+                                        setAttributes(updates);
+                                    }}
+                                    help={__('Sort posts by which criteria', 'jankx')}
+                                />
+                                <SelectControl
+                                    label={__('Order', 'jankx')}
+                                    value={order as 'ASC' | 'DESC'}
+                                    options={orderOptions}
+                                    onChange={(value) => {
+                                        console.log('[DEBUG Edit] order onChange:', value);
+                                        setAttributes({ order: value as 'ASC' | 'DESC' });
+                                    }}
+                                />
+                            </>
+                        );
+                    })()}
                 </PanelBody>
 
                 {/* Layout Settings */}
                 <PanelBody title={__('Layout', 'jankx')} initialOpen={true}>
-                    <SelectControl
-                        label={__('Layout Type', 'jankx')}
-                        value={layout}
-                        options={layoutOptions.length > 0 ? layoutOptions : [
-                            { label: __('Grid', 'jankx'), value: 'grid' },
-                            { label: __('List', 'jankx'), value: 'list' },
-                            { label: __('Card', 'jankx'), value: 'card' },
-                            { label: __('Carousel', 'jankx'), value: 'carousel' },
-                        ]}
-                        onChange={(value) => setAttributes({ layout: value })}
-                    />
-                    {supportedOptions.includes('columns') && (
-                        <ResponsiveControl
-                            label={__('Columns', 'jankx')}
-                            values={resolvedResponsiveColumns}
-                            onChange={(values) => setAttributes({
-                                columns: values.desktop,
-                                columnsTablet: values.tablet,
-                                columnsMobile: values.mobile,
-                                responsiveColumns: values
-                            })}
-                            min={1}
-                            max={6}
-                            help={{
-                                desktop: __('Number of columns on large screens (>1024px)', 'jankx'),
-                                tablet: __('Number of columns on tablet (768px - 1024px)', 'jankx'),
-                                mobile: __('Number of columns on mobile (<768px)', 'jankx')
-                            }}
-                        />
-                    )}
+                            <SelectControl
+                                label={__('Layout Type', 'jankx')}
+                                value={layout}
+                                options={layoutOptions.length > 0 ? layoutOptions : [
+                                    { label: __('Grid', 'jankx'), value: 'grid' },
+                                    { label: __('List', 'jankx'), value: 'list' },
+                                    { label: __('Card', 'jankx'), value: 'card' },
+                                    { label: __('Carousel', 'jankx'), value: 'carousel' },
+                                ]}
+                                onChange={(value) => {
+                                    console.log('[DEBUG Edit] layout onChange:', value);
+                                    setAttributes({ layout: value });
+                                }}
+                            />
+                            {supportedOptions.includes('columns') ? (
+                                <ResponsiveControl
+                                    label={__('Columns', 'jankx')}
+                                    values={resolvedResponsiveColumns}
+                                    onChange={(values) => setAttributes({
+                                        columns: values.desktop,
+                                        columnsTablet: values.tablet,
+                                        columnsMobile: values.mobile,
+                                        responsiveColumns: values
+                                    })}
+                                    min={1}
+                                    max={6}
+                                    help={{
+                                        desktop: __('Number of columns on large screens (>1024px)', 'jankx'),
+                                        tablet: __('Number of columns on tablet (768px - 1024px)', 'jankx'),
+                                        mobile: __('Number of columns on mobile (<768px)', 'jankx')
+                                    }}
+                                />
+                            ) : null}
+                        </PanelBody>
                     
                     {/* Carousel Specific Settings */}
-                    {layout === 'carousel' && (
+                    {layout === 'carousel' ? (
                         <>
                             <RangeControl
                                 label={__('Slides To Scroll', 'jankx')}
@@ -579,7 +862,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                 onChange={(value) => setAttributes({ autoplay: value })}
                                 help={__('Automatically advance slides', 'jankx')}
                             />
-                            {autoplay && (
+                            {autoplay ? (
                                 <RangeControl
                                     label={__('Autoplay Delay (ms)', 'jankx')}
                                     value={autoplayDelay}
@@ -589,7 +872,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                     step={500}
                                     help={__('Time between autoplay transitions', 'jankx')}
                                 />
-                            )}
+                            ) : null}
                             <ToggleControl
                                 label={__('Show Arrows', 'jankx')}
                                 checked={showArrows}
@@ -603,76 +886,75 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                 help={__('Display pagination dots', 'jankx')}
                             />
                         </>
-                    )}
-                </PanelBody>
+                    ) : null}
 
                 {/* Pagination Settings */}
                 <PanelBody title={__('Pagination', 'jankx')} initialOpen={false}>
-                    <ToggleControl
-                        label={__('Enable Pagination', 'jankx')}
-                        checked={enablePagination}
-                        onChange={(value) => setAttributes({ enablePagination: value })}
-                        help={__('Display pagination to paginate posts', 'jankx')}
-                    />
+                        <ToggleControl
+                            label={__('Enable Pagination', 'jankx')}
+                            checked={enablePagination}
+                            onChange={(value) => setAttributes({ enablePagination: value })}
+                            help={__('Display pagination to paginate posts', 'jankx')}
+                        />
 
-                    {enablePagination && (
-                        <>
-                            <SelectControl
-                                label={__('Pagination Style', 'jankx')}
-                                value={paginationStyle}
-                                options={[
-                                    { label: __('Numbers', 'jankx'), value: 'numbers' },
-                                    { label: __('Simple (Prev/Next)', 'jankx'), value: 'simple' },
-                                    { label: __('Arrows', 'jankx'), value: 'arrows' },
-                                    { label: __('Load More', 'jankx'), value: 'load-more' },
-                                ]}
-                                onChange={(value) => setAttributes({ paginationStyle: value as 'numbers' | 'simple' | 'arrows' | 'load-more' })}
-                                help={__('Choose pagination display style', 'jankx')}
-                            />
-
-                            <SelectControl
-                                label={__('Pagination Alignment', 'jankx')}
-                                value={paginationAlignment}
-                                options={[
-                                    { label: __('Left', 'jankx'), value: 'left' },
-                                    { label: __('Center', 'jankx'), value: 'center' },
-                                    { label: __('Right', 'jankx'), value: 'right' },
-                                ]}
-                                onChange={(value) => setAttributes({ paginationAlignment: value as 'left' | 'center' | 'right' })}
-                                help={__('Align pagination position', 'jankx')}
-                            />
-
-                            {paginationStyle === 'numbers' && (
-                                <ToggleControl
-                                    label={__('Show All Page Numbers', 'jankx')}
-                                    checked={showPaginationNumbers}
-                                    onChange={(value) => setAttributes({ showPaginationNumbers: value })}
-                                    help={__('Show all page numbers instead of abbreviated', 'jankx')}
+                        {enablePagination ? (
+                            <>
+                                <SelectControl
+                                    label={__('Pagination Style', 'jankx')}
+                                    value={paginationStyle}
+                                    options={[
+                                        { label: __('Numbers', 'jankx'), value: 'numbers' },
+                                        { label: __('Simple (Prev/Next)', 'jankx'), value: 'simple' },
+                                        { label: __('Arrows', 'jankx'), value: 'arrows' },
+                                        { label: __('Load More', 'jankx'), value: 'load-more' },
+                                    ]}
+                                    onChange={(value) => setAttributes({ paginationStyle: value as 'numbers' | 'simple' | 'arrows' | 'load-more' })}
+                                    help={__('Choose pagination display style', 'jankx')}
                                 />
-                            )}
 
-                            <TextControl
-                                label={__('Previous Button Text', 'jankx')}
-                                value={paginationPrevText}
-                                onChange={(value) => setAttributes({ paginationPrevText: value })}
-                                help={__('Leave empty to use default text. Can use HTML/SVG.', 'jankx')}
-                                placeholder={__('Example: « Previous or <svg>...</svg>', 'jankx')}
-                            />
+                                <SelectControl
+                                    label={__('Pagination Alignment', 'jankx')}
+                                    value={paginationAlignment}
+                                    options={[
+                                        { label: __('Left', 'jankx'), value: 'left' },
+                                        { label: __('Center', 'jankx'), value: 'center' },
+                                        { label: __('Right', 'jankx'), value: 'right' },
+                                    ]}
+                                    onChange={(value) => setAttributes({ paginationAlignment: value as 'left' | 'center' | 'right' })}
+                                    help={__('Align pagination position', 'jankx')}
+                                />
 
-                            <TextControl
-                                label={__('Next Button Text', 'jankx')}
-                                value={paginationNextText}
-                                onChange={(value) => setAttributes({ paginationNextText: value })}
-                                help={__('Leave empty to use default text. Can use HTML/SVG.', 'jankx')}
-                                placeholder={__('Example: Next » or <svg>...</svg>', 'jankx')}
-                            />
-                        </>
-                    )}
+                                {paginationStyle === 'numbers' ? (
+                                    <ToggleControl
+                                        label={__('Show All Page Numbers', 'jankx')}
+                                        checked={showPaginationNumbers}
+                                        onChange={(value) => setAttributes({ showPaginationNumbers: value })}
+                                        help={__('Show all page numbers instead of abbreviated', 'jankx')}
+                                    />
+                                ) : null}
+
+                                <TextControl
+                                    label={__('Previous Button Text', 'jankx')}
+                                    value={paginationPrevText}
+                                    onChange={(value) => setAttributes({ paginationPrevText: value })}
+                                    help={__('Leave empty to use default text. Can use HTML/SVG.', 'jankx')}
+                                    placeholder={__('Example: « Previous or <svg>...</svg>', 'jankx')}
+                                />
+
+                                <TextControl
+                                    label={__('Next Button Text', 'jankx')}
+                                    value={paginationNextText}
+                                    onChange={(value) => setAttributes({ paginationNextText: value })}
+                                    help={__('Leave empty to use default text. Can use HTML/SVG.', 'jankx')}
+                                    placeholder={__('Example: Next » or <svg>...</svg>', 'jankx')}
+                                />
+                            </>
+                        ) : null}
                 </PanelBody>
 
                 {/* Query Parameters - Only show for custom preset */}
-                {queryPreset === 'custom' && (
-                    <PanelBody title={__('Query Parameters', 'jankx')} initialOpen={false}>
+                {queryPreset === 'custom' ? (
+                        <PanelBody title={__('Query Parameters', 'jankx')} initialOpen={false}>
                         <RangeControl
                             label={__('Offset', 'jankx')}
                             value={offset}
@@ -683,7 +965,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         />
 
                         {/* Meta Key for meta_value ordering */}
-                        {(orderBy === 'meta_value' || orderBy === 'meta_value_num') && (
+                        {(orderBy === 'meta_value' || orderBy === 'meta_value_num') ? (
                             <>
                                 <TextControl
                                     label={__('Meta Key', 'jankx')}
@@ -692,25 +974,25 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                     help={__('Meta key for sorting (required when using meta_value)', 'jankx')}
                                     placeholder={__('Example: price, views, rating', 'jankx')}
                                 />
-                                {orderBy === 'meta_value' && (
+                                {orderBy === 'meta_value' ? (
                                     <SelectControl
                                         label={__('Meta Type', 'jankx')}
                                         value={metaType}
-                                        options={(window as any).jankxQueryOptions?.metaTypes || [
+                                        options={window.jankxQueryOptions?.metaTypes || [
                                             { label: __('-- Auto --', 'jankx'), value: '' },
                                             { label: 'NUMERIC', value: 'NUMERIC' },
                                         ]}
                                         onChange={(value) => setAttributes({ metaType: value })}
                                         help={__('Specify data type for accurate sorting', 'jankx')}
                                     />
-                                )}
+                                ) : null}
                             </>
-                        )}
-                    </PanelBody>
-                )}
+                        ) : null}
+                        </PanelBody>
+                ) : null}
 
                 {/* Advanced Query Parameters - Only show for custom preset */}
-                {queryPreset === 'custom' && (
+                {queryPreset === 'custom' ? (
                     <PanelBody title={__('🔧 Advanced Query Parameters', 'jankx')} initialOpen={false}>
                         <TextControl
                             label={__('Query ID', 'jankx')}
@@ -761,10 +1043,10 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                             placeholder={__('Example: 4, 5, 6', 'jankx')}
                         />
                     </PanelBody>
-                )}
+                ) : null}
 
                 {/* Keyword Search Filter - Only show for custom preset */}
-                {queryPreset === 'custom' && (
+                {queryPreset === 'custom' ? (
                     <PanelBody title={__('🔍 Keyword Search', 'jankx')} initialOpen={false}>
                         <TextControl
                             label={__('Search Keyword', 'jankx')}
@@ -774,10 +1056,10 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                             placeholder={__('Enter keyword...', 'jankx')}
                         />
                     </PanelBody>
-                )}
+                ) : null}
 
                 {/* Author Filters - Only show for custom preset */}
-                {queryPreset === 'custom' && authors.length > 0 && (
+                {queryPreset === 'custom' && authors.length > 0 ? (
                     <PanelBody title={__('👤 Author Filters', 'jankx')} initialOpen={false}>
                         <BaseControl
                             label={__('Authors (Include)', 'jankx')}
@@ -818,10 +1100,10 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                             />
                         </BaseControl>
                     </PanelBody>
-                )}
+                ) : null}
 
                 {/* Post ID Filters - Only show for custom preset */}
-                {queryPreset === 'custom' && (
+                {queryPreset === 'custom' ? (
                     <PanelBody title={__('🔢 Post ID Filters', 'jankx')} initialOpen={false}>
                         <TextControl
                             label={__('Post IDs (Include)', 'jankx')}
@@ -844,10 +1126,10 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                             placeholder={__('Example: 4, 5, 6', 'jankx')}
                         />
                     </PanelBody>
-                )}
+                ) : null}
 
                 {/* Meta Query Filters - Only show for custom preset */}
-                {queryPreset === 'custom' && (
+                {queryPreset === 'custom' ? (
                     <PanelBody title={__('⚙️ Meta Query Filters', 'jankx')} initialOpen={false}>
                         <Button
                             variant="primary"
@@ -929,7 +1211,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                     }}
                                 />
 
-                                {!['EXISTS', 'NOT EXISTS'].includes(mq.compare) && (
+                                {!['EXISTS', 'NOT EXISTS'].includes(mq.compare) ? (
                                     <TextControl
                                         label={__('Value', 'jankx')}
                                         value={mq.value}
@@ -947,7 +1229,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                         }}
                                         placeholder={__('Enter value...', 'jankx')}
                                     />
-                                )}
+                                ) : null}
 
                                 <SelectControl
                                     label={__('Type (Optional)', 'jankx')}
@@ -985,10 +1267,10 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                             </div>
                         ))}
                     </PanelBody>
-                )}
+                ) : null}
 
                 {/* Taxonomy Filters - Only show for custom preset */}
-                {queryPreset === 'custom' && taxonomies.length > 0 && taxonomies.map((taxonomy: TaxonomyItem) => {
+                {queryPreset === 'custom' && taxonomies.length > 0 ? taxonomies.map((taxonomy: TaxonomyItem) => {
                     // Find existing query for this taxonomy
                     const existingQueryIndex = taxQuery.findIndex(tq => tq.taxonomy === taxonomy.slug);
                     const hasQuery = existingQueryIndex >= 0;
@@ -1024,7 +1306,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                     {__('Add Filter', 'jankx')} {taxonomy.name}
                                 </Button>
                             ) : (
-                                currentQuery && (
+                                currentQuery ? (
                                     <>
                                         <SelectControl
                                             label={__('Operator', 'jankx')}
@@ -1052,7 +1334,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                         />
 
                                         {/* Only show term selection if operator is not EXISTS/NOT EXISTS */}
-                                        {!['EXISTS', 'NOT EXISTS'].includes(currentQuery.operator) && (
+                                        {!['EXISTS', 'NOT EXISTS'].includes(currentQuery.operator) ? (
                                             <>
                                                 {terms ? (
                                                     <BaseControl
@@ -1090,7 +1372,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                                     <Spinner />
                                                 )}
                                             </>
-                                        )}
+                                        ) : null}
 
                                         <Button
                                             isDestructive
@@ -1104,11 +1386,11 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                             {__('Remove Filter', 'jankx')}
                                         </Button>
                                     </>
-                                )
+                                ) : null
                             )}
                         </PanelBody>
                     );
-                })}
+                }) : null}
             </InspectorControls>
 
             <div {...blockProps}>

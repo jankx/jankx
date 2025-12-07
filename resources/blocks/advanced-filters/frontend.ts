@@ -407,7 +407,6 @@ class AdvancedFilters {
                 // Always send post_id if we have it
                 if (postId > 0) {
                     params.append('post_id', String(postId));
-                    console.log('AdvancedFilters: Sending post_id:', postId);
                 } else {
                     console.warn('AdvancedFilters: Could not determine post_id, server will try to detect it');
                 }

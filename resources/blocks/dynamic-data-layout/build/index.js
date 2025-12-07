@@ -62,6 +62,12 @@ function Edit({
   setAttributes,
   clientId
 }) {
+  console.log('[DEBUG Edit] ========== EDIT FUNCTION START ==========');
+  console.log('[DEBUG Edit] Function called with:', {
+    attributes,
+    clientId
+  });
+  console.log('[DEBUG Edit] Component render timestamp:', new Date().toISOString());
   const {
     queryPreset = 'custom',
     postType = 'post',
@@ -113,61 +119,118 @@ function Edit({
     carouselContainScroll = 'trimSnaps',
     carouselInViewThreshold = 0
   } = attributes;
+  console.log('[DEBUG Edit] Destructured attributes:', {
+    queryPreset,
+    postType,
+    postsPerPage,
+    layout,
+    columns,
+    columnsTablet,
+    columnsMobile,
+    queryId,
+    orderBy,
+    order
+  });
 
   // States for taxonomies and authors
+  console.log('[DEBUG Edit] [HOOK-1] About to call useState for taxonomies');
   const [taxonomies, setTaxonomies] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)([]);
+  console.log('[DEBUG Edit] [HOOK-1] useState taxonomies completed, value:', taxonomies);
+  console.log('[DEBUG Edit] [HOOK-2] About to call useState for authors');
   const [authors, setAuthors] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)([]);
+  console.log('[DEBUG Edit] [HOOK-2] useState authors completed, value:', authors);
+  console.log('[DEBUG Edit] [HOOK-3] About to call useState for taxonomyTerms');
   const [taxonomyTerms, setTaxonomyTerms] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)({});
+  console.log('[DEBUG Edit] [HOOK-3] useState taxonomyTerms completed, value:', taxonomyTerms);
+  console.log('[DEBUG Edit] [HOOK-4] About to call useRef for isMountedRef');
   const isMountedRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useRef)(true);
+  console.log('[DEBUG Edit] [HOOK-4] useRef isMountedRef completed, value:', isMountedRef.current);
+  console.log('[DEBUG Edit] [HOOK-5] About to call useEffect (mount effect)');
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
+    console.log('[DEBUG Edit] [HOOK-5] Mount effect running');
     isMountedRef.current = true;
+    console.log('[DEBUG Edit] [HOOK-5] isMountedRef set to true');
     return () => {
+      console.log('[DEBUG Edit] [HOOK-5] Unmount effect running');
       isMountedRef.current = false;
+      console.log('[DEBUG Edit] [HOOK-5] isMountedRef set to false');
     };
   }, []);
+  console.log('[DEBUG Edit] [HOOK-5] useEffect (mount effect) registered');
 
   // Generate unique queryId if not set
+  console.log('[DEBUG Edit] [HOOK-6] About to call useEffect (queryId effect)');
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
+    console.log('[DEBUG Edit] [HOOK-6] queryId effect - queryId:', queryId, 'clientId:', clientId);
     if (!queryId) {
+      console.log('[DEBUG Edit] [HOOK-6] Generating new queryId from clientId');
       // Generate unique ID from clientId hash
       const hash = clientId.split('').reduce((acc, char) => {
         return char.charCodeAt(0) + ((acc << 5) - acc);
       }, 0);
+      const newQueryId = String(Math.abs(hash));
+      console.log('[DEBUG Edit] [HOOK-6] Generated queryId:', newQueryId);
       setAttributes({
-        queryId: String(Math.abs(hash))
+        queryId: newQueryId
       });
+    } else {
+      console.log('[DEBUG Edit] [HOOK-6] queryId already exists, skipping generation');
     }
   }, [queryId, clientId, setAttributes]);
+  console.log('[DEBUG Edit] [HOOK-6] useEffect (queryId effect) registered');
 
   // Reset queryPreset if current preset is not valid for the current postType
+  console.log('[DEBUG Edit] [HOOK-7] About to call useEffect (queryPreset validation)');
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
+    console.log('[DEBUG Edit] [HOOK-7] queryPreset validation effect - postType:', postType, 'queryPreset:', queryPreset);
     const allPresets = window.jankxQueryOptions?.queryPresets || [];
+    console.log('[DEBUG Edit] [HOOK-7] All presets:', allPresets);
     const validPresets = allPresets.filter(preset => !preset.postType || preset.postType === postType);
+    console.log('[DEBUG Edit] [HOOK-7] Valid presets for postType:', validPresets);
     const currentPresetValid = validPresets.some(preset => preset.value === queryPreset);
-    if (!currentPresetValid && validPresets.length > 0) {
+    console.log('[DEBUG Edit] [HOOK-7] Current preset valid?', currentPresetValid);
+    if (!currentPresetValid && validPresets.length > 0 && validPresets[0]?.value) {
       // Reset to first valid preset
+      const newPreset = validPresets[0].value;
+      console.log('[DEBUG Edit] [HOOK-7] Resetting queryPreset to:', newPreset);
       setAttributes({
-        queryPreset: validPresets[0].value
+        queryPreset: newPreset
       });
     }
   }, [postType, queryPreset, setAttributes]);
+  console.log('[DEBUG Edit] [HOOK-7] useEffect (queryPreset validation) registered');
 
   // Fetch taxonomies and authors when postType changes
+  console.log('[DEBUG Edit] [HOOK-8] About to call useEffect (fetch taxonomies/authors)');
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
+    console.log('[DEBUG Edit] [HOOK-8] Fetch taxonomies/authors effect - postType:', postType);
     const fetchTaxonomiesAndAuthors = async () => {
+      console.log('[DEBUG Edit] fetchTaxonomiesAndAuthors called');
+      if (!window.wp?.apiFetch) {
+        console.log('[DEBUG Edit] window.wp.apiFetch not available');
+        return;
+      }
       try {
+        console.log('[DEBUG Edit] Fetching taxonomies for postType:', postType);
         const taxonomiesData = await window.wp.apiFetch({
           path: `/wp/v2/taxonomies?type=${postType}`
         });
+        console.log('[DEBUG Edit] Raw taxonomiesData:', taxonomiesData);
         if (!isMountedRef.current) {
+          console.log('[DEBUG Edit] Component unmounted, skipping state update');
           return;
         }
         const taxArray = Object.values(taxonomiesData || {}).filter(item => typeof item?.slug === 'string' && typeof item?.name === 'string');
+        console.log('[DEBUG Edit] Filtered taxonomies array:', taxArray);
         setTaxonomies(taxArray);
+        console.log('[DEBUG Edit] setTaxonomies called with:', taxArray);
+        console.log('[DEBUG Edit] Fetching authors');
         const authorsData = await window.wp.apiFetch({
           path: '/wp/v2/users?who=authors&per_page=100'
         });
+        console.log('[DEBUG Edit] Raw authorsData:', authorsData);
         if (!isMountedRef.current) {
+          console.log('[DEBUG Edit] Component unmounted, skipping state update');
           return;
         }
         const normalizedAuthors = (authorsData || []).map(author => {
@@ -178,29 +241,44 @@ function Edit({
             name
           };
         }).filter(author => author.id > 0 && author.name.length > 0);
+        console.log('[DEBUG Edit] Normalized authors:', normalizedAuthors);
         setAuthors(normalizedAuthors);
+        console.log('[DEBUG Edit] setAuthors called with:', normalizedAuthors);
       } catch (error) {
-        console.error('Error fetching taxonomies/authors:', error);
+        console.error('[DEBUG Edit] Error fetching taxonomies/authors:', error);
         if (!isMountedRef.current) {
+          console.log('[DEBUG Edit] Component unmounted, skipping error state update');
           return;
         }
         setTaxonomies([]);
         setAuthors([]);
+        console.log('[DEBUG Edit] Reset taxonomies and authors to empty arrays');
       }
     };
     fetchTaxonomiesAndAuthors();
   }, [postType]);
+  console.log('[DEBUG Edit] [HOOK-8] useEffect (fetch taxonomies/authors) registered');
 
   // Function to fetch terms for a specific taxonomy
+  console.log('[DEBUG Edit] [HOOK-9] About to call useCallback (fetchTermsForTaxonomy)');
   const fetchTermsForTaxonomy = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useCallback)(async taxonomy => {
+    console.log('[DEBUG Edit] fetchTermsForTaxonomy called with taxonomy:', taxonomy);
     if (taxonomyTerms[taxonomy]) {
+      console.log('[DEBUG Edit] Terms already loaded for taxonomy:', taxonomy);
       return; // Already loaded
     }
+    if (!window.wp?.apiFetch) {
+      console.log('[DEBUG Edit] window.wp.apiFetch not available');
+      return;
+    }
     try {
+      console.log('[DEBUG Edit] Fetching terms for taxonomy:', taxonomy);
       const termsResponse = await window.wp.apiFetch({
         path: `/wp/v2/${taxonomy}?per_page=100&orderby=name&order=asc`
       });
+      console.log('[DEBUG Edit] Raw termsResponse:', termsResponse);
       if (!isMountedRef.current) {
+        console.log('[DEBUG Edit] Component unmounted, skipping state update');
         return;
       }
       const normalizedTerms = (termsResponse || []).map(term => {
@@ -211,21 +289,33 @@ function Edit({
           name
         };
       }).filter(term => term.id > 0 && term.name.length > 0);
-      setTaxonomyTerms(prev => ({
-        ...prev,
-        [taxonomy]: normalizedTerms
-      }));
+      console.log('[DEBUG Edit] Normalized terms:', normalizedTerms);
+      setTaxonomyTerms(prev => {
+        const newState = {
+          ...prev,
+          [taxonomy]: normalizedTerms
+        };
+        console.log('[DEBUG Edit] Setting taxonomyTerms to:', newState);
+        return newState;
+      });
     } catch (error) {
-      console.error(`Error fetching terms for ${taxonomy}:`, error);
+      console.error(`[DEBUG Edit] Error fetching terms for ${taxonomy}:`, error);
       if (!isMountedRef.current) {
+        console.log('[DEBUG Edit] Component unmounted, skipping error state update');
         return;
       }
-      setTaxonomyTerms(prev => ({
-        ...prev,
-        [taxonomy]: []
-      }));
+      setTaxonomyTerms(prev => {
+        const newState = {
+          ...prev,
+          [taxonomy]: []
+        };
+        console.log('[DEBUG Edit] Setting taxonomyTerms to empty array for taxonomy:', taxonomy);
+        return newState;
+      });
     }
   }, [taxonomyTerms]);
+  console.log('[DEBUG Edit] [HOOK-9] useCallback (fetchTermsForTaxonomy) registered');
+  console.log('[DEBUG Edit] [HOOK-10] About to call useBlockProps');
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)({
     className: `dynamic-data-layout layout-${layout} columns-${columns} columns-tablet-${columnsTablet} columns-mobile-${columnsMobile}`,
     style: {
@@ -234,82 +324,199 @@ function Edit({
       '--columns-mobile': columnsMobile
     }
   });
+  console.log('[DEBUG Edit] [HOOK-10] useBlockProps completed, blockProps:', blockProps);
   const resolvedResponsiveColumns = responsiveColumns && typeof responsiveColumns === 'object' ? responsiveColumns : {
     desktop: columns,
     tablet: columnsTablet,
     mobile: columnsMobile
   };
+  console.log('[DEBUG Edit] resolvedResponsiveColumns:', resolvedResponsiveColumns);
+  console.log('[DEBUG Edit] [HOOK-11] About to call useEffect (responsiveColumns sync)');
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
+    console.log('[DEBUG Edit] [HOOK-11] responsiveColumns sync effect');
     const expected = {
       desktop: columns,
       tablet: columnsTablet,
       mobile: columnsMobile
     };
+    console.log('[DEBUG Edit] [HOOK-11] Expected responsiveColumns:', expected);
+    console.log('[DEBUG Edit] [HOOK-11] Current responsiveColumns:', responsiveColumns);
     const needsUpdate = !responsiveColumns || responsiveColumns.desktop !== expected.desktop || responsiveColumns.tablet !== expected.tablet || responsiveColumns.mobile !== expected.mobile;
+    console.log('[DEBUG Edit] [HOOK-11] Needs update?', needsUpdate);
     if (needsUpdate) {
+      console.log('[DEBUG Edit] [HOOK-11] Updating responsiveColumns to:', expected);
       setAttributes({
         responsiveColumns: expected
       });
     }
   }, [columns, columnsTablet, columnsMobile, responsiveColumns, setAttributes]);
+  console.log('[DEBUG Edit] [HOOK-11] useEffect (responsiveColumns sync) registered');
 
   // Get available post types
+  console.log('[DEBUG Edit] [HOOK-12] About to call useSelect (postTypes)');
   const postTypes = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useSelect)(select => {
     const {
       getPostTypes
     } = select('core');
-    return getPostTypes({
+    const types = getPostTypes({
       per_page: -1
     }) || [];
+    console.log('[DEBUG Edit] [HOOK-12] useSelect postTypes:', types);
+    return types;
   }, []);
+  console.log('[DEBUG Edit] [HOOK-12] useSelect (postTypes) completed, value:', postTypes);
   const postTypeOptions = postTypes.filter(type => type.viewable && type.slug !== 'attachment').map(type => ({
     label: type.name,
     value: type.slug
   }));
+  console.log('[DEBUG Edit] postTypeOptions:', postTypeOptions);
 
   // Get layouts data from PHP
   const layoutsData = window.jankxDynamicDataLayouts || {
     layoutsByPostType: {},
     commonLayouts: []
   };
+  console.log('[DEBUG Edit] layoutsData:', layoutsData);
 
   // Get available layouts for current post type
+  console.log('[DEBUG Edit] [HOOK-13] About to call useMemo (availableLayouts)');
   const availableLayouts = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => {
+    console.log('[DEBUG Edit] [HOOK-13] useMemo availableLayouts - postType:', postType);
     const layouts = [];
 
     // Add common layouts
     if (layoutsData.commonLayouts) {
+      console.log('[DEBUG Edit] Processing commonLayouts:', layoutsData.commonLayouts);
       layoutsData.commonLayouts.forEach(layoutInfo => {
-        layouts.push({
+        const layoutItem = {
           name: layoutInfo.name || '',
           title: layoutInfo.title || layoutInfo.name || ''
-        });
+        };
+        if (layoutInfo.supportedOptions) {
+          layoutItem.supportedOptions = layoutInfo.supportedOptions;
+        }
+        layouts.push(layoutItem);
       });
     }
 
     // Add post type specific layouts
     if (layoutsData.layoutsByPostType && layoutsData.layoutsByPostType[postType]) {
+      console.log('[DEBUG Edit] Processing layoutsByPostType for', postType, ':', layoutsData.layoutsByPostType[postType]);
       layoutsData.layoutsByPostType[postType].forEach(layoutInfo => {
-        layouts.push({
+        const layoutItem = {
           name: layoutInfo.name || '',
           title: layoutInfo.title || layoutInfo.name || ''
-        });
+        };
+        if (layoutInfo.supportedOptions) {
+          layoutItem.supportedOptions = layoutInfo.supportedOptions;
+        }
+        layouts.push(layoutItem);
       });
     }
+    console.log('[DEBUG Edit] [HOOK-13] Final availableLayouts:', layouts);
     return layouts;
   }, [postType, layoutsData]);
+  console.log('[DEBUG Edit] [HOOK-13] useMemo (availableLayouts) completed, value:', availableLayouts);
 
   // Layout options for SelectControl
+  console.log('[DEBUG Edit] [HOOK-14] About to call useMemo (layoutOptions)');
   const layoutOptions = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => {
-    return availableLayouts.map(layoutInfo => ({
+    const options = availableLayouts.map(layoutInfo => ({
       label: layoutInfo.title,
       value: layoutInfo.name
     }));
+    console.log('[DEBUG Edit] [HOOK-14] layoutOptions:', options);
+    return options;
   }, [availableLayouts]);
+  console.log('[DEBUG Edit] [HOOK-14] useMemo (layoutOptions) completed, value:', layoutOptions);
 
   // Get current layout's supported options
   const currentLayout = availableLayouts.find(l => l.name === layout);
-  const supportedOptions = currentLayout ? currentLayout.supportedOptions || [] : [];
+  console.log('[DEBUG Edit] currentLayout:', currentLayout, 'for layout:', layout);
+  const supportedOptions = currentLayout?.supportedOptions || [];
+  console.log('[DEBUG Edit] supportedOptions:', supportedOptions);
+
+  // Pre-compute orderBy options outside conditional render to avoid React hooks error
+  console.log('[DEBUG Edit] [HOOK-15] About to call useMemo (orderByOptions)');
+  const orderByOptions = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => {
+    const allOrderByOptions = window.jankxQueryOptions?.orderBy || [];
+    console.log('[DEBUG Edit] [HOOK-15] Computing orderByOptions - allOrderByOptions:', allOrderByOptions);
+    // Filter order by options based on postType:
+    // - Common options: postType is null (available for all post types)
+    // - Specific options: postType matches current postType
+    const filtered = allOrderByOptions.filter(option => !option.postType || option.postType === postType).map(option => ({
+      label: option.label,
+      value: option.value
+    }));
+    console.log('[DEBUG Edit] [HOOK-15] Filtered orderByOptions:', filtered);
+    return filtered;
+  }, [postType]);
+  console.log('[DEBUG Edit] [HOOK-15] useMemo (orderByOptions) completed, value:', orderByOptions);
+
+  // Pre-compute order options outside conditional render
+  console.log('[DEBUG Edit] [HOOK-16] About to call useMemo (orderOptions)');
+  const orderOptions = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => {
+    const options = window.jankxQueryOptions?.order || [{
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Descending', 'jankx'),
+      value: 'DESC'
+    }, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Ascending', 'jankx'),
+      value: 'ASC'
+    }];
+    console.log('[DEBUG Edit] [HOOK-16] orderOptions:', options);
+    return options;
+  }, []);
+  console.log('[DEBUG Edit] [HOOK-16] useMemo (orderOptions) completed, value:', orderOptions);
+
+  // Pre-compute query preset options outside JSX
+  console.log('[DEBUG Edit] [HOOK-17] About to call useMemo (queryPresetOptions)');
+  const queryPresetOptions = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => {
+    const allPresets = window.jankxQueryOptions?.queryPresets || [];
+    console.log('[DEBUG Edit] [HOOK-17] All query presets:', allPresets);
+    // Filter presets based on postType:
+    // - Common presets: postType is null (available for all post types)
+    // - Specific presets: postType matches current postType
+    const filtered = allPresets.filter(preset => !preset.postType || preset.postType === postType).map(preset => ({
+      label: preset.label,
+      value: preset.value
+    }));
+    console.log('[DEBUG Edit] [HOOK-17] Filtered query preset options:', filtered);
+    return filtered;
+  }, [postType]);
+  console.log('[DEBUG Edit] [HOOK-17] useMemo (queryPresetOptions) completed, value:', queryPresetOptions);
+
+  // Pre-compute query preset help text outside JSX
+  console.log('[DEBUG Edit] [HOOK-18] About to call useMemo (queryPresetHelp)');
+  const queryPresetHelp = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => {
+    const allPresets = window.jankxQueryOptions?.queryPresets || [];
+    const currentPreset = allPresets.find(p => p.value === queryPreset);
+    const helpText = currentPreset?.help || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select a query preset', 'jankx');
+    console.log('[DEBUG Edit] [HOOK-18] queryPresetHelp:', helpText);
+    return helpText;
+  }, [queryPreset]);
+  console.log('[DEBUG Edit] [HOOK-18] useMemo (queryPresetHelp) completed, value:', queryPresetHelp);
+
+  // Debug: Log when queryPreset is 'default'
+  console.log('[DEBUG Edit] ===== START RENDER =====');
+  console.log('[DEBUG Edit] queryPreset:', queryPreset);
+  console.log('[DEBUG Edit] postType:', postType);
+  console.log('[DEBUG Edit] layout:', layout);
+  console.log('[DEBUG Edit] columns:', {
+    desktop: columns,
+    tablet: columnsTablet,
+    mobile: columnsMobile
+  });
+  console.log('[DEBUG Edit] supportedOptions:', supportedOptions);
+  console.log('[DEBUG Edit] currentLayout:', currentLayout);
+  console.log('[DEBUG Edit] All attributes:', attributes);
+  console.log('[DEBUG Edit] ========== ALL HOOKS COMPLETED ==========');
+  console.log('[DEBUG Edit] Total hooks called: 18');
+  console.log('[DEBUG Edit] ========== ABOUT TO RENDER JSX ==========');
+  console.log('[DEBUG Edit] queryPreset at render time:', queryPreset);
+  console.log('[DEBUG Edit] Will render Order By controls?', queryPreset !== 'default');
+  console.log('[DEBUG Edit] Will render custom panels?', queryPreset === 'custom');
+  console.log('[DEBUG Edit] Conditional render check - queryPreset !== "default":', queryPreset !== 'default');
+  console.log('[DEBUG Edit] Conditional render check - queryPreset === "custom":', queryPreset === 'custom');
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
       group: "settings",
@@ -319,31 +526,24 @@ function Edit({
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Query Preset', 'jankx'),
           value: queryPreset,
-          options: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => {
-            const allPresets = window.jankxQueryOptions?.queryPresets || [];
-            // Filter presets based on postType:
-            // - Common presets: postType is null (available for all post types)
-            // - Specific presets: postType matches current postType
-            return allPresets.filter(preset => !preset.postType || preset.postType === postType).map(preset => ({
-              label: preset.label,
-              value: preset.value
-            }));
-          }, [postType]),
-          onChange: value => setAttributes({
-            queryPreset: value
-          }),
-          help: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => {
-            const allPresets = window.jankxQueryOptions?.queryPresets || [];
-            const currentPreset = allPresets.find(p => p.value === queryPreset);
-            return currentPreset?.help || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select a query preset', 'jankx');
-          }, [queryPreset])
+          options: queryPresetOptions,
+          onChange: value => {
+            console.log('[DEBUG Edit] queryPreset onChange:', value);
+            setAttributes({
+              queryPreset: value
+            });
+          },
+          help: queryPresetHelp
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Post Type', 'jankx'),
           value: postType,
           options: postTypeOptions,
-          onChange: value => setAttributes({
-            postType: value
-          }),
+          onChange: value => {
+            console.log('[DEBUG Edit] postType onChange:', value);
+            setAttributes({
+              postType: value
+            });
+          },
           help: queryPreset === 'default' ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select post type for the main query', 'jankx') : undefined
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Posts Per Page', 'jankx'),
@@ -354,60 +554,59 @@ function Edit({
           min: 1,
           max: 50,
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Number of posts to display', 'jankx')
-        }), postType === 'post' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+        }), postType === 'post' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Include Sticky Posts', 'jankx'),
           checked: includeStickyPosts,
           onChange: value => setAttributes({
             includeStickyPosts: value
           }),
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Include sticky posts in the query (disabled by default).', 'jankx')
-        }), queryPreset !== 'default' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Order By', 'jankx'),
-            value: orderBy,
-            options: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => {
-              const allOrderByOptions = window.jankxQueryOptions?.orderBy || [];
-              // Filter order by options based on postType:
-              // - Common options: postType is null (available for all post types)
-              // - Specific options: postType matches current postType
-              return allOrderByOptions.filter(option => !option.postType || option.postType === postType).map(option => ({
-                label: option.label,
-                value: option.value
-              }));
-            }, [postType]),
-            onChange: value => {
-              const allOrderByOptions = window.jankxQueryOptions?.orderBy || [];
-              const selectedOption = allOrderByOptions.find(opt => opt.value === value);
+        }) : null, (() => {
+          const shouldRender = queryPreset !== 'default';
+          console.log('[DEBUG Edit] [CONDITIONAL-1] Checking queryPreset !== "default":', shouldRender, 'queryPreset:', queryPreset);
+          if (!shouldRender) {
+            console.log('[DEBUG Edit] [CONDITIONAL-1] Not rendering Order By controls (queryPreset is "default")');
+            return null;
+          }
+          console.log('[DEBUG Edit] [CONDITIONAL-1] Rendering Order By controls');
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Order By', 'jankx'),
+              value: orderBy,
+              options: orderByOptions,
+              onChange: value => {
+                console.log('[DEBUG Edit] orderBy onChange:', value);
+                const allOrderByOptions = window.jankxQueryOptions?.orderBy || [];
+                const selectedOption = allOrderByOptions.find(opt => opt.value === value);
 
-              // Auto-set metaKey if option has metaKey property
-              const updates = {
-                orderBy: value
-              };
-              if (selectedOption?.metaKey) {
-                updates.metaKey = selectedOption.metaKey;
-                // Set orderBy to meta_value_num if value is numeric (like total_sales, _price)
-                if (['total_sales', '_price'].includes(value)) {
-                  updates.orderBy = 'meta_value_num';
+                // Auto-set metaKey if option has metaKey property
+                const updates = {
+                  orderBy: value
+                };
+                if (selectedOption?.metaKey) {
+                  updates.metaKey = selectedOption.metaKey;
+                  // Set orderBy to meta_value_num if value is numeric (like total_sales, _price)
+                  if (['total_sales', '_price'].includes(value)) {
+                    updates.orderBy = 'meta_value_num';
+                  }
                 }
+                console.log('[DEBUG Edit] Setting attributes:', updates);
+                setAttributes(updates);
+              },
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Sort posts by which criteria', 'jankx')
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Order', 'jankx'),
+              value: order,
+              options: orderOptions,
+              onChange: value => {
+                console.log('[DEBUG Edit] order onChange:', value);
+                setAttributes({
+                  order: value
+                });
               }
-              setAttributes(updates);
-            },
-            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Sort posts by which criteria', 'jankx')
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Order', 'jankx'),
-            value: order,
-            options: window.jankxQueryOptions?.order || [{
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Descending', 'jankx'),
-              value: 'DESC'
-            }, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Ascending', 'jankx'),
-              value: 'ASC'
-            }],
-            onChange: value => setAttributes({
-              order: value
-            })
-          })]
-        })]
+            })]
+          });
+        })()]
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Layout', 'jankx'),
         initialOpen: true,
@@ -427,10 +626,13 @@ function Edit({
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Carousel', 'jankx'),
             value: 'carousel'
           }],
-          onChange: value => setAttributes({
-            layout: value
-          })
-        }), supportedOptions.includes('columns') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_shared_components__WEBPACK_IMPORTED_MODULE_5__.ResponsiveControl, {
+          onChange: value => {
+            console.log('[DEBUG Edit] layout onChange:', value);
+            setAttributes({
+              layout: value
+            });
+          }
+        }), supportedOptions.includes('columns') ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_shared_components__WEBPACK_IMPORTED_MODULE_5__.ResponsiveControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Columns', 'jankx'),
           values: resolvedResponsiveColumns,
           onChange: values => setAttributes({
@@ -446,57 +648,57 @@ function Edit({
             tablet: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Number of columns on tablet (768px - 1024px)', 'jankx'),
             mobile: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Number of columns on mobile (<768px)', 'jankx')
           }
-        }), layout === 'carousel' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Slides To Scroll', 'jankx'),
-            value: slidesToScroll,
-            onChange: value => setAttributes({
-              slidesToScroll: value || 1
-            }),
-            min: 1,
-            max: columns || 3,
-            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Number of slides to scroll at a time', 'jankx')
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Loop', 'jankx'),
-            checked: loop,
-            onChange: value => setAttributes({
-              loop: value
-            }),
-            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enable infinite loop', 'jankx')
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Autoplay', 'jankx'),
-            checked: autoplay,
-            onChange: value => setAttributes({
-              autoplay: value
-            }),
-            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Automatically advance slides', 'jankx')
-          }), autoplay && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Autoplay Delay (ms)', 'jankx'),
-            value: autoplayDelay,
-            onChange: value => setAttributes({
-              autoplayDelay: value || 3000
-            }),
-            min: 1000,
-            max: 10000,
-            step: 500,
-            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Time between autoplay transitions', 'jankx')
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Arrows', 'jankx'),
-            checked: showArrows,
-            onChange: value => setAttributes({
-              showArrows: value
-            }),
-            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Display navigation arrows', 'jankx')
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Dots', 'jankx'),
-            checked: showDots,
-            onChange: value => setAttributes({
-              showDots: value
-            }),
-            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Display pagination dots', 'jankx')
-          })]
+        }) : null]
+      }), layout === 'carousel' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Slides To Scroll', 'jankx'),
+          value: slidesToScroll,
+          onChange: value => setAttributes({
+            slidesToScroll: value || 1
+          }),
+          min: 1,
+          max: columns || 3,
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Number of slides to scroll at a time', 'jankx')
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Loop', 'jankx'),
+          checked: loop,
+          onChange: value => setAttributes({
+            loop: value
+          }),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enable infinite loop', 'jankx')
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Autoplay', 'jankx'),
+          checked: autoplay,
+          onChange: value => setAttributes({
+            autoplay: value
+          }),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Automatically advance slides', 'jankx')
+        }), autoplay ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Autoplay Delay (ms)', 'jankx'),
+          value: autoplayDelay,
+          onChange: value => setAttributes({
+            autoplayDelay: value || 3000
+          }),
+          min: 1000,
+          max: 10000,
+          step: 500,
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Time between autoplay transitions', 'jankx')
+        }) : null, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Arrows', 'jankx'),
+          checked: showArrows,
+          onChange: value => setAttributes({
+            showArrows: value
+          }),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Display navigation arrows', 'jankx')
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Dots', 'jankx'),
+          checked: showDots,
+          onChange: value => setAttributes({
+            showDots: value
+          }),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Display pagination dots', 'jankx')
         })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+      }) : null, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Pagination', 'jankx'),
         initialOpen: false,
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
@@ -506,7 +708,7 @@ function Edit({
             enablePagination: value
           }),
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Display pagination to paginate posts', 'jankx')
-        }), enablePagination && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
+        }), enablePagination ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Pagination Style', 'jankx'),
             value: paginationStyle,
@@ -544,14 +746,14 @@ function Edit({
               paginationAlignment: value
             }),
             help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Align pagination position', 'jankx')
-          }), paginationStyle === 'numbers' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+          }), paginationStyle === 'numbers' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show All Page Numbers', 'jankx'),
             checked: showPaginationNumbers,
             onChange: value => setAttributes({
               showPaginationNumbers: value
             }),
             help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show all page numbers instead of abbreviated', 'jankx')
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+          }) : null, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Previous Button Text', 'jankx'),
             value: paginationPrevText,
             onChange: value => setAttributes({
@@ -568,8 +770,8 @@ function Edit({
             help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Leave empty to use default text. Can use HTML/SVG.', 'jankx'),
             placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Example: Next » or <svg>...</svg>', 'jankx')
           })]
-        })]
-      }), queryPreset === 'custom' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+        }) : null]
+      }), queryPreset === 'custom' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Query Parameters', 'jankx'),
         initialOpen: false,
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
@@ -581,7 +783,7 @@ function Edit({
           min: 0,
           max: 50,
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Skip the first N posts', 'jankx')
-        }), (orderBy === 'meta_value' || orderBy === 'meta_value_num') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
+        }), orderBy === 'meta_value' || orderBy === 'meta_value_num' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Meta Key', 'jankx'),
             value: metaKey,
@@ -590,7 +792,7 @@ function Edit({
             }),
             help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Meta key for sorting (required when using meta_value)', 'jankx'),
             placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Example: price, views, rating', 'jankx')
-          }), orderBy === 'meta_value' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+          }), orderBy === 'meta_value' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Meta Type', 'jankx'),
             value: metaType,
             options: window.jankxQueryOptions?.metaTypes || [{
@@ -604,9 +806,9 @@ function Edit({
               metaType: value
             }),
             help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Specify data type for accurate sorting', 'jankx')
-          })]
-        })]
-      }), queryPreset === 'custom' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+          }) : null]
+        }) : null]
+      }) : null, queryPreset === 'custom' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('🔧 Advanced Query Parameters', 'jankx'),
         initialOpen: false,
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
@@ -658,7 +860,7 @@ function Edit({
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Exclude posts with parents in this list', 'jankx'),
           placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Example: 4, 5, 6', 'jankx')
         })]
-      }), queryPreset === 'custom' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+      }) : null, queryPreset === 'custom' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('🔍 Keyword Search', 'jankx'),
         initialOpen: false,
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
@@ -670,7 +872,7 @@ function Edit({
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Search by title, content, excerpt', 'jankx'),
           placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enter keyword...', 'jankx')
         })
-      }), queryPreset === 'custom' && authors.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+      }) : null, queryPreset === 'custom' && authors.length > 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('👤 Author Filters', 'jankx'),
         initialOpen: false,
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.BaseControl, {
@@ -710,7 +912,7 @@ function Edit({
             }
           })
         })]
-      }), queryPreset === 'custom' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+      }) : null, queryPreset === 'custom' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('🔢 Post ID Filters', 'jankx'),
         initialOpen: false,
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
@@ -736,7 +938,7 @@ function Edit({
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Exclude posts with these IDs (comma separated)', 'jankx'),
           placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Example: 4, 5, 6', 'jankx')
         })]
-      }), queryPreset === 'custom' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+      }) : null, queryPreset === 'custom' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('⚙️ Meta Query Filters', 'jankx'),
         initialOpen: false,
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
@@ -853,7 +1055,7 @@ function Edit({
                 metaQuery: newMetaQuery
               });
             }
-          }), !['EXISTS', 'NOT EXISTS'].includes(mq.compare) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+          }), !['EXISTS', 'NOT EXISTS'].includes(mq.compare) ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Value', 'jankx'),
             value: mq.value,
             onChange: value => {
@@ -871,7 +1073,7 @@ function Edit({
               });
             },
             placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enter value...', 'jankx')
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+          }) : null, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Type (Optional)', 'jankx'),
             value: mq.type || '',
             options: [{
@@ -928,7 +1130,7 @@ function Edit({
             help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Specify data type for accurate comparison', 'jankx')
           })]
         }, index))]
-      }), queryPreset === 'custom' && taxonomies.length > 0 && taxonomies.map(taxonomy => {
+      }) : null, queryPreset === 'custom' && taxonomies.length > 0 ? taxonomies.map(taxonomy => {
         // Find existing query for this taxonomy
         const existingQueryIndex = taxQuery.findIndex(tq => tq.taxonomy === taxonomy.slug);
         const hasQuery = existingQueryIndex >= 0;
@@ -958,7 +1160,7 @@ function Edit({
               fetchTermsForTaxonomy(taxonomy.slug);
             },
             children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Add Filter', 'jankx'), " ", taxonomy.name]
-          }) : currentQuery && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
+          }) : currentQuery ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
               label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Operator', 'jankx'),
               value: currentQuery.operator,
@@ -993,7 +1195,7 @@ function Edit({
                 });
               },
               help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('EXISTS/NOT EXISTS checks if taxonomy has any terms', 'jankx')
-            }), !['EXISTS', 'NOT EXISTS'].includes(currentQuery.operator) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
+            }), !['EXISTS', 'NOT EXISTS'].includes(currentQuery.operator) ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
               children: terms ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.BaseControl, {
                 label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select Terms', 'jankx'),
                 help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select terms from dropdown', 'jankx'),
@@ -1022,7 +1224,7 @@ function Edit({
                   }
                 })
               }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Spinner, {})
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+            }) : null, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
               isDestructive: true,
               variant: "secondary",
               onClick: () => {
@@ -1036,9 +1238,9 @@ function Edit({
               },
               children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Remove Filter', 'jankx')
             })]
-          })
+          }) : null
         }, taxonomy.slug);
-      })]
+      }) : null]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
       ...blockProps,
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InnerBlocks, {
