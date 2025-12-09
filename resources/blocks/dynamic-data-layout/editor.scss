@@ -1,8 +1,118 @@
 /**
  * Dynamic Data Layout Block Editor Styles
+ * 
+ * Nhiệm vụ: Styles cho editor preview của dynamic-data-layout block
+ * Columns được áp dụng cho wrapper trong editor
  */
 
 .wp-block-jankx-dynamic-data-layout {
     // Editor specific styles
+    
+    // Grid và Card layout preview trong editor
+    &.dynamic-data-layout--grid,
+    &.dynamic-data-layout--card {
+        // Preview container bên trong (InnerBlocks hoặc preview items)
+        .wp-block-jankx-dynamic-data-template,
+        .dynamic-data-layout-preview {
+            display: grid;
+            gap: var(--wp--preset--spacing--medium, 1.5rem);
+            
+            // Sử dụng CSS variables từ wrapper
+            grid-template-columns: repeat(var(--columns-mobile, 1), 1fr);
+            
+            @media (min-width: 768px) {
+                grid-template-columns: repeat(var(--columns-tablet, 2), 1fr);
+            }
+            
+            @media (min-width: 1024px) {
+                grid-template-columns: repeat(var(--columns-desktop, 3), 1fr);
+            }
+        }
+    }
+    
+    // List layout preview
+    &.dynamic-data-layout--list {
+        .wp-block-jankx-dynamic-data-template,
+        .dynamic-data-layout-preview {
+            display: flex;
+            flex-direction: column;
+            gap: var(--wp--preset--spacing--medium, 1.5rem);
+        }
+    }
+    
+    // Support cho column classes trong editor
+    &.columns-1 { --columns-desktop: 1; }
+    &.columns-2 { --columns-desktop: 2; }
+    &.columns-3 { --columns-desktop: 3; }
+    &.columns-4 { --columns-desktop: 4; }
+    &.columns-5 { --columns-desktop: 5; }
+    &.columns-6 { --columns-desktop: 6; }
+    
+    &.columns-tablet-1 { --columns-tablet: 1; }
+    &.columns-tablet-2 { --columns-tablet: 2; }
+    &.columns-tablet-3 { --columns-tablet: 3; }
+    &.columns-tablet-4 { --columns-tablet: 4; }
+    
+    &.columns-mobile-1 { --columns-mobile: 1; }
+    &.columns-mobile-2 { --columns-mobile: 2; }
+    
+    // Preview container cho editor
+    .dynamic-data-layout-preview {
+        // Grid và Card layout
+        &--grid,
+        &--card {
+            display: grid;
+            gap: var(--wp--preset--spacing--medium, 1.5rem);
+            
+            // Sử dụng CSS variables từ preview container
+            grid-template-columns: repeat(var(--columns-mobile, 1), 1fr);
+            
+            @media (min-width: 768px) {
+                grid-template-columns: repeat(var(--columns-tablet, 2), 1fr);
+            }
+            
+            @media (min-width: 1024px) {
+                grid-template-columns: repeat(var(--columns-desktop, 3), 1fr);
+            }
+            
+            // Preview items
+            .dynamic-data-layout-preview-item {
+                // Items sẽ tự động được sắp xếp theo grid
+                transition: all 0.2s ease;
+            }
+        }
+        
+        // List layout
+        &--list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--wp--preset--spacing--medium, 1.5rem);
+            
+            .dynamic-data-layout-preview-item {
+                width: 100%;
+            }
+        }
+        
+        // Carousel layout
+        &--carousel {
+            // Carousel preview sẽ được xử lý bởi JavaScript
+            display: flex;
+            overflow-x: auto;
+            gap: var(--wp--preset--spacing--medium, 1.5rem);
+            
+            .dynamic-data-layout-preview-item {
+                flex: 0 0 auto;
+                width: calc(100% / var(--columns-desktop, 3) - var(--wp--preset--spacing--medium, 1.5rem));
+                min-width: 200px;
+            }
+        }
+    }
+    
+    // InnerBlocks container cần có grid display
+    .block-editor-inner-blocks {
+        .block-editor-block-list__layout {
+            // Layout sẽ được áp dụng từ parent preview container
+        }
+    }
 }
 

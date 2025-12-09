@@ -117,12 +117,18 @@ class Renderer
             $html .= PaginationRenderer::render($content, $query, $attributes);
         }
 
-        // Add wrapper classes
+        // Add wrapper classes and styles
         $wrapperClasses = $this->resolveWrapperClasses($decorator, $attributes);
-        if (!empty($wrapperClasses)) {
+        $wrapperStyles = $this->resolveWrapperStyles($attributes);
+        
+        if (!empty($wrapperClasses) || !empty($wrapperStyles)) {
+            $styleAttr = !empty($wrapperStyles) ? sprintf(' style="%s"', esc_attr($wrapperStyles)) : '';
+            $classAttr = !empty($wrapperClasses) ? sprintf(' class="%s"', esc_attr(implode(' ', $wrapperClasses))) : '';
+            
             $html = sprintf(
-                '<div class="%s">%s</div>',
-                esc_attr(implode(' ', $wrapperClasses)),
+                '<div%s%s>%s</div>',
+                $classAttr,
+                $styleAttr,
                 $html
             );
         }
@@ -219,11 +225,24 @@ class Renderer
         // Add layout class
         if (!empty($attributes['layout'])) {
             $classes[] = 'layout-' . sanitize_html_class($attributes['layout']);
+            $classes[] = 'dynamic-data-layout--' . sanitize_html_class($attributes['layout']);
         }
 
         // Add post type class
         if (!empty($attributes['postType'])) {
             $classes[] = 'post-type-' . sanitize_html_class($attributes['postType']);
+        }
+
+        // Add column classes for grid/card layouts
+        $layoutName = $attributes['layout'] ?? 'grid';
+        if (in_array($layoutName, ['grid', 'card'], true)) {
+            $columns = isset($attributes['columns']) ? max(1, min(6, (int) $attributes['columns'])) : 3;
+            $columnsTablet = isset($attributes['columnsTablet']) ? max(1, min(4, (int) $attributes['columnsTablet'])) : 2;
+            $columnsMobile = isset($attributes['columnsMobile']) ? max(1, min(2, (int) $attributes['columnsMobile'])) : 1;
+            
+            $classes[] = 'columns-' . $columns;
+            $classes[] = 'columns-tablet-' . $columnsTablet;
+            $classes[] = 'columns-mobile-' . $columnsMobile;
         }
 
         // Get classes from content generator
@@ -239,6 +258,31 @@ class Renderer
         }
 
         return array_values(array_filter(array_unique($classes)));
+    }
+
+    /**
+     * Resolve wrapper inline styles from attributes
+     *
+     * @param array $attributes Block attributes
+     * @return string
+     */
+    protected function resolveWrapperStyles(array $attributes): string
+    {
+        $styles = [];
+        
+        // Add CSS variables for responsive columns
+        $layoutName = $attributes['layout'] ?? 'grid';
+        if (in_array($layoutName, ['grid', 'card'], true)) {
+            $columns = isset($attributes['columns']) ? max(1, min(6, (int) $attributes['columns'])) : 3;
+            $columnsTablet = isset($attributes['columnsTablet']) ? max(1, min(4, (int) $attributes['columnsTablet'])) : 2;
+            $columnsMobile = isset($attributes['columnsMobile']) ? max(1, min(2, (int) $attributes['columnsMobile'])) : 1;
+            
+            $styles[] = sprintf('--columns-desktop: %d;', $columns);
+            $styles[] = sprintf('--columns-tablet: %d;', $columnsTablet);
+            $styles[] = sprintf('--columns-mobile: %d;', $columnsMobile);
+        }
+        
+        return implode(' ', $styles);
     }
 }
 

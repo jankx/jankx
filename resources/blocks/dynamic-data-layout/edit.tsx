@@ -1,5 +1,6 @@
 import { __ } from '@wordpress/i18n';
-import { useBlockProps, InspectorControls, InnerBlocks, store as blockEditorStore } from '@wordpress/block-editor';
+import { useBlockProps, InspectorControls, InnerBlocks, store as blockEditorStore, BlockPreview } from '@wordpress/block-editor';
+import { cloneBlock } from '@wordpress/blocks';
 import {
     PanelBody,
     SelectControl,
@@ -1393,13 +1394,107 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                 }) : null}
             </InspectorControls>
 
-            <div {...blockProps}>
-                <InnerBlocks 
-                    allowedBlocks={['jankx/dynamic-data-template']}
-                    templateLock={false}
-                    renderAppender={InnerBlocks.ButtonBlockAppender}
-                />
-            </div>
+            {(() => {
+                console.log('[DEBUG Edit] Rendering preview container with:', {
+                    layout,
+                    columns,
+                    columnsTablet,
+                    columnsMobile,
+                    postsPerPage
+                });
+                
+                // Lấy template block từ InnerBlocks
+                const blocks = useSelect(
+                    (select) => select(blockEditorStore).getBlocks(clientId),
+                    [clientId]
+                );
+                
+                const templateBlock = blocks && blocks.length > 0 ? blocks[0] : null;
+                const hasTemplateBlock = !!templateBlock;
+                
+                // Tính số lượng items để hiển thị grid (ít nhất 2 hàng)
+                const minItemsForGrid = Math.max(2, columns * 2); // Ít nhất 2 hàng
+                const previewItemsCount = Math.min(
+                    Math.max(minItemsForGrid, postsPerPage || 1),
+                    12
+                );
+                
+                console.log('[DEBUG Edit] Has template block:', hasTemplateBlock, 'Preview items count:', previewItemsCount);
+
+                const previewTemplateBlocks = useMemo(
+                    () => {
+                        if (!hasTemplateBlock || !templateBlock) {
+                            return [];
+                        }
+                        const count = Math.max(0, previewItemsCount - 1); // các item còn lại ngoài item edit
+                        return Array.from({ length: count }, () => cloneBlock(templateBlock));
+                    },
+                    [hasTemplateBlock, templateBlock, previewItemsCount]
+                );
+                
+                return (
+                    <div {...blockProps}>
+                        <div 
+                            className={`dynamic-data-layout-preview dynamic-data-layout-preview--${layout}`}
+                            style={{
+                                '--columns-desktop': columns,
+                                '--columns-tablet': columnsTablet,
+                                '--columns-mobile': columnsMobile,
+                            } as CSSProperties}
+                        >
+                            {hasTemplateBlock ? (
+                                <>
+                                    {/* Item 1: template editable */}
+                                    <div className="dynamic-data-layout-template-editor">
+                                        <InnerBlocks 
+                                            allowedBlocks={['jankx/dynamic-data-template']}
+                                            templateLock={false}
+                                            renderAppender={InnerBlocks.ButtonBlockAppender}
+                                        />
+                                    </div>
+                                    {/* Các items còn lại: clone template để preview, giống hệt item đầu */}
+                                    {previewTemplateBlocks.map((previewBlock, index) => (
+                                        <div 
+                                            key={`template-preview-${index}`}
+                                            className="dynamic-data-layout-template-preview-item"
+                                            style={{
+                                                border: '1px dashed #ccc',
+                                                borderRadius: '4px',
+                                                padding: '0.5rem',
+                                                backgroundColor: '#f9f9f9',
+                                            }}
+                                        >
+                                            <BlockPreview blocks={[previewBlock]} />
+                                        </div>
+                                    ))}
+                                </>
+                            ) : (
+                                // Chưa có template: chỉ hiển thị khu vực thêm template
+                                <div style={{ 
+                                    padding: '1rem',
+                                    border: '2px dashed #0073aa',
+                                    borderRadius: '4px',
+                                    backgroundColor: '#f0f6fc',
+                                }}>
+                                    <div style={{ 
+                                        fontSize: '0.85rem',
+                                        color: '#0073aa',
+                                        marginBottom: '0.75rem',
+                                        fontWeight: '600',
+                                    }}>
+                                        {__('Add Dynamic Data Template to define item layout', 'jankx')}
+                                    </div>
+                                    <InnerBlocks 
+                                        allowedBlocks={['jankx/dynamic-data-template']}
+                                        templateLock={false}
+                                        renderAppender={InnerBlocks.ButtonBlockAppender}
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                );
+            })()}
         </>
     );
 }
