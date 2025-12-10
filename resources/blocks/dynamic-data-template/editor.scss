@@ -4,5 +4,24 @@
 
 .wp-block-jankx-dynamic-data-template {
     // Editor specific styles
+    
+    // Tất cả items hiển thị giống nhau như frontend
+    .dynamic-data-template__item {
+        position: relative;
+        
+        // Đảm bảo tất cả items đều có style giống nhau
+        // Không có border, background đặc biệt để giống frontend nhất có thể
+    }
+    
+    // Container cho items
+    .dynamic-data-template__items-container {
+        // Đảm bảo gap và layout giống frontend
+        width: 100%;
+    }
+    
+    // InnerBlocks styling để giống frontend
+    .dynamic-data-template__inner-blocks {
+        width: 100%;
+    }
 }
 

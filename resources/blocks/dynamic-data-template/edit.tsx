@@ -3,6 +3,8 @@ import {
     useBlockProps,
     useInnerBlocksProps,
     InspectorControls,
+    BlockPreview,
+    store as blockEditorStore,
 } from '@wordpress/block-editor';
 import {
     PanelBody,
@@ -10,8 +12,10 @@ import {
     ToggleControl,
     RangeControl,
 } from '@wordpress/components';
-import { useMemo } from '@wordpress/element';
-import { createBlock } from '@wordpress/blocks';
+import { useMemo, useEffect, useState, useRef, useCallback } from '@wordpress/element';
+import { useSelect, useDispatch } from '@wordpress/data';
+import { cloneBlock } from '@wordpress/blocks';
+import type { CSSProperties } from 'react';
 
 interface DynamicDataTemplateAttributes {
     contentLoopLayout: string;
@@ -36,6 +40,11 @@ interface DynamicDataTemplateEditProps {
             postType?: string;
         };
         postType?: string;
+        postsPerPage?: number;
+        displayLayout?: string;
+        columns?: number;
+        columnsTablet?: number;
+        columnsMobile?: number;
     };
 }
 
@@ -58,8 +67,13 @@ export default function Edit({
         itemBorderRadius = 0,
     } = attributes;
 
-    // Get post type from context
+    // Get post type and settings from context
     const postType: string = context?.query?.postType || context?.postType || 'post';
+    const postsPerPage: number = context?.postsPerPage || 10;
+    const displayLayout: string = context?.displayLayout || 'grid';
+    const columns: number = context?.columns || 3;
+    const columnsTablet: number = context?.columnsTablet || 2;
+    const columnsMobile: number = context?.columnsMobile || 1;
 
     // Get layouts data from PHP
     const layoutsData = (window as any).jankxDynamicDataContentLoopLayouts || {
@@ -114,6 +128,7 @@ export default function Edit({
         className: `dynamic-data-template dynamic-data-template--${contentLoopLayout}`,
     });
 
+    // InnerBlocks props cho tất cả items (tất cả đều editable)
     const innerBlocksProps = useInnerBlocksProps(
         {
             className: 'dynamic-data-template__inner-blocks',
@@ -124,6 +139,44 @@ export default function Edit({
             allowedBlocks: undefined, // Allow all blocks
         }
     );
+
+    // Dispatch để có thể update blocks
+    const { replaceInnerBlocks } = useDispatch(blockEditorStore);
+
+    // Get current template block innerBlocks từ store
+    const templateBlock = useSelect(
+        (select) => select(blockEditorStore).getBlock(clientId),
+        [clientId]
+    );
+
+    const currentInnerBlocks = templateBlock?.innerBlocks || [];
+
+    // Shared state cho tất cả items - dùng React state để đồng nhất
+    const [sharedInnerBlocks, setSharedInnerBlocks] = useState<any[]>(currentInnerBlocks);
+    const isSyncingRef = useRef(false);
+    const lastSyncedBlocksRef = useRef<string>('');
+
+    // Sync: khi innerBlocks của template block thay đổi, update shared state
+    useEffect(() => {
+        if (isSyncingRef.current) {
+            return; // Đang sync, bỏ qua
+        }
+
+        const currentBlocksStr = JSON.stringify(currentInnerBlocks);
+        
+        // Chỉ sync nếu thực sự có thay đổi
+        if (currentBlocksStr !== lastSyncedBlocksRef.current) {
+            lastSyncedBlocksRef.current = currentBlocksStr;
+            setSharedInnerBlocks(currentInnerBlocks);
+        }
+    }, [currentInnerBlocks]);
+
+
+    // Calculate total items to display (including editable one)
+    const totalItems = useMemo(() => {
+        // Giới hạn tối đa 12 items cho performance
+        return Math.min(Math.max(1, postsPerPage), 12);
+    }, [postsPerPage]);
 
     return (
         <>
@@ -166,7 +219,32 @@ export default function Edit({
             </InspectorControls>
 
             <div {...blockProps}>
-                <div {...innerBlocksProps} />
+                {/* Container với layout grid/card */}
+                <div 
+                    className={`dynamic-data-template__items-container layout-${displayLayout} columns-${columns} columns-tablet-${columnsTablet} columns-mobile-${columnsMobile}`}
+                    style={{
+                        '--columns-desktop': columns,
+                        '--columns-tablet': columnsTablet,
+                        '--columns-mobile': columnsMobile,
+                        display: displayLayout === 'grid' || displayLayout === 'card' ? 'grid' : 'block',
+                        gridTemplateColumns: (displayLayout === 'grid' || displayLayout === 'card') 
+                            ? `repeat(${columns}, 1fr)` 
+                            : 'none',
+                        gap: '1rem',
+                    } as CSSProperties}
+                >
+                    {/* Tất cả items đều editable với InnerBlocks thật - hiển thị giống nhau như frontend */}
+                    {Array.from({ length: totalItems }).map((_, index) => (
+                        <div
+                            key={`template-item-${index}`}
+                            className="dynamic-data-template__item"
+                            data-item-index={index}
+                        >
+                            {/* Tất cả items đều dùng InnerBlocks - có thể edit trực tiếp, hiển thị giống nhau */}
+                            <div {...innerBlocksProps} />
+                        </div>
+                    ))}
+                </div>
             </div>
         </>
     );

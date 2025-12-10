@@ -14,7 +14,11 @@
   "providesContext": {
     "queryId": "queryId",
     "postType": "postType",
-    "displayLayout": "layout"
+    "displayLayout": "layout",
+    "postsPerPage": "postsPerPage",
+    "columns": "columns",
+    "columnsTablet": "columnsTablet",
+    "columnsMobile": "columnsMobile"
   },
   "usesContext": ["queryId", "postType"],
   "allowedBlocks": ["jankx/dynamic-data-template"],

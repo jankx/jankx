@@ -4,5 +4,14 @@
 /**
  * Dynamic Data Template Block Editor Styles
  */
+.wp-block-jankx-dynamic-data-template .dynamic-data-template__item {
+  position: relative;
+}
+.wp-block-jankx-dynamic-data-template .dynamic-data-template__items-container {
+  width: 100%;
+}
+.wp-block-jankx-dynamic-data-template .dynamic-data-template__inner-blocks {
+  width: 100%;
+}
 
 /*# sourceMappingURL=editor.css.map*/

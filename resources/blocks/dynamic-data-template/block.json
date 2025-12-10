@@ -13,7 +13,11 @@
   "usesContext": [
     "queryId",
     "postType",
-    "displayLayout"
+    "displayLayout",
+    "postsPerPage",
+    "columns",
+    "columnsTablet",
+    "columnsMobile"
   ],
   "supports": {
     "reusable": false,
