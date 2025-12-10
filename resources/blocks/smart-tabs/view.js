@@ -305,6 +305,47 @@ function triggerAdvancedFilter(triggerSettings) {
         console.log('AdvancedFilter: Found filter block:', filterBlock.id, filterBlock.className);
     }
 
+    // If AdvancedFilters instance exists, trigger AJAX directly without toggling UI
+    const afInstance = filterBlock.advancedFiltersInstance;
+    if (afInstance) {
+        const filtersPayload = buildFiltersPayload(filterId, {
+            filterValue,
+            filterValueMin,
+            filterValueMax,
+            filterValueStart,
+            filterValueEnd,
+        });
+
+        if (filtersPayload) {
+            try {
+                afInstance.currentFilters = filtersPayload;
+                if (typeof afInstance.updateViaAjax === "function") {
+                    afInstance.updateViaAjax();
+                    return;
+                }
+                if (typeof afInstance.handleFilterChange === "function") {
+                    afInstance.handleFilterChange();
+                    return;
+                }
+            } catch (e) {
+                console.error('AdvancedFilter: Error calling instance AJAX', e);
+            }
+        }
+    }
+
+    // Direct AJAX to dynamic-data-layout without advanced-filters DOM state
+    const directPayload = buildFiltersPayload(filterId, {
+        filterValue,
+        filterValueMin,
+        filterValueMax,
+        filterValueStart,
+        filterValueEnd,
+    });
+    if (directPayload) {
+        fetchDynamicDataLayout(filterBlockId, directPayload);
+        return;
+    }
+
     applyFilterToBlock(filterBlock, filterId, {
         filterValue,
         filterValueMin,
@@ -585,3 +626,154 @@ function applyFilterToBlock(filterBlock, filterId, values) {
     }
 }
 
+
+function buildFiltersPayload(filterId, values) {
+    const parts = filterId.split('_');
+    if (parts.length < 2) return null;
+    const type = parts[0];
+    if (type === 'taxonomy') {
+        const taxonomy = parts.slice(2).join('_') || '';
+        if (!taxonomy) return null;
+        return { [taxonomy]: values.filterValue ? [values.filterValue] : [] };
+    }
+    if (type === 'meta') {
+        const metaKey = parts.slice(2).join('_') || '';
+        return metaKey ? { meta: { [metaKey]: values.filterValue || '' } } : null;
+    }
+    if (type === 'price') {
+        return { price: { min: values.filterValueMin || '', max: values.filterValueMax || '' } };
+    }
+    if (type === 'date') {
+        return { date: { start: values.filterValueStart || '', end: values.filterValueEnd || '' } };
+    }
+    if (type === 'author') {
+        return { author: values.filterValue ? [values.filterValue] : [] };
+    }
+    if (type === 'keyword') {
+        return { keyword: values.filterValue || '' };
+    }
+    return null;
+}
+
+/**
+ * Directly fetch and update dynamic-data-layout block via AJAX (no advanced-filters DOM dependency)
+ */
+function fetchDynamicDataLayout(targetBlockId, filtersPayload) {
+    const targetBlock = document.querySelector(`.wp-block-jankx-dynamic-data-layout[data-block-id="${targetBlockId}"], .wp-block-jankx-dynamic-data-layout[data-query-id="${targetBlockId}"]`) || document.getElementById(targetBlockId);
+    if (!targetBlock) {
+        console.warn(`AdvancedFilter: Dynamic Data Layout block ${targetBlockId} not found for direct AJAX`);
+        return;
+    }
+
+    const attributesJson = targetBlock.getAttribute('data-block-settings') || '';
+    if (!attributesJson) {
+        console.warn('AdvancedFilter: Missing data-block-settings on dynamic-data-layout block');
+    }
+
+    let nonce = '';
+    let ajaxUrl = '/wp-admin/admin-ajax.php';
+    const afConfigEl = document.querySelector('.advanced-filters-config');
+    if (afConfigEl) {
+        nonce = afConfigEl.getAttribute('data-nonce') || '';
+        ajaxUrl = afConfigEl.getAttribute('data-ajax-url') || ajaxUrl;
+    } else if (window.jankxAdvancedFilters) {
+        nonce = window.jankxAdvancedFilters.nonce || '';
+        ajaxUrl = window.jankxAdvancedFilters.ajaxUrl || ajaxUrl;
+    }
+
+    const params = new URLSearchParams();
+    params.append('action', 'jankx_dynamic_data_layout_filter');
+    params.append('nonce', nonce);
+    params.append('block_id', targetBlockId);
+    params.append('attributes', attributesJson || '');
+    params.append('filters', JSON.stringify(filtersPayload));
+
+    fetch(ajaxUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: params,
+        credentials: 'same-origin',
+    })
+        .then((res) => res.json())
+        .then((data) => {
+            if (!data || !data.success || !data.data || !data.data.html) {
+                console.error('AdvancedFilter: Invalid AJAX response', data);
+                return;
+            }
+            const temp = document.createElement('div');
+            temp.innerHTML = data.data.html.trim();
+            const newEl = temp.firstElementChild;
+            if (!newEl) {
+                console.error('AdvancedFilter: Cannot parse HTML from response');
+                return;
+            }
+            // Update URL params if allowed
+            const updateUrlAttr = afConfigEl ? afConfigEl.getAttribute('data-update-url') : null;
+            const allowUpdateUrl = updateUrlAttr === null ? (window.jankxAdvancedFilters ? window.jankxAdvancedFilters.updateUrl !== false : true) : updateUrlAttr !== '0' && updateUrlAttr !== 'false';
+            updateUrlWithFilters(filtersPayload, allowUpdateUrl);
+
+            targetBlock.replaceWith(newEl);
+        })
+        .catch((err) => {
+            console.error('AdvancedFilter: AJAX update failed', err);
+        });
+}
+
+/**
+ * Update browser URL with current filters (query params) without reloading
+ */
+function updateUrlWithFilters(filtersPayload, enableUpdateUrl = true) {
+    if (!enableUpdateUrl || !filtersPayload || typeof window === 'undefined' || !window.location) {
+        return;
+    }
+    const url = new URL(window.location.href);
+    const params = url.searchParams;
+
+    const setParam = (key, value) => {
+        if (value === undefined || value === null || value === '') {
+            params.delete(key);
+        } else {
+            params.set(key, value);
+        }
+    };
+
+    Object.keys(filtersPayload).forEach((key) => {
+        const value = filtersPayload[key];
+        if (key === 'price' && value) {
+            setParam('price_min', value.min || '');
+            setParam('price_max', value.max || '');
+            return;
+        }
+        if (key === 'date' && value) {
+            setParam('date_start', value.start || '');
+            setParam('date_end', value.end || '');
+            return;
+        }
+        if (key === 'author') {
+            const authorVal = Array.isArray(value) ? value[0] || '' : value;
+            setParam('author', authorVal);
+            return;
+        }
+        if (key === 'keyword') {
+            setParam('s', value || '');
+            return;
+        }
+        if (key === 'meta' && value && typeof value === 'object') {
+            Object.keys(value).forEach((metaKey) => {
+                setParam(`meta_${metaKey}`, value[metaKey] || '');
+            });
+            return;
+        }
+        // default: taxonomy
+        if (Array.isArray(value)) {
+            setParam(key, value.join(','));
+        } else if (value) {
+            setParam(key, value);
+        } else {
+            params.delete(key);
+        }
+    });
+
+    const newUrl = `${url.origin}${url.pathname}${params.toString() ? `?${params.toString()}` : ''}${url.hash}`;
+    window.history.replaceState({}, '', newUrl);
+}

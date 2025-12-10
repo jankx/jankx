@@ -124,53 +124,92 @@ class DynamicDataLayoutQueryHelper
      */
     public static function applyFiltersToAttributes(array $attributes, array $filters): array
     {
-        if (!empty($filters) && is_array($filters)) {
-            $tax_query = $attributes['taxQuery'] ?? [];
+        if (empty($filters) || !is_array($filters)) {
+            return $attributes;
+        }
 
-            foreach ($filters as $key => $value) {
-                $taxonomy = get_taxonomy($key);
-                if ($taxonomy) {
-                    $term_ids = is_array($value) ? $value : [$value];
-                    $tax_query[] = [
+        // Override previous selections to avoid AND-ing impossible queries
+        $tax_query_by_taxonomy = [];
+        $meta_query = [];
+        $author_in = [];
+
+        foreach ($filters as $key => $value) {
+            $taxonomy = get_taxonomy($key);
+            if ($taxonomy) {
+                $term_ids = is_array($value) ? $value : [$value];
+                $term_ids = array_values(array_unique(array_map('intval', $term_ids)));
+                if (empty($term_ids)) {
+                    continue;
+                }
+                if (isset($tax_query_by_taxonomy[$key])) {
+                    $existing = $tax_query_by_taxonomy[$key]['terms'] ?? [];
+                    $tax_query_by_taxonomy[$key]['terms'] = array_values(array_unique(array_merge($existing, $term_ids)));
+                } else {
+                    $tax_query_by_taxonomy[$key] = [
                         'taxonomy' => $key,
                         'field' => 'term_id',
-                        'terms' => array_map('intval', $term_ids),
+                        'terms' => $term_ids,
                         'operator' => 'IN',
                     ];
-                } elseif ($key === 'keyword' && !empty($value)) {
-                    $attributes['keyword'] = sanitize_text_field($value);
-                } elseif ($key === 'orderby' && !empty($value)) {
-                    $mapped = self::mapWooCommerceOrderby($value);
-                    $attributes['orderBy'] = $mapped['orderBy'];
-                    if (!empty($mapped['metaKey'])) {
-                        $attributes['metaKey'] = $mapped['metaKey'];
-                    }
-                    if (!empty($mapped['order'])) {
-                        $attributes['order'] = $mapped['order'];
-                    }
-                } elseif ($key === 'order' && !empty($value)) {
-                    $attributes['order'] = strtoupper(sanitize_text_field($value));
-                } elseif (strpos($key, 'meta_') === 0) {
-                    $meta_key = substr($key, 5);
-                    $meta_query = $attributes['metaQuery'] ?? [];
-                    $meta_query[] = [
-                        'key' => $meta_key,
-                        'value' => sanitize_text_field($value),
-                        'compare' => '=',
-                    ];
-                    $attributes['metaQuery'] = $meta_query;
-                } elseif ($key === 'author' && !empty($value)) {
-                    $author_ids = is_array($value) ? $value : [$value];
-                    $attributes['authorIn'] = array_merge(
-                        $attributes['authorIn'] ?? [],
-                        array_map('intval', $author_ids)
-                    );
                 }
+                continue;
             }
 
-            if (!empty($tax_query)) {
-                $attributes['taxQuery'] = $tax_query;
+            if ($key === 'keyword' && $value !== '') {
+                $attributes['keyword'] = sanitize_text_field($value);
+                continue;
             }
+
+            if ($key === 'orderby' && $value !== '') {
+                $mapped = self::mapWooCommerceOrderby($value);
+                $attributes['orderBy'] = $mapped['orderBy'];
+                if (!empty($mapped['metaKey'])) {
+                    $attributes['metaKey'] = $mapped['metaKey'];
+                }
+                if (!empty($mapped['order'])) {
+                    $attributes['order'] = $mapped['order'];
+                }
+                continue;
+            }
+
+            if ($key === 'order' && $value !== '') {
+                $attributes['order'] = strtoupper(sanitize_text_field($value));
+                continue;
+            }
+
+            if (strpos($key, 'meta_') === 0) {
+                $meta_key = substr($key, 5);
+                $meta_query[] = [
+                    'key' => $meta_key,
+                    'value' => sanitize_text_field($value),
+                    'compare' => '=',
+                ];
+                continue;
+            }
+
+            if ($key === 'author' && $value !== '') {
+                $author_ids = is_array($value) ? $value : [$value];
+                $author_in = array_merge($author_in, array_map('intval', $author_ids));
+                continue;
+            }
+        }
+
+        if (!empty($tax_query_by_taxonomy)) {
+            $attributes['taxQuery'] = array_values($tax_query_by_taxonomy);
+        } else {
+            unset($attributes['taxQuery']);
+        }
+
+        if (!empty($meta_query)) {
+            $attributes['metaQuery'] = $meta_query;
+        } else {
+            unset($attributes['metaQuery']);
+        }
+
+        if (!empty($author_in)) {
+            $attributes['authorIn'] = array_values(array_unique($author_in));
+        } else {
+            unset($attributes['authorIn']);
         }
 
         return $attributes;
