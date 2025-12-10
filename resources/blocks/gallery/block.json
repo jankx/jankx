@@ -1,6 +1,6 @@
 {
     "$schema": "https://schemas.wp.org/trunk/block.json",
-    "name": "jankx/image-masonry-gallery",
+    "name": "jankx/gallery",
     "title": "Image Masonry Gallery",
     "category": "jankx",
     "icon": "format-gallery",
@@ -62,6 +62,10 @@
         "imageHoverEffect": {
             "type": "string",
             "default": "none"
+        },
+        "layout": {
+            "type": "string",
+            "default": "masonry"
         }
     },
     "editorScript": "file:./build/index.js",

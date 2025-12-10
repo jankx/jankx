@@ -11,7 +11,7 @@ use Jankx\Gutenberg\Blocks\AdvancedImageBoxBlock;
 use Jankx\Gutenberg\Blocks\AuthorBoxBlock;
 use Jankx\Gutenberg\Blocks\DatePickerCalendarBlock;
 use Jankx\Gutenberg\Blocks\IconPickerBlock;
-use Jankx\Gutenberg\Blocks\ImageMasonryGalleryBlock;
+use Jankx\Gutenberg\Blocks\GalleryBlock;
 use Jankx\Gutenberg\Blocks\CommentCountBlock;
 use Jankx\Gutenberg\Blocks\DynamicDataLayoutBlock;
 use Jankx\Gutenberg\Blocks\DynamicDataTemplateBlock;
@@ -135,7 +135,7 @@ class GutenbergService
         $this->repository->registerBlock(AuthorBoxBlock::class);
         $this->repository->registerBlock(DatePickerCalendarBlock::class);
         $this->repository->registerBlock(IconPickerBlock::class);
-        $this->repository->registerBlock(ImageMasonryGalleryBlock::class);
+        $this->repository->registerBlock(GalleryBlock::class);
         $this->repository->registerBlock(CommentCountBlock::class);
         $this->repository->registerBlock(DynamicDataLayoutBlock::class);
         $this->repository->registerBlock(DynamicDataTemplateBlock::class);

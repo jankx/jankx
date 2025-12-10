@@ -2,20 +2,20 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./blocks/image-masonry-gallery/block.json":
-/*!*************************************************!*\
-  !*** ./blocks/image-masonry-gallery/block.json ***!
-  \*************************************************/
+/***/ "./blocks/gallery/block.json":
+/*!***********************************!*\
+  !*** ./blocks/gallery/block.json ***!
+  \***********************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","name":"jankx/image-masonry-gallery","title":"Image Masonry Gallery","category":"jankx","icon":"format-gallery","description":"Showcase Images in a Masonry Gallery View with responsive columns and lightbox support.","keywords":["masonry","gallery","images","image gallery","lightbox"],"textdomain":"jankx","supports":{"html":false,"anchor":true,"align":["wide","full"],"spacing":{"margin":true,"padding":true}},"attributes":{"galleryId":{"type":"string"},"images":{"type":"array"},"colDevice":{"type":"string","default":"desktop"},"deskCol":{"type":"number","default":3},"tabCol":{"type":"number","default":2},"phoneCol":{"type":"number","default":1},"gapDevice":{"type":"string","default":"desktop"},"deskGap":{"type":"number","default":10},"tabGap":{"type":"number","default":10},"phoneGap":{"type":"number","default":5},"enableLightbox":{"type":"boolean","default":true},"imageHoverEffect":{"type":"string","default":"none"}},"editorScript":"file:./build/index.js","style":"file:./build/style.css","editorStyle":"file:./build/editor.css"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","name":"jankx/gallery","title":"Image Masonry Gallery","category":"jankx","icon":"format-gallery","description":"Showcase Images in a Masonry Gallery View with responsive columns and lightbox support.","keywords":["masonry","gallery","images","image gallery","lightbox"],"textdomain":"jankx","supports":{"html":false,"anchor":true,"align":["wide","full"],"spacing":{"margin":true,"padding":true}},"attributes":{"galleryId":{"type":"string"},"images":{"type":"array"},"colDevice":{"type":"string","default":"desktop"},"deskCol":{"type":"number","default":3},"tabCol":{"type":"number","default":2},"phoneCol":{"type":"number","default":1},"gapDevice":{"type":"string","default":"desktop"},"deskGap":{"type":"number","default":10},"tabGap":{"type":"number","default":10},"phoneGap":{"type":"number","default":5},"enableLightbox":{"type":"boolean","default":true},"imageHoverEffect":{"type":"string","default":"none"},"layout":{"type":"string","default":"masonry"}},"editorScript":"file:./build/index.js","style":"file:./build/style.css","editorStyle":"file:./build/editor.css"}');
 
 /***/ }),
 
-/***/ "./blocks/image-masonry-gallery/components/devices.tsx":
-/*!*************************************************************!*\
-  !*** ./blocks/image-masonry-gallery/components/devices.tsx ***!
-  \*************************************************************/
+/***/ "./blocks/gallery/components/devices.tsx":
+/*!***********************************************!*\
+  !*** ./blocks/gallery/components/devices.tsx ***!
+  \***********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -69,10 +69,10 @@ const Devices = ({
 
 /***/ }),
 
-/***/ "./blocks/image-masonry-gallery/edit.tsx":
-/*!***********************************************!*\
-  !*** ./blocks/image-masonry-gallery/edit.tsx ***!
-  \***********************************************/
+/***/ "./blocks/gallery/edit.tsx":
+/*!*********************************!*\
+  !*** ./blocks/gallery/edit.tsx ***!
+  \*********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -87,8 +87,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./editor.scss */ "./blocks/image-masonry-gallery/editor.scss");
-/* harmony import */ var _components_devices__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/devices */ "./blocks/image-masonry-gallery/components/devices.tsx");
+/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./editor.scss */ "./blocks/gallery/editor.scss");
+/* harmony import */ var _components_devices__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/devices */ "./blocks/gallery/components/devices.tsx");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__);
 /* eslint-disable no-unused-vars */
@@ -120,10 +120,14 @@ function Edit({
     tabGap,
     phoneGap,
     enableLightbox,
-    imageHoverEffect
+    imageHoverEffect,
+    layout
   } = attributes;
+  const isMasonry = layout === 'masonry';
   // cols number
-  const colsNumber = images ? deskCol : 1;
+  const colsNumber = images ? isMasonry ? deskCol : 1 : 1;
+  const tabletColumns = isMasonry ? tabCol : 1;
+  const phoneColumns = isMasonry ? phoneCol : 1;
 
   // gallery id
   setAttributes({
@@ -134,33 +138,48 @@ function Edit({
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Gallery Settings', 'jankx'),
         initialOpen: true,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_components_devices__WEBPACK_IMPORTED_MODULE_5__["default"], {
-          device: colDevice,
-          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Number of Columns', 'jankx'),
-          renderFunction: device => setAttributes({
-            colDevice: device
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Layout', 'jankx'),
+          value: layout,
+          options: [{
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Masonry', 'jankx'),
+            value: 'masonry'
+          }, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Stacked (Portrait)', 'jankx'),
+            value: 'stacked'
+          }],
+          onChange: value => setAttributes({
+            layout: value
           })
-        }), colDevice === 'desktop' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.RangeControl, {
-          value: deskCol,
-          onChange: value => setAttributes({
-            deskCol: value
-          }),
-          min: 1,
-          max: 5
-        }), colDevice === 'tablet' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.RangeControl, {
-          value: tabCol,
-          onChange: value => setAttributes({
-            tabCol: value
-          }),
-          min: 1,
-          max: 5
-        }), colDevice === 'smartphone' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.RangeControl, {
-          value: phoneCol,
-          onChange: value => setAttributes({
-            phoneCol: value
-          }),
-          min: 1,
-          max: 5
+        }), isMasonry && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_components_devices__WEBPACK_IMPORTED_MODULE_5__["default"], {
+            device: colDevice,
+            title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Number of Columns', 'jankx'),
+            renderFunction: device => setAttributes({
+              colDevice: device
+            })
+          }), colDevice === 'desktop' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.RangeControl, {
+            value: deskCol,
+            onChange: value => setAttributes({
+              deskCol: value
+            }),
+            min: 1,
+            max: 5
+          }), colDevice === 'tablet' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.RangeControl, {
+            value: tabCol,
+            onChange: value => setAttributes({
+              tabCol: value
+            }),
+            min: 1,
+            max: 5
+          }), colDevice === 'smartphone' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.RangeControl, {
+            value: phoneCol,
+            onChange: value => setAttributes({
+              phoneCol: value
+            }),
+            min: 1,
+            max: 5
+          })]
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_components_devices__WEBPACK_IMPORTED_MODULE_5__["default"], {
           device: gapDevice,
           title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Items Gutter', 'jankx'),
@@ -249,7 +268,7 @@ function Edit({
       })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
       ...(0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.useBlockProps)({
-        className: `dc__${colsNumber} tc__${tabCol} pc__${phoneCol} dg__${deskGap} tg__${tabGap} pg__${phoneGap}`
+        className: `layout__${layout} dc__${colsNumber} tc__${tabletColumns} pc__${phoneColumns} dg__${deskGap} tg__${tabGap} pg__${phoneGap}`
       }),
       children: images ? images.map(image => {
         return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
@@ -280,10 +299,10 @@ function Edit({
 
 /***/ }),
 
-/***/ "./blocks/image-masonry-gallery/editor.scss":
-/*!**************************************************!*\
-  !*** ./blocks/image-masonry-gallery/editor.scss ***!
-  \**************************************************/
+/***/ "./blocks/gallery/editor.scss":
+/*!************************************!*\
+  !*** ./blocks/gallery/editor.scss ***!
+  \************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -292,10 +311,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./blocks/image-masonry-gallery/save.tsx":
-/*!***********************************************!*\
-  !*** ./blocks/image-masonry-gallery/save.tsx ***!
-  \***********************************************/
+/***/ "./blocks/gallery/save.tsx":
+/*!*********************************!*\
+  !*** ./blocks/gallery/save.tsx ***!
+  \*********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -325,11 +344,16 @@ function save({
     tabGap,
     phoneGap,
     enableLightbox,
-    imageHoverEffect
+    imageHoverEffect,
+    layout
   } = attributes;
+  const isMasonry = layout === 'masonry';
+  const desktopColumns = isMasonry ? deskCol : 1;
+  const tabletColumns = isMasonry ? tabCol : 1;
+  const phoneColumns = isMasonry ? phoneCol : 1;
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
     ..._wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps.save({
-      className: `dc__${deskCol} tc__${tabCol} pc__${phoneCol} dg__${deskGap} tg__${tabGap} pg__${phoneGap}`
+      className: `layout__${layout} dc__${desktopColumns} tc__${tabletColumns} pc__${phoneColumns} dg__${deskGap} tg__${tabGap} pg__${phoneGap}`
     }),
     "data-id": galleryId,
     id: galleryId,
@@ -356,10 +380,10 @@ function save({
 
 /***/ }),
 
-/***/ "./blocks/image-masonry-gallery/style.scss":
-/*!*************************************************!*\
-  !*** ./blocks/image-masonry-gallery/style.scss ***!
-  \*************************************************/
+/***/ "./blocks/gallery/style.scss":
+/*!***********************************!*\
+  !*** ./blocks/gallery/style.scss ***!
+  \***********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -499,16 +523,16 @@ module.exports = window["ReactJSXRuntime"];
 var __webpack_exports__ = {};
 // This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
 (() => {
-/*!************************************************!*\
-  !*** ./blocks/image-masonry-gallery/index.tsx ***!
-  \************************************************/
+/*!**********************************!*\
+  !*** ./blocks/gallery/index.tsx ***!
+  \**********************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./style.scss */ "./blocks/image-masonry-gallery/style.scss");
-/* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./block.json */ "./blocks/image-masonry-gallery/block.json");
-/* harmony import */ var _edit__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./edit */ "./blocks/image-masonry-gallery/edit.tsx");
-/* harmony import */ var _save__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./save */ "./blocks/image-masonry-gallery/save.tsx");
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./style.scss */ "./blocks/gallery/style.scss");
+/* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./block.json */ "./blocks/gallery/block.json");
+/* harmony import */ var _edit__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./edit */ "./blocks/gallery/edit.tsx");
+/* harmony import */ var _save__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./save */ "./blocks/gallery/save.tsx");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__);
 

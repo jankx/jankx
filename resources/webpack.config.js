@@ -39,9 +39,9 @@ module.exports = {
     'blocks/svg-icon/build/style': './blocks/svg-icon/style.scss',
     'blocks/svg-icon/build/editor': './blocks/svg-icon/editor.scss',
 
-    'blocks/image-masonry-gallery/build/index': './blocks/image-masonry-gallery/index.tsx',
-    'blocks/image-masonry-gallery/build/style': './blocks/image-masonry-gallery/style.scss',
-    'blocks/image-masonry-gallery/build/editor': './blocks/image-masonry-gallery/editor.scss',
+    'blocks/gallery/build/index': './blocks/gallery/index.tsx',
+    'blocks/gallery/build/style': './blocks/gallery/style.scss',
+    'blocks/gallery/build/editor': './blocks/gallery/editor.scss',
 
 
     'blocks/advanced-image-box/build/index': './blocks/advanced-image-box/index.tsx',
@@ -76,6 +76,7 @@ module.exports = {
     'blocks/smart-tabs/build/view': './blocks/smart-tabs/view.js',
 
     'blocks/smart-tab/build/index': './blocks/smart-tab/index.tsx',
+    'blocks/smart-tab/build/view': './blocks/smart-tab/view.js',
     'blocks/smart-tab/build/style': './blocks/smart-tab/style.scss',
     'blocks/smart-tab/build/editor': './blocks/smart-tab/editor.scss',
 

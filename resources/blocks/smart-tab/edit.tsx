@@ -24,8 +24,9 @@ import {
     ColorPicker,
     __experimentalUnitControl as UnitControl,
 } from '@wordpress/components';
-import { useSelect } from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
 import { useMemo, useState, useEffect, useRef } from '@wordpress/element';
+import { createBlock } from '@wordpress/blocks';
 import { code, brush } from '@wordpress/icons';
 
 /**
@@ -88,21 +89,20 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
 
     const activeTabIndex = context?.['jankx/activeTab'] ?? 0;
 
+    // Get inner blocks to check if advanced-filter already exists
+    const innerBlocks = useSelect(
+        (select: any) => {
+            const block = select('core/block-editor').getBlock(clientId);
+            return block?.innerBlocks || [];
+        },
+        [clientId]
+    );
+
+    const { insertBlocks } = useDispatch('core/block-editor');
+
     // Advanced Filter Trigger State - Declare before useMemo to avoid initialization error
-    const [advancedFilterBlocks, setAdvancedFilterBlocks] = useState<AdvancedFilterBlock[]>([]);
-    const [selectedFilterBlock, setSelectedFilterBlock] = useState<AdvancedFilterBlock | null>(null);
-    const [availableFilters, setAvailableFilters] = useState<AdvancedFilter[]>([]);
-    const [selectedFilter, setSelectedFilter] = useState<AdvancedFilter | null>(null);
-    const [filterTerms, setFilterTerms] = useState<Term[]>([]);
-    const [loadingTerms, setLoadingTerms] = useState<boolean>(false);
-    const [authors, setAuthors] = useState<Author[]>([]);
-    const [loadingAuthors, setLoadingAuthors] = useState<boolean>(false);
-    // Cache for loaded terms and authors to avoid unnecessary reloads
-    // Use refs to avoid re-renders and dependency issues
-    const termsCacheRef = useRef<Record<string, Term[]>>({});
-    const authorsCacheRef = useRef<Author[] | null>(null);
-    const lastTaxonomyRef = useRef<string>('');
-    const lastFilterTypeRef = useRef<string>('');
+    const [dynamicDataLayoutBlocks, setDynamicDataLayoutBlocks] = useState<Array<{ id: string; clientId: string; postType: string; name: string }>>([]);
+    const [selectedTargetBlock, setSelectedTargetBlock] = useState<{ id: string; postType: string } | null>(null);
 
     const rawTriggerConfig = (window?.JankxSmartTabTriggers?.items ?? {}) as Record<string, SmartTabTriggerConfig>;
     const fallbackTrigger: SmartTabTriggerConfig = useMemo(
@@ -139,22 +139,25 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
                 value: config.key,
             }));
 
-            // Hide advanced-filter trigger if no advanced-filters blocks are available
-            if (trigger === 'advanced-filter' || advancedFilterBlocks.length > 0) {
+            // Hide advanced-filter trigger if no dynamic-data-layout blocks are available
+            if (trigger === 'advanced-filter' || dynamicDataLayoutBlocks.length > 0) {
                 return options;
             }
 
             // Filter out advanced-filter trigger if no blocks available
             return options.filter((opt) => opt.value !== 'advanced-filter');
         },
-        [triggersMap, advancedFilterBlocks.length, trigger]
+        [triggersMap, dynamicDataLayoutBlocks.length, trigger]
     );
 
     const triggerConfig = (triggersMap[trigger] ?? triggersMap.manual ?? fallbackTrigger) as SmartTabTriggerConfig;
-    const triggerSupports = triggerConfig?.supports || {};
-    const allowCustomTitle = triggerSupports.customTitle !== false;
-    const allowCustomContent = triggerSupports.customContent !== false;
-    const allowCustomIcon = triggerSupports.icon !== false;
+    // Override supports for advanced-filter trigger to allow custom content
+    const resolvedSupports = trigger === 'advanced-filter' 
+        ? { ...triggerConfig.supports, customContent: true }
+        : triggerConfig.supports || {};
+    const allowCustomTitle = resolvedSupports.customTitle !== false;
+    const allowCustomContent = resolvedSupports.customContent !== false;
+    const allowCustomIcon = resolvedSupports.icon !== false;
     const previewTitle =
         triggerConfig.previewTitle || triggerConfig.label || (title ? title : __('Tab', 'jankx'));
 
@@ -193,6 +196,14 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
         },
     });
 
+    // Determine allowed blocks based on trigger
+    const allowedBlocks = useMemo(() => {
+        if (trigger === 'advanced-filter') {
+            return ['jankx/advanced-filter'];
+        }
+        return undefined; // Allow all blocks for other triggers
+    }, [trigger]);
+
     const innerBlocksProps = useInnerBlocksProps(
         {
             className: 'smart-tab__content',
@@ -200,6 +211,7 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
         },
         {
             templateLock: false,
+            allowedBlocks: allowedBlocks,
             // Chỉ tab active mới có block appender
             renderAppender: isActive ? undefined : (false as unknown as undefined),
         }
@@ -249,35 +261,49 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
             updatedAttributes.iconName = '';
         }
 
+        // If switching to advanced-filter trigger, automatically add advanced-filter inner block
+        if (newTriggerKey === 'advanced-filter') {
+            const hasAdvancedFilterBlock = innerBlocks.some((block: any) => block.name === 'jankx/advanced-filter');
+            if (!hasAdvancedFilterBlock) {
+                const defaultAttributes = {
+                    filterType: 'taxonomy',
+                    enabled: true,
+                };
+                insertBlocks(createBlock('jankx/advanced-filter', defaultAttributes as any), undefined, clientId);
+            }
+        }
+
         setAttributes(updatedAttributes);
     };
 
-    // Find advanced-filters blocks on the page (always check for availability)
+    // Find dynamic-data-layout blocks on the page (always check for availability)
     useEffect(() => {
-        const findAdvancedFiltersBlocks = (): void => {
+        const findDynamicDataLayoutBlocks = (): void => {
             try {
                 const wpData = window.wp?.data;
                 if (!wpData) {
-                    setAdvancedFilterBlocks([]);
+                    setDynamicDataLayoutBlocks([]);
                     return;
                 }
                 const currentBlocks = wpData.select('core/block-editor').getBlocks() as Block[];
                 if (!currentBlocks || currentBlocks.length === 0) {
-                    setAdvancedFilterBlocks([]);
+                    setDynamicDataLayoutBlocks([]);
                     return;
                 }
 
-                const findBlocks = (blocks: Block[]): AdvancedFilterBlock[] => {
-                    const found: AdvancedFilterBlock[] = [];
+                const findBlocks = (blocks: Block[]): Array<{ id: string; clientId: string; postType: string; name: string }> => {
+                    const found: Array<{ id: string; clientId: string; postType: string; name: string }> = [];
                     
                     blocks.forEach((block: Block) => {
-                        if (block.name === 'jankx/advanced-filters') {
-                            const blockId = block.clientId;
+                        if (block.name === 'jankx/dynamic-data-layout') {
                             const attrs = (block.attributes || {}) as Record<string, unknown>;
+                            const queryId = attrs.queryId || block.clientId;
+                            const postType = (attrs.postType as string) || 'post';
                             found.push({
-                                id: blockId,
-                                clientId: blockId,
-                                attributes: attrs,
+                                id: String(queryId || block.clientId),
+                                clientId: block.clientId,
+                                postType: postType,
+                                name: `${postType} Layout`,
                             });
                         }
                         
@@ -289,26 +315,26 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
                     return found;
                 };
 
-                const filterBlocks = findBlocks(currentBlocks);
-                setAdvancedFilterBlocks(filterBlocks);
+                const layoutBlocks = findBlocks(currentBlocks);
+                setDynamicDataLayoutBlocks(layoutBlocks);
 
                 // Restore selected block from triggerSettings (only if trigger is advanced-filter)
                 if (trigger === 'advanced-filter') {
-                    const savedBlockId = (triggerSettings as Record<string, unknown>)?.filterBlockId as string | undefined;
+                    const savedBlockId = (triggerSettings as Record<string, unknown>)?.targetBlockId as string | undefined;
                     if (savedBlockId) {
-                        const block = filterBlocks.find((b: AdvancedFilterBlock) => b.id === savedBlockId);
+                        const block = layoutBlocks.find((b) => b.id === savedBlockId);
                         if (block) {
-                            setSelectedFilterBlock(block);
+                            setSelectedTargetBlock({ id: block.id, postType: block.postType });
                         }
                     }
                 }
             } catch (error) {
-                console.error('Error finding advanced-filters blocks:', error);
-                setAdvancedFilterBlocks([]);
+                console.error('Error finding dynamic-data-layout blocks:', error);
+                setDynamicDataLayoutBlocks([]);
             }
         };
 
-        findAdvancedFiltersBlocks();
+        findDynamicDataLayoutBlocks();
 
         // Subscribe to block changes
         let timeoutId: NodeJS.Timeout | null = null;
@@ -321,7 +347,7 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
                 clearTimeout(timeoutId);
             }
             timeoutId = setTimeout(() => {
-                findAdvancedFiltersBlocks();
+                findDynamicDataLayoutBlocks();
             }, 300);
         });
 
@@ -335,224 +361,19 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
         };
     }, [trigger, triggerSettings]);
 
-    // Load filters from selected block
-    useEffect(() => {
-        if (trigger !== 'advanced-filter' || !selectedFilterBlock) {
-            setAvailableFilters([]);
-            return;
+    // Update trigger config to allow custom content when advanced-filter trigger is selected
+    const resolvedTriggerConfig = useMemo(() => {
+        if (trigger === 'advanced-filter') {
+            return {
+                ...triggerConfig,
+                supports: {
+                    ...triggerConfig.supports,
+                    customContent: true, // Allow inner blocks for advanced-filter
+                },
+            };
         }
-
-        const attrs = selectedFilterBlock.attributes || {};
-        const allFilters: AdvancedFilter[] = [];
-
-        // Combine all filter types
-        const taxonomyFilters = (attrs.taxonomyFilters as AdvancedFilter[]) || [];
-        const metaFilters = (attrs.metaFilters as AdvancedFilter[]) || [];
-        const priceFilters = (attrs.priceFilters as AdvancedFilter[]) || [];
-        const dateFilters = (attrs.dateFilters as AdvancedFilter[]) || [];
-        const authorFilters = (attrs.authorFilters as AdvancedFilter[]) || [];
-        const keywordFilter = (attrs.keywordFilter as { enabled?: boolean; placeholder?: string; label?: string }) || {};
-
-        taxonomyFilters.forEach((filter: AdvancedFilter, index: number) => {
-            if (filter.enabled !== false) {
-                allFilters.push({
-                    ...filter,
-                    filterType: 'taxonomy',
-                    filterIndex: index,
-                    filterId: `taxonomy_${index}_${filter.taxonomy || ''}`,
-                    label: filter.label || filter.taxonomy || `Taxonomy Filter ${index + 1}`,
-                });
-            }
-        });
-
-        metaFilters.forEach((filter: AdvancedFilter, index: number) => {
-            if (filter.enabled !== false) {
-                allFilters.push({
-                    ...filter,
-                    filterType: 'meta',
-                    filterIndex: index,
-                    filterId: `meta_${index}_${filter.metaKey || ''}`,
-                    label: filter.label || filter.metaKey || `Meta Filter ${index + 1}`,
-                });
-            }
-        });
-
-        priceFilters.forEach((filter: AdvancedFilter, index: number) => {
-            if (filter.enabled !== false) {
-                allFilters.push({
-                    ...filter,
-                    filterType: 'price',
-                    filterIndex: index,
-                    filterId: `price_${index}`,
-                    label: filter.label || __('Price Filter', 'jankx'),
-                });
-            }
-        });
-
-        dateFilters.forEach((filter: AdvancedFilter, index: number) => {
-            if (filter.enabled !== false) {
-                allFilters.push({
-                    ...filter,
-                    filterType: 'date',
-                    filterIndex: index,
-                    filterId: `date_${index}`,
-                    label: filter.label || __('Date Filter', 'jankx'),
-                });
-            }
-        });
-
-        authorFilters.forEach((filter: AdvancedFilter, index: number) => {
-            if (filter.enabled !== false) {
-                allFilters.push({
-                    ...filter,
-                    filterType: 'author',
-                    filterIndex: index,
-                    filterId: `author_${index}`,
-                    label: filter.label || __('Author Filter', 'jankx'),
-                });
-            }
-        });
-
-        if (keywordFilter.enabled) {
-            allFilters.push({
-                ...keywordFilter,
-                filterType: 'keyword',
-                filterIndex: 0,
-                filterId: 'keyword_0',
-                label: keywordFilter.label || __('Keyword Search', 'jankx'),
-            });
-        }
-
-        setAvailableFilters(allFilters);
-
-        // Restore selected filter from triggerSettings
-        const savedFilterId = (triggerSettings as Record<string, unknown>)?.filterId as string | undefined;
-        if (savedFilterId) {
-            const filter = allFilters.find((f: AdvancedFilter) => f.filterId === savedFilterId);
-            if (filter) {
-                setSelectedFilter(filter);
-            }
-        }
-    }, [trigger, selectedFilterBlock, triggerSettings]);
-
-    // Load terms for taxonomy filter
-    // Only reload when taxonomy actually changes, not when selectedFilter object reference changes
-    useEffect(() => {
-        if (trigger !== 'advanced-filter' || !selectedFilter || selectedFilter.filterType !== 'taxonomy') {
-            setFilterTerms([]);
-            lastFilterTypeRef.current = '';
-            lastTaxonomyRef.current = '';
-            return;
-        }
-
-        const taxonomy = selectedFilter.taxonomy || '';
-        const filterType = selectedFilter.filterType || '';
-        
-        if (!taxonomy) {
-            setFilterTerms([]);
-            lastTaxonomyRef.current = '';
-            return;
-        }
-
-        // Only reload if taxonomy actually changed
-        if (lastTaxonomyRef.current === taxonomy && lastFilterTypeRef.current === filterType) {
-            // Taxonomy hasn't changed, use cached terms if available
-            if (termsCacheRef.current[taxonomy] && termsCacheRef.current[taxonomy].length > 0) {
-                setFilterTerms(termsCacheRef.current[taxonomy]);
-                return;
-            }
-        }
-
-        // Taxonomy changed or not in cache, need to load
-        lastTaxonomyRef.current = taxonomy;
-        lastFilterTypeRef.current = filterType;
-        
-        // Check cache first - if terms for this taxonomy are already loaded, use them
-        if (termsCacheRef.current[taxonomy] && termsCacheRef.current[taxonomy].length > 0) {
-            setFilterTerms(termsCacheRef.current[taxonomy]);
-            return;
-        }
-
-        // Not in cache, need to load
-        setLoadingTerms(true);
-        
-        const wpApiFetch = window.wp?.apiFetch;
-        if (!wpApiFetch) {
-            setLoadingTerms(false);
-            return;
-        }
-        
-        wpApiFetch({
-            path: `/wp/v2/${taxonomy}?per_page=100&orderby=name&order=asc`,
-        })
-            .then((terms: unknown) => {
-                const termsArray = (terms as Term[]) || [];
-                setFilterTerms(termsArray);
-                // Cache the loaded terms
-                termsCacheRef.current[taxonomy] = termsArray;
-            })
-            .catch((error: Error) => {
-                console.error('Error loading terms:', error);
-                setFilterTerms([]);
-            })
-            .finally(() => {
-                setLoadingTerms(false);
-            });
-    }, [trigger, selectedFilter?.filterType, selectedFilter?.taxonomy]);
-
-    // Load authors for author filter
-    // Only reload when filter type changes to author, use cache otherwise
-    useEffect(() => {
-        if (trigger !== 'advanced-filter' || !selectedFilter || selectedFilter.filterType !== 'author') {
-            setAuthors([]);
-            lastFilterTypeRef.current = '';
-            return;
-        }
-
-        const filterType = selectedFilter.filterType || '';
-        
-        // Only reload if filter type actually changed to author
-        if (lastFilterTypeRef.current === filterType && authorsCacheRef.current && authorsCacheRef.current.length > 0) {
-            // Filter type hasn't changed, use cached authors
-            setAuthors(authorsCacheRef.current);
-            return;
-        }
-
-        // Filter type changed or not in cache, need to load
-        lastFilterTypeRef.current = filterType;
-
-        // Check cache first - if authors are already loaded, use them
-        if (authorsCacheRef.current && authorsCacheRef.current.length > 0) {
-            setAuthors(authorsCacheRef.current);
-            return;
-        }
-
-        // Only load if not in cache
-        setLoadingAuthors(true);
-        
-        const wpApiFetch = window.wp?.apiFetch;
-        if (!wpApiFetch) {
-            setLoadingAuthors(false);
-            return;
-        }
-        
-        wpApiFetch({
-            path: '/wp/v2/users?per_page=100&orderby=name&order=asc',
-        })
-            .then((users: unknown) => {
-                const usersArray = (users as Author[]) || [];
-                setAuthors(usersArray);
-                // Cache the loaded authors
-                authorsCacheRef.current = usersArray;
-            })
-            .catch((error: Error) => {
-                console.error('Error loading authors:', error);
-                setAuthors([]);
-            })
-            .finally(() => {
-                setLoadingAuthors(false);
-            });
-    }, [trigger, selectedFilter?.filterType]);
+        return triggerConfig;
+    }, [trigger, triggerConfig]);
 
     return (
         <>
@@ -587,215 +408,44 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
                     {/* Advanced Filter Trigger Settings */}
                     {trigger === 'advanced-filter' && (
                         <PanelBody title={__('Filter Settings', 'jankx')} initialOpen={true}>
-                            {advancedFilterBlocks.length === 0 ? (
+                            {dynamicDataLayoutBlocks.length === 0 ? (
                                 <p style={{ color: '#d63638' }}>
-                                    {__('No advanced-filters blocks found on this page. Add an advanced-filters block first.', 'jankx')}
+                                    {__('No Dynamic Data Layout blocks found on this page. Add a Dynamic Data Layout block first.', 'jankx')}
                                 </p>
                             ) : (
                                 <>
                                     <SelectControl
-                                        label={__('Filter Block', 'jankx')}
-                                        value={(triggerSettings as Record<string, unknown>)?.filterBlockId as string || ''}
+                                        label={__('Target Block', 'jankx')}
+                                        value={(triggerSettings as Record<string, unknown>)?.targetBlockId as string || ''}
                                         options={[
                                             { label: __('-- Select Block --', 'jankx'), value: '' },
-                                            ...advancedFilterBlocks.map((block: AdvancedFilterBlock) => ({
-                                                label: `Advanced Filters Block (${block.id.substring(0, 8)}...)`,
+                                            ...dynamicDataLayoutBlocks.map((block) => ({
+                                                label: `${block.name} (${block.postType})`,
                                                 value: block.id,
                                             })),
                                         ]}
                                         onChange={(value: string) => {
-                                            const block = advancedFilterBlocks.find((b: AdvancedFilterBlock) => b.id === value);
-                                            setSelectedFilterBlock(block || null);
+                                            const block = dynamicDataLayoutBlocks.find((b) => b.id === value);
+                                            setSelectedTargetBlock(block ? { id: block.id, postType: block.postType } : null);
                                             setAttributes({
                                                 triggerSettings: {
                                                     ...triggerSettings,
-                                                    filterBlockId: value,
-                                                    filterId: '',
-                                                    filterValue: '',
+                                                    targetBlockId: value,
                                                 },
                                             });
                                         }}
-                                        help={__('Select the advanced-filters block to use', 'jankx')}
+                                        help={__('Select the Dynamic Data Layout block to filter', 'jankx')}
                                     />
 
-                                    {selectedFilterBlock && (
-                                        <>
-                                            <SelectControl
-                                                label={__('Filter', 'jankx')}
-                                                value={(triggerSettings as Record<string, unknown>)?.filterId as string || ''}
-                                                options={[
-                                                    { label: __('-- Select Filter --', 'jankx'), value: '' },
-                                                    ...availableFilters.map((filter: AdvancedFilter) => ({
-                                                        label: filter.label || filter.filterId,
-                                                        value: filter.filterId,
-                                                    })),
-                                                ]}
-                                                onChange={(value: string) => {
-                                                    const filter = availableFilters.find((f: AdvancedFilter) => f.filterId === value);
-                                                    setSelectedFilter(filter || null);
-                                                    setAttributes({
-                                                        triggerSettings: {
-                                                            ...triggerSettings,
-                                                            filterId: value,
-                                                            filterValue: '',
-                                                        },
-                                                    });
-                                                }}
-                                                help={__('Select the filter to apply', 'jankx')}
-                                            />
-
-                                            {selectedFilter && (
-                                                <div style={{ marginTop: '15px' }}>
-                                                    {selectedFilter.filterType === 'taxonomy' && (
-                                                        <>
-                                                            <SelectControl
-                                                                label={__('Filter Value (Term)', 'jankx')}
-                                                                value={(triggerSettings as Record<string, unknown>)?.filterValue as string || ''}
-                                                                options={[
-                                                                    { label: __('-- Select Term --', 'jankx'), value: '' },
-                                                                    ...filterTerms.map((term: Term) => ({
-                                                                        label: term.name + (term.count ? ` (${term.count})` : ''),
-                                                                        value: String(term.id),
-                                                                    })),
-                                                                ]}
-                                                                onChange={(value: string) => {
-                                                                    setAttributes({
-                                                                        triggerSettings: {
-                                                                            ...triggerSettings,
-                                                                            filterValue: value,
-                                                                        },
-                                                                    });
-                                                                }}
-                                                                disabled={loadingTerms}
-                                                                help={loadingTerms ? __('Loading terms...', 'jankx') : __('Select a term to filter by', 'jankx')}
-                                                            />
-                                                        </>
-                                                    )}
-
-                                                    {selectedFilter.filterType === 'meta' && (
-                                                        <TextControl
-                                                            label={__('Filter Value', 'jankx')}
-                                                            value={(triggerSettings as Record<string, unknown>)?.filterValue as string || ''}
-                                                            onChange={(value: string) => {
-                                                                setAttributes({
-                                                                    triggerSettings: {
-                                                                        ...triggerSettings,
-                                                                        filterValue: value,
-                                                                    },
-                                                                });
-                                                            }}
-                                                            placeholder={selectedFilter.placeholder || __('Enter value...', 'jankx')}
-                                                            help={__('Enter the meta value to filter by', 'jankx')}
-                                                        />
-                                                    )}
-
-                                                    {selectedFilter.filterType === 'price' && (
-                                                        <>
-                                                            <TextControl
-                                                                label={__('Min Price', 'jankx')}
-                                                                type="number"
-                                                                value={(triggerSettings as Record<string, unknown>)?.filterValueMin as string || ''}
-                                                                onChange={(value: string) => {
-                                                                    setAttributes({
-                                                                        triggerSettings: {
-                                                                            ...triggerSettings,
-                                                                            filterValueMin: value,
-                                                                        },
-                                                                    });
-                                                                }}
-                                                                placeholder={selectedFilter.minPrice || __('Min', 'jankx')}
-                                                            />
-                                                            <TextControl
-                                                                label={__('Max Price', 'jankx')}
-                                                                type="number"
-                                                                value={(triggerSettings as Record<string, unknown>)?.filterValueMax as string || ''}
-                                                                onChange={(value: string) => {
-                                                                    setAttributes({
-                                                                        triggerSettings: {
-                                                                            ...triggerSettings,
-                                                                            filterValueMax: value,
-                                                                        },
-                                                                    });
-                                                                }}
-                                                                placeholder={selectedFilter.maxPrice || __('Max', 'jankx')}
-                                                            />
-                                                        </>
-                                                    )}
-
-                                                    {selectedFilter.filterType === 'date' && (
-                                                        <>
-                                                            <TextControl
-                                                                label={__('Start Date', 'jankx')}
-                                                                type="date"
-                                                                value={(triggerSettings as Record<string, unknown>)?.filterValueStart as string || ''}
-                                                                onChange={(value: string) => {
-                                                                    setAttributes({
-                                                                        triggerSettings: {
-                                                                            ...triggerSettings,
-                                                                            filterValueStart: value,
-                                                                        },
-                                                                    });
-                                                                }}
-                                                            />
-                                                            <TextControl
-                                                                label={__('End Date', 'jankx')}
-                                                                type="date"
-                                                                value={(triggerSettings as Record<string, unknown>)?.filterValueEnd as string || ''}
-                                                                onChange={(value: string) => {
-                                                                    setAttributes({
-                                                                        triggerSettings: {
-                                                                            ...triggerSettings,
-                                                                            filterValueEnd: value,
-                                                                        },
-                                                                    });
-                                                                }}
-                                                            />
-                                                        </>
-                                                    )}
-
-                                                    {selectedFilter.filterType === 'author' && (
-                                                        <SelectControl
-                                                            label={__('Author', 'jankx')}
-                                                            value={(triggerSettings as Record<string, unknown>)?.filterValue as string || ''}
-                                                            options={[
-                                                                { label: __('-- Select Author --', 'jankx'), value: '' },
-                                                                ...authors.map((author: Author) => ({
-                                                                    label: author.name,
-                                                                    value: String(author.id),
-                                                                })),
-                                                            ]}
-                                                            onChange={(value: string) => {
-                                                                setAttributes({
-                                                                    triggerSettings: {
-                                                                        ...triggerSettings,
-                                                                        filterValue: value,
-                                                                    },
-                                                                });
-                                                            }}
-                                                            disabled={loadingAuthors}
-                                                            help={loadingAuthors ? __('Loading authors...', 'jankx') : __('Select an author to filter by', 'jankx')}
-                                                        />
-                                                    )}
-
-                                                    {selectedFilter.filterType === 'keyword' && (
-                                                        <TextControl
-                                                            label={__('Search Keyword', 'jankx')}
-                                                            value={(triggerSettings as Record<string, unknown>)?.filterValue as string || ''}
-                                                            onChange={(value: string) => {
-                                                                setAttributes({
-                                                                    triggerSettings: {
-                                                                        ...triggerSettings,
-                                                                        filterValue: value,
-                                                                    },
-                                                                });
-                                                            }}
-                                                            placeholder={selectedFilter.placeholder || __('Enter keyword...', 'jankx')}
-                                                            help={__('Enter the search keyword', 'jankx')}
-                                                        />
-                                                    )}
-                                                </div>
-                                            )}
-                                        </>
+                                    {selectedTargetBlock && (
+                                        <div style={{ marginTop: '10px', padding: '10px', backgroundColor: '#f0f0f1', borderRadius: '4px' }}>
+                                            <p style={{ margin: 0, fontSize: '12px' }}>
+                                                <strong>{__('Post Type:', 'jankx')}</strong> {selectedTargetBlock.postType}
+                                            </p>
+                                            <p style={{ margin: '5px 0 0 0', fontSize: '12px', color: '#666' }}>
+                                                {__('Configure the filter using the Advanced Filter block below.', 'jankx')}
+                                            </p>
+                                        </div>
                                     )}
                                 </>
                             )}

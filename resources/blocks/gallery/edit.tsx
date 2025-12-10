@@ -39,9 +39,13 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 		phoneGap,
 		enableLightbox,
 		imageHoverEffect,
+		layout,
 	} = attributes;
+	const isMasonry = layout === 'masonry';
 	// cols number
-	const colsNumber = images ? deskCol : 1;
+	const colsNumber = images ? (isMasonry ? deskCol : 1) : 1;
+	const tabletColumns = isMasonry ? tabCol : 1;
+	const phoneColumns = isMasonry ? phoneCol : 1;
 
 	// gallery id
 	setAttributes({ galleryId: clientId.slice(0, 8) });
@@ -53,46 +57,69 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 					title={__('Gallery Settings', 'jankx')}
 					initialOpen={true}
 				>
-					<Devices
-						device={colDevice}
-						title={__('Number of Columns', 'jankx')}
-						renderFunction={(device) =>
+					<SelectControl
+						label={__('Layout', 'jankx')}
+						value={layout}
+						options={[
+							{
+								label: __('Masonry', 'jankx'),
+								value: 'masonry',
+							},
+							{
+								label: __('Stacked (Portrait)', 'jankx'),
+								value: 'stacked',
+							},
+						]}
+						onChange={(value) =>
 							setAttributes({
-								colDevice: device,
+								layout: value,
 							})
 						}
 					/>
-					{colDevice === 'desktop' && (
-						<RangeControl
-							value={deskCol}
-							onChange={(value) =>
-								setAttributes({ deskCol: value })
-							}
-							min={1}
-							max={5}
-						/>
-					)}
+					{isMasonry && (
+						<>
+							<Devices
+								device={colDevice}
+								title={__('Number of Columns', 'jankx')}
+								renderFunction={(device) =>
+									setAttributes({
+										colDevice: device,
+									})
+								}
+							/>
+							{colDevice === 'desktop' && (
+								<RangeControl
+									value={deskCol}
+									onChange={(value) =>
+										setAttributes({ deskCol: value })
+									}
+									min={1}
+									max={5}
+								/>
+							)}
 
-					{colDevice === 'tablet' && (
-						<RangeControl
-							value={tabCol}
-							onChange={(value) =>
-								setAttributes({ tabCol: value })
-							}
-							min={1}
-							max={5}
-						/>
-					)}
+							{colDevice === 'tablet' && (
+								<RangeControl
+									value={tabCol}
+									onChange={(value) =>
+										setAttributes({ tabCol: value })
+									}
+									min={1}
+									max={5}
+								/>
+							)}
 
-					{colDevice === 'smartphone' && (
-						<RangeControl
-							value={phoneCol}
-							onChange={(value) =>
-								setAttributes({ phoneCol: value })
-							}
-							min={1}
-							max={5}
-						/>
+							{colDevice === 'smartphone' && (
+								<RangeControl
+									value={phoneCol}
+									onChange={(value) =>
+										setAttributes({ phoneCol: value })
+									}
+									min={1}
+									max={5}
+								/>
+							)}
+						</>
 					)}
 					{/* Columns Gap */}
 					<Devices
@@ -226,7 +253,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 			)}
 			<div
 				{...useBlockProps({
-					className: `dc__${colsNumber} tc__${tabCol} pc__${phoneCol} dg__${deskGap} tg__${tabGap} pg__${phoneGap}`,
+					className: `layout__${layout} dc__${colsNumber} tc__${tabletColumns} pc__${phoneColumns} dg__${deskGap} tg__${tabGap} pg__${phoneGap}`,
 				})}
 			>
 				{images ? (

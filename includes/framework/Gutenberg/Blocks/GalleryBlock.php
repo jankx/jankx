@@ -13,14 +13,14 @@ use Jankx\Gutenberg\Block;
  * @package Jankx\Gutenberg\Blocks
  * @since 1.0.0
  */
-class ImageMasonryGalleryBlock extends Block
+class GalleryBlock extends Block
 {
     /**
      * Block ID
      *
      * @var string
      */
-    protected $blockId = 'jankx/image-masonry-gallery';
+    protected $blockId = 'jankx/gallery';
 
     /**
      * Block attributes
@@ -98,18 +98,25 @@ class ImageMasonryGalleryBlock extends Block
         $phoneGap = $attributes['phoneGap'] ?? 5;
         $enableLightbox = $attributes['enableLightbox'] ?? true;
         $imageHoverEffect = $attributes['imageHoverEffect'] ?? 'none';
+        $layout = $attributes['layout'] ?? 'masonry';
         $className = $attributes['className'] ?? '';
 
         if (empty($images)) {
             return $this->renderPlaceholder();
         }
 
+        $isMasonry = $layout === 'masonry';
+        $deskColumnClass = $isMasonry ? "dc__{$deskCol}" : 'dc__1';
+        $tabColumnClass = $isMasonry ? "tc__{$tabCol}" : 'tc__1';
+        $phoneColumnClass = $isMasonry ? "pc__{$phoneCol}" : 'pc__1';
+
         // Build wrapper classes
         $wrapperClasses = [
             'wp-block-jankx-image-masonry-gallery',
-            "dc__{$deskCol}",
-            "tc__{$tabCol}",
-            "pc__{$phoneCol}",
+            "layout__{$layout}",
+            $deskColumnClass,
+            $tabColumnClass,
+            $phoneColumnClass,
             "dg__{$deskGap}",
             "tg__{$tabGap}",
             "pg__{$phoneGap}"

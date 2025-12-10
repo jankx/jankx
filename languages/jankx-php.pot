@@ -182,11 +182,11 @@ msgstr ""
 msgid "Chọn icon từ Jankx Font Icons System để hiển thị ở đây."
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/ImageMasonryGalleryBlock.php:161
+#: ../includes/framework/Gutenberg/Blocks/GalleryBlock.php:161
 msgid "Gallery Image"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/ImageMasonryGalleryBlock.php:192
+#: ../includes/framework/Gutenberg/Blocks/GalleryBlock.php:192
 msgid "No images selected. Please add images to the gallery."
 msgstr ""
 

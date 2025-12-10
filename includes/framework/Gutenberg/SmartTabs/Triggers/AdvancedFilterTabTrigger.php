@@ -32,7 +32,7 @@ class AdvancedFilterTabTrigger extends AbstractSmartTabTrigger
      */
     public function getDescription(): string
     {
-        return __('Trigger advanced filter when tab is clicked. Updates dynamic-data-layout blocks with filtered results.', 'jankx');
+        return __('Trigger advanced filter when tab is clicked. Configure filter using Advanced Filter block inside this tab. Updates dynamic-data-layout blocks with filtered results.', 'jankx');
     }
 
     /**
@@ -40,7 +40,7 @@ class AdvancedFilterTabTrigger extends AbstractSmartTabTrigger
      */
     public function isAvailable(array $context = []): bool
     {
-        // Check if there are any advanced-filters blocks on the page
+        // Check if there are any dynamic-data-layout blocks on the page
         // This will be checked in JavaScript for editor context
         return true;
     }
@@ -54,7 +54,7 @@ class AdvancedFilterTabTrigger extends AbstractSmartTabTrigger
         
         $settings['supports'] = [
             'customTitle' => true,
-            'customContent' => false, // Content is managed by trigger
+            'customContent' => true, // Allow inner blocks (advanced-filter block)
             'icon' => true,
         ];
 
@@ -62,29 +62,11 @@ class AdvancedFilterTabTrigger extends AbstractSmartTabTrigger
         $settings['settingsSchema'] = [
             [
                 'type' => 'select',
-                'key' => 'filterBlockId',
-                'label' => __('Filter Block', 'jankx'),
-                'description' => __('Select the advanced-filters block to use', 'jankx'),
+                'key' => 'targetBlockId',
+                'label' => __('Target Block', 'jankx'),
+                'description' => __('Select the Dynamic Data Layout block to filter', 'jankx'),
                 'options' => [], // Will be populated by JavaScript
                 'required' => true,
-            ],
-            [
-                'type' => 'select',
-                'key' => 'filterId',
-                'label' => __('Filter', 'jankx'),
-                'description' => __('Select the filter to apply', 'jankx'),
-                'options' => [], // Will be populated by JavaScript
-                'required' => true,
-            ],
-            [
-                'type' => 'dynamic',
-                'key' => 'filterValue',
-                'label' => __('Filter Value', 'jankx'),
-                'description' => __('Select or enter the filter value', 'jankx'),
-                'required' => true,
-                'dependsOn' => [
-                    'filterId' => 'filterId',
-                ],
             ],
         ];
 

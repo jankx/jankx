@@ -6,7 +6,8 @@
   "title": "Advanced Filter",
   "category": "jankx",
   "parent": [
-    "jankx/advanced-filters"
+    "jankx/advanced-filters",
+    "jankx/smart-tab"
   ],
   "icon": "filter",
   "description": "Một filter đơn lẻ dùng bên trong Advanced Filters.",
@@ -124,6 +125,26 @@
     "showSearchButton": {
       "type": "boolean",
       "default": false
+    },
+    "filterValue": {
+      "type": "string",
+      "default": ""
+    },
+    "filterValueMin": {
+      "type": "string",
+      "default": ""
+    },
+    "filterValueMax": {
+      "type": "string",
+      "default": ""
+    },
+    "filterValueStart": {
+      "type": "string",
+      "default": ""
+    },
+    "filterValueEnd": {
+      "type": "string",
+      "default": ""
     }
   },
   "editorScript": "file:./build/index.js"

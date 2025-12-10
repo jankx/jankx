@@ -4,10 +4,18 @@
 .wp-block-jankx-image-masonry-gallery {
 	transition: all 0.5s ease-in-out;
 	column-fill: initial;
+	&.layout__stacked {
+		column-count: 1 !important;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		width: 100%;
+	}
 	.single-gallery-image {
 		display: block;
 		box-sizing: border-box;
 		overflow: hidden;
+		width: 100%;
 		img {
 			transition: all 0.23s ease-in-out;
 			backface-visibility: hidden;

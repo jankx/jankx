@@ -104,6 +104,7 @@ class SmartTabsBlock extends Block
         $tab_alignment = $attributes['tabAlignment'] ?? 'left';
         $hide_tabs_border_bottom = $attributes['hideTabsBorderBottom'] ?? false;
         $center_navigation = $attributes['centerNavigation'] ?? false;
+        $hide_tab_content = $attributes['hideTabContent'] ?? false;
         $label = $attributes['label'] ?? '';
         $show_label = $attributes['showLabel'] ?? false;
         $class_name = $attributes['className'] ?? '';
@@ -127,6 +128,10 @@ class SmartTabsBlock extends Block
 
         if (!empty($class_name)) {
             $wrapper_classes[] = esc_attr($class_name);
+        }
+
+        if ($hide_tab_content) {
+            $wrapper_classes[] = 'smart-tabs--hide-content';
         }
 
         // Build wrapper attributes
@@ -159,12 +164,27 @@ class SmartTabsBlock extends Block
             $attrs_string .= sprintf(' %s="%s"', esc_attr($key), esc_attr($value));
         }
 
-        // Wrap saved content với navigation
-        return sprintf(
-            '<div%s><div class="smart-tabs__navigation">%s%s</div><div class="smart-tabs__content">%s</div></div>',
-            $attrs_string,
+        // Build navigation HTML
+        $navigation_html = sprintf(
+            '<div class="smart-tabs__navigation">%s%s</div>',
             $label_html,
-            $tab_nav_html,
+            $tab_nav_html
+        );
+
+        // Only render content wrapper if hideTabContent is false
+        if ($hide_tab_content) {
+            return sprintf(
+                '<div%s>%s</div>',
+                $attrs_string,
+                $navigation_html
+            );
+        }
+
+        // Render with content wrapper
+        return sprintf(
+            '<div%s>%s<div class="smart-tabs__content">%s</div></div>',
+            $attrs_string,
+            $navigation_html,
             $content  // Content đã được save sẵn từ JavaScript
         );
     }

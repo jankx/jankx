@@ -14,11 +14,16 @@ export default function save({ attributes }) {
 		phoneGap,
 		enableLightbox,
 		imageHoverEffect,
+		layout,
 	} = attributes;
+	const isMasonry = layout === 'masonry';
+	const desktopColumns = isMasonry ? deskCol : 1;
+	const tabletColumns = isMasonry ? tabCol : 1;
+	const phoneColumns = isMasonry ? phoneCol : 1;
 	return (
 		<div
 			{...useBlockProps.save({
-				className: `dc__${deskCol} tc__${tabCol} pc__${phoneCol} dg__${deskGap} tg__${tabGap} pg__${phoneGap}`,
+				className: `layout__${layout} dc__${desktopColumns} tc__${tabletColumns} pc__${phoneColumns} dg__${deskGap} tg__${tabGap} pg__${phoneGap}`,
 			})}
 			data-id={galleryId}
 			id={galleryId}

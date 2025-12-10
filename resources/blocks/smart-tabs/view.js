@@ -115,9 +115,14 @@ document.addEventListener('DOMContentLoaded', () => {
         navItems.forEach((navItem, index) => {
             navItem.addEventListener('click', (event) => {
                 event.preventDefault();
+                
+                // Get trigger before activating tab
+                const tabTrigger = navItem?.getAttribute('data-trigger');
+                const panel = tabPanels[index];
+                
+                // Activate tab first
                 activateTab(index, { focusNav: true, force: true });
 
-                const panel = tabPanels[index];
                 if (panel && panel.id) {
                     const newHash = `#${panel.id}`;
                     if (window.location.hash !== newHash) {
@@ -130,19 +135,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     scrollToPanel(index);
                 }
 
-                // Handle advanced-filter trigger
-                const tabTrigger = panel?.getAttribute('data-trigger');
-                if (tabTrigger === 'advanced-filter') {
-                    const triggerSettingsData = panel?.getAttribute('data-trigger-settings');
-                    if (triggerSettingsData) {
-                        try {
-                            const triggerSettings = JSON.parse(triggerSettingsData);
-                            triggerAdvancedFilter(triggerSettings);
-                        } catch (error) {
-                            console.error('Error parsing trigger settings:', error);
-                        }
-                    }
-                }
+                // Advanced-filter trigger is now handled by smart-tab/view.js
+                // No need to handle it here anymore
             });
         });
 
@@ -214,7 +208,152 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- * Trigger advanced filter when tab is clicked
+ * Extract filter data from advanced-filter block element
+ * 
+ * @param {HTMLElement} filterBlock The advanced-filter block element
+ * @param {string} filterType The filter type (taxonomy, meta, price, date, author, keyword)
+ * @return {Object|null} Filter data object or null
+ */
+function extractFilterDataFromBlock(filterBlock, filterType) {
+    if (!filterBlock) return null;
+    
+    const data = {};
+    
+    switch (filterType) {
+        case 'taxonomy':
+            const taxonomy = filterBlock.getAttribute('data-taxonomy') || '';
+            const filterValue = filterBlock.getAttribute('data-filter-value') || '';
+            if (taxonomy) {
+                data.taxonomy = taxonomy;
+                if (filterValue) {
+                    data.filterValue = filterValue;
+                }
+            }
+            break;
+            
+        case 'meta':
+            const metaKey = filterBlock.getAttribute('data-meta-key') || '';
+            const metaValue = filterBlock.getAttribute('data-filter-value') || '';
+            if (metaKey) {
+                data.metaKey = metaKey;
+                data.filterValue = metaValue;
+            }
+            break;
+            
+        case 'price':
+            const minPrice = filterBlock.getAttribute('data-filter-value-min') || '';
+            const maxPrice = filterBlock.getAttribute('data-filter-value-max') || '';
+            if (minPrice || maxPrice) {
+                data.filterValueMin = minPrice;
+                data.filterValueMax = maxPrice;
+            }
+            break;
+            
+        case 'date':
+            const startDate = filterBlock.getAttribute('data-filter-value-start') || '';
+            const endDate = filterBlock.getAttribute('data-filter-value-end') || '';
+            if (startDate || endDate) {
+                data.filterValueStart = startDate;
+                data.filterValueEnd = endDate;
+            }
+            break;
+            
+        case 'author':
+            const authorId = filterBlock.getAttribute('data-filter-value') || '';
+            if (authorId) {
+                data.filterValue = authorId;
+            }
+            break;
+            
+        case 'keyword':
+            const keyword = filterBlock.getAttribute('data-filter-value') || '';
+            if (keyword) {
+                data.filterValue = keyword;
+            }
+            break;
+    }
+    
+    // Return data if we have at least the required fields for each type
+    const hasRequiredData = 
+        (filterType === 'taxonomy' && data.taxonomy) ||
+        (filterType === 'meta' && data.metaKey) ||
+        (filterType === 'price' && (data.filterValueMin || data.filterValueMax)) ||
+        (filterType === 'date' && (data.filterValueStart || data.filterValueEnd)) ||
+        (filterType === 'author' && data.filterValue) ||
+        (filterType === 'keyword' && data.filterValue);
+    
+    return hasRequiredData ? data : null;
+}
+
+/**
+ * Trigger advanced filter from block data
+ * 
+ * @param {string} targetBlockId The target dynamic-data-layout block ID
+ * @param {string} filterType The filter type
+ * @param {Object} filterData Filter data object
+ */
+function triggerAdvancedFilterFromBlock(targetBlockId, filterType, filterData) {
+    if (!targetBlockId) {
+        console.warn('AdvancedFilter: Missing targetBlockId');
+        return;
+    }
+    
+    // Build filters payload based on filter type
+    let filtersPayload = {};
+    
+    switch (filterType) {
+        case 'taxonomy':
+            if (filterData.taxonomy && filterData.filterValue) {
+                filtersPayload[filterData.taxonomy] = [filterData.filterValue];
+            }
+            break;
+            
+        case 'meta':
+            if (filterData.metaKey) {
+                filtersPayload.meta = {
+                    [filterData.metaKey]: filterData.filterValue || '',
+                };
+            }
+            break;
+            
+        case 'price':
+            filtersPayload.price = {
+                min: filterData.filterValueMin || '',
+                max: filterData.filterValueMax || '',
+            };
+            break;
+            
+        case 'date':
+            filtersPayload.date = {
+                start: filterData.filterValueStart || '',
+                end: filterData.filterValueEnd || '',
+            };
+            break;
+            
+        case 'author':
+            if (filterData.filterValue) {
+                filtersPayload.author = [filterData.filterValue];
+            }
+            break;
+            
+        case 'keyword':
+            if (filterData.filterValue) {
+                filtersPayload.keyword = filterData.filterValue;
+            }
+            break;
+    }
+    
+    if (Object.keys(filtersPayload).length === 0) {
+        console.warn('AdvancedFilter: Empty filters payload', { filterType, filterData });
+        return;
+    }
+    
+    // Call direct AJAX to update dynamic-data-layout
+    fetchDynamicDataLayout(targetBlockId, filtersPayload);
+}
+
+/**
+ * Trigger advanced filter when tab is clicked (legacy method for backward compatibility)
  * 
  * @param {Object} triggerSettings Trigger settings from tab attributes
  */
@@ -670,6 +809,7 @@ function fetchDynamicDataLayout(targetBlockId, filtersPayload) {
         console.warn('AdvancedFilter: Missing data-block-settings on dynamic-data-layout block');
     }
 
+    // Lấy nonce & ajaxUrl giống advanced-filters
     let nonce = '';
     let ajaxUrl = '/wp-admin/admin-ajax.php';
     const afConfigEl = document.querySelector('.advanced-filters-config');
@@ -681,12 +821,47 @@ function fetchDynamicDataLayout(targetBlockId, filtersPayload) {
         ajaxUrl = window.jankxAdvancedFilters.ajaxUrl || ajaxUrl;
     }
 
+    if (!nonce) {
+        console.warn('AdvancedFilter: Missing nonce, cannot send AJAX');
+        return;
+    }
+
+    // Đảm bảo ajaxUrl là absolute
+    if (ajaxUrl.startsWith('/')) {
+        ajaxUrl = window.location.origin + ajaxUrl;
+    } else if (!ajaxUrl.startsWith('http://') && !ajaxUrl.startsWith('https://')) {
+        ajaxUrl = window.location.origin + '/' + ajaxUrl.replace(/^\//, '');
+    }
+
+    // Lấy post_id (tương tự advanced-filters)
+    let postId = 0;
+    try {
+        postId = window.wp?.data?.select('core/editor')?.getCurrentPostId?.() || 0;
+    } catch (e) { /* ignore */ }
+    if (!postId) {
+        const bodyPostId = document.body.getAttribute('data-post-id');
+        if (bodyPostId) postId = parseInt(bodyPostId) || 0;
+    }
+    if (!postId) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlPostId = urlParams.get('p') || urlParams.get('post') || urlParams.get('post_id');
+        if (urlPostId) postId = parseInt(urlPostId) || 0;
+    }
+    if (!postId) {
+        const bodyClasses = document.body.className;
+        const match = bodyClasses.match(/postid-(\d+)/);
+        if (match) postId = parseInt(match[1]) || 0;
+    }
+
     const params = new URLSearchParams();
     params.append('action', 'jankx_dynamic_data_layout_filter');
     params.append('nonce', nonce);
     params.append('block_id', targetBlockId);
     params.append('attributes', attributesJson || '');
     params.append('filters', JSON.stringify(filtersPayload));
+    if (postId > 0) {
+        params.append('post_id', String(postId));
+    }
 
     fetch(ajaxUrl, {
         method: 'POST',
