@@ -320,8 +320,8 @@
     }
 }
 
-// Loading spinner for post-type-layout blocks (target blocks)
-.post-type-layout-loading {
+// Loading spinner for dynamic-data-layout blocks (target blocks)
+.dynamic-data-layout-loading {
     display: none;
     position: absolute;
     top: 0;
@@ -339,7 +339,7 @@
         display: flex;
     }
 
-    .post-type-layout-spinner {
+    .dynamic-data-layout-spinner {
         display: inline-block;
         width: 40px;
         height: 40px;
@@ -350,8 +350,8 @@
     }
 }
 
-// Ensure post-type-layout block has relative positioning for absolute loading overlay
-.wp-block-jankx-post-type-layout {
+// Ensure dynamic-data-layout block has relative positioning for absolute loading overlay
+.wp-block-jankx-dynamic-data-layout {
     position: relative;
     min-height: 100px; // Ensure there's space for loading overlay
 }

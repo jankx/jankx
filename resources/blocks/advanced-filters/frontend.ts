@@ -382,7 +382,7 @@ class AdvancedFilters {
                 }
             }
 
-            // Use PostTypeLayoutBlock's AJAX handler
+            // Use DynamicDataLayoutBlock's AJAX handler
             // Process each target block individually
             const updatePromises = this.config.targetBlockIds.map(async (blockId): Promise<{ blockId: string; html: string } | null> => {
                 // Get block attributes from DOM if available
@@ -523,7 +523,7 @@ class AdvancedFilters {
             
             if (!targetElement) {
                 // Try finding by class and queryId data attribute
-                const blocks = document.querySelectorAll('.wp-block-jankx-post-type-layout');
+                const blocks = document.querySelectorAll('.wp-block-jankx-dynamic-data-layout');
                 blocks.forEach((block) => {
                     const queryId = (block as HTMLElement).getAttribute('data-query-id');
                     if (queryId === blockId) {
@@ -534,7 +534,7 @@ class AdvancedFilters {
             
             if (targetElement) {
                 // Remove loading spinner before updating content
-                const existingLoading = targetElement.querySelector('.post-type-layout-loading');
+                const existingLoading = targetElement.querySelector('.dynamic-data-layout-loading');
                 if (existingLoading) {
                     existingLoading.remove();
                 }
@@ -563,7 +563,7 @@ class AdvancedFilters {
 
     private reinitializeBlockScripts(element: HTMLElement): void {
         // Re-initialize carousel if present
-        if (element.querySelector('.post-type-layout-carousel')) {
+        if (element.querySelector('.dynamic-data-layout-carousel')) {
             // Trigger any carousel initialization scripts
             const event = new CustomEvent('jankx:reinitialize-carousel', {
                 detail: { element },
@@ -633,13 +633,13 @@ class AdvancedFilters {
     private showLoading(): void {
         if (!this.config || !this.config.targetBlockIds) return;
         
-        // Show loading spinner on target blocks (post-type-layout blocks)
+        // Show loading spinner on target blocks (dynamic-data-layout blocks)
         this.config.targetBlockIds.forEach((blockId: string) => {
             let targetElement = document.querySelector(`[data-block-id="${blockId}"], [data-query-id="${blockId}"]`) as HTMLElement;
             
             if (!targetElement) {
                 // Try finding by class and queryId data attribute
-                const blocks = document.querySelectorAll('.wp-block-jankx-post-type-layout');
+                const blocks = document.querySelectorAll('.wp-block-jankx-dynamic-data-layout');
                 blocks.forEach((block) => {
                     const queryId = (block as HTMLElement).getAttribute('data-query-id');
                     if (queryId === blockId) {
@@ -650,13 +650,13 @@ class AdvancedFilters {
             
             if (targetElement) {
                 // Create or get loading element
-                let loading = targetElement.querySelector('.post-type-layout-loading');
+                let loading = targetElement.querySelector('.dynamic-data-layout-loading');
                 
                 if (!loading) {
                     // Create loading element if it doesn't exist
                     loading = document.createElement('div');
-                    loading.className = 'post-type-layout-loading';
-                    loading.innerHTML = '<div class="post-type-layout-spinner"></div>';
+                    loading.className = 'dynamic-data-layout-loading';
+                    loading.innerHTML = '<div class="dynamic-data-layout-spinner"></div>';
                     targetElement.appendChild(loading);
                 }
                 
@@ -674,7 +674,7 @@ class AdvancedFilters {
             
             if (!targetElement) {
                 // Try finding by class and queryId data attribute
-                const blocks = document.querySelectorAll('.wp-block-jankx-post-type-layout');
+                const blocks = document.querySelectorAll('.wp-block-jankx-dynamic-data-layout');
                 blocks.forEach((block) => {
                     const queryId = (block as HTMLElement).getAttribute('data-query-id');
                     if (queryId === blockId) {
@@ -684,7 +684,7 @@ class AdvancedFilters {
             }
             
             if (targetElement) {
-                const loading = targetElement.querySelector('.post-type-layout-loading');
+                const loading = targetElement.querySelector('.dynamic-data-layout-loading');
                 if (loading) {
                     loading.classList.remove('active');
                 }

@@ -247,7 +247,7 @@
   background: var(--wp--preset--color--primary, #503AA8);
 }
 
-.post-type-layout-loading {
+.dynamic-data-layout-loading {
   display: none;
   position: absolute;
   top: 0;
@@ -261,10 +261,10 @@
   padding: 2rem;
   text-align: center;
 }
-.post-type-layout-loading.active {
+.dynamic-data-layout-loading.active {
   display: flex;
 }
-.post-type-layout-loading .post-type-layout-spinner {
+.dynamic-data-layout-loading .dynamic-data-layout-spinner {
   display: inline-block;
   width: 40px;
   height: 40px;
@@ -274,7 +274,7 @@
   animation: spin 1s linear infinite;
 }
 
-.wp-block-jankx-post-type-layout {
+.wp-block-jankx-dynamic-data-layout {
   position: relative;
   min-height: 100px;
 }

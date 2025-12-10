@@ -126,7 +126,7 @@ class AdvancedFiltersBlock extends Block
     public function handleFindBlocksFilter(array $blocks, $post): array
     {
         $parsed_blocks = parse_blocks($post->post_content);
-        $this->findPostTypeLayoutBlocks($parsed_blocks, $blocks, [
+        $this->findDynamicDataLayoutBlocks($parsed_blocks, $blocks, [
             'source' => 'current_page',
             'postId' => $post->ID,
             'postTitle' => $post->post_title,
@@ -137,18 +137,18 @@ class AdvancedFiltersBlock extends Block
     }
 
     /**
-     * Recursively find jankx/post-type-layout blocks in parsed blocks
+     * Recursively find jankx/dynamic-data-layout blocks in parsed blocks
      *
      * @param array $blocks Parsed blocks array
      * @param array &$found_blocks Reference to array to collect found blocks
      * @param array $context Context information (source, postId, postTitle, postType)
      * @return void
      */
-    private function findPostTypeLayoutBlocks(array $blocks, array &$found_blocks, array $context): void
+    private function findDynamicDataLayoutBlocks(array $blocks, array &$found_blocks, array $context): void
     {
         foreach ($blocks as $block) {
-            // Check if this is a post-type-layout block
-            if (($block['blockName'] ?? '') === 'jankx/post-type-layout') {
+            // Check if this is a dynamic-data-layout block
+            if (($block['blockName'] ?? '') === 'jankx/dynamic-data-layout') {
                 $attributes = $block['attrs'] ?? [];
                 $query_id = $attributes['queryId'] ?? null;
                 
@@ -180,7 +180,7 @@ class AdvancedFiltersBlock extends Block
 
             // Recursively search inner blocks
             if (!empty($block['innerBlocks'])) {
-                $this->findPostTypeLayoutBlocks($block['innerBlocks'], $found_blocks, $context);
+                $this->findDynamicDataLayoutBlocks($block['innerBlocks'], $found_blocks, $context);
             }
         }
     }
@@ -252,7 +252,7 @@ class AdvancedFiltersBlock extends Block
         }
 
         // If not found, search in limited posts to avoid memory issues
-        // Only search in recent posts with post-type-layout blocks
+        // Only search in recent posts with dynamic-data-layout blocks
         $posts = get_posts([
             'post_type' => ['page', 'post'], // Limit to common post types
             'post_status' => 'publish',
@@ -289,7 +289,7 @@ class AdvancedFiltersBlock extends Block
     private function findBlockInBlocks(array $blocks, string $block_id): ?array
     {
             foreach ($blocks as $block) {
-            if (($block['blockName'] ?? '') === 'jankx/post-type-layout') {
+            if (($block['blockName'] ?? '') === 'jankx/dynamic-data-layout') {
                 $current_block_id = $block['attrs']['queryId'] ?? null;
                 // Check both queryId and generated ID
                 if ($current_block_id && strval($current_block_id) === strval($block_id)) {
@@ -387,7 +387,7 @@ class AdvancedFiltersBlock extends Block
         // Generate unique filter ID
         $filter_id = 'filter_' . uniqid();
 
-        // Try detect post type from target post-type-layout blocks
+        // Try detect post type from target dynamic-data-layout blocks
         $detected_post_type = $this->detectPostTypeFromTargetIds($target_block_ids) ?: 'post';
 
         // Build filter configuration for frontend JavaScript
@@ -434,7 +434,7 @@ class AdvancedFiltersBlock extends Block
             'id' => $instance_id,
         ]);
 
-        // Create nonce for AJAX requests - use PostTypeLayoutBlock's nonce
+        // Create nonce for AJAX requests - use DynamicDataLayoutBlock's nonce
         $ajax_nonce = wp_create_nonce('jankx_load_more');
         $ajax_url = admin_url('admin-ajax.php');
 
@@ -491,7 +491,7 @@ class AdvancedFiltersBlock extends Block
         }
 
         // If not found, try to find in template parts (limited query to avoid memory issues)
-        // Only search in recent posts with post-type-layout blocks to avoid memory exhaustion
+        // Only search in recent posts with dynamic-data-layout blocks to avoid memory exhaustion
         $posts = get_posts([
             'post_type' => ['page', 'post'], // Limit to common post types
             'post_status' => 'publish',
@@ -531,7 +531,7 @@ class AdvancedFiltersBlock extends Block
     {
         foreach ($blocks as $block) {
             // Check current block
-            if (($block['blockName'] ?? '') === 'jankx/post-type-layout') {
+            if (($block['blockName'] ?? '') === 'jankx/dynamic-data-layout') {
                     $current_block_id = $block['attrs']['queryId'] ?? null;
                     if ($current_block_id && strval($current_block_id) === strval($block_id)) {
                         return $block['attrs']['postType'] ?? null;

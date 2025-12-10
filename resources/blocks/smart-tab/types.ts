@@ -55,12 +55,67 @@ export interface SmartTabTriggerConfig {
     settingsSchema?: Array<Record<string, unknown>>;
 }
 
+export interface AdvancedFilterBlock {
+    id: string;
+    clientId: string;
+    attributes: Record<string, unknown>;
+}
+
+export interface AdvancedFilter {
+    filterType: 'taxonomy' | 'meta' | 'price' | 'date' | 'author' | 'keyword';
+    filterIndex: number;
+    filterId: string;
+    label: string;
+    enabled?: boolean;
+    taxonomy?: string;
+    metaKey?: string;
+    placeholder?: string;
+    minPrice?: string;
+    maxPrice?: string;
+    currency?: string;
+    dateField?: string;
+    dateRange?: boolean;
+    showCount?: boolean;
+    listingType?: 'ul' | 'ol' | 'none';
+    [key: string]: unknown;
+}
+
+export interface Term {
+    id: number;
+    name: string;
+    count?: number;
+    slug: string;
+}
+
+export interface Author {
+    id: number;
+    name: string;
+    slug: string;
+}
+
 declare global {
     interface Window {
         JankxSmartTabTriggers?: {
             items: Record<string, SmartTabTriggerConfig>;
         };
+        wp?: {
+            data?: {
+                select: (store: string) => {
+                    getBlocks: () => Block[];
+                    getBlockIndex: (clientId: string) => number;
+                };
+                subscribe: (callback: () => void) => () => void;
+            };
+            apiFetch?: (options: { path: string }) => Promise<unknown[]>;
+        };
     }
+}
+
+interface Block {
+    name: string;
+    clientId: string;
+    attributes?: Record<string, unknown>;
+    innerBlocks?: Block[];
 }
 
 

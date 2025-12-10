@@ -73,6 +73,7 @@ function Edit({
   const {
     title,
     trigger = 'manual',
+    triggerSettings = {},
     iconType,
     icon,
     iconName,
@@ -91,6 +92,16 @@ function Edit({
     contentGradient
   } = attributes;
   const activeTabIndex = (_context$jankxActive = context?.['jankx/activeTab']) !== null && _context$jankxActive !== void 0 ? _context$jankxActive : 0;
+
+  // Advanced Filter Trigger State - Declare before useMemo to avoid initialization error
+  const [advancedFilterBlocks, setAdvancedFilterBlocks] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)([]);
+  const [selectedFilterBlock, setSelectedFilterBlock] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(null);
+  const [availableFilters, setAvailableFilters] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)([]);
+  const [selectedFilter, setSelectedFilter] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(null);
+  const [filterTerms, setFilterTerms] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)([]);
+  const [loadingTerms, setLoadingTerms] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(false);
+  const [authors, setAuthors] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)([]);
+  const [loadingAuthors, setLoadingAuthors] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(false);
   const rawTriggerConfig = (_window$JankxSmartTab = window?.JankxSmartTabTriggers?.items) !== null && _window$JankxSmartTab !== void 0 ? _window$JankxSmartTab : {};
   const fallbackTrigger = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => ({
     key: 'manual',
@@ -115,10 +126,20 @@ function Edit({
       ...rawTriggerConfig
     };
   }, [rawTriggerConfig, fallbackTrigger]);
-  const triggerOptions = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => Object.values(triggersMap).map(config => ({
-    label: config.label,
-    value: config.key
-  })), [triggersMap]);
+  const triggerOptions = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => {
+    const options = Object.values(triggersMap).map(config => ({
+      label: config.label,
+      value: config.key
+    }));
+
+    // Hide advanced-filter trigger if no advanced-filters blocks are available
+    if (trigger === 'advanced-filter' || advancedFilterBlocks.length > 0) {
+      return options;
+    }
+
+    // Filter out advanced-filter trigger if no blocks available
+    return options.filter(opt => opt.value !== 'advanced-filter');
+  }, [triggersMap, advancedFilterBlocks.length, trigger]);
   const triggerConfig = (_ref = (_triggersMap$trigger = triggersMap[trigger]) !== null && _triggersMap$trigger !== void 0 ? _triggersMap$trigger : triggersMap.manual) !== null && _ref !== void 0 ? _ref : fallbackTrigger;
   const triggerSupports = triggerConfig?.supports || {};
   const allowCustomTitle = triggerSupports.customTitle !== false;
@@ -131,11 +152,9 @@ function Edit({
   const {
     blockIndex
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useSelect)(select => {
-    const {
-      getBlockIndex
-    } = select('core/block-editor');
+    const editorSelect = select('core/block-editor');
     return {
-      blockIndex: getBlockIndex(clientId)
+      blockIndex: editorSelect.getBlockIndex(clientId)
     };
   }, [clientId]);
   const isActive = blockIndex === activeTabIndex;
@@ -169,10 +188,10 @@ function Edit({
 
   // Handle icon selection from picker
   const handleIconSelect = selectedIcon => {
-    if (selectedIcon && selectedIcon.icon) {
+    if (selectedIcon && selectedIcon.name) {
       setAttributes({
-        icon: selectedIcon.icon,
-        iconName: selectedIcon.name || '',
+        iconName: selectedIcon.name,
+        iconSet: selectedIcon.iconSet || iconSet,
         iconType: 'picker'
       });
     }
@@ -180,10 +199,11 @@ function Edit({
 
   // Parse and set SVG icon
   const handleCustomSvg = svgContent => {
-    const parsedIcon = (0,_svg_icon_utils__WEBPACK_IMPORTED_MODULE_8__.parseIcon)(svgContent);
-    if (parsedIcon) {
+    // parseIcon returns React element, but we need to store as string
+    // So we just store the original SVG content
+    if (svgContent && svgContent.trim()) {
       setAttributes({
-        icon: parsedIcon,
+        icon: svgContent,
         iconType: 'svg'
       });
     }
@@ -207,6 +227,227 @@ function Edit({
     }
     setAttributes(updatedAttributes);
   };
+
+  // Find advanced-filters blocks on the page (always check for availability)
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
+    const findAdvancedFiltersBlocks = () => {
+      try {
+        const wpData = window.wp?.data;
+        if (!wpData) {
+          setAdvancedFilterBlocks([]);
+          return;
+        }
+        const currentBlocks = wpData.select('core/block-editor').getBlocks();
+        if (!currentBlocks || currentBlocks.length === 0) {
+          setAdvancedFilterBlocks([]);
+          return;
+        }
+        const findBlocks = blocks => {
+          const found = [];
+          blocks.forEach(block => {
+            if (block.name === 'jankx/advanced-filters') {
+              const blockId = block.clientId;
+              const attrs = block.attributes || {};
+              found.push({
+                id: blockId,
+                clientId: blockId,
+                attributes: attrs
+              });
+            }
+            if (block.innerBlocks && block.innerBlocks.length > 0) {
+              found.push(...findBlocks(block.innerBlocks));
+            }
+          });
+          return found;
+        };
+        const filterBlocks = findBlocks(currentBlocks);
+        setAdvancedFilterBlocks(filterBlocks);
+
+        // Restore selected block from triggerSettings (only if trigger is advanced-filter)
+        if (trigger === 'advanced-filter') {
+          const savedBlockId = triggerSettings?.filterBlockId;
+          if (savedBlockId) {
+            const block = filterBlocks.find(b => b.id === savedBlockId);
+            if (block) {
+              setSelectedFilterBlock(block);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error finding advanced-filters blocks:', error);
+        setAdvancedFilterBlocks([]);
+      }
+    };
+    findAdvancedFiltersBlocks();
+
+    // Subscribe to block changes
+    let timeoutId = null;
+    const wpData = window.wp?.data;
+    if (!wpData) {
+      return;
+    }
+    const unsubscribe = wpData.subscribe(() => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      timeoutId = setTimeout(() => {
+        findAdvancedFiltersBlocks();
+      }, 300);
+    });
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, [trigger, triggerSettings]);
+
+  // Load filters from selected block
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
+    if (trigger !== 'advanced-filter' || !selectedFilterBlock) {
+      setAvailableFilters([]);
+      return;
+    }
+    const attrs = selectedFilterBlock.attributes || {};
+    const allFilters = [];
+
+    // Combine all filter types
+    const taxonomyFilters = attrs.taxonomyFilters || [];
+    const metaFilters = attrs.metaFilters || [];
+    const priceFilters = attrs.priceFilters || [];
+    const dateFilters = attrs.dateFilters || [];
+    const authorFilters = attrs.authorFilters || [];
+    const keywordFilter = attrs.keywordFilter || {};
+    taxonomyFilters.forEach((filter, index) => {
+      if (filter.enabled !== false) {
+        allFilters.push({
+          ...filter,
+          filterType: 'taxonomy',
+          filterIndex: index,
+          filterId: `taxonomy_${index}_${filter.taxonomy || ''}`,
+          label: filter.label || filter.taxonomy || `Taxonomy Filter ${index + 1}`
+        });
+      }
+    });
+    metaFilters.forEach((filter, index) => {
+      if (filter.enabled !== false) {
+        allFilters.push({
+          ...filter,
+          filterType: 'meta',
+          filterIndex: index,
+          filterId: `meta_${index}_${filter.metaKey || ''}`,
+          label: filter.label || filter.metaKey || `Meta Filter ${index + 1}`
+        });
+      }
+    });
+    priceFilters.forEach((filter, index) => {
+      if (filter.enabled !== false) {
+        allFilters.push({
+          ...filter,
+          filterType: 'price',
+          filterIndex: index,
+          filterId: `price_${index}`,
+          label: filter.label || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Price Filter', 'jankx')
+        });
+      }
+    });
+    dateFilters.forEach((filter, index) => {
+      if (filter.enabled !== false) {
+        allFilters.push({
+          ...filter,
+          filterType: 'date',
+          filterIndex: index,
+          filterId: `date_${index}`,
+          label: filter.label || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Date Filter', 'jankx')
+        });
+      }
+    });
+    authorFilters.forEach((filter, index) => {
+      if (filter.enabled !== false) {
+        allFilters.push({
+          ...filter,
+          filterType: 'author',
+          filterIndex: index,
+          filterId: `author_${index}`,
+          label: filter.label || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Author Filter', 'jankx')
+        });
+      }
+    });
+    if (keywordFilter.enabled) {
+      allFilters.push({
+        ...keywordFilter,
+        filterType: 'keyword',
+        filterIndex: 0,
+        filterId: 'keyword_0',
+        label: keywordFilter.label || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Keyword Search', 'jankx')
+      });
+    }
+    setAvailableFilters(allFilters);
+
+    // Restore selected filter from triggerSettings
+    const savedFilterId = triggerSettings?.filterId;
+    if (savedFilterId) {
+      const filter = allFilters.find(f => f.filterId === savedFilterId);
+      if (filter) {
+        setSelectedFilter(filter);
+      }
+    }
+  }, [trigger, selectedFilterBlock, triggerSettings]);
+
+  // Load terms for taxonomy filter
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
+    if (trigger !== 'advanced-filter' || !selectedFilter || selectedFilter.filterType !== 'taxonomy') {
+      setFilterTerms([]);
+      return;
+    }
+    const taxonomy = selectedFilter.taxonomy;
+    if (!taxonomy) {
+      setFilterTerms([]);
+      return;
+    }
+    setLoadingTerms(true);
+    const wpApiFetch = window.wp?.apiFetch;
+    if (!wpApiFetch) {
+      setLoadingTerms(false);
+      return;
+    }
+    wpApiFetch({
+      path: `/wp/v2/${taxonomy}?per_page=100&orderby=name&order=asc`
+    }).then(terms => {
+      setFilterTerms(terms || []);
+    }).catch(error => {
+      console.error('Error loading terms:', error);
+      setFilterTerms([]);
+    }).finally(() => {
+      setLoadingTerms(false);
+    });
+  }, [trigger, selectedFilter]);
+
+  // Load authors for author filter
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
+    if (trigger !== 'advanced-filter' || !selectedFilter || selectedFilter.filterType !== 'author') {
+      setAuthors([]);
+      return;
+    }
+    setLoadingAuthors(true);
+    const wpApiFetch = window.wp?.apiFetch;
+    if (!wpApiFetch) {
+      setLoadingAuthors(false);
+      return;
+    }
+    wpApiFetch({
+      path: '/wp/v2/users?per_page=100&orderby=name&order=asc'
+    }).then(users => {
+      setAuthors(users || []);
+    }).catch(error => {
+      console.error('Error loading authors:', error);
+      setAuthors([]);
+    }).finally(() => {
+      setLoadingAuthors(false);
+    });
+  }, [trigger, selectedFilter]);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
@@ -232,6 +473,191 @@ function Edit({
           placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enter tab title', 'jankx'),
           disabled: !allowCustomTitle,
           help: allowCustomTitle ? undefined : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Title is managed by the selected trigger.', 'jankx')
+        }), trigger === 'advanced-filter' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Filter Settings', 'jankx'),
+          initialOpen: true,
+          children: advancedFilterBlocks.length === 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("p", {
+            style: {
+              color: '#d63638'
+            },
+            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('No advanced-filters blocks found on this page. Add an advanced-filters block first.', 'jankx')
+          }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Filter Block', 'jankx'),
+              value: triggerSettings?.filterBlockId || '',
+              options: [{
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('-- Select Block --', 'jankx'),
+                value: ''
+              }, ...advancedFilterBlocks.map(block => ({
+                label: `Advanced Filters Block (${block.id.substring(0, 8)}...)`,
+                value: block.id
+              }))],
+              onChange: value => {
+                const block = advancedFilterBlocks.find(b => b.id === value);
+                setSelectedFilterBlock(block || null);
+                setAttributes({
+                  triggerSettings: {
+                    ...triggerSettings,
+                    filterBlockId: value,
+                    filterId: '',
+                    filterValue: ''
+                  }
+                });
+              },
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select the advanced-filters block to use', 'jankx')
+            }), selectedFilterBlock && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Filter', 'jankx'),
+                value: triggerSettings?.filterId || '',
+                options: [{
+                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('-- Select Filter --', 'jankx'),
+                  value: ''
+                }, ...availableFilters.map(filter => ({
+                  label: filter.label || filter.filterId,
+                  value: filter.filterId
+                }))],
+                onChange: value => {
+                  const filter = availableFilters.find(f => f.filterId === value);
+                  setSelectedFilter(filter || null);
+                  setAttributes({
+                    triggerSettings: {
+                      ...triggerSettings,
+                      filterId: value,
+                      filterValue: ''
+                    }
+                  });
+                },
+                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select the filter to apply', 'jankx')
+              }), selectedFilter && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("div", {
+                style: {
+                  marginTop: '15px'
+                },
+                children: [selectedFilter.filterType === 'taxonomy' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+                    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Filter Value (Term)', 'jankx'),
+                    value: triggerSettings?.filterValue || '',
+                    options: [{
+                      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('-- Select Term --', 'jankx'),
+                      value: ''
+                    }, ...filterTerms.map(term => ({
+                      label: term.name + (term.count ? ` (${term.count})` : ''),
+                      value: String(term.id)
+                    }))],
+                    onChange: value => {
+                      setAttributes({
+                        triggerSettings: {
+                          ...triggerSettings,
+                          filterValue: value
+                        }
+                      });
+                    },
+                    disabled: loadingTerms,
+                    help: loadingTerms ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Loading terms...', 'jankx') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select a term to filter by', 'jankx')
+                  })
+                }), selectedFilter.filterType === 'meta' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Filter Value', 'jankx'),
+                  value: triggerSettings?.filterValue || '',
+                  onChange: value => {
+                    setAttributes({
+                      triggerSettings: {
+                        ...triggerSettings,
+                        filterValue: value
+                      }
+                    });
+                  },
+                  placeholder: selectedFilter.placeholder || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enter value...', 'jankx'),
+                  help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enter the meta value to filter by', 'jankx')
+                }), selectedFilter.filterType === 'price' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+                    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Min Price', 'jankx'),
+                    type: "number",
+                    value: triggerSettings?.filterValueMin || '',
+                    onChange: value => {
+                      setAttributes({
+                        triggerSettings: {
+                          ...triggerSettings,
+                          filterValueMin: value
+                        }
+                      });
+                    },
+                    placeholder: selectedFilter.minPrice || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Min', 'jankx')
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+                    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Max Price', 'jankx'),
+                    type: "number",
+                    value: triggerSettings?.filterValueMax || '',
+                    onChange: value => {
+                      setAttributes({
+                        triggerSettings: {
+                          ...triggerSettings,
+                          filterValueMax: value
+                        }
+                      });
+                    },
+                    placeholder: selectedFilter.maxPrice || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Max', 'jankx')
+                  })]
+                }), selectedFilter.filterType === 'date' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+                    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Start Date', 'jankx'),
+                    type: "date",
+                    value: triggerSettings?.filterValueStart || '',
+                    onChange: value => {
+                      setAttributes({
+                        triggerSettings: {
+                          ...triggerSettings,
+                          filterValueStart: value
+                        }
+                      });
+                    }
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+                    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('End Date', 'jankx'),
+                    type: "date",
+                    value: triggerSettings?.filterValueEnd || '',
+                    onChange: value => {
+                      setAttributes({
+                        triggerSettings: {
+                          ...triggerSettings,
+                          filterValueEnd: value
+                        }
+                      });
+                    }
+                  })]
+                }), selectedFilter.filterType === 'author' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Author', 'jankx'),
+                  value: triggerSettings?.filterValue || '',
+                  options: [{
+                    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('-- Select Author --', 'jankx'),
+                    value: ''
+                  }, ...authors.map(author => ({
+                    label: author.name,
+                    value: String(author.id)
+                  }))],
+                  onChange: value => {
+                    setAttributes({
+                      triggerSettings: {
+                        ...triggerSettings,
+                        filterValue: value
+                      }
+                    });
+                  },
+                  disabled: loadingAuthors,
+                  help: loadingAuthors ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Loading authors...', 'jankx') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select an author to filter by', 'jankx')
+                }), selectedFilter.filterType === 'keyword' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Search Keyword', 'jankx'),
+                  value: triggerSettings?.filterValue || '',
+                  onChange: value => {
+                    setAttributes({
+                      triggerSettings: {
+                        ...triggerSettings,
+                        filterValue: value
+                      }
+                    });
+                  },
+                  placeholder: selectedFilter.placeholder || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enter keyword...', 'jankx'),
+                  help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enter the search keyword', 'jankx')
+                })]
+              })]
+            })]
+          })
         })]
       }), allowCustomIcon && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Tab Icon', 'jankx'),
@@ -272,9 +698,12 @@ function Edit({
         }), iconType === 'picker' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
           className: "smart-tab-icon-picker",
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_shared_components_IconPicker__WEBPACK_IMPORTED_MODULE_6__["default"], {
-            value: iconName,
+            value: iconName ? {
+              name: iconName,
+              iconSet: iconSet
+            } : null,
             onChange: handleIconSelect,
-            iconSet: iconSet
+            iconType: iconSet
           })
         }), iconType !== 'none' && icon && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {

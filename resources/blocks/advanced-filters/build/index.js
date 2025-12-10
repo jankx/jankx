@@ -235,12 +235,12 @@ function Edit({
   // Use blockProps without additional classes since PHP render already includes full wrapper
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)();
 
-  // Helper function to find post-type-layout blocks recursively
-  const findPostTypeLayoutBlocks = blocks => {
+  // Helper function to find dynamic-data-layout blocks recursively
+  const findDynamicDataLayoutBlocks = blocks => {
     const found = [];
     const traverse = blockList => {
       blockList.forEach(block => {
-        if (block.name === 'jankx/post-type-layout') {
+        if (block.name === 'jankx/dynamic-data-layout') {
           const queryId = block.attributes?.queryId || block.clientId;
           found.push({
             id: String(queryId || block.clientId),
@@ -258,7 +258,7 @@ function Edit({
     return found;
   };
 
-  // Get available post-type-layout blocks from current page only
+  // Get available dynamic-data-layout blocks from current page only
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
     const getAvailableBlocks = () => {
       setLoadingBlocks(true);
@@ -266,8 +266,8 @@ function Edit({
         // Get blocks from current page/post context only
         const currentBlocks = window.wp.data.select('core/block-editor').getBlocks();
         if (currentBlocks && currentBlocks.length > 0) {
-          const postTypeLayoutBlocks = findPostTypeLayoutBlocks(currentBlocks);
-          setAvailableBlocks(postTypeLayoutBlocks);
+          const dynamicDataLayoutBlocks = findDynamicDataLayoutBlocks(currentBlocks);
+          setAvailableBlocks(dynamicDataLayoutBlocks);
         } else {
           setAvailableBlocks([]);
         }
@@ -292,8 +292,8 @@ function Edit({
       timeoutId = setTimeout(() => {
         const currentBlocks = window.wp.data.select('core/block-editor').getBlocks();
         if (currentBlocks) {
-          const postTypeLayoutBlocks = findPostTypeLayoutBlocks(currentBlocks);
-          setAvailableBlocks(postTypeLayoutBlocks);
+          const dynamicDataLayoutBlocks = findDynamicDataLayoutBlocks(currentBlocks);
+          setAvailableBlocks(dynamicDataLayoutBlocks);
         }
       }, 300);
     });
@@ -368,10 +368,10 @@ function Edit({
         initialOpen: true,
         children: loadingBlocks ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Spinner, {}) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("p", {
-            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select Post Type Layout blocks to filter:', 'jankx')
+            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select Dynamic Data Layout blocks to filter:', 'jankx')
           }), availableBlocks.length === 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Placeholder, {
             children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("p", {
-              children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('No Post Type Layout blocks found in this page. Add a Post Type Layout block to this page first.', 'jankx')
+              children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('No Dynamic Data Layout blocks found in this page. Add a Dynamic Data Layout block to this page first.', 'jankx')
             })
           }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
             style: {
@@ -399,7 +399,7 @@ function Edit({
                   });
                 }
               },
-              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select the Post Type Layout block you want to filter.', 'jankx')
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select the Dynamic Data Layout block you want to filter.', 'jankx')
             }), targetBlockIds.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
               style: {
                 marginTop: '10px',

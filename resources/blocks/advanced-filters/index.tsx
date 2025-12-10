@@ -95,13 +95,13 @@ function Edit({ attributes, setAttributes }: EditProps) {
     // Use blockProps without additional classes since PHP render already includes full wrapper
     const blockProps = useBlockProps();
 
-    // Helper function to find post-type-layout blocks recursively
-    const findPostTypeLayoutBlocks = (blocks: any[]): any[] => {
+    // Helper function to find dynamic-data-layout blocks recursively
+    const findDynamicDataLayoutBlocks = (blocks: any[]): any[] => {
         const found: any[] = [];
         
         const traverse = (blockList: any[]) => {
             blockList.forEach((block) => {
-                if (block.name === 'jankx/post-type-layout') {
+                if (block.name === 'jankx/dynamic-data-layout') {
                     const queryId = block.attributes?.queryId || block.clientId;
                     found.push({
                         id: String(queryId || block.clientId),
@@ -120,7 +120,7 @@ function Edit({ attributes, setAttributes }: EditProps) {
         return found;
     };
 
-    // Get available post-type-layout blocks from current page only
+    // Get available dynamic-data-layout blocks from current page only
     useEffect(() => {
         const getAvailableBlocks = () => {
             setLoadingBlocks(true);
@@ -128,8 +128,8 @@ function Edit({ attributes, setAttributes }: EditProps) {
                 // Get blocks from current page/post context only
                 const currentBlocks = (window as any).wp.data.select('core/block-editor').getBlocks();
                 if (currentBlocks && currentBlocks.length > 0) {
-                    const postTypeLayoutBlocks = findPostTypeLayoutBlocks(currentBlocks);
-                    setAvailableBlocks(postTypeLayoutBlocks);
+                    const dynamicDataLayoutBlocks = findDynamicDataLayoutBlocks(currentBlocks);
+                    setAvailableBlocks(dynamicDataLayoutBlocks);
                 } else {
                     setAvailableBlocks([]);
                 }
@@ -154,8 +154,8 @@ function Edit({ attributes, setAttributes }: EditProps) {
             timeoutId = setTimeout(() => {
                 const currentBlocks = (window as any).wp.data.select('core/block-editor').getBlocks();
                 if (currentBlocks) {
-                    const postTypeLayoutBlocks = findPostTypeLayoutBlocks(currentBlocks);
-                    setAvailableBlocks(postTypeLayoutBlocks);
+                    const dynamicDataLayoutBlocks = findDynamicDataLayoutBlocks(currentBlocks);
+                    setAvailableBlocks(dynamicDataLayoutBlocks);
                 }
             }, 300);
         });
@@ -235,10 +235,10 @@ function Edit({ attributes, setAttributes }: EditProps) {
                         <Spinner />
                     ) : (
                         <>
-                            <p>{__('Select Post Type Layout blocks to filter:', 'jankx')}</p>
+                            <p>{__('Select Dynamic Data Layout blocks to filter:', 'jankx')}</p>
                             {availableBlocks.length === 0 ? (
                                 <Placeholder>
-                                    <p>{__('No Post Type Layout blocks found in this page. Add a Post Type Layout block to this page first.', 'jankx')}</p>
+                                    <p>{__('No Dynamic Data Layout blocks found in this page. Add a Dynamic Data Layout block to this page first.', 'jankx')}</p>
                                 </Placeholder>
                             ) : (
                                 <div style={{ marginTop: '10px' }}>
@@ -264,7 +264,7 @@ function Edit({ attributes, setAttributes }: EditProps) {
                                                 });
                                             }
                                         }}
-                                        help={__('Select the Post Type Layout block you want to filter.', 'jankx')}
+                                        help={__('Select the Dynamic Data Layout block you want to filter.', 'jankx')}
                                     />
                                     {targetBlockIds.length > 0 && (
                                         <div style={{ marginTop: '10px', padding: '10px', backgroundColor: '#f0f0f1', borderRadius: '4px' }}>
