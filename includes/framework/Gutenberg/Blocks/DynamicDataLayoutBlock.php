@@ -53,8 +53,12 @@ class DynamicDataLayoutBlock extends Block
         add_filter('render_block_data', [$this, 'normalizeBlockAttributes'], 10, 1);
 
         // Register handlers via WordPress filters (for AJAX requests from advanced-filters)
-        add_filter('jankx_post_type_layout_filter_update', [$this, 'handleFilterUpdate'], 10, 2);
-        add_filter('jankx_post_type_layout_get_block_attributes', [$this, 'handleGetBlockAttributes'], 10, 3);
+        add_filter('jankx_dynamic_data_layout_filter_update', [$this, 'handleFilterUpdate'], 10, 2);
+        add_filter('jankx_dynamic_data_layout_get_block_attributes', [$this, 'handleGetBlockAttributes'], 10, 3);
+
+        // AJAX endpoints for dynamic-data-layout
+        add_action('wp_ajax_jankx_dynamic_data_layout_filter', [$this, 'ajaxFilterUpdate']);
+        add_action('wp_ajax_nopriv_jankx_dynamic_data_layout_filter', [$this, 'ajaxFilterUpdate']);
 
         $this->ensureServices();
     }
@@ -231,7 +235,12 @@ class DynamicDataLayoutBlock extends Block
         $this->ensureServices();
 
         try {
-            return $this->rendererService->render($attributes, $content, $block);
+            $rendered = $this->rendererService->render($attributes, $content, $block);
+
+            // Expose data attributes so other blocks (e.g., advanced-filters) can find and update this block via AJAX
+            $wrapperAttrs = $this->buildWrapperAttributes($attributes);
+
+            return sprintf('<div %s>%s</div>', $wrapperAttrs, $rendered);
         } catch (\Exception $e) {
             return sprintf(
                 '<div class="dynamic-data-layout-error">%s</div>',
@@ -442,6 +451,10 @@ class DynamicDataLayoutBlock extends Block
         // Render layout
         $html = $decorator->render();
 
+        // Wrap with data attributes so subsequent AJAX updates keep block metadata
+        $wrapperAttrs = $this->buildWrapperAttributes($attributes);
+        $html = sprintf('<div %s>%s</div>', $wrapperAttrs, $html);
+
         return [
             'html' => $html,
             'attributes' => $attributes,
@@ -526,5 +539,126 @@ class DynamicDataLayoutBlock extends Block
             return $decorator->buildQuery($attributes);
         }
     }
-}
 
+    /**
+     * Build wrapper attributes with data-* for AJAX/filter integrations
+     *
+     * @param array $attributes
+     * @return string
+     */
+    protected function buildWrapperAttributes(array $attributes): string
+    {
+        $attrs = [];
+
+        // queryId is required; expose as data-block-id and data-query-id
+        $queryId = isset($attributes['queryId']) ? (string) $attributes['queryId'] : '';
+        if ($queryId !== '') {
+            $attrs['data-block-id'] = esc_attr($queryId);
+            $attrs['data-query-id'] = esc_attr($queryId);
+        }
+
+        // Helpful data attributes for frontend reconstruction
+        $attrs['data-post-type'] = esc_attr($attributes['postType'] ?? '');
+        $attrs['data-layout'] = esc_attr($attributes['layout'] ?? '');
+        if (isset($attributes['postsPerPage'])) {
+            $attrs['data-posts-per-page'] = (int) $attributes['postsPerPage'];
+        }
+        if (isset($attributes['columns'])) {
+            $attrs['data-columns'] = (int) $attributes['columns'];
+        }
+        if (isset($attributes['columnsTablet'])) {
+            $attrs['data-columns-tablet'] = (int) $attributes['columnsTablet'];
+        }
+        if (isset($attributes['columnsMobile'])) {
+            $attrs['data-columns-mobile'] = (int) $attributes['columnsMobile'];
+        }
+        if (!empty($attributes['orderBy'])) {
+            $attrs['data-order-by'] = esc_attr($attributes['orderBy']);
+        }
+        if (!empty($attributes['order'])) {
+            $attrs['data-order'] = esc_attr($attributes['order']);
+        }
+        if (!empty($attributes['queryPreset'])) {
+            $attrs['data-query-preset'] = esc_attr($attributes['queryPreset']);
+        }
+        if (!empty($attributes['imageRatio'])) {
+            $attrs['data-image-ratio'] = esc_attr($attributes['imageRatio']);
+        }
+        if (!empty($attributes['thumbnailPosition'])) {
+            $attrs['data-thumbnail-position'] = esc_attr($attributes['thumbnailPosition']);
+        }
+
+        // Embed full attributes for AJAX fallback
+        $attrs['data-block-settings'] = esc_attr(wp_json_encode($attributes));
+
+        // Build attribute string
+        $parts = [];
+        foreach ($attrs as $key => $value) {
+            if ($value === '' || $value === null) {
+                continue;
+            }
+            $parts[] = sprintf('%s="%s"', esc_attr($key), esc_attr((string) $value));
+        }
+
+        return implode(' ', $parts);
+    }
+
+
+
+    /**
+     * AJAX handler for Dynamic Data Layout filter update
+     */
+    public function ajaxFilterUpdate(): void
+    {
+        check_ajax_referer('jankx_load_more', 'nonce');
+
+        $block_id = isset($_POST['block_id']) ? sanitize_text_field(wp_unslash($_POST['block_id'])) : '';
+        $attributes_json = isset($_POST['attributes']) ? sanitize_text_field(wp_unslash($_POST['attributes'])) : '';
+        $filters_json = isset($_POST['filters']) ? sanitize_text_field(wp_unslash($_POST['filters'])) : '[]';
+        $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
+
+        if (empty($block_id)) {
+            wp_send_json_error(['message' => __('Block ID is required', 'jankx')]);
+        }
+
+        $attributes = [];
+        $filters = [];
+
+        if (!empty($attributes_json)) {
+            $decoded = json_decode($attributes_json, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                $attributes = $decoded;
+            }
+        }
+
+        if (!empty($filters_json)) {
+            $decoded = json_decode($filters_json, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                $filters = $decoded;
+            }
+        }
+
+        if (empty($post_id)) {
+            $post_id = get_the_ID() ?: 0;
+        }
+
+        if (empty($attributes) && $post_id > 0) {
+            // Delegate to Block handler via filter to get block attributes
+            $block_data_result = apply_filters('jankx_dynamic_data_layout_get_block_attributes', null, $post_id, $block_id);
+            if ($block_data_result !== null) {
+                $attributes = $block_data_result;
+            }
+        }
+
+        if (empty($attributes)) {
+            wp_send_json_error(['message' => __('Block attributes not found', 'jankx')]);
+        }
+
+        if (!empty($block_id) && empty($attributes['queryId'])) {
+            $attributes['queryId'] = $block_id;
+        }
+
+        $result = apply_filters('jankx_dynamic_data_layout_filter_update', $attributes, $filters);
+        wp_send_json_success($result);
+    }
+}

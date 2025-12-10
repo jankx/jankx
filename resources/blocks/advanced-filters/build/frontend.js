@@ -14,6 +14,8 @@ class AdvancedFilters {
   currentFilters = {};
   constructor(container) {
     this.container = container;
+    // Expose instance for external triggers (e.g., smart-tab)
+    this.container.advancedFiltersInstance = this;
     this.init();
   }
   init() {
@@ -398,7 +400,7 @@ class AdvancedFilters {
           console.warn(`AdvancedFilters: Could not find block attributes for block ${blockId}, server will try to detect from block_id`);
         }
         const params = new URLSearchParams({
-          action: 'jankx_post_type_layout_filter',
+          action: 'jankx_dynamic_data_layout_filter',
           nonce: nonce,
           block_id: blockId,
           attributes: attributesJson,

@@ -8,7 +8,7 @@
   \********************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/advanced-filters","version":"1.0.0","title":"Advanced Filters","category":"jankx","icon":"filter","description":"Hiển thị bộ lọc nâng cao để filter posts trong Post Type Layout blocks","textdomain":"jankx","editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css","viewScript":"file:./build/frontend.js","supports":{"html":false,"align":["wide","full"],"anchor":true,"spacing":{"margin":true,"padding":true,"blockGap":true},"color":{"background":true,"text":true,"link":true,"gradients":true},"background":{"backgroundImage":true,"backgroundSize":true},"typography":{"fontSize":true,"lineHeight":true},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true},"__experimentalLayout":{"allowSwitching":true,"allowInheriting":true,"default":{"type":"constrained"}}},"attributes":{"targetBlockIds":{"type":"array","default":[]},"filterType":{"type":"string","default":"taxonomy","enum":["taxonomy","meta","price","date","author","keyword","mixed"]},"layout":{"type":"string","default":"horizontal","enum":["horizontal","vertical","dropdown","accordion"]},"showLabels":{"type":"boolean","default":true},"showResetButton":{"type":"boolean","default":true},"resetButtonText":{"type":"string","default":"Reset Filters"},"ajaxEnabled":{"type":"boolean","default":true},"updateUrl":{"type":"boolean","default":true},"scrollToResults":{"type":"boolean","default":false},"taxonomyFilters":{"type":"array","default":[]},"metaFilters":{"type":"array","default":[]},"priceFilters":{"type":"array","default":[]},"dateFilters":{"type":"array","default":[]},"authorFilters":{"type":"array","default":[]},"keywordFilter":{"type":"object","default":{"enabled":false,"placeholder":"Search..."}},"displayStyle":{"type":"string","default":"buttons","enum":["buttons","checkboxes","dropdown","select"]},"showCount":{"type":"boolean","default":false},"showEmptyTerms":{"type":"boolean","default":true},"showOnlyTopLevel":{"type":"boolean","default":false},"showHierarchy":{"type":"boolean","default":false},"displayAsDropdown":{"type":"boolean","default":false},"multipleSelection":{"type":"boolean","default":true},"collapsible":{"type":"boolean","default":false},"defaultExpanded":{"type":"boolean","default":true}}}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/advanced-filters","version":"1.0.0","title":"Advanced Filters","category":"jankx","icon":"filter","description":"Hiển thị bộ lọc nâng cao để filter posts trong Post Type Layout blocks","textdomain":"jankx","editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css","viewScript":"file:./build/frontend.js","supports":{"html":false,"align":["wide","full"],"anchor":true,"spacing":{"margin":true,"padding":true,"blockGap":true},"color":{"background":true,"text":true,"link":true,"gradients":true},"background":{"backgroundImage":true,"backgroundSize":true},"typography":{"fontSize":true,"lineHeight":true},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true},"__experimentalLayout":{"allowSwitching":true,"allowInheriting":true,"default":{"type":"constrained"}}},"attributes":{"blockId":{"type":"string","default":""},"targetBlockIds":{"type":"array","default":[]},"filterType":{"type":"string","default":"taxonomy","enum":["taxonomy","meta","price","date","author","keyword","mixed"]},"layout":{"type":"string","default":"horizontal","enum":["horizontal","vertical","dropdown","accordion"]},"showLabels":{"type":"boolean","default":true},"showResetButton":{"type":"boolean","default":true},"resetButtonText":{"type":"string","default":"Reset Filters"},"ajaxEnabled":{"type":"boolean","default":true},"updateUrl":{"type":"boolean","default":true},"scrollToResults":{"type":"boolean","default":false},"taxonomyFilters":{"type":"array","default":[]},"metaFilters":{"type":"array","default":[]},"priceFilters":{"type":"array","default":[]},"dateFilters":{"type":"array","default":[]},"authorFilters":{"type":"array","default":[]},"keywordFilter":{"type":"object","default":{"enabled":false,"placeholder":"Search..."}},"displayStyle":{"type":"string","default":"buttons","enum":["buttons","checkboxes","dropdown","select"]},"showCount":{"type":"boolean","default":false},"showEmptyTerms":{"type":"boolean","default":true},"showOnlyTopLevel":{"type":"boolean","default":false},"showHierarchy":{"type":"boolean","default":false},"displayAsDropdown":{"type":"boolean","default":false},"multipleSelection":{"type":"boolean","default":true},"collapsible":{"type":"boolean","default":false},"defaultExpanded":{"type":"boolean","default":true}}}');
 
 /***/ }),
 
@@ -197,9 +197,11 @@ __webpack_require__.r(__webpack_exports__);
 
 function Edit({
   attributes,
-  setAttributes
+  setAttributes,
+  clientId
 }) {
   const {
+    blockId,
     targetBlockIds,
     filterType,
     layout,
@@ -231,6 +233,15 @@ function Edit({
 
   // Get post type from target block
   const targetPostType = targetBlockIds.length > 0 && availableBlocks.length > 0 ? availableBlocks.find(b => b.id === targetBlockIds[0])?.postType || 'post' : 'post';
+
+  // Ensure blockId is set to clientId for frontend matching
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
+    if (!blockId && clientId) {
+      setAttributes({
+        blockId: clientId
+      });
+    }
+  }, [blockId, clientId, setAttributes]);
 
   // Use blockProps without additional classes since PHP render already includes full wrapper
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)();

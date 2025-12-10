@@ -25,6 +25,8 @@ class AdvancedFilters {
 
     constructor(container: HTMLElement) {
         this.container = container;
+        // Expose instance for external triggers (e.g., smart-tab)
+        (this.container as any).advancedFiltersInstance = this;
         this.init();
     }
 
@@ -447,7 +449,7 @@ class AdvancedFilters {
                 }
 
                 const params = new URLSearchParams({
-                    action: 'jankx_post_type_layout_filter',
+                    action: 'jankx_dynamic_data_layout_filter',
                     nonce: nonce,
                     block_id: blockId,
                     attributes: attributesJson,
