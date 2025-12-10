@@ -6,6 +6,7 @@ use Jankx\Foundation\Application;
 use Jankx\Facades\Log;
 use Jankx\Gutenberg\Blocks\AdvancedButtonBlock;
 use Jankx\Gutenberg\Blocks\AdvancedFiltersBlock;
+use Jankx\Gutenberg\Blocks\AdvancedFilterBlock;
 use Jankx\Gutenberg\Blocks\AdvancedImageBoxBlock;
 use Jankx\Gutenberg\Blocks\AuthorBoxBlock;
 use Jankx\Gutenberg\Blocks\DatePickerCalendarBlock;
@@ -128,6 +129,7 @@ class GutenbergService
     protected function registerDefaultBlocks()
     {
         $this->repository->registerBlock(AdvancedButtonBlock::class);
+        $this->repository->registerBlock(AdvancedFilterBlock::class);
         $this->repository->registerBlock(AdvancedFiltersBlock::class);
         $this->repository->registerBlock(AdvancedImageBoxBlock::class);
         $this->repository->registerBlock(AuthorBoxBlock::class);

@@ -439,6 +439,209 @@ Một số blocks sử dụng data attributes để lưu trữ giá trị cho Ja
 
 ---
 
+### jankx/advanced-filters
+
+**Mục đích**: Container block để quản lý nhiều filters, cho phép filter posts trong Dynamic Data Layout blocks qua AJAX.
+
+#### Kiến trúc Block:
+- **Parent Block**: `jankx/advanced-filters` - Container chứa nhiều filter blocks
+- **Child Blocks**: `jankx/advanced-filter` - Mỗi filter đơn lẻ được tạo như một inner block
+- **Relationship**: Parent block tự động đồng bộ attributes từ child blocks để render
+
+#### Attributes ảnh hưởng đến Styles:
+
+1. **targetBlockIds** (array, default: [])
+   - Array các block IDs của Dynamic Data Layout blocks cần filter
+   - Data Attribute: `data-target-block-ids="{JSON.stringify(value)}"`
+   - Không tạo CSS class trực tiếp
+
+2. **layout** (string, default: "horizontal")
+   - Values: `"horizontal"`, `"vertical"`, `"dropdown"`, `"accordion"`
+   - CSS Classes: `layout-{value}` (ví dụ: `layout-horizontal`)
+   - Áp dụng cho container wrapper
+
+3. **ajaxEnabled** (boolean, default: true)
+   - Data Attribute: `data-ajax-enabled="{value}"`
+   - Không tạo CSS class, chỉ ảnh hưởng đến JavaScript behavior
+
+4. **updateUrl** (boolean, default: true)
+   - Chỉ ảnh hưởng đến JavaScript behavior
+   - Không tạo CSS class
+
+5. **scrollToResults** (boolean, default: false)
+   - Chỉ ảnh hưởng đến JavaScript behavior
+   - Không tạo CSS class
+
+6. **showResetButton** (boolean, default: true)
+   - Conditional rendering cho reset button
+   - CSS Classes: `.filter-reset-button` (khi true)
+
+#### Block Supports:
+- **align**: `["wide", "full"]`
+- **spacing**: margin, padding, blockGap
+- **color**: background, text, link, gradients
+- **background**: backgroundImage, backgroundSize
+- **typography**: fontSize, lineHeight
+- **border**: color, radius, style, width
+
+#### Context API:
+Block này cung cấp context cho child blocks (`jankx/advanced-filter`):
+- `jankx/advanced-filters/targetPostType`: Post type từ target block
+- `jankx/advanced-filters/layout`: Layout setting
+- `jankx/advanced-filters/displayStyle`: Display style default
+- `jankx/advanced-filters/showLabels`: Show labels setting
+- `jankx/advanced-filters/showCount`: Show count setting
+- `jankx/advanced-filters/showEmptyTerms`: Show empty terms setting
+- `jankx/advanced-filters/showOnlyTopLevel`: Show only top level setting
+- `jankx/advanced-filters/showHierarchy`: Show hierarchy setting
+- `jankx/advanced-filters/multipleSelection`: Multiple selection setting
+- `jankx/advanced-filters/collapsible`: Collapsible setting
+- `jankx/advanced-filters/defaultExpanded`: Default expanded setting
+
+#### Inner Blocks:
+- **Allowed Blocks**: `["jankx/advanced-filter"]`
+- **Appender**: `InnerBlocks.ButtonBlockAppender` - Cho phép thêm filter mới
+- **Save**: `InnerBlocks.Content` - Lưu tất cả child blocks
+
+#### CSS Structure:
+```html
+<div class="wp-block-jankx-advanced-filters layout-{layout}"
+     id="jankx-advanced-filters-{filterId}"
+     data-filter-block-id="{blockId}"
+     data-target-block-ids="{JSON.stringify(targetBlockIds)}">
+  <div class="advanced-filters-config" 
+       data-config="{JSON.stringify(config)}"
+       data-nonce="{nonce}"
+       data-ajax-url="{ajaxUrl}"
+       style="display: none;"></div>
+  <div class="advanced-filters-container">
+    <!-- Rendered filters from child blocks -->
+  </div>
+  {showResetButton && (
+    <button type="button" class="filter-reset-button">
+      {resetButtonText}
+    </button>
+  )}
+</div>
+```
+
+#### Data Flow:
+1. User thêm filter → `handleAddFilterBlock()` tạo `jankx/advanced-filter` block
+2. Child blocks cập nhật attributes → Parent block tự động đồng bộ qua `useEffect`
+3. Parent block render → PHP `AdvancedFiltersRenderer` nhận attributes và render filters
+4. Frontend JavaScript → Xử lý filter interactions và AJAX updates
+
+---
+
+### jankx/advanced-filter
+
+**Mục đích**: Block đơn lẻ đại diện cho một filter, được sử dụng như inner block của `jankx/advanced-filters`.
+
+#### Attributes ảnh hưởng đến Styles:
+
+1. **filterType** (string, default: "taxonomy")
+   - Values: `"taxonomy"`, `"meta"`, `"price"`, `"date"`, `"author"`, `"keyword"`
+   - CSS Classes: `filter-type-{value}` (ví dụ: `filter-type-taxonomy`)
+   - Data Attribute: `data-filter-type="{value}"`
+
+2. **layout** (string, default: "horizontal")
+   - Values: `"horizontal"`, `"vertical"`, `"dropdown"`, `"accordion"`
+   - CSS Classes: `filter-layout-{value}`
+   - Fallback: Lấy từ parent block context nếu không set
+
+3. **displayStyle** (string, default: "buttons")
+   - Values: `"buttons"`, `"checkboxes"`, `"dropdown"`, `"select"`
+   - CSS Classes: `filter-display-{value}`
+   - Fallback: Lấy từ parent block context nếu không set
+
+4. **showLabels** (boolean, default: true)
+   - Conditional rendering cho labels
+   - Fallback: Lấy từ parent block context nếu không set
+
+5. **collapsible** (boolean, default: false)
+   - CSS Classes: `filter-collapsible` (khi true)
+   - Fallback: Lấy từ parent block context nếu không set
+
+6. **defaultExpanded** (boolean, default: true)
+   - CSS Classes: `filter-expanded` (khi true)
+   - Chỉ áp dụng khi `collapsible === true`
+   - Fallback: Lấy từ parent block context nếu không set
+
+7. **multipleSelection** (boolean, default: true)
+   - Data Attribute: `data-multiple-selection="{value}"`
+   - Ảnh hưởng đến JavaScript behavior
+   - Fallback: Lấy từ parent block context nếu không set
+
+#### Filter Type Specific Attributes:
+
+**Taxonomy Filter:**
+- **taxonomy** (string): Taxonomy slug (ví dụ: `"category"`, `"post_tag"`)
+- **showCount** (boolean): Hiển thị số lượng posts
+- **showEmptyTerms** (boolean): Hiển thị terms không có posts
+- **showOnlyTopLevel** (boolean): Chỉ hiển thị top level terms
+- **showHierarchy** (boolean): Hiển thị hierarchical structure
+- **listingType** (string): `"ul"`, `"ol"`, `"none"` - Cho checkboxes style
+
+**Meta Filter:**
+- **metaKey** (string): Meta key name
+- **inputType** (string): `"text"`, `"number"`, `"range"`, `"date"`, `"date-range"`
+- **minValue** (string): Min value cho range
+- **maxValue** (string): Max value cho range
+- **placeholder** (string): Placeholder text
+
+**Price Filter:**
+- **minPrice** (string): Giá tối thiểu
+- **maxPrice** (string): Giá tối đa
+- **currency** (string, default: "VND"): Currency symbol
+
+**Date Filter:**
+- **dateField** (string, default: "post_date"): `"post_date"` hoặc `"post_modified"`
+- **dateRange** (boolean, default: true): Cho phép chọn date range
+
+**Author Filter:**
+- Sử dụng `displayStyle` và `multipleSelection`
+
+**Keyword Filter:**
+- **placeholder** (string, default: "Search..."): Placeholder text
+- **showSearchButton** (boolean, default: false): Hiển thị search button
+
+#### Block Supports:
+- **html**: false (không cho phép HTML editing)
+- **reusable**: false (không thể tái sử dụng độc lập)
+
+#### Context API:
+Block này sử dụng context từ parent block (`jankx/advanced-filters`):
+- Tự động fallback các settings từ parent nếu không được set cụ thể
+- Sử dụng `useSelect` để lấy parent attributes
+
+#### CSS Structure:
+```html
+<div class="wp-block-jankx-advanced-filter 
+            jankx-advanced-filter
+            filter-type-{filterType}
+            filter-layout-{layout}
+            filter-display-{displayStyle}
+            filter-collapsible
+            filter-expanded"
+     data-filter-type="{filterType}"
+     data-multiple-selection="{multipleSelection}">
+  <!-- Filter content rendered by PHP AdvancedFiltersRenderer -->
+</div>
+```
+
+#### Parent-Child Relationship:
+- Block này **PHẢI** được sử dụng bên trong `jankx/advanced-filters`
+- Attributes được đồng bộ lên parent block để PHP renderer có thể xử lý
+- Parent block tự động nhóm filters theo `filterType` vào các arrays tương ứng:
+  - `taxonomyFilters[]`
+  - `metaFilters[]`
+  - `priceFilters[]`
+  - `dateFilters[]`
+  - `authorFilters[]`
+  - `keywordFilter` (object, không phải array)
+
+---
+
 ## Patterns & Conventions
 
 ### 1. CSS Class Naming

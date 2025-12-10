@@ -140,6 +140,8 @@ module.exports = {
     'blocks/advanced-button/build/style': './blocks/advanced-button/style.scss',
     'blocks/advanced-button/build/editor': './blocks/advanced-button/editor.scss',
 
+    'blocks/advanced-filter/build/index': './blocks/advanced-filter/index.tsx',
+
     'blocks/advanced-filters/build/index': './blocks/advanced-filters/index.tsx',
     'blocks/advanced-filters/build/frontend': './blocks/advanced-filters/frontend.ts',
     'blocks/advanced-filters/build/style': './blocks/advanced-filters/style.scss',

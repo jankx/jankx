@@ -8,7 +8,7 @@
   \********************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/advanced-filters","version":"1.0.0","title":"Advanced Filters","category":"jankx","icon":"filter","description":"Hiển thị bộ lọc nâng cao để filter posts trong Post Type Layout blocks","textdomain":"jankx","editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css","viewScript":"file:./build/frontend.js","supports":{"html":false,"align":["wide","full"],"anchor":true,"spacing":{"margin":true,"padding":true,"blockGap":true},"color":{"background":true,"text":true,"link":true,"gradients":true},"background":{"backgroundImage":true,"backgroundSize":true},"typography":{"fontSize":true,"lineHeight":true},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true},"__experimentalLayout":{"allowSwitching":true,"allowInheriting":true,"default":{"type":"constrained"}}},"attributes":{"blockId":{"type":"string","default":""},"targetBlockIds":{"type":"array","default":[]},"filterType":{"type":"string","default":"taxonomy","enum":["taxonomy","meta","price","date","author","keyword","mixed"]},"layout":{"type":"string","default":"horizontal","enum":["horizontal","vertical","dropdown","accordion"]},"showLabels":{"type":"boolean","default":true},"showResetButton":{"type":"boolean","default":true},"resetButtonText":{"type":"string","default":"Reset Filters"},"ajaxEnabled":{"type":"boolean","default":true},"updateUrl":{"type":"boolean","default":true},"scrollToResults":{"type":"boolean","default":false},"taxonomyFilters":{"type":"array","default":[]},"metaFilters":{"type":"array","default":[]},"priceFilters":{"type":"array","default":[]},"dateFilters":{"type":"array","default":[]},"authorFilters":{"type":"array","default":[]},"keywordFilter":{"type":"object","default":{"enabled":false,"placeholder":"Search..."}},"displayStyle":{"type":"string","default":"buttons","enum":["buttons","checkboxes","dropdown","select"]},"showCount":{"type":"boolean","default":false},"showEmptyTerms":{"type":"boolean","default":true},"showOnlyTopLevel":{"type":"boolean","default":false},"showHierarchy":{"type":"boolean","default":false},"displayAsDropdown":{"type":"boolean","default":false},"multipleSelection":{"type":"boolean","default":true},"collapsible":{"type":"boolean","default":false},"defaultExpanded":{"type":"boolean","default":true}}}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/advanced-filters","version":"1.0.0","title":"Advanced Filters","category":"jankx","icon":"filter","description":"Hiển thị bộ lọc nâng cao để filter posts trong Post Type Layout blocks","textdomain":"jankx","editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css","viewScript":"file:./build/frontend.js","providesContext":{"jankx/advanced-filters/targetPostType":"targetPostType","jankx/advanced-filters/layout":"layout","jankx/advanced-filters/displayStyle":"displayStyle","jankx/advanced-filters/showLabels":"showLabels","jankx/advanced-filters/showCount":"showCount","jankx/advanced-filters/showEmptyTerms":"showEmptyTerms","jankx/advanced-filters/showOnlyTopLevel":"showOnlyTopLevel","jankx/advanced-filters/showHierarchy":"showHierarchy","jankx/advanced-filters/multipleSelection":"multipleSelection","jankx/advanced-filters/collapsible":"collapsible","jankx/advanced-filters/defaultExpanded":"defaultExpanded"},"supports":{"html":false,"align":["wide","full"],"anchor":true,"spacing":{"margin":true,"padding":true,"blockGap":true},"color":{"background":true,"text":true,"link":true,"gradients":true},"background":{"backgroundImage":true,"backgroundSize":true},"typography":{"fontSize":true,"lineHeight":true},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true},"__experimentalLayout":{"allowSwitching":true,"allowInheriting":true,"default":{"type":"constrained"}}},"attributes":{"blockId":{"type":"string","default":""},"targetBlockIds":{"type":"array","default":[]},"filterType":{"type":"string","default":"taxonomy","enum":["taxonomy","meta","price","date","author","keyword","mixed"]},"layout":{"type":"string","default":"horizontal","enum":["horizontal","vertical","dropdown","accordion"]},"targetPostType":{"type":"string","default":"post"},"showLabels":{"type":"boolean","default":true},"showResetButton":{"type":"boolean","default":true},"resetButtonText":{"type":"string","default":"Reset Filters"},"ajaxEnabled":{"type":"boolean","default":true},"updateUrl":{"type":"boolean","default":true},"scrollToResults":{"type":"boolean","default":false},"taxonomyFilters":{"type":"array","default":[]},"metaFilters":{"type":"array","default":[]},"priceFilters":{"type":"array","default":[]},"dateFilters":{"type":"array","default":[]},"authorFilters":{"type":"array","default":[]},"keywordFilter":{"type":"object","default":{"enabled":false,"placeholder":"Search..."}},"displayStyle":{"type":"string","default":"buttons","enum":["buttons","checkboxes","dropdown","select"]},"showCount":{"type":"boolean","default":false},"showEmptyTerms":{"type":"boolean","default":true},"showOnlyTopLevel":{"type":"boolean","default":false},"showHierarchy":{"type":"boolean","default":false},"displayAsDropdown":{"type":"boolean","default":false},"multipleSelection":{"type":"boolean","default":true},"collapsible":{"type":"boolean","default":false},"defaultExpanded":{"type":"boolean","default":true}}}');
 
 /***/ }),
 
@@ -51,6 +51,16 @@ module.exports = window["wp"]["blocks"];
 /***/ ((module) => {
 
 module.exports = window["wp"]["components"];
+
+/***/ }),
+
+/***/ "@wordpress/data":
+/*!******************************!*\
+  !*** external ["wp","data"] ***!
+  \******************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["data"];
 
 /***/ }),
 
@@ -179,12 +189,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _wordpress_server_side_render__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/server-side-render */ "@wordpress/server-side-render");
-/* harmony import */ var _wordpress_server_side_render__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_wordpress_server_side_render__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./block.json */ "./blocks/advanced-filters/block.json");
-/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./editor.scss */ "./blocks/advanced-filters/editor.scss");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _wordpress_server_side_render__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/server-side-render */ "@wordpress/server-side-render");
+/* harmony import */ var _wordpress_server_side_render__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_wordpress_server_side_render__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./block.json */ "./blocks/advanced-filters/block.json");
+/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./editor.scss */ "./blocks/advanced-filters/editor.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__);
+
 
 
 
@@ -229,7 +242,59 @@ function Edit({
   } = attributes;
   const [availableBlocks, setAvailableBlocks] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)([]);
   const [loadingBlocks, setLoadingBlocks] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(false);
-  const [taxonomies, setTaxonomies] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)([]);
+  const {
+    insertBlocks
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_5__.useDispatch)('core/block-editor');
+
+  // Lấy danh sách block con advanced-filter
+  const innerFilterBlocks = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_5__.useSelect)(select => {
+    const block = select('core/block-editor').getBlock(clientId);
+    return block?.innerBlocks || [];
+  }, [clientId]);
+
+  // Dùng useMemo để tránh setAttributes lặp lại nếu dữ liệu không đổi
+  const normalizedFilters = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => {
+    const nextTax = [];
+    const nextMeta = [];
+    const nextPrice = [];
+    const nextDate = [];
+    const nextAuthor = [];
+    const nextKeyword = [];
+    innerFilterBlocks.forEach(block => {
+      const filter = block.attributes || {};
+      const type = filter.filterType || 'taxonomy';
+      switch (type) {
+        case 'taxonomy':
+          nextTax.push(filter);
+          break;
+        case 'meta':
+          nextMeta.push(filter);
+          break;
+        case 'price':
+          nextPrice.push(filter);
+          break;
+        case 'date':
+          nextDate.push(filter);
+          break;
+        case 'author':
+          nextAuthor.push(filter);
+          break;
+        case 'keyword':
+          nextKeyword.push(filter);
+          break;
+        default:
+          break;
+      }
+    });
+    return {
+      taxonomyFilters: nextTax,
+      metaFilters: nextMeta,
+      priceFilters: nextPrice,
+      dateFilters: nextDate,
+      authorFilters: nextAuthor,
+      keywordFilter: nextKeyword[0] || keywordFilter || {}
+    };
+  }, [innerFilterBlocks, keywordFilter]);
 
   // Get post type from target block
   const targetPostType = targetBlockIds.length > 0 && availableBlocks.length > 0 ? availableBlocks.find(b => b.id === targetBlockIds[0])?.postType || 'post' : 'post';
@@ -245,6 +310,32 @@ function Edit({
 
   // Use blockProps without additional classes since PHP render already includes full wrapper
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)();
+
+  // Đồng bộ filters từ block con lên attributes để render PHP/SSR
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
+    const nextAttributes = {
+      taxonomyFilters: normalizedFilters.taxonomyFilters,
+      metaFilters: normalizedFilters.metaFilters,
+      priceFilters: normalizedFilters.priceFilters,
+      dateFilters: normalizedFilters.dateFilters,
+      authorFilters: normalizedFilters.authorFilters,
+      keywordFilter: normalizedFilters.keywordFilter,
+      targetPostType
+    };
+    const currentSnapshot = JSON.stringify({
+      taxonomyFilters,
+      metaFilters,
+      priceFilters,
+      dateFilters,
+      authorFilters,
+      keywordFilter,
+      targetPostType
+    });
+    const nextSnapshot = JSON.stringify(nextAttributes);
+    if (currentSnapshot !== nextSnapshot) {
+      setAttributes(nextAttributes);
+    }
+  }, [normalizedFilters, taxonomyFilters, metaFilters, priceFilters, dateFilters, authorFilters, keywordFilter, targetPostType, setAttributes]);
 
   // Helper function to find dynamic-data-layout blocks recursively
   const findDynamicDataLayoutBlocks = blocks => {
@@ -317,78 +408,40 @@ function Edit({
       }
     };
   }, []);
-
-  // Fetch taxonomies for target post type (from target block)
-  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
-    const fetchTaxonomies = async () => {
-      if (!targetPostType) return;
-      try {
-        const taxData = await window.wp.apiFetch({
-          path: `/wp/v2/taxonomies?type=${targetPostType}`
-        });
-        setTaxonomies(Object.values(taxData || {}));
-      } catch (error) {
-        console.error('Error fetching taxonomies:', error);
-        setTaxonomies([]);
-      }
+  const handleAddFilterBlock = () => {
+    const defaultAttributes = {
+      filterType,
+      layout,
+      showLabels,
+      displayStyle,
+      listingType: 'ul',
+      showCount,
+      showEmptyTerms,
+      showOnlyTopLevel,
+      showHierarchy,
+      multipleSelection,
+      collapsible,
+      defaultExpanded
     };
-    fetchTaxonomies();
-  }, [targetPostType]);
-  const handleAddTaxonomyFilter = () => {
-    setAttributes({
-      taxonomyFilters: [...taxonomyFilters, {
-        taxonomy: '',
-        label: '',
-        enabled: true,
-        filterType: filterType,
-        layout: layout,
-        showLabels: showLabels,
-        displayStyle: displayStyle,
-        listingType: 'ul',
-        // Default listing type
-        showCount: showCount,
-        showEmptyTerms: showEmptyTerms,
-        showOnlyTopLevel: showOnlyTopLevel,
-        showHierarchy: showHierarchy,
-        displayAsDropdown: displayAsDropdown,
-        multipleSelection: multipleSelection,
-        collapsible: collapsible,
-        defaultExpanded: defaultExpanded
-      }]
-    });
+    insertBlocks((0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.createBlock)('jankx/advanced-filter', defaultAttributes), undefined, clientId);
   };
-  const handleUpdateTaxonomyFilter = (index, updates) => {
-    const newFilters = [...taxonomyFilters];
-    newFilters[index] = {
-      ...newFilters[index],
-      ...updates
-    };
-    setAttributes({
-      taxonomyFilters: newFilters
-    });
-  };
-  const handleRemoveTaxonomyFilter = index => {
-    setAttributes({
-      taxonomyFilters: taxonomyFilters.filter((_, i) => i !== index)
-    });
-  };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Target Blocks', 'jankx'),
         initialOpen: true,
-        children: loadingBlocks ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Spinner, {}) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("p", {
+        children: loadingBlocks ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Spinner, {}) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("p", {
             children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select Dynamic Data Layout blocks to filter:', 'jankx')
-          }), availableBlocks.length === 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Placeholder, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("p", {
+          }), availableBlocks.length === 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Placeholder, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("p", {
               children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('No Dynamic Data Layout blocks found in this page. Add a Dynamic Data Layout block to this page first.', 'jankx')
             })
-          }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+          }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
             style: {
               marginTop: '10px'
             },
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
               label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Target Block(s)', 'jankx'),
               value: targetBlockIds.length > 0 ? targetBlockIds[0] : '',
               options: [{
@@ -411,23 +464,23 @@ function Edit({
                 }
               },
               help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select the Dynamic Data Layout block you want to filter.', 'jankx')
-            }), targetBlockIds.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+            }), targetBlockIds.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
               style: {
                 marginTop: '10px',
                 padding: '10px',
                 backgroundColor: '#f0f0f1',
                 borderRadius: '4px'
               },
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("strong", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("strong", {
                 children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Selected:', 'jankx')
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("ul", {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("ul", {
                 style: {
                   margin: '5px 0',
                   paddingLeft: '20px'
                 },
                 children: targetBlockIds.map(id => {
                   const block = availableBlocks.find(b => b.id === id);
-                  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("li", {
+                  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("li", {
                     children: [block?.name || id, block?.source && ` (${block.source})`]
                   }, id);
                 })
@@ -435,392 +488,44 @@ function Edit({
             })]
           })]
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filters', 'jankx'),
         initialOpen: false,
-        children: [targetBlockIds.length === 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("p", {
+        children: [targetBlockIds.length === 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("p", {
           style: {
             color: '#d63638',
             marginBottom: '10px'
           },
           children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Please select a target block first to configure filters.', 'jankx')
-        }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("p", {
+        }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("p", {
           style: {
             marginBottom: '10px',
             fontSize: '12px',
             color: '#666'
           },
-          children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Post Type:', 'jankx'), " ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("strong", {
+          children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Post Type:', 'jankx'), " ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("strong", {
             children: targetPostType
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Button, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Button, {
           variant: "primary",
-          onClick: handleAddTaxonomyFilter,
+          onClick: handleAddFilterBlock,
           style: {
             marginTop: '10px'
           },
           disabled: targetBlockIds.length === 0,
           children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('+ Add Filter', 'jankx')
-        }), taxonomyFilters.map((filter, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
-          title: `${(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter', 'jankx')} #${index + 1}${filter.filterType ? ` - ${filter.filterType}` : ''}${filter.taxonomy ? ` (${filter.taxonomy})` : ''}`,
-          initialOpen: false,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
-            style: {
-              marginBottom: '15px'
-            },
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
-              style: {
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: '15px'
-              },
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("strong", {
-                children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter Configuration', 'jankx')
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Button, {
-                isDestructive: true,
-                isSmall: true,
-                onClick: () => handleRemoveTaxonomyFilter(index),
-                children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Remove', 'jankx')
-              })]
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter Type', 'jankx'),
-              value: filter.filterType || filterType,
-              options: [{
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Taxonomy', 'jankx'),
-                value: 'taxonomy'
-              }, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Meta Field', 'jankx'),
-                value: 'meta'
-              }, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Price', 'jankx'),
-                value: 'price'
-              }, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Date', 'jankx'),
-                value: 'date'
-              }, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Author', 'jankx'),
-                value: 'author'
-              }, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Keyword', 'jankx'),
-                value: 'keyword'
-              }],
-              onChange: value => handleUpdateTaxonomyFilter(index, {
-                filterType: value
-              })
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Label (Optional)', 'jankx'),
-              value: filter.label || '',
-              onChange: value => handleUpdateTaxonomyFilter(index, {
-                label: value
-              }),
-              placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Custom label for this filter', 'jankx')
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enabled', 'jankx'),
-              checked: filter.enabled !== false,
-              onChange: value => handleUpdateTaxonomyFilter(index, {
-                enabled: value
-              })
-            })]
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
-            style: {
-              marginTop: '20px',
-              paddingTop: '15px',
-              borderTop: '1px solid #ddd'
-            },
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("strong", {
-              style: {
-                display: 'block',
-                marginBottom: '15px'
-              },
-              children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter Settings', 'jankx')
-            }), (filter.filterType || filterType) === 'taxonomy' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Taxonomy', 'jankx'),
-                value: filter.taxonomy || '',
-                options: [{
-                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('-- Select --', 'jankx'),
-                  value: ''
-                }, ...taxonomies.map(tax => ({
-                  label: tax.name,
-                  value: tax.slug
-                }))],
-                onChange: value => handleUpdateTaxonomyFilter(index, {
-                  taxonomy: value
-                })
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display Style', 'jankx'),
-                value: filter.displayStyle || displayStyle,
-                options: [{
-                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Buttons', 'jankx'),
-                  value: 'buttons'
-                }, {
-                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Checkboxes', 'jankx'),
-                  value: 'checkboxes'
-                }, {
-                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Dropdown', 'jankx'),
-                  value: 'dropdown'
-                }, {
-                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select', 'jankx'),
-                  value: 'select'
-                }],
-                onChange: value => handleUpdateTaxonomyFilter(index, {
-                  displayStyle: value
-                })
-              }), (filter.displayStyle || displayStyle) === 'checkboxes' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Listing Type', 'jankx'),
-                value: filter.listingType || 'ul',
-                options: [{
-                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Unordered List (•)', 'jankx'),
-                  value: 'ul'
-                }, {
-                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Ordered List (1, 2, 3)', 'jankx'),
-                  value: 'ol'
-                }, {
-                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('No List', 'jankx'),
-                  value: 'none'
-                }],
-                onChange: value => handleUpdateTaxonomyFilter(index, {
-                  listingType: value
-                }),
-                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Choose how to display the terms list (only applies to checkboxes)', 'jankx'),
-                __nextHasNoMarginBottom: true,
-                __next40pxDefaultSize: true
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Post Counts', 'jankx'),
-                checked: filter.showCount !== undefined ? filter.showCount : showCount,
-                onChange: value => handleUpdateTaxonomyFilter(index, {
-                  showCount: value
-                }),
-                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show post count next to each term', 'jankx')
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Empty Terms', 'jankx'),
-                checked: filter.showEmptyTerms !== undefined ? filter.showEmptyTerms : showEmptyTerms,
-                onChange: value => handleUpdateTaxonomyFilter(index, {
-                  showEmptyTerms: value
-                }),
-                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show terms that have no posts', 'jankx')
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Only Top Level Terms', 'jankx'),
-                checked: filter.showOnlyTopLevel !== undefined ? filter.showOnlyTopLevel : showOnlyTopLevel,
-                onChange: value => handleUpdateTaxonomyFilter(index, {
-                  showOnlyTopLevel: value
-                }),
-                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show only parent terms', 'jankx')
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Hierarchy', 'jankx'),
-                checked: filter.showHierarchy !== undefined ? filter.showHierarchy : showHierarchy,
-                onChange: value => handleUpdateTaxonomyFilter(index, {
-                  showHierarchy: value
-                }),
-                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display terms with hierarchical structure', 'jankx')
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Multiple Selection', 'jankx'),
-                checked: filter.multipleSelection !== undefined ? filter.multipleSelection : multipleSelection,
-                onChange: value => handleUpdateTaxonomyFilter(index, {
-                  multipleSelection: value
-                }),
-                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Allow users to select multiple terms', 'jankx')
-              })]
-            }), (filter.filterType || filterType) === 'meta' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Meta Key', 'jankx'),
-                value: filter.metaKey || '',
-                onChange: value => handleUpdateTaxonomyFilter(index, {
-                  metaKey: value
-                }),
-                placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('e.g., _price, custom_field', 'jankx')
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Input Type', 'jankx'),
-                value: filter.inputType || 'text',
-                options: [{
-                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Text', 'jankx'),
-                  value: 'text'
-                }, {
-                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Number', 'jankx'),
-                  value: 'number'
-                }, {
-                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Number Range', 'jankx'),
-                  value: 'range'
-                }, {
-                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Date', 'jankx'),
-                  value: 'date'
-                }, {
-                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Date Range', 'jankx'),
-                  value: 'date-range'
-                }],
-                onChange: value => handleUpdateTaxonomyFilter(index, {
-                  inputType: value
-                })
-              }), filter.inputType === 'range' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
-                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Min Value', 'jankx'),
-                  value: filter.minValue || '',
-                  onChange: value => handleUpdateTaxonomyFilter(index, {
-                    minValue: value
-                  }),
-                  type: "number"
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
-                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Max Value', 'jankx'),
-                  value: filter.maxValue || '',
-                  onChange: value => handleUpdateTaxonomyFilter(index, {
-                    maxValue: value
-                  }),
-                  type: "number"
-                })]
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Placeholder', 'jankx'),
-                value: filter.placeholder || '',
-                onChange: value => handleUpdateTaxonomyFilter(index, {
-                  placeholder: value
-                })
-              })]
-            }), (filter.filterType || filterType) === 'price' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Min Price', 'jankx'),
-                value: filter.minPrice || '',
-                onChange: value => handleUpdateTaxonomyFilter(index, {
-                  minPrice: value
-                }),
-                type: "number"
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Max Price', 'jankx'),
-                value: filter.maxPrice || '',
-                onChange: value => handleUpdateTaxonomyFilter(index, {
-                  maxPrice: value
-                }),
-                type: "number"
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Currency Symbol', 'jankx'),
-                value: filter.currency || 'VND',
-                onChange: value => handleUpdateTaxonomyFilter(index, {
-                  currency: value
-                })
-              })]
-            }), (filter.filterType || filterType) === 'date' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Date Field', 'jankx'),
-                value: filter.dateField || 'post_date',
-                options: [{
-                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Post Date', 'jankx'),
-                  value: 'post_date'
-                }, {
-                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Modified Date', 'jankx'),
-                  value: 'post_modified'
-                }],
-                onChange: value => handleUpdateTaxonomyFilter(index, {
-                  dateField: value
-                })
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Date Range', 'jankx'),
-                checked: filter.dateRange !== undefined ? filter.dateRange : true,
-                onChange: value => handleUpdateTaxonomyFilter(index, {
-                  dateRange: value
-                }),
-                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Allow users to select a date range', 'jankx')
-              })]
-            }), (filter.filterType || filterType) === 'author' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display Style', 'jankx'),
-                value: filter.displayStyle || displayStyle,
-                options: [{
-                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Dropdown', 'jankx'),
-                  value: 'dropdown'
-                }, {
-                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Checkboxes', 'jankx'),
-                  value: 'checkboxes'
-                }],
-                onChange: value => handleUpdateTaxonomyFilter(index, {
-                  displayStyle: value
-                })
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Multiple Selection', 'jankx'),
-                checked: filter.multipleSelection !== undefined ? filter.multipleSelection : multipleSelection,
-                onChange: value => handleUpdateTaxonomyFilter(index, {
-                  multipleSelection: value
-                }),
-                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Allow users to select multiple authors', 'jankx')
-              })]
-            }), (filter.filterType || filterType) === 'keyword' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Placeholder', 'jankx'),
-                value: filter.placeholder || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Search...', 'jankx'),
-                onChange: value => handleUpdateTaxonomyFilter(index, {
-                  placeholder: value
-                })
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Search Button', 'jankx'),
-                checked: filter.showSearchButton !== undefined ? filter.showSearchButton : false,
-                onChange: value => handleUpdateTaxonomyFilter(index, {
-                  showSearchButton: value
-                })
-              })]
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
-              style: {
-                marginTop: '15px',
-                paddingTop: '15px',
-                borderTop: '1px solid #ddd'
-              },
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("strong", {
-                style: {
-                  display: 'block',
-                  marginBottom: '10px'
-                },
-                children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display Options', 'jankx')
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Layout', 'jankx'),
-                value: filter.layout || layout,
-                options: [{
-                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Horizontal', 'jankx'),
-                  value: 'horizontal'
-                }, {
-                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Vertical', 'jankx'),
-                  value: 'vertical'
-                }, {
-                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Dropdown', 'jankx'),
-                  value: 'dropdown'
-                }, {
-                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Accordion', 'jankx'),
-                  value: 'accordion'
-                }],
-                onChange: value => handleUpdateTaxonomyFilter(index, {
-                  layout: value
-                })
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Labels', 'jankx'),
-                checked: filter.showLabels !== undefined ? filter.showLabels : showLabels,
-                onChange: value => handleUpdateTaxonomyFilter(index, {
-                  showLabels: value
-                })
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Collapsible', 'jankx'),
-                checked: filter.collapsible !== undefined ? filter.collapsible : collapsible,
-                onChange: value => handleUpdateTaxonomyFilter(index, {
-                  collapsible: value
-                }),
-                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Make filter collapsible', 'jankx')
-              }), filter.collapsible && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Default Expanded', 'jankx'),
-                checked: filter.defaultExpanded !== undefined ? filter.defaultExpanded : defaultExpanded,
-                onChange: value => handleUpdateTaxonomyFilter(index, {
-                  defaultExpanded: value
-                }),
-                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show filter expanded by default', 'jankx')
-              })]
-            })]
-          })]
-        }, index))]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('AJAX Settings', 'jankx'),
         initialOpen: false,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable AJAX', 'jankx'),
           checked: ajaxEnabled,
           onChange: value => setAttributes({
             ajaxEnabled: value
           }),
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Update results without page reload', 'jankx')
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Update URL', 'jankx'),
           checked: updateUrl,
           onChange: value => setAttributes({
@@ -828,7 +533,7 @@ function Edit({
           }),
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Update browser URL with filter parameters', 'jankx'),
           disabled: !ajaxEnabled
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Scroll to Results', 'jankx'),
           checked: scrollToResults,
           onChange: value => setAttributes({
@@ -837,16 +542,16 @@ function Edit({
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Scroll to target block after filtering', 'jankx'),
           disabled: !ajaxEnabled
         })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Reset Button', 'jankx'),
         initialOpen: false,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Reset Button', 'jankx'),
           checked: showResetButton,
           onChange: value => setAttributes({
             showResetButton: value
           })
-        }), showResetButton && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+        }), showResetButton && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Reset Button Text', 'jankx'),
           value: resetButtonText,
           onChange: value => setAttributes({
@@ -854,25 +559,33 @@ function Edit({
           })
         })]
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
       ...blockProps,
-      children: targetBlockIds.length === 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Placeholder, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
+        style: {
+          marginBottom: '15px'
+        },
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InnerBlocks, {
+          allowedBlocks: ['jankx/advanced-filter'],
+          renderAppender: () => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InnerBlocks.ButtonBlockAppender, {})
+        })
+      }), targetBlockIds.length === 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Placeholder, {
         icon: "filter",
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Advanced Filters', 'jankx'),
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("p", {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("p", {
           children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Please select at least one target block to filter in the sidebar.', 'jankx')
         })
-      }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)((_wordpress_server_side_render__WEBPACK_IMPORTED_MODULE_5___default()), {
+      }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)((_wordpress_server_side_render__WEBPACK_IMPORTED_MODULE_6___default()), {
         block: "jankx/advanced-filters",
         attributes: attributes
-      })
+      })]
     })]
   });
 }
-(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.registerBlockType)(_block_json__WEBPACK_IMPORTED_MODULE_6__.name, {
-  ..._block_json__WEBPACK_IMPORTED_MODULE_6__,
+(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.registerBlockType)(_block_json__WEBPACK_IMPORTED_MODULE_7__.name, {
+  ..._block_json__WEBPACK_IMPORTED_MODULE_7__,
   edit: Edit,
-  save: () => null // Server-side rendering
+  save: () => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InnerBlocks.Content, {}) // Lưu block con để giữ cấu hình filter
 });
 })();
 
