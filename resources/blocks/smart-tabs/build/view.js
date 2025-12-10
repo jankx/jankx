@@ -194,26 +194,33 @@ function triggerAdvancedFilter(triggerSettings) {
   const filterValueStart = triggerSettings.filterValueStart;
   const filterValueEnd = triggerSettings.filterValueEnd;
   if (!filterBlockId || !filterId) {
+    console.warn('AdvancedFilter trigger: Missing filterBlockId or filterId', triggerSettings);
     return;
   }
 
-  // Find the advanced-filters block
-  const filterBlock = document.querySelector(`[data-block-id="${filterBlockId}"], [id*="${filterBlockId}"]`);
+  // Find the advanced-filters block container
+  // Try multiple selectors to find the block
+  let filterBlock = document.querySelector(`.wp-block-jankx-advanced-filters[id*="${filterBlockId}"]`);
   if (!filterBlock) {
-    // Try to find by class
+    filterBlock = document.querySelector(`.wp-block-jankx-advanced-filters[data-query-id="${filterBlockId}"]`);
+  }
+  if (!filterBlock) {
+    filterBlock = document.querySelector(`.wp-block-jankx-advanced-filters[data-block-id="${filterBlockId}"]`);
+  }
+  if (!filterBlock) {
+    // Try to find by ID directly
+    filterBlock = document.getElementById(filterBlockId);
+  }
+  if (!filterBlock) {
+    // Last resort: find all advanced-filters blocks and use the first one
     const allFilterBlocks = document.querySelectorAll('.wp-block-jankx-advanced-filters');
     if (allFilterBlocks.length > 0) {
-      // Use first block if we can't find by ID
-      const firstBlock = allFilterBlocks[0];
-      applyFilterToBlock(firstBlock, filterId, {
-        filterValue,
-        filterValueMin,
-        filterValueMax,
-        filterValueStart,
-        filterValueEnd
-      });
+      console.warn(`AdvancedFilter trigger: Could not find block with ID ${filterBlockId}, using first available block`);
+      filterBlock = allFilterBlocks[0];
+    } else {
+      console.error('AdvancedFilter trigger: No advanced-filters blocks found on page');
+      return;
     }
-    return;
   }
   applyFilterToBlock(filterBlock, filterId, {
     filterValue,
@@ -235,6 +242,7 @@ function applyFilterToBlock(filterBlock, filterId, values) {
   // Parse filter ID to get filter type and index
   const filterParts = filterId.split('_');
   if (filterParts.length < 2) {
+    console.warn('AdvancedFilter: Invalid filterId format', filterId);
     return;
   }
   const filterType = filterParts[0]; // taxonomy, meta, price, date, author, keyword
@@ -242,29 +250,50 @@ function applyFilterToBlock(filterBlock, filterId, values) {
 
   // Find the filter group element
   let filterGroup = null;
+  let elementFound = false;
   if (filterType === 'taxonomy') {
     const taxonomy = filterParts[2] || '';
+    // Try multiple selectors to find taxonomy filter group
     filterGroup = filterBlock.querySelector(`[data-taxonomy="${taxonomy}"]`);
+    if (!filterGroup) {
+      // Try with filter-taxonomy class
+      filterGroup = filterBlock.querySelector(`.filter-taxonomy[data-taxonomy="${taxonomy}"]`);
+    }
     if (filterGroup && values.filterValue) {
-      // Find the term option and click it
-      const termOption = filterGroup.querySelector(`[data-value="${values.filterValue}"], input[value="${values.filterValue}"]`);
-      if (termOption) {
-        if (termOption instanceof HTMLElement && termOption.classList.contains('filter-option')) {
-          termOption.click();
-        } else if (termOption instanceof HTMLInputElement) {
-          termOption.checked = true;
-          termOption.dispatchEvent(new Event('change', {
-            bubbles: true
-          }));
+      // Try to find term option by data-value first (for filter-option buttons)
+      let termOption = filterGroup.querySelector(`[data-value="${values.filterValue}"]`);
+      if (termOption && termOption.classList.contains('filter-option')) {
+        // It's a button, click it
+        elementFound = true;
+        termOption.click();
+      } else {
+        // Try to find input/checkbox
+        termOption = filterGroup.querySelector(`input[value="${values.filterValue}"]`);
+        if (termOption) {
+          elementFound = true;
+          if (termOption instanceof HTMLInputElement) {
+            termOption.checked = true;
+            // Trigger change event immediately
+            termOption.dispatchEvent(new Event('change', {
+              bubbles: true
+            }));
+          }
         }
+      }
+      if (!elementFound) {
+        console.warn(`AdvancedFilter: Could not find term option with value ${values.filterValue} for taxonomy ${taxonomy}`);
       }
     }
   } else if (filterType === 'meta') {
     const metaKey = filterParts[2] || '';
-    filterGroup = filterBlock.querySelector(`[data-meta-key="${metaKey}"]`);
+    filterGroup = filterBlock.querySelector(`.filter-meta[data-meta-key="${metaKey}"]`);
+    if (!filterGroup) {
+      filterGroup = filterBlock.querySelector(`[data-meta-key="${metaKey}"]`);
+    }
     if (filterGroup && values.filterValue) {
       const input = filterGroup.querySelector('input, select');
       if (input) {
+        elementFound = true;
         input.value = values.filterValue;
         input.dispatchEvent(new Event('input', {
           bubbles: true
@@ -278,8 +307,9 @@ function applyFilterToBlock(filterBlock, filterId, values) {
     filterGroup = filterBlock.querySelector('.filter-price');
     if (filterGroup) {
       if (values.filterValueMin) {
-        const minInput = filterGroup.querySelector('[data-price="min"], [name="price_min"]');
+        const minInput = filterGroup.querySelector('[name="price_min"], input[type="number"]');
         if (minInput) {
+          elementFound = true;
           minInput.value = values.filterValueMin;
           minInput.dispatchEvent(new Event('input', {
             bubbles: true
@@ -287,8 +317,9 @@ function applyFilterToBlock(filterBlock, filterId, values) {
         }
       }
       if (values.filterValueMax) {
-        const maxInput = filterGroup.querySelector('[data-price="max"], [name="price_max"]');
+        const maxInput = filterGroup.querySelector('[name="price_max"], input[type="number"]:last-of-type');
         if (maxInput) {
+          elementFound = true;
           maxInput.value = values.filterValueMax;
           maxInput.dispatchEvent(new Event('input', {
             bubbles: true
@@ -300,8 +331,9 @@ function applyFilterToBlock(filterBlock, filterId, values) {
     filterGroup = filterBlock.querySelector('.filter-date');
     if (filterGroup) {
       if (values.filterValueStart) {
-        const startInput = filterGroup.querySelector('[data-date="start"], [name="date_start"]');
+        const startInput = filterGroup.querySelector('[name="date_start"], input[type="date"]:first-of-type');
         if (startInput) {
+          elementFound = true;
           startInput.value = values.filterValueStart;
           startInput.dispatchEvent(new Event('change', {
             bubbles: true
@@ -309,8 +341,9 @@ function applyFilterToBlock(filterBlock, filterId, values) {
         }
       }
       if (values.filterValueEnd) {
-        const endInput = filterGroup.querySelector('[data-date="end"], [name="date_end"]');
+        const endInput = filterGroup.querySelector('[name="date_end"], input[type="date"]:last-of-type');
         if (endInput) {
+          elementFound = true;
           endInput.value = values.filterValueEnd;
           endInput.dispatchEvent(new Event('change', {
             bubbles: true
@@ -319,10 +352,11 @@ function applyFilterToBlock(filterBlock, filterId, values) {
       }
     }
   } else if (filterType === 'author') {
-    filterGroup = filterBlock.querySelector('[data-filter-type="author"]');
+    filterGroup = filterBlock.querySelector('[data-filter-type="author"], .filter-author');
     if (filterGroup && values.filterValue) {
       const input = filterGroup.querySelector(`input[value="${values.filterValue}"], select`);
       if (input) {
+        elementFound = true;
         if (input instanceof HTMLInputElement) {
           input.checked = true;
           input.dispatchEvent(new Event('change', {
@@ -341,6 +375,7 @@ function applyFilterToBlock(filterBlock, filterId, values) {
     if (filterGroup && values.filterValue) {
       const input = filterGroup.querySelector('input');
       if (input) {
+        elementFound = true;
         input.value = values.filterValue;
         input.dispatchEvent(new Event('input', {
           bubbles: true
@@ -348,35 +383,26 @@ function applyFilterToBlock(filterBlock, filterId, values) {
       }
     }
   }
+  if (!filterGroup) {
+    console.warn(`AdvancedFilter: Could not find filter group for filterId ${filterId}`);
+    return;
+  }
+  if (!elementFound) {
+    console.warn(`AdvancedFilter: Could not find filter element for filterId ${filterId} with values`, values);
+    return;
+  }
 
-  // Trigger filter change by dispatching change/input events
-  // AdvancedFilters class listens to these events and will handle the update
-  // We need to wait a bit for the DOM to update, then trigger the change
-
-  setTimeout(() => {
-    // Trigger change event on inputs that were modified
-    const changedInputs = filterGroup?.querySelectorAll('input:not([type="hidden"]), select');
-    if (changedInputs && changedInputs.length > 0) {
-      changedInputs.forEach(input => {
-        // Trigger both input and change events to ensure AdvancedFilters picks it up
-        input.dispatchEvent(new Event('input', {
-          bubbles: true
-        }));
-        input.dispatchEvent(new Event('change', {
-          bubbles: true
-        }));
-      });
-    }
-
-    // Also trigger click event on filter-option buttons if any were clicked
-    const clickedOptions = filterGroup?.querySelectorAll('.filter-option.active');
-    if (clickedOptions && clickedOptions.length > 0) {
-      // The click event should have already been triggered, but ensure change is fired
+  // For taxonomy filters with filter-option buttons, the click event should trigger handleFilterChange
+  // For other filters, we've already dispatched change/input events
+  // But let's also trigger a change event on the filter group to ensure AdvancedFilters picks it up
+  if (filterType !== 'taxonomy' || !values.filterValue) {
+    // For non-taxonomy or empty taxonomy, ensure change event is fired
+    setTimeout(() => {
       filterGroup.dispatchEvent(new Event('change', {
         bubbles: true
       }));
-    }
-  }, 100);
+    }, 50);
+  }
 }
 /******/ })()
 ;

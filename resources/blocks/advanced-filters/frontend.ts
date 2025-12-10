@@ -390,10 +390,60 @@ class AdvancedFilters {
                 let attributesJson = '';
                 
                 if (targetBlock) {
+                    // Try to get data-block-settings first (for PostTypeLayoutBlock)
                     const blockSettings = targetBlock.getAttribute('data-block-settings');
                     if (blockSettings) {
                         attributesJson = blockSettings;
+                    } else {
+                        // For DynamicDataLayoutBlock, build attributes from data attributes
+                        const attributes: Record<string, unknown> = {
+                            queryId: blockId,
+                        };
+                        
+                        // Collect all data attributes
+                        const postType = targetBlock.getAttribute('data-post-type');
+                        if (postType) attributes.postType = postType;
+                        
+                        const layout = targetBlock.getAttribute('data-layout');
+                        if (layout) attributes.layout = layout;
+                        
+                        const postsPerPage = targetBlock.getAttribute('data-posts-per-page');
+                        if (postsPerPage) attributes.postsPerPage = parseInt(postsPerPage, 10);
+                        
+                        const columns = targetBlock.getAttribute('data-columns');
+                        if (columns) attributes.columns = parseInt(columns, 10);
+                        
+                        const columnsTablet = targetBlock.getAttribute('data-columns-tablet');
+                        if (columnsTablet) attributes.columnsTablet = parseInt(columnsTablet, 10);
+                        
+                        const columnsMobile = targetBlock.getAttribute('data-columns-mobile');
+                        if (columnsMobile) attributes.columnsMobile = parseInt(columnsMobile, 10);
+                        
+                        const orderBy = targetBlock.getAttribute('data-order-by');
+                        if (orderBy) attributes.orderBy = orderBy;
+                        
+                        const order = targetBlock.getAttribute('data-order');
+                        if (order) attributes.order = order;
+                        
+                        const queryPreset = targetBlock.getAttribute('data-query-preset');
+                        if (queryPreset) attributes.queryPreset = queryPreset;
+                        
+                        const imageRatio = targetBlock.getAttribute('data-image-ratio');
+                        if (imageRatio) attributes.imageRatio = imageRatio;
+                        
+                        const thumbnailPosition = targetBlock.getAttribute('data-thumbnail-position');
+                        if (thumbnailPosition) attributes.thumbnailPosition = thumbnailPosition;
+                        
+                        // Convert to JSON if we have any attributes
+                        if (Object.keys(attributes).length > 1) { // More than just queryId
+                            attributesJson = JSON.stringify(attributes);
+                        }
                     }
+                }
+                
+                // If still no attributes, log warning but continue (server will try to find block)
+                if (!attributesJson) {
+                    console.warn(`AdvancedFilters: Could not find block attributes for block ${blockId}, server will try to detect from block_id`);
                 }
 
                 const params = new URLSearchParams({

@@ -55,8 +55,9 @@ interface EditProps {
     clientId: string;
 }
 
-function Edit({ attributes, setAttributes }: EditProps) {
+function Edit({ attributes, setAttributes, clientId }: EditProps) {
     const {
+        blockId,
         targetBlockIds,
         filterType,
         layout,
@@ -91,6 +92,13 @@ function Edit({ attributes, setAttributes }: EditProps) {
     const targetPostType = targetBlockIds.length > 0 && availableBlocks.length > 0
         ? availableBlocks.find(b => b.id === targetBlockIds[0])?.postType || 'post'
         : 'post';
+
+    // Ensure blockId is set to clientId for frontend matching
+    useEffect(() => {
+        if (!blockId && clientId) {
+            setAttributes({ blockId: clientId });
+        }
+    }, [blockId, clientId, setAttributes]);
 
     // Use blockProps without additional classes since PHP render already includes full wrapper
     const blockProps = useBlockProps();

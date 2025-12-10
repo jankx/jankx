@@ -228,26 +228,81 @@ function triggerAdvancedFilter(triggerSettings) {
     const filterValueEnd = triggerSettings.filterValueEnd;
 
     if (!filterBlockId || !filterId) {
+        console.warn('AdvancedFilter trigger: Missing filterBlockId or filterId', triggerSettings);
         return;
     }
 
-    // Find the advanced-filters block
-    const filterBlock = document.querySelector(`[data-block-id="${filterBlockId}"], [id*="${filterBlockId}"]`);
+    // Find the advanced-filters block container
+    // Try multiple selectors to find the block
+    let filterBlock = document.querySelector(`.wp-block-jankx-advanced-filters[data-filter-block-id="${filterBlockId}"]`);
+    
     if (!filterBlock) {
-        // Try to find by class
+        filterBlock = document.querySelector(`.wp-block-jankx-advanced-filters[id*="${filterBlockId}"]`);
+    }
+    
+    if (!filterBlock) {
+        filterBlock = document.querySelector(`.wp-block-jankx-advanced-filters[data-query-id="${filterBlockId}"]`);
+    }
+    
+    if (!filterBlock) {
+        filterBlock = document.querySelector(`.wp-block-jankx-advanced-filters[data-block-id="${filterBlockId}"]`);
+    }
+    
+    if (!filterBlock) {
+        // Try to find by ID directly
+        filterBlock = document.getElementById(filterBlockId);
+    }
+    
+    if (!filterBlock) {
+        // Try to find by matching blockId in config
+        const allFilterBlocks = document.querySelectorAll('.wp-block-jankx-advanced-filters');
+        console.log(`AdvancedFilter: Searching ${allFilterBlocks.length} advanced-filters blocks for ID ${filterBlockId}`);
+        
+        for (const block of allFilterBlocks) {
+            const configEl = block.querySelector('.advanced-filters-config');
+            if (configEl) {
+                try {
+                    const configData = configEl.getAttribute('data-config');
+                    if (configData) {
+                        const config = JSON.parse(configData);
+                        console.log(`AdvancedFilter: Found block with config.blockId=${config.blockId}, targetBlockIds=`, config.targetBlockIds);
+                        
+                        // Match by blockId in config
+                        if (config.blockId === filterBlockId) {
+                            console.log('AdvancedFilter: Matched block by blockId in config');
+                            filterBlock = block;
+                            break;
+                        }
+                        // Also try matching by targetBlockIds (for backward compatibility)
+                        if (config.targetBlockIds && config.targetBlockIds.includes(filterBlockId)) {
+                            console.log('AdvancedFilter: Matched block by targetBlockIds in config');
+                            filterBlock = block;
+                            break;
+                        }
+                    }
+                } catch (e) {
+                    console.error('AdvancedFilter: Error parsing config', e);
+                }
+            } else {
+                console.warn('AdvancedFilter: Block found but no .advanced-filters-config element');
+            }
+        }
+    }
+    
+    if (!filterBlock) {
+        // Last resort: find all advanced-filters blocks and use the first one
         const allFilterBlocks = document.querySelectorAll('.wp-block-jankx-advanced-filters');
         if (allFilterBlocks.length > 0) {
-            // Use first block if we can't find by ID
-            const firstBlock = allFilterBlocks[0];
-            applyFilterToBlock(firstBlock, filterId, {
-                filterValue,
-                filterValueMin,
-                filterValueMax,
-                filterValueStart,
-                filterValueEnd,
-            });
+            console.warn(`AdvancedFilter trigger: Could not find block with ID ${filterBlockId}, using first available block`);
+            filterBlock = allFilterBlocks[0];
+        } else {
+            console.error('AdvancedFilter trigger: No advanced-filters blocks found on page');
+            return;
         }
-        return;
+    }
+    
+    if (filterBlock) {
+        console.log('AdvancedFilter: Found filter block:', filterBlock.id, filterBlock.className);
     }
 
     applyFilterToBlock(filterBlock, filterId, {
@@ -270,6 +325,7 @@ function applyFilterToBlock(filterBlock, filterId, values) {
     // Parse filter ID to get filter type and index
     const filterParts = filterId.split('_');
     if (filterParts.length < 2) {
+        console.warn('AdvancedFilter: Invalid filterId format', filterId);
         return;
     }
 
@@ -278,30 +334,159 @@ function applyFilterToBlock(filterBlock, filterId, values) {
 
     // Find the filter group element
     let filterGroup = null;
+    let elementFound = false;
 
     if (filterType === 'taxonomy') {
         const taxonomy = filterParts[2] || '';
+        
+        if (!taxonomy) {
+            console.warn(`AdvancedFilter: Taxonomy name is missing in filterId ${filterId}`);
+            return;
+        }
+        
+        console.log(`AdvancedFilter: Looking for taxonomy filter group with taxonomy="${taxonomy}"`);
+        
+        // Try multiple selectors to find taxonomy filter group in the specific block
         filterGroup = filterBlock.querySelector(`[data-taxonomy="${taxonomy}"]`);
         
-        if (filterGroup && values.filterValue) {
-            // Find the term option and click it
-            const termOption = filterGroup.querySelector(`[data-value="${values.filterValue}"], input[value="${values.filterValue}"]`);
-            if (termOption) {
-                if (termOption instanceof HTMLElement && termOption.classList.contains('filter-option')) {
-                    termOption.click();
-                } else if (termOption instanceof HTMLInputElement) {
-                    termOption.checked = true;
-                    termOption.dispatchEvent(new Event('change', { bubbles: true }));
+        if (!filterGroup) {
+            // Try with filter-taxonomy class
+            filterGroup = filterBlock.querySelector(`.filter-taxonomy[data-taxonomy="${taxonomy}"]`);
+        }
+        
+        if (!filterGroup) {
+            // Try with data-filter-type
+            filterGroup = filterBlock.querySelector(`[data-filter-type="taxonomy"][data-taxonomy="${taxonomy}"]`);
+        }
+        
+        if (!filterGroup) {
+            // Try with filter-group class
+            filterGroup = filterBlock.querySelector(`.filter-group[data-taxonomy="${taxonomy}"]`);
+        }
+        
+        if (!filterGroup) {
+            // Last resort: find any element with data-taxonomy and match
+            const allTaxonomyGroups = filterBlock.querySelectorAll('[data-taxonomy]');
+            console.log(`AdvancedFilter: Found ${allTaxonomyGroups.length} elements with data-taxonomy attribute in block`);
+            if (allTaxonomyGroups.length > 0) {
+                // Try to find by matching taxonomy name
+                for (const group of allTaxonomyGroups) {
+                    const groupTaxonomy = group.getAttribute('data-taxonomy');
+                    console.log(`AdvancedFilter: Checking group with taxonomy="${groupTaxonomy}"`);
+                    if (groupTaxonomy === taxonomy) {
+                        filterGroup = group;
+                        console.log('AdvancedFilter: Matched taxonomy filter group');
+                        break;
+                    }
                 }
             }
         }
+        
+        // If still not found, search in all advanced-filters blocks on the page
+        if (!filterGroup) {
+            console.log('AdvancedFilter: Not found in specific block, searching all advanced-filters blocks');
+            const allFilterBlocks = document.querySelectorAll('.wp-block-jankx-advanced-filters');
+            for (const block of allFilterBlocks) {
+                filterGroup = block.querySelector(`[data-taxonomy="${taxonomy}"]`);
+                if (filterGroup) {
+                    console.log('AdvancedFilter: Found filter group in another block');
+                    filterBlock = block; // Update filterBlock reference
+                    break;
+                }
+            }
+        }
+        
+        if (!filterGroup) {
+            // Debug: log all filter groups found
+            const allFilterGroups = filterBlock.querySelectorAll('[data-taxonomy], [data-filter-type]');
+            const availableTaxonomies = Array.from(allFilterGroups).map(el => ({
+                taxonomy: el.getAttribute('data-taxonomy'),
+                filterType: el.getAttribute('data-filter-type'),
+                classes: el.className,
+                id: el.id,
+            }));
+            console.warn(`AdvancedFilter: Could not find filter group for taxonomy ${taxonomy}. Available filter groups in block:`, availableTaxonomies);
+            
+            // Also check all blocks on page
+            const allBlocks = document.querySelectorAll('.wp-block-jankx-advanced-filters');
+            const allTaxonomiesOnPage = [];
+            allBlocks.forEach(block => {
+                const groups = block.querySelectorAll('[data-taxonomy]');
+                groups.forEach(group => {
+                    allTaxonomiesOnPage.push({
+                        taxonomy: group.getAttribute('data-taxonomy'),
+                        blockId: block.id,
+                        classes: group.className,
+                    });
+                });
+            });
+            console.warn(`AdvancedFilter: All taxonomy filters on page:`, allTaxonomiesOnPage);
+            
+            // Also check if filter block has any content
+            const filterContainer = filterBlock.querySelector('.advanced-filters-container');
+            if (filterContainer) {
+                console.warn(`AdvancedFilter: Filter container HTML:`, filterContainer.innerHTML.substring(0, 1000));
+            } else {
+                console.warn(`AdvancedFilter: No .advanced-filters-container found in block`);
+            }
+            return;
+        }
+        
+        console.log(`AdvancedFilter: Found filter group for taxonomy ${taxonomy}:`, filterGroup.className, filterGroup.getAttribute('data-taxonomy'));
+        
+        if (values.filterValue) {
+            // Try to find term option by data-value first (for filter-option buttons)
+            let termOption = filterGroup.querySelector(`[data-value="${values.filterValue}"]`);
+            
+            if (termOption && termOption.classList.contains('filter-option')) {
+                // It's a button, click it
+                elementFound = true;
+                termOption.click();
+            } else {
+                // Try to find input/checkbox
+                termOption = filterGroup.querySelector(`input[value="${values.filterValue}"]`);
+                if (termOption) {
+                    elementFound = true;
+                    if (termOption instanceof HTMLInputElement) {
+                        termOption.checked = true;
+                        // Trigger change event immediately
+                        termOption.dispatchEvent(new Event('change', { bubbles: true }));
+                    }
+                }
+            }
+            
+            if (!elementFound) {
+                console.warn(`AdvancedFilter: Could not find term option with value ${values.filterValue} for taxonomy ${taxonomy}. Available values:`, 
+                    Array.from(filterGroup.querySelectorAll('[data-value], input[value]')).map(el => 
+                        el.getAttribute('data-value') || el.getAttribute('value')
+                    ));
+            }
+        } else {
+            // Empty value means "all" - might need to clear selection
+            console.log(`AdvancedFilter: filterValue is empty for taxonomy ${taxonomy}, clearing selection`);
+            // Clear all selections
+            const activeOptions = filterGroup.querySelectorAll('.filter-option.active, input:checked');
+            activeOptions.forEach(opt => {
+                if (opt.classList.contains('filter-option')) {
+                    opt.classList.remove('active');
+                } else if (opt instanceof HTMLInputElement) {
+                    opt.checked = false;
+                }
+            });
+            elementFound = true;
+        }
     } else if (filterType === 'meta') {
         const metaKey = filterParts[2] || '';
-        filterGroup = filterBlock.querySelector(`[data-meta-key="${metaKey}"]`);
+        filterGroup = filterBlock.querySelector(`.filter-meta[data-meta-key="${metaKey}"]`);
+        
+        if (!filterGroup) {
+            filterGroup = filterBlock.querySelector(`[data-meta-key="${metaKey}"]`);
+        }
         
         if (filterGroup && values.filterValue) {
             const input = filterGroup.querySelector('input, select');
             if (input) {
+                elementFound = true;
                 input.value = values.filterValue;
                 input.dispatchEvent(new Event('input', { bubbles: true }));
                 input.dispatchEvent(new Event('change', { bubbles: true }));
@@ -312,15 +497,17 @@ function applyFilterToBlock(filterBlock, filterId, values) {
         
         if (filterGroup) {
             if (values.filterValueMin) {
-                const minInput = filterGroup.querySelector('[data-price="min"], [name="price_min"]');
+                const minInput = filterGroup.querySelector('[name="price_min"], input[type="number"]');
                 if (minInput) {
+                    elementFound = true;
                     minInput.value = values.filterValueMin;
                     minInput.dispatchEvent(new Event('input', { bubbles: true }));
                 }
             }
             if (values.filterValueMax) {
-                const maxInput = filterGroup.querySelector('[data-price="max"], [name="price_max"]');
+                const maxInput = filterGroup.querySelector('[name="price_max"], input[type="number"]:last-of-type');
                 if (maxInput) {
+                    elementFound = true;
                     maxInput.value = values.filterValueMax;
                     maxInput.dispatchEvent(new Event('input', { bubbles: true }));
                 }
@@ -331,26 +518,29 @@ function applyFilterToBlock(filterBlock, filterId, values) {
         
         if (filterGroup) {
             if (values.filterValueStart) {
-                const startInput = filterGroup.querySelector('[data-date="start"], [name="date_start"]');
+                const startInput = filterGroup.querySelector('[name="date_start"], input[type="date"]:first-of-type');
                 if (startInput) {
+                    elementFound = true;
                     startInput.value = values.filterValueStart;
                     startInput.dispatchEvent(new Event('change', { bubbles: true }));
                 }
             }
             if (values.filterValueEnd) {
-                const endInput = filterGroup.querySelector('[data-date="end"], [name="date_end"]');
+                const endInput = filterGroup.querySelector('[name="date_end"], input[type="date"]:last-of-type');
                 if (endInput) {
+                    elementFound = true;
                     endInput.value = values.filterValueEnd;
                     endInput.dispatchEvent(new Event('change', { bubbles: true }));
                 }
             }
         }
     } else if (filterType === 'author') {
-        filterGroup = filterBlock.querySelector('[data-filter-type="author"]');
+        filterGroup = filterBlock.querySelector('[data-filter-type="author"], .filter-author');
         
         if (filterGroup && values.filterValue) {
             const input = filterGroup.querySelector(`input[value="${values.filterValue}"], select`);
             if (input) {
+                elementFound = true;
                 if (input instanceof HTMLInputElement) {
                     input.checked = true;
                     input.dispatchEvent(new Event('change', { bubbles: true }));
@@ -366,33 +556,31 @@ function applyFilterToBlock(filterBlock, filterId, values) {
         if (filterGroup && values.filterValue) {
             const input = filterGroup.querySelector('input');
             if (input) {
+                elementFound = true;
                 input.value = values.filterValue;
                 input.dispatchEvent(new Event('input', { bubbles: true }));
             }
         }
     }
 
-    // Trigger filter change by dispatching change/input events
-    // AdvancedFilters class listens to these events and will handle the update
-    // We need to wait a bit for the DOM to update, then trigger the change
-    
-    setTimeout(() => {
-        // Trigger change event on inputs that were modified
-        const changedInputs = filterGroup?.querySelectorAll('input:not([type="hidden"]), select');
-        if (changedInputs && changedInputs.length > 0) {
-            changedInputs.forEach((input) => {
-                // Trigger both input and change events to ensure AdvancedFilters picks it up
-                input.dispatchEvent(new Event('input', { bubbles: true }));
-                input.dispatchEvent(new Event('change', { bubbles: true }));
-            });
-        }
-        
-        // Also trigger click event on filter-option buttons if any were clicked
-        const clickedOptions = filterGroup?.querySelectorAll('.filter-option.active');
-        if (clickedOptions && clickedOptions.length > 0) {
-            // The click event should have already been triggered, but ensure change is fired
+    if (!filterGroup) {
+        console.warn(`AdvancedFilter: Could not find filter group for filterId ${filterId}`);
+        return;
+    }
+
+    if (!elementFound) {
+        console.warn(`AdvancedFilter: Could not find filter element for filterId ${filterId} with values`, values);
+        return;
+    }
+
+    // For taxonomy filters with filter-option buttons, the click event should trigger handleFilterChange
+    // For other filters, we've already dispatched change/input events
+    // But let's also trigger a change event on the filter group to ensure AdvancedFilters picks it up
+    if (filterType !== 'taxonomy' || !values.filterValue) {
+        // For non-taxonomy or empty taxonomy, ensure change event is fired
+        setTimeout(() => {
             filterGroup.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-    }, 100);
+        }, 50);
+    }
 }
 

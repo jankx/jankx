@@ -25,7 +25,7 @@ import {
     __experimentalUnitControl as UnitControl,
 } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
-import { useMemo, useState, useEffect } from '@wordpress/element';
+import { useMemo, useState, useEffect, useRef } from '@wordpress/element';
 import { code, brush } from '@wordpress/icons';
 
 /**
@@ -97,6 +97,12 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
     const [loadingTerms, setLoadingTerms] = useState<boolean>(false);
     const [authors, setAuthors] = useState<Author[]>([]);
     const [loadingAuthors, setLoadingAuthors] = useState<boolean>(false);
+    // Cache for loaded terms and authors to avoid unnecessary reloads
+    // Use refs to avoid re-renders and dependency issues
+    const termsCacheRef = useRef<Record<string, Term[]>>({});
+    const authorsCacheRef = useRef<Author[] | null>(null);
+    const lastTaxonomyRef = useRef<string>('');
+    const lastFilterTypeRef = useRef<string>('');
 
     const rawTriggerConfig = (window?.JankxSmartTabTriggers?.items ?? {}) as Record<string, SmartTabTriggerConfig>;
     const fallbackTrigger: SmartTabTriggerConfig = useMemo(
@@ -430,18 +436,44 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
     }, [trigger, selectedFilterBlock, triggerSettings]);
 
     // Load terms for taxonomy filter
+    // Only reload when taxonomy actually changes, not when selectedFilter object reference changes
     useEffect(() => {
         if (trigger !== 'advanced-filter' || !selectedFilter || selectedFilter.filterType !== 'taxonomy') {
             setFilterTerms([]);
+            lastFilterTypeRef.current = '';
+            lastTaxonomyRef.current = '';
             return;
         }
 
-        const taxonomy = selectedFilter.taxonomy;
+        const taxonomy = selectedFilter.taxonomy || '';
+        const filterType = selectedFilter.filterType || '';
+        
         if (!taxonomy) {
             setFilterTerms([]);
+            lastTaxonomyRef.current = '';
             return;
         }
 
+        // Only reload if taxonomy actually changed
+        if (lastTaxonomyRef.current === taxonomy && lastFilterTypeRef.current === filterType) {
+            // Taxonomy hasn't changed, use cached terms if available
+            if (termsCacheRef.current[taxonomy] && termsCacheRef.current[taxonomy].length > 0) {
+                setFilterTerms(termsCacheRef.current[taxonomy]);
+                return;
+            }
+        }
+
+        // Taxonomy changed or not in cache, need to load
+        lastTaxonomyRef.current = taxonomy;
+        lastFilterTypeRef.current = filterType;
+        
+        // Check cache first - if terms for this taxonomy are already loaded, use them
+        if (termsCacheRef.current[taxonomy] && termsCacheRef.current[taxonomy].length > 0) {
+            setFilterTerms(termsCacheRef.current[taxonomy]);
+            return;
+        }
+
+        // Not in cache, need to load
         setLoadingTerms(true);
         
         const wpApiFetch = window.wp?.apiFetch;
@@ -454,7 +486,10 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
             path: `/wp/v2/${taxonomy}?per_page=100&orderby=name&order=asc`,
         })
             .then((terms: unknown) => {
-                setFilterTerms((terms as Term[]) || []);
+                const termsArray = (terms as Term[]) || [];
+                setFilterTerms(termsArray);
+                // Cache the loaded terms
+                termsCacheRef.current[taxonomy] = termsArray;
             })
             .catch((error: Error) => {
                 console.error('Error loading terms:', error);
@@ -463,15 +498,36 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
             .finally(() => {
                 setLoadingTerms(false);
             });
-    }, [trigger, selectedFilter]);
+    }, [trigger, selectedFilter?.filterType, selectedFilter?.taxonomy]);
 
     // Load authors for author filter
+    // Only reload when filter type changes to author, use cache otherwise
     useEffect(() => {
         if (trigger !== 'advanced-filter' || !selectedFilter || selectedFilter.filterType !== 'author') {
             setAuthors([]);
+            lastFilterTypeRef.current = '';
             return;
         }
 
+        const filterType = selectedFilter.filterType || '';
+        
+        // Only reload if filter type actually changed to author
+        if (lastFilterTypeRef.current === filterType && authorsCacheRef.current && authorsCacheRef.current.length > 0) {
+            // Filter type hasn't changed, use cached authors
+            setAuthors(authorsCacheRef.current);
+            return;
+        }
+
+        // Filter type changed or not in cache, need to load
+        lastFilterTypeRef.current = filterType;
+
+        // Check cache first - if authors are already loaded, use them
+        if (authorsCacheRef.current && authorsCacheRef.current.length > 0) {
+            setAuthors(authorsCacheRef.current);
+            return;
+        }
+
+        // Only load if not in cache
         setLoadingAuthors(true);
         
         const wpApiFetch = window.wp?.apiFetch;
@@ -484,7 +540,10 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
             path: '/wp/v2/users?per_page=100&orderby=name&order=asc',
         })
             .then((users: unknown) => {
-                setAuthors((users as Author[]) || []);
+                const usersArray = (users as Author[]) || [];
+                setAuthors(usersArray);
+                // Cache the loaded authors
+                authorsCacheRef.current = usersArray;
             })
             .catch((error: Error) => {
                 console.error('Error loading authors:', error);
@@ -493,7 +552,7 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
             .finally(() => {
                 setLoadingAuthors(false);
             });
-    }, [trigger, selectedFilter]);
+    }, [trigger, selectedFilter?.filterType]);
 
     return (
         <>

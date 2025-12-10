@@ -50,6 +50,10 @@
     }
   },
   "attributes": {
+    "blockId": {
+      "type": "string",
+      "default": ""
+    },
     "targetBlockIds": {
       "type": "array",
       "default": []

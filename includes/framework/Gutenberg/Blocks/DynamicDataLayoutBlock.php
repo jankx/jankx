@@ -6,6 +6,7 @@ use Jankx\Gutenberg\Block;
 use Jankx\Layouts\DynamicDataLayout\DynamicDataLayoutManager;
 use Jankx\Gutenberg\Blocks\DynamicDataLayout\Renderer;
 use Jankx\Gutenberg\Blocks\DynamicDataLayout\AttributeSanitizer;
+use Jankx\Query\DynamicDataLayoutQueryHelper;
 
 /**
  * Dynamic Data Layout Block
@@ -50,6 +51,10 @@ class DynamicDataLayoutBlock extends Block
         // Filter block attributes to ensure queryId is always valid
         // This runs before WordPress processes providesContext
         add_filter('render_block_data', [$this, 'normalizeBlockAttributes'], 10, 1);
+
+        // Register handlers via WordPress filters (for AJAX requests from advanced-filters)
+        add_filter('jankx_post_type_layout_filter_update', [$this, 'handleFilterUpdate'], 10, 2);
+        add_filter('jankx_post_type_layout_get_block_attributes', [$this, 'handleGetBlockAttributes'], 10, 3);
 
         $this->ensureServices();
     }
@@ -384,6 +389,142 @@ class DynamicDataLayoutBlock extends Block
             'layouts' => $structures,
             'postItem' => [], // Empty for now, or define default
         ];
+    }
+
+    /**
+     * Handle Filter Update request via filter
+     *
+     * @param array $attributes Block attributes
+     * @param array $filters Filter values
+     * @return array Response data
+     */
+    public function handleFilterUpdate(array $attributes, array $filters): array
+    {
+        // Check if this is for our block type - must have queryId and postType
+        if (empty($attributes['queryId']) || empty($attributes['postType'])) {
+            // Not our block or incomplete data, return empty to let other handlers process
+            return [];
+        }
+
+        $this->ensureServices();
+
+        $layoutName = $attributes['layout'] ?? 'grid';
+        $postType = $attributes['postType'] ?? 'post';
+
+        // Apply filters to attributes
+        $attributes = DynamicDataLayoutQueryHelper::applyFiltersToAttributes($attributes, $filters);
+
+        // Sanitize attributes
+        $attributes = $this->attributeSanitizer->sanitize($layoutName, $attributes, true);
+
+        // Create layout decorator
+        $decorator = $this->layoutManager->createLayout($layoutName, $postType, $attributes);
+
+        // Build query
+        $originalPreset = $attributes['queryPreset'] ?? 'custom';
+        $query = $this->buildQueryForPreset($decorator, $attributes, $originalPreset, $postType);
+        $decorator->withQuery($query);
+        $decorator->withAttributes($attributes);
+
+        // Resolve template block
+        $templateBlock = null;
+        if (!empty($attributes['postTemplate'])) {
+            $templateBlock = $attributes['postTemplate'];
+        }
+
+        // Set content generator if template block exists
+        if ($templateBlock) {
+            $generator = new \Jankx\Layouts\PostLayout\Generators\PostTemplateBlockGenerator($templateBlock, $attributes);
+            $layoutInstance = $decorator->getLayout();
+            $layoutInstance->setContentGenerator($generator);
+        }
+
+        // Render layout
+        $html = $decorator->render();
+
+        return [
+            'html' => $html,
+            'attributes' => $attributes,
+        ];
+    }
+
+    /**
+     * Handle Get Block Attributes request via filter
+     *
+     * @param mixed $default Default return value
+     * @param int $post_id Post ID
+     * @param string $block_id Block queryId
+     * @return array|null Block attributes
+     */
+    public function handleGetBlockAttributes($default, int $post_id, string $block_id)
+    {
+        if (!$post_id) {
+            return $default;
+        }
+
+        $post_obj = get_post($post_id);
+        if (!$post_obj) {
+            return $default;
+        }
+
+        $blocks = parse_blocks($post_obj->post_content);
+        $found = $this->findBlockAttributesById($blocks, $block_id);
+        
+        return $found !== null ? $found : $default;
+    }
+
+    /**
+     * Recursively find block attributes by queryId
+     *
+     * @param array $blocks Parsed blocks
+     * @param string $target_block_id
+     * @return array|null
+     */
+    private function findBlockAttributesById(array $blocks, string $target_block_id): ?array
+    {
+        foreach ($blocks as $block) {
+            if (($block['blockName'] ?? '') === 'jankx/dynamic-data-layout') {
+                $query_id = $block['attrs']['queryId'] ?? null;
+                if ($query_id && strval($query_id) === $target_block_id) {
+                    return $block['attrs'] ?? [];
+                }
+            }
+
+            if (!empty($block['innerBlocks'])) {
+                $result = $this->findBlockAttributesById($block['innerBlocks'], $target_block_id);
+                if ($result !== null) {
+                    return $result;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Build query for preset
+     *
+     * @param mixed $decorator Layout decorator
+     * @param array $attributes Block attributes
+     * @param string $originalPreset Original preset
+     * @param string $postType Post type
+     * @return \WP_Query
+     */
+    private function buildQueryForPreset($decorator, array $attributes, string $originalPreset, string $postType): \WP_Query
+    {
+        if ($originalPreset === 'default') {
+            return DynamicDataLayoutQueryHelper::buildDefaultQuery($attributes);
+        } elseif ($originalPreset === 'related') {
+            $attributes = DynamicDataLayoutQueryHelper::buildRelatedQuery($attributes);
+            $decorator->withAttributes($attributes);
+            return $decorator->buildQuery($attributes);
+        } else {
+            if ($originalPreset !== 'custom') {
+                $attributes = DynamicDataLayoutQueryHelper::applyQueryBuilderFilter($attributes, $originalPreset);
+            }
+            $decorator->withAttributes($attributes);
+            return $decorator->buildQuery($attributes);
+        }
     }
 }
 

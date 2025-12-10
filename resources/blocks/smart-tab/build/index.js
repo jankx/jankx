@@ -102,6 +102,12 @@ function Edit({
   const [loadingTerms, setLoadingTerms] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(false);
   const [authors, setAuthors] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)([]);
   const [loadingAuthors, setLoadingAuthors] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(false);
+  // Cache for loaded terms and authors to avoid unnecessary reloads
+  // Use refs to avoid re-renders and dependency issues
+  const termsCacheRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useRef)({});
+  const authorsCacheRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useRef)(null);
+  const lastTaxonomyRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useRef)('');
+  const lastFilterTypeRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useRef)('');
   const rawTriggerConfig = (_window$JankxSmartTab = window?.JankxSmartTabTriggers?.items) !== null && _window$JankxSmartTab !== void 0 ? _window$JankxSmartTab : {};
   const fallbackTrigger = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => ({
     key: 'manual',
@@ -397,16 +403,42 @@ function Edit({
   }, [trigger, selectedFilterBlock, triggerSettings]);
 
   // Load terms for taxonomy filter
+  // Only reload when taxonomy actually changes, not when selectedFilter object reference changes
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
     if (trigger !== 'advanced-filter' || !selectedFilter || selectedFilter.filterType !== 'taxonomy') {
       setFilterTerms([]);
+      lastFilterTypeRef.current = '';
+      lastTaxonomyRef.current = '';
       return;
     }
-    const taxonomy = selectedFilter.taxonomy;
+    const taxonomy = selectedFilter.taxonomy || '';
+    const filterType = selectedFilter.filterType || '';
     if (!taxonomy) {
       setFilterTerms([]);
+      lastTaxonomyRef.current = '';
       return;
     }
+
+    // Only reload if taxonomy actually changed
+    if (lastTaxonomyRef.current === taxonomy && lastFilterTypeRef.current === filterType) {
+      // Taxonomy hasn't changed, use cached terms if available
+      if (termsCacheRef.current[taxonomy] && termsCacheRef.current[taxonomy].length > 0) {
+        setFilterTerms(termsCacheRef.current[taxonomy]);
+        return;
+      }
+    }
+
+    // Taxonomy changed or not in cache, need to load
+    lastTaxonomyRef.current = taxonomy;
+    lastFilterTypeRef.current = filterType;
+
+    // Check cache first - if terms for this taxonomy are already loaded, use them
+    if (termsCacheRef.current[taxonomy] && termsCacheRef.current[taxonomy].length > 0) {
+      setFilterTerms(termsCacheRef.current[taxonomy]);
+      return;
+    }
+
+    // Not in cache, need to load
     setLoadingTerms(true);
     const wpApiFetch = window.wp?.apiFetch;
     if (!wpApiFetch) {
@@ -416,21 +448,45 @@ function Edit({
     wpApiFetch({
       path: `/wp/v2/${taxonomy}?per_page=100&orderby=name&order=asc`
     }).then(terms => {
-      setFilterTerms(terms || []);
+      const termsArray = terms || [];
+      setFilterTerms(termsArray);
+      // Cache the loaded terms
+      termsCacheRef.current[taxonomy] = termsArray;
     }).catch(error => {
       console.error('Error loading terms:', error);
       setFilterTerms([]);
     }).finally(() => {
       setLoadingTerms(false);
     });
-  }, [trigger, selectedFilter]);
+  }, [trigger, selectedFilter?.filterType, selectedFilter?.taxonomy]);
 
   // Load authors for author filter
+  // Only reload when filter type changes to author, use cache otherwise
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
     if (trigger !== 'advanced-filter' || !selectedFilter || selectedFilter.filterType !== 'author') {
       setAuthors([]);
+      lastFilterTypeRef.current = '';
       return;
     }
+    const filterType = selectedFilter.filterType || '';
+
+    // Only reload if filter type actually changed to author
+    if (lastFilterTypeRef.current === filterType && authorsCacheRef.current && authorsCacheRef.current.length > 0) {
+      // Filter type hasn't changed, use cached authors
+      setAuthors(authorsCacheRef.current);
+      return;
+    }
+
+    // Filter type changed or not in cache, need to load
+    lastFilterTypeRef.current = filterType;
+
+    // Check cache first - if authors are already loaded, use them
+    if (authorsCacheRef.current && authorsCacheRef.current.length > 0) {
+      setAuthors(authorsCacheRef.current);
+      return;
+    }
+
+    // Only load if not in cache
     setLoadingAuthors(true);
     const wpApiFetch = window.wp?.apiFetch;
     if (!wpApiFetch) {
@@ -440,14 +496,17 @@ function Edit({
     wpApiFetch({
       path: '/wp/v2/users?per_page=100&orderby=name&order=asc'
     }).then(users => {
-      setAuthors(users || []);
+      const usersArray = users || [];
+      setAuthors(usersArray);
+      // Cache the loaded authors
+      authorsCacheRef.current = usersArray;
     }).catch(error => {
       console.error('Error loading authors:', error);
       setAuthors([]);
     }).finally(() => {
       setLoadingAuthors(false);
     });
-  }, [trigger, selectedFilter]);
+  }, [trigger, selectedFilter?.filterType]);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {

@@ -390,9 +390,32 @@ class AdvancedFiltersBlock extends Block
         // Try detect post type from target dynamic-data-layout blocks
         $detected_post_type = $this->detectPostTypeFromTargetIds($target_block_ids) ?: 'post';
 
+        // Get block identifier for frontend JavaScript to find this block
+        // Use blockId attribute (set to clientId in editor) if available
+        $block_identifier_for_config = $attributes['blockId'] ?? '';
+        
+        if (empty($block_identifier_for_config)) {
+            // Fallback: try to get from parsed block
+            if ($block instanceof \WP_Block) {
+                $block_identifier_for_config = $block->parsed_block['attrs']['blockId'] ?? 
+                                              $block->parsed_block['attrs']['queryId'] ?? 
+                                              ($block->parsed_block['attrs']['anchor'] ?? '');
+            }
+        }
+        
+        if (empty($block_identifier_for_config) && !empty($attributes['queryId'])) {
+            $block_identifier_for_config = $attributes['queryId'];
+        }
+        
+        // Generate a unique ID if still empty
+        if (empty($block_identifier_for_config)) {
+            $block_identifier_for_config = 'af-' . uniqid();
+        }
+        
         // Build filter configuration for frontend JavaScript
         $config = [
             'filterId' => $filter_id,
+            'blockId' => $block_identifier_for_config, // Add block identifier to config
             'targetBlockIds' => $target_block_ids,
             'filterType' => $filter_type,
             'ajaxEnabled' => $ajax_enabled,
@@ -429,9 +452,12 @@ class AdvancedFiltersBlock extends Block
             $wrapper_classes[] = 'layout-' . esc_attr($layout);
         }
         
+        // Add data attributes for frontend JavaScript to find this block
+        // Use the same identifier from config
         $wrapper_attributes = get_block_wrapper_attributes([
             'class' => implode(' ', $wrapper_classes),
             'id' => $instance_id,
+            'data-filter-block-id' => $block_identifier_for_config,
         ]);
 
         // Create nonce for AJAX requests - use DynamicDataLayoutBlock's nonce
