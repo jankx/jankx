@@ -292,7 +292,8 @@ function applyFilterToBlock(filterBlock, filterId, values) {
   let filterGroup = null;
   let elementFound = false;
   if (filterType === 'taxonomy') {
-    const taxonomy = filterParts[2] || '';
+    // Taxonomy slug may contain underscores, join the rest
+    const taxonomy = filterParts.slice(2).join('_') || '';
     if (!taxonomy) {
       console.warn(`AdvancedFilter: Taxonomy name is missing in filterId ${filterId}`);
       return;
