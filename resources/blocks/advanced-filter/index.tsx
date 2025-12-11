@@ -84,6 +84,10 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         dateField,
         dateRange,
         showSearchButton,
+        searchButtonText,
+        searchButtonDisplay,
+        searchButtonIcon,
+        keywordAction,
         filterValue,
         filterValueMin,
         filterValueMax,
@@ -166,6 +170,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
 
     const resolvedTargetPostType = parentDefaults.targetPostType || 'post';
     const resolvedDisplayStyle = displayStyle || parentDefaults.displayStyle || 'buttons';
+    const normalizedDisplayStyle = ['buttons', 'checkboxes'].includes(resolvedDisplayStyle || '') ? resolvedDisplayStyle : 'buttons';
     const resolvedLayout = layout || parentDefaults.layout || 'horizontal';
     const resolvedShowLabels = showLabels ?? parentDefaults.showLabels ?? true;
     const resolvedShowCount = showCount ?? parentDefaults.showCount ?? false;
@@ -175,6 +180,10 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     const resolvedMultiple = multipleSelection ?? parentDefaults.multipleSelection ?? true;
     const resolvedCollapsible = collapsible ?? parentDefaults.collapsible ?? false;
     const resolvedDefaultExpanded = defaultExpanded ?? parentDefaults.defaultExpanded ?? true;
+    const resolvedKeywordAction = keywordAction || 'typing';
+    const resolvedSearchButtonText = searchButtonText || __('Search', 'jankx');
+    const resolvedSearchButtonDisplay = searchButtonDisplay || 'text';
+    const resolvedSearchButtonIcon = searchButtonIcon || '';
 
     const blockProps = useBlockProps({
         className: 'jankx-advanced-filter',
@@ -303,17 +312,15 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                 <>
                                     <SelectControl
                                         label={__('Display Style', 'jankx')}
-                                        value={resolvedDisplayStyle}
+                                        value={normalizedDisplayStyle}
                                         options={[
                                             { label: __('Buttons', 'jankx'), value: 'buttons' },
                                             { label: __('Checkboxes', 'jankx'), value: 'checkboxes' },
-                                            { label: __('Dropdown', 'jankx'), value: 'dropdown' },
-                                            { label: __('Select', 'jankx'), value: 'select' },
                                         ]}
                                         onChange={(value) => setAttributes({ displayStyle: value as FilterAttributes['displayStyle'] })}
                                     />
 
-                                    {resolvedDisplayStyle === 'checkboxes' && (
+                                    {normalizedDisplayStyle === 'checkboxes' && (
                                         <SelectControl
                                             label={__('Listing Type', 'jankx')}
                                             value={listingType || 'ul'}
@@ -557,9 +564,9 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                 <>
                                     <SelectControl
                                         label={__('Display Style', 'jankx')}
-                                        value={resolvedDisplayStyle}
+                                        value={normalizedDisplayStyle}
                                         options={[
-                                            { label: __('Dropdown', 'jankx'), value: 'dropdown' },
+                                            { label: __('Buttons', 'jankx'), value: 'buttons' },
                                             { label: __('Checkboxes', 'jankx'), value: 'checkboxes' },
                                         ]}
                                         onChange={(value) => setAttributes({ displayStyle: value as FilterAttributes['displayStyle'] })}
@@ -606,6 +613,48 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                         checked={showSearchButton !== undefined ? showSearchButton : false}
                                         onChange={(value) => setAttributes({ showSearchButton: value })}
                                     />
+                                    {showSearchButton ? (
+                                        <SelectControl
+                                            label={__('Search Action', 'jankx')}
+                                            value={resolvedKeywordAction}
+                                            options={[
+                                                { label: __('Filter while typing', 'jankx'), value: 'typing' },
+                                                { label: __('Only when clicking Search', 'jankx'), value: 'button' },
+                                            ]}
+                                            onChange={(value) => setAttributes({ keywordAction: value as 'typing' | 'button' })}
+                                            help={__('Chọn cách kích hoạt filter cho ô tìm kiếm', 'jankx')}
+                                        />
+                                    ) : null}
+                                    {showSearchButton ? (
+                                        <TextControl
+                                            label={__('Search Button Text', 'jankx')}
+                                            value={resolvedSearchButtonText}
+                                            onChange={(value) => setAttributes({ searchButtonText: value })}
+                                            placeholder={__('Search', 'jankx')}
+                                        />
+                                    ) : null}
+                                    {showSearchButton ? (
+                                        <SelectControl
+                                            label={__('Search Button Display', 'jankx')}
+                                            value={resolvedSearchButtonDisplay}
+                                            options={[
+                                                { label: __('Text only', 'jankx'), value: 'text' },
+                                                { label: __('SVG/Icon only', 'jankx'), value: 'icon' },
+                                                { label: __('Icon + Text', 'jankx'), value: 'icon-text' },
+                                            ]}
+                                            onChange={(value) => setAttributes({ searchButtonDisplay: value as 'text' | 'icon' | 'icon-text' })}
+                                            help={__('Chọn hiển thị nút: chỉ text, chỉ icon, hoặc icon + text', 'jankx')}
+                                        />
+                                    ) : null}
+                                    {showSearchButton && resolvedSearchButtonDisplay !== 'text' ? (
+                                        <TextControl
+                                            label={__('Search Button Icon (SVG/HTML)', 'jankx')}
+                                            value={resolvedSearchButtonIcon}
+                                            onChange={(value) => setAttributes({ searchButtonIcon: value })}
+                                            placeholder={'<svg>...</svg>'}
+                                            help={__('Dán SVG hoặc HTML icon. Sử dụng cẩn thận.', 'jankx')}
+                                        />
+                                    ) : null}
                                 </>
                             )}
 
@@ -623,44 +672,6 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                     )}
                 </PanelBody>
 
-                {/* Ẩn Display Options khi parent là smart-tab */}
-                {!isSmartTabChild && (
-                    <PanelBody title={__('Display Options', 'jankx')} initialOpen={false}>
-                        <SelectControl
-                            label={__('Layout', 'jankx')}
-                            value={resolvedLayout}
-                            options={[
-                                { label: __('Horizontal', 'jankx'), value: 'horizontal' },
-                                { label: __('Vertical', 'jankx'), value: 'vertical' },
-                                { label: __('Dropdown', 'jankx'), value: 'dropdown' },
-                                { label: __('Accordion', 'jankx'), value: 'accordion' },
-                            ]}
-                            onChange={(value) => setAttributes({ layout: value as FilterAttributes['layout'] })}
-                        />
-
-                        <ToggleControl
-                            label={__('Show Labels', 'jankx')}
-                            checked={resolvedShowLabels}
-                            onChange={(value) => setAttributes({ showLabels: value })}
-                        />
-
-                        <ToggleControl
-                            label={__('Collapsible', 'jankx')}
-                            checked={resolvedCollapsible}
-                            onChange={(value) => setAttributes({ collapsible: value })}
-                            help={__('Make filter collapsible', 'jankx')}
-                        />
-
-                        {resolvedCollapsible && (
-                            <ToggleControl
-                                label={__('Default Expanded', 'jankx')}
-                                checked={resolvedDefaultExpanded}
-                                onChange={(value) => setAttributes({ defaultExpanded: value })}
-                                help={__('Show filter expanded by default', 'jankx')}
-                            />
-                        )}
-                    </PanelBody>
-                )}
             </InspectorControls>
 
             <div {...blockProps}>

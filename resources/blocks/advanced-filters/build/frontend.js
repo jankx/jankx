@@ -166,11 +166,26 @@ class AdvancedFilters {
     // Keyword filter
     const keywordInput = this.container.querySelector('.filter-keyword input');
     if (keywordInput) {
-      keywordInput.addEventListener('input', () => {
-        if (this.config?.ajaxEnabled) {
-          this.debounce(() => this.handleFilterChange(), 500)();
-        }
-      });
+      const keywordGroup = keywordInput.closest('.filter-group[data-filter-type="keyword"]');
+      const keywordAction = keywordGroup?.getAttribute('data-keyword-action') || 'typing';
+      const searchButton = this.container.querySelector('.filter-keyword .filter-search-button');
+      if (keywordAction === 'button' && searchButton) {
+        // Only trigger when clicking search button or pressing Enter
+        searchButton.addEventListener('click', () => this.handleFilterChange());
+        keywordInput.addEventListener('keydown', e => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            this.handleFilterChange();
+          }
+        });
+      } else {
+        // Default: filter while typing (debounced)
+        keywordInput.addEventListener('input', () => {
+          if (this.config?.ajaxEnabled) {
+            this.debounce(() => this.handleFilterChange(), 500)();
+          }
+        });
+      }
     }
 
     // Reset button

@@ -126,6 +126,24 @@
       "type": "boolean",
       "default": false
     },
+    "searchButtonText": {
+      "type": "string",
+      "default": "Search"
+    },
+    "searchButtonDisplay": {
+      "type": "string",
+      "default": "text",
+      "enum": ["text", "icon", "icon-text"]
+    },
+    "searchButtonIcon": {
+      "type": "string",
+      "default": ""
+    },
+    "keywordAction": {
+      "type": "string",
+      "default": "typing",
+      "enum": ["typing", "button"]
+    },
     "filterValue": {
       "type": "string",
       "default": ""

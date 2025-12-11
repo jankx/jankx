@@ -8,7 +8,7 @@
   \*******************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/advanced-filter","version":"1.0.0","title":"Advanced Filter","category":"jankx","parent":["jankx/advanced-filters","jankx/smart-tab"],"icon":"filter","description":"Một filter đơn lẻ dùng bên trong Advanced Filters.","textdomain":"jankx","supports":{"html":false,"reusable":false},"attributes":{"filterType":{"type":"string","default":"taxonomy","enum":["taxonomy","meta","price","date","author","keyword"]},"label":{"type":"string","default":""},"enabled":{"type":"boolean","default":true},"taxonomy":{"type":"string","default":""},"displayStyle":{"type":"string","default":"buttons","enum":["buttons","checkboxes","dropdown","select"]},"listingType":{"type":"string","default":"ul","enum":["ul","ol","none"]},"showCount":{"type":"boolean","default":false},"showEmptyTerms":{"type":"boolean","default":true},"showOnlyTopLevel":{"type":"boolean","default":false},"showHierarchy":{"type":"boolean","default":false},"multipleSelection":{"type":"boolean","default":true},"layout":{"type":"string","default":"horizontal","enum":["horizontal","vertical","dropdown","accordion"]},"showLabels":{"type":"boolean","default":true},"collapsible":{"type":"boolean","default":false},"defaultExpanded":{"type":"boolean","default":true},"metaKey":{"type":"string","default":""},"inputType":{"type":"string","default":"text","enum":["text","number","range","date","date-range"]},"minValue":{"type":"string","default":""},"maxValue":{"type":"string","default":""},"placeholder":{"type":"string","default":""},"minPrice":{"type":"string","default":""},"maxPrice":{"type":"string","default":""},"currency":{"type":"string","default":"VND"},"dateField":{"type":"string","default":"post_date"},"dateRange":{"type":"boolean","default":true},"showSearchButton":{"type":"boolean","default":false},"filterValue":{"type":"string","default":""},"filterValueMin":{"type":"string","default":""},"filterValueMax":{"type":"string","default":""},"filterValueStart":{"type":"string","default":""},"filterValueEnd":{"type":"string","default":""}},"editorScript":"file:./build/index.js"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/advanced-filter","version":"1.0.0","title":"Advanced Filter","category":"jankx","parent":["jankx/advanced-filters","jankx/smart-tab"],"icon":"filter","description":"Một filter đơn lẻ dùng bên trong Advanced Filters.","textdomain":"jankx","supports":{"html":false,"reusable":false},"attributes":{"filterType":{"type":"string","default":"taxonomy","enum":["taxonomy","meta","price","date","author","keyword"]},"label":{"type":"string","default":""},"enabled":{"type":"boolean","default":true},"taxonomy":{"type":"string","default":""},"displayStyle":{"type":"string","default":"buttons","enum":["buttons","checkboxes","dropdown","select"]},"listingType":{"type":"string","default":"ul","enum":["ul","ol","none"]},"showCount":{"type":"boolean","default":false},"showEmptyTerms":{"type":"boolean","default":true},"showOnlyTopLevel":{"type":"boolean","default":false},"showHierarchy":{"type":"boolean","default":false},"multipleSelection":{"type":"boolean","default":true},"layout":{"type":"string","default":"horizontal","enum":["horizontal","vertical","dropdown","accordion"]},"showLabels":{"type":"boolean","default":true},"collapsible":{"type":"boolean","default":false},"defaultExpanded":{"type":"boolean","default":true},"metaKey":{"type":"string","default":""},"inputType":{"type":"string","default":"text","enum":["text","number","range","date","date-range"]},"minValue":{"type":"string","default":""},"maxValue":{"type":"string","default":""},"placeholder":{"type":"string","default":""},"minPrice":{"type":"string","default":""},"maxPrice":{"type":"string","default":""},"currency":{"type":"string","default":"VND"},"dateField":{"type":"string","default":"post_date"},"dateRange":{"type":"boolean","default":true},"showSearchButton":{"type":"boolean","default":false},"searchButtonText":{"type":"string","default":"Search"},"keywordAction":{"type":"string","default":"typing","enum":["typing","button"]},"filterValue":{"type":"string","default":""},"filterValueMin":{"type":"string","default":""},"filterValueMax":{"type":"string","default":""},"filterValueStart":{"type":"string","default":""},"filterValueEnd":{"type":"string","default":""}},"editorScript":"file:./build/index.js"}');
 
 /***/ }),
 
@@ -213,6 +213,8 @@ function Edit({
     dateField,
     dateRange,
     showSearchButton,
+    searchButtonText,
+    keywordAction,
     filterValue,
     filterValueMin,
     filterValueMax,
@@ -293,6 +295,7 @@ function Edit({
   }, [clientId]);
   const resolvedTargetPostType = parentDefaults.targetPostType || 'post';
   const resolvedDisplayStyle = displayStyle || parentDefaults.displayStyle || 'buttons';
+  const normalizedDisplayStyle = ['buttons', 'checkboxes'].includes(resolvedDisplayStyle || '') ? resolvedDisplayStyle : 'buttons';
   const resolvedLayout = layout || parentDefaults.layout || 'horizontal';
   const resolvedShowLabels = (_ref = showLabels !== null && showLabels !== void 0 ? showLabels : parentDefaults.showLabels) !== null && _ref !== void 0 ? _ref : true;
   const resolvedShowCount = (_ref2 = showCount !== null && showCount !== void 0 ? showCount : parentDefaults.showCount) !== null && _ref2 !== void 0 ? _ref2 : false;
@@ -302,6 +305,8 @@ function Edit({
   const resolvedMultiple = (_ref6 = multipleSelection !== null && multipleSelection !== void 0 ? multipleSelection : parentDefaults.multipleSelection) !== null && _ref6 !== void 0 ? _ref6 : true;
   const resolvedCollapsible = (_ref7 = collapsible !== null && collapsible !== void 0 ? collapsible : parentDefaults.collapsible) !== null && _ref7 !== void 0 ? _ref7 : false;
   const resolvedDefaultExpanded = (_ref8 = defaultExpanded !== null && defaultExpanded !== void 0 ? defaultExpanded : parentDefaults.defaultExpanded) !== null && _ref8 !== void 0 ? _ref8 : true;
+  const resolvedKeywordAction = keywordAction || 'typing';
+  const resolvedSearchButtonText = searchButtonText || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Search', 'jankx');
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)({
     className: 'jankx-advanced-filter'
   });
@@ -444,24 +449,18 @@ function Edit({
           }), !isSmartTabChild && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
               label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display Style', 'jankx'),
-              value: resolvedDisplayStyle,
+              value: normalizedDisplayStyle,
               options: [{
                 label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Buttons', 'jankx'),
                 value: 'buttons'
               }, {
                 label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Checkboxes', 'jankx'),
                 value: 'checkboxes'
-              }, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Dropdown', 'jankx'),
-                value: 'dropdown'
-              }, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select', 'jankx'),
-                value: 'select'
               }],
               onChange: value => setAttributes({
                 displayStyle: value
               })
-            }), resolvedDisplayStyle === 'checkboxes' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+            }), normalizedDisplayStyle === 'checkboxes' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
               label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Listing Type', 'jankx'),
               value: listingType || 'ul',
               options: [{
@@ -696,10 +695,10 @@ function Edit({
           children: [!isSmartTabChild && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
               label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display Style', 'jankx'),
-              value: resolvedDisplayStyle,
+              value: normalizedDisplayStyle,
               options: [{
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Dropdown', 'jankx'),
-                value: 'dropdown'
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Buttons', 'jankx'),
+                value: 'buttons'
               }, {
                 label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Checkboxes', 'jankx'),
                 value: 'checkboxes'
@@ -744,7 +743,28 @@ function Edit({
               onChange: value => setAttributes({
                 showSearchButton: value
               })
-            })]
+            }), showSearchButton ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Search Action', 'jankx'),
+              value: resolvedKeywordAction,
+              options: [{
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter while typing', 'jankx'),
+                value: 'typing'
+              }, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Only when clicking Search', 'jankx'),
+                value: 'button'
+              }],
+              onChange: value => setAttributes({
+                keywordAction: value
+              }),
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Chọn cách kích hoạt filter cho ô tìm kiếm', 'jankx')
+            }) : null, showSearchButton ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Search Button Text', 'jankx'),
+              value: resolvedSearchButtonText,
+              onChange: value => setAttributes({
+                searchButtonText: value
+              }),
+              placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Search', 'jankx')
+            }) : null]
           }), isSmartTabChild && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Search Keyword', 'jankx'),
             value: filterValue || '',
@@ -754,49 +774,6 @@ function Edit({
             placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Nhập từ khóa để filter', 'jankx'),
             help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Từ khóa để filter khi tab được click', 'jankx')
           })]
-        })]
-      }), !isSmartTabChild && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
-        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display Options', 'jankx'),
-        initialOpen: false,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Layout', 'jankx'),
-          value: resolvedLayout,
-          options: [{
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Horizontal', 'jankx'),
-            value: 'horizontal'
-          }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Vertical', 'jankx'),
-            value: 'vertical'
-          }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Dropdown', 'jankx'),
-            value: 'dropdown'
-          }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Accordion', 'jankx'),
-            value: 'accordion'
-          }],
-          onChange: value => setAttributes({
-            layout: value
-          })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Labels', 'jankx'),
-          checked: resolvedShowLabels,
-          onChange: value => setAttributes({
-            showLabels: value
-          })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Collapsible', 'jankx'),
-          checked: resolvedCollapsible,
-          onChange: value => setAttributes({
-            collapsible: value
-          }),
-          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Make filter collapsible', 'jankx')
-        }), resolvedCollapsible && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Default Expanded', 'jankx'),
-          checked: resolvedDefaultExpanded,
-          onChange: value => setAttributes({
-            defaultExpanded: value
-          }),
-          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show filter expanded by default', 'jankx')
         })]
       })]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {

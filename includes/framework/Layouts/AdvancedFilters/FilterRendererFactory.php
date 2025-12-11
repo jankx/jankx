@@ -37,7 +37,8 @@ class FilterRendererFactory
         // self::register('price', PriceFilterRenderer::class);
         // self::register('date', DateFilterRenderer::class);
         // self::register('author', AuthorFilterRenderer::class);
-        // self::register('keyword', KeywordFilterRenderer::class);
+        // Register keyword renderer to render keyword input filters
+        self::register('keyword', \Jankx\Layouts\AdvancedFilters\Renderers\KeywordFilterRenderer::class);
     }
 
     /**

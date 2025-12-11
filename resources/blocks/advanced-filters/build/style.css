@@ -27,6 +27,20 @@
   gap: 1rem;
   align-items: flex-start;
 }
+.wp-block-jankx-advanced-filters.layout-horizontal .filter-options.display-checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  padding-left: 0;
+  list-style: none;
+}
+.wp-block-jankx-advanced-filters.layout-horizontal .filter-options.display-checkboxes .filter-option-wrapper {
+  list-style: none;
+  display: block;
+}
+.wp-block-jankx-advanced-filters.layout-horizontal .filter-options.display-checkboxes .filter-option {
+  padding: 0.25rem 0.5rem;
+}
 .wp-block-jankx-advanced-filters.layout-vertical .advanced-filters-container {
   display: flex;
   flex-direction: column;

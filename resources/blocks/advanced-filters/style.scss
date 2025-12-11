@@ -43,6 +43,24 @@
             gap: 1rem;
             align-items: flex-start;
         }
+
+        // Ensure checkbox display styles align horizontally
+        .filter-options.display-checkboxes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 1rem;
+            padding-left: 0;
+            list-style: none;
+
+            .filter-option-wrapper {
+                list-style: none;
+                display: block;
+            }
+
+            .filter-option {
+                padding: 0.25rem 0.5rem;
+            }
+        }
     }
 
     &.layout-vertical {
