@@ -46,6 +46,121 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+// ---- Helpers to guard runtime data coming from PHP/localize ----
+const normalizeQueryPresets = rawPresets => {
+  if (!Array.isArray(rawPresets)) {
+    return [];
+  }
+  return rawPresets.map(preset => {
+    const value = typeof preset?.value === 'string' ? preset.value : '';
+    const label = typeof preset?.label === 'string' ? preset.label : '';
+    const postType = typeof preset?.postType === 'string' ? preset.postType : null;
+
+    // help text must be string; fall back to errorMsg/message if provided
+    let help;
+    if (typeof preset?.help === 'string') {
+      help = preset.help;
+    } else if (typeof preset?.errorMsg === 'string') {
+      help = preset.errorMsg;
+    } else if (typeof preset?.message === 'string') {
+      help = preset.message;
+    }
+    return {
+      value,
+      label,
+      postType,
+      help
+    };
+  }).filter(preset => preset.value.length > 0 && preset.label.length > 0);
+};
+const normalizeLayouts = rawLayouts => {
+  if (!Array.isArray(rawLayouts)) {
+    return [];
+  }
+  return rawLayouts.map(layout => {
+    const name = typeof layout?.name === 'string' ? layout.name : '';
+    const title = typeof layout?.title === 'string' ? layout.title : name;
+    const supportedOptions = Array.isArray(layout?.supportedOptions) ? layout.supportedOptions : undefined;
+    const readOnlyOptions = Array.isArray(layout?.readOnlyOptions) ? layout.readOnlyOptions : undefined;
+    return {
+      name,
+      title,
+      supportedOptions,
+      readOnlyOptions
+    };
+  }).filter(layout => layout.name.length > 0 && layout.title.length > 0);
+};
+const normalizeLayoutsData = raw => {
+  if (!raw || typeof raw !== 'object') {
+    return {
+      layoutsByPostType: {},
+      commonLayouts: []
+    };
+  }
+  const obj = raw;
+  const commonLayouts = normalizeLayouts(obj.commonLayouts);
+  const layoutsByPostType = {};
+  if (obj.layoutsByPostType && typeof obj.layoutsByPostType === 'object') {
+    Object.entries(obj.layoutsByPostType).forEach(([postType, layouts]) => {
+      const normalized = normalizeLayouts(layouts);
+      if (normalized.length > 0) {
+        layoutsByPostType[postType] = normalized;
+      }
+    });
+  }
+  return {
+    layoutsByPostType,
+    commonLayouts
+  };
+};
+const normalizeOrderByOptions = (raw, fallback) => {
+  if (!Array.isArray(raw)) {
+    return fallback;
+  }
+  const normalized = raw.map(item => {
+    const value = typeof item?.value === 'string' ? item.value : '';
+    const label = typeof item?.label === 'string' ? item.label : '';
+    const postType = typeof item?.postType === 'string' ? item.postType : null;
+    const metaKey = typeof item?.metaKey === 'string' ? item.metaKey : undefined;
+    return {
+      value,
+      label,
+      postType,
+      metaKey
+    };
+  }).filter(item => item.value.length > 0 && item.label.length > 0);
+  return normalized.length > 0 ? normalized : fallback;
+};
+const normalizeOrderOptions = (raw, fallback) => {
+  if (!Array.isArray(raw)) {
+    return fallback;
+  }
+  const normalized = raw.map(item => {
+    const value = item?.value === 'ASC' || item?.value === 'DESC' ? item.value : null;
+    const label = typeof item?.label === 'string' ? item.label : '';
+    return value ? {
+      value,
+      label
+    } : null;
+  }).filter(item => !!item && item.label.length > 0);
+  return normalized.length > 0 ? normalized : fallback;
+};
+const toSafeHelpText = (input, fallback) => {
+  if (typeof input === 'string') {
+    return input;
+  }
+  if (input && typeof input === 'object') {
+    const message = input.errorMsg;
+    const message2 = input.message;
+    if (typeof message === 'string') {
+      return message;
+    }
+    if (typeof message2 === 'string') {
+      return message2;
+    }
+  }
+  return fallback;
+};
 const normalizeTokens = tokens => {
   return tokens.map(token => {
     if (typeof token === 'string') {
@@ -385,11 +500,8 @@ function Edit({
   }));
   console.log('[DEBUG Edit] postTypeOptions:', postTypeOptions);
 
-  // Get layouts data from PHP
-  const layoutsData = window.jankxDynamicDataLayouts || {
-    layoutsByPostType: {},
-    commonLayouts: []
-  };
+  // Get layouts data from PHP (normalize to avoid objects being rendered)
+  const layoutsData = normalizeLayoutsData(window.jankxDynamicDataLayouts);
   console.log('[DEBUG Edit] layoutsData:', layoutsData);
 
   // Get available layouts for current post type
@@ -471,7 +583,20 @@ function Edit({
   // Pre-compute orderBy options outside conditional render to avoid React hooks error
   console.log('[DEBUG Edit] [HOOK-15] About to call useMemo (orderByOptions)');
   const orderByOptions = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => {
-    const allOrderByOptions = window.jankxQueryOptions?.orderBy || [];
+    const fallback = [{
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Date', 'jankx'),
+      value: 'date'
+    }, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Title', 'jankx'),
+      value: 'title'
+    }, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Modified', 'jankx'),
+      value: 'modified'
+    }, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Menu Order', 'jankx'),
+      value: 'menu_order'
+    }];
+    const allOrderByOptions = normalizeOrderByOptions(window.jankxQueryOptions?.orderBy, fallback);
     console.log('[DEBUG Edit] [HOOK-15] Computing orderByOptions - allOrderByOptions:', allOrderByOptions);
     // Filter order by options based on postType:
     // - Common options: postType is null (available for all post types)
@@ -488,13 +613,14 @@ function Edit({
   // Pre-compute order options outside conditional render
   console.log('[DEBUG Edit] [HOOK-16] About to call useMemo (orderOptions)');
   const orderOptions = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => {
-    const options = window.jankxQueryOptions?.order || [{
+    const defaultOptions = [{
       label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Descending', 'jankx'),
       value: 'DESC'
     }, {
       label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Ascending', 'jankx'),
       value: 'ASC'
     }];
+    const options = normalizeOrderOptions(window.jankxQueryOptions?.order, defaultOptions);
     console.log('[DEBUG Edit] [HOOK-16] orderOptions:', options);
     return options;
   }, []);
@@ -502,8 +628,9 @@ function Edit({
 
   // Pre-compute query preset options outside JSX
   console.log('[DEBUG Edit] [HOOK-17] About to call useMemo (queryPresetOptions)');
+  const normalizedPresets = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => normalizeQueryPresets(window.jankxQueryOptions?.queryPresets), []);
   const queryPresetOptions = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => {
-    const allPresets = window.jankxQueryOptions?.queryPresets || [];
+    const allPresets = normalizedPresets;
     console.log('[DEBUG Edit] [HOOK-17] All query presets:', allPresets);
     // Filter presets based on postType:
     // - Common presets: postType is null (available for all post types)
@@ -514,18 +641,17 @@ function Edit({
     }));
     console.log('[DEBUG Edit] [HOOK-17] Filtered query preset options:', filtered);
     return filtered;
-  }, [postType]);
+  }, [postType, normalizedPresets]);
   console.log('[DEBUG Edit] [HOOK-17] useMemo (queryPresetOptions) completed, value:', queryPresetOptions);
 
   // Pre-compute query preset help text outside JSX
   console.log('[DEBUG Edit] [HOOK-18] About to call useMemo (queryPresetHelp)');
   const queryPresetHelp = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => {
-    const allPresets = window.jankxQueryOptions?.queryPresets || [];
-    const currentPreset = allPresets.find(p => p.value === queryPreset);
-    const helpText = currentPreset?.help || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select a query preset', 'jankx');
+    const currentPreset = normalizedPresets.find(p => p.value === queryPreset);
+    const helpText = toSafeHelpText(currentPreset?.help, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select a query preset', 'jankx'));
     console.log('[DEBUG Edit] [HOOK-18] queryPresetHelp:', helpText);
     return helpText;
-  }, [queryPreset]);
+  }, [queryPreset, normalizedPresets]);
   console.log('[DEBUG Edit] [HOOK-18] useMemo (queryPresetHelp) completed, value:', queryPresetHelp);
 
   // Debug: Log when queryPreset is 'default'

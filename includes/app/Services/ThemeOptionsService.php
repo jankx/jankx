@@ -282,6 +282,16 @@ class ThemeOptionsService
      */
     public function renderOptionsPage(): void
     {
+        // Nếu có adapter và adapter có framework instance, gọi render từ framework
+        if ($this->adapter && method_exists($this->adapter, 'getFramework')) {
+            $framework = $this->adapter->getFramework();
+            if ($framework && method_exists($framework, 'renderOptionsPage')) {
+                $framework->renderOptionsPage();
+                return;
+            }
+        }
+
+        // Fallback: hiển thị thông tin debug
         echo '<div class="wrap">';
         echo '<h1>Bookix Theme Options</h1>';
         echo '<p>Framework Mode: ' . $this->getCurrentFrameworkMode() . '</p>';
