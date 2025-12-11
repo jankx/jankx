@@ -97,6 +97,15 @@
         "bottom": "0",
         "left": "0"
       }
+    },
+    "thumbnailPosition": {
+      "type": "string",
+      "default": "top",
+      "enum": ["top", "bottom", "left", "right"]
+    },
+    "imageRatio": {
+      "type": "string",
+      "default": ""
     }
   }
 }

@@ -339,12 +339,35 @@ class SmartTabsBlock extends Block
                 $content_html = $icon_html . $label_html;
             }
 
+            // Build additional data attributes for advanced-filter trigger
+            $additional_data_attrs = '';
+            if ($trigger_key === 'advanced-filter') {
+                // Try to get filter data from advanced-filter block in inner blocks
+                // Pass tab index to extractFilterDataFromTab for matching with terms
+                $block_with_index = $block;
+                $block_with_index['tab_index'] = $index;
+                $filter_data = $this->extractFilterDataFromTab($block_with_index);
+                
+                if (!empty($filter_data['filterType'])) {
+                    $additional_data_attrs .= sprintf(' data-filter-type="%s"', esc_attr($filter_data['filterType']));
+                }
+                
+                if (!empty($filter_data['filterValue'])) {
+                    $additional_data_attrs .= sprintf(' data-filter-value="%s"', esc_attr($filter_data['filterValue']));
+                }
+                
+                if (!empty($filter_data['taxonomy'])) {
+                    $additional_data_attrs .= sprintf(' data-taxonomy="%s"', esc_attr($filter_data['taxonomy']));
+                }
+            }
+
             $nav_items[] = sprintf(
-                '<button class="%s" data-tab-index="%d" data-trigger="%s" type="button"%s>%s</button>',
+                '<button class="%s" data-tab-index="%d" data-trigger="%s" type="button"%s%s>%s</button>',
                 implode(' ', $item_classes),
                 $index,
                 esc_attr($trigger_key),
                 $tab_style_attr,
+                $additional_data_attrs,
                 $content_html
             );
         }
@@ -413,6 +436,131 @@ class SmartTabsBlock extends Block
             'post_type' => $post_type ?: '',
             'is_admin' => is_admin(),
         ];
+    }
+
+    /**
+     * Extract filter data from advanced-filter block in tab inner blocks
+     *
+     * @param array $tab_block Tab block data
+     * @return array Filter data (filterType, filterValue, taxonomy)
+     */
+    protected function extractFilterDataFromTab(array $tab_block): array
+    {
+        $filter_data = [];
+        
+        // Get inner blocks of the tab
+        $inner_blocks = $tab_block['innerBlocks'] ?? [];
+        
+        foreach ($inner_blocks as $inner_block) {
+            // Check if this is an advanced-filter block
+            if (($inner_block['blockName'] ?? '') === 'jankx/advanced-filter') {
+                $attrs = $inner_block['attrs'] ?? [];
+                
+                // Get filter type
+                $filter_type = $attrs['filterType'] ?? 'taxonomy';
+                $filter_data['filterType'] = $filter_type;
+                
+                // Get filter value based on filter type
+                switch ($filter_type) {
+                    case 'taxonomy':
+                        // Get taxonomy
+                        $taxonomy = $attrs['taxonomy'] ?? '';
+                        if ($taxonomy) {
+                            $filter_data['taxonomy'] = $taxonomy;
+                        }
+                        
+                        // Get filter value (term ID or slug)
+                        // First, try to get from triggerSettings (set in editor)
+                        $trigger_settings = $tab_block['attrs']['triggerSettings'] ?? [];
+                        $filter_value = $trigger_settings['filterValue'] ?? '';
+                        
+                        // If not in triggerSettings, try to get from filterValue attribute
+                        if (empty($filter_value)) {
+                            $filter_value = $attrs['filterValue'] ?? '';
+                        }
+                        
+                        // If still empty, try to match tab index with taxonomy terms
+                        // Tab index 0 = "All" (empty), tab index 1 = first term, etc.
+                        if (empty($filter_value) && !empty($taxonomy)) {
+                            // Get tab index from context (passed from renderTabNavigation)
+                            $tab_index = $tab_block['tab_index'] ?? -1;
+                            
+                            if ($tab_index > 0) {
+                                // Get taxonomy terms
+                                $terms = get_terms([
+                                    'taxonomy' => $taxonomy,
+                                    'hide_empty' => false,
+                                    'orderby' => 'term_order',
+                                    'order' => 'ASC',
+                                ]);
+                                
+                                if (!is_wp_error($terms) && !empty($terms) && is_array($terms)) {
+                                    // Tab index 1 = first term (index 0 in terms array)
+                                    $term_index = $tab_index - 1;
+                                    if (isset($terms[$term_index])) {
+                                        $term = $terms[$term_index];
+                                        // Use term ID as filter value (can be changed to slug if needed)
+                                        $filter_value = (string) $term->term_id;
+                                    }
+                                }
+                            }
+                        }
+                        
+                        // Note: For tab index 0 (All), filterValue should be empty
+                        // For other tabs, filterValue should be set in editor, triggerSettings, or matched by tab index
+                        if (!empty($filter_value)) {
+                            $filter_data['filterValue'] = $filter_value;
+                        }
+                        break;
+                        
+                    case 'meta':
+                        $meta_key = $attrs['metaKey'] ?? '';
+                        $meta_value = $attrs['filterValue'] ?? '';
+                        if ($meta_key) {
+                            $filter_data['metaKey'] = $meta_key;
+                        }
+                        if ($meta_value) {
+                            $filter_data['filterValue'] = $meta_value;
+                        }
+                        break;
+                        
+                    case 'price':
+                        $min_price = $attrs['filterValueMin'] ?? '';
+                        $max_price = $attrs['filterValueMax'] ?? '';
+                        if ($min_price) {
+                            $filter_data['filterValueMin'] = $min_price;
+                        }
+                        if ($max_price) {
+                            $filter_data['filterValueMax'] = $max_price;
+                        }
+                        break;
+                        
+                    case 'date':
+                        $start_date = $attrs['filterValueStart'] ?? '';
+                        $end_date = $attrs['filterValueEnd'] ?? '';
+                        if ($start_date) {
+                            $filter_data['filterValueStart'] = $start_date;
+                        }
+                        if ($end_date) {
+                            $filter_data['filterValueEnd'] = $end_date;
+                        }
+                        break;
+                        
+                    case 'author':
+                    case 'keyword':
+                        $filter_value = $attrs['filterValue'] ?? '';
+                        if ($filter_value) {
+                            $filter_data['filterValue'] = $filter_value;
+                        }
+                        break;
+                }
+                
+                // Only return data from the first advanced-filter block found
+                break;
+            }
+        }
+        
+        return $filter_data;
     }
 }
 

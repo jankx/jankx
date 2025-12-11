@@ -222,6 +222,74 @@ $url = Url::asset('css/style.css');
 
 Hệ thống Gutenberg blocks trong Jankx Framework cho phép tạo các custom blocks với editor và frontend tương đồng. Blocks được khai báo trong `resources/blocks/`, đăng ký qua PHP class extends `Block.php`, và quản lý bởi `GutenbergService`.
 
+#### 7.0. Dynamic Data Template & Content Loop Layouts
+
+**Content Loop Layouts** là hệ thống cho phép tùy chỉnh cách hiển thị từng item trong loop của `jankx/dynamic-data-layout` block. Layouts được đăng ký qua PHP và chỉ thêm CSS classes vào loop items, không can thiệp vào nội dung bên trong.
+
+**Đăng ký Content Loop Layout**:
+
+```php
+// Trong Service Provider hoặc functions.php
+add_action('jankx/dynamic-data-template/register-content-loop-layouts', function ($manager) {
+    $manager->registerLayout(
+        'promotional-banner', // Layout name
+        \Puleeno\Vietkara\Layouts\PromotionalBannerLayout::class, // Layout class
+        'common' // Post types: 'common' (all), hoặc array ['post', 'product']
+    );
+});
+```
+
+**Layout Class Structure**:
+
+```php
+namespace Puleeno\Vietkara\Layouts;
+
+class PromotionalBannerLayout
+{
+    /**
+     * Get layout title (hiển thị trong editor dropdown)
+     */
+    public function getTitle(): string
+    {
+        return __('Promotional Banner', 'vietkara');
+    }
+
+    /**
+     * Get supported display options (metadata only)
+     */
+    public function getSupportedOptions(): array
+    {
+        return [
+            'showFeaturedImage',
+            'showTitle',
+            'thumbnailPosition',
+            'imageRatio',
+        ];
+    }
+}
+```
+
+**CSS Class Application**:
+
+Khi chọn layout trong `jankx/dynamic-data-template` block, mỗi loop item sẽ tự động có class `content-loop-layout--{layoutName}`:
+
+```html
+<li class="wp-block-post post post-123 content-loop-layout--promotional-banner">
+    <!-- Inner blocks content -->
+</li>
+```
+
+**Quan trọng**:
+- Layout chỉ thêm CSS classes, không can thiệp vào nội dung
+- Nội dung bên trong được handle hoàn toàn qua editor (inner blocks)
+- Developers có thể style layout bằng CSS targeting class `content-loop-layout--{layoutName}`
+- Layout class được thêm vào trong `PostTemplateRendererTrait::buildItemClasses()`
+
+**Location**: 
+- Layout Manager: `includes/framework/Layouts/DynamicDataLayout/ContentLoopLayoutManager.php`
+- Block: `includes/framework/Gutenberg/Blocks/DynamicDataTemplateBlock.php`
+- Renderer Trait: `includes/framework/Layouts/PostLayout/Generators/Concerns/PostTemplateRendererTrait.php`
+
 #### 7.1. Cấu trúc Block
 
 Blocks được khai báo trong thư mục `resources/blocks/<block-name>/` với cấu trúc như sau:

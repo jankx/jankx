@@ -262,6 +262,12 @@ trait PostTemplateRendererTrait
             $classes[] = $customItemClass;
         }
 
+        // Add content loop layout class from template block attributes
+        $templateAttrs = $this->templateBlock['attrs'] ?? [];
+        if (!empty($templateAttrs['contentLoopLayout'])) {
+            $classes[] = 'content-loop-layout--' . sanitize_html_class($templateAttrs['contentLoopLayout']);
+        }
+
         $classes = array_unique(array_filter(array_map('sanitize_html_class', $classes)));
 
         return implode(' ', $classes);

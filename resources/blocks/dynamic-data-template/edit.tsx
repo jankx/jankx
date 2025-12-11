@@ -11,6 +11,7 @@ import {
     SelectControl,
     ToggleControl,
     RangeControl,
+    TextControl,
 } from '@wordpress/components';
 import { useMemo, useEffect, useState, useRef, useCallback } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
@@ -29,7 +30,14 @@ interface DynamicDataTemplateAttributes {
         bottom?: string;
         left?: string;
     };
+    thumbnailPosition?: 'top' | 'bottom' | 'left' | 'right';
+    imageRatio?: string;
 }
+
+// Image ratio presets
+const PRESET_IMAGE_RATIOS = ['16/9', '4/3', '21/9', '1/1', '3/4', '2/3', '9/16'] as const;
+type PresetImageRatio = typeof PRESET_IMAGE_RATIOS[number];
+type ImageRatioSelectValue = '' | 'custom' | PresetImageRatio;
 
 interface DynamicDataTemplateEditProps {
     attributes: DynamicDataTemplateAttributes;
@@ -65,7 +73,23 @@ export default function Edit({
         itemSpacing = 'normal',
         showItemBorder = false,
         itemBorderRadius = 0,
+        thumbnailPosition = 'top',
+        imageRatio = '',
     } = attributes;
+
+    // Image ratio handling
+    const imageRatioSelectValue = useMemo<ImageRatioSelectValue>(() => {
+        if (!imageRatio) {
+            return '';
+        }
+        if ((PRESET_IMAGE_RATIOS as readonly string[]).includes(imageRatio)) {
+            return imageRatio as PresetImageRatio;
+        }
+        return 'custom';
+    }, [imageRatio]);
+
+    const isCustomImageRatio = imageRatioSelectValue === 'custom';
+    const customImageRatioValue = isCustomImageRatio && imageRatio ? imageRatio : '';
 
     // Get post type and settings from context
     const postType: string = context?.query?.postType || context?.postType || 'post';
@@ -213,6 +237,58 @@ export default function Edit({
                             }
                             min={0}
                             max={50}
+                        />
+                    )}
+                </PanelBody>
+
+                <PanelBody title={__('Image Settings', 'jankx')} initialOpen={false}>
+                    <SelectControl
+                        label={__('Thumbnail Position', 'jankx')}
+                        value={thumbnailPosition || 'top'}
+                        options={[
+                            { label: __('Top (Default)', 'jankx'), value: 'top' },
+                            { label: __('Bottom', 'jankx'), value: 'bottom' },
+                            { label: __('Left', 'jankx'), value: 'left' },
+                            { label: __('Right', 'jankx'), value: 'right' },
+                        ]}
+                        onChange={(value) => setAttributes({ thumbnailPosition: value as DynamicDataTemplateAttributes['thumbnailPosition'] })}
+                        help={__('Choose where the featured image appears relative to the content.', 'jankx')}
+                    />
+                    <SelectControl
+                        label={__('Image Aspect Ratio', 'jankx')}
+                        value={imageRatioSelectValue}
+                        onChange={(value) => {
+                            if (value === 'custom') {
+                                setAttributes({ imageRatio: '' });
+                            } else {
+                                setAttributes({ imageRatio: value || '' });
+                            }
+                        }}
+                        help={__('Set the aspect ratio for featured images', 'jankx')}
+                        options={[
+                            { label: __('Default (3:2)', 'jankx'), value: '' },
+                            { label: __('16:9 (Landscape)', 'jankx'), value: '16/9' },
+                            { label: __('4:3 (Landscape)', 'jankx'), value: '4/3' },
+                            { label: __('21:9 (Ultra Wide)', 'jankx'), value: '21/9' },
+                            { label: __('1:1 (Square)', 'jankx'), value: '1/1' },
+                            { label: __('3:4 (Portrait)', 'jankx'), value: '3/4' },
+                            { label: __('2:3 (Portrait)', 'jankx'), value: '2/3' },
+                            { label: __('9:16 (Vertical)', 'jankx'), value: '9/16' },
+                            { label: __('Custom', 'jankx'), value: 'custom' },
+                        ]}
+                    />
+                    {isCustomImageRatio && (
+                        <TextControl
+                            label={__('Custom Ratio', 'jankx')}
+                            value={customImageRatioValue}
+                            onChange={(value) => {
+                                const ratioPattern = /^\d+\/\d+$/;
+                                if (!value || ratioPattern.test(value)) {
+                                    setAttributes({ imageRatio: value || '' });
+                                }
+                            }}
+                            help={__('Enter aspect ratio in format: width/height (e.g., 16/9, 3/4)', 'jankx')}
+                            placeholder="16/9"
                         />
                     )}
                 </PanelBody>

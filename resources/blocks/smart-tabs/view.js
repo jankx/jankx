@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
         navItems.forEach((navItem, index) => {
             navItem.addEventListener('click', (event) => {
                 event.preventDefault();
-                
+
                 // Get trigger before activating tab
                 const tabTrigger = navItem?.getAttribute('data-trigger');
                 const panel = tabPanels[index];

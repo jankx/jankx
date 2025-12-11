@@ -279,6 +279,51 @@
     "carouselInViewThreshold": {
       "type": "number",
       "default": 0
+    },
+    "showTitle": {
+      "type": "boolean",
+      "default": true
+    },
+    "showExcerpt": {
+      "type": "boolean",
+      "default": true
+    },
+    "showFeaturedImage": {
+      "type": "boolean",
+      "default": true
+    },
+    "thumbnailPosition": {
+      "type": "string",
+      "default": "top",
+      "enum": ["top", "bottom", "left", "right"]
+    },
+    "imageRatio": {
+      "type": "string",
+      "default": ""
+    },
+    "showDate": {
+      "type": "boolean",
+      "default": true
+    },
+    "showAuthor": {
+      "type": "boolean",
+      "default": false
+    },
+    "showPrice": {
+      "type": "boolean",
+      "default": true
+    },
+    "showAddToCart": {
+      "type": "boolean",
+      "default": true
+    },
+    "showRating": {
+      "type": "boolean",
+      "default": false
+    },
+    "excerptLength": {
+      "type": "number",
+      "default": 55
     }
   }
 }

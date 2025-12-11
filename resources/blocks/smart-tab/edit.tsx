@@ -445,7 +445,7 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
                                             <p style={{ margin: '5px 0 0 0', fontSize: '12px', color: '#666' }}>
                                                 {__('Configure the filter using the Advanced Filter block below.', 'jankx')}
                                             </p>
-                                        </div>
+                                                </div>
                                     )}
                                 </>
                             )}

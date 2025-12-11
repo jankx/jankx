@@ -642,6 +642,137 @@ Block này sử dụng context từ parent block (`jankx/advanced-filters`):
 
 ---
 
+### jankx/dynamic-data-template
+
+**Mục đích**: Template block để định nghĩa cách hiển thị từng item trong loop của `jankx/dynamic-data-layout` block.
+
+#### Content Loop Layouts:
+
+**Content Loop Layout** là hệ thống cho phép tùy chỉnh cách hiển thị từng item trong loop. Layouts được đăng ký qua PHP và chỉ thêm CSS classes vào loop items.
+
+#### Attributes ảnh hưởng đến Styles:
+
+1. **contentLoopLayout** (string, default: "default")
+   - Layout name được chọn từ dropdown trong editor
+   - CSS Classes: `content-loop-layout--{value}` được thêm vào mỗi loop item
+   - Ví dụ: `content-loop-layout--promotional-banner`
+   - Location: Class được thêm trong `PostTemplateRendererTrait::buildItemClasses()`
+
+2. **thumbnailPosition** (string, default: "top")
+   - Values: `"top"`, `"bottom"`, `"left"`, `"right"`
+   - CSS Classes: `thumbnail-position-{value}`
+
+3. **imageRatio** (string, default: "")
+   - Values: `"1/1"`, `"16/9"`, `"4/3"`, `"3/2"`, custom ratios
+   - CSS Classes: `image-ratio-{value}` (ví dụ: `image-ratio-1-1`)
+   - CSS: `aspect-ratio: {value}`
+
+4. **itemSpacing** (string, default: "normal")
+   - Values: `"none"`, `"compact"`, `"normal"`, `"loose"`
+   - CSS Classes: `item-spacing-{value}`
+
+5. **showItemBorder** (boolean, default: false)
+   - CSS Classes: `has-item-border` (khi true)
+
+6. **itemBorderRadius** (number, default: 0)
+   - Inline style: `border-radius: {value}px`
+
+7. **itemPadding** (object, default: {top: 0, right: 0, bottom: 0, left: 0})
+   - Inline styles: `padding: {top}px {right}px {bottom}px {left}px`
+
+#### Block Supports:
+- **align**: `["wide", "full"]`
+- **spacing**: margin, padding, blockGap
+- **color**: background, text, link, gradients
+- **typography**: fontSize, lineHeight, fontFamily, fontWeight, fontStyle, textTransform, textDecoration, letterSpacing
+- **border**: color, radius, style, width
+
+#### Inner Blocks:
+- Block này hỗ trợ inner blocks để tùy chỉnh nội dung của từng item
+- Default blocks được cung cấp dựa trên post type
+- Inner blocks được render cho mỗi post trong loop
+
+#### CSS Structure:
+```html
+<!-- Loop item với content loop layout class -->
+<li class="wp-block-post post post-{id} content-loop-layout--{contentLoopLayout} thumbnail-position-{thumbnailPosition} image-ratio-{imageRatio} item-spacing-{itemSpacing}">
+    <!-- Inner blocks content -->
+</li>
+```
+
+#### Đăng ký Content Loop Layout:
+
+**Bước 1**: Tạo Layout Class
+
+```php
+// src/Layouts/PromotionalBannerLayout.php
+namespace Puleeno\Vietkara\Layouts;
+
+class PromotionalBannerLayout
+{
+    public function getTitle(): string
+    {
+        return __('Promotional Banner', 'vietkara');
+    }
+
+    public function getSupportedOptions(): array
+    {
+        return [
+            'showFeaturedImage',
+            'showTitle',
+            'thumbnailPosition',
+            'imageRatio',
+        ];
+    }
+}
+```
+
+**Bước 2**: Đăng ký Layout
+
+```php
+// Trong Service Provider
+add_action('jankx/dynamic-data-template/register-content-loop-layouts', function ($manager) {
+    $manager->registerLayout(
+        'promotional-banner',
+        \Puleeno\Vietkara\Layouts\PromotionalBannerLayout::class,
+        'common' // Available for all post types
+    );
+});
+```
+
+**Bước 3**: Style với CSS
+
+```css
+/* Style cho promotional banner layout */
+.content-loop-layout--promotional-banner {
+    position: relative;
+    overflow: hidden;
+}
+
+.content-loop-layout--promotional-banner .wp-block-post-featured-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.content-loop-layout--promotional-banner .wp-block-post-title {
+    position: relative;
+    z-index: 2;
+    color: #ffffff;
+}
+```
+
+**Quan trọng**:
+- Layout chỉ thêm CSS classes, không can thiệp vào nội dung
+- Nội dung được handle hoàn toàn qua editor (inner blocks)
+- Class `content-loop-layout--{layoutName}` được tự động thêm vào mỗi loop item
+- Layouts có thể được đăng ký cho specific post types hoặc 'common' (all post types)
+
+---
+
 ## Patterns & Conventions
 
 ### 1. CSS Class Naming

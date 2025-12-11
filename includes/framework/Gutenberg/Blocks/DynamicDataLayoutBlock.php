@@ -7,6 +7,8 @@ use Jankx\Layouts\DynamicDataLayout\DynamicDataLayoutManager;
 use Jankx\Gutenberg\Blocks\DynamicDataLayout\Renderer;
 use Jankx\Gutenberg\Blocks\DynamicDataLayout\AttributeSanitizer;
 use Jankx\Query\DynamicDataLayoutQueryHelper;
+use Jankx\Foundation\Application;
+use Jankx\Services\DefaultThumbnailService;
 
 /**
  * Dynamic Data Layout Block
@@ -550,6 +552,9 @@ class DynamicDataLayoutBlock extends Block
     {
         $attrs = [];
 
+        // Add block class for easier selection
+        $attrs['class'] = 'wp-block-jankx-dynamic-data-layout';
+
         // queryId is required; expose as data-block-id and data-query-id
         $queryId = isset($attributes['queryId']) ? (string) $attributes['queryId'] : '';
         if ($queryId !== '') {
@@ -612,6 +617,9 @@ class DynamicDataLayoutBlock extends Block
     {
         check_ajax_referer('jankx_load_more', 'nonce');
 
+        // Boot DefaultThumbnailService in AJAX context
+        $this->bootDefaultThumbnailService();
+
         $block_id = isset($_POST['block_id']) ? sanitize_text_field(wp_unslash($_POST['block_id'])) : '';
         $attributes_json = isset($_POST['attributes']) ? sanitize_text_field(wp_unslash($_POST['attributes'])) : '';
         $filters_json = isset($_POST['filters']) ? sanitize_text_field(wp_unslash($_POST['filters'])) : '[]';
@@ -660,5 +668,38 @@ class DynamicDataLayoutBlock extends Block
 
         $result = apply_filters('jankx_dynamic_data_layout_filter_update', $attributes, $filters);
         wp_send_json_success($result);
+    }
+
+    /**
+     * Boot DefaultThumbnailService in AJAX context
+     * 
+     * This ensures default thumbnails are applied when rendering posts via AJAX
+     *
+     * @return void
+     */
+    protected function bootDefaultThumbnailService(): void
+    {
+        // Check if filters are already added (service already booted)
+        if (has_filter('has_post_thumbnail', '__return_true')) {
+            // Service is already booted, no need to boot again
+            return;
+        }
+
+        // Try to get service from Application container
+        try {
+            $app = Application::getInstance();
+            $service = $app->make(DefaultThumbnailService::class);
+            
+            if ($service && $service->isEnabled()) {
+                $service->boot();
+            }
+        } catch (\Exception $e) {
+            // If service is not available, try to create and boot directly
+            // This is a fallback for cases where Application is not fully initialized
+            $service = new DefaultThumbnailService();
+            if ($service->isEnabled()) {
+                $service->boot();
+            }
+        }
     }
 }
