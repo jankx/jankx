@@ -16,8 +16,6 @@ use Jankx\Gutenberg\Blocks\CommentCountBlock;
 use Jankx\Gutenberg\Blocks\DynamicDataLayoutBlock;
 use Jankx\Gutenberg\Blocks\DynamicDataTemplateBlock;
 use Jankx\Gutenberg\Blocks\MagicTextBlock;
-use Jankx\Gutenberg\Blocks\MasterDataLayoutBlock;
-use Jankx\Gutenberg\Blocks\MasterDataTemplateBlock;
 use Jankx\Gutenberg\Blocks\MasterTableBlock;
 use Jankx\Gutenberg\Blocks\ModalBlock;
 use Jankx\Gutenberg\Blocks\OffcanvasSidebarBlock;
@@ -140,8 +138,6 @@ class GutenbergService
         $this->repository->registerBlock(DynamicDataLayoutBlock::class);
         $this->repository->registerBlock(DynamicDataTemplateBlock::class);
         $this->repository->registerBlock(MagicTextBlock::class);
-        $this->repository->registerBlock(MasterDataLayoutBlock::class);
-        $this->repository->registerBlock(MasterDataTemplateBlock::class);
         $this->repository->registerBlock(MasterTableBlock::class);
         $this->repository->registerBlock(ModalBlock::class);
         $this->repository->registerBlock(OffcanvasSidebarBlock::class);
