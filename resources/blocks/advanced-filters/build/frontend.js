@@ -14,7 +14,48 @@ class AdvancedFilters {
   currentFilters = {};
   constructor(container) {
     this.container = container;
+    // Expose instance for external triggers (e.g., smart-tab)
+    this.container.advancedFiltersInstance = this;
+    // Move padding from wrapper to inner container (so it's inside border)
+    this.movePaddingToContainer();
     this.init();
+  }
+
+  /**
+   * Move padding from wrapper to inner container
+   * This ensures padding is inside the border, not outside
+   */
+  movePaddingToContainer() {
+    if (!this.container) return;
+    const container = this.container.querySelector('.advanced-filters-container');
+    if (!container) return;
+
+    // Get computed styles from wrapper
+    const wrapperStyles = window.getComputedStyle(this.container);
+    const paddingTop = wrapperStyles.paddingTop;
+    const paddingRight = wrapperStyles.paddingRight;
+    const paddingBottom = wrapperStyles.paddingBottom;
+    const paddingLeft = wrapperStyles.paddingLeft;
+
+    // Only move padding if it's not zero
+    if (paddingTop !== '0px' || paddingRight !== '0px' || paddingBottom !== '0px' || paddingLeft !== '0px') {
+      // Apply padding to inner container
+      container.style.paddingTop = paddingTop;
+      container.style.paddingRight = paddingRight;
+      container.style.paddingBottom = paddingBottom;
+      container.style.paddingLeft = paddingLeft;
+
+      // Remove padding from wrapper
+      this.container.style.padding = '0';
+
+      // Also adjust reset button margins if it exists
+      const resetButton = this.container.querySelector('.filter-reset-button');
+      if (resetButton) {
+        resetButton.style.marginLeft = paddingLeft;
+        resetButton.style.marginRight = paddingRight;
+        resetButton.style.marginBottom = paddingBottom;
+      }
+    }
   }
   init() {
     if (!this.container) return;
@@ -51,17 +92,46 @@ class AdvancedFilters {
           element.addEventListener('click', e => {
             e.preventDefault();
 
+            // Find the checkbox/radio input inside the filter-option (label)
+            const input = element.querySelector('input[type="checkbox"], input[type="radio"]');
+
             // Find the parent filter group to check multiple selection setting
             const filterGroup = element.closest('[data-taxonomy]');
             const multipleSelection = filterGroup?.getAttribute('data-multiple-selection') === 'true';
-            if (multipleSelection) {
-              // Toggle: allow multiple selections
-              element.classList.toggle('active');
+            if (input) {
+              if (multipleSelection) {
+                // Toggle: allow multiple selections
+                input.checked = !input.checked;
+                element.classList.toggle('active', input.checked);
+              } else {
+                // Single selection: uncheck all siblings, then check this one
+                const siblings = filterGroup?.querySelectorAll('input[type="checkbox"], input[type="radio"]');
+                siblings?.forEach(sibling => {
+                  sibling.checked = false;
+                  const siblingOption = sibling.closest('.filter-option');
+                  if (siblingOption) {
+                    siblingOption.classList.remove('active');
+                  }
+                });
+                input.checked = true;
+                element.classList.add('active');
+              }
+
+              // Trigger change event on input to ensure other listeners are notified
+              input.dispatchEvent(new Event('change', {
+                bubbles: true
+              }));
             } else {
-              // Single selection: deactivate siblings, then toggle this one
-              const siblings = filterGroup?.querySelectorAll('.filter-option');
-              siblings?.forEach(sibling => sibling.classList.remove('active'));
-              element.classList.toggle('active');
+              // Fallback: if no input found, just toggle active class (for button-style options)
+              if (multipleSelection) {
+                // Toggle: allow multiple selections
+                element.classList.toggle('active');
+              } else {
+                // Single selection: deactivate siblings, then toggle this one
+                const siblings = filterGroup?.querySelectorAll('.filter-option');
+                siblings?.forEach(sibling => sibling.classList.remove('active'));
+                element.classList.toggle('active');
+              }
             }
             this.handleFilterChange();
           });
@@ -96,11 +166,26 @@ class AdvancedFilters {
     // Keyword filter
     const keywordInput = this.container.querySelector('.filter-keyword input');
     if (keywordInput) {
-      keywordInput.addEventListener('input', () => {
-        if (this.config?.ajaxEnabled) {
-          this.debounce(() => this.handleFilterChange(), 500)();
-        }
-      });
+      const keywordGroup = keywordInput.closest('.filter-group[data-filter-type="keyword"]');
+      const keywordAction = keywordGroup?.getAttribute('data-keyword-action') || 'typing';
+      const searchButton = this.container.querySelector('.filter-keyword .filter-search-button');
+      if (keywordAction === 'button' && searchButton) {
+        // Only trigger when clicking search button or pressing Enter
+        searchButton.addEventListener('click', () => this.handleFilterChange());
+        keywordInput.addEventListener('keydown', e => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            this.handleFilterChange();
+          }
+        });
+      } else {
+        // Default: filter while typing (debounced)
+        keywordInput.addEventListener('input', () => {
+          if (this.config?.ajaxEnabled) {
+            this.debounce(() => this.handleFilterChange(), 500)();
+          }
+        });
+      }
     }
 
     // Reset button
@@ -344,20 +429,61 @@ class AdvancedFilters {
         }
       }
 
-      // Use PostTypeLayoutBlock's AJAX handler
+      // Use DynamicDataLayoutBlock's AJAX handler
       // Process each target block individually
       const updatePromises = this.config.targetBlockIds.map(async blockId => {
         // Get block attributes from DOM if available
         const targetBlock = document.querySelector(`[data-query-id="${blockId}"], [data-block-id="${blockId}"]`);
         let attributesJson = '';
         if (targetBlock) {
+          // Try to get data-block-settings first (for PostTypeLayoutBlock)
           const blockSettings = targetBlock.getAttribute('data-block-settings');
           if (blockSettings) {
             attributesJson = blockSettings;
+          } else {
+            // For DynamicDataLayoutBlock, build attributes from data attributes
+            const attributes = {
+              queryId: blockId
+            };
+
+            // Collect all data attributes
+            const postType = targetBlock.getAttribute('data-post-type');
+            if (postType) attributes.postType = postType;
+            const layout = targetBlock.getAttribute('data-layout');
+            if (layout) attributes.layout = layout;
+            const postsPerPage = targetBlock.getAttribute('data-posts-per-page');
+            if (postsPerPage) attributes.postsPerPage = parseInt(postsPerPage, 10);
+            const columns = targetBlock.getAttribute('data-columns');
+            if (columns) attributes.columns = parseInt(columns, 10);
+            const columnsTablet = targetBlock.getAttribute('data-columns-tablet');
+            if (columnsTablet) attributes.columnsTablet = parseInt(columnsTablet, 10);
+            const columnsMobile = targetBlock.getAttribute('data-columns-mobile');
+            if (columnsMobile) attributes.columnsMobile = parseInt(columnsMobile, 10);
+            const orderBy = targetBlock.getAttribute('data-order-by');
+            if (orderBy) attributes.orderBy = orderBy;
+            const order = targetBlock.getAttribute('data-order');
+            if (order) attributes.order = order;
+            const queryPreset = targetBlock.getAttribute('data-query-preset');
+            if (queryPreset) attributes.queryPreset = queryPreset;
+            const imageRatio = targetBlock.getAttribute('data-image-ratio');
+            if (imageRatio) attributes.imageRatio = imageRatio;
+            const thumbnailPosition = targetBlock.getAttribute('data-thumbnail-position');
+            if (thumbnailPosition) attributes.thumbnailPosition = thumbnailPosition;
+
+            // Convert to JSON if we have any attributes
+            if (Object.keys(attributes).length > 1) {
+              // More than just queryId
+              attributesJson = JSON.stringify(attributes);
+            }
           }
         }
+
+        // If still no attributes, log warning but continue (server will try to find block)
+        if (!attributesJson) {
+          console.warn(`AdvancedFilters: Could not find block attributes for block ${blockId}, server will try to detect from block_id`);
+        }
         const params = new URLSearchParams({
-          action: 'jankx_post_type_layout_filter',
+          action: 'jankx_dynamic_data_layout_filter',
           nonce: nonce,
           block_id: blockId,
           attributes: attributesJson,
@@ -367,7 +493,6 @@ class AdvancedFilters {
         // Always send post_id if we have it
         if (postId > 0) {
           params.append('post_id', String(postId));
-          console.log('AdvancedFilters: Sending post_id:', postId);
         } else {
           console.warn('AdvancedFilters: Could not determine post_id, server will try to detect it');
         }
@@ -471,7 +596,7 @@ class AdvancedFilters {
       }
       if (!targetElement) {
         // Try finding by class and queryId data attribute
-        const blocks = document.querySelectorAll('.wp-block-jankx-post-type-layout');
+        const blocks = document.querySelectorAll('.wp-block-jankx-dynamic-data-layout');
         blocks.forEach(block => {
           const queryId = block.getAttribute('data-query-id');
           if (queryId === blockId) {
@@ -481,7 +606,7 @@ class AdvancedFilters {
       }
       if (targetElement) {
         // Remove loading spinner before updating content
-        const existingLoading = targetElement.querySelector('.post-type-layout-loading');
+        const existingLoading = targetElement.querySelector('.dynamic-data-layout-loading');
         if (existingLoading) {
           existingLoading.remove();
         }
@@ -508,7 +633,7 @@ class AdvancedFilters {
   }
   reinitializeBlockScripts(element) {
     // Re-initialize carousel if present
-    if (element.querySelector('.post-type-layout-carousel')) {
+    if (element.querySelector('.dynamic-data-layout-carousel')) {
       // Trigger any carousel initialization scripts
       const event = new CustomEvent('jankx:reinitialize-carousel', {
         detail: {
@@ -577,12 +702,12 @@ class AdvancedFilters {
   showLoading() {
     if (!this.config || !this.config.targetBlockIds) return;
 
-    // Show loading spinner on target blocks (post-type-layout blocks)
+    // Show loading spinner on target blocks (dynamic-data-layout blocks)
     this.config.targetBlockIds.forEach(blockId => {
       let targetElement = document.querySelector(`[data-block-id="${blockId}"], [data-query-id="${blockId}"]`);
       if (!targetElement) {
         // Try finding by class and queryId data attribute
-        const blocks = document.querySelectorAll('.wp-block-jankx-post-type-layout');
+        const blocks = document.querySelectorAll('.wp-block-jankx-dynamic-data-layout');
         blocks.forEach(block => {
           const queryId = block.getAttribute('data-query-id');
           if (queryId === blockId) {
@@ -592,12 +717,12 @@ class AdvancedFilters {
       }
       if (targetElement) {
         // Create or get loading element
-        let loading = targetElement.querySelector('.post-type-layout-loading');
+        let loading = targetElement.querySelector('.dynamic-data-layout-loading');
         if (!loading) {
           // Create loading element if it doesn't exist
           loading = document.createElement('div');
-          loading.className = 'post-type-layout-loading';
-          loading.innerHTML = '<div class="post-type-layout-spinner"></div>';
+          loading.className = 'dynamic-data-layout-loading';
+          loading.innerHTML = '<div class="dynamic-data-layout-spinner"></div>';
           targetElement.appendChild(loading);
         }
         loading.classList.add('active');
@@ -612,7 +737,7 @@ class AdvancedFilters {
       let targetElement = document.querySelector(`[data-block-id="${blockId}"], [data-query-id="${blockId}"]`);
       if (!targetElement) {
         // Try finding by class and queryId data attribute
-        const blocks = document.querySelectorAll('.wp-block-jankx-post-type-layout');
+        const blocks = document.querySelectorAll('.wp-block-jankx-dynamic-data-layout');
         blocks.forEach(block => {
           const queryId = block.getAttribute('data-query-id');
           if (queryId === blockId) {
@@ -621,7 +746,7 @@ class AdvancedFilters {
         });
       }
       if (targetElement) {
-        const loading = targetElement.querySelector('.post-type-layout-loading');
+        const loading = targetElement.querySelector('.dynamic-data-layout-loading');
         if (loading) {
           loading.classList.remove('active');
         }

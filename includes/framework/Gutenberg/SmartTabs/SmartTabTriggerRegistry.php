@@ -63,6 +63,9 @@ class SmartTabTriggerRegistry
         // Register default manual trigger.
         $this->registerTrigger(new Triggers\ManualTabTrigger());
 
+        // Register advanced filter trigger
+        $this->registerTrigger(new Triggers\AdvancedFilterTabTrigger());
+
         /**
          * Allow external packages to register triggers.
          *

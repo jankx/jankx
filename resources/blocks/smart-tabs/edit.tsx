@@ -39,6 +39,7 @@ export default function Edit({ attributes, setAttributes, clientId }: SmartTabsP
         tabAlignment,
         hideTabsBorderBottom,
         centerNavigation,
+        hideTabContent = false,
         label = '',
         showLabel = false,
     } = attributes;
@@ -141,7 +142,7 @@ export default function Edit({ attributes, setAttributes, clientId }: SmartTabsP
     };
 
     const blockProps = useBlockProps({
-        className: `smart-tabs smart-tabs--${tabType} smart-tabs--style-${styleType}${hideTabsBorderBottom ? ' smart-tabs--hide-border-bottom' : ''}${centerNavigation ? ' smart-tabs--center-navigation' : ''}`,
+        className: `smart-tabs smart-tabs--${tabType} smart-tabs--style-${styleType}${hideTabsBorderBottom ? ' smart-tabs--hide-border-bottom' : ''}${centerNavigation ? ' smart-tabs--center-navigation' : ''}${hideTabContent ? ' smart-tabs--hide-content' : ''}`,
     });
 
     const innerBlocksProps = useInnerBlocksProps(
@@ -206,6 +207,14 @@ export default function Edit({ attributes, setAttributes, clientId }: SmartTabsP
                         checked={centerNavigation}
                         onChange={(value: boolean) => setAttributes({ centerNavigation: value })}
                         help={__('Center the tabs navigation with fit-content width', 'jankx')}
+                        __nextHasNoMarginBottom
+                    />
+
+                    <ToggleControl
+                        label={__('Hide Tab Content', 'jankx')}
+                        checked={hideTabContent}
+                        onChange={(value: boolean) => setAttributes({ hideTabContent: value })}
+                        help={__('Ẩn phần nội dung của tab (hữu ích khi tab trigger tự xử lý).', 'jankx')}
                         __nextHasNoMarginBottom
                     />
 

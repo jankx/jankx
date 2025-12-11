@@ -268,6 +268,128 @@ abstract class PostLayout implements PostLayoutInterface
         return [];
     }
 
+    /**
+     * Get HTML structure definition for editor rendering
+     * 
+     * @param array $options Layout options
+     * @return array Structure definition matching TypeScript LayoutStructure interface
+     */
+    public function getHtmlStructure(array $options = []): array
+    {
+        $mergedOptions = array_merge($this->options, $options);
+        
+        return [
+            'layout' => $this->name,
+            'container' => $this->getContainerStructure($mergedOptions),
+            'itemWrapper' => $this->getItemWrapperStructure($mergedOptions),
+            'emptyState' => $this->getEmptyStateStructure($mergedOptions),
+            'paginationWrapper' => $this->getPaginationWrapperStructure($mergedOptions),
+        ];
+    }
+
+    /**
+     * Get container element structure
+     * Can be overridden by child classes to match their specific structure
+     * 
+     * @param array $options
+     * @return array
+     */
+    protected function getContainerStructure(array $options): array
+    {
+        $classes = ['post-type-layout', 'post-type-layout-' . $this->name, 'layout-' . $this->name];
+        
+        if (!empty($options['columns'])) {
+            $classes[] = 'columns-' . intval($options['columns']);
+        }
+        if (!empty($options['columnsTablet'])) {
+            $classes[] = 'columns-tablet-' . intval($options['columnsTablet']);
+        }
+        if (!empty($options['columnsMobile'])) {
+            $classes[] = 'columns-mobile-' . intval($options['columnsMobile']);
+        }
+
+        $styles = [];
+        if (!empty($options['columns'])) {
+            $styles['--columns-desktop'] = (string) intval($options['columns']);
+        }
+        if (!empty($options['columnsTablet'])) {
+            $styles['--columns-tablet'] = (string) intval($options['columnsTablet']);
+        }
+        if (!empty($options['columnsMobile'])) {
+            $styles['--columns-mobile'] = (string) intval($options['columnsMobile']);
+        }
+
+        return [
+            'tag' => 'div',
+            'classes' => $classes,
+            'styles' => $styles,
+            'attributes' => [
+                'data-layout' => $this->name,
+            ],
+        ];
+    }
+
+    /**
+     * Get item wrapper structure
+     * Matches the structure from renderPostItem()
+     * 
+     * @param array $options
+     * @return array
+     */
+    protected function getItemWrapperStructure(array $options): array
+    {
+        $classes = ['post-item'];
+        
+        $thumbnailPosition = $options['thumbnailPosition'] ?? 'top';
+        if (in_array($thumbnailPosition, ['top', 'bottom', 'left', 'right'], true)) {
+            $classes[] = 'thumbnail-position-' . $thumbnailPosition;
+        }
+
+        // Add has-thumbnail or no-thumbnail class based on showFeaturedImage
+        $hasThumbnail = !empty($options['showFeaturedImage']);
+        $classes[] = $hasThumbnail ? 'has-thumbnail' : 'no-thumbnail';
+
+        return [
+            'tag' => 'article',
+            'classes' => $classes,
+            'attributes' => [
+                'id' => 'post-{{post-id}}', // Placeholder for post ID
+            ],
+        ];
+    }
+
+    /**
+     * Get empty state structure
+     * 
+     * @param array $options
+     * @return array
+     */
+    protected function getEmptyStateStructure(array $options): array
+    {
+        return [
+            'tag' => 'div',
+            'classes' => ['post-layout-no-results'],
+            'text' => __('No posts found.', 'jankx'),
+        ];
+    }
+
+    /**
+     * Get pagination wrapper structure
+     * 
+     * @param array $options
+     * @return array
+     */
+    protected function getPaginationWrapperStructure(array $options): array
+    {
+        $alignment = $options['paginationAlignment'] ?? 'center';
+        $classes = ['post-layout-pagination', 'pagination-align-' . $alignment];
+
+        return [
+            'tag' => 'div',
+            'classes' => $classes,
+        ];
+    }
+
     public function getSupportedOptions(): array
     {
         return array_keys($this->defaultOptions);

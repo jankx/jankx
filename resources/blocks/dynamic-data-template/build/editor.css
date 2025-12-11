@@ -1,0 +1,17 @@
+/*!*********************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/dynamic-data-template/editor.scss ***!
+  \*********************************************************************************************************************************************************************************************************/
+/**
+ * Dynamic Data Template Block Editor Styles
+ */
+.wp-block-jankx-dynamic-data-template .dynamic-data-template__item {
+  position: relative;
+}
+.wp-block-jankx-dynamic-data-template .dynamic-data-template__items-container {
+  width: 100%;
+}
+.wp-block-jankx-dynamic-data-template .dynamic-data-template__inner-blocks {
+  width: 100%;
+}
+
+/*# sourceMappingURL=editor.css.map*/

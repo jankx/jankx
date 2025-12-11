@@ -112,4 +112,49 @@ class CardLayout extends PostLayout
             'showTitle', // Card layout cần title để có ý nghĩa
         ];
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getContainerStructure(array $options): array
+    {
+        $classes = [
+            'post-type-layout-card',
+            'wp-block-jankx-post-layout-template',
+        ];
+        
+        $columns = intval($options['columns'] ?? $this->getOption('columns', 3));
+        $columnsTablet = intval($options['columnsTablet'] ?? $this->getOption('columnsTablet', 2));
+        $columnsMobile = intval($options['columnsMobile'] ?? $this->getOption('columnsMobile', 1));
+
+        $classes[] = 'columns-' . $columns;
+        $classes[] = 'columns-tablet-' . $columnsTablet;
+        $classes[] = 'columns-mobile-' . $columnsMobile;
+
+        $styles = [
+            '--columns-desktop' => (string) $columns,
+            '--columns-tablet' => (string) $columnsTablet,
+            '--columns-mobile' => (string) $columnsMobile,
+        ];
+
+        return [
+            'tag' => 'div',
+            'classes' => $classes,
+            'styles' => $styles,
+            'attributes' => [
+                'data-layout' => $this->name,
+            ],
+        ];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getItemWrapperStructure(array $options): array
+    {
+        $structure = parent::getItemWrapperStructure($options);
+        $structure['tag'] = 'article';
+        $structure['classes'][] = 'jankx-card';
+        return $structure;
+    }
 }

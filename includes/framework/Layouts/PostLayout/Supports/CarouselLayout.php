@@ -127,6 +127,16 @@ class CarouselLayout extends PostLayout implements PostLayoutJsCallbackInterface
             'showArrows',
             'showDots',
             'itemStyle',
+            'carouselAlign',
+            'carouselAxis',
+            'carouselDirection',
+            'carouselStartIndex',
+            'carouselDuration',
+            'carouselDragFree',
+            'carouselDragThreshold',
+            'carouselSkipSnaps',
+            'carouselContainScroll',
+            'carouselInViewThreshold',
         ];
     }
 
@@ -213,6 +223,17 @@ class CarouselLayout extends PostLayout implements PostLayoutJsCallbackInterface
             'showDots' => $options['showDots'] ?? $this->getOption('showDots', true),
             'itemsWrapperClass' => $options['itemsWrapperClass'] ?? $this->getOption('itemsWrapperClass', ''),
             'itemClass' => $options['itemClass'] ?? $this->getOption('itemClass', ''),
+            // Embla carousel options
+            'carouselAlign' => $options['carouselAlign'] ?? $this->getOption('carouselAlign', 'start'),
+            'carouselAxis' => $options['carouselAxis'] ?? $this->getOption('carouselAxis', 'x'),
+            'carouselDirection' => $options['carouselDirection'] ?? $this->getOption('carouselDirection', 'ltr'),
+            'carouselStartIndex' => $options['carouselStartIndex'] ?? $this->getOption('carouselStartIndex', 0),
+            'carouselDuration' => $options['carouselDuration'] ?? $this->getOption('carouselDuration', 25),
+            'carouselDragFree' => $options['carouselDragFree'] ?? $this->getOption('carouselDragFree', false),
+            'carouselDragThreshold' => $options['carouselDragThreshold'] ?? $this->getOption('carouselDragThreshold', 10),
+            'carouselSkipSnaps' => $options['carouselSkipSnaps'] ?? $this->getOption('carouselSkipSnaps', false),
+            'carouselContainScroll' => $options['carouselContainScroll'] ?? $this->getOption('carouselContainScroll', 'trimSnaps'),
+            'carouselInViewThreshold' => $options['carouselInViewThreshold'] ?? $this->getOption('carouselInViewThreshold', 0),
         ];
 
         if (isset($options['imageRatio']) && $options['imageRatio'] !== '') {
@@ -254,6 +275,142 @@ class CarouselLayout extends PostLayout implements PostLayoutJsCallbackInterface
     public function needsJsInit(): bool
     {
         return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getHtmlStructure(array $options = []): array
+    {
+        $mergedOptions = array_merge($this->options, $options);
+        $carouselOptions = $this->buildCarouselOptions($mergedOptions);
+        // Merge back showFeaturedImage and thumbnailPosition for itemWrapper
+        $itemWrapperOptions = array_merge($carouselOptions, [
+            'showFeaturedImage' => $mergedOptions['showFeaturedImage'] ?? $this->getOption('showFeaturedImage', true),
+            'thumbnailPosition' => $mergedOptions['thumbnailPosition'] ?? $this->getOption('thumbnailPosition', 'top'),
+        ]);
+        
+        return [
+            'layout' => $this->name,
+            'container' => $this->getContainerStructure($carouselOptions),
+            'itemWrapper' => $this->getItemWrapperStructure($itemWrapperOptions),
+            'emptyState' => $this->getEmptyStateStructure($mergedOptions),
+            'paginationWrapper' => $this->getPaginationWrapperStructure($mergedOptions),
+        ];
+    }
+
+    /**
+     * {@inheritDoc}
+     * Carousel layout has special structure with embla__viewport and embla__container
+     */
+    protected function getContainerStructure(array $options): array
+    {
+        $classes = [
+            'post-type-layout-carousel',
+            'jankx-carousel',
+            'embla',
+            'columns-' . intval($options['columns'] ?? 3),
+            'columns-tablet-' . intval($options['columnsTablet'] ?? 2),
+            'columns-mobile-' . intval($options['columnsMobile'] ?? 1),
+        ];
+
+        $styles = [
+            '--carousel-columns' => (string) intval($options['columns'] ?? 3),
+            '--carousel-columns-tablet' => (string) intval($options['columnsTablet'] ?? 2),
+            '--carousel-columns-mobile' => (string) intval($options['columnsMobile'] ?? 1),
+        ];
+
+        if (!empty($options['imageRatio'])) {
+            $styles['--jankx-image-ratio'] = (string) $options['imageRatio'];
+            $classes[] = 'has-image-ratio';
+        }
+
+        $attributes = [
+            'data-embla-carousel' => '',
+            'data-slides-per-view' => (string) intval($options['columns'] ?? 3),
+            'data-slides-to-scroll' => (string) intval($options['slidesToScroll'] ?? 1),
+            'data-layout' => $this->name,
+            'data-align' => $options['carouselAlign'] ?? 'start',
+            'data-axis' => $options['carouselAxis'] ?? 'x',
+            'data-direction' => $options['carouselDirection'] ?? 'ltr',
+            'data-start-index' => (string) intval($options['carouselStartIndex'] ?? 0),
+            'data-duration' => (string) intval($options['carouselDuration'] ?? 25),
+            'data-drag-threshold' => (string) intval($options['carouselDragThreshold'] ?? 10),
+            'data-contain-scroll' => $options['carouselContainScroll'] ?? 'trimSnaps',
+            'data-in-view-threshold' => (string) floatval($options['carouselInViewThreshold'] ?? 0),
+        ];
+
+        if (!empty($options['loop'])) {
+            $attributes['data-loop'] = 'true';
+        }
+
+        if (!empty($options['autoplay'])) {
+            $attributes['data-autoplay'] = 'true';
+            $attributes['data-autoplay-delay'] = (string) intval($options['autoplayDelay'] ?? 3000);
+        }
+
+        if (!empty($options['carouselDragFree'])) {
+            $attributes['data-drag-free'] = 'true';
+        }
+
+        if (!empty($options['carouselSkipSnaps'])) {
+            $attributes['data-skip-snaps'] = 'true';
+        }
+
+        // Carousel structure: container -> embla__viewport -> embla__container -> embla__slide items
+        return [
+            'tag' => 'div',
+            'classes' => $classes,
+            'styles' => $styles,
+            'attributes' => $attributes,
+            'children' => [
+                [
+                    'tag' => 'div',
+                    'classes' => ['embla__viewport'],
+                    'children' => [
+                        [
+                            'tag' => 'div',
+                            'classes' => ['embla__container'],
+                            'placeholder' => 'carousel-slides', // Placeholder for slides
+                        ],
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * {@inheritDoc}
+     * Carousel layout wraps each item in embla__slide
+     */
+    protected function getItemWrapperStructure(array $options): array
+    {
+        // First get the base post item structure
+        $postItemClasses = ['post-item'];
+        
+        $thumbnailPosition = $options['thumbnailPosition'] ?? 'top';
+        if (in_array($thumbnailPosition, ['top', 'bottom', 'left', 'right'], true)) {
+            $postItemClasses[] = 'thumbnail-position-' . $thumbnailPosition;
+        }
+
+        $hasThumbnail = !empty($options['showFeaturedImage']);
+        $postItemClasses[] = $hasThumbnail ? 'has-thumbnail' : 'no-thumbnail';
+
+        // Carousel wraps each post item in embla__slide
+        return [
+            'tag' => 'div',
+            'classes' => ['embla__slide'],
+            'children' => [
+                [
+                    'tag' => 'article',
+                    'classes' => $postItemClasses,
+                    'attributes' => [
+                        'id' => 'post-{{post-id}}',
+                    ],
+                    'placeholder' => 'post-content', // Placeholder for post item content
+                ],
+            ],
+        ];
     }
 }
 

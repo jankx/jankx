@@ -110,6 +110,7 @@
     "usesContext": ["jankx/smartTabsId", "jankx/activeTab"],
     "editorScript": "file:./build/index.js",
     "editorStyle": "file:./build/editor.css",
+    "viewScript": "file:./build/view.js",
     "style": "file:./build/style.css"
 }
 

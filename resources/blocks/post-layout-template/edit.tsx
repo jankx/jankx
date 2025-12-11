@@ -4,6 +4,7 @@ import { useSelect } from '@wordpress/data';
 import { __, _x } from '@wordpress/i18n';
 import {
     BlockControls,
+    InspectorControls,
     BlockContextProvider,
     __experimentalUseBlockPreview as useBlockPreview,
     useBlockProps,
@@ -11,7 +12,7 @@ import {
     InnerBlocks,
     store as blockEditorStore,
 } from '@wordpress/block-editor';
-import { Spinner, ToolbarGroup } from '@wordpress/components';
+import { Spinner, ToolbarGroup, PanelBody, SelectControl, ToggleControl, RangeControl } from '@wordpress/components';
 import { store as coreStore } from '@wordpress/core-data';
 import { list, grid } from '@wordpress/icons';
 
@@ -29,6 +30,17 @@ interface PostLayoutTemplateEditProps {
             type?: string;
             columnCount?: number;
         };
+        contentLayout?: string;
+        className?: string;
+        itemSpacing?: string;
+        showItemBorder?: boolean;
+        itemBorderRadius?: number;
+        itemPadding?: {
+            top?: string;
+            right?: string;
+            bottom?: string;
+            left?: string;
+        };
     };
     setAttributes: (attributes: Record<string, unknown>) => void;
     clientId: string;
@@ -42,11 +54,13 @@ interface PostLayoutTemplateEditProps {
 
 function PostLayoutTemplateInnerBlocks({ classList, allowedBlocks }: { classList?: string; allowedBlocks?: string[] }) {
     const innerBlocksProps = useInnerBlocksProps(
-        { className: clsx('wp-block-post', classList) },
+        { 
+            className: clsx('wp-block-post', classList, 'is-editing'),
+            style: { minHeight: '50px', position: 'relative' }
+        },
         {
             template: TEMPLATE,
             __unstableDisableLayoutClassNames: true,
-            renderAppender: InnerBlocks.ButtonBlockAppender,
             allowedBlocks,
             templateLock: false,
         }
@@ -102,7 +116,15 @@ export default function PostLayoutTemplateEdit({
     setAttributes,
     clientId,
     context,
-    attributes: { layout },
+    attributes: { 
+        layout, 
+        contentLayout = 'default', 
+        className = '',
+        itemSpacing = 'normal',
+        showItemBorder = false,
+        itemBorderRadius = 0,
+        itemPadding = { top: '0', right: '0', bottom: '0', left: '0' },
+    },
     __unstableLayoutClassNames,
 }: PostLayoutTemplateEditProps) {
     const {
@@ -274,24 +296,36 @@ export default function PostLayoutTemplateEdit({
     );
 
     const blockProps = useBlockProps({
-        className: clsx(__unstableLayoutClassNames, {
+        className: clsx(__unstableLayoutClassNames, className, {
             [`columns-${columnCount}`]: layoutType === 'grid' && columnCount,
+            [`content-layout-${contentLayout}`]: contentLayout && contentLayout !== 'default',
+            [`item-spacing-${itemSpacing}`]: itemSpacing && itemSpacing !== 'normal',
+            'has-item-border': showItemBorder,
         }),
-    });
+        style: showItemBorder && itemBorderRadius > 0 ? {
+            '--item-border-radius': `${itemBorderRadius}px`,
+        } : undefined,
+    } as any);
 
     if (!posts) {
         return (
-            <p {...blockProps}>
-                <Spinner />
-            </p>
+            <>
+                {inspectorControls}
+                <p {...blockProps}>
+                    <Spinner />
+                </p>
+            </>
         );
     }
 
     if (!posts.length) {
         return (
-            <p {...blockProps}>
-                {__('No results found.', 'jankx')}
-            </p>
+            <>
+                {inspectorControls}
+                <p {...blockProps}>
+                    {__('No results found.', 'jankx')}
+                </p>
+            </>
         );
     }
 
@@ -319,12 +353,196 @@ export default function PostLayoutTemplateEdit({
         },
     ];
 
+    if (!posts) {
+        return (
+            <>
+                <BlockControls>
+                    <ToolbarGroup controls={displayLayoutControls} />
+                </BlockControls>
+
+                <InspectorControls>
+                    <PanelBody title={__('Template Settings', 'jankx')} initialOpen={true}>
+                        <SelectControl
+                            label={__('Content Layout', 'jankx')}
+                            value={contentLayout}
+                            options={[
+                                { label: __('Default', 'jankx'), value: 'default' },
+                                { label: __('Compact', 'jankx'), value: 'compact' },
+                                { label: __('Full', 'jankx'), value: 'full' },
+                            ]}
+                            onChange={(value) => setAttributes({ contentLayout: value })}
+                            help={__('Control the layout style of the post template', 'jankx')}
+                        />
+                    </PanelBody>
+
+                    <PanelBody title={__('Item Styling', 'jankx')} initialOpen={false}>
+                        <SelectControl
+                            label={__('Item Spacing', 'jankx')}
+                            value={itemSpacing}
+                            options={[
+                                { label: __('None', 'jankx'), value: 'none' },
+                                { label: __('Compact', 'jankx'), value: 'compact' },
+                                { label: __('Normal', 'jankx'), value: 'normal' },
+                                { label: __('Loose', 'jankx'), value: 'loose' },
+                            ]}
+                            onChange={(value) => setAttributes({ itemSpacing: value })}
+                            help={__('Control spacing between post items', 'jankx')}
+                        />
+                        <ToggleControl
+                            label={__('Show Item Border', 'jankx')}
+                            checked={showItemBorder}
+                            onChange={(value) => setAttributes({ showItemBorder: value })}
+                            help={__('Add border around each post item', 'jankx')}
+                        />
+                        {showItemBorder && (
+                            <RangeControl
+                                label={__('Border Radius', 'jankx')}
+                                value={itemBorderRadius}
+                                onChange={(value) => setAttributes({ itemBorderRadius: value || 0 })}
+                                min={0}
+                                max={50}
+                                help={__('Border radius in pixels', 'jankx')}
+                            />
+                        )}
+                    </PanelBody>
+
+                    <PanelBody title={__('Advanced', 'jankx')} initialOpen={false}>
+                        <p style={{ fontSize: '12px', color: '#757575', marginTop: '8px' }}>
+                            {__('Note: Individual inner blocks (Title, Date, Excerpt, etc.) have their own settings that appear when you select them directly.', 'jankx')}
+                        </p>
+                    </PanelBody>
+                </InspectorControls>
+                <p {...blockProps}>
+                    <Spinner />
+                </p>
+            </>
+        );
+    }
+
+    if (!posts.length) {
+        return (
+            <>
+                <BlockControls>
+                    <ToolbarGroup controls={displayLayoutControls} />
+                </BlockControls>
+
+                <InspectorControls>
+                    <PanelBody title={__('Template Settings', 'jankx')} initialOpen={true}>
+                        <SelectControl
+                            label={__('Content Layout', 'jankx')}
+                            value={contentLayout}
+                            options={[
+                                { label: __('Default', 'jankx'), value: 'default' },
+                                { label: __('Compact', 'jankx'), value: 'compact' },
+                                { label: __('Full', 'jankx'), value: 'full' },
+                            ]}
+                            onChange={(value) => setAttributes({ contentLayout: value })}
+                            help={__('Control the layout style of the post template', 'jankx')}
+                        />
+                    </PanelBody>
+
+                    <PanelBody title={__('Item Styling', 'jankx')} initialOpen={false}>
+                        <SelectControl
+                            label={__('Item Spacing', 'jankx')}
+                            value={itemSpacing}
+                            options={[
+                                { label: __('None', 'jankx'), value: 'none' },
+                                { label: __('Compact', 'jankx'), value: 'compact' },
+                                { label: __('Normal', 'jankx'), value: 'normal' },
+                                { label: __('Loose', 'jankx'), value: 'loose' },
+                            ]}
+                            onChange={(value) => setAttributes({ itemSpacing: value })}
+                            help={__('Control spacing between post items', 'jankx')}
+                        />
+                        <ToggleControl
+                            label={__('Show Item Border', 'jankx')}
+                            checked={showItemBorder}
+                            onChange={(value) => setAttributes({ showItemBorder: value })}
+                            help={__('Add border around each post item', 'jankx')}
+                        />
+                        {showItemBorder && (
+                            <RangeControl
+                                label={__('Border Radius', 'jankx')}
+                                value={itemBorderRadius}
+                                onChange={(value) => setAttributes({ itemBorderRadius: value || 0 })}
+                                min={0}
+                                max={50}
+                                help={__('Border radius in pixels', 'jankx')}
+                            />
+                        )}
+                    </PanelBody>
+
+                    <PanelBody title={__('Advanced', 'jankx')} initialOpen={false}>
+                        <p style={{ fontSize: '12px', color: '#757575', marginTop: '8px' }}>
+                            {__('Note: Individual inner blocks (Title, Date, Excerpt, etc.) have their own settings that appear when you select them directly.', 'jankx')}
+                        </p>
+                    </PanelBody>
+                </InspectorControls>
+                <p {...blockProps}>
+                    {__('No results found.', 'jankx')}
+                </p>
+            </>
+        );
+    }
+
     return (
         <>
             <BlockControls>
                 <ToolbarGroup controls={displayLayoutControls} />
             </BlockControls>
 
+            <InspectorControls>
+                <PanelBody title={__('Template Settings', 'jankx')} initialOpen={true}>
+                    <SelectControl
+                        label={__('Content Layout', 'jankx')}
+                        value={contentLayout}
+                        options={[
+                            { label: __('Default', 'jankx'), value: 'default' },
+                            { label: __('Compact', 'jankx'), value: 'compact' },
+                            { label: __('Full', 'jankx'), value: 'full' },
+                        ]}
+                        onChange={(value) => setAttributes({ contentLayout: value })}
+                        help={__('Control the layout style of the post template', 'jankx')}
+                    />
+                </PanelBody>
+
+                <PanelBody title={__('Item Styling', 'jankx')} initialOpen={false}>
+                    <SelectControl
+                        label={__('Item Spacing', 'jankx')}
+                        value={itemSpacing}
+                        options={[
+                            { label: __('None', 'jankx'), value: 'none' },
+                            { label: __('Compact', 'jankx'), value: 'compact' },
+                            { label: __('Normal', 'jankx'), value: 'normal' },
+                            { label: __('Loose', 'jankx'), value: 'loose' },
+                        ]}
+                        onChange={(value) => setAttributes({ itemSpacing: value })}
+                        help={__('Control spacing between post items', 'jankx')}
+                    />
+                    <ToggleControl
+                        label={__('Show Item Border', 'jankx')}
+                        checked={showItemBorder}
+                        onChange={(value) => setAttributes({ showItemBorder: value })}
+                        help={__('Add border around each post item', 'jankx')}
+                    />
+                    {showItemBorder && (
+                        <RangeControl
+                            label={__('Border Radius', 'jankx')}
+                            value={itemBorderRadius}
+                            onChange={(value) => setAttributes({ itemBorderRadius: value || 0 })}
+                            min={0}
+                            max={50}
+                            help={__('Border radius in pixels', 'jankx')}
+                        />
+                    )}
+                </PanelBody>
+
+                <PanelBody title={__('Advanced', 'jankx')} initialOpen={false}>
+                    <p style={{ fontSize: '12px', color: '#757575', marginTop: '8px' }}>
+                        {__('Note: Individual inner blocks (Title, Date, Excerpt, etc.) have their own settings that appear when you select them directly.', 'jankx')}
+                    </p>
+                </PanelBody>
+            </InspectorControls>
             <>
                 {innerBlockCount === 0 && (
                     <div className="jankx-post-layout-template__notice">

@@ -110,4 +110,13 @@ interface PostLayoutInterface
      * @return string
      */
     public function wrapTemplateHtml(string $html, array $options = []): string;
+
+    /**
+     * Get HTML structure definition for editor rendering
+     * Returns array structure that matches TypeScript LayoutStructure interface
+     *
+     * @param array $options Layout options
+     * @return array Structure definition
+     */
+    public function getHtmlStructure(array $options = []): array;
 }

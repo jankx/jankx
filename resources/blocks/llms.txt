@@ -1,0 +1,1128 @@
+# Jankx Gutenberg Blocks - Style Options Specification
+
+## Tổng quan
+Tài liệu này mô tả chi tiết các style options và attributes của các Jankx Gutenberg blocks, cách chúng ảnh hưởng đến styling, và các CSS classes được tạo ra. File này được sử dụng để AI có thể tự động tạo theme và template blocks với styling chính xác.
+
+## Nguyên tắc chung
+
+### 1. Block Supports
+WordPress block supports là các tính năng được WordPress core cung cấp, tự động tạo CSS classes và inline styles:
+
+- **Spacing**: margin, padding, blockGap
+  - Classes: `has-{property}-{value}` (ví dụ: `has-padding-large`)
+  - CSS variables: `--wp--preset--spacing--{size}`
+  
+- **Color**: background, text, link, gradients
+  - Classes: `has-{color-name}-{type}-color` (ví dụ: `has-primary-background-color`)
+  
+- **Typography**: fontSize, lineHeight, textAlign, fontFamily, fontWeight
+  - Classes: `has-{size}-font-size`, `has-text-align-{position}`
+  
+- **Border**: color, radius, style, width
+  - Classes: `has-border-color`, `has-{radius}-border-radius`
+  
+- **Shadow**: box-shadow
+  - Classes: `has-shadow-{value}`
+
+### 2. CSS Classes từ Attributes
+Các blocks tự định nghĩa CSS classes dựa trên attributes, format: `{block-name}--{attribute-value}`
+
+### 3. Data Attributes
+Một số blocks sử dụng data attributes để lưu trữ giá trị cho JavaScript và CSS:
+- Format: `data-{attribute-name}="{value}"`
+- Ví dụ: `data-image-size="fullwidth"`, `data-columns="4"`
+
+---
+
+## Block Specifications
+
+### jankx/post-type-layout
+
+**Mục đích**: Hiển thị danh sách posts theo layout tùy chỉnh với query options đầy đủ.
+
+#### Attributes ảnh hưởng đến Styles:
+
+1. **layout** (string, default: "grid")
+   - Values: `"grid"`, `"list"`, `"carousel"`, `"masonry"`
+   - CSS Classes:
+     - `layout-grid`: Grid layout với columns
+     - `layout-list`: List layout với items dọc
+     - `layout-carousel`: Carousel/slider layout
+     - `layout-masonry`: Masonry layout
+   - CSS Variables:
+     - `--columns-desktop`: Số cột desktop
+     - `--columns-tablet`: Số cột tablet
+     - `--columns-mobile`: Số cột mobile
+
+2. **columns** (number, default: 3)
+   - CSS Classes: `columns-{value}` (ví dụ: `columns-4`)
+   - CSS Variables:
+     - `--columns-desktop: {value}`
+     - `grid-template-columns: repeat({value}, 1fr)`
+   - Data Attribute: `data-columns="{value}"`
+
+3. **columnsTablet** (number, default: 2)
+   - CSS Classes: `columns-tablet-{value}`
+   - CSS Variables: `--columns-tablet: {value}`
+   - Data Attribute: `data-columns-tablet="{value}"`
+
+4. **columnsMobile** (number, default: 1)
+   - CSS Classes: `columns-mobile-{value}`
+   - CSS Variables: `--columns-mobile: {value}`
+   - Data Attribute: `data-columns-mobile="{value}"`
+
+5. **thumbnailPosition** (string, default: "top")
+   - Values: `"top"`, `"bottom"`, `"left"`, `"right"`
+   - CSS Classes: `thumbnail-position-{value}`
+   - Ảnh hưởng đến flex direction và image order
+
+6. **imageRatio** (string, default: "")
+   - Values: `"1/1"`, `"16/9"`, `"4/3"`, `"3/2"`, custom ratios
+   - CSS Classes: `image-ratio-{value}` (ví dụ: `image-ratio-1-1`)
+   - CSS: `aspect-ratio: {value}`
+
+7. **postType** (string, default: "post")
+   - CSS Classes: `post-type-{value}` (ví dụ: `post-type-store`)
+   - Đặc biệt: Nếu `postType === "product"` → thêm class `wc-block-product-template`
+
+8. **layout** cho carousel:
+   - CSS Classes: `post-type-layout-carousel`
+   - Data Attributes:
+     - `data-embla-carousel=""`
+     - `data-slides-per-view="{columns}"`
+     - `data-slides-to-scroll="{slidesToScroll}"`
+     - `data-loop="{loop}"`
+     - `data-autoplay="{autoplay}"`
+     - `data-autoplay-delay="{autoplayDelay}"`
+
+#### Block Supports:
+- **align**: `["wide", "full"]`
+- **spacing**: margin, padding, blockGap
+- **color**: background, text, link, gradients
+- **background**: backgroundImage, backgroundSize
+- **typography**: fontSize, lineHeight
+- **border**: color, radius, style, width
+
+#### Responsive Behavior:
+- Desktop: sử dụng `columns` attribute
+- Tablet: sử dụng `columnsTablet` attribute
+- Mobile: sử dụng `columnsMobile` attribute
+- CSS sử dụng media queries:
+  ```scss
+  @media (max-width: 768px) { /* tablet */ }
+  @media (max-width: 480px) { /* mobile */ }
+  ```
+
+---
+
+### jankx/swiper-banner
+
+**Mục đích**: Banner slide cho Swiper với styles và links tùy chỉnh.
+
+#### Attributes ảnh hưởng đến Styles:
+
+1. **bannerStyle** (string, default: "banner")
+   - Values: `"banner"`, `"circles"`, `"square"`
+   - CSS Classes: `swiper-banner--{value}`
+   - Styles:
+     - `banner`: Default banner style
+     - `circles`: `border-radius: 50%`, `aspect-ratio: 1`
+     - `square`: `aspect-ratio: 1`
+
+2. **imageSize** (string, default: "cover")
+   - Values: `"cover"`, `"contain"`, `"fullwidth"`
+   - CSS Classes:
+     - Wrapper: `image-size-{value}`
+     - Image: `.swiper-banner__image.image-size-{value}`
+   - CSS:
+     - `cover`: `background-size: cover`
+     - `contain`: `background-size: contain`
+     - `fullwidth`: `background-size: 100% 100%`
+   - Data Attribute: `data-image-size="{value}"`
+
+3. **textAlign** (string, default: "center")
+   - Values: `"left"`, `"center"`, `"right"`
+   - CSS Classes: `text-{value}`
+
+4. **textPosition** (string, default: "middle")
+   - Values: `"top"`, `"middle"`, `"bottom"`
+   - CSS Classes: `text-position-{value}`
+   - CSS:
+     - `top`: `align-items: flex-start`, `padding-top: 1rem`
+     - `middle`: `align-items: center`
+     - `bottom`: `align-items: flex-end`, `padding-bottom: 1rem`
+
+5. **overlayOpacity** (number, default: 0.3)
+   - CSS Variable: `--overlay-opacity: {value}`
+   - Applied to: `.swiper-banner__overlay`
+
+6. **overlayColor** (string, default: "#000000")
+   - CSS Variable: `--overlay-color: {value}`
+   - Applied to: `.swiper-banner__overlay`
+
+7. **height** (number, default: 0)
+   - CSS Variable: `--banner-height: {value}px`
+   - Chỉ áp dụng khi `bannerStyle === "circles"`
+
+8. **showCaption** (boolean, default: true)
+   - Conditional rendering, không tạo CSS class
+
+#### Block Supports:
+- **spacing**: margin, padding
+- **color**: background, text
+- **border**: color, radius, style, width
+
+#### CSS Structure:
+```html
+<div class="swiper-slide swiper-banner swiper-banner--{bannerStyle} text-{textAlign} text-position-{textPosition} image-size-{imageSize}">
+  <div class="swiper-banner__image" style="background-image: url(...); --overlay-color: ...; --overlay-opacity: ...;">
+    <div class="swiper-banner__overlay"></div>
+    <div class="swiper-banner__caption">
+      <div class="swiper-banner__caption-content">{caption}</div>
+    </div>
+  </div>
+</div>
+```
+
+---
+
+### jankx/swiper-slide
+
+**Mục đích**: Slide đơn lẻ cho Swiper slider, hỗ trợ inner blocks.
+
+#### Attributes ảnh hưởng đến Styles:
+
+1. **imageSize** (string, default: "cover")
+   - Values: `"cover"`, `"contain"`, `"fullwidth"`
+   - CSS Classes: `image-size-{value}`
+   - CSS (cho background images):
+     - `cover`: `background-size: cover !important`
+     - `contain`: `background-size: contain !important`
+     - `fullwidth`: `background-size: 100% 100% !important`, `background-position: center !important`
+   - Data Attribute: `data-image-size="{value}"`
+
+2. **slideId** (string)
+   - Data Attribute: `data-slide-id="{value}"`
+   - Không tạo CSS class
+
+#### Block Supports:
+- **spacing**: padding (margin disabled)
+- **color**: background, text, gradients
+- **background**: backgroundImage, backgroundSize, backgroundPosition, backgroundRepeat
+- **dimensions**: minHeight
+
+#### CSS Structure:
+```html
+<div class="swiper-slide image-size-{imageSize}" data-slide-id="{slideId}" data-image-size="{imageSize}">
+  <!-- Inner blocks content -->
+</div>
+```
+
+---
+
+### jankx/advanced-button
+
+**Mục đích**: Advanced button block với enhanced features.
+
+#### Attributes ảnh hưởng đến Styles:
+
+1. **triggerType** (string, default: "link")
+   - Values: `"link"`, `"button"`, `"detail-link"`, `"modal"`
+   - Data Attribute: `data-trigger-type="{value}"`
+   - CSS Classes: Không tự động tạo, nhưng có thể dùng trong CSS
+
+2. **iconPosition** (string, default: "left")
+   - Values: `"left"`, `"right"`, `"top"`, `"bottom"`
+   - CSS Classes: `icon-position-{value}`
+
+3. **showLabel** (boolean, default: true)
+   - Conditional rendering, không tạo CSS class
+
+4. **useIconBlocks** (boolean, default: false)
+   - Conditional rendering, không tạo CSS class
+
+#### Block Supports:
+- **typography**: fontSize, lineHeight, textAlign, fontFamily, fontWeight, fontStyle, textTransform, textDecoration, letterSpacing
+- **color**: background, text, gradients (skipSerialization: true)
+- **spacing**: padding (horizontal, vertical), margin
+- **border**: color, radius, style, width
+- **shadow**: box-shadow
+- **dimensions**: minHeight
+- **layout**: flex (justifyContent: center)
+
+#### Block Styles:
+- `fill` (default): Filled button style
+- `outline`: Outline button style
+
+#### CSS Structure:
+```html
+<div class="wp-block-jankx-advanced-button">
+  <a class="jankx-advanced-button__link icon-position-{iconPosition} has-{color}-background-color" 
+     data-trigger-type="{triggerType}" 
+     data-modal-id="{modalId}">
+    <span class="button-icon-wrapper">
+      <!-- Icon blocks -->
+    </span>
+    <span class="button-text">{text}</span>
+  </a>
+</div>
+```
+
+---
+
+### jankx/advanced-image-box
+
+**Mục đích**: Advanced image block với overlay info box và inner blocks support.
+
+#### Attributes ảnh hưởng đến Styles:
+
+1. **overlayPosition** (string, default: "center")
+   - Values: `"center"`, `"top"`, `"bottom"`, `"left"`, `"right"`, `"top-left"`, `"top-right"`, `"bottom-left"`, `"bottom-right"`
+   - CSS Classes: `wp-block-jankx-advanced-image-box__overlay--{value}`
+
+2. **overlayAnimation** (string, default: "fadeIn")
+   - Values: `"fadeIn"`, `"slideUp"`, `"slideDown"`, `"zoomIn"`, etc.
+   - CSS Classes: `animated {value}`
+
+3. **imageHoverEffect** (string, default: "zoom")
+   - Values: `"zoom"`, `"fade"`, `"scale"`, `"none"`
+   - CSS Classes: `has-hover-{value}` (ví dụ: `has-hover-zoom`)
+
+4. **showOverlayOnHover** (boolean, default: true)
+   - CSS Classes: `has-overlay` (khi true)
+
+5. **borderRadius** (string, default: "0px")
+   - Inline style: `border-radius: {value}`
+   - Applied to: `img` element
+
+6. **overlayBackground** (string, default: "rgba(0, 0, 0, 0.7)")
+   - Inline style: `background-color: {value}`
+
+7. **overlayOpacity** (number, default: 1)
+   - Inline style: `opacity: {value}`
+
+#### Block Supports:
+- **align**: `["left", "center", "right", "wide", "full"]`
+- **spacing**: margin, padding
+- **border**: color, radius, style, width (applied to `img` and overlay)
+- **shadow**: box-shadow (applied to `img` and overlay)
+- **filter**: duotone (applied to `img`)
+- **innerBlocks**: true
+
+#### Block Styles:
+- `default` (default): Default image box style
+- `card`: Card style with shadow
+- `overlay`: Overlay style
+- `modern`: Modern style
+
+#### CSS Structure:
+```html
+<figure class="wp-block-jankx-advanced-image-box has-overlay has-hover-effect has-hover-{imageHoverEffect}">
+  <img src="..." alt="..." class="wp-block-jankx-advanced-image-box__image has-hover-zoom" 
+       style="border-radius: {borderRadius}"/>
+  <div class="wp-block-jankx-advanced-image-box__overlay 
+              wp-block-jankx-advanced-image-box__overlay--{overlayPosition} 
+              animated {overlayAnimation}"
+       style="background-color: {overlayBackground}; opacity: {overlayOpacity}">
+    <div class="wp-block-jankx-advanced-image-box__overlay__content">
+      <!-- Inner blocks content -->
+    </div>
+  </div>
+  <figcaption class="wp-block-jankx-advanced-image-box__caption">{caption}</figcaption>
+</figure>
+```
+
+---
+
+### jankx/smart-tabs
+
+**Mục đích**: Tạo interactive tabs với layouts và styles tùy chỉnh.
+
+#### Attributes ảnh hưởng đến Styles:
+
+1. **tabType** (string, default: "horizontal")
+   - Values: `"horizontal"`, `"vertical"`
+   - CSS Classes: `smart-tabs--{value}`
+
+2. **styleType** (string, default: "default")
+   - Values: `"default"`, `"minimal"`, `"modern"`, `"boxed"`, `"bordered"`
+   - CSS Classes: `smart-tabs--{value}`
+
+3. **tabAlignment** (string, default: "left")
+   - Values: `"left"`, `"center"`, `"right"`, `"justify"`
+   - CSS Classes: `tabs-align-{value}`
+
+4. **centerNavigation** (boolean, default: false)
+   - CSS Classes: `tabs-center-navigation` (khi true)
+
+5. **hideTabsBorderBottom** (boolean, default: false)
+   - CSS Classes: `tabs-no-border-bottom` (khi true)
+
+6. **tabItemTextColor** (string)
+   - Inline style: `color: {value}` (applied to tab items)
+
+7. **tabItemBackgroundColor** (string)
+   - Inline style: `background-color: {value}` (applied to tab items)
+
+8. **tabItemGradient** (string)
+   - Inline style: `background: {value}` (applied to tab items)
+
+9. **activeTabTextColor** (string)
+   - Inline style: `color: {value}` (applied to active tab)
+
+10. **activeTabBackgroundColor** (string)
+    - Inline style: `background-color: {value}` (applied to active tab)
+
+11. **activeTabGradient** (string)
+    - Inline style: `background: {value}` (applied to active tab)
+
+12. **label** (string, default: "")
+    - Text content for the label displayed before tabs
+    - CSS Classes: Không tạo class, chỉ render khi `showLabel === true`
+
+13. **showLabel** (boolean, default: false)
+    - Controls visibility of the label
+    - CSS Classes: Không tạo class, chỉ conditional rendering
+    - Khi `true` và `label` có giá trị → hiển thị label với style:
+      - Background: `#000000` (black)
+      - Text color: `#ffffff` (white)
+      - Font size: `0.875rem` (14px)
+      - Font weight: `700` (bold)
+      - Padding: `0.625rem 1.25rem` (10px 20px)
+
+#### Block Supports:
+- **align**: `["wide", "full"]`
+- **spacing**: margin, padding
+- **color**: background, text
+
+#### CSS Structure:
+```html
+<div class="wp-block-jankx-smart-tabs 
+            smart-tabs--{tabType} 
+            smart-tabs--{styleType} 
+            tabs-align-{tabAlignment}
+            tabs-center-navigation
+            tabs-no-border-bottom">
+  <div class="smart-tabs__navigation">
+    {showLabel && label && (
+      <div class="smart-tabs__label">{label}</div>
+    )}
+    <div class="smart-tabs__nav-list align-{tabAlignment}">
+      <button class="smart-tabs__nav-item" 
+              style="color: {tabItemTextColor}; background-color: {tabItemBackgroundColor};">
+        {title}
+      </button>
+      <button class="smart-tabs__nav-item is-active"
+              style="color: {activeTabTextColor}; background-color: {activeTabBackgroundColor};">
+        {title}
+      </button>
+    </div>
+  </div>
+  <div class="smart-tabs__content">
+    <!-- Tab content (inner blocks) -->
+  </div>
+</div>
+```
+
+#### Label Styling:
+- **Container**: `.smart-tabs__label`
+- **Layout**: Flex container với `display: flex`, `align-items: center`
+- **Label styles**:
+  - Background: `#000000` (black)
+  - Color: `#ffffff` (white)
+  - Font size: `0.875rem` (14px)
+  - Font weight: `700` (bold)
+  - Padding: `0.625rem 1.25rem` (10px 20px)
+  - `white-space: nowrap` để text không wrap
+  - `flex-shrink: 0` để không bị shrink
+- **Position**: Nằm bên trái của `.smart-tabs__nav-list`
+
+---
+
+### jankx/advanced-filters
+
+**Mục đích**: Container block để quản lý nhiều filters, cho phép filter posts trong Dynamic Data Layout blocks qua AJAX.
+
+#### Kiến trúc Block:
+- **Parent Block**: `jankx/advanced-filters` - Container chứa nhiều filter blocks
+- **Child Blocks**: `jankx/advanced-filter` - Mỗi filter đơn lẻ được tạo như một inner block
+- **Relationship**: Parent block tự động đồng bộ attributes từ child blocks để render
+
+#### Attributes ảnh hưởng đến Styles:
+
+1. **targetBlockIds** (array, default: [])
+   - Array các block IDs của Dynamic Data Layout blocks cần filter
+   - Data Attribute: `data-target-block-ids="{JSON.stringify(value)}"`
+   - Không tạo CSS class trực tiếp
+
+2. **layout** (string, default: "horizontal")
+   - Values: `"horizontal"`, `"vertical"`, `"dropdown"`, `"accordion"`
+   - CSS Classes: `layout-{value}` (ví dụ: `layout-horizontal`)
+   - Áp dụng cho container wrapper
+
+3. **ajaxEnabled** (boolean, default: true)
+   - Data Attribute: `data-ajax-enabled="{value}"`
+   - Không tạo CSS class, chỉ ảnh hưởng đến JavaScript behavior
+
+4. **updateUrl** (boolean, default: true)
+   - Chỉ ảnh hưởng đến JavaScript behavior
+   - Không tạo CSS class
+
+5. **scrollToResults** (boolean, default: false)
+   - Chỉ ảnh hưởng đến JavaScript behavior
+   - Không tạo CSS class
+
+6. **showResetButton** (boolean, default: true)
+   - Conditional rendering cho reset button
+   - CSS Classes: `.filter-reset-button` (khi true)
+
+#### Block Supports:
+- **align**: `["wide", "full"]`
+- **spacing**: margin, padding, blockGap
+- **color**: background, text, link, gradients
+- **background**: backgroundImage, backgroundSize
+- **typography**: fontSize, lineHeight
+- **border**: color, radius, style, width
+
+#### Context API:
+Block này cung cấp context cho child blocks (`jankx/advanced-filter`):
+- `jankx/advanced-filters/targetPostType`: Post type từ target block
+- `jankx/advanced-filters/layout`: Layout setting
+- `jankx/advanced-filters/displayStyle`: Display style default
+- `jankx/advanced-filters/showLabels`: Show labels setting
+- `jankx/advanced-filters/showCount`: Show count setting
+- `jankx/advanced-filters/showEmptyTerms`: Show empty terms setting
+- `jankx/advanced-filters/showOnlyTopLevel`: Show only top level setting
+- `jankx/advanced-filters/showHierarchy`: Show hierarchy setting
+- `jankx/advanced-filters/multipleSelection`: Multiple selection setting
+- `jankx/advanced-filters/collapsible`: Collapsible setting
+- `jankx/advanced-filters/defaultExpanded`: Default expanded setting
+
+#### Inner Blocks:
+- **Allowed Blocks**: `["jankx/advanced-filter"]`
+- **Appender**: `InnerBlocks.ButtonBlockAppender` - Cho phép thêm filter mới
+- **Save**: `InnerBlocks.Content` - Lưu tất cả child blocks
+
+#### CSS Structure:
+```html
+<div class="wp-block-jankx-advanced-filters layout-{layout}"
+     id="jankx-advanced-filters-{filterId}"
+     data-filter-block-id="{blockId}"
+     data-target-block-ids="{JSON.stringify(targetBlockIds)}">
+  <div class="advanced-filters-config" 
+       data-config="{JSON.stringify(config)}"
+       data-nonce="{nonce}"
+       data-ajax-url="{ajaxUrl}"
+       style="display: none;"></div>
+  <div class="advanced-filters-container">
+    <!-- Rendered filters from child blocks -->
+  </div>
+  {showResetButton && (
+    <button type="button" class="filter-reset-button">
+      {resetButtonText}
+    </button>
+  )}
+</div>
+```
+
+#### Data Flow:
+1. User thêm filter → `handleAddFilterBlock()` tạo `jankx/advanced-filter` block
+2. Child blocks cập nhật attributes → Parent block tự động đồng bộ qua `useEffect`
+3. Parent block render → PHP `AdvancedFiltersRenderer` nhận attributes và render filters
+4. Frontend JavaScript → Xử lý filter interactions và AJAX updates
+
+---
+
+### jankx/advanced-filter
+
+**Mục đích**: Block đơn lẻ đại diện cho một filter, được sử dụng như inner block của `jankx/advanced-filters`.
+
+#### Attributes ảnh hưởng đến Styles:
+
+1. **filterType** (string, default: "taxonomy")
+   - Values: `"taxonomy"`, `"meta"`, `"price"`, `"date"`, `"author"`, `"keyword"`
+   - CSS Classes: `filter-type-{value}` (ví dụ: `filter-type-taxonomy`)
+   - Data Attribute: `data-filter-type="{value}"`
+
+2. **layout** (string, default: "horizontal")
+   - Values: `"horizontal"`, `"vertical"`, `"dropdown"`, `"accordion"`
+   - CSS Classes: `filter-layout-{value}`
+   - Fallback: Lấy từ parent block context nếu không set
+
+3. **displayStyle** (string, default: "buttons")
+   - Values: `"buttons"`, `"checkboxes"`, `"dropdown"`, `"select"`
+   - CSS Classes: `filter-display-{value}`
+   - Fallback: Lấy từ parent block context nếu không set
+
+4. **showLabels** (boolean, default: true)
+   - Conditional rendering cho labels
+   - Fallback: Lấy từ parent block context nếu không set
+
+5. **collapsible** (boolean, default: false)
+   - CSS Classes: `filter-collapsible` (khi true)
+   - Fallback: Lấy từ parent block context nếu không set
+
+6. **defaultExpanded** (boolean, default: true)
+   - CSS Classes: `filter-expanded` (khi true)
+   - Chỉ áp dụng khi `collapsible === true`
+   - Fallback: Lấy từ parent block context nếu không set
+
+7. **multipleSelection** (boolean, default: true)
+   - Data Attribute: `data-multiple-selection="{value}"`
+   - Ảnh hưởng đến JavaScript behavior
+   - Fallback: Lấy từ parent block context nếu không set
+
+#### Filter Type Specific Attributes:
+
+**Taxonomy Filter:**
+- **taxonomy** (string): Taxonomy slug (ví dụ: `"category"`, `"post_tag"`)
+- **showCount** (boolean): Hiển thị số lượng posts
+- **showEmptyTerms** (boolean): Hiển thị terms không có posts
+- **showOnlyTopLevel** (boolean): Chỉ hiển thị top level terms
+- **showHierarchy** (boolean): Hiển thị hierarchical structure
+- **listingType** (string): `"ul"`, `"ol"`, `"none"` - Cho checkboxes style
+
+**Meta Filter:**
+- **metaKey** (string): Meta key name
+- **inputType** (string): `"text"`, `"number"`, `"range"`, `"date"`, `"date-range"`
+- **minValue** (string): Min value cho range
+- **maxValue** (string): Max value cho range
+- **placeholder** (string): Placeholder text
+
+**Price Filter:**
+- **minPrice** (string): Giá tối thiểu
+- **maxPrice** (string): Giá tối đa
+- **currency** (string, default: "VND"): Currency symbol
+
+**Date Filter:**
+- **dateField** (string, default: "post_date"): `"post_date"` hoặc `"post_modified"`
+- **dateRange** (boolean, default: true): Cho phép chọn date range
+
+**Author Filter:**
+- Sử dụng `displayStyle` và `multipleSelection`
+
+**Keyword Filter:**
+- **placeholder** (string, default: "Search..."): Placeholder text
+- **showSearchButton** (boolean, default: false): Hiển thị search button
+
+#### Block Supports:
+- **html**: false (không cho phép HTML editing)
+- **reusable**: false (không thể tái sử dụng độc lập)
+
+#### Context API:
+Block này sử dụng context từ parent block (`jankx/advanced-filters`):
+- Tự động fallback các settings từ parent nếu không được set cụ thể
+- Sử dụng `useSelect` để lấy parent attributes
+
+#### CSS Structure:
+```html
+<div class="wp-block-jankx-advanced-filter 
+            jankx-advanced-filter
+            filter-type-{filterType}
+            filter-layout-{layout}
+            filter-display-{displayStyle}
+            filter-collapsible
+            filter-expanded"
+     data-filter-type="{filterType}"
+     data-multiple-selection="{multipleSelection}">
+  <!-- Filter content rendered by PHP AdvancedFiltersRenderer -->
+</div>
+```
+
+#### Parent-Child Relationship:
+- Block này **PHẢI** được sử dụng bên trong `jankx/advanced-filters`
+- Attributes được đồng bộ lên parent block để PHP renderer có thể xử lý
+- Parent block tự động nhóm filters theo `filterType` vào các arrays tương ứng:
+  - `taxonomyFilters[]`
+  - `metaFilters[]`
+  - `priceFilters[]`
+  - `dateFilters[]`
+  - `authorFilters[]`
+  - `keywordFilter` (object, không phải array)
+
+---
+
+### jankx/dynamic-data-template
+
+**Mục đích**: Template block để định nghĩa cách hiển thị từng item trong loop của `jankx/dynamic-data-layout` block.
+
+#### Content Loop Layouts:
+
+**Content Loop Layout** là hệ thống cho phép tùy chỉnh cách hiển thị từng item trong loop. Layouts được đăng ký qua PHP và chỉ thêm CSS classes vào loop items.
+
+#### Attributes ảnh hưởng đến Styles:
+
+1. **contentLoopLayout** (string, default: "default")
+   - Layout name được chọn từ dropdown trong editor
+   - CSS Classes: `content-loop-layout--{value}` được thêm vào mỗi loop item
+   - Ví dụ: `content-loop-layout--promotional-banner`
+   - Location: Class được thêm trong `PostTemplateRendererTrait::buildItemClasses()`
+
+2. **thumbnailPosition** (string, default: "top")
+   - Values: `"top"`, `"bottom"`, `"left"`, `"right"`
+   - CSS Classes: `thumbnail-position-{value}`
+
+3. **imageRatio** (string, default: "")
+   - Values: `"1/1"`, `"16/9"`, `"4/3"`, `"3/2"`, custom ratios
+   - CSS Classes: `image-ratio-{value}` (ví dụ: `image-ratio-1-1`)
+   - CSS: `aspect-ratio: {value}`
+
+4. **itemSpacing** (string, default: "normal")
+   - Values: `"none"`, `"compact"`, `"normal"`, `"loose"`
+   - CSS Classes: `item-spacing-{value}`
+
+5. **showItemBorder** (boolean, default: false)
+   - CSS Classes: `has-item-border` (khi true)
+
+6. **itemBorderRadius** (number, default: 0)
+   - Inline style: `border-radius: {value}px`
+
+7. **itemPadding** (object, default: {top: 0, right: 0, bottom: 0, left: 0})
+   - Inline styles: `padding: {top}px {right}px {bottom}px {left}px`
+
+#### Block Supports:
+- **align**: `["wide", "full"]`
+- **spacing**: margin, padding, blockGap
+- **color**: background, text, link, gradients
+- **typography**: fontSize, lineHeight, fontFamily, fontWeight, fontStyle, textTransform, textDecoration, letterSpacing
+- **border**: color, radius, style, width
+
+#### Inner Blocks:
+- Block này hỗ trợ inner blocks để tùy chỉnh nội dung của từng item
+- Default blocks được cung cấp dựa trên post type
+- Inner blocks được render cho mỗi post trong loop
+
+#### CSS Structure:
+```html
+<!-- Loop item với content loop layout class -->
+<li class="wp-block-post post post-{id} content-loop-layout--{contentLoopLayout} thumbnail-position-{thumbnailPosition} image-ratio-{imageRatio} item-spacing-{itemSpacing}">
+    <!-- Inner blocks content -->
+</li>
+```
+
+#### Đăng ký Content Loop Layout:
+
+**Bước 1**: Tạo Layout Class
+
+```php
+// src/Layouts/PromotionalBannerLayout.php
+namespace Puleeno\Vietkara\Layouts;
+
+class PromotionalBannerLayout
+{
+    public function getTitle(): string
+    {
+        return __('Promotional Banner', 'vietkara');
+    }
+
+    public function getSupportedOptions(): array
+    {
+        return [
+            'showFeaturedImage',
+            'showTitle',
+            'thumbnailPosition',
+            'imageRatio',
+        ];
+    }
+}
+```
+
+**Bước 2**: Đăng ký Layout
+
+```php
+// Trong Service Provider
+add_action('jankx/dynamic-data-template/register-content-loop-layouts', function ($manager) {
+    $manager->registerLayout(
+        'promotional-banner',
+        \Puleeno\Vietkara\Layouts\PromotionalBannerLayout::class,
+        'common' // Available for all post types
+    );
+});
+```
+
+**Bước 3**: Style với CSS
+
+```css
+/* Style cho promotional banner layout */
+.content-loop-layout--promotional-banner {
+    position: relative;
+    overflow: hidden;
+}
+
+.content-loop-layout--promotional-banner .wp-block-post-featured-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.content-loop-layout--promotional-banner .wp-block-post-title {
+    position: relative;
+    z-index: 2;
+    color: #ffffff;
+}
+```
+
+**Quan trọng**:
+- Layout chỉ thêm CSS classes, không can thiệp vào nội dung
+- Nội dung được handle hoàn toàn qua editor (inner blocks)
+- Class `content-loop-layout--{layoutName}` được tự động thêm vào mỗi loop item
+- Layouts có thể được đăng ký cho specific post types hoặc 'common' (all post types)
+
+---
+
+## Patterns & Conventions
+
+### 1. CSS Class Naming
+- **Block prefix**: `wp-block-jankx-{block-name}`
+- **BEM methodology**: `{block}__{element}--{modifier}`
+- **Attribute classes**: `{attribute-name}-{value}` (ví dụ: `image-size-fullwidth`)
+- **State classes**: `is-{state}` (ví dụ: `is-active`, `is-loading`)
+
+### 2. CSS Variables
+- **Custom properties**: `--{property-name}: {value}`
+- **WordPress presets**: `--wp--preset--{type}--{name}` (ví dụ: `--wp--preset--spacing--large`)
+- **Block-specific**: `--{block-name}--{property}` (ví dụ: `--swiper-banner--height`)
+
+### 3. Data Attributes
+- Format: `data-{attribute-name}="{value}"`
+- Sử dụng cho JavaScript và CSS selectors
+- Ví dụ: `data-image-size="fullwidth"`, `data-columns="4"`
+
+### 4. Responsive Breakpoints
+- **Desktop**: Default (no media query)
+- **Tablet**: `@media (max-width: 768px)`
+- **Mobile**: `@media (max-width: 480px)`
+
+### 5. Conditional Classes
+- Classes chỉ được thêm khi attribute có giá trị truthy
+- Format: `{condition} && '{class-name}'`
+- Ví dụ: `columns ? `columns-${columns}` : ''`
+
+### 6. Inline Styles
+- Sử dụng cho dynamic values (colors, sizes từ attributes)
+- Format: `style={{ property: value }}`
+- CSS Variables thường được dùng thay vì inline styles khi có thể
+
+---
+
+## Implementation Guidelines
+
+### Khi tạo template blocks:
+
+1. **Luôn sử dụng đúng attribute names** như đã định nghĩa trong block.json
+2. **Áp dụng CSS classes** theo pattern đã mô tả
+3. **Sử dụng data attributes** cho JavaScript functionality
+4. **Respect block supports** - WordPress sẽ tự động thêm classes
+5. **Responsive design** - luôn có mobile và tablet variants
+6. **Editor = Frontend** - editor preview phải match frontend output
+
+### Ví dụ template block:
+
+```html
+<!-- wp:jankx/post-type-layout {
+  "layout": "grid",
+  "columns": 4,
+  "columnsTablet": 2,
+  "columnsMobile": 1,
+  "postType": "store",
+  "imageRatio": "1/1",
+  "thumbnailPosition": "top"
+} -->
+<div class="wp-block-jankx-post-type-layout 
+            layout-grid 
+            columns-4 
+            columns-tablet-2 
+            columns-mobile-1 
+            post-type-store 
+            image-ratio-1-1 
+            thumbnail-position-top"
+     data-columns="4"
+     data-columns-tablet="2"
+     data-columns-mobile="1">
+  <!-- Inner blocks -->
+</div>
+<!-- /wp:jankx/post-type-layout -->
+```
+
+---
+
+## Notes quan trọng
+
+1. **Frontend và Editor phải tương đồng**: Không có editor-specific styling, chỉ preview giống frontend
+2. **Dynamic blocks**: Sử dụng PHP render_callback cho frontend, JavaScript chỉ cho editor
+3. **InnerBlocks**: Một số blocks hỗ trợ inner blocks để tùy chỉnh content structure
+4. **Context API**: Một số blocks sử dụng providesContext và usesContext để share data
+5. **Migration**: Luôn có migration path cho old blocks khi thay đổi structure
+
+---
+
+## PHP-Driven Block Customization Pattern
+
+### ⚠️ NGUYÊN TẮC CỐT LÕI ⚠️
+
+**"Tất cả tính năng customize phải được thực hiện ở level PHP qua interfaces và abstract classes theo design pattern. Code JavaScript của block CHỈ dùng để hiển thị các tính năng được PHP hỗ trợ."**
+
+### Tại Sao?
+
+❌ **KHÔNG BAO GIỜ** hard-code options, features, business logic trong JavaScript vì:
+- Khó customize cho developers (phải rebuild JS)
+- Không extensible (không thể override bằng hooks/filters)
+- Khó maintain (logic scattered giữa PHP và JS)
+- Performance kém (large JS bundles)
+
+✅ **LUÔN LUÔN** define features trong PHP vì:
+- Developers có thể customize bằng PHP hooks/filters (WordPress standard)
+- Extensible qua interfaces và abstract classes
+- Maintainable (centralized logic)
+- Performance tốt (server-side processing)
+
+### Architecture
+
+```
+PHP (Controller) ────wp_localize_script()───→ JavaScript (View)
+   │                                              │
+   ├─ Interfaces                                 ├─ Read PHP data
+   ├─ Abstract Classes                           ├─ Render UI
+   ├─ Business Logic                             ├─ Handle user input
+   ├─ Features & Options                         └─ NO business logic!
+   ├─ Hooks & Filters
+   └─ Data Processing
+```
+
+### Quick Example
+
+**❌ BAD: Hard-coded trong JavaScript**
+
+```typescript
+// BAD - Don't do this!
+const layoutOptions = [
+    { label: 'Grid', value: 'grid' },
+    { label: 'List', value: 'list' },
+]; // Hard-coded! Developer không thể add layout mới!
+
+<SelectControl options={layoutOptions} />
+```
+
+**✅ GOOD: Dynamic từ PHP**
+
+```php
+// PHP: Define layouts
+class PostLayoutManager {
+    public function getLayouts(): array {
+        $layouts = [
+            ['name' => 'grid', 'title' => 'Grid'],
+            ['name' => 'list', 'title' => 'List'],
+        ];
+        
+        // Allow developers to add more
+        return apply_filters('jankx/post-layout/layouts', $layouts);
+    }
+}
+
+// Pass to JS
+wp_localize_script('my-block-editor', 'myBlockConfig', [
+    'layouts' => $layoutManager->getLayouts(),
+]);
+```
+
+```typescript
+// JavaScript: Read from PHP
+const supportedLayouts = (window as any).myBlockConfig?.layouts || [];
+
+<SelectControl
+    options={supportedLayouts.map((l: any) => ({
+        label: l.title,
+        value: l.name,
+    }))}
+/>
+```
+
+### Development Rules
+
+#### ✅ DO (Làm)
+
+1. **Define features trong PHP classes**
+   ```php
+   abstract class AbstractBlockLayout {
+       abstract public function getSupportedOptions(): array;
+       abstract public function getHtmlStructure(): array;
+   }
+   ```
+
+2. **Pass configuration to JavaScript**
+   ```php
+   wp_localize_script('block-editor', 'blockConfig', [
+       'options' => $this->getOptions(),
+       'features' => $this->getFeatures(),
+   ]);
+   ```
+
+3. **JavaScript chỉ render UI**
+   ```typescript
+   const config = (window as any).blockConfig;
+   // Just render, no logic!
+   ```
+
+4. **Provide hooks cho developers**
+   ```php
+   do_action('jankx/block/register-features', $this);
+   $options = apply_filters('jankx/block/options', $options);
+   ```
+
+5. **Dynamic options based on PHP**
+   ```typescript
+   const supportedOptions = currentLayout?.supportedOptions || [];
+   {supportedOptions.includes('columns') && (
+       <RangeControl label="Columns" />
+   )}
+   ```
+
+#### ❌ DON'T (Không Làm)
+
+1. **Hard-code options trong JS**
+   ```typescript
+   // ❌ BAD
+   const options = ['grid', 'list', 'carousel'];
+   ```
+
+2. **Business logic trong JS**
+   ```typescript
+   // ❌ BAD
+   function calculatePrice(product) {
+       return product.price * (1 + tax);
+   }
+   ```
+
+3. **Conditional features trong JS**
+   ```typescript
+   // ❌ BAD
+   {postType === 'product' && <PriceControl />}
+   // Should check supportedOptions from PHP!
+   ```
+
+4. **Fixed feature sets**
+   ```typescript
+   // ❌ BAD
+   const features = {
+       showTitle: true,
+       showExcerpt: true,
+   };
+   // Should come from PHP configuration!
+   ```
+
+### Checklist
+
+Trước khi commit block code, kiểm tra:
+
+- [ ] ✅ Features defined trong PHP (classes/interfaces)
+- [ ] ✅ Configuration passed qua `wp_localize_script()`
+- [ ] ✅ JavaScript chỉ render UI, không có logic
+- [ ] ✅ Options dynamically loaded from PHP
+- [ ] ✅ Hooks/filters provided cho developers
+- [ ] ❌ KHÔNG có hard-coded options trong JS
+- [ ] ❌ KHÔNG có business logic trong JS
+- [ ] ❌ KHÔNG có conditional features trong JS
+
+### Real Example: master-data-layout Block
+
+**PHP Side**:
+
+```php
+class PostLayoutManager {
+    protected $layouts = [];
+    
+    public function registerLayout(AbstractBlockLayout $layout) {
+        $this->layouts[$layout->getName()] = $layout;
+    }
+    
+    public function getLayoutsForJavaScript(): array {
+        return array_map(function($layout) {
+            return [
+                'name' => $layout->getName(),
+                'title' => $layout->getTitle(),
+                'supportedOptions' => $layout->getSupportedOptions(),
+                'readOnlyOptions' => $layout->getReadOnlyOptions(),
+            ];
+        }, $this->layouts);
+    }
+}
+
+// In Block class
+public function enqueueEditorAssets() {
+    wp_localize_script(
+        'jankx-master-data-layout-editor',
+        'jankxSupportedPostTypeLayouts',
+        $layoutManager->getLayoutsForJavaScript()
+    );
+}
+```
+
+**JavaScript Side**:
+
+```typescript
+// Read from PHP
+const supportedLayouts = (window as any).jankxSupportedPostTypeLayouts || [];
+const currentLayout = supportedLayouts.find((l: any) => l.name === layout);
+const supportedOptions = currentLayout?.supportedOptions || [];
+
+// Dynamic rendering based on PHP config
+<SelectControl
+    label={__('Layout Type', 'jankx')}
+    value={layout}
+    options={supportedLayouts.map((l: any) => ({
+        label: l.title,
+        value: l.name,
+    }))}
+    onChange={(value: string): void => setAttributes({ layout: value })}
+/>
+
+{supportedOptions.includes('columns') && (
+    <RangeControl
+        label={__('Columns', 'jankx')}
+        value={columns}
+        onChange={(value: number | undefined): void => setAttributes({ columns: value || 3 })}
+        min={1}
+        max={6}
+    />
+)}
+```
+
+### Developer Extension Example
+
+Developers có thể extend dễ dàng bằng PHP:
+
+```php
+// Child theme hoặc plugin
+add_action('jankx/post-layout/register-layouts', function($manager) {
+    $manager->registerLayout(new MyCustomLayout());
+});
+
+add_filter('jankx/post-layout/layouts', function($layouts) {
+    // Add or modify layouts
+    return $layouts;
+});
+```
+
+**KHÔNG CẦN** rebuild JavaScript! 🎉
+
+### Summary
+
+- **PHP = Controller**: Defines features, options, business logic
+- **JavaScript = View**: Renders UI, displays PHP data
+- **Extensibility**: Hooks & filters in PHP
+- **Developer-Friendly**: No JS rebuild needed
+- **Performance**: Smaller JS bundles, server-side processing
+
+**Remember**: JavaScript developers might leave, but PHP WordPress developers will maintain your code! 😊
+
+---
+
+## Additional Resources
+
+- WordPress Block Editor Handbook: https://developer.wordpress.org/block-editor/
+- Block Supports Reference: https://developer.wordpress.org/block-editor/reference-guides/block-api/block-supports/
+- Jankx Framework Documentation: (internal)
+- PHP-Driven Architecture: See main llms.txt for detailed guide

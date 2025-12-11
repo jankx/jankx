@@ -22,6 +22,9 @@ class LayoutOptionsResolver
 
         $options = [
             'columns' => $this->attributes['columns'] ?? 3,
+            'columnsTablet' => $this->attributes['columnsTablet'] ?? ($this->attributes['columns'] ?? 2),
+            'columnsMobile' => $this->attributes['columnsMobile'] ?? 1,
+            'responsiveColumns' => $this->attributes['responsiveColumns'] ?? null,
             'showFeaturedImage' => $this->attributes['showFeaturedImage'] ?? true,
             'thumbnailPosition' => $this->resolveThumbnailPosition(),
             'imageRatio' => $this->attributes['imageRatio'] ?? '',

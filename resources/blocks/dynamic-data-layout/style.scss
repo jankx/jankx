@@ -1,0 +1,109 @@
+/**
+ * Dynamic Data Layout Block Styles
+ * 
+ * Nhiệm vụ: Layout của toàn bộ data (wrapper, columns, grid structure)
+ * Layout của từng item được xử lý bởi dynamic-data-template block
+ */
+
+.wp-block-jankx-dynamic-data-layout {
+    &.dynamic-data-layout {
+        // Base styles cho wrapper
+    }
+
+    // Grid và Card layout - columns được áp dụng cho container bên trong
+    &.dynamic-data-layout--grid,
+    &.dynamic-data-layout--card {
+        // CSS variables được truyền từ wrapper xuống container bên trong
+        .post-type-layout-grid,
+        .post-type-layout-card {
+            display: grid;
+            gap: var(--wp--preset--spacing--medium, 1.5rem);
+            
+            // Sử dụng CSS variables từ wrapper hoặc từ chính element
+            grid-template-columns: repeat(var(--columns-mobile, 1), 1fr);
+            
+            @media (min-width: 768px) {
+                grid-template-columns: repeat(var(--columns-tablet, 2), 1fr);
+            }
+            
+            @media (min-width: 1024px) {
+                grid-template-columns: repeat(var(--columns-desktop, 3), 1fr);
+            }
+        }
+    }
+
+    // List layout
+    &.dynamic-data-layout--list {
+        .post-type-layout-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--wp--preset--spacing--medium, 1.5rem);
+        }
+    }
+
+    // Carousel layout
+    &.dynamic-data-layout--carousel {
+        // Carousel styles will be handled by JavaScript
+    }
+    
+    // Support cho class-based column classes (fallback)
+    // Classes này được thêm vào wrapper và CSS variables được truyền xuống
+    &[class*="columns-"] {
+        // Truyền CSS variables xuống container bên trong
+        .post-type-layout-grid,
+        .post-type-layout-card {
+            // Variables được set từ wrapper inline styles hoặc từ classes
+        }
+    }
+    
+    // Direct column classes support (nếu wrapper có classes trực tiếp)
+    &.columns-1 { --columns-desktop: 1; }
+    &.columns-2 { --columns-desktop: 2; }
+    &.columns-3 { --columns-desktop: 3; }
+    &.columns-4 { --columns-desktop: 4; }
+    &.columns-5 { --columns-desktop: 5; }
+    &.columns-6 { --columns-desktop: 6; }
+    
+    &.columns-tablet-1 { --columns-tablet: 1; }
+    &.columns-tablet-2 { --columns-tablet: 2; }
+    &.columns-tablet-3 { --columns-tablet: 3; }
+    &.columns-tablet-4 { --columns-tablet: 4; }
+    
+    &.columns-mobile-1 { --columns-mobile: 1; }
+    &.columns-mobile-2 { --columns-mobile: 2; }
+}
+
+// Support cho post-type-layout-grid trực tiếp (không có wrapper)
+.post-type-layout-grid,
+.post-type-layout-card {
+    display: grid;
+    gap: var(--wp--preset--spacing--medium, 1.5rem);
+    
+    // Sử dụng CSS variables từ chính element
+    grid-template-columns: repeat(var(--columns-mobile, 1), 1fr);
+    
+    @media (min-width: 768px) {
+        grid-template-columns: repeat(var(--columns-tablet, 2), 1fr);
+    }
+    
+    @media (min-width: 1024px) {
+        grid-template-columns: repeat(var(--columns-desktop, 3), 1fr);
+    }
+    
+    // Support cho column classes trực tiếp trên element
+    &.columns-1 { --columns-desktop: 1; }
+    &.columns-2 { --columns-desktop: 2; }
+    &.columns-3 { --columns-desktop: 3; }
+    &.columns-4 { --columns-desktop: 4; }
+    &.columns-5 { --columns-desktop: 5; }
+    &.columns-6 { --columns-desktop: 6; }
+    
+    &.columns-tablet-1 { --columns-tablet: 1; }
+    &.columns-tablet-2 { --columns-tablet: 2; }
+    &.columns-tablet-3 { --columns-tablet: 3; }
+    &.columns-tablet-4 { --columns-tablet: 4; }
+    
+    &.columns-mobile-1 { --columns-mobile: 1; }
+    &.columns-mobile-2 { --columns-mobile: 2; }
+}
+

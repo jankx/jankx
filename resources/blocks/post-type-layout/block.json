@@ -28,6 +28,7 @@
     "html": false,
     "align": ["wide", "full"],
     "anchor": true,
+    "innerBlocks": true,
     "spacing": {
       "margin": true,
       "padding": true,
@@ -280,6 +281,50 @@
     "showDots": {
       "type": "boolean",
       "default": true
+    },
+    "carouselAlign": {
+      "type": "string",
+      "default": "start",
+      "enum": ["start", "center", "end"]
+    },
+    "carouselAxis": {
+      "type": "string",
+      "default": "x",
+      "enum": ["x", "y"]
+    },
+    "carouselDirection": {
+      "type": "string",
+      "default": "ltr",
+      "enum": ["ltr", "rtl"]
+    },
+    "carouselStartIndex": {
+      "type": "number",
+      "default": 0
+    },
+    "carouselDuration": {
+      "type": "number",
+      "default": 25
+    },
+    "carouselDragFree": {
+      "type": "boolean",
+      "default": false
+    },
+    "carouselDragThreshold": {
+      "type": "number",
+      "default": 10
+    },
+    "carouselSkipSnaps": {
+      "type": "boolean",
+      "default": false
+    },
+    "carouselContainScroll": {
+      "type": "string",
+      "default": "trimSnaps",
+      "enum": ["false", "trimSnaps", "keepSnaps"]
+    },
+    "carouselInViewThreshold": {
+      "type": "number",
+      "default": 0
     }
   }
 }

@@ -8,7 +8,7 @@
 /***/ ((module) => {
 
 "use strict";
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/smart-tab","title":"Smart Tab","category":"jankx","description":"Single tab item for Smart Tabs","keywords":["tab","smart","panel"],"textdomain":"jankx","parent":["jankx/smart-tabs"],"attributes":{"title":{"type":"string","default":"Tab"},"trigger":{"type":"string","default":"manual"},"triggerSettings":{"type":"object","default":{}},"iconType":{"type":"string","enum":["none","svg","picker"],"default":"none"},"icon":{"type":"string","default":""},"iconName":{"type":"string","default":""},"iconSet":{"type":"string","default":"material"},"iconPosition":{"type":"string","enum":["before","after"],"default":"before"},"iconSize":{"type":"string","default":"16px"},"iconColor":{"type":"string","default":""},"tabId":{"type":"string"},"normalTabTextColor":{"type":"string"},"normalTabBackgroundColor":{"type":"string"},"normalTabGradient":{"type":"string"},"activeTabTextColor":{"type":"string"},"activeTabBackgroundColor":{"type":"string"},"activeTabGradient":{"type":"string"},"contentTextColor":{"type":"string"},"contentBackgroundColor":{"type":"string"},"contentGradient":{"type":"string"},"style":{"type":"object"}},"supports":{"html":false,"anchor":false,"customClassName":false,"reusable":false,"spacing":{"margin":true,"padding":true,"__experimentalDefaultControls":{"padding":true}},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true,"__experimentalDefaultControls":{"radius":true}}},"usesContext":["jankx/smartTabsId","jankx/activeTab"],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/smart-tab","title":"Smart Tab","category":"jankx","description":"Single tab item for Smart Tabs","keywords":["tab","smart","panel"],"textdomain":"jankx","parent":["jankx/smart-tabs"],"attributes":{"title":{"type":"string","default":"Tab"},"trigger":{"type":"string","default":"manual"},"triggerSettings":{"type":"object","default":{}},"iconType":{"type":"string","enum":["none","svg","picker"],"default":"none"},"icon":{"type":"string","default":""},"iconName":{"type":"string","default":""},"iconSet":{"type":"string","default":"material"},"iconPosition":{"type":"string","enum":["before","after"],"default":"before"},"iconSize":{"type":"string","default":"16px"},"iconColor":{"type":"string","default":""},"tabId":{"type":"string"},"normalTabTextColor":{"type":"string"},"normalTabBackgroundColor":{"type":"string"},"normalTabGradient":{"type":"string"},"activeTabTextColor":{"type":"string"},"activeTabBackgroundColor":{"type":"string"},"activeTabGradient":{"type":"string"},"contentTextColor":{"type":"string"},"contentBackgroundColor":{"type":"string"},"contentGradient":{"type":"string"},"style":{"type":"object"}},"supports":{"html":false,"anchor":false,"customClassName":false,"reusable":false,"spacing":{"margin":true,"padding":true,"__experimentalDefaultControls":{"padding":true}},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true,"__experimentalDefaultControls":{"radius":true}}},"usesContext":["jankx/smartTabsId","jankx/activeTab"],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","viewScript":"file:./build/view.js","style":"file:./build/style.css"}');
 
 /***/ }),
 
@@ -33,16 +33,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/brush.js");
-/* harmony import */ var _shared_components_IconPicker__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../shared/components/IconPicker */ "./shared/components/IconPicker.tsx");
-/* harmony import */ var _svg_icon_components__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../svg-icon/components */ "./blocks/svg-icon/components/index.tsx");
-/* harmony import */ var _svg_icon_utils__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../svg-icon/utils */ "./blocks/svg-icon/utils/index.ts");
-/* harmony import */ var _svg_icon_icons__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../svg-icon/icons */ "./blocks/svg-icon/icons/index.tsx");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__);
+/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
+/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/brush.js");
+/* harmony import */ var _shared_components_IconPicker__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../shared/components/IconPicker */ "./shared/components/IconPicker.tsx");
+/* harmony import */ var _svg_icon_components__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../svg-icon/components */ "./blocks/svg-icon/components/index.tsx");
+/* harmony import */ var _svg_icon_utils__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../svg-icon/utils */ "./blocks/svg-icon/utils/index.ts");
+/* harmony import */ var _svg_icon_icons__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../svg-icon/icons */ "./blocks/svg-icon/icons/index.tsx");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__);
 /**
  * WordPress dependencies
  */
+
 
 
 
@@ -73,6 +76,7 @@ function Edit({
   const {
     title,
     trigger = 'manual',
+    triggerSettings = {},
     iconType,
     icon,
     iconName,
@@ -91,6 +95,19 @@ function Edit({
     contentGradient
   } = attributes;
   const activeTabIndex = (_context$jankxActive = context?.['jankx/activeTab']) !== null && _context$jankxActive !== void 0 ? _context$jankxActive : 0;
+
+  // Get inner blocks to check if advanced-filter already exists
+  const innerBlocks = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useSelect)(select => {
+    const block = select('core/block-editor').getBlock(clientId);
+    return block?.innerBlocks || [];
+  }, [clientId]);
+  const {
+    insertBlocks
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useDispatch)('core/block-editor');
+
+  // Advanced Filter Trigger State - Declare before useMemo to avoid initialization error
+  const [dynamicDataLayoutBlocks, setDynamicDataLayoutBlocks] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)([]);
+  const [selectedTargetBlock, setSelectedTargetBlock] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(null);
   const rawTriggerConfig = (_window$JankxSmartTab = window?.JankxSmartTabTriggers?.items) !== null && _window$JankxSmartTab !== void 0 ? _window$JankxSmartTab : {};
   const fallbackTrigger = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => ({
     key: 'manual',
@@ -115,15 +132,29 @@ function Edit({
       ...rawTriggerConfig
     };
   }, [rawTriggerConfig, fallbackTrigger]);
-  const triggerOptions = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => Object.values(triggersMap).map(config => ({
-    label: config.label,
-    value: config.key
-  })), [triggersMap]);
+  const triggerOptions = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => {
+    const options = Object.values(triggersMap).map(config => ({
+      label: config.label,
+      value: config.key
+    }));
+
+    // Hide advanced-filter trigger if no dynamic-data-layout blocks are available
+    if (trigger === 'advanced-filter' || dynamicDataLayoutBlocks.length > 0) {
+      return options;
+    }
+
+    // Filter out advanced-filter trigger if no blocks available
+    return options.filter(opt => opt.value !== 'advanced-filter');
+  }, [triggersMap, dynamicDataLayoutBlocks.length, trigger]);
   const triggerConfig = (_ref = (_triggersMap$trigger = triggersMap[trigger]) !== null && _triggersMap$trigger !== void 0 ? _triggersMap$trigger : triggersMap.manual) !== null && _ref !== void 0 ? _ref : fallbackTrigger;
-  const triggerSupports = triggerConfig?.supports || {};
-  const allowCustomTitle = triggerSupports.customTitle !== false;
-  const allowCustomContent = triggerSupports.customContent !== false;
-  const allowCustomIcon = triggerSupports.icon !== false;
+  // Override supports for advanced-filter trigger to allow custom content
+  const resolvedSupports = trigger === 'advanced-filter' ? {
+    ...triggerConfig.supports,
+    customContent: true
+  } : triggerConfig.supports || {};
+  const allowCustomTitle = resolvedSupports.customTitle !== false;
+  const allowCustomContent = resolvedSupports.customContent !== false;
+  const allowCustomIcon = resolvedSupports.icon !== false;
   const previewTitle = triggerConfig.previewTitle || triggerConfig.label || (title ? title : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Tab', 'jankx'));
 
   // Color and gradient settings
@@ -131,11 +162,9 @@ function Edit({
   const {
     blockIndex
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useSelect)(select => {
-    const {
-      getBlockIndex
-    } = select('core/block-editor');
+    const editorSelect = select('core/block-editor');
     return {
-      blockIndex: getBlockIndex(clientId)
+      blockIndex: editorSelect.getBlockIndex(clientId)
     };
   }, [clientId]);
   const isActive = blockIndex === activeTabIndex;
@@ -158,21 +187,30 @@ function Edit({
       display: isActive ? 'block' : 'none'
     }
   });
+
+  // Determine allowed blocks based on trigger
+  const allowedBlocks = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => {
+    if (trigger === 'advanced-filter') {
+      return ['jankx/advanced-filter'];
+    }
+    return undefined; // Allow all blocks for other triggers
+  }, [trigger]);
   const innerBlocksProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useInnerBlocksProps)({
     className: 'smart-tab__content',
     style: contentStyles
   }, {
     templateLock: false,
+    allowedBlocks: allowedBlocks,
     // Chỉ tab active mới có block appender
     renderAppender: isActive ? undefined : false
   });
 
   // Handle icon selection from picker
   const handleIconSelect = selectedIcon => {
-    if (selectedIcon && selectedIcon.icon) {
+    if (selectedIcon && selectedIcon.name) {
       setAttributes({
-        icon: selectedIcon.icon,
-        iconName: selectedIcon.name || '',
+        iconName: selectedIcon.name,
+        iconSet: selectedIcon.iconSet || iconSet,
         iconType: 'picker'
       });
     }
@@ -180,15 +218,16 @@ function Edit({
 
   // Parse and set SVG icon
   const handleCustomSvg = svgContent => {
-    const parsedIcon = (0,_svg_icon_utils__WEBPACK_IMPORTED_MODULE_8__.parseIcon)(svgContent);
-    if (parsedIcon) {
+    // parseIcon returns React element, but we need to store as string
+    // So we just store the original SVG content
+    if (svgContent && svgContent.trim()) {
       setAttributes({
-        icon: parsedIcon,
+        icon: svgContent,
         iconType: 'svg'
       });
     }
   };
-  const allIcons = (0,_svg_icon_utils__WEBPACK_IMPORTED_MODULE_8__.flattenIconsArray)((0,_svg_icon_icons__WEBPACK_IMPORTED_MODULE_9__["default"])());
+  const allIcons = (0,_svg_icon_utils__WEBPACK_IMPORTED_MODULE_9__.flattenIconsArray)((0,_svg_icon_icons__WEBPACK_IMPORTED_MODULE_10__["default"])());
   const handleTriggerChange = value => {
     var _ref2, _triggersMap$newTrigg;
     const newTriggerKey = triggersMap[value] ? value : 'manual';
@@ -205,20 +244,127 @@ function Edit({
       updatedAttributes.icon = '';
       updatedAttributes.iconName = '';
     }
+
+    // If switching to advanced-filter trigger, automatically add advanced-filter inner block
+    if (newTriggerKey === 'advanced-filter') {
+      const hasAdvancedFilterBlock = innerBlocks.some(block => block.name === 'jankx/advanced-filter');
+      if (!hasAdvancedFilterBlock) {
+        const defaultAttributes = {
+          filterType: 'taxonomy',
+          enabled: true
+        };
+        insertBlocks((0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_5__.createBlock)('jankx/advanced-filter', defaultAttributes), undefined, clientId);
+      }
+    }
     setAttributes(updatedAttributes);
   };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+
+  // Find dynamic-data-layout blocks on the page (always check for availability)
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
+    const findDynamicDataLayoutBlocks = () => {
+      try {
+        const wpData = window.wp?.data;
+        if (!wpData) {
+          setDynamicDataLayoutBlocks([]);
+          return;
+        }
+        const currentBlocks = wpData.select('core/block-editor').getBlocks();
+        if (!currentBlocks || currentBlocks.length === 0) {
+          setDynamicDataLayoutBlocks([]);
+          return;
+        }
+        const findBlocks = blocks => {
+          const found = [];
+          blocks.forEach(block => {
+            if (block.name === 'jankx/dynamic-data-layout') {
+              const attrs = block.attributes || {};
+              const queryId = attrs.queryId || block.clientId;
+              const postType = attrs.postType || 'post';
+              found.push({
+                id: String(queryId || block.clientId),
+                clientId: block.clientId,
+                postType: postType,
+                name: `${postType} Layout`
+              });
+            }
+            if (block.innerBlocks && block.innerBlocks.length > 0) {
+              found.push(...findBlocks(block.innerBlocks));
+            }
+          });
+          return found;
+        };
+        const layoutBlocks = findBlocks(currentBlocks);
+        setDynamicDataLayoutBlocks(layoutBlocks);
+
+        // Restore selected block from triggerSettings (only if trigger is advanced-filter)
+        if (trigger === 'advanced-filter') {
+          const savedBlockId = triggerSettings?.targetBlockId;
+          if (savedBlockId) {
+            const block = layoutBlocks.find(b => b.id === savedBlockId);
+            if (block) {
+              setSelectedTargetBlock({
+                id: block.id,
+                postType: block.postType
+              });
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error finding dynamic-data-layout blocks:', error);
+        setDynamicDataLayoutBlocks([]);
+      }
+    };
+    findDynamicDataLayoutBlocks();
+
+    // Subscribe to block changes
+    let timeoutId = null;
+    const wpData = window.wp?.data;
+    if (!wpData) {
+      return;
+    }
+    const unsubscribe = wpData.subscribe(() => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      timeoutId = setTimeout(() => {
+        findDynamicDataLayoutBlocks();
+      }, 300);
+    });
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, [trigger, triggerSettings]);
+
+  // Update trigger config to allow custom content when advanced-filter trigger is selected
+  const resolvedTriggerConfig = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => {
+    if (trigger === 'advanced-filter') {
+      return {
+        ...triggerConfig,
+        supports: {
+          ...triggerConfig.supports,
+          customContent: true // Allow inner blocks for advanced-filter
+        }
+      };
+    }
+    return triggerConfig;
+  }, [trigger, triggerConfig]);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Tab Settings', 'jankx'),
         initialOpen: true,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Trigger', 'jankx'),
           value: trigger,
           options: triggerOptions,
           onChange: handleTriggerChange,
           help: triggerConfig?.description || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select behaviour for this tab.', 'jankx')
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Tab Title', 'jankx'),
           value: allowCustomTitle ? title : previewTitle,
           onChange: value => {
@@ -232,11 +378,69 @@ function Edit({
           placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enter tab title', 'jankx'),
           disabled: !allowCustomTitle,
           help: allowCustomTitle ? undefined : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Title is managed by the selected trigger.', 'jankx')
+        }), trigger === 'advanced-filter' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Filter Settings', 'jankx'),
+          initialOpen: true,
+          children: dynamicDataLayoutBlocks.length === 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("p", {
+            style: {
+              color: '#d63638'
+            },
+            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('No Dynamic Data Layout blocks found on this page. Add a Dynamic Data Layout block first.', 'jankx')
+          }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Target Block', 'jankx'),
+              value: triggerSettings?.targetBlockId || '',
+              options: [{
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('-- Select Block --', 'jankx'),
+                value: ''
+              }, ...dynamicDataLayoutBlocks.map(block => ({
+                label: `${block.name} (${block.postType})`,
+                value: block.id
+              }))],
+              onChange: value => {
+                const block = dynamicDataLayoutBlocks.find(b => b.id === value);
+                setSelectedTargetBlock(block ? {
+                  id: block.id,
+                  postType: block.postType
+                } : null);
+                setAttributes({
+                  triggerSettings: {
+                    ...triggerSettings,
+                    targetBlockId: value
+                  }
+                });
+              },
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select the Dynamic Data Layout block to filter', 'jankx')
+            }), selectedTargetBlock && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
+              style: {
+                marginTop: '10px',
+                padding: '10px',
+                backgroundColor: '#f0f0f1',
+                borderRadius: '4px'
+              },
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("p", {
+                style: {
+                  margin: 0,
+                  fontSize: '12px'
+                },
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("strong", {
+                  children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Post Type:', 'jankx')
+                }), " ", selectedTargetBlock.postType]
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("p", {
+                style: {
+                  margin: '5px 0 0 0',
+                  fontSize: '12px',
+                  color: '#666'
+                },
+                children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Configure the filter using the Advanced Filter block below.', 'jankx')
+              })]
+            })]
+          })
         })]
-      }), allowCustomIcon && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+      }), allowCustomIcon && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Tab Icon', 'jankx'),
         initialOpen: false,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Icon Type', 'jankx'),
           value: iconType,
           options: [{
@@ -252,8 +456,8 @@ function Edit({
           onChange: value => setAttributes({
             iconType: value
           })
-        }), iconType === 'svg' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_svg_icon_components__WEBPACK_IMPORTED_MODULE_7__.InserterModal, {
+        }), iconType === 'svg' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_svg_icon_components__WEBPACK_IMPORTED_MODULE_8__.InserterModal, {
             isInserterOpen: false,
             setInserterOpen: () => {},
             onSelect: selectedIcon => {
@@ -262,22 +466,25 @@ function Edit({
               }
             },
             icons: allIcons
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('SVG Code', 'jankx'),
             value: icon,
             onChange: handleCustomSvg,
             placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Paste SVG code here', 'jankx'),
             help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Paste your SVG code', 'jankx')
           })]
-        }), iconType === 'picker' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
+        }), iconType === 'picker' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
           className: "smart-tab-icon-picker",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_shared_components_IconPicker__WEBPACK_IMPORTED_MODULE_6__["default"], {
-            value: iconName,
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_shared_components_IconPicker__WEBPACK_IMPORTED_MODULE_7__["default"], {
+            value: iconName ? {
+              name: iconName,
+              iconSet: iconSet
+            } : null,
             onChange: handleIconSelect,
-            iconSet: iconSet
+            iconType: iconSet
           })
-        }), iconType !== 'none' && icon && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+        }), iconType !== 'none' && icon && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Icon Position', 'jankx'),
             value: iconPosition,
             options: [{
@@ -290,29 +497,29 @@ function Edit({
             onChange: value => setAttributes({
               iconPosition: value
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalUnitControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalUnitControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Icon Size', 'jankx'),
             value: iconSize,
             onChange: value => setAttributes({
               iconSize: value || '16px'
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("div", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
             className: "components-base-control",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("label", {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("label", {
               className: "components-base-control__label",
               children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Icon Color', 'jankx')
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Dropdown, {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Dropdown, {
               renderToggle: ({
                 isOpen,
                 onToggle
-              }) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
-                icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__["default"],
+              }) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+                icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__["default"],
                 onClick: onToggle,
                 "aria-expanded": isOpen,
                 variant: "secondary",
                 children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Choose Color', 'jankx')
               }),
-              renderContent: () => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ColorPicker, {
+              renderContent: () => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ColorPicker, {
                 color: iconColor,
                 onChange: value => setAttributes({
                   iconColor: value
@@ -324,13 +531,13 @@ function Edit({
           })]
         })]
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
       ...blockProps,
-      children: allowCustomContent ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
+      children: allowCustomContent ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
         ...innerBlocksProps
-      }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
+      }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
         className: "smart-tab__content smart-tab__content--locked",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("p", {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("p", {
           children: triggerConfig?.description || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Content is generated by the selected trigger.', 'jankx')
         })
       })

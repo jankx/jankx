@@ -39,9 +39,9 @@ module.exports = {
     'blocks/svg-icon/build/style': './blocks/svg-icon/style.scss',
     'blocks/svg-icon/build/editor': './blocks/svg-icon/editor.scss',
 
-    'blocks/image-masonry-gallery/build/index': './blocks/image-masonry-gallery/index.tsx',
-    'blocks/image-masonry-gallery/build/style': './blocks/image-masonry-gallery/style.scss',
-    'blocks/image-masonry-gallery/build/editor': './blocks/image-masonry-gallery/editor.scss',
+    'blocks/gallery/build/index': './blocks/gallery/index.tsx',
+    'blocks/gallery/build/style': './blocks/gallery/style.scss',
+    'blocks/gallery/build/editor': './blocks/gallery/editor.scss',
 
 
     'blocks/advanced-image-box/build/index': './blocks/advanced-image-box/index.tsx',
@@ -76,6 +76,7 @@ module.exports = {
     'blocks/smart-tabs/build/view': './blocks/smart-tabs/view.js',
 
     'blocks/smart-tab/build/index': './blocks/smart-tab/index.tsx',
+    'blocks/smart-tab/build/view': './blocks/smart-tab/view.js',
     'blocks/smart-tab/build/style': './blocks/smart-tab/style.scss',
     'blocks/smart-tab/build/editor': './blocks/smart-tab/editor.scss',
 
@@ -140,6 +141,8 @@ module.exports = {
     'blocks/advanced-button/build/style': './blocks/advanced-button/style.scss',
     'blocks/advanced-button/build/editor': './blocks/advanced-button/editor.scss',
 
+    'blocks/advanced-filter/build/index': './blocks/advanced-filter/index.tsx',
+
     'blocks/advanced-filters/build/index': './blocks/advanced-filters/index.tsx',
     'blocks/advanced-filters/build/frontend': './blocks/advanced-filters/frontend.ts',
     'blocks/advanced-filters/build/style': './blocks/advanced-filters/style.scss',
@@ -161,6 +164,14 @@ module.exports = {
     'blocks/smart-search/build/frontend': './blocks/smart-search/frontend.ts',
     'blocks/smart-search/build/style': './blocks/smart-search/style.scss',
     'blocks/smart-search/build/editor': './blocks/smart-search/editor.scss',
+
+    'blocks/dynamic-data-layout/build/index': './blocks/dynamic-data-layout/index.tsx',
+    'blocks/dynamic-data-layout/build/style': './blocks/dynamic-data-layout/style.scss',
+    'blocks/dynamic-data-layout/build/editor': './blocks/dynamic-data-layout/editor.scss',
+
+    'blocks/dynamic-data-template/build/index': './blocks/dynamic-data-template/index.tsx',
+    'blocks/dynamic-data-template/build/style': './blocks/dynamic-data-template/style.scss',
+    'blocks/dynamic-data-template/build/editor': './blocks/dynamic-data-template/editor.scss',
   },
   output: {
     path: path.resolve(__dirname),

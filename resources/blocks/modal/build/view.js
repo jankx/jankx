@@ -343,7 +343,6 @@ __webpack_require__.r(__webpack_exports__);
       // Store in global object with modal ID as key
       if (Object.keys(shareData).length > 0) {
         window.jankxShareData[modalId] = shareData;
-        console.log('Shared data for modal:', modalId, shareData);
       }
     }
 
@@ -392,7 +391,6 @@ __webpack_require__.r(__webpack_exports__);
         sharedData: window.jankxShareData[modalId] || {}
       }
     }));
-    console.log('Modal opened:', modalId);
   }
   function stopMediaInModal(modal) {
     // Stop all iframes (YouTube, Vimeo, etc.)
@@ -458,7 +456,6 @@ __webpack_require__.r(__webpack_exports__);
         modalElement: modal
       }
     }));
-    console.log('Modal closed:', modalId);
   }
   function initModals() {
     // Get all modals directly (no wrapper)
@@ -504,10 +501,6 @@ __webpack_require__.r(__webpack_exports__);
     // Initialize Micromodal with global config
     micromodal__WEBPACK_IMPORTED_MODULE_0__["default"].init({
       onShow: function (modal, trigger) {
-        console.log('Modal opened:', modal.id);
-        console.log('Modal element:', modal);
-        console.log('Modal has is-open class:', modal.classList.contains('is-open'));
-
         // Collect and share data from trigger element
         if (trigger) {
           const shareData = {};
@@ -526,7 +519,6 @@ __webpack_require__.r(__webpack_exports__);
           // Store in global object with modal ID as key
           if (Object.keys(shareData).length > 0) {
             window.jankxShareData[modal.id] = shareData;
-            console.log('Shared data for modal:', modal.id, shareData);
           }
         }
 
@@ -567,8 +559,6 @@ __webpack_require__.r(__webpack_exports__);
         }));
       },
       onClose: function (modal) {
-        console.log('Modal closed:', modal.id);
-
         // Stop all media playback in modal
         stopMediaInModal(modal);
 
@@ -621,11 +611,9 @@ __webpack_require__.r(__webpack_exports__);
               micromodal__WEBPACK_IMPORTED_MODULE_0__["default"].show(modalId);
             });
           });
-          console.log('Registered custom triggers for modal:', modalId);
         }
       }
     });
-    console.log('Micromodal initialized with configs:', modalConfigs);
   }
 
   // Expose global functions for external use (both custom and Micromodal methods)

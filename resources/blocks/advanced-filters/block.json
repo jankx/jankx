@@ -12,6 +12,19 @@
   "editorStyle": "file:./build/editor.css",
   "style": "file:./build/style.css",
   "viewScript": "file:./build/frontend.js",
+  "providesContext": {
+    "jankx/advanced-filters/targetPostType": "targetPostType",
+    "jankx/advanced-filters/layout": "layout",
+    "jankx/advanced-filters/displayStyle": "displayStyle",
+    "jankx/advanced-filters/showLabels": "showLabels",
+    "jankx/advanced-filters/showCount": "showCount",
+    "jankx/advanced-filters/showEmptyTerms": "showEmptyTerms",
+    "jankx/advanced-filters/showOnlyTopLevel": "showOnlyTopLevel",
+    "jankx/advanced-filters/showHierarchy": "showHierarchy",
+    "jankx/advanced-filters/multipleSelection": "multipleSelection",
+    "jankx/advanced-filters/collapsible": "collapsible",
+    "jankx/advanced-filters/defaultExpanded": "defaultExpanded"
+  },
   "supports": {
     "html": false,
     "align": ["wide", "full"],
@@ -50,6 +63,10 @@
     }
   },
   "attributes": {
+    "blockId": {
+      "type": "string",
+      "default": ""
+    },
     "targetBlockIds": {
       "type": "array",
       "default": []
@@ -63,6 +80,10 @@
       "type": "string",
       "default": "horizontal",
       "enum": ["horizontal", "vertical", "dropdown", "accordion"]
+    },
+    "targetPostType": {
+      "type": "string",
+      "default": "post"
     },
     "showLabels": {
       "type": "boolean",
