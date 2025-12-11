@@ -40,6 +40,10 @@ export interface AdvancedImageBoxAttributes {
 	align?: 'left' | 'center' | 'right' | 'wide' | 'full';
 	className?: string;
 	style?: Record<string, unknown>;
+
+	// Preset
+	preset?: string;
+	presetOptions?: PresetOptionValue;
 }
 
 export interface AdvancedImageBoxEditProps {
@@ -143,4 +147,46 @@ export interface OverlaySettings {
 	overlayPosition: string;
 	overlayBackground: string;
 	overlayOpacity: number;
+}
+
+/**
+ * Preset mask types
+ */
+export type PresetMaskType = 'css' | 'svg';
+
+/**
+ * Preset option definition
+ */
+export interface PresetOption {
+	name: string;
+	label: string;
+	type: 'text' | 'number' | 'color' | 'select' | 'range' | 'toggle';
+	default?: unknown;
+	options?: Array<{ label: string; value: string | number }>;
+	min?: number;
+	max?: number;
+	step?: number;
+	help?: string;
+}
+
+/**
+ * Preset definition from PHP
+ */
+export interface ImageBoxPreset {
+	id: string;
+	name: string;
+	label: string;
+	description?: string;
+	maskType: PresetMaskType;
+	options?: PresetOption[];
+	className?: string;
+	requiresInnerBlocks?: boolean;
+	innerBlocksTemplate?: InnerBlocksTemplate[];
+}
+
+/**
+ * Preset option value
+ */
+export interface PresetOptionValue {
+	[key: string]: unknown;
 }

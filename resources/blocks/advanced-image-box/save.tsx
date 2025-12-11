@@ -42,7 +42,8 @@ export default function save({ attributes, className }: AdvancedImageBoxSaveProp
 		overlayBackground,
 		overlayOpacity,
 		imageHoverEffect,
-		borderRadius
+		borderRadius,
+		preset
 	} = attributes;
 
 	// Validate content before saving
@@ -84,8 +85,16 @@ export default function save({ attributes, className }: AdvancedImageBoxSaveProp
 		/>
 	);
 
-	// Create overlay content if enabled
-	const overlayContent = showOverlayOnHover && (
+	// Always render inner blocks content (for PHP to extract when preset is active)
+	// When preset is active, overlay won't be shown but inner blocks will be extracted by PHP
+	const innerBlocksContent = (
+		<div className="wp-block-jankx-advanced-image-box__overlay__content">
+			<InnerBlocks.Content />
+		</div>
+	);
+
+	// Create overlay content if enabled (but not when preset is active)
+	const overlayContent = showOverlayOnHover && !preset && (
 		<div
 			className={clsx(
 				'wp-block-jankx-advanced-image-box__overlay',
@@ -100,11 +109,12 @@ export default function save({ attributes, className }: AdvancedImageBoxSaveProp
 				animationDelay: `${overlayAnimationDelay}ms`,
 			}}
 		>
-			<div className="wp-block-jankx-advanced-image-box__overlay__content">
-				<InnerBlocks.Content />
-			</div>
+			{innerBlocksContent}
 		</div>
 	);
+
+	// When preset is active, render inner blocks in hidden container for PHP to extract
+	const presetInnerBlocks = preset && !showOverlayOnHover && innerBlocksContent;
 
 	// Wrap image with link if href is provided
 	const wrappedImage = href ? (
@@ -133,6 +143,7 @@ export default function save({ attributes, className }: AdvancedImageBoxSaveProp
 		<figure { ...useBlockProps.save({ className: blockClasses }) }>
 			{wrappedImage}
 			{overlayContent}
+			{presetInnerBlocks}
 			{!RichText.isEmpty(caption) && (
 				<RichText.Content
 					className="wp-block-jankx-advanced-image-box__caption"

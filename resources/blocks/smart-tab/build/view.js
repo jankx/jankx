@@ -513,26 +513,37 @@ function handleAdvancedFilterTrigger(tabBlock, navButton) {
     return;
   }
 
-  // Get targetBlockId from triggerSettings
-  const triggerSettingsData = tabBlock?.getAttribute('data-trigger-settings');
-  console.log('[SmartTab AdvancedFilter] Trigger settings data', {
-    hasTriggerSettings: !!triggerSettingsData,
-    triggerSettingsData
-  });
+  // Get targetBlockId - prioritize data-target-block-id on nav button
   let targetBlockId = null;
-  if (triggerSettingsData) {
-    try {
-      const triggerSettings = JSON.parse(triggerSettingsData);
-      targetBlockId = triggerSettings.targetBlockId;
-      console.log('[SmartTab AdvancedFilter] Parsed trigger settings', {
-        triggerSettings,
-        targetBlockId
-      });
-    } catch (error) {
-      console.error('[SmartTab AdvancedFilter] Error parsing trigger settings:', error, {
-        triggerSettingsData
-      });
-      return;
+
+  // First, try to get from nav button's data-target-block-id attribute
+  if (navButton) {
+    targetBlockId = navButton.getAttribute('data-target-block-id');
+    if (targetBlockId) {
+      console.log('[SmartTab AdvancedFilter] Target block ID from nav button:', targetBlockId);
+    }
+  }
+
+  // Fallback to triggerSettings if not found on nav button
+  if (!targetBlockId) {
+    const triggerSettingsData = tabBlock?.getAttribute('data-trigger-settings');
+    console.log('[SmartTab AdvancedFilter] Trigger settings data', {
+      hasTriggerSettings: !!triggerSettingsData,
+      triggerSettingsData
+    });
+    if (triggerSettingsData) {
+      try {
+        const triggerSettings = JSON.parse(triggerSettingsData);
+        targetBlockId = triggerSettings.targetBlockId;
+        console.log('[SmartTab AdvancedFilter] Parsed trigger settings', {
+          triggerSettings,
+          targetBlockId
+        });
+      } catch (error) {
+        console.error('[SmartTab AdvancedFilter] Error parsing trigger settings:', error, {
+          triggerSettingsData
+        });
+      }
     }
   }
   if (!targetBlockId) {

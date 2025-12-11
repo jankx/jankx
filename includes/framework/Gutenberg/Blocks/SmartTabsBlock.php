@@ -342,6 +342,14 @@ class SmartTabsBlock extends Block
             // Build additional data attributes for advanced-filter trigger
             $additional_data_attrs = '';
             if ($trigger_key === 'advanced-filter') {
+                // Get targetBlockId from triggerSettings
+                $trigger_settings = $attributes['triggerSettings'] ?? [];
+                $target_block_id = $trigger_settings['targetBlockId'] ?? '';
+                
+                if (!empty($target_block_id)) {
+                    $additional_data_attrs .= sprintf(' data-target-block-id="%s"', esc_attr($target_block_id));
+                }
+                
                 // Try to get filter data from advanced-filter block in inner blocks
                 // Pass tab index to extractFilterDataFromTab for matching with terms
                 $block_with_index = $block;

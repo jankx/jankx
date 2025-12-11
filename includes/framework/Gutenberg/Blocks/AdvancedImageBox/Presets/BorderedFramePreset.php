@@ -1,0 +1,472 @@
+<?php
+
+namespace Jankx\Gutenberg\Blocks\AdvancedImageBox\Presets;
+
+use Jankx\Gutenberg\Blocks\AdvancedImageBox\PresetInterface;
+
+/**
+ * Bordered Frame Preset
+ *
+ * Creates an image with an inner border frame and title box
+ */
+class BorderedFramePreset implements PresetInterface
+{
+    public function getId(): string
+    {
+        return 'bordered-frame';
+    }
+
+    public function getName(): string
+    {
+        return 'bordered_frame';
+    }
+
+    public function getLabel(): string
+    {
+        return __('Bordered Frame', 'jankx');
+    }
+
+    public function getDescription(): string
+    {
+        return __('Image with inner border frame and title box', 'jankx');
+    }
+
+    public function getMaskType(): string
+    {
+        return 'css';
+    }
+
+    public function getOptions(): array
+    {
+        return [
+            [
+                'name' => 'borderWidth',
+                'label' => __('Border Width', 'jankx'),
+                'type' => 'range',
+                'default' => 4,
+                'min' => 1,
+                'max' => 20,
+                'step' => 1,
+                'help' => __('Width of the inner border frame in pixels', 'jankx'),
+            ],
+            [
+                'name' => 'borderColor',
+                'label' => __('Border Color', 'jankx'),
+                'type' => 'color',
+                'default' => '#ffffff',
+                'help' => __('Color of the inner border frame', 'jankx'),
+            ],
+            [
+                'name' => 'borderOffset',
+                'label' => __('Border Offset', 'jankx'),
+                'type' => 'range',
+                'default' => 20,
+                'min' => 0,
+                'max' => 100,
+                'step' => 5,
+                'help' => __('Distance from image edges to border in pixels', 'jankx'),
+            ],
+            [
+                'name' => 'titleFullWidth',
+                'label' => __('Title Full Width', 'jankx'),
+                'type' => 'toggle',
+                'default' => false,
+                'help' => __('Make title box full width of the frame', 'jankx'),
+            ],
+            [
+                'name' => 'titlePosition',
+                'label' => __('Title Position', 'jankx'),
+                'type' => 'select',
+                'default' => 'bottom-center',
+                'options' => [
+                    ['label' => __('Top Left', 'jankx'), 'value' => 'top-left'],
+                    ['label' => __('Top Center', 'jankx'), 'value' => 'top-center'],
+                    ['label' => __('Top Right', 'jankx'), 'value' => 'top-right'],
+                    ['label' => __('Bottom Left', 'jankx'), 'value' => 'bottom-left'],
+                    ['label' => __('Bottom Center', 'jankx'), 'value' => 'bottom-center'],
+                    ['label' => __('Bottom Right', 'jankx'), 'value' => 'bottom-right'],
+                    ['label' => __('Left Top', 'jankx'), 'value' => 'left-top'],
+                    ['label' => __('Left Center', 'jankx'), 'value' => 'left-center'],
+                    ['label' => __('Left Bottom', 'jankx'), 'value' => 'left-bottom'],
+                    ['label' => __('Right Top', 'jankx'), 'value' => 'right-top'],
+                    ['label' => __('Right Center', 'jankx'), 'value' => 'right-center'],
+                    ['label' => __('Right Bottom', 'jankx'), 'value' => 'right-bottom'],
+                    ['label' => __('Center', 'jankx'), 'value' => 'center'],
+                ],
+                'help' => __('Position of the title box (only applies when Full Width is disabled)', 'jankx'),
+            ],
+            [
+                'name' => 'titleBackground',
+                'label' => __('Title Background', 'jankx'),
+                'type' => 'color',
+                'default' => 'rgba(0, 0, 0, 0.8)',
+                'help' => __('Background color of the title box', 'jankx'),
+            ],
+            [
+                'name' => 'titleColor',
+                'label' => __('Title Color', 'jankx'),
+                'type' => 'color',
+                'default' => '#ffffff',
+                'help' => __('Text color of the title', 'jankx'),
+            ],
+            [
+                'name' => 'titleMarginTop',
+                'label' => __('Title Margin Top', 'jankx'),
+                'type' => 'range',
+                'default' => 0,
+                'min' => 0,
+                'max' => 50,
+                'step' => 1,
+                'help' => __('Top margin of the title box in pixels', 'jankx'),
+            ],
+            [
+                'name' => 'titleMarginRight',
+                'label' => __('Title Margin Right', 'jankx'),
+                'type' => 'range',
+                'default' => 0,
+                'min' => 0,
+                'max' => 50,
+                'step' => 1,
+                'help' => __('Right margin of the title box in pixels', 'jankx'),
+            ],
+            [
+                'name' => 'titleMarginBottom',
+                'label' => __('Title Margin Bottom', 'jankx'),
+                'type' => 'range',
+                'default' => 0,
+                'min' => 0,
+                'max' => 50,
+                'step' => 1,
+                'help' => __('Bottom margin of the title box in pixels', 'jankx'),
+            ],
+            [
+                'name' => 'titleMarginLeft',
+                'label' => __('Title Margin Left', 'jankx'),
+                'type' => 'range',
+                'default' => 0,
+                'min' => 0,
+                'max' => 50,
+                'step' => 1,
+                'help' => __('Left margin of the title box in pixels', 'jankx'),
+            ],
+            [
+                'name' => 'titleWidth',
+                'label' => __('Title Width', 'jankx'),
+                'type' => 'range',
+                'default' => 0,
+                'min' => 0,
+                'max' => 500,
+                'step' => 10,
+                'help' => __('Width of the title box in pixels (0 = auto)', 'jankx'),
+            ],
+            [
+                'name' => 'titleMinWidth',
+                'label' => __('Title Min Width', 'jankx'),
+                'type' => 'range',
+                'default' => 0,
+                'min' => 0,
+                'max' => 500,
+                'step' => 10,
+                'help' => __('Minimum width of the title box in pixels', 'jankx'),
+            ],
+        ];
+    }
+
+    public function requiresInnerBlocks(): bool
+    {
+        return true;
+    }
+
+    public function getInnerBlocksTemplate(): ?array
+    {
+        return [
+            [
+                'name' => 'core/heading',
+                'attributes' => [
+                    'level' => 3,
+                    'placeholder' => __('Enter image title', 'jankx'),
+                    'textAlign' => 'center',
+                ],
+            ],
+        ];
+    }
+
+    public function getClasses(): array
+    {
+        return [
+            'preset-bordered-frame',
+        ];
+    }
+
+    public function renderCSS(array $attributes, array $options = []): string
+    {
+        $borderWidth = $options['borderWidth'] ?? 4;
+        $borderColor = $options['borderColor'] ?? '#ffffff';
+        $borderOffset = $options['borderOffset'] ?? 20;
+        $titleFullWidth = $options['titleFullWidth'] ?? false;
+        $titlePosition = $options['titlePosition'] ?? 'bottom-center';
+        $titleBackground = $options['titleBackground'] ?? 'rgba(0, 0, 0, 0.8)';
+        $titleColor = $options['titleColor'] ?? '#ffffff';
+        $titleMarginTop = $options['titleMarginTop'] ?? 0;
+        $titleMarginRight = $options['titleMarginRight'] ?? 0;
+        $titleMarginBottom = $options['titleMarginBottom'] ?? 0;
+        $titleMarginLeft = $options['titleMarginLeft'] ?? 0;
+        $titleWidth = $options['titleWidth'] ?? 0;
+        $titleMinWidth = $options['titleMinWidth'] ?? 0;
+
+        $css = "
+.wp-block-jankx-advanced-image-box.preset-bordered-frame {
+    position: relative;
+    display: inline-block;
+}
+
+.wp-block-jankx-advanced-image-box.preset-bordered-frame img {
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: all 0.3s ease;
+}
+
+.wp-block-jankx-advanced-image-box.preset-bordered-frame .wp-block-jankx-advanced-image-box__frame-wrapper {
+    position: absolute;
+    top: {$borderOffset}px;
+    left: {$borderOffset}px;
+    right: {$borderOffset}px;
+    bottom: {$borderOffset}px;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.wp-block-jankx-advanced-image-box.preset-bordered-frame .wp-block-jankx-advanced-image-box__frame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: {$borderWidth}px solid {$borderColor};
+    pointer-events: none;
+}
+
+.wp-block-jankx-advanced-image-box.preset-bordered-frame .wp-block-jankx-advanced-image-box__title-box {
+    position: absolute;
+    background: {$titleBackground};
+    color: {$titleColor};
+    padding: 12px 20px;
+    z-index: 2;
+    pointer-events: none;
+    margin-top: {$titleMarginTop}px;
+    margin-right: {$titleMarginRight}px;
+    margin-bottom: {$titleMarginBottom}px;
+    margin-left: {$titleMarginLeft}px;
+    box-sizing: border-box;
+    max-width: 100%;
+";
+        
+        // Add width if set
+        if ($titleWidth > 0) {
+            $css .= "
+    width: {$titleWidth}px;
+";
+        }
+        
+        // Add min-width if set
+        if ($titleMinWidth > 0) {
+            $css .= "
+    min-width: {$titleMinWidth}px;
+";
+        }
+        
+        $css .= "
+";
+
+        // Position title box relative to frame
+        if ($titleFullWidth) {
+            // Full width/height based on position
+            if (strpos($titlePosition, 'top') === 0) {
+                $css .= "
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+";
+            } elseif (strpos($titlePosition, 'bottom') === 0) {
+                $css .= "
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+";
+            } elseif (strpos($titlePosition, 'left') === 0) {
+                $css .= "
+    top: 0;
+    left: 0;
+    bottom: 0;
+    height: 100%;
+";
+            } elseif (strpos($titlePosition, 'right') === 0) {
+                $css .= "
+    top: 0;
+    right: 0;
+    bottom: 0;
+    height: 100%;
+";
+            }
+        } else {
+            // 2D positioning
+            switch ($titlePosition) {
+                case 'top-left':
+                    $css .= "
+    top: 0;
+    left: 0;
+";
+                    break;
+                case 'top-center':
+                    $css .= "
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+";
+                    break;
+                case 'top-right':
+                    $css .= "
+    top: 0;
+    right: 0;
+";
+                    break;
+                case 'bottom-left':
+                    $css .= "
+    bottom: 0;
+    left: 0;
+";
+                    break;
+                case 'bottom-center':
+                    $css .= "
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+";
+                    break;
+                case 'bottom-right':
+                    $css .= "
+    bottom: 0;
+    right: 0;
+";
+                    break;
+                case 'left-top':
+                    $css .= "
+    top: 0;
+    left: 0;
+";
+                    break;
+                case 'left-center':
+                    $css .= "
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+";
+                    break;
+                case 'left-bottom':
+                    $css .= "
+    bottom: 0;
+    left: 0;
+";
+                    break;
+                case 'right-top':
+                    $css .= "
+    top: 0;
+    right: 0;
+";
+                    break;
+                case 'right-center':
+                    $css .= "
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+";
+                    break;
+                case 'right-bottom':
+                    $css .= "
+    bottom: 0;
+    right: 0;
+";
+                    break;
+                case 'center':
+                    $css .= "
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+";
+                    break;
+            }
+        }
+
+        $css .= "
+}
+
+.wp-block-jankx-advanced-image-box.preset-bordered-frame .wp-block-jankx-advanced-image-box__title-box h3,
+.wp-block-jankx-advanced-image-box.preset-bordered-frame .wp-block-jankx-advanced-image-box__title-box .wp-block-heading {
+    margin: 0;
+    color: {$titleColor};
+    font-size: 1.2em;
+    font-weight: 600;
+}
+
+/* Ensure hover effects work with preset */
+.wp-block-jankx-advanced-image-box.preset-bordered-frame:hover .wp-block-jankx-advanced-image-box__image.has-hover-zoom {
+    transform: scale(1.05);
+}
+
+.wp-block-jankx-advanced-image-box.preset-bordered-frame:hover .wp-block-jankx-advanced-image-box__image.has-hover-fade {
+    opacity: 0.8;
+}
+
+.wp-block-jankx-advanced-image-box.preset-bordered-frame:hover .wp-block-jankx-advanced-image-box__image.has-hover-blur {
+    filter: blur(2px);
+}
+
+.wp-block-jankx-advanced-image-box.preset-bordered-frame:hover .wp-block-jankx-advanced-image-box__image.has-hover-grayscale {
+    filter: grayscale(100%);
+}
+
+.wp-block-jankx-advanced-image-box.preset-bordered-frame:hover .wp-block-jankx-advanced-image-box__image.has-hover-sepia {
+    filter: sepia(100%);
+}
+
+.wp-block-jankx-advanced-image-box.preset-bordered-frame:hover .wp-block-jankx-advanced-image-box__image.has-hover-brightness {
+    filter: brightness(1.2);
+}
+";
+
+        return $css;
+    }
+
+    public function renderSVGMask(array $attributes, array $options = []): string
+    {
+        // This preset uses CSS only, no SVG mask needed
+        return '';
+    }
+
+    public function renderMarkup(array $attributes, array $options = [], string $content = ''): string
+    {
+        $markup = '<div class="wp-block-jankx-advanced-image-box__frame-wrapper">';
+        $markup .= '<div class="wp-block-jankx-advanced-image-box__frame"></div>';
+        
+        if (!empty($content)) {
+            $markup .= sprintf(
+                '<div class="wp-block-jankx-advanced-image-box__title-box">%s</div>',
+                $content
+            );
+        }
+        
+        $markup .= '</div>';
+
+        return $markup;
+    }
+
+    public function getJavaScript(): string
+    {
+        // No custom JavaScript needed for this preset
+        return '';
+    }
+}
+

@@ -8,7 +8,7 @@
   \**********************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/advanced-image-box","title":"Advanced Image Box","category":"jankx","description":"An advanced image block with overlay info box and inner content support.","keywords":["image","overlay","hover","animation","inner blocks"],"textdomain":"jankx","attributes":{"url":{"type":"string","source":"attribute","selector":"img","attribute":"src","role":"content"},"alt":{"type":"string","source":"attribute","selector":"img","attribute":"alt","default":"","role":"content"},"title":{"type":"string","source":"attribute","selector":"img","attribute":"title","role":"content"},"id":{"type":"number","role":"content"},"width":{"type":"string"},"height":{"type":"string"},"aspectRatio":{"type":"string"},"scale":{"type":"string"},"sizeSlug":{"type":"string"},"href":{"type":"string","source":"attribute","selector":"a","attribute":"href","role":"content"},"linkTarget":{"type":"string","source":"attribute","selector":"a","attribute":"target"},"rel":{"type":"string","source":"attribute","selector":"a","attribute":"rel"},"caption":{"type":"rich-text","source":"rich-text","selector":".wp-block-jankx-advanced-image-box__caption","role":"content"},"showOverlayOnHover":{"type":"boolean","default":true},"overlayAnimation":{"type":"string","default":"fadeIn"},"overlayAnimationDuration":{"type":"number","default":1000},"overlayAnimationDelay":{"type":"number","default":0},"overlayPosition":{"type":"string","default":"center"},"overlayBackground":{"type":"string","default":"rgba(0, 0, 0, 0.7)"},"overlayOpacity":{"type":"number","default":1},"imageHoverEffect":{"type":"string","default":"zoom"},"borderRadius":{"type":"string","default":"0px"}},"supports":{"anchor":true,"align":["left","center","right","wide","full"],"html":false,"innerBlocks":true,"reusable":false,"interactivity":{"clientNavigation":true},"color":{"text":false,"background":false,"gradients":true,"__experimentalSkipSerialization":true},"spacing":{"margin":true,"padding":true,"__experimentalDefaultControls":{"margin":true,"padding":true}},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true,"__experimentalSkipSerialization":true,"__experimentalDefaultControls":{"color":true,"radius":true,"style":true,"width":true}},"shadow":{"__experimentalSkipSerialization":true},"filter":{"duotone":true}},"selectors":{"border":".wp-block-jankx-advanced-image-box img, .wp-block-jankx-advanced-image-box__overlay","shadow":".wp-block-jankx-advanced-image-box img, .wp-block-jankx-advanced-image-box__overlay","filter":{"duotone":".wp-block-jankx-advanced-image-box img"}},"styles":[{"name":"default","label":"Default","isDefault":true},{"name":"card","label":"Card"},{"name":"overlay","label":"Overlay"},{"name":"modern","label":"Modern"}],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/advanced-image-box","title":"Advanced Image Box","category":"jankx","description":"An advanced image block with overlay info box and inner content support.","keywords":["image","overlay","hover","animation","inner blocks"],"textdomain":"jankx","attributes":{"url":{"type":"string","source":"attribute","selector":"img","attribute":"src","role":"content"},"alt":{"type":"string","source":"attribute","selector":"img","attribute":"alt","default":"","role":"content"},"title":{"type":"string","source":"attribute","selector":"img","attribute":"title","role":"content"},"id":{"type":"number","role":"content"},"width":{"type":"string"},"height":{"type":"string"},"aspectRatio":{"type":"string"},"scale":{"type":"string"},"sizeSlug":{"type":"string"},"href":{"type":"string","source":"attribute","selector":"a","attribute":"href","role":"content"},"linkTarget":{"type":"string","source":"attribute","selector":"a","attribute":"target"},"rel":{"type":"string","source":"attribute","selector":"a","attribute":"rel"},"caption":{"type":"rich-text","source":"rich-text","selector":".wp-block-jankx-advanced-image-box__caption","role":"content"},"showOverlayOnHover":{"type":"boolean","default":true},"overlayAnimation":{"type":"string","default":"fadeIn"},"overlayAnimationDuration":{"type":"number","default":1000},"overlayAnimationDelay":{"type":"number","default":0},"overlayPosition":{"type":"string","default":"center"},"overlayBackground":{"type":"string","default":"rgba(0, 0, 0, 0.7)"},"overlayOpacity":{"type":"number","default":1},"imageHoverEffect":{"type":"string","default":"zoom"},"borderRadius":{"type":"string","default":"0px"},"preset":{"type":"string"},"presetOptions":{"type":"object"}},"supports":{"anchor":true,"align":["left","center","right","wide","full"],"html":false,"innerBlocks":true,"reusable":false,"interactivity":{"clientNavigation":true},"color":{"text":false,"background":false,"gradients":true,"__experimentalSkipSerialization":true},"spacing":{"margin":true,"padding":true,"__experimentalDefaultControls":{"margin":true,"padding":true}},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true,"__experimentalSkipSerialization":true,"__experimentalDefaultControls":{"color":true,"radius":true,"style":true,"width":true}},"shadow":{"__experimentalSkipSerialization":true},"filter":{"duotone":true}},"selectors":{"border":".wp-block-jankx-advanced-image-box img, .wp-block-jankx-advanced-image-box__overlay","shadow":".wp-block-jankx-advanced-image-box img, .wp-block-jankx-advanced-image-box__overlay","filter":{"duotone":".wp-block-jankx-advanced-image-box img"}},"styles":[{"name":"default","label":"Default","isDefault":true},{"name":"card","label":"Card"},{"name":"overlay","label":"Overlay"},{"name":"modern","label":"Modern"}],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
 
 /***/ }),
 
@@ -358,8 +358,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_blob__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/blob */ "@wordpress/blob");
 /* harmony import */ var _wordpress_blob__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blob__WEBPACK_IMPORTED_MODULE_8__);
 /* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./constants */ "./blocks/advanced-image-box/constants.ts");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__);
+/* harmony import */ var _presetCSSHelpers__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./presetCSSHelpers */ "./blocks/advanced-image-box/presetCSSHelpers.ts");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__);
 /**
  * External dependencies
  */
@@ -381,6 +382,9 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 
+
+
+// Get presets from PHP
 
 function edit({
   attributes,
@@ -413,7 +417,9 @@ function edit({
     overlayBackground = 'rgba(0,0,0,0.5)',
     overlayOpacity = 1,
     imageHoverEffect = 'none',
-    borderRadius = '0px'
+    borderRadius = '0px',
+    preset = '',
+    presetOptions = {}
   } = attributes || {};
 
   // Validation state removed for better UX
@@ -430,11 +436,146 @@ function edit({
     createErrorNotice
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_5__.useDispatch)('core/notices');
 
-  // Get inner blocks for validation
+  // Get inner blocks for validation and template check
   const innerBlocks = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_5__.useSelect)(select => {
     const blocks = select(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.store).getBlocks(clientId);
     return Array.isArray(blocks) ? blocks : [];
   }, [clientId]);
+
+  // Only apply template if inner blocks are empty (to preserve existing content)
+  const hasInnerBlocks = innerBlocks && innerBlocks.length > 0;
+
+  // Get presets from PHP
+  const presets = window.jankxAdvancedImageBoxPresets || {};
+  const currentPreset = preset ? presets[preset] : null;
+
+  // Handle preset change
+  const handlePresetChange = newPresetId => {
+    const newPreset = presets[newPresetId];
+    if (!newPreset) {
+      setAttributes({
+        preset: undefined,
+        presetOptions: undefined
+      });
+      return;
+    }
+
+    // Set default options
+    const defaultOptions = {};
+    if (newPreset.options) {
+      newPreset.options.forEach(option => {
+        if (option.default !== undefined) {
+          defaultOptions[option.name] = option.default;
+        }
+      });
+    }
+    setAttributes({
+      preset: newPresetId,
+      presetOptions: defaultOptions
+    });
+
+    // If preset requires inner blocks, add template
+    if (newPreset.requiresInnerBlocks && newPreset.innerBlocksTemplate) {
+      // This will be handled by InnerBlocks component
+    }
+  };
+
+  // Handle preset option change
+  const handlePresetOptionChange = (optionName, value) => {
+    setAttributes({
+      presetOptions: {
+        ...presetOptions,
+        [optionName]: value
+      }
+    });
+  };
+
+  // Render preset option control
+  const renderPresetOption = option => {
+    var _option$name, _ref, _option$min, _option$max, _option$step, _ref2, _ref3, _ref4;
+    const value = (_option$name = presetOptions[option.name]) !== null && _option$name !== void 0 ? _option$name : option.default;
+    switch (option.type) {
+      case 'text':
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
+          style: {
+            marginBottom: '16px'
+          },
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("label", {
+            style: {
+              display: 'block',
+              marginBottom: '4px'
+            },
+            children: option.label
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("input", {
+            type: "text",
+            value: String(value || ''),
+            onChange: e => handlePresetOptionChange(option.name, e.target.value),
+            style: {
+              width: '100%'
+            }
+          }), option.help && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("p", {
+            style: {
+              fontSize: '12px',
+              color: '#757575',
+              marginTop: '4px'
+            },
+            children: option.help
+          })]
+        }, option.name);
+      case 'number':
+      case 'range':
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.RangeControl, {
+          label: option.label,
+          value: Number((_ref = value !== null && value !== void 0 ? value : option.default) !== null && _ref !== void 0 ? _ref : 0),
+          onChange: newValue => handlePresetOptionChange(option.name, newValue),
+          min: (_option$min = option.min) !== null && _option$min !== void 0 ? _option$min : 0,
+          max: (_option$max = option.max) !== null && _option$max !== void 0 ? _option$max : 100,
+          step: (_option$step = option.step) !== null && _option$step !== void 0 ? _option$step : 1,
+          help: option.help
+        }, option.name);
+      case 'color':
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
+          style: {
+            marginBottom: '16px'
+          },
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ColorPicker, {
+            color: String((_ref2 = value !== null && value !== void 0 ? value : option.default) !== null && _ref2 !== void 0 ? _ref2 : '#000000'),
+            onChange: newValue => handlePresetOptionChange(option.name, newValue),
+            label: option.label
+          }), option.help && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("p", {
+            style: {
+              fontSize: '12px',
+              color: '#757575',
+              marginTop: '4px'
+            },
+            children: option.help
+          })]
+        }, option.name);
+      case 'select':
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.SelectControl, {
+          label: option.label,
+          value: String((_ref3 = value !== null && value !== void 0 ? value : option.default) !== null && _ref3 !== void 0 ? _ref3 : ''),
+          options: option.options?.map(opt => ({
+            label: opt.label,
+            value: String(opt.value)
+          })) || [],
+          onChange: newValue => handlePresetOptionChange(option.name, newValue),
+          help: option.help
+        }, option.name);
+      case 'toggle':
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
+          label: option.label,
+          checked: Boolean((_ref4 = value !== null && value !== void 0 ? value : option.default) !== null && _ref4 !== void 0 ? _ref4 : false),
+          onChange: newValue => handlePresetOptionChange(option.name, newValue),
+          help: option.help
+        }, option.name);
+      default:
+        return null;
+    }
+  };
+
+  // Render preset CSS for editor preview
+  const presetCSS = currentPreset && preset ? (0,_presetCSSHelpers__WEBPACK_IMPORTED_MODULE_10__.renderPresetCSS)(currentPreset, presetOptions) : '';
 
   // Validation removed for better UX
 
@@ -443,7 +584,10 @@ function edit({
     className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])(className, 'wp-block-jankx-advanced-image-box', {
       'has-overlay': showOverlayOnHover,
       'has-hover-effect': imageHoverEffect && imageHoverEffect !== 'none',
-      'is-selected': isSelected
+      'is-selected': isSelected,
+      ...(currentPreset?.className ? {
+        [currentPreset.className]: true
+      } : {})
     })
   });
   const onSelectImage = media => {
@@ -503,7 +647,7 @@ function edit({
 
   // Validation notice removed for better UX
 
-  const imageElement = url ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("img", {
+  const imageElement = url ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("img", {
     src: url,
     alt: alt || '',
     title: title,
@@ -519,9 +663,9 @@ function edit({
       height,
       borderRadius
     }
-  }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
+  }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
     className: "wp-block-jankx-advanced-image-box__placeholder",
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.MediaReplaceFlow, {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.MediaReplaceFlow, {
       mediaId: id,
       mediaURL: url,
       allowedTypes: ['image'],
@@ -532,27 +676,75 @@ function edit({
       name: !url ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Add image') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Replace')
     })
   });
-  const overlayContent = showOverlayOnHover && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
-    className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])('wp-block-jankx-advanced-image-box__overlay', `wp-block-jankx-advanced-image-box__overlay--${overlayPosition}`, 'animated', overlayAnimation),
-    style: {
-      backgroundColor: overlayBackground,
-      opacity: overlayOpacity,
-      animationDuration: `${overlayAnimationDuration}ms`,
-      animationDelay: `${overlayAnimationDelay}ms`
-    },
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
-      className: "wp-block-jankx-advanced-image-box__overlay__content",
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.InnerBlocks, {
-        allowedBlocks: _constants__WEBPACK_IMPORTED_MODULE_9__.ALLOWED_INNER_BLOCKS,
-        templateLock: false,
-        renderAppender: _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.InnerBlocks.ButtonBlockAppender
+
+  // InnerBlocks MUST be rendered in ONE fixed location in the DOM
+  // This is critical for WordPress to properly track and save inner blocks
+  const innerBlocksProps = {
+    allowedBlocks: _constants__WEBPACK_IMPORTED_MODULE_9__.ALLOWED_INNER_BLOCKS,
+    templateLock: false,
+    renderAppender: _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.InnerBlocks.ButtonBlockAppender,
+    // Only apply template if inner blocks are empty and preset requires it
+    template: !hasInnerBlocks && preset && currentPreset?.requiresInnerBlocks && currentPreset.innerBlocksTemplate ? currentPreset.innerBlocksTemplate : undefined
+  };
+
+  // Determine where to render InnerBlocks based on preset and overlay
+  // But always render it in ONE place only
+  let innerBlocksWrapper = null;
+  if (preset && currentPreset?.requiresInnerBlocks) {
+    // When preset is active, render in title-box
+    innerBlocksWrapper = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
+      className: "wp-block-jankx-advanced-image-box__frame-wrapper",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
+        className: "wp-block-jankx-advanced-image-box__frame"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
+        className: "wp-block-jankx-advanced-image-box__title-box",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
+          className: "wp-block-jankx-advanced-image-box__overlay__content",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.InnerBlocks, {
+            ...innerBlocksProps
+          })
+        })
+      })]
+    });
+  } else if (showOverlayOnHover) {
+    // When overlay is enabled, render in overlay
+    innerBlocksWrapper = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
+      className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])('wp-block-jankx-advanced-image-box__overlay', `wp-block-jankx-advanced-image-box__overlay--${overlayPosition}`, 'animated', overlayAnimation),
+      style: {
+        backgroundColor: overlayBackground,
+        opacity: overlayOpacity,
+        animationDuration: `${overlayAnimationDuration}ms`,
+        animationDelay: `${overlayAnimationDelay}ms`
+      },
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
+        className: "wp-block-jankx-advanced-image-box__overlay__content",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.InnerBlocks, {
+          ...innerBlocksProps
+        })
       })
-    })
-  });
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("div", {
+    });
+  } else {
+    // When no preset and no overlay, render in hidden container (still visible for editing)
+    innerBlocksWrapper = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
+      className: "wp-block-jankx-advanced-image-box__overlay__content",
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.InnerBlocks, {
+        ...innerBlocksProps
+      })
+    });
+  }
+
+  // Separate visual elements (overlay wrapper for non-preset, preset frame for preset)
+  const overlayContent = showOverlayOnHover && !preset ? innerBlocksWrapper : null;
+  const presetContent = preset && currentPreset ? innerBlocksWrapper : null;
+  const hiddenInnerBlocks = !preset && !showOverlayOnHover ? innerBlocksWrapper : null;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.Fragment, {
+    children: [presetCSS && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("style", {
+      dangerouslySetInnerHTML: {
+        __html: presetCSS
+      }
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
       ...blockProps,
-      children: [imageElement, overlayContent, !_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.RichText.isEmpty(caption) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.RichText, {
+      children: [imageElement, overlayContent, presetContent, hiddenInnerBlocks, !_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.RichText.isEmpty(caption) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.RichText, {
         className: "wp-block-jankx-advanced-image-box__caption",
         tagName: "figcaption",
         value: caption,
@@ -561,9 +753,9 @@ function edit({
         }),
         placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Add caption…')
       })]
-    }), isSelected && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.BlockControls, {
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToolbarGroup, {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.MediaReplaceFlow, {
+    }), isSelected && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.BlockControls, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToolbarGroup, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.MediaReplaceFlow, {
           mediaId: id,
           mediaURL: url,
           allowedTypes: ['image'],
@@ -572,21 +764,55 @@ function edit({
           onSelectURL: onSelectURL,
           onError: onUploadError,
           name: !url ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Add image') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Replace')
-        }), href && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToolbarButton, {
+        }), href && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToolbarButton, {
           icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_7__["default"],
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Unlink'),
           onClick: unlink
-        }), !href && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToolbarButton, {
+        }), !href && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToolbarButton, {
           icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__["default"],
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Link'),
           onClick: startEditing
         })]
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.InspectorControls, {
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.InspectorControls, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Preset'),
+        initialOpen: true,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.SelectControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Layout Preset'),
+          value: preset || '',
+          options: [{
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('None', 'jankx'),
+            value: ''
+          }, ...Object.values(presets).map(p => ({
+            label: p.label,
+            value: p.id
+          }))],
+          onChange: handlePresetChange,
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Choose a preset layout for the image box', 'jankx')
+        }), currentPreset && currentPreset.description && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("p", {
+          style: {
+            fontSize: '12px',
+            color: '#757575',
+            marginTop: '8px'
+          },
+          children: currentPreset.description
+        }), currentPreset && currentPreset.options && currentPreset.options.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
+          style: {
+            marginTop: '16px'
+          },
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("strong", {
+            style: {
+              display: 'block',
+              marginBottom: '12px'
+            },
+            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Preset Options', 'jankx')
+          }), currentPreset.options.map(renderPresetOption)]
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Image Settings'),
         initialOpen: true,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.RichText, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.RichText, {
           className: "wp-block-jankx-advanced-image-box__alt-text",
           tagName: "p",
           value: alt || '',
@@ -595,7 +821,7 @@ function edit({
           }),
           placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Add alt text…'),
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Describe the purpose of the image. Leave empty if decorative.')
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.RichText, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.RichText, {
           className: "wp-block-jankx-advanced-image-box__title",
           tagName: "p",
           value: title || '',
@@ -605,17 +831,17 @@ function edit({
           placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Add title…'),
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Describe the role of this image on the page.')
         })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Overlay Settings'),
         initialOpen: false,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show overlay on hover'),
           checked: showOverlayOnHover,
           onChange: value => setAttributes({
             showOverlayOnHover: value
           })
-        }), showOverlayOnHover && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.SelectControl, {
+        }), showOverlayOnHover && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.SelectControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Animation'),
             value: overlayAnimation,
             options: [{
@@ -628,7 +854,7 @@ function edit({
             onChange: value => setAttributes({
               overlayAnimation: value
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.RangeControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.RangeControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Animation Duration (ms)'),
             value: overlayAnimationDuration,
             onChange: value => setAttributes({
@@ -637,7 +863,7 @@ function edit({
             min: 100,
             max: 5000,
             step: 100
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.RangeControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.RangeControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Animation Delay (ms)'),
             value: overlayAnimationDelay,
             onChange: value => setAttributes({
@@ -646,7 +872,7 @@ function edit({
             min: 0,
             max: 2000,
             step: 100
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.SelectControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.SelectControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Overlay Position'),
             value: overlayPosition,
             options: _constants__WEBPACK_IMPORTED_MODULE_9__.OVERLAY_POSITIONS.map(position => ({
@@ -656,13 +882,13 @@ function edit({
             onChange: value => setAttributes({
               overlayPosition: value
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ColorPicker, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ColorPicker, {
             color: overlayBackground,
             onChange: value => setAttributes({
               overlayBackground: value
             }),
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Overlay Background')
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.RangeControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.RangeControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Overlay Opacity'),
             value: overlayOpacity,
             onChange: value => setAttributes({
@@ -673,10 +899,10 @@ function edit({
             step: 0.1
           })]
         })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Hover Effects'),
         initialOpen: false,
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.SelectControl, {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.SelectControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Image Hover Effect'),
           value: imageHoverEffect,
           options: _constants__WEBPACK_IMPORTED_MODULE_9__.HOVER_EFFECTS.map(effect => ({
@@ -687,10 +913,10 @@ function edit({
             imageHoverEffect: value
           })
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Styling'),
         initialOpen: false,
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.RangeControl, {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.RangeControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Border Radius (px)'),
           value: parseInt(borderRadius) || 0,
           onChange: value => setAttributes({
@@ -703,6 +929,198 @@ function edit({
       })]
     })]
   });
+}
+
+/***/ }),
+
+/***/ "./blocks/advanced-image-box/presetCSSHelpers.ts":
+/*!*******************************************************!*\
+  !*** ./blocks/advanced-image-box/presetCSSHelpers.ts ***!
+  \*******************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   renderBorderedFrameCSS: () => (/* binding */ renderBorderedFrameCSS),
+/* harmony export */   renderPresetCSS: () => (/* binding */ renderPresetCSS)
+/* harmony export */ });
+/**
+ * Helper functions to render preset CSS in editor
+ * These should match the PHP renderCSS methods
+ */
+
+/**
+ * Render CSS for bordered-frame preset
+ */
+function renderBorderedFrameCSS(preset, options) {
+  var _options$borderWidth, _options$borderColor, _options$borderOffset, _options$titleFullWid, _options$titlePositio, _options$titleBackgro, _options$titleColor, _options$titleMarginT, _options$titleMarginR, _options$titleMarginB, _options$titleMarginL, _options$titleWidth, _options$titleMinWidt;
+  const borderWidth = Number((_options$borderWidth = options.borderWidth) !== null && _options$borderWidth !== void 0 ? _options$borderWidth : 4);
+  const borderColor = String((_options$borderColor = options.borderColor) !== null && _options$borderColor !== void 0 ? _options$borderColor : '#ffffff');
+  const borderOffset = Number((_options$borderOffset = options.borderOffset) !== null && _options$borderOffset !== void 0 ? _options$borderOffset : 20);
+  const titleFullWidth = Boolean((_options$titleFullWid = options.titleFullWidth) !== null && _options$titleFullWid !== void 0 ? _options$titleFullWid : false);
+  const titlePosition = String((_options$titlePositio = options.titlePosition) !== null && _options$titlePositio !== void 0 ? _options$titlePositio : 'bottom-center');
+  const titleBackground = String((_options$titleBackgro = options.titleBackground) !== null && _options$titleBackgro !== void 0 ? _options$titleBackgro : 'rgba(0, 0, 0, 0.8)');
+  const titleColor = String((_options$titleColor = options.titleColor) !== null && _options$titleColor !== void 0 ? _options$titleColor : '#ffffff');
+  const titleMarginTop = Number((_options$titleMarginT = options.titleMarginTop) !== null && _options$titleMarginT !== void 0 ? _options$titleMarginT : 0);
+  const titleMarginRight = Number((_options$titleMarginR = options.titleMarginRight) !== null && _options$titleMarginR !== void 0 ? _options$titleMarginR : 0);
+  const titleMarginBottom = Number((_options$titleMarginB = options.titleMarginBottom) !== null && _options$titleMarginB !== void 0 ? _options$titleMarginB : 0);
+  const titleMarginLeft = Number((_options$titleMarginL = options.titleMarginLeft) !== null && _options$titleMarginL !== void 0 ? _options$titleMarginL : 0);
+  const titleWidth = Number((_options$titleWidth = options.titleWidth) !== null && _options$titleWidth !== void 0 ? _options$titleWidth : 0);
+  const titleMinWidth = Number((_options$titleMinWidt = options.titleMinWidth) !== null && _options$titleMinWidt !== void 0 ? _options$titleMinWidt : 0);
+  let titlePositionCSS = '';
+  if (titleFullWidth) {
+    // Full width/height based on position
+    if (titlePosition.startsWith('top')) {
+      titlePositionCSS = `top: 0; left: 0; right: 0; width: 100%;`;
+    } else if (titlePosition.startsWith('bottom')) {
+      titlePositionCSS = `bottom: 0; left: 0; right: 0; width: 100%;`;
+    } else if (titlePosition.startsWith('left')) {
+      titlePositionCSS = `top: 0; left: 0; bottom: 0; height: 100%;`;
+    } else if (titlePosition.startsWith('right')) {
+      titlePositionCSS = `top: 0; right: 0; bottom: 0; height: 100%;`;
+    }
+  } else {
+    // 2D positioning
+    switch (titlePosition) {
+      case 'top-left':
+        titlePositionCSS = `top: 0; left: 0;`;
+        break;
+      case 'top-center':
+        titlePositionCSS = `top: 0; left: 50%; transform: translateX(-50%);`;
+        break;
+      case 'top-right':
+        titlePositionCSS = `top: 0; right: 0;`;
+        break;
+      case 'bottom-left':
+        titlePositionCSS = `bottom: 0; left: 0;`;
+        break;
+      case 'bottom-center':
+        titlePositionCSS = `bottom: 0; left: 50%; transform: translateX(-50%);`;
+        break;
+      case 'bottom-right':
+        titlePositionCSS = `bottom: 0; right: 0;`;
+        break;
+      case 'left-top':
+        titlePositionCSS = `top: 0; left: 0;`;
+        break;
+      case 'left-center':
+        titlePositionCSS = `top: 50%; left: 0; transform: translateY(-50%);`;
+        break;
+      case 'left-bottom':
+        titlePositionCSS = `bottom: 0; left: 0;`;
+        break;
+      case 'right-top':
+        titlePositionCSS = `top: 0; right: 0;`;
+        break;
+      case 'right-center':
+        titlePositionCSS = `top: 50%; right: 0; transform: translateY(-50%);`;
+        break;
+      case 'right-bottom':
+        titlePositionCSS = `bottom: 0; right: 0;`;
+        break;
+      case 'center':
+        titlePositionCSS = `top: 50%; left: 50%; transform: translate(-50%, -50%);`;
+        break;
+      default:
+        titlePositionCSS = `bottom: 0; left: 50%; transform: translateX(-50%);`;
+    }
+  }
+  return `
+.wp-block-jankx-advanced-image-box.preset-bordered-frame {
+	position: relative;
+	display: inline-block;
+}
+
+.wp-block-jankx-advanced-image-box.preset-bordered-frame img {
+	display: block;
+	width: 100%;
+	height: auto;
+	transition: all 0.3s ease;
+}
+
+.wp-block-jankx-advanced-image-box.preset-bordered-frame .wp-block-jankx-advanced-image-box__frame-wrapper {
+	position: absolute;
+	top: ${borderOffset}px;
+	left: ${borderOffset}px;
+	right: ${borderOffset}px;
+	bottom: ${borderOffset}px;
+	pointer-events: none;
+	z-index: 1;
+}
+
+.wp-block-jankx-advanced-image-box.preset-bordered-frame .wp-block-jankx-advanced-image-box__frame {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	border: ${borderWidth}px solid ${borderColor};
+	pointer-events: none;
+}
+
+.wp-block-jankx-advanced-image-box.preset-bordered-frame .wp-block-jankx-advanced-image-box__title-box {
+	position: absolute;
+	background: ${titleBackground};
+	color: ${titleColor};
+	padding: 12px 20px;
+	z-index: 2;
+	pointer-events: none;
+	margin-top: ${titleMarginTop}px;
+	margin-right: ${titleMarginRight}px;
+	margin-bottom: ${titleMarginBottom}px;
+	margin-left: ${titleMarginLeft}px;
+	box-sizing: border-box;
+	max-width: 100%;
+	${titleWidth > 0 ? `width: ${titleWidth}px;` : ''}
+	${titleMinWidth > 0 ? `min-width: ${titleMinWidth}px;` : ''}
+	${titlePositionCSS}
+}
+
+.wp-block-jankx-advanced-image-box.preset-bordered-frame .wp-block-jankx-advanced-image-box__title-box h3,
+.wp-block-jankx-advanced-image-box.preset-bordered-frame .wp-block-jankx-advanced-image-box__title-box .wp-block-heading {
+	margin: 0;
+	color: ${titleColor};
+	font-size: 1.2em;
+	font-weight: 600;
+}
+
+/* Ensure hover effects work with preset */
+.wp-block-jankx-advanced-image-box.preset-bordered-frame:hover .wp-block-jankx-advanced-image-box__image.has-hover-zoom {
+	transform: scale(1.05);
+}
+
+.wp-block-jankx-advanced-image-box.preset-bordered-frame:hover .wp-block-jankx-advanced-image-box__image.has-hover-fade {
+	opacity: 0.8;
+}
+
+.wp-block-jankx-advanced-image-box.preset-bordered-frame:hover .wp-block-jankx-advanced-image-box__image.has-hover-blur {
+	filter: blur(2px);
+}
+
+.wp-block-jankx-advanced-image-box.preset-bordered-frame:hover .wp-block-jankx-advanced-image-box__image.has-hover-grayscale {
+	filter: grayscale(100%);
+}
+
+.wp-block-jankx-advanced-image-box.preset-bordered-frame:hover .wp-block-jankx-advanced-image-box__image.has-hover-sepia {
+	filter: sepia(100%);
+}
+
+.wp-block-jankx-advanced-image-box.preset-bordered-frame:hover .wp-block-jankx-advanced-image-box__image.has-hover-brightness {
+	filter: brightness(1.2);
+}
+`;
+}
+
+/**
+ * Render CSS for a preset
+ */
+function renderPresetCSS(preset, options) {
+  switch (preset.id) {
+    case 'bordered-frame':
+      return renderBorderedFrameCSS(preset, options);
+    default:
+      return '';
+  }
 }
 
 /***/ }),

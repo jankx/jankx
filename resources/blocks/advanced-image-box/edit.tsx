@@ -40,7 +40,7 @@ import { isBlobURL } from '@wordpress/blob';
 /**
  * Internal dependencies
  */
-import { AdvancedImageBoxEditProps, MediaFile } from './types';
+import { AdvancedImageBoxEditProps, MediaFile, ImageBoxPreset, PresetOption } from './types';
 import {
 	ANIMATION_OPTIONS,
 	OVERLAY_POSITIONS,
@@ -49,6 +49,12 @@ import {
 	DEFAULT_INNER_BLOCKS_TEMPLATE
 } from './constants';
 import { validateBlockContent, getValidationSummary } from './validationUtils';
+import { renderPresetCSS } from './presetCSSHelpers';
+
+// Get presets from PHP
+declare const window: Window & {
+	jankxAdvancedImageBoxPresets?: Record<string, ImageBoxPreset>;
+};
 
 export default function edit({
 	attributes,
@@ -81,7 +87,9 @@ export default function edit({
 		overlayBackground = 'rgba(0,0,0,0.5)',
 		overlayOpacity = 1,
 		imageHoverEffect = 'none',
-		borderRadius = '0px'
+		borderRadius = '0px',
+		preset = '',
+		presetOptions = {}
 	} = attributes || {};
 
 	// Validation state removed for better UX
@@ -95,11 +103,149 @@ export default function edit({
 	const { getSettings, getBlockRootClientId } = useSelect(blockEditorStore);
 	const { createErrorNotice } = useDispatch('core/notices');
 
-	// Get inner blocks for validation
+	// Get inner blocks for validation and template check
 	const innerBlocks = useSelect((select) => {
 		const blocks = select(blockEditorStore).getBlocks(clientId);
 		return Array.isArray(blocks) ? blocks : [];
 	}, [clientId]);
+	
+	// Only apply template if inner blocks are empty (to preserve existing content)
+	const hasInnerBlocks = innerBlocks && innerBlocks.length > 0;
+
+	// Get presets from PHP
+	const presets = window.jankxAdvancedImageBoxPresets || {};
+	const currentPreset = preset ? presets[preset] : null;
+
+	// Handle preset change
+	const handlePresetChange = (newPresetId: string) => {
+		const newPreset = presets[newPresetId];
+		if (!newPreset) {
+			setAttributes({ preset: undefined, presetOptions: undefined });
+			return;
+		}
+
+		// Set default options
+		const defaultOptions: Record<string, unknown> = {};
+		if (newPreset.options) {
+			newPreset.options.forEach((option: PresetOption) => {
+				if (option.default !== undefined) {
+					defaultOptions[option.name] = option.default;
+				}
+			});
+		}
+
+		setAttributes({
+			preset: newPresetId,
+			presetOptions: defaultOptions
+		});
+
+		// If preset requires inner blocks, add template
+		if (newPreset.requiresInnerBlocks && newPreset.innerBlocksTemplate) {
+			// This will be handled by InnerBlocks component
+		}
+	};
+
+	// Handle preset option change
+	const handlePresetOptionChange = (optionName: string, value: unknown) => {
+		setAttributes({
+			presetOptions: {
+				...presetOptions,
+				[optionName]: value
+			}
+		});
+	};
+
+	// Render preset option control
+	const renderPresetOption = (option: PresetOption) => {
+		const value = (presetOptions as Record<string, unknown>)[option.name] ?? option.default;
+
+		switch (option.type) {
+			case 'text':
+				return (
+					<div key={option.name} style={{ marginBottom: '16px' }}>
+						<label style={{ display: 'block', marginBottom: '4px' }}>
+							{option.label}
+						</label>
+						<input
+							type="text"
+							value={String(value || '')}
+							onChange={(e) => handlePresetOptionChange(option.name, e.target.value)}
+							style={{ width: '100%' }}
+						/>
+						{option.help && (
+							<p style={{ fontSize: '12px', color: '#757575', marginTop: '4px' }}>
+								{option.help}
+							</p>
+						)}
+					</div>
+				);
+
+			case 'number':
+			case 'range':
+				return (
+					<RangeControl
+						key={option.name}
+						label={option.label}
+						value={Number(value ?? option.default ?? 0)}
+						onChange={(newValue) => handlePresetOptionChange(option.name, newValue)}
+						min={option.min ?? 0}
+						max={option.max ?? 100}
+						step={option.step ?? 1}
+						help={option.help}
+					/>
+				);
+
+			case 'color':
+				return (
+					<div key={option.name} style={{ marginBottom: '16px' }}>
+						<ColorPicker
+							color={String(value ?? option.default ?? '#000000')}
+							onChange={(newValue) => handlePresetOptionChange(option.name, newValue)}
+							label={option.label}
+						/>
+						{option.help && (
+							<p style={{ fontSize: '12px', color: '#757575', marginTop: '4px' }}>
+								{option.help}
+							</p>
+						)}
+					</div>
+				);
+
+			case 'select':
+				return (
+					<SelectControl
+						key={option.name}
+						label={option.label}
+						value={String(value ?? option.default ?? '')}
+						options={option.options?.map(opt => ({
+							label: opt.label,
+							value: String(opt.value)
+						})) || []}
+						onChange={(newValue) => handlePresetOptionChange(option.name, newValue)}
+						help={option.help}
+					/>
+				);
+
+			case 'toggle':
+				return (
+					<ToggleControl
+						key={option.name}
+						label={option.label}
+						checked={Boolean(value ?? option.default ?? false)}
+						onChange={(newValue) => handlePresetOptionChange(option.name, newValue)}
+						help={option.help}
+					/>
+				);
+
+			default:
+				return null;
+		}
+	};
+
+	// Render preset CSS for editor preview
+	const presetCSS = currentPreset && preset
+		? renderPresetCSS(currentPreset, presetOptions as PresetOptionValue)
+		: '';
 
 	// Validation removed for better UX
 
@@ -109,6 +255,7 @@ export default function edit({
 			'has-overlay': showOverlayOnHover,
 			'has-hover-effect': imageHoverEffect && imageHoverEffect !== 'none',
 			'is-selected': isSelected,
+			...(currentPreset?.className ? { [currentPreset.className]: true } : {}),
 		}),
 	});
 
@@ -209,36 +356,83 @@ export default function edit({
 		</div>
 	);
 
-	const overlayContent = showOverlayOnHover && (
-		<div
-			className={clsx(
-				'wp-block-jankx-advanced-image-box__overlay',
-				`wp-block-jankx-advanced-image-box__overlay--${overlayPosition}`,
-				'animated',
-				overlayAnimation
-			)}
-			style={{
-				backgroundColor: overlayBackground,
-				opacity: overlayOpacity,
-				animationDuration: `${overlayAnimationDuration}ms`,
-				animationDelay: `${overlayAnimationDelay}ms`,
-			}}
-		>
-			<div className="wp-block-jankx-advanced-image-box__overlay__content">
-				<InnerBlocks
-					allowedBlocks={ALLOWED_INNER_BLOCKS}
-					templateLock={false}
-					renderAppender={InnerBlocks.ButtonBlockAppender}
-				/>
+	// InnerBlocks MUST be rendered in ONE fixed location in the DOM
+	// This is critical for WordPress to properly track and save inner blocks
+	const innerBlocksProps = {
+		allowedBlocks: ALLOWED_INNER_BLOCKS,
+		templateLock: false,
+		renderAppender: InnerBlocks.ButtonBlockAppender,
+		// Only apply template if inner blocks are empty and preset requires it
+		template: !hasInnerBlocks && 
+			preset && 
+			currentPreset?.requiresInnerBlocks && 
+			currentPreset.innerBlocksTemplate 
+				? currentPreset.innerBlocksTemplate 
+				: undefined
+	};
+
+	// Determine where to render InnerBlocks based on preset and overlay
+	// But always render it in ONE place only
+	let innerBlocksWrapper: JSX.Element | null = null;
+
+	if (preset && currentPreset?.requiresInnerBlocks) {
+		// When preset is active, render in title-box
+		innerBlocksWrapper = (
+			<div className="wp-block-jankx-advanced-image-box__frame-wrapper">
+				<div className="wp-block-jankx-advanced-image-box__frame"></div>
+				<div className="wp-block-jankx-advanced-image-box__title-box">
+					<div className="wp-block-jankx-advanced-image-box__overlay__content">
+						<InnerBlocks {...innerBlocksProps} />
+					</div>
+				</div>
 			</div>
-		</div>
-	);
+		);
+	} else if (showOverlayOnHover) {
+		// When overlay is enabled, render in overlay
+		innerBlocksWrapper = (
+			<div
+				className={clsx(
+					'wp-block-jankx-advanced-image-box__overlay',
+					`wp-block-jankx-advanced-image-box__overlay--${overlayPosition}`,
+					'animated',
+					overlayAnimation
+				)}
+				style={{
+					backgroundColor: overlayBackground,
+					opacity: overlayOpacity,
+					animationDuration: `${overlayAnimationDuration}ms`,
+					animationDelay: `${overlayAnimationDelay}ms`,
+				}}
+			>
+				<div className="wp-block-jankx-advanced-image-box__overlay__content">
+					<InnerBlocks {...innerBlocksProps} />
+				</div>
+			</div>
+		);
+	} else {
+		// When no preset and no overlay, render in hidden container (still visible for editing)
+		innerBlocksWrapper = (
+			<div className="wp-block-jankx-advanced-image-box__overlay__content">
+				<InnerBlocks {...innerBlocksProps} />
+			</div>
+		);
+	}
+
+	// Separate visual elements (overlay wrapper for non-preset, preset frame for preset)
+	const overlayContent = showOverlayOnHover && !preset ? innerBlocksWrapper : null;
+	const presetContent = preset && currentPreset ? innerBlocksWrapper : null;
+	const hiddenInnerBlocks = !preset && !showOverlayOnHover ? innerBlocksWrapper : null;
 
 	return (
 		<>
+			{presetCSS && (
+				<style dangerouslySetInnerHTML={{ __html: presetCSS }} />
+			)}
 			<div {...blockProps}>
 				{imageElement}
 				{overlayContent}
+				{presetContent}
+				{hiddenInnerBlocks}
 				{!RichText.isEmpty(caption) && (
 					<RichText
 						className="wp-block-jankx-advanced-image-box__caption"
@@ -282,6 +476,37 @@ export default function edit({
 			)}
 
 			<InspectorControls>
+				<PanelBody title={__('Preset')} initialOpen={true}>
+					<SelectControl
+						label={__('Layout Preset')}
+						value={preset || ''}
+						options={[
+							{ label: __('None', 'jankx'), value: '' },
+							...Object.values(presets).map((p: ImageBoxPreset) => ({
+								label: p.label,
+								value: p.id
+							}))
+						]}
+						onChange={handlePresetChange}
+						help={__('Choose a preset layout for the image box', 'jankx')}
+					/>
+
+					{currentPreset && currentPreset.description && (
+						<p style={{ fontSize: '12px', color: '#757575', marginTop: '8px' }}>
+							{currentPreset.description}
+						</p>
+					)}
+
+					{currentPreset && currentPreset.options && currentPreset.options.length > 0 && (
+						<div style={{ marginTop: '16px' }}>
+							<strong style={{ display: 'block', marginBottom: '12px' }}>
+								{__('Preset Options', 'jankx')}
+							</strong>
+							{currentPreset.options.map(renderPresetOption)}
+						</div>
+					)}
+				</PanelBody>
+
 				<PanelBody title={__('Image Settings')} initialOpen={true}>
 					<RichText
 						className="wp-block-jankx-advanced-image-box__alt-text"

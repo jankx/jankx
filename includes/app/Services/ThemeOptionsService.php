@@ -183,8 +183,9 @@ class ThemeOptionsService
                 // Tạo OptionsReader instance bằng getInstance
             $optionsReader = \Jankx\Adapter\Options\OptionsReader::getInstance();
 
-            // Set options directory path (relative path)
-            $optionsReader->setOptionsDirectoryPath('resources/options');
+            // Set options directory path (relative path) - default is includes/theme-options
+            // No need to set if using default, but can override if needed
+            // $optionsReader->setOptionsDirectoryPath('includes/theme-options');
             $optionsReader->setChildThemeOverrideEnabled(true);
 
 

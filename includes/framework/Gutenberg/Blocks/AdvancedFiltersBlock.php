@@ -585,11 +585,11 @@ class AdvancedFiltersBlock extends Block
      */
     public function localizeFrontendData(): void
     {
-        // Only localize if block is used on the page
-        if (!has_block('jankx/advanced-filters')) {
-            return;
-        }
-
+        // Always localize nonce for AJAX requests
+        // This is needed for smart-tabs with advanced-filter triggers even when
+        // advanced-filters block is not present (e.g., in templates, homepage)
+        // has_block() may not detect blocks in template parts or homepage
+        
         // Output inline script with localized data
         ?>
         <script type="text/javascript">

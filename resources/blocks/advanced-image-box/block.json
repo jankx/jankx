@@ -109,6 +109,12 @@
 		"borderRadius": {
 			"type": "string",
 			"default": "0px"
+		},
+		"preset": {
+			"type": "string"
+		},
+		"presetOptions": {
+			"type": "object"
 		}
 	},
 	"supports": {
