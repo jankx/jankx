@@ -53,17 +53,46 @@ class AdvancedFilters {
           element.addEventListener('click', e => {
             e.preventDefault();
 
+            // Find the checkbox/radio input inside the filter-option (label)
+            const input = element.querySelector('input[type="checkbox"], input[type="radio"]');
+
             // Find the parent filter group to check multiple selection setting
             const filterGroup = element.closest('[data-taxonomy]');
             const multipleSelection = filterGroup?.getAttribute('data-multiple-selection') === 'true';
-            if (multipleSelection) {
-              // Toggle: allow multiple selections
-              element.classList.toggle('active');
+            if (input) {
+              if (multipleSelection) {
+                // Toggle: allow multiple selections
+                input.checked = !input.checked;
+                element.classList.toggle('active', input.checked);
+              } else {
+                // Single selection: uncheck all siblings, then check this one
+                const siblings = filterGroup?.querySelectorAll('input[type="checkbox"], input[type="radio"]');
+                siblings?.forEach(sibling => {
+                  sibling.checked = false;
+                  const siblingOption = sibling.closest('.filter-option');
+                  if (siblingOption) {
+                    siblingOption.classList.remove('active');
+                  }
+                });
+                input.checked = true;
+                element.classList.add('active');
+              }
+
+              // Trigger change event on input to ensure other listeners are notified
+              input.dispatchEvent(new Event('change', {
+                bubbles: true
+              }));
             } else {
-              // Single selection: deactivate siblings, then toggle this one
-              const siblings = filterGroup?.querySelectorAll('.filter-option');
-              siblings?.forEach(sibling => sibling.classList.remove('active'));
-              element.classList.toggle('active');
+              // Fallback: if no input found, just toggle active class (for button-style options)
+              if (multipleSelection) {
+                // Toggle: allow multiple selections
+                element.classList.toggle('active');
+              } else {
+                // Single selection: deactivate siblings, then toggle this one
+                const siblings = filterGroup?.querySelectorAll('.filter-option');
+                siblings?.forEach(sibling => sibling.classList.remove('active'));
+                element.classList.toggle('active');
+              }
             }
             this.handleFilterChange();
           });

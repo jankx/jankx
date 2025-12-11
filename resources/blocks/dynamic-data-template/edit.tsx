@@ -109,16 +109,15 @@ export default function Edit({
     const availableLayouts: ContentLoopLayoutOption[] = useMemo(() => {
         const layouts: ContentLoopLayoutOption[] = [];
         
-        // Add common layouts
-        if (layoutsData.commonLayouts) {
-            layoutsData.commonLayouts.forEach((layoutInfo: ContentLoopLayoutOption) => {
-                layouts.push(layoutInfo);
-            });
-        }
-        
-        // Add post type specific layouts
+        // Use layoutsByPostType which already includes common layouts
+        // This avoids duplicates since getLayoutsForPostType() already merges common + post type specific
         if (layoutsData.layoutsByPostType && layoutsData.layoutsByPostType[postType]) {
             layoutsData.layoutsByPostType[postType].forEach((layoutInfo: ContentLoopLayoutOption) => {
+                layouts.push(layoutInfo);
+            });
+        } else if (layoutsData.commonLayouts) {
+            // Fallback to common layouts if post type specific layouts not found
+            layoutsData.commonLayouts.forEach((layoutInfo: ContentLoopLayoutOption) => {
                 layouts.push(layoutInfo);
             });
         }

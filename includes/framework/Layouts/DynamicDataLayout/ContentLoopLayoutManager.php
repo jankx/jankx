@@ -115,18 +115,31 @@ class ContentLoopLayoutManager
     public function getLayoutsForPostType(string $postType): array
     {
         $layouts = [];
+        $addedLayouts = []; // Track added layouts to avoid duplicates
 
         // Get common layouts (available for all post types)
         if (isset($this->registeredLayouts['common'])) {
             foreach ($this->registeredLayouts['common'] as $layoutName => $layoutInfo) {
-                $layouts[] = $this->getLayoutInfo($layoutName, 'common');
+                if (!in_array($layoutName, $addedLayouts, true)) {
+                    $layouts[] = $this->getLayoutInfo($layoutName, 'common');
+                    $addedLayouts[] = $layoutName;
+                }
             }
         }
 
-        // Get post type specific layouts
+        // Get post type specific layouts (these override common layouts if same name)
         if (isset($this->registeredLayouts[$postType])) {
             foreach ($this->registeredLayouts[$postType] as $layoutName => $layoutInfo) {
-                $layouts[] = $this->getLayoutInfo($layoutName, $postType);
+                // If layout already exists (from common), replace it with post type specific version
+                $existingIndex = array_search($layoutName, $addedLayouts, true);
+                if ($existingIndex !== false) {
+                    // Replace existing layout with post type specific version
+                    $layouts[$existingIndex] = $this->getLayoutInfo($layoutName, $postType);
+                } else {
+                    // Add new layout
+                    $layouts[] = $this->getLayoutInfo($layoutName, $postType);
+                    $addedLayouts[] = $layoutName;
+                }
             }
         }
 

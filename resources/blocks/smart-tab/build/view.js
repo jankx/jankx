@@ -667,6 +667,7 @@ function handleAdvancedFilterTrigger(tabBlock, navButton) {
       tabContentHTML: tabContent?.innerHTML?.substring(0, 200)
     });
     if (tabContent) {
+      // First, try to find advanced-filter block directly
       advancedFilterBlock = tabContent.querySelector('.wp-block-jankx-advanced-filter');
       console.log('[SmartTab AdvancedFilter] Search result (.wp-block-jankx-advanced-filter):', !!advancedFilterBlock);
       if (!advancedFilterBlock) {
@@ -676,6 +677,17 @@ function handleAdvancedFilterTrigger(tabBlock, navButton) {
       if (!advancedFilterBlock) {
         advancedFilterBlock = tabContent.querySelector('[data-filter-type]');
         console.log('[SmartTab AdvancedFilter] Search result ([data-filter-type]):', !!advancedFilterBlock);
+      }
+
+      // If not found, try to find in advanced-filters block (parent block)
+      // After splitting, advanced-filter is a child of advanced-filters
+      if (!advancedFilterBlock) {
+        const advancedFiltersBlock = tabContent.querySelector('.wp-block-jankx-advanced-filters, .jankx-advanced-filters');
+        if (advancedFiltersBlock) {
+          console.log('[SmartTab AdvancedFilter] Found advanced-filters block, searching for advanced-filter inside');
+          advancedFilterBlock = advancedFiltersBlock.querySelector('.wp-block-jankx-advanced-filter, .jankx-advanced-filter, [data-filter-type]');
+          console.log('[SmartTab AdvancedFilter] Search result in advanced-filters block:', !!advancedFilterBlock);
+        }
       }
     }
 
@@ -691,6 +703,16 @@ function handleAdvancedFilterTrigger(tabBlock, navButton) {
     if (!advancedFilterBlock && tabBlock?.querySelector) {
       advancedFilterBlock = tabBlock.querySelector('[data-filter-type]');
       console.log('[SmartTab AdvancedFilter] Search in entire tab ([data-filter-type]):', !!advancedFilterBlock);
+    }
+
+    // If still not found, try to find in advanced-filters block (parent block) in entire tab
+    if (!advancedFilterBlock && tabBlock?.querySelector) {
+      const advancedFiltersBlock = tabBlock.querySelector('.wp-block-jankx-advanced-filters, .jankx-advanced-filters');
+      if (advancedFiltersBlock) {
+        console.log('[SmartTab AdvancedFilter] Found advanced-filters block in entire tab, searching for advanced-filter inside');
+        advancedFilterBlock = advancedFiltersBlock.querySelector('.wp-block-jankx-advanced-filter, .jankx-advanced-filter, [data-filter-type]');
+        console.log('[SmartTab AdvancedFilter] Search result in advanced-filters block (entire tab):', !!advancedFilterBlock);
+      }
     }
   }
 
@@ -763,9 +785,37 @@ function handleAdvancedFilterTrigger(tabBlock, navButton) {
             filterBlockForOptions = allFilterBlocks[0];
           }
         }
+
+        // If still not found, try to find in advanced-filters block (parent block)
+        // After splitting, advanced-filter is a child of advanced-filters
+        if (!filterBlockForOptions && taxonomy) {
+          const advancedFiltersBlocks = document.querySelectorAll('.wp-block-jankx-advanced-filters, .jankx-advanced-filters');
+          for (const advancedFiltersBlock of advancedFiltersBlocks) {
+            const filterBlock = advancedFiltersBlock.querySelector(`[data-taxonomy="${taxonomy}"], .wp-block-jankx-advanced-filter[data-taxonomy="${taxonomy}"]`);
+            if (filterBlock) {
+              filterBlockForOptions = filterBlock;
+              console.log('[SmartTab AdvancedFilter] Found filter block in advanced-filters parent', {
+                filterBlockForOptions
+              });
+              break;
+            }
+          }
+        }
         if (filterBlockForOptions && tabIndex > 0) {
           // For taxonomy filters, try to find option by index (skip index 0 which is usually "All")
-          const filterOptions = Array.from(filterBlockForOptions.querySelectorAll('.filter-option, [data-value], input[type="radio"], input[type="checkbox"]'));
+          // Filter options might be in advanced-filters block (parent), not in advanced-filter block
+          let filterOptions = Array.from(filterBlockForOptions.querySelectorAll('.filter-option, [data-value], input[type="radio"], input[type="checkbox"]'));
+
+          // If no options found in filter block, try to find in parent advanced-filters block
+          if (filterOptions.length === 0) {
+            const parentAdvancedFilters = filterBlockForOptions.closest('.wp-block-jankx-advanced-filters, .jankx-advanced-filters');
+            if (parentAdvancedFilters) {
+              filterOptions = Array.from(parentAdvancedFilters.querySelectorAll('.filter-option, [data-value], input[type="radio"], input[type="checkbox"]'));
+              console.log('[SmartTab AdvancedFilter] Found filter options in parent advanced-filters block', {
+                count: filterOptions.length
+              });
+            }
+          }
 
           // First, try to match by index
           const optionIndex = tabIndex - 1;
