@@ -39,7 +39,7 @@ export interface AdvancedImageBoxAttributes {
 	borderRadius?: string;
 	align?: 'left' | 'center' | 'right' | 'wide' | 'full';
 	className?: string;
-	style?: Record<string, any>;
+	style?: Record<string, unknown>;
 }
 
 export interface AdvancedImageBoxEditProps {
@@ -48,8 +48,8 @@ export interface AdvancedImageBoxEditProps {
 	isSelected: boolean;
 	className?: string;
 	clientId: string;
-	context?: Record<string, any>;
-	onReplace?: (blocks: any[]) => void;
+	context?: Record<string, unknown>;
+	onReplace?: (blocks: BlockInstance[]) => void;
 	insertBlocksAfter?: () => void;
 }
 
@@ -60,7 +60,7 @@ export interface AdvancedImageBoxSaveProps {
 
 export interface BlockInstance {
 	name: string;
-	attributes: Record<string, any>;
+	attributes: Record<string, unknown>;
 	innerBlocks: BlockInstance[];
 	clientId: string;
 }
@@ -133,7 +133,7 @@ export interface OverlayInfoBoxProps {
 
 export interface InnerBlocksTemplate {
 	name: string;
-	attributes?: Record<string, any>;
+	attributes?: Record<string, unknown>;
 	innerBlocks?: InnerBlocksTemplate[];
 }
 

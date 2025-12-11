@@ -189,65 +189,83 @@ export const isAllowedInnerBlock = (blockName: string): boolean => {
  */
 export const validateBlockAttributes = (
 	blockName: string,
-	attributes: Record<string, any>
+	attributes: Record<string, unknown>
 ): ValidationResult => {
 	const issues: ValidationIssue[] = [];
 
 	// Block-specific validation
 	switch (blockName) {
 		case 'core/heading':
-			if (!attributes.content && !attributes.level) {
+			{
+				const { content, level } = attributes as { content?: unknown; level?: unknown };
+				if (!content && !level) {
 				issues.push({
 					type: 'warning',
 					message: 'Heading should have content and level'
 				});
 			}
 			break;
+			}
 
 		case 'core/button':
-			if (!attributes.text && !attributes.url) {
+			{
+				const { text, url } = attributes as { text?: unknown; url?: unknown };
+				if (!text && !url) {
 				issues.push({
 					type: 'warning',
 					message: 'Button should have text and URL'
 				});
 			}
 			break;
+			}
 
 		case 'core/paragraph':
-			if (!attributes.content) {
+			{
+				const { content } = attributes as { content?: unknown };
+				if (!content) {
 				issues.push({
 					type: 'warning',
 					message: 'Paragraph should have content'
 				});
 			}
 			break;
+			}
 
 		case 'core/list':
-			if (!attributes.values && !attributes.ordered) {
+			{
+				const { values, ordered } = attributes as { values?: unknown; ordered?: unknown };
+				if (!values && !ordered) {
 				issues.push({
 					type: 'warning',
 					message: 'List should have content'
 				});
 			}
 			break;
+			}
 
 		case 'core/group':
-			if (!attributes.layout) {
+			{
+				const { layout } = attributes as { layout?: unknown };
+				if (!layout) {
 				issues.push({
 					type: 'info',
 					message: 'Group layout is recommended'
 				});
 			}
 			break;
+			}
 
 		case 'core/columns':
-			if (!attributes.columns) {
+			{
+				const { columns } = attributes as { columns?: unknown };
+				if (!columns) {
 				issues.push({
 					type: 'warning',
 					message: 'Columns should specify number of columns'
 				});
 			}
 			break;
+			}
 	}
 
 	return {

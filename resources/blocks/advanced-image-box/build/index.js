@@ -332,203 +332,6 @@ const VALIDATION_RULES = {
 
 /***/ }),
 
-/***/ "./blocks/advanced-image-box/deprecated.tsx":
-/*!**************************************************!*\
-  !*** ./blocks/advanced-image-box/deprecated.tsx ***!
-  \**************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
-/* harmony export */   migrateAttributes: () => (/* binding */ migrateAttributes),
-/* harmony export */   v1: () => (/* binding */ v1),
-/* harmony export */   v2: () => (/* binding */ v2)
-/* harmony export */ });
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__);
-
-/**
- * Deprecated versions of Advanced Image Box block
- */
-
-/**
- * Migrate old attributes to new structure
- */
-const migrateAttributes = oldAttributes => {
-  return {
-    ...oldAttributes,
-    // Map old attributes to new structure
-    showOverlayOnHover: oldAttributes.showOverlay !== undefined ? oldAttributes.showOverlay : true,
-    overlayAnimation: oldAttributes.animation || 'fadeIn',
-    overlayPosition: oldAttributes.position || 'center',
-    overlayBackground: oldAttributes.overlayColor || 'rgba(0, 0, 0, 0.7)',
-    overlayOpacity: oldAttributes.opacity !== undefined ? oldAttributes.opacity : 1,
-    imageHoverEffect: oldAttributes.hoverEffect || 'zoom',
-    borderRadius: oldAttributes.radius || '0px'
-  };
-};
-
-/**
- * Version 1 - Initial version with basic overlay support
- */
-const v1 = {
-  attributes: {
-    url: {
-      type: 'string',
-      source: 'attribute',
-      selector: 'img',
-      attribute: 'src'
-    },
-    alt: {
-      type: 'string',
-      source: 'attribute',
-      selector: 'img',
-      attribute: 'alt'
-    },
-    title: {
-      type: 'string',
-      source: 'attribute',
-      selector: 'img',
-      attribute: 'title'
-    },
-    id: {
-      type: 'number'
-    },
-    showOverlay: {
-      type: 'boolean',
-      default: true
-    },
-    animation: {
-      type: 'string',
-      default: 'fadeIn'
-    },
-    position: {
-      type: 'string',
-      default: 'center'
-    },
-    overlayColor: {
-      type: 'string',
-      default: 'rgba(0, 0, 0, 0.7)'
-    },
-    opacity: {
-      type: 'number',
-      default: 1
-    },
-    hoverEffect: {
-      type: 'string',
-      default: 'zoom'
-    },
-    radius: {
-      type: 'string',
-      default: '0px'
-    }
-  },
-  save({
-    attributes
-  }) {
-    const {
-      url,
-      alt,
-      title,
-      id,
-      showOverlay,
-      animation,
-      position,
-      overlayColor,
-      opacity,
-      hoverEffect,
-      radius
-    } = attributes;
-    const imageElement = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("img", {
-      src: url,
-      alt: alt || '',
-      title: title,
-      className: `wp-block-jankx-advanced-image-box__image ${hoverEffect !== 'none' ? `has-hover-${hoverEffect}` : ''}`,
-      style: {
-        borderRadius: radius
-      }
-    });
-    const overlayContent = showOverlay && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
-      className: `wp-block-jankx-advanced-image-box__overlay wp-block-jankx-advanced-image-box__overlay--${position} animated ${animation}`,
-      style: {
-        backgroundColor: overlayColor,
-        opacity: opacity
-      }
-    });
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("figure", {
-      className: "wp-block-jankx-advanced-image-box",
-      children: [imageElement, overlayContent]
-    });
-  }
-};
-
-/**
- * Version 2 - Added inner blocks support
- */
-const v2 = {
-  attributes: {
-    ...v1.attributes,
-    innerBlocks: {
-      type: 'array',
-      default: []
-    }
-  },
-  save({
-    attributes
-  }) {
-    const {
-      url,
-      alt,
-      title,
-      id,
-      showOverlay,
-      animation,
-      position,
-      overlayColor,
-      opacity,
-      hoverEffect,
-      radius,
-      innerBlocks
-    } = attributes;
-    const imageElement = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("img", {
-      src: url,
-      alt: alt || '',
-      title: title,
-      className: `wp-block-jankx-advanced-image-box__image ${hoverEffect !== 'none' ? `has-hover-${hoverEffect}` : ''}`,
-      style: {
-        borderRadius: radius
-      }
-    });
-    const overlayContent = showOverlay && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
-      className: `wp-block-jankx-advanced-image-box__overlay wp-block-jankx-advanced-image-box__overlay--${position} animated ${animation}`,
-      style: {
-        backgroundColor: overlayColor,
-        opacity: opacity
-      },
-      children: innerBlocks && innerBlocks.map((block, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
-        className: `wp-block-${block.name.replace('/', '-')}`,
-        children: block.attributes?.content && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
-          dangerouslySetInnerHTML: {
-            __html: block.attributes.content
-          }
-        })
-      }, index))
-    });
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("figure", {
-      className: "wp-block-jankx-advanced-image-box",
-      children: [imageElement, overlayContent]
-    });
-  }
-};
-
-/**
- * Export deprecated versions
- */
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ([v2, v1]);
-
-/***/ }),
-
 /***/ "./blocks/advanced-image-box/edit.tsx":
 /*!********************************************!*\
   !*** ./blocks/advanced-image-box/edit.tsx ***!
@@ -731,7 +534,12 @@ function edit({
   });
   const overlayContent = showOverlayOnHover && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
     className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])('wp-block-jankx-advanced-image-box__overlay', `wp-block-jankx-advanced-image-box__overlay--${overlayPosition}`, 'animated', overlayAnimation),
-    style: {},
+    style: {
+      backgroundColor: overlayBackground,
+      opacity: overlayOpacity,
+      animationDuration: `${overlayAnimationDuration}ms`,
+      animationDelay: `${overlayAnimationDelay}ms`
+    },
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
       className: "wp-block-jankx-advanced-image-box__overlay__content",
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.InnerBlocks, {
@@ -990,7 +798,12 @@ function save({
   // Create overlay content if enabled
   const overlayContent = showOverlayOnHover && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
     className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])('wp-block-jankx-advanced-image-box__overlay', `wp-block-jankx-advanced-image-box__overlay--${overlayPosition}`, 'animated', overlayAnimation),
-    style: {},
+    style: {
+      backgroundColor: overlayBackground,
+      opacity: overlayOpacity,
+      animationDuration: `${overlayAnimationDuration}ms`,
+      animationDelay: `${overlayAnimationDelay}ms`
+    },
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
       className: "wp-block-jankx-advanced-image-box__overlay__content",
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InnerBlocks.Content, {})
@@ -1217,53 +1030,86 @@ const validateBlockAttributes = (blockName, attributes) => {
   // Block-specific validation
   switch (blockName) {
     case 'core/heading':
-      if (!attributes.content && !attributes.level) {
-        issues.push({
-          type: 'warning',
-          message: 'Heading should have content and level'
-        });
+      {
+        const {
+          content,
+          level
+        } = attributes;
+        if (!content && !level) {
+          issues.push({
+            type: 'warning',
+            message: 'Heading should have content and level'
+          });
+        }
+        break;
       }
-      break;
     case 'core/button':
-      if (!attributes.text && !attributes.url) {
-        issues.push({
-          type: 'warning',
-          message: 'Button should have text and URL'
-        });
+      {
+        const {
+          text,
+          url
+        } = attributes;
+        if (!text && !url) {
+          issues.push({
+            type: 'warning',
+            message: 'Button should have text and URL'
+          });
+        }
+        break;
       }
-      break;
     case 'core/paragraph':
-      if (!attributes.content) {
-        issues.push({
-          type: 'warning',
-          message: 'Paragraph should have content'
-        });
+      {
+        const {
+          content
+        } = attributes;
+        if (!content) {
+          issues.push({
+            type: 'warning',
+            message: 'Paragraph should have content'
+          });
+        }
+        break;
       }
-      break;
     case 'core/list':
-      if (!attributes.values && !attributes.ordered) {
-        issues.push({
-          type: 'warning',
-          message: 'List should have content'
-        });
+      {
+        const {
+          values,
+          ordered
+        } = attributes;
+        if (!values && !ordered) {
+          issues.push({
+            type: 'warning',
+            message: 'List should have content'
+          });
+        }
+        break;
       }
-      break;
     case 'core/group':
-      if (!attributes.layout) {
-        issues.push({
-          type: 'info',
-          message: 'Group layout is recommended'
-        });
+      {
+        const {
+          layout
+        } = attributes;
+        if (!layout) {
+          issues.push({
+            type: 'info',
+            message: 'Group layout is recommended'
+          });
+        }
+        break;
       }
-      break;
     case 'core/columns':
-      if (!attributes.columns) {
-        issues.push({
-          type: 'warning',
-          message: 'Columns should specify number of columns'
-        });
+      {
+        const {
+          columns
+        } = attributes;
+        if (!columns) {
+          issues.push({
+            type: 'warning',
+            message: 'Columns should specify number of columns'
+          });
+        }
+        break;
       }
-      break;
   }
   return {
     isValid: issues.length === 0,
@@ -1653,7 +1499,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _edit__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./edit */ "./blocks/advanced-image-box/edit.tsx");
 /* harmony import */ var _save__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./save */ "./blocks/advanced-image-box/save.tsx");
 /* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./block.json */ "./blocks/advanced-image-box/block.json");
-/* harmony import */ var _deprecated__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./deprecated */ "./blocks/advanced-image-box/deprecated.tsx");
 /**
  * WordPress dependencies
  */
@@ -1661,10 +1506,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 /**
  * Internal dependencies
  */
-
 
 
 
@@ -1706,7 +1551,6 @@ const settings = {
   },
   edit: _edit__WEBPACK_IMPORTED_MODULE_3__["default"],
   save: _save__WEBPACK_IMPORTED_MODULE_4__["default"],
-  deprecated: _deprecated__WEBPACK_IMPORTED_MODULE_6__["default"],
   merge: (a, {
     url = '',
     alt = ''

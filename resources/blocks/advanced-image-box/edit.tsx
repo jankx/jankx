@@ -40,7 +40,7 @@ import { isBlobURL } from '@wordpress/blob';
 /**
  * Internal dependencies
  */
-import { AdvancedImageBoxEditProps, ValidationIssue } from './types';
+import { AdvancedImageBoxEditProps, MediaFile } from './types';
 import {
 	ANIMATION_OPTIONS,
 	OVERLAY_POSITIONS,
@@ -112,7 +112,7 @@ export default function edit({
 		}),
 	});
 
-	const onSelectImage = (media: any) => {
+	const onSelectImage = (media: MediaFile | null) => {
 		if (!media || !media.url) {
 			setAttributes({
 				url: undefined,
@@ -218,6 +218,10 @@ export default function edit({
 				overlayAnimation
 			)}
 			style={{
+				backgroundColor: overlayBackground,
+				opacity: overlayOpacity,
+				animationDuration: `${overlayAnimationDuration}ms`,
+				animationDelay: `${overlayAnimationDelay}ms`,
 			}}
 		>
 			<div className="wp-block-jankx-advanced-image-box__overlay__content">

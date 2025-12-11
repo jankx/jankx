@@ -33,17 +33,35 @@ jest.mock('@wordpress/block-editor', () => ({
 
 jest.mock('@wordpress/components', () => ({
     PanelBody: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-    SelectControl: ({ label, value, options, onChange }: any) => (
+    SelectControl: ({
+        label,
+        value,
+        options,
+        onChange,
+    }: {
+        label: string;
+        value: string | number;
+        options: Array<{ label: string; value: string | number }>;
+        onChange: (value: string | number) => void;
+    }) => (
         <label>
             {label}
             <select value={value} onChange={(e) => onChange(e.target.value)} data-testid={`select-${label}`}>
-                {options.map((opt: any) => (
+                {options.map((opt) => (
                     <option key={opt.value} value={opt.value}>{opt.label}</option>
                 ))}
             </select>
         </label>
     ),
-    RangeControl: ({ label, value, onChange }: any) => (
+    RangeControl: ({
+        label,
+        value,
+        onChange,
+    }: {
+        label: string;
+        value: number;
+        onChange: (value: number) => void;
+    }) => (
         <label>
             {label}
             <input
@@ -54,7 +72,15 @@ jest.mock('@wordpress/components', () => ({
             />
         </label>
     ),
-    ToggleControl: ({ label, checked, onChange }: any) => (
+    ToggleControl: ({
+        label,
+        checked,
+        onChange,
+    }: {
+        label: string;
+        checked: boolean;
+        onChange: (value: boolean) => void;
+    }) => (
         <label>
             {label}
             <input
@@ -67,7 +93,7 @@ jest.mock('@wordpress/components', () => ({
     ),
     ColorPicker: () => <div data-testid="color-picker">Color Picker</div>,
     Notice: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-    Button: ({ children, onClick }: any) => <button onClick={onClick}>{children}</button>,
+    Button: ({ children, onClick }: { children: React.ReactNode; onClick: () => void }) => <button onClick={onClick}>{children}</button>,
     ToolbarGroup: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
     ToolbarButton: ({ children }: { children: React.ReactNode }) => <button>{children}</button>,
     __experimentalToolsPanel: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,

@@ -1,6 +1,7 @@
 /**
  * WordPress dependencies
  */
+import type { BlockConfiguration } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
 import { image as icon } from '@wordpress/icons';
 import { registerBlockType } from '@wordpress/blocks';
@@ -11,13 +12,13 @@ import { registerBlockType } from '@wordpress/blocks';
 import edit from './edit';
 import save from './save';
 import metadata from './block.json';
-import deprecated from './deprecated';
+import type { AdvancedImageBoxAttributes } from './types';
 
 const { name } = metadata;
 
 export { metadata, name };
 
-export const settings = {
+export const settings: BlockConfiguration<AdvancedImageBoxAttributes> = {
 	icon,
 	example: {
 		attributes: {
@@ -55,8 +56,7 @@ export const settings = {
 	},
 	edit,
 	save,
-	deprecated,
-	merge: (a: any, { url = '', alt = '' }: any) => ({
+	merge: (a: AdvancedImageBoxAttributes, { url = '', alt = '' }: Partial<AdvancedImageBoxAttributes>) => ({
 		...a,
 		url: a.url || url,
 		alt: a.alt || alt,
@@ -64,4 +64,4 @@ export const settings = {
 };
 
 // Register the block
-registerBlockType(name as string, settings as any);
+registerBlockType(name as string, settings);
