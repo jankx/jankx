@@ -935,70 +935,6 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         </>
                     ) : null}
 
-                {/* Pagination Settings */}
-                <PanelBody title={__('Pagination', 'jankx')} initialOpen={false}>
-                        <ToggleControl
-                            label={__('Enable Pagination', 'jankx')}
-                            checked={enablePagination}
-                            onChange={(value) => setAttributes({ enablePagination: value })}
-                            help={__('Display pagination to paginate posts', 'jankx')}
-                        />
-
-                        {enablePagination ? (
-                            <>
-                                <SelectControl
-                                    label={__('Pagination Style', 'jankx')}
-                                    value={paginationStyle}
-                                    options={[
-                                        { label: __('Numbers', 'jankx'), value: 'numbers' },
-                                        { label: __('Simple (Prev/Next)', 'jankx'), value: 'simple' },
-                                        { label: __('Arrows', 'jankx'), value: 'arrows' },
-                                        { label: __('Load More', 'jankx'), value: 'load-more' },
-                                    ]}
-                                    onChange={(value) => setAttributes({ paginationStyle: value as 'numbers' | 'simple' | 'arrows' | 'load-more' })}
-                                    help={__('Choose pagination display style', 'jankx')}
-                                />
-
-                                <SelectControl
-                                    label={__('Pagination Alignment', 'jankx')}
-                                    value={paginationAlignment}
-                                    options={[
-                                        { label: __('Left', 'jankx'), value: 'left' },
-                                        { label: __('Center', 'jankx'), value: 'center' },
-                                        { label: __('Right', 'jankx'), value: 'right' },
-                                    ]}
-                                    onChange={(value) => setAttributes({ paginationAlignment: value as 'left' | 'center' | 'right' })}
-                                    help={__('Align pagination position', 'jankx')}
-                                />
-
-                                {paginationStyle === 'numbers' ? (
-                                    <ToggleControl
-                                        label={__('Show All Page Numbers', 'jankx')}
-                                        checked={showPaginationNumbers}
-                                        onChange={(value) => setAttributes({ showPaginationNumbers: value })}
-                                        help={__('Show all page numbers instead of abbreviated', 'jankx')}
-                                    />
-                                ) : null}
-
-                                <TextControl
-                                    label={__('Previous Button Text', 'jankx')}
-                                    value={paginationPrevText}
-                                    onChange={(value) => setAttributes({ paginationPrevText: value })}
-                                    help={__('Leave empty to use default text. Can use HTML/SVG.', 'jankx')}
-                                    placeholder={__('Example: « Previous or <svg>...</svg>', 'jankx')}
-                                />
-
-                                <TextControl
-                                    label={__('Next Button Text', 'jankx')}
-                                    value={paginationNextText}
-                                    onChange={(value) => setAttributes({ paginationNextText: value })}
-                                    help={__('Leave empty to use default text. Can use HTML/SVG.', 'jankx')}
-                                    placeholder={__('Example: Next » or <svg>...</svg>', 'jankx')}
-                                />
-                            </>
-                        ) : null}
-                </PanelBody>
-
                 {/* Query Parameters - Only show for custom preset */}
                 {queryPreset === 'custom' ? (
                         <PanelBody title={__('Query Parameters', 'jankx')} initialOpen={false}>
@@ -1439,136 +1375,68 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                     );
                 }) : null}
 
-                {/* Display Options */}
+                {/* Display Options - Only Pagination */}
                 <PanelBody title={__('Display Options', 'jankx')} initialOpen={false}>
-                    {supportedOptions.includes('showFeaturedImage') && (
+                    <ToggleControl
+                        label={__('Enable Pagination', 'jankx')}
+                        checked={enablePagination}
+                        onChange={(value) => setAttributes({ enablePagination: value })}
+                        help={__('Display pagination to paginate posts', 'jankx')}
+                    />
+
+                    {enablePagination ? (
                         <>
-                            <ToggleControl
-                                label={__('Show Featured Image', 'jankx')}
-                                checked={showFeaturedImage}
-                                onChange={(value) => setAttributes({ showFeaturedImage: value })}
-                                disabled={readOnlyOptions.includes('showFeaturedImage')}
+                            <SelectControl
+                                label={__('Pagination Style', 'jankx')}
+                                value={paginationStyle}
+                                options={[
+                                    { label: __('Numbers', 'jankx'), value: 'numbers' },
+                                    { label: __('Simple (Prev/Next)', 'jankx'), value: 'simple' },
+                                    { label: __('Arrows', 'jankx'), value: 'arrows' },
+                                    { label: __('Load More', 'jankx'), value: 'load-more' },
+                                ]}
+                                onChange={(value) => setAttributes({ paginationStyle: value as 'numbers' | 'simple' | 'arrows' | 'load-more' })}
+                                help={__('Choose pagination display style', 'jankx')}
                             />
-                            {showFeaturedImage && (
-                                <>
-                                    {supportedOptions.includes('thumbnailPosition') && (
-                                        <SelectControl
-                                            label={__('Thumbnail Position', 'jankx')}
-                                            value={thumbnailPosition || 'top'}
-                                            options={[
-                                                { label: __('Top (Default)', 'jankx'), value: 'top' },
-                                                { label: __('Bottom', 'jankx'), value: 'bottom' },
-                                                { label: __('Left', 'jankx'), value: 'left' },
-                                                { label: __('Right', 'jankx'), value: 'right' },
-                                            ]}
-                                            onChange={(value) => setAttributes({ thumbnailPosition: value as DynamicDataLayoutAttributes['thumbnailPosition'] })}
-                                            help={__('Choose where the featured image appears relative to the content.', 'jankx')}
-                                        />
-                                    )}
-                                    <SelectControl
-                                        label={__('Image Aspect Ratio', 'jankx')}
-                                        value={imageRatioSelectValue}
-                                        onChange={(value) => {
-                                            if (value === 'custom') {
-                                                setAttributes({ imageRatio: '' });
-                                            } else {
-                                                setAttributes({ imageRatio: value || '' });
-                                            }
-                                        }}
-                                        help={__('Set the aspect ratio for featured images', 'jankx')}
-                                        options={[
-                                            { label: __('Default (3:2)', 'jankx'), value: '' },
-                                            { label: __('16:9 (Landscape)', 'jankx'), value: '16/9' },
-                                            { label: __('4:3 (Landscape)', 'jankx'), value: '4/3' },
-                                            { label: __('21:9 (Ultra Wide)', 'jankx'), value: '21/9' },
-                                            { label: __('1:1 (Square)', 'jankx'), value: '1/1' },
-                                            { label: __('3:4 (Portrait)', 'jankx'), value: '3/4' },
-                                            { label: __('2:3 (Portrait)', 'jankx'), value: '2/3' },
-                                            { label: __('9:16 (Vertical)', 'jankx'), value: '9/16' },
-                                            { label: __('Custom', 'jankx'), value: 'custom' },
-                                        ]}
-                                    />
-                                    {isCustomImageRatio && (
-                                        <TextControl
-                                            label={__('Custom Ratio', 'jankx')}
-                                            value={customImageRatioValue}
-                                            onChange={(value) => {
-                                                const ratioPattern = /^\d+\/\d+$/;
-                                                if (!value || ratioPattern.test(value)) {
-                                                    setAttributes({ imageRatio: value || '' });
-                                                }
-                                            }}
-                                            help={__('Enter aspect ratio in format: width/height (e.g., 16/9, 3/4)', 'jankx')}
-                                            placeholder="16/9"
-                                        />
-                                    )}
-                                </>
-                            )}
-                        </>
-                    )}
-                    {supportedOptions.includes('showTitle') && (
-                        <ToggleControl
-                            label={__('Show Title', 'jankx')}
-                            checked={showTitle}
-                            onChange={(value) => setAttributes({ showTitle: value })}
-                            disabled={readOnlyOptions.includes('showTitle')}
-                        />
-                    )}
-                    {!isProduct && supportedOptions.includes('showExcerpt') && (
-                        <>
-                            <ToggleControl
-                                label={__('Show Excerpt', 'jankx')}
-                                checked={showExcerpt}
-                                onChange={(value) => setAttributes({ showExcerpt: value })}
-                                disabled={readOnlyOptions.includes('showExcerpt')}
+
+                            <SelectControl
+                                label={__('Pagination Alignment', 'jankx')}
+                                value={paginationAlignment}
+                                options={[
+                                    { label: __('Left', 'jankx'), value: 'left' },
+                                    { label: __('Center', 'jankx'), value: 'center' },
+                                    { label: __('Right', 'jankx'), value: 'right' },
+                                ]}
+                                onChange={(value) => setAttributes({ paginationAlignment: value as 'left' | 'center' | 'right' })}
+                                help={__('Align pagination position', 'jankx')}
                             />
-                            {showExcerpt && (
-                                <RangeControl
-                                    label={__('Excerpt Length', 'jankx')}
-                                    value={excerptLength}
-                                    onChange={(value) => setAttributes({ excerptLength: value || 55 })}
-                                    min={10}
-                                    max={200}
-                                    help={__('Number of characters to display in excerpt', 'jankx')}
+
+                            {paginationStyle === 'numbers' ? (
+                                <ToggleControl
+                                    label={__('Show All Page Numbers', 'jankx')}
+                                    checked={showPaginationNumbers}
+                                    onChange={(value) => setAttributes({ showPaginationNumbers: value })}
+                                    help={__('Show all page numbers instead of abbreviated', 'jankx')}
                                 />
-                            )}
-                        </>
-                    )}
-                    {!isProduct && supportedOptions.includes('showDate') && (
-                        <ToggleControl
-                            label={__('Show Date', 'jankx')}
-                            checked={showDate}
-                            onChange={(value) => setAttributes({ showDate: value })}
-                            disabled={readOnlyOptions.includes('showDate')}
-                        />
-                    )}
-                    {supportedOptions.includes('showAuthor') && (
-                        <ToggleControl
-                            label={__('Show Author', 'jankx')}
-                            checked={showAuthor}
-                            onChange={(value) => setAttributes({ showAuthor: value })}
-                            disabled={readOnlyOptions.includes('showAuthor')}
-                        />
-                    )}
-                    {isProduct && (
-                        <>
-                            <ToggleControl
-                                label={__('Show Price', 'jankx')}
-                                checked={showPrice}
-                                onChange={(value) => setAttributes({ showPrice: value })}
+                            ) : null}
+
+                            <TextControl
+                                label={__('Previous Button Text', 'jankx')}
+                                value={paginationPrevText}
+                                onChange={(value) => setAttributes({ paginationPrevText: value })}
+                                help={__('Leave empty to use default text. Can use HTML/SVG.', 'jankx')}
+                                placeholder={__('Example: « Previous or <svg>...</svg>', 'jankx')}
                             />
-                            <ToggleControl
-                                label={__('Show Add To Cart Button', 'jankx')}
-                                checked={showAddToCart}
-                                onChange={(value) => setAttributes({ showAddToCart: value })}
-                            />
-                            <ToggleControl
-                                label={__('Show Rating', 'jankx')}
-                                checked={showRating}
-                                onChange={(value) => setAttributes({ showRating: value })}
+
+                            <TextControl
+                                label={__('Next Button Text', 'jankx')}
+                                value={paginationNextText}
+                                onChange={(value) => setAttributes({ paginationNextText: value })}
+                                help={__('Leave empty to use default text. Can use HTML/SVG.', 'jankx')}
+                                placeholder={__('Example: Next » or <svg>...</svg>', 'jankx')}
                             />
                         </>
-                    )}
+                    ) : null}
                 </PanelBody>
             </InspectorControls>
 

@@ -1,6 +1,26 @@
 /*!***************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/advanced-filters/style.scss ***!
   \***************************************************************************************************************************************************************************************************/
+.wp-block-jankx-advanced-filters {
+  box-sizing: border-box;
+  --wrapper-padding-top: var(--wp--style--padding--top, 0);
+  --wrapper-padding-right: var(--wp--style--padding--right, 0);
+  --wrapper-padding-bottom: var(--wp--style--padding--bottom, 0);
+  --wrapper-padding-left: var(--wp--style--padding--left, 0);
+  padding: 0 !important;
+}
+.wp-block-jankx-advanced-filters .advanced-filters-container {
+  box-sizing: border-box;
+  padding-top: var(--wrapper-padding-top);
+  padding-right: var(--wrapper-padding-right);
+  padding-bottom: var(--wrapper-padding-bottom);
+  padding-left: var(--wrapper-padding-left);
+}
+.wp-block-jankx-advanced-filters .filter-reset-button {
+  margin-left: var(--wrapper-padding-left, 0);
+  margin-right: var(--wrapper-padding-right, 0);
+  margin-bottom: var(--wrapper-padding-bottom, 0);
+}
 .wp-block-jankx-advanced-filters.layout-horizontal .advanced-filters-container {
   display: flex;
   flex-wrap: wrap;

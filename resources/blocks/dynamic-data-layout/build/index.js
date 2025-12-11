@@ -730,80 +730,7 @@ function Edit({
           }),
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Display pagination dots', 'jankx')
         })]
-      }) : null, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
-        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Pagination', 'jankx'),
-        initialOpen: false,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enable Pagination', 'jankx'),
-          checked: enablePagination,
-          onChange: value => setAttributes({
-            enablePagination: value
-          }),
-          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Display pagination to paginate posts', 'jankx')
-        }), enablePagination ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Pagination Style', 'jankx'),
-            value: paginationStyle,
-            options: [{
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Numbers', 'jankx'),
-              value: 'numbers'
-            }, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Simple (Prev/Next)', 'jankx'),
-              value: 'simple'
-            }, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Arrows', 'jankx'),
-              value: 'arrows'
-            }, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Load More', 'jankx'),
-              value: 'load-more'
-            }],
-            onChange: value => setAttributes({
-              paginationStyle: value
-            }),
-            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Choose pagination display style', 'jankx')
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Pagination Alignment', 'jankx'),
-            value: paginationAlignment,
-            options: [{
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Left', 'jankx'),
-              value: 'left'
-            }, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Center', 'jankx'),
-              value: 'center'
-            }, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Right', 'jankx'),
-              value: 'right'
-            }],
-            onChange: value => setAttributes({
-              paginationAlignment: value
-            }),
-            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Align pagination position', 'jankx')
-          }), paginationStyle === 'numbers' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show All Page Numbers', 'jankx'),
-            checked: showPaginationNumbers,
-            onChange: value => setAttributes({
-              showPaginationNumbers: value
-            }),
-            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show all page numbers instead of abbreviated', 'jankx')
-          }) : null, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Previous Button Text', 'jankx'),
-            value: paginationPrevText,
-            onChange: value => setAttributes({
-              paginationPrevText: value
-            }),
-            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Leave empty to use default text. Can use HTML/SVG.', 'jankx'),
-            placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Example: « Previous or <svg>...</svg>', 'jankx')
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Next Button Text', 'jankx'),
-            value: paginationNextText,
-            onChange: value => setAttributes({
-              paginationNextText: value
-            }),
-            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Leave empty to use default text. Can use HTML/SVG.', 'jankx'),
-            placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Example: Next » or <svg>...</svg>', 'jankx')
-          })]
-        }) : null]
-      }), queryPreset === 'custom' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+      }) : null, queryPreset === 'custom' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Query Parameters', 'jankx'),
         initialOpen: false,
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
@@ -1275,153 +1202,76 @@ function Edit({
       }) : null, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Display Options', 'jankx'),
         initialOpen: false,
-        children: [supportedOptions.includes('showFeaturedImage') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Featured Image', 'jankx'),
-            checked: showFeaturedImage,
-            onChange: value => setAttributes({
-              showFeaturedImage: value
-            }),
-            disabled: readOnlyOptions.includes('showFeaturedImage')
-          }), showFeaturedImage && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
-            children: [supportedOptions.includes('thumbnailPosition') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Thumbnail Position', 'jankx'),
-              value: thumbnailPosition || 'top',
-              options: [{
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Top (Default)', 'jankx'),
-                value: 'top'
-              }, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Bottom', 'jankx'),
-                value: 'bottom'
-              }, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Left', 'jankx'),
-                value: 'left'
-              }, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Right', 'jankx'),
-                value: 'right'
-              }],
-              onChange: value => setAttributes({
-                thumbnailPosition: value
-              }),
-              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Choose where the featured image appears relative to the content.', 'jankx')
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Image Aspect Ratio', 'jankx'),
-              value: imageRatioSelectValue,
-              onChange: value => {
-                if (value === 'custom') {
-                  setAttributes({
-                    imageRatio: ''
-                  });
-                } else {
-                  setAttributes({
-                    imageRatio: value || ''
-                  });
-                }
-              },
-              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Set the aspect ratio for featured images', 'jankx'),
-              options: [{
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Default (3:2)', 'jankx'),
-                value: ''
-              }, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('16:9 (Landscape)', 'jankx'),
-                value: '16/9'
-              }, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('4:3 (Landscape)', 'jankx'),
-                value: '4/3'
-              }, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('21:9 (Ultra Wide)', 'jankx'),
-                value: '21/9'
-              }, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('1:1 (Square)', 'jankx'),
-                value: '1/1'
-              }, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('3:4 (Portrait)', 'jankx'),
-                value: '3/4'
-              }, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('2:3 (Portrait)', 'jankx'),
-                value: '2/3'
-              }, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('9:16 (Vertical)', 'jankx'),
-                value: '9/16'
-              }, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Custom', 'jankx'),
-                value: 'custom'
-              }]
-            }), isCustomImageRatio && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Custom Ratio', 'jankx'),
-              value: customImageRatioValue,
-              onChange: value => {
-                const ratioPattern = /^\d+\/\d+$/;
-                if (!value || ratioPattern.test(value)) {
-                  setAttributes({
-                    imageRatio: value || ''
-                  });
-                }
-              },
-              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enter aspect ratio in format: width/height (e.g., 16/9, 3/4)', 'jankx'),
-              placeholder: "16/9"
-            })]
-          })]
-        }), supportedOptions.includes('showTitle') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Title', 'jankx'),
-          checked: showTitle,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enable Pagination', 'jankx'),
+          checked: enablePagination,
           onChange: value => setAttributes({
-            showTitle: value
+            enablePagination: value
           }),
-          disabled: readOnlyOptions.includes('showTitle')
-        }), !isProduct && supportedOptions.includes('showExcerpt') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Excerpt', 'jankx'),
-            checked: showExcerpt,
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Display pagination to paginate posts', 'jankx')
+        }), enablePagination ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Pagination Style', 'jankx'),
+            value: paginationStyle,
+            options: [{
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Numbers', 'jankx'),
+              value: 'numbers'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Simple (Prev/Next)', 'jankx'),
+              value: 'simple'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Arrows', 'jankx'),
+              value: 'arrows'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Load More', 'jankx'),
+              value: 'load-more'
+            }],
             onChange: value => setAttributes({
-              showExcerpt: value
+              paginationStyle: value
             }),
-            disabled: readOnlyOptions.includes('showExcerpt')
-          }), showExcerpt && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Excerpt Length', 'jankx'),
-            value: excerptLength,
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Choose pagination display style', 'jankx')
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Pagination Alignment', 'jankx'),
+            value: paginationAlignment,
+            options: [{
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Left', 'jankx'),
+              value: 'left'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Center', 'jankx'),
+              value: 'center'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Right', 'jankx'),
+              value: 'right'
+            }],
             onChange: value => setAttributes({
-              excerptLength: value || 55
+              paginationAlignment: value
             }),
-            min: 10,
-            max: 200,
-            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Number of characters to display in excerpt', 'jankx')
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Align pagination position', 'jankx')
+          }), paginationStyle === 'numbers' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show All Page Numbers', 'jankx'),
+            checked: showPaginationNumbers,
+            onChange: value => setAttributes({
+              showPaginationNumbers: value
+            }),
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show all page numbers instead of abbreviated', 'jankx')
+          }) : null, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Previous Button Text', 'jankx'),
+            value: paginationPrevText,
+            onChange: value => setAttributes({
+              paginationPrevText: value
+            }),
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Leave empty to use default text. Can use HTML/SVG.', 'jankx'),
+            placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Example: « Previous or <svg>...</svg>', 'jankx')
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Next Button Text', 'jankx'),
+            value: paginationNextText,
+            onChange: value => setAttributes({
+              paginationNextText: value
+            }),
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Leave empty to use default text. Can use HTML/SVG.', 'jankx'),
+            placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Example: Next » or <svg>...</svg>', 'jankx')
           })]
-        }), !isProduct && supportedOptions.includes('showDate') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Date', 'jankx'),
-          checked: showDate,
-          onChange: value => setAttributes({
-            showDate: value
-          }),
-          disabled: readOnlyOptions.includes('showDate')
-        }), supportedOptions.includes('showAuthor') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Author', 'jankx'),
-          checked: showAuthor,
-          onChange: value => setAttributes({
-            showAuthor: value
-          }),
-          disabled: readOnlyOptions.includes('showAuthor')
-        }), isProduct && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Price', 'jankx'),
-            checked: showPrice,
-            onChange: value => setAttributes({
-              showPrice: value
-            })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Add To Cart Button', 'jankx'),
-            checked: showAddToCart,
-            onChange: value => setAttributes({
-              showAddToCart: value
-            })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Rating', 'jankx'),
-            checked: showRating,
-            onChange: value => setAttributes({
-              showRating: value
-            })
-          })]
-        })]
+        }) : null]
       })]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
       ...blockProps,

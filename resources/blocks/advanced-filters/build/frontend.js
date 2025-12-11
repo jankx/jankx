@@ -16,7 +16,46 @@ class AdvancedFilters {
     this.container = container;
     // Expose instance for external triggers (e.g., smart-tab)
     this.container.advancedFiltersInstance = this;
+    // Move padding from wrapper to inner container (so it's inside border)
+    this.movePaddingToContainer();
     this.init();
+  }
+
+  /**
+   * Move padding from wrapper to inner container
+   * This ensures padding is inside the border, not outside
+   */
+  movePaddingToContainer() {
+    if (!this.container) return;
+    const container = this.container.querySelector('.advanced-filters-container');
+    if (!container) return;
+
+    // Get computed styles from wrapper
+    const wrapperStyles = window.getComputedStyle(this.container);
+    const paddingTop = wrapperStyles.paddingTop;
+    const paddingRight = wrapperStyles.paddingRight;
+    const paddingBottom = wrapperStyles.paddingBottom;
+    const paddingLeft = wrapperStyles.paddingLeft;
+
+    // Only move padding if it's not zero
+    if (paddingTop !== '0px' || paddingRight !== '0px' || paddingBottom !== '0px' || paddingLeft !== '0px') {
+      // Apply padding to inner container
+      container.style.paddingTop = paddingTop;
+      container.style.paddingRight = paddingRight;
+      container.style.paddingBottom = paddingBottom;
+      container.style.paddingLeft = paddingLeft;
+
+      // Remove padding from wrapper
+      this.container.style.padding = '0';
+
+      // Also adjust reset button margins if it exists
+      const resetButton = this.container.querySelector('.filter-reset-button');
+      if (resetButton) {
+        resetButton.style.marginLeft = paddingLeft;
+        resetButton.style.marginRight = paddingRight;
+        resetButton.style.marginBottom = paddingBottom;
+      }
+    }
   }
   init() {
     if (!this.container) return;
