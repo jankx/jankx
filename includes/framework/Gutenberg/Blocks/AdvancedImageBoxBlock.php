@@ -215,9 +215,20 @@ window.jankxAdvancedImageBoxGetPresetCSS = function(presetId, attributes, option
 
         // Remove default overlay content when preset is active
         // Be very specific to only remove overlay, not frame-wrapper or title-box
-        // First, remove overlay div that contains overlay__content (but preserve everything else)
+        // Strategy: Match any div that contains overlay__content and remove the entire overlay structure
+        
+        // First, remove overlay div wrapper that contains overlay__content
+        // Match div with class containing "__overlay" (but not "__overlay__title-box", "__overlay__frame-wrapper", or "__overlay__frame")
+        // and contains a child div with class "overlay__content"
         $content = preg_replace(
-            '/<div\s+class="[^"]*wp-block-jankx-advanced-image-box__overlay(?!__title-box|__frame-wrapper|__frame)[^"]*"[^>]*>[\s\S]*?<div\s+class="[^"]*wp-block-jankx-advanced-image-box__overlay__content[^"]*"[^>]*>[\s\S]*?<\/div>[\s\S]*?<\/div>/s',
+            '/<div\s+class="[^"]*__overlay(?!__title-box|__frame-wrapper|__frame)[^"]*"[^>]*>[\s\S]*?<div\s+class="[^"]*overlay__content[^"]*"[^>]*>[\s\S]*?<\/div>[\s\S]*?<\/div>/s',
+            '',
+            $content
+        );
+        
+        // Also match overlay divs with class "wp-block-jankx-advanced-image-box__overlay" (standard format)
+        $content = preg_replace(
+            '/<div\s+class="[^"]*wp-block-jankx-advanced-image-box__overlay(?!__title-box|__frame-wrapper|__frame)[^"]*"[^>]*>[\s\S]*?<div\s+class="[^"]*overlay__content[^"]*"[^>]*>[\s\S]*?<\/div>[\s\S]*?<\/div>/s',
             '',
             $content
         );
@@ -225,14 +236,15 @@ window.jankxAdvancedImageBoxGetPresetCSS = function(presetId, attributes, option
         // Then remove standalone overlay__content div (but not title-box)
         // This handles the case when preset is active and overlay__content is rendered without overlay wrapper
         $content = preg_replace(
-            '/<div\s+class="[^"]*wp-block-jankx-advanced-image-box__overlay__content(?!__title-box)[^"]*"[^>]*>[\s\S]*?<\/div>/s',
+            '/<div\s+class="[^"]*overlay__content(?!__title-box)[^"]*"[^>]*>[\s\S]*?<\/div>/s',
             '',
             $content
         );
         
-        // Finally, remove empty overlay wrapper (but not frame-wrapper or title-box)
+        // Finally, remove any remaining empty overlay wrapper divs (but not frame-wrapper or title-box)
+        // Match divs with class containing "__overlay" but not the protected classes
         $content = preg_replace(
-            '/<div\s+class="[^"]*wp-block-jankx-advanced-image-box__overlay(?!__title-box|__frame-wrapper|__frame)[^"]*"[^>]*>\s*<\/div>/s',
+            '/<div\s+class="[^"]*__overlay(?!__title-box|__frame-wrapper|__frame)[^"]*"[^>]*>\s*<\/div>/s',
             '',
             $content
         );
