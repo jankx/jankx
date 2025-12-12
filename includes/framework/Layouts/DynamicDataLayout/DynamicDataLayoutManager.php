@@ -2,9 +2,9 @@
 
 namespace Jankx\Layouts\DynamicDataLayout;
 
-use Jankx\Layouts\PostLayout\PostLayoutFactory;
-use Jankx\Layouts\PostLayout\PostLayoutDecorator;
-use Jankx\Layouts\PostLayout\Contracts\PostLayoutInterface;
+use Jankx\Layouts\DynamicDataLayout\PostLayoutFactory;
+use Jankx\Layouts\DynamicDataLayout\PostLayoutDecorator;
+use Jankx\Layouts\DynamicDataLayout\Contracts\PostLayoutInterface;
 
 /**
  * Dynamic Data Layout Manager
@@ -44,6 +44,7 @@ class DynamicDataLayoutManager
      */
     protected function __construct()
     {
+        PostLayoutFactory::init();
         $this->registerBuiltInLayouts();
         
         // Allow developers to register custom layouts
@@ -284,4 +285,3 @@ class DynamicDataLayoutManager
                isset($this->registeredLayouts['common'][$layoutName]);
     }
 }
-

@@ -1037,7 +1037,7 @@ abstract class AbstractBlockLayout
 
 ```php
 // includes/framework/Layouts/PostLayout/GridLayout.php
-namespace Jankx\Layouts\PostLayout;
+namespace Jankx\Layouts\DynamicDataLayout;
 
 use Jankx\Gutenberg\Abstracts\AbstractBlockLayout;
 

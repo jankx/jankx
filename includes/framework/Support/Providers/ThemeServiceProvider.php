@@ -9,8 +9,8 @@ use Jankx\Services\DefaultThumbnailService;
 use Jankx\Support\Providers\ServiceProvider;
 use Jankx\Support\TemplateEngine\TemplateEngineManager;
 use Jankx\Support\TemplateEngine\Engines\PlatesEngine;
-use Jankx\Layouts\PostLayout\PostLayoutManager;
-use Jankx\Layouts\PostLayout\Supports\DefaultContent;
+use Jankx\Layouts\DynamicDataLayout\DynamicDataLayoutManager;
+use Jankx\Layouts\DynamicDataLayout\Supports\DefaultContent;
 
 /**
  * Theme Service Provider
@@ -133,12 +133,12 @@ class ThemeServiceProvider extends ServiceProvider
         // Register PostLayoutManager as singleton
         // Use both names for backward compatibility
         $app->singleton('postlayout.manager', function (Application $app) {
-            return PostLayoutManager::getInstance();
+            return DynamicDataLayoutManager::getInstance();
         });
         
         // Also register with dot notation for facade compatibility
         $app->singleton('post.layout.manager', function (Application $app) {
-            return PostLayoutManager::getInstance();
+            return DynamicDataLayoutManager::getInstance();
         });
     }
 

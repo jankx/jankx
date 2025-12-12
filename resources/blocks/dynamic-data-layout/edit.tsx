@@ -914,16 +914,18 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         help={queryPresetHelp}
                     />
 
-                    <SelectControl
-                        label={__('Post Type', 'jankx')}
-                        value={postType}
-                        options={postTypeOptions}
-                        onChange={(value) => {
-                            console.log('[DEBUG Edit] postType onChange:', value);
-                            setAttributes({ postType: value, useMultiPostType: false });
-                        }}
-                        help={queryPreset === 'default' ? __('Select post type for the main query', 'jankx') : undefined}
-                    />
+                    {!useMultiPostType ? (
+                        <SelectControl
+                            label={__('Post Type', 'jankx')}
+                            value={postType}
+                            options={postTypeOptions}
+                            onChange={(value) => {
+                                console.log('[DEBUG Edit] postType onChange:', value);
+                                setAttributes({ postType: value, useMultiPostType: false });
+                            }}
+                            help={queryPreset === 'default' ? __('Select post type for the main query', 'jankx') : undefined}
+                        />
+                    ) : null}
                     
                     <ToggleControl
                         label={__('Multi Post Type', 'jankx')}

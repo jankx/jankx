@@ -4,8 +4,8 @@ namespace Jankx\Gutenberg\Blocks;
 
 use Jankx\Gutenberg\Block;
 use Jankx\Layouts\DynamicDataLayout\DynamicDataLayoutManager;
-use Jankx\Gutenberg\Blocks\DynamicDataLayout\Renderer;
-use Jankx\Gutenberg\Blocks\DynamicDataLayout\AttributeSanitizer;
+use Jankx\Layouts\DynamicDataLayout\Renderer;
+use Jankx\Layouts\DynamicDataLayout\AttributeSanitizer;
 use Jankx\Query\DynamicDataLayoutQueryHelper;
 use Jankx\Foundation\Application;
 use Jankx\Services\DefaultThumbnailService;
@@ -460,7 +460,7 @@ class DynamicDataLayoutBlock extends Block
 
         // Set content generator if template block exists
         if ($templateBlock) {
-            $generator = new \Jankx\Layouts\PostLayout\Generators\PostTemplateBlockGenerator($templateBlock, $attributes);
+            $generator = new \Jankx\Layouts\DynamicDataLayout\Generators\PostTemplateBlockGenerator($templateBlock, $attributes);
             $layoutInstance = $decorator->getLayout();
             $layoutInstance->setContentGenerator($generator);
         }

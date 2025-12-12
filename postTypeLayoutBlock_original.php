@@ -4,7 +4,7 @@ namespace Jankx\Gutenberg\Blocks;
 
 use Jankx\Gutenberg\Block;
 use Jankx\Gutenberg\QueryOptions;
-use Jankx\Layouts\PostLayout\PostLayoutManager;
+use Jankx\Layouts\DynamicDataLayout\PostLayoutManager;
 use Jankx\Facades\PostLayout;
 use Jankx\Multilingual\MultilingualFactory;
 use WP_Query;

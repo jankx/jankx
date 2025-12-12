@@ -16,8 +16,8 @@ use Jankx\Gutenberg\Block;
 use Jankx\Facades\Log;
 use Jankx\Layouts\AdvancedFilters\AdvancedFiltersRenderer as FilterRenderer;
 use Jankx\Query\AdvancedFiltersQueryBuilder;
-use Jankx\Layouts\PostLayout\PostLayoutManager;
-use Jankx\Layouts\PostLayout\PostLayoutDecorator;
+use Jankx\Layouts\DynamicDataLayout\DynamicDataLayoutManager;
+use Jankx\Layouts\DynamicDataLayout\PostLayoutDecorator;
 use Jankx\Rest\AdvancedFiltersRestApiHandler;
 use Jankx\Rest\AdvancedFiltersAjaxHandler;
 use WP_Query;
@@ -60,9 +60,9 @@ class AdvancedFiltersBlock extends Block
     protected $filterRenderer = null;
 
     /**
-     * Post Layout Manager instance
+     * Dynamic Data Layout Manager instance
      *
-     * @var PostLayoutManager|null
+     * @var DynamicDataLayoutManager|null
      */
     protected $layoutManager = null;
 
@@ -78,7 +78,7 @@ class AdvancedFiltersBlock extends Block
         $this->ajaxHandler = new AdvancedFiltersAjaxHandler();
         $this->queryBuilder = new AdvancedFiltersQueryBuilder();
         $this->filterRenderer = new FilterRenderer();
-        $this->layoutManager = PostLayoutManager::getInstance();
+        $this->layoutManager = DynamicDataLayoutManager::getInstance();
 
         // Register handlers
         add_action('rest_api_init', [$this->restHandler, 'registerEndpoints']);
@@ -217,7 +217,11 @@ class AdvancedFiltersBlock extends Block
 
         // Render using PostLayoutDecorator
         $layout_name = $block_attributes['layout'] ?? 'grid';
-        $decorator = $this->layoutManager->createLayout($layout_name, $block_attributes);
+        $decorator = $this->layoutManager->createLayout(
+            $layout_name,
+            $block_attributes['postType'] ?? 'post',
+            $block_attributes
+        );
         $decorator->withQuery($query);
         $rendered_content = $decorator->render();
 
