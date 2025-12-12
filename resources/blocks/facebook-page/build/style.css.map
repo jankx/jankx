@@ -1,0 +1,1 @@
+{"version":3,"file":"blocks/facebook-page/build/style.css","mappings":";;;AACE;EACE;AAAJ,C","sources":["webpack://jankx/./blocks/facebook-page/style.scss"],"sourcesContent":[".jankx-facebook-page {\n  .fb-page {\n    width: 100%;\n  }\n}\n\n"],"names":[],"sourceRoot":""}
