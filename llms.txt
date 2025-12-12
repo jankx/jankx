@@ -1779,6 +1779,23 @@ Xem thêm trong `docs/` directory:
  
  ## Nguyên tắc chung
  
+ ## CSS Rules cho Blocks
+ - Không hardcode CSS trong SCSS/JS/PHP.
+ - Tất cả giá trị CSS phải đến từ attributes/options của block.
+ - Giá trị động áp dụng bằng inline styles trong PHP render của block.
+ - CSS common/tái sử dụng khai báo trong `style.css` của block (và `editor.css` khi cần).
+ - Ưu tiên sử dụng `theme.json` presets và CSS variables khi phù hợp; vẫn lấy giá trị từ attributes.
+ - Mapping giữa attributes → CSS phải rõ ràng, đảm bảo editor/frontend tương đồng.
+ 
+ Ví dụ:
+ - `borderRadius` → inline style `border-radius: {borderRadius}` tại PHP render.
+ - `overlayOpacity` → inline style `opacity: {overlayOpacity}` trên overlay container.
+ - `columns` → CSS variables `--columns-desktop`, `--columns-tablet`, `--columns-mobile` đặt bằng inline styles.
+ 
+ Quy định triển khai:
+ - PHP block class chịu trách nhiệm build inline styles từ attributes.
+ - Không set giá trị cố định trong SCSS; SCSS chỉ chứa cấu trúc/layout chung.
+ - JavaScript chỉ hiển thị UI, không gắn logic hay giá trị CSS cố định.
  ### 1. Block Supports
  WordPress block supports là các tính năng được WordPress core cung cấp, tự động tạo CSS classes và inline styles:
  
