@@ -3,11 +3,11 @@
 namespace Jankx\Gutenberg\Blocks;
 
 use Jankx\Gutenberg\Block;
-use Jankx\Gutenberg\Blocks\AdvancedButton\ButtonRendererFactory;
-use Jankx\Gutenberg\Blocks\AdvancedButton\ContentExtractor;
-use Jankx\Gutenberg\Blocks\AdvancedButton\ButtonStyler;
-use Jankx\Gutenberg\Blocks\AdvancedButton\InnerBlocksHandler;
-use Jankx\Gutenberg\Blocks\AdvancedButton\WrapperRenderer;
+use Jankx\Layouts\AdvancedButton\ButtonRendererFactory;
+use Jankx\Layouts\AdvancedButton\ContentExtractor;
+use Jankx\Layouts\AdvancedButton\ButtonStyler;
+use Jankx\Layouts\AdvancedButton\InnerBlocksHandler;
+use Jankx\Layouts\AdvancedButton\WrapperRenderer;
 
 /**
  * Advanced Button Block
@@ -124,7 +124,7 @@ class AdvancedButtonBlock extends Block
         // Apply PHP-specific processing based on trigger type
         // For detail-link and modal, use renderers to handle placeholders
         if ($triggerType === 'detail-link') {
-            $renderer = new \Jankx\Gutenberg\Blocks\AdvancedButton\DetailLinkRenderer();
+            $renderer = new \Jankx\Layouts\AdvancedButton\DetailLinkRenderer();
             $innerContent = $this->extractButtonInnerContent($buttonContent);
             $buttonElement = ContentExtractor::getButtonElement($buttonContent);
             
@@ -143,7 +143,7 @@ class AdvancedButtonBlock extends Block
                 return $renderer->render($attributes, $innerContent, $classes, $styles);
             }
         } elseif ($triggerType === 'modal') {
-            $renderer = new \Jankx\Gutenberg\Blocks\AdvancedButton\ModalRenderer();
+            $renderer = new \Jankx\Layouts\AdvancedButton\ModalRenderer();
             $innerContent = $this->extractButtonInnerContent($buttonContent);
             $buttonElement = ContentExtractor::getButtonElement($buttonContent);
             

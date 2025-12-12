@@ -1,26 +1,9 @@
 <?php
 
-namespace Jankx\Gutenberg\Blocks\AdvancedButton;
+namespace Jankx\Layouts\AdvancedButton;
 
-/**
- * Modal Button Renderer
- *
- * Renders button as a button element that triggers a modal
- * Matches JavaScript save function: triggerType === 'modal'
- *
- * @package Jankx\Gutenberg\Blocks\AdvancedButton
- */
 class ModalRenderer extends AbstractButtonRenderer
 {
-    /**
-     * Render modal trigger button
-     *
-     * @param array $attributes Block attributes
-     * @param string $content Button content
-     * @param string $classes Button CSS classes
-     * @param array $styles Button inline styles
-     * @return string Rendered HTML
-     */
     public function render(array $attributes, string $content, string $classes, array $styles): string
     {
         $modalId = $attributes['modalId'] ?? '';
@@ -28,48 +11,35 @@ class ModalRenderer extends AbstractButtonRenderer
         $modalSharePostTitle = $attributes['modalSharePostTitle'] ?? false;
         $modalShareCurrentUrl = $attributes['modalShareCurrentUrl'] ?? false;
         $title = $attributes['title'] ?? '';
-
-        // Add jankx-button-modal-trigger class (matches JS)
         $classes .= ' jankx-button-modal-trigger';
-
         $htmlAttributes = [
             'type' => 'button',
             'class' => $classes,
-            'data-micromodal-trigger' => $modalId, // Micromodal standard attribute
-            'data-modal-id' => $modalId, // Keep for backward compatibility
+            'data-micromodal-trigger' => $modalId,
+            'data-modal-id' => $modalId,
             'data-trigger-type' => 'modal',
         ];
-
-        // Add share data attributes if enabled (matches JS)
         if ($modalShareObjectId) {
             $htmlAttributes['data-share-object-id'] = 'true';
             $htmlAttributes['data-current-object-id'] = '{{CURRENT_POST_ID}}';
         }
-
         if ($modalSharePostTitle) {
             $htmlAttributes['data-share-post-title'] = 'true';
             $htmlAttributes['data-current-post-title'] = '{{CURRENT_POST_TITLE}}';
         }
-
         if ($modalShareCurrentUrl) {
             $htmlAttributes['data-share-current-url'] = 'true';
             $htmlAttributes['data-current-url'] = '{{CURRENT_POST_URL}}';
         }
-
         if ($title) {
             $htmlAttributes['title'] = esc_attr($title);
         }
-
         $styleAttr = $this->buildStyleAttribute($styles);
         if ($styleAttr) {
             $htmlAttributes['style'] = $styleAttr;
         }
-
         $attributesString = $this->buildAttributes($htmlAttributes);
-
         $html = sprintf('<button%s>%s</button>', $attributesString, $content);
-
-        // Replace placeholders with actual post data (matches PHP logic)
         if (is_singular() && have_posts()) {
             the_post();
             $post_id = get_the_ID();
@@ -82,13 +52,11 @@ class ModalRenderer extends AbstractButtonRenderer
             $post_title = $post ? $post->post_title : '';
             $post_url = $post ? get_permalink($post) : '';
         }
-
         if ($post_id && $post_title && $post_url) {
             $html = str_replace('{{CURRENT_POST_ID}}', esc_attr($post_id), $html);
             $html = str_replace('{{CURRENT_POST_TITLE}}', esc_attr($post_title), $html);
             $html = str_replace('{{CURRENT_POST_URL}}', esc_attr($post_url), $html);
         }
-
         return $html;
     }
 }
