@@ -55,6 +55,7 @@ class AdvancedFiltersRenderer
             'displayAsDropdown' => $attributes['displayAsDropdown'] ?? false,
             'multipleSelection' => $attributes['multipleSelection'] ?? true,
             'layout' => $attributes['layout'] ?? 'horizontal',
+            'multiPostTypes' => $attributes['multiPostTypes'] ?? ['enabled' => false, 'postTypes' => []],
         ];
 
         // Combine all filter types
@@ -131,4 +132,3 @@ class AdvancedFiltersRenderer
         return FilterRendererFactory::getRegisteredRenderers();
     }
 }
-

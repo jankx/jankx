@@ -93,6 +93,15 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
     }
   );
 
+  const overlayInnerBlocksProps = useInnerBlocksProps(
+    { className: 'swiper-overlay-layer' },
+    {
+      allowedBlocks: ['jankx/swiper-inner-blocks-overlay'],
+      template: [],
+      templateLock: false
+    }
+  );
+
   // Handle gallery image selection
   const onSelectGalleryImages = (images: any[]) => {
     const galleryData = images.map(img => ({
@@ -577,6 +586,8 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
         {pagination && (
           <div className="swiper-pagination"></div>
         )}
+
+        <div {...overlayInnerBlocksProps} />
       </div>
       </div>
     </>

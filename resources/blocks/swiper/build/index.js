@@ -130,6 +130,13 @@ function Edit({
     templateLock: false,
     orientation: 'horizontal'
   });
+  const overlayInnerBlocksProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useInnerBlocksProps)({
+    className: 'swiper-overlay-layer'
+  }, {
+    allowedBlocks: ['jankx/swiper-inner-blocks-overlay'],
+    template: [],
+    templateLock: false
+  });
 
   // Handle gallery image selection
   const onSelectGalleryImages = images => {
@@ -643,6 +650,8 @@ function Edit({
           })]
         }), pagination && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("div", {
           className: "swiper-pagination"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("div", {
+          ...overlayInnerBlocksProps
         })]
       })]
     })]

@@ -192,6 +192,21 @@ class DynamicDataLayoutQueryHelper
                 $author_in = array_merge($author_in, array_map('intval', $author_ids));
                 continue;
             }
+
+            // Switch post type when user selects via keyword filter radios
+            if ($key === 'post_type') {
+                $slug = is_string($value) ? sanitize_key($value) : '';
+                if ($slug !== '') {
+                    $allowed = true;
+                    if (!empty($attributes['useMultiPostType']) && !empty($attributes['postTypes']) && is_array($attributes['postTypes'])) {
+                        $allowed = in_array($slug, $attributes['postTypes'], true);
+                    }
+                    if ($allowed) {
+                        $attributes['postType'] = $slug;
+                    }
+                }
+                continue;
+            }
         }
 
         if (!empty($tax_query_by_taxonomy)) {
@@ -293,4 +308,3 @@ class DynamicDataLayoutQueryHelper
         return $mapping[$woocommerce_orderby] ?? ['orderBy' => $woocommerce_orderby];
     }
 }
-

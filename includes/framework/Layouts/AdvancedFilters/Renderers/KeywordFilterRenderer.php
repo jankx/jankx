@@ -57,6 +57,21 @@ class KeywordFilterRenderer extends BaseFilterRenderer
         echo '<div class="filter-keyword-wrapper">';
         echo '<input type="text" class="filter-input filter-input-keyword" placeholder="' . esc_attr($placeholder) . '" />';
 
+        // Render post type radios when multi post type is enabled
+        $multi = $global_settings['multiPostTypes'] ?? ['enabled' => false, 'postTypes' => []];
+        $post_types = is_array($multi['postTypes'] ?? null) ? $multi['postTypes'] : [];
+        if (!empty($multi['enabled']) && count($post_types) > 1) {
+            echo '<div class="post-type-radios" role="radiogroup" aria-label="' . esc_attr(__('Post Type', 'jankx')) . '">';
+            // "All" option
+            echo '<label class="filter-option"><input type="radio" name="post_type" value="" checked /> ' . esc_html(__('Tất cả', 'jankx')) . '</label>';
+            foreach ($post_types as $pt) {
+                $obj = get_post_type_object($pt);
+                $label_text = $obj && isset($obj->labels->singular_name) ? $obj->labels->singular_name : ucwords(str_replace(['-', '_'], ' ', $pt));
+                echo '<label class="filter-option"><input type="radio" name="post_type" value="' . esc_attr($pt) . '" /> ' . esc_html($label_text) . '</label>';
+            }
+            echo '</div>';
+        }
+
         if ($show_search_button) {
             echo '<button type="button" class="filter-search-button">';
             if ($search_button_display === 'icon' || $search_button_display === 'icon-text') {
@@ -80,5 +95,4 @@ class KeywordFilterRenderer extends BaseFilterRenderer
         echo '</div>'; // end filter-group
     }
 }
-
 

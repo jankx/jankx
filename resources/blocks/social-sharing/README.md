@@ -128,7 +128,7 @@ const sharingBlock = document.querySelector('.wp-block-jankx-social-sharing');
 ### Build
 ```bash
 cd wp-content/themes/jankx/resources
-npm run build:webpack
+npm run build:blocks
 ```
 
 ### Watch mode
