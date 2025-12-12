@@ -4,7 +4,7 @@ namespace Jankx\Gutenberg\Blocks;
 
 use Jankx\Gutenberg\Block;
 use Jankx\Gutenberg\QueryOptions;
-use Jankx\Layouts\DynamicDataLayout\PostLayoutManager;
+use Jankx\Layouts\DynamicDataLayout\DynamicDataLayoutManager;
 use Jankx\Facades\PostLayout;
 use Jankx\Multilingual\MultilingualFactory;
 use WP_Query;
@@ -28,9 +28,9 @@ class PostTypeLayoutBlock extends Block
     protected $blockId = 'jankx/post-type-layout';
 
     /**
-     * PostLayoutManager instance
+     * DynamicDataLayoutManager instance
      *
-     * @var PostLayoutManager|null
+     * @var DynamicDataLayoutManager|null
      */
     protected $layoutManager = null;
 
@@ -60,12 +60,12 @@ class PostTypeLayoutBlock extends Block
     /**
      * Get layout manager (lazy loaded)
      *
-     * @return PostLayoutManager
+     * @return DynamicDataLayoutManager
      */
-    protected function getLayoutManager(): PostLayoutManager
+    protected function getLayoutManager(): DynamicDataLayoutManager
     {
         if ($this->layoutManager === null) {
-            $this->layoutManager = PostLayoutManager::getInstance();
+            $this->layoutManager = DynamicDataLayoutManager::getInstance();
         }
         return $this->layoutManager;
     }
@@ -295,7 +295,7 @@ class PostTypeLayoutBlock extends Block
         }
 
         // Localize supported layouts
-        $layouts = $this->getLayoutManager()->getLayouts(['field' => 'all']);
+        $layouts = $this->getLayoutManager()->getCommonLayouts();
         
         wp_localize_script(
             $script_handle,
@@ -462,7 +462,8 @@ class PostTypeLayoutBlock extends Block
         $layoutManager = $this->getLayoutManager();
 
         // Check if layout exists
-        if (!$layoutManager->hasLayout($layout_name)) {
+        $post_type_for_check = $attributes['postType'] ?? 'post';
+        if (!$layoutManager->hasLayout($layout_name, $post_type_for_check)) {
             return sprintf(
                 '<div class="post-layout-error">%s</div>',
                 sprintf(
@@ -545,19 +546,19 @@ class PostTypeLayoutBlock extends Block
             $query = new WP_Query($query_args);
 
             // Create decorator with the query
-            $decorator = $layoutManager->createLayout($layout_name, $attributes);
+            $decorator = $layoutManager->createLayout($layout_name, $attributes['postType'] ?? 'post', $attributes);
             $decorator->withQuery($query);
         } elseif ($queryPreset === 'related') {
             // Build related posts query
             $attributes = $this->buildRelatedQuery($attributes);
 
             // Create decorator and build query
-            $decorator = $layoutManager->createLayout($layout_name, $attributes);
+            $decorator = $layoutManager->createLayout($layout_name, $attributes['postType'] ?? 'post', $attributes);
             $query = $decorator->buildQuery($attributes);
             $decorator->withQuery($query);
         } else {
             // Custom query (default behavior)
-            $decorator = $layoutManager->createLayout($layout_name, $attributes);
+            $decorator = $layoutManager->createLayout($layout_name, $attributes['postType'] ?? 'post', $attributes);
             $query = $decorator->buildQuery($attributes);
             $decorator->withQuery($query);
         }
@@ -695,7 +696,8 @@ class PostTypeLayoutBlock extends Block
         $layoutManager = $this->getLayoutManager();
 
         // Check if layout exists
-        if (!$layoutManager->hasLayout($layout_name)) {
+        $post_type_for_check = $attributes['postType'] ?? 'post';
+        if (!$layoutManager->hasLayout($layout_name, $post_type_for_check)) {
             wp_send_json_error(['message' => __('Layout does not exist', 'jankx')]);
             return;
         }
@@ -911,16 +913,16 @@ class PostTypeLayoutBlock extends Block
             }
             
             $query = new WP_Query($query_args);
-            $decorator = $layoutManager->createLayout($layout_name, $attributes);
+            $decorator = $layoutManager->createLayout($layout_name, $attributes['postType'] ?? 'post', $attributes);
             $decorator->withQuery($query);
         } elseif ($queryPreset === 'related') {
             $attributes = $this->buildRelatedQuery($attributes);
-            $decorator = $layoutManager->createLayout($layout_name, $attributes);
+            $decorator = $layoutManager->createLayout($layout_name, $attributes['postType'] ?? 'post', $attributes);
             $query = $decorator->buildQuery($attributes);
             $decorator->withQuery($query);
         } else {
             // Custom query
-            $decorator = $layoutManager->createLayout($layout_name, $attributes);
+            $decorator = $layoutManager->createLayout($layout_name, $attributes['postType'] ?? 'post', $attributes);
             $query = $decorator->buildQuery($attributes);
             $decorator->withQuery($query);
         }

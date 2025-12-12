@@ -11,7 +11,7 @@ namespace Tests\Integration\PostLayout;
 
 use Tests\Helpers\TestCase;
 use Tests\Helpers\HtmlAssertions;
-use Jankx\Layouts\DynamicDataLayout\PostLayoutManager;
+use Jankx\Layouts\DynamicDataLayout\DynamicDataLayoutManager;
 use Jankx\Layouts\DynamicDataLayout\Supports\GridLayout;
 use Jankx\Layouts\DynamicDataLayout\Supports\ListLayout;
 
@@ -24,7 +24,7 @@ class PostLayoutColumnsUpdateTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->layoutManager = PostLayoutManager::getInstance();
+        $this->layoutManager = DynamicDataLayoutManager::getInstance();
     }
 
     /**
