@@ -290,6 +290,14 @@
   }
 }
 
+/* Editor placeholder to show background when no image is present */
+.wp-block-jankx-advanced-image-box__no-image {
+  background-size: cover;
+  background-position: center;
+  display: block;
+  width: 100%;
+}
+
 .components-panel__body .wp-block-jankx-advanced-image-box__alt-text .components-base-control__label,
 .components-panel__body .wp-block-jankx-advanced-image-box__title .components-base-control__label {
   font-weight: 600;

@@ -237,6 +237,21 @@ class DynamicDataLayoutBlock extends Block
         $this->ensureServices();
 
         try {
+            // Extract template block attributes (imageRatio, thumbnailPosition) and merge into parent attributes
+            if ($block instanceof \WP_Block) {
+                $templateBlock = $this->extractTemplateBlockFromParsedBlock($block->parsed_block ?? []);
+                if ($templateBlock && !empty($templateBlock['attrs'])) {
+                    $templateAttrs = $templateBlock['attrs'];
+                    // Merge template block attributes into parent attributes for wrapper attributes
+                    if (!empty($templateAttrs['imageRatio']) && empty($attributes['imageRatio'])) {
+                        $attributes['imageRatio'] = $templateAttrs['imageRatio'];
+                    }
+                    if (!empty($templateAttrs['thumbnailPosition']) && empty($attributes['thumbnailPosition'])) {
+                        $attributes['thumbnailPosition'] = $templateAttrs['thumbnailPosition'];
+                    }
+                }
+            }
+
             $rendered = $this->rendererService->render($attributes, $content, $block);
 
             // Expose data attributes so other blocks (e.g., advanced-filters) can find and update this block via AJAX

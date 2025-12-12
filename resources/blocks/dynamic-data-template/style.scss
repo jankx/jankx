@@ -34,3 +34,44 @@
     }
 }
 
+// Apply aspect ratio to images based on data-image-ratio attribute
+// This is set on the parent dynamic-data-layout wrapper
+.dynamic-data-layout-wrapper[data-image-ratio] {
+    // Target featured images in post items
+    .post-item,
+    .dynamic-data-template__item {
+        .post-thumbnail,
+        .wp-block-post-featured-image,
+        .wc-block-components-product-image,
+        img {
+            aspect-ratio: var(--image-ratio, auto);
+        }
+        
+        // Apply aspect ratio using CSS custom property
+        &[style*="--image-ratio"] {
+            .post-thumbnail,
+            .wp-block-post-featured-image,
+            .wc-block-components-product-image,
+            img {
+                aspect-ratio: var(--image-ratio);
+            }
+        }
+    }
+}
+
+// Apply aspect ratio based on data attribute value
+$ratios: '16/9', '4/3', '21/9', '1/1', '3/4', '2/3', '9/16';
+@each $ratio in $ratios {
+    .dynamic-data-layout-wrapper[data-image-ratio="#{$ratio}"] {
+        .post-item,
+        .dynamic-data-template__item {
+            .post-thumbnail,
+            .wp-block-post-featured-image,
+            .wc-block-components-product-image,
+            img {
+                aspect-ratio: #{$ratio};
+            }
+        }
+    }
+}
+

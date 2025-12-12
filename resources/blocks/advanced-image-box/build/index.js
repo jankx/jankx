@@ -396,6 +396,61 @@ function edit({
   onReplace,
   insertBlocksAfter
 }) {
+  var _ref5, _titleBackground;
+  // Helper: parse color string to { colorHex, alpha }
+  const parseColorAndAlpha = value => {
+    const str = String(value !== null && value !== void 0 ? value : '').trim();
+
+    // rgba(...) format
+    const rgbaMatch = str.match(/rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*(?:,\s*(0|0?\.\d+|1(?:\.0+)?)\s*)?\)/i);
+    if (rgbaMatch) {
+      const r = Number(rgbaMatch[1]);
+      const g = Number(rgbaMatch[2]);
+      const b = Number(rgbaMatch[3]);
+      const a = rgbaMatch[4] !== undefined ? Number(rgbaMatch[4]) : 1;
+      const hex = rgbToHex(r, g, b);
+      return {
+        colorHex: hex,
+        alpha: a
+      };
+    }
+
+    // Hex format #rrggbb or #rgb
+    const hexMatch = str.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+    if (hexMatch) {
+      const hex = normalizeHex(str);
+      return {
+        colorHex: hex,
+        alpha: 1
+      };
+    }
+
+    // Unknown format - fallback to empty
+    return {
+      colorHex: String(value !== null && value !== void 0 ? value : '') || '#000000',
+      alpha: 1
+    };
+  };
+  const rgbToHex = (r, g, b) => `#${[r, g, b].map(x => {
+    const s = x.toString(16);
+    return s.length === 1 ? `0${s}` : s;
+  }).join('')}`;
+  const normalizeHex = hex => {
+    const h = hex.replace('#', '').toLowerCase();
+    if (h.length === 3) {
+      return `#${h[0]}${h[0]}${h[1]}${h[1]}${h[2]}${h[2]}`;
+    }
+    return `#${h}`;
+  };
+  const combineHexAndAlpha = (hex, alpha) => {
+    const normalized = normalizeHex(hex);
+    if (alpha >= 1) return normalized;
+    // Convert hex to rgb
+    const r = parseInt(normalized.slice(1, 3), 16);
+    const g = parseInt(normalized.slice(3, 5), 16);
+    const b = parseInt(normalized.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  };
   const {
     url = '',
     alt = '',
@@ -447,7 +502,35 @@ function edit({
 
   // Get presets from PHP
   const presets = window.jankxAdvancedImageBoxPresets || {};
+  // Provide editor theme color palette for preset color options
+  const settingsObj = typeof getSettings === 'function' ? getSettings() : undefined;
+  const editorColors = settingsObj && settingsObj.colors ? settingsObj.colors : undefined;
   const currentPreset = preset ? presets[preset] : null;
+
+  // Merge new preset options when preset data changes
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
+    if (preset && currentPreset && currentPreset.options) {
+      const currentOptions = presetOptions || {};
+      const mergedOptions = {
+        ...currentOptions
+      };
+      let hasNewOptions = false;
+      currentPreset.options.forEach(option => {
+        // Add new options that don't exist in current presetOptions
+        if (!(option.name in mergedOptions) && option.default !== undefined) {
+          mergedOptions[option.name] = option.default;
+          hasNewOptions = true;
+        }
+      });
+
+      // Only update if there are new options
+      if (hasNewOptions) {
+        setAttributes({
+          presetOptions: mergedOptions
+        });
+      }
+    }
+  }, [preset, currentPreset, presetOptions, setAttributes]);
 
   // Handle preset change
   const handlePresetChange = newPresetId => {
@@ -460,18 +543,22 @@ function edit({
       return;
     }
 
-    // Set default options
-    const defaultOptions = {};
+    // Merge default options with existing presetOptions
+    // This ensures new options are added while preserving existing values
+    const mergedOptions = {
+      ...(presetOptions || {})
+    };
     if (newPreset.options) {
       newPreset.options.forEach(option => {
-        if (option.default !== undefined) {
-          defaultOptions[option.name] = option.default;
+        // Only set default if option doesn't exist in current presetOptions
+        if (!(option.name in mergedOptions) && option.default !== undefined) {
+          mergedOptions[option.name] = option.default;
         }
       });
     }
     setAttributes({
       preset: newPresetId,
-      presetOptions: defaultOptions
+      presetOptions: mergedOptions
     });
 
     // If preset requires inner blocks, add template
@@ -492,7 +579,7 @@ function edit({
 
   // Render preset option control
   const renderPresetOption = option => {
-    var _option$name, _ref, _option$min, _option$max, _option$step, _ref2, _ref3, _ref4;
+    var _option$name, _ref, _option$min, _option$max, _option$step, _ref3, _ref4;
     const value = (_option$name = presetOptions[option.name]) !== null && _option$name !== void 0 ? _option$name : option.default;
     switch (option.type) {
       case 'text':
@@ -534,15 +621,61 @@ function edit({
           help: option.help
         }, option.name);
       case 'color':
+        // Use Gutenberg ColorPalette so preset color options follow editor/theme palettes.
+        // Also provide an opacity slider (alpha). ColorPalette returns a hex value, so alpha
+        // is stored separately and combined into rgba(...) when alpha < 1.
         return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
           style: {
             marginBottom: '16px'
           },
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ColorPicker, {
-            color: String((_ref2 = value !== null && value !== void 0 ? value : option.default) !== null && _ref2 !== void 0 ? _ref2 : '#000000'),
-            onChange: newValue => handlePresetOptionChange(option.name, newValue),
-            label: option.label
-          }), option.help && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("p", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("label", {
+            style: {
+              display: 'block',
+              marginBottom: '6px'
+            },
+            children: option.label
+          }),
+          // Parse stored value to split into hex and alpha
+          ((_option$default, _ref2) => {
+            const {
+              colorHex: storedHex,
+              alpha: storedAlpha
+            } = parseColorAndAlpha(value);
+            const colorValue = storedHex || String((_option$default = option.default) !== null && _option$default !== void 0 ? _option$default : '#000000');
+            const alphaValue = Number(storedAlpha !== null && storedAlpha !== void 0 ? storedAlpha : 1);
+            if (editorColors && editorColors.length > 0) {
+              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.Fragment, {
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ColorPalette, {
+                  value: String(colorValue),
+                  onChange: newHex => handlePresetOptionChange(option.name, combineHexAndAlpha(String(newHex || colorValue), alphaValue)),
+                  colors: editorColors
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
+                  style: {
+                    marginTop: '6px'
+                  },
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("label", {
+                    style: {
+                      display: 'block',
+                      marginBottom: '4px'
+                    },
+                    children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Opacity')
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.RangeControl, {
+                    value: alphaValue,
+                    onChange: newAlpha => handlePresetOptionChange(option.name, combineHexAndAlpha(String(colorValue), Number(newAlpha))),
+                    min: 0,
+                    max: 1,
+                    step: 0.01
+                  })]
+                })]
+              });
+            }
+
+            // Fallback: use ColorPicker which supports alpha as rgba string
+            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ColorPicker, {
+              color: String((_ref2 = value !== null && value !== void 0 ? value : option.default) !== null && _ref2 !== void 0 ? _ref2 : '#000000'),
+              onChange: newValue => handlePresetOptionChange(option.name, newValue)
+            });
+          })(), option.help && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("p", {
             style: {
               fontSize: '12px',
               color: '#757575',
@@ -647,7 +780,10 @@ function edit({
 
   // Validation notice removed for better UX
 
-  const imageElement = url ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("img", {
+  const hasImage = Boolean(url && String(url).trim() !== '');
+  const presetBg = String((_ref5 = (_titleBackground = presetOptions?.titleBackground) !== null && _titleBackground !== void 0 ? _titleBackground : overlayBackground) !== null && _ref5 !== void 0 ? _ref5 : 'transparent');
+  const placeholderMinHeight = height || '240px';
+  const imageElement = hasImage ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("img", {
     src: url,
     alt: alt || '',
     title: title,
@@ -665,6 +801,10 @@ function edit({
     }
   }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
     className: "wp-block-jankx-advanced-image-box__placeholder",
+    style: {
+      backgroundColor: presetBg,
+      minHeight: placeholderMinHeight
+    },
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.MediaReplaceFlow, {
       mediaId: id,
       mediaURL: url,
@@ -812,7 +952,33 @@ function edit({
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Image Settings'),
         initialOpen: true,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.RichText, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
+          style: {
+            marginBottom: '12px'
+          },
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.MediaReplaceFlow, {
+            mediaId: id,
+            mediaURL: url,
+            allowedTypes: ['image'],
+            accept: "image/*",
+            onSelect: onSelectImage,
+            onSelectURL: onSelectURL,
+            onError: onUploadError,
+            name: !url ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Add image') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Replace')
+          }), url && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.Button, {
+            isSecondary: true,
+            onClick: () => setAttributes({
+              url: undefined,
+              id: undefined,
+              alt: undefined,
+              title: undefined
+            }),
+            style: {
+              marginLeft: '8px'
+            },
+            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Remove image')
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.RichText, {
           className: "wp-block-jankx-advanced-image-box__alt-text",
           tagName: "p",
           value: alt || '',
@@ -1161,6 +1327,7 @@ function save({
   attributes,
   className
 }) {
+  var _ref, _presetOptions$titleB;
   const {
     url,
     alt,
@@ -1182,8 +1349,16 @@ function save({
     overlayBackground,
     overlayOpacity,
     imageHoverEffect,
-    borderRadius
+    borderRadius,
+    preset
   } = attributes;
+
+  // Support presetOptions and provide a visible fallback when there is no image
+  const presetOptions = attributes.presetOptions || {};
+  const hasImage = Boolean(url && String(url).trim() !== '');
+  // Prefer preset titleBackground (used by bordered-frame), then overlayBackground
+  const fallbackBg = String((_ref = (_presetOptions$titleB = presetOptions.titleBackground) !== null && _presetOptions$titleB !== void 0 ? _presetOptions$titleB : overlayBackground) !== null && _ref !== void 0 ? _ref : 'transparent');
+  const fallbackMinHeight = height || '240px';
 
   // Validate content before saving
   const validation = (0,_validationUtils__WEBPACK_IMPORTED_MODULE_2__.validateBlockContent)(attributes, []);
@@ -1205,16 +1380,33 @@ function save({
     height,
     borderRadius
   };
-  const imageElement = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("img", {
+  const imageElement = hasImage ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("img", {
     src: url,
     alt: alt || '',
     title: title,
     className: imageClasses,
     style: imageStyle
+  }) :
+  /*#__PURE__*/
+  // Fallback element when no image is provided: shows a colored block so presets/frame are visible
+  (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+    className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])('wp-block-jankx-advanced-image-box__no-image', imageClasses),
+    style: {
+      ...imageStyle,
+      backgroundColor: fallbackBg,
+      minHeight: fallbackMinHeight
+    }
   });
 
-  // Create overlay content if enabled
-  const overlayContent = showOverlayOnHover && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+  // Always render inner blocks content - needed for all scenarios
+  // This ensures inner blocks are saved regardless of preset/overlay settings
+  const innerBlocksContent = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+    className: "wp-block-jankx-advanced-image-box__overlay__content",
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InnerBlocks.Content, {})
+  });
+
+  // Create overlay content if enabled (but not when preset is active)
+  const overlayContent = showOverlayOnHover && !preset && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
     className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])('wp-block-jankx-advanced-image-box__overlay', `wp-block-jankx-advanced-image-box__overlay--${overlayPosition}`, 'animated', overlayAnimation),
     style: {
       backgroundColor: overlayBackground,
@@ -1222,11 +1414,22 @@ function save({
       animationDuration: `${overlayAnimationDuration}ms`,
       animationDelay: `${overlayAnimationDelay}ms`
     },
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
-      className: "wp-block-jankx-advanced-image-box__overlay__content",
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InnerBlocks.Content, {})
-    })
+    children: innerBlocksContent
   });
+
+  // When preset is active, render inner blocks in frame/title-box (matching edit mode)
+  const presetContent = preset && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+    className: "wp-block-jankx-advanced-image-box__frame-wrapper",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+      className: "wp-block-jankx-advanced-image-box__frame"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+      className: "wp-block-jankx-advanced-image-box__title-box",
+      children: innerBlocksContent
+    })]
+  });
+
+  // When no preset and no overlay, render inner blocks in hidden container (for editing)
+  const hiddenContent = !preset && !showOverlayOnHover && innerBlocksContent;
 
   // Wrap image with link if href is provided
   const wrappedImage = href ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("a", {
@@ -1244,7 +1447,7 @@ function save({
     ..._wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps.save({
       className: blockClasses
     }),
-    children: [wrappedImage, overlayContent, !_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.RichText.isEmpty(caption) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.RichText.Content, {
+    children: [wrappedImage, overlayContent, presetContent, hiddenContent, caption && !_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.RichText.isEmpty(caption) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.RichText.Content, {
       className: "wp-block-jankx-advanced-image-box__caption",
       tagName: "figcaption",
       value: caption

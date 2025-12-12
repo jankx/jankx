@@ -46,6 +46,13 @@ export default function save({ attributes, className }: AdvancedImageBoxSaveProp
 		preset
 	} = attributes;
 
+	// Support presetOptions and provide a visible fallback when there is no image
+	const presetOptions = (attributes as any).presetOptions || {};
+	const hasImage = Boolean(url && String(url).trim() !== '');
+	// Prefer preset titleBackground (used by bordered-frame), then overlayBackground
+	const fallbackBg = String(presetOptions.titleBackground ?? overlayBackground ?? 'transparent');
+	const fallbackMinHeight = height || '240px';
+
 	// Validate content before saving
 	const validation = validateBlockContent(attributes, []);
 
@@ -75,7 +82,7 @@ export default function save({ attributes, className }: AdvancedImageBoxSaveProp
 		borderRadius,
 	};
 
-	const imageElement = (
+	const imageElement = hasImage ? (
 		<img
 			src={url}
 			alt={alt || ''}
@@ -83,10 +90,21 @@ export default function save({ attributes, className }: AdvancedImageBoxSaveProp
 			className={imageClasses}
 			style={imageStyle}
 		/>
+	) : (
+		// Fallback element when no image is provided: shows a colored block so presets/frame are visible
+		<div
+			className={clsx('wp-block-jankx-advanced-image-box__no-image', imageClasses)}
+			style={{
+				...imageStyle,
+				backgroundColor: fallbackBg,
+				minHeight: fallbackMinHeight,
+			}}>
+			{/* Inner blocks and preset elements will be rendered separately below */}
+		</div>
 	);
 
-	// Always render inner blocks content (for PHP to extract when preset is active)
-	// When preset is active, overlay won't be shown but inner blocks will be extracted by PHP
+	// Always render inner blocks content - needed for all scenarios
+	// This ensures inner blocks are saved regardless of preset/overlay settings
 	const innerBlocksContent = (
 		<div className="wp-block-jankx-advanced-image-box__overlay__content">
 			<InnerBlocks.Content />
@@ -113,8 +131,18 @@ export default function save({ attributes, className }: AdvancedImageBoxSaveProp
 		</div>
 	);
 
-	// When preset is active, render inner blocks in hidden container for PHP to extract
-	const presetInnerBlocks = preset && !showOverlayOnHover && innerBlocksContent;
+	// When preset is active, render inner blocks in frame/title-box (matching edit mode)
+	const presetContent = preset && (
+		<div className="wp-block-jankx-advanced-image-box__frame-wrapper">
+			<div className="wp-block-jankx-advanced-image-box__frame"></div>
+			<div className="wp-block-jankx-advanced-image-box__title-box">
+				{innerBlocksContent}
+			</div>
+		</div>
+	);
+
+	// When no preset and no overlay, render inner blocks in hidden container (for editing)
+	const hiddenContent = !preset && !showOverlayOnHover && innerBlocksContent;
 
 	// Wrap image with link if href is provided
 	const wrappedImage = href ? (
@@ -143,8 +171,9 @@ export default function save({ attributes, className }: AdvancedImageBoxSaveProp
 		<figure { ...useBlockProps.save({ className: blockClasses }) }>
 			{wrappedImage}
 			{overlayContent}
-			{presetInnerBlocks}
-			{!RichText.isEmpty(caption) && (
+			{presetContent}
+			{hiddenContent}
+			{caption && !RichText.isEmpty(caption) && (
 				<RichText.Content
 					className="wp-block-jankx-advanced-image-box__caption"
 					tagName="figcaption"

@@ -20,4 +20,102 @@
   border: 1px solid var(--wp--preset--color--contrast, #ccc);
 }
 
+.dynamic-data-layout-wrapper[data-image-ratio] .post-item .post-thumbnail,
+.dynamic-data-layout-wrapper[data-image-ratio] .post-item .wp-block-post-featured-image,
+.dynamic-data-layout-wrapper[data-image-ratio] .post-item .wc-block-components-product-image,
+.dynamic-data-layout-wrapper[data-image-ratio] .post-item img,
+.dynamic-data-layout-wrapper[data-image-ratio] .dynamic-data-template__item .post-thumbnail,
+.dynamic-data-layout-wrapper[data-image-ratio] .dynamic-data-template__item .wp-block-post-featured-image,
+.dynamic-data-layout-wrapper[data-image-ratio] .dynamic-data-template__item .wc-block-components-product-image,
+.dynamic-data-layout-wrapper[data-image-ratio] .dynamic-data-template__item img {
+  aspect-ratio: var(--image-ratio, auto);
+}
+.dynamic-data-layout-wrapper[data-image-ratio] .post-item[style*="--image-ratio"] .post-thumbnail,
+.dynamic-data-layout-wrapper[data-image-ratio] .post-item[style*="--image-ratio"] .wp-block-post-featured-image,
+.dynamic-data-layout-wrapper[data-image-ratio] .post-item[style*="--image-ratio"] .wc-block-components-product-image,
+.dynamic-data-layout-wrapper[data-image-ratio] .post-item[style*="--image-ratio"] img,
+.dynamic-data-layout-wrapper[data-image-ratio] .dynamic-data-template__item[style*="--image-ratio"] .post-thumbnail,
+.dynamic-data-layout-wrapper[data-image-ratio] .dynamic-data-template__item[style*="--image-ratio"] .wp-block-post-featured-image,
+.dynamic-data-layout-wrapper[data-image-ratio] .dynamic-data-template__item[style*="--image-ratio"] .wc-block-components-product-image,
+.dynamic-data-layout-wrapper[data-image-ratio] .dynamic-data-template__item[style*="--image-ratio"] img {
+  aspect-ratio: var(--image-ratio);
+}
+
+.dynamic-data-layout-wrapper[data-image-ratio="16/9"] .post-item .post-thumbnail,
+.dynamic-data-layout-wrapper[data-image-ratio="16/9"] .post-item .wp-block-post-featured-image,
+.dynamic-data-layout-wrapper[data-image-ratio="16/9"] .post-item .wc-block-components-product-image,
+.dynamic-data-layout-wrapper[data-image-ratio="16/9"] .post-item img,
+.dynamic-data-layout-wrapper[data-image-ratio="16/9"] .dynamic-data-template__item .post-thumbnail,
+.dynamic-data-layout-wrapper[data-image-ratio="16/9"] .dynamic-data-template__item .wp-block-post-featured-image,
+.dynamic-data-layout-wrapper[data-image-ratio="16/9"] .dynamic-data-template__item .wc-block-components-product-image,
+.dynamic-data-layout-wrapper[data-image-ratio="16/9"] .dynamic-data-template__item img {
+  aspect-ratio: 16/9;
+}
+
+.dynamic-data-layout-wrapper[data-image-ratio="4/3"] .post-item .post-thumbnail,
+.dynamic-data-layout-wrapper[data-image-ratio="4/3"] .post-item .wp-block-post-featured-image,
+.dynamic-data-layout-wrapper[data-image-ratio="4/3"] .post-item .wc-block-components-product-image,
+.dynamic-data-layout-wrapper[data-image-ratio="4/3"] .post-item img,
+.dynamic-data-layout-wrapper[data-image-ratio="4/3"] .dynamic-data-template__item .post-thumbnail,
+.dynamic-data-layout-wrapper[data-image-ratio="4/3"] .dynamic-data-template__item .wp-block-post-featured-image,
+.dynamic-data-layout-wrapper[data-image-ratio="4/3"] .dynamic-data-template__item .wc-block-components-product-image,
+.dynamic-data-layout-wrapper[data-image-ratio="4/3"] .dynamic-data-template__item img {
+  aspect-ratio: 4/3;
+}
+
+.dynamic-data-layout-wrapper[data-image-ratio="21/9"] .post-item .post-thumbnail,
+.dynamic-data-layout-wrapper[data-image-ratio="21/9"] .post-item .wp-block-post-featured-image,
+.dynamic-data-layout-wrapper[data-image-ratio="21/9"] .post-item .wc-block-components-product-image,
+.dynamic-data-layout-wrapper[data-image-ratio="21/9"] .post-item img,
+.dynamic-data-layout-wrapper[data-image-ratio="21/9"] .dynamic-data-template__item .post-thumbnail,
+.dynamic-data-layout-wrapper[data-image-ratio="21/9"] .dynamic-data-template__item .wp-block-post-featured-image,
+.dynamic-data-layout-wrapper[data-image-ratio="21/9"] .dynamic-data-template__item .wc-block-components-product-image,
+.dynamic-data-layout-wrapper[data-image-ratio="21/9"] .dynamic-data-template__item img {
+  aspect-ratio: 21/9;
+}
+
+.dynamic-data-layout-wrapper[data-image-ratio="1/1"] .post-item .post-thumbnail,
+.dynamic-data-layout-wrapper[data-image-ratio="1/1"] .post-item .wp-block-post-featured-image,
+.dynamic-data-layout-wrapper[data-image-ratio="1/1"] .post-item .wc-block-components-product-image,
+.dynamic-data-layout-wrapper[data-image-ratio="1/1"] .post-item img,
+.dynamic-data-layout-wrapper[data-image-ratio="1/1"] .dynamic-data-template__item .post-thumbnail,
+.dynamic-data-layout-wrapper[data-image-ratio="1/1"] .dynamic-data-template__item .wp-block-post-featured-image,
+.dynamic-data-layout-wrapper[data-image-ratio="1/1"] .dynamic-data-template__item .wc-block-components-product-image,
+.dynamic-data-layout-wrapper[data-image-ratio="1/1"] .dynamic-data-template__item img {
+  aspect-ratio: 1/1;
+}
+
+.dynamic-data-layout-wrapper[data-image-ratio="3/4"] .post-item .post-thumbnail,
+.dynamic-data-layout-wrapper[data-image-ratio="3/4"] .post-item .wp-block-post-featured-image,
+.dynamic-data-layout-wrapper[data-image-ratio="3/4"] .post-item .wc-block-components-product-image,
+.dynamic-data-layout-wrapper[data-image-ratio="3/4"] .post-item img,
+.dynamic-data-layout-wrapper[data-image-ratio="3/4"] .dynamic-data-template__item .post-thumbnail,
+.dynamic-data-layout-wrapper[data-image-ratio="3/4"] .dynamic-data-template__item .wp-block-post-featured-image,
+.dynamic-data-layout-wrapper[data-image-ratio="3/4"] .dynamic-data-template__item .wc-block-components-product-image,
+.dynamic-data-layout-wrapper[data-image-ratio="3/4"] .dynamic-data-template__item img {
+  aspect-ratio: 3/4;
+}
+
+.dynamic-data-layout-wrapper[data-image-ratio="2/3"] .post-item .post-thumbnail,
+.dynamic-data-layout-wrapper[data-image-ratio="2/3"] .post-item .wp-block-post-featured-image,
+.dynamic-data-layout-wrapper[data-image-ratio="2/3"] .post-item .wc-block-components-product-image,
+.dynamic-data-layout-wrapper[data-image-ratio="2/3"] .post-item img,
+.dynamic-data-layout-wrapper[data-image-ratio="2/3"] .dynamic-data-template__item .post-thumbnail,
+.dynamic-data-layout-wrapper[data-image-ratio="2/3"] .dynamic-data-template__item .wp-block-post-featured-image,
+.dynamic-data-layout-wrapper[data-image-ratio="2/3"] .dynamic-data-template__item .wc-block-components-product-image,
+.dynamic-data-layout-wrapper[data-image-ratio="2/3"] .dynamic-data-template__item img {
+  aspect-ratio: 2/3;
+}
+
+.dynamic-data-layout-wrapper[data-image-ratio="9/16"] .post-item .post-thumbnail,
+.dynamic-data-layout-wrapper[data-image-ratio="9/16"] .post-item .wp-block-post-featured-image,
+.dynamic-data-layout-wrapper[data-image-ratio="9/16"] .post-item .wc-block-components-product-image,
+.dynamic-data-layout-wrapper[data-image-ratio="9/16"] .post-item img,
+.dynamic-data-layout-wrapper[data-image-ratio="9/16"] .dynamic-data-template__item .post-thumbnail,
+.dynamic-data-layout-wrapper[data-image-ratio="9/16"] .dynamic-data-template__item .wp-block-post-featured-image,
+.dynamic-data-layout-wrapper[data-image-ratio="9/16"] .dynamic-data-template__item .wc-block-components-product-image,
+.dynamic-data-layout-wrapper[data-image-ratio="9/16"] .dynamic-data-template__item img {
+  aspect-ratio: 9/16;
+}
+
 /*# sourceMappingURL=style.css.map*/

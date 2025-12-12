@@ -122,7 +122,13 @@ function Edit({
     return defaultBlocks.map(blockConfig => [blockConfig.blockName, blockConfig.attrs]);
   }, [defaultBlocks]);
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)({
-    className: `dynamic-data-template dynamic-data-template--${contentLoopLayout}`
+    className: `dynamic-data-template dynamic-data-template--${contentLoopLayout}`,
+    ...(imageRatio && {
+      'data-image-ratio': imageRatio
+    }),
+    ...(thumbnailPosition && {
+      'data-thumbnail-position': thumbnailPosition
+    })
   });
 
   // InnerBlocks props cho tất cả items (tất cả đều editable)
@@ -342,7 +348,14 @@ __webpack_require__.r(__webpack_exports__);
 function Save({
   attributes
 }) {
-  const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.useBlockProps.save();
+  const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.useBlockProps.save({
+    ...(attributes.imageRatio && {
+      'data-image-ratio': attributes.imageRatio
+    }),
+    ...(attributes.thumbnailPosition && {
+      'data-thumbnail-position': attributes.thumbnailPosition
+    })
+  });
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
     ...blockProps,
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.InnerBlocks.Content, {})

@@ -60,8 +60,8 @@ class KeywordFilterRenderer extends BaseFilterRenderer
         if ($show_search_button) {
             echo '<button type="button" class="filter-search-button">';
             if ($search_button_display === 'icon' || $search_button_display === 'icon-text') {
-                // Allow SVG/HTML icon (sanitize)
-                echo wp_kses_post($search_button_icon);
+                // Render SVG/HTML icon with proper sanitization
+                echo $this->renderSvgIcon($search_button_icon);
                 if ($search_button_display === 'icon-text') {
                     echo ' ';
                 }

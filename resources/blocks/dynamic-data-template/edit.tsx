@@ -149,6 +149,8 @@ export default function Edit({
 
     const blockProps = useBlockProps({
         className: `dynamic-data-template dynamic-data-template--${contentLoopLayout}`,
+        ...(imageRatio && { 'data-image-ratio': imageRatio }),
+        ...(thumbnailPosition && { 'data-thumbnail-position': thumbnailPosition }),
     });
 
     // InnerBlocks props cho tất cả items (tất cả đều editable)

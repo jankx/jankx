@@ -157,7 +157,19 @@ class BorderedFramePreset implements PresetInterface
                 'min' => 0,
                 'max' => 500,
                 'step' => 10,
-                'help' => __('Width of the title box in pixels (0 = auto)', 'jankx'),
+                'help' => __('Width of the title box (0 = auto)', 'jankx'),
+            ],
+            [
+                'name' => 'titleWidthUnit',
+                'label' => __('Title Width Unit', 'jankx'),
+                'type' => 'select',
+                'default' => 'px',
+                'options' => [
+                    ['label' => __('Pixels (px)', 'jankx'), 'value' => 'px'],
+                    ['label' => __('Percent (%)', 'jankx'), 'value' => '%'],
+                    ['label' => __('Rem', 'jankx'), 'value' => 'rem'],
+                ],
+                'help' => __('Unit for the title box width', 'jankx'),
             ],
             [
                 'name' => 'titleMinWidth',
@@ -168,6 +180,46 @@ class BorderedFramePreset implements PresetInterface
                 'max' => 500,
                 'step' => 10,
                 'help' => __('Minimum width of the title box in pixels', 'jankx'),
+            ],
+            [
+                'name' => 'titlePaddingTop',
+                'label' => __('Title Padding Top', 'jankx'),
+                'type' => 'range',
+                'default' => 12,
+                'min' => 0,
+                'max' => 100,
+                'step' => 1,
+                'help' => __('Top padding of the title box in pixels', 'jankx'),
+            ],
+            [
+                'name' => 'titlePaddingRight',
+                'label' => __('Title Padding Right', 'jankx'),
+                'type' => 'range',
+                'default' => 20,
+                'min' => 0,
+                'max' => 100,
+                'step' => 1,
+                'help' => __('Right padding of the title box in pixels', 'jankx'),
+            ],
+            [
+                'name' => 'titlePaddingBottom',
+                'label' => __('Title Padding Bottom', 'jankx'),
+                'type' => 'range',
+                'default' => 12,
+                'min' => 0,
+                'max' => 100,
+                'step' => 1,
+                'help' => __('Bottom padding of the title box in pixels', 'jankx'),
+            ],
+            [
+                'name' => 'titlePaddingLeft',
+                'label' => __('Title Padding Left', 'jankx'),
+                'type' => 'range',
+                'default' => 20,
+                'min' => 0,
+                'max' => 100,
+                'step' => 1,
+                'help' => __('Left padding of the title box in pixels', 'jankx'),
             ],
         ];
     }
@@ -212,7 +264,12 @@ class BorderedFramePreset implements PresetInterface
         $titleMarginBottom = $options['titleMarginBottom'] ?? 0;
         $titleMarginLeft = $options['titleMarginLeft'] ?? 0;
         $titleWidth = $options['titleWidth'] ?? 0;
+        $titleWidthUnit = $options['titleWidthUnit'] ?? 'px';
         $titleMinWidth = $options['titleMinWidth'] ?? 0;
+        $titlePaddingTop = $options['titlePaddingTop'] ?? 12;
+        $titlePaddingRight = $options['titlePaddingRight'] ?? 20;
+        $titlePaddingBottom = $options['titlePaddingBottom'] ?? 12;
+        $titlePaddingLeft = $options['titlePaddingLeft'] ?? 20;
 
         $css = "
 .wp-block-jankx-advanced-image-box.preset-bordered-frame {
@@ -251,7 +308,10 @@ class BorderedFramePreset implements PresetInterface
     position: absolute;
     background: {$titleBackground};
     color: {$titleColor};
-    padding: 12px 20px;
+    padding-top: {$titlePaddingTop}px;
+    padding-right: {$titlePaddingRight}px;
+    padding-bottom: {$titlePaddingBottom}px;
+    padding-left: {$titlePaddingLeft}px;
     z-index: 2;
     pointer-events: none;
     margin-top: {$titleMarginTop}px;
@@ -265,7 +325,7 @@ class BorderedFramePreset implements PresetInterface
         // Add width if set
         if ($titleWidth > 0) {
             $css .= "
-    width: {$titleWidth}px;
+    width: {$titleWidth}{$titleWidthUnit};
 ";
         }
         

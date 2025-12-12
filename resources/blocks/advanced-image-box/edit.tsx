@@ -25,7 +25,9 @@ import {
 	SelectControl,
 	RangeControl,
 	ToggleControl,
+	// Use ColorPalette to leverage Gutenberg theme color settings
 	ColorPicker,
+	ColorPalette,
 	Notice,
 	Button,
 	ToolbarGroup,
@@ -66,6 +68,56 @@ export default function edit({
 	onReplace,
 	insertBlocksAfter,
 }: AdvancedImageBoxEditProps) {
+		// Helper: parse color string to { colorHex, alpha }
+		const parseColorAndAlpha = (value: unknown) => {
+			const str = String(value ?? '').trim();
+
+			// rgba(...) format
+			const rgbaMatch = str.match(/rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*(?:,\s*(0|0?\.\d+|1(?:\.0+)?)\s*)?\)/i);
+			if (rgbaMatch) {
+				const r = Number(rgbaMatch[1]);
+				const g = Number(rgbaMatch[2]);
+				const b = Number(rgbaMatch[3]);
+				const a = rgbaMatch[4] !== undefined ? Number(rgbaMatch[4]) : 1;
+				const hex = rgbToHex(r, g, b);
+				return { colorHex: hex, alpha: a };
+			}
+
+			// Hex format #rrggbb or #rgb
+			const hexMatch = str.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+			if (hexMatch) {
+				const hex = normalizeHex(str);
+				return { colorHex: hex, alpha: 1 };
+			}
+
+			// Unknown format - fallback to empty
+			return { colorHex: String(value ?? '') || '#000000', alpha: 1 };
+		};
+
+		const rgbToHex = (r: number, g: number, b: number) => `#${[r, g, b]
+			.map((x) => {
+				const s = x.toString(16);
+				return s.length === 1 ? `0${s}` : s;
+			})
+			.join('')}`;
+
+		const normalizeHex = (hex: string) => {
+			const h = hex.replace('#', '').toLowerCase();
+			if (h.length === 3) {
+				return `#${h[0]}${h[0]}${h[1]}${h[1]}${h[2]}${h[2]}`;
+			}
+			return `#${h}`;
+		};
+
+		const combineHexAndAlpha = (hex: string, alpha: number) => {
+			const normalized = normalizeHex(hex);
+			if (alpha >= 1) return normalized;
+			// Convert hex to rgb
+			const r = parseInt(normalized.slice(1, 3), 16);
+			const g = parseInt(normalized.slice(3, 5), 16);
+			const b = parseInt(normalized.slice(5, 7), 16);
+			return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+		};
 	const {
 		url = '',
 		alt = '',
@@ -108,13 +160,38 @@ export default function edit({
 		const blocks = select(blockEditorStore).getBlocks(clientId);
 		return Array.isArray(blocks) ? blocks : [];
 	}, [clientId]);
-	
+
 	// Only apply template if inner blocks are empty (to preserve existing content)
 	const hasInnerBlocks = innerBlocks && innerBlocks.length > 0;
 
 	// Get presets from PHP
 	const presets = window.jankxAdvancedImageBoxPresets || {};
+	// Provide editor theme color palette for preset color options
+	const settingsObj = typeof getSettings === 'function' ? getSettings() : undefined;
+	const editorColors = (settingsObj && settingsObj.colors) ? settingsObj.colors : undefined;
 	const currentPreset = preset ? presets[preset] : null;
+
+	// Merge new preset options when preset data changes
+	useEffect(() => {
+		if (preset && currentPreset && currentPreset.options) {
+			const currentOptions = (presetOptions as Record<string, unknown>) || {};
+			const mergedOptions: Record<string, unknown> = { ...currentOptions };
+			let hasNewOptions = false;
+
+			currentPreset.options.forEach((option: PresetOption) => {
+				// Add new options that don't exist in current presetOptions
+				if (!(option.name in mergedOptions) && option.default !== undefined) {
+					mergedOptions[option.name] = option.default;
+					hasNewOptions = true;
+				}
+			});
+
+			// Only update if there are new options
+			if (hasNewOptions) {
+				setAttributes({ presetOptions: mergedOptions });
+			}
+		}
+	}, [preset, currentPreset, presetOptions, setAttributes]);
 
 	// Handle preset change
 	const handlePresetChange = (newPresetId: string) => {
@@ -124,19 +201,22 @@ export default function edit({
 			return;
 		}
 
-		// Set default options
-		const defaultOptions: Record<string, unknown> = {};
+		// Merge default options with existing presetOptions
+		// This ensures new options are added while preserving existing values
+		const mergedOptions: Record<string, unknown> = { ...(presetOptions as Record<string, unknown> || {}) };
+
 		if (newPreset.options) {
 			newPreset.options.forEach((option: PresetOption) => {
-				if (option.default !== undefined) {
-					defaultOptions[option.name] = option.default;
+				// Only set default if option doesn't exist in current presetOptions
+				if (!(option.name in mergedOptions) && option.default !== undefined) {
+					mergedOptions[option.name] = option.default;
 				}
 			});
 		}
 
 		setAttributes({
 			preset: newPresetId,
-			presetOptions: defaultOptions
+			presetOptions: mergedOptions
 		});
 
 		// If preset requires inner blocks, add template
@@ -196,13 +276,51 @@ export default function edit({
 				);
 
 			case 'color':
+				// Use Gutenberg ColorPalette so preset color options follow editor/theme palettes.
+				// Also provide an opacity slider (alpha). ColorPalette returns a hex value, so alpha
+				// is stored separately and combined into rgba(...) when alpha < 1.
 				return (
 					<div key={option.name} style={{ marginBottom: '16px' }}>
-						<ColorPicker
-							color={String(value ?? option.default ?? '#000000')}
-							onChange={(newValue) => handlePresetOptionChange(option.name, newValue)}
-							label={option.label}
-						/>
+						<label style={{ display: 'block', marginBottom: '6px' }}>{option.label}</label>
+						{
+							// Parse stored value to split into hex and alpha
+							(() => {
+								const { colorHex: storedHex, alpha: storedAlpha } = parseColorAndAlpha(value as string);
+								const colorValue = storedHex || String(option.default ?? '#000000');
+								const alphaValue = Number(storedAlpha ?? 1);
+
+								if (editorColors && editorColors.length > 0) {
+									return (
+										<>
+											<ColorPalette
+												value={String(colorValue)}
+												onChange={(newHex) => handlePresetOptionChange(option.name, combineHexAndAlpha(String(newHex || colorValue), alphaValue))}
+												colors={editorColors}
+											/>
+											<div style={{ marginTop: '6px' }}>
+												<label style={{ display: 'block', marginBottom: '4px' }}>{__('Opacity')}</label>
+												<RangeControl
+													value={alphaValue}
+													onChange={(newAlpha) => handlePresetOptionChange(option.name, combineHexAndAlpha(String(colorValue), Number(newAlpha)))}
+													min={0}
+													max={1}
+													step={0.01}
+												/>
+											</div>
+										</>
+									);
+								}
+
+								// Fallback: use ColorPicker which supports alpha as rgba string
+								return (
+									<ColorPicker
+										color={String(value ?? option.default ?? '#000000')}
+										onChange={(newValue) => handlePresetOptionChange(option.name, newValue)}
+									/>
+								);
+							})()
+						}
+
 						{option.help && (
 							<p style={{ fontSize: '12px', color: '#757575', marginTop: '4px' }}>
 								{option.help}
@@ -319,7 +437,11 @@ export default function edit({
 
 	// Validation notice removed for better UX
 
-	const imageElement = url ? (
+	const hasImage = Boolean(url && String(url).trim() !== '');
+	const presetBg = String((presetOptions as Record<string, unknown>)?.titleBackground ?? overlayBackground ?? 'transparent');
+	const placeholderMinHeight = height || '240px';
+
+	const imageElement = hasImage ? (
 		<img
 			src={url}
 			alt={alt || ''}
@@ -342,7 +464,13 @@ export default function edit({
 			}}
 		/>
 	) : (
-		<div className="wp-block-jankx-advanced-image-box__placeholder">
+		<div
+			className="wp-block-jankx-advanced-image-box__placeholder"
+			style={{
+				backgroundColor: presetBg,
+				minHeight: placeholderMinHeight,
+			}}
+		>
 			<MediaReplaceFlow
 				mediaId={id}
 				mediaURL={url}
@@ -363,11 +491,11 @@ export default function edit({
 		templateLock: false,
 		renderAppender: InnerBlocks.ButtonBlockAppender,
 		// Only apply template if inner blocks are empty and preset requires it
-		template: !hasInnerBlocks && 
-			preset && 
-			currentPreset?.requiresInnerBlocks && 
-			currentPreset.innerBlocksTemplate 
-				? currentPreset.innerBlocksTemplate 
+		template: !hasInnerBlocks &&
+			preset &&
+			currentPreset?.requiresInnerBlocks &&
+			currentPreset.innerBlocksTemplate
+				? currentPreset.innerBlocksTemplate
 				: undefined
 	};
 
@@ -508,6 +636,24 @@ export default function edit({
 				</PanelBody>
 
 				<PanelBody title={__('Image Settings')} initialOpen={true}>
+					<div style={{ marginBottom: '12px' }}>
+						{/* Media controls in Inspector: add/replace image and remove image */}
+						<MediaReplaceFlow
+							mediaId={id}
+							mediaURL={url}
+							allowedTypes={['image']}
+							accept="image/*"
+							onSelect={onSelectImage}
+							onSelectURL={onSelectURL}
+							onError={onUploadError}
+							name={!url ? __('Add image') : __('Replace')}
+						/>
+						{url && (
+							<Button isSecondary onClick={() => setAttributes({ url: undefined, id: undefined, alt: undefined, title: undefined })} style={{ marginLeft: '8px' }}>
+								{__('Remove image')}
+							</Button>
+						)}
+					</div>
 					<RichText
 						className="wp-block-jankx-advanced-image-box__alt-text"
 						tagName="p"

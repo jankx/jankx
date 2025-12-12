@@ -375,6 +375,14 @@
 	}
 }
 
+/* Editor placeholder to show background when no image is present */
+.wp-block-jankx-advanced-image-box__no-image {
+	background-size: cover;
+	background-position: center;
+	display: block;
+	width: 100%;
+}
+
 // Inspector controls styling
 .components-panel__body {
 	.wp-block-jankx-advanced-image-box__alt-text,

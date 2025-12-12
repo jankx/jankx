@@ -262,6 +262,14 @@
 	}
 }
 
+/* Placeholder when there is no image: show background and inner content */
+.wp-block-jankx-advanced-image-box__no-image {
+	background-size: cover;
+	background-position: center;
+	display: block;
+	width: 100%;
+}
+
 // Animation overrides for better performance
 .animated {
 	&:not(.none) {

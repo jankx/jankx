@@ -92,6 +92,7 @@ jest.mock('@wordpress/components', () => ({
         </label>
     ),
     ColorPicker: () => <div data-testid="color-picker">Color Picker</div>,
+    ColorPalette: () => <div data-testid="color-palette">Color Palette</div>,
     Notice: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
     Button: ({ children, onClick }: { children: React.ReactNode; onClick: () => void }) => <button onClick={onClick}>{children}</button>,
     ToolbarGroup: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
@@ -159,6 +160,19 @@ describe('AdvancedImageBox Edit', () => {
         render(<Edit {...defaultProps} />);
 
         expect(screen.getByTestId('media-replace')).toBeInTheDocument();
+    });
+
+    it('should show remove image button when image set and call setAttributes on click', () => {
+        const setAttributes = jest.fn();
+        const propsWithImage = { ...defaultProps, attributes: { ...defaultAttributes, url: 'https://example.com/image.jpg', id: 123 } };
+        render(<Edit {...propsWithImage} setAttributes={setAttributes} />);
+
+        // Remove image button should be in the inspector area and clickable
+        const removeButton = screen.getByText('Remove image');
+        expect(removeButton).toBeInTheDocument();
+
+        removeButton && fireEvent.click(removeButton);
+        expect(setAttributes).toHaveBeenCalledWith({ url: undefined, id: undefined, alt: undefined, title: undefined });
     });
 
     it('should toggle showOverlayOnHover', () => {
