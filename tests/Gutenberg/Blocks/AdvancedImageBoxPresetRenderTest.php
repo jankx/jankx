@@ -3,8 +3,8 @@
 namespace Tests\Gutenberg\Blocks;
 
 use Jankx\Gutenberg\Blocks\AdvancedImageBoxBlock;
-use Jankx\Gutenberg\Blocks\AdvancedImageBox\PresetRegistry;
-use Jankx\Gutenberg\Blocks\AdvancedImageBox\Presets\BorderedFramePreset;
+use Jankx\Layouts\AdvancedImageBox\PresetRegistry;
+use Jankx\Layouts\AdvancedImageBox\Presets\BorderedFramePreset;
 
 class AdvancedImageBoxPresetRenderTest extends BlockTestCase
 {

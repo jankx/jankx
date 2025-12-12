@@ -12,7 +12,7 @@ use Jankx\Layouts\DynamicDataLayout\PostLayout;
 use Jankx\Layouts\DynamicDataLayout\Supports\GridLayout;
 use Jankx\Layouts\DynamicDataLayout\Supports\ListLayout;
 use Jankx\Layouts\DynamicDataLayout\Supports\CarouselLayout;
-use Jankx\Layouts\DynamicDataLayout\PostLayoutManager;
+use Jankx\Layouts\DynamicDataLayout\DynamicDataLayoutManager;
 
 class PostLayoutStructureTest extends TestCase
 {
@@ -22,7 +22,7 @@ class PostLayoutStructureTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->layoutManager = PostLayoutManager::getInstance();
+        $this->layoutManager = DynamicDataLayoutManager::getInstance();
     }
 
     public function testPostLayoutHasGetHtmlStructureMethod()
@@ -178,7 +178,7 @@ class PostLayoutStructureTest extends TestCase
 
     public function testAllLayoutsHaveStructure()
     {
-        $layouts = $this->layoutManager->getLayouts(['field' => 'all']);
+        $layouts = $this->layoutManager->getCommonLayouts();
         
         foreach ($layouts as $layoutInfo) {
             $layoutName = $layoutInfo['name'] ?? '';

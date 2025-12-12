@@ -11,7 +11,7 @@ namespace Tests\Integration\PostLayout;
 
 use Tests\Helpers\TestCase;
 use Jankx\Gutenberg\Blocks\PostTypeLayoutBlock;
-use Jankx\Layouts\DynamicDataLayout\PostLayoutManager;
+use Jankx\Layouts\DynamicDataLayout\DynamicDataLayoutManager;
 
 class PostLayoutSaveFunctionTest extends TestCase
 {
@@ -21,7 +21,7 @@ class PostLayoutSaveFunctionTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->layoutManager = PostLayoutManager::getInstance();
+        $this->layoutManager = DynamicDataLayoutManager::getInstance();
         
         // Provide block path for PostTypeLayoutBlock
         $blockPath = dirname(__DIR__, 3) . '/resources/blocks/post-type-layout';

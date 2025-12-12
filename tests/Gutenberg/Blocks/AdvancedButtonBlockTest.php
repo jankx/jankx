@@ -4,7 +4,7 @@ namespace Tests\Gutenberg\Blocks;
 
 use Tests\Gutenberg\Blocks\BlockTestCase;
 use Jankx\Gutenberg\Blocks\AdvancedButtonBlock;
-use Jankx\Gutenberg\Blocks\AdvancedButton\ButtonRendererFactory;
+use Jankx\Layouts\AdvancedButton\ButtonRendererFactory;
 use Mockery;
 
 /**
