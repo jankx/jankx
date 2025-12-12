@@ -36,7 +36,7 @@
     "@types/wordpress__blocks": "^12.5.16",
     "@wordpress/babel-preset-default": "^8.9.0",
     "@wordpress/dependency-extraction-webpack-plugin": "^6.29.0",
-    "@wordpress/scripts": "^19.2.4",
+    "@wordpress/scripts": "^31.1.0",
     "babel-loader": "^10.0.0",
     "css-loader": "^7.1.2",
     "i": "^0.3.7",

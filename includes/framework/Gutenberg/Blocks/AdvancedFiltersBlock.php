@@ -394,6 +394,33 @@ class AdvancedFiltersBlock extends Block
         // Try detect post type from target dynamic-data-layout blocks
         $detected_post_type = $this->detectPostTypeFromTargetIds($target_block_ids) ?: 'post';
 
+        // Detect multi post type settings from the first target dynamic-data-layout block
+        $multi_post_types = [
+            'enabled' => false,
+            'postTypes' => [],
+        ];
+        if (!empty($target_block_ids)) {
+            $first_target_id = $target_block_ids[0];
+            $current_post_id = 0;
+            global $post;
+            if ($post && isset($post->ID)) {
+                $current_post_id = (int) $post->ID;
+            } else {
+                $current_post_id = get_the_ID() ?: 0;
+            }
+            $ddl_attrs = apply_filters('jankx_dynamic_data_layout_get_block_attributes', null, $current_post_id, (string) $first_target_id);
+            if (is_array($ddl_attrs)) {
+                $use_multi = !empty($ddl_attrs['useMultiPostType']);
+                $post_types = is_array($ddl_attrs['postTypes'] ?? null) ? array_values(array_filter($ddl_attrs['postTypes'])) : [];
+                if ($use_multi && count($post_types) > 1) {
+                    $multi_post_types['enabled'] = true;
+                    $multi_post_types['postTypes'] = $post_types;
+                }
+            }
+        }
+        // Expose multi post type settings to renderer via attributes
+        $attributes['multiPostTypes'] = $multi_post_types;
+
         // Get block identifier for frontend JavaScript to find this block
         // Use blockId attribute (set to clientId in editor) if available
         $block_identifier_for_config = $attributes['blockId'] ?? '';

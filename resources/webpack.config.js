@@ -107,6 +107,10 @@ module.exports = {
     'blocks/swiper-banner/build/style': './blocks/swiper-banner/style.scss',
     'blocks/swiper-banner/build/editor': './blocks/swiper-banner/editor.scss',
 
+    'blocks/swiper-inner-blocks-overlay/build/index': './blocks/swiper-inner-blocks-overlay/index.tsx',
+    'blocks/swiper-inner-blocks-overlay/build/style': './blocks/swiper-inner-blocks-overlay/style.scss',
+    'blocks/swiper-inner-blocks-overlay/build/editor': './blocks/swiper-inner-blocks-overlay/editor.scss',
+
     'blocks/slideshow/build/index': './blocks/slideshow/index.tsx',
     'blocks/slideshow/build/save': './blocks/slideshow/save.tsx',
     'blocks/slideshow/build/style': './blocks/slideshow/style.scss',

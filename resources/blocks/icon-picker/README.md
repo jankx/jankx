@@ -139,7 +139,7 @@ icon-picker/
 
 ### Build
 ```bash
-npm run build:webpack
+npm run build:blocks
 ```
 
 ## 📱 Responsive

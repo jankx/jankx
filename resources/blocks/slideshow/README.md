@@ -139,7 +139,7 @@ blocks/slideshow-item/
 
 ### Building
 ```bash
-npm run build:webpack
+npm run build:blocks
 ```
 
 ### Development Mode

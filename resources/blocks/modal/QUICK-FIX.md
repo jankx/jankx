@@ -70,7 +70,7 @@ Giải pháp:
 Nguyên nhân: Build chưa được apply
 Giải pháp:
 1. cd C:/Users/puleeno/Projects/buocchandisan.vn/wp-content/themes/jankx/resources
-2. npm run build:webpack
+2. npm run build:blocks
 3. Hard refresh editor
 ```
 
@@ -99,7 +99,7 @@ Giải pháp:
 
 ```bash
 cd C:/Users/puleeno/Projects/buocchandisan.vn/wp-content/themes/jankx/resources
-npm run build:webpack
+npm run build:blocks
 ```
 
 Build thành công sẽ show:

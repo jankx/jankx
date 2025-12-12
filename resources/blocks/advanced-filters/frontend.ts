@@ -181,7 +181,7 @@ class AdvancedFilters {
         });
 
         // Keyword filter
-        const keywordInput = this.container.querySelector('.filter-keyword input');
+        const keywordInput = this.container.querySelector('.filter-keyword input.filter-input-keyword');
         if (keywordInput) {
             const keywordGroup = keywordInput.closest('.filter-group[data-filter-type="keyword"]') as HTMLElement | null;
             const keywordAction = keywordGroup?.getAttribute('data-keyword-action') || 'typing';
@@ -205,6 +205,11 @@ class AdvancedFilters {
                 });
             }
         }
+
+        // Post type radio (inside keyword filter)
+        this.container.querySelectorAll('.filter-keyword .post-type-radios input[type="radio"]').forEach((element) => {
+            element.addEventListener('change', () => this.handleFilterChange());
+        });
 
         // Reset button
         const resetButton = this.container.querySelector('.filter-reset-button');
@@ -391,9 +396,15 @@ class AdvancedFilters {
         }
 
         // Collect keyword filter
-        const keywordInput = this.container.querySelector('.filter-keyword input') as HTMLInputElement;
+        const keywordInput = this.container.querySelector('.filter-keyword input.filter-input-keyword') as HTMLInputElement;
         if (keywordInput?.value) {
             filters.keyword = keywordInput.value;
+        }
+
+        // Collect selected post type (if radios exist)
+        const selectedPostType = (this.container.querySelector('.filter-keyword .post-type-radios input[type="radio"]:checked') as HTMLInputElement | null)?.value || '';
+        if (selectedPostType) {
+            filters.post_type = selectedPostType;
         }
 
         // Collect WooCommerce ordering
@@ -866,6 +877,16 @@ class AdvancedFilters {
             filters.keyword = keyword;
         }
 
+        // Load selected post type
+        const urlPostType = urlParams.get('post_type');
+        if (urlPostType !== null) {
+            if (urlPostType !== '') {
+                filters.post_type = urlPostType;
+            } else {
+                filters.post_type = '';
+            }
+        }
+
         // Load meta filters
         urlParams.forEach((value, key) => {
             if (key.startsWith('meta_')) {
@@ -952,10 +973,20 @@ class AdvancedFilters {
                 }
             } else if (key === 'keyword') {
                 // Keyword filter
-                const keywordInput = this.container!.querySelector('.filter-keyword input') as HTMLInputElement;
+                const keywordInput = this.container!.querySelector('.filter-keyword input.filter-input-keyword') as HTMLInputElement;
                 if (keywordInput) {
                     keywordInput.value = value;
                 }
+            } else if (key === 'post_type') {
+                // Post type radio
+                const radios = this.container!.querySelectorAll('.filter-keyword .post-type-radios input[type="radio"]') as NodeListOf<HTMLInputElement>;
+                radios.forEach((radio) => {
+                    radio.checked = (radio.value === value) || (value === '' && radio.value === '');
+                    const option = radio.closest('.filter-option') as HTMLElement | null;
+                    if (option) {
+                        option.classList.toggle('active', radio.checked);
+                    }
+                });
             } else if (key.startsWith('meta_')) {
                 // Meta filter
                 const metaKey = key.replace('meta_', '');
@@ -990,4 +1021,3 @@ function initAdvancedFilters(): void {
 if (typeof window !== 'undefined') {
     (window as any).AdvancedFilters = AdvancedFilters;
 }
-
