@@ -5,8 +5,8 @@ namespace Jankx\Gutenberg\Blocks;
 use Jankx\Gutenberg\Block;
 use Jankx\Layouts\DynamicDataLayout\ContentLoopLayoutManager;
 use Jankx\Layouts\ContentLayout\ContentLayoutManager;
-use Jankx\Layouts\PostLayout\Contracts\PostLayoutInterface;
-use Jankx\Layouts\PostLayout\Generators\PostTemplateBlockGenerator;
+use Jankx\Layouts\DynamicDataLayout\Contracts\PostLayoutInterface;
+use Jankx\Layouts\DynamicDataLayout\Generators\PostTemplateBlockGenerator;
 use WP_Query;
 
 /**

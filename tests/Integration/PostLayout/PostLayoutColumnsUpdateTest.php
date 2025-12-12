@@ -11,9 +11,9 @@ namespace Tests\Integration\PostLayout;
 
 use Tests\Helpers\TestCase;
 use Tests\Helpers\HtmlAssertions;
-use Jankx\Layouts\PostLayout\PostLayoutManager;
-use Jankx\Layouts\PostLayout\Supports\GridLayout;
-use Jankx\Layouts\PostLayout\Supports\ListLayout;
+use Jankx\Layouts\DynamicDataLayout\PostLayoutManager;
+use Jankx\Layouts\DynamicDataLayout\Supports\GridLayout;
+use Jankx\Layouts\DynamicDataLayout\Supports\ListLayout;
 
 class PostLayoutColumnsUpdateTest extends TestCase
 {

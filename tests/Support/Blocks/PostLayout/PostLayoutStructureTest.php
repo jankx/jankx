@@ -8,11 +8,11 @@ namespace Tests\Support\Blocks\PostLayout;
 
 use Tests\Helpers\TestCase;
 use Tests\Helpers\HtmlAssertions;
-use Jankx\Layouts\PostLayout\PostLayout;
-use Jankx\Layouts\PostLayout\Supports\GridLayout;
-use Jankx\Layouts\PostLayout\Supports\ListLayout;
-use Jankx\Layouts\PostLayout\Supports\CarouselLayout;
-use Jankx\Layouts\PostLayout\PostLayoutManager;
+use Jankx\Layouts\DynamicDataLayout\PostLayout;
+use Jankx\Layouts\DynamicDataLayout\Supports\GridLayout;
+use Jankx\Layouts\DynamicDataLayout\Supports\ListLayout;
+use Jankx\Layouts\DynamicDataLayout\Supports\CarouselLayout;
+use Jankx\Layouts\DynamicDataLayout\PostLayoutManager;
 
 class PostLayoutStructureTest extends TestCase
 {

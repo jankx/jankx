@@ -11,7 +11,7 @@ namespace Tests\Integration\PostLayout;
 
 use Tests\Helpers\TestCase;
 use Jankx\Gutenberg\Blocks\PostTypeLayoutBlock;
-use Jankx\Layouts\PostLayout\PostLayoutManager;
+use Jankx\Layouts\DynamicDataLayout\PostLayoutManager;
 
 class PostLayoutSaveFunctionTest extends TestCase
 {

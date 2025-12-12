@@ -3,10 +3,10 @@
 namespace Jankx\Tests\Support\Blocks\MasterDataLayout;
 
 use Tests\Helpers\TestCase;
-use Jankx\Layouts\PostLayout\Supports\GridLayout;
-use Jankx\Layouts\PostLayout\Supports\ListLayout;
-use Jankx\Layouts\PostLayout\Supports\CardLayout;
-use Jankx\Layouts\PostLayout\Supports\CarouselLayout;
+use Jankx\Layouts\DynamicDataLayout\Supports\GridLayout;
+use Jankx\Layouts\DynamicDataLayout\Supports\ListLayout;
+use Jankx\Layouts\DynamicDataLayout\Supports\CardLayout;
+use Jankx\Layouts\DynamicDataLayout\Supports\CarouselLayout;
 
 class MasterDataLayoutStructureTest extends TestCase
 {
