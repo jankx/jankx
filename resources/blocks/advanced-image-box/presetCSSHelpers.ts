@@ -144,6 +144,18 @@ export function renderBorderedFrameCSS(
 	font-weight: 600;
 }
 
+/* Ensure placeholder (no-image) shows sensible fallback when preset is active */
+.wp-block-jankx-advanced-image-box.preset-bordered-frame .wp-block-jankx-advanced-image-box__no-image {
+	background-color: ${titleBackground};
+	background-size: cover;
+	background-position: center;
+	min-height: 240px;
+}
+
+.wp-block-jankx-advanced-image-box.preset-bordered-frame .wp-block-jankx-advanced-image-box__no-image__alt {
+	color: ${titleColor};
+}
+
 /* Ensure hover effects work with preset */
 .wp-block-jankx-advanced-image-box.preset-bordered-frame:hover .wp-block-jankx-advanced-image-box__image.has-hover-zoom {
 	transform: scale(1.05);

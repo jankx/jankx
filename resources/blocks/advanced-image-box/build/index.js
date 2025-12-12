@@ -8,7 +8,7 @@
   \**********************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/advanced-image-box","title":"Advanced Image Box","category":"jankx","description":"An advanced image block with overlay info box and inner content support.","keywords":["image","overlay","hover","animation","inner blocks"],"textdomain":"jankx","attributes":{"url":{"type":"string","source":"attribute","selector":"img","attribute":"src","role":"content"},"alt":{"type":"string","source":"attribute","selector":"img","attribute":"alt","default":"","role":"content"},"title":{"type":"string","source":"attribute","selector":"img","attribute":"title","role":"content"},"id":{"type":"number","role":"content"},"width":{"type":"string"},"height":{"type":"string"},"aspectRatio":{"type":"string"},"scale":{"type":"string"},"sizeSlug":{"type":"string"},"href":{"type":"string","source":"attribute","selector":"a","attribute":"href","role":"content"},"linkTarget":{"type":"string","source":"attribute","selector":"a","attribute":"target"},"rel":{"type":"string","source":"attribute","selector":"a","attribute":"rel"},"caption":{"type":"rich-text","source":"rich-text","selector":".wp-block-jankx-advanced-image-box__caption","role":"content"},"showOverlayOnHover":{"type":"boolean","default":true},"overlayAnimation":{"type":"string","default":"fadeIn"},"overlayAnimationDuration":{"type":"number","default":1000},"overlayAnimationDelay":{"type":"number","default":0},"overlayPosition":{"type":"string","default":"center"},"overlayBackground":{"type":"string","default":"rgba(0, 0, 0, 0.7)"},"overlayOpacity":{"type":"number","default":1},"imageHoverEffect":{"type":"string","default":"zoom"},"borderRadius":{"type":"string","default":"0px"},"preset":{"type":"string"},"presetOptions":{"type":"object"}},"supports":{"anchor":true,"align":["left","center","right","wide","full"],"html":false,"innerBlocks":true,"reusable":false,"interactivity":{"clientNavigation":true},"color":{"text":false,"background":false,"gradients":true,"__experimentalSkipSerialization":true},"spacing":{"margin":true,"padding":true,"__experimentalDefaultControls":{"margin":true,"padding":true}},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true,"__experimentalSkipSerialization":true,"__experimentalDefaultControls":{"color":true,"radius":true,"style":true,"width":true}},"shadow":{"__experimentalSkipSerialization":true},"filter":{"duotone":true}},"selectors":{"border":".wp-block-jankx-advanced-image-box img, .wp-block-jankx-advanced-image-box__overlay","shadow":".wp-block-jankx-advanced-image-box img, .wp-block-jankx-advanced-image-box__overlay","filter":{"duotone":".wp-block-jankx-advanced-image-box img"}},"styles":[{"name":"default","label":"Default","isDefault":true},{"name":"card","label":"Card"},{"name":"overlay","label":"Overlay"},{"name":"modern","label":"Modern"}],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/advanced-image-box","title":"Advanced Image Box","category":"jankx","description":"An advanced image block with overlay info box and inner content support.","keywords":["image","overlay","hover","animation","inner blocks"],"textdomain":"jankx","attributes":{"url":{"type":"string","source":"attribute","selector":"img","attribute":"src","role":"content"},"alt":{"type":"string","source":"attribute","selector":"img","attribute":"alt","default":"","role":"content"},"title":{"type":"string","source":"attribute","selector":"img","attribute":"title","role":"content"},"id":{"type":"number","role":"content"},"width":{"type":"string"},"height":{"type":"string"},"aspectRatio":{"type":"string"},"scale":{"type":"string"},"sizeSlug":{"type":"string"},"href":{"type":"string","source":"attribute","selector":"a","attribute":"href","role":"content"},"linkTarget":{"type":"string","source":"attribute","selector":"a","attribute":"target"},"rel":{"type":"string","source":"attribute","selector":"a","attribute":"rel"},"caption":{"type":"rich-text","source":"rich-text","selector":".wp-block-jankx-advanced-image-box__caption","role":"content"},"showOverlayOnHover":{"type":"boolean","default":true},"overlayAnimation":{"type":"string","default":"fadeIn"},"overlayAnimationDuration":{"type":"number","default":1000},"overlayAnimationDelay":{"type":"number","default":0},"overlayPosition":{"type":"string","default":"center"},"overlayBackground":{"type":"string","default":"rgba(0, 0, 0, 0.7)"},"overlayOpacity":{"type":"number","default":1},"imageHoverEffect":{"type":"string","default":"zoom"},"borderRadius":{"type":"string","default":"0px"},"preset":{"type":"string","default":""},"presetOptions":{"type":"object","default":{}}},"supports":{"anchor":true,"align":["left","center","right","wide","full"],"html":false,"innerBlocks":true,"reusable":false,"interactivity":{"clientNavigation":true},"color":{"text":false,"background":true,"gradients":true,"__experimentalSkipSerialization":false},"spacing":{"margin":true,"padding":true,"__experimentalDefaultControls":{"margin":true,"padding":true}},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true,"__experimentalSkipSerialization":true,"__experimentalDefaultControls":{"color":true,"radius":true,"style":true,"width":true}},"shadow":{"__experimentalSkipSerialization":true},"filter":{"duotone":true}},"selectors":{"border":".wp-block-jankx-advanced-image-box img, .wp-block-jankx-advanced-image-box__overlay","shadow":".wp-block-jankx-advanced-image-box img, .wp-block-jankx-advanced-image-box__overlay","filter":{"duotone":".wp-block-jankx-advanced-image-box img"}},"styles":[{"name":"default","label":"Default","isDefault":true},{"name":"card","label":"Card"},{"name":"overlay","label":"Overlay"},{"name":"modern","label":"Modern"}],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
 
 /***/ }),
 
@@ -396,7 +396,7 @@ function edit({
   onReplace,
   insertBlocksAfter
 }) {
-  var _ref5, _titleBackground;
+  var _ref5, _titleBackground, _titleColor;
   // Helper: parse color string to { colorHex, alpha }
   const parseColorAndAlpha = value => {
     const str = String(value !== null && value !== void 0 ? value : '').trim();
@@ -799,13 +799,15 @@ function edit({
       height,
       borderRadius
     }
-  }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
+  }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
     className: "wp-block-jankx-advanced-image-box__placeholder",
-    style: {
-      backgroundColor: presetBg,
-      minHeight: placeholderMinHeight
-    },
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.MediaReplaceFlow, {
+    children: [!hasImage && alt && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
+      className: "wp-block-jankx-advanced-image-box__no-image__alt",
+      style: {
+        color: String((_titleColor = presetOptions?.titleColor) !== null && _titleColor !== void 0 ? _titleColor : '#ffffff')
+      },
+      children: alt
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.MediaReplaceFlow, {
       mediaId: id,
       mediaURL: url,
       allowedTypes: ['image'],
@@ -814,7 +816,7 @@ function edit({
       onSelectURL: onSelectURL,
       onError: onUploadError,
       name: !url ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Add image') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Replace')
-    })
+    })]
   });
 
   // InnerBlocks MUST be rendered in ONE fixed location in the DOM
@@ -1250,6 +1252,18 @@ function renderBorderedFrameCSS(preset, options) {
 	font-weight: 600;
 }
 
+/* Ensure placeholder (no-image) shows sensible fallback when preset is active */
+.wp-block-jankx-advanced-image-box.preset-bordered-frame .wp-block-jankx-advanced-image-box__no-image {
+	background-color: ${titleBackground};
+	background-size: cover;
+	background-position: center;
+	min-height: 240px;
+}
+
+.wp-block-jankx-advanced-image-box.preset-bordered-frame .wp-block-jankx-advanced-image-box__no-image__alt {
+	color: ${titleColor};
+}
+
 /* Ensure hover effects work with preset */
 .wp-block-jankx-advanced-image-box.preset-bordered-frame:hover .wp-block-jankx-advanced-image-box__image.has-hover-zoom {
 	transform: scale(1.05);
@@ -1327,7 +1341,7 @@ function save({
   attributes,
   className
 }) {
-  var _ref, _presetOptions$titleB;
+  var _ref, _presetOptions$titleB, _presetOptions$titleC;
   const {
     url,
     alt,
@@ -1388,14 +1402,36 @@ function save({
     style: imageStyle
   }) :
   /*#__PURE__*/
-  // Fallback element when no image is provided: shows a colored block so presets/frame are visible
+  // Fallback element when no image is provided: show minimal structure and rely on preset CSS
+  // Do not apply inline border-radius, background-color, or min-height to avoid forcing styles
   (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
     className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])('wp-block-jankx-advanced-image-box__no-image', imageClasses),
     style: {
-      ...imageStyle,
-      backgroundColor: fallbackBg,
-      minHeight: fallbackMinHeight
-    }
+      // Keep border and shadow styles, but omit borderRadius if present
+      ...(() => {
+        const tempStyle = {
+          ...borderProps.style,
+          ...shadowProps.style
+        };
+        // Remove borderRadius property if exists on borderProps.style
+        if ('borderRadius' in tempStyle) {
+          delete tempStyle.borderRadius;
+        }
+        return tempStyle;
+      })(),
+      // Keep aspect ratio/size information if necessary
+      aspectRatio,
+      objectFit: scale,
+      width,
+      height
+    },
+    children: !hasImage && alt && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+      className: "wp-block-jankx-advanced-image-box__no-image__alt",
+      style: {
+        color: String((_presetOptions$titleC = presetOptions.titleColor) !== null && _presetOptions$titleC !== void 0 ? _presetOptions$titleC : '#ffffff')
+      },
+      children: alt
+    })
   });
 
   // Always render inner blocks content - needed for all scenarios
@@ -1417,16 +1453,9 @@ function save({
     children: innerBlocksContent
   });
 
-  // When preset is active, render inner blocks in frame/title-box (matching edit mode)
-  const presetContent = preset && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
-    className: "wp-block-jankx-advanced-image-box__frame-wrapper",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
-      className: "wp-block-jankx-advanced-image-box__frame"
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
-      className: "wp-block-jankx-advanced-image-box__title-box",
-      children: innerBlocksContent
-    })]
-  });
+  // When preset is active, do not render the preset frame/title wrapper in saved output
+  // The server-side render (render_callback) will insert the markup to avoid duplicate elements
+  const presetContent = null;
 
   // When no preset and no overlay, render inner blocks in hidden container (for editing)
   const hiddenContent = !preset && !showOverlayOnHover && innerBlocksContent;
@@ -1447,7 +1476,7 @@ function save({
     ..._wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps.save({
       className: blockClasses
     }),
-    children: [wrappedImage, overlayContent, presetContent, hiddenContent, caption && !_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.RichText.isEmpty(caption) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.RichText.Content, {
+    children: [wrappedImage, overlayContent, hiddenContent, caption && !_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.RichText.isEmpty(caption) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.RichText.Content, {
       className: "wp-block-jankx-advanced-image-box__caption",
       tagName: "figcaption",
       value: caption

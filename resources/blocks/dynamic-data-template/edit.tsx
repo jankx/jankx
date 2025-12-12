@@ -296,7 +296,6 @@ export default function Edit({
             </InspectorControls>
 
             <div {...blockProps}>
-                {/* Container với layout grid/card */}
                 <div 
                     className={`dynamic-data-template__items-container layout-${displayLayout} columns-${columns} columns-tablet-${columnsTablet} columns-mobile-${columnsMobile}`}
                     style={{
@@ -310,17 +309,12 @@ export default function Edit({
                         gap: '1rem',
                     } as CSSProperties}
                 >
-                    {/* Tất cả items đều editable với InnerBlocks thật - hiển thị giống nhau như frontend */}
-                    {Array.from({ length: totalItems }).map((_, index) => (
-                        <div
-                            key={`template-item-${index}`}
-                            className="dynamic-data-template__item"
-                            data-item-index={index}
-                        >
-                            {/* Tất cả items đều dùng InnerBlocks - có thể edit trực tiếp, hiển thị giống nhau */}
-                            <div {...innerBlocksProps} />
-                        </div>
-                    ))}
+                    <div
+                        className="dynamic-data-template__item"
+                        data-item-index={0}
+                    >
+                        <div {...innerBlocksProps} />
+                    </div>
                 </div>
             </div>
         </>

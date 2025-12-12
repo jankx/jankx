@@ -200,6 +200,21 @@
   width: 100%;
 }
 
+.wp-block-jankx-advanced-image-box__no-image__alt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.2;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
 .animated:not(.none) {
   animation-duration: 1s;
   animation-fill-mode: both;

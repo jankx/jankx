@@ -90,16 +90,6 @@ module.exports = {
     'blocks/social-sharing-icon/build/style': './blocks/social-sharing-icon/style.scss',
     'blocks/social-sharing-icon/build/editor': './blocks/social-sharing-icon/editor.scss',
 
-    'blocks/post-type-layout/build/index': './blocks/post-type-layout/index.tsx',
-    'blocks/post-type-layout/build/load-more': './blocks/post-type-layout/load-more.ts',
-    'blocks/post-type-layout/build/carousel': './blocks/post-type-layout/carousel.ts',
-    'blocks/post-type-layout/build/style': './blocks/post-type-layout/style.scss',
-    'blocks/post-type-layout/build/editor': './blocks/post-type-layout/editor.scss',
-
-    'blocks/post-layout-template/build/index': './blocks/post-layout-template/index.tsx',
-    'blocks/post-layout-template/build/style': './blocks/post-layout-template/style.scss',
-    'blocks/post-layout-template/build/editor': './blocks/post-layout-template/editor.scss',
-
     'blocks/author-box/build/index': './blocks/author-box/src/index.tsx',
     'blocks/author-box/build/style': './blocks/author-box/src/style.scss',
     'blocks/author-box/build/editor': './blocks/author-box/src/editor.scss',

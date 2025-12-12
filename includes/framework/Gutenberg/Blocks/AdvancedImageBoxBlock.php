@@ -115,6 +115,10 @@ window.jankxAdvancedImageBoxGetPresetCSS = function(presetId, attributes, option
             return $content;
         }
 
+        if (!function_exists('render_block')) {
+            require_once ABSPATH . 'wp-includes/blocks.php';
+        }
+
         $preset = PresetRegistry::get($presetId);
         if (!$preset) {
             return $content;
@@ -154,7 +158,8 @@ window.jankxAdvancedImageBoxGetPresetCSS = function(presetId, attributes, option
         $innerBlocksContent = trim($innerBlocksContent);
 
         // Render preset markup with inner blocks content
-        // Note: renderMarkup always returns frame-wrapper, even if inner blocks content is empty
+        // Note: renderMarkup always returns frame-wrapper and title-box,
+        //       even if inner blocks content is empty (for visible title area)
         $presetMarkup = PresetRegistry::renderPresetMarkup(
             $presetId,
             $attributes,
@@ -208,7 +213,8 @@ window.jankxAdvancedImageBoxGetPresetCSS = function(presetId, attributes, option
 
         // Insert preset markup FIRST (before removing overlay)
         // renderMarkup always returns frame-wrapper, so presetMarkup should never be empty
-        if (!empty($presetMarkup)) {
+        // Defensive: only insert if the content does not already include the frame wrapper
+        if (!empty($presetMarkup) && strpos($content, 'wp-block-jankx-advanced-image-box__frame-wrapper') === false) {
             // Insert before closing figure tag
             $content = str_replace('</figure>', $presetMarkup . '</figure>', $content);
         }

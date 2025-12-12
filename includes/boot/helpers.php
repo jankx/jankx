@@ -1,6 +1,6 @@
 <?php
 
-use Jankx\Foundation\PageRenderer;
+use Jankx\Helper\TemplateHelper;
 
 /**
  * Check if the current page supports Gutenberg templates.
@@ -8,26 +8,10 @@ use Jankx\Foundation\PageRenderer;
  * @return bool
  */
 if (!function_exists('jankx_is_support_block_template')) {
-function jankx_is_support_block_template()
-{
-    // Check if WordPress supports block templates
-    if (!function_exists('wp_is_block_theme')) {
-        return false;
+    function jankx_is_support_block_template()
+    {
+        return TemplateHelper::isSupportBlockTemplate();
     }
-
-    // Check if current theme supports block templates
-    if (!current_theme_supports('block-templates')) {
-        return false;
-    }
-
-    // Check if current page type supports block templates
-    $post_type = get_post_type();
-    if ($post_type && !post_type_supports($post_type, 'block-templates')) {
-        return false;
-    }
-
-    return true;
-}
 }
 
 /**
@@ -38,20 +22,11 @@ function jankx_is_support_block_template()
  * @return void
  */
 if (!function_exists('jankx')) {
-function jankx($context = null, $templates = null)
-{
-    $renderer = PageRenderer::getInstance();
-    $renderer->setContext($context);
-
-    if ($templates) {
-        $renderer->setTemplates($templates);
+    function jankx($context = null, $templates = null)
+    {
+        TemplateHelper::render($context, $templates);
     }
-
-    $renderer->render();
 }
-}
-
-
 
 /**
  * Get block template HTML for current page.
@@ -59,12 +34,8 @@ function jankx($context = null, $templates = null)
  * @return string|null
  */
 if (!function_exists('jankx_get_the_block_template_html')) {
-function jankx_get_the_block_template_html()
-{
-    if (!function_exists('get_the_block_template_html')) {
-        return null;
+    function jankx_get_the_block_template_html()
+    {
+        return TemplateHelper::getTheBlockTemplateHtml();
     }
-
-    return get_the_block_template_html();
-}
 }

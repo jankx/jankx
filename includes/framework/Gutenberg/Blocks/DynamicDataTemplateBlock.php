@@ -4,6 +4,10 @@ namespace Jankx\Gutenberg\Blocks;
 
 use Jankx\Gutenberg\Block;
 use Jankx\Layouts\DynamicDataLayout\ContentLoopLayoutManager;
+use Jankx\Layouts\ContentLayout\ContentLayoutManager;
+use Jankx\Layouts\PostLayout\Contracts\PostLayoutInterface;
+use Jankx\Layouts\PostLayout\Generators\PostTemplateBlockGenerator;
+use WP_Query;
 
 /**
  * Dynamic Data Template Block
@@ -65,6 +69,14 @@ class DynamicDataTemplateBlock extends Block
      */
     public function enqueueEditorAssets()
     {
+        $manager = ContentLayoutManager::getInstance();
+        $presets = $manager->getForJs();
+        wp_add_inline_script(
+            'wp-block-editor',
+            'window.jankxContentLayoutPresets = ' . wp_json_encode($presets) . ';',
+            'before'
+        );
+
         $asset_file = $this->blockPath . '/build/index.asset.php';
 
         if (!file_exists($asset_file)) {
@@ -191,9 +203,36 @@ class DynamicDataTemplateBlock extends Block
      */
     public function render($attributes, $content = '', $block = null)
     {
-        // This block renders via InnerBlocks.Content in save.tsx
-        // The actual rendering is handled by the parent block
+        if ($block instanceof \WP_Block) {
+            $context = $block->context['jankxPostTypeLayout'] ?? null;
+            if (is_array($context)) {
+                $query = $context['query'] ?? null;
+                if ($query instanceof WP_Query) {
+                    $options = $context['options'] ?? [];
+                    $template = $context['template'] ?? ($block->parsed_block ?? null);
+                    if (is_array($template)) {
+                        $layout = $context['layout'] ?? null;
+                        $generator = new PostTemplateBlockGenerator($template, $options);
+                        if ($layout instanceof PostLayoutInterface) {
+                            $generator->setLayout($layout);
+                        }
+                        return $generator->generate($query, $options);
+                    }
+                }
+            }
+        }
         return $content;
     }
-}
 
+    public static function renderTemplateWithQuery(array $templateBlock, WP_Query $query, array $options, ?PostLayoutInterface $layout = null): string
+    {
+        if (!function_exists('render_block')) {
+            require_once ABSPATH . 'wp-includes/blocks.php';
+        }
+        $generator = new PostTemplateBlockGenerator($templateBlock, $options);
+        if ($layout instanceof PostLayoutInterface) {
+            $generator->setLayout($layout);
+        }
+        return $generator->generate($query, $options);
+    }
+}

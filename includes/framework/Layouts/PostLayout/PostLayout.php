@@ -5,7 +5,7 @@ namespace Jankx\Layouts\PostLayout;
 use Jankx\Layouts\PostLayout\Contracts\PostLayoutInterface;
 use Jankx\Layouts\PostLayout\Contracts\ContentGeneratorInterface;
 use Jankx\Layouts\PostLayout\Generators\PostTemplateBlockGenerator;
-use Jankx\Gutenberg\Blocks\PostLayoutTemplateBlock;
+use Jankx\Gutenberg\Blocks\DynamicDataTemplateBlock;
 use WP_Query;
 
 abstract class PostLayout implements PostLayoutInterface
@@ -220,7 +220,7 @@ abstract class PostLayout implements PostLayoutInterface
 
         $templateBlock = $this->getOption('postTemplate');
         if (is_array($templateBlock) && !empty($templateBlock)) {
-            $html = PostLayoutTemplateBlock::renderTemplateWithQuery(
+            $html = DynamicDataTemplateBlock::renderTemplateWithQuery(
                 $templateBlock,
                 $this->query,
                 $this->options,

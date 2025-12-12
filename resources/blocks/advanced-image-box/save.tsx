@@ -91,14 +91,34 @@ export default function save({ attributes, className }: AdvancedImageBoxSaveProp
 			style={imageStyle}
 		/>
 	) : (
-		// Fallback element when no image is provided: shows a colored block so presets/frame are visible
+		// Fallback element when no image is provided: show minimal structure and rely on preset CSS
+		// Do not apply inline border-radius, background-color, or min-height to avoid forcing styles
 		<div
 			className={clsx('wp-block-jankx-advanced-image-box__no-image', imageClasses)}
 			style={{
-				...imageStyle,
-				backgroundColor: fallbackBg,
-				minHeight: fallbackMinHeight,
+				// Keep border and shadow styles, but omit borderRadius if present
+				...(() => {
+					const tempStyle: Record<string, unknown> = { ...borderProps.style, ...shadowProps.style };
+					// Remove borderRadius property if exists on borderProps.style
+					if ('borderRadius' in tempStyle) {
+						delete tempStyle.borderRadius;
+					}
+					return tempStyle;
+				})(),
+				// Keep aspect ratio/size information if necessary
+				aspectRatio,
+				objectFit: scale,
+				width,
+				height,
 			}}>
+			{!hasImage && alt && (
+				<div
+					className="wp-block-jankx-advanced-image-box__no-image__alt"
+					style={{ color: String(presetOptions.titleColor ?? '#ffffff') }}
+				>
+					{alt}
+				</div>
+			)}
 			{/* Inner blocks and preset elements will be rendered separately below */}
 		</div>
 	);
@@ -131,15 +151,9 @@ export default function save({ attributes, className }: AdvancedImageBoxSaveProp
 		</div>
 	);
 
-	// When preset is active, render inner blocks in frame/title-box (matching edit mode)
-	const presetContent = preset && (
-		<div className="wp-block-jankx-advanced-image-box__frame-wrapper">
-			<div className="wp-block-jankx-advanced-image-box__frame"></div>
-			<div className="wp-block-jankx-advanced-image-box__title-box">
-				{innerBlocksContent}
-			</div>
-		</div>
-	);
+	// When preset is active, do not render the preset frame/title wrapper in saved output
+	// The server-side render (render_callback) will insert the markup to avoid duplicate elements
+	const presetContent = null;
 
 	// When no preset and no overlay, render inner blocks in hidden container (for editing)
 	const hiddenContent = !preset && !showOverlayOnHover && innerBlocksContent;
@@ -171,7 +185,7 @@ export default function save({ attributes, className }: AdvancedImageBoxSaveProp
 		<figure { ...useBlockProps.save({ className: blockClasses }) }>
 			{wrappedImage}
 			{overlayContent}
-			{presetContent}
+			{/* preset content is injected server-side via render_callback; do not duplicate it here */}
 			{hiddenContent}
 			{caption && !RichText.isEmpty(caption) && (
 				<RichText.Content

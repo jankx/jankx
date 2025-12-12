@@ -464,13 +464,15 @@ export default function edit({
 			}}
 		/>
 	) : (
-		<div
-			className="wp-block-jankx-advanced-image-box__placeholder"
-			style={{
-				backgroundColor: presetBg,
-				minHeight: placeholderMinHeight,
-			}}
-		>
+		<div className="wp-block-jankx-advanced-image-box__placeholder">
+            {!hasImage && alt && (
+                <div
+                    className="wp-block-jankx-advanced-image-box__no-image__alt"
+                    style={{ color: String((presetOptions as Record<string, unknown>)?.titleColor ?? '#ffffff') }}
+                >
+                    {alt}
+                </div>
+            )}
 			<MediaReplaceFlow
 				mediaId={id}
 				mediaURL={url}

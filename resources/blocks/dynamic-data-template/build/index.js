@@ -313,15 +313,13 @@ function Edit({
           gridTemplateColumns: displayLayout === 'grid' || displayLayout === 'card' ? `repeat(${columns}, 1fr)` : 'none',
           gap: '1rem'
         },
-        children: Array.from({
-          length: totalItems
-        }).map((_, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
           className: "dynamic-data-template__item",
-          "data-item-index": index,
+          "data-item-index": 0,
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
             ...innerBlocksProps
           })
-        }, `template-item-${index}`))
+        })
       })
     })]
   });

@@ -111,10 +111,12 @@
 			"default": "0px"
 		},
 		"preset": {
-			"type": "string"
+			"type": "string",
+			"default": ""
 		},
 		"presetOptions": {
-			"type": "object"
+			"type": "object",
+			"default": {}
 		}
 	},
 	"supports": {
@@ -128,9 +130,9 @@
 		},
 		"color": {
 			"text": false,
-			"background": false,
+			"background": true,
 			"gradients": true,
-			"__experimentalSkipSerialization": true
+			"__experimentalSkipSerialization": false
 		},
 		"spacing": {
 			"margin": true,

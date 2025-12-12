@@ -185,6 +185,54 @@ describe('AdvancedImageBox Edit', () => {
         expect(setAttributes).toHaveBeenCalledWith({ showOverlayOnHover: true });
     });
 
+    it('should display alt text in placeholder when no image is set', () => {
+        const setAttributes = jest.fn();
+        const propsWithAlt = { ...defaultProps, attributes: { ...defaultAttributes, alt: 'Sample alt text', url: '' } };
+        render(<Edit {...propsWithAlt} setAttributes={setAttributes} />);
+
+        expect(screen.getByText('Sample alt text')).toBeInTheDocument();
+    });
+
+    it('placeholder should not have inline background or minHeight when no image', () => {
+        const setAttributes = jest.fn();
+        const { container } = render(<Edit {...defaultProps} setAttributes={setAttributes} />);
+
+        const placeholder = container.querySelector('.wp-block-jankx-advanced-image-box__placeholder') as HTMLElement;
+        expect(placeholder).toBeInTheDocument();
+        expect(placeholder.style.backgroundColor).toBe('');
+        expect(placeholder.style.minHeight).toBe('');
+    });
+
+    it('should persist preset color option when opacity changed', () => {
+        // Mock window presets
+        (window as any).jankxAdvancedImageBoxPresets = {
+            'bordered-frame': {
+                id: 'bordered-frame',
+                label: 'Bordered Frame',
+                options: [
+                    { name: 'titleBackground', type: 'color', default: '#ff0000', label: 'Title Background' }
+                ]
+            }
+        };
+
+        const setAttributes = jest.fn();
+        const propsWithPreset = {
+            ...defaultProps,
+            attributes: { ...defaultAttributes, preset: 'bordered-frame', presetOptions: {} }
+        };
+
+        render(<Edit {...propsWithPreset} setAttributes={setAttributes} />);
+
+        // Opacity RangeControl is rendered with label 'Opacity' inside the color control
+        const opacityRange = screen.getByTestId('range-Opacity') as HTMLInputElement;
+
+        // Change to 0 (parseInt in mock will convert '0' correctly)
+        fireEvent.change(opacityRange, { target: { value: '0' } });
+
+        // Expect setAttributes called with combined rgba value for titleBackground
+        expect(setAttributes).toHaveBeenCalledWith({ presetOptions: { titleBackground: 'rgba(255, 0, 0, 0)' } });
+    });
+
     it('should update overlayAnimation when changed', () => {
         const setAttributes = jest.fn();
         render(<Edit {...defaultProps} setAttributes={setAttributes} />);

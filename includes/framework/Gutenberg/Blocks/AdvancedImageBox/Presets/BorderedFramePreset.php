@@ -274,7 +274,7 @@ class BorderedFramePreset implements PresetInterface
         $css = "
 .wp-block-jankx-advanced-image-box.preset-bordered-frame {
     position: relative;
-    display: inline-block;
+    display: block;
 }
 
 .wp-block-jankx-advanced-image-box.preset-bordered-frame img {
@@ -471,6 +471,18 @@ class BorderedFramePreset implements PresetInterface
     font-weight: 600;
 }
 
+/* Ensure placeholder (no-image) shows sensible fallback when preset is active */
+.wp-block-jankx-advanced-image-box.preset-bordered-frame .wp-block-jankx-advanced-image-box__no-image {
+    background-color: {$titleBackground};
+    background-size: cover;
+    background-position: center;
+    min-height: 240px;
+}
+
+.wp-block-jankx-advanced-image-box.preset-bordered-frame .wp-block-jankx-advanced-image-box__no-image__alt {
+    color: {$titleColor};
+}
+
 /* Ensure hover effects work with preset */
 .wp-block-jankx-advanced-image-box.preset-bordered-frame:hover .wp-block-jankx-advanced-image-box__image.has-hover-zoom {
     transform: scale(1.05);
@@ -510,13 +522,10 @@ class BorderedFramePreset implements PresetInterface
     {
         $markup = '<div class="wp-block-jankx-advanced-image-box__frame-wrapper">';
         $markup .= '<div class="wp-block-jankx-advanced-image-box__frame"></div>';
-        
-        if (!empty($content)) {
-            $markup .= sprintf(
-                '<div class="wp-block-jankx-advanced-image-box__title-box">%s</div>',
-                $content
-            );
-        }
+        $markup .= sprintf(
+            '<div class="wp-block-jankx-advanced-image-box__title-box">%s</div>',
+            $content
+        );
         
         $markup .= '</div>';
 
