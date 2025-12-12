@@ -1,0 +1,60 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "name": "jankx/facebook-page",
+  "title": "Facebook Page",
+  "category": "jankx",
+  "icon": "share",
+  "description": "Nhúng Facebook Page Plugin với tùy chọn tabs, kích thước, và hiển thị.",
+  "keywords": ["facebook", "page", "social", "fanpage"],
+  "textdomain": "jankx",
+  "supports": {
+    "html": false,
+    "align": ["wide", "full"],
+    "spacing": {
+      "margin": true,
+      "padding": true
+    }
+  },
+  "attributes": {
+    "href": {
+      "type": "string",
+      "default": ""
+    },
+    "tabs": {
+      "type": "string",
+      "default": "timeline,events,messages"
+    },
+    "width": {
+      "type": "number",
+      "default": 380
+    },
+    "hideCover": {
+      "type": "boolean",
+      "default": false
+    },
+    "showFacepile": {
+      "type": "boolean",
+      "default": true
+    },
+    "smallHeader": {
+      "type": "boolean",
+      "default": false
+    },
+    "adaptContainerWidth": {
+      "type": "boolean",
+      "default": true
+    },
+    "locale": {
+      "type": "string",
+      "default": "vi_VN"
+    },
+    "className": {
+      "type": "string"
+    }
+  },
+  "editorScript": "file:./build/index.js",
+  "viewScript": "file:./build/frontend.js",
+  "style": "file:./build/style.css",
+  "editorStyle": "file:./build/editor.css"
+}
+

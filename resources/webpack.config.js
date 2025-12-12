@@ -166,6 +166,11 @@ module.exports = {
     'blocks/dynamic-data-template/build/index': './blocks/dynamic-data-template/index.tsx',
     'blocks/dynamic-data-template/build/style': './blocks/dynamic-data-template/style.scss',
     'blocks/dynamic-data-template/build/editor': './blocks/dynamic-data-template/editor.scss',
+
+    'blocks/facebook-page/build/index': './blocks/facebook-page/index.tsx',
+    'blocks/facebook-page/build/frontend': './blocks/facebook-page/frontend.ts',
+    'blocks/facebook-page/build/style': './blocks/facebook-page/style.scss',
+    'blocks/facebook-page/build/editor': './blocks/facebook-page/editor.scss',
   },
   output: {
     path: path.resolve(__dirname),

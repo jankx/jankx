@@ -37,6 +37,7 @@ use Jankx\Gutenberg\Blocks\TableCellBlock;
 use Jankx\Gutenberg\Blocks\TableOfContentBlock;
 use Jankx\Gutenberg\Blocks\TableRowBlock;
 use Jankx\Gutenberg\Blocks\WplyrMediaBlock;
+use Jankx\Gutenberg\Blocks\FacebookPageBlock;
 use Jankx\Gutenberg\GutenbergPattern;
 
 /**
@@ -157,6 +158,7 @@ class GutenbergService
         $this->repository->registerBlock(TableOfContentBlock::class);
         $this->repository->registerBlock(TableRowBlock::class);
         $this->repository->registerBlock(WplyrMediaBlock::class);
+        $this->repository->registerBlock(FacebookPageBlock::class);
     }
 
     /**
