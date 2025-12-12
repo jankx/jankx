@@ -36,4 +36,10 @@ return [
     'options' => [
         'framework' => 'jankx', // auto, jankx, kirki, redux, wordpress
     ],
+    'cli' => [
+        'commands' => [
+            // Register demo data command from child config; parent provider will bind and register
+            // 'jankx demo-data' => \Jankx\Foundation\Cli\Commands\DemoDataCommand::class,
+        ],
+    ],
 ];

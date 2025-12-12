@@ -6,6 +6,7 @@ use Jankx\Foundation\Application;
 use Jankx\Foundation\Cli\Commands\JankxCommand;
 use Jankx\Foundation\Cli\Commands\CacheCommand;
 use Jankx\Foundation\Cli\Commands\ConfigCommand;
+// Demo commands should be configured via config and resolved dynamically
 use Jankx\Facades\Log;
 use Jankx\Helper\Environment;
 
@@ -40,6 +41,16 @@ class WordPressCliServiceProvider extends ServiceProvider
         $this->app->singleton('jankx.config.command', function ($app) {
             return new ConfigCommand();
         });
+        // Register additional CLI commands from config
+        $commands = $this->app['config']->get('cli.commands', []);
+        if (is_array($commands)) {
+            foreach ($commands as $name => $class) {
+                $binding = "cli.command.{$name}";
+                $this->app->singleton($binding, function ($app) use ($class) {
+                    return new $class();
+                });
+            }
+        }
     }
 
     /**
@@ -73,6 +84,13 @@ class WordPressCliServiceProvider extends ServiceProvider
 
         // Register config management commands
         \WP_CLI::add_command('jankx config', $this->app->make('jankx.config.command'));
+        // Register commands from config
+        $commands = $this->app->get('config')->get('cli.commands', []);
+        if (is_array($commands)) {
+            foreach ($commands as $name => $class) {
+                \WP_CLI::add_command($name, $this->app->make("cli.command.{$name}"));
+            }
+        }
 
         // Log command registration
     }
