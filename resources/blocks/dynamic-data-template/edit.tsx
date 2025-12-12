@@ -98,6 +98,9 @@ export default function Edit({
     const columns: number = context?.columns || 3;
     const columnsTablet: number = context?.columnsTablet || 2;
     const columnsMobile: number = context?.columnsMobile || 1;
+    const slidesToScroll: number = (context as any)?.slidesToScroll || 1;
+    const showArrows: boolean = !!(context as any)?.showArrows;
+    const showDots: boolean = !!(context as any)?.showDots;
 
     // Get layouts data from PHP
     const layoutsData = (window as any).jankxDynamicDataContentLoopLayouts || {
@@ -203,6 +206,14 @@ export default function Edit({
         return Math.min(Math.max(1, postsPerPage), 12);
     }, [postsPerPage]);
 
+    const viewportRef = useRef<HTMLDivElement | null>(null);
+    const scrollBySlides = useCallback((n: number) => {
+        const vp = viewportRef.current;
+        if (!vp) return;
+        const width = vp.clientWidth;
+        const perSlide = width / Math.max(1, columns);
+        vp.scrollBy({ left: n * perSlide * Math.max(1, slidesToScroll), behavior: 'smooth' });
+    }, [columns, slidesToScroll]);
     return (
         <>
             <InspectorControls>
@@ -296,45 +307,112 @@ export default function Edit({
             </InspectorControls>
 
             <div {...blockProps}>
-                <div 
-                    className={`dynamic-data-template__items-container layout-${displayLayout} columns-${columns} columns-tablet-${columnsTablet} columns-mobile-${columnsMobile}`}
-                    style={{
-                        '--columns-desktop': columns,
-                        '--columns-tablet': columnsTablet,
-                        '--columns-mobile': columnsMobile,
-                        display: displayLayout === 'grid' || displayLayout === 'card' ? 'grid' : 'block',
-                        gridTemplateColumns: (displayLayout === 'grid' || displayLayout === 'card') 
-                            ? `repeat(${columns}, 1fr)` 
-                            : 'none',
-                        gap: '1rem',
-                    } as CSSProperties}
-                >
-                    {Array.from({ length: totalItems }).map((_, index) => {
-                        if (index === 0) {
+                {displayLayout === 'carousel' ? (
+                    <div className={`dynamic-data-template__carousel columns-${columns}`}>
+                        {showArrows ? (
+                            <div className="dynamic-data-template__carousel-nav">
+                                <button type="button" className="carousel-button prev" onClick={() => scrollBySlides(-1)}>Prev</button>
+                                <button type="button" className="carousel-button next" onClick={() => scrollBySlides(1)}>Next</button>
+                            </div>
+                        ) : null}
+                        <div
+                            ref={viewportRef}
+                            className="dynamic-data-template__carousel-viewport"
+                            style={{
+                                overflow: 'hidden',
+                            } as CSSProperties}
+                        >
+                            <div
+                                className={`dynamic-data-template__items-container layout-${displayLayout} columns-${columns} columns-tablet-${columnsTablet} columns-mobile-${columnsMobile}`}
+                                style={{
+                                    '--columns-desktop': columns,
+                                    '--columns-tablet': columnsTablet,
+                                    '--columns-mobile': columnsMobile,
+                                    display: 'flex',
+                                    gap: '1rem',
+                                    scrollSnapType: 'x mandatory',
+                                } as CSSProperties}
+                            >
+                                {Array.from({ length: totalItems }).map((_, index) => {
+                                    const itemStyle: CSSProperties = {
+                                        flex: `0 0 calc(100% / ${columns})`,
+                                        scrollSnapAlign: 'start',
+                                    };
+                                    if (index === 0) {
+                                        return (
+                                            <div
+                                                key={`item-${index}`}
+                                                className="dynamic-data-template__item"
+                                                data-item-index={index}
+                                                style={itemStyle}
+                                            >
+                                                <div {...innerBlocksProps} />
+                                            </div>
+                                        );
+                                    }
+                                    return (
+                                        <div
+                                            key={`item-${index}`}
+                                            className="dynamic-data-template__item dynamic-data-template__item--preview"
+                                            data-item-index={index}
+                                            style={itemStyle}
+                                        >
+                                            <div className="dynamic-data-template__inner-blocks">
+                                                <BlockPreview
+                                                    blocks={sharedInnerBlocks}
+                                                />
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                        {showDots ? (
+                            <div className="dynamic-data-template__carousel-dots"></div>
+                        ) : null}
+                    </div>
+                ) : (
+                    <div 
+                        className={`dynamic-data-template__items-container layout-${displayLayout} columns-${columns} columns-tablet-${columnsTablet} columns-mobile-${columnsMobile}`}
+                        style={{
+                            '--columns-desktop': columns,
+                            '--columns-tablet': columnsTablet,
+                            '--columns-mobile': columnsMobile,
+                            display: displayLayout === 'grid' || displayLayout === 'card' ? 'grid' : 'block',
+                            gridTemplateColumns: (displayLayout === 'grid' || displayLayout === 'card') 
+                                ? `repeat(${columns}, 1fr)` 
+                                : 'none',
+                            gap: '1rem',
+                        } as CSSProperties}
+                    >
+                        {Array.from({ length: totalItems }).map((_, index) => {
+                            if (index === 0) {
+                                return (
+                                    <div
+                                        key={`item-${index}`}
+                                        className="dynamic-data-template__item"
+                                        data-item-index={index}
+                                    >
+                                        <div {...innerBlocksProps} />
+                                    </div>
+                                );
+                            }
                             return (
                                 <div
                                     key={`item-${index}`}
-                                    className="dynamic-data-template__item"
+                                    className="dynamic-data-template__item dynamic-data-template__item--preview"
                                     data-item-index={index}
                                 >
-                                    <div {...innerBlocksProps} />
+                                    <div className="dynamic-data-template__inner-blocks">
+                                        <BlockPreview
+                                            blocks={sharedInnerBlocks}
+                                        />
+                                    </div>
                                 </div>
                             );
-                        }
-                        return (
-                            <div
-                                key={`item-${index}`}
-                                className="dynamic-data-template__item dynamic-data-template__item--preview"
-                                data-item-index={index}
-                            >
-                                <BlockPreview
-                                    blocks={sharedInnerBlocks}
-                                    viewportWidth={320}
-                                />
-                            </div>
-                        );
-                    })}
-                </div>
+                        })}
+                    </div>
+                )}
             </div>
         </>
     );

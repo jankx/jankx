@@ -18,7 +18,13 @@
     "postsPerPage": "postsPerPage",
     "columns": "columns",
     "columnsTablet": "columnsTablet",
-    "columnsMobile": "columnsMobile"
+    "columnsMobile": "columnsMobile",
+    "slidesToScroll": "slidesToScroll",
+    "loop": "loop",
+    "autoplay": "autoplay",
+    "autoplayDelay": "autoplayDelay",
+    "showArrows": "showArrows",
+    "showDots": "showDots"
   },
   "usesContext": ["queryId", "postType"],
   "allowedBlocks": ["jankx/dynamic-data-template"],
@@ -81,6 +87,14 @@
     "postType": {
       "type": "string",
       "default": "post"
+    },
+    "useMultiPostType": {
+      "type": "boolean",
+      "default": false
+    },
+    "postTypes": {
+      "type": "array",
+      "default": []
     },
     "postsPerPage": {
       "type": "number",
@@ -327,4 +341,3 @@
     }
   }
 }
-

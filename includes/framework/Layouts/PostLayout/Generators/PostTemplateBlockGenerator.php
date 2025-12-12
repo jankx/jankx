@@ -46,14 +46,31 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
         $this->currentLayout = $layoutType;
 
         if ($layoutType === 'carousel') {
+            $before = '';
+            $after = '';
+            ob_start();
+            do_action('jankx/dynamic-data-template/before_loop', $options, $query, $this->getLayout());
+            $before = (string) ob_get_clean();
             $html = $this->renderCarousel($query, $options);
+            ob_start();
+            do_action('jankx/dynamic-data-template/after_loop', $options, $query, $this->getLayout());
+            $after = (string) ob_get_clean();
+            $html = $before . $html . $after;
             $this->runtimeOptions = [];
             $this->currentLayout = '';
             return $html;
         }
 
         $wrapperAttributes = $this->buildWrapperAttributes($options);
+        $before = '';
+        $after = '';
+        ob_start();
+        do_action('jankx/dynamic-data-template/before_loop', $options, $query, $this->getLayout());
+        $before = (string) ob_get_clean();
         $items = $this->renderPosts($query, $options);
+        ob_start();
+        do_action('jankx/dynamic-data-template/after_loop', $options, $query, $this->getLayout());
+        $after = (string) ob_get_clean();
 
         $this->runtimeOptions = [];
         $this->currentLayout = '';
@@ -62,7 +79,7 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
             return '';
         }
 
-        return sprintf('<ul %s>%s</ul>', $this->stringifyAttributes($wrapperAttributes), $items);
+        return sprintf('%s<ul %s>%s</ul>%s', $before, $this->stringifyAttributes($wrapperAttributes), $items, $after);
     }
 
     /**

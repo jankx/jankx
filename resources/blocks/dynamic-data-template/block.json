@@ -17,7 +17,13 @@
     "postsPerPage",
     "columns",
     "columnsTablet",
-    "columnsMobile"
+    "columnsMobile",
+    "slidesToScroll",
+    "loop",
+    "autoplay",
+    "autoplayDelay",
+    "showArrows",
+    "showDots"
   ],
   "supports": {
     "reusable": false,
@@ -109,4 +115,3 @@
     }
   }
 }
-

@@ -36,7 +36,9 @@ class LayoutQueryBuilder
         [$orderby, $order] = $this->resolveOrdering();
 
         $args = [
-            'post_type' => $this->attributes['postType'] ?? 'post',
+            'post_type' => !empty($this->attributes['postTypes']) && is_array($this->attributes['postTypes'])
+                ? array_values(array_filter(array_map('sanitize_key', (array) $this->attributes['postTypes'])))
+                : ($this->attributes['postType'] ?? 'post'),
             'posts_per_page' => $this->attributes['postsPerPage'] ?? 10,
             'orderby' => $orderby,
             'post_status' => 'publish',
@@ -354,4 +356,3 @@ class LayoutQueryBuilder
         return ($this->attributes['postType'] ?? 'post') === $type;
     }
 }
-

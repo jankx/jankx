@@ -289,6 +289,8 @@ type QueryPreset =
 interface DynamicDataLayoutAttributes {
     queryPreset: QueryPreset;
     postType: string;
+    useMultiPostType?: boolean;
+    postTypes?: string[];
     postsPerPage: number;
     layout: string;
     columns: number;
@@ -365,6 +367,8 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     const {
         queryPreset = 'custom',
         postType = 'post',
+        useMultiPostType = false,
+        postTypes = [],
         postsPerPage = 10,
         layout = 'grid',
         columns = 3,
@@ -704,15 +708,15 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
 
     // Get available post types
     console.log('[DEBUG Edit] [HOOK-12] About to call useSelect (postTypes)');
-    const postTypes = useSelect((select: WordPressSelect) => {
+    const wpPostTypes = useSelect((select: WordPressSelect) => {
         const { getPostTypes } = select('core');
         const types = getPostTypes({ per_page: -1 }) || [];
-        console.log('[DEBUG Edit] [HOOK-12] useSelect postTypes:', types);
+        console.log('[DEBUG Edit] [HOOK-12] useSelect wpPostTypes:', types);
         return types;
     }, []);
-    console.log('[DEBUG Edit] [HOOK-12] useSelect (postTypes) completed, value:', postTypes);
+    console.log('[DEBUG Edit] [HOOK-12] useSelect (wpPostTypes) completed, value:', wpPostTypes);
 
-    const postTypeOptions = postTypes
+    const postTypeOptions = wpPostTypes
         .filter((type: PostType) => type.viewable && type.slug !== 'attachment')
         .map((type: PostType) => ({
             label: type.name,
@@ -916,10 +920,51 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         options={postTypeOptions}
                         onChange={(value) => {
                             console.log('[DEBUG Edit] postType onChange:', value);
-                            setAttributes({ postType: value });
+                            setAttributes({ postType: value, useMultiPostType: false });
                         }}
                         help={queryPreset === 'default' ? __('Select post type for the main query', 'jankx') : undefined}
                     />
+                    
+                    <ToggleControl
+                        label={__('Multi Post Type', 'jankx')}
+                        checked={useMultiPostType}
+                        onChange={(value) => {
+                            setAttributes({ useMultiPostType: value });
+                            if (!value) {
+                                // When turning off multi, keep first selected as single postType
+                                const first = Array.isArray(postTypes) && postTypes.length > 0 ? postTypes[0] : postType;
+                                setAttributes({ postType: first });
+                            }
+                        }}
+                        help={__('Enable selecting multiple post types', 'jankx')}
+                    />
+                    {useMultiPostType ? (
+                        <BaseControl
+                            label={__('Post Types (Multiple)', 'jankx')}
+                            help={__('Select multiple post types to include', 'jankx')}
+                        >
+                            <FormTokenField
+                                value={postTypes.map((slug) => {
+                                    const found = postTypeOptions.find((opt) => opt.value === slug);
+                                    return found?.label || slug;
+                                })}
+                                suggestions={postTypeOptions.map((opt) => opt.label)}
+                                onChange={(tokens) => {
+                                    const names = normalizeTokens(tokens as TokenLike[]);
+                                    const selectedSlugs = names
+                                        .map((name) => {
+                                            const opt = postTypeOptions.find((o) => o.label === name);
+                                            return opt?.value || '';
+                                        })
+                                        .filter((slug) => slug.length > 0);
+                                    setAttributes({ postTypes: selectedSlugs });
+                                    if (selectedSlugs.length > 0) {
+                                        setAttributes({ postType: selectedSlugs[0] });
+                                    }
+                                }}
+                            />
+                        </BaseControl>
+                    ) : null}
 
                     {/* Posts Per Page - Show for all presets */}
                     <RangeControl

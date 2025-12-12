@@ -2430,12 +2430,42 @@ Xem thêm trong `docs/` directory:
    - `dateFilters[]`
    - `authorFilters[]`
    - `keywordFilter` (object, không phải array)
- 
- ---
- 
- ### jankx/dynamic-data-template
- 
- **Mục đích**: Template block để định nghĩa cách hiển thị từng item trong loop của `jankx/dynamic-data-layout` block.
+
+---
+
+### jankx/dynamic-data-layout
+
+**Mục đích**: Block cha điều phối query, renderer và cung cấp context cho `jankx/dynamic-data-template`. Toàn bộ options được định nghĩa trong PHP, JavaScript chỉ đọc cấu hình từ PHP.
+
+#### Editor Preview (Carousel)
+- Khi chọn `displayLayout = "carousel"`, editor phải hiển thị preview đúng với các options của carousel.
+- Tất cả options của carousel đều lấy từ PHP (không hardcode), ví dụ:
+  - `slidesPerView`, `slidesToScroll`, `loop`, `autoplay`, `autoplayDelay`.
+- Editor khởi tạo carousel bằng JS đã được đăng ký qua PHP interface, và bind config từ attributes để người dùng thấy preview tương đồng với frontend.
+
+#### Options → Data Attributes & Inline Styles
+- `displayLayout` → lớp `layout-{value}` trên container.
+- `columns`, `columnsTablet`, `columnsMobile` → inline CSS variables `--columns-desktop`, `--columns-tablet`, `--columns-mobile`.
+- `postsPerPage` → chuyển thành `WP_Query: posts_per_page` ở PHP.
+- Với carousel, renderer thêm data attributes:
+  - `data-embla-carousel=""`
+  - `data-slides-per-view="{columns}"`
+  - `data-slides-to-scroll="{slidesToScroll}"`
+  - `data-loop="{loop}"`
+  - `data-autoplay="{autoplay}"`
+  - `data-autoplay-delay="{autoplayDelay}"`
+
+#### PHP-Driven JavaScript
+- JavaScript của editor và frontend được đăng ký từ PHP:
+  - PHP cung cấp handle, dependencies, và initializer cho editor/frontend.
+  - Config khởi tạo được pass qua `wp_localize_script()` hoặc `wp_add_inline_script()` từ PHP.
+- Không có logic hay giá trị cố định trong JS; JS chỉ đọc và khởi tạo theo dữ liệu từ PHP.
+
+---
+
+### jankx/dynamic-data-template
+
+**Mục đích**: Template block để định nghĩa cách hiển thị từng item trong loop của `jankx/dynamic-data-layout` block.
  
  #### Content Loop Layouts:
  
@@ -2483,15 +2513,22 @@ Xem thêm trong `docs/` directory:
  - Default blocks được cung cấp dựa trên post type
  - Inner blocks được render cho mỗi post trong loop
  
- #### CSS Structure:
- ```html
- <!-- Loop item với content loop layout class -->
- <li class="wp-block-post post post-{id} content-loop-layout--{contentLoopLayout} thumbnail-position-{thumbnailPosition} image-ratio-{imageRatio} item-spacing-{itemSpacing}">
-     <!-- Inner blocks content -->
- </li>
- ```
- 
- #### Đăng ký Content Loop Layout:
+#### CSS Structure:
+```html
+<!-- Loop item với content loop layout class -->
+<li class="wp-block-post post post-{id} content-loop-layout--{contentLoopLayout} thumbnail-position-{thumbnailPosition} image-ratio-{imageRatio} item-spacing-{itemSpacing}">
+    <!-- Inner blocks content -->
+</li>
+```
+
+#### Action Hooks
+- Cung cấp hook để custom wrapper/container trước và sau khi render loop:
+  - `do_action('jankx/dynamic-data-template/before_loop', $attributes, $context, $block);`
+  - `do_action('jankx/dynamic-data-template/after_loop', $attributes, $context, $block);`
+- Mục tiêu: Cho phép PHP developers thêm wrappers (`.wrap`, `.container`) hoặc markup đặc biệt cho các layout tùy biến mà không cần sửa JS.
+- Tất cả render hiển thị và options khai báo qua PHP; editor/JS chỉ hiển thị các tính năng đã được PHP hỗ trợ.
+
+#### Đăng ký Content Loop Layout:
  
  **Bước 1**: Tạo Layout Class
  
@@ -2681,9 +2718,27 @@ Xem thêm trong `docs/` directory:
     ├─ Features & Options                         └─ NO business logic!
     ├─ Hooks & Filters
     └─ Data Processing
- ```
- 
- ### Quick Example
+```
+
+### JavaScript Integration via PHP Interfaces
+
+- Định nghĩa interface PHP cho scripts của layout/block để đảm bảo JS được khai báo và khởi tạo một cách thống nhất:
+  ```php
+  interface LayoutScriptInterface {
+      public function getHandle(): string;
+      public function getDependencies(): array;
+      public function getEditorInitializer(): string;   // tên hàm init editor
+      public function getFrontendInitializer(): string; // tên hàm init frontend
+      public function getInitConfig(array $attributes, array $context = []): array;
+  }
+  ```
+- Service/provider chịu trách nhiệm:
+  - Đăng ký script (`wp_register_script`), enqueue khi cần.
+  - `wp_localize_script` để truyền `getInitConfig()` sang JS.
+  - Gọi initializer tương ứng trong editor/frontend.
+- JS chỉ đọc `window.config` đã được PHP pass vào, khởi tạo theo đúng layout; không có logic hay giá trị cố định trong JS.
+
+### Quick Example
  
  **❌ BAD: Hard-coded trong JavaScript**
  
