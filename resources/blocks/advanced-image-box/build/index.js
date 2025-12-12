@@ -396,7 +396,7 @@ function edit({
   onReplace,
   insertBlocksAfter
 }) {
-  var _ref5, _titleBackground, _titleColor;
+  var _po$titlePosition, _po$titleFullWidth, _styleMargin$top, _styleMargin$right, _styleMargin$bottom, _styleMargin$left, _po$titleWidthUnit, _ref5, _titleBackground, _titleColor;
   // Helper: parse color string to { colorHex, alpha }
   const parseColorAndAlpha = value => {
     const str = String(value !== null && value !== void 0 ? value : '').trim();
@@ -709,6 +709,73 @@ function edit({
 
   // Render preset CSS for editor preview
   const presetCSS = currentPreset && preset ? (0,_presetCSSHelpers__WEBPACK_IMPORTED_MODULE_10__.renderPresetCSS)(currentPreset, presetOptions) : '';
+  // Apply WordPress margin (style.spacing.margin) to title-box in editor preview
+  const styleMargin = attributes?.style?.spacing?.margin || {};
+  const po = presetOptions || {};
+  const pos = String((_po$titlePosition = po?.titlePosition) !== null && _po$titlePosition !== void 0 ? _po$titlePosition : 'bottom-center');
+  const full = Boolean((_po$titleFullWidth = po?.titleFullWidth) !== null && _po$titleFullWidth !== void 0 ? _po$titleFullWidth : false);
+  const mTop = String((_styleMargin$top = styleMargin.top) !== null && _styleMargin$top !== void 0 ? _styleMargin$top : po?.titleMarginTop !== undefined ? `${po.titleMarginTop}px` : '');
+  const mRight = String((_styleMargin$right = styleMargin.right) !== null && _styleMargin$right !== void 0 ? _styleMargin$right : po?.titleMarginRight !== undefined ? `${po.titleMarginRight}px` : '');
+  const mBottom = String((_styleMargin$bottom = styleMargin.bottom) !== null && _styleMargin$bottom !== void 0 ? _styleMargin$bottom : po?.titleMarginBottom !== undefined ? `${po.titleMarginBottom}px` : '');
+  const mLeft = String((_styleMargin$left = styleMargin.left) !== null && _styleMargin$left !== void 0 ? _styleMargin$left : po?.titleMarginLeft !== undefined ? `${po.titleMarginLeft}px` : '');
+  const offsetsCSS = (() => {
+    if (!preset || !currentPreset) return '';
+    if (full) {
+      if (pos.startsWith('top')) return `.wp-block-jankx-advanced-image-box.preset-bordered-frame .wp-block-jankx-advanced-image-box__title-box { top: ${mTop || '0'}; left: 0; right: 0; }`;
+      if (pos.startsWith('bottom')) return `.wp-block-jankx-advanced-image-box.preset-bordered-frame .wp-block-jankx-advanced-image-box__title-box { bottom: ${mBottom || '0'}; left: 0; right: 0; }`;
+      if (pos.startsWith('left')) return `.wp-block-jankx-advanced-image-box.preset-bordered-frame .wp-block-jankx-advanced-image-box__title-box { left: ${mLeft || '0'}; top: 0; bottom: 0; }`;
+      if (pos.startsWith('right')) return `.wp-block-jankx-advanced-image-box.preset-bordered-frame .wp-block-jankx-advanced-image-box__title-box { right: ${mRight || '0'}; top: 0; bottom: 0; }`;
+      return '';
+    }
+    switch (pos) {
+      case 'top-left':
+        return `.wp-block-jankx-advanced-image-box.preset-bordered-frame .wp-block-jankx-advanced-image-box__title-box { top: ${mTop || '0'}; left: ${mLeft || '0'}; }`;
+      case 'top-center':
+        return `.wp-block-jankx-advanced-image-box.preset-bordered-frame .wp-block-jankx-advanced-image-box__title-box { top: ${mTop || '0'}; left: 50%; transform: translateX(-50%); }`;
+      case 'top-right':
+        return `.wp-block-jankx-advanced-image-box.preset-bordered-frame .wp-block-jankx-advanced-image-box__title-box { top: ${mTop || '0'}; right: ${mRight || '0'}; }`;
+      case 'bottom-left':
+        return `.wp-block-jankx-advanced-image-box.preset-bordered-frame .wp-block-jankx-advanced-image-box__title-box { bottom: ${mBottom || '0'}; left: ${mLeft || '0'}; }`;
+      case 'bottom-center':
+        return `.wp-block-jankx-advanced-image-box.preset-bordered-frame .wp-block-jankx-advanced-image-box__title-box { bottom: ${mBottom || '0'}; left: 50%; transform: translateX(-50%); }`;
+      case 'bottom-right':
+        return `.wp-block-jankx-advanced-image-box.preset-bordered-frame .wp-block-jankx-advanced-image-box__title-box { bottom: ${mBottom || '0'}; right: ${mRight || '0'}; }`;
+      case 'left-top':
+        return `.wp-block-jankx-advanced-image-box.preset-bordered-frame .wp-block-jankx-advanced-image-box__title-box { top: ${mTop || '0'}; left: ${mLeft || '0'}; }`;
+      case 'left-center':
+        return `.wp-block-jankx-advanced-image-box.preset-bordered-frame .wp-block-jankx-advanced-image-box__title-box { top: 50%; left: ${mLeft || '0'}; transform: translateY(-50%); }`;
+      case 'left-bottom':
+        return `.wp-block-jankx-advanced-image-box.preset-bordered-frame .wp-block-jankx-advanced-image-box__title-box { bottom: ${mBottom || '0'}; left: ${mLeft || '0'}; }`;
+      case 'right-top':
+        return `.wp-block-jankx-advanced-image-box.preset-bordered-frame .wp-block-jankx-advanced-image-box__title-box { top: ${mTop || '0'}; right: ${mRight || '0'}; }`;
+      case 'right-center':
+        return `.wp-block-jankx-advanced-image-box.preset-bordered-frame .wp-block-jankx-advanced-image-box__title-box { top: 50%; right: ${mRight || '0'}; transform: translateY(-50%); }`;
+      case 'right-bottom':
+        return `.wp-block-jankx-advanced-image-box.preset-bordered-frame .wp-block-jankx-advanced-image-box__title-box { bottom: ${mBottom || '0'}; right: ${mRight || '0'}; }`;
+      case 'center':
+        return `.wp-block-jankx-advanced-image-box.preset-bordered-frame .wp-block-jankx-advanced-image-box__title-box { top: 50%; left: 50%; transform: translate(-50%, -50%); }`;
+      default:
+        return '';
+    }
+  })();
+  const padTop = po?.titlePaddingTop !== undefined ? `${po.titlePaddingTop}px` : '';
+  const padRight = po?.titlePaddingRight !== undefined ? `${po.titlePaddingRight}px` : '';
+  const padBottom = po?.titlePaddingBottom !== undefined ? `${po.titlePaddingBottom}px` : '';
+  const padLeft = po?.titlePaddingLeft !== undefined ? `${po.titlePaddingLeft}px` : '';
+  const widthUnit = String((_po$titleWidthUnit = po?.titleWidthUnit) !== null && _po$titleWidthUnit !== void 0 ? _po$titleWidthUnit : 'px');
+  const widthVal = po?.titleWidth && Number(po.titleWidth) > 0 ? `${po.titleWidth}${widthUnit}` : '';
+  const minWidthVal = po?.titleMinWidth && Number(po.titleMinWidth) > 0 ? `${po.titleMinWidth}px` : '';
+  const paddingCSS = padTop || padRight || padBottom || padLeft || widthVal || minWidthVal ? `
+.wp-block-jankx-advanced-image-box.preset-bordered-frame .wp-block-jankx-advanced-image-box__title-box {
+    ${padTop ? `padding-top: ${padTop};` : ''}
+    ${padRight ? `padding-right: ${padRight};` : ''}
+    ${padBottom ? `padding-bottom: ${padBottom};` : ''}
+    ${padLeft ? `padding-left: ${padLeft};` : ''}
+    ${widthVal ? `width: ${widthVal};` : ''}
+    ${minWidthVal ? `min-width: ${minWidthVal};` : ''}
+}
+` : '';
+  const combinedPresetCSS = `${presetCSS}${offsetsCSS}${paddingCSS}`;
 
   // Validation removed for better UX
 
@@ -819,12 +886,21 @@ function edit({
     })]
   });
 
+  // Wrap image with link in editor to match frontend rendering
+  const wrappedImage = href ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("a", {
+    href: href,
+    target: linkTarget,
+    rel: rel,
+    className: "wp-block-jankx-advanced-image-box__link",
+    children: imageElement
+  }) : imageElement;
+
   // InnerBlocks MUST be rendered in ONE fixed location in the DOM
   // This is critical for WordPress to properly track and save inner blocks
   const innerBlocksProps = {
     allowedBlocks: _constants__WEBPACK_IMPORTED_MODULE_9__.ALLOWED_INNER_BLOCKS,
     templateLock: false,
-    renderAppender: _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.InnerBlocks.ButtonBlockAppender,
+    renderAppender: false,
     // Only apply template if inner blocks are empty and preset requires it
     template: !hasInnerBlocks && preset && currentPreset?.requiresInnerBlocks && currentPreset.innerBlocksTemplate ? currentPreset.innerBlocksTemplate : undefined
   };
@@ -880,13 +956,13 @@ function edit({
   const presetContent = preset && currentPreset ? innerBlocksWrapper : null;
   const hiddenInnerBlocks = !preset && !showOverlayOnHover ? innerBlocksWrapper : null;
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.Fragment, {
-    children: [presetCSS && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("style", {
+    children: [combinedPresetCSS && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("style", {
       dangerouslySetInnerHTML: {
-        __html: presetCSS
+        __html: combinedPresetCSS
       }
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("figure", {
       ...blockProps,
-      children: [imageElement, overlayContent, presetContent, hiddenInnerBlocks, !_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.RichText.isEmpty(caption) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.RichText, {
+      children: [wrappedImage, overlayContent, presetContent, hiddenInnerBlocks, !_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.RichText.isEmpty(caption) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.RichText, {
         className: "wp-block-jankx-advanced-image-box__caption",
         tagName: "figcaption",
         value: caption,
@@ -1476,7 +1552,13 @@ function save({
     ..._wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps.save({
       className: blockClasses
     }),
-    children: [wrappedImage, overlayContent, hiddenContent, caption && !_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.RichText.isEmpty(caption) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.RichText.Content, {
+    children: [wrappedImage, overlayContent, hiddenContent, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+      className: "wp-block-jankx-advanced-image-box__serialized-content",
+      style: {
+        display: 'none'
+      },
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InnerBlocks.Content, {})
+    }), caption && !_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.RichText.isEmpty(caption) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.RichText.Content, {
       className: "wp-block-jankx-advanced-image-box__caption",
       tagName: "figcaption",
       value: caption

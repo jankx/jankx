@@ -259,10 +259,11 @@ class BorderedFramePreset implements PresetInterface
         $titlePosition = $options['titlePosition'] ?? 'bottom-center';
         $titleBackground = $options['titleBackground'] ?? 'rgba(0, 0, 0, 0.8)';
         $titleColor = $options['titleColor'] ?? '#ffffff';
-        $titleMarginTop = $options['titleMarginTop'] ?? 0;
-        $titleMarginRight = $options['titleMarginRight'] ?? 0;
-        $titleMarginBottom = $options['titleMarginBottom'] ?? 0;
-        $titleMarginLeft = $options['titleMarginLeft'] ?? 0;
+        $styleMargin = $attributes['style']['spacing']['margin'] ?? null;
+        $marginTop = is_array($styleMargin ?? null) && array_key_exists('top', $styleMargin) ? (string)$styleMargin['top'] : ((int)($options['titleMarginTop'] ?? 0)) . 'px';
+        $marginRight = is_array($styleMargin ?? null) && array_key_exists('right', $styleMargin) ? (string)$styleMargin['right'] : ((int)($options['titleMarginRight'] ?? 0)) . 'px';
+        $marginBottom = is_array($styleMargin ?? null) && array_key_exists('bottom', $styleMargin) ? (string)$styleMargin['bottom'] : ((int)($options['titleMarginBottom'] ?? 0)) . 'px';
+        $marginLeft = is_array($styleMargin ?? null) && array_key_exists('left', $styleMargin) ? (string)$styleMargin['left'] : ((int)($options['titleMarginLeft'] ?? 0)) . 'px';
         $titleWidth = $options['titleWidth'] ?? 0;
         $titleWidthUnit = $options['titleWidthUnit'] ?? 'px';
         $titleMinWidth = $options['titleMinWidth'] ?? 0;
@@ -314,10 +315,10 @@ class BorderedFramePreset implements PresetInterface
     padding-left: {$titlePaddingLeft}px;
     z-index: 2;
     pointer-events: none;
-    margin-top: {$titleMarginTop}px;
-    margin-right: {$titleMarginRight}px;
-    margin-bottom: {$titleMarginBottom}px;
-    margin-left: {$titleMarginLeft}px;
+    margin-top: {$marginTop};
+    margin-right: {$marginRight};
+    margin-bottom: {$marginBottom};
+    margin-left: {$marginLeft};
     box-sizing: border-box;
     max-width: 100%;
 ";
@@ -520,10 +521,89 @@ class BorderedFramePreset implements PresetInterface
 
     public function renderMarkup(array $attributes, array $options = [], string $content = ''): string
     {
+        $styleMargin = $attributes['style']['spacing']['margin'] ?? null;
+        $marginTop = is_array($styleMargin ?? null) && array_key_exists('top', $styleMargin) ? (string)$styleMargin['top'] : ((int)($options['titleMarginTop'] ?? 0)) . 'px';
+        $marginRight = is_array($styleMargin ?? null) && array_key_exists('right', $styleMargin) ? (string)$styleMargin['right'] : ((int)($options['titleMarginRight'] ?? 0)) . 'px';
+        $marginBottom = is_array($styleMargin ?? null) && array_key_exists('bottom', $styleMargin) ? (string)$styleMargin['bottom'] : ((int)($options['titleMarginBottom'] ?? 0)) . 'px';
+        $marginLeft = is_array($styleMargin ?? null) && array_key_exists('left', $styleMargin) ? (string)$styleMargin['left'] : ((int)($options['titleMarginLeft'] ?? 0)) . 'px';
+
+        $paddingTop = (int)($options['titlePaddingTop'] ?? 12) . 'px';
+        $paddingRight = (int)($options['titlePaddingRight'] ?? 20) . 'px';
+        $paddingBottom = (int)($options['titlePaddingBottom'] ?? 12) . 'px';
+        $paddingLeft = (int)($options['titlePaddingLeft'] ?? 20) . 'px';
+
+        $titlePosition = $options['titlePosition'] ?? 'bottom-center';
+        $titleFullWidth = $options['titleFullWidth'] ?? false;
+
+        $offsets = '';
+        if ($titleFullWidth) {
+            if (strpos($titlePosition, 'top') === 0) {
+                $offsets .= 'top:' . esc_attr($marginTop) . '; left:0; right:0;';
+            } elseif (strpos($titlePosition, 'bottom') === 0) {
+                $offsets .= 'bottom:' . esc_attr($marginBottom) . '; left:0; right:0;';
+            } elseif (strpos($titlePosition, 'left') === 0) {
+                $offsets .= 'left:' . esc_attr($marginLeft) . '; top:0; bottom:0;';
+            } elseif (strpos($titlePosition, 'right') === 0) {
+                $offsets .= 'right:' . esc_attr($marginRight) . '; top:0; bottom:0;';
+            }
+        } else {
+            switch ($titlePosition) {
+                case 'top-left':
+                    $offsets .= 'top:' . esc_attr($marginTop) . '; left:' . esc_attr($marginLeft) . ';';
+                    break;
+                case 'top-center':
+                    $offsets .= 'top:' . esc_attr($marginTop) . '; left:50%; transform:translateX(-50%);';
+                    break;
+                case 'top-right':
+                    $offsets .= 'top:' . esc_attr($marginTop) . '; right:' . esc_attr($marginRight) . ';';
+                    break;
+                case 'bottom-left':
+                    $offsets .= 'bottom:' . esc_attr($marginBottom) . '; left:' . esc_attr($marginLeft) . ';';
+                    break;
+                case 'bottom-center':
+                    $offsets .= 'bottom:' . esc_attr($marginBottom) . '; left:50%; transform:translateX(-50%);';
+                    break;
+                case 'bottom-right':
+                    $offsets .= 'bottom:' . esc_attr($marginBottom) . '; right:' . esc_attr($marginRight) . ';';
+                    break;
+                case 'left-top':
+                    $offsets .= 'top:' . esc_attr($marginTop) . '; left:' . esc_attr($marginLeft) . ';';
+                    break;
+                case 'left-center':
+                    $offsets .= 'top:50%; left:' . esc_attr($marginLeft) . '; transform:translateY(-50%);';
+                    break;
+                case 'left-bottom':
+                    $offsets .= 'bottom:' . esc_attr($marginBottom) . '; left:' . esc_attr($marginLeft) . ';';
+                    break;
+                case 'right-top':
+                    $offsets .= 'top:' . esc_attr($marginTop) . '; right:' . esc_attr($marginRight) . ';';
+                    break;
+                case 'right-center':
+                    $offsets .= 'top:50%; right:' . esc_attr($marginRight) . '; transform:translateY(-50%);';
+                    break;
+                case 'right-bottom':
+                    $offsets .= 'bottom:' . esc_attr($marginBottom) . '; right:' . esc_attr($marginRight) . ';';
+                    break;
+                case 'center':
+                    $offsets .= 'top:50%; left:50%; transform:translate(-50%, -50%);';
+                    break;
+            }
+        }
+
+        $inlineStyle = sprintf(
+            'padding-top:%s;padding-right:%s;padding-bottom:%s;padding-left:%s;%s',
+            esc_attr($paddingTop),
+            esc_attr($paddingRight),
+            esc_attr($paddingBottom),
+            esc_attr($paddingLeft),
+            $offsets
+        );
+
         $markup = '<div class="wp-block-jankx-advanced-image-box__frame-wrapper">';
         $markup .= '<div class="wp-block-jankx-advanced-image-box__frame"></div>';
         $markup .= sprintf(
-            '<div class="wp-block-jankx-advanced-image-box__title-box">%s</div>',
+            '<div class="wp-block-jankx-advanced-image-box__title-box" style="%s">%s</div>',
+            $inlineStyle,
             $content
         );
         

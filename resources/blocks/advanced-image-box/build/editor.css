@@ -48,13 +48,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
+  padding: 0;
   opacity: 0;
   visibility: hidden;
   transition: all 0.3s ease;
   z-index: 2;
   border-radius: inherit;
-  border: 2px dashed rgba(255, 255, 255, 0.5);
+  border: none;
   color: #fff;
 }
 .block-editor-block-list__layout .wp-block-jankx-advanced-image-box__overlay--top {
@@ -96,7 +96,7 @@
 .block-editor-block-list__layout .wp-block-jankx-advanced-image-box__overlay .wp-block-columns,
 .block-editor-block-list__layout .wp-block-jankx-advanced-image-box__overlay .wp-block-column {
   color: inherit;
-  text-align: center;
+  text-align: left;
   position: relative;
   z-index: 2;
 }

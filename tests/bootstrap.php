@@ -200,6 +200,20 @@ if (!function_exists('esc_url')) {
     }
 }
 
+if (!function_exists('wp_style_is')) {
+    function wp_style_is($handle, $status = 'registered')
+    {
+        return false;
+    }
+}
+
+if (!function_exists('wp_add_inline_style')) {
+    function wp_add_inline_style($handle, $css)
+    {
+        return true;
+    }
+}
+
 if (!function_exists('wp_unslash')) {
     function wp_unslash($value)
     {
@@ -288,6 +302,14 @@ if (!function_exists('translate_nooped_plural')) {
         } else {
             return _n($nooped_plural['singular'], $nooped_plural['plural'], $count, $domain);
         }
+    }
+}
+
+// Stub for render_block to avoid requiring WordPress core in unit tests
+if (!function_exists('render_block')) {
+    function render_block($block)
+    {
+        return '';
     }
 }
 

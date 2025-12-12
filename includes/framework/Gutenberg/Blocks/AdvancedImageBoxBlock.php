@@ -127,9 +127,10 @@ window.jankxAdvancedImageBoxGetPresetCSS = function(presetId, attributes, option
         // Extract inner blocks content
         $innerBlocksContent = '';
         
-        // Method 1: Try to extract from rendered $content (from overlay__content div)
-        // This works whether overlay is shown or not (when preset is active, overlay__content is still rendered but hidden)
-        if (preg_match('/<div[^>]*class="[^"]*wp-block-jankx-advanced-image-box__overlay__content[^"]*"[^>]*>(.*?)<\/div>/s', $content, $matches)) {
+        if (preg_match('/<div[^>]*class="[^"]*wp-block-jankx-advanced-image-box__serialized-content[^"]*"[^>]*>(.*?)<\/div>/s', $content, $matches)) {
+            $innerBlocksContent = trim($matches[1] ?? '');
+        }
+        if (empty($innerBlocksContent) && preg_match('/<div[^>]*class="[^"]*wp-block-jankx-advanced-image-box__overlay__content[^"]*"[^>]*>(.*?)<\/div>/s', $content, $matches)) {
             $innerBlocksContent = trim($matches[1] ?? '');
         }
         
@@ -251,6 +252,12 @@ window.jankxAdvancedImageBoxGetPresetCSS = function(presetId, attributes, option
         // Match divs with class containing "__overlay" but not the protected classes
         $content = preg_replace(
             '/<div\s+class="[^"]*__overlay(?!__title-box|__frame-wrapper|__frame)[^"]*"[^>]*>\s*<\/div>/s',
+            '',
+            $content
+        );
+
+        $content = preg_replace(
+            '/<div\s+class="[^"]*wp-block-jankx-advanced-image-box__serialized-content[^"]*"[^>]*>[\s\S]*?<\/div>/s',
             '',
             $content
         );

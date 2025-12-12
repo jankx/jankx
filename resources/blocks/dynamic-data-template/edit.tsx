@@ -309,12 +309,31 @@ export default function Edit({
                         gap: '1rem',
                     } as CSSProperties}
                 >
-                    <div
-                        className="dynamic-data-template__item"
-                        data-item-index={0}
-                    >
-                        <div {...innerBlocksProps} />
-                    </div>
+                    {Array.from({ length: totalItems }).map((_, index) => {
+                        if (index === 0) {
+                            return (
+                                <div
+                                    key={`item-${index}`}
+                                    className="dynamic-data-template__item"
+                                    data-item-index={index}
+                                >
+                                    <div {...innerBlocksProps} />
+                                </div>
+                            );
+                        }
+                        return (
+                            <div
+                                key={`item-${index}`}
+                                className="dynamic-data-template__item dynamic-data-template__item--preview"
+                                data-item-index={index}
+                            >
+                                <BlockPreview
+                                    blocks={sharedInnerBlocks}
+                                    viewportWidth={320}
+                                />
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
         </>

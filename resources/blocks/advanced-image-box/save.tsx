@@ -187,6 +187,9 @@ export default function save({ attributes, className }: AdvancedImageBoxSaveProp
 			{overlayContent}
 			{/* preset content is injected server-side via render_callback; do not duplicate it here */}
 			{hiddenContent}
+			<div className="wp-block-jankx-advanced-image-box__serialized-content" style={{ display: 'none' }}>
+				<InnerBlocks.Content />
+			</div>
 			{caption && !RichText.isEmpty(caption) && (
 				<RichText.Content
 					className="wp-block-jankx-advanced-image-box__caption"
