@@ -262,4 +262,90 @@ abstract class PostLayout implements PostLayoutInterface
         include $template_path;
         return ob_get_clean();
     }
+
+    protected function renderPostItem(): string
+    {
+        $post_id = get_the_ID();
+        $thumbnail_position = $this->getOption('thumbnailPosition', 'top');
+        $show_thumbnail = (bool) $this->getOption('showFeaturedImage', true);
+        $show_title = (bool) $this->getOption('showTitle', true);
+        $show_excerpt = (bool) $this->getOption('showExcerpt', true);
+        $show_date = (bool) $this->getOption('showDate', true);
+        $show_author = (bool) $this->getOption('showAuthor', false);
+        $excerpt_length = (int) $this->getOption('excerptLength', 55);
+        $image_size = (string) $this->getOption('imageSize', 'large');
+
+        $classes = ['post-item', 'thumbnail-position-' . $thumbnail_position];
+        $classes[] = $show_thumbnail ? 'has-thumbnail' : 'no-thumbnail';
+
+        $thumb_html = '';
+        if ($show_thumbnail && has_post_thumbnail($post_id)) {
+            $thumb_html = sprintf(
+                '<div class="post-thumbnail">%s</div>',
+                get_the_post_thumbnail($post_id, $image_size)
+            );
+        }
+
+        $title_html = '';
+        if ($show_title) {
+            $title_html = sprintf(
+                '<h3 class="post-title"><a href="%s">%s</a></h3>',
+                esc_url(get_permalink($post_id)),
+                esc_html(get_the_title($post_id))
+            );
+        }
+
+        $date_html = '';
+        if ($show_date) {
+            $date_html = sprintf(
+                '<div class="post-date">%s</div>',
+                esc_html(get_the_date('', $post_id))
+            );
+        }
+
+        $author_html = '';
+        if ($show_author) {
+            $author_html = sprintf(
+                '<div class="post-author">%s</div>',
+                esc_html(get_the_author())
+            );
+        }
+
+        $excerpt_html = '';
+        if ($show_excerpt) {
+            $raw_excerpt = has_excerpt($post_id) ? get_the_excerpt($post_id) : get_post_field('post_content', $post_id);
+            $trimmed = wp_trim_words($raw_excerpt, max(1, $excerpt_length));
+            if (!empty($trimmed)) {
+                $excerpt_html = sprintf('<div class="post-excerpt">%s</div>', esc_html($trimmed));
+            }
+        }
+
+        $content_html = $title_html . $author_html . $date_html . $excerpt_html;
+
+        if (in_array($thumbnail_position, ['left', 'right'], true)) {
+            $html = sprintf(
+                '<article class="%s"><div class="post-inner horizontal %s">%s<div class="post-content">%s</div></div></article>',
+                esc_attr(implode(' ', $classes)),
+                $thumbnail_position === 'left' ? 'image-left' : 'image-right',
+                $thumb_html,
+                $content_html
+            );
+        } elseif ($thumbnail_position === 'bottom') {
+            $html = sprintf(
+                '<article class="%s"><div class="post-content">%s</div>%s</article>',
+                esc_attr(implode(' ', $classes)),
+                $content_html,
+                $thumb_html
+            );
+        } else {
+            $html = sprintf(
+                '<article class="%s">%s<div class="post-content">%s</div></article>',
+                esc_attr(implode(' ', $classes)),
+                $thumb_html,
+                $content_html
+            );
+        }
+
+        return $html;
+    }
 }

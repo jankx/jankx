@@ -622,17 +622,31 @@ class AdvancedFilters {
           existingLoading.remove();
         }
 
-        // Parse the returned HTML and replace only the inner content
+        // Parse the returned HTML and update the existing node without replacing it
+        // to preserve references and avoid losing the target block identity
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = html.trim();
         const newContent = tempDiv.firstElementChild;
         if (newContent) {
-          targetElement.replaceWith(newContent);
-          // Update reference to the new element
-          targetElement = newContent;
+          const target = targetElement;
+          const source = newContent;
+
+          // Sync classes
+          target.className = source.className;
+
+          // Sync common data attributes present in source
+          Array.from(source.attributes).forEach(attr => {
+            const name = attr.name;
+            const value = attr.value;
+            if (name === 'id') return; // keep existing id
+            target.setAttribute(name, value);
+          });
+
+          // Update inner HTML only
+          target.innerHTML = source.innerHTML;
 
           // Re-initialize any scripts that might be needed (e.g., carousel, load-more)
-          this.reinitializeBlockScripts(targetElement);
+          this.reinitializeBlockScripts(target);
         } else {
           // Fallback: just replace innerHTML
           targetElement.innerHTML = html;

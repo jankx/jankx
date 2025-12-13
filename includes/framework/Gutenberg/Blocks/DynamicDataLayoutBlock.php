@@ -681,8 +681,20 @@ class DynamicDataLayoutBlock extends Block
             $attributes['queryId'] = $block_id;
         }
 
-        $result = apply_filters('jankx_dynamic_data_layout_filter_update', $attributes, $filters);
-        wp_send_json_success($result);
+        try {
+            $result = apply_filters('jankx_dynamic_data_layout_filter_update', $attributes, $filters);
+            if (!is_array($result)) {
+                $result = ['html' => '', 'attributes' => $attributes];
+            }
+            wp_send_json_success($result);
+        } catch (\Throwable $e) {
+            $message = $e->getMessage();
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                $message .= ' at ' . $e->getFile() . ':' . $e->getLine();
+            }
+            error_log('jankx_dynamic_data_layout_filter error: ' . $message);
+            wp_send_json_error(['message' => $message]);
+        }
     }
 
     /**

@@ -8,7 +8,7 @@
   \**********************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/advanced-image-box","title":"Advanced Image Box","category":"jankx","description":"An advanced image block with overlay info box and inner content support.","keywords":["image","overlay","hover","animation","inner blocks"],"textdomain":"jankx","attributes":{"url":{"type":"string","source":"attribute","selector":"img","attribute":"src","role":"content"},"alt":{"type":"string","source":"attribute","selector":"img","attribute":"alt","default":"","role":"content"},"title":{"type":"string","source":"attribute","selector":"img","attribute":"title","role":"content"},"id":{"type":"number","role":"content"},"width":{"type":"string"},"height":{"type":"string"},"aspectRatio":{"type":"string"},"scale":{"type":"string"},"sizeSlug":{"type":"string"},"href":{"type":"string","source":"attribute","selector":"a","attribute":"href","role":"content"},"linkTarget":{"type":"string","source":"attribute","selector":"a","attribute":"target"},"rel":{"type":"string","source":"attribute","selector":"a","attribute":"rel"},"caption":{"type":"rich-text","source":"rich-text","selector":".wp-block-jankx-advanced-image-box__caption","role":"content"},"showOverlayOnHover":{"type":"boolean","default":true},"overlayAnimation":{"type":"string","default":"fadeIn"},"overlayAnimationDuration":{"type":"number","default":1000},"overlayAnimationDelay":{"type":"number","default":0},"overlayPosition":{"type":"string","default":"center"},"overlayBackground":{"type":"string","default":"rgba(0, 0, 0, 0.7)"},"overlayOpacity":{"type":"number","default":1},"imageHoverEffect":{"type":"string","default":"zoom"},"borderRadius":{"type":"string","default":"0px"},"preset":{"type":"string","default":""},"presetOptions":{"type":"object","default":{}}},"supports":{"anchor":true,"align":["left","center","right","wide","full"],"html":false,"innerBlocks":true,"reusable":false,"interactivity":{"clientNavigation":true},"color":{"text":false,"background":true,"gradients":true,"__experimentalSkipSerialization":false},"spacing":{"margin":true,"padding":true,"__experimentalDefaultControls":{"margin":true,"padding":true}},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true,"__experimentalSkipSerialization":true,"__experimentalDefaultControls":{"color":true,"radius":true,"style":true,"width":true}},"shadow":{"__experimentalSkipSerialization":true},"filter":{"duotone":true}},"selectors":{"border":".wp-block-jankx-advanced-image-box img, .wp-block-jankx-advanced-image-box__overlay","shadow":".wp-block-jankx-advanced-image-box img, .wp-block-jankx-advanced-image-box__overlay","filter":{"duotone":".wp-block-jankx-advanced-image-box img"}},"styles":[{"name":"default","label":"Default","isDefault":true},{"name":"card","label":"Card"},{"name":"overlay","label":"Overlay"},{"name":"modern","label":"Modern"}],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/advanced-image-box","title":"Advanced Image Box","category":"jankx","description":"An advanced image block with overlay info box and inner content support.","keywords":["image","overlay","hover","animation","inner blocks"],"textdomain":"jankx","attributes":{"url":{"type":"string","source":"attribute","selector":"img","attribute":"src","role":"content"},"alt":{"type":"string","default":"","role":"content"},"title":{"type":"string","source":"attribute","selector":"img","attribute":"title","role":"content"},"id":{"type":"number","role":"content"},"width":{"type":"string"},"height":{"type":"string"},"aspectRatio":{"type":"string"},"scale":{"type":"string"},"sizeSlug":{"type":"string"},"href":{"type":"string","source":"attribute","selector":"a","attribute":"href","role":"content"},"linkTarget":{"type":"string","source":"attribute","selector":"a","attribute":"target"},"rel":{"type":"string","source":"attribute","selector":"a","attribute":"rel"},"caption":{"type":"rich-text","source":"rich-text","selector":".wp-block-jankx-advanced-image-box__caption","role":"content"},"showOverlayOnHover":{"type":"boolean","default":true},"overlayAnimation":{"type":"string","default":"fadeIn"},"overlayAnimationDuration":{"type":"number","default":1000},"overlayAnimationDelay":{"type":"number","default":0},"overlayPosition":{"type":"string","default":"center"},"overlayBackground":{"type":"string","default":"rgba(0, 0, 0, 0.7)"},"overlayOpacity":{"type":"number","default":1},"imageHoverEffect":{"type":"string","default":"zoom"},"borderRadius":{"type":"string","default":"0px"},"preset":{"type":"string","default":""},"presetOptions":{"type":"object","default":{}}},"supports":{"anchor":true,"align":["left","center","right","wide","full"],"html":false,"innerBlocks":true,"reusable":false,"interactivity":{"clientNavigation":true},"color":{"text":false,"background":true,"gradients":true,"__experimentalSkipSerialization":false},"spacing":{"margin":true,"padding":true,"__experimentalDefaultControls":{"margin":true,"padding":true}},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true,"__experimentalSkipSerialization":true,"__experimentalDefaultControls":{"color":true,"radius":true,"style":true,"width":true}},"shadow":{"__experimentalSkipSerialization":true},"filter":{"duotone":true}},"selectors":{"border":".wp-block-jankx-advanced-image-box img, .wp-block-jankx-advanced-image-box__overlay","shadow":".wp-block-jankx-advanced-image-box img, .wp-block-jankx-advanced-image-box__overlay","filter":{"duotone":".wp-block-jankx-advanced-image-box img"}},"styles":[{"name":"default","label":"Default","isDefault":true},{"name":"card","label":"Card"},{"name":"overlay","label":"Overlay"},{"name":"modern","label":"Modern"}],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
 
 /***/ }),
 
@@ -329,6 +329,64 @@ const VALIDATION_RULES = {
   maxOverlayOpacity: 1,
   minOverlayOpacity: 0
 };
+
+/***/ }),
+
+/***/ "./blocks/advanced-image-box/deprecated.tsx":
+/*!**************************************************!*\
+  !*** ./blocks/advanced-image-box/deprecated.tsx ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _save__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./save */ "./blocks/advanced-image-box/save.tsx");
+/* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./block.json */ "./blocks/advanced-image-box/block.json");
+/**
+ * Deprecated versions of the block
+ */
+
+
+
+const {
+  attributes
+} = _block_json__WEBPACK_IMPORTED_MODULE_1__;
+
+// Original attributes configuration with source: attribute for alt
+const v1Attributes = {
+  ...attributes,
+  alt: {
+    type: 'string',
+    source: 'attribute',
+    selector: 'img',
+    attribute: 'alt',
+    default: '',
+    role: 'content'
+  }
+};
+const v1 = {
+  attributes: v1Attributes,
+  save: _save__WEBPACK_IMPORTED_MODULE_0__["default"]
+};
+
+// V2 deprecation for the no-image case where alt text is inside div
+const v2Attributes = {
+  ...attributes,
+  alt: {
+    type: 'string',
+    source: 'html',
+    selector: '.wp-block-jankx-advanced-image-box__no-image__alt',
+    default: '',
+    role: 'content'
+  }
+};
+const v2 = {
+  attributes: v2Attributes,
+  save: _save__WEBPACK_IMPORTED_MODULE_0__["default"]
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ([v2, v1]);
 
 /***/ }),
 
@@ -2219,7 +2277,7 @@ var __webpack_exports__ = {};
   \*********************************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   metadata: () => (/* reexport default export from named module */ _block_json__WEBPACK_IMPORTED_MODULE_5__),
+/* harmony export */   metadata: () => (/* reexport default export from named module */ _block_json__WEBPACK_IMPORTED_MODULE_6__),
 /* harmony export */   name: () => (/* binding */ name),
 /* harmony export */   settings: () => (/* binding */ settings)
 /* harmony export */ });
@@ -2230,7 +2288,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _edit__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./edit */ "./blocks/advanced-image-box/edit.tsx");
 /* harmony import */ var _save__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./save */ "./blocks/advanced-image-box/save.tsx");
-/* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./block.json */ "./blocks/advanced-image-box/block.json");
+/* harmony import */ var _deprecated__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./deprecated */ "./blocks/advanced-image-box/deprecated.tsx");
+/* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./block.json */ "./blocks/advanced-image-box/block.json");
 /**
  * WordPress dependencies
  */
@@ -2245,9 +2304,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 const {
   name
-} = _block_json__WEBPACK_IMPORTED_MODULE_5__;
+} = _block_json__WEBPACK_IMPORTED_MODULE_6__;
 
 const settings = {
   icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_1__["default"],
@@ -2283,6 +2343,7 @@ const settings = {
   },
   edit: _edit__WEBPACK_IMPORTED_MODULE_3__["default"],
   save: _save__WEBPACK_IMPORTED_MODULE_4__["default"],
+  deprecated: _deprecated__WEBPACK_IMPORTED_MODULE_5__["default"],
   merge: (a, {
     url = '',
     alt = ''
