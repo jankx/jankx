@@ -426,7 +426,7 @@ function Edit({
           '--columns-tablet': columnsTablet,
           '--columns-mobile': columnsMobile,
           display: displayLayout === 'grid' || displayLayout === 'card' ? 'grid' : 'block',
-          gridTemplateColumns: displayLayout === 'grid' || displayLayout === 'card' ? `repeat(${columns}, 1fr)` : 'none',
+          gridTemplateColumns: displayLayout === 'grid' || displayLayout === 'card' ? `repeat(${columns}, minmax(0, 1fr))` : 'none',
           gap: '1rem'
         },
         children: Array.from({

@@ -6,23 +6,47 @@
  */
 .wp-block-jankx-dynamic-data-template .dynamic-data-template__item {
   position: relative;
+  max-width: 100%;
 }
 .wp-block-jankx-dynamic-data-template .dynamic-data-template__item.dynamic-data-template__item--preview .block-editor-block-preview {
   margin: 0;
   padding: 0;
   height: 100%;
+  width: 100%;
   border: none;
 }
 .wp-block-jankx-dynamic-data-template .dynamic-data-template__item.dynamic-data-template__item--preview .block-editor-block-preview .block-editor-block-preview__content {
   margin: 0;
   padding: 0;
   min-height: 100%;
+  width: 100%;
+}
+.wp-block-jankx-dynamic-data-template .dynamic-data-template__item.dynamic-data-template__item--preview .block-editor-block-preview .block-editor-block-preview__content img,
+.wp-block-jankx-dynamic-data-template .dynamic-data-template__item.dynamic-data-template__item--preview .block-editor-block-preview .block-editor-block-preview__content .wp-block-post-featured-image img,
+.wp-block-jankx-dynamic-data-template .dynamic-data-template__item.dynamic-data-template__item--preview .block-editor-block-preview .block-editor-block-preview__content .wc-block-components-product-image img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+.wp-block-jankx-dynamic-data-template .dynamic-data-template__item.dynamic-data-template__item--preview .block-editor-block-preview .block-editor-block-preview__content .alignwide,
+.wp-block-jankx-dynamic-data-template .dynamic-data-template__item.dynamic-data-template__item--preview .block-editor-block-preview .block-editor-block-preview__content .alignfull {
+  max-width: 100%;
+  margin-left: 0;
+  margin-right: 0;
 }
 .wp-block-jankx-dynamic-data-template .dynamic-data-template__items-container {
   width: 100%;
+  box-sizing: border-box;
+}
+.wp-block-jankx-dynamic-data-template .dynamic-data-template__items-container * {
+  box-sizing: border-box;
 }
 .wp-block-jankx-dynamic-data-template .dynamic-data-template__inner-blocks {
   width: 100%;
+}
+.wp-block-jankx-dynamic-data-template .dynamic-data-template__inner-blocks img {
+  max-width: 100%;
+  height: auto;
 }
 
 .wp-block-jankx-dynamic-data-template[data-image-ratio] .dynamic-data-template__item .post-thumbnail,
@@ -30,6 +54,7 @@
 .wp-block-jankx-dynamic-data-template[data-image-ratio] .dynamic-data-template__item .wc-block-components-product-image,
 .wp-block-jankx-dynamic-data-template[data-image-ratio] .dynamic-data-template__item img {
   aspect-ratio: var(--image-ratio, auto);
+  object-fit: cover;
 }
 
 .wp-block-jankx-dynamic-data-template[data-image-ratio="16/9"] .dynamic-data-template__item .post-thumbnail,

@@ -8,9 +8,8 @@
     // Tất cả items hiển thị giống nhau như frontend
     .dynamic-data-template__item {
         position: relative;
-        
-        // Đảm bảo tất cả items đều có style giống nhau
-        // Không có border, background đặc biệt để giống frontend nhất có thể
+        // Ensure content doesn't overflow
+        max-width: 100%;
         
         // Reset styles for BlockPreview container to match InnerBlocks
         &.dynamic-data-template__item--preview {
@@ -18,12 +17,31 @@
                 margin: 0;
                 padding: 0;
                 height: 100%;
+                width: 100%;
                 border: none;
                 
                 .block-editor-block-preview__content {
                     margin: 0;
                     padding: 0;
                     min-height: 100%;
+                    width: 100%;
+                    
+                    // Force images to be responsive inside preview
+                    img,
+                    .wp-block-post-featured-image img,
+                    .wc-block-components-product-image img {
+                        max-width: 100%;
+                        height: auto;
+                        display: block;
+                    }
+
+                    // Fix for wide aligned blocks inside preview
+                    .alignwide,
+                    .alignfull {
+                        max-width: 100%;
+                        margin-left: 0;
+                        margin-right: 0;
+                    }
                 }
             }
         }
@@ -33,11 +51,23 @@
     .dynamic-data-template__items-container {
         // Đảm bảo gap và layout giống frontend
         width: 100%;
+        
+        // Ensure grid respects container width
+        box-sizing: border-box;
+        * {
+            box-sizing: border-box;
+        }
     }
     
     // InnerBlocks styling để giống frontend
     .dynamic-data-template__inner-blocks {
         width: 100%;
+        
+        // Ensure images are responsive in the editable item too
+        img {
+            max-width: 100%;
+            height: auto;
+        }
     }
 }
 
@@ -49,6 +79,7 @@
         .wc-block-components-product-image,
         img {
             aspect-ratio: var(--image-ratio, auto);
+            object-fit: cover;
         }
     }
 }
