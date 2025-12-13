@@ -1,9 +1,3 @@
-
-
-
-
-
-
 <?php
 namespace Jankx\Gutenberg\Blocks;
 use Jankx\Gutenberg\Block;

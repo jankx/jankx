@@ -130,7 +130,7 @@ class SwiperBlock extends Block
 
         if ($block && !empty($block->inner_blocks)) {
             foreach ($block->inner_blocks as $inner_block) {
-                $block_html = render_block($inner_block);
+                $block_html = ($inner_block instanceof \WP_Block) ? $inner_block->render() : render_block($inner_block);
                 if ($inner_block->name === 'jankx/swiper-inner-blocks-overlay') {
                     $overlay_content .= $block_html;
                 } else {
