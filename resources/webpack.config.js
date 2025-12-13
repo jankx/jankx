@@ -105,7 +105,6 @@ module.exports = {
 
     'blocks/testimonial/build/index': './blocks/testimonial/index.tsx',
     'blocks/testimonial/build/style': './blocks/testimonial/style.scss',
-    'blocks/testimonial/build/editor': './blocks/testimonial/editor.scss',
 
     'blocks/testimonials/build/index': './blocks/testimonials/index.tsx',
     'blocks/testimonials/build/style': './blocks/testimonials/style.scss',

@@ -26,17 +26,44 @@ class TestimonialBlock extends Block
         if (!empty($className)) {
             $classes .= ' ' . esc_attr($className);
         }
-        $avatar = '';
+        
+        // Header: Avatar + Info (Author, Rating)
+        $avatarHtml = '';
         if ($avatarId) {
-            $avatar = wp_get_attachment_image($avatarId, 'thumbnail', false, ['class' => 'avatar']);
-            $avatar = $avatar ? '<div class="testimonial-avatar">' . $avatar . '</div>' : '';
+            $avatarImg = wp_get_attachment_image($avatarId, 'thumbnail', false, ['class' => 'avatar']);
+            if ($avatarImg) {
+                $avatarHtml = '<div class="testimonial-avatar">' . $avatarImg . '</div>';
+            }
         }
+
+        $authorHtml = '';
+        if ($author) {
+            $authorHtml = '<div class="testimonial-author">' . esc_html($author) . '</div>';
+            if ($link) {
+                $authorHtml = '<a class="testimonial-link" href="' . esc_url($link) . '">' . $authorHtml . '</a>';
+            }
+        }
+
         $ratingHtml = '';
         if ($rating > 0) {
             $stars = str_repeat('★', min($rating, 5));
             $empty = str_repeat('☆', max(0, 5 - min($rating, 5)));
             $ratingHtml = '<div class="testimonial-rating" aria-label="' . esc_attr($rating . '/5') . '">' . $stars . $empty . '</div>';
         }
+
+        $headerHtml = '<div class="testimonial-header">' . $avatarHtml . '<div class="testimonial-info">' . $authorHtml . $ratingHtml . '</div></div>';
+
+        // Body: Quote Icon + Content
+        $contentHtml = '';
+        if ($excerpt) {
+            $contentHtml = '<div class="testimonial-content">' . wp_kses_post($excerpt) . '</div>';
+        } else {
+            $contentHtml = $content;
+        }
+        
+        $bodyHtml = '<div class="testimonial-body"><div class="testimonial-quote-icon">“</div>' . $contentHtml . '</div>';
+
+        // Footer: Meta + Date
         $metaParts = [];
         if ($role) {
             $metaParts[] = esc_html($role);
@@ -44,37 +71,31 @@ class TestimonialBlock extends Block
         if ($company) {
             $metaParts[] = esc_html($company);
         }
-        $meta = '';
+        
+        $metaHtml = '';
         if (!empty($metaParts)) {
-            $meta = '<div class="testimonial-meta">' . implode(' • ', $metaParts) . '</div>';
+            $metaHtml = '<div class="testimonial-meta">' . implode(' • ', $metaParts) . '</div>';
         }
-        $authorHtml = '';
-        if ($author) {
-            $authorHtml = '<div class="testimonial-author">' . esc_html($author) . '</div>';
-        }
+
         $dateHtml = '';
         if ($date) {
             $dateHtml = '<div class="testimonial-date">' . esc_html($date) . '</div>';
         }
-        $contentHtml = '';
-        if ($excerpt) {
-            $contentHtml = '<div class="testimonial-content">' . wp_kses_post($excerpt) . '</div>';
-        } else {
-            $contentHtml = $content;
+
+        $footerHtml = '';
+        if ($metaHtml || $dateHtml) {
+            $footerHtml = '<div class="testimonial-footer">' . $metaHtml . $dateHtml . '</div>';
         }
-        if ($link) {
-            $authorHtml = '<a class="testimonial-link" href="' . esc_url($link) . '">' . $authorHtml . '</a>';
-        }
+
         $wrapper = get_block_wrapper_attributes();
+        
         return sprintf(
-            '<div %s><div class="%s">%s<div class="testimonial-body">%s%s%s%s</div></div></div>',
+            '<div %s><div class="%s">%s%s%s</div></div>',
             $wrapper,
             esc_attr($classes),
-            $avatar,
-            $authorHtml,
-            $meta,
-            $dateHtml,
-            $ratingHtml . $contentHtml
+            $headerHtml,
+            $bodyHtml,
+            $footerHtml
         );
     }
 }

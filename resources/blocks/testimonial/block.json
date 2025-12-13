@@ -9,7 +9,6 @@
   "description": "Một testimonial item độc lập, tuỳ chỉnh nội dung và kiểu hiển thị bằng PHP",
   "textdomain": "jankx",
   "editorScript": "file:./build/index.js",
-  "editorStyle": "file:./build/editor.css",
   "style": "file:./build/style.css",
   "usesContext": ["asSlide", "layoutType"],
   "supports": {
