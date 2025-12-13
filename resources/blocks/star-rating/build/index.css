@@ -1,4 +1,50 @@
-.wp-block-jankx-star-rating .jankx-star-rating{display:inline-flex;align-items:center;gap:5px}.wp-block-jankx-star-rating .jankx-stars{display:inline-flex;line-height:1;font-size:var(--star-size, 16px)}.wp-block-jankx-star-rating .jankx-star{display:inline-flex;align-items:center;justify-content:center;color:var(--star-color, #f1c40f)}.wp-block-jankx-star-rating .jankx-star.empty{color:var(--star-empty-color, #ddd)}.wp-block-jankx-star-rating .jankx-star.is-svg{width:var(--star-size, 16px);height:var(--star-size, 16px)}.wp-block-jankx-star-rating .jankx-star.is-svg svg{width:100%;height:100%;fill:currentColor}.wp-block-jankx-star-rating .jankx-rating-count{font-size:.8em;color:#666}
-.wp-block-jankx-star-rating .jankx-block-placeholder-info{font-size:10px;color:#999;margin-top:5px;font-style:italic;text-align:center;border:1px dashed #ccc;padding:2px 5px;display:inline-block}
+/*!**********************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/star-rating/style.scss ***!
+  \**********************************************************************************************************************************************************************************************/
+.wp-block-jankx-star-rating .jankx-star-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.wp-block-jankx-star-rating .jankx-stars {
+  display: inline-flex;
+  line-height: 1;
+  font-size: var(--star-size, 16px);
+}
+.wp-block-jankx-star-rating .jankx-star {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--star-color, #f1c40f);
+}
+.wp-block-jankx-star-rating .jankx-star.empty {
+  color: var(--star-empty-color, #ddd);
+}
+.wp-block-jankx-star-rating .jankx-star.is-svg {
+  width: var(--star-size, 16px);
+  height: var(--star-size, 16px);
+}
+.wp-block-jankx-star-rating .jankx-star.is-svg svg {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+.wp-block-jankx-star-rating .jankx-rating-count {
+  font-size: 0.8em;
+  color: #666;
+}
+/*!***********************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/star-rating/editor.scss ***!
+  \***********************************************************************************************************************************************************************************************/
+.wp-block-jankx-star-rating .jankx-block-placeholder-info {
+  font-size: 10px;
+  color: #999;
+  margin-top: 5px;
+  font-style: italic;
+  text-align: center;
+  border: 1px dashed #ccc;
+  padding: 2px 5px;
+  display: inline-block;
+}
 
 /*# sourceMappingURL=index.css.map*/
