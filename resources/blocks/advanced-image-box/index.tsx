@@ -11,6 +11,7 @@ import { registerBlockType } from '@wordpress/blocks';
  */
 import edit from './edit';
 import save from './save';
+import deprecated from './deprecated';
 import metadata from './block.json';
 import type { AdvancedImageBoxAttributes } from './types';
 
@@ -56,6 +57,7 @@ export const settings: BlockConfiguration<AdvancedImageBoxAttributes> = {
 	},
 	edit,
 	save,
+	deprecated,
 	merge: (a: AdvancedImageBoxAttributes, { url = '', alt = '' }: Partial<AdvancedImageBoxAttributes>) => ({
 		...a,
 		url: a.url || url,
