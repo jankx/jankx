@@ -572,8 +572,6 @@ class DynamicDataLayoutBlock extends Block
         // Include layout-constrained classes to match editor wrapper behavior
         $attrs['class'] = implode(' ', [
             $baseClass,
-            'is-layout-constrained',
-            "{$baseClass}-is-layout-constrained",
         ]);
 
         // queryId is required; expose as data-block-id and data-query-id

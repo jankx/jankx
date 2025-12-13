@@ -30,6 +30,7 @@ return [
         // App\Providers\WordPress\VisualTermDescriptionEditorServiceProvider::class,
         App\Providers\WordPress\AdminThumbnailColumnStyleServiceProvider::class,
         Jankx\Features\Gallery\GalleryServiceProvider::class,
+        Jankx\Features\CustomBlocks\CustomBlocksServiceProvider::class,
     ],
     'aliases' => [
         'cache' => ['\Jankx\Services\CacheService'],

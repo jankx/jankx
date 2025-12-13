@@ -173,7 +173,7 @@ export default function Edit({
         
         // Use layoutsByPostType which already includes common layouts
         // This avoids duplicates since getLayoutsForPostType() already merges common + post type specific
-        if (layoutsData.layoutsByPostType && layoutsData.layoutsByPostType[postType]) {
+        if (layoutsData.layoutsByPostType && typeof layoutsData.layoutsByPostType === 'object' && postType in layoutsData.layoutsByPostType && Array.isArray(layoutsData.layoutsByPostType[postType])) {
             layoutsData.layoutsByPostType[postType].forEach((layoutInfo: ContentLoopLayoutOption) => {
                 layouts.push(layoutInfo);
             });
@@ -201,13 +201,19 @@ export default function Edit({
         return defaultBlocksData[postType] || [];
     }, [postType]);
 
+    // Recursive function to convert blocks to template format
+    const convertToTemplate = useCallback((blocks: any[]): any[] => {
+        return blocks.map((block) => [
+            block.blockName,
+            block.attrs || {},
+            block.innerBlocks ? convertToTemplate(block.innerBlocks) : []
+        ]);
+    }, []);
+
     // Convert default blocks to template format
     const defaultTemplate = useMemo(() => {
-        return defaultBlocks.map((blockConfig) => [
-            blockConfig.blockName,
-            blockConfig.attrs,
-        ]);
-    }, [defaultBlocks]);
+        return convertToTemplate(defaultBlocks);
+    }, [defaultBlocks, convertToTemplate]);
 
     const blockProps = useBlockProps({
         className: `dynamic-data-template dynamic-data-template--${contentLoopLayout}`,
