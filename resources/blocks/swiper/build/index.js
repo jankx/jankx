@@ -125,18 +125,18 @@ function Edit({
   const innerBlocksProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useInnerBlocksProps)({
     className: 'swiper-wrapper'
   }, {
-    allowedBlocks: contentMode === 'slides' ? ['jankx/swiper-slide'] : ['jankx/swiper-banner'],
+    allowedBlocks: contentMode === 'slides' ? ['jankx/swiper-slide', 'jankx/swiper-inner-blocks-overlay'] : ['jankx/swiper-banner', 'jankx/swiper-inner-blocks-overlay'],
     template: contentMode === 'slides' ? [['jankx/swiper-slide'], ['jankx/swiper-slide'], ['jankx/swiper-slide']] : [],
     templateLock: false,
     orientation: 'horizontal'
   });
-  const overlayInnerBlocksProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useInnerBlocksProps)({
-    className: 'swiper-overlay-layer'
-  }, {
-    allowedBlocks: ['jankx/swiper-inner-blocks-overlay'],
-    template: [],
-    templateLock: false
-  });
+  const hasInnerBlocks = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_9__.useSelect)(select => {
+    const {
+      getBlock
+    } = select('core/block-editor');
+    const block = getBlock(clientId);
+    return !!(block && block.innerBlocks.length);
+  }, [clientId]);
 
   // Handle gallery image selection
   const onSelectGalleryImages = images => {
@@ -650,8 +650,6 @@ function Edit({
           })]
         }), pagination && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("div", {
           className: "swiper-pagination"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("div", {
-          ...overlayInnerBlocksProps
         })]
       })]
     })]

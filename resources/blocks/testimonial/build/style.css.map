@@ -1,0 +1,1 @@
+{"version":3,"file":"blocks/testimonial/build/style.css","mappings":";;;AACE;EACE;AAAJ,C","sources":["webpack://jankx/./blocks/testimonial/style.scss"],"sourcesContent":[".jankx-testimonial-editor {\n  .testimonial-item {\n    display: block;\n  }\n}\n\n"],"names":[],"sourceRoot":""}
