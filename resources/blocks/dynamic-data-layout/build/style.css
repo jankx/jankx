@@ -143,4 +143,14 @@
   --columns-mobile: 2;
 }
 
+.wp-block-jankx-dynamic-data-layout.has-text-color .post-type-layout-grid,
+.wp-block-jankx-dynamic-data-layout.has-text-color .post-type-layout-card,
+.wp-block-jankx-dynamic-data-layout.has-text-color .post-type-layout-list {
+  color: inherit;
+}
+
+.wp-block-jankx-dynamic-data-layout.has-background {
+  /* background will be applied via inline style or preset background class */
+}
+
 /*# sourceMappingURL=style.css.map*/

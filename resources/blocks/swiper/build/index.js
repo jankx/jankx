@@ -128,7 +128,8 @@ function Edit({
     allowedBlocks: contentMode === 'slides' ? ['jankx/swiper-slide', 'jankx/swiper-inner-blocks-overlay'] : ['jankx/swiper-banner', 'jankx/swiper-inner-blocks-overlay'],
     template: contentMode === 'slides' ? [['jankx/swiper-slide'], ['jankx/swiper-slide'], ['jankx/swiper-slide']] : [],
     templateLock: false,
-    orientation: 'horizontal'
+    orientation: 'horizontal',
+    renderAppender: _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InnerBlocks.ButtonBlockAppender
   });
   const hasInnerBlocks = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_9__.useSelect)(select => {
     const {

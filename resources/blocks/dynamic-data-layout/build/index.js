@@ -371,13 +371,29 @@ function Edit({
       });
     }
   }, [taxonomyTerms]);
+  const styleColor = attributes.style && attributes.style.color ? attributes.style.color : undefined;
+  const backgroundColorSlug = attributes.backgroundColor || styleColor?.background?.slug;
+  const textColorSlug = attributes.textColor || styleColor?.text?.slug;
+  const gradient = attributes.gradient || styleColor?.gradient;
+  const hasBackground = !!(styleColor?.background || gradient || backgroundColorSlug);
+  const hasTextColor = !!(styleColor?.text || textColorSlug);
+  const editorClassName = ['dynamic-data-layout', `dynamic-data-layout--${layout}`, `columns-${columns}`, `columns-tablet-${columnsTablet}`, `columns-mobile-${columnsMobile}`, backgroundColorSlug ? `has-${backgroundColorSlug}-background-color` : undefined, textColorSlug ? `has-${textColorSlug}-color` : undefined, hasBackground ? 'has-background' : undefined, hasTextColor ? 'has-text-color' : undefined].filter(Boolean).join(' ');
+  const editorStyle = {
+    '--columns-desktop': columns,
+    '--columns-tablet': columnsTablet,
+    '--columns-mobile': columnsMobile
+  };
+  if (styleColor) {
+    const bg = typeof styleColor.background === 'object' ? styleColor.background?.color : styleColor.background;
+    const text = typeof styleColor.text === 'object' ? styleColor.text?.color : styleColor.text;
+    const grad = typeof styleColor.gradient === 'object' ? styleColor.gradient?.gradient : styleColor.gradient;
+    if (bg) editorStyle.backgroundColor = bg;
+    if (text) editorStyle.color = text;
+    if (grad) editorStyle.background = grad;
+  }
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)({
-    className: `dynamic-data-layout layout-${layout} columns-${columns} columns-tablet-${columnsTablet} columns-mobile-${columnsMobile}`,
-    style: {
-      '--columns-desktop': columns,
-      '--columns-tablet': columnsTablet,
-      '--columns-mobile': columnsMobile
-    }
+    className: editorClassName,
+    style: editorStyle
   });
   const resolvedResponsiveColumns = responsiveColumns && typeof responsiveColumns === 'object' ? responsiveColumns : {
     desktop: columns,
@@ -1404,7 +1420,47 @@ __webpack_require__.r(__webpack_exports__);
 function Save({
   attributes
 }) {
-  const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.useBlockProps.save();
+  const attrs = attributes;
+  const layout = attrs.layout || 'grid';
+  const columns = attrs.columns || 3;
+  const columnsTablet = attrs.columnsTablet || 2;
+  const columnsMobile = attrs.columnsMobile || 1;
+
+  // Build classes consistent with editor and styles
+  const backgroundColorSlug = attrs.backgroundColor || attrs.style?.color?.backgroundSlug || attrs.style?.color?.background?.slug;
+  const textColorSlug = attrs.textColor || attrs.style?.color?.textSlug || attrs.style?.color?.text?.slug;
+  const gradient = attrs.gradient || attrs.style?.color?.gradient;
+  const hasBackground = !!(styleColor?.background || gradient || backgroundColorSlug);
+  const hasTextColor = !!(styleColor?.text || textColorSlug);
+  const className = ['dynamic-data-layout', `dynamic-data-layout--${layout}`, `columns-${columns}`, `columns-tablet-${columnsTablet}`, `columns-mobile-${columnsMobile}`, backgroundColorSlug ? `has-${backgroundColorSlug}-background-color` : undefined, textColorSlug ? `has-${textColorSlug}-color` : undefined, hasBackground ? 'has-background' : undefined, hasTextColor ? 'has-text-color' : undefined].filter(Boolean).join(' ');
+
+  // Collect styles (CSS variables for columns + color styles from style.color)
+  const inlineStyle = {
+    '--columns-desktop': columns,
+    '--columns-tablet': columnsTablet,
+    '--columns-mobile': columnsMobile
+  };
+  const styleColor = attrs.style && attrs.style.color ? attrs.style.color : undefined;
+  if (styleColor) {
+    // background may be either a string or an object { color: string, slug? }
+    const bg = typeof styleColor.background === 'object' ? styleColor.background?.color : styleColor.background;
+    const text = typeof styleColor.text === 'object' ? styleColor.text?.color : styleColor.text;
+    const grad = typeof styleColor.gradient === 'object' ? styleColor.gradient?.gradient : styleColor.gradient;
+    if (bg) {
+      inlineStyle.backgroundColor = bg;
+    }
+    if (text) {
+      inlineStyle.color = text;
+    }
+    if (grad) {
+      inlineStyle.background = grad;
+      delete inlineStyle.backgroundColor;
+    }
+  }
+  const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.useBlockProps.save({
+    className,
+    style: inlineStyle
+  });
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
     ...blockProps,
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.InnerBlocks.Content, {})
