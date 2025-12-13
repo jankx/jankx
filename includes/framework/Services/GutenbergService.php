@@ -36,6 +36,7 @@ use Jankx\Gutenberg\Blocks\SwiperSlideBlock;
 use Jankx\Gutenberg\Blocks\TableCellBlock;
 use Jankx\Gutenberg\Blocks\TableOfContentBlock;
 use Jankx\Gutenberg\Blocks\TableRowBlock;
+use Jankx\Gutenberg\Blocks\TestimonialsBlock;
 use Jankx\Gutenberg\Blocks\WplyrMediaBlock;
 use Jankx\Gutenberg\Blocks\FacebookPageBlock;
 use Jankx\Gutenberg\GutenbergPattern;
@@ -65,7 +66,6 @@ class GutenbergService
         $this->repository = $app->make('gutenberg.repository');
 
         $this->registerBlockCategories();
-        $this->registerPatternCategories();
     }
 
     public function initBlocks()
@@ -108,9 +108,6 @@ class GutenbergService
                     Log::error('GutenbergService: Failed to register block ' . $blockName . ' - ' . $e->getMessage());
                 }
             }
-
-            // Discover and register patterns
-            $this->discoverPatterns();
         } catch (\Exception $e) {
             Log::error('GutenbergService: Failed to initialize - ' . $e->getMessage());
             throw $e;
@@ -159,6 +156,7 @@ class GutenbergService
         $this->repository->registerBlock(TableRowBlock::class);
         $this->repository->registerBlock(WplyrMediaBlock::class);
         $this->repository->registerBlock(FacebookPageBlock::class);
+        $this->repository->registerBlock(TestimonialsBlock::class);
     }
 
     /**
@@ -297,242 +295,6 @@ class GutenbergService
         return $categories;
     }
 
-    // ========================================
-    // PATTERN METHODS
-    // ========================================
-
-    /**
-     * Register pattern categories
-     */
-    protected function registerPatternCategories(): void
-    {
-        $patternCategories = [
-            'jankx' => [
-                'label' => 'Jankx Patterns',
-                'description' => 'Custom patterns for Jankx theme'
-            ],
-            'hero' => [
-                'label' => 'Hero Sections',
-                'description' => 'Modern hero sections with animations'
-            ],
-            'cards' => [
-                'label' => 'Card Layouts',
-                'description' => 'Beautiful card-based layouts'
-            ],
-            'grid' => [
-                'label' => 'Grid Systems',
-                'description' => 'Responsive grid layouts'
-            ],
-            'testimonials' => [
-                'label' => 'Testimonials',
-                'description' => 'Customer testimonial layouts'
-            ],
-            'cta' => [
-                'label' => 'Call to Action',
-                'description' => 'Engaging call-to-action sections'
-            ]
-        ];
-
-        foreach ($patternCategories as $slug => $category) {
-            register_block_pattern_category($slug, $category);
-        }
-    }
-
-    /**
-     * Discover patterns from repository
-     */
-    public function discoverPatterns(): void
-    {
-        try {
-            // Register default patterns
-            $this->registerDefaultPatterns();
-
-            // Fire action hook for plugins and child themes to register their patterns
-            do_action(
-                'jankx/gutenberg/register-patterns',
-                $this->repository,
-                $this->app
-            );
-        } catch (\Exception $e) {
-            Log::error('GutenbergService: Failed to discover patterns - ' . $e->getMessage());
-            throw $e;
-        }
-    }
-
-    /**
-     * Register default patterns
-     */
-    protected function registerDefaultPatterns(): void
-    {
-        // Register built-in patterns
-        $defaultPatterns = [
-            \Jankx\Gutenberg\Patterns\HeroSectionPattern::class,
-        ];
-
-        foreach ($defaultPatterns as $patternClass) {
-            try {
-                $this->repository->registerPattern($patternClass, $this->app);
-            } catch (\Exception $e) {
-                Log::error('GutenbergService: Failed to register default pattern ' . $patternClass . ' - ' . $e->getMessage());
-            }
-        }
-    }
-
-    /**
-     * Get all registered patterns
-     */
-    public function getPatterns(): array
-    {
-        return $this->repository->getPatternInstances();
-    }
-
-    /**
-     * Get pattern by slug
-     */
-    public function getPatternBySlug(string $slug): ?GutenbergPattern
-    {
-        return $this->repository->getPattern($slug);
-    }
-
-    /**
-     * Get pattern slug using reflection
-     */
-    protected function getPatternSlug(GutenbergPattern $pattern): string
-    {
-        $reflection = new \ReflectionClass($pattern);
-        $method = $reflection->getMethod('getPatternSlug');
-        $method->setAccessible(true);
-        return $method->invoke($pattern);
-    }
-
-    /**
-     * Get patterns by category
-     */
-    public function getPatternsByCategory(string $category): array
-    {
-        $patternInstances = $this->repository->getPatternInstances();
-
-        return array_filter($patternInstances, function ($pattern) use ($category) {
-            return in_array($category, $this->getPatternData($pattern)['categories'] ?? []);
-        });
-    }
-
-    /**
-     * Get pattern data using reflection
-     */
-    protected function getPatternData(GutenbergPattern $pattern): array
-    {
-        $reflection = new \ReflectionClass($pattern);
-        $method = $reflection->getMethod('getPatternData');
-        $method->setAccessible(true);
-        return $method->invoke($pattern);
-    }
-
-    /**
-     * Create pattern instance
-     */
-    public function createPattern(string $className): GutenbergPattern
-    {
-
-
-        if (!class_exists($className)) {
-            $error = 'Pattern class ' . $className . ' not found';
-            Log::error('GutenbergService: ' . $error);
-            throw new \InvalidArgumentException($error);
-        }
-
-        if (!$this->app->bound($className)) {
-            $this->app->singleton($className, function ($app) use ($className) {
-                return new $className($app);
-            });
-        }
-
-        try {
-            $pattern = $this->app->make($className);
-
-            if (!$pattern instanceof GutenbergPattern) {
-                $error = 'Class ' . $className . ' must extend GutenbergPattern';
-                Log::error('GutenbergService: ' . $error);
-                throw new \InvalidArgumentException($error);
-            }
-
-
-            return $pattern;
-        } catch (\Exception $e) {
-            Log::error('GutenbergService: Failed to create pattern ' . $className . ' - ' . $e->getMessage());
-            throw $e;
-        }
-    }
-
-    /**
-     * Get pattern statistics
-     */
-    public function getPatternStats(): array
-    {
-        $patternInstances = $this->repository->getPatternInstances();
-
-        $stats = [
-            'total' => count($patternInstances),
-            'categories' => [],
-            'keywords' => []
-        ];
-
-        foreach ($patternInstances as $pattern) {
-            $data = $this->getPatternData($pattern);
-
-            // Count categories
-            foreach ($data['categories'] ?? [] as $category) {
-                $stats['categories'][$category] = ($stats['categories'][$category] ?? 0) + 1;
-            }
-
-            // Count keywords
-            foreach ($data['keywords'] ?? [] as $keyword) {
-                $stats['keywords'][$keyword] = ($stats['keywords'][$keyword] ?? 0) + 1;
-            }
-        }
-
-        return $stats;
-    }
-
-    /**
-     * Clear pattern cache
-     */
-    public function clearPatternCache(): void
-    {
-        try {
-            // Clear pattern cache
-            wp_cache_delete('jankx_patterns', 'jankx_patterns');
-            wp_cache_delete('jankx_pattern_categories', 'jankx_patterns');
-        } catch (\Exception $e) {
-            Log::error('GutenbergService: Failed to clear pattern cache - ' . $e->getMessage());
-            throw $e;
-        }
-    }
-
-    /**
-     * Get pattern template data
-     */
-    public function getPatternTemplateData(string $patternSlug): array
-    {
-        $pattern = $this->getPatternBySlug($patternSlug);
-
-        if (!$pattern) {
-            return [];
-        }
-
-        return $this->getTemplateData($pattern);
-    }
-
-    /**
-     * Get template data using reflection
-     */
-    protected function getTemplateData(GutenbergPattern $pattern): array
-    {
-        $reflection = new \ReflectionClass($pattern);
-        $method = $reflection->getMethod('getTemplateData');
-        $method->setAccessible(true);
-        return $method->invoke($pattern);
-    }
 
     /**
      * Get list of core blocks to monitor

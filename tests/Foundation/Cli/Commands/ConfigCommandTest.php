@@ -5,7 +5,6 @@ namespace Tests\Foundation\Cli\Commands;
 use PHPUnit\Framework\TestCase;
 use Jankx\Foundation\Cli\Commands\ConfigCommand;
 use Jankx\Foundation\Application;
-use Jankx\Config\Repository;
 
 /**
  * ConfigCommand Test
@@ -202,10 +201,6 @@ class ConfigCommandTest extends TestCase
             }
         }
 
-        // Mock Environment and Log facades
-        if (!class_exists('Jankx\Helper\Environment')) {
-            class_alias('stdClass', 'Jankx\Helper\Environment');
-        }
         if (!class_exists('Jankx\Facades\Log')) {
             class_alias('stdClass', 'Jankx\Facades\Log');
         }
