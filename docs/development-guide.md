@@ -376,7 +376,7 @@ class CustomKernel extends Kernel
 
 ## Testing
 
-### 1. Unit Tests
+### 1. Unit Tests (PHP)
 
 ```php
 <?php
@@ -398,7 +398,18 @@ class MyServiceTest extends TestCase
 }
 ```
 
-### 2. Integration Tests
+### 2. Block Unit Tests (JS)
+
+For JavaScript unit tests (WordPress Blocks), please refer to [resources/UNIT_TESTING.md](../resources/UNIT_TESTING.md).
+
+The tests use **Jest** and **React Testing Library**.
+
+```bash
+# Run all block tests
+npm run test:unit
+```
+
+### 3. Integration Tests
 
 ```php
 <?php
@@ -419,17 +430,14 @@ class ThemeTest extends TestCase
 }
 ```
 
-### 3. Running Tests
+### 4. Running Tests
 
 ```bash
-# Run all tests
+# Run PHP tests
 composer test
 
-# Run specific test
-composer test -- --filter=MyServiceTest
-
-# Run with coverage
-composer test -- --coverage-html coverage/
+# Run JS block tests
+npm run test:unit
 ```
 
 ## Debugging
