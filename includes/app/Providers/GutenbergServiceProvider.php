@@ -26,4 +26,22 @@ class GutenbergServiceProvider extends FrameworkGutenbergServiceProvider
             return new \Jankx\Gutenberg\GutenbergRepository();
         });
     }
+
+    /**
+     * Bootstrap any application services.
+     *
+     * @param  \Jankx\Foundation\Application  $app
+     * @return void
+     */
+    public function boot(Application $app)
+    {
+        parent::boot($app);
+
+        add_filter('use_block_editor_for_post_type', function ($use_block_editor, $post_type) {
+            if ($post_type === 'video') {
+                return false;
+            }
+            return $use_block_editor;
+        }, 10, 2);
+    }
 }
