@@ -1,9 +1,10 @@
 import { __ } from '@wordpress/i18n';
 import { useBlockProps, InspectorControls, RichText, MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
 import { PanelBody, RangeControl, TextControl, Button } from '@wordpress/components';
+import { useSelect } from '@wordpress/data';
 import type { TestimonialProps } from './types';
 
-export default function Edit({ attributes, setAttributes }: TestimonialProps): JSX.Element {
+export default function Edit({ attributes, setAttributes, context }: TestimonialProps): JSX.Element {
   const {
     author,
     role,
@@ -19,6 +20,18 @@ export default function Edit({ attributes, setAttributes }: TestimonialProps): J
   const blockProps = useBlockProps({
     className: `jankx-testimonial-editor ${className || ''}`.trim(),
   });
+
+  const media = useSelect(
+    (select: any) => (avatarId ? select('core').getMedia(avatarId) : null),
+    [avatarId]
+  );
+
+  const asSlide = !!(context && context.asSlide);
+  const itemClasses = `testimonial-item${asSlide ? ' swiper-slide' : ''}`;
+
+  const stars = '★'.repeat(Math.min(rating || 0, 5)) + '☆'.repeat(Math.max(0, 5 - Math.min(rating || 0, 5)));
+  const metaParts = [role || '', company || ''].filter(Boolean);
+  const meta = metaParts.length ? metaParts.join(' • ') : '';
 
   return (
     <div {...blockProps}>
@@ -45,8 +58,25 @@ export default function Edit({ attributes, setAttributes }: TestimonialProps): J
         </PanelBody>
       </InspectorControls>
 
-      <div className="testimonial-item">
+      <div className={itemClasses}>
+        {avatarId && media?.source_url ? (
+          <div className="testimonial-avatar">
+            <img className="avatar" src={media.source_url} alt={media.alt_text || ''} />
+          </div>
+        ) : null}
         <div className="testimonial-body">
+          {author ? (
+            link ? (
+              <a className="testimonial-link" href={link}>
+                <div className="testimonial-author">{author}</div>
+              </a>
+            ) : (
+              <div className="testimonial-author">{author}</div>
+            )
+          ) : null}
+          {meta ? <div className="testimonial-meta">{meta}</div> : null}
+          {date ? <div className="testimonial-date">{date}</div> : null}
+          {rating ? <div className="testimonial-rating" aria-label={`${rating}/5`}>{stars}</div> : null}
           <RichText
             tagName="div"
             className="testimonial-content"
@@ -59,4 +89,3 @@ export default function Edit({ attributes, setAttributes }: TestimonialProps): J
     </div>
   );
 }
-

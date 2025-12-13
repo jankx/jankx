@@ -15,5 +15,8 @@ export interface TestimonialProps {
   attributes: TestimonialAttributes;
   setAttributes: (attrs: Partial<TestimonialAttributes>) => void;
   clientId: string;
+  context?: {
+    asSlide?: boolean;
+    layoutType?: string;
+  };
 }
-
