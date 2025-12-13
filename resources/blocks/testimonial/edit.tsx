@@ -1,6 +1,5 @@
 import { __ } from '@wordpress/i18n';
 import { useBlockProps, InspectorControls, RichText, MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
-import ServerSideRender from '@wordpress/server-side-render';
 import { PanelBody, RangeControl, TextControl, Button } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import type { TestimonialProps } from './types';
@@ -59,24 +58,28 @@ export default function Edit({ attributes, setAttributes, context }: Testimonial
         </PanelBody>
       </InspectorControls>
       <div className={itemClasses}>
-        {avatarId && media?.source_url ? (
-          <div className="testimonial-avatar">
-            <img className="avatar" src={media.source_url} alt={media.alt_text || ''} />
-          </div>
-        ) : null}
+        <div className="testimonial-header">
+            {avatarId && media?.source_url ? (
+            <div className="testimonial-avatar">
+                <img className="avatar" src={media.source_url} alt={media.alt_text || ''} />
+            </div>
+            ) : null}
+            <div className="testimonial-info">
+                {author ? (
+                    link ? (
+                    <a className="testimonial-link" href={link}>
+                        <div className="testimonial-author">{author}</div>
+                    </a>
+                    ) : (
+                    <div className="testimonial-author">{author}</div>
+                    )
+                ) : null}
+                {rating ? <div className="testimonial-rating" aria-label={`${rating}/5`}>{stars}</div> : null}
+            </div>
+        </div>
+
         <div className="testimonial-body">
-          {author ? (
-            link ? (
-              <a className="testimonial-link" href={link}>
-                <div className="testimonial-author">{author}</div>
-              </a>
-            ) : (
-              <div className="testimonial-author">{author}</div>
-            )
-          ) : null}
-          {meta ? <div className="testimonial-meta">{meta}</div> : null}
-          {date ? <div className="testimonial-date">{date}</div> : null}
-          {rating ? <div className="testimonial-rating" aria-label={`${rating}/5`}>{stars}</div> : null}
+          <div className="testimonial-quote-icon">“</div>
           <RichText
             tagName="div"
             className="testimonial-content"
@@ -85,11 +88,11 @@ export default function Edit({ attributes, setAttributes, context }: Testimonial
             onChange={(v) => setAttributes({ excerpt: v })}
           />
         </div>
-      </div>
 
-      {/* Server-rendered preview to match frontend output exactly */}
-      <div className="testimonial-editor-preview">
-        <ServerSideRender block="jankx/testimonial" attributes={attributes} />
+        <div className="testimonial-footer">
+            {meta ? <div className="testimonial-meta">{meta}</div> : null}
+            {date ? <div className="testimonial-date">{date}</div> : null}
+        </div>
       </div>
     </div>
   );

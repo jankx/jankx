@@ -42,6 +42,17 @@
                         margin-left: 0;
                         margin-right: 0;
                     }
+
+                    // Fix alignment: remove top margin from the first block in preview
+                    > :first-child {
+                        margin-top: 0 !important;
+                    }
+
+                    // Ensure Post Title margin matches editor context if it's not first
+                    .wp-block-post-title {
+                        // Inherit or force consistent spacing if needed
+                        // margin-bottom: 0.5em; 
+                    }
                 }
             }
         }
@@ -67,6 +78,12 @@
         img {
             max-width: 100%;
             height: auto;
+        }
+
+        // Fix alignment: remove top margin from the first block in editable area
+        // Target the inner block list layout wrapper
+        .block-editor-block-list__layout > :first-child {
+            margin-top: 0 !important;
         }
     }
 }

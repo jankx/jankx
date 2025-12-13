@@ -9,6 +9,15 @@
     &.dynamic-data-layout {
         // Base styles cho wrapper
     }
+    
+    // Reset list styles if rendered as ul
+    &[tagName="ul"], 
+    &.is-style-list,
+    &:where(ul) {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
 
     // Grid và Card layout - columns được áp dụng cho container bên trong
     &.dynamic-data-layout--grid,
@@ -106,4 +115,3 @@
     &.columns-mobile-1 { --columns-mobile: 1; }
     &.columns-mobile-2 { --columns-mobile: 2; }
 }
-

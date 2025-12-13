@@ -34,6 +34,9 @@
   margin-left: 0;
   margin-right: 0;
 }
+.wp-block-jankx-dynamic-data-template .dynamic-data-template__item.dynamic-data-template__item--preview .block-editor-block-preview .block-editor-block-preview__content > :first-child {
+  margin-top: 0 !important;
+}
 .wp-block-jankx-dynamic-data-template .dynamic-data-template__items-container {
   width: 100%;
   box-sizing: border-box;
@@ -47,6 +50,9 @@
 .wp-block-jankx-dynamic-data-template .dynamic-data-template__inner-blocks img {
   max-width: 100%;
   height: auto;
+}
+.wp-block-jankx-dynamic-data-template .dynamic-data-template__inner-blocks .block-editor-block-list__layout > :first-child {
+  margin-top: 0 !important;
 }
 
 .wp-block-jankx-dynamic-data-template[data-image-ratio] .dynamic-data-template__item .post-thumbnail,
