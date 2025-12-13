@@ -156,7 +156,8 @@ class GutenbergService
         $this->repository->registerBlock(TableRowBlock::class);
         $this->repository->registerBlock(WplyrMediaBlock::class);
         $this->repository->registerBlock(FacebookPageBlock::class);
-        $this->repository->registerBlock(TestimonialsBlock::class);
+        $this->repository->registerBlock(\Jankx\Gutenberg\Blocks\TestimonialsBlock::class);
+        $this->repository->registerBlock(\Jankx\Gutenberg\Blocks\TestimonialBlock::class);
     }
 
     /**
