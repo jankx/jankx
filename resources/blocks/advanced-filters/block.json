@@ -58,7 +58,7 @@
       "allowSwitching": true,
       "allowInheriting": true,
       "default": {
-        "type": "constrained"
+        "type": "default"
       }
     }
   },
@@ -175,4 +175,3 @@
     }
   }
 }
-

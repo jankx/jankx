@@ -124,6 +124,24 @@ class AdvancedButtonBlockTest extends BlockTestCase
     }
 
     /**
+     * Test render modal trigger without an ID should not add modal trigger class
+     */
+    public function test_render_modal_without_id_does_not_add_trigger_class(): void
+    {
+        $attributes = $this->getDefaultAttributes();
+        $attributes['triggerType'] = 'modal';
+        $attributes['modalId'] = '';
+        $attributes['text'] = 'Open Modal';
+
+        $block = $this->createMockBlock($attributes);
+        
+        $html = $this->block->render($attributes, '', $block);
+
+        $this->assertNotEmpty($html);
+        $this->assertStringNotContainsString('jankx-button-modal-trigger', $html);
+    }
+
+    /**
      * Test render with inner blocks
      */
     public function test_render_with_inner_blocks(): void

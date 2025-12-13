@@ -217,7 +217,7 @@ export default function Save(props: SaveProps) {
 
 			buttonElement = (
 				<button
-					className={buttonClasses + ' jankx-button-modal-trigger'}
+					className={buttonClasses + (modalId ? ' jankx-button-modal-trigger' : '')}
 					type="button"
 					{...modalDataAttrs}
 					style={buttonStyles}

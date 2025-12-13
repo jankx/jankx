@@ -1,6 +1,6 @@
-/*!******************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/dynamic-data-layout/style.scss ***!
-  \******************************************************************************************************************************************************************************************************/
+/*!*********************************************************************************************************************************************************************************************************!*\
+  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/dynamic-data-layout/style.scss ***!
+  \*********************************************************************************************************************************************************************************************************/
 @charset "UTF-8";
 /**
  * Dynamic Data Layout Block Styles
@@ -152,114 +152,9 @@
 .wp-block-jankx-dynamic-data-layout.has-background {
   /* background will be applied via inline style or preset background class */
 }
-/*!*******************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/dynamic-data-layout/editor.scss ***!
-  \*******************************************************************************************************************************************************************************************************/
-@charset "UTF-8";
-/**
- * Dynamic Data Layout Block Editor Styles
- * 
- * Nhiệm vụ: Styles cho editor preview của dynamic-data-layout block
- * Columns được áp dụng cho wrapper trong editor
- */
-.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--grid .wp-block-jankx-dynamic-data-template,
-.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--grid .dynamic-data-layout-preview, .wp-block-jankx-dynamic-data-layout.dynamic-data-layout--card .wp-block-jankx-dynamic-data-template,
-.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--card .dynamic-data-layout-preview {
-  display: grid;
-  gap: var(--wp--preset--spacing--medium, 1.5rem);
-  grid-template-columns: repeat(var(--columns-mobile, 1), 1fr);
-}
-@media (min-width: 768px) {
-  .wp-block-jankx-dynamic-data-layout.dynamic-data-layout--grid .wp-block-jankx-dynamic-data-template,
-  .wp-block-jankx-dynamic-data-layout.dynamic-data-layout--grid .dynamic-data-layout-preview, .wp-block-jankx-dynamic-data-layout.dynamic-data-layout--card .wp-block-jankx-dynamic-data-template,
-  .wp-block-jankx-dynamic-data-layout.dynamic-data-layout--card .dynamic-data-layout-preview {
-    grid-template-columns: repeat(var(--columns-tablet, 2), 1fr);
-  }
-}
-@media (min-width: 1024px) {
-  .wp-block-jankx-dynamic-data-layout.dynamic-data-layout--grid .wp-block-jankx-dynamic-data-template,
-  .wp-block-jankx-dynamic-data-layout.dynamic-data-layout--grid .dynamic-data-layout-preview, .wp-block-jankx-dynamic-data-layout.dynamic-data-layout--card .wp-block-jankx-dynamic-data-template,
-  .wp-block-jankx-dynamic-data-layout.dynamic-data-layout--card .dynamic-data-layout-preview {
-    grid-template-columns: repeat(var(--columns-desktop, 3), 1fr);
-  }
-}
-.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--list .wp-block-jankx-dynamic-data-template,
-.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--list .dynamic-data-layout-preview {
-  display: flex;
-  flex-direction: column;
-  gap: var(--wp--preset--spacing--medium, 1.5rem);
-}
-.wp-block-jankx-dynamic-data-layout.columns-1 {
-  --columns-desktop: 1;
-}
-.wp-block-jankx-dynamic-data-layout.columns-2 {
-  --columns-desktop: 2;
-}
-.wp-block-jankx-dynamic-data-layout.columns-3 {
-  --columns-desktop: 3;
-}
-.wp-block-jankx-dynamic-data-layout.columns-4 {
-  --columns-desktop: 4;
-}
-.wp-block-jankx-dynamic-data-layout.columns-5 {
-  --columns-desktop: 5;
-}
-.wp-block-jankx-dynamic-data-layout.columns-6 {
-  --columns-desktop: 6;
-}
-.wp-block-jankx-dynamic-data-layout.columns-tablet-1 {
-  --columns-tablet: 1;
-}
-.wp-block-jankx-dynamic-data-layout.columns-tablet-2 {
-  --columns-tablet: 2;
-}
-.wp-block-jankx-dynamic-data-layout.columns-tablet-3 {
-  --columns-tablet: 3;
-}
-.wp-block-jankx-dynamic-data-layout.columns-tablet-4 {
-  --columns-tablet: 4;
-}
-.wp-block-jankx-dynamic-data-layout.columns-mobile-1 {
-  --columns-mobile: 1;
-}
-.wp-block-jankx-dynamic-data-layout.columns-mobile-2 {
-  --columns-mobile: 2;
-}
-.wp-block-jankx-dynamic-data-layout .dynamic-data-layout-preview--grid, .wp-block-jankx-dynamic-data-layout .dynamic-data-layout-preview--card {
-  display: grid;
-  gap: var(--wp--preset--spacing--medium, 1.5rem);
-  grid-template-columns: repeat(var(--columns-mobile, 1), 1fr);
-}
-@media (min-width: 768px) {
-  .wp-block-jankx-dynamic-data-layout .dynamic-data-layout-preview--grid, .wp-block-jankx-dynamic-data-layout .dynamic-data-layout-preview--card {
-    grid-template-columns: repeat(var(--columns-tablet, 2), 1fr);
-  }
-}
-@media (min-width: 1024px) {
-  .wp-block-jankx-dynamic-data-layout .dynamic-data-layout-preview--grid, .wp-block-jankx-dynamic-data-layout .dynamic-data-layout-preview--card {
-    grid-template-columns: repeat(var(--columns-desktop, 3), 1fr);
-  }
-}
-.wp-block-jankx-dynamic-data-layout .dynamic-data-layout-preview--grid .dynamic-data-layout-preview-item, .wp-block-jankx-dynamic-data-layout .dynamic-data-layout-preview--card .dynamic-data-layout-preview-item {
-  transition: all 0.2s ease;
-}
-.wp-block-jankx-dynamic-data-layout .dynamic-data-layout-preview--list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--wp--preset--spacing--medium, 1.5rem);
-}
-.wp-block-jankx-dynamic-data-layout .dynamic-data-layout-preview--list .dynamic-data-layout-preview-item {
-  width: 100%;
-}
-.wp-block-jankx-dynamic-data-layout .dynamic-data-layout-preview--carousel {
-  display: flex;
-  overflow-x: auto;
-  gap: var(--wp--preset--spacing--medium, 1.5rem);
-}
-.wp-block-jankx-dynamic-data-layout .dynamic-data-layout-preview--carousel .dynamic-data-layout-preview-item {
-  flex: 0 0 auto;
-  width: calc(100% / var(--columns-desktop, 3) - var(--wp--preset--spacing--medium, 1.5rem));
-  min-width: 200px;
-}
+/*!**********************************************************************************************************************************************************************************************************!*\
+  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/dynamic-data-layout/editor.scss ***!
+  \**********************************************************************************************************************************************************************************************************/
+
 
 /*# sourceMappingURL=index.css.map*/
