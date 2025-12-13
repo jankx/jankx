@@ -1427,6 +1427,7 @@ function Save({
   const columnsMobile = attrs.columnsMobile || 1;
 
   // Build classes consistent with editor and styles
+  const styleColor = attrs.style && attrs.style.color ? attrs.style.color : undefined;
   const backgroundColorSlug = attrs.backgroundColor || attrs.style?.color?.backgroundSlug || attrs.style?.color?.background?.slug;
   const textColorSlug = attrs.textColor || attrs.style?.color?.textSlug || attrs.style?.color?.text?.slug;
   const gradient = attrs.gradient || attrs.style?.color?.gradient;
@@ -1440,7 +1441,6 @@ function Save({
     '--columns-tablet': columnsTablet,
     '--columns-mobile': columnsMobile
   };
-  const styleColor = attrs.style && attrs.style.color ? attrs.style.color : undefined;
   if (styleColor) {
     // background may be either a string or an object { color: string, slug? }
     const bg = typeof styleColor.background === 'object' ? styleColor.background?.color : styleColor.background;
