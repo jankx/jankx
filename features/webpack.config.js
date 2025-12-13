@@ -10,16 +10,24 @@ module.exports = {
         'views/index': './metrics/blocks/views/index.tsx',
         'views/style': './metrics/blocks/views/style.css',
         'trend-posts/index': './metrics/blocks/trend-posts/index.tsx',
-        'trend-posts/style': './metrics/blocks/trend-posts/style.scss'
+        'trend-posts/style': './metrics/blocks/trend-posts/style.scss',
+        'custom-price/index': './custom-blocks/blocks/custom-price/index.tsx',
+        'custom-price/style': './custom-blocks/blocks/custom-price/style.scss',
+        'custom-price/editor': './custom-blocks/blocks/custom-price/editor.scss'
     },
     output: {
-        path: path.resolve(__dirname, 'metrics/blocks'),
+        path: path.resolve(__dirname, '.'),
         filename: (pathData) => {
             const chunkName = pathData.chunk.name;
             const parts = chunkName.split('/');
             const blockName = parts[0];
             const fileName = parts[1] || 'index';
-            return `${blockName}/build/${fileName}.js`;
+            
+            if (chunkName.startsWith('custom-price')) {
+                return `custom-blocks/blocks/${blockName}/build/${fileName}.js`;
+            }
+            
+            return `metrics/blocks/${blockName}/build/${fileName}.js`;
         },
         clean: false
     },
@@ -62,7 +70,12 @@ module.exports = {
                 const parts = chunkName.split('/');
                 const blockName = parts[0];
                 const fileName = parts[1] || 'index';
-                return `${blockName}/build/${fileName}.css`;
+                
+                if (chunkName.startsWith('custom-price')) {
+                    return `custom-blocks/blocks/${blockName}/build/${fileName}.css`;
+                }
+                
+                return `metrics/blocks/${blockName}/build/${fileName}.css`;
             },
             chunkFilename: '[id].css'
         }),
@@ -72,6 +85,9 @@ module.exports = {
             combineAssets: false
         })
     ],
+    resolve: {
+        extensions: ['.ts', '.tsx', '.js', '.jsx', '.json']
+    },
     externals: {
         '@wordpress/blocks': 'wp.blocks',
         '@wordpress/components': 'wp.components',

@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { useBlockProps, InspectorControls, useInnerBlocksProps, MediaUpload, MediaUploadCheck, BlockControls } from '@wordpress/block-editor';                                 
+import { useBlockProps, InspectorControls, useInnerBlocksProps, MediaUpload, MediaUploadCheck, BlockControls, InnerBlocks } from '@wordpress/block-editor';                                 
 import { PanelBody, RangeControl, ToggleControl, SelectControl, Button, TabPanel, ColorPicker, ToolbarGroup, ToolbarButton } from '@wordpress/components';
 import { gallery, cover, layout, quote } from '@wordpress/icons';                                   
 import { useEffect, useRef } from '@wordpress/element';
@@ -91,7 +91,8 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
         ['jankx/swiper-slide']
       ] : [],
       templateLock: false,
-      orientation: 'horizontal'
+      orientation: 'horizontal',
+      renderAppender: InnerBlocks.ButtonBlockAppender
     }
   );
 

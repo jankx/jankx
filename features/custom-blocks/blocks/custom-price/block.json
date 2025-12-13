@@ -1,0 +1,39 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "jankx/custom-price",
+  "version": "1.0.0",
+  "title": "Custom Price",
+  "category": "widgets",
+  "icon": "money",
+  "description": "Display custom price field with specific style",
+  "supports": {
+    "html": false,
+    "color": {
+        "text": true,
+        "background": true
+    },
+    "typography": {
+        "fontSize": true
+    }
+  },
+  "attributes": {
+    "metaKey": {
+      "type": "string",
+      "default": "_price"
+    },
+    "customMetaKey": {
+      "type": "string",
+      "default": ""
+    },
+    "currencySymbol": {
+        "type": "string",
+        "default": "đ"
+    }
+  },
+  "textdomain": "jankx",
+  "editorScript": "file:./build/index.js",
+  "editorStyle": "file:./build/editor.css",
+  "style": "file:./build/style.css",
+  "render": "file:./render.php"
+}

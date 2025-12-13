@@ -1,0 +1,17 @@
+.jankx-custom-price {
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 18px;
+    color: #ff6600;
+    display: inline-flex;
+    align-items: baseline;
+    
+    .price-amount {
+        margin-right: 4px;
+    }
+    
+    .currency-symbol {
+        text-decoration: underline;
+        font-size: 0.9em;
+    }
+}

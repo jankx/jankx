@@ -147,9 +147,11 @@ class DynamicDataTemplateBlock extends Block
      */
     protected function getDefaultInnerBlocksForPostType(string $postType): array
     {
+        $defaultBlocks = [];
+
         // For product post type, return WooCommerce blocks
         if ($postType === 'product') {
-            return [
+            $defaultBlocks = [
                 [
                     'blockName' => 'woocommerce/product-image',
                     'attrs' => [],
@@ -167,27 +169,29 @@ class DynamicDataTemplateBlock extends Block
                     'attrs' => [],
                 ],
             ];
+        } else {
+            // For other post types, return standard post blocks
+            $defaultBlocks = [
+                [
+                    'blockName' => 'core/post-featured-image',
+                    'attrs' => [],
+                ],
+                [
+                    'blockName' => 'core/post-title',
+                    'attrs' => [],
+                ],
+                [
+                    'blockName' => 'core/post-date',
+                    'attrs' => [],
+                ],
+                [
+                    'blockName' => 'core/post-excerpt',
+                    'attrs' => [],
+                ],
+            ];
         }
 
-        // For other post types, return standard post blocks
-        return [
-            [
-                'blockName' => 'core/post-featured-image',
-                'attrs' => [],
-            ],
-            [
-                'blockName' => 'core/post-title',
-                'attrs' => [],
-            ],
-            [
-                'blockName' => 'core/post-date',
-                'attrs' => [],
-            ],
-            [
-                'blockName' => 'core/post-excerpt',
-                'attrs' => [],
-            ],
-        ];
+        return apply_filters('jankx/dynamic-data-template/default-inner-blocks', $defaultBlocks, $postType);
     }
 
     /**

@@ -35,6 +35,7 @@
       "Jankx\\Features\\Metrics\\": "./features/metrics",
       "Jankx\\Features\\ContentTemplates\\": "./features/content-templates",
       "Jankx\\Features\\Gallery\\": "./features/gallery",
+      "Jankx\\Features\\CustomBlocks\\": "./features/custom-blocks",
       "App\\": "./includes/app"
     }
   },
