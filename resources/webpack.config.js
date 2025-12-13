@@ -103,6 +103,14 @@ module.exports = {
     'blocks/swiper-slide/build/style': './blocks/swiper-slide/style.scss',
     'blocks/swiper-slide/build/editor': './blocks/swiper-slide/editor.scss',
 
+    'blocks/testimonial/build/index': './blocks/testimonial/index.tsx',
+    'blocks/testimonial/build/style': './blocks/testimonial/style.scss',
+    'blocks/testimonial/build/editor': './blocks/testimonial/editor.scss',
+
+    'blocks/testimonials/build/index': './blocks/testimonials/index.tsx',
+    'blocks/testimonials/build/style': './blocks/testimonials/style.scss',
+    'blocks/testimonials/build/editor': './blocks/testimonials/editor.scss',
+
     'blocks/swiper-banner/build/index': './blocks/swiper-banner/index.tsx',
     'blocks/swiper-banner/build/style': './blocks/swiper-banner/style.scss',
     'blocks/swiper-banner/build/editor': './blocks/swiper-banner/editor.scss',
@@ -171,6 +179,10 @@ module.exports = {
     'blocks/facebook-page/build/frontend': './blocks/facebook-page/frontend.ts',
     'blocks/facebook-page/build/style': './blocks/facebook-page/style.scss',
     'blocks/facebook-page/build/editor': './blocks/facebook-page/editor.scss',
+
+    'blocks/star-rating/build/index': './blocks/star-rating/index.tsx',
+    'blocks/star-rating/build/style': './blocks/star-rating/style.scss',
+    'blocks/star-rating/build/editor': './blocks/star-rating/editor.scss',
   },
   output: {
     path: path.resolve(__dirname),
@@ -194,6 +206,7 @@ module.exports = {
     '@wordpress/element': ['wp', 'element'],
     '@wordpress/data': ['wp', 'data'],
     '@wordpress/core-data': ['wp', 'coreData'],
+    '@wordpress/server-side-render': ['wp', 'serverSideRender'],
     // Swiper will be bundled, not external
     // embla-carousel-react will be bundled into editor script
     // embla-carousel will be bundled into frontend carousel script
@@ -233,6 +246,9 @@ module.exports = {
         }
         if (request === '@wordpress/core-data') {
           return ['wp', 'coreData'];
+        }
+        if (request === '@wordpress/server-side-render') {
+          return ['wp', 'serverSideRender'];
         }
         if (request === 'react') {
           return 'React';

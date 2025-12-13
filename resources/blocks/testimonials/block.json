@@ -9,6 +9,8 @@
   "description": "Hiển thị testimonials với layout tổng thể (grid/list/carousel/banner)",
   "textdomain": "jankx",
   "editorScript": "file:./build/index.js",
+  "editorStyle": "file:./build/editor.css",
+  "style": "file:./build/style.css",
   "allowedBlocks": ["jankx/testimonial"],
   "providesContext": {
     "asSlide": "asSlide",

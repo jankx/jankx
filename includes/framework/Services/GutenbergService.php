@@ -40,6 +40,7 @@ use Jankx\Gutenberg\Blocks\TestimonialsBlock;
 use Jankx\Gutenberg\Blocks\WplyrMediaBlock;
 use Jankx\Gutenberg\Blocks\FacebookPageBlock;
 use Jankx\Gutenberg\Blocks\TestimonialBlock;
+use Jankx\Gutenberg\Blocks\StarRatingBlock;
 
 /**
  * Gutenberg Service
@@ -158,6 +159,7 @@ class GutenbergService
         $this->repository->registerBlock(FacebookPageBlock::class);
         $this->repository->registerBlock(TestimonialsBlock::class);
         $this->repository->registerBlock(TestimonialBlock::class);
+        $this->repository->registerBlock(StarRatingBlock::class);
     }
 
     /**

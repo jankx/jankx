@@ -82,7 +82,9 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
   const innerBlocksProps = useInnerBlocksProps(
     { className: 'swiper-wrapper' },
     {
-      allowedBlocks: contentMode === 'slides' ? ['jankx/swiper-slide'] : ['jankx/swiper-banner'],
+      allowedBlocks: contentMode === 'slides' 
+        ? ['jankx/swiper-slide', 'jankx/swiper-inner-blocks-overlay'] 
+        : ['jankx/swiper-banner', 'jankx/swiper-inner-blocks-overlay'],
       template: contentMode === 'slides' ? [
         ['jankx/swiper-slide'],
         ['jankx/swiper-slide'],
@@ -93,13 +95,13 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
     }
   );
 
-  const overlayInnerBlocksProps = useInnerBlocksProps(
-    { className: 'swiper-overlay-layer' },
-    {
-      allowedBlocks: ['jankx/swiper-inner-blocks-overlay'],
-      template: [],
-      templateLock: false
-    }
+  const hasInnerBlocks = useSelect(
+    (select) => {
+      const { getBlock } = select('core/block-editor');
+      const block = getBlock(clientId);
+      return !!(block && block.innerBlocks.length);
+    },
+    [clientId]
   );
 
   // Handle gallery image selection
@@ -583,11 +585,7 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
           </>
         )}
 
-        {pagination && (
-          <div className="swiper-pagination"></div>
-        )}
-
-        <div {...overlayInnerBlocksProps} />
+        {pagination && <div className="swiper-pagination"></div>}
       </div>
       </div>
     </>

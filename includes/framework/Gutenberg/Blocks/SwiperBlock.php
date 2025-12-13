@@ -124,13 +124,32 @@ class SwiperBlock extends Block
             intval($height)
         );
 
+        // Separate slides and overlay
+        $slides_content = '';
+        $overlay_content = '';
+
+        if ($block && !empty($block->inner_blocks)) {
+            foreach ($block->inner_blocks as $inner_block) {
+                $block_html = render_block($inner_block);
+                if ($inner_block->name === 'jankx/swiper-inner-blocks-overlay') {
+                    $overlay_content .= $block_html;
+                } else {
+                    $slides_content .= $block_html;
+                }
+            }
+        } else {
+            $slides_content = $content;
+        }
+
         ob_start();
         ?>
         <div <?php echo $block_wrapper_attrs; ?>>
             <div class="swiper" <?php echo $container_attrs; ?>>
                 <div class="swiper-wrapper">
-                    <?php echo $content; ?>
+                    <?php echo $slides_content; ?>
                 </div>
+
+                <?php echo $overlay_content; ?>
 
                 <?php if ($navigation) : ?>
                     <div class="swiper-button-prev"></div>

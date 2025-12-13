@@ -1,5 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { useBlockProps, InspectorControls, RichText, MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
+import ServerSideRender from '@wordpress/server-side-render';
 import { PanelBody, RangeControl, TextControl, Button } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import type { TestimonialProps } from './types';
@@ -57,7 +58,6 @@ export default function Edit({ attributes, setAttributes, context }: Testimonial
           </MediaUploadCheck>
         </PanelBody>
       </InspectorControls>
-
       <div className={itemClasses}>
         {avatarId && media?.source_url ? (
           <div className="testimonial-avatar">
@@ -85,6 +85,11 @@ export default function Edit({ attributes, setAttributes, context }: Testimonial
             onChange={(v) => setAttributes({ excerpt: v })}
           />
         </div>
+      </div>
+
+      {/* Server-rendered preview to match frontend output exactly */}
+      <div className="testimonial-editor-preview">
+        <ServerSideRender block="jankx/testimonial" attributes={attributes} />
       </div>
     </div>
   );
