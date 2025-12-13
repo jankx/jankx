@@ -610,13 +610,43 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         }
     }, [taxonomyTerms]);
 
+    const styleColor = attributes.style && attributes.style.color ? attributes.style.color : undefined;
+    const backgroundColorSlug = attributes.backgroundColor || styleColor?.background?.slug;
+    const textColorSlug = attributes.textColor || styleColor?.text?.slug;
+    const gradient = attributes.gradient || styleColor?.gradient;
+    const hasBackground = !!(styleColor?.background || gradient || backgroundColorSlug);
+    const hasTextColor = !!(styleColor?.text || textColorSlug);
+
+    const editorClassName = [
+        'dynamic-data-layout',
+        `dynamic-data-layout--${layout}`,
+        `columns-${columns}`,
+        `columns-tablet-${columnsTablet}`,
+        `columns-mobile-${columnsMobile}`,
+        backgroundColorSlug ? `has-${backgroundColorSlug}-background-color` : undefined,
+        textColorSlug ? `has-${textColorSlug}-color` : undefined,
+        hasBackground ? 'has-background' : undefined,
+        hasTextColor ? 'has-text-color' : undefined,
+    ].filter(Boolean).join(' ');
+
+    const editorStyle: CSSProperties = {
+        '--columns-desktop': columns,
+        '--columns-tablet': columnsTablet,
+        '--columns-mobile': columnsMobile,
+    } as CSSProperties;
+
+    if (styleColor) {
+        const bg = typeof styleColor.background === 'object' ? styleColor.background?.color : styleColor.background;
+        const text = typeof styleColor.text === 'object' ? styleColor.text?.color : styleColor.text;
+        const grad = typeof styleColor.gradient === 'object' ? styleColor.gradient?.gradient : styleColor.gradient;
+        if (bg) editorStyle.backgroundColor = bg as any;
+        if (text) editorStyle.color = text as any;
+        if (grad) editorStyle.background = grad as any;
+    }
+
     const blockProps = useBlockProps({
-        className: `dynamic-data-layout layout-${layout} columns-${columns} columns-tablet-${columnsTablet} columns-mobile-${columnsMobile}`,
-        style: {
-            '--columns-desktop': columns,
-            '--columns-tablet': columnsTablet,
-            '--columns-mobile': columnsMobile,
-        } as CSSProperties,
+        className: editorClassName,
+        style: editorStyle,
     });
 
     const resolvedResponsiveColumns = responsiveColumns && typeof responsiveColumns === 'object'

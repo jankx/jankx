@@ -115,3 +115,14 @@
     &.columns-mobile-1 { --columns-mobile: 1; }
     &.columns-mobile-2 { --columns-mobile: 2; }
 }
+
+// Ensure color/background set on wrapper inheritance to child elements
+.wp-block-jankx-dynamic-data-layout.has-text-color .post-type-layout-grid,
+.wp-block-jankx-dynamic-data-layout.has-text-color .post-type-layout-card,
+.wp-block-jankx-dynamic-data-layout.has-text-color .post-type-layout-list {
+    color: inherit;
+}
+
+.wp-block-jankx-dynamic-data-layout.has-background {
+    /* background will be applied via inline style or preset background class */
+}
