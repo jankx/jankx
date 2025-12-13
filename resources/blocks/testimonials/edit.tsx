@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { useBlockProps, InspectorControls, useInnerBlocksProps } from '@wordpress/block-editor';
+import { useBlockProps, InspectorControls, useInnerBlocksProps, InnerBlocks } from '@wordpress/block-editor';
 import { PanelBody, RangeControl, ToggleControl, SelectControl } from '@wordpress/components';
 import type { TestimonialsProps, LayoutType } from './types';
 
@@ -40,6 +40,7 @@ export default function Edit({ attributes, setAttributes }: TestimonialsProps): 
       allowedBlocks: ['jankx/testimonial'],
       templateLock: false,
       orientation: 'horizontal',
+      renderAppender: () => <InnerBlocks.ButtonBlockAppender />
     }
   );
 
@@ -143,4 +144,3 @@ export default function Edit({ attributes, setAttributes }: TestimonialsProps): 
     </div>
   );
 }
-
