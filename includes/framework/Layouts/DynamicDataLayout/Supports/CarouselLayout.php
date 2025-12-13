@@ -23,7 +23,7 @@ class CarouselLayout extends PostLayout
 
         $attrs = [
             'class' => sprintf(
-                'post-type-layout-carousel columns-%d columns-tablet-%d columns-mobile-%d',
+                'wp-block-jankx-dynamic-data-layout post-type-layout-carousel columns-%d columns-tablet-%d columns-mobile-%d',
                 max(1, $columns), max(1, $columnsTablet), max(1, $columnsMobile)
             ),
             'data-embla-carousel' => '',
@@ -243,4 +243,3 @@ class CarouselLayout extends PostLayout
         ];
     }
 }
-

@@ -19,7 +19,7 @@ class MasonryLayout extends PostLayout
 
         ob_start();
         ?>
-        <div class="post-type-layout-masonry columns-<?php echo esc_attr(max(1, $columns)); ?>">
+        <div class="wp-block-jankx-dynamic-data-layout post-type-layout-masonry columns-<?php echo esc_attr(max(1, $columns)); ?>">
             <?php
             while ($this->query->have_posts()) {
                 $this->query->the_post();
@@ -62,4 +62,3 @@ class MasonryLayout extends PostLayout
         return ['showTitle'];
     }
 }
-

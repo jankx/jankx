@@ -19,21 +19,41 @@ class GridLayout extends PostLayout
         $columnsTablet = (int) $this->getOption('columnsTablet', 2);
         $columnsMobile = (int) $this->getOption('columnsMobile', 1);
 
-        $wrapper_class = sprintf(
-            'post-type-layout-grid wp-block-jankx-dynamic-data-layout is-flex-container columns-%d columns-tablet-%d columns-mobile-%d',
-            max(1, $columns),
-            max(1, $columnsTablet),
-            max(1, $columnsMobile)
-        );
+        $hasImageRatio = false;
+        $imageRatio = $this->getOption('imageRatio', '');
+        $ratioStyle = '';
+        if (is_string($imageRatio) && strpos($imageRatio, '/') !== false) {
+            [$w, $h] = array_map('floatval', explode('/', $imageRatio, 2));
+            if ($w > 0 && $h > 0) {
+                $percent = ($h / $w) * 100.0;
+                $ratioStyle = sprintf('--jankx-image-ratio: %.4f%%;', $percent);
+                $hasImageRatio = true;
+            }
+        }
+
+        $ul_classes = [
+            'wp-block-jankx-dynamic-data-layout',
+            'post-type-layout-grid',
+            'is-flex-container',
+            'columns-' . max(1, $columns),
+            'columns-tablet-' . max(1, $columnsTablet),
+            'columns-mobile-' . max(1, $columnsMobile),
+        ];
+        if ($hasImageRatio) {
+            $ul_classes[] = 'has-image-ratio';
+        }
 
         ob_start();
         ?>
-        <ul class="<?php echo esc_attr($wrapper_class); ?>"
-            style="<?php echo esc_attr(sprintf('--columns-desktop:%d; --columns-tablet:%d; --columns-mobile:%d;', $columns, $columnsTablet, $columnsMobile)); ?>">
+        <ul class="<?php echo esc_attr(implode(' ', $ul_classes)); ?>"
+            style="<?php echo esc_attr(sprintf('--columns-desktop: %d; --columns-tablet: %d; --columns-mobile: %d; %s', $columns, $columnsTablet, $columnsMobile, $ratioStyle)); ?>">
             <?php
             while ($this->query->have_posts()) {
                 $this->query->the_post();
-                echo sprintf('<li class="wp-block-post">%s</li>', $this->renderPostItem());
+                $li_classes = get_post_class('wp-block-post', get_the_ID());
+                echo '<li class="' . esc_attr(implode(' ', array_filter(array_map('sanitize_html_class', $li_classes)))) . '">';
+                echo $this->renderPostItem();
+                echo '</li>';
             }
             wp_reset_postdata();
             ?>
@@ -76,4 +96,3 @@ class GridLayout extends PostLayout
         return ['showTitle'];
     }
 }
-
