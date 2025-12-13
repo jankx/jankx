@@ -130,8 +130,26 @@ class SwiperBlock extends Block
 
         if ($block && !empty($block->inner_blocks)) {
             foreach ($block->inner_blocks as $inner_block) {
-                $block_html = ($inner_block instanceof \WP_Block) ? $inner_block->render() : render_block($inner_block);
-                if ($inner_block->name === 'jankx/swiper-inner-blocks-overlay') {
+                // Ensure $inner_block is an array if it's not an object (compatibility with different WP versions/contexts)
+                if (is_object($inner_block)) {
+                    $block_name = $inner_block->name;
+                    $parsed_block = (array) $inner_block; // Cast to array if render_block expects array
+                    // However, render_block expects an array representing the parsed block. 
+                    // WP_Block->inner_blocks contains WP_Block objects in recent versions.
+                    // We need to render the WP_Block object correctly.
+                    
+                    // Actually, render_block() expects an array. 
+                    // If we have WP_Block objects, we should use their ->parsed_block property or construct the array.
+                    // But wait, render_block($inner_block->parsed_block) is likely what we need if $inner_block is a WP_Block.
+                    $parsed_block_data = $inner_block->parsed_block;
+                } else {
+                    $block_name = $inner_block['blockName'];
+                    $parsed_block_data = $inner_block;
+                }
+
+                $block_html = render_block($parsed_block_data);
+                
+                if ($block_name === 'jankx/swiper-inner-blocks-overlay') {
                     $overlay_content .= $block_html;
                 } else {
                     $slides_content .= $block_html;
