@@ -17,7 +17,7 @@ class ListLayout extends PostLayout
 
         ob_start();
         ?>
-        <div class="post-type-layout-list">
+        <div class="wp-block-jankx-dynamic-data-layout post-type-layout-list">
             <?php
             while ($this->query->have_posts()) {
                 $this->query->the_post();
@@ -60,4 +60,3 @@ class ListLayout extends PostLayout
         return ['showTitle'];
     }
 }
-
