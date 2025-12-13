@@ -14,13 +14,6 @@ namespace Jankx\Gutenberg\Blocks;
 
 use Jankx\Gutenberg\Block;
 use Jankx\Facades\Log;
-use Jankx\Layouts\AdvancedFilters\AdvancedFiltersRenderer as FilterRenderer;
-use Jankx\Query\AdvancedFiltersQueryBuilder;
-use Jankx\Layouts\DynamicDataLayout\DynamicDataLayoutManager;
-use Jankx\Layouts\DynamicDataLayout\PostLayoutDecorator;
-use Jankx\Rest\AdvancedFiltersRestApiHandler;
-use Jankx\Rest\AdvancedFiltersAjaxHandler;
-use WP_Query;
 
 class AdvancedFiltersBlock extends Block
 {
@@ -32,325 +25,16 @@ class AdvancedFiltersBlock extends Block
     protected $blockId = 'jankx/advanced-filters';
 
     /**
-     * REST API Handler instance
-     *
-     * @var AdvancedFiltersRestApiHandler|null
-     */
-    protected $restHandler = null;
-
-    /**
-     * AJAX Handler instance
-     *
-     * @var AdvancedFiltersAjaxHandler|null
-     */
-    protected $ajaxHandler = null;
-
-    /**
-     * Query Builder instance
-     *
-     * @var AdvancedFiltersQueryBuilder|null
-     */
-    protected $queryBuilder = null;
-
-    /**
-     * Filter Renderer instance
-     *
-     * @var FilterRenderer|null
-     */
-    protected $filterRenderer = null;
-
-    /**
-     * Dynamic Data Layout Manager instance
-     *
-     * @var DynamicDataLayoutManager|null
-     */
-    protected $layoutManager = null;
-
-    /**
      * Register the block
      *
      * @return void
      */
     public function init()
     {
-        // Initialize handlers
-        $this->restHandler = new AdvancedFiltersRestApiHandler();
-        $this->ajaxHandler = new AdvancedFiltersAjaxHandler();
-        $this->queryBuilder = new AdvancedFiltersQueryBuilder();
-        $this->filterRenderer = new FilterRenderer();
-        $this->layoutManager = DynamicDataLayoutManager::getInstance();
-
-        // Register handlers
-        add_action('rest_api_init', [$this->restHandler, 'registerEndpoints']);
-        $this->ajaxHandler->registerHandlers();
-        
-        // Register filter hooks for handlers to use
-        add_filter('jankx_advanced_filter_get_block_data', [$this, 'handleGetBlockDataFilter'], 10, 3);
-        add_filter('jankx_advanced_filter_find_blocks', [$this, 'handleFindBlocksFilter'], 10, 2);
-
         // Localize data for block viewScript
         add_action('wp_footer', [$this, 'localizeFrontendData']);
     }
 
-    /**
-     * Filter callback to get block data
-     *
-     * @param array $results
-     * @param array $target_blocks
-     * @param array $filters
-     * @return array
-     */
-    public function handleGetBlockDataFilter(array $results, array $target_blocks, array $filters): array
-    {
-        foreach ($target_blocks as $target) {
-            if (!$target['enabled']) {
-                continue;
-            }
-
-            $block_data = $this->getBlockData($target, $filters);
-            if ($block_data) {
-                $results[$target['blockId']] = $block_data;
-            }
-        }
-
-        return $results;
-        }
-
-    /**
-     * Filter callback to find blocks
-     *
-     * @param array $blocks
-     * @param \WP_Post $post
-     * @return array
-     */
-    public function handleFindBlocksFilter(array $blocks, $post): array
-    {
-        $parsed_blocks = parse_blocks($post->post_content);
-        $this->findDynamicDataLayoutBlocks($parsed_blocks, $blocks, [
-            'source' => 'current_page',
-            'postId' => $post->ID,
-            'postTitle' => $post->post_title,
-            'postType' => $post->post_type,
-        ]);
-
-        return $blocks;
-    }
-
-    /**
-     * Recursively find jankx/dynamic-data-layout blocks in parsed blocks
-     *
-     * @param array $blocks Parsed blocks array
-     * @param array &$found_blocks Reference to array to collect found blocks
-     * @param array $context Context information (source, postId, postTitle, postType)
-     * @return void
-     */
-    private function findDynamicDataLayoutBlocks(array $blocks, array &$found_blocks, array $context): void
-    {
-        foreach ($blocks as $block) {
-            // Check if this is a dynamic-data-layout block
-            if (($block['blockName'] ?? '') === 'jankx/dynamic-data-layout') {
-                $attributes = $block['attrs'] ?? [];
-                $query_id = $attributes['queryId'] ?? null;
-                
-                // Use queryId if available, otherwise generate a hash
-                $block_id = $query_id ? strval($query_id) : 'block_' . md5(serialize($block));
-                
-                // Check if block already exists (by queryId)
-                $exists = false;
-                foreach ($found_blocks as $existing_block) {
-                    if ($existing_block['id'] === $block_id) {
-                        $exists = true;
-                        break;
-                    }
-                }
-                
-                if (!$exists) {
-                    $found_blocks[] = [
-                        'id' => $block_id,
-                        'name' => ($attributes['postType'] ?? 'post') . ' Layout - ' . $context['postTitle'],
-                        'postId' => $context['postId'],
-                        'postTitle' => $context['postTitle'],
-                        'postType' => $context['postType'],
-                        'source' => $context['source'],
-                        'blockType' => $attributes['postType'] ?? 'post',
-                        'layout' => $attributes['layout'] ?? 'grid',
-                    ];
-                }
-            }
-
-            // Recursively search inner blocks
-            if (!empty($block['innerBlocks'])) {
-                $this->findDynamicDataLayoutBlocks($block['innerBlocks'], $found_blocks, $context);
-            }
-        }
-    }
-
-    /**
-     * Get data for a specific block
-     *
-     * @param array $target
-     * @param array $filters
-     * @return array|null
-     */
-    private function getBlockData($target, $filters)
-    {
-        $block_id = $target['blockId'];
-        $selector = $target['selector'];
-
-        // Get block content
-        $block_content = $this->getBlockContent($block_id);
-        if (!$block_content) {
-            return null;
-        }
-
-        // Parse block attributes
-        $block_attributes = $this->parseBlockAttributes($block_content);
-        if (!$block_attributes) {
-            return null;
-        }
-
-        // Build query args from filters
-        $query_args = $this->queryBuilder->buildFromFilters($block_attributes, $filters);
-
-        // Execute query
-        $query = new WP_Query($query_args);
-
-        // Render using PostLayoutDecorator
-        $layout_name = $block_attributes['layout'] ?? 'grid';
-        $decorator = $this->layoutManager->createLayout(
-            $layout_name,
-            $block_attributes['postType'] ?? 'post',
-            $block_attributes
-        );
-        $decorator->withQuery($query);
-        $rendered_content = $decorator->render();
-
-        return [
-            'blockId' => $block_id,
-            'selector' => $selector,
-            'content' => $rendered_content,
-            'query_info' => [
-                'total_posts' => $query->found_posts ?? 0,
-                'found_posts' => count($query->posts) ?? 0,
-                'max_pages' => $query->max_num_pages ?? 0
-            ]
-        ];
-    }
-
-    /**
-     * Get block content
-     *
-     * @param string $block_id
-     * @return array|null
-     */
-    private function getBlockContent($block_id)
-    {
-        // First, try to find in current post/page context
-        global $post;
-        if ($post && !empty($post->post_content)) {
-            $blocks = parse_blocks($post->post_content);
-            $found_block = $this->findBlockInBlocks($blocks, $block_id);
-            if ($found_block) {
-                return $found_block;
-            }
-        }
-
-        // If not found, search in limited posts to avoid memory issues
-        // Only search in recent posts with dynamic-data-layout blocks
-        $posts = get_posts([
-            'post_type' => ['page', 'post'], // Limit to common post types
-            'post_status' => 'publish',
-            'posts_per_page' => 50, // Limit to 50 posts instead of -1
-            'orderby' => 'modified',
-            'order' => 'DESC',
-            'suppress_filters' => true, // Disable filters for performance
-            'no_found_rows' => true, // Skip pagination counting
-            'update_post_term_cache' => false, // Skip term cache
-            'update_post_meta_cache' => false, // Skip meta cache
-        ]);
-
-        foreach ($posts as $post_item) {
-            if (empty($post_item->post_content)) {
-                continue;
-            }
-            $blocks = parse_blocks($post_item->post_content);
-            $found_block = $this->findBlockInBlocks($blocks, $block_id);
-            if ($found_block) {
-                return $found_block;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Find block in parsed blocks array
-     *
-     * @param array $blocks Parsed blocks array
-     * @param string $block_id Target block ID
-     * @return array|null Block array or null
-     */
-    private function findBlockInBlocks(array $blocks, string $block_id): ?array
-    {
-            foreach ($blocks as $block) {
-            if (($block['blockName'] ?? '') === 'jankx/dynamic-data-layout') {
-                $current_block_id = $block['attrs']['queryId'] ?? null;
-                // Check both queryId and generated ID
-                if ($current_block_id && strval($current_block_id) === strval($block_id)) {
-                    return $block;
-                }
-                $generated_block_id = 'block_' . md5(serialize($block));
-                if ($generated_block_id === $block_id) {
-                        return $block;
-                    }
-            }
-
-            // Recursively check inner blocks
-            if (!empty($block['innerBlocks'])) {
-                $found = $this->findBlockInBlocks($block['innerBlocks'], $block_id);
-                if ($found) {
-                    return $found;
-                }
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Parse block attributes
-     *
-     * @param array $block
-     * @return array|null
-     */
-    private function parseBlockAttributes($block)
-    {
-        if (!$block || !isset($block['attrs'])) {
-            return null;
-        }
-
-        $attrs = $block['attrs'];
-
-        return [
-            'postType' => $attrs['postType'] ?? 'post',
-            'postsPerPage' => $attrs['postsPerPage'] ?? 6,
-            'orderBy' => $attrs['orderBy'] ?? 'date',
-            'order' => $attrs['order'] ?? 'DESC',
-            'offset' => $attrs['offset'] ?? 0,
-            'exclude' => $attrs['exclude'] ?? [],
-            'include' => $attrs['include'] ?? [],
-            'layout' => $attrs['layout'] ?? 'grid',
-            'columns' => $attrs['columns'] ?? 3,
-            'columnsTablet' => $attrs['columnsTablet'] ?? 2,
-            'columnsMobile' => $attrs['columnsMobile'] ?? 1,
-            'showFeaturedImage' => $attrs['showFeaturedImage'] ?? true,
-            'showTitle' => $attrs['showTitle'] ?? true,
-            'showExcerpt' => $attrs['showExcerpt'] ?? true,
-            'showDate' => $attrs['showDate'] ?? true,
-            'showAuthor' => $attrs['showAuthor'] ?? false,
-            'excerptLength' => $attrs['excerptLength'] ?? 55,
-        ];
-    }
 
     /**
      * Render the block content
@@ -518,7 +202,14 @@ class AdvancedFiltersBlock extends Block
                  data-ajax-url="<?php echo esc_attr($ajax_url); ?>"
                  style="display: none;"></div>
             <div class="advanced-filters-container">
-                <?php $this->filterRenderer->render($attributes, $config); ?>
+                <?php
+                if ($block instanceof \WP_Block) {
+                    $children = $block->parsed_block['innerBlocks'] ?? [];
+                    foreach ($children as $child) {
+                        echo render_block($child);
+                    }
+                }
+                ?>
             </div>
             <?php if ($show_reset_button) : ?>
                 <button type="button" class="filter-reset-button">

@@ -242,9 +242,6 @@ function Edit({
   } = attributes;
   const [availableBlocks, setAvailableBlocks] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)([]);
   const [loadingBlocks, setLoadingBlocks] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(false);
-  const {
-    insertBlocks
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_5__.useDispatch)('core/block-editor');
 
   // Lấy danh sách block con advanced-filter
   const innerFilterBlocks = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_5__.useSelect)(select => {
@@ -408,23 +405,9 @@ function Edit({
       }
     };
   }, []);
-  const handleAddFilterBlock = () => {
-    const defaultAttributes = {
-      filterType,
-      layout,
-      showLabels,
-      displayStyle,
-      listingType: 'ul',
-      showCount,
-      showEmptyTerms,
-      showOnlyTopLevel,
-      showHierarchy,
-      multipleSelection,
-      collapsible,
-      defaultExpanded
-    };
-    insertBlocks((0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.createBlock)('jankx/advanced-filter', defaultAttributes), undefined, clientId);
-  };
+
+  // Use the appender in block content to add filters
+
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
@@ -488,10 +471,10 @@ function Edit({
             })]
           })]
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filters', 'jankx'),
         initialOpen: false,
-        children: [targetBlockIds.length === 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("p", {
+        children: targetBlockIds.length === 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("p", {
           style: {
             color: '#d63638',
             marginBottom: '10px'
@@ -506,15 +489,7 @@ function Edit({
           children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Post Type:', 'jankx'), " ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("strong", {
             children: targetPostType
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Button, {
-          variant: "primary",
-          onClick: handleAddFilterBlock,
-          style: {
-            marginTop: '10px'
-          },
-          disabled: targetBlockIds.length === 0,
-          children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('+ Add Filter', 'jankx')
-        })]
+        })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('AJAX Settings', 'jankx'),
         initialOpen: false,

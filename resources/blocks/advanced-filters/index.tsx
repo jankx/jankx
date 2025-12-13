@@ -1,4 +1,4 @@
-import { createBlock, registerBlockType } from '@wordpress/blocks';
+import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
 import {
     useBlockProps,
@@ -15,7 +15,7 @@ import {
     Spinner,
 } from '@wordpress/components';
 import { useEffect, useMemo, useState } from '@wordpress/element';
-import { useDispatch, useSelect } from '@wordpress/data';
+import { useSelect } from '@wordpress/data';
 import ServerSideRender from '@wordpress/server-side-render';
 import metadata from './block.json';
 // Import styles - editor.scss already imports style.scss
@@ -88,7 +88,6 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
 
     const [availableBlocks, setAvailableBlocks] = useState<any[]>([]);
     const [loadingBlocks, setLoadingBlocks] = useState(false);
-    const { insertBlocks } = useDispatch('core/block-editor');
 
     // Lấy danh sách block con advanced-filter
     const innerFilterBlocks = useSelect(
@@ -274,24 +273,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         };
     }, []);
 
-    const handleAddFilterBlock = () => {
-        const defaultAttributes = {
-            filterType,
-            layout,
-            showLabels,
-            displayStyle,
-            listingType: 'ul',
-            showCount,
-            showEmptyTerms,
-            showOnlyTopLevel,
-            showHierarchy,
-            multipleSelection,
-            collapsible,
-            defaultExpanded,
-        };
-
-        insertBlocks(createBlock('jankx/advanced-filter', defaultAttributes as any), undefined, clientId);
-    };
+    // Use the appender in block content to add filters
 
     return (
         <>
@@ -364,15 +346,6 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                 {__('Post Type:', 'jankx')} <strong>{targetPostType}</strong>
                             </p>
                         )}
-
-                        <Button 
-                            variant="primary" 
-                        onClick={handleAddFilterBlock} 
-                            style={{ marginTop: '10px' }}
-                            disabled={targetBlockIds.length === 0}
-                        >
-                            {__('+ Add Filter', 'jankx')}
-                        </Button>
                     </PanelBody>
 
                 <PanelBody title={__('AJAX Settings', 'jankx')} initialOpen={false}>
@@ -444,4 +417,3 @@ registerBlockType(metadata.name, {
     edit: Edit,
     save: () => <InnerBlocks.Content />, // Lưu block con để giữ cấu hình filter
 } as any);
-

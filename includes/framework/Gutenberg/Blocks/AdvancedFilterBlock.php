@@ -3,6 +3,7 @@
 namespace Jankx\Gutenberg\Blocks;
 
 use Jankx\Gutenberg\Block;
+use Jankx\Layouts\AdvancedFilters\FilterRendererFactory;
 
 /**
  * Advanced Filter Block
@@ -115,8 +116,41 @@ class AdvancedFilterBlock extends Block
         }
         
         // Nếu là child của advanced-filters, không render gì; dữ liệu được parent xử lý.
-        return '';
+        // Thay vào đó, tự render UI filter dựa trên attributes + context từ parent
+        $filter = is_array($attributes) ? $attributes : [];
+
+        // Build global settings from parent context (provided by advanced-filters block)
+        $ctx = is_object($block) && property_exists($block, 'context') ? (array) $block->context : [];
+        $global = [
+            'showLabels' => $ctx['jankx/advanced-filters/showLabels'] ?? true,
+            'displayStyle' => $ctx['jankx/advanced-filters/displayStyle'] ?? 'buttons',
+            'showCount' => $ctx['jankx/advanced-filters/showCount'] ?? false,
+            'showEmptyTerms' => $ctx['jankx/advanced-filters/showEmptyTerms'] ?? true,
+            'showOnlyTopLevel' => $ctx['jankx/advanced-filters/showOnlyTopLevel'] ?? false,
+            'showHierarchy' => $ctx['jankx/advanced-filters/showHierarchy'] ?? false,
+            'displayAsDropdown' => $ctx['jankx/advanced-filters/displayAsDropdown'] ?? false,
+            'multipleSelection' => $ctx['jankx/advanced-filters/multipleSelection'] ?? true,
+            'layout' => $ctx['jankx/advanced-filters/layout'] ?? 'horizontal',
+            'listingType' => $filter['listingType'] ?? 'ul',
+        ];
+
+        // Initialize renderer factory and render according to filter type
+        FilterRendererFactory::init();
+        $type = $filter['filterType'] ?? 'taxonomy';
+        if (!FilterRendererFactory::hasRenderer($type)) {
+            return '';
+        }
+
+        ob_start();
+        try {
+            $renderer = FilterRendererFactory::create($type);
+            if ($renderer->canHandle($filter)) {
+                $renderer->render($filter, $global);
+            }
+        } catch (\Throwable $e) {
+            // Swallow render errors to avoid breaking editor
+        }
+        return ob_get_clean();
     }
 }
-
 
