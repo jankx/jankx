@@ -5,6 +5,8 @@ namespace Jankx\Layouts\DynamicDataLayout\Generators;
 use Jankx\Layouts\DynamicDataLayout\Generators\Concerns\PostTemplateRendererTrait;
 use WP_Post;
 use WP_Query;
+use WP_Block;
+use Jankx\Facades\Log;
 
 class PostTemplateBlockGenerator extends AbstractContentGenerator
 {
@@ -102,7 +104,68 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
 
     protected function renderTemplateForPost(WP_Post $post, WP_Query $query, array $options): string
     {
-        return $this->traitRenderTemplateForPost($post, $query, $options);
+        $context = $this->buildBlockContext($post, $query, $options);
+        
+        // Get overlay settings
+        $attrs = $this->templateBlock['attrs'] ?? [];
+        $overlayIcon = $attrs['overlayIcon'] ?? '';
+        $overlayMode = $attrs['overlayIconMode'] ?? 'always-show';
+
+        try {
+            $innerBlocks = $this->templateBlock['innerBlocks'] ?? [];
+
+            if (empty($innerBlocks)) {
+                return '';
+            }
+
+            $output = '';
+            foreach ($innerBlocks as $innerBlock) {
+                $normalizedBlock = [
+                    'blockName' => $innerBlock['blockName'] ?? '',
+                    'attrs' => is_array($innerBlock['attrs'] ?? null) ? $innerBlock['attrs'] : [],
+                    'innerBlocks' => is_array($innerBlock['innerBlocks'] ?? null) ? $innerBlock['innerBlocks'] : [],
+                    'innerContent' => is_array($innerBlock['innerContent'] ?? null) ? $innerBlock['innerContent'] : [],
+                ];
+
+                if (!empty($innerBlock['originalContent'])) {
+                    $normalizedBlock['originalContent'] = $innerBlock['originalContent'];
+                }
+
+                $blockInstance = new WP_Block($normalizedBlock, $context);
+                $blockHtml = $blockInstance->render();
+
+                // Inject overlay if it's a featured image block
+                if ($overlayIcon && in_array($normalizedBlock['blockName'], ['core/post-featured-image', 'woocommerce/product-image', 'jankx/advanced-image-box'])) {
+                    $blockHtml = $this->wrapWithOverlay($blockHtml, $overlayIcon, $overlayMode);
+                }
+
+                $output .= $blockHtml;
+            }
+
+            return $output;
+        } catch (\Throwable $exception) {
+            Log::error(sprintf(
+                'PostTemplateBlockGenerator: render error for post %d - %s',
+                $post->ID,
+                $exception->getMessage()
+            ));
+            return '';
+        }
+    }
+
+    protected function wrapWithOverlay(string $html, string $icon, string $mode): string
+    {
+        $wrapperClasses = 'jankx-thumbnail-overlay-wrapper';
+        $wrapperClasses .= ' overlay-mode-' . $mode;
+        
+        $iconHtml = sprintf('<div class="jankx-overlay-icon"><i class="%s"></i></div>', esc_attr($icon));
+        
+        return sprintf(
+            '<div class="%s">%s%s</div>',
+            esc_attr($wrapperClasses),
+            $html,
+            $iconHtml
+        );
     }
 
     protected function buildBlockContext(WP_Post $post, WP_Query $query, array $options): array

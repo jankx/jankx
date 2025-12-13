@@ -32,6 +32,8 @@ interface DynamicDataTemplateAttributes {
     };
     thumbnailPosition?: 'top' | 'bottom' | 'left' | 'right';
     imageRatio?: string;
+    overlayIcon?: string;
+    overlayIconMode?: 'always-show' | 'hover-hide' | 'hover-show';
 }
 
 // Image ratio presets
@@ -96,6 +98,8 @@ export default function Edit({
         itemBorderRadius = 0,
         thumbnailPosition = 'top',
         imageRatio = '',
+        overlayIcon = '',
+        overlayIconMode = 'always-show',
     } = attributes;
 
     // Image ratio handling
@@ -312,6 +316,24 @@ export default function Edit({
                             }}
                             help={__('Enter aspect ratio in format: width/height (e.g., 16/9, 3/4)', 'jankx')}
                             placeholder="16/9"
+                        />
+                    )}
+                    <TextControl
+                        label={__('Overlay Icon Class', 'jankx')}
+                        value={overlayIcon}
+                        onChange={(value) => setAttributes({ overlayIcon: value })}
+                        help={__('Enter icon class (e.g., fas fa-play, dashicons-video-alt3)', 'jankx')}
+                    />
+                    {overlayIcon && (
+                        <SelectControl
+                            label={__('Overlay Icon Mode', 'jankx')}
+                            value={overlayIconMode}
+                            options={[
+                                { label: __('Always Show', 'jankx'), value: 'always-show' },
+                                { label: __('Hover to Hide', 'jankx'), value: 'hover-hide' },
+                                { label: __('Hover to Show', 'jankx'), value: 'hover-show' },
+                            ]}
+                            onChange={(value) => setAttributes({ overlayIconMode: value as any })}
                         />
                     )}
                 </PanelBody>

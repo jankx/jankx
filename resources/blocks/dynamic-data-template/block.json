@@ -122,6 +122,15 @@
     "imageRatio": {
       "type": "string",
       "default": ""
+    },
+    "overlayIcon": {
+      "type": "string",
+      "default": ""
+    },
+    "overlayIconMode": {
+      "type": "string",
+      "default": "always-show",
+      "enum": ["always-show", "hover-hide", "hover-show"]
     }
   }
 }
