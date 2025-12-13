@@ -39,7 +39,7 @@ use Jankx\Gutenberg\Blocks\TableRowBlock;
 use Jankx\Gutenberg\Blocks\TestimonialsBlock;
 use Jankx\Gutenberg\Blocks\WplyrMediaBlock;
 use Jankx\Gutenberg\Blocks\FacebookPageBlock;
-use Jankx\Gutenberg\GutenbergPattern;
+use Jankx\Gutenberg\Blocks\TestimonialBlock;
 
 /**
  * Gutenberg Service
@@ -156,8 +156,8 @@ class GutenbergService
         $this->repository->registerBlock(TableRowBlock::class);
         $this->repository->registerBlock(WplyrMediaBlock::class);
         $this->repository->registerBlock(FacebookPageBlock::class);
-        $this->repository->registerBlock(\Jankx\Gutenberg\Blocks\TestimonialsBlock::class);
-        $this->repository->registerBlock(\Jankx\Gutenberg\Blocks\TestimonialBlock::class);
+        $this->repository->registerBlock(TestimonialsBlock::class);
+        $this->repository->registerBlock(TestimonialBlock::class);
     }
 
     /**

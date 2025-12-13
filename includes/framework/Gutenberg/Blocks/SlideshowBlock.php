@@ -3,7 +3,6 @@
 namespace Jankx\Gutenberg\Blocks;
 
 use Jankx\Gutenberg\Block;
-use Jankx\Gutenberg\GutenbergPattern;
 
 class SlideshowBlock extends Block
 {
