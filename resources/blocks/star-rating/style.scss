@@ -1,0 +1,40 @@
+.wp-block-jankx-star-rating {
+    .jankx-star-rating {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .jankx-stars {
+        display: inline-flex;
+        line-height: 1;
+        font-size: var(--star-size, 16px);
+    }
+
+    .jankx-star {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--star-color, #f1c40f);
+        
+        &.empty {
+            color: var(--star-empty-color, #ddd);
+        }
+
+        &.is-svg {
+            width: var(--star-size, 16px);
+            height: var(--star-size, 16px);
+            
+            svg {
+                width: 100%;
+                height: 100%;
+                fill: currentColor;
+            }
+        }
+    }
+
+    .jankx-rating-count {
+        font-size: 0.8em;
+        color: #666;
+    }
+}
