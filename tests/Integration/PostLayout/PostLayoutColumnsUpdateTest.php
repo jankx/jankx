@@ -87,7 +87,7 @@ class PostLayoutColumnsUpdateTest extends TestCase
         
         // Should have base classes
         $this->assertContains('post-type-layout-grid', $container['classes']);
-        $this->assertContains('wp-block-jankx-post-layout-template', $container['classes']);
+        $this->assertContains('wp-block-jankx-dynamic-data-layout', $container['classes']);
         $this->assertContains('is-flex-container', $container['classes']);
         
         // Should have column classes

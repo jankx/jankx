@@ -28,6 +28,8 @@ return [
         // App\Providers\WooCommerce\SaleBadgeServiceProvider::class,
         // App\Providers\WordPress\ApplyTermHtmlDescriptionServiceProvider::class,
         // App\Providers\WordPress\VisualTermDescriptionEditorServiceProvider::class,
+        App\Providers\WordPress\AdminThumbnailColumnStyleServiceProvider::class,
+        Jankx\Features\Gallery\GalleryServiceProvider::class,
     ],
     'aliases' => [
         'cache' => ['\Jankx\Services\CacheService'],

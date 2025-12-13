@@ -271,7 +271,7 @@ trait PostTemplateRendererTrait
 
     protected function buildWrapperAttributes(array $options): array
     {
-        $classes = ['wp-block-jankx-post-layout-template'];
+        $classes = ['wp-block-jankx-dynamic-data-layout'];
         $templateAttrs = $this->templateBlock['attrs'] ?? [];
 
         if (!empty($templateAttrs['className'])) {

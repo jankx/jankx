@@ -98,7 +98,7 @@ class LayoutOptionsResolver
             return $options;
         }
         if (empty($options['itemsWrapperClass'])) {
-            $options['itemsWrapperClass'] = 'wp-block-jankx-post-layout-template';
+            $options['itemsWrapperClass'] = 'wp-block-jankx-dynamic-data-layout';
         }
         if (empty($options['itemClass'])) {
             $options['itemClass'] = 'wp-block-post';

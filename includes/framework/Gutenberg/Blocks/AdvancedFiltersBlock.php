@@ -394,13 +394,12 @@ class AdvancedFiltersBlock extends Block
         // Try detect post type from target dynamic-data-layout blocks
         $detected_post_type = $this->detectPostTypeFromTargetIds($target_block_ids) ?: 'post';
 
-        // Detect multi post type settings from the first target dynamic-data-layout block
+        // Detect multi post type settings from all target dynamic-data-layout blocks
         $multi_post_types = [
             'enabled' => false,
             'postTypes' => [],
         ];
         if (!empty($target_block_ids)) {
-            $first_target_id = $target_block_ids[0];
             $current_post_id = 0;
             global $post;
             if ($post && isset($post->ID)) {
@@ -408,14 +407,28 @@ class AdvancedFiltersBlock extends Block
             } else {
                 $current_post_id = get_the_ID() ?: 0;
             }
-            $ddl_attrs = apply_filters('jankx_dynamic_data_layout_get_block_attributes', null, $current_post_id, (string) $first_target_id);
-            if (is_array($ddl_attrs)) {
-                $use_multi = !empty($ddl_attrs['useMultiPostType']);
-                $post_types = is_array($ddl_attrs['postTypes'] ?? null) ? array_values(array_filter($ddl_attrs['postTypes'])) : [];
-                if ($use_multi && count($post_types) > 1) {
-                    $multi_post_types['enabled'] = true;
-                    $multi_post_types['postTypes'] = $post_types;
+            $union_post_types = [];
+            $multi_enabled = false;
+            foreach ($target_block_ids as $ddl_id) {
+                $ddl_attrs = apply_filters('jankx_dynamic_data_layout_get_block_attributes', null, $current_post_id, (string) $ddl_id);
+                if (!is_array($ddl_attrs)) {
+                    continue;
                 }
+                if (!empty($ddl_attrs['useMultiPostType'])) {
+                    $multi_enabled = true;
+                }
+                $pts = is_array($ddl_attrs['postTypes'] ?? null) ? array_values(array_filter($ddl_attrs['postTypes'])) : [];
+                foreach ($pts as $pt) {
+                    if (!in_array($pt, $union_post_types, true)) {
+                        $union_post_types[] = $pt;
+                    }
+                }
+            }
+            // Enable multi post types whenever union of post types across targets > 1,
+            // even if individual blocks are single post type
+            if (count($union_post_types) > 1) {
+                $multi_post_types['enabled'] = true;
+                $multi_post_types['postTypes'] = $union_post_types;
             }
         }
         // Expose multi post type settings to renderer via attributes

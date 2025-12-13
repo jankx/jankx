@@ -20,7 +20,7 @@ class CardLayout extends PostLayout
         $columnsMobile = (int) $this->getOption('columnsMobile', 1);
 
         $wrapper_class = sprintf(
-            'post-type-layout-card wp-block-jankx-post-layout-template is-flex-container columns-%d columns-tablet-%d columns-mobile-%d',
+            'post-type-layout-card wp-block-jankx-dynamic-data-layout is-flex-container columns-%d columns-tablet-%d columns-mobile-%d',
             max(1, $columns),
             max(1, $columnsTablet),
             max(1, $columnsMobile)
