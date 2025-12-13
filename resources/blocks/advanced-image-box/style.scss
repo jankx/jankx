@@ -5,11 +5,23 @@
 // Import Animate.css for animations
 @import url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css');
 
-.wp-block-jankx-advanced-image-box {
+figure.wp-block-jankx-advanced-image-box {
 	position: relative;
 	overflow: hidden;
 	border-radius: var(--wp--custom--border-radius, 0);
 	transition: all 0.3s ease;
+
+	div[class*="__no-image"] {
+		height: 100%;
+		display: flex;
+  		align-items: center;
+		justify-content: center;
+
+		div[class*="__no-image__alt"] {
+			font-size: 16px;
+			font-weight: 700;
+		}
+	}
 
 	&__image {
 		display: block;

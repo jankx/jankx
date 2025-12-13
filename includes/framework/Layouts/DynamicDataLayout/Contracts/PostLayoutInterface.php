@@ -18,5 +18,6 @@ interface PostLayoutInterface
     public function getHtmlStructure(array $options = []): array;
     public function getSupportedOptions(): array;
     public function getReadOnlyOptions(): array;
+    public function getSettingsDefinition(): array;
 }
 

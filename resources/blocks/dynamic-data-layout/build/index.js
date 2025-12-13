@@ -8,7 +8,7 @@
   \***********************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/dynamic-data-layout","version":"1.0.0","title":"Dynamic Data Layout","category":"jankx","icon":"layout","description":"Hiển thị danh sách posts theo layout tùy chỉnh với WordPress query builder","textdomain":"jankx","editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css","providesContext":{"queryId":"queryId","postType":"postType","displayLayout":"layout","postsPerPage":"postsPerPage","columns":"columns","columnsTablet":"columnsTablet","columnsMobile":"columnsMobile","slidesToScroll":"slidesToScroll","loop":"loop","autoplay":"autoplay","autoplayDelay":"autoplayDelay","showArrows":"showArrows","showDots":"showDots"},"usesContext":["queryId","postType"],"allowedBlocks":["jankx/dynamic-data-template"],"supports":{"html":false,"align":["wide","full"],"anchor":true,"innerBlocks":true,"spacing":{"margin":true,"padding":true,"blockGap":true},"color":{"background":true,"text":true,"link":true,"gradients":true},"background":{"backgroundImage":true,"backgroundSize":true},"typography":{"fontSize":true,"lineHeight":true},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true},"__experimentalLayout":{"allowSwitching":true,"allowInheriting":true,"default":{"type":"constrained"}}},"attributes":{"queryPreset":{"type":"string","default":"custom","enum":["default","related","custom","on-sale","featured","related-products","best-sellers","top-rated","upsells","new-arrivals","recently-viewed"]},"postType":{"type":"string","default":"post"},"useMultiPostType":{"type":"boolean","default":false},"postTypes":{"type":"array","default":[]},"postsPerPage":{"type":"number","default":10},"includeStickyPosts":{"type":"boolean","default":false},"layout":{"type":"string","default":"grid"},"columns":{"type":"number","default":3},"columnsTablet":{"type":"number","default":2},"columnsMobile":{"type":"number","default":1},"responsiveColumns":{"type":"object","default":{"desktop":3,"tablet":2,"mobile":1}},"orderBy":{"type":"string","default":"date"},"order":{"type":"string","default":"DESC"},"queryId":{"type":"string","default":""},"offset":{"type":"number","default":0},"taxQuery":{"type":"array","default":[]},"metaQuery":{"type":"array","default":[]},"keyword":{"type":"string","default":""},"authorIn":{"type":"array","default":[]},"authorNotIn":{"type":"array","default":[]},"postIn":{"type":"array","default":[]},"postNotIn":{"type":"array","default":[]},"metaKey":{"type":"string","default":""},"metaType":{"type":"string","default":""},"postStatus":{"type":"array","default":["publish"]},"postParent":{"type":"number","default":0},"postParentIn":{"type":"array","default":[]},"postParentNotIn":{"type":"array","default":[]},"customQueryId":{"type":"string","default":""},"enablePagination":{"type":"boolean","default":false},"paginationStyle":{"type":"string","default":"numbers","enum":["numbers","simple","arrows","load-more"]},"paginationAlignment":{"type":"string","default":"center","enum":["left","center","right"]},"showPaginationNumbers":{"type":"boolean","default":true},"paginationPrevText":{"type":"string","default":""},"paginationNextText":{"type":"string","default":""},"slidesToScroll":{"type":"number","default":1},"loop":{"type":"boolean","default":false},"autoplay":{"type":"boolean","default":false},"autoplayDelay":{"type":"number","default":3000},"showArrows":{"type":"boolean","default":true},"showDots":{"type":"boolean","default":true},"carouselAlign":{"type":"string","default":"start","enum":["start","center","end"]},"carouselAxis":{"type":"string","default":"x","enum":["x","y"]},"carouselDirection":{"type":"string","default":"ltr","enum":["ltr","rtl"]},"carouselStartIndex":{"type":"number","default":0},"carouselDuration":{"type":"number","default":25},"carouselDragFree":{"type":"boolean","default":false},"carouselDragThreshold":{"type":"number","default":10},"carouselSkipSnaps":{"type":"boolean","default":false},"carouselContainScroll":{"type":"string","default":"trimSnaps","enum":["false","trimSnaps","keepSnaps"]},"carouselInViewThreshold":{"type":"number","default":0},"showTitle":{"type":"boolean","default":true},"showExcerpt":{"type":"boolean","default":true},"showFeaturedImage":{"type":"boolean","default":true},"thumbnailPosition":{"type":"string","default":"top","enum":["top","bottom","left","right"]},"imageRatio":{"type":"string","default":""},"showDate":{"type":"boolean","default":true},"showAuthor":{"type":"boolean","default":false},"showPrice":{"type":"boolean","default":true},"showAddToCart":{"type":"boolean","default":true},"showRating":{"type":"boolean","default":false},"excerptLength":{"type":"number","default":55}}}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/dynamic-data-layout","version":"1.0.0","title":"Dynamic Data Layout","category":"jankx","icon":"layout","description":"Hiển thị danh sách posts theo layout tùy chỉnh với WordPress query builder","textdomain":"jankx","editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css","providesContext":{"queryId":"queryId","postType":"postType","displayLayout":"layout","postsPerPage":"postsPerPage","columns":"columns","columnsTablet":"columnsTablet","columnsMobile":"columnsMobile","slidesToScroll":"slidesToScroll","loop":"loop","autoplay":"autoplay","autoplayDelay":"autoplayDelay","showArrows":"showArrows","showDots":"showDots","carouselAlign":"carouselAlign","carouselAxis":"carouselAxis","carouselDirection":"carouselDirection","carouselStartIndex":"carouselStartIndex","carouselDuration":"carouselDuration","carouselDragFree":"carouselDragFree","carouselDragThreshold":"carouselDragThreshold","carouselSkipSnaps":"carouselSkipSnaps","carouselContainScroll":"carouselContainScroll","carouselInViewThreshold":"carouselInViewThreshold"},"usesContext":["queryId","postType"],"allowedBlocks":["jankx/dynamic-data-template"],"supports":{"html":false,"align":["wide","full"],"anchor":true,"innerBlocks":true,"spacing":{"margin":true,"padding":true,"blockGap":true},"color":{"background":true,"text":true,"link":true,"gradients":true},"background":{"backgroundImage":true,"backgroundSize":true},"typography":{"fontSize":true,"lineHeight":true},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true},"__experimentalLayout":{"allowSwitching":true,"allowInheriting":true,"default":{"type":"constrained"}}},"attributes":{"queryPreset":{"type":"string","default":"custom","enum":["default","related","custom","on-sale","featured","related-products","best-sellers","top-rated","upsells","new-arrivals","recently-viewed"]},"postType":{"type":"string","default":"post"},"useMultiPostType":{"type":"boolean","default":false},"postTypes":{"type":"array","default":[]},"postsPerPage":{"type":"number","default":10},"includeStickyPosts":{"type":"boolean","default":false},"layout":{"type":"string","default":"grid"},"columns":{"type":"number","default":3},"columnsTablet":{"type":"number","default":2},"columnsMobile":{"type":"number","default":1},"responsiveColumns":{"type":"object","default":{"desktop":3,"tablet":2,"mobile":1}},"orderBy":{"type":"string","default":"date"},"order":{"type":"string","default":"DESC"},"queryId":{"type":"string","default":""},"offset":{"type":"number","default":0},"taxQuery":{"type":"array","default":[]},"metaQuery":{"type":"array","default":[]},"keyword":{"type":"string","default":""},"authorIn":{"type":"array","default":[]},"authorNotIn":{"type":"array","default":[]},"postIn":{"type":"array","default":[]},"postNotIn":{"type":"array","default":[]},"metaKey":{"type":"string","default":""},"metaType":{"type":"string","default":""},"postStatus":{"type":"array","default":["publish"]},"postParent":{"type":"number","default":0},"postParentIn":{"type":"array","default":[]},"postParentNotIn":{"type":"array","default":[]},"customQueryId":{"type":"string","default":""},"enablePagination":{"type":"boolean","default":false},"paginationStyle":{"type":"string","default":"numbers","enum":["numbers","simple","arrows","load-more"]},"paginationAlignment":{"type":"string","default":"center","enum":["left","center","right"]},"showPaginationNumbers":{"type":"boolean","default":true},"paginationPrevText":{"type":"string","default":""},"paginationNextText":{"type":"string","default":""},"slidesToScroll":{"type":"number","default":1},"loop":{"type":"boolean","default":false},"autoplay":{"type":"boolean","default":false},"autoplayDelay":{"type":"number","default":3000},"showArrows":{"type":"boolean","default":true},"showDots":{"type":"boolean","default":true},"carouselAlign":{"type":"string","default":"start","enum":["start","center","end"]},"carouselAxis":{"type":"string","default":"x","enum":["x","y"]},"carouselDirection":{"type":"string","default":"ltr","enum":["ltr","rtl"]},"carouselStartIndex":{"type":"number","default":0},"carouselDuration":{"type":"number","default":25},"carouselDragFree":{"type":"boolean","default":false},"carouselDragThreshold":{"type":"number","default":10},"carouselSkipSnaps":{"type":"boolean","default":false},"carouselContainScroll":{"type":"string","default":"trimSnaps","enum":["false","trimSnaps","keepSnaps"]},"carouselInViewThreshold":{"type":"number","default":0},"showTitle":{"type":"boolean","default":true},"showExcerpt":{"type":"boolean","default":true},"showFeaturedImage":{"type":"boolean","default":true},"thumbnailPosition":{"type":"string","default":"top","enum":["top","bottom","left","right"]},"imageRatio":{"type":"string","default":""},"showDate":{"type":"boolean","default":true},"showAuthor":{"type":"boolean","default":false},"showPrice":{"type":"boolean","default":true},"showAddToCart":{"type":"boolean","default":true},"showRating":{"type":"boolean","default":false},"excerptLength":{"type":"number","default":55}}}');
 
 /***/ }),
 
@@ -82,11 +82,13 @@ const normalizeLayouts = rawLayouts => {
     const title = typeof layout?.title === 'string' ? layout.title : name;
     const supportedOptions = Array.isArray(layout?.supportedOptions) ? layout.supportedOptions : undefined;
     const readOnlyOptions = Array.isArray(layout?.readOnlyOptions) ? layout.readOnlyOptions : undefined;
+    const settingsDefinition = Array.isArray(layout?.settingsDefinition) ? layout.settingsDefinition : undefined;
     return {
       name,
       title,
       supportedOptions,
-      readOnlyOptions
+      readOnlyOptions,
+      settingsDefinition
     };
   }).filter(layout => layout.name.length > 0 && layout.title.length > 0);
 };
@@ -523,6 +525,9 @@ function Edit({
         if (layoutInfo.supportedOptions) {
           layoutItem.supportedOptions = layoutInfo.supportedOptions;
         }
+        if (layoutInfo.settingsDefinition) {
+          layoutItem.settingsDefinition = layoutInfo.settingsDefinition;
+        }
         layouts.push(layoutItem);
       });
     }
@@ -537,6 +542,9 @@ function Edit({
         };
         if (layoutInfo.supportedOptions) {
           layoutItem.supportedOptions = layoutInfo.supportedOptions;
+        }
+        if (layoutInfo.settingsDefinition) {
+          layoutItem.settingsDefinition = layoutInfo.settingsDefinition;
         }
         layouts.push(layoutItem);
       });
@@ -563,8 +571,10 @@ function Edit({
   console.log('[DEBUG Edit] currentLayout:', currentLayout, 'for layout:', layout);
   const supportedOptions = currentLayout?.supportedOptions || [];
   const readOnlyOptions = currentLayout?.readOnlyOptions || [];
+  const settingsDefinition = currentLayout?.settingsDefinition || [];
   console.log('[DEBUG Edit] supportedOptions:', supportedOptions);
   console.log('[DEBUG Edit] readOnlyOptions:', readOnlyOptions);
+  console.log('[DEBUG Edit] settingsDefinition:', settingsDefinition);
 
   // Check if post type is product
   const isProduct = postType === 'product';
@@ -581,6 +591,80 @@ function Edit({
   }, [imageRatio]);
   const isCustomImageRatio = imageRatioSelectValue === 'custom';
   const customImageRatioValue = isCustomImageRatio && imageRatio ? imageRatio : '';
+
+  // Helper to render dynamic settings
+  const renderSettingsControl = (setting, index) => {
+    var _ref;
+    // Check conditions
+    if (setting.condition) {
+      const shouldRender = Object.entries(setting.condition).every(([key, value]) => {
+        return attributes[key] === value;
+      });
+      if (!shouldRender) {
+        return null;
+      }
+    }
+    const commonProps = {
+      key: index,
+      label: setting.label,
+      help: setting.help
+    };
+    switch (setting.type) {
+      case 'text':
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+          ...commonProps,
+          value: attributes[setting.name] || setting.default || '',
+          onChange: value => setAttributes({
+            [setting.name]: value
+          })
+        });
+      case 'number':
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+          ...commonProps,
+          type: "number",
+          value: attributes[setting.name] || setting.default || '',
+          onChange: value => setAttributes({
+            [setting.name]: Number(value)
+          })
+        });
+      case 'range':
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
+          ...commonProps,
+          value: attributes[setting.name] || setting.default,
+          onChange: value => setAttributes({
+            [setting.name]: value
+          }),
+          min: setting.min,
+          max: setting.max,
+          step: setting.step
+        });
+      case 'toggle':
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+          ...commonProps,
+          checked: (_ref = attributes[setting.name]) !== null && _ref !== void 0 ? _ref : setting.default,
+          onChange: value => setAttributes({
+            [setting.name]: value
+          })
+        });
+      case 'select':
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+          ...commonProps,
+          value: attributes[setting.name] || setting.default,
+          options: setting.options || [],
+          onChange: value => setAttributes({
+            [setting.name]: value
+          })
+        });
+      case 'panel':
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+          title: setting.title,
+          initialOpen: setting.initialOpen,
+          children: setting.controls?.map((childSetting, childIndex) => renderSettingsControl(childSetting, childIndex))
+        }, index);
+      default:
+        return null;
+    }
+  };
 
   // Pre-compute orderBy options outside conditional render to avoid React hooks error
   console.log('[DEBUG Edit] [HOOK-15] About to call useMemo (orderByOptions)');
@@ -851,56 +935,11 @@ function Edit({
             mobile: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Number of columns on mobile (<768px)', 'jankx')
           }
         }) : null]
-      }), layout === 'carousel' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Slides To Scroll', 'jankx'),
-          value: slidesToScroll,
-          onChange: value => setAttributes({
-            slidesToScroll: value || 1
-          }),
-          min: 1,
-          max: columns || 3,
-          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Number of slides to scroll at a time', 'jankx')
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Loop', 'jankx'),
-          checked: loop,
-          onChange: value => setAttributes({
-            loop: value
-          }),
-          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enable infinite loop', 'jankx')
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Autoplay', 'jankx'),
-          checked: autoplay,
-          onChange: value => setAttributes({
-            autoplay: value
-          }),
-          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Automatically advance slides', 'jankx')
-        }), autoplay ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Autoplay Delay (ms)', 'jankx'),
-          value: autoplayDelay,
-          onChange: value => setAttributes({
-            autoplayDelay: value || 3000
-          }),
-          min: 1000,
-          max: 10000,
-          step: 500,
-          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Time between autoplay transitions', 'jankx')
-        }) : null, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Arrows', 'jankx'),
-          checked: showArrows,
-          onChange: value => setAttributes({
-            showArrows: value
-          }),
-          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Display navigation arrows', 'jankx')
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Dots', 'jankx'),
-          checked: showDots,
-          onChange: value => setAttributes({
-            showDots: value
-          }),
-          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Display pagination dots', 'jankx')
-        })]
-      }) : null, queryPreset === 'custom' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+      }), settingsDefinition.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Layout Settings', 'jankx'),
+        initialOpen: true,
+        children: settingsDefinition.map((setting, index) => renderSettingsControl(setting, index))
+      }), queryPreset === 'custom' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Query Parameters', 'jankx'),
         initialOpen: false,
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {

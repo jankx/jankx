@@ -78,12 +78,29 @@ interface QueryOptions {
     metaTypes?: MetaTypeOption[];
 }
 
+interface SettingDefinition {
+    name?: string;
+    label?: string;
+    type: 'text' | 'number' | 'range' | 'toggle' | 'select' | 'panel';
+    default?: any;
+    options?: { label: string; value: string }[];
+    min?: number;
+    max?: number;
+    step?: number;
+    help?: string;
+    condition?: Record<string, any>;
+    title?: string; // For panel
+    initialOpen?: boolean; // For panel
+    controls?: SettingDefinition[]; // For panel
+}
+
 interface LayoutInfo {
     name: string;
     title: string;
     postType?: string;
     supportedOptions?: string[];
     readOnlyOptions?: string[];
+    settingsDefinition?: SettingDefinition[];
 }
 
 interface LayoutsData {
@@ -161,12 +178,16 @@ const normalizeLayouts = (rawLayouts: unknown): LayoutInfo[] => {
             const readOnlyOptions = Array.isArray(layout?.readOnlyOptions)
                 ? (layout.readOnlyOptions as string[])
                 : undefined;
+            const settingsDefinition = Array.isArray(layout?.settingsDefinition)
+                ? (layout.settingsDefinition as SettingDefinition[])
+                : undefined;
 
             return {
                 name,
                 title,
                 supportedOptions,
                 readOnlyOptions,
+                settingsDefinition,
             };
         })
         .filter((layout) => layout.name.length > 0 && layout.title.length > 0);
@@ -732,18 +753,21 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     console.log('[DEBUG Edit] [HOOK-13] About to call useMemo (availableLayouts)');
     const availableLayouts = useMemo(() => {
         console.log('[DEBUG Edit] [HOOK-13] useMemo availableLayouts - postType:', postType);
-        const layouts: Array<{ name: string; title: string; supportedOptions?: string[] }> = [];
+        const layouts: Array<{ name: string; title: string; supportedOptions?: string[]; settingsDefinition?: SettingDefinition[] }> = [];
         
         // Add common layouts
         if (layoutsData.commonLayouts) {
             console.log('[DEBUG Edit] Processing commonLayouts:', layoutsData.commonLayouts);
             layoutsData.commonLayouts.forEach((layoutInfo: LayoutInfo) => {
-                const layoutItem: { name: string; title: string; supportedOptions?: string[] } = {
+                const layoutItem: { name: string; title: string; supportedOptions?: string[]; settingsDefinition?: SettingDefinition[] } = {
                     name: layoutInfo.name || '',
                     title: layoutInfo.title || layoutInfo.name || '',
                 };
                 if (layoutInfo.supportedOptions) {
                     layoutItem.supportedOptions = layoutInfo.supportedOptions;
+                }
+                if (layoutInfo.settingsDefinition) {
+                    layoutItem.settingsDefinition = layoutInfo.settingsDefinition;
                 }
                 layouts.push(layoutItem);
             });
@@ -753,12 +777,15 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         if (layoutsData.layoutsByPostType && layoutsData.layoutsByPostType[postType]) {
             console.log('[DEBUG Edit] Processing layoutsByPostType for', postType, ':', layoutsData.layoutsByPostType[postType]);
             layoutsData.layoutsByPostType[postType].forEach((layoutInfo: LayoutInfo) => {
-                const layoutItem: { name: string; title: string; supportedOptions?: string[] } = {
+                const layoutItem: { name: string; title: string; supportedOptions?: string[]; settingsDefinition?: SettingDefinition[] } = {
                     name: layoutInfo.name || '',
                     title: layoutInfo.title || layoutInfo.name || '',
                 };
                 if (layoutInfo.supportedOptions) {
                     layoutItem.supportedOptions = layoutInfo.supportedOptions;
+                }
+                if (layoutInfo.settingsDefinition) {
+                    layoutItem.settingsDefinition = layoutInfo.settingsDefinition;
                 }
                 layouts.push(layoutItem);
             });
@@ -787,8 +814,10 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     
     const supportedOptions: string[] = currentLayout?.supportedOptions || [];
     const readOnlyOptions: string[] = currentLayout?.readOnlyOptions || [];
+    const settingsDefinition: SettingDefinition[] = currentLayout?.settingsDefinition || [];
     console.log('[DEBUG Edit] supportedOptions:', supportedOptions);
     console.log('[DEBUG Edit] readOnlyOptions:', readOnlyOptions);
+    console.log('[DEBUG Edit] settingsDefinition:', settingsDefinition);
 
     // Check if post type is product
     const isProduct = postType === 'product';
@@ -806,6 +835,83 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
 
     const isCustomImageRatio = imageRatioSelectValue === 'custom';
     const customImageRatioValue = isCustomImageRatio && imageRatio ? imageRatio : '';
+
+    // Helper to render dynamic settings
+    const renderSettingsControl = (setting: SettingDefinition, index: number): JSX.Element | null => {
+        // Check conditions
+        if (setting.condition) {
+            const shouldRender = Object.entries(setting.condition).every(([key, value]) => {
+                return (attributes as any)[key] === value;
+            });
+            if (!shouldRender) {
+                return null;
+            }
+        }
+
+        const commonProps = {
+            key: index,
+            label: setting.label,
+            help: setting.help,
+        };
+
+        switch (setting.type) {
+            case 'text':
+                return (
+                    <TextControl
+                        {...commonProps}
+                        value={(attributes as any)[setting.name!] || setting.default || ''}
+                        onChange={(value) => setAttributes({ [setting.name!]: value })}
+                    />
+                );
+            case 'number':
+                return (
+                    <TextControl
+                        {...commonProps}
+                        type="number"
+                        value={(attributes as any)[setting.name!] || setting.default || ''}
+                        onChange={(value) => setAttributes({ [setting.name!]: Number(value) })}
+                    />
+                );
+            case 'range':
+                return (
+                    <RangeControl
+                        {...commonProps}
+                        value={(attributes as any)[setting.name!] || setting.default}
+                        onChange={(value) => setAttributes({ [setting.name!]: value })}
+                        min={setting.min}
+                        max={setting.max}
+                        step={setting.step}
+                    />
+                );
+            case 'toggle':
+                return (
+                    <ToggleControl
+                        {...commonProps}
+                        checked={(attributes as any)[setting.name!] ?? setting.default}
+                        onChange={(value) => setAttributes({ [setting.name!]: value })}
+                    />
+                );
+            case 'select':
+                return (
+                    <SelectControl
+                        {...commonProps}
+                        value={(attributes as any)[setting.name!] || setting.default}
+                        options={setting.options || []}
+                        onChange={(value) => setAttributes({ [setting.name!]: value })}
+                    />
+                );
+            case 'panel':
+                return (
+                    <PanelBody title={setting.title} initialOpen={setting.initialOpen} key={index}>
+                        {setting.controls?.map((childSetting, childIndex) => 
+                            renderSettingsControl(childSetting, childIndex)
+                        )}
+                    </PanelBody>
+                );
+            default:
+                return null;
+        }
+    };
 
     // Pre-compute orderBy options outside conditional render to avoid React hooks error
     console.log('[DEBUG Edit] [HOOK-15] About to call useMemo (orderByOptions)');
@@ -1073,54 +1179,12 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                             ) : null}
                         </PanelBody>
                     
-                    {/* Carousel Specific Settings */}
-                    {layout === 'carousel' ? (
-                        <>
-                            <RangeControl
-                                label={__('Slides To Scroll', 'jankx')}
-                                value={slidesToScroll}
-                                onChange={(value) => setAttributes({ slidesToScroll: value || 1 })}
-                                min={1}
-                                max={columns || 3}
-                                help={__('Number of slides to scroll at a time', 'jankx')}
-                            />
-                            <ToggleControl
-                                label={__('Loop', 'jankx')}
-                                checked={loop}
-                                onChange={(value) => setAttributes({ loop: value })}
-                                help={__('Enable infinite loop', 'jankx')}
-                            />
-                            <ToggleControl
-                                label={__('Autoplay', 'jankx')}
-                                checked={autoplay}
-                                onChange={(value) => setAttributes({ autoplay: value })}
-                                help={__('Automatically advance slides', 'jankx')}
-                            />
-                            {autoplay ? (
-                                <RangeControl
-                                    label={__('Autoplay Delay (ms)', 'jankx')}
-                                    value={autoplayDelay}
-                                    onChange={(value) => setAttributes({ autoplayDelay: value || 3000 })}
-                                    min={1000}
-                                    max={10000}
-                                    step={500}
-                                    help={__('Time between autoplay transitions', 'jankx')}
-                                />
-                            ) : null}
-                            <ToggleControl
-                                label={__('Show Arrows', 'jankx')}
-                                checked={showArrows}
-                                onChange={(value) => setAttributes({ showArrows: value })}
-                                help={__('Display navigation arrows', 'jankx')}
-                            />
-                            <ToggleControl
-                                label={__('Show Dots', 'jankx')}
-                                checked={showDots}
-                                onChange={(value) => setAttributes({ showDots: value })}
-                                help={__('Display pagination dots', 'jankx')}
-                            />
-                        </>
-                    ) : null}
+                    {/* Layout Specific Settings (Dynamic) */}
+                    {settingsDefinition.length > 0 && (
+                        <PanelBody title={__('Layout Settings', 'jankx')} initialOpen={true}>
+                            {settingsDefinition.map((setting, index) => renderSettingsControl(setting, index))}
+                        </PanelBody>
+                    )}
 
                 {/* Query Parameters - Only show for custom preset */}
                 {queryPreset === 'custom' ? (

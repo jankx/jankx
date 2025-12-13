@@ -175,6 +175,7 @@ class DynamicDataLayoutManager
                         'postType' => $postType,
                         'supportedOptions' => $layout->getSupportedOptions(),
                         'readOnlyOptions' => $layout->getReadOnlyOptions(),
+                        'settingsDefinition' => $layout->getSettingsDefinition(),
                     ];
                 }
             } catch (\Exception $e) {
@@ -195,6 +196,7 @@ class DynamicDataLayoutManager
                         'postType' => $postType,
                         'supportedOptions' => $layout->getSupportedOptions(),
                         'readOnlyOptions' => $layout->getReadOnlyOptions(),
+                        'settingsDefinition' => $layout->getSettingsDefinition(),
                     ];
                 }
             } catch (\Exception $e) {
@@ -210,6 +212,7 @@ class DynamicDataLayoutManager
             'postType' => $postType,
             'supportedOptions' => [],
             'readOnlyOptions' => [],
+            'settingsDefinition' => [],
         ];
     }
 

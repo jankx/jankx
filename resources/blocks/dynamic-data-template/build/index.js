@@ -8,7 +8,7 @@
   \*************************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/dynamic-data-template","title":"Dynamic Data Template","category":"jankx","parent":["jankx/dynamic-data-layout"],"description":"Markup template để render từng item trong Dynamic Data Layout block","textdomain":"jankx","editorScript":"file:./build/index.js","style":"file:./build/style.css","editorStyle":"file:./build/editor.css","usesContext":["queryId","postType","displayLayout","postsPerPage","columns","columnsTablet","columnsMobile","slidesToScroll","loop","autoplay","autoplayDelay","showArrows","showDots"],"supports":{"reusable":false,"html":false,"align":["wide","full"],"layout":true,"color":{"gradients":true,"link":true,"__experimentalDefaultControls":{"background":true,"text":true}},"typography":{"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true,"__experimentalTextTransform":true,"__experimentalTextDecoration":true,"__experimentalLetterSpacing":true,"__experimentalDefaultControls":{"fontSize":true}},"spacing":{"margin":true,"padding":true,"blockGap":{"__experimentalDefault":"1.25em"},"__experimentalDefaultControls":{"blockGap":true,"padding":false,"margin":false}},"interactivity":{"clientNavigation":true},"__experimentalBorder":{"radius":true,"color":true,"width":true,"style":true}},"attributes":{"contentLoopLayout":{"type":"string","default":"default"},"className":{"type":"string","default":""},"itemSpacing":{"type":"string","default":"normal","enum":["none","compact","normal","loose"]},"showItemBorder":{"type":"boolean","default":false},"itemBorderRadius":{"type":"number","default":0},"itemPadding":{"type":"object","default":{"top":"0","right":"0","bottom":"0","left":"0"}},"thumbnailPosition":{"type":"string","default":"top","enum":["top","bottom","left","right"]},"imageRatio":{"type":"string","default":""}}}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/dynamic-data-template","title":"Dynamic Data Template","category":"jankx","parent":["jankx/dynamic-data-layout"],"description":"Markup template để render từng item trong Dynamic Data Layout block","textdomain":"jankx","editorScript":"file:./build/index.js","style":"file:./build/style.css","editorStyle":"file:./build/editor.css","usesContext":["queryId","postType","displayLayout","postsPerPage","columns","columnsTablet","columnsMobile","slidesToScroll","loop","autoplay","autoplayDelay","showArrows","showDots","carouselAlign","carouselAxis","carouselDirection","carouselStartIndex","carouselDuration","carouselDragFree","carouselDragThreshold","carouselSkipSnaps","carouselContainScroll","carouselInViewThreshold"],"supports":{"reusable":false,"html":false,"align":["wide","full"],"layout":true,"color":{"gradients":true,"link":true,"__experimentalDefaultControls":{"background":true,"text":true}},"typography":{"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true,"__experimentalTextTransform":true,"__experimentalTextDecoration":true,"__experimentalLetterSpacing":true,"__experimentalDefaultControls":{"fontSize":true}},"spacing":{"margin":true,"padding":true,"blockGap":{"__experimentalDefault":"1.25em"},"__experimentalDefaultControls":{"blockGap":true,"padding":false,"margin":false}},"interactivity":{"clientNavigation":true},"__experimentalBorder":{"radius":true,"color":true,"width":true,"style":true}},"attributes":{"contentLoopLayout":{"type":"string","default":"default"},"className":{"type":"string","default":""},"itemSpacing":{"type":"string","default":"normal","enum":["none","compact","normal","loose"]},"showItemBorder":{"type":"boolean","default":false},"itemBorderRadius":{"type":"number","default":0},"itemPadding":{"type":"object","default":{"top":"0","right":"0","bottom":"0","left":"0"}},"thumbnailPosition":{"type":"string","default":"top","enum":["top","bottom","left","right"]},"imageRatio":{"type":"string","default":""}}}');
 
 /***/ }),
 
@@ -42,6 +42,11 @@ __webpack_require__.r(__webpack_exports__);
 
 // Image ratio presets
 const PRESET_IMAGE_RATIOS = ['16/9', '4/3', '21/9', '1/1', '3/4', '2/3', '9/16'];
+const DEFAULT_LAYOUTS_DATA = {
+  layoutsByPostType: {},
+  commonLayouts: []
+};
+const DEFAULT_BLOCKS_DATA = {};
 function Edit({
   attributes,
   setAttributes,
@@ -80,12 +85,10 @@ function Edit({
   const slidesToScroll = context?.slidesToScroll || 1;
   const showArrows = !!context?.showArrows;
   const showDots = !!context?.showDots;
+  const carouselAlign = context?.carouselAlign || 'start';
 
   // Get layouts data from PHP
-  const layoutsData = window.jankxDynamicDataContentLoopLayouts || {
-    layoutsByPostType: {},
-    commonLayouts: []
-  };
+  const layoutsData = window.jankxDynamicDataContentLoopLayouts || DEFAULT_LAYOUTS_DATA;
 
   // Get available layouts for current post type
   const availableLayouts = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useMemo)(() => {
@@ -116,7 +119,7 @@ function Edit({
 
   // Get default blocks for post type
   const defaultBlocks = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useMemo)(() => {
-    const defaultBlocksData = window.jankxDynamicDataTemplateDefaultBlocks || {};
+    const defaultBlocksData = window.jankxDynamicDataTemplateDefaultBlocks || DEFAULT_BLOCKS_DATA;
     return defaultBlocksData[postType] || [];
   }, [postType]);
 
@@ -144,25 +147,16 @@ function Edit({
     allowedBlocks: undefined // Allow all blocks
   });
 
-  // Dispatch để có thể update blocks
-  const {
-    replaceInnerBlocks
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_4__.useDispatch)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.store);
-
   // Get current template block innerBlocks từ store
   const templateBlock = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_4__.useSelect)(select => select(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.store).getBlock(clientId), [clientId]);
   const currentInnerBlocks = templateBlock?.innerBlocks || [];
 
   // Shared state cho tất cả items - dùng React state để đồng nhất
   const [sharedInnerBlocks, setSharedInnerBlocks] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useState)(currentInnerBlocks);
-  const isSyncingRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useRef)(false);
   const lastSyncedBlocksRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useRef)('');
 
   // Sync: khi innerBlocks của template block thay đổi, update shared state
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useEffect)(() => {
-    if (isSyncingRef.current) {
-      return; // Đang sync, bỏ qua
-    }
     const currentBlocksStr = JSON.stringify(currentInnerBlocks);
 
     // Chỉ sync nếu thực sự có thay đổi
@@ -353,7 +347,7 @@ function Edit({
             }).map((_, index) => {
               const itemStyle = {
                 flex: `0 0 calc(100% / ${columns})`,
-                scrollSnapAlign: 'start'
+                scrollSnapAlign: carouselAlign
               };
               if (index === 0) {
                 return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {

@@ -23,7 +23,17 @@
     "autoplay",
     "autoplayDelay",
     "showArrows",
-    "showDots"
+    "showDots",
+    "carouselAlign",
+    "carouselAxis",
+    "carouselDirection",
+    "carouselStartIndex",
+    "carouselDuration",
+    "carouselDragFree",
+    "carouselDragThreshold",
+    "carouselSkipSnaps",
+    "carouselContainScroll",
+    "carouselInViewThreshold"
   ],
   "supports": {
     "reusable": false,

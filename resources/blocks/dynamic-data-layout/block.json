@@ -24,7 +24,17 @@
     "autoplay": "autoplay",
     "autoplayDelay": "autoplayDelay",
     "showArrows": "showArrows",
-    "showDots": "showDots"
+    "showDots": "showDots",
+    "carouselAlign": "carouselAlign",
+    "carouselAxis": "carouselAxis",
+    "carouselDirection": "carouselDirection",
+    "carouselStartIndex": "carouselStartIndex",
+    "carouselDuration": "carouselDuration",
+    "carouselDragFree": "carouselDragFree",
+    "carouselDragThreshold": "carouselDragThreshold",
+    "carouselSkipSnaps": "carouselSkipSnaps",
+    "carouselContainScroll": "carouselContainScroll",
+    "carouselInViewThreshold": "carouselInViewThreshold"
   },
   "usesContext": ["queryId", "postType"],
   "allowedBlocks": ["jankx/dynamic-data-template"],

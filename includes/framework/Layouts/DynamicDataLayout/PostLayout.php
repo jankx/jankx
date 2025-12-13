@@ -229,6 +229,11 @@ abstract class PostLayout implements PostLayoutInterface
         return ['showTitle'];
     }
 
+    public function getSettingsDefinition(): array
+    {
+        return [];
+    }
+
     protected function loadTemplate(string $template_name, array $args = []): string
     {
         $search_paths = [

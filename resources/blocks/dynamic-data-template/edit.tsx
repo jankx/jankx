@@ -14,9 +14,9 @@ import {
     TextControl,
 } from '@wordpress/components';
 import { useMemo, useEffect, useState, useRef, useCallback } from '@wordpress/element';
-import { useSelect, useDispatch } from '@wordpress/data';
-import { cloneBlock } from '@wordpress/blocks';
+import { useSelect } from '@wordpress/data';
 import type { CSSProperties } from 'react';
+import type { BlockInstance } from '@wordpress/blocks';
 
 interface DynamicDataTemplateAttributes {
     contentLoopLayout: string;
@@ -53,6 +53,10 @@ interface DynamicDataTemplateEditProps {
         columns?: number;
         columnsTablet?: number;
         columnsMobile?: number;
+        slidesToScroll?: number;
+        showArrows?: boolean;
+        showDots?: boolean;
+        carouselAlign?: 'start' | 'center' | 'end';
     };
 }
 
@@ -61,6 +65,23 @@ interface ContentLoopLayoutOption {
     title: string;
     postType: string;
 }
+
+declare global {
+    interface Window {
+        jankxDynamicDataContentLoopLayouts?: {
+            layoutsByPostType: Record<string, ContentLoopLayoutOption[]>;
+            commonLayouts: ContentLoopLayoutOption[];
+        };
+        jankxDynamicDataTemplateDefaultBlocks?: Record<string, { blockName: string; attrs: Record<string, unknown> }[]>;
+    }
+}
+
+const DEFAULT_LAYOUTS_DATA = {
+    layoutsByPostType: {},
+    commonLayouts: [],
+};
+
+const DEFAULT_BLOCKS_DATA: Record<string, { blockName: string; attrs: Record<string, unknown> }[]> = {};
 
 export default function Edit({
     attributes,
@@ -98,15 +119,13 @@ export default function Edit({
     const columns: number = context?.columns || 3;
     const columnsTablet: number = context?.columnsTablet || 2;
     const columnsMobile: number = context?.columnsMobile || 1;
-    const slidesToScroll: number = (context as any)?.slidesToScroll || 1;
-    const showArrows: boolean = !!(context as any)?.showArrows;
-    const showDots: boolean = !!(context as any)?.showDots;
+    const slidesToScroll: number = context?.slidesToScroll || 1;
+    const showArrows: boolean = !!context?.showArrows;
+    const showDots: boolean = !!context?.showDots;
+    const carouselAlign = context?.carouselAlign || 'start';
 
     // Get layouts data from PHP
-    const layoutsData = (window as any).jankxDynamicDataContentLoopLayouts || {
-        layoutsByPostType: {},
-        commonLayouts: [],
-    };
+    const layoutsData = window.jankxDynamicDataContentLoopLayouts || DEFAULT_LAYOUTS_DATA;
 
     // Get available layouts for current post type
     const availableLayouts: ContentLoopLayoutOption[] = useMemo(() => {
@@ -138,13 +157,13 @@ export default function Edit({
 
     // Get default blocks for post type
     const defaultBlocks = useMemo(() => {
-        const defaultBlocksData = (window as any).jankxDynamicDataTemplateDefaultBlocks || {};
+        const defaultBlocksData = window.jankxDynamicDataTemplateDefaultBlocks || DEFAULT_BLOCKS_DATA;
         return defaultBlocksData[postType] || [];
     }, [postType]);
 
     // Convert default blocks to template format
     const defaultTemplate = useMemo(() => {
-        return defaultBlocks.map((blockConfig: { blockName: string; attrs: Record<string, unknown> }) => [
+        return defaultBlocks.map((blockConfig) => [
             blockConfig.blockName,
             blockConfig.attrs,
         ]);
@@ -162,14 +181,11 @@ export default function Edit({
             className: 'dynamic-data-template__inner-blocks',
         },
         {
-            template: defaultTemplate.length > 0 ? defaultTemplate : undefined,
+            template: defaultTemplate.length > 0 ? defaultTemplate as any : undefined,
             templateLock: false, // Allow editing inner blocks
             allowedBlocks: undefined, // Allow all blocks
         }
     );
-
-    // Dispatch để có thể update blocks
-    const { replaceInnerBlocks } = useDispatch(blockEditorStore);
 
     // Get current template block innerBlocks từ store
     const templateBlock = useSelect(
@@ -180,16 +196,11 @@ export default function Edit({
     const currentInnerBlocks = templateBlock?.innerBlocks || [];
 
     // Shared state cho tất cả items - dùng React state để đồng nhất
-    const [sharedInnerBlocks, setSharedInnerBlocks] = useState<any[]>(currentInnerBlocks);
-    const isSyncingRef = useRef(false);
+    const [sharedInnerBlocks, setSharedInnerBlocks] = useState<BlockInstance[]>(currentInnerBlocks);
     const lastSyncedBlocksRef = useRef<string>('');
 
     // Sync: khi innerBlocks của template block thay đổi, update shared state
     useEffect(() => {
-        if (isSyncingRef.current) {
-            return; // Đang sync, bỏ qua
-        }
-
         const currentBlocksStr = JSON.stringify(currentInnerBlocks);
         
         // Chỉ sync nếu thực sự có thay đổi
@@ -336,7 +347,7 @@ export default function Edit({
                                 {Array.from({ length: totalItems }).map((_, index) => {
                                     const itemStyle: CSSProperties = {
                                         flex: `0 0 calc(100% / ${columns})`,
-                                        scrollSnapAlign: 'start',
+                                        scrollSnapAlign: carouselAlign,
                                     };
                                     if (index === 0) {
                                         return (

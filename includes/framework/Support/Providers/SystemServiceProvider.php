@@ -48,11 +48,6 @@ class SystemServiceProvider extends ServiceProvider
         // Register facades
         Cache::setFacadeApplication($app);
         User::setFacadeApplication($app);
-
-        // Register layout facades
-        \Jankx\Facades\Menu::setFacadeApplication($app);
-        \Jankx\Facades\Sidebar::setFacadeApplication($app);
-        \Jankx\Facades\Footer::setFacadeApplication($app);
     }
 
     /**
