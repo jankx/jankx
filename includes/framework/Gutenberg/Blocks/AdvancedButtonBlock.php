@@ -40,6 +40,18 @@ class AdvancedButtonBlock extends Block
      */
     public function render($attributes, $content = '', $block = null)
     {
+        // Respect post type context when configured
+        if ($block instanceof \WP_Block) {
+            $ctx = is_array($block->context ?? null) ? $block->context : [];
+            $currentPostType = $ctx['postType'] ?? null;
+            $showForPostType = $attributes['showForPostType'] ?? '';
+            if ($currentPostType && is_string($showForPostType) && $showForPostType !== '') {
+                if ($currentPostType !== $showForPostType) {
+                    return '';
+                }
+            }
+        }
+
         // Handle empty content with inner blocks (fallback case)
         if (empty($content) && $block && !empty($block->inner_blocks)) {
             $content = $this->renderFallbackContent($attributes, $block);

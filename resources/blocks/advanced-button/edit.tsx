@@ -57,6 +57,7 @@ interface EditProps {
 		useIconBlocks: boolean;
 		iconPosition: string;
 		showLabel: boolean;
+		showForPostType?: string;
 	};
 	setAttributes: (attrs: Partial<EditProps['attributes']>) => void;
 	backgroundColor: any;
@@ -101,6 +102,7 @@ export function Edit(props: EditProps) {
 		useIconBlocks = false,
 		iconPosition = 'left',
 		showLabel = true,
+		showForPostType = '',
 	} = attributes;
 
 	// Check if block has inner blocks (icon blocks)
@@ -111,6 +113,36 @@ export function Edit(props: EditProps) {
 		},
 		[clientId]
 	);
+	// Detect ancestor dynamic-data-template/layout and multi post types
+	const { isInsideDynamicTemplate, multiPostTypes } = useSelect(
+		(select: any) => {
+			const { getBlockParents, getBlock } = select('core/block-editor');
+			const parents: string[] = getBlockParents(clientId) || [];
+			const templateId = parents.find((id) => getBlock(id)?.name === 'jankx/dynamic-data-template');
+			let multi = { enabled: false, postTypes: [] as string[] };
+			if (templateId) {
+				const layoutId = getBlockParents(templateId).find((id: string) => getBlock(id)?.name === 'jankx/dynamic-data-layout');
+				if (layoutId) {
+					const layoutBlock = getBlock(layoutId);
+					const attrs = layoutBlock?.attributes || {};
+					if (attrs?.useMultiPostType && Array.isArray(attrs?.postTypes) && attrs.postTypes.length > 1) {
+						multi = { enabled: true, postTypes: attrs.postTypes as string[] };
+					}
+				}
+			}
+			return { isInsideDynamicTemplate: !!templateId, multiPostTypes: multi };
+		},
+		[clientId]
+	);
+	// Build post type options
+	const wpPostTypes = useSelect((select: any) => {
+		const core = select('core');
+		return core.getPostTypes({ per_page: -1 }) || [];
+	}, []);
+	const postTypeOptions = (multiPostTypes.postTypes || []).map((slug: string) => {
+		const found = (wpPostTypes || []).find((pt: any) => pt.slug === slug);
+		return { label: found?.name || slug, value: slug };
+	});
 
 	// Get all modal blocks from the page
 	const modalBlocks = useSelect(
@@ -433,9 +465,26 @@ export function Edit(props: EditProps) {
 							url: undefined,
 							linkTarget: undefined,
 							rel: undefined,
+							showForPostType: '',
 						});
 					}}
 				>
+					{isInsideDynamicTemplate && multiPostTypes.enabled && postTypeOptions.length > 1 && (
+						<ToolsPanelItem
+							label={__('Show For Post Type', 'jankx')}
+							isShownByDefault
+							hasValue={() => !!showForPostType}
+							onDeselect={() => setAttributes({ showForPostType: '' })}
+						>
+							<SelectControl
+								label={__('Show For Post Type', 'jankx')}
+								value={showForPostType || ''}
+								options={[{ label: __('All', 'jankx'), value: '' }, ...postTypeOptions]}
+								onChange={(value) => setAttributes({ showForPostType: value })}
+								help={__('Only render this button for items of the selected post type', 'jankx')}
+							/>
+						</ToolsPanelItem>
+					)}
 					<ToolsPanelItem
 						label={__('Trigger Type', 'jankx')}
 						isShownByDefault

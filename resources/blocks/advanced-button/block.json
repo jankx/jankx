@@ -14,6 +14,10 @@
         "core/html"
     ],
     "attributes": {
+        "showForPostType": {
+            "type": "string",
+            "default": ""
+        },
         "triggerType": {
             "type": "string",
             "enum": ["link", "button", "detail-link", "modal"],
@@ -196,4 +200,3 @@
     "editorStyle": "file:./build/editor.css",
     "style": "file:./build/style.css"
 }
-
