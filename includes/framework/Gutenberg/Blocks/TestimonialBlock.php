@@ -58,7 +58,7 @@ class TestimonialBlock extends Block
         }
         $contentHtml = '';
         if ($excerpt) {
-            $contentHtml = '<div class="testimonial-content">' . esc_html($excerpt) . '</div>';
+            $contentHtml = '<div class="testimonial-content">' . wp_kses_post($excerpt) . '</div>';
         } else {
             $contentHtml = $content;
         }

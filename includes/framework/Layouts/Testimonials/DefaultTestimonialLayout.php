@@ -75,7 +75,7 @@ class DefaultTestimonialLayout implements TestimonialLayoutInterface
     protected function getExcerpt($post): string
     {
         $excerpt = has_excerpt($post) ? get_the_excerpt($post) : wp_trim_words($post->post_content, $this->options['excerptLength']);
-        return sprintf('<div class="testimonial-content">%s</div>', esc_html($excerpt));
+        return sprintf('<div class="testimonial-content">%s</div>', wp_kses_post($excerpt));
     }
 
     public function render(): string
