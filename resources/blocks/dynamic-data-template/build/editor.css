@@ -7,6 +7,17 @@
 .wp-block-jankx-dynamic-data-template .dynamic-data-template__item {
   position: relative;
 }
+.wp-block-jankx-dynamic-data-template .dynamic-data-template__item.dynamic-data-template__item--preview .block-editor-block-preview {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  border: none;
+}
+.wp-block-jankx-dynamic-data-template .dynamic-data-template__item.dynamic-data-template__item--preview .block-editor-block-preview .block-editor-block-preview__content {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
 .wp-block-jankx-dynamic-data-template .dynamic-data-template__items-container {
   width: 100%;
 }

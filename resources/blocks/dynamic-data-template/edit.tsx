@@ -6,6 +6,7 @@ import {
     BlockPreview,
     store as blockEditorStore,
 } from '@wordpress/block-editor';
+import { useResizeObserver } from '@wordpress/compose';
 import {
     PanelBody,
     SelectControl,
@@ -84,6 +85,41 @@ const DEFAULT_LAYOUTS_DATA = {
 };
 
 const DEFAULT_BLOCKS_DATA: Record<string, { blockName: string; attrs: Record<string, unknown> }[]> = {};
+
+interface PreviewItemProps {
+    blocks: BlockInstance[];
+    className?: string;
+    style?: CSSProperties;
+    index: number;
+}
+
+const PreviewItem = ({
+    blocks,
+    className,
+    style,
+    index,
+}: PreviewItemProps) => {
+    const [resizeListener, sizes] = useResizeObserver();
+    const width = sizes && sizes.width;
+
+    return (
+        <div
+            className={className}
+            data-item-index={index}
+            style={style}
+        >
+            {resizeListener}
+            <div className="dynamic-data-template__inner-blocks">
+                {!!width && (
+                    <BlockPreview
+                        blocks={blocks}
+                        viewportWidth={width}
+                    />
+                )}
+            </div>
+        </div>
+    );
+};
 
 export default function Edit({
     attributes,
@@ -384,18 +420,13 @@ export default function Edit({
                                         );
                                     }
                                     return (
-                                        <div
+                                        <PreviewItem
                                             key={`item-${index}`}
                                             className="dynamic-data-template__item dynamic-data-template__item--preview"
-                                            data-item-index={index}
+                                            index={index}
                                             style={itemStyle}
-                                        >
-                                            <div className="dynamic-data-template__inner-blocks">
-                                                <BlockPreview
-                                                    blocks={sharedInnerBlocks}
-                                                />
-                                            </div>
-                                        </div>
+                                            blocks={sharedInnerBlocks}
+                                        />
                                     );
                                 })}
                             </div>
@@ -431,17 +462,12 @@ export default function Edit({
                                 );
                             }
                             return (
-                                <div
+                                <PreviewItem
                                     key={`item-${index}`}
                                     className="dynamic-data-template__item dynamic-data-template__item--preview"
-                                    data-item-index={index}
-                                >
-                                    <div className="dynamic-data-template__inner-blocks">
-                                        <BlockPreview
-                                            blocks={sharedInnerBlocks}
-                                        />
-                                    </div>
-                                </div>
+                                    index={index}
+                                    blocks={sharedInnerBlocks}
+                                />
                             );
                         })}
                     </div>
