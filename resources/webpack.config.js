@@ -139,6 +139,7 @@ module.exports = {
     'blocks/smart-breadcrumb/build/editor': './blocks/smart-breadcrumb/src/editor.scss',
 
     'blocks/advanced-button/build/index': './blocks/advanced-button/index.tsx',
+    'blocks/advanced-button/build/frontend': './blocks/advanced-button/frontend.ts',
     'blocks/advanced-button/build/style': './blocks/advanced-button/style.scss',
     'blocks/advanced-button/build/editor': './blocks/advanced-button/editor.scss',
 
