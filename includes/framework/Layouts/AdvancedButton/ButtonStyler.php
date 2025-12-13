@@ -58,7 +58,12 @@ class ButtonStyler
     public static function getBorderRadius(array $attributes, string $content): ?string
     {
         if (!empty($attributes['style']['border']['radius'])) {
-            return $attributes['style']['border']['radius'];
+            $radius = $attributes['style']['border']['radius'];
+            // Convert array to string if needed
+            if (is_array($radius)) {
+                return implode(' ', $radius);
+            }
+            return (string) $radius;
         }
 
         if (preg_match('/style\s*=\s*["\'][^"\']*border-radius\s*:\s*([^;]+)/i', $content, $matches)) {

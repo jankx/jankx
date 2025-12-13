@@ -302,6 +302,23 @@ class AdvancedFiltersBlockTest extends BlockTestCase
     }
 
     /**
+     * Test render with blockId as array to ensure no "Array to string" warnings
+     */
+    public function test_render_with_block_id_array(): void
+    {
+        $attributes = $this->getDefaultAttributes();
+        $attributes['blockId'] = ['part1', 'part2'];
+
+        $block = $this->createMockBlock($attributes);
+
+        $html = $this->block->render($attributes, '', $block);
+
+        $this->assertNotEmpty($html);
+        $this->assertStringContainsString('data-filter-block-id', $html);
+        $this->assertStringNotContainsString('Array', $html);
+    }
+
+    /**
      * Test resetButtonText custom text
      */
     public function test_reset_button_text_custom(): void

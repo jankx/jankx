@@ -140,6 +140,16 @@ class AdvancedFiltersBlock extends Block
             $block_identifier_for_config = 'af-' . uniqid();
         }
         
+        // Ensure block identifier is always a string so it can be used in
+        // data attributes and JSON config without causing array-to-string errors.
+        if (!is_scalar($block_identifier_for_config)) {
+            if (is_array($block_identifier_for_config) || is_object($block_identifier_for_config)) {
+                $block_identifier_for_config = wp_json_encode($block_identifier_for_config);
+            } else {
+                $block_identifier_for_config = (string) $block_identifier_for_config;
+            }
+        }
+
         // Build filter configuration for frontend JavaScript
         $config = [
             'filterId' => $filter_id,
@@ -187,6 +197,26 @@ class AdvancedFiltersBlock extends Block
             'id' => $instance_id,
             'data-filter-block-id' => $block_identifier_for_config,
         ]);
+
+        // WordPress core returns a string, but custom providers or filters
+        // might accidentally return an array. Normalize to string to avoid
+        // "Array to string conversion" warnings when echoing.
+        if (is_array($wrapper_attributes)) {
+            $tmp_attrs = [];
+            foreach ($wrapper_attributes as $k => $v) {
+                if (is_int($k)) {
+                    $tmp_attrs[] = $v;
+                    continue;
+                }
+
+                if (is_array($v) || is_object($v)) {
+                    $v = wp_json_encode($v);
+                }
+
+                $tmp_attrs[] = $k . '="' . esc_attr($v) . '"';
+            }
+            $wrapper_attributes = implode(' ', $tmp_attrs);
+        }
 
         // Create nonce for AJAX requests - use DynamicDataLayoutBlock's nonce
         $ajax_nonce = wp_create_nonce('jankx_load_more');
