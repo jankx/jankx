@@ -7,4 +7,9 @@
   background: #f6f7f7;
 }
 
+.wp-block-jankx-facebook-page .jankx-facebook-page,
+.wp-block-jankx-facebook-page.jankx-facebook-page {
+  overflow: hidden;
+}
+
 /*# sourceMappingURL=editor.css.map*/
