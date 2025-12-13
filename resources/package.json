@@ -29,6 +29,8 @@
   "author": "Puleeno Nguyen",
   "license": "MIT",
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
     "@types/lodash": "^4.17.20",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
@@ -40,6 +42,7 @@
     "babel-loader": "^10.0.0",
     "css-loader": "^7.1.2",
     "i": "^0.3.7",
+    "jest-environment-jsdom": "^30.2.0",
     "npm": "^11.5.2",
     "npm-run-all": "^4.1.5",
     "photoswipe": "^5.4.4",

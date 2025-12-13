@@ -381,9 +381,6 @@ interface EditProps {
 }
 
 function Edit({ attributes, setAttributes, clientId }: EditProps) {
-    console.log('[DEBUG Edit] ========== EDIT FUNCTION START ==========');
-    console.log('[DEBUG Edit] Function called with:', { attributes, clientId });
-    console.log('[DEBUG Edit] Component render timestamp:', new Date().toISOString());
     
     const {
         queryPreset = 'custom',
@@ -450,132 +447,79 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         excerptLength = 55,
     } = attributes;
     
-    console.log('[DEBUG Edit] Destructured attributes:', {
-        queryPreset,
-        postType,
-        postsPerPage,
-        layout,
-        columns,
-        columnsTablet,
-        columnsMobile,
-        queryId,
-        orderBy,
-        order
-    });
-
     // States for taxonomies and authors
-    console.log('[DEBUG Edit] [HOOK-1] About to call useState for taxonomies');
     const [taxonomies, setTaxonomies] = useState<TaxonomyItem[]>([]);
-    console.log('[DEBUG Edit] [HOOK-1] useState taxonomies completed, value:', taxonomies);
     
-    console.log('[DEBUG Edit] [HOOK-2] About to call useState for authors');
     const [authors, setAuthors] = useState<AuthorItem[]>([]);
-    console.log('[DEBUG Edit] [HOOK-2] useState authors completed, value:', authors);
     
-    console.log('[DEBUG Edit] [HOOK-3] About to call useState for taxonomyTerms');
     const [taxonomyTerms, setTaxonomyTerms] = useState<Record<string, TermItem[]>>({});
-    console.log('[DEBUG Edit] [HOOK-3] useState taxonomyTerms completed, value:', taxonomyTerms);
 
-    console.log('[DEBUG Edit] [HOOK-4] About to call useRef for isMountedRef');
     const isMountedRef = useRef(true);
-    console.log('[DEBUG Edit] [HOOK-4] useRef isMountedRef completed, value:', isMountedRef.current);
 
-    console.log('[DEBUG Edit] [HOOK-5] About to call useEffect (mount effect)');
     useEffect(() => {
-        console.log('[DEBUG Edit] [HOOK-5] Mount effect running');
         isMountedRef.current = true;
-        console.log('[DEBUG Edit] [HOOK-5] isMountedRef set to true');
         return () => {
-            console.log('[DEBUG Edit] [HOOK-5] Unmount effect running');
             isMountedRef.current = false;
-            console.log('[DEBUG Edit] [HOOK-5] isMountedRef set to false');
         };
     }, []);
-    console.log('[DEBUG Edit] [HOOK-5] useEffect (mount effect) registered');
 
     // Generate unique queryId if not set
-    console.log('[DEBUG Edit] [HOOK-6] About to call useEffect (queryId effect)');
     useEffect(() => {
-        console.log('[DEBUG Edit] [HOOK-6] queryId effect - queryId:', queryId, 'clientId:', clientId);
         if (!queryId) {
-            console.log('[DEBUG Edit] [HOOK-6] Generating new queryId from clientId');
             // Generate unique ID from clientId hash
             const hash = clientId.split('').reduce((acc, char) => {
                 return char.charCodeAt(0) + ((acc << 5) - acc);
             }, 0);
             const newQueryId = String(Math.abs(hash));
-            console.log('[DEBUG Edit] [HOOK-6] Generated queryId:', newQueryId);
             setAttributes({ queryId: newQueryId });
-        } else {
-            console.log('[DEBUG Edit] [HOOK-6] queryId already exists, skipping generation');
         }
     }, [queryId, clientId, setAttributes]);
-    console.log('[DEBUG Edit] [HOOK-6] useEffect (queryId effect) registered');
 
     // Reset queryPreset if current preset is not valid for the current postType
-    console.log('[DEBUG Edit] [HOOK-7] About to call useEffect (queryPreset validation)');
     useEffect(() => {
-        console.log('[DEBUG Edit] [HOOK-7] queryPreset validation effect - postType:', postType, 'queryPreset:', queryPreset);
         const allPresets: QueryPresetOption[] = window.jankxQueryOptions?.queryPresets || [];
-        console.log('[DEBUG Edit] [HOOK-7] All presets:', allPresets);
         
         const validPresets = allPresets.filter((preset: QueryPresetOption) => 
             !preset.postType || preset.postType === postType
         );
-        console.log('[DEBUG Edit] [HOOK-7] Valid presets for postType:', validPresets);
         
         const currentPresetValid = validPresets.some((preset: QueryPresetOption) => preset.value === queryPreset);
-        console.log('[DEBUG Edit] [HOOK-7] Current preset valid?', currentPresetValid);
         
         if (!currentPresetValid && validPresets.length > 0 && validPresets[0]?.value) {
             // Reset to first valid preset
             const newPreset = validPresets[0].value as QueryPreset;
-            console.log('[DEBUG Edit] [HOOK-7] Resetting queryPreset to:', newPreset);
             setAttributes({ queryPreset: newPreset });
         }
     }, [postType, queryPreset, setAttributes]);
-    console.log('[DEBUG Edit] [HOOK-7] useEffect (queryPreset validation) registered');
 
     // Fetch taxonomies and authors when postType changes
-    console.log('[DEBUG Edit] [HOOK-8] About to call useEffect (fetch taxonomies/authors)');
     useEffect(() => {
-        console.log('[DEBUG Edit] [HOOK-8] Fetch taxonomies/authors effect - postType:', postType);
         
         const fetchTaxonomiesAndAuthors = async () => {
-            console.log('[DEBUG Edit] fetchTaxonomiesAndAuthors called');
             
             if (!window.wp?.apiFetch) {
-                console.log('[DEBUG Edit] window.wp.apiFetch not available');
                 return;
             }
 
             try {
-                console.log('[DEBUG Edit] Fetching taxonomies for postType:', postType);
                 const taxonomiesData = await window.wp.apiFetch({
                     path: `/wp/v2/taxonomies?type=${postType}`,
                 }) as Record<string, TaxonomyItem> | undefined;
-                console.log('[DEBUG Edit] Raw taxonomiesData:', taxonomiesData);
 
                 if (!isMountedRef.current) {
-                    console.log('[DEBUG Edit] Component unmounted, skipping state update');
                     return;
                 }
 
                 const taxArray = Object.values(taxonomiesData || {}).filter(
                     (item): item is TaxonomyItem => typeof item?.slug === 'string' && typeof item?.name === 'string'
                 );
-                console.log('[DEBUG Edit] Filtered taxonomies array:', taxArray);
                 setTaxonomies(taxArray);
-                console.log('[DEBUG Edit] setTaxonomies called with:', taxArray);
 
-                console.log('[DEBUG Edit] Fetching authors');
                 const authorsData = await window.wp.apiFetch({
                     path: '/wp/v2/users?who=authors&per_page=100',
                 }) as Array<Record<string, unknown>> | undefined;
-                console.log('[DEBUG Edit] Raw authorsData:', authorsData);
 
                 if (!isMountedRef.current) {
-                    console.log('[DEBUG Edit] Component unmounted, skipping state update');
                     return;
                 }
 
@@ -596,51 +540,38 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                     })
                     .filter((author): author is AuthorItem => author.id > 0 && author.name.length > 0);
                 
-                console.log('[DEBUG Edit] Normalized authors:', normalizedAuthors);
                 setAuthors(normalizedAuthors);
-                console.log('[DEBUG Edit] setAuthors called with:', normalizedAuthors);
             } catch (error) {
-                console.error('[DEBUG Edit] Error fetching taxonomies/authors:', error);
 
                 if (!isMountedRef.current) {
-                    console.log('[DEBUG Edit] Component unmounted, skipping error state update');
                     return;
                 }
 
                 setTaxonomies([]);
                 setAuthors([]);
-                console.log('[DEBUG Edit] Reset taxonomies and authors to empty arrays');
             }
         };
 
         fetchTaxonomiesAndAuthors();
     }, [postType]);
-    console.log('[DEBUG Edit] [HOOK-8] useEffect (fetch taxonomies/authors) registered');
 
     // Function to fetch terms for a specific taxonomy
-    console.log('[DEBUG Edit] [HOOK-9] About to call useCallback (fetchTermsForTaxonomy)');
     const fetchTermsForTaxonomy = useCallback(async (taxonomy: string) => {
-        console.log('[DEBUG Edit] fetchTermsForTaxonomy called with taxonomy:', taxonomy);
         
         if (taxonomyTerms[taxonomy]) {
-            console.log('[DEBUG Edit] Terms already loaded for taxonomy:', taxonomy);
             return; // Already loaded
         }
 
         if (!window.wp?.apiFetch) {
-            console.log('[DEBUG Edit] window.wp.apiFetch not available');
             return;
         }
 
         try {
-            console.log('[DEBUG Edit] Fetching terms for taxonomy:', taxonomy);
             const termsResponse = await window.wp.apiFetch({
                 path: `/wp/v2/${taxonomy}?per_page=100&orderby=name&order=asc`,
             }) as Array<Record<string, unknown>> | undefined;
-            console.log('[DEBUG Edit] Raw termsResponse:', termsResponse);
 
             if (!isMountedRef.current) {
-                console.log('[DEBUG Edit] Component unmounted, skipping state update');
                 return;
             }
 
@@ -655,21 +586,17 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                 })
                 .filter((term): term is TermItem => term.id > 0 && term.name.length > 0);
             
-            console.log('[DEBUG Edit] Normalized terms:', normalizedTerms);
 
             setTaxonomyTerms(prev => {
                 const newState = {
                     ...prev,
                     [taxonomy]: normalizedTerms,
                 };
-                console.log('[DEBUG Edit] Setting taxonomyTerms to:', newState);
                 return newState;
             });
         } catch (error) {
-            console.error(`[DEBUG Edit] Error fetching terms for ${taxonomy}:`, error);
 
             if (!isMountedRef.current) {
-                console.log('[DEBUG Edit] Component unmounted, skipping error state update');
                 return;
             }
 
@@ -678,14 +605,11 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                     ...prev,
                     [taxonomy]: [],
                 };
-                console.log('[DEBUG Edit] Setting taxonomyTerms to empty array for taxonomy:', taxonomy);
                 return newState;
             });
         }
     }, [taxonomyTerms]);
-    console.log('[DEBUG Edit] [HOOK-9] useCallback (fetchTermsForTaxonomy) registered');
 
-    console.log('[DEBUG Edit] [HOOK-10] About to call useBlockProps');
     const blockProps = useBlockProps({
         className: `dynamic-data-layout layout-${layout} columns-${columns} columns-tablet-${columnsTablet} columns-mobile-${columnsMobile}`,
         style: {
@@ -694,23 +618,17 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             '--columns-mobile': columnsMobile,
         } as CSSProperties,
     });
-    console.log('[DEBUG Edit] [HOOK-10] useBlockProps completed, blockProps:', blockProps);
 
     const resolvedResponsiveColumns = responsiveColumns && typeof responsiveColumns === 'object'
         ? responsiveColumns
         : { desktop: columns, tablet: columnsTablet, mobile: columnsMobile };
-    console.log('[DEBUG Edit] resolvedResponsiveColumns:', resolvedResponsiveColumns);
 
-    console.log('[DEBUG Edit] [HOOK-11] About to call useEffect (responsiveColumns sync)');
     useEffect(() => {
-        console.log('[DEBUG Edit] [HOOK-11] responsiveColumns sync effect');
         const expected = {
             desktop: columns,
             tablet: columnsTablet,
             mobile: columnsMobile,
         };
-        console.log('[DEBUG Edit] [HOOK-11] Expected responsiveColumns:', expected);
-        console.log('[DEBUG Edit] [HOOK-11] Current responsiveColumns:', responsiveColumns);
 
         const needsUpdate =
             !responsiveColumns ||
@@ -718,24 +636,17 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             responsiveColumns.tablet !== expected.tablet ||
             responsiveColumns.mobile !== expected.mobile;
         
-        console.log('[DEBUG Edit] [HOOK-11] Needs update?', needsUpdate);
-
         if (needsUpdate) {
-            console.log('[DEBUG Edit] [HOOK-11] Updating responsiveColumns to:', expected);
             setAttributes({ responsiveColumns: expected });
         }
     }, [columns, columnsTablet, columnsMobile, responsiveColumns, setAttributes]);
-    console.log('[DEBUG Edit] [HOOK-11] useEffect (responsiveColumns sync) registered');
 
     // Get available post types
-    console.log('[DEBUG Edit] [HOOK-12] About to call useSelect (postTypes)');
     const wpPostTypes = useSelect((select: WordPressSelect) => {
         const { getPostTypes } = select('core');
         const types = getPostTypes({ per_page: -1 }) || [];
-        console.log('[DEBUG Edit] [HOOK-12] useSelect wpPostTypes:', types);
         return types;
     }, []);
-    console.log('[DEBUG Edit] [HOOK-12] useSelect (wpPostTypes) completed, value:', wpPostTypes);
 
     const postTypeOptions = wpPostTypes
         .filter((type: PostType) => type.viewable && type.slug !== 'attachment')
@@ -743,21 +654,16 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             label: type.name,
             value: type.slug,
         }));
-    console.log('[DEBUG Edit] postTypeOptions:', postTypeOptions);
 
     // Get layouts data from PHP (normalize to avoid objects being rendered)
     const layoutsData: LayoutsData = normalizeLayoutsData(window.jankxDynamicDataLayouts);
-    console.log('[DEBUG Edit] layoutsData:', layoutsData);
 
     // Get available layouts for current post type
-    console.log('[DEBUG Edit] [HOOK-13] About to call useMemo (availableLayouts)');
     const availableLayouts = useMemo(() => {
-        console.log('[DEBUG Edit] [HOOK-13] useMemo availableLayouts - postType:', postType);
         const layouts: Array<{ name: string; title: string; supportedOptions?: string[]; settingsDefinition?: SettingDefinition[] }> = [];
         
         // Add common layouts
         if (layoutsData.commonLayouts) {
-            console.log('[DEBUG Edit] Processing commonLayouts:', layoutsData.commonLayouts);
             layoutsData.commonLayouts.forEach((layoutInfo: LayoutInfo) => {
                 const layoutItem: { name: string; title: string; supportedOptions?: string[]; settingsDefinition?: SettingDefinition[] } = {
                     name: layoutInfo.name || '',
@@ -775,7 +681,6 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         
         // Add post type specific layouts
         if (layoutsData.layoutsByPostType && layoutsData.layoutsByPostType[postType]) {
-            console.log('[DEBUG Edit] Processing layoutsByPostType for', postType, ':', layoutsData.layoutsByPostType[postType]);
             layoutsData.layoutsByPostType[postType].forEach((layoutInfo: LayoutInfo) => {
                 const layoutItem: { name: string; title: string; supportedOptions?: string[]; settingsDefinition?: SettingDefinition[] } = {
                     name: layoutInfo.name || '',
@@ -791,33 +696,24 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             });
         }
         
-        console.log('[DEBUG Edit] [HOOK-13] Final availableLayouts:', layouts);
         return layouts;
     }, [postType, layoutsData]);
-    console.log('[DEBUG Edit] [HOOK-13] useMemo (availableLayouts) completed, value:', availableLayouts);
 
     // Layout options for SelectControl
-    console.log('[DEBUG Edit] [HOOK-14] About to call useMemo (layoutOptions)');
     const layoutOptions = useMemo(() => {
         const options = availableLayouts.map((layoutInfo) => ({
             label: layoutInfo.title,
             value: layoutInfo.name,
         }));
-        console.log('[DEBUG Edit] [HOOK-14] layoutOptions:', options);
         return options;
     }, [availableLayouts]);
-    console.log('[DEBUG Edit] [HOOK-14] useMemo (layoutOptions) completed, value:', layoutOptions);
 
     // Get current layout's supported options
     const currentLayout = availableLayouts.find((l) => l.name === layout);
-    console.log('[DEBUG Edit] currentLayout:', currentLayout, 'for layout:', layout);
     
     const supportedOptions: string[] = currentLayout?.supportedOptions || [];
     const readOnlyOptions: string[] = currentLayout?.readOnlyOptions || [];
     const settingsDefinition: SettingDefinition[] = currentLayout?.settingsDefinition || [];
-    console.log('[DEBUG Edit] supportedOptions:', supportedOptions);
-    console.log('[DEBUG Edit] readOnlyOptions:', readOnlyOptions);
-    console.log('[DEBUG Edit] settingsDefinition:', settingsDefinition);
 
     // Check if post type is product
     const isProduct = postType === 'product';
@@ -914,7 +810,6 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     };
 
     // Pre-compute orderBy options outside conditional render to avoid React hooks error
-    console.log('[DEBUG Edit] [HOOK-15] About to call useMemo (orderByOptions)');
     const orderByOptions = useMemo(() => {
         const fallback: OrderByOption[] = [
             { label: __('Date', 'jankx'), value: 'date' },
@@ -923,7 +818,6 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             { label: __('Menu Order', 'jankx'), value: 'menu_order' },
         ];
         const allOrderByOptions: OrderByOption[] = normalizeOrderByOptions(window.jankxQueryOptions?.orderBy, fallback);
-        console.log('[DEBUG Edit] [HOOK-15] Computing orderByOptions - allOrderByOptions:', allOrderByOptions);
         // Filter order by options based on postType:
         // - Common options: postType is null (available for all post types)
         // - Specific options: postType matches current postType
@@ -935,31 +829,24 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                 label: option.label,
                 value: option.value,
             }));
-        console.log('[DEBUG Edit] [HOOK-15] Filtered orderByOptions:', filtered);
         return filtered;
     }, [postType]);
-    console.log('[DEBUG Edit] [HOOK-15] useMemo (orderByOptions) completed, value:', orderByOptions);
 
     // Pre-compute order options outside conditional render
-    console.log('[DEBUG Edit] [HOOK-16] About to call useMemo (orderOptions)');
     const orderOptions = useMemo(() => {
         const defaultOptions: OrderOption[] = [
             { label: __('Descending', 'jankx'), value: 'DESC' },
             { label: __('Ascending', 'jankx'), value: 'ASC' },
         ];
         const options = normalizeOrderOptions(window.jankxQueryOptions?.order, defaultOptions);
-        console.log('[DEBUG Edit] [HOOK-16] orderOptions:', options);
         return options;
     }, []);
-    console.log('[DEBUG Edit] [HOOK-16] useMemo (orderOptions) completed, value:', orderOptions);
 
     // Pre-compute query preset options outside JSX
-    console.log('[DEBUG Edit] [HOOK-17] About to call useMemo (queryPresetOptions)');
     const normalizedPresets = useMemo<QueryPresetOption[]>(() => normalizeQueryPresets(window.jankxQueryOptions?.queryPresets), []);
 
     const queryPresetOptions = useMemo(() => {
         const allPresets: QueryPresetOption[] = normalizedPresets;
-        console.log('[DEBUG Edit] [HOOK-17] All query presets:', allPresets);
         // Filter presets based on postType:
         // - Common presets: postType is null (available for all post types)
         // - Specific presets: postType matches current postType
@@ -971,39 +858,15 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                 label: preset.label,
                 value: preset.value,
             }));
-        console.log('[DEBUG Edit] [HOOK-17] Filtered query preset options:', filtered);
         return filtered;
     }, [postType, normalizedPresets]);
-    console.log('[DEBUG Edit] [HOOK-17] useMemo (queryPresetOptions) completed, value:', queryPresetOptions);
 
     // Pre-compute query preset help text outside JSX
-    console.log('[DEBUG Edit] [HOOK-18] About to call useMemo (queryPresetHelp)');
     const queryPresetHelp = useMemo(() => {
         const currentPreset = normalizedPresets.find((p: QueryPresetOption) => p.value === queryPreset);
         const helpText = toSafeHelpText(currentPreset?.help, __('Select a query preset', 'jankx'));
-        console.log('[DEBUG Edit] [HOOK-18] queryPresetHelp:', helpText);
         return helpText;
     }, [queryPreset, normalizedPresets]);
-    console.log('[DEBUG Edit] [HOOK-18] useMemo (queryPresetHelp) completed, value:', queryPresetHelp);
-
-    // Debug: Log when queryPreset is 'default'
-    console.log('[DEBUG Edit] ===== START RENDER =====');
-    console.log('[DEBUG Edit] queryPreset:', queryPreset);
-    console.log('[DEBUG Edit] postType:', postType);
-    console.log('[DEBUG Edit] layout:', layout);
-    console.log('[DEBUG Edit] columns:', { desktop: columns, tablet: columnsTablet, mobile: columnsMobile });
-    console.log('[DEBUG Edit] supportedOptions:', supportedOptions);
-    console.log('[DEBUG Edit] currentLayout:', currentLayout);
-    console.log('[DEBUG Edit] All attributes:', attributes);
-
-    console.log('[DEBUG Edit] ========== ALL HOOKS COMPLETED ==========');
-    console.log('[DEBUG Edit] Total hooks called: 18');
-    console.log('[DEBUG Edit] ========== ABOUT TO RENDER JSX ==========');
-    console.log('[DEBUG Edit] queryPreset at render time:', queryPreset);
-    console.log('[DEBUG Edit] Will render Order By controls?', queryPreset !== 'default');
-    console.log('[DEBUG Edit] Will render custom panels?', queryPreset === 'custom');
-    console.log('[DEBUG Edit] Conditional render check - queryPreset !== "default":', queryPreset !== 'default');
-    console.log('[DEBUG Edit] Conditional render check - queryPreset === "custom":', queryPreset === 'custom');
     
     return (
         <>
@@ -1014,7 +877,6 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         value={queryPreset}
                         options={queryPresetOptions}
                         onChange={(value) => {
-                            console.log('[DEBUG Edit] queryPreset onChange:', value);
                             setAttributes({ queryPreset: value as QueryPreset });
                         }}
                         help={queryPresetHelp}
@@ -1026,7 +888,6 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                             value={postType}
                             options={postTypeOptions}
                             onChange={(value) => {
-                                console.log('[DEBUG Edit] postType onChange:', value);
                                 setAttributes({ postType: value, useMultiPostType: false });
                             }}
                             help={queryPreset === 'default' ? __('Select post type for the main query', 'jankx') : undefined}
@@ -1096,12 +957,9 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                     {/* Order By and Order - Show for related and custom presets */}
                     {(() => {
                         const shouldRender = queryPreset !== 'default';
-                        console.log('[DEBUG Edit] [CONDITIONAL-1] Checking queryPreset !== "default":', shouldRender, 'queryPreset:', queryPreset);
                         if (!shouldRender) {
-                            console.log('[DEBUG Edit] [CONDITIONAL-1] Not rendering Order By controls (queryPreset is "default")');
                             return null;
                         }
-                        console.log('[DEBUG Edit] [CONDITIONAL-1] Rendering Order By controls');
                         return (
                             <>
                                 <SelectControl
@@ -1109,7 +967,6 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                     value={orderBy}
                                     options={orderByOptions}
                                     onChange={(value) => {
-                                        console.log('[DEBUG Edit] orderBy onChange:', value);
                                         const allOrderByOptions: OrderByOption[] = window.jankxQueryOptions?.orderBy || [];
                                         const selectedOption = allOrderByOptions.find((opt: OrderByOption) => opt.value === value);
                                         
@@ -1123,7 +980,6 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                             }
                                         }
                                         
-                                        console.log('[DEBUG Edit] Setting attributes:', updates);
                                         setAttributes(updates);
                                     }}
                                     help={__('Sort posts by which criteria', 'jankx')}
@@ -1133,7 +989,6 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                     value={order as 'ASC' | 'DESC'}
                                     options={orderOptions}
                                     onChange={(value) => {
-                                        console.log('[DEBUG Edit] order onChange:', value);
                                         setAttributes({ order: value as 'ASC' | 'DESC' });
                                     }}
                                 />
@@ -1154,7 +1009,6 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                     { label: __('Carousel', 'jankx'), value: 'carousel' },
                                 ]}
                                 onChange={(value) => {
-                                    console.log('[DEBUG Edit] layout onChange:', value);
                                     setAttributes({ layout: value });
                                 }}
                             />
