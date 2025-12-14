@@ -1,0 +1,17 @@
+/**
+ * Dynamic Data SSR Block Styles
+ */
+.wp-block-jankx-dynamic-data-ssr {
+    &.dynamic-data-ssr {
+        // container styles if needed
+    }
+    &[data-image-ratio] {
+        .post-thumbnail,
+        .wp-block-post-featured-image,
+        img {
+            aspect-ratio: var(--image-ratio, auto);
+            object-fit: cover;
+        }
+    }
+}
+

@@ -33,7 +33,7 @@ class ContentLoopLayoutManager
      *
      * @var array
      */
-    protected $builtInLayouts = ['default'];
+    protected $builtInLayouts = ['default', 'grid', 'card', 'list', 'carousel', 'masonry'];
 
     /**
      * Constructor
@@ -67,10 +67,12 @@ class ContentLoopLayoutManager
      */
     protected function registerBuiltInLayouts(): void
     {
-        // Register default layout as common
         $this->registerLayout('default', null, 'common');
-
-        // Register product-specific layout
+        $this->registerLayout('grid', \Jankx\Layouts\DynamicDataLayout\ContentLoopLayouts\GridItemLayout::class, 'common');
+        $this->registerLayout('card', \Jankx\Layouts\DynamicDataLayout\ContentLoopLayouts\CardItemLayout::class, 'common');
+        $this->registerLayout('list', \Jankx\Layouts\DynamicDataLayout\ContentLoopLayouts\ListItemLayout::class, 'common');
+        $this->registerLayout('carousel', \Jankx\Layouts\DynamicDataLayout\ContentLoopLayouts\CarouselItemLayout::class, 'common');
+        $this->registerLayout('masonry', \Jankx\Layouts\DynamicDataLayout\ContentLoopLayouts\MasonryItemLayout::class, 'common');
         if (post_type_exists('product')) {
             $this->registerLayout('button-in-featured-image-wrap', null, 'product');
         }
@@ -214,4 +216,3 @@ class ContentLoopLayoutManager
                isset($this->registeredLayouts['common'][$layoutName]);
     }
 }
-

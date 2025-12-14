@@ -174,6 +174,9 @@ module.exports = {
     'blocks/dynamic-data-template/build/index': './blocks/dynamic-data-template/index.tsx',
     'blocks/dynamic-data-template/build/style': './blocks/dynamic-data-template/style.scss',
     'blocks/dynamic-data-template/build/editor': './blocks/dynamic-data-template/editor.scss',
+    'blocks/dynamic-data-ssr/build/index': './blocks/dynamic-data-ssr/index.tsx',
+    'blocks/dynamic-data-ssr/build/style': './blocks/dynamic-data-ssr/style.scss',
+    'blocks/dynamic-data-ssr/build/editor': './blocks/dynamic-data-ssr/editor.scss',
 
     'blocks/facebook-page/build/index': './blocks/facebook-page/index.tsx',
     'blocks/facebook-page/build/frontend': './blocks/facebook-page/frontend.ts',
