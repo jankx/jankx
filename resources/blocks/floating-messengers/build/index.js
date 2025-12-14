@@ -200,6 +200,10 @@ function channelUrl(type, channels) {
     setAttributes
   }) => {
     const {
+      expandStyle = 'vertical',
+      verticalAlign = 'bottom',
+      expandDistance = 72,
+      idleAnimation = 'none',
       position = 'right',
       bottomOffset = '24px',
       showLabels = false,
@@ -232,9 +236,12 @@ function channelUrl(type, channels) {
       }
     } = attributes;
     const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)({
-      className: `jankx-floating-messengers position-${position} trigger-${triggerMode} ${showLabels ? 'show-labels' : ''}`,
-      style: {
+      className: ['jankx-floating-messengers', `position-${position}`, `trigger-${triggerMode}`, `expand-${expandStyle}`, `v-${verticalAlign}`, idleAnimation !== 'none' ? `idle-${idleAnimation}` : '', showLabels ? 'show-labels' : ''].filter(Boolean).join(' '),
+      style: verticalAlign === 'bottom' ? {
         bottom: bottomOffset
+      } : {
+        top: '50%',
+        transform: 'translateY(-50%)'
       }
     });
     const enabledTypes = Object.keys(channels).filter(t => channels[t]?.enabled);
@@ -255,6 +262,19 @@ function channelUrl(type, channels) {
             }],
             onChange: value => setAttributes({
               position: value
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Căn theo trục Y', 'jankx'),
+            value: verticalAlign,
+            options: [{
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Dưới cùng', 'jankx'),
+              value: 'bottom'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Giữa màn hình', 'jankx'),
+              value: 'center'
+            }],
+            onChange: value => setAttributes({
+              verticalAlign: value
             })
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Khoảng cách dưới', 'jankx'),
@@ -283,6 +303,60 @@ function channelUrl(type, channels) {
               showLabels: value
             })
           })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
+          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Kiểu bung nút', 'jankx'),
+          initialOpen: true,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Kiểu bung', 'jankx'),
+            value: expandStyle,
+            options: [{
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Thẳng đứng', 'jankx'),
+              value: 'vertical'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Xòe quạt', 'jankx'),
+              value: 'fan'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Hai bên', 'jankx'),
+              value: 'bidirectional'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Tách trên/dưới', 'jankx'),
+              value: 'split'
+            }],
+            onChange: value => setAttributes({
+              expandStyle: value
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RangeControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Khoảng cách bung (px)', 'jankx'),
+            value: expandDistance,
+            onChange: value => setAttributes({
+              expandDistance: value || 72
+            }),
+            min: 40,
+            max: 160
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
+          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Hiệu ứng rảnh', 'jankx'),
+          initialOpen: false,
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Items Idle Animation', 'jankx'),
+            value: idleAnimation,
+            options: [{
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Không', 'jankx'),
+              value: 'none'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Pulsating Ring', 'jankx'),
+              value: 'pulse-ring'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Wiggle', 'jankx'),
+              value: 'wiggle'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Float', 'jankx'),
+              value: 'float'
+            }],
+            onChange: value => setAttributes({
+              idleAnimation: value
+            })
+          })
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
           title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Kênh liên hệ', 'jankx'),
           initialOpen: true,
@@ -518,30 +592,120 @@ function channelUrl(type, channels) {
         })]
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
         ...blockProps,
+        "data-count": enabledTypes.length,
+        style: {
+          ...(blockProps.style || {}),
+          ['--fm-distance']: `${expandDistance}px`
+        },
         children: [triggerMode === 'toggle' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
           className: "fm-trigger",
           "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Mở danh sách liên hệ', 'jankx'),
           type: "button",
-          children: "+"
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("span", {
+            className: "fm-trigger-dot"
+          })
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
           className: "fm-list",
           children: enabledTypes.length === 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
             className: "fm-placeholder",
             children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Chọn kênh liên hệ trong panel bên phải', 'jankx')
-          }) : enabledTypes.map(t => {
+          }) : enabledTypes.map((t, idx) => {
             const label = channels[t]?.label || (t === 'phone' ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Gọi', 'jankx') : t.charAt(0).toUpperCase() + t.slice(1));
-            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("a", {
-              className: `fm-item fm-${t}`,
-              href: channelUrl(t, channels),
-              target: "_blank",
-              rel: "noopener",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("span", {
-                className: "fm-icon",
-                "aria-hidden": "true"
-              }), showLabels && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("span", {
-                className: "fm-label",
-                children: label
-              })]
+            const svgIcon = (() => {
+              switch (t) {
+                case 'messenger':
+                  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("svg", {
+                    viewBox: "0 0 24 24",
+                    width: "20",
+                    height: "20",
+                    "aria-hidden": "true",
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("path", {
+                      fill: "currentColor",
+                      d: "M12 2C6.48 2 2 6.09 2 10.91c0 2.73 1.41 5.18 3.67 6.87v3.22l3.36-1.85c.93.26 1.92.4 2.97.4 5.52 0 10-4.09 10-8.91S17.52 2 12 2zm1.23 10.46l-2.1-2.23-4.1 2.23 4.51-4.87 2.15 2.23 4.03-2.23-4.49 4.87z"
+                    })
+                  });
+                case 'whatsapp':
+                  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("svg", {
+                    viewBox: "0 0 24 24",
+                    width: "20",
+                    height: "20",
+                    "aria-hidden": "true",
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("path", {
+                      fill: "currentColor",
+                      d: "M20.52 3.48A10.69 10.69 0 0012 0C5.37 0 0 5.37 0 12c0 2.1.56 4.16 1.62 5.97L0 24l6.2-1.63A11.97 11.97 0 0012 24c6.63 0 12-5.37 12-12 0-3.21-1.25-6.22-3.48-8.52zm-8.52 18.3c-1.9 0-3.76-.5-5.38-1.45l-.38-.22-3.69.97.99-3.59-.25-.37A9.47 9.47 0 012.56 12C2.56 6.74 6.74 2.56 12 2.56c2.52 0 4.89.98 6.67 2.77a9.41 9.41 0 012.77 6.67c0 5.26-4.18 9.44-9.44 9.44zm5.48-6.96c-.3-.15-1.77-.87-2.05-.96-.28-.1-.48-.15-.68.15-.2.3-.78.95-.96 1.15-.18.2-.35.23-.65.08-.3-.15-1.26-.46-2.4-1.46-.89-.79-1.49-1.77-1.67-2.07-.18-.3-.02-.47.13-.62.13-.13.3-.35.45-.53.15-.18.2-.3.3-.5.1-.2.05-.38-.02-.53-.08-.15-.68-1.65-.94-2.26-.25-.6-.5-.52-.68-.53l-.58-.01c-.2 0-.53.08-.82.38-.3.3-1.08 1.06-1.08 2.58 0 1.51 1.11 2.97 1.26 3.18.15.2 2.18 3.34 5.27 4.54.74.32 1.32.5 1.77.64.74.23 1.41.2 1.94.12.59-.09 1.77-.72 2.02-1.41.25-.69.25-1.28.18-1.41-.07-.13-.27-.2-.58-.34z"
+                    })
+                  });
+                case 'zalo':
+                  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("svg", {
+                    viewBox: "0 0 24 24",
+                    width: "20",
+                    height: "20",
+                    "aria-hidden": "true",
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("path", {
+                      fill: "currentColor",
+                      d: "M4 3h12a5 5 0 015 5v8a5 5 0 01-5 5H4a1 1 0 01-1-1V4a1 1 0 011-1zm3.5 6.5h-2V17h2V9.5zm1.5 0V17h5v-1.5h-3.5V9.5H9zm9.5 0H16V17h2v-4h1.5V9.5z"
+                    })
+                  });
+                case 'telegram':
+                  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("svg", {
+                    viewBox: "0 0 24 24",
+                    width: "20",
+                    height: "20",
+                    "aria-hidden": "true",
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("path", {
+                      fill: "currentColor",
+                      d: "M23.5 2.5L1.5 11.2c-1 .4-.9 1.8.2 2.1l5.5 1.7 2.1 6.7c.3 1 1.6 1.2 2.2.2l3.3-5.2 5.8 4.3c1 .7 2.3.1 2.6-1.1l3.2-15c.3-1.2-1-2.1-2.1-1.6z"
+                    })
+                  });
+                case 'phone':
+                  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("svg", {
+                    viewBox: "0 0 24 24",
+                    width: "20",
+                    height: "20",
+                    "aria-hidden": "true",
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("path", {
+                      fill: "currentColor",
+                      d: "M6.6 10.2c1.2 2.4 3.1 4.3 5.5 5.5l1.8-1.8c.4-.4 1-.5 1.5-.3 1.6.5 3.3.8 5.1.8.8 0 1.5.7 1.5 1.5V20c0 .8-.7 1.5-1.5 1.5C10.7 21.5 2.5 13.3 2.5 3.5 2.5 2.7 3.2 2 4 2h3.6c.8 0 1.5.7 1.5 1.5 0 1.8.3 3.5.8 5.1.2.5.1 1.1-.3 1.5l-2 2.1z"
+                    })
+                  });
+                case 'sms':
+                  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("svg", {
+                    viewBox: "0 0 24 24",
+                    width: "20",
+                    height: "20",
+                    "aria-hidden": "true",
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("path", {
+                      fill: "currentColor",
+                      d: "M20 2H4C2.9 2 2 2.9 2 4v14c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 10H6v-2h12v2zm0-4H6V6h12v2zm-6 8H6v-2h6v2z"
+                    })
+                  });
+                default:
+                  return null;
+              }
+            })();
+            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+              className: `fm-node fm-${t}`,
+              style: {
+                ['--index']: idx + 1
+              },
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("a", {
+                className: `fm-button`,
+                href: channelUrl(t, channels),
+                target: "_blank",
+                rel: "noopener",
+                "aria-label": label,
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("span", {
+                  className: "fm-icon",
+                  "aria-hidden": "true",
+                  children: svgIcon
+                }), showLabels && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("span", {
+                  className: "fm-label",
+                  children: label
+                }), !showLabels && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("span", {
+                  className: "fm-tooltip",
+                  children: label
+                })]
+              })
             }, t);
           })
         })]

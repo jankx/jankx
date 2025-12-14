@@ -24,6 +24,25 @@
     }
   },
   "attributes": {
+    "expandStyle": {
+      "type": "string",
+      "default": "vertical",
+      "enum": ["vertical", "fan", "bidirectional", "split"]
+    },
+    "verticalAlign": {
+      "type": "string",
+      "default": "bottom",
+      "enum": ["bottom", "center"]
+    },
+    "expandDistance": {
+      "type": "number",
+      "default": 72
+    },
+    "idleAnimation": {
+      "type": "string",
+      "default": "none",
+      "enum": ["none", "pulse-ring", "wiggle", "float"]
+    },
     "position": {
       "type": "string",
       "default": "right",

@@ -13,6 +13,7 @@ use Jankx\Gutenberg\Blocks\DatePickerCalendarBlock;
 use Jankx\Gutenberg\Blocks\IconPickerBlock;
 use Jankx\Gutenberg\Blocks\GalleryBlock;
 use Jankx\Gutenberg\Blocks\CommentCountBlock;
+use Jankx\Gutenberg\Blocks\PostTypeBadgeBlock;
 use Jankx\Gutenberg\Blocks\DynamicDataLayoutBlock;
 use Jankx\Gutenberg\Blocks\DynamicDataTemplateBlock;
 use Jankx\Gutenberg\Blocks\MagicTextBlock;
@@ -133,6 +134,7 @@ class GutenbergService
         $this->repository->registerBlock(IconPickerBlock::class);
         $this->repository->registerBlock(GalleryBlock::class);
         $this->repository->registerBlock(CommentCountBlock::class);
+        $this->repository->registerBlock(PostTypeBadgeBlock::class);
         $this->repository->registerBlock(DynamicDataLayoutBlock::class);
         $this->repository->registerBlock(DynamicDataTemplateBlock::class);
         $this->repository->registerBlock(\Jankx\Gutenberg\Blocks\DynamicDataSSRBlock::class);

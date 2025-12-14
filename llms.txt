@@ -1248,7 +1248,7 @@ class PostLayoutManager
 
 Thêm block `jankx/post-type-badge` để hiển thị nhãn loại bài viết trên từng item trong `Dynamic Data Template`.
 - Attributes: `position` (top-right, top-left, bottom-right, bottom-left), `offsetX`, `offsetY`, `backgroundColor`, `textColor`, `borderRadius`, `showLabel`.
-- Rendered server-side via `render.php` (được khai báo trong `block.json` bằng `render: file:./render.php`).
+- Rendered server-side via a PHP Block class `Jankx\\Gutenberg\\Blocks\\PostTypeBadgeBlock` (registered in Gutenberg service).
 - CSS mặc định sẽ đặt `.loop-item { position: relative }` và badge có `position: absolute` để có thể đặt chính xác theo `position`.
 
 ```
