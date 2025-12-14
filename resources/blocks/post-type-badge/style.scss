@@ -1,0 +1,19 @@
+.wp-block-jankx-post-type-badge {
+  position: absolute;
+  z-index: 20;
+  padding: 8px 12px;
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+  line-height: 1;
+  display: inline-block;
+}
+
+.wp-block-jankx-post-type-badge.position-top-right { top: 12px; right: 12px; }
+.wp-block-jankx-post-type-badge.position-top-left { top: 12px; left: 12px; }
+.wp-block-jankx-post-type-badge.position-bottom-right { bottom: 12px; right: 12px; }
+.wp-block-jankx-post-type-badge.position-bottom-left { bottom: 12px; left: 12px; }
+
+/* Ensure loop item is positioned relative so badge anchors correctly */
+.loop-item { position: relative; }

@@ -1243,6 +1243,14 @@ class PostLayoutManager
         return apply_filters('jankx/post-layout/layouts', $layouts, $args);
     }
 }
+
+#### Thêm: Post Type Badge Block
+
+Thêm block `jankx/post-type-badge` để hiển thị nhãn loại bài viết trên từng item trong `Dynamic Data Template`.
+- Attributes: `position` (top-right, top-left, bottom-right, bottom-left), `offsetX`, `offsetY`, `backgroundColor`, `textColor`, `borderRadius`, `showLabel`.
+- Rendered server-side via `render.php` (được khai báo trong `block.json` bằng `render: file:./render.php`).
+- CSS mặc định sẽ đặt `.loop-item { position: relative }` và badge có `position: absolute` để có thể đặt chính xác theo `position`.
+
 ```
 
 #### Developer Extension (Child Theme hoặc Plugin)
