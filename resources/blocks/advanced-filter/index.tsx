@@ -288,6 +288,12 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         checked={enabled !== false}
                         onChange={(value) => setAttributes({ enabled: value })}
                     />
+
+                    <ToggleControl
+                        label={__('Hide Label', 'jankx')}
+                        checked={!resolvedShowLabels}
+                        onChange={(value) => setAttributes({ showLabels: !value })}
+                    />
                 </PanelBody>
 
                 <PanelBody title={__('Filter Settings', 'jankx')} initialOpen={true}>

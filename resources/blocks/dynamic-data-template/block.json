@@ -69,8 +69,8 @@
       },
       "__experimentalDefaultControls": {
         "blockGap": true,
-        "padding": false,
-        "margin": false
+        "padding": true,
+        "margin": true
       }
     },
     "interactivity": {

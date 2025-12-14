@@ -413,6 +413,21 @@ export default function Edit({
                                         flex: `0 0 calc(100% / ${columns})`,
                                         scrollSnapAlign: carouselAlign,
                                     };
+                                    const spacing = (attributes as any)?.style?.spacing;
+                                    if (spacing?.padding) {
+                                        const p = spacing.padding;
+                                        if (p.top) itemStyle.paddingTop = p.top as any;
+                                        if (p.right) itemStyle.paddingRight = p.right as any;
+                                        if (p.bottom) itemStyle.paddingBottom = p.bottom as any;
+                                        if (p.left) itemStyle.paddingLeft = p.left as any;
+                                    }
+                                    if (spacing?.margin) {
+                                        const m = spacing.margin;
+                                        if (m.top) itemStyle.marginTop = m.top as any;
+                                        if (m.right) itemStyle.marginRight = m.right as any;
+                                        if (m.bottom) itemStyle.marginBottom = m.bottom as any;
+                                        if (m.left) itemStyle.marginLeft = m.left as any;
+                                    }
                                     if (index === 0) {
                                         return (
                                             <div
@@ -457,21 +472,55 @@ export default function Edit({
                     >
                         {Array.from({ length: totalItems }).map((_, index) => {
                             if (index === 0) {
+                                const itemStyle2: CSSProperties = {};
+                                const spacing2 = (attributes as any)?.style?.spacing;
+                                if (spacing2?.padding) {
+                                    const p2 = spacing2.padding;
+                                    if (p2.top) itemStyle2.paddingTop = p2.top as any;
+                                    if (p2.right) itemStyle2.paddingRight = p2.right as any;
+                                    if (p2.bottom) itemStyle2.paddingBottom = p2.bottom as any;
+                                    if (p2.left) itemStyle2.paddingLeft = p2.left as any;
+                                }
+                                if (spacing2?.margin) {
+                                    const m2 = spacing2.margin;
+                                    if (m2.top) itemStyle2.marginTop = m2.top as any;
+                                    if (m2.right) itemStyle2.marginRight = m2.right as any;
+                                    if (m2.bottom) itemStyle2.marginBottom = m2.bottom as any;
+                                    if (m2.left) itemStyle2.marginLeft = m2.left as any;
+                                }
                                 return (
                                     <div
                                         key={`item-${index}`}
                                         className="dynamic-data-template__item"
                                         data-item-index={index}
+                                        style={itemStyle2}
                                     >
                                         <div {...innerBlocksProps} />
                                     </div>
                                 );
+                            }
+                            const itemStyle3: CSSProperties = {};
+                            const spacing3 = (attributes as any)?.style?.spacing;
+                            if (spacing3?.padding) {
+                                const p3 = spacing3.padding;
+                                if (p3.top) itemStyle3.paddingTop = p3.top as any;
+                                if (p3.right) itemStyle3.paddingRight = p3.right as any;
+                                if (p3.bottom) itemStyle3.paddingBottom = p3.bottom as any;
+                                if (p3.left) itemStyle3.paddingLeft = p3.left as any;
+                            }
+                            if (spacing3?.margin) {
+                                const m3 = spacing3.margin;
+                                if (m3.top) itemStyle3.marginTop = m3.top as any;
+                                if (m3.right) itemStyle3.marginRight = m3.right as any;
+                                if (m3.bottom) itemStyle3.marginBottom = m3.bottom as any;
+                                if (m3.left) itemStyle3.marginLeft = m3.left as any;
                             }
                             return (
                                 <PreviewItem
                                     key={`item-${index}`}
                                     className="dynamic-data-template__item dynamic-data-template__item--preview"
                                     index={index}
+                                    style={itemStyle3}
                                     blocks={sharedInnerBlocks}
                                 />
                             );
@@ -482,4 +531,3 @@ export default function Edit({
         </>
     );
 }
-

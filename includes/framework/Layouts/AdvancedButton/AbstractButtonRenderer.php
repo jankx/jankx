@@ -12,6 +12,10 @@ abstract class AbstractButtonRenderer implements ButtonRendererInterface
         $styleParts = [];
         foreach ($styles as $property => $value) {
             if (!empty($value)) {
+                // Handle array values like border-radius
+                if (is_array($value)) {
+                    $value = implode(' ', $value);
+                }
                 $styleParts[] = esc_attr($property) . ': ' . esc_attr($value);
             }
         }

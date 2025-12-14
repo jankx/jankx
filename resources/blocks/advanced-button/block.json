@@ -36,10 +36,7 @@
         },
         "modalId": {
             "type": "string",
-            "default": "",
-            "source": "attribute",
-            "selector": ".jankx-advanced-button__link",
-            "attribute": "data-modal-id"
+            "default": ""
         },
         "modalShareObjectId": {
             "type": "boolean",

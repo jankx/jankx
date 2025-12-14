@@ -8,7 +8,7 @@
   \*************************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/dynamic-data-template","title":"Dynamic Data Template","category":"jankx","parent":["jankx/dynamic-data-layout"],"description":"Markup template để render từng item trong Dynamic Data Layout block","textdomain":"jankx","editorScript":"file:./build/index.js","style":"file:./build/style.css","editorStyle":"file:./build/editor.css","usesContext":["queryId","postType","displayLayout","postsPerPage","columns","columnsTablet","columnsMobile","slidesToScroll","loop","autoplay","autoplayDelay","showArrows","showDots","carouselAlign","carouselAxis","carouselDirection","carouselStartIndex","carouselDuration","carouselDragFree","carouselDragThreshold","carouselSkipSnaps","carouselContainScroll","carouselInViewThreshold"],"supports":{"reusable":false,"html":false,"align":["wide","full"],"layout":true,"color":{"gradients":true,"link":true,"__experimentalDefaultControls":{"background":true,"text":true}},"typography":{"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true,"__experimentalTextTransform":true,"__experimentalTextDecoration":true,"__experimentalLetterSpacing":true,"__experimentalDefaultControls":{"fontSize":true}},"spacing":{"margin":true,"padding":true,"blockGap":{"__experimentalDefault":"1.25em"},"__experimentalDefaultControls":{"blockGap":true,"padding":false,"margin":false}},"interactivity":{"clientNavigation":true},"__experimentalBorder":{"radius":true,"color":true,"width":true,"style":true}},"attributes":{"contentLoopLayout":{"type":"string","default":"default"},"className":{"type":"string","default":""},"itemSpacing":{"type":"string","default":"normal","enum":["none","compact","normal","loose"]},"showItemBorder":{"type":"boolean","default":false},"itemBorderRadius":{"type":"number","default":0},"itemPadding":{"type":"object","default":{"top":"0","right":"0","bottom":"0","left":"0"}},"thumbnailPosition":{"type":"string","default":"top","enum":["top","bottom","left","right"]},"imageRatio":{"type":"string","default":""},"overlayIcon":{"type":"string","default":""},"overlayIconMode":{"type":"string","default":"always-show","enum":["always-show","hover-hide","hover-show"]}}}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/dynamic-data-template","title":"Dynamic Data Template","category":"jankx","parent":["jankx/dynamic-data-layout"],"description":"Markup template để render từng item trong Dynamic Data Layout block","textdomain":"jankx","editorScript":"file:./build/index.js","style":"file:./build/style.css","editorStyle":"file:./build/editor.css","usesContext":["queryId","postType","displayLayout","postsPerPage","columns","columnsTablet","columnsMobile","slidesToScroll","loop","autoplay","autoplayDelay","showArrows","showDots","carouselAlign","carouselAxis","carouselDirection","carouselStartIndex","carouselDuration","carouselDragFree","carouselDragThreshold","carouselSkipSnaps","carouselContainScroll","carouselInViewThreshold"],"supports":{"reusable":false,"html":false,"align":["wide","full"],"layout":true,"color":{"gradients":true,"link":true,"__experimentalDefaultControls":{"background":true,"text":true}},"typography":{"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true,"__experimentalTextTransform":true,"__experimentalTextDecoration":true,"__experimentalLetterSpacing":true,"__experimentalDefaultControls":{"fontSize":true}},"spacing":{"margin":true,"padding":true,"blockGap":{"__experimentalDefault":"1.25em"},"__experimentalDefaultControls":{"blockGap":true,"padding":true,"margin":true}},"interactivity":{"clientNavigation":true},"__experimentalBorder":{"radius":true,"color":true,"width":true,"style":true}},"attributes":{"contentLoopLayout":{"type":"string","default":"default"},"className":{"type":"string","default":""},"itemSpacing":{"type":"string","default":"normal","enum":["none","compact","normal","loose"]},"showItemBorder":{"type":"boolean","default":false},"itemBorderRadius":{"type":"number","default":0},"itemPadding":{"type":"object","default":{"top":"0","right":"0","bottom":"0","left":"0"}},"thumbnailPosition":{"type":"string","default":"top","enum":["top","bottom","left","right"]},"imageRatio":{"type":"string","default":""},"overlayIcon":{"type":"string","default":""},"overlayIconMode":{"type":"string","default":"always-show","enum":["always-show","hover-hide","hover-show"]}}}');
 
 /***/ }),
 
@@ -403,6 +403,21 @@ function Edit({
                 flex: `0 0 calc(100% / ${columns})`,
                 scrollSnapAlign: carouselAlign
               };
+              const spacing = attributes?.style?.spacing;
+              if (spacing?.padding) {
+                const p = spacing.padding;
+                if (p.top) itemStyle.paddingTop = p.top;
+                if (p.right) itemStyle.paddingRight = p.right;
+                if (p.bottom) itemStyle.paddingBottom = p.bottom;
+                if (p.left) itemStyle.paddingLeft = p.left;
+              }
+              if (spacing?.margin) {
+                const m = spacing.margin;
+                if (m.top) itemStyle.marginTop = m.top;
+                if (m.right) itemStyle.marginRight = m.right;
+                if (m.bottom) itemStyle.marginBottom = m.bottom;
+                if (m.left) itemStyle.marginLeft = m.left;
+              }
               if (index === 0) {
                 return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
                   className: "dynamic-data-template__item",
@@ -438,17 +453,51 @@ function Edit({
           length: totalItems
         }).map((_, index) => {
           if (index === 0) {
+            const itemStyle2 = {};
+            const spacing2 = attributes?.style?.spacing;
+            if (spacing2?.padding) {
+              const p2 = spacing2.padding;
+              if (p2.top) itemStyle2.paddingTop = p2.top;
+              if (p2.right) itemStyle2.paddingRight = p2.right;
+              if (p2.bottom) itemStyle2.paddingBottom = p2.bottom;
+              if (p2.left) itemStyle2.paddingLeft = p2.left;
+            }
+            if (spacing2?.margin) {
+              const m2 = spacing2.margin;
+              if (m2.top) itemStyle2.marginTop = m2.top;
+              if (m2.right) itemStyle2.marginRight = m2.right;
+              if (m2.bottom) itemStyle2.marginBottom = m2.bottom;
+              if (m2.left) itemStyle2.marginLeft = m2.left;
+            }
             return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
               className: "dynamic-data-template__item",
               "data-item-index": index,
+              style: itemStyle2,
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
                 ...innerBlocksProps
               })
             }, `item-${index}`);
           }
+          const itemStyle3 = {};
+          const spacing3 = attributes?.style?.spacing;
+          if (spacing3?.padding) {
+            const p3 = spacing3.padding;
+            if (p3.top) itemStyle3.paddingTop = p3.top;
+            if (p3.right) itemStyle3.paddingRight = p3.right;
+            if (p3.bottom) itemStyle3.paddingBottom = p3.bottom;
+            if (p3.left) itemStyle3.paddingLeft = p3.left;
+          }
+          if (spacing3?.margin) {
+            const m3 = spacing3.margin;
+            if (m3.top) itemStyle3.marginTop = m3.top;
+            if (m3.right) itemStyle3.marginRight = m3.right;
+            if (m3.bottom) itemStyle3.marginBottom = m3.bottom;
+            if (m3.left) itemStyle3.marginLeft = m3.left;
+          }
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(PreviewItem, {
             className: "dynamic-data-template__item dynamic-data-template__item--preview",
             index: index,
+            style: itemStyle3,
             blocks: sharedInnerBlocks
           }, `item-${index}`);
         })

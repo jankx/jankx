@@ -11,16 +11,23 @@ class ModalRenderer extends AbstractButtonRenderer
         $modalSharePostTitle = $attributes['modalSharePostTitle'] ?? false;
         $modalShareCurrentUrl = $attributes['modalShareCurrentUrl'] ?? false;
         $title = $attributes['title'] ?? '';
+        
+        // Only add modal trigger class if there's a valid modalId
         if (!empty($modalId)) {
             $classes .= ' jankx-button-modal-trigger';
         }
+        
         $htmlAttributes = [
             'type' => 'button',
             'class' => $classes,
-            'data-micromodal-trigger' => $modalId,
-            'data-modal-id' => $modalId,
             'data-trigger-type' => 'modal',
         ];
+        
+        // Only add modal attributes if modalId exists
+        if (!empty($modalId)) {
+            $htmlAttributes['data-micromodal-trigger'] = $modalId;
+            $htmlAttributes['data-modal-id'] = $modalId;
+        }
         if ($modalShareObjectId) {
             $htmlAttributes['data-share-object-id'] = 'true';
             $htmlAttributes['data-current-object-id'] = '{{CURRENT_POST_ID}}';

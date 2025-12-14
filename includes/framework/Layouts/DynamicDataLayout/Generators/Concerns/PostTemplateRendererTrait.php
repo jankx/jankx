@@ -14,6 +14,19 @@ trait PostTemplateRendererTrait
         $output = [];
         $originalPost = $GLOBALS['post'] ?? null;
 
+        $templateAttrs = $this->templateBlock['attrs'] ?? [];
+        $itemInlineStyle = '';
+        if (!empty($templateAttrs['style']) && is_array($templateAttrs['style']) && function_exists('wp_style_engine_get_styles')) {
+            $spacing = $templateAttrs['style']['spacing'] ?? null;
+            if (!empty($spacing) && is_array($spacing)) {
+                $styles = wp_style_engine_get_styles(['spacing' => $spacing]);
+                if (!empty($styles['css'])) {
+                    $itemInlineStyle = trim($styles['css']);
+                }
+            }
+        }
+        $styleAttr = $itemInlineStyle !== '' ? sprintf(' style="%s"', esc_attr($itemInlineStyle)) : '';
+
         while ($query->have_posts()) {
             $query->the_post();
             $post = get_post();
@@ -30,12 +43,13 @@ trait PostTemplateRendererTrait
             $classes = $this->buildItemClasses($post);
             if ($mode === 'carousel') {
                 $output[] = sprintf(
-                    '<div class="embla__slide"><div class="%s">%s</div></div>',
+                    '<div class="embla__slide"><div class="%s"%s>%s</div></div>',
                     esc_attr($classes),
+                    $styleAttr,
                     $itemContent
                 );
             } else {
-                $output[] = sprintf('<li class="%s">%s</li>', esc_attr($classes), $itemContent);
+                $output[] = sprintf('<li class="%s"%s>%s</li>', esc_attr($classes), $styleAttr, $itemContent);
             }
         }
 
@@ -397,4 +411,3 @@ trait PostTemplateRendererTrait
         return implode(' ', $parts);
     }
 }
-
