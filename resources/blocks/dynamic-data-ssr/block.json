@@ -1,15 +1,12 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 3,
-  "name": "jankx/dynamic-data-template",
-  "title": "Dynamic Data Template",
+  "name": "jankx/dynamic-data-ssr",
+  "title": "Dynamic Data SSR",
   "category": "jankx",
   "parent": ["jankx/dynamic-data-layout"],
-  "description": "Markup template để render từng item trong Dynamic Data Layout block",
+  "description": "Server-rendered template cho từng item trong Dynamic Data Layout block (model-view).",
   "textdomain": "jankx",
-  "editorScript": "file:./build/index.js",
-  "style": "file:./build/style.css",
-  "editorStyle": "file:./build/editor.css",
   "usesContext": [
     "queryId",
     "postType",
@@ -84,6 +81,10 @@
     }
   },
   "attributes": {
+    "templateSlug": {
+      "type": "string",
+      "default": "post-layouts/loop-item"
+    },
     "contentLoopLayout": {
       "type": "string",
       "default": "default"
@@ -92,41 +93,14 @@
       "type": "string",
       "default": ""
     },
-    "itemSpacing": {
-      "type": "string",
-      "default": "normal",
-      "enum": ["none", "compact", "normal", "loose"]
-    },
-    "showItemBorder": {
-      "type": "boolean",
-      "default": false
-    },
-    "itemBorderRadius": {
-      "type": "number",
-      "default": 0
-    },
-    "itemPadding": {
-      "type": "object",
-      "default": {
-        "top": "0",
-        "right": "0",
-        "bottom": "0",
-        "left": "0"
-      }
-    },
     "thumbnailPosition": {
       "type": "string",
       "default": "top",
       "enum": ["top", "bottom", "left", "right"]
     },
-        "overlayIcon": {
+    "imageRatio": {
       "type": "string",
       "default": ""
-    },
-    "overlayIconMode": {
-      "type": "string",
-      "default": "always-show",
-      "enum": ["always-show", "hover-hide", "hover-show"]
     }
   }
 }

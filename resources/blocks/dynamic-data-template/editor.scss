@@ -47,12 +47,6 @@
                     > :first-child {
                         margin-top: 0 !important;
                     }
-
-                    // Ensure Post Title margin matches editor context if it's not first
-                    .wp-block-post-title {
-                        // Inherit or force consistent spacing if needed
-                        // margin-bottom: 0.5em; 
-                    }
                 }
             }
         }
@@ -88,30 +82,3 @@
     }
 }
 
-// Apply aspect ratio in editor based on block attributes
-.wp-block-jankx-dynamic-data-template[data-image-ratio] {
-    .dynamic-data-template__item {
-        .post-thumbnail,
-        .wp-block-post-featured-image,
-        .wc-block-components-product-image,
-        img {
-            aspect-ratio: var(--image-ratio, auto);
-            object-fit: cover;
-        }
-    }
-}
-
-// Apply aspect ratio based on data attribute value in editor
-$ratios: '16/9', '4/3', '21/9', '1/1', '3/4', '2/3', '9/16';
-@each $ratio in $ratios {
-    .wp-block-jankx-dynamic-data-template[data-image-ratio="#{$ratio}"] {
-        .dynamic-data-template__item {
-            .post-thumbnail,
-            .wp-block-post-featured-image,
-            .wc-block-components-product-image,
-            img {
-                aspect-ratio: #{$ratio};
-            }
-        }
-    }
-}

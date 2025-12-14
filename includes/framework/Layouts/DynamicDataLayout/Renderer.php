@@ -5,6 +5,7 @@ namespace Jankx\Layouts\DynamicDataLayout;
 use Jankx\Layouts\DynamicDataLayout\DynamicDataLayoutManager;
 use Jankx\Layouts\DynamicDataLayout\PostLayoutDecorator;
 use Jankx\Layouts\DynamicDataLayout\Generators\PostTemplateBlockGenerator;
+use Jankx\Layouts\DynamicDataLayout\Generators\SsrViewGenerator;
 use Jankx\Layouts\DynamicDataLayout\PaginationRenderer;
 use Jankx\Layouts\DynamicDataLayout\Contracts\PostLayoutJsCallbackInterface;
 use Jankx\Layouts\DynamicDataLayout\Contracts\ContentGeneratorInterface;
@@ -77,7 +78,10 @@ class Renderer
         $decorator->withAttributes($attributes);
 
         if ($templateBlock) {
-            $generator = new PostTemplateBlockGenerator($templateBlock, $attributes);
+            $blockName = $templateBlock['blockName'] ?? '';
+            $generator = ($blockName === 'jankx/dynamic-data-ssr')
+                ? new SsrViewGenerator($templateBlock, $attributes)
+                : new PostTemplateBlockGenerator($templateBlock, $attributes);
             $layoutInstance = $decorator->getLayout();
             $layoutInstance->setContentGenerator($generator);
         }

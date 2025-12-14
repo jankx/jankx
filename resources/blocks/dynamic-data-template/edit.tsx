@@ -32,15 +32,10 @@ interface DynamicDataTemplateAttributes {
         left?: string;
     };
     thumbnailPosition?: 'top' | 'bottom' | 'left' | 'right';
-    imageRatio?: string;
     overlayIcon?: string;
     overlayIconMode?: 'always-show' | 'hover-hide' | 'hover-show';
 }
 
-// Image ratio presets
-const PRESET_IMAGE_RATIOS = ['16/9', '4/3', '21/9', '1/1', '3/4', '2/3', '9/16'] as const;
-type PresetImageRatio = typeof PRESET_IMAGE_RATIOS[number];
-type ImageRatioSelectValue = '' | 'custom' | PresetImageRatio;
 
 interface DynamicDataTemplateEditProps {
     attributes: DynamicDataTemplateAttributes;
@@ -133,24 +128,10 @@ export default function Edit({
         showItemBorder = false,
         itemBorderRadius = 0,
         thumbnailPosition = 'top',
-        imageRatio = '',
         overlayIcon = '',
         overlayIconMode = 'always-show',
     } = attributes;
 
-    // Image ratio handling
-    const imageRatioSelectValue = useMemo<ImageRatioSelectValue>(() => {
-        if (!imageRatio) {
-            return '';
-        }
-        if ((PRESET_IMAGE_RATIOS as readonly string[]).includes(imageRatio)) {
-            return imageRatio as PresetImageRatio;
-        }
-        return 'custom';
-    }, [imageRatio]);
-
-    const isCustomImageRatio = imageRatioSelectValue === 'custom';
-    const customImageRatioValue = isCustomImageRatio && imageRatio ? imageRatio : '';
 
     // Get post type and settings from context
     const postType: string = context?.query?.postType || context?.postType || 'post';
@@ -217,7 +198,6 @@ export default function Edit({
 
     const blockProps = useBlockProps({
         className: `dynamic-data-template dynamic-data-template--${contentLoopLayout}`,
-        ...(imageRatio && { 'data-image-ratio': imageRatio }),
         ...(thumbnailPosition && { 'data-thumbnail-position': thumbnailPosition }),
     });
 
@@ -323,43 +303,6 @@ export default function Edit({
                         onChange={(value) => setAttributes({ thumbnailPosition: value as DynamicDataTemplateAttributes['thumbnailPosition'] })}
                         help={__('Choose where the featured image appears relative to the content.', 'jankx')}
                     />
-                    <SelectControl
-                        label={__('Image Aspect Ratio', 'jankx')}
-                        value={imageRatioSelectValue}
-                        onChange={(value) => {
-                            if (value === 'custom') {
-                                setAttributes({ imageRatio: '' });
-                            } else {
-                                setAttributes({ imageRatio: value || '' });
-                            }
-                        }}
-                        help={__('Set the aspect ratio for featured images', 'jankx')}
-                        options={[
-                            { label: __('Default (3:2)', 'jankx'), value: '' },
-                            { label: __('16:9 (Landscape)', 'jankx'), value: '16/9' },
-                            { label: __('4:3 (Landscape)', 'jankx'), value: '4/3' },
-                            { label: __('21:9 (Ultra Wide)', 'jankx'), value: '21/9' },
-                            { label: __('1:1 (Square)', 'jankx'), value: '1/1' },
-                            { label: __('3:4 (Portrait)', 'jankx'), value: '3/4' },
-                            { label: __('2:3 (Portrait)', 'jankx'), value: '2/3' },
-                            { label: __('9:16 (Vertical)', 'jankx'), value: '9/16' },
-                            { label: __('Custom', 'jankx'), value: 'custom' },
-                        ]}
-                    />
-                    {isCustomImageRatio && (
-                        <TextControl
-                            label={__('Custom Ratio', 'jankx')}
-                            value={customImageRatioValue}
-                            onChange={(value) => {
-                                const ratioPattern = /^\d+\/\d+$/;
-                                if (!value || ratioPattern.test(value)) {
-                                    setAttributes({ imageRatio: value || '' });
-                                }
-                            }}
-                            help={__('Enter aspect ratio in format: width/height (e.g., 16/9, 3/4)', 'jankx')}
-                            placeholder="16/9"
-                        />
-                    )}
                     <TextControl
                         label={__('Overlay Icon Class', 'jankx')}
                         value={overlayIcon}

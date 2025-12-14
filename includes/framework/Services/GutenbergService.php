@@ -134,6 +134,7 @@ class GutenbergService
         $this->repository->registerBlock(CommentCountBlock::class);
         $this->repository->registerBlock(DynamicDataLayoutBlock::class);
         $this->repository->registerBlock(DynamicDataTemplateBlock::class);
+        $this->repository->registerBlock(\Jankx\Gutenberg\Blocks\DynamicDataSSRBlock::class);
         $this->repository->registerBlock(MagicTextBlock::class);
         $this->repository->registerBlock(MasterTableBlock::class);
         $this->repository->registerBlock(ModalBlock::class);

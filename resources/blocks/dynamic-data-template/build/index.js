@@ -8,7 +8,7 @@
   \*************************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/dynamic-data-template","title":"Dynamic Data Template","category":"jankx","parent":["jankx/dynamic-data-layout"],"description":"Markup template để render từng item trong Dynamic Data Layout block","textdomain":"jankx","editorScript":"file:./build/index.js","style":"file:./build/style.css","editorStyle":"file:./build/editor.css","usesContext":["queryId","postType","displayLayout","postsPerPage","columns","columnsTablet","columnsMobile","slidesToScroll","loop","autoplay","autoplayDelay","showArrows","showDots","carouselAlign","carouselAxis","carouselDirection","carouselStartIndex","carouselDuration","carouselDragFree","carouselDragThreshold","carouselSkipSnaps","carouselContainScroll","carouselInViewThreshold"],"supports":{"reusable":false,"html":false,"align":["wide","full"],"layout":true,"color":{"gradients":true,"link":true,"__experimentalDefaultControls":{"background":true,"text":true}},"typography":{"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true,"__experimentalTextTransform":true,"__experimentalTextDecoration":true,"__experimentalLetterSpacing":true,"__experimentalDefaultControls":{"fontSize":true}},"spacing":{"margin":true,"padding":true,"blockGap":{"__experimentalDefault":"1.25em"},"__experimentalDefaultControls":{"blockGap":true,"padding":true,"margin":true}},"interactivity":{"clientNavigation":true},"__experimentalBorder":{"radius":true,"color":true,"width":true,"style":true}},"attributes":{"contentLoopLayout":{"type":"string","default":"default"},"className":{"type":"string","default":""},"itemSpacing":{"type":"string","default":"normal","enum":["none","compact","normal","loose"]},"showItemBorder":{"type":"boolean","default":false},"itemBorderRadius":{"type":"number","default":0},"itemPadding":{"type":"object","default":{"top":"0","right":"0","bottom":"0","left":"0"}},"thumbnailPosition":{"type":"string","default":"top","enum":["top","bottom","left","right"]},"imageRatio":{"type":"string","default":""},"overlayIcon":{"type":"string","default":""},"overlayIconMode":{"type":"string","default":"always-show","enum":["always-show","hover-hide","hover-show"]}}}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/dynamic-data-template","title":"Dynamic Data Template","category":"jankx","parent":["jankx/dynamic-data-layout"],"description":"Markup template để render từng item trong Dynamic Data Layout block","textdomain":"jankx","editorScript":"file:./build/index.js","style":"file:./build/style.css","editorStyle":"file:./build/editor.css","usesContext":["queryId","postType","displayLayout","postsPerPage","columns","columnsTablet","columnsMobile","slidesToScroll","loop","autoplay","autoplayDelay","showArrows","showDots","carouselAlign","carouselAxis","carouselDirection","carouselStartIndex","carouselDuration","carouselDragFree","carouselDragThreshold","carouselSkipSnaps","carouselContainScroll","carouselInViewThreshold"],"supports":{"reusable":false,"html":false,"align":["wide","full"],"layout":true,"color":{"gradients":true,"link":true,"__experimentalDefaultControls":{"background":true,"text":true}},"typography":{"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true,"__experimentalTextTransform":true,"__experimentalTextDecoration":true,"__experimentalLetterSpacing":true,"__experimentalDefaultControls":{"fontSize":true}},"spacing":{"margin":true,"padding":true,"blockGap":{"__experimentalDefault":"1.25em"},"__experimentalDefaultControls":{"blockGap":true,"padding":true,"margin":true}},"interactivity":{"clientNavigation":true},"__experimentalBorder":{"radius":true,"color":true,"width":true,"style":true}},"attributes":{"contentLoopLayout":{"type":"string","default":"default"},"className":{"type":"string","default":""},"itemSpacing":{"type":"string","default":"normal","enum":["none","compact","normal","loose"]},"showItemBorder":{"type":"boolean","default":false},"itemBorderRadius":{"type":"number","default":0},"itemPadding":{"type":"object","default":{"top":"0","right":"0","bottom":"0","left":"0"}},"thumbnailPosition":{"type":"string","default":"top","enum":["top","bottom","left","right"]},"overlayIcon":{"type":"string","default":""},"overlayIconMode":{"type":"string","default":"always-show","enum":["always-show","hover-hide","hover-show"]}}}');
 
 /***/ }),
 
@@ -43,8 +43,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-// Image ratio presets
-const PRESET_IMAGE_RATIOS = ['16/9', '4/3', '21/9', '1/1', '3/4', '2/3', '9/16'];
 const DEFAULT_LAYOUTS_DATA = {
   layoutsByPostType: {},
   commonLayouts: []
@@ -83,23 +81,9 @@ function Edit({
     showItemBorder = false,
     itemBorderRadius = 0,
     thumbnailPosition = 'top',
-    imageRatio = '',
     overlayIcon = '',
     overlayIconMode = 'always-show'
   } = attributes;
-
-  // Image ratio handling
-  const imageRatioSelectValue = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => {
-    if (!imageRatio) {
-      return '';
-    }
-    if (PRESET_IMAGE_RATIOS.includes(imageRatio)) {
-      return imageRatio;
-    }
-    return 'custom';
-  }, [imageRatio]);
-  const isCustomImageRatio = imageRatioSelectValue === 'custom';
-  const customImageRatioValue = isCustomImageRatio && imageRatio ? imageRatio : '';
 
   // Get post type and settings from context
   const postType = context?.query?.postType || context?.postType || 'post';
@@ -160,9 +144,6 @@ function Edit({
   }, [defaultBlocks, convertToTemplate]);
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)({
     className: `dynamic-data-template dynamic-data-template--${contentLoopLayout}`,
-    ...(imageRatio && {
-      'data-image-ratio': imageRatio
-    }),
     ...(thumbnailPosition && {
       'data-thumbnail-position': thumbnailPosition
     })
@@ -282,62 +263,6 @@ function Edit({
             thumbnailPosition: value
           }),
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Choose where the featured image appears relative to the content.', 'jankx')
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Image Aspect Ratio', 'jankx'),
-          value: imageRatioSelectValue,
-          onChange: value => {
-            if (value === 'custom') {
-              setAttributes({
-                imageRatio: ''
-              });
-            } else {
-              setAttributes({
-                imageRatio: value || ''
-              });
-            }
-          },
-          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Set the aspect ratio for featured images', 'jankx'),
-          options: [{
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Default (3:2)', 'jankx'),
-            value: ''
-          }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('16:9 (Landscape)', 'jankx'),
-            value: '16/9'
-          }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('4:3 (Landscape)', 'jankx'),
-            value: '4/3'
-          }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('21:9 (Ultra Wide)', 'jankx'),
-            value: '21/9'
-          }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('1:1 (Square)', 'jankx'),
-            value: '1/1'
-          }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('3:4 (Portrait)', 'jankx'),
-            value: '3/4'
-          }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('2:3 (Portrait)', 'jankx'),
-            value: '2/3'
-          }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('9:16 (Vertical)', 'jankx'),
-            value: '9/16'
-          }, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Custom', 'jankx'),
-            value: 'custom'
-          }]
-        }), isCustomImageRatio && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Custom Ratio', 'jankx'),
-          value: customImageRatioValue,
-          onChange: value => {
-            const ratioPattern = /^\d+\/\d+$/;
-            if (!value || ratioPattern.test(value)) {
-              setAttributes({
-                imageRatio: value || ''
-              });
-            }
-          },
-          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enter aspect ratio in format: width/height (e.g., 16/9, 3/4)', 'jankx'),
-          placeholder: "16/9"
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Overlay Icon Class', 'jankx'),
           value: overlayIcon,

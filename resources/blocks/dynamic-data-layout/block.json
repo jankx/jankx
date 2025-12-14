@@ -37,7 +37,7 @@
     "carouselInViewThreshold": "carouselInViewThreshold"
   },
   "usesContext": ["queryId", "postType"],
-  "allowedBlocks": ["jankx/dynamic-data-template"],
+  "allowedBlocks": ["jankx/dynamic-data-template", "jankx/dynamic-data-ssr"],
   "supports": {
     "html": false,
     "align": ["wide", "full"],
