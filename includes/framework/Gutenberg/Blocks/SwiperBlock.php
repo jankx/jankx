@@ -51,6 +51,12 @@ class SwiperBlock extends Block
         $banner_padding = $attributes['bannerPadding'] ?? 20;
         $banner_border_radius = $attributes['bannerBorderRadius'] ?? 0;
 
+        // Gradient overlay attributes
+        $gradient_overlay = $attributes['gradientOverlay'] ?? false;
+        $gradient_color = $attributes['gradientColor'] ?? '#000000';
+        $gradient_opacity = $attributes['gradientOpacity'] ?? 0.7;
+        $gradient_height = $attributes['gradientHeight'] ?? 60;
+
         // Extract style variation from className
         $style_variation = 'default';
         if (preg_match('/is-style-(\w+)/', $class_name, $matches)) {
@@ -104,7 +110,7 @@ class SwiperBlock extends Block
 
         // Build container data attributes for Swiper initialization
         $container_attrs = sprintf(
-            'data-slides-per-view="%s" data-slides-per-view-tablet="%s" data-slides-per-view-mobile="%s" data-space-between="%s" data-loop="%s" data-autoplay="%s" data-autoplay-delay="%s" data-speed="%s" data-navigation="%s" data-pagination="%s" data-effect="%s" data-banner-style="%s" data-banner-text-color="%s" data-banner-background-color="%s" data-banner-padding="%s" data-banner-border-radius="%s" data-swiper-height="%s"',
+            'data-slides-per-view="%s" data-slides-per-view-tablet="%s" data-slides-per-view-mobile="%s" data-space-between="%s" data-loop="%s" data-autoplay="%s" data-autoplay-delay="%s" data-speed="%s" data-navigation="%s" data-pagination="%s" data-effect="%s" data-banner-style="%s" data-banner-text-color="%s" data-banner-background-color="%s" data-banner-padding="%s" data-banner-border-radius="%s" data-swiper-height="%s" data-gradient-overlay="%s" data-gradient-color="%s" data-gradient-opacity="%s" data-gradient-height="%s"',
             esc_attr($slides_per_view),
             esc_attr($slides_per_view_tablet),
             esc_attr($slides_per_view_mobile),
@@ -121,7 +127,11 @@ class SwiperBlock extends Block
             esc_attr($banner_background_color),
             esc_attr($banner_padding),
             esc_attr($banner_border_radius),
-            intval($height)
+            intval($height),
+            $gradient_overlay ? 'true' : 'false',
+            esc_attr($gradient_color),
+            esc_attr($gradient_opacity),
+            esc_attr($gradient_height)
         );
 
         // Separate slides and overlay

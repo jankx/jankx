@@ -10573,7 +10573,7 @@ _shared_swiper_core_mjs__WEBPACK_IMPORTED_MODULE_0__.S.use(modules);
   \**********************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/swiper","title":"Swiper","category":"jankx","description":"Modern touch slider with hardware accelerated transitions","keywords":["slider","swiper","carousel","gallery","slideshow"],"textdomain":"jankx","attributes":{"slidesPerView":{"type":"number","default":1},"slidesPerViewTablet":{"type":"number","default":1},"slidesPerViewMobile":{"type":"number","default":1},"spaceBetween":{"type":"number","default":30},"loop":{"type":"boolean","default":true},"autoplay":{"type":"boolean","default":false},"autoplayDelay":{"type":"number","default":3000},"speed":{"type":"number","default":300},"navigation":{"type":"boolean","default":true},"pagination":{"type":"boolean","default":true},"effect":{"type":"string","enum":["slide","fade","cube","coverflow","flip","cards"],"default":"slide"},"height":{"type":"number","default":50},"minHeight":{"type":"number","default":50},"contentMode":{"type":"string","enum":["slides","gallery"],"default":"slides"},"galleryImages":{"type":"array","default":[]},"bannerStyle":{"type":"string","enum":["default","circles","square","banner"],"default":"default"},"bannerTextColor":{"type":"string","default":"#ffffff"},"bannerBackgroundColor":{"type":"string","default":"rgba(0,0,0,0.5)"},"bannerPadding":{"type":"number","default":20},"bannerBorderRadius":{"type":"number","default":0},"className":{"type":"string"},"anchor":{"type":"string"}},"supports":{"html":false,"anchor":true,"align":["wide","full"],"spacing":{"margin":true,"padding":true},"color":{"background":true,"text":true},"border":{"color":true,"radius":true,"style":true,"width":true,"__experimentalDefaultControls":{"radius":true}}},"providesContext":{"jankx/swiperId":"anchor"},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","viewScript":"file:./build/view.js","style":"file:./build/style.css","styles":[{"name":"default","label":"Default","isDefault":true},{"name":"banner","label":"Banner"},{"name":"carousel","label":"Carousel"},{"name":"testimonial","label":"Testimonial"}]}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/swiper","title":"Swiper","category":"jankx","description":"Modern touch slider with hardware accelerated transitions","keywords":["slider","swiper","carousel","gallery","slideshow"],"textdomain":"jankx","attributes":{"slidesPerView":{"type":"number","default":1},"slidesPerViewTablet":{"type":"number","default":1},"slidesPerViewMobile":{"type":"number","default":1},"spaceBetween":{"type":"number","default":30},"loop":{"type":"boolean","default":true},"autoplay":{"type":"boolean","default":false},"autoplayDelay":{"type":"number","default":3000},"speed":{"type":"number","default":300},"navigation":{"type":"boolean","default":true},"pagination":{"type":"boolean","default":true},"effect":{"type":"string","enum":["slide","fade","cube","coverflow","flip","cards"],"default":"slide"},"height":{"type":"number","default":50},"minHeight":{"type":"number","default":50},"contentMode":{"type":"string","enum":["slides","gallery"],"default":"slides"},"galleryImages":{"type":"array","default":[]},"bannerStyle":{"type":"string","enum":["default","circles","square","banner"],"default":"default"},"bannerTextColor":{"type":"string","default":"#ffffff"},"bannerBackgroundColor":{"type":"string","default":"rgba(0,0,0,0.5)"},"bannerPadding":{"type":"number","default":20},"bannerBorderRadius":{"type":"number","default":0},"gradientOverlay":{"type":"boolean","default":false},"gradientColor":{"type":"string","default":"#000000"},"gradientOpacity":{"type":"number","default":0.7},"gradientHeight":{"type":"number","default":60},"className":{"type":"string"},"anchor":{"type":"string"}},"supports":{"html":false,"anchor":true,"align":["wide","full"],"spacing":{"margin":true,"padding":true},"color":{"background":true,"text":true},"border":{"color":true,"radius":true,"style":true,"width":true,"__experimentalDefaultControls":{"radius":true}}},"providesContext":{"jankx/swiperId":"anchor"},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","viewScript":"file:./build/view.js","style":"file:./build/style.css","styles":[{"name":"default","label":"Default","isDefault":true},{"name":"banner","label":"Banner"},{"name":"carousel","label":"Carousel"},{"name":"testimonial","label":"Testimonial"}]}');
 
 /***/ }),
 
@@ -10617,6 +10617,19 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+// Utility function to convert hex to RGB
+const hexToRgb = hex => {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  } : {
+    r: 0,
+    g: 0,
+    b: 0
+  };
+};
 function Edit({
   attributes,
   setAttributes,
@@ -10643,6 +10656,10 @@ function Edit({
     bannerBackgroundColor,
     bannerPadding,
     bannerBorderRadius,
+    gradientOverlay,
+    gradientColor,
+    gradientOpacity,
+    gradientHeight,
     className
   } = attributes;
 
@@ -10671,9 +10688,12 @@ function Edit({
   };
   const swiperRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_7__.useRef)(null);
   const containerRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_7__.useRef)(null);
+
+  // Convert gradient color to RGB for CSS variables
+  const gradientRgb = hexToRgb(gradientColor);
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)({
     ref: containerRef,
-    className: `swiper-block swiper-effect-${effect} banner-style-${bannerStyle} ${className || ''}`.trim(),
+    className: `swiper-block swiper-effect-${effect} banner-style-${bannerStyle} ${gradientOverlay ? 'has-gradient-overlay' : ''} ${className || ''}`.trim(),
     style: {
       '--swiper-height': `${height}px`,
       '--swiper-min-height': `${minHeight}px`,
@@ -10682,6 +10702,12 @@ function Edit({
       '--banner-background-color': bannerBackgroundColor,
       '--banner-padding': `${bannerPadding}px`,
       '--banner-border-radius': `${bannerBorderRadius}px`,
+      '--gradient-overlay-enabled': gradientOverlay ? '1' : '0',
+      '--gradient-color-r': gradientRgb.r,
+      '--gradient-color-g': gradientRgb.g,
+      '--gradient-color-b': gradientRgb.b,
+      '--gradient-opacity': gradientOpacity,
+      '--gradient-height': `${gradientHeight}%`,
       '--slides-per-view-desktop': slidesPerView,
       '--slides-per-view-tablet': slidesPerViewTablet,
       '--slides-per-view-mobile': slidesPerViewMobile
@@ -11202,6 +11228,57 @@ function Edit({
             min: 0,
             max: 20,
             step: 1
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Gradient Overlay', 'jankx'),
+          initialOpen: false,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enable Gradient Overlay', 'jankx'),
+            checked: gradientOverlay,
+            onChange: val => setAttributes({
+              gradientOverlay: val
+            }),
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Add a gradient overlay from bottom to top with decreasing transparency', 'jankx')
+          }), gradientOverlay && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {
+              style: {
+                marginBottom: '16px'
+              },
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("label", {
+                style: {
+                  display: 'block',
+                  marginBottom: '8px',
+                  fontWeight: 'bold'
+                },
+                children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Gradient Color', 'jankx')
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ColorPicker, {
+                color: gradientColor,
+                onChange: color => setAttributes({
+                  gradientColor: color
+                }),
+                disableAlpha: false
+              })]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Gradient Opacity', 'jankx'),
+              value: gradientOpacity,
+              onChange: val => setAttributes({
+                gradientOpacity: val
+              }),
+              min: 0,
+              max: 1,
+              step: 0.1,
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Transparency of the gradient (0 = fully transparent, 1 = fully opaque)', 'jankx')
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Gradient Height (%)', 'jankx'),
+              value: gradientHeight,
+              onChange: val => setAttributes({
+                gradientHeight: val
+              }),
+              min: 10,
+              max: 100,
+              step: 5,
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Height of the gradient overlay as percentage of slide height', 'jankx')
+            })]
           })]
         })]
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {

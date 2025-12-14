@@ -91,6 +91,22 @@
       "type": "number",
       "default": 0
     },
+    "gradientOverlay": {
+      "type": "boolean",
+      "default": false
+    },
+    "gradientColor": {
+      "type": "string",
+      "default": "#000000"
+    },
+    "gradientOpacity": {
+      "type": "number",
+      "default": 0.7
+    },
+    "gradientHeight": {
+      "type": "number",
+      "default": 60
+    },
     "className": {
       "type": "string"
     },

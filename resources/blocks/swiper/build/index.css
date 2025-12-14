@@ -1749,6 +1749,17 @@
   height: 100%;
   position: relative;
 }
+.wp-block-jankx-swiper.has-gradient-overlay .swiper-slide::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--gradient-height, 60%);
+  background: linear-gradient(to top, rgba(var(--gradient-color-r, 0), var(--gradient-color-g, 0), var(--gradient-color-b, 0), var(--gradient-opacity, 0.7)) 0%, rgba(var(--gradient-color-r, 0), var(--gradient-color-g, 0), var(--gradient-color-b, 0), calc(var(--gradient-opacity, 0.7) * 0.8)) 30%, rgba(var(--gradient-color-r, 0), var(--gradient-color-g, 0), var(--gradient-color-b, 0), calc(var(--gradient-opacity, 0.7) * 0.5)) 60%, rgba(var(--gradient-color-r, 0), var(--gradient-color-g, 0), var(--gradient-color-b, 0), calc(var(--gradient-opacity, 0.7) * 0.2)) 85%, transparent 100%);
+  pointer-events: none;
+  z-index: 5;
+}
 .wp-block-jankx-swiper .swiper-button-prev,
 .wp-block-jankx-swiper .swiper-button-next {
   color: var(--wp--preset--color--contrast, #000);

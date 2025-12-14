@@ -9,6 +9,16 @@ import Swiper from 'swiper/bundle';
 import 'swiper/css/bundle';
 import type { SwiperProps } from './types';
 
+// Utility function to convert hex to RGB
+const hexToRgb = (hex: string) => {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  } : { r: 0, g: 0, b: 0 };
+};
+
 export default function Edit({ attributes, setAttributes, clientId }: SwiperProps): JSX.Element {                                                               
   const {
     slidesPerView,
@@ -31,6 +41,10 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
     bannerBackgroundColor,
     bannerPadding,
     bannerBorderRadius,
+    gradientOverlay,
+    gradientColor,
+    gradientOpacity,
+    gradientHeight,
     className
   } = attributes;
 
@@ -62,9 +76,12 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
   const swiperRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Convert gradient color to RGB for CSS variables
+  const gradientRgb = hexToRgb(gradientColor);
+
     const blockProps = useBlockProps({
     ref: containerRef,
-    className: `swiper-block swiper-effect-${effect} banner-style-${bannerStyle} ${className || ''}`.trim(),                                                                              
+    className: `swiper-block swiper-effect-${effect} banner-style-${bannerStyle} ${gradientOverlay ? 'has-gradient-overlay' : ''} ${className || ''}`.trim(),                                                                              
     style: {
       '--swiper-height': `${height}px`,
       '--swiper-min-height': `${minHeight}px`,
@@ -73,6 +90,12 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
       '--banner-background-color': bannerBackgroundColor,
       '--banner-padding': `${bannerPadding}px`,
       '--banner-border-radius': `${bannerBorderRadius}px`,
+      '--gradient-overlay-enabled': gradientOverlay ? '1' : '0',
+      '--gradient-color-r': gradientRgb.r,
+      '--gradient-color-g': gradientRgb.g,
+      '--gradient-color-b': gradientRgb.b,
+      '--gradient-opacity': gradientOpacity,
+      '--gradient-height': `${gradientHeight}%`,
       '--slides-per-view-desktop': slidesPerView,
       '--slides-per-view-tablet': slidesPerViewTablet,
       '--slides-per-view-mobile': slidesPerViewMobile
@@ -573,6 +596,50 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
             max={20}
             step={1}
           />
+        </PanelBody>
+
+        <PanelBody title={__('Gradient Overlay', 'jankx')} initialOpen={false}>
+          <ToggleControl
+            label={__('Enable Gradient Overlay', 'jankx')}
+            checked={gradientOverlay}
+            onChange={(val: boolean) => setAttributes({ gradientOverlay: val })}
+            help={__('Add a gradient overlay from bottom to top with decreasing transparency', 'jankx')}
+          />
+
+          {gradientOverlay && (
+            <>
+              <div style={{ marginBottom: '16px' }}>
+                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+                  {__('Gradient Color', 'jankx')}
+                </label>
+                <ColorPicker
+                  color={gradientColor}
+                  onChange={(color: string) => setAttributes({ gradientColor: color })}
+                  disableAlpha={false}
+                />
+              </div>
+
+              <RangeControl
+                label={__('Gradient Opacity', 'jankx')}
+                value={gradientOpacity}
+                onChange={(val: number) => setAttributes({ gradientOpacity: val })}
+                min={0}
+                max={1}
+                step={0.1}
+                help={__('Transparency of the gradient (0 = fully transparent, 1 = fully opaque)', 'jankx')}
+              />
+
+              <RangeControl
+                label={__('Gradient Height (%)', 'jankx')}
+                value={gradientHeight}
+                onChange={(val: number) => setAttributes({ gradientHeight: val })}
+                min={10}
+                max={100}
+                step={5}
+                help={__('Height of the gradient overlay as percentage of slide height', 'jankx')}
+              />
+            </>
+          )}
         </PanelBody>
       </InspectorControls>
 

@@ -1,0 +1,58 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "jankx/floating-messengers",
+  "title": "Floating Messengers",
+  "category": "jankx",
+  "icon": "share",
+  "description": "Nút nổi multi-messenger để liên hệ nhanh (Messenger, WhatsApp, Zalo, Telegram, Call, SMS).",
+  "textdomain": "jankx",
+  "editorScript": "file:./build/index.js",
+  "style": "file:./build/style.css",
+  "editorStyle": "file:./build/editor.css",
+  "viewScript": "file:./build/frontend.js",
+  "supports": {
+    "html": false,
+    "align": ["wide", "full"],
+    "spacing": {
+      "margin": true,
+      "padding": true,
+      "blockGap": true
+    },
+    "__experimentalBorder": {
+      "radius": true
+    }
+  },
+  "attributes": {
+    "position": {
+      "type": "string",
+      "default": "right",
+      "enum": ["left", "right"]
+    },
+    "bottomOffset": {
+      "type": "string",
+      "default": "24px"
+    },
+    "showLabels": {
+      "type": "boolean",
+      "default": false
+    },
+    "triggerMode": {
+      "type": "string",
+      "default": "toggle",
+      "enum": ["toggle", "always"]
+    },
+    "channels": {
+      "type": "object",
+      "default": {
+        "messenger": { "enabled": false, "appId": "", "pageId": "", "label": "Messenger" },
+        "whatsapp": { "enabled": false, "phone": "", "label": "WhatsApp" },
+        "zalo": { "enabled": false, "phone": "", "label": "Zalo" },
+        "telegram": { "enabled": false, "username": "", "label": "Telegram" },
+        "phone": { "enabled": false, "phone": "", "label": "Gọi" },
+        "sms": { "enabled": false, "phone": "", "label": "SMS" }
+      }
+    }
+  }
+}
+

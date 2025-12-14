@@ -177,6 +177,10 @@ module.exports = {
     'blocks/dynamic-data-ssr/build/index': './blocks/dynamic-data-ssr/index.tsx',
     'blocks/dynamic-data-ssr/build/style': './blocks/dynamic-data-ssr/style.scss',
     'blocks/dynamic-data-ssr/build/editor': './blocks/dynamic-data-ssr/editor.scss',
+    'blocks/floating-messengers/build/index': './blocks/floating-messengers/index.tsx',
+    'blocks/floating-messengers/build/style': './blocks/floating-messengers/style.scss',
+    'blocks/floating-messengers/build/editor': './blocks/floating-messengers/editor.scss',
+    'blocks/floating-messengers/build/frontend': './blocks/floating-messengers/frontend.ts',
 
     'blocks/facebook-page/build/index': './blocks/facebook-page/index.tsx',
     'blocks/facebook-page/build/frontend': './blocks/facebook-page/frontend.ts',

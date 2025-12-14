@@ -249,6 +249,9 @@ class DynamicDataLayoutBlock extends Block
                     if (!empty($templateAttrs['thumbnailPosition']) && empty($attributes['thumbnailPosition'])) {
                         $attributes['thumbnailPosition'] = $templateAttrs['thumbnailPosition'];
                     }
+                    if (!empty($attributes['queryId'])) {
+                        $this->cacheTemplateByBlockId((string) $attributes['queryId'], $templateBlock);
+                    }
                 }
             }
 
@@ -460,6 +463,13 @@ class DynamicDataLayoutBlock extends Block
 
         // Set content generator if template block exists
         if ($templateBlock) {
+            $templateAttrs = $templateBlock['attrs'] ?? [];
+            if (!empty($templateAttrs['imageRatio']) && empty($attributes['imageRatio'])) {
+                $attributes['imageRatio'] = $templateAttrs['imageRatio'];
+            }
+            if (!empty($templateAttrs['thumbnailPosition']) && empty($attributes['thumbnailPosition'])) {
+                $attributes['thumbnailPosition'] = $templateAttrs['thumbnailPosition'];
+            }
             $generator = new \Jankx\Layouts\DynamicDataLayout\Generators\PostTemplateBlockGenerator($templateBlock, $attributes);
             $layoutInstance = $decorator->getLayout();
             $layoutInstance->setContentGenerator($generator);
@@ -516,7 +526,12 @@ class DynamicDataLayoutBlock extends Block
             if (($block['blockName'] ?? '') === 'jankx/dynamic-data-layout') {
                 $query_id = $block['attrs']['queryId'] ?? null;
                 if ($query_id && strval($query_id) === $target_block_id) {
-                    return $block['attrs'] ?? [];
+                    $attrs = $block['attrs'] ?? [];
+                    $template = $this->extractTemplateBlockFromParsedBlock($block);
+                    if ($template !== null) {
+                        $attrs['postTemplate'] = $template;
+                    }
+                    return $attrs;
                 }
             }
 
@@ -685,6 +700,13 @@ class DynamicDataLayoutBlock extends Block
             $attributes['queryId'] = $block_id;
         }
 
+        if (empty($attributes['postTemplate']) && !empty($attributes['queryId'])) {
+            $cachedTemplate = $this->getCachedTemplateByBlockId((string) $attributes['queryId']);
+            if (is_array($cachedTemplate)) {
+                $attributes['postTemplate'] = $cachedTemplate;
+            }
+        }
+
         try {
             $result = apply_filters('jankx_dynamic_data_layout_filter_update', $attributes, $filters);
             if (!is_array($result)) {
@@ -699,6 +721,17 @@ class DynamicDataLayoutBlock extends Block
             error_log('jankx_dynamic_data_layout_filter error: ' . $message);
             wp_send_json_error(['message' => $message]);
         }
+    }
+
+    protected function cacheTemplateByBlockId(string $blockId, array $template): void
+    {
+        set_transient('jankx_ddl_template_' . $blockId, $template, DAY_IN_SECONDS);
+    }
+
+    protected function getCachedTemplateByBlockId(string $blockId): ?array
+    {
+        $cached = get_transient('jankx_ddl_template_' . $blockId);
+        return is_array($cached) ? $cached : null;
     }
 
     /**
