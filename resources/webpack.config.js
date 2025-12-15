@@ -193,6 +193,9 @@ module.exports = {
     'blocks/star-rating/build/index': './blocks/star-rating/index.tsx',
     'blocks/star-rating/build/style': './blocks/star-rating/style.scss',
     'blocks/star-rating/build/editor': './blocks/star-rating/editor.scss',
+
+    'blocks/post-type-badge/build/index': './blocks/post-type-badge/index.tsx',
+    'blocks/post-type-badge/build/style': './blocks/post-type-badge/style.scss',
   },
   output: {
     path: path.resolve(__dirname),

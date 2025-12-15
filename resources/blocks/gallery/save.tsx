@@ -15,15 +15,22 @@ export default function save({ attributes }) {
 		enableLightbox,
 		imageHoverEffect,
 		layout,
+		rows,
 	} = attributes;
 	const isMasonry = layout === 'masonry';
+	const isHorizontalMasonry = layout === 'horizontal-masonry';
 	const desktopColumns = isMasonry ? deskCol : 1;
 	const tabletColumns = isMasonry ? tabCol : 1;
 	const phoneColumns = isMasonry ? phoneCol : 1;
+
+	const additionalClasses = isHorizontalMasonry
+		? 'gallery-horizontal-scroll gallery-column hide-scrollbars ltr focus-within'
+		: '';
+
 	return (
 		<div
 			{...useBlockProps.save({
-				className: `layout__${layout} dc__${desktopColumns} tc__${tabletColumns} pc__${phoneColumns} dg__${deskGap} tg__${tabGap} pg__${phoneGap}`,
+				className: `layout__${layout} dc__${desktopColumns} tc__${tabletColumns} pc__${phoneColumns} dg__${deskGap} tg__${tabGap} pg__${phoneGap} ${isHorizontalMasonry ? `rows__${rows}` : ''} ${additionalClasses}`,
 			})}
 			data-id={galleryId}
 			id={galleryId}

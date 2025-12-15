@@ -8,6 +8,11 @@
   "description": "Hiển thị nhãn loại bài viết (post type) trên item trong Post Layout",
   "textdomain": "jankx",
   "attributes": {
+    "displayType": {
+      "type": "string",
+      "default": "absolute",
+      "enum": ["absolute", "normal"]
+    },
     "position": {
       "type": "string",
       "default": "top-right"

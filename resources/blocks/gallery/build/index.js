@@ -8,7 +8,7 @@
   \***********************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","name":"jankx/gallery","title":"Image Masonry Gallery","category":"jankx","icon":"format-gallery","description":"Showcase Images in a Masonry Gallery View with responsive columns and lightbox support.","keywords":["masonry","gallery","images","image gallery","lightbox"],"textdomain":"jankx","supports":{"html":false,"anchor":true,"align":["wide","full"],"spacing":{"margin":true,"padding":true}},"attributes":{"galleryId":{"type":"string"},"images":{"type":"array"},"colDevice":{"type":"string","default":"desktop"},"deskCol":{"type":"number","default":3},"tabCol":{"type":"number","default":2},"phoneCol":{"type":"number","default":1},"gapDevice":{"type":"string","default":"desktop"},"deskGap":{"type":"number","default":10},"tabGap":{"type":"number","default":10},"phoneGap":{"type":"number","default":5},"enableLightbox":{"type":"boolean","default":true},"imageHoverEffect":{"type":"string","default":"none"},"layout":{"type":"string","default":"masonry"}},"editorScript":"file:./build/index.js","style":"file:./build/style.css","editorStyle":"file:./build/editor.css"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","name":"jankx/gallery","title":"Image Masonry Gallery","category":"jankx","icon":"format-gallery","description":"Showcase Images in a Masonry Gallery View with responsive columns and lightbox support.","keywords":["masonry","gallery","images","image gallery","lightbox"],"textdomain":"jankx","supports":{"html":false,"anchor":true,"align":["wide","full"],"spacing":{"margin":true,"padding":true}},"attributes":{"galleryId":{"type":"string"},"images":{"type":"array"},"colDevice":{"type":"string","default":"desktop"},"deskCol":{"type":"number","default":3},"tabCol":{"type":"number","default":2},"phoneCol":{"type":"number","default":1},"gapDevice":{"type":"string","default":"desktop"},"deskGap":{"type":"number","default":10},"tabGap":{"type":"number","default":10},"phoneGap":{"type":"number","default":5},"enableLightbox":{"type":"boolean","default":true},"imageHoverEffect":{"type":"string","default":"none"},"layout":{"type":"string","default":"masonry"},"rows":{"type":"number","default":2}},"editorScript":"file:./build/index.js","style":"file:./build/style.css","editorStyle":"file:./build/editor.css"}');
 
 /***/ }),
 
@@ -121,9 +121,11 @@ function Edit({
     phoneGap,
     enableLightbox,
     imageHoverEffect,
-    layout
+    layout,
+    rows
   } = attributes;
   const isMasonry = layout === 'masonry';
+  const isHorizontalMasonry = layout === 'horizontal-masonry';
   // cols number
   const colsNumber = images ? isMasonry ? deskCol : 1 : 1;
   const tabletColumns = isMasonry ? tabCol : 1;
@@ -132,6 +134,9 @@ function Edit({
   // gallery id
   setAttributes({
     galleryId: clientId.slice(0, 8)
+  });
+  const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.useBlockProps)({
+    className: `layout__${layout} dc__${colsNumber} tc__${tabletColumns} pc__${phoneColumns} dg__${deskGap} tg__${tabGap} pg__${phoneGap} ${isHorizontalMasonry ? `rows__${rows}` : ''}`
   });
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.InspectorControls, {
@@ -145,12 +150,23 @@ function Edit({
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Masonry', 'jankx'),
             value: 'masonry'
           }, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Masonry (Horizontal)', 'jankx'),
+            value: 'horizontal-masonry'
+          }, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Stacked (Portrait)', 'jankx'),
             value: 'stacked'
           }],
           onChange: value => setAttributes({
             layout: value
           })
+        }), isHorizontalMasonry && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.RangeControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Number of Rows', 'jankx'),
+          value: rows,
+          onChange: value => setAttributes({
+            rows: value
+          }),
+          min: 1,
+          max: 4
         }), isMasonry && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_components_devices__WEBPACK_IMPORTED_MODULE_5__["default"], {
             device: colDevice,
@@ -267,9 +283,7 @@ function Edit({
         })
       })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
-      ...(0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.useBlockProps)({
-        className: `layout__${layout} dc__${colsNumber} tc__${tabletColumns} pc__${phoneColumns} dg__${deskGap} tg__${tabGap} pg__${phoneGap}`
-      }),
+      ...blockProps,
       children: images ? images.map(image => {
         return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
           className: `single-gallery-image ${imageHoverEffect} dg__${deskGap} tg__${tabGap} pg__${phoneGap}`,
@@ -345,15 +359,18 @@ function save({
     phoneGap,
     enableLightbox,
     imageHoverEffect,
-    layout
+    layout,
+    rows
   } = attributes;
   const isMasonry = layout === 'masonry';
+  const isHorizontalMasonry = layout === 'horizontal-masonry';
   const desktopColumns = isMasonry ? deskCol : 1;
   const tabletColumns = isMasonry ? tabCol : 1;
   const phoneColumns = isMasonry ? phoneCol : 1;
+  const additionalClasses = isHorizontalMasonry ? 'gallery-horizontal-scroll gallery-column hide-scrollbars ltr focus-within' : '';
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
     ..._wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps.save({
-      className: `layout__${layout} dc__${desktopColumns} tc__${tabletColumns} pc__${phoneColumns} dg__${deskGap} tg__${tabGap} pg__${phoneGap}`
+      className: `layout__${layout} dc__${desktopColumns} tc__${tabletColumns} pc__${phoneColumns} dg__${deskGap} tg__${tabGap} pg__${phoneGap} ${isHorizontalMasonry ? `rows__${rows}` : ''} ${additionalClasses}`
     }),
     "data-id": galleryId,
     id: galleryId,

@@ -40,8 +40,10 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 		enableLightbox,
 		imageHoverEffect,
 		layout,
+		rows,
 	} = attributes;
 	const isMasonry = layout === 'masonry';
+	const isHorizontalMasonry = layout === 'horizontal-masonry';
 	// cols number
 	const colsNumber = images ? (isMasonry ? deskCol : 1) : 1;
 	const tabletColumns = isMasonry ? tabCol : 1;
@@ -49,6 +51,10 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 
 	// gallery id
 	setAttributes({ galleryId: clientId.slice(0, 8) });
+
+	const blockProps = useBlockProps({
+		className: `layout__${layout} dc__${colsNumber} tc__${tabletColumns} pc__${phoneColumns} dg__${deskGap} tg__${tabGap} pg__${phoneGap} ${isHorizontalMasonry ? `rows__${rows}` : ''}`,
+	});
 
 	return (
 		<Fragment>
@@ -66,6 +72,10 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 								value: 'masonry',
 							},
 							{
+								label: __('Masonry (Horizontal)', 'jankx'),
+								value: 'horizontal-masonry',
+							},
+							{
 								label: __('Stacked (Portrait)', 'jankx'),
 								value: 'stacked',
 							},
@@ -76,6 +86,15 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 							})
 						}
 					/>
+					{isHorizontalMasonry && (
+						<RangeControl
+							label={__('Number of Rows', 'jankx')}
+							value={rows}
+							onChange={(value) => setAttributes({ rows: value })}
+							min={1}
+							max={4}
+						/>
+					)}
 					{isMasonry && (
 						<>
 							<Devices
@@ -252,9 +271,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 				</BlockControls>
 			)}
 			<div
-				{...useBlockProps({
-					className: `layout__${layout} dc__${colsNumber} tc__${tabletColumns} pc__${phoneColumns} dg__${deskGap} tg__${tabGap} pg__${phoneGap}`,
-				})}
+				{...blockProps}
 			>
 				{images ? (
 					images.map((image) => {

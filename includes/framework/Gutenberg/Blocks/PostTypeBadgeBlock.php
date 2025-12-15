@@ -42,6 +42,7 @@ class PostTypeBadgeBlock extends Block
 
         $attrs = is_array($attributes) ? $attributes : (array) $attributes;
 
+        $displayType = isset($attrs['displayType']) ? $attrs['displayType'] : 'absolute';
         $position = isset($attrs['position']) ? $attrs['position'] : 'top-right';
         $offsetX = isset($attrs['offsetX']) ? $attrs['offsetX'] : '12px';
         $offsetY = isset($attrs['offsetY']) ? $attrs['offsetY'] : '12px';
@@ -54,22 +55,30 @@ class PostTypeBadgeBlock extends Block
             return '';
         }
 
-        $classes = implode(' ', array_filter([
+        $classes_array = [
             'wp-block-jankx-post-type-badge',
-            'position-' . esc_attr($position),
-        ]));
-
-        $style_parts = [];
-        if (strpos($position, 'top') !== false) {
-            $style_parts[] = 'top: ' . esc_attr($offsetY) . ';';
+        ];
+        if ($displayType === 'absolute') {
+            $classes_array[] = 'position-' . esc_attr($position);
         } else {
-            $style_parts[] = 'bottom: ' . esc_attr($offsetY) . ';';
+            $classes_array[] = 'display-normal';
         }
 
-        if (strpos($position, 'right') !== false) {
-            $style_parts[] = 'right: ' . esc_attr($offsetX) . ';';
-        } else {
-            $style_parts[] = 'left: ' . esc_attr($offsetX) . ';';
+        $classes = implode(' ', array_filter($classes_array));
+
+        $style_parts = [];
+        if ($displayType === 'absolute') {
+            if (strpos($position, 'top') !== false) {
+                $style_parts[] = 'top: ' . esc_attr($offsetY) . ';';
+            } else {
+                $style_parts[] = 'bottom: ' . esc_attr($offsetY) . ';';
+            }
+
+            if (strpos($position, 'right') !== false) {
+                $style_parts[] = 'right: ' . esc_attr($offsetX) . ';';
+            } else {
+                $style_parts[] = 'left: ' . esc_attr($offsetX) . ';';
+            }
         }
 
         $style_parts[] = 'background: ' . esc_attr($bg) . ';';

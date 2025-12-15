@@ -41,6 +41,65 @@
   filter: grayscale(1); /* Microsoft Edge and Firefox 35+ */
 }
 
+/* Horizontal Masonry Layout */
+.wp-block-jankx-image-masonry-gallery.layout__horizontal-masonry {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: max-content;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  /* Reset standard masonry styles */
+  column-count: unset !important;
+  column-gap: unset !important;
+  /* Default gaps */
+  gap: 10px;
+  /* Hide scrollbars class */
+}
+.wp-block-jankx-image-masonry-gallery.layout__horizontal-masonry.hide-scrollbars {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.wp-block-jankx-image-masonry-gallery.layout__horizontal-masonry.hide-scrollbars::-webkit-scrollbar {
+  display: none;
+}
+.wp-block-jankx-image-masonry-gallery.layout__horizontal-masonry .single-gallery-image {
+  width: auto;
+  height: 100%;
+  margin-bottom: 0 !important;
+  display: flex;
+}
+.wp-block-jankx-image-masonry-gallery.layout__horizontal-masonry .single-gallery-image img {
+  width: auto;
+  height: 100%;
+  object-fit: cover;
+  max-width: none;
+}
+.wp-block-jankx-image-masonry-gallery.layout__horizontal-masonry {
+  /* Rows Configuration */
+}
+.wp-block-jankx-image-masonry-gallery.layout__horizontal-masonry.rows__1 {
+  grid-template-rows: 400px;
+}
+.wp-block-jankx-image-masonry-gallery.layout__horizontal-masonry.rows__2 {
+  grid-template-rows: repeat(2, 250px);
+}
+.wp-block-jankx-image-masonry-gallery.layout__horizontal-masonry.rows__3 {
+  grid-template-rows: repeat(3, 200px);
+}
+.wp-block-jankx-image-masonry-gallery.layout__horizontal-masonry.rows__4 {
+  grid-template-rows: repeat(4, 180px);
+}
+.wp-block-jankx-image-masonry-gallery.layout__horizontal-masonry {
+  /* Responsive Adjustments */
+}
+@media only screen and (max-width: 767px) {
+  .wp-block-jankx-image-masonry-gallery.layout__horizontal-masonry.rows__2, .wp-block-jankx-image-masonry-gallery.layout__horizontal-masonry.rows__3, .wp-block-jankx-image-masonry-gallery.layout__horizontal-masonry.rows__4 {
+    grid-template-rows: repeat(2, 180px);
+  }
+}
+
 /* Masonry on Mobile */
 @media only screen and (max-width: 767px) {
   .wp-block-jankx-image-masonry-gallery.pc__1 {

@@ -66,6 +66,10 @@
         "layout": {
             "type": "string",
             "default": "masonry"
+        },
+        "rows": {
+            "type": "number",
+            "default": 2
         }
     },
     "editorScript": "file:./build/index.js",

@@ -4,8 +4,10 @@ import {
     useInnerBlocksProps,
     InspectorControls,
     BlockPreview,
+    BlockContextProvider,
     store as blockEditorStore,
 } from '@wordpress/block-editor';
+import { store as coreStore } from '@wordpress/core-data';
 import { useResizeObserver } from '@wordpress/compose';
 import {
     PanelBody,
@@ -55,6 +57,25 @@ interface DynamicDataTemplateEditProps {
         showArrows?: boolean;
         showDots?: boolean;
         carouselAlign?: 'start' | 'center' | 'end';
+        queryPreset?: string;
+        includeStickyPosts?: boolean;
+        orderBy?: string;
+        order?: string;
+        offset?: number;
+        taxQuery?: any[];
+        metaQuery?: any[];
+        keyword?: string;
+        authorIn?: number[];
+        authorNotIn?: number[];
+        postIn?: number[];
+        postNotIn?: number[];
+        metaKey?: string;
+        metaType?: string;
+        postStatus?: string[];
+        postParent?: number;
+        postParentIn?: number[];
+        postParentNotIn?: number[];
+        customQueryId?: string;
     };
 }
 
@@ -144,6 +165,42 @@ export default function Edit({
     const showArrows: boolean = !!context?.showArrows;
     const showDots: boolean = !!context?.showDots;
     const carouselAlign = context?.carouselAlign || 'start';
+
+    // Prepare query args
+    const queryArgs = useMemo(() => {
+        const args: Record<string, any> = {
+            per_page: postsPerPage,
+            offset: context.offset || 0,
+            order: context.order || 'DESC',
+            orderby: context.orderBy || 'date',
+            status: context.postStatus || 'publish',
+            _embed: true, // Fetch embedded data like featured media
+        };
+
+        if (context.keyword) args.search = context.keyword;
+        if (context.authorIn?.length) args.author = context.authorIn;
+        if (context.authorNotIn?.length) args.author_exclude = context.authorNotIn;
+        if (context.postIn?.length) args.include = context.postIn;
+        if (context.postNotIn?.length) args.exclude = context.postNotIn;
+        if (context.postParent) args.parent = context.postParent;
+        if (context.postParentIn?.length) args.parent = context.postParentIn;
+        if (context.postParentNotIn?.length) args.parent_exclude = context.postParentNotIn;
+        // ignore_sticky_posts logic depends on API version but generally REST doesn't sticky by default unless asked?
+        // Actually REST API doesn't move sticky posts to top by default like WP_Query.
+        // But let's leave it as is.
+        
+        return args;
+    }, [context, postsPerPage]);
+
+    // Fetch posts
+    const { posts, hasResolved } = useSelect((select) => {
+        const { getEntityRecords, hasFinishedResolution } = select(coreStore);
+        const selectorArgs = ['postType', postType, queryArgs];
+        return {
+            posts: getEntityRecords(...selectorArgs),
+            hasResolved: hasFinishedResolution('getEntityRecords', selectorArgs),
+        };
+    }, [postType, queryArgs]);
 
     // Get layouts data from PHP
     const layoutsData = window.jankxDynamicDataContentLoopLayouts || DEFAULT_LAYOUTS_DATA;
@@ -239,9 +296,12 @@ export default function Edit({
 
     // Calculate total items to display (including editable one)
     const totalItems = useMemo(() => {
-        // Giới hạn tối đa 12 items cho performance
+        if (hasResolved && posts) {
+            return Math.max(1, posts.length);
+        }
+        // Giới hạn tối đa 12 items cho performance khi loading
         return Math.min(Math.max(1, postsPerPage), 12);
-    }, [postsPerPage]);
+    }, [postsPerPage, hasResolved, posts]);
 
     const viewportRef = useRef<HTMLDivElement | null>(null);
     const scrollBySlides = useCallback((n: number) => {
@@ -371,6 +431,10 @@ export default function Edit({
                                         if (m.bottom) itemStyle.marginBottom = m.bottom as any;
                                         if (m.left) itemStyle.marginLeft = m.left as any;
                                     }
+
+                                    const postData = posts && posts[index] ? posts[index] : null;
+                                    const contextValue = postData ? { postId: postData.id, postType: postData.type } : {};
+
                                     if (index === 0) {
                                         return (
                                             <div
@@ -379,18 +443,37 @@ export default function Edit({
                                                 data-item-index={index}
                                                 style={itemStyle}
                                             >
-                                                <div {...innerBlocksProps} />
+                                                {postData ? (
+                                                    <BlockContextProvider value={contextValue}>
+                                                        <div {...innerBlocksProps} />
+                                                    </BlockContextProvider>
+                                                ) : (
+                                                    <div {...innerBlocksProps} />
+                                                )}
                                             </div>
                                         );
                                     }
                                     return (
-                                        <PreviewItem
+                                        <div
                                             key={`item-${index}`}
                                             className="dynamic-data-template__item dynamic-data-template__item--preview"
-                                            index={index}
+                                            data-item-index={index}
                                             style={itemStyle}
-                                            blocks={sharedInnerBlocks}
-                                        />
+                                        >
+                                             {postData ? (
+                                                <BlockContextProvider value={contextValue}>
+                                                    <PreviewItem
+                                                        index={index}
+                                                        blocks={sharedInnerBlocks}
+                                                    />
+                                                </BlockContextProvider>
+                                            ) : (
+                                                <PreviewItem
+                                                    index={index}
+                                                    blocks={sharedInnerBlocks}
+                                                />
+                                            )}
+                                        </div>
                                     );
                                 })}
                             </div>
@@ -414,6 +497,9 @@ export default function Edit({
                         } as CSSProperties}
                     >
                         {Array.from({ length: totalItems }).map((_, index) => {
+                            const postData = posts && posts[index] ? posts[index] : null;
+                            const contextValue = postData ? { postId: postData.id, postType: postData.type } : {};
+
                             if (index === 0) {
                                 const itemStyle2: CSSProperties = {};
                                 const spacing2 = (attributes as any)?.style?.spacing;
@@ -438,7 +524,13 @@ export default function Edit({
                                         data-item-index={index}
                                         style={itemStyle2}
                                     >
-                                        <div {...innerBlocksProps} />
+                                        {postData ? (
+                                            <BlockContextProvider value={contextValue}>
+                                                <div {...innerBlocksProps} />
+                                            </BlockContextProvider>
+                                        ) : (
+                                            <div {...innerBlocksProps} />
+                                        )}
                                     </div>
                                 );
                             }
@@ -459,13 +551,26 @@ export default function Edit({
                                 if (m3.left) itemStyle3.marginLeft = m3.left as any;
                             }
                             return (
-                                <PreviewItem
+                                <div
                                     key={`item-${index}`}
                                     className="dynamic-data-template__item dynamic-data-template__item--preview"
-                                    index={index}
+                                    data-item-index={index}
                                     style={itemStyle3}
-                                    blocks={sharedInnerBlocks}
-                                />
+                                >
+                                    {postData ? (
+                                        <BlockContextProvider value={contextValue}>
+                                            <PreviewItem
+                                                index={index}
+                                                blocks={sharedInnerBlocks}
+                                            />
+                                        </BlockContextProvider>
+                                    ) : (
+                                        <PreviewItem
+                                            index={index}
+                                            blocks={sharedInnerBlocks}
+                                        />
+                                    )}
+                                </div>
                             );
                         })}
                     </div>

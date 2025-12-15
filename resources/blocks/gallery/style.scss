@@ -46,6 +46,68 @@
 	}
 }
 
+/* Horizontal Masonry Layout */
+.wp-block-jankx-image-masonry-gallery.layout__horizontal-masonry {
+	display: grid;
+	grid-auto-flow: column;
+	grid-auto-columns: max-content;
+	overflow-x: auto;
+	overflow-y: hidden;
+	scroll-behavior: smooth;
+	-webkit-overflow-scrolling: touch;
+	
+	/* Reset standard masonry styles */
+	column-count: unset !important;
+	column-gap: unset !important;
+
+	/* Default gaps */
+	gap: 10px;
+
+	/* Hide scrollbars class */
+	&.hide-scrollbars {
+		-ms-overflow-style: none;  /* IE and Edge */
+		scrollbar-width: none;  /* Firefox */
+		&::-webkit-scrollbar {
+			display: none;
+		}
+	}
+
+	.single-gallery-image {
+		width: auto;
+		height: 100%;
+		margin-bottom: 0 !important;
+		display: flex;
+		
+		img {
+			width: auto;
+			height: 100%;
+			object-fit: cover;
+			max-width: none;
+		}
+	}
+
+	/* Rows Configuration */
+	&.rows__1 {
+		grid-template-rows: 400px;
+	}
+	&.rows__2 {
+		grid-template-rows: repeat(2, 250px);
+	}
+	&.rows__3 {
+		grid-template-rows: repeat(3, 200px);
+	}
+	&.rows__4 {
+		grid-template-rows: repeat(4, 180px);
+	}
+
+	/* Responsive Adjustments */
+	@media only screen and (max-width: 767px) {
+		&.rows__2, &.rows__3, &.rows__4 {
+			grid-template-rows: repeat(2, 180px);
+		}
+	}
+}
+
 /* Masonry on Mobile */
 @media only screen and (max-width: 767px) {
 	.wp-block-jankx-image-masonry-gallery {
