@@ -196,6 +196,10 @@ module.exports = {
 
     'blocks/post-type-badge/build/index': './blocks/post-type-badge/index.tsx',
     'blocks/post-type-badge/build/style': './blocks/post-type-badge/style.scss',
+
+    'blocks/divider/build/index': './blocks/divider/index.tsx',
+    'blocks/divider/build/style': './blocks/divider/style.scss',
+    'blocks/divider/build/editor': './blocks/divider/editor.scss',
   },
   output: {
     path: path.resolve(__dirname),

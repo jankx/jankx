@@ -1,0 +1,15 @@
+.wp-block-jankx-divider {
+  position: relative;
+}
+
+.wp-block-jankx-divider.is-style-dashed {
+  border-top: 2px dashed currentColor;
+}
+
+.wp-block-jankx-divider.is-style-dotted {
+  border-top: 2px dotted currentColor;
+}
+
+.wp-block-jankx-divider.is-style-line {
+  border-top: 2px solid currentColor;
+}
