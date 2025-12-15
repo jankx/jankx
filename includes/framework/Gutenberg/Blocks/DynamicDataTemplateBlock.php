@@ -149,8 +149,8 @@ class DynamicDataTemplateBlock extends Block
     {
         $defaultBlocks = [];
 
-        // For product post type, return WooCommerce blocks
-        if ($postType === 'product') {
+        // For product and tour post types, return WooCommerce blocks
+        if (in_array($postType, ['product', 'tour'])) {
             $defaultBlocks = [
                 [
                     'blockName' => 'woocommerce/product-image',

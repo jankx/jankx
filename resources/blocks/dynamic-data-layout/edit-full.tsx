@@ -567,12 +567,27 @@ useEffect(() => {
         return getPostTypes({ per_page: -1 }) || [];
     }, []);
 
-    const postTypeOptions = postTypes
-        .filter((type: any) => type.viewable && type.slug !== 'attachment')
-        .map((type: any) => ({
-            label: type.name,
-            value: type.slug,
-        }));
+    const publicPostTypes: Array<{ slug: string; name: string }> = Array.isArray((window as any).jankxPublicPostTypes)
+        ? (window as any).jankxPublicPostTypes
+        : [];
+    const postTypeOptions = (() => {
+        const map = new Map<string, string>();
+        postTypes
+            .filter((type: any) => type.slug !== 'attachment')
+            .forEach((type: any) => {
+                if (!map.has(type.slug)) {
+                    map.set(type.slug, type.name);
+                }
+            });
+        publicPostTypes
+            .filter((pt) => pt.slug !== 'attachment')
+            .forEach((pt) => {
+                if (!map.has(pt.slug)) {
+                    map.set(pt.slug, pt.name || pt.slug);
+                }
+            });
+        return Array.from(map.entries()).map(([value, label]) => ({ label, value }));
+    })();
 
     // Get current layout's supported options
     const supportedLayouts = (window as any).jankxSupportedPostTypeLayouts || [];

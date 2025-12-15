@@ -424,10 +424,33 @@ function Edit({
     }) || [];
     return types;
   }, []);
-  const postTypeOptions = wpPostTypes.filter(type => type.viewable && type.slug !== 'attachment').map(type => ({
-    label: type.name,
-    value: type.slug
-  }));
+  const publicPostTypes = Array.isArray(window.jankxPublicPostTypes) ? window.jankxPublicPostTypes : [];
+  const postTypeOptions = (() => {
+    const map = new Map();
+    // From core store (REST-visible types)
+    wpPostTypes.filter(type => type.slug !== 'attachment').forEach(type => {
+      if (!map.has(type.slug)) {
+        map.set(type.slug, type.name);
+      }
+    });
+    // From PHP localized public post types (includes non-REST CPTs like product/tour)
+    publicPostTypes.filter(pt => pt.slug !== 'attachment').forEach(pt => {
+      if (!map.has(pt.slug)) {
+        map.set(pt.slug, pt.name || pt.slug);
+      }
+    });
+    // Fallback: ensure keys present in layouts data are also available
+    const layoutPostTypes = Object.keys(layoutsData && layoutsData.layoutsByPostType || {});
+    layoutPostTypes.filter(slug => slug !== 'attachment').forEach(slug => {
+      if (!map.has(slug)) {
+        map.set(slug, slug);
+      }
+    });
+    return Array.from(map.entries()).map(([value, label]) => ({
+      label,
+      value
+    }));
+  })();
 
   // Get layouts data from PHP (normalize to avoid objects being rendered)
   const layoutsData = normalizeLayoutsData(window.jankxDynamicDataLayouts);
@@ -489,6 +512,7 @@ function Edit({
 
   // Check if post type is product
   const isProduct = postType === 'product';
+  const hasCommerceFeatures = ['product', 'tour'].includes(postType);
 
   // Image ratio handling
   const imageRatioSelectValue = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => {
@@ -1277,7 +1301,206 @@ function Edit({
       }) : null, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Display Options', 'jankx'),
         initialOpen: false,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+        children: [supportedOptions.includes('showFeaturedImage') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Featured Image', 'jankx'),
+            checked: showFeaturedImage,
+            onChange: value => setAttributes({
+              showFeaturedImage: value
+            }),
+            disabled: readOnlyOptions.includes('showFeaturedImage')
+          }), showFeaturedImage && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Thumbnail Position', 'jankx'),
+              value: thumbnailPosition,
+              options: [{
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Top', 'jankx'),
+                value: 'top'
+              }, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Bottom', 'jankx'),
+                value: 'bottom'
+              }, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Left', 'jankx'),
+                value: 'left'
+              }, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Right', 'jankx'),
+                value: 'right'
+              }],
+              onChange: value => setAttributes({
+                thumbnailPosition: value
+              }),
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Position of the featured image relative to content', 'jankx')
+            }), isCustomImageRatio ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+              style: {
+                display: 'flex',
+                gap: '10px',
+                alignItems: 'flex-end',
+                marginBottom: '1em'
+              },
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+                style: {
+                  flex: 1
+                },
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Image Ratio', 'jankx'),
+                  value: imageRatioSelectValue,
+                  options: [{
+                    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Original', 'jankx'),
+                    value: ''
+                  }, {
+                    label: '16:9',
+                    value: '16/9'
+                  }, {
+                    label: '4:3',
+                    value: '4/3'
+                  }, {
+                    label: '1:1',
+                    value: '1/1'
+                  }, {
+                    label: '3:2',
+                    value: '3/2'
+                  }, {
+                    label: '3:4',
+                    value: '3/4'
+                  }, {
+                    label: '9:16',
+                    value: '9/16'
+                  }, {
+                    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Custom', 'jankx'),
+                    value: 'custom'
+                  }],
+                  onChange: value => {
+                    if (value === 'custom') {
+                      setAttributes({
+                        imageRatio: '16/9'
+                      });
+                    } else {
+                      setAttributes({
+                        imageRatio: value
+                      });
+                    }
+                  }
+                })
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+                style: {
+                  flex: 1
+                },
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Custom Ratio', 'jankx'),
+                  value: customImageRatioValue,
+                  onChange: value => {
+                    const ratioPattern = /^\d+\/\d+$/;
+                    if (!value || ratioPattern.test(value)) {
+                      setAttributes({
+                        imageRatio: value || ''
+                      });
+                    }
+                  },
+                  placeholder: "16/9"
+                })
+              })]
+            }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Image Ratio', 'jankx'),
+              value: imageRatioSelectValue,
+              options: [{
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Original', 'jankx'),
+                value: ''
+              }, {
+                label: '16:9',
+                value: '16/9'
+              }, {
+                label: '4:3',
+                value: '4/3'
+              }, {
+                label: '1:1',
+                value: '1/1'
+              }, {
+                label: '3:2',
+                value: '3/2'
+              }, {
+                label: '3:4',
+                value: '3/4'
+              }, {
+                label: '9:16',
+                value: '9/16'
+              }, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Custom', 'jankx'),
+                value: 'custom'
+              }],
+              onChange: value => {
+                if (value === 'custom') {
+                  setAttributes({
+                    imageRatio: '16/9'
+                  });
+                } else {
+                  setAttributes({
+                    imageRatio: value
+                  });
+                }
+              },
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Aspect ratio for the featured image', 'jankx')
+            })]
+          })]
+        }), supportedOptions.includes('showTitle') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Title', 'jankx'),
+          checked: showTitle,
+          onChange: value => setAttributes({
+            showTitle: value
+          }),
+          disabled: readOnlyOptions.includes('showTitle')
+        }), !isProduct && supportedOptions.includes('showExcerpt') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Excerpt', 'jankx'),
+            checked: showExcerpt,
+            onChange: value => setAttributes({
+              showExcerpt: value
+            }),
+            disabled: readOnlyOptions.includes('showExcerpt')
+          }), showExcerpt && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Excerpt Length', 'jankx'),
+            value: excerptLength,
+            onChange: value => setAttributes({
+              excerptLength: value || 55
+            }),
+            min: 10,
+            max: 200,
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Number of characters to display in excerpt', 'jankx')
+          })]
+        }), !isProduct && supportedOptions.includes('showDate') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Date', 'jankx'),
+          checked: showDate,
+          onChange: value => setAttributes({
+            showDate: value
+          }),
+          disabled: readOnlyOptions.includes('showDate')
+        }), supportedOptions.includes('showAuthor') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Author', 'jankx'),
+          checked: showAuthor,
+          onChange: value => setAttributes({
+            showAuthor: value
+          }),
+          disabled: readOnlyOptions.includes('showAuthor')
+        }), hasCommerceFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Price', 'jankx'),
+            checked: showPrice,
+            onChange: value => setAttributes({
+              showPrice: value
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Add To Cart Button', 'jankx'),
+            checked: showAddToCart,
+            onChange: value => setAttributes({
+              showAddToCart: value
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Rating', 'jankx'),
+            checked: showRating,
+            onChange: value => setAttributes({
+              showRating: value
+            })
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enable Pagination', 'jankx'),
           checked: enablePagination,
           onChange: value => setAttributes({

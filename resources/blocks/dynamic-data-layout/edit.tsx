@@ -678,12 +678,39 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         return types;
     }, []);
 
-    const postTypeOptions = wpPostTypes
-        .filter((type: PostType) => type.viewable && type.slug !== 'attachment')
-        .map((type: PostType) => ({
-            label: type.name,
-            value: type.slug,
-        }));
+    const publicPostTypes: Array<{ slug: string; name: string }> = Array.isArray((window as any).jankxPublicPostTypes)
+        ? (window as any).jankxPublicPostTypes
+        : [];
+    
+    const postTypeOptions = (() => {
+        const map = new Map<string, string>();
+        // From core store (REST-visible types)
+        wpPostTypes
+            .filter((type: PostType) => type.slug !== 'attachment')
+            .forEach((type: PostType) => {
+                if (!map.has(type.slug)) {
+                    map.set(type.slug, type.name);
+                }
+            });
+        // From PHP localized public post types (includes non-REST CPTs like product/tour)
+        publicPostTypes
+            .filter((pt) => pt.slug !== 'attachment')
+            .forEach((pt) => {
+                if (!map.has(pt.slug)) {
+                    map.set(pt.slug, pt.name || pt.slug);
+                }
+            });
+        // Fallback: ensure keys present in layouts data are also available
+        const layoutPostTypes = Object.keys((layoutsData && layoutsData.layoutsByPostType) || {});
+        layoutPostTypes
+            .filter((slug) => slug !== 'attachment')
+            .forEach((slug) => {
+                if (!map.has(slug)) {
+                    map.set(slug, slug);
+                }
+            });
+        return Array.from(map.entries()).map(([value, label]) => ({ label, value }));
+    })();
 
     // Get layouts data from PHP (normalize to avoid objects being rendered)
     const layoutsData: LayoutsData = normalizeLayoutsData(window.jankxDynamicDataLayouts);
@@ -747,6 +774,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
 
     // Check if post type is product
     const isProduct = postType === 'product';
+    const hasCommerceFeatures = ['product', 'tour'].includes(postType);
 
     // Image ratio handling
     const imageRatioSelectValue = useMemo<ImageRatioSelectValue>(() => {
@@ -1510,8 +1538,166 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                     );
                 }) : null}
 
-                {/* Display Options - Only Pagination */}
+                {/* Display Options */}
                 <PanelBody title={__('Display Options', 'jankx')} initialOpen={false}>
+                    {supportedOptions.includes('showFeaturedImage') && (
+                        <>
+                            <ToggleControl
+                                label={__('Show Featured Image', 'jankx')}
+                                checked={showFeaturedImage}
+                                onChange={(value) => setAttributes({ showFeaturedImage: value })}
+                                disabled={readOnlyOptions.includes('showFeaturedImage')}
+                            />
+                            {showFeaturedImage && (
+                                <>
+                                    <SelectControl
+                                        label={__('Thumbnail Position', 'jankx')}
+                                        value={thumbnailPosition}
+                                        options={[
+                                            { label: __('Top', 'jankx'), value: 'top' },
+                                            { label: __('Bottom', 'jankx'), value: 'bottom' },
+                                            { label: __('Left', 'jankx'), value: 'left' },
+                                            { label: __('Right', 'jankx'), value: 'right' },
+                                        ]}
+                                        onChange={(value) => setAttributes({ thumbnailPosition: value as 'top' | 'bottom' | 'left' | 'right' })}
+                                        help={__('Position of the featured image relative to content', 'jankx')}
+                                    />
+                                    {isCustomImageRatio ? (
+                                        <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-end', marginBottom: '1em' }}>
+                                            <div style={{ flex: 1 }}>
+                                                <SelectControl
+                                                    label={__('Image Ratio', 'jankx')}
+                                                    value={imageRatioSelectValue}
+                                                    options={[
+                                                        { label: __('Original', 'jankx'), value: '' },
+                                                        { label: '16:9', value: '16/9' },
+                                                        { label: '4:3', value: '4/3' },
+                                                        { label: '1:1', value: '1/1' },
+                                                        { label: '3:2', value: '3/2' },
+                                                        { label: '3:4', value: '3/4' },
+                                                        { label: '9:16', value: '9/16' },
+                                                        { label: __('Custom', 'jankx'), value: 'custom' },
+                                                    ]}
+                                                    onChange={(value) => {
+                                                        if (value === 'custom') {
+                                                            setAttributes({ imageRatio: '16/9' });
+                                                        } else {
+                                                            setAttributes({ imageRatio: value });
+                                                        }
+                                                    }}
+                                                />
+                                            </div>
+                                            <div style={{ flex: 1 }}>
+                                                <TextControl
+                                                    label={__('Custom Ratio', 'jankx')}
+                                                    value={customImageRatioValue}
+                                                    onChange={(value) => {
+                                                        const ratioPattern = /^\d+\/\d+$/;
+                                                        if (!value || ratioPattern.test(value)) {
+                                                            setAttributes({ imageRatio: value || '' });
+                                                        }
+                                                    }}
+                                                    placeholder="16/9"
+                                                />
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <SelectControl
+                                            label={__('Image Ratio', 'jankx')}
+                                            value={imageRatioSelectValue}
+                                            options={[
+                                                { label: __('Original', 'jankx'), value: '' },
+                                                { label: '16:9', value: '16/9' },
+                                                { label: '4:3', value: '4/3' },
+                                                { label: '1:1', value: '1/1' },
+                                                { label: '3:2', value: '3/2' },
+                                                { label: '3:4', value: '3/4' },
+                                                { label: '9:16', value: '9/16' },
+                                                { label: __('Custom', 'jankx'), value: 'custom' },
+                                            ]}
+                                            onChange={(value) => {
+                                                if (value === 'custom') {
+                                                    setAttributes({ imageRatio: '16/9' });
+                                                } else {
+                                                    setAttributes({ imageRatio: value });
+                                                }
+                                            }}
+                                            help={__('Aspect ratio for the featured image', 'jankx')}
+                                        />
+                                    )}
+                                </>
+                            )}
+                        </>
+                    )}
+
+                    {supportedOptions.includes('showTitle') && (
+                        <ToggleControl
+                            label={__('Show Title', 'jankx')}
+                            checked={showTitle}
+                            onChange={(value) => setAttributes({ showTitle: value })}
+                            disabled={readOnlyOptions.includes('showTitle')}
+                        />
+                    )}
+
+                    {!isProduct && supportedOptions.includes('showExcerpt') && (
+                        <>
+                            <ToggleControl
+                                label={__('Show Excerpt', 'jankx')}
+                                checked={showExcerpt}
+                                onChange={(value) => setAttributes({ showExcerpt: value })}
+                                disabled={readOnlyOptions.includes('showExcerpt')}
+                            />
+                            {showExcerpt && (
+                                <RangeControl
+                                    label={__('Excerpt Length', 'jankx')}
+                                    value={excerptLength}
+                                    onChange={(value) => setAttributes({ excerptLength: value || 55 })}
+                                    min={10}
+                                    max={200}
+                                    help={__('Number of characters to display in excerpt', 'jankx')}
+                                />
+                            )}
+                        </>
+                    )}
+
+                    {!isProduct && supportedOptions.includes('showDate') && (
+                        <ToggleControl
+                            label={__('Show Date', 'jankx')}
+                            checked={showDate}
+                            onChange={(value) => setAttributes({ showDate: value })}
+                            disabled={readOnlyOptions.includes('showDate')}
+                        />
+                    )}
+
+                    {supportedOptions.includes('showAuthor') && (
+                        <ToggleControl
+                            label={__('Show Author', 'jankx')}
+                            checked={showAuthor}
+                            onChange={(value) => setAttributes({ showAuthor: value })}
+                            disabled={readOnlyOptions.includes('showAuthor')}
+                        />
+                    )}
+
+                    {hasCommerceFeatures && (
+                        <>
+                            <ToggleControl
+                                label={__('Show Price', 'jankx')}
+                                checked={showPrice}
+                                onChange={(value) => setAttributes({ showPrice: value })}
+                            />
+                            <ToggleControl
+                                label={__('Show Add To Cart Button', 'jankx')}
+                                checked={showAddToCart}
+                                onChange={(value) => setAttributes({ showAddToCart: value })}
+                            />
+                            <ToggleControl
+                                label={__('Show Rating', 'jankx')}
+                                checked={showRating}
+                                onChange={(value) => setAttributes({ showRating: value })}
+                            />
+                        </>
+                    )}
+
                     <ToggleControl
                         label={__('Enable Pagination', 'jankx')}
                         checked={enablePagination}

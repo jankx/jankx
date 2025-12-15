@@ -356,6 +356,28 @@ class DynamicDataLayoutBlock extends Block
             ]
         );
 
+        // Localize public post types for editor (ensure non-REST CPTs like product/tour appear)
+        $public_post_types = [];
+        foreach ($post_types as $slug => $obj) {
+            $label = '';
+            if (isset($obj->labels) && isset($obj->labels->singular_name) && $obj->labels->singular_name) {
+                $label = $obj->labels->singular_name;
+            } elseif (isset($obj->label) && $obj->label) {
+                $label = $obj->label;
+            } else {
+                $label = ucfirst($slug);
+            }
+            $public_post_types[] = [
+                'slug' => $slug,
+                'name' => $label,
+            ];
+        }
+        wp_localize_script(
+            $script_handle,
+            'jankxPublicPostTypes',
+            $public_post_types
+        );
+
         // Localize query options including query presets
         $query_options = \Jankx\Gutenberg\QueryOptions::getOptions();
         wp_localize_script(
