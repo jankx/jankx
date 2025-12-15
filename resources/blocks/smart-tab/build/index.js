@@ -436,6 +436,48 @@ function Edit({
               })]
             })]
           })
+        }), trigger === 'open-link' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Open Link Settings', 'jankx'),
+          initialOpen: true,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('URL', 'jankx'),
+            value: triggerSettings?.url || '',
+            onChange: value => setAttributes({
+              triggerSettings: {
+                ...triggerSettings,
+                url: value
+              }
+            }),
+            placeholder: "https://example.com",
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enter the destination URL', 'jankx')
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Open In', 'jankx'),
+            value: triggerSettings?.target || '_self',
+            options: [{
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Same Tab', 'jankx'),
+              value: '_self'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('New Tab', 'jankx'),
+              value: '_blank'
+            }],
+            onChange: value => setAttributes({
+              triggerSettings: {
+                ...triggerSettings,
+                target: value
+              }
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Rel', 'jankx'),
+            value: triggerSettings?.rel || '',
+            onChange: value => setAttributes({
+              triggerSettings: {
+                ...triggerSettings,
+                rel: value
+              }
+            }),
+            placeholder: "noopener noreferrer",
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Optional rel attribute (e.g. noopener, noreferrer, nofollow)', 'jankx')
+          })]
         })]
       }), allowCustomIcon && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Tab Icon', 'jankx'),

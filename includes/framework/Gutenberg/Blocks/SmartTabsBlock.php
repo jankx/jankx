@@ -369,15 +369,40 @@ class SmartTabsBlock extends Block
                 }
             }
 
-            $nav_items[] = sprintf(
-                '<button class="%s" data-tab-index="%d" data-trigger="%s" type="button"%s%s>%s</button>',
-                implode(' ', $item_classes),
-                $index,
-                esc_attr($trigger_key),
-                $tab_style_attr,
-                $additional_data_attrs,
-                $content_html
-            );
+            if ($trigger_key === 'open-link') {
+                $trigger_settings = $attributes['triggerSettings'] ?? [];
+                $href = isset($trigger_settings['url']) ? (string) $trigger_settings['url'] : '';
+                $target = isset($trigger_settings['target']) ? (string) $trigger_settings['target'] : '_self';
+                $rel = isset($trigger_settings['rel']) ? (string) $trigger_settings['rel'] : '';
+
+                if (empty($href)) {
+                    $href = '#';
+                }
+
+                $rel_attr = $rel ? sprintf(' rel="%s"', esc_attr($rel)) : '';
+
+                $nav_items[] = sprintf(
+                    '<a class="%s" data-tab-index="%d" data-trigger="%s" href="%s" target="%s"%s%s>%s</a>',
+                    implode(' ', $item_classes),
+                    $index,
+                    esc_attr($trigger_key),
+                    esc_url($href),
+                    esc_attr($target),
+                    $rel_attr,
+                    $tab_style_attr,
+                    $content_html
+                );
+            } else {
+                $nav_items[] = sprintf(
+                    '<button class="%s" data-tab-index="%d" data-trigger="%s" type="button"%s%s>%s</button>',
+                    implode(' ', $item_classes),
+                    $index,
+                    esc_attr($trigger_key),
+                    $tab_style_attr,
+                    $additional_data_attrs,
+                    $content_html
+                );
+            }
         }
 
         return sprintf(
@@ -571,4 +596,3 @@ class SmartTabsBlock extends Block
         return $filter_data;
     }
 }
-

@@ -451,6 +451,56 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
                             )}
                         </PanelBody>
                     )}
+
+                    {/* Open Link Trigger Settings */}
+                    {trigger === 'open-link' && (
+                        <PanelBody title={__('Open Link Settings', 'jankx')} initialOpen={true}>
+                            <TextControl
+                                label={__('URL', 'jankx')}
+                                value={(triggerSettings as Record<string, unknown>)?.url as string || ''}
+                                onChange={(value: string) =>
+                                    setAttributes({
+                                        triggerSettings: {
+                                            ...triggerSettings,
+                                            url: value,
+                                        },
+                                    })
+                                }
+                                placeholder="https://example.com"
+                                help={__('Enter the destination URL', 'jankx')}
+                            />
+                            <SelectControl
+                                label={__('Open In', 'jankx')}
+                                value={(triggerSettings as Record<string, unknown>)?.target as string || '_self'}
+                                options={[
+                                    { label: __('Same Tab', 'jankx'), value: '_self' },
+                                    { label: __('New Tab', 'jankx'), value: '_blank' },
+                                ]}
+                                onChange={(value: string) =>
+                                    setAttributes({
+                                        triggerSettings: {
+                                            ...triggerSettings,
+                                            target: value,
+                                        },
+                                    })
+                                }
+                            />
+                            <TextControl
+                                label={__('Rel', 'jankx')}
+                                value={(triggerSettings as Record<string, unknown>)?.rel as string || ''}
+                                onChange={(value: string) =>
+                                    setAttributes({
+                                        triggerSettings: {
+                                            ...triggerSettings,
+                                            rel: value,
+                                        },
+                                    })
+                                }
+                                placeholder="noopener noreferrer"
+                                help={__('Optional rel attribute (e.g. noopener, noreferrer, nofollow)', 'jankx')}
+                            />
+                        </PanelBody>
+                    )}
                 </PanelBody>
 
                 {allowCustomIcon && (
@@ -566,4 +616,3 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
         </>
     );
 }
-

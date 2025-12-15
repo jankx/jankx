@@ -92,13 +92,13 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     navItems.forEach((navItem, index) => {
       navItem.addEventListener('click', event => {
-        event.preventDefault();
-
-        // Get trigger before activating tab
         const tabTrigger = navItem?.getAttribute('data-trigger');
+        if (tabTrigger === 'open-link') {
+          // Allow default navigation for open-link trigger
+          return;
+        }
+        event.preventDefault();
         const panel = tabPanels[index];
-
-        // Activate tab first
         activateTab(index, {
           focusNav: true,
           force: true
@@ -112,7 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Advanced-filter trigger is now handled by smart-tab/view.js
-        // No need to handle it here anymore
       });
     });
     tabsBlock.addEventListener('keydown', event => {

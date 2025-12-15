@@ -66,6 +66,9 @@ class SmartTabTriggerRegistry
         // Register advanced filter trigger
         $this->registerTrigger(new Triggers\AdvancedFilterTabTrigger());
 
+        // Register open-link trigger
+        $this->registerTrigger(new Triggers\OpenLinkTabTrigger());
+
         /**
          * Allow external packages to register triggers.
          *
@@ -148,5 +151,4 @@ class SmartTabTriggerRegistry
         return $config;
     }
 }
-
 
