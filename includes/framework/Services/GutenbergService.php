@@ -35,6 +35,7 @@ use Jankx\Gutenberg\Blocks\SvgIconBlock;
 use Jankx\Gutenberg\Blocks\SwiperBannerBlock;
 use Jankx\Gutenberg\Blocks\SwiperBlock;
 use Jankx\Gutenberg\Blocks\SwiperSlideBlock;
+use Jankx\Gutenberg\Blocks\SwiperInnerBlocksOverlayBlock;
 use Jankx\Gutenberg\Blocks\TableCellBlock;
 use Jankx\Gutenberg\Blocks\TableOfContentBlock;
 use Jankx\Gutenberg\Blocks\TableRowBlock;
@@ -158,6 +159,7 @@ class GutenbergService
         $this->repository->registerBlock(SwiperBannerBlock::class);
         $this->repository->registerBlock(SwiperBlock::class);
         $this->repository->registerBlock(SwiperSlideBlock::class);
+        $this->repository->registerBlock(SwiperInnerBlocksOverlayBlock::class);
         $this->repository->registerBlock(TableCellBlock::class);
         $this->repository->registerBlock(TableOfContentBlock::class);
         $this->repository->registerBlock(TableRowBlock::class);
