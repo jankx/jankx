@@ -425,6 +425,9 @@ function Edit({
     return types;
   }, []);
   const publicPostTypes = Array.isArray(window.jankxPublicPostTypes) ? window.jankxPublicPostTypes : [];
+
+  // Get layouts data from PHP (normalize to avoid objects being rendered)
+  const layoutsData = normalizeLayoutsData(window.jankxDynamicDataLayouts);
   const postTypeOptions = (() => {
     const map = new Map();
     // From core store (REST-visible types)
@@ -451,9 +454,6 @@ function Edit({
       value
     }));
   })();
-
-  // Get layouts data from PHP (normalize to avoid objects being rendered)
-  const layoutsData = normalizeLayoutsData(window.jankxDynamicDataLayouts);
 
   // Get available layouts for current post type
   const availableLayouts = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => {

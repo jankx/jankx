@@ -682,6 +682,9 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         ? (window as any).jankxPublicPostTypes
         : [];
     
+    // Get layouts data from PHP (normalize to avoid objects being rendered)
+    const layoutsData: LayoutsData = normalizeLayoutsData(window.jankxDynamicDataLayouts);
+
     const postTypeOptions = (() => {
         const map = new Map<string, string>();
         // From core store (REST-visible types)
@@ -711,9 +714,6 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             });
         return Array.from(map.entries()).map(([value, label]) => ({ label, value }));
     })();
-
-    // Get layouts data from PHP (normalize to avoid objects being rendered)
-    const layoutsData: LayoutsData = normalizeLayoutsData(window.jankxDynamicDataLayouts);
 
     // Get available layouts for current post type
     const availableLayouts = useMemo(() => {
