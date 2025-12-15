@@ -5,7 +5,7 @@ import { useSelect } from '@wordpress/data';
 import { useState, useEffect } from '@wordpress/element';
 
 export default function Edit({ attributes, setAttributes }) {
-    const { metaKey, customMetaKey, currencySymbol } = attributes;
+    const { metaKey, customMetaKey, currencySymbol, emptyText, numberFormat } = attributes;
     
     // Default meta key options
     const defaultOptions = [
@@ -19,8 +19,20 @@ export default function Edit({ attributes, setAttributes }) {
         className: 'jankx-custom-price-block'
     });
 
-    // Preview value
-    const priceValue = '2.500.000';
+    const formatOptions = [
+        { label: __('Vietnamese (vi-VN)', 'jankx'), value: 'vi-VN' },
+        { label: __('English (en-US)', 'jankx'), value: 'en-US' },
+    ];
+
+    // Preview value based on numberFormat
+    const previewNumber = 2500000;
+    const priceValue = (() => {
+        try {
+            return new Intl.NumberFormat(numberFormat || 'vi-VN', { maximumFractionDigits: 0 }).format(previewNumber);
+        } catch (e) {
+            return '2.500.000';
+        }
+    })();
 
     return (
         <div {...blockProps}>
@@ -47,12 +59,24 @@ export default function Edit({ attributes, setAttributes }) {
                         value={currencySymbol}
                         onChange={(value) => setAttributes({ currencySymbol: value })}
                     />
+                    <TextControl
+                        label={__('Empty Price Text', 'jankx')}
+                        value={emptyText}
+                        onChange={(value) => setAttributes({ emptyText: value })}
+                        help={__('Shown when price is empty or 0', 'jankx')}
+                    />
+                    <SelectControl
+                        label={__('Number Format', 'jankx')}
+                        value={numberFormat}
+                        options={formatOptions}
+                        onChange={(value) => setAttributes({ numberFormat: value })}
+                    />
                 </PanelBody>
             </InspectorControls>
 
             <div className="jankx-custom-price">
-                <span className="price-amount">{priceValue}</span>
-                <span className="currency-symbol">{currencySymbol}</span>
+                <span className="price-amount">{priceValue || emptyText}</span>
+                {priceValue ? <span className="currency-symbol">{currencySymbol}</span> : null}
             </div>
         </div>
     );

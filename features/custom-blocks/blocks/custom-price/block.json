@@ -29,6 +29,14 @@
     "currencySymbol": {
         "type": "string",
         "default": "đ"
+    },
+    "emptyText": {
+      "type": "string",
+      "default": "Liên hệ"
+    },
+    "numberFormat": {
+      "type": "string",
+      "default": "vi-VN"
     }
   },
   "textdomain": "jankx",

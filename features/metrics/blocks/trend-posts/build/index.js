@@ -54,13 +54,13 @@ module.exports = window["wp"]["i18n"];
 
 /***/ }),
 
-/***/ "react":
-/*!************************!*\
-  !*** external "React" ***!
-  \************************/
+/***/ "react/jsx-runtime":
+/*!**********************************!*\
+  !*** external "ReactJSXRuntime" ***!
+  \**********************************/
 /***/ ((module) => {
 
-module.exports = window["React"];
+module.exports = window["ReactJSXRuntime"];
 
 /***/ })
 
@@ -139,17 +139,17 @@ var __webpack_exports__ = {};
   !*** ./metrics/blocks/trend-posts/index.tsx ***!
   \**********************************************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
-/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./style.scss */ "./metrics/blocks/trend-posts/style.scss");
+/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
+/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./style.scss */ "./metrics/blocks/trend-posts/style.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__);
 
 
 
@@ -157,16 +157,16 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const generateMockTitle = index => {
-  return (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Sample trending post %d', 'jankx'), index + 1);
+  return (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Sample trending post %d', 'jankx'), index + 1);
 };
-const mockExcerpt = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('This is a preview excerpt that gives a quick summary of the post content for demonstration.', 'jankx');
-const mockDate = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('January 1, 2025', 'jankx');
-const mockViews = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('12.3K views', 'jankx');
-(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__.registerBlockType)('jankx/trend-posts', {
-  title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Trend Posts', 'jankx'),
+const mockExcerpt = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('This is a preview excerpt that gives a quick summary of the post content for demonstration.', 'jankx');
+const mockDate = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('January 1, 2025', 'jankx');
+const mockViews = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('12.3K views', 'jankx');
+(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.registerBlockType)('jankx/trend-posts', {
+  title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Trend Posts', 'jankx'),
   category: 'widgets',
   icon: 'chart-line',
-  description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Display trending posts based on view count', 'jankx'),
+  description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display trending posts based on view count', 'jankx'),
   attributes: {
     postsPerPage: {
       type: 'number',
@@ -211,7 +211,7 @@ const mockViews = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('12.3K vie
       showViews,
       includeStickyPosts
     } = attributes;
-    const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.useBlockProps)({
+    const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)({
       className: 'jankx-trend-posts-block'
     });
     const className = (_blockProps$className = blockProps.className) !== null && _blockProps$className !== void 0 ? _blockProps$className : '';
@@ -226,99 +226,122 @@ const mockViews = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('12.3K vie
       views: mockViews,
       id: index
     }));
-    return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.InspectorControls, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
-      title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Settings', 'jankx')
-    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.RangeControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Number of Posts', 'jankx'),
-      value: postsPerPage,
-      onChange: value => setAttributes({
-        postsPerPage: value
-      }),
-      min: 1,
-      max: 10
-    }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Show Thumbnail', 'jankx'),
-      checked: showThumbnail,
-      onChange: value => setAttributes({
-        showThumbnail: value
-      }),
-      disabled: isHotBadgeStyle,
-      help: isHotBadgeStyle ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Thumbnails are hidden in Hot Badge style.', 'jankx') : undefined
-    }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Show Title', 'jankx'),
-      checked: showTitle,
-      onChange: value => setAttributes({
-        showTitle: value
-      })
-    }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Show Excerpt', 'jankx'),
-      checked: showExcerpt,
-      onChange: value => setAttributes({
-        showExcerpt: value
-      }),
-      disabled: isHotBadgeStyle,
-      help: isHotBadgeStyle ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Excerpt is hidden in Hot Badge style.', 'jankx') : undefined
-    }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Show Date', 'jankx'),
-      checked: showDate,
-      onChange: value => setAttributes({
-        showDate: value
-      }),
-      disabled: isHotBadgeStyle,
-      help: isHotBadgeStyle ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Date is hidden in Hot Badge style.', 'jankx') : undefined
-    }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Show Views', 'jankx'),
-      checked: showViews,
-      onChange: value => setAttributes({
-        showViews: value
-      }),
-      disabled: isHotBadgeStyle,
-      help: isHotBadgeStyle ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('View counter is hidden in Hot Badge style.', 'jankx') : undefined
-    }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Include Sticky Posts', 'jankx'),
-      checked: includeStickyPosts,
-      onChange: value => setAttributes({
-        includeStickyPosts: value
-      }),
-      help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Enable to allow sticky posts to appear in the trending list.', 'jankx')
-    }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      ...blockProps
-    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: "trend-posts-container"
-    }, mockPosts.map(post => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("article", {
-      key: post.id,
-      className: `trend-post-item${isHotBadgeStyle ? ' trend-post-item-hot' : ''}`
-    }, showThumbnail && !isHotBadgeStyle && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: "trend-post-thumbnail"
-    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-      className: "trend-post-thumbnail-placeholder",
-      "aria-hidden": "true"
-    })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: "trend-post-content"
-    }, isHotBadgeStyle && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-      className: "trend-post-badge",
-      "aria-hidden": "true"
-    }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Xu hướng HOT', 'jankx')), showTitle && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", {
-      className: "trend-post-title"
-    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, post.title)), showExcerpt && !isHotBadgeStyle && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: "trend-post-excerpt"
-    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, post.excerpt)), !isHotBadgeStyle && (showDate || showViews) && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: "trend-post-meta"
-    }, showDate && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-      className: "trend-post-date"
-    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("time", {
-      dateTime: "2025-01-01"
-    }, post.date)), showViews && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-      className: "trend-post-views"
-    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg", {
-      width: "14",
-      height: "14",
-      viewBox: "0 0 24 24",
-      fill: "currentColor",
-      "aria-hidden": "true"
-    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-      d: "M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
-    })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, post.views)))))))));
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
+          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Settings', 'jankx'),
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RangeControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Number of Posts', 'jankx'),
+            value: postsPerPage,
+            onChange: value => setAttributes({
+              postsPerPage: value
+            }),
+            min: 1,
+            max: 10
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Thumbnail', 'jankx'),
+            checked: showThumbnail,
+            onChange: value => setAttributes({
+              showThumbnail: value
+            }),
+            disabled: isHotBadgeStyle,
+            help: isHotBadgeStyle ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Thumbnails are hidden in Hot Badge style.', 'jankx') : undefined
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Title', 'jankx'),
+            checked: showTitle,
+            onChange: value => setAttributes({
+              showTitle: value
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Excerpt', 'jankx'),
+            checked: showExcerpt,
+            onChange: value => setAttributes({
+              showExcerpt: value
+            }),
+            disabled: isHotBadgeStyle,
+            help: isHotBadgeStyle ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Excerpt is hidden in Hot Badge style.', 'jankx') : undefined
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Date', 'jankx'),
+            checked: showDate,
+            onChange: value => setAttributes({
+              showDate: value
+            }),
+            disabled: isHotBadgeStyle,
+            help: isHotBadgeStyle ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Date is hidden in Hot Badge style.', 'jankx') : undefined
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Views', 'jankx'),
+            checked: showViews,
+            onChange: value => setAttributes({
+              showViews: value
+            }),
+            disabled: isHotBadgeStyle,
+            help: isHotBadgeStyle ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('View counter is hidden in Hot Badge style.', 'jankx') : undefined
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Include Sticky Posts', 'jankx'),
+            checked: includeStickyPosts,
+            onChange: value => setAttributes({
+              includeStickyPosts: value
+            }),
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable to allow sticky posts to appear in the trending list.', 'jankx')
+          })]
+        })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+        ...blockProps,
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+          className: "trend-posts-container",
+          children: mockPosts.map(post => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("article", {
+            className: `trend-post-item${isHotBadgeStyle ? ' trend-post-item-hot' : ''}`,
+            children: [showThumbnail && !isHotBadgeStyle && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+              className: "trend-post-thumbnail",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("span", {
+                className: "trend-post-thumbnail-placeholder",
+                "aria-hidden": "true"
+              })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+              className: "trend-post-content",
+              children: [isHotBadgeStyle && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("span", {
+                className: "trend-post-badge",
+                "aria-hidden": "true",
+                children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Xu hướng HOT', 'jankx')
+              }), showTitle && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("h3", {
+                className: "trend-post-title",
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("span", {
+                  children: post.title
+                })
+              }), showExcerpt && !isHotBadgeStyle && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+                className: "trend-post-excerpt",
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("p", {
+                  children: post.excerpt
+                })
+              }), !isHotBadgeStyle && (showDate || showViews) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+                className: "trend-post-meta",
+                children: [showDate && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("span", {
+                  className: "trend-post-date",
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("time", {
+                    dateTime: "2025-01-01",
+                    children: post.date
+                  })
+                }), showViews && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("span", {
+                  className: "trend-post-views",
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("svg", {
+                    width: "14",
+                    height: "14",
+                    viewBox: "0 0 24 24",
+                    fill: "currentColor",
+                    "aria-hidden": "true",
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("path", {
+                      d: "M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
+                    })
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("span", {
+                    children: post.views
+                  })]
+                })]
+              })]
+            })]
+          }, post.id))
+        })
+      })]
+    });
   },
   save: function save() {
     return null; // Dynamic block

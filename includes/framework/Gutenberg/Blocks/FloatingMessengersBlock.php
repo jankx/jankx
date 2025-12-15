@@ -11,30 +11,41 @@ class FloatingMessengersBlock extends Block
     public function render($attributes, $content = '')
     {
         $position = $attributes['position'] ?? 'right';
-        $bottom = $attributes['bottomOffset'] ?? '24px';
+        $bottomOffset = $attributes['bottomOffset'] ?? '24px';
         $showLabels = !empty($attributes['showLabels']);
         $triggerMode = $attributes['triggerMode'] ?? 'toggle';
         $channels = is_array($attributes['channels'] ?? null) ? $attributes['channels'] : [];
+        $expandStyle = $attributes['expandStyle'] ?? 'vertical';
+        $verticalAlign = $attributes['verticalAlign'] ?? 'bottom';
+        $expandDistance = isset($attributes['expandDistance']) ? (int)$attributes['expandDistance'] : 72;
+        $idleAnimation = $attributes['idleAnimation'] ?? 'none';
 
         $classes = [
             'jankx-floating-messengers',
             'position-' . ($position === 'left' ? 'left' : 'right'),
             'trigger-' . ($triggerMode === 'always' ? 'always' : 'toggle'),
+            'expand-' . (in_array($expandStyle, ['vertical','fan','bidirectional','split'], true) ? $expandStyle : 'vertical'),
+            'v-' . ($verticalAlign === 'center' ? 'center' : 'bottom'),
         ];
         if ($showLabels) {
             $classes[] = 'show-labels';
         }
+        if ($idleAnimation !== 'none' && in_array($idleAnimation, ['pulse-ring','wiggle','float'], true)) {
+            $classes[] = 'idle-' . $idleAnimation;
+        }
 
         $itemsHtml = '';
+        $enabledCount = 0;
         foreach (['messenger', 'whatsapp', 'zalo', 'telegram', 'phone', 'sms'] as $type) {
             $conf = is_array($channels[$type] ?? null) ? $channels[$type] : [];
             if (empty($conf['enabled'])) {
                 continue;
             }
+            $enabledCount++;
             $href = $this->buildUrl($type, $conf);
             $label = !empty($conf['label']) ? $conf['label'] : $this->defaultLabel($type);
             $itemsHtml .= sprintf(
-                '<a class="fm-item fm-%1$s" href="%2$s" target="_blank" rel="noopener"><span class="fm-icon"></span>%3$s</a>',
+                '<div class="fm-node fm-%1$s"><a class="fm-button" href="%2$s" target="_blank" rel="noopener"><span class="fm-icon" aria-hidden="true"></span>%3$s</a></div>',
                 esc_attr($type),
                 esc_url($href),
                 $showLabels ? sprintf('<span class="fm-label">%s</span>', esc_html($label)) : ''
@@ -42,15 +53,29 @@ class FloatingMessengersBlock extends Block
         }
 
         $triggerHtml = $triggerMode === 'toggle'
-            ? '<button class="fm-trigger" type="button" aria-label="Toggle contacts">+</button>'
+            ? '<button class="fm-trigger" type="button" aria-label="Toggle contacts"><span class="fm-trigger-dot"></span></button>'
             : '';
 
+        $styleInline = '';
+        if ($verticalAlign === 'bottom') {
+            $styleInline = 'bottom:' . esc_attr($bottomOffset) . ';';
+        } else {
+            $styleInline = 'top:50%;transform:translateY(-50%);';
+        }
+        $styleInline .= '--fm-distance:' . esc_attr($expandDistance) . 'px;';
+
+        // Show helpful placeholder when no channels enabled
+        if ($enabledCount === 0) {
+            $itemsHtml = '<div class="fm-placeholder">' . esc_html__('Chọn kênh liên hệ trong panel bên phải', 'jankx') . '</div>';
+        }
+
         return sprintf(
-            '<div class="%1$s" style="bottom:%2$s">%3$s<div class="fm-list">%4$s</div></div>',
+            '<div class="%1$s" style="%2$s" data-count="%5$d">%3$s<div class="fm-list">%4$s</div></div>',
             esc_attr(implode(' ', $classes)),
-            esc_attr($bottom),
+            $styleInline,
             $triggerHtml,
-            $itemsHtml
+            $itemsHtml,
+            (int)$enabledCount
         );
     }
 
@@ -105,4 +130,3 @@ class FloatingMessengersBlock extends Block
         return '#';
     }
 }
-
