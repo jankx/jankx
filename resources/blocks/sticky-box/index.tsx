@@ -43,5 +43,5 @@ registerBlockType('jankx/sticky-box', {
       </>
     );
   },
-  save: () => null,
+  save: () => <InnerBlocks.Content />,
 });

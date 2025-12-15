@@ -402,7 +402,21 @@ registerBlockType('jankx/floating-messengers', {
                         )}
                     </PanelBody>
                 </InspectorControls>
-                <div {...blockProps} data-count={enabledTypes.length} style={{ ...(blockProps.style || {}), ['--fm-distance' as any]: `${expandDistance}px` }}>
+                <div 
+                    {...blockProps} 
+                    data-count={enabledTypes.length} 
+                    style={{ 
+                        ...(blockProps.style || {}), 
+                        position: 'fixed',
+                        zIndex: 9999,
+                        left: position === 'left' ? '24px' : 'auto',
+                        right: position === 'right' ? '24px' : 'auto',
+                        bottom: verticalAlign === 'bottom' ? bottomOffset : 'auto',
+                        top: verticalAlign === 'center' ? '50%' : 'auto',
+                        transform: verticalAlign === 'center' ? 'translateY(-50%)' : 'none',
+                        ['--fm-distance' as any]: `${expandDistance}px` 
+                    }}
+                >
                     {triggerMode === 'toggle' && (
                         <button className="fm-trigger" aria-label={__('Mở danh sách liên hệ', 'jankx')} type="button">
                             <span className="fm-trigger-dot" />

@@ -1,14 +1,15 @@
 .wp-block-jankx-floating-messengers,
 .jankx-floating-messengers {
-    position: fixed;
-    z-index: 9999;
+    /* Position is handled inline for better editor/frontend parity */
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
+/* Positioning handled via inline styles
 .jankx-floating-messengers.position-right { right: 24px; }
 .jankx-floating-messengers.position-left { left: 24px; }
 .jankx-floating-messengers.v-center { top: 50%; transform: translateY(-50%); }
+*/
 
 .jankx-floating-messengers .fm-trigger {
     width: 44px;

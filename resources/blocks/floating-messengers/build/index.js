@@ -673,6 +673,13 @@ function channelUrl(type, channels) {
         "data-count": enabledTypes.length,
         style: {
           ...(blockProps.style || {}),
+          position: 'fixed',
+          zIndex: 9999,
+          left: position === 'left' ? '24px' : 'auto',
+          right: position === 'right' ? '24px' : 'auto',
+          bottom: verticalAlign === 'bottom' ? bottomOffset : 'auto',
+          top: verticalAlign === 'center' ? '50%' : 'auto',
+          transform: verticalAlign === 'center' ? 'translateY(-50%)' : 'none',
           ['--fm-distance']: `${expandDistance}px`
         },
         children: [triggerMode === 'toggle' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {

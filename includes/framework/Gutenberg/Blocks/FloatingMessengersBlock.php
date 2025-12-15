@@ -63,11 +63,17 @@ class FloatingMessengersBlock extends Block
             ? '<button class="fm-trigger" type="button" aria-label="Toggle contacts"><span class="fm-trigger-dot"></span></button>'
             : '';
 
-        $styleInline = '';
-        if ($verticalAlign === 'bottom') {
-            $styleInline = 'bottom:' . esc_attr($bottomOffset) . ';';
+        $styleInline = 'position:fixed;z-index:9999;';
+        if ($position === 'left') {
+            $styleInline .= 'left:24px;right:auto;';
         } else {
-            $styleInline = 'top:50%;transform:translateY(-50%);';
+            $styleInline .= 'right:24px;left:auto;';
+        }
+
+        if ($verticalAlign === 'bottom') {
+            $styleInline .= 'bottom:' . esc_attr($bottomOffset) . ';top:auto;';
+        } else {
+            $styleInline .= 'top:50%;bottom:auto;transform:translateY(-50%);';
         }
         $styleInline .= '--fm-distance:' . esc_attr($expandDistance) . 'px;';
 

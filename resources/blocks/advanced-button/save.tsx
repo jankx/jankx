@@ -21,6 +21,7 @@ interface SaveProps {
 		modalShareObjectId: boolean;
 		modalSharePostTitle: boolean;
 		modalShareCurrentUrl: boolean;
+		formData: Array<{ key: string; value: string }>;
 		text: string;
 		url: string;
 		title: string;
@@ -47,6 +48,7 @@ export default function Save(props: SaveProps) {
 		modalShareObjectId = false,
 		modalSharePostTitle = false,
 		modalShareCurrentUrl = false,
+		formData = [],
 		text,
 		url,
 		title,
@@ -213,6 +215,15 @@ export default function Save(props: SaveProps) {
 			if (modalShareCurrentUrl) {
 				modalDataAttrs['data-share-current-url'] = 'true';
 				modalDataAttrs['data-current-url'] = '{{CURRENT_POST_URL}}';
+			}
+
+			// Add custom form data
+			if (formData && formData.length > 0) {
+				formData.forEach((item) => {
+					if (item.key && item.value) {
+						modalDataAttrs[`data-form-${item.key}`] = item.value;
+					}
+				});
 			}
 
 			buttonElement = (

@@ -40,6 +40,18 @@ class ModalRenderer extends AbstractButtonRenderer
             $htmlAttributes['data-share-current-url'] = 'true';
             $htmlAttributes['data-current-url'] = '{{CURRENT_POST_URL}}';
         }
+        
+        // Handle custom form data
+        $formData = $attributes['formData'] ?? [];
+        if (!empty($formData) && is_array($formData)) {
+            foreach ($formData as $item) {
+                if (!empty($item['key']) && !empty($item['value'])) {
+                    $key = 'data-form-' . esc_attr($item['key']);
+                    $htmlAttributes[$key] = $item['value'];
+                }
+            }
+        }
+        
         if ($title) {
             $htmlAttributes['title'] = esc_attr($title);
         }
@@ -65,6 +77,22 @@ class ModalRenderer extends AbstractButtonRenderer
             $html = str_replace('{{CURRENT_POST_ID}}', esc_attr($post_id), $html);
             $html = str_replace('{{CURRENT_POST_TITLE}}', esc_attr($post_title), $html);
             $html = str_replace('{{CURRENT_POST_URL}}', esc_attr($post_url), $html);
+            
+            // Replace placeholders in custom form data
+            $html = str_replace('{post_id}', esc_attr($post_id), $html);
+            $html = str_replace('{post_title}', esc_attr($post_title), $html);
+            $html = str_replace('{current_url}', esc_attr($post_url), $html);
+            // Support WooCommerce price if available
+            if (function_exists('wc_get_product')) {
+                $product = wc_get_product($post_id);
+                if ($product) {
+                    $html = str_replace('{price}', esc_attr($product->get_price_html()), $html);
+                    $html = str_replace('{raw_price}', esc_attr($product->get_price()), $html);
+                    $image_id = $product->get_image_id();
+                    $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'full') : '';
+                    $html = str_replace('{product_image}', esc_attr($image_url), $html);
+                }
+            }
         }
         return $html;
     }

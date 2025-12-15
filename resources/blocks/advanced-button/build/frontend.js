@@ -35,6 +35,24 @@
           hasJankxModal: !!window.JankxModal,
           hasMicroModal: !!window.MicroModal
         });
+
+        // Extract dynamic form data and dispatch event
+        const formData = {};
+        Array.from(trigger.attributes).forEach(attr => {
+          if (attr.name.startsWith('data-form-')) {
+            const key = attr.name.replace('data-form-', '');
+            formData[key] = attr.value;
+          }
+        });
+        if (Object.keys(formData).length > 0) {
+          console.log('[AdvancedButton] dispatching formello:update', formData);
+          document.dispatchEvent(new CustomEvent('formello:update', {
+            detail: {
+              data: formData,
+              triggerId: trigger.id
+            }
+          }));
+        }
         if (!modalId || modalId.trim() === '') {
           console.warn('[AdvancedButton] missing data-modal-id on trigger', trigger);
           return;

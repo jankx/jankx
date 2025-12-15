@@ -43,6 +43,7 @@ interface EditProps {
 		modalShareObjectId: boolean;
 		modalSharePostTitle: boolean;
 		modalShareCurrentUrl: boolean;
+		formData: Array<{ key: string; value: string }>;
 		text: string;
 		url: string;
 		title: string;
@@ -92,6 +93,7 @@ export function Edit(props: EditProps) {
 		modalShareObjectId = false,
 		modalSharePostTitle = false,
 		modalShareCurrentUrl = false,
+		formData = [],
 		text,
 		url,
 		title,
@@ -660,6 +662,72 @@ export function Edit(props: EditProps) {
 										help={__('Share current page URL', 'jankx')}
 										__nextHasNoMarginBottom
 									/>
+									
+									<div style={{ marginTop: '16px', borderTop: '1px solid #ddd', paddingTop: '16px' }}>
+										<p style={{ fontSize: '13px', fontWeight: 600, marginBottom: '8px' }}>
+											{__('Custom Form Data', 'jankx')}
+										</p>
+										{formData.map((item, index) => (
+											<div key={index} style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+												<TextControl
+													placeholder="Key"
+													value={item.key}
+													onChange={(val) => {
+														const newFormData = [...formData];
+														newFormData[index].key = val;
+														setAttributes({ formData: newFormData });
+													}}
+													__nextHasNoMarginBottom
+												/>
+												<TextControl
+													placeholder="Value"
+													value={item.value}
+													onChange={(val) => {
+														const newFormData = [...formData];
+														newFormData[index].value = val;
+														setAttributes({ formData: newFormData });
+													}}
+													__nextHasNoMarginBottom
+												/>
+												<button
+													type="button"
+													onClick={() => {
+														const newFormData = formData.filter((_, i) => i !== index);
+														setAttributes({ formData: newFormData });
+													}}
+													style={{ 
+														background: 'none', 
+														border: 'none', 
+														cursor: 'pointer',
+														color: '#cc1818',
+														padding: '4px'
+													}}
+												>
+													✕
+												</button>
+											</div>
+										))}
+										<button
+											type="button"
+											onClick={() => {
+												setAttributes({ formData: [...formData, { key: '', value: '' }] });
+											}}
+											style={{
+												background: '#f0f0f0',
+												border: '1px dashed #ccc',
+												width: '100%',
+												padding: '6px',
+												cursor: 'pointer',
+												borderRadius: '4px',
+												fontSize: '12px'
+											}}
+										>
+											+ {__('Add Data Item', 'jankx')}
+										</button>
+										<p style={{ fontSize: '11px', color: '#666', marginTop: '4px', fontStyle: 'italic' }}>
+											{__('These values will be sent to the modal form. Use {post_title}, {price}, {post_id} as placeholders.', 'jankx')}
+										</p>
+									</div>
 								</div>
 							</ToolsPanelItem>
 						</>

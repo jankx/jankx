@@ -81,6 +81,7 @@ function Edit(props) {
     modalShareObjectId = false,
     modalSharePostTitle = false,
     modalShareCurrentUrl = false,
+    formData = [],
     text,
     url,
     title,
@@ -641,6 +642,93 @@ function Edit(props) {
                 }),
                 help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Share current page URL', 'jankx'),
                 __nextHasNoMarginBottom: true
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+                style: {
+                  marginTop: '16px',
+                  borderTop: '1px solid #ddd',
+                  paddingTop: '16px'
+                },
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("p", {
+                  style: {
+                    fontSize: '13px',
+                    fontWeight: 600,
+                    marginBottom: '8px'
+                  },
+                  children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Custom Form Data', 'jankx')
+                }), formData.map((item, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+                  style: {
+                    display: 'flex',
+                    gap: '8px',
+                    marginBottom: '8px'
+                  },
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+                    placeholder: "Key",
+                    value: item.key,
+                    onChange: val => {
+                      const newFormData = [...formData];
+                      newFormData[index].key = val;
+                      setAttributes({
+                        formData: newFormData
+                      });
+                    },
+                    __nextHasNoMarginBottom: true
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+                    placeholder: "Value",
+                    value: item.value,
+                    onChange: val => {
+                      const newFormData = [...formData];
+                      newFormData[index].value = val;
+                      setAttributes({
+                        formData: newFormData
+                      });
+                    },
+                    __nextHasNoMarginBottom: true
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("button", {
+                    type: "button",
+                    onClick: () => {
+                      const newFormData = formData.filter((_, i) => i !== index);
+                      setAttributes({
+                        formData: newFormData
+                      });
+                    },
+                    style: {
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      color: '#cc1818',
+                      padding: '4px'
+                    },
+                    children: "\u2715"
+                  })]
+                }, index)), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("button", {
+                  type: "button",
+                  onClick: () => {
+                    setAttributes({
+                      formData: [...formData, {
+                        key: '',
+                        value: ''
+                      }]
+                    });
+                  },
+                  style: {
+                    background: '#f0f0f0',
+                    border: '1px dashed #ccc',
+                    width: '100%',
+                    padding: '6px',
+                    cursor: 'pointer',
+                    borderRadius: '4px',
+                    fontSize: '12px'
+                  },
+                  children: ["+ ", (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Add Data Item', 'jankx')]
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("p", {
+                  style: {
+                    fontSize: '11px',
+                    color: '#666',
+                    marginTop: '4px',
+                    fontStyle: 'italic'
+                  },
+                  children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('These values will be sent to the modal form. Use {post_title}, {price}, {post_id} as placeholders.', 'jankx')
+                })]
               })]
             })
           })]
@@ -766,6 +854,7 @@ function Save(props) {
     modalShareObjectId = false,
     modalSharePostTitle = false,
     modalShareCurrentUrl = false,
+    formData = [],
     text,
     url,
     title,
@@ -910,6 +999,15 @@ function Save(props) {
       if (modalShareCurrentUrl) {
         modalDataAttrs['data-share-current-url'] = 'true';
         modalDataAttrs['data-current-url'] = '{{CURRENT_POST_URL}}';
+      }
+
+      // Add custom form data
+      if (formData && formData.length > 0) {
+        formData.forEach(item => {
+          if (item.key && item.value) {
+            modalDataAttrs[`data-form-${item.key}`] = item.value;
+          }
+        });
       }
       buttonElement = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
         className: buttonClasses + (modalId ? ' jankx-button-modal-trigger' : ''),

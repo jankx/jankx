@@ -5,4 +5,5 @@
 .jankx-sticky-box.sticky-enabled {
   position: sticky;
   top: var(--sticky-top, 16px);
+  z-index: 10;
 }
