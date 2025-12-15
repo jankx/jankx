@@ -1,0 +1,38 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "jankx/sticky-box",
+  "title": "Sticky Box",
+  "category": "jankx",
+  "icon": "align-wide",
+  "description": "Nhóm nội dung có hành vi sticky theo trục Y khi scroll tới.",
+  "textdomain": "jankx",
+  "attributes": {
+    "stickyEnabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "offsetTop": {
+      "type": "number",
+      "default": 16
+    }
+  },
+  "supports": {
+    "html": false,
+    "align": ["wide", "full"],
+    "spacing": {
+      "margin": true,
+      "padding": true,
+      "blockGap": true
+    },
+    "__experimentalBorder": {
+      "radius": true,
+      "width": true,
+      "color": true,
+      "style": true
+    }
+  },
+  "editorScript": "file:./build/index.js",
+  "style": "file:./build/style.css",
+  "editorStyle": "file:./build/editor.css"
+}

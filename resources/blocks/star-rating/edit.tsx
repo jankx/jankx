@@ -12,6 +12,7 @@ interface Attributes {
     starColor: string;
     starEmptyColor: string;
     showCount: boolean;
+    showScoreText: boolean;
     countMetaKey: string;
     align?: string;
     iconType: 'text' | 'svg';
@@ -39,6 +40,7 @@ const Edit = ({ attributes, setAttributes }: EditProps) => {
         starColor,
         starEmptyColor,
         showCount,
+        showScoreText,
         countMetaKey,
         iconType,
         svgFull,
@@ -201,6 +203,11 @@ const Edit = ({ attributes, setAttributes }: EditProps) => {
                         checked={showCount}
                         onChange={(value) => setAttributes({ showCount: value })}
                     />
+                    <ToggleControl
+                        label={__('Show Score Text (x.x/5.0)', 'jankx')}
+                        checked={showScoreText}
+                        onChange={(value) => setAttributes({ showScoreText: value })}
+                    />
 
                     {showCount && (ratingSource === 'meta' || ratingSource === 'crawler') && (
                         <TextControl
@@ -217,6 +224,11 @@ const Edit = ({ attributes, setAttributes }: EditProps) => {
                     <div className="jankx-stars">
                         {renderStars(rating)}
                     </div>
+                    {showScoreText && (
+                        <span className="jankx-rating-text">
+                            ({Number.isFinite(rating) ? rating.toFixed(1) : '0.0'}/5.0)
+                        </span>
+                    )}
                     {showCount && (
                         <span className="jankx-rating-count">
                             (123)

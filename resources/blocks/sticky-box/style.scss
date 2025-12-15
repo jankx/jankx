@@ -1,0 +1,8 @@
+.wp-block-jankx-sticky-box,
+.jankx-sticky-box {
+  position: relative;
+}
+.jankx-sticky-box.sticky-enabled {
+  position: sticky;
+  top: var(--sticky-top, 16px);
+}

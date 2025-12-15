@@ -43,6 +43,7 @@ const Edit = ({
     starColor,
     starEmptyColor,
     showCount,
+    showScoreText,
     countMetaKey,
     iconType,
     svgFull,
@@ -220,6 +221,12 @@ const Edit = ({
           onChange: value => setAttributes({
             showCount: value
           })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Show Score Text (x.x/5.0)', 'jankx'),
+          checked: showScoreText,
+          onChange: value => setAttributes({
+            showScoreText: value
+          })
         }), showCount && (ratingSource === 'meta' || ratingSource === 'crawler') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TextControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Count Meta Key', 'jankx'),
           value: countMetaKey,
@@ -235,6 +242,9 @@ const Edit = ({
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
           className: "jankx-stars",
           children: renderStars(rating)
+        }), showScoreText && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("span", {
+          className: "jankx-rating-text",
+          children: ["(", Number.isFinite(rating) ? rating.toFixed(1) : '0.0', "/5.0)"]
         }), showCount && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
           className: "jankx-rating-count",
           children: "(123)"

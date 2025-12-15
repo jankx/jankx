@@ -43,6 +43,7 @@ use Jankx\Gutenberg\Blocks\FacebookPageBlock;
 use Jankx\Gutenberg\Blocks\TestimonialBlock;
 use Jankx\Gutenberg\Blocks\StarRatingBlock;
 use Jankx\Gutenberg\Blocks\FloatingMessengersBlock;
+use Jankx\Gutenberg\Blocks\StickyBoxBlock;
 
 /**
  * Gutenberg Service
@@ -165,6 +166,7 @@ class GutenbergService
         $this->repository->registerBlock(TestimonialBlock::class);
         $this->repository->registerBlock(StarRatingBlock::class);
         $this->repository->registerBlock(FloatingMessengersBlock::class);
+        $this->repository->registerBlock(StickyBoxBlock::class);
     }
 
     /**

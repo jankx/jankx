@@ -1,6 +1,6 @@
-/*!*******************************************************************************************************************************************************************************************************!*\
-  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/offcanvas-sidebar/style.scss ***!
-  \*******************************************************************************************************************************************************************************************************/
+/*!****************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/offcanvas-sidebar/style.scss ***!
+  \****************************************************************************************************************************************************************************************************/
 /**
  * Offcanvas Sidebar Block Styles
  * Based on SidebarTransitions with all animation effects
@@ -58,7 +58,6 @@
   height: 100vh;
   overflow: hidden;
   /* Base sidebar styles */
-  /* Right position */
 }
 .offcanvas-sidebar-container .offcanvas-sidebar {
   position: fixed;
@@ -82,8 +81,6 @@
   display: flex;
   flex-direction: column;
   /* Close Button - Base styles */
-  /* Sidebar Content - Allow scrolling for long content */
-  /* Sidebar Menu */
 }
 .offcanvas-sidebar-container .offcanvas-sidebar .close-button {
   position: absolute;
@@ -99,9 +96,6 @@
   transition: all 0.3s ease;
   z-index: 10;
   font-weight: 300;
-  /* Position variants */
-  /* Size variants */
-  /* Style variants */
 }
 .offcanvas-sidebar-container .offcanvas-sidebar .close-button:hover {
   transform: rotate(90deg);
@@ -113,6 +107,9 @@
 .offcanvas-sidebar-container .offcanvas-sidebar .close-button:disabled {
   cursor: not-allowed;
   opacity: 0.5;
+}
+.offcanvas-sidebar-container .offcanvas-sidebar .close-button {
+  /* Position variants */
 }
 .offcanvas-sidebar-container .offcanvas-sidebar .close-button.position-top-right {
   top: 15px;
@@ -146,6 +143,9 @@
 .offcanvas-sidebar-container .offcanvas-sidebar .close-button.position-center-left:hover {
   transform: translateY(-50%) rotate(90deg);
 }
+.offcanvas-sidebar-container .offcanvas-sidebar .close-button {
+  /* Size variants */
+}
 .offcanvas-sidebar-container .offcanvas-sidebar .close-button.size-small {
   width: 28px;
   height: 28px;
@@ -160,6 +160,9 @@
   width: 44px;
   height: 44px;
   font-size: 32px;
+}
+.offcanvas-sidebar-container .offcanvas-sidebar .close-button {
+  /* Style variants */
 }
 .offcanvas-sidebar-container .offcanvas-sidebar .close-button.style-circle {
   border-radius: 50%;
@@ -190,6 +193,9 @@
   background: rgba(0, 0, 0, 0.1);
   border-radius: 50%;
 }
+.offcanvas-sidebar-container .offcanvas-sidebar {
+  /* Sidebar Content - Allow scrolling for long content */
+}
 .offcanvas-sidebar-container .offcanvas-sidebar .sidebar-content {
   flex: 1;
   overflow-y: auto;
@@ -209,6 +215,9 @@
 }
 .offcanvas-sidebar-container .offcanvas-sidebar .sidebar-content::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.5);
+}
+.offcanvas-sidebar-container .offcanvas-sidebar {
+  /* Sidebar Menu */
 }
 .offcanvas-sidebar-container .offcanvas-sidebar .sidebar-menu {
   padding: 0;
@@ -249,6 +258,9 @@
 }
 .offcanvas-sidebar-container .offcanvas-sidebar .sidebar-menu a .menu-text {
   flex: 1;
+}
+.offcanvas-sidebar-container {
+  /* Right position */
 }
 .offcanvas-sidebar-container.position-right .offcanvas-sidebar {
   left: auto;

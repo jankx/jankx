@@ -2,10 +2,768 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "../node_modules/@wordpress/icons/build-module/library/cover.js":
-/*!**********************************************************************!*\
-  !*** ../node_modules/@wordpress/icons/build-module/library/cover.js ***!
-  \**********************************************************************/
+/***/ "./blocks/swiper/block.json":
+/*!**********************************!*\
+  !*** ./blocks/swiper/block.json ***!
+  \**********************************/
+/***/ ((module) => {
+
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/swiper","title":"Swiper","category":"jankx","description":"Modern touch slider with hardware accelerated transitions","keywords":["slider","swiper","carousel","gallery","slideshow"],"textdomain":"jankx","attributes":{"slidesPerView":{"type":"number","default":1},"slidesPerViewTablet":{"type":"number","default":1},"slidesPerViewMobile":{"type":"number","default":1},"spaceBetween":{"type":"number","default":30},"loop":{"type":"boolean","default":true},"autoplay":{"type":"boolean","default":false},"autoplayDelay":{"type":"number","default":3000},"speed":{"type":"number","default":300},"navigation":{"type":"boolean","default":true},"pagination":{"type":"boolean","default":true},"effect":{"type":"string","enum":["slide","fade","cube","coverflow","flip","cards"],"default":"slide"},"height":{"type":"number","default":50},"minHeight":{"type":"number","default":50},"contentMode":{"type":"string","enum":["slides","gallery"],"default":"slides"},"galleryImages":{"type":"array","default":[]},"bannerStyle":{"type":"string","enum":["default","circles","square","banner"],"default":"default"},"bannerTextColor":{"type":"string","default":"#ffffff"},"bannerBackgroundColor":{"type":"string","default":"rgba(0,0,0,0.5)"},"bannerPadding":{"type":"number","default":20},"bannerBorderRadius":{"type":"number","default":0},"gradientOverlay":{"type":"boolean","default":false},"gradientColor":{"type":"string","default":"#000000"},"gradientOpacity":{"type":"number","default":0.7},"gradientHeight":{"type":"number","default":60},"className":{"type":"string"},"anchor":{"type":"string"}},"supports":{"html":false,"anchor":true,"align":["wide","full"],"spacing":{"margin":true,"padding":true},"color":{"background":true,"text":true},"border":{"color":true,"radius":true,"style":true,"width":true,"__experimentalDefaultControls":{"radius":true}}},"providesContext":{"jankx/swiperId":"anchor"},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","viewScript":"file:./build/view.js","style":"file:./build/style.css","styles":[{"name":"default","label":"Default","isDefault":true},{"name":"banner","label":"Banner"},{"name":"carousel","label":"Carousel"},{"name":"testimonial","label":"Testimonial"}]}');
+
+/***/ }),
+
+/***/ "./blocks/swiper/edit.tsx":
+/*!********************************!*\
+  !*** ./blocks/swiper/edit.tsx ***!
+  \********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Edit)
+/* harmony export */ });
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/cover.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/gallery.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/layout.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/quote.js");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
+/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var swiper_bundle__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! swiper/bundle */ "./node_modules/swiper/swiper-bundle.mjs");
+/* harmony import */ var swiper_css_bundle__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! swiper/css/bundle */ "./node_modules/swiper/swiper-bundle.css");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__);
+
+
+
+
+
+
+
+
+
+
+// Utility function to convert hex to RGB
+const hexToRgb = hex => {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  } : {
+    r: 0,
+    g: 0,
+    b: 0
+  };
+};
+function Edit({
+  attributes,
+  setAttributes,
+  clientId
+}) {
+  const {
+    slidesPerView,
+    slidesPerViewTablet,
+    slidesPerViewMobile,
+    spaceBetween,
+    loop,
+    autoplay,
+    autoplayDelay,
+    speed,
+    navigation,
+    pagination,
+    effect,
+    height,
+    minHeight,
+    contentMode,
+    galleryImages,
+    bannerStyle,
+    bannerTextColor,
+    bannerBackgroundColor,
+    bannerPadding,
+    bannerBorderRadius,
+    gradientOverlay,
+    gradientColor,
+    gradientOpacity,
+    gradientHeight,
+    className
+  } = attributes;
+
+  // Get block's style variation
+  const styleVariation = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_9__.useSelect)(select => {
+    const block = select('core/block-editor').getBlock(clientId);
+    if (!block) return 'default';
+
+    // Extract style variation from className
+    const match = className?.match(/is-style-(\w+)/);
+    return match ? match[1] : 'default';
+  }, [clientId, className]);
+
+  // Function to update style variation
+  const updateStyleVariation = variation => {
+    // Remove existing variation classes
+    const currentClassName = className || '';
+    const cleanedClassName = currentClassName.replace(/\bis-style-\w+\b/g, '').trim();
+
+    // Add new variation class
+    const newVariationClass = variation === 'default' ? '' : `is-style-${variation}`;
+    const newClassName = [cleanedClassName, newVariationClass].filter(Boolean).join(' ');
+    setAttributes({
+      className: newClassName
+    });
+  };
+  const swiperRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_7__.useRef)(null);
+  const containerRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_7__.useRef)(null);
+
+  // Convert gradient color to RGB for CSS variables
+  const gradientRgb = hexToRgb(gradientColor);
+  const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)({
+    ref: containerRef,
+    className: `swiper-block swiper-effect-${effect} banner-style-${bannerStyle} ${gradientOverlay ? 'has-gradient-overlay' : ''} ${className || ''}`.trim(),
+    style: {
+      '--swiper-height': `${height}px`,
+      '--swiper-min-height': `${minHeight}px`,
+      '--banner-style': bannerStyle,
+      '--banner-text-color': bannerTextColor,
+      '--banner-background-color': bannerBackgroundColor,
+      '--banner-padding': `${bannerPadding}px`,
+      '--banner-border-radius': `${bannerBorderRadius}px`,
+      '--gradient-overlay-enabled': gradientOverlay ? '1' : '0',
+      '--gradient-color-r': gradientRgb.r,
+      '--gradient-color-g': gradientRgb.g,
+      '--gradient-color-b': gradientRgb.b,
+      '--gradient-opacity': gradientOpacity,
+      '--gradient-height': `${gradientHeight}%`,
+      '--slides-per-view-desktop': slidesPerView,
+      '--slides-per-view-tablet': slidesPerViewTablet,
+      '--slides-per-view-mobile': slidesPerViewMobile
+    }
+  });
+  const innerBlocksProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useInnerBlocksProps)({
+    className: 'swiper-wrapper'
+  }, {
+    allowedBlocks: contentMode === 'slides' ? ['jankx/swiper-slide', 'jankx/swiper-inner-blocks-overlay'] : ['jankx/swiper-banner', 'jankx/swiper-inner-blocks-overlay'],
+    template: contentMode === 'slides' ? [['jankx/swiper-slide'], ['jankx/swiper-slide'], ['jankx/swiper-slide']] : [],
+    templateLock: false,
+    orientation: 'horizontal',
+    renderAppender: _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InnerBlocks.ButtonBlockAppender
+  });
+  const hasInnerBlocks = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_9__.useSelect)(select => {
+    const {
+      getBlock
+    } = select('core/block-editor');
+    const block = getBlock(clientId);
+    return !!(block && block.innerBlocks.length);
+  }, [clientId]);
+
+  // Handle gallery image selection
+  const onSelectGalleryImages = images => {
+    const galleryData = images.map(img => ({
+      id: img.id,
+      url: img.url,
+      alt: img.alt || '',
+      caption: img.caption || ''
+    }));
+    setAttributes({
+      galleryImages: galleryData
+    });
+
+    // Create swiper-banner blocks for each image
+    const bannerBlocks = images.map(img => (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_8__.createBlock)('jankx/swiper-banner', {
+      imageId: img.id,
+      imageUrl: img.url,
+      imageAlt: img.alt || '',
+      imageCaption: img.caption || ''
+    }));
+
+    // Replace inner blocks with banner blocks
+    wp.data.dispatch('core/block-editor').replaceInnerBlocks(clientId, bannerBlocks);
+  };
+
+  // Initialize Swiper in editor
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_7__.useEffect)(() => {
+    if (!containerRef.current) return;
+    const loadSwiper = async () => {
+      await new Promise(resolve => setTimeout(resolve, 200));
+      if (containerRef.current) {
+        const swiperEl = containerRef.current.querySelector('.swiper');
+        if (!swiperEl) return;
+
+        // If Swiper already exists, just update params instead of destroying
+        if (swiperRef.current) {
+          // Update params
+          Object.assign(swiperRef.current.params, {
+            slidesPerView,
+            spaceBetween,
+            loop,
+            speed,
+            effect,
+            breakpoints: {
+              320: {
+                slidesPerView: slidesPerViewMobile,
+                spaceBetween: spaceBetween
+              },
+              768: {
+                slidesPerView: slidesPerViewTablet,
+                spaceBetween: spaceBetween
+              },
+              1024: {
+                slidesPerView: slidesPerView,
+                spaceBetween: spaceBetween
+              }
+            },
+            autoplay: autoplay ? {
+              delay: autoplayDelay,
+              disableOnInteraction: false
+            } : false,
+            navigation: navigation ? {
+              nextEl: swiperEl.querySelector('.swiper-button-next'),
+              prevEl: swiperEl.querySelector('.swiper-button-prev')
+            } : false,
+            pagination: pagination ? {
+              el: swiperEl.querySelector('.swiper-pagination'),
+              clickable: true
+            } : false
+          });
+
+          // Update navigation
+          if (navigation) {
+            const nextEl = swiperEl.querySelector('.swiper-button-next');
+            const prevEl = swiperEl.querySelector('.swiper-button-prev');
+            if (nextEl && prevEl) {
+              if (swiperRef.current.navigation) {
+                swiperRef.current.navigation.init();
+                swiperRef.current.navigation.update();
+              }
+            }
+          } else if (swiperRef.current.navigation) {
+            swiperRef.current.navigation.destroy();
+          }
+
+          // Update pagination
+          if (pagination) {
+            const paginationEl = swiperEl.querySelector('.swiper-pagination');
+            if (paginationEl) {
+              if (swiperRef.current.pagination) {
+                swiperRef.current.pagination.init();
+                swiperRef.current.pagination.render();
+                swiperRef.current.pagination.update();
+              }
+            }
+          } else if (swiperRef.current.pagination) {
+            swiperRef.current.pagination.destroy();
+          }
+
+          // Update Swiper
+          swiperRef.current.update();
+
+          // Update autoplay
+          if (autoplay && swiperRef.current.autoplay) {
+            swiperRef.current.autoplay.start();
+          } else if (swiperRef.current.autoplay) {
+            swiperRef.current.autoplay.stop();
+          }
+        } else {
+          // Create new instance only if doesn't exist
+          const nextEl = swiperEl.querySelector('.swiper-button-next');
+          const prevEl = swiperEl.querySelector('.swiper-button-prev');
+          const paginationEl = swiperEl.querySelector('.swiper-pagination');
+          const swiperConfig = {
+            slidesPerView,
+            spaceBetween,
+            loop,
+            speed,
+            effect,
+            breakpoints: {
+              320: {
+                slidesPerView: slidesPerViewMobile,
+                spaceBetween: spaceBetween
+              },
+              768: {
+                slidesPerView: slidesPerViewTablet,
+                spaceBetween: spaceBetween
+              },
+              1024: {
+                slidesPerView: slidesPerView,
+                spaceBetween: spaceBetween
+              }
+            },
+            autoplay: autoplay ? {
+              delay: autoplayDelay,
+              disableOnInteraction: false
+            } : false,
+            fadeEffect: {
+              crossFade: true
+            },
+            cubeEffect: {
+              shadow: true,
+              slideShadows: true,
+              shadowOffset: 20,
+              shadowScale: 0.94
+            },
+            coverflowEffect: {
+              rotate: 50,
+              stretch: 0,
+              depth: 100,
+              modifier: 1,
+              slideShadows: true
+            },
+            flipEffect: {
+              slideShadows: true,
+              limitRotation: true
+            },
+            cardsEffect: {
+              perSlideOffset: 8,
+              perSlideRotate: 2
+            }
+          };
+
+          // Only add navigation if enabled and elements exist
+          if (navigation && nextEl && prevEl) {
+            swiperConfig.navigation = {
+              nextEl,
+              prevEl
+            };
+          }
+
+          // Only add pagination if enabled and element exists
+          if (pagination && paginationEl) {
+            swiperConfig.pagination = {
+              el: paginationEl,
+              clickable: true
+            };
+          }
+          swiperRef.current = new swiper_bundle__WEBPACK_IMPORTED_MODULE_10__["default"](swiperEl, swiperConfig);
+        }
+      }
+    };
+    const timeoutId = setTimeout(loadSwiper, 100);
+    return () => {
+      clearTimeout(timeoutId);
+      // Don't destroy on settings change, only update
+    };
+  }, [slidesPerView, slidesPerViewTablet, slidesPerViewMobile, spaceBetween, loop, autoplay, autoplayDelay, speed, navigation, pagination, effect, height, minHeight]);
+
+  // Cleanup only on unmount
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_7__.useEffect)(() => {
+    return () => {
+      if (swiperRef.current) {
+        swiperRef.current.destroy(false, false);
+        swiperRef.current = null;
+      }
+    };
+  }, []);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.BlockControls, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToolbarGroup, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToolbarButton, {
+          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__["default"],
+          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Default', 'jankx'),
+          onClick: () => updateStyleVariation('default'),
+          isActive: styleVariation === 'default'
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToolbarButton, {
+          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__["default"],
+          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Banner', 'jankx'),
+          onClick: () => updateStyleVariation('banner'),
+          isActive: styleVariation === 'banner'
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToolbarButton, {
+          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__["default"],
+          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Carousel', 'jankx'),
+          onClick: () => updateStyleVariation('carousel'),
+          isActive: styleVariation === 'carousel'
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToolbarButton, {
+          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__["default"],
+          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Testimonial', 'jankx'),
+          onClick: () => updateStyleVariation('testimonial'),
+          isActive: styleVariation === 'testimonial'
+        })]
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {
+      ...blockProps,
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TabPanel, {
+          className: "swiper-tabs",
+          activeClass: "is-active",
+          onSelect: tabName => {
+            if (tabName === 'gallery') {
+              setAttributes({
+                contentMode: 'gallery'
+              });
+            } else {
+              setAttributes({
+                contentMode: 'slides'
+              });
+            }
+          },
+          tabs: [{
+            name: 'slides',
+            title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Slides', 'jankx'),
+            className: 'tab-slides'
+          }, {
+            name: 'gallery',
+            title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Gallery', 'jankx'),
+            className: 'tab-gallery'
+          }],
+          children: tab => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.Fragment, {
+            children: [tab.name === 'slides' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+              title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Add Slides', 'jankx'),
+              initialOpen: true,
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("p", {
+                children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Use the + button to add individual slides', 'jankx')
+              })
+            }), tab.name === 'gallery' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+              title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select Images', 'jankx'),
+              initialOpen: true,
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.MediaUploadCheck, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.MediaUpload, {
+                  onSelect: onSelectGalleryImages,
+                  allowedTypes: ['image'],
+                  multiple: true,
+                  value: galleryImages.map(img => img.id),
+                  render: ({
+                    open
+                  }) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+                    variant: "primary",
+                    onClick: open,
+                    style: {
+                      width: '100%',
+                      marginBottom: '10px'
+                    },
+                    children: galleryImages.length > 0 ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Change Images', 'jankx') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select Images', 'jankx')
+                  })
+                })
+              }), galleryImages.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("p", {
+                children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Selected', 'jankx'), ": ", galleryImages.length, " ", (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('images', 'jankx')]
+              })]
+            })]
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Slider Settings', 'jankx'),
+          initialOpen: true,
+          children: [styleVariation === 'carousel' || styleVariation === 'testimonial' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Slides Per View (Desktop)', 'jankx'),
+              value: slidesPerView,
+              onChange: val => setAttributes({
+                slidesPerView: val
+              }),
+              min: 1,
+              max: 6,
+              step: 1,
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Number of slides visible on desktop screens (≥1024px)', 'jankx')
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Slides Per View (Tablet)', 'jankx'),
+              value: slidesPerViewTablet,
+              onChange: val => setAttributes({
+                slidesPerViewTablet: val
+              }),
+              min: 1,
+              max: 4,
+              step: 1,
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Number of slides visible on tablet screens (768px - 1023px)', 'jankx')
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Slides Per View (Mobile)', 'jankx'),
+              value: slidesPerViewMobile,
+              onChange: val => setAttributes({
+                slidesPerViewMobile: val
+              }),
+              min: 1,
+              max: 2,
+              step: 1,
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Number of slides visible on mobile screens (<768px)', 'jankx')
+            })]
+          }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Slides Per View', 'jankx'),
+            value: slidesPerView,
+            onChange: val => setAttributes({
+              slidesPerView: val
+            }),
+            min: 1,
+            max: 4,
+            step: 1
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Space Between (px)', 'jankx'),
+            value: spaceBetween,
+            onChange: val => setAttributes({
+              spaceBetween: val
+            }),
+            min: 0,
+            max: 100,
+            step: 10
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Speed (ms)', 'jankx'),
+            value: speed,
+            onChange: val => setAttributes({
+              speed: val
+            }),
+            min: 100,
+            max: 2000,
+            step: 100
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Height (px)', 'jankx'),
+            value: height,
+            onChange: val => setAttributes({
+              height: val
+            }),
+            min: 50,
+            max: 1000,
+            step: 50,
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Height for desktop (max-height on mobile)', 'jankx')
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Min Height (px)', 'jankx'),
+            value: minHeight,
+            onChange: val => setAttributes({
+              minHeight: val
+            }),
+            min: 50,
+            max: 600,
+            step: 50,
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Minimum height on mobile devices', 'jankx')
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Effect', 'jankx'),
+            value: effect,
+            options: [{
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Slide', 'jankx'),
+              value: 'slide'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Fade', 'jankx'),
+              value: 'fade'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Cube', 'jankx'),
+              value: 'cube'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Coverflow', 'jankx'),
+              value: 'coverflow'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Flip', 'jankx'),
+              value: 'flip'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Cards', 'jankx'),
+              value: 'cards'
+            }],
+            onChange: val => setAttributes({
+              effect: val
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Loop', 'jankx'),
+            checked: loop,
+            onChange: val => setAttributes({
+              loop: val
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Navigation', 'jankx'),
+            checked: navigation,
+            onChange: val => setAttributes({
+              navigation: val
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Pagination', 'jankx'),
+            checked: pagination,
+            onChange: val => setAttributes({
+              pagination: val
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Autoplay', 'jankx'),
+            checked: autoplay,
+            onChange: val => setAttributes({
+              autoplay: val
+            })
+          }), autoplay && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Autoplay Delay (ms)', 'jankx'),
+            value: autoplayDelay,
+            onChange: val => setAttributes({
+              autoplayDelay: val
+            }),
+            min: 1000,
+            max: 10000,
+            step: 500
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Banner Style Settings', 'jankx'),
+          initialOpen: false,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Banner Style', 'jankx'),
+            value: bannerStyle,
+            options: [{
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Default', 'jankx'),
+              value: 'default'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Circles', 'jankx'),
+              value: 'circles'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Square', 'jankx'),
+              value: 'square'
+            }, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Banner', 'jankx'),
+              value: 'banner'
+            }],
+            onChange: val => setAttributes({
+              bannerStyle: val
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {
+            style: {
+              marginBottom: '16px'
+            },
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("label", {
+              style: {
+                display: 'block',
+                marginBottom: '8px',
+                fontWeight: 'bold'
+              },
+              children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Text Color', 'jankx')
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ColorPicker, {
+              color: bannerTextColor,
+              onChange: color => setAttributes({
+                bannerTextColor: color
+              }),
+              disableAlpha: false
+            })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {
+            style: {
+              marginBottom: '16px'
+            },
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("label", {
+              style: {
+                display: 'block',
+                marginBottom: '8px',
+                fontWeight: 'bold'
+              },
+              children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Background Color', 'jankx')
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ColorPicker, {
+              color: bannerBackgroundColor,
+              onChange: color => setAttributes({
+                bannerBackgroundColor: color
+              }),
+              disableAlpha: false
+            })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Padding (px)', 'jankx'),
+            value: bannerPadding,
+            onChange: val => setAttributes({
+              bannerPadding: val
+            }),
+            min: 0,
+            max: 50,
+            step: 5
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Border Radius (px)', 'jankx'),
+            value: bannerBorderRadius,
+            onChange: val => setAttributes({
+              bannerBorderRadius: val
+            }),
+            min: 0,
+            max: 20,
+            step: 1
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Gradient Overlay', 'jankx'),
+          initialOpen: false,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enable Gradient Overlay', 'jankx'),
+            checked: gradientOverlay,
+            onChange: val => setAttributes({
+              gradientOverlay: val
+            }),
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Add a gradient overlay from bottom to top with decreasing transparency', 'jankx')
+          }), gradientOverlay && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {
+              style: {
+                marginBottom: '16px'
+              },
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("label", {
+                style: {
+                  display: 'block',
+                  marginBottom: '8px',
+                  fontWeight: 'bold'
+                },
+                children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Gradient Color', 'jankx')
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ColorPicker, {
+                color: gradientColor,
+                onChange: color => setAttributes({
+                  gradientColor: color
+                }),
+                disableAlpha: false
+              })]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Gradient Opacity', 'jankx'),
+              value: gradientOpacity,
+              onChange: val => setAttributes({
+                gradientOpacity: val
+              }),
+              min: 0,
+              max: 1,
+              step: 0.1,
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Transparency of the gradient (0 = fully transparent, 1 = fully opaque)', 'jankx')
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Gradient Height (%)', 'jankx'),
+              value: gradientHeight,
+              onChange: val => setAttributes({
+                gradientHeight: val
+              }),
+              min: 10,
+              max: 100,
+              step: 5,
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Height of the gradient overlay as percentage of slide height', 'jankx')
+            })]
+          })]
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {
+        className: "swiper",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("div", {
+          ...innerBlocksProps
+        }), navigation && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("div", {
+            className: "swiper-button-prev"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("div", {
+            className: "swiper-button-next"
+          })]
+        }), pagination && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("div", {
+          className: "swiper-pagination"
+        })]
+      })]
+    })]
+  });
+}
+
+/***/ }),
+
+/***/ "./blocks/swiper/editor.scss":
+/*!***********************************!*\
+  !*** ./blocks/swiper/editor.scss ***!
+  \***********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./blocks/swiper/style.scss":
+/*!**********************************!*\
+  !*** ./blocks/swiper/style.scss ***!
+  \**********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/icons/build-module/library/cover.js":
+/*!*********************************************************************!*\
+  !*** ./node_modules/@wordpress/icons/build-module/library/cover.js ***!
+  \*********************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -30,10 +788,10 @@ var cover_default = /* @__PURE__ */(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE
 
 /***/ }),
 
-/***/ "../node_modules/@wordpress/icons/build-module/library/gallery.js":
-/*!************************************************************************!*\
-  !*** ../node_modules/@wordpress/icons/build-module/library/gallery.js ***!
-  \************************************************************************/
+/***/ "./node_modules/@wordpress/icons/build-module/library/gallery.js":
+/*!***********************************************************************!*\
+  !*** ./node_modules/@wordpress/icons/build-module/library/gallery.js ***!
+  \***********************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -60,10 +818,10 @@ var gallery_default = /* @__PURE__ */(0,react_jsx_runtime__WEBPACK_IMPORTED_MODU
 
 /***/ }),
 
-/***/ "../node_modules/@wordpress/icons/build-module/library/layout.js":
-/*!***********************************************************************!*\
-  !*** ../node_modules/@wordpress/icons/build-module/library/layout.js ***!
-  \***********************************************************************/
+/***/ "./node_modules/@wordpress/icons/build-module/library/layout.js":
+/*!**********************************************************************!*\
+  !*** ./node_modules/@wordpress/icons/build-module/library/layout.js ***!
+  \**********************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -88,10 +846,10 @@ var layout_default = /* @__PURE__ */(0,react_jsx_runtime__WEBPACK_IMPORTED_MODUL
 
 /***/ }),
 
-/***/ "../node_modules/@wordpress/icons/build-module/library/quote.js":
-/*!**********************************************************************!*\
-  !*** ../node_modules/@wordpress/icons/build-module/library/quote.js ***!
-  \**********************************************************************/
+/***/ "./node_modules/@wordpress/icons/build-module/library/quote.js":
+/*!*********************************************************************!*\
+  !*** ./node_modules/@wordpress/icons/build-module/library/quote.js ***!
+  \*********************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -116,19 +874,19 @@ var quote_default = /* @__PURE__ */(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE
 
 /***/ }),
 
-/***/ "../node_modules/swiper/modules/a11y.mjs":
-/*!***********************************************!*\
-  !*** ../node_modules/swiper/modules/a11y.mjs ***!
-  \***********************************************/
+/***/ "./node_modules/swiper/modules/a11y.mjs":
+/*!**********************************************!*\
+  !*** ./node_modules/swiper/modules/a11y.mjs ***!
+  \**********************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ A11y)
 /* harmony export */ });
-/* harmony import */ var _shared_ssr_window_esm_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/ssr-window.esm.mjs */ "../node_modules/swiper/shared/ssr-window.esm.mjs");
-/* harmony import */ var _shared_classes_to_selector_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/classes-to-selector.mjs */ "../node_modules/swiper/shared/classes-to-selector.mjs");
-/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../shared/utils.mjs */ "../node_modules/swiper/shared/utils.mjs");
+/* harmony import */ var _shared_ssr_window_esm_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/ssr-window.esm.mjs */ "./node_modules/swiper/shared/ssr-window.esm.mjs");
+/* harmony import */ var _shared_classes_to_selector_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/classes-to-selector.mjs */ "./node_modules/swiper/shared/classes-to-selector.mjs");
+/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../shared/utils.mjs */ "./node_modules/swiper/shared/utils.mjs");
 
 
 
@@ -509,17 +1267,17 @@ function A11y({
 
 /***/ }),
 
-/***/ "../node_modules/swiper/modules/autoplay.mjs":
-/*!***************************************************!*\
-  !*** ../node_modules/swiper/modules/autoplay.mjs ***!
-  \***************************************************/
+/***/ "./node_modules/swiper/modules/autoplay.mjs":
+/*!**************************************************!*\
+  !*** ./node_modules/swiper/modules/autoplay.mjs ***!
+  \**************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Autoplay)
 /* harmony export */ });
-/* harmony import */ var _shared_ssr_window_esm_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/ssr-window.esm.mjs */ "../node_modules/swiper/shared/ssr-window.esm.mjs");
+/* harmony import */ var _shared_ssr_window_esm_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/ssr-window.esm.mjs */ "./node_modules/swiper/shared/ssr-window.esm.mjs");
 
 
 /* eslint no-underscore-dangle: "off" */
@@ -827,17 +1585,17 @@ function Autoplay({
 
 /***/ }),
 
-/***/ "../node_modules/swiper/modules/controller.mjs":
-/*!*****************************************************!*\
-  !*** ../node_modules/swiper/modules/controller.mjs ***!
-  \*****************************************************/
+/***/ "./node_modules/swiper/modules/controller.mjs":
+/*!****************************************************!*\
+  !*** ./node_modules/swiper/modules/controller.mjs ***!
+  \****************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Controller)
 /* harmony export */ });
-/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/utils.mjs */ "../node_modules/swiper/shared/utils.mjs");
+/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/utils.mjs */ "./node_modules/swiper/shared/utils.mjs");
 
 
 /* eslint no-bitwise: ["error", { "allow": [">>"] }] */
@@ -1032,21 +1790,21 @@ function Controller({
 
 /***/ }),
 
-/***/ "../node_modules/swiper/modules/effect-cards.mjs":
-/*!*******************************************************!*\
-  !*** ../node_modules/swiper/modules/effect-cards.mjs ***!
-  \*******************************************************/
+/***/ "./node_modules/swiper/modules/effect-cards.mjs":
+/*!******************************************************!*\
+  !*** ./node_modules/swiper/modules/effect-cards.mjs ***!
+  \******************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ EffectCards)
 /* harmony export */ });
-/* harmony import */ var _shared_create_shadow_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/create-shadow.mjs */ "../node_modules/swiper/shared/create-shadow.mjs");
-/* harmony import */ var _shared_effect_init_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/effect-init.mjs */ "../node_modules/swiper/shared/effect-init.mjs");
-/* harmony import */ var _shared_effect_target_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../shared/effect-target.mjs */ "../node_modules/swiper/shared/effect-target.mjs");
-/* harmony import */ var _shared_effect_virtual_transition_end_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../shared/effect-virtual-transition-end.mjs */ "../node_modules/swiper/shared/effect-virtual-transition-end.mjs");
-/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../shared/utils.mjs */ "../node_modules/swiper/shared/utils.mjs");
+/* harmony import */ var _shared_create_shadow_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/create-shadow.mjs */ "./node_modules/swiper/shared/create-shadow.mjs");
+/* harmony import */ var _shared_effect_init_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/effect-init.mjs */ "./node_modules/swiper/shared/effect-init.mjs");
+/* harmony import */ var _shared_effect_target_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../shared/effect-target.mjs */ "./node_modules/swiper/shared/effect-target.mjs");
+/* harmony import */ var _shared_effect_virtual_transition_end_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../shared/effect-virtual-transition-end.mjs */ "./node_modules/swiper/shared/effect-virtual-transition-end.mjs");
+/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../shared/utils.mjs */ "./node_modules/swiper/shared/utils.mjs");
 
 
 
@@ -1178,20 +1936,20 @@ function EffectCards({
 
 /***/ }),
 
-/***/ "../node_modules/swiper/modules/effect-coverflow.mjs":
-/*!***********************************************************!*\
-  !*** ../node_modules/swiper/modules/effect-coverflow.mjs ***!
-  \***********************************************************/
+/***/ "./node_modules/swiper/modules/effect-coverflow.mjs":
+/*!**********************************************************!*\
+  !*** ./node_modules/swiper/modules/effect-coverflow.mjs ***!
+  \**********************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ EffectCoverflow)
 /* harmony export */ });
-/* harmony import */ var _shared_create_shadow_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/create-shadow.mjs */ "../node_modules/swiper/shared/create-shadow.mjs");
-/* harmony import */ var _shared_effect_init_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/effect-init.mjs */ "../node_modules/swiper/shared/effect-init.mjs");
-/* harmony import */ var _shared_effect_target_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../shared/effect-target.mjs */ "../node_modules/swiper/shared/effect-target.mjs");
-/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../shared/utils.mjs */ "../node_modules/swiper/shared/utils.mjs");
+/* harmony import */ var _shared_create_shadow_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/create-shadow.mjs */ "./node_modules/swiper/shared/create-shadow.mjs");
+/* harmony import */ var _shared_effect_init_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/effect-init.mjs */ "./node_modules/swiper/shared/effect-init.mjs");
+/* harmony import */ var _shared_effect_target_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../shared/effect-target.mjs */ "./node_modules/swiper/shared/effect-target.mjs");
+/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../shared/utils.mjs */ "./node_modules/swiper/shared/utils.mjs");
 
 
 
@@ -1299,21 +2057,21 @@ function EffectCoverflow({
 
 /***/ }),
 
-/***/ "../node_modules/swiper/modules/effect-creative.mjs":
-/*!**********************************************************!*\
-  !*** ../node_modules/swiper/modules/effect-creative.mjs ***!
-  \**********************************************************/
+/***/ "./node_modules/swiper/modules/effect-creative.mjs":
+/*!*********************************************************!*\
+  !*** ./node_modules/swiper/modules/effect-creative.mjs ***!
+  \*********************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ EffectCreative)
 /* harmony export */ });
-/* harmony import */ var _shared_create_shadow_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/create-shadow.mjs */ "../node_modules/swiper/shared/create-shadow.mjs");
-/* harmony import */ var _shared_effect_init_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/effect-init.mjs */ "../node_modules/swiper/shared/effect-init.mjs");
-/* harmony import */ var _shared_effect_target_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../shared/effect-target.mjs */ "../node_modules/swiper/shared/effect-target.mjs");
-/* harmony import */ var _shared_effect_virtual_transition_end_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../shared/effect-virtual-transition-end.mjs */ "../node_modules/swiper/shared/effect-virtual-transition-end.mjs");
-/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../shared/utils.mjs */ "../node_modules/swiper/shared/utils.mjs");
+/* harmony import */ var _shared_create_shadow_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/create-shadow.mjs */ "./node_modules/swiper/shared/create-shadow.mjs");
+/* harmony import */ var _shared_effect_init_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/effect-init.mjs */ "./node_modules/swiper/shared/effect-init.mjs");
+/* harmony import */ var _shared_effect_target_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../shared/effect-target.mjs */ "./node_modules/swiper/shared/effect-target.mjs");
+/* harmony import */ var _shared_effect_virtual_transition_end_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../shared/effect-virtual-transition-end.mjs */ "./node_modules/swiper/shared/effect-virtual-transition-end.mjs");
+/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../shared/utils.mjs */ "./node_modules/swiper/shared/utils.mjs");
 
 
 
@@ -1463,18 +2221,18 @@ function EffectCreative({
 
 /***/ }),
 
-/***/ "../node_modules/swiper/modules/effect-cube.mjs":
-/*!******************************************************!*\
-  !*** ../node_modules/swiper/modules/effect-cube.mjs ***!
-  \******************************************************/
+/***/ "./node_modules/swiper/modules/effect-cube.mjs":
+/*!*****************************************************!*\
+  !*** ./node_modules/swiper/modules/effect-cube.mjs ***!
+  \*****************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ EffectCube)
 /* harmony export */ });
-/* harmony import */ var _shared_effect_init_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/effect-init.mjs */ "../node_modules/swiper/shared/effect-init.mjs");
-/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/utils.mjs */ "../node_modules/swiper/shared/utils.mjs");
+/* harmony import */ var _shared_effect_init_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/effect-init.mjs */ "./node_modules/swiper/shared/effect-init.mjs");
+/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/utils.mjs */ "./node_modules/swiper/shared/utils.mjs");
 
 
 
@@ -1652,20 +2410,20 @@ function EffectCube({
 
 /***/ }),
 
-/***/ "../node_modules/swiper/modules/effect-fade.mjs":
-/*!******************************************************!*\
-  !*** ../node_modules/swiper/modules/effect-fade.mjs ***!
-  \******************************************************/
+/***/ "./node_modules/swiper/modules/effect-fade.mjs":
+/*!*****************************************************!*\
+  !*** ./node_modules/swiper/modules/effect-fade.mjs ***!
+  \*****************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ EffectFade)
 /* harmony export */ });
-/* harmony import */ var _shared_effect_init_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/effect-init.mjs */ "../node_modules/swiper/shared/effect-init.mjs");
-/* harmony import */ var _shared_effect_target_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/effect-target.mjs */ "../node_modules/swiper/shared/effect-target.mjs");
-/* harmony import */ var _shared_effect_virtual_transition_end_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../shared/effect-virtual-transition-end.mjs */ "../node_modules/swiper/shared/effect-virtual-transition-end.mjs");
-/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../shared/utils.mjs */ "../node_modules/swiper/shared/utils.mjs");
+/* harmony import */ var _shared_effect_init_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/effect-init.mjs */ "./node_modules/swiper/shared/effect-init.mjs");
+/* harmony import */ var _shared_effect_target_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/effect-target.mjs */ "./node_modules/swiper/shared/effect-target.mjs");
+/* harmony import */ var _shared_effect_virtual_transition_end_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../shared/effect-virtual-transition-end.mjs */ "./node_modules/swiper/shared/effect-virtual-transition-end.mjs");
+/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../shared/utils.mjs */ "./node_modules/swiper/shared/utils.mjs");
 
 
 
@@ -1735,21 +2493,21 @@ function EffectFade({
 
 /***/ }),
 
-/***/ "../node_modules/swiper/modules/effect-flip.mjs":
-/*!******************************************************!*\
-  !*** ../node_modules/swiper/modules/effect-flip.mjs ***!
-  \******************************************************/
+/***/ "./node_modules/swiper/modules/effect-flip.mjs":
+/*!*****************************************************!*\
+  !*** ./node_modules/swiper/modules/effect-flip.mjs ***!
+  \*****************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ EffectFlip)
 /* harmony export */ });
-/* harmony import */ var _shared_create_shadow_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/create-shadow.mjs */ "../node_modules/swiper/shared/create-shadow.mjs");
-/* harmony import */ var _shared_effect_init_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/effect-init.mjs */ "../node_modules/swiper/shared/effect-init.mjs");
-/* harmony import */ var _shared_effect_target_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../shared/effect-target.mjs */ "../node_modules/swiper/shared/effect-target.mjs");
-/* harmony import */ var _shared_effect_virtual_transition_end_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../shared/effect-virtual-transition-end.mjs */ "../node_modules/swiper/shared/effect-virtual-transition-end.mjs");
-/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../shared/utils.mjs */ "../node_modules/swiper/shared/utils.mjs");
+/* harmony import */ var _shared_create_shadow_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/create-shadow.mjs */ "./node_modules/swiper/shared/create-shadow.mjs");
+/* harmony import */ var _shared_effect_init_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/effect-init.mjs */ "./node_modules/swiper/shared/effect-init.mjs");
+/* harmony import */ var _shared_effect_target_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../shared/effect-target.mjs */ "./node_modules/swiper/shared/effect-target.mjs");
+/* harmony import */ var _shared_effect_virtual_transition_end_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../shared/effect-virtual-transition-end.mjs */ "./node_modules/swiper/shared/effect-virtual-transition-end.mjs");
+/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../shared/utils.mjs */ "./node_modules/swiper/shared/utils.mjs");
 
 
 
@@ -1864,17 +2622,17 @@ function EffectFlip({
 
 /***/ }),
 
-/***/ "../node_modules/swiper/modules/free-mode.mjs":
-/*!****************************************************!*\
-  !*** ../node_modules/swiper/modules/free-mode.mjs ***!
-  \****************************************************/
+/***/ "./node_modules/swiper/modules/free-mode.mjs":
+/*!***************************************************!*\
+  !*** ./node_modules/swiper/modules/free-mode.mjs ***!
+  \***************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ freeMode)
 /* harmony export */ });
-/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/utils.mjs */ "../node_modules/swiper/shared/utils.mjs");
+/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/utils.mjs */ "./node_modules/swiper/shared/utils.mjs");
 
 
 function freeMode({
@@ -2114,10 +2872,10 @@ function freeMode({
 
 /***/ }),
 
-/***/ "../node_modules/swiper/modules/grid.mjs":
-/*!***********************************************!*\
-  !*** ../node_modules/swiper/modules/grid.mjs ***!
-  \***********************************************/
+/***/ "./node_modules/swiper/modules/grid.mjs":
+/*!**********************************************!*\
+  !*** ./node_modules/swiper/modules/grid.mjs ***!
+  \**********************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -2282,18 +3040,18 @@ function Grid({
 
 /***/ }),
 
-/***/ "../node_modules/swiper/modules/hash-navigation.mjs":
-/*!**********************************************************!*\
-  !*** ../node_modules/swiper/modules/hash-navigation.mjs ***!
-  \**********************************************************/
+/***/ "./node_modules/swiper/modules/hash-navigation.mjs":
+/*!*********************************************************!*\
+  !*** ./node_modules/swiper/modules/hash-navigation.mjs ***!
+  \*********************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ HashNavigation)
 /* harmony export */ });
-/* harmony import */ var _shared_ssr_window_esm_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/ssr-window.esm.mjs */ "../node_modules/swiper/shared/ssr-window.esm.mjs");
-/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/utils.mjs */ "../node_modules/swiper/shared/utils.mjs");
+/* harmony import */ var _shared_ssr_window_esm_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/ssr-window.esm.mjs */ "./node_modules/swiper/shared/ssr-window.esm.mjs");
+/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/utils.mjs */ "./node_modules/swiper/shared/utils.mjs");
 
 
 
@@ -2390,17 +3148,17 @@ function HashNavigation({
 
 /***/ }),
 
-/***/ "../node_modules/swiper/modules/history.mjs":
-/*!**************************************************!*\
-  !*** ../node_modules/swiper/modules/history.mjs ***!
-  \**************************************************/
+/***/ "./node_modules/swiper/modules/history.mjs":
+/*!*************************************************!*\
+  !*** ./node_modules/swiper/modules/history.mjs ***!
+  \*************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ History)
 /* harmony export */ });
-/* harmony import */ var _shared_ssr_window_esm_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/ssr-window.esm.mjs */ "../node_modules/swiper/shared/ssr-window.esm.mjs");
+/* harmony import */ var _shared_ssr_window_esm_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/ssr-window.esm.mjs */ "./node_modules/swiper/shared/ssr-window.esm.mjs");
 
 
 function History({
@@ -2546,18 +3304,18 @@ function History({
 
 /***/ }),
 
-/***/ "../node_modules/swiper/modules/keyboard.mjs":
-/*!***************************************************!*\
-  !*** ../node_modules/swiper/modules/keyboard.mjs ***!
-  \***************************************************/
+/***/ "./node_modules/swiper/modules/keyboard.mjs":
+/*!**************************************************!*\
+  !*** ./node_modules/swiper/modules/keyboard.mjs ***!
+  \**************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Keyboard)
 /* harmony export */ });
-/* harmony import */ var _shared_ssr_window_esm_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/ssr-window.esm.mjs */ "../node_modules/swiper/shared/ssr-window.esm.mjs");
-/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/utils.mjs */ "../node_modules/swiper/shared/utils.mjs");
+/* harmony import */ var _shared_ssr_window_esm_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/ssr-window.esm.mjs */ "./node_modules/swiper/shared/ssr-window.esm.mjs");
+/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/utils.mjs */ "./node_modules/swiper/shared/utils.mjs");
 
 
 
@@ -2678,17 +3436,17 @@ function Keyboard({
 
 /***/ }),
 
-/***/ "../node_modules/swiper/modules/manipulation.mjs":
-/*!*******************************************************!*\
-  !*** ../node_modules/swiper/modules/manipulation.mjs ***!
-  \*******************************************************/
+/***/ "./node_modules/swiper/modules/manipulation.mjs":
+/*!******************************************************!*\
+  !*** ./node_modules/swiper/modules/manipulation.mjs ***!
+  \******************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Manipulation)
 /* harmony export */ });
-/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/utils.mjs */ "../node_modules/swiper/shared/utils.mjs");
+/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/utils.mjs */ "./node_modules/swiper/shared/utils.mjs");
 
 
 function appendSlide(slides) {
@@ -2885,18 +3643,18 @@ function Manipulation({
 
 /***/ }),
 
-/***/ "../node_modules/swiper/modules/mousewheel.mjs":
-/*!*****************************************************!*\
-  !*** ../node_modules/swiper/modules/mousewheel.mjs ***!
-  \*****************************************************/
+/***/ "./node_modules/swiper/modules/mousewheel.mjs":
+/*!****************************************************!*\
+  !*** ./node_modules/swiper/modules/mousewheel.mjs ***!
+  \****************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Mousewheel)
 /* harmony export */ });
-/* harmony import */ var _shared_ssr_window_esm_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/ssr-window.esm.mjs */ "../node_modules/swiper/shared/ssr-window.esm.mjs");
-/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/utils.mjs */ "../node_modules/swiper/shared/utils.mjs");
+/* harmony import */ var _shared_ssr_window_esm_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/ssr-window.esm.mjs */ "./node_modules/swiper/shared/ssr-window.esm.mjs");
+/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/utils.mjs */ "./node_modules/swiper/shared/utils.mjs");
 
 
 
@@ -3295,18 +4053,18 @@ function Mousewheel({
 
 /***/ }),
 
-/***/ "../node_modules/swiper/modules/navigation.mjs":
-/*!*****************************************************!*\
-  !*** ../node_modules/swiper/modules/navigation.mjs ***!
-  \*****************************************************/
+/***/ "./node_modules/swiper/modules/navigation.mjs":
+/*!****************************************************!*\
+  !*** ./node_modules/swiper/modules/navigation.mjs ***!
+  \****************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Navigation)
 /* harmony export */ });
-/* harmony import */ var _shared_create_element_if_not_defined_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/create-element-if-not-defined.mjs */ "../node_modules/swiper/shared/create-element-if-not-defined.mjs");
-/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/utils.mjs */ "../node_modules/swiper/shared/utils.mjs");
+/* harmony import */ var _shared_create_element_if_not_defined_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/create-element-if-not-defined.mjs */ "./node_modules/swiper/shared/create-element-if-not-defined.mjs");
+/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/utils.mjs */ "./node_modules/swiper/shared/utils.mjs");
 
 
 
@@ -3519,19 +4277,19 @@ function Navigation({
 
 /***/ }),
 
-/***/ "../node_modules/swiper/modules/pagination.mjs":
-/*!*****************************************************!*\
-  !*** ../node_modules/swiper/modules/pagination.mjs ***!
-  \*****************************************************/
+/***/ "./node_modules/swiper/modules/pagination.mjs":
+/*!****************************************************!*\
+  !*** ./node_modules/swiper/modules/pagination.mjs ***!
+  \****************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Pagination)
 /* harmony export */ });
-/* harmony import */ var _shared_classes_to_selector_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/classes-to-selector.mjs */ "../node_modules/swiper/shared/classes-to-selector.mjs");
-/* harmony import */ var _shared_create_element_if_not_defined_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/create-element-if-not-defined.mjs */ "../node_modules/swiper/shared/create-element-if-not-defined.mjs");
-/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../shared/utils.mjs */ "../node_modules/swiper/shared/utils.mjs");
+/* harmony import */ var _shared_classes_to_selector_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/classes-to-selector.mjs */ "./node_modules/swiper/shared/classes-to-selector.mjs");
+/* harmony import */ var _shared_create_element_if_not_defined_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/create-element-if-not-defined.mjs */ "./node_modules/swiper/shared/create-element-if-not-defined.mjs");
+/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../shared/utils.mjs */ "./node_modules/swiper/shared/utils.mjs");
 
 
 
@@ -3995,17 +4753,17 @@ function Pagination({
 
 /***/ }),
 
-/***/ "../node_modules/swiper/modules/parallax.mjs":
-/*!***************************************************!*\
-  !*** ../node_modules/swiper/modules/parallax.mjs ***!
-  \***************************************************/
+/***/ "./node_modules/swiper/modules/parallax.mjs":
+/*!**************************************************!*\
+  !*** ./node_modules/swiper/modules/parallax.mjs ***!
+  \**************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Parallax)
 /* harmony export */ });
-/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/utils.mjs */ "../node_modules/swiper/shared/utils.mjs");
+/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/utils.mjs */ "./node_modules/swiper/shared/utils.mjs");
 
 
 function Parallax({
@@ -4130,20 +4888,20 @@ function Parallax({
 
 /***/ }),
 
-/***/ "../node_modules/swiper/modules/scrollbar.mjs":
-/*!****************************************************!*\
-  !*** ../node_modules/swiper/modules/scrollbar.mjs ***!
-  \****************************************************/
+/***/ "./node_modules/swiper/modules/scrollbar.mjs":
+/*!***************************************************!*\
+  !*** ./node_modules/swiper/modules/scrollbar.mjs ***!
+  \***************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Scrollbar)
 /* harmony export */ });
-/* harmony import */ var _shared_ssr_window_esm_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/ssr-window.esm.mjs */ "../node_modules/swiper/shared/ssr-window.esm.mjs");
-/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/utils.mjs */ "../node_modules/swiper/shared/utils.mjs");
-/* harmony import */ var _shared_create_element_if_not_defined_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../shared/create-element-if-not-defined.mjs */ "../node_modules/swiper/shared/create-element-if-not-defined.mjs");
-/* harmony import */ var _shared_classes_to_selector_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../shared/classes-to-selector.mjs */ "../node_modules/swiper/shared/classes-to-selector.mjs");
+/* harmony import */ var _shared_ssr_window_esm_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/ssr-window.esm.mjs */ "./node_modules/swiper/shared/ssr-window.esm.mjs");
+/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/utils.mjs */ "./node_modules/swiper/shared/utils.mjs");
+/* harmony import */ var _shared_create_element_if_not_defined_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../shared/create-element-if-not-defined.mjs */ "./node_modules/swiper/shared/create-element-if-not-defined.mjs");
+/* harmony import */ var _shared_classes_to_selector_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../shared/classes-to-selector.mjs */ "./node_modules/swiper/shared/classes-to-selector.mjs");
 
 
 
@@ -4513,18 +5271,18 @@ function Scrollbar({
 
 /***/ }),
 
-/***/ "../node_modules/swiper/modules/thumbs.mjs":
-/*!*************************************************!*\
-  !*** ../node_modules/swiper/modules/thumbs.mjs ***!
-  \*************************************************/
+/***/ "./node_modules/swiper/modules/thumbs.mjs":
+/*!************************************************!*\
+  !*** ./node_modules/swiper/modules/thumbs.mjs ***!
+  \************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Thumb)
 /* harmony export */ });
-/* harmony import */ var _shared_ssr_window_esm_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/ssr-window.esm.mjs */ "../node_modules/swiper/shared/ssr-window.esm.mjs");
-/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/utils.mjs */ "../node_modules/swiper/shared/utils.mjs");
+/* harmony import */ var _shared_ssr_window_esm_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/ssr-window.esm.mjs */ "./node_modules/swiper/shared/ssr-window.esm.mjs");
+/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/utils.mjs */ "./node_modules/swiper/shared/utils.mjs");
 
 
 
@@ -4725,18 +5483,18 @@ function Thumb({
 
 /***/ }),
 
-/***/ "../node_modules/swiper/modules/virtual.mjs":
-/*!**************************************************!*\
-  !*** ../node_modules/swiper/modules/virtual.mjs ***!
-  \**************************************************/
+/***/ "./node_modules/swiper/modules/virtual.mjs":
+/*!*************************************************!*\
+  !*** ./node_modules/swiper/modules/virtual.mjs ***!
+  \*************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Virtual)
 /* harmony export */ });
-/* harmony import */ var _shared_ssr_window_esm_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/ssr-window.esm.mjs */ "../node_modules/swiper/shared/ssr-window.esm.mjs");
-/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/utils.mjs */ "../node_modules/swiper/shared/utils.mjs");
+/* harmony import */ var _shared_ssr_window_esm_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/ssr-window.esm.mjs */ "./node_modules/swiper/shared/ssr-window.esm.mjs");
+/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/utils.mjs */ "./node_modules/swiper/shared/utils.mjs");
 
 
 
@@ -5105,18 +5863,18 @@ function Virtual({
 
 /***/ }),
 
-/***/ "../node_modules/swiper/modules/zoom.mjs":
-/*!***********************************************!*\
-  !*** ../node_modules/swiper/modules/zoom.mjs ***!
-  \***********************************************/
+/***/ "./node_modules/swiper/modules/zoom.mjs":
+/*!**********************************************!*\
+  !*** ./node_modules/swiper/modules/zoom.mjs ***!
+  \**********************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Zoom)
 /* harmony export */ });
-/* harmony import */ var _shared_ssr_window_esm_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/ssr-window.esm.mjs */ "../node_modules/swiper/shared/ssr-window.esm.mjs");
-/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/utils.mjs */ "../node_modules/swiper/shared/utils.mjs");
+/* harmony import */ var _shared_ssr_window_esm_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/ssr-window.esm.mjs */ "./node_modules/swiper/shared/ssr-window.esm.mjs");
+/* harmony import */ var _shared_utils_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/utils.mjs */ "./node_modules/swiper/shared/utils.mjs");
 
 
 
@@ -5821,10 +6579,10 @@ function Zoom({
 
 /***/ }),
 
-/***/ "../node_modules/swiper/shared/classes-to-selector.mjs":
-/*!*************************************************************!*\
-  !*** ../node_modules/swiper/shared/classes-to-selector.mjs ***!
-  \*************************************************************/
+/***/ "./node_modules/swiper/shared/classes-to-selector.mjs":
+/*!************************************************************!*\
+  !*** ./node_modules/swiper/shared/classes-to-selector.mjs ***!
+  \************************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -5841,17 +6599,17 @@ function classesToSelector(classes = '') {
 
 /***/ }),
 
-/***/ "../node_modules/swiper/shared/create-element-if-not-defined.mjs":
-/*!***********************************************************************!*\
-  !*** ../node_modules/swiper/shared/create-element-if-not-defined.mjs ***!
-  \***********************************************************************/
+/***/ "./node_modules/swiper/shared/create-element-if-not-defined.mjs":
+/*!**********************************************************************!*\
+  !*** ./node_modules/swiper/shared/create-element-if-not-defined.mjs ***!
+  \**********************************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   c: () => (/* binding */ createElementIfNotDefined)
 /* harmony export */ });
-/* harmony import */ var _utils_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils.mjs */ "../node_modules/swiper/shared/utils.mjs");
+/* harmony import */ var _utils_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils.mjs */ "./node_modules/swiper/shared/utils.mjs");
 
 
 function createElementIfNotDefined(swiper, originalParams, params, checkProps) {
@@ -5877,17 +6635,17 @@ function createElementIfNotDefined(swiper, originalParams, params, checkProps) {
 
 /***/ }),
 
-/***/ "../node_modules/swiper/shared/create-shadow.mjs":
-/*!*******************************************************!*\
-  !*** ../node_modules/swiper/shared/create-shadow.mjs ***!
-  \*******************************************************/
+/***/ "./node_modules/swiper/shared/create-shadow.mjs":
+/*!******************************************************!*\
+  !*** ./node_modules/swiper/shared/create-shadow.mjs ***!
+  \******************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   c: () => (/* binding */ createShadow)
 /* harmony export */ });
-/* harmony import */ var _utils_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils.mjs */ "../node_modules/swiper/shared/utils.mjs");
+/* harmony import */ var _utils_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils.mjs */ "./node_modules/swiper/shared/utils.mjs");
 
 
 function createShadow(suffix, slideEl, side) {
@@ -5906,10 +6664,10 @@ function createShadow(suffix, slideEl, side) {
 
 /***/ }),
 
-/***/ "../node_modules/swiper/shared/effect-init.mjs":
-/*!*****************************************************!*\
-  !*** ../node_modules/swiper/shared/effect-init.mjs ***!
-  \*****************************************************/
+/***/ "./node_modules/swiper/shared/effect-init.mjs":
+/*!****************************************************!*\
+  !*** ./node_modules/swiper/shared/effect-init.mjs ***!
+  \****************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -5978,17 +6736,17 @@ function effectInit(params) {
 
 /***/ }),
 
-/***/ "../node_modules/swiper/shared/effect-target.mjs":
-/*!*******************************************************!*\
-  !*** ../node_modules/swiper/shared/effect-target.mjs ***!
-  \*******************************************************/
+/***/ "./node_modules/swiper/shared/effect-target.mjs":
+/*!******************************************************!*\
+  !*** ./node_modules/swiper/shared/effect-target.mjs ***!
+  \******************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   e: () => (/* binding */ effectTarget)
 /* harmony export */ });
-/* harmony import */ var _utils_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils.mjs */ "../node_modules/swiper/shared/utils.mjs");
+/* harmony import */ var _utils_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils.mjs */ "./node_modules/swiper/shared/utils.mjs");
 
 
 function effectTarget(effectParams, slideEl) {
@@ -6005,17 +6763,17 @@ function effectTarget(effectParams, slideEl) {
 
 /***/ }),
 
-/***/ "../node_modules/swiper/shared/effect-virtual-transition-end.mjs":
-/*!***********************************************************************!*\
-  !*** ../node_modules/swiper/shared/effect-virtual-transition-end.mjs ***!
-  \***********************************************************************/
+/***/ "./node_modules/swiper/shared/effect-virtual-transition-end.mjs":
+/*!**********************************************************************!*\
+  !*** ./node_modules/swiper/shared/effect-virtual-transition-end.mjs ***!
+  \**********************************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   e: () => (/* binding */ effectVirtualTransitionEnd)
 /* harmony export */ });
-/* harmony import */ var _utils_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils.mjs */ "../node_modules/swiper/shared/utils.mjs");
+/* harmony import */ var _utils_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils.mjs */ "./node_modules/swiper/shared/utils.mjs");
 
 
 function effectVirtualTransitionEnd({
@@ -6067,10 +6825,10 @@ function effectVirtualTransitionEnd({
 
 /***/ }),
 
-/***/ "../node_modules/swiper/shared/ssr-window.esm.mjs":
-/*!********************************************************!*\
-  !*** ../node_modules/swiper/shared/ssr-window.esm.mjs ***!
-  \********************************************************/
+/***/ "./node_modules/swiper/shared/ssr-window.esm.mjs":
+/*!*******************************************************!*\
+  !*** ./node_modules/swiper/shared/ssr-window.esm.mjs ***!
+  \*******************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -6222,10 +6980,10 @@ function getWindow() {
 
 /***/ }),
 
-/***/ "../node_modules/swiper/shared/swiper-core.mjs":
-/*!*****************************************************!*\
-  !*** ../node_modules/swiper/shared/swiper-core.mjs ***!
-  \*****************************************************/
+/***/ "./node_modules/swiper/shared/swiper-core.mjs":
+/*!****************************************************!*\
+  !*** ./node_modules/swiper/shared/swiper-core.mjs ***!
+  \****************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -6233,8 +6991,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   S: () => (/* binding */ Swiper),
 /* harmony export */   d: () => (/* binding */ defaults)
 /* harmony export */ });
-/* harmony import */ var _ssr_window_esm_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ssr-window.esm.mjs */ "../node_modules/swiper/shared/ssr-window.esm.mjs");
-/* harmony import */ var _utils_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils.mjs */ "../node_modules/swiper/shared/utils.mjs");
+/* harmony import */ var _ssr_window_esm_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ssr-window.esm.mjs */ "./node_modules/swiper/shared/ssr-window.esm.mjs");
+/* harmony import */ var _utils_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils.mjs */ "./node_modules/swiper/shared/utils.mjs");
 
 
 
@@ -10111,10 +10869,10 @@ Swiper.use([Resize, Observer]);
 
 /***/ }),
 
-/***/ "../node_modules/swiper/shared/utils.mjs":
-/*!***********************************************!*\
-  !*** ../node_modules/swiper/shared/utils.mjs ***!
-  \***********************************************/
+/***/ "./node_modules/swiper/shared/utils.mjs":
+/*!**********************************************!*\
+  !*** ./node_modules/swiper/shared/utils.mjs ***!
+  \**********************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -10145,7 +10903,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   x: () => (/* binding */ extend),
 /* harmony export */   y: () => (/* binding */ deleteProps)
 /* harmony export */ });
-/* harmony import */ var _ssr_window_esm_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ssr-window.esm.mjs */ "../node_modules/swiper/shared/ssr-window.esm.mjs");
+/* harmony import */ var _ssr_window_esm_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ssr-window.esm.mjs */ "./node_modules/swiper/shared/ssr-window.esm.mjs");
 
 
 function classesToTokens(classes = '') {
@@ -10474,10 +11232,10 @@ function setInnerHTML(el, html = '') {
 
 /***/ }),
 
-/***/ "../node_modules/swiper/swiper-bundle.css":
-/*!************************************************!*\
-  !*** ../node_modules/swiper/swiper-bundle.css ***!
-  \************************************************/
+/***/ "./node_modules/swiper/swiper-bundle.css":
+/*!***********************************************!*\
+  !*** ./node_modules/swiper/swiper-bundle.css ***!
+  \***********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -10486,10 +11244,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "../node_modules/swiper/swiper-bundle.mjs":
-/*!************************************************!*\
-  !*** ../node_modules/swiper/swiper-bundle.mjs ***!
-  \************************************************/
+/***/ "./node_modules/swiper/swiper-bundle.mjs":
+/*!***********************************************!*\
+  !*** ./node_modules/swiper/swiper-bundle.mjs ***!
+  \***********************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -10497,30 +11255,30 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   Swiper: () => (/* reexport safe */ _shared_swiper_core_mjs__WEBPACK_IMPORTED_MODULE_0__.S),
 /* harmony export */   "default": () => (/* reexport safe */ _shared_swiper_core_mjs__WEBPACK_IMPORTED_MODULE_0__.S)
 /* harmony export */ });
-/* harmony import */ var _shared_swiper_core_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./shared/swiper-core.mjs */ "../node_modules/swiper/shared/swiper-core.mjs");
-/* harmony import */ var _modules_virtual_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/virtual.mjs */ "../node_modules/swiper/modules/virtual.mjs");
-/* harmony import */ var _modules_keyboard_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/keyboard.mjs */ "../node_modules/swiper/modules/keyboard.mjs");
-/* harmony import */ var _modules_mousewheel_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/mousewheel.mjs */ "../node_modules/swiper/modules/mousewheel.mjs");
-/* harmony import */ var _modules_navigation_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/navigation.mjs */ "../node_modules/swiper/modules/navigation.mjs");
-/* harmony import */ var _modules_pagination_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/pagination.mjs */ "../node_modules/swiper/modules/pagination.mjs");
-/* harmony import */ var _modules_scrollbar_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./modules/scrollbar.mjs */ "../node_modules/swiper/modules/scrollbar.mjs");
-/* harmony import */ var _modules_parallax_mjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./modules/parallax.mjs */ "../node_modules/swiper/modules/parallax.mjs");
-/* harmony import */ var _modules_zoom_mjs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./modules/zoom.mjs */ "../node_modules/swiper/modules/zoom.mjs");
-/* harmony import */ var _modules_controller_mjs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./modules/controller.mjs */ "../node_modules/swiper/modules/controller.mjs");
-/* harmony import */ var _modules_a11y_mjs__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./modules/a11y.mjs */ "../node_modules/swiper/modules/a11y.mjs");
-/* harmony import */ var _modules_history_mjs__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./modules/history.mjs */ "../node_modules/swiper/modules/history.mjs");
-/* harmony import */ var _modules_hash_navigation_mjs__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./modules/hash-navigation.mjs */ "../node_modules/swiper/modules/hash-navigation.mjs");
-/* harmony import */ var _modules_autoplay_mjs__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./modules/autoplay.mjs */ "../node_modules/swiper/modules/autoplay.mjs");
-/* harmony import */ var _modules_thumbs_mjs__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./modules/thumbs.mjs */ "../node_modules/swiper/modules/thumbs.mjs");
-/* harmony import */ var _modules_free_mode_mjs__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./modules/free-mode.mjs */ "../node_modules/swiper/modules/free-mode.mjs");
-/* harmony import */ var _modules_grid_mjs__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./modules/grid.mjs */ "../node_modules/swiper/modules/grid.mjs");
-/* harmony import */ var _modules_manipulation_mjs__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./modules/manipulation.mjs */ "../node_modules/swiper/modules/manipulation.mjs");
-/* harmony import */ var _modules_effect_fade_mjs__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./modules/effect-fade.mjs */ "../node_modules/swiper/modules/effect-fade.mjs");
-/* harmony import */ var _modules_effect_cube_mjs__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./modules/effect-cube.mjs */ "../node_modules/swiper/modules/effect-cube.mjs");
-/* harmony import */ var _modules_effect_flip_mjs__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./modules/effect-flip.mjs */ "../node_modules/swiper/modules/effect-flip.mjs");
-/* harmony import */ var _modules_effect_coverflow_mjs__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./modules/effect-coverflow.mjs */ "../node_modules/swiper/modules/effect-coverflow.mjs");
-/* harmony import */ var _modules_effect_creative_mjs__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./modules/effect-creative.mjs */ "../node_modules/swiper/modules/effect-creative.mjs");
-/* harmony import */ var _modules_effect_cards_mjs__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./modules/effect-cards.mjs */ "../node_modules/swiper/modules/effect-cards.mjs");
+/* harmony import */ var _shared_swiper_core_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./shared/swiper-core.mjs */ "./node_modules/swiper/shared/swiper-core.mjs");
+/* harmony import */ var _modules_virtual_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/virtual.mjs */ "./node_modules/swiper/modules/virtual.mjs");
+/* harmony import */ var _modules_keyboard_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/keyboard.mjs */ "./node_modules/swiper/modules/keyboard.mjs");
+/* harmony import */ var _modules_mousewheel_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/mousewheel.mjs */ "./node_modules/swiper/modules/mousewheel.mjs");
+/* harmony import */ var _modules_navigation_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/navigation.mjs */ "./node_modules/swiper/modules/navigation.mjs");
+/* harmony import */ var _modules_pagination_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/pagination.mjs */ "./node_modules/swiper/modules/pagination.mjs");
+/* harmony import */ var _modules_scrollbar_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./modules/scrollbar.mjs */ "./node_modules/swiper/modules/scrollbar.mjs");
+/* harmony import */ var _modules_parallax_mjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./modules/parallax.mjs */ "./node_modules/swiper/modules/parallax.mjs");
+/* harmony import */ var _modules_zoom_mjs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./modules/zoom.mjs */ "./node_modules/swiper/modules/zoom.mjs");
+/* harmony import */ var _modules_controller_mjs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./modules/controller.mjs */ "./node_modules/swiper/modules/controller.mjs");
+/* harmony import */ var _modules_a11y_mjs__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./modules/a11y.mjs */ "./node_modules/swiper/modules/a11y.mjs");
+/* harmony import */ var _modules_history_mjs__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./modules/history.mjs */ "./node_modules/swiper/modules/history.mjs");
+/* harmony import */ var _modules_hash_navigation_mjs__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./modules/hash-navigation.mjs */ "./node_modules/swiper/modules/hash-navigation.mjs");
+/* harmony import */ var _modules_autoplay_mjs__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./modules/autoplay.mjs */ "./node_modules/swiper/modules/autoplay.mjs");
+/* harmony import */ var _modules_thumbs_mjs__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./modules/thumbs.mjs */ "./node_modules/swiper/modules/thumbs.mjs");
+/* harmony import */ var _modules_free_mode_mjs__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./modules/free-mode.mjs */ "./node_modules/swiper/modules/free-mode.mjs");
+/* harmony import */ var _modules_grid_mjs__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./modules/grid.mjs */ "./node_modules/swiper/modules/grid.mjs");
+/* harmony import */ var _modules_manipulation_mjs__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./modules/manipulation.mjs */ "./node_modules/swiper/modules/manipulation.mjs");
+/* harmony import */ var _modules_effect_fade_mjs__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./modules/effect-fade.mjs */ "./node_modules/swiper/modules/effect-fade.mjs");
+/* harmony import */ var _modules_effect_cube_mjs__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./modules/effect-cube.mjs */ "./node_modules/swiper/modules/effect-cube.mjs");
+/* harmony import */ var _modules_effect_flip_mjs__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./modules/effect-flip.mjs */ "./node_modules/swiper/modules/effect-flip.mjs");
+/* harmony import */ var _modules_effect_coverflow_mjs__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./modules/effect-coverflow.mjs */ "./node_modules/swiper/modules/effect-coverflow.mjs");
+/* harmony import */ var _modules_effect_creative_mjs__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./modules/effect-creative.mjs */ "./node_modules/swiper/modules/effect-creative.mjs");
+/* harmony import */ var _modules_effect_cards_mjs__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./modules/effect-cards.mjs */ "./node_modules/swiper/modules/effect-cards.mjs");
 /**
  * Swiper 12.0.3
  * Most modern mobile touch slider and framework with hardware accelerated transitions
@@ -10563,764 +11321,6 @@ const modules = [_modules_virtual_mjs__WEBPACK_IMPORTED_MODULE_1__["default"], _
 _shared_swiper_core_mjs__WEBPACK_IMPORTED_MODULE_0__.S.use(modules);
 
 
-
-
-/***/ }),
-
-/***/ "./blocks/swiper/block.json":
-/*!**********************************!*\
-  !*** ./blocks/swiper/block.json ***!
-  \**********************************/
-/***/ ((module) => {
-
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/swiper","title":"Swiper","category":"jankx","description":"Modern touch slider with hardware accelerated transitions","keywords":["slider","swiper","carousel","gallery","slideshow"],"textdomain":"jankx","attributes":{"slidesPerView":{"type":"number","default":1},"slidesPerViewTablet":{"type":"number","default":1},"slidesPerViewMobile":{"type":"number","default":1},"spaceBetween":{"type":"number","default":30},"loop":{"type":"boolean","default":true},"autoplay":{"type":"boolean","default":false},"autoplayDelay":{"type":"number","default":3000},"speed":{"type":"number","default":300},"navigation":{"type":"boolean","default":true},"pagination":{"type":"boolean","default":true},"effect":{"type":"string","enum":["slide","fade","cube","coverflow","flip","cards"],"default":"slide"},"height":{"type":"number","default":50},"minHeight":{"type":"number","default":50},"contentMode":{"type":"string","enum":["slides","gallery"],"default":"slides"},"galleryImages":{"type":"array","default":[]},"bannerStyle":{"type":"string","enum":["default","circles","square","banner"],"default":"default"},"bannerTextColor":{"type":"string","default":"#ffffff"},"bannerBackgroundColor":{"type":"string","default":"rgba(0,0,0,0.5)"},"bannerPadding":{"type":"number","default":20},"bannerBorderRadius":{"type":"number","default":0},"gradientOverlay":{"type":"boolean","default":false},"gradientColor":{"type":"string","default":"#000000"},"gradientOpacity":{"type":"number","default":0.7},"gradientHeight":{"type":"number","default":60},"className":{"type":"string"},"anchor":{"type":"string"}},"supports":{"html":false,"anchor":true,"align":["wide","full"],"spacing":{"margin":true,"padding":true},"color":{"background":true,"text":true},"border":{"color":true,"radius":true,"style":true,"width":true,"__experimentalDefaultControls":{"radius":true}}},"providesContext":{"jankx/swiperId":"anchor"},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","viewScript":"file:./build/view.js","style":"file:./build/style.css","styles":[{"name":"default","label":"Default","isDefault":true},{"name":"banner","label":"Banner"},{"name":"carousel","label":"Carousel"},{"name":"testimonial","label":"Testimonial"}]}');
-
-/***/ }),
-
-/***/ "./blocks/swiper/edit.tsx":
-/*!********************************!*\
-  !*** ./blocks/swiper/edit.tsx ***!
-  \********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ Edit)
-/* harmony export */ });
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/icons */ "../node_modules/@wordpress/icons/build-module/library/cover.js");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/icons */ "../node_modules/@wordpress/icons/build-module/library/gallery.js");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/icons */ "../node_modules/@wordpress/icons/build-module/library/layout.js");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/icons */ "../node_modules/@wordpress/icons/build-module/library/quote.js");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
-/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
-/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var swiper_bundle__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! swiper/bundle */ "../node_modules/swiper/swiper-bundle.mjs");
-/* harmony import */ var swiper_css_bundle__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! swiper/css/bundle */ "../node_modules/swiper/swiper-bundle.css");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__);
-
-
-
-
-
-
-
-
-
-
-// Utility function to convert hex to RGB
-const hexToRgb = hex => {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result ? {
-    r: parseInt(result[1], 16),
-    g: parseInt(result[2], 16),
-    b: parseInt(result[3], 16)
-  } : {
-    r: 0,
-    g: 0,
-    b: 0
-  };
-};
-function Edit({
-  attributes,
-  setAttributes,
-  clientId
-}) {
-  const {
-    slidesPerView,
-    slidesPerViewTablet,
-    slidesPerViewMobile,
-    spaceBetween,
-    loop,
-    autoplay,
-    autoplayDelay,
-    speed,
-    navigation,
-    pagination,
-    effect,
-    height,
-    minHeight,
-    contentMode,
-    galleryImages,
-    bannerStyle,
-    bannerTextColor,
-    bannerBackgroundColor,
-    bannerPadding,
-    bannerBorderRadius,
-    gradientOverlay,
-    gradientColor,
-    gradientOpacity,
-    gradientHeight,
-    className
-  } = attributes;
-
-  // Get block's style variation
-  const styleVariation = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_9__.useSelect)(select => {
-    const block = select('core/block-editor').getBlock(clientId);
-    if (!block) return 'default';
-
-    // Extract style variation from className
-    const match = className?.match(/is-style-(\w+)/);
-    return match ? match[1] : 'default';
-  }, [clientId, className]);
-
-  // Function to update style variation
-  const updateStyleVariation = variation => {
-    // Remove existing variation classes
-    const currentClassName = className || '';
-    const cleanedClassName = currentClassName.replace(/\bis-style-\w+\b/g, '').trim();
-
-    // Add new variation class
-    const newVariationClass = variation === 'default' ? '' : `is-style-${variation}`;
-    const newClassName = [cleanedClassName, newVariationClass].filter(Boolean).join(' ');
-    setAttributes({
-      className: newClassName
-    });
-  };
-  const swiperRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_7__.useRef)(null);
-  const containerRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_7__.useRef)(null);
-
-  // Convert gradient color to RGB for CSS variables
-  const gradientRgb = hexToRgb(gradientColor);
-  const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)({
-    ref: containerRef,
-    className: `swiper-block swiper-effect-${effect} banner-style-${bannerStyle} ${gradientOverlay ? 'has-gradient-overlay' : ''} ${className || ''}`.trim(),
-    style: {
-      '--swiper-height': `${height}px`,
-      '--swiper-min-height': `${minHeight}px`,
-      '--banner-style': bannerStyle,
-      '--banner-text-color': bannerTextColor,
-      '--banner-background-color': bannerBackgroundColor,
-      '--banner-padding': `${bannerPadding}px`,
-      '--banner-border-radius': `${bannerBorderRadius}px`,
-      '--gradient-overlay-enabled': gradientOverlay ? '1' : '0',
-      '--gradient-color-r': gradientRgb.r,
-      '--gradient-color-g': gradientRgb.g,
-      '--gradient-color-b': gradientRgb.b,
-      '--gradient-opacity': gradientOpacity,
-      '--gradient-height': `${gradientHeight}%`,
-      '--slides-per-view-desktop': slidesPerView,
-      '--slides-per-view-tablet': slidesPerViewTablet,
-      '--slides-per-view-mobile': slidesPerViewMobile
-    }
-  });
-  const innerBlocksProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useInnerBlocksProps)({
-    className: 'swiper-wrapper'
-  }, {
-    allowedBlocks: contentMode === 'slides' ? ['jankx/swiper-slide', 'jankx/swiper-inner-blocks-overlay'] : ['jankx/swiper-banner', 'jankx/swiper-inner-blocks-overlay'],
-    template: contentMode === 'slides' ? [['jankx/swiper-slide'], ['jankx/swiper-slide'], ['jankx/swiper-slide']] : [],
-    templateLock: false,
-    orientation: 'horizontal',
-    renderAppender: _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InnerBlocks.ButtonBlockAppender
-  });
-  const hasInnerBlocks = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_9__.useSelect)(select => {
-    const {
-      getBlock
-    } = select('core/block-editor');
-    const block = getBlock(clientId);
-    return !!(block && block.innerBlocks.length);
-  }, [clientId]);
-
-  // Handle gallery image selection
-  const onSelectGalleryImages = images => {
-    const galleryData = images.map(img => ({
-      id: img.id,
-      url: img.url,
-      alt: img.alt || '',
-      caption: img.caption || ''
-    }));
-    setAttributes({
-      galleryImages: galleryData
-    });
-
-    // Create swiper-banner blocks for each image
-    const bannerBlocks = images.map(img => (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_8__.createBlock)('jankx/swiper-banner', {
-      imageId: img.id,
-      imageUrl: img.url,
-      imageAlt: img.alt || '',
-      imageCaption: img.caption || ''
-    }));
-
-    // Replace inner blocks with banner blocks
-    wp.data.dispatch('core/block-editor').replaceInnerBlocks(clientId, bannerBlocks);
-  };
-
-  // Initialize Swiper in editor
-  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_7__.useEffect)(() => {
-    if (!containerRef.current) return;
-    const loadSwiper = async () => {
-      await new Promise(resolve => setTimeout(resolve, 200));
-      if (containerRef.current) {
-        const swiperEl = containerRef.current.querySelector('.swiper');
-        if (!swiperEl) return;
-
-        // If Swiper already exists, just update params instead of destroying
-        if (swiperRef.current) {
-          // Update params
-          Object.assign(swiperRef.current.params, {
-            slidesPerView,
-            spaceBetween,
-            loop,
-            speed,
-            effect,
-            breakpoints: {
-              320: {
-                slidesPerView: slidesPerViewMobile,
-                spaceBetween: spaceBetween
-              },
-              768: {
-                slidesPerView: slidesPerViewTablet,
-                spaceBetween: spaceBetween
-              },
-              1024: {
-                slidesPerView: slidesPerView,
-                spaceBetween: spaceBetween
-              }
-            },
-            autoplay: autoplay ? {
-              delay: autoplayDelay,
-              disableOnInteraction: false
-            } : false,
-            navigation: navigation ? {
-              nextEl: swiperEl.querySelector('.swiper-button-next'),
-              prevEl: swiperEl.querySelector('.swiper-button-prev')
-            } : false,
-            pagination: pagination ? {
-              el: swiperEl.querySelector('.swiper-pagination'),
-              clickable: true
-            } : false
-          });
-
-          // Update navigation
-          if (navigation) {
-            const nextEl = swiperEl.querySelector('.swiper-button-next');
-            const prevEl = swiperEl.querySelector('.swiper-button-prev');
-            if (nextEl && prevEl) {
-              if (swiperRef.current.navigation) {
-                swiperRef.current.navigation.init();
-                swiperRef.current.navigation.update();
-              }
-            }
-          } else if (swiperRef.current.navigation) {
-            swiperRef.current.navigation.destroy();
-          }
-
-          // Update pagination
-          if (pagination) {
-            const paginationEl = swiperEl.querySelector('.swiper-pagination');
-            if (paginationEl) {
-              if (swiperRef.current.pagination) {
-                swiperRef.current.pagination.init();
-                swiperRef.current.pagination.render();
-                swiperRef.current.pagination.update();
-              }
-            }
-          } else if (swiperRef.current.pagination) {
-            swiperRef.current.pagination.destroy();
-          }
-
-          // Update Swiper
-          swiperRef.current.update();
-
-          // Update autoplay
-          if (autoplay && swiperRef.current.autoplay) {
-            swiperRef.current.autoplay.start();
-          } else if (swiperRef.current.autoplay) {
-            swiperRef.current.autoplay.stop();
-          }
-        } else {
-          // Create new instance only if doesn't exist
-          const nextEl = swiperEl.querySelector('.swiper-button-next');
-          const prevEl = swiperEl.querySelector('.swiper-button-prev');
-          const paginationEl = swiperEl.querySelector('.swiper-pagination');
-          const swiperConfig = {
-            slidesPerView,
-            spaceBetween,
-            loop,
-            speed,
-            effect,
-            breakpoints: {
-              320: {
-                slidesPerView: slidesPerViewMobile,
-                spaceBetween: spaceBetween
-              },
-              768: {
-                slidesPerView: slidesPerViewTablet,
-                spaceBetween: spaceBetween
-              },
-              1024: {
-                slidesPerView: slidesPerView,
-                spaceBetween: spaceBetween
-              }
-            },
-            autoplay: autoplay ? {
-              delay: autoplayDelay,
-              disableOnInteraction: false
-            } : false,
-            fadeEffect: {
-              crossFade: true
-            },
-            cubeEffect: {
-              shadow: true,
-              slideShadows: true,
-              shadowOffset: 20,
-              shadowScale: 0.94
-            },
-            coverflowEffect: {
-              rotate: 50,
-              stretch: 0,
-              depth: 100,
-              modifier: 1,
-              slideShadows: true
-            },
-            flipEffect: {
-              slideShadows: true,
-              limitRotation: true
-            },
-            cardsEffect: {
-              perSlideOffset: 8,
-              perSlideRotate: 2
-            }
-          };
-
-          // Only add navigation if enabled and elements exist
-          if (navigation && nextEl && prevEl) {
-            swiperConfig.navigation = {
-              nextEl,
-              prevEl
-            };
-          }
-
-          // Only add pagination if enabled and element exists
-          if (pagination && paginationEl) {
-            swiperConfig.pagination = {
-              el: paginationEl,
-              clickable: true
-            };
-          }
-          swiperRef.current = new swiper_bundle__WEBPACK_IMPORTED_MODULE_10__["default"](swiperEl, swiperConfig);
-        }
-      }
-    };
-    const timeoutId = setTimeout(loadSwiper, 100);
-    return () => {
-      clearTimeout(timeoutId);
-      // Don't destroy on settings change, only update
-    };
-  }, [slidesPerView, slidesPerViewTablet, slidesPerViewMobile, spaceBetween, loop, autoplay, autoplayDelay, speed, navigation, pagination, effect, height, minHeight]);
-
-  // Cleanup only on unmount
-  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_7__.useEffect)(() => {
-    return () => {
-      if (swiperRef.current) {
-        swiperRef.current.destroy(false, false);
-        swiperRef.current = null;
-      }
-    };
-  }, []);
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.Fragment, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.BlockControls, {
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToolbarGroup, {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToolbarButton, {
-          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__["default"],
-          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Default', 'jankx'),
-          onClick: () => updateStyleVariation('default'),
-          isActive: styleVariation === 'default'
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToolbarButton, {
-          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__["default"],
-          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Banner', 'jankx'),
-          onClick: () => updateStyleVariation('banner'),
-          isActive: styleVariation === 'banner'
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToolbarButton, {
-          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__["default"],
-          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Carousel', 'jankx'),
-          onClick: () => updateStyleVariation('carousel'),
-          isActive: styleVariation === 'carousel'
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToolbarButton, {
-          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__["default"],
-          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Testimonial', 'jankx'),
-          onClick: () => updateStyleVariation('testimonial'),
-          isActive: styleVariation === 'testimonial'
-        })]
-      })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {
-      ...blockProps,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TabPanel, {
-          className: "swiper-tabs",
-          activeClass: "is-active",
-          onSelect: tabName => {
-            if (tabName === 'gallery') {
-              setAttributes({
-                contentMode: 'gallery'
-              });
-            } else {
-              setAttributes({
-                contentMode: 'slides'
-              });
-            }
-          },
-          tabs: [{
-            name: 'slides',
-            title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Slides', 'jankx'),
-            className: 'tab-slides'
-          }, {
-            name: 'gallery',
-            title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Gallery', 'jankx'),
-            className: 'tab-gallery'
-          }],
-          children: tab => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.Fragment, {
-            children: [tab.name === 'slides' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
-              title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Add Slides', 'jankx'),
-              initialOpen: true,
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("p", {
-                children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Use the + button to add individual slides', 'jankx')
-              })
-            }), tab.name === 'gallery' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
-              title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select Images', 'jankx'),
-              initialOpen: true,
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.MediaUploadCheck, {
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.MediaUpload, {
-                  onSelect: onSelectGalleryImages,
-                  allowedTypes: ['image'],
-                  multiple: true,
-                  value: galleryImages.map(img => img.id),
-                  render: ({
-                    open
-                  }) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
-                    variant: "primary",
-                    onClick: open,
-                    style: {
-                      width: '100%',
-                      marginBottom: '10px'
-                    },
-                    children: galleryImages.length > 0 ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Change Images', 'jankx') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select Images', 'jankx')
-                  })
-                })
-              }), galleryImages.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("p", {
-                children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Selected', 'jankx'), ": ", galleryImages.length, " ", (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('images', 'jankx')]
-              })]
-            })]
-          })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
-          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Slider Settings', 'jankx'),
-          initialOpen: true,
-          children: [styleVariation === 'carousel' || styleVariation === 'testimonial' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.Fragment, {
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Slides Per View (Desktop)', 'jankx'),
-              value: slidesPerView,
-              onChange: val => setAttributes({
-                slidesPerView: val
-              }),
-              min: 1,
-              max: 6,
-              step: 1,
-              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Number of slides visible on desktop screens (≥1024px)', 'jankx')
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Slides Per View (Tablet)', 'jankx'),
-              value: slidesPerViewTablet,
-              onChange: val => setAttributes({
-                slidesPerViewTablet: val
-              }),
-              min: 1,
-              max: 4,
-              step: 1,
-              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Number of slides visible on tablet screens (768px - 1023px)', 'jankx')
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Slides Per View (Mobile)', 'jankx'),
-              value: slidesPerViewMobile,
-              onChange: val => setAttributes({
-                slidesPerViewMobile: val
-              }),
-              min: 1,
-              max: 2,
-              step: 1,
-              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Number of slides visible on mobile screens (<768px)', 'jankx')
-            })]
-          }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Slides Per View', 'jankx'),
-            value: slidesPerView,
-            onChange: val => setAttributes({
-              slidesPerView: val
-            }),
-            min: 1,
-            max: 4,
-            step: 1
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Space Between (px)', 'jankx'),
-            value: spaceBetween,
-            onChange: val => setAttributes({
-              spaceBetween: val
-            }),
-            min: 0,
-            max: 100,
-            step: 10
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Speed (ms)', 'jankx'),
-            value: speed,
-            onChange: val => setAttributes({
-              speed: val
-            }),
-            min: 100,
-            max: 2000,
-            step: 100
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Height (px)', 'jankx'),
-            value: height,
-            onChange: val => setAttributes({
-              height: val
-            }),
-            min: 50,
-            max: 1000,
-            step: 50,
-            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Height for desktop (max-height on mobile)', 'jankx')
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Min Height (px)', 'jankx'),
-            value: minHeight,
-            onChange: val => setAttributes({
-              minHeight: val
-            }),
-            min: 50,
-            max: 600,
-            step: 50,
-            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Minimum height on mobile devices', 'jankx')
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Effect', 'jankx'),
-            value: effect,
-            options: [{
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Slide', 'jankx'),
-              value: 'slide'
-            }, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Fade', 'jankx'),
-              value: 'fade'
-            }, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Cube', 'jankx'),
-              value: 'cube'
-            }, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Coverflow', 'jankx'),
-              value: 'coverflow'
-            }, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Flip', 'jankx'),
-              value: 'flip'
-            }, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Cards', 'jankx'),
-              value: 'cards'
-            }],
-            onChange: val => setAttributes({
-              effect: val
-            })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Loop', 'jankx'),
-            checked: loop,
-            onChange: val => setAttributes({
-              loop: val
-            })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Navigation', 'jankx'),
-            checked: navigation,
-            onChange: val => setAttributes({
-              navigation: val
-            })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Pagination', 'jankx'),
-            checked: pagination,
-            onChange: val => setAttributes({
-              pagination: val
-            })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Autoplay', 'jankx'),
-            checked: autoplay,
-            onChange: val => setAttributes({
-              autoplay: val
-            })
-          }), autoplay && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Autoplay Delay (ms)', 'jankx'),
-            value: autoplayDelay,
-            onChange: val => setAttributes({
-              autoplayDelay: val
-            }),
-            min: 1000,
-            max: 10000,
-            step: 500
-          })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
-          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Banner Style Settings', 'jankx'),
-          initialOpen: false,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Banner Style', 'jankx'),
-            value: bannerStyle,
-            options: [{
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Default', 'jankx'),
-              value: 'default'
-            }, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Circles', 'jankx'),
-              value: 'circles'
-            }, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Square', 'jankx'),
-              value: 'square'
-            }, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Banner', 'jankx'),
-              value: 'banner'
-            }],
-            onChange: val => setAttributes({
-              bannerStyle: val
-            })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {
-            style: {
-              marginBottom: '16px'
-            },
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("label", {
-              style: {
-                display: 'block',
-                marginBottom: '8px',
-                fontWeight: 'bold'
-              },
-              children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Text Color', 'jankx')
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ColorPicker, {
-              color: bannerTextColor,
-              onChange: color => setAttributes({
-                bannerTextColor: color
-              }),
-              disableAlpha: false
-            })]
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {
-            style: {
-              marginBottom: '16px'
-            },
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("label", {
-              style: {
-                display: 'block',
-                marginBottom: '8px',
-                fontWeight: 'bold'
-              },
-              children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Background Color', 'jankx')
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ColorPicker, {
-              color: bannerBackgroundColor,
-              onChange: color => setAttributes({
-                bannerBackgroundColor: color
-              }),
-              disableAlpha: false
-            })]
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Padding (px)', 'jankx'),
-            value: bannerPadding,
-            onChange: val => setAttributes({
-              bannerPadding: val
-            }),
-            min: 0,
-            max: 50,
-            step: 5
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Border Radius (px)', 'jankx'),
-            value: bannerBorderRadius,
-            onChange: val => setAttributes({
-              bannerBorderRadius: val
-            }),
-            min: 0,
-            max: 20,
-            step: 1
-          })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
-          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Gradient Overlay', 'jankx'),
-          initialOpen: false,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enable Gradient Overlay', 'jankx'),
-            checked: gradientOverlay,
-            onChange: val => setAttributes({
-              gradientOverlay: val
-            }),
-            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Add a gradient overlay from bottom to top with decreasing transparency', 'jankx')
-          }), gradientOverlay && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.Fragment, {
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {
-              style: {
-                marginBottom: '16px'
-              },
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("label", {
-                style: {
-                  display: 'block',
-                  marginBottom: '8px',
-                  fontWeight: 'bold'
-                },
-                children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Gradient Color', 'jankx')
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ColorPicker, {
-                color: gradientColor,
-                onChange: color => setAttributes({
-                  gradientColor: color
-                }),
-                disableAlpha: false
-              })]
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Gradient Opacity', 'jankx'),
-              value: gradientOpacity,
-              onChange: val => setAttributes({
-                gradientOpacity: val
-              }),
-              min: 0,
-              max: 1,
-              step: 0.1,
-              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Transparency of the gradient (0 = fully transparent, 1 = fully opaque)', 'jankx')
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
-              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Gradient Height (%)', 'jankx'),
-              value: gradientHeight,
-              onChange: val => setAttributes({
-                gradientHeight: val
-              }),
-              min: 10,
-              max: 100,
-              step: 5,
-              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Height of the gradient overlay as percentage of slide height', 'jankx')
-            })]
-          })]
-        })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {
-        className: "swiper",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("div", {
-          ...innerBlocksProps
-        }), navigation && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.Fragment, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("div", {
-            className: "swiper-button-prev"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("div", {
-            className: "swiper-button-next"
-          })]
-        }), pagination && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("div", {
-          className: "swiper-pagination"
-        })]
-      })]
-    })]
-  });
-}
-
-/***/ }),
-
-/***/ "./blocks/swiper/editor.scss":
-/*!***********************************!*\
-  !*** ./blocks/swiper/editor.scss ***!
-  \***********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-// extracted by mini-css-extract-plugin
-
-
-/***/ }),
-
-/***/ "./blocks/swiper/style.scss":
-/*!**********************************!*\
-  !*** ./blocks/swiper/style.scss ***!
-  \**********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-// extracted by mini-css-extract-plugin
 
 
 /***/ }),

@@ -181,6 +181,9 @@ module.exports = {
     'blocks/floating-messengers/build/style': './blocks/floating-messengers/style.scss',
     'blocks/floating-messengers/build/editor': './blocks/floating-messengers/editor.scss',
     'blocks/floating-messengers/build/frontend': './blocks/floating-messengers/frontend.ts',
+    'blocks/sticky-box/build/index': './blocks/sticky-box/index.tsx',
+    'blocks/sticky-box/build/style': './blocks/sticky-box/style.scss',
+    'blocks/sticky-box/build/editor': './blocks/sticky-box/editor.scss',
 
     'blocks/facebook-page/build/index': './blocks/facebook-page/index.tsx',
     'blocks/facebook-page/build/frontend': './blocks/facebook-page/frontend.ts',

@@ -1,9 +1,6 @@
-/*!*********************************************************************************************************************************************************************************************************!*\
-  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/floating-messengers/style.scss ***!
-  \*********************************************************************************************************************************************************************************************************/
-/**
- * Floating Messengers - Frontend Styles
- */
+/*!******************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/floating-messengers/style.scss ***!
+  \******************************************************************************************************************************************************************************************************/
 .wp-block-jankx-floating-messengers,
 .jankx-floating-messengers {
   position: fixed;
@@ -149,7 +146,6 @@
   display: none;
 }
 
-/* Tooltip */
 .jankx-floating-messengers .fm-button .fm-tooltip {
   position: absolute;
   top: 50%;
@@ -199,7 +195,6 @@
   transform: translateY(-50%) translateX(-12px);
 }
 
-/* Idle animations */
 @keyframes fm-pulse-ring {
   0% {
     transform: scale(1);
@@ -262,7 +257,6 @@
   animation: fm-float 3.2s ease-in-out infinite;
 }
 
-/* Expansion styles */
 .jankx-floating-messengers.expand-vertical .fm-list {
   display: flex;
   flex-direction: column;
@@ -284,7 +278,6 @@
   position: absolute;
 }
 
-/* Count class positions for fan (precomputed offsets for up to 6 items) */
 .jankx-floating-messengers.expand-fan.is-open[data-count="2"] .fm-node:nth-child(1) {
   transform: translateY(calc(var(--fm-distance, 72px) * -1));
 }
@@ -321,7 +314,6 @@
   transform: translate(calc(var(--fm-distance, 72px) * var(--dir, 1) * 0.5), calc(var(--fm-distance, 72px) * -1.5));
 }
 
-/* Bidirectional: alternate left/right from trigger */
 .jankx-floating-messengers.expand-bidirectional.is-open .fm-list .fm-node {
   transform: translateY(calc(var(--fm-distance, 72px) * -1));
 }
@@ -334,7 +326,6 @@
   transform: translateX(calc(var(--fm-distance, 72px) * (var(--dir, -1)))) translateY(calc(var(--fm-distance, 72px) * -1));
 }
 
-/* Split above/below */
 .jankx-floating-messengers.expand-split.is-open .fm-list .fm-node {
   transform: translateY(calc(var(--fm-distance, 72px) * -1));
 }
@@ -343,7 +334,6 @@
   transform: translateY(calc(var(--fm-distance, 72px) * -2));
 }
 
-/* Direction variable depending on side */
 .jankx-floating-messengers.position-right {
   --dir: -1;
 }

@@ -98,6 +98,11 @@ class StarRatingBlock extends Block
                 <div class="jankx-stars" title="<?php echo esc_attr(sprintf(__('Rated %s out of 5', 'jankx'), $rating)); ?>">
                     <?php echo $this->renderStars($rating, $attributes); ?>
                 </div>
+                <?php if (!empty($attributes['showScoreText'])): ?>
+                    <span class="jankx-rating-text">
+                        (<?php echo esc_html(number_format_i18n($rating, 1)); ?>/5.0)
+                    </span>
+                <?php endif; ?>
                 <?php if ($attributes['showCount'] && $count > 0): ?>
                     <span class="jankx-rating-count">
                         (<?php echo number_format_i18n($count); ?>)

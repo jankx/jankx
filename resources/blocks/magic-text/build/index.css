@@ -1,6 +1,6 @@
-/*!************************************************************************************************************************************************************************************************!*\
-  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/magic-text/style.scss ***!
-  \************************************************************************************************************************************************************************************************/
+/*!*********************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/magic-text/style.scss ***!
+  \*********************************************************************************************************************************************************************************************/
 /**
  * The following styles get applied both on the front of your site
  * and in the editor.
@@ -18,9 +18,9 @@ mark.has-gradient-color {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
-/*!*************************************************************************************************************************************************************************************************!*\
-  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/magic-text/editor.scss ***!
-  \*************************************************************************************************************************************************************************************************/
+/*!**********************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/magic-text/editor.scss ***!
+  \**********************************************************************************************************************************************************************************************/
 /**
  * The following styles get applied inside the editor only.
  *
@@ -102,9 +102,9 @@ mark.has-gradient-color {
     padding: 12px;
   }
 }
-/*!****************************************************************************************************************************************************************************************************************************!*\
-  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/magic-text/components/underline-effect/style.scss ***!
-  \****************************************************************************************************************************************************************************************************************************/
+/*!*************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/magic-text/components/underline-effect/style.scss ***!
+  \*************************************************************************************************************************************************************************************************************************/
 .jankx-underline-clip-effect {
   position: relative;
 }
@@ -120,9 +120,9 @@ mark.has-gradient-color {
   border: 6px solid var(--underline-border-color, hsl(130, 80%, 50%));
   clip-path: polygon(0 0, 50% 50%, 100% 0);
 }
-/*!*************************************************************************************************************************************************************************************************************************!*\
-  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/magic-text/components/text-bg-image/style.scss ***!
-  \*************************************************************************************************************************************************************************************************************************/
+/*!**********************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/magic-text/components/text-bg-image/style.scss ***!
+  \**********************************************************************************************************************************************************************************************************************/
 .jankx-bg-image {
   display: inline-block;
   background-image: var(--text-bg-image);
@@ -144,9 +144,9 @@ mark.has-gradient-color {
     text-shadow: 0 0 1px rgba(0, 0, 0, 0.2), 0 0 2px rgba(0, 0, 0, 0.1);
   }
 }
-/*!***************************************************************************************************************************************************************************************************************************!*\
-  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/magic-text/components/gradient-stroke/style.scss ***!
-  \***************************************************************************************************************************************************************************************************************************/
+/*!************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/magic-text/components/gradient-stroke/style.scss ***!
+  \************************************************************************************************************************************************************************************************************************/
 .magic-gradient-stroke {
   --stroke-color: transparent;
   --stroke-width: 1px;
@@ -178,9 +178,9 @@ mark.has-gradient-color {
 .editor-styles-wrapper .magic-gradient-stroke {
   background-color: rgba(0, 0, 0, 0.1);
 }
-/*!*************************************************************************************************************************************************************************************************************************************!*\
-  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/magic-text/components/post-theme-selector/themes/dark.scss ***!
-  \*************************************************************************************************************************************************************************************************************************************/
+/*!**********************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/magic-text/components/post-theme-selector/themes/dark.scss ***!
+  \**********************************************************************************************************************************************************************************************************************************/
 body.theme-dark {
   background-color: #121212;
   color: #e0e0e0;
@@ -454,9 +454,9 @@ body.theme-dark .message.error {
     animation: none !important;
   }
 }
-/*!**************************************************************************************************************************************************************************************************************************************!*\
-  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/magic-text/components/post-theme-selector/themes/light.scss ***!
-  \**************************************************************************************************************************************************************************************************************************************/
+/*!***********************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/magic-text/components/post-theme-selector/themes/light.scss ***!
+  \***********************************************************************************************************************************************************************************************************************************/
 body.theme-light {
   background-color: #f8f9fa;
   color: #212529;
@@ -767,9 +767,9 @@ body.theme-light .screen-reader-text {
     forced-color-adjust: auto;
   }
 }
-/*!******************************************************************************************************************************************************************************************************************************************!*\
-  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/magic-text/components/post-theme-selector/themes/milkshake.scss ***!
-  \******************************************************************************************************************************************************************************************************************************************/
+/*!***************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/magic-text/components/post-theme-selector/themes/milkshake.scss ***!
+  \***************************************************************************************************************************************************************************************************************************************/
 @charset "UTF-8";
 body.theme-milkshake {
   background-color: #fef6ff;
@@ -1284,9 +1284,9 @@ body.theme-milkshake p {
     animation: none !important;
   }
 }
-/*!*****************************************************************************************************************************************************************************************************************************************!*\
-  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/magic-text/components/post-theme-selector/themes/popsicle.scss ***!
-  \*****************************************************************************************************************************************************************************************************************************************/
+/*!**************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/magic-text/components/post-theme-selector/themes/popsicle.scss ***!
+  \**************************************************************************************************************************************************************************************************************************************/
 body.theme-popsicle {
   background: linear-gradient(135deg, #ff7eb3, #ff758c, #ff6a5c);
   color: #ffffff;
@@ -1402,9 +1402,9 @@ body.theme-popsicle::-webkit-scrollbar-thumb {
 body.theme-popsicle::-webkit-scrollbar-thumb:hover {
   background-color: #ff758c;
 }
-/*!*******************************************************************************************************************************************************************************************************************!*\
-  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/magic-text/components/tooltip/style.scss ***!
-  \*******************************************************************************************************************************************************************************************************************/
+/*!****************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/magic-text/components/tooltip/style.scss ***!
+  \****************************************************************************************************************************************************************************************************************/
 :root {
   --tooltip-bg-color: #333;
   --tooltip-text-color: #fff;
@@ -1586,7 +1586,6 @@ body.theme-popsicle::-webkit-scrollbar-thumb:hover {
   border-radius: 4px;
   overflow: hidden;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  /* Tab Content Area */
 }
 .tooltip-color-tabs .components-tab-panel__tabs {
   display: flex;
@@ -1608,7 +1607,6 @@ body.theme-popsicle::-webkit-scrollbar-thumb:hover {
   transition: all 0.2s ease;
   border-bottom: 2px solid transparent;
   position: relative;
-  /* Disabled state */
 }
 .tooltip-color-tabs .components-tab-panel__tabs .components-tab-panel__tabs-item:hover {
   background: #e9ecef;
@@ -1634,6 +1632,9 @@ body.theme-popsicle::-webkit-scrollbar-thumb:hover {
   height: 2px;
   background: #007cba;
 }
+.tooltip-color-tabs .components-tab-panel__tabs .components-tab-panel__tabs-item {
+  /* Disabled state */
+}
 .tooltip-color-tabs .components-tab-panel__tabs .components-tab-panel__tabs-item:disabled {
   opacity: 0.5;
   cursor: not-allowed;
@@ -1641,6 +1642,9 @@ body.theme-popsicle::-webkit-scrollbar-thumb:hover {
 .tooltip-color-tabs .components-tab-panel__tabs .components-tab-panel__tabs-item:disabled:hover {
   background: transparent;
   color: #6c757d;
+}
+.tooltip-color-tabs {
+  /* Tab Content Area */
 }
 .tooltip-color-tabs .components-tab-panel__tab-content {
   padding: 20px;
@@ -1724,9 +1728,9 @@ body.theme-popsicle::-webkit-scrollbar-thumb:hover {
   }
 }
 /*********************** End  TabPanel   */
-/*!******************************************************************************************************************************************************************************************************************!*\
-  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/magic-text/components/marker/style.scss ***!
-  \******************************************************************************************************************************************************************************************************************/
+/*!***************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/magic-text/components/marker/style.scss ***!
+  \***************************************************************************************************************************************************************************************************************/
 .jankx-text-marker {
   background-color: rgb(235, 164, 10);
   color: #000;
