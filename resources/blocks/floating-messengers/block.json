@@ -64,12 +64,12 @@
     "channels": {
       "type": "object",
       "default": {
-        "messenger": { "enabled": false, "appId": "", "pageId": "", "label": "Messenger" },
-        "whatsapp": { "enabled": false, "phone": "", "label": "WhatsApp" },
-        "zalo": { "enabled": false, "phone": "", "label": "Zalo" },
-        "telegram": { "enabled": false, "username": "", "label": "Telegram" },
-        "phone": { "enabled": false, "phone": "", "label": "Gọi" },
-        "sms": { "enabled": false, "phone": "", "label": "SMS" }
+        "messenger": { "enabled": false, "appId": "", "pageId": "", "label": "Messenger", "iconSvg": "" },
+        "whatsapp": { "enabled": false, "phone": "", "label": "WhatsApp", "iconSvg": "" },
+        "zalo": { "enabled": false, "phone": "", "label": "Zalo", "iconSvg": "" },
+        "telegram": { "enabled": false, "username": "", "label": "Telegram", "iconSvg": "" },
+        "phone": { "enabled": false, "phone": "", "label": "Gọi", "iconSvg": "" },
+        "sms": { "enabled": false, "phone": "", "label": "SMS", "iconSvg": "" }
       }
     }
   }

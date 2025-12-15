@@ -397,6 +397,19 @@ function channelUrl(type, channels) {
                   }
                 }
               })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextareaControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('SVG Icon', 'jankx'),
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Dán mã SVG để tùy chỉnh icon', 'jankx'),
+              value: channels.messenger?.iconSvg || '',
+              onChange: value => setAttributes({
+                channels: {
+                  ...channels,
+                  messenger: {
+                    ...(channels.messenger || {}),
+                    iconSvg: value
+                  }
+                }
+              })
             })]
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('WhatsApp', 'jankx'),
@@ -432,6 +445,19 @@ function channelUrl(type, channels) {
                   whatsapp: {
                     ...(channels.whatsapp || {}),
                     label: value
+                  }
+                }
+              })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextareaControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('SVG Icon', 'jankx'),
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Dán mã SVG để tùy chỉnh icon', 'jankx'),
+              value: channels.whatsapp?.iconSvg || '',
+              onChange: value => setAttributes({
+                channels: {
+                  ...channels,
+                  whatsapp: {
+                    ...(channels.whatsapp || {}),
+                    iconSvg: value
                   }
                 }
               })
@@ -473,6 +499,19 @@ function channelUrl(type, channels) {
                   }
                 }
               })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextareaControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('SVG Icon', 'jankx'),
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Dán mã SVG để tùy chỉnh icon', 'jankx'),
+              value: channels.zalo?.iconSvg || '',
+              onChange: value => setAttributes({
+                channels: {
+                  ...channels,
+                  zalo: {
+                    ...(channels.zalo || {}),
+                    iconSvg: value
+                  }
+                }
+              })
             })]
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Telegram', 'jankx'),
@@ -508,6 +547,19 @@ function channelUrl(type, channels) {
                   telegram: {
                     ...(channels.telegram || {}),
                     label: value
+                  }
+                }
+              })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextareaControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('SVG Icon', 'jankx'),
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Dán mã SVG để tùy chỉnh icon', 'jankx'),
+              value: channels.telegram?.iconSvg || '',
+              onChange: value => setAttributes({
+                channels: {
+                  ...channels,
+                  telegram: {
+                    ...(channels.telegram || {}),
+                    iconSvg: value
                   }
                 }
               })
@@ -549,6 +601,19 @@ function channelUrl(type, channels) {
                   }
                 }
               })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextareaControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('SVG Icon', 'jankx'),
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Dán mã SVG để tùy chỉnh icon', 'jankx'),
+              value: channels.phone?.iconSvg || '',
+              onChange: value => setAttributes({
+                channels: {
+                  ...channels,
+                  phone: {
+                    ...(channels.phone || {}),
+                    iconSvg: value
+                  }
+                }
+              })
             })]
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('SMS', 'jankx'),
@@ -587,6 +652,19 @@ function channelUrl(type, channels) {
                   }
                 }
               })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextareaControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('SVG Icon', 'jankx'),
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Dán mã SVG để tùy chỉnh icon', 'jankx'),
+              value: channels.sms?.iconSvg || '',
+              onChange: value => setAttributes({
+                channels: {
+                  ...channels,
+                  sms: {
+                    ...(channels.sms || {}),
+                    iconSvg: value
+                  }
+                }
+              })
             })]
           })]
         })]
@@ -611,6 +689,7 @@ function channelUrl(type, channels) {
             children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Chọn kênh liên hệ trong panel bên phải', 'jankx')
           }) : enabledTypes.map((t, idx) => {
             const label = channels[t]?.label || (t === 'phone' ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Gọi', 'jankx') : t.charAt(0).toUpperCase() + t.slice(1));
+            const customSvg = channels[t]?.iconSvg;
             const svgIcon = (() => {
               switch (t) {
                 case 'messenger':
@@ -694,7 +773,13 @@ function channelUrl(type, channels) {
                 target: "_blank",
                 rel: "noopener",
                 "aria-label": label,
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("span", {
+                children: [customSvg ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("span", {
+                  className: "fm-icon",
+                  "aria-hidden": "true",
+                  dangerouslySetInnerHTML: {
+                    __html: customSvg
+                  }
+                }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("span", {
                   className: "fm-icon",
                   "aria-hidden": "true",
                   children: svgIcon

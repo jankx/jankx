@@ -1,7 +1,7 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
-import { PanelBody, SelectControl, ToggleControl, TextControl, RangeControl } from '@wordpress/components';
+import { PanelBody, SelectControl, ToggleControl, TextControl, RangeControl, TextareaControl } from '@wordpress/components';
 import './style.scss';
 import './editor.scss';
 
@@ -12,12 +12,12 @@ type VerticalAlign = 'bottom' | 'center';
 type IdleAnimation = 'none' | 'pulse-ring' | 'wiggle' | 'float';
 
 interface Channels {
-    messenger: { enabled: boolean; appId?: string; pageId?: string; label?: string };
-    whatsapp: { enabled: boolean; phone?: string; label?: string };
-    zalo: { enabled: boolean; phone?: string; label?: string };
-    telegram: { enabled: boolean; username?: string; label?: string };
-    phone: { enabled: boolean; phone?: string; label?: string };
-    sms: { enabled: boolean; phone?: string; label?: string };
+    messenger: { enabled: boolean; appId?: string; pageId?: string; label?: string; iconSvg?: string };
+    whatsapp: { enabled: boolean; phone?: string; label?: string; iconSvg?: string };
+    zalo: { enabled: boolean; phone?: string; label?: string; iconSvg?: string };
+    telegram: { enabled: boolean; username?: string; label?: string; iconSvg?: string };
+    phone: { enabled: boolean; phone?: string; label?: string; iconSvg?: string };
+    sms: { enabled: boolean; phone?: string; label?: string; iconSvg?: string };
 }
 
 interface Attributes {
@@ -198,6 +198,16 @@ registerBlockType('jankx/floating-messengers', {
                                         })
                                     }
                                 />
+                                <TextareaControl
+                                    label={__('SVG Icon', 'jankx')}
+                                    help={__('Dán mã SVG để tùy chỉnh icon', 'jankx')}
+                                    value={channels.messenger?.iconSvg || ''}
+                                    onChange={(value) =>
+                                        setAttributes({
+                                            channels: { ...channels, messenger: { ...(channels.messenger || {}), iconSvg: value } },
+                                        })
+                                    }
+                                />
                             </>
                         )}
 
@@ -223,6 +233,16 @@ registerBlockType('jankx/floating-messengers', {
                                     onChange={(value) =>
                                         setAttributes({
                                             channels: { ...channels, whatsapp: { ...(channels.whatsapp || {}), label: value } },
+                                        })
+                                    }
+                                />
+                                <TextareaControl
+                                    label={__('SVG Icon', 'jankx')}
+                                    help={__('Dán mã SVG để tùy chỉnh icon', 'jankx')}
+                                    value={channels.whatsapp?.iconSvg || ''}
+                                    onChange={(value) =>
+                                        setAttributes({
+                                            channels: { ...channels, whatsapp: { ...(channels.whatsapp || {}), iconSvg: value } },
                                         })
                                     }
                                 />
@@ -254,6 +274,16 @@ registerBlockType('jankx/floating-messengers', {
                                         })
                                     }
                                 />
+                                <TextareaControl
+                                    label={__('SVG Icon', 'jankx')}
+                                    help={__('Dán mã SVG để tùy chỉnh icon', 'jankx')}
+                                    value={channels.zalo?.iconSvg || ''}
+                                    onChange={(value) =>
+                                        setAttributes({
+                                            channels: { ...channels, zalo: { ...(channels.zalo || {}), iconSvg: value } },
+                                        })
+                                    }
+                                />
                             </>
                         )}
 
@@ -279,6 +309,16 @@ registerBlockType('jankx/floating-messengers', {
                                     onChange={(value) =>
                                         setAttributes({
                                             channels: { ...channels, telegram: { ...(channels.telegram || {}), label: value } },
+                                        })
+                                    }
+                                />
+                                <TextareaControl
+                                    label={__('SVG Icon', 'jankx')}
+                                    help={__('Dán mã SVG để tùy chỉnh icon', 'jankx')}
+                                    value={channels.telegram?.iconSvg || ''}
+                                    onChange={(value) =>
+                                        setAttributes({
+                                            channels: { ...channels, telegram: { ...(channels.telegram || {}), iconSvg: value } },
                                         })
                                     }
                                 />
@@ -310,6 +350,16 @@ registerBlockType('jankx/floating-messengers', {
                                         })
                                     }
                                 />
+                                <TextareaControl
+                                    label={__('SVG Icon', 'jankx')}
+                                    help={__('Dán mã SVG để tùy chỉnh icon', 'jankx')}
+                                    value={channels.phone?.iconSvg || ''}
+                                    onChange={(value) =>
+                                        setAttributes({
+                                            channels: { ...channels, phone: { ...(channels.phone || {}), iconSvg: value } },
+                                        })
+                                    }
+                                />
                             </>
                         )}
 
@@ -338,6 +388,16 @@ registerBlockType('jankx/floating-messengers', {
                                         })
                                     }
                                 />
+                                <TextareaControl
+                                    label={__('SVG Icon', 'jankx')}
+                                    help={__('Dán mã SVG để tùy chỉnh icon', 'jankx')}
+                                    value={channels.sms?.iconSvg || ''}
+                                    onChange={(value) =>
+                                        setAttributes({
+                                            channels: { ...channels, sms: { ...(channels.sms || {}), iconSvg: value } },
+                                        })
+                                    }
+                                />
                             </>
                         )}
                     </PanelBody>
@@ -356,6 +416,7 @@ registerBlockType('jankx/floating-messengers', {
                                 const label =
                                     channels[t]?.label ||
                                     (t === 'phone' ? __('Gọi', 'jankx') : t.charAt(0).toUpperCase() + t.slice(1));
+                                const customSvg = channels[t as keyof Channels]?.iconSvg;
                                 const svgIcon = (() => {
                                     switch (t) {
                                         case 'messenger':
@@ -377,7 +438,11 @@ registerBlockType('jankx/floating-messengers', {
                                 return (
                                     <div key={t} className={`fm-node fm-${t}`} style={{ ['--index' as any]: idx + 1 }}>
                                         <a className={`fm-button`} href={channelUrl(t, channels)} target="_blank" rel="noopener" aria-label={label}>
-                                            <span className="fm-icon" aria-hidden="true">{svgIcon}</span>
+                                            {customSvg ? (
+                                                <span className="fm-icon" aria-hidden="true" dangerouslySetInnerHTML={{ __html: customSvg }} />
+                                            ) : (
+                                                <span className="fm-icon" aria-hidden="true">{svgIcon}</span>
+                                            )}
                                             {showLabels && <span className="fm-label">{label}</span>}
                                             {!showLabels && <span className="fm-tooltip">{label}</span>}
                                         </a>
