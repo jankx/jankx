@@ -1785,10 +1785,10 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                     marginBottom: '0.75rem',
                                     fontWeight: '600',
                                 }}>
-                                    {__('Add Dynamic Data Template or Dynamic Data SSR to define item layout', 'jankx')}
+                                    {__('Add Dynamic Data Template to define item layout', 'jankx')}
                                 </div>
                                 <InnerBlocks 
-                                    allowedBlocks={['jankx/dynamic-data-template', 'jankx/dynamic-data-ssr']}
+                                    allowedBlocks={['jankx/dynamic-data-template']}
                                     templateLock={false}
                                     renderAppender={InnerBlocks.ButtonBlockAppender}
                                 />
@@ -1798,7 +1798,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                     
                     return (
                         <InnerBlocks 
-                            allowedBlocks={['jankx/dynamic-data-template', 'jankx/dynamic-data-ssr']}
+                            allowedBlocks={['jankx/dynamic-data-template']}
                             templateLock={false}
                             renderAppender={InnerBlocks.DefaultBlockAppender}
                         />

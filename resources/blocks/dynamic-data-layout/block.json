@@ -56,7 +56,7 @@
     "customQueryId": "customQueryId"
   },
   "usesContext": ["queryId", "postType"],
-  "allowedBlocks": ["jankx/dynamic-data-template", "jankx/dynamic-data-ssr"],
+  "allowedBlocks": ["jankx/dynamic-data-template"],
   "supports": {
     "html": false,
     "align": ["wide", "full"],

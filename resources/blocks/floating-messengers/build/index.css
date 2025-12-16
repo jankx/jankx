@@ -1,4 +1,350 @@
-.wp-block-jankx-floating-messengers,.jankx-floating-messengers{display:flex;flex-direction:column;gap:8px}.jankx-floating-messengers .fm-trigger{width:44px;height:44px;border-radius:50%;border:none;background:#0073aa;color:#fff;font-size:24px;line-height:1;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.2);position:relative;display:inline-flex;align-items:center;justify-content:center;transition:transform .2s ease,filter .2s ease,box-shadow .2s ease}.jankx-floating-messengers .fm-trigger:hover{transform:scale(1.06);filter:brightness(1.1);box-shadow:0 8px 18px rgba(0,0,0,.25);z-index:10001}.jankx-floating-messengers .fm-trigger .fm-trigger-dot{width:10px;height:10px;border-radius:50%;background:#fff}.jankx-floating-messengers.trigger-toggle .fm-list{display:none}.jankx-floating-messengers.trigger-toggle.is-open .fm-list{display:flex}.jankx-floating-messengers.trigger-always .fm-trigger{display:none}.jankx-floating-messengers .fm-list{position:relative;display:flex;flex-direction:column;gap:8px}.jankx-floating-messengers .fm-node{position:relative}.jankx-floating-messengers .fm-button{display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:#2c2c2c;background:#fff;border-radius:999px;padding:8px;box-shadow:0 4px 12px rgba(0,0,0,.1);position:relative;transition:transform .2s ease,filter .2s ease,box-shadow .2s ease}.jankx-floating-messengers .fm-button:hover{transform:scale(1.06);filter:brightness(1.05);box-shadow:0 8px 18px rgba(0,0,0,.18);z-index:10000}.jankx-floating-messengers .fm-icon{width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,0);color:#fff;display:inline-flex;align-items:center;justify-content:center}.jankx-floating-messengers .fm-icon svg{transition:transform .25s ease}.jankx-floating-messengers .fm-button:hover .fm-icon svg{transform:rotate(12deg)}.jankx-floating-messengers .fm-node.fm-messenger .fm-icon{background:#3186f6}.jankx-floating-messengers .fm-node.fm-whatsapp .fm-icon{background:#25d366}.jankx-floating-messengers .fm-node.fm-zalo .fm-icon{background:#0068ff}.jankx-floating-messengers .fm-node.fm-telegram .fm-icon{background:#2aabee}.jankx-floating-messengers .fm-node.fm-phone .fm-icon{background:#34a853}.jankx-floating-messengers .fm-node.fm-sms .fm-icon{background:#777}.jankx-floating-messengers:not(.show-labels) .fm-item .fm-label{display:none}.jankx-floating-messengers .fm-button .fm-tooltip{position:absolute;top:50%;transform:translateY(-50%) translateX(8px);left:100%;background:rgba(0,0,0,.85);color:#fff;font-size:12px;line-height:1;padding:6px 8px;border-radius:6px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s ease,transform .2s ease}.jankx-floating-messengers.position-left .fm-button .fm-tooltip{right:100%;left:auto;transform:translateY(-50%) translateX(-8px)}.jankx-floating-messengers .fm-button .fm-tooltip::after{content:"";position:absolute;top:50%;transform:translateY(-50%);left:-6px;border:6px solid rgba(0,0,0,0);border-right-color:rgba(0,0,0,.85)}.jankx-floating-messengers.position-left .fm-button .fm-tooltip::after{right:-6px;left:auto;border-right-color:rgba(0,0,0,0);border-left-color:rgba(0,0,0,.85)}.jankx-floating-messengers .fm-button:hover .fm-tooltip{opacity:1;transform:translateY(-50%) translateX(12px)}.jankx-floating-messengers.position-left .fm-button:hover .fm-tooltip{transform:translateY(-50%) translateX(-12px)}@keyframes fm-pulse-ring{0%{transform:scale(1);opacity:.6}80%{transform:scale(1.8);opacity:0}100%{transform:scale(1.8);opacity:0}}@keyframes fm-wiggle{0%,100%{transform:rotate(0deg)}25%{transform:rotate(5deg)}50%{transform:rotate(0deg)}75%{transform:rotate(-5deg)}}@keyframes fm-float{0%{transform:translateY(0)}50%{transform:translateY(-6px)}100%{transform:translateY(0)}}.jankx-floating-messengers.idle-pulse-ring .fm-button::before{content:"";position:absolute;left:50%;top:50%;width:36px;height:36px;border-radius:50%;background:currentColor;opacity:.15;transform:translate(-50%, -50%);animation:fm-pulse-ring 1.8s ease-out infinite}.jankx-floating-messengers.idle-wiggle .fm-button{animation:fm-wiggle 2.2s ease-in-out infinite;transform-origin:center}.jankx-floating-messengers.idle-float .fm-button{animation:fm-float 3.2s ease-in-out infinite}.jankx-floating-messengers.expand-vertical .fm-list{display:flex;flex-direction:column}.jankx-floating-messengers.expand-vertical.trigger-toggle .fm-list{margin-top:8px}.jankx-floating-messengers.expand-fan .fm-list,.jankx-floating-messengers.expand-bidirectional .fm-list,.jankx-floating-messengers.expand-split .fm-list{position:relative}.jankx-floating-messengers.expand-fan.is-open .fm-list .fm-node,.jankx-floating-messengers.expand-bidirectional.is-open .fm-list .fm-node,.jankx-floating-messengers.expand-split.is-open .fm-list .fm-node{position:absolute}.jankx-floating-messengers.expand-fan.is-open[data-count="2"] .fm-node:nth-child(1){transform:translateY(calc(var(--fm-distance, 72px) * -1))}.jankx-floating-messengers.expand-fan.is-open[data-count="2"] .fm-node:nth-child(2){transform:translateX(calc(var(--fm-distance, 72px) * (var(--dir, 1))))}.jankx-floating-messengers.expand-fan.is-open[data-count="3"] .fm-node:nth-child(1){transform:translateY(calc(var(--fm-distance, 72px) * -1))}.jankx-floating-messengers.expand-fan.is-open[data-count="3"] .fm-node:nth-child(2){transform:translateX(calc(var(--fm-distance, 72px) * (var(--dir, 1))))}.jankx-floating-messengers.expand-fan.is-open[data-count="3"] .fm-node:nth-child(3){transform:translate(calc(var(--fm-distance, 72px) * (var(--dir, 1))), calc(var(--fm-distance, 72px) * -1))}.jankx-floating-messengers.expand-fan.is-open[data-count="4"] .fm-node:nth-child(1){transform:translateY(calc(var(--fm-distance, 72px) * -1))}.jankx-floating-messengers.expand-fan.is-open[data-count="4"] .fm-node:nth-child(2){transform:translateX(calc(var(--fm-distance, 72px) * (var(--dir, 1))))}.jankx-floating-messengers.expand-fan.is-open[data-count="4"] .fm-node:nth-child(3){transform:translate(calc(var(--fm-distance, 72px) * (var(--dir, 1))), calc(var(--fm-distance, 72px) * -1))}.jankx-floating-messengers.expand-fan.is-open[data-count="4"] .fm-node:nth-child(4){transform:translate(calc(var(--fm-distance, 72px) * var(--dir, 1) * 0.5), calc(var(--fm-distance, 72px) * -1.5))}.jankx-floating-messengers.expand-bidirectional.is-open .fm-list .fm-node{transform:translateY(calc(var(--fm-distance, 72px) * -1))}.jankx-floating-messengers.expand-bidirectional.is-open .fm-list .fm-node:nth-child(odd){transform:translateX(calc(var(--fm-distance, 72px) * (var(--dir, 1)))) translateY(calc(var(--fm-distance, 72px) * -1))}.jankx-floating-messengers.expand-bidirectional.is-open .fm-list .fm-node:nth-child(even){transform:translateX(calc(var(--fm-distance, 72px) * (var(--dir, -1)))) translateY(calc(var(--fm-distance, 72px) * -1))}.jankx-floating-messengers.expand-split.is-open .fm-list .fm-node{transform:translateY(calc(var(--fm-distance, 72px) * -1))}.jankx-floating-messengers.expand-split.is-open .fm-list .fm-node:nth-child(n+3){transform:translateY(calc(var(--fm-distance, 72px) * -2))}.jankx-floating-messengers.position-right{--dir: -1}.jankx-floating-messengers.position-left{--dir: 1}
-.wp-block-jankx-floating-messengers .fm-placeholder{font-size:12px;color:#646970;background:#f6f7f7;border:1px dashed #c3c4c7;padding:8px 12px;border-radius:6px}
+/*!******************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/floating-messengers/style.scss ***!
+  \******************************************************************************************************************************************************************************************************/
+.wp-block-jankx-floating-messengers,
+.jankx-floating-messengers {
+  /* Position is handled inline for better editor/frontend parity */
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Positioning handled via inline styles
+.jankx-floating-messengers.position-right { right: 24px; }
+.jankx-floating-messengers.position-left { left: 24px; }
+.jankx-floating-messengers.v-center { top: 50%; transform: translateY(-50%); }
+*/
+.jankx-floating-messengers .fm-trigger {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: #0073aa;
+  color: #fff;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
+}
+
+.jankx-floating-messengers .fm-trigger:hover {
+  transform: scale(1.06);
+  filter: brightness(1.1);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+  z-index: 10001;
+}
+
+.jankx-floating-messengers .fm-trigger .fm-trigger-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.jankx-floating-messengers.trigger-toggle .fm-list {
+  display: none;
+}
+
+.jankx-floating-messengers.trigger-toggle.is-open .fm-list {
+  display: flex;
+}
+
+.jankx-floating-messengers.trigger-always .fm-trigger {
+  display: none;
+}
+
+.jankx-floating-messengers .fm-list {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.jankx-floating-messengers .fm-node {
+  position: relative;
+}
+
+.jankx-floating-messengers .fm-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #2c2c2c;
+  background: #fff;
+  border-radius: 999px;
+  padding: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  position: relative;
+  transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
+}
+
+.jankx-floating-messengers .fm-button:hover {
+  transform: scale(1.06);
+  filter: brightness(1.05);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+  z-index: 10000;
+}
+
+.jankx-floating-messengers .fm-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: transparent;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.jankx-floating-messengers .fm-icon svg {
+  transition: transform 0.25s ease;
+}
+
+.jankx-floating-messengers .fm-button:hover .fm-icon svg {
+  transform: rotate(12deg);
+}
+
+.jankx-floating-messengers .fm-node.fm-messenger .fm-icon {
+  background: #3186f6;
+}
+
+.jankx-floating-messengers .fm-node.fm-whatsapp .fm-icon {
+  background: #25D366;
+}
+
+.jankx-floating-messengers .fm-node.fm-zalo .fm-icon {
+  background: #0068ff;
+}
+
+.jankx-floating-messengers .fm-node.fm-telegram .fm-icon {
+  background: #2AABEE;
+}
+
+.jankx-floating-messengers .fm-node.fm-phone .fm-icon {
+  background: #34a853;
+}
+
+.jankx-floating-messengers .fm-node.fm-sms .fm-icon {
+  background: #777;
+}
+
+.jankx-floating-messengers:not(.show-labels) .fm-item .fm-label {
+  display: none;
+}
+
+.jankx-floating-messengers .fm-button .fm-tooltip {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%) translateX(8px);
+  left: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  font-size: 12px;
+  line-height: 1;
+  padding: 6px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.jankx-floating-messengers.position-left .fm-button .fm-tooltip {
+  right: 100%;
+  left: auto;
+  transform: translateY(-50%) translateX(-8px);
+}
+
+.jankx-floating-messengers .fm-button .fm-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: -6px;
+  border: 6px solid transparent;
+  border-right-color: rgba(0, 0, 0, 0.85);
+}
+
+.jankx-floating-messengers.position-left .fm-button .fm-tooltip::after {
+  right: -6px;
+  left: auto;
+  border-right-color: transparent;
+  border-left-color: rgba(0, 0, 0, 0.85);
+}
+
+.jankx-floating-messengers .fm-button:hover .fm-tooltip {
+  opacity: 1;
+  transform: translateY(-50%) translateX(12px);
+}
+
+.jankx-floating-messengers.position-left .fm-button:hover .fm-tooltip {
+  transform: translateY(-50%) translateX(-12px);
+}
+
+@keyframes fm-pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  80% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+@keyframes fm-wiggle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(5deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+  75% {
+    transform: rotate(-5deg);
+  }
+}
+@keyframes fm-float {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+.jankx-floating-messengers.idle-pulse-ring .fm-button::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.15;
+  transform: translate(-50%, -50%);
+  animation: fm-pulse-ring 1.8s ease-out infinite;
+}
+
+.jankx-floating-messengers.idle-wiggle .fm-button {
+  animation: fm-wiggle 2.2s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.jankx-floating-messengers.idle-float .fm-button {
+  animation: fm-float 3.2s ease-in-out infinite;
+}
+
+.jankx-floating-messengers.expand-vertical .fm-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.jankx-floating-messengers.expand-vertical.trigger-toggle .fm-list {
+  margin-top: 8px;
+}
+
+.jankx-floating-messengers.expand-fan .fm-list,
+.jankx-floating-messengers.expand-bidirectional .fm-list,
+.jankx-floating-messengers.expand-split .fm-list {
+  position: relative;
+}
+
+.jankx-floating-messengers.expand-fan.is-open .fm-list .fm-node,
+.jankx-floating-messengers.expand-bidirectional.is-open .fm-list .fm-node,
+.jankx-floating-messengers.expand-split.is-open .fm-list .fm-node {
+  position: absolute;
+}
+
+.jankx-floating-messengers.expand-fan.is-open[data-count="2"] .fm-node:nth-child(1) {
+  transform: translateY(calc(var(--fm-distance, 72px) * -1));
+}
+
+.jankx-floating-messengers.expand-fan.is-open[data-count="2"] .fm-node:nth-child(2) {
+  transform: translateX(calc(var(--fm-distance, 72px) * (var(--dir, 1))));
+}
+
+.jankx-floating-messengers.expand-fan.is-open[data-count="3"] .fm-node:nth-child(1) {
+  transform: translateY(calc(var(--fm-distance, 72px) * -1));
+}
+
+.jankx-floating-messengers.expand-fan.is-open[data-count="3"] .fm-node:nth-child(2) {
+  transform: translateX(calc(var(--fm-distance, 72px) * (var(--dir, 1))));
+}
+
+.jankx-floating-messengers.expand-fan.is-open[data-count="3"] .fm-node:nth-child(3) {
+  transform: translate(calc(var(--fm-distance, 72px) * (var(--dir, 1))), calc(var(--fm-distance, 72px) * -1));
+}
+
+.jankx-floating-messengers.expand-fan.is-open[data-count="4"] .fm-node:nth-child(1) {
+  transform: translateY(calc(var(--fm-distance, 72px) * -1));
+}
+
+.jankx-floating-messengers.expand-fan.is-open[data-count="4"] .fm-node:nth-child(2) {
+  transform: translateX(calc(var(--fm-distance, 72px) * (var(--dir, 1))));
+}
+
+.jankx-floating-messengers.expand-fan.is-open[data-count="4"] .fm-node:nth-child(3) {
+  transform: translate(calc(var(--fm-distance, 72px) * (var(--dir, 1))), calc(var(--fm-distance, 72px) * -1));
+}
+
+.jankx-floating-messengers.expand-fan.is-open[data-count="4"] .fm-node:nth-child(4) {
+  transform: translate(calc(var(--fm-distance, 72px) * var(--dir, 1) * 0.5), calc(var(--fm-distance, 72px) * -1.5));
+}
+
+.jankx-floating-messengers.expand-bidirectional.is-open .fm-list .fm-node {
+  transform: translateY(calc(var(--fm-distance, 72px) * -1));
+}
+
+.jankx-floating-messengers.expand-bidirectional.is-open .fm-list .fm-node:nth-child(odd) {
+  transform: translateX(calc(var(--fm-distance, 72px) * (var(--dir, 1)))) translateY(calc(var(--fm-distance, 72px) * -1));
+}
+
+.jankx-floating-messengers.expand-bidirectional.is-open .fm-list .fm-node:nth-child(even) {
+  transform: translateX(calc(var(--fm-distance, 72px) * (var(--dir, -1)))) translateY(calc(var(--fm-distance, 72px) * -1));
+}
+
+.jankx-floating-messengers.expand-split.is-open .fm-list .fm-node {
+  transform: translateY(calc(var(--fm-distance, 72px) * -1));
+}
+
+.jankx-floating-messengers.expand-split.is-open .fm-list .fm-node:nth-child(n+3) {
+  transform: translateY(calc(var(--fm-distance, 72px) * -2));
+}
+
+.jankx-floating-messengers.position-right {
+  --dir: -1;
+}
+
+.jankx-floating-messengers.position-left {
+  --dir: 1;
+}
+/*!*******************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/floating-messengers/editor.scss ***!
+  \*******************************************************************************************************************************************************************************************************/
+/**
+ * Floating Messengers - Editor Styles
+ */
+.wp-block-jankx-floating-messengers .fm-placeholder {
+  font-size: 12px;
+  color: #646970;
+  background: #f6f7f7;
+  border: 1px dashed #c3c4c7;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
 
 /*# sourceMappingURL=index.css.map*/
