@@ -112,7 +112,7 @@ class BootChildTheme
                 $mo->import_from_file($moFile);
                 $l10n[$textDomain] = $mo;
             } else {
-                Log::warning('Child theme MO file not found for manual loading', [
+                Log::debug('Child theme MO file not found for manual loading', [
                     'text_domain' => $textDomain,
                     'locale' => $locale,
                     'mo_file' => $moFile
