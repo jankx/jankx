@@ -101,8 +101,6 @@ export default function Edit({ attributes, setAttributes }: SwiperBannerProps): 
         className={`swiper-banner__image image-size-${imageSize}`}
         style={imageStyles}
       >
-        <div className="swiper-banner__overlay"></div>
-        
         {showCaption && imageCaption && (
           <div className="swiper-banner__caption">
             <div className="swiper-banner__caption-content">

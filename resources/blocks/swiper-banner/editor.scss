@@ -48,15 +48,7 @@
     }
   }
   
-  &__overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: var(--overlay-color, #000000);
-    opacity: var(--overlay-opacity, 0.3);
-  }
+  // overlay removed — swiper uses global gradient overlay instead
   
   &__caption {
     position: relative;
