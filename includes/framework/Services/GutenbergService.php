@@ -15,7 +15,6 @@ use Jankx\Gutenberg\Blocks\GalleryBlock;
 use Jankx\Gutenberg\Blocks\CommentCountBlock;
 use Jankx\Gutenberg\Blocks\PostTypeBadgeBlock;
 use Jankx\Gutenberg\Blocks\DynamicDataLayoutBlock;
-use Jankx\Gutenberg\Blocks\DynamicDataSSRBlock;
 use Jankx\Gutenberg\Blocks\DynamicDataTemplateBlock;
 use Jankx\Gutenberg\Blocks\MagicTextBlock;
 use Jankx\Gutenberg\Blocks\MasterTableBlock;
@@ -141,7 +140,6 @@ class GutenbergService
         $this->repository->registerBlock(PostTypeBadgeBlock::class);
         $this->repository->registerBlock(DynamicDataLayoutBlock::class);
         $this->repository->registerBlock(DynamicDataTemplateBlock::class);
-        $this->repository->registerBlock(DynamicDataSSRBlock::class);
         $this->repository->registerBlock(MagicTextBlock::class);
         $this->repository->registerBlock(MasterTableBlock::class);
         $this->repository->registerBlock(ModalBlock::class);

@@ -174,13 +174,12 @@ module.exports = {
     'blocks/dynamic-data-template/build/index': './blocks/dynamic-data-template/index.tsx',
     'blocks/dynamic-data-template/build/style': './blocks/dynamic-data-template/style.scss',
     'blocks/dynamic-data-template/build/editor': './blocks/dynamic-data-template/editor.scss',
-    'blocks/dynamic-data-ssr/build/index': './blocks/dynamic-data-ssr/index.tsx',
-    'blocks/dynamic-data-ssr/build/style': './blocks/dynamic-data-ssr/style.scss',
-    'blocks/dynamic-data-ssr/build/editor': './blocks/dynamic-data-ssr/editor.scss',
+
     'blocks/floating-messengers/build/index': './blocks/floating-messengers/index.tsx',
     'blocks/floating-messengers/build/style': './blocks/floating-messengers/style.scss',
     'blocks/floating-messengers/build/editor': './blocks/floating-messengers/editor.scss',
     'blocks/floating-messengers/build/frontend': './blocks/floating-messengers/frontend.ts',
+    
     'blocks/sticky-box/build/index': './blocks/sticky-box/index.tsx',
     'blocks/sticky-box/build/style': './blocks/sticky-box/style.scss',
     'blocks/sticky-box/build/editor': './blocks/sticky-box/editor.scss',
