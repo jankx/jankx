@@ -1,0 +1,3 @@
+.wp-block-jankx-dynamic-ssr-template[data-image-ratio] .post-thumbnail,.wp-block-jankx-dynamic-ssr-template[data-image-ratio] .wp-block-post-featured-image,.wp-block-jankx-dynamic-ssr-template[data-image-ratio] img{aspect-ratio:var(--image-ratio, auto);object-fit:cover}
+
+/*# sourceMappingURL=style.css.map*/

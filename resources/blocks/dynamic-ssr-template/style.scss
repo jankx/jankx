@@ -1,0 +1,14 @@
+/**
+ * Dynamic SSR Template Block Styles
+ */
+.wp-block-jankx-dynamic-ssr-template {
+    &[data-image-ratio] {
+        .post-thumbnail,
+        .wp-block-post-featured-image,
+        img {
+            aspect-ratio: var(--image-ratio, auto);
+            object-fit: cover;
+        }
+    }
+}
+
