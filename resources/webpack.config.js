@@ -174,16 +174,20 @@ module.exports = {
     'blocks/dynamic-data-template/build/index': './blocks/dynamic-data-template/index.tsx',
     'blocks/dynamic-data-template/build/style': './blocks/dynamic-data-template/style.scss',
     'blocks/dynamic-data-template/build/editor': './blocks/dynamic-data-template/editor.scss',
+
     'blocks/dynamic-ssr-layout/build/index': './blocks/dynamic-ssr-layout/index.tsx',
     'blocks/dynamic-ssr-layout/build/style': './blocks/dynamic-ssr-layout/style.scss',
     'blocks/dynamic-ssr-layout/build/editor': './blocks/dynamic-ssr-layout/editor.scss',
+
     'blocks/dynamic-ssr-template/build/index': './blocks/dynamic-ssr-template/index.tsx',
     'blocks/dynamic-ssr-template/build/style': './blocks/dynamic-ssr-template/style.scss',
     'blocks/dynamic-ssr-template/build/editor': './blocks/dynamic-ssr-template/editor.scss',
+
     'blocks/floating-messengers/build/index': './blocks/floating-messengers/index.tsx',
     'blocks/floating-messengers/build/style': './blocks/floating-messengers/style.scss',
     'blocks/floating-messengers/build/editor': './blocks/floating-messengers/editor.scss',
     'blocks/floating-messengers/build/frontend': './blocks/floating-messengers/frontend.ts',
+    
     'blocks/sticky-box/build/index': './blocks/sticky-box/index.tsx',
     'blocks/sticky-box/build/style': './blocks/sticky-box/style.scss',
     'blocks/sticky-box/build/editor': './blocks/sticky-box/editor.scss',

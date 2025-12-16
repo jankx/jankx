@@ -1,2 +1,104 @@
-!function(){"use strict";function t(){const t=document.querySelectorAll(".jankx-button-modal-trigger");console.log("[AdvancedButton] initAdvancedButtons: found",t.length,"buttons"),t.forEach(t=>{"true"!==t.getAttribute("data-jankx-click-attached")?(t.addEventListener("click",function(t){t.preventDefault();const o=t.currentTarget,e=o.getAttribute("data-modal-id"),n=o.getAttribute("data-micromodal-trigger"),a=e||n;console.log("[AdvancedButton] click trigger",{modalId:a,modalIdAttr:e,micromodalAttr:n,trigger:o,hasJankxModal:!!window.JankxModal,hasMicroModal:!!window.MicroModal});const d={};if(Array.from(o.attributes).forEach(t=>{if(t.name.startsWith("data-form-")){const o=t.name.replace("data-form-","");d[o]=t.value}}),Object.keys(d).length>0&&(console.log("[AdvancedButton] dispatching formello:update",d),document.dispatchEvent(new CustomEvent("formello:update",{detail:{data:d,triggerId:o.id}}))),a&&""!==a.trim())if(window.JankxModal)console.log("[AdvancedButton] using JankxModal.show",a),window.JankxModal.show(a,o);else if(window.MicroModal)console.log("[AdvancedButton] using MicroModal.show",a),window.MicroModal.show(a);else{const t=document.getElementById(a);t?(console.log("[AdvancedButton] manual open modal element",t),t.classList.add("is-open"),t.setAttribute("aria-hidden","false")):console.warn(`[Jankx Advanced Button] Modal with ID "${a}" not found or JankxModal library not loaded.`)}else console.warn("[AdvancedButton] missing data-modal-id on trigger",o)}),t.setAttribute("data-jankx-click-attached","true"),console.log("[AdvancedButton] attached click listener to",t)):console.log("[AdvancedButton] listener already attached to",t)})}"loading"===document.readyState?(console.log("[AdvancedButton] waiting for DOMContentLoaded"),document.addEventListener("DOMContentLoaded",t)):(console.log("[AdvancedButton] DOM ready, initializing immediately"),t())}();
+/******/ (() => { // webpackBootstrap
+/*!********************************************!*\
+  !*** ./blocks/advanced-button/frontend.ts ***!
+  \********************************************/
+/**
+ * Advanced Button Frontend Script
+ */
+
+// Define global interfaces
+
+(function () {
+  'use strict';
+
+  function initAdvancedButtons() {
+    const buttons = document.querySelectorAll('.jankx-button-modal-trigger');
+    console.log('[AdvancedButton] initAdvancedButtons: found', buttons.length, 'buttons');
+    buttons.forEach(button => {
+      // Check if event listener is already attached (to avoid duplicates if called multiple times)
+      if (button.getAttribute('data-jankx-click-attached') === 'true') {
+        console.log('[AdvancedButton] listener already attached to', button);
+        return;
+      }
+      button.addEventListener('click', function (e) {
+        e.preventDefault();
+        const trigger = e.currentTarget;
+        // Try the new `data-modal-id` attribute first, then fallback to Micromodal style
+        const modalIdAttr = trigger.getAttribute('data-modal-id');
+        const micromodalAttr = trigger.getAttribute('data-micromodal-trigger');
+        const modalId = modalIdAttr || micromodalAttr;
+        console.log('[AdvancedButton] click trigger', {
+          modalId,
+          modalIdAttr,
+          micromodalAttr,
+          trigger,
+          hasJankxModal: !!window.JankxModal,
+          hasMicroModal: !!window.MicroModal
+        });
+
+        // Extract dynamic form data and dispatch event
+        const formData = {};
+        Array.from(trigger.attributes).forEach(attr => {
+          if (attr.name.startsWith('data-form-')) {
+            const key = attr.name.replace('data-form-', '');
+            formData[key] = attr.value;
+          }
+        });
+        if (Object.keys(formData).length > 0) {
+          console.log('[AdvancedButton] dispatching formello:update', formData);
+          document.dispatchEvent(new CustomEvent('formello:update', {
+            detail: {
+              data: formData,
+              triggerId: trigger.id
+            }
+          }));
+        }
+        if (!modalId || modalId.trim() === '') {
+          console.warn('[AdvancedButton] missing data-modal-id on trigger', trigger);
+          return;
+        }
+
+        // Try JankxModal first (wrapper around MicroModal with extras)
+        if (window.JankxModal) {
+          console.log('[AdvancedButton] using JankxModal.show', modalId);
+          window.JankxModal.show(modalId, trigger);
+        }
+        // Fallback to raw MicroModal
+        else if (window.MicroModal) {
+          console.log('[AdvancedButton] using MicroModal.show', modalId);
+          window.MicroModal.show(modalId);
+        }
+        // Fallback: Check if modal exists and show it manually (simple toggle)
+        else {
+          const modal = document.getElementById(modalId);
+          if (modal) {
+            console.log('[AdvancedButton] manual open modal element', modal);
+            modal.classList.add('is-open');
+            modal.setAttribute('aria-hidden', 'false');
+          } else {
+            console.warn(`[Jankx Advanced Button] Modal with ID "${modalId}" not found or JankxModal library not loaded.`);
+          }
+        }
+      });
+
+      // Mark as attached
+      button.setAttribute('data-jankx-click-attached', 'true');
+      console.log('[AdvancedButton] attached click listener to', button);
+    });
+  }
+
+  // Initialize on DOMContentLoaded
+  if (document.readyState === 'loading') {
+    console.log('[AdvancedButton] waiting for DOMContentLoaded');
+    document.addEventListener('DOMContentLoaded', initAdvancedButtons);
+  } else {
+    console.log('[AdvancedButton] DOM ready, initializing immediately');
+    initAdvancedButtons();
+  }
+
+  // Optional: Re-init on dynamic content loading (if any custom event exists)
+  // document.addEventListener('jankx:content-loaded', initAdvancedButtons);
+})();
+/******/ })()
+;
 //# sourceMappingURL=frontend.js.map

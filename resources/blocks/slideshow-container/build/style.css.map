@@ -1,1 +1,1 @@
-{"version":3,"file":"blocks/slideshow-container/build/style.css","mappings":"AAAA,2BACE,cACA,W","sources":["webpack://jankx/./blocks/slideshow-container/style.scss"],"sourcesContent":[".slideshow-container-block {\n  display: block;\n  width: 100%;\n}\n\n"],"names":[],"sourceRoot":""}
+{"version":3,"file":"blocks/slideshow-container/build/style.css","mappings":";;;AAAA;EACE;EACA;AACF,C","sources":["webpack://jankx/./blocks/slideshow-container/style.scss"],"sourcesContent":[".slideshow-container-block {\n  display: block;\n  width: 100%;\n}\n\n"],"names":[],"sourceRoot":""}
