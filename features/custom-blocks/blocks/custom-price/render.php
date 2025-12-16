@@ -31,7 +31,8 @@ if ($price_number > 0) {
 }
 
 ?>
-<div class="jankx-custom-price">
+<?php $wrapper_attrs = get_block_wrapper_attributes([ 'class' => 'jankx-custom-price' ]); ?>
+<div <?php echo $wrapper_attrs; ?>>
     <span class="price-amount">
         <?php echo esc_html($formatted_price !== '' ? $formatted_price : $empty_text); ?>
     </span>
