@@ -1749,6 +1749,16 @@
   height: 100%;
   position: relative;
 }
+.wp-block-jankx-swiper.is-style-banner .swiper {
+  height: auto;
+  min-height: var(--swiper-min-height, 500px);
+}
+.wp-block-jankx-swiper.has-gradient-overlay .swiper-slide:hover {
+  opacity: 1;
+}
+.wp-block-jankx-swiper.has-gradient-overlay .swiper-slide {
+  overflow: hidden;
+}
 .wp-block-jankx-swiper.has-gradient-overlay .swiper-slide::after {
   content: "";
   position: absolute;

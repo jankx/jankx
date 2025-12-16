@@ -37,8 +37,24 @@
     position: relative;
   }
 
+  // Banner variation should size by content instead of fixed height
+  &.is-style-banner {
+    .swiper {
+      height: auto;
+      min-height: var(--swiper-min-height, 500px);
+    }
+  }
+
   // Gradient Overlay Styles
   &.has-gradient-overlay {
+    // Prevent hover darkening conflicts with overlay
+    .swiper-slide:hover {
+      opacity: 1;
+    }
+    // Confine overlay within slide box to avoid visual glitches
+    .swiper-slide {
+      overflow: hidden;
+    }
     .swiper-slide {
       &::after {
         content: '';
