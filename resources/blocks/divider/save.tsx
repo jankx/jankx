@@ -1,13 +1,14 @@
-import { useBlockProps, InnerBlocks } from '@wordpress/block-editor';
+import { useBlockProps } from '@wordpress/block-editor';
+import { createElement } from '@wordpress/element';
 
-export default function Save(): JSX.Element {
+type Attributes = {
+  tagName?: 'hr' | 'div';
+};
+
+export default function Save({ attributes = {} as Attributes }): JSX.Element {
+  const { tagName = 'hr' } = attributes;
   const blockProps = useBlockProps.save({
     className: 'jankx-divider',
   });
-
-  return (
-    <div {...blockProps}>
-      <InnerBlocks.Content />
-    </div>
-  );
+  return createElement(tagName, blockProps as any);
 }

@@ -4,66 +4,24 @@
   "name": "jankx/divider",
   "title": "Divider",
   "category": "jankx",
-  "description": "Container giống core/group với các style variants: dashed, dotted, line",
+  "description": "Divider giống core/separator với các style variants: dashed, dotted, line",
   "textdomain": "jankx",
   "supports": {
     "html": false,
     "anchor": true,
-    "align": ["wide", "full"],
+    "align": ["center", "wide", "full"],
     "spacing": {
-      "margin": true,
-      "padding": true,
-      "blockGap": true
+      "margin": ["top", "bottom"]
     },
     "color": {
-      "background": true,
-      "text": true,
-      "link": true,
-      "gradients": true
-    },
-    "border": {
-      "color": true,
-      "radius": true,
-      "style": true,
-      "width": true,
-      "__experimentalDefaultControls": {
-        "color": true,
-        "radius": true,
-        "style": true,
-        "width": true
-      }
-    },
-    "background": {
-      "backgroundImage": true,
-      "backgroundPosition": true,
-      "backgroundRepeat": true,
-      "backgroundSize": true
-    },
-    "dimensions": {
-      "minHeight": true
-    },
-    "typography": {
-      "fontSize": true,
-      "lineHeight": true,
-      "fontFamily": true,
-      "fontWeight": true,
-      "fontStyle": true,
-      "textTransform": true,
-      "textDecoration": true,
-      "letterSpacing": true
-    },
-    "__experimentalLayout": {
-      "allowSwitching": true,
-      "allowInheriting": true,
-      "default": {
-        "type": "constrained"
-      }
+      "text": true
     }
   },
   "attributes": {
     "tagName": {
       "type": "string",
-      "default": "div"
+      "enum": ["hr", "div"],
+      "default": "hr"
     },
     "className": {
       "type": "string"
