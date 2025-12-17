@@ -45,7 +45,8 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
     gradientColor,
     gradientOpacity,
     gradientHeight,
-    className
+    className,
+    fitViewportMinusHeader = false
   } = attributes;
 
   // Get block's style variation
@@ -81,7 +82,7 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
 
     const blockProps = useBlockProps({
     ref: containerRef,
-    className: `swiper-block swiper-effect-${effect} banner-style-${bannerStyle} ${gradientOverlay ? 'has-gradient-overlay' : ''} ${className || ''}`.trim(),                                                                              
+    className: `swiper-block swiper-effect-${effect} banner-style-${bannerStyle} ${gradientOverlay ? 'has-gradient-overlay' : ''} ${className || ''} ${fitViewportMinusHeader ? 'fit-vh-minus-header' : ''}`.trim(),
     style: {
       '--swiper-height': `${height}px`,
       '--swiper-min-height': `${minHeight}px`,
@@ -412,7 +413,7 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
           )}
         </TabPanel>
 
-                <PanelBody title={__('Slider Settings', 'jankx')} initialOpen={true}>
+        <PanelBody title={__('Slider Settings', 'jankx')} initialOpen={true}>
           {(styleVariation === 'carousel' || styleVariation === 'testimonial') ? (
             <>
               <RangeControl
@@ -492,6 +493,13 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
             max={600}
             step={50}
             help={__('Minimum height on mobile devices', 'jankx')}
+          />
+          
+          <ToggleControl
+            label={__('Chiều cao = 100vh trừ header', 'jankx')}
+            checked={fitViewportMinusHeader}
+            onChange={(val: boolean) => setAttributes({ fitViewportMinusHeader: val })}
+            help={__('Khi bật, Swiper sẽ lấp đầy phần còn lại của viewport sau header.', 'jankx')}
           />
 
           <SelectControl

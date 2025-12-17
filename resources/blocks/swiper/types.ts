@@ -12,6 +12,7 @@ export interface SwiperAttributes {
   effect: 'slide' | 'fade' | 'cube' | 'coverflow' | 'flip' | 'cards';
   height: number;
   minHeight: number;
+  fitViewportMinusHeader?: boolean;
   contentMode: 'slides' | 'gallery';
   galleryImages: Array<{
     id: number;

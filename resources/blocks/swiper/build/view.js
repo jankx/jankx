@@ -10532,6 +10532,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadSwiper = async () => {
       await new Promise(resolve => setTimeout(resolve, 100));
 
+      // Fit viewport minus header: compute height dynamically if enabled via class
+      const applyViewportMinusHeader = () => {
+        if (!block.classList.contains('fit-vh-minus-header')) {
+          return;
+        }
+        const headerEl = document.querySelector('header');
+        const headerHeight = headerEl ? headerEl.offsetHeight : 0;
+        const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+        const computed = Math.max(0, viewportHeight - headerHeight);
+        // Apply to CSS var used by styles
+        block.style.setProperty('--swiper-height', `${computed}px`);
+        // Also set dataset for circle/square banners width sync
+        container.dataset.swiperHeight = `${computed}`;
+      };
+
+      // Apply at start and on resize
+      applyViewportMinusHeader();
+      window.addEventListener('resize', applyViewportMinusHeader, {
+        passive: true
+      });
+
       // Get settings from data attributes
       const slidesPerView = parseInt(container.dataset.slidesPerView) || 1;
       const slidesPerViewTablet = parseInt(container.dataset.slidesPerViewTablet) || slidesPerView;

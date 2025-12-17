@@ -8,7 +8,7 @@
   \**********************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/swiper","title":"Swiper","category":"jankx","description":"Modern touch slider with hardware accelerated transitions","keywords":["slider","swiper","carousel","gallery","slideshow"],"textdomain":"jankx","attributes":{"slidesPerView":{"type":"number","default":1},"slidesPerViewTablet":{"type":"number","default":1},"slidesPerViewMobile":{"type":"number","default":1},"spaceBetween":{"type":"number","default":30},"loop":{"type":"boolean","default":true},"autoplay":{"type":"boolean","default":false},"autoplayDelay":{"type":"number","default":3000},"speed":{"type":"number","default":300},"navigation":{"type":"boolean","default":true},"pagination":{"type":"boolean","default":true},"effect":{"type":"string","enum":["slide","fade","cube","coverflow","flip","cards"],"default":"slide"},"height":{"type":"number","default":50},"minHeight":{"type":"number","default":50},"contentMode":{"type":"string","enum":["slides","gallery"],"default":"slides"},"galleryImages":{"type":"array","default":[]},"bannerStyle":{"type":"string","enum":["default","circles","square","banner"],"default":"default"},"bannerTextColor":{"type":"string","default":"#ffffff"},"bannerBackgroundColor":{"type":"string","default":"rgba(0,0,0,0.5)"},"bannerPadding":{"type":"number","default":20},"bannerBorderRadius":{"type":"number","default":0},"gradientOverlay":{"type":"boolean","default":false},"gradientColor":{"type":"string","default":"#000000"},"gradientOpacity":{"type":"number","default":0.7},"gradientHeight":{"type":"number","default":60},"className":{"type":"string"},"anchor":{"type":"string"}},"supports":{"html":false,"anchor":true,"align":["wide","full"],"spacing":{"margin":true,"padding":true},"color":{"background":true,"text":true},"border":{"color":true,"radius":true,"style":true,"width":true,"__experimentalDefaultControls":{"radius":true}}},"providesContext":{"jankx/swiperId":"anchor"},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","viewScript":"file:./build/view.js","style":"file:./build/style.css","styles":[{"name":"default","label":"Default","isDefault":true},{"name":"banner","label":"Banner"},{"name":"carousel","label":"Carousel"},{"name":"testimonial","label":"Testimonial"}]}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/swiper","title":"Swiper","category":"jankx","description":"Modern touch slider with hardware accelerated transitions","keywords":["slider","swiper","carousel","gallery","slideshow"],"textdomain":"jankx","attributes":{"slidesPerView":{"type":"number","default":1},"slidesPerViewTablet":{"type":"number","default":1},"slidesPerViewMobile":{"type":"number","default":1},"spaceBetween":{"type":"number","default":30},"loop":{"type":"boolean","default":true},"autoplay":{"type":"boolean","default":false},"autoplayDelay":{"type":"number","default":3000},"speed":{"type":"number","default":300},"navigation":{"type":"boolean","default":true},"pagination":{"type":"boolean","default":true},"effect":{"type":"string","enum":["slide","fade","cube","coverflow","flip","cards"],"default":"slide"},"height":{"type":"number","default":50},"minHeight":{"type":"number","default":50},"fitViewportMinusHeader":{"type":"boolean","default":false},"contentMode":{"type":"string","enum":["slides","gallery"],"default":"slides"},"galleryImages":{"type":"array","default":[]},"bannerStyle":{"type":"string","enum":["default","circles","square","banner"],"default":"default"},"bannerTextColor":{"type":"string","default":"#ffffff"},"bannerBackgroundColor":{"type":"string","default":"rgba(0,0,0,0.5)"},"bannerPadding":{"type":"number","default":20},"bannerBorderRadius":{"type":"number","default":0},"gradientOverlay":{"type":"boolean","default":false},"gradientColor":{"type":"string","default":"#000000"},"gradientOpacity":{"type":"number","default":0.7},"gradientHeight":{"type":"number","default":60},"className":{"type":"string"},"anchor":{"type":"string"}},"supports":{"html":false,"anchor":true,"align":["wide","full"],"spacing":{"margin":true,"padding":true},"color":{"background":true,"text":true},"border":{"color":true,"radius":true,"style":true,"width":true,"__experimentalDefaultControls":{"radius":true}}},"providesContext":{"jankx/swiperId":"anchor"},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","viewScript":"file:./build/view.js","style":"file:./build/style.css","styles":[{"name":"default","label":"Default","isDefault":true},{"name":"banner","label":"Banner"},{"name":"carousel","label":"Carousel"},{"name":"testimonial","label":"Testimonial"}]}');
 
 /***/ }),
 
@@ -95,7 +95,8 @@ function Edit({
     gradientColor,
     gradientOpacity,
     gradientHeight,
-    className
+    className,
+    fitViewportMinusHeader = false
   } = attributes;
 
   // Get block's style variation
@@ -128,7 +129,7 @@ function Edit({
   const gradientRgb = hexToRgb(gradientColor);
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)({
     ref: containerRef,
-    className: `swiper-block swiper-effect-${effect} banner-style-${bannerStyle} ${gradientOverlay ? 'has-gradient-overlay' : ''} ${className || ''}`.trim(),
+    className: `swiper-block swiper-effect-${effect} banner-style-${bannerStyle} ${gradientOverlay ? 'has-gradient-overlay' : ''} ${className || ''} ${fitViewportMinusHeader ? 'fit-vh-minus-header' : ''}`.trim(),
     style: {
       '--swiper-height': `${height}px`,
       '--swiper-min-height': `${minHeight}px`,
@@ -528,6 +529,13 @@ function Edit({
             max: 600,
             step: 50,
             help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Minimum height on mobile devices', 'jankx')
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Chiều cao = 100vh trừ header', 'jankx'),
+            checked: fitViewportMinusHeader,
+            onChange: val => setAttributes({
+              fitViewportMinusHeader: val
+            }),
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Khi bật, Swiper sẽ lấp đầy phần còn lại của viewport sau header.', 'jankx')
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Effect', 'jankx'),
             value: effect,

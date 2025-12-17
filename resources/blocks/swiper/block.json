@@ -61,6 +61,10 @@
       "type": "number", 
       "default": 50
     },
+    "fitViewportMinusHeader": {
+      "type": "boolean",
+      "default": false
+    },
     "contentMode": {
       "type": "string",
       "enum": ["slides", "gallery"],
