@@ -89,7 +89,7 @@ import {
 	formatLowercase,
 	formatOutdent,
 	formatOutdentRTL,
-	formatRtl,
+	formatRTL,
 	formatStrikethrough,
 	formatUnderline,
 	formatUppercase,
@@ -1079,7 +1079,7 @@ const wordpressIcons = [
 	{
 		name: 'formatRtl',
 		title: __( 'Format RTL', 'icon-block' ),
-		icon: formatRtl,
+		icon: formatRTL,
 		categories: [ 'editor' ],
 	},
 	{
