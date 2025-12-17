@@ -16,10 +16,14 @@
 		box-sizing: border-box;
 		overflow: hidden;
 		width: 100%;
+		break-inside: avoid;
+		-webkit-column-break-inside: avoid;
+		page-break-inside: avoid;
 		img {
 			transition: all 0.23s ease-in-out;
 			backface-visibility: hidden;
 			width: 100%;
+			display: block;
 		}
 		&.zoom__in {
 			&:hover img {
@@ -118,7 +122,7 @@
 		}
 		@for $i from 0 through 101 {
 			&.pg__#{$i} {
-				gap: #{$i}px;
+				column-gap: #{$i}px;
 			}
 		}
 		.single-gallery-image {
@@ -141,7 +145,7 @@
 		}
 		@for $i from 0 through 101 {
 			&.tg__#{$i} {
-				gap: #{$i}px;
+				column-gap: #{$i}px;
 			}
 		}
 		.single-gallery-image {
@@ -164,7 +168,7 @@
 		}
 		@for $i from 0 through 101 {
 			&.dg__#{$i} {
-				gap: #{$i}px;
+				column-gap: #{$i}px;
 			}
 		}
 		.single-gallery-image {

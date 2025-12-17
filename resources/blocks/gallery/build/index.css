@@ -20,11 +20,15 @@
   box-sizing: border-box;
   overflow: hidden;
   width: 100%;
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  page-break-inside: avoid;
 }
 .wp-block-jankx-image-masonry-gallery .single-gallery-image img {
   transition: all 0.23s ease-in-out;
   backface-visibility: hidden;
   width: 100%;
+  display: block;
 }
 .wp-block-jankx-image-masonry-gallery .single-gallery-image.zoom__in:hover img {
   transform: scale(1.05);
@@ -121,310 +125,310 @@
     column-count: 6;
   }
   .wp-block-jankx-image-masonry-gallery.pg__0 {
-    gap: 0px;
+    column-gap: 0px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__1 {
-    gap: 1px;
+    column-gap: 1px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__2 {
-    gap: 2px;
+    column-gap: 2px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__3 {
-    gap: 3px;
+    column-gap: 3px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__4 {
-    gap: 4px;
+    column-gap: 4px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__5 {
-    gap: 5px;
+    column-gap: 5px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__6 {
-    gap: 6px;
+    column-gap: 6px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__7 {
-    gap: 7px;
+    column-gap: 7px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__8 {
-    gap: 8px;
+    column-gap: 8px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__9 {
-    gap: 9px;
+    column-gap: 9px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__10 {
-    gap: 10px;
+    column-gap: 10px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__11 {
-    gap: 11px;
+    column-gap: 11px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__12 {
-    gap: 12px;
+    column-gap: 12px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__13 {
-    gap: 13px;
+    column-gap: 13px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__14 {
-    gap: 14px;
+    column-gap: 14px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__15 {
-    gap: 15px;
+    column-gap: 15px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__16 {
-    gap: 16px;
+    column-gap: 16px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__17 {
-    gap: 17px;
+    column-gap: 17px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__18 {
-    gap: 18px;
+    column-gap: 18px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__19 {
-    gap: 19px;
+    column-gap: 19px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__20 {
-    gap: 20px;
+    column-gap: 20px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__21 {
-    gap: 21px;
+    column-gap: 21px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__22 {
-    gap: 22px;
+    column-gap: 22px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__23 {
-    gap: 23px;
+    column-gap: 23px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__24 {
-    gap: 24px;
+    column-gap: 24px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__25 {
-    gap: 25px;
+    column-gap: 25px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__26 {
-    gap: 26px;
+    column-gap: 26px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__27 {
-    gap: 27px;
+    column-gap: 27px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__28 {
-    gap: 28px;
+    column-gap: 28px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__29 {
-    gap: 29px;
+    column-gap: 29px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__30 {
-    gap: 30px;
+    column-gap: 30px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__31 {
-    gap: 31px;
+    column-gap: 31px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__32 {
-    gap: 32px;
+    column-gap: 32px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__33 {
-    gap: 33px;
+    column-gap: 33px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__34 {
-    gap: 34px;
+    column-gap: 34px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__35 {
-    gap: 35px;
+    column-gap: 35px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__36 {
-    gap: 36px;
+    column-gap: 36px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__37 {
-    gap: 37px;
+    column-gap: 37px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__38 {
-    gap: 38px;
+    column-gap: 38px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__39 {
-    gap: 39px;
+    column-gap: 39px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__40 {
-    gap: 40px;
+    column-gap: 40px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__41 {
-    gap: 41px;
+    column-gap: 41px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__42 {
-    gap: 42px;
+    column-gap: 42px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__43 {
-    gap: 43px;
+    column-gap: 43px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__44 {
-    gap: 44px;
+    column-gap: 44px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__45 {
-    gap: 45px;
+    column-gap: 45px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__46 {
-    gap: 46px;
+    column-gap: 46px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__47 {
-    gap: 47px;
+    column-gap: 47px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__48 {
-    gap: 48px;
+    column-gap: 48px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__49 {
-    gap: 49px;
+    column-gap: 49px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__50 {
-    gap: 50px;
+    column-gap: 50px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__51 {
-    gap: 51px;
+    column-gap: 51px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__52 {
-    gap: 52px;
+    column-gap: 52px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__53 {
-    gap: 53px;
+    column-gap: 53px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__54 {
-    gap: 54px;
+    column-gap: 54px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__55 {
-    gap: 55px;
+    column-gap: 55px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__56 {
-    gap: 56px;
+    column-gap: 56px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__57 {
-    gap: 57px;
+    column-gap: 57px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__58 {
-    gap: 58px;
+    column-gap: 58px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__59 {
-    gap: 59px;
+    column-gap: 59px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__60 {
-    gap: 60px;
+    column-gap: 60px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__61 {
-    gap: 61px;
+    column-gap: 61px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__62 {
-    gap: 62px;
+    column-gap: 62px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__63 {
-    gap: 63px;
+    column-gap: 63px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__64 {
-    gap: 64px;
+    column-gap: 64px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__65 {
-    gap: 65px;
+    column-gap: 65px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__66 {
-    gap: 66px;
+    column-gap: 66px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__67 {
-    gap: 67px;
+    column-gap: 67px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__68 {
-    gap: 68px;
+    column-gap: 68px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__69 {
-    gap: 69px;
+    column-gap: 69px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__70 {
-    gap: 70px;
+    column-gap: 70px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__71 {
-    gap: 71px;
+    column-gap: 71px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__72 {
-    gap: 72px;
+    column-gap: 72px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__73 {
-    gap: 73px;
+    column-gap: 73px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__74 {
-    gap: 74px;
+    column-gap: 74px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__75 {
-    gap: 75px;
+    column-gap: 75px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__76 {
-    gap: 76px;
+    column-gap: 76px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__77 {
-    gap: 77px;
+    column-gap: 77px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__78 {
-    gap: 78px;
+    column-gap: 78px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__79 {
-    gap: 79px;
+    column-gap: 79px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__80 {
-    gap: 80px;
+    column-gap: 80px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__81 {
-    gap: 81px;
+    column-gap: 81px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__82 {
-    gap: 82px;
+    column-gap: 82px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__83 {
-    gap: 83px;
+    column-gap: 83px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__84 {
-    gap: 84px;
+    column-gap: 84px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__85 {
-    gap: 85px;
+    column-gap: 85px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__86 {
-    gap: 86px;
+    column-gap: 86px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__87 {
-    gap: 87px;
+    column-gap: 87px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__88 {
-    gap: 88px;
+    column-gap: 88px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__89 {
-    gap: 89px;
+    column-gap: 89px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__90 {
-    gap: 90px;
+    column-gap: 90px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__91 {
-    gap: 91px;
+    column-gap: 91px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__92 {
-    gap: 92px;
+    column-gap: 92px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__93 {
-    gap: 93px;
+    column-gap: 93px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__94 {
-    gap: 94px;
+    column-gap: 94px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__95 {
-    gap: 95px;
+    column-gap: 95px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__96 {
-    gap: 96px;
+    column-gap: 96px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__97 {
-    gap: 97px;
+    column-gap: 97px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__98 {
-    gap: 98px;
+    column-gap: 98px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__99 {
-    gap: 99px;
+    column-gap: 99px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__100 {
-    gap: 100px;
+    column-gap: 100px;
   }
   .wp-block-jankx-image-masonry-gallery.pg__101 {
-    gap: 101px;
+    column-gap: 101px;
   }
   .wp-block-jankx-image-masonry-gallery .single-gallery-image.pg__0 {
     margin-bottom: 0px;
@@ -754,310 +758,310 @@
     column-count: 6;
   }
   .wp-block-jankx-image-masonry-gallery.tg__0 {
-    gap: 0px;
+    column-gap: 0px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__1 {
-    gap: 1px;
+    column-gap: 1px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__2 {
-    gap: 2px;
+    column-gap: 2px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__3 {
-    gap: 3px;
+    column-gap: 3px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__4 {
-    gap: 4px;
+    column-gap: 4px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__5 {
-    gap: 5px;
+    column-gap: 5px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__6 {
-    gap: 6px;
+    column-gap: 6px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__7 {
-    gap: 7px;
+    column-gap: 7px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__8 {
-    gap: 8px;
+    column-gap: 8px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__9 {
-    gap: 9px;
+    column-gap: 9px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__10 {
-    gap: 10px;
+    column-gap: 10px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__11 {
-    gap: 11px;
+    column-gap: 11px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__12 {
-    gap: 12px;
+    column-gap: 12px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__13 {
-    gap: 13px;
+    column-gap: 13px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__14 {
-    gap: 14px;
+    column-gap: 14px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__15 {
-    gap: 15px;
+    column-gap: 15px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__16 {
-    gap: 16px;
+    column-gap: 16px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__17 {
-    gap: 17px;
+    column-gap: 17px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__18 {
-    gap: 18px;
+    column-gap: 18px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__19 {
-    gap: 19px;
+    column-gap: 19px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__20 {
-    gap: 20px;
+    column-gap: 20px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__21 {
-    gap: 21px;
+    column-gap: 21px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__22 {
-    gap: 22px;
+    column-gap: 22px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__23 {
-    gap: 23px;
+    column-gap: 23px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__24 {
-    gap: 24px;
+    column-gap: 24px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__25 {
-    gap: 25px;
+    column-gap: 25px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__26 {
-    gap: 26px;
+    column-gap: 26px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__27 {
-    gap: 27px;
+    column-gap: 27px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__28 {
-    gap: 28px;
+    column-gap: 28px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__29 {
-    gap: 29px;
+    column-gap: 29px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__30 {
-    gap: 30px;
+    column-gap: 30px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__31 {
-    gap: 31px;
+    column-gap: 31px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__32 {
-    gap: 32px;
+    column-gap: 32px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__33 {
-    gap: 33px;
+    column-gap: 33px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__34 {
-    gap: 34px;
+    column-gap: 34px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__35 {
-    gap: 35px;
+    column-gap: 35px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__36 {
-    gap: 36px;
+    column-gap: 36px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__37 {
-    gap: 37px;
+    column-gap: 37px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__38 {
-    gap: 38px;
+    column-gap: 38px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__39 {
-    gap: 39px;
+    column-gap: 39px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__40 {
-    gap: 40px;
+    column-gap: 40px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__41 {
-    gap: 41px;
+    column-gap: 41px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__42 {
-    gap: 42px;
+    column-gap: 42px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__43 {
-    gap: 43px;
+    column-gap: 43px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__44 {
-    gap: 44px;
+    column-gap: 44px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__45 {
-    gap: 45px;
+    column-gap: 45px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__46 {
-    gap: 46px;
+    column-gap: 46px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__47 {
-    gap: 47px;
+    column-gap: 47px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__48 {
-    gap: 48px;
+    column-gap: 48px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__49 {
-    gap: 49px;
+    column-gap: 49px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__50 {
-    gap: 50px;
+    column-gap: 50px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__51 {
-    gap: 51px;
+    column-gap: 51px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__52 {
-    gap: 52px;
+    column-gap: 52px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__53 {
-    gap: 53px;
+    column-gap: 53px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__54 {
-    gap: 54px;
+    column-gap: 54px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__55 {
-    gap: 55px;
+    column-gap: 55px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__56 {
-    gap: 56px;
+    column-gap: 56px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__57 {
-    gap: 57px;
+    column-gap: 57px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__58 {
-    gap: 58px;
+    column-gap: 58px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__59 {
-    gap: 59px;
+    column-gap: 59px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__60 {
-    gap: 60px;
+    column-gap: 60px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__61 {
-    gap: 61px;
+    column-gap: 61px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__62 {
-    gap: 62px;
+    column-gap: 62px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__63 {
-    gap: 63px;
+    column-gap: 63px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__64 {
-    gap: 64px;
+    column-gap: 64px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__65 {
-    gap: 65px;
+    column-gap: 65px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__66 {
-    gap: 66px;
+    column-gap: 66px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__67 {
-    gap: 67px;
+    column-gap: 67px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__68 {
-    gap: 68px;
+    column-gap: 68px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__69 {
-    gap: 69px;
+    column-gap: 69px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__70 {
-    gap: 70px;
+    column-gap: 70px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__71 {
-    gap: 71px;
+    column-gap: 71px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__72 {
-    gap: 72px;
+    column-gap: 72px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__73 {
-    gap: 73px;
+    column-gap: 73px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__74 {
-    gap: 74px;
+    column-gap: 74px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__75 {
-    gap: 75px;
+    column-gap: 75px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__76 {
-    gap: 76px;
+    column-gap: 76px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__77 {
-    gap: 77px;
+    column-gap: 77px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__78 {
-    gap: 78px;
+    column-gap: 78px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__79 {
-    gap: 79px;
+    column-gap: 79px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__80 {
-    gap: 80px;
+    column-gap: 80px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__81 {
-    gap: 81px;
+    column-gap: 81px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__82 {
-    gap: 82px;
+    column-gap: 82px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__83 {
-    gap: 83px;
+    column-gap: 83px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__84 {
-    gap: 84px;
+    column-gap: 84px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__85 {
-    gap: 85px;
+    column-gap: 85px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__86 {
-    gap: 86px;
+    column-gap: 86px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__87 {
-    gap: 87px;
+    column-gap: 87px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__88 {
-    gap: 88px;
+    column-gap: 88px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__89 {
-    gap: 89px;
+    column-gap: 89px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__90 {
-    gap: 90px;
+    column-gap: 90px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__91 {
-    gap: 91px;
+    column-gap: 91px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__92 {
-    gap: 92px;
+    column-gap: 92px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__93 {
-    gap: 93px;
+    column-gap: 93px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__94 {
-    gap: 94px;
+    column-gap: 94px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__95 {
-    gap: 95px;
+    column-gap: 95px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__96 {
-    gap: 96px;
+    column-gap: 96px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__97 {
-    gap: 97px;
+    column-gap: 97px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__98 {
-    gap: 98px;
+    column-gap: 98px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__99 {
-    gap: 99px;
+    column-gap: 99px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__100 {
-    gap: 100px;
+    column-gap: 100px;
   }
   .wp-block-jankx-image-masonry-gallery.tg__101 {
-    gap: 101px;
+    column-gap: 101px;
   }
   .wp-block-jankx-image-masonry-gallery .single-gallery-image.tg__0 {
     margin-bottom: 0px;
@@ -1387,310 +1391,310 @@
     column-count: 6;
   }
   .wp-block-jankx-image-masonry-gallery.dg__0 {
-    gap: 0px;
+    column-gap: 0px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__1 {
-    gap: 1px;
+    column-gap: 1px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__2 {
-    gap: 2px;
+    column-gap: 2px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__3 {
-    gap: 3px;
+    column-gap: 3px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__4 {
-    gap: 4px;
+    column-gap: 4px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__5 {
-    gap: 5px;
+    column-gap: 5px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__6 {
-    gap: 6px;
+    column-gap: 6px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__7 {
-    gap: 7px;
+    column-gap: 7px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__8 {
-    gap: 8px;
+    column-gap: 8px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__9 {
-    gap: 9px;
+    column-gap: 9px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__10 {
-    gap: 10px;
+    column-gap: 10px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__11 {
-    gap: 11px;
+    column-gap: 11px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__12 {
-    gap: 12px;
+    column-gap: 12px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__13 {
-    gap: 13px;
+    column-gap: 13px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__14 {
-    gap: 14px;
+    column-gap: 14px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__15 {
-    gap: 15px;
+    column-gap: 15px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__16 {
-    gap: 16px;
+    column-gap: 16px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__17 {
-    gap: 17px;
+    column-gap: 17px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__18 {
-    gap: 18px;
+    column-gap: 18px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__19 {
-    gap: 19px;
+    column-gap: 19px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__20 {
-    gap: 20px;
+    column-gap: 20px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__21 {
-    gap: 21px;
+    column-gap: 21px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__22 {
-    gap: 22px;
+    column-gap: 22px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__23 {
-    gap: 23px;
+    column-gap: 23px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__24 {
-    gap: 24px;
+    column-gap: 24px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__25 {
-    gap: 25px;
+    column-gap: 25px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__26 {
-    gap: 26px;
+    column-gap: 26px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__27 {
-    gap: 27px;
+    column-gap: 27px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__28 {
-    gap: 28px;
+    column-gap: 28px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__29 {
-    gap: 29px;
+    column-gap: 29px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__30 {
-    gap: 30px;
+    column-gap: 30px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__31 {
-    gap: 31px;
+    column-gap: 31px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__32 {
-    gap: 32px;
+    column-gap: 32px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__33 {
-    gap: 33px;
+    column-gap: 33px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__34 {
-    gap: 34px;
+    column-gap: 34px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__35 {
-    gap: 35px;
+    column-gap: 35px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__36 {
-    gap: 36px;
+    column-gap: 36px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__37 {
-    gap: 37px;
+    column-gap: 37px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__38 {
-    gap: 38px;
+    column-gap: 38px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__39 {
-    gap: 39px;
+    column-gap: 39px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__40 {
-    gap: 40px;
+    column-gap: 40px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__41 {
-    gap: 41px;
+    column-gap: 41px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__42 {
-    gap: 42px;
+    column-gap: 42px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__43 {
-    gap: 43px;
+    column-gap: 43px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__44 {
-    gap: 44px;
+    column-gap: 44px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__45 {
-    gap: 45px;
+    column-gap: 45px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__46 {
-    gap: 46px;
+    column-gap: 46px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__47 {
-    gap: 47px;
+    column-gap: 47px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__48 {
-    gap: 48px;
+    column-gap: 48px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__49 {
-    gap: 49px;
+    column-gap: 49px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__50 {
-    gap: 50px;
+    column-gap: 50px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__51 {
-    gap: 51px;
+    column-gap: 51px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__52 {
-    gap: 52px;
+    column-gap: 52px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__53 {
-    gap: 53px;
+    column-gap: 53px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__54 {
-    gap: 54px;
+    column-gap: 54px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__55 {
-    gap: 55px;
+    column-gap: 55px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__56 {
-    gap: 56px;
+    column-gap: 56px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__57 {
-    gap: 57px;
+    column-gap: 57px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__58 {
-    gap: 58px;
+    column-gap: 58px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__59 {
-    gap: 59px;
+    column-gap: 59px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__60 {
-    gap: 60px;
+    column-gap: 60px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__61 {
-    gap: 61px;
+    column-gap: 61px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__62 {
-    gap: 62px;
+    column-gap: 62px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__63 {
-    gap: 63px;
+    column-gap: 63px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__64 {
-    gap: 64px;
+    column-gap: 64px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__65 {
-    gap: 65px;
+    column-gap: 65px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__66 {
-    gap: 66px;
+    column-gap: 66px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__67 {
-    gap: 67px;
+    column-gap: 67px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__68 {
-    gap: 68px;
+    column-gap: 68px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__69 {
-    gap: 69px;
+    column-gap: 69px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__70 {
-    gap: 70px;
+    column-gap: 70px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__71 {
-    gap: 71px;
+    column-gap: 71px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__72 {
-    gap: 72px;
+    column-gap: 72px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__73 {
-    gap: 73px;
+    column-gap: 73px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__74 {
-    gap: 74px;
+    column-gap: 74px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__75 {
-    gap: 75px;
+    column-gap: 75px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__76 {
-    gap: 76px;
+    column-gap: 76px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__77 {
-    gap: 77px;
+    column-gap: 77px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__78 {
-    gap: 78px;
+    column-gap: 78px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__79 {
-    gap: 79px;
+    column-gap: 79px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__80 {
-    gap: 80px;
+    column-gap: 80px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__81 {
-    gap: 81px;
+    column-gap: 81px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__82 {
-    gap: 82px;
+    column-gap: 82px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__83 {
-    gap: 83px;
+    column-gap: 83px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__84 {
-    gap: 84px;
+    column-gap: 84px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__85 {
-    gap: 85px;
+    column-gap: 85px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__86 {
-    gap: 86px;
+    column-gap: 86px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__87 {
-    gap: 87px;
+    column-gap: 87px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__88 {
-    gap: 88px;
+    column-gap: 88px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__89 {
-    gap: 89px;
+    column-gap: 89px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__90 {
-    gap: 90px;
+    column-gap: 90px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__91 {
-    gap: 91px;
+    column-gap: 91px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__92 {
-    gap: 92px;
+    column-gap: 92px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__93 {
-    gap: 93px;
+    column-gap: 93px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__94 {
-    gap: 94px;
+    column-gap: 94px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__95 {
-    gap: 95px;
+    column-gap: 95px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__96 {
-    gap: 96px;
+    column-gap: 96px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__97 {
-    gap: 97px;
+    column-gap: 97px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__98 {
-    gap: 98px;
+    column-gap: 98px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__99 {
-    gap: 99px;
+    column-gap: 99px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__100 {
-    gap: 100px;
+    column-gap: 100px;
   }
   .wp-block-jankx-image-masonry-gallery.dg__101 {
-    gap: 101px;
+    column-gap: 101px;
   }
   .wp-block-jankx-image-masonry-gallery .single-gallery-image.dg__0 {
     margin-bottom: 0px;
