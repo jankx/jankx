@@ -23,6 +23,19 @@
       "enum": ["hr", "div"],
       "default": "hr"
     },
+    "thickness": {
+      "type": "number",
+      "default": 2
+    },
+    "widthPercent": {
+      "type": "number",
+      "default": 50
+    },
+    "lineAlign": {
+      "type": "string",
+      "enum": ["left", "center", "right"],
+      "default": "center"
+    },
     "className": {
       "type": "string"
     }

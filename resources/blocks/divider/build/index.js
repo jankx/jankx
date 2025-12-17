@@ -8,7 +8,7 @@
   \***********************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/divider","title":"Divider","category":"jankx","description":"Divider giống core/separator với các style variants: dashed, dotted, line","textdomain":"jankx","supports":{"html":false,"anchor":true,"align":["center","wide","full"],"spacing":{"margin":["top","bottom"]},"color":{"text":true}},"attributes":{"tagName":{"type":"string","enum":["hr","div"],"default":"hr"},"className":{"type":"string"}},"styles":[{"name":"dashed","label":"Dashed"},{"name":"dotted","label":"Dotted"},{"name":"line","label":"Line"}],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/divider","title":"Divider","category":"jankx","description":"Divider giống core/separator với các style variants: dashed, dotted, line","textdomain":"jankx","supports":{"html":false,"anchor":true,"align":["center","wide","full"],"spacing":{"margin":["top","bottom"]},"color":{"text":true}},"attributes":{"tagName":{"type":"string","enum":["hr","div"],"default":"hr"},"thickness":{"type":"number","default":2},"widthPercent":{"type":"number","default":50},"lineAlign":{"type":"string","enum":["left","center","right"],"default":"center"},"className":{"type":"string"}},"styles":[{"name":"dashed","label":"Dashed"},{"name":"dotted","label":"Dotted"},{"name":"line","label":"Line"}],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
 
 /***/ }),
 
@@ -24,20 +24,77 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__);
+
+
+
 
 
 function Edit({
-  attributes
+  attributes,
+  setAttributes
 }) {
   const {
-    tagName = 'hr'
+    tagName = 'hr',
+    thickness = 2,
+    widthPercent = 50,
+    lineAlign = 'center'
   } = attributes;
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.useBlockProps)({
-    className: 'jankx-divider'
+    className: `jankx-divider align-${lineAlign}`,
+    style: {
+      ['--divider-thickness']: `${thickness}px`,
+      ['--divider-width']: `${widthPercent}%`
+    }
   });
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(tagName, blockProps);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.InspectorControls, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Line Settings', 'jankx'),
+        initialOpen: true,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.RangeControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Độ dày (px)', 'jankx'),
+          value: thickness,
+          onChange: v => setAttributes({
+            thickness: v !== null && v !== void 0 ? v : 2
+          }),
+          min: 1,
+          max: 12
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.RangeControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Chiều rộng (%)', 'jankx'),
+          value: widthPercent,
+          onChange: v => setAttributes({
+            widthPercent: v !== null && v !== void 0 ? v : 50
+          }),
+          min: 10,
+          max: 100
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Căn lề', 'jankx'),
+          value: lineAlign,
+          options: [{
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Trái', 'jankx'),
+            value: 'left'
+          }, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Giữa', 'jankx'),
+            value: 'center'
+          }, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Phải', 'jankx'),
+            value: 'right'
+          }],
+          onChange: v => setAttributes({
+            lineAlign: v
+          })
+        })]
+      })
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.createElement)(tagName, blockProps)]
+  });
 }
 
 /***/ }),
@@ -74,10 +131,17 @@ function Save({
   attributes = {}
 }) {
   const {
-    tagName = 'hr'
+    tagName = 'hr',
+    thickness = 2,
+    widthPercent = 50,
+    lineAlign = 'center'
   } = attributes;
   const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.useBlockProps.save({
-    className: 'jankx-divider'
+    className: `jankx-divider align-${lineAlign}`,
+    style: {
+      ['--divider-thickness']: `${thickness}px`,
+      ['--divider-width']: `${widthPercent}%`
+    }
   });
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(tagName, blockProps);
 }
@@ -116,6 +180,16 @@ module.exports = window["wp"]["blocks"];
 
 /***/ }),
 
+/***/ "@wordpress/components":
+/*!************************************!*\
+  !*** external ["wp","components"] ***!
+  \************************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["components"];
+
+/***/ }),
+
 /***/ "@wordpress/element":
 /*!*********************************!*\
   !*** external ["wp","element"] ***!
@@ -123,6 +197,26 @@ module.exports = window["wp"]["blocks"];
 /***/ ((module) => {
 
 module.exports = window["wp"]["element"];
+
+/***/ }),
+
+/***/ "@wordpress/i18n":
+/*!******************************!*\
+  !*** external ["wp","i18n"] ***!
+  \******************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["i18n"];
+
+/***/ }),
+
+/***/ "react/jsx-runtime":
+/*!**********************************!*\
+  !*** external "ReactJSXRuntime" ***!
+  \**********************************/
+/***/ ((module) => {
+
+module.exports = window["ReactJSXRuntime"];
 
 /***/ })
 
