@@ -1,0 +1,1 @@
+{"version":3,"file":"blocks/dynamic-ssr-layout/build/editor.css","mappings":";;;AAAA;;EAAA,C","sources":["webpack://jankx/./blocks/dynamic-ssr-layout/editor.scss"],"sourcesContent":["/**\n * Dynamic SSR Layout Block Editor Styles\n */\n.wp-block-jankx-dynamic-ssr-layout {\n}\n\n"],"names":[],"sourceRoot":""}
