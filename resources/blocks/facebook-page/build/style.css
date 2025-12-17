@@ -4,6 +4,12 @@
 .jankx-facebook-page .fb-page {
   width: 100%;
 }
+.jankx-facebook-page .fb-page > span {
+  width: 100% !important;
+}
+.jankx-facebook-page .fb-page iframe {
+  width: 100% !important;
+}
 
 .wp-block-jankx-facebook-page .jankx-facebook-page,
 .wp-block-jankx-facebook-page.jankx-facebook-page {

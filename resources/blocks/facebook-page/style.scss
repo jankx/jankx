@@ -1,6 +1,12 @@
 .jankx-facebook-page {
   .fb-page {
     width: 100%;
+    > span {
+      width: 100%!important;
+    }
+    iframe {
+      width: 100%!important;
+    }
   }
 }
 
