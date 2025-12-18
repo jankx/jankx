@@ -24,6 +24,24 @@ declare global {
     'use strict';
 
     function initAdvancedButtons() {
+        const links = Array.from(document.querySelectorAll('.jankx-advanced-button__link')) as HTMLElement[];
+        const bodyClass = document.body.className || '';
+        const match = bodyClass.match(/post-type-([^\s]+)/);
+        const currentPostType = match ? match[1] : '';
+        links.forEach(link => {
+            const conditionType = link.getAttribute('data-condition-type') || 'always';
+            const targetPostType = link.getAttribute('data-show-for-post-type') || '';
+            if (conditionType === 'post-type') {
+                const wrapper = link.closest('.wp-block-jankx-advanced-button') as HTMLElement | null;
+                if (targetPostType && currentPostType && targetPostType !== currentPostType) {
+                    if (wrapper) {
+                        wrapper.style.display = 'none';
+                    } else {
+                        link.style.display = 'none';
+                    }
+                }
+            }
+        });
         const buttons = document.querySelectorAll('.jankx-button-modal-trigger');
         console.log('[AdvancedButton] initAdvancedButtons: found', buttons.length, 'buttons');
         

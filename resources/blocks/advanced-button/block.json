@@ -14,9 +14,20 @@
         "core/html"
     ],
     "attributes": {
+        "conditionType": {
+            "type": "string",
+            "enum": ["always", "post-type"],
+            "default": "always",
+            "source": "attribute",
+            "selector": ".jankx-advanced-button__link",
+            "attribute": "data-condition-type"
+        },
         "showForPostType": {
             "type": "string",
-            "default": ""
+            "default": "",
+            "source": "attribute",
+            "selector": ".jankx-advanced-button__link",
+            "attribute": "data-show-for-post-type"
         },
         "triggerType": {
             "type": "string",

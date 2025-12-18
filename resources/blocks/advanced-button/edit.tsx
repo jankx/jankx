@@ -30,7 +30,7 @@ import {
 	useBlockEditingMode,
 	BlockEdit,
 } from '@wordpress/block-editor';
-import { useState, useRef, useCallback } from '@wordpress/element';
+import { useState, useRef, useCallback, useEffect } from '@wordpress/element';
 import { displayShortcut, isKeyboardEvent } from '@wordpress/keycodes';
 import { link } from '@wordpress/icons';
 import { useSelect } from '@wordpress/data';
@@ -58,6 +58,7 @@ interface EditProps {
 		useIconBlocks: boolean;
 		iconPosition: string;
 		showLabel: boolean;
+		conditionType?: string;
 		showForPostType?: string;
 	};
 	setAttributes: (attrs: Partial<EditProps['attributes']>) => void;
@@ -104,8 +105,16 @@ export function Edit(props: EditProps) {
 		useIconBlocks = false,
 		iconPosition = 'left',
 		showLabel = true,
+		conditionType = 'always',
 		showForPostType = '',
 	} = attributes;
+
+	// Backward compatibility auto-migrate
+	useEffect(() => {
+		if ((!attributes as any)?.conditionType && showForPostType) {
+			setAttributes({ conditionType: 'post-type' });
+		}
+	}, [showForPostType]);
 
 	// Check if block has inner blocks (icon blocks)
 	const hasInnerBlocks = useSelect(
@@ -141,10 +150,10 @@ export function Edit(props: EditProps) {
 		const core = select('core');
 		return core.getPostTypes({ per_page: -1 }) || [];
 	}, []);
-	const postTypeOptions = (multiPostTypes.postTypes || []).map((slug: string) => {
-		const found = (wpPostTypes || []).find((pt: any) => pt.slug === slug);
-		return { label: found?.name || slug, value: slug };
-	});
+	const postTypeOptions = (wpPostTypes || []).map((pt: any) => ({
+		label: pt.name,
+		value: pt.slug,
+	}));
 
 	// Get all modal blocks from the page
 	const modalBlocks = useSelect(
@@ -467,26 +476,39 @@ export function Edit(props: EditProps) {
 							url: undefined,
 							linkTarget: undefined,
 							rel: undefined,
+							conditionType: 'always',
 							showForPostType: '',
 						});
 					}}
 				>
-					{isInsideDynamicTemplate && multiPostTypes.enabled && postTypeOptions.length > 1 && (
-						<ToolsPanelItem
-							label={__('Show For Post Type', 'jankx')}
-							isShownByDefault
-							hasValue={() => !!showForPostType}
-							onDeselect={() => setAttributes({ showForPostType: '' })}
-						>
+					<ToolsPanelItem
+						label={__('Condition Type', 'jankx')}
+						isShownByDefault
+						hasValue={() => conditionType !== 'always'}
+						onDeselect={() => {
+							setAttributes({ conditionType: 'always', showForPostType: '' });
+						}}
+					>
+						<SelectControl
+							label={__('Condition Type', 'jankx')}
+							value={conditionType}
+							options={[
+								{ label: __('Always show', 'jankx'), value: 'always' },
+								{ label: __('Only show for Post Type', 'jankx'), value: 'post-type' },
+							]}
+							onChange={(value) => setAttributes({ conditionType: value })}
+							help={__('Choose when this button should be visible', 'jankx')}
+						/>
+						{conditionType === 'post-type' && (
 							<SelectControl
-								label={__('Show For Post Type', 'jankx')}
+								label={__('Post Type', 'jankx')}
 								value={showForPostType || ''}
-								options={[{ label: __('All', 'jankx'), value: '' }, ...postTypeOptions]}
+								options={[{ label: __('Select Post Type', 'jankx'), value: '' }, ...postTypeOptions]}
 								onChange={(value) => setAttributes({ showForPostType: value })}
-								help={__('Only render this button for items of the selected post type', 'jankx')}
+								help={__('Only render this button for the selected post type', 'jankx')}
 							/>
-						</ToolsPanelItem>
-					)}
+						)}
+					</ToolsPanelItem>
 					<ToolsPanelItem
 						label={__('Trigger Type', 'jankx')}
 						isShownByDefault
