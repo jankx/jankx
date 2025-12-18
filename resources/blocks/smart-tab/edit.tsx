@@ -295,7 +295,7 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
                     const found: Array<{ id: string; clientId: string; postType: string; name: string }> = [];
                     
                     blocks.forEach((block: Block) => {
-                        if (block.name === 'jankx/dynamic-data-layout') {
+                        if (block.name === 'jankx/dynamic-data-layout' || block.name === 'jankx/dynamic-ssr-layout') {
                             const attrs = (block.attributes || {}) as Record<string, unknown>;
                             const queryId = attrs.queryId || block.clientId;
                             const postType = (attrs.postType as string) || 'post';

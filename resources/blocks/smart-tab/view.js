@@ -1225,7 +1225,12 @@ function fetchDynamicDataLayout(targetBlockId, filtersPayload) {
 
     // Try multiple selectors to find the target block
     // 1. By class and data attributes (preferred)
-    let targetBlock = document.querySelector(`.wp-block-jankx-dynamic-data-layout[data-block-id="${targetBlockId}"], .wp-block-jankx-dynamic-data-layout[data-query-id="${targetBlockId}"]`);
+    let targetBlock = document.querySelector(
+        `.wp-block-jankx-dynamic-data-layout[data-block-id="${targetBlockId}"], ` +
+        `.wp-block-jankx-dynamic-data-layout[data-query-id="${targetBlockId}"], ` +
+        `.wp-block-jankx-dynamic-ssr-layout[data-block-id="${targetBlockId}"], ` +
+        `.wp-block-jankx-dynamic-ssr-layout[data-query-id="${targetBlockId}"]`
+    );
     
     // 2. By data attributes only (fallback if class is missing)
     if (!targetBlock) {
@@ -1242,11 +1247,16 @@ function fetchDynamicDataLayout(targetBlockId, filtersPayload) {
         found: !!targetBlock,
         targetBlock,
         searchMethods: {
-            byClassAndData: !!document.querySelector(`.wp-block-jankx-dynamic-data-layout[data-block-id="${targetBlockId}"], .wp-block-jankx-dynamic-data-layout[data-query-id="${targetBlockId}"]`),
+            byClassAndData: !!document.querySelector(
+                `.wp-block-jankx-dynamic-data-layout[data-block-id="${targetBlockId}"], ` +
+                `.wp-block-jankx-dynamic-data-layout[data-query-id="${targetBlockId}"], ` +
+                `.wp-block-jankx-dynamic-ssr-layout[data-block-id="${targetBlockId}"], ` +
+                `.wp-block-jankx-dynamic-ssr-layout[data-query-id="${targetBlockId}"]`
+            ),
             byDataOnly: !!document.querySelector(`[data-block-id="${targetBlockId}"], [data-query-id="${targetBlockId}"]`),
             byId: !!document.getElementById(targetBlockId),
         },
-        allDynamicDataLayouts: Array.from(document.querySelectorAll('.wp-block-jankx-dynamic-data-layout')).map(block => ({
+        allDynamicDataLayouts: Array.from(document.querySelectorAll('.wp-block-jankx-dynamic-data-layout, .wp-block-jankx-dynamic-ssr-layout')).map(block => ({
             blockId: block.getAttribute('data-block-id'),
             queryId: block.getAttribute('data-query-id'),
             id: block.id,
@@ -1578,4 +1588,3 @@ function updateUrlWithFilters(filtersPayload, enableUpdateUrl = true) {
     const newUrl = `${url.origin}${url.pathname}${params.toString() ? `?${params.toString()}` : ''}${url.hash}`;
     window.history.replaceState({}, '', newUrl);
 }
-

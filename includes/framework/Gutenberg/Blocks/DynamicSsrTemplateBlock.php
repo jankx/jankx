@@ -129,7 +129,7 @@ class DynamicSsrTemplateBlock extends Block
         ];
 
         try {
-            $layoutManager = new DynamicDataLayoutManager();
+            $layoutManager = DynamicDataLayoutManager::getInstance();
             $sanitizer = new AttributeSanitizer($layoutManager);
             $sanitized = $sanitizer->sanitize($layoutName, $baseAttributes, true);
 
@@ -151,4 +151,3 @@ class DynamicSsrTemplateBlock extends Block
         }
     }
 }
-
