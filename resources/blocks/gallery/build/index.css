@@ -8,6 +8,25 @@
   transition: all 0.5s ease-in-out;
   column-fill: initial;
 }
+.wp-block-jankx-image-masonry-gallery.fixed__height {
+  display: flex;
+  gap: 10px;
+}
+.wp-block-jankx-image-masonry-gallery.fixed__height .gallery-col {
+  display: flex;
+  flex-direction: column;
+  height: var(--gallery-height, 400px);
+  flex: 1;
+}
+.wp-block-jankx-image-masonry-gallery.fixed__height .single-gallery-image {
+  margin-bottom: 0 !important;
+  overflow: hidden;
+}
+.wp-block-jankx-image-masonry-gallery.fixed__height .single-gallery-image img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
 .wp-block-jankx-image-masonry-gallery.layout__stacked {
   column-count: 1 !important;
   display: flex;

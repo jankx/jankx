@@ -4,6 +4,25 @@
 .wp-block-jankx-image-masonry-gallery {
 	transition: all 0.5s ease-in-out;
 	column-fill: initial;
+	&.fixed__height {
+		display: flex;
+		gap: 10px;
+		.gallery-col {
+			display: flex;
+			flex-direction: column;
+			height: var(--gallery-height, 400px);
+			flex: 1;
+		}
+		.single-gallery-image {
+			margin-bottom: 0 !important;
+			overflow: hidden;
+			img {
+				height: 100%;
+				width: 100%;
+				object-fit: cover;
+			}
+		}
+	}
 	&.layout__stacked {
 		column-count: 1 !important;
 		display: flex;

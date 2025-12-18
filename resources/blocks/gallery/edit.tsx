@@ -41,6 +41,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 		imageHoverEffect,
 		layout,
 		rows,
+		galleryHeight,
 	} = attributes;
 	const isMasonry = layout === 'masonry';
 	const isHorizontalMasonry = layout === 'horizontal-masonry';
@@ -53,8 +54,40 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 	setAttributes({ galleryId: clientId.slice(0, 8) });
 
 	const blockProps = useBlockProps({
-		className: `layout__${layout} dc__${colsNumber} tc__${tabletColumns} pc__${phoneColumns} dg__${deskGap} tg__${tabGap} pg__${phoneGap} ${isHorizontalMasonry ? `rows__${rows}` : ''}`,
+		className: `layout__${layout} dc__${colsNumber} tc__${tabletColumns} pc__${phoneColumns} dg__${deskGap} tg__${tabGap} pg__${phoneGap} ${isHorizontalMasonry ? `rows__${rows}` : ''} ${isMasonry && galleryHeight ? 'fixed__height' : ''}`,
+		style: isMasonry && galleryHeight ? ({ ['--gallery-height' as any]: `${galleryHeight}px` } as any) : undefined,
 	});
+
+	// Helper to distribute images into columns ensuring each column totals 100% height
+	const distributeIntoColumns = (items: any[], columnsCount: number) => {
+		const columns: Array<Array<{ image: any; fraction: number }>> = Array.from({ length: Math.max(columnsCount, 1) }, () => []);
+		if (!items || items.length === 0) return columns;
+		let colIndex = 0;
+		for (let i = 0; i < items.length; ) {
+			const current = items[i];
+			const ratio = current?.width && current?.height ? current.height / current.width : 1;
+			const target = columns[colIndex % columnsCount];
+			if (ratio >= 1.2) {
+				target.push({ image: current, fraction: 1 });
+				i += 1;
+				colIndex += 1;
+			} else {
+				// take up to 2 images per column with equal split
+				const first = current;
+				const second = items[i + 1];
+				if (second) {
+					target.push({ image: first, fraction: 0.5 });
+					target.push({ image: second, fraction: 0.5 });
+					i += 2;
+				} else {
+					target.push({ image: first, fraction: 1 });
+					i += 1;
+				}
+				colIndex += 1;
+			}
+		}
+		return columns;
+	};
 
 	return (
 		<Fragment>
@@ -139,6 +172,15 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 								/>
 							)}
 						</>
+					)}
+					{isMasonry && (
+						<RangeControl
+							label={__('Gallery Height (px)', 'jankx')}
+							value={galleryHeight}
+							onChange={(value) => setAttributes({ galleryHeight: value })}
+							min={200}
+							max={1200}
+						/>
 					)}
 					{/* Columns Gap */}
 					<Devices
@@ -270,31 +312,46 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 					</ToolbarGroup>
 				</BlockControls>
 			)}
-			<div
-				{...blockProps}
-			>
+			<div {...blockProps}>
 				{images ? (
-					images.map((image) => {
-						return (
-							<div
-								key={image.id}
-								className={`single-gallery-image ${imageHoverEffect} dg__${deskGap} tg__${tabGap} pg__${phoneGap}`}
-							>
-								<img
-									src={image.url}
-									alt={
-										image.alt
-											? image.alt
-											: __(
-													'Gallery Image',
-													'jankx'
-											  )
-									}
-									className={`wp-image${image.id}`}
-								/>
-							</div>
-						);
-					})
+					isMasonry && galleryHeight
+						? distributeIntoColumns(images, colsNumber).map((col, idx) => (
+								<div className="gallery-col" key={`col-${idx}`}>
+									{col.map(({ image, fraction }) => (
+										<div
+											key={image.id}
+											className={`single-gallery-image ${imageHoverEffect} dg__${deskGap} tg__${tabGap} pg__${phoneGap}`}
+											style={{ height: `${fraction * 100}%` }}
+										>
+											<img
+												src={image.url}
+												alt={
+													image.alt
+														? image.alt
+														: __('Gallery Image', 'jankx')
+												}
+												className={`wp-image${image.id}`}
+											/>
+										</div>
+									))}
+								</div>
+						  ))
+						: images.map((image) => (
+								<div
+									key={image.id}
+									className={`single-gallery-image ${imageHoverEffect} dg__${deskGap} tg__${tabGap} pg__${phoneGap}`}
+								>
+									<img
+										src={image.url}
+										alt={
+											image.alt
+												? image.alt
+												: __('Gallery Image', 'jankx')
+										}
+										className={`wp-image${image.id}`}
+									/>
+								</div>
+						  ))
 				) : (
 					<MediaPlaceholder
 						multiple={true}
