@@ -1,4 +1,23 @@
-.slideshow-container-block{display:block;width:100%}
-.wp-block-jankx-slideshow-container:not(.is-selected){pointer-events:none}.wp-block-jankx-slideshow-container:not(.is-selected) .slideshow-item-block,.wp-block-jankx-slideshow-container:not(.is-selected) .components-button,.wp-block-jankx-slideshow-container:not(.is-selected) button{pointer-events:auto}.wp-block-jankx-slideshow-container .slideshow-container-block{min-height:50px}
+/*!******************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/slideshow-container/style.scss ***!
+  \******************************************************************************************************************************************************************************************************/
+.slideshow-container-block {
+  display: block;
+  width: 100%;
+}
+/*!*******************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/slideshow-container/editor.scss ***!
+  \*******************************************************************************************************************************************************************************************************/
+.wp-block-jankx-slideshow-container:not(.is-selected) {
+  pointer-events: none;
+}
+.wp-block-jankx-slideshow-container:not(.is-selected) .slideshow-item-block,
+.wp-block-jankx-slideshow-container:not(.is-selected) .components-button,
+.wp-block-jankx-slideshow-container:not(.is-selected) button {
+  pointer-events: auto;
+}
+.wp-block-jankx-slideshow-container .slideshow-container-block {
+  min-height: 50px;
+}
 
 /*# sourceMappingURL=index.css.map*/

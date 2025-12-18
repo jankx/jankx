@@ -1,2 +1,964 @@
-(()=>{class e{config=null;container=null;currentFilters={};constructor(e){this.container=e,this.container.advancedFiltersInstance=this,this.movePaddingToContainer(),this.init()}movePaddingToContainer(){if(!this.container)return;const e=this.container.querySelector(".advanced-filters-container");if(!e)return;const t=window.getComputedStyle(this.container),r=t.paddingTop,i=t.paddingRight,n=t.paddingBottom,o=t.paddingLeft;if("0px"!==r||"0px"!==i||"0px"!==n||"0px"!==o){e.style.paddingTop=r,e.style.paddingRight=i,e.style.paddingBottom=n,e.style.paddingLeft=o,this.container.style.padding="0";const t=this.container.querySelector(".filter-reset-button");t&&(t.style.marginLeft=o,t.style.marginRight=i,t.style.marginBottom=n)}}init(){if(!this.container)return;const e=this.container.querySelector(".advanced-filters-config");if(e)try{const t=e.getAttribute("data-config");if(t){this.config=JSON.parse(t);const r=e.getAttribute("data-nonce")||window.jankxAdvancedFilters?.nonce||"",i=e.getAttribute("data-ajax-url")||window.jankxAdvancedFilters?.ajaxUrl||"/wp-admin/admin-ajax.php";this.config.nonce=r,this.config.ajaxUrl=i,this.loadFiltersFromUrl(),this.setupEventListeners()}}catch(e){console.error("Error parsing filter config:",e)}}setupEventListeners(){if(!this.container||!this.config)return;this.container.querySelectorAll(".filter-taxonomy input, .filter-taxonomy .filter-option").forEach(e=>{(e instanceof HTMLInputElement||e instanceof HTMLElement)&&(e.addEventListener("change",()=>this.handleFilterChange()),e instanceof HTMLElement&&e.classList.contains("filter-option")&&e.addEventListener("click",t=>{t.preventDefault();const r=e.querySelector('input[type="checkbox"], input[type="radio"]'),i=e.closest("[data-taxonomy]"),n="true"===i?.getAttribute("data-multiple-selection");if(r){if(n)r.checked=!r.checked,e.classList.toggle("active",r.checked);else{const t=i?.querySelectorAll('input[type="checkbox"], input[type="radio"]');t?.forEach(e=>{e.checked=!1;const t=e.closest(".filter-option");t&&t.classList.remove("active")}),r.checked=!0,e.classList.add("active")}r.dispatchEvent(new Event("change",{bubbles:!0}))}else if(n)e.classList.toggle("active");else{const t=i?.querySelectorAll(".filter-option");t?.forEach(e=>e.classList.remove("active")),e.classList.toggle("active")}this.handleFilterChange()}))}),this.container.querySelectorAll(".filter-meta input, .filter-meta select").forEach(e=>{e.addEventListener("change",()=>this.handleFilterChange()),e.addEventListener("input",()=>{this.config?.ajaxEnabled&&this.debounce(()=>this.handleFilterChange(),500)()})}),this.container.querySelectorAll(".filter-price input").forEach(e=>{e.addEventListener("input",()=>{this.config?.ajaxEnabled&&this.debounce(()=>this.handleFilterChange(),500)()})}),this.container.querySelectorAll(".filter-date input").forEach(e=>{e.addEventListener("change",()=>this.handleFilterChange())});const e=this.container.querySelector(".filter-keyword input.filter-input-keyword");if(e){const t=e.closest('.filter-group[data-filter-type="keyword"]'),r=t?.getAttribute("data-keyword-action")||"typing",i=this.container.querySelector(".filter-keyword .filter-search-button");"button"===r&&i?(i.addEventListener("click",()=>this.handleFilterChange()),e.addEventListener("keydown",e=>{"Enter"===e.key&&(e.preventDefault(),this.handleFilterChange())})):e.addEventListener("input",()=>{this.config?.ajaxEnabled&&this.debounce(()=>this.handleFilterChange(),500)()})}this.container.querySelectorAll('.filter-keyword .post-type-radios input[type="radio"]').forEach(e=>{e.addEventListener("change",()=>this.handleFilterChange())});const t=this.container.querySelector(".filter-reset-button");t&&t.addEventListener("click",()=>this.handleReset()),this.setupWooCommerceOrderingListener()}setupWooCommerceOrderingListener(){let e=document.querySelector(".woocommerce-ordering .orderby");if(!e)return void("loading"===document.readyState?document.addEventListener("DOMContentLoaded",()=>{this.setupWooCommerceOrderingListener()}):setTimeout(()=>{this.setupWooCommerceOrderingListener()},500));if(e.__jankxAdvancedFiltersListenerAttached)return;e.__jankxAdvancedFiltersListenerAttached=!0;const t=e.closest("form.woocommerce-ordering");if(t&&!t.__jankxAdvancedFiltersPreventDefaultAttached&&(t.__jankxAdvancedFiltersPreventDefaultAttached=!0,t.addEventListener("submit",e=>{this.config&&this.config.ajaxEnabled&&(e.preventDefault(),e.stopPropagation())})),e.addEventListener("change",e=>{e.preventDefault(),e.stopPropagation(),this.config&&this.config.ajaxEnabled?setTimeout(()=>{this.handleFilterChange()},50):t&&t.submit()}),!document.__jankxAdvancedFiltersOrderingObserver){const e=new MutationObserver(e=>{e.forEach(e=>{e.addedNodes.forEach(e=>{if(e.nodeType===Node.ELEMENT_NODE){const t=e,r=t.querySelector?.(".woocommerce-ordering .orderby")||(t.classList?.contains("woocommerce-ordering")?t.querySelector(".orderby"):null);r&&!r.__jankxAdvancedFiltersListenerAttached&&this.setupWooCommerceOrderingListener()}})})});e.observe(document.body,{childList:!0,subtree:!0}),document.__jankxAdvancedFiltersOrderingObserver=e}}handleFilterChange(){this.config&&(this.collectFilters(),this.config.ajaxEnabled?this.updateViaAjax():this.updateViaForm())}collectFilters(){if(!this.container)return;const e={};this.container.querySelectorAll(".filter-taxonomy").forEach(t=>{const r=t.getAttribute("data-taxonomy");if(!r)return;const i=[];t.querySelectorAll("input:checked, .filter-option.active").forEach(e=>{if(e instanceof HTMLInputElement)i.push(e.value);else if(e instanceof HTMLElement){const t=e.getAttribute("data-value");t&&i.push(t)}}),i.length>0&&(e[r]=i)}),this.container.querySelectorAll(".filter-meta").forEach(t=>{const r=t.getAttribute("data-meta-key");if(!r)return;const i=t.querySelector("input, select");i&&i.value&&(e[`meta_${r}`]=i.value)});const t=this.container.querySelector(".filter-price");if(t){const r=t.querySelector('[data-price="min"]'),i=t.querySelector('[data-price="max"]');(r?.value||i?.value)&&(e.price={min:r?.value||"",max:i?.value||""})}const r=this.container.querySelector(".filter-date");if(r){const t=r.querySelector('[data-date="start"]'),i=r.querySelector('[data-date="end"]');(t?.value||i?.value)&&(e.date={start:t?.value||"",end:i?.value||""})}const i=this.container.querySelector(".filter-keyword input.filter-input-keyword");i?.value&&(e.keyword=i.value);const n=this.container.querySelector('.filter-keyword .post-type-radios input[type="radio"]:checked')?.value||"";n&&(e.post_type=n);const o=document.querySelector(".woocommerce-ordering .orderby");o?.value&&(e.orderby=o.value),this.currentFilters=e}async updateViaAjax(){if(this.config&&0!==this.config.targetBlockIds.length){this.showLoading();try{const e=this.config?.nonce||window.jankxAdvancedFilters?.nonce||"";let t=this.config?.ajaxUrl||window.jankxAdvancedFilters?.ajaxUrl||"/wp-admin/admin-ajax.php";if(t.startsWith("/")?t=window.location.origin+t:t.startsWith("http://")||t.startsWith("https://")||(t=window.location.origin+"/"+t.replace(/^\//,"")),!e)return console.error("Nonce is missing! Cannot proceed with AJAX request."),alert("Security error: Please refresh the page and try again."),void this.hideLoading();let r=0;try{r=window.wp?.data?.select("core/editor")?.getCurrentPostId?.()||0}catch(e){}if(!r){const e=document.body.getAttribute("data-post-id");e&&(r=parseInt(e)||0)}if(!r){const e=new URLSearchParams(window.location.search),t=e.get("p")||e.get("post")||e.get("post_id");t&&(r=parseInt(t)||0)}if(!r){const e=document.body.className.match(/postid-(\d+)/);e&&(r=parseInt(e[1])||0)}const i=this.config.targetBlockIds.map(async i=>{const n=document.querySelector(`[data-query-id="${i}"], [data-block-id="${i}"]`);let o="";if(n){const e=n.getAttribute("data-block-settings");if(e)o=e;else{const e={queryId:i},t=n.getAttribute("data-post-type");t&&(e.postType=t);const r=n.getAttribute("data-layout");r&&(e.layout=r);const a=n.getAttribute("data-posts-per-page");a&&(e.postsPerPage=parseInt(a,10));const c=n.getAttribute("data-columns");c&&(e.columns=parseInt(c,10));const s=n.getAttribute("data-columns-tablet");s&&(e.columnsTablet=parseInt(s,10));const l=n.getAttribute("data-columns-mobile");l&&(e.columnsMobile=parseInt(l,10));const d=n.getAttribute("data-order-by");d&&(e.orderBy=d);const u=n.getAttribute("data-order");u&&(e.order=u);const h=n.getAttribute("data-query-preset");h&&(e.queryPreset=h);const f=n.getAttribute("data-image-ratio");f&&(e.imageRatio=f);const p=n.getAttribute("data-thumbnail-position");p&&(e.thumbnailPosition=p),Object.keys(e).length>1&&(o=JSON.stringify(e))}}o||console.warn(`AdvancedFilters: Could not find block attributes for block ${i}, server will try to detect from block_id`);const a=new URLSearchParams({action:"jankx_dynamic_data_layout_filter",nonce:e,block_id:i,attributes:o,filters:JSON.stringify(this.currentFilters)});let c,s;r>0?a.append("post_id",String(r)):console.warn("AdvancedFilters: Could not determine post_id, server will try to detect it");try{c=await fetch(t,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:a,credentials:"same-origin"})}catch(e){if(console.error(`Network error when fetching filter update for block ${i}:`,e),e instanceof TypeError&&e.message.includes("fetch"))return console.warn("Possible page redirect detected, falling back to form submission"),null;throw e}if(!c.ok){let e="";try{e=await c.text()}catch(t){e=`HTTP ${c.status} ${c.statusText}`}throw console.error(`Filter update failed for block ${i}:`,c.status,e),new Error(`HTTP ${c.status}: ${e}`)}try{s=await c.json()}catch(e){throw console.error(`Failed to parse JSON response for block ${i}:`,e),new Error("Invalid JSON response from server")}if(s.success&&s.data)return{blockId:i,html:s.data.html};{const e=s?.data?.message||s?.data||"Unknown error";throw console.error(`Filter update failed for block ${i}:`,e),new Error(e)}}),n=(await Promise.all(i)).filter(e=>null!==e);if(0===n.length)return console.warn("No valid results from filter update"),void this.hideLoading();const o={};n.forEach(e=>{o[e.blockId]=e.html}),this.updateTargetBlocks(o),this.config.updateUrl&&this.updateUrl(),this.config.scrollToResults&&this.scrollToResults()}catch(e){console.error("Error updating filters:",e),alert(`Error updating filters: ${e instanceof Error?e.message:"Unknown error"}`)}finally{this.hideLoading()}}}updateViaForm(){if(!this.container)return;const e=this.container.closest("form");e&&e.submit()}updateTargetBlocks(e){Object.entries(e).forEach(([e,t])=>{let r=document.querySelector(`[data-block-id="${e}"]`);if(r||(r=document.querySelector(`[data-query-id="${e}"]`)),r||(r=document.getElementById(`block-${e}`)),r||document.querySelectorAll(".wp-block-jankx-dynamic-data-layout").forEach(t=>{t.getAttribute("data-query-id")===e&&(r=t)}),r){const e=r.querySelector(".dynamic-data-layout-loading");e&&e.remove();const i=document.createElement("div");i.innerHTML=t.trim();const n=i.firstElementChild;if(n){const e=r,t=n;e.className=t.className,Array.from(t.attributes).forEach(t=>{const r=t.name,i=t.value;"id"!==r&&e.setAttribute(r,i)}),e.innerHTML=t.innerHTML,this.reinitializeBlockScripts(e)}else r.innerHTML=t}else console.warn(`AdvancedFiltersBlock: Target block with ID "${e}" not found in DOM`)})}reinitializeBlockScripts(e){if(e.querySelector(".dynamic-data-layout-carousel")){const t=new CustomEvent("jankx:reinitialize-carousel",{detail:{element:e}});document.dispatchEvent(t)}if(e.querySelector(".jankx-load-more-button")){const t=new CustomEvent("jankx:reinitialize-load-more",{detail:{element:e}});document.dispatchEvent(t)}}updateUrl(){const e=new URL(window.location.href);Object.entries(this.currentFilters).forEach(([t,r])=>{Array.isArray(r)?e.searchParams.set(t,r.join(",")):"object"==typeof r?Object.entries(r).forEach(([r,i])=>{i&&e.searchParams.set(`${t}_${r}`,String(i))}):e.searchParams.set(t,String(r))}),window.history.pushState({},"",e.toString())}scrollToResults(){if(this.config&&this.config.targetBlockIds.length>0){const e=document.querySelector(`[data-block-id="${this.config.targetBlockIds[0]}"]`);e&&e.scrollIntoView({behavior:"smooth",block:"start"})}}handleReset(){this.container&&(this.container.querySelectorAll("input, select").forEach(e=>{e instanceof HTMLInputElement?"checkbox"===e.type||"radio"===e.type?e.checked=!1:e.value="":e instanceof HTMLSelectElement&&(e.selectedIndex=0)}),this.container.querySelectorAll(".filter-option").forEach(e=>{e.classList.remove("active")}),this.currentFilters={},this.handleFilterChange())}showLoading(){this.config&&this.config.targetBlockIds&&this.config.targetBlockIds.forEach(e=>{let t=document.querySelector(`[data-block-id="${e}"], [data-query-id="${e}"]`);if(t||document.querySelectorAll(".wp-block-jankx-dynamic-data-layout").forEach(r=>{r.getAttribute("data-query-id")===e&&(t=r)}),t){let e=t.querySelector(".dynamic-data-layout-loading");e||(e=document.createElement("div"),e.className="dynamic-data-layout-loading",e.innerHTML='<div class="dynamic-data-layout-spinner"></div>',t.appendChild(e)),e.classList.add("active")}})}hideLoading(){this.config&&this.config.targetBlockIds&&this.config.targetBlockIds.forEach(e=>{let t=document.querySelector(`[data-block-id="${e}"], [data-query-id="${e}"]`);if(t||document.querySelectorAll(".wp-block-jankx-dynamic-data-layout").forEach(r=>{r.getAttribute("data-query-id")===e&&(t=r)}),t){const e=t.querySelector(".dynamic-data-layout-loading");e&&e.classList.remove("active")}})}debounce(e,t){let r;return(...i)=>{clearTimeout(r),r=setTimeout(()=>e(...i),t)}}loadFiltersFromUrl(){if(!this.container)return;const e=new URLSearchParams(window.location.search),t={};(this.config?.taxonomyFilters||[]).map(e=>e.taxonomy).filter(Boolean).forEach(r=>{const i=e.get(r);if(i){const e=i.split(",").map(e=>parseInt(e.trim())).filter(e=>!isNaN(e));e.length>0&&(t[r]=e)}});const r=e.get("keyword");r&&(t.keyword=r);const i=e.get("post_type");null!==i&&(t.post_type=""!==i?i:""),e.forEach((e,r)=>{r.startsWith("meta_")&&(t[r]=e)});const n=e.get("price_min"),o=e.get("price_max");(n||o)&&(t.price={},n&&(t.price.min=n),o&&(t.price.max=o));const a=e.get("date_start"),c=e.get("date_end");(a||c)&&(t.date={},a&&(t.date.start=a),c&&(t.date.end=c));const s=e.get("author");if(s){const e=s.split(",").map(e=>parseInt(e.trim())).filter(e=>!isNaN(e));e.length>0&&(t.author=e)}Object.keys(t).length>0&&(this.currentFilters=t,this.applyFiltersToUI(t))}applyFiltersToUI(e){this.container&&Object.entries(e).forEach(([e,t])=>{if(Array.isArray(t)){const r=this.container.querySelector(`[data-taxonomy="${e}"], [data-filter-type="author"]`);r&&t.forEach(e=>{const t=r.querySelector(`input[value="${e}"]`);t&&(t.checked=!0);const i=r.querySelector(`[data-value="${e}"]`);i&&i.classList.add("active")})}else if("object"==typeof t&&null!==t){if("price"===e){const e=this.container.querySelector(".filter-price");if(e){const r=e.querySelector('[name="price_min"]'),i=e.querySelector('[name="price_max"]');r&&t.min&&(r.value=t.min),i&&t.max&&(i.value=t.max)}}else if("date"===e){const e=this.container.querySelector(".filter-date");if(e){const r=e.querySelector('[name="date_start"]'),i=e.querySelector('[name="date_end"]');r&&t.start&&(r.value=t.start),i&&t.end&&(i.value=t.end)}}}else if("keyword"===e){const e=this.container.querySelector(".filter-keyword input.filter-input-keyword");e&&(e.value=t)}else if("post_type"===e)this.container.querySelectorAll('.filter-keyword .post-type-radios input[type="radio"]').forEach(e=>{e.checked=e.value===t||""===t&&""===e.value;const r=e.closest(".filter-option");r&&r.classList.toggle("active",e.checked)});else if(e.startsWith("meta_")){const r=e.replace("meta_",""),i=this.container.querySelector(`[data-meta-key="${r}"]`);if(i){const e=i.querySelector("input, select");e&&(e.value=t)}}})}}function t(){document.querySelectorAll(".wp-block-jankx-advanced-filters").forEach(t=>{t instanceof HTMLElement&&new e(t)})}"loading"===document.readyState?document.addEventListener("DOMContentLoaded",t):t(),"undefined"!=typeof window&&(window.AdvancedFilters=e)})();
+/******/ (() => { // webpackBootstrap
+/*!*********************************************!*\
+  !*** ./blocks/advanced-filters/frontend.ts ***!
+  \*********************************************/
+/**
+ * Advanced Filters Block - Frontend JavaScript
+ *
+ * Handles filter interactions and AJAX updates
+ */
+
+class AdvancedFilters {
+  config = null;
+  container = null;
+  currentFilters = {};
+  constructor(container) {
+    this.container = container;
+    // Expose instance for external triggers (e.g., smart-tab)
+    this.container.advancedFiltersInstance = this;
+    // Move padding from wrapper to inner container (so it's inside border)
+    this.movePaddingToContainer();
+    this.init();
+  }
+
+  /**
+   * Move padding from wrapper to inner container
+   * This ensures padding is inside the border, not outside
+   */
+  movePaddingToContainer() {
+    if (!this.container) return;
+    const container = this.container.querySelector('.advanced-filters-container');
+    if (!container) return;
+
+    // Get computed styles from wrapper
+    const wrapperStyles = window.getComputedStyle(this.container);
+    const paddingTop = wrapperStyles.paddingTop;
+    const paddingRight = wrapperStyles.paddingRight;
+    const paddingBottom = wrapperStyles.paddingBottom;
+    const paddingLeft = wrapperStyles.paddingLeft;
+
+    // Only move padding if it's not zero
+    if (paddingTop !== '0px' || paddingRight !== '0px' || paddingBottom !== '0px' || paddingLeft !== '0px') {
+      // Apply padding to inner container
+      container.style.paddingTop = paddingTop;
+      container.style.paddingRight = paddingRight;
+      container.style.paddingBottom = paddingBottom;
+      container.style.paddingLeft = paddingLeft;
+
+      // Remove padding from wrapper
+      this.container.style.padding = '0';
+
+      // Also adjust reset button margins if it exists
+      const resetButton = this.container.querySelector('.filter-reset-button');
+      if (resetButton) {
+        resetButton.style.marginLeft = paddingLeft;
+        resetButton.style.marginRight = paddingRight;
+        resetButton.style.marginBottom = paddingBottom;
+      }
+    }
+  }
+  init() {
+    if (!this.container) return;
+    const configElement = this.container.querySelector('.advanced-filters-config');
+    if (!configElement) return;
+    try {
+      const configData = configElement.getAttribute('data-config');
+      if (configData) {
+        this.config = JSON.parse(configData);
+        // Get nonce and AJAX URL from data attributes (fallback to localized script)
+        const nonce = configElement.getAttribute('data-nonce') || window.jankxAdvancedFilters?.nonce || '';
+        const ajaxUrl = configElement.getAttribute('data-ajax-url') || window.jankxAdvancedFilters?.ajaxUrl || '/wp-admin/admin-ajax.php';
+
+        // Store nonce and AJAX URL in config for later use
+        this.config.nonce = nonce;
+        this.config.ajaxUrl = ajaxUrl;
+
+        // Load filter values from URL on page load
+        this.loadFiltersFromUrl();
+        this.setupEventListeners();
+      }
+    } catch (error) {
+      console.error('Error parsing filter config:', error);
+    }
+  }
+  setupEventListeners() {
+    if (!this.container || !this.config) return;
+
+    // Taxonomy filters
+    this.container.querySelectorAll('.filter-taxonomy input, .filter-taxonomy .filter-option').forEach(element => {
+      if (element instanceof HTMLInputElement || element instanceof HTMLElement) {
+        element.addEventListener('change', () => this.handleFilterChange());
+        if (element instanceof HTMLElement && element.classList.contains('filter-option')) {
+          element.addEventListener('click', e => {
+            e.preventDefault();
+
+            // Find the checkbox/radio input inside the filter-option (label)
+            const input = element.querySelector('input[type="checkbox"], input[type="radio"]');
+
+            // Find the parent filter group to check multiple selection setting
+            const filterGroup = element.closest('[data-taxonomy]');
+            const multipleSelection = filterGroup?.getAttribute('data-multiple-selection') === 'true';
+            if (input) {
+              if (multipleSelection) {
+                // Toggle: allow multiple selections
+                input.checked = !input.checked;
+                element.classList.toggle('active', input.checked);
+              } else {
+                // Single selection: uncheck all siblings, then check this one
+                const siblings = filterGroup?.querySelectorAll('input[type="checkbox"], input[type="radio"]');
+                siblings?.forEach(sibling => {
+                  sibling.checked = false;
+                  const siblingOption = sibling.closest('.filter-option');
+                  if (siblingOption) {
+                    siblingOption.classList.remove('active');
+                  }
+                });
+                input.checked = true;
+                element.classList.add('active');
+              }
+
+              // Trigger change event on input to ensure other listeners are notified
+              input.dispatchEvent(new Event('change', {
+                bubbles: true
+              }));
+            } else {
+              // Fallback: if no input found, just toggle active class (for button-style options)
+              if (multipleSelection) {
+                // Toggle: allow multiple selections
+                element.classList.toggle('active');
+              } else {
+                // Single selection: deactivate siblings, then toggle this one
+                const siblings = filterGroup?.querySelectorAll('.filter-option');
+                siblings?.forEach(sibling => sibling.classList.remove('active'));
+                element.classList.toggle('active');
+              }
+            }
+            this.handleFilterChange();
+          });
+        }
+      }
+    });
+
+    // Meta filters
+    this.container.querySelectorAll('.filter-meta input, .filter-meta select').forEach(element => {
+      element.addEventListener('change', () => this.handleFilterChange());
+      element.addEventListener('input', () => {
+        if (this.config?.ajaxEnabled) {
+          this.debounce(() => this.handleFilterChange(), 500)();
+        }
+      });
+    });
+
+    // Price filters
+    this.container.querySelectorAll('.filter-price input').forEach(element => {
+      element.addEventListener('input', () => {
+        if (this.config?.ajaxEnabled) {
+          this.debounce(() => this.handleFilterChange(), 500)();
+        }
+      });
+    });
+
+    // Date filters
+    this.container.querySelectorAll('.filter-date input').forEach(element => {
+      element.addEventListener('change', () => this.handleFilterChange());
+    });
+
+    // Keyword filter
+    const keywordInput = this.container.querySelector('.filter-keyword input.filter-input-keyword');
+    if (keywordInput) {
+      const keywordGroup = keywordInput.closest('.filter-group[data-filter-type="keyword"]');
+      const keywordAction = keywordGroup?.getAttribute('data-keyword-action') || 'typing';
+      const searchButton = this.container.querySelector('.filter-keyword .filter-search-button');
+      if (keywordAction === 'button' && searchButton) {
+        // Only trigger when clicking search button or pressing Enter
+        searchButton.addEventListener('click', () => this.handleFilterChange());
+        keywordInput.addEventListener('keydown', e => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            this.handleFilterChange();
+          }
+        });
+      } else {
+        // Default: filter while typing (debounced)
+        keywordInput.addEventListener('input', () => {
+          if (this.config?.ajaxEnabled) {
+            this.debounce(() => this.handleFilterChange(), 500)();
+          }
+        });
+      }
+    }
+
+    // Post type radio (inside keyword filter)
+    this.container.querySelectorAll('.filter-keyword .post-type-radios input[type="radio"]').forEach(element => {
+      element.addEventListener('change', () => this.handleFilterChange());
+    });
+
+    // Reset button
+    const resetButton = this.container.querySelector('.filter-reset-button');
+    if (resetButton) {
+      resetButton.addEventListener('click', () => this.handleReset());
+    }
+
+    // WooCommerce ordering form
+    this.setupWooCommerceOrderingListener();
+  }
+
+  /**
+   * Setup event listener for WooCommerce ordering form
+   * 
+   * @return void
+   */
+  setupWooCommerceOrderingListener() {
+    // Try to find WooCommerce ordering form
+    let woocommerceOrdering = document.querySelector('.woocommerce-ordering .orderby');
+    if (!woocommerceOrdering) {
+      // Form not found, might not be loaded yet, try again after DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+          this.setupWooCommerceOrderingListener();
+        });
+      } else {
+        // If DOM is ready but form not found, try again after a short delay
+        // This handles cases where form is rendered dynamically
+        setTimeout(() => {
+          this.setupWooCommerceOrderingListener();
+        }, 500);
+      }
+      return;
+    }
+
+    // Check if listener already attached to avoid duplicate listeners
+    if (woocommerceOrdering.__jankxAdvancedFiltersListenerAttached) {
+      return;
+    }
+
+    // Mark as attached
+    woocommerceOrdering.__jankxAdvancedFiltersListenerAttached = true;
+
+    // Prevent default form submission behavior
+    const orderingForm = woocommerceOrdering.closest('form.woocommerce-ordering');
+    if (orderingForm && !orderingForm.__jankxAdvancedFiltersPreventDefaultAttached) {
+      orderingForm.__jankxAdvancedFiltersPreventDefaultAttached = true;
+      orderingForm.addEventListener('submit', e => {
+        // Only prevent default if AJAX is enabled
+        if (this.config && this.config.ajaxEnabled) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+        // If AJAX is not enabled, allow normal form submission
+      });
+    }
+
+    // Listen for change event on orderby select
+    woocommerceOrdering.addEventListener('change', e => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      // Trigger filter update when orderby changes
+      if (this.config && this.config.ajaxEnabled) {
+        // Small delay to ensure form doesn't submit
+        setTimeout(() => {
+          this.handleFilterChange();
+        }, 50);
+      } else {
+        // If AJAX is not enabled, submit the form normally
+        if (orderingForm) {
+          orderingForm.submit();
+        }
+      }
+    });
+
+    // Also listen for dynamically added forms
+    // Use MutationObserver to handle cases where form is added after page load
+    if (!document.__jankxAdvancedFiltersOrderingObserver) {
+      const observer = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+          mutation.addedNodes.forEach(node => {
+            if (node.nodeType === Node.ELEMENT_NODE) {
+              const element = node;
+              // Check if the added node or its children contain the ordering form
+              const newOrdering = element.querySelector?.('.woocommerce-ordering .orderby') || (element.classList?.contains('woocommerce-ordering') ? element.querySelector('.orderby') : null);
+              if (newOrdering && !newOrdering.__jankxAdvancedFiltersListenerAttached) {
+                // New form found, setup listener
+                this.setupWooCommerceOrderingListener();
+              }
+            }
+          });
+        });
+      });
+
+      // Observe the document body for new elements
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+      document.__jankxAdvancedFiltersOrderingObserver = observer;
+    }
+  }
+  handleFilterChange() {
+    if (!this.config) return;
+    this.collectFilters();
+    if (this.config.ajaxEnabled) {
+      this.updateViaAjax();
+    } else {
+      this.updateViaForm();
+    }
+  }
+  collectFilters() {
+    if (!this.container) return;
+    const filters = {};
+
+    // Collect taxonomy filters
+    this.container.querySelectorAll('.filter-taxonomy').forEach(group => {
+      const taxonomy = group.getAttribute('data-taxonomy');
+      if (!taxonomy) return;
+      const selected = [];
+      group.querySelectorAll('input:checked, .filter-option.active').forEach(element => {
+        if (element instanceof HTMLInputElement) {
+          selected.push(element.value);
+        } else if (element instanceof HTMLElement) {
+          const value = element.getAttribute('data-value');
+          if (value) selected.push(value);
+        }
+      });
+      if (selected.length > 0) {
+        filters[taxonomy] = selected;
+      }
+    });
+
+    // Collect meta filters
+    this.container.querySelectorAll('.filter-meta').forEach(group => {
+      const metaKey = group.getAttribute('data-meta-key');
+      if (!metaKey) return;
+      const input = group.querySelector('input, select');
+      if (input && input.value) {
+        filters[`meta_${metaKey}`] = input.value;
+      }
+    });
+
+    // Collect price filters
+    const priceGroup = this.container.querySelector('.filter-price');
+    if (priceGroup) {
+      const minInput = priceGroup.querySelector('[data-price="min"]');
+      const maxInput = priceGroup.querySelector('[data-price="max"]');
+      if (minInput?.value || maxInput?.value) {
+        filters.price = {
+          min: minInput?.value || '',
+          max: maxInput?.value || ''
+        };
+      }
+    }
+
+    // Collect date filters
+    const dateGroup = this.container.querySelector('.filter-date');
+    if (dateGroup) {
+      const startInput = dateGroup.querySelector('[data-date="start"]');
+      const endInput = dateGroup.querySelector('[data-date="end"]');
+      if (startInput?.value || endInput?.value) {
+        filters.date = {
+          start: startInput?.value || '',
+          end: endInput?.value || ''
+        };
+      }
+    }
+
+    // Collect keyword filter
+    const keywordInput = this.container.querySelector('.filter-keyword input.filter-input-keyword');
+    if (keywordInput?.value) {
+      filters.keyword = keywordInput.value;
+    }
+
+    // Collect selected post type (if radios exist)
+    const selectedPostType = this.container.querySelector('.filter-keyword .post-type-radios input[type="radio"]:checked')?.value || '';
+    if (selectedPostType) {
+      filters.post_type = selectedPostType;
+    }
+
+    // Collect WooCommerce ordering
+    const woocommerceOrdering = document.querySelector('.woocommerce-ordering .orderby');
+    if (woocommerceOrdering?.value) {
+      filters.orderby = woocommerceOrdering.value;
+    }
+    this.currentFilters = filters;
+  }
+  async updateViaAjax() {
+    if (!this.config || this.config.targetBlockIds.length === 0) return;
+    this.showLoading();
+    try {
+      // Get nonce from config (set in init) or fallback to localized script
+      const nonce = this.config?.nonce || window.jankxAdvancedFilters?.nonce || '';
+      let ajaxUrl = this.config?.ajaxUrl || window.jankxAdvancedFilters?.ajaxUrl || '/wp-admin/admin-ajax.php';
+
+      // Ensure AJAX URL is absolute
+      if (ajaxUrl.startsWith('/')) {
+        // Relative URL, make it absolute
+        ajaxUrl = window.location.origin + ajaxUrl;
+      } else if (!ajaxUrl.startsWith('http://') && !ajaxUrl.startsWith('https://')) {
+        // Relative URL without leading slash, add origin
+        ajaxUrl = window.location.origin + '/' + ajaxUrl.replace(/^\//, '');
+      }
+      if (!nonce) {
+        console.error('Nonce is missing! Cannot proceed with AJAX request.');
+        alert('Security error: Please refresh the page and try again.');
+        this.hideLoading();
+        return;
+      }
+
+      // Get current post ID if available - try multiple methods
+      let postId = 0;
+
+      // Method 1: From WordPress editor (admin)
+      try {
+        postId = window.wp?.data?.select('core/editor')?.getCurrentPostId?.() || 0;
+      } catch (e) {
+        // Not in editor
+      }
+
+      // Method 2: From body data attribute
+      if (!postId) {
+        const bodyPostId = document.body.getAttribute('data-post-id');
+        if (bodyPostId) {
+          postId = parseInt(bodyPostId) || 0;
+        }
+      }
+
+      // Method 3: From URL query string
+      if (!postId) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlPostId = urlParams.get('p') || urlParams.get('post') || urlParams.get('post_id');
+        if (urlPostId) {
+          postId = parseInt(urlPostId) || 0;
+        }
+      }
+
+      // Method 4: From body classes (WordPress adds postid-{ID} class)
+      if (!postId) {
+        const bodyClasses = document.body.className;
+        const postIdMatch = bodyClasses.match(/postid-(\d+)/);
+        if (postIdMatch) {
+          postId = parseInt(postIdMatch[1]) || 0;
+        }
+      }
+
+      // Use DynamicDataLayoutBlock's AJAX handler
+      // Process each target block individually
+      const updatePromises = this.config.targetBlockIds.map(async blockId => {
+        // Get block attributes from DOM if available
+        const targetBlock = document.querySelector(`[data-query-id="${blockId}"], [data-block-id="${blockId}"]`);
+        let attributesJson = '';
+        if (targetBlock) {
+          // Try to get data-block-settings first (for PostTypeLayoutBlock)
+          const blockSettings = targetBlock.getAttribute('data-block-settings');
+          if (blockSettings) {
+            attributesJson = blockSettings;
+          } else {
+            // For DynamicDataLayoutBlock, build attributes from data attributes
+            const attributes = {
+              queryId: blockId
+            };
+
+            // Collect all data attributes
+            const postType = targetBlock.getAttribute('data-post-type');
+            if (postType) attributes.postType = postType;
+            const layout = targetBlock.getAttribute('data-layout');
+            if (layout) attributes.layout = layout;
+            const postsPerPage = targetBlock.getAttribute('data-posts-per-page');
+            if (postsPerPage) attributes.postsPerPage = parseInt(postsPerPage, 10);
+            const columns = targetBlock.getAttribute('data-columns');
+            if (columns) attributes.columns = parseInt(columns, 10);
+            const columnsTablet = targetBlock.getAttribute('data-columns-tablet');
+            if (columnsTablet) attributes.columnsTablet = parseInt(columnsTablet, 10);
+            const columnsMobile = targetBlock.getAttribute('data-columns-mobile');
+            if (columnsMobile) attributes.columnsMobile = parseInt(columnsMobile, 10);
+            const orderBy = targetBlock.getAttribute('data-order-by');
+            if (orderBy) attributes.orderBy = orderBy;
+            const order = targetBlock.getAttribute('data-order');
+            if (order) attributes.order = order;
+            const queryPreset = targetBlock.getAttribute('data-query-preset');
+            if (queryPreset) attributes.queryPreset = queryPreset;
+            const imageRatio = targetBlock.getAttribute('data-image-ratio');
+            if (imageRatio) attributes.imageRatio = imageRatio;
+            const thumbnailPosition = targetBlock.getAttribute('data-thumbnail-position');
+            if (thumbnailPosition) attributes.thumbnailPosition = thumbnailPosition;
+
+            // Convert to JSON if we have any attributes
+            if (Object.keys(attributes).length > 1) {
+              // More than just queryId
+              attributesJson = JSON.stringify(attributes);
+            }
+          }
+        }
+
+        // If still no attributes, log warning but continue (server will try to find block)
+        if (!attributesJson) {
+          console.warn(`AdvancedFilters: Could not find block attributes for block ${blockId}, server will try to detect from block_id`);
+        }
+        const params = new URLSearchParams({
+          action: 'jankx_dynamic_data_layout_filter',
+          nonce: nonce,
+          block_id: blockId,
+          attributes: attributesJson,
+          filters: JSON.stringify(this.currentFilters)
+        });
+
+        // Always send post_id if we have it
+        if (postId > 0) {
+          params.append('post_id', String(postId));
+        } else {
+          console.warn('AdvancedFilters: Could not determine post_id, server will try to detect it');
+        }
+        let response;
+        try {
+          response = await fetch(ajaxUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: params,
+            credentials: 'same-origin' // Include cookies for WordPress
+          });
+        } catch (fetchError) {
+          // Network error - could be CORS, connection issue, or page redirect
+          console.error(`Network error when fetching filter update for block ${blockId}:`, fetchError);
+
+          // If it's a NetworkError, the page might be redirecting
+          if (fetchError instanceof TypeError && fetchError.message.includes('fetch')) {
+            console.warn('Possible page redirect detected, falling back to form submission');
+            // Don't throw error, just return null to skip this block update
+            return null;
+          }
+          throw fetchError;
+        }
+        if (!response.ok) {
+          let errorText = '';
+          try {
+            errorText = await response.text();
+          } catch (e) {
+            errorText = `HTTP ${response.status} ${response.statusText}`;
+          }
+          console.error(`Filter update failed for block ${blockId}:`, response.status, errorText);
+          throw new Error(`HTTP ${response.status}: ${errorText}`);
+        }
+        let data;
+        try {
+          data = await response.json();
+        } catch (jsonError) {
+          console.error(`Failed to parse JSON response for block ${blockId}:`, jsonError);
+          throw new Error('Invalid JSON response from server');
+        }
+        if (data.success && data.data) {
+          return {
+            blockId: blockId,
+            html: data.data.html
+          };
+        } else {
+          const errorMessage = data?.data?.message || data?.data || 'Unknown error';
+          console.error(`Filter update failed for block ${blockId}:`, errorMessage);
+          throw new Error(errorMessage);
+        }
+      });
+
+      // Wait for all blocks to update (filter out null results)
+      const results = await Promise.all(updatePromises);
+      const validResults = results.filter(result => result !== null);
+      if (validResults.length === 0) {
+        console.warn('No valid results from filter update');
+        this.hideLoading();
+        return;
+      }
+
+      // Update target blocks
+      const resultsMap = {};
+      validResults.forEach(result => {
+        resultsMap[result.blockId] = result.html;
+      });
+      this.updateTargetBlocks(resultsMap);
+      if (this.config.updateUrl) {
+        this.updateUrl();
+      }
+      if (this.config.scrollToResults) {
+        this.scrollToResults();
+      }
+    } catch (error) {
+      console.error('Error updating filters:', error);
+      alert(`Error updating filters: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+      this.hideLoading();
+    }
+  }
+  updateViaForm() {
+    if (!this.container) return;
+    const form = this.container.closest('form');
+    if (form) {
+      form.submit();
+    }
+  }
+  updateTargetBlocks(data) {
+    Object.entries(data).forEach(([blockId, html]) => {
+      // Try multiple selectors to find the target block
+      let targetElement = document.querySelector(`[data-block-id="${blockId}"]`);
+      if (!targetElement) {
+        // Try by queryId attribute if present in the rendered HTML
+        targetElement = document.querySelector(`[data-query-id="${blockId}"]`);
+      }
+      if (!targetElement) {
+        // Try by ID
+        targetElement = document.getElementById(`block-${blockId}`);
+      }
+      if (!targetElement) {
+        // Try finding by class and queryId data attribute
+        const blocks = document.querySelectorAll('.wp-block-jankx-dynamic-data-layout');
+        blocks.forEach(block => {
+          const queryId = block.getAttribute('data-query-id');
+          if (queryId === blockId) {
+            targetElement = block;
+          }
+        });
+      }
+      if (targetElement) {
+        // Remove loading spinner before updating content
+        const existingLoading = targetElement.querySelector('.dynamic-data-layout-loading');
+        if (existingLoading) {
+          existingLoading.remove();
+        }
+
+        // Parse the returned HTML and update the existing node without replacing it
+        // to preserve references and avoid losing the target block identity
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html.trim();
+        const newContent = tempDiv.firstElementChild;
+        if (newContent) {
+          const target = targetElement;
+          const source = newContent;
+
+          // Sync classes
+          target.className = source.className;
+
+          // Sync common data attributes present in source
+          Array.from(source.attributes).forEach(attr => {
+            const name = attr.name;
+            const value = attr.value;
+            if (name === 'id') return; // keep existing id
+            target.setAttribute(name, value);
+          });
+
+          // Update inner HTML only
+          target.innerHTML = source.innerHTML;
+
+          // Re-initialize any scripts that might be needed (e.g., carousel, load-more)
+          this.reinitializeBlockScripts(target);
+        } else {
+          // Fallback: just replace innerHTML
+          targetElement.innerHTML = html;
+        }
+      } else {
+        console.warn(`AdvancedFiltersBlock: Target block with ID "${blockId}" not found in DOM`);
+      }
+    });
+  }
+  reinitializeBlockScripts(element) {
+    // Re-initialize carousel if present
+    if (element.querySelector('.dynamic-data-layout-carousel')) {
+      // Trigger any carousel initialization scripts
+      const event = new CustomEvent('jankx:reinitialize-carousel', {
+        detail: {
+          element
+        }
+      });
+      document.dispatchEvent(event);
+    }
+
+    // Re-initialize load-more buttons if present
+    if (element.querySelector('.jankx-load-more-button')) {
+      // Trigger load-more initialization
+      const event = new CustomEvent('jankx:reinitialize-load-more', {
+        detail: {
+          element
+        }
+      });
+      document.dispatchEvent(event);
+    }
+  }
+  updateUrl() {
+    const url = new URL(window.location.href);
+    Object.entries(this.currentFilters).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        url.searchParams.set(key, value.join(','));
+      } else if (typeof value === 'object') {
+        Object.entries(value).forEach(([k, v]) => {
+          if (v) url.searchParams.set(`${key}_${k}`, String(v));
+        });
+      } else {
+        url.searchParams.set(key, String(value));
+      }
+    });
+    window.history.pushState({}, '', url.toString());
+  }
+  scrollToResults() {
+    if (this.config && this.config.targetBlockIds.length > 0) {
+      const firstTarget = document.querySelector(`[data-block-id="${this.config.targetBlockIds[0]}"]`);
+      if (firstTarget) {
+        firstTarget.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    }
+  }
+  handleReset() {
+    if (!this.container) return;
+    this.container.querySelectorAll('input, select').forEach(element => {
+      if (element instanceof HTMLInputElement) {
+        if (element.type === 'checkbox' || element.type === 'radio') {
+          element.checked = false;
+        } else {
+          element.value = '';
+        }
+      } else if (element instanceof HTMLSelectElement) {
+        element.selectedIndex = 0;
+      }
+    });
+    this.container.querySelectorAll('.filter-option').forEach(element => {
+      element.classList.remove('active');
+    });
+    this.currentFilters = {};
+    this.handleFilterChange();
+  }
+  showLoading() {
+    if (!this.config || !this.config.targetBlockIds) return;
+
+    // Show loading spinner on target blocks (dynamic-data-layout blocks)
+    this.config.targetBlockIds.forEach(blockId => {
+      let targetElement = document.querySelector(`[data-block-id="${blockId}"], [data-query-id="${blockId}"]`);
+      if (!targetElement) {
+        // Try finding by class and queryId data attribute
+        const blocks = document.querySelectorAll('.wp-block-jankx-dynamic-data-layout');
+        blocks.forEach(block => {
+          const queryId = block.getAttribute('data-query-id');
+          if (queryId === blockId) {
+            targetElement = block;
+          }
+        });
+      }
+      if (targetElement) {
+        // Create or get loading element
+        let loading = targetElement.querySelector('.dynamic-data-layout-loading');
+        if (!loading) {
+          // Create loading element if it doesn't exist
+          loading = document.createElement('div');
+          loading.className = 'dynamic-data-layout-loading';
+          loading.innerHTML = '<div class="dynamic-data-layout-spinner"></div>';
+          targetElement.appendChild(loading);
+        }
+        loading.classList.add('active');
+      }
+    });
+  }
+  hideLoading() {
+    if (!this.config || !this.config.targetBlockIds) return;
+
+    // Hide loading spinner on target blocks
+    this.config.targetBlockIds.forEach(blockId => {
+      let targetElement = document.querySelector(`[data-block-id="${blockId}"], [data-query-id="${blockId}"]`);
+      if (!targetElement) {
+        // Try finding by class and queryId data attribute
+        const blocks = document.querySelectorAll('.wp-block-jankx-dynamic-data-layout');
+        blocks.forEach(block => {
+          const queryId = block.getAttribute('data-query-id');
+          if (queryId === blockId) {
+            targetElement = block;
+          }
+        });
+      }
+      if (targetElement) {
+        const loading = targetElement.querySelector('.dynamic-data-layout-loading');
+        if (loading) {
+          loading.classList.remove('active');
+        }
+      }
+    });
+  }
+  debounce(func, wait) {
+    let timeout;
+    return (...args) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func(...args), wait);
+    };
+  }
+
+  /**
+   * Load filter values from URL query string on page load
+   * This ensures filters persist after page reload
+   */
+  loadFiltersFromUrl() {
+    if (!this.container) return;
+    const urlParams = new URLSearchParams(window.location.search);
+    const filters = {};
+
+    // Get all public taxonomies from config
+    const taxonomyFilters = this.config?.taxonomyFilters || [];
+    const taxonomySlugs = taxonomyFilters.map(f => f.taxonomy).filter(Boolean);
+
+    // Load taxonomy filters
+    taxonomySlugs.forEach(taxonomy => {
+      const value = urlParams.get(taxonomy);
+      if (value) {
+        const termIds = value.split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id));
+        if (termIds.length > 0) {
+          filters[taxonomy] = termIds;
+        }
+      }
+    });
+
+    // Load keyword filter
+    const keyword = urlParams.get('keyword');
+    if (keyword) {
+      filters.keyword = keyword;
+    }
+
+    // Load selected post type
+    const urlPostType = urlParams.get('post_type');
+    if (urlPostType !== null) {
+      if (urlPostType !== '') {
+        filters.post_type = urlPostType;
+      } else {
+        filters.post_type = '';
+      }
+    }
+
+    // Load meta filters
+    urlParams.forEach((value, key) => {
+      if (key.startsWith('meta_')) {
+        filters[key] = value;
+      }
+    });
+
+    // Load price filters
+    const priceMin = urlParams.get('price_min');
+    const priceMax = urlParams.get('price_max');
+    if (priceMin || priceMax) {
+      filters.price = {};
+      if (priceMin) filters.price.min = priceMin;
+      if (priceMax) filters.price.max = priceMax;
+    }
+
+    // Load date filters
+    const dateStart = urlParams.get('date_start');
+    const dateEnd = urlParams.get('date_end');
+    if (dateStart || dateEnd) {
+      filters.date = {};
+      if (dateStart) filters.date.start = dateStart;
+      if (dateEnd) filters.date.end = dateEnd;
+    }
+
+    // Load author filter
+    const author = urlParams.get('author');
+    if (author) {
+      const authorIds = author.split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id));
+      if (authorIds.length > 0) {
+        filters.author = authorIds;
+      }
+    }
+
+    // Apply filters to UI
+    if (Object.keys(filters).length > 0) {
+      this.currentFilters = filters;
+      this.applyFiltersToUI(filters);
+    }
+  }
+
+  /**
+   * Apply filter values to UI elements
+   */
+  applyFiltersToUI(filters) {
+    if (!this.container) return;
+
+    // Apply taxonomy filters
+    Object.entries(filters).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        // Taxonomy or author filters
+        const filterGroup = this.container.querySelector(`[data-taxonomy="${key}"], [data-filter-type="author"]`);
+        if (filterGroup) {
+          value.forEach(termId => {
+            const input = filterGroup.querySelector(`input[value="${termId}"]`);
+            if (input) {
+              input.checked = true;
+            }
+            // Also add active class for styling consistency
+            const option = filterGroup.querySelector(`[data-value="${termId}"]`);
+            if (option) {
+              option.classList.add('active');
+            }
+          });
+        }
+      } else if (typeof value === 'object' && value !== null) {
+        // Price or date filters
+        if (key === 'price') {
+          const priceGroup = this.container.querySelector('.filter-price');
+          if (priceGroup) {
+            const minInput = priceGroup.querySelector('[name="price_min"]');
+            const maxInput = priceGroup.querySelector('[name="price_max"]');
+            if (minInput && value.min) minInput.value = value.min;
+            if (maxInput && value.max) maxInput.value = value.max;
+          }
+        } else if (key === 'date') {
+          const dateGroup = this.container.querySelector('.filter-date');
+          if (dateGroup) {
+            const startInput = dateGroup.querySelector('[name="date_start"]');
+            const endInput = dateGroup.querySelector('[name="date_end"]');
+            if (startInput && value.start) startInput.value = value.start;
+            if (endInput && value.end) endInput.value = value.end;
+          }
+        }
+      } else if (key === 'keyword') {
+        // Keyword filter
+        const keywordInput = this.container.querySelector('.filter-keyword input.filter-input-keyword');
+        if (keywordInput) {
+          keywordInput.value = value;
+        }
+      } else if (key === 'post_type') {
+        // Post type radio
+        const radios = this.container.querySelectorAll('.filter-keyword .post-type-radios input[type="radio"]');
+        radios.forEach(radio => {
+          radio.checked = radio.value === value || value === '' && radio.value === '';
+          const option = radio.closest('.filter-option');
+          if (option) {
+            option.classList.toggle('active', radio.checked);
+          }
+        });
+      } else if (key.startsWith('meta_')) {
+        // Meta filter
+        const metaKey = key.replace('meta_', '');
+        const metaGroup = this.container.querySelector(`[data-meta-key="${metaKey}"]`);
+        if (metaGroup) {
+          const input = metaGroup.querySelector('input, select');
+          if (input) {
+            input.value = value;
+          }
+        }
+      }
+    });
+  }
+}
+
+// Initialize on DOM ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initAdvancedFilters);
+} else {
+  initAdvancedFilters();
+}
+function initAdvancedFilters() {
+  document.querySelectorAll('.wp-block-jankx-advanced-filters').forEach(container => {
+    if (container instanceof HTMLElement) {
+      new AdvancedFilters(container);
+    }
+  });
+}
+
+// Export for potential external use
+if (typeof window !== 'undefined') {
+  window.AdvancedFilters = AdvancedFilters;
+}
+/******/ })()
+;
 //# sourceMappingURL=frontend.js.map

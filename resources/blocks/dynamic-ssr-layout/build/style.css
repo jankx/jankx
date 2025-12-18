@@ -1,3 +1,51 @@
-.wp-block-jankx-dynamic-ssr-layout .embla__viewport{overflow:hidden;width:100%}.wp-block-jankx-dynamic-ssr-layout .embla__container{display:flex;will-change:transform}.wp-block-jankx-dynamic-ssr-layout .embla__slide{position:relative;flex:0 0 calc(100%/var(--carousel-columns, var(--columns-desktop, 3)))}@media(max-width: 1024px){.wp-block-jankx-dynamic-ssr-layout .embla__slide{flex-basis:calc(100%/var(--carousel-columns-tablet, var(--columns-tablet, 2)))}}@media(max-width: 768px){.wp-block-jankx-dynamic-ssr-layout .embla__slide{flex-basis:calc(100%/var(--carousel-columns-mobile, var(--columns-mobile, 1)))}}.wp-block-jankx-dynamic-ssr-layout .embla__button{position:absolute;top:50%;transform:translateY(-50%);z-index:2;background:hsla(0,0%,100%,.85);border:1px solid #ddd;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer}.wp-block-jankx-dynamic-ssr-layout .embla__button--prev{left:8px}.wp-block-jankx-dynamic-ssr-layout .embla__button--next{right:8px}
+/*!*****************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/dynamic-ssr-layout/style.scss ***!
+  \*****************************************************************************************************************************************************************************************************/
+/**
+ * Dynamic SSR Layout Block Styles
+ */
+.wp-block-jankx-dynamic-ssr-layout .embla__viewport {
+  overflow: hidden;
+  width: 100%;
+}
+.wp-block-jankx-dynamic-ssr-layout .embla__container {
+  display: flex;
+  will-change: transform;
+}
+.wp-block-jankx-dynamic-ssr-layout .embla__slide {
+  position: relative;
+  flex: 0 0 calc(100% / var(--carousel-columns, var(--columns-desktop, 3)));
+}
+@media (max-width: 1024px) {
+  .wp-block-jankx-dynamic-ssr-layout .embla__slide {
+    flex-basis: calc(100% / var(--carousel-columns-tablet, var(--columns-tablet, 2)));
+  }
+}
+@media (max-width: 768px) {
+  .wp-block-jankx-dynamic-ssr-layout .embla__slide {
+    flex-basis: calc(100% / var(--carousel-columns-mobile, var(--columns-mobile, 1)));
+  }
+}
+.wp-block-jankx-dynamic-ssr-layout .embla__button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.wp-block-jankx-dynamic-ssr-layout .embla__button--prev {
+  left: 8px;
+}
+.wp-block-jankx-dynamic-ssr-layout .embla__button--next {
+  right: 8px;
+}
 
 /*# sourceMappingURL=style.css.map*/

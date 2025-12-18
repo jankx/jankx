@@ -21,11 +21,6 @@ module.exports = {
     'blocks/icon-picker/build/style': './blocks/icon-picker/style.scss',
     'blocks/icon-picker/build/editor': './blocks/icon-picker/editor.scss',
 
-    'blocks/wplyr-media/build/index': './blocks/wplyr-media/index.tsx',
-    'blocks/wplyr-media/build/style': './blocks/wplyr-media/style.scss',
-    'blocks/wplyr-media/build/editor': './blocks/wplyr-media/editor.scss',
-    'blocks/wplyr-media/build/view': './blocks/wplyr-media/view.js',
-
     'blocks/offcanvas-sidebar/build/index': './blocks/offcanvas-sidebar/index.tsx',
     'blocks/offcanvas-sidebar/build/frontend': './blocks/offcanvas-sidebar/frontend.ts',
     'blocks/offcanvas-sidebar/build/style': './blocks/offcanvas-sidebar/style.scss',
@@ -38,11 +33,6 @@ module.exports = {
     'blocks/svg-icon/build/index': './blocks/svg-icon/index.tsx',
     'blocks/svg-icon/build/style': './blocks/svg-icon/style.scss',
     'blocks/svg-icon/build/editor': './blocks/svg-icon/editor.scss',
-
-    'blocks/gallery/build/index': './blocks/gallery/index.tsx',
-    'blocks/gallery/build/style': './blocks/gallery/style.scss',
-    'blocks/gallery/build/editor': './blocks/gallery/editor.scss',
-
 
     'blocks/advanced-image-box/build/index': './blocks/advanced-image-box/index.tsx',
     'blocks/advanced-image-box/build/style': './blocks/advanced-image-box/style.scss',

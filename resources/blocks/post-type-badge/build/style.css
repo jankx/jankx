@@ -1,3 +1,46 @@
-.wp-block-jankx-post-type-badge{position:absolute;z-index:20;padding:8px 12px;font-weight:700;font-size:12px;text-transform:uppercase;box-shadow:0 4px 10px rgba(0,0,0,.12);line-height:1;display:inline-block}.wp-block-jankx-post-type-badge.display-normal{position:static;box-shadow:none;margin-bottom:.5em}.wp-block-jankx-post-type-badge.position-top-right{top:12px;right:12px}.wp-block-jankx-post-type-badge.position-top-left{top:12px;left:12px}.wp-block-jankx-post-type-badge.position-bottom-right{bottom:12px;right:12px}.wp-block-jankx-post-type-badge.position-bottom-left{bottom:12px;left:12px}.loop-item{position:relative}
+/*!**************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/post-type-badge/style.scss ***!
+  \**************************************************************************************************************************************************************************************************/
+.wp-block-jankx-post-type-badge {
+  position: absolute;
+  z-index: 20;
+  padding: 8px 12px;
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+  line-height: 1;
+  display: inline-block;
+}
+.wp-block-jankx-post-type-badge.display-normal {
+  position: static;
+  box-shadow: none;
+  margin-bottom: 0.5em;
+}
+
+.wp-block-jankx-post-type-badge.position-top-right {
+  top: 12px;
+  right: 12px;
+}
+
+.wp-block-jankx-post-type-badge.position-top-left {
+  top: 12px;
+  left: 12px;
+}
+
+.wp-block-jankx-post-type-badge.position-bottom-right {
+  bottom: 12px;
+  right: 12px;
+}
+
+.wp-block-jankx-post-type-badge.position-bottom-left {
+  bottom: 12px;
+  left: 12px;
+}
+
+/* Ensure loop item is positioned relative so badge anchors correctly */
+.loop-item {
+  position: relative;
+}
 
 /*# sourceMappingURL=style.css.map*/
