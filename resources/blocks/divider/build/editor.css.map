@@ -1,1 +1,1 @@
-{"version":3,"file":"blocks/divider/build/editor.css","mappings":";;;AAAA;EACE;AACF,C","sources":["webpack://jankx/./blocks/divider/editor.scss"],"sourcesContent":[".wp-block-jankx-divider {\n  min-height: 20px;\n}\n"],"names":[],"sourceRoot":""}
+{"version":3,"file":"blocks/divider/build/editor.css","mappings":"AAAA,wBACE,gB","sources":["webpack://jankx/./blocks/divider/editor.scss"],"sourcesContent":[".wp-block-jankx-divider {\n  min-height: 20px;\n}\n"],"names":[],"sourceRoot":""}

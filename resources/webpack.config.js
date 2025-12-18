@@ -178,6 +178,7 @@ module.exports = {
     'blocks/dynamic-ssr-layout/build/index': './blocks/dynamic-ssr-layout/index.tsx',
     'blocks/dynamic-ssr-layout/build/style': './blocks/dynamic-ssr-layout/style.scss',
     'blocks/dynamic-ssr-layout/build/editor': './blocks/dynamic-ssr-layout/editor.scss',
+    'blocks/dynamic-ssr-layout/build/view': './blocks/dynamic-ssr-layout/view.js',
 
     'blocks/dynamic-ssr-template/build/index': './blocks/dynamic-ssr-template/index.tsx',
     'blocks/dynamic-ssr-template/build/style': './blocks/dynamic-ssr-template/style.scss',

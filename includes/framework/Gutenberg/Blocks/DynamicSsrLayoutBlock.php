@@ -76,9 +76,50 @@ class DynamicSsrLayoutBlock extends Block
         return null;
     }
 
+    protected function sanitizeTemplateBlock(array $block): array
+    {
+        $sanitized = [
+            'blockName' => $block['blockName'] ?? '',
+            'attrs' => is_array($block['attrs'] ?? null) ? $block['attrs'] : [],
+            'innerBlocks' => [],
+            'innerHTML' => $block['innerHTML'] ?? '',
+            'innerContent' => is_array($block['innerContent'] ?? null) ? $block['innerContent'] : [],
+        ];
+
+        if (!empty($block['originalContent'])) {
+            $sanitized['originalContent'] = $block['originalContent'];
+        }
+
+        if (!empty($block['innerBlocks']) && is_array($block['innerBlocks'])) {
+            foreach ($block['innerBlocks'] as $inner) {
+                if (is_array($inner)) {
+                    $sanitized['innerBlocks'][] = $this->sanitizeTemplateBlock($inner);
+                }
+            }
+        }
+
+        return $sanitized;
+    }
+
     protected function enqueueCarouselAssets(): void
     {
-        // Placeholder for carousel assets if needed
+        $asset_file = $this->blockPath . '/build/view.asset.php';
+        $script_file = $this->blockPath . '/build/view.js';
+        if (file_exists($asset_file) && file_exists($script_file)) {
+            $asset = require $asset_file;
+            $handle = 'jankx-dynamic-ssr-layout-view';
+            if (!wp_script_is($handle, 'registered')) {
+                $script_url = (new \Jankx\Managers\UrlManager())->blockAsset('dynamic-ssr-layout/build/view.js');
+                wp_register_script(
+                    $handle,
+                    $script_url,
+                    isset($asset['dependencies']) ? $asset['dependencies'] : [],
+                    isset($asset['version']) ? $asset['version'] : false,
+                    true
+                );
+            }
+            wp_enqueue_script($handle);
+        }
     }
 
     public function normalizeBlockAttributes($parsed_block)
@@ -251,4 +292,3 @@ class DynamicSsrLayoutBlock extends Block
         wp_localize_script($script_handle, 'jankxQueryOptions', $query_options);
     }
 }
-

@@ -717,43 +717,39 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
 
     // Get available layouts for current post type
     const availableLayouts = useMemo(() => {
-        const layouts: Array<{ name: string; title: string; supportedOptions?: string[]; settingsDefinition?: SettingDefinition[] }> = [];
+        const map = new Map<string, { name: string; title: string; supportedOptions?: string[]; settingsDefinition?: SettingDefinition[] }>();
         
-        // Add common layouts
-        if (layoutsData.commonLayouts) {
-            layoutsData.commonLayouts.forEach((layoutInfo: LayoutInfo) => {
-                const layoutItem: { name: string; title: string; supportedOptions?: string[]; settingsDefinition?: SettingDefinition[] } = {
-                    name: layoutInfo.name || '',
-                    title: layoutInfo.title || layoutInfo.name || '',
-                };
-                if (layoutInfo.supportedOptions) {
-                    layoutItem.supportedOptions = layoutInfo.supportedOptions;
-                }
-                if (layoutInfo.settingsDefinition) {
-                    layoutItem.settingsDefinition = layoutInfo.settingsDefinition;
-                }
-                layouts.push(layoutItem);
-            });
-        }
-        
-        // Add post type specific layouts
         if (layoutsData.layoutsByPostType && layoutsData.layoutsByPostType[postType]) {
             layoutsData.layoutsByPostType[postType].forEach((layoutInfo: LayoutInfo) => {
-                const layoutItem: { name: string; title: string; supportedOptions?: string[]; settingsDefinition?: SettingDefinition[] } = {
-                    name: layoutInfo.name || '',
-                    title: layoutInfo.title || layoutInfo.name || '',
-                };
-                if (layoutInfo.supportedOptions) {
-                    layoutItem.supportedOptions = layoutInfo.supportedOptions;
-                }
-                if (layoutInfo.settingsDefinition) {
-                    layoutItem.settingsDefinition = layoutInfo.settingsDefinition;
-                }
-                layouts.push(layoutItem);
+                const name = layoutInfo.name || '';
+                const title = layoutInfo.title || layoutInfo.name || '';
+                if (!name) return;
+                map.set(name, {
+                    name,
+                    title,
+                    supportedOptions: layoutInfo.supportedOptions,
+                    settingsDefinition: layoutInfo.settingsDefinition,
+                });
             });
         }
         
-        return layouts;
+        if (layoutsData.commonLayouts) {
+            layoutsData.commonLayouts.forEach((layoutInfo: LayoutInfo) => {
+                const name = layoutInfo.name || '';
+                const title = layoutInfo.title || layoutInfo.name || '';
+                if (!name) return;
+                if (!map.has(name)) {
+                    map.set(name, {
+                        name,
+                        title,
+                        supportedOptions: layoutInfo.supportedOptions,
+                        settingsDefinition: layoutInfo.settingsDefinition,
+                    });
+                }
+            });
+        }
+        
+        return Array.from(map.values());
     }, [postType, layoutsData]);
 
     // Layout options for SelectControl
