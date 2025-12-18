@@ -34,6 +34,8 @@ interface SaveProps {
 		useIconBlocks: boolean;
 		iconPosition: string;
 		showLabel: boolean;
+		conditionType?: string;
+		showForPostType?: string;
 	};
 }
 
@@ -60,6 +62,8 @@ export default function Save(props: SaveProps) {
 		useIconBlocks = false,
 		iconPosition = 'left',
 		showLabel = true,
+		conditionType = 'always',
+		showForPostType = '',
 	} = props.attributes;
 
 	// Always render the button - InnerBlocks.Content will handle inner blocks if they exist
@@ -158,6 +162,8 @@ export default function Save(props: SaveProps) {
 					rel={rel || undefined}
 					style={buttonStyles}
 					title={title}
+					data-condition-type={conditionType}
+					data-show-for-post-type={showForPostType || undefined}
 					data-trigger-type="link"
 				>
 					{textMarkup}
@@ -172,6 +178,8 @@ export default function Save(props: SaveProps) {
 					type={buttonType as any}
 					style={buttonStyles}
 					title={title}
+					data-condition-type={conditionType}
+					data-show-for-post-type={showForPostType || undefined}
 					data-trigger-type="button"
 				>
 					{textMarkup}
@@ -186,6 +194,8 @@ export default function Save(props: SaveProps) {
 					className={buttonClasses + ' jankx-button-detail-link'}
 					href="#"
 					data-trigger-type="detail-link"
+					data-condition-type={conditionType}
+					data-show-for-post-type={showForPostType || undefined}
 					style={buttonStyles}
 					title={title}
 				>
@@ -201,6 +211,10 @@ export default function Save(props: SaveProps) {
 				'data-modal-id': modalId || '', // Keep for backward compatibility
 				'data-trigger-type': 'modal'
 			};
+			modalDataAttrs['data-condition-type'] = conditionType;
+			if (showForPostType) {
+				modalDataAttrs['data-show-for-post-type'] = showForPostType;
+			}
 
 			// Add share data attributes if enabled
 			// These will be read by the modal's view.js when triggered

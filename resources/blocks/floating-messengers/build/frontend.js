@@ -1,2 +1,34 @@
-!function(){function e(){document.querySelectorAll(".jankx-floating-messengers").forEach(e=>{const t=e.querySelector(".fm-list");if(!t)return;const n=t.querySelectorAll(".fm-node").length;e.dataset.count=String(n)})}document.addEventListener("click",function(e){const t=e.target;if(!t)return;const n=t.closest(".jankx-floating-messengers.trigger-toggle .fm-trigger");if(n){const e=n.closest(".jankx-floating-messengers");e&&e.classList.toggle("is-open")}}),document.addEventListener("DOMContentLoaded",e),e()}();
+/******/ (() => { // webpackBootstrap
+/*!************************************************!*\
+  !*** ./blocks/floating-messengers/frontend.ts ***!
+  \************************************************/
+/**
+ * Floating Messengers - frontend behavior
+ */
+(function () {
+  document.addEventListener('click', function (e) {
+    const target = e.target;
+    if (!target) return;
+    const trigger = target.closest('.jankx-floating-messengers.trigger-toggle .fm-trigger');
+    if (trigger) {
+      const root = trigger.closest('.jankx-floating-messengers');
+      if (root) {
+        root.classList.toggle('is-open');
+      }
+    }
+  });
+  // Initialize count-based class for expansion positioning
+  function initCountClass() {
+    document.querySelectorAll('.jankx-floating-messengers').forEach(root => {
+      const list = root.querySelector('.fm-list');
+      if (!list) return;
+      const count = list.querySelectorAll('.fm-node').length;
+      root.dataset.count = String(count);
+    });
+  }
+  document.addEventListener('DOMContentLoaded', initCountClass);
+  initCountClass();
+})();
+/******/ })()
+;
 //# sourceMappingURL=frontend.js.map
