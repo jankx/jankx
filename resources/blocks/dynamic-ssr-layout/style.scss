@@ -2,5 +2,47 @@
  * Dynamic SSR Layout Block Styles
  */
 .wp-block-jankx-dynamic-ssr-layout {
+  .embla__viewport {
+    overflow: hidden;
+    width: 100%;
+  }
+  .embla__container {
+    display: flex;
+    will-change: transform;
+  }
+  .embla__slide {
+    position: relative;
+    flex: 0 0 calc(100% / var(--carousel-columns, var(--columns-desktop, 3)));
+  }
+  @media (max-width: 1024px) {
+    .embla__slide {
+      flex-basis: calc(100% / var(--carousel-columns-tablet, var(--columns-tablet, 2)));
+    }
+  }
+  @media (max-width: 768px) {
+    .embla__slide {
+      flex-basis: calc(100% / var(--carousel-columns-mobile, var(--columns-mobile, 1)));
+    }
+  }
+  .embla__button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .embla__button--prev {
+    left: 8px;
+  }
+  .embla__button--next {
+    right: 8px;
+  }
 }
-

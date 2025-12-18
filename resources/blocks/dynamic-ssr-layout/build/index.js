@@ -447,42 +447,36 @@ function Edit({
 
   // Get available layouts for current post type
   const availableLayouts = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => {
-    const layouts = [];
-
-    // Add common layouts
-    if (layoutsData.commonLayouts) {
-      layoutsData.commonLayouts.forEach(layoutInfo => {
-        const layoutItem = {
-          name: layoutInfo.name || '',
-          title: layoutInfo.title || layoutInfo.name || ''
-        };
-        if (layoutInfo.supportedOptions) {
-          layoutItem.supportedOptions = layoutInfo.supportedOptions;
-        }
-        if (layoutInfo.settingsDefinition) {
-          layoutItem.settingsDefinition = layoutInfo.settingsDefinition;
-        }
-        layouts.push(layoutItem);
-      });
-    }
-
-    // Add post type specific layouts
+    const map = new Map();
     if (layoutsData.layoutsByPostType && layoutsData.layoutsByPostType[postType]) {
       layoutsData.layoutsByPostType[postType].forEach(layoutInfo => {
-        const layoutItem = {
-          name: layoutInfo.name || '',
-          title: layoutInfo.title || layoutInfo.name || ''
-        };
-        if (layoutInfo.supportedOptions) {
-          layoutItem.supportedOptions = layoutInfo.supportedOptions;
-        }
-        if (layoutInfo.settingsDefinition) {
-          layoutItem.settingsDefinition = layoutInfo.settingsDefinition;
-        }
-        layouts.push(layoutItem);
+        const name = layoutInfo.name || '';
+        const title = layoutInfo.title || layoutInfo.name || '';
+        if (!name) return;
+        map.set(name, {
+          name,
+          title,
+          supportedOptions: layoutInfo.supportedOptions,
+          settingsDefinition: layoutInfo.settingsDefinition
+        });
       });
     }
-    return layouts;
+    if (layoutsData.commonLayouts) {
+      layoutsData.commonLayouts.forEach(layoutInfo => {
+        const name = layoutInfo.name || '';
+        const title = layoutInfo.title || layoutInfo.name || '';
+        if (!name) return;
+        if (!map.has(name)) {
+          map.set(name, {
+            name,
+            title,
+            supportedOptions: layoutInfo.supportedOptions,
+            settingsDefinition: layoutInfo.settingsDefinition
+          });
+        }
+      });
+    }
+    return Array.from(map.values());
   }, [postType, layoutsData]);
 
   // Layout options for SelectControl
