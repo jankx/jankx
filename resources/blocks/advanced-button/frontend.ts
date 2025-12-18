@@ -27,13 +27,14 @@ declare global {
         const links = Array.from(document.querySelectorAll('.jankx-advanced-button__link')) as HTMLElement[];
         const bodyClass = document.body.className || '';
         const match = bodyClass.match(/post-type-([^\s]+)/);
-        const currentPostType = match ? match[1] : '';
         links.forEach(link => {
+            const layout = link.closest('.wp-block-jankx-dynamic-data-layout') as HTMLElement | null;
+            const contextPostType = (layout && layout.getAttribute('data-post-type')) || (match ? match[1] : '');
             const conditionType = link.getAttribute('data-condition-type') || 'always';
             const targetPostType = link.getAttribute('data-show-for-post-type') || '';
             if (conditionType === 'post-type') {
                 const wrapper = link.closest('.wp-block-jankx-advanced-button') as HTMLElement | null;
-                if (targetPostType && currentPostType && targetPostType !== currentPostType) {
+                if (targetPostType && contextPostType && targetPostType !== contextPostType) {
                     if (wrapper) {
                         wrapper.style.display = 'none';
                     } else {

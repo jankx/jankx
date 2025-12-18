@@ -41,14 +41,24 @@ class AdvancedButtonBlock extends Block
     public function render($attributes, $content = '', $block = null)
     {
         // Respect post type context when configured
-        if ($block instanceof \WP_Block) {
-            $ctx = is_array($block->context ?? null) ? $block->context : [];
-            $currentPostType = $ctx['postType'] ?? null;
-            $showForPostType = $attributes['showForPostType'] ?? '';
-            if ($currentPostType && is_string($showForPostType) && $showForPostType !== '') {
-                if ($currentPostType !== $showForPostType) {
-                    return '';
+        $conditionType = isset($attributes['conditionType']) ? (string) $attributes['conditionType'] : 'always';
+        $showForPostType = isset($attributes['showForPostType']) ? (string) $attributes['showForPostType'] : '';
+        if ($conditionType === 'post-type' && $showForPostType !== '') {
+            $currentPostType = null;
+            if ($block instanceof \WP_Block) {
+                $ctx = is_array($block->context ?? null) ? $block->context : [];
+                $currentPostType = $ctx['postType'] ?? ($ctx['previewPostType'] ?? null);
+            }
+            if (!$currentPostType) {
+                $post_id = get_the_ID();
+                if ($post_id) {
+                    $currentPostType = get_post_type($post_id);
+                } elseif (isset($GLOBALS['post']) && $GLOBALS['post'] instanceof \WP_Post) {
+                    $currentPostType = get_post_type($GLOBALS['post']);
                 }
+            }
+            if ($currentPostType && $currentPostType !== $showForPostType) {
+                return '';
             }
         }
 
