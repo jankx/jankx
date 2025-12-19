@@ -11,6 +11,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize responsive enhancements
     initResponsiveEnhancements();
+    
+    // Apply line clamp styles
+    applyLineClampStyles();
 });
 
 /**
@@ -242,9 +245,44 @@ function initResponsiveTypography() {
     });
 }
 
+/**
+ * Apply line clamp styles for elements marked by editor filters
+ */
+function applyLineClampStyles() {
+    const targets = document.querySelectorAll('.jankx-line-clamp');
+    targets.forEach(el => {
+        let clamp = 0;
+        const dataClamp = el.getAttribute('data-line-clamp');
+        if (dataClamp) {
+            const n = parseInt(dataClamp, 10);
+            if (!isNaN(n) && n > 0) {
+                clamp = n;
+            }
+        }
+        if (clamp === 0) {
+            const match = Array.from(el.classList).find(c => /^jankx-line-clamp-lines-\d+$/.test(c));
+            if (match) {
+                const n = parseInt(match.replace('jankx-line-clamp-lines-', ''), 10);
+                if (!isNaN(n) && n > 0) {
+                    clamp = n;
+                }
+            }
+        }
+        if (clamp > 0) {
+            el.style.display = '-webkit-box';
+            el.style.webkitLineClamp = clamp;
+            el.style.WebkitLineClamp = clamp;
+            el.style.webkitBoxOrient = 'vertical';
+            el.style.WebkitBoxOrient = 'vertical';
+            el.style.overflow = 'hidden';
+        }
+    });
+}
+
 // Export functions for potential external use
 window.JankxBlocksExtra = {
     handleCSRBlocks,
     initializeCSRBlock,
-    initResponsiveEnhancements
+    initResponsiveEnhancements,
+    applyLineClampStyles
 };

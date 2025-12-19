@@ -17,4 +17,3 @@ if (!defined('ABSPATH')) {
 
 // Load Jankx Framework
 require_once get_template_directory() . '/includes/framework.php';
-
