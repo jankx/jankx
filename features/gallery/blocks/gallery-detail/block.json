@@ -1,0 +1,36 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "jankx/gallery-detail",
+  "title": "Gallery Detail",
+  "category": "jankx",
+  "description": "Gallery with main image and thumbnails",
+  "textdomain": "jankx",
+  "supports": {
+    "html": false,
+    "align": [
+      "wide",
+      "full"
+    ]
+  },
+  "attributes": {
+    "useCurrentPost": {
+      "type": "boolean",
+      "default": true
+    },
+    "imageSize": {
+      "type": "string",
+      "default": "large"
+    },
+    "thumbSize": {
+      "type": "string",
+      "default": "thumbnail"
+    },
+    "className": {
+      "type": "string"
+    }
+  },
+  "render": "file:./render.php",
+  "viewScript": "file:./view.js"
+}
+
