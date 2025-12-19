@@ -1,0 +1,109 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/smart-tabs",
+    "title": "Smart Tabs",
+    "category": "jankx",
+    "description": "Create interactive tabs with customizable layouts and styles",
+    "keywords": ["tabs", "smart", "accordion", "vertical", "horizontal"],
+    "textdomain": "jankx",
+    "attributes": {
+        "tabType": {
+            "type": "string",
+            "enum": ["horizontal", "vertical"],
+            "default": "horizontal"
+        },
+        "styleType": {
+            "type": "string",
+            "enum": ["default", "minimal", "modern", "boxed", "bordered"],
+            "default": "default"
+        },
+        "activeTab": {
+            "type": "number",
+            "default": 0
+        },
+        "tabAlignment": {
+            "type": "string",
+            "enum": ["left", "center", "right", "justify"],
+            "default": "left"
+        },
+        "tabItemTextColor": {
+            "type": "string"
+        },
+        "tabItemBackgroundColor": {
+            "type": "string"
+        },
+        "tabItemGradient": {
+            "type": "string"
+        },
+        "activeTabTextColor": {
+            "type": "string"
+        },
+        "activeTabBackgroundColor": {
+            "type": "string"
+        },
+        "activeTabGradient": {
+            "type": "string"
+        },
+        "hideTabsBorderBottom": {
+            "type": "boolean",
+            "default": false
+        },
+        "centerNavigation": {
+            "type": "boolean",
+            "default": false
+        },
+        "hideTabContent": {
+            "type": "boolean",
+            "default": false
+        },
+        "label": {
+            "type": "string",
+            "default": ""
+        },
+        "showLabel": {
+            "type": "boolean",
+            "default": false
+        },
+        "className": {
+            "type": "string"
+        },
+        "anchor": {
+            "type": "string"
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "align": ["wide", "full"],
+        "spacing": {
+            "margin": true,
+            "padding": true,
+            "__experimentalDefaultControls": {
+                "padding": true
+            }
+        },
+        "color": {
+            "background": true,
+            "text": true,
+            "__experimentalDefaultControls": {
+                "background": true,
+                "text": true
+            }
+        }
+    },
+    "providesContext": {
+        "jankx/smartTabsId": "anchor",
+        "jankx/activeTab": "activeTab"
+    },
+    "example": {
+        "attributes": {
+            "tabType": "horizontal",
+            "styleType": "modern"
+        }
+    },
+    "editorScript": "file:./build/index.js",
+    "editorStyle": "file:./build/editor.css",
+    "viewScript": "file:./build/view.js",
+    "style": "file:./build/style.css"
+}

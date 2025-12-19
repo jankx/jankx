@@ -1,0 +1,61 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/dynamic-ssr-template",
+    "title": "Dynamic SSR Template",
+    "category": "jankx",
+    "parent": ["jankx/dynamic-ssr-layout"],
+    "description": "Server-rendered template cho từng item trong Dynamic SSR Layout",
+    "textdomain": "jankx",
+    "editorScript": "file:./build/index.js",
+    "style": "file:./build/style.css",
+    "editorStyle": "file:./build/editor.css",
+    "usesContext": [
+        "queryId",
+        "postType",
+        "displayLayout",
+        "postsPerPage",
+        "columns",
+        "columnsTablet",
+        "columnsMobile",
+        "slidesToScroll",
+        "loop",
+        "autoplay",
+        "autoplayDelay",
+        "showArrows",
+        "showDots",
+        "carouselAlign",
+        "carouselAxis",
+        "carouselDirection",
+        "carouselStartIndex",
+        "carouselDuration",
+        "carouselDragFree",
+        "carouselDragThreshold",
+        "carouselSkipSnaps",
+        "carouselContainScroll",
+        "carouselInViewThreshold"
+    ],
+    "supports": {
+        "reusable": false,
+        "html": false,
+        "align": ["wide", "full"],
+        "layout": true,
+        "color": {
+            "gradients": true,
+            "link": true,
+            "__experimentalDefaultControls": {
+                "background": true,
+                "text": true
+            }
+        },
+        "typography": {
+            "fontSize": true,
+            "lineHeight": true,
+            "__experimentalFontFamily": true,
+            "__experimentalFontWeight": true,
+            "__experimentalFontStyle": true,
+            "__experimentalTextTransform": true,
+            "__experimentalTextDecoration": true
+        }
+    }
+}

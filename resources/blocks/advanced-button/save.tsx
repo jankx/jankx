@@ -42,7 +42,7 @@ interface SaveProps {
 /**
  * The save function for the Advanced Button Block.
  */
-export default function Save(props: SaveProps) {
+	export default function Save(props: SaveProps) {
 	const {
 		triggerType = 'link',
 		buttonType = 'button',
@@ -50,7 +50,10 @@ export default function Save(props: SaveProps) {
 		modalShareObjectId = false,
 		modalSharePostTitle = false,
 		modalShareCurrentUrl = false,
+		modalShareFeaturedImageId = false,
+		modalShareFeaturedImageUrl = false,
 		formData = [],
+		formMappings = [],
 		text,
 		url,
 		title,
@@ -230,6 +233,14 @@ export default function Save(props: SaveProps) {
 				modalDataAttrs['data-share-current-url'] = 'true';
 				modalDataAttrs['data-current-url'] = '{{CURRENT_POST_URL}}';
 			}
+			if (modalShareFeaturedImageId) {
+				modalDataAttrs['data-share-featured-image-id'] = 'true';
+				modalDataAttrs['data-current-featured-image-id'] = '{{CURRENT_FEATURED_IMAGE_ID}}';
+			}
+			if (modalShareFeaturedImageUrl) {
+				modalDataAttrs['data-share-featured-image-url'] = 'true';
+				modalDataAttrs['data-current-featured-image-url'] = '{{CURRENT_FEATURED_IMAGE_URL}}';
+			}
 
 			// Add custom form data
 			if (formData && formData.length > 0) {
@@ -238,6 +249,15 @@ export default function Save(props: SaveProps) {
 						modalDataAttrs[`data-form-${item.key}`] = item.value;
 					}
 				});
+			}
+			
+			// Add form data mappings (as JSON payload)
+			if (Array.isArray(formMappings) && formMappings.length > 0) {
+				try {
+					modalDataAttrs['data-form-mappings'] = JSON.stringify(formMappings);
+				} catch (e) {
+					// ignore JSON errors silently
+				}
 			}
 
 			buttonElement = (

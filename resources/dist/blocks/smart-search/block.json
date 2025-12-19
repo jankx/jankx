@@ -1,0 +1,145 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/smart-search",
+    "version": "1.0.0",
+    "title": "Smart Search",
+    "category": "jankx",
+    "icon": "search",
+    "keywords": ["search", "form", "autocomplete", "suggestion", "filter"],
+    "supports": {
+        "align": ["wide", "full"],
+        "html": false,
+        "color": {
+            "background": true,
+            "text": true,
+            "gradients": true,
+            "link": true
+        },
+        "spacing": {
+            "margin": true,
+            "padding": true,
+            "blockGap": true
+        },
+        "border": {
+            "color": true,
+            "radius": true,
+            "style": true,
+            "width": true
+        },
+        "background": {
+            "backgroundImage": true,
+            "backgroundPosition": true,
+            "backgroundRepeat": true,
+            "backgroundSize": true
+        },
+        "dimensions": {
+            "minHeight": true
+        },
+        "typography": {
+            "fontSize": true,
+            "lineHeight": true,
+            "fontFamily": true,
+            "fontWeight": true,
+            "fontStyle": true,
+            "textTransform": true,
+            "textDecoration": true,
+            "letterSpacing": true
+        },
+        "__experimentalLayout": {
+            "allowSwitching": true,
+            "allowInheriting": true,
+            "default": {
+                "type": "constrained"
+            }
+        }
+    },
+    "description": "Search form builder với auto suggestion và autocomplete capabilities",
+    "attributes": {
+        "placeholder": {
+            "type": "string",
+            "default": "Search..."
+        },
+        "showPostTypeFilter": {
+            "type": "boolean",
+            "default": false
+        },
+        "postTypes": {
+            "type": "array",
+            "default": ["post"],
+            "items": {
+                "type": "string"
+            }
+        },
+        "showTaxonomyFilter": {
+            "type": "boolean",
+            "default": false
+        },
+        "taxonomies": {
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "string"
+            }
+        },
+        "enableAutoSuggestion": {
+            "type": "boolean",
+            "default": true
+        },
+        "showPosts": {
+            "type": "boolean",
+            "default": true
+        },
+        "showPostTypes": {
+            "type": "boolean",
+            "default": false
+        },
+        "showUsers": {
+            "type": "boolean",
+            "default": false
+        },
+        "showTaxonomy": {
+            "type": "boolean",
+            "default": false
+        },
+        "showTags": {
+            "type": "boolean",
+            "default": false
+        },
+        "suggestionLimit": {
+            "type": "integer",
+            "default": 10
+        },
+        "iconPosition": {
+            "type": "string",
+            "default": "inside",
+            "enum": ["inside", "outside"]
+        },
+        "showIcon": {
+            "type": "boolean",
+            "default": true
+        },
+        "showLabel": {
+            "type": "boolean",
+            "default": false
+        },
+        "labelText": {
+            "type": "string",
+            "default": "Search"
+        },
+        "buttonPosition": {
+            "type": "string",
+            "default": "inside",
+            "enum": ["inside", "outside"]
+        },
+        "searchUrl": {
+            "type": "string",
+            "default": ""
+        }
+    },
+    "textdomain": "jankx",
+    "editorScript": "file:./build/index.js",
+    "editorStyle": "file:./build/editor.css",
+    "style": "file:./build/style.css",
+    "viewScript": "file:./build/frontend.js"
+}

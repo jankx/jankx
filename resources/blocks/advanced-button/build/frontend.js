@@ -33,6 +33,68 @@
     });
     const buttons = document.querySelectorAll('.jankx-button-modal-trigger');
     console.log('[AdvancedButton] initAdvancedButtons: found', buttons.length, 'buttons');
+    const applyFormMappings = (trigger, modalId) => {
+      try {
+        const mappingsAttr = trigger.getAttribute('data-form-mappings');
+        if (!mappingsAttr) return;
+        const mappings = JSON.parse(mappingsAttr || '[]');
+        if (!Array.isArray(mappings) || mappings.length === 0) return;
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+        const resolveValue = source => {
+          switch (source) {
+            case 'button_title':
+              return trigger.getAttribute('title') || trigger.querySelector('.button-text')?.textContent || '';
+            case 'current_post_title':
+              return trigger.getAttribute('data-current-post-title') || '';
+            case 'current_post_id':
+              return trigger.getAttribute('data-current-object-id') || '';
+            case 'current_url':
+              return trigger.getAttribute('data-current-url') || window.location.href;
+            case 'current_featured_image_url':
+              return trigger.getAttribute('data-current-featured-image-url') || '';
+            case 'current_featured_image_id':
+              return trigger.getAttribute('data-current-featured-image-id') || '';
+            default:
+              return '';
+          }
+        };
+        mappings.forEach(({
+          source,
+          selector,
+          mode,
+          attributeName
+        }) => {
+          if (!selector) return;
+          const target = modal.querySelector(selector);
+          if (!target) return;
+          const value = resolveValue(source);
+          if (value === undefined || value === null) return;
+          if ((mode || 'value') === 'attribute' && attributeName) {
+            target.setAttribute(attributeName, value);
+          } else if ((mode || 'value') === 'text') {
+            target.textContent = value;
+          } else {
+            const tag = target.tagName.toLowerCase();
+            if (tag === 'input' || tag === 'textarea' || tag === 'select') {
+              target.value = value;
+              target.dispatchEvent(new Event('input', {
+                bubbles: true
+              }));
+              target.dispatchEvent(new Event('change', {
+                bubbles: true
+              }));
+            } else if (tag === 'img') {
+              target.src = value;
+            } else {
+              target.textContent = value;
+            }
+          }
+        });
+      } catch (err) {
+        // ignore malformed JSON
+      }
+    };
     buttons.forEach(button => {
       // Check if event listener is already attached (to avoid duplicates if called multiple times)
       if (button.getAttribute('data-jankx-click-attached') === 'true') {
@@ -76,6 +138,9 @@
           console.warn('[AdvancedButton] missing data-modal-id on trigger', trigger);
           return;
         }
+
+        // Apply form mappings before showing modal
+        applyFormMappings(trigger, modalId);
 
         // Try JankxModal first (wrapper around MicroModal with extras)
         if (window.JankxModal) {

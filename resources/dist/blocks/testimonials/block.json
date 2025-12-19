@@ -1,0 +1,84 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/testimonials",
+    "version": "1.0.0",
+    "title": "Testimonials",
+    "category": "jankx",
+    "icon": "format-quote",
+    "description": "Hiển thị testimonials với layout tổng thể (grid/list/carousel/banner)",
+    "textdomain": "jankx",
+    "editorScript": "file:./build/index.js",
+    "editorStyle": "file:./build/editor.css",
+    "style": "file:./build/style.css",
+    "allowedBlocks": ["jankx/testimonial"],
+    "providesContext": {
+        "asSlide": "asSlide",
+        "layoutType": "layout"
+    },
+    "supports": {
+        "html": false,
+        "align": ["wide", "full"],
+        "anchor": true,
+        "spacing": {
+            "margin": true,
+            "padding": true,
+            "blockGap": true
+        },
+        "color": {
+            "background": true,
+            "text": true
+        },
+        "typography": {
+            "fontSize": true,
+            "lineHeight": true
+        }
+    },
+    "attributes": {
+        "asSlide": {
+            "type": "boolean",
+            "default": false
+        },
+        "layout": {
+            "type": "string",
+            "default": "default",
+            "enum": ["default", "grid", "list", "carousel", "banner"]
+        },
+        "slidesPerView": {
+            "type": "number",
+            "default": 1
+        },
+        "spaceBetween": {
+            "type": "number",
+            "default": 30
+        },
+        "loop": {
+            "type": "boolean",
+            "default": true
+        },
+        "autoplay": {
+            "type": "boolean",
+            "default": false
+        },
+        "autoplayDelay": {
+            "type": "number",
+            "default": 3000
+        },
+        "navigation": {
+            "type": "boolean",
+            "default": true
+        },
+        "pagination": {
+            "type": "boolean",
+            "default": true
+        },
+        "height": {
+            "type": "number",
+            "default": 50
+        },
+        "minHeight": {
+            "type": "number",
+            "default": 50
+        }
+    }
+}

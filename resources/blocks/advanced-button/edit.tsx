@@ -30,7 +30,7 @@ import {
 	useBlockEditingMode,
 	BlockEdit,
 } from '@wordpress/block-editor';
-import { useState, useRef, useCallback, useEffect } from '@wordpress/element';
+import { useState, useRef, useCallback, useEffect, useMemo } from '@wordpress/element';
 import { displayShortcut, isKeyboardEvent } from '@wordpress/keycodes';
 import { link } from '@wordpress/icons';
 import { useSelect } from '@wordpress/data';
@@ -43,7 +43,10 @@ interface EditProps {
 		modalShareObjectId: boolean;
 		modalSharePostTitle: boolean;
 		modalShareCurrentUrl: boolean;
+		modalShareFeaturedImageId?: boolean;
+		modalShareFeaturedImageUrl?: boolean;
 		formData: Array<{ key: string; value: string }>;
+		formMappings?: Array<{ source: string; selector: string; mode?: 'value' | 'attribute'; attributeName?: string }>;
 		text: string;
 		url: string;
 		title: string;
@@ -94,7 +97,10 @@ export function Edit(props: EditProps) {
 		modalShareObjectId = false,
 		modalSharePostTitle = false,
 		modalShareCurrentUrl = false,
+		modalShareFeaturedImageId = false,
+		modalShareFeaturedImageUrl = false,
 		formData = [],
+		formMappings = [],
 		text,
 		url,
 		title,
@@ -109,9 +115,11 @@ export function Edit(props: EditProps) {
 		showForPostType = '',
 	} = attributes;
 
+	const shareEnabled =
+		(modalShareObjectId || modalSharePostTitle || modalShareCurrentUrl || modalShareFeaturedImageId || modalShareFeaturedImageUrl);
 	// Backward compatibility auto-migrate
 	useEffect(() => {
-		if ((!attributes as any)?.conditionType && showForPostType) {
+		if (!(attributes as any)?.conditionType && showForPostType) {
 			setAttributes({ conditionType: 'post-type' });
 		}
 	}, [showForPostType]);
@@ -681,18 +689,154 @@ export function Edit(props: EditProps) {
 									__nextHasNoMarginBottom
 								/>
 								{isCustomModalId && (
-									<div style={{ marginTop: '12px' }}>
+									<>
+										<div style={{ marginTop: '12px' }}>
+											<TextControl
+												label={__('Custom Modal ID', 'jankx')}
+												value={modalId || ''}
+												onChange={(value) => setAttributes({ modalId: value })}
+												placeholder={__('e.g. modal-contact-form', 'jankx')}
+												help={__('Enter the ID of your modal. Must match exactly with the modal block ID.', 'jankx')}
+												__nextHasNoMarginBottom
+											/>
+									</div>
+									</>
+								)}
+							</ToolsPanelItem>
+							<div style={{ marginTop: '16px', borderTop: '1px solid #ddd', paddingTop: '16px', gridColumn: '1 / -1' }}>
+								<p style={{ fontSize: '13px', fontWeight: 600, marginBottom: '8px' }}>
+									{__('Form Data Mapping', 'jankx')}
+								</p>
+								{!shareEnabled && (
+									<div style={{
+										padding: '10px',
+										borderRadius: '6px',
+										background: '#fff3cd',
+										border: '1px solid #ffeaa7',
+										marginBottom: '12px'
+									}}>
+										<p style={{ margin: 0, fontSize: '12px', color: '#856404' }}>
+											{__('Enable Share Data options above to use mapping. Without shared data attributes, mappings will have no values.', 'jankx')}
+										</p>
+									</div>
+								)}
+								{shareEnabled && (formMappings || []).map((item, index) => (
+									<div
+										key={index}
+										style={{
+											border: '1px solid #e0e0e0',
+											borderRadius: '6px',
+											padding: '10px',
+											marginBottom: '10px',
+											display: 'flex',
+											flexDirection: 'column',
+											gap: '8px'
+										}}
+									>
+										<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+											<span style={{ fontSize: '12px', fontWeight: 600 }}>
+												{__('Mapping', 'jankx')} #{index + 1}
+											</span>
+											<button
+												type="button"
+												onClick={() => {
+													const next = (formMappings || []).filter((_, i) => i !== index);
+													setAttributes({ formMappings: next });
+												}}
+												style={{
+													background: 'none',
+													border: 'none',
+													cursor: 'pointer',
+													color: '#cc1818',
+													padding: '4px',
+												}}
+												aria-label={__('Remove mapping', 'jankx')}
+												title={__('Remove mapping', 'jankx')}
+											>
+												✕
+											</button>
+										</div>
+										<SelectControl
+											label={__('Source', 'jankx')}
+											value={item.source}
+											options={[
+												{ label: __('Button Title', 'jankx'), value: 'button_title' },
+												{ label: __('Current Post Title', 'jankx'), value: 'current_post_title' },
+												{ label: __('Current Post ID', 'jankx'), value: 'current_post_id' },
+												{ label: __('Current URL', 'jankx'), value: 'current_url' },
+												{ label: __('Featured Image URL', 'jankx'), value: 'current_featured_image_url' },
+												{ label: __('Featured Image ID', 'jankx'), value: 'current_featured_image_id' },
+											]}
+											onChange={(val) => {
+												const next = [...formMappings];
+												next[index] = { ...next[index], source: val };
+												setAttributes({ formMappings: next });
+											}}
+											__nextHasNoMarginBottom
+										/>
+										<SelectControl
+											label={__('Apply To', 'jankx')}
+											value={item.mode || 'value'}
+											options={[
+												{ label: __('Value', 'jankx'), value: 'value' },
+												{ label: __('Attribute', 'jankx'), value: 'attribute' },
+												{ label: __('Text Content', 'jankx'), value: 'text' },
+											]}
+											onChange={(val) => {
+												const next = [...formMappings];
+												next[index] = { ...next[index], mode: val as any };
+												setAttributes({ formMappings: next });
+											}}
+											__nextHasNoMarginBottom
+										/>
+										{(item.mode || 'value') === 'attribute' && (
+											<TextControl
+												label={__('Attribute Name', 'jankx')}
+												placeholder="e.g. value, href, src, alt, data-foo"
+												value={item.attributeName || ''}
+												onChange={(val) => {
+													const next = [...formMappings];
+													next[index] = { ...next[index], attributeName: val };
+													setAttributes({ formMappings: next });
+												}}
+												__nextHasNoMarginBottom
+											/>
+										)}
 										<TextControl
-											label={__('Custom Modal ID', 'jankx')}
-											value={modalId || ''}
-											onChange={(value) => setAttributes({ modalId: value })}
-											placeholder={__('e.g. modal-contact-form', 'jankx')}
-											help={__('Enter the ID of your modal. Must match exactly with the modal block ID.', 'jankx')}
+											label={__('Destination Selector', 'jankx')}
+											placeholder="e.g. input[name='your-name']"
+											value={item.selector || ''}
+											onChange={(val) => {
+												const next = [...formMappings];
+												next[index] = { ...next[index], selector: val };
+												setAttributes({ formMappings: next });
+											}}
 											__nextHasNoMarginBottom
 										/>
 									</div>
-								)}
-							</ToolsPanelItem>
+								))}
+								<button
+									type="button"
+									onClick={() => {
+										setAttributes({ formMappings: [...(formMappings || []), { source: 'button_title', selector: '', mode: 'value', attributeName: '' }] });
+									}}
+									style={{
+										background: '#f0f0f0',
+										border: '1px dashed #ccc',
+										width: '100%',
+										padding: '6px',
+										cursor: 'pointer',
+										borderRadius: '4px',
+										fontSize: '12px'
+									}}
+									disabled={!shareEnabled}
+								>
+									+ {__('Add Mapping', 'jankx')}
+								</button>
+								<p style={{ fontSize: '11px', color: '#666', marginTop: '4px', fontStyle: 'italic' }}>
+									{__('When clicking the button, values will be pushed into matched elements inside the modal.', 'jankx')}
+								</p>
+							</div>
 							<ToolsPanelItem
 								label={__('Share Data with Modal', 'jankx')}
 								isShownByDefault={true}
@@ -726,6 +870,20 @@ export function Edit(props: EditProps) {
 										checked={modalShareCurrentUrl || false}
 										onChange={(value) => setAttributes({ modalShareCurrentUrl: value })}
 										help={__('Share current page URL', 'jankx')}
+										__nextHasNoMarginBottom
+									/>
+									<ToggleControl
+										label={__('Share Featured Image ID', 'jankx')}
+										checked={modalShareFeaturedImageId || false}
+										onChange={(value) => setAttributes({ modalShareFeaturedImageId: value })}
+										help={__('Share current post featured image ID', 'jankx')}
+										__nextHasNoMarginBottom
+									/>
+									<ToggleControl
+										label={__('Share Featured Image URL', 'jankx')}
+										checked={modalShareFeaturedImageUrl || false}
+										onChange={(value) => setAttributes({ modalShareFeaturedImageUrl: value })}
+										help={__('Share current post featured image URL', 'jankx')}
 										__nextHasNoMarginBottom
 									/>
 									

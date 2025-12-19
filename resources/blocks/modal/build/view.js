@@ -314,6 +314,17 @@ __webpack_require__.r(__webpack_exports__);
 
   // Initialize global share data object
   window.jankxShareData = window.jankxShareData || {};
+  document.addEventListener('jankx:modal:show', function (event) {
+    const detail = event.detail || {};
+    console.log('[Modal] Received shared data:', detail.sharedData);
+    console.log('[Modal] Modal element:', detail.modalElement);
+    if (detail.triggerElement) {
+      console.log('[Modal] Trigger element:', detail.triggerElement);
+      console.log('[Modal] Form mappings:', detail.triggerElement.getAttribute('data-form-mappings'));
+    } else {
+      console.log('[Modal] Trigger element: null');
+    }
+  });
 
   // Simple modal show/hide functions (no external library needed)
   function showModal(modalId, triggerElement) {
@@ -388,7 +399,8 @@ __webpack_require__.r(__webpack_exports__);
       detail: {
         modalId,
         modalElement: modal,
-        sharedData: window.jankxShareData[modalId] || {}
+        sharedData: window.jankxShareData[modalId] || {},
+        triggerElement
       }
     }));
   }
@@ -554,7 +566,8 @@ __webpack_require__.r(__webpack_exports__);
           detail: {
             modalId: modal.id,
             modalElement: modal,
-            sharedData: window.jankxShareData[modal.id] || {}
+            sharedData: window.jankxShareData[modal.id] || {},
+            triggerElement: trigger
           }
         }));
       },

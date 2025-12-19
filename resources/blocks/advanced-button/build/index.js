@@ -8,7 +8,7 @@
 /***/ ((module) => {
 
 "use strict";
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/advanced-button","title":"Advanced Button","category":"jankx","description":"Advanced button block with enhanced features and styling options.","keywords":["button","link","advanced","cta","action"],"textdomain":"jankx","allowedBlocks":["jankx/icon-picker","jankx/svg-icon","core/image","core/html"],"attributes":{"conditionType":{"type":"string","enum":["always","post-type"],"default":"always","source":"attribute","selector":".jankx-advanced-button__link","attribute":"data-condition-type"},"showForPostType":{"type":"string","default":"","source":"attribute","selector":".jankx-advanced-button__link","attribute":"data-show-for-post-type"},"triggerType":{"type":"string","enum":["link","button","detail-link","modal"],"default":"link","source":"attribute","selector":".jankx-advanced-button__link","attribute":"data-trigger-type"},"buttonType":{"type":"string","enum":["button","submit","reset"],"default":"button","source":"attribute","selector":"button","attribute":"type"},"modalId":{"type":"string","default":""},"modalShareObjectId":{"type":"boolean","default":false},"modalSharePostTitle":{"type":"boolean","default":false},"modalShareCurrentUrl":{"type":"boolean","default":false},"text":{"type":"string","source":"html","selector":".button-text","default":"Button"},"url":{"type":"string","source":"attribute","selector":"a","attribute":"href","role":"content","default":""},"title":{"type":"string","source":"attribute","selector":"a,button","attribute":"title","role":"content"},"linkTarget":{"type":"string","source":"attribute","selector":"a","attribute":"target","role":"content"},"rel":{"type":"string","source":"attribute","selector":"a","attribute":"rel","role":"content"},"placeholder":{"type":"string","default":""},"backgroundColor":{"type":"string"},"textColor":{"type":"string"},"gradient":{"type":"string"},"width":{"type":"number"},"style":{"type":"object","default":{"spacing":{"padding":{"top":"0.5rem","right":"1rem","bottom":"0.5rem","left":"1rem"}}}},"useIconBlocks":{"type":"boolean","default":false},"iconPosition":{"type":"string","enum":["left","right","top","bottom"],"default":"left"},"showLabel":{"type":"boolean","default":true}},"supports":{"anchor":true,"align":false,"alignWide":false,"color":{"__experimentalSkipSerialization":true,"gradients":true,"__experimentalDefaultControls":{"background":true,"text":true}},"typography":{"fontSize":true,"lineHeight":true,"textAlign":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true,"__experimentalTextTransform":true,"__experimentalTextDecoration":true,"__experimentalLetterSpacing":true,"__experimentalDefaultControls":{"fontSize":true}},"reusable":false,"shadow":true,"spacing":{"padding":["horizontal","vertical"],"margin":true,"__experimentalDefaultControls":{"padding":true,"margin":false}},"layout":{"default":{"type":"flex","justifyContent":"center"},"allowSwitching":false,"allowInheriting":false,"allowEditing":false},"dimensions":{"minHeight":true},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true,"__experimentalDefaultControls":{"color":true,"radius":true,"style":true,"width":true}}},"styles":[{"name":"fill","label":"Fill","isDefault":true},{"name":"outline","label":"Outline"}],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css","viewScript":"file:./build/frontend.js"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/advanced-button","title":"Advanced Button","category":"jankx","description":"Advanced button block with enhanced features and styling options.","keywords":["button","link","advanced","cta","action"],"textdomain":"jankx","allowedBlocks":["jankx/icon-picker","jankx/svg-icon","core/image","core/html"],"attributes":{"conditionType":{"type":"string","enum":["always","post-type"],"default":"always"},"showForPostType":{"type":"string","default":""},"triggerType":{"type":"string","enum":["link","button","detail-link","modal"],"default":"link","source":"attribute","selector":".jankx-advanced-button__link","attribute":"data-trigger-type"},"buttonType":{"type":"string","enum":["button","submit","reset"],"default":"button","source":"attribute","selector":"button","attribute":"type"},"modalId":{"type":"string","default":""},"modalShareObjectId":{"type":"boolean","default":false},"modalSharePostTitle":{"type":"boolean","default":false},"modalShareCurrentUrl":{"type":"boolean","default":false},"modalShareFeaturedImageId":{"type":"boolean","default":false},"modalShareFeaturedImageUrl":{"type":"boolean","default":false},"formMappings":{"type":"array","default":[]},"text":{"type":"string","source":"html","selector":".button-text","default":"Button"},"url":{"type":"string","source":"attribute","selector":"a","attribute":"href","role":"content","default":""},"title":{"type":"string","source":"attribute","selector":"a,button","attribute":"title","role":"content"},"linkTarget":{"type":"string","source":"attribute","selector":"a","attribute":"target","role":"content"},"rel":{"type":"string","source":"attribute","selector":"a","attribute":"rel","role":"content"},"placeholder":{"type":"string","default":""},"backgroundColor":{"type":"string"},"textColor":{"type":"string"},"gradient":{"type":"string"},"width":{"type":"number"},"style":{"type":"object","default":{"spacing":{"padding":{"top":"0.5rem","right":"1rem","bottom":"0.5rem","left":"1rem"}}}},"useIconBlocks":{"type":"boolean","default":false},"iconPosition":{"type":"string","enum":["left","right","top","bottom"],"default":"left"},"showLabel":{"type":"boolean","default":true}},"supports":{"anchor":true,"align":false,"alignWide":false,"color":{"__experimentalSkipSerialization":true,"gradients":true,"__experimentalDefaultControls":{"background":true,"text":true}},"typography":{"fontSize":true,"lineHeight":true,"textAlign":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true,"__experimentalTextTransform":true,"__experimentalTextDecoration":true,"__experimentalLetterSpacing":true,"__experimentalDefaultControls":{"fontSize":true}},"reusable":false,"shadow":true,"spacing":{"padding":["horizontal","vertical"],"margin":true,"__experimentalDefaultControls":{"padding":true,"margin":false}},"layout":{"default":{"type":"flex","justifyContent":"center"},"allowSwitching":false,"allowInheriting":false,"allowEditing":false},"dimensions":{"minHeight":true},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true,"__experimentalDefaultControls":{"color":true,"radius":true,"style":true,"width":true}}},"styles":[{"name":"fill","label":"Fill","isDefault":true},{"name":"outline","label":"Outline"}],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css","viewScript":"file:./build/frontend.js"}');
 
 /***/ }),
 
@@ -81,7 +81,10 @@ function Edit(props) {
     modalShareObjectId = false,
     modalSharePostTitle = false,
     modalShareCurrentUrl = false,
+    modalShareFeaturedImageId = false,
+    modalShareFeaturedImageUrl = false,
     formData = [],
+    formMappings = [],
     text,
     url,
     title,
@@ -95,10 +98,10 @@ function Edit(props) {
     conditionType = 'always',
     showForPostType = ''
   } = attributes;
-
+  const shareEnabled = modalShareObjectId || modalSharePostTitle || modalShareCurrentUrl || modalShareFeaturedImageId || modalShareFeaturedImageUrl;
   // Backward compatibility auto-migrate
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
-    if ((!attributes)?.conditionType && showForPostType) {
+    if (!attributes?.conditionType && showForPostType) {
       setAttributes({
         conditionType: 'post-type'
       });
@@ -112,7 +115,6 @@ function Edit(props) {
     } = select('core/block-editor');
     return getBlockCount(clientId) > 0;
   }, [clientId]);
-  // Detect ancestor dynamic-data-template/layout and multi post types
   const {
     isInsideDynamicTemplate,
     multiPostTypes,
@@ -647,20 +649,213 @@ function Edit(props) {
               },
               help: isCustomModalId ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enter custom modal ID in the field below', 'jankx') : modalBlocks.length === 0 ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('No modal blocks found on this page. Add a modal block first or use custom ID.', 'jankx') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select a modal block to trigger, or choose custom ID', 'jankx'),
               __nextHasNoMarginBottom: true
-            }), isCustomModalId && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
-              style: {
-                marginTop: '12px'
-              },
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
-                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Custom Modal ID', 'jankx'),
-                value: modalId || '',
-                onChange: value => setAttributes({
-                  modalId: value
-                }),
-                placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('e.g. modal-contact-form', 'jankx'),
-                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enter the ID of your modal. Must match exactly with the modal block ID.', 'jankx'),
-                __nextHasNoMarginBottom: true
+            }), isCustomModalId && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+                style: {
+                  marginTop: '12px'
+                },
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Custom Modal ID', 'jankx'),
+                  value: modalId || '',
+                  onChange: value => setAttributes({
+                    modalId: value
+                  }),
+                  placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('e.g. modal-contact-form', 'jankx'),
+                  help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enter the ID of your modal. Must match exactly with the modal block ID.', 'jankx'),
+                  __nextHasNoMarginBottom: true
+                })
               })
+            })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+            style: {
+              marginTop: '16px',
+              borderTop: '1px solid #ddd',
+              paddingTop: '16px',
+              gridColumn: '1 / -1'
+            },
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("p", {
+              style: {
+                fontSize: '13px',
+                fontWeight: 600,
+                marginBottom: '8px'
+              },
+              children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Form Data Mapping', 'jankx')
+            }), !shareEnabled && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+              style: {
+                padding: '10px',
+                borderRadius: '6px',
+                background: '#fff3cd',
+                border: '1px solid #ffeaa7',
+                marginBottom: '12px'
+              },
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("p", {
+                style: {
+                  margin: 0,
+                  fontSize: '12px',
+                  color: '#856404'
+                },
+                children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable Share Data options above to use mapping. Without shared data attributes, mappings will have no values.', 'jankx')
+              })
+            }), shareEnabled && (formMappings || []).map((item, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+              style: {
+                border: '1px solid #e0e0e0',
+                borderRadius: '6px',
+                padding: '10px',
+                marginBottom: '10px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px'
+              },
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+                style: {
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between'
+                },
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("span", {
+                  style: {
+                    fontSize: '12px',
+                    fontWeight: 600
+                  },
+                  children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Mapping', 'jankx'), " #", index + 1]
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("button", {
+                  type: "button",
+                  onClick: () => {
+                    const next = (formMappings || []).filter((_, i) => i !== index);
+                    setAttributes({
+                      formMappings: next
+                    });
+                  },
+                  style: {
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    color: '#cc1818',
+                    padding: '4px'
+                  },
+                  "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Remove mapping', 'jankx'),
+                  title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Remove mapping', 'jankx'),
+                  children: "\u2715"
+                })]
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Source', 'jankx'),
+                value: item.source,
+                options: [{
+                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Button Title', 'jankx'),
+                  value: 'button_title'
+                }, {
+                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Current Post Title', 'jankx'),
+                  value: 'current_post_title'
+                }, {
+                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Current Post ID', 'jankx'),
+                  value: 'current_post_id'
+                }, {
+                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Current URL', 'jankx'),
+                  value: 'current_url'
+                }, {
+                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Featured Image URL', 'jankx'),
+                  value: 'current_featured_image_url'
+                }, {
+                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Featured Image ID', 'jankx'),
+                  value: 'current_featured_image_id'
+                }],
+                onChange: val => {
+                  const next = [...formMappings];
+                  next[index] = {
+                    ...next[index],
+                    source: val
+                  };
+                  setAttributes({
+                    formMappings: next
+                  });
+                },
+                __nextHasNoMarginBottom: true
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Apply To', 'jankx'),
+                value: item.mode || 'value',
+                options: [{
+                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Value', 'jankx'),
+                  value: 'value'
+                }, {
+                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Attribute', 'jankx'),
+                  value: 'attribute'
+                }, {
+                  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Text Content', 'jankx'),
+                  value: 'text'
+                }],
+                onChange: val => {
+                  const next = [...formMappings];
+                  next[index] = {
+                    ...next[index],
+                    mode: val
+                  };
+                  setAttributes({
+                    formMappings: next
+                  });
+                },
+                __nextHasNoMarginBottom: true
+              }), (item.mode || 'value') === 'attribute' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Attribute Name', 'jankx'),
+                placeholder: "e.g. value, href, src, alt, data-foo",
+                value: item.attributeName || '',
+                onChange: val => {
+                  const next = [...formMappings];
+                  next[index] = {
+                    ...next[index],
+                    attributeName: val
+                  };
+                  setAttributes({
+                    formMappings: next
+                  });
+                },
+                __nextHasNoMarginBottom: true
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Destination Selector', 'jankx'),
+                placeholder: "e.g. input[name='your-name']",
+                value: item.selector || '',
+                onChange: val => {
+                  const next = [...formMappings];
+                  next[index] = {
+                    ...next[index],
+                    selector: val
+                  };
+                  setAttributes({
+                    formMappings: next
+                  });
+                },
+                __nextHasNoMarginBottom: true
+              })]
+            }, index)), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("button", {
+              type: "button",
+              onClick: () => {
+                setAttributes({
+                  formMappings: [...(formMappings || []), {
+                    source: 'button_title',
+                    selector: '',
+                    mode: 'value',
+                    attributeName: ''
+                  }]
+                });
+              },
+              style: {
+                background: '#f0f0f0',
+                border: '1px dashed #ccc',
+                width: '100%',
+                padding: '6px',
+                cursor: 'pointer',
+                borderRadius: '4px',
+                fontSize: '12px'
+              },
+              disabled: !shareEnabled,
+              children: ["+ ", (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Add Mapping', 'jankx')]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("p", {
+              style: {
+                fontSize: '11px',
+                color: '#666',
+                marginTop: '4px',
+                fontStyle: 'italic'
+              },
+              children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('When clicking the button, values will be pushed into matched elements inside the modal.', 'jankx')
             })]
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalToolsPanelItem, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Share Data with Modal', 'jankx'),
@@ -705,6 +900,22 @@ function Edit(props) {
                   modalShareCurrentUrl: value
                 }),
                 help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Share current page URL', 'jankx'),
+                __nextHasNoMarginBottom: true
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Share Featured Image ID', 'jankx'),
+                checked: modalShareFeaturedImageId || false,
+                onChange: value => setAttributes({
+                  modalShareFeaturedImageId: value
+                }),
+                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Share current post featured image ID', 'jankx'),
+                __nextHasNoMarginBottom: true
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Share Featured Image URL', 'jankx'),
+                checked: modalShareFeaturedImageUrl || false,
+                onChange: value => setAttributes({
+                  modalShareFeaturedImageUrl: value
+                }),
+                help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Share current post featured image URL', 'jankx'),
                 __nextHasNoMarginBottom: true
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
                 style: {
@@ -918,7 +1129,10 @@ function Save(props) {
     modalShareObjectId = false,
     modalSharePostTitle = false,
     modalShareCurrentUrl = false,
+    modalShareFeaturedImageId = false,
+    modalShareFeaturedImageUrl = false,
     formData = [],
+    formMappings = [],
     text,
     url,
     title,
@@ -1076,6 +1290,14 @@ function Save(props) {
         modalDataAttrs['data-share-current-url'] = 'true';
         modalDataAttrs['data-current-url'] = '{{CURRENT_POST_URL}}';
       }
+      if (modalShareFeaturedImageId) {
+        modalDataAttrs['data-share-featured-image-id'] = 'true';
+        modalDataAttrs['data-current-featured-image-id'] = '{{CURRENT_FEATURED_IMAGE_ID}}';
+      }
+      if (modalShareFeaturedImageUrl) {
+        modalDataAttrs['data-share-featured-image-url'] = 'true';
+        modalDataAttrs['data-current-featured-image-url'] = '{{CURRENT_FEATURED_IMAGE_URL}}';
+      }
 
       // Add custom form data
       if (formData && formData.length > 0) {
@@ -1084,6 +1306,15 @@ function Save(props) {
             modalDataAttrs[`data-form-${item.key}`] = item.value;
           }
         });
+      }
+
+      // Add form data mappings (as JSON payload)
+      if (Array.isArray(formMappings) && formMappings.length > 0) {
+        try {
+          modalDataAttrs['data-form-mappings'] = JSON.stringify(formMappings);
+        } catch (e) {
+          // ignore JSON errors silently
+        }
       }
       buttonElement = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
         className: buttonClasses + (modalId ? ' jankx-button-modal-trigger' : ''),
@@ -1121,25 +1352,23 @@ function Save(props) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   "default": () => (/* binding */ button_default)
 /* harmony export */ });
 /* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
 /* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__);
-/**
- * WordPress dependencies
- */
+// packages/icons/src/library/button.tsx
 
 
-const button = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.SVG, {
+var button_default = /* @__PURE__ */(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.SVG, {
   viewBox: "0 0 24 24",
   xmlns: "http://www.w3.org/2000/svg",
-  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.Path, {
+  children: /* @__PURE__ */(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.Path, {
     d: "M8 12.5h8V11H8v1.5Z M19 6.5H5a2 2 0 0 0-2 2V15a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.5a2 2 0 0 0-2-2ZM5 8h14a.5.5 0 0 1 .5.5V15a.5.5 0 0 1-.5.5H5a.5.5 0 0 1-.5-.5V8.5A.5.5 0 0 1 5 8Z"
   })
 });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (button);
+
 
 /***/ }),
 
@@ -1152,25 +1381,23 @@ const button = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.js
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   "default": () => (/* binding */ link_default)
 /* harmony export */ });
 /* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
 /* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__);
-/**
- * WordPress dependencies
- */
+// packages/icons/src/library/link.tsx
 
 
-const link = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.SVG, {
+var link_default = /* @__PURE__ */(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.SVG, {
   xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 24 24",
-  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.Path, {
+  children: /* @__PURE__ */(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.Path, {
     d: "M10 17.389H8.444A5.194 5.194 0 1 1 8.444 7H10v1.5H8.444a3.694 3.694 0 0 0 0 7.389H10v1.5ZM14 7h1.556a5.194 5.194 0 0 1 0 10.39H14v-1.5h1.556a3.694 3.694 0 0 0 0-7.39H14V7Zm-4.5 6h5v-1.5h-5V13Z"
   })
 });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (link);
+
 
 /***/ }),
 

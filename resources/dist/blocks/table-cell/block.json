@@ -1,0 +1,61 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/table-cell",
+    "title": "Table Cell",
+    "category": "jankx",
+    "parent": ["jankx/table-row"],
+    "icon": "table-col-after",
+    "description": "A table cell that can contain any block content",
+    "keywords": ["table", "cell", "td", "th"],
+    "textdomain": "jankx",
+    "attributes": {
+        "isHeaderCell": {
+            "type": "boolean",
+            "default": false
+        },
+        "colspan": {
+            "type": "number",
+            "default": 1
+        },
+        "rowspan": {
+            "type": "number",
+            "default": 1
+        },
+        "verticalAlignment": {
+            "type": "string",
+            "enum": ["top", "middle", "bottom"],
+            "default": "middle"
+        }
+    },
+    "supports": {
+        "html": false,
+        "reusable": false,
+        "spacing": {
+            "padding": true,
+            "margin": false
+        },
+        "color": {
+            "background": true,
+            "text": true
+        },
+        "__experimentalBorder": {
+            "color": true,
+            "style": true,
+            "width": true,
+            "__experimentalDefaultControls": {
+                "color": true,
+                "style": true,
+                "width": true
+            }
+        },
+        "typography": {
+            "fontSize": true,
+            "fontWeight": true,
+            "textAlign": true
+        }
+    },
+    "editorScript": "file:./build/index.js",
+    "editorStyle": "file:./build/editor.css",
+    "style": "file:./build/style.css"
+}

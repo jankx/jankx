@@ -16,6 +16,18 @@ import MicroModal from 'micromodal';
     // Initialize global share data object
     window.jankxShareData = window.jankxShareData || {};
 
+    document.addEventListener('jankx:modal:show', function(event) {
+        const detail = event.detail || {};
+        console.log('[Modal] Received shared data:', detail.sharedData);
+        console.log('[Modal] Modal element:', detail.modalElement);
+        if (detail.triggerElement) {
+            console.log('[Modal] Trigger element:', detail.triggerElement);
+            console.log('[Modal] Form mappings:', detail.triggerElement.getAttribute('data-form-mappings'));
+        } else {
+            console.log('[Modal] Trigger element: null');
+        }
+    });
+
     // Simple modal show/hide functions (no external library needed)
     function showModal(modalId, triggerElement) {
         const modal = document.getElementById(modalId);
@@ -92,7 +104,8 @@ import MicroModal from 'micromodal';
             detail: {
                 modalId,
                 modalElement: modal,
-                sharedData: window.jankxShareData[modalId] || {}
+                sharedData: window.jankxShareData[modalId] || {},
+                triggerElement
             }
         }));
     }
@@ -264,7 +277,8 @@ import MicroModal from 'micromodal';
                     detail: {
                         modalId: modal.id,
                         modalElement: modal,
-                        sharedData: window.jankxShareData[modal.id] || {}
+                        sharedData: window.jankxShareData[modal.id] || {},
+                        triggerElement: trigger
                     }
                 }));
             },
@@ -374,4 +388,3 @@ import MicroModal from 'micromodal';
     };
 
 })();
-

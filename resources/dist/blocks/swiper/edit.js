@@ -1,0 +1,291 @@
+import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "react/jsx-runtime";
+import { __ } from '@wordpress/i18n';
+import { useBlockProps, InspectorControls, useInnerBlocksProps, MediaUpload, MediaUploadCheck, BlockControls, InnerBlocks } from '@wordpress/block-editor';
+import { PanelBody, RangeControl, ToggleControl, SelectControl, Button, TabPanel, ColorPicker, ToolbarGroup, ToolbarButton } from '@wordpress/components';
+import { gallery, cover, layout, quote } from '@wordpress/icons';
+import { useEffect, useRef } from '@wordpress/element';
+import { createBlock } from '@wordpress/blocks';
+import { useSelect } from '@wordpress/data';
+import Swiper from 'swiper/bundle';
+import 'swiper/css/bundle';
+// Utility function to convert hex to RGB
+const hexToRgb = (hex) => {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : { r: 0, g: 0, b: 0 };
+};
+export default function Edit({ attributes, setAttributes, clientId }) {
+    const { slidesPerView, slidesPerViewTablet, slidesPerViewMobile, spaceBetween, loop, autoplay, autoplayDelay, speed, navigation, pagination, effect, height, minHeight, contentMode, galleryImages, bannerStyle, bannerTextColor, bannerBackgroundColor, bannerPadding, bannerBorderRadius, gradientOverlay, gradientColor, gradientOpacity, gradientHeight, className, fitViewportMinusHeader = false } = attributes;
+    // Get block's style variation
+    const styleVariation = useSelect((select) => {
+        const block = select('core/block-editor').getBlock(clientId);
+        if (!block)
+            return 'default';
+        // Extract style variation from className
+        const match = className?.match(/is-style-(\w+)/);
+        return match ? match[1] : 'default';
+    }, [clientId, className]);
+    // Function to update style variation
+    const updateStyleVariation = (variation) => {
+        // Remove existing variation classes
+        const currentClassName = className || '';
+        const cleanedClassName = currentClassName
+            .replace(/\bis-style-\w+\b/g, '')
+            .trim();
+        // Add new variation class
+        const newVariationClass = variation === 'default' ? '' : `is-style-${variation}`;
+        const newClassName = [cleanedClassName, newVariationClass].filter(Boolean).join(' ');
+        setAttributes({ className: newClassName });
+    };
+    const swiperRef = useRef(null);
+    const containerRef = useRef(null);
+    // Convert gradient color to RGB for CSS variables
+    const gradientRgb = hexToRgb(gradientColor);
+    const blockProps = useBlockProps({
+        ref: containerRef,
+        className: `swiper-block swiper-effect-${effect} banner-style-${bannerStyle} ${gradientOverlay ? 'has-gradient-overlay' : ''} ${className || ''} ${fitViewportMinusHeader ? 'fit-vh-minus-header' : ''}`.trim(),
+        style: {
+            '--swiper-height': `${height}px`,
+            '--swiper-min-height': `${minHeight}px`,
+            '--banner-style': bannerStyle,
+            '--banner-text-color': bannerTextColor,
+            '--banner-background-color': bannerBackgroundColor,
+            '--banner-padding': `${bannerPadding}px`,
+            '--banner-border-radius': `${bannerBorderRadius}px`,
+            '--gradient-overlay-enabled': gradientOverlay ? '1' : '0',
+            '--gradient-color-r': gradientRgb.r,
+            '--gradient-color-g': gradientRgb.g,
+            '--gradient-color-b': gradientRgb.b,
+            '--gradient-opacity': gradientOpacity,
+            '--gradient-height': `${gradientHeight}%`,
+            '--slides-per-view-desktop': slidesPerView,
+            '--slides-per-view-tablet': slidesPerViewTablet,
+            '--slides-per-view-mobile': slidesPerViewMobile
+        }
+    });
+    const innerBlocksProps = useInnerBlocksProps({ className: 'swiper-wrapper' }, {
+        allowedBlocks: contentMode === 'slides'
+            ? ['jankx/swiper-slide', 'jankx/swiper-inner-blocks-overlay']
+            : ['jankx/swiper-banner', 'jankx/swiper-inner-blocks-overlay'],
+        template: contentMode === 'slides' ? [
+            ['jankx/swiper-slide'],
+            ['jankx/swiper-slide'],
+            ['jankx/swiper-slide']
+        ] : [],
+        templateLock: false,
+        orientation: 'horizontal',
+        renderAppender: InnerBlocks.ButtonBlockAppender
+    });
+    const hasInnerBlocks = useSelect((select) => {
+        const { getBlock } = select('core/block-editor');
+        const block = getBlock(clientId);
+        return !!(block && block.innerBlocks.length);
+    }, [clientId]);
+    // Handle gallery image selection
+    const onSelectGalleryImages = (images) => {
+        const galleryData = images.map(img => ({
+            id: img.id,
+            url: img.url,
+            alt: img.alt || '',
+            caption: img.caption || ''
+        }));
+        setAttributes({ galleryImages: galleryData });
+        // Create swiper-banner blocks for each image
+        const bannerBlocks = images.map(img => createBlock('jankx/swiper-banner', {
+            imageId: img.id,
+            imageUrl: img.url,
+            imageAlt: img.alt || '',
+            imageCaption: img.caption || ''
+        }));
+        // Replace inner blocks with banner blocks
+        wp.data.dispatch('core/block-editor').replaceInnerBlocks(clientId, bannerBlocks);
+    };
+    // Initialize Swiper in editor
+    useEffect(() => {
+        if (!containerRef.current)
+            return;
+        const loadSwiper = async () => {
+            await new Promise(resolve => setTimeout(resolve, 200));
+            if (containerRef.current) {
+                const swiperEl = containerRef.current.querySelector('.swiper');
+                if (!swiperEl)
+                    return;
+                // If Swiper already exists, just update params instead of destroying
+                if (swiperRef.current) {
+                    // Update params
+                    Object.assign(swiperRef.current.params, {
+                        slidesPerView,
+                        spaceBetween,
+                        loop,
+                        speed,
+                        effect,
+                        breakpoints: {
+                            320: {
+                                slidesPerView: slidesPerViewMobile,
+                                spaceBetween: spaceBetween
+                            },
+                            768: {
+                                slidesPerView: slidesPerViewTablet,
+                                spaceBetween: spaceBetween
+                            },
+                            1024: {
+                                slidesPerView: slidesPerView,
+                                spaceBetween: spaceBetween
+                            }
+                        },
+                        autoplay: autoplay ? {
+                            delay: autoplayDelay,
+                            disableOnInteraction: false
+                        } : false,
+                        navigation: navigation ? {
+                            nextEl: swiperEl.querySelector('.swiper-button-next'),
+                            prevEl: swiperEl.querySelector('.swiper-button-prev')
+                        } : false,
+                        pagination: pagination ? {
+                            el: swiperEl.querySelector('.swiper-pagination'),
+                            clickable: true
+                        } : false
+                    });
+                    // Update navigation
+                    if (navigation) {
+                        const nextEl = swiperEl.querySelector('.swiper-button-next');
+                        const prevEl = swiperEl.querySelector('.swiper-button-prev');
+                        if (nextEl && prevEl) {
+                            if (swiperRef.current.navigation) {
+                                swiperRef.current.navigation.init();
+                                swiperRef.current.navigation.update();
+                            }
+                        }
+                    }
+                    else if (swiperRef.current.navigation) {
+                        swiperRef.current.navigation.destroy();
+                    }
+                    // Update pagination
+                    if (pagination) {
+                        const paginationEl = swiperEl.querySelector('.swiper-pagination');
+                        if (paginationEl) {
+                            if (swiperRef.current.pagination) {
+                                swiperRef.current.pagination.init();
+                                swiperRef.current.pagination.render();
+                                swiperRef.current.pagination.update();
+                            }
+                        }
+                    }
+                    else if (swiperRef.current.pagination) {
+                        swiperRef.current.pagination.destroy();
+                    }
+                    // Update Swiper
+                    swiperRef.current.update();
+                    // Update autoplay
+                    if (autoplay && swiperRef.current.autoplay) {
+                        swiperRef.current.autoplay.start();
+                    }
+                    else if (swiperRef.current.autoplay) {
+                        swiperRef.current.autoplay.stop();
+                    }
+                }
+                else {
+                    // Create new instance only if doesn't exist
+                    const nextEl = swiperEl.querySelector('.swiper-button-next');
+                    const prevEl = swiperEl.querySelector('.swiper-button-prev');
+                    const paginationEl = swiperEl.querySelector('.swiper-pagination');
+                    const swiperConfig = {
+                        slidesPerView,
+                        spaceBetween,
+                        loop,
+                        speed,
+                        effect,
+                        breakpoints: {
+                            320: {
+                                slidesPerView: slidesPerViewMobile,
+                                spaceBetween: spaceBetween
+                            },
+                            768: {
+                                slidesPerView: slidesPerViewTablet,
+                                spaceBetween: spaceBetween
+                            },
+                            1024: {
+                                slidesPerView: slidesPerView,
+                                spaceBetween: spaceBetween
+                            }
+                        },
+                        autoplay: autoplay ? {
+                            delay: autoplayDelay,
+                            disableOnInteraction: false
+                        } : false,
+                        fadeEffect: { crossFade: true },
+                        cubeEffect: { shadow: true, slideShadows: true, shadowOffset: 20, shadowScale: 0.94 },
+                        coverflowEffect: { rotate: 50, stretch: 0, depth: 100, modifier: 1, slideShadows: true },
+                        flipEffect: { slideShadows: true, limitRotation: true },
+                        cardsEffect: { perSlideOffset: 8, perSlideRotate: 2 }
+                    };
+                    // Only add navigation if enabled and elements exist
+                    if (navigation && nextEl && prevEl) {
+                        swiperConfig.navigation = {
+                            nextEl,
+                            prevEl
+                        };
+                    }
+                    // Only add pagination if enabled and element exists
+                    if (pagination && paginationEl) {
+                        swiperConfig.pagination = {
+                            el: paginationEl,
+                            clickable: true
+                        };
+                    }
+                    swiperRef.current = new Swiper(swiperEl, swiperConfig);
+                }
+            }
+        };
+        const timeoutId = setTimeout(loadSwiper, 100);
+        return () => {
+            clearTimeout(timeoutId);
+            // Don't destroy on settings change, only update
+        };
+    }, [slidesPerView, slidesPerViewTablet, slidesPerViewMobile, spaceBetween, loop, autoplay, autoplayDelay, speed, navigation, pagination, effect, height, minHeight]);
+    // Cleanup only on unmount
+    useEffect(() => {
+        return () => {
+            if (swiperRef.current) {
+                swiperRef.current.destroy(false, false);
+                swiperRef.current = null;
+            }
+        };
+    }, []);
+    return (_jsxs(_Fragment, { children: [_jsx(BlockControls, { children: _jsxs(ToolbarGroup, { children: [_jsx(ToolbarButton, { icon: gallery, title: __('Default', 'jankx'), onClick: () => updateStyleVariation('default'), isActive: styleVariation === 'default' }), _jsx(ToolbarButton, { icon: cover, title: __('Banner', 'jankx'), onClick: () => updateStyleVariation('banner'), isActive: styleVariation === 'banner' }), _jsx(ToolbarButton, { icon: layout, title: __('Carousel', 'jankx'), onClick: () => updateStyleVariation('carousel'), isActive: styleVariation === 'carousel' }), _jsx(ToolbarButton, { icon: quote, title: __('Testimonial', 'jankx'), onClick: () => updateStyleVariation('testimonial'), isActive: styleVariation === 'testimonial' })] }) }), _jsxs("div", { ...blockProps, children: [_jsxs(InspectorControls, { children: [_jsx(TabPanel, { className: "swiper-tabs", activeClass: "is-active", onSelect: (tabName) => {
+                                    if (tabName === 'gallery') {
+                                        setAttributes({ contentMode: 'gallery' });
+                                    }
+                                    else {
+                                        setAttributes({ contentMode: 'slides' });
+                                    }
+                                }, tabs: [
+                                    {
+                                        name: 'slides',
+                                        title: __('Slides', 'jankx'),
+                                        className: 'tab-slides'
+                                    },
+                                    {
+                                        name: 'gallery',
+                                        title: __('Gallery', 'jankx'),
+                                        className: 'tab-gallery'
+                                    }
+                                ], children: (tab) => (_jsxs(_Fragment, { children: [tab.name === 'slides' && (_jsx(PanelBody, { title: __('Add Slides', 'jankx'), initialOpen: true, children: _jsx("p", { children: __('Use the + button to add individual slides', 'jankx') }) })), tab.name === 'gallery' && (_jsxs(PanelBody, { title: __('Select Images', 'jankx'), initialOpen: true, children: [_jsx(MediaUploadCheck, { children: _jsx(MediaUpload, { onSelect: onSelectGalleryImages, allowedTypes: ['image'], multiple: true, value: galleryImages.map(img => img.id), render: ({ open }) => (_jsx(Button, { variant: "primary", onClick: open, style: { width: '100%', marginBottom: '10px' }, children: galleryImages.length > 0
+                                                                ? __('Change Images', 'jankx')
+                                                                : __('Select Images', 'jankx') })) }) }), galleryImages.length > 0 && (_jsxs("p", { children: [__('Selected', 'jankx'), ": ", galleryImages.length, " ", __('images', 'jankx')] }))] }))] })) }), _jsxs(PanelBody, { title: __('Slider Settings', 'jankx'), initialOpen: true, children: [(styleVariation === 'carousel' || styleVariation === 'testimonial') ? (_jsxs(_Fragment, { children: [_jsx(RangeControl, { label: __('Slides Per View (Desktop)', 'jankx'), value: slidesPerView, onChange: (val) => setAttributes({ slidesPerView: val }), min: 1, max: 6, step: 1, help: __('Number of slides visible on desktop screens (≥1024px)', 'jankx') }), _jsx(RangeControl, { label: __('Slides Per View (Tablet)', 'jankx'), value: slidesPerViewTablet, onChange: (val) => setAttributes({ slidesPerViewTablet: val }), min: 1, max: 4, step: 1, help: __('Number of slides visible on tablet screens (768px - 1023px)', 'jankx') }), _jsx(RangeControl, { label: __('Slides Per View (Mobile)', 'jankx'), value: slidesPerViewMobile, onChange: (val) => setAttributes({ slidesPerViewMobile: val }), min: 1, max: 2, step: 1, help: __('Number of slides visible on mobile screens (<768px)', 'jankx') })] })) : (_jsx(RangeControl, { label: __('Slides Per View', 'jankx'), value: slidesPerView, onChange: (val) => setAttributes({ slidesPerView: val }), min: 1, max: 4, step: 1 })), _jsx(RangeControl, { label: __('Space Between (px)', 'jankx'), value: spaceBetween, onChange: (val) => setAttributes({ spaceBetween: val }), min: 0, max: 100, step: 10 }), _jsx(RangeControl, { label: __('Speed (ms)', 'jankx'), value: speed, onChange: (val) => setAttributes({ speed: val }), min: 100, max: 2000, step: 100 }), _jsx(RangeControl, { label: __('Height (px)', 'jankx'), value: height, onChange: (val) => setAttributes({ height: val }), min: 50, max: 1000, step: 50, help: __('Height for desktop (max-height on mobile)', 'jankx') }), _jsx(RangeControl, { label: __('Min Height (px)', 'jankx'), value: minHeight, onChange: (val) => setAttributes({ minHeight: val }), min: 50, max: 600, step: 50, help: __('Minimum height on mobile devices', 'jankx') }), _jsx(ToggleControl, { label: __('Chiều cao = 100vh trừ header', 'jankx'), checked: fitViewportMinusHeader, onChange: (val) => setAttributes({ fitViewportMinusHeader: val }), help: __('Khi bật, Swiper sẽ lấp đầy phần còn lại của viewport sau header.', 'jankx') }), _jsx(SelectControl, { label: __('Effect', 'jankx'), value: effect, options: [
+                                            { label: __('Slide', 'jankx'), value: 'slide' },
+                                            { label: __('Fade', 'jankx'), value: 'fade' },
+                                            { label: __('Cube', 'jankx'), value: 'cube' },
+                                            { label: __('Coverflow', 'jankx'), value: 'coverflow' },
+                                            { label: __('Flip', 'jankx'), value: 'flip' },
+                                            { label: __('Cards', 'jankx'), value: 'cards' }
+                                        ], onChange: (val) => setAttributes({ effect: val }) }), _jsx(ToggleControl, { label: __('Loop', 'jankx'), checked: loop, onChange: (val) => setAttributes({ loop: val }) }), _jsx(ToggleControl, { label: __('Navigation', 'jankx'), checked: navigation, onChange: (val) => setAttributes({ navigation: val }) }), _jsx(ToggleControl, { label: __('Pagination', 'jankx'), checked: pagination, onChange: (val) => setAttributes({ pagination: val }) }), _jsx(ToggleControl, { label: __('Autoplay', 'jankx'), checked: autoplay, onChange: (val) => setAttributes({ autoplay: val }) }), autoplay && (_jsx(RangeControl, { label: __('Autoplay Delay (ms)', 'jankx'), value: autoplayDelay, onChange: (val) => setAttributes({ autoplayDelay: val }), min: 1000, max: 10000, step: 500 }))] }), _jsxs(PanelBody, { title: __('Banner Style Settings', 'jankx'), initialOpen: false, children: [_jsx(SelectControl, { label: __('Banner Style', 'jankx'), value: bannerStyle, options: [
+                                            { label: __('Default', 'jankx'), value: 'default' },
+                                            { label: __('Circles', 'jankx'), value: 'circles' },
+                                            { label: __('Square', 'jankx'), value: 'square' },
+                                            { label: __('Banner', 'jankx'), value: 'banner' }
+                                        ], onChange: (val) => setAttributes({ bannerStyle: val }) }), _jsxs("div", { style: { marginBottom: '16px' }, children: [_jsx("label", { style: { display: 'block', marginBottom: '8px', fontWeight: 'bold' }, children: __('Text Color', 'jankx') }), _jsx(ColorPicker, { color: bannerTextColor, onChange: (color) => setAttributes({ bannerTextColor: color }), disableAlpha: false })] }), _jsxs("div", { style: { marginBottom: '16px' }, children: [_jsx("label", { style: { display: 'block', marginBottom: '8px', fontWeight: 'bold' }, children: __('Background Color', 'jankx') }), _jsx(ColorPicker, { color: bannerBackgroundColor, onChange: (color) => setAttributes({ bannerBackgroundColor: color }), disableAlpha: false })] }), _jsx(RangeControl, { label: __('Padding (px)', 'jankx'), value: bannerPadding, onChange: (val) => setAttributes({ bannerPadding: val }), min: 0, max: 50, step: 5 }), _jsx(RangeControl, { label: __('Border Radius (px)', 'jankx'), value: bannerBorderRadius, onChange: (val) => setAttributes({ bannerBorderRadius: val }), min: 0, max: 20, step: 1 })] }), _jsxs(PanelBody, { title: __('Gradient Overlay', 'jankx'), initialOpen: false, children: [_jsx(ToggleControl, { label: __('Enable Gradient Overlay', 'jankx'), checked: gradientOverlay, onChange: (val) => setAttributes({ gradientOverlay: val }), help: __('Add a gradient overlay from bottom to top with decreasing transparency', 'jankx') }), gradientOverlay && (_jsxs(_Fragment, { children: [_jsxs("div", { style: { marginBottom: '16px' }, children: [_jsx("label", { style: { display: 'block', marginBottom: '8px', fontWeight: 'bold' }, children: __('Gradient Color', 'jankx') }), _jsx(ColorPicker, { color: gradientColor, onChange: (color) => setAttributes({ gradientColor: color }), disableAlpha: false })] }), _jsx(RangeControl, { label: __('Gradient Opacity', 'jankx'), value: gradientOpacity, onChange: (val) => setAttributes({ gradientOpacity: val }), min: 0, max: 1, step: 0.1, help: __('Transparency of the gradient (0 = fully transparent, 1 = fully opaque)', 'jankx') }), _jsx(RangeControl, { label: __('Gradient Height (%)', 'jankx'), value: gradientHeight, onChange: (val) => setAttributes({ gradientHeight: val }), min: 10, max: 100, step: 5, help: __('Height of the gradient overlay as percentage of slide height', 'jankx') })] }))] })] }), _jsxs("div", { className: "swiper", children: [_jsx("div", { ...innerBlocksProps }), navigation && (_jsxs(_Fragment, { children: [_jsx("div", { className: "swiper-button-prev" }), _jsx("div", { className: "swiper-button-next" })] })), pagination && _jsx("div", { className: "swiper-pagination" })] })] })] }));
+}
