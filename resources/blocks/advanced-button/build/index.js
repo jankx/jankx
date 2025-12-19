@@ -8,7 +8,7 @@
 /***/ ((module) => {
 
 "use strict";
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/advanced-button","title":"Advanced Button","category":"jankx","description":"Advanced button block with enhanced features and styling options.","keywords":["button","link","advanced","cta","action"],"textdomain":"jankx","allowedBlocks":["jankx/icon-picker","jankx/svg-icon","core/image","core/html"],"attributes":{"conditionType":{"type":"string","enum":["always","post-type"],"default":"always"},"showForPostType":{"type":"string","default":""},"triggerType":{"type":"string","enum":["link","button","detail-link","modal"],"default":"link","source":"attribute","selector":".jankx-advanced-button__link","attribute":"data-trigger-type"},"buttonType":{"type":"string","enum":["button","submit","reset"],"default":"button","source":"attribute","selector":"button","attribute":"type"},"modalId":{"type":"string","default":""},"modalShareObjectId":{"type":"boolean","default":false},"modalSharePostTitle":{"type":"boolean","default":false},"modalShareCurrentUrl":{"type":"boolean","default":false},"modalShareFeaturedImageId":{"type":"boolean","default":false},"modalShareFeaturedImageUrl":{"type":"boolean","default":false},"formMappings":{"type":"array","default":[]},"text":{"type":"string","source":"html","selector":".button-text","default":"Button"},"url":{"type":"string","source":"attribute","selector":"a","attribute":"href","role":"content","default":""},"title":{"type":"string","source":"attribute","selector":"a,button","attribute":"title","role":"content"},"linkTarget":{"type":"string","source":"attribute","selector":"a","attribute":"target","role":"content"},"rel":{"type":"string","source":"attribute","selector":"a","attribute":"rel","role":"content"},"placeholder":{"type":"string","default":""},"backgroundColor":{"type":"string"},"textColor":{"type":"string"},"gradient":{"type":"string"},"width":{"type":"number"},"style":{"type":"object","default":{"spacing":{"padding":{"top":"0.5rem","right":"1rem","bottom":"0.5rem","left":"1rem"}}}},"useIconBlocks":{"type":"boolean","default":false},"iconPosition":{"type":"string","enum":["left","right","top","bottom"],"default":"left"},"showLabel":{"type":"boolean","default":true}},"supports":{"anchor":true,"align":false,"alignWide":false,"color":{"__experimentalSkipSerialization":true,"gradients":true,"__experimentalDefaultControls":{"background":true,"text":true}},"typography":{"fontSize":true,"lineHeight":true,"textAlign":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true,"__experimentalTextTransform":true,"__experimentalTextDecoration":true,"__experimentalLetterSpacing":true,"__experimentalDefaultControls":{"fontSize":true}},"reusable":false,"shadow":true,"spacing":{"padding":["horizontal","vertical"],"margin":true,"__experimentalDefaultControls":{"padding":true,"margin":false}},"layout":{"default":{"type":"flex","justifyContent":"center"},"allowSwitching":false,"allowInheriting":false,"allowEditing":false},"dimensions":{"minHeight":true},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true,"__experimentalDefaultControls":{"color":true,"radius":true,"style":true,"width":true}}},"styles":[{"name":"fill","label":"Fill","isDefault":true},{"name":"outline","label":"Outline"}],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css","viewScript":"file:./build/frontend.js"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/advanced-button","title":"Advanced Button","category":"jankx","description":"Advanced button block with enhanced features and styling options.","keywords":["button","link","advanced","cta","action"],"textdomain":"jankx","allowedBlocks":["jankx/icon-picker","jankx/svg-icon","core/image","core/html"],"attributes":{"conditionType":{"type":"string","enum":["always","post-type"],"default":"always"},"showForPostType":{"type":"string","default":""},"triggerType":{"type":"string","enum":["link","button","detail-link","modal"],"default":"link","source":"attribute","selector":".jankx-advanced-button__link","attribute":"data-trigger-type"},"buttonType":{"type":"string","enum":["button","submit","reset"],"default":"button","source":"attribute","selector":"button","attribute":"type"},"modalId":{"type":"string","default":""},"modalShareObjectId":{"type":"boolean","default":false},"modalSharePostTitle":{"type":"boolean","default":false},"modalShareCurrentUrl":{"type":"boolean","default":false},"modalShareFeaturedImageId":{"type":"boolean","default":false},"modalShareFeaturedImageUrl":{"type":"boolean","default":false},"modalFeaturedImageSize":{"type":"string","default":"full"},"formMappings":{"type":"array","default":[]},"text":{"type":"string","source":"html","selector":".button-text","default":"Button"},"url":{"type":"string","source":"attribute","selector":"a","attribute":"href","role":"content","default":""},"title":{"type":"string","source":"attribute","selector":"a,button","attribute":"title","role":"content"},"linkTarget":{"type":"string","source":"attribute","selector":"a","attribute":"target","role":"content"},"rel":{"type":"string","source":"attribute","selector":"a","attribute":"rel","role":"content"},"placeholder":{"type":"string","default":""},"backgroundColor":{"type":"string"},"textColor":{"type":"string"},"gradient":{"type":"string"},"width":{"type":"number"},"style":{"type":"object","default":{"spacing":{"padding":{"top":"0.5rem","right":"1rem","bottom":"0.5rem","left":"1rem"}}}},"useIconBlocks":{"type":"boolean","default":false},"iconPosition":{"type":"string","enum":["left","right","top","bottom"],"default":"left"},"showLabel":{"type":"boolean","default":true}},"supports":{"anchor":true,"align":false,"alignWide":false,"color":{"__experimentalSkipSerialization":true,"gradients":true,"__experimentalDefaultControls":{"background":true,"text":true}},"typography":{"fontSize":true,"lineHeight":true,"textAlign":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true,"__experimentalTextTransform":true,"__experimentalTextDecoration":true,"__experimentalLetterSpacing":true,"__experimentalDefaultControls":{"fontSize":true}},"reusable":false,"shadow":true,"spacing":{"padding":["horizontal","vertical"],"margin":true,"__experimentalDefaultControls":{"padding":true,"margin":false}},"layout":{"default":{"type":"flex","justifyContent":"center"},"allowSwitching":false,"allowInheriting":false,"allowEditing":false},"dimensions":{"minHeight":true},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true,"__experimentalDefaultControls":{"color":true,"radius":true,"style":true,"width":true}}},"styles":[{"name":"fill","label":"Fill","isDefault":true},{"name":"outline","label":"Outline"}],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css","viewScript":"file:./build/frontend.js"}');
 
 /***/ }),
 
@@ -83,6 +83,7 @@ function Edit(props) {
     modalShareCurrentUrl = false,
     modalShareFeaturedImageId = false,
     modalShareFeaturedImageUrl = false,
+    modalFeaturedImageSize = 'full',
     formData = [],
     formMappings = [],
     text,
@@ -916,6 +917,29 @@ function Edit(props) {
                   modalShareFeaturedImageUrl: value
                 }),
                 help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Share current post featured image URL', 'jankx'),
+                __nextHasNoMarginBottom: true
+              }), modalShareFeaturedImageUrl && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Featured image size', 'jankx'),
+                value: modalFeaturedImageSize,
+                options: [{
+                  label: 'thumbnail',
+                  value: 'thumbnail'
+                }, {
+                  label: 'medium',
+                  value: 'medium'
+                }, {
+                  label: 'medium_large',
+                  value: 'medium_large'
+                }, {
+                  label: 'large',
+                  value: 'large'
+                }, {
+                  label: 'full',
+                  value: 'full'
+                }],
+                onChange: value => setAttributes({
+                  modalFeaturedImageSize: value
+                }),
                 __nextHasNoMarginBottom: true
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
                 style: {

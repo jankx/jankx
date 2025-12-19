@@ -137,6 +137,21 @@ interface Window {
                                             elm.setAttribute(item.attributeName, val);
                                                                                                                                                        console.log(item);
                                                              console.log(elm);
+                                            const tagAttr = elm.tagName.toLowerCase();
+                                            if (tagAttr === 'img' && item.attributeName === 'src') {
+                                                const ds = trigger.dataset as DOMStringMap | undefined;
+                                                const srcset = ds?.currentFeaturedImageSrcset || '';
+                                                const sizes = ds?.currentFeaturedImageSizes || '';
+                                                if (srcset) {
+                                                    elm.setAttribute('srcset', srcset);
+                                                }
+                                                if (sizes) {
+                                                    elm.setAttribute('sizes', sizes);
+                                                }
+                                                if ((elm as HTMLImageElement).getAttribute('loading') === 'lazy') {
+                                                    (elm as HTMLImageElement).removeAttribute('loading');
+                                                }
+                                            }
 
                                         } else if ((item.mode || 'value') === 'text') {
                                             console.log('set text content', val);
@@ -150,6 +165,18 @@ interface Window {
                                                 elm.dispatchEvent(new Event('change', { bubbles: true }));
                                             } else if (tag === 'img') {
                                                 (elm as HTMLImageElement).src = val;
+                                                const ds2 = trigger.dataset as DOMStringMap | undefined;
+                                                const srcset2 = ds2?.currentFeaturedImageSrcset || '';
+                                                const sizes2 = ds2?.currentFeaturedImageSizes || '';
+                                                if (srcset2) {
+                                                    elm.setAttribute('srcset', srcset2);
+                                                }
+                                                if (sizes2) {
+                                                    elm.setAttribute('sizes', sizes2);
+                                                }
+                                                if ((elm as HTMLImageElement).getAttribute('loading') === 'lazy') {
+                                                    (elm as HTMLImageElement).removeAttribute('loading');
+                                                }
                                             } else {
                                                 elm.textContent = val;
                                             }

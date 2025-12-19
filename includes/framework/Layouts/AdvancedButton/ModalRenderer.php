@@ -42,13 +42,18 @@ class ModalRenderer extends AbstractButtonRenderer
             $htmlAttributes['data-share-current-url'] = 'true';
             $htmlAttributes['data-current-url'] = '{{CURRENT_POST_URL}}';
         }
+        $featured_image_size = isset($attributes['modalFeaturedImageSize']) && is_string($attributes['modalFeaturedImageSize']) ? $attributes['modalFeaturedImageSize'] : 'full';
         if ($modalShareFeaturedImageId) {
             $htmlAttributes['data-share-featured-image-id'] = 'true';
             $htmlAttributes['data-current-featured-image-id'] = '{{CURRENT_FEATURED_IMAGE_ID}}';
+            $htmlAttributes['data-current-featured-image-srcset'] = '{{CURRENT_FEATURED_IMAGE_SRCSET}}';
+            $htmlAttributes['data-current-featured-image-sizes'] = '{{CURRENT_FEATURED_IMAGE_SIZES}}';
         }
         if ($modalShareFeaturedImageUrl) {
             $htmlAttributes['data-share-featured-image-url'] = 'true';
             $htmlAttributes['data-current-featured-image-url'] = '{{CURRENT_FEATURED_IMAGE_URL}}';
+            $htmlAttributes['data-current-featured-image-srcset'] = '{{CURRENT_FEATURED_IMAGE_SRCSET}}';
+            $htmlAttributes['data-current-featured-image-sizes'] = '{{CURRENT_FEATURED_IMAGE_SIZES}}';
         }
         
         // Handle custom form data
@@ -115,14 +120,24 @@ class ModalRenderer extends AbstractButtonRenderer
             
             // Featured image for current post/page
             $featured_image_id = get_post_thumbnail_id($post_id);
-            $featured_image_url = $featured_image_id ? wp_get_attachment_image_url($featured_image_id, 'full') : '';
+            $featured_image_url = $featured_image_id ? wp_get_attachment_image_url($featured_image_id, $featured_image_size) : '';
             if ($featured_image_id) {
                 $html = str_replace('{{CURRENT_FEATURED_IMAGE_ID}}', esc_attr($featured_image_id), $html);
                 $html = str_replace('{featured_image_id}', esc_attr($featured_image_id), $html);
+                $featured_image_srcset = wp_get_attachment_image_srcset($featured_image_id, $featured_image_size) ?: '';
+                $featured_image_sizes = wp_get_attachment_image_sizes($featured_image_id, $featured_image_size) ?: '';
+                $html = str_replace('{{CURRENT_FEATURED_IMAGE_SRCSET}}', esc_attr($featured_image_srcset), $html);
+                $html = str_replace('{{CURRENT_FEATURED_IMAGE_SIZES}}', esc_attr($featured_image_sizes), $html);
             }
             if ($featured_image_url) {
                 $html = str_replace('{{CURRENT_FEATURED_IMAGE_URL}}', esc_attr($featured_image_url), $html);
                 $html = str_replace('{featured_image_url}', esc_attr($featured_image_url), $html);
+                if (strpos($html, '{{CURRENT_FEATURED_IMAGE_SRCSET}}') !== false) {
+                    $html = str_replace('{{CURRENT_FEATURED_IMAGE_SRCSET}}', '', $html);
+                }
+                if (strpos($html, '{{CURRENT_FEATURED_IMAGE_SIZES}}') !== false) {
+                    $html = str_replace('{{CURRENT_FEATURED_IMAGE_SIZES}}', '', $html);
+                }
             }
             // Support WooCommerce price if available
             if (function_exists('wc_get_product')) {
