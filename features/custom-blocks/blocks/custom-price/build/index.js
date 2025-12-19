@@ -8,7 +8,7 @@
   \******************************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/custom-price","version":"1.0.0","title":"Custom Price","category":"widgets","icon":"money","description":"Display custom price field with specific style","supports":{"html":false,"color":{"text":true,"background":true},"typography":{"fontSize":true}},"attributes":{"metaKey":{"type":"string","default":"_price"},"customMetaKey":{"type":"string","default":""},"currencySymbol":{"type":"string","default":"đ"},"emptyText":{"type":"string","default":"Liên hệ"},"numberFormat":{"type":"string","default":"vi-VN"}},"textdomain":"jankx","editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css","render":"file:./render.php"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/custom-price","version":"1.0.0","title":"Custom Price","category":"widgets","icon":"money","description":"Display custom price field with specific style","supports":{"html":false,"color":{"text":true,"background":true},"typography":{"fontSize":true}},"attributes":{"metaKey":{"type":"string","default":"_price"},"customMetaKey":{"type":"string","default":""},"maxPriceMetaKey":{"type":"string","default":"none"},"maxPriceCustomMetaKey":{"type":"string","default":""},"currencySymbol":{"type":"string","default":"đ"},"emptyText":{"type":"string","default":"Liên hệ"},"numberFormat":{"type":"string","default":"vi-VN"}},"textdomain":"jankx","editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css","render":"file:./render.php"}');
 
 /***/ }),
 
@@ -41,6 +41,8 @@ function Edit({
   const {
     metaKey,
     customMetaKey,
+    maxPriceMetaKey,
+    maxPriceCustomMetaKey,
     currencySymbol,
     emptyText,
     numberFormat
@@ -56,6 +58,16 @@ function Edit({
   }, {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Sale Price (_sale_price)', 'jankx'),
     value: '_sale_price'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Custom Key', 'jankx'),
+    value: 'custom'
+  }];
+  const maxOptions = [{
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('None', 'jankx'),
+    value: 'none'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Max Price (_price_max)', 'jankx'),
+    value: '_price_max'
   }, {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Custom Key', 'jankx'),
     value: 'custom'
@@ -101,6 +113,21 @@ function Edit({
             customMetaKey: value
           }),
           help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enter the meta key to retrieve the price from.', 'jankx')
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select Max Price Meta Key', 'jankx'),
+          value: maxPriceMetaKey,
+          options: maxOptions,
+          onChange: value => setAttributes({
+            maxPriceMetaKey: value
+          }),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Choose to show a price range', 'jankx')
+        }), maxPriceMetaKey === 'custom' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enter Custom Max Price Key', 'jankx'),
+          value: maxPriceCustomMetaKey,
+          onChange: value => setAttributes({
+            maxPriceCustomMetaKey: value
+          }),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enter the meta key for max price.', 'jankx')
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Currency Symbol', 'jankx'),
           value: currencySymbol,
