@@ -17,17 +17,11 @@
         "conditionType": {
             "type": "string",
             "enum": ["always", "post-type"],
-            "default": "always",
-            "source": "attribute",
-            "selector": ".jankx-advanced-button__link",
-            "attribute": "data-condition-type"
+            "default": "always"
         },
         "showForPostType": {
             "type": "string",
-            "default": "",
-            "source": "attribute",
-            "selector": ".jankx-advanced-button__link",
-            "attribute": "data-show-for-post-type"
+            "default": ""
         },
         "triggerType": {
             "type": "string",

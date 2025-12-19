@@ -115,7 +115,8 @@ function Edit(props) {
   // Detect ancestor dynamic-data-template/layout and multi post types
   const {
     isInsideDynamicTemplate,
-    multiPostTypes
+    multiPostTypes,
+    detectedPostType
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_7__.useSelect)(select => {
     const {
       getBlockParents,
@@ -127,6 +128,7 @@ function Edit(props) {
       enabled: false,
       postTypes: []
     };
+    let detected = '';
     if (templateId) {
       const layoutId = getBlockParents(templateId).find(id => getBlock(id)?.name === 'jankx/dynamic-data-layout');
       if (layoutId) {
@@ -138,24 +140,61 @@ function Edit(props) {
             postTypes: attrs.postTypes
           };
         }
+        if (attrs?.postType) {
+          detected = attrs.postType;
+        } else if (Array.isArray(attrs?.postTypes) && attrs.postTypes.length > 0) {
+          detected = attrs.postTypes[0];
+        }
       }
     }
     return {
       isInsideDynamicTemplate: !!templateId,
-      multiPostTypes: multi
+      multiPostTypes: multi,
+      detectedPostType: detected
     };
   }, [clientId]);
-  // Build post type options
   const wpPostTypes = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_7__.useSelect)(select => {
     const core = select('core');
     return core.getPostTypes({
       per_page: -1
     }) || [];
   }, []);
-  const postTypeOptions = (wpPostTypes || []).map(pt => ({
-    label: pt.name,
-    value: pt.slug
-  }));
+  const publicPostTypes = Array.isArray(window.jankxPublicPostTypes) ? window.jankxPublicPostTypes : [];
+  const postTypeOptions = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => {
+    const map = new Map();
+    (wpPostTypes || []).filter(type => type.slug !== 'attachment').forEach(type => {
+      if (!map.has(type.slug)) {
+        map.set(type.slug, type.name);
+      }
+    });
+    publicPostTypes.filter(pt => pt.slug !== 'attachment').forEach(pt => {
+      if (!map.has(pt.slug)) {
+        map.set(pt.slug, pt.name || pt.slug);
+      }
+    });
+    return Array.from(map.entries()).map(([value, label]) => ({
+      label,
+      value
+    }));
+  }, [wpPostTypes, publicPostTypes]);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
+    if (isInsideDynamicTemplate && conditionType === 'always' && (!showForPostType || showForPostType === '') && detectedPostType) {
+      setAttributes({
+        conditionType: 'post-type',
+        showForPostType: detectedPostType
+      });
+    }
+  }, [isInsideDynamicTemplate, detectedPostType, conditionType, showForPostType, setAttributes]);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
+    if (isInsideDynamicTemplate && conditionType === 'post-type') {
+      const isInvalid = showForPostType === 'attachment' || !!showForPostType && !postTypeOptions.some(opt => opt.value === showForPostType);
+      if (isInvalid && detectedPostType) {
+        setAttributes({
+          showForPostType: detectedPostType
+        });
+      }
+    }
+  }, [isInsideDynamicTemplate, conditionType, showForPostType, detectedPostType, postTypeOptions, setAttributes]);
 
   // Get all modal blocks from the page
   const modalBlocks = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_7__.useSelect)(select => {

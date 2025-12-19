@@ -43,6 +43,15 @@ class AdvancedButtonBlock extends Block
         // Respect post type context when configured
         $conditionType = isset($attributes['conditionType']) ? (string) $attributes['conditionType'] : 'always';
         $showForPostType = isset($attributes['showForPostType']) ? (string) $attributes['showForPostType'] : '';
+        // Fallback: extract data attributes from saved content when attributes are defaults
+        if (($conditionType === 'always' || $showForPostType === '') && is_string($content) && $content !== '') {
+            if (preg_match('/data-condition-type="([^"]*)"/', $content, $m)) {
+                $conditionType = $m[1] ?: $conditionType;
+            }
+            if (preg_match('/data-show-for-post-type="([^"]*)"/', $content, $m2)) {
+                $showForPostType = $m2[1] ?: $showForPostType;
+            }
+        }
         if ($conditionType === 'post-type' && $showForPostType !== '') {
             $currentPostType = null;
             if ($block instanceof \WP_Block) {
@@ -54,10 +63,10 @@ class AdvancedButtonBlock extends Block
                 if ($post_id) {
                     $currentPostType = get_post_type($post_id);
                 } elseif (isset($GLOBALS['post']) && $GLOBALS['post'] instanceof \WP_Post) {
-                    $currentPostType = get_post_type($GLOBALS['post']);
+                    $currentPostType = $GLOBALS['post']->post_type;
                 }
             }
-            if ($currentPostType && $currentPostType !== $showForPostType) {
+            if ($currentPostType !== null && $currentPostType !== $showForPostType) {
                 return '';
             }
         }
