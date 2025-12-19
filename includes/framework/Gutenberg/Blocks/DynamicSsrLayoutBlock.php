@@ -22,6 +22,10 @@ class DynamicSsrLayoutBlock extends Block
     {
         add_action('enqueue_block_editor_assets', [$this, 'enqueueEditorAssets'], 20);
         add_filter('render_block_data', [$this, 'normalizeBlockAttributes'], 10, 1);
+        add_filter('jankx_dynamic_ssr_layout_filter_update', [$this, 'handleFilterUpdate'], 10, 2);
+        add_filter('jankx_dynamic_ssr_layout_get_block_attributes', [$this, 'handleGetBlockAttributes'], 10, 3);
+        add_action('wp_ajax_jankx_dynamic_ssr_layout_filter', [$this, 'ajaxFilterUpdate']);
+        add_action('wp_ajax_nopriv_jankx_dynamic_ssr_layout_filter', [$this, 'ajaxFilterUpdate']);
         $this->ensureServices();
     }
 
@@ -290,5 +294,118 @@ class DynamicSsrLayoutBlock extends Block
 
         $query_options = \Jankx\Gutenberg\QueryOptions::getOptions();
         wp_localize_script($script_handle, 'jankxQueryOptions', $query_options);
+    }
+
+    public function handleFilterUpdate(array $attributes, array $filters): array
+    {
+        if (empty($attributes['queryId']) || empty($attributes['postType'])) {
+            return [];
+        }
+        $this->ensureServices();
+        $layoutName = $attributes['layout'] ?? 'grid';
+        $attributes = \Jankx\Query\DynamicDataLayoutQueryHelper::applyFiltersToAttributes($attributes, $filters);
+        $attributes = $this->attributeSanitizer->sanitize($layoutName, $attributes, true);
+        $rendered = $this->rendererService->render($attributes, '', null);
+        $wrapperAttrs = $this->buildWrapperAttributes($attributes);
+        $html = sprintf('<div %s>%s</div>', $wrapperAttrs, $rendered);
+        return [
+            'html' => $html,
+            'attributes' => $attributes,
+        ];
+    }
+
+    public function handleGetBlockAttributes($default, int $post_id, string $block_id)
+    {
+        if (!$post_id) {
+            return $default;
+        }
+        $post_obj = get_post($post_id);
+        if (!$post_obj) {
+            return $default;
+        }
+        $blocks = parse_blocks($post_obj->post_content);
+        $found = $this->findBlockAttributesById($blocks, $block_id);
+        return $found !== null ? $found : $default;
+    }
+
+    private function findBlockAttributesById(array $blocks, string $target_block_id): ?array
+    {
+        foreach ($blocks as $block) {
+            if (($block['blockName'] ?? '') === 'jankx/dynamic-ssr-layout') {
+                $query_id = $block['attrs']['queryId'] ?? null;
+                if ($query_id && strval($query_id) === $target_block_id) {
+                    $attrs = $block['attrs'] ?? [];
+                    $template = $this->extractTemplateBlockFromParsedBlock($block);
+                    if ($template !== null) {
+                        $attrs['postTemplate'] = $template;
+                    }
+                    return $attrs;
+                }
+            }
+            if (!empty($block['innerBlocks'])) {
+                $result = $this->findBlockAttributesById($block['innerBlocks'], $target_block_id);
+                if ($result !== null) {
+                    return $result;
+                }
+            }
+        }
+        return null;
+    }
+
+    public function ajaxFilterUpdate(): void
+    {
+        check_ajax_referer('jankx_load_more', 'nonce');
+        $this->bootDefaultThumbnailService();
+        $block_id = isset($_POST['block_id']) ? sanitize_text_field(wp_unslash($_POST['block_id'])) : '';
+        $attributes_json = isset($_POST['attributes']) ? sanitize_text_field(wp_unslash($_POST['attributes'])) : '';
+        $filters_json = isset($_POST['filters']) ? sanitize_text_field(wp_unslash($_POST['filters'])) : '[]';
+        $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
+        if (empty($block_id)) {
+            wp_send_json_error(['message' => __('Block ID is required', 'jankx')]);
+        }
+        $attributes = [];
+        $filters = [];
+        if (!empty($attributes_json)) {
+            $decoded = json_decode($attributes_json, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                $attributes = $decoded;
+            }
+        }
+        if (!empty($filters_json)) {
+            $decoded = json_decode($filters_json, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                $filters = $decoded;
+            }
+        }
+        if (empty($attributes) && $post_id > 0) {
+            $attrs = apply_filters('jankx_dynamic_ssr_layout_get_block_attributes', null, $post_id, $block_id);
+            if (is_array($attrs)) {
+                $attributes = $attrs;
+            }
+        }
+        if (empty($attributes)) {
+            wp_send_json_error(['message' => __('Attributes not found', 'jankx')]);
+        }
+        $response = $this->handleFilterUpdate($attributes, $filters);
+        wp_send_json_success($response);
+    }
+
+    protected function bootDefaultThumbnailService(): void
+    {
+        if (has_filter('has_post_thumbnail', '__return_true')) {
+            return;
+        }
+        try {
+            $app = Application::getInstance();
+            $service = $app->make(DefaultThumbnailService::class);
+            if ($service && $service->isEnabled()) {
+                $service->boot();
+            }
+        } catch (\Exception $e) {
+            $service = new DefaultThumbnailService();
+            if ($service->isEnabled()) {
+                $service->boot();
+            }
+        }
     }
 }
