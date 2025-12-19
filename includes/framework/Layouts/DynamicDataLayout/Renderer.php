@@ -79,7 +79,7 @@ class Renderer
 
         if ($templateBlock) {
             $blockName = $templateBlock['blockName'] ?? '';
-            $generator = ($blockName === 'jankx/dynamic-data-ssr')
+            $generator = ($blockName === 'jankx/dynamic-ssr-template')
                 ? new SsrViewGenerator($templateBlock, $attributes)
                 : new PostTemplateBlockGenerator($templateBlock, $attributes);
             $layoutInstance = $decorator->getLayout();
