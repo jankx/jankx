@@ -4,6 +4,8 @@ namespace Jankx\Features\Gallery;
 
 use Jankx\Foundation\Application;
 use Jankx\Support\Providers\ServiceProvider;
+use Jankx\Facades\Config;
+use Jankx\Facades\App;
 
 class GalleryServiceProvider extends ServiceProvider
 {
@@ -53,10 +55,57 @@ class GalleryServiceProvider extends ServiceProvider
                 'capability_type' => 'post',
             ];
 
-            if (!post_type_exists('gallery')) {
+            $enabledByConfig = (bool) Config::get('gallery.enable_post_type', false);
+            $enabledByOptions = false;
+            try {
+                $themeOptions = App::getInstance()->make('theme-options');
+                if ($themeOptions) {
+                    $enabledByOptions = (bool) $themeOptions->getOption('enable_gallery_post_type', false);
+                }
+            } catch (\Exception $e) {
+            }
+            if (($enabledByConfig || $enabledByOptions) && !post_type_exists('gallery')) {
                 register_post_type('gallery', $args);
             }
         }, 10);
+
+        add_filter('jankx/options/pages', function ($pages) {
+            $pages = is_array($pages) ? $pages : [];
+            $pages[] = [
+                'id' => 'gallery',
+                'title' => __('Gallery', 'jankx'),
+                'icon' => 'dashicons-format-gallery',
+                'position' => 70,
+            ];
+            return $pages;
+        });
+
+        add_filter('jankx/options/sections', function ($sections) {
+            $sections = is_array($sections) ? $sections : [];
+            if (!isset($sections['gallery'])) {
+                $sections['gallery'] = [];
+            }
+            $sections['gallery']['settings'] = [
+                'title' => __('Gallery Settings', 'jankx'),
+                'fields' => [
+                    [
+                        'id' => 'enable_gallery_post_type',
+                        'type' => 'switch',
+                        'title' => __('Enable Gallery Post Type', 'jankx'),
+                        'default' => false,
+                    ],
+                    [
+                        'id' => 'gallery_metabox_post_types',
+                        'type' => 'select',
+                        'title' => __('Metabox Post Types', 'jankx'),
+                        'multiple' => true,
+                        'options' => $this->getAllPublicPostTypes(),
+                        'default' => [],
+                    ],
+                ],
+            ];
+            return $sections;
+        });
 
         add_action('add_meta_boxes', [$this, 'addGalleryMetaBox']);
         add_action('save_post', [$this, 'saveGalleryMetaBox']);
@@ -65,14 +114,17 @@ class GalleryServiceProvider extends ServiceProvider
 
     public function addGalleryMetaBox()
     {
-        add_meta_box(
-            'jankx_gallery_images',
-            __('Gallery Images', 'jankx'),
-            [$this, 'renderGalleryMetaBox'],
-            'gallery',
-            'normal',
-            'high'
-        );
+        $postTypes = $this->getMetaboxPostTypes();
+        foreach ($postTypes as $postType) {
+            add_meta_box(
+                'jankx_gallery_images',
+                __('Gallery Images', 'jankx'),
+                [$this, 'renderGalleryMetaBox'],
+                $postType,
+                'normal',
+                'high'
+            );
+        }
     }
 
     public function renderGalleryMetaBox($post)
@@ -124,7 +176,8 @@ class GalleryServiceProvider extends ServiceProvider
     public function enqueueAssets()
     {
         $screen = get_current_screen();
-        if ($screen && $screen->post_type === 'gallery') {
+        $postTypes = $this->getMetaboxPostTypes();
+        if ($screen && in_array($screen->post_type, $postTypes, true)) {
             wp_enqueue_media();
             wp_enqueue_script('jquery-ui-sortable');
             
@@ -144,5 +197,44 @@ class GalleryServiceProvider extends ServiceProvider
             );
         }
     }
-}
 
+    protected function getMetaboxPostTypes(): array
+    {
+        $postTypes = [];
+        $configPostTypes = Config::get('gallery.metabox.post_types', []);
+        if (is_array($configPostTypes)) {
+            $postTypes = array_merge($postTypes, $configPostTypes);
+        }
+        try {
+            $themeOptions = App::getInstance()->make('theme-options');
+            if ($themeOptions) {
+                $optPostTypes = $themeOptions->getOption('gallery_metabox_post_types', []);
+                if (is_array($optPostTypes)) {
+                    $postTypes = array_merge($postTypes, $optPostTypes);
+                }
+                $enabledByOptions = (bool) $themeOptions->getOption('enable_gallery_post_type', false);
+                if ($enabledByOptions) {
+                    $postTypes[] = 'gallery';
+                }
+            }
+        } catch (\Exception $e) {
+        }
+        $enabledByConfig = (bool) Config::get('gallery.enable_post_type', false);
+        if ($enabledByConfig) {
+            $postTypes[] = 'gallery';
+        }
+        $postTypes = array_values(array_unique(array_filter(array_map('strval', $postTypes))));
+        $postTypes = apply_filters('jankx/gallery/metabox/post_types', $postTypes);
+        return $postTypes;
+    }
+
+    protected function getAllPublicPostTypes(): array
+    {
+        $types = get_post_types(['public' => true], 'objects');
+        $options = [];
+        foreach ($types as $type => $obj) {
+            $options[$type] = isset($obj->labels->name) ? $obj->labels->name : $type;
+        }
+        return $options;
+    }
+}

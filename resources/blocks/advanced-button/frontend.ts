@@ -17,12 +17,30 @@ declare global {
 interface Window {
         JankxModal?: JankxModal;
         MicroModal?: MicroModal;
-        jankxFormMappings?: Record<string, Array<{ source: string; selector: string; mode?: string; attributeName?: string }>>;
     }
 }
 
 (function() {
     'use strict';
+
+    const resolveValue = (source: string, trigger: HTMLElement): string => {
+        switch (source) {
+            case 'button_title':
+                return trigger.getAttribute('title') || (trigger.querySelector('.button-text')?.textContent || '');
+            case 'current_post_title':
+                return trigger.getAttribute('data-current-post-title') || '';
+            case 'current_post_id':
+                return trigger.getAttribute('data-current-object-id') || '';
+            case 'current_url':
+                return trigger.getAttribute('data-current-url') || window.location.href;
+            case 'current_featured_image_url':
+                return trigger.getAttribute('data-current-featured-image-url') || '';
+            case 'current_featured_image_id':
+                return trigger.getAttribute('data-current-featured-image-id') || '';
+            default:
+                return '';
+        }
+    };
 
     function initAdvancedButtons() {
         const links = Array.from(document.querySelectorAll('.jankx-advanced-button__link')) as HTMLElement[];
@@ -46,64 +64,6 @@ interface Window {
         });
         const buttons = document.querySelectorAll('.jankx-button-modal-trigger');
         console.log('[AdvancedButton] initAdvancedButtons: found', buttons.length, 'buttons');
-        
-        const applyFormMappings = (trigger: HTMLElement, modalId: string) => {
-            try {
-                const mappingsAttr = trigger.getAttribute('data-form-mappings');
-                if (!mappingsAttr) return;
-                const mappings: Array<{ source: string; selector: string; mode?: string; attributeName?: string }> = JSON.parse(mappingsAttr || '[]');
-                if (!Array.isArray(mappings) || mappings.length === 0) return;
-
-                const modal = document.getElementById(modalId);
-                if (!modal) return;
-
-                const resolveValue = (source: string): string => {
-                    switch (source) {
-                        case 'button_title':
-                            return trigger.getAttribute('title') || (trigger.querySelector('.button-text')?.textContent || '');
-                        case 'current_post_title':
-                            return trigger.getAttribute('data-current-post-title') || '';
-                        case 'current_post_id':
-                            return trigger.getAttribute('data-current-object-id') || '';
-                        case 'current_url':
-                            return trigger.getAttribute('data-current-url') || window.location.href;
-                        case 'current_featured_image_url':
-                            return trigger.getAttribute('data-current-featured-image-url') || '';
-                        case 'current_featured_image_id':
-                            return trigger.getAttribute('data-current-featured-image-id') || '';
-                        default:
-                            return '';
-                    }
-                };
-
-                mappings.forEach(({ source, selector, mode, attributeName }) => {
-                    if (!selector) return;
-                    const target = modal.querySelector(selector) as HTMLElement | null;
-                    if (!target) return;
-                    const value = resolveValue(source);
-                    if (value === undefined || value === null) return;
-
-                    if ((mode || 'value') === 'attribute' && attributeName) {
-                        target.setAttribute(attributeName, value);
-                    } else if ((mode || 'value') === 'text') {
-                        target.textContent = value;
-                    } else {
-                        const tag = target.tagName.toLowerCase();
-                        if (tag === 'input' || tag === 'textarea' || tag === 'select') {
-                            (target as HTMLInputElement).value = value;
-                            target.dispatchEvent(new Event('input', { bubbles: true }));
-                            target.dispatchEvent(new Event('change', { bubbles: true }));
-                        } else if (tag === 'img') {
-                            (target as HTMLImageElement).src = value;
-                        } else {
-                            target.textContent = value;
-                        }
-                    }
-                });
-            } catch (err) {
-                // ignore malformed JSON
-            }
-        };
 
         buttons.forEach(button => {
             // Check if event listener is already attached (to avoid duplicates if called multiple times)
@@ -139,6 +99,70 @@ interface Window {
                             triggerId: trigger.id
                         }
                     }));
+
+                    // Support update HTML data attributes
+                    if (formData.mappings !== undefined && formData.mappings.length > 0) {
+                        console.log(typeof formData.mappings);
+                        const mappings = JSON.parse(formData.mappings || '[]');
+                        console.log(mappings);
+
+                        if (Array.isArray(mappings) && mappings.length > 0) {
+                            mappings.forEach(function(item, index){
+                                console.log(item, index);
+
+
+
+                                const val = resolveValue(item.source, trigger);
+
+                                const elms = document.querySelectorAll(item.selector);
+
+                                if (typeof window['cleanImageSrcSet'] === 'undefined') {
+                                    console.log('zo');
+                                    elms.forEach(function(elm: Element){
+                                         // Avoid image is not updated after replace URL
+                                        const tag = elm.tagName.toLowerCase();
+                                        if (tag === 'img') {
+                                            (elm as HTMLImageElement).removeAttribute('srcset');
+                                        }
+                                    });
+                                    window['cleanImageSrcSet'] = true;
+                                }
+                                if (elms) {
+                                    elms.forEach(function(elm: Element){
+                                        console.log(elm, item);
+                                        if ((item.mode || 'value') === 'attribute' && item.attributeName) {
+                                            console.log('set attribute', item.attributeName, val);
+                                                                                    console.log(item);
+
+                                            elm.setAttribute(item.attributeName, val);
+                                                                                                                                                       console.log(item);
+                                                             console.log(elm);
+
+                                        } else if ((item.mode || 'value') === 'text') {
+                                            console.log('set text content', val);
+                                            elm.textContent = val;
+                                        } else {
+                                            console.log('set value auto detect', val);
+                                            const tag = elm.tagName.toLowerCase();
+                                            if (tag === 'input' || tag === 'textarea' || tag === 'select') {
+                                                (elm as HTMLInputElement).value = val;
+                                                elm.dispatchEvent(new Event('input', { bubbles: true }));
+                                                elm.dispatchEvent(new Event('change', { bubbles: true }));
+                                            } else if (tag === 'img') {
+                                                (elm as HTMLImageElement).src = val;
+                                            } else {
+                                                elm.textContent = val;
+                                            }
+                                        }
+
+                                    });
+                                }
+                                console.log(val);
+                            });
+
+                            console.log(trigger.attributes);
+                        }
+                    }
                 }
 
                 if (!modalId || modalId.trim() === '') {
@@ -146,15 +170,7 @@ interface Window {
                     return;
                 }
 
-                // Store rules by modalId globally; binder will read and apply inside onShow
-                try {
-                    const attr = trigger.getAttribute('data-form-mappings');
-                    const parsed = attr ? JSON.parse(attr || '[]') : [];
-                    if (Array.isArray(parsed)) {
-                        window.jankxFormMappings = window.jankxFormMappings || {};
-                        window.jankxFormMappings[modalId] = parsed;
-                    }
-                } catch (e) {}
+
 
                 // Try JankxModal first (wrapper around MicroModal with extras)
                 if (window.JankxModal) {

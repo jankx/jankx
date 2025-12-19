@@ -314,94 +314,11 @@ __webpack_require__.r(__webpack_exports__);
 
   // Initialize global share data object
   window.jankxShareData = window.jankxShareData || {};
-  // Global form mappings store by modalId
-  window.jankxFormMappings = window.jankxFormMappings || {};
-  // Global binder: bind values/attributes into elements inside modal
-  window.jankxBindFormMappings = function (modal, trigger) {
-    try {
-      const modalId = modal.id;
-      // Prefer mappings stored globally by modalId; fallback to trigger attribute
-      let mappings = Array.isArray(window.jankxFormMappings[modalId]) ? window.jankxFormMappings[modalId] : null;
-      if (!mappings && trigger) {
-        const attr = trigger.getAttribute('data-form-mappings');
-        if (attr) {
-          try {
-            mappings = JSON.parse(attr || '[]');
-          } catch (e) {
-            mappings = [];
-          }
-        }
-      }
-      if (!Array.isArray(mappings) || mappings.length === 0) return;
-      const resolveValue = function (source) {
-        switch (source) {
-          case 'button_title':
-            return trigger ? trigger.getAttribute('title') || trigger.querySelector('.button-text') && trigger.querySelector('.button-text').textContent || '' : '';
-          case 'current_post_title':
-            return trigger ? trigger.dataset.currentPostTitle || '' : '';
-          case 'current_post_id':
-            return trigger ? trigger.dataset.currentObjectId || '' : '';
-          case 'current_url':
-            return trigger ? trigger.dataset.currentUrl || window.location.href : window.location.href;
-          case 'current_featured_image_url':
-            return trigger ? trigger.dataset.currentFeaturedImageUrl || '' : '';
-          case 'current_featured_image_id':
-            return trigger ? trigger.dataset.currentFeaturedImageId || '' : '';
-          default:
-            return '';
-        }
-      };
-      mappings.forEach(function (m) {
-        var source = m.source,
-          selector = m.selector,
-          mode = m.mode,
-          attributeName = m.attributeName;
-        if (!selector) return;
-        let target = modal.querySelector(selector);
-        if (!target) return;
-        const value = resolveValue(source);
-        if (value === undefined || value === null) return;
-        if ((mode || 'value') === 'attribute' && attributeName) {
-          target.setAttribute(attributeName, value);
-        } else if ((mode || 'value') === 'text') {
-          target.textContent = value;
-        } else {
-          const tag = target.tagName.toLowerCase();
-          if (tag === 'input' || tag === 'textarea' || tag === 'select') {
-            target.value = value;
-            target.dispatchEvent(new Event('input', {
-              bubbles: true
-            }));
-            target.dispatchEvent(new Event('change', {
-              bubbles: true
-            }));
-          } else if (tag === 'img') {
-            target.src = value;
-          } else {
-            target.textContent = value;
-          }
-        }
-      });
-    } catch (e) {}
-  };
   document.addEventListener('jankx:modal:show', function (event) {
     const detail = event.detail || {};
     console.log('[Modal] Received shared data:', detail.sharedData);
     console.log('[Modal] Modal element:', detail.modalElement);
     if (detail.triggerElement) {
-      // Cache rules by modalId for binder to use
-      try {
-        const modalEl = detail.modalElement;
-        const modalId = modalEl ? modalEl.id : '';
-        const attr = detail.triggerElement.getAttribute('data-form-mappings');
-        if (modalId && attr) {
-          const parsed = JSON.parse(attr || '[]');
-          if (Array.isArray(parsed)) {
-            window.jankxFormMappings = window.jankxFormMappings || {};
-            window.jankxFormMappings[modalId] = parsed;
-          }
-        }
-      } catch (e) {}
       console.log('[Modal] Trigger element:', detail.triggerElement);
       console.log('[Modal] Form mappings:', detail.triggerElement.getAttribute('data-form-mappings'));
     } else {
@@ -596,10 +513,6 @@ __webpack_require__.r(__webpack_exports__);
     // Initialize Micromodal with global config
     micromodal__WEBPACK_IMPORTED_MODULE_0__["default"].init({
       onShow: function (modal, trigger) {
-        // One global binder; loads rules by modalId and binds
-        if (window.jankxBindFormMappings) {
-          window.jankxBindFormMappings(modal, trigger);
-        }
         // Collect and share data from trigger element
         if (trigger) {
           const shareData = {};
