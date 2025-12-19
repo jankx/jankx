@@ -124,13 +124,13 @@ export function Edit(props: EditProps) {
 		},
 		[clientId]
 	);
-	// Detect ancestor dynamic-data-template/layout and multi post types
-	const { isInsideDynamicTemplate, multiPostTypes } = useSelect(
+	const { isInsideDynamicTemplate, multiPostTypes, detectedPostType } = useSelect(
 		(select: any) => {
 			const { getBlockParents, getBlock } = select('core/block-editor');
 			const parents: string[] = getBlockParents(clientId) || [];
 			const templateId = parents.find((id) => getBlock(id)?.name === 'jankx/dynamic-data-template');
 			let multi = { enabled: false, postTypes: [] as string[] };
+			let detected = '';
 			if (templateId) {
 				const layoutId = getBlockParents(templateId).find((id: string) => getBlock(id)?.name === 'jankx/dynamic-data-layout');
 				if (layoutId) {
@@ -139,21 +139,65 @@ export function Edit(props: EditProps) {
 					if (attrs?.useMultiPostType && Array.isArray(attrs?.postTypes) && attrs.postTypes.length > 1) {
 						multi = { enabled: true, postTypes: attrs.postTypes as string[] };
 					}
+					if (attrs?.postType) {
+						detected = attrs.postType as string;
+					} else if (Array.isArray(attrs?.postTypes) && attrs.postTypes.length > 0) {
+						detected = attrs.postTypes[0] as string;
+					}
 				}
 			}
-			return { isInsideDynamicTemplate: !!templateId, multiPostTypes: multi };
+			return { isInsideDynamicTemplate: !!templateId, multiPostTypes: multi, detectedPostType: detected };
 		},
 		[clientId]
 	);
-	// Build post type options
 	const wpPostTypes = useSelect((select: any) => {
 		const core = select('core');
 		return core.getPostTypes({ per_page: -1 }) || [];
 	}, []);
-	const postTypeOptions = (wpPostTypes || []).map((pt: any) => ({
-		label: pt.name,
-		value: pt.slug,
-	}));
+	const publicPostTypes: Array<{ slug: string; name: string }> = Array.isArray((window as any).jankxPublicPostTypes)
+		? (window as any).jankxPublicPostTypes
+		: [];
+	const postTypeOptions = useMemo(
+		() => {
+			const map = new Map<string, string>();
+			(wpPostTypes || [])
+				.filter((type: any) => type.slug !== 'attachment')
+				.forEach((type: any) => {
+					if (!map.has(type.slug)) {
+						map.set(type.slug, type.name);
+					}
+				});
+			publicPostTypes
+				.filter((pt) => pt.slug !== 'attachment')
+				.forEach((pt) => {
+					if (!map.has(pt.slug)) {
+						map.set(pt.slug, pt.name || pt.slug);
+					}
+				});
+			return Array.from(map.entries()).map(([value, label]) => ({ label, value }));
+		},
+		[wpPostTypes, publicPostTypes]
+	);
+	useEffect(() => {
+		if (
+			isInsideDynamicTemplate &&
+			conditionType === 'always' &&
+			(!showForPostType || showForPostType === '') &&
+			detectedPostType
+		) {
+			setAttributes({ conditionType: 'post-type', showForPostType: detectedPostType });
+		}
+	}, [isInsideDynamicTemplate, detectedPostType, conditionType, showForPostType, setAttributes]);
+	useEffect(() => {
+		if (isInsideDynamicTemplate && conditionType === 'post-type') {
+			const isInvalid =
+				showForPostType === 'attachment' ||
+				(!!showForPostType && !postTypeOptions.some((opt) => opt.value === showForPostType));
+			if (isInvalid && detectedPostType) {
+				setAttributes({ showForPostType: detectedPostType });
+			}
+		}
+	}, [isInsideDynamicTemplate, conditionType, showForPostType, detectedPostType, postTypeOptions, setAttributes]);
 
 	// Get all modal blocks from the page
 	const modalBlocks = useSelect(
