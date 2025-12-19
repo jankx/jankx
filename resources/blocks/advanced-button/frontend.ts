@@ -14,9 +14,10 @@ interface MicroModal {
 }
 
 declare global {
-    interface Window {
+interface Window {
         JankxModal?: JankxModal;
         MicroModal?: MicroModal;
+        jankxFormMappings?: Record<string, Array<{ source: string; selector: string; mode?: string; attributeName?: string }>>;
     }
 }
 
@@ -50,7 +51,7 @@ declare global {
             try {
                 const mappingsAttr = trigger.getAttribute('data-form-mappings');
                 if (!mappingsAttr) return;
-                const mappings: Array<{ source: string; selector: string }> = JSON.parse(mappingsAttr || '[]');
+                const mappings: Array<{ source: string; selector: string; mode?: string; attributeName?: string }> = JSON.parse(mappingsAttr || '[]');
                 if (!Array.isArray(mappings) || mappings.length === 0) return;
 
                 const modal = document.getElementById(modalId);
@@ -145,8 +146,15 @@ declare global {
                     return;
                 }
 
-                // Apply form mappings before showing modal
-                applyFormMappings(trigger, modalId);
+                // Store rules by modalId globally; binder will read and apply inside onShow
+                try {
+                    const attr = trigger.getAttribute('data-form-mappings');
+                    const parsed = attr ? JSON.parse(attr || '[]') : [];
+                    if (Array.isArray(parsed)) {
+                        window.jankxFormMappings = window.jankxFormMappings || {};
+                        window.jankxFormMappings[modalId] = parsed;
+                    }
+                } catch (e) {}
 
                 // Try JankxModal first (wrapper around MicroModal with extras)
                 if (window.JankxModal) {

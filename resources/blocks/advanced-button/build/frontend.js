@@ -139,8 +139,15 @@
           return;
         }
 
-        // Apply form mappings before showing modal
-        applyFormMappings(trigger, modalId);
+        // Store rules by modalId globally; binder will read and apply inside onShow
+        try {
+          const attr = trigger.getAttribute('data-form-mappings');
+          const parsed = attr ? JSON.parse(attr || '[]') : [];
+          if (Array.isArray(parsed)) {
+            window.jankxFormMappings = window.jankxFormMappings || {};
+            window.jankxFormMappings[modalId] = parsed;
+          }
+        } catch (e) {}
 
         // Try JankxModal first (wrapper around MicroModal with extras)
         if (window.JankxModal) {
