@@ -10,6 +10,7 @@ use Jankx\Layouts\DynamicDataLayout\PaginationRenderer;
 use Jankx\Layouts\DynamicDataLayout\Contracts\PostLayoutJsCallbackInterface;
 use Jankx\Layouts\DynamicDataLayout\Contracts\ContentGeneratorInterface;
 use Jankx\Query\DynamicDataLayoutQueryHelper;
+use Jankx\Multilingual\MultilingualFactory;
 use WP_Query;
 
 class Renderer
@@ -140,7 +141,72 @@ class Renderer
         if ($preset === 'related') {
             $attributes = DynamicDataLayoutQueryHelper::buildRelatedQuery($attributes);
             $decorator->withAttributes($attributes);
-            return $decorator->buildQuery($attributes);
+            $relatedQuery = $decorator->buildQuery($attributes);
+            $perPage = isset($attributes['postsPerPage']) ? (int) $attributes['postsPerPage'] : 10;
+            $relatedIds = array_map(static function ($p) {
+                return isset($p->ID) ? (int) $p->ID : 0;
+            }, $relatedQuery->posts ?? []);
+            $relatedIds = array_values(array_filter(array_unique($relatedIds)));
+            $relatedCount = count($relatedIds);
+            if ($relatedCount >= $perPage) {
+                return $relatedQuery;
+            }
+            $remaining = max(0, $perPage - $relatedCount);
+            $excludeIds = $relatedIds;
+            if (!empty($attributes['postNotIn']) && is_array($attributes['postNotIn'])) {
+                $excludeIds = array_values(array_unique(array_merge($excludeIds, array_map('intval', $attributes['postNotIn']))));
+            }
+            if (is_singular()) {
+                $current = get_queried_object_id();
+                if ($current) {
+                    $excludeIds[] = (int) $current;
+                }
+            }
+            $excludeIds = array_values(array_unique(array_filter($excludeIds)));
+            $lang = $attributes['_current_language'] ?? null;
+            $cacheKey = 'rand_fill:' . ($attributes['postType'] ?? $postType) . ':' . $remaining . ($lang ? (':lang:' . $lang) : '');
+            $transientKey = 'jankx_dd_layout_' . md5($cacheKey);
+            $randIds = get_transient($transientKey);
+            if (!is_array($randIds)) {
+                $randArgs = [
+                    'post_type' => $attributes['postType'] ?? $postType,
+                    'posts_per_page' => $remaining,
+                    'orderby' => 'rand',
+                    'post_status' => 'publish',
+                ];
+                if (!empty($excludeIds)) {
+                    $randArgs['post__not_in'] = $excludeIds;
+                }
+                if ($lang) {
+                    $randArgs = MultilingualFactory::addLanguageToQueryArgs($randArgs, $lang);
+                }
+                $randQuery = new WP_Query($randArgs);
+                $randIds = array_map(static function ($p) {
+                    return isset($p->ID) ? (int) $p->ID : 0;
+                }, $randQuery->posts ?? []);
+                $randIds = array_values(array_filter(array_unique($randIds)));
+                set_transient($transientKey, $randIds, 10 * MINUTE_IN_SECONDS);
+            }
+            $finalIds = array_values(array_unique(array_merge($relatedIds, $randIds)));
+            if (count($finalIds) > $perPage) {
+                $finalIds = array_slice($finalIds, 0, $perPage);
+            }
+            $finalArgs = [
+                'post_type' => $attributes['postType'] ?? $postType,
+                'posts_per_page' => $perPage,
+                'post__in' => $finalIds,
+                'orderby' => 'post__in',
+                'post_status' => 'publish',
+            ];
+            if (!empty($attributes['_internal_paged'])) {
+                $finalArgs['paged'] = (int) $attributes['_internal_paged'];
+            } elseif (!empty($attributes['enablePagination'])) {
+                $finalArgs['paged'] = get_query_var('paged') ?: 1;
+            }
+            if ($lang) {
+                $finalArgs = MultilingualFactory::addLanguageToQueryArgs($finalArgs, $lang);
+            }
+            return new WP_Query($finalArgs);
         }
         if ($preset !== 'custom') {
             $attributes = DynamicDataLayoutQueryHelper::applyQueryBuilderFilter($attributes, $preset);

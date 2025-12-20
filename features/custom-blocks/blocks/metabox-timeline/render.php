@@ -3,6 +3,7 @@
 $post_id = get_the_ID();
 $raw = get_post_meta($post_id, 'jankx_timeline_items', true);
 $items = [];
+$hide_when_empty = isset($attributes['hideWhenEmpty']) ? (bool) $attributes['hideWhenEmpty'] : true;
 if (is_string($raw) && strlen($raw)) {
     $decoded = json_decode($raw, true);
     if (is_array($decoded)) {
@@ -13,15 +14,23 @@ if (is_string($raw) && strlen($raw)) {
 }
 
 if (empty($items)) {
+    if ($hide_when_empty) {
+        return;
+    }
     $wrapper = get_block_wrapper_attributes(['class' => 'jankx-timeline']);
     echo '<div ' . $wrapper . '>';
+    echo '<div class="jankx-timelime-header"></div>';
+    echo '<div class="jankx-timelime-items">';
     echo '<div class="jankx-timeline-empty">' . esc_html__('No timeline items', 'jankx') . '</div>';
+    echo '</div>';
     echo '</div>';
     return;
 }
 
 $wrapper_attrs = get_block_wrapper_attributes(['class' => 'jankx-timeline']);
 echo '<div ' . $wrapper_attrs . '>';
+echo '<div class="jankx-timelime-header"></div>';
+echo '<div class="jankx-timelime-items">';
 echo '<div class="jankx-timeline-line"></div>';
 foreach ($items as $i => $item) {
     $time = isset($item['time']) ? $item['time'] : '';
@@ -31,16 +40,15 @@ foreach ($items as $i => $item) {
     $imgUrl = $imageId ? wp_get_attachment_image_url($imageId, 'medium') : '';
     echo '<div class="jankx-timeline-item">';
     echo '<div class="jankx-timeline-marker"></div>';
-        if ($time) {
-        echo '<div class="jankx-timeline-time">' . esc_html($time) . '</div>';
+    if ($time) {
+        echo '<p class="jankx-timeline-time">' . esc_html($time) . '</p>';
     }
     echo '<div class="jankx-timeline-card">';
-
     if ($title) {
-        echo '<div class="jankx-timeline-title">' . esc_html($title) . '</div>';
+        echo '<h4 class="jankx-timeline-title">' . esc_html($title) . '</h4>';
     }
     if ($description) {
-        echo '<div class="jankx-timeline-desc">' . esc_html($description) . '</div>';
+        echo '<p class="jankx-timeline-desc">' . esc_html($description) . '</p>';
     }
     if ($imgUrl) {
         echo '<div class="jankx-timeline-image"><img src="' . esc_url($imgUrl) . '" alt=""></div>';
@@ -48,4 +56,5 @@ foreach ($items as $i => $item) {
     echo '</div>';
     echo '</div>';
 }
-echo '</div>';
+echo '</div>'; // .jankx-timelime-items
+echo '</div>'; // wrapper

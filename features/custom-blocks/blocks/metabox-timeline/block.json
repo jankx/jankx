@@ -62,6 +62,12 @@
       "letterSpacing": ".jankx-timeline-title, .jankx-timeline-desc, .jankx-timeline-time"
     }
   },
+  "attributes": {
+    "hideWhenEmpty": {
+      "type": "boolean",
+      "default": true
+    }
+  },
   "keywords": ["timeline", "lịch trình", "metabox"],
   "textdomain": "jankx",
   "style": "file:./build/style.css",

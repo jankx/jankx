@@ -8,7 +8,7 @@
   \**********************************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/metabox-timeline","version":"1.0.0","title":"Metabox Timeline","category":"jankx","icon":"schedule","description":"Hiển thị timeline từ metabox","supports":{"html":false,"inserter":true,"color":{"text":true,"background":true,"__experimentalSkipSerialization":true},"spacing":{"margin":true,"padding":true,"__experimentalSkipSerialization":true},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true,"__experimentalSkipSerialization":true},"typography":{"fontSize":true,"lineHeight":true,"fontStyle":true,"fontWeight":true,"textDecoration":true,"textTransform":true,"letterSpacing":true,"__experimentalSkipSerialization":true}},"selectors":{"root":".jankx-timeline","color":{"text":".jankx-timeline-time, .jankx-timeline-title, .jankx-timeline-desc","background":".jankx-timeline-card"},"spacing":{"root":".jankx-timeline","padding":".jankx-timeline-card, .jankx-timeline-item","margin":".jankx-timeline-item"},"border":{"root":".jankx-timeline-card"},"typography":{"fontSize":".jankx-timeline-title, .jankx-timeline-desc, .jankx-timeline-time","lineHeight":".jankx-timeline-title, .jankx-timeline-desc, .jankx-timeline-time","fontStyle":".jankx-timeline-title, .jankx-timeline-desc, .jankx-timeline-time","fontWeight":".jankx-timeline-title, .jankx-timeline-desc, .jankx-timeline-time","textDecoration":".jankx-timeline-title, .jankx-timeline-desc, .jankx-timeline-time","textTransform":".jankx-timeline-title, .jankx-timeline-desc, .jankx-timeline-time","letterSpacing":".jankx-timeline-title, .jankx-timeline-desc, .jankx-timeline-time"}},"keywords":["timeline","lịch trình","metabox"],"textdomain":"jankx","style":"file:./build/style.css","editorStyle":"file:./build/style.css","editorScript":"file:./build/index.js","render":"file:./render.php"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/metabox-timeline","version":"1.0.0","title":"Metabox Timeline","category":"jankx","icon":"schedule","description":"Hiển thị timeline từ metabox","supports":{"html":false,"inserter":true,"color":{"text":true,"background":true,"__experimentalSkipSerialization":true},"spacing":{"margin":true,"padding":true,"__experimentalSkipSerialization":true},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true,"__experimentalSkipSerialization":true},"typography":{"fontSize":true,"lineHeight":true,"fontStyle":true,"fontWeight":true,"textDecoration":true,"textTransform":true,"letterSpacing":true,"__experimentalSkipSerialization":true}},"selectors":{"root":".jankx-timeline","color":{"text":".jankx-timeline-time, .jankx-timeline-title, .jankx-timeline-desc","background":".jankx-timeline-card"},"spacing":{"root":".jankx-timeline","padding":".jankx-timeline-card, .jankx-timeline-item","margin":".jankx-timeline-item"},"border":{"root":".jankx-timeline-card"},"typography":{"fontSize":".jankx-timeline-title, .jankx-timeline-desc, .jankx-timeline-time","lineHeight":".jankx-timeline-title, .jankx-timeline-desc, .jankx-timeline-time","fontStyle":".jankx-timeline-title, .jankx-timeline-desc, .jankx-timeline-time","fontWeight":".jankx-timeline-title, .jankx-timeline-desc, .jankx-timeline-time","textDecoration":".jankx-timeline-title, .jankx-timeline-desc, .jankx-timeline-time","textTransform":".jankx-timeline-title, .jankx-timeline-desc, .jankx-timeline-time","letterSpacing":".jankx-timeline-title, .jankx-timeline-desc, .jankx-timeline-time"}},"attributes":{"hideWhenEmpty":{"type":"boolean","default":true}},"keywords":["timeline","lịch trình","metabox"],"textdomain":"jankx","style":"file:./build/style.css","editorStyle":"file:./build/style.css","editorScript":"file:./build/index.js","render":"file:./render.php"}');
 
 /***/ }),
 
@@ -158,7 +158,10 @@ __webpack_require__.r(__webpack_exports__);
 // Main metabox timeline block: provides editor template
 
 (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.registerBlockType)(_block_json__WEBPACK_IMPORTED_MODULE_4__.name, {
-  edit() {
+  edit({
+    attributes,
+    setAttributes
+  }) {
     const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)({
       className: 'jankx-metabox-timeline-editor'
     });
@@ -175,7 +178,14 @@ __webpack_require__.r(__webpack_exports__);
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
           title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Cấu hình', 'jankx'),
-          initialOpen: true
+          initialOpen: true,
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Ẩn nếu không có items', 'jankx'),
+            checked: !!attributes.hideWhenEmpty,
+            onChange: val => setAttributes({
+              hideWhenEmpty: val
+            })
+          })
         })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InnerBlocks, {
         allowedBlocks: ['jankx/timelime-header', 'jankx/timelime-items'],
