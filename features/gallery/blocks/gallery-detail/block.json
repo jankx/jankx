@@ -26,11 +26,58 @@
       "type": "string",
       "default": "thumbnail"
     },
+    "aspectWidth": {
+      "type": "number",
+      "default": 16
+    },
+    "aspectHeight": {
+      "type": "number",
+      "default": 9
+    },
+    "thumbAspectWidth": {
+      "type": "number",
+      "default": 4
+    },
+    "thumbAspectHeight": {
+      "type": "number",
+      "default": 3
+    },
+    "thumbWidth": {
+      "type": "number",
+      "default": 140
+    },
+    "showWishlist": {
+      "type": "boolean",
+      "default": true
+    },
+    "showFullscreen": {
+      "type": "boolean",
+      "default": true
+    },
+    "showNavigation": {
+      "type": "boolean",
+      "default": true
+    },
+    "autoplay": {
+      "type": "boolean",
+      "default": false
+    },
+    "autoplaySpeed": {
+      "type": "number",
+      "default": 3000
+    },
+    "preset": {
+      "type": "string",
+      "default": "classic"
+    },
     "className": {
       "type": "string"
     }
   },
   "render": "file:./render.php",
   "viewScript": "file:./view.js",
+  "script": "file:./view.js",
+  "style": "file:./style.css",
+  "editorStyle": "file:./style.css",
   "editorScript": "file:./index.js"
 }
