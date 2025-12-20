@@ -1,0 +1,16 @@
+/*!****************************************************************************************************!*\
+  !*** css ../node_modules/css-loader/dist/cjs.js!./custom-blocks/blocks/metabox-timeline/style.css ***!
+  \****************************************************************************************************/
+.jankx-timeline{position:relative;padding-left:56px}
+.jankx-timeline-line{position:absolute;left:24px;top:0;bottom:0;width:8px;background:linear-gradient(180deg,#ffcf70,#ffe8b5);border-radius:999px}
+.jankx-timeline-item{position:relative;margin:24px 0}
+.jankx-timeline-marker{position:absolute;left:20px;top:12px;width:16px;height:16px;border-radius:50%;background:#fff;border:4px solid #ffa700;box-shadow:0 0 0 2px rgba(255,167,0,.2)}
+.jankx-timeline-card{margin-left:24px;background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);padding:16px 20px}
+.jankx-timeline-time{display:inline-flex;align-items:center;gap:8px;background:#0b7a3e;color:#fff;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:700}
+.jankx-timeline-title{margin-top:10px;font-weight:700;font-size:18px;color:#222}
+.jankx-timeline-desc{margin-top:6px;color:#555;line-height:1.6}
+.jankx-timeline-image{margin-top:10px}
+.jankx-timeline-empty{padding:16px;color:#777}
+
+
+/*# sourceMappingURL=style.css.map*/

@@ -10,6 +10,23 @@
         var wishlist = root.querySelector('.jankx-gallery-detail__wishlist');
         var fullscreen = root.querySelector('.jankx-gallery-detail__fullscreen');
         var currentIndex = 0;
+        if (main) {
+            var initialSrc = main.getAttribute('src');
+            if (!initialSrc) {
+                if (buttons.length) {
+                    var b0 = buttons[0];
+                    var s0 = b0.getAttribute('data-src') || '';
+                    var ss0 = b0.getAttribute('data-srcset') || '';
+                    var sz0 = b0.getAttribute('data-sizes') || '';
+                    if (s0) main.setAttribute('src', s0);
+                    if (ss0) { main.setAttribute('srcset', ss0); } else { main.removeAttribute('srcset'); }
+                    if (sz0) { main.setAttribute('sizes', sz0); } else { main.removeAttribute('sizes'); }
+                }
+                main.removeAttribute('loading');
+                main.classList.add('ls-no-lazy');
+                main.setAttribute('data-no-lazy', '1');
+            }
+        }
         function selectIndex(idx){
             var btn = buttons[idx];
             if (!btn) return;

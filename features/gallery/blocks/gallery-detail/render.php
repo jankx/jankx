@@ -87,6 +87,9 @@ function jankx_gallery_detail_render($attributes = [], $content = '', $block = n
         $showNavigation = false;
         $autoplay = false;
     }
+    $mainSize = (!empty($main['id']) && is_numeric($main['id'])) ? wp_get_attachment_image_src((int)$main['id'], $imageSize) : null;
+    $mainW = is_array($mainSize) && isset($mainSize[1]) ? (int)$mainSize[1] : null;
+    $mainH = is_array($mainSize) && isset($mainSize[2]) ? (int)$mainSize[2] : null;
     ob_start();
     ?>
     <div
@@ -100,12 +103,17 @@ function jankx_gallery_detail_render($attributes = [], $content = '', $block = n
             <div class="jankx-gallery-detail__stage">
                 <img
                     id="jankx-gallery-main-<?php echo esc_attr($post_id ?: 'preview'); ?>"
-                    class="jankx-gallery-detail__image"
+                    class="jankx-gallery-detail__image ls-no-lazy"
                     src="<?php echo esc_url($main['url']); ?>"
+                    data-no-lazy="1"
                     <?php if (!empty($main['srcset'])): ?>srcset="<?php echo esc_attr($main['srcset']); ?>"<?php endif; ?>
                     <?php if (!empty($main['sizes'])): ?>sizes="<?php echo esc_attr($main['sizes']); ?>"<?php endif; ?>
+                    <?php if ($mainW): ?>width="<?php echo esc_attr($mainW); ?>"<?php endif; ?>
+                    <?php if ($mainH): ?>height="<?php echo esc_attr($mainH); ?>"<?php endif; ?>
                     alt="<?php echo esc_attr($main['alt']); ?>"
                     loading="eager"
+                    decoding="async"
+                    fetchpriority="high"
                 />
                 <?php if ($showWishlist): ?>
                 <button type="button" class="jankx-gallery-detail__wishlist" aria-pressed="false" aria-label="wishlist">❤</button>
@@ -122,6 +130,9 @@ function jankx_gallery_detail_render($attributes = [], $content = '', $block = n
         <?php if (!$is_single): ?>
             <div class="jankx-gallery-detail__thumbs">
                 <?php foreach ($images as $img): ?>
+                    <?php $tSize = (!empty($img['id']) && is_numeric($img['id'])) ? wp_get_attachment_image_src((int)$img['id'], $thumbSize) : null; ?>
+                    <?php $tW = is_array($tSize) && isset($tSize[1]) ? (int)$tSize[1] : null; ?>
+                    <?php $tH = is_array($tSize) && isset($tSize[2]) ? (int)$tSize[2] : null; ?>
                     <button
                         type="button"
                         class="jankx-gallery-detail__thumb"
@@ -131,7 +142,7 @@ function jankx_gallery_detail_render($attributes = [], $content = '', $block = n
                         aria-label="thumb"
                     >
                         <span class="jankx-gallery-detail__thumb-inner">
-                            <img src="<?php echo esc_url($img['thumb']); ?>" alt="<?php echo esc_attr($img['alt']); ?>" />
+                            <img src="<?php echo esc_url($img['thumb']); ?>" <?php if ($tW): ?>width="<?php echo esc_attr($tW); ?>"<?php endif; ?> <?php if ($tH): ?>height="<?php echo esc_attr($tH); ?>"<?php endif; ?> alt="<?php echo esc_attr($img['alt']); ?>" data-no-lazy="1" class="ls-no-lazy" />
                         </span>
                     </button>
                 <?php endforeach; ?>

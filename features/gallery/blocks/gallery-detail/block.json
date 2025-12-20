@@ -75,10 +75,10 @@
     }
   },
   "render": "file:./render.php",
-  "viewScript": "file:./view.js",
-  "script": "file:./view.js",
-  "style": "file:./style.css",
-  "editorStyle": "file:./style.css",
-  "editorScript": "file:./index.js",
+  "viewScript": "file:./build/view.js",
+  "script": "file:./build/view.js",
+  "style": "file:./build/style.css",
+  "editorStyle": "file:./build/style.css",
+  "editorScript": "file:./build/index.js",
   "usesContext": ["postId"]
 }

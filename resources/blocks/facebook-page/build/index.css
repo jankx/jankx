@@ -19,7 +19,7 @@
 }
 .jankx-facebook-page .fb-page > span {
   width: 100% !important;
-  height: auto !important;
+  overflow: hidden !important;
 }
 .jankx-facebook-page .fb-page iframe {
   width: 100% !important;

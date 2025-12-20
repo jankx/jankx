@@ -11,7 +11,7 @@
     "html": false
   },
   "textdomain": "jankx",
-  "style": "file:./style.css",
-  "editorStyle": "file:./style.css",
+  "style": "file:./build/style.css",
+  "editorStyle": "file:./build/style.css",
   "render": "file:./render.php"
 }
