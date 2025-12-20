@@ -82,10 +82,15 @@ function jankx_gallery_detail_render($attributes = [], $content = '', $block = n
         return '';
     }
     $main = $images[0];
+    $is_single = count($images) <= 1;
+    if ($is_single) {
+        $showNavigation = false;
+        $autoplay = false;
+    }
     ob_start();
     ?>
     <div
-        class="jankx-gallery-detail is-style-<?php echo esc_attr($preset); ?><?php echo $showNavigation ? ' has-nav' : ''; ?>"
+        class="jankx-gallery-detail is-style-<?php echo esc_attr($preset); ?><?php echo $showNavigation ? ' has-nav' : ''; ?><?php echo $is_single ? ' is-single' : ''; ?>"
         data-post-id="<?php echo esc_attr($post_id ?: 'preview'); ?>"
         data-autoplay="<?php echo $autoplay ? '1' : '0'; ?>"
         data-speed="<?php echo esc_attr($autoplaySpeed); ?>"
@@ -114,22 +119,24 @@ function jankx_gallery_detail_render($attributes = [], $content = '', $block = n
                 <?php endif; ?>
             </div>
         </div>
-        <div class="jankx-gallery-detail__thumbs">
-            <?php foreach ($images as $img): ?>
-                <button
-                    type="button"
-                    class="jankx-gallery-detail__thumb"
-                    data-src="<?php echo esc_attr($img['url']); ?>"
-                    data-srcset="<?php echo esc_attr($img['srcset']); ?>"
-                    data-sizes="<?php echo esc_attr($img['sizes']); ?>"
-                    aria-label="thumb"
-                >
-                    <span class="jankx-gallery-detail__thumb-inner">
-                        <img src="<?php echo esc_url($img['thumb']); ?>" alt="<?php echo esc_attr($img['alt']); ?>" />
-                    </span>
-                </button>
-            <?php endforeach; ?>
-        </div>
+        <?php if (!$is_single): ?>
+            <div class="jankx-gallery-detail__thumbs">
+                <?php foreach ($images as $img): ?>
+                    <button
+                        type="button"
+                        class="jankx-gallery-detail__thumb"
+                        data-src="<?php echo esc_attr($img['url']); ?>"
+                        data-srcset="<?php echo esc_attr($img['srcset']); ?>"
+                        data-sizes="<?php echo esc_attr($img['sizes']); ?>"
+                        aria-label="thumb"
+                    >
+                        <span class="jankx-gallery-detail__thumb-inner">
+                            <img src="<?php echo esc_url($img['thumb']); ?>" alt="<?php echo esc_attr($img['alt']); ?>" />
+                        </span>
+                    </button>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
     </div>
     <script>
     (function(){
@@ -137,55 +144,63 @@ function jankx_gallery_detail_render($attributes = [], $content = '', $block = n
         if (!root) return;
         var main = root.querySelector('#jankx-gallery-main-<?php echo esc_js($post_id); ?>');
         var buttons = root.querySelectorAll('.jankx-gallery-detail__thumb');
+        var total = buttons.length;
         var currentIndex = 0;
-        buttons.forEach(function(btn, idx){
-            if (idx === 0) btn.classList.add('is-active');
-            btn.addEventListener('click', function(){
-                var s = btn.getAttribute('data-src') || '';
-                var ss = btn.getAttribute('data-srcset') || '';
-                var sz = btn.getAttribute('data-sizes') || '';
-                if (s) {
-                    main.setAttribute('src', s);
-                }
-                if (ss) {
-                    main.setAttribute('srcset', ss);
-                } else {
-                    main.removeAttribute('srcset');
-                }
-                if (sz) {
-                    main.setAttribute('sizes', sz);
-                } else {
-                    main.removeAttribute('sizes');
-                }
-                if (main.getAttribute('loading') === 'lazy') {
-                    main.removeAttribute('loading');
-                }
-                buttons.forEach(function(b){ b.classList.remove('is-active'); });
-                btn.classList.add('is-active');
-                currentIndex = idx;
+        if (total > 1) {
+            buttons.forEach(function(btn, idx){
+                if (idx === 0) btn.classList.add('is-active');
+                btn.addEventListener('click', function(){
+                    var s = btn.getAttribute('data-src') || '';
+                    var ss = btn.getAttribute('data-srcset') || '';
+                    var sz = btn.getAttribute('data-sizes') || '';
+                    if (s) {
+                        main.setAttribute('src', s);
+                    }
+                    if (ss) {
+                        main.setAttribute('srcset', ss);
+                    } else {
+                        main.removeAttribute('srcset');
+                    }
+                    if (sz) {
+                        main.setAttribute('sizes', sz);
+                    } else {
+                        main.removeAttribute('sizes');
+                    }
+                    if (main.getAttribute('loading') === 'lazy') {
+                        main.removeAttribute('loading');
+                    }
+                    buttons.forEach(function(b){ b.classList.remove('is-active'); });
+                    btn.classList.add('is-active');
+                    currentIndex = idx;
+                });
             });
-        });
+        }
         var prev = root.querySelector('.jankx-gallery-detail__prev');
         var next = root.querySelector('.jankx-gallery-detail__next');
-        function goTo(index){
-            var btn = buttons[index];
-            if (btn) btn.click();
-            var thumbs = root.querySelector('.jankx-gallery-detail__thumbs');
-            if (thumbs && btn) {
-                var rect = btn.getBoundingClientRect();
-                var trect = thumbs.getBoundingClientRect();
-                var offset = rect.left - trect.left - (trect.width/2 - rect.width/2);
-                thumbs.scrollBy({ left: offset, behavior: 'smooth' });
+        if (total > 1) {
+            function goTo(index){
+                var btn = buttons[index];
+                if (btn) btn.click();
+                var thumbs = root.querySelector('.jankx-gallery-detail__thumbs');
+                if (thumbs && btn) {
+                    var rect = btn.getBoundingClientRect();
+                    var trect = thumbs.getBoundingClientRect();
+                    var offset = rect.left - trect.left - (trect.width/2 - rect.width/2);
+                    thumbs.scrollBy({ left: offset, behavior: 'smooth' });
+                }
             }
+            if (prev) prev.addEventListener('click', function(){
+                currentIndex = (currentIndex - 1 + buttons.length) % buttons.length;
+                goTo(currentIndex);
+            });
+            if (next) next.addEventListener('click', function(){
+                currentIndex = (currentIndex + 1) % buttons.length;
+                goTo(currentIndex);
+            });
+        } else {
+            if (prev) prev.remove();
+            if (next) next.remove();
         }
-        if (prev) prev.addEventListener('click', function(){
-            currentIndex = (currentIndex - 1 + buttons.length) % buttons.length;
-            goTo(currentIndex);
-        });
-        if (next) next.addEventListener('click', function(){
-            currentIndex = (currentIndex + 1) % buttons.length;
-            goTo(currentIndex);
-        });
         var wishlist = root.querySelector('.jankx-gallery-detail__wishlist');
         if (wishlist) wishlist.addEventListener('click', function(){
             var pressed = wishlist.getAttribute('aria-pressed') === 'true';
@@ -199,11 +214,11 @@ function jankx_gallery_detail_render($attributes = [], $content = '', $block = n
                 el.requestFullscreen();
             }
         });
-        var autoplay = root.getAttribute('data-autoplay') === '1';
+        var autoplay = total > 1 && root.getAttribute('data-autoplay') === '1';
         var speed = parseInt(root.getAttribute('data-speed') || '3000', 10);
         var timer = null;
         function startAutoplay(){
-            if (timer) return;
+            if (timer || !autoplay) return;
             timer = setInterval(function(){
                 currentIndex = (currentIndex + 1) % buttons.length;
                 goTo(currentIndex);

@@ -3,6 +3,7 @@
         if (!root) return;
         var main = root.querySelector('.jankx-gallery-detail__image');
         var buttons = Array.prototype.slice.call(root.querySelectorAll('.jankx-gallery-detail__thumb'));
+        var total = buttons.length;
         var thumbs = root.querySelector('.jankx-gallery-detail__thumbs');
         var prev = root.querySelector('.jankx-gallery-detail__prev');
         var next = root.querySelector('.jankx-gallery-detail__next');
@@ -29,16 +30,21 @@
                 thumbs.scrollBy({ left: offset, behavior: 'smooth' });
             }
         }
-        buttons.forEach(function(btn, idx){
-            if (idx === 0) btn.classList.add('is-active');
-            btn.addEventListener('click', function(){ selectIndex(idx); });
-        });
-        if (prev) prev.addEventListener('click', function(){
-            selectIndex((currentIndex - 1 + buttons.length) % buttons.length);
-        });
-        if (next) next.addEventListener('click', function(){
-            selectIndex((currentIndex + 1) % buttons.length);
-        });
+        if (total > 1) {
+            buttons.forEach(function(btn, idx){
+                if (idx === 0) btn.classList.add('is-active');
+                btn.addEventListener('click', function(){ selectIndex(idx); });
+            });
+            if (prev) prev.addEventListener('click', function(){
+                selectIndex((currentIndex - 1 + buttons.length) % buttons.length);
+            });
+            if (next) next.addEventListener('click', function(){
+                selectIndex((currentIndex + 1) % buttons.length);
+            });
+        } else {
+            if (prev) prev.remove();
+            if (next) next.remove();
+        }
         if (wishlist) wishlist.addEventListener('click', function(){
             var pressed = wishlist.getAttribute('aria-pressed') === 'true';
             wishlist.setAttribute('aria-pressed', pressed ? 'false' : 'true');
@@ -48,11 +54,11 @@
             var el = root.querySelector('.jankx-gallery-detail__stage');
             if (el && el.requestFullscreen) el.requestFullscreen();
         });
-        var autoplay = root.getAttribute('data-autoplay') === '1';
+        var autoplay = total > 1 && root.getAttribute('data-autoplay') === '1';
         var speed = parseInt(root.getAttribute('data-speed') || '3000', 10);
         var timer = null;
         function startAutoplay(){
-            if (timer) return;
+            if (timer || !autoplay) return;
             timer = setInterval(function(){
                 selectIndex((currentIndex + 1) % buttons.length);
             }, speed);

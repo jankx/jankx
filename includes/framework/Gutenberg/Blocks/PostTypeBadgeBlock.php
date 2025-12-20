@@ -38,6 +38,10 @@ class PostTypeBadgeBlock extends Block
             $ptype = get_post_type($post_id);
             $ptype_obj = get_post_type_object($ptype);
             $label = $ptype_obj ? ($ptype_obj->labels->singular_name ?? $ptype_obj->label) : $ptype;
+            $customLabels = apply_filters('jankx/post_type_badge/labels', []);
+            if (is_array($customLabels) && isset($customLabels[$ptype]) && is_string($customLabels[$ptype]) && $customLabels[$ptype] !== '') {
+                $label = $customLabels[$ptype];
+            }
         }
 
         $attrs = is_array($attributes) ? $attributes : (array) $attributes;

@@ -50,11 +50,9 @@
       }
     });
     const buttons = document.querySelectorAll('.jankx-button-modal-trigger');
-    console.log('[AdvancedButton] initAdvancedButtons: found', buttons.length, 'buttons');
     buttons.forEach(button => {
       // Check if event listener is already attached (to avoid duplicates if called multiple times)
       if (button.getAttribute('data-jankx-click-attached') === 'true') {
-        console.log('[AdvancedButton] listener already attached to', button);
         return;
       }
       button.addEventListener('click', function (e) {
@@ -64,14 +62,6 @@
         const modalIdAttr = trigger.getAttribute('data-modal-id');
         const micromodalAttr = trigger.getAttribute('data-micromodal-trigger');
         const modalId = modalIdAttr || micromodalAttr;
-        console.log('[AdvancedButton] click trigger', {
-          modalId,
-          modalIdAttr,
-          micromodalAttr,
-          trigger,
-          hasJankxModal: !!window.JankxModal,
-          hasMicroModal: !!window.MicroModal
-        });
 
         // Extract dynamic form data and dispatch event
         const formData = {};
@@ -82,7 +72,6 @@
           }
         });
         if (Object.keys(formData).length > 0) {
-          console.log('[AdvancedButton] dispatching formello:update', formData);
           document.dispatchEvent(new CustomEvent('formello:update', {
             detail: {
               data: formData,
@@ -92,54 +81,24 @@
 
           // Support update HTML data attributes
           if (formData.mappings !== undefined && formData.mappings.length > 0) {
-            console.log(typeof formData.mappings);
             const mappings = JSON.parse(formData.mappings || '[]');
-            console.log(mappings);
             if (Array.isArray(mappings) && mappings.length > 0) {
               mappings.forEach(function (item, index) {
-                console.log(item, index);
                 const val = resolveValue(item.source, trigger);
                 const elms = document.querySelectorAll(item.selector);
-                if (typeof window['cleanImageSrcSet'] === 'undefined') {
-                  console.log('zo');
-                  elms.forEach(function (elm) {
-                    // Avoid image is not updated after replace URL
-                    const tag = elm.tagName.toLowerCase();
-                    if (tag === 'img') {
-                      elm.removeAttribute('srcset');
-                    }
-                  });
-                  window['cleanImageSrcSet'] = true;
-                }
                 if (elms) {
                   elms.forEach(function (elm) {
-                    console.log(elm, item);
                     if ((item.mode || 'value') === 'attribute' && item.attributeName) {
-                      console.log('set attribute', item.attributeName, val);
-                      console.log(item);
                       elm.setAttribute(item.attributeName, val);
-                      console.log(item);
-                      console.log(elm);
                       const tagAttr = elm.tagName.toLowerCase();
                       if (tagAttr === 'img' && item.attributeName === 'src') {
-                        const ds = trigger.dataset;
-                        const srcset = ds?.currentFeaturedImageSrcset || '';
-                        const sizes = ds?.currentFeaturedImageSizes || '';
-                        if (srcset) {
-                          elm.setAttribute('srcset', srcset);
-                        }
-                        if (sizes) {
-                          elm.setAttribute('sizes', sizes);
-                        }
                         if (elm.getAttribute('loading') === 'lazy') {
                           elm.removeAttribute('loading');
                         }
                       }
                     } else if ((item.mode || 'value') === 'text') {
-                      console.log('set text content', val);
                       elm.textContent = val;
                     } else {
-                      console.log('set value auto detect', val);
                       const tag = elm.tagName.toLowerCase();
                       if (tag === 'input' || tag === 'textarea' || tag === 'select') {
                         elm.value = val;
@@ -151,15 +110,6 @@
                         }));
                       } else if (tag === 'img') {
                         elm.src = val;
-                        const ds2 = trigger.dataset;
-                        const srcset2 = ds2?.currentFeaturedImageSrcset || '';
-                        const sizes2 = ds2?.currentFeaturedImageSizes || '';
-                        if (srcset2) {
-                          elm.setAttribute('srcset', srcset2);
-                        }
-                        if (sizes2) {
-                          elm.setAttribute('sizes', sizes2);
-                        }
                         if (elm.getAttribute('loading') === 'lazy') {
                           elm.removeAttribute('loading');
                         }
@@ -169,57 +119,43 @@
                     }
                   });
                 }
-                console.log(val);
               });
-              console.log(trigger.attributes);
             }
           }
         }
         if (!modalId || modalId.trim() === '') {
-          console.warn('[AdvancedButton] missing data-modal-id on trigger', trigger);
           return;
         }
 
         // Try JankxModal first (wrapper around MicroModal with extras)
         if (window.JankxModal) {
-          console.log('[AdvancedButton] using JankxModal.show', modalId);
           window.JankxModal.show(modalId, trigger);
         }
         // Fallback to raw MicroModal
         else if (window.MicroModal) {
-          console.log('[AdvancedButton] using MicroModal.show', modalId);
           window.MicroModal.show(modalId);
         }
         // Fallback: Check if modal exists and show it manually (simple toggle)
         else {
           const modal = document.getElementById(modalId);
           if (modal) {
-            console.log('[AdvancedButton] manual open modal element', modal);
             modal.classList.add('is-open');
             modal.setAttribute('aria-hidden', 'false');
-          } else {
-            console.warn(`[Jankx Advanced Button] Modal with ID "${modalId}" not found or JankxModal library not loaded.`);
           }
         }
       });
 
       // Mark as attached
       button.setAttribute('data-jankx-click-attached', 'true');
-      console.log('[AdvancedButton] attached click listener to', button);
     });
   }
 
   // Initialize on DOMContentLoaded
   if (document.readyState === 'loading') {
-    console.log('[AdvancedButton] waiting for DOMContentLoaded');
     document.addEventListener('DOMContentLoaded', initAdvancedButtons);
   } else {
-    console.log('[AdvancedButton] DOM ready, initializing immediately');
     initAdvancedButtons();
   }
-
-  // Optional: Re-init on dynamic content loading (if any custom event exists)
-  // document.addEventListener('jankx:content-loaded', initAdvancedButtons);
 })();
 /******/ })()
 ;
