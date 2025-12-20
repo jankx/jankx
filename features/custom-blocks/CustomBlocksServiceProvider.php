@@ -21,6 +21,7 @@ class CustomBlocksServiceProvider extends ServiceProvider
         add_action('admin_enqueue_scripts', [$this, 'enqueueTimelineAssets']);
         add_action('add_meta_boxes', [$this, 'registerPerUnitMetabox']);
         add_action('save_post', [$this, 'savePerUnitMetabox']);
+        add_filter('jankx/post_type_badge/labels', [$this, 'getPostTypeBadgeLabels']);
     }
 
     public function registerBlocks()
@@ -271,5 +272,16 @@ class CustomBlocksServiceProvider extends ServiceProvider
             '1.0.0',
             true
         );
+    }
+
+    public function getPostTypeBadgeLabels($labels)
+    {
+        $custom = [
+            'product' => 'Sản phẩm',
+        ];
+        if (is_array($labels)) {
+            return array_merge($labels, $custom);
+        }
+        return $custom;
     }
 }
