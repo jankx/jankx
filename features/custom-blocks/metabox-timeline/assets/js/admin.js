@@ -13,9 +13,9 @@
   function createItemTemplate(index, imageEnabled) {
     var html = ''
       + '<div class="jankx-timeline-item" data-index="' + index + '">'
-      +   '<div class="field"><label>Time</label><input type="text" name="jankx_timeline[' + index + '][time]" value=""></div>'
-      +   '<div class="field"><label>Title</label><input type="text" name="jankx_timeline[' + index + '][title]" value=""></div>'
-      +   '<div class="field"><label>Description</label><textarea name="jankx_timeline[' + index + '][description]"></textarea></div>';
+      +   '<div class="field"><label>Time*</label><input type="text" name="jankx_timeline[' + index + '][time]" value="" placeholder="Ví dụ: 08:00" required></div>'
+      +   '<div class="field"><label>Title*</label><input type="text" name="jankx_timeline[' + index + '][title]" value="" placeholder="Ví dụ: Đến thác nước" required></div>'
+      +   '<div class="field"><label>Description</label><textarea name="jankx_timeline[' + index + '][description]" placeholder="Mô tả (không bắt buộc)"></textarea></div>';
     if (imageEnabled) {
       html += '<div class="field image-field"><label>Image</label>'
         + '<div class="image-preview"></div>'
@@ -88,4 +88,3 @@
     });
   });
 })(jQuery);
-

@@ -182,9 +182,9 @@ class CustomBlocksServiceProvider extends ServiceProvider
                 $description = isset($item['description']) ? $item['description'] : '';
                 $imageId = isset($item['image']) ? (int) $item['image'] : 0;
                 echo '<div class="jankx-timeline-item" data-index="' . esc_attr($index) . '">';
-                echo '<div class="field"><label>' . esc_html__('Time', 'jankx') . '</label><input type="text" name="jankx_timeline[' . esc_attr($index) . '][time]" value="' . esc_attr($time) . '"></div>';
-                echo '<div class="field"><label>' . esc_html__('Title', 'jankx') . '</label><input type="text" name="jankx_timeline[' . esc_attr($index) . '][title]" value="' . esc_attr($title) . '"></div>';
-                echo '<div class="field"><label>' . esc_html__('Description', 'jankx') . '</label><textarea name="jankx_timeline[' . esc_attr($index) . '][description]">' . esc_textarea($description) . '</textarea></div>';
+                echo '<div class="field"><label>' . esc_html__('Time*', 'jankx') . '</label><input type="text" name="jankx_timeline[' . esc_attr($index) . '][time]" value="' . esc_attr($time) . '" placeholder="' . esc_attr__('Ví dụ: 08:00', 'jankx') . '" required></div>';
+                echo '<div class="field"><label>' . esc_html__('Title*', 'jankx') . '</label><input type="text" name="jankx_timeline[' . esc_attr($index) . '][title]" value="' . esc_attr($title) . '" placeholder="' . esc_attr__('Ví dụ: Đến thác nước', 'jankx') . '" required></div>';
+                echo '<div class="field"><label>' . esc_html__('Description', 'jankx') . '</label><textarea name="jankx_timeline[' . esc_attr($index) . '][description]" placeholder="' . esc_attr__('Mô tả (không bắt buộc)', 'jankx') . '">' . esc_textarea($description) . '</textarea></div>';
                 if ($imageEnabled) {
                     $imgUrl = $imageId ? wp_get_attachment_image_url($imageId, 'thumbnail') : '';
                     echo '<div class="field image-field"><label>' . esc_html__('Image', 'jankx') . '</label>';
@@ -228,7 +228,8 @@ class CustomBlocksServiceProvider extends ServiceProvider
                 $title = isset($item['title']) ? sanitize_text_field($item['title']) : '';
                 $description = isset($item['description']) ? sanitize_textarea_field($item['description']) : '';
                 $image = isset($item['image']) ? intval($item['image']) : 0;
-                if ($time && $title && $description) {
+                // Save item if at least one meaningful field is provided
+                if ($time || $title || $description || ($this->isTimelineImageEnabled() && $image > 0)) {
                     $data = [
                         'time' => $time,
                         'title' => $title,
