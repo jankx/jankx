@@ -17,6 +17,9 @@ function jankx_gallery_detail_render($attributes = [], $content = '', $block = n
     $preset = isset($attributes['preset']) && is_string($attributes['preset']) ? $attributes['preset'] : 'classic';
     $thumbWidth = isset($attributes['thumbWidth']) && is_numeric($attributes['thumbWidth']) ? (int)$attributes['thumbWidth'] : 140;
     $post_id = 0;
+    if (is_object($block) && isset($block->context) && is_array($block->context) && !empty($block->context['postId'])) {
+        $post_id = (int)$block->context['postId'];
+    }
     if ($useCurrentPost) {
         if (is_singular() && have_posts()) {
             the_post();
@@ -24,13 +27,57 @@ function jankx_gallery_detail_render($attributes = [], $content = '', $block = n
             wp_reset_postdata();
         } else {
             global $post;
-            $post_id = $post ? $post->ID : 0;
+            if (!$post_id) {
+                $post_id = $post ? $post->ID : 0;
+            }
         }
     }
-    if (!$post_id) {
+    $isEditorRequest = (defined('REST_REQUEST') && REST_REQUEST) || (function_exists('wp_is_block_editor') && wp_is_block_editor());
+    if (!$post_id && !$isEditorRequest) {
         return '';
     }
-    $images = \Jankx\Features\Gallery\GalleryServiceProvider::getGallery($post_id, $imageSize, $thumbSize);
+    $images = [];
+    if ($post_id) {
+        $images = \Jankx\Features\Gallery\GalleryServiceProvider::getGallery($post_id, $imageSize, $thumbSize);
+    }
+    if (empty($images) && $isEditorRequest) {
+        $attachments = get_posts([
+            'post_type' => 'attachment',
+            'post_mime_type' => 'image',
+            'posts_per_page' => 6,
+            'orderby' => 'date',
+            'order' => 'DESC',
+        ]);
+        foreach ($attachments as $att) {
+            $url = wp_get_attachment_image_url($att->ID, $imageSize);
+            $thumb = wp_get_attachment_image_url($att->ID, $thumbSize);
+            if ($url) {
+                $images[] = [
+                    'id' => (int)$att->ID,
+                    'url' => $url,
+                    'srcset' => wp_get_attachment_image_srcset($att->ID, $imageSize) ?: '',
+                    'sizes' => wp_get_attachment_image_sizes($att->ID, $imageSize) ?: '',
+                    'thumb' => $thumb ?: $url,
+                    'alt' => get_post_meta($att->ID, '_wp_attachment_image_alt', true),
+                ];
+            }
+        }
+        if (empty($images)) {
+            $placeholders = [];
+            for ($i = 0; $i < 5; $i++) {
+                $svgMain = '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450"><rect width="100%" height="100%" fill="#eee"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#999" font-size="24">Gallery Preview</text></svg>';
+                $svgThumb = '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="150"><rect width="100%" height="100%" fill="#eee"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#999" font-size="14">Thumb</text></svg>';
+                $images[] = [
+                    'id' => 0,
+                    'url' => 'data:image/svg+xml;utf8,' . rawurlencode($svgMain),
+                    'srcset' => '',
+                    'sizes' => '',
+                    'thumb' => 'data:image/svg+xml;utf8,' . rawurlencode($svgThumb),
+                    'alt' => 'Placeholder',
+                ];
+            }
+        }
+    }
     if (empty($images)) {
         return '';
     }
@@ -39,7 +86,7 @@ function jankx_gallery_detail_render($attributes = [], $content = '', $block = n
     ?>
     <div
         class="jankx-gallery-detail is-style-<?php echo esc_attr($preset); ?><?php echo $showNavigation ? ' has-nav' : ''; ?>"
-        data-post-id="<?php echo esc_attr($post_id); ?>"
+        data-post-id="<?php echo esc_attr($post_id ?: 'preview'); ?>"
         data-autoplay="<?php echo $autoplay ? '1' : '0'; ?>"
         data-speed="<?php echo esc_attr($autoplaySpeed); ?>"
         style="--jg-ratio-w:<?php echo esc_attr($aspectW); ?>;--jg-ratio-h:<?php echo esc_attr($aspectH); ?>;--jg-thumb-ratio-w:<?php echo esc_attr($tAspectW); ?>;--jg-thumb-ratio-h:<?php echo esc_attr($tAspectH); ?>;--jg-thumb-width:<?php echo esc_attr($thumbWidth); ?>px;"
@@ -47,7 +94,7 @@ function jankx_gallery_detail_render($attributes = [], $content = '', $block = n
         <div class="jankx-gallery-detail__main">
             <div class="jankx-gallery-detail__stage">
                 <img
-                    id="jankx-gallery-main-<?php echo esc_attr($post_id); ?>"
+                    id="jankx-gallery-main-<?php echo esc_attr($post_id ?: 'preview'); ?>"
                     class="jankx-gallery-detail__image"
                     src="<?php echo esc_url($main['url']); ?>"
                     <?php if (!empty($main['srcset'])): ?>srcset="<?php echo esc_attr($main['srcset']); ?>"<?php endif; ?>

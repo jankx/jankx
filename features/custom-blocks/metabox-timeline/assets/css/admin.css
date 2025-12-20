@@ -1,5 +1,35 @@
-#jankx-timeline-metabox .field{margin-bottom:10px}
-#jankx-timeline-metabox .field label{display:block;font-weight:600;margin-bottom:4px}
-#jankx-timeline-metabox .field input[type="text"],#jankx-timeline-metabox .field textarea{width:100%}
-#jankx-timeline-metabox .image-field .image-preview img{max-width:120px;height:auto;display:block;margin-bottom:6px}
-#jankx-timeline-metabox .jankx-timeline-item{border:1px solid #eee;padding:10px;border-radius:6px;margin-bottom:10px;background:#fff}
+.jankx-timeline-items {
+  margin-top: 10px;
+}
+.jankx-timeline-item {
+  border: 1px solid #e5e5e5;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: #fff;
+}
+.jankx-timeline-item .field {
+  margin-bottom: 8px;
+}
+.jankx-timeline-item .field label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.jankx-timeline-item .image-field .image-preview {
+  width: 120px;
+  height: 120px;
+  border: 1px dashed #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 6px;
+  background: #fafafa;
+}
+.jankx-timeline-item .image-field .image-preview img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+}
+.jankx-timeline-actions {
+  margin-top: 10px;
+}

@@ -6,13 +6,16 @@
   var __ = wp.i18n.__;
   var useBlockProps = wp.blockEditor && wp.blockEditor.useBlockProps ? wp.blockEditor.useBlockProps : function() { return {}; };
   var InspectorControls = wp.blockEditor && wp.blockEditor.InspectorControls ? wp.blockEditor.InspectorControls : null;
-  var ServerSideRender = wp.serverSideRender;
+  var ServerSideRender = wp.serverSideRender || (wp.components && wp.components.ServerSideRender) || null;
   var el = wp.element.createElement;
+  var useState = wp.element && wp.element.useState ? wp.element.useState : null;
+  var useEffect = wp.element && wp.element.useEffect ? wp.element.useEffect : null;
   var PanelBody = wp.components && wp.components.PanelBody ? wp.components.PanelBody : null;
   var ToggleControl = wp.components && wp.components.ToggleControl ? wp.components.ToggleControl : null;
   var TextControl = wp.components && wp.components.TextControl ? wp.components.TextControl : null;
   var SelectControl = wp.components && wp.components.SelectControl ? wp.components.SelectControl : null;
   var RangeControl = wp.components && wp.components.RangeControl ? wp.components.RangeControl : null;
+  var apiFetch = wp.apiFetch;
 
   function Edit(props) {
     var blockProps = useBlockProps({ className: 'jankx-gallery-detail-editor' });
@@ -110,10 +113,31 @@
         })
       )
     ) : null;
-    var preview = ServerSideRender ? el(ServerSideRender, {
-      block: 'jankx/gallery-detail',
-      attributes: props.attributes
-    }) : el('div', blockProps, __('Gallery Detail', 'jankx'));
+    var preview;
+    if (ServerSideRender) {
+      preview = el(ServerSideRender, { block: 'jankx/gallery-detail', attributes: props.attributes });
+    } else if (apiFetch && useState && useEffect) {
+      var state = useState('');
+      var html = state[0];
+      var setHtml = state[1];
+      useEffect(function(){
+        var path = '/wp/v2/block-renderer/jankx/gallery-detail?context=edit';
+        var body = { attributes: props.attributes };
+        apiFetch({ path: path, method: 'POST', data: body }).then(function(res){
+          var out = res && res.rendered ? res.rendered : '';
+          setHtml(out || '');
+          setTimeout(function(){
+            var evt = new CustomEvent('jankx:gallery:refresh', { detail: {} });
+            document.dispatchEvent(evt);
+          }, 0);
+        }).catch(function(){
+          setHtml('');
+        });
+      }, [JSON.stringify(props.attributes)]);
+      preview = el('div', Object.assign({}, blockProps, { className: (blockProps.className || '') + ' jankx-gallery-detail-editor' }), el('div', { dangerouslySetInnerHTML: { __html: html } }));
+    } else {
+      preview = el('div', blockProps, __('Gallery Detail', 'jankx'));
+    }
     return el('div', blockProps, inspector, preview);
   }
 

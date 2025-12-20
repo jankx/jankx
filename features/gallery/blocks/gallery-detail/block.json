@@ -79,5 +79,6 @@
   "script": "file:./view.js",
   "style": "file:./style.css",
   "editorStyle": "file:./style.css",
-  "editorScript": "file:./index.js"
+  "editorScript": "file:./index.js",
+  "usesContext": ["postId"]
 }

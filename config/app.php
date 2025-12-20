@@ -45,4 +45,17 @@ return [
             // 'jankx demo-data' => \Jankx\Foundation\Cli\Commands\DemoDataCommand::class,
         ],
     ],
+    'custom_blocks' => [
+        'timeline' => [
+            'enabled' => true,
+            'post_types' => ['post'],
+            'image_enabled' => true,
+        ],
+        'per_unit' => [
+            'enabled' => true,
+            'post_types' => ['product'],
+            'meta_key' => '_unit',
+        ],
+    ],
 ];
+

@@ -72,4 +72,8 @@
         var r = m.querySelectorAll('.jankx-gallery-detail');
         Array.prototype.forEach.call(r, init);
     });
+    document.addEventListener('jankx:gallery:refresh', function(){
+        var rs = document.querySelectorAll('.jankx-gallery-detail');
+        Array.prototype.forEach.call(rs, init);
+    });
 })();
