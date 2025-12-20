@@ -31,10 +31,11 @@ foreach ($items as $i => $item) {
     $imgUrl = $imageId ? wp_get_attachment_image_url($imageId, 'medium') : '';
     echo '<div class="jankx-timeline-item">';
     echo '<div class="jankx-timeline-marker"></div>';
-    echo '<div class="jankx-timeline-card">';
-    if ($time) {
+        if ($time) {
         echo '<div class="jankx-timeline-time">' . esc_html($time) . '</div>';
     }
+    echo '<div class="jankx-timeline-card">';
+
     if ($title) {
         echo '<div class="jankx-timeline-title">' . esc_html($title) . '</div>';
     }

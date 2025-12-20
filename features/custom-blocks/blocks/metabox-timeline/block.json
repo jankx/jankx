@@ -4,12 +4,14 @@
   "name": "jankx/metabox-timeline",
   "version": "1.0.0",
   "title": "Metabox Timeline",
-  "category": "widgets",
+  "category": "jankx",
   "icon": "schedule",
   "description": "Hiển thị timeline từ metabox",
   "supports": {
-    "html": false
+    "html": false,
+    "inserter": true
   },
+  "keywords": ["timeline", "lịch trình", "metabox"],
   "textdomain": "jankx",
   "style": "file:./build/style.css",
   "editorStyle": "file:./build/style.css",

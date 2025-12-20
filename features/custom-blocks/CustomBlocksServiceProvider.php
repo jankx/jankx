@@ -163,16 +163,7 @@ class CustomBlocksServiceProvider extends ServiceProvider
     public function renderTimelineMetabox($post)
     {
         wp_nonce_field('jankx_timeline_save', 'jankx_timeline_nonce');
-        $raw = get_post_meta($post->ID, 'jankx_timeline_items', true);
-        $items = [];
-        if (is_string($raw) && strlen($raw)) {
-            $decoded = json_decode($raw, true);
-            if (is_array($decoded)) {
-                $items = $decoded;
-            }
-        } elseif (is_array($raw)) {
-            $items = $raw;
-        }
+        $items = get_post_meta($post->ID, 'jankx_timeline_items', true);
         $imageEnabled = $this->isTimelineImageEnabled();
         echo '<div id="jankx-timeline-metabox" data-image-enabled="' . esc_attr($imageEnabled ? '1' : '0') . '">';
         echo '<div class="jankx-timeline-items">';
@@ -243,7 +234,7 @@ class CustomBlocksServiceProvider extends ServiceProvider
                 }
             }
         }
-        update_post_meta($post_id, 'jankx_timeline_items', wp_json_encode($clean));
+        update_post_meta($post_id, 'jankx_timeline_items', $clean);
     }
 
     public function enqueueTimelineAssets()
