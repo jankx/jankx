@@ -9,69 +9,11 @@
   "description": "Hiển thị timeline từ metabox",
   "supports": {
     "html": false,
-    "inserter": true,
-    "color": {
-      "text": true,
-      "background": true,
-      "__experimentalSkipSerialization": true
-    },
-    "spacing": {
-      "margin": true,
-      "padding": true,
-      "__experimentalSkipSerialization": true
-    },
-    "__experimentalBorder": {
-      "color": true,
-      "radius": true,
-      "style": true,
-      "width": true,
-      "__experimentalSkipSerialization": true
-    },
-    "typography": {
-      "fontSize": true,
-      "lineHeight": true,
-      "fontStyle": true,
-      "fontWeight": true,
-      "textDecoration": true,
-      "textTransform": true,
-      "letterSpacing": true,
-      "__experimentalSkipSerialization": true
-    }
-  },
-  "selectors": {
-    "root": ".jankx-timeline",
-    "color": {
-      "text": ".jankx-timeline-time, .jankx-timeline-title, .jankx-timeline-desc",
-      "background": ".jankx-timeline-card"
-    },
-    "spacing": {
-      "root": ".jankx-timeline",
-      "padding": ".jankx-timeline-card, .jankx-timeline-item",
-      "margin": ".jankx-timeline-item"
-    },
-    "border": {
-      "root": ".jankx-timeline-card"
-    },
-    "typography": {
-      "fontSize": ".jankx-timeline-title, .jankx-timeline-desc, .jankx-timeline-time",
-      "lineHeight": ".jankx-timeline-title, .jankx-timeline-desc, .jankx-timeline-time",
-      "fontStyle": ".jankx-timeline-title, .jankx-timeline-desc, .jankx-timeline-time",
-      "fontWeight": ".jankx-timeline-title, .jankx-timeline-desc, .jankx-timeline-time",
-      "textDecoration": ".jankx-timeline-title, .jankx-timeline-desc, .jankx-timeline-time",
-      "textTransform": ".jankx-timeline-title, .jankx-timeline-desc, .jankx-timeline-time",
-      "letterSpacing": ".jankx-timeline-title, .jankx-timeline-desc, .jankx-timeline-time"
-    }
-  },
-  "attributes": {
-    "hideWhenEmpty": {
-      "type": "boolean",
-      "default": true
-    }
+    "inserter": true
   },
   "keywords": ["timeline", "lịch trình", "metabox"],
   "textdomain": "jankx",
   "style": "file:./build/style.css",
   "editorStyle": "file:./build/style.css",
-  "editorScript": "file:./build/index.js",
   "render": "file:./render.php"
 }

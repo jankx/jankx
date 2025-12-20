@@ -6,13 +6,13 @@ import {
   RichText,
   InspectorControls,
 } from '@wordpress/block-editor';
-import { PanelBody, ToggleControl } from '@wordpress/components';
+import { PanelBody } from '@wordpress/components';
 // @ts-ignore
 import blockJson from './block.json';
 
 // Main metabox timeline block: provides editor template
 registerBlockType(blockJson.name, {
-  edit({ attributes, setAttributes }) {
+  edit() {
     const blockProps = useBlockProps({
       className: 'jankx-metabox-timeline-editor',
     });
@@ -35,13 +35,7 @@ registerBlockType(blockJson.name, {
     return (
       <div {...blockProps}>
         <InspectorControls>
-          <PanelBody title={__('Cấu hình', 'jankx')} initialOpen={true}>
-            <ToggleControl
-              label={__('Ẩn nếu không có items', 'jankx')}
-              checked={!!attributes.hideWhenEmpty}
-              onChange={(val: boolean) => setAttributes({ hideWhenEmpty: val })}
-            />
-          </PanelBody>
+          <PanelBody title={__('Cấu hình', 'jankx')} initialOpen={true} />
         </InspectorControls>
         <InnerBlocks
           allowedBlocks={['jankx/timelime-header', 'jankx/timelime-items']}

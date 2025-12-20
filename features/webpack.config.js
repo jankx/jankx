@@ -13,13 +13,12 @@ module.exports = {
         'trend-posts/style': './metrics/blocks/trend-posts/style.scss',
         'gallery-detail/index': './gallery/blocks/gallery-detail/index.js',
         'gallery-detail/view': './gallery/blocks/gallery-detail/view.js',
-        'gallery-detail/style': './gallery/blocks/gallery-detail/style.css',
+        'gallery-detail/style': './gallery/blocks/gallery-detail/build/style.css',
         'custom-price/index': './custom-blocks/blocks/custom-price/index.tsx',
         'custom-price/style': './custom-blocks/blocks/custom-price/style.scss',
         'custom-price/editor': './custom-blocks/blocks/custom-price/editor.scss',
         'metabox-timeline/style': './custom-blocks/blocks/metabox-timeline/style.css',
-        'metabox-timeline/index': './custom-blocks/blocks/metabox-timeline/index.tsx',
-        'per-unit/index': './custom-blocks/blocks/per-unit/index.tsx',
+        'per-unit/index': './custom-blocks/blocks/per-unit/build/index.js',
         'per-unit/style': './custom-blocks/blocks/per-unit/style.css'
     },
     output: {

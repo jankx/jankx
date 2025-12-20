@@ -40,6 +40,10 @@
     padding: 16px 20px
 }
 
+.jankx-timelime-items {
+    margin-left: 57px;
+}
+
 .jankx-timeline-time {
     display: inline-flex;
     align-items: center;
