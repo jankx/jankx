@@ -2,13 +2,8 @@
 
 namespace Jankx\Support\Providers;
 
-use Jankx\Facades\App;
 use Jankx\Services\GutenbergService;
-use Jankx\Services\AdvancedGutenbergService;
 use Jankx\Foundation\Application;
-use Jankx\Facades\Log;
-use Jankx\Helper\Environment;
-
 /**
  * Gutenberg Service Provider
  *

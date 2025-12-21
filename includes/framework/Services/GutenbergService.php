@@ -46,6 +46,7 @@ use Jankx\Gutenberg\Blocks\StarRatingBlock;
 use Jankx\Gutenberg\Blocks\FloatingMessengersBlock;
 use Jankx\Gutenberg\Blocks\StickyBoxBlock;
 use Jankx\Gutenberg\Blocks\DividerBlock;
+use Jankx\Gutenberg\Blocks\LanguageSwitcherBlock;
 
 /**
  * Gutenberg Service
@@ -170,6 +171,7 @@ class GutenbergService
         $this->repository->registerBlock(FloatingMessengersBlock::class);
         $this->repository->registerBlock(StickyBoxBlock::class);
         $this->repository->registerBlock(DividerBlock::class);
+        $this->repository->registerBlock(LanguageSwitcherBlock::class);
     }
 
     /**
