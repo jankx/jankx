@@ -1,0 +1,434 @@
+/**
+ * Menu Item Block Editor Styles
+ * Editor-specific styling for the menu item block
+ * 
+ * @package JankX\MenuBuilder\Blocks
+ * @since 1.0.0
+ */
+
+// Menu item block editor styles
+.wp-block-jankx-menu-builder-menu-item {
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    background: white;
+    margin-bottom: 10px;
+    transition: all 0.2s ease;
+    
+    &:hover {
+        border-color: #0073aa;
+        box-shadow: 0 2px 4px rgba(0, 115, 170, 0.1);
+    }
+    
+    &.is-selected {
+        border-color: #0073aa;
+        box-shadow: 0 0 0 2px rgba(0, 115, 170, 0.2);
+    }
+    
+    &.menu-item-inactive {
+        opacity: 0.6;
+        border-style: dashed;
+        background: #fafafa;
+    }
+    
+    &.has-children {
+        border-left: 4px solid #0073aa;
+    }
+    
+    &.menu-item-button {
+        background: linear-gradient(135deg, #0073aa 0%, #005a87 100%);
+        color: white;
+        border-color: #005a87;
+        
+        .menu-item-preview .menu-item-header .menu-item-info .menu-item-details {
+            .menu-item-label-preview,
+            .menu-item-url-preview {
+                color: white;
+            }
+        }
+    }
+    
+    .menu-item-preview {
+        padding: 15px;
+        
+        .menu-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            
+            .menu-item-info {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                flex: 1;
+                
+                .menu-item-type-indicator {
+                    .components-button {
+                        padding: 6px;
+                        min-height: auto;
+                        opacity: 0.6;
+                        
+                        &:hover {
+                            opacity: 1;
+                        }
+                    }
+                }
+                
+                .menu-item-details {
+                    flex: 1;
+                    
+                    .menu-item-label-preview {
+                        font-weight: 600;
+                        color: #333;
+                        margin-bottom: 4px;
+                        font-size: 14px;
+                    }
+                    
+                    .menu-item-url-preview {
+                        font-size: 12px;
+                        color: #666;
+                        margin-bottom: 4px;
+                        word-break: break-all;
+                    }
+                    
+                    .submenu-indicator {
+                        font-size: 11px;
+                        color: #0073aa;
+                        font-weight: 500;
+                        text-transform: uppercase;
+                        letter-spacing: 0.5px;
+                    }
+                }
+            }
+            
+            .menu-item-status {
+                .status-inactive {
+                    padding: 4px 8px;
+                    background: #ffc107;
+                    color: #333;
+                    font-size: 11px;
+                    border-radius: 3px;
+                    font-weight: 500;
+                }
+            }
+        }
+        
+        .submenu-preview {
+            margin-top: 15px;
+            padding: 12px;
+            background: #fafafa;
+            border-radius: 4px;
+            border: 1px dashed #e0e0e0;
+            
+            .no-submenu-items {
+                text-align: center;
+                color: #666;
+                font-size: 13px;
+                font-style: italic;
+            }
+            
+            .submenu-items-list {
+                .submenu-item-preview {
+                    padding: 6px 8px;
+                    background: white;
+                    border: 1px solid #e0e0e0;
+                    border-radius: 3px;
+                    margin-bottom: 4px;
+                    font-size: 13px;
+                    color: #333;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    
+                    &::before {
+                        content: '→';
+                        color: #0073aa;
+                        font-weight: bold;
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Nested menu items styling
+.wp-block-jankx-menu-builder-menu-item {
+    // First level nesting
+    .wp-block-jankx-menu-builder-menu-item {
+        margin-left: 20px;
+        border-left: 3px solid #0073aa;
+        background: #f8f9fa;
+        
+        // Second level nesting
+        .wp-block-jankx-menu-builder-menu-item {
+            margin-left: 20px;
+            border-left: 3px solid #005a87;
+            background: #f1f3f4;
+            
+            // Third level nesting
+            .wp-block-jankx-menu-builder-menu-item {
+                margin-left: 20px;
+                border-left: 3px solid #00415d;
+                background: #e9ecef;
+            }
+        }
+    }
+}
+
+// Inner blocks appender styling
+.wp-block-jankx-menu-builder-menu-item {
+    .block-list-appender {
+        margin-top: 10px;
+        
+        .components-button {
+            width: 100%;
+            justify-content: center;
+            padding: 12px;
+            border: 2px dashed #0073aa;
+            background: transparent;
+            color: #0073aa;
+            font-weight: 500;
+            border-radius: 4px;
+            font-size: 13px;
+            
+            &:hover {
+                background: #0073aa;
+                color: white;
+                border-style: solid;
+                transform: translateY(-1px);
+                box-shadow: 0 2px 4px rgba(0, 115, 170, 0.2);
+            }
+            
+            &:focus {
+                outline: 2px solid #0073aa;
+                outline-offset: 2px;
+            }
+        }
+    }
+}
+
+// Block toolbar improvements
+.block-editor-block-toolbar {
+    .components-toolbar-group {
+        .components-button {
+            &:hover {
+                background: #f0f0f0;
+            }
+            
+            &.is-active {
+                background: #0073aa;
+                color: white;
+            }
+        }
+    }
+}
+
+// Inspector controls improvements for menu item
+.components-panel__body {
+    .components-base-control {
+        margin-bottom: 16px;
+        
+        .components-base-control__label {
+            font-weight: 600;
+            color: #1e1e1e;
+            margin-bottom: 8px;
+        }
+        
+        .components-text-control__input,
+        .components-select-control__input {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            
+            &:focus {
+                border-color: #0073aa;
+                box-shadow: 0 0 0 1px #0073aa;
+            }
+        }
+    }
+    
+    .components-toggle-control {
+        margin-bottom: 16px;
+        
+        .components-toggle-control__label {
+            font-weight: 600;
+            color: #1e1e1e;
+        }
+    }
+    
+    .components-range-control {
+        margin-bottom: 16px;
+        
+        .components-range-control__label {
+            font-weight: 600;
+            color: #1e1e1e;
+        }
+    }
+    
+    .components-button-group {
+        margin-bottom: 16px;
+        
+        .components-button {
+            border-radius: 0;
+            
+            &:first-child {
+                border-radius: 4px 0 0 4px;
+            }
+            
+            &:last-child {
+                border-radius: 0 4px 4px 0;
+            }
+            
+            &.is-primary {
+                background: #0073aa;
+                color: white;
+                border-color: #0073aa;
+            }
+        }
+    }
+}
+
+// Responsive adjustments for editor
+@media (max-width: 768px) {
+    .wp-block-jankx-menu-builder-menu-item {
+        .menu-item-preview .menu-item-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+            
+            .menu-item-info {
+                width: 100%;
+            }
+            
+            .menu-item-status {
+                align-self: flex-end;
+            }
+        }
+    }
+    
+    // Nested items on mobile
+    .wp-block-jankx-menu-builder-menu-item {
+        .wp-block-jankx-menu-builder-menu-item {
+            margin-left: 15px;
+            
+            .wp-block-jankx-menu-builder-menu-item {
+                margin-left: 15px;
+                
+                .wp-block-jankx-menu-builder-menu-item {
+                    margin-left: 15px;
+                }
+            }
+        }
+    }
+}
+
+// Dark mode support for editor
+.is-dark-theme {
+    .wp-block-jankx-menu-builder-menu-item {
+        background: #2d2d2d;
+        border-color: #444;
+        
+        &:hover {
+            border-color: #0073aa;
+            box-shadow: 0 2px 4px rgba(0, 115, 170, 0.3);
+        }
+        
+        &.is-selected {
+            border-color: #0073aa;
+            box-shadow: 0 0 0 2px rgba(0, 115, 170, 0.4);
+        }
+        
+        &.menu-item-inactive {
+            background: #1d1d1d;
+            border-color: #444;
+        }
+        
+        .menu-item-preview .menu-item-header .menu-item-info .menu-item-details {
+            .menu-item-label-preview {
+                color: #fff;
+            }
+            
+            .menu-item-url-preview {
+                color: #ccc;
+            }
+        }
+        
+        .submenu-preview {
+            background: #1d1d1d;
+            border-color: #444;
+            
+            .no-submenu-items {
+                color: #ccc;
+            }
+            
+            .submenu-items-list .submenu-item-preview {
+                background: #2d2d2d;
+                border-color: #444;
+                color: #fff;
+            }
+        }
+    }
+    
+    // Nested items in dark mode
+    .wp-block-jankx-menu-builder-menu-item {
+        .wp-block-jankx-menu-builder-menu-item {
+            background: #252525;
+            border-left-color: #0073aa;
+            
+            .wp-block-jankx-menu-builder-menu-item {
+                background: #1d1d1d;
+                border-left-color: #005a87;
+                
+                .wp-block-jankx-menu-builder-menu-item {
+                    background: #151515;
+                    border-left-color: #00415d;
+                }
+            }
+        }
+    }
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+    .wp-block-jankx-menu-builder-menu-item {
+        border-width: 2px;
+        
+        &.is-selected {
+            border-width: 3px;
+        }
+        
+        .menu-item-preview .menu-item-header .menu-item-info .menu-item-details {
+            .menu-item-label-preview {
+                font-weight: 700;
+            }
+        }
+    }
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+    .wp-block-jankx-menu-builder-menu-item {
+        transition: none !important;
+        
+        .block-list-appender .components-button {
+            transition: none !important;
+            
+            &:hover {
+                transform: none !important;
+            }
+        }
+    }
+}
+
+// Focus indicators for accessibility
+.wp-block-jankx-menu-builder-menu-item {
+    &:focus-within {
+        outline: 2px solid #0073aa;
+        outline-offset: 2px;
+    }
+    
+    .components-button {
+        &:focus {
+            outline: 2px solid #0073aa;
+            outline-offset: 2px;
+        }
+    }
+}

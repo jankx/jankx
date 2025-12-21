@@ -20,6 +20,7 @@ return [
         App\Providers\GutenbergServiceProvider::class,
         App\Providers\LanguageSwitcherServiceProvider::class,
         App\Providers\NavigationBlockServiceProvider::class,
+        App\MenuBuilder\ServiceProvider::class,
         Jankx\Support\Providers\ContentLayoutServiceProvider::class,
         // App\Providers\SkeletonServiceProvider::class,
 

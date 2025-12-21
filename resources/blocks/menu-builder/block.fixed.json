@@ -1,0 +1,88 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "jankx/menu-builder",
+  "version": "1.0.0",
+  "title": "Responsive Menu Builder",
+  "category": "jankx",
+  "description": "Build responsive menus with mobile mmenu and desktop navigation supporting mega menu, flyout, and multilevel submenus",
+  "keywords": ["menu", "navigation", "responsive", "mobile", "mmenu", "mega", "flyout", "multilevel"],
+  "textdomain": "jankx",
+  "editorScript": "file:./build/index.js",
+  "editorStyle": "file:./build/editor.css",
+  "style": "file:./build/style.css",
+  "viewScript": "file:./build/frontend.js",
+  "attributes": {
+    "menuItems": { "type": "array", "default": [] },
+    "mobileBreakpoint": { "type": "number", "default": 768 },
+    "desktopBreakpoint": { "type": "number", "default": 1024 },
+    "enableMobileMenu": { "type": "boolean", "default": true },
+    "enableDesktopMenu": { "type": "boolean", "default": true },
+    "mobileMenuOptions": {
+      "type": "object",
+      "default": {
+        "slidingSubmenus": true,
+        "theme": "dark",
+        "position": "left",
+        "zposition": "back"
+      }
+    },
+    "desktopMenuOptions": {
+      "type": "object",
+      "default": {
+        "dropdownAnimation": "fade",
+        "hoverDelay": 200,
+        "submenuTrigger": "hover"
+      }
+    },
+    "menuId": { "type": "string", "default": "" },
+    "menuClass": { "type": "string", "default": "jankx-responsive-menu" },
+    "mobileMenuIcon": { "type": "string", "default": "menu" },
+    "mobileMenuPosition": { "type": "string", "default": "right" },
+    "submenuTypes": {
+      "type": "object",
+      "default": {
+        "mega": { "enabled": true, "columns": 4, "fullWidth": true },
+        "flyout": { "enabled": true, "position": "right", "animation": "slide" },
+        "multilevel": { "enabled": true, "maxDepth": 3 }
+      }
+    },
+    "megaMenuSettings": {
+      "type": "object",
+      "default": {
+        "containerWidth": "1200px",
+        "columnGap": "20px",
+        "padding": "20px"
+      }
+    },
+    "flyoutMenuSettings": {
+      "type": "object",
+      "default": {
+        "width": "300px",
+        "animation": "slide",
+        "position": "right"
+      }
+    },
+    "multilevelMenuSettings": {
+      "type": "object",
+      "default": {
+        "maxDepth": 3,
+        "indicator": true,
+        "animation": "fade"
+      }
+    }
+  },
+  "supports": {
+    "anchor": true,
+    "align": ["wide", "full"],
+    "html": false,
+    "color": {
+        "text": true,
+        "background": true
+    },
+    "spacing": {
+      "margin": true,
+      "padding": true
+    }
+  }
+}

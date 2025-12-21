@@ -21,11 +21,6 @@ module.exports = {
     'blocks/icon-picker/build/style': './blocks/icon-picker/style.scss',
     'blocks/icon-picker/build/editor': './blocks/icon-picker/editor.scss',
 
-    'blocks/wplyr-media/build/index': './blocks/wplyr-media/index.tsx',
-    'blocks/wplyr-media/build/style': './blocks/wplyr-media/style.scss',
-    'blocks/wplyr-media/build/editor': './blocks/wplyr-media/editor.scss',
-    'blocks/wplyr-media/build/view': './blocks/wplyr-media/view.js',
-
     'blocks/offcanvas-sidebar/build/index': './blocks/offcanvas-sidebar/index.tsx',
     'blocks/offcanvas-sidebar/build/frontend': './blocks/offcanvas-sidebar/frontend.ts',
     'blocks/offcanvas-sidebar/build/style': './blocks/offcanvas-sidebar/style.scss',
@@ -207,6 +202,12 @@ module.exports = {
     'blocks/divider/build/index': './blocks/divider/index.tsx',
     'blocks/divider/build/style': './blocks/divider/style.scss',
     'blocks/divider/build/editor': './blocks/divider/editor.scss',
+
+    // Menu Builder block
+    'blocks/menu-builder/build/index': './blocks/menu-builder/index.tsx',
+    'blocks/menu-builder/build/style': './blocks/menu-builder/style.scss',
+    'blocks/menu-builder/build/editor': './blocks/menu-builder/editor.scss',
+    'blocks/menu-builder/build/frontend': './blocks/menu-builder/frontend.js',
   },
   output: {
     path: path.resolve(__dirname),
