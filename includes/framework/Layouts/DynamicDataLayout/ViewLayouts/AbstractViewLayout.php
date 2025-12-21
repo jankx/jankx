@@ -59,17 +59,14 @@ abstract class AbstractViewLayout implements ViewLayoutInterface
         return array_key_exists($key, $this->options) ? $this->options[$key] : $default;
     }
 
-    public function setQuery(WP_Query $query): ViewLayoutInterface
+    public function setQuery(WP_Query $query): self
     {
         $this->query = $query;
         return $this;
     }
 
-    public function setContentGenerator($generator): ViewLayoutInterface
+    public function setContentGenerator($generator): self
     {
-        if ($generator && is_object($generator) && method_exists($generator, 'setLayout')) {
-            call_user_func([$generator, 'setLayout'], $this);
-        }
         $this->contentGenerator = $generator;
         return $this;
     }
@@ -99,7 +96,7 @@ abstract class AbstractViewLayout implements ViewLayoutInterface
                 $templateBlock,
                 $this->query,
                 $this->options,
-                $this instanceof ViewLayoutInterface ? $this : null
+                null
             );
             return $this->wrapTemplateHtml($html, $this->options);
         }
@@ -119,7 +116,6 @@ abstract class AbstractViewLayout implements ViewLayoutInterface
         $templateBlock = $this->getOption('postTemplate');
         if (is_array($templateBlock) && !empty($templateBlock)) {
             $generator = new PostTemplateBlockGenerator($templateBlock, $this->options);
-            $generator->setLayout($this instanceof ViewLayoutInterface ? $this : null);
             $preview = $generator->generatePreview($this->options);
             if (!empty($preview)) {
                 return $preview;
@@ -237,6 +233,7 @@ abstract class AbstractViewLayout implements ViewLayoutInterface
     protected function loadTemplate(string $template_name, array $args = []): string
     {
         $search_paths = [
+            get_stylesheet_directory() . '/views/layouts/',
             get_stylesheet_directory() . '/views/view-layout/',
             get_template_directory() . '/includes/framework/Layouts/ViewLayout/templates/',
         ];
@@ -265,46 +262,11 @@ abstract class AbstractViewLayout implements ViewLayoutInterface
 
     protected function renderViewItem(): string
     {
-        $view_id = get_the_ID();
-        $show_thumbnail = (bool) $this->getOption('showFeaturedImage', true);
-        $show_title = (bool) $this->getOption('showTitle', true);
-        $show_excerpt = (bool) $this->getOption('showExcerpt', true);
-        $show_date = (bool) $this->getOption('showDate', true);
-        $excerpt_length = (int) $this->getOption('excerptLength', 55);
-
-        $parts = [];
-
-        if ($show_thumbnail && has_post_thumbnail($view_id)) {
-            $thumb = get_the_post_thumbnail($view_id, 'post-thumbnail', ['style' => 'object-fit:cover;']);
-            $parts[] = sprintf('<figure class="wp-block-view-featured-image">%s</figure>', $thumb);
-        }
-
-        if ($show_title) {
-            $parts[] = sprintf(
-                '<h2 class="wp-block-view-title"><a href="%s">%s</a></h2>',
-                esc_url(get_permalink($view_id)),
-                esc_html(get_the_title($view_id))
-            );
-        }
-
-        if ($show_date) {
-            $parts[] = sprintf(
-                '<div class="wp-block-view-date"><time datetime="%s">%s</time></div>',
-                esc_attr(get_post_time('c', true, $view_id)),
-                esc_html(get_the_date('', $view_id))
-            );
-        }
-
-        if ($show_excerpt) {
-            $raw_excerpt = has_excerpt($view_id) ? get_the_excerpt($view_id) : get_post_field('post_content', $view_id);
-            $trimmed = wp_trim_words($raw_excerpt, max(1, $excerpt_length));
-            $parts[] = sprintf(
-                '<div class="wp-block-view-excerpt"><p class="wp-block-view-excerpt__excerpt">%s</p></div>',
-                esc_html($trimmed)
-            );
-        }
-
-        return implode('', $parts);
+        $args = [
+            'options' => $this->options,
+        ];
+        
+        return $this->loadTemplate($this->name, $args);
     }
 
     /**
@@ -316,7 +278,6 @@ abstract class AbstractViewLayout implements ViewLayoutInterface
      */
     public function appendClassesToWrapper(array $classes, array $options = []): array
     {
-        // Default implementation - can be overridden by child classes
         return $classes;
     }
 }
