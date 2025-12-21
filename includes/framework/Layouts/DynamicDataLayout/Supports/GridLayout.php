@@ -95,4 +95,29 @@ class GridLayout extends PostLayout
     {
         return ['showTitle'];
     }
+
+    public function appendClassesToWrapper(array $classes, array $options = []): array
+    {
+        $columns = (int) $this->getOption('columns', 3);
+        $columnsTablet = (int) $this->getOption('columnsTablet', 2);
+        $columnsMobile = (int) $this->getOption('columnsMobile', 1);
+
+        // Add grid-specific classes
+        $classes[] = 'post-type-layout-grid';
+        $classes[] = 'is-flex-container';
+        $classes[] = 'columns-' . max(1, $columns);
+        $classes[] = 'columns-tablet-' . max(1, $columnsTablet);
+        $classes[] = 'columns-mobile-' . max(1, $columnsMobile);
+
+        // Add image ratio class if set
+        $imageRatio = $this->getOption('imageRatio', '');
+        if (is_string($imageRatio) && strpos($imageRatio, '/') !== false) {
+            [$w, $h] = array_map('floatval', explode('/', $imageRatio, 2));
+            if ($w > 0 && $h > 0) {
+                $classes[] = 'has-image-ratio';
+            }
+        }
+
+        return $classes;
+    }
 }

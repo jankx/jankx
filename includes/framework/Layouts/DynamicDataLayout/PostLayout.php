@@ -306,4 +306,17 @@ abstract class PostLayout implements PostLayoutInterface
 
         return implode('', $parts);
     }
+
+    /**
+     * Append CSS classes to the wrapper element
+     *
+     * @param array $classes Existing CSS classes
+     * @param array $options Additional options for class generation
+     * @return array Updated CSS classes
+     */
+    public function appendClassesToWrapper(array $classes, array $options = []): array
+    {
+        // Default implementation - can be overridden by child classes
+        return $classes;
+    }
 }
