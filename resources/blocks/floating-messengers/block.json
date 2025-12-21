@@ -2,15 +2,52 @@
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 3,
   "name": "jankx/floating-messengers",
+  "version": "1.0.0",
   "title": "Floating Messengers",
   "category": "jankx",
   "icon": "share",
-  "description": "Nút nổi multi-messenger để liên hệ nhanh (Messenger, WhatsApp, Zalo, Telegram, Call, SMS).",
+  "description": "Nút nổi chứa nhiều messenger với khả năng cấu hình bật/tắt từng mục.",
   "textdomain": "jankx",
-  "editorScript": "file:./build/index.js",
-  "style": "file:./build/style.css",
-  "editorStyle": "file:./build/editor.css",
-  "viewScript": "file:./build/frontend.js",
+  "attributes": {
+    "positionX": {
+      "type": "string",
+      "enum": ["left", "right"],
+      "default": "right"
+    },
+    "positionY": {
+      "type": "string",
+      "enum": ["bottom", "center"],
+      "default": "bottom"
+    },
+    "offsetBottom": {
+      "type": "number",
+      "default": 24
+    },
+    "expansionStyle": {
+      "type": "string",
+      "enum": ["vertical", "horizontal", "fan", "split"],
+      "default": "vertical"
+    },
+    "idleAnimation": {
+      "type": "string",
+      "enum": ["none", "pulse-ring", "wiggle", "float"],
+      "default": "none"
+    },
+    "spacing": {
+      "type": "number",
+      "default": 60
+    },
+    "messengers": {
+      "type": "array",
+      "default": [
+        { "id": "zalo", "name": "Zalo", "enabled": true, "color": "#0068FF", "url": "#", "iconLabel": "Z" },
+        { "id": "messenger", "name": "Messenger", "enabled": true, "color": "#00B2FF", "url": "#", "iconLabel": "M" },
+        { "id": "instagram", "name": "Instagram", "enabled": true, "color": "#E1306C", "url": "#", "iconLabel": "I" },
+        { "id": "telegram", "name": "Telegram", "enabled": false, "color": "#229ED9", "url": "#", "iconLabel": "T" },
+        { "id": "call", "name": "Hotline", "enabled": true, "color": "#34D399", "url": "tel:", "iconLabel": "☎" }
+      ]
+    }
+  },
   "supports": {
     "html": false,
     "align": ["wide", "full"],
@@ -19,59 +56,30 @@
       "padding": true,
       "blockGap": true
     },
+    "color": {
+      "background": true,
+      "text": true,
+      "link": true,
+      "gradients": true
+    },
     "__experimentalBorder": {
-      "radius": true
-    }
+      "color": true,
+      "radius": true,
+      "style": true,
+      "width": true
+    },
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true,
+      "textAlign": true,
+      "fontFamily": true,
+      "fontWeight": true
+    },
+    "anchor": true
   },
-  "attributes": {
-    "expandStyle": {
-      "type": "string",
-      "default": "vertical",
-      "enum": ["vertical", "fan", "bidirectional", "split"]
-    },
-    "verticalAlign": {
-      "type": "string",
-      "default": "bottom",
-      "enum": ["bottom", "center"]
-    },
-    "expandDistance": {
-      "type": "number",
-      "default": 72
-    },
-    "idleAnimation": {
-      "type": "string",
-      "default": "none",
-      "enum": ["none", "pulse-ring", "wiggle", "float"]
-    },
-    "position": {
-      "type": "string",
-      "default": "right",
-      "enum": ["left", "right"]
-    },
-    "bottomOffset": {
-      "type": "string",
-      "default": "24px"
-    },
-    "showLabels": {
-      "type": "boolean",
-      "default": false
-    },
-    "triggerMode": {
-      "type": "string",
-      "default": "toggle",
-      "enum": ["toggle", "always"]
-    },
-    "channels": {
-      "type": "object",
-      "default": {
-        "messenger": { "enabled": false, "appId": "", "pageId": "", "label": "Messenger", "iconSvg": "" },
-        "whatsapp": { "enabled": false, "phone": "", "label": "WhatsApp", "iconSvg": "" },
-        "zalo": { "enabled": false, "phone": "", "label": "Zalo", "iconSvg": "" },
-        "telegram": { "enabled": false, "username": "", "label": "Telegram", "iconSvg": "" },
-        "phone": { "enabled": false, "phone": "", "label": "Gọi", "iconSvg": "" },
-        "sms": { "enabled": false, "phone": "", "label": "SMS", "iconSvg": "" }
-      }
-    }
-  }
+  "editorScript": "file:./build/index.js",
+  "editorStyle": "file:./build/editor.css",
+  "style": "file:./build/style.css",
+  "viewScript": "file:./build/frontend.js"
 }
 

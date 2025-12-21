@@ -5,13 +5,18 @@ import { useSelect } from '@wordpress/data';
 import { useState, useEffect } from '@wordpress/element';
 
 export default function Edit({ attributes, setAttributes }) {
-    const { metaKey, customMetaKey, currencySymbol, emptyText, numberFormat } = attributes;
+    const { metaKey, customMetaKey, maxPriceMetaKey, maxPriceCustomMetaKey, currencySymbol, emptyText, numberFormat } = attributes;
     
     // Default meta key options
     const defaultOptions = [
         { label: __('Price (_price)', 'jankx'), value: '_price' },
         { label: __('Regular Price (_regular_price)', 'jankx'), value: '_regular_price' },
         { label: __('Sale Price (_sale_price)', 'jankx'), value: '_sale_price' },
+        { label: __('Custom Key', 'jankx'), value: 'custom' },
+    ];
+    const maxOptions = [
+        { label: __('None', 'jankx'), value: 'none' },
+        { label: __('Max Price (_price_max)', 'jankx'), value: '_price_max' },
         { label: __('Custom Key', 'jankx'), value: 'custom' },
     ];
 
@@ -51,6 +56,22 @@ export default function Edit({ attributes, setAttributes }) {
                             value={customMetaKey}
                             onChange={(value) => setAttributes({ customMetaKey: value })}
                             help={__('Enter the meta key to retrieve the price from.', 'jankx')}
+                        />
+                    )}
+
+                    <SelectControl
+                        label={__('Select Max Price Meta Key', 'jankx')}
+                        value={maxPriceMetaKey}
+                        options={maxOptions}
+                        onChange={(value) => setAttributes({ maxPriceMetaKey: value })}
+                        help={__('Choose to show a price range', 'jankx')}
+                    />
+                    {maxPriceMetaKey === 'custom' && (
+                        <TextControl
+                            label={__('Enter Custom Max Price Key', 'jankx')}
+                            value={maxPriceCustomMetaKey}
+                            onChange={(value) => setAttributes({ maxPriceCustomMetaKey: value })}
+                            help={__('Enter the meta key for max price.', 'jankx')}
                         />
                     )}
 

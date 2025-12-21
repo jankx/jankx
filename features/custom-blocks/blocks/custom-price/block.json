@@ -26,6 +26,14 @@
       "type": "string",
       "default": ""
     },
+    "maxPriceMetaKey": {
+      "type": "string",
+      "default": "none"
+    },
+    "maxPriceCustomMetaKey": {
+      "type": "string",
+      "default": ""
+    },
     "currencySymbol": {
         "type": "string",
         "default": "đ"

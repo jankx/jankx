@@ -63,6 +63,10 @@
             "type": "boolean",
             "default": false
         },
+        "modalFeaturedImageSize": {
+            "type": "string",
+            "default": "full"
+        },
         "formMappings": {
             "type": "array",
             "default": []

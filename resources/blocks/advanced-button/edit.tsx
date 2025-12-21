@@ -99,6 +99,7 @@ export function Edit(props: EditProps) {
 		modalShareCurrentUrl = false,
 		modalShareFeaturedImageId = false,
 		modalShareFeaturedImageUrl = false,
+		modalFeaturedImageSize = 'full',
 		formData = [],
 		formMappings = [],
 		text,
@@ -886,6 +887,21 @@ export function Edit(props: EditProps) {
 										help={__('Share current post featured image URL', 'jankx')}
 										__nextHasNoMarginBottom
 									/>
+									{modalShareFeaturedImageUrl && (
+										<SelectControl
+											label={__('Featured image size', 'jankx')}
+											value={modalFeaturedImageSize}
+											options={[
+												{ label: 'thumbnail', value: 'thumbnail' },
+												{ label: 'medium', value: 'medium' },
+												{ label: 'medium_large', value: 'medium_large' },
+												{ label: 'large', value: 'large' },
+												{ label: 'full', value: 'full' }
+											]}
+											onChange={(value) => setAttributes({ modalFeaturedImageSize: value })}
+											__nextHasNoMarginBottom
+										/>
+									)}
 									
 									<div style={{ marginTop: '16px', borderTop: '1px solid #ddd', paddingTop: '16px' }}>
 										<p style={{ fontSize: '13px', fontWeight: 600, marginBottom: '8px' }}>

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "jankx/metabox-timeline",
+  "version": "1.0.0",
+  "title": "Metabox Timeline",
+  "category": "jankx",
+  "icon": "schedule",
+  "description": "Hiển thị timeline từ metabox",
+  "supports": {
+    "html": false,
+    "inserter": true
+  },
+  "keywords": ["timeline", "lịch trình", "metabox"],
+  "textdomain": "jankx",
+  "style": "file:./build/style.css",
+  "editorStyle": "file:./build/style.css",
+  "render": "file:./render.php"
+}
