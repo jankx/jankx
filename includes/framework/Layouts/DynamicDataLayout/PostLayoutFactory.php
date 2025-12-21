@@ -8,6 +8,7 @@ use Jankx\Layouts\DynamicDataLayout\BlockLayouts\ListLayout;
 use Jankx\Layouts\DynamicDataLayout\BlockLayouts\MasonryLayout;
 use Jankx\Layouts\DynamicDataLayout\BlockLayouts\CardLayout;
 use Jankx\Layouts\DynamicDataLayout\BlockLayouts\CarouselLayout;
+use Jankx\Layouts\DynamicDataLayout\BlockLayouts\HorizontalLayout;
 use InvalidArgumentException;
 
 class PostLayoutFactory
@@ -21,6 +22,7 @@ class PostLayoutFactory
         self::register('masonry', MasonryLayout::class);
         self::register('card', CardLayout::class);
         self::register('carousel', CarouselLayout::class);
+        self::register('horizontal', HorizontalLayout::class);
     }
 
     public static function register(string $name, string $class): void
