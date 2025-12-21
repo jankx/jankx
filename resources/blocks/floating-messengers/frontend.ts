@@ -72,7 +72,7 @@ function initFloatingMessengers(container: HTMLElement) {
         break;
       }
     }
-    return `translate(-50%, -50%) translate(${x}px, ${y}px)`;
+    return `translate(${x}px, ${y}px)`;
   }
 
   function applyIdleAnimation(el: HTMLElement, enabled: boolean) {
@@ -93,7 +93,7 @@ function initFloatingMessengers(container: HTMLElement) {
 
   itemEls.forEach((el, idx) => {
     el.style.transition = 'transform 0.5s ease-out, opacity 0.3s ease-out';
-    el.style.transform = 'translate(-50%, -50%) translate(0, 0)';
+    el.style.transform = 'translate(0, 0)';
     el.style.opacity = '0';
     el.style.pointerEvents = 'none';
     applyIdleAnimation(el, false);
@@ -114,7 +114,7 @@ function initFloatingMessengers(container: HTMLElement) {
   }
   function close() {
     itemEls.forEach((el) => {
-      el.style.transform = 'translate(-50%, -50%) translate(0, 0)';
+      el.style.transform = 'translate(0, 0)';
       el.style.opacity = '0';
       el.style.pointerEvents = 'none';
       applyIdleAnimation(el, false);

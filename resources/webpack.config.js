@@ -34,11 +34,6 @@ module.exports = {
     'blocks/svg-icon/build/style': './blocks/svg-icon/style.scss',
     'blocks/svg-icon/build/editor': './blocks/svg-icon/editor.scss',
 
-    'blocks/gallery/build/index': './blocks/gallery/index.tsx',
-    'blocks/gallery/build/style': './blocks/gallery/style.scss',
-    'blocks/gallery/build/editor': './blocks/gallery/editor.scss',
-
-
     'blocks/advanced-image-box/build/index': './blocks/advanced-image-box/index.tsx',
     'blocks/advanced-image-box/build/style': './blocks/advanced-image-box/style.scss',
     'blocks/advanced-image-box/build/editor': './blocks/advanced-image-box/editor.scss',

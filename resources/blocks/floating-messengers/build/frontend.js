@@ -73,7 +73,7 @@ function initFloatingMessengers(container) {
           break;
         }
     }
-    return `translate(-50%, -50%) translate(${x}px, ${y}px)`;
+    return `translate(${x}px, ${y}px)`;
   }
   function applyIdleAnimation(el, enabled) {
     el.classList.remove('fm-anim-wiggle', 'fm-anim-float', 'fm-anim-pulse-ring');
@@ -92,7 +92,7 @@ function initFloatingMessengers(container) {
   }
   itemEls.forEach((el, idx) => {
     el.style.transition = 'transform 0.5s ease-out, opacity 0.3s ease-out';
-    el.style.transform = 'translate(-50%, -50%) translate(0, 0)';
+    el.style.transform = 'translate(0, 0)';
     el.style.opacity = '0';
     el.style.pointerEvents = 'none';
     applyIdleAnimation(el, false);
@@ -112,7 +112,7 @@ function initFloatingMessengers(container) {
   }
   function close() {
     itemEls.forEach(el => {
-      el.style.transform = 'translate(-50%, -50%) translate(0, 0)';
+      el.style.transform = 'translate(0, 0)';
       el.style.opacity = '0';
       el.style.pointerEvents = 'none';
       applyIdleAnimation(el, false);
