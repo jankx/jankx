@@ -150,7 +150,3 @@ function render_menu_item_block($attributes, $content, $block) {
     return $html;
 }
 
-// Register the render callback
-register_block_type('jankx/menu-builder/menu-item', [
-    'render_callback' => __NAMESPACE__ . '\\render_menu_item_block',
-]);

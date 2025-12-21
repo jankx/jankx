@@ -73,6 +73,8 @@ class ServiceProvider extends AbstractServiceProvider
         // Boot assets
         $this->bootAssets();
 
+        $this->bootAdminNotices();
+
         // Boot Gutenberg block
         $this->bootGutenbergBlock();
 
@@ -102,9 +104,9 @@ class ServiceProvider extends AbstractServiceProvider
 
         $charset_collate = $wpdb->get_charset_collate();
 
-        // Menus table
-        $table_name = $wpdb->prefix . 'jankx_menus';
-        $sql = "CREATE TABLE IF NOT EXISTS $table_name (
+        // Create menus table first
+        $menus_table = $wpdb->prefix . 'jankx_menus';
+        $sql1 = "CREATE TABLE IF NOT EXISTS $menus_table (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             name varchar(255) NOT NULL,
             slug varchar(255) NOT NULL,
@@ -118,9 +120,9 @@ class ServiceProvider extends AbstractServiceProvider
             KEY status (status)
         ) $charset_collate;";
 
-        // Menu items table
-        $table_name = $wpdb->prefix . 'jankx_menu_items';
-        $sql .= "CREATE TABLE IF NOT EXISTS $table_name (
+        // Create menu items table second (with foreign key reference)
+        $menu_items_table = $wpdb->prefix . 'jankx_menu_items';
+        $sql2 = "CREATE TABLE IF NOT EXISTS $menu_items_table (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             menu_id bigint(20) unsigned NOT NULL,
             parent_id bigint(20) unsigned DEFAULT 0,
@@ -142,7 +144,47 @@ class ServiceProvider extends AbstractServiceProvider
         ) $charset_collate;";
 
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-        dbDelta($sql);
+        dbDelta($sql1);
+        dbDelta($sql2);
+    }
+
+    protected function tablesExist(): bool
+    {
+        global $wpdb;
+        $menus = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $wpdb->esc_like($wpdb->prefix . 'jankx_menus')));
+        $items = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $wpdb->esc_like($wpdb->prefix . 'jankx_menu_items')));
+        return !empty($menus) && !empty($items);
+    }
+
+    protected function bootAdminNotices()
+    {
+        add_action('admin_notices', function () {
+            if (!is_admin() || !current_user_can('manage_options')) {
+                return;
+            }
+
+            if (isset($_GET['jankx_menu_builder_migrated']) && $_GET['jankx_menu_builder_migrated'] === '1') {
+                echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Đã migrate bảng dữ liệu cho Jankx Menu.', 'jankx') . '</p></div>';
+                return;
+            }
+
+            if (!$this->tablesExist()) {
+                $url = wp_nonce_url(admin_url('admin-post.php?action=jankx_menu_builder_migrate'), 'jankx_menu_builder_migrate');
+                echo '<div class="notice notice-warning"><p>' . esc_html__('Cần migrate bảng cơ sở dữ liệu cho Jankx Menu.', 'jankx') . ' <a href="' . esc_url($url) . '">' . esc_html__('Nhấn để migrate', 'jankx') . '</a></p></div>';
+            }
+        });
+
+        add_action('admin_post_jankx_menu_builder_migrate', function () {
+            if (!current_user_can('manage_options')) {
+                wp_die('Unauthorized');
+            }
+            check_admin_referer('jankx_menu_builder_migrate');
+            $this->createTables();
+            $ref = wp_get_referer();
+            $redirect = $ref ? add_query_arg('jankx_menu_builder_migrated', '1', $ref) : add_query_arg('jankx_menu_builder_migrated', '1', admin_url());
+            wp_safe_redirect($redirect);
+            exit;
+        });
     }
 
     /**
@@ -181,7 +223,7 @@ class ServiceProvider extends AbstractServiceProvider
         add_action('init', function () {
             // Register main menu builder block
             register_block_type_from_metadata(
-                JANKX_THEME_DIR . '/resources/blocks/menu-builder/block.fixed.json',
+                get_template_directory() . '/resources/blocks/menu-builder/block.fixed.json',
                 [
                     'render_callback' => [$this->app[MenuRenderer::class], 'renderBlock'],
                     'attributes' => [
@@ -253,7 +295,7 @@ class ServiceProvider extends AbstractServiceProvider
             if (file_exists($menu_item_render)) {
                 require_once $menu_item_render;
             }
-            register_block_type('jankx/menu-builder/menu-item', [
+            register_block_type('jankx/menu-item', [
                 'render_callback' => '\\JankX\\MenuBuilder\\Blocks\\render_menu_item_block',
                 'attributes' => [
                     'itemId' => ['type' => 'string', 'default' => ''],

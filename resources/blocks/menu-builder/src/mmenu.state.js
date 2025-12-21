@@ -10,21 +10,21 @@
 import MmenuState from './core/oncanvas/mmenu.oncanvas.state';
 
 //	Core add-ons
-import offcanvas from '../dist/core/offcanvas/mmenu.offcanvas';
-import scrollBugFix from '../dist/core/scrollbugfix/mmenu.scrollbugfix';
-import theme from '../dist/core/theme/mmenu.theme';
+import offcanvas from './core/offcanvas/mmenu.offcanvas';
+import scrollBugFix from './core/scrollbugfix/mmenu.scrollbugfix';
+import theme from './core/theme/mmenu.theme';
 
 //	Add-ons
-import backButton from '../dist/addons/backbutton/mmenu.backbutton';
-import counters from '../dist/addons/counters/mmenu.counters';
-import iconbar from '../dist/addons/iconbar/mmenu.iconbar';
-import iconPanels from '../dist/addons/iconpanels/mmenu.iconpanels';
-import navbars from '../dist/addons/navbars/mmenu.navbars';
-import pageScroll from '../dist/addons/pagescroll/mmenu.pagescroll';
-import searchfield from '../dist/addons/searchfield/mmenu.searchfield';
-import sectionIndexer from '../dist/addons/sectionindexer/mmenu.sectionindexer';
-import setSelected from '../dist/addons/setselected/mmenu.setselected';
-import sidebar from '../dist/addons/sidebar/mmenu.sidebar';
+import backButton from './addons/backbutton/mmenu.backbutton';
+import counters from './addons/counters/mmenu.counters';
+import iconbar from './addons/iconbar/mmenu.iconbar';
+import iconPanels from './addons/iconpanels/mmenu.iconpanels';
+import navbars from './addons/navbars/mmenu.navbars';
+import pageScroll from './addons/pagescroll/mmenu.pagescroll';
+import searchfield from './addons/searchfield/mmenu.searchfield';
+import sectionIndexer from './addons/sectionindexer/mmenu.sectionindexer';
+import setSelected from './addons/setselected/mmenu.setselected';
+import sidebar from './addons/sidebar/mmenu.sidebar';
 
 MmenuState.addons = {
     //	Core add-ons

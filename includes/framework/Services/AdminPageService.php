@@ -48,6 +48,16 @@ class AdminPageService
 
 
         $this->addPage([
+            'id' => 'jankx-settings',
+            'title' => 'Jankx Framework',
+            'menu_title' => 'Dashboard',
+            'capability' => 'manage_options',
+            'callback' => [$this, 'renderDashboardPage'],
+            'icon' => 'dashicons-dashboard',
+            'position' => 10
+        ]);
+
+        $this->addPage([
             'id' => 'jankx-framework-info',
             'title' => 'Framework Info',
             'menu_title' => 'Framework Info',
@@ -1089,7 +1099,7 @@ class AdminPageService
         try {
             $icons = $this->loadIconsFromType($iconType);
             wp_send_json_success(['icons' => $icons]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             wp_send_json_error(['message' => $e->getMessage()]);
         }
     }
@@ -1103,7 +1113,7 @@ class AdminPageService
         $allIconTypes = Config::get('font-icons.icon_types', []);
 
         if (!isset($allIconTypes[$iconType])) {
-            throw new Exception('Icon type not found: ' . $iconType);
+            throw new \Exception('Icon type not found: ' . $iconType);
         }
 
         $config = $allIconTypes[$iconType];
@@ -1181,6 +1191,40 @@ class AdminPageService
         echo '<tr><th>Base URL</th><td>' . ($this->app->make('jankx.urls')['base'] ?? 'Unknown') . '</td></tr>';
         echo '<tr><th>PHP Version</th><td>' . PHP_VERSION . '</td></tr>';
         echo '<tr><th>WordPress Version</th><td>' . get_bloginfo('version') . '</td></tr>';
+        echo '</table>';
+        echo '</div>';
+
+        // Database Information
+        echo '<div class="jankx-info-section">';
+        echo '<h3>Database Information</h3>';
+        echo '<table class="form-table">';
+        global $wpdb;
+        echo '<tr><th>Database Version</th><td>' . $wpdb->get_var('SELECT VERSION()') . '</td></tr>';
+        echo '<tr><th>Database Host</th><td>' . DB_HOST . '</td></tr>';
+        echo '<tr><th>Database Name</th><td>' . DB_NAME . '</td></tr>';
+        echo '<tr><th>Database Charset</th><td>' . $wpdb->charset . '</td></tr>';
+        echo '<tr><th>Database Collate</th><td>' . ($wpdb->collate ?: 'Default') . '</td></tr>';
+        
+        // Check Menu Builder tables
+        $menus_table = $wpdb->prefix . 'jankx_menus';
+        $menu_items_table = $wpdb->prefix . 'jankx_menu_items';
+        $menus_exists = $wpdb->get_var("SHOW TABLES LIKE '$menus_table'");
+        $menu_items_exists = $wpdb->get_var("SHOW TABLES LIKE '$menu_items_table'");
+        
+        echo '<tr><th>Menu Builder Tables</th><td>';
+        if ($menus_exists) {
+            echo '<span class="dashicons dashicons-yes-alt" style="color: green;"></span> Menus table exists';
+        } else {
+            echo '<span class="dashicons dashicons-no-alt" style="color: red;"></span> Menus table missing';
+        }
+        echo '<br>';
+        if ($menu_items_exists) {
+            echo '<span class="dashicons dashicons-yes-alt" style="color: green;"></span> Menu items table exists';
+        } else {
+            echo '<span class="dashicons dashicons-no-alt" style="color: red;"></span> Menu items table missing';
+        }
+        echo '</td></tr>';
+        
         echo '</table>';
         echo '</div>';
 
