@@ -158,8 +158,16 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
     const allowCustomTitle = resolvedSupports.customTitle !== false;
     const allowCustomContent = resolvedSupports.customContent !== false;
     const allowCustomIcon = resolvedSupports.icon !== false;
-    const previewTitle =
-        triggerConfig.previewTitle || triggerConfig.label || (title ? title : __('Tab', 'jankx'));
+    const previewTitle = useMemo(() => {
+        const baseTitle = triggerConfig.previewTitle || triggerConfig.label || (title ? title : __('Tab', 'jankx'));
+        
+        // Add posts count for advanced filter trigger
+        if (trigger === 'advanced-filter' && attributes.postsCount && attributes.postsCount > 0) {
+            return `${baseTitle} (${attributes.postsCount}件)`;
+        }
+        
+        return baseTitle;
+    }, [triggerConfig, title, trigger, attributes.postsCount]);
 
     // Color and gradient settings
     const colorGradientSettings = useMultipleOriginColorsAndGradients() || {};
@@ -275,6 +283,86 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
 
         setAttributes(updatedAttributes);
     };
+
+    // Fetch posts count for advanced filter trigger
+    useEffect(() => {
+        if (trigger === 'advanced-filter' && selectedTargetBlock) {
+            const fetchPostsCount = async () => {
+                try {
+                    // Get advanced filter settings from inner blocks
+                    const advancedFilterBlock = innerBlocks.find((block: any) => block.name === 'jankx/advanced-filter');
+                    if (!advancedFilterBlock) {
+                        setAttributes({ postsCount: 0 });
+                        return;
+                    }
+
+                    const filterAttrs = advancedFilterBlock.attributes as Record<string, unknown>;
+                    const filterType = filterAttrs.filterType as string;
+                    
+                    // Build filter settings object based on filter type
+                    const filterSettings: Record<string, any> = {};
+                    
+                    switch (filterType) {
+                        case 'taxonomy':
+                            if (filterAttrs.taxonomy && filterAttrs.terms) {
+                                filterSettings.taxonomy = filterAttrs.taxonomy;
+                                filterSettings.terms = filterAttrs.terms;
+                            }
+                            break;
+                        case 'author':
+                            if (filterAttrs.authors) {
+                                filterSettings.authors = filterAttrs.authors;
+                            }
+                            break;
+                        case 'keyword':
+                            if (filterAttrs.keyword) {
+                                filterSettings.keyword = filterAttrs.keyword;
+                            }
+                            break;
+                        case 'price':
+                            if (filterAttrs.minPrice || filterAttrs.maxPrice) {
+                                filterSettings.minPrice = filterAttrs.minPrice;
+                                filterSettings.maxPrice = filterAttrs.maxPrice;
+                            }
+                            break;
+                        case 'date':
+                            if (filterAttrs.dateFrom || filterAttrs.dateTo) {
+                                filterSettings.dateFrom = filterAttrs.dateFrom;
+                                filterSettings.dateTo = filterAttrs.dateTo;
+                            }
+                            break;
+                    }
+
+                    // Make AJAX request to get posts count using WP_Query
+                    const formData = new FormData();
+                    formData.append('action', 'jankx_posts_count');
+                    formData.append('nonce', window.jankx?.nonce || '');
+                    formData.append('postType', selectedTargetBlock.postType);
+                    formData.append('filterType', filterType);
+                    formData.append('filterSettings', JSON.stringify(filterSettings));
+
+                    const response = await fetch('/wp-admin/admin-ajax.php', {
+                        method: 'POST',
+                        body: formData,
+                    });
+
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        setAttributes({ postsCount: result.data.count });
+                    } else {
+                        console.error('Error fetching posts count:', result.data.message);
+                        setAttributes({ postsCount: 0 });
+                    }
+                } catch (error) {
+                    console.error('Error fetching posts count:', error);
+                    setAttributes({ postsCount: 0 });
+                }
+            };
+
+            fetchPostsCount();
+        }
+    }, [trigger, selectedTargetBlock, innerBlocks]);
 
     // Find dynamic-data-layout blocks on the page (always check for availability)
     useEffect(() => {
@@ -471,7 +559,7 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
                             />
                             <SelectControl
                                 label={__('Open In', 'jankx')}
-                                value={(triggerSettings as Record<string, unknown>)?.target as string || '_self'}
+                                value={(triggerSettings as Record<string, unknown>)?.target as '_self' | '_blank' || '_self'}
                                 options={[
                                     { label: __('Same Tab', 'jankx'), value: '_self' },
                                     { label: __('New Tab', 'jankx'), value: '_blank' },
