@@ -1,204 +1,26 @@
-.jankx-floating-messengers {
-  position: fixed;
-  z-index: 9999;
-
-  .fm-wrapper {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .fm-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-  }
-
-  .fm-items {
-    position: relative;
-    width: 0;
-    height: 0;
-    pointer-events: none;
-  }
-
-  .fm-item {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 48px;
-    height: 48px;
-    border-radius: 9999px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    text-decoration: none;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
-    transition: transform .5s ease-out, opacity .3s ease-out, box-shadow .2s ease-out;
-    opacity: 0;
-    pointer-events: none;
-    z-index: 40;
-    transform: translate(0, 0);
-  }
-  .fm-item:hover {
-    transform: scale(1.05);
-    box-shadow: 0 10px 24px rgba(0,0,0,0.18);
-  }
-  .fm-item.fm-open:hover {
-    transform: scale(1.05);
-  }
-  .fm-item-icon {
-    font-size: 16px;
-    font-weight: 700;
-    line-height: 1;
-  }
-  .fm-ring {
-    position: absolute;
-    inset: 0;
-    border-radius: 9999px;
-    opacity: .75;
-    display: none;
-    background: currentColor;
-    filter: brightness(1.1);
-    z-index: 30;
-  }
-  @keyframes fm-ping {
-    0% { transform: scale(1); opacity: .6; }
-    80% { transform: scale(1.6); opacity: 0; }
-    100% { transform: scale(1.6); opacity: 0; }
-  }
-  .fm-anim-pulse-ring .fm-ring {
-    display: inline-block;
-    animation: fm-ping 1.6s linear infinite;
-  }
-  .fm-tooltip {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    padding: 6px 10px;
-    border-radius: 6px;
-    background: #1f2937;
-    color: #fff;
-    font-size: 12px;
-    opacity: 0;
-    transform-origin: left;
-    transition: opacity .2s ease, transform .2s ease;
-    white-space: nowrap;
-    pointer-events: none;
-    box-shadow: 0 8px 16px rgba(0,0,0,.2);
-  }
-  .fm-item:hover .fm-tooltip {
-    opacity: 1;
-    transform: translateY(-50%) scale(1);
-  }
-  .fm-tooltip-arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 0;
-    height: 0;
-    border: 6px solid transparent;
-  }
-  &[data-position-x="right"] .fm-tooltip {
-    right: 110%;
-    margin-right: 8px;
-    transform-origin: right;
-  }
-  &[data-position-x="right"] .fm-tooltip-arrow {
-    left: calc(100% + 1px);
-    border-left-color: #1f2937;
-  }
-  &[data-position-x="left"] .fm-tooltip {
-    left: 110%;
-    margin-left: 8px;
-    transform-origin: left;
-  }
-  &[data-position-x="left"] .fm-tooltip-arrow {
-    right: calc(100% + 1px);
-    border-right-color: #1f2937;
-  }
-
-  .fm-main-button {
-    position: relative;
-    z-index: 50;
-    width: 56px;
-    height: 56px;
-    border-radius: 9999px;
-    background: #4F46E5;
-    color: #fff;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 8px 26px rgba(0,0,0,0.2);
-    border: 0;
-    cursor: pointer;
-    transition: transform .3s ease, filter .2s ease;
-  }
-  .fm-main-button:hover {
-    transform: scale(1.05);
-    filter: brightness(1.05);
-  }
-  .fm-main-button.fm-open {
-    background: #EF4444;
-    transform: rotate(90deg);
-  }
-
-  /* Idle Animations */
-  @keyframes fm-wiggle {
-    0%, 100% { transform: rotate(0deg); }
-    50% { transform: rotate(7deg); }
-  }
-  @keyframes fm-float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-6px); }
-  }
-  @keyframes fm-pulse-ring {
-    0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.6); }
-    70% { box-shadow: 0 0 0 8px rgba(255,255,255,0); }
-    100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
-  }
-  .fm-anim-wiggle { animation: fm-wiggle 2s ease-in-out infinite; }
-  .fm-anim-float { animation: fm-float 3s ease-in-out infinite; }
-  .fm-anim-pulse-ring { animation: fm-pulse-ring 2.5s ease-out infinite; }
-}
-
-/* Editor preview minimal styles */
-.jankx-floating-messengers[data-editor-preview="true"] {
-  .fm-container-preview {
-    position: relative;
-    min-height: 120px;
-  }
-  .fm-items-preview {
-    position: relative;
-    width: 0;
-    height: 0;
-  }
-  .fm-item-preview {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 40px;
-    height: 40px;
-    border-radius: 9999px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-  }
-  .fm-main-button-preview {
-    margin-top: 80px;
-    display: inline-block;
-    padding: 6px 12px;
-    border-radius: 6px;
-    background: #4F46E5;
-    color: #fff;
-    font-size: 12px;
-  }
-}
+.jfm-root{position:fixed;z-index:9999}
+.jfm-items{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.jfm-item-wrap{position:absolute;top:0;left:0;transition:all .5s ease-out;z-index:40}
+.jfm-item{display:flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:9999px;color:#fff;box-shadow:0 4px 10px rgba(0,0,0,.15);transition:all .3s ease;pointer-events:auto}
+.jfm-item:hover{transform:scale(1.1);filter:brightness(1.1);box-shadow:0 8px 16px rgba(0,0,0,.2);z-index:50}
+.jfm-item-icon{display:inline-block;font-weight:700}
+.jfm-tooltip{position:absolute;top:50%;transform:translateY(-50%);padding:.25rem .75rem;background:#1f2937;color:#fff;font-size:.75rem;border-radius:.375rem;opacity:0;transform-origin:center;transition:all .2s ease;white-space:nowrap;box-shadow:0 8px 16px rgba(0,0,0,.2)}
+.jfm-item-wrap:hover .jfm-tooltip{opacity:1}
+.jfm-tip-right{right:110% ;margin-right:.5rem}
+.jfm-tip-left{left:110% ;margin-left:.5rem}
+.jfm-tooltip:after{content:"";position:absolute;top:50%;transform:translateY(-50%);width:0;height:0;border:4px solid transparent}
+.jfm-tip-right:after{left:100%;border-left-color:#1f2937}
+.jfm-tip-left:after{right:100%;border-right-color:#1f2937}
+.jfm-main-btn{position:relative;z-index:50;display:flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:9999px;background:#4f46e5;color:#fff;box-shadow:0 8px 16px rgba(0,0,0,.15);transition:transform .3s ease}
+.jfm-main-btn:hover{transform:scale(1.05)}
+.jfm-main-btn.is-open{background:#ef4444;transform:rotate(90deg)}
+.jfm-main-icon{position:relative;display:block;font-size:24px}
+@keyframes wiggle{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.animate-wiggle{animation:wiggle 1s ease-in-out infinite}
+.animate-float{animation:float 2s ease-in-out infinite}
+.animate-ping{animation:pulse 1s cubic-bezier(0,0,.2,1) infinite}
+@keyframes pulse{0%{transform:scale(1);opacity:.75}100%{transform:scale(1.6);opacity:0}}
+.jfm-pulse-ring{position:absolute;inset:0;border-radius:9999px;opacity:.35}
+.jankx-floating-messengers-editor .jfm-preview{display:inline-flex;align-items:center;gap:.5rem}
+.jankx-floating-messengers-editor .jfm-main-btn{width:40px;height:40px}

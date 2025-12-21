@@ -1,232 +1,187 @@
 /*!******************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/floating-messengers/style.scss ***!
   \******************************************************************************************************************************************************************************************************/
-.jankx-floating-messengers {
+.jfm-root {
   position: fixed;
   z-index: 9999;
 }
-.jankx-floating-messengers .fm-wrapper {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-.jankx-floating-messengers .fm-overlay {
+
+.jfm-items {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   pointer-events: none;
 }
-.jankx-floating-messengers .fm-items {
-  position: relative;
-  width: 0;
-  height: 0;
-  pointer-events: none;
-}
-.jankx-floating-messengers .fm-item {
+
+.jfm-item-wrap {
   position: absolute;
   top: 0;
   left: 0;
+  transition: all 0.5s ease-out;
+  z-index: 40;
+}
+
+.jfm-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 48px;
   height: 48px;
   border-radius: 9999px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   color: #fff;
-  text-decoration: none;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
-  transition: transform 0.5s ease-out, opacity 0.3s ease-out, box-shadow 0.2s ease-out;
-  opacity: 0;
-  pointer-events: none;
-  z-index: 40;
-  transform: translate(0, 0);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  pointer-events: auto;
 }
-.jankx-floating-messengers .fm-item:hover {
-  transform: scale(1.05);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
-}
-.jankx-floating-messengers .fm-item.fm-open:hover {
-  transform: scale(1.05);
-}
-.jankx-floating-messengers .fm-item-icon {
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1;
-}
-.jankx-floating-messengers .fm-ring {
-  position: absolute;
-  inset: 0;
-  border-radius: 9999px;
-  opacity: 0.75;
-  display: none;
-  background: currentColor;
+
+.jfm-item:hover {
+  transform: scale(1.1);
   filter: brightness(1.1);
-  z-index: 30;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 50;
 }
-@keyframes fm-ping {
-  0% {
-    transform: scale(1);
-    opacity: 0.6;
-  }
-  80% {
-    transform: scale(1.6);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1.6);
-    opacity: 0;
-  }
-}
-.jankx-floating-messengers .fm-anim-pulse-ring .fm-ring {
+
+.jfm-item-icon {
   display: inline-block;
-  animation: fm-ping 1.6s linear infinite;
+  font-weight: 700;
 }
-.jankx-floating-messengers .fm-tooltip {
+
+.jfm-tooltip {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  padding: 6px 10px;
-  border-radius: 6px;
+  padding: 0.25rem 0.75rem;
   background: #1f2937;
   color: #fff;
-  font-size: 12px;
+  font-size: 0.75rem;
+  border-radius: 0.375rem;
   opacity: 0;
-  transform-origin: left;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transform-origin: center;
+  transition: all 0.2s ease;
   white-space: nowrap;
-  pointer-events: none;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
-.jankx-floating-messengers .fm-item:hover .fm-tooltip {
+
+.jfm-item-wrap:hover .jfm-tooltip {
   opacity: 1;
-  transform: translateY(-50%) scale(1);
 }
-.jankx-floating-messengers .fm-tooltip-arrow {
+
+.jfm-tip-right {
+  right: 110%;
+  margin-right: 0.5rem;
+}
+
+.jfm-tip-left {
+  left: 110%;
+  margin-left: 0.5rem;
+}
+
+.jfm-tooltip:after {
+  content: "";
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   width: 0;
   height: 0;
-  border: 6px solid transparent;
+  border: 4px solid transparent;
 }
-.jankx-floating-messengers[data-position-x=right] .fm-tooltip {
-  right: 110%;
-  margin-right: 8px;
-  transform-origin: right;
-}
-.jankx-floating-messengers[data-position-x=right] .fm-tooltip-arrow {
-  left: calc(100% + 1px);
+
+.jfm-tip-right:after {
+  left: 100%;
   border-left-color: #1f2937;
 }
-.jankx-floating-messengers[data-position-x=left] .fm-tooltip {
-  left: 110%;
-  margin-left: 8px;
-  transform-origin: left;
-}
-.jankx-floating-messengers[data-position-x=left] .fm-tooltip-arrow {
-  right: calc(100% + 1px);
+
+.jfm-tip-left:after {
+  right: 100%;
   border-right-color: #1f2937;
 }
-.jankx-floating-messengers .fm-main-button {
+
+.jfm-main-btn {
   position: relative;
   z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 56px;
   height: 56px;
   border-radius: 9999px;
-  background: #4F46E5;
+  background: #4f46e5;
   color: #fff;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.2);
-  border: 0;
-  cursor: pointer;
-  transition: transform 0.3s ease, filter 0.2s ease;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease;
 }
-.jankx-floating-messengers .fm-main-button:hover {
+
+.jfm-main-btn:hover {
   transform: scale(1.05);
-  filter: brightness(1.05);
 }
-.jankx-floating-messengers .fm-main-button.fm-open {
-  background: #EF4444;
+
+.jfm-main-btn.is-open {
+  background: #ef4444;
   transform: rotate(90deg);
 }
-.jankx-floating-messengers {
-  /* Idle Animations */
+
+.jfm-main-icon {
+  position: relative;
+  display: block;
+  font-size: 24px;
 }
-@keyframes fm-wiggle {
+
+@keyframes wiggle {
   0%, 100% {
-    transform: rotate(0deg);
+    transform: rotate(-3deg);
   }
   50% {
-    transform: rotate(7deg);
+    transform: rotate(3deg);
   }
 }
-@keyframes fm-float {
+@keyframes float {
   0%, 100% {
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-6px);
+    transform: translateY(-5px);
   }
 }
-@keyframes fm-pulse-ring {
-  0% {
-    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.6);
-  }
-  70% {
-    box-shadow: 0 0 0 8px rgba(255, 255, 255, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
-  }
-}
-.jankx-floating-messengers .fm-anim-wiggle {
-  animation: fm-wiggle 2s ease-in-out infinite;
-}
-.jankx-floating-messengers .fm-anim-float {
-  animation: fm-float 3s ease-in-out infinite;
-}
-.jankx-floating-messengers .fm-anim-pulse-ring {
-  animation: fm-pulse-ring 2.5s ease-out infinite;
+.animate-wiggle {
+  animation: wiggle 1s ease-in-out infinite;
 }
 
-/* Editor preview minimal styles */
-.jankx-floating-messengers[data-editor-preview=true] .fm-container-preview {
-  position: relative;
-  min-height: 120px;
+.animate-float {
+  animation: float 2s ease-in-out infinite;
 }
-.jankx-floating-messengers[data-editor-preview=true] .fm-items-preview {
-  position: relative;
-  width: 0;
-  height: 0;
+
+.animate-ping {
+  animation: pulse 1s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
-.jankx-floating-messengers[data-editor-preview=true] .fm-item-preview {
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.75;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+.jfm-pulse-ring {
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
+  border-radius: 9999px;
+  opacity: 0.35;
+}
+
+.jankx-floating-messengers-editor .jfm-preview {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.jankx-floating-messengers-editor .jfm-main-btn {
   width: 40px;
   height: 40px;
-  border-radius: 9999px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-}
-.jankx-floating-messengers[data-editor-preview=true] .fm-main-button-preview {
-  margin-top: 80px;
-  display: inline-block;
-  padding: 6px 12px;
-  border-radius: 6px;
-  background: #4F46E5;
-  color: #fff;
-  font-size: 12px;
 }
 
 /*# sourceMappingURL=style.css.map*/

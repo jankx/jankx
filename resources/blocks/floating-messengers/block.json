@@ -6,75 +6,28 @@
   "title": "Floating Messengers",
   "category": "jankx",
   "icon": "share",
-  "description": "Nút nổi chứa nhiều messenger với khả năng cấu hình bật/tắt từng mục.",
+  "description": "Floating action button for multi-messenger links with advanced expansion and animations",
   "textdomain": "jankx",
   "attributes": {
-    "positionX": {
-      "type": "string",
-      "enum": ["left", "right"],
-      "default": "right"
-    },
-    "positionY": {
-      "type": "string",
-      "enum": ["bottom", "center"],
-      "default": "bottom"
-    },
-    "offsetBottom": {
-      "type": "number",
-      "default": 24
-    },
-    "expansionStyle": {
-      "type": "string",
-      "enum": ["vertical", "horizontal", "fan", "split"],
-      "default": "vertical"
-    },
-    "idleAnimation": {
-      "type": "string",
-      "enum": ["none", "pulse-ring", "wiggle", "float"],
-      "default": "none"
-    },
-    "spacing": {
-      "type": "number",
-      "default": 60
-    },
+    "positionX": { "type": "string", "enum": ["left", "right"], "default": "right" },
+    "positionY": { "type": "string", "enum": ["bottom", "center"], "default": "bottom" },
+    "offsetBottom": { "type": "number", "default": 24 },
+    "expansionStyle": { "type": "string", "enum": ["vertical", "horizontal", "fan", "split"], "default": "vertical" },
+    "idleAnimation": { "type": "string", "enum": ["none", "pulse-ring", "wiggle", "float"], "default": "none" },
+    "spacing": { "type": "number", "default": 60 },
     "messengers": {
       "type": "array",
       "default": [
-        { "id": "zalo", "name": "Zalo", "enabled": true, "color": "#0068FF", "url": "#", "iconLabel": "Z" },
-        { "id": "messenger", "name": "Messenger", "enabled": true, "color": "#00B2FF", "url": "#", "iconLabel": "M" },
-        { "id": "instagram", "name": "Instagram", "enabled": true, "color": "#E1306C", "url": "#", "iconLabel": "I" },
-        { "id": "telegram", "name": "Telegram", "enabled": false, "color": "#229ED9", "url": "#", "iconLabel": "T" },
-        { "id": "call", "name": "Hotline", "enabled": true, "color": "#34D399", "url": "tel:", "iconLabel": "☎" }
+        { "id": "zalo", "name": "Zalo", "color": "#0068FF", "url": "#" },
+        { "id": "messenger", "name": "Messenger", "color": "#00B2FF", "url": "#" },
+        { "id": "instagram", "name": "Instagram", "color": "#E1306C", "url": "#" },
+        { "id": "telegram", "name": "Telegram", "color": "#229ED9", "url": "#" },
+        { "id": "call", "name": "Hotline", "color": "#34D399", "url": "tel:123456789" }
       ]
     }
   },
   "supports": {
     "html": false,
-    "align": ["wide", "full"],
-    "spacing": {
-      "margin": true,
-      "padding": true,
-      "blockGap": true
-    },
-    "color": {
-      "background": true,
-      "text": true,
-      "link": true,
-      "gradients": true
-    },
-    "__experimentalBorder": {
-      "color": true,
-      "radius": true,
-      "style": true,
-      "width": true
-    },
-    "typography": {
-      "fontSize": true,
-      "lineHeight": true,
-      "textAlign": true,
-      "fontFamily": true,
-      "fontWeight": true
-    },
     "anchor": true
   },
   "editorScript": "file:./build/index.js",
@@ -82,4 +35,3 @@
   "style": "file:./build/style.css",
   "viewScript": "file:./build/frontend.js"
 }
-

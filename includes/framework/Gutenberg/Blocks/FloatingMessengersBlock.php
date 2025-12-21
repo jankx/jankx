@@ -19,20 +19,5 @@ class FloatingMessengersBlock extends Block
      * @var string
      */
     protected $blockId = 'jankx/floating-messengers';
-
-    /**
-     * Constructor
-     *
-     * Resolve block path via container to `resources/blocks/floating-messengers`
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
-     * Block không cần render callback vì dùng save.tsx (static HTML).
-     * Mọi tương tác UI do viewScript (frontend.js) đảm nhận.
-     */
 }
 
