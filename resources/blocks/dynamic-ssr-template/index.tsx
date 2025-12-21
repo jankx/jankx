@@ -8,7 +8,7 @@ import './style.scss';
 import './editor.scss';
 
 interface DynamicSsrTemplateAttributes {
-    contentLoopLayout?: string;
+    templateSlug?: string;
     thumbnailPosition?: 'top' | 'bottom' | 'left' | 'right';
     imageRatio?: string;
     itemSpacing?: 'none' | 'compact' | 'normal' | 'loose';
@@ -16,6 +16,12 @@ interface DynamicSsrTemplateAttributes {
     itemBorderRadius?: number;
     showExcerpt?: boolean;
     excerptLength?: number;
+    showTitle?: boolean;
+    showDate?: boolean;
+    showAuthor?: boolean;
+    showPrice?: boolean;
+    showAddToCart?: boolean;
+    showRating?: boolean;
 }
 
 declare global {
@@ -27,13 +33,14 @@ declare global {
         jankxDynamicSsrTemplate?: {
             nonce: string;
             ajaxUrl: string;
+            availableTemplates?: Array<{ slug: string; title: string; description?: string }>;
         };
     }
 }
 
 function Edit({ attributes, setAttributes, context }: any) {
     const {
-        contentLoopLayout = 'default',
+        templateSlug = 'post-layouts/loop-item',
         thumbnailPosition = 'top',
         imageRatio = '',
         itemSpacing = 'normal',
@@ -41,6 +48,12 @@ function Edit({ attributes, setAttributes, context }: any) {
         itemBorderRadius = 0,
         showExcerpt = true,
         excerptLength = 55,
+        showTitle = true,
+        showDate = true,
+        showAuthor = false,
+        showPrice = true,
+        showAddToCart = true,
+        showRating = false,
     } = attributes as DynamicSsrTemplateAttributes;
 
     const postType = (context?.postType as string) || 'post';
@@ -62,11 +75,32 @@ function Edit({ attributes, setAttributes, context }: any) {
         return merged.map((l) => ({ label: l.title || l.name, value: l.name }));
     }, [postType, layoutsData]);
 
+    // Template options from views directory
+    const templateOptions = useMemo(() => {
+        const availableTemplates = window.jankxDynamicSsrTemplate?.availableTemplates || [];
+        
+        // Default template options
+        const defaultTemplates = [
+            { label: __('Default Loop Item', 'jankx'), value: 'post-layouts/loop-item' },
+            { label: __('Large Item', 'jankx'), value: 'post-layouts/large-item' },
+            { label: __('Thumbnail Only', 'jankx'), value: 'post-layouts/thumbnail' },
+            { label: __('Term Item', 'jankx'), value: 'post-layouts/term-item' },
+        ];
+
+        // Add available templates from PHP
+        const phpTemplates = availableTemplates.map((template: { slug: string; title: string; description?: string }) => ({
+            label: template.title,
+            value: template.slug,
+        }));
+
+        return [...defaultTemplates, ...phpTemplates];
+    }, []);
+
     const [previewHtml, setPreviewHtml] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
 
     const blockProps = useBlockProps({
-        className: `dynamic-ssr-template dynamic-ssr-template--${contentLoopLayout}`,
+        className: `dynamic-ssr-template dynamic-ssr-template--${templateSlug.replace('/', '-')}`,
         ...(imageRatio && { 'data-image-ratio': imageRatio }),
     });
 
@@ -82,8 +116,9 @@ function Edit({ attributes, setAttributes, context }: any) {
         if (!nonce) {
             return;
         }
+
         const ssrAttrs = {
-            contentLoopLayout,
+            templateSlug,
             thumbnailPosition,
             imageRatio,
             itemSpacing,
@@ -91,7 +126,14 @@ function Edit({ attributes, setAttributes, context }: any) {
             itemBorderRadius,
             showExcerpt,
             excerptLength,
+            showTitle,
+            showDate,
+            showAuthor,
+            showPrice,
+            showAddToCart,
+            showRating,
         };
+
         const parentAttrs = {
             postType: (context?.postType as string) || 'post',
             layout: (context?.displayLayout as string) || 'grid',
@@ -116,6 +158,7 @@ function Edit({ attributes, setAttributes, context }: any) {
             carouselContainScroll: (context?.carouselContainScroll as string) ?? undefined,
             carouselInViewThreshold: (context?.carouselInViewThreshold as number) ?? undefined,
         };
+
         const params = new URLSearchParams();
         params.append('action', 'jankx_dynamic_ssr_template_preview');
         params.append('nonce', nonce);
@@ -141,7 +184,7 @@ function Edit({ attributes, setAttributes, context }: any) {
             })
             .finally(() => setLoading(false));
     }, [
-        contentLoopLayout,
+        templateSlug,
         thumbnailPosition,
         imageRatio,
         itemSpacing,
@@ -149,6 +192,12 @@ function Edit({ attributes, setAttributes, context }: any) {
         itemBorderRadius,
         showExcerpt,
         excerptLength,
+        showTitle,
+        showDate,
+        showAuthor,
+        showPrice,
+        showAddToCart,
+        showRating,
         context?.postType,
         context?.displayLayout,
         context?.postsPerPage,
@@ -178,10 +227,11 @@ function Edit({ attributes, setAttributes, context }: any) {
             <InspectorControls>
                 <PanelBody title={__('SSR Template Settings', 'jankx')} initialOpen={true}>
                     <SelectControl
-                        label={__('Content Loop Layout', 'jankx')}
-                        value={contentLoopLayout}
-                        options={layoutOptions}
-                        onChange={(value: string) => setAttributes({ contentLoopLayout: value })}
+                        label={__('Template File', 'jankx')}
+                        value={templateSlug}
+                        options={templateOptions}
+                        onChange={(value: string) => setAttributes({ templateSlug: value })}
+                        help={__('Template file from views directory. Can be overridden in child theme.', 'jankx')}
                     />
                     <SelectControl
                         label={__('Item Spacing', 'jankx')}
@@ -229,6 +279,11 @@ function Edit({ attributes, setAttributes, context }: any) {
                 </PanelBody>
                 <PanelBody title={__('Content Settings', 'jankx')} initialOpen={false}>
                     <ToggleControl
+                        label={__('Show Title', 'jankx')}
+                        checked={!!showTitle}
+                        onChange={(value: boolean) => setAttributes({ showTitle: value })}
+                    />
+                    <ToggleControl
                         label={__('Show Excerpt', 'jankx')}
                         checked={!!showExcerpt}
                         onChange={(value: boolean) => setAttributes({ showExcerpt: value })}
@@ -242,7 +297,36 @@ function Edit({ attributes, setAttributes, context }: any) {
                             max={200}
                         />
                     )}
+                    <ToggleControl
+                        label={__('Show Date', 'jankx')}
+                        checked={!!showDate}
+                        onChange={(value: boolean) => setAttributes({ showDate: value })}
+                    />
+                    <ToggleControl
+                        label={__('Show Author', 'jankx')}
+                        checked={!!showAuthor}
+                        onChange={(value: boolean) => setAttributes({ showAuthor: value })}
+                    />
                 </PanelBody>
+                {(postType === 'product' || postType === 'tour') && (
+                    <PanelBody title={__('Commerce Settings', 'jankx')} initialOpen={false}>
+                        <ToggleControl
+                            label={__('Show Price', 'jankx')}
+                            checked={!!showPrice}
+                            onChange={(value: boolean) => setAttributes({ showPrice: value })}
+                        />
+                        <ToggleControl
+                            label={__('Show Add to Cart', 'jankx')}
+                            checked={!!showAddToCart}
+                            onChange={(value: boolean) => setAttributes({ showAddToCart: value })}
+                        />
+                        <ToggleControl
+                            label={__('Show Rating', 'jankx')}
+                            checked={!!showRating}
+                            onChange={(value: boolean) => setAttributes({ showRating: value })}
+                        />
+                    </PanelBody>
+                )}
             </InspectorControls>
             <div {...blockProps}>
                 {loading ? (
@@ -250,7 +334,10 @@ function Edit({ attributes, setAttributes, context }: any) {
                 ) : previewHtml ? (
                     <div dangerouslySetInnerHTML={{ __html: previewHtml }} />
                 ) : (
-                    <div style={{ padding: '12px' }}>{__('No preview available', 'jankx')}</div>
+                    <div style={{ padding: '12px' }}>
+                        {__('Template:', 'jankx')} {templateSlug}<br />
+                        {__('No preview available', 'jankx')}
+                    </div>
                 )}
             </div>
         </>

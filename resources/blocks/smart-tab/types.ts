@@ -9,6 +9,7 @@ export interface SmartTabAttributes {
     title: string;
     trigger: string;
     triggerSettings?: Record<string, unknown>;
+    postsCount?: number;
     iconType: IconType;
     icon: string;
     iconName: string;
@@ -77,6 +78,7 @@ export interface AdvancedFilter {
     dateRange?: boolean;
     showCount?: boolean;
     listingType?: 'ul' | 'ol' | 'none';
+    postsCount?: number;
     [key: string]: unknown;
 }
 
@@ -97,6 +99,9 @@ declare global {
     interface Window {
         JankxSmartTabTriggers?: {
             items: Record<string, SmartTabTriggerConfig>;
+        };
+        jankx?: {
+            nonce?: string;
         };
         wp?: {
             data?: {

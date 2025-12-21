@@ -12,6 +12,7 @@ interface PostLayoutInterface
     public function getOptions(): array;
     public function setQuery(WP_Query $query): self;
     public function setContentGenerator($generator): self;
+    public function getContentGenerator();
     public function render(): string;
     public function renderDefault(): string;
     public function renderPreview(): array;
@@ -19,5 +20,6 @@ interface PostLayoutInterface
     public function getSupportedOptions(): array;
     public function getReadOnlyOptions(): array;
     public function getSettingsDefinition(): array;
+    public function appendClassesToWrapper(array $classes, array $options = []): array;
 }
 

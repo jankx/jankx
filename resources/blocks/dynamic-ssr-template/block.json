@@ -35,6 +35,22 @@
     "carouselContainScroll",
     "carouselInViewThreshold"
   ],
+  "attributes": {
+    "templateSlug": { "type": "string", "default": "post-layouts/loop-item" },
+    "thumbnailPosition": { "type": "string", "default": "top" },
+    "imageRatio": { "type": "string", "default": "" },
+    "itemSpacing": { "type": "string", "default": "normal" },
+    "showItemBorder": { "type": "boolean", "default": false },
+    "itemBorderRadius": { "type": "number", "default": 0 },
+    "showExcerpt": { "type": "boolean", "default": true },
+    "excerptLength": { "type": "number", "default": 55 },
+    "showTitle": { "type": "boolean", "default": true },
+    "showDate": { "type": "boolean", "default": true },
+    "showAuthor": { "type": "boolean", "default": false },
+    "showPrice": { "type": "boolean", "default": true },
+    "showAddToCart": { "type": "boolean", "default": true },
+    "showRating": { "type": "boolean", "default": false }
+  },
   "supports": {
     "reusable": false,
     "html": false,

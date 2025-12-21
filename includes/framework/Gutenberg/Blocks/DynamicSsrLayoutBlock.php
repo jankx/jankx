@@ -6,6 +6,7 @@ use Jankx\Gutenberg\Block;
 use Jankx\Layouts\DynamicDataLayout\DynamicDataLayoutManager;
 use Jankx\Layouts\DynamicDataLayout\Renderer;
 use Jankx\Layouts\DynamicDataLayout\AttributeSanitizer;
+use Jankx\Layouts\DynamicDataLayout\Generators\ViewTemplateContentGenerator;
 use Jankx\Query\DynamicDataLayoutQueryHelper;
 use Jankx\Foundation\Application;
 use Jankx\Services\DefaultThumbnailService;
@@ -26,6 +27,10 @@ class DynamicSsrLayoutBlock extends Block
         add_filter('jankx_dynamic_ssr_layout_get_block_attributes', [$this, 'handleGetBlockAttributes'], 10, 3);
         add_action('wp_ajax_jankx_dynamic_ssr_layout_filter', [$this, 'ajaxFilterUpdate']);
         add_action('wp_ajax_nopriv_jankx_dynamic_ssr_layout_filter', [$this, 'ajaxFilterUpdate']);
+        add_action('wp_ajax_jankx_dynamic_ssr_template_preview', [$this, 'ajaxTemplatePreview']);
+        add_action('wp_ajax_nopriv_jankx_dynamic_ssr_template_preview', [$this, 'ajaxTemplatePreview']);
+        add_action('wp_ajax_jankx_posts_count', [$this, 'ajaxPostsCount']);
+        add_action('wp_ajax_nopriv_jankx_posts_count', [$this, 'ajaxPostsCount']);
         $this->ensureServices();
     }
 
@@ -294,6 +299,14 @@ class DynamicSsrLayoutBlock extends Block
 
         $query_options = \Jankx\Gutenberg\QueryOptions::getOptions();
         wp_localize_script($script_handle, 'jankxQueryOptions', $query_options);
+
+        // Get available templates from views directory
+        $availableTemplates = $this->getAvailableTemplates();
+        wp_localize_script($script_handle, 'jankxDynamicSsrTemplate', [
+            'nonce' => wp_create_nonce('jankx_load_more'),
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'availableTemplates' => $availableTemplates,
+        ]);
     }
 
     public function handleFilterUpdate(array $attributes, array $filters): array
@@ -406,6 +419,279 @@ class DynamicSsrLayoutBlock extends Block
             if ($service->isEnabled()) {
                 $service->boot();
             }
+        }
+    }
+
+    /**
+     * Get available templates from views directory
+     *
+     * @return array
+     */
+    protected function getAvailableTemplates(): array
+    {
+        $templates = [];
+        $viewsDir = get_stylesheet_directory() . '/views';
+        $parentViewsDir = get_template_directory() . '/views';
+
+        // Scan both parent and child theme views directories
+        $directories = [$viewsDir, $parentViewsDir];
+        
+        foreach ($directories as $dir) {
+            if (!is_dir($dir)) {
+                continue;
+            }
+
+            // Scan post-layouts subdirectory
+            $postLayoutsDir = $dir . '/post-layouts';
+            if (is_dir($postLayoutsDir)) {
+                $this->scanTemplateDirectory($postLayoutsDir, 'post-layouts/', $templates);
+            }
+
+            // Scan other template files in views root
+            $this->scanTemplateDirectory($dir, '', $templates);
+        }
+
+        return array_unique($templates, SORT_REGULAR);
+    }
+
+    /**
+     * Scan a directory for template files
+     *
+     * @param string $directory
+     * @param string $prefix
+     * @param array $templates
+     * @return void
+     */
+    protected function scanTemplateDirectory(string $directory, string $prefix, array &$templates): void
+    {
+        $files = scandir($directory);
+        if (!$files) {
+            return;
+        }
+
+        foreach ($files as $file) {
+            if ($file === '.' || $file === '..') {
+                continue;
+            }
+
+            $filePath = $directory . '/' . $file;
+            if (is_dir($filePath)) {
+                // Recursively scan subdirectories
+                $this->scanTemplateDirectory($filePath, $prefix . $file . '/', $templates);
+            } elseif (pathinfo($file, PATHINFO_EXTENSION) === 'php') {
+                // Add PHP template files
+                $templateSlug = $prefix . pathinfo($file, PATHINFO_FILENAME);
+                $templates[] = [
+                    'slug' => $templateSlug,
+                    'title' => $this->getTemplateTitle($templateSlug),
+                    'description' => sprintf(__('Template file: %s', 'jankx'), $file),
+                ];
+            }
+        }
+    }
+
+    /**
+     * Get template title from slug
+     *
+     * @param string $slug
+     * @return string
+     */
+    protected function getTemplateTitle(string $slug): string
+    {
+        // Convert slug to readable title
+        $title = str_replace(['-', '_'], ' ', $slug);
+        $title = ucwords($title);
+        
+        // Handle special cases
+        $specialCases = [
+            'post-layouts/loop-item' => __('Default Loop Item', 'jankx'),
+            'post-layouts/large-item' => __('Large Item', 'jankx'),
+            'post-layouts/thumbnail' => __('Thumbnail Only', 'jankx'),
+            'post-layouts/term-item' => __('Term Item', 'jankx'),
+        ];
+
+        return $specialCases[$slug] ?? $title;
+    }
+
+    /**
+     * AJAX handler for template preview
+     *
+     * @return void
+     */
+    public function ajaxPostsCount(): void
+    {
+        check_ajax_referer('jankx_load_more', 'nonce');
+
+        $postType = isset($_POST['postType']) ? sanitize_text_field(wp_unslash($_POST['postType'])) : 'post';
+        $filterType = isset($_POST['filterType']) ? sanitize_text_field(wp_unslash($_POST['filterType'])) : '';
+        $filterSettings = isset($_POST['filterSettings']) ? json_decode(wp_unslash($_POST['filterSettings']), true) : [];
+
+        if (!is_array($filterSettings)) {
+            $filterSettings = [];
+        }
+
+        try {
+            // Build WP_Query args based on filter settings
+            $args = [
+                'post_type' => $postType,
+                'post_status' => 'publish',
+                'posts_per_page' => -1, // Get all posts for counting
+                'fields' => 'ids', // Only get post IDs for better performance
+            ];
+
+            // Add filter conditions based on filter type
+            switch ($filterType) {
+                case 'taxonomy':
+                    if (!empty($filterSettings['taxonomy']) && !empty($filterSettings['terms'])) {
+                        $args['tax_query'] = [
+                            [
+                                'taxonomy' => $filterSettings['taxonomy'],
+                                'terms' => array_map('intval', $filterSettings['terms']),
+                                'field' => 'term_id',
+                                'operator' => 'IN',
+                            ],
+                        ];
+                    }
+                    break;
+
+                case 'author':
+                    if (!empty($filterSettings['authors'])) {
+                        $args['author__in'] = array_map('intval', $filterSettings['authors']);
+                    }
+                    break;
+
+                case 'keyword':
+                    if (!empty($filterSettings['keyword'])) {
+                        $args['s'] = sanitize_text_field($filterSettings['keyword']);
+                    }
+                    break;
+
+                case 'price':
+                    $minPrice = !empty($filterSettings['minPrice']) ? floatval($filterSettings['minPrice']) : 0;
+                    $maxPrice = !empty($filterSettings['maxPrice']) ? floatval($filterSettings['maxPrice']) : 999999;
+                    
+                    $args['meta_query'] = [
+                        [
+                            'key' => '_price',
+                            'value' => [$minPrice, $maxPrice],
+                            'type' => 'NUMERIC',
+                            'compare' => 'BETWEEN',
+                        ],
+                    ];
+                    break;
+
+                case 'date':
+                    $dateQuery = [];
+                    if (!empty($filterSettings['dateFrom'])) {
+                        $dateQuery['after'] = sanitize_text_field($filterSettings['dateFrom']);
+                    }
+                    if (!empty($filterSettings['dateTo'])) {
+                        $dateQuery['before'] = sanitize_text_field($filterSettings['dateTo']);
+                    }
+                    if (!empty($dateQuery)) {
+                        $dateQuery['inclusive'] = true;
+                        $args['date_query'] = [$dateQuery];
+                    }
+                    break;
+            }
+
+            // Execute WP_Query
+            $query = new \WP_Query($args);
+            $postsCount = $query->found_posts;
+
+            wp_send_json_success([
+                'count' => $postsCount,
+                'post_type' => $postType,
+                'filter_type' => $filterType,
+            ]);
+
+        } catch (\Throwable $e) {
+            $message = $e->getMessage();
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                $message .= ' at ' . $e->getFile() . ':' . $e->getLine();
+            }
+            error_log('jankx_posts_count error: ' . $message);
+            wp_send_json_error(['message' => $message]);
+        }
+    }
+
+    /**
+     * AJAX handler for template preview
+     *
+     * @return void
+     */
+    public function ajaxTemplatePreview(): void
+    {
+        check_ajax_referer('jankx_load_more', 'nonce');
+
+        $attributes = isset($_POST['attributes']) ? json_decode(wp_unslash($_POST['attributes']), true) : [];
+        $parent_attributes = isset($_POST['parent_attributes']) ? json_decode(wp_unslash($_POST['parent_attributes']), true) : [];
+
+        if (!is_array($attributes) || !is_array($parent_attributes)) {
+            wp_send_json_error(['message' => __('Invalid attributes', 'jankx')]);
+        }
+
+        try {
+            $this->bootDefaultThumbnailService();
+            
+            // Create a mock template block
+            $templateBlock = [
+                'blockName' => 'jankx/dynamic-ssr-template',
+                'attrs' => $attributes,
+                'innerBlocks' => [],
+                'innerHTML' => '',
+                'innerContent' => [],
+            ];
+
+            // Merge parent attributes for rendering
+            $mergedAttributes = array_merge($parent_attributes, $attributes);
+
+            // Create ViewTemplateContentGenerator
+            $generator = new ViewTemplateContentGenerator(
+                $templateBlock,
+                $mergedAttributes
+            );
+
+            // Build query for preview
+            $postType = $parent_attributes['postType'] ?? 'post';
+            $postsPerPage = $parent_attributes['postsPerPage'] ?? 3;
+            
+            $args = [
+                'post_type' => $postType,
+                'posts_per_page' => $postsPerPage,
+                'post_status' => 'publish',
+                'orderby' => $parent_attributes['orderBy'] ?? 'date',
+                'order' => $parent_attributes['order'] ?? 'DESC',
+            ];
+
+            $query = new \WP_Query($args);
+
+            if (!$query->have_posts()) {
+                wp_send_json_success([
+                    'html' => '<div style="padding: 12px; text-align: center;">' . __('No posts found', 'jankx') . '</div>',
+                ]);
+            }
+
+            // Generate preview HTML
+            $options = array_merge($mergedAttributes, [
+                'layout' => $parent_attributes['layout'] ?? 'grid',
+                'columns' => $parent_attributes['columns'] ?? 3,
+                'templateSlug' => $attributes['templateSlug'] ?? 'post-layouts/loop-item',
+            ]);
+
+            $html = $generator->generate($query, $options);
+
+            wp_send_json_success([
+                'html' => $html,
+            ]);
+
+        } catch (\Throwable $e) {
+            $message = $e->getMessage();
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                $message .= ' at ' . $e->getFile() . ':' . $e->getLine();
+            }
+            error_log('jankx_dynamic_ssr_template_preview error: ' . $message);
+            wp_send_json_error(['message' => $message]);
         }
     }
 }

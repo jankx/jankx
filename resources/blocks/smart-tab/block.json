@@ -21,6 +21,10 @@
             "type": "object",
             "default": {}
         },
+        "postsCount": {
+            "type": "number",
+            "default": 0
+        },
         "iconType": {
             "type": "string",
             "enum": ["none", "svg", "picker"],
