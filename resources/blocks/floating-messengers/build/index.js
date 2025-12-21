@@ -62,6 +62,42 @@ const presetColors = [{
   name: 'Indigo',
   color: '#4F46E5'
 }];
+const DEFAULT_MESSENGERS = [{
+  id: 'zalo',
+  name: 'Zalo',
+  enabled: true,
+  color: '#0068FF',
+  url: '#',
+  iconLabel: 'Z'
+}, {
+  id: 'messenger',
+  name: 'Messenger',
+  enabled: true,
+  color: '#00B2FF',
+  url: '#',
+  iconLabel: 'M'
+}, {
+  id: 'instagram',
+  name: 'Instagram',
+  enabled: true,
+  color: '#E1306C',
+  url: '#',
+  iconLabel: 'I'
+}, {
+  id: 'telegram',
+  name: 'Telegram',
+  enabled: false,
+  color: '#229ED9',
+  url: '#',
+  iconLabel: 'T'
+}, {
+  id: 'call',
+  name: 'Hotline',
+  enabled: true,
+  color: '#34D399',
+  url: 'tel:',
+  iconLabel: '☎'
+}];
 function Edit(props) {
   const {
     attributes,
@@ -79,7 +115,17 @@ function Edit(props) {
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)({
     className: 'jankx-floating-messengers'
   });
-  const enabledMessengers = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useMemo)(() => Array.isArray(messengers) ? messengers.filter(m => m.enabled) : [], [messengers]);
+
+  // Initialize default messengers if empty
+  if (!Array.isArray(messengers) || messengers.length === 0) {
+    setAttributes({
+      messengers: DEFAULT_MESSENGERS
+    });
+  }
+  const enabledMessengers = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useMemo)(() => {
+    const list = Array.isArray(messengers) && messengers.length > 0 ? messengers : DEFAULT_MESSENGERS;
+    return list.filter(m => m.enabled);
+  }, [messengers]);
   const updateMessenger = (id, patch) => {
     const next = (messengers || []).map(m => m.id === id ? {
       ...m,
@@ -178,7 +224,7 @@ function Edit(props) {
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Cấu hình từng Messenger', 'jankx'),
         initialOpen: true,
-        children: (messengers || []).map(m => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+        children: (Array.isArray(messengers) && messengers.length > 0 ? messengers : DEFAULT_MESSENGERS).map(m => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
           style: {
             borderTop: '1px solid #eee',
             paddingTop: 12,
@@ -299,8 +345,45 @@ function Save(props) {
   const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.useBlockProps.save({
     className: 'jankx-floating-messengers'
   });
-  const enabledMessengers = Array.isArray(messengers) ? messengers.filter(m => m.enabled) : [];
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+  const DEFAULT_MESSENGERS = [{
+    id: 'zalo',
+    name: 'Zalo',
+    enabled: true,
+    color: '#0068FF',
+    url: '#',
+    iconLabel: 'Z'
+  }, {
+    id: 'messenger',
+    name: 'Messenger',
+    enabled: true,
+    color: '#00B2FF',
+    url: '#',
+    iconLabel: 'M'
+  }, {
+    id: 'instagram',
+    name: 'Instagram',
+    enabled: true,
+    color: '#E1306C',
+    url: '#',
+    iconLabel: 'I'
+  }, {
+    id: 'telegram',
+    name: 'Telegram',
+    enabled: false,
+    color: '#229ED9',
+    url: '#',
+    iconLabel: 'T'
+  }, {
+    id: 'call',
+    name: 'Hotline',
+    enabled: true,
+    color: '#34D399',
+    url: 'tel:',
+    iconLabel: '☎'
+  }];
+  const list = Array.isArray(messengers) && messengers.length > 0 ? messengers : DEFAULT_MESSENGERS;
+  const enabledMessengers = list.filter(m => m.enabled);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
     ...blockProps,
     "data-position-x": positionX,
     "data-position-y": positionY,
@@ -308,32 +391,45 @@ function Save(props) {
     "data-idle-animation": idleAnimation,
     "data-offset-bottom": offsetBottom,
     "data-spacing": spacing,
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
-      className: "fm-items",
-      children: enabledMessengers.map(m => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("a", {
-        className: "fm-item",
-        href: m.url || '#',
-        target: "_blank",
-        rel: "noopener noreferrer",
-        "data-id": m.id,
-        "data-name": m.name,
-        style: {
-          backgroundColor: m.color
-        },
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
-          className: "fm-item-icon",
-          children: m.iconLabel || m.name.charAt(0)
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+      className: "fm-wrapper",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+        className: "fm-overlay",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+          className: "fm-items",
+          children: enabledMessengers.map(m => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("a", {
+            className: "fm-item",
+            href: m.url || '#',
+            target: "_blank",
+            rel: "noopener noreferrer",
+            "data-id": m.id,
+            "data-name": m.name,
+            style: {
+              backgroundColor: m.color
+            },
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
+              className: "fm-item-icon",
+              children: m.iconLabel || m.name.charAt(0)
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
+              className: "fm-ring"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+              className: "fm-tooltip",
+              children: [m.name, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+                className: "fm-tooltip-arrow"
+              })]
+            })]
+          }, m.id))
         })
-      }, m.id))
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("button", {
-      type: "button",
-      className: "fm-main-button",
-      "aria-label": "Toggle Messengers",
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
-        className: "fm-main-label",
-        children: "Chat"
-      })
-    })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("button", {
+        type: "button",
+        className: "fm-main-button",
+        "aria-label": "Toggle Messengers",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
+          className: "fm-main-label",
+          children: "Chat"
+        })
+      })]
+    })
   });
 }
 

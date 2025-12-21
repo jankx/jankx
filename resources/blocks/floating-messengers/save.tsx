@@ -37,7 +37,15 @@ export default function Save(props: SaveProps) {
     className: 'jankx-floating-messengers',
   });
 
-  const enabledMessengers = Array.isArray(messengers) ? messengers.filter((m) => m.enabled) : [];
+  const DEFAULT_MESSENGERS: MessengerItem[] = [
+    { id: 'zalo', name: 'Zalo', enabled: true, color: '#0068FF', url: '#', iconLabel: 'Z' },
+    { id: 'messenger', name: 'Messenger', enabled: true, color: '#00B2FF', url: '#', iconLabel: 'M' },
+    { id: 'instagram', name: 'Instagram', enabled: true, color: '#E1306C', url: '#', iconLabel: 'I' },
+    { id: 'telegram', name: 'Telegram', enabled: false, color: '#229ED9', url: '#', iconLabel: 'T' },
+    { id: 'call', name: 'Hotline', enabled: true, color: '#34D399', url: 'tel:', iconLabel: '☎' },
+  ];
+  const list = Array.isArray(messengers) && messengers.length > 0 ? messengers : DEFAULT_MESSENGERS;
+  const enabledMessengers = list.filter((m) => m.enabled);
 
   return (
     <div
@@ -49,26 +57,34 @@ export default function Save(props: SaveProps) {
       data-offset-bottom={offsetBottom}
       data-spacing={spacing}
     >
-      <div className="fm-items">
-        {enabledMessengers.map((m) => (
-          <a
-            key={m.id}
-            className="fm-item"
-            href={m.url || '#'}
-            target="_blank"
-            rel="noopener noreferrer"
-            data-id={m.id}
-            data-name={m.name}
-            style={{ backgroundColor: m.color }}
-          >
-            <span className="fm-item-icon">{m.iconLabel || m.name.charAt(0)}</span>
-          </a>
-        ))}
+      <div className="fm-wrapper">
+        <div className="fm-overlay">
+          <div className="fm-items">
+            {enabledMessengers.map((m) => (
+              <a
+                key={m.id}
+                className="fm-item"
+                href={m.url || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-id={m.id}
+                data-name={m.name}
+                style={{ backgroundColor: m.color }}
+              >
+                <span className="fm-item-icon">{m.iconLabel || m.name.charAt(0)}</span>
+                <span className="fm-ring"></span>
+                <div className="fm-tooltip">
+                  {m.name}
+                  <div className="fm-tooltip-arrow"></div>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+        <button type="button" className="fm-main-button" aria-label="Toggle Messengers">
+          <span className="fm-main-label">Chat</span>
+        </button>
       </div>
-      <button type="button" className="fm-main-button" aria-label="Toggle Messengers">
-        <span className="fm-main-label">Chat</span>
-      </button>
     </div>
   );
 }
-

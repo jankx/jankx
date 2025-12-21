@@ -46,6 +46,14 @@ const presetColors = [
   { name: 'Indigo', color: '#4F46E5' },
 ];
 
+const DEFAULT_MESSENGERS: MessengerItem[] = [
+  { id: 'zalo', name: 'Zalo', enabled: true, color: '#0068FF', url: '#', iconLabel: 'Z' },
+  { id: 'messenger', name: 'Messenger', enabled: true, color: '#00B2FF', url: '#', iconLabel: 'M' },
+  { id: 'instagram', name: 'Instagram', enabled: true, color: '#E1306C', url: '#', iconLabel: 'I' },
+  { id: 'telegram', name: 'Telegram', enabled: false, color: '#229ED9', url: '#', iconLabel: 'T' },
+  { id: 'call', name: 'Hotline', enabled: true, color: '#34D399', url: 'tel:', iconLabel: '☎' },
+];
+
 export default function Edit(props: EditProps) {
   const { attributes, setAttributes } = props;
   const {
@@ -62,10 +70,15 @@ export default function Edit(props: EditProps) {
     className: 'jankx-floating-messengers',
   });
 
-  const enabledMessengers = useMemo(
-    () => (Array.isArray(messengers) ? messengers.filter((m) => m.enabled) : []),
-    [messengers]
-  );
+  // Initialize default messengers if empty
+  if (!Array.isArray(messengers) || messengers.length === 0) {
+    setAttributes({ messengers: DEFAULT_MESSENGERS });
+  }
+
+  const enabledMessengers = useMemo(() => {
+    const list = Array.isArray(messengers) && messengers.length > 0 ? messengers : DEFAULT_MESSENGERS;
+    return list.filter((m) => m.enabled);
+  }, [messengers]);
 
   const updateMessenger = (id: string, patch: Partial<MessengerItem>) => {
     const next = (messengers || []).map((m) => (m.id === id ? { ...m, ...patch } : m));
@@ -135,7 +148,7 @@ export default function Edit(props: EditProps) {
         </PanelBody>
 
         <PanelBody title={__('Cấu hình từng Messenger', 'jankx')} initialOpen={true}>
-          {(messengers || []).map((m) => (
+          {((Array.isArray(messengers) && messengers.length > 0 ? messengers : DEFAULT_MESSENGERS)).map((m) => (
             <div key={m.id} style={{ borderTop: '1px solid #eee', paddingTop: 12, marginTop: 12 }}>
               <ToggleControl
                 label={`${m.name} (${m.id})`}
@@ -204,4 +217,3 @@ export default function Edit(props: EditProps) {
     </>
   );
 }
-

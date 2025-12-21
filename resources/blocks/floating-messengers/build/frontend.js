@@ -14,9 +14,7 @@ function initFloatingMessengers(container) {
   const mainBtn = container.querySelector('.fm-main-button');
   if (!itemsWrapper || !mainBtn) return;
 
-  // Position container fixed
-  container.style.position = 'fixed';
-  container.style.zIndex = '9999';
+  // Position container fixed (CSS already sets fixed, but enforce offsets)
   container.style.left = positionX === 'left' ? '24px' : 'auto';
   container.style.right = positionX === 'right' ? '24px' : 'auto';
   container.style.bottom = positionY === 'bottom' ? `${offsetBottom}px` : 'auto';
@@ -75,10 +73,11 @@ function initFloatingMessengers(container) {
           break;
         }
     }
-    return `translate(${x}px, ${y}px)`;
+    return `translate(-50%, -50%) translate(${x}px, ${y}px)`;
   }
-  function applyIdleAnimation(el) {
+  function applyIdleAnimation(el, enabled) {
     el.classList.remove('fm-anim-wiggle', 'fm-anim-float', 'fm-anim-pulse-ring');
+    if (!enabled) return;
     switch (idleAnimation) {
       case 'wiggle':
         el.classList.add('fm-anim-wiggle');
@@ -93,10 +92,10 @@ function initFloatingMessengers(container) {
   }
   itemEls.forEach((el, idx) => {
     el.style.transition = 'transform 0.5s ease-out, opacity 0.3s ease-out';
-    el.style.transform = 'translate(0, 0)';
+    el.style.transform = 'translate(-50%, -50%) translate(0, 0)';
     el.style.opacity = '0';
     el.style.pointerEvents = 'none';
-    applyIdleAnimation(el);
+    applyIdleAnimation(el, false);
     el.style.transitionDelay = `${idx * 50}ms`;
   });
   function open() {
@@ -105,18 +104,22 @@ function initFloatingMessengers(container) {
       el.style.transform = getItemTransform(idx, count);
       el.style.opacity = '1';
       el.style.pointerEvents = 'auto';
+      applyIdleAnimation(el, true);
     });
     isOpen = true;
     mainBtn.classList.add('fm-open');
+    container.classList.add('fm-open');
   }
   function close() {
     itemEls.forEach(el => {
-      el.style.transform = 'translate(0, 0)';
+      el.style.transform = 'translate(-50%, -50%) translate(0, 0)';
       el.style.opacity = '0';
       el.style.pointerEvents = 'none';
+      applyIdleAnimation(el, false);
     });
     isOpen = false;
     mainBtn.classList.remove('fm-open');
+    container.classList.remove('fm-open');
   }
   mainBtn.addEventListener('click', () => {
     if (isOpen) {

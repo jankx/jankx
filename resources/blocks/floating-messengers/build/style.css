@@ -5,6 +5,23 @@
   position: fixed;
   z-index: 9999;
 }
+.jankx-floating-messengers .fm-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.jankx-floating-messengers .fm-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
 .jankx-floating-messengers .fm-items {
   position: relative;
   width: 0;
@@ -13,8 +30,8 @@
 }
 .jankx-floating-messengers .fm-item {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 50%;
+  left: 50%;
   width: 48px;
   height: 48px;
   border-radius: 9999px;
@@ -27,6 +44,8 @@
   transition: transform 0.5s ease-out, opacity 0.3s ease-out, box-shadow 0.2s ease-out;
   opacity: 0;
   pointer-events: none;
+  z-index: 40;
+  transform: translate(-50%, -50%);
 }
 .jankx-floating-messengers .fm-item:hover {
   transform: scale(1.05);
@@ -36,6 +55,80 @@
   font-size: 16px;
   font-weight: 700;
   line-height: 1;
+}
+.jankx-floating-messengers .fm-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  opacity: 0.75;
+  display: none;
+  background: currentColor;
+  filter: brightness(1.1);
+  z-index: 30;
+}
+@keyframes fm-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  80% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+.jankx-floating-messengers .fm-anim-pulse-ring .fm-ring {
+  display: inline-block;
+  animation: fm-ping 1.6s linear infinite;
+}
+.jankx-floating-messengers .fm-tooltip {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: #1f2937;
+  color: #fff;
+  font-size: 12px;
+  opacity: 0;
+  transform-origin: left;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+.jankx-floating-messengers .fm-item:hover .fm-tooltip {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
+}
+.jankx-floating-messengers .fm-tooltip-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+}
+.jankx-floating-messengers[data-position-x=right] .fm-tooltip {
+  right: 110%;
+  margin-right: 8px;
+  transform-origin: right;
+}
+.jankx-floating-messengers[data-position-x=right] .fm-tooltip-arrow {
+  left: calc(100% + 1px);
+  border-left-color: #1f2937;
+}
+.jankx-floating-messengers[data-position-x=left] .fm-tooltip {
+  left: 110%;
+  margin-left: 8px;
+  transform-origin: left;
+}
+.jankx-floating-messengers[data-position-x=left] .fm-tooltip-arrow {
+  right: calc(100% + 1px);
+  border-right-color: #1f2937;
 }
 .jankx-floating-messengers .fm-main-button {
   position: relative;
