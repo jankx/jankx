@@ -9,8 +9,6 @@ use Jankx\Layouts\DynamicDataLayout\DynamicDataLayoutManager;
 use Jankx\Layouts\DynamicDataLayout\AttributeSanitizer;
 use Jankx\Layouts\DynamicDataLayout\PostLayoutDecorator;
 use Jankx\Layouts\DynamicDataLayout\Generators\SsrViewGenerator;
-use Jankx\Foundation\Application;
-use Jankx\Services\DefaultThumbnailService;
 
 class DynamicSsrTemplateBlock extends Block
 {
@@ -92,7 +90,6 @@ class DynamicSsrTemplateBlock extends Block
     public function ajaxPreview()
     {
         check_ajax_referer('jankx_dynamic_ssr_template_preview', 'nonce');
-        $this->bootDefaultThumbnailService();
 
         $rawAttributes = $_POST['attributes'] ?? '';
         $rawParentAttributes = $_POST['parent_attributes'] ?? '';
@@ -151,25 +148,6 @@ class DynamicSsrTemplateBlock extends Block
             wp_send_json_success(['html' => is_string($html) ? $html : '']);
         } catch (\Throwable $e) {
             wp_send_json_error(['message' => $e->getMessage()]);
-        }
-    }
-
-    protected function bootDefaultThumbnailService(): void
-    {
-        if (has_filter('has_post_thumbnail', '__return_true')) {
-            return;
-        }
-        try {
-            $app = Application::getInstance();
-            $service = $app->make(DefaultThumbnailService::class);
-            if ($service && $service->isEnabled()) {
-                $service->boot();
-            }
-        } catch (\Exception $e) {
-            $service = new DefaultThumbnailService();
-            if ($service->isEnabled()) {
-                $service->boot();
-            }
         }
     }
 }

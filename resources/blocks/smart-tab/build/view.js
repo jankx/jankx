@@ -1336,8 +1336,7 @@ function fetchDynamicDataLayout(targetBlockId, filtersPayload) {
     }
   }
   const params = new URLSearchParams();
-  const isSsrTarget = targetBlock.classList.contains('wp-block-jankx-dynamic-ssr-layout');
-  params.append('action', isSsrTarget ? 'jankx_dynamic_ssr_layout_filter' : 'jankx_dynamic_data_layout_filter');
+  params.append('action', 'jankx_dynamic_data_layout_filter');
   params.append('nonce', nonce);
   params.append('block_id', targetBlockId);
   params.append('attributes', attributesJson || '');
