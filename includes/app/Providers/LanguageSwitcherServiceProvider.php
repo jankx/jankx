@@ -70,13 +70,5 @@ class LanguageSwitcherServiceProvider extends \Jankx\Support\Providers\ServicePr
                 Log::error('Language Switcher REST Error: ' . $e->getMessage());
             }
         });
-        add_action('jankx/gutenberg/register-blocks', function ($repository) use ($app) {
-            try {
-                $languageSwitcher = $app->get('language-switcher');
-                $languageSwitcher->registerBlock($repository);
-            } catch (\Exception $e) {
-                Log::error('Language Switcher Gutenberg Block Error: ' . $e->getMessage());
-            }
-        });
     }
 }
