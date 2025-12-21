@@ -2,12 +2,12 @@
 
 namespace Jankx\Layouts\DynamicDataLayout;
 
-use Jankx\Layouts\DynamicDataLayout\Contracts\PostLayoutInterface;
-use Jankx\Layouts\DynamicDataLayout\Supports\GridLayout;
-use Jankx\Layouts\DynamicDataLayout\Supports\ListLayout;
-use Jankx\Layouts\DynamicDataLayout\Supports\MasonryLayout;
-use Jankx\Layouts\DynamicDataLayout\Supports\CardLayout;
-use Jankx\Layouts\DynamicDataLayout\Supports\CarouselLayout;
+use Jankx\Layouts\DynamicDataLayout\Contracts\BlockTemplateLayoutInterface;
+use Jankx\Layouts\DynamicDataLayout\BlockLayouts\GridLayout;
+use Jankx\Layouts\DynamicDataLayout\BlockLayouts\ListLayout;
+use Jankx\Layouts\DynamicDataLayout\BlockLayouts\MasonryLayout;
+use Jankx\Layouts\DynamicDataLayout\BlockLayouts\CardLayout;
+use Jankx\Layouts\DynamicDataLayout\BlockLayouts\CarouselLayout;
 use InvalidArgumentException;
 
 class PostLayoutFactory
@@ -28,13 +28,13 @@ class PostLayoutFactory
         if (!class_exists($class)) {
             throw new InvalidArgumentException(sprintf('Layout class %s does not exist', $class));
         }
-        if (!is_subclass_of($class, PostLayoutInterface::class)) {
-            throw new InvalidArgumentException(sprintf('Layout class %s must implement PostLayoutInterface', $class));
+        if (!is_subclass_of($class, BlockTemplateLayoutInterface::class)) {
+            throw new InvalidArgumentException(sprintf('Layout class %s must implement BlockTemplateLayoutInterface', $class));
         }
         self::$layouts[$name] = $class;
     }
 
-    public static function create(string $layoutName): PostLayoutInterface
+    public static function create(string $layoutName): BlockTemplateLayoutInterface
     {
         if (!isset(self::$layouts[$layoutName])) {
             throw new InvalidArgumentException(

@@ -3,10 +3,11 @@
 namespace Jankx\Gutenberg\Blocks;
 
 use Jankx\Gutenberg\Block;
-use Jankx\Layouts\DynamicDataLayout\ContentLoopLayoutManager;
+use Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutManager;
 use Jankx\Layouts\ContentLayout\ContentLayoutManager;
-use Jankx\Layouts\DynamicDataLayout\Contracts\PostLayoutInterface;
+use Jankx\Layouts\DynamicDataLayout\Contracts\BlockTemplateLayoutInterface;
 use Jankx\Layouts\DynamicDataLayout\Generators\PostTemplateBlockGenerator;
+use Jankx\Layouts\DynamicDataLayout\ContentLoopLayoutManager;
 use WP_Query;
 
 /**
@@ -48,6 +49,16 @@ class DynamicDataTemplateBlock extends Block
             $this->contentLoopLayoutManager = ContentLoopLayoutManager::getInstance();
         }
         return $this->contentLoopLayoutManager;
+    }
+
+    /**
+     * Get block template layout manager instance
+     *
+     * @return BlockTemplateLayoutManager
+     */
+    protected function getBlockTemplateLayoutManager(): BlockTemplateLayoutManager
+    {
+        return BlockTemplateLayoutManager::getInstance();
     }
 
     /**
@@ -217,7 +228,7 @@ class DynamicDataTemplateBlock extends Block
                     if (is_array($template)) {
                         $layout = $context['layout'] ?? null;
                         $generator = new PostTemplateBlockGenerator($template, $options);
-                        if ($layout instanceof PostLayoutInterface) {
+                        if ($layout instanceof BlockTemplateLayoutInterface) {
                             $generator->setLayout($layout);
                         }
                         return $generator->generate($query, $options);
@@ -228,13 +239,13 @@ class DynamicDataTemplateBlock extends Block
         return $content;
     }
 
-    public static function renderTemplateWithQuery(array $templateBlock, WP_Query $query, array $options, ?PostLayoutInterface $layout = null): string
+    public static function renderTemplateWithQuery(array $templateBlock, WP_Query $query, array $options, ?BlockTemplateLayoutInterface $layout = null): string
     {
         if (!function_exists('render_block')) {
             require_once ABSPATH . 'wp-includes/blocks.php';
         }
         $generator = new PostTemplateBlockGenerator($templateBlock, $options);
-        if ($layout instanceof PostLayoutInterface) {
+        if ($layout instanceof BlockTemplateLayoutInterface) {
             $generator->setLayout($layout);
         }
         return $generator->generate($query, $options);

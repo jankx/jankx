@@ -3,7 +3,7 @@
 namespace Jankx\Layouts\DynamicDataLayout;
 
 use Jankx\Facades\Log;
-use Jankx\Layouts\DynamicDataLayout\Contracts\PostLayoutInterface;
+use Jankx\Layouts\DynamicDataLayout\Contracts\BlockTemplateLayoutInterface;
 use Jankx\Layouts\DynamicDataLayout\Support\LayoutOptionsResolver;
 use Jankx\Layouts\DynamicDataLayout\Support\LayoutQueryBuilder;
 use WP_Query;
@@ -13,7 +13,7 @@ class PostLayoutDecorator
     protected $layout;
     protected $excerptLengthFilter = null;
 
-    public function __construct(PostLayoutInterface $layout)
+    public function __construct(BlockTemplateLayoutInterface $layout)
     {
         $this->layout = $layout;
     }
@@ -100,7 +100,7 @@ class PostLayoutDecorator
         }
     }
 
-    public function getLayout(): PostLayoutInterface
+    public function getLayout(): BlockTemplateLayoutInterface
     {
         return $this->layout;
     }

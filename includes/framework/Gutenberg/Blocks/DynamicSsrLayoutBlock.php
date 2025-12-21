@@ -3,10 +3,10 @@
 namespace Jankx\Gutenberg\Blocks;
 
 use Jankx\Gutenberg\Block;
-use Jankx\Layouts\DynamicDataLayout\DynamicDataLayoutManager;
-use Jankx\Layouts\DynamicDataLayout\Renderer;
-use Jankx\Layouts\DynamicDataLayout\AttributeSanitizer;
-use Jankx\Layouts\DynamicDataLayout\Generators\ViewTemplateContentGenerator;
+use Jankx\Layouts\DynamicDataLayout\ViewLayouts\ViewLayoutManager;
+use Jankx\Layouts\DynamicDataLayout\ViewLayouts\ViewRenderer;
+use Jankx\Layouts\DynamicDataLayout\ViewLayouts\ViewAttributeSanitizer;
+use Jankx\Layouts\DynamicDataLayout\ViewLayouts\Generators\ViewTemplateContentGenerator;
 use Jankx\Query\DynamicDataLayoutQueryHelper;
 use Jankx\Foundation\Application;
 use Jankx\Services\DefaultThumbnailService;
@@ -15,9 +15,9 @@ class DynamicSsrLayoutBlock extends Block
 {
     protected $blockId = 'jankx/dynamic-ssr-layout';
 
-    protected ?DynamicDataLayoutManager $layoutManager = null;
-    protected ?AttributeSanitizer $attributeSanitizer = null;
-    protected ?Renderer $rendererService = null;
+    protected ?ViewLayoutManager $layoutManager = null;
+    protected ?ViewAttributeSanitizer $attributeSanitizer = null;
+    protected ?ViewRenderer $rendererService = null;
 
     public function init()
     {
@@ -43,11 +43,11 @@ class DynamicSsrLayoutBlock extends Block
         $layoutManager = $this->getLayoutManager();
 
         if (!$this->attributeSanitizer) {
-            $this->attributeSanitizer = new AttributeSanitizer($layoutManager);
+            $this->attributeSanitizer = new ViewAttributeSanitizer($layoutManager);
         }
 
         if (!$this->rendererService) {
-            $this->rendererService = new Renderer(
+            $this->rendererService = new ViewRenderer(
                 $layoutManager,
                 $this->attributeSanitizer,
                 function (array $parsedBlock) {
@@ -157,10 +157,10 @@ class DynamicSsrLayoutBlock extends Block
         return $parsed_block;
     }
 
-    protected function getLayoutManager(): DynamicDataLayoutManager
+    protected function getLayoutManager(): ViewLayoutManager
     {
-        if ($this->layoutManager === null) {
-            $this->layoutManager = DynamicDataLayoutManager::getInstance();
+        if (!$this->layoutManager) {
+            $this->layoutManager = ViewLayoutManager::getInstance();
         }
         return $this->layoutManager;
     }

@@ -1,13 +1,13 @@
 <?php
 
-namespace Jankx\Layouts\DynamicDataLayout\Supports;
+namespace Jankx\Layouts\DynamicDataLayout\BlockLayouts;
 
-use Jankx\Layouts\DynamicDataLayout\PostLayout;
+use Jankx\Layouts\DynamicDataLayout\BlockTemplateLayout;
 
-class CardLayout extends PostLayout
+class GridLayout extends BlockTemplateLayout
 {
-    protected $name = 'card';
-    protected $title = 'Card Layout';
+    protected $name = 'grid';
+    protected $title = 'Grid Layout';
 
     public function renderDefault(): string
     {
@@ -33,7 +33,7 @@ class CardLayout extends PostLayout
 
         $ul_classes = [
             'wp-block-jankx-dynamic-data-layout',
-            'post-type-layout-card',
+            'post-type-layout-grid',
             'is-flex-container',
             'columns-' . max(1, $columns),
             'columns-tablet-' . max(1, $columnsTablet),
@@ -67,7 +67,8 @@ class CardLayout extends PostLayout
         return [
             'name' => $this->name,
             'title' => $this->title,
-            'type' => 'card',
+            'type' => 'grid',
+            'columns' => $this->getOption('columns', 3),
             'supportedOptions' => $this->getSupportedOptions(),
         ];
     }
@@ -93,5 +94,30 @@ class CardLayout extends PostLayout
     public function getReadOnlyOptions(): array
     {
         return ['showTitle'];
+    }
+
+    public function appendClassesToWrapper(array $classes, array $options = []): array
+    {
+        $columns = (int) $this->getOption('columns', 3);
+        $columnsTablet = (int) $this->getOption('columnsTablet', 2);
+        $columnsMobile = (int) $this->getOption('columnsMobile', 1);
+
+        // Add grid-specific classes
+        $classes[] = 'post-type-layout-grid';
+        $classes[] = 'is-flex-container';
+        $classes[] = 'columns-' . max(1, $columns);
+        $classes[] = 'columns-tablet-' . max(1, $columnsTablet);
+        $classes[] = 'columns-mobile-' . max(1, $columnsMobile);
+
+        // Add image ratio class if set
+        $imageRatio = $this->getOption('imageRatio', '');
+        if (is_string($imageRatio) && strpos($imageRatio, '/') !== false) {
+            [$w, $h] = array_map('floatval', explode('/', $imageRatio, 2));
+            if ($w > 0 && $h > 0) {
+                $classes[] = 'has-image-ratio';
+            }
+        }
+
+        return $classes;
     }
 }

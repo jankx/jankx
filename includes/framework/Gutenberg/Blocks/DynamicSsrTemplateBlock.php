@@ -4,11 +4,10 @@ namespace Jankx\Gutenberg\Blocks;
 
 use Jankx\Gutenberg\Block;
 use WP_Query;
-use Jankx\Layouts\DynamicDataLayout\ContentLoopLayoutManager;
-use Jankx\Layouts\DynamicDataLayout\DynamicDataLayoutManager;
-use Jankx\Layouts\DynamicDataLayout\AttributeSanitizer;
-use Jankx\Layouts\DynamicDataLayout\PostLayoutDecorator;
-use Jankx\Layouts\DynamicDataLayout\Generators\SsrViewGenerator;
+use Jankx\Layouts\DynamicDataLayout\ViewLayouts\ViewLayoutManager;
+use Jankx\Layouts\DynamicDataLayout\ViewLayouts\ViewAttributeSanitizer;
+use Jankx\Layouts\DynamicDataLayout\ViewLayouts\ViewLayoutDecorator;
+use Jankx\Layouts\DynamicDataLayout\ViewLayouts\Generators\ViewSsrGenerator;
 
 class DynamicSsrTemplateBlock extends Block
 {
@@ -21,9 +20,9 @@ class DynamicSsrTemplateBlock extends Block
         add_action('wp_ajax_nopriv_jankx_dynamic_ssr_template_preview', [$this, 'ajaxPreview']);
     }
 
-    protected function getContentLoopLayoutManager(): ContentLoopLayoutManager
+    protected function getViewLayoutManager(): ViewLayoutManager
     {
-        return ContentLoopLayoutManager::getInstance();
+        return ViewLayoutManager::getInstance();
     }
 
     public function enqueueEditorAssets()

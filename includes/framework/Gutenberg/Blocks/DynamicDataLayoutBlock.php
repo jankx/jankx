@@ -3,9 +3,9 @@
 namespace Jankx\Gutenberg\Blocks;
 
 use Jankx\Gutenberg\Block;
-use Jankx\Layouts\DynamicDataLayout\DynamicDataLayoutManager;
-use Jankx\Layouts\DynamicDataLayout\Renderer;
-use Jankx\Layouts\DynamicDataLayout\AttributeSanitizer;
+use Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutManager;
+use Jankx\Layouts\DynamicDataLayout\BlockTemplateRenderer;
+use Jankx\Layouts\DynamicDataLayout\BlockTemplateAttributeSanitizer;
 use Jankx\Query\DynamicDataLayoutQueryHelper;
 use Jankx\Foundation\Application;
 use Jankx\Services\DefaultThumbnailService;
@@ -25,25 +25,25 @@ class DynamicDataLayoutBlock extends Block
     protected $blockId = 'jankx/dynamic-data-layout';
 
     /**
-     * Dynamic Data Layout Manager instance
+     * Block Template Layout Manager instance
      *
-     * @var DynamicDataLayoutManager|null
+     * @var BlockTemplateLayoutManager|null
      */
     protected $layoutManager = null;
 
     /**
      * Attribute Sanitizer instance
      *
-     * @var AttributeSanitizer|null
+     * @var BlockTemplateAttributeSanitizer|null
      */
-    protected ?AttributeSanitizer $attributeSanitizer = null;
+    protected ?BlockTemplateAttributeSanitizer $attributeSanitizer = null;
 
     /**
      * Renderer Service instance
      *
-     * @var Renderer|null
+     * @var BlockTemplateRenderer|null
      */
-    protected ?Renderer $rendererService = null;
+    protected ?BlockTemplateRenderer $rendererService = null;
 
     public function init()
     {
@@ -79,11 +79,11 @@ class DynamicDataLayoutBlock extends Block
         $layoutManager = $this->getLayoutManager();
 
         if (!$this->attributeSanitizer) {
-            $this->attributeSanitizer = new AttributeSanitizer($layoutManager);
+            $this->attributeSanitizer = new BlockTemplateAttributeSanitizer($layoutManager);
         }
 
         if (!$this->rendererService) {
-            $this->rendererService = new Renderer(
+            $this->rendererService = new BlockTemplateRenderer(
                 $layoutManager,
                 $this->attributeSanitizer,
                 function (array $parsedBlock) {
@@ -182,12 +182,12 @@ class DynamicDataLayoutBlock extends Block
     /**
      * Get layout manager instance
      *
-     * @return DynamicDataLayoutManager
+     * @return BlockTemplateLayoutManager
      */
-    protected function getLayoutManager(): DynamicDataLayoutManager
+    protected function getLayoutManager(): BlockTemplateLayoutManager
     {
         if ($this->layoutManager === null) {
-            $this->layoutManager = DynamicDataLayoutManager::getInstance();
+            $this->layoutManager = BlockTemplateLayoutManager::getInstance();
         }
         return $this->layoutManager;
     }
@@ -421,7 +421,7 @@ class DynamicDataLayoutBlock extends Block
                 }
 
                 try {
-                    $layout = $layoutManager->createLayout($layoutName, $post_type === 'common' ? 'post' : $post_type, []);
+                    $layout = $layoutManager->createLayout($layoutName);
                     
                     if ($layout) {
                         $layoutInstance = $layout->getLayout();
@@ -469,7 +469,7 @@ class DynamicDataLayoutBlock extends Block
         $attributes = $this->attributeSanitizer->sanitize($layoutName, $attributes, true);
 
         // Create layout decorator
-        $decorator = $this->layoutManager->createLayout($layoutName, $postType, $attributes);
+        $decorator = $this->layoutManager->createLayout($layoutName);
 
         // Build query
         $originalPreset = $attributes['queryPreset'] ?? 'custom';

@@ -1,10 +1,10 @@
 <?php
 
-namespace Jankx\Layouts\DynamicDataLayout\Supports;
+namespace Jankx\Layouts\DynamicDataLayout\BlockLayouts;
 
-use Jankx\Layouts\DynamicDataLayout\PostLayout;
+use Jankx\Layouts\DynamicDataLayout\BlockTemplateLayout;
 
-class CarouselLayout extends PostLayout
+class CarouselLayout extends BlockTemplateLayout
 {
     protected $name = 'carousel';
     protected $title = 'Carousel Layout';
@@ -15,41 +15,76 @@ class CarouselLayout extends PostLayout
             return '';
         }
 
-        // Use template generator if available; otherwise render simple carousel wrapper
-        $columns = (int) $this->getOption('columns', 3);
-        $columnsTablet = (int) $this->getOption('columnsTablet', 2);
-        $columnsMobile = (int) $this->getOption('columnsMobile', 1);
-        $slidesToScroll = max(1, (int) $this->getOption('slidesToScroll', 1));
+        $slidesPerView = (int) $this->getOption('slidesPerView', 1);
+        $spaceBetween = (int) $this->getOption('spaceBetween', 16);
+        $loop = (bool) $this->getOption('loop', false);
+        $autoplay = (bool) $this->getOption('autoplay', false);
+        $autoplayDelay = (int) $this->getOption('autoplayDelay', 3000);
+        $showArrows = (bool) $this->getOption('showArrows', true);
+        $showDots = (bool) $this->getOption('showDots', true);
+        $carouselAlign = $this->getOption('carouselAlign', 'start');
+        $carouselContainScroll = $this->getOption('carouselContainScroll', 'trimSnaps');
+        $carouselAxis = $this->getOption('carouselAxis', 'x');
+        $carouselDirection = $this->getOption('carouselDirection', 'ltr');
+        $carouselDuration = (int) $this->getOption('carouselDuration', 25);
 
-        $attrs = [
-            'class' => sprintf(
-                'wp-block-jankx-dynamic-data-layout post-type-layout-carousel columns-%d columns-tablet-%d columns-mobile-%d',
-                max(1, $columns), max(1, $columnsTablet), max(1, $columnsMobile)
-            ),
-            'data-embla-carousel' => '',
-            'data-slides-per-view' => (string) max(1, $columns),
-            'data-slides-to-scroll' => (string) $slidesToScroll,
+        $carouselClasses = [
+            'wp-block-jankx-dynamic-data-layout',
+            'post-type-layout-carousel',
+            'carousel',
         ];
 
-        $attrString = '';
-        foreach ($attrs as $k => $v) {
-            $attrString .= sprintf('%s="%s" ', esc_attr($k), esc_attr($v));
+        if ($showArrows) {
+            $carouselClasses[] = 'has-arrows';
+        }
+        if ($showDots) {
+            $carouselClasses[] = 'has-dots';
         }
 
         ob_start();
         ?>
-        <div <?php echo trim($attrString); ?>>
-            <div class="embla__viewport">
-                <div class="embla__container">
+        <div class="<?php echo esc_attr(implode(' ', $carouselClasses)); ?>"
+            data-slides-per-view="<?php echo esc_attr($slidesPerView); ?>"
+            data-space-between="<?php echo esc_attr($spaceBetween); ?>"
+            data-loop="<?php echo $loop ? 'true' : 'false'; ?>"
+            data-autoplay="<?php echo $autoplay ? 'true' : 'false'; ?>"
+            data-autoplay-delay="<?php echo esc_attr($autoplayDelay); ?>"
+            data-align="<?php echo esc_attr($carouselAlign); ?>"
+            data-contain-scroll="<?php echo esc_attr($carouselContainScroll); ?>"
+            data-axis="<?php echo esc_attr($carouselAxis); ?>"
+            data-direction="<?php echo esc_attr($carouselDirection); ?>"
+            data-duration="<?php echo esc_attr($carouselDuration); ?>">
+            
+            <?php if ($showArrows): ?>
+                <button class="carousel-arrow carousel-arrow-prev">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <button class="carousel-arrow carousel-arrow-next">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            <?php endif; ?>
+
+            <div class="carousel-viewport">
+                <div class="carousel-container">
                     <?php
                     while ($this->query->have_posts()) {
                         $this->query->the_post();
-                        echo sprintf('<div class="embla__slide"><div class="wp-block-post">%s</div></div>', $this->renderPostItem());
+                        echo '<div class="carousel-slide">';
+                        echo $this->renderPostItem();
+                        echo '</div>';
                     }
                     wp_reset_postdata();
                     ?>
                 </div>
             </div>
+
+            <?php if ($showDots): ?>
+                <div class="carousel-dots"></div>
+            <?php endif; ?>
         </div>
         <?php
         return (string) ob_get_clean();
@@ -68,10 +103,19 @@ class CarouselLayout extends PostLayout
     public function getSupportedOptions(): array
     {
         return [
-            'columns',
-            'columnsTablet',
-            'columnsMobile',
-            'slidesToScroll',
+            'slidesPerView',
+            'spaceBetween',
+            'loop',
+            'autoplay',
+            'autoplayDelay',
+            'showArrows',
+            'showDots',
+            'carouselAlign',
+            'carouselContainScroll',
+            'carouselAxis',
+            'carouselDirection',
+            'carouselDuration',
+            'postsPerPage',
             'showFeaturedImage',
             'showTitle',
             'showExcerpt',
@@ -79,6 +123,7 @@ class CarouselLayout extends PostLayout
             'showAuthor',
             'excerptLength',
             'thumbnailPosition',
+            'itemStyle',
         ];
     }
 
@@ -91,12 +136,33 @@ class CarouselLayout extends PostLayout
     {
         return [
             [
-                'name' => 'slidesToScroll',
-                'label' => __('Slides To Scroll', 'jankx'),
+                'name' => 'slidesPerView',
+                'label' => __('Slides Per View', 'jankx'),
                 'type' => 'range',
                 'default' => 1,
                 'min' => 1,
-                'max' => 6, // Should be dynamic based on columns, but static for now
+                'max' => 6,
+                'step' => 1,
+                'help' => __('Number of slides visible at once', 'jankx'),
+            ],
+            [
+                'name' => 'spaceBetween',
+                'label' => __('Space Between', 'jankx'),
+                'type' => 'range',
+                'default' => 16,
+                'min' => 0,
+                'max' => 50,
+                'step' => 4,
+                'help' => __('Space between slides in pixels', 'jankx'),
+            ],
+            [
+                'name' => 'slidesToScroll',
+                'label' => __('Slides to Scroll', 'jankx'),
+                'type' => 'range',
+                'default' => 1,
+                'min' => 1,
+                'max' => 6,
+                'step' => 1,
                 'help' => __('Number of slides to scroll at a time', 'jankx'),
             ],
             [
@@ -196,50 +262,8 @@ class CarouselLayout extends PostLayout
                         'max' => 100,
                         'help' => __('Transition duration', 'jankx'),
                     ],
-                    [
-                        'name' => 'carouselDragFree',
-                        'label' => __('Drag Free', 'jankx'),
-                        'type' => 'toggle',
-                        'default' => false,
-                        'help' => __('Allow free dragging without snapping', 'jankx'),
-                    ],
-                    [
-                        'name' => 'carouselSkipSnaps',
-                        'label' => __('Skip Snaps', 'jankx'),
-                        'type' => 'toggle',
-                        'default' => false,
-                        'help' => __('Allow skipping snaps during fast scroll', 'jankx'),
-                    ],
-                    [
-                        'name' => 'carouselDragThreshold',
-                        'label' => __('Drag Threshold', 'jankx'),
-                        'type' => 'range',
-                        'default' => 10,
-                        'min' => 0,
-                        'max' => 50,
-                        'help' => __('Minimum distance to trigger drag', 'jankx'),
-                    ],
-                    [
-                        'name' => 'carouselInViewThreshold',
-                        'label' => __('In View Threshold', 'jankx'),
-                        'type' => 'range',
-                        'default' => 0,
-                        'min' => 0,
-                        'max' => 1,
-                        'step' => 0.1,
-                        'help' => __('Percentage of slide visible to be considered in view (0-1)', 'jankx'),
-                    ],
-                    [
-                        'name' => 'carouselStartIndex',
-                        'label' => __('Start Index', 'jankx'),
-                        'type' => 'range',
-                        'default' => 0,
-                        'min' => 0,
-                        'max' => 10,
-                        'help' => __('Initial slide index', 'jankx'),
-                    ],
-                ]
-            ]
+                ],
+            ],
         ];
     }
 }

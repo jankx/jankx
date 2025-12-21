@@ -3,21 +3,21 @@
 namespace Jankx\Layouts\DynamicDataLayout\Generators;
 
 use Jankx\Layouts\DynamicDataLayout\Contracts\ContentGeneratorInterface;
-use Jankx\Layouts\DynamicDataLayout\Contracts\PostLayoutInterface;
+use Jankx\Layouts\DynamicDataLayout\Contracts\BlockTemplateLayoutInterface;
 use WP_Query;
 
 abstract class AbstractContentGenerator implements ContentGeneratorInterface
 {
-    /** @var PostLayoutInterface|null */
+    /** @var BlockTemplateLayoutInterface|null */
     protected $layout = null;
 
-    public function setLayout(PostLayoutInterface $layout): ContentGeneratorInterface
+    public function setLayout(BlockTemplateLayoutInterface $layout): self
     {
         $this->layout = $layout;
         return $this;
     }
 
-    public function getLayout(): ?PostLayoutInterface
+    public function getLayout(): ?BlockTemplateLayoutInterface
     {
         return $this->layout;
     }

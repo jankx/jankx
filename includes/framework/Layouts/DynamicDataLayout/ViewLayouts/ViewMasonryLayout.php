@@ -1,10 +1,8 @@
 <?php
 
-namespace Jankx\Layouts\DynamicDataLayout\Supports;
+namespace Jankx\Layouts\DynamicDataLayout\ViewLayouts;
 
-use Jankx\Layouts\DynamicDataLayout\PostLayout;
-
-class MasonryLayout extends PostLayout
+class ViewMasonryLayout extends AbstractViewLayout
 {
     protected $name = 'masonry';
     protected $title = 'Masonry Layout';
@@ -19,11 +17,11 @@ class MasonryLayout extends PostLayout
 
         ob_start();
         ?>
-        <div class="wp-block-jankx-dynamic-data-layout post-type-layout-masonry columns-<?php echo esc_attr(max(1, $columns)); ?>">
+        <div class="wp-block-jankx-dynamic-ssr-layout view-type-layout-masonry columns-<?php echo esc_attr(max(1, $columns)); ?>">
             <?php
             while ($this->query->have_posts()) {
                 $this->query->the_post();
-                echo $this->renderPostItem();
+                echo $this->renderViewItem();
             }
             wp_reset_postdata();
             ?>

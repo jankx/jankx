@@ -1,16 +1,15 @@
 <?php
 
-namespace Jankx\Layouts\DynamicDataLayout\Contracts;
+namespace Jankx\Layouts\DynamicDataLayout\ViewLayouts\Contracts;
 
 use WP_Query;
 
-interface ContentGeneratorInterface
+interface ViewContentGeneratorInterface
 {
-    public function setLayout(BlockTemplateLayoutInterface $layout): self;
-    public function getLayout(): ?BlockTemplateLayoutInterface;
+    public function setLayout(ViewLayoutInterface $layout): self;
+    public function getLayout(): ?ViewLayoutInterface;
     public function generate(WP_Query $query, array $options = []): string;
     public function generatePreview(array $options = []): array;
     public function getName(): string;
     public function getTitle(): string;
 }
-

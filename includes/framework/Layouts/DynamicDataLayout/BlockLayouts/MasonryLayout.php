@@ -1,13 +1,13 @@
 <?php
 
-namespace Jankx\Layouts\DynamicDataLayout\Supports;
+namespace Jankx\Layouts\DynamicDataLayout\BlockLayouts;
 
-use Jankx\Layouts\DynamicDataLayout\PostLayout;
+use Jankx\Layouts\DynamicDataLayout\BlockTemplateLayout;
 
-class ListLayout extends PostLayout
+class MasonryLayout extends BlockTemplateLayout
 {
-    protected $name = 'list';
-    protected $title = 'List Layout';
+    protected $name = 'masonry';
+    protected $title = 'Masonry Layout';
 
     public function renderDefault(): string
     {
@@ -15,9 +15,11 @@ class ListLayout extends PostLayout
             return '';
         }
 
+        $columns = (int) $this->getOption('columns', 3);
+
         ob_start();
         ?>
-        <div class="wp-block-jankx-dynamic-data-layout post-type-layout-list">
+        <div class="wp-block-jankx-dynamic-data-layout post-type-layout-masonry columns-<?php echo esc_attr(max(1, $columns)); ?>">
             <?php
             while ($this->query->have_posts()) {
                 $this->query->the_post();
@@ -35,7 +37,7 @@ class ListLayout extends PostLayout
         return [
             'name' => $this->name,
             'title' => $this->title,
-            'type' => 'list',
+            'type' => 'masonry',
             'supportedOptions' => $this->getSupportedOptions(),
         ];
     }
@@ -43,6 +45,7 @@ class ListLayout extends PostLayout
     public function getSupportedOptions(): array
     {
         return [
+            'columns',
             'postsPerPage',
             'showFeaturedImage',
             'showTitle',
@@ -51,7 +54,6 @@ class ListLayout extends PostLayout
             'showAuthor',
             'excerptLength',
             'thumbnailPosition',
-            'itemStyle',
         ];
     }
 

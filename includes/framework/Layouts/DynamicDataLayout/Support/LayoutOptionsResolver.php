@@ -2,14 +2,14 @@
 
 namespace Jankx\Layouts\DynamicDataLayout\Support;
 
-use Jankx\Layouts\DynamicDataLayout\Contracts\PostLayoutInterface;
+use Jankx\Layouts\DynamicDataLayout\Contracts\BlockTemplateLayoutInterface;
 
 class LayoutOptionsResolver
 {
     protected array $attributes;
-    protected PostLayoutInterface $layout;
+    protected BlockTemplateLayoutInterface $layout;
 
-    public function __construct(array $attributes, PostLayoutInterface $layout)
+    public function __construct(array $attributes, BlockTemplateLayoutInterface $layout)
     {
         $this->attributes = $attributes;
         $this->layout = $layout;

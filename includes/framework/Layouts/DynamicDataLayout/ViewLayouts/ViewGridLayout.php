@@ -1,10 +1,8 @@
 <?php
 
-namespace Jankx\Layouts\DynamicDataLayout\Supports;
+namespace Jankx\Layouts\DynamicDataLayout\ViewLayouts;
 
-use Jankx\Layouts\DynamicDataLayout\PostLayout;
-
-class GridLayout extends PostLayout
+class ViewGridLayout extends AbstractViewLayout
 {
     protected $name = 'grid';
     protected $title = 'Grid Layout';
@@ -32,8 +30,8 @@ class GridLayout extends PostLayout
         }
 
         $ul_classes = [
-            'wp-block-jankx-dynamic-data-layout',
-            'post-type-layout-grid',
+            'wp-block-jankx-dynamic-ssr-layout',
+            'view-type-layout-grid',
             'is-flex-container',
             'columns-' . max(1, $columns),
             'columns-tablet-' . max(1, $columnsTablet),
@@ -50,9 +48,9 @@ class GridLayout extends PostLayout
             <?php
             while ($this->query->have_posts()) {
                 $this->query->the_post();
-                $li_classes = get_post_class('wp-block-post', get_the_ID());
+                $li_classes = get_post_class('wp-block-view', get_the_ID());
                 echo '<li class="' . esc_attr(implode(' ', array_filter(array_map('sanitize_html_class', $li_classes)))) . '">';
-                echo $this->renderPostItem();
+                echo $this->renderViewItem();
                 echo '</li>';
             }
             wp_reset_postdata();
@@ -103,7 +101,7 @@ class GridLayout extends PostLayout
         $columnsMobile = (int) $this->getOption('columnsMobile', 1);
 
         // Add grid-specific classes
-        $classes[] = 'post-type-layout-grid';
+        $classes[] = 'view-type-layout-grid';
         $classes[] = 'is-flex-container';
         $classes[] = 'columns-' . max(1, $columns);
         $classes[] = 'columns-tablet-' . max(1, $columnsTablet);

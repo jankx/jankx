@@ -2,13 +2,13 @@
 
 namespace Jankx\Layouts\DynamicDataLayout;
 
-use Jankx\Layouts\DynamicDataLayout\Contracts\PostLayoutInterface;
+use Jankx\Layouts\DynamicDataLayout\Contracts\BlockTemplateLayoutInterface;
 use Jankx\Layouts\DynamicDataLayout\Contracts\ContentGeneratorInterface;
 use Jankx\Layouts\DynamicDataLayout\Generators\PostTemplateBlockGenerator;
 use Jankx\Gutenberg\Blocks\DynamicDataTemplateBlock;
 use WP_Query;
 
-abstract class PostLayout implements PostLayoutInterface
+abstract class BlockTemplateLayout implements BlockTemplateLayoutInterface
 {
     protected $name = '';
     protected $title = '';
@@ -59,13 +59,13 @@ abstract class PostLayout implements PostLayoutInterface
         return array_key_exists($key, $this->options) ? $this->options[$key] : $default;
     }
 
-    public function setQuery(WP_Query $query): PostLayoutInterface
+    public function setQuery(WP_Query $query): BlockTemplateLayoutInterface
     {
         $this->query = $query;
         return $this;
     }
 
-    public function setContentGenerator($generator): PostLayoutInterface
+    public function setContentGenerator($generator): BlockTemplateLayoutInterface
     {
         if ($generator && is_object($generator) && method_exists($generator, 'setLayout')) {
             call_user_func([$generator, 'setLayout'], $this);
@@ -99,7 +99,7 @@ abstract class PostLayout implements PostLayoutInterface
                 $templateBlock,
                 $this->query,
                 $this->options,
-                $this
+                $this instanceof BlockTemplateLayoutInterface ? $this : null
             );
             return $this->wrapTemplateHtml($html, $this->options);
         }
@@ -119,7 +119,7 @@ abstract class PostLayout implements PostLayoutInterface
         $templateBlock = $this->getOption('postTemplate');
         if (is_array($templateBlock) && !empty($templateBlock)) {
             $generator = new PostTemplateBlockGenerator($templateBlock, $this->options);
-            $generator->setLayout($this);
+            $generator->setLayout($this instanceof BlockTemplateLayoutInterface ? $this : null);
             $preview = $generator->generatePreview($this->options);
             if (!empty($preview)) {
                 return $preview;
@@ -318,5 +318,21 @@ abstract class PostLayout implements PostLayoutInterface
     {
         // Default implementation - can be overridden by child classes
         return $classes;
+    }
+
+    // Additional methods for compatibility
+    public function withQuery(WP_Query $query): self
+    {
+        return $this->setQuery($query);
+    }
+
+    public function withAttributes(array $attributes): self
+    {
+        return $this->setOptions($attributes);
+    }
+
+    public function getLayout(): self
+    {
+        return $this;
     }
 }
