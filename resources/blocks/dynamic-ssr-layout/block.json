@@ -96,7 +96,23 @@
     }
   },
   "attributes": {
-    "queryPreset": { "type": "string", "default": "custom" },
+    "queryPreset": {
+      "type": "string",
+      "default": "custom",
+      "enum": [
+        "default",
+        "related",
+        "custom",
+        "on-sale",
+        "featured",
+        "related-products",
+        "best-sellers",
+        "top-rated",
+        "upsells",
+        "new-arrivals",
+        "recently-viewed"
+      ]
+    },
     "postType": { "type": "string", "default": "post" },
     "useMultiPostType": { "type": "boolean", "default": false },
     "postTypes": { "type": "array", "default": [] },
@@ -129,8 +145,16 @@
     "postParentNotIn": { "type": "array", "default": [] },
     "customQueryId": { "type": "string", "default": "" },
     "enablePagination": { "type": "boolean", "default": false },
-    "paginationStyle": { "type": "string", "default": "numbers" },
-    "paginationAlignment": { "type": "string", "default": "center" },
+    "paginationStyle": {
+      "type": "string",
+      "default": "numbers",
+      "enum": ["numbers", "simple", "arrows", "load-more"]
+    },
+    "paginationAlignment": {
+      "type": "string",
+      "default": "center",
+      "enum": ["left", "center", "right"]
+    },
     "showPaginationNumbers": { "type": "boolean", "default": true },
     "paginationPrevText": { "type": "string", "default": "" },
     "paginationNextText": { "type": "string", "default": "" },
@@ -140,20 +164,40 @@
     "autoplayDelay": { "type": "number", "default": 3000 },
     "showArrows": { "type": "boolean", "default": true },
     "showDots": { "type": "boolean", "default": true },
-    "carouselAlign": { "type": "string", "default": "start" },
-    "carouselAxis": { "type": "string", "default": "x" },
-    "carouselDirection": { "type": "string", "default": "ltr" },
+    "carouselAlign": {
+      "type": "string",
+      "default": "start",
+      "enum": ["start", "center", "end"]
+    },
+    "carouselAxis": {
+      "type": "string",
+      "default": "x",
+      "enum": ["x", "y"]
+    },
+    "carouselDirection": {
+      "type": "string",
+      "default": "ltr",
+      "enum": ["ltr", "rtl"]
+    },
     "carouselStartIndex": { "type": "number", "default": 0 },
     "carouselDuration": { "type": "number", "default": 25 },
     "carouselDragFree": { "type": "boolean", "default": false },
     "carouselDragThreshold": { "type": "number", "default": 10 },
     "carouselSkipSnaps": { "type": "boolean", "default": false },
-    "carouselContainScroll": { "type": "string", "default": "trimSnaps" },
+    "carouselContainScroll": {
+      "type": "string",
+      "default": "trimSnaps",
+      "enum": ["false", "trimSnaps", "keepSnaps"]
+    },
     "carouselInViewThreshold": { "type": "number", "default": 0 },
     "showTitle": { "type": "boolean", "default": true },
     "showExcerpt": { "type": "boolean", "default": true },
     "showFeaturedImage": { "type": "boolean", "default": true },
-    "thumbnailPosition": { "type": "string", "default": "top" },
+    "thumbnailPosition": {
+      "type": "string",
+      "default": "top",
+      "enum": ["top", "bottom", "left", "right"]
+    },
     "imageRatio": { "type": "string", "default": "" },
     "showDate": { "type": "boolean", "default": true },
     "showAuthor": { "type": "boolean", "default": false },

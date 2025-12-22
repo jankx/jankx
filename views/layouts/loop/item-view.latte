@@ -1,0 +1,65 @@
+{* View item template - used by AbstractViewLayout renderViewItem() *}
+<div class="{implode(' ', $content_classes)}">
+    {if $show_thumbnail && $thumbnail.exists}
+        <figure class="wp-block-view-featured-image">
+            {$thumbnail.html|noescape}
+        </figure>
+    {/if}
+
+    <div class="wp-block-view-content-inner">
+        {if $show_title}
+            <h2 class="wp-block-view-title">
+                <a href="{$permalink|escape}">
+                    {$title|noescape}
+                </a>
+            </h2>
+        {/if}
+
+        {if $show_date && $date}
+            <div class="wp-block-view-date">
+                <time datetime="{$date.datetime|escape}">
+                    {$date.formatted|escape}
+                </time>
+            </div>
+        {/if}
+
+        {if $show_excerpt && $excerpt}
+            <div class="wp-block-view-excerpt">
+                <p class="wp-block-view-excerpt__excerpt">
+                    {$excerpt|noescape}
+                </p>
+            </div>
+        {/if}
+        
+        {block additionalContent}
+            {* Additional content will be rendered here by child classes *}
+            {if $show_categories && $categories}
+                <div class="wp-block-view-categories">
+                    {foreach $categories as $category}
+                        <a href="{$category.link|escape}" class="category-link">{$category.name|escape}</a>
+                    {/foreach}
+                </div>
+            {/if}
+            
+            {if $show_tags && $tags}
+                <div class="wp-block-view-tags">
+                    {foreach $tags as $tag}
+                        <a href="{$tag.link|escape}" class="tag-link">{$tag.name|escape}</a>
+                    {/foreach}
+                </div>
+            {/if}
+            
+            {if $show_author && $author}
+                <div class="wp-block-view-author">
+                    <a href="{$author.posts_url|escape}" class="author-link">{$author.display_name|escape}</a>
+                </div>
+            {/if}
+            
+            {if $show_read_more}
+                <div class="wp-block-view-read-more">
+                    <a href="{$permalink|escape}" class="read-more-link">{$read_more_text|escape}</a>
+                </div>
+            {/if}
+        {/block}
+    </div>
+</div>

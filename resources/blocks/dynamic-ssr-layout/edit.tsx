@@ -12,7 +12,10 @@ import {
     BaseControl,
 } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
-import { useCallback, useEffect, useState, useMemo } from '@wordpress/element';
+import { useCallback, useEffect, useState, useMemo, useRef } from '@wordpress/element';
+import type { CSSProperties } from 'react';
+type TokenLike = string | { value: string; [key: string]: unknown };
+import { ResponsiveControl, ResponsiveValue } from '../../shared/components';
 import './style.scss';
 import './editor.scss';
 
@@ -205,16 +208,31 @@ const normalizeOrderOptions = (raw: unknown, fallback: OrderOption[]): OrderOpti
     return normalized.length > 0 ? normalized : fallback;
 };
 
-type QueryPreset = 'default' | 'related' | 'custom';
+const normalizeTokens = (tokens: TokenLike[]): string[] => {
+    return tokens.map((token) => {
+        if (typeof token === 'string') {
+            return token;
+        }
+        if (typeof token === 'object' && token !== null && typeof token.value === 'string') {
+            return token.value;
+        }
+        return String(token);
+    });
+};
+
+type QueryPreset = 'default' | 'related' | 'custom' | 'on-sale' | 'featured' | 'related-products' | 'best-sellers' | 'top-rated' | 'upsells' | 'new-arrivals' | 'recently-viewed';
 
 interface DynamicSsrLayoutAttributes {
     queryPreset: QueryPreset;
     postType: string;
+    useMultiPostType: boolean;
+    postTypes: string[];
     postsPerPage: number;
     layout: string;
     columns: number;
     columnsTablet: number;
     columnsMobile: number;
+    responsiveColumns?: { desktop: number; tablet: number; mobile: number };
     includeStickyPosts: boolean;
     orderBy: string;
     order: string;
@@ -231,6 +249,8 @@ interface DynamicSsrLayoutAttributes {
     metaType: string;
     postStatus: string[];
     postParent: number;
+    postParentIn: number[];
+    postParentNotIn: number[];
     customQueryId: string;
     // Carousel specific attributes
     slidesToScroll?: number;
@@ -249,6 +269,13 @@ interface DynamicSsrLayoutAttributes {
     carouselSkipSnaps?: boolean;
     carouselContainScroll?: 'false' | 'trimSnaps' | 'keepSnaps';
     carouselInViewThreshold?: number;
+    // Pagination specific attributes
+    enablePagination?: boolean;
+    paginationStyle?: 'numbers' | 'simple' | 'arrows' | 'load-more';
+    paginationAlignment?: 'left' | 'center' | 'right';
+    showPaginationNumbers?: boolean;
+    paginationPrevText?: string;
+    paginationNextText?: string;
 }
 
 interface EditProps {
@@ -261,11 +288,14 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     const {
         queryPreset = 'custom',
         postType = 'post',
+        useMultiPostType = false,
+        postTypes = [],
         postsPerPage = 10,
         layout = 'grid',
         columns = 3,
         columnsTablet = 2,
         columnsMobile = 1,
+        responsiveColumns,
         includeStickyPosts = false,
         orderBy = 'date',
         order = 'DESC',
@@ -282,6 +312,8 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         metaType = '',
         postStatus = ['publish'],
         postParent = 0,
+        postParentIn = [],
+        postParentNotIn = [],
         customQueryId = '',
         slidesToScroll = 1,
         loop = false,
@@ -299,6 +331,12 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         carouselSkipSnaps = false,
         carouselContainScroll = 'trimSnaps',
         carouselInViewThreshold = 0,
+        enablePagination = false,
+        paginationStyle = 'numbers',
+        paginationAlignment = 'center',
+        showPaginationNumbers = true,
+        paginationPrevText = '',
+        paginationNextText = '',
     } = attributes;
 
     // States for taxonomies and authors
@@ -521,8 +559,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         }));
     }, [postType, normalizedPresets]);
 
-    const TEMPLATE: any = [['jankx/dynamic-ssr-template']];
-
+    
     return (
         <>
             <InspectorControls>
@@ -573,38 +610,538 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                     )}
                 </PanelBody>
 
-                <PanelBody title={__('Query Settings', 'jankx')} initialOpen={false}>
+                <PanelBody title={__('Query Settings', 'jankx')} initialOpen={true}>
                     <SelectControl
                         label={__('Query Preset', 'jankx')}
                         value={queryPreset}
                         options={queryPresetOptions}
                         onChange={(value: string) => setAttributes({ queryPreset: value as QueryPreset })}
+                        help={(() => {
+                            const selected = queryPresetOptions.find(opt => opt.value === queryPreset);
+                            return selected?.help;
+                        })()}
                     />
-                    <SelectControl
-                        label={__('Order By', 'jankx')}
-                        value={orderBy}
-                        options={orderByOptions}
-                        onChange={(value: string) => setAttributes({ orderBy: value })}
-                    />
-                    <SelectControl
-                        label={__('Order', 'jankx')}
-                        value={order}
-                        options={orderOptions}
-                        onChange={(value: string) => setAttributes({ order: value })}
-                    />
+
+                    {!useMultiPostType ? (
+                        <SelectControl
+                            label={__('Post Type', 'jankx')}
+                            value={postType}
+                            options={postTypeOptions}
+                            onChange={(value: string) => {
+                                setAttributes({ postType: value, useMultiPostType: false });
+                            }}
+                            help={queryPreset === 'default' ? __('Select post type for the main query', 'jankx') : undefined}
+                        />
+                    ) : null}
+                    
                     <ToggleControl
-                        label={__('Include Sticky Posts', 'jankx')}
-                        checked={includeStickyPosts}
-                        onChange={(value: boolean) => setAttributes({ includeStickyPosts: value })}
+                        label={__('Multi Post Type', 'jankx')}
+                        checked={useMultiPostType}
+                        onChange={(value: boolean) => {
+                            setAttributes({ useMultiPostType: value });
+                            if (!value) {
+                                // When turning off multi, keep first selected as single postType
+                                const first = Array.isArray(postTypes) && postTypes.length > 0 ? postTypes[0] : postType;
+                                if (first) {
+                                    setAttributes({ postType: first });
+                                }
+                            }
+                        }}
+                        help={__('Enable selecting multiple post types', 'jankx')}
                     />
+                    {useMultiPostType ? (
+                        <BaseControl
+                            label={__('Post Types (Multiple)', 'jankx')}
+                            help={__('Select multiple post types to include', 'jankx')}
+                        >
+                            <FormTokenField
+                                value={postTypes.map((slug) => {
+                                    const found = postTypeOptions.find((opt) => opt.value === slug);
+                                    return found?.label || slug;
+                                })}
+                                suggestions={postTypeOptions.map((opt) => opt.label)}
+                                onChange={(tokens) => {
+                                    const names = normalizeTokens(tokens as TokenLike[]);
+                                    const selectedSlugs = names
+                                        .map((name) => {
+                                            const opt = postTypeOptions.find((o) => o.label === name);
+                                            return opt?.value || '';
+                                        })
+                                        .filter((slug) => slug.length > 0);
+                                    setAttributes({ postTypes: selectedSlugs });
+                                    if (selectedSlugs.length > 0 && selectedSlugs[0]) {
+                                        setAttributes({ postType: selectedSlugs[0] });
+                                    }
+                                }}
+                            />
+                        </BaseControl>
+                    ) : null}
+
+                    {/* Posts Per Page - Show for all presets */}
                     <RangeControl
-                        label={__('Offset', 'jankx')}
-                        value={offset}
-                        onChange={(value?: number) => setAttributes({ offset: value ?? 0 })}
-                        min={0}
-                        max={100}
+                        label={__('Posts Per Page', 'jankx')}
+                        value={postsPerPage}
+                        onChange={(value?: number) => setAttributes({ postsPerPage: value ?? 10 })}
+                        min={1}
+                        max={50}
+                        help={__('Number of posts to display', 'jankx')}
                     />
+
+                    {postType === 'post' ? (
+                        <ToggleControl
+                            label={__('Include Sticky Posts', 'jankx')}
+                            checked={includeStickyPosts}
+                            onChange={(value: boolean) => setAttributes({ includeStickyPosts: value })}
+                            help={__('Include sticky posts in the query (disabled by default).', 'jankx')}
+                        />
+                    ) : null}
+
+                    {/* Order By and Order - Show for related and custom presets */}
+                    {(() => {
+                        const shouldRender = queryPreset !== 'default';
+                        if (!shouldRender) {
+                            return null;
+                        }
+                        return (
+                            <>
+                                <SelectControl
+                                    label={__('Order By', 'jankx')}
+                                    value={orderBy}
+                                    options={orderByOptions}
+                                    onChange={(value: string) => {
+                                        const allOrderByOptions: OrderByOption[] = window.jankxQueryOptions?.orderBy || [];
+                                        const selectedOption = allOrderByOptions.find((opt: OrderByOption) => opt.value === value);
+                                        
+                                        // Auto-set metaKey if option has metaKey property
+                                        const updates: Partial<DynamicSsrLayoutAttributes> = { orderBy: value };
+                                        if (selectedOption?.metaKey) {
+                                            updates.metaKey = selectedOption.metaKey;
+                                            // Set orderBy to meta_value_num if value is numeric (like total_sales, _price)
+                                            if (['total_sales', '_price'].includes(value)) {
+                                                updates.orderBy = 'meta_value_num';
+                                            }
+                                        }
+                                        
+                                        setAttributes(updates);
+                                    }}
+                                    help={__('Sort posts by which criteria', 'jankx')}
+                                />
+                                <SelectControl
+                                    label={__('Order', 'jankx')}
+                                    value={order}
+                                    options={orderOptions}
+                                    onChange={(value: string) => {
+                                        setAttributes({ order: value as 'ASC' | 'DESC' });
+                                    }}
+                                />
+                            </>
+                        );
+                    })()}
                 </PanelBody>
+
+                {/* Query Parameters - Only show for custom preset */}
+                {queryPreset === 'custom' ? (
+                        <PanelBody title={__('Query Parameters', 'jankx')} initialOpen={false}>
+                        <RangeControl
+                            label={__('Offset', 'jankx')}
+                            value={offset}
+                            onChange={(value?: number) => setAttributes({ offset: value ?? 0 })}
+                            min={0}
+                            max={50}
+                            help={__('Skip the first N posts', 'jankx')}
+                        />
+
+                        {/* Meta Key for meta_value ordering */}
+                        {(orderBy === 'meta_value' || orderBy === 'meta_value_num') ? (
+                            <>
+                                <TextControl
+                                    label={__('Meta Key', 'jankx')}
+                                    value={metaKey}
+                                    onChange={(value: string) => setAttributes({ metaKey: value })}
+                                    help={__('Meta key for sorting (required when using meta_value)', 'jankx')}
+                                    placeholder={__('Example: price, views, rating', 'jankx')}
+                                />
+                                {orderBy === 'meta_value' ? (
+                                    <SelectControl
+                                        label={__('Meta Type', 'jankx')}
+                                        value={metaType}
+                                        options={window.jankxQueryOptions?.metaTypes || [
+                                            { label: __('-- Auto --', 'jankx'), value: '' },
+                                            { label: 'NUMERIC', value: 'NUMERIC' },
+                                            { label: 'BINARY', value: 'BINARY' },
+                                            { label: 'CHAR', value: 'CHAR' },
+                                            { label: 'DATE', value: 'DATE' },
+                                            { label: 'DATETIME', value: 'DATETIME' },
+                                            { label: 'DECIMAL', value: 'DECIMAL' },
+                                            { label: 'SIGNED', value: 'SIGNED' },
+                                            { label: 'TIME', value: 'TIME' },
+                                            { label: 'UNSIGNED', value: 'UNSIGNED' },
+                                        ]}
+                                        onChange={(value: string) => setAttributes({ metaType: value })}
+                                        help={__('Meta field type for proper sorting', 'jankx')}
+                                    />
+                                ) : null}
+                            </>
+                        ) : null}
+                    </PanelBody>
+                ) : null}
+
+                {queryPreset === 'custom' ? (
+                    <PanelBody title={__('Advanced Query Parameters', 'jankx')} initialOpen={false}>
+                        <TextControl
+                            label={__('Query ID', 'jankx')}
+                            value={customQueryId}
+                            onChange={(value) => setAttributes({ customQueryId: value })}
+                        />
+                        <BaseControl
+                            label={__('Post Status', 'jankx')}
+                        >
+                            <FormTokenField
+                                value={postStatus}
+                                suggestions={['publish', 'pending', 'draft', 'auto-draft', 'future', 'private', 'inherit', 'trash', 'any']}
+                                onChange={(tokens) => setAttributes({ postStatus: normalizeTokens(tokens as TokenLike[]) })}
+                            />
+                        </BaseControl>
+                        <TextControl
+                            label={__('Post Parent ID', 'jankx')}
+                            type="number"
+                            value={String(postParent)}
+                            onChange={(value) => setAttributes({ postParent: parseInt(value) || 0 })}
+                        />
+                        <TextControl
+                            label={__('Post Parent IDs (Include)', 'jankx')}
+                            value={postParentIn.join(', ')}
+                            onChange={(value) => {
+                                const ids = value.split(',').map(v => parseInt(v.trim())).filter(v => !isNaN(v));
+                                setAttributes({ postParentIn: ids });
+                            }}
+                        />
+                        <TextControl
+                            label={__('Post Parent IDs (Exclude)', 'jankx')}
+                            value={postParentNotIn.join(', ')}
+                            onChange={(value) => {
+                                const ids = value.split(',').map(v => parseInt(v.trim())).filter(v => !isNaN(v));
+                                setAttributes({ postParentNotIn: ids });
+                            }}
+                        />
+                    </PanelBody>
+                ) : null}
+
+                {queryPreset === 'custom' ? (
+                    <PanelBody title={__('Keyword Search', 'jankx')} initialOpen={false}>
+                        <TextControl
+                            label={__('Search Keyword', 'jankx')}
+                            value={keyword}
+                            onChange={(value) => setAttributes({ keyword: value })}
+                        />
+                    </PanelBody>
+                ) : null}
+
+                {queryPreset === 'custom' && authors.length > 0 ? (
+                    <PanelBody title={__('Author Filters', 'jankx')} initialOpen={false}>
+                        <BaseControl
+                            label={__('Authors (Include)', 'jankx')}
+                        >
+                            <FormTokenField
+                                value={authors.filter((author) => authorIn.includes(author.id)).map((author) => author.name)}
+                                suggestions={authors.map((author) => author.name)}
+                                onChange={(tokens) => {
+                                    const normalizedTokens = normalizeTokens(tokens as TokenLike[]);
+                                    const selectedIds = normalizedTokens
+                                        .map((tokenName) => {
+                                            const author = authors.find((item) => item.name === tokenName);
+                                            return author?.id ?? 0;
+                                        })
+                                        .filter((id) => id > 0);
+                                    setAttributes({ authorIn: selectedIds });
+                                }}
+                            />
+                        </BaseControl>
+                        <BaseControl
+                            label={__('Authors (Exclude)', 'jankx')}
+                        >
+                            <FormTokenField
+                                value={authors.filter((author) => authorNotIn.includes(author.id)).map((author) => author.name)}
+                                suggestions={authors.map((author) => author.name)}
+                                onChange={(tokens) => {
+                                    const normalizedTokens = normalizeTokens(tokens as TokenLike[]);
+                                    const selectedIds = normalizedTokens
+                                        .map((tokenName) => {
+                                            const author = authors.find((item) => item.name === tokenName);
+                                            return author?.id ?? 0;
+                                        })
+                                        .filter((id) => id > 0);
+                                    setAttributes({ authorNotIn: selectedIds });
+                                }}
+                            />
+                        </BaseControl>
+                    </PanelBody>
+                ) : null}
+
+                {queryPreset === 'custom' ? (
+                    <PanelBody title={__('Post ID Filters', 'jankx')} initialOpen={false}>
+                        <TextControl
+                            label={__('Post IDs (Include)', 'jankx')}
+                            value={postIn.join(', ')}
+                            onChange={(value) => {
+                                const ids = value.split(',').map(v => parseInt(v.trim())).filter(v => !isNaN(v));
+                                setAttributes({ postIn: ids });
+                            }}
+                        />
+                        <TextControl
+                            label={__('Post IDs (Exclude)', 'jankx')}
+                            value={postNotIn.join(', ')}
+                            onChange={(value) => {
+                                const ids = value.split(',').map(v => parseInt(v.trim())).filter(v => !isNaN(v));
+                                setAttributes({ postNotIn: ids });
+                            }}
+                        />
+                    </PanelBody>
+                ) : null}
+
+                {queryPreset === 'custom' ? (
+                    <PanelBody title={__('Meta Query Filters', 'jankx')} initialOpen={false}>
+                        <Button
+                            variant="primary"
+                            onClick={() => {
+                                const newMetaQuery = [...metaQuery];
+                                newMetaQuery.push({
+                                    key: '',
+                                    value: '',
+                                    compare: '=',
+                                });
+                                setAttributes({ metaQuery: newMetaQuery });
+                            }}
+                        >
+                            {__('+ Add Meta Query', 'jankx')}
+                        </Button>
+
+                        {metaQuery.map((mq, index) => (
+                            <div key={index} style={{ marginTop: '15px', padding: '10px', border: '1px solid #ddd', borderRadius: '4px', backgroundColor: '#f9f9f9' }}>
+                                <TextControl
+                                    label={__('Meta Key', 'jankx')}
+                                    value={mq.key}
+                                    onChange={(value) => {
+                                        const newMetaQuery = [...metaQuery];
+                                        const targetQuery = newMetaQuery[index];
+                                        if (!targetQuery) {
+                                            return;
+                                        }
+                                        newMetaQuery[index] = {
+                                            ...targetQuery,
+                                            key: value,
+                                        };
+                                        setAttributes({ metaQuery: newMetaQuery });
+                                    }}
+                                />
+                                <SelectControl
+                                    label={__('Compare', 'jankx')}
+                                    value={mq.compare}
+                                    options={[
+                                        { label: '= (Equal)', value: '=' },
+                                        { label: '!= (Not Equal)', value: '!=' },
+                                        { label: '> (Greater Than)', value: '>' },
+                                        { label: '>= (Greater or Equal)', value: '>=' },
+                                        { label: '< (Less Than)', value: '<' },
+                                        { label: '<= (Less or Equal)', value: '<=' },
+                                        { label: 'LIKE (Contains)', value: 'LIKE' },
+                                        { label: 'NOT LIKE (Not Contains)', value: 'NOT LIKE' },
+                                        { label: 'IN (In List)', value: 'IN' },
+                                        { label: 'NOT IN (Not In List)', value: 'NOT IN' },
+                                        { label: 'EXISTS (Exists)', value: 'EXISTS' },
+                                        { label: 'NOT EXISTS (Not Exists)', value: 'NOT EXISTS' },
+                                    ]}
+                                    onChange={(value) => {
+                                        const newMetaQuery = [...metaQuery];
+                                        const targetQuery = newMetaQuery[index];
+                                        if (!targetQuery) {
+                                            return;
+                                        }
+                                        newMetaQuery[index] = {
+                                            ...targetQuery,
+                                            compare: value as MetaQueryItem['compare'],
+                                        };
+                                        setAttributes({ metaQuery: newMetaQuery });
+                                    }}
+                                />
+                                {!['EXISTS', 'NOT EXISTS'].includes(mq.compare) ? (
+                                    <TextControl
+                                        label={__('Value', 'jankx')}
+                                        value={mq.value}
+                                        onChange={(value) => {
+                                            const newMetaQuery = [...metaQuery];
+                                            const targetQuery = newMetaQuery[index];
+                                            if (!targetQuery) {
+                                                return;
+                                            }
+                                            newMetaQuery[index] = {
+                                                ...targetQuery,
+                                                value,
+                                            };
+                                            setAttributes({ metaQuery: newMetaQuery });
+                                        }}
+                                    />
+                                ) : null}
+                                <SelectControl
+                                    label={__('Type (Optional)', 'jankx')}
+                                    value={mq.type || ''}
+                                    options={[
+                                        { label: __('-- Auto --', 'jankx'), value: '' },
+                                        { label: 'NUMERIC', value: 'NUMERIC' },
+                                        { label: 'BINARY', value: 'BINARY' },
+                                        { label: 'CHAR', value: 'CHAR' },
+                                        { label: 'DATE', value: 'DATE' },
+                                        { label: 'DATETIME', value: 'DATETIME' },
+                                        { label: 'DECIMAL', value: 'DECIMAL' },
+                                        { label: 'TIME', value: 'TIME' },
+                                        { label: 'SIGNED', value: 'SIGNED' },
+                                        { label: 'UNSIGNED', value: 'UNSIGNED' },
+                                    ]}
+                                    onChange={(value) => {
+                                        const newMetaQuery = [...metaQuery];
+                                        const targetQuery = newMetaQuery[index];
+                                        if (!targetQuery) {
+                                            return;
+                                        }
+                                        const updatedQuery: MetaQueryItem = { ...targetQuery };
+                                        const nextType = value ? (value as MetaQueryItem['type']) : undefined;
+                                        if (nextType) {
+                                            updatedQuery.type = nextType;
+                                        } else if ('type' in updatedQuery) {
+                                            delete (updatedQuery as { type?: MetaQueryItem['type'] }).type;
+                                        }
+                                        newMetaQuery[index] = updatedQuery;
+                                        setAttributes({ metaQuery: newMetaQuery });
+                                    }}
+                                />
+                                <Button
+                                    isDestructive
+                                    isSmall
+                                    onClick={() => {
+                                        const newMetaQuery = metaQuery.filter((_, i) => i !== index);
+                                        setAttributes({ metaQuery: newMetaQuery });
+                                    }}
+                                    style={{ marginTop: '10px' }}
+                                >
+                                    {__('Remove', 'jankx')}
+                                </Button>
+                            </div>
+                        ))}
+                    </PanelBody>
+                ) : null}
+
+                {queryPreset === 'custom' && taxonomies.length > 0 ? taxonomies.map((taxonomy: TaxonomyItem) => {
+                    const existingQueryIndex = taxQuery.findIndex(tq => tq.taxonomy === taxonomy.slug);
+                    const hasQuery = existingQueryIndex >= 0;
+                    const currentQuery = hasQuery ? taxQuery[existingQueryIndex] : undefined;
+                    const terms = taxonomyTerms[taxonomy.slug];
+                    return (
+                        <PanelBody
+                            key={taxonomy.slug}
+                            title={taxonomy.name}
+                            initialOpen={hasQuery}
+                            onToggle={(isOpen) => {
+                                if (isOpen) {
+                                    fetchTermsForTaxonomy(taxonomy.slug);
+                                }
+                            }}
+                        >
+                            {!hasQuery ? (
+                                <Button
+                                    variant="secondary"
+                                    onClick={() => {
+                                        const newTaxQuery = [...taxQuery];
+                                        newTaxQuery.push({
+                                            taxonomy: taxonomy.slug,
+                                            terms: [],
+                                            operator: 'IN'
+                                        });
+                                        setAttributes({ taxQuery: newTaxQuery });
+                                        fetchTermsForTaxonomy(taxonomy.slug);
+                                    }}
+                                >
+                                    {__('Add Filter', 'jankx')} {taxonomy.name}
+                                </Button>
+                            ) : (
+                                currentQuery ? (
+                                    <>
+                                        <SelectControl
+                                            label={__('Operator', 'jankx')}
+                                            value={currentQuery.operator}
+                                            options={[
+                                                { label: __('IN (Include)', 'jankx'), value: 'IN' },
+                                                { label: __('NOT IN (Exclude)', 'jankx'), value: 'NOT IN' },
+                                                { label: __('AND (Must Have All)', 'jankx'), value: 'AND' },
+                                                { label: __('EXISTS (Has Terms)', 'jankx'), value: 'EXISTS' },
+                                                { label: __('NOT EXISTS (No Terms)', 'jankx'), value: 'NOT EXISTS' },
+                                            ]}
+                                            onChange={(value) => {
+                                                const newTaxQuery = [...taxQuery];
+                                                const targetQuery = newTaxQuery[existingQueryIndex];
+                                                if (!targetQuery) {
+                                                    return;
+                                                }
+                                                newTaxQuery[existingQueryIndex] = {
+                                                    ...targetQuery,
+                                                    operator: value as TaxQueryItem['operator'],
+                                                };
+                                                setAttributes({ taxQuery: newTaxQuery });
+                                            }}
+                                        />
+                                        {!['EXISTS', 'NOT EXISTS'].includes(currentQuery.operator) ? (
+                                            <>
+                                                {terms ? (
+                                                    <BaseControl
+                                                        label={__('Select Terms', 'jankx')}
+                                                    >
+                                                        <FormTokenField
+                                                            value={terms
+                                                                .filter((term) => currentQuery.terms.includes(term.id))
+                                                                .map((term) => term.name)}
+                                                            suggestions={terms.map((term) => term.name)}
+                                                            onChange={(tokens) => {
+                                                                const selectedNames = normalizeTokens(tokens as TokenLike[]);
+                                                                const selectedIds = selectedNames
+                                                                    .map((tokenName) => {
+                                                                        const term = terms.find((item) => item.name === tokenName);
+                                                                        return term?.id ?? 0;
+                                                                    })
+                                                                    .filter((id) => id > 0);
+                                                                const newTaxQuery = [...taxQuery];
+                                                                const targetQuery = newTaxQuery[existingQueryIndex];
+                                                                if (!targetQuery) {
+                                                                    return;
+                                                                }
+                                                                newTaxQuery[existingQueryIndex] = {
+                                                                    ...targetQuery,
+                                                                    terms: selectedIds,
+                                                                };
+                                                                setAttributes({ taxQuery: newTaxQuery });
+                                                            }}
+                                                        />
+                                                    </BaseControl>
+                                                ) : (
+                                                    <Spinner />
+                                                )}
+                                            </>
+                                        ) : null}
+                                        <Button
+                                            isDestructive
+                                            variant="secondary"
+                                            onClick={() => {
+                                                const newTaxQuery = taxQuery.filter((_, i) => i !== existingQueryIndex);
+                                                setAttributes({ taxQuery: newTaxQuery });
+                                            }}
+                                            style={{ marginTop: '10px' }}
+                                        >
+                                            {__('Remove Filter', 'jankx')}
+                                        </Button>
+                                    </>
+                                ) : null
+                            )}
+                        </PanelBody>
+                    );
+                }) : null}
 
                 {layout === 'carousel' && (
                     <PanelBody title={__('Carousel Settings', 'jankx')} initialOpen={false}>
@@ -647,13 +1184,114 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         />
                     </PanelBody>
                 )}
+
+                <PanelBody title={__('Pagination Settings', 'jankx')} initialOpen={false}>
+                    <ToggleControl
+                        label={__('Enable Pagination', 'jankx')}
+                        checked={enablePagination}
+                        onChange={(value) => setAttributes({ enablePagination: value })}
+                        help={__('Display pagination to paginate posts', 'jankx')}
+                    />
+
+                    {enablePagination ? (
+                        <>
+                            <SelectControl
+                                label={__('Pagination Style', 'jankx')}
+                                value={paginationStyle}
+                                options={[
+                                    { label: __('Numbers', 'jankx'), value: 'numbers' },
+                                    { label: __('Simple (Prev/Next)', 'jankx'), value: 'simple' },
+                                    { label: __('Arrows', 'jankx'), value: 'arrows' },
+                                    { label: __('Load More', 'jankx'), value: 'load-more' },
+                                ]}
+                                onChange={(value) => setAttributes({ paginationStyle: value as 'numbers' | 'simple' | 'arrows' | 'load-more' })}
+                                help={__('Choose pagination display style', 'jankx')}
+                            />
+
+                            <SelectControl
+                                label={__('Pagination Alignment', 'jankx')}
+                                value={paginationAlignment}
+                                options={[
+                                    { label: __('Left', 'jankx'), value: 'left' },
+                                    { label: __('Center', 'jankx'), value: 'center' },
+                                    { label: __('Right', 'jankx'), value: 'right' },
+                                ]}
+                                onChange={(value) => setAttributes({ paginationAlignment: value as 'left' | 'center' | 'right' })}
+                                help={__('Align pagination position', 'jankx')}
+                            />
+
+                            {paginationStyle === 'numbers' ? (
+                                <ToggleControl
+                                    label={__('Show All Page Numbers', 'jankx')}
+                                    checked={showPaginationNumbers}
+                                    onChange={(value) => setAttributes({ showPaginationNumbers: value })}
+                                    help={__('Show all page numbers instead of abbreviated', 'jankx')}
+                                />
+                            ) : null}
+
+                            <TextControl
+                                label={__('Previous Button Text', 'jankx')}
+                                value={paginationPrevText}
+                                onChange={(value) => setAttributes({ paginationPrevText: value })}
+                                help={__('Leave empty to use default text. Can use HTML/SVG.', 'jankx')}
+                                placeholder={__('Example: « Previous or <svg>...</svg>', 'jankx')}
+                            />
+
+                            <TextControl
+                                label={__('Next Button Text', 'jankx')}
+                                value={paginationNextText}
+                                onChange={(value) => setAttributes({ paginationNextText: value })}
+                                help={__('Leave empty to use default text. Can use HTML/SVG.', 'jankx')}
+                                placeholder={__('Example: Next » or <svg>...</svg>', 'jankx')}
+                            />
+                        </>
+                    ) : null}
+                </PanelBody>
             </InspectorControls>
 
             <div {...blockProps}>
-                <InnerBlocks
-                    template={TEMPLATE}
-                    templateLock="all"
-                />
+                {/* Chỉ render wrapper, template block sẽ tự render items */}
+                {(() => {
+                    const blocks = useSelect(
+                        (select) => (select as any)(blockEditorStore).getBlocks(clientId),
+                        [clientId]
+                    );
+                    
+                    const hasTemplateBlock = blocks && blocks.length > 0;
+                    
+                    if (!hasTemplateBlock) {
+                        return (
+                            <div style={{ 
+                                padding: '1rem',
+                                border: '2px dashed #0073aa',
+                                borderRadius: '4px',
+                                backgroundColor: '#f0f6fc',
+                            }}>
+                                <div style={{ 
+                                    fontSize: '0.85rem',
+                                    color: '#0073aa',
+                                    marginBottom: '0.75rem',
+                                    fontWeight: '600',
+                                }}>
+                                    {__('Add Dynamic SSR Template to define item layout', 'jankx')}
+                                </div>
+                                <InnerBlocks 
+                                    allowedBlocks={['jankx/dynamic-ssr-template']}
+                                    templateLock={false}
+                                    renderAppender={InnerBlocks.ButtonBlockAppender}
+                                />
+                            </div>
+                        );
+                    }
+                    
+                    return (
+                        <InnerBlocks 
+                            allowedBlocks={['jankx/dynamic-ssr-template']}
+                            templateLock={false}
+                            renderAppender={InnerBlocks.DefaultBlockAppender}
+                        />
+                    );
+                })()}
             </div>
         </>
     );

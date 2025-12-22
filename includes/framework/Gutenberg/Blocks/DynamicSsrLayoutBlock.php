@@ -735,17 +735,109 @@ class DynamicSsrLayoutBlock extends Block
                 $mergedAttributes
             );
 
-            // Build query for preview
-            $postType = $parent_attributes['postType'] ?? 'post';
-            $postsPerPage = $parent_attributes['postsPerPage'] ?? 3;
-            
+            // Build query for preview using full attributes
+            $postType = $mergedAttributes['postType'] ?? 'post';
+            $postsPerPage = isset($mergedAttributes['postsPerPage']) ? (int) $mergedAttributes['postsPerPage'] : 3;
+
             $args = [
-                'post_type' => $postType,
                 'posts_per_page' => $postsPerPage,
-                'post_status' => 'publish',
-                'orderby' => $parent_attributes['orderBy'] ?? 'date',
-                'order' => $parent_attributes['order'] ?? 'DESC',
+                'orderby' => $mergedAttributes['orderBy'] ?? 'date',
+                'order' => $mergedAttributes['order'] ?? 'DESC',
             ];
+
+            if (!empty($mergedAttributes['useMultiPostType']) && !empty($mergedAttributes['postTypes']) && is_array($mergedAttributes['postTypes'])) {
+                $args['post_type'] = array_values(array_filter(array_map('sanitize_key', $mergedAttributes['postTypes'])));
+            } else {
+                $args['post_type'] = sanitize_key($postType);
+            }
+
+            if (!empty($mergedAttributes['postStatus'])) {
+                $args['post_status'] = is_array($mergedAttributes['postStatus'])
+                    ? array_map('sanitize_key', $mergedAttributes['postStatus'])
+                    : sanitize_key($mergedAttributes['postStatus']);
+            } else {
+                $args['post_status'] = 'publish';
+            }
+
+            if (isset($mergedAttributes['offset'])) {
+                $args['offset'] = (int) $mergedAttributes['offset'];
+            }
+
+            $includeSticky = !empty($mergedAttributes['includeStickyPosts']);
+            $args['ignore_sticky_posts'] = !$includeSticky;
+
+            if (!empty($mergedAttributes['metaKey']) && isset($mergedAttributes['orderBy']) && in_array($mergedAttributes['orderBy'], ['meta_value', 'meta_value_num'], true)) {
+                $args['meta_key'] = sanitize_key($mergedAttributes['metaKey']);
+                if (!empty($mergedAttributes['metaType'])) {
+                    $args['meta_type'] = $mergedAttributes['metaType'];
+                }
+            }
+
+            if (!empty($mergedAttributes['keyword']) && is_string($mergedAttributes['keyword'])) {
+                $args['s'] = sanitize_text_field($mergedAttributes['keyword']);
+            }
+
+            if (!empty($mergedAttributes['authorIn']) && is_array($mergedAttributes['authorIn'])) {
+                $args['author__in'] = array_values(array_filter(array_map('intval', $mergedAttributes['authorIn'])));
+            }
+            if (!empty($mergedAttributes['authorNotIn']) && is_array($mergedAttributes['authorNotIn'])) {
+                $args['author__not_in'] = array_values(array_filter(array_map('intval', $mergedAttributes['authorNotIn'])));
+            }
+
+            if (!empty($mergedAttributes['postIn']) && is_array($mergedAttributes['postIn'])) {
+                $args['post__in'] = array_values(array_filter(array_map('intval', $mergedAttributes['postIn'])));
+            }
+            if (!empty($mergedAttributes['postNotIn']) && is_array($mergedAttributes['postNotIn'])) {
+                $args['post__not_in'] = array_values(array_filter(array_map('intval', $mergedAttributes['postNotIn'])));
+            }
+
+            if (isset($mergedAttributes['postParent'])) {
+                $args['post_parent'] = (int) $mergedAttributes['postParent'];
+            }
+            if (!empty($mergedAttributes['postParentIn']) && is_array($mergedAttributes['postParentIn'])) {
+                $args['post_parent__in'] = array_values(array_filter(array_map('intval', $mergedAttributes['postParentIn'])));
+            }
+            if (!empty($mergedAttributes['postParentNotIn']) && is_array($mergedAttributes['postParentNotIn'])) {
+                $args['post_parent__not_in'] = array_values(array_filter(array_map('intval', $mergedAttributes['postParentNotIn'])));
+            }
+
+            if (!empty($mergedAttributes['taxQuery']) && is_array($mergedAttributes['taxQuery'])) {
+                $tax_query = [];
+                foreach ($mergedAttributes['taxQuery'] as $tq) {
+                    if (empty($tq['taxonomy'])) {
+                        continue;
+                    }
+                    $tax_query[] = [
+                        'taxonomy' => sanitize_key($tq['taxonomy']),
+                        'field' => 'term_id',
+                        'terms' => array_values(array_filter(array_map('intval', $tq['terms'] ?? []))),
+                        'operator' => isset($tq['operator']) ? strtoupper($tq['operator']) : 'IN',
+                    ];
+                }
+                if (!empty($tax_query)) {
+                    $args['tax_query'] = $tax_query;
+                }
+            }
+
+            if (!empty($mergedAttributes['metaQuery']) && is_array($mergedAttributes['metaQuery'])) {
+                $meta_query = [];
+                foreach ($mergedAttributes['metaQuery'] as $mq) {
+                    $entry = [
+                        'key' => isset($mq['key']) ? sanitize_key($mq['key']) : '',
+                        'compare' => isset($mq['compare']) ? $mq['compare'] : '=',
+                    ];
+                    if (isset($mq['value']) && $mq['value'] !== '') {
+                        $entry['value'] = $mq['value'];
+                    }
+                    if (!empty($mq['type'])) {
+                        $entry['type'] = $mq['type'];
+                    }
+                    $meta_query[] = $entry;
+                }
+                if (!empty($meta_query)) {
+                    $args['meta_query'] = $meta_query;
+                }
+            }
 
             $query = new \WP_Query($args);
 
