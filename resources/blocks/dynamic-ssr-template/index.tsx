@@ -24,14 +24,20 @@ interface DynamicSsrTemplateAttributes {
     showRating?: boolean;
 }
 
+interface ContentLoopLayoutOption {
+    name: string;
+    title: string;
+}
+
 declare global {
     interface Window {
         jankxDynamicDataContentLoopLayouts?: {
-            layoutsByPostType: Record<string, Array<{ name: string; title: string }>>;
-            commonLayouts: Array<{ name: string; title: string }>;
+            layoutsByPostType: Record<string, ContentLoopLayoutOption[]>;
+            commonLayouts: ContentLoopLayoutOption[];
         };
         jankxDynamicSsrTemplate?: {
             nonce: string;
+            postsCountNonce: string;
             ajaxUrl: string;
             availableTemplates?: Array<{ slug: string; title: string; description?: string }>;
         };
@@ -40,7 +46,7 @@ declare global {
 
 function Edit({ attributes, setAttributes, context }: any) {
     const {
-        templateSlug = 'post-layouts/loop-item',
+        templateSlug = 'layouts/loop/item-default',
         thumbnailPosition = 'top',
         imageRatio = '',
         itemSpacing = 'normal',
@@ -81,7 +87,7 @@ function Edit({ attributes, setAttributes, context }: any) {
         
         // Default template options
         const defaultTemplates = [
-            { label: __('Default Loop Item', 'jankx'), value: 'post-layouts/loop-item' },
+            { label: __('Default Loop Item', 'jankx'), value: 'layouts/loop/item-default' },
             { label: __('Large Item', 'jankx'), value: 'post-layouts/large-item' },
             { label: __('Thumbnail Only', 'jankx'), value: 'post-layouts/thumbnail' },
             { label: __('Term Item', 'jankx'), value: 'post-layouts/term-item' },

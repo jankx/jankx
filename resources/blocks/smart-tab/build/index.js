@@ -269,17 +269,33 @@ function Edit({
 
   // Fetch posts count for advanced filter trigger
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
-    if (trigger === 'advanced-filter' && selectedTargetBlock) {
+    if (!(trigger === 'advanced-filter' && selectedTargetBlock)) {
+      return;
+    }
+
+    // Only fetch if we have a valid advanced filter block
+    const advancedFilterBlock = innerBlocks.find(block => block.name === 'jankx/advanced-filter');
+    if (!advancedFilterBlock) {
+      setAttributes({
+        postsCount: 0
+      });
+      return;
+    }
+
+    // Check if nonce is available
+    const nonce = window.jankxDynamicSsrTemplate?.postsCountNonce;
+    if (!nonce) {
+      console.warn('Posts count nonce not available');
+      setAttributes({
+        postsCount: 0
+      });
+      return;
+    }
+
+    // Debounce to prevent multiple rapid requests
+    const timeoutId = setTimeout(() => {
       const fetchPostsCount = async () => {
         try {
-          // Get advanced filter settings from inner blocks
-          const advancedFilterBlock = innerBlocks.find(block => block.name === 'jankx/advanced-filter');
-          if (!advancedFilterBlock) {
-            setAttributes({
-              postsCount: 0
-            });
-            return;
-          }
           const filterAttrs = advancedFilterBlock.attributes;
           const filterType = filterAttrs.filterType;
 
@@ -319,7 +335,7 @@ function Edit({
           // Make AJAX request to get posts count using WP_Query
           const formData = new FormData();
           formData.append('action', 'jankx_posts_count');
-          formData.append('nonce', window.jankx?.nonce || '');
+          formData.append('nonce', nonce);
           formData.append('postType', selectedTargetBlock.postType);
           formData.append('filterType', filterType);
           formData.append('filterSettings', JSON.stringify(filterSettings));
@@ -327,13 +343,16 @@ function Edit({
             method: 'POST',
             body: formData
           });
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
           const result = await response.json();
           if (result.success) {
             setAttributes({
               postsCount: result.data.count
             });
           } else {
-            console.error('Error fetching posts count:', result.data.message);
+            console.error('Error fetching posts count:', result.data?.message || 'Unknown error');
             setAttributes({
               postsCount: 0
             });
@@ -346,7 +365,10 @@ function Edit({
         }
       };
       fetchPostsCount();
-    }
+    }, 500); // 500ms debounce
+
+    // Cleanup timeout on unmount or dependencies change
+    return () => clearTimeout(timeoutId);
   }, [trigger, selectedTargetBlock, innerBlocks]);
 
   // Find dynamic-data-layout blocks on the page (always check for availability)
@@ -408,11 +430,19 @@ function Edit({
 
     // Subscribe to block changes
     let timeoutId = null;
+    let lastBlockCount = 0;
     const wpData = window.wp?.data;
     if (!wpData) {
       return;
     }
     const unsubscribe = wpData.subscribe(() => {
+      // Only check if block count actually changed
+      const currentBlocks = wpData.select('core/block-editor').getBlocks();
+      const currentBlockCount = currentBlocks.length;
+      if (currentBlockCount === lastBlockCount) {
+        return;
+      }
+      lastBlockCount = currentBlockCount;
       if (timeoutId) {
         clearTimeout(timeoutId);
       }
@@ -428,7 +458,7 @@ function Edit({
         unsubscribe();
       }
     };
-  }, [trigger, triggerSettings]);
+  }, [trigger]);
 
   // Update trigger config to allow custom content when advanced-filter trigger is selected
   const resolvedTriggerConfig = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => {

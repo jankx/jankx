@@ -8,7 +8,7 @@
   \************************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/dynamic-ssr-template","title":"Dynamic SSR Template","category":"jankx","parent":["jankx/dynamic-ssr-layout"],"description":"Server-rendered template cho từng item trong Dynamic SSR Layout","textdomain":"jankx","editorScript":"file:./build/index.js","style":"file:./build/style.css","editorStyle":"file:./build/editor.css","usesContext":["queryId","postType","displayLayout","postsPerPage","columns","columnsTablet","columnsMobile","slidesToScroll","loop","autoplay","autoplayDelay","showArrows","showDots","carouselAlign","carouselAxis","carouselDirection","carouselStartIndex","carouselDuration","carouselDragFree","carouselDragThreshold","carouselSkipSnaps","carouselContainScroll","carouselInViewThreshold"],"attributes":{"templateSlug":{"type":"string","default":"post-layouts/loop-item"},"thumbnailPosition":{"type":"string","default":"top"},"imageRatio":{"type":"string","default":""},"itemSpacing":{"type":"string","default":"normal"},"showItemBorder":{"type":"boolean","default":false},"itemBorderRadius":{"type":"number","default":0},"showExcerpt":{"type":"boolean","default":true},"excerptLength":{"type":"number","default":55},"showTitle":{"type":"boolean","default":true},"showDate":{"type":"boolean","default":true},"showAuthor":{"type":"boolean","default":false},"showPrice":{"type":"boolean","default":true},"showAddToCart":{"type":"boolean","default":true},"showRating":{"type":"boolean","default":false}},"supports":{"reusable":false,"html":false,"align":["wide","full"],"layout":true,"color":{"gradients":true,"link":true,"__experimentalDefaultControls":{"background":true,"text":true}},"typography":{"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true,"__experimentalTextTransform":true,"__experimentalTextDecoration":true}}}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/dynamic-ssr-template","title":"Dynamic SSR Template","category":"jankx","parent":["jankx/dynamic-ssr-layout"],"description":"Server-rendered template cho từng item trong Dynamic SSR Layout","textdomain":"jankx","editorScript":"file:./build/index.js","style":"file:./build/style.css","editorStyle":"file:./build/editor.css","usesContext":["queryId","postType","displayLayout","postsPerPage","columns","columnsTablet","columnsMobile","slidesToScroll","loop","autoplay","autoplayDelay","showArrows","showDots","carouselAlign","carouselAxis","carouselDirection","carouselStartIndex","carouselDuration","carouselDragFree","carouselDragThreshold","carouselSkipSnaps","carouselContainScroll","carouselInViewThreshold"],"attributes":{"templateSlug":{"type":"string","default":"layouts/loop/item-default"},"thumbnailPosition":{"type":"string","default":"top"},"imageRatio":{"type":"string","default":""},"itemSpacing":{"type":"string","default":"normal"},"showItemBorder":{"type":"boolean","default":false},"itemBorderRadius":{"type":"number","default":0},"showExcerpt":{"type":"boolean","default":true},"excerptLength":{"type":"number","default":55},"showTitle":{"type":"boolean","default":true},"showDate":{"type":"boolean","default":true},"showAuthor":{"type":"boolean","default":false},"showPrice":{"type":"boolean","default":true},"showAddToCart":{"type":"boolean","default":true},"showRating":{"type":"boolean","default":false}},"supports":{"reusable":false,"html":false,"align":["wide","full"],"layout":true,"color":{"gradients":true,"link":true,"__experimentalDefaultControls":{"background":true,"text":true}},"typography":{"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true,"__experimentalTextTransform":true,"__experimentalTextDecoration":true}}}');
 
 /***/ }),
 
@@ -201,7 +201,7 @@ function Edit({
   context
 }) {
   const {
-    templateSlug = 'post-layouts/loop-item',
+    templateSlug = 'layouts/loop/item-default',
     thumbnailPosition = 'top',
     imageRatio = '',
     itemSpacing = 'normal',
@@ -244,7 +244,7 @@ function Edit({
     // Default template options
     const defaultTemplates = [{
       label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Default Loop Item', 'jankx'),
-      value: 'post-layouts/loop-item'
+      value: 'layouts/loop/item-default'
     }, {
       label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Large Item', 'jankx'),
       value: 'post-layouts/large-item'

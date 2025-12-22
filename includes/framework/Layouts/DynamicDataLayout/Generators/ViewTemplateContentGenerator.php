@@ -106,7 +106,7 @@ class ViewTemplateContentGenerator extends AbstractContentGenerator
     protected function renderTemplateForPost(WP_Post $post, WP_Query $query, array $options): string
     {
         // Get template slug from template block attributes
-        $templateSlug = $this->templateBlock['attrs']['templateSlug'] ?? 'post-layouts/loop-item';
+        $templateSlug = $this->templateBlock['attrs']['templateSlug'] ?? 'layouts/loop/item-default';
         
         // Build template variables
         $templateVars = $this->buildTemplateVariables($post, $query, $options);
@@ -129,18 +129,29 @@ class ViewTemplateContentGenerator extends AbstractContentGenerator
                     'ViewTemplateContentGenerator: Template file not found: %s',
                     $templateSlug
                 ));
-                return '';
+                return '<div style="padding: 12px; text-align: center;">Template not found: ' . esc_html($templateSlug) . '</div>';
             }
 
-            // Extract variables for template
-            extract($variables);
-            
-            // Start output buffering
-            ob_start();
-            include $templateFile;
-            $content = ob_get_clean();
-            
-            return $content;
+            // Check if it's a Latte template
+            if (str_ends_with($templateFile, '.latte')) {
+                // Use Latte engine if available
+                if ($app->bound('latte.engine')) {
+                    $latte = $app->make('latte.engine');
+                    return $latte->render($templateFile, $variables);
+                } else {
+                    // Fallback to simple PHP rendering for Latte files
+                    extract($variables);
+                    ob_start();
+                    include $templateFile;
+                    return ob_get_clean();
+                }
+            } else {
+                // PHP template rendering
+                extract($variables);
+                ob_start();
+                include $templateFile;
+                return ob_get_clean();
+            }
             
         } catch (\Throwable $exception) {
             Log::error(sprintf(
@@ -148,25 +159,40 @@ class ViewTemplateContentGenerator extends AbstractContentGenerator
                 $templateSlug,
                 $exception->getMessage()
             ));
-            return '';
+            return '<div style="padding: 12px; text-align: center;">Template rendering error: ' . esc_html($exception->getMessage()) . '</div>';
         }
     }
 
     protected function locateTemplateFile(string $templateSlug): ?string
     {
         // Convert slug to file path
-        $templatePath = str_replace('/', DIRECTORY_SEPARATOR, $templateSlug) . '.php';
+        $templatePath = str_replace('/', DIRECTORY_SEPARATOR, $templateSlug);
         
-        // Check child theme first
-        $childThemePath = get_stylesheet_directory() . '/views/' . $templatePath;
-        if (file_exists($childThemePath)) {
-            return $childThemePath;
+        // Check for .latte files first (Latte templates)
+        $latteExtensions = ['.latte'];
+        foreach ($latteExtensions as $ext) {
+            // Check child theme first
+            $childThemePath = get_stylesheet_directory() . '/views/' . $templatePath . $ext;
+            if (file_exists($childThemePath)) {
+                return $childThemePath;
+            }
+            
+            // Check parent theme
+            $parentThemePath = get_template_directory() . '/views/' . $templatePath . $ext;
+            if (file_exists($parentThemePath)) {
+                return $parentThemePath;
+            }
         }
         
-        // Check parent theme
-        $parentThemePath = get_template_directory() . '/views/' . $templatePath;
-        if (file_exists($parentThemePath)) {
-            return $parentThemePath;
+        // Fallback to .php files for backward compatibility
+        $phpPath = get_stylesheet_directory() . '/views/' . $templatePath . '.php';
+        if (file_exists($phpPath)) {
+            return $phpPath;
+        }
+        
+        $phpPath = get_template_directory() . '/views/' . $templatePath . '.php';
+        if (file_exists($phpPath)) {
+            return $phpPath;
         }
         
         return null;

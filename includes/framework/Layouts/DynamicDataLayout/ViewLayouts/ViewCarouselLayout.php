@@ -66,6 +66,21 @@ class ViewCarouselLayout extends AbstractViewLayout
                 wp_reset_postdata();
                 ?>
             </div>
+            
+            <!-- Navigation buttons -->
+            <button class="carousel-nav carousel-prev" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
+            <button class="carousel-nav carousel-next" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </button>
+            
+            <!-- Pagination dots -->
+            <div class="carousel-dots"></div>
         </div>
         <?php
         return (string) ob_get_clean();

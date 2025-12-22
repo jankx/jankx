@@ -272,11 +272,12 @@ class DynamicSsrLayoutBlock extends Block
         // Build class array with layout-specific classes
         $classes = [$baseClass];
         
-        // Add layout classes to match renderer output
+        // Add layout classes to match dynamic-ssr-layout CSS
         $layout = $attributes['layout'] ?? '';
         if ($layout) {
-            $classes[] = 'dynamic-data-layout';
-            $classes[] = 'dynamic-data-layout--' . $layout;
+            $classes[] = 'dynamic-ssr-layout';
+            $classes[] = 'dynamic-ssr-layout--' . $layout;
+            $classes[] = 'view-type-layout-' . $layout;
         }
         
         // Add column classes
@@ -383,7 +384,8 @@ class DynamicSsrLayoutBlock extends Block
         // Get available templates from views directory
         $availableTemplates = $this->getAvailableTemplates();
         wp_localize_script($script_handle, 'jankxDynamicSsrTemplate', [
-            'nonce' => wp_create_nonce('jankx_load_more'),
+            'nonce' => wp_create_nonce('jankx_dynamic_ssr_template_preview'),
+            'postsCountNonce' => wp_create_nonce('jankx_posts_count'),
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'availableTemplates' => $availableTemplates,
         ]);
@@ -584,7 +586,7 @@ class DynamicSsrLayoutBlock extends Block
         
         // Handle special cases
         $specialCases = [
-            'post-layouts/loop-item' => __('Default Loop Item', 'jankx'),
+            'layouts/loop/item-default' => __('Default Loop Item', 'jankx'),
             'post-layouts/large-item' => __('Large Item', 'jankx'),
             'post-layouts/thumbnail' => __('Thumbnail Only', 'jankx'),
             'post-layouts/term-item' => __('Term Item', 'jankx'),
@@ -600,7 +602,7 @@ class DynamicSsrLayoutBlock extends Block
      */
     public function ajaxPostsCount(): void
     {
-        check_ajax_referer('jankx_load_more', 'nonce');
+        check_ajax_referer('jankx_posts_count', 'nonce');
 
         $postType = isset($_POST['postType']) ? sanitize_text_field(wp_unslash($_POST['postType'])) : 'post';
         $filterType = isset($_POST['filterType']) ? sanitize_text_field(wp_unslash($_POST['filterType'])) : '';
@@ -702,7 +704,7 @@ class DynamicSsrLayoutBlock extends Block
      */
     public function ajaxTemplatePreview(): void
     {
-        check_ajax_referer('jankx_load_more', 'nonce');
+        check_ajax_referer('jankx_dynamic_ssr_template_preview', 'nonce');
 
         $attributes = isset($_POST['attributes']) ? json_decode(wp_unslash($_POST['attributes']), true) : [];
         $parent_attributes = isset($_POST['parent_attributes']) ? json_decode(wp_unslash($_POST['parent_attributes']), true) : [];
@@ -727,7 +729,7 @@ class DynamicSsrLayoutBlock extends Block
             $mergedAttributes = array_merge($parent_attributes, $attributes);
 
             // Create ViewTemplateContentGenerator
-            $templateSlug = $attributes['templateSlug'] ?? 'post-layouts/loop-item';
+            $templateSlug = $attributes['templateSlug'] ?? 'layouts/loop/item-default';
             $generator = new ViewTemplateContentGenerator(
                 $templateSlug,
                 $mergedAttributes
@@ -757,7 +759,7 @@ class DynamicSsrLayoutBlock extends Block
             $options = array_merge($mergedAttributes, [
                 'layout' => $parent_attributes['layout'] ?? 'grid',
                 'columns' => $parent_attributes['columns'] ?? 3,
-                'templateSlug' => $attributes['templateSlug'] ?? 'post-layouts/loop-item',
+                'templateSlug' => $attributes['templateSlug'] ?? 'layouts/loop/item-default',
             ]);
 
             $html = $generator->generate($query, $options);

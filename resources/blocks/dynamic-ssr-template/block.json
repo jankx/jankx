@@ -36,7 +36,7 @@
     "carouselInViewThreshold"
   ],
   "attributes": {
-    "templateSlug": { "type": "string", "default": "post-layouts/loop-item" },
+    "templateSlug": { "type": "string", "default": "layouts/loop/item-default" },
     "thumbnailPosition": { "type": "string", "default": "top" },
     "imageRatio": { "type": "string", "default": "" },
     "itemSpacing": { "type": "string", "default": "normal" },

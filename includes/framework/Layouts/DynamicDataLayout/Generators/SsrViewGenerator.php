@@ -4,6 +4,7 @@ namespace Jankx\Layouts\DynamicDataLayout\Generators;
 
 use Jankx\Layouts\DynamicDataLayout\Generators\Concerns\PostTemplateRendererTrait;
 use Jankx\Foundation\Application;
+use Jankx\Gutenberg\Blocks\DynamicDataTemplateBlock;
 use WP_Query;
 use WP_Post;
 
@@ -97,7 +98,7 @@ class SsrViewGenerator extends AbstractContentGenerator
 
     protected function renderTemplateForPost(WP_Post $post, WP_Query $query, array $options): string
     {
-        $templateSlug = $this->getOption('templateSlug', $options['templateSlug'] ?? 'post-layouts/loop-item');
+        $templateSlug = $this->getOption('templateSlug', $options['templateSlug'] ?? 'layouts/loop/item-default');
         $app = Application::getInstance();
 
         $variables = [
@@ -110,7 +111,9 @@ class SsrViewGenerator extends AbstractContentGenerator
         ];
 
         try {
-            return $app->renderTemplate($templateSlug, $variables);
+            return DynamicDataTemplateBlock::renderTemplateWithQuery([
+                'attrs' => ['templateSlug' => $templateSlug]
+            ], $query, $variables);
         } catch (\Throwable $e) {
             return '';
         }
