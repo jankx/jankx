@@ -268,7 +268,30 @@ class DynamicSsrLayoutBlock extends Block
     {
         $attrs = [];
         $baseClass = 'wp-block-jankx-dynamic-ssr-layout';
-        $attrs['class'] = implode(' ', [$baseClass]);
+        
+        // Build class array with layout-specific classes
+        $classes = [$baseClass];
+        
+        // Add layout classes to match renderer output
+        $layout = $attributes['layout'] ?? '';
+        if ($layout) {
+            $classes[] = 'dynamic-data-layout';
+            $classes[] = 'dynamic-data-layout--' . $layout;
+        }
+        
+        // Add column classes
+        if (isset($attributes['columns'])) {
+            $classes[] = 'columns-' . (int) $attributes['columns'];
+        }
+        if (isset($attributes['columnsTablet'])) {
+            $classes[] = 'columns-tablet-' . (int) $attributes['columnsTablet'];
+        }
+        if (isset($attributes['columnsMobile'])) {
+            $classes[] = 'columns-mobile-' . (int) $attributes['columnsMobile'];
+        }
+        
+        $attrs['class'] = implode(' ', $classes);
+        
         $queryId = isset($attributes['queryId']) ? (string) $attributes['queryId'] : '';
         if ($queryId !== '') {
             $attrs['data-block-id'] = esc_attr($queryId);
