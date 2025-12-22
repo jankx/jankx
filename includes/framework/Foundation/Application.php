@@ -13,6 +13,7 @@ use Jankx\Support\Providers\FontIconsServiceProvider;
 use Jankx\Support\Providers\FontsServiceProvider;
 use Jankx\Support\Providers\JankxFrameworkServiceProvider;
 use Jankx\Support\Providers\SystemServiceProvider;
+use Jankx\Support\Providers\TemplateEngineServiceProvider;
 use Jankx\Support\Providers\ThemeOptionsServiceProvider;
 use Jankx\Support\Providers\TranslationServiceProvider;
 
@@ -75,6 +76,7 @@ class Application extends Container
         FontsServiceProvider::class,
         FontIconsServiceProvider::class,
         ContentLayoutServiceProvider::class,
+        TemplateEngineServiceProvider::class,
     ];
 
     /**
@@ -184,81 +186,6 @@ class Application extends Container
         });
 
         $this->alias(LoggerInterface::class, 'log');
-
-        // Register template engines
-        $this->registerTemplateEngines();
-    }
-
-    /**
-     * Register template engines into the container
-     *
-     * @return void
-     */
-    protected function registerTemplateEngines()
-    {
-        // Register main template engine
-        $this->singleton('template.engine', function ($app) {
-            return new \Jankx\Support\TemplateEngine\TemplateEngineManager($app);
-        });
-
-        // Register individual engines
-        $this->singleton('template.engine.jankx', function ($app) {
-            return new \Jankx\Support\TemplateEngine\Engines\PlatesEngine($app);
-        });
-
-        $this->singleton('template.engine.plates', function ($app) {
-            return new \Jankx\Support\TemplateEngine\Engines\PlatesEngine($app);
-        });
-
-        // Register engine aliases
-        $this->alias('template.engine', \Jankx\Support\TemplateEngine\TemplateEngineManager::class);
-        $this->alias('template.engine.jankx', \Jankx\Support\TemplateEngine\Engines\PlatesEngine::class);
-        $this->alias('template.engine.plates', \Jankx\Support\TemplateEngine\Engines\PlatesEngine::class);
-    }
-
-    /**
-     * Get the template engine instance
-     *
-     * @return \Jankx\Support\TemplateEngine\TemplateEngineManager
-     */
-    public function templateEngine()
-    {
-        return $this->make('template.engine');
-    }
-
-    /**
-     * Get a specific template engine instance
-     *
-     * @param string $engine
-     * @return \Jankx\Contracts\TemplateEngine\EngineInterface
-     */
-    public function templateEngineInstance($engine = 'jankx')
-    {
-        return $this->make("template.engine.{$engine}");
-    }
-
-    /**
-     * Render a template using the template engine
-     *
-     * @param string $template
-     * @param array $variables
-     * @return string
-     */
-    public function renderTemplate($template, $variables = [])
-    {
-        return $this->templateEngine()->render($template, $variables);
-    }
-
-    /**
-     * Display a template using the template engine
-     *
-     * @param string $template
-     * @param array $variables
-     * @return void
-     */
-    public function displayTemplate($template, $variables = [])
-    {
-        $this->templateEngine()->display($template, $variables);
     }
 
 
@@ -274,7 +201,6 @@ class Application extends Container
         $defaultAliases = [
             'app'      => [Application::class],
             'config'   => [Repository::class],
-            'template' => [\Jankx\Support\TemplateEngine\TemplateEngineManager::class],
         ];
 
         // Load aliases from config if available

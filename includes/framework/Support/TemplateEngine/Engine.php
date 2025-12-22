@@ -7,7 +7,7 @@ use Jankx\Foundation\Application;
 use Jankx\Support\TemplateEngine\Engines\JankxEngine;
 use Jankx\Support\TemplateEngine\Engines\TwigEngine;
 use Jankx\Support\TemplateEngine\Engines\BladeEngine;
-use Jankx\Support\TemplateEngine\Engines\PlatesEngine;
+use Jankx\Support\TemplateEngine\Engines\LatteEngine;
 
 /**
  * Abstract Jankx Template Engine
@@ -425,7 +425,7 @@ abstract class Engine implements EngineInterface
      */
     protected function isCacheEnabled()
     {
-        return defined('JANKX_TEMPLATE_CACHE') && JANKX_TEMPLATE_CACHE;
+        return defined('WP_DEBUG') && !WP_DEBUG;
     }
 
     /**

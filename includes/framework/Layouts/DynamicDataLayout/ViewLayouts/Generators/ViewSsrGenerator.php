@@ -20,25 +20,10 @@ class ViewSsrGenerator extends AbstractViewContentGenerator
         $this->templateBlock = $templateBlock;
         $this->options = $options;
         
-        // Require Latte to be available
-        if (!class_exists('Latte\Engine')) {
-            throw new \RuntimeException('Latte template engine is required. Please run "composer install" to install dependencies.');
-        }
-        
-        $this->latte = new LatteEngine();
-        
-        // Configure Latte
-        $this->latte->setTempDirectory(sys_get_temp_dir() . '/jankx_latte_cache');
-        $this->latte->setAutoRefresh(true);
-        
-        // Add custom filters for WordPress functions
-        $this->latte->addFilter('esc_html', 'esc_html');
-        $this->latte->addFilter('esc_url', 'esc_url');
-        $this->latte->addFilter('esc_attr', 'esc_attr');
-        $this->latte->addFilter('wp_kses_post', 'wp_kses_post');
-        $this->latte->addFilter('wp_trim_words', 'wp_trim_words');
+        $app = \Jankx\Foundation\Application::getInstance();
+        $this->latte = $app->make('template.engine.latte');
     }
-
+    
     public function getName(): string
     {
         return 'view-ssr-generator';
@@ -178,49 +163,8 @@ class ViewSsrGenerator extends AbstractViewContentGenerator
         
         error_log('ViewSsrGenerator - Template file exists, proceeding with render');
         
-        // Prepare template variables
-        $params = [
-            'view_id' => get_the_ID(),
-            'options' => $options,
-            'show_thumbnail' => (bool) ($options['showFeaturedImage'] ?? true),
-            'show_title' => (bool) ($options['showTitle'] ?? true),
-            'show_excerpt' => (bool) ($options['showExcerpt'] ?? true),
-            'show_date' => (bool) ($options['showDate'] ?? true),
-            'excerpt_length' => (int) ($options['excerptLength'] ?? 55),
-            'image_size' => $options['imageSize'] ?? 'post-thumbnail',
-            'thumbnail_position' => $options['thumbnailPosition'] ?? 'top',
-            'show_read_more' => (bool) ($options['showReadMore'] ?? false),
-            'read_more_text' => $options['readMoreText'] ?? __('Read More', 'jankx'),
-            'show_author' => (bool) ($options['showAuthor'] ?? false),
-            'show_categories' => (bool) ($options['showCategories'] ?? false),
-            'show_tags' => (bool) ($options['showTags'] ?? false),
-        ];
-        
-        // Add WordPress functions to template
-        $params['wp'] = [
-            'get_permalink' => 'get_permalink',
-            'get_the_title' => 'get_the_title',
-            'get_the_date' => 'get_the_date',
-            'get_post_time' => 'get_post_time',
-            'get_the_excerpt' => 'get_the_excerpt',
-            'get_post_field' => 'get_post_field',
-            'has_post_thumbnail' => 'has_post_thumbnail',
-            'the_post_thumbnail' => 'the_post_thumbnail',
-            'get_the_category' => 'get_the_category',
-            'get_category_link' => 'get_category_link',
-            'get_the_tags' => 'get_the_tags',
-            'get_tag_link' => 'get_tag_link',
-            'get_the_author_meta' => 'get_the_author_meta',
-            'has_category' => 'has_category',
-            'has_tag' => 'has_tag',
-            '__' => '__',
-            'esc_html' => 'esc_html',
-            'esc_url' => 'esc_url',
-            'esc_attr' => 'esc_attr',
-            'wp_kses_post' => 'wp_kses_post',
-            'wp_trim_words' => 'wp_trim_words',
-            'wpautop' => 'wpautop',
-        ];
+        // Prepare all data using the same method as AbstractViewLayout
+        $params = $this->prepareTemplateData(get_the_ID(), $options);
         
         // Render with Latte, throw exception on error
         try {
@@ -232,6 +176,125 @@ class ViewSsrGenerator extends AbstractViewContentGenerator
             error_log('ViewSsrGenerator - Latte render failed: ' . $e->getMessage());
             throw new \RuntimeException("Failed to render template {$templateFile}: " . $e->getMessage(), 0, $e);
         }
+    }
+
+    protected function prepareTemplateData(int $view_id, array $options): array
+    {
+        // Process all data in the layout class
+        $show_thumbnail = (bool) ($options['showFeaturedImage'] ?? true);
+        $show_title = (bool) ($options['showTitle'] ?? true);
+        $show_excerpt = (bool) ($options['showExcerpt'] ?? true);
+        $show_date = (bool) ($options['showDate'] ?? true);
+        $excerpt_length = (int) ($options['excerptLength'] ?? 55);
+        $image_size = $options['imageSize'] ?? 'post-thumbnail';
+        $thumbnail_position = $options['thumbnailPosition'] ?? 'top';
+        $show_read_more = (bool) ($options['showReadMore'] ?? false);
+        $read_more_text = $options['readMoreText'] ?? __('Read More', 'jankx');
+        $show_author = (bool) ($options['showAuthor'] ?? false);
+        $show_categories = (bool) ($options['showCategories'] ?? false);
+        $show_tags = (bool) ($options['showTags'] ?? false);
+
+        // Prepare content classes
+        $content_classes = ['wp-block-view-content'];
+        if ($thumbnail_position) {
+            $content_classes[] = 'thumbnail-' . $thumbnail_position;
+        }
+
+        // Process excerpt
+        $excerpt_text = '';
+        if ($show_excerpt) {
+            $raw_excerpt = has_excerpt($view_id) ? get_the_excerpt($view_id) : get_post_field('post_content', $view_id);
+            $excerpt_text = wp_trim_words($raw_excerpt, max(1, $excerpt_length));
+        }
+
+        // Process categories
+        $categories = [];
+        if ($show_categories && has_category('', $view_id)) {
+            $category_terms = get_the_category($view_id);
+            foreach ($category_terms as $category) {
+                $categories[] = [
+                    'name' => $category->name,
+                    'link' => get_category_link($category->term_id),
+                ];
+            }
+        }
+
+        // Process tags
+        $tags = [];
+        if ($show_tags && has_tag('', $view_id)) {
+            $tag_terms = get_the_tags($view_id);
+            if ($tag_terms) {
+                foreach ($tag_terms as $tag) {
+                    $tags[] = [
+                        'name' => $tag->name,
+                        'link' => get_tag_link($tag->term_id),
+                    ];
+                }
+            }
+        }
+
+        // Process author
+        $author = [];
+        if ($show_author) {
+            $author = [
+                'display_name' => get_the_author_meta('display_name', get_post_field('post_author', $view_id)),
+                'posts_url' => get_author_posts_url(get_post_field('post_author', $view_id)),
+            ];
+        }
+
+        // Process date
+        $date = [];
+        if ($show_date) {
+            $date = [
+                'formatted' => get_the_date('', $view_id),
+                'datetime' => get_post_time('c', true, $view_id),
+            ];
+        }
+
+        // Process thumbnail
+        $thumbnail = [];
+        if ($show_thumbnail && has_post_thumbnail($view_id)) {
+            $thumbnail = [
+                'html' => get_the_post_thumbnail($view_id, $image_size, ['style' => 'object-fit:cover;']),
+                'url' => get_the_post_thumbnail_url($view_id, $image_size),
+                'exists' => true,
+            ];
+        } else {
+            $thumbnail = [
+                'html' => '',
+                'url' => '',
+                'exists' => false,
+            ];
+        }
+
+        // Return all prepared data
+        return [
+            'view_id' => $view_id,
+            'options' => $options,
+            'content_classes' => $content_classes,
+            'show_thumbnail' => $show_thumbnail,
+            'show_title' => $show_title,
+            'show_excerpt' => $show_excerpt,
+            'show_date' => $show_date,
+            'show_read_more' => $show_read_more,
+            'show_author' => $show_author,
+            'show_categories' => $show_categories,
+            'show_tags' => $show_tags,
+            'excerpt_length' => $excerpt_length,
+            'image_size' => $image_size,
+            'thumbnail_position' => $thumbnail_position,
+            'read_more_text' => $read_more_text,
+            
+            // Processed data
+            'title' => get_the_title($view_id),
+            'permalink' => get_permalink($view_id),
+            'excerpt' => $excerpt_text,
+            'date' => $date,
+            'thumbnail' => $thumbnail,
+            'author' => $author,
+            'categories' => $categories,
+            'tags' => $tags,
+        ];
     }
 
     protected function getLoopItemTemplateFile(string $layout): string

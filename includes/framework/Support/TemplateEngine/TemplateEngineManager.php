@@ -36,12 +36,22 @@ class TemplateEngineManager extends Engine
      */
     protected function registerEngines()
     {
-        try {
-            // Get engines from container instead of creating new instances
-            $this->engines['jankx'] = $this->app->make('template.engine.jankx');
-            $this->engines['plates'] = $this->app->make('template.engine.plates');
-        } catch (Exception $e) {
-            Log::error($e->getMessage());
+        $engines = ['plates', 'latte'];
+        
+        foreach ($engines as $engine) {
+            try {
+                $engineKey = "template.engine.{$engine}";
+                if ($this->app->bound($engineKey)) {
+                    $this->engines[$engine] = $this->app->make($engineKey);
+                }
+            } catch (Exception $e) {
+                Log::debug("Failed to load {$engine} template engine: " . $e->getMessage());
+            }
+        }
+
+        // Ensure we have at least one engine available
+        if (empty($this->engines)) {
+            Log::warning('No template engines are available. Please check your service provider configuration.');
         }
     }
 

@@ -33,22 +33,8 @@ abstract class AbstractViewLayout implements ViewLayoutInterface
     public function __construct()
     {
         $this->options = $this->defaultOptions;
-        
-        // Initialize Latte
-        if (!class_exists('Latte\Engine')) {
-            throw new \RuntimeException('Latte template engine is required. Please run "composer install" to install dependencies.');
-        }
-        
-        $this->latte = new LatteEngine();
-        $this->latte->setTempDirectory(sys_get_temp_dir() . '/jankx_latte_cache');
-        $this->latte->setAutoRefresh(true);
-        
-        // Add WordPress function filters
-        $this->latte->addFilter('esc_html', 'esc_html');
-        $this->latte->addFilter('esc_url', 'esc_url');
-        $this->latte->addFilter('esc_attr', 'esc_attr');
-        $this->latte->addFilter('wp_kses_post', 'wp_kses_post');
-        $this->latte->addFilter('wp_trim_words', 'wp_trim_words');
+        $app = \Jankx\Foundation\Application::getInstance();
+        $this->latte = $app->make('template.engine.latte');
     }
 
     public function getName(): string
@@ -348,21 +334,23 @@ abstract class AbstractViewLayout implements ViewLayoutInterface
         }
 
         // Process categories
-        $categories = [];
         if ($show_categories && has_category('', $view_id)) {
             $category_terms = get_the_category($view_id);
+            $categories = [];
             foreach ($category_terms as $category) {
                 $categories[] = [
                     'name' => $category->name,
                     'link' => get_category_link($category->term_id),
                 ];
             }
+        } else {
+            $categories = null;
         }
 
         // Process tags
-        $tags = [];
         if ($show_tags && has_tag('', $view_id)) {
             $tag_terms = get_the_tags($view_id);
+            $tags = [];
             if ($tag_terms) {
                 foreach ($tag_terms as $tag) {
                     $tags[] = [
@@ -371,28 +359,31 @@ abstract class AbstractViewLayout implements ViewLayoutInterface
                     ];
                 }
             }
+        } else {
+            $tags = null;
         }
 
         // Process author
-        $author = [];
         if ($show_author) {
             $author = [
                 'display_name' => get_the_author_meta('display_name', get_post_field('post_author', $view_id)),
                 'posts_url' => get_author_posts_url(get_post_field('post_author', $view_id)),
             ];
+        } else {
+            $author = null;
         }
 
         // Process date
-        $date = [];
         if ($show_date) {
             $date = [
                 'formatted' => get_the_date('', $view_id),
-                'datetime' => get_post_time('c', true, $view_id),
+                'datetime' => get_the_time('c', true, $view_id),
             ];
+        } else {
+            $date = null;
         }
 
         // Process thumbnail
-        $thumbnail = [];
         if ($show_thumbnail && has_post_thumbnail($view_id)) {
             $thumbnail = [
                 'html' => get_the_post_thumbnail($view_id, $image_size, ['style' => 'object-fit:cover;']),

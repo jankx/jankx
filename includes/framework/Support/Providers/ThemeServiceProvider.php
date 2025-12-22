@@ -8,7 +8,6 @@ use Jankx\Services\ThemeService;
 use Jankx\Services\DefaultThumbnailService;
 use Jankx\Support\Providers\ServiceProvider;
 use Jankx\Support\TemplateEngine\TemplateEngineManager;
-use Jankx\Support\TemplateEngine\Engines\PlatesEngine;
 use Jankx\Layouts\DynamicDataLayout\DynamicDataLayoutManager;
 use Jankx\Layouts\DynamicDataLayout\Supports\DefaultContent;
 
@@ -28,7 +27,7 @@ use Jankx\Layouts\DynamicDataLayout\Supports\DefaultContent;
  * - Meta tags and head content
  * - Footer scripts and analytics
  * - Template engine registration and initialization
- * - TemplateEngineManager and PlatesEngine setup
+ * - TemplateEngineManager and LatteEngine setup
  * - PostLayout PostsFetcher initialization and AJAX actions
  *
  * @package Jankx\Support\Providers
@@ -93,16 +92,9 @@ class ThemeServiceProvider extends ServiceProvider
             return new TemplateEngineManager($app);
         });
 
-        // Register PlatesEngine as singleton
-        $app->singleton(PlatesEngine::class, function (Application $app) {
-            return new PlatesEngine($app);
-        });
-
         // Register aliases for easy access
         $app->alias(TemplateEngineManager::class, 'template.engine');
-        $app->alias(PlatesEngine::class, 'template.engine.plates');
         $app->alias(TemplateEngineManager::class, 'template');
-        $app->alias(PlatesEngine::class, 'template.engine.jankx');
     }
 
     /**
