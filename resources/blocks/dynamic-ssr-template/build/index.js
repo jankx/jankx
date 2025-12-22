@@ -8,7 +8,7 @@
   \************************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/dynamic-ssr-template","title":"Dynamic SSR Template","category":"jankx","parent":["jankx/dynamic-ssr-layout"],"description":"Server-rendered template cho từng item trong Dynamic SSR Layout","textdomain":"jankx","editorScript":"file:./build/index.js","style":"file:./build/style.css","editorStyle":"file:./build/editor.css","usesContext":["queryId","postType","displayLayout","postsPerPage","columns","columnsTablet","columnsMobile","slidesToScroll","loop","autoplay","autoplayDelay","showArrows","showDots","carouselAlign","carouselAxis","carouselDirection","carouselStartIndex","carouselDuration","carouselDragFree","carouselDragThreshold","carouselSkipSnaps","carouselContainScroll","carouselInViewThreshold"],"supports":{"reusable":false,"html":false,"align":["wide","full"],"layout":true,"color":{"gradients":true,"link":true,"__experimentalDefaultControls":{"background":true,"text":true}},"typography":{"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true,"__experimentalTextTransform":true,"__experimentalTextDecoration":true}}}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/dynamic-ssr-template","title":"Dynamic SSR Template","category":"jankx","parent":["jankx/dynamic-ssr-layout"],"description":"Server-rendered template cho từng item trong Dynamic SSR Layout","textdomain":"jankx","editorScript":"file:./build/index.js","style":"file:./build/style.css","editorStyle":"file:./build/editor.css","usesContext":["queryId","postType","displayLayout","postsPerPage","columns","columnsTablet","columnsMobile","slidesToScroll","loop","autoplay","autoplayDelay","showArrows","showDots","carouselAlign","carouselAxis","carouselDirection","carouselStartIndex","carouselDuration","carouselDragFree","carouselDragThreshold","carouselSkipSnaps","carouselContainScroll","carouselInViewThreshold"],"attributes":{"templateSlug":{"type":"string","default":"post-layouts/loop-item"},"thumbnailPosition":{"type":"string","default":"top"},"imageRatio":{"type":"string","default":""},"itemSpacing":{"type":"string","default":"normal"},"showItemBorder":{"type":"boolean","default":false},"itemBorderRadius":{"type":"number","default":0},"showExcerpt":{"type":"boolean","default":true},"excerptLength":{"type":"number","default":55},"showTitle":{"type":"boolean","default":true},"showDate":{"type":"boolean","default":true},"showAuthor":{"type":"boolean","default":false},"showPrice":{"type":"boolean","default":true},"showAddToCart":{"type":"boolean","default":true},"showRating":{"type":"boolean","default":false}},"supports":{"reusable":false,"html":false,"align":["wide","full"],"layout":true,"color":{"gradients":true,"link":true,"__experimentalDefaultControls":{"background":true,"text":true}},"typography":{"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true,"__experimentalTextTransform":true,"__experimentalTextDecoration":true}}}');
 
 /***/ }),
 
@@ -201,14 +201,20 @@ function Edit({
   context
 }) {
   const {
-    contentLoopLayout = 'default',
+    templateSlug = 'post-layouts/loop-item',
     thumbnailPosition = 'top',
     imageRatio = '',
     itemSpacing = 'normal',
     showItemBorder = false,
     itemBorderRadius = 0,
     showExcerpt = true,
-    excerptLength = 55
+    excerptLength = 55,
+    showTitle = true,
+    showDate = true,
+    showAuthor = false,
+    showPrice = true,
+    showAddToCart = true,
+    showRating = false
   } = attributes;
   const postType = context?.postType || 'post';
   const layoutsData = window.jankxDynamicDataContentLoopLayouts || {
@@ -230,10 +236,37 @@ function Edit({
       value: l.name
     }));
   }, [postType, layoutsData]);
+
+  // Template options from views directory
+  const templateOptions = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => {
+    const availableTemplates = window.jankxDynamicSsrTemplate?.availableTemplates || [];
+
+    // Default template options
+    const defaultTemplates = [{
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Default Loop Item', 'jankx'),
+      value: 'post-layouts/loop-item'
+    }, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Large Item', 'jankx'),
+      value: 'post-layouts/large-item'
+    }, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Thumbnail Only', 'jankx'),
+      value: 'post-layouts/thumbnail'
+    }, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Term Item', 'jankx'),
+      value: 'post-layouts/term-item'
+    }];
+
+    // Add available templates from PHP
+    const phpTemplates = availableTemplates.map(template => ({
+      label: template.title,
+      value: template.slug
+    }));
+    return [...defaultTemplates, ...phpTemplates];
+  }, []);
   const [previewHtml, setPreviewHtml] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)('');
   const [loading, setLoading] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(false);
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)({
-    className: `dynamic-ssr-template dynamic-ssr-template--${contentLoopLayout}`,
+    className: `dynamic-ssr-template dynamic-ssr-template--${templateSlug.replace('/', '-')}`,
     ...(imageRatio && {
       'data-image-ratio': imageRatio
     })
@@ -252,14 +285,20 @@ function Edit({
       return;
     }
     const ssrAttrs = {
-      contentLoopLayout,
+      templateSlug,
       thumbnailPosition,
       imageRatio,
       itemSpacing,
       showItemBorder,
       itemBorderRadius,
       showExcerpt,
-      excerptLength
+      excerptLength,
+      showTitle,
+      showDate,
+      showAuthor,
+      showPrice,
+      showAddToCart,
+      showRating
     };
     const parentAttrs = {
       postType: context?.postType || 'post',
@@ -307,19 +346,20 @@ function Edit({
     }).catch(() => {
       setPreviewHtml('');
     }).finally(() => setLoading(false));
-  }, [contentLoopLayout, thumbnailPosition, imageRatio, itemSpacing, showItemBorder, itemBorderRadius, showExcerpt, excerptLength, context?.postType, context?.displayLayout, context?.postsPerPage, context?.columns, context?.columnsTablet, context?.columnsMobile, context?.slidesToScroll, context?.loop, context?.autoplay, context?.autoplayDelay, context?.showArrows, context?.showDots, context?.carouselAlign, context?.carouselAxis, context?.carouselDirection, context?.carouselStartIndex, context?.carouselDuration, context?.carouselDragFree, context?.carouselDragThreshold, context?.carouselSkipSnaps, context?.carouselContainScroll, context?.carouselInViewThreshold]);
+  }, [templateSlug, thumbnailPosition, imageRatio, itemSpacing, showItemBorder, itemBorderRadius, showExcerpt, excerptLength, showTitle, showDate, showAuthor, showPrice, showAddToCart, showRating, context?.postType, context?.displayLayout, context?.postsPerPage, context?.columns, context?.columnsTablet, context?.columnsMobile, context?.slidesToScroll, context?.loop, context?.autoplay, context?.autoplayDelay, context?.showArrows, context?.showDots, context?.carouselAlign, context?.carouselAxis, context?.carouselDirection, context?.carouselStartIndex, context?.carouselDuration, context?.carouselDragFree, context?.carouselDragThreshold, context?.carouselSkipSnaps, context?.carouselContainScroll, context?.carouselInViewThreshold]);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('SSR Template Settings', 'jankx'),
         initialOpen: true,
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Content Loop Layout', 'jankx'),
-          value: contentLoopLayout,
-          options: layoutOptions,
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Template File', 'jankx'),
+          value: templateSlug,
+          options: templateOptions,
           onChange: value => setAttributes({
-            contentLoopLayout: value
-          })
+            templateSlug: value
+          }),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Template file from views directory. Can be overridden in child theme.', 'jankx')
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Item Spacing', 'jankx'),
           value: itemSpacing,
@@ -387,6 +427,12 @@ function Edit({
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Content Settings', 'jankx'),
         initialOpen: false,
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Title', 'jankx'),
+          checked: !!showTitle,
+          onChange: value => setAttributes({
+            showTitle: value
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Excerpt', 'jankx'),
           checked: !!showExcerpt,
           onChange: value => setAttributes({
@@ -400,6 +446,40 @@ function Edit({
           }),
           min: 10,
           max: 200
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Date', 'jankx'),
+          checked: !!showDate,
+          onChange: value => setAttributes({
+            showDate: value
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Author', 'jankx'),
+          checked: !!showAuthor,
+          onChange: value => setAttributes({
+            showAuthor: value
+          })
+        })]
+      }), (postType === 'product' || postType === 'tour') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Commerce Settings', 'jankx'),
+        initialOpen: false,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Price', 'jankx'),
+          checked: !!showPrice,
+          onChange: value => setAttributes({
+            showPrice: value
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Add to Cart', 'jankx'),
+          checked: !!showAddToCart,
+          onChange: value => setAttributes({
+            showAddToCart: value
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Rating', 'jankx'),
+          checked: !!showRating,
+          onChange: value => setAttributes({
+            showRating: value
+          })
         })]
       })]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
@@ -413,11 +493,11 @@ function Edit({
         dangerouslySetInnerHTML: {
           __html: previewHtml
         }
-      }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+      }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
         style: {
           padding: '12px'
         },
-        children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('No preview available', 'jankx')
+        children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Template:', 'jankx'), " ", templateSlug, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("br", {}), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('No preview available', 'jankx')]
       })
     })]
   });

@@ -13,8 +13,11 @@ class ViewCarouselLayout extends AbstractViewLayout
             return '';
         }
 
-        $slidesPerView = (int) ($this->getOption('slidesPerView') ?: 1);
+        // Get slidesPerView from columns data (desktop columns by default)
+        $columns = (int) ($this->getOption('columns') ?: 1);
+        $slidesPerView = (int) ($this->getOption('slidesPerView') ?: $columns);
         $spaceBetween = (int) ($this->getOption('spaceBetween') ?: 16);
+        // Loop mode disabled by default for better PageSpeed performance (prevents CLS)
         $loop = (bool) $this->getOption('loop', false);
         $autoplay = (bool) $this->getOption('autoplay', false);
         $autoplayDelay = (int) $this->getOption('autoplayDelay', 3000);
@@ -29,7 +32,6 @@ class ViewCarouselLayout extends AbstractViewLayout
         $carouselClasses = [
             'wp-block-jankx-dynamic-ssr-layout',
             'view-type-layout-carousel',
-            'carousel',
         ];
 
         if ($showArrows) {
@@ -53,36 +55,17 @@ class ViewCarouselLayout extends AbstractViewLayout
             data-direction="<?php echo esc_attr($carouselDirection); ?>"
             data-duration="<?php echo esc_attr($carouselDuration); ?>">
             
-            <?php if ($showArrows): ?>
-                <button class="carousel-arrow carousel-arrow-prev">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                        <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </button>
-                <button class="carousel-arrow carousel-arrow-next">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                        <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </button>
-            <?php endif; ?>
-
-            <div class="carousel-viewport">
-                <div class="carousel-container">
-                    <?php
-                    while ($this->query->have_posts()) {
-                        $this->query->the_post();
-                        echo '<div class="carousel-slide">';
-                        echo $this->renderViewItem();
-                        echo '</div>';
-                    }
-                    wp_reset_postdata();
-                    ?>
-                </div>
+            <div class="carousel-container">
+                <?php
+                while ($this->query->have_posts()) {
+                    $this->query->the_post();
+                    echo '<div class="carousel-slide">';
+                    echo $this->renderViewItem();
+                    echo '</div>';
+                }
+                wp_reset_postdata();
+                ?>
             </div>
-
-            <?php if ($showDots): ?>
-                <div class="carousel-dots"></div>
-            <?php endif; ?>
         </div>
         <?php
         return (string) ob_get_clean();

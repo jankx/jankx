@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Apply at start and on resize
       applyViewportMinusHeader();
       window.addEventListener('resize', applyViewportMinusHeader, { passive: true });
+      window.addEventListener('orientationchange', applyViewportMinusHeader, { passive: true });
 
       // Get settings from data attributes
       const slidesPerView = parseInt(container.dataset.slidesPerView) || 1;
@@ -46,6 +47,14 @@ document.addEventListener('DOMContentLoaded', () => {
       const navigation = container.dataset.navigation === 'true';
       const pagination = container.dataset.pagination === 'true';
       const effect = container.dataset.effect || 'slide';
+      const isMobileViewport = (window.innerWidth || document.documentElement.clientWidth) <= 768;
+      const slidesCount = container.querySelectorAll('.swiper-slide').length;
+      const initialEffect = isMobileViewport && ['cube', 'flip', 'coverflow'].includes(effect) ? 'slide' : effect;
+      const spaceBetweenMobile = Math.min(spaceBetween, 16);
+      const spaceBetweenTablet = Math.min(spaceBetween, 24);
+      const adjustedSpeed = slidesCount > 6 ? Math.min(speed, 400) : speed;
+      const useAutoplay = autoplay && slidesCount <= 10;
+      const finalAutoplayDelay = Math.max(autoplayDelay, 4000);
       
       // Get banner style settings from data attributes
       const bannerStyle = container.dataset.bannerStyle || 'default';
@@ -100,24 +109,24 @@ document.addEventListener('DOMContentLoaded', () => {
         slidesPerView,
         spaceBetween,
         loop,
-        speed,
-        effect,
+        speed: adjustedSpeed,
+        effect: initialEffect,
         breakpoints: {
           320: {
             slidesPerView: slidesPerViewMobile,
-            spaceBetween: spaceBetween
+            spaceBetween: spaceBetweenMobile
           },
           768: {
             slidesPerView: slidesPerViewTablet,
-            spaceBetween: spaceBetween
+            spaceBetween: spaceBetweenTablet
           },
           1024: {
             slidesPerView: slidesPerView,
             spaceBetween: spaceBetween
           }
         },
-        autoplay: autoplay ? {
-          delay: autoplayDelay,
+        autoplay: useAutoplay ? {
+          delay: finalAutoplayDelay,
           disableOnInteraction: false
         } : false,
         fadeEffect: { crossFade: true },

@@ -6,9 +6,6 @@
  */
 
 .wp-block-jankx-dynamic-data-layout {
-    &.dynamic-data-layout {
-        // Base styles cho wrapper
-    }
     
     // Reset list styles if rendered as ul
     &[tagName="ul"], 
@@ -52,7 +49,138 @@
 
     // Carousel layout
     &.dynamic-data-layout--carousel {
-        // Carousel styles will be handled by JavaScript
+        .carousel-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            gap: var(--space-between, 16px);
+            
+            // Prevent CLS with aspect ratio
+            aspect-ratio: 16 / 9;
+            min-height: 300px;
+            
+            @media (max-width: 768px) {
+                aspect-ratio: 4 / 3;
+                min-height: 250px;
+            }
+            
+            @media (max-width: 480px) {
+                aspect-ratio: 1 / 1;
+                min-height: 200px;
+            }
+            
+            // Hide scrollbar for cleaner look
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            &::-webkit-scrollbar {
+                display: none;
+            }
+        }
+        
+        .carousel-slide {
+            flex: 0 0 calc((100% - (var(--space-between, 16px) * (var(--slides-per-view, 1) - 1))) / var(--slides-per-view, 1));
+            width: calc((100% - (var(--space-between, 16px) * (var(--slides-per-view, 1) - 1))) / var(--slides-per-view, 1));
+            max-width: calc((100% - (var(--space-between, 16px) * (var(--slides-per-view, 1) - 1))) / var(--slides-per-view, 1));
+            min-width: 0;
+            scroll-snap-align: start;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            
+            // Prevent image layout shift
+            img {
+                aspect-ratio: 16 / 9;
+                object-fit: cover;
+                width: 100%;
+                height: auto;
+                
+                @media (max-width: 768px) {
+                    aspect-ratio: 4 / 3;
+                }
+                
+                @media (max-width: 480px) {
+                    aspect-ratio: 1 / 1;
+                }
+            }
+        }
+        
+        // Navigation buttons
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            
+            &:hover {
+                background: rgba(255, 255, 255, 1);
+                transform: translateY(-50%) scale(1.1);
+            }
+            
+            &.carousel-prev {
+                left: 10px;
+            }
+            
+            &.carousel-next {
+                right: 10px;
+            }
+            
+            svg {
+                width: 18px;
+                height: 18px;
+                fill: #333;
+            }
+        }
+        
+        // Pagination dots
+        .carousel-dots {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+        
+        .carousel-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            
+            &:hover {
+                background: rgba(255, 255, 255, 0.8);
+            }
+            
+            &.is-active {
+                background: #fff;
+                transform: scale(1.2);
+            }
+        }
+        
+        // Hide navigation when not needed
+        &:not(.has-arrows) .carousel-nav {
+            display: none;
+        }
+        
+        &:not(.has-dots) .carousel-dots {
+            display: none;
+        }
     }
     
     // Support cho class-based column classes (fallback)
@@ -62,6 +190,8 @@
         .post-type-layout-grid,
         .post-type-layout-card {
             // Variables được set từ wrapper inline styles hoặc từ classes
+            display: grid;
+            gap: var(--wp--preset--spacing--medium, 1.5rem);
         }
     }
     
@@ -125,4 +255,9 @@
 
 .wp-block-jankx-dynamic-data-layout.has-background {
     /* background will be applied via inline style or preset background class */
+    .post-type-layout-grid,
+    .post-type-layout-card,
+    .post-type-layout-list {
+        background: inherit;
+    }
 }

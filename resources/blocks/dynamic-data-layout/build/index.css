@@ -39,6 +39,128 @@
   flex-direction: column;
   gap: var(--wp--preset--spacing--medium, 1.5rem);
 }
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .carousel-container {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  gap: var(--space-between, 16px);
+  aspect-ratio: 16/9;
+  min-height: 300px;
+}
+@media (max-width: 768px) {
+  .wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .carousel-container {
+    aspect-ratio: 4/3;
+    min-height: 250px;
+  }
+}
+@media (max-width: 480px) {
+  .wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .carousel-container {
+    aspect-ratio: 1/1;
+    min-height: 200px;
+  }
+}
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .carousel-container {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .carousel-container::-webkit-scrollbar {
+  display: none;
+}
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .carousel-slide {
+  flex: 0 0 calc((100% - var(--space-between, 16px) * (var(--slides-per-view, 1) - 1)) / var(--slides-per-view, 1));
+  width: calc((100% - var(--space-between, 16px) * (var(--slides-per-view, 1) - 1)) / var(--slides-per-view, 1));
+  max-width: calc((100% - var(--space-between, 16px) * (var(--slides-per-view, 1) - 1)) / var(--slides-per-view, 1));
+  min-width: 0;
+  scroll-snap-align: start;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .carousel-slide img {
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  width: 100%;
+  height: auto;
+}
+@media (max-width: 768px) {
+  .wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .carousel-slide img {
+    aspect-ratio: 4/3;
+  }
+}
+@media (max-width: 480px) {
+  .wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .carousel-slide img {
+    aspect-ratio: 1/1;
+  }
+}
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .carousel-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .carousel-nav:hover {
+  background: rgb(255, 255, 255);
+  transform: translateY(-50%) scale(1.1);
+}
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .carousel-nav.carousel-prev {
+  left: 10px;
+}
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .carousel-nav.carousel-next {
+  right: 10px;
+}
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .carousel-nav svg {
+  width: 18px;
+  height: 18px;
+  fill: #333;
+}
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .carousel-dots {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .carousel-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .carousel-dot:hover {
+  background: rgba(255, 255, 255, 0.8);
+}
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .carousel-dot.is-active {
+  background: #fff;
+  transform: scale(1.2);
+}
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel:not(.has-arrows) .carousel-nav {
+  display: none;
+}
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel:not(.has-dots) .carousel-dots {
+  display: none;
+}
+.wp-block-jankx-dynamic-data-layout[class*=columns-] .post-type-layout-grid,
+.wp-block-jankx-dynamic-data-layout[class*=columns-] .post-type-layout-card {
+  display: grid;
+  gap: var(--wp--preset--spacing--medium, 1.5rem);
+}
 .wp-block-jankx-dynamic-data-layout.columns-1 {
   --columns-desktop: 1;
 }
@@ -151,6 +273,11 @@
 
 .wp-block-jankx-dynamic-data-layout.has-background {
   /* background will be applied via inline style or preset background class */
+}
+.wp-block-jankx-dynamic-data-layout.has-background .post-type-layout-grid,
+.wp-block-jankx-dynamic-data-layout.has-background .post-type-layout-card,
+.wp-block-jankx-dynamic-data-layout.has-background .post-type-layout-list {
+  background: inherit;
 }
 /*!*******************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/dynamic-data-layout/editor.scss ***!

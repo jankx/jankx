@@ -127,7 +127,64 @@ class DynamicSsrLayoutBlock extends Block
                     true
                 );
             }
-            wp_enqueue_script($handle);
+            
+            // Only enqueue when carousel blocks are present on page
+            if (has_block($this->blockId)) {
+                // Enqueue carousel styles
+                $style_asset_file = $this->blockPath . '/build/style.asset.php';
+                $style_file = $this->blockPath . '/build/style.css';
+                if (file_exists($style_asset_file) && file_exists($style_file)) {
+                    $style_asset = require $style_asset_file;
+                    $style_handle = 'jankx-dynamic-ssr-layout-style';
+                    if (!wp_style_is($style_handle, 'registered')) {
+                        $style_url = (new \Jankx\Managers\UrlManager())->blockAsset('dynamic-ssr-layout/build/style.css');
+                        // Debug: Log the URL
+                        error_log('Carousel CSS URL: ' . $style_url);
+                        wp_register_style(
+                            $style_handle,
+                            $style_url,
+                            isset($style_asset['dependencies']) ? $style_asset['dependencies'] : [],
+                            isset($style_asset['version']) ? $style_asset['version'] : false
+                        );
+                    }
+                    wp_enqueue_style($style_handle);
+                    error_log('Carousel CSS enqueued successfully');
+                } else {
+                    error_log('Carousel CSS files not found: ' . $style_file);
+                }
+                
+                wp_enqueue_script($handle);
+                
+                // Add inline script for lazy loading carousel initialization
+                wp_add_inline_script($handle, "
+                    // Lazy load carousel only when visible
+                    function initCarouselWhenVisible() {
+                        const carousels = document.querySelectorAll('.wp-block-jankx-dynamic-ssr-layout.view-type-layout-carousel');
+                        if (carousels.length === 0) return;
+                        
+                        const observer = new IntersectionObserver((entries) => {
+                            entries.forEach(entry => {
+                                if (entry.isIntersecting) {
+                                    // Initialize carousel when visible
+                                    if (typeof window.initCarousel === 'function') {
+                                        window.initCarousel(entry.target);
+                                    }
+                                    observer.unobserve(entry.target);
+                                }
+                            });
+                        }, { threshold: 0.1, rootMargin: '200px' });
+                        
+                        carousels.forEach(carousel => observer.observe(carousel));
+                    }
+                    
+                    // Initialize when DOM is ready
+                    if (document.readyState === 'loading') {
+                        document.addEventListener('DOMContentLoaded', initCarouselWhenVisible);
+                    } else {
+                        initCarouselWhenVisible();
+                    }
+                ");
+            }
         }
     }
 
@@ -647,8 +704,9 @@ class DynamicSsrLayoutBlock extends Block
             $mergedAttributes = array_merge($parent_attributes, $attributes);
 
             // Create ViewTemplateContentGenerator
+            $templateSlug = $attributes['templateSlug'] ?? 'post-layouts/loop-item';
             $generator = new ViewTemplateContentGenerator(
-                $templateBlock,
+                $templateSlug,
                 $mergedAttributes
             );
 

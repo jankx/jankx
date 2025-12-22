@@ -158,14 +158,14 @@ module.exports = {
     'blocks/smart-search/build/editor': './blocks/smart-search/editor.scss',
 
     'blocks/dynamic-data-layout/build/index': './blocks/dynamic-data-layout/index.tsx',
+    'blocks/dynamic-data-layout/build/view': './blocks/dynamic-data-layout/view.js',
     'blocks/dynamic-data-layout/build/style': './blocks/dynamic-data-layout/style.scss',
     'blocks/dynamic-data-layout/build/editor': './blocks/dynamic-data-layout/editor.scss',
 
     'blocks/dynamic-data-template/build/index': './blocks/dynamic-data-template/index.tsx',
-    'blocks/dynamic-data-template/build/style': './blocks/dynamic-data-template/style.scss',
-    'blocks/dynamic-data-template/build/editor': './blocks/dynamic-data-template/editor.scss',
 
     'blocks/dynamic-ssr-layout/build/index': './blocks/dynamic-ssr-layout/index.tsx',
+    'blocks/dynamic-ssr-layout/build/view': './blocks/dynamic-ssr-layout/view.js',
     'blocks/dynamic-ssr-layout/build/style': './blocks/dynamic-ssr-layout/style.scss',
     'blocks/dynamic-ssr-layout/build/editor': './blocks/dynamic-ssr-layout/editor.scss',
 
