@@ -8,10 +8,16 @@ use Jankx\Layouts\DynamicDataLayout\ViewLayouts\ViewLayoutManager;
 use Jankx\Layouts\DynamicDataLayout\ViewLayouts\ViewAttributeSanitizer;
 use Jankx\Layouts\DynamicDataLayout\ViewLayouts\ViewLayoutDecorator;
 use Jankx\Layouts\DynamicDataLayout\ViewLayouts\Generators\ViewSsrGenerator;
+use Jankx\Layouts\DynamicDataLayout\ContentLoopLayoutManager;
+use Jankx\Layouts\DynamicDataLayout\DynamicDataLayoutManager;
+use Jankx\Layouts\DynamicDataLayout\AttributeSanitizer;
+use Jankx\Layouts\DynamicDataLayout\PostLayoutDecorator;
+use Jankx\Layouts\DynamicDataLayout\Generators\SsrViewGenerator;
 
 class DynamicSsrTemplateBlock extends Block
 {
     protected $blockId = 'jankx/dynamic-ssr-template';
+    protected $contentLoopLayoutManager;
 
     public function init()
     {
@@ -23,6 +29,14 @@ class DynamicSsrTemplateBlock extends Block
     protected function getViewLayoutManager(): ViewLayoutManager
     {
         return ViewLayoutManager::getInstance();
+    }
+
+    protected function getContentLoopLayoutManager(): ContentLoopLayoutManager
+    {
+        if ($this->contentLoopLayoutManager === null) {
+            $this->contentLoopLayoutManager = ContentLoopLayoutManager::getInstance();
+        }
+        return $this->contentLoopLayoutManager;
     }
 
     public function enqueueEditorAssets()

@@ -18,6 +18,7 @@ class ViewLayoutFactory
         self::register('card', ViewCardLayout::class);
         self::register('carousel', ViewCarouselLayout::class);
         self::register('horizontal', ViewHorizontalLayout::class);
+        self::register('promotional-banner', ViewPromotionalBannerLayout::class);
     }
 
     public static function register(string $name, string $class): void

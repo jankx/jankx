@@ -1,0 +1,87 @@
+{**
+ * Fullwidth Loop Item Template
+ * Full-width template for individual loop items with larger content
+ *}
+
+{var $content_classes = ['wp-block-view-content', 'wp-block-view-content-fullwidth']}
+{if $thumbnail_position}
+    {var $content_classes[] = 'thumbnail-' . $thumbnail_position}
+{/if}
+
+<div class="{implode(' ', $content_classes)}">
+    <div class="wp-block-view-fullwidth-wrapper">
+        {if $show_thumbnail && $wp.has_post_thumbnail($view_id)}
+            <figure class="wp-block-view-featured-image wp-block-view-featured-image-fullwidth">
+                <a href="{$wp.get_permalink($view_id)|noescape}">
+                    {$wp.the_post_thumbnail($image_size, ['style' => 'object-fit:cover;'])|noescape}
+                </a>
+            </figure>
+        {/if}
+
+        <div class="wp-block-view-content-inner wp-block-view-content-inner-fullwidth">
+            {if $show_title}
+                <h2 class="wp-block-view-title wp-block-view-title-fullwidth">
+                    <a href="{$wp.get_permalink($view_id)|noescape}">
+                        {$wp.get_the_title($view_id)|noescape}
+                    </a>
+                </h2>
+            {/if}
+
+            <div class="wp-block-view-meta">
+                {if $show_date}
+                    <div class="wp-block-view-date">
+                        <time datetime="{$wp.get_post_time('c', true, $view_id)|noescape}">
+                            {$wp.get_the_date('', $view_id)|noescape}
+                        </time>
+                    </div>
+                {/if}
+
+                {if $show_author}
+                    <div class="wp-block-view-author">
+                        <span class="wp-block-view-author__by">{$wp.__('By', 'jankx')|noescape}</span>
+                        <span class="wp-block-view-author__name">
+                            {$wp.get_the_author_meta('display_name', $wp.get_post_field('post_author', $view_id))|noescape}
+                        </span>
+                    </div>
+                {/if}
+
+                {if $show_categories && $wp.has_category($view_id)}
+                    <div class="wp-block-view-categories">
+                        {foreach $wp.get_the_category($view_id) as $category}
+                            <a href="{$wp.get_category_link($category->term_id)|noescape}" class="wp-block-view-categories__link">
+                                {$category->name|noescape}
+                            </a>
+                        {/foreach}
+                    </div>
+                {/if}
+            </div>
+
+            {if $show_excerpt}
+                <div class="wp-block-view-excerpt wp-block-view-excerpt-fullwidth">
+                    <div class="wp-block-view-excerpt__excerpt">
+                        {var $raw_excerpt = $wp.has_excerpt($view_id) ? $wp.get_the_excerpt($view_id) : $wp.get_post_field('post_content', $view_id)}
+                        {$wp.wpautop($wp.wp_trim_words($raw_excerpt, max(1, $excerpt_length)))|noescape}
+                    </div>
+                </div>
+            {/if}
+
+            {if $show_tags && $wp.has_tag($view_id)}
+                <div class="wp-block-view-tags">
+                    {foreach $wp.get_the_tags($view_id) as $tag}
+                        <a href="{$wp.get_tag_link($tag->term_id)|noescape}" class="wp-block-view-tags__link">
+                            {$tag->name|noescape}
+                        </a>
+                    {/foreach}
+                </div>
+            {/if}
+
+            {if $show_read_more}
+                <div class="wp-block-view-read-more wp-block-view-read-more-fullwidth">
+                    <a href="{$wp.get_permalink($view_id)|noescape}" class="wp-block-view-read-more__link">
+                        {$read_more_text|noescape}
+                    </a>
+                </div>
+            {/if}
+        </div>
+    </div>
+</div>

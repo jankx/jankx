@@ -1,0 +1,44 @@
+{**
+ * Carousel Layout Template
+ * Used by ViewCarouselLayout for rendering individual slides
+ *}
+
+{var $content_classes = ['wp-block-view-content', 'carousel-slide-content']}
+{if $thumbnail_position}
+    {var $content_classes[] = 'thumbnail-' . $thumbnail_position}
+{/if}
+
+<div class="{implode(' ', $content_classes)}">
+    {if $show_thumbnail && $wp.has_post_thumbnail($view_id)}
+        <figure class="wp-block-view-featured-image">
+            {$wp.the_post_thumbnail($image_size, ['style' => 'object-fit:cover;'])|noescape}
+        </figure>
+    {/if}
+
+    <div class="wp-block-view-content-inner">
+        {if $show_title}
+            <h2 class="wp-block-view-title">
+                <a href="{$wp.get_permalink($view_id)|noescape}">
+                    {$wp.get_the_title($view_id)|noescape}
+                </a>
+            </h2>
+        {/if}
+
+        {if $show_date}
+            <div class="wp-block-view-date">
+                <time datetime="{$wp.get_post_time('c', true, $view_id)|noescape}">
+                    {$wp.get_the_date('', $view_id)|noescape}
+                </time>
+            </div>
+        {/if}
+
+        {if $show_excerpt}
+            <div class="wp-block-view-excerpt">
+                <p class="wp-block-view-excerpt__excerpt">
+                    {var $raw_excerpt = $wp.has_excerpt($view_id) ? $wp.get_the_excerpt($view_id) : $wp.get_post_field('post_content', $view_id)}
+                    {$wp.wp_trim_words($raw_excerpt, max(1, $excerpt_length))|noescape}
+                </p>
+            </div>
+        {/if}
+    </div>
+</div>
