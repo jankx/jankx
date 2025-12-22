@@ -14,6 +14,8 @@
   "providesContext": {
     "queryId": "queryId",
     "postType": "postType",
+    "useMultiPostType": "useMultiPostType",
+    "postTypes": "postTypes",
     "displayLayout": "layout",
     "postsPerPage": "postsPerPage",
     "columns": "columns",
@@ -207,4 +209,3 @@
     "excerptLength": { "type": "number", "default": 55 }
   }
 }
-
