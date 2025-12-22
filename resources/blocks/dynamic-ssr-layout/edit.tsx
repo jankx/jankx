@@ -445,6 +445,26 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         className: `dynamic-ssr-layout dynamic-ssr-layout--${layout}`,
     });
 
+    const resolvedResponsiveColumns = (responsiveColumns && typeof responsiveColumns === 'object')
+        ? responsiveColumns
+        : { desktop: columns, tablet: columnsTablet, mobile: columnsMobile };
+
+    useEffect(() => {
+        const expected = {
+            desktop: columns,
+            tablet: columnsTablet,
+            mobile: columnsMobile,
+        };
+        const needsUpdate =
+            !responsiveColumns ||
+            (responsiveColumns as any).desktop !== expected.desktop ||
+            (responsiveColumns as any).tablet !== expected.tablet ||
+            (responsiveColumns as any).mobile !== expected.mobile;
+        if (needsUpdate) {
+            setAttributes({ responsiveColumns: expected });
+        }
+    }, [columns, columnsTablet, columnsMobile, responsiveColumns, setAttributes]);
+
     // Get available post types
     const wpPostTypes = useSelect((select: WordPressSelect) => {
         const { getPostTypes } = select('core');
@@ -583,31 +603,18 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         min={1}
                         max={50}
                     />
-                    {layout !== 'carousel' && (
-                        <>
-                            <RangeControl
-                                label={__('Columns', 'jankx')}
-                                value={columns}
-                                onChange={(value?: number) => setAttributes({ columns: value ?? 3 })}
-                                min={1}
-                                max={6}
-                            />
-                            <RangeControl
-                                label={__('Tablet Columns', 'jankx')}
-                                value={columnsTablet}
-                                onChange={(value?: number) => setAttributes({ columnsTablet: value ?? 2 })}
-                                min={1}
-                                max={4}
-                            />
-                            <RangeControl
-                                label={__('Mobile Columns', 'jankx')}
-                                value={columnsMobile}
-                                onChange={(value?: number) => setAttributes({ columnsMobile: value ?? 1 })}
-                                min={1}
-                                max={3}
-                            />
-                        </>
-                    )}
+                    <ResponsiveControl
+                        label={__('Columns', 'jankx')}
+                        values={resolvedResponsiveColumns as ResponsiveValue}
+                        onChange={(values) => setAttributes({
+                            columns: values.desktop,
+                            columnsTablet: values.tablet,
+                            columnsMobile: values.mobile,
+                            responsiveColumns: values
+                        })}
+                        min={1}
+                        max={6}
+                    />
                 </PanelBody>
 
                 <PanelBody title={__('Query Settings', 'jankx')} initialOpen={true}>
