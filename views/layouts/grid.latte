@@ -5,9 +5,9 @@
  *}
 
 <div class="{implode(' ', $content_classes)}">
-    {if $show_thumbnail && $thumbnail.exists}
+    {if $thumbnail && $thumbnail['exists']}
         <figure class="wp-block-view-featured-image">
-            {$thumbnail.html|noescape}
+            {$thumbnail['html']|noescape}
         </figure>
     {/if}
 
@@ -22,8 +22,8 @@
 
         {if $show_date && $date}
             <div class="wp-block-view-date">
-                <time datetime="{$date.datetime|noescape}">
-                    {$date.formatted|noescape}
+                <time datetime="{$date['datetime']|noescape}">
+                    {$date['formatted']|noescape}
                 </time>
             </div>
         {/if}
@@ -39,8 +39,8 @@
         {if $show_categories && $categories}
             <div class="wp-block-view-categories">
                 {foreach $categories as $category}
-                    <a href="{$category.link|noescape}" class="wp-block-view-category">
-                        {$category.name|noescape}
+                    <a href="{$category['link']|noescape}" class="wp-block-view-category">
+                        {$category['name']|noescape}
                     </a>
                 {/foreach}
             </div>
@@ -49,8 +49,8 @@
         {if $show_tags && $tags}
             <div class="wp-block-view-tags">
                 {foreach $tags as $tag}
-                    <a href="{$tag.link|noescape}" class="wp-block-view-tag">
-                        {$tag.name|noescape}
+                    <a href="{$tag['link']|noescape}" class="wp-block-view-tag">
+                        {$tag['name']|noescape}
                     </a>
                 {/foreach}
             </div>
@@ -58,8 +58,8 @@
 
         {if $show_author && $author}
             <div class="wp-block-view-author">
-                <a href="{$author.posts_url|noescape}" class="wp-block-view-author-link">
-                    {$author.display_name|noescape}
+                <a href="{$author['posts_url']|noescape}" class="wp-block-view-author-link">
+                    {$author['display_name']|noescape}
                 </a>
             </div>
         {/if}
