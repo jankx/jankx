@@ -49,25 +49,13 @@ class BootTemplateEngine
         if (!wp_mkdir_p($cache_base_dir)) {
             throw new \RuntimeException("Failed to create cache directory: {$cache_base_dir}");
         }
-        
+        $latte->setTempDirectory($cache_base_dir);
+
         if (defined('WP_DEBUG') && WP_DEBUG) {
-            $cache_dir = $cache_base_dir . '/disabled';
-            if (!wp_mkdir_p($cache_dir)) {
-                throw new \RuntimeException("Failed to create cache directory: {$cache_dir}");
-            }
-            $latte->setTempDirectory($cache_dir);
             $latte->setAutoRefresh(true);
         } else {
-            $latte->setTempDirectory($cache_base_dir);
             $latte->setAutoRefresh(false);
         }
-        
-        // Add WordPress function filters
-        $latte->addFilter('esc_html', 'esc_html');
-        $latte->addFilter('esc_url', 'esc_url');
-        $latte->addFilter('esc_attr', 'esc_attr');
-        $latte->addFilter('wp_kses_post', 'wp_kses_post');
-        $latte->addFilter('wp_trim_words', 'wp_trim_words');
 
         // Register the configured Latte engine in the container
         $app->singleton('latte.engine', function () use ($latte) {

@@ -43,7 +43,33 @@ class TemplateEngineServiceProvider extends ServiceProvider
      */
     public function boot(Application $app)
     {
-        // Template engine is already registered and ready to use
-        // No additional boot logic needed
+        // Add WordPress function filters to the Latte engine
+        $this->registerWordPressFilters($app);
+    }
+
+    /**
+     * Register WordPress function filters for the Latte engine.
+     *
+     * @param  \Jankx\Foundation\Application  $app
+     * @return void
+     */
+    protected function registerWordPressFilters(Application $app)
+    {
+        try {
+            $latte = $app->make('latte.engine');
+            
+            // Add WordPress function filters
+            $latte->addFilter('esc_html', 'esc_html');
+            $latte->addFilter('esc_url', 'esc_url');
+            $latte->addFilter('esc_attr', 'esc_attr');
+            $latte->addFilter('wp_kses_post', 'wp_kses_post');
+            $latte->addFilter('wp_trim_words', 'wp_trim_words');
+            
+        } catch (\Exception $e) {
+            // Log error but don't break application boot
+            if (function_exists('jankx_log')) {
+                error_log('Failed to register WordPress filters: ' . $e->getMessage());
+            }
+        }
     }
 }
