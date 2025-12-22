@@ -614,6 +614,11 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         })}
                         min={1}
                         max={6}
+                        help={{
+                            desktop: __('Number of columns on large screens (>1024px)', 'jankx'),
+                            tablet: __('Number of columns on tablet (768px - 1024px)', 'jankx'),
+                            mobile: __('Number of columns on mobile (<768px)', 'jankx'),
+                        }}
                     />
                 </PanelBody>
 
