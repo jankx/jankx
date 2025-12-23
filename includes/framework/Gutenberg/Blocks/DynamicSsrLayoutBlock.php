@@ -847,14 +847,47 @@ class DynamicSsrLayoutBlock extends Block
                 ]);
             }
 
-            // Generate preview HTML
+            // Generate preview HTML for items
             $options = array_merge($mergedAttributes, [
                 'layout' => $parent_attributes['layout'] ?? 'grid',
                 'columns' => $parent_attributes['columns'] ?? 3,
+                'columnsTablet' => $parent_attributes['columnsTablet'] ?? 2,
+                'columnsMobile' => $parent_attributes['columnsMobile'] ?? 1,
                 'templateSlug' => $attributes['templateSlug'] ?? 'layouts/loop/item-default',
             ]);
+            
+            $items_html = $generator->generate($query, $options);
 
-            $html = $generator->generate($query, $options);
+            // Build container classes and inline styles to match frontend
+            $layoutName = $options['layout'] ?? 'grid';
+            $columnsDesktop = isset($options['columns']) ? (int) $options['columns'] : 3;
+            $columnsTablet = isset($options['columnsTablet']) ? (int) $options['columnsTablet'] : 2;
+            $columnsMobile = isset($options['columnsMobile']) ? (int) $options['columnsMobile'] : 1;
+
+            $container_classes = [
+                'view-type-layout',
+                'view-type-layout-' . sanitize_html_class($layoutName),
+                'layout-' . sanitize_html_class($layoutName),
+                'is-flex-container',
+                'columns-' . $columnsDesktop,
+                'columns-tablet-' . $columnsTablet,
+                'columns-mobile-' . $columnsMobile,
+            ];
+            $inline_styles = sprintf(
+                '--columns-desktop: %d; --columns-tablet: %d; --columns-mobile: %d;',
+                $columnsDesktop,
+                $columnsTablet,
+                $columnsMobile
+            );
+
+            // Wrap items HTML with container
+            $html = sprintf(
+                '<div class="%s" style="%s" data-layout="%s">%s</div>',
+                esc_attr(implode(' ', $container_classes)),
+                esc_attr($inline_styles),
+                esc_attr($layoutName),
+                $items_html
+            );
 
             wp_send_json_success([
                 'html' => $html,

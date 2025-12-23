@@ -442,7 +442,14 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     }, [taxonomyTerms]);
 
     const blockProps = useBlockProps({
-        className: `dynamic-ssr-layout dynamic-ssr-layout--${layout}`,
+        className: [
+            'dynamic-ssr-layout',
+            `dynamic-ssr-layout--${layout}`,
+            `view-type-layout-${layout}`,
+            `columns-${columns}`,
+            `columns-tablet-${columnsTablet}`,
+            `columns-mobile-${columnsMobile}`,
+        ].join(' '),
     });
 
     const resolvedResponsiveColumns = (responsiveColumns && typeof responsiveColumns === 'object')
