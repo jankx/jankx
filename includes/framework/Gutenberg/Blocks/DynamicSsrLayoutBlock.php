@@ -50,8 +50,11 @@ class DynamicSsrLayoutBlock extends Block
             $this->rendererService = new ViewRenderer(
                 $layoutManager,
                 $this->attributeSanitizer,
-                function (array $parsedBlock) {
-                    return $this->extractTemplateBlockFromParsedBlock($parsedBlock);
+                function (array $attributes) {
+                    if (isset($attributes['postTemplate']) && is_array($attributes['postTemplate'])) {
+                        return $attributes['postTemplate'];
+                    }
+                    return null;
                 },
                 function ($template) {
                     return $this->sanitizeTemplateBlock($template);
@@ -719,39 +722,20 @@ class DynamicSsrLayoutBlock extends Block
 
             $mergedAttributes = array_merge($parent_attributes, $attributes);
 
-            $layoutName = $mergedAttributes['layout'] ?? 'grid';
-            $postType = $mergedAttributes['postType'] ?? 'post';
-            $postsPerPage = isset($mergedAttributes['postsPerPage']) ? (int) $mergedAttributes['postsPerPage'] : 6;
-
-            $templateSlug = $attributes['templateSlug'] ?? 'layouts/loop/item-default';
-            $generator = new ViewTemplateContentGenerator($templateSlug, $mergedAttributes);
-
-            $args = [
-                'post_type' => sanitize_key($postType),
-                'post_status' => 'publish',
-                'posts_per_page' => $postsPerPage,
-                'orderby' => $mergedAttributes['orderBy'] ?? 'date',
-                'order' => $mergedAttributes['order'] ?? 'DESC',
+            // Provide a template block to the renderer via attributes so it can generate
+            // the same markup as frontend (including carousel structure).
+            $mergedAttributes['postTemplate'] = [
+                'blockName' => 'jankx/dynamic-ssr-template',
+                'attrs' => is_array($attributes) ? $attributes : [],
+                'innerBlocks' => [],
+                'innerHTML' => '',
+                'innerContent' => [],
             ];
 
-            $query = new \WP_Query($args);
-            if (!$query->have_posts()) {
-                wp_send_json_success([
-                    'html' => '<div style="padding: 12px; text-align: center;">' . __('No posts found', 'jankx') . '</div>',
-                ]);
-            }
-
-            $options = array_merge($mergedAttributes, [
-                'layout' => $layoutName,
-                'templateSlug' => $templateSlug,
-            ]);
-
-            $items_html = $generator->generate($query, $options);
-
-            // Wrap with the same outer wrapper as frontend.
             $sanitized = $this->attributeSanitizer->sanitize($mergedAttributes);
+            $rendered = $this->rendererService->render($sanitized, '', null);
             $wrapperAttrs = $this->buildWrapperAttributes($sanitized);
-            $html = sprintf('<div %s>%s</div>', $wrapperAttrs, $items_html);
+            $html = sprintf('<div %s>%s</div>', $wrapperAttrs, $rendered);
 
             wp_send_json_success(['html' => $html]);
         } catch (\Throwable $e) {
