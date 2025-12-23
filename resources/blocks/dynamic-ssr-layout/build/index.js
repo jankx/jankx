@@ -46,6 +46,32 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+function stableStringify(value) {
+  const seen = new WeakSet();
+  const normalize = v => {
+    if (v === null || typeof v !== 'object') {
+      return v;
+    }
+    if (seen.has(v)) {
+      return null;
+    }
+    seen.add(v);
+    if (Array.isArray(v)) {
+      return v.map(normalize);
+    }
+    const obj = v;
+    const out = {};
+    Object.keys(obj).sort().forEach(k => {
+      out[k] = normalize(obj[k]);
+    });
+    return out;
+  };
+  try {
+    return JSON.stringify(normalize(value));
+  } catch (e) {
+    return '';
+  }
+}
 const normalizeQueryPresets = rawPresets => {
   if (!Array.isArray(rawPresets)) {
     return [];
@@ -215,6 +241,8 @@ function Edit({
   const [taxonomyTerms, setTaxonomyTerms] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)({});
   const [previewHtml, setPreviewHtml] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)('');
   const [loadingPreview, setLoadingPreview] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(false);
+  const lastPreviewKeyRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useRef)('');
+  const abortPreviewRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useRef)(null);
   const innerBlocks = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useSelect)(select => select(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.store).getBlocks(clientId), [clientId]);
   const templateBlockAttrs = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => {
     if (!Array.isArray(innerBlocks)) {
@@ -306,12 +334,24 @@ function Edit({
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)({
     className: ['dynamic-ssr-layout', `dynamic-ssr-layout--${layout}`, `view-type-layout-${layout}`, `columns-${columns}`, `columns-tablet-${columnsTablet}`, `columns-mobile-${columnsMobile}`].join(' ')
   });
+  const previewKey = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => {
+    if (!templateBlockAttrs) {
+      return '';
+    }
+    return stableStringify({
+      templateBlockAttrs,
+      parentAttributes: attributes
+    });
+  }, [templateBlockAttrs, attributes]);
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
     if (isSelected) {
       return;
     }
     if (!templateBlockAttrs) {
       setPreviewHtml('');
+      return;
+    }
+    if (previewKey && lastPreviewKeyRef.current === previewKey) {
       return;
     }
     const nonce = window.jankxDynamicSsrTemplate?.nonce || '';
@@ -325,6 +365,11 @@ function Edit({
     params.append('nonce', nonce);
     params.append('attributes', JSON.stringify(templateBlockAttrs));
     params.append('parent_attributes', JSON.stringify(attributes));
+    if (abortPreviewRef.current) {
+      abortPreviewRef.current.abort();
+    }
+    const controller = new AbortController();
+    abortPreviewRef.current = controller;
     setLoadingPreview(true);
     fetch(ajaxUrl, {
       method: 'POST',
@@ -332,15 +377,24 @@ function Edit({
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: params,
-      credentials: 'same-origin'
+      credentials: 'same-origin',
+      signal: controller.signal
     }).then(res => res.json()).then(data => {
       if (data?.success && typeof data.data?.html === 'string') {
         setPreviewHtml(data.data.html);
+        lastPreviewKeyRef.current = previewKey;
       } else {
         setPreviewHtml('');
+        lastPreviewKeyRef.current = previewKey;
       }
-    }).catch(() => setPreviewHtml('')).finally(() => setLoadingPreview(false));
-  }, [isSelected, templateBlockAttrs, attributes]);
+    }).catch(err => {
+      if (err?.name === 'AbortError') {
+        return;
+      }
+      setPreviewHtml('');
+      lastPreviewKeyRef.current = previewKey;
+    }).finally(() => setLoadingPreview(false));
+  }, [isSelected, templateBlockAttrs, previewKey]);
   const resolvedResponsiveColumns = responsiveColumns && typeof responsiveColumns === 'object' ? responsiveColumns : {
     desktop: columns,
     tablet: columnsTablet,
