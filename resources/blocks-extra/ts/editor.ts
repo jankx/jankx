@@ -228,20 +228,10 @@ function addResponsiveDimensionsControls(BlockEdit: wp.element.ComponentType<wp.
             return blockEdit;
         }
         
-        const DeviceToggle: wp.element.ComponentType<any> = () => {
-            const [current, setCurrent] = (wp.element as any).useState<Device>('desktop');
-            (deviceState as any).value = current;
-            return wp.element.createElement(
-                wp.components.ButtonGroup,
-                {},
-                wp.element.createElement(wp.components.Button, { isPressed: current === 'desktop', onClick: () => setCurrent('desktop'), variant: current === 'desktop' ? 'primary' : 'secondary', size: 'small', title: 'Desktop' }, '🖥️'),
-                wp.element.createElement(wp.components.Button, { isPressed: current === 'tablet', onClick: () => setCurrent('tablet'), variant: current === 'tablet' ? 'primary' : 'secondary', size: 'small', title: 'Tablet' }, '📱'),
-                wp.element.createElement(wp.components.Button, { isPressed: current === 'mobile', onClick: () => setCurrent('mobile'), variant: current === 'mobile' ? 'primary' : 'secondary', size: 'small', title: 'Mobile' }, '📱'),
-            );
-        };
-        
-        const deviceState: { value: Device } = { value: 'desktop' };
-        const currentDevice = () => deviceState.value;
+        // ToolsPanel integration: render one ToolsPanelItem under Dimensions
+        const ToolsPanelItem = (wp.components as any).__experimentalToolsPanelItem;
+        const [current, setCurrent] = (wp.element as any).useState<Device>('desktop');
+        const currentDevice = () => current;
         const getVal = (type: 'padding'|'margin'|'gap') => {
             const d = currentDevice();
             if (type === 'padding') return d === 'desktop' ? attributes.jankxPaddingDesktop : d === 'tablet' ? attributes.jankxPaddingTablet : attributes.jankxPaddingMobile;
@@ -271,9 +261,39 @@ function addResponsiveDimensionsControls(BlockEdit: wp.element.ComponentType<wp.
             wp.blockEditor.InspectorControls,
             { group: 'spacing' },
             wp.element.createElement(
-                wp.components.PanelBody,
-                { title: 'Jankx Responsive Dimensions', initialOpen: false },
-                wp.element.createElement(DeviceToggle, {}),
+                ToolsPanelItem,
+                {
+                    label: 'Responsive Dimensions',
+                    isShownByDefault: true,
+                    hasValue: () => {
+                        const v = [
+                            attributes.jankxPaddingDesktop, attributes.jankxPaddingTablet, attributes.jankxPaddingMobile,
+                            attributes.jankxMarginDesktop, attributes.jankxMarginTablet, attributes.jankxMarginMobile,
+                            attributes.jankxGapDesktop, attributes.jankxGapTablet, attributes.jankxGapMobile,
+                        ];
+                        return v.some((x: any) => typeof x === 'number');
+                    },
+                    onDeselect: () => {
+                        setAttributes({
+                            jankxPaddingDesktop: undefined,
+                            jankxPaddingTablet: undefined,
+                            jankxPaddingMobile: undefined,
+                            jankxMarginDesktop: undefined,
+                            jankxMarginTablet: undefined,
+                            jankxMarginMobile: undefined,
+                            jankxGapDesktop: undefined,
+                            jankxGapTablet: undefined,
+                            jankxGapMobile: undefined,
+                        });
+                    }
+                },
+                wp.element.createElement(
+                    wp.components.ButtonGroup,
+                    { style: { marginBottom: '12px' } },
+                    wp.element.createElement(wp.components.Button, { isPressed: current === 'desktop', onClick: () => setCurrent('desktop'), variant: current === 'desktop' ? 'primary' : 'secondary', size: 'small', title: 'Desktop' }, '🖥️'),
+                    wp.element.createElement(wp.components.Button, { isPressed: current === 'tablet', onClick: () => setCurrent('tablet'), variant: current === 'tablet' ? 'primary' : 'secondary', size: 'small', title: 'Tablet' }, '📱'),
+                    wp.element.createElement(wp.components.Button, { isPressed: current === 'mobile', onClick: () => setCurrent('mobile'), variant: current === 'mobile' ? 'primary' : 'secondary', size: 'small', title: 'Mobile' }, '📱'),
+                ),
                 wp.element.createElement(wp.components.RangeControl, {
                     label: `Padding (${currentDevice()})`,
                     value: getVal('padding'),
