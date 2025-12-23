@@ -1,4 +1,14 @@
-.jankx-testimonials-editor .swiper,.jankx-testimonials-editor .testimonials-wrapper{min-height:var(--swiper-min-height, 50px)}
-.jankx-testimonials-editor .testimonial-item.placeholder{opacity:.7}
+/*!***********************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/testimonials/style.scss ***!
+  \***********************************************************************************************************************************************************************************************/
+.jankx-testimonials-editor .swiper, .jankx-testimonials-editor .testimonials-wrapper {
+  min-height: var(--swiper-min-height, 50px);
+}
+/*!************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/testimonials/editor.scss ***!
+  \************************************************************************************************************************************************************************************************/
+.jankx-testimonials-editor .testimonial-item.placeholder {
+  opacity: 0.7;
+}
 
 /*# sourceMappingURL=index.css.map*/

@@ -1,1 +1,1 @@
-<?php return array('dependencies' => array('react-jsx-runtime', 'wp-block-editor'), 'version' => '98567c3b5fc935f1e741');
+<?php return array('dependencies' => array('react-jsx-runtime', 'wp-block-editor'), 'version' => '9e8d894c53413a7b4660');

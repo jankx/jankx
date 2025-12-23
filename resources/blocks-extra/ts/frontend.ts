@@ -301,6 +301,9 @@ function initializeBlocksExtraFrontend(): void {
     
     // Initialize responsive enhancements
     initResponsiveEnhancements();
+    
+    // Inject responsive dimensions CSS
+    injectResponsiveDimensionsCSS();
 }
 
 // Initialize when DOM is ready
@@ -323,3 +326,52 @@ const JankxBlocksExtra: JankxBlocksExtraAPI = {
 // Export types
 export type { RenderMode, BlockName, BlockAttributes, CSRBlockData, JankxBlocksExtraAPI };
 export { JankxBlocksExtra };
+
+/**
+ * Inject global CSS to apply responsive dimensions via CSS variables
+ */
+function injectResponsiveDimensionsCSS(): void {
+    const STYLE_ID = 'jankx-responsive-dimensions-css';
+    if (document.getElementById(STYLE_ID)) {
+        return;
+    }
+    const style = document.createElement('style');
+    style.id = STYLE_ID;
+    style.textContent = `
+        .has-jankx-responsive-dimensions.has-jankx-padding {
+            padding: var(--jankx-padding-desktop, initial);
+        }
+        .has-jankx-responsive-dimensions.has-jankx-margin {
+            margin: var(--jankx-margin-desktop, initial);
+        }
+        .has-jankx-responsive-dimensions.has-jankx-gap {
+            gap: var(--jankx-gap-desktop, var(--wp--style--block-gap, initial));
+            --wp--style--block-gap: var(--jankx-gap-desktop, var(--wp--style--block-gap, initial));
+        }
+        @media (max-width: 1024px) {
+            .has-jankx-responsive-dimensions.has-jankx-padding {
+                padding: var(--jankx-padding-tablet, var(--jankx-padding-desktop, initial));
+            }
+            .has-jankx-responsive-dimensions.has-jankx-margin {
+                margin: var(--jankx-margin-tablet, var(--jankx-margin-desktop, initial));
+            }
+            .has-jankx-responsive-dimensions.has-jankx-gap {
+                gap: var(--jankx-gap-tablet, var(--jankx-gap-desktop, var(--wp--style--block-gap, initial)));
+                --wp--style--block-gap: var(--jankx-gap-tablet, var(--jankx-gap-desktop, var(--wp--style--block-gap, initial)));
+            }
+        }
+        @media (max-width: 768px) {
+            .has-jankx-responsive-dimensions.has-jankx-padding {
+                padding: var(--jankx-padding-mobile, var(--jankx-padding-tablet, var(--jankx-padding-desktop, initial)));
+            }
+            .has-jankx-responsive-dimensions.has-jankx-margin {
+                margin: var(--jankx-margin-mobile, var(--jankx-margin-tablet, var(--jankx-margin-desktop, initial)));
+            }
+            .has-jankx-responsive-dimensions.has-jankx-gap {
+                gap: var(--jankx-gap-mobile, var(--jankx-gap-tablet, var(--jankx-gap-desktop, var(--wp--style--block-gap, initial))));
+                --wp--style--block-gap: var(--jankx-gap-mobile, var(--jankx-gap-tablet, var(--jankx-gap-desktop, var(--wp--style--block-gap, initial))));
+            }
+        }
+    `;
+    document.head.appendChild(style);
+}
