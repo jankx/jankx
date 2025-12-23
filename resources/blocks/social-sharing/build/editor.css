@@ -1,3 +1,20 @@
-.wp-block-jankx-social-sharing .social-sharing-preview{padding:1.5rem;border:2px dashed #ddd;border-radius:8px;background:#f9f9f9}.wp-block-jankx-social-sharing .social-sharing-preview .sharing-buttons{display:flex;flex-wrap:wrap;gap:.5rem}.wp-block-jankx-social-sharing .social-sharing-preview .sharing-button{cursor:not-allowed;opacity:.8}
+/*!**************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/social-sharing/editor.scss ***!
+  \**************************************************************************************************************************************************************************************************/
+.wp-block-jankx-social-sharing .social-sharing-preview {
+  padding: 1.5rem;
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+  background: #f9f9f9;
+}
+.wp-block-jankx-social-sharing .social-sharing-preview .sharing-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.wp-block-jankx-social-sharing .social-sharing-preview .sharing-button {
+  cursor: not-allowed;
+  opacity: 0.8;
+}
 
 /*# sourceMappingURL=editor.css.map*/

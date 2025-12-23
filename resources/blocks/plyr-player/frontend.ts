@@ -1,4 +1,4 @@
-import Plyr from 'plyr/dist/plyr';
+import Plyr from 'plyr';
 
 type PlyrBlockConfig = {
   autoplay?: boolean;

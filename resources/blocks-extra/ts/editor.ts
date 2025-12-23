@@ -68,7 +68,7 @@ function addRenderModeControl(BlockEdit: wp.element.ComponentType<wp.blockEditor
         
         // Add the render mode control to inspector
         const renderModeControl = wp.element.createElement(
-            wp.components.InspectorControls,
+            wp.blockEditor.InspectorControls,
             {},
             wp.element.createElement(
                 wp.components.PanelBody,
@@ -181,7 +181,16 @@ function initializeBlocksExtraEditor(): void {
 }
 
 // Initialize when DOM is ready
-wp.dom.ready(initializeBlocksExtraEditor);
+if (typeof wp !== 'undefined' && (wp as any).domReady) {
+    (wp as any).domReady(initializeBlocksExtraEditor);
+} else {
+    // Fallback for environments where wp.domReady is unavailable
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => initializeBlocksExtraEditor());
+    } else {
+        initializeBlocksExtraEditor();
+    }
+}
 
 // Export types for external use
 export type { RenderMode, SelectOption, EnhancedBlockProps };
@@ -196,6 +205,14 @@ function addResponsiveDimensionsAttributes(settings: any, name: string): any {
     if (!spacingSupport) {
         return settings;
     }
+    // Disable core padding/margin controls so we can replace them
+    const supports = { ...(settings.supports || {}) };
+    const spacing = { ...(supports.spacing || {}) };
+    spacing.padding = false;
+    spacing.margin = false;
+    supports.spacing = spacing;
+    settings.supports = supports;
+
     const attributes = {
         ...(settings.attributes || {}),
         jankxPaddingDesktop: { type: 'number' },
@@ -259,17 +276,15 @@ function addResponsiveDimensionsControls(BlockEdit: wp.element.ComponentType<wp.
         
         const spacingPanel = wp.element.createElement(
             wp.blockEditor.InspectorControls,
-            { group: 'spacing' },
+            { group: 'dimensions' },
             wp.element.createElement(
                 ToolsPanelItem,
                 {
-                    label: 'Responsive Dimensions',
+                    label: 'Padding (Responsive)',
                     isShownByDefault: true,
                     hasValue: () => {
                         const v = [
-                            attributes.jankxPaddingDesktop, attributes.jankxPaddingTablet, attributes.jankxPaddingMobile,
-                            attributes.jankxMarginDesktop, attributes.jankxMarginTablet, attributes.jankxMarginMobile,
-                            attributes.jankxGapDesktop, attributes.jankxGapTablet, attributes.jankxGapMobile,
+                            attributes.jankxPaddingDesktop, attributes.jankxPaddingTablet, attributes.jankxPaddingMobile
                         ];
                         return v.some((x: any) => typeof x === 'number');
                     },
@@ -277,13 +292,7 @@ function addResponsiveDimensionsControls(BlockEdit: wp.element.ComponentType<wp.
                         setAttributes({
                             jankxPaddingDesktop: undefined,
                             jankxPaddingTablet: undefined,
-                            jankxPaddingMobile: undefined,
-                            jankxMarginDesktop: undefined,
-                            jankxMarginTablet: undefined,
-                            jankxMarginMobile: undefined,
-                            jankxGapDesktop: undefined,
-                            jankxGapTablet: undefined,
-                            jankxGapMobile: undefined,
+                            jankxPaddingMobile: undefined
                         });
                     }
                 },
@@ -295,26 +304,46 @@ function addResponsiveDimensionsControls(BlockEdit: wp.element.ComponentType<wp.
                     wp.element.createElement(wp.components.Button, { isPressed: current === 'mobile', onClick: () => setCurrent('mobile'), variant: current === 'mobile' ? 'primary' : 'secondary', size: 'small', title: 'Mobile' }, '📱'),
                 ),
                 wp.element.createElement(wp.components.RangeControl, {
-                    label: `Padding (${currentDevice()})`,
+                    label: `Padding`,
                     value: getVal('padding'),
                     min: 0, max: 128, allowReset: true,
                     onChange: (v?: number) => setVal('padding', typeof v === 'number' ? v : undefined),
                     help: 'Khoảng cách bên trong khối; áp dụng cho tất cả các cạnh'
                 }),
+            ),
+            wp.element.createElement(
+                ToolsPanelItem,
+                {
+                    label: 'Margin (Responsive)',
+                    isShownByDefault: true,
+                    hasValue: () => {
+                        const v = [
+                            attributes.jankxMarginDesktop, attributes.jankxMarginTablet, attributes.jankxMarginMobile
+                        ];
+                        return v.some((x: any) => typeof x === 'number');
+                    },
+                    onDeselect: () => {
+                        setAttributes({
+                            jankxMarginDesktop: undefined,
+                            jankxMarginTablet: undefined,
+                            jankxMarginMobile: undefined
+                        });
+                    }
+                },
+                wp.element.createElement(
+                    wp.components.ButtonGroup,
+                    { style: { marginBottom: '12px' } },
+                    wp.element.createElement(wp.components.Button, { isPressed: current === 'desktop', onClick: () => setCurrent('desktop'), variant: current === 'desktop' ? 'primary' : 'secondary', size: 'small', title: 'Desktop' }, '🖥️'),
+                    wp.element.createElement(wp.components.Button, { isPressed: current === 'tablet', onClick: () => setCurrent('tablet'), variant: current === 'tablet' ? 'primary' : 'secondary', size: 'small', title: 'Tablet' }, '📱'),
+                    wp.element.createElement(wp.components.Button, { isPressed: current === 'mobile', onClick: () => setCurrent('mobile'), variant: current === 'mobile' ? 'primary' : 'secondary', size: 'small', title: 'Mobile' }, '📱'),
+                ),
                 wp.element.createElement(wp.components.RangeControl, {
-                    label: `Margin (${currentDevice()})`,
+                    label: `Margin`,
                     value: getVal('margin'),
                     min: 0, max: 128, allowReset: true,
                     onChange: (v?: number) => setVal('margin', typeof v === 'number' ? v : undefined),
                     help: 'Khoảng cách bên ngoài khối; áp dụng cho tất cả các cạnh'
-                }),
-                wp.element.createElement(wp.components.RangeControl, {
-                    label: `Gap (${currentDevice()})`,
-                    value: getVal('gap'),
-                    min: 0, max: 64, allowReset: true,
-                    onChange: (v?: number) => setVal('gap', typeof v === 'number' ? v : undefined),
-                    help: 'Khoảng cách giữa các phần tử con (block gap)'
-                }),
+                })
             )
         );
         

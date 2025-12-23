@@ -49,8 +49,6 @@
             "type": "string"
         }
     },
-    "editorScript": "file:./build/index.js",
-    "viewScript": "file:./build/frontend.js",
     "style": "file:./build/style.css",
     "editorStyle": "file:./build/editor.css"
 }

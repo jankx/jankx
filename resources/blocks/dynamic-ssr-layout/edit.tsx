@@ -282,9 +282,10 @@ interface EditProps {
     attributes: DynamicSsrLayoutAttributes;
     setAttributes: (attrs: Partial<DynamicSsrLayoutAttributes>) => void;
     clientId: string;
+    isSelected?: boolean;
 }
 
-function Edit({ attributes, setAttributes, clientId }: EditProps) {
+function Edit({ attributes, setAttributes, clientId, isSelected = false }: EditProps) {
     const {
         queryPreset = 'custom',
         postType = 'post',
@@ -343,6 +344,25 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     const [taxonomies, setTaxonomies] = useState<TaxonomyItem[]>([]);
     const [authors, setAuthors] = useState<AuthorItem[]>([]);
     const [taxonomyTerms, setTaxonomyTerms] = useState<Record<string, TermItem[]>>({});
+
+    const [previewHtml, setPreviewHtml] = useState<string>('');
+    const [loadingPreview, setLoadingPreview] = useState<boolean>(false);
+
+    const innerBlocks = useSelect(
+        (select) => (select as any)(blockEditorStore).getBlocks(clientId),
+        [clientId]
+    );
+
+    const templateBlockAttrs = useMemo(() => {
+        if (!Array.isArray(innerBlocks)) {
+            return null;
+        }
+        const templateBlock = innerBlocks.find((b: any) => b?.name === 'jankx/dynamic-ssr-template');
+        if (!templateBlock) {
+            return null;
+        }
+        return templateBlock.attributes || null;
+    }, [innerBlocks]);
 
     // Generate unique queryId if not set
     useEffect(() => {
@@ -451,6 +471,50 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             `columns-mobile-${columnsMobile}`,
         ].join(' '),
     });
+
+    useEffect(() => {
+        if (isSelected) {
+            return;
+        }
+        if (!templateBlockAttrs) {
+            setPreviewHtml('');
+            return;
+        }
+        const nonce = (window as any).jankxDynamicSsrTemplate?.nonce || '';
+        const ajaxUrl = (window as any).jankxDynamicSsrTemplate?.ajaxUrl || '';
+        if (!nonce || !ajaxUrl) {
+            setPreviewHtml('');
+            return;
+        }
+
+        const params = new URLSearchParams();
+        params.append('action', 'jankx_dynamic_ssr_template_preview');
+        params.append('nonce', nonce);
+        params.append('attributes', JSON.stringify(templateBlockAttrs));
+        params.append('parent_attributes', JSON.stringify(attributes));
+
+        setLoadingPreview(true);
+        fetch(ajaxUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: params,
+            credentials: 'same-origin',
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                if (data?.success && typeof data.data?.html === 'string') {
+                    setPreviewHtml(data.data.html);
+                } else {
+                    setPreviewHtml('');
+                }
+            })
+            .catch(() => setPreviewHtml(''))
+            .finally(() => setLoadingPreview(false));
+    }, [
+        isSelected,
+        templateBlockAttrs,
+        attributes,
+    ]);
 
     const resolvedResponsiveColumns = (responsiveColumns && typeof responsiveColumns === 'object')
         ? responsiveColumns
@@ -1269,48 +1333,48 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             </InspectorControls>
 
             <div {...blockProps}>
-                {/* Chỉ render wrapper, template block sẽ tự render items */}
-                {(() => {
-                    const blocks = useSelect(
-                        (select) => (select as any)(blockEditorStore).getBlocks(clientId),
-                        [clientId]
-                    );
-                    
-                    const hasTemplateBlock = blocks && blocks.length > 0;
-                    
-                    if (!hasTemplateBlock) {
-                        return (
-                            <div style={{ 
-                                padding: '1rem',
-                                border: '2px dashed #0073aa',
-                                borderRadius: '4px',
-                                backgroundColor: '#f0f6fc',
-                            }}>
-                                <div style={{ 
-                                    fontSize: '0.85rem',
-                                    color: '#0073aa',
-                                    marginBottom: '0.75rem',
-                                    fontWeight: '600',
+                {isSelected ? (
+                    (() => {
+                        const hasTemplateBlock = Array.isArray(innerBlocks) && innerBlocks.length > 0;
+                        if (!hasTemplateBlock) {
+                            return (
+                                <div style={{
+                                    padding: '1rem',
+                                    border: '2px dashed #0073aa',
+                                    borderRadius: '4px',
+                                    backgroundColor: '#f0f6fc',
                                 }}>
-                                    {__('Add Dynamic SSR Template to define item layout', 'jankx')}
+                                    <div style={{
+                                        fontSize: '0.85rem',
+                                        color: '#0073aa',
+                                        marginBottom: '0.75rem',
+                                        fontWeight: '600',
+                                    }}>
+                                        {__('Add Dynamic SSR Template to define item layout', 'jankx')}
+                                    </div>
+                                    <InnerBlocks
+                                        allowedBlocks={['jankx/dynamic-ssr-template']}
+                                        templateLock={false}
+                                        renderAppender={InnerBlocks.ButtonBlockAppender}
+                                    />
                                 </div>
-                                <InnerBlocks 
-                                    allowedBlocks={['jankx/dynamic-ssr-template']}
-                                    templateLock={false}
-                                    renderAppender={InnerBlocks.ButtonBlockAppender}
-                                />
-                            </div>
+                            );
+                        }
+                        return (
+                            <InnerBlocks
+                                allowedBlocks={['jankx/dynamic-ssr-template']}
+                                templateLock={false}
+                                renderAppender={InnerBlocks.DefaultBlockAppender}
+                            />
                         );
-                    }
-                    
-                    return (
-                        <InnerBlocks 
-                            allowedBlocks={['jankx/dynamic-ssr-template']}
-                            templateLock={false}
-                            renderAppender={InnerBlocks.DefaultBlockAppender}
-                        />
-                    );
-                })()}
+                    })()
+                ) : loadingPreview ? (
+                    <div style={{ padding: '12px' }}>{__('Loading preview…', 'jankx')}</div>
+                ) : previewHtml ? (
+                    <div dangerouslySetInnerHTML={{ __html: previewHtml }} />
+                ) : (
+                    <div style={{ padding: '12px' }}>{__('No preview available', 'jankx')}</div>
+                )}
             </div>
         </>
     );

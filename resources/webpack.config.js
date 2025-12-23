@@ -220,6 +220,11 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.scss', '.css'],
     alias: {
+      // Force all plyr imports (including plyr-react's internal `import PlyrJS from "plyr"`)
+      // to use the compiled dist build. This avoids webpack 5 strict ESM "fully specified"
+      // issues when bundling plyr/src/js/plyr.js.
+      plyr$: path.resolve(__dirname, './node_modules/plyr/dist/plyr.js'),
+      'plyr/src/js/plyr.js': path.resolve(__dirname, './node_modules/plyr/dist/plyr.js'),
       plyr: path.resolve(__dirname, './node_modules/plyr/dist/plyr.js'),
     },
   },

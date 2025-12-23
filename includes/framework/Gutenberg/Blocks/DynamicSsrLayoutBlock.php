@@ -399,7 +399,7 @@ class DynamicSsrLayoutBlock extends Block
         $this->ensureServices();
         $layoutName = $attributes['layout'] ?? 'grid';
         $attributes = \Jankx\Query\DynamicDataLayoutQueryHelper::applyFiltersToAttributes($attributes, $filters);
-        $attributes = $this->attributeSanitizer->sanitize($layoutName, $attributes, true);
+        $attributes = $this->attributeSanitizer->sanitize($attributes);
         $rendered = $this->rendererService->render($attributes, '', null);
         $wrapperAttrs = $this->buildWrapperAttributes($attributes);
         $html = sprintf('<div %s>%s</div>', $wrapperAttrs, $rendered);
@@ -715,184 +715,45 @@ class DynamicSsrLayoutBlock extends Block
 
         try {
             $this->bootDefaultThumbnailService();
-            
-            // Create a mock template block
-            $templateBlock = [
-                'blockName' => 'jankx/dynamic-ssr-template',
-                'attrs' => $attributes,
-                'innerBlocks' => [],
-                'innerHTML' => '',
-                'innerContent' => [],
-            ];
+            $this->ensureServices();
 
-            // Merge parent attributes for rendering
             $mergedAttributes = array_merge($parent_attributes, $attributes);
 
-            // Create ViewTemplateContentGenerator
-            $templateSlug = $attributes['templateSlug'] ?? 'layouts/loop/item-default';
-            $generator = new ViewTemplateContentGenerator(
-                $templateSlug,
-                $mergedAttributes
-            );
-
-            // Build query for preview using full attributes
+            $layoutName = $mergedAttributes['layout'] ?? 'grid';
             $postType = $mergedAttributes['postType'] ?? 'post';
-            $postsPerPage = isset($mergedAttributes['postsPerPage']) ? (int) $mergedAttributes['postsPerPage'] : 3;
+            $postsPerPage = isset($mergedAttributes['postsPerPage']) ? (int) $mergedAttributes['postsPerPage'] : 6;
+
+            $templateSlug = $attributes['templateSlug'] ?? 'layouts/loop/item-default';
+            $generator = new ViewTemplateContentGenerator($templateSlug, $mergedAttributes);
 
             $args = [
+                'post_type' => sanitize_key($postType),
+                'post_status' => 'publish',
                 'posts_per_page' => $postsPerPage,
                 'orderby' => $mergedAttributes['orderBy'] ?? 'date',
                 'order' => $mergedAttributes['order'] ?? 'DESC',
             ];
 
-            if (!empty($mergedAttributes['useMultiPostType']) && !empty($mergedAttributes['postTypes']) && is_array($mergedAttributes['postTypes'])) {
-                $args['post_type'] = array_values(array_filter(array_map('sanitize_key', $mergedAttributes['postTypes'])));
-            } else {
-                $args['post_type'] = sanitize_key($postType);
-            }
-
-            if (!empty($mergedAttributes['postStatus'])) {
-                $args['post_status'] = is_array($mergedAttributes['postStatus'])
-                    ? array_map('sanitize_key', $mergedAttributes['postStatus'])
-                    : sanitize_key($mergedAttributes['postStatus']);
-            } else {
-                $args['post_status'] = 'publish';
-            }
-
-            if (isset($mergedAttributes['offset'])) {
-                $args['offset'] = (int) $mergedAttributes['offset'];
-            }
-
-            $includeSticky = !empty($mergedAttributes['includeStickyPosts']);
-            $args['ignore_sticky_posts'] = !$includeSticky;
-
-            if (!empty($mergedAttributes['metaKey']) && isset($mergedAttributes['orderBy']) && in_array($mergedAttributes['orderBy'], ['meta_value', 'meta_value_num'], true)) {
-                $args['meta_key'] = sanitize_key($mergedAttributes['metaKey']);
-                if (!empty($mergedAttributes['metaType'])) {
-                    $args['meta_type'] = $mergedAttributes['metaType'];
-                }
-            }
-
-            if (!empty($mergedAttributes['keyword']) && is_string($mergedAttributes['keyword'])) {
-                $args['s'] = sanitize_text_field($mergedAttributes['keyword']);
-            }
-
-            if (!empty($mergedAttributes['authorIn']) && is_array($mergedAttributes['authorIn'])) {
-                $args['author__in'] = array_values(array_filter(array_map('intval', $mergedAttributes['authorIn'])));
-            }
-            if (!empty($mergedAttributes['authorNotIn']) && is_array($mergedAttributes['authorNotIn'])) {
-                $args['author__not_in'] = array_values(array_filter(array_map('intval', $mergedAttributes['authorNotIn'])));
-            }
-
-            if (!empty($mergedAttributes['postIn']) && is_array($mergedAttributes['postIn'])) {
-                $args['post__in'] = array_values(array_filter(array_map('intval', $mergedAttributes['postIn'])));
-            }
-            if (!empty($mergedAttributes['postNotIn']) && is_array($mergedAttributes['postNotIn'])) {
-                $args['post__not_in'] = array_values(array_filter(array_map('intval', $mergedAttributes['postNotIn'])));
-            }
-
-            if (isset($mergedAttributes['postParent'])) {
-                $args['post_parent'] = (int) $mergedAttributes['postParent'];
-            }
-            if (!empty($mergedAttributes['postParentIn']) && is_array($mergedAttributes['postParentIn'])) {
-                $args['post_parent__in'] = array_values(array_filter(array_map('intval', $mergedAttributes['postParentIn'])));
-            }
-            if (!empty($mergedAttributes['postParentNotIn']) && is_array($mergedAttributes['postParentNotIn'])) {
-                $args['post_parent__not_in'] = array_values(array_filter(array_map('intval', $mergedAttributes['postParentNotIn'])));
-            }
-
-            if (!empty($mergedAttributes['taxQuery']) && is_array($mergedAttributes['taxQuery'])) {
-                $tax_query = [];
-                foreach ($mergedAttributes['taxQuery'] as $tq) {
-                    if (empty($tq['taxonomy'])) {
-                        continue;
-                    }
-                    $tax_query[] = [
-                        'taxonomy' => sanitize_key($tq['taxonomy']),
-                        'field' => 'term_id',
-                        'terms' => array_values(array_filter(array_map('intval', $tq['terms'] ?? []))),
-                        'operator' => isset($tq['operator']) ? strtoupper($tq['operator']) : 'IN',
-                    ];
-                }
-                if (!empty($tax_query)) {
-                    $args['tax_query'] = $tax_query;
-                }
-            }
-
-            if (!empty($mergedAttributes['metaQuery']) && is_array($mergedAttributes['metaQuery'])) {
-                $meta_query = [];
-                foreach ($mergedAttributes['metaQuery'] as $mq) {
-                    $entry = [
-                        'key' => isset($mq['key']) ? sanitize_key($mq['key']) : '',
-                        'compare' => isset($mq['compare']) ? $mq['compare'] : '=',
-                    ];
-                    if (isset($mq['value']) && $mq['value'] !== '') {
-                        $entry['value'] = $mq['value'];
-                    }
-                    if (!empty($mq['type'])) {
-                        $entry['type'] = $mq['type'];
-                    }
-                    $meta_query[] = $entry;
-                }
-                if (!empty($meta_query)) {
-                    $args['meta_query'] = $meta_query;
-                }
-            }
-
             $query = new \WP_Query($args);
-
             if (!$query->have_posts()) {
                 wp_send_json_success([
                     'html' => '<div style="padding: 12px; text-align: center;">' . __('No posts found', 'jankx') . '</div>',
                 ]);
             }
 
-            // Generate preview HTML for items
             $options = array_merge($mergedAttributes, [
-                'layout' => $parent_attributes['layout'] ?? 'grid',
-                'columns' => $parent_attributes['columns'] ?? 3,
-                'columnsTablet' => $parent_attributes['columnsTablet'] ?? 2,
-                'columnsMobile' => $parent_attributes['columnsMobile'] ?? 1,
-                'templateSlug' => $attributes['templateSlug'] ?? 'layouts/loop/item-default',
+                'layout' => $layoutName,
+                'templateSlug' => $templateSlug,
             ]);
-            
+
             $items_html = $generator->generate($query, $options);
 
-            // Build container classes and inline styles to match frontend
-            $layoutName = $options['layout'] ?? 'grid';
-            $columnsDesktop = isset($options['columns']) ? (int) $options['columns'] : 3;
-            $columnsTablet = isset($options['columnsTablet']) ? (int) $options['columnsTablet'] : 2;
-            $columnsMobile = isset($options['columnsMobile']) ? (int) $options['columnsMobile'] : 1;
+            // Wrap with the same outer wrapper as frontend.
+            $sanitized = $this->attributeSanitizer->sanitize($mergedAttributes);
+            $wrapperAttrs = $this->buildWrapperAttributes($sanitized);
+            $html = sprintf('<div %s>%s</div>', $wrapperAttrs, $items_html);
 
-            $container_classes = [
-                'view-type-layout',
-                'view-type-layout-' . sanitize_html_class($layoutName),
-                'layout-' . sanitize_html_class($layoutName),
-                'is-flex-container',
-                'columns-' . $columnsDesktop,
-                'columns-tablet-' . $columnsTablet,
-                'columns-mobile-' . $columnsMobile,
-            ];
-            $inline_styles = sprintf(
-                '--columns-desktop: %d; --columns-tablet: %d; --columns-mobile: %d;',
-                $columnsDesktop,
-                $columnsTablet,
-                $columnsMobile
-            );
-
-            // Wrap items HTML with container
-            $html = sprintf(
-                '<div class="%s" style="%s" data-layout="%s">%s</div>',
-                esc_attr(implode(' ', $container_classes)),
-                esc_attr($inline_styles),
-                esc_attr($layoutName),
-                $items_html
-            );
-
-            wp_send_json_success([
-                'html' => $html,
-            ]);
-
+            wp_send_json_success(['html' => $html]);
         } catch (\Throwable $e) {
             $message = $e->getMessage();
             if (defined('WP_DEBUG') && WP_DEBUG) {
