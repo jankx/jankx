@@ -36,6 +36,50 @@ class DynamicDataTemplateBlock extends Block
     {
         // Enqueue editor scripts with localized data
         add_action('enqueue_block_editor_assets', [$this, 'enqueueEditorAssets'], 20);
+        
+        // Register block with attributes
+        register_block_type($this->blockId, [
+            'render_callback' => [$this, 'render'],
+            'attributes' => [
+                'overlayIcon' => [
+                    'type' => 'string',
+                    'default' => '',
+                ],
+                'overlayIconPosition' => [
+                    'type' => 'string',
+                    'default' => 'center',
+                ],
+                'overlayIconSize' => [
+                    'type' => 'number',
+                    'default' => 24,
+                ],
+                'overlayIconColor' => [
+                    'type' => 'string',
+                    'default' => '#ffffff',
+                ],
+                'overlayIconBackground' => [
+                    'type' => 'string',
+                    'default' => 'rgba(0, 0, 0, 0.5)',
+                ],
+                'overlayIconShowMode' => [
+                    'type' => 'string',
+                    'default' => 'always-show',
+                ],
+                'overlayIconTarget' => [
+                    'type' => 'string',
+                    'default' => 'featured-image',
+                ],
+                // Keep existing attributes
+                'contentLoopLayout' => [
+                    'type' => 'string',
+                    'default' => 'default',
+                ],
+                'className' => [
+                    'type' => 'string',
+                    'default' => '',
+                ],
+            ],
+        ]);
     }
 
     /**
@@ -218,6 +262,17 @@ class DynamicDataTemplateBlock extends Block
      */
     public function render($attributes, $content = '', $block = null)
     {
+        $wrapper_attributes = get_block_wrapper_attributes([
+            'class' => $this->buildWrapperClasses($attributes),
+            'data-overlay-icon' => $attributes['overlayIcon'] ?? '',
+            'data-overlay-icon-position' => $attributes['overlayIconPosition'] ?? 'center',
+            'data-overlay-icon-size' => $attributes['overlayIconSize'] ?? 24,
+            'data-overlay-icon-color' => $attributes['overlayIconColor'] ?? '#ffffff',
+            'data-overlay-icon-bg' => $attributes['overlayIconBackground'] ?? 'rgba(0, 0, 0, 0.5)',
+            'data-overlay-icon-mode' => $attributes['overlayIconShowMode'] ?? 'always-show',
+            'data-overlay-icon-target' => $attributes['overlayIconTarget'] ?? 'featured-image',
+        ]);
+
         if ($block instanceof \WP_Block) {
             $context = $block->context['jankxPostTypeLayout'] ?? null;
             if (is_array($context)) {
@@ -231,12 +286,45 @@ class DynamicDataTemplateBlock extends Block
                         if ($layout instanceof BlockTemplateLayoutInterface) {
                             $generator->setLayout($layout);
                         }
-                        return $generator->generate($query, $options);
+                        return sprintf(
+                            '<div %s>%s</div>',
+                            $wrapper_attributes,
+                            $generator->generate($query, $options)
+                        );
                     }
                 }
             }
         }
-        return $content;
+        
+        return sprintf(
+            '<div %s>%s</div>',
+            $wrapper_attributes,
+            $content
+        );
+    }
+
+    /**
+     * Build wrapper classes for the block
+     *
+     * @param array $attributes Block attributes
+     * @return string
+     */
+    protected function buildWrapperClasses($attributes)
+    {
+        $classes = ['dynamic-data-template'];
+        
+        if (!empty($attributes['className'])) {
+            $classes[] = $attributes['className'];
+        }
+        
+        if (!empty($attributes['overlayIcon'])) {
+            $classes[] = 'has-overlay-icon';
+            $classes[] = sprintf('overlay-icon-position-%s', $attributes['overlayIconPosition'] ?? 'center');
+            $classes[] = sprintf('overlay-icon-mode-%s', $attributes['overlayIconShowMode'] ?? 'always-show');
+            $classes[] = sprintf('overlay-icon-target-%s', $attributes['overlayIconTarget'] ?? 'featured-image');
+        }
+        
+        return implode(' ', $classes);
     }
 
     public static function renderTemplateWithQuery(array $templateBlock, WP_Query $query, array $options, ?BlockTemplateLayoutInterface $layout = null): string

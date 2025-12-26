@@ -116,6 +116,36 @@
       "default": "normal",
       "enum": ["none", "compact", "normal", "loose"]
     },
+    "overlayIcon": {
+      "type": "string",
+      "default": ""
+    },
+    "overlayIconPosition": {
+      "type": "string",
+      "default": "center"
+    },
+    "overlayIconSize": {
+      "type": "number",
+      "default": 24
+    },
+    "overlayIconColor": {
+      "type": "string",
+      "default": "#ffffff"
+    },
+    "overlayIconBackground": {
+      "type": "string",
+      "default": "rgba(0, 0, 0, 0.5)"
+    },
+    "overlayIconShowMode": {
+      "type": "string",
+      "default": "always-show",
+      "enum": ["always-show", "hover-hide", "hover-show"]
+    },
+    "overlayIconTarget": {
+      "type": "string",
+      "default": "featured-image",
+      "enum": ["featured-image", "entire-item"]
+    },
     "showItemBorder": {
       "type": "boolean",
       "default": false
@@ -137,15 +167,6 @@
       "type": "string",
       "default": "top",
       "enum": ["top", "bottom", "left", "right"]
-    },
-        "overlayIcon": {
-      "type": "string",
-      "default": ""
-    },
-    "overlayIconMode": {
-      "type": "string",
-      "default": "always-show",
-      "enum": ["always-show", "hover-hide", "hover-show"]
     }
   }
 }

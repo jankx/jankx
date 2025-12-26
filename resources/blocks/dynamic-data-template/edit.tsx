@@ -24,7 +24,7 @@ import type { BlockInstance } from '@wordpress/blocks';
 interface DynamicDataTemplateAttributes {
     contentLoopLayout: string;
     className?: string;
-    itemSpacing?: string;
+    itemSpacing?: 'none' | 'compact' | 'normal' | 'loose';
     showItemBorder?: boolean;
     itemBorderRadius?: number;
     itemPadding?: {
@@ -36,6 +36,11 @@ interface DynamicDataTemplateAttributes {
     thumbnailPosition?: 'top' | 'bottom' | 'left' | 'right';
     overlayIcon?: string;
     overlayIconMode?: 'always-show' | 'hover-hide' | 'hover-show';
+    overlayIconPosition?: 'center' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+    overlayIconSize?: number;
+    overlayIconColor?: string;
+    overlayIconBackground?: string;
+    overlayIconTarget?: 'featured-image' | 'entire-item';
 }
 
 
@@ -144,13 +149,20 @@ export default function Edit({
     context,
 }: DynamicDataTemplateEditProps): JSX.Element {
     const {
-        contentLoopLayout = 'default',
+        contentLoopLayout,
+        className = '',
         itemSpacing = 'normal',
         showItemBorder = false,
         itemBorderRadius = 0,
+        itemPadding = {},
         thumbnailPosition = 'top',
-        overlayIcon = '',
+        overlayIcon,
         overlayIconMode = 'always-show',
+        overlayIconPosition = 'center',
+        overlayIconSize = 24,
+        overlayIconColor = '#ffffff',
+        overlayIconBackground = 'rgba(0, 0, 0, 0.5)',
+        overlayIconTarget = 'featured-image',
     } = attributes;
 
 
@@ -363,24 +375,94 @@ export default function Edit({
                         onChange={(value) => setAttributes({ thumbnailPosition: value as DynamicDataTemplateAttributes['thumbnailPosition'] })}
                         help={__('Choose where the featured image appears relative to the content.', 'jankx')}
                     />
-                    <TextControl
-                        label={__('Overlay Icon Class', 'jankx')}
-                        value={overlayIcon}
-                        onChange={(value) => setAttributes({ overlayIcon: value })}
-                        help={__('Enter icon class (e.g., fas fa-play, dashicons-video-alt3)', 'jankx')}
-                    />
-                    {overlayIcon && (
-                        <SelectControl
-                            label={__('Overlay Icon Mode', 'jankx')}
-                            value={overlayIconMode}
-                            options={[
-                                { label: __('Always Show', 'jankx'), value: 'always-show' },
-                                { label: __('Hover to Hide', 'jankx'), value: 'hover-hide' },
-                                { label: __('Hover to Show', 'jankx'), value: 'hover-show' },
-                            ]}
-                            onChange={(value) => setAttributes({ overlayIconMode: value as any })}
+                    
+                    <PanelBody title={__('Overlay Icon Settings', 'jankx')} initialOpen={false}>
+                        <TextControl
+                            label={__('Icon Class', 'jankx')}
+                            value={overlayIcon}
+                            onChange={(value) => setAttributes({ overlayIcon: value })}
+                            help={__('Enter icon class (e.g., fas fa-play, dashicons-video-alt3)', 'jankx')}
                         />
-                    )}
+                        
+                        {overlayIcon && (
+                            <>
+                                <SelectControl
+                                    label={__('Display Mode', 'jankx')}
+                                    value={overlayIconShowMode || 'always-show'}
+                                    options={[
+                                        { label: __('Always Show', 'jankx'), value: 'always-show' },
+                                        { label: __('Show on Hover', 'jankx'), value: 'hover-show' },
+                                        { label: __('Hide on Hover', 'jankx'), value: 'hover-hide' },
+                                    ]}
+                                    onChange={(value) => setAttributes({ overlayIconShowMode: value as any })}
+                                />
+                                
+                                <SelectControl
+                                    label={__('Icon Position', 'jankx')}
+                                    value={overlayIconPosition || 'center'}
+                                    options={[
+                                        { label: __('Center', 'jankx'), value: 'center' },
+                                        { label: __('Top Left', 'jankx'), value: 'top-left' },
+                                        { label: __('Top Right', 'jankx'), value: 'top-right' },
+                                        { label: __('Bottom Left', 'jankx'), value: 'bottom-left' },
+                                        { label: __('Bottom Right', 'jankx'), value: 'bottom-right' },
+                                    ]}
+                                    onChange={(value) => setAttributes({ overlayIconPosition: value as any })}
+                                />
+                                
+                                <SelectControl
+                                    label={__('Target Area', 'jankx')}
+                                    value={overlayIconTarget || 'featured-image'}
+                                    options={[
+                                        { label: __('Featured Image', 'jankx'), value: 'featured-image' },
+                                        { label: __('Entire Item', 'jankx'), value: 'entire-item' },
+                                    ]}
+                                    onChange={(value) => setAttributes({ overlayIconTarget: value as any })}
+                                    help={__('Choose where the overlay icon should appear', 'jankx')}
+                                />
+                                
+                                <RangeControl
+                                    label={__('Icon Size', 'jankx')}
+                                    value={overlayIconSize || 24}
+                                    onChange={(value) => setAttributes({ overlayIconSize: value || 24 })}
+                                    min={10}
+                                    max={100}
+                                    step={1}
+                                />
+                                
+                                <div className="components-base-control">
+                                    <label className="components-base-control__label">
+                                        {__('Icon Color', 'jankx')}
+                                    </label>
+                                    <div className="components-color-palette-control__color-indicator-wrapper">
+                                        <input
+                                            type="color"
+                                            value={overlayIconColor || '#ffffff'}
+                                            onChange={(e) => setAttributes({ overlayIconColor: e.target.value })}
+                                            style={{ width: '100%', height: '40px' }}
+                                        />
+                                    </div>
+                                </div>
+                                
+                                <div className="components-base-control">
+                                    <label className="components-base-control__label">
+                                        {__('Icon Background', 'jankx')}
+                                    </label>
+                                    <div className="components-color-palette-control__color-indicator-wrapper">
+                                        <input
+                                            type="color"
+                                            value={overlayIconBackground || 'rgba(0, 0, 0, 0.5)'}
+                                            onChange={(e) => setAttributes({ overlayIconBackground: e.target.value })}
+                                            style={{ width: '100%', height: '40px' }}
+                                        />
+                                    </div>
+                                    <p className="components-base-control__help">
+                                        {__('Use RGBA format for transparency (e.g., rgba(0,0,0,0.5))', 'jankx')}
+                                    </p>
+                                </div>
+                            </>
+                        )}
+                    </PanelBody>
                 </PanelBody>
             </InspectorControls>
 

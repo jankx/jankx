@@ -149,28 +149,28 @@
     
     // Carousel styles with CSS Scroll Snap
     &.view-type-layout-carousel {
+        position: relative;
+        padding: 0 20px; // Add padding to prevent cut-off on sides
+        
         .carousel-container {
             display: flex;
             overflow-x: auto;
             scroll-snap-type: x mandatory;
             scroll-behavior: smooth;
             gap: var(--space-between, 16px);
+            padding: 10px 0; // Add vertical padding
+            margin: 0 -20px; // Compensate for parent padding
+            scroll-padding: 0 20px; // Ensure smooth scrolling to start/end
             
-            // Temporarily disable aspect-ratio for testing
-            // aspect-ratio: 16 / 9;
+            // Remove debug background
             min-height: 300px;
             width: 100%;
             
-            // Debug: Ensure container is visible
-            background: rgba(0, 255, 0, 0.1); // Temporary debug background
-            
             @media (max-width: 768px) {
-                aspect-ratio: 4 / 3;
                 min-height: 250px;
             }
             
             @media (max-width: 480px) {
-                aspect-ratio: 1 / 1;
                 min-height: 200px;
             }
             
@@ -180,12 +180,22 @@
             &::-webkit-scrollbar {
                 display: none;
             }
+            
+            // Add padding at the end to show the last item completely
+            &::after {
+                content: '';
+                flex: 0 0 20px;
+                height: 1px;
+                display: block;
+            }
         }
         
         .carousel-slide {
-            flex: 0 0 calc((100% - (var(--space-between, 16px) * (var(--slides-per-view, 1) - 1))) / var(--slides-per-view, 1));
-            width: calc((100% - (var(--space-between, 16px) * (var(--slides-per-view, 1) - 1))) / var(--slides-per-view, 1));
-            max-width: calc((100% - (var(--space-between, 16px) * (var(--slides-per-view, 1) - 1))) / var(--slides-per-view, 1));
+            $slide-width: calc((100% - (var(--space-between, 16px) * (var(--slides-per-view, 1) - 1))) / var(--slides-per-view, 1));
+            
+            flex: 0 0 $slide-width;
+            width: $slide-width;
+            max-width: $slide-width;
             min-width: 0;
             scroll-snap-align: start;
             height: auto;
@@ -193,9 +203,9 @@
             flex-direction: column;
             flex-shrink: 0;
             
-            // Debug: Ensure slides are visible
-            border: 1px solid red; // Temporary debug border
-            background: rgba(255, 0, 0, 0.1); // Temporary debug background
+            // Remove debug styles
+            border: none;
+            background: transparent;
             
             // Prevent image layout shift
             img {

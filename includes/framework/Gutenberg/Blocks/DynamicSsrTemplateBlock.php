@@ -24,6 +24,41 @@ class DynamicSsrTemplateBlock extends Block
         add_action('enqueue_block_editor_assets', [$this, 'enqueueEditorAssets'], 20);
         add_action('wp_ajax_jankx_dynamic_ssr_template_preview', [$this, 'ajaxPreview']);
         add_action('wp_ajax_nopriv_jankx_dynamic_ssr_template_preview', [$this, 'ajaxPreview']);
+        
+        // Register block with attributes
+        register_block_type($this->blockId, [
+            'render_callback' => [$this, 'render'],
+            'attributes' => [
+                'overlayIcon' => [
+                    'type' => 'string',
+                    'default' => '',
+                ],
+                'overlayIconPosition' => [
+                    'type' => 'string',
+                    'default' => 'center',
+                ],
+                'overlayIconSize' => [
+                    'type' => 'number',
+                    'default' => 24,
+                ],
+                'overlayIconColor' => [
+                    'type' => 'string',
+                    'default' => '#ffffff',
+                ],
+                'overlayIconBackground' => [
+                    'type' => 'string',
+                    'default' => 'rgba(0, 0, 0, 0.5)',
+                ],
+                'overlayIconShowMode' => [
+                    'type' => 'string',
+                    'default' => 'always-show',
+                ],
+                'overlayIconTarget' => [
+                    'type' => 'string',
+                    'default' => 'featured-image',
+                ],
+            ],
+        ]);
     }
 
     protected function getViewLayoutManager(): ViewLayoutManager
@@ -88,16 +123,86 @@ class DynamicSsrTemplateBlock extends Block
 
     public function render($attributes, $content = '', $block = null)
     {
+        $wrapper_attributes = get_block_wrapper_attributes([
+            'class' => $this->buildWrapperClasses($attributes),
+            'data-overlay-icon' => $attributes['overlayIcon'] ?? '',
+            'data-overlay-icon-position' => $attributes['overlayIconPosition'] ?? 'center',
+            'data-overlay-icon-size' => $attributes['overlayIconSize'] ?? 24,
+            'data-overlay-icon-color' => $attributes['overlayIconColor'] ?? '#ffffff',
+            'data-overlay-icon-bg' => $attributes['overlayIconBackground'] ?? 'rgba(0, 0, 0, 0.5)',
+            'data-overlay-icon-mode' => $attributes['overlayIconShowMode'] ?? 'always-show',
+            'data-overlay-icon-target' => $attributes['overlayIconTarget'] ?? 'featured-image',
+        ]);
+
         if ($block instanceof \WP_Block) {
             $context = $block->context['jankxPostTypeLayout'] ?? null;
             if (is_array($context)) {
                 $query = $context['query'] ?? null;
                 if ($query instanceof WP_Query) {
-                    return '';
+                    return sprintf(
+                        '<div %s>%s</div>',
+                        $wrapper_attributes,
+                        $this->renderTemplate($query, $attributes, $block)
+                    );
                 }
             }
         }
-        return $content;
+        
+        return sprintf(
+            '<div %s>%s</div>',
+            $wrapper_attributes,
+            $content
+        );
+    }
+
+    /**
+     * Render the template
+     *
+     * @param WP_Query $query
+     * @param array $attributes
+     * @param \WP_Block $block
+     * @return string
+     */
+    protected function renderTemplate($query, $attributes, $block)
+    {
+        $context = $block->context['jankxPostTypeLayout'] ?? null;
+        if (is_array($context)) {
+            $options = $context['options'] ?? [];
+            $template = $context['template'] ?? ($block->parsed_block ?? null);
+            if (is_array($template)) {
+                $layout = $context['layout'] ?? null;
+                $generator = new SsrViewGenerator($template, $options);
+                if ($layout instanceof \Jankx\Layouts\DynamicDataLayout\Contracts\BlockTemplateLayoutInterface) {
+                    $generator->setLayout($layout);
+                }
+                return $generator->generate($query, $options);
+            }
+        }
+        return '';
+    }
+
+    /**
+     * Build wrapper classes for the block
+     *
+     * @param array $attributes Block attributes
+     * @return string
+     */
+    protected function buildWrapperClasses($attributes)
+    {
+        $classes = ['dynamic-ssr-template'];
+        
+        if (!empty($attributes['className'])) {
+            $classes[] = $attributes['className'];
+        }
+        
+        if (!empty($attributes['overlayIcon'])) {
+            $classes[] = 'has-overlay-icon';
+            $classes[] = sprintf('overlay-icon-position-%s', $attributes['overlayIconPosition'] ?? 'center');
+            $classes[] = sprintf('overlay-icon-mode-%s', $attributes['overlayIconShowMode'] ?? 'always-show');
+            $classes[] = sprintf('overlay-icon-target-%s', $attributes['overlayIconTarget'] ?? 'featured-image');
+        }
+        
+        return implode(' ', $classes);
     }
 
     public function ajaxPreview()
