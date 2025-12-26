@@ -38,7 +38,15 @@ export default function Save({ attributes }: SaveProps): JSX.Element {
         '--columns-desktop': columns,
         '--columns-tablet': columnsTablet,
         '--columns-mobile': columnsMobile,
+        '--slides-per-view': columns,
+        '--space-between': '16px',
     };
+
+    // Add carousel specific styles if layout is carousel
+    if (layout === 'carousel') {
+        inlineStyle['--slides-per-view'] = columns;
+        inlineStyle['--space-between'] = '16px';
+    }
 
     if (styleColor) {
         // background may be either a string or an object { color: string, slug? }
@@ -57,11 +65,30 @@ export default function Save({ attributes }: SaveProps): JSX.Element {
         }
     }
 
-    const blockProps = useBlockProps.save({ className, style: inlineStyle });
+    // Add data attributes for carousel functionality
+    const dataAttributes: Record<string, any> = {
+        'data-layout': layout,
+    };
+
+    if (layout === 'carousel') {
+        dataAttributes['data-slides-per-view'] = columns;
+        dataAttributes['data-space-between'] = '16';
+        dataAttributes['data-loop'] = attrs.loop || false;
+        dataAttributes['data-autoplay'] = attrs.autoplay || false;
+        dataAttributes['data-autoplay-delay'] = attrs.autoplayDelay || 3000;
+    }
+
+    const blockProps = useBlockProps.save({
+        className,
+        style: inlineStyle,
+        ...dataAttributes
+    });
 
     return (
         <div {...blockProps}>
-            <InnerBlocks.Content />
+            <div className={`carousel-container ${layout === 'carousel' ? 'is-carousel' : ''}`}>
+                <InnerBlocks.Content />
+            </div>
         </div>
     );
 }

@@ -293,6 +293,28 @@ class DynamicSsrLayoutBlock extends Block
         if (isset($attributes['columnsMobile'])) {
             $classes[] = 'columns-mobile-' . (int) $attributes['columnsMobile'];
         }
+
+        // Add carousel-specific attributes
+        if ($layout === 'carousel') {
+            // Add carousel class
+            $classes[] = 'dynamic-ssr-layout--carousel';
+            $classes[] = 'has-carousel';
+
+            // Add carousel data attributes
+            $attrs['data-layout'] = 'carousel';
+            $attrs['data-slides-per-view'] = esc_attr($attributes['columns'] ?? 3);
+            $attrs['data-space-between'] = esc_attr($attributes['spaceBetween'] ?? 16);
+            $attrs['data-autoplay'] = !empty($attributes['autoplay']) ? 'true' : 'false';
+            $attrs['data-autoplay-delay'] = esc_attr($attributes['autoplayDelay'] ?? 3000);
+            $attrs['data-loop'] = !empty($attributes['loop']) ? 'true' : 'false';
+
+            // Add inline styles for carousel
+            $attrs['style'] = sprintf(
+                '--slides-per-view: %d; --space-between: %dpx;',
+                (int) ($attributes['columns'] ?? 3),
+                (int) ($attributes['spaceBetween'] ?? 16)
+            );
+        }
         
         $attrs['class'] = implode(' ', $classes);
         
