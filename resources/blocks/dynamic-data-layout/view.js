@@ -1,10 +1,17 @@
 // Vanilla JS Carousel with CSS Scroll Snap for Dynamic Data Layout
 function initDynamicDataCarousel(root) {
-    const carousels = root ? root.querySelectorAll('.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel') : document.querySelectorAll('.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel');
+    const carousels = root ? root.querySelectorAll('.wp-block-jankx-dynamic-data-layout[data-layout="carousel"]') : 
+                           document.querySelectorAll('.wp-block-jankx-dynamic-data-layout[data-layout="carousel"]');
     
     carousels.forEach(carousel => {
+        // Skip if already initialized
+        if (carousel.classList.contains('carousel-initialized')) return;
+        
         const container = carousel.querySelector('.carousel-container');
         if (!container) return;
+        
+        // Mark as initialized
+        carousel.classList.add('carousel-initialized');
         
         // Get configuration from data attributes or CSS variables
         const slidesPerView = parseInt(carousel.getAttribute('data-slides-per-view')) || 
@@ -13,12 +20,27 @@ function initDynamicDataCarousel(root) {
                            parseInt(getComputedStyle(carousel).getPropertyValue('--space-between')) || 16;
         const autoplay = carousel.getAttribute('data-autoplay') === 'true';
         const autoplayDelay = Math.max(3000, parseInt(carousel.getAttribute('data-autoplay-delay')) || 5000);
-        const showArrows = carousel.classList.contains('has-arrows');
-        const showDots = carousel.classList.contains('has-dots');
+        const loop = carousel.getAttribute('data-loop') === 'true';
+        const showArrows = carousel.classList.contains('has-arrows') || true; // Always show arrows by default
+        const showDots = carousel.classList.contains('has-dots') || true; // Always show dots by default
         
-        // Set CSS variables
+        // Set CSS variables on the container
         container.style.setProperty('--slides-per-view', slidesPerView);
         container.style.setProperty('--space-between', `${spaceBetween}px`);
+        
+        // Ensure container has the right classes for styling
+        container.classList.add('carousel-container');
+        
+        // Wrap each direct child in a carousel-slide div if not already wrapped
+        const slides = Array.from(container.children);
+        slides.forEach(slide => {
+            if (!slide.classList.contains('carousel-slide')) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'carousel-slide';
+                slide.parentNode.insertBefore(wrapper, slide);
+                wrapper.appendChild(slide);
+            }
+        });
         
         // Create navigation buttons
         if (showArrows) {
@@ -40,6 +62,10 @@ function initDynamicDataCarousel(root) {
         
         // Setup drag functionality
         setupDragScroll(container);
+        
+        // Initial update of UI
+        updateActiveDot(carousel, container);
+        updateNavigationButtons(carousel, container);
     });
 }
 
@@ -207,7 +233,24 @@ function setupDragScroll(container) {
 // Initialize carousels when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     initDynamicDataCarousel();
+    
+    // Also initialize for dynamically loaded content (e.g., AJAX, page transitions)
+    if (typeof wp !== 'undefined' && wp.data && wp.data.subscribe) {
+        wp.data.subscribe(() => {
+            // Use setTimeout to ensure the DOM is updated
+            setTimeout(() => {
+                initDynamicDataCarousel();
+            }, 100);
+        });
+    }
 });
+
+// Export for potential manual initialization
+if (typeof window !== 'undefined') {
+    window.JankxCarousel = {
+        init: initDynamicDataCarousel
+    };
+}
 
 // Re-initialize carousels when custom event is fired
 document.addEventListener('jankx:reinitialize-carousel', e => {

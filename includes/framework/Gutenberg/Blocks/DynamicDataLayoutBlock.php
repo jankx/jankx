@@ -609,7 +609,25 @@ class DynamicDataLayoutBlock extends Block
         // Include layout-constrained classes to match editor wrapper behavior
         $attrs['class'] = implode(' ', [
             $baseClass,
+            !empty($attributes['className']) ? $attributes['className'] : '',
         ]);
+        
+        // Add carousel-specific attributes
+        if (($attributes['layout'] ?? '') === 'carousel') {
+            // Add carousel class
+            $attrs['class'] .= ' dynamic-data-layout--carousel';
+
+            // Add carousel data attributes
+            $attrs['data-layout'] = 'carousel';
+            $attrs['data-slides-per-view'] = esc_attr($attributes['columns'] ?? 3);
+            $attrs['data-space-between'] = esc_attr($attributes['spaceBetween'] ?? 16);
+            $attrs['data-autoplay'] = !empty($attributes['autoplay']) ? 'true' : 'false';
+            $attrs['data-autoplay-delay'] = esc_attr($attributes['autoplayDelay'] ?? 3000);
+            $attrs['data-loop'] = !empty($attributes['loop']) ? 'true' : 'false';
+            
+            // Add carousel container class
+            $attrs['class'] .= ' has-carousel';
+        }
 
         // queryId is required; expose as data-block-id and data-query-id
         $queryId = isset($attributes['queryId']) ? (string) $attributes['queryId'] : '';
