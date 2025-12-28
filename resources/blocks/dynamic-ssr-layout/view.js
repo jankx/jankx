@@ -244,10 +244,13 @@ function setupEmblaListeners(instance) {
         updateNavigation(instance);
     });
     if (instance.autoplay) {
-        carousel.addEventListener('mouseenter', () => pauseAutoplay(instance));
-        carousel.addEventListener('mouseleave', () => resumeAutoplay(instance));
-        carousel.addEventListener('touchstart', () => pauseAutoplay(instance));
-        carousel.addEventListener('touchend', () => resumeAutoplay(instance));
+        const ap = instance.embla.plugins?.().autoplay;
+        if (ap) {
+            carousel.addEventListener('mouseenter', () => ap.stop(), { passive: true });
+            carousel.addEventListener('mouseleave', () => ap.play(), { passive: true });
+            carousel.addEventListener('touchstart', () => ap.stop(), { passive: true });
+            carousel.addEventListener('touchend', () => ap.play(), { passive: true });
+        }
     }
 }
 
@@ -323,21 +326,24 @@ function updateNavigation(instance) {
             const instance = carouselInstances.get(container);
             if (instance) {
                 instance.embla.scrollNext();
-                resetAutoplay(instance);
+                const ap = instance.embla.plugins?.().autoplay;
+                if (ap) ap.reset();
             }
         },
         prev: (container) => {
             const instance = carouselInstances.get(container);
             if (instance) {
                 instance.embla.scrollPrev();
-                resetAutoplay(instance);
+                const ap = instance.embla.plugins?.().autoplay;
+                if (ap) ap.reset();
             }
         },
         goTo: (container, index) => {
             const instance = carouselInstances.get(container);
             if (instance) {
                 instance.embla.scrollTo(index);
-                resetAutoplay(instance);
+                const ap = instance.embla.plugins?.().autoplay;
+                if (ap) ap.reset();
             }
         },
         update: (container) => {

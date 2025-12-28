@@ -37,13 +37,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const speed = parseInt(container.dataset.speed) || 300;
       const navigation = container.dataset.navigation === 'true';
       const pagination = container.dataset.pagination === 'true';
-      const effect = container.dataset.effect || 'slide';
       const isMobileViewport = (window.innerWidth || document.documentElement.clientWidth) <= 768;
       const slideNodes = container.querySelectorAll('.embla__slide').length 
         ? container.querySelectorAll('.embla__slide') 
         : container.querySelectorAll('.swiper-slide');
       const slidesCount = slideNodes.length;
-      const initialEffect = isMobileViewport && ['cube', 'flip', 'coverflow'].includes(effect) ? 'slide' : effect;
       const spaceBetweenMobile = Math.min(spaceBetween, 16);
       const spaceBetweenTablet = Math.min(spaceBetween, 24);
       const adjustedSpeed = slidesCount > 6 ? Math.min(speed, 400) : speed;
@@ -132,6 +130,15 @@ document.addEventListener('DOMContentLoaded', () => {
         bullets = slides.map((_, index) => {
           const b = document.createElement('span');
           b.className = 'embla__dot';
+          b.style.display = 'inline-block';
+          b.style.width = '12px';
+          b.style.height = '12px';
+          b.style.borderRadius = '9999px';
+          b.style.background = 'rgba(255,255,255,0.6)';
+          b.style.opacity = '0.6';
+          b.style.margin = '0 6px';
+          b.style.cursor = 'pointer';
+          b.style.transition = 'transform 0.2s ease, background 0.2s ease, opacity 0.2s ease, width 0.2s ease, height 0.2s ease';
           b.addEventListener('click', () => embla.scrollTo(index, true), { passive: true });
           paginationEl.appendChild(b);
           return b;
@@ -142,8 +149,18 @@ document.addEventListener('DOMContentLoaded', () => {
         bullets.forEach((b, i) => {
           if (i === index) {
             b.classList.add('is-active');
+            b.style.background = 'rgba(255,255,255,0.95)';
+            b.style.opacity = '1';
+            b.style.transform = 'scale(1.2)';
+            b.style.width = '16px';
+            b.style.height = '16px';
           } else {
             b.classList.remove('is-active');
+            b.style.background = 'rgba(255,255,255,0.6)';
+            b.style.opacity = '0.6';
+            b.style.transform = 'scale(1)';
+            b.style.width = '12px';
+            b.style.height = '12px';
           }
         });
       };

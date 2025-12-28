@@ -38,7 +38,6 @@ class SwiperBlock extends Block
         $speed = $attributes['speed'] ?? 300;
         $navigation = $attributes['navigation'] ?? true;
         $pagination = $attributes['pagination'] ?? true;
-        $effect = $attributes['effect'] ?? 'slide';
         $height = $attributes['height'] ?? 50;
         $min_height = $attributes['minHeight'] ?? 50;
         $class_name = $attributes['className'] ?? '';
@@ -65,7 +64,7 @@ class SwiperBlock extends Block
 
         // Build wrapper attributes
         // Build custom classes - WordPress will automatically merge className from attributes
-        $custom_classes = 'swiper-block swiper-effect-' . esc_attr($effect);
+        $custom_classes = 'swiper-block';
         
         // Merge with className from attributes (includes variation styles like is-style-banner, etc.)
         if (!empty($class_name)) {
@@ -111,7 +110,7 @@ class SwiperBlock extends Block
 
         // Build container data attributes for Embla initialization
         $container_attrs = sprintf(
-            'data-slides-per-view="%s" data-slides-per-view-tablet="%s" data-slides-per-view-mobile="%s" data-space-between="%s" data-loop="%s" data-autoplay="%s" data-autoplay-delay="%s" data-speed="%s" data-navigation="%s" data-pagination="%s" data-effect="%s" data-banner-style="%s" data-banner-text-color="%s" data-banner-background-color="%s" data-banner-padding="%s" data-banner-border-radius="%s" data-swiper-height="%s" data-gradient-overlay="%s" data-gradient-color="%s" data-gradient-opacity="%s" data-gradient-height="%s"',
+            'data-slides-per-view="%s" data-slides-per-view-tablet="%s" data-slides-per-view-mobile="%s" data-space-between="%s" data-loop="%s" data-autoplay="%s" data-autoplay-delay="%s" data-speed="%s" data-navigation="%s" data-pagination="%s" data-banner-style="%s" data-banner-text-color="%s" data-banner-background-color="%s" data-banner-padding="%s" data-banner-border-radius="%s" data-swiper-height="%s" data-gradient-overlay="%s" data-gradient-color="%s" data-gradient-opacity="%s" data-gradient-height="%s"',
             esc_attr($slides_per_view),
             esc_attr($slides_per_view_tablet),
             esc_attr($slides_per_view_mobile),
@@ -122,7 +121,6 @@ class SwiperBlock extends Block
             esc_attr($speed),
             $navigation ? 'true' : 'false',
             $pagination ? 'true' : 'false',
-            esc_attr($effect),
             esc_attr($banner_style),
             esc_attr($banner_text_color),
             esc_attr($banner_background_color),

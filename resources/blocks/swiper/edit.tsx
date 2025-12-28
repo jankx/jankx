@@ -82,7 +82,7 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
 
     const blockProps = useBlockProps({
     ref: containerRef,
-    className: `swiper-block swiper-effect-${effect} banner-style-${bannerStyle} ${gradientOverlay ? 'has-gradient-overlay' : ''} ${className || ''} ${fitViewportMinusHeader ? 'fit-vh-minus-header' : ''}`.trim(),
+    className: `swiper-block banner-style-${bannerStyle} ${gradientOverlay ? 'has-gradient-overlay' : ''} ${className || ''} ${fitViewportMinusHeader ? 'fit-vh-minus-header' : ''}`.trim(),
     style: {
       '--swiper-height': `${height}px`,
       '--swiper-min-height': `${minHeight}px`,
@@ -218,7 +218,7 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [slidesPerView, slidesPerViewTablet, slidesPerViewMobile, spaceBetween, loop, autoplay, autoplayDelay, speed, navigation, pagination, effect, height, minHeight]);
+  }, [slidesPerView, slidesPerViewTablet, slidesPerViewMobile, spaceBetween, loop, autoplay, autoplayDelay, speed, navigation, pagination, height, minHeight]);
 
   // Cleanup only on unmount
   useEffect(() => {
@@ -415,20 +415,6 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
             checked={fitViewportMinusHeader}
             onChange={(val: boolean) => setAttributes({ fitViewportMinusHeader: val })}
             help={__('Khi bật, Swiper sẽ lấp đầy phần còn lại của viewport sau header.', 'jankx')}
-          />
-
-          <SelectControl
-            label={__('Effect', 'jankx')}
-            value={effect}
-            options={[
-              { label: __('Slide', 'jankx'), value: 'slide' },
-              { label: __('Fade', 'jankx'), value: 'fade' },
-              { label: __('Cube', 'jankx'), value: 'cube' },
-              { label: __('Coverflow', 'jankx'), value: 'coverflow' },
-              { label: __('Flip', 'jankx'), value: 'flip' },
-              { label: __('Cards', 'jankx'), value: 'cards' }
-            ]}
-            onChange={(val: string) => setAttributes({ effect: val as any })}
           />
 
           <ToggleControl
