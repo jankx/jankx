@@ -38,7 +38,7 @@ registerBlockType(metadata.name, {
         } = attributes;
 
         const blockProps = useBlockProps.save({
-          className: `swiper-slide swiper-banner swiper-banner--${bannerStyle} text-${textAlign} text-position-${textPosition} image-size-${imageSize}`
+          className: `embla__slide embla-banner embla-banner--${bannerStyle} text-${textAlign} text-position-${textPosition} image-size-${imageSize}`
         });
 
         const imageStyles: React.CSSProperties = {
@@ -58,14 +58,14 @@ registerBlockType(metadata.name, {
 
         const imageContent = (
           <div 
-            className={`swiper-banner__image image-size-${imageSize}`}
+            className={`embla-banner__image image-size-${imageSize}`}
             style={imageStyles}
           >
-            <div className="swiper-banner__overlay"></div>
+            <div className="embla-banner__overlay"></div>
             
             {showCaption && imageCaption && (
-              <div className="swiper-banner__caption">
-                <div className="swiper-banner__caption-content">
+              <div className="embla-banner__caption">
+                <div className="embla-banner__caption-content">
                   {imageCaption}
                 </div>
               </div>
@@ -75,7 +75,7 @@ registerBlockType(metadata.name, {
 
         // OLD structure with .swiper-banner__content wrapper
         const content = (
-          <div className="swiper-banner__content">
+          <div className="embla-banner__content">
             {imageContent}
           </div>
         );
@@ -87,7 +87,7 @@ registerBlockType(metadata.name, {
                 href={linkUrl}
                 target={linkTarget}
                 rel={linkTarget === '_blank' ? 'noopener noreferrer' : undefined}
-                className="swiper-banner__link"
+                className="embla-banner__link"
               >
                 {content}
               </a>

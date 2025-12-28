@@ -18,7 +18,7 @@ export default function Save({ attributes }: SwiperBannerProps): JSX.Element {
   } = attributes;
 
   const blockProps = useBlockProps.save({
-    className: `swiper-slide swiper-banner swiper-banner--${bannerStyle} text-${textAlign} text-position-${textPosition} image-size-${imageSize}`,
+    className: `embla__slide embla-banner embla-banner--${bannerStyle} text-${textAlign} text-position-${textPosition} image-size-${imageSize}`,
     'data-image-size': imageSize
   });
 
@@ -40,12 +40,12 @@ export default function Save({ attributes }: SwiperBannerProps): JSX.Element {
 
   const content = (
     <div 
-      className={`swiper-banner__image image-size-${imageSize}`}
+      className={`embla-banner__image image-size-${imageSize}`}
       style={imageStyles}
     >
       {showCaption && imageCaption && (
-        <div className="swiper-banner__caption">
-          <div className="swiper-banner__caption-content">
+        <div className="embla-banner__caption">
+          <div className="embla-banner__caption-content">
             {imageCaption}
           </div>
         </div>
@@ -60,7 +60,7 @@ export default function Save({ attributes }: SwiperBannerProps): JSX.Element {
           href={linkUrl}
           target={linkTarget}
           rel={linkTarget === '_blank' ? 'noopener noreferrer' : undefined}
-          className="swiper-banner__link"
+          className="embla-banner__link"
         >
           {content}
         </a>

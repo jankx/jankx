@@ -36,50 +36,6 @@ class DynamicDataTemplateBlock extends Block
     {
         // Enqueue editor scripts with localized data
         add_action('enqueue_block_editor_assets', [$this, 'enqueueEditorAssets'], 20);
-        
-        // Register block with attributes
-        register_block_type($this->blockId, [
-            'render_callback' => [$this, 'render'],
-            'attributes' => [
-                'overlayIcon' => [
-                    'type' => 'string',
-                    'default' => '',
-                ],
-                'overlayIconPosition' => [
-                    'type' => 'string',
-                    'default' => 'center',
-                ],
-                'overlayIconSize' => [
-                    'type' => 'number',
-                    'default' => 24,
-                ],
-                'overlayIconColor' => [
-                    'type' => 'string',
-                    'default' => '#ffffff',
-                ],
-                'overlayIconBackground' => [
-                    'type' => 'string',
-                    'default' => 'rgba(0, 0, 0, 0.5)',
-                ],
-                'overlayIconShowMode' => [
-                    'type' => 'string',
-                    'default' => 'always-show',
-                ],
-                'overlayIconTarget' => [
-                    'type' => 'string',
-                    'default' => 'featured-image',
-                ],
-                // Keep existing attributes
-                'contentLoopLayout' => [
-                    'type' => 'string',
-                    'default' => 'default',
-                ],
-                'className' => [
-                    'type' => 'string',
-                    'default' => '',
-                ],
-            ],
-        ]);
     }
 
     /**

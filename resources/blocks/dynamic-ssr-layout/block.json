@@ -9,6 +9,7 @@
   "description": "Wrapper layout hiển thị danh sách posts với SSR template",
   "textdomain": "jankx",
   "editorScript": "file:./build/index.js",
+  "viewScript": "file:./build/view.js",
   "editorStyle": "file:./build/editor.css",
   "style": "file:./build/style.css",
   "providesContext": {

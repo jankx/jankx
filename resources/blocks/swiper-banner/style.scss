@@ -1,5 +1,5 @@
-// Swiper Banner Styles
-.swiper-banner {
+// Embla Banner Styles
+.embla-banner {
   position: relative;
   overflow: hidden;
   border-radius: inherit;
@@ -60,7 +60,7 @@
   
   // Style variations
   &--banner {
-    .swiper-banner__caption {
+    .embla-banner__caption {
       &-content {
         font-size: 2rem;
         font-weight: 700;
@@ -74,11 +74,11 @@
     // Width will be set by JavaScript to match height
     flex-shrink: 0;
     
-    .swiper-banner__image {
+    .embla-banner__image {
       border-radius: 50%;
     }
     
-    .swiper-banner__caption {
+    .embla-banner__caption {
       &-content {
         font-size: 1.2rem;
         text-align: center;
@@ -89,11 +89,11 @@
   &--square {
     aspect-ratio: 1;
     
-    .swiper-banner__image {
+    .embla-banner__image {
       border-radius: 8px;
     }
     
-    .swiper-banner__caption {
+    .embla-banner__caption {
       &-content {
         font-size: 1.3rem;
       }
@@ -102,21 +102,21 @@
   
   // Text alignment
   &.text-left {
-    .swiper-banner__caption {
+    .embla-banner__caption {
       justify-content: flex-start;
       text-align: left;
     }
   }
   
   &.text-center {
-    .swiper-banner__caption {
+    .embla-banner__caption {
       justify-content: center;
       text-align: center;
     }
   }
   
   &.text-right {
-    .swiper-banner__caption {
+    .embla-banner__caption {
       justify-content: flex-end;
       text-align: right;
     }
@@ -124,20 +124,20 @@
   
   // Text position
   &.text-position-top {
-    .swiper-banner__caption {
+    .embla-banner__caption {
       align-items: flex-start;
       padding-top: 1rem;
     }
   }
   
   &.text-position-middle {
-    .swiper-banner__caption {
+    .embla-banner__caption {
       align-items: center;
     }
   }
   
   &.text-position-bottom {
-    .swiper-banner__caption {
+    .embla-banner__caption {
       align-items: flex-end;
       padding-bottom: 1rem;
     }
@@ -145,19 +145,19 @@
   
   // Image size classes on wrapper
   &.image-size-contain {
-    .swiper-banner__image {
+    .embla-banner__image {
       background-size: contain !important;
     }
   }
   
   &.image-size-cover {
-    .swiper-banner__image {
+    .embla-banner__image {
       background-size: cover !important;
     }
   }
   
   &.image-size-fullwidth {
-    .swiper-banner__image {
+    .embla-banner__image {
       background-size: 100% 100% !important;
       background-position: center !important;
     }
@@ -166,7 +166,7 @@
 
 // Responsive adjustments
 @media (max-width: 768px) {
-  .swiper-banner {
+  .embla-banner {
     &__caption {
       padding: 1rem;
       max-width: 90%;
@@ -177,7 +177,7 @@
     }
     
     &--banner {
-      .swiper-banner__caption {
+      .embla-banner__caption {
         &-content {
           font-size: 1.5rem;
         }
@@ -185,7 +185,7 @@
     }
     
     &--circles {
-      .swiper-banner__caption {
+      .embla-banner__caption {
         &-content {
           font-size: 1rem;
         }
@@ -193,7 +193,7 @@
     }
     
     &--square {
-      .swiper-banner__caption {
+      .embla-banner__caption {
         &-content {
           font-size: 1.1rem;
         }
@@ -203,7 +203,7 @@
 }
 
 @media (max-width: 480px) {
-  .swiper-banner {
+  .embla-banner {
     &__caption {
       padding: 0.75rem;
       
@@ -213,7 +213,7 @@
     }
     
     &--banner {
-      .swiper-banner__caption {
+      .embla-banner__caption {
         &-content {
           font-size: 1.2rem;
         }
@@ -224,7 +224,7 @@
 
 // Editor specific styles
 .block-editor-block-list__layout {
-  .swiper-banner {
+  .embla-banner {
     min-height: 200px;
   }
 }

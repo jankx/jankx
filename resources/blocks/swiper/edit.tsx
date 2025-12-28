@@ -5,8 +5,7 @@ import { gallery, cover, layout, quote } from '@wordpress/icons';
 import { useEffect, useRef } from '@wordpress/element';
 import { createBlock } from '@wordpress/blocks';
 import { useSelect } from '@wordpress/data';
-import Swiper from 'swiper/bundle';
-import 'swiper/css/bundle';
+import EmblaCarousel from 'embla-carousel';
 import type { SwiperProps } from './types';
 
 // Utility function to convert hex to RGB
@@ -75,6 +74,7 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
   };
 
   const swiperRef = useRef<any>(null);
+  const emblaRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Convert gradient color to RGB for CSS variables
@@ -99,7 +99,8 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
       '--gradient-height': `${gradientHeight}%`,
       '--slides-per-view-desktop': slidesPerView,
       '--slides-per-view-tablet': slidesPerViewTablet,
-      '--slides-per-view-mobile': slidesPerViewMobile
+      '--slides-per-view-mobile': slidesPerViewMobile,
+      '--space-between': `${spaceBetween}px`
     } as React.CSSProperties
   });
 
@@ -154,7 +155,7 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
     wp.data.dispatch('core/block-editor').replaceInnerBlocks(clientId, bannerBlocks);
   };
 
-  // Initialize Swiper in editor
+  // Initialize Embla in editor
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -162,137 +163,52 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
       await new Promise(resolve => setTimeout(resolve, 200));
 
       if (containerRef.current) {
-        const swiperEl = containerRef.current.querySelector('.swiper');
+        const swiperEl = containerRef.current.querySelector('.embla');
         if (!swiperEl) return;
 
-        // If Swiper already exists, just update params instead of destroying
-        if (swiperRef.current) {
-          // Update params
-          Object.assign(swiperRef.current.params, {
-            slidesPerView,
-            spaceBetween,
-            loop,
-            speed,
-            effect,
-            breakpoints: {
-              320: {
-                slidesPerView: slidesPerViewMobile,
-                spaceBetween: spaceBetween
-              },
-              768: {
-                slidesPerView: slidesPerViewTablet,
-                spaceBetween: spaceBetween
-              },
-              1024: {
-                slidesPerView: slidesPerView,
-                spaceBetween: spaceBetween
-              }
-            },
-            autoplay: autoplay ? {
-              delay: autoplayDelay,
-              disableOnInteraction: false
-            } : false,
-            navigation: navigation ? {
-              nextEl: swiperEl.querySelector('.swiper-button-next'),
-              prevEl: swiperEl.querySelector('.swiper-button-prev')
-            } : false,
-            pagination: pagination ? {
-              el: swiperEl.querySelector('.swiper-pagination'),
-              clickable: true
-            } : false
-          });
+        const nextEl = swiperEl.querySelector('.embla__button--next');
+        const prevEl = swiperEl.querySelector('.embla__button--prev');
+        const paginationEl = swiperEl.querySelector('.embla__dots');
 
-          // Update navigation
-          if (navigation) {
-            const nextEl = swiperEl.querySelector('.swiper-button-next');
-            const prevEl = swiperEl.querySelector('.swiper-button-prev');
-            if (nextEl && prevEl) {
-              if (swiperRef.current.navigation) {
-                swiperRef.current.navigation.init();
-                swiperRef.current.navigation.update();
-              }
-            }
-          } else if (swiperRef.current.navigation) {
-            swiperRef.current.navigation.destroy();
-          }
+        swiperEl.classList.add('embla__viewport');
+        const track = swiperEl.querySelector('.embla__container') || swiperEl.querySelector('.swiper-wrapper');
+        if (track && !track.classList.contains('embla__container')) track.classList.add('embla__container');
 
-          // Update pagination
-          if (pagination) {
-            const paginationEl = swiperEl.querySelector('.swiper-pagination');
-            if (paginationEl) {
-              if (swiperRef.current.pagination) {
-                swiperRef.current.pagination.init();
-                swiperRef.current.pagination.render();
-                swiperRef.current.pagination.update();
-              }
-            }
-          } else if (swiperRef.current.pagination) {
-            swiperRef.current.pagination.destroy();
-          }
+        const options: any = {
+          loop: loop,
+          duration: speed,
+          align: 'start'
+        };
 
-          // Update Swiper
-          swiperRef.current.update();
-
-          // Update autoplay
-          if (autoplay && swiperRef.current.autoplay) {
-            swiperRef.current.autoplay.start();
-          } else if (swiperRef.current.autoplay) {
-            swiperRef.current.autoplay.stop();
-          }
-                } else {
-          // Create new instance only if doesn't exist
-          const nextEl = swiperEl.querySelector('.swiper-button-next');
-          const prevEl = swiperEl.querySelector('.swiper-button-prev');
-          const paginationEl = swiperEl.querySelector('.swiper-pagination');
-          
-          const swiperConfig: any = {
-            slidesPerView,
-            spaceBetween,
-            loop,
-            speed,
-            effect,
-            breakpoints: {
-              320: {
-                slidesPerView: slidesPerViewMobile,
-                spaceBetween: spaceBetween
-              },
-              768: {
-                slidesPerView: slidesPerViewTablet,
-                spaceBetween: spaceBetween
-              },
-              1024: {
-                slidesPerView: slidesPerView,
-                spaceBetween: spaceBetween
-              }
-            },
-            autoplay: autoplay ? {
-              delay: autoplayDelay,
-              disableOnInteraction: false
-            } : false,
-            fadeEffect: { crossFade: true },
-            cubeEffect: { shadow: true, slideShadows: true, shadowOffset: 20, shadowScale: 0.94 },                                                              
-            coverflowEffect: { rotate: 50, stretch: 0, depth: 100, modifier: 1, slideShadows: true },                                                               
-            flipEffect: { slideShadows: true, limitRotation: true },
-            cardsEffect: { perSlideOffset: 8, perSlideRotate: 2 }
-          };
-
-          // Only add navigation if enabled and elements exist
+        if (emblaRef.current) {
+          emblaRef.current.reInit(options);
+        } else {
+          emblaRef.current = EmblaCarousel(swiperEl, options);
           if (navigation && nextEl && prevEl) {
-            swiperConfig.navigation = {
-              nextEl,
-              prevEl
-            };
+            nextEl.addEventListener('click', () => emblaRef.current.scrollNext(), { passive: true });
+            prevEl.addEventListener('click', () => emblaRef.current.scrollPrev(), { passive: true });
           }
-
-          // Only add pagination if enabled and element exists
           if (pagination && paginationEl) {
-            swiperConfig.pagination = {
-              el: paginationEl,
-              clickable: true
+            const slides = emblaRef.current.slideNodes();
+            paginationEl.innerHTML = '';
+            slides.forEach((_, index) => {
+              const b = document.createElement('span');
+              b.className = 'embla__dot';
+              b.addEventListener('click', () => emblaRef.current.scrollTo(index), { passive: true });
+              paginationEl.appendChild(b);
+            });
+            const updateActive = () => {
+              const i = emblaRef.current.selectedScrollSnap();
+              const bullets = paginationEl.querySelectorAll('.embla__dot');
+              bullets.forEach((el, idx) => {
+                if (idx === i) el.classList.add('is-active');
+                else el.classList.remove('is-active');
+              });
             };
+            emblaRef.current.on('select', updateActive);
+            emblaRef.current.on('reInit', updateActive);
+            updateActive();
           }
-
-          swiperRef.current = new Swiper(swiperEl, swiperConfig);
         }
       }
     };
@@ -301,16 +217,15 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
 
     return () => {
       clearTimeout(timeoutId);
-      // Don't destroy on settings change, only update
     };
   }, [slidesPerView, slidesPerViewTablet, slidesPerViewMobile, spaceBetween, loop, autoplay, autoplayDelay, speed, navigation, pagination, effect, height, minHeight]);
 
   // Cleanup only on unmount
   useEffect(() => {
     return () => {
-      if (swiperRef.current) {
-        swiperRef.current.destroy(false, false);
-        swiperRef.current = null;
+      if (emblaRef.current) {
+        emblaRef.current.destroy();
+        emblaRef.current = null;
       }
     };
   }, []);
@@ -651,17 +566,17 @@ export default function Edit({ attributes, setAttributes, clientId }: SwiperProp
         </PanelBody>
       </InspectorControls>
 
-      <div className="swiper">
-        <div {...innerBlocksProps} />
+      <div className="embla">
+        <div {...innerBlocksProps} className={`${innerBlocksProps.className} embla__container`} />
 
         {navigation && (
           <>
-            <div className="swiper-button-prev"></div>
-            <div className="swiper-button-next"></div>
+            <div className="embla__button embla__button--prev"></div>
+            <div className="embla__button embla__button--next"></div>
           </>
         )}
 
-        {pagination && <div className="swiper-pagination"></div>}
+        {pagination && <div className="embla__dots"></div>}
       </div>
       </div>
     </>

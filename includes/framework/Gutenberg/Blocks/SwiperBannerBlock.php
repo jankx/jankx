@@ -61,7 +61,7 @@ class SwiperBannerBlock extends Block
         }
 
         // Build wrapper classes
-        $wrapper_classes = ['swiper-slide', 'swiper-banner'];
+        $wrapper_classes = ['embla__slide', 'embla-banner'];
         if (!empty($banner_style)) {
             $wrapper_classes[] = 'banner-style-' . esc_attr($banner_style);
         }
@@ -69,7 +69,7 @@ class SwiperBannerBlock extends Block
             $wrapper_classes[] = 'text-position-' . esc_attr($text_position);
         }
         if (!empty($text_align)) {
-            $wrapper_classes[] = 'text-align-' . esc_attr($text_align);
+            $wrapper_classes[] = 'text-' . esc_attr($text_align);
         }
         if (!empty($image_size)) {
             $wrapper_classes[] = 'image-size-' . esc_attr($image_size);
@@ -97,9 +97,9 @@ class SwiperBannerBlock extends Block
 
 
         // Build banner wrapper classes using BEM
-        $banner_classes = ['swiper-banner'];
+        $banner_classes = ['embla-banner'];
         if (!empty($banner_style)) {
-            $banner_classes[] = 'swiper-banner--' . esc_attr($banner_style);
+            $banner_classes[] = 'embla-banner--' . esc_attr($banner_style);
         }
         if (!empty($text_align)) {
             $banner_classes[] = 'text-' . esc_attr($text_align);
@@ -112,8 +112,8 @@ class SwiperBannerBlock extends Block
         // But if content exists and contains nested swiper-banner blocks, ignore it
         $processed_content = '';
         if (!empty($content)) {
-            // Check if content contains nested swiper-banner block (this shouldn't happen but WordPress might render it)
-            if (strpos($content, 'wp-block-jankx-swiper-banner') !== false || strpos($content, 'swiper-banner__image') !== false) {
+            // Check if content contains nested banner block (this shouldn't happen but WordPress might render it)
+            if (strpos($content, 'wp-block-jankx-swiper-banner') !== false || strpos($content, 'embla-banner__image') !== false) {
                 // Content contains a nested banner block, ignore it completely
                 // This prevents double rendering of banner structure
                 $processed_content = '';
@@ -129,7 +129,7 @@ class SwiperBannerBlock extends Block
             <?php if (!empty($link_url)) : ?>
                 <a href="<?php echo esc_url($link_url); ?>" 
                    target="<?php echo esc_attr($link_target); ?>"
-                   class="swiper-banner__link"
+                   class="embla-banner__link"
                    aria-label="<?php echo esc_attr($image_alt); ?>">
             <?php endif; ?>
             
@@ -149,16 +149,16 @@ class SwiperBannerBlock extends Block
                 
                 $image_style_attr = implode('; ', $image_styles);
                 ?>
-                <div class="swiper-banner__image image-size-<?php echo esc_attr($image_size); ?>" style="<?php echo esc_attr($image_style_attr); ?>">
+                <div class="embla-banner__image image-size-<?php echo esc_attr($image_size); ?>" style="<?php echo esc_attr($image_style_attr); ?>">
                     <?php if (!empty($processed_content) || ($show_caption && !empty($image_caption))) : ?>
-                        <div class="swiper-banner__caption">
+                        <div class="embla-banner__caption">
                             <?php if (!empty($processed_content)) : ?>
-                                <div class="swiper-banner__caption-content">
+                                <div class="embla-banner__caption-content">
                                     <?php echo wp_kses_post($processed_content); ?>
                                 </div>
                             <?php endif; ?>
                             <?php if ($show_caption && !empty($image_caption)) : ?>
-                                <div class="swiper-banner__caption-text">
+                                <div class="embla-banner__caption-text">
                                     <?php echo esc_html($image_caption); ?>
                                 </div>
                             <?php endif; ?>

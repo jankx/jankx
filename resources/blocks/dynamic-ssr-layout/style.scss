@@ -190,6 +190,15 @@
             }
         }
         
+        // Embla integration: ensure proper viewport/track styling
+        .embla__viewport {
+            overflow: hidden;
+        }
+        .embla__container {
+            display: flex;
+            align-items: stretch;
+        }
+        
         .carousel-slide {
             $slide-width: calc((100% - (var(--space-between, 16px) * (var(--slides-per-view, 1) - 1))) / var(--slides-per-view, 1));
             

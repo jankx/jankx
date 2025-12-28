@@ -1,6 +1,4 @@
 // Swiper Block - Editor Only Styles
-// Import Swiper CSS from npm package
-@use 'swiper/css/bundle';
 
 .editor-styles-wrapper {
   .wp-block-jankx-swiper {
@@ -8,9 +6,9 @@
   }
 }
 
-// Force Swiper styles in editor if needed
+// Force viewport styles in editor if needed
 .wp-block-jankx-swiper {
-  .swiper {
+  .embla {
     height: var(--swiper-height, 50px);
     
     @media (max-width: 1024px) {

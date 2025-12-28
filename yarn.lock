@@ -3021,23 +3021,23 @@
     mime "^3.0.0"
     web-vitals "^4.2.1"
 
-"@wordpress/element@^6.36.0":
-  version "6.36.0"
-  resolved "https://registry.npmjs.org/@wordpress/element/-/element-6.36.0.tgz"
-  integrity sha512-6Ym/Ucik49skz1XJ2GRXENoMjJx7EYnY+fbfor9KtChiCd9/3H4/rI4sZgewVPIO//fCKEk7G30HoR+xB7GZMQ==
+"@wordpress/element@^6.37.0":
+  version "6.37.0"
+  resolved "https://registry.npmjs.org/@wordpress/element/-/element-6.37.0.tgz"
+  integrity sha512-8+hvjtbsPX1Jz55a5uJi6o8jNOaGlAUwV55lUJsH+iE3OHA6PyE6r9atosGRRHvfXPDlKA5ckfbrtoh7h586GA==
   dependencies:
     "@types/react" "^18.2.79"
     "@types/react-dom" "^18.2.25"
-    "@wordpress/escape-html" "^3.36.0"
+    "@wordpress/escape-html" "^3.37.0"
     change-case "^4.1.2"
     is-plain-object "^5.0.0"
     react "^18.3.0"
     react-dom "^18.3.0"
 
-"@wordpress/escape-html@^3.36.0":
-  version "3.36.0"
-  resolved "https://registry.npmjs.org/@wordpress/escape-html/-/escape-html-3.36.0.tgz"
-  integrity sha512-0FvvlVPv+7X8lX5ExcTh6ib/xckGIuVXdnHglR3rZC1MJI682cx4JRUR0Igk6nKyPS8UiSQCKtN3U1aSPtZaCg==
+"@wordpress/escape-html@^3.37.0":
+  version "3.37.0"
+  resolved "https://registry.npmjs.org/@wordpress/escape-html/-/escape-html-3.37.0.tgz"
+  integrity sha512-hJ2yytDPaZ7Gx+Zj+1iUBzZYED+323MTFbkpydJecWA48K+cNyutEEuHPi9bzmJXirI0YSnkN5i1tZoYQPTiGQ==
 
 "@wordpress/eslint-plugin@^22.19.0":
   version "22.19.0"
@@ -3079,12 +3079,12 @@
     tannin "^1.2.0"
 
 "@wordpress/icons@^11.3.0":
-  version "11.3.0"
-  resolved "https://registry.npmjs.org/@wordpress/icons/-/icons-11.3.0.tgz"
-  integrity sha512-ortBmmzg0855houBuJyR1v1WgKjUiPzBTGUbzOAEeNlOoisXaQO0hLIL7L8vFcd2L46i8PQHPvwpL5ifFTSC+g==
+  version "11.4.0"
+  resolved "https://registry.npmjs.org/@wordpress/icons/-/icons-11.4.0.tgz"
+  integrity sha512-3sis5bwTyDOrLy83Mp799NNJuEgbTOWwHpxnGNmabEDA3BbBYPnr0soSGSFe201nqNKiVwL/TcpRaQ91SoEHTQ==
   dependencies:
-    "@wordpress/element" "^6.36.0"
-    "@wordpress/primitives" "^4.36.0"
+    "@wordpress/element" "^6.37.0"
+    "@wordpress/primitives" "^4.37.0"
 
 "@wordpress/jest-console@^8.33.0":
   version "8.33.0"
@@ -3120,12 +3120,12 @@
   resolved "https://registry.npmjs.org/@wordpress/prettier-config/-/prettier-config-4.33.0.tgz"
   integrity sha512-PRNb10ouWjg52yeWHTXlaZqkuHMSHlKq9Risg368f5fWU7akDJgZboiD6jVdtv+iGXdFRlI5oRF31wqArzNykA==
 
-"@wordpress/primitives@^4.36.0":
-  version "4.36.0"
-  resolved "https://registry.npmjs.org/@wordpress/primitives/-/primitives-4.36.0.tgz"
-  integrity sha512-Y/5Vkd/oAFNVe/dJpnpfnJ/ar4uWorCD0DAWglpFktNSAJfD3cqVbchJ6zNzqwXG9lR+7yqeh7ZHsmp2juoy3Q==
+"@wordpress/primitives@^4.37.0":
+  version "4.37.0"
+  resolved "https://registry.npmjs.org/@wordpress/primitives/-/primitives-4.37.0.tgz"
+  integrity sha512-iPpiS1tu1U5cXxVW6CQ45rqdnIc4Ev5FGyicuuaru0wboC+d2CwoNHxPFDOOpGL16yp8OfSDA13vQY3MJHw7QA==
   dependencies:
-    "@wordpress/element" "^6.36.0"
+    "@wordpress/element" "^6.37.0"
     clsx "^2.1.1"
 
 "@wordpress/scripts@^30.23.0":
@@ -4615,7 +4615,7 @@ core-js-pure@^3.23.3:
   resolved "https://registry.npmjs.org/core-js-pure/-/core-js-pure-3.46.0.tgz"
   integrity sha512-NMCW30bHNofuhwLhYPt66OLOKTMbOhgTTatKVbaQC3KRHpTCiRIBYvtshr+NBYSnBxwAFhjW/RfJ0XbIjS16rw==
 
-core-js@^3.31.0:
+core-js@^3.31.0, core-js@^3.45.1:
   version "3.46.0"
   resolved "https://registry.npmjs.org/core-js/-/core-js-3.46.0.tgz"
   integrity sha512-vDMm9B0xnqqZ8uSBpZ8sNtRtOdmfShrvT6h2TuQGLs0Is+cR0DYbj/KWP6ALVNbWPpqA/qPLoOuppJN07humpA==
@@ -5014,6 +5014,11 @@ csstype@^3.0.2, csstype@^3.2.2:
   version "3.2.3"
   resolved "https://registry.npmjs.org/csstype/-/csstype-3.2.3.tgz"
   integrity sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==
+
+custom-event-polyfill@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.npmjs.org/custom-event-polyfill/-/custom-event-polyfill-1.0.7.tgz"
+  integrity sha512-TDDkd5DkaZxZFM8p+1I3yAlvM3rSr1wbrOliG4yJiwinMZN8z/iGL7BTlDkrJcYTmgUSb4ywVCc3ZaUtOtC76w==
 
 cwd@^0.10.0:
   version "0.10.0"
@@ -5437,6 +5442,11 @@ elliptic@^6.5.3, elliptic@^6.5.5:
     inherits "^2.0.4"
     minimalistic-assert "^1.0.1"
     minimalistic-crypto-utils "^1.0.1"
+
+embla-carousel@^7.1.0:
+  version "7.1.0"
+  resolved "https://registry.npmjs.org/embla-carousel/-/embla-carousel-7.1.0.tgz"
+  integrity sha512-Bh8Pa8NWzgugLkf8sAGexQlBCNDFaej5BXiKgQdRJ1mUC9NWBrw9Z23YVPVGkguWoz5LMjZXXFVGCobl3UPt/Q==
 
 emittery@^0.13.1:
   version "0.13.1"
@@ -6944,9 +6954,9 @@ html-minifier-terser@^5.1.1:
     terser "^4.6.3"
 
 html-react-parser@^5.2.10:
-  version "5.2.10"
-  resolved "https://registry.npmjs.org/html-react-parser/-/html-react-parser-5.2.10.tgz"
-  integrity sha512-DjOLloguuDA+Ed7Q7PKhvMQmCl2+Yk/pfvvca68fvn15QFBbL4uHGxXwoXQ4sqS0UyuRH2lJb0S8yZCL3lvehQ==
+  version "5.2.11"
+  resolved "https://registry.npmjs.org/html-react-parser/-/html-react-parser-5.2.11.tgz"
+  integrity sha512-WnSQVn/D1UTj64nSz5y8MriL+MrbsZH80Ytr1oqKqs8DGZnphWY1R1pl3t7TY3rpqTSu+FHA21P80lrsmrdNBA==
   dependencies:
     domhandler "5.0.3"
     html-dom-parser "5.1.2"
@@ -7023,15 +7033,7 @@ http-proxy-agent@^5.0.0:
     agent-base "6"
     debug "4"
 
-http-proxy-agent@^7.0.0:
-  version "7.0.2"
-  resolved "https://registry.npmjs.org/http-proxy-agent/-/http-proxy-agent-7.0.2.tgz"
-  integrity sha512-T1gkAiYYDWYx3V5Bmyu7HcfcvL7mUrTWiM6yOfa3PIphViJ/gFPbvidQ+veqSOHci/PxBcDabeUNCzpOODJZig==
-  dependencies:
-    agent-base "^7.1.0"
-    debug "^4.3.4"
-
-http-proxy-agent@^7.0.1:
+http-proxy-agent@^7.0.0, http-proxy-agent@^7.0.1:
   version "7.0.2"
   resolved "https://registry.npmjs.org/http-proxy-agent/-/http-proxy-agent-7.0.2.tgz"
   integrity sha512-T1gkAiYYDWYx3V5Bmyu7HcfcvL7mUrTWiM6yOfa3PIphViJ/gFPbvidQ+veqSOHci/PxBcDabeUNCzpOODJZig==
@@ -8515,6 +8517,11 @@ loader-utils@^2.0.0, loader-utils@^2.0.4:
     emojis-list "^3.0.0"
     json5 "^2.1.2"
 
+loadjs@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.npmjs.org/loadjs/-/loadjs-4.3.0.tgz"
+  integrity sha512-vNX4ZZLJBeDEOBvdr2v/F+0aN5oMuPu7JTqrMwp+DtgK+AryOlpy6Xtm2/HpNr+azEa828oQjOtWsB6iDtSfSQ==
+
 locate-path@^5.0.0:
   version "5.0.0"
   resolved "https://registry.npmjs.org/locate-path/-/locate-path-5.0.0.tgz"
@@ -9758,6 +9765,25 @@ plur@^4.0.0:
   dependencies:
     irregular-plurals "^3.2.0"
 
+plyr-react@^5.3.0:
+  version "5.3.0"
+  resolved "https://registry.npmjs.org/plyr-react/-/plyr-react-5.3.0.tgz"
+  integrity sha512-m36/HrpHwg1N2rq3E31E8/kpAH55vk6qHUg17MG4uu9jbWYxnkN39lLmZQwxW7/qpDPfW5aGUJ6R3u23V0R3zA==
+  dependencies:
+    plyr "^3.7.7"
+    react-aptor "^2.0.0"
+
+plyr@^3.7.7, plyr@^3.7.8:
+  version "3.8.3"
+  resolved "https://registry.npmjs.org/plyr/-/plyr-3.8.3.tgz"
+  integrity sha512-0+iI5uw0WRvtKBpgPCkmQQv7ucHVQKTEo6UFJjgJ8cy/JZhy0dQqshHQVitHXV6l2O3MzhgnuvQ95VSkWcWeSw==
+  dependencies:
+    core-js "^3.45.1"
+    custom-event-polyfill "^1.0.7"
+    loadjs "^4.3.0"
+    rangetouch "^2.0.1"
+    url-polyfill "^1.1.13"
+
 po2json@^1.0.0-beta-3:
   version "1.0.0-beta-3"
   resolved "https://registry.npmjs.org/po2json/-/po2json-1.0.0-beta-3.tgz"
@@ -10553,6 +10579,11 @@ range-parser@^1.2.1, range-parser@~1.2.1:
   resolved "https://registry.npmjs.org/range-parser/-/range-parser-1.2.1.tgz"
   integrity sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==
 
+rangetouch@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.npmjs.org/rangetouch/-/rangetouch-2.0.1.tgz"
+  integrity sha512-sln+pNSc8NGaHoLzwNBssFSf/rSYkqeBXzX1AtJlkJiUaVSJSbRAWJk+4omsXkN+EJalzkZhWQ3th1m0FpR5xA==
+
 raw-body@~1.1.0:
   version "1.1.7"
   resolved "https://registry.npmjs.org/raw-body/-/raw-body-1.1.7.tgz"
@@ -10570,6 +10601,11 @@ raw-body@2.5.2:
     http-errors "2.0.0"
     iconv-lite "0.4.24"
     unpipe "1.0.0"
+
+react-aptor@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.npmjs.org/react-aptor/-/react-aptor-2.0.0.tgz"
+  integrity sha512-YnCayokuhAwmBBP4Oc0bbT2l6ApfsjbY3DEEVUddIKZEBlGl1npzjHHzWnSqWuboSbMZvRqUM01Io9yiIp1wcg==
 
 react-dom@^18.0.0, react-dom@^18.3.0:
   version "18.3.1"
@@ -10599,7 +10635,7 @@ react-refresh@^0.14.0, "react-refresh@>=0.10.0 <1.0.0":
   resolved "https://registry.npmjs.org/react-refresh/-/react-refresh-0.14.2.tgz"
   integrity sha512-jCvmsr+1IUSMUyzOkRcvnVbX3ZYC6g9TDrDbFuFmRDq7PD4yaGbLKNQL6k2jnArV8hjYxh7hVhAZB6s9HDGpZA==
 
-react@^18.0.0, react@^18.3.0, react@^18.3.1, "react@0.14 || 15 || 16 || 17 || 18 || 19":
+react@^18.0.0, react@^18.3.0, react@^18.3.1, react@>=16.8, "react@0.14 || 15 || 16 || 17 || 18 || 19":
   version "18.3.1"
   resolved "https://registry.npmjs.org/react/-/react-18.3.1.tgz"
   integrity sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==
@@ -11020,12 +11056,7 @@ safe-buffer@^5.0.1, safe-buffer@^5.1.0, safe-buffer@^5.1.1, safe-buffer@^5.1.2, 
   resolved "https://registry.npmjs.org/safe-buffer/-/safe-buffer-5.2.1.tgz"
   integrity sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ==
 
-safe-buffer@~5.1.0:
-  version "5.1.2"
-  resolved "https://registry.npmjs.org/safe-buffer/-/safe-buffer-5.1.2.tgz"
-  integrity sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g==
-
-safe-buffer@~5.1.1:
+safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   version "5.1.2"
   resolved "https://registry.npmjs.org/safe-buffer/-/safe-buffer-5.1.2.tgz"
   integrity sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g==
@@ -11703,14 +11734,14 @@ streamx@^2.15.0, streamx@^2.21.0:
     fast-fifo "^1.3.2"
     text-decoder "^1.1.0"
 
-string_decoder@^1.0.0, string_decoder@^1.1.1, string_decoder@~1.1.1:
+string_decoder@^1.0.0, string_decoder@~1.1.1:
   version "1.1.1"
   resolved "https://registry.npmjs.org/string_decoder/-/string_decoder-1.1.1.tgz"
   integrity sha512-n/ShnvDi6FHbbVfviro+WojiFzv+s8MPMHBczVePfUpDJLwoLT0ht1l4YwBCbi8pJAveEEdnkHyPyTP/mzRfwg==
   dependencies:
     safe-buffer "~5.1.0"
 
-string_decoder@^1.3.0:
+string_decoder@^1.1.1, string_decoder@^1.3.0:
   version "1.3.0"
   resolved "https://registry.npmjs.org/string_decoder/-/string_decoder-1.3.0.tgz"
   integrity sha512-hkRX8U1WjJFd8LsDJ2yQ/wWWxaopEsABU1XfkM8A+j0+85JAGppt16cr1Whg6KIbb4okU6Mql6BOj+uup/wKeA==
@@ -12550,6 +12581,11 @@ url-parse@^1.5.3:
   dependencies:
     querystringify "^2.1.1"
     requires-port "^1.0.0"
+
+url-polyfill@^1.1.13:
+  version "1.1.14"
+  resolved "https://registry.npmjs.org/url-polyfill/-/url-polyfill-1.1.14.tgz"
+  integrity sha512-p4f3TTAG6ADVF3mwbXw7hGw+QJyw5CnNGvYh5fCuQQZIiuKUswqcznyV3pGDP9j0TSmC4UvRKm8kl1QsX1diiQ==
 
 url@^0.11.0:
   version "0.11.4"

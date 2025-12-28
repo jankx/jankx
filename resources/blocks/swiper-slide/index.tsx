@@ -12,7 +12,7 @@ registerBlockType(metadata.name, {
   save: ({ attributes }: SwiperSlideProps) => {
     const { imageSize = 'cover' } = attributes;
     const blockProps = useBlockProps.save({
-      className: `swiper-slide image-size-${imageSize}`,
+      className: `embla__slide image-size-${imageSize}`,
       'data-image-size': imageSize
     });
     return (

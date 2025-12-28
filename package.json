@@ -8,8 +8,9 @@
         "hot": "mix watch --hot",
         "build:prod": "npm run production",
         "production": "mix --production",
-        "build:webpack": "webpack --mode=production --config resources/webpack.config.js",
-        "build": "run-p build:*",
+    "build:webpack": "webpack --mode=production --config resources/webpack.config.js",
+    "build:blocks": "webpack --mode=production --config resources/webpack.config.js",
+    "build": "run-p build:*",
         "i18n:pot:php": "wp-pot --src '**/*.php' --dest-file languages/jankx.pot --domain jankx --package \"Jankx Framework\"",
         "i18n:pot": "npm run i18n:pot:php",
         "i18n:update": "node -e \"require('child_process').execSync('\\\"C:\\\\Program Files\\\\Git\\\\usr\\\\bin\\\\msgmerge.exe\\\" --update --backup=none languages/jankx-vi.po languages/jankx.pot', {stdio: 'inherit'})\"",
@@ -44,15 +45,16 @@
         "webpack-remove-empty-scripts": "^1.1.1",
         "wp-pot-cli": "^1.5.0"
     },
-    "dependencies": {
-        "@wordpress/icons": "^11.3.0",
-        "classnames": "^2.5.1",
-        "fuse.js": "^7.1.0",
-        "html-react-parser": "^5.2.10",
-        "micromodal": "^0.6.1",
-        "plyr": "^3.7.8",
-        "plyr-react": "^5.3.0",
-        "swiper": "^12.0.3",
-        "vanilla-sharing": "^6.1.2"
-    }
+  "dependencies": {
+    "@wordpress/icons": "^11.3.0",
+    "classnames": "^2.5.1",
+    "fuse.js": "^7.1.0",
+    "html-react-parser": "^5.2.10",
+    "micromodal": "^0.6.1",
+    "plyr": "^3.7.8",
+    "plyr-react": "^5.3.0",
+    "embla-carousel": "^7.1.0",
+    "swiper": "^12.0.3",
+    "vanilla-sharing": "^6.1.2"
+  }
 }

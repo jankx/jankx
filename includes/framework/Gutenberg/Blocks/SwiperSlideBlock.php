@@ -32,7 +32,7 @@ class SwiperSlideBlock extends Block
         $class_name = $attributes['className'] ?? '';
 
         // Build wrapper classes
-        $wrapper_classes = ['swiper-slide'];
+        $wrapper_classes = ['embla__slide'];
         if (!empty($image_size)) {
             $wrapper_classes[] = 'image-size-' . esc_attr($image_size);
         }

@@ -1,14 +1,14 @@
 // Swiper Block Styles
 // Import Swiper CSS from npm package
-@use '~swiper/css/bundle';
 
 .wp-block-jankx-swiper {
   position: relative;
 
-         .swiper {
+         .embla {
            width: 100%;
            // PC: height cứng
            height: var(--swiper-height, 50px);
+           overflow: hidden;
 
            // Tablet và mobile: max-height với auto adjustment
            @media (max-width: 1024px) {
@@ -18,28 +18,36 @@
            }
          }
 
-  .swiper-wrapper {
+  .embla__container {
     display: flex;
     height: 100%;
+    gap: var(--space-between, 30px);
+    will-change: transform;
   }
 
-  .swiper-overlay-layer {
-    position: absolute;
-    inset: 0;
-    z-index: 10;
-    pointer-events: auto;
-  }
-
-  .swiper-slide {
+  .embla__slide {
     flex-shrink: 0;
-    width: 100%;
+    width: auto;
     height: 100%;
     position: relative;
+    flex: 0 0 calc((100% - (var(--space-between, 30px) * (var(--slides-per-view-desktop, 1) - 1))) / var(--slides-per-view-desktop, 1));
+  }
+
+  @media (max-width: 1024px) {
+    .embla__slide {
+      flex: 0 0 calc((100% - (var(--space-between, 24px) * (var(--slides-per-view-tablet, 1) - 1))) / var(--slides-per-view-tablet, 1));
+    }
+  }
+
+  @media (max-width: 768px) {
+    .embla__slide {
+      flex: 0 0 calc((100% - (var(--space-between, 16px) * (var(--slides-per-view-mobile, 1) - 1))) / var(--slides-per-view-mobile, 1));
+    }
   }
 
   // Banner variation should size by content instead of fixed height
   &.is-style-banner {
-    .swiper {
+    .embla {
       height: auto;
       min-height: var(--swiper-min-height, 500px);
     }
@@ -48,14 +56,14 @@
   // Gradient Overlay Styles
   &.has-gradient-overlay {
     // Prevent hover darkening conflicts with overlay
-    .swiper-slide:hover {
+    .embla__slide:hover {
       opacity: 1;
     }
     // Confine overlay within slide box to avoid visual glitches
-    .swiper-slide {
+    .embla__slide {
       overflow: hidden;
     }
-    .swiper-slide {
+    .embla__slide {
       &::after {
         content: '';
         position: absolute;
@@ -98,8 +106,7 @@
   }
 
   // Navigation buttons
-  .swiper-button-prev,
-  .swiper-button-next {
+  .embla__button {
     color: var(--wp--preset--color--contrast, #000);
 
     &::after {
@@ -109,7 +116,7 @@
 
     // Banner variation specific styles
   &.is-style-banner {
-    .swiper-banner {
+    .embla-banner {
       width: 100%;
       height: 100%;
       display: flex;
@@ -132,61 +139,60 @@
 
   // Style Variations
   &.is-style-banner {
-    .swiper-slide {
+    .embla__slide {
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
     }
 
-    .swiper-pagination-bullet {
+    .embla__dot {
       background: rgba(255, 255, 255, 0.6);
       width: 12px;
       height: 12px;
 
-      &.swiper-pagination-bullet-active {
+      &.is-active {
         background: rgba(255, 255, 255, 1);
       }
     }
   }
 
   &.is-style-carousel {
-    .swiper {
+    .embla {
       padding: 20px 0 50px;
       overflow: visible;
     }
 
-    .swiper-wrapper {
+    .embla__container {
       align-items: stretch;
     }
 
-    .swiper-slide {
+    .embla__slide {
       height: auto;
       padding: 0 10px;
       opacity: 0.7;
       transition: opacity 0.3s ease, transform 0.3s ease;
       transform: scale(0.95);
 
-      &.swiper-slide-active {
+      &.is-active {
         opacity: 1;
         transform: scale(1);
         z-index: 1;
       }
 
       // Hover effect for better UX
-      &:hover:not(.swiper-slide-active) {
+      &:hover:not(.is-active) {
         opacity: 0.85;
       }
     }
 
     // Ensure slides content displays properly
-    .swiper-slide > * {
+    .embla__slide > * {
       width: 100%;
       height: 100%;
     }
 
-    .swiper-button-prev,
-    .swiper-button-next {
+    .embla__button {
       background: rgba(0, 0, 0, 0.7);
       border-radius: 50%;
       width: 44px;
@@ -222,18 +228,18 @@
       }
     }
 
-    .swiper-pagination {
+    .embla__dots {
       bottom: 10px;
       position: absolute;
 
-      .swiper-pagination-bullet {
+      .embla__dot {
         width: 10px;
         height: 10px;
         margin: 0 6px;
         background: rgba(0, 0, 0, 0.4);
         transition: all 0.3s ease;
 
-        &-active {
+        &.is-active {
           background: rgba(0, 0, 0, 0.8);
           transform: scale(1.2);
         }
@@ -242,37 +248,37 @@
 
     // Responsive adjustments
     @media (max-width: 768px) {
-      .swiper {
+      .embla {
         padding: 15px 0 40px;
       }
 
-      .swiper-slide {
+      .embla__slide {
         padding: 0 8px;
         opacity: 0.8;
 
-        &.swiper-slide-active {
+        &.is-active {
           opacity: 1;
         }
       }
     }
 
     @media (max-width: 480px) {
-      .swiper {
+      .embla {
         padding: 10px 0 35px;
       }
 
-      .swiper-slide {
+      .embla__slide {
         padding: 0 5px;
       }
     }
   }
 
   &.is-style-testimonial {
-    .swiper {
+    .embla {
       padding: 40px 0;
     }
 
-    .swiper-slide {
+    .embla__slide {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -281,8 +287,7 @@
       padding: 20px 40px;
     }
 
-    .swiper-button-prev,
-    .swiper-button-next {
+    .embla__button {
       color: var(--wp--preset--color--contrast, #666);
       width: 40px;
       height: 40px;
@@ -298,17 +303,17 @@
       }
     }
 
-    .swiper-pagination {
+    .embla__dots {
       position: relative;
       margin-top: 30px;
 
-      .swiper-pagination-bullet {
+      .embla__dot {
         width: 12px;
         height: 12px;
         margin: 0 8px;
         opacity: 0.3;
 
-        &.swiper-pagination-bullet-active {
+        &.is-active {
           opacity: 1;
           width: 30px;
           border-radius: 6px;

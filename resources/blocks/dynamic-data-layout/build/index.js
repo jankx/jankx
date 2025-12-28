@@ -1662,8 +1662,16 @@ function Save({
   const inlineStyle = {
     '--columns-desktop': columns,
     '--columns-tablet': columnsTablet,
-    '--columns-mobile': columnsMobile
+    '--columns-mobile': columnsMobile,
+    '--slides-per-view': columns,
+    '--space-between': '16px'
   };
+
+  // Add carousel specific styles if layout is carousel
+  if (layout === 'carousel') {
+    inlineStyle['--slides-per-view'] = columns;
+    inlineStyle['--space-between'] = '16px';
+  }
   if (styleColor) {
     // background may be either a string or an object { color: string, slug? }
     const bg = typeof styleColor.background === 'object' ? styleColor.background?.color : styleColor.background;
@@ -1680,13 +1688,31 @@ function Save({
       delete inlineStyle.backgroundColor;
     }
   }
+
+  // Add data attributes for carousel
+  const dataAttributes = {
+    'data-layout': layout,
+    'data-slides-per-view': columns,
+    'data-space-between': '16'
+  };
+  if (layout === 'carousel') {
+    dataAttributes['data-autoplay'] = attributes.autoplay || false;
+    dataAttributes['data-autoplay-delay'] = attributes.autoplayDelay || 3000;
+    dataAttributes['data-slides-per-view'] = columns;
+    dataAttributes['data-space-between'] = '16';
+    dataAttributes['data-loop'] = attributes.loop || false;
+  }
   const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.useBlockProps.save({
     className,
-    style: inlineStyle
+    style: inlineStyle,
+    ...dataAttributes
   });
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
     ...blockProps,
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.InnerBlocks.Content, {})
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+      className: `carousel-container ${layout === 'carousel' ? 'is-carousel' : ''}`,
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.InnerBlocks.Content, {})
+    })
   });
 }
 

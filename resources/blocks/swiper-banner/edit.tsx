@@ -32,7 +32,7 @@ export default function Edit({ attributes, setAttributes }: SwiperBannerProps): 
   } = attributes;
 
   const blockProps = useBlockProps({
-    className: `swiper-slide swiper-banner swiper-banner--${bannerStyle} text-${textAlign} text-position-${textPosition} image-size-${imageSize}`
+    className: `embla__slide embla-banner embla-banner--${bannerStyle} text-${textAlign} text-position-${textPosition} image-size-${imageSize}`
   });
 
   const onSelectImage = (media: any) => {
@@ -98,12 +98,12 @@ export default function Edit({ attributes, setAttributes }: SwiperBannerProps): 
 
     return (
       <div 
-        className={`swiper-banner__image image-size-${imageSize}`}
+        className={`embla-banner__image image-size-${imageSize}`}
         style={imageStyles}
       >
         {showCaption && imageCaption && (
-          <div className="swiper-banner__caption">
-            <div className="swiper-banner__caption-content">
+          <div className="embla-banner__caption">
+            <div className="embla-banner__caption-content">
               {imageCaption}
             </div>
           </div>

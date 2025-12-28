@@ -22,6 +22,7 @@ class DynamicSsrLayoutBlock extends Block
     public function init()
     {
         add_action('enqueue_block_editor_assets', [$this, 'enqueueEditorAssets'], 20);
+        add_action('wp_enqueue_scripts', [$this, 'enqueueFrontendAssets']);
         add_filter('render_block_data', [$this, 'normalizeBlockAttributes'], 10, 1);
         add_filter('jankx_dynamic_ssr_layout_filter_update', [$this, 'handleFilterUpdate'], 10, 2);
         add_filter('jankx_dynamic_ssr_layout_get_block_attributes', [$this, 'handleGetBlockAttributes'], 10, 3);
@@ -32,6 +33,34 @@ class DynamicSsrLayoutBlock extends Block
         add_action('wp_ajax_jankx_posts_count', [$this, 'ajaxPostsCount']);
         add_action('wp_ajax_nopriv_jankx_posts_count', [$this, 'ajaxPostsCount']);
         $this->ensureServices();
+    }
+    
+    public function enqueueFrontendAssets()
+    {
+        // Only enqueue on frontend
+        if (is_admin()) {
+            return;
+        }
+
+        $block_name = str_replace('jankx/', '', $this->blockId);
+        $view_js_url = $this->blockPath . '/build/view.js';
+
+        if (file_exists($view_js_url)) {
+            $asset_file = $this->blockPath . '/build/view.asset.php';
+            $asset = file_exists($asset_file) ? require $asset_file : [
+                'dependencies' => [],
+                'version' => filemtime($view_js_url)
+            ];
+
+            $handle = 'jankx-' . str_replace('/', '-', $block_name) . '-view';
+            wp_enqueue_script(
+                $handle,
+                content_url(str_replace(WP_CONTENT_DIR, '', $view_js_url)),
+                $asset['dependencies'],
+                $asset['version'],
+                true
+            );
+        }
     }
 
     protected function ensureServices(): void

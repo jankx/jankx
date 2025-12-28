@@ -1,7 +1,7 @@
 /*!************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/swiper-banner/style.scss ***!
   \************************************************************************************************************************************************************************************************/
-.swiper-banner {
+.embla-banner {
   position: relative;
   overflow: hidden;
   border-radius: inherit;
@@ -9,7 +9,7 @@
   height: 100%;
   min-height: 200px;
 }
-.swiper-banner__image {
+.embla-banner__image {
   position: relative;
   width: 100%;
   height: 100%;
@@ -20,131 +20,131 @@
   align-items: center;
   justify-content: center;
 }
-.swiper-banner__image.image-size-contain {
+.embla-banner__image.image-size-contain {
   background-size: contain;
 }
-.swiper-banner__image.image-size-cover {
+.embla-banner__image.image-size-cover {
   background-size: cover;
 }
-.swiper-banner__image.image-size-fullwidth {
+.embla-banner__image.image-size-fullwidth {
   background-size: 100% 100% !important;
   background-position: center !important;
 }
-.swiper-banner__caption {
+.embla-banner__caption {
   position: relative;
   z-index: 2;
   padding: 2rem;
   max-width: 80%;
 }
-.swiper-banner__caption-content {
+.embla-banner__caption-content {
   color: white;
   font-size: 1.5rem;
   font-weight: 600;
   line-height: 1.4;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
-.swiper-banner__link {
+.embla-banner__link {
   display: block;
   width: 100%;
   height: 100%;
   text-decoration: none;
   color: inherit;
 }
-.swiper-banner--banner .swiper-banner__caption-content {
+.embla-banner--banner .embla-banner__caption-content {
   font-size: 2rem;
   font-weight: 700;
 }
-.swiper-banner--circles {
+.embla-banner--circles {
   border-radius: 50%;
   aspect-ratio: 1;
   flex-shrink: 0;
 }
-.swiper-banner--circles .swiper-banner__image {
+.embla-banner--circles .embla-banner__image {
   border-radius: 50%;
 }
-.swiper-banner--circles .swiper-banner__caption-content {
+.embla-banner--circles .embla-banner__caption-content {
   font-size: 1.2rem;
   text-align: center;
 }
-.swiper-banner--square {
+.embla-banner--square {
   aspect-ratio: 1;
 }
-.swiper-banner--square .swiper-banner__image {
+.embla-banner--square .embla-banner__image {
   border-radius: 8px;
 }
-.swiper-banner--square .swiper-banner__caption-content {
+.embla-banner--square .embla-banner__caption-content {
   font-size: 1.3rem;
 }
-.swiper-banner.text-left .swiper-banner__caption {
+.embla-banner.text-left .embla-banner__caption {
   justify-content: flex-start;
   text-align: left;
 }
-.swiper-banner.text-center .swiper-banner__caption {
+.embla-banner.text-center .embla-banner__caption {
   justify-content: center;
   text-align: center;
 }
-.swiper-banner.text-right .swiper-banner__caption {
+.embla-banner.text-right .embla-banner__caption {
   justify-content: flex-end;
   text-align: right;
 }
-.swiper-banner.text-position-top .swiper-banner__caption {
+.embla-banner.text-position-top .embla-banner__caption {
   align-items: flex-start;
   padding-top: 1rem;
 }
-.swiper-banner.text-position-middle .swiper-banner__caption {
+.embla-banner.text-position-middle .embla-banner__caption {
   align-items: center;
 }
-.swiper-banner.text-position-bottom .swiper-banner__caption {
+.embla-banner.text-position-bottom .embla-banner__caption {
   align-items: flex-end;
   padding-bottom: 1rem;
 }
-.swiper-banner.image-size-contain .swiper-banner__image {
+.embla-banner.image-size-contain .embla-banner__image {
   background-size: contain !important;
 }
-.swiper-banner.image-size-cover .swiper-banner__image {
+.embla-banner.image-size-cover .embla-banner__image {
   background-size: cover !important;
 }
-.swiper-banner.image-size-fullwidth .swiper-banner__image {
+.embla-banner.image-size-fullwidth .embla-banner__image {
   background-size: 100% 100% !important;
   background-position: center !important;
 }
 
 @media (max-width: 768px) {
-  .swiper-banner__caption {
+  .embla-banner__caption {
     padding: 1rem;
     max-width: 90%;
   }
-  .swiper-banner__caption-content {
+  .embla-banner__caption-content {
     font-size: 1.2rem;
   }
-  .swiper-banner--banner .swiper-banner__caption-content {
+  .embla-banner--banner .embla-banner__caption-content {
     font-size: 1.5rem;
   }
-  .swiper-banner--circles .swiper-banner__caption-content {
+  .embla-banner--circles .embla-banner__caption-content {
     font-size: 1rem;
   }
-  .swiper-banner--square .swiper-banner__caption-content {
+  .embla-banner--square .embla-banner__caption-content {
     font-size: 1.1rem;
   }
 }
 @media (max-width: 480px) {
-  .swiper-banner__caption {
+  .embla-banner__caption {
     padding: 0.75rem;
   }
-  .swiper-banner__caption-content {
+  .embla-banner__caption-content {
     font-size: 1rem;
   }
-  .swiper-banner--banner .swiper-banner__caption-content {
+  .embla-banner--banner .embla-banner__caption-content {
     font-size: 1.2rem;
   }
 }
-.block-editor-block-list__layout .swiper-banner {
+.block-editor-block-list__layout .embla-banner {
   min-height: 200px;
 }
 /*!*************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/swiper-banner/editor.scss ***!
   \*************************************************************************************************************************************************************************************************/
-.swiper-banner .components-placeholder {
+.embla-banner .components-placeholder {
   min-height: 200px;
   border: 2px dashed #ccc;
   border-radius: 8px;
@@ -153,18 +153,18 @@
   justify-content: center;
   background: #f9f9f9;
 }
-.swiper-banner .components-placeholder .components-placeholder__label {
+.embla-banner .components-placeholder .components-placeholder__label {
   font-size: 16px;
   font-weight: 600;
   color: #666;
   margin-bottom: 10px;
 }
-.swiper-banner .components-placeholder .components-placeholder__instructions {
+.embla-banner .components-placeholder .components-placeholder__instructions {
   color: #999;
   font-size: 14px;
   margin-bottom: 15px;
 }
-.swiper-banner__image {
+.embla-banner__image {
   position: relative;
   min-height: 200px;
   background-size: cover;
@@ -174,83 +174,83 @@
   align-items: center;
   justify-content: center;
 }
-.swiper-banner__image.image-size-contain {
+.embla-banner__image.image-size-contain {
   background-size: contain;
 }
-.swiper-banner__image.image-size-cover {
+.embla-banner__image.image-size-cover {
   background-size: cover;
 }
-.swiper-banner__image.image-size-fullwidth {
+.embla-banner__image.image-size-fullwidth {
   background-size: 100% 100% !important;
   background-position: center !important;
 }
-.swiper-banner__caption {
+.embla-banner__caption {
   position: relative;
   z-index: 2;
   padding: 2rem;
   max-width: 80%;
 }
-.swiper-banner__caption-content {
+.embla-banner__caption-content {
   color: white;
   font-size: 1.5rem;
   font-weight: 600;
   line-height: 1.4;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
-.swiper-banner--banner .swiper-banner__caption-content {
+.embla-banner--banner .embla-banner__caption-content {
   font-size: 2rem;
   font-weight: 700;
 }
-.swiper-banner--circles {
+.embla-banner--circles {
   border-radius: 50%;
   aspect-ratio: 1;
 }
-.swiper-banner--circles .swiper-banner__image {
+.embla-banner--circles .embla-banner__image {
   border-radius: 50%;
 }
-.swiper-banner--circles .swiper-banner__caption-content {
+.embla-banner--circles .embla-banner__caption-content {
   font-size: 1.2rem;
   text-align: center;
 }
-.swiper-banner--square {
+.embla-banner--square {
   aspect-ratio: 1;
 }
-.swiper-banner--square .swiper-banner__image {
+.embla-banner--square .embla-banner__image {
   border-radius: 8px;
 }
-.swiper-banner--square .swiper-banner__caption-content {
+.embla-banner--square .embla-banner__caption-content {
   font-size: 1.3rem;
 }
-.swiper-banner.text-left .swiper-banner__caption {
+.embla-banner.text-left .embla-banner__caption {
   justify-content: flex-start;
   text-align: left;
 }
-.swiper-banner.text-center .swiper-banner__caption {
+.embla-banner.text-center .embla-banner__caption {
   justify-content: center;
   text-align: center;
 }
-.swiper-banner.text-right .swiper-banner__caption {
+.embla-banner.text-right .embla-banner__caption {
   justify-content: flex-end;
   text-align: right;
 }
-.swiper-banner.text-position-top .swiper-banner__caption {
+.embla-banner.text-position-top .embla-banner__caption {
   align-items: flex-start;
   padding-top: 1rem;
 }
-.swiper-banner.text-position-middle .swiper-banner__caption {
+.embla-banner.text-position-middle .embla-banner__caption {
   align-items: center;
 }
-.swiper-banner.text-position-bottom .swiper-banner__caption {
+.embla-banner.text-position-bottom .embla-banner__caption {
   align-items: flex-end;
   padding-bottom: 1rem;
 }
-.swiper-banner.image-size-contain .swiper-banner__image {
+.embla-banner.image-size-contain .embla-banner__image {
   background-size: contain !important;
 }
-.swiper-banner.image-size-cover .swiper-banner__image {
+.embla-banner.image-size-cover .embla-banner__image {
   background-size: cover !important;
 }
-.swiper-banner.image-size-fullwidth .swiper-banner__image {
+.embla-banner.image-size-fullwidth .embla-banner__image {
   background-size: 100% 100% !important;
   background-position: center !important;
 }
@@ -283,20 +283,20 @@
 }
 
 @media (max-width: 768px) {
-  .swiper-banner__caption {
+  .embla-banner__caption {
     padding: 1rem;
     max-width: 90%;
   }
-  .swiper-banner__caption-content {
+  .embla-banner__caption-content {
     font-size: 1.2rem;
   }
-  .swiper-banner--banner .swiper-banner__caption-content {
+  .embla-banner--banner .embla-banner__caption-content {
     font-size: 1.5rem;
   }
-  .swiper-banner--circles .swiper-banner__caption-content {
+  .embla-banner--circles .embla-banner__caption-content {
     font-size: 1rem;
   }
-  .swiper-banner--square .swiper-banner__caption-content {
+  .embla-banner--square .embla-banner__caption-content {
     font-size: 1.1rem;
   }
 }

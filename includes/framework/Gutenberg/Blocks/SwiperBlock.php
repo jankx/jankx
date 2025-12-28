@@ -74,12 +74,13 @@ class SwiperBlock extends Block
 
         // Build style string
         $style_string = sprintf(
-            '--swiper-height: %dpx; --swiper-min-height: %dpx; --slides-per-view-desktop: %d; --slides-per-view-tablet: %d; --slides-per-view-mobile: %d;',
+            '--swiper-height: %dpx; --swiper-min-height: %dpx; --slides-per-view-desktop: %d; --slides-per-view-tablet: %d; --slides-per-view-mobile: %d; --space-between: %dpx;',
             $height,
             $min_height,
             $slides_per_view,
             $slides_per_view_tablet,
-            $slides_per_view_mobile
+            $slides_per_view_mobile,
+            $space_between
         );
 
         $wrapper_attributes = [
@@ -108,7 +109,7 @@ class SwiperBlock extends Block
             $block_wrapper_attrs .= ' class="' . esc_attr($custom_classes) . '"';
         }
 
-        // Build container data attributes for Swiper initialization
+        // Build container data attributes for Embla initialization
         $container_attrs = sprintf(
             'data-slides-per-view="%s" data-slides-per-view-tablet="%s" data-slides-per-view-mobile="%s" data-space-between="%s" data-loop="%s" data-autoplay="%s" data-autoplay-delay="%s" data-speed="%s" data-navigation="%s" data-pagination="%s" data-effect="%s" data-banner-style="%s" data-banner-text-color="%s" data-banner-background-color="%s" data-banner-padding="%s" data-banner-border-radius="%s" data-swiper-height="%s" data-gradient-overlay="%s" data-gradient-color="%s" data-gradient-opacity="%s" data-gradient-height="%s"',
             esc_attr($slides_per_view),
@@ -172,20 +173,20 @@ class SwiperBlock extends Block
         ob_start();
         ?>
         <div <?php echo $block_wrapper_attrs; ?>>
-            <div class="swiper" <?php echo $container_attrs; ?>>
-                <div class="swiper-wrapper">
+            <div class="embla" <?php echo $container_attrs; ?>>
+                <div class="embla__container">
                     <?php echo $slides_content; ?>
                 </div>
 
                 <?php echo $overlay_content; ?>
 
                 <?php if ($navigation) : ?>
-                    <div class="swiper-button-prev"></div>
-                    <div class="swiper-button-next"></div>
+                    <div class="embla__button embla__button--prev"></div>
+                    <div class="embla__button embla__button--next"></div>
                 <?php endif; ?>
 
                 <?php if ($pagination) : ?>
-                    <div class="swiper-pagination"></div>
+                    <div class="embla__dots"></div>
                 <?php endif; ?>
             </div>
         </div>

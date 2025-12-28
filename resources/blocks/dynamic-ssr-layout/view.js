@@ -1,258 +1,360 @@
-// Vanilla JS Carousel with CSS Scroll Snap for Dynamic SSR Layout
+import EmblaCarousel from 'embla-carousel';
 (function() {
+    // Track all carousel instances
+    const carouselInstances = new Map();
+    
     function initCarousel(root) {
-        console.log('initCarousel called with root:', root);
-        const carousels = root ? root.querySelectorAll('.wp-block-jankx-dynamic-ssr-layout.view-type-layout-carousel') : document.querySelectorAll('.wp-block-jankx-dynamic-ssr-layout.view-type-layout-carousel');
+        const carousels = root ? root.querySelectorAll('.wp-block-jankx-dynamic-ssr-layout.view-type-layout-carousel') : 
+                               document.querySelectorAll('.wp-block-jankx-dynamic-ssr-layout.view-type-layout-carousel');
         
-        console.log('Found carousels:', carousels.length);
-        
-        carousels.forEach((carousel, index) => {
-            console.log(`Processing carousel ${index}:`, carousel);
+        carousels.forEach((carousel) => {
+            if (carousel._carouselInitialized) return;
+            
             const container = carousel.querySelector('.carousel-container');
-            if (!container) {
-                console.log('No container found for carousel', carousel);
-                return;
+            if (!container) return;
+            
+            const instanceId = 'carousel-' + Math.random().toString(36).substr(2, 9);
+            const instance = {
+                carousel,
+                container,
+                embla: null,
+                slides: [],
+                autoplayTimeout: null,
+                isPaused: false
+            };
+            
+            instance.slidesPerView = parseInt(carousel.getAttribute('data-slides-per-view')) || 1;
+            instance.spaceBetween = parseInt(carousel.getAttribute('data-space-between')) || 16;
+            instance.autoplay = carousel.getAttribute('data-autoplay') === 'true';
+            instance.autoplayDelay = Math.max(3000, parseInt(carousel.getAttribute('data-autoplay-delay')) || 5000);
+            instance.showArrows = carousel.classList.contains('has-arrows');
+            instance.showDots = carousel.classList.contains('has-dots');
+            
+            container.style.setProperty('--slides-per-view', instance.slidesPerView);
+            container.style.setProperty('--space-between', `${instance.spaceBetween}px`);
+            carousel.style.setProperty('--slides-per-view', instance.slidesPerView);
+            carousel.style.setProperty('--space-between', `${instance.spaceBetween}px`);
+            
+            container.classList.add('embla__viewport');
+            let track = container.querySelector('.embla__container');
+            if (!track) {
+                track = document.createElement('div');
+                track.className = 'embla__container';
+                while (container.firstChild) {
+                    const node = container.firstChild;
+                    if (node.classList && node.classList.contains('carousel-slide')) {
+                        track.appendChild(node);
+                    } else {
+                        const wrapper = document.createElement('div');
+                        wrapper.className = 'carousel-slide';
+                        container.removeChild(node);
+                        wrapper.appendChild(node);
+                        track.appendChild(wrapper);
+                    }
+                }
+                container.appendChild(track);
             }
             
-            // Get configuration from data attributes
-            const slidesPerView = parseInt(carousel.getAttribute('data-slides-per-view')) || 1;
-            const spaceBetween = parseInt(carousel.getAttribute('data-space-between')) || 16;
-            const autoplay = carousel.getAttribute('data-autoplay') === 'true';
-            const autoplayDelay = Math.max(3000, parseInt(carousel.getAttribute('data-autoplay-delay')) || 5000);
-            const showArrows = carousel.classList.contains('has-arrows');
-            const showDots = carousel.classList.contains('has-dots');
+            instance.slides = Array.from(container.querySelectorAll('.carousel-slide'));
             
-            console.log('Carousel config:', {
-                slidesPerView,
-                spaceBetween,
-                autoplay,
-                showArrows,
-                showDots
+            instance.embla = EmblaCarousel(container, {
+                loop: true,
+                duration: 25,
+                align: 'start'
             });
             
-            // Set CSS variables immediately
-            container.style.setProperty('--slides-per-view', slidesPerView);
-            container.style.setProperty('--space-between', `${spaceBetween}px`);
-            carousel.style.setProperty('--slides-per-view', slidesPerView);
-            carousel.style.setProperty('--space-between', `${spaceBetween}px`);
+            carouselInstances.set(container, instance);
+            carousel._carouselInitialized = true;
             
-            console.log('CSS variables set:', {
-                containerSlidesPerView: getComputedStyle(container).getPropertyValue('--slides-per-view'),
-                containerSpaceBetween: getComputedStyle(container).getPropertyValue('--space-between')
-            });
-            
-            // Force layout recalculation
-            container.style.display = 'flex';
-            container.style.width = '100%';
-            
-            // Create navigation buttons
-            if (showArrows) {
-                createNavigationButtons(carousel, container);
+            if (instance.showArrows) {
+                // Use existing navigation if present, otherwise create
+                const prevExisting = carousel.querySelector('.carousel-prev');
+                const nextExisting = carousel.querySelector('.carousel-next');
+                if (prevExisting && nextExisting) {
+                    prevExisting.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        instance.embla.scrollPrev();
+                        resetAutoplay(instance);
+                    }, { passive: true });
+                    nextExisting.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        instance.embla.scrollNext();
+                        resetAutoplay(instance);
+                    }, { passive: true });
+                    instance.prevBtn = prevExisting;
+                    instance.nextBtn = nextExisting;
+                } else {
+                    createNavigationButtons(carousel, container, instance);
+                }
             }
             
-            // Create pagination dots
-            if (showDots) {
-                createPaginationDots(carousel, container);
+            if (instance.showDots) {
+                // Use existing dots container if present
+                const dotsExisting = carousel.querySelector('.carousel-dots');
+                if (dotsExisting) {
+                    instance.dotsContainer = dotsExisting;
+                    // Populate dots based on slide count
+                    const slides = instance.embla.slideNodes();
+                    const totalSlides = slides.length;
+                    const dotsCount = Math.ceil(totalSlides / instance.slidesPerView);
+                    dotsExisting.innerHTML = '';
+                    for (let i = 0; i < dotsCount; i++) {
+                        const dot = document.createElement('button');
+                        dot.className = 'carousel-dot';
+                        dot.setAttribute('role', 'tab');
+                        dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+                        dot.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+                        dot.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            instance.embla.scrollTo(i * instance.slidesPerView);
+                            resetAutoplay(instance);
+                        }, { passive: true });
+                        dotsExisting.appendChild(dot);
+                    }
+                } else {
+                    createPaginationDots(carousel, container, instance);
+                }
             }
             
-            // Setup autoplay
-            if (autoplay) {
-                setupAutoplay(carousel, container, autoplayDelay);
+            setupEmblaListeners(instance);
+            
+            if (instance.autoplay) {
+                startAutoplay(instance);
             }
             
-            // Setup scroll event listeners
-            setupScrollEvents(carousel, container);
-            
-            // Setup drag functionality
-            setupDragScroll(container);
+            updateCarousel(instance);
         });
     }
 
-function createNavigationButtons(carousel, container) {
-    // Create prev button
+function createNavigationButtons(carousel, container, instance) {
     const prevBtn = document.createElement('button');
     prevBtn.className = 'carousel-nav carousel-prev';
+    prevBtn.setAttribute('aria-label', 'Previous slide');
     prevBtn.innerHTML = `
         <svg viewBox="0 0 24 24" fill="none">
             <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
     `;
-    prevBtn.addEventListener('click', () => {
-        container.scrollBy({ left: -container.offsetWidth, behavior: 'smooth' });
+    prevBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        instance.embla.scrollPrev();
+        resetAutoplay(instance);
     });
     
-    // Create next button
     const nextBtn = document.createElement('button');
     nextBtn.className = 'carousel-nav carousel-next';
+    nextBtn.setAttribute('aria-label', 'Next slide');
     nextBtn.innerHTML = `
         <svg viewBox="0 0 24 24" fill="none">
             <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
     `;
-    nextBtn.addEventListener('click', () => {
-        container.scrollBy({ left: container.offsetWidth, behavior: 'smooth' });
+    nextBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        instance.embla.scrollNext();
+        resetAutoplay(instance);
     });
     
     carousel.appendChild(prevBtn);
     carousel.appendChild(nextBtn);
+    
+    instance.prevBtn = prevBtn;
+    instance.nextBtn = nextBtn;
 }
 
-function createPaginationDots(carousel, container) {
-    const slides = container.querySelectorAll('.carousel-slide');
+function createPaginationDots(carousel, container, instance) {
+    const slides = instance.embla.slideNodes();
     if (slides.length <= 1) return;
     
     const dotsContainer = document.createElement('div');
     dotsContainer.className = 'carousel-dots';
+    dotsContainer.setAttribute('role', 'tablist');
     
-    slides.forEach((_, index) => {
+    const totalSlides = slides.length;
+    const dotsCount = Math.ceil(totalSlides / instance.slidesPerView);
+    
+    for (let i = 0; i < dotsCount; i++) {
         const dot = document.createElement('button');
         dot.className = 'carousel-dot';
-        if (index === 0) dot.classList.add('is-active');
+        dot.setAttribute('role', 'tab');
+        dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+        dot.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
         
-        dot.addEventListener('click', () => {
-            const slideWidth = slides[0].offsetWidth;
-            const gap = parseInt(getComputedStyle(container).gap) || 0;
-            const scrollPosition = index * (slideWidth + gap);
-            container.scrollTo({ left: scrollPosition, behavior: 'smooth' });
+        dot.addEventListener('click', (e) => {
+            e.preventDefault();
+            instance.embla.scrollTo(i * instance.slidesPerView);
+            resetAutoplay(instance);
         });
         
         dotsContainer.appendChild(dot);
-    });
+    }
     
     carousel.appendChild(dotsContainer);
+    instance.dotsContainer = dotsContainer;
 }
 
-function setupAutoplay(carousel, container, delay) {
-    let autoplayInterval;
+function startAutoplay(instance) {
+    if (!instance.autoplay || instance.isPaused) return;
     
-    const startAutoplay = () => {
-        autoplayInterval = setInterval(() => {
-            const maxScroll = container.scrollWidth - container.clientWidth;
-            if (container.scrollLeft >= maxScroll - 1) {
-                // Reached end, scroll to beginning
-                container.scrollTo({ left: 0, behavior: 'smooth' });
-            } else {
-                container.scrollBy({ left: container.offsetWidth, behavior: 'smooth' });
-            }
-        }, delay);
-    };
+    if (instance.autoplayTimeout) {
+        clearTimeout(instance.autoplayTimeout);
+    }
     
-    const stopAutoplay = () => {
-        clearInterval(autoplayInterval);
-    };
-    
-    // Start autoplay
-    startAutoplay();
-    
-    // Pause on hover
-    carousel.addEventListener('mouseenter', stopAutoplay);
-    carousel.addEventListener('mouseleave', startAutoplay);
-    
-    // Pause on touch
-    carousel.addEventListener('touchstart', stopAutoplay);
-    carousel.addEventListener('touchend', startAutoplay);
-}
-
-function setupScrollEvents(carousel, container) {
-    let isScrolling = false;
-    
-    container.addEventListener('scroll', () => {
-        if (!isScrolling) {
-            window.requestAnimationFrame(() => {
-                updateActiveDot(carousel, container);
-                updateNavigationButtons(carousel, container);
-                isScrolling = false;
-            });
-            isScrolling = true;
+    instance.autoplayTimeout = setTimeout(() => {
+        if (instance.embla.canScrollNext()) {
+            instance.embla.scrollNext();
+        } else {
+            instance.embla.scrollTo(0);
         }
-    });
+        
+        if (instance.autoplay && !instance.isPaused) {
+            startAutoplay(instance);
+        }
+    }, instance.autoplayDelay);
 }
 
-function updateActiveDot(carousel, container) {
-    const dots = carousel.querySelectorAll('.carousel-dot');
-    if (dots.length === 0) return;
+function resetAutoplay(instance) {
+    if (!instance.autoplay) return;
     
-    const slides = container.querySelectorAll('.carousel-slide');
-    if (slides.length === 0) return;
+    if (instance.autoplayTimeout) {
+        clearTimeout(instance.autoplayTimeout);
+    }
     
-    const slideWidth = slides[0].offsetWidth;
-    const gap = parseInt(getComputedStyle(container).gap) || 0;
-    const currentIndex = Math.round(container.scrollLeft / (slideWidth + gap));
+    startAutoplay(instance);
+}
+
+function pauseAutoplay(instance) {
+    if (!instance.autoplay) return;
+    instance.isPaused = true;
+    if (instance.autoplayTimeout) {
+        clearTimeout(instance.autoplayTimeout);
+    }
+}
+
+function resumeAutoplay(instance) {
+    if (!instance.autoplay) return;
+    instance.isPaused = false;
+    startAutoplay(instance);
+}
+
+function setupEmblaListeners(instance) {
+    const { embla, carousel } = instance;
+    embla.on('select', () => {
+        updateDots(instance);
+        updateNavigation(instance);
+    });
+    embla.on('reInit', () => {
+        updateCarousel(instance);
+        updateDots(instance);
+        updateNavigation(instance);
+    });
+    if (instance.autoplay) {
+        carousel.addEventListener('mouseenter', () => pauseAutoplay(instance));
+        carousel.addEventListener('mouseleave', () => resumeAutoplay(instance));
+        carousel.addEventListener('touchstart', () => pauseAutoplay(instance));
+        carousel.addEventListener('touchend', () => resumeAutoplay(instance));
+    }
+}
+
+function updateCarousel(instance) {
+    const { embla, slidesPerView, showDots, showArrows } = instance;
+    
+    if (!embla) return;
+    
+    const selected = embla.selectedScrollSnap();
+    
+    if (showDots && instance.dotsContainer) {
+        updateDots(instance);
+    }
+    
+    if (showArrows) {
+        updateNavigation(instance);
+    }
+}
+
+function updateDots(instance) {
+    const { dotsContainer, slidesPerView, embla } = instance;
+    const dots = dotsContainer?.querySelectorAll('.carousel-dot');
+    if (!dots || !dots.length) return;
+    
+    const activeDotIndex = Math.floor(embla.selectedScrollSnap() / slidesPerView);
     
     dots.forEach((dot, index) => {
-        dot.classList.toggle('is-active', index === currentIndex);
+        const isActive = index === activeDotIndex;
+        dot.classList.toggle('is-active', isActive);
+        dot.setAttribute('aria-selected', isActive ? 'true' : 'false');
     });
 }
 
-function updateNavigationButtons(carousel, container) {
-    const prevBtn = carousel.querySelector('.carousel-prev');
-    const nextBtn = carousel.querySelector('.carousel-next');
+function updateNavigation(instance) {
+    const { prevBtn, nextBtn, embla } = instance;
     
     if (prevBtn) {
-        prevBtn.disabled = container.scrollLeft <= 0;
+        const disabled = !embla.canScrollPrev();
+        prevBtn.disabled = disabled;
+        prevBtn.setAttribute('aria-disabled', disabled ? 'true' : 'false');
     }
     
     if (nextBtn) {
-        const maxScroll = container.scrollWidth - container.clientWidth;
-        nextBtn.disabled = container.scrollLeft >= maxScroll - 1;
+        const disabled = !embla.canScrollNext();
+        nextBtn.disabled = disabled;
+        nextBtn.setAttribute('aria-disabled', disabled ? 'true' : 'false');
     }
-}
-
-function setupDragScroll(container) {
-    let isDown = false;
-    let startX;
-    let scrollLeft;
-    
-    container.addEventListener('mousedown', (e) => {
-        isDown = true;
-        startX = e.pageX - container.offsetLeft;
-        scrollLeft = container.scrollLeft;
-        container.style.cursor = 'grabbing';
-    });
-    
-    container.addEventListener('mouseleave', () => {
-        isDown = false;
-        container.style.cursor = 'grab';
-    });
-    
-    container.addEventListener('mouseup', () => {
-        isDown = false;
-        container.style.cursor = 'grab';
-    });
-    
-    container.addEventListener('mousemove', (e) => {
-        if (!isDown) return;
-        e.preventDefault();
-        const x = e.pageX - container.offsetLeft;
-        const walk = (x - startX) * 2;
-        container.scrollLeft = scrollLeft - walk;
-    });
 }
 
 // Initialize carousels when DOM is ready
     function initializeCarousels() {
-        console.log('Initializing carousels...');
         initCarousel();
     }
     
-    // Try immediate execution
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initializeCarousels);
     } else {
-        // DOM already ready, initialize immediately
         initializeCarousels();
     }
     
-    // Also try after a short delay as fallback
     setTimeout(initializeCarousels, 100);
     
-    // Re-initialize carousels when custom event is fired
     document.addEventListener('jankx:reinitialize-carousel', e => {
         const element = e?.detail?.element || null;
         initCarousel(element || undefined);
     });
     
-    // Make initCarousel globally available
     window.initCarousel = initCarousel;
+    
+    window.JankxCarousel = {
+        init: initCarousel,
+        next: (container) => {
+            const instance = carouselInstances.get(container);
+            if (instance) {
+                instance.embla.scrollNext();
+                resetAutoplay(instance);
+            }
+        },
+        prev: (container) => {
+            const instance = carouselInstances.get(container);
+            if (instance) {
+                instance.embla.scrollPrev();
+                resetAutoplay(instance);
+            }
+        },
+        goTo: (container, index) => {
+            const instance = carouselInstances.get(container);
+            if (instance) {
+                instance.embla.scrollTo(index);
+                resetAutoplay(instance);
+            }
+        },
+        update: (container) => {
+            const instance = carouselInstances.get(container);
+            if (instance) {
+                updateCarousel(instance);
+            }
+        }
+    };
     
 })();

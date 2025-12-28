@@ -24,41 +24,6 @@ class DynamicSsrTemplateBlock extends Block
         add_action('enqueue_block_editor_assets', [$this, 'enqueueEditorAssets'], 20);
         add_action('wp_ajax_jankx_dynamic_ssr_template_preview', [$this, 'ajaxPreview']);
         add_action('wp_ajax_nopriv_jankx_dynamic_ssr_template_preview', [$this, 'ajaxPreview']);
-        
-        // Register block with attributes
-        register_block_type($this->blockId, [
-            'render_callback' => [$this, 'render'],
-            'attributes' => [
-                'overlayIcon' => [
-                    'type' => 'string',
-                    'default' => '',
-                ],
-                'overlayIconPosition' => [
-                    'type' => 'string',
-                    'default' => 'center',
-                ],
-                'overlayIconSize' => [
-                    'type' => 'number',
-                    'default' => 24,
-                ],
-                'overlayIconColor' => [
-                    'type' => 'string',
-                    'default' => '#ffffff',
-                ],
-                'overlayIconBackground' => [
-                    'type' => 'string',
-                    'default' => 'rgba(0, 0, 0, 0.5)',
-                ],
-                'overlayIconShowMode' => [
-                    'type' => 'string',
-                    'default' => 'always-show',
-                ],
-                'overlayIconTarget' => [
-                    'type' => 'string',
-                    'default' => 'featured-image',
-                ],
-            ],
-        ]);
     }
 
     protected function getViewLayoutManager(): ViewLayoutManager

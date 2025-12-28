@@ -93,94 +93,70 @@
                     padding-right: 0;
                 }
             }
-        }
-        
-        /* Navigation buttons */
-        .carousel-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255, 255, 255, 0.8);
-            border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 10;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
             
-            &:hover {
-                background: rgba(255, 255, 255, 1);
-                transform: translateY(-50%) scale(1.1);
-            }
-            
-            &.carousel-prev {
-                left: 10px;
-            }
-            
-            &.carousel-next {
-                right: 10px;
-            }
-            
-            svg {
-                width: 24px;
-                height: 24px;
-            }
-        }
-        
-        /* Pagination dots */
-        .carousel-dots {
-            display: flex;
-            justify-content: center;
-            padding: 15px 0;
-            gap: 8px;
-            
-            .carousel-dot {
-                width: 10px;
-                height: 10px;
-                border-radius: 50%;
-                background: #ccc;
+            /* Navigation buttons */
+            .carousel-nav {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                background: rgba(255, 255, 255, 0.8);
                 border: none;
-                padding: 0;
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
                 cursor: pointer;
+                z-index: 10;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
                 transition: all 0.3s ease;
                 
-                &.is-active {
-                    background: #000;
-                    transform: scale(1.2);
+                &:hover {
+                    background: rgba(255, 255, 255, 1);
+                    transform: translateY(-50%) scale(1.1);
                 }
                 
-                &:focus {
-                    outline: none;
+                &.carousel-prev {
+                    left: 10px;
+                }
+                
+                &.carousel-next {
+                    right: 10px;
+                }
+                
+                svg {
+                    width: 24px;
+                    height: 24px;
                 }
             }
-        }
-            scroll-behavior: smooth;
-            gap: var(--space-between, 16px);
             
-            // Prevent CLS with aspect ratio
-            aspect-ratio: 16 / 9;
-            min-height: 300px;
-            
-            @media (max-width: 768px) {
-                aspect-ratio: 4 / 3;
-                min-height: 250px;
-            }
-            
-            @media (max-width: 480px) {
-                aspect-ratio: 1 / 1;
-                min-height: 200px;
-            }
-            
-            // Hide scrollbar for cleaner look
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-            &::-webkit-scrollbar {
-                display: none;
+            /* Pagination dots */
+            .carousel-dots {
+                display: flex;
+                justify-content: center;
+                padding: 15px 0;
+                gap: 8px;
+                
+                .carousel-dot {
+                    width: 10px;
+                    height: 10px;
+                    border-radius: 50%;
+                    background: #ccc;
+                    border: none;
+                    padding: 0;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    
+                    &.is-active {
+                        background: #000;
+                        transform: scale(1.2);
+                    }
+                    
+                    &:focus {
+                        outline: none;
+                    }
+                }
             }
         }
         

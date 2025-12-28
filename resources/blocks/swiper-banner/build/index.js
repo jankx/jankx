@@ -55,7 +55,7 @@ function Edit({
     imageSize = 'cover'
   } = attributes;
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)({
-    className: `swiper-slide swiper-banner swiper-banner--${bannerStyle} text-${textAlign} text-position-${textPosition} image-size-${imageSize}`
+    className: `embla__slide embla-banner embla-banner--${bannerStyle} text-${textAlign} text-position-${textPosition} image-size-${imageSize}`
   });
   const onSelectImage = media => {
     setAttributes({
@@ -111,12 +111,12 @@ function Edit({
       imageStyles.backgroundSize = 'cover';
     }
     return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
-      className: `swiper-banner__image image-size-${imageSize}`,
+      className: `embla-banner__image image-size-${imageSize}`,
       style: imageStyles,
       children: showCaption && imageCaption && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
-        className: "swiper-banner__caption",
+        className: "embla-banner__caption",
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
-          className: "swiper-banner__caption-content",
+          className: "embla-banner__caption-content",
           children: imageCaption
         })
       })
@@ -353,7 +353,7 @@ function Save({
     imageSize = 'cover'
   } = attributes;
   const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.useBlockProps.save({
-    className: `swiper-slide swiper-banner swiper-banner--${bannerStyle} text-${textAlign} text-position-${textPosition} image-size-${imageSize}`,
+    className: `embla__slide embla-banner embla-banner--${bannerStyle} text-${textAlign} text-position-${textPosition} image-size-${imageSize}`,
     'data-image-size': imageSize
   });
   const imageStyles = {
@@ -372,12 +372,12 @@ function Save({
     imageStyles.backgroundSize = 'cover';
   }
   const content = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
-    className: `swiper-banner__image image-size-${imageSize}`,
+    className: `embla-banner__image image-size-${imageSize}`,
     style: imageStyles,
     children: showCaption && imageCaption && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
-      className: "swiper-banner__caption",
+      className: "embla-banner__caption",
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
-        className: "swiper-banner__caption-content",
+        className: "embla-banner__caption-content",
         children: imageCaption
       })
     })
@@ -389,7 +389,7 @@ function Save({
         href: linkUrl,
         target: linkTarget,
         rel: linkTarget === '_blank' ? 'noopener noreferrer' : undefined,
-        className: "swiper-banner__link",
+        className: "embla-banner__link",
         children: content
       })
     });
@@ -589,7 +589,7 @@ __webpack_require__.r(__webpack_exports__);
         imageSize = 'cover'
       } = attributes;
       const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps.save({
-        className: `swiper-slide swiper-banner swiper-banner--${bannerStyle} text-${textAlign} text-position-${textPosition} image-size-${imageSize}`
+        className: `embla__slide embla-banner embla-banner--${bannerStyle} text-${textAlign} text-position-${textPosition} image-size-${imageSize}`
       });
       const imageStyles = {
         backgroundImage: `url(${imageUrl})`,
@@ -605,14 +605,14 @@ __webpack_require__.r(__webpack_exports__);
         imageStyles.backgroundSize = 'cover';
       }
       const imageContent = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-        className: `swiper-banner__image image-size-${imageSize}`,
+        className: `embla-banner__image image-size-${imageSize}`,
         style: imageStyles,
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-          className: "swiper-banner__overlay"
+          className: "embla-banner__overlay"
         }), showCaption && imageCaption && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-          className: "swiper-banner__caption",
+          className: "embla-banner__caption",
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-            className: "swiper-banner__caption-content",
+            className: "embla-banner__caption-content",
             children: imageCaption
           })
         })]
@@ -620,7 +620,7 @@ __webpack_require__.r(__webpack_exports__);
 
       // OLD structure with .swiper-banner__content wrapper
       const content = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-        className: "swiper-banner__content",
+        className: "embla-banner__content",
         children: imageContent
       });
       if (linkUrl) {
@@ -630,7 +630,7 @@ __webpack_require__.r(__webpack_exports__);
             href: linkUrl,
             target: linkTarget,
             rel: linkTarget === '_blank' ? 'noopener noreferrer' : undefined,
-            className: "swiper-banner__link",
+            className: "embla-banner__link",
             children: content
           })
         });

@@ -1,19 +1,17 @@
-// Vanilla JS Carousel with CSS Scroll Snap for Dynamic Data Layout
+import EmblaCarousel from 'embla-carousel';
+
 function initDynamicDataCarousel(root) {
     const carousels = root ? root.querySelectorAll('.wp-block-jankx-dynamic-data-layout[data-layout="carousel"]') : 
                            document.querySelectorAll('.wp-block-jankx-dynamic-data-layout[data-layout="carousel"]');
     
     carousels.forEach(carousel => {
-        // Skip if already initialized
         if (carousel.classList.contains('carousel-initialized')) return;
         
         const container = carousel.querySelector('.carousel-container');
         if (!container) return;
         
-        // Mark as initialized
         carousel.classList.add('carousel-initialized');
         
-        // Get configuration from data attributes or CSS variables
         const slidesPerView = parseInt(carousel.getAttribute('data-slides-per-view')) || 
                             parseInt(getComputedStyle(carousel).getPropertyValue('--slides-per-view')) || 1;
         const spaceBetween = parseInt(carousel.getAttribute('data-space-between')) || 
@@ -21,56 +19,62 @@ function initDynamicDataCarousel(root) {
         const autoplay = carousel.getAttribute('data-autoplay') === 'true';
         const autoplayDelay = Math.max(3000, parseInt(carousel.getAttribute('data-autoplay-delay')) || 5000);
         const loop = carousel.getAttribute('data-loop') === 'true';
-        const showArrows = carousel.classList.contains('has-arrows') || true; // Always show arrows by default
-        const showDots = carousel.classList.contains('has-dots') || true; // Always show dots by default
+        const showArrows = carousel.classList.contains('has-arrows') || true;
+        const showDots = carousel.classList.contains('has-dots') || true;
         
-        // Set CSS variables on the container
         container.style.setProperty('--slides-per-view', slidesPerView);
         container.style.setProperty('--space-between', `${spaceBetween}px`);
         
-        // Ensure container has the right classes for styling
-        container.classList.add('carousel-container');
-        
-        // Wrap each direct child in a carousel-slide div if not already wrapped
-        const slides = Array.from(container.children);
-        slides.forEach(slide => {
-            if (!slide.classList.contains('carousel-slide')) {
-                const wrapper = document.createElement('div');
-                wrapper.className = 'carousel-slide';
-                slide.parentNode.insertBefore(wrapper, slide);
-                wrapper.appendChild(slide);
+        container.classList.add('carousel-container', 'embla__viewport');
+        let track = container.querySelector('.embla__container');
+        if (!track) {
+            track = document.createElement('div');
+            track.className = 'embla__container';
+            while (container.firstChild) {
+                const node = container.firstChild;
+                if (node.classList && node.classList.contains('carousel-slide')) {
+                    track.appendChild(node);
+                } else {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'carousel-slide';
+                    container.removeChild(node);
+                    wrapper.appendChild(node);
+                    track.appendChild(wrapper);
+                }
             }
+            container.appendChild(track);
+        }
+        
+        const slides = Array.from(container.children);
+        const embla = EmblaCarousel(container, {
+            loop: loop,
+            duration: 25,
+            align: 'start'
         });
         
-        // Create navigation buttons
         if (showArrows) {
-            createNavigationButtons(carousel, container);
+            createNavigationButtons(carousel, container, embla);
         }
         
-        // Create pagination dots
         if (showDots) {
-            createPaginationDots(carousel, container);
+            createPaginationDots(carousel, container, embla);
         }
         
-        // Setup autoplay
         if (autoplay) {
-            setupAutoplay(carousel, container, autoplayDelay);
+            setupAutoplay(carousel, container, embla, autoplayDelay);
         }
         
-        // Setup scroll event listeners
-        setupScrollEvents(carousel, container);
-        
-        // Setup drag functionality
-        setupDragScroll(container);
-        
-        // Initial update of UI
-        updateActiveDot(carousel, container);
-        updateNavigationButtons(carousel, container);
+        const onSelect = () => {
+            updateActiveDot(carousel, container, embla);
+            updateNavigationButtons(carousel, container, embla);
+        };
+        embla.on('select', onSelect);
+        embla.on('reInit', onSelect);
+        onSelect();
     });
 }
 
-function createNavigationButtons(carousel, container) {
-    // Create prev button
+function createNavigationButtons(carousel, container, embla) {
     const prevBtn = document.createElement('button');
     prevBtn.className = 'carousel-nav carousel-prev';
     prevBtn.innerHTML = `
@@ -78,11 +82,8 @@ function createNavigationButtons(carousel, container) {
             <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
     `;
-    prevBtn.addEventListener('click', () => {
-        container.scrollBy({ left: -container.offsetWidth, behavior: 'smooth' });
-    });
+    prevBtn.addEventListener('click', () => embla.scrollPrev(), { passive: true });
     
-    // Create next button
     const nextBtn = document.createElement('button');
     nextBtn.className = 'carousel-nav carousel-next';
     nextBtn.innerHTML = `
@@ -90,16 +91,14 @@ function createNavigationButtons(carousel, container) {
             <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
     `;
-    nextBtn.addEventListener('click', () => {
-        container.scrollBy({ left: container.offsetWidth, behavior: 'smooth' });
-    });
+    nextBtn.addEventListener('click', () => embla.scrollNext(), { passive: true });
     
     carousel.appendChild(prevBtn);
     carousel.appendChild(nextBtn);
 }
 
-function createPaginationDots(carousel, container) {
-    const slides = container.querySelectorAll('.carousel-slide');
+function createPaginationDots(carousel, container, embla) {
+    const slides = embla.slideNodes();
     if (slides.length <= 1) return;
     
     const dotsContainer = document.createElement('div');
@@ -109,13 +108,7 @@ function createPaginationDots(carousel, container) {
         const dot = document.createElement('button');
         dot.className = 'carousel-dot';
         if (index === 0) dot.classList.add('is-active');
-        
-        dot.addEventListener('click', () => {
-            const slideWidth = slides[0].offsetWidth;
-            const gap = parseInt(getComputedStyle(container).gap) || 0;
-            const scrollPosition = index * (slideWidth + gap);
-            container.scrollTo({ left: scrollPosition, behavior: 'smooth' });
-        });
+        dot.addEventListener('click', () => embla.scrollTo(index), { passive: true });
         
         dotsContainer.appendChild(dot);
     });
@@ -123,17 +116,15 @@ function createPaginationDots(carousel, container) {
     carousel.appendChild(dotsContainer);
 }
 
-function setupAutoplay(carousel, container, delay) {
+function setupAutoplay(carousel, container, embla, delay) {
     let autoplayInterval;
     
     const startAutoplay = () => {
         autoplayInterval = setInterval(() => {
-            const maxScroll = container.scrollWidth - container.clientWidth;
-            if (container.scrollLeft >= maxScroll - 1) {
-                // Reached end, scroll to beginning
-                container.scrollTo({ left: 0, behavior: 'smooth' });
+            if (embla.canScrollNext()) {
+                embla.scrollNext();
             } else {
-                container.scrollBy({ left: container.offsetWidth, behavior: 'smooth' });
+                embla.scrollTo(0);
             }
         }, delay);
     };
@@ -142,102 +133,44 @@ function setupAutoplay(carousel, container, delay) {
         clearInterval(autoplayInterval);
     };
     
-    // Start autoplay
     startAutoplay();
     
-    // Pause on hover
     carousel.addEventListener('mouseenter', stopAutoplay);
     carousel.addEventListener('mouseleave', startAutoplay);
     
-    // Pause on touch
     carousel.addEventListener('touchstart', stopAutoplay);
     carousel.addEventListener('touchend', startAutoplay);
 }
 
-function setupScrollEvents(carousel, container) {
-    let isScrolling = false;
-    
-    container.addEventListener('scroll', () => {
-        if (!isScrolling) {
-            window.requestAnimationFrame(() => {
-                updateActiveDot(carousel, container);
-                updateNavigationButtons(carousel, container);
-                isScrolling = false;
-            });
-            isScrolling = true;
-        }
-    });
-}
-
-function updateActiveDot(carousel, container) {
+function updateActiveDot(carousel, container, embla) {
     const dots = carousel.querySelectorAll('.carousel-dot');
     if (dots.length === 0) return;
     
-    const slides = container.querySelectorAll('.carousel-slide');
-    if (slides.length === 0) return;
-    
-    const slideWidth = slides[0].offsetWidth;
-    const gap = parseInt(getComputedStyle(container).gap) || 0;
-    const currentIndex = Math.round(container.scrollLeft / (slideWidth + gap));
+    const currentIndex = embla.selectedScrollSnap();
     
     dots.forEach((dot, index) => {
         dot.classList.toggle('is-active', index === currentIndex);
     });
 }
 
-function updateNavigationButtons(carousel, container) {
+function updateNavigationButtons(carousel, container, embla) {
     const prevBtn = carousel.querySelector('.carousel-prev');
     const nextBtn = carousel.querySelector('.carousel-next');
     
     if (prevBtn) {
-        prevBtn.disabled = container.scrollLeft <= 0;
+        prevBtn.disabled = !embla.canScrollPrev();
     }
     
     if (nextBtn) {
-        const maxScroll = container.scrollWidth - container.clientWidth;
-        nextBtn.disabled = container.scrollLeft >= maxScroll - 1;
+        nextBtn.disabled = !embla.canScrollNext();
     }
 }
 
-function setupDragScroll(container) {
-    let isDown = false;
-    let startX;
-    let scrollLeft;
-    
-    container.addEventListener('mousedown', (e) => {
-        isDown = true;
-        startX = e.pageX - container.offsetLeft;
-        scrollLeft = container.scrollLeft;
-        container.style.cursor = 'grabbing';
-    });
-    
-    container.addEventListener('mouseleave', () => {
-        isDown = false;
-        container.style.cursor = 'grab';
-    });
-    
-    container.addEventListener('mouseup', () => {
-        isDown = false;
-        container.style.cursor = 'grab';
-    });
-    
-    container.addEventListener('mousemove', (e) => {
-        if (!isDown) return;
-        e.preventDefault();
-        const x = e.pageX - container.offsetLeft;
-        const walk = (x - startX) * 2;
-        container.scrollLeft = scrollLeft - walk;
-    });
-}
-
-// Initialize carousels when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     initDynamicDataCarousel();
     
-    // Also initialize for dynamically loaded content (e.g., AJAX, page transitions)
     if (typeof wp !== 'undefined' && wp.data && wp.data.subscribe) {
         wp.data.subscribe(() => {
-            // Use setTimeout to ensure the DOM is updated
             setTimeout(() => {
                 initDynamicDataCarousel();
             }, 100);
