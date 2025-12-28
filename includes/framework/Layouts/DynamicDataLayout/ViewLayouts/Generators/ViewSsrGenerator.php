@@ -40,7 +40,7 @@ class ViewSsrGenerator extends AbstractViewContentGenerator
             return '';
         }
 
-        $mergedOptions = array_merge($this->options, $options);
+        $mergedOptions = array_merge($this->templateBlock['attrs'] ?? [], $this->options, $options);
         $layout = $this->getLayout();
 
         if (!$layout) {
@@ -254,8 +254,9 @@ class ViewSsrGenerator extends AbstractViewContentGenerator
         // Process thumbnail
         $thumbnail = [];
         if ($show_thumbnail && has_post_thumbnail($view_id)) {
+            $originalThumbHtml = get_the_post_thumbnail($view_id, $image_size, ['style' => 'object-fit:cover; max-width:100%; height:auto;']);
             $thumbnail = [
-                'html' => get_the_post_thumbnail($view_id, $image_size, ['style' => 'object-fit:cover;']),
+                'html' => $originalThumbHtml,
                 'url' => get_the_post_thumbnail_url($view_id, $image_size),
                 'exists' => true,
             ];
@@ -265,6 +266,39 @@ class ViewSsrGenerator extends AbstractViewContentGenerator
                 'url' => '',
                 'exists' => false,
             ];
+        }
+
+        // Overlay icon injection for featured image when configured
+        $overlayIcon = $options['overlayIcon'] ?? '';
+        $overlayType = $options['overlayIconType'] ?? 'class';
+        $overlayImage = $options['overlayIconImageUrl'] ?? '';
+        $overlayText = $options['overlayIconText'] ?? '';
+        $overlayRotate = isset($options['overlayIconRotate']) ? (int) $options['overlayIconRotate'] : 0;
+        $overlayColor = $options['overlayIconColor'] ?? '#ffffff';
+        $overlayBg = $options['overlayIconBackground'] ?? 'rgba(0, 0, 0, 0.5)';
+        $overlaySize = isset($options['overlayIconSize']) ? (int) $options['overlayIconSize'] : 24;
+        $overlayPosition = $options['overlayIconPosition'] ?? 'center';
+        $overlayMode = $options['overlayIconShowMode'] ?? 'always-show';
+        $overlayTarget = $options['overlayIconTarget'] ?? 'featured-image';
+
+        if ($thumbnail['exists'] && ($overlayIcon || $overlayImage || $overlayText) && $overlayTarget === 'featured-image') {
+            $wrapperClasses = 'jankx-thumbnail-overlay-wrapper overlay-mode-' . sanitize_html_class($overlayMode) . ' overlay-pos-' . sanitize_html_class($overlayPosition);
+            $commonStyle = sprintf('style="color:%s;background:%s;font-size:%dpx;"', esc_attr($overlayColor), esc_attr($overlayBg), (int) $overlaySize);
+            $rotateStyle = $overlayRotate !== 0 ? ' style="transform: rotate(' . (int) $overlayRotate . 'deg);"' : '';
+            if ($overlayType === 'image' && $overlayImage) {
+                $iconHtml = sprintf('<div class="jankx-overlay-icon" %s><img src="%s" alt="" style="width:%dpx;height:%dpx;object-fit:contain;" /></div>', $commonStyle, esc_url($overlayImage), (int) $overlaySize, (int) $overlaySize);
+            } elseif ($overlayType === 'text' && $overlayText !== '') {
+                $iconHtml = sprintf('<div class="jankx-overlay-icon" %s><span class="jankx-overlay-icon-text"%s>%s</span></div>', $commonStyle, $rotateStyle, esc_html($overlayText));
+            } else {
+                $iconHtml = sprintf('<div class="jankx-overlay-icon" %s><i class="%s"%s></i></div>', $commonStyle, esc_attr($overlayIcon), $rotateStyle);
+            }
+            $overlayInline = 'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;';
+            $overlayHtml = sprintf('<div class="%s" style="%s">%s</div>', esc_attr($wrapperClasses), esc_attr($overlayInline), $iconHtml);
+            $thumbnail['html'] = sprintf(
+                '<div class="jankx-overlay-container" style="position:relative;">%s%s</div>',
+                $thumbnail['html'],
+                $overlayHtml
+            );
         }
 
         // Return all prepared data

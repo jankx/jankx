@@ -394,9 +394,6 @@ class DynamicSsrLayoutBlock extends Block
         if ($registered_block && !empty($registered_block->editor_script)) {
             $script_handle = $registered_block->editor_script;
         }
-        if (!wp_script_is($script_handle, 'registered')) {
-            return;
-        }
 
         $layoutManager = $this->getLayoutManager();
 
@@ -406,14 +403,10 @@ class DynamicSsrLayoutBlock extends Block
             $layouts_by_post_type[$post_type] = $layoutManager->getLayoutsForPostType($post_type);
         }
 
-        wp_localize_script(
-            $script_handle,
-            'jankxDynamicDataLayouts',
-            [
-                'layoutsByPostType' => $layouts_by_post_type,
-                'commonLayouts' => $layoutManager->getCommonLayouts(),
-            ]
-        );
+        $layouts_payload = [
+            'layoutsByPostType' => $layouts_by_post_type,
+            'commonLayouts' => $layoutManager->getCommonLayouts(),
+        ];
 
         $public_post_types = [];
         foreach ($post_types as $slug => $obj) {
@@ -430,19 +423,37 @@ class DynamicSsrLayoutBlock extends Block
                 'name' => $label,
             ];
         }
-        wp_localize_script($script_handle, 'jankxPublicPostTypes', $public_post_types);
-
         $query_options = \Jankx\Gutenberg\QueryOptions::getOptions();
-        wp_localize_script($script_handle, 'jankxQueryOptions', $query_options);
 
         // Get available templates from views directory
         $availableTemplates = $this->getAvailableTemplates();
-        wp_localize_script($script_handle, 'jankxDynamicSsrTemplate', [
+        $ssr_template_config = [
             'nonce' => wp_create_nonce('jankx_dynamic_ssr_template_preview'),
             'postsCountNonce' => wp_create_nonce('jankx_posts_count'),
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'availableTemplates' => $availableTemplates,
-        ]);
+        ];
+
+        if (wp_script_is($script_handle, 'registered') || wp_script_is($script_handle, 'enqueued')) {
+            wp_localize_script(
+                $script_handle,
+                'jankxDynamicDataLayouts',
+                $layouts_payload
+            );
+            wp_localize_script($script_handle, 'jankxPublicPostTypes', $public_post_types);
+            wp_localize_script($script_handle, 'jankxQueryOptions', $query_options);
+            wp_localize_script($script_handle, 'jankxDynamicSsrTemplate', $ssr_template_config);
+        } else {
+            // Fallback: inject data before wp-block-editor if block script handle cannot be detected yet
+            $json_layouts = wp_json_encode($layouts_payload);
+            $json_post_types = wp_json_encode($public_post_types);
+            $json_query_options = wp_json_encode($query_options);
+            $json_ssr_config = wp_json_encode($ssr_template_config);
+            wp_add_inline_script('wp-block-editor', "window.jankxDynamicDataLayouts = {$json_layouts};", 'before');
+            wp_add_inline_script('wp-block-editor', "window.jankxPublicPostTypes = {$json_post_types};", 'before');
+            wp_add_inline_script('wp-block-editor', "window.jankxQueryOptions = {$json_query_options};", 'before');
+            wp_add_inline_script('wp-block-editor', "window.jankxDynamicSsrTemplate = {$json_ssr_config};", 'before');
+        }
     }
 
     public function handleFilterUpdate(array $attributes, array $filters): array

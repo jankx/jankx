@@ -591,6 +591,15 @@ function Edit({ attributes, setAttributes, clientId, isSelected = false }: EditP
             label: layoutInfo.title,
             value: layoutInfo.name,
         }));
+        if (options.length === 0) {
+            return [
+                { label: __('Grid', 'jankx'), value: 'grid' },
+                { label: __('List', 'jankx'), value: 'list' },
+                { label: __('Card', 'jankx'), value: 'card' },
+                { label: __('Horizontal', 'jankx'), value: 'horizontal' },
+                { label: __('Default', 'jankx'), value: 'default' },
+            ];
+        }
         return options;
     }, [availableLayouts]);
 
@@ -644,7 +653,7 @@ function Edit({ attributes, setAttributes, clientId, isSelected = false }: EditP
     return (
         <>
             <InspectorControls>
-                <PanelBody title={__('Layout Settings', 'jankx')} initialOpen={true}>
+                <PanelBody title={__('Layout', 'jankx')} initialOpen={true}>
                     <SelectControl
                         label={__('Post Type', 'jankx')}
                         value={postType}
@@ -652,7 +661,7 @@ function Edit({ attributes, setAttributes, clientId, isSelected = false }: EditP
                         onChange={(value: string) => setAttributes({ postType: value })}
                     />
                     <SelectControl
-                        label={__('Layout', 'jankx')}
+                        label={__('Layout Type', 'jankx')}
                         value={layout}
                         options={layoutOptions}
                         onChange={(value: string) => setAttributes({ layout: value })}
