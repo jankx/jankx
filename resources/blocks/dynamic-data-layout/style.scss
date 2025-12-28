@@ -73,7 +73,9 @@
             
             /* Carousel slides */
             .carousel-slide {
-                flex: 0 0 calc(100% / var(--slides-per-view, 1));
+                flex: 0 0 calc(100%/ var(--slides-per-view, 1));
+                width: calc(100% / var(--slides-per-view, 1));
+                max-width: calc(100% / var(--slides-per-view, 1));
                 scroll-snap-align: start;
                 padding: 0 calc(var(--space-between, 16px) / 2);
                 box-sizing: border-box;
@@ -161,9 +163,10 @@
         }
         
         .carousel-slide {
-            flex: 0 0 calc((100% - (var(--space-between, 16px) * (var(--slides-per-view, 1) - 1))) / var(--slides-per-view, 1));
-            width: calc((100% - (var(--space-between, 16px) * (var(--slides-per-view, 1) - 1))) / var(--slides-per-view, 1));
-            max-width: calc((100% - (var(--space-between, 16px) * (var(--slides-per-view, 1) - 1))) / var(--slides-per-view, 1));
+            flex: 0 0 calc(100%/ var(--slides-per-view, 1));
+            width: calc(100% / var(--slides-per-view, 1));
+            max-width: calc(100% / var(--slides-per-view, 1));
+            padding: 0 calc(var(--space-between, 16px) / 2);
             min-width: 0;
             scroll-snap-align: start;
             height: auto;

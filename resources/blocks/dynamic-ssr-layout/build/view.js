@@ -1731,8 +1731,14 @@ __webpack_require__.r(__webpack_exports__);
         autoplayTimeout: null,
         isPaused: false
       };
-      instance.slidesPerView = parseInt(carousel.getAttribute('data-slides-per-view')) || 1;
-      instance.spaceBetween = parseInt(carousel.getAttribute('data-space-between')) || 16;
+      const computed = getComputedStyle(carousel);
+      const cssSlides = parseInt(computed.getPropertyValue('--slides-per-view')) || NaN;
+      const cssSpace = parseInt(computed.getPropertyValue('--space-between')) || NaN;
+      const dataSlides = parseInt(carousel.getAttribute('data-slides-per-view')) || NaN;
+      const dataColumns = parseInt(carousel.getAttribute('data-columns')) || NaN;
+      const dataSpace = parseInt(carousel.getAttribute('data-space-between')) || NaN;
+      instance.slidesPerView = dataSlides || dataColumns || cssSlides || 1;
+      instance.spaceBetween = dataSpace || cssSpace || 16;
       instance.autoplay = carousel.getAttribute('data-autoplay') === 'true';
       instance.autoplayDelay = Math.max(3000, parseInt(carousel.getAttribute('data-autoplay-delay')) || 5000);
       instance.showArrows = carousel.classList.contains('has-arrows');

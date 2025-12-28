@@ -200,11 +200,13 @@
         }
         
         .carousel-slide {
-            $slide-width: calc((100% - (var(--space-between, 16px) * (var(--slides-per-view, 1) - 1))) / var(--slides-per-view, 1));
+            $slide-width: calc(100% / var(--slides-per-view, 1));
             
             flex: 0 0 $slide-width;
             width: $slide-width;
             max-width: $slide-width;
+            padding: 0 calc(var(--space-between, 16px) / 2);
+
             min-width: 0;
             scroll-snap-align: start;
             height: auto;

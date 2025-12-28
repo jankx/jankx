@@ -59,9 +59,12 @@ class ViewCarouselLayout extends AbstractViewLayout
                 <?php
                 while ($this->query->have_posts()) {
                     $this->query->the_post();
-                    echo '<div class="carousel-slide">';
-                    echo $this->renderViewItem();
-                    echo '</div>';
+                    $itemHtml = (string) $this->renderViewItem();
+                    if (trim($itemHtml) !== '') {
+                        echo '<div class="carousel-slide">';
+                        echo $itemHtml;
+                        echo '</div>';
+                    }
                 }
                 wp_reset_postdata();
                 ?>

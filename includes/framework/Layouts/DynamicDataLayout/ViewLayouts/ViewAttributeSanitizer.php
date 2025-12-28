@@ -60,7 +60,13 @@ class ViewAttributeSanitizer
 
         // Carousel specific options
         if ($sanitized['layout'] === 'carousel') {
-            $sanitized['slidesPerView'] = $this->sanitizeNumericValue($attributes, 'slidesPerView', 1, 6, 1);
+            $sanitized['slidesPerView'] = $this->sanitizeNumericValue(
+                $attributes,
+                'slidesPerView',
+                1,
+                6,
+                $sanitized['columns'] ?? 1
+            );
             $sanitized['spaceBetween'] = $this->sanitizeNumericValue($attributes, 'spaceBetween', 0, 100, 16);
             $sanitized['autoplayDelay'] = $this->sanitizeNumericValue($attributes, 'autoplayDelay', 1000, 10000, 3000);
             $sanitized['loop'] = $this->sanitizeBooleanValue($attributes, 'loop', false);
