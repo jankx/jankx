@@ -173,7 +173,7 @@ class SwiperBlock extends Block
         ob_start();
         ?>
         <div <?php echo $block_wrapper_attrs; ?>>
-            <div class="embla" <?php echo $container_attrs; ?>>
+            <div class="embla" <?php echo $container_attrs; ?> style="position:relative;">
                 <div class="embla__container">
                     <?php echo $slides_content; ?>
                 </div>

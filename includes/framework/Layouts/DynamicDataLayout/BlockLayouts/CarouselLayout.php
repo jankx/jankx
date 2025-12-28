@@ -49,6 +49,7 @@ class CarouselLayout extends BlockTemplateLayout
         ob_start();
         ?>
         <div class="<?php echo esc_attr(implode(' ', $carouselClasses)); ?>"
+            style="position: relative;"
             data-slides-per-view="<?php echo esc_attr($slidesPerView); ?>"
             data-space-between="<?php echo esc_attr($spaceBetween); ?>"
             data-loop="<?php echo $loop ? 'true' : 'false'; ?>"
