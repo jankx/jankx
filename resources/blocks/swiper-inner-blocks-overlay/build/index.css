@@ -22,10 +22,13 @@
   inset: 0;
   z-index: 10;
   outline: 1px dashed rgba(0, 0, 0, 0.3);
-  pointer-events: auto;
+  pointer-events: none;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.wp-block-jankx-swiper-inner-blocks-overlay * {
+  pointer-events: auto;
 }
 
 /*# sourceMappingURL=index.css.map*/
