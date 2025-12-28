@@ -1,7 +1,8 @@
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
-import { PanelBody, SelectControl, ToggleControl, RangeControl, TextControl } from '@wordpress/components';
+import { PanelBody, SelectControl, ToggleControl, RangeControl, TextControl, Button } from '@wordpress/components';
+import { MediaUpload } from '@wordpress/block-editor';
 import { useMemo, useEffect, useState } from '@wordpress/element';
 import metadata from './block.json';
 import './style.scss';
@@ -17,6 +18,18 @@ interface DynamicSsrTemplateAttributes {
     showExcerpt?: boolean;
     excerptLength?: number;
     showTitle?: boolean;
+    overlayIcon?: string;
+    overlayIconPosition?: 'center' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+    overlayIconSize?: number;
+    overlayIconColor?: string;
+    overlayIconBackground?: string;
+    overlayIconShowMode?: 'always-show' | 'hover-hide' | 'hover-show';
+    overlayIconTarget?: 'featured-image' | 'entire-item';
+    overlayIconType?: 'class' | 'image' | 'text';
+    overlayIconImageId?: number;
+    overlayIconImageUrl?: string;
+    overlayIconText?: string;
+    overlayIconRotate?: number;
     showDate?: boolean;
     showAuthor?: boolean;
     showPrice?: boolean;
@@ -55,6 +68,18 @@ function Edit({ attributes, setAttributes, context }: any) {
         showExcerpt = true,
         excerptLength = 55,
         showTitle = true,
+        overlayIcon = '',
+        overlayIconPosition = 'center',
+        overlayIconSize = 24,
+        overlayIconColor = '#ffffff',
+        overlayIconBackground = 'rgba(0, 0, 0, 0.5)',
+        overlayIconShowMode = 'always-show',
+        overlayIconTarget = 'featured-image',
+        overlayIconType = 'class',
+        overlayIconImageId = 0,
+        overlayIconImageUrl = '',
+        overlayIconText = '',
+        overlayIconRotate = 0,
         showDate = true,
         showAuthor = false,
         showPrice = true,
@@ -133,6 +158,18 @@ function Edit({ attributes, setAttributes, context }: any) {
             showExcerpt,
             excerptLength,
             showTitle,
+            overlayIcon,
+            overlayIconPosition,
+            overlayIconSize,
+            overlayIconColor,
+            overlayIconBackground,
+            overlayIconShowMode,
+            overlayIconTarget,
+            overlayIconType,
+            overlayIconImageId,
+            overlayIconImageUrl,
+            overlayIconText,
+            overlayIconRotate,
             showDate,
             showAuthor,
             showPrice,
@@ -220,6 +257,18 @@ function Edit({ attributes, setAttributes, context }: any) {
         showExcerpt,
         excerptLength,
         showTitle,
+        overlayIcon,
+        overlayIconPosition,
+        overlayIconSize,
+        overlayIconColor,
+        overlayIconBackground,
+        overlayIconShowMode,
+        overlayIconTarget,
+        overlayIconType,
+        overlayIconImageId,
+        overlayIconImageUrl,
+        overlayIconText,
+        overlayIconRotate,
         showDate,
         showAuthor,
         showPrice,
@@ -324,6 +373,132 @@ function Edit({ attributes, setAttributes, context }: any) {
                         value={imageRatio}
                         onChange={(value: string) => setAttributes({ imageRatio: value })}
                     />
+                </PanelBody>
+                <PanelBody title={__('Overlay Icon Settings', 'jankx')} initialOpen={true}>
+                    <SelectControl
+                        label={__('Overlay Source', 'jankx')}
+                        value={overlayIconType}
+                        options={[
+                            { label: __('Icon Class', 'jankx'), value: 'class' },
+                            { label: __('Image', 'jankx'), value: 'image' },
+                            { label: __('Text Symbol', 'jankx'), value: 'text' },
+                        ]}
+                        onChange={(value: string) => setAttributes({ overlayIconType: value as any })}
+                    />
+                    {overlayIconType === 'class' && (
+                        <TextControl
+                            label={__('Icon Class', 'jankx')}
+                            value={overlayIcon}
+                            onChange={(value: string) => setAttributes({ overlayIcon: value })}
+                        />
+                    )}
+                    {overlayIconType === 'text' && (
+                        <>
+                            <TextControl
+                                label={__('Symbol Text', 'jankx')}
+                                value={overlayIconText}
+                                onChange={(value: string) => setAttributes({ overlayIconText: value })}
+                                help={__('Ví dụ: ▶, ★, ▷', 'jankx')}
+                            />
+                            <RangeControl
+                                label={__('Rotate (deg)', 'jankx')}
+                                value={overlayIconRotate}
+                                onChange={(value?: number) => setAttributes({ overlayIconRotate: value || 0 })}
+                                min={-180}
+                                max={180}
+                                step={1}
+                            />
+                        </>
+                    )}
+                    {overlayIconType === 'image' && (
+                        <>
+                            <MediaUpload
+                                onSelect={(media: any) => {
+                                    const url = media?.url || '';
+                                    const id = media?.id || 0;
+                                    setAttributes({
+                                        overlayIconImageUrl: url,
+                                        overlayIconImageId: id,
+                                    });
+                                }}
+                                allowedTypes={['image']}
+                                value={overlayIconImageId || 0}
+                                render={({ open }) => (
+                                    <Button variant="primary" onClick={open}>
+                                        {overlayIconImageUrl ? __('Change Overlay Image', 'jankx') : __('Select Overlay Image', 'jankx')}
+                                    </Button>
+                                )}
+                            />
+                            {overlayIconImageUrl && (
+                                <div style={{ marginTop: 8 }}>
+                                    <img src={overlayIconImageUrl} alt="" style={{ maxWidth: '100%', height: 'auto' }} />
+                                    <Button
+                                        variant="secondary"
+                                        onClick={() => setAttributes({ overlayIconImageUrl: '', overlayIconImageId: 0 })}
+                                        style={{ marginTop: 8 }}
+                                    >
+                                        {__('Remove Image', 'jankx')}
+                                    </Button>
+                                </div>
+                            )}
+                        </>
+                    )}
+                    {(overlayIconType === 'image' ? !!overlayIconImageUrl : (overlayIconType === 'text' ? !!overlayIconText : !!overlayIcon)) && (
+                        <>
+                            <SelectControl
+                                label={__('Display Mode', 'jankx')}
+                                value={overlayIconShowMode}
+                                options={[
+                                    { label: __('Always Show', 'jankx'), value: 'always-show' },
+                                    { label: __('Show on Hover', 'jankx'), value: 'hover-show' },
+                                    { label: __('Hide on Hover', 'jankx'), value: 'hover-hide' },
+                                ]}
+                                onChange={(value: string) => setAttributes({ overlayIconShowMode: value })}
+                            />
+                            <SelectControl
+                                label={__('Icon Position', 'jankx')}
+                                value={overlayIconPosition}
+                                options={[
+                                    { label: __('Center', 'jankx'), value: 'center' },
+                                    { label: __('Top Left', 'jankx'), value: 'top-left' },
+                                    { label: __('Top Right', 'jankx'), value: 'top-right' },
+                                    { label: __('Bottom Left', 'jankx'), value: 'bottom-left' },
+                                    { label: __('Bottom Right', 'jankx'), value: 'bottom-right' },
+                                ]}
+                                onChange={(value: string) => setAttributes({ overlayIconPosition: value })}
+                            />
+                            <SelectControl
+                                label={__('Target Area', 'jankx')}
+                                value={overlayIconTarget}
+                                options={[
+                                    { label: __('Featured Image', 'jankx'), value: 'featured-image' },
+                                    { label: __('Entry Image', 'jankx'), value: 'entry-image' },
+                                    { label: __('Entire Item', 'jankx'), value: 'entire-item' },
+                                ]}
+                                onChange={(value: string) => setAttributes({ overlayIconTarget: value })}
+                            />
+                            <RangeControl
+                                label={__('Icon Size', 'jankx')}
+                                value={overlayIconSize}
+                                min={10}
+                                max={100}
+                                step={1}
+                                onChange={(value?: number) => setAttributes({ overlayIconSize: value || 24 })}
+                            />
+                            <TextControl
+                                label={__('Icon Color', 'jankx')}
+                                value={overlayIconColor}
+                                onChange={(value: string) => setAttributes({ overlayIconColor: value })}
+                                help={__('Use CSS color value, e.g., #ffffff', 'jankx')}
+                            />
+                            <TextControl
+                                label={__('Icon Background', 'jankx')}
+                                value={overlayIconBackground}
+                                onChange={(value: string) => setAttributes({ overlayIconBackground: value })}
+                                help={__('Use RGBA for transparency, e.g., rgba(0,0,0,0.5)', 'jankx')}
+                            />
+                        </>
+                    )}
                 </PanelBody>
                 <PanelBody title={__('Content Settings', 'jankx')} initialOpen={false}>
                     <ToggleControl

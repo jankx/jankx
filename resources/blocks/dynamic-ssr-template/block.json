@@ -45,6 +45,18 @@
     "showExcerpt": { "type": "boolean", "default": true },
     "excerptLength": { "type": "number", "default": 55 },
     "showTitle": { "type": "boolean", "default": true },
+    "overlayIcon": { "type": "string", "default": "" },
+    "overlayIconPosition": { "type": "string", "default": "center" },
+    "overlayIconSize": { "type": "number", "default": 24 },
+    "overlayIconColor": { "type": "string", "default": "#ffffff" },
+    "overlayIconBackground": { "type": "string", "default": "rgba(0, 0, 0, 0.5)" },
+    "overlayIconShowMode": { "type": "string", "default": "always-show", "enum": ["always-show", "hover-hide", "hover-show"] },
+    "overlayIconTarget": { "type": "string", "default": "featured-image", "enum": ["featured-image", "entry-image", "entire-item"] },
+    "overlayIconType": { "type": "string", "default": "class", "enum": ["class", "image", "text"] },
+    "overlayIconText": { "type": "string", "default": "" },
+    "overlayIconRotate": { "type": "number", "default": 0 },
+    "overlayIconImageId": { "type": "number", "default": 0 },
+    "overlayIconImageUrl": { "type": "string", "default": "" },
     "showDate": { "type": "boolean", "default": true },
     "showAuthor": { "type": "boolean", "default": false },
     "showPrice": { "type": "boolean", "default": true },
@@ -75,4 +87,3 @@
     }
   }
 }
-

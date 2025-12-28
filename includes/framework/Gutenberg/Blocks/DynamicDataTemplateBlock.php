@@ -221,6 +221,10 @@ class DynamicDataTemplateBlock extends Block
         $wrapper_attributes = get_block_wrapper_attributes([
             'class' => $this->buildWrapperClasses($attributes),
             'data-overlay-icon' => $attributes['overlayIcon'] ?? '',
+            'data-overlay-icon-type' => $attributes['overlayIconType'] ?? 'class',
+            'data-overlay-icon-image' => $attributes['overlayIconImageUrl'] ?? '',
+            'data-overlay-icon-text' => $attributes['overlayIconText'] ?? '',
+            'data-overlay-icon-rotate' => isset($attributes['overlayIconRotate']) ? (int) $attributes['overlayIconRotate'] : 0,
             'data-overlay-icon-position' => $attributes['overlayIconPosition'] ?? 'center',
             'data-overlay-icon-size' => $attributes['overlayIconSize'] ?? 24,
             'data-overlay-icon-color' => $attributes['overlayIconColor'] ?? '#ffffff',

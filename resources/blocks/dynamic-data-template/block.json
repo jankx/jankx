@@ -144,7 +144,28 @@
     "overlayIconTarget": {
       "type": "string",
       "default": "featured-image",
-      "enum": ["featured-image", "entire-item"]
+      "enum": ["featured-image", "entry-image", "entire-item"]
+    },
+    "overlayIconType": {
+      "type": "string",
+      "default": "class",
+      "enum": ["class", "image", "text"]
+    },
+    "overlayIconText": {
+      "type": "string",
+      "default": ""
+    },
+    "overlayIconRotate": {
+      "type": "number",
+      "default": 0
+    },
+    "overlayIconImageId": {
+      "type": "number",
+      "default": 0
+    },
+    "overlayIconImageUrl": {
+      "type": "string",
+      "default": ""
     },
     "showItemBorder": {
       "type": "boolean",
