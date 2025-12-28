@@ -163,3 +163,59 @@
         }
     }
 }
+
+// Overlay icon wrapper for featured/entry images
+.jankx-thumbnail-overlay-wrapper {
+    position: relative;
+
+    .jankx-overlay-icon {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        padding: 6px;
+        color: inherit;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 10;
+        transition: opacity 0.2s ease;
+    }
+
+    &.overlay-mode-always-show .jankx-overlay-icon {
+        opacity: 1;
+    }
+    &.overlay-mode-hover-show .jankx-overlay-icon {
+        opacity: 0;
+    }
+    &.overlay-mode-hover-show:hover .jankx-overlay-icon {
+        opacity: 1;
+    }
+    &.overlay-mode-hover-hide .jankx-overlay-icon {
+        opacity: 1;
+    }
+    &.overlay-mode-hover-hide:hover .jankx-overlay-icon {
+        opacity: 0;
+    }
+
+    &.overlay-pos-center .jankx-overlay-icon {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    &.overlay-pos-top-left .jankx-overlay-icon {
+        top: 8px;
+        left: 8px;
+    }
+    &.overlay-pos-top-right .jankx-overlay-icon {
+        top: 8px;
+        right: 8px;
+    }
+    &.overlay-pos-bottom-left .jankx-overlay-icon {
+        bottom: 8px;
+        left: 8px;
+    }
+    &.overlay-pos-bottom-right .jankx-overlay-icon {
+        bottom: 8px;
+        right: 8px;
+    }
+}

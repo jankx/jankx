@@ -114,6 +114,10 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
         $overlayImage = $attrs['overlayIconImageUrl'] ?? '';
         $overlayText = $attrs['overlayIconText'] ?? '';
         $overlayRotate = isset($attrs['overlayIconRotate']) ? (int) $attrs['overlayIconRotate'] : 0;
+        $overlayColor = $attrs['overlayIconColor'] ?? '#ffffff';
+        $overlayBg = $attrs['overlayIconBackground'] ?? 'rgba(0, 0, 0, 0.5)';
+        $overlaySize = isset($attrs['overlayIconSize']) ? (int) $attrs['overlayIconSize'] : 24;
+        $overlayPosition = $attrs['overlayIconPosition'] ?? 'center';
 
         try {
             $innerBlocks = $this->templateBlock['innerBlocks'] ?? [];
@@ -140,7 +144,19 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
 
                 // Inject overlay if it's a featured/entry image block
                 if (($overlayIcon || $overlayImage || $overlayText) && in_array($normalizedBlock['blockName'], ['core/post-featured-image', 'woocommerce/product-image', 'jankx/advanced-image-box'])) {
-                    $blockHtml = $this->wrapWithOverlay($blockHtml, $overlayIcon, $overlayMode, $overlayType, $overlayImage, $overlayText, $overlayRotate);
+                    $blockHtml = $this->wrapWithOverlay(
+                        $blockHtml,
+                        $overlayIcon,
+                        $overlayMode,
+                        $overlayType,
+                        $overlayImage,
+                        $overlayText,
+                        $overlayRotate,
+                        $overlayColor,
+                        $overlayBg,
+                        $overlaySize,
+                        $overlayPosition
+                    );
                 }
 
                 $output .= $blockHtml;
@@ -157,18 +173,30 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
         }
     }
 
-    protected function wrapWithOverlay(string $html, string $icon, string $mode, string $type = 'class', string $imageUrl = '', string $text = '', int $rotate = 0): string
+    protected function wrapWithOverlay(
+        string $html,
+        string $icon,
+        string $mode,
+        string $type = 'class',
+        string $imageUrl = '',
+        string $text = '',
+        int $rotate = 0,
+        string $color = '#ffffff',
+        string $bg = 'rgba(0, 0, 0, 0.5)',
+        int $size = 24,
+        string $position = 'center'
+    ): string
     {
-        $wrapperClasses = 'jankx-thumbnail-overlay-wrapper';
-        $wrapperClasses .= ' overlay-mode-' . $mode;
+        $wrapperClasses = 'jankx-thumbnail-overlay-wrapper overlay-mode-' . $mode . ' overlay-pos-' . sanitize_html_class($position);
         
+        $commonStyle = sprintf('style="color:%s;background:%s;font-size:%dpx;"', esc_attr($color), esc_attr($bg), (int) $size);
+        $rotateStyle = $rotate !== 0 ? ' style="transform: rotate(' . (int) $rotate . 'deg);"' : '';
         if ($type === 'image' && $imageUrl) {
-            $iconHtml = sprintf('<div class="jankx-overlay-icon"><img src="%s" alt="" /></div>', esc_url($imageUrl));
+            $iconHtml = sprintf('<div class="jankx-overlay-icon" %s><img src="%s" alt="" style="width:%dpx;height:%dpx;object-fit:contain;" /></div>', $commonStyle, esc_url($imageUrl), (int) $size, (int) $size);
         } elseif ($type === 'text' && $text !== '') {
-            $style = $rotate !== 0 ? ' style="transform: rotate(' . (int) $rotate . 'deg);"' : '';
-            $iconHtml = sprintf('<div class="jankx-overlay-icon"><span class="jankx-overlay-icon-text"%s>%s</span></div>', $style, esc_html($text));
+            $iconHtml = sprintf('<div class="jankx-overlay-icon" %s><span class="jankx-overlay-icon-text"%s>%s</span></div>', $commonStyle, $rotateStyle, esc_html($text));
         } else {
-            $iconHtml = sprintf('<div class="jankx-overlay-icon"><i class="%s"></i></div>', esc_attr($icon));
+            $iconHtml = sprintf('<div class="jankx-overlay-icon" %s><i class="%s"%s></i></div>', $commonStyle, esc_attr($icon), $rotateStyle);
         }
         
         return sprintf(
