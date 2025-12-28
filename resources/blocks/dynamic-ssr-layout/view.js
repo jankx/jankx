@@ -23,8 +23,14 @@ import EmblaCarousel from 'embla-carousel';
                 isPaused: false
             };
             
-            instance.slidesPerView = parseInt(carousel.getAttribute('data-slides-per-view')) || 1;
-            instance.spaceBetween = parseInt(carousel.getAttribute('data-space-between')) || 16;
+            const computed = getComputedStyle(carousel);
+            const cssSlides = parseInt(computed.getPropertyValue('--slides-per-view')) || NaN;
+            const cssSpace = parseInt(computed.getPropertyValue('--space-between')) || NaN;
+            const dataSlides = parseInt(carousel.getAttribute('data-slides-per-view')) || NaN;
+            const dataColumns = parseInt(carousel.getAttribute('data-columns')) || NaN;
+            const dataSpace = parseInt(carousel.getAttribute('data-space-between')) || NaN;
+            instance.slidesPerView = (dataSlides || dataColumns || cssSlides || 1);
+            instance.spaceBetween = (dataSpace || cssSpace || 16);
             instance.autoplay = carousel.getAttribute('data-autoplay') === 'true';
             instance.autoplayDelay = Math.max(3000, parseInt(carousel.getAttribute('data-autoplay-delay')) || 5000);
             instance.showArrows = carousel.classList.contains('has-arrows');
@@ -42,7 +48,21 @@ import EmblaCarousel from 'embla-carousel';
                 track.className = 'embla__container';
                 while (container.firstChild) {
                     const node = container.firstChild;
-                    if (node.classList && node.classList.contains('carousel-slide')) {
+                    const isElement = node.nodeType === 1;
+                    const isText = node.nodeType === 3;
+                    const isComment = node.nodeType === 8;
+                    if (isText) {
+                        const text = node.nodeValue || '';
+                        if (text.trim() === '') {
+                            container.removeChild(node);
+                            continue;
+                        }
+                    }
+                    if (isComment) {
+                        container.removeChild(node);
+                        continue;
+                    }
+                    if (isElement && node.classList && node.classList.contains('carousel-slide')) {
                         track.appendChild(node);
                     } else {
                         const wrapper = document.createElement('div');

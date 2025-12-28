@@ -1748,7 +1748,21 @@ __webpack_require__.r(__webpack_exports__);
         track.className = 'embla__container';
         while (container.firstChild) {
           const node = container.firstChild;
-          if (node.classList && node.classList.contains('carousel-slide')) {
+          const isElement = node.nodeType === 1;
+          const isText = node.nodeType === 3;
+          const isComment = node.nodeType === 8;
+          if (isText) {
+            const text = node.nodeValue || '';
+            if (text.trim() === '') {
+              container.removeChild(node);
+              continue;
+            }
+          }
+          if (isComment) {
+            container.removeChild(node);
+            continue;
+          }
+          if (isElement && node.classList && node.classList.contains('carousel-slide')) {
             track.appendChild(node);
           } else {
             const wrapper = document.createElement('div');
