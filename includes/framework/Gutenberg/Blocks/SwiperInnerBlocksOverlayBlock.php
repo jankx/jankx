@@ -19,7 +19,7 @@ class SwiperInnerBlocksOverlayBlock extends Block
 
         $wrapper_attributes = [
             'class' => implode(' ', $wrapper_classes),
-            'style' => 'position:relative;z-index:1;',
+            'style' => 'z-index:1;-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none; user-select: none',
             'data-overlay' => 'true',
         ];
 

@@ -377,10 +377,8 @@ function Edit({ attributes, setAttributes, clientId, isSelected = false }: EditP
     const [authors, setAuthors] = useState<AuthorItem[]>([]);
     const [taxonomyTerms, setTaxonomyTerms] = useState<Record<string, TermItem[]>>({});
 
-    const [previewHtml, setPreviewHtml] = useState<string>('');
-    const [loadingPreview, setLoadingPreview] = useState<boolean>(false);
-    const lastPreviewKeyRef = useRef<string>('');
-    const abortPreviewRef = useRef<AbortController | null>(null);
+    const [previewHtml] = useState<string>('');
+    const [loadingPreview] = useState<boolean>(false);
 
     const innerBlocks = useSelect(
         (select) => (select as any)(blockEditorStore).getBlocks(clientId),
@@ -506,74 +504,7 @@ function Edit({ attributes, setAttributes, clientId, isSelected = false }: EditP
         ].join(' '),
     });
 
-    const previewKey = useMemo(() => {
-        if (!templateBlockAttrs) {
-            return '';
-        }
-        return stableStringify({ templateBlockAttrs, parentAttributes: attributes });
-    }, [templateBlockAttrs, attributes]);
-
-    useEffect(() => {
-        if (isSelected) {
-            return;
-        }
-        if (!templateBlockAttrs) {
-            setPreviewHtml('');
-            return;
-        }
-        if (previewKey && lastPreviewKeyRef.current === previewKey) {
-            return;
-        }
-        const nonce = (window as any).jankxDynamicSsrTemplate?.nonce || '';
-        const ajaxUrl = (window as any).jankxDynamicSsrTemplate?.ajaxUrl || '';
-        if (!nonce || !ajaxUrl) {
-            setPreviewHtml('');
-            return;
-        }
-
-        const params = new URLSearchParams();
-        params.append('action', 'jankx_dynamic_ssr_template_preview');
-        params.append('nonce', nonce);
-        params.append('attributes', JSON.stringify(templateBlockAttrs));
-        params.append('parent_attributes', JSON.stringify(attributes));
-
-        if (abortPreviewRef.current) {
-            abortPreviewRef.current.abort();
-        }
-        const controller = new AbortController();
-        abortPreviewRef.current = controller;
-
-        setLoadingPreview(true);
-        fetch(ajaxUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: params,
-            credentials: 'same-origin',
-            signal: controller.signal,
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                if (data?.success && typeof data.data?.html === 'string') {
-                    setPreviewHtml(data.data.html);
-                    lastPreviewKeyRef.current = previewKey;
-                } else {
-                    setPreviewHtml('');
-                    lastPreviewKeyRef.current = previewKey;
-                }
-            })
-            .catch((err) => {
-                if (err?.name === 'AbortError') {
-                    return;
-                }
-                setPreviewHtml('');
-                lastPreviewKeyRef.current = previewKey;
-            })
-            .finally(() => setLoadingPreview(false));
-    }, [
-        isSelected,
-        templateBlockAttrs,
-        previewKey,
-    ]);
+    useEffect(() => {}, []);
 
     const resolvedResponsiveColumns = (responsiveColumns && typeof responsiveColumns === 'object')
         ? responsiveColumns
@@ -1427,12 +1358,12 @@ function Edit({ attributes, setAttributes, clientId, isSelected = false }: EditP
                             />
                         );
                     })()
-                ) : loadingPreview ? (
-                    <div style={{ padding: '12px' }}>{__('Loading preview…', 'jankx')}</div>
-                ) : previewHtml ? (
-                    <div dangerouslySetInnerHTML={{ __html: previewHtml }} />
                 ) : (
-                    <div style={{ padding: '12px' }}>{__('No preview available', 'jankx')}</div>
+                    <InnerBlocks
+                        allowedBlocks={['jankx/dynamic-ssr-template']}
+                        templateLock={false}
+                        renderAppender={InnerBlocks.DefaultBlockAppender}
+                    />
                 )}
             </div>
         </>
