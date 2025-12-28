@@ -1,4 +1,5 @@
 import EmblaCarousel from 'embla-carousel';
+import Autoplay from 'embla-carousel-autoplay';
 
 document.addEventListener('DOMContentLoaded', () => {
   const swiperBlocks = document.querySelectorAll('.wp-block-jankx-swiper');
@@ -47,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const spaceBetweenTablet = Math.min(spaceBetween, 24);
       const adjustedSpeed = slidesCount > 6 ? Math.min(speed, 400) : speed;
       const useAutoplay = autoplay && slidesCount <= 10;
-      const finalAutoplayDelay = Math.max(autoplayDelay, 4000);
+      const finalAutoplayDelay = Math.max(autoplayDelay, 1000);
 
       const bannerStyle = container.dataset.bannerStyle || 'default';
       const bannerTextColor = container.dataset.bannerTextColor || '#ffffff';
@@ -98,37 +99,30 @@ document.addEventListener('DOMContentLoaded', () => {
         track.classList.add('embla__container');
       }
 
+      const plugins = useAutoplay ? [Autoplay({ delay: finalAutoplayDelay, stopOnInteraction: true, stopOnMouseEnter: true })] : [];
       const embla = EmblaCarousel(container, {
         loop: loop,
         duration: adjustedSpeed,
         align: 'start'
-      });
+      }, plugins);
 
       if (navigation && nextEl && prevEl) {
-        nextEl.addEventListener('click', () => embla.scrollNext(), { passive: true });
-        prevEl.addEventListener('click', () => embla.scrollPrev(), { passive: true });
+        nextEl.addEventListener('click', () => {
+          const nextIndex = embla.selectedScrollSnap() + 1;
+          embla.scrollTo(nextIndex, true);
+        }, { passive: true });
+        prevEl.addEventListener('click', () => {
+          const prevIndex = embla.selectedScrollSnap() - 1;
+          embla.scrollTo(prevIndex, true);
+        }, { passive: true });
       }
 
-      let autoplayTimer = null;
-      const startAutoplay = () => {
-        if (!useAutoplay) return;
-        stopAutoplay();
-        autoplayTimer = setInterval(() => {
-          if (embla.canScrollNext()) {
-            embla.scrollNext();
-          } else {
-            embla.scrollTo(0);
-          }
-        }, finalAutoplayDelay);
-      };
-      const stopAutoplay = () => {
-        if (autoplayTimer) {
-          clearInterval(autoplayTimer);
-          autoplayTimer = null;
+      if (useAutoplay) {
+        const ap = embla.plugins?.().autoplay;
+        if (ap) {
+          container.addEventListener('pointerdown', () => ap.stop(), { passive: true });
         }
-      };
-      startAutoplay();
-      container.addEventListener('pointerdown', () => stopAutoplay(), { passive: true });
+      }
 
       let bullets = [];
       const setupPagination = () => {
@@ -138,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
         bullets = slides.map((_, index) => {
           const b = document.createElement('span');
           b.className = 'embla__dot';
-          b.addEventListener('click', () => embla.scrollTo(index), { passive: true });
+          b.addEventListener('click', () => embla.scrollTo(index, true), { passive: true });
           paginationEl.appendChild(b);
           return b;
         });

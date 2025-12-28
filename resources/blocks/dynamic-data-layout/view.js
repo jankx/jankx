@@ -1,4 +1,5 @@
 import EmblaCarousel from 'embla-carousel';
+import Autoplay from 'embla-carousel-autoplay';
 
 function initDynamicDataCarousel(root) {
     const carousels = root ? root.querySelectorAll('.wp-block-jankx-dynamic-data-layout[data-layout="carousel"]') : 
@@ -60,11 +61,12 @@ function initDynamicDataCarousel(root) {
         }
         
         const slides = Array.from(container.children);
+        const plugins = autoplay ? [Autoplay({ delay: autoplayDelay, stopOnInteraction: true, stopOnMouseEnter: true })] : [];
         const embla = EmblaCarousel(container, {
             loop: loop,
             duration: 25,
             align: 'start'
-        });
+        }, plugins);
         
         if (showArrows) {
             createNavigationButtons(carousel, container, embla);
@@ -75,7 +77,13 @@ function initDynamicDataCarousel(root) {
         }
         
         if (autoplay) {
-            setupAutoplay(carousel, container, embla, autoplayDelay);
+            const ap = embla.plugins?.().autoplay;
+            if (ap) {
+                carousel.addEventListener('mouseenter', () => ap.stop(), { passive: true });
+                carousel.addEventListener('mouseleave', () => ap.play(), { passive: true });
+                carousel.addEventListener('touchstart', () => ap.stop(), { passive: true });
+                carousel.addEventListener('touchend', () => ap.play(), { passive: true });
+            }
         }
         
         const onSelect = () => {
@@ -130,31 +138,7 @@ function createPaginationDots(carousel, container, embla) {
     carousel.appendChild(dotsContainer);
 }
 
-function setupAutoplay(carousel, container, embla, delay) {
-    let autoplayInterval;
-    
-    const startAutoplay = () => {
-        autoplayInterval = setInterval(() => {
-            if (embla.canScrollNext()) {
-                embla.scrollNext();
-            } else {
-                embla.scrollTo(0);
-            }
-        }, delay);
-    };
-    
-    const stopAutoplay = () => {
-        clearInterval(autoplayInterval);
-    };
-    
-    startAutoplay();
-    
-    carousel.addEventListener('mouseenter', stopAutoplay);
-    carousel.addEventListener('mouseleave', startAutoplay);
-    
-    carousel.addEventListener('touchstart', stopAutoplay);
-    carousel.addEventListener('touchend', startAutoplay);
-}
+// Autoplay handled via embla-carousel-autoplay plugin above
 
 function updateActiveDot(carousel, container, embla) {
     const dots = carousel.querySelectorAll('.carousel-dot');

@@ -1,4 +1,5 @@
 import EmblaCarousel from 'embla-carousel';
+import Autoplay from 'embla-carousel-autoplay';
 (function() {
     // Track all carousel instances
     const carouselInstances = new Map();
@@ -77,11 +78,14 @@ import EmblaCarousel from 'embla-carousel';
             
             instance.slides = Array.from(container.querySelectorAll('.carousel-slide'));
             
+            const plugins = instance.autoplay
+                ? [Autoplay({ delay: instance.autoplayDelay, stopOnInteraction: true, stopOnMouseEnter: true })]
+                : [];
             instance.embla = EmblaCarousel(container, {
                 loop: true,
                 duration: 25,
                 align: 'start'
-            });
+            }, plugins);
             
             carouselInstances.set(container, instance);
             carousel._carouselInitialized = true;
@@ -95,13 +99,15 @@ import EmblaCarousel from 'embla-carousel';
                         e.preventDefault();
                         e.stopPropagation();
                         instance.embla.scrollPrev();
-                        resetAutoplay(instance);
+                        const ap = instance.embla.plugins?.().autoplay;
+                        if (ap) ap.reset();
                     }, { passive: true });
                     nextExisting.addEventListener('click', (e) => {
                         e.preventDefault();
                         e.stopPropagation();
                         instance.embla.scrollNext();
-                        resetAutoplay(instance);
+                        const ap = instance.embla.plugins?.().autoplay;
+                        if (ap) ap.reset();
                     }, { passive: true });
                     instance.prevBtn = prevExisting;
                     instance.nextBtn = nextExisting;
@@ -129,7 +135,8 @@ import EmblaCarousel from 'embla-carousel';
                         dot.addEventListener('click', (e) => {
                             e.preventDefault();
                             instance.embla.scrollTo(i * instance.slidesPerView);
-                            resetAutoplay(instance);
+                            const ap = instance.embla.plugins?.().autoplay;
+                            if (ap) ap.reset();
                         }, { passive: true });
                         dotsExisting.appendChild(dot);
                     }
@@ -139,9 +146,15 @@ import EmblaCarousel from 'embla-carousel';
             }
             
             setupEmblaListeners(instance);
-            
+
             if (instance.autoplay) {
-                startAutoplay(instance);
+                const ap = instance.embla.plugins?.().autoplay;
+                if (ap) {
+                    carousel.addEventListener('mouseenter', () => ap.stop(), { passive: true });
+                    carousel.addEventListener('mouseleave', () => ap.play(), { passive: true });
+                    carousel.addEventListener('touchstart', () => ap.stop(), { passive: true });
+                    carousel.addEventListener('touchend', () => ap.play(), { passive: true });
+                }
             }
             
             updateCarousel(instance);
@@ -217,49 +230,7 @@ function createPaginationDots(carousel, container, instance) {
     instance.dotsContainer = dotsContainer;
 }
 
-function startAutoplay(instance) {
-    if (!instance.autoplay || instance.isPaused) return;
-    
-    if (instance.autoplayTimeout) {
-        clearTimeout(instance.autoplayTimeout);
-    }
-    
-    instance.autoplayTimeout = setTimeout(() => {
-        if (instance.embla.canScrollNext()) {
-            instance.embla.scrollNext();
-        } else {
-            instance.embla.scrollTo(0);
-        }
-        
-        if (instance.autoplay && !instance.isPaused) {
-            startAutoplay(instance);
-        }
-    }, instance.autoplayDelay);
-}
-
-function resetAutoplay(instance) {
-    if (!instance.autoplay) return;
-    
-    if (instance.autoplayTimeout) {
-        clearTimeout(instance.autoplayTimeout);
-    }
-    
-    startAutoplay(instance);
-}
-
-function pauseAutoplay(instance) {
-    if (!instance.autoplay) return;
-    instance.isPaused = true;
-    if (instance.autoplayTimeout) {
-        clearTimeout(instance.autoplayTimeout);
-    }
-}
-
-function resumeAutoplay(instance) {
-    if (!instance.autoplay) return;
-    instance.isPaused = false;
-    startAutoplay(instance);
-}
+// Autoplay handled via embla-carousel-autoplay plugin above
 
 function setupEmblaListeners(instance) {
     const { embla, carousel } = instance;

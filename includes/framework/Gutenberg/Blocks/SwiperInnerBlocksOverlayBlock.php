@@ -19,6 +19,8 @@ class SwiperInnerBlocksOverlayBlock extends Block
 
         $wrapper_attributes = [
             'class' => implode(' ', $wrapper_classes),
+            'style' => 'position:relative;z-index:1;',
+            'data-overlay' => 'true',
         ];
 
         $block_wrapper_attrs = get_block_wrapper_attributes($wrapper_attributes);
