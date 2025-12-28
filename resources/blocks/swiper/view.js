@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const spaceBetweenTablet = Math.min(spaceBetween, 24);
       const adjustedSpeed = slidesCount > 6 ? Math.min(speed, 400) : speed;
       const useAutoplay = autoplay && slidesCount <= 10;
-      const finalAutoplayDelay = Math.max(autoplayDelay, 1000);
+      const finalAutoplayDelay = Math.max(autoplayDelay, 4000);
 
       const bannerStyle = container.dataset.bannerStyle || 'default';
       const bannerTextColor = container.dataset.bannerTextColor || '#ffffff';
