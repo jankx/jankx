@@ -34,6 +34,11 @@ class CarouselLayout extends BlockTemplateLayout
             'carousel',
         ];
 
+        $navBaseStyle = 'position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;background:rgba(0,0,0,0.7);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:2;border:none;';
+        $prevStyle = $navBaseStyle . 'left:10px;';
+        $nextStyle = $navBaseStyle . 'right:10px;';
+        $dotsStyle = 'position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:2;';
+
         if ($showArrows) {
             $carouselClasses[] = 'has-arrows';
         }
@@ -56,12 +61,12 @@ class CarouselLayout extends BlockTemplateLayout
             data-duration="<?php echo esc_attr($carouselDuration); ?>">
             
             <?php if ($showArrows): ?>
-                <button class="carousel-arrow carousel-arrow-prev">
+                <button class="carousel-arrow carousel-arrow-prev" style="<?php echo esc_attr($prevStyle); ?>">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                         <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                 </button>
-                <button class="carousel-arrow carousel-arrow-next">
+                <button class="carousel-arrow carousel-arrow-next" style="<?php echo esc_attr($nextStyle); ?>">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                         <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
@@ -83,7 +88,7 @@ class CarouselLayout extends BlockTemplateLayout
             </div>
 
             <?php if ($showDots): ?>
-                <div class="carousel-dots"></div>
+                <div class="carousel-dots" style="<?php echo esc_attr($dotsStyle); ?>"></div>
             <?php endif; ?>
         </div>
         <?php

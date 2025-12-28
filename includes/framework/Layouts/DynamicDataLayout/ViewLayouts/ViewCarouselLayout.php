@@ -29,6 +29,11 @@ class ViewCarouselLayout extends AbstractViewLayout
         $carouselDirection = $this->getOption('carouselDirection', 'ltr');
         $carouselDuration = (int) $this->getOption('carouselDuration', 25);
 
+        $navBaseStyle = 'position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;background:rgba(0,0,0,0.7);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:2;border:none;';
+        $prevStyle = $navBaseStyle . 'left:10px;';
+        $nextStyle = $navBaseStyle . 'right:10px;';
+        $dotsStyle = 'position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:2;';
+
         $carouselClasses = [
             'wp-block-jankx-dynamic-ssr-layout',
             'view-type-layout-carousel',
@@ -71,19 +76,19 @@ class ViewCarouselLayout extends AbstractViewLayout
             </div>
             
             <!-- Navigation buttons -->
-            <button class="carousel-nav carousel-prev" type="button">
+            <button class="carousel-nav carousel-prev" type="button" style="<?php echo esc_attr($prevStyle); ?>">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="15 18 9 12 15 6"></polyline>
                 </svg>
             </button>
-            <button class="carousel-nav carousel-next" type="button">
+            <button class="carousel-nav carousel-next" type="button" style="<?php echo esc_attr($nextStyle); ?>">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="9 18 15 12 9 6"></polyline>
                 </svg>
             </button>
             
             <!-- Pagination dots -->
-            <div class="carousel-dots"></div>
+            <div class="carousel-dots" style="<?php echo esc_attr($dotsStyle); ?>"></div>
         </div>
         <?php
         return (string) ob_get_clean();

@@ -181,12 +181,12 @@ class SwiperBlock extends Block
                 <?php echo $overlay_content; ?>
 
                 <?php if ($navigation) : ?>
-                    <div class="embla__button embla__button--prev"></div>
-                    <div class="embla__button embla__button--next"></div>
+                    <div class="embla__button embla__button--prev" style="position:absolute;top:50%;left:10px;transform:translateY(-50%);width:44px;height:44px;background:rgba(0,0,0,0.7);border-radius:50%;z-index:2;"></div>
+                    <div class="embla__button embla__button--next" style="position:absolute;top:50%;right:10px;transform:translateY(-50%);width:44px;height:44px;background:rgba(0,0,0,0.7);border-radius:50%;z-index:2;"></div>
                 <?php endif; ?>
 
                 <?php if ($pagination) : ?>
-                    <div class="embla__dots"></div>
+                    <div class="embla__dots" style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:2;"></div>
                 <?php endif; ?>
             </div>
         </div>
