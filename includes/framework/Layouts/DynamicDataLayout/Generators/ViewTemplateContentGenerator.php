@@ -121,8 +121,12 @@ class ViewTemplateContentGenerator extends AbstractContentGenerator
             // Get the application instance for template rendering
             $app = Application::getInstance();
             
+            // Resolve post type to prioritize post-type-specific template paths
+            $postType = $variables['post_type']
+                ?? ((isset($variables['post']) && $variables['post'] instanceof WP_Post) ? $variables['post']->post_type : null);
+            
             // Build template file path
-            $templateFile = $this->locateTemplateFile($templateSlug);
+            $templateFile = $this->locateTemplateFile($templateSlug, $postType);
             
             if (!$templateFile || !file_exists($templateFile)) {
                 Log::warning(sprintf(
@@ -163,34 +167,67 @@ class ViewTemplateContentGenerator extends AbstractContentGenerator
         }
     }
 
-    protected function locateTemplateFile(string $templateSlug): ?string
+    protected function locateTemplateFile(string $templateSlug, ?string $postType = null): ?string
     {
         // Convert slug to file path
         $templatePath = str_replace('/', DIRECTORY_SEPARATOR, $templateSlug);
+        $viewsDirChild = get_stylesheet_directory() . '/views/';
+        $viewsDirParent = get_template_directory() . '/views/';
+        
+        // If post type is provided, first try post-type-specific paths under views/layouts/loop/{postType}/...
+        if (!empty($postType)) {
+            $sanitizedPostType = sanitize_file_name($postType);
+            $loopPrefix = 'layouts' . DIRECTORY_SEPARATOR . 'loop' . DIRECTORY_SEPARATOR;
+            if (str_starts_with($templatePath, $loopPrefix)) {
+                // Preserve any nested path after layouts/loop/
+                $suffix = substr($templatePath, strlen($loopPrefix));
+                $postTypePath = $loopPrefix . $sanitizedPostType . DIRECTORY_SEPARATOR . $suffix;
+                
+                // Try Latte first
+                $childPostTypeLatte = $viewsDirChild . $postTypePath . '.latte';
+                if (file_exists($childPostTypeLatte)) {
+                    return $childPostTypeLatte;
+                }
+                $parentPostTypeLatte = $viewsDirParent . $postTypePath . '.latte';
+                if (file_exists($parentPostTypeLatte)) {
+                    return $parentPostTypeLatte;
+                }
+                
+                // Fallback to PHP under post-type path
+                $childPostTypePhp = $viewsDirChild . $postTypePath . '.php';
+                if (file_exists($childPostTypePhp)) {
+                    return $childPostTypePhp;
+                }
+                $parentPostTypePhp = $viewsDirParent . $postTypePath . '.php';
+                if (file_exists($parentPostTypePhp)) {
+                    return $parentPostTypePhp;
+                }
+            }
+        }
         
         // Check for .latte files first (Latte templates)
         $latteExtensions = ['.latte'];
         foreach ($latteExtensions as $ext) {
             // Check child theme first
-            $childThemePath = get_stylesheet_directory() . '/views/' . $templatePath . $ext;
+            $childThemePath = $viewsDirChild . $templatePath . $ext;
             if (file_exists($childThemePath)) {
                 return $childThemePath;
             }
             
             // Check parent theme
-            $parentThemePath = get_template_directory() . '/views/' . $templatePath . $ext;
+            $parentThemePath = $viewsDirParent . $templatePath . $ext;
             if (file_exists($parentThemePath)) {
                 return $parentThemePath;
             }
         }
         
         // Fallback to .php files for backward compatibility
-        $phpPath = get_stylesheet_directory() . '/views/' . $templatePath . '.php';
+        $phpPath = $viewsDirChild . $templatePath . '.php';
         if (file_exists($phpPath)) {
             return $phpPath;
         }
         
-        $phpPath = get_template_directory() . '/views/' . $templatePath . '.php';
+        $phpPath = $viewsDirParent . $templatePath . '.php';
         if (file_exists($phpPath)) {
             return $phpPath;
         }
@@ -235,6 +272,9 @@ class ViewTemplateContentGenerator extends AbstractContentGenerator
         $variables['columns'] = $options['columns'] ?? 3;
         $variables['columns_tablet'] = $options['columnsTablet'] ?? 2;
         $variables['columns_mobile'] = $options['columnsMobile'] ?? 1;
+        
+        // Add post type for template resolution priority
+        $variables['post_type'] = $post->post_type ?? null;
 
         return $variables;
     }
