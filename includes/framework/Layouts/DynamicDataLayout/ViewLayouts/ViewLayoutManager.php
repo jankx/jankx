@@ -9,6 +9,7 @@ class ViewLayoutManager
 {
     protected static $instance = null;
     protected $layouts = [];
+    protected $registered = false;
 
     public static function getInstance(): self
     {
@@ -23,24 +24,38 @@ class ViewLayoutManager
         ViewLayoutFactory::init();
     }
 
+    protected function ensureRegistered(): void
+    {
+        if ($this->registered) {
+            return;
+        }
+        do_action('jankx/layouts/view-layout/register-layouts', $this);
+        $this->layouts = ViewLayoutFactory::getRegisteredLayouts();
+        $this->registered = true;
+    }
+
     public function createLayout(string $layoutName): ViewLayoutInterface
     {
+        $this->ensureRegistered();
         return ViewLayoutFactory::create($layoutName);
     }
 
     public function getAvailableLayouts(): array
     {
-        return $this->layouts = ViewLayoutFactory::getRegisteredLayouts();
+        $this->ensureRegistered();
+        return $this->layouts;
     }
 
     public function getLayoutNames(): array
     {
-        return ViewLayoutFactory::getLayoutNames();
+        $this->ensureRegistered();
+        return array_keys($this->layouts);
     }
 
     public function hasLayout(string $layoutName): bool
     {
-        return ViewLayoutFactory::hasLayout($layoutName);
+        $this->ensureRegistered();
+        return isset($this->layouts[$layoutName]);
     }
 
     public function registerLayout(string $name, string $class): void
@@ -51,6 +66,7 @@ class ViewLayoutManager
 
     public function getLayoutOptions(string $layoutName): array
     {
+        $this->ensureRegistered();
         if (!$this->hasLayout($layoutName)) {
             return [];
         }
@@ -61,6 +77,7 @@ class ViewLayoutManager
 
     public function getLayoutSettingsDefinition(string $layoutName): array
     {
+        $this->ensureRegistered();
         if (!$this->hasLayout($layoutName)) {
             return [];
         }
@@ -71,6 +88,7 @@ class ViewLayoutManager
 
     public function renderLayout(string $layoutName, array $options = [], $query = null): string
     {
+        $this->ensureRegistered();
         if (!$this->hasLayout($layoutName)) {
             return '';
         }
@@ -87,6 +105,7 @@ class ViewLayoutManager
 
     public function renderLayoutPreview(string $layoutName, array $options = []): array
     {
+        $this->ensureRegistered();
         if (!$this->hasLayout($layoutName)) {
             return [];
         }
@@ -99,6 +118,7 @@ class ViewLayoutManager
 
     public function getLayoutsForPostType(string $postType): array
     {
+        $this->ensureRegistered();
         $layouts = [];
         foreach ($this->getLayoutNames() as $name) {
             try {
