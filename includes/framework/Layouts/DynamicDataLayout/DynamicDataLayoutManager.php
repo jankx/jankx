@@ -4,7 +4,7 @@ namespace Jankx\Layouts\DynamicDataLayout;
 
 use Jankx\Layouts\DynamicDataLayout\PostLayoutFactory;
 use Jankx\Layouts\DynamicDataLayout\PostLayoutDecorator;
-use Jankx\Layouts\DynamicDataLayout\Contracts\PostLayoutInterface;
+use Jankx\Layouts\DynamicDataLayout\Contracts\BlockTemplateLayoutInterface;
 
 /**
  * Dynamic Data Layout Manager
@@ -167,7 +167,7 @@ class DynamicDataLayoutManager
         if (in_array($layoutName, $this->builtInLayouts)) {
             try {
                 $layout = PostLayoutFactory::create($layoutName);
-                if ($layout instanceof PostLayoutInterface) {
+                if ($layout instanceof BlockTemplateLayoutInterface) {
                     return [
                         'name' => $layoutName,
                         'title' => $layout->getTitle(),
@@ -188,7 +188,7 @@ class DynamicDataLayoutManager
         if ($layoutInfo && $layoutInfo['class']) {
             try {
                 $layout = new $layoutInfo['class']();
-                if ($layout instanceof PostLayoutInterface) {
+                if ($layout instanceof BlockTemplateLayoutInterface) {
                     return [
                         'name' => $layoutName,
                         'title' => $layout->getTitle(),
@@ -253,7 +253,7 @@ class DynamicDataLayoutManager
             if ($layoutInfo && $layoutInfo['class']) {
                 try {
                     $layout = new $layoutInfo['class']();
-                    if ($layout instanceof PostLayoutInterface) {
+                    if ($layout instanceof BlockTemplateLayoutInterface) {
                         $decorator = new PostLayoutDecorator($layout);
                         if (!empty($attributes)) {
                             $decorator->withAttributes($attributes);

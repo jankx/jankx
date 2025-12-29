@@ -6,7 +6,6 @@ use Jankx\Gutenberg\Block;
 use Jankx\Layouts\DynamicDataLayout\ViewLayouts\ViewLayoutManager;
 use Jankx\Layouts\DynamicDataLayout\ViewLayouts\ViewRenderer;
 use Jankx\Layouts\DynamicDataLayout\ViewLayouts\ViewAttributeSanitizer;
-use Jankx\Layouts\DynamicDataLayout\ViewLayouts\Generators\ViewTemplateContentGenerator;
 use Jankx\Query\DynamicDataLayoutQueryHelper;
 use Jankx\Foundation\Application;
 use Jankx\Services\DefaultThumbnailService;
@@ -249,7 +248,12 @@ class DynamicSsrLayoutBlock extends Block
     protected function getLayoutManager(): ViewLayoutManager
     {
         if (!$this->layoutManager) {
-            $this->layoutManager = ViewLayoutManager::getInstance();
+            try {
+                $app = Application::getInstance();
+                $this->layoutManager = $app->make(ViewLayoutManager::class);
+            } catch (\Throwable $e) {
+                $this->layoutManager = ViewLayoutManager::getInstance();
+            }
         }
         return $this->layoutManager;
     }
@@ -400,12 +404,53 @@ class DynamicSsrLayoutBlock extends Block
         $post_types = get_post_types(['public' => true], 'objects');
         $layouts_by_post_type = [];
         foreach ($post_types as $post_type => $post_type_obj) {
-            $layouts_by_post_type[$post_type] = $layoutManager->getLayoutsForPostType($post_type);
+            $rawLayouts = $layoutManager->getLayoutsForPostType($post_type);
+            $normalizedLayouts = [];
+            if (is_array($rawLayouts)) {
+                foreach ($rawLayouts as $layoutName => $layoutClass) {
+                    try {
+                        $layoutInstance = $layoutManager->createLayout($layoutName);
+                        $normalizedLayouts[] = [
+                            'name' => $layoutInstance->getName(),
+                            'title' => $layoutInstance->getTitle(),
+                            'postType' => $post_type,
+                        ];
+                    } catch (\Throwable $e) {
+                        $normalizedLayouts[] = [
+                            'name' => $layoutName,
+                            'title' => ucfirst(str_replace('-', ' ', $layoutName)),
+                            'postType' => $post_type,
+                        ];
+                    }
+                }
+            }
+            $layouts_by_post_type[$post_type] = $normalizedLayouts;
+        }
+
+        $commonLayoutsRaw = $layoutManager->getCommonLayouts();
+        $commonLayouts = [];
+        if (is_array($commonLayoutsRaw)) {
+            foreach ($commonLayoutsRaw as $layoutName => $layoutClass) {
+                try {
+                    $layoutInstance = $layoutManager->createLayout($layoutName);
+                    $commonLayouts[] = [
+                        'name' => $layoutInstance->getName(),
+                        'title' => $layoutInstance->getTitle(),
+                        'postType' => 'common',
+                    ];
+                } catch (\Throwable $e) {
+                    $commonLayouts[] = [
+                        'name' => $layoutName,
+                        'title' => ucfirst(str_replace('-', ' ', $layoutName)),
+                        'postType' => 'common',
+                    ];
+                }
+            }
         }
 
         $layouts_payload = [
             'layoutsByPostType' => $layouts_by_post_type,
-            'commonLayouts' => $layoutManager->getCommonLayouts(),
+            'commonLayouts' => $commonLayouts,
         ];
 
         $public_post_types = [];

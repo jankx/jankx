@@ -16,7 +16,6 @@ use Jankx\Support\Providers\SystemServiceProvider;
 use Jankx\Support\Providers\TemplateEngineServiceProvider;
 use Jankx\Support\Providers\ThemeOptionsServiceProvider;
 use Jankx\Support\Providers\TranslationServiceProvider;
-use Jankx\Foundation\Bootstrap\BootTemplateEngine;
 
 class Application extends Container
 {

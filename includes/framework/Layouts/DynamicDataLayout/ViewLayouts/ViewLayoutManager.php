@@ -21,7 +21,6 @@ class ViewLayoutManager
     private function __construct()
     {
         ViewLayoutFactory::init();
-        $this->layouts = ViewLayoutFactory::getRegisteredLayouts();
     }
 
     public function createLayout(string $layoutName): ViewLayoutInterface
@@ -31,7 +30,7 @@ class ViewLayoutManager
 
     public function getAvailableLayouts(): array
     {
-        return $this->layouts;
+        return $this->layouts = ViewLayoutFactory::getRegisteredLayouts();
     }
 
     public function getLayoutNames(): array
@@ -100,16 +99,61 @@ class ViewLayoutManager
 
     public function getLayoutsForPostType(string $postType): array
     {
-        // Return all available layouts for SSR (they work with any post type)
-        return $this->getAvailableLayouts();
+        $layouts = [];
+        foreach ($this->getLayoutNames() as $name) {
+            try {
+                $layout = $this->createLayout($name);
+                $layouts[] = [
+                    'name' => $layout->getName(),
+                    'title' => $layout->getTitle(),
+                    'postType' => $postType,
+                    'supportedOptions' => $layout->getSupportedOptions(),
+                    'readOnlyOptions' => $layout->getReadOnlyOptions(),
+                    'settingsDefinition' => $layout->getSettingsDefinition(),
+                ];
+            } catch (\Throwable $e) {
+                $layouts[] = [
+                    'name' => $name,
+                    'title' => ucfirst($name),
+                    'postType' => $postType,
+                    'supportedOptions' => [],
+                    'readOnlyOptions' => [],
+                    'settingsDefinition' => [],
+                ];
+            }
+        }
+        return $layouts;
     }
 
     public function getCommonLayouts(): array
     {
-        // Return common layouts that work well with most content
-        $commonLayouts = ['grid', 'list', 'card'];
-        $availableLayouts = $this->getAvailableLayouts();
-        
-        return array_intersect_key($availableLayouts, array_flip($commonLayouts));
+        $common = ['grid', 'list', 'card'];
+        $layouts = [];
+        foreach ($common as $name) {
+            if (!ViewLayoutFactory::hasLayout($name)) {
+                continue;
+            }
+            try {
+                $layout = $this->createLayout($name);
+                $layouts[] = [
+                    'name' => $layout->getName(),
+                    'title' => $layout->getTitle(),
+                    'postType' => 'common',
+                    'supportedOptions' => $layout->getSupportedOptions(),
+                    'readOnlyOptions' => $layout->getReadOnlyOptions(),
+                    'settingsDefinition' => $layout->getSettingsDefinition(),
+                ];
+            } catch (\Throwable $e) {
+                $layouts[] = [
+                    'name' => $name,
+                    'title' => ucfirst($name),
+                    'postType' => 'common',
+                    'supportedOptions' => [],
+                    'readOnlyOptions' => [],
+                    'settingsDefinition' => [],
+                ];
+            }
+        }
+        return $layouts;
     }
 }

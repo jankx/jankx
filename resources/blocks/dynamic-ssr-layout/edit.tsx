@@ -569,21 +569,19 @@ function Edit({ attributes, setAttributes, clientId, isSelected = false }: EditP
 
     // Get available layouts for current post type
     const availableLayouts = useMemo(() => {
-        const layouts: LayoutInfo[] = [];
-        
-        if (layoutsData.commonLayouts) {
-            layoutsData.commonLayouts.forEach((layoutInfo: LayoutInfo) => {
-                layouts.push(layoutInfo);
-            });
-        }
-        
-        if (layoutsData.layoutsByPostType && layoutsData.layoutsByPostType[postType]) {
-            layoutsData.layoutsByPostType[postType].forEach((layoutInfo: LayoutInfo) => {
-                layouts.push(layoutInfo);
-            });
-        }
-        
-        return layouts;
+        const map = new Map<string, LayoutInfo>();
+        (layoutsData.commonLayouts || []).forEach((layoutInfo: LayoutInfo) => {
+            if (layoutInfo?.name) {
+                map.set(layoutInfo.name, layoutInfo);
+            }
+        });
+        const specific = (layoutsData.layoutsByPostType && layoutsData.layoutsByPostType[postType]) ? layoutsData.layoutsByPostType[postType] : [];
+        specific.forEach((layoutInfo: LayoutInfo) => {
+            if (layoutInfo?.name) {
+                map.set(layoutInfo.name, layoutInfo);
+            }
+        });
+        return Array.from(map.values());
     }, [postType, layoutsData]);
 
     const layoutOptions = useMemo(() => {

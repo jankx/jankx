@@ -45,6 +45,11 @@ class ViewLayoutFactory
 
     public static function getRegisteredLayouts(): array
     {
+        do_action(
+            'jankx/layouts/view-layout/register-layouts',     
+            $this
+        );
+
         return apply_filters('jankx/layouts/view-layout/registered-layouts', self::$layouts);
     }
 

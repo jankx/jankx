@@ -392,18 +392,19 @@ function Edit({
 
   // Get available layouts for current post type
   const availableLayouts = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => {
-    const layouts = [];
-    if (layoutsData.commonLayouts) {
-      layoutsData.commonLayouts.forEach(layoutInfo => {
-        layouts.push(layoutInfo);
-      });
-    }
-    if (layoutsData.layoutsByPostType && layoutsData.layoutsByPostType[postType]) {
-      layoutsData.layoutsByPostType[postType].forEach(layoutInfo => {
-        layouts.push(layoutInfo);
-      });
-    }
-    return layouts;
+    const map = new Map();
+    (layoutsData.commonLayouts || []).forEach(layoutInfo => {
+      if (layoutInfo?.name) {
+        map.set(layoutInfo.name, layoutInfo);
+      }
+    });
+    const specific = layoutsData.layoutsByPostType && layoutsData.layoutsByPostType[postType] ? layoutsData.layoutsByPostType[postType] : [];
+    specific.forEach(layoutInfo => {
+      if (layoutInfo?.name) {
+        map.set(layoutInfo.name, layoutInfo);
+      }
+    });
+    return Array.from(map.values());
   }, [postType, layoutsData]);
   const layoutOptions = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => {
     const options = availableLayouts.map(layoutInfo => ({
