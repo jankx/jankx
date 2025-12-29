@@ -252,7 +252,7 @@ class DynamicSsrLayoutBlock extends Block
                 $app = Application::getInstance();
                 $this->layoutManager = $app->make(ViewLayoutManager::class);
             } catch (\Throwable $e) {
-                $this->layoutManager = ViewLayoutManager::getInstance();
+                throw $e;
             }
         }
         return $this->layoutManager;
@@ -407,20 +407,32 @@ class DynamicSsrLayoutBlock extends Block
             $rawLayouts = $layoutManager->getLayoutsForPostType($post_type);
             $normalizedLayouts = [];
             if (is_array($rawLayouts)) {
-                foreach ($rawLayouts as $layoutName => $layoutClass) {
-                    try {
-                        $layoutInstance = $layoutManager->createLayout($layoutName);
+                foreach ($rawLayouts as $key => $value) {
+                    if (is_array($value) && isset($value['name'])) {
                         $normalizedLayouts[] = [
-                            'name' => $layoutInstance->getName(),
-                            'title' => $layoutInstance->getTitle(),
+                            'name' => $value['name'],
+                            'title' => isset($value['title']) ? $value['title'] : ucfirst(str_replace('-', ' ', $value['name'])),
                             'postType' => $post_type,
                         ];
-                    } catch (\Throwable $e) {
-                        $normalizedLayouts[] = [
-                            'name' => $layoutName,
-                            'title' => ucfirst(str_replace('-', ' ', $layoutName)),
-                            'postType' => $post_type,
-                        ];
+                    } else {
+                        $layoutName = is_string($key) ? $key : (is_string($value) ? $value : '');
+                        if ($layoutName === '') {
+                            continue;
+                        }
+                        try {
+                            $layoutInstance = $layoutManager->createLayout($layoutName);
+                            $normalizedLayouts[] = [
+                                'name' => $layoutInstance->getName(),
+                                'title' => $layoutInstance->getTitle(),
+                                'postType' => $post_type,
+                            ];
+                        } catch (\Throwable $e) {
+                            $normalizedLayouts[] = [
+                                'name' => $layoutName,
+                                'title' => ucfirst(str_replace('-', ' ', $layoutName)),
+                                'postType' => $post_type,
+                            ];
+                        }
                     }
                 }
             }
@@ -430,20 +442,32 @@ class DynamicSsrLayoutBlock extends Block
         $commonLayoutsRaw = $layoutManager->getCommonLayouts();
         $commonLayouts = [];
         if (is_array($commonLayoutsRaw)) {
-            foreach ($commonLayoutsRaw as $layoutName => $layoutClass) {
-                try {
-                    $layoutInstance = $layoutManager->createLayout($layoutName);
+            foreach ($commonLayoutsRaw as $key => $value) {
+                if (is_array($value) && isset($value['name'])) {
                     $commonLayouts[] = [
-                        'name' => $layoutInstance->getName(),
-                        'title' => $layoutInstance->getTitle(),
+                        'name' => $value['name'],
+                        'title' => isset($value['title']) ? $value['title'] : ucfirst(str_replace('-', ' ', $value['name'])),
                         'postType' => 'common',
                     ];
-                } catch (\Throwable $e) {
-                    $commonLayouts[] = [
-                        'name' => $layoutName,
-                        'title' => ucfirst(str_replace('-', ' ', $layoutName)),
-                        'postType' => 'common',
-                    ];
+                } else {
+                    $layoutName = is_string($key) ? $key : (is_string($value) ? $value : '');
+                    if ($layoutName === '') {
+                        continue;
+                    }
+                    try {
+                        $layoutInstance = $layoutManager->createLayout($layoutName);
+                        $commonLayouts[] = [
+                            'name' => $layoutInstance->getName(),
+                            'title' => $layoutInstance->getTitle(),
+                            'postType' => 'common',
+                        ];
+                    } catch (\Throwable $e) {
+                        $commonLayouts[] = [
+                            'name' => $layoutName,
+                            'title' => ucfirst(str_replace('-', ' ', $layoutName)),
+                            'postType' => 'common',
+                        ];
+                    }
                 }
             }
         }

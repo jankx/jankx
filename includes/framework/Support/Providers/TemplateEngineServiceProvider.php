@@ -3,6 +3,7 @@
 namespace Jankx\Support\Providers;
 
 use Jankx\Foundation\Application;
+use Jankx\Layouts\DynamicDataLayout\ViewLayouts\ViewLayoutManager;
 use Jankx\Support\Providers\ServiceProvider;
 
 /**
@@ -45,6 +46,10 @@ class TemplateEngineServiceProvider extends ServiceProvider
     {
         // Add WordPress function filters to the Latte engine
         $this->registerWordPressFilters($app);
+
+        $app->singleton(ViewLayoutManager::class, function (Application $app) {
+            return ViewLayoutManager::getInstance();
+        });
     }
 
     /**

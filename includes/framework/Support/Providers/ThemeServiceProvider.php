@@ -10,6 +10,7 @@ use Jankx\Support\Providers\ServiceProvider;
 use Jankx\Support\TemplateEngine\TemplateEngineManager;
 use Jankx\Layouts\DynamicDataLayout\DynamicDataLayoutManager;
 use Jankx\Layouts\DynamicDataLayout\Supports\DefaultContent;
+use Jankx\Layouts\DynamicDataLayout\ViewLayouts\ViewLayoutManager;
 
 /**
  * Theme Service Provider
@@ -55,6 +56,11 @@ class ThemeServiceProvider extends ServiceProvider
 
         // Register DefaultThumbnail service
         $this->registerDefaultThumbnailService($app);
+
+        // Register ViewLayoutManager binding for container resolution
+        $app->singleton(ViewLayoutManager::class, function () {
+            return ViewLayoutManager::getInstance();
+        });
     }
 
     /**

@@ -236,10 +236,29 @@ abstract class AbstractViewLayout implements ViewLayoutInterface
 
     protected function loadTemplate(string $template_name, array $args = []): string
     {
-        // WordPress template hierarchy: child theme first, then parent theme
         $template_names = [$template_name . '.latte', $template_name . '.php', 'default.latte', 'default.php'];
-        
-        // Check child theme first
+        $options = $args['options'] ?? [];
+        $layout = $this->name ?: '';
+        $post_type = isset($options['postType']) ? (string) $options['postType'] : 'post';
+
+        if (is_child_theme()) {
+            $priority_child_dir = get_stylesheet_directory() . '/views/layouts/loop/' . sanitize_file_name($layout) . '/' . sanitize_file_name($post_type) . '/';
+            foreach ($template_names as $filename) {
+                $template_path = $priority_child_dir . $filename;
+                if (file_exists($template_path)) {
+                    return $this->renderTemplate($template_path, $args);
+                }
+            }
+        }
+
+        $priority_parent_dir = get_template_directory() . '/views/layouts/loop/' . sanitize_file_name($layout) . '/' . sanitize_file_name($post_type) . '/';
+        foreach ($template_names as $filename) {
+            $template_path = $priority_parent_dir . $filename;
+            if (file_exists($template_path)) {
+                return $this->renderTemplate($template_path, $args);
+            }
+        }
+
         if (is_child_theme()) {
             $child_theme_dir = get_stylesheet_directory() . '/views/layouts/';
             foreach ($template_names as $filename) {
@@ -249,8 +268,7 @@ abstract class AbstractViewLayout implements ViewLayoutInterface
                 }
             }
         }
-        
-        // Then check parent theme
+
         $parent_theme_dir = get_template_directory() . '/views/layouts/';
         foreach ($template_names as $filename) {
             $template_path = $parent_theme_dir . $filename;
@@ -258,13 +276,12 @@ abstract class AbstractViewLayout implements ViewLayoutInterface
                 return $this->renderTemplate($template_path, $args);
             }
         }
-        
-        // Legacy fallback paths
+
         $legacy_paths = [
             get_stylesheet_directory() . '/views/view-layout/',
             get_template_directory() . '/includes/framework/Layouts/ViewLayout/templates/',
         ];
-        
+
         foreach ($legacy_paths as $base_path) {
             foreach ($template_names as $filename) {
                 $template_path = $base_path . $filename;
@@ -273,8 +290,7 @@ abstract class AbstractViewLayout implements ViewLayoutInterface
                 }
             }
         }
-        
-        throw new \RuntimeException("Template not found: {$template_name}. Searched in child theme and parent theme views/layouts/ directories.");
+        throw new \RuntimeException("Template not found: {$template_name}. Searched in prioritized loop directories and views/layouts/ directories.");
     }
 
     protected function renderTemplate(string $template_path, array $args = []): string
