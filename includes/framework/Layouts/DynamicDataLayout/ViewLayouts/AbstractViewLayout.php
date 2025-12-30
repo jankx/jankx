@@ -130,7 +130,23 @@ abstract class AbstractViewLayout implements ViewLayoutInterface
 
     public function wrapTemplateHtml(string $html, array $options = []): string
     {
-        return $html;
+        $structure = $this->getHtmlStructure($options);
+        $container = $structure['container'] ?? [];
+        $tag = isset($container['tag']) ? (string) $container['tag'] : 'div';
+        $classes = isset($container['classes']) && is_array($container['classes']) ? $container['classes'] : [];
+        $classes = $this->appendClassesToWrapper($classes, $options);
+        $classAttr = implode(' ', array_map('sanitize_html_class', $classes));
+        $styles = isset($container['styles']) && is_array($container['styles']) ? $container['styles'] : [];
+        $styleAttr = '';
+        foreach ($styles as $k => $v) {
+            $styleAttr .= $k . ':' . $v . ';';
+        }
+        $attributes = isset($container['attributes']) && is_array($container['attributes']) ? $container['attributes'] : [];
+        $attrStr = '';
+        foreach ($attributes as $key => $value) {
+            $attrStr .= ' ' . esc_attr($key) . '="' . esc_attr($value) . '"';
+        }
+        return sprintf('<%1$s class="%2$s" style="%3$s"%4$s>%5$s</%1$s>', $tag, $classAttr, $styleAttr, $attrStr, $html);
     }
 
     public function renderDefaultPreview(): array
@@ -241,34 +257,31 @@ abstract class AbstractViewLayout implements ViewLayoutInterface
         $post_type = isset($options['postType']) ? (string) $options['postType'] : 'post';
         $key = $layout . '|' . $post_type . '|' . $template_name;
         static $cache = [];
-        if (isset($cache[$key])) {
+        if (isset($cache[$key]) && (!defined('JANKX_DISABLE_VIEWS_CACHE') || constant('JANKX_DISABLE_VIEWS_CACHE') === false)) {
             return $this->renderTemplate($cache[$key], $args);
         }
 
-        $sanLayout = sanitize_file_name($layout);
+
         $sanPostType = sanitize_file_name($post_type);
-        $filenames = [$template_name . '.latte', $template_name . '.php', 'default.latte', 'default.php'];
+        $isItemTemplate = str_starts_with($template_name, 'item-');
+        $filenames = $isItemTemplate
+            ? [$template_name . '.latte', $template_name . '.php', 'item-default.latte', 'item-default.php']
+            : [$template_name . '.latte', $template_name . '.php', 'default.latte', 'default.php'];
 
         $dirs = [];
         $isChild = is_child_theme();
         if ($isChild) {
             $childBase = get_stylesheet_directory() . '/views/layouts/';
-            $dirs[] = $childBase . 'loop/' . $sanLayout . '/' . $sanPostType . '/';
             $dirs[] = $childBase . 'loop/' . $sanPostType . '/';
             $dirs[] = $childBase;
         }
+
         $parentBase = get_template_directory() . '/views/layouts/';
-        $dirs[] = $parentBase . 'loop/' . $sanLayout . '/' . $sanPostType . '/';
         $dirs[] = $parentBase . 'loop/' . $sanPostType . '/';
         $dirs[] = $parentBase;
 
-        $legacyDirs = [];
-        if ($isChild) {
-            $legacyDirs[] = get_stylesheet_directory() . '/views/view-layout/';
-        }
-        $legacyDirs[] = get_template_directory() . '/includes/framework/Layouts/ViewLayout/templates/';
 
-        foreach (array_merge($dirs, $legacyDirs) as $base) {
+        foreach ($dirs as $base) {
             foreach ($filenames as $filename) {
                 $template_path = $base . $filename;
                 if (file_exists($template_path)) {
@@ -301,6 +314,32 @@ abstract class AbstractViewLayout implements ViewLayoutInterface
             return $this->latte->renderToString($template_path, $params);
         } catch (\Exception $e) {
             throw new \RuntimeException("Failed to render Latte template {$template_path}: " . $e->getMessage(), 0, $e);
+        }
+    }
+
+    public function renderPostItem(): string
+    {
+        $currentId = get_the_ID();
+        $postType = get_post_type($currentId) ?: ($this->getOption('postType') ?? 'post');
+        $options = array_merge($this->options, [
+            'layout' => $this->name,
+            'postType' => (string) $postType,
+        ]);
+        $generator = new \Jankx\Layouts\DynamicDataLayout\ViewLayouts\Generators\ViewSsrGenerator(
+            [
+                'blockName' => 'jankx/dynamic-ssr-template',
+                'attrs' => [],
+                'innerBlocks' => [],
+                'innerHTML' => '',
+                'innerContent' => [],
+            ],
+            $options
+        );
+        $generator->setLayout($this);
+        try {
+            return $generator->renderSingleItem($options);
+        } catch (\Throwable $e) {
+            return '';
         }
     }
 
@@ -431,13 +470,21 @@ abstract class AbstractViewLayout implements ViewLayoutInterface
         ];
     }
 
-    protected function renderViewItem(): string
+    public function renderViewItem(): string
     {
-        $args = [
-            'options' => $this->options,
-        ];
-        
-        return $this->loadTemplate($this->name, $args);
+        $item = $this->getItemWrapperStructure($this->options);
+        $tag = isset($item['tag']) ? (string) $item['tag'] : 'article';
+        $classes = isset($item['classes']) && is_array($item['classes']) ? $item['classes'] : [];
+        $classAttr = implode(' ', array_map('sanitize_html_class', $classes));
+        $attributes = isset($item['attributes']) && is_array($item['attributes']) ? $item['attributes'] : [];
+        $attrStr = '';
+        $currentId = get_the_ID();
+        foreach ($attributes as $key => $value) {
+            $v = is_string($value) ? str_replace(['{{view-id}}', '{{post-id}}'], (string) $currentId, $value) : $value;
+            $attrStr .= ' ' . esc_attr($key) . '="' . esc_attr($v) . '"';
+        }
+        $content = $this->renderPostItem();
+        return sprintf('<%1$s class="%2$s"%3$s>%4$s</%1$s>', $tag, $classAttr, $attrStr, $content);
     }
 
     /**

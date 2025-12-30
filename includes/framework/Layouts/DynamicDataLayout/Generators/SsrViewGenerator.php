@@ -98,7 +98,10 @@ class SsrViewGenerator extends AbstractContentGenerator
 
     protected function renderTemplateForPost(WP_Post $post, WP_Query $query, array $options): string
     {
-        $templateSlug = $this->getOption('templateSlug', $options['templateSlug'] ?? 'layouts/loop/item-default');
+        $layoutObj = $this->getLayout();
+        $layoutName = method_exists($layoutObj, 'getName') ? (string) $layoutObj->getName() : '';
+        $defaultSlug = $layoutName !== '' ? ('layouts/loop/item-' . sanitize_file_name($layoutName)) : 'layouts/loop/item-default';
+        $templateSlug = $this->getOption('templateSlug', $options['templateSlug'] ?? $defaultSlug);
         $app = Application::getInstance();
 
         $variables = [

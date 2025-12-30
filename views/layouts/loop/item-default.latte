@@ -5,10 +5,10 @@
  *}
 
 <div class="{implode(' ', $content_classes)}">
-    {if $show_thumbnail && $thumbnail.exists}
+    {if $show_thumbnail && $thumbnail['exists']}
         <figure class="wp-block-view-featured-image">
             <a href="{$permalink|noescape}">
-                {$thumbnail.html|noescape}
+                {$thumbnail['html']|noescape}
             </a>
         </figure>
     {/if}
@@ -24,8 +24,8 @@
 
         {if $show_date && $date}
             <div class="wp-block-view-date">
-                <time datetime="{$date.datetime|noescape}">
-                    {$date.formatted|noescape}
+                <time datetime="{$date['datetime']|noescape}">
+                    {$date['formatted']|noescape}
                 </time>
             </div>
         {/if}

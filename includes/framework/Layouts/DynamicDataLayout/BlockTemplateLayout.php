@@ -130,7 +130,22 @@ abstract class BlockTemplateLayout implements BlockTemplateLayoutInterface
 
     public function wrapTemplateHtml(string $html, array $options = []): string
     {
-        return $html;
+        $structure = $this->getHtmlStructure($options);
+        $container = $structure['container'] ?? [];
+        $tag = isset($container['tag']) ? (string) $container['tag'] : 'div';
+        $classes = isset($container['classes']) && is_array($container['classes']) ? $container['classes'] : [];
+        $classAttr = implode(' ', array_map('sanitize_html_class', $classes));
+        $styles = isset($container['styles']) && is_array($container['styles']) ? $container['styles'] : [];
+        $styleAttr = '';
+        foreach ($styles as $k => $v) {
+            $styleAttr .= $k . ':' . $v . ';';
+        }
+        $attributes = isset($container['attributes']) && is_array($container['attributes']) ? $container['attributes'] : [];
+        $attrStr = '';
+        foreach ($attributes as $key => $value) {
+            $attrStr .= ' ' . esc_attr($key) . '="' . esc_attr($value) . '"';
+        }
+        return sprintf('<%1$s class="%2$s" style="%3$s"%4$s>%5$s</%1$s>', $tag, $classAttr, $styleAttr, $attrStr, $html);
     }
 
     public function renderDefaultPreview(): array
@@ -263,7 +278,7 @@ abstract class BlockTemplateLayout implements BlockTemplateLayoutInterface
         return ob_get_clean();
     }
 
-    protected function renderPostItem(): string
+    public function renderPostItem(): string
     {
         $post_id = get_the_ID();
         $show_thumbnail = (bool) $this->getOption('showFeaturedImage', true);

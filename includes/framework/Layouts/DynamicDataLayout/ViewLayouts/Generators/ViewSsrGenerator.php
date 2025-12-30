@@ -151,7 +151,6 @@ class ViewSsrGenerator extends AbstractViewContentGenerator
         $layout = $options['layout'] ?? 'default';
         $postType = $options['postType'] ?? 'post';
         $templateFile = $this->getLoopItemTemplateFile($layout, (string) $postType);
-        
         // Debug: Log template file path
         error_log('ViewSsrGenerator renderLoopItemTemplate - layout: ' . $layout);
         error_log('ViewSsrGenerator renderLoopItemTemplate - templateFile: ' . $templateFile);
@@ -177,6 +176,18 @@ class ViewSsrGenerator extends AbstractViewContentGenerator
             error_log('ViewSsrGenerator - Latte render failed: ' . $e->getMessage());
             throw new \RuntimeException("Failed to render template {$templateFile}: " . $e->getMessage(), 0, $e);
         }
+    }
+
+    public function renderSingleItem(array $options): string
+    {
+        $templateBlock = [
+            'blockName' => 'jankx/dynamic-ssr-template',
+            'attrs' => [],
+            'innerBlocks' => [],
+            'innerHTML' => '',
+            'innerContent' => [],
+        ];
+        return $this->renderTemplateBlock($templateBlock, $options);
     }
 
     protected function prepareTemplateData(int $view_id, array $options): array
@@ -336,10 +347,10 @@ class ViewSsrGenerator extends AbstractViewContentGenerator
     {
         $sanLayout = sanitize_file_name($layout);
         $sanPostType = sanitize_file_name($postType ?: 'post');
-        $filenames = ['item-' . $sanLayout . '.latte', 'item-' . $sanLayout . '.php'];
+        $filenames = ['item-' . $sanLayout . '.latte', 'item-' . $sanLayout . '.php', 'item-default.latte', 'item-default.php'];
         $key = $sanLayout . '|' . $sanPostType;
         static $cache = [];
-        if (isset($cache[$key])) {
+        if (isset($cache[$key]) && (!defined('JANKX_DISABLE_VIEWS_CACHE') || constant('JANKX_DISABLE_VIEWS_CACHE') === false)) {
             return $cache[$key];
         }
 
@@ -347,15 +358,14 @@ class ViewSsrGenerator extends AbstractViewContentGenerator
         $isChild = is_child_theme();
         if ($isChild) {
             $childBase = get_stylesheet_directory() . '/views/layouts/';
-            $dirs[] = $childBase . 'loop/' . $sanLayout . '/' . $sanPostType . '/';
-            $dirs[] = $childBase . 'loop/' . $sanPostType . '/';
-            $dirs[] = $childBase . 'loop/';
+            $dirs[0] = $childBase . 'loop/' . $sanPostType . '/';
+            $dirs[2] = $childBase . 'loop/';
         }
         $parentBase = get_template_directory() . '/views/layouts/';
-        $dirs[] = $parentBase . 'loop/' . $sanLayout . '/' . $sanPostType . '/';
-        $dirs[] = $parentBase . 'loop/' . $sanPostType . '/';
-        $dirs[] = $parentBase . 'loop/';
+        $dirs[1] = $parentBase . 'loop/' . $sanPostType . '/';
+        $dirs[3] = $parentBase . 'loop/';
 
+        asort($dirs);
         foreach ($dirs as $base) {
             foreach ($filenames as $filename) {
                 $path = $base . $filename;
@@ -366,7 +376,9 @@ class ViewSsrGenerator extends AbstractViewContentGenerator
             }
         }
 
-        return $parentBase . 'loop/' . 'item-' . $sanLayout . '.latte';
+        $fallback = $parentBase . 'loop/' . 'item-' . $sanLayout . '.latte';
+        $cache[$key] = $fallback;
+        return $fallback;
     }
 
     protected function generatePreviewContent(array $options): string

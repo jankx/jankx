@@ -118,6 +118,11 @@ class DynamicSsrLayoutBlock extends Block
 
     protected function sanitizeTemplateBlock(array $block): array
     {
+        $disallowed = [
+            'core/template',
+            'core/template-part',
+        ];
+
         $sanitized = [
             'blockName' => $block['blockName'] ?? '',
             'attrs' => is_array($block['attrs'] ?? null) ? $block['attrs'] : [],
@@ -133,7 +138,10 @@ class DynamicSsrLayoutBlock extends Block
         if (!empty($block['innerBlocks']) && is_array($block['innerBlocks'])) {
             foreach ($block['innerBlocks'] as $inner) {
                 if (is_array($inner)) {
-                    $sanitized['innerBlocks'][] = $this->sanitizeTemplateBlock($inner);
+                    $name = $inner['blockName'] ?? '';
+                    if (!in_array($name, $disallowed, true)) {
+                        $sanitized['innerBlocks'][] = $this->sanitizeTemplateBlock($inner);
+                    }
                 }
             }
         }

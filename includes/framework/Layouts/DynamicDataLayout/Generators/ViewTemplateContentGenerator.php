@@ -107,6 +107,10 @@ class ViewTemplateContentGenerator extends AbstractContentGenerator
     {
         // Get template slug from template block attributes
         $templateSlug = $this->templateBlock['attrs']['templateSlug'] ?? 'layouts/loop/item-default';
+        // Normalize invalid slugs (e.g., just 'grid', 'list') to default item template
+        if (!is_string($templateSlug) || strpos($templateSlug, '/') === false) {
+            $templateSlug = 'layouts/loop/item-default';
+        }
         
         // Build template variables
         $templateVars = $this->buildTemplateVariables($post, $query, $options);
@@ -129,11 +133,19 @@ class ViewTemplateContentGenerator extends AbstractContentGenerator
             $templateFile = $this->locateTemplateFile($templateSlug, $postType);
             
             if (!$templateFile || !file_exists($templateFile)) {
-                Log::warning(sprintf(
-                    'ViewTemplateContentGenerator: Template file not found: %s',
-                    $templateSlug
-                ));
-                return '<div style="padding: 12px; text-align: center;">Template not found: ' . esc_html($templateSlug) . '</div>';
+                // Fallback to default item template
+                $fallbackSlug = 'layouts/loop/item-default';
+                $fallbackFile = $this->locateTemplateFile($fallbackSlug, $postType);
+                if ($fallbackFile && file_exists($fallbackFile)) {
+                    $templateFile = $fallbackFile;
+                    $templateSlug = $fallbackSlug;
+                } else {
+                    Log::warning(sprintf(
+                        'ViewTemplateContentGenerator: Template file not found: %s',
+                        $templateSlug
+                    ));
+                    return '';
+                }
             }
 
             // Check if it's a Latte template

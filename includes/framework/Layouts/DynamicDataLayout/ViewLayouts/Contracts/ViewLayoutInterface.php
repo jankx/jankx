@@ -2,6 +2,7 @@
 
 namespace Jankx\Layouts\DynamicDataLayout\ViewLayouts\Contracts;
 
+use WP_Post;
 use WP_Query;
 
 interface ViewLayoutInterface
@@ -21,4 +22,8 @@ interface ViewLayoutInterface
     public function getReadOnlyOptions(): array;
     public function getSettingsDefinition(): array;
     public function appendClassesToWrapper(array $classes, array $options = []): array;
+
+    public function renderViewItem(): string;
+
+    public function renderPostItem(): string;
 }
