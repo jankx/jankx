@@ -88,8 +88,12 @@ class DynamicSsrTemplateBlock extends Block
 
     public function render($attributes, $content = '', $block = null)
     {
+        $image_ratio = isset($attributes['imageRatio']) ? (string) $attributes['imageRatio'] : '';
+        $style_inline = $image_ratio !== '' ? ('--image-ratio: ' . $image_ratio) : '';
         $wrapper_attributes = get_block_wrapper_attributes([
             'class' => $this->buildWrapperClasses($attributes),
+            'data-image-ratio' => $image_ratio,
+            'style' => $style_inline,
             'data-overlay-icon' => $attributes['overlayIcon'] ?? '',
             'data-overlay-icon-type' => $attributes['overlayIconType'] ?? 'class',
             'data-overlay-icon-image' => $attributes['overlayIconImageUrl'] ?? '',

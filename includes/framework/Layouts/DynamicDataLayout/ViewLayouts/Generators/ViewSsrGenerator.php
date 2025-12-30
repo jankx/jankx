@@ -47,9 +47,15 @@ class ViewSsrGenerator extends AbstractViewContentGenerator
             return '';
         }
 
+        $imageRatio = '';
+        if (!empty($mergedOptions['imageRatio']) && is_string($mergedOptions['imageRatio'])) {
+            $imageRatio = trim((string) $mergedOptions['imageRatio']);
+        }
+        $wrapperStyle = $imageRatio !== '' ? ('--image-ratio: ' . $imageRatio) : '';
+
         ob_start();
         ?>
-        <div class="wp-block-jankx-dynamic-ssr-template">
+        <div class="wp-block-jankx-dynamic-ssr-template"<?php echo $imageRatio !== '' ? (' data-image-ratio="' . esc_attr($imageRatio) . '"') : ''; ?><?php echo $wrapperStyle !== '' ? (' style="' . esc_attr($wrapperStyle) . '"') : ''; ?>>
             <?php
             while ($query->have_posts()) {
                 $query->the_post();
@@ -350,7 +356,7 @@ class ViewSsrGenerator extends AbstractViewContentGenerator
         $filenames = ['item-' . $sanLayout . '.latte', 'item-' . $sanLayout . '.php', 'item-default.latte', 'item-default.php'];
         $key = $sanLayout . '|' . $sanPostType;
         static $cache = [];
-        if (isset($cache[$key]) && (!defined('JANKX_DISABLE_VIEWS_CACHE') || constant('JANKX_DISABLE_VIEWS_CACHE') === false)) {
+        if (isset($cache[$key])) {
             return $cache[$key];
         }
 
@@ -358,14 +364,19 @@ class ViewSsrGenerator extends AbstractViewContentGenerator
         $isChild = is_child_theme();
         if ($isChild) {
             $childBase = get_stylesheet_directory() . '/views/layouts/';
-            $dirs[0] = $childBase . 'loop/' . $sanPostType . '/';
-            $dirs[2] = $childBase . 'loop/';
+            // Child theme - post type specific (highest priority)
+            $dirs[1] = $childBase . 'loop/' . $sanPostType . '/';
+            // Child theme - general loop (fallback)
+            $dirs[100] = $childBase . 'loop/';
         }
         $parentBase = get_template_directory() . '/views/layouts/';
-        $dirs[1] = $parentBase . 'loop/' . $sanPostType . '/';
-        $dirs[3] = $parentBase . 'loop/';
+        // Parent theme - post type specific
+        $dirs[5] = $parentBase . 'loop/' . $sanPostType . '/';
+        // Parent theme - general loop (lowest priority)
+        $dirs[200] = $parentBase . 'loop/';
 
-        asort($dirs);
+
+        ksort($dirs);
         foreach ($dirs as $base) {
             foreach ($filenames as $filename) {
                 $path = $base . $filename;

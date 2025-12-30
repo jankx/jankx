@@ -4,46 +4,113 @@
  * All data is processed in the layout class, template only displays
  *}
 
-<div class="{implode(' ', $content_classes)}">
-    {if $show_thumbnail && $thumbnail['exists']}
-        <figure class="wp-block-view-featured-image">
-            <a href="{$permalink|noescape}">
-                {$thumbnail['html']|noescape}
-            </a>
-        </figure>
-    {/if}
+{var $item_spacing = isset($item_spacing) ? $item_spacing : ($options['itemSpacing'] ?? 'normal')}
+{var $show_item_border = isset($show_item_border) ? $show_item_border : ($options['showItemBorder'] ?? false)}
+{var $item_border_radius = isset($item_border_radius) ? $item_border_radius : ($options['itemBorderRadius'] ?? 0)}
+{var $pos = isset($thumbnail_position) ? $thumbnail_position : ($options['thumbnailPosition'] ?? 'top')}
+{var $showThumb = isset($show_thumbnail) ? $show_thumbnail : ($options['showFeaturedImage'] ?? true)}
+{var $thumbExists = isset($thumbnail) ? ($thumbnail['exists'] ?? false) : false}
+{var $thumbHtml = isset($thumbnail) ? ($thumbnail['html'] ?? '') : ''}
+{var $attrs = isset($template_block['attrs']) ? $template_block['attrs'] : []}
+{var $overlayType = isset($attrs['overlayIconType']) ? $attrs['overlayIconType'] : ($options['overlayIconType'] ?? 'class')}
+{var $overlayTarget = isset($attrs['overlayIconTarget']) ? $attrs['overlayIconTarget'] : ($options['overlayIconTarget'] ?? 'featured-image')}
+{var $overlayClass = isset($attrs['overlayIcon']) ? $attrs['overlayIcon'] : ($options['overlayIcon'] ?? '')}
+{var $overlayText = isset($attrs['overlayIconText']) ? $attrs['overlayIconText'] : ($options['overlayIconText'] ?? '')}
+{var $overlayImageUrl = isset($attrs['overlayIconImageUrl']) ? $attrs['overlayIconImageUrl'] : ($options['overlayIconImageUrl'] ?? '')}
+{var $overlaySize = isset($attrs['overlayIconSize']) ? (int) $attrs['overlayIconSize'] : (isset($options['overlayIconSize']) ? (int) $options['overlayIconSize'] : 24)}
+{var $overlayColor = isset($attrs['overlayIconColor']) ? $attrs['overlayIconColor'] : ($options['overlayIconColor'] ?? '#ffffff')}
+{var $overlayBg = isset($attrs['overlayIconBackground']) ? $attrs['overlayIconBackground'] : ($options['overlayIconBackground'] ?? 'rgba(0, 0, 0, 0.5)')}
+{var $overlayPos = isset($attrs['overlayIconPosition']) ? $attrs['overlayIconPosition'] : ($options['overlayIconPosition'] ?? 'center')}
+{var $overlayMode = isset($attrs['overlayIconShowMode']) ? $attrs['overlayIconShowMode'] : ($options['overlayIconShowMode'] ?? 'always-show')}
+{var $overlayRotate = isset($attrs['overlayIconRotate']) ? (int) $attrs['overlayIconRotate'] : (isset($options['overlayIconRotate']) ? (int) $options['overlayIconRotate'] : 0)}
+{var $hasOverlay = ($overlayType === 'image' ? ($overlayImageUrl !== '') : ($overlayType === 'text' ? ($overlayText !== '') : ($overlayClass !== '')))}
 
-    <div class="wp-block-view-content-inner">
-        {if $show_title}
-            <h3 class="wp-block-view-title">
+{var $image_ratio = isset($image_ratio) ? $image_ratio : ($options['imageRatio'] ?? '')}
+{var $contentClassExtra = ' item-spacing-' . $item_spacing . ($show_item_border ? ' has-item-border' : '') . ($image_ratio ? ' has-image-ratio' : '')}
+{var $contentStyleExtra = ($show_item_border && $item_border_radius > 0) ? ('border-radius: ' . (int) $item_border_radius . 'px;') : ''}
+
+<div class="{implode(' ', $content_classes)}{$contentClassExtra}" style="{$contentStyleExtra}">
+    <div class="wp-block-view-row">
+        {if $showThumb && $thumbExists}
+            <figure class="wp-block-view-featured-image wp-block-post-featured-image">
                 <a href="{$permalink|noescape}">
-                    {$title|noescape}
+                    {$thumbHtml|noescape}
                 </a>
-            </h3>
+            </figure>
         {/if}
-
-        {if $show_date && $date}
-            <div class="wp-block-view-date">
-                <time datetime="{$date['datetime']|noescape}">
-                    {$date['formatted']|noescape}
-                </time>
-            </div>
-        {/if}
-
-        {if $show_excerpt && $excerpt}
-            <div class="wp-block-view-excerpt">
-                <p class="wp-block-view-excerpt__excerpt">
-                    {$excerpt|noescape}
-                </p>
-            </div>
-        {/if}
-
-        {if $show_read_more}
-            <div class="wp-block-view-read-more">
-                <a href="{$permalink|noescape}" class="wp-block-view-read-more__link">
-                    {$read_more_text|noescape}
-                </a>
-            </div>
-        {/if}
+        <div class="wp-block-view-content-inner">
+            {if $show_title}
+                <h3 class="wp-block-view-title">
+                    <a href="{$permalink|noescape}">{$title|noescape}</a>
+                </h3>
+            {/if}
+            {if $show_date && $date}
+                <div class="wp-block-view-date">
+                    <time datetime="{$date['datetime']|noescape}">{$date['formatted']|noescape}</time>
+                </div>
+            {/if}
+            {if isset($show_author) && $show_author && isset($author) && $author}
+                <div class="wp-block-view-author">
+                    <a href="{$author['posts_url']|noescape}">{$author['display_name']|noescape}</a>
+                </div>
+            {/if}
+            {if isset($categories) && $categories}
+                <div class="wp-block-view-categories">
+                    {foreach $categories as $cat}
+                        <a href="{$cat['link']|noescape}">{$cat['name']|noescape}</a>
+                    {/foreach}
+                </div>
+            {/if}
+            {if isset($tags) && $tags}
+                <div class="wp-block-view-tags">
+                    {foreach $tags as $tag}
+                        <a href="{$tag['link']|noescape}">{$tag['name']|noescape}</a>
+                    {/foreach}
+                </div>
+            {/if}
+            {if $show_excerpt && $excerpt}
+                <div class="wp-block-view-excerpt">
+                    <p class="wp-block-view-excerpt__excerpt">{$excerpt|noescape}</p>
+                </div>
+            {/if}
+            {var $price_html = ''}
+            {if isset($show_price) && $show_price && function_exists('wc_get_product')}
+                {var $product = wc_get_product($post->ID)}
+                {if $product}{var $price_html = $product->get_price_html()}{/if}
+            {/if}
+            {if $price_html !== ''}<div class="wp-block-view-price">{$price_html|noescape}</div>{/if}
+            {var $rating_html = ''}
+            {if isset($show_rating) && $show_rating && function_exists('wc_get_product') && function_exists('wc_get_rating_html')}
+                {var $product2 = wc_get_product($post->ID)}
+                {if $product2}{var $rating_html = wc_get_rating_html($product2->get_average_rating())}{/if}
+            {/if}
+            {if $rating_html !== ''}<div class="wp-block-view-rating">{$rating_html|noescape}</div>{/if}
+            {if isset($show_add_to_cart) && $show_add_to_cart}
+                {if function_exists('wc_get_product')}
+                    {var $p = wc_get_product($post->ID)}
+                    {if $p}
+                        <div class="wp-block-view-add-to-cart">
+                            <a href="{$p->add_to_cart_url()|noescape}">{$p->add_to_cart_text()|noescape}</a>
+                        </div>
+                    {/if}
+                {else}
+                    <div class="wp-block-view-add-to-cart">
+                        <a href="{$permalink|noescape}">Xem chi tiết</a>
+                    </div>
+                {/if}
+            {/if}
+            {if $show_read_more}
+                <div class="wp-block-view-read-more">
+                    <a href="{$permalink|noescape}" class="wp-block-view-read-more__link">{$read_more_text|noescape}</a>
+                </div>
+            {/if}
+        </div>
     </div>
+    {if $hasOverlay && $overlayTarget === 'entire-item'}
+        <span class="view-overlay overlay-{$overlayType} overlay-pos-{$overlayPos} overlay-mode-{$overlayMode}" style="color: {$overlayColor}; background: {$overlayBg}; font-size: {$overlaySize}px; width: {$overlaySize}px; height: {$overlaySize}px; line-height: {$overlaySize}px; transform: rotate({$overlayRotate}deg);">
+            {if $overlayType === 'class'}<i class="{$overlayClass}"></i>{/if}
+            {if $overlayType === 'image'}<img src="{$overlayImageUrl|noescape}" alt="" />{/if}
+            {if $overlayType === 'text'}{$overlayText|noescape}{/if}
+        </span>
+    {/if}
 </div>

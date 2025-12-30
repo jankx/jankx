@@ -257,7 +257,7 @@ abstract class AbstractViewLayout implements ViewLayoutInterface
         $post_type = isset($options['postType']) ? (string) $options['postType'] : 'post';
         $key = $layout . '|' . $post_type . '|' . $template_name;
         static $cache = [];
-        if (isset($cache[$key]) && (!defined('JANKX_DISABLE_VIEWS_CACHE') || constant('JANKX_DISABLE_VIEWS_CACHE') === false)) {
+        if (isset($cache[$key])) {
             return $this->renderTemplate($cache[$key], $args);
         }
 
