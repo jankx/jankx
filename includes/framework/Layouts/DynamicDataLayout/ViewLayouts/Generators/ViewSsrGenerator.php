@@ -149,7 +149,8 @@ class ViewSsrGenerator extends AbstractViewContentGenerator
     protected function renderLoopItemTemplate(array $options): string
     {
         $layout = $options['layout'] ?? 'default';
-        $templateFile = $this->getLoopItemTemplateFile($layout);
+        $postType = $options['postType'] ?? 'post';
+        $templateFile = $this->getLoopItemTemplateFile($layout, (string) $postType);
         
         // Debug: Log template file path
         error_log('ViewSsrGenerator renderLoopItemTemplate - layout: ' . $layout);
@@ -331,45 +332,41 @@ class ViewSsrGenerator extends AbstractViewContentGenerator
         ];
     }
 
-    protected function getLoopItemTemplateFile(string $layout): string
+    protected function getLoopItemTemplateFile(string $layout, ?string $postType = null): string
     {
-        // WordPress template hierarchy: child theme first, then parent theme
-        $template_filename = 'item-' . $layout . '.latte';
-        
-        // Check child theme first
-        if (is_child_theme()) {
-            $child_template = get_stylesheet_directory() . '/views/layouts/loop/' . $template_filename;
-            if (file_exists($child_template)) {
-                return $child_template;
+        $sanLayout = sanitize_file_name($layout);
+        $sanPostType = sanitize_file_name($postType ?: 'post');
+        $filenames = ['item-' . $sanLayout . '.latte', 'item-' . $sanLayout . '.php'];
+        $key = $sanLayout . '|' . $sanPostType;
+        static $cache = [];
+        if (isset($cache[$key])) {
+            return $cache[$key];
+        }
+
+        $dirs = [];
+        $isChild = is_child_theme();
+        if ($isChild) {
+            $childBase = get_stylesheet_directory() . '/views/layouts/';
+            $dirs[] = $childBase . 'loop/' . $sanLayout . '/' . $sanPostType . '/';
+            $dirs[] = $childBase . 'loop/' . $sanPostType . '/';
+            $dirs[] = $childBase . 'loop/';
+        }
+        $parentBase = get_template_directory() . '/views/layouts/';
+        $dirs[] = $parentBase . 'loop/' . $sanLayout . '/' . $sanPostType . '/';
+        $dirs[] = $parentBase . 'loop/' . $sanPostType . '/';
+        $dirs[] = $parentBase . 'loop/';
+
+        foreach ($dirs as $base) {
+            foreach ($filenames as $filename) {
+                $path = $base . $filename;
+                if (file_exists($path)) {
+                    $cache[$key] = $path;
+                    return $path;
+                }
             }
         }
-        
-        // Then check parent theme
-        $parent_template = get_template_directory() . '/views/layouts/loop/' . $template_filename;
-        if (file_exists($parent_template)) {
-            return $parent_template;
-        }
-        
-        // If no .latte found, check for PHP fallbacks
-        $php_filename = 'item-' . $layout . '.php';
-        
-        // Check child theme for PHP
-        if (is_child_theme()) {
-            $child_php_template = get_stylesheet_directory() . '/views/layouts/loop/' . $php_filename;
-            if (file_exists($child_php_template)) {
-                return $child_php_template;
-            }
-        }
-        
-        // Check parent theme for PHP
-        $parent_php_template = get_template_directory() . '/views/layouts/loop/' . $php_filename;
-        if (file_exists($parent_php_template)) {
-            return $parent_php_template;
-        }
-        
-        // Return the parent theme latte path even if it doesn't exist
-        // This will trigger the exception in renderLoopItemTemplate with clear error message
-        return $parent_template;
+
+        return $parentBase . 'loop/' . 'item-' . $sanLayout . '.latte';
     }
 
     protected function generatePreviewContent(array $options): string

@@ -236,61 +236,48 @@ abstract class AbstractViewLayout implements ViewLayoutInterface
 
     protected function loadTemplate(string $template_name, array $args = []): string
     {
-        $template_names = [$template_name . '.latte', $template_name . '.php', 'default.latte', 'default.php'];
         $options = $args['options'] ?? [];
         $layout = $this->name ?: '';
         $post_type = isset($options['postType']) ? (string) $options['postType'] : 'post';
+        $key = $layout . '|' . $post_type . '|' . $template_name;
+        static $cache = [];
+        if (isset($cache[$key])) {
+            return $this->renderTemplate($cache[$key], $args);
+        }
 
-        if (is_child_theme()) {
-            $priority_child_dir = get_stylesheet_directory() . '/views/layouts/loop/' . sanitize_file_name($layout) . '/' . sanitize_file_name($post_type) . '/';
-            foreach ($template_names as $filename) {
-                $template_path = $priority_child_dir . $filename;
+        $sanLayout = sanitize_file_name($layout);
+        $sanPostType = sanitize_file_name($post_type);
+        $filenames = [$template_name . '.latte', $template_name . '.php', 'default.latte', 'default.php'];
+
+        $dirs = [];
+        $isChild = is_child_theme();
+        if ($isChild) {
+            $childBase = get_stylesheet_directory() . '/views/layouts/';
+            $dirs[] = $childBase . 'loop/' . $sanLayout . '/' . $sanPostType . '/';
+            $dirs[] = $childBase . 'loop/' . $sanPostType . '/';
+            $dirs[] = $childBase;
+        }
+        $parentBase = get_template_directory() . '/views/layouts/';
+        $dirs[] = $parentBase . 'loop/' . $sanLayout . '/' . $sanPostType . '/';
+        $dirs[] = $parentBase . 'loop/' . $sanPostType . '/';
+        $dirs[] = $parentBase;
+
+        $legacyDirs = [];
+        if ($isChild) {
+            $legacyDirs[] = get_stylesheet_directory() . '/views/view-layout/';
+        }
+        $legacyDirs[] = get_template_directory() . '/includes/framework/Layouts/ViewLayout/templates/';
+
+        foreach (array_merge($dirs, $legacyDirs) as $base) {
+            foreach ($filenames as $filename) {
+                $template_path = $base . $filename;
                 if (file_exists($template_path)) {
+                    $cache[$key] = $template_path;
                     return $this->renderTemplate($template_path, $args);
                 }
             }
         }
-
-        $priority_parent_dir = get_template_directory() . '/views/layouts/loop/' . sanitize_file_name($layout) . '/' . sanitize_file_name($post_type) . '/';
-        foreach ($template_names as $filename) {
-            $template_path = $priority_parent_dir . $filename;
-            if (file_exists($template_path)) {
-                return $this->renderTemplate($template_path, $args);
-            }
-        }
-
-        if (is_child_theme()) {
-            $child_theme_dir = get_stylesheet_directory() . '/views/layouts/';
-            foreach ($template_names as $filename) {
-                $template_path = $child_theme_dir . $filename;
-                if (file_exists($template_path)) {
-                    return $this->renderTemplate($template_path, $args);
-                }
-            }
-        }
-
-        $parent_theme_dir = get_template_directory() . '/views/layouts/';
-        foreach ($template_names as $filename) {
-            $template_path = $parent_theme_dir . $filename;
-            if (file_exists($template_path)) {
-                return $this->renderTemplate($template_path, $args);
-            }
-        }
-
-        $legacy_paths = [
-            get_stylesheet_directory() . '/views/view-layout/',
-            get_template_directory() . '/includes/framework/Layouts/ViewLayout/templates/',
-        ];
-
-        foreach ($legacy_paths as $base_path) {
-            foreach ($template_names as $filename) {
-                $template_path = $base_path . $filename;
-                if (file_exists($template_path)) {
-                    return $this->renderTemplate($template_path, $args);
-                }
-            }
-        }
-        throw new \RuntimeException("Template not found: {$template_name}. Searched in prioritized loop directories and views/layouts/ directories.");
+        throw new \RuntimeException("Template not found: {$template_name}");
     }
 
     protected function renderTemplate(string $template_path, array $args = []): string
