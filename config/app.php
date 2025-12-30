@@ -13,7 +13,6 @@ return [
         Jankx\Support\Providers\FontIconsServiceProvider::class,
         Jankx\Support\Providers\FontsServiceProvider::class,
         Jankx\Support\Providers\PerformanceServiceProvider::class,
-        Jankx\Support\Providers\PlatesServiceProvider::class,
         Jankx\Support\Providers\ThemeServiceProvider::class,
         Jankx\Support\Providers\WordPressCliServiceProvider::class,
 

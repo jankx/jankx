@@ -31,9 +31,9 @@ abstract class Kernel implements KernelInterface
         RegisterFacades::class,
         ThemeDataLoader::class,
         BootChildTheme::class,
+        BootTemplateEngine::class,
         RegisterProviders::class,
         BootProviders::class,
-        BootTemplateEngine::class,
     ];
 
     /**
