@@ -286,16 +286,36 @@ class DynamicSsrLayoutBlock extends Block
 
         $this->ensureServices();
 
+
+        // Remove debug output
+
+
+
         try {
             if ($block instanceof \WP_Block) {
                 $templateBlock = $this->extractTemplateBlockFromParsedBlock($block->parsed_block ?? []);
                 if ($templateBlock && !empty($templateBlock['attrs'])) {
                     $templateAttrs = $templateBlock['attrs'];
-                    if (!empty($templateAttrs['imageRatio']) && empty($attributes['imageRatio'])) {
-                        $attributes['imageRatio'] = $templateAttrs['imageRatio'];
-                    }
-                    if (!empty($templateAttrs['thumbnailPosition']) && empty($attributes['thumbnailPosition'])) {
-                        $attributes['thumbnailPosition'] = $templateAttrs['thumbnailPosition'];
+                    // Merge template attributes into parent, overriding defaults
+                    $keysToMerge = [
+                        'imageRatio',
+                        'thumbnailPosition',
+                        'overlayIcon',
+                        'overlayIconType',
+                        'overlayIconImageUrl',
+                        'overlayIconText',
+                        'overlayIconRotate',
+                        'overlayIconPosition',
+                        'overlayIconSize',
+                        'overlayIconColor',
+                        'overlayIconBackground',
+                        'overlayIconShowMode',
+                        'overlayIconTarget',
+                    ];
+                    foreach ($keysToMerge as $k) {
+                        if (array_key_exists($k, $templateAttrs)) {
+                            $attributes[$k] = $templateAttrs[$k];
+                        }
                     }
                 }
             }

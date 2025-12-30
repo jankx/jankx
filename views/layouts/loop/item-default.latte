@@ -36,6 +36,11 @@
                 <a href="{$permalink|noescape}">
                     {$thumbHtml|noescape}
                 </a>
+                {if $hasOverlay && $overlayTarget in ['entry-image', 'featured-image'] }
+                    <span class="view-overlay overlay-{$overlayType} overlay-pos-{$overlayPos} overlay-mode-{$overlayMode}" style="color: {$overlayColor}; background: {$overlayBg}; font-size: {$overlaySize}px; width: {$overlaySize}px; height: {$overlaySize}px; line-height: {$overlaySize}px;">
+                        {include '../common/overlay-icon.latte', type => $overlayType, className => $overlayClass, imageUrl => $overlayImageUrl, text => $overlayText, rotate => $overlayRotate, size => $overlaySize}
+                    </span>
+                {/if}
             </figure>
         {/if}
         <div class="wp-block-view-content-inner">
@@ -107,10 +112,8 @@
         </div>
     </div>
     {if $hasOverlay && $overlayTarget === 'entire-item'}
-        <span class="view-overlay overlay-{$overlayType} overlay-pos-{$overlayPos} overlay-mode-{$overlayMode}" style="color: {$overlayColor}; background: {$overlayBg}; font-size: {$overlaySize}px; width: {$overlaySize}px; height: {$overlaySize}px; line-height: {$overlaySize}px; transform: rotate({$overlayRotate}deg);">
-            {if $overlayType === 'class'}<i class="{$overlayClass}"></i>{/if}
-            {if $overlayType === 'image'}<img src="{$overlayImageUrl|noescape}" alt="" />{/if}
-            {if $overlayType === 'text'}{$overlayText|noescape}{/if}
+        <span class="view-overlay overlay-{$overlayType} overlay-pos-{$overlayPos} overlay-mode-{$overlayMode}" style="color: {$overlayColor}; background: {$overlayBg}; font-size: {$overlaySize}px; width: {$overlaySize}px; height: {$overlaySize}px; line-height: {$overlaySize}px;">
+            {include '../common/overlay-icon.latte', type => $overlayType, className => $overlayClass, imageUrl => $overlayImageUrl, text => $overlayText, rotate => $overlayRotate, size => $overlaySize}
         </span>
     {/if}
 </div>

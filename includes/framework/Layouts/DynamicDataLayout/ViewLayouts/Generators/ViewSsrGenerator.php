@@ -40,7 +40,7 @@ class ViewSsrGenerator extends AbstractViewContentGenerator
             return '';
         }
 
-        $mergedOptions = array_merge($this->templateBlock['attrs'] ?? [], $this->options, $options);
+        $mergedOptions = array_merge($this->options, $options, $this->templateBlock['attrs'] ?? []);
         $layout = $this->getLayout();
 
         if (!$layout) {
@@ -111,6 +111,19 @@ class ViewSsrGenerator extends AbstractViewContentGenerator
 
         // Fallback rendering
         return $this->fallbackRender($templateBlock, $options);
+    }
+
+    protected function getOverlayIconTemplateFile(): ?string
+    {
+        $child = get_stylesheet_directory() . '/views/layouts/common/overlay-icon.latte';
+        if (file_exists($child)) {
+            return $child;
+        }
+        $parent = get_template_directory() . '/views/layouts/common/overlay-icon.latte';
+        if (file_exists($parent)) {
+            return $parent;
+        }
+        return null;
     }
 
     protected function fallbackRender(array $templateBlock, array $options): string
@@ -302,14 +315,27 @@ class ViewSsrGenerator extends AbstractViewContentGenerator
         if ($thumbnail['exists'] && ($overlayIcon || $overlayImage || $overlayText) && $overlayTarget === 'featured-image') {
             $wrapperClasses = 'jankx-thumbnail-overlay-wrapper overlay-mode-' . sanitize_html_class($overlayMode) . ' overlay-pos-' . sanitize_html_class($overlayPosition);
             $commonStyle = sprintf('style="color:%s;background:%s;font-size:%dpx;"', esc_attr($overlayColor), esc_attr($overlayBg), (int) $overlaySize);
-            $rotateStyle = $overlayRotate !== 0 ? ' style="transform: rotate(' . (int) $overlayRotate . 'deg);"' : '';
-            if ($overlayType === 'image' && $overlayImage) {
-                $iconHtml = sprintf('<div class="jankx-overlay-icon" %s><img src="%s" alt="" style="width:%dpx;height:%dpx;object-fit:contain;" /></div>', $commonStyle, esc_url($overlayImage), (int) $overlaySize, (int) $overlaySize);
-            } elseif ($overlayType === 'text' && $overlayText !== '') {
-                $iconHtml = sprintf('<div class="jankx-overlay-icon" %s><span class="jankx-overlay-icon-text"%s>%s</span></div>', $commonStyle, $rotateStyle, esc_html($overlayText));
+            $overlayIconTemplate = $this->getOverlayIconTemplateFile();
+            $iconMarkup = '';
+            if ($overlayIconTemplate && file_exists($overlayIconTemplate)) {
+                $iconMarkup = $this->latte->renderToString($overlayIconTemplate, [
+                    'type' => $overlayType,
+                    'className' => $overlayIcon,
+                    'imageUrl' => $overlayImage,
+                    'text' => $overlayText,
+                    'rotate' => (int) $overlayRotate,
+                    'size' => (int) $overlaySize,
+                ]);
             } else {
-                $iconHtml = sprintf('<div class="jankx-overlay-icon" %s><i class="%s"%s></i></div>', $commonStyle, esc_attr($overlayIcon), $rotateStyle);
+                if ($overlayType === 'image' && $overlayImage) {
+                    $iconMarkup = sprintf('<img src="%s" alt="" style="width:%dpx;height:%dpx;object-fit:contain;" />', esc_url($overlayImage), (int) $overlaySize, (int) $overlaySize);
+                } elseif ($overlayType === 'text' && $overlayText !== '') {
+                    $iconMarkup = sprintf('<span class="jankx-overlay-icon-text" style="transform: rotate(%ddeg);">%s</span>', (int) $overlayRotate, esc_html($overlayText));
+                } else {
+                    $iconMarkup = sprintf('<i class="%s" style="transform: rotate(%ddeg);"></i>', esc_attr($overlayIcon), (int) $overlayRotate);
+                }
             }
+            $iconHtml = sprintf('<div class="jankx-overlay-icon" %s>%s</div>', $commonStyle, $iconMarkup);
             $overlayInline = 'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;';
             $overlayHtml = sprintf('<div class="%s" style="%s">%s</div>', esc_attr($wrapperClasses), esc_attr($overlayInline), $iconHtml);
             $thumbnail['html'] = sprintf(

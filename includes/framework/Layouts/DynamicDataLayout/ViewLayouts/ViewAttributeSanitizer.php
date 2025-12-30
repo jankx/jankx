@@ -57,6 +57,21 @@ class ViewAttributeSanitizer
         $sanitized['thumbnailPosition'] = $this->sanitizeThumbnailPosition($attributes['thumbnailPosition'] ?? 'top');
         $sanitized['emptyMessage'] = $this->sanitizeText($attributes['emptyMessage'] ?? __('No posts found.', 'jankx'));
         $sanitized['className'] = $this->sanitizeClassName($attributes['className'] ?? '');
+        // Image ratio (e.g., "16/9") used by some layouts
+        $sanitized['imageRatio'] = $this->sanitizeImageRatio($attributes['imageRatio'] ?? '');
+
+        // Overlay icon options
+        $sanitized['overlayIcon'] = $this->sanitizeText($attributes['overlayIcon'] ?? '');
+        $sanitized['overlayIconType'] = $this->sanitizeOverlayType($attributes['overlayIconType'] ?? 'class');
+        $sanitized['overlayIconImageUrl'] = $this->sanitizeUrl($attributes['overlayIconImageUrl'] ?? '');
+        $sanitized['overlayIconText'] = $this->sanitizeText($attributes['overlayIconText'] ?? '');
+        $sanitized['overlayIconRotate'] = $this->sanitizeNumericValue($attributes, 'overlayIconRotate', 0, 360, 0);
+        $sanitized['overlayIconColor'] = $this->sanitizeText($attributes['overlayIconColor'] ?? '#ffffff');
+        $sanitized['overlayIconBackground'] = $this->sanitizeText($attributes['overlayIconBackground'] ?? 'rgba(0, 0, 0, 0.5)');
+        $sanitized['overlayIconSize'] = $this->sanitizeNumericValue($attributes, 'overlayIconSize', 8, 256, 24);
+        $sanitized['overlayIconPosition'] = $this->sanitizeOverlayPosition($attributes['overlayIconPosition'] ?? 'center');
+        $sanitized['overlayIconShowMode'] = $this->sanitizeOverlayMode($attributes['overlayIconShowMode'] ?? 'always-show');
+        $sanitized['overlayIconTarget'] = $this->sanitizeOverlayTarget($attributes['overlayIconTarget'] ?? 'featured-image');
 
         // Carousel specific options
         if ($sanitized['layout'] === 'carousel') {
@@ -78,7 +93,6 @@ class ViewAttributeSanitizer
             $sanitized['carouselDirection'] = $this->sanitizeCarouselDirection($attributes['carouselDirection'] ?? 'ltr');
             $sanitized['carouselDuration'] = $this->sanitizeNumericValue($attributes, 'carouselDuration', 10, 100, 25);
         }
-
         // Apply filter for custom sanitization
         return apply_filters('jankx_view_layout_sanitize_attributes', $sanitized, $attributes);
     }
@@ -116,6 +130,48 @@ class ViewAttributeSanitizer
     protected function sanitizeClassName(string $className): string
     {
         return sanitize_html_class($className);
+    }
+
+    protected function sanitizeImageRatio(string $ratio): string
+    {
+        $ratio = trim((string) $ratio);
+        if ($ratio === '') {
+            return '';
+        }
+        if (preg_match('/^\d+(\.\d+)?\s*\/\s*\d+(\.\d+)?$/', $ratio)) {
+            return $ratio;
+        }
+        return '';
+    }
+
+    protected function sanitizeOverlayType(string $type): string
+    {
+        $allowed = ['class', 'image', 'text'];
+        return in_array($type, $allowed, true) ? $type : 'class';
+    }
+
+    protected function sanitizeUrl(string $url): string
+    {
+        $url = esc_url_raw($url);
+        return is_string($url) ? $url : '';
+    }
+
+    protected function sanitizeOverlayPosition(string $pos): string
+    {
+        $allowed = ['center', 'top-left', 'top-right', 'bottom-left', 'bottom-right'];
+        return in_array($pos, $allowed, true) ? $pos : 'center';
+    }
+
+    protected function sanitizeOverlayMode(string $mode): string
+    {
+        $allowed = ['always-show', 'hover-hide', 'hover-show'];
+        return in_array($mode, $allowed, true) ? $mode : 'always-show';
+    }
+
+    protected function sanitizeOverlayTarget(string $target): string
+    {
+        $allowed = ['featured-image', 'entry-image', 'entire-item'];
+        return in_array($target, $allowed, true) ? $target : 'featured-image';
     }
 
     protected function sanitizeCarouselAlign(string $align): string

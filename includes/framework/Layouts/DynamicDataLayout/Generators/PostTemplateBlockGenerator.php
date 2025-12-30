@@ -118,6 +118,7 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
         $overlayBg = $attrs['overlayIconBackground'] ?? 'rgba(0, 0, 0, 0.5)';
         $overlaySize = isset($attrs['overlayIconSize']) ? (int) $attrs['overlayIconSize'] : 24;
         $overlayPosition = $attrs['overlayIconPosition'] ?? 'center';
+        $overlayTarget = $attrs['overlayIconTarget'] ?? 'featured-image';
 
         try {
             $innerBlocks = $this->templateBlock['innerBlocks'] ?? [];
@@ -142,8 +143,12 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
                 $blockInstance = new WP_Block($normalizedBlock, $context);
                 $blockHtml = $blockInstance->render();
 
-                // Inject overlay if it's a featured/entry image block
-                if (($overlayIcon || $overlayImage || $overlayText) && in_array($normalizedBlock['blockName'], ['core/post-featured-image', 'woocommerce/product-image', 'jankx/advanced-image-box'])) {
+                // Inject overlay only when targeting featured image
+                if (
+                    $overlayTarget === 'featured-image'
+                    && ($overlayIcon || $overlayImage || $overlayText)
+                    && in_array($normalizedBlock['blockName'], ['core/post-featured-image', 'woocommerce/product-image', 'jankx/advanced-image-box'], true)
+                ) {
                     $blockHtml = $this->wrapWithOverlay(
                         $blockHtml,
                         $overlayIcon,

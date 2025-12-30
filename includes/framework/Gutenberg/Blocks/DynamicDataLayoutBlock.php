@@ -111,7 +111,7 @@ class DynamicDataLayoutBlock extends Block
             return null;
         }
 
-        if (in_array(($parsedBlock['blockName'] ?? ''), ['jankx/dynamic-data-template', 'jankx/dynamic-data-ssr'], true)) {
+        if (in_array(($parsed_block['blockName'] ?? ''), ['jankx/dynamic-data-template', 'jankx/dynamic-data-ssr', 'jankx/dynamic-ssr-template'], true)) {
             return $parsedBlock;
         }
 
@@ -242,12 +242,26 @@ class DynamicDataLayoutBlock extends Block
                 $templateBlock = $this->extractTemplateBlockFromParsedBlock($block->parsed_block ?? []);
                 if ($templateBlock && !empty($templateBlock['attrs'])) {
                     $templateAttrs = $templateBlock['attrs'];
-                    // Merge template block attributes into parent attributes for wrapper attributes
-                    if (!empty($templateAttrs['imageRatio']) && empty($attributes['imageRatio'])) {
-                        $attributes['imageRatio'] = $templateAttrs['imageRatio'];
-                    }
-                    if (!empty($templateAttrs['thumbnailPosition']) && empty($attributes['thumbnailPosition'])) {
-                        $attributes['thumbnailPosition'] = $templateAttrs['thumbnailPosition'];
+                    // Merge template block attributes into parent attributes, overriding defaults
+                    $keysToMerge = [
+                        'imageRatio',
+                        'thumbnailPosition',
+                        'overlayIcon',
+                        'overlayIconType',
+                        'overlayIconImageUrl',
+                        'overlayIconText',
+                        'overlayIconRotate',
+                        'overlayIconPosition',
+                        'overlayIconSize',
+                        'overlayIconColor',
+                        'overlayIconBackground',
+                        'overlayIconShowMode',
+                        'overlayIconTarget',
+                    ];
+                    foreach ($keysToMerge as $k) {
+                        if (array_key_exists($k, $templateAttrs)) {
+                            $attributes[$k] = $templateAttrs[$k];
+                        }
                     }
                     if (!empty($attributes['queryId'])) {
                         $this->cacheTemplateByBlockId((string) $attributes['queryId'], $templateBlock);
