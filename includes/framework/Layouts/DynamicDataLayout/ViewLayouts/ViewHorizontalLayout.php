@@ -13,13 +13,6 @@ class ViewHorizontalLayout extends AbstractViewLayout
             return '';
         }
 
-        $showFeaturedImage = (bool) $this->getOption('showFeaturedImage', true);
-        $showTitle = (bool) $this->getOption('showTitle', true);
-        $showExcerpt = (bool) $this->getOption('showExcerpt', false);
-        $showDate = (bool) $this->getOption('showDate', true);
-        $showAuthor = (bool) $this->getOption('showAuthor', false);
-        $imageSize = $this->getOption('imageSize', 'medium');
-        $excerptLength = (int) ($this->getOption('excerptLength') ?: 55);
         $itemWidth = $this->getOption('itemWidth', '300px');
         $itemGap = $this->getOption('itemGap', '16px');
         $scrollSnap = (bool) $this->getOption('scrollSnap', true);
@@ -48,70 +41,9 @@ class ViewHorizontalLayout extends AbstractViewLayout
                 <?php
                 while ($this->query->have_posts()) {
                     $this->query->the_post();
-                    ?>
-                    <div class="horizontal-item">
-                        <?php
-                        if ($showFeaturedImage && has_post_thumbnail()) {
-                            ?>
-                            <div class="horizontal-item-image">
-                                <a href="<?php the_permalink(); ?>">
-                                    <?php echo get_the_post_thumbnail(get_the_ID(), $imageSize, ['class' => 'horizontal-item-thumbnail']); ?>
-                                </a>
-                            </div>
-                            <?php
-                        }
-
-                        if ($showTitle) {
-                            ?>
-                            <h3 class="horizontal-item-title">
-                                <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-                            </h3>
-                            <?php
-                        }
-
-                        if ($showDate || $showAuthor) {
-                            ?>
-                            <div class="horizontal-item-meta">
-                                <?php
-                                if ($showDate) {
-                                    ?>
-                                    <time class="horizontal-item-date" datetime="<?php echo esc_attr(get_the_date('c')); ?>">
-                                        <?php echo esc_html(get_the_date()); ?>
-                                    </time>
-                                    <?php
-                                }
-                                if ($showAuthor) {
-                                    ?>
-                                    <span class="horizontal-item-author">
-                                        <?php echo esc_html(get_the_author()); ?>
-                                    </span>
-                                    <?php
-                                }
-                                ?>
-                            </div>
-                            <?php
-                        }
-
-                        if ($showExcerpt) {
-                            ?>
-                            <div class="horizontal-item-excerpt">
-                                <?php
-                                if ($excerptLength > 0) {
-                                    add_filter('excerpt_length', function() use ($excerptLength) {
-                                        return $excerptLength;
-                                    }, 999);
-                                }
-                                the_excerpt();
-                                if ($excerptLength > 0) {
-                                    remove_all_filters('excerpt_length', 999);
-                                }
-                                ?>
-                            </div>
-                            <?php
-                        }
-                        ?>
-                    </div>
-                    <?php
+                    echo '<div class="horizontal-item">';
+                    echo $this->renderViewItem();
+                    echo '</div>';
                 }
                 wp_reset_postdata();
                 ?>
