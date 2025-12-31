@@ -71,10 +71,6 @@ class TemplateEngineServiceProvider extends ServiceProvider
             $latte->addFilter('wp_trim_words', 'wp_trim_words');
             
         } catch (\Exception $e) {
-            // Log error but don't break application boot
-            if (function_exists('jankx_log')) {
-                error_log('Failed to register WordPress filters: ' . $e->getMessage());
-            }
         }
     }
 }

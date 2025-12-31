@@ -2,7 +2,6 @@
 
 namespace Jankx\Layouts\DynamicDataLayout\ViewLayouts;
 
-use Jankx\Facades\Log;
 use Jankx\Layouts\DynamicDataLayout\ViewLayouts\ViewLayoutManager;
 use Jankx\Layouts\DynamicDataLayout\ViewLayouts\ViewAttributeSanitizer;
 use Jankx\Layouts\DynamicDataLayout\ViewLayouts\ViewLayoutQueryBuilder;
@@ -38,7 +37,6 @@ class ViewLayoutDecorator
         
         if ($generator) {
             $generatorClass = get_class($generator);
-            Log::debug('ViewLayoutDecorator: post_type=' . $postType . ', generator=' . $generatorClass);
             $this->layout->setContentGenerator($generator);
         }
     }

@@ -26,8 +26,6 @@ class LayoutQueryBuilder
         $args = $this->applyLanguageArgs($args);
         $args = $this->applyFilters($args);
 
-        $this->debugFinalArgs($args);
-
         return new WP_Query($args);
     }
 
@@ -52,8 +50,6 @@ class LayoutQueryBuilder
             $includeSticky = !empty($this->attributes['includeStickyPosts']);
             $args['ignore_sticky_posts'] = $includeSticky ? 0 : 1;
         }
-
-        $this->debugInitialArgs($args);
 
         return $args;
     }
@@ -129,7 +125,6 @@ class LayoutQueryBuilder
         $metaOrder = $this->attributes['order'] ?? 'DESC';
         $args['orderby'] = [$this->attributes['orderBy'] => $metaOrder, 'ID' => 'DESC'];
         unset($args['order']);
-        $this->debugMetaOrdering($args);
         return $args;
     }
 
@@ -266,9 +261,6 @@ class LayoutQueryBuilder
         }
         $language = $this->attributes['_current_language'];
         $args = MultilingualFactory::addLanguageToQueryArgs($args, $language);
-        Log::debug('PostLayoutDecorator::buildQuery - Language filter applied', [
-            'language' => $language,
-        ]);
         return $args;
     }
 
@@ -283,41 +275,10 @@ class LayoutQueryBuilder
         return $args;
     }
 
-    protected function debugInitialArgs(array $args): void
-    {
-        Log::debug('PostLayoutDecorator::buildQuery - Initial args', [
-            'orderby' => $args['orderby'],
-            'order' => $args['order'] ?? 'using array orderby',
-            'post_type' => $args['post_type'],
-            'posts_per_page' => $args['posts_per_page'],
-        ]);
-    }
-
-    protected function debugMetaOrdering(array $args): void
-    {
-        Log::debug('PostLayoutDecorator::buildQuery - Meta value ordering', [
-            'meta_key' => $args['meta_key'] ?? '',
-            'meta_type' => $args['meta_type'] ?? 'not set',
-            'orderby' => $args['orderby'] ?? '',
-        ]);
-    }
-
-    protected function debugFinalArgs(array $args): void
-    {
-        Log::debug('PostLayoutDecorator::buildQuery - Final query args', [
-            'orderby' => $args['orderby'],
-            'order' => $args['order'] ?? 'using array orderby',
-            'post_type' => $args['post_type'],
-            'posts_per_page' => $args['posts_per_page'],
-            'has_tax_query' => !empty($args['tax_query']),
-            'has_meta_query' => !empty($args['meta_query']),
-            'has_meta_key' => !empty($args['meta_key']),
-        ]);
-    }
+    // removed unused debug methods
 
     protected function isPostType(string $type): bool
     {
         return ($this->attributes['postType'] ?? 'post') === $type;
     }
 }
-

@@ -177,8 +177,6 @@ class DynamicSsrLayoutBlock extends Block
                     $style_handle = 'jankx-dynamic-ssr-layout-style';
                     if (!wp_style_is($style_handle, 'registered')) {
                         $style_url = (new \Jankx\Managers\UrlManager())->blockAsset('dynamic-ssr-layout/build/style.css');
-                        // Debug: Log the URL
-                        error_log('Carousel CSS URL: ' . $style_url);
                         wp_register_style(
                             $style_handle,
                             $style_url,
@@ -187,9 +185,6 @@ class DynamicSsrLayoutBlock extends Block
                         );
                     }
                     wp_enqueue_style($style_handle);
-                    error_log('Carousel CSS enqueued successfully');
-                } else {
-                    error_log('Carousel CSS files not found: ' . $style_file);
                 }
                 
                 wp_enqueue_script($handle);
@@ -854,7 +849,6 @@ class DynamicSsrLayoutBlock extends Block
             if (defined('WP_DEBUG') && WP_DEBUG) {
                 $message .= ' at ' . $e->getFile() . ':' . $e->getLine();
             }
-            error_log('jankx_posts_count error: ' . $message);
             wp_send_json_error(['message' => $message]);
         }
     }
@@ -902,7 +896,6 @@ class DynamicSsrLayoutBlock extends Block
             if (defined('WP_DEBUG') && WP_DEBUG) {
                 $message .= ' at ' . $e->getFile() . ':' . $e->getLine();
             }
-            error_log('jankx_dynamic_ssr_template_preview error: ' . $message);
             wp_send_json_error(['message' => $message]);
         }
     }

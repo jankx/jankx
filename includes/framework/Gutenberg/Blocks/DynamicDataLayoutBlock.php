@@ -772,7 +772,6 @@ class DynamicDataLayoutBlock extends Block
             if (defined('WP_DEBUG') && WP_DEBUG) {
                 $message .= ' at ' . $e->getFile() . ':' . $e->getLine();
             }
-            error_log('jankx_dynamic_data_layout_filter error: ' . $message);
             wp_send_json_error(['message' => $message]);
         }
     }

@@ -141,7 +141,6 @@ class ExtensionServiceProvider extends ServiceProvider
         $callerFile = $extensionDir . '/' . $caller['file'];
 
         if (!file_exists($callerFile)) {
-            Log::debug("Extension caller file not found: {$callerFile}");
             return;
         }
 
@@ -174,8 +173,6 @@ class ExtensionServiceProvider extends ServiceProvider
                     } else {
                         $extension->{$caller['method']}($args);
                     }
-                } else {
-                    Log::debug("Method not found or not specified: " . ($caller['method'] ?? 'none') . " for extension: {$extensionName}");
                 }
 
                 // Track extension ID to prevent duplicates

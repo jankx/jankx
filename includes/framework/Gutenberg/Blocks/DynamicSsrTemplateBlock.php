@@ -6,7 +6,6 @@ use Jankx\Gutenberg\Block;
 use WP_Query;
 use Jankx\Layouts\DynamicDataLayout\ViewLayouts\ViewLayoutManager;
 use Jankx\Layouts\DynamicDataLayout\ViewLayouts\ViewAttributeSanitizer;
-use Jankx\Layouts\DynamicDataLayout\ViewLayouts\ViewLayoutDecorator;
 use Jankx\Layouts\DynamicDataLayout\ViewLayouts\Generators\ViewSsrGenerator;
 use Jankx\Layouts\DynamicDataLayout\ContentLoopLayoutManager;
 use Jankx\Layouts\DynamicDataLayout\DynamicDataLayoutManager;

@@ -33,8 +33,6 @@ class RegisterProviders
         foreach ($providers as $provider) {
             if (is_string($provider) && class_exists($provider)) {
                 $app->register($provider);
-            } else {
-                Log::debug(sprintf('Provider class not found: %s', is_string($provider) ? $provider : gettype($provider)));
             }
         }
     }

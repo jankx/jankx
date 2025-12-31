@@ -45,7 +45,6 @@ class TemplateEngineManager extends Engine
                     $this->engines[$engine] = $this->app->make($engineKey);
                 }
             } catch (Exception $e) {
-                Log::debug("Failed to load {$engine} template engine: " . $e->getMessage());
             }
         }
 

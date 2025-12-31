@@ -90,16 +90,12 @@ class ViewSsrGenerator extends AbstractViewContentGenerator
         // Apply options to block attributes
         $blockAttributes = array_merge($blockAttributes, $options);
 
-        // Debug: Log what we're working with
-        error_log('ViewSsrGenerator renderTemplateBlock - blockName: ' . $blockName);
-        error_log('ViewSsrGenerator renderTemplateBlock - options: ' . json_encode($options));
 
         // For dynamic-ssr-template blocks, load the loop item template
         if ($blockName === 'jankx/dynamic-ssr-template') {
             try {
                 return $this->renderLoopItemTemplate($options);
             } catch (\Exception $e) {
-                error_log('ViewSsrGenerator renderLoopItemTemplate error: ' . $e->getMessage());
                 throw $e;
             }
         }
@@ -170,29 +166,21 @@ class ViewSsrGenerator extends AbstractViewContentGenerator
         $layout = $options['layout'] ?? 'default';
         $postType = $options['postType'] ?? 'post';
         $templateFile = $this->getLoopItemTemplateFile($layout, (string) $postType);
-        // Debug: Log template file path
-        error_log('ViewSsrGenerator renderLoopItemTemplate - layout: ' . $layout);
-        error_log('ViewSsrGenerator renderLoopItemTemplate - templateFile: ' . $templateFile);
         
         // Check if template file exists
         if (!file_exists($templateFile)) {
-            error_log('ViewSsrGenerator - Template file not found: ' . $templateFile);
             throw new \RuntimeException("Template file not found: {$templateFile}");
         }
         
-        error_log('ViewSsrGenerator - Template file exists, proceeding with render');
         
         // Prepare all data using the same method as AbstractViewLayout
         $params = $this->prepareTemplateData(get_the_ID(), $options);
         
         // Render with Latte, throw exception on error
         try {
-            error_log('ViewSsrGenerator - Attempting Latte render');
             $result = $this->latte->renderToString($templateFile, $params);
-            error_log('ViewSsrGenerator - Latte render successful, length: ' . strlen($result));
             return $result;
         } catch (\Exception $e) {
-            error_log('ViewSsrGenerator - Latte render failed: ' . $e->getMessage());
             throw new \RuntimeException("Failed to render template {$templateFile}: " . $e->getMessage(), 0, $e);
         }
     }
