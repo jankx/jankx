@@ -17,7 +17,6 @@ class ViewLayoutFactory
         self::register('masonry', ViewMasonryLayout::class);
         self::register('card', ViewCardLayout::class);
         self::register('carousel', ViewCarouselLayout::class);
-        self::register('horizontal', ViewHorizontalLayout::class);
     }
 
     public static function register(string $name, string $class): void

@@ -1,3 +1,5 @@
+@use '../../scss/blocks/layout/layouts';
+
 /**
  * Dynamic SSR Layout Block Styles - Vanilla JS Carousel
  */
@@ -41,6 +43,57 @@
         }
         
         // Support for column classes
+        &.columns-1 { --columns-desktop: 1; }
+        &.columns-2 { --columns-desktop: 2; }
+        &.columns-3 { --columns-desktop: 3; }
+        &.columns-4 { --columns-desktop: 4; }
+        &.columns-5 { --columns-desktop: 5; }
+        &.columns-6 { --columns-desktop: 6; }
+        
+        &.columns-tablet-1 { --columns-tablet: 1; }
+        &.columns-tablet-2 { --columns-tablet: 2; }
+        &.columns-tablet-3 { --columns-tablet: 3; }
+        &.columns-tablet-4 { --columns-tablet: 4; }
+        
+        &.columns-mobile-1 { --columns-mobile: 1; }
+        &.columns-mobile-2 { --columns-mobile: 2; }
+    }
+    
+    // Horizontal layout styled as grid using responsive columns
+    &.view-type-layout-horizontal {
+        .wp-block-view {
+            display: flex;
+            flex-direction: column;
+            gap: var(--wp--preset--spacing--medium, 1.5rem);
+        }
+        
+        // Apply grid on wrapper to align items per responsive columns
+        display: grid;
+        gap: var(--wp--preset--spacing--medium, 1.5rem);
+        grid-template-columns: repeat(var(--columns-mobile, 1), 1fr);
+        
+        @media (min-width: 768px) {
+            grid-template-columns: repeat(var(--columns-tablet, 2), 1fr);
+        }
+        
+        @media (min-width: 1024px) {
+            grid-template-columns: repeat(var(--columns-desktop, 3), 1fr);
+        }
+        
+        // Inner container preview support (if renderer adds view-type classes)
+        .view-type-layout.view-type-layout-horizontal {
+            display: grid;
+            gap: var(--wp--preset--spacing--medium, 1.5rem);
+            grid-template-columns: repeat(var(--columns-mobile, 1), 1fr);
+            @media (min-width: 768px) {
+                grid-template-columns: repeat(var(--columns-tablet, 2), 1fr);
+            }
+            @media (min-width: 1024px) {
+                grid-template-columns: repeat(var(--columns-desktop, 3), 1fr);
+            }
+        }
+        
+        // Support for column classes on wrapper
         &.columns-1 { --columns-desktop: 1; }
         &.columns-2 { --columns-desktop: 2; }
         &.columns-3 { --columns-desktop: 3; }

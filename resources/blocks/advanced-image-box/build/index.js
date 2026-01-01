@@ -538,6 +538,8 @@ function edit({
   // Validation state removed for better UX
   const [isEditingURL, setIsEditingURL] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(false);
   const [popoverAnchor, setPopoverAnchor] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(null);
+  const linkButtonRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(null);
+  const opensInNewTab = linkTarget === '_blank';
   const borderProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.__experimentalUseBorderProps)(attributes);
   const shadowProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.__experimentalGetShadowClassesAndStyles)(attributes);
   const blockEditingMode = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.useBlockEditingMode)();
@@ -902,6 +904,19 @@ function edit({
     });
     setIsEditingURL(false);
   };
+  const onToggleOpenInNewTab = value => {
+    const newLinkTarget = value ? '_blank' : undefined;
+    let updatedRel = rel;
+    if (newLinkTarget && !rel) {
+      updatedRel = 'noreferrer noopener';
+    } else if (!newLinkTarget && rel === 'noreferrer noopener') {
+      updatedRel = undefined;
+    }
+    setAttributes({
+      linkTarget: newLinkTarget,
+      rel: updatedRel
+    });
+  };
 
   // Validation notice removed for better UX
 
@@ -1041,14 +1056,52 @@ function edit({
           onError: onUploadError,
           name: !url ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Add image') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Replace')
         }), href && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToolbarButton, {
+          ref: linkButtonRef,
           icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__["default"],
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Unlink'),
           onClick: unlink
         }), !href && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToolbarButton, {
+          ref: linkButtonRef,
           icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_7__["default"],
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Link'),
           onClick: startEditing
         })]
+      })
+    }), isEditingURL && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.Popover, {
+      anchor: linkButtonRef?.current || popoverAnchor,
+      placement: "bottom",
+      onClose: () => {
+        setIsEditingURL(false);
+        linkButtonRef?.current?.focus?.();
+      },
+      focusOnMount: isEditingURL ? 'firstElement' : false,
+      variant: "alternate",
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.__experimentalLinkControl, {
+        value: {
+          url: href || '',
+          opensInNewTab
+        },
+        onChange: ({
+          url: newURL = '',
+          opensInNewTab: newTab
+        }) => {
+          setAttributes({
+            href: newURL
+          });
+          if (opensInNewTab !== newTab) {
+            onToggleOpenInNewTab(!!newTab);
+          }
+        },
+        onRemove: () => {
+          unlink();
+          linkButtonRef?.current?.focus?.();
+        },
+        settings: [{
+          id: 'opensInNewTab',
+          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Open in new tab', 'jankx')
+        }],
+        showSuggestions: true,
+        showInitialSuggestions: true
       })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.InspectorControls, {
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {

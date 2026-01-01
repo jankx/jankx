@@ -147,7 +147,7 @@ class ViewLayoutManager
 
     public function getCommonLayouts(): array
     {
-        $common = ['grid', 'list', 'card'];
+        $common = ['grid', 'list', 'card', 'horizontal'];
         $layouts = [];
         foreach ($common as $name) {
             if (!ViewLayoutFactory::hasLayout($name)) {

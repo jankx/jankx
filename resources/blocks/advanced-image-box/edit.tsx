@@ -16,6 +16,7 @@ import {
 	useBlockProps,
 	InnerBlocks,
 	__experimentalUseBorderProps as useBorderProps,
+	__experimentalLinkControl as LinkControl,
 	__experimentalGetShadowClassesAndStyles as getShadowClassesAndStyles,
 	store as blockEditorStore,
 	useBlockEditingMode,
@@ -32,6 +33,7 @@ import {
 	Button,
 	ToolbarGroup,
 	ToolbarButton,
+	Popover,
 	__experimentalToolsPanel as ToolsPanel,
 	__experimentalToolsPanelItem as ToolsPanelItem,
 } from '@wordpress/components';
@@ -147,6 +149,8 @@ export default function edit({
 	// Validation state removed for better UX
 	const [isEditingURL, setIsEditingURL] = useState(false);
 	const [popoverAnchor, setPopoverAnchor] = useState<HTMLElement | null>(null);
+	const linkButtonRef = useRef<HTMLButtonElement | null>(null);
+	const opensInNewTab = linkTarget === '_blank';
 
 	const borderProps = useBorderProps(attributes);
 	const shadowProps = getShadowClassesAndStyles(attributes);
@@ -501,6 +505,19 @@ export default function edit({
 		});
 		setIsEditingURL(false);
 	};
+	const onToggleOpenInNewTab = (value: boolean) => {
+		const newLinkTarget = value ? '_blank' : undefined;
+		let updatedRel = rel;
+		if (newLinkTarget && !rel) {
+			updatedRel = 'noreferrer noopener';
+		} else if (!newLinkTarget && rel === 'noreferrer noopener') {
+			updatedRel = undefined;
+		}
+		setAttributes({
+			linkTarget: newLinkTarget,
+			rel: updatedRel,
+		});
+	};
 
 	// Validation notice removed for better UX
 
@@ -670,6 +687,7 @@ export default function edit({
 						/>
 						{href && (
 							<ToolbarButton
+								ref={linkButtonRef as any}
 								icon={linkOff}
 								label={__('Unlink')}
 								onClick={unlink}
@@ -677,6 +695,7 @@ export default function edit({
 						)}
 						{!href && (
 							<ToolbarButton
+								ref={linkButtonRef as any}
 								icon={link}
 								label={__('Link')}
 								onClick={startEditing}
@@ -684,6 +703,41 @@ export default function edit({
 						)}
 					</ToolbarGroup>
 				</BlockControls>
+			)}
+
+			{isEditingURL && (
+				<Popover
+					anchor={linkButtonRef?.current || popoverAnchor}
+					placement="bottom"
+					onClose={() => {
+						setIsEditingURL(false);
+						(linkButtonRef?.current as any)?.focus?.();
+					}}
+					focusOnMount={isEditingURL ? 'firstElement' : false}
+					variant="alternate"
+				>
+					<LinkControl
+						value={{ url: href || '', opensInNewTab }}
+						onChange={({ url: newURL = '', opensInNewTab: newTab }: any) => {
+							setAttributes({ href: newURL });
+							if (opensInNewTab !== newTab) {
+								onToggleOpenInNewTab(!!newTab);
+							}
+						}}
+						onRemove={() => {
+							unlink();
+							(linkButtonRef?.current as any)?.focus?.();
+						}}
+						settings={[
+							{
+								id: 'opensInNewTab',
+								title: __('Open in new tab', 'jankx'),
+							},
+						]}
+						showSuggestions={true}
+						showInitialSuggestions={true}
+					/>
+				</Popover>
 			)}
 
 			<InspectorControls>

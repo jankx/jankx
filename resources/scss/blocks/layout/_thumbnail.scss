@@ -1,0 +1,87 @@
+.view-item {
+    .wp-block-view-content {
+        .wp-block-view-row {
+            display: flex;
+            gap: var(--wp--preset--spacing--small, 8px);
+            align-items: stretch;
+        }
+        figure.wp-block-view-featured-image {
+            margin: 0;
+            flex: 0 0 auto;
+            width: 100%;
+        }
+        .wp-block-view-content-inner {
+            flex: 1 1 auto;
+            width: auto;
+        }
+    }
+    &.thumbnail-position-top {
+        .wp-block-view-row {
+            flex-direction: column;
+        }
+        figure.wp-block-view-featured-image img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+    }
+    &.thumbnail-position-bottom {
+        .wp-block-view-row {
+            flex-direction: column-reverse;
+        }
+        figure.wp-block-view-featured-image img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+    }
+    &.thumbnail-position-left {
+        .wp-block-view-row {
+            flex-direction: row;
+        }
+        figure.wp-block-view-featured-image {
+            width: var(--thumbnail-width, 40%);
+            max-width: 40%;
+        }
+        .wp-block-view-content-inner {
+            flex: 1 1 0%;
+        }
+        @media (max-width: 768px) {
+            .wp-block-view-row {
+                flex-direction: column;
+            }
+            figure.wp-block-view-featured-image {
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+    }
+    &.thumbnail-position-right {
+        .wp-block-view-row {
+            flex-direction: row-reverse;
+        }
+        figure.wp-block-view-featured-image {
+            width: var(--thumbnail-width, 40%);
+            max-width: 40%;
+        }
+        .wp-block-view-content-inner {
+            flex: 1 1 0%;
+        }
+        @media (max-width: 768px) {
+            .wp-block-view-row {
+                flex-direction: column;
+            }
+            figure.wp-block-view-featured-image {
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+    }
+    &.no-thumbnail {
+        .wp-block-view-content {
+            .wp-block-view-row {
+                display: block;
+            }
+        }
+    }
+}
