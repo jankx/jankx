@@ -74,6 +74,14 @@
       "type": "boolean",
       "default": true
     },
+    "gridAspectRatio": {
+      "type": "string",
+      "default": "landscape"
+    },
+    "gridColumns": {
+      "type": "number",
+      "default": 4
+    },
     "className": {
       "type": "string"
     }

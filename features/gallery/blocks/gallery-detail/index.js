@@ -1,10 +1,10 @@
-;(function (wp) {
+; (function (wp) {
   if (!wp || !wp.blocks) {
     return;
   }
   var registerBlockType = wp.blocks.registerBlockType;
   var __ = wp.i18n.__;
-  var useBlockProps = wp.blockEditor && wp.blockEditor.useBlockProps ? wp.blockEditor.useBlockProps : function() { return {}; };
+  var useBlockProps = wp.blockEditor && wp.blockEditor.useBlockProps ? wp.blockEditor.useBlockProps : function () { return {}; };
   var InspectorControls = wp.blockEditor && wp.blockEditor.InspectorControls ? wp.blockEditor.InspectorControls : null;
   var ServerSideRender = wp.serverSideRender || (wp.components && wp.components.ServerSideRender) || null;
   var el = wp.element.createElement;
@@ -21,7 +21,7 @@
     var blockProps = useBlockProps({ className: 'jankx-gallery-detail-editor' });
     var a = props.attributes;
     function setAttr(key) {
-      return function (value) { props.setAttributes(((t={}), t[key]=value, t)); var t; };
+      return function (value) { props.setAttributes(((t = {}), t[key] = value, t)); var t; };
     }
     var inspector = InspectorControls ? el(InspectorControls, {},
       el(PanelBody, { title: __('Source', 'jankx'), initialOpen: true },
@@ -31,9 +31,9 @@
           onChange: setAttr('useCurrentPost')
         }),
         el(ToggleControl, {
-            label: __('Show featured image', 'jankx'),
-            checked: a.showFeaturedImage !== false, // default true
-            onChange: setAttr('showFeaturedImage')
+          label: __('Show featured image', 'jankx'),
+          checked: a.showFeaturedImage !== false, // default true
+          onChange: setAttr('showFeaturedImage')
         }),
         el(TextControl, {
           label: __('Image size', 'jankx'),
@@ -83,8 +83,25 @@
           options: [
             { label: __('Classic', 'jankx'), value: 'classic' },
             { label: __('Zigzag', 'jankx'), value: 'zigzag' },
+            { label: __('Grid', 'jankx'), value: 'grid' },
           ],
           onChange: setAttr('preset')
+        }),
+        a.preset === 'grid' && el(SelectControl, {
+          label: __('Grid Aspect Ratio', 'jankx'),
+          value: a.gridAspectRatio || 'landscape',
+          options: [
+            { label: __('Landscape (16:9)', 'jankx'), value: 'landscape' },
+            { label: __('Portrait (3:4)', 'jankx'), value: 'portrait' },
+            { label: __('Square (1:1)', 'jankx'), value: 'square' },
+          ],
+          onChange: setAttr('gridAspectRatio')
+        }),
+        a.preset === 'grid' && el(RangeControl, {
+          label: __('Grid Columns', 'jankx'),
+          value: a.gridColumns || 4,
+          min: 2, max: 6, step: 1,
+          onChange: setAttr('gridColumns')
         })
       ),
       el(PanelBody, { title: __('Controls', 'jankx'), initialOpen: true },
@@ -123,17 +140,17 @@
       var state = useState('');
       var html = state[0];
       var setHtml = state[1];
-      useEffect(function(){
+      useEffect(function () {
         var path = '/wp/v2/block-renderer/jankx/gallery-detail?context=edit';
         var body = { attributes: props.attributes };
-        apiFetch({ path: path, method: 'POST', data: body }).then(function(res){
+        apiFetch({ path: path, method: 'POST', data: body }).then(function (res) {
           var out = res && res.rendered ? res.rendered : '';
           setHtml(out || '');
-          setTimeout(function(){
+          setTimeout(function () {
             var evt = new CustomEvent('jankx:gallery:refresh', { detail: {} });
             document.dispatchEvent(evt);
           }, 0);
-        }).catch(function(){
+        }).catch(function () {
           setHtml('');
         });
       }, [JSON.stringify(props.attributes)]);
@@ -152,4 +169,4 @@
     save: function () { return null; }
   });
 })(window.wp);
- 
+
