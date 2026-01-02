@@ -57,3 +57,45 @@
 .jankx-gallery-images:empty .jankx-drop-instruction {
     display: block;
 }
+
+/* Zigzag Preset Styles */
+.jankx-gallery-detail.is-style-zigzag {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    padding: 20px 0;
+}
+
+.jankx-gallery-detail.is-style-zigzag .jankx-gallery-item {
+    width: 65%; /* Not full width to allow zigzag effect */
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.jankx-gallery-detail.is-style-zigzag .jankx-gallery-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+}
+
+/* Stagger logic */
+.jankx-gallery-detail.is-style-zigzag .jankx-gallery-item:nth-child(odd) {
+    align-self: flex-start;
+    margin-right: auto;
+}
+
+.jankx-gallery-detail.is-style-zigzag .jankx-gallery-item:nth-child(even) {
+    align-self: flex-end;
+    margin-left: auto;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+    .jankx-gallery-detail.is-style-zigzag .jankx-gallery-item {
+        width: 100%;
+        margin: 0 !important; /* Force center on mobile */
+    }
+}

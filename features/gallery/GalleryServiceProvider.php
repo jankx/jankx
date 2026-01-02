@@ -15,7 +15,7 @@ class GalleryServiceProvider extends ServiceProvider
     public function boot(Application $app)
     {
         add_action('init', [$this, 'registerBlocks']);
-        
+
         add_action('add_meta_boxes', [$this, 'registerMetabox']);
         add_action('save_post', [$this, 'saveGallery']);
         add_action('admin_enqueue_scripts', [$this, 'enqueueScripts']);
@@ -54,24 +54,28 @@ class GalleryServiceProvider extends ServiceProvider
         ?>
         <div class="jankx-gallery-wrapper">
             <div class="jankx-gallery-images">
-                <?php if (!empty($gallery_ids)) : ?>
-                    <?php foreach ($gallery_ids as $id) : 
+                <?php if (!empty($gallery_ids)): ?>
+                    <?php foreach ($gallery_ids as $id):
                         $url = wp_get_attachment_image_url($id, 'thumbnail');
-                        if (!$url) continue;
-                    ?>
+                        if (!$url)
+                            continue;
+                        ?>
                         <div class="jankx-gallery-image" data-id="<?php echo esc_attr($id); ?>">
                             <img src="<?php echo esc_url($url); ?>" />
                             <span class="remove-image">&times;</span>
                         </div>
                     <?php endforeach; ?>
                 <?php endif; ?>
-                <div class="jankx-drop-instruction" style="<?php echo empty($gallery_ids) ? 'display:block' : 'display:none'; ?>">
+                <div class="jankx-drop-instruction"
+                    style="<?php echo empty($gallery_ids) ? 'display:block' : 'display:none'; ?>">
                     <?php _e('No images selected', 'jankx'); ?>
                 </div>
             </div>
             <div class="jankx-gallery-actions">
-                <input type="hidden" name="jankx_gallery_ids" id="jankx_gallery_ids" value="<?php echo esc_attr($gallery_ids_str); ?>" />
-                <button type="button" class="button button-primary jankx-add-gallery-images"><?php _e('Add Images', 'jankx'); ?></button>
+                <input type="hidden" name="jankx_gallery_ids" id="jankx_gallery_ids"
+                    value="<?php echo esc_attr($gallery_ids_str); ?>" />
+                <button type="button"
+                    class="button button-primary jankx-add-gallery-images"><?php _e('Add Images', 'jankx'); ?></button>
             </div>
         </div>
         <?php
@@ -102,7 +106,7 @@ class GalleryServiceProvider extends ServiceProvider
     {
         $screen = get_current_screen();
         $post_types = Config::get('gallery.metabox.post_types', []);
-        
+
         if ($screen && in_array($screen->post_type, $post_types)) {
             wp_enqueue_media();
             wp_enqueue_script(
@@ -121,14 +125,14 @@ class GalleryServiceProvider extends ServiceProvider
         }
     }
 
-    public static function getGallery(int $post_id, string $imageSize = 'large', string $thumbSize = 'thumbnail'): array
+    public static function getGallery(int $post_id, string $imageSize = 'large', string $thumbSize = 'thumbnail', bool $showFeaturedImage = true): array
     {
         if (!$post_id) {
             return [];
         }
         $featured_id = get_post_thumbnail_id($post_id);
         $gallery_ids = [];
-        
+
         // Check meta first
         $meta_gallery = get_post_meta($post_id, 'jankx_gallery_ids', true);
         if ($meta_gallery) {
@@ -141,7 +145,7 @@ class GalleryServiceProvider extends ServiceProvider
                 $gallery_ids = array_map('intval', explode(',', $gallery['ids']));
             }
         }
-        
+
         if (empty($gallery_ids)) {
             $attachments = get_children([
                 'post_parent' => $post_id,
@@ -151,10 +155,10 @@ class GalleryServiceProvider extends ServiceProvider
                 'order' => 'ASC',
             ]);
             foreach ($attachments as $att) {
-                $gallery_ids[] = (int)$att->ID;
+                $gallery_ids[] = (int) $att->ID;
             }
         }
-        if ($featured_id && !in_array($featured_id, $gallery_ids, true)) {
+        if ($showFeaturedImage && $featured_id && !in_array($featured_id, $gallery_ids, true)) {
             array_unshift($gallery_ids, $featured_id);
         }
         $images = [];

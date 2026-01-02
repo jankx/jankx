@@ -1,9 +1,20 @@
-/*!********************************************************************************************!*\
-  !*** css ../node_modules/css-loader/dist/cjs.js!./custom-blocks/blocks/per-unit/style.css ***!
-  \********************************************************************************************/
-.jankx-per-unit{display:inline-flex;align-items:baseline;margin-left:4px}
-.jankx-per-unit .per-unit-prefix{margin-right:2px;color:#666}
-.jankx-per-unit .per-unit-value{font-weight:600;color:#222}
+/*!*************************************************************************************************************************************!*\
+  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js!./custom-blocks/blocks/per-unit/style.scss ***!
+  \*************************************************************************************************************************************/
+.jankx-per-unit {
+  display: inline-flex;
+  align-items: baseline;
+  margin-left: 4px;
+}
 
+.jankx-per-unit .per-unit-prefix {
+  margin-right: 2px;
+  color: #666;
+}
+
+.jankx-per-unit .per-unit-value {
+  font-weight: 600;
+  color: #222;
+}
 
 /*# sourceMappingURL=style.css.map*/

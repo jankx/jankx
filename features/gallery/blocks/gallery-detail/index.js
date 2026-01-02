@@ -30,6 +30,11 @@
           checked: !!a.useCurrentPost,
           onChange: setAttr('useCurrentPost')
         }),
+        el(ToggleControl, {
+            label: __('Show featured image', 'jankx'),
+            checked: a.showFeaturedImage !== false, // default true
+            onChange: setAttr('showFeaturedImage')
+        }),
         el(TextControl, {
           label: __('Image size', 'jankx'),
           value: a.imageSize || 'large',
@@ -77,9 +82,7 @@
           value: a.preset || 'classic',
           options: [
             { label: __('Classic', 'jankx'), value: 'classic' },
-            { label: __('Minimal', 'jankx'), value: 'minimal' },
-            { label: __('Overlay', 'jankx'), value: 'overlay' },
-            { label: __('Filmstrip', 'jankx'), value: 'filmstrip' },
+            { label: __('Zigzag', 'jankx'), value: 'zigzag' },
           ],
           onChange: setAttr('preset')
         })

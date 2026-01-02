@@ -13,13 +13,13 @@ module.exports = {
         'trend-posts/style': './metrics/blocks/trend-posts/style.scss',
         'gallery-detail/index': './gallery/blocks/gallery-detail/index.js',
         'gallery-detail/view': './gallery/blocks/gallery-detail/view.js',
-        'gallery-detail/style': './gallery/blocks/gallery-detail/build/style.css',
+        'gallery-detail/style': './gallery/blocks/gallery-detail/style.scss',
         'custom-price/index': './custom-blocks/blocks/custom-price/index.tsx',
         'custom-price/style': './custom-blocks/blocks/custom-price/style.scss',
         'custom-price/editor': './custom-blocks/blocks/custom-price/editor.scss',
         'metabox-timeline/style': './custom-blocks/blocks/metabox-timeline/style.css',
-        'per-unit/index': './custom-blocks/blocks/per-unit/build/index.js',
-        'per-unit/style': './custom-blocks/blocks/per-unit/style.css'
+        'per-unit/index': './custom-blocks/blocks/per-unit/index.tsx',
+        'per-unit/style': './custom-blocks/blocks/per-unit/style.scss'
     },
     output: {
         path: path.resolve(__dirname, '.'),
@@ -28,7 +28,7 @@ module.exports = {
             const parts = chunkName.split('/');
             const blockName = parts[0];
             const fileName = parts[1] || 'index';
-            
+
             if (
                 chunkName.startsWith('custom-price') ||
                 chunkName.startsWith('per-unit') ||
@@ -39,7 +39,7 @@ module.exports = {
             if (chunkName.startsWith('gallery-detail')) {
                 return `gallery/blocks/${blockName}/build/${fileName}.js`;
             }
-            
+
             return `metrics/blocks/${blockName}/build/${fileName}.js`;
         },
         clean: false
@@ -83,7 +83,7 @@ module.exports = {
                 const parts = chunkName.split('/');
                 const blockName = parts[0];
                 const fileName = parts[1] || 'index';
-                
+
                 if (
                     chunkName.startsWith('custom-price') ||
                     chunkName.startsWith('per-unit') ||
@@ -94,7 +94,7 @@ module.exports = {
                 if (chunkName.startsWith('gallery-detail')) {
                     return `gallery/blocks/${blockName}/build/${fileName}.css`;
                 }
-                
+
                 return `metrics/blocks/${blockName}/build/${fileName}.css`;
             },
             chunkFilename: '[id].css'

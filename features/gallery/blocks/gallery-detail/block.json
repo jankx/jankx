@@ -70,6 +70,10 @@
       "type": "string",
       "default": "classic"
     },
+    "showFeaturedImage": {
+      "type": "boolean",
+      "default": true
+    },
     "className": {
       "type": "string"
     }
@@ -80,5 +84,7 @@
   "style": "file:./build/style.css",
   "editorStyle": "file:./build/style.css",
   "editorScript": "file:./build/index.js",
-  "usesContext": ["postId"]
+  "usesContext": [
+    "postId"
+  ]
 }
