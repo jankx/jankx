@@ -233,7 +233,7 @@ Hệ thống Gutenberg blocks trong Jankx Framework cho phép tạo các custom 
 add_action('jankx/dynamic-data-template/register-content-loop-layouts', function ($manager) {
     $manager->registerLayout(
         'promotional-banner', // Layout name
-        \Puleeno\Vietkara\Layouts\PromotionalBannerLayout::class, // Layout class
+        \App\Layouts\PromotionalBannerLayout::class, // Layout class
         'common' // Post types: 'common' (all), hoặc array ['post', 'product']
     );
 });
@@ -242,7 +242,7 @@ add_action('jankx/dynamic-data-template/register-content-loop-layouts', function
 **Layout Class Structure**:
 
 ```php
-namespace Puleeno\Vietkara\Layouts;
+namespace App\Layouts;
 
 class PromotionalBannerLayout
 {
@@ -2542,7 +2542,7 @@ Xem thêm trong `docs/` directory:
  
  ```php
  // src/Layouts/PromotionalBannerLayout.php
- namespace Puleeno\Vietkara\Layouts;
+ namespace App\Layouts;
  
  class PromotionalBannerLayout
  {
@@ -2570,7 +2570,7 @@ Xem thêm trong `docs/` directory:
  add_action('jankx/dynamic-data-template/register-content-loop-layouts', function ($manager) {
      $manager->registerLayout(
          'promotional-banner',
-         \Puleeno\Vietkara\Layouts\PromotionalBannerLayout::class,
+         \App\Layouts\PromotionalBannerLayout::class,
          'common' // Available for all post types
      );
  });

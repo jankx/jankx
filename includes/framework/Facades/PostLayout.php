@@ -7,7 +7,7 @@ namespace Jankx\Facades;
  *
  * @method static void registerLayout(string $name, string $class)
  * @method static array getLayouts(array $args = [])
- * @method static \Jankx\Layouts\DynamicDataLayout\PostLayoutDecorator createLayout(string $layoutName, string $postType, array $attributes = [])
+ * @method static \Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutDecorator createLayout(string $layoutName, string $postType, array $attributes = [])
  * @method static string render(string $layoutName, array $attributes)
  * @method static array renderPreview(string $layoutName, array $attributes = [])
  * @method static bool hasLayout(string $layoutName)

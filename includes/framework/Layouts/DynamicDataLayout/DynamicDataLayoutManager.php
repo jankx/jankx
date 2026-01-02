@@ -2,8 +2,8 @@
 
 namespace Jankx\Layouts\DynamicDataLayout;
 
-use Jankx\Layouts\DynamicDataLayout\PostLayoutFactory;
-use Jankx\Layouts\DynamicDataLayout\PostLayoutDecorator;
+use Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutFactory;
+use Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutDecorator;
 use Jankx\Layouts\DynamicDataLayout\Contracts\BlockTemplateLayoutInterface;
 
 /**
@@ -44,7 +44,7 @@ class DynamicDataLayoutManager
      */
     protected function __construct()
     {
-        PostLayoutFactory::init();
+        BlockTemplateLayoutFactory::init();
         $this->registerBuiltInLayouts();
         
         // Allow developers to register custom layouts
@@ -163,10 +163,10 @@ class DynamicDataLayoutManager
      */
     protected function getLayoutInfo(string $layoutName, string $postType): array
     {
-        // For built-in layouts, use PostLayoutFactory
+        // For built-in layouts, use BlockTemplateLayoutFactory
         if (in_array($layoutName, $this->builtInLayouts)) {
             try {
-                $layout = PostLayoutFactory::create($layoutName);
+                $layout = BlockTemplateLayoutFactory::create($layoutName);
                 if ($layout instanceof BlockTemplateLayoutInterface) {
                     return [
                         'name' => $layoutName,
@@ -179,7 +179,7 @@ class DynamicDataLayoutManager
                     ];
                 }
             } catch (\Exception $e) {
-                // Layout not found in PostLayoutFactory, continue
+                // Layout not found in BlockTemplateLayoutFactory, continue
             }
         }
 
@@ -222,16 +222,16 @@ class DynamicDataLayoutManager
      * @param string $layoutName Layout name
      * @param string $postType Post type
      * @param array $attributes Block attributes
-     * @return PostLayoutDecorator|null
+     * @return BlockTemplateLayoutDecorator|null
      */
-    public function createLayout(string $layoutName, string $postType, array $attributes = []): ?PostLayoutDecorator
+    public function createLayout(string $layoutName, string $postType, array $attributes = []): ?BlockTemplateLayoutDecorator
     {
         try {
-            // Try to create from PostLayoutFactory first (for built-in layouts)
-            $layout = PostLayoutFactory::create($layoutName);
+            // Try to create from BlockTemplateLayoutFactory first (for built-in layouts)
+            $layout = BlockTemplateLayoutFactory::create($layoutName);
             
             // Wrap in decorator
-            $decorator = new PostLayoutDecorator($layout);
+            $decorator = new BlockTemplateLayoutDecorator($layout);
             
             // Set attributes if provided
             if (!empty($attributes)) {
@@ -254,7 +254,7 @@ class DynamicDataLayoutManager
                 try {
                     $layout = new $layoutInfo['class']();
                     if ($layout instanceof BlockTemplateLayoutInterface) {
-                        $decorator = new PostLayoutDecorator($layout);
+                        $decorator = new BlockTemplateLayoutDecorator($layout);
                         if (!empty($attributes)) {
                             $decorator->withAttributes($attributes);
                         }
@@ -280,7 +280,7 @@ class DynamicDataLayoutManager
     {
         // Check built-in layouts
         if (in_array($layoutName, $this->builtInLayouts)) {
-            return PostLayoutFactory::hasLayout($layoutName);
+            return BlockTemplateLayoutFactory::hasLayout($layoutName);
         }
 
         // Check registered layouts

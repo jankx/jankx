@@ -12,11 +12,10 @@ class ViewLayoutFactory
     public static function init(): void
     {
         // Register default SSR layouts
-        self::register('grid', ViewGridLayout::class);
-        self::register('list', ViewListLayout::class);
-        self::register('masonry', ViewMasonryLayout::class);
-        self::register('card', ViewCardLayout::class);
-        self::register('carousel', ViewCarouselLayout::class);
+        self::register('grid', class_exists('\App\ViewLayouts\ViewGridLayout') ? '\App\ViewLayouts\ViewGridLayout' : ViewGridLayout::class);
+        self::register('list', class_exists('\App\ViewLayouts\ViewListLayout') ? '\App\ViewLayouts\ViewListLayout' : ViewListLayout::class);
+        self::register('mansory', class_exists('\App\ViewLayouts\ViewMasonryLayout') ? '\App\ViewLayouts\ViewMasonryLayout' : ViewMasonryLayout::class);
+        self::register('carousel', class_exists('\App\ViewLayouts\ViewCarouselLayout') ? '\App\ViewLayouts\ViewCarouselLayout' : ViewCarouselLayout::class);
     }
 
     public static function register(string $name, string $class): void

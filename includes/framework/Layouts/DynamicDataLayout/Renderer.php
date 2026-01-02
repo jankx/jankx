@@ -3,7 +3,7 @@
 namespace Jankx\Layouts\DynamicDataLayout;
 
 use Jankx\Layouts\DynamicDataLayout\DynamicDataLayoutManager;
-use Jankx\Layouts\DynamicDataLayout\PostLayoutDecorator;
+use Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutDecorator;
 use Jankx\Layouts\DynamicDataLayout\Generators\PostTemplateBlockGenerator;
 use Jankx\Layouts\DynamicDataLayout\Generators\SsrViewGenerator;
 use Jankx\Layouts\DynamicDataLayout\Generators\ViewTemplateContentGenerator;
@@ -135,7 +135,7 @@ class Renderer
         return $templateBlock;
     }
 
-    protected function buildQueryForPreset(PostLayoutDecorator $decorator, array &$attributes, string $preset, string $postType): WP_Query
+    protected function buildQueryForPreset(BlockTemplateLayoutDecorator $decorator, array &$attributes, string $preset, string $postType): WP_Query
     {
         if ($preset === 'default') {
             return DynamicDataLayoutQueryHelper::buildDefaultQuery($attributes);
@@ -152,7 +152,7 @@ class Renderer
         return $decorator->buildQuery($attributes);
     }
 
-    protected function resolveWrapperClasses(PostLayoutDecorator $decorator, array $attributes): array
+    protected function resolveWrapperClasses(BlockTemplateLayoutDecorator $decorator, array $attributes): array
     {
         $classes = ['dynamic-data-layout-wrapper'];
         if (!empty($attributes['layout'])) {

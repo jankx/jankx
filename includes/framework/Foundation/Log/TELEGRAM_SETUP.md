@@ -102,7 +102,7 @@ Jankx::log()->error('Payment gateway failed', [
 ]);
 
 // Debug log (chỉ gửi khi JANKX_LOG_ALL = true)
-Jankx::log()->debug('PostLayoutDecorator::buildQuery', [
+Jankx::log()->debug('BlockTemplateLayoutDecorator::buildQuery', [
     'orderby' => 'date',
     'posts_per_page' => 10
 ]);

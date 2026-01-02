@@ -6,21 +6,19 @@ use Jankx\Layouts\DynamicDataLayout\Contracts\BlockTemplateLayoutInterface;
 use Jankx\Layouts\DynamicDataLayout\BlockLayouts\GridLayout;
 use Jankx\Layouts\DynamicDataLayout\BlockLayouts\ListLayout;
 use Jankx\Layouts\DynamicDataLayout\BlockLayouts\MasonryLayout;
-use Jankx\Layouts\DynamicDataLayout\BlockLayouts\CardLayout;
 use Jankx\Layouts\DynamicDataLayout\BlockLayouts\CarouselLayout;
 use InvalidArgumentException;
 
-class PostLayoutFactory
+class BlockTemplateLayoutFactory
 {
     protected static $layouts = [];
 
     public static function init(): void
     {
-        self::register('grid', GridLayout::class);
-        self::register('list', ListLayout::class);
-        self::register('masonry', MasonryLayout::class);
-        self::register('card', CardLayout::class);
-        self::register('carousel', CarouselLayout::class);
+        self::register('grid',  class_exists('\App\BlockLayouts\GridLayout') ? '\App\BlockLayouts\GridLayout' : GridLayout::class);
+        self::register('list',  class_exists('\App\BlockLayouts\ListLayout') ? '\App\BlockLayouts\ListLayout' : ListLayout::class);
+        self::register('masonry',  class_exists('\App\BlockLayouts\MasonryLayout') ? '\App\BlockLayouts\MasonryLayout' : MasonryLayout::class);
+        self::register('carousel', class_exists('\App\BlockLayouts\CarouselLayout') ? '\App\BlockLayouts\CarouselLayout' : CarouselLayout::class);
     }
 
     public static function register(string $name, string $class): void

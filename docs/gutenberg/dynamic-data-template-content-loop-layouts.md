@@ -97,7 +97,7 @@ Tạo file layout class trong theme hoặc plugin:
 // src/Layouts/PromotionalBannerLayout.php
 <?php
 
-namespace Puleeno\Vietkara\Layouts;
+namespace App\Layouts;
 
 class PromotionalBannerLayout
 {
@@ -127,7 +127,7 @@ class PromotionalBannerLayout
 add_action('jankx/dynamic-data-template/register-content-loop-layouts', function ($manager) {
     $manager->registerLayout(
         'promotional-banner', // Layout name (slug)
-        \Puleeno\Vietkara\Layouts\PromotionalBannerLayout::class, // Layout class
+        \App\Layouts\PromotionalBannerLayout::class, // Layout class
         'common' // Post types: 'common' (all), hoặc array ['post', 'product']
     );
 });
@@ -212,7 +212,7 @@ Style layout bằng CSS targeting class `content-loop-layout--{layoutName}`:
 // wp-content/themes/vietkara/src/Layouts/PromotionalBannerLayout.php
 <?php
 
-namespace Puleeno\Vietkara\Layouts;
+namespace App\Layouts;
 
 class PromotionalBannerLayout
 {
@@ -243,7 +243,7 @@ public function boot(Application $app)
     add_action('jankx/dynamic-data-template/register-content-loop-layouts', function ($manager) {
         $manager->registerLayout(
             'promotional-banner',
-            \Puleeno\Vietkara\Layouts\PromotionalBannerLayout::class,
+            \App\Layouts\PromotionalBannerLayout::class,
             'common' // Available for all post types
         );
     });
@@ -332,7 +332,7 @@ public function boot(Application $app)
     [
         'name' => 'promotional-banner',
         'title' => 'Promotional Banner',
-        'class' => 'Puleeno\Vietkara\Layouts\PromotionalBannerLayout',
+        'class' => 'App\Layouts\PromotionalBannerLayout',
         'postType' => 'common',
         'supportedOptions' => [...]
     ]

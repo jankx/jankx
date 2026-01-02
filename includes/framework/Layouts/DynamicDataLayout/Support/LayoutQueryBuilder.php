@@ -3,16 +3,16 @@
 namespace Jankx\Layouts\DynamicDataLayout\Support;
 
 use Jankx\Facades\Log;
-use Jankx\Layouts\DynamicDataLayout\Contracts\PostLayoutInterface;
+use Jankx\Layouts\DynamicDataLayout\Contracts\BlockTemplateLayoutInterface;
 use Jankx\Multilingual\MultilingualFactory;
 use WP_Query;
 
 class LayoutQueryBuilder
 {
     protected array $attributes;
-    protected PostLayoutInterface $layout;
+    protected BlockTemplateLayoutInterface $layout;
 
-    public function __construct(array $attributes, PostLayoutInterface $layout)
+    public function __construct(array $attributes, BlockTemplateLayoutInterface $layout)
     {
         $this->attributes = $attributes;
         $this->layout = $layout;

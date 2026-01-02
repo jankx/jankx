@@ -3,7 +3,7 @@
 namespace Jankx\Layouts\DynamicDataLayout;
 
 use Jankx\Layouts\DynamicDataLayout\Contracts\BlockTemplateLayoutInterface;
-use Jankx\Layouts\DynamicDataLayout\PostLayoutFactory;
+use Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutFactory;
 
 class BlockTemplateLayoutManager
 {
@@ -20,13 +20,13 @@ class BlockTemplateLayoutManager
 
     private function __construct()
     {
-        PostLayoutFactory::init();
-        $this->layouts = PostLayoutFactory::getRegisteredLayouts();
+        BlockTemplateLayoutFactory::init();
+        $this->layouts = BlockTemplateLayoutFactory::getRegisteredLayouts();
     }
 
     public function createLayout(string $layoutName): BlockTemplateLayoutInterface
     {
-        return PostLayoutFactory::create($layoutName);
+        return BlockTemplateLayoutFactory::create($layoutName);
     }
 
     public function getAvailableLayouts(): array
@@ -36,18 +36,18 @@ class BlockTemplateLayoutManager
 
     public function getLayoutNames(): array
     {
-        return PostLayoutFactory::getLayoutNames();
+        return BlockTemplateLayoutFactory::getLayoutNames();
     }
 
     public function hasLayout(string $layoutName): bool
     {
-        return PostLayoutFactory::hasLayout($layoutName);
+        return BlockTemplateLayoutFactory::hasLayout($layoutName);
     }
 
     public function registerLayout(string $name, string $class): void
     {
-        PostLayoutFactory::register($name, $class);
-        $this->layouts = PostLayoutFactory::getRegisteredLayouts();
+        BlockTemplateLayoutFactory::register($name, $class);
+        $this->layouts = BlockTemplateLayoutFactory::getRegisteredLayouts();
     }
 
     public function getLayoutOptions(string $layoutName): array

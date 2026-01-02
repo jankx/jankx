@@ -10,7 +10,7 @@ use Jankx\Layouts\DynamicDataLayout\ViewLayouts\Generators\ViewSsrGenerator;
 use Jankx\Layouts\DynamicDataLayout\ContentLoopLayoutManager;
 use Jankx\Layouts\DynamicDataLayout\DynamicDataLayoutManager;
 use Jankx\Layouts\DynamicDataLayout\AttributeSanitizer;
-use Jankx\Layouts\DynamicDataLayout\PostLayoutDecorator;
+use Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutDecorator;
 use Jankx\Layouts\DynamicDataLayout\Generators\SsrViewGenerator;
 
 class DynamicSsrTemplateBlock extends Block
@@ -224,7 +224,7 @@ class DynamicSsrTemplateBlock extends Block
             $sanitized = $sanitizer->sanitize($layoutName, $baseAttributes, true);
 
             $decorator = $layoutManager->createLayout($layoutName, $postType, $sanitized);
-            if (!$decorator instanceof PostLayoutDecorator) {
+            if (!$decorator instanceof BlockTemplateLayoutDecorator) {
                 wp_send_json_success(['html' => '']);
             }
 

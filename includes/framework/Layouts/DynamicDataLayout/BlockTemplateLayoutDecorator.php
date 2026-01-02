@@ -8,8 +8,12 @@ use Jankx\Layouts\DynamicDataLayout\Support\LayoutOptionsResolver;
 use Jankx\Layouts\DynamicDataLayout\Support\LayoutQueryBuilder;
 use WP_Query;
 
-class PostLayoutDecorator
+class BlockTemplateLayoutDecorator
 {
+
+    /**
+     * @var BlockTemplateLayoutInterface
+     */
     protected $layout;
     protected $excerptLengthFilter = null;
 
@@ -43,7 +47,7 @@ class PostLayoutDecorator
         $generator = apply_filters('jankx/post-layout/generator', null, $postType, $attributes);
 
         if ($generator !== null) {
-            Log::error('PostLayoutDecorator: post_type=' . $postType . ', generator=' . get_class($generator));
+            Log::error('BlockTemplateLayoutDecorator: post_type=' . $postType . ', generator=' . get_class($generator));
         }
 
         if ($generator && is_a($generator, 'Jankx\Layouts\DynamicDataLayout\Contracts\ContentGeneratorInterface')) {
