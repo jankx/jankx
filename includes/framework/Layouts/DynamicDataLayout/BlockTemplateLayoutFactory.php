@@ -15,10 +15,22 @@ class BlockTemplateLayoutFactory
 
     public static function init(): void
     {
-        self::register('grid',  class_exists('\App\BlockLayouts\GridLayout') ? '\App\BlockLayouts\GridLayout' : GridLayout::class);
-        self::register('list',  class_exists('\App\BlockLayouts\ListLayout') ? '\App\BlockLayouts\ListLayout' : ListLayout::class);
-        self::register('masonry',  class_exists('\App\BlockLayouts\MasonryLayout') ? '\App\BlockLayouts\MasonryLayout' : MasonryLayout::class);
-        self::register('carousel', class_exists('\App\BlockLayouts\CarouselLayout') ? '\App\BlockLayouts\CarouselLayout' : CarouselLayout::class);
+        self::register(
+            'grid',  
+            class_exists('\App\BlockLayouts\GridLayout') ? '\App\BlockLayouts\GridLayout' : GridLayout::class
+        );
+        self::register(
+            'list',  
+            class_exists('\App\BlockLayouts\ListLayout') ? '\App\BlockLayouts\ListLayout' : ListLayout::class
+        );
+        self::register(
+            'masonry',  
+            class_exists('\App\BlockLayouts\MasonryLayout') ? '\App\BlockLayouts\MasonryLayout' : MasonryLayout::class
+        );
+        self::register(
+            'carousel', 
+            class_exists('\App\BlockLayouts\CarouselLayout') ? '\App\BlockLayouts\CarouselLayout' : CarouselLayout::class
+        );  
     }
 
     public static function register(string $name, string $class): void
