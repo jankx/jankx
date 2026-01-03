@@ -4,7 +4,9 @@
   "name": "jankx/dynamic-data-template",
   "title": "Dynamic Data Template",
   "category": "jankx",
-  "parent": ["jankx/dynamic-data-layout"],
+  "parent": [
+    "jankx/dynamic-data-layout"
+  ],
   "description": "Markup template để render từng item trong Dynamic Data Layout block",
   "textdomain": "jankx",
   "editorScript": "file:./build/index.js",
@@ -57,7 +59,10 @@
   "supports": {
     "reusable": false,
     "html": false,
-    "align": ["wide", "full"],
+    "align": [
+      "wide",
+      "full"
+    ],
     "layout": true,
     "color": {
       "gradients": true,
@@ -114,7 +119,12 @@
     "itemSpacing": {
       "type": "string",
       "default": "normal",
-      "enum": ["none", "compact", "normal", "loose"]
+      "enum": [
+        "none",
+        "compact",
+        "normal",
+        "loose"
+      ]
     },
     "overlayIcon": {
       "type": "string",
@@ -139,17 +149,29 @@
     "overlayIconShowMode": {
       "type": "string",
       "default": "always-show",
-      "enum": ["always-show", "hover-hide", "hover-show"]
+      "enum": [
+        "always-show",
+        "hover-hide",
+        "hover-show"
+      ]
     },
     "overlayIconTarget": {
       "type": "string",
       "default": "featured-image",
-      "enum": ["featured-image", "entry-image", "entire-item"]
+      "enum": [
+        "featured-image",
+        "entry-image",
+        "entire-item"
+      ]
     },
     "overlayIconType": {
       "type": "string",
       "default": "class",
-      "enum": ["class", "image", "text"]
+      "enum": [
+        "class",
+        "image",
+        "text"
+      ]
     },
     "overlayIconText": {
       "type": "string",
@@ -187,7 +209,46 @@
     "thumbnailPosition": {
       "type": "string",
       "default": "top",
-      "enum": ["top", "bottom", "left", "right"]
+      "enum": [
+        "top",
+        "bottom",
+        "left",
+        "right"
+      ]
+    },
+    "animationType": {
+      "type": "string",
+      "default": "none",
+      "enum": [
+        "none",
+        "fade-in",
+        "fade-in-up",
+        "fade-in-down",
+        "fade-in-left",
+        "fade-in-right",
+        "zoom-in",
+        "slide-in-up"
+      ]
+    },
+    "animationDuration": {
+      "type": "number",
+      "default": 1000
+    },
+    "animationDelay": {
+      "type": "number",
+      "default": 0
+    },
+    "animationTarget": {
+      "type": "string",
+      "default": "entry",
+      "enum": [
+        "entry",
+        "thumbnail"
+      ]
+    },
+    "animationReverse": {
+      "type": "boolean",
+      "default": false
     }
   }
 }

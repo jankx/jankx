@@ -48,6 +48,11 @@ interface DynamicDataTemplateAttributes {
     overlayIconImageUrl?: string;
     overlayIconText?: string;
     overlayIconRotate?: number;
+    animationType?: string;
+    animationDuration?: number;
+    animationDelay?: number;
+    animationTarget?: 'entry' | 'thumbnail';
+    animationReverse?: boolean;
 }
 
 
@@ -175,6 +180,11 @@ export default function Edit({
         overlayIconImageUrl = '',
         overlayIconText = '',
         overlayIconRotate = 0,
+        animationType = 'none',
+        animationDuration = 1000,
+        animationDelay = 0,
+        animationTarget = 'entry',
+        animationReverse = false,
     } = attributes;
 
 
@@ -212,7 +222,7 @@ export default function Edit({
         // ignore_sticky_posts logic depends on API version but generally REST doesn't sticky by default unless asked?
         // Actually REST API doesn't move sticky posts to top by default like WP_Query.
         // But let's leave it as is.
-        
+
         return args;
     }, [context, postsPerPage]);
 
@@ -232,7 +242,7 @@ export default function Edit({
     // Get available layouts for current post type
     const availableLayouts: ContentLoopLayoutOption[] = useMemo(() => {
         const layouts: ContentLoopLayoutOption[] = [];
-        
+
         // Use layoutsByPostType which already includes common layouts
         // This avoids duplicates since getLayoutsForPostType() already merges common + post type specific
         if (layoutsData.layoutsByPostType && typeof layoutsData.layoutsByPostType === 'object' && postType in layoutsData.layoutsByPostType && Array.isArray(layoutsData.layoutsByPostType[postType])) {
@@ -245,7 +255,7 @@ export default function Edit({
                 layouts.push(layoutInfo);
             });
         }
-        
+
         return layouts;
     }, [postType, layoutsData]);
 
@@ -309,7 +319,7 @@ export default function Edit({
     // Sync: khi innerBlocks của template block thay đổi, update shared state
     useEffect(() => {
         const currentBlocksStr = JSON.stringify(currentInnerBlocks);
-        
+
         // Chỉ sync nếu thực sự có thay đổi
         if (currentBlocksStr !== lastSyncedBlocksRef.current) {
             lastSyncedBlocksRef.current = currentBlocksStr;
@@ -365,7 +375,7 @@ export default function Edit({
                         <RangeControl
                             label={__('Border Radius', 'jankx')}
                             value={itemBorderRadius}
-                            onChange={(value: number | undefined): void => 
+                            onChange={(value: number | undefined): void =>
                                 setAttributes({ itemBorderRadius: value || 0 })
                             }
                             min={0}
@@ -387,7 +397,7 @@ export default function Edit({
                         onChange={(value) => setAttributes({ thumbnailPosition: value as DynamicDataTemplateAttributes['thumbnailPosition'] })}
                         help={__('Choose where the featured image appears relative to the content.', 'jankx')}
                     />
-                    
+
                 </PanelBody>
             </InspectorControls>
 
@@ -402,7 +412,7 @@ export default function Edit({
                         ]}
                         onChange={(value) => setAttributes({ overlayIconType: value as any })}
                     />
-                    
+
                     {overlayIconType === 'image' ? (
                         <>
                             <MediaUpload
@@ -460,7 +470,7 @@ export default function Edit({
                             help={__('Enter icon class (e.g., fas fa-play, dashicons-video-alt3)', 'jankx')}
                         />
                     )}
-                    
+
                     {(overlayIconType === 'image' ? !!overlayIconImageUrl : (overlayIconType === 'text' ? !!overlayIconText : !!overlayIcon)) && (
                         <>
                             <SelectControl
@@ -473,7 +483,7 @@ export default function Edit({
                                 ]}
                                 onChange={(value) => setAttributes({ overlayIconShowMode: value as any })}
                             />
-                            
+
                             <SelectControl
                                 label={__('Icon Position', 'jankx')}
                                 value={overlayIconPosition || 'center'}
@@ -486,7 +496,7 @@ export default function Edit({
                                 ]}
                                 onChange={(value) => setAttributes({ overlayIconPosition: value as any })}
                             />
-                            
+
                             <SelectControl
                                 label={__('Target Area', 'jankx')}
                                 value={overlayIconTarget || 'featured-image'}
@@ -498,7 +508,7 @@ export default function Edit({
                                 onChange={(value) => setAttributes({ overlayIconTarget: value as any })}
                                 help={__('Choose where the overlay icon should appear', 'jankx')}
                             />
-                            
+
                             <RangeControl
                                 label={__('Icon Size', 'jankx')}
                                 value={overlayIconSize || 24}
@@ -507,7 +517,7 @@ export default function Edit({
                                 max={100}
                                 step={1}
                             />
-                            
+
                             <div className="components-base-control">
                                 <label className="components-base-control__label">
                                     {__('Icon Color', 'jankx')}
@@ -521,7 +531,7 @@ export default function Edit({
                                     />
                                 </div>
                             </div>
-                            
+
                             <div className="components-base-control">
                                 <label className="components-base-control__label">
                                     {__('Icon Background', 'jankx')}
@@ -538,6 +548,59 @@ export default function Edit({
                                     {__('Use RGBA format for transparency (e.g., rgba(0,0,0,0.5))', 'jankx')}
                                 </p>
                             </div>
+                        </>
+                    )}
+                </PanelBody>
+
+                <PanelBody title={__('Scroll Animation', 'jankx')} initialOpen={false}>
+                    <SelectControl
+                        label={__('Animation Type', 'jankx')}
+                        value={animationType || 'none'}
+                        options={[
+                            { label: __('None', 'jankx'), value: 'none' },
+                            { label: __('Fade In', 'jankx'), value: 'fade-in' },
+                            { label: __('Fade In Up', 'jankx'), value: 'fade-in-up' },
+                            { label: __('Fade In Down', 'jankx'), value: 'fade-in-down' },
+                            { label: __('Fade In Left', 'jankx'), value: 'fade-in-left' },
+                            { label: __('Fade In Right', 'jankx'), value: 'fade-in-right' },
+                            { label: __('Zoom In', 'jankx'), value: 'zoom-in' },
+                            { label: __('Slide In Up', 'jankx'), value: 'slide-in-up' },
+                        ]}
+                        onChange={(value) => setAttributes({ animationType: value })}
+                    />
+                    {animationType !== 'none' && (
+                        <>
+                            <RangeControl
+                                label={__('Animation Duration (ms)', 'jankx')}
+                                value={animationDuration || 1000}
+                                onChange={(value) => setAttributes({ animationDuration: value || 1000 })}
+                                min={100}
+                                max={5000}
+                                step={100}
+                            />
+                            <RangeControl
+                                label={__('Animation Delay (ms)', 'jankx')}
+                                value={animationDelay || 0}
+                                onChange={(value) => setAttributes({ animationDelay: value || 0 })}
+                                min={0}
+                                max={5000}
+                                step={100}
+                            />
+                            <SelectControl
+                                label={__('Animation Target', 'jankx')}
+                                value={animationTarget || 'entry'}
+                                options={[
+                                    { label: __('Whole Item (Entry)', 'jankx'), value: 'entry' },
+                                    { label: __('Thumbnail Only', 'jankx'), value: 'thumbnail' },
+                                ]}
+                                onChange={(value) => setAttributes({ animationTarget: value as any })}
+                            />
+                            <ToggleControl
+                                label={__('Reverse Animation on Scroll Out', 'jankx')}
+                                checked={animationReverse}
+                                onChange={(value) => setAttributes({ animationReverse: value })}
+                                help={__('Hide item when scroll back up', 'jankx')}
+                            />
                         </>
                     )}
                 </PanelBody>
@@ -570,10 +633,15 @@ export default function Edit({
                                 } as CSSProperties}
                             >
                                 {Array.from({ length: totalItems }).map((_, index) => {
+                                    const animationClass = animationType && animationType !== 'none' ? `jankx-reveal jankx-reveal--${animationType} jankx-reveal--target-${animationTarget} ${animationReverse ? 'jankx-reveal--reverse' : ''}` : '';
                                     const itemStyle: CSSProperties = {
                                         flex: `0 0 calc(100% / ${columns})`,
                                         scrollSnapAlign: carouselAlign,
                                     };
+                                    if (animationType !== 'none') {
+                                        (itemStyle as any)['--jankx-animation-duration'] = `${animationDuration}ms`;
+                                        (itemStyle as any)['--jankx-animation-delay'] = `${index * animationDelay}ms`;
+                                    }
                                     const spacing = (attributes as any)?.style?.spacing;
                                     if (spacing?.padding) {
                                         const p = spacing.padding;
@@ -597,7 +665,7 @@ export default function Edit({
                                         return (
                                             <div
                                                 key={`item-${index}`}
-                                                className="dynamic-data-template__item"
+                                                className={`dynamic-data-template__item ${animationClass}`}
                                                 data-item-index={index}
                                                 style={itemStyle}
                                             >
@@ -614,11 +682,11 @@ export default function Edit({
                                     return (
                                         <div
                                             key={`item-${index}`}
-                                            className="dynamic-data-template__item dynamic-data-template__item--preview"
+                                            className={`dynamic-data-template__item dynamic-data-template__item--preview ${animationClass}`}
                                             data-item-index={index}
                                             style={itemStyle}
                                         >
-                                             {postData ? (
+                                            {postData ? (
                                                 <BlockContextProvider value={contextValue}>
                                                     <PreviewItem
                                                         index={index}
@@ -641,25 +709,30 @@ export default function Edit({
                         ) : null}
                     </div>
                 ) : (
-                    <div 
+                    <div
                         className={`dynamic-data-template__items-container layout-${displayLayout} columns-${columns} columns-tablet-${columnsTablet} columns-mobile-${columnsMobile}`}
                         style={{
                             '--columns-desktop': columns,
                             '--columns-tablet': columnsTablet,
                             '--columns-mobile': columnsMobile,
                             display: displayLayout === 'grid' || displayLayout === 'card' ? 'grid' : 'block',
-                            gridTemplateColumns: (displayLayout === 'grid' || displayLayout === 'card') 
-                                ? `repeat(${columns}, minmax(0, 1fr))` 
+                            gridTemplateColumns: (displayLayout === 'grid' || displayLayout === 'card')
+                                ? `repeat(${columns}, minmax(0, 1fr))`
                                 : 'none',
                             gap: '1rem',
                         } as CSSProperties}
                     >
                         {Array.from({ length: totalItems }).map((_, index) => {
+                            const animationClass = animationType && animationType !== 'none' ? `jankx-reveal jankx-reveal--${animationType} jankx-reveal--target-${animationTarget} ${animationReverse ? 'jankx-reveal--reverse' : ''}` : '';
                             const postData = posts && posts[index] ? posts[index] : null;
                             const contextValue = postData ? { postId: postData.id, postType: postData.type } : {};
 
                             if (index === 0) {
                                 const itemStyle2: CSSProperties = {};
+                                if (animationType !== 'none') {
+                                    (itemStyle2 as any)['--jankx-animation-duration'] = `${animationDuration}ms`;
+                                    (itemStyle2 as any)['--jankx-animation-delay'] = `${index * animationDelay}ms`;
+                                }
                                 const spacing2 = (attributes as any)?.style?.spacing;
                                 if (spacing2?.padding) {
                                     const p2 = spacing2.padding;
@@ -678,7 +751,7 @@ export default function Edit({
                                 return (
                                     <div
                                         key={`item-${index}`}
-                                        className="dynamic-data-template__item"
+                                        className={`dynamic-data-template__item ${animationClass}`}
                                         data-item-index={index}
                                         style={itemStyle2}
                                     >
@@ -711,7 +784,7 @@ export default function Edit({
                             return (
                                 <div
                                     key={`item-${index}`}
-                                    className="dynamic-data-template__item dynamic-data-template__item--preview"
+                                    className={`dynamic-data-template__item dynamic-data-template__item--preview ${animationClass}`}
                                     data-item-index={index}
                                     style={itemStyle3}
                                 >

@@ -1,4 +1,3 @@
-
 // Content Loop Layout: Product Card
 .content-loop-layout--product-card {
     overflow: hidden;
@@ -16,7 +15,7 @@
 
         .wp-block-post-featured-image {
             margin: 0;
-            
+
             img {
                 width: 100%;
                 height: 100%;
@@ -30,7 +29,7 @@
             .wp-block-post-featured-image img {
                 transform: scale(1.05);
             }
-            
+
             .view-detail-btn {
                 opacity: 1;
                 transform: translate(-50%, -50%) translateY(0);
@@ -64,7 +63,7 @@
             transition: all 0.3s ease;
             z-index: 20;
             margin: 0;
-            
+
             a {
                 background-color: #f3f4f6; // Gray-100
                 color: #1f2937; // Gray-800
@@ -73,9 +72,9 @@
                 font-size: 0.85rem;
                 font-weight: 600;
                 text-decoration: none;
-                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
                 white-space: nowrap;
-                
+
                 &:hover {
                     background-color: #fff;
                 }
@@ -95,12 +94,12 @@
             margin-top: 0;
             margin-bottom: 8px;
             font-size: 1.1rem;
-            
+
             a {
                 color: #ea580c; // Orange-600
                 text-decoration: none;
                 font-weight: 700;
-                
+
                 &:hover {
                     color: #c2410c; // Orange-700
                 }
@@ -132,7 +131,7 @@
             justify-content: space-between;
             margin-top: auto;
             margin-bottom: 0;
-            
+
             .price,
             .wp-block-woocommerce-product-price {
                 color: #ea580c; // Orange-600
@@ -143,6 +142,7 @@
 
             .buy-now-btn {
                 margin: 0;
+
                 a {
                     background-color: #166534; // Green-800
                     color: #fff;
@@ -154,7 +154,7 @@
                     text-transform: uppercase;
                     transition: background 0.2s;
                     white-space: nowrap;
-                    
+
                     &:hover {
                         background-color: #14532d; // Green-900
                     }
@@ -184,15 +184,19 @@
     &.overlay-mode-always-show .jankx-overlay-icon {
         opacity: 1;
     }
+
     &.overlay-mode-hover-show .jankx-overlay-icon {
         opacity: 0;
     }
+
     &.overlay-mode-hover-show:hover .jankx-overlay-icon {
         opacity: 1;
     }
+
     &.overlay-mode-hover-hide .jankx-overlay-icon {
         opacity: 1;
     }
+
     &.overlay-mode-hover-hide:hover .jankx-overlay-icon {
         opacity: 0;
     }
@@ -202,20 +206,133 @@
         left: 50%;
         transform: translate(-50%, -50%);
     }
+
     &.overlay-pos-top-left .jankx-overlay-icon {
         top: 8px;
         left: 8px;
     }
+
     &.overlay-pos-top-right .jankx-overlay-icon {
         top: 8px;
         right: 8px;
     }
+
     &.overlay-pos-bottom-left .jankx-overlay-icon {
         bottom: 8px;
         left: 8px;
     }
+
     &.overlay-pos-bottom-right .jankx-overlay-icon {
         bottom: 8px;
         right: 8px;
+    }
+}
+
+// Scroll Reveal Animations
+.jankx-reveal {
+    --jankx-animation-duration: 1000ms;
+    --jankx-animation-delay: 0ms;
+
+    opacity: 0;
+    transition-duration: var(--jankx-animation-duration);
+    transition-delay: var(--jankx-animation-delay);
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-property: opacity, transform;
+
+    &.is-in-view {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+    }
+
+    // Animation Types
+    &--fade-in-up {
+        transform: translateY(30px);
+
+        &.is-in-view {
+            transform: translateY(0);
+        }
+    }
+
+    &--fade-in-down {
+        transform: translateY(-30px);
+
+        &.is-in-view {
+            transform: translateY(0);
+        }
+    }
+
+    &--fade-in-left {
+        transform: translateX(-30px);
+
+        &.is-in-view {
+            transform: translateX(0);
+        }
+    }
+
+    &--fade-in-right {
+        transform: translateX(30px);
+
+        &.is-in-view {
+            transform: translateX(0);
+        }
+    }
+
+    &--zoom-in {
+        transform: scale(0.9);
+
+        &.is-in-view {
+            transform: scale(1);
+        }
+    }
+
+    &--slide-in-up {
+        clip-path: inset(100% 0 0 0);
+
+        &.is-in-view {
+            clip-path: inset(0 0 0 0);
+        }
+    }
+
+    // Target Selection
+    &--target-thumbnail {
+        opacity: 1; // Item itself is visible
+        transform: none;
+
+        .wp-block-post-featured-image img,
+        .product-card-image-wrapper img,
+        .jankx-thumbnail-overlay-wrapper img {
+            opacity: 0;
+            transition: inherit;
+        }
+
+        &.is-in-view {
+
+            .wp-block-post-featured-image img,
+            .product-card-image-wrapper img,
+            .jankx-thumbnail-overlay-wrapper img {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+        }
+
+        &.jankx-reveal--fade-in-up img {
+            transform: translateY(30px);
+        }
+
+        &.jankx-reveal--fade-in-down img {
+            transform: translateY(-30px);
+        }
+
+        &.jankx-reveal--fade-in-left img {
+            transform: translateX(-30px);
+        }
+
+        &.jankx-reveal--fade-in-right img {
+            transform: translateX(30px);
+        }
+
+        &.jankx-reveal--zoom-in img {
+            transform: scale(0.9);
+        }
     }
 }

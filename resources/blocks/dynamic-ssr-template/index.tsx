@@ -35,6 +35,11 @@ interface DynamicSsrTemplateAttributes {
     showPrice?: boolean;
     showAddToCart?: boolean;
     showRating?: boolean;
+    animationType?: string;
+    animationDuration?: number;
+    animationDelay?: number;
+    animationTarget?: 'entry' | 'thumbnail';
+    animationReverse?: boolean;
 }
 
 interface ContentLoopLayoutOption {
@@ -85,6 +90,11 @@ function Edit({ attributes, setAttributes, context }: any) {
         showPrice = true,
         showAddToCart = true,
         showRating = false,
+        animationType = 'none',
+        animationDuration = 1000,
+        animationDelay = 0,
+        animationTarget = 'entry',
+        animationReverse = false,
     } = attributes as DynamicSsrTemplateAttributes;
 
     const postType = (context?.postType as string) || 'post';
@@ -109,7 +119,7 @@ function Edit({ attributes, setAttributes, context }: any) {
     // Template options from views directory
     const templateOptions = useMemo(() => {
         const availableTemplates = window.jankxDynamicSsrTemplate?.availableTemplates || [];
-        
+
         // Default template options
         const defaultTemplates = [
             { label: __('Default Loop Item', 'jankx'), value: 'layouts/loop/item-default' },
@@ -175,6 +185,11 @@ function Edit({ attributes, setAttributes, context }: any) {
             showPrice,
             showAddToCart,
             showRating,
+            animationType,
+            animationDuration,
+            animationDelay,
+            animationTarget,
+            animationReverse,
         };
 
         const parentAttrs = {
@@ -274,6 +289,11 @@ function Edit({ attributes, setAttributes, context }: any) {
         showPrice,
         showAddToCart,
         showRating,
+        animationType,
+        animationDuration,
+        animationDelay,
+        animationTarget,
+        animationReverse,
         context?.postType,
         context?.useMultiPostType,
         context?.postTypes,
@@ -530,6 +550,58 @@ function Edit({ attributes, setAttributes, context }: any) {
                         checked={!!showAuthor}
                         onChange={(value: boolean) => setAttributes({ showAuthor: value })}
                     />
+                </PanelBody>
+                <PanelBody title={__('Scroll Animation', 'jankx')} initialOpen={false}>
+                    <SelectControl
+                        label={__('Animation Type', 'jankx')}
+                        value={animationType || 'none'}
+                        options={[
+                            { label: __('None', 'jankx'), value: 'none' },
+                            { label: __('Fade In', 'jankx'), value: 'fade-in' },
+                            { label: __('Fade In Up', 'jankx'), value: 'fade-in-up' },
+                            { label: __('Fade In Down', 'jankx'), value: 'fade-in-down' },
+                            { label: __('Fade In Left', 'jankx'), value: 'fade-in-left' },
+                            { label: __('Fade In Right', 'jankx'), value: 'fade-in-right' },
+                            { label: __('Zoom In', 'jankx'), value: 'zoom-in' },
+                            { label: __('Slide In Up', 'jankx'), value: 'slide-in-up' },
+                        ]}
+                        onChange={(value: string) => setAttributes({ animationType: value })}
+                    />
+                    {animationType !== 'none' && (
+                        <>
+                            <RangeControl
+                                label={__('Animation Duration (ms)', 'jankx')}
+                                value={animationDuration}
+                                onChange={(value?: number) => setAttributes({ animationDuration: value || 1000 })}
+                                min={100}
+                                max={5000}
+                                step={100}
+                            />
+                            <RangeControl
+                                label={__('Animation Delay (ms)', 'jankx')}
+                                value={animationDelay}
+                                onChange={(value?: number) => setAttributes({ animationDelay: value || 0 })}
+                                min={0}
+                                max={5000}
+                                step={100}
+                            />
+                            <SelectControl
+                                label={__('Animation Target', 'jankx')}
+                                value={animationTarget || 'entry'}
+                                options={[
+                                    { label: __('Whole Item (Entry)', 'jankx'), value: 'entry' },
+                                    { label: __('Thumbnail Only', 'jankx'), value: 'thumbnail' },
+                                ]}
+                                onChange={(value) => setAttributes({ animationTarget: value as any })}
+                            />
+                            <ToggleControl
+                                label={__('Reverse Animation on Scroll Out', 'jankx')}
+                                checked={animationReverse}
+                                onChange={(value) => setAttributes({ animationReverse: value })}
+                                help={__('Hide item when scroll back up', 'jankx')}
+                            />
+                        </>
+                    )}
                 </PanelBody>
                 {(postType === 'product' || postType === 'tour') && (
                     <PanelBody title={__('Commerce Settings', 'jankx')} initialOpen={false}>

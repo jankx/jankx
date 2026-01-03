@@ -26,6 +26,13 @@ trait PostTemplateRendererTrait
             }
         }
         $styleAttr = $itemInlineStyle !== '' ? sprintf(' style="%s"', esc_attr($itemInlineStyle)) : '';
+        $animationType = $templateAttrs['animationType'] ?? 'none';
+        $animationDuration = $templateAttrs['animationDuration'] ?? 1000;
+        $animationDelay = $templateAttrs['animationDelay'] ?? 0;
+        $animationTarget = $templateAttrs['animationTarget'] ?? 'entry';
+        $animationReverse = !empty($templateAttrs['animationReverse']);
+
+        $itemIndex = 0;
 
         while ($query->have_posts()) {
             $query->the_post();
@@ -41,16 +48,35 @@ trait PostTemplateRendererTrait
             }
 
             $classes = $this->buildItemClasses($post);
+            $currentStyleAttr = $styleAttr;
+
+            if ($animationType !== 'none') {
+                $classes .= sprintf(' jankx-reveal jankx-reveal--%s jankx-reveal--target-%s', $animationType, $animationTarget);
+                if ($animationReverse) {
+                    $classes .= ' jankx-reveal--reverse';
+                }
+
+                $delay = $itemIndex * $animationDelay;
+                $animationStyles = sprintf('--jankx-animation-duration: %dms; --jankx-animation-delay: %dms;', $animationDuration, $delay);
+
+                if (empty($itemInlineStyle)) {
+                    $currentStyleAttr = sprintf(' style="%s"', esc_attr($animationStyles));
+                } else {
+                    $currentStyleAttr = sprintf(' style="%s"', esc_attr(rtrim($itemInlineStyle, ';') . '; ' . $animationStyles));
+                }
+            }
+
             if ($mode === 'carousel') {
                 $output[] = sprintf(
                     '<div class="embla__slide"><div class="%s"%s>%s</div></div>',
                     esc_attr($classes),
-                    $styleAttr,
+                    $currentStyleAttr,
                     $itemContent
                 );
             } else {
-                $output[] = sprintf('<li class="%s"%s>%s</li>', esc_attr($classes), $styleAttr, $itemContent);
+                $output[] = sprintf('<li class="%s"%s>%s</li>', esc_attr($classes), $currentStyleAttr, $itemContent);
             }
+            $itemIndex++;
         }
 
         wp_reset_postdata();
@@ -172,20 +198,24 @@ trait PostTemplateRendererTrait
                 </div>
             </div>
 
-            <?php if ($showArrows) : ?>
-                <button class="embla__button embla__button--prev" type="button" aria-label="<?php esc_attr_e('Previous slide', 'jankx'); ?>">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M15 18l-6-6 6-6"/>
+            <?php if ($showArrows): ?>
+                <button class="embla__button embla__button--prev" type="button"
+                    aria-label="<?php esc_attr_e('Previous slide', 'jankx'); ?>">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M15 18l-6-6 6-6" />
                     </svg>
                 </button>
-                <button class="embla__button embla__button--next" type="button" aria-label="<?php esc_attr_e('Next slide', 'jankx'); ?>">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M9 18l6-6-6-6"/>
+                <button class="embla__button embla__button--next" type="button"
+                    aria-label="<?php esc_attr_e('Next slide', 'jankx'); ?>">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 18l6-6-6-6" />
                     </svg>
                 </button>
             <?php endif; ?>
 
-            <?php if ($showDots) : ?>
+            <?php if ($showDots): ?>
                 <div class="embla__dots"></div>
             <?php endif; ?>
         </div>

@@ -21,6 +21,7 @@ interface JankxBlocksExtraAPI {
     handleCSRBlocks: () => void;
     initializeCSRBlock: (block: HTMLElement, blockName: BlockName, attributes: BlockAttributes) => void;
     initResponsiveEnhancements: () => void;
+    initScrollReveal: () => void;
 }
 
 // Constants
@@ -39,11 +40,11 @@ const BLOCK_ENHANCEMENTS: Record<string, (block: HTMLElement, attributes: BlockA
  */
 function handleCSRBlocks(): void {
     const csrBlocks: NodeListOf<HTMLElement> = document.querySelectorAll(CSR_BLOCK_SELECTOR);
-    
+
     csrBlocks.forEach((block: HTMLElement): void => {
         const blockName: BlockName = block.dataset.blockName ?? '';
         const blockAttrsString: string = block.dataset.blockAttrs ?? '{}';
-        
+
         let blockAttrs: BlockAttributes;
         try {
             blockAttrs = JSON.parse(blockAttrsString);
@@ -51,7 +52,7 @@ function handleCSRBlocks(): void {
             console.warn('Jankx Blocks Extra: Failed to parse block attributes', error);
             blockAttrs = {};
         }
-        
+
         // Initialize CSR rendering for this block
         initializeCSRBlock(block, blockName, blockAttrs);
     });
@@ -63,13 +64,13 @@ function handleCSRBlocks(): void {
 function initializeCSRBlock(block: HTMLElement, blockName: BlockName, attributes: BlockAttributes): void {
     // Add loading state
     block.classList.add(LOADING_CLASS);
-    
+
     // Simulate async rendering - in real implementation, this would
     // fetch data or perform complex client-side operations
     setTimeout((): void => {
         block.classList.remove(LOADING_CLASS);
         block.classList.add(LOADED_CLASS);
-        
+
         // Add event listeners or interactive features based on block type
         addBlockInteractivity(block, blockName, attributes);
     }, 100);
@@ -80,7 +81,7 @@ function initializeCSRBlock(block: HTMLElement, blockName: BlockName, attributes
  */
 function addBlockInteractivity(block: HTMLElement, blockName: BlockName, attributes: BlockAttributes): void {
     const enhancementFunction = BLOCK_ENHANCEMENTS[blockName];
-    
+
     if (enhancementFunction) {
         enhancementFunction(block, attributes);
     }
@@ -92,13 +93,13 @@ function addBlockInteractivity(block: HTMLElement, blockName: BlockName, attribu
 function enhanceImageBlock(block: HTMLElement, attributes: BlockAttributes): void {
     const img: HTMLImageElement | null = block.querySelector('img');
     if (!img) return;
-    
+
     // Add lazy loading enhancement
     img.loading = 'lazy';
-    
+
     // Add zoom on click for CSR mode
     img.style.cursor = 'zoom-in';
-    
+
     const handleClick = (): void => {
         // Simple zoom implementation
         if (img.style.transform === 'scale(1.5)') {
@@ -111,7 +112,7 @@ function enhanceImageBlock(block: HTMLElement, attributes: BlockAttributes): voi
             img.style.position = 'relative';
         }
     };
-    
+
     img.addEventListener('click', handleClick);
 }
 
@@ -121,7 +122,7 @@ function enhanceImageBlock(block: HTMLElement, attributes: BlockAttributes): voi
 function enhanceGalleryBlock(block: HTMLElement, attributes: BlockAttributes): void {
     const images: NodeListOf<HTMLImageElement> = block.querySelectorAll('img');
     const imageArray: HTMLImageElement[] = Array.from(images);
-    
+
     // Add lightbox functionality
     imageArray.forEach((img: HTMLImageElement, index: number): void => {
         img.style.cursor = 'pointer';
@@ -135,16 +136,16 @@ function enhanceGalleryBlock(block: HTMLElement, attributes: BlockAttributes): v
 function enhanceHeadingBlock(block: HTMLElement, attributes: BlockAttributes): void {
     // Add copy-to-clipboard functionality
     block.style.cursor = 'pointer';
-    
+
     const handleClick = (): void => {
         const text: string = block.textContent?.trim() ?? '';
-        
+
         if (navigator.clipboard && text) {
             navigator.clipboard.writeText(text).then((): void => {
                 // Show copied feedback
                 const originalBg: string = block.style.backgroundColor;
                 block.style.backgroundColor = '#e8f5e8';
-                
+
                 setTimeout((): void => {
                     block.style.backgroundColor = originalBg;
                 }, 300);
@@ -153,7 +154,7 @@ function enhanceHeadingBlock(block: HTMLElement, attributes: BlockAttributes): v
             });
         }
     };
-    
+
     block.addEventListener('click', handleClick);
 }
 
@@ -177,7 +178,7 @@ function openLightbox(images: HTMLImageElement[], startIndex: number): void {
         z-index: 10000;
         cursor: pointer;
     `;
-    
+
     // Create image container
     const imgContainer: HTMLDivElement = document.createElement('div');
     imgContainer.style.cssText = `
@@ -185,7 +186,7 @@ function openLightbox(images: HTMLImageElement[], startIndex: number): void {
         max-height: 90%;
         position: relative;
     `;
-    
+
     // Show current image
     const currentImg: HTMLImageElement = document.createElement('img');
     currentImg.src = images[startIndex]?.src ?? '';
@@ -194,11 +195,11 @@ function openLightbox(images: HTMLImageElement[], startIndex: number): void {
         max-height: 100%;
         object-fit: contain;
     `;
-    
+
     imgContainer.appendChild(currentImg);
     lightbox.appendChild(imgContainer);
     document.body.appendChild(lightbox);
-    
+
     // Close on click
     const closeLightbox = (): void => {
         if (document.body.contains(lightbox)) {
@@ -206,12 +207,12 @@ function openLightbox(images: HTMLImageElement[], startIndex: number): void {
         }
         document.removeEventListener('keydown', handleKey);
     };
-    
+
     lightbox.addEventListener('click', closeLightbox);
-    
+
     // Keyboard navigation
     let currentIndex: number = startIndex;
-    
+
     const handleKey = (e: KeyboardEvent): void => {
         switch (e.key) {
             case 'Escape':
@@ -231,7 +232,7 @@ function openLightbox(images: HTMLImageElement[], startIndex: number): void {
                 break;
         }
     };
-    
+
     document.addEventListener('keydown', handleKey);
 }
 
@@ -241,10 +242,10 @@ function openLightbox(images: HTMLImageElement[], startIndex: number): void {
 function initResponsiveEnhancements(): void {
     // Add responsive container classes
     addResponsiveContainerClasses();
-    
+
     // Initialize responsive image handling
     initResponsiveImages();
-    
+
     // Add responsive typography
     initResponsiveTypography();
 }
@@ -254,7 +255,7 @@ function initResponsiveEnhancements(): void {
  */
 function addResponsiveContainerClasses(): void {
     const containers: NodeListOf<HTMLElement> = document.querySelectorAll('.wp-block-group, .wp-block-cover');
-    
+
     containers.forEach((container: HTMLElement): void => {
         // Add responsive width classes
         if (!container.classList.contains('jankx-responsive-container')) {
@@ -268,7 +269,7 @@ function addResponsiveContainerClasses(): void {
  */
 function initResponsiveImages(): void {
     const images: NodeListOf<HTMLImageElement> = document.querySelectorAll('img');
-    
+
     images.forEach((img: HTMLImageElement): void => {
         // Ensure images are responsive
         if (!img.style.maxWidth) {
@@ -286,10 +287,41 @@ function initResponsiveImages(): void {
 function initResponsiveTypography(): void {
     // Add responsive font sizes based on viewport
     const headings: NodeListOf<HTMLHeadingElement> = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
-    
+
     headings.forEach((heading: HTMLHeadingElement): void => {
         heading.classList.add('jankx-responsive-text');
     });
+}
+
+/**
+ * Initialize scroll reveal animations
+ */
+function initScrollReveal(): void {
+    const revealElements: NodeListOf<HTMLElement> = document.querySelectorAll('.jankx-reveal');
+    if (revealElements.length === 0) return;
+
+    const observerOptions: IntersectionObserverInit = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries: IntersectionObserverEntry[]) => {
+        entries.forEach(entry => {
+            const el = entry.target as HTMLElement;
+            const isReverse = el.classList.contains('jankx-reveal--reverse');
+
+            if (entry.isIntersecting) {
+                el.classList.add('is-in-view');
+            } else {
+                // Only remove class if reverse animation is enabled
+                if (isReverse) {
+                    el.classList.remove('is-in-view');
+                }
+            }
+        });
+    }, observerOptions);
+
+    revealElements.forEach(el => observer.observe(el));
 }
 
 /**
@@ -298,10 +330,13 @@ function initResponsiveTypography(): void {
 function initializeBlocksExtraFrontend(): void {
     // Handle CSR blocks
     handleCSRBlocks();
-    
+
     // Initialize responsive enhancements
     initResponsiveEnhancements();
-    
+
+    // Initialize scroll reveal
+    initScrollReveal();
+
     // Inject responsive dimensions CSS
     injectResponsiveDimensionsCSS();
 }
@@ -317,7 +352,8 @@ if (document.readyState === 'loading') {
 const JankxBlocksExtra: JankxBlocksExtraAPI = {
     handleCSRBlocks,
     initializeCSRBlock,
-    initResponsiveEnhancements
+    initResponsiveEnhancements,
+    initScrollReveal
 };
 
 // Make API available globally

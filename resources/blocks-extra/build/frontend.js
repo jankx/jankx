@@ -309,6 +309,33 @@ function initResponsiveTypography() {
 }
 
 /**
+ * Initialize scroll reveal animations
+ */
+function initScrollReveal() {
+  const revealElements = document.querySelectorAll('.jankx-reveal');
+  if (revealElements.length === 0) return;
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const el = entry.target;
+      const isReverse = el.classList.contains('jankx-reveal--reverse');
+      if (entry.isIntersecting) {
+        el.classList.add('is-in-view');
+      } else {
+        // Only remove class if reverse animation is enabled
+        if (isReverse) {
+          el.classList.remove('is-in-view');
+        }
+      }
+    });
+  }, observerOptions);
+  revealElements.forEach(el => observer.observe(el));
+}
+
+/**
  * Main initialization function
  */
 function initializeBlocksExtraFrontend() {
@@ -317,6 +344,9 @@ function initializeBlocksExtraFrontend() {
 
   // Initialize responsive enhancements
   initResponsiveEnhancements();
+
+  // Initialize scroll reveal
+  initScrollReveal();
 
   // Inject responsive dimensions CSS
   injectResponsiveDimensionsCSS();
@@ -333,7 +363,8 @@ if (document.readyState === 'loading') {
 const JankxBlocksExtra = {
   handleCSRBlocks,
   initializeCSRBlock,
-  initResponsiveEnhancements
+  initResponsiveEnhancements,
+  initScrollReveal
 };
 
 // Make API available globally
