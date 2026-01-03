@@ -299,7 +299,7 @@ class ConfigCommand extends WP_CLI_Command
         "hot": "mix watch --hot",
         "build:prod": "npm run production",
         "production": "mix --production",
-        "build": "run-p build:*"
+        "build": "run-s build:*"
     },
     "devDependencies": {
         "axios": "^1.8.1",

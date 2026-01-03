@@ -141,6 +141,12 @@
 
 .jankx-thumbnail-overlay-wrapper {
   position: relative;
+  display: block;
+}
+.jankx-thumbnail-overlay-wrapper img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 .jankx-thumbnail-overlay-wrapper .jankx-overlay-icon {
   position: absolute;

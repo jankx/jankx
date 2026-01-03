@@ -10,7 +10,7 @@
         "production": "mix --production",
         "build:webpack": "webpack --mode=production --config resources/webpack.config.js",
         "build:blocks": "webpack --mode=production --config resources/webpack.config.js",
-        "build": "run-p build:*",
+        "build": "run-s build:*",
         "i18n:pot:php": "wp-pot --src '**/*.php' --dest-file languages/jankx.pot --domain jankx --package \"Jankx Framework\"",
         "i18n:pot": "npm run i18n:pot:php",
         "i18n:update": "node -e \"require('child_process').execSync('\\\"C:\\\\Program Files\\\\Git\\\\usr\\\\bin\\\\msgmerge.exe\\\" --update --backup=none languages/jankx-vi.po languages/jankx.pot', {stdio: 'inherit'})\"",

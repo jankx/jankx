@@ -114,9 +114,13 @@ class SsrViewGenerator extends AbstractContentGenerator
         ];
 
         try {
-            return DynamicDataTemplateBlock::renderTemplateWithQuery([
-                'attrs' => ['templateSlug' => $templateSlug]
-            ], $query, $variables);
+            return DynamicDataTemplateBlock::renderTemplateWithQuery(
+                array_merge($this->templateBlock, [
+                    'attrs' => array_merge($this->templateBlock['attrs'] ?? [], ['templateSlug' => $templateSlug])
+                ]),
+                $query,
+                $variables
+            );
         } catch (\Throwable $e) {
             return '';
         }

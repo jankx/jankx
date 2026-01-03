@@ -167,6 +167,13 @@
 // Overlay icon wrapper for featured/entry images
 .jankx-thumbnail-overlay-wrapper {
     position: relative;
+    display: block;
+
+    img {
+        display: block;
+        width: 100%;
+        height: auto;
+    }
 
     .jankx-overlay-icon {
         position: absolute;
