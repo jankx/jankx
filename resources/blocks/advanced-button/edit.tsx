@@ -141,7 +141,7 @@ export function Edit(props: EditProps) {
 			let multi = { enabled: false, postTypes: [] as string[] };
 			let detected = '';
 			if (templateId) {
-				const layoutId = getBlockParents(templateId).find((id: string) => getBlock(id)?.name === 'jankx/dynamic-data-layout');
+				const layoutId = getBlockParents(templateId).find((id: string) => ['jankx/dynamic-data-layout', 'jankx/dynamic-ssr-layout'].includes(getBlock(id)?.name));
 				if (layoutId) {
 					const layoutBlock = getBlock(layoutId);
 					const attrs = layoutBlock?.attributes || {};
@@ -310,7 +310,7 @@ export function Edit(props: EditProps) {
 		...blockProps.style,
 		...borderProps?.style,
 	};
-	
+
 	// Apply preset colors if set
 	if (backgroundColor?.color) {
 		buttonStyles.backgroundColor = backgroundColor.color;
@@ -318,12 +318,12 @@ export function Edit(props: EditProps) {
 	if (textColor?.color) {
 		buttonStyles.color = textColor.color;
 	}
-	
+
 	// Apply custom colors from style.color if set (overrides preset colors)
 	if (attributes.style?.color?.text) {
 		buttonStyles.color = attributes.style.color.text;
 	}
-	
+
 	// Apply gradient if set (gradient takes priority over background color)
 	if (attributes.style?.color?.gradient) {
 		buttonStyles.background = attributes.style.color.gradient;
@@ -700,7 +700,7 @@ export function Edit(props: EditProps) {
 												help={__('Enter the ID of your modal. Must match exactly with the modal block ID.', 'jankx')}
 												__nextHasNoMarginBottom
 											/>
-									</div>
+										</div>
 									</>
 								)}
 							</ToolsPanelItem>
@@ -902,7 +902,7 @@ export function Edit(props: EditProps) {
 											__nextHasNoMarginBottom
 										/>
 									)}
-									
+
 									<div style={{ marginTop: '16px', borderTop: '1px solid #ddd', paddingTop: '16px' }}>
 										<p style={{ fontSize: '13px', fontWeight: 600, marginBottom: '8px' }}>
 											{__('Custom Form Data', 'jankx')}
@@ -935,9 +935,9 @@ export function Edit(props: EditProps) {
 														const newFormData = formData.filter((_, i) => i !== index);
 														setAttributes({ formData: newFormData });
 													}}
-													style={{ 
-														background: 'none', 
-														border: 'none', 
+													style={{
+														background: 'none',
+														border: 'none',
 														cursor: 'pointer',
 														color: '#cc1818',
 														padding: '4px'

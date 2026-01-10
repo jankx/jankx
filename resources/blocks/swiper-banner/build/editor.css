@@ -1,3 +1,161 @@
-.embla-banner .components-placeholder{min-height:200px;border:2px dashed #ccc;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#f9f9f9}.embla-banner .components-placeholder .components-placeholder__label{font-size:16px;font-weight:600;color:#666;margin-bottom:10px}.embla-banner .components-placeholder .components-placeholder__instructions{color:#999;font-size:14px;margin-bottom:15px}.embla-banner__image{position:relative;min-height:200px;background-size:cover;background-position:center;background-repeat:no-repeat;display:flex;align-items:center;justify-content:center}.embla-banner__image.image-size-contain{background-size:contain}.embla-banner__image.image-size-cover{background-size:cover}.embla-banner__image.image-size-fullwidth{background-size:100% 100% !important;background-position:center !important}.embla-banner__caption{position:relative;z-index:2;padding:2rem;max-width:80%}.embla-banner__caption-content{color:#fff;font-size:1.5rem;font-weight:600;line-height:1.4;text-shadow:0 2px 4px rgba(0,0,0,.5)}.embla-banner--banner .embla-banner__caption-content{font-size:2rem;font-weight:700}.embla-banner--circles{border-radius:50%;aspect-ratio:1}.embla-banner--circles .embla-banner__image{border-radius:50%}.embla-banner--circles .embla-banner__caption-content{font-size:1.2rem;text-align:center}.embla-banner--square{aspect-ratio:1}.embla-banner--square .embla-banner__image{border-radius:8px}.embla-banner--square .embla-banner__caption-content{font-size:1.3rem}.embla-banner.text-left .embla-banner__caption{justify-content:flex-start;text-align:left}.embla-banner.text-center .embla-banner__caption{justify-content:center;text-align:center}.embla-banner.text-right .embla-banner__caption{justify-content:flex-end;text-align:right}.embla-banner.text-position-top .embla-banner__caption{align-items:flex-start;padding-top:1rem}.embla-banner.text-position-middle .embla-banner__caption{align-items:center}.embla-banner.text-position-bottom .embla-banner__caption{align-items:flex-end;padding-bottom:1rem}.embla-banner.image-size-contain .embla-banner__image{background-size:contain !important}.embla-banner.image-size-cover .embla-banner__image{background-size:cover !important}.embla-banner.image-size-fullwidth .embla-banner__image{background-size:100% 100% !important;background-position:center !important}.swiper-tabs .components-tab-panel__tabs{display:flex;border-bottom:1px solid #ddd;margin-bottom:20px}.swiper-tabs .components-tab-panel__tabs .components-tab-panel__tabs-item{flex:1;padding:10px 15px;text-align:center;border:none;background:rgba(0,0,0,0);cursor:pointer;border-bottom:2px solid rgba(0,0,0,0);transition:all .3s ease}.swiper-tabs .components-tab-panel__tabs .components-tab-panel__tabs-item:hover{background:#f0f0f0}.swiper-tabs .components-tab-panel__tabs .components-tab-panel__tabs-item.is-active{border-bottom-color:#007cba;color:#007cba;font-weight:600}.swiper-tabs .components-tab-panel__tab-content{min-height:200px}@media(max-width: 768px){.embla-banner__caption{padding:1rem;max-width:90%}.embla-banner__caption-content{font-size:1.2rem}.embla-banner--banner .embla-banner__caption-content{font-size:1.5rem}.embla-banner--circles .embla-banner__caption-content{font-size:1rem}.embla-banner--square .embla-banner__caption-content{font-size:1.1rem}}
+/*!*************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/swiper-banner/editor.scss ***!
+  \*************************************************************************************************************************************************************************************************/
+.embla-banner .components-placeholder {
+  min-height: 200px;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f9f9f9;
+}
+.embla-banner .components-placeholder .components-placeholder__label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 10px;
+}
+.embla-banner .components-placeholder .components-placeholder__instructions {
+  color: #999;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+.embla-banner__image {
+  position: relative;
+  min-height: 200px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.embla-banner__image.image-size-contain {
+  background-size: contain;
+}
+.embla-banner__image.image-size-cover {
+  background-size: cover;
+}
+.embla-banner__image.image-size-fullwidth {
+  background-size: 100% 100% !important;
+  background-position: center !important;
+}
+.embla-banner__caption {
+  position: relative;
+  z-index: 2;
+  padding: 2rem;
+  max-width: 80%;
+}
+.embla-banner__caption-content {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.4;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+.embla-banner--banner .embla-banner__caption-content {
+  font-size: 2rem;
+  font-weight: 700;
+}
+.embla-banner--circles {
+  border-radius: 50%;
+  aspect-ratio: 1;
+}
+.embla-banner--circles .embla-banner__image {
+  border-radius: 50%;
+}
+.embla-banner--circles .embla-banner__caption-content {
+  font-size: 1.2rem;
+  text-align: center;
+}
+.embla-banner--square {
+  aspect-ratio: 1;
+}
+.embla-banner--square .embla-banner__image {
+  border-radius: 8px;
+}
+.embla-banner--square .embla-banner__caption-content {
+  font-size: 1.3rem;
+}
+.embla-banner.text-left .embla-banner__caption {
+  justify-content: flex-start;
+  text-align: left;
+}
+.embla-banner.text-center .embla-banner__caption {
+  justify-content: center;
+  text-align: center;
+}
+.embla-banner.text-right .embla-banner__caption {
+  justify-content: flex-end;
+  text-align: right;
+}
+.embla-banner.text-position-top .embla-banner__caption {
+  align-items: flex-start;
+  padding-top: 1rem;
+}
+.embla-banner.text-position-middle .embla-banner__caption {
+  align-items: center;
+}
+.embla-banner.text-position-bottom .embla-banner__caption {
+  align-items: flex-end;
+  padding-bottom: 1rem;
+}
+.embla-banner.image-size-contain .embla-banner__image {
+  background-size: contain !important;
+}
+.embla-banner.image-size-cover .embla-banner__image {
+  background-size: cover !important;
+}
+.embla-banner.image-size-fullwidth .embla-banner__image {
+  background-size: 100% 100% !important;
+  background-position: center !important;
+}
+
+.swiper-tabs .components-tab-panel__tabs {
+  display: flex;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 20px;
+}
+.swiper-tabs .components-tab-panel__tabs .components-tab-panel__tabs-item {
+  flex: 1;
+  padding: 10px 15px;
+  text-align: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+.swiper-tabs .components-tab-panel__tabs .components-tab-panel__tabs-item:hover {
+  background: #f0f0f0;
+}
+.swiper-tabs .components-tab-panel__tabs .components-tab-panel__tabs-item.is-active {
+  border-bottom-color: #007cba;
+  color: #007cba;
+  font-weight: 600;
+}
+.swiper-tabs .components-tab-panel__tab-content {
+  min-height: 200px;
+}
+
+@media (max-width: 768px) {
+  .embla-banner__caption {
+    padding: 1rem;
+    max-width: 90%;
+  }
+  .embla-banner__caption-content {
+    font-size: 1.2rem;
+  }
+  .embla-banner--banner .embla-banner__caption-content {
+    font-size: 1.5rem;
+  }
+  .embla-banner--circles .embla-banner__caption-content {
+    font-size: 1rem;
+  }
+  .embla-banner--square .embla-banner__caption-content {
+    font-size: 1.1rem;
+  }
+}
 
 /*# sourceMappingURL=editor.css.map*/
