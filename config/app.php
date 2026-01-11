@@ -2,7 +2,7 @@
 
 return [
     'name' => 'Jankx Framework',
-    'menu_title' => 'Jankx',
+    'menu_title' => 'Jankx Dashboard',
     'admin_page_title' => 'Jankx Framework',
     'menu_position' => 59,
     'version' => '2.0.0',
@@ -30,6 +30,7 @@ return [
         // App\Providers\WordPress\ApplyTermHtmlDescriptionServiceProvider::class,
         // App\Providers\WordPress\VisualTermDescriptionEditorServiceProvider::class,
         App\Providers\WordPress\AdminThumbnailColumnStyleServiceProvider::class,
+        App\Providers\ImageSizeServiceProvider::class,
         Jankx\Features\Gallery\GalleryServiceProvider::class,
         Jankx\Features\CustomBlocks\CustomBlocksServiceProvider::class,
     ],
