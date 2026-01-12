@@ -144,7 +144,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             keywordFilter: nextKeyword[0] || keywordFilter || {},
         };
     }, [innerFilterBlocks, keywordFilter]);
-    
+
     // Get post type from target block
     const targetPostType = targetBlockIds.length > 0 && availableBlocks.length > 0
         ? availableBlocks.find(b => b.id === targetBlockIds[0])?.postType || 'post'
@@ -201,10 +201,10 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     // Helper function to find dynamic-data-layout blocks recursively
     const findDynamicDataLayoutBlocks = (blocks: any[]): any[] => {
         const found: any[] = [];
-        
+
         const traverse = (blockList: any[]) => {
             blockList.forEach((block) => {
-                if (block.name === 'jankx/dynamic-data-layout') {
+                if (block.name === 'jankx/dynamic-data-layout' || block.name === 'jankx/dynamic-ssr-layout') {
                     const queryId = block.attributes?.queryId || block.clientId;
                     found.push({
                         id: String(queryId || block.clientId),
@@ -218,7 +218,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                 }
             });
         };
-        
+
         traverse(blocks);
         return found;
     };
@@ -337,16 +337,16 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                 </PanelBody>
 
                 <PanelBody title={__('Filters', 'jankx')} initialOpen={false}>
-                        {targetBlockIds.length === 0 ? (
-                            <p style={{ color: '#d63638', marginBottom: '10px' }}>
-                                {__('Please select a target block first to configure filters.', 'jankx')}
-                            </p>
-                        ) : (
-                            <p style={{ marginBottom: '10px', fontSize: '12px', color: '#666' }}>
-                                {__('Post Type:', 'jankx')} <strong>{targetPostType}</strong>
-                            </p>
-                        )}
-                    </PanelBody>
+                    {targetBlockIds.length === 0 ? (
+                        <p style={{ color: '#d63638', marginBottom: '10px' }}>
+                            {__('Please select a target block first to configure filters.', 'jankx')}
+                        </p>
+                    ) : (
+                        <p style={{ marginBottom: '10px', fontSize: '12px', color: '#666' }}>
+                            {__('Post Type:', 'jankx')} <strong>{targetPostType}</strong>
+                        </p>
+                    )}
+                </PanelBody>
 
                 <PanelBody title={__('AJAX Settings', 'jankx')} initialOpen={false}>
                     <ToggleControl

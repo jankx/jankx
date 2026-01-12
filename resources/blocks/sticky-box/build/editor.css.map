@@ -1,1 +1,1 @@
-{"version":3,"file":"blocks/sticky-box/build/editor.css","mappings":"AAAA,2BACE,kC","sources":["webpack://jankx/./blocks/sticky-box/editor.scss"],"sourcesContent":[".wp-block-jankx-sticky-box {\n  border: 1px dashed rgba(0,0,0,.08);\n}\n"],"names":[],"sourceRoot":""}
+{"version":3,"file":"blocks/sticky-box/build/editor.css","mappings":";;;AAAA;EACE;AACF,C","sources":["webpack://jankx/./blocks/sticky-box/editor.scss"],"sourcesContent":[".wp-block-jankx-sticky-box {\n  border: 1px dashed rgba(0,0,0,.08);\n}\n"],"names":[],"sourceRoot":""}

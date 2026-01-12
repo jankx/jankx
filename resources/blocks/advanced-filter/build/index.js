@@ -1,2 +1,843 @@
-(()=>{"use strict";const e=window.wp.blocks,t=window.wp.i18n,l=window.wp.blockEditor,a=window.wp.components,n=window.wp.element,o=window.wp.data,r=JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/advanced-filter","version":"1.0.0","title":"Advanced Filter","category":"jankx","parent":["jankx/advanced-filters","jankx/smart-tab"],"icon":"filter","description":"Một filter đơn lẻ dùng bên trong Advanced Filters.","textdomain":"jankx","supports":{"html":false,"reusable":false},"attributes":{"filterType":{"type":"string","default":"taxonomy","enum":["taxonomy","meta","price","date","author","keyword"]},"label":{"type":"string","default":""},"enabled":{"type":"boolean","default":true},"taxonomy":{"type":"string","default":""},"displayStyle":{"type":"string","default":"buttons","enum":["buttons","checkboxes","dropdown","select"]},"listingType":{"type":"string","default":"ul","enum":["ul","ol","none"]},"showCount":{"type":"boolean","default":false},"showEmptyTerms":{"type":"boolean","default":true},"showOnlyTopLevel":{"type":"boolean","default":false},"showHierarchy":{"type":"boolean","default":false},"multipleSelection":{"type":"boolean","default":true},"layout":{"type":"string","default":"horizontal","enum":["horizontal","vertical","dropdown","accordion"]},"showLabels":{"type":"boolean","default":true},"collapsible":{"type":"boolean","default":false},"defaultExpanded":{"type":"boolean","default":true},"metaKey":{"type":"string","default":""},"inputType":{"type":"string","default":"text","enum":["text","number","range","date","date-range"]},"minValue":{"type":"string","default":""},"maxValue":{"type":"string","default":""},"placeholder":{"type":"string","default":""},"minPrice":{"type":"string","default":""},"maxPrice":{"type":"string","default":""},"currency":{"type":"string","default":"VND"},"dateField":{"type":"string","default":"post_date"},"dateRange":{"type":"boolean","default":true},"showSearchButton":{"type":"boolean","default":false},"searchButtonText":{"type":"string","default":"Search"},"searchButtonDisplay":{"type":"string","default":"text","enum":["text","icon","icon-text"]},"searchButtonIcon":{"type":"string","default":""},"keywordAction":{"type":"string","default":"typing","enum":["typing","button"]},"filterValue":{"type":"string","default":""},"filterValueMin":{"type":"string","default":""},"filterValueMax":{"type":"string","default":""},"filterValueStart":{"type":"string","default":""},"filterValueEnd":{"type":"string","default":""}},"editorScript":"file:./build/index.js"}'),i=window.ReactJSXRuntime;(0,e.registerBlockType)(r.name,{...r,edit:function({attributes:e,setAttributes:r,clientId:s}){var u,c,x,d,h,p;const{filterType:_,label:j,enabled:y,taxonomy:g,displayStyle:k,listingType:b,showCount:m,showEmptyTerms:f,showOnlyTopLevel:v,showHierarchy:C,multipleSelection:w,layout:S,showLabels:T,collapsible:F,defaultExpanded:V,metaKey:B,inputType:P,minValue:D,maxValue:M,placeholder:L,minPrice:A,maxPrice:E,currency:I,dateField:N,dateRange:O,showSearchButton:H,searchButtonText:$,searchButtonDisplay:R,searchButtonIcon:G,keywordAction:K,filterValue:z,filterValueMin:J,filterValueMax:U,filterValueStart:q,filterValueEnd:X}=e,[Q,W]=(0,n.useState)([]),[Y,Z]=(0,n.useState)([]),[ee,te]=(0,n.useState)([]),[le,ae]=(0,n.useState)(!1),[ne,oe]=(0,n.useState)(!1),[re,ie]=(0,n.useState)(!1),{isSmartTabChild:se,parentDefaults:ue}=(0,o.useSelect)(e=>{const{getBlockParents:t,getBlock:l}=e("core/block-editor"),a=t(s)||[];let n=a.find(e=>"jankx/smart-tab"===l(e)?.name);if(n){const t=l(n),a=((t?.attributes||{}).triggerSettings||{}).targetBlockId;let o="post";if(a){const t=e("core/block-editor").getBlocks(),l=e=>{for(const t of e){if("jankx/dynamic-data-layout"===t.name){const e=t.attributes?.queryId||t.clientId;if(String(e)===a)return t}if(t.innerBlocks?.length>0){const e=l(t.innerBlocks);if(e)return e}}return null},n=l(t);n&&(o=n.attributes?.postType||"post")}return{isSmartTabChild:!0,parentDefaults:{targetPostType:o}}}if(n=a.find(e=>"jankx/advanced-filters"===l(e)?.name),n){const e=l(n);return{isSmartTabChild:!1,parentDefaults:e?.attributes||{}}}return{isSmartTabChild:!1,parentDefaults:{}}},[s]),ce=ue.targetPostType||"post",xe=k||ue.displayStyle||"buttons",de=["buttons","checkboxes"].includes(xe||"")?xe:"buttons",he=(S||ue.layout,null===(u=null!=T?T:ue.showLabels)||void 0===u||u),pe=null!==(c=null!=m?m:ue.showCount)&&void 0!==c&&c,_e=null===(x=null!=f?f:ue.showEmptyTerms)||void 0===x||x,je=null!==(d=null!=v?v:ue.showOnlyTopLevel)&&void 0!==d&&d,ye=null!==(h=null!=C?C:ue.showHierarchy)&&void 0!==h&&h,ge=null===(p=null!=w?w:ue.multipleSelection)||void 0===p||p,ke=(null!=F||ue.collapsible,null!=V||ue.defaultExpanded,K||"typing"),be=$||(0,t.__)("Search","jankx"),me=R||"text",fe=G||"",ve=(0,l.useBlockProps)({className:"jankx-advanced-filter"}),Ce=(0,n.useMemo)(()=>{const e=_?_.charAt(0).toUpperCase()+_.slice(1):"Filter";return j||`${(0,t.__)("Filter","jankx")} (${e})`},[j,_]);return(0,n.useEffect)(()=>{ce&&(ae(!0),(async()=>{try{const e=await window.wp.apiFetch({path:`/wp/v2/taxonomies?type=${ce}`}),t=Object.values(e||{});W(t)}catch(e){W([])}finally{ae(!1)}})())},[ce]),(0,n.useEffect)(()=>{g?(oe(!0),(async()=>{try{const e=await window.wp.apiFetch({path:`/wp/v2/${g}?per_page=100&orderby=name&order=asc`});Z(Array.isArray(e)?e:[])}catch(e){Z([])}finally{oe(!1)}})()):Z([])},[g]),(0,n.useEffect)(()=>{"author"===_?(ie(!0),(async()=>{try{const e=await window.wp.apiFetch({path:"/wp/v2/users?per_page=100&orderby=name&order=asc"});te(Array.isArray(e)?e:[])}catch(e){te([])}finally{ie(!1)}})()):te([])},[_]),(0,i.jsxs)(i.Fragment,{children:[(0,i.jsxs)(l.InspectorControls,{children:[(0,i.jsxs)(a.PanelBody,{title:(0,t.__)("Filter","jankx"),initialOpen:!0,children:[(0,i.jsxs)("p",{style:{marginBottom:"8px",fontSize:"12px",color:"#555"},children:[(0,t.__)("Post type kế thừa từ Advanced Filters:","jankx")," ",(0,i.jsx)("strong",{children:ce})]}),(0,i.jsx)(a.SelectControl,{label:(0,t.__)("Filter Type","jankx"),value:_,options:[{label:(0,t.__)("Taxonomy","jankx"),value:"taxonomy"},{label:(0,t.__)("Meta Field","jankx"),value:"meta"},{label:(0,t.__)("Price","jankx"),value:"price"},{label:(0,t.__)("Date","jankx"),value:"date"},{label:(0,t.__)("Author","jankx"),value:"author"},{label:(0,t.__)("Keyword","jankx"),value:"keyword"}],onChange:e=>r({filterType:e})}),(0,i.jsx)(a.TextControl,{label:(0,t.__)("Label (Optional)","jankx"),value:j||"",onChange:e=>r({label:e}),placeholder:(0,t.__)("Custom label for this filter","jankx")}),(0,i.jsx)(a.ToggleControl,{label:(0,t.__)("Enabled","jankx"),checked:!1!==y,onChange:e=>r({enabled:e})}),(0,i.jsx)(a.ToggleControl,{label:(0,t.__)("Hide Label","jankx"),checked:!he,onChange:e=>r({showLabels:!e})})]}),(0,i.jsxs)(a.PanelBody,{title:(0,t.__)("Filter Settings","jankx"),initialOpen:!0,children:["taxonomy"===_&&(0,i.jsxs)(i.Fragment,{children:[(0,i.jsx)(a.SelectControl,{label:(0,t.__)("Taxonomy","jankx"),value:g||"",options:[{label:le?(0,t.__)("Loading...","jankx"):(0,t.__)("-- Select --","jankx"),value:""},...Q.map(e=>({label:e.name,value:e.slug}))],onChange:e=>r({taxonomy:e}),help:(0,t.__)("Taxonomy lấy theo post type của block cha","jankx")}),!se&&(0,i.jsxs)(i.Fragment,{children:[(0,i.jsx)(a.SelectControl,{label:(0,t.__)("Display Style","jankx"),value:de,options:[{label:(0,t.__)("Buttons","jankx"),value:"buttons"},{label:(0,t.__)("Checkboxes","jankx"),value:"checkboxes"}],onChange:e=>r({displayStyle:e})}),"checkboxes"===de&&(0,i.jsx)(a.SelectControl,{label:(0,t.__)("Listing Type","jankx"),value:b||"ul",options:[{label:(0,t.__)("Unordered List (•)","jankx"),value:"ul"},{label:(0,t.__)("Ordered List (1, 2, 3)","jankx"),value:"ol"},{label:(0,t.__)("No List","jankx"),value:"none"}],onChange:e=>r({listingType:e})}),(0,i.jsx)(a.ToggleControl,{label:(0,t.__)("Show Post Counts","jankx"),checked:pe,onChange:e=>r({showCount:e})}),(0,i.jsx)(a.ToggleControl,{label:(0,t.__)("Show Empty Terms","jankx"),checked:_e,onChange:e=>r({showEmptyTerms:e})}),(0,i.jsx)(a.ToggleControl,{label:(0,t.__)("Show Only Top Level Terms","jankx"),checked:je,onChange:e=>r({showOnlyTopLevel:e})}),(0,i.jsx)(a.ToggleControl,{label:(0,t.__)("Show Hierarchy","jankx"),checked:ye,onChange:e=>r({showHierarchy:e})}),(0,i.jsx)(a.ToggleControl,{label:(0,t.__)("Multiple Selection","jankx"),checked:ge,onChange:e=>r({multipleSelection:e})})]}),se&&g&&(0,i.jsx)(a.SelectControl,{label:(0,t.__)("Select Term","jankx"),value:z||"all",options:[{label:(0,t.__)("Tất cả","jankx"),value:"all"},...ne?[]:Y.map(e=>({label:`${e.name}${void 0!==e.count?` (${e.count})`:""}`,value:String(e.id)}))],onChange:e=>r({filterValue:"all"===e?"":e}),help:(0,t.__)('Chọn "Tất cả" để hiển thị tất cả data, hoặc chọn term cụ thể để filter',"jankx")}),!se&&(0,i.jsxs)("div",{style:{marginTop:"10px"},children:[(0,i.jsx)("strong",{style:{display:"block",marginBottom:"6px"},children:(0,t.__)("Preview terms","jankx")}),ne?(0,i.jsx)(a.Spinner,{}):0===Y.length?(0,i.jsx)(a.Placeholder,{children:(0,t.__)("No terms found","jankx")}):(0,i.jsx)("ul",{style:{maxHeight:"120px",overflow:"auto",paddingLeft:"16px"},children:Y.map(e=>(0,i.jsxs)("li",{children:[e.name," ",void 0!==e.count?`(${e.count})`:""]},e.id))})]})]}),"meta"===_&&(0,i.jsxs)(i.Fragment,{children:[(0,i.jsx)(a.TextControl,{label:(0,t.__)("Meta Key","jankx"),value:B||"",onChange:e=>r({metaKey:e}),placeholder:(0,t.__)("e.g., _price, custom_field","jankx")}),!se&&(0,i.jsxs)(i.Fragment,{children:[(0,i.jsx)(a.SelectControl,{label:(0,t.__)("Input Type","jankx"),value:P||"text",options:[{label:(0,t.__)("Text","jankx"),value:"text"},{label:(0,t.__)("Number","jankx"),value:"number"},{label:(0,t.__)("Number Range","jankx"),value:"range"},{label:(0,t.__)("Date","jankx"),value:"date"},{label:(0,t.__)("Date Range","jankx"),value:"date-range"}],onChange:e=>r({inputType:e})}),"range"===P&&(0,i.jsxs)(i.Fragment,{children:[(0,i.jsx)(a.TextControl,{label:(0,t.__)("Min Value","jankx"),value:D||"",onChange:e=>r({minValue:e}),type:"number"}),(0,i.jsx)(a.TextControl,{label:(0,t.__)("Max Value","jankx"),value:M||"",onChange:e=>r({maxValue:e}),type:"number"})]}),(0,i.jsx)(a.TextControl,{label:(0,t.__)("Placeholder","jankx"),value:L||"",onChange:e=>r({placeholder:e})})]}),se&&B&&(0,i.jsx)(a.TextControl,{label:(0,t.__)("Meta Value","jankx"),value:z||"",onChange:e=>r({filterValue:e}),placeholder:(0,t.__)("Nhập giá trị meta để filter","jankx"),help:(0,t.__)("Giá trị meta để filter khi tab được click","jankx")})]}),"price"===_&&(0,i.jsxs)(i.Fragment,{children:[!se&&(0,i.jsx)(a.TextControl,{label:(0,t.__)("Currency Symbol","jankx"),value:I||"VND",onChange:e=>r({currency:e})}),se?(0,i.jsxs)(i.Fragment,{children:[(0,i.jsx)(a.TextControl,{label:(0,t.__)("Min Price","jankx"),value:J||"",onChange:e=>r({filterValueMin:e}),type:"number",placeholder:(0,t.__)("Giá tối thiểu","jankx")}),(0,i.jsx)(a.TextControl,{label:(0,t.__)("Max Price","jankx"),value:U||"",onChange:e=>r({filterValueMax:e}),type:"number",placeholder:(0,t.__)("Giá tối đa","jankx")})]}):(0,i.jsxs)(i.Fragment,{children:[(0,i.jsx)(a.TextControl,{label:(0,t.__)("Min Price","jankx"),value:A||"",onChange:e=>r({minPrice:e}),type:"number"}),(0,i.jsx)(a.TextControl,{label:(0,t.__)("Max Price","jankx"),value:E||"",onChange:e=>r({maxPrice:e}),type:"number"})]})]}),"date"===_&&(0,i.jsxs)(i.Fragment,{children:[!se&&(0,i.jsxs)(i.Fragment,{children:[(0,i.jsx)(a.SelectControl,{label:(0,t.__)("Date Field","jankx"),value:N||"post_date",options:[{label:(0,t.__)("Post Date","jankx"),value:"post_date"},{label:(0,t.__)("Modified Date","jankx"),value:"post_modified"}],onChange:e=>r({dateField:e})}),(0,i.jsx)(a.ToggleControl,{label:(0,t.__)("Date Range","jankx"),checked:void 0===O||O,onChange:e=>r({dateRange:e}),help:(0,t.__)("Allow users to select a date range","jankx")})]}),se&&(0,i.jsxs)(i.Fragment,{children:[(0,i.jsx)(a.TextControl,{label:(0,t.__)("Start Date","jankx"),type:"date",value:q||"",onChange:e=>r({filterValueStart:e}),help:(0,t.__)("Ngày bắt đầu để filter","jankx")}),(0,i.jsx)(a.TextControl,{label:(0,t.__)("End Date","jankx"),type:"date",value:X||"",onChange:e=>r({filterValueEnd:e}),help:(0,t.__)("Ngày kết thúc để filter","jankx")})]})]}),"author"===_&&(0,i.jsxs)(i.Fragment,{children:[!se&&(0,i.jsxs)(i.Fragment,{children:[(0,i.jsx)(a.SelectControl,{label:(0,t.__)("Display Style","jankx"),value:de,options:[{label:(0,t.__)("Buttons","jankx"),value:"buttons"},{label:(0,t.__)("Checkboxes","jankx"),value:"checkboxes"}],onChange:e=>r({displayStyle:e})}),(0,i.jsx)(a.ToggleControl,{label:(0,t.__)("Multiple Selection","jankx"),checked:ge,onChange:e=>r({multipleSelection:e}),help:(0,t.__)("Allow users to select multiple authors","jankx")})]}),se&&(0,i.jsx)(a.SelectControl,{label:(0,t.__)("Select Author","jankx"),value:z||"",options:[{label:re?(0,t.__)("Loading...","jankx"):(0,t.__)("-- Select Author --","jankx"),value:""},...ee.map(e=>({label:e.name,value:String(e.id)}))],onChange:e=>r({filterValue:e}),help:(0,t.__)("Chọn author để filter khi tab được click","jankx")})]}),"keyword"===_&&(0,i.jsxs)(i.Fragment,{children:[!se&&(0,i.jsxs)(i.Fragment,{children:[(0,i.jsx)(a.TextControl,{label:(0,t.__)("Placeholder","jankx"),value:L||(0,t.__)("Search...","jankx"),onChange:e=>r({placeholder:e})}),(0,i.jsx)(a.ToggleControl,{label:(0,t.__)("Show Search Button","jankx"),checked:void 0!==H&&H,onChange:e=>r({showSearchButton:e})}),H?(0,i.jsx)(a.SelectControl,{label:(0,t.__)("Search Action","jankx"),value:ke,options:[{label:(0,t.__)("Filter while typing","jankx"),value:"typing"},{label:(0,t.__)("Only when clicking Search","jankx"),value:"button"}],onChange:e=>r({keywordAction:e}),help:(0,t.__)("Chọn cách kích hoạt filter cho ô tìm kiếm","jankx")}):null,H?(0,i.jsx)(a.TextControl,{label:(0,t.__)("Search Button Text","jankx"),value:be,onChange:e=>r({searchButtonText:e}),placeholder:(0,t.__)("Search","jankx")}):null,H?(0,i.jsx)(a.SelectControl,{label:(0,t.__)("Search Button Display","jankx"),value:me,options:[{label:(0,t.__)("Text only","jankx"),value:"text"},{label:(0,t.__)("SVG/Icon only","jankx"),value:"icon"},{label:(0,t.__)("Icon + Text","jankx"),value:"icon-text"}],onChange:e=>r({searchButtonDisplay:e}),help:(0,t.__)("Chọn hiển thị nút: chỉ text, chỉ icon, hoặc icon + text","jankx")}):null,H&&"text"!==me?(0,i.jsx)(a.TextControl,{label:(0,t.__)("Search Button Icon (SVG/HTML)","jankx"),value:fe,onChange:e=>r({searchButtonIcon:e}),placeholder:"<svg>...</svg>",help:(0,t.__)("Dán SVG hoặc HTML icon. Sử dụng cẩn thận.","jankx")}):null]}),se&&(0,i.jsx)(a.TextControl,{label:(0,t.__)("Search Keyword","jankx"),value:z||"",onChange:e=>r({filterValue:e}),placeholder:(0,t.__)("Nhập từ khóa để filter","jankx"),help:(0,t.__)("Từ khóa để filter khi tab được click","jankx")})]})]})]}),(0,i.jsxs)("div",{...ve,children:[(0,i.jsx)("strong",{children:Ce}),(0,i.jsxs)("div",{style:{fontSize:"12px",color:"#555"},children:[(0,i.jsxs)("div",{children:[(0,t.__)("Type","jankx"),": ",_]}),g&&(0,i.jsxs)("div",{children:[(0,t.__)("Taxonomy","jankx"),": ",g]}),j&&(0,i.jsxs)("div",{children:[(0,t.__)("Label","jankx"),": ",j]})]})]})]})},save:()=>null})})();
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./blocks/advanced-filter/block.json":
+/*!*******************************************!*\
+  !*** ./blocks/advanced-filter/block.json ***!
+  \*******************************************/
+/***/ ((module) => {
+
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/advanced-filter","version":"1.0.0","title":"Advanced Filter","category":"jankx","parent":["jankx/advanced-filters","jankx/smart-tab"],"icon":"filter","description":"Một filter đơn lẻ dùng bên trong Advanced Filters.","textdomain":"jankx","supports":{"html":false,"reusable":false},"attributes":{"filterType":{"type":"string","default":"taxonomy","enum":["taxonomy","meta","price","date","author","keyword"]},"label":{"type":"string","default":""},"enabled":{"type":"boolean","default":true},"taxonomy":{"type":"string","default":""},"displayStyle":{"type":"string","default":"buttons","enum":["buttons","checkboxes","dropdown","select"]},"listingType":{"type":"string","default":"ul","enum":["ul","ol","none"]},"showCount":{"type":"boolean","default":false},"showEmptyTerms":{"type":"boolean","default":true},"showOnlyTopLevel":{"type":"boolean","default":false},"showHierarchy":{"type":"boolean","default":false},"multipleSelection":{"type":"boolean","default":true},"layout":{"type":"string","default":"horizontal","enum":["horizontal","vertical","dropdown","accordion"]},"showLabels":{"type":"boolean","default":true},"collapsible":{"type":"boolean","default":false},"defaultExpanded":{"type":"boolean","default":true},"metaKey":{"type":"string","default":""},"inputType":{"type":"string","default":"text","enum":["text","number","range","date","date-range"]},"minValue":{"type":"string","default":""},"maxValue":{"type":"string","default":""},"placeholder":{"type":"string","default":""},"minPrice":{"type":"string","default":""},"maxPrice":{"type":"string","default":""},"currency":{"type":"string","default":"VND"},"dateField":{"type":"string","default":"post_date"},"dateRange":{"type":"boolean","default":true},"showSearchButton":{"type":"boolean","default":false},"searchButtonText":{"type":"string","default":"Search"},"searchButtonDisplay":{"type":"string","default":"text","enum":["text","icon","icon-text"]},"searchButtonIcon":{"type":"string","default":""},"keywordAction":{"type":"string","default":"typing","enum":["typing","button"]},"filterValue":{"type":"string","default":""},"filterValueMin":{"type":"string","default":""},"filterValueMax":{"type":"string","default":""},"filterValueStart":{"type":"string","default":""},"filterValueEnd":{"type":"string","default":""}},"editorScript":"file:./build/index.js"}');
+
+/***/ }),
+
+/***/ "@wordpress/block-editor":
+/*!*************************************!*\
+  !*** external ["wp","blockEditor"] ***!
+  \*************************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["blockEditor"];
+
+/***/ }),
+
+/***/ "@wordpress/blocks":
+/*!********************************!*\
+  !*** external ["wp","blocks"] ***!
+  \********************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["blocks"];
+
+/***/ }),
+
+/***/ "@wordpress/components":
+/*!************************************!*\
+  !*** external ["wp","components"] ***!
+  \************************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["components"];
+
+/***/ }),
+
+/***/ "@wordpress/data":
+/*!******************************!*\
+  !*** external ["wp","data"] ***!
+  \******************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["data"];
+
+/***/ }),
+
+/***/ "@wordpress/element":
+/*!*********************************!*\
+  !*** external ["wp","element"] ***!
+  \*********************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["element"];
+
+/***/ }),
+
+/***/ "@wordpress/i18n":
+/*!******************************!*\
+  !*** external ["wp","i18n"] ***!
+  \******************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["i18n"];
+
+/***/ }),
+
+/***/ "react/jsx-runtime":
+/*!**********************************!*\
+  !*** external "ReactJSXRuntime" ***!
+  \**********************************/
+/***/ ((module) => {
+
+module.exports = window["ReactJSXRuntime"];
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/************************************************************************/
+var __webpack_exports__ = {};
+// This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
+(() => {
+/*!******************************************!*\
+  !*** ./blocks/advanced-filter/index.tsx ***!
+  \******************************************/
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
+/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./block.json */ "./blocks/advanced-filter/block.json");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__);
+
+
+
+
+
+
+
+
+function Edit({
+  attributes,
+  setAttributes,
+  clientId
+}) {
+  var _ref, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8;
+  const {
+    filterType,
+    label,
+    enabled,
+    taxonomy,
+    displayStyle,
+    listingType,
+    showCount,
+    showEmptyTerms,
+    showOnlyTopLevel,
+    showHierarchy,
+    multipleSelection,
+    layout,
+    showLabels,
+    collapsible,
+    defaultExpanded,
+    metaKey,
+    inputType,
+    minValue,
+    maxValue,
+    placeholder,
+    minPrice,
+    maxPrice,
+    currency,
+    dateField,
+    dateRange,
+    showSearchButton,
+    searchButtonText,
+    searchButtonDisplay,
+    searchButtonIcon,
+    keywordAction,
+    filterValue,
+    filterValueMin,
+    filterValueMax,
+    filterValueStart,
+    filterValueEnd
+  } = attributes;
+  const [taxonomies, setTaxonomies] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)([]);
+  const [terms, setTerms] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)([]);
+  const [authors, setAuthors] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)([]);
+  const [loadingTaxonomies, setLoadingTaxonomies] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(false);
+  const [loadingTerms, setLoadingTerms] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(false);
+  const [loadingAuthors, setLoadingAuthors] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(false);
+
+  // Kiểm tra parent block và lấy attributes
+  const {
+    isSmartTabChild,
+    parentDefaults
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_5__.useSelect)(select => {
+    const {
+      getBlockParents,
+      getBlock
+    } = select('core/block-editor');
+    const parents = getBlockParents(clientId) || [];
+
+    // Tìm parent là smart-tab trước (cho advanced filter trigger)
+    let parentId = parents.find(id => getBlock(id)?.name === 'jankx/smart-tab');
+    if (parentId) {
+      const parent = getBlock(parentId);
+      const attrs = parent?.attributes || {};
+      const triggerSettings = attrs.triggerSettings || {};
+      const targetBlockId = triggerSettings.targetBlockId;
+
+      // Tìm dynamic-data-layout block để lấy post type
+      let targetPostType = 'post';
+      if (targetBlockId) {
+        const allBlocks = select('core/block-editor').getBlocks();
+        const findBlock = blocks => {
+          for (const block of blocks) {
+            if (block.name === 'jankx/dynamic-data-layout' || block.name === 'jankx/dynamic-ssr-layout') {
+              const queryId = block.attributes?.queryId || block.clientId;
+              if (String(queryId) === targetBlockId) {
+                return block;
+              }
+            }
+            if (block.innerBlocks?.length > 0) {
+              const found = findBlock(block.innerBlocks);
+              if (found) return found;
+            }
+          }
+          return null;
+        };
+        const targetBlock = findBlock(allBlocks);
+        if (targetBlock) {
+          targetPostType = targetBlock.attributes?.postType || 'post';
+        }
+      }
+      return {
+        isSmartTabChild: true,
+        parentDefaults: {
+          targetPostType
+        }
+      };
+    }
+
+    // Fallback: tìm parent là advanced-filters
+    parentId = parents.find(id => getBlock(id)?.name === 'jankx/advanced-filters');
+    if (parentId) {
+      const parent = getBlock(parentId);
+      return {
+        isSmartTabChild: false,
+        parentDefaults: parent?.attributes || {}
+      };
+    }
+    return {
+      isSmartTabChild: false,
+      parentDefaults: {}
+    };
+  }, [clientId]);
+  const resolvedTargetPostType = parentDefaults.targetPostType || 'post';
+  const resolvedDisplayStyle = displayStyle || parentDefaults.displayStyle || 'buttons';
+  const normalizedDisplayStyle = ['buttons', 'checkboxes'].includes(resolvedDisplayStyle || '') ? resolvedDisplayStyle : 'buttons';
+  const resolvedLayout = layout || parentDefaults.layout || 'horizontal';
+  const resolvedShowLabels = (_ref = showLabels !== null && showLabels !== void 0 ? showLabels : parentDefaults.showLabels) !== null && _ref !== void 0 ? _ref : true;
+  const resolvedShowCount = (_ref2 = showCount !== null && showCount !== void 0 ? showCount : parentDefaults.showCount) !== null && _ref2 !== void 0 ? _ref2 : false;
+  const resolvedShowEmptyTerms = (_ref3 = showEmptyTerms !== null && showEmptyTerms !== void 0 ? showEmptyTerms : parentDefaults.showEmptyTerms) !== null && _ref3 !== void 0 ? _ref3 : true;
+  const resolvedShowOnlyTopLevel = (_ref4 = showOnlyTopLevel !== null && showOnlyTopLevel !== void 0 ? showOnlyTopLevel : parentDefaults.showOnlyTopLevel) !== null && _ref4 !== void 0 ? _ref4 : false;
+  const resolvedShowHierarchy = (_ref5 = showHierarchy !== null && showHierarchy !== void 0 ? showHierarchy : parentDefaults.showHierarchy) !== null && _ref5 !== void 0 ? _ref5 : false;
+  const resolvedMultiple = (_ref6 = multipleSelection !== null && multipleSelection !== void 0 ? multipleSelection : parentDefaults.multipleSelection) !== null && _ref6 !== void 0 ? _ref6 : true;
+  const resolvedCollapsible = (_ref7 = collapsible !== null && collapsible !== void 0 ? collapsible : parentDefaults.collapsible) !== null && _ref7 !== void 0 ? _ref7 : false;
+  const resolvedDefaultExpanded = (_ref8 = defaultExpanded !== null && defaultExpanded !== void 0 ? defaultExpanded : parentDefaults.defaultExpanded) !== null && _ref8 !== void 0 ? _ref8 : true;
+  const resolvedKeywordAction = keywordAction || 'typing';
+  const resolvedSearchButtonText = searchButtonText || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Search', 'jankx');
+  const resolvedSearchButtonDisplay = searchButtonDisplay || 'text';
+  const resolvedSearchButtonIcon = searchButtonIcon || '';
+  const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)({
+    className: 'jankx-advanced-filter'
+  });
+  const filterTitle = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => {
+    const typeLabel = filterType ? filterType.charAt(0).toUpperCase() + filterType.slice(1) : 'Filter';
+    return label || `${(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter', 'jankx')} (${typeLabel})`;
+  }, [label, filterType]);
+
+  // Fetch taxonomies theo post type từ parent
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
+    if (!resolvedTargetPostType) return;
+    setLoadingTaxonomies(true);
+    (async () => {
+      try {
+        const taxData = await window.wp.apiFetch({
+          path: `/wp/v2/taxonomies?type=${resolvedTargetPostType}`
+        });
+        const list = Object.values(taxData || {});
+        setTaxonomies(list);
+      } catch (e) {
+        setTaxonomies([]);
+      } finally {
+        setLoadingTaxonomies(false);
+      }
+    })();
+  }, [resolvedTargetPostType]);
+
+  // Fetch terms theo taxonomy đã chọn (preview cho editor)
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
+    if (!taxonomy) {
+      setTerms([]);
+      return;
+    }
+    setLoadingTerms(true);
+    (async () => {
+      try {
+        const termsData = await window.wp.apiFetch({
+          path: `/wp/v2/${taxonomy}?per_page=100&orderby=name&order=asc`
+        });
+        setTerms(Array.isArray(termsData) ? termsData : []);
+      } catch (e) {
+        setTerms([]);
+      } finally {
+        setLoadingTerms(false);
+      }
+    })();
+  }, [taxonomy]);
+
+  // Fetch authors khi filterType là author
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
+    if (filterType !== 'author') {
+      setAuthors([]);
+      return;
+    }
+    setLoadingAuthors(true);
+    (async () => {
+      try {
+        const usersData = await window.wp.apiFetch({
+          path: '/wp/v2/users?per_page=100&orderby=name&order=asc'
+        });
+        setAuthors(Array.isArray(usersData) ? usersData : []);
+      } catch (e) {
+        setAuthors([]);
+      } finally {
+        setLoadingAuthors(false);
+      }
+    })();
+  }, [filterType]);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter', 'jankx'),
+        initialOpen: true,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("p", {
+          style: {
+            marginBottom: '8px',
+            fontSize: '12px',
+            color: '#555'
+          },
+          children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Post type kế thừa từ Advanced Filters:', 'jankx'), " ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("strong", {
+            children: resolvedTargetPostType
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter Type', 'jankx'),
+          value: filterType,
+          options: [{
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Taxonomy', 'jankx'),
+            value: 'taxonomy'
+          }, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Meta Field', 'jankx'),
+            value: 'meta'
+          }, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Price', 'jankx'),
+            value: 'price'
+          }, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Date', 'jankx'),
+            value: 'date'
+          }, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Author', 'jankx'),
+            value: 'author'
+          }, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Keyword', 'jankx'),
+            value: 'keyword'
+          }],
+          onChange: value => setAttributes({
+            filterType: value
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Label (Optional)', 'jankx'),
+          value: label || '',
+          onChange: value => setAttributes({
+            label: value
+          }),
+          placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Custom label for this filter', 'jankx')
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enabled', 'jankx'),
+          checked: enabled !== false,
+          onChange: value => setAttributes({
+            enabled: value
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Hide Label', 'jankx'),
+          checked: !resolvedShowLabels,
+          onChange: value => setAttributes({
+            showLabels: !value
+          })
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter Settings', 'jankx'),
+        initialOpen: true,
+        children: [filterType === 'taxonomy' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Taxonomy', 'jankx'),
+            value: taxonomy || '',
+            options: [{
+              label: loadingTaxonomies ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Loading...', 'jankx') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('-- Select --', 'jankx'),
+              value: ''
+            }, ...taxonomies.map(tax => ({
+              label: tax.name,
+              value: tax.slug
+            }))],
+            onChange: value => setAttributes({
+              taxonomy: value
+            }),
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Taxonomy lấy theo post type của block cha', 'jankx')
+          }), !isSmartTabChild && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display Style', 'jankx'),
+              value: normalizedDisplayStyle,
+              options: [{
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Buttons', 'jankx'),
+                value: 'buttons'
+              }, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Checkboxes', 'jankx'),
+                value: 'checkboxes'
+              }],
+              onChange: value => setAttributes({
+                displayStyle: value
+              })
+            }), normalizedDisplayStyle === 'checkboxes' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Listing Type', 'jankx'),
+              value: listingType || 'ul',
+              options: [{
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Unordered List (•)', 'jankx'),
+                value: 'ul'
+              }, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Ordered List (1, 2, 3)', 'jankx'),
+                value: 'ol'
+              }, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('No List', 'jankx'),
+                value: 'none'
+              }],
+              onChange: value => setAttributes({
+                listingType: value
+              })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Post Counts', 'jankx'),
+              checked: resolvedShowCount,
+              onChange: value => setAttributes({
+                showCount: value
+              })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Empty Terms', 'jankx'),
+              checked: resolvedShowEmptyTerms,
+              onChange: value => setAttributes({
+                showEmptyTerms: value
+              })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Only Top Level Terms', 'jankx'),
+              checked: resolvedShowOnlyTopLevel,
+              onChange: value => setAttributes({
+                showOnlyTopLevel: value
+              })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Hierarchy', 'jankx'),
+              checked: resolvedShowHierarchy,
+              onChange: value => setAttributes({
+                showHierarchy: value
+              })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Multiple Selection', 'jankx'),
+              checked: resolvedMultiple,
+              onChange: value => setAttributes({
+                multipleSelection: value
+              })
+            })]
+          }), isSmartTabChild && taxonomy && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select Term', 'jankx'),
+            value: filterValue || 'all',
+            options: [{
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Tất cả', 'jankx'),
+              value: 'all'
+            }, ...(loadingTerms ? [] : terms.map(term => ({
+              label: `${term.name}${term.count !== undefined ? ` (${term.count})` : ''}`,
+              value: String(term.id)
+            })))],
+            onChange: value => setAttributes({
+              filterValue: value === 'all' ? '' : value
+            }),
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Chọn "Tất cả" để hiển thị tất cả data, hoặc chọn term cụ thể để filter', 'jankx')
+          }), !isSmartTabChild && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+            style: {
+              marginTop: '10px'
+            },
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("strong", {
+              style: {
+                display: 'block',
+                marginBottom: '6px'
+              },
+              children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Preview terms', 'jankx')
+            }), loadingTerms ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Spinner, {}) : terms.length === 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Placeholder, {
+              children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('No terms found', 'jankx')
+            }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("ul", {
+              style: {
+                maxHeight: '120px',
+                overflow: 'auto',
+                paddingLeft: '16px'
+              },
+              children: terms.map(term => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("li", {
+                children: [term.name, " ", term.count !== undefined ? `(${term.count})` : '']
+              }, term.id))
+            })]
+          })]
+        }), filterType === 'meta' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Meta Key', 'jankx'),
+            value: metaKey || '',
+            onChange: value => setAttributes({
+              metaKey: value
+            }),
+            placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('e.g., _price, custom_field', 'jankx')
+          }), !isSmartTabChild && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Input Type', 'jankx'),
+              value: inputType || 'text',
+              options: [{
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Text', 'jankx'),
+                value: 'text'
+              }, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Number', 'jankx'),
+                value: 'number'
+              }, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Number Range', 'jankx'),
+                value: 'range'
+              }, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Date', 'jankx'),
+                value: 'date'
+              }, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Date Range', 'jankx'),
+                value: 'date-range'
+              }],
+              onChange: value => setAttributes({
+                inputType: value
+              })
+            }), inputType === 'range' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Min Value', 'jankx'),
+                value: minValue || '',
+                onChange: value => setAttributes({
+                  minValue: value
+                }),
+                type: "number"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Max Value', 'jankx'),
+                value: maxValue || '',
+                onChange: value => setAttributes({
+                  maxValue: value
+                }),
+                type: "number"
+              })]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Placeholder', 'jankx'),
+              value: placeholder || '',
+              onChange: value => setAttributes({
+                placeholder: value
+              })
+            })]
+          }), isSmartTabChild && metaKey && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Meta Value', 'jankx'),
+            value: filterValue || '',
+            onChange: value => setAttributes({
+              filterValue: value
+            }),
+            placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Nhập giá trị meta để filter', 'jankx'),
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Giá trị meta để filter khi tab được click', 'jankx')
+          })]
+        }), filterType === 'price' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
+          children: [!isSmartTabChild && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Currency Symbol', 'jankx'),
+            value: currency || 'VND',
+            onChange: value => setAttributes({
+              currency: value
+            })
+          }), isSmartTabChild ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Min Price', 'jankx'),
+              value: filterValueMin || '',
+              onChange: value => setAttributes({
+                filterValueMin: value
+              }),
+              type: "number",
+              placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Giá tối thiểu', 'jankx')
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Max Price', 'jankx'),
+              value: filterValueMax || '',
+              onChange: value => setAttributes({
+                filterValueMax: value
+              }),
+              type: "number",
+              placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Giá tối đa', 'jankx')
+            })]
+          }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Min Price', 'jankx'),
+              value: minPrice || '',
+              onChange: value => setAttributes({
+                minPrice: value
+              }),
+              type: "number"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Max Price', 'jankx'),
+              value: maxPrice || '',
+              onChange: value => setAttributes({
+                maxPrice: value
+              }),
+              type: "number"
+            })]
+          })]
+        }), filterType === 'date' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
+          children: [!isSmartTabChild && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Date Field', 'jankx'),
+              value: dateField || 'post_date',
+              options: [{
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Post Date', 'jankx'),
+                value: 'post_date'
+              }, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Modified Date', 'jankx'),
+                value: 'post_modified'
+              }],
+              onChange: value => setAttributes({
+                dateField: value
+              })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Date Range', 'jankx'),
+              checked: dateRange !== undefined ? dateRange : true,
+              onChange: value => setAttributes({
+                dateRange: value
+              }),
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Allow users to select a date range', 'jankx')
+            })]
+          }), isSmartTabChild && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Start Date', 'jankx'),
+              type: "date",
+              value: filterValueStart || '',
+              onChange: value => setAttributes({
+                filterValueStart: value
+              }),
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Ngày bắt đầu để filter', 'jankx')
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('End Date', 'jankx'),
+              type: "date",
+              value: filterValueEnd || '',
+              onChange: value => setAttributes({
+                filterValueEnd: value
+              }),
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Ngày kết thúc để filter', 'jankx')
+            })]
+          })]
+        }), filterType === 'author' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
+          children: [!isSmartTabChild && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display Style', 'jankx'),
+              value: normalizedDisplayStyle,
+              options: [{
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Buttons', 'jankx'),
+                value: 'buttons'
+              }, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Checkboxes', 'jankx'),
+                value: 'checkboxes'
+              }],
+              onChange: value => setAttributes({
+                displayStyle: value
+              })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Multiple Selection', 'jankx'),
+              checked: resolvedMultiple,
+              onChange: value => setAttributes({
+                multipleSelection: value
+              }),
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Allow users to select multiple authors', 'jankx')
+            })]
+          }), isSmartTabChild && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select Author', 'jankx'),
+            value: filterValue || '',
+            options: [{
+              label: loadingAuthors ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Loading...', 'jankx') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('-- Select Author --', 'jankx'),
+              value: ''
+            }, ...authors.map(author => ({
+              label: author.name,
+              value: String(author.id)
+            }))],
+            onChange: value => setAttributes({
+              filterValue: value
+            }),
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Chọn author để filter khi tab được click', 'jankx')
+          })]
+        }), filterType === 'keyword' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
+          children: [!isSmartTabChild && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Placeholder', 'jankx'),
+              value: placeholder || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Search...', 'jankx'),
+              onChange: value => setAttributes({
+                placeholder: value
+              })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Search Button', 'jankx'),
+              checked: showSearchButton !== undefined ? showSearchButton : false,
+              onChange: value => setAttributes({
+                showSearchButton: value
+              })
+            }), showSearchButton ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Search Action', 'jankx'),
+              value: resolvedKeywordAction,
+              options: [{
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter while typing', 'jankx'),
+                value: 'typing'
+              }, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Only when clicking Search', 'jankx'),
+                value: 'button'
+              }],
+              onChange: value => setAttributes({
+                keywordAction: value
+              }),
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Chọn cách kích hoạt filter cho ô tìm kiếm', 'jankx')
+            }) : null, showSearchButton ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Search Button Text', 'jankx'),
+              value: resolvedSearchButtonText,
+              onChange: value => setAttributes({
+                searchButtonText: value
+              }),
+              placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Search', 'jankx')
+            }) : null, showSearchButton ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Search Button Display', 'jankx'),
+              value: resolvedSearchButtonDisplay,
+              options: [{
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Text only', 'jankx'),
+                value: 'text'
+              }, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('SVG/Icon only', 'jankx'),
+                value: 'icon'
+              }, {
+                label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Icon + Text', 'jankx'),
+                value: 'icon-text'
+              }],
+              onChange: value => setAttributes({
+                searchButtonDisplay: value
+              }),
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Chọn hiển thị nút: chỉ text, chỉ icon, hoặc icon + text', 'jankx')
+            }) : null, showSearchButton && resolvedSearchButtonDisplay !== 'text' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Search Button Icon (SVG/HTML)', 'jankx'),
+              value: resolvedSearchButtonIcon,
+              onChange: value => setAttributes({
+                searchButtonIcon: value
+              }),
+              placeholder: '<svg>...</svg>',
+              help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Dán SVG hoặc HTML icon. Sử dụng cẩn thận.', 'jankx')
+            }) : null]
+          }), isSmartTabChild && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Search Keyword', 'jankx'),
+            value: filterValue || '',
+            onChange: value => setAttributes({
+              filterValue: value
+            }),
+            placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Nhập từ khóa để filter', 'jankx'),
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Từ khóa để filter khi tab được click', 'jankx')
+          })]
+        })]
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+      ...blockProps,
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("strong", {
+        children: filterTitle
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+        style: {
+          fontSize: '12px',
+          color: '#555'
+        },
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+          children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Type', 'jankx'), ": ", filterType]
+        }), taxonomy && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+          children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Taxonomy', 'jankx'), ": ", taxonomy]
+        }), label && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+          children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Label', 'jankx'), ": ", label]
+        })]
+      })]
+    })]
+  });
+}
+(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.registerBlockType)(_block_json__WEBPACK_IMPORTED_MODULE_6__.name, {
+  ..._block_json__WEBPACK_IMPORTED_MODULE_6__,
+  edit: Edit,
+  save: () => null
+});
+})();
+
+/******/ })()
+;
 //# sourceMappingURL=index.js.map

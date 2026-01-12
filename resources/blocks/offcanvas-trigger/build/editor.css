@@ -1,3 +1,76 @@
-.editor-styles-wrapper .offcanvas-trigger{display:inline-flex;align-items:center;gap:8px;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:16px;font-weight:500;text-decoration:none;transition:all .3s ease;font-family:inherit}.editor-styles-wrapper .offcanvas-trigger:focus{outline:none}.editor-styles-wrapper .offcanvas-trigger .trigger-icon{display:flex;align-items:center;font-size:16px}.editor-styles-wrapper .offcanvas-trigger .trigger-text{font-weight:500}.editor-styles-wrapper .offcanvas-trigger.size-small{padding:8px 12px;font-size:14px}.editor-styles-wrapper .offcanvas-trigger.size-small .trigger-icon{font-size:14px}.editor-styles-wrapper .offcanvas-trigger.size-large{padding:16px 24px;font-size:18px}.editor-styles-wrapper .offcanvas-trigger.size-large .trigger-icon{font-size:18px}.color-controls{display:flex;flex-direction:column;gap:10px;margin:15px 0}.color-controls .color-control{position:relative}.color-controls .color-control .components-button{width:100%;justify-content:flex-start;padding:8px 12px;border-radius:4px;font-size:14px}.color-controls .color-control .color-picker-popup{position:absolute;top:100%;left:0;z-index:1000;background:#fff;border:1px solid #ddd;border-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,.1);padding:10px;margin-top:5px}
+/*!*****************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/offcanvas-trigger/editor.scss ***!
+  \*****************************************************************************************************************************************************************************************************/
+/**
+ * Offcanvas Trigger Block - Editor Styles
+ */
+.editor-styles-wrapper .offcanvas-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+.editor-styles-wrapper .offcanvas-trigger:focus {
+  outline: none;
+}
+.editor-styles-wrapper .offcanvas-trigger .trigger-icon {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+}
+.editor-styles-wrapper .offcanvas-trigger .trigger-text {
+  font-weight: 500;
+}
+.editor-styles-wrapper .offcanvas-trigger.size-small {
+  padding: 8px 12px;
+  font-size: 14px;
+}
+.editor-styles-wrapper .offcanvas-trigger.size-small .trigger-icon {
+  font-size: 14px;
+}
+.editor-styles-wrapper .offcanvas-trigger.size-large {
+  padding: 16px 24px;
+  font-size: 18px;
+}
+.editor-styles-wrapper .offcanvas-trigger.size-large .trigger-icon {
+  font-size: 18px;
+}
+
+.color-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 15px 0;
+}
+.color-controls .color-control {
+  position: relative;
+}
+.color-controls .color-control .components-button {
+  width: 100%;
+  justify-content: flex-start;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+.color-controls .color-control .color-picker-popup {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  margin-top: 5px;
+}
 
 /*# sourceMappingURL=editor.css.map*/

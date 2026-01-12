@@ -1,2 +1,162 @@
-!function(){"use strict";function t(){const t=Array.from(document.querySelectorAll(".jankx-advanced-button__link")),e=(document.body.className||"").match(/post-type-([^\s]+)/);t.forEach(t=>{const a=t.closest(".wp-block-jankx-dynamic-data-layout"),r=a&&a.getAttribute("data-post-type")||(e?e[1]:""),n=t.getAttribute("data-condition-type")||"always",o=t.getAttribute("data-show-for-post-type")||"";if("post-type"===n){const e=t.closest(".wp-block-jankx-advanced-button");o&&r&&o!==r&&(e?e.style.display="none":t.style.display="none")}}),document.querySelectorAll(".jankx-button-modal-trigger").forEach(t=>{"true"!==t.getAttribute("data-jankx-click-attached")&&(t.addEventListener("click",function(t){t.preventDefault();const e=t.currentTarget,a=e.getAttribute("data-modal-id"),r=e.getAttribute("data-micromodal-trigger"),n=a||r,o={};if(Array.from(e.attributes).forEach(t=>{if(t.name.startsWith("data-form-")){const e=t.name.replace("data-form-","");o[e]=t.value}}),Object.keys(o).length>0&&(document.dispatchEvent(new CustomEvent("formello:update",{detail:{data:o,triggerId:e.id}})),void 0!==o.mappings&&o.mappings.length>0)){const t=JSON.parse(o.mappings||"[]");Array.isArray(t)&&t.length>0&&t.forEach(function(t,a){const r=((t,e)=>{switch(t){case"button_title":return e.getAttribute("title")||e.querySelector(".button-text")?.textContent||"";case"current_post_title":return e.getAttribute("data-current-post-title")||"";case"current_post_id":return e.getAttribute("data-current-object-id")||"";case"current_url":return e.getAttribute("data-current-url")||window.location.href;case"current_featured_image_url":return e.getAttribute("data-current-featured-image-url")||"";case"current_featured_image_id":return e.getAttribute("data-current-featured-image-id")||"";default:return""}})(t.source,e),n=document.querySelectorAll(t.selector);n&&n.forEach(function(e){if("attribute"===(t.mode||"value")&&t.attributeName)e.setAttribute(t.attributeName,r),"img"===e.tagName.toLowerCase()&&"src"===t.attributeName&&"lazy"===e.getAttribute("loading")&&e.removeAttribute("loading");else if("text"===(t.mode||"value"))e.textContent=r;else{const t=e.tagName.toLowerCase();"input"===t||"textarea"===t||"select"===t?(e.value=r,e.dispatchEvent(new Event("input",{bubbles:!0})),e.dispatchEvent(new Event("change",{bubbles:!0}))):"img"===t?(e.src=r,"lazy"===e.getAttribute("loading")&&e.removeAttribute("loading")):e.textContent=r}})})}if(n&&""!==n.trim())if(window.JankxModal)window.JankxModal.show(n,e);else if(window.MicroModal)window.MicroModal.show(n);else{const t=document.getElementById(n);t&&(t.classList.add("is-open"),t.setAttribute("aria-hidden","false"))}}),t.setAttribute("data-jankx-click-attached","true"))})}"loading"===document.readyState?document.addEventListener("DOMContentLoaded",t):t()}();
+/******/ (() => { // webpackBootstrap
+/*!********************************************!*\
+  !*** ./blocks/advanced-button/frontend.ts ***!
+  \********************************************/
+/**
+ * Advanced Button Frontend Script
+ */
+
+// Define global interfaces
+
+(function () {
+  'use strict';
+
+  const resolveValue = (source, trigger) => {
+    switch (source) {
+      case 'button_title':
+        return trigger.getAttribute('title') || trigger.querySelector('.button-text')?.textContent || '';
+      case 'current_post_title':
+        return trigger.getAttribute('data-current-post-title') || '';
+      case 'current_post_id':
+        return trigger.getAttribute('data-current-object-id') || '';
+      case 'current_url':
+        return trigger.getAttribute('data-current-url') || window.location.href;
+      case 'current_featured_image_url':
+        return trigger.getAttribute('data-current-featured-image-url') || '';
+      case 'current_featured_image_id':
+        return trigger.getAttribute('data-current-featured-image-id') || '';
+      default:
+        return '';
+    }
+  };
+  function initAdvancedButtons() {
+    const links = Array.from(document.querySelectorAll('.jankx-advanced-button__link'));
+    const bodyClass = document.body.className || '';
+    const match = bodyClass.match(/post-type-([^\s]+)/);
+    links.forEach(link => {
+      const layout = link.closest('.wp-block-jankx-dynamic-data-layout');
+      const contextPostType = layout && layout.getAttribute('data-post-type') || (match ? match[1] : '');
+      const conditionType = link.getAttribute('data-condition-type') || 'always';
+      const targetPostType = link.getAttribute('data-show-for-post-type') || '';
+      if (conditionType === 'post-type') {
+        const wrapper = link.closest('.wp-block-jankx-advanced-button');
+        if (targetPostType && contextPostType && targetPostType !== contextPostType) {
+          if (wrapper) {
+            wrapper.style.display = 'none';
+          } else {
+            link.style.display = 'none';
+          }
+        }
+      }
+    });
+    const buttons = document.querySelectorAll('.jankx-button-modal-trigger');
+    buttons.forEach(button => {
+      // Check if event listener is already attached (to avoid duplicates if called multiple times)
+      if (button.getAttribute('data-jankx-click-attached') === 'true') {
+        return;
+      }
+      button.addEventListener('click', function (e) {
+        e.preventDefault();
+        const trigger = e.currentTarget;
+        // Try the new `data-modal-id` attribute first, then fallback to Micromodal style
+        const modalIdAttr = trigger.getAttribute('data-modal-id');
+        const micromodalAttr = trigger.getAttribute('data-micromodal-trigger');
+        const modalId = modalIdAttr || micromodalAttr;
+
+        // Extract dynamic form data and dispatch event
+        const formData = {};
+        Array.from(trigger.attributes).forEach(attr => {
+          if (attr.name.startsWith('data-form-')) {
+            const key = attr.name.replace('data-form-', '');
+            formData[key] = attr.value;
+          }
+        });
+        if (Object.keys(formData).length > 0) {
+          document.dispatchEvent(new CustomEvent('formello:update', {
+            detail: {
+              data: formData,
+              triggerId: trigger.id
+            }
+          }));
+
+          // Support update HTML data attributes
+          if (formData.mappings !== undefined && formData.mappings.length > 0) {
+            const mappings = JSON.parse(formData.mappings || '[]');
+            if (Array.isArray(mappings) && mappings.length > 0) {
+              mappings.forEach(function (item, index) {
+                const val = resolveValue(item.source, trigger);
+                const elms = document.querySelectorAll(item.selector);
+                if (elms) {
+                  elms.forEach(function (elm) {
+                    if ((item.mode || 'value') === 'attribute' && item.attributeName) {
+                      elm.setAttribute(item.attributeName, val);
+                      const tagAttr = elm.tagName.toLowerCase();
+                      if (tagAttr === 'img' && item.attributeName === 'src') {
+                        if (elm.getAttribute('loading') === 'lazy') {
+                          elm.removeAttribute('loading');
+                        }
+                      }
+                    } else if ((item.mode || 'value') === 'text') {
+                      elm.textContent = val;
+                    } else {
+                      const tag = elm.tagName.toLowerCase();
+                      if (tag === 'input' || tag === 'textarea' || tag === 'select') {
+                        elm.value = val;
+                        elm.dispatchEvent(new Event('input', {
+                          bubbles: true
+                        }));
+                        elm.dispatchEvent(new Event('change', {
+                          bubbles: true
+                        }));
+                      } else if (tag === 'img') {
+                        elm.src = val;
+                        if (elm.getAttribute('loading') === 'lazy') {
+                          elm.removeAttribute('loading');
+                        }
+                      } else {
+                        elm.textContent = val;
+                      }
+                    }
+                  });
+                }
+              });
+            }
+          }
+        }
+        if (!modalId || modalId.trim() === '') {
+          return;
+        }
+
+        // Try JankxModal first (wrapper around MicroModal with extras)
+        if (window.JankxModal) {
+          window.JankxModal.show(modalId, trigger);
+        }
+        // Fallback to raw MicroModal
+        else if (window.MicroModal) {
+          window.MicroModal.show(modalId);
+        }
+        // Fallback: Check if modal exists and show it manually (simple toggle)
+        else {
+          const modal = document.getElementById(modalId);
+          if (modal) {
+            modal.classList.add('is-open');
+            modal.setAttribute('aria-hidden', 'false');
+          }
+        }
+      });
+
+      // Mark as attached
+      button.setAttribute('data-jankx-click-attached', 'true');
+    });
+  }
+
+  // Initialize on DOMContentLoaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAdvancedButtons);
+  } else {
+    initAdvancedButtons();
+  }
+})();
+/******/ })()
+;
 //# sourceMappingURL=frontend.js.map

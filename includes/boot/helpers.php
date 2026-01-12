@@ -15,6 +15,18 @@ if (!function_exists('jankx_is_support_block_template')) {
 }
 
 /**
+ * Get the Jankx application container instance.
+ *
+ * @return \Jankx\Foundation\Application
+ */
+if (!function_exists('jankx_app')) {
+    function jankx_app()
+    {
+        return \Jankx\Foundation\Application::getInstance();
+    }
+}
+
+/**
  * Render a page with the given context and templates.
  *
  * @param string $context The page context (single, archive, etc.)

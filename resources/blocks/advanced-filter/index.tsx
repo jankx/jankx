@@ -122,7 +122,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                     const allBlocks = select('core/block-editor').getBlocks();
                     const findBlock = (blocks: any[]): any => {
                         for (const block of blocks) {
-                            if (block.name === 'jankx/dynamic-data-layout') {
+                            if (block.name === 'jankx/dynamic-data-layout' || block.name === 'jankx/dynamic-ssr-layout') {
                                 const queryId = block.attributes?.queryId || block.clientId;
                                 if (String(queryId) === targetBlockId) {
                                     return block;
