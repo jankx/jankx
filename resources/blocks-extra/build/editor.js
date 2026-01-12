@@ -200,6 +200,15 @@ function addResponsiveDimensionsAttributes(settings, name) {
     },
     jankxGapMobile: {
       type: 'number'
+    },
+    jankxFlexOrderDesktop: {
+      type: 'number'
+    },
+    jankxFlexOrderTablet: {
+      type: 'number'
+    },
+    jankxFlexOrderMobile: {
+      type: 'number'
     }
   };
   return {
@@ -340,6 +349,58 @@ function addResponsiveDimensionsControls(BlockEdit) {
       allowReset: true,
       onChange: v => setVal('margin', typeof v === 'number' ? v : undefined),
       help: 'Khoảng cách bên ngoài khối; áp dụng cho tất cả các cạnh'
+    })), wp.element.createElement(ToolsPanelItem, {
+      label: 'Flex Order (Responsive)',
+      isShownByDefault: false,
+      hasValue: () => {
+        const v = [attributes.jankxFlexOrderDesktop, attributes.jankxFlexOrderTablet, attributes.jankxFlexOrderMobile];
+        return v.some(x => typeof x === 'number');
+      },
+      onDeselect: () => {
+        setAttributes({
+          jankxFlexOrderDesktop: undefined,
+          jankxFlexOrderTablet: undefined,
+          jankxFlexOrderMobile: undefined
+        });
+      }
+    }, wp.element.createElement(wp.components.ButtonGroup, {
+      style: {
+        marginBottom: '12px'
+      }
+    }, wp.element.createElement(wp.components.Button, {
+      isPressed: current === 'desktop',
+      onClick: () => setCurrent('desktop'),
+      variant: current === 'desktop' ? 'primary' : 'secondary',
+      size: 'small',
+      title: 'Desktop'
+    }, '🖥️'), wp.element.createElement(wp.components.Button, {
+      isPressed: current === 'tablet',
+      onClick: () => setCurrent('tablet'),
+      variant: current === 'tablet' ? 'primary' : 'secondary',
+      size: 'small',
+      title: 'Tablet'
+    }, '📱'), wp.element.createElement(wp.components.Button, {
+      isPressed: current === 'mobile',
+      onClick: () => setCurrent('mobile'),
+      variant: current === 'mobile' ? 'primary' : 'secondary',
+      size: 'small',
+      title: 'Mobile'
+    }, '📱')), wp.element.createElement(wp.components.RangeControl, {
+      label: `Flex Order`,
+      value: (() => {
+        const d = currentDevice();
+        return d === 'desktop' ? attributes.jankxFlexOrderDesktop : d === 'tablet' ? attributes.jankxFlexOrderTablet : attributes.jankxFlexOrderMobile;
+      })(),
+      min: -10,
+      max: 20,
+      allowReset: true,
+      onChange: v => {
+        const d = currentDevice();
+        const patch = {};
+        if (d === 'desktop') patch.jankxFlexOrderDesktop = v;else if (d === 'tablet') patch.jankxFlexOrderTablet = v;else patch.jankxFlexOrderMobile = v;
+        setAttributes(patch);
+      },
+      help: 'Thứ tự hiển thị của block trong flex/grid container (chỉ áp dụng khi parent có display: flex hoặc grid)'
     })));
     return [blockEdit, spacingPanel];
   };
@@ -352,8 +413,9 @@ function addResponsiveDimensionsToSave(props, _blockType, attributes) {
   const hasPadding = [attributes.jankxPaddingDesktop, attributes.jankxPaddingTablet, attributes.jankxPaddingMobile].some(v => typeof v === 'number');
   const hasMargin = [attributes.jankxMarginDesktop, attributes.jankxMarginTablet, attributes.jankxMarginMobile].some(v => typeof v === 'number');
   const hasGap = [attributes.jankxGapDesktop, attributes.jankxGapTablet, attributes.jankxGapMobile].some(v => typeof v === 'number');
-  if (hasPadding || hasMargin || hasGap) {
-    const className = (props.className || '') + (/\bhas-jankx-responsive-dimensions\b/.test(props.className || '') ? '' : (props.className ? ' ' : '') + 'has-jankx-responsive-dimensions') + (hasPadding && !/\bhas-jankx-padding\b/.test(props.className || '') ? ' has-jankx-padding' : '') + (hasMargin && !/\bhas-jankx-margin\b/.test(props.className || '') ? ' has-jankx-margin' : '') + (hasGap && !/\bhas-jankx-gap\b/.test(props.className || '') ? ' has-jankx-gap' : '');
+  const hasFlexOrder = [attributes.jankxFlexOrderDesktop, attributes.jankxFlexOrderTablet, attributes.jankxFlexOrderMobile].some(v => typeof v === 'number');
+  if (hasPadding || hasMargin || hasGap || hasFlexOrder) {
+    const className = (props.className || '') + (/\bhas-jankx-responsive-dimensions\b/.test(props.className || '') ? '' : (props.className ? ' ' : '') + 'has-jankx-responsive-dimensions') + (hasPadding && !/\bhas-jankx-padding\b/.test(props.className || '') ? ' has-jankx-padding' : '') + (hasMargin && !/\bhas-jankx-margin\b/.test(props.className || '') ? ' has-jankx-margin' : '') + (hasGap && !/\bhas-jankx-gap\b/.test(props.className || '') ? ' has-jankx-gap' : '') + (hasFlexOrder && !/\bhas-jankx-flex-order\b/.test(props.className || '') ? ' has-jankx-flex-order' : '');
     const style = {
       ...(props.style || {})
     };
@@ -366,6 +428,9 @@ function addResponsiveDimensionsToSave(props, _blockType, attributes) {
     if (typeof attributes.jankxGapDesktop === 'number') style['--jankx-gap-desktop'] = attributes.jankxGapDesktop + 'px';
     if (typeof attributes.jankxGapTablet === 'number') style['--jankx-gap-tablet'] = attributes.jankxGapTablet + 'px';
     if (typeof attributes.jankxGapMobile === 'number') style['--jankx-gap-mobile'] = attributes.jankxGapMobile + 'px';
+    if (typeof attributes.jankxFlexOrderDesktop === 'number') style['--jankx-flex-order-desktop'] = attributes.jankxFlexOrderDesktop;
+    if (typeof attributes.jankxFlexOrderTablet === 'number') style['--jankx-flex-order-tablet'] = attributes.jankxFlexOrderTablet;
+    if (typeof attributes.jankxFlexOrderMobile === 'number') style['--jankx-flex-order-mobile'] = attributes.jankxFlexOrderMobile;
     return {
       ...props,
       className,
@@ -390,12 +455,18 @@ function injectResponsiveDimensionsCSS() {
             gap: var(--jankx-gap-desktop, var(--wp--style--block-gap, initial));
             --wp--style--block-gap: var(--jankx-gap-desktop, var(--wp--style--block-gap, initial));
         }
+        .has-jankx-responsive-dimensions.has-jankx-flex-order {
+            order: var(--jankx-flex-order-desktop, initial);
+        }
         @media (max-width: 1024px) {
             .has-jankx-responsive-dimensions.has-jankx-padding { padding: var(--jankx-padding-tablet, var(--jankx-padding-desktop, initial)); }
             .has-jankx-responsive-dimensions.has-jankx-margin { margin: var(--jankx-margin-tablet, var(--jankx-margin-desktop, initial)); }
             .has-jankx-responsive-dimensions.has-jankx-gap {
                 gap: var(--jankx-gap-tablet, var(--jankx-gap-desktop, var(--wp--style--block-gap, initial)));
                 --wp--style--block-gap: var(--jankx-gap-tablet, var(--jankx-gap-desktop, var(--wp--style--block-gap, initial)));
+            }
+            .has-jankx-responsive-dimensions.has-jankx-flex-order {
+                order: var(--jankx-flex-order-tablet, var(--jankx-flex-order-desktop, initial));
             }
         }
         @media (max-width: 768px) {
@@ -404,6 +475,9 @@ function injectResponsiveDimensionsCSS() {
             .has-jankx-responsive-dimensions.has-jankx-gap {
                 gap: var(--jankx-gap-mobile, var(--jankx-gap-tablet, var(--jankx-gap-desktop, var(--wp--style--block-gap, initial))));
                 --wp--style--block-gap: var(--jankx-gap-mobile, var(--jankx-gap-tablet, var(--jankx-gap-desktop, var(--wp--style--block-gap, initial))));
+            }
+            .has-jankx-responsive-dimensions.has-jankx-flex-order {
+                order: var(--jankx-flex-order-mobile, var(--jankx-flex-order-tablet, var(--jankx-flex-order-desktop, initial)));
             }
         }
     `;

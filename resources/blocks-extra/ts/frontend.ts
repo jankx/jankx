@@ -384,6 +384,9 @@ function injectResponsiveDimensionsCSS(): void {
             gap: var(--jankx-gap-desktop, var(--wp--style--block-gap, initial));
             --wp--style--block-gap: var(--jankx-gap-desktop, var(--wp--style--block-gap, initial));
         }
+        .has-jankx-responsive-dimensions.has-jankx-flex-order {
+            order: var(--jankx-flex-order-desktop, initial);
+        }
         @media (max-width: 1024px) {
             .has-jankx-responsive-dimensions.has-jankx-padding {
                 padding: var(--jankx-padding-tablet, var(--jankx-padding-desktop, initial));
@@ -395,6 +398,9 @@ function injectResponsiveDimensionsCSS(): void {
                 gap: var(--jankx-gap-tablet, var(--jankx-gap-desktop, var(--wp--style--block-gap, initial)));
                 --wp--style--block-gap: var(--jankx-gap-tablet, var(--jankx-gap-desktop, var(--wp--style--block-gap, initial)));
             }
+            .has-jankx-responsive-dimensions.has-jankx-flex-order {
+                order: var(--jankx-flex-order-tablet, var(--jankx-flex-order-desktop, initial));
+            }
         }
         @media (max-width: 768px) {
             .has-jankx-responsive-dimensions.has-jankx-padding {
@@ -405,7 +411,10 @@ function injectResponsiveDimensionsCSS(): void {
             }
             .has-jankx-responsive-dimensions.has-jankx-gap {
                 gap: var(--jankx-gap-mobile, var(--jankx-gap-tablet, var(--jankx-gap-desktop, var(--wp--style--block-gap, initial))));
-                --wp--style--block-gap: var(--jankx-gap-mobile, var(--jankx-gap-tablet, var(--jankx-gap-desktop, var(--wp--style--block-gap, initial))));
+                --wp--style--block-gap: var(--jankx-gap-mobile, var(--jankx-gap-tablet, var(--jankx-gap-desktop, var(--wp--style--block-gap, initial)));
+            }
+            .has-jankx-responsive-dimensions.has-jankx-flex-order {
+                order: var(--jankx-flex-order-mobile, var(--jankx-flex-order-tablet, var(--jankx-flex-order-desktop, initial)));
             }
         }
     `;
